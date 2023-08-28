@@ -1,0 +1,29 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* layout */
+.layout {
+    height: 100vh;
+    width: 100vw;
+}
+
+/* splitpanes */
+.splitpanes__splitter {
+    background-color: #ddd;
+}
+
+.splitpanes__splitter:hover {
+    background-color: #aaa;
+}
+
+
+.splitpanes--vertical > .splitpanes__splitter {
+    min-width: 6px !important;
+}
+
+.splitpanes--horizontal > .splitpanes__splitter {
+    min-height: 6px !important;
+}
