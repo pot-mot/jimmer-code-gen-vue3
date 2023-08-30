@@ -77,13 +77,13 @@ export interface GenEntityPropertiesView_TargetOf_properties {
     
     modifiedTime: string;
     
+    name: string;
+    
     propertyAnnotationExpression: string;
     
     propertyAssociationType: string;
     
     propertyComment: string;
-    
-    propertyName: string;
     
     propertyType: string;
     

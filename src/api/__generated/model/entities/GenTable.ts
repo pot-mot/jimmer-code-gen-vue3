@@ -15,19 +15,19 @@ export interface GenTable {
     
     schema: GenSchema;
     
-    groupId: number;
+    groupId?: number;
     
-    group: GenTableGroup;
+    group?: GenTableGroup;
     
     entityIds: number[];
     
     entities: GenEntity[];
     
-    tableName: string;
+    name: string;
     
-    tableComment: string;
+    comment: string;
     
-    tableType: TableType;
+    type: TableType;
     
     orderKey: number;
     

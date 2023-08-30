@@ -6,5 +6,9 @@ export interface EntityQuery {
     
     ids?: number[];
     
+    keywords?: string[];
+    
     modifiedTime?: TimeRangeQueryParam;
+    
+    names?: string[];
 }

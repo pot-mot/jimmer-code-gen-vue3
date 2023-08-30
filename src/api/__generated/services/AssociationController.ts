@@ -29,16 +29,7 @@ export class AssociationController {
         ReadonlyArray<GenAssociationPreviewView>
     > {
         let _uri = '/association/select';
-        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
-        let _value: any = undefined;
-        _value = options.tableIds.join(',');
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'tableIds='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenAssociationPreviewView>
+        return (await this.executor({uri: _uri, method: 'GET', body: options.body})) as ReadonlyArray<GenAssociationPreviewView>
     }
 }
 
@@ -46,5 +37,5 @@ export type AssociationControllerOptions = {
     'delete': {readonly ids: ReadonlyArray<number>},
     'query': {readonly body: AssociationQuery},
     'save': {readonly body: ReadonlyArray<GenAssociationCommonInput>},
-    'select': {readonly tableIds: ReadonlyArray<number>}
+    'select': {readonly body: ReadonlyArray<number>}
 }

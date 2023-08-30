@@ -19,7 +19,7 @@ export interface GenProperty {
     
     entity: GenEntity;
     
-    propertyName: string;
+    name: string;
     
     isId: boolean;
     

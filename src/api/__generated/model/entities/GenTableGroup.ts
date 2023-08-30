@@ -18,7 +18,7 @@ export interface GenTableGroup {
     
     tables: GenTable[];
     
-    groupName: string;
+    name: string;
     
     orderKey: number;
 }

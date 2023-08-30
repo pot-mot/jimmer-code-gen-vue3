@@ -4,5 +4,7 @@ export { DataSourceController } from './DataSourceController';
 export type { DataSourceControllerOptions } from './DataSourceController';
 export { EntityController } from './EntityController';
 export type { EntityControllerOptions } from './EntityController';
+export { SchemaController } from './SchemaController';
+export type { SchemaControllerOptions } from './SchemaController';
 export { TableController } from './TableController';
 export type { TableControllerOptions } from './TableController';

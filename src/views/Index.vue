@@ -1,11 +1,18 @@
 <script setup lang="js">
 import LeftTopBottomLayout from "../components/layout/LeftRightLayout.vue";
-import Dialog from "../components/common/Dialog.vue";
+import DataSourceMenu from "../components/dataSource/DataSourceMenu.vue";
+import TableGraph from "../components/table/TableGraph.vue";
 </script>
 
 <template>
-	<LeftTopBottomLayout></LeftTopBottomLayout>
-	<Dialog></Dialog>
+	<LeftTopBottomLayout>
+		<template #left>
+			<DataSourceMenu></DataSourceMenu>
+		</template>
+		<template #right>
+			<TableGraph></TableGraph>
+		</template>
+	</LeftTopBottomLayout>
 </template>
 
 <style scoped lang="scss">

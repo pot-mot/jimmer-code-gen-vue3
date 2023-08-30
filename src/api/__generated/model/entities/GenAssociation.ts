@@ -11,7 +11,7 @@ export interface GenAssociation {
     
     id: number;
     
-    associationComment: string;
+    comment: string;
     
     sourceColumn: GenColumn;
     

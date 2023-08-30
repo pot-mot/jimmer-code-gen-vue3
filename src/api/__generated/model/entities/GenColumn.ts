@@ -18,21 +18,21 @@ export interface GenColumn {
     
     table?: GenTable;
     
-    columnSort: number;
+    orderKey: number;
     
-    columnName: string;
+    name: string;
     
-    columnTypeCode: number;
+    typeCode: number;
     
-    columnType: string;
+    type: string;
     
-    columnDisplaySize: number;
+    displaySize: number;
     
-    columnPrecision: number;
+    numericPrecision: number;
     
-    columnDefault?: string;
+    defaultValue?: string;
     
-    columnComment: string;
+    comment: string;
     
     isPk: boolean;
     

@@ -33,6 +33,8 @@ export type ApiErrors = {
     },
     "entityController": {
     },
+    "schemaController": {
+    },
     "tableController": {
     }
 };

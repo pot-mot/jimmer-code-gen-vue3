@@ -8,9 +8,11 @@
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "api": "node scripts/generateApi.js",
-    "rm_readonly": "node scripts/removeModelReadonly.js"
+    "rm_readonly": "node scripts/removeReadonly.js"
   },
   "dependencies": {
+    "@antv/x6": "^2.13.1",
+    "@antv/x6-vue-shape": "^2.1.1",
     "pinia": "^2.1.6",
     "sass": "^1.66.1",
     "splitpanes": "^3.1.5",
@@ -21,7 +23,6 @@
   "devDependencies": {
     "@types/splitpanes": "^2.2.1",
     "@vitejs/plugin-vue": "^4.2.3",
-    "@vitejs/plugin-vue-jsx": "^3.0.2",
     "adm-zip": "^0.5.10",
     "fs-extra": "^11.1.1",
     "temp-dir": "^3.0.0",

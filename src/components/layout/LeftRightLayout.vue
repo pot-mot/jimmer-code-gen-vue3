@@ -4,14 +4,12 @@ import 'splitpanes/dist/splitpanes.css'
 </script>
 
 <template>
-	<div class="layout">
-		<splitpanes>
-			<pane size="20">
-				<slot name="left"/>
-			</pane>
-			<pane>
-				<slot name="right"/>
-			</pane>
-		</splitpanes>
-	</div>
+	<splitpanes>
+		<pane size="25">
+			<slot name="left"/>
+		</pane>
+		<pane>
+			<slot name="right"/>
+		</pane>
+	</splitpanes>
 </template>

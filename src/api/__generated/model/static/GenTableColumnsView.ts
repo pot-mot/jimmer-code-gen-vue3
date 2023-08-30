@@ -4,13 +4,17 @@ export interface GenTableColumnsView {
     
     columns: GenTableColumnsView_TargetOf_columns[];
     
+    comment: string;
+    
     createdTime: string;
     
-    groupId: number;
+    groupId?: number;
     
     id: number;
     
     modifiedTime: string;
+    
+    name: string;
     
     orderKey: number;
     
@@ -18,34 +22,20 @@ export interface GenTableColumnsView {
     
     schemaId: number;
     
-    tableComment: string;
-    
-    tableName: string;
-    
-    tableType: TableType;
+    type: TableType;
 }
 
 export interface GenTableColumnsView_TargetOf_columns {
     
     autoIncrement: boolean;
     
-    columnComment: string;
-    
-    columnDefault?: string;
-    
-    columnDisplaySize: number;
-    
-    columnName: string;
-    
-    columnPrecision: number;
-    
-    columnSort: number;
-    
-    columnType: string;
-    
-    columnTypeCode: number;
+    comment: string;
     
     createdTime: string;
+    
+    defaultValue?: string;
+    
+    displaySize: number;
     
     fk: boolean;
     
@@ -53,13 +43,23 @@ export interface GenTableColumnsView_TargetOf_columns {
     
     modifiedTime: string;
     
+    name: string;
+    
     notNull: boolean;
+    
+    numericPrecision: number;
+    
+    orderKey: number;
     
     pk: boolean;
     
     remark: string;
     
     tableId?: number;
+    
+    type: string;
+    
+    typeCode: number;
     
     unique: boolean;
 }

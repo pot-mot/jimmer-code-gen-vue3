@@ -1,7 +1,7 @@
 import type { Dynamic, Executor } from '../';
 import type { GenSchemaDto } from '../model/dto';
-import type { GenDataSource, GenSchema } from '../model/entities';
-import type { GenDataSourceInput, GenDataSourceSchemasView, GenSchemaInsertInput, GenSchemaTablesView } from '../model/static';
+import type { GenSchema } from '../model/entities';
+import type { GenDataSourceInput, GenDataSourceView, GenSchemaView } from '../model/static';
 
 export class DataSourceController {
     
@@ -16,24 +16,27 @@ export class DataSourceController {
     async importSchema(options: DataSourceControllerOptions['importSchema']): Promise<
         ReadonlyArray<Dynamic<GenSchema>>
     > {
-        let _uri = '/dataSource/schema';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as ReadonlyArray<Dynamic<GenSchema>>
+        let _uri = '/dataSource/';
+        _uri += encodeURIComponent(options.dataSourceId);
+        _uri += '/schema/';
+        _uri += encodeURIComponent(options.name);
+        return (await this.executor({uri: _uri, method: 'POST'})) as ReadonlyArray<Dynamic<GenSchema>>
     }
     
     async list(): Promise<
-        ReadonlyArray<GenDataSourceSchemasView>
+        ReadonlyArray<GenDataSourceView>
     > {
         let _uri = '/dataSource/';
-        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenDataSourceSchemasView>
+        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenDataSourceView>
     }
     
     async listSchemas(options: DataSourceControllerOptions['listSchemas']): Promise<
-        ReadonlyArray<GenSchemaTablesView>
+        ReadonlyArray<GenSchemaView>
     > {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.dataSourceId);
-        _uri += '/schemas/imported';
-        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenSchemaTablesView>
+        _uri += '/schema/imported';
+        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenSchemaView>
     }
     
     async listTypes(): Promise<
@@ -44,10 +47,10 @@ export class DataSourceController {
     }
     
     async save(options: DataSourceControllerOptions['save']): Promise<
-        Dynamic<GenDataSource>
+        GenDataSourceView
     > {
         let _uri = '/dataSource/';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Dynamic<GenDataSource>
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as GenDataSourceView
     }
     
     async viewSchemas(options: DataSourceControllerOptions['viewSchemas']): Promise<
@@ -55,14 +58,14 @@ export class DataSourceController {
     > {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.dataSourceId);
-        _uri += '/schemas/all';
+        _uri += '/schema/all';
         return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenSchemaDto['DEFAULT']>
     }
 }
 
 export type DataSourceControllerOptions = {
     'delete': {readonly ids: ReadonlyArray<number>},
-    'importSchema': {readonly body: GenSchemaInsertInput},
+    'importSchema': {readonly dataSourceId: number, readonly name: string},
     'list': {},
     'listSchemas': {readonly dataSourceId: number},
     'listTypes': {},

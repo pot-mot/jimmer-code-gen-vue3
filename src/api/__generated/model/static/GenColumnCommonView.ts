@@ -2,23 +2,13 @@ export interface GenColumnCommonView {
     
     autoIncrement: boolean;
     
-    columnComment: string;
-    
-    columnDefault?: string;
-    
-    columnDisplaySize: number;
-    
-    columnName: string;
-    
-    columnPrecision: number;
-    
-    columnSort: number;
-    
-    columnType: string;
-    
-    columnTypeCode: number;
+    comment: string;
     
     createdTime: string;
+    
+    defaultValue?: string;
+    
+    displaySize: number;
     
     fk: boolean;
     
@@ -26,11 +16,21 @@ export interface GenColumnCommonView {
     
     modifiedTime: string;
     
+    name: string;
+    
     notNull: boolean;
+    
+    numericPrecision: number;
+    
+    orderKey: number;
     
     pk: boolean;
     
     remark: string;
+    
+    type: string;
+    
+    typeCode: number;
     
     unique: boolean;
 }

@@ -2,9 +2,9 @@ import type { AssociationType } from '../enums';
 
 export interface GenAssociationCommonView {
     
-    associationComment: string;
-    
     associationType: AssociationType;
+    
+    comment: string;
     
     createdTime: string;
     

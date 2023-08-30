@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 // 替换目录路径
-const directoryPath = 'src/api/__generated/model';
+const modelPath = 'src/api/__generated/model';
 
 // 递归遍历目录中的所有文件
 function traverseDirectory(directoryPath) {
@@ -30,4 +30,4 @@ function replaceInFile(filePath) {
 }
 
 // 执行替换操作
-traverseDirectory(directoryPath);
+traverseDirectory(modelPath);

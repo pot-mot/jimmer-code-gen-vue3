@@ -6,5 +6,9 @@ export interface ColumnQuery {
     
     ids?: number[];
     
+    keywords?: string[];
+    
     modifiedTime?: TimeRangeQueryParam;
+    
+    tableIds?: number[];
 }

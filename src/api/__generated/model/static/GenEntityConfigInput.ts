@@ -63,13 +63,13 @@ export interface GenEntityConfigInput_TargetOf_properties {
     
     logicalDelete: boolean;
     
+    name: string;
+    
     propertyAnnotationExpression: string;
     
     propertyAssociationType: string;
     
     propertyComment: string;
-    
-    propertyName: string;
     
     propertyType: string;
     
