@@ -6,30 +6,40 @@
 
 <script setup lang="ts">
 import {nextTick, onMounted, ref} from "vue";
-import { Graph } from "@antv/x6";
-import { register } from "@antv/x6-vue-shape";
-import TableNode from "./TableNode.vue";
+import {Graph} from "@antv/x6";
+
+import {ColumnPortLayout} from "./port/ColumnPortLayout.ts";
+
 import {useTableEditorStore} from "../../store/tableEditor.ts";
 import {GenTableCommonView} from "../../api/__generated/model/static";
+import {addTableNodes} from "./common/table.ts";
+import {register} from "@antv/x6-vue-shape";
+import TableNode from "./shape/TableNode.vue";
+import {AssociationEdge} from "./edge/AssociationEdge.ts";
 
 const container = ref<HTMLDivElement | null>(null);
 const graphBase = ref<HTMLDivElement | null>(null);
 
 let graph: Graph;
 
+const store = useTableEditorStore()
+
+Graph.registerPortLayout(
+	"Column",
+	ColumnPortLayout,
+	true
+)
+
 register({
 	shape: "table",
-	component: TableNode,
-	label: 'rect',
+	component: TableNode
 });
-
-const store = useTableEditorStore()
 
 store.$onAction(({name, after}) => {
 	if (name == "addTables") {
 		after((result) => {
 			removeTableNodes(result.del)
-			addTableNodes(result.add)
+			addTableNodes(graph, result.add)
 		})
 	}
 
@@ -40,24 +50,9 @@ store.$onAction(({name, after}) => {
 	}
 })
 
-const addTableNodes = (tables: readonly GenTableCommonView[]) => {
-	tables.forEach(table => {
-		graph.addNode({
-			x: 0,
-			y: 0,
-			shape: "table",
-			data: table,
-			id: `${table.id}`
-		})
-		console.log(table)
-	})
-}
-
 const removeTableNodes = (tables: readonly GenTableCommonView[]) => {
 	tables.forEach(table => {
-		graph.removeNode(`${table.id}`)
-
-		console.log(table)
+		graph.removeNode(`table-${table.id}`)
 	})
 }
 
@@ -66,8 +61,12 @@ const graphInit = () => {
 	graph = new Graph({
 		container: graphBase.value,
 		width: container.value.clientWidth,
-		height: container.value.clientHeight
+		height: container.value.clientHeight,
+		connecting: AssociationEdge
 	});
+	graphBase.value.addEventListener('resize', () => {
+		if (container.value) graph.resize(container.value.clientWidth, container.value.clientHeight)
+	})
 };
 
 onMounted(() => {

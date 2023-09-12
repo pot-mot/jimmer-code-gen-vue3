@@ -47,8 +47,6 @@ const refreshSchema = (schemaId: number = props.schema.id) => {
 }
 
 const editorStore = useTableEditorStore()
-
-
 </script>
 
 <template>
