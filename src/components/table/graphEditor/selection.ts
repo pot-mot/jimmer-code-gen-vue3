@@ -6,7 +6,10 @@ export const useSelection = (graph: Graph) => {
         new Selection({
             enabled: true,
             rubberband: true,
-            showNodeSelectionBox: true
+            showNodeSelectionBox: true,
+            showEdgeSelectionBox: true,
+
+            pointerEvents: "none"
         })
     )
 };

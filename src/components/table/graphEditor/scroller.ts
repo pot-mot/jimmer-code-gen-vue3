@@ -5,7 +5,11 @@ export const useScroller = (graph: Graph) => {
     graph.use(
         new Scroller({
             enabled: true,
-            padding: 200,
+            padding: 0,
+
+            pageVisible: true,
+            pageBreak: true,
         })
     )
+    graph.setScrollbarPosition(0,0)
 };

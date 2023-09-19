@@ -5,6 +5,9 @@ export const useHistory = (graph: Graph) => {
     graph.use(
         new History({
             enabled: true,
+            ignoreAdd: false,
+            ignoreChange: false,
+            ignoreRemove: false,
         })
     );
 };

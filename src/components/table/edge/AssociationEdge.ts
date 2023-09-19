@@ -18,4 +18,7 @@ export const AssociationEdge = {
             },
         })
     },
+
+    allowBlank: false,
+    allowNode: false
 }
