@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import DragResize from 'vue3-draggable-resizable'
 import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
 
@@ -22,7 +22,7 @@ withDefaults(
 </script>
 
 <template>
-	<DragResize :initH="initH" :initW="initW" :minH="minH" :minW="minW" style="border: none;" :parent="true">
+	<DragResize :initH="initH" :initW="initW" :minH="minH" :minW="minW" :parent="true" style="border: none;">
 		<div class="wrapper">
 			<slot></slot>
 		</div>

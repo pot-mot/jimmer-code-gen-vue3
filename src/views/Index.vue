@@ -1,4 +1,4 @@
-<script setup lang="js">
+<script lang="js" setup>
 import LeftTopBottomLayout from "../components/layout/LeftRightLayout.vue";
 import DataSourceMenu from "../components/dataSource/DataSourceMenu.vue";
 import TableGraph from "../components/table/TableGraph.vue";
@@ -15,5 +15,5 @@ import TableGraph from "../components/table/TableGraph.vue";
 	</LeftTopBottomLayout>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss" scoped>
 </style>

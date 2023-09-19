@@ -11,6 +11,7 @@
     "rm_readonly": "node scripts/removeReadonly.js"
   },
   "dependencies": {
+    "@antv/layout": "^0.3.23",
     "@antv/x6": "^2.13.1",
     "@antv/x6-plugin-history": "^2.2.3",
     "@antv/x6-plugin-minimap": "^2.0.5",

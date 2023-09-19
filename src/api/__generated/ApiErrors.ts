@@ -1,40 +1,36 @@
-export type AllErrors = 
+export type AllErrors =
     {
         readonly family: "DATA_SOURCE_ERROR_CODE",
         readonly code: "CONNECT_FAIL"
     }
-;
+    ;
 
 export type ApiErrors = {
-    "associationService": {
-    },
-    "columnService": {
-    },
+    "associationService": {},
+    "columnService": {},
     "dataSourceService": {
         "importSchema": AllErrors & (
             {
                 readonly family: 'DATA_SOURCE_ERROR_CODE',
                 readonly code: 'CONNECT_FAIL',
-                readonly [key:string]: any
+                readonly [key: string]: any
             }
-        ),
+            ),
         "save": AllErrors & (
             {
                 readonly family: 'DATA_SOURCE_ERROR_CODE',
                 readonly code: 'CONNECT_FAIL',
-                readonly [key:string]: any
+                readonly [key: string]: any
             }
-        ),
+            ),
         "viewSchemas": AllErrors & (
             {
                 readonly family: 'DATA_SOURCE_ERROR_CODE',
                 readonly code: 'CONNECT_FAIL',
-                readonly [key:string]: any
+                readonly [key: string]: any
             }
-        )
+            )
     },
-    "schemaService": {
-    },
-    "tableService": {
-    }
+    "schemaService": {},
+    "tableService": {}
 };

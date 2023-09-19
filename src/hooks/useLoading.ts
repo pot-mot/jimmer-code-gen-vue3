@@ -6,9 +6,9 @@ export const useLoading = (immediate: boolean = true) => {
         return loadingCount.value > 0
     })
 
-    const add = () => loadingCount.value ++
+    const add = () => loadingCount.value++
 
-    const sub = () => loadingCount.value --
+    const sub = () => loadingCount.value--
 
     const clear = () => loadingCount.value = 0
 

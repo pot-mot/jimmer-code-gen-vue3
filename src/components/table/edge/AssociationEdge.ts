@@ -1,4 +1,5 @@
 import {Shape} from "@antv/x6";
+import {COMMON_COLOR} from "../constant";
 
 export const AssociationEdge = {
     router: {
@@ -8,12 +9,13 @@ export const AssociationEdge = {
             direction: 'H',
         },
     },
+
     createEdge() {
         return new Shape.Edge({
             attrs: {
                 line: {
-                    stroke: '#A2B1C3',
-                    strokeWidth: 2,
+                    stroke: COMMON_COLOR,
+                    strokeWidth: 1,
                 },
             },
         })

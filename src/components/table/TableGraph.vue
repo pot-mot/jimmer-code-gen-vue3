@@ -8,6 +8,26 @@
 	</div>
 </template>
 
+<style lang="scss">
+.x6-graph-scroller-background {
+	background-color: #ccc;
+}
+
+.x6-graph-background {
+	background-color: #fff;
+}
+
+.x6-widget-selection {
+	.x6-widget-selection-box {
+		border: 1px dashed #239edd;
+	}
+
+	.x6-widget-selection-inner {
+		border: 1px solid #239edd;
+	}
+}
+</style>
+
 <style lang="scss" scoped>
 .wrapper {
 	position: relative;
@@ -22,7 +42,7 @@
 }
 </style>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import {nextTick, onMounted, Ref, ref} from "vue";
 import {Graph} from "@antv/x6";
 
@@ -34,14 +54,17 @@ import {initGraph} from "./graphEditor/init.ts";
 import {useStoreEvents} from "./graphEditor/store.ts";
 import {COLUMN_PORT} from "./constant";
 import {useHistory} from "./graphEditor/history.ts";
-import {useScroller} from "./graphEditor/scroller.ts";
 import {useSelection} from "./graphEditor/selection.ts";
-import {useMouseEnterToFront} from "./graphEditor/eventListen.ts";
+import {
+	useEdgeClickToggleAssociationType,
+	useEdgeMouseEnterChangeEdgeColor,
+	useMouseEnterNodeToFront
+} from "./graphEditor/eventListen.ts";
 
 const container = ref<HTMLDivElement | null>(null);
 const wrapper = ref<HTMLDivElement | null>(null);
 
-const graph: Ref<Graph> = ref();
+const graph: Ref<Graph | undefined> = ref();
 
 Graph.registerPortLayout(
 	COLUMN_PORT,
@@ -71,12 +94,33 @@ onMounted(() => {
 		graph.value = initGraph(container.value!, wrapper.value!)
 		useStoreEvents(graph.value)
 		useHistory(graph.value)
-		useScroller(graph.value)
 		useSelection(graph.value)
 
-		useMouseEnterToFront(graph.value)
+		useMouseEnterNodeToFront(graph.value)
+		useEdgeMouseEnterChangeEdgeColor(graph.value)
 
-		console.log(graph.value)
+		useEdgeClickToggleAssociationType(graph.value)
+
+		document.documentElement.addEventListener('keydown', (e: KeyboardEvent) => {
+			if (e.ctrlKey || e.metaKey) {
+				if (e.key == 'z') {
+					handleUndo()
+				} else if (e.key == 'Z') {
+					handleRedo()
+				}
+			}
+		})
+
+		document.documentElement.addEventListener('keydown', (event) => {
+			if (graph.value && event.key === 'Delete') {
+				const selectedCells = graph.value.getSelectedCells()
+
+				// 删除选中的元素
+				selectedCells.forEach((cell) => {
+					graph.value?.removeCell(cell.id)
+				});
+			}
+		});
 	})
 });
 </script>

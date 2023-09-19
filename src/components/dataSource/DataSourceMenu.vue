@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {onMounted, ref} from "vue";
 import {api} from "../../api";
 import {GenDataSourceInput, GenDataSourceView} from "../../api/__generated/model/static";

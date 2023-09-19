@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {ref, watch} from "vue";
 import {GenSchemaView, GenTableCommonView} from "../../api/__generated/model/static";
 import {api} from "../../api";

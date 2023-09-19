@@ -23,7 +23,7 @@ export const useTableEditorStore = defineStore('tableEditor', () => {
                 return true
             }
             return false
-         })
+        })
         return res
     }
 
@@ -34,7 +34,7 @@ export const useTableEditorStore = defineStore('tableEditor', () => {
         })
     }
 
-    const deleteAssociations  = (ids: readonly number[]) => {
+    const deleteAssociations = (ids: readonly number[]) => {
         api.associationService.delete({ids}).then(res => {
             associations.value = associations.value.filter(association => !ids.includes(association.id))
             alert(`移除了${res}条关联`)

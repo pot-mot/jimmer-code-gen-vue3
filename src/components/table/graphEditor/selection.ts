@@ -6,10 +6,12 @@ export const useSelection = (graph: Graph) => {
         new Selection({
             enabled: true,
             rubberband: true,
-            showNodeSelectionBox: true,
-            showEdgeSelectionBox: true,
-
-            pointerEvents: "none"
+            showNodeSelectionBox: true
         })
     )
+    useSelectDelete(graph)
 };
+
+export const useSelectDelete = (graph: Graph) => {
+    console.log(graph)
+}

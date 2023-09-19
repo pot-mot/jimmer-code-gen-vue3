@@ -1,16 +1,17 @@
-import type { Executor } from '../';
-import type { GenTableColumnsView, GenTableCommonView, TableQuery } from '../model/static';
+import type {Executor} from '../';
+import type {GenTableColumnsView, GenTableCommonView, TableQuery} from '../model/static';
 
 export class TableService {
-    
-    constructor(private executor: Executor) {}
-    
+
+    constructor(private executor: Executor) {
+    }
+
     async delete(options: TableServiceOptions['delete']): Promise<number> {
         let _uri = '/table/';
         _uri += encodeURIComponent(options.ids.join(','));
         return (await this.executor({uri: _uri, method: 'DELETE'})) as number
     }
-    
+
     async list(options: TableServiceOptions['list']): Promise<
         ReadonlyArray<GenTableColumnsView>
     > {
@@ -18,7 +19,7 @@ export class TableService {
         _uri += encodeURIComponent(options.ids.join(','));
         return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenTableColumnsView>
     }
-    
+
     async query(options: TableServiceOptions['query']): Promise<
         ReadonlyArray<GenTableCommonView>
     > {
@@ -65,7 +66,7 @@ export class TableService {
 }
 
 export type TableServiceOptions = {
-    'delete': {readonly ids: ReadonlyArray<number>},
-    'list': {readonly ids: ReadonlyArray<number>},
-    'query': {readonly query: TableQuery}
+    'delete': { readonly ids: ReadonlyArray<number> },
+    'list': { readonly ids: ReadonlyArray<number> },
+    'query': { readonly query: TableQuery }
 }

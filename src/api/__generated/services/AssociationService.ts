@@ -1,16 +1,17 @@
-import type { Executor } from '../';
-import type { AssociationQuery, GenAssociationCommonInput, GenAssociationCommonView } from '../model/static';
+import type {Executor} from '../';
+import type {AssociationQuery, GenAssociationCommonInput, GenAssociationCommonView} from '../model/static';
 
 export class AssociationService {
-    
-    constructor(private executor: Executor) {}
-    
+
+    constructor(private executor: Executor) {
+    }
+
     async delete(options: AssociationServiceOptions['delete']): Promise<number> {
         let _uri = '/association/';
         _uri += encodeURIComponent(options.ids.join(','));
         return (await this.executor({uri: _uri, method: 'DELETE'})) as number
     }
-    
+
     async query(options: AssociationServiceOptions['query']): Promise<
         ReadonlyArray<GenAssociationCommonView>
     > {
@@ -61,12 +62,12 @@ export class AssociationService {
         }
         return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenAssociationCommonView>
     }
-    
+
     async save(options: AssociationServiceOptions['save']): Promise<number> {
         let _uri = '/association/save';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number
     }
-    
+
     async select(options: AssociationServiceOptions['select']): Promise<
         ReadonlyArray<GenAssociationCommonView>
     > {
@@ -85,8 +86,8 @@ export class AssociationService {
 }
 
 export type AssociationServiceOptions = {
-    'delete': {readonly ids: ReadonlyArray<number>},
-    'query': {readonly query: AssociationQuery},
-    'save': {readonly body: ReadonlyArray<GenAssociationCommonInput>},
-    'select': {readonly tableId: number}
+    'delete': { readonly ids: ReadonlyArray<number> },
+    'query': { readonly query: AssociationQuery },
+    'save': { readonly body: ReadonlyArray<GenAssociationCommonInput> },
+    'select': { readonly tableId: number }
 }

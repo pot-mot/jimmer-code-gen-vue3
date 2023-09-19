@@ -4,23 +4,25 @@ import {AssociationEdge} from "../edge/AssociationEdge.ts";
 export const initGraph = (container: HTMLElement, wrapper: HTMLElement): Graph => {
     const graph = new Graph({
         container,
+
         mousewheel: {
             enabled: true,
-            modifiers: ['ctrl', 'meta'],
+            minScale: 0.1,
+            maxScale: 4,
         },
 
         width: wrapper.clientWidth,
         height: wrapper.clientHeight,
 
+        panning: {
+            enabled: true,
+            eventTypes: ['rightMouseDown']
+        },
+
         connecting: AssociationEdge,
     });
 
-    container.addEventListener('resize', () => {
-        if (graph && container && wrapper) graph.resize(wrapper.clientWidth, wrapper.clientHeight)
-    })
-    window.addEventListener('resize', () => {
-        if (graph && container && wrapper) graph.resize(wrapper.clientWidth, wrapper.clientHeight)
-    })
+    graph.zoomTo(0.5)
 
     return graph
 }

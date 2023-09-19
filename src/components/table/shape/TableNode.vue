@@ -1,8 +1,8 @@
 <template>
-	<div class="node" v-if="table">
-		<table class="node-wrapper" ref="nodeWrapper">
+	<div v-if="table" class="node">
+		<table ref="wrapper" class="node-wrapper">
 			<tr>
-				<td colspan="3" class="tableName">{{ table.name }}</td>
+				<td class="tableName" colspan="3">{{ table.name }}</td>
 			</tr>
 			<tr v-for="column in table.columns">
 				<td>{{ column.name }}</td>
@@ -12,40 +12,6 @@
 		</table>
 	</div>
 </template>
-
-<script setup lang='ts'>
-import {inject, nextTick, onMounted, ref} from "vue";
-import {GenTableColumnsView} from "../../../api/__generated/model/static";
-import {Node} from '@antv/x6'
-
-const nodeWrapper = ref<HTMLElement | null>()
-
-const getNode = inject<() => Node>("getNode")!;
-
-const table = ref<GenTableColumnsView>()
-
-onMounted(() => {
-	const node = getNode()
-	table.value = node.getData()
-
-	nextTick(() => {
-		if (!nodeWrapper.value) return
-		node.resize(nodeWrapper.value.clientWidth, nodeWrapper.value.clientHeight)
-
-		table.value?.columns.forEach(column => {
-			node.addPort({
-				id: `column-${column.id}`,
-				group: 'column',
-				attrs: {
-					portBody: {
-						width: nodeWrapper.value!.clientWidth,
-					}
-				}
-			})
-		})
-	})
-});
-</script>
 
 <style lang="scss" scoped>
 .node {
@@ -68,3 +34,37 @@ onMounted(() => {
 	}
 }
 </style>
+
+<script lang='ts' setup>
+import {inject, nextTick, onMounted, ref} from "vue";
+import {GenTableColumnsView} from "../../../api/__generated/model/static";
+import {Node} from '@antv/x6'
+
+const wrapper = ref<HTMLElement | null>()
+
+const getNode = inject<() => Node>("getNode")!;
+
+const table = ref<GenTableColumnsView>()
+
+onMounted(() => {
+	const node = getNode()
+	table.value = node.getData()
+
+	nextTick(() => {
+		if (!wrapper.value) return
+		node.resize(wrapper.value.clientWidth, wrapper.value.clientHeight)
+
+		table.value?.columns.forEach(column => {
+			node.addPort({
+				id: `column-${column.id}`,
+				group: 'column',
+				attrs: {
+					portBody: {
+						width: wrapper.value!.clientWidth,
+					}
+				}
+			})
+		})
+	})
+});
+</script>
