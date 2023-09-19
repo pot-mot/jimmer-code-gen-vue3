@@ -1,24 +1,24 @@
 import type { Executor } from './';
 
-import { AssociationController, DataSourceController, EntityController, SchemaController, TableController } from './services';
+import { AssociationService, ColumnService, DataSourceService, SchemaService, TableService } from './services';
 
 export class Api {
     
-    readonly associationController: AssociationController;
+    readonly associationService: AssociationService;
     
-    readonly dataSourceController: DataSourceController;
+    readonly columnService: ColumnService;
     
-    readonly entityController: EntityController;
+    readonly dataSourceService: DataSourceService;
     
-    readonly schemaController: SchemaController;
+    readonly schemaService: SchemaService;
     
-    readonly tableController: TableController;
+    readonly tableService: TableService;
     
     constructor(executor: Executor) {
-        this.associationController = new AssociationController(executor);
-        this.dataSourceController = new DataSourceController(executor);
-        this.entityController = new EntityController(executor);
-        this.schemaController = new SchemaController(executor);
-        this.tableController = new TableController(executor);
+        this.associationService = new AssociationService(executor);
+        this.columnService = new ColumnService(executor);
+        this.dataSourceService = new DataSourceService(executor);
+        this.schemaService = new SchemaService(executor);
+        this.tableService = new TableService(executor);
     }
 }

@@ -1,6 +1,6 @@
 import {GenTableCommonView} from "../../../api/__generated/model/static";
 import {Graph} from "@antv/x6";
-import {COLUMN_HEIGHT} from "../constant";
+import {COLUMN_HEIGHT, COLUMN_PORT} from "../constant";
 
 export const addTableNodes = (graph: Graph, tables: readonly GenTableCommonView[]) => {
     tables.forEach(table => {
@@ -13,7 +13,7 @@ export const addTableNodes = (graph: Graph, tables: readonly GenTableCommonView[
             ports: {
                 groups: {
                     column: {
-                        position: 'Column',    // 链接桩布局
+                        position: COLUMN_PORT,
                         markup: [
                             {
                                 tagName: 'rect',
@@ -31,5 +31,11 @@ export const addTableNodes = (graph: Graph, tables: readonly GenTableCommonView[
                 },
             },
         })
+    })
+}
+
+export const removeTableNodes = (graph: Graph, tables: readonly GenTableCommonView[]) => {
+    tables.forEach(table => {
+        graph.removeNode(`table-${table.id}`)
     })
 }

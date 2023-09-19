@@ -12,6 +12,10 @@
   },
   "dependencies": {
     "@antv/x6": "^2.13.1",
+    "@antv/x6-plugin-history": "^2.2.3",
+    "@antv/x6-plugin-minimap": "^2.0.5",
+    "@antv/x6-plugin-scroller": "^2.0.10",
+    "@antv/x6-plugin-selection": "^2.1.7",
     "@antv/x6-vue-shape": "^2.1.1",
     "pinia": "^2.1.6",
     "sass": "^1.66.1",

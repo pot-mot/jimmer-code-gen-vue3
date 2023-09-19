@@ -21,7 +21,7 @@ const emits = defineEmits<SchemaItemEmits>()
 const allSchemas = ref<ReadonlyArray<GenSchemaDto['DEFAULT']>>([])
 
 const viewSchemas = (dataSourceId: number) => {
-	api.dataSourceController.viewSchemas({dataSourceId}).then(res => {
+	api.dataSourceService.viewSchemas({dataSourceId}).then(res => {
 		allSchemas.value = res
 	})
 }
@@ -29,7 +29,7 @@ const viewSchemas = (dataSourceId: number) => {
 const schemas = ref<readonly GenSchemaView[]>([])
 
 const getSchemas = (dataSourceId: number = props.dataSource.id) => {
-	api.dataSourceController.listSchemas({dataSourceId}).then(res => {
+	api.schemaService.list({dataSourceId}).then(res => {
 		schemas.value = res
 	})
 }
@@ -39,7 +39,7 @@ watch(() => props.dataSource, () => {
 }, {immediate: true})
 
 const deleteDataSource = (dataSourceId: number = props.dataSource.id) => {
-	api.dataSourceController.delete({ids: [dataSourceId]}).then(res => {
+	api.dataSourceService.delete({ids: [dataSourceId]}).then(res => {
 		if (res == 1) {
 			alert("删除成功")
 			emits("delete")
@@ -48,7 +48,7 @@ const deleteDataSource = (dataSourceId: number = props.dataSource.id) => {
 }
 
 const importSchema = (name: string, dataSourceId: number = props.dataSource.id) => {
-	api.dataSourceController.importSchema({
+	api.dataSourceService.importSchema({
 		dataSourceId,
 		name
 	}).then(res => {

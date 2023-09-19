@@ -19,7 +19,7 @@ const emits = defineEmits<SchemaItemEmits>()
 const tables = ref<readonly GenTableCommonView[]>([])
 
 const getTables = (schemaId: number = props.schema.id) => {
-	api.schemaController.listTables({schemaId}).then(res => {
+	api.tableService.query({query: {schemaIds: [schemaId]}}).then(res => {
 		tables.value = res
 	})
 }
@@ -29,19 +29,10 @@ watch(() => props.schema, () => {
 }, {immediate: true})
 
 const deleteSchema = (schemaId: number = props.schema.id) => {
-	api.schemaController.delete({ids: [schemaId]}).then(res => {
+	api.schemaService.delete({ids: [schemaId]}).then(res => {
 		if (res == 1) {
 			alert("删除成功")
 			emits("delete")
-		}
-	})
-}
-
-const refreshSchema = (schemaId: number = props.schema.id) => {
-	api.schemaController.refresh({id: schemaId}).then(res => {
-		if (res >= 1) {
-			alert("刷新成功")
-			getTables()
 		}
 	})
 }
@@ -54,12 +45,11 @@ const editorStore = useTableEditorStore()
 		<details>
 			<summary>
 				<span>{{ schema.name }}</span>
-				<button @click="refreshSchema()">刷新</button>
 				<button @click="deleteSchema()">删除</button>
 			</summary>
 			<template v-for="table in tables">
 				<div style="padding-left: 2em;" @click="editorStore.addTables([table.id])">
-					{{table.name}} {{table.comment}} {{table.type}}
+					{{ table.name }} {{ table.comment }} {{ table.type }}
 				</div>
 			</template>
 		</details>

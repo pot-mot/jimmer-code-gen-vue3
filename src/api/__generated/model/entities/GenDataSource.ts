@@ -3,6 +3,12 @@ import type { GenSchema } from './';
 
 export interface GenDataSource {
     
+    createdTime: string;
+    
+    modifiedTime: string;
+    
+    remark: string;
+    
     id: number;
     
     type: DataSourceType;

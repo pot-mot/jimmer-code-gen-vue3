@@ -1,31 +1,31 @@
 <template>
-	<div ref="container" style="height: 100%; width: 100%;">
-		<div ref="graphBase"/>
+	<div ref="wrapper" style="height: 100%; width: 100%;">
+		<div @click="handleUndo">undo</div>
+		<div @click="handleRedo">redo</div>
+		<div ref="container"/>
 	</div>
 </template>
 
 <script setup lang="ts">
-import {nextTick, onMounted, ref} from "vue";
+import {nextTick, onMounted, Ref, ref} from "vue";
 import {Graph} from "@antv/x6";
 
 import {ColumnPortLayout} from "./port/ColumnPortLayout.ts";
 
-import {useTableEditorStore} from "../../store/tableEditor.ts";
-import {GenTableCommonView} from "../../api/__generated/model/static";
-import {addTableNodes} from "./common/table.ts";
 import {register} from "@antv/x6-vue-shape";
 import TableNode from "./shape/TableNode.vue";
-import {AssociationEdge} from "./edge/AssociationEdge.ts";
+import {initGraph} from "./graphEditor/init.ts";
+import {useStoreEvents} from "./graphEditor/store.ts";
+import {COLUMN_PORT} from "./constant";
+import {useHistory} from "./graphEditor/plugins.ts";
 
 const container = ref<HTMLDivElement | null>(null);
-const graphBase = ref<HTMLDivElement | null>(null);
+const wrapper = ref<HTMLDivElement | null>(null);
 
-let graph: Graph;
-
-const store = useTableEditorStore()
+const graph: Ref<Graph> = ref();
 
 Graph.registerPortLayout(
-	"Column",
+	COLUMN_PORT,
 	ColumnPortLayout,
 	true
 )
@@ -35,43 +35,25 @@ register({
 	component: TableNode
 });
 
-store.$onAction(({name, after}) => {
-	if (name == "addTables") {
-		after((result) => {
-			removeTableNodes(result.del)
-			addTableNodes(graph, result.add)
-		})
+const handleUndo = () => {
+	if (graph.value && graph.value.canUndo()) {
+		graph.value.undo()
 	}
-
-	if (name == "removeTables") {
-		after((result) => {
-			removeTableNodes(result)
-		})
-	}
-})
-
-const removeTableNodes = (tables: readonly GenTableCommonView[]) => {
-	tables.forEach(table => {
-		graph.removeNode(`table-${table.id}`)
-	})
 }
 
-const graphInit = () => {
-	if (!container.value || !graphBase.value) return;
-	graph = new Graph({
-		container: graphBase.value,
-		width: container.value.clientWidth,
-		height: container.value.clientHeight,
-		connecting: AssociationEdge
-	});
-	graphBase.value.addEventListener('resize', () => {
-		if (container.value) graph.resize(container.value.clientWidth, container.value.clientHeight)
-	})
-};
+const handleRedo = () => {
+	if (graph.value && graph.value.canRedo()) {
+		graph.value.redo()
+	}
+}
 
 onMounted(() => {
 	nextTick(() => {
-		graphInit();
+		graph.value = initGraph(container.value!, wrapper.value!)
+		useStoreEvents(graph.value)
+		useHistory(graph.value)
+
+		console.log(graph.value)
 	})
 });
 </script>

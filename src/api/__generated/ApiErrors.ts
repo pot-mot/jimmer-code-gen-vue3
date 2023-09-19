@@ -6,9 +6,11 @@ export type AllErrors =
 ;
 
 export type ApiErrors = {
-    "associationController": {
+    "associationService": {
     },
-    "dataSourceController": {
+    "columnService": {
+    },
+    "dataSourceService": {
         "importSchema": AllErrors & (
             {
                 readonly family: 'DATA_SOURCE_ERROR_CODE',
@@ -31,10 +33,8 @@ export type ApiErrors = {
             }
         )
     },
-    "entityController": {
+    "schemaService": {
     },
-    "schemaController": {
-    },
-    "tableController": {
+    "tableService": {
     }
 };
