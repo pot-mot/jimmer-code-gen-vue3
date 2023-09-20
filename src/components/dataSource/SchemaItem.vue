@@ -37,7 +37,7 @@ const deleteSchema = (schemaId: number = props.schema.id) => {
 	})
 }
 
-const editorStore = useTableEditorStore()
+const store = useTableEditorStore()
 </script>
 
 <template>
@@ -48,7 +48,7 @@ const editorStore = useTableEditorStore()
 				<button @click="deleteSchema()">删除</button>
 			</summary>
 			<template v-for="table in tables">
-				<div style="padding-left: 2em;" @click="editorStore.addTables([table.id])">
+				<div style="padding-left: 2em;" @click="store.addTables([table.id])">
 					{{ table.name }} {{ table.comment }} {{ table.type }}
 				</div>
 			</template>

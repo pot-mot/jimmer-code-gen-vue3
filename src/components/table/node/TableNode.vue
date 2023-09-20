@@ -41,12 +41,15 @@
 import {inject, nextTick, onMounted, ref} from "vue";
 import {GenTableColumnsView} from "../../../api/__generated/model/static";
 import {Node} from '@antv/x6'
+import {useTableEditorStore} from "../../../store/tableEditor.ts";
 
 const wrapper = ref<HTMLElement | null>()
 
 const getNode = inject<() => Node>("getNode")!;
 
 const table = ref<GenTableColumnsView>()
+
+const store = useTableEditorStore()
 
 onMounted(() => {
 	const node = getNode()
@@ -55,7 +58,7 @@ onMounted(() => {
 	nextTick(() => {
 		if (!wrapper.value) return
 
-		node.startBatch('update')
+		store.graph().disableHistory()
 
 		node.resize(wrapper.value.clientWidth, wrapper.value.clientHeight)
 
@@ -67,7 +70,7 @@ onMounted(() => {
 			})
 		})
 
-		node.stopBatch('update')
+		store.graph().enableHistory()
 	})
 });
 </script>

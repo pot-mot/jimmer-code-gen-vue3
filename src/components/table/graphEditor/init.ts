@@ -1,5 +1,5 @@
 import {Graph} from "@antv/x6";
-import {AssociationEdge} from "../edge/AssociationEdge.ts";
+import {AssociationEdgeConnecting} from "../edge/AssociationEdge.ts";
 
 export const initGraph = (container: HTMLElement, wrapper: HTMLElement): Graph => {
     const graph = new Graph({
@@ -19,10 +19,10 @@ export const initGraph = (container: HTMLElement, wrapper: HTMLElement): Graph =
             eventTypes: ['rightMouseDown']
         },
 
-        connecting: AssociationEdge,
+        connecting: AssociationEdgeConnecting,
     });
 
-    graph.zoomTo(0.5)
+    graph.zoomTo(0.7)
 
     return graph
 }

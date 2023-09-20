@@ -1,15 +1,14 @@
 import {GenTableColumnsView} from "../../../api/__generated/model/static";
-import {GenTableColumnsView_TargetOf_columns} from "../../../api/__generated/model/static/GenTableColumnsView.ts";
+import {Graph, Node} from "@antv/x6";
+import {COLUMN_HEIGHT, COLUMN_PORT} from "../constant";
+import {columnToPort} from "../port/ColumnPort.ts";
 
-import {Graph} from "@antv/x6";
-import {COLUMN_HEIGHT, COLUMN_PORT, COLUMN_PORT_GROUP} from "../constant";
-import {getLabel} from "../edge/AssociationEdge.ts";
+export const tableIdToNodeId = (id: number) => {
+    return `table-${id}`
+}
 
-const columnToPort = (column: GenTableColumnsView_TargetOf_columns) => {
-    return {
-        id: `column-${column.id}`,
-        group: COLUMN_PORT_GROUP,
-    }
+export const nodeIdToTableId = (id: string) => {
+    return parseInt(id.replace('table-', ''))
 }
 
 const tableToNode = (table: GenTableColumnsView, options: any = undefined) => {
@@ -17,7 +16,7 @@ const tableToNode = (table: GenTableColumnsView, options: any = undefined) => {
         ...options,
         shape: "table",
         data: {table},
-        id: `table-${table.id}`,
+        id: tableIdToNodeId(table.id),
         ports: {
             groups: {
                 COLUMN_PORT_GROUP: {
@@ -44,6 +43,14 @@ const tableToNode = (table: GenTableColumnsView, options: any = undefined) => {
     }
 }
 
+const nodeToTable = (node: Node): GenTableColumnsView => {
+    return node.data.table
+}
+
+export const getTables = (graph: Graph) => {
+    return graph.getNodes().map(nodeToTable)
+}
+
 export const addTableNodes = (graph: Graph, tables: readonly GenTableColumnsView[]) => {
     graph.addNodes(tables.map(table => {
         const svgRect = graph.view.svg.getBoundingClientRect()
@@ -52,11 +59,5 @@ export const addTableNodes = (graph: Graph, tables: readonly GenTableColumnsView
 }
 
 export const removeTableNodes = (graph: Graph, tables: readonly GenTableColumnsView[]) => {
-    graph.removeCells(tables.map(table => `table-${table.id}`))
-}
-
-export const getAssociations = (graph: Graph) => {
-    graph.getEdges().forEach(edge => {
-        console.log(edge.getSourcePortId(), edge.getTargetPortId(), getLabel(edge))
-    })
+    graph.removeCells(tables.map(table => tableIdToNodeId(table.id)))
 }

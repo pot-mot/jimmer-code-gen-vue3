@@ -1,5 +1,5 @@
 import type { Executor } from '../';
-import type { AssociationQuery, GenAssociationCommonInput, GenAssociationCommonView } from '../model/static';
+import type { AssociationQuery, GenAssociationCommonInput, GenAssociationCommonView, GenAssociationMatchView } from '../model/static';
 
 export class AssociationService {
     
@@ -67,6 +67,13 @@ export class AssociationService {
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number
     }
     
+    async scan(options: AssociationServiceOptions['scan']): Promise<
+        ReadonlyArray<GenAssociationMatchView>
+    > {
+        let _uri = '/association/scan';
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as ReadonlyArray<GenAssociationMatchView>
+    }
+    
     async select(options: AssociationServiceOptions['select']): Promise<
         ReadonlyArray<GenAssociationCommonView>
     > {
@@ -88,5 +95,6 @@ export type AssociationServiceOptions = {
     'delete': {readonly ids: ReadonlyArray<number>},
     'query': {readonly query: AssociationQuery},
     'save': {readonly body: ReadonlyArray<GenAssociationCommonInput>},
+    'scan': {readonly body: ReadonlyArray<number>},
     'select': {readonly tableId: number}
 }

@@ -1,61 +1,69 @@
 import {defineStore} from "pinia";
-import {ref} from "vue";
-import {GenAssociationCommonView, GenTableColumnsView} from "../api/__generated/model/static";
+import {
+    GenTableColumnsView
+} from "../api/__generated/model/static";
 import {api} from "../api";
+import {Graph} from "@antv/x6";
+import {getAssociations} from "../components/table/edge/AssociationEdge.ts";
+import {addTableNodes, getTables, removeTableNodes} from "../components/table/node/TableNode.ts";
 
 export const useTableEditorStore =
     defineStore(
         'tableEditor',
         () => {
-            const tables = ref<GenTableColumnsView[]>([])
+            let _graph: Graph
 
-            const associations = ref<GenAssociationCommonView[]>([])
+            const graph = () => {
+                return _graph
+            }
+
+            const tables = () => {
+                return getTables(graph())
+            }
+
+            const associations = () => {
+                return getAssociations(graph())
+            }
 
             const addTables = async (ids: readonly number[]) => {
                 const add = await api.tableService.list({ids: ids})
                 const del = removeTables(ids)
-                tables.value.push(...add)
+
+                removeTableNodes(graph(), del)
+                addTableNodes(graph(), add)
+
+                console.log(add, del, graph())
+
                 return {add, del}
             }
 
             const removeTables = (ids: readonly number[]) => {
                 const res: GenTableColumnsView[] = []
-                tables.value = tables.value.filter(table => {
+                tables().filter(table => {
                     if (ids.includes(table.id)) {
                         res.push(table)
                         return true
                     }
                     return false
                 })
+                removeTableNodes(graph(), res)
                 return res
             }
 
-
-            const saveAssociations = (inputs: readonly GenAssociationCommonView[]) => {
-                api.associationService.save({body: inputs}).then(res => {
-                    console.log(res)
-                })
-            }
-
-            const deleteAssociations = (ids: readonly number[]) => {
-                api.associationService.delete({ids}).then(res => {
-                    associations.value = associations.value.filter(association => !ids.includes(association.id))
-                    alert(`移除了${res}条关联`)
-                })
+            const load = (graph: Graph) => {
+                _graph = graph
             }
 
             return {
+                graph,
+
                 tables,
+                associations,
+
+                load,
+
                 addTables,
                 removeTables,
-                associations,
-                saveAssociations,
-                deleteAssociations,
-            }
-        },
-        {
-            persist: {
-                storage: window.localStorage,
             }
         }
     )

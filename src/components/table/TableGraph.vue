@@ -5,6 +5,7 @@
 			<li @click="handleUndo">undo</li>
 			<li @click="handleRedo">redo</li>
 			<li @click="handleSave">保存</li>
+			<li @click="handleScan">扫描关联</li>
 		</ul>
 	</div>
 </template>
@@ -44,15 +45,14 @@
 </style>
 
 <script lang="ts" setup>
-import {nextTick, onMounted, Ref, ref} from "vue";
+import {nextTick, onMounted, ref} from "vue";
 import {Graph} from "@antv/x6";
 
-import {ColumnPortLayout} from "./port/ColumnPortLayout.ts";
+import {ColumnPort} from "./port/ColumnPort.ts";
 
 import {register} from "@antv/x6-vue-shape";
-import TableNode from "./shape/TableNode.vue";
+import TableNode from "./node/TableNode.vue";
 import {initGraph} from "./graphEditor/init.ts";
-import {useStoreEvents} from "./graphEditor/store.ts";
 import {COLUMN_PORT} from "./constant";
 import {useHistory} from "./graphEditor/history.ts";
 import {useSelection} from "./graphEditor/selection.ts";
@@ -60,18 +60,20 @@ import {
 	useEdgeMouseEnterChangeEdgeColor,
 	useMouseEnterNodeToFront
 } from "./graphEditor/eventListen.ts";
-import {useSwitchAssociationType} from "./edge/AssociationEdge.ts";
-import {getAssociations} from "./graphEditor/table.ts";
+import {scanAssociations, useSwitchAssociationType} from "./edge/AssociationEdge.ts";
 import {loadGraph, saveGraph} from "./graphEditor/localStorage.ts";
+import {useTableEditorStore} from "../../store/tableEditor.ts";
 
 const container = ref<HTMLDivElement | null>(null);
 const wrapper = ref<HTMLDivElement | null>(null);
 
-const graph: Ref<Graph | undefined> = ref();
+let graph: Graph
+
+const store = useTableEditorStore()
 
 Graph.registerPortLayout(
 	COLUMN_PORT,
-	ColumnPortLayout,
+	ColumnPort,
 	true
 )
 
@@ -81,34 +83,36 @@ register({
 });
 
 const handleUndo = () => {
-	if (graph.value && graph.value.canUndo()) {
-		graph.value.undo()
+	if (graph && graph.canUndo()) {
+		graph.undo()
 	}
 }
 
 const handleRedo = () => {
-	if (graph.value && graph.value.canRedo()) {
-		graph.value.redo()
+	if (graph && graph.canRedo()) {
+		graph.redo()
 	}
 }
 
 const handleSave = () => {
-	if (graph.value) {
-		getAssociations(graph.value)
-		saveGraph(graph.value)
+	if (graph) {
+		saveGraph(graph)
 	}
+}
+
+const handleScan = () => {
+	scanAssociations(store.tables().map(table => table.id))
 }
 
 onMounted(() => {
 	nextTick(() => {
-		graph.value = initGraph(container.value!, wrapper.value!)
-		useStoreEvents(graph.value)
-		useHistory(graph.value)
-		useSelection(graph.value)
+		graph = initGraph(container.value!, wrapper.value!)
+		useHistory(graph)
+		useSelection(graph)
 
-		useMouseEnterNodeToFront(graph.value)
-		useEdgeMouseEnterChangeEdgeColor(graph.value)
-		useSwitchAssociationType(graph.value)
+		useMouseEnterNodeToFront(graph)
+		useEdgeMouseEnterChangeEdgeColor(graph)
+		useSwitchAssociationType(graph)
 
 		document.documentElement.addEventListener('keydown', (e: KeyboardEvent) => {
 			if (e.ctrlKey || e.metaKey) {
@@ -126,15 +130,16 @@ onMounted(() => {
 		})
 
 		document.documentElement.addEventListener('keydown', (event) => {
-			if (graph.value && event.key === 'Delete') {
-				const selectedCells = graph.value.getSelectedCells()
+			if (graph && event.key === 'Delete') {
+				const selectedCells = graph.getSelectedCells()
 
 				// 删除选中的元素
-				graph.value?.removeCells(selectedCells)
+				graph?.removeCells(selectedCells)
 			}
 		});
 
-		loadGraph(graph.value)
+		loadGraph(graph)
+		store.load(graph)
 
 		window.addEventListener('beforeunload', () => {
 			handleSave()
