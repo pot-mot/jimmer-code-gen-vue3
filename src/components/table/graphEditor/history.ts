@@ -5,9 +5,33 @@ export const useHistory = (graph: Graph) => {
     graph.use(
         new History({
             enabled: true,
-            ignoreAdd: false,
-            ignoreChange: false,
-            ignoreRemove: false,
+            beforeAddCommand: (event, args) => {
+                if (event == "cell:change:*" && args && 'key' in args) {
+                    if (args.key == "size") {
+                        return false
+                    } else if (args.key == 'port' || args.key == 'ports') {
+                        return false
+                    } else if (args.key == 'zIndex') {
+                        return false
+                    } else if (args.key == 'target') {
+                        return false
+                    } else if (args.key == 'attrs') {
+                        return false
+                    }
+                }
+                console.log(event, args)
+                console.log((graph.getPlugin('history') as any).undoStack)
+
+                return true
+            }
         })
     );
+
+    graph.on('node:move', () => {
+        graph.startBatch('node move')
+    })
+
+    graph.on('node:moved', () => {
+        graph.stopBatch('node move')
+    })
 };

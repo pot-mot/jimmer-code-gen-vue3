@@ -1,11 +1,11 @@
 import {GenTableCommonView} from "../../../api/__generated/model/static";
-import {Graph, Node} from "@antv/x6";
+import {Graph} from "@antv/x6";
 import {COLUMN_HEIGHT, COLUMN_PORT} from "../constant";
 
-const tableToNode = (table: GenTableCommonView): Node => {
+const tableToNode = (table: GenTableCommonView, graph: Graph) => {
     return {
         shape: "table",
-        data: table,
+        data: {table, graph},
         id: `table-${table.id}`,
         ports: {
             groups: {
@@ -32,12 +32,10 @@ const tableToNode = (table: GenTableCommonView): Node => {
 
 export const addTableNodes = (graph: Graph, tables: readonly GenTableCommonView[]) => {
     graph.addNodes(tables.map(table => {
-        return tableToNode(table)
+        return tableToNode(table, graph)
     }))
 }
 
 export const removeTableNodes = (graph: Graph, tables: readonly GenTableCommonView[]) => {
-    tables.forEach(table => {
-        graph.removeNode(`table-${table.id}`)
-    })
+    graph.removeCells(tables.map(table => `table-${table.id}`))
 }

@@ -11,7 +11,7 @@ interface SchemaItemProps {
 const props = defineProps<SchemaItemProps>()
 
 interface SchemaItemEmits {
-	(event: "delete"): void
+	(event: "delete", schemaId: number): void
 }
 
 const emits = defineEmits<SchemaItemEmits>()
@@ -32,7 +32,7 @@ const deleteSchema = (schemaId: number = props.schema.id) => {
 	api.schemaService.delete({ids: [schemaId]}).then(res => {
 		if (res == 1) {
 			alert("删除成功")
-			emits("delete")
+			emits("delete", schemaId)
 		}
 	})
 }

@@ -13,7 +13,7 @@ interface DataSourceItemProps {
 const props = defineProps<DataSourceItemProps>()
 
 interface SchemaItemEmits {
-	(event: "delete"): void
+	(event: "delete", dataSourceId: number): void
 }
 
 const emits = defineEmits<SchemaItemEmits>()
@@ -42,7 +42,7 @@ const deleteDataSource = (dataSourceId: number = props.dataSource.id) => {
 	api.dataSourceService.delete({ids: [dataSourceId]}).then(res => {
 		if (res == 1) {
 			alert("删除成功")
-			emits("delete")
+			emits("delete", dataSourceId)
 		}
 	})
 }
@@ -70,10 +70,12 @@ const importSchema = (name: string, dataSourceId: number = props.dataSource.id) 
 				<button @click="deleteDataSource()">删除</button>
 			</summary>
 			<div v-if="allSchemas.length > 0" style="padding-left: 3em">
-				<div v-for="schema in allSchemas">
-					<span>{{ schema.name }}</span>
-					<button @click="importSchema(schema.name)">导入</button>
-				</div>
+				<details open>
+					<div v-for="schema in allSchemas">
+						<span>{{ schema.name }}</span>
+						<button @click="importSchema(schema.name)">导入</button>
+					</div>
+				</details>
 			</div>
 			<template v-for="schema in schemas">
 				<SchemaItem :schema="schema" @delete="getSchemas"/>

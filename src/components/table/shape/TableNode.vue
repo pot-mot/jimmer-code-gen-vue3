@@ -38,7 +38,9 @@
 <script lang='ts' setup>
 import {inject, nextTick, onMounted, ref} from "vue";
 import {GenTableColumnsView} from "../../../api/__generated/model/static";
-import {Node} from '@antv/x6'
+import {Graph, Node} from '@antv/x6'
+import {PortManager} from "@antv/x6/es/model/port";
+import PortMetadata = PortManager.PortMetadata;
 
 const wrapper = ref<HTMLElement | null>()
 
@@ -48,14 +50,14 @@ const table = ref<GenTableColumnsView>()
 
 onMounted(() => {
 	const node = getNode()
-	table.value = node.getData()
+	table.value = node.getData().table
+	const graph = node.getData().graph
 
 	nextTick(() => {
 		if (!wrapper.value) return
-		node.resize(wrapper.value.clientWidth, wrapper.value.clientHeight)
 
-		table.value?.columns.forEach(column => {
-			node.addPort({
+		const ports = table.value?.columns.map(column => {
+			return <PortMetadata>{
 				id: `column-${column.id}`,
 				group: 'column',
 				attrs: {
@@ -63,8 +65,16 @@ onMounted(() => {
 						width: wrapper.value!.clientWidth,
 					}
 				}
-			})
+			}
 		})
+
+		if (wrapper.value) {
+			node.resize(wrapper.value.clientWidth, wrapper.value.clientHeight)
+		}
+
+		if (ports) {
+			node.addPorts(ports)
+		}
 	})
 });
 </script>
