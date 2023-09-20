@@ -7,11 +7,7 @@ export const useHistory = (graph: Graph) => {
             enabled: true,
             beforeAddCommand: (event, args) => {
                 if (event == "cell:change:*" && args && 'key' in args) {
-                    if (args.key == "size") {
-                        return false
-                    } else if (args.key == 'port' || args.key == 'ports') {
-                        return false
-                    } else if (args.key == 'zIndex') {
+                    if (args.key == 'zIndex') {
                         return false
                     } else if (args.key == 'target') {
                         return false
@@ -19,8 +15,9 @@ export const useHistory = (graph: Graph) => {
                         return false
                     }
                 }
-                console.log(event, args)
-                console.log((graph.getPlugin('history') as any).undoStack)
+                // debugger
+                // console.log(event, args)
+                // console.log((graph.getPlugin('history') as any).undoStack)
 
                 return true
             }

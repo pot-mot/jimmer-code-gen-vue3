@@ -15,17 +15,3 @@ export const useEdgeMouseEnterChangeEdgeColor = (graph: Graph) => {
         edge.attr('line/stroke', COMMON_COLOR)
     })
 }
-
-export const useEdgeClickToggleAssociationType = (graph: Graph) => {
-    graph.on('edge:click', ({edge}) => {
-        if (!edge) return;
-
-        if (edge.labels.length > 0 && edge.labels[0].attrs.label.text == "ManyToOne") {
-            edge.setLabels(["OneToOne"])
-        } else if (edge.labels.length > 0 && edge.labels[0].attrs.label.text == "OneToOne") {
-            edge.setLabels(["ManyToMany"])
-        } else {
-            edge.setLabels(["ManyToOne"])
-        }
-    })
-}

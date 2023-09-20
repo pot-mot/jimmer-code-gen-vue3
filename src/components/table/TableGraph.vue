@@ -4,6 +4,7 @@
 		<ul class="tool-list">
 			<li @click="handleUndo">undo</li>
 			<li @click="handleRedo">redo</li>
+			<li @click="handleSave">保存</li>
 		</ul>
 	</div>
 </template>
@@ -56,10 +57,12 @@ import {COLUMN_PORT} from "./constant";
 import {useHistory} from "./graphEditor/history.ts";
 import {useSelection} from "./graphEditor/selection.ts";
 import {
-	useEdgeClickToggleAssociationType,
 	useEdgeMouseEnterChangeEdgeColor,
 	useMouseEnterNodeToFront
 } from "./graphEditor/eventListen.ts";
+import {useSwitchAssociationType} from "./edge/AssociationEdge.ts";
+import {getAssociations} from "./graphEditor/table.ts";
+import {loadGraph, saveGraph} from "./graphEditor/localStorage.ts";
 
 const container = ref<HTMLDivElement | null>(null);
 const wrapper = ref<HTMLDivElement | null>(null);
@@ -89,6 +92,13 @@ const handleRedo = () => {
 	}
 }
 
+const handleSave = () => {
+	if (graph.value) {
+		getAssociations(graph.value)
+		saveGraph(graph.value)
+	}
+}
+
 onMounted(() => {
 	nextTick(() => {
 		graph.value = initGraph(container.value!, wrapper.value!)
@@ -98,15 +108,19 @@ onMounted(() => {
 
 		useMouseEnterNodeToFront(graph.value)
 		useEdgeMouseEnterChangeEdgeColor(graph.value)
-
-		useEdgeClickToggleAssociationType(graph.value)
+		useSwitchAssociationType(graph.value)
 
 		document.documentElement.addEventListener('keydown', (e: KeyboardEvent) => {
 			if (e.ctrlKey || e.metaKey) {
 				if (e.key == 'z') {
+					e.preventDefault()
 					handleUndo()
 				} else if (e.key == 'Z') {
+					e.preventDefault()
 					handleRedo()
+				} else if (e.key == 's') {
+					e.preventDefault()
+					handleSave()
 				}
 			}
 		})
@@ -116,11 +130,15 @@ onMounted(() => {
 				const selectedCells = graph.value.getSelectedCells()
 
 				// 删除选中的元素
-				selectedCells.forEach((cell) => {
-					graph.value?.removeCell(cell.id)
-				});
+				graph.value?.removeCells(selectedCells)
 			}
 		});
+
+		loadGraph(graph.value)
+
+		window.addEventListener('beforeunload', () => {
+			handleSave()
+		})
 	})
 });
 </script>
