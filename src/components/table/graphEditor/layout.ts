@@ -1,5 +1,6 @@
 import {Graph, Node, Edge} from "@antv/x6"
-import {nodeIdToTableId} from "../node/TableNode.ts";
+import {nodeIdToTableId} from "../node/TableNode.ts"
+import {Point} from "@antv/x6-geometry"
 
 interface LayoutNode {
     id: number
@@ -68,10 +69,12 @@ const setLevel = (nodes: LayoutNode[], edges: LayoutEdge[]) => {
     }
 
     for (const {source, target} of edges) {
-        const targetNode = nodeMap.get(target)!
-        const sourceNode = nodeMap.get(source)!
-        targetNode.children.push(sourceNode)
-        sourceNode.outDegree ++
+        const targetNode = nodeMap.get(target)
+        const sourceNode = nodeMap.get(source)
+        if (targetNode && sourceNode) {
+            targetNode.children.push(sourceNode)
+            sourceNode.outDegree ++
+        }
     }
 
     for (const node of nodeMap.values()) {
@@ -104,66 +107,104 @@ const groupByLevel = (nodes: LayoutNode[]): Node[][] => {
     return result
 }
 
+const getPoint = (nodes: Node[], direction: "LT" | "RT" | "LB" | "RB" = "LT"): Point.PointLike => {
+    return nodes.reduce((targetPoint, node) => {
+        const current = node.getPosition()
+
+        if (!targetPoint) {
+            return current // 第一个点作为初始值
+        }
+
+        switch (direction) {
+            case "LT":
+                if (current.x < targetPoint.x || (current.x === targetPoint.x && current.y < targetPoint.y)) {
+                    return current // 当前点比累积的点更左上，更新累积的点
+                }
+                break
+            case "RT":
+                if (current.x > targetPoint.x || (current.x === targetPoint.x && current.y < targetPoint.y)) {
+                    return current // 当前点比累积的点更右上，更新累积的点
+                }
+                break
+            case "LB":
+                if (current.x < targetPoint.x || (current.x === targetPoint.x && current.y > targetPoint.y)) {
+                    return current // 当前点比累积的点更左下，更新累积的点
+                }
+                break
+            case "RB":
+                if (current.x > targetPoint.x || (current.x === targetPoint.x && current.y > targetPoint.y)) {
+                    return current // 当前点比累积的点更右下，更新累积的点
+                }
+                break
+        }
+
+        return targetPoint // 当前点不是目标位置的点，保持累积的点不变
+    }, { x: 0, y: 0 })
+}
+
 const getMaxWidth = (nodes: Node[]): number => {
-    let max = 0
-    nodes.forEach(node => {
+    return nodes.reduce((maxWidth, node) => {
         const width = node.getSize().width
-        if (width > max) max = width
-    })
-    return max
+        return Math.max(maxWidth, width)
+    }, 0)
 }
 
 const getMaxHeight = (nodes: Node[]): number => {
-    let max = 0
-    nodes.forEach(node => {
+    return nodes.reduce((maxHeight, node) => {
         const height = node.getSize().height
-        if (height > max) max = height
-    })
-    return max
+        return Math.max(maxHeight, height)
+    }, 0)
 }
 
-const layoutLR = (nodeLevels: Node[][], gapX: number = 200, gapY: number = 100) => {
-    let tempX = gapX
-    nodeLevels.forEach(nodes => {
+const layoutLR = (nodeLevels: Node[][], startX: number = 0, startY: number = 0, gapX: number = 200, gapY: number = 100) => {
+    let tempX = startX
+
+    for (const nodes of nodeLevels) {
         const width = getMaxWidth(nodes)
-        let tempY = gapY
-        nodes.forEach(node => {
+        let tempY = startY
+
+        for (const node of nodes) {
             node.setPosition({
                 x: tempX,
                 y: tempY,
             })
+
             tempY += node.getSize().height + gapY
-        })
+        }
+
         tempX += width + gapX
-    })
+    }
 }
 
-const layoutTB = (nodeLevels: Node[][], gapX: number = 200, gapY: number = 100) => {
-    let tempY = gapY
-    nodeLevels.forEach(nodes => {
+const layoutTB = (nodeLevels: Node[][], startX: number = 0, startY: number = 0, gapX: number = 200, gapY: number = 100) => {
+    let tempY = startY
+
+    for (const nodes of nodeLevels) {
         const height = getMaxHeight(nodes)
-        let tempX = gapX
-        nodes.forEach(node => {
+        let tempX = startX
+
+        for (const node of nodes) {
             node.setPosition({
                 x: tempX,
                 y: tempY,
             })
+
             tempX += node.getSize().width + gapX
-        })
+        }
+
         tempY += height + gapY
-    })
+    }
 }
 
-const layoutRL = (nodeLevels: Node[][], gapX: number = 200, gapY: number = 100) => {
-    layoutLR(nodeLevels.reverse(), gapX, gapY)
+const layoutRL = (nodeLevels: Node[][], startX: number = 0, startY: number = 0, gapX: number = 200, gapY: number = 100) => {
+    layoutLR(nodeLevels.reverse(), startX, startY, gapX, gapY)
 }
 
-const layoutBT = (nodeLevels: Node[][], gapX: number = 200, gapY: number = 100) => {
-    layoutTB(nodeLevels.reverse(), gapX, gapY)
+const layoutBT = (nodeLevels: Node[][], startX: number = 0, startY: number = 0, gapX: number = 200, gapY: number = 100) => {
+    layoutTB(nodeLevels.reverse(), startX, startY, gapX, gapY)
 }
 
-
-export const byTreeLayout = (graph: Graph, direction: "LR" | "TB" | "RL" | "BT" = "BT") => {
+export const byTreeLayout = (graph: Graph, direction: "LR" | "TB" | "RL" | "BT" = "LR") => {
     const nodes = graph.isSelectionEmpty() ? getLayoutNodes(graph.getNodes()) : getLayoutNodes(graph.getSelectedCells().filter(cell => cell.isNode()) as Node[])
     const edges = graph.isSelectionEmpty() ? getLayoutEdges(graph.getEdges()) : getLayoutEdges(graph.getSelectedCells().filter(cell => cell.isEdge()) as Edge[])
 
@@ -171,8 +212,24 @@ export const byTreeLayout = (graph: Graph, direction: "LR" | "TB" | "RL" | "BT" 
 
     const nodeLevels = groupByLevel(nodes)
 
-    if (direction == 'LR') layoutLR(nodeLevels)
-    else if (direction == 'TB') layoutTB(nodeLevels)
-    else if (direction == 'RL') layoutRL(nodeLevels)
-    else if (direction == 'BT') layoutBT(nodeLevels)
+    graph.startBatch('layout')
+
+    const start: Point.PointLike = getPoint(nodes.map(node => node.node), "LT")
+
+    switch (direction) {
+        case "LR":
+            layoutLR(nodeLevels, start.x, start.y)
+            break
+        case "RL":
+            layoutRL(nodeLevels, start.x, start.y)
+            break
+        case "TB":
+            layoutTB(nodeLevels, start.x, start.y)
+            break
+        case "BT":
+            layoutBT(nodeLevels, start.x, start.y)
+            break
+    }
+
+    graph.stopBatch('layout')
 }

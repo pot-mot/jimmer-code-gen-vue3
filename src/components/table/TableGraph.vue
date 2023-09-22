@@ -2,15 +2,35 @@
 	<div ref="wrapper" class="wrapper">
 		<div ref="container"/>
 		<ul class="tool-list left-top">
-			<li @click="handleUndo">undo</li>
-			<li @click="handleRedo">redo</li>
-			<li @click="handleSave">保存</li>
-			<li @click="handleLayout">布局</li>
-			<li @click="handleScan">扫描关联</li>
+			<li>
+				<button @click="handleUndo">undo</button>
+			</li>
+			<li>
+				<button @click="handleRedo">redo</button>
+			</li>
+			<li>
+				<button @click="handleSave">保存</button>
+			</li>
+			<li>
+				<button @click="handleLayout">布局</button>
+				<select v-model="layoutDirection">
+					<option value="LR">左右</option>
+					<option value="RL">右左</option>
+					<option value="TB">上下</option>
+					<option value="BT">下上</option>
+				</select>
+			</li>
+			<li>
+				<button @click="handleScan">扫描关联</button>
+			</li>
 		</ul>
 		<ul class="tool-list right-top">
-			<li @click="handleRefresh">清理画布</li>
-			<li @click="handleRefreshAssociation">清除关联</li>
+			<li>
+				<button @click="handleRefresh">清理画布</button>
+			</li>
+			<li>
+				<button @click="handleRefreshAssociation">清除关联</button>
+			</li>
 		</ul>
 	</div>
 </template>
@@ -49,7 +69,7 @@
 </style>
 
 <script lang="ts" setup>
-import {nextTick, onMounted, ref} from "vue";
+import {nextTick, onMounted, Ref, ref} from "vue";
 import {Graph} from "@antv/x6";
 
 import {ColumnPort} from "./port/ColumnPort.ts";
@@ -167,8 +187,10 @@ const handleRefreshAssociation = () => {
 	graph.removeCells(graph.getEdges())
 }
 
+const layoutDirection: Ref<"LR" | "TB" | "RL" | "BT"> = ref("LR")
+
 const handleLayout = () => {
-	if (graph) byTreeLayout(graph)
+	if (graph) byTreeLayout(graph, layoutDirection.value)
 }
 
 onMounted(() => {
