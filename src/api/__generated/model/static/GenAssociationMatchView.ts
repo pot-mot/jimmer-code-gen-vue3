@@ -4,7 +4,31 @@ export interface GenAssociationMatchView {
     
     associationType: AssociationType;
     
-    sourceColumnId: number;
+    sourceColumn: GenAssociationMatchView_TargetOf_sourceColumn;
     
-    targetColumnId: number;
+    targetColumn: GenAssociationMatchView_TargetOf_targetColumn;
+}
+
+export interface GenAssociationMatchView_TargetOf_sourceColumn {
+    
+    id: number;
+    
+    table?: GenAssociationMatchView_TargetOf_sourceColumn_TargetOf_table;
+}
+
+export interface GenAssociationMatchView_TargetOf_sourceColumn_TargetOf_table {
+    
+    id: number;
+}
+
+export interface GenAssociationMatchView_TargetOf_targetColumn {
+    
+    id: number;
+    
+    table?: GenAssociationMatchView_TargetOf_targetColumn_TargetOf_table;
+}
+
+export interface GenAssociationMatchView_TargetOf_targetColumn_TargetOf_table {
+    
+    id: number;
 }

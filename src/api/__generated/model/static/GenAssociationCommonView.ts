@@ -16,7 +16,31 @@ export interface GenAssociationCommonView {
     
     remark: string;
     
-    sourceColumnId: number;
+    sourceColumn: GenAssociationCommonView_TargetOf_sourceColumn;
     
-    targetColumnId: number;
+    targetColumn: GenAssociationCommonView_TargetOf_targetColumn;
+}
+
+export interface GenAssociationCommonView_TargetOf_sourceColumn {
+    
+    id: number;
+    
+    table?: GenAssociationCommonView_TargetOf_sourceColumn_TargetOf_table;
+}
+
+export interface GenAssociationCommonView_TargetOf_sourceColumn_TargetOf_table {
+    
+    id: number;
+}
+
+export interface GenAssociationCommonView_TargetOf_targetColumn {
+    
+    id: number;
+    
+    table?: GenAssociationCommonView_TargetOf_targetColumn_TargetOf_table;
+}
+
+export interface GenAssociationCommonView_TargetOf_targetColumn_TargetOf_table {
+    
+    id: number;
 }

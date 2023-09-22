@@ -1,11 +1,28 @@
-import {Edge, Graph, Shape} from "@antv/x6";
+import {Edge, Graph, Node, Shape} from "@antv/x6";
 import {COMMON_COLOR, MANY_TO_MANY, MANY_TO_ONE, ONE_TO_ONE} from "../constant";
 import {AssociationType} from "../../../api/__generated/model/enums";
 import {GenAssociationMatchView} from "../../../api/__generated/model/static";
 import {columnIdToPortId, portIdToColumnId} from "../port/ColumnPort.ts";
 import {api} from "../../../api";
+import {nodeIdToTableId, tableIdToNodeId} from "../node/TableNode.ts";
+import {Options} from "@antv/x6/es/graph/options";
+import Connecting = Options.Connecting;
 
-export const AssociationEdgeConnecting = {
+const baseColumnEdge = {
+    attrs: {
+        line: {
+            stroke: COMMON_COLOR,
+            strokeWidth: 1,
+        },
+    },
+    labels: [{
+        attrs: {
+            label: {text: MANY_TO_ONE}
+        }
+    }]
+}
+
+export const AssociationEdgeConnecting: Partial<Connecting> = {
     router: {
         name: 'er',
         args: {
@@ -14,19 +31,34 @@ export const AssociationEdgeConnecting = {
         },
     },
 
+    validateConnection(
+        {
+            sourcePort,
+            targetPort,
+        }
+    ) {
+        const graph = this
+        const edges = graph.getEdges()
+
+        let isExist = false
+
+        for (let edge of edges) {
+            if (
+                (edge.getTargetPortId() == targetPort && edge.getSourcePortId() == sourcePort) ||
+                (edge.getTargetPortId() == sourcePort && edge.getSourcePortId() == targetPort)
+            ) {
+                isExist = true
+                break
+            }
+        }
+
+        return !isExist
+    },
+
+    // @ts-ignore
     createEdge() {
         return new Shape.Edge({
-            attrs: {
-                line: {
-                    stroke: COMMON_COLOR,
-                    strokeWidth: 1,
-                },
-            },
-            labels: [{
-                attrs: {
-                    label: {text: MANY_TO_ONE}
-                }
-            }]
+            ...baseColumnEdge
         })
     },
 
@@ -57,18 +89,36 @@ export const useSwitchAssociationType = (graph: Graph) => {
     })
 }
 
-export const associationToEdge = (association: GenAssociationMatchView): Edge.Metadata => {
-    return {
-        source: columnIdToPortId(association.sourceColumnId),
-        target: columnIdToPortId(association.targetColumnId),
-        label: association.associationType
-    }
+export const associationToEdge = (association: GenAssociationMatchView): Edge => {
+    const edge: Edge = new Shape.Edge<Edge.Properties>({
+        ...baseColumnEdge,
+        source: {
+            cell: tableIdToNodeId(association.sourceColumn.table!.id),
+            port: columnIdToPortId(association.sourceColumn.id)
+        },
+        target: {
+            cell: tableIdToNodeId(association.targetColumn.table!.id),
+            port: columnIdToPortId(association.targetColumn.id)
+        },
+    })
+    setLabel(edge, association.associationType)
+    return edge
 }
 
 export const edgeToAssociation = (edge: Edge): GenAssociationMatchView => {
     return {
-        sourceColumnId: portIdToColumnId(edge.getSourcePortId()!),
-        targetColumnId: portIdToColumnId(edge.getTargetPortId()!),
+        sourceColumn: {
+            id: portIdToColumnId(edge.getSourcePortId()!),
+            table: {
+                id: nodeIdToTableId(edge.getSourceNode()!.id)
+            }
+        },
+        targetColumn: {
+            id: portIdToColumnId(edge.getTargetPortId()!),
+            table: {
+                id: nodeIdToTableId(edge.getTargetNode()!.id)
+            }
+        },
         associationType: getLabel(edge),
     }
 }
@@ -77,8 +127,27 @@ export const getAssociations = (graph: Graph) => {
     return graph.getEdges().map(edgeToAssociation)
 }
 
+const compareEdge = (oldEdge: Edge, newEdge: Edge): boolean => {
+    return oldEdge.getSourcePortId() == newEdge.getSourcePortId() && oldEdge.getTargetPortId() == newEdge.getTargetPortId();
+}
+
 export const addAssociationEdges = (graph: Graph, associations: readonly GenAssociationMatchView[]) => {
-    graph.addEdges(associations.map(associationToEdge))
+    graph.startBatch('add edge')
+
+    associations.map(associationToEdge).forEach(newEdge => {
+        try {
+            const edges: Edge[] = graph.getEdges();
+            const isDuplicate = edges.some((oldEdge) => compareEdge(oldEdge, newEdge))
+            // 如果不存在 source 和 target 相同的边
+            if (!isDuplicate) {
+                graph.addEdge(newEdge)
+            }
+        } catch (e) {
+            console.warn('add edge fail', newEdge, e)
+        }
+    })
+
+    graph.stopBatch('add edge')
 }
 
 export const scanAssociations = async (tableIds: readonly number[]) => {

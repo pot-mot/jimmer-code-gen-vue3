@@ -32,8 +32,6 @@ export const useTableEditorStore =
                 removeTableNodes(graph(), del)
                 addTableNodes(graph(), add)
 
-                console.log(add, del, graph())
-
                 return {add, del}
             }
 

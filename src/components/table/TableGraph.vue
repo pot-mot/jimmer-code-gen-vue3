@@ -2,6 +2,9 @@
 	<div ref="wrapper" class="wrapper">
 		<div ref="container"/>
 		<ul class="tool-list">
+			<li @click="handleRefresh">重置</li>
+			<li @click="handleRefreshAssociation">清空关联</li>
+			<li @click="handleLayout">布局</li>
 			<li @click="handleUndo">undo</li>
 			<li @click="handleRedo">redo</li>
 			<li @click="handleSave">保存</li>
@@ -60,9 +63,10 @@ import {
 	useEdgeMouseEnterChangeEdgeColor,
 	useMouseEnterNodeToFront
 } from "./graphEditor/eventListen.ts";
-import {scanAssociations, useSwitchAssociationType} from "./edge/AssociationEdge.ts";
-import {loadGraph, saveGraph} from "./graphEditor/localStorage.ts";
+import {addAssociationEdges, scanAssociations, useSwitchAssociationType} from "./edge/AssociationEdge.ts";
+import {clearGraph, loadGraph, saveGraph} from "./graphEditor/localStorage.ts";
 import {useTableEditorStore} from "../../store/tableEditor.ts";
+import {layout} from "./graphEditor/layout.ts";
 
 const container = ref<HTMLDivElement | null>(null);
 const wrapper = ref<HTMLDivElement | null>(null);
@@ -81,6 +85,55 @@ register({
 	shape: "table",
 	component: TableNode
 });
+
+const init = () => {
+	graph = initGraph(container.value!, wrapper.value!)
+	useHistory(graph)
+	useSelection(graph)
+
+	useMouseEnterNodeToFront(graph)
+	useEdgeMouseEnterChangeEdgeColor(graph)
+	useSwitchAssociationType(graph)
+}
+
+const addEventListener = () => {
+	document.documentElement.addEventListener('keydown', (e: KeyboardEvent) => {
+		if (e.ctrlKey || e.metaKey) {
+			if (e.key == 'z') {
+				e.preventDefault()
+				handleUndo()
+			} else if (e.key == 'Z') {
+				e.preventDefault()
+				handleRedo()
+			} else if (e.key == 's') {
+				e.preventDefault()
+				handleSave()
+			}
+		}
+	})
+
+	document.documentElement.addEventListener('keydown', (event) => {
+		if (graph && event.key === 'Delete') {
+			const selectedCells = graph.getSelectedCells()
+
+			// 删除选中的元素
+			graph?.removeCells(selectedCells)
+		}
+	});
+}
+
+const load = () => {
+	try {
+		loadGraph(graph)
+		store.load(graph)
+
+		window.addEventListener('beforeunload', () => {
+			handleSave()
+		})
+	} catch (e) {
+		clearGraph(graph)
+	}
+}
 
 const handleUndo = () => {
 	if (graph && graph.canUndo()) {
@@ -101,49 +154,30 @@ const handleSave = () => {
 }
 
 const handleScan = () => {
-	scanAssociations(store.tables().map(table => table.id))
+	scanAssociations(store.tables().map(table => table.id)).then(res => {
+		addAssociationEdges(graph, res)
+	})
+}
+
+const handleRefresh = () => {
+	init()
+}
+
+const handleRefreshAssociation = () => {
+	graph.removeCells(graph.getEdges())
+}
+
+const handleLayout = () => {
+	layout(graph)
 }
 
 onMounted(() => {
 	nextTick(() => {
-		graph = initGraph(container.value!, wrapper.value!)
-		useHistory(graph)
-		useSelection(graph)
+		init()
 
-		useMouseEnterNodeToFront(graph)
-		useEdgeMouseEnterChangeEdgeColor(graph)
-		useSwitchAssociationType(graph)
+		addEventListener()
 
-		document.documentElement.addEventListener('keydown', (e: KeyboardEvent) => {
-			if (e.ctrlKey || e.metaKey) {
-				if (e.key == 'z') {
-					e.preventDefault()
-					handleUndo()
-				} else if (e.key == 'Z') {
-					e.preventDefault()
-					handleRedo()
-				} else if (e.key == 's') {
-					e.preventDefault()
-					handleSave()
-				}
-			}
-		})
-
-		document.documentElement.addEventListener('keydown', (event) => {
-			if (graph && event.key === 'Delete') {
-				const selectedCells = graph.getSelectedCells()
-
-				// 删除选中的元素
-				graph?.removeCells(selectedCells)
-			}
-		});
-
-		loadGraph(graph)
-		store.load(graph)
-
-		window.addEventListener('beforeunload', () => {
-			handleSave()
-		})
+		load()
 	})
 });
 </script>
