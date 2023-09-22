@@ -1,5 +1,5 @@
-import {Edge, Graph, Node, Shape} from "@antv/x6";
-import {COMMON_COLOR, MANY_TO_MANY, MANY_TO_ONE, ONE_TO_ONE} from "../constant";
+import {Edge, Graph, Shape} from "@antv/x6";
+import {COMMON_COLOR, MANY_TO_ONE, ONE_TO_ONE} from "../constant";
 import {AssociationType} from "../../../api/__generated/model/enums";
 import {GenAssociationMatchView} from "../../../api/__generated/model/static";
 import {columnIdToPortId, portIdToColumnId} from "../port/ColumnPort.ts";
@@ -22,6 +22,21 @@ const baseColumnEdge = {
     }]
 }
 
+export const edgeIsExist = (graph: Graph, sourcePort: string | null | undefined, targetPort: string | null | undefined): boolean => {
+    const edges = graph.getEdges()
+
+    for (let edge of edges) {
+        if (
+            (edge.getTargetPortId() == targetPort && edge.getSourcePortId() == sourcePort) ||
+            (edge.getTargetPortId() == sourcePort && edge.getSourcePortId() == targetPort)
+        ) {
+            return true
+        }
+    }
+
+    return false
+}
+
 export const AssociationEdgeConnecting: Partial<Connecting> = {
     router: {
         name: 'er',
@@ -37,22 +52,7 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
             targetPort,
         }
     ) {
-        const graph = this
-        const edges = graph.getEdges()
-
-        let isExist = false
-
-        for (let edge of edges) {
-            if (
-                (edge.getTargetPortId() == targetPort && edge.getSourcePortId() == sourcePort) ||
-                (edge.getTargetPortId() == sourcePort && edge.getSourcePortId() == targetPort)
-            ) {
-                isExist = true
-                break
-            }
-        }
-
-        return !isExist
+        return !edgeIsExist(this, sourcePort, targetPort)
     },
 
     // @ts-ignore
@@ -73,20 +73,6 @@ export const setLabel = (edge: Edge, label: string) => {
 
 export const getLabel = (edge: Edge): AssociationType => {
     return edge.labels[0].attrs!.label.text as AssociationType;
-}
-
-export const useSwitchAssociationType = (graph: Graph) => {
-    graph.on('edge:click', ({edge}) => {
-        if (!edge) return;
-
-        if (getLabel(edge) == MANY_TO_ONE) {
-            setLabel(edge, MANY_TO_MANY)
-        } else if (getLabel(edge) == MANY_TO_MANY) {
-            setLabel(edge, ONE_TO_ONE)
-        } else {
-            setLabel(edge, MANY_TO_ONE)
-        }
-    })
 }
 
 export const associationToEdge = (association: GenAssociationMatchView): Edge => {
@@ -127,19 +113,14 @@ export const getAssociations = (graph: Graph) => {
     return graph.getEdges().map(edgeToAssociation)
 }
 
-const compareEdge = (oldEdge: Edge, newEdge: Edge): boolean => {
-    return oldEdge.getSourcePortId() == newEdge.getSourcePortId() && oldEdge.getTargetPortId() == newEdge.getTargetPortId();
-}
-
 export const addAssociationEdges = (graph: Graph, associations: readonly GenAssociationMatchView[]) => {
     graph.startBatch('add edge')
 
     associations.map(associationToEdge).forEach(newEdge => {
         try {
-            const edges: Edge[] = graph.getEdges();
-            const isDuplicate = edges.some((oldEdge) => compareEdge(oldEdge, newEdge))
+            const isExist = edgeIsExist(graph, newEdge.getSourcePortId(), newEdge.getTargetPortId())
             // 如果不存在 source 和 target 相同的边
-            if (!isDuplicate) {
+            if (!isExist) {
                 graph.addEdge(newEdge)
             }
         } catch (e) {
@@ -152,4 +133,17 @@ export const addAssociationEdges = (graph: Graph, associations: readonly GenAsso
 
 export const scanAssociations = async (tableIds: readonly number[]) => {
     return await api.associationService.scan({body: tableIds})
+}
+
+
+export const useSwitchAssociationType = (graph: Graph) => {
+    graph.on('edge:click', ({edge}) => {
+        if (!edge) return;
+
+        if (getLabel(edge) == MANY_TO_ONE) {
+            setLabel(edge, ONE_TO_ONE)
+        } else {
+            setLabel(edge, MANY_TO_ONE)
+        }
+    })
 }

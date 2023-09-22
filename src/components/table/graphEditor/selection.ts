@@ -5,8 +5,9 @@ export const useSelection = (graph: Graph) => {
     graph.use(
         new Selection({
             enabled: true,
+            movable: true,
             rubberband: true,
-            showNodeSelectionBox: true,
+            rubberEdge: true,
         })
     )
 };

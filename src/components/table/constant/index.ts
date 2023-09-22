@@ -4,9 +4,9 @@ export const COLUMN_PORT = "COLUMN_PORT"
 
 export const COLUMN_HEIGHT = 30
 
-export const HOVER_COLOR = '#555'
+export const HIGHLIGHT_COLOR = 'var(--highlight-color)'
 
-export const COMMON_COLOR = '#888'
+export const COMMON_COLOR = 'var(--common-color)'
 
 
 export const ONE_TO_ONE = "ONE_TO_ONE"

@@ -28,3 +28,8 @@
 .splitpanes--horizontal > .splitpanes__splitter {
     min-height: 6px !important;
 }
+
+ul,
+ol {
+    list-style: none;
+}

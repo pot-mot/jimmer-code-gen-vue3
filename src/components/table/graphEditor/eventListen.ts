@@ -1,17 +1,17 @@
 import {Graph} from "@antv/x6";
-import {COMMON_COLOR, HOVER_COLOR} from "../constant";
+import {COMMON_COLOR, HIGHLIGHT_COLOR} from "../constant";
 
-export const useMouseEnterNodeToFront = (graph: Graph) => {
+export const useHoverToFront = (graph: Graph) => {
     graph.on('node:mouseenter', ({node}) => {
         node.toFront()
     })
 }
 
-export const useEdgeMouseEnterChangeEdgeColor = (graph: Graph) => {
-    graph.on('edge:mouseenter', ({edge}) => {
-        edge.attr('line/stroke', HOVER_COLOR)
+export const useEdgeColor = (graph: Graph) => {
+    graph.on('edge:selected', ({edge}) => {
+        edge.attr('line/stroke', HIGHLIGHT_COLOR)
     })
-    graph.on('edge:mouseleave', ({edge}) => {
+    graph.on('edge:unselected', ({edge}) => {
         edge.attr('line/stroke', COMMON_COLOR)
     })
 }

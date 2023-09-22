@@ -4,11 +4,13 @@ export const saveGraph = (graph: Graph) => {
     if (!graph) return
 
     try {
+        graph.cleanSelection()
         localStorage.setItem('graph', JSON.stringify(graph.toJSON()))
         alert("保存成功")
     } catch (e) {
         clearGraph(graph)
-        alert(`保存失败：${e}`)
+        alert("保存失败")
+        console.error(e)
     }
 }
 

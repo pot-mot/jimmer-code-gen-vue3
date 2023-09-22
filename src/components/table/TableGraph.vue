@@ -1,49 +1,50 @@
 <template>
 	<div ref="wrapper" class="wrapper">
 		<div ref="container"/>
-		<ul class="tool-list">
-			<li @click="handleRefresh">重置</li>
-			<li @click="handleRefreshAssociation">清空关联</li>
-			<li @click="handleLayout">布局</li>
+		<ul class="tool-list left-top">
 			<li @click="handleUndo">undo</li>
 			<li @click="handleRedo">redo</li>
 			<li @click="handleSave">保存</li>
+			<li @click="handleLayout">布局</li>
 			<li @click="handleScan">扫描关联</li>
+		</ul>
+		<ul class="tool-list right-top">
+			<li @click="handleRefresh">清理画布</li>
+			<li @click="handleRefreshAssociation">清除关联</li>
 		</ul>
 	</div>
 </template>
-
-<style lang="scss">
-.x6-graph-scroller-background {
-	background-color: #ccc;
-}
-
-.x6-graph-background {
-	background-color: #fff;
-}
-
-.x6-widget-selection {
-	.x6-widget-selection-box {
-		border: 1px dashed #239edd;
-	}
-
-	.x6-widget-selection-inner {
-		border: 1px solid #239edd;
-	}
-}
-</style>
 
 <style lang="scss" scoped>
 .wrapper {
 	position: relative;
 	height: 100%;
 	width: 100%;
+
+	--highlight-color: #239edd;
+	--common-color: #666;
 }
 
 .tool-list {
 	position: absolute;
-	top: 0;
-	right: 0;
+
+	&.right-top {
+		top: 0;
+		right: 0;
+	}
+
+	&.left-top {
+		top: 0;
+		left: 0;
+	}
+}
+
+.x6-node-selected .node-wrapper {
+	border: 2px solid var(--highlight-color);
+}
+
+.x6-highlight-stroke {
+	stroke: var(--highlight-color) !important;
 }
 </style>
 
@@ -60,8 +61,8 @@ import {COLUMN_PORT} from "./constant";
 import {useHistory} from "./graphEditor/history.ts";
 import {useSelection} from "./graphEditor/selection.ts";
 import {
-	useEdgeMouseEnterChangeEdgeColor,
-	useMouseEnterNodeToFront
+	useEdgeColor,
+	useHoverToFront
 } from "./graphEditor/eventListen.ts";
 import {addAssociationEdges, scanAssociations, useSwitchAssociationType} from "./edge/AssociationEdge.ts";
 import {clearGraph, loadGraph, saveGraph} from "./graphEditor/localStorage.ts";
@@ -91,8 +92,8 @@ const init = () => {
 	useHistory(graph)
 	useSelection(graph)
 
-	useMouseEnterNodeToFront(graph)
-	useEdgeMouseEnterChangeEdgeColor(graph)
+	useHoverToFront(graph)
+	useEdgeColor(graph)
 	useSwitchAssociationType(graph)
 }
 

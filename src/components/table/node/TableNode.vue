@@ -31,9 +31,14 @@
 
 		.tableName {
 			text-align: center;
-			border-bottom: 1px solid #666;
+			border-bottom: 1px solid var(--common-color);
 		}
 	}
+}
+
+.x6-node-selected .node-wrapper {
+	outline: 2px solid var(--highlight-color);
+	outline-offset: 4px;
 }
 </style>
 
