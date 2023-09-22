@@ -1,7 +1,8 @@
 <template>
 	<div ref="wrapper" class="wrapper">
 		<div ref="container"/>
-		<ul class="tool-list left-top">
+		<div class="toolbar right-bottom minimap" ref="minimap"></div>
+		<ul class="toolbar left-top">
 			<li>
 				<button @click="handleUndo">undo</button>
 			</li>
@@ -9,7 +10,7 @@
 				<button @click="handleRedo">redo</button>
 			</li>
 			<li>
-				<button @click="handleSave">保存</button>
+				<button @click="handleSaveAssociation">保存关联（入库）</button>
 			</li>
 			<li>
 				<button @click="handleLayout">布局</button>
@@ -24,7 +25,7 @@
 				<button @click="handleScan">扫描关联</button>
 			</li>
 		</ul>
-		<ul class="tool-list right-top">
+		<ul class="toolbar right-top">
 			<li>
 				<button @click="handleRefresh">清理画布</button>
 			</li>
@@ -45,8 +46,10 @@
 	--common-color: #666;
 }
 
-.tool-list {
+.toolbar {
 	position: absolute;
+	border: 1px var(--common-color) solid;
+	background-color: #fff;
 
 	&.right-top {
 		top: 0;
@@ -57,6 +60,21 @@
 		top: 0;
 		left: 0;
 	}
+
+	&.right-bottom {
+		bottom: 0;
+		right: 0;
+	}
+
+	&.left-bottom {
+		bottom: 0;
+		left: 0;
+	}
+}
+
+.minimap {
+	width: max(25vw, 200px);
+	height: max(35vh, 200px);
 }
 
 .x6-node-selected .node-wrapper {
@@ -88,9 +106,11 @@ import {addAssociationEdges, scanAssociations, useSwitchAssociationType} from ".
 import {clearGraph, loadGraph, saveGraph} from "./graphEditor/localStorage.ts";
 import {useTableEditorStore} from "../../store/tableEditor.ts";
 import {byTreeLayout} from "./graphEditor/layout.ts";
+import {useMiniMap} from "./graphEditor/miniMap.ts";
 
 const container = ref<HTMLDivElement | null>(null);
 const wrapper = ref<HTMLDivElement | null>(null);
+const minimap = ref<HTMLDivElement | null>(null);
 
 let graph: Graph
 
@@ -111,6 +131,7 @@ const init = () => {
 	graph = initGraph(container.value!, wrapper.value!)
 	useHistory(graph)
 	useSelection(graph)
+	useMiniMap(graph, minimap.value!)
 
 	useHoverToFront(graph)
 	useEdgeColor(graph)
@@ -169,8 +190,8 @@ const handleRedo = () => {
 	}
 }
 
-const handleSave = () => {
-	if (graph) saveGraph(graph)
+const handleSaveAssociation = () => {
+	store.saveAssociations()
 }
 
 const handleScan = () => {

@@ -109,7 +109,7 @@ export const edgeToAssociation = (edge: Edge): GenAssociationMatchView => {
     }
 }
 
-export const getAssociations = (graph: Graph) => {
+export const getAssociations = (graph: Graph): GenAssociationMatchView[] => {
     return graph.getEdges().map(edgeToAssociation)
 }
 

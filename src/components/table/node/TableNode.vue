@@ -15,8 +15,6 @@
 
 <style lang="scss" scoped>
 .node {
-	opacity: 0.8;
-
 	.node-wrapper {
 		background-color: #fff;
 		border: 1px solid #000;
@@ -27,11 +25,14 @@
 			padding: 0 0.5em;
 			height: 30px;
 			line-height: 30px;
+			font-size: 16px;
 		}
 
 		.tableName {
 			text-align: center;
 			border-bottom: 1px solid var(--common-color);
+			font-size: 20px;
+			font-weight: 600;
 		}
 	}
 }

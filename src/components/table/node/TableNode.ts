@@ -47,7 +47,7 @@ const nodeToTable = (node: Node): GenTableColumnsView => {
     return node.data.table
 }
 
-export const getTables = (graph: Graph) => {
+export const getTables = (graph: Graph): GenTableColumnsView[] => {
     return graph.getNodes().map(nodeToTable)
 }
 

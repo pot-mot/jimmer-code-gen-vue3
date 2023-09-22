@@ -45,6 +45,7 @@ const store = useTableEditorStore()
 		<details>
 			<summary>
 				<span>{{ schema.name }}</span>
+				<button @click="store.addTables([...tables.map(table => table.id)])">导入画布</button>
 				<button @click="deleteSchema()">删除</button>
 			</summary>
 			<template v-for="table in tables">

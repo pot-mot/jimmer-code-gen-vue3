@@ -30,11 +30,20 @@ const getLayoutNodes = (nodes: Node[]): LayoutNode[] => {
 }
 
 const getLayoutEdges = (edges: Edge[]): LayoutEdge[] => {
-    return edges.map(edge => {
-        const target = nodeIdToTableId(edge.getTargetNode()!.id)
-        const source = nodeIdToTableId(edge.getSourceNode()!.id)
-        return {target, source}
+    const result: LayoutEdge[] = []
+
+    edges.forEach(edge => {
+        const targetNode = edge.getTargetNode()
+        const sourceNode = edge.getSourceNode()
+
+        if (!targetNode || !sourceNode) return;
+
+        const target = nodeIdToTableId(targetNode.id)
+        const source = nodeIdToTableId(sourceNode.id)
+        result.push({target, source})
     })
+
+    return result
 }
 
 const setLevel = (nodes: LayoutNode[], edges: LayoutEdge[]) => {
