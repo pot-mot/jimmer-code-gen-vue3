@@ -67,7 +67,7 @@ import {
 import {addAssociationEdges, scanAssociations, useSwitchAssociationType} from "./edge/AssociationEdge.ts";
 import {clearGraph, loadGraph, saveGraph} from "./graphEditor/localStorage.ts";
 import {useTableEditorStore} from "../../store/tableEditor.ts";
-import {layout} from "./graphEditor/layout.ts";
+import {byTreeLayout} from "./graphEditor/layout.ts";
 
 const container = ref<HTMLDivElement | null>(null);
 const wrapper = ref<HTMLDivElement | null>(null);
@@ -116,6 +116,7 @@ const addEventListener = () => {
 	document.documentElement.addEventListener('keydown', (event) => {
 		if (graph && event.key === 'Delete') {
 			const selectedCells = graph.getSelectedCells()
+			graph.cleanSelection()
 
 			// 删除选中的元素
 			graph?.removeCells(selectedCells)
@@ -149,9 +150,7 @@ const handleRedo = () => {
 }
 
 const handleSave = () => {
-	if (graph) {
-		saveGraph(graph)
-	}
+	if (graph) saveGraph(graph)
 }
 
 const handleScan = () => {
@@ -169,7 +168,7 @@ const handleRefreshAssociation = () => {
 }
 
 const handleLayout = () => {
-	layout(graph)
+	if (graph) byTreeLayout(graph)
 }
 
 onMounted(() => {
