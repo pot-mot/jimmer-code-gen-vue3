@@ -9,8 +9,7 @@ import { Graph, Node } from "@antv/x6";
 import { addAssociationEdges, getAssociations } from "../components/table/edge/AssociationEdge.ts";
 import { addTableNodes, getTables, nodeIdToTableId, removeTableNodes, tableIdToNodeId } from "../components/table/node/TableNode.ts";
 import { GenTableColumnsView_TargetOf_columns } from "../api/__generated/model/static/GenTableColumnsView.ts";
-import { nextTick } from "vue";
-import { layoutByTree } from "../components/table/graphEditor/layout.ts";
+import { layoutByLevels } from "../components/table/graphEditor/layout.ts";
 import { saveGraph } from "../components/table/graphEditor/localStorage.ts";
 import { defaultZoomRange } from "../components/table/graphEditor/scale.ts";
 import { Ref, ref, onMounted } from 'vue';
@@ -100,7 +99,7 @@ export const useTableEditorGraphStore =
             const layoutDirection: Ref<"LR" | "TB" | "RL" | "BT"> = ref("LR")
 
             const layout = () => {
-                layoutByTree(graph(), layoutDirection.value)
+                layoutByLevels(graph(), layoutDirection.value)
             }
 
             /**
@@ -134,8 +133,7 @@ export const useTableEditorGraphStore =
                 removeAll()
                 await importTables(ids, false)
                 layout()
-                graph().scaleContentToFit({ ...defaultZoomRange })
-                graph().centerContent()
+                fit()
 
                 if (select) graph().select(ids.map(id => tableIdToNodeId(id)))
             }
@@ -224,8 +222,12 @@ export const useTableEditorGraphStore =
 
             const load = (graph: Graph) => {
                 _graph = graph
-                graph.scaleContentToFit({ ...defaultZoomRange })
-                graph.centerContent()
+                fit()
+            }
+
+            const fit = () => {
+                graph().scaleContentToFit({ ...defaultZoomRange })
+                graph().centerContent()
             }
 
             return {
@@ -235,6 +237,7 @@ export const useTableEditorGraphStore =
                 associations,
 
                 load,
+                fit,
 
                 importTables,
                 importSchema,

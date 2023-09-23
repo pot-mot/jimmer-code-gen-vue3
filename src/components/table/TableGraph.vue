@@ -10,15 +10,17 @@
 				<button @click="toggleLog">log</button>
 			</li>
 		</ul>
-		<div class="toolbar right-bottom">
-			<template v-if="minimapShow">
-				<div class="minimap" ref="minimap"></div>
-			</template>
-
-			<DragResizeBox v-if="logShow">
-				<div></div>
-			</DragResizeBox>
-		</div>
+		<ul class="toolbar right-top">
+			<li>
+				<button @click="store.fit">适应画布</button>
+			</li>
+			<li>
+				<button @click="store.removeAll">清除所有</button>
+			</li>
+			<li>
+				<button @click="store.removeAssociation">清除关联</button>
+			</li>
+		</ul>
 		<ul class="toolbar left-top">
 			<li>
 				<button @click="store.undo">undo</button>
@@ -41,18 +43,19 @@
 			<li>
 				<button @click="store.match">匹配关联</button>
 				<select v-model="store.matchType">
-					<option v-for="type in store.matchTypes" :value="type">{{ type }}</option>
+					<option v-for="type in store.matchTypes" :value="type"></option>
 				</select>
 			</li>
 		</ul>
-		<ul class="toolbar right-top">
-			<li>
-				<button @click="store.removeAll">清除所有</button>
-			</li>
-			<li>
-				<button @click="store.removeAssociation">清除关联</button>
-			</li>
-		</ul>
+		<div class="toolbar right-bottom">
+			<template v-if="minimapShow">
+				<div class="minimap" ref="minimap"></div>
+			</template>
+
+			<DragResizeBox v-if="logShow">
+				<div></div>
+			</DragResizeBox>
+		</div>
 	</div>
 </template>
 
@@ -155,7 +158,7 @@ const init = () => {
 	useHoverToFront(graph)
 	useEdgeColor(graph)
 	useSwitchAssociationType(graph)
-	
+
 }
 
 const addEventListener = () => {

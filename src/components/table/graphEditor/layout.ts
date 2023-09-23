@@ -6,6 +6,7 @@ interface LayoutNode {
     id: number
     level: number
     visited: boolean
+    inDegree: number
     outDegree: number
     children: LayoutNode[]
     node: Node
@@ -21,12 +22,13 @@ interface LayoutEdge {
  * @param nodes 节点
  * @returns 布局节点
  */
-const getLayoutNodes = (nodes: readonly Node[]): LayoutNode[] => {
+const toLayoutNodes = (nodes: readonly Node[]): LayoutNode[] => {
     return nodes.map(node => {
         return {
             id: nodeIdToTableId(node.id),
             level: 0,
             visited: false,
+            inDegree: 0,
             outDegree: 0,
             children: [],
             node,
@@ -39,7 +41,7 @@ const getLayoutNodes = (nodes: readonly Node[]): LayoutNode[] => {
  * @param edges 边
  * @returns 布局边
  */
-const getLayoutEdges = (edges: readonly Edge[]): LayoutEdge[] => {
+const toLayoutEdges = (edges: readonly Edge[]): LayoutEdge[] => {
     const result: LayoutEdge[] = []
 
     edges.forEach(edge => {
@@ -102,6 +104,7 @@ const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
         if (targetNode && sourceNode) {
             targetNode.children.push(sourceNode)
             sourceNode.outDegree++
+            targetNode.inDegree++
         }
     }
 
@@ -113,14 +116,44 @@ const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
 }
 
 /**
+ * 均分数组
+ * @param array 待分割的数组
+ * @param chunkSize 每个部分的大小
+ * @returns 均分成多个部分的二维数组
+ */
+const splitArrayIntoChunks = <T>(
+    array: T[], 
+    chunkSize: number = Math.ceil(Math.sqrt(array.length))
+): T[][] => {
+    const chunks: T[][] = [];
+    const length = array.length;
+    let index = 0;
+
+    while (index < length) {
+        chunks.push(array.slice(index, index + chunkSize));
+        index += chunkSize;
+    }
+
+    return chunks;
+}
+
+/**
  * 将布局节点根据 level 大小进行分组，同时根据子节点数量进行排序（将子节点更多的靠前放置），最终返回节点的二维数组
+ * 没有入度出度的节点将位于最后
  * @param nodes 布局节点
  * @returns 节点的二维数组，其中每一个一维数组表示节点层
  */
 const groupByLevel = (nodes: readonly LayoutNode[]): Node[][] => {
     const levelMap = new Map<number, LayoutNode[]>()
 
+    const unrelatedNodes: Node[] = []
+
     nodes.forEach(node => {
+        if (node.inDegree == 0 && node.outDegree == 0) {
+            unrelatedNodes.push(node.node)
+            return
+        }
+
         const levelList = levelMap.get(node.level)
         if (levelList) {
             levelList.push(node)
@@ -141,9 +174,17 @@ const groupByLevel = (nodes: readonly LayoutNode[]): Node[][] => {
         )
     })
 
+    result.push(...splitArrayIntoChunks(unrelatedNodes))
+
     return result
 }
 
+/**
+ * 获取节点中的端点位置
+ * @param nodes 节点
+ * @param direction 位置，左上/右上/左下/右下
+ * @returns 端点
+ */
 const getPoint = (nodes: Node[], direction: "LT" | "RT" | "LB" | "RB" = "LT"): Point.PointLike => {
     return nodes.reduce((targetPoint, node) => {
         const current = node.getPosition()
@@ -193,7 +234,29 @@ const getMaxHeight = (nodes: Node[]): number => {
     }, 0)
 }
 
-const layoutLR = (nodeLevels: Node[][], startX: number = 0, startY: number = 0, gapX: number = 200, gapY: number = 100) => {
+interface LayoutOptions {
+    startX: number
+    startY: number
+    gapX: number
+    gapY: number
+}
+
+interface LevelLayoutOptions extends LayoutOptions {
+    nodeLevels: Node[][]
+}
+
+const defaultLayoutOptions: LayoutOptions = {
+    startX: 0,
+    startY: 0,
+    gapX: 200,
+    gapY: 100,
+}
+
+const layoutLR = (options: Partial<LevelLayoutOptions>) => {
+    const { nodeLevels, startX, startY, gapX, gapY } = Object.assign(defaultLayoutOptions, options)
+
+    if (!nodeLevels) return
+
     let tempX = startX
 
     for (const nodes of nodeLevels) {
@@ -213,7 +276,11 @@ const layoutLR = (nodeLevels: Node[][], startX: number = 0, startY: number = 0, 
     }
 }
 
-const layoutTB = (nodeLevels: Node[][], startX: number = 0, startY: number = 0, gapX: number = 200, gapY: number = 100) => {
+const layoutTB = (options: Partial<LevelLayoutOptions>) => {
+    const { nodeLevels, startX, startY, gapX, gapY } = Object.assign(defaultLayoutOptions, options)
+
+    if (!nodeLevels) return
+
     let tempY = startY
 
     for (const nodes of nodeLevels) {
@@ -233,17 +300,26 @@ const layoutTB = (nodeLevels: Node[][], startX: number = 0, startY: number = 0, 
     }
 }
 
-const layoutRL = (nodeLevels: Node[][], startX: number = 0, startY: number = 0, gapX: number = 200, gapY: number = 100) => {
-    layoutLR(nodeLevels.reverse(), startX, startY, gapX, gapY)
+const layoutRL = (options: Partial<LevelLayoutOptions>) => {
+    if (options.nodeLevels) options.nodeLevels.reverse()
+    layoutLR(options)
 }
 
-const layoutBT = (nodeLevels: Node[][], startX: number = 0, startY: number = 0, gapX: number = 200, gapY: number = 100) => {
-    layoutTB(nodeLevels.reverse(), startX, startY, gapX, gapY)
+const layoutBT = (options: Partial<LevelLayoutOptions>) => {
+    if (options.nodeLevels) options.nodeLevels.reverse()
+    layoutTB(options)
 }
 
-export const layoutByTree = (graph: Graph, direction: "LR" | "TB" | "RL" | "BT" = "LR", gapX: number = 200, gapY: number = 100) => {
-    const nodes = graph.isSelectionEmpty() ? getLayoutNodes(graph.getNodes()) : getLayoutNodes(graph.getSelectedCells().filter(cell => cell.isNode()) as Node[])
-    const edges = graph.isSelectionEmpty() ? getLayoutEdges(graph.getEdges()) : getLayoutEdges(graph.getSelectedCells().filter(cell => cell.isEdge()) as Edge[])
+/**
+ * 根据层级进行布局
+ * @param graph 图
+ * @param direction 方向，此处是指层级的排布方向，左右/上下/右左/下上
+ * @param gapX 水平排布间距
+ * @param gapY 垂直排布间距
+ */
+export const layoutByLevels = (graph: Graph, direction: "LR" | "TB" | "RL" | "BT" = "LR", gapX: number = 200, gapY: number = 100) => {
+    const nodes = graph.isSelectionEmpty() ? toLayoutNodes(graph.getNodes()) : toLayoutNodes(graph.getSelectedCells().filter(cell => cell.isNode()) as Node[])
+    const edges = graph.isSelectionEmpty() ? toLayoutEdges(graph.getEdges()) : toLayoutEdges(graph.getSelectedCells().filter(cell => cell.isEdge()) as Edge[])
 
     setLevel(nodes, edges)
 
@@ -251,20 +327,28 @@ export const layoutByTree = (graph: Graph, direction: "LR" | "TB" | "RL" | "BT" 
 
     graph.startBatch('layout')
 
-    const start: Point.PointLike = getPoint(nodes.map(node => node.node), "LT")
+    const { x: startX, y: startY } = getPoint(nodes.map(node => node.node), "LT")
+
+    const options: LevelLayoutOptions = {
+        nodeLevels,
+        startX,
+        startY,
+        gapX,
+        gapY
+    }
 
     switch (direction) {
         case "LR":
-            layoutLR(nodeLevels, start.x, start.y, gapX, gapY)
+            layoutLR(options)
             break
         case "RL":
-            layoutRL(nodeLevels, start.x, start.y, gapX, gapY)
+            layoutRL(options)
             break
         case "TB":
-            layoutTB(nodeLevels, start.x, start.y, gapX, gapY)
+            layoutTB(options)
             break
         case "BT":
-            layoutBT(nodeLevels, start.x, start.y, gapX, gapY)
+            layoutBT(options)
             break
     }
 
