@@ -26,6 +26,7 @@ const saveDataSource = () => {
 			password: "root",
 			type: "MYSQL",
 			orderKey: 0,
+			remark: "",
 		}
 	}).then(res => {
 		console.log(res)

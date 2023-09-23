@@ -33,6 +33,8 @@ export type ApiErrors = {
             }
         )
     },
+    "entityService": {
+    },
     "schemaService": {
     },
     "tableService": {

@@ -1,4 +1,5 @@
 import type { Executor } from '../';
+import type { SelectType } from '../model/enums';
 import type { AssociationQuery, GenAssociationCommonInput, GenAssociationCommonView, GenAssociationMatchView } from '../model/static';
 
 export class AssociationService {
@@ -8,6 +9,36 @@ export class AssociationService {
     async delete(options: AssociationServiceOptions['delete']): Promise<number> {
         let _uri = '/association/';
         _uri += encodeURIComponent(options.ids.join(','));
+        return (await this.executor({uri: _uri, method: 'DELETE'})) as number
+    }
+    
+    async deleteByColumn(options: AssociationServiceOptions['deleteByColumn']): Promise<number> {
+        let _uri = '/association/column/';
+        _uri += encodeURIComponent(options.columnIds.join(','));
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.selectType;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'selectType='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        return (await this.executor({uri: _uri, method: 'DELETE'})) as number
+    }
+    
+    async deleteByTable(options: AssociationServiceOptions['deleteByTable']): Promise<number> {
+        let _uri = '/association/table/';
+        _uri += encodeURIComponent(options.tableIds.join(','));
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.selectType;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'selectType='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         return (await this.executor({uri: _uri, method: 'DELETE'})) as number
     }
     
@@ -62,9 +93,11 @@ export class AssociationService {
         return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenAssociationCommonView>
     }
     
-    async save(options: AssociationServiceOptions['save']): Promise<number> {
+    async save(options: AssociationServiceOptions['save']): Promise<
+        ReadonlyArray<number>
+    > {
         let _uri = '/association/save';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as ReadonlyArray<number>
     }
     
     async scan(options: AssociationServiceOptions['scan']): Promise<
@@ -74,27 +107,48 @@ export class AssociationService {
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as ReadonlyArray<GenAssociationMatchView>
     }
     
-    async select(options: AssociationServiceOptions['select']): Promise<
-        ReadonlyArray<GenAssociationCommonView>
+    async selectByColumn(options: AssociationServiceOptions['selectByColumn']): Promise<
+        ReadonlyArray<GenAssociationMatchView>
     > {
-        let _uri = '/association/select';
+        let _uri = '/association/select/column/';
+        _uri += encodeURIComponent(options.columnIds.join(','));
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
-        _value = options.tableId;
+        _value = options.selectType;
         if (_value !== undefined && _value !== null) {
             _uri += _separator
-            _uri += 'tableId='
+            _uri += 'selectType='
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenAssociationCommonView>
+        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenAssociationMatchView>
+    }
+    
+    async selectByTable(options: AssociationServiceOptions['selectByTable']): Promise<
+        ReadonlyArray<GenAssociationMatchView>
+    > {
+        let _uri = '/association/select/table/';
+        _uri += encodeURIComponent(options.tableIds.join(','));
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.selectType;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'selectType='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenAssociationMatchView>
     }
 }
 
 export type AssociationServiceOptions = {
     'delete': {readonly ids: ReadonlyArray<number>},
+    'deleteByColumn': {readonly columnIds: ReadonlyArray<number>, readonly selectType?: SelectType},
+    'deleteByTable': {readonly tableIds: ReadonlyArray<number>, readonly selectType?: SelectType},
     'query': {readonly query: AssociationQuery},
     'save': {readonly body: ReadonlyArray<GenAssociationCommonInput>},
     'scan': {readonly body: ReadonlyArray<number>},
-    'select': {readonly tableId: number}
+    'selectByColumn': {readonly columnIds: ReadonlyArray<number>, readonly selectType?: SelectType},
+    'selectByTable': {readonly tableIds: ReadonlyArray<number>, readonly selectType?: SelectType}
 }

@@ -17,6 +17,7 @@
     "@antv/x6-plugin-minimap": "^2.0.5",
     "@antv/x6-plugin-selection": "^2.1.7",
     "@antv/x6-vue-shape": "^2.1.1",
+    "lodash": "^4.17.21",
     "pinia": "^2.1.6",
     "pinia-plugin-persistedstate": "^3.2.0",
     "sass": "^1.66.1",

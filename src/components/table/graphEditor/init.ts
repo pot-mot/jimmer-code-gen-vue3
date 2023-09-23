@@ -1,5 +1,7 @@
-import {Graph} from "@antv/x6";
-import {AssociationEdgeConnecting} from "../edge/AssociationEdge.ts";
+import { Graph } from "@antv/x6"
+import { AssociationEdgeConnecting } from "../edge/AssociationEdge.ts"
+import { defaultZoomRange } from "./scale.ts"
+import { debounce } from 'lodash'
 
 export const initGraph = (container: HTMLElement, wrapper: HTMLElement): Graph => {
     const graph = new Graph({
@@ -7,8 +9,7 @@ export const initGraph = (container: HTMLElement, wrapper: HTMLElement): Graph =
 
         mousewheel: {
             enabled: true,
-            minScale: 0.1,
-            maxScale: 4,
+            ...defaultZoomRange,
         },
 
         width: wrapper.clientWidth,
@@ -20,9 +21,13 @@ export const initGraph = (container: HTMLElement, wrapper: HTMLElement): Graph =
         },
 
         connecting: AssociationEdgeConnecting,
-    });
+    })
 
-    graph.zoomTo(0.7)
+    const resizeOb = new ResizeObserver(debounce(() => {
+        graph.resize(wrapper.clientWidth, wrapper.clientHeight)
+    }, 200))
+
+    resizeOb.observe(wrapper)
 
     return graph
 }

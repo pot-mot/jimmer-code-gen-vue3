@@ -5,13 +5,13 @@ import {
 } from "../api/__generated/model/static";
 import {api} from "../api";
 import {Graph} from "@antv/x6";
-import {getAssociations} from "../components/table/edge/AssociationEdge.ts";
+import {addAssociationEdges, getAssociations} from "../components/table/edge/AssociationEdge.ts";
 import {addTableNodes, getTables, removeTableNodes} from "../components/table/node/TableNode.ts";
 import {GenTableColumnsView_TargetOf_columns} from "../api/__generated/model/static/GenTableColumnsView.ts";
 
-export const useTableEditorStore =
+export const useTableEditorGraphStore =
     defineStore(
-        'tableEditor',
+        'tableEditorGraph',
         () => {
             let _graph: Graph
 
@@ -33,6 +33,10 @@ export const useTableEditorStore =
 
                 removeTableNodes(graph(), del)
                 addTableNodes(graph(), add)
+
+                const associations = await api.associationService.selectByTable({tableIds: ids})
+
+                addAssociationEdges(graph(), associations)
 
                 return {add, del}
             }
@@ -61,20 +65,20 @@ export const useTableEditorStore =
                     })
                 })
 
-                return await api.associationService.save({body: inputs.map(association => {
-                        const tempComment: string[] = []
+                const viewToInput = (view: GenAssociationMatchView): GenAssociationCommonInput => {
+                    const tempComment: string[] = []
                         const tempRemark: string[] = []
 
                         tempComment.push("[")
 
-                        if (association.targetColumn.table) {
-                            const targetTable = tableMap.get(association.targetColumn.table.id)
+                        if (view.targetColumn.table) {
+                            const targetTable = tableMap.get(view.targetColumn.table.id)
                             if (targetTable) {
                                 tempRemark.push(targetTable.comment)
                                 tempComment.push(targetTable.name)
                             }
                         }
-                        const targetColumn = columnMap.get(association.targetColumn.id)
+                        const targetColumn = columnMap.get(view.targetColumn.id)
                         if (targetColumn) {
                             tempComment.push(".")
                             tempComment.push(targetColumn.name)
@@ -86,14 +90,14 @@ export const useTableEditorStore =
                         tempComment.push("] -> [")
                         tempRemark.push(" -> ")
 
-                        if (association.sourceColumn.table) {
-                            const sourceTable = tableMap.get(association.sourceColumn.table.id)
+                        if (view.sourceColumn.table) {
+                            const sourceTable = tableMap.get(view.sourceColumn.table.id)
                             if (sourceTable) {
                                 tempComment.push(sourceTable.name)
                                 tempRemark.push(sourceTable.comment)
                             }
                         }
-                        const sourceColumn = columnMap.get(association.sourceColumn.id)
+                        const sourceColumn = columnMap.get(view.sourceColumn.id)
                         if (sourceColumn) {
                             tempComment.push(".")
                             tempComment.push(sourceColumn.name)
@@ -104,15 +108,19 @@ export const useTableEditorStore =
 
                         tempComment.push("]")
 
-                        return <GenAssociationCommonInput>{
-                            associationType: association.associationType,
-                            targetColumnId: association.targetColumn.id,
-                            sourceColumnId: association.sourceColumn.id,
+                        return {
+                            associationType: view.associationType,
+                            targetColumnId: view.targetColumn.id,
+                            sourceColumnId: view.sourceColumn.id,
                             orderKey: 0,
                             comment: tempComment.join(""),
                             remark: tempRemark.join(""),
                         }
-                    })})
+                }
+
+                await api.associationService.deleteByTable({tableIds: [...tableMap.keys()]})
+
+                return await api.associationService.save({body: inputs.map(viewToInput)})
             }
 
             const load = (graph: Graph) => {

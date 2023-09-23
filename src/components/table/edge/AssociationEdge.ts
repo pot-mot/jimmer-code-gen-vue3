@@ -22,21 +22,6 @@ const baseColumnEdge = {
     }]
 }
 
-export const edgeIsExist = (graph: Graph, sourcePort: string | null | undefined, targetPort: string | null | undefined): boolean => {
-    const edges = graph.getEdges()
-
-    for (let edge of edges) {
-        if (
-            (edge.getTargetPortId() == targetPort && edge.getSourcePortId() == sourcePort) ||
-            (edge.getTargetPortId() == sourcePort && edge.getSourcePortId() == targetPort)
-        ) {
-            return true
-        }
-    }
-
-    return false
-}
-
 export const AssociationEdgeConnecting: Partial<Connecting> = {
     router: {
         name: 'er',
@@ -65,6 +50,33 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
     allowBlank: false,
     allowNode: false,
     allowEdge: false,
+}
+
+export const nodeIsExist = (graph: Graph, nodeId: string): boolean => {
+    const cell = graph.getCellById(nodeId)
+    return cell && cell.isNode()
+}
+
+/**
+ * 校验 Edge 在节点间是否已经存在，无论方向
+ * @param graph 图
+ * @param sourcePort 源连接桩 
+ * @param targetPort 目标连接桩
+ * @returns 是否存在
+ */
+export const edgeIsExist = (graph: Graph, sourcePort: string | null | undefined, targetPort: string | null | undefined): boolean => {
+    const edges = graph.getEdges()
+
+    for (let edge of edges) {
+        if (
+            (edge.getTargetPortId() == targetPort && edge.getSourcePortId() == sourcePort) ||
+            (edge.getTargetPortId() == sourcePort && edge.getSourcePortId() == targetPort)
+        ) {
+            return true
+        }
+    }
+
+    return false
 }
 
 export const setLabel = (edge: Edge, label: string) => {
@@ -118,6 +130,9 @@ export const addAssociationEdges = (graph: Graph, associations: readonly GenAsso
 
     associations.map(associationToEdge).forEach(newEdge => {
         try {
+            if (!nodeIsExist(graph, newEdge.getSourceCellId())) return
+            if (!nodeIsExist(graph, newEdge.getTargetCellId())) return
+
             const isExist = edgeIsExist(graph, newEdge.getSourcePortId(), newEdge.getTargetPortId())
             // 如果不存在 source 和 target 相同的边
             if (!isExist) {

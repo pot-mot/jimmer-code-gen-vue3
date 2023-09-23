@@ -1,7 +1,24 @@
 <template>
 	<div ref="wrapper" class="wrapper">
-		<div ref="container"/>
-		<div class="toolbar right-bottom minimap" ref="minimap"></div>
+		<div ref="container"></div>
+
+		<ul class="toolbar left-bottom">
+			<li>
+				<button @click="toggleMinimap">minimap</button>
+			</li>
+			<li>
+				<button @click="toggleLog">log</button>
+			</li>
+		</ul>
+		<div class="toolbar right-bottom">
+			<template v-if="minimapShow">
+				<div class="minimap" ref="minimap"></div>
+			</template>
+
+			<DragResizeBox v-if="logShow">
+				<div></div>
+			</DragResizeBox>
+		</div>
 		<ul class="toolbar left-top">
 			<li>
 				<button @click="handleUndo">undo</button>
@@ -70,11 +87,11 @@
 		bottom: 0;
 		left: 0;
 	}
-}
 
-.minimap {
-	width: max(25vw, 200px);
-	height: max(35vh, 200px);
+	.minimap {
+		width: max(15vw, 200px);
+		height: max(20vh, 200px);
+	}
 }
 
 .x6-node-selected .node-wrapper {
@@ -87,26 +104,27 @@
 </style>
 
 <script lang="ts" setup>
-import {nextTick, onMounted, Ref, ref} from "vue";
-import {Graph} from "@antv/x6";
+import { onMounted, Ref, ref, nextTick } from "vue";
+import { Graph } from "@antv/x6";
 
-import {ColumnPort} from "./port/ColumnPort.ts";
+import { ColumnPort } from "./port/ColumnPort.ts";
 
-import {register} from "@antv/x6-vue-shape";
+import { register } from "@antv/x6-vue-shape";
 import TableNode from "./node/TableNode.vue";
-import {initGraph} from "./graphEditor/init.ts";
-import {COLUMN_PORT} from "./constant";
-import {useHistory} from "./graphEditor/history.ts";
-import {useSelection} from "./graphEditor/selection.ts";
+import { initGraph } from "./graphEditor/init.ts";
+import { COLUMN_PORT } from "./constant";
+import { useHistory } from "./graphEditor/history.ts";
+import { useSelection } from "./graphEditor/selection.ts";
 import {
 	useEdgeColor,
 	useHoverToFront
 } from "./graphEditor/eventListen.ts";
-import {addAssociationEdges, scanAssociations, useSwitchAssociationType} from "./edge/AssociationEdge.ts";
-import {clearGraph, loadGraph, saveGraph} from "./graphEditor/localStorage.ts";
-import {useTableEditorStore} from "../../store/tableEditor.ts";
-import {byTreeLayout} from "./graphEditor/layout.ts";
-import {useMiniMap} from "./graphEditor/miniMap.ts";
+import { addAssociationEdges, scanAssociations, useSwitchAssociationType } from "./edge/AssociationEdge.ts";
+import { clearGraph, loadGraph, saveGraph } from "./graphEditor/localStorage.ts";
+import { useTableEditorGraphStore } from "../../store/tableEditorGraph.ts";
+import { byTreeLayout } from "./graphEditor/layout.ts";
+import { useMiniMap } from "./graphEditor/miniMap.ts";
+import DragResizeBox from '../common/DragResizeBox.vue'
 
 const container = ref<HTMLDivElement | null>(null);
 const wrapper = ref<HTMLDivElement | null>(null);
@@ -114,7 +132,7 @@ const minimap = ref<HTMLDivElement | null>(null);
 
 let graph: Graph
 
-const store = useTableEditorStore()
+const store = useTableEditorGraphStore()
 
 Graph.registerPortLayout(
 	COLUMN_PORT,
@@ -131,11 +149,10 @@ const init = () => {
 	graph = initGraph(container.value!, wrapper.value!)
 	useHistory(graph)
 	useSelection(graph)
-	useMiniMap(graph, minimap.value!)
-
 	useHoverToFront(graph)
 	useEdgeColor(graph)
 	useSwitchAssociationType(graph)
+	
 }
 
 const addEventListener = () => {
@@ -150,6 +167,9 @@ const addEventListener = () => {
 			} else if (e.key == 's') {
 				e.preventDefault()
 				handleSave()
+			} else if (e.key == 'a') {
+				e.preventDefault()
+				handleSelectAll()
 			}
 		}
 	})
@@ -190,6 +210,12 @@ const handleRedo = () => {
 	}
 }
 
+const handleSave = () => {
+	if (graph) {
+		saveGraph(graph)
+	}
+}
+
 const handleSaveAssociation = () => {
 	store.saveAssociations()
 }
@@ -201,11 +227,15 @@ const handleScan = () => {
 }
 
 const handleRefresh = () => {
-	init()
+	graph.removeCells(graph.getCells())
 }
 
 const handleRefreshAssociation = () => {
 	graph.removeCells(graph.getEdges())
+}
+
+const handleSelectAll = () => {
+	graph.resetSelection(graph.getCells())
 }
 
 const layoutDirection: Ref<"LR" | "TB" | "RL" | "BT"> = ref("LR")
@@ -214,13 +244,38 @@ const handleLayout = () => {
 	if (graph) byTreeLayout(graph, layoutDirection.value)
 }
 
+const logShow = ref(false)
+
+const toggleLog = () => {
+	logShow.value = !logShow.value
+}
+
+const minimapShow = ref(false)
+
+const toggleMinimap = () => {
+	minimapShow.value = !minimapShow.value
+	if (minimapShow.value) {
+		nextTick(() => {
+			if (minimap.value) {
+				useMiniMap(graph, minimap.value)
+			}
+		})
+	}
+}
+
 onMounted(() => {
-	nextTick(() => {
-		init()
+	init()
 
-		addEventListener()
+	addEventListener()
 
-		load()
-	})
+	load()
+
+	if (minimapShow.value) {
+		nextTick(() => {
+			if (minimap.value) {
+				useMiniMap(graph, minimap.value)
+			}
+		})
+	}
 });
 </script>

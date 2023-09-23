@@ -3,6 +3,9 @@
 
 <template>
 	<div class="layout">
-		<router-view/>
+		<RouterLink to="/table/graph">Table</RouterLink>
+		<RouterLink to="/entity">Entity</RouterLink>
+		<RouterView>
+		</RouterView>
 	</div>
 </template>

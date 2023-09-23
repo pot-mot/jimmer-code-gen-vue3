@@ -2,7 +2,7 @@
 	<div v-if="table" class="node">
 		<table ref="wrapper" class="node-wrapper">
 			<tr>
-				<td class="tableName" colspan="3">{{ table.name }}</td>
+				<td class="tableName" colspan="3">{{ table.name }} {{ table.comment }}</td>
 			</tr>
 			<tr v-for="column in table.columns">
 				<td>{{ column.name }}</td>
@@ -47,7 +47,7 @@
 import {inject, nextTick, onMounted, ref} from "vue";
 import {GenTableColumnsView} from "../../../api/__generated/model/static";
 import {Node} from '@antv/x6'
-import {useTableEditorStore} from "../../../store/tableEditor.ts";
+import {useTableEditorGraphStore} from "../../../store/tableEditorGraph.ts";
 
 const wrapper = ref<HTMLElement | null>()
 
@@ -55,7 +55,7 @@ const getNode = inject<() => Node>("getNode")!;
 
 const table = ref<GenTableColumnsView>()
 
-const store = useTableEditorStore()
+const store = useTableEditorGraphStore()
 
 onMounted(() => {
 	const node = getNode()

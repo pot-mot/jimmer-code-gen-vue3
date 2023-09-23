@@ -2,7 +2,7 @@
 import DragResize from 'vue3-draggable-resizable'
 import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
 
-interface DialogProps {
+interface DragResizeProps {
 	initH?: number
 	initW?: number
 	minW?: number
@@ -10,7 +10,7 @@ interface DialogProps {
 }
 
 withDefaults(
-	defineProps<DialogProps>(),
+	defineProps<DragResizeProps>(),
 	{
 		initH: 350,
 		initW: 450,
@@ -22,7 +22,7 @@ withDefaults(
 </script>
 
 <template>
-	<DragResize :initH="initH" :initW="initW" :minH="minH" :minW="minW" :parent="true" style="border: none;">
+	<DragResize :initH="initH" :initW="initW" :minH="minH" :minW="minW" style="border: none;">
 		<div class="wrapper">
 			<slot></slot>
 		</div>

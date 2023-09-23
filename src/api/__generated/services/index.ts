@@ -4,6 +4,8 @@ export { ColumnService } from './ColumnService';
 export type { ColumnServiceOptions } from './ColumnService';
 export { DataSourceService } from './DataSourceService';
 export type { DataSourceServiceOptions } from './DataSourceService';
+export { EntityService } from './EntityService';
+export type { EntityServiceOptions } from './EntityService';
 export { SchemaService } from './SchemaService';
 export type { SchemaServiceOptions } from './SchemaService';
 export { TableService } from './TableService';

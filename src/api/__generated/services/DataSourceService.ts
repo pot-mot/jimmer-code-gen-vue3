@@ -37,11 +37,9 @@ export class DataSourceService {
         return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<string>
     }
     
-    async save(options: DataSourceServiceOptions['save']): Promise<
-        GenDataSourceView
-    > {
+    async save(options: DataSourceServiceOptions['save']): Promise<number> {
         let _uri = '/dataSource/';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as GenDataSourceView
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number
     }
     
     async viewSchemas(options: DataSourceServiceOptions['viewSchemas']): Promise<

@@ -2,7 +2,7 @@
 import {ref, watch} from "vue";
 import {GenSchemaView, GenTableCommonView} from "../../api/__generated/model/static";
 import {api} from "../../api";
-import {useTableEditorStore} from "../../store/tableEditor.ts";
+import {useTableEditorGraphStore} from "../../store/tableEditorGraph.ts";
 
 interface SchemaItemProps {
 	schema: GenSchemaView
@@ -37,7 +37,7 @@ const deleteSchema = (schemaId: number = props.schema.id) => {
 	})
 }
 
-const store = useTableEditorStore()
+const store = useTableEditorGraphStore()
 </script>
 
 <template>
@@ -49,8 +49,11 @@ const store = useTableEditorStore()
 				<button @click="deleteSchema()">删除</button>
 			</summary>
 			<template v-for="table in tables">
-				<div style="padding-left: 2em;" @click="store.addTables([table.id])">
-					{{ table.name }} {{ table.comment }} {{ table.type }}
+				<div style="padding-left: 2em;">
+					<span>
+						{{ table.name }} {{ table.comment }} {{ table.type }}
+					</span>
+					<button @click="store.addTables([table.id])">导入画布</button>
 				</div>
 			</template>
 		</details>

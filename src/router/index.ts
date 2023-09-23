@@ -3,18 +3,35 @@ import {createWebHistory, createRouter, RouteRecordRaw} from 'vue-router'
 const routes: RouteRecordRaw[] = [
     {
         path: "",
-        name: "index",
+        name: "Index",
         component: () => import("../views/Index.vue")
     },
     {
-        path: "/graph",
-        name: "graph",
-        component: () => import("../views/Graph.vue")
+        path: "/table",
+        name: "Table",
+        component: () => import("../views/table/Index.vue"),
+        children: [
+            {
+                path: "/table/graph",
+                name: "TableGraph",
+                component: () => import("../views/table/Graph.vue"),
+            },
+            {
+                path: "/table/list",
+                name: "TableList",
+                component: () => import("../views/table/List.vue"),
+            },
+            {
+                path: "/table/detail",
+                name: "TableDetail",
+                component: () => import("../views/table/Detail.vue"),
+            },
+        ]
     },
     {
         path: "/entity",
         name: "entity",
-        component: () => import("../views/Entity.vue")
+        component: () => import("../views/entity/Index.vue")
     }
 ]
 
