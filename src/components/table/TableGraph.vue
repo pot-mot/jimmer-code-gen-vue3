@@ -21,17 +21,17 @@
 		</div>
 		<ul class="toolbar left-top">
 			<li>
-				<button @click="handleUndo">undo</button>
+				<button @click="store.undo">undo</button>
 			</li>
 			<li>
-				<button @click="handleRedo">redo</button>
+				<button @click="store.redo">redo</button>
 			</li>
 			<li>
-				<button @click="handleSaveAssociation">保存关联（入库）</button>
+				<button @click="store.saveAssociations">保存关联（入库）</button>
 			</li>
 			<li>
-				<button @click="handleLayout">布局</button>
-				<select v-model="layoutDirection">
+				<button @click="store.layout">布局</button>
+				<select v-model="store.layoutDirection">
 					<option value="LR">左右</option>
 					<option value="RL">右左</option>
 					<option value="TB">上下</option>
@@ -39,18 +39,18 @@
 				</select>
 			</li>
 			<li>
-				<button @click="handleMatch">匹配关联</button>
-				<select v-model="matchType">
-					<option v-for="type in matchTypes" :value="type">{{ type }}</option>
+				<button @click="store.match">匹配关联</button>
+				<select v-model="store.matchType">
+					<option v-for="type in store.matchTypes" :value="type">{{ type }}</option>
 				</select>
 			</li>
 		</ul>
 		<ul class="toolbar right-top">
 			<li>
-				<button @click="handleRefresh">清理画布</button>
+				<button @click="store.removeAll">清除所有</button>
 			</li>
 			<li>
-				<button @click="handleRefreshAssociation">清除关联</button>
+				<button @click="store.removeAssociation">清除关联</button>
 			</li>
 		</ul>
 	</div>
@@ -107,7 +107,7 @@
 </style>
 
 <script lang="ts" setup>
-import { onMounted, Ref, ref, nextTick } from "vue";
+import { onMounted, ref, nextTick } from "vue";
 import { Graph } from "@antv/x6";
 
 import { ColumnPort } from "./port/ColumnPort.ts";
@@ -122,14 +122,12 @@ import {
 	useEdgeColor,
 	useHoverToFront
 } from "./graphEditor/eventListen.ts";
-import { addAssociationEdges, useSwitchAssociationType } from "./edge/AssociationEdge.ts";
-import { clearGraph, loadGraph, saveGraph } from "./graphEditor/localStorage.ts";
+import { useSwitchAssociationType } from "./edge/AssociationEdge.ts";
+import { clearGraph, loadGraph } from "./graphEditor/localStorage.ts";
 import { useTableEditorGraphStore } from "../../store/tableEditorGraph.ts";
-import { layoutByTree } from "./graphEditor/layout.ts";
 import { useMiniMap } from "./graphEditor/miniMap.ts";
 import DragResizeBox from '../common/DragResizeBox.vue'
-import { api } from "../../api";
-import {AssociationMatchType} from "../../api/__generated/model/enums";
+
 
 const container = ref<HTMLDivElement | null>(null);
 const wrapper = ref<HTMLDivElement | null>(null);
@@ -165,16 +163,16 @@ const addEventListener = () => {
 		if (e.ctrlKey || e.metaKey) {
 			if (e.key == 'z') {
 				e.preventDefault()
-				handleUndo()
+				store.undo()
 			} else if (e.key == 'Z') {
 				e.preventDefault()
-				handleRedo()
+				store.redo()
 			} else if (e.key == 's') {
 				e.preventDefault()
-				handleSave()
+				store.save()
 			} else if (e.key == 'a') {
 				e.preventDefault()
-				handleSelectAll()
+				store.selectAll()
 			}
 		}
 	})
@@ -194,75 +192,12 @@ const load = () => {
 	try {
 		loadGraph(graph)
 		store.load(graph)
-
-		graph.fitToContent()
-
 		window.addEventListener('beforeunload', () => {
-			handleSave()
+			store.save()
 		})
 	} catch (e) {
 		clearGraph(graph)
 	}
-}
-
-const handleUndo = () => {
-	if (graph && graph.canUndo()) {
-		graph.undo()
-	}
-}
-
-const handleRedo = () => {
-	if (graph && graph.canRedo()) {
-		graph.redo()
-	}
-}
-
-const handleSave = () => {
-	if (graph) {
-		saveGraph(graph)
-	}
-}
-
-const handleSaveAssociation = () => {
-	store.saveAssociations()
-}
-
-const matchTypes: Ref<ReadonlyArray<AssociationMatchType>> = ref([])
-
-const matchType: Ref<AssociationMatchType> = ref('SIMPLE_PK')
-
-onMounted(() => {
-	api.associationService.listMatchType().then(res => {
-		matchTypes.value = res
-		matchType.value = res[0]
-	})
-})
-
-const handleMatch = () => {
-	api.associationService.match({
-		body: store.tables().map(table => table.id), 
-		matchType: matchType.value
-	}).then(res => {
-		addAssociationEdges(graph, res)
-	})
-}
-
-const handleRefresh = () => {
-	graph.removeCells(graph.getCells())
-}
-
-const handleRefreshAssociation = () => {
-	graph.removeCells(graph.getEdges())
-}
-
-const handleSelectAll = () => {
-	graph.resetSelection(graph.getCells())
-}
-
-const layoutDirection: Ref<"LR" | "TB" | "RL" | "BT"> = ref("LR")
-
-const handleLayout = () => {
-	if (graph) layoutByTree(graph, layoutDirection.value)
 }
 
 const logShow = ref(false)

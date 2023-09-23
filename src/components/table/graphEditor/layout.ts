@@ -64,26 +64,30 @@ const getLayoutEdges = (edges: readonly Edge[]): LayoutEdge[] => {
 const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
     const nodeMap: Map<number, LayoutNode> = new Map()
 
+    /**
+     * 对树进行广度优先搜索，并给节点设置层级信息
+     * @param root 根节点
+     */
     const bfs = (root: LayoutNode) => {
-        let curLevel = 1
-        let fa: LayoutNode[] = [root]
-        let son: LayoutNode[] = []
+        let currentLevel = 1
+        let currentLevelNodes: LayoutNode[] = [root]
+        let nextLevelNodes: LayoutNode[] = []
 
-        while (fa.length > 0) {
-            const p = fa.shift()!
-            p.level = curLevel
+        while (currentLevelNodes.length > 0) {
+            const currentNode = currentLevelNodes.shift()!
+            currentNode.level = currentLevel
 
-            for (const child of p.children) {
+            for (const child of currentNode.children) {
                 if (!child.visited) {
                     child.visited = true
-                    son.push(child)
+                    nextLevelNodes.push(child)
                 }
             }
 
-            if (fa.length === 0) {
-                curLevel++
-                fa = son
-                son = []
+            if (currentLevelNodes.length === 0) {
+                currentLevel++
+                currentLevelNodes = nextLevelNodes
+                nextLevelNodes = []
             }
         }
     }
@@ -120,7 +124,6 @@ const groupByLevel = (nodes: readonly LayoutNode[]): Node[][] => {
         const levelList = levelMap.get(node.level)
         if (levelList) {
             levelList.push(node)
-            console.log(node.children.length);
         } else {
             levelMap.set(node.level, [node])
         }

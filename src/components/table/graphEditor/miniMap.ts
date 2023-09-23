@@ -12,7 +12,7 @@ export const useMiniMap = (graph: Graph, container: HTMLElement) => {
             graphOptions: {
                 async: true,
                 getCellView(cell) {
-                    // 用指定的 View 替换节点默认的 View
+                    // TODO 用指定的 View 替换节点默认的 View
                     if (cell.isNode()) {
                         const node = cell as Node
                         console.log(node)

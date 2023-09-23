@@ -44,11 +44,11 @@ const store = useTableEditorGraphStore()
 	<div style="padding-left: 2em;">
 		<details>
 			<summary>
-				<span @click.prevent="store.addTables([...tables.map(table => table.id)], true, true)">{{ schema.name }}</span>
+				<span @click.prevent="store.importSchema([...tables.map(table => table.id)])">{{ schema.name }}</span>
 				<button @click.prevent="deleteSchema()">删除</button>
 			</summary>
 			<table style="padding-left: 2em;" class="tableList">
-				<tr v-for="table in tables" :class="table.type" @click.prevent="store.addTables([table.id], false, true)">
+				<tr v-for="table in tables" :class="table.type" @click.prevent="store.importTable(table.id)">
 					<td>{{ table.name }}</td>
 					<td>{{ table.comment }}</td>
 				</tr>
