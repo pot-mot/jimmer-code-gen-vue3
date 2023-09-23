@@ -4,7 +4,13 @@
 			<tr>
 				<td class="tableName" colspan="3">{{ table.name }} {{ table.comment }}</td>
 			</tr>
-			<tr v-for="column in table.columns">
+			<tr v-for="column in table.columns" 
+			:class="{
+				'pk': column.pk, 
+				'fk': column.fk, 
+				'notNull': column.notNull, 
+				'unique': column.unique,
+			}">
 				<td>{{ column.name }}</td>
 				<td>{{ `${column.type}(${column.displaySize}, ${column.numericPrecision})` }}</td>
 				<td>{{ column.comment }}</td>

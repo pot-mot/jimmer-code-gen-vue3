@@ -4,10 +4,11 @@ import {
     GenTableColumnsView
 } from "../api/__generated/model/static";
 import {api} from "../api";
-import {Graph} from "@antv/x6";
+import {Graph, Node} from "@antv/x6";
 import {addAssociationEdges, getAssociations} from "../components/table/edge/AssociationEdge.ts";
-import {addTableNodes, getTables, removeTableNodes} from "../components/table/node/TableNode.ts";
+import {addTableNodes, getTables, removeTableNodes, tableIdToNodeId} from "../components/table/node/TableNode.ts";
 import {GenTableColumnsView_TargetOf_columns} from "../api/__generated/model/static/GenTableColumnsView.ts";
+import { nextTick } from "vue";
 
 export const useTableEditorGraphStore =
     defineStore(
@@ -27,31 +28,51 @@ export const useTableEditorGraphStore =
                 return getAssociations(graph())
             }
 
-            const addTables = async (ids: readonly number[]) => {
-                const add = await api.tableService.list({ids: ids})
-                const del = removeTables(ids)
+            const getExistedIds = (ids: readonly number[]): number[] => {
+                const idSet = new Set(ids);
+                return tables()
+                    .filter(table => idSet.has(table.id))
+                    .map(table => table.id);
+            }
 
-                removeTableNodes(graph(), del)
+            /**
+             * 向图中添加 table node
+             * @param ids 要添加的 table id
+             * @param replace 替换已存在的 node
+             * @returns 新增，已存在的 id
+             */
+            const addTables = async (ids: readonly number[], replace: boolean = true, select: boolean = false) => {
+                const add = await api.tableService.list({ids})
+                const existedIds = getExistedIds(ids)
+
+                if (replace) {
+                    removeTableNodes(graph(), existedIds)
+                }
+
                 addTableNodes(graph(), add)
 
                 const associations = await api.associationService.selectByTable({tableIds: ids})
 
                 addAssociationEdges(graph(), associations)
 
-                return {add, del}
-            }
+                if (select) {
+                    nextTick(() => {
+                        if (ids.length == 1) {
+                            const cell = graph().getCellById(tableIdToNodeId(ids[0]))
+                            if (cell.isNode()) {
+                                const node = cell as Node
+                                graph().cleanSelection()
+                                graph().centerCell(node)
+                                graph().select(node)
+                                node.toFront()
+                            }
+                        } else {
+                            graph().select(ids.map(id => tableIdToNodeId(id)))
+                        }
+                    })
+                }
 
-            const removeTables = (ids: readonly number[]) => {
-                const res: GenTableColumnsView[] = []
-                tables().filter(table => {
-                    if (ids.includes(table.id)) {
-                        res.push(table)
-                        return true
-                    }
-                    return false
-                })
-                removeTableNodes(graph(), res)
-                return res
+                return {add, existedIds}
             }
 
             const saveAssociations = async (inputs: GenAssociationMatchView[] = associations()) => {
@@ -136,7 +157,6 @@ export const useTableEditorGraphStore =
                 load,
 
                 addTables,
-                removeTables,
 
                 saveAssociations,
             }

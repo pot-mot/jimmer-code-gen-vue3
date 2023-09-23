@@ -146,10 +146,6 @@ export const addAssociationEdges = (graph: Graph, associations: readonly GenAsso
     graph.stopBatch('add edge')
 }
 
-export const matchAssociations = async (tableIds: readonly number[], matchType?: AssociationMatchType) => {
-    return await api.associationService.match({body: tableIds, matchType})
-}
-
 
 export const useSwitchAssociationType = (graph: Graph) => {
     graph.on('edge:click', ({edge}) => {

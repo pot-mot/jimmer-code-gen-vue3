@@ -43,7 +43,7 @@ const tableToNode = (table: GenTableColumnsView, options: any = undefined) => {
     }
 }
 
-const nodeToTable = (node: Node): GenTableColumnsView => {
+export const nodeToTable = (node: Node): GenTableColumnsView => {
     return node.data.table
 }
 
@@ -58,6 +58,6 @@ export const addTableNodes = (graph: Graph, tables: readonly GenTableColumnsView
     }))
 }
 
-export const removeTableNodes = (graph: Graph, tables: readonly GenTableColumnsView[]) => {
-    graph.removeCells(tables.map(table => tableIdToNodeId(table.id)))
+export const removeTableNodes = (graph: Graph, ids: readonly number[]) => {
+    graph.removeCells(ids.map(id => tableIdToNodeId(id)))
 }

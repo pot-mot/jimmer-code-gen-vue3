@@ -1,6 +1,6 @@
-import {Graph, Node, Edge} from "@antv/x6"
-import {nodeIdToTableId} from "../node/TableNode.ts"
-import {Point} from "@antv/x6-geometry"
+import { Graph, Node, Edge } from "@antv/x6"
+import { nodeIdToTableId } from "../node/TableNode.ts"
+import { Point } from "@antv/x6-geometry"
 
 interface LayoutNode {
     id: number
@@ -16,7 +16,12 @@ interface LayoutEdge {
     source: number
 }
 
-const getLayoutNodes = (nodes: Node[]): LayoutNode[] => {
+/**
+ * 从节点转换为简化数据的布局节点
+ * @param nodes 节点
+ * @returns 布局节点
+ */
+const getLayoutNodes = (nodes: readonly Node[]): LayoutNode[] => {
     return nodes.map(node => {
         return {
             id: nodeIdToTableId(node.id),
@@ -29,7 +34,12 @@ const getLayoutNodes = (nodes: Node[]): LayoutNode[] => {
     })
 }
 
-const getLayoutEdges = (edges: Edge[]): LayoutEdge[] => {
+/**
+ * 从边中提取布局边
+ * @param edges 边
+ * @returns 布局边
+ */
+const getLayoutEdges = (edges: readonly Edge[]): LayoutEdge[] => {
     const result: LayoutEdge[] = []
 
     edges.forEach(edge => {
@@ -40,13 +50,18 @@ const getLayoutEdges = (edges: Edge[]): LayoutEdge[] => {
 
         const target = nodeIdToTableId(targetNode.id)
         const source = nodeIdToTableId(sourceNode.id)
-        result.push({target, source})
+        result.push({ target, source })
     })
 
     return result
 }
 
-const setLevel = (nodes: LayoutNode[], edges: LayoutEdge[]) => {
+/**
+ * 根据从顺序第一个节点开始进行 bfs 生成森林，为节点设置 level 
+ * @param nodes 布局节点
+ * @param edges 布局边
+ */
+const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
     const nodeMap: Map<number, LayoutNode> = new Map()
 
     const bfs = (root: LayoutNode) => {
@@ -77,12 +92,12 @@ const setLevel = (nodes: LayoutNode[], edges: LayoutEdge[]) => {
         nodeMap.set(node.id, node)
     }
 
-    for (const {source, target} of edges) {
+    for (const { source, target } of edges) {
         const targetNode = nodeMap.get(target)
         const sourceNode = nodeMap.get(source)
         if (targetNode && sourceNode) {
             targetNode.children.push(sourceNode)
-            sourceNode.outDegree ++
+            sourceNode.outDegree++
         }
     }
 
@@ -93,15 +108,21 @@ const setLevel = (nodes: LayoutNode[], edges: LayoutEdge[]) => {
     }
 }
 
-const groupByLevel = (nodes: LayoutNode[]): Node[][] => {
-    const levelMap = new Map<number, Node[]>()
+/**
+ * 将布局节点根据 level 大小进行分组，同时根据子节点数量进行排序（将子节点更多的靠前放置），最终返回节点的二维数组
+ * @param nodes 布局节点
+ * @returns 节点的二维数组，其中每一个一维数组表示节点层
+ */
+const groupByLevel = (nodes: readonly LayoutNode[]): Node[][] => {
+    const levelMap = new Map<number, LayoutNode[]>()
 
     nodes.forEach(node => {
         const levelList = levelMap.get(node.level)
         if (levelList) {
-            levelList.push(node.node)
+            levelList.push(node)
+            console.log(node.children.length);
         } else {
-            levelMap.set(node.level, [node.node])
+            levelMap.set(node.level, [node])
         }
     })
 
@@ -110,7 +131,11 @@ const groupByLevel = (nodes: LayoutNode[]): Node[][] => {
     const keys: number[] = [...levelMap.keys()].sort()
 
     keys.forEach(key => {
-        result.push(levelMap.get(key)!)
+        result.push(
+            levelMap.get(key)!
+                .sort((a, b) => b.children.length - a.children.length)
+                .map(node => node.node)
+        )
     })
 
     return result
@@ -213,7 +238,7 @@ const layoutBT = (nodeLevels: Node[][], startX: number = 0, startY: number = 0, 
     layoutTB(nodeLevels.reverse(), startX, startY, gapX, gapY)
 }
 
-export const byTreeLayout = (graph: Graph, direction: "LR" | "TB" | "RL" | "BT" = "LR") => {
+export const layoutByTree = (graph: Graph, direction: "LR" | "TB" | "RL" | "BT" = "LR", gapX: number = 200, gapY: number = 100) => {
     const nodes = graph.isSelectionEmpty() ? getLayoutNodes(graph.getNodes()) : getLayoutNodes(graph.getSelectedCells().filter(cell => cell.isNode()) as Node[])
     const edges = graph.isSelectionEmpty() ? getLayoutEdges(graph.getEdges()) : getLayoutEdges(graph.getSelectedCells().filter(cell => cell.isEdge()) as Edge[])
 
@@ -227,16 +252,16 @@ export const byTreeLayout = (graph: Graph, direction: "LR" | "TB" | "RL" | "BT" 
 
     switch (direction) {
         case "LR":
-            layoutLR(nodeLevels, start.x, start.y)
+            layoutLR(nodeLevels, start.x, start.y, gapX, gapY)
             break
         case "RL":
-            layoutRL(nodeLevels, start.x, start.y)
+            layoutRL(nodeLevels, start.x, start.y, gapX, gapY)
             break
         case "TB":
-            layoutTB(nodeLevels, start.x, start.y)
+            layoutTB(nodeLevels, start.x, start.y, gapX, gapY)
             break
         case "BT":
-            layoutBT(nodeLevels, start.x, start.y)
+            layoutBT(nodeLevels, start.x, start.y, gapX, gapY)
             break
     }
 

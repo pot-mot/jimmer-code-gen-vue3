@@ -122,10 +122,10 @@ import {
 	useEdgeColor,
 	useHoverToFront
 } from "./graphEditor/eventListen.ts";
-import { addAssociationEdges, matchAssociations, useSwitchAssociationType } from "./edge/AssociationEdge.ts";
+import { addAssociationEdges, useSwitchAssociationType } from "./edge/AssociationEdge.ts";
 import { clearGraph, loadGraph, saveGraph } from "./graphEditor/localStorage.ts";
 import { useTableEditorGraphStore } from "../../store/tableEditorGraph.ts";
-import { byTreeLayout } from "./graphEditor/layout.ts";
+import { layoutByTree } from "./graphEditor/layout.ts";
 import { useMiniMap } from "./graphEditor/miniMap.ts";
 import DragResizeBox from '../common/DragResizeBox.vue'
 import { api } from "../../api";
@@ -195,6 +195,8 @@ const load = () => {
 		loadGraph(graph)
 		store.load(graph)
 
+		graph.fitToContent()
+
 		window.addEventListener('beforeunload', () => {
 			handleSave()
 		})
@@ -229,13 +231,18 @@ const matchTypes: Ref<ReadonlyArray<AssociationMatchType>> = ref([])
 
 const matchType: Ref<AssociationMatchType> = ref('SIMPLE_PK')
 
-onMounted(async () => {
-	matchTypes.value = await api.associationService.listMatchType()
-	matchType.value = matchTypes.value[0]
+onMounted(() => {
+	api.associationService.listMatchType().then(res => {
+		matchTypes.value = res
+		matchType.value = res[0]
+	})
 })
 
 const handleMatch = () => {
-	matchAssociations(store.tables().map(table => table.id), matchType.value).then(res => {
+	api.associationService.match({
+		body: store.tables().map(table => table.id), 
+		matchType: matchType.value
+	}).then(res => {
 		addAssociationEdges(graph, res)
 	})
 }
@@ -255,7 +262,7 @@ const handleSelectAll = () => {
 const layoutDirection: Ref<"LR" | "TB" | "RL" | "BT"> = ref("LR")
 
 const handleLayout = () => {
-	if (graph) byTreeLayout(graph, layoutDirection.value)
+	if (graph) layoutByTree(graph, layoutDirection.value)
 }
 
 const logShow = ref(false)

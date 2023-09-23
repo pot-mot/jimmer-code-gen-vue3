@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import {onMounted, ref} from "vue";
-import {api} from "../../api";
-import {GenDataSourceInput, GenDataSourceView} from "../../api/__generated/model/static";
+import {api} from "../../../api";
+import {GenDataSourceInput, GenDataSourceView} from "../../../api/__generated/model/static";
 import DataSourceItem from "./DataSourceItem.vue";
-import {DataSourceType} from "../../api/__generated/model/enums";
+import {DataSourceType} from "../../../api/__generated/model/enums";
 
 const dataSourceTypes = ref<ReadonlyArray<DataSourceType>>([])
 const dataSources = ref<readonly GenDataSourceView[]>([])
@@ -50,5 +50,6 @@ const saveDataSource = () => {
 	width: 100%;
 	overflow: auto;
 	white-space: nowrap;
+	padding-bottom: 20px;
 }
 </style>

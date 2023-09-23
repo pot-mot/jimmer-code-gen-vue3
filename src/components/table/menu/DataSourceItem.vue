@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import {ref, watch} from "vue";
-import {GenDataSourceView, GenSchemaView} from "../../api/__generated/model/static";
+import {GenDataSourceView, GenSchemaView} from "../../../api/__generated/model/static";
 
 import SchemaItem from "./SchemaItem.vue";
-import {api} from "../../api";
-import {GenSchemaDto} from "../../api/__generated/model/dto";
+import {api} from "../../../api";
+import {GenSchemaDto} from "../../../api/__generated/model/dto";
 
 interface DataSourceItemProps {
 	dataSource: GenDataSourceView
