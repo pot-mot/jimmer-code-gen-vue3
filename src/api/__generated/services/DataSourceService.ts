@@ -1,6 +1,7 @@
 import type { Dynamic, Executor } from '../';
 import type { GenSchemaDto } from '../model/dto';
 import type { GenSchema } from '../model/entities';
+import type { DataSourceType } from '../model/enums';
 import type { GenDataSourceInput, GenDataSourceView } from '../model/static';
 
 export class DataSourceService {
@@ -31,10 +32,10 @@ export class DataSourceService {
     }
     
     async listTypes(): Promise<
-        ReadonlyArray<string>
+        ReadonlyArray<DataSourceType>
     > {
         let _uri = '/dataSource/types';
-        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<string>
+        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<DataSourceType>
     }
     
     async save(options: DataSourceServiceOptions['save']): Promise<number> {

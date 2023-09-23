@@ -1,3 +1,4 @@
+export type { AssociationMatchType } from './AssociationMatchType';
 export type { AssociationType } from './AssociationType';
 export type { DataSourceType } from './DataSourceType';
 export type { QueryType } from './QueryType';

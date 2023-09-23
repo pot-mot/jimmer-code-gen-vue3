@@ -3,8 +3,9 @@ import {onMounted, ref} from "vue";
 import {api} from "../../api";
 import {GenDataSourceInput, GenDataSourceView} from "../../api/__generated/model/static";
 import DataSourceItem from "./DataSourceItem.vue";
+import {DataSourceType} from "../../api/__generated/model/enums";
 
-const dataSourceTypes = ref<readonly string[]>([])
+const dataSourceTypes = ref<ReadonlyArray<DataSourceType>>([])
 const dataSources = ref<readonly GenDataSourceView[]>([])
 
 onMounted(() => {

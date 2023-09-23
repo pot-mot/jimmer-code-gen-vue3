@@ -1,6 +1,6 @@
 import {Edge, Graph, Shape} from "@antv/x6";
 import {COMMON_COLOR, MANY_TO_ONE, ONE_TO_ONE} from "../constant";
-import {AssociationType} from "../../../api/__generated/model/enums";
+import {AssociationType, AssociationMatchType} from "../../../api/__generated/model/enums";
 import {GenAssociationMatchView} from "../../../api/__generated/model/static";
 import {columnIdToPortId, portIdToColumnId} from "../port/ColumnPort.ts";
 import {api} from "../../../api";
@@ -146,8 +146,8 @@ export const addAssociationEdges = (graph: Graph, associations: readonly GenAsso
     graph.stopBatch('add edge')
 }
 
-export const scanAssociations = async (tableIds: readonly number[]) => {
-    return await api.associationService.scan({body: tableIds})
+export const matchAssociations = async (tableIds: readonly number[], matchType?: AssociationMatchType) => {
+    return await api.associationService.match({body: tableIds, matchType})
 }
 
 

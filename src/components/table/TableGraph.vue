@@ -39,7 +39,10 @@
 				</select>
 			</li>
 			<li>
-				<button @click="handleScan">扫描关联</button>
+				<button @click="handleMatch">匹配关联</button>
+				<select v-model="matchType">
+					<option v-for="type in matchTypes" :value="type">{{ type }}</option>
+				</select>
 			</li>
 		</ul>
 		<ul class="toolbar right-top">
@@ -119,12 +122,14 @@ import {
 	useEdgeColor,
 	useHoverToFront
 } from "./graphEditor/eventListen.ts";
-import { addAssociationEdges, scanAssociations, useSwitchAssociationType } from "./edge/AssociationEdge.ts";
+import { addAssociationEdges, matchAssociations, useSwitchAssociationType } from "./edge/AssociationEdge.ts";
 import { clearGraph, loadGraph, saveGraph } from "./graphEditor/localStorage.ts";
 import { useTableEditorGraphStore } from "../../store/tableEditorGraph.ts";
 import { byTreeLayout } from "./graphEditor/layout.ts";
 import { useMiniMap } from "./graphEditor/miniMap.ts";
 import DragResizeBox from '../common/DragResizeBox.vue'
+import { api } from "../../api";
+import {AssociationMatchType} from "../../api/__generated/model/enums";
 
 const container = ref<HTMLDivElement | null>(null);
 const wrapper = ref<HTMLDivElement | null>(null);
@@ -220,8 +225,17 @@ const handleSaveAssociation = () => {
 	store.saveAssociations()
 }
 
-const handleScan = () => {
-	scanAssociations(store.tables().map(table => table.id)).then(res => {
+const matchTypes: Ref<ReadonlyArray<AssociationMatchType>> = ref([])
+
+const matchType: Ref<AssociationMatchType> = ref('SIMPLE_PK')
+
+onMounted(async () => {
+	matchTypes.value = await api.associationService.listMatchType()
+	matchType.value = matchTypes.value[0]
+})
+
+const handleMatch = () => {
+	matchAssociations(store.tables().map(table => table.id), matchType.value).then(res => {
 		addAssociationEdges(graph, res)
 	})
 }
