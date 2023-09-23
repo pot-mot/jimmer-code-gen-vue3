@@ -1,11 +1,10 @@
-import {Edge, Graph, Shape} from "@antv/x6";
-import {COMMON_COLOR, MANY_TO_ONE, ONE_TO_ONE} from "../constant";
-import {AssociationType, AssociationMatchType} from "../../../api/__generated/model/enums";
-import {GenAssociationMatchView} from "../../../api/__generated/model/static";
-import {columnIdToPortId, portIdToColumnId} from "../port/ColumnPort.ts";
-import {api} from "../../../api";
-import {nodeIdToTableId, tableIdToNodeId} from "../node/TableNode.ts";
-import {Options} from "@antv/x6/es/graph/options";
+import { Edge, Graph, Shape } from "@antv/x6";
+import { COMMON_COLOR, MANY_TO_ONE, ONE_TO_ONE } from "../constant";
+import { AssociationType } from "../../../api/__generated/model/enums";
+import { GenAssociationMatchView } from "../../../api/__generated/model/static";
+import { columnIdToPortId, portIdToColumnId } from "../port/ColumnPort.ts";
+import { nodeIdToTableId, tableIdToNodeId } from "../node/TableNode.ts";
+import { Options } from "@antv/x6/es/graph/options";
 import Connecting = Options.Connecting;
 
 const baseColumnEdge = {
@@ -17,7 +16,7 @@ const baseColumnEdge = {
     },
     labels: [{
         attrs: {
-            label: {text: MANY_TO_ONE}
+            label: { text: MANY_TO_ONE }
         }
     }]
 }
@@ -130,6 +129,11 @@ export const addAssociationEdges = (graph: Graph, associations: readonly GenAsso
 
     associations.map(associationToEdge).forEach(newEdge => {
         try {
+            console.log(newEdge.getSourceCellId(), newEdge.getTargetCellId(),
+                graph.getCellById(newEdge.getSourceCellId()),
+                graph.getCellById(newEdge.getTargetCellId())
+            );
+
             if (!nodeIsExist(graph, newEdge.getSourceCellId())) return
             if (!nodeIsExist(graph, newEdge.getTargetCellId())) return
 
@@ -148,7 +152,7 @@ export const addAssociationEdges = (graph: Graph, associations: readonly GenAsso
 
 
 export const useSwitchAssociationType = (graph: Graph) => {
-    graph.on('edge:click', ({edge}) => {
+    graph.on('edge:click', ({ edge }) => {
         if (!edge) return;
 
         if (getLabel(edge) == MANY_TO_ONE) {

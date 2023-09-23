@@ -43,7 +43,7 @@
 			<li>
 				<button @click="store.match">匹配关联</button>
 				<select v-model="store.matchType">
-					<option v-for="type in store.matchTypes" :value="type"></option>
+					<option v-for="type in store.matchTypes" :value="type">{{ type }}</option>
 				</select>
 			</li>
 		</ul>

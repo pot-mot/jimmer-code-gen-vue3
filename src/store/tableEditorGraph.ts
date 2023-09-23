@@ -20,137 +20,80 @@ export const useTableEditorGraphStore =
         () => {
             let _graph: Graph
 
+            /**
+             * 加载 graph，初始化
+             * @param graph 
+             */
+            const load = (graph: Graph) => {
+                _graph = graph
+                fit()
+            }
+
+            /**
+             * 获取 graph
+             * @returns _graph
+             */
             const graph = () => {
                 if (!_graph) throw new Error("graph is not init")
                 return _graph
             }
 
+            /**
+             * 使画布适应内容
+             */
+            const fit = () => {
+                graph().scaleContentToFit({ ...defaultZoomRange })
+                graph().centerContent()
+            }
+
+            /**
+             * 根据 node 获取 graph 中的 table
+             * @returns table
+             */
             const tables = (): GenTableColumnsView[] => {
                 return getTables(graph())
             }
 
+            /**
+             * 根据 edge 获取 graph 中的 association
+             * @returns association
+             */
             const associations = (): GenAssociationMatchView[] => {
                 return getAssociations(graph())
             }
 
-            const getExistedIds = (ids: readonly number[]): number[] => {
-                const idSet = new Set(ids);
+            /**
+             * 过滤存在的 table id
+             * @param tableIds 
+             * @returns 过滤结果
+             */
+            const getExistedIds = (tableIds : readonly number[]): number[] => {
+                const idSet = new Set(tableIds);
                 return tables()
                     .filter(table => idSet.has(table.id))
                     .map(table => table.id);
             }
 
+            /** 撤回 */
             const undo = () => {
                 if (graph() && graph().canUndo()) {
                     graph().undo()
                 }
             }
 
+            /** 重做 */
             const redo = () => {
                 if (graph() && graph().canRedo()) {
                     graph().redo()
                 }
             }
 
+            /** 保存 */
             const save = () => {
                 saveGraph(graph())
             }
 
-            const matchTypes: Ref<ReadonlyArray<AssociationMatchType>> = ref([])
-
-            const matchType: Ref<AssociationMatchType> = ref('SIMPLE_PK')
-
-            onMounted(() => {
-                api.associationService.listMatchType().then(res => {
-                    matchTypes.value = res
-                    matchType.value = res[0]
-                })
-            })
-
-            const match = () => {
-                const selectNodes = graph().getSelectedCells().filter(cell => cell.isNode())
-
-                api.associationService.match({
-                    body: selectNodes.map(node => nodeIdToTableId(node.id)),
-                    matchType: matchType.value
-                }).then(res => {
-                    addAssociationEdges(graph(), res)
-                })
-            }
-
-            const removeAll = () => {
-                graph().removeCells(graph().getCells())
-            }
-
-            const removeAssociation = () => {
-                const selectEdges = graph().getSelectedCells().filter(cell => cell.isEdge())
-
-                if (selectEdges.length > 0) {
-                    graph().removeCells(selectEdges)
-                } else {
-                    graph().removeCells(graph().getEdges())
-                }
-            }
-
-            const selectAll = () => {
-                graph().resetSelection(graph().getCells())
-            }
-
-            const layoutDirection: Ref<"LR" | "TB" | "RL" | "BT"> = ref("LR")
-
-            const layout = () => {
-                layoutByLevels(graph(), layoutDirection.value)
-            }
-
-            /**
-             * 向图中添加 table node
-             * @param ids 要添加的 table id
-             * @param replace 替换已存在的 node
-             * @returns 新增，已存在的 id
-             */
-            const importTables = async (ids: readonly number[], replace: boolean = true) => {
-                const add = await api.tableService.list({ ids })
-                const existedIds = getExistedIds(ids)
-
-                if (replace) {
-                    removeTableNodes(graph(), existedIds)
-                }
-
-                graph().startBatch('add nodes')
-
-                addTableNodes(graph(), add)
-
-                const associations = await api.associationService.selectByTable({ tableIds: ids })
-
-                addAssociationEdges(graph(), associations)
-
-                graph().stopBatch('add nodes')
-
-                return { add, existedIds }
-            }
-
-            const importSchema = async (ids: readonly number[], select: boolean = false) => {
-                removeAll()
-                await importTables(ids, false)
-                layout()
-                fit()
-
-                if (select) graph().select(ids.map(id => tableIdToNodeId(id)))
-            }
-
-            const importTable = async (id: number, focus: boolean = true) => {
-                await importTables([id], false)
-                if (!focus) return
-                const cell = graph().getCellById(tableIdToNodeId(id))
-                if (cell.isNode()) {
-                    const node = cell as Node
-                    graph().cleanSelection()
-                    graph().centerCell(node)
-                    graph().select(node)
-                    node.toFront()
-                }
-            }
-
+            /** 保存关联 */
             const saveAssociations = async (inputs: GenAssociationMatchView[] = associations()) => {
                 const tableMap = new Map<number, GenTableColumnsView>
                 const columnMap = new Map<number, GenTableColumnsView_TargetOf_columns>
@@ -220,14 +163,118 @@ export const useTableEditorGraphStore =
                 return await api.associationService.save({ body: inputs.map(viewToInput) })
             }
 
-            const load = (graph: Graph) => {
-                _graph = graph
-                fit()
+            const matchTypes: Ref<ReadonlyArray<AssociationMatchType>> = ref([])
+
+            const matchType: Ref<AssociationMatchType> = ref('SIMPLE_PK')
+
+            onMounted(() => {
+                api.associationService.listMatchType().then(res => {
+                    matchTypes.value = res
+                    matchType.value = res[0]
+                })
+            })
+
+            /** 匹配关联 */
+            const match = async () => {
+                let nodes = graph().getSelectedCells().filter(cell => cell.isNode())
+
+                if (nodes.length == 0) {
+                    nodes = graph().getNodes()
+                }
+
+                const res = await api.associationService.match({
+                    body: nodes.map(node => nodeIdToTableId(node.id)),
+                    matchType: matchType.value
+                })
+
+                addAssociationEdges(graph(), res)
             }
 
-            const fit = () => {
-                graph().scaleContentToFit({ ...defaultZoomRange })
-                graph().centerContent()
+            /** 移除全部 */
+            const removeAll = () => {
+                graph().removeCells(graph().getCells())
+            }
+
+            /** 移除选中区域关联，如果没有选中则移除全部关联 */
+            const removeAssociation = () => {
+                const selectEdges = graph().getSelectedCells().filter(cell => cell.isEdge())
+
+                if (selectEdges.length > 0) {
+                    graph().removeCells(selectEdges)
+                } else {
+                    graph().removeCells(graph().getEdges())
+                }
+            }
+
+            /** 选中全部 */
+            const selectAll = () => {
+                graph().resetSelection(graph().getCells())
+            }
+
+            const layoutDirection: Ref<"LR" | "TB" | "RL" | "BT"> = ref("LR")
+
+            /** 布局 */
+            const layout = () => {
+                layoutByLevels(graph(), layoutDirection.value)
+            }
+
+            /**
+             * 向图中添加 table node
+             * @param tableIds 要添加的 table id
+             * @param replace 替换已存在的 node
+             * @returns 新增 table，已存在的 id
+             */
+            const importTables = async (tableIds: readonly number[], replace: boolean = true) => {
+                const add = await api.tableService.list({ ids: tableIds })
+                const existedIds = getExistedIds(tableIds)
+
+                if (replace) {
+                    removeTableNodes(graph(), existedIds)
+                }
+
+                graph().startBatch('add nodes')
+
+                addTableNodes(graph(), add)
+
+                const associations = await api.associationService.selectByTable({ tableIds })
+
+                addAssociationEdges(graph(), associations)
+
+                graph().stopBatch('add nodes')
+
+                return { add, existedIds }
+            }
+
+            /**
+             * 导入 schema (tableList)，不进行 replace
+             * 将清空当前画布
+             * @param tableIds table id
+             * @param select 结束后是否选中全部
+             */
+            const importSchema = async (tableIds: readonly number[], select: boolean = false) => {
+                removeAll()
+                await importTables(tableIds, false)
+                layout()
+                fit()
+                if (select) graph().select(tableIds.map(id => tableIdToNodeId(id)))
+            }
+
+            /**
+             * 导入 table，不进行 replace
+             * @param id tableId
+             * @param focus 结束后是否将目标表选中并居中
+             */
+            const importTable = async (id: number, focus: boolean = true) => {
+                await importTables([id], false)
+                if (!focus) return
+                const cell = graph().getCellById(tableIdToNodeId(id))
+                if (cell.isNode()) {
+                    const node = cell as Node
+                    graph().cleanSelection()
+                    graph().centerCell(node)
+                    graph().select(node)
+                    node.toFront()
+                }
             }
 
             return {
