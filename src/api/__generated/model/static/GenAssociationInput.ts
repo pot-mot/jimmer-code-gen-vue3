@@ -1,6 +1,6 @@
 import type { AssociationType } from '../enums';
 
-export interface GenAssociationCommonInput {
+export interface GenAssociationInput {
     
     associationType: AssociationType;
     

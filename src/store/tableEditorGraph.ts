@@ -42,7 +42,7 @@ export const useTableEditorGraphStore =
              * 使画布适应内容
              */
             const fit = () => {
-                graph().scaleContentToFit({ ...defaultZoomRange })
+                graph().scaleContentToFit({ ...defaultZoomRange, padding: 100 })
                 graph().centerContent()
             }
 
@@ -224,7 +224,7 @@ export const useTableEditorGraphStore =
              * @param replace 替换已存在的 node
              * @returns 新增 table，已存在的 id
              */
-            const importTables = async (tableIds: readonly number[], replace: boolean = true) => {
+            const importTables = async (tableIds: number[], replace: boolean = true) => {
                 const add = await api.tableService.list({ ids: tableIds })
                 const existedIds = getExistedIds(tableIds)
 
@@ -251,7 +251,7 @@ export const useTableEditorGraphStore =
              * @param tableIds table id
              * @param select 结束后是否选中全部
              */
-            const importSchema = async (tableIds: readonly number[], select: boolean = false) => {
+            const importSchema = async (tableIds: number[], select: boolean = false) => {
                 removeAll()
                 await importTables(tableIds, false)
                 layout()
@@ -264,16 +264,26 @@ export const useTableEditorGraphStore =
              * @param id tableId
              * @param focus 结束后是否将目标表选中并居中
              */
-            const importTable = async (id: number, focus: boolean = true) => {
+            const importTable = async (id: number, focus: boolean = true, padding: number = 200) => {
                 await importTables([id], false)
                 if (!focus) return
                 const cell = graph().getCellById(tableIdToNodeId(id))
                 if (cell.isNode()) {
                     const node = cell as Node
+                    node.toFront()
                     graph().cleanSelection()
                     graph().centerCell(node)
                     graph().select(node)
-                    node.toFront()
+
+                    const {width, height} = node.getSize()
+                    const {x, y} = node.getPosition()
+
+                    graph().zoomToRect({
+                        width: width + padding * 2,
+                        x: x - padding,
+                        y: y - padding,
+                        height: height + padding * 2
+                    })
                 }
             }
 

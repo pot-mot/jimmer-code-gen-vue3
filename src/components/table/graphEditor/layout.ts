@@ -317,9 +317,22 @@ const layoutBT = (options: Partial<LevelLayoutOptions>) => {
  * @param gapX 水平排布间距
  * @param gapY 垂直排布间距
  */
-export const layoutByLevels = (graph: Graph, direction: "LR" | "TB" | "RL" | "BT" = "LR", gapX: number = 200, gapY: number = 100) => {
-    const nodes = graph.isSelectionEmpty() ? toLayoutNodes(graph.getNodes()) : toLayoutNodes(graph.getSelectedCells().filter(cell => cell.isNode()) as Node[])
-    const edges = graph.isSelectionEmpty() ? toLayoutEdges(graph.getEdges()) : toLayoutEdges(graph.getSelectedCells().filter(cell => cell.isEdge()) as Edge[])
+export const layoutByLevels = (
+    graph: Graph, 
+    direction: "LR" | "TB" | "RL" | "BT" = "LR", 
+    gapX: number = 200, 
+    gapY: number = 100
+) => {
+    let nodes
+    let edges
+
+    if (graph.isSelectionEmpty() || graph.getSelectedCellCount() == 1) {
+        nodes = toLayoutNodes(graph.getNodes())
+        edges = toLayoutEdges(graph.getEdges())
+    } else {
+        nodes = toLayoutNodes(graph.getSelectedCells().filter(cell => cell.isNode()) as Node[])
+        edges = toLayoutEdges(graph.getSelectedCells().filter(cell => cell.isEdge()) as Edge[])
+    }
 
     setLevel(nodes, edges)
 

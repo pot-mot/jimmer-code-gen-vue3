@@ -12,7 +12,7 @@ export class SchemaService {
     }
     
     async list(options: SchemaServiceOptions['list']): Promise<
-        ReadonlyArray<GenSchemaView>
+        GenSchemaView[]
     > {
         let _uri = '/schema/';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -24,11 +24,11 @@ export class SchemaService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenSchemaView>
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenSchemaView[]
     }
 }
 
 export type SchemaServiceOptions = {
-    'delete': {readonly ids: ReadonlyArray<number>},
-    'list': {readonly dataSourceId: number}
+    'delete': {ids: number[]},
+    'list': {dataSourceId: number}
 }

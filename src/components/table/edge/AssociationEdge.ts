@@ -129,11 +129,6 @@ export const addAssociationEdges = (graph: Graph, associations: readonly GenAsso
 
     associations.map(associationToEdge).forEach(newEdge => {
         try {
-            console.log(newEdge.getSourceCellId(), newEdge.getTargetCellId(),
-                graph.getCellById(newEdge.getSourceCellId()),
-                graph.getCellById(newEdge.getTargetCellId())
-            );
-
             if (!nodeIsExist(graph, newEdge.getSourceCellId())) return
             if (!nodeIsExist(graph, newEdge.getTargetCellId())) return
 

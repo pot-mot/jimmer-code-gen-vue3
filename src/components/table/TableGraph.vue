@@ -7,6 +7,9 @@
 				<button @click="toggleMinimap">minimap</button>
 			</li>
 			<li>
+				<button @click="toggleOutline">outline</button>
+			</li>
+			<li>
 				<button @click="toggleLog">log</button>
 			</li>
 		</ul>
@@ -43,18 +46,14 @@
 			<li>
 				<button @click="store.match">匹配关联</button>
 				<select v-model="store.matchType">
-					<option v-for="type in store.matchTypes" :value="type">{{ type }}</option>
+					<option v-for="(type) in store.matchTypes" :value="type">{{ type }}</option>
 				</select>
 			</li>
 		</ul>
 		<div class="toolbar right-bottom">
-			<template v-if="minimapShow">
+			<template v-if="showMinimap">
 				<div class="minimap" ref="minimap"></div>
 			</template>
-
-			<DragResizeBox v-if="logShow">
-				<div></div>
-			</DragResizeBox>
 		</div>
 	</div>
 </template>
@@ -129,8 +128,6 @@ import { useSwitchAssociationType } from "./edge/AssociationEdge.ts";
 import { clearGraph, loadGraph } from "./graphEditor/localStorage.ts";
 import { useTableEditorGraphStore } from "../../store/tableEditorGraph.ts";
 import { useMiniMap } from "./graphEditor/miniMap.ts";
-import DragResizeBox from '../common/DragResizeBox.vue'
-
 
 const container = ref<HTMLDivElement | null>(null);
 const wrapper = ref<HTMLDivElement | null>(null);
@@ -158,10 +155,10 @@ const init = () => {
 	useHoverToFront(graph)
 	useEdgeColor(graph)
 	useSwitchAssociationType(graph)
-
+	useKeyEvent()
 }
 
-const addEventListener = () => {
+const useKeyEvent = () => {
 	document.documentElement.addEventListener('keydown', (e: KeyboardEvent) => {
 		if (e.ctrlKey || e.metaKey) {
 			if (e.key == 'z') {
@@ -195,6 +192,7 @@ const load = () => {
 	try {
 		loadGraph(graph)
 		store.load(graph)
+
 		window.addEventListener('beforeunload', () => {
 			store.save()
 		})
@@ -203,17 +201,23 @@ const load = () => {
 	}
 }
 
-const logShow = ref(false)
+const showLog = ref(false)
 
 const toggleLog = () => {
-	logShow.value = !logShow.value
+	showLog.value = !showLog.value
 }
 
-const minimapShow = ref(false)
+const showOutline = ref(false)
+
+const toggleOutline = () => {
+	showOutline.value = !showOutline.value
+}
+
+const showMinimap = ref(false)
 
 const toggleMinimap = () => {
-	minimapShow.value = !minimapShow.value
-	if (minimapShow.value) {
+	showMinimap.value = !showMinimap.value
+	if (showMinimap.value) {
 		nextTick(() => {
 			if (minimap.value) {
 				useMiniMap(graph, minimap.value)
@@ -225,11 +229,9 @@ const toggleMinimap = () => {
 onMounted(() => {
 	init()
 
-	addEventListener()
-
 	load()
 
-	if (minimapShow.value) {
+	if (showMinimap.value) {
 		nextTick(() => {
 			if (minimap.value) {
 				useMiniMap(graph, minimap.value)

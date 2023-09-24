@@ -124,7 +124,7 @@ export class EntityService {
     }
     
     async mapping(options: EntityServiceOptions['mapping']): Promise<
-        ReadonlyArray<number>
+        number[]
     > {
         let _uri = '/entity/mapping';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -136,11 +136,11 @@ export class EntityService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'POST'})) as ReadonlyArray<number>
+        return (await this.executor({uri: _uri, method: 'POST'})) as number[]
     }
     
     async query(options: EntityServiceOptions['query']): Promise<
-        ReadonlyArray<GenEntityPropertiesView>
+        GenEntityPropertiesView[]
     > {
         let _uri = '/entity/query';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -166,13 +166,13 @@ export class EntityService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'POST'})) as ReadonlyArray<GenEntityPropertiesView>
+        return (await this.executor({uri: _uri, method: 'POST'})) as GenEntityPropertiesView[]
     }
 }
 
 export type EntityServiceOptions = {
-    'config': {readonly entity: GenEntityConfigInput},
-    'delete': {readonly ids: ReadonlyArray<number>},
-    'mapping': {readonly tableIds: ReadonlyArray<number>},
-    'query': {readonly query: EntityQuery}
+    'config': {entity: GenEntityConfigInput},
+    'delete': {ids: number[]},
+    'mapping': {tableIds: number[]},
+    'query': {query: EntityQuery}
 }

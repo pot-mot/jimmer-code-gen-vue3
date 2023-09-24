@@ -1,43 +1,34 @@
 <script lang="ts" setup>
 import {onMounted, ref} from "vue";
 import {api} from "../../../api";
-import {GenDataSourceInput, GenDataSourceView} from "../../../api/__generated/model/static";
+import {GenDataSourceView} from "../../../api/__generated/model/static";
 import DataSourceItem from "./DataSourceItem.vue";
-import {DataSourceType} from "../../../api/__generated/model/enums";
+import DataSourceDialog from "./DataSourceDialog.vue";
 
-const dataSourceTypes = ref<ReadonlyArray<DataSourceType>>([])
-const dataSources = ref<readonly GenDataSourceView[]>([])
+const dataSources = ref<GenDataSourceView[]>([])
 
 onMounted(() => {
-	api.dataSourceService.listTypes().then(res => {
-		dataSourceTypes.value = res
-	})
 	api.dataSourceService.list().then(res => {
 		dataSources.value = res
 	})
 })
 
-const saveDataSource = () => {
-	api.dataSourceService.save({
-		body: <GenDataSourceInput>{
-			name: "localhost",
-			host: "localhost",
-			port: "3307",
-			username: "root",
-			password: "root",
-			type: "MYSQL",
-			orderKey: 0,
-			remark: "",
-		}
-	}).then(res => {
-		console.log(res)
-	})
+const isSave = ref(false)
+
+const handleSave = () => {
+	isSave.value = true
+}
+
+const handleSaveFinish = (dataSouce: GenDataSourceView) => {
+	isSave.value = false
+	console.log(dataSouce);
 }
 </script>
 
 <template>
+	<DataSourceDialog v-if="isSave" :data-source="{}" @save="handleSaveFinish" @close="isSave = false"></DataSourceDialog>
 	<div class="wrapper" style="font-size: 12px;">
-		<button @click="saveDataSource()">新增</button>
+		<button @click="handleSave()">新增</button>
 		<template v-for="dataSource in dataSources">
 			<DataSourceItem :data-source="dataSource"/>
 		</template>

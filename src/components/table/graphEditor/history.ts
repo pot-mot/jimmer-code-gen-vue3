@@ -15,9 +15,6 @@ export const useHistory = (graph: Graph) => {
                         return false
                     }
                 }
-                // debugger
-                // console.log(event, args)
-                // console.log((graph.getPlugin('history') as any).undoStack)
 
                 return true
             }

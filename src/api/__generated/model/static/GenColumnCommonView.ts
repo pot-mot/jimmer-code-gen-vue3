@@ -28,6 +28,8 @@ export interface GenColumnCommonView {
     
     remark: string;
     
+    tableId?: number;
+    
     type: string;
     
     typeCode: number;

@@ -63,7 +63,7 @@ export interface GenEntityPropertiesView_TargetOf_properties {
     
     enumId: number;
     
-    id: boolean;
+    id: number;
     
     idGenerationType: string;
     

@@ -14,50 +14,72 @@ export class DataSourceService {
         return (await this.executor({uri: _uri, method: 'DELETE'})) as number
     }
     
+    async edit(options: DataSourceServiceOptions['edit']): Promise<number> {
+        let _uri = '/dataSource/';
+        _uri += encodeURIComponent(options.id);
+        return (await this.executor({uri: _uri, method: 'PUT', body: options.body})) as number
+    }
+    
+    async get(options: DataSourceServiceOptions['get']): Promise<
+        GenDataSourceView[]
+    > {
+        let _uri = '/dataSource/';
+        _uri += encodeURIComponent(options.id);
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenDataSourceView[]
+    }
+    
     async importSchema(options: DataSourceServiceOptions['importSchema']): Promise<
-        ReadonlyArray<Dynamic<GenSchema>>
+        Dynamic<GenSchema>[]
     > {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.dataSourceId);
         _uri += '/schema/';
         _uri += encodeURIComponent(options.name);
-        return (await this.executor({uri: _uri, method: 'POST'})) as ReadonlyArray<Dynamic<GenSchema>>
+        return (await this.executor({uri: _uri, method: 'POST'})) as Dynamic<GenSchema>[]
     }
     
-    async list(): Promise<
-        ReadonlyArray<GenDataSourceView>
-    > {
-        let _uri = '/dataSource/';
-        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenDataSourceView>
-    }
-    
-    async listTypes(): Promise<
-        ReadonlyArray<DataSourceType>
-    > {
-        let _uri = '/dataSource/types';
-        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<DataSourceType>
-    }
-    
-    async save(options: DataSourceServiceOptions['save']): Promise<number> {
+    async insert(options: DataSourceServiceOptions['insert']): Promise<number> {
         let _uri = '/dataSource/';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number
     }
     
+    async list(): Promise<
+        GenDataSourceView[]
+    > {
+        let _uri = '/dataSource/';
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenDataSourceView[]
+    }
+    
+    async listTypes(): Promise<
+        DataSourceType[]
+    > {
+        let _uri = '/dataSource/types';
+        return (await this.executor({uri: _uri, method: 'GET'})) as DataSourceType[]
+    }
+    
+    async test(options: DataSourceServiceOptions['test']): Promise<boolean> {
+        let _uri = '/dataSource/test';
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as boolean
+    }
+    
     async viewSchemas(options: DataSourceServiceOptions['viewSchemas']): Promise<
-        ReadonlyArray<GenSchemaDto['DEFAULT']>
+        GenSchemaDto['DEFAULT'][]
     > {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.dataSourceId);
         _uri += '/schema';
-        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenSchemaDto['DEFAULT']>
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenSchemaDto['DEFAULT'][]
     }
 }
 
 export type DataSourceServiceOptions = {
-    'delete': {readonly ids: ReadonlyArray<number>},
-    'importSchema': {readonly dataSourceId: number, readonly name: string},
+    'delete': {ids: number[]},
+    'edit': {id: number, body: GenDataSourceInput},
+    'get': {id: number},
+    'importSchema': {dataSourceId: number, name: string},
+    'insert': {body: GenDataSourceInput},
     'list': {},
     'listTypes': {},
-    'save': {readonly body: GenDataSourceInput},
-    'viewSchemas': {readonly dataSourceId: number}
+    'test': {body: GenDataSourceInput},
+    'viewSchemas': {dataSourceId: number}
 }

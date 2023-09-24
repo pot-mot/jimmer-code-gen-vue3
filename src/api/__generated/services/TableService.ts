@@ -12,15 +12,15 @@ export class TableService {
     }
     
     async list(options: TableServiceOptions['list']): Promise<
-        ReadonlyArray<GenTableColumnsView>
+        GenTableColumnsView[]
     > {
         let _uri = '/table/';
         _uri += encodeURIComponent(options.ids.join(','));
-        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenTableColumnsView>
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenTableColumnsView[]
     }
     
     async query(options: TableServiceOptions['query']): Promise<
-        ReadonlyArray<GenTableCommonView>
+        GenTableCommonView[]
     > {
         let _uri = '/table/query';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -60,12 +60,12 @@ export class TableService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenTableCommonView>
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenTableCommonView[]
     }
 }
 
 export type TableServiceOptions = {
-    'delete': {readonly ids: ReadonlyArray<number>},
-    'list': {readonly ids: ReadonlyArray<number>},
-    'query': {readonly query: TableQuery}
+    'delete': {ids: number[]},
+    'list': {ids: number[]},
+    'query': {query: TableQuery}
 }

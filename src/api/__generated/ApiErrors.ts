@@ -11,6 +11,13 @@ export type ApiErrors = {
     "columnService": {
     },
     "dataSourceService": {
+        "edit": AllErrors & (
+            {
+                readonly family: 'DATA_SOURCE_ERROR_CODE',
+                readonly code: 'CONNECT_FAIL',
+                readonly [key:string]: any
+            }
+        ),
         "importSchema": AllErrors & (
             {
                 readonly family: 'DATA_SOURCE_ERROR_CODE',
@@ -18,7 +25,7 @@ export type ApiErrors = {
                 readonly [key:string]: any
             }
         ),
-        "save": AllErrors & (
+        "insert": AllErrors & (
             {
                 readonly family: 'DATA_SOURCE_ERROR_CODE',
                 readonly code: 'CONNECT_FAIL',

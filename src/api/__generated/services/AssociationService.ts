@@ -1,6 +1,6 @@
 import type { Executor } from '../';
 import type { AssociationMatchType, SelectType } from '../model/enums';
-import type { AssociationQuery, GenAssociationCommonInput, GenAssociationCommonView, GenAssociationMatchView } from '../model/static';
+import type { AssociationQuery, GenAssociationCommonView, GenAssociationInput, GenAssociationMatchView } from '../model/static';
 
 export class AssociationService {
     
@@ -43,14 +43,14 @@ export class AssociationService {
     }
     
     async listMatchType(): Promise<
-        ReadonlyArray<AssociationMatchType>
+        AssociationMatchType[]
     > {
         let _uri = '/association/matchType';
-        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<AssociationMatchType>
+        return (await this.executor({uri: _uri, method: 'GET'})) as AssociationMatchType[]
     }
     
     async match(options: AssociationServiceOptions['match']): Promise<
-        ReadonlyArray<GenAssociationMatchView>
+        GenAssociationMatchView[]
     > {
         let _uri = '/association/match';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -62,11 +62,11 @@ export class AssociationService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as ReadonlyArray<GenAssociationMatchView>
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as GenAssociationMatchView[]
     }
     
     async query(options: AssociationServiceOptions['query']): Promise<
-        ReadonlyArray<GenAssociationCommonView>
+        GenAssociationCommonView[]
     > {
         let _uri = '/association/query';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -113,18 +113,18 @@ export class AssociationService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenAssociationCommonView>
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenAssociationCommonView[]
     }
     
     async save(options: AssociationServiceOptions['save']): Promise<
-        ReadonlyArray<number>
+        number[]
     > {
         let _uri = '/association/save';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as ReadonlyArray<number>
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number[]
     }
     
     async selectByColumn(options: AssociationServiceOptions['selectByColumn']): Promise<
-        ReadonlyArray<GenAssociationMatchView>
+        GenAssociationMatchView[]
     > {
         let _uri = '/association/select/column/';
         _uri += encodeURIComponent(options.columnIds.join(','));
@@ -137,11 +137,11 @@ export class AssociationService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenAssociationMatchView>
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenAssociationMatchView[]
     }
     
     async selectByTable(options: AssociationServiceOptions['selectByTable']): Promise<
-        ReadonlyArray<GenAssociationMatchView>
+        GenAssociationMatchView[]
     > {
         let _uri = '/association/select/table/';
         _uri += encodeURIComponent(options.tableIds.join(','));
@@ -154,18 +154,18 @@ export class AssociationService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as ReadonlyArray<GenAssociationMatchView>
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenAssociationMatchView[]
     }
 }
 
 export type AssociationServiceOptions = {
-    'delete': {readonly ids: ReadonlyArray<number>},
-    'deleteByColumn': {readonly columnIds: ReadonlyArray<number>, readonly selectType?: SelectType},
-    'deleteByTable': {readonly tableIds: ReadonlyArray<number>, readonly selectType?: SelectType},
+    'delete': {ids: number[]},
+    'deleteByColumn': {columnIds: number[], selectType?: SelectType},
+    'deleteByTable': {tableIds: number[], selectType?: SelectType},
     'listMatchType': {},
-    'match': {readonly body: ReadonlyArray<number>, readonly matchType?: AssociationMatchType},
-    'query': {readonly query: AssociationQuery},
-    'save': {readonly body: ReadonlyArray<GenAssociationCommonInput>},
-    'selectByColumn': {readonly columnIds: ReadonlyArray<number>, readonly selectType?: SelectType},
-    'selectByTable': {readonly tableIds: ReadonlyArray<number>, readonly selectType?: SelectType}
+    'match': {body: number[], matchType?: AssociationMatchType},
+    'query': {query: AssociationQuery},
+    'save': {body: GenAssociationInput[]},
+    'selectByColumn': {columnIds: number[], selectType?: SelectType},
+    'selectByTable': {tableIds: number[], selectType?: SelectType}
 }

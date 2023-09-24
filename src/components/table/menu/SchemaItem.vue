@@ -16,7 +16,7 @@ interface SchemaItemEmits {
 
 const emits = defineEmits<SchemaItemEmits>()
 
-const tables = ref<readonly GenTableCommonView[]>([])
+const tables = ref<GenTableCommonView[]>([])
 
 const getTables = (schemaId: number = props.schema.id) => {
 	api.tableService.query({ query: { schemaIds: [schemaId] } }).then(res => {
