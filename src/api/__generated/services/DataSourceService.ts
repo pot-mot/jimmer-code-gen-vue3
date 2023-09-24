@@ -1,6 +1,5 @@
-import type { Dynamic, Executor } from '../';
+import type { Executor } from '../';
 import type { GenSchemaDto } from '../model/dto';
-import type { GenSchema } from '../model/entities';
 import type { DataSourceType } from '../model/enums';
 import type { GenDataSourceInput, GenDataSourceView } from '../model/static';
 
@@ -28,14 +27,12 @@ export class DataSourceService {
         return (await this.executor({uri: _uri, method: 'GET'})) as GenDataSourceView[]
     }
     
-    async importSchema(options: DataSourceServiceOptions['importSchema']): Promise<
-        Dynamic<GenSchema>[]
-    > {
+    async importSchema(options: DataSourceServiceOptions['importSchema']): Promise<number> {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.dataSourceId);
         _uri += '/schema/';
         _uri += encodeURIComponent(options.name);
-        return (await this.executor({uri: _uri, method: 'POST'})) as Dynamic<GenSchema>[]
+        return (await this.executor({uri: _uri, method: 'POST'})) as number
     }
     
     async insert(options: DataSourceServiceOptions['insert']): Promise<number> {

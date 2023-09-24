@@ -3,7 +3,7 @@ import { onMounted, ref, watch } from 'vue';
 import { api } from "../../../api";
 import { GenDataSourceInput, GenDataSourceView } from "../../../api/__generated/model/static";
 import { DataSourceType } from "../../../api/__generated/model/enums";
-import DragResizeBox from "../../common/DragResizeBox.vue";
+import DragDialog from "../../common/DragDialog.vue";
 
 const dataSourceTypes = ref<DataSourceType[]>([])
 
@@ -15,7 +15,9 @@ onMounted(() => {
 
 interface DataSourceDialogProps {
     id?: number,
-    dataSource: Partial<GenDataSourceInput>
+    dataSource: Partial<GenDataSourceInput>,
+    x?: number
+    y?: number
 }
 
 const props = defineProps<DataSourceDialogProps>()
@@ -27,7 +29,7 @@ interface SchemaItemEmits {
 }
 
 const defaultDataSource: GenDataSourceInput = {
-    name: "dataSource",
+    name: "DataSource",
     host: "127.0.0.1",
     port: "3306",
     orderKey: 0,
@@ -65,7 +67,7 @@ const submit = () => {
             id: props.id,
             body: dataSource.value
         }).then(count => {
-            if (count >= 1) {
+            if (count > 0) {
                 emits("edit")
             }
         })
@@ -88,43 +90,40 @@ const close = () => {
 </script>
 
 <template>
-    <Teleport to="body">
-        <DragResizeBox :x="300" :y="100">
-            <button style="position: absolute; top: 0; right: 0;" @click="close">x</button>
-            <table>
-                <tr>
-                    <td><label>name</label></td>
-                    <td><input v-model="dataSource.name"></td>
-                </tr>
-                <tr>
-                    <td><label>host</label></td>
-                    <td><input v-model="dataSource.host"></td>
-                </tr>
-                <tr>
-                    <td><label>port</label></td>
-                    <td><input v-model="dataSource.port"></td>
-                </tr>
-                <tr>
-                    <td><label>username</label></td>
-                    <td><input v-model="dataSource.username"></td>
-                </tr>
-                <tr>
-                    <td><label>password</label></td>
-                    <td><input v-model="dataSource.password"></td>
-                </tr>
-                <tr>
-                    <td><label>type</label></td>
-                    <select v-model="dataSource.type">
-                        <option v-for="(type) in dataSourceTypes" :value="type">{{ type }}</option>
-                    </select>
-                </tr>
-                <tr>
-                    <td><label>remark</label></td>
-                    <td><input v-model="dataSource.remark"></td>
-                </tr>
-            </table>
-            <button @click="test">测试</button>
-            <button @click="submit">提交</button>
-        </DragResizeBox>
-    </Teleport>
+    <DragDialog :x="props.x" :y="props.y" @close="close">
+        <table style="width: 100%;">
+            <tr>
+                <td><label>name</label></td>
+                <td><input v-model="dataSource.name"></td>
+            </tr>
+            <tr>
+                <td><label>host</label></td>
+                <td><input v-model="dataSource.host"></td>
+            </tr>
+            <tr>
+                <td><label>port</label></td>
+                <td><input v-model="dataSource.port"></td>
+            </tr>
+            <tr>
+                <td><label>username</label></td>
+                <td><input v-model="dataSource.username"></td>
+            </tr>
+            <tr>
+                <td><label>password</label></td>
+                <td><input type="password" v-model="dataSource.password"></td>
+            </tr>
+            <tr>
+                <td><label>type</label></td>
+                <select v-model="dataSource.type">
+                    <option v-for="(type) in dataSourceTypes" :value="type">{{ type }}</option>
+                </select>
+            </tr>
+            <tr>
+                <td><label>remark</label></td>
+                <td><textarea v-model="dataSource.remark"></textarea></td>
+            </tr>
+        </table>
+        <button @click="test">测试</button>
+        <button @click="submit">提交</button>
+    </DragDialog>
 </template>

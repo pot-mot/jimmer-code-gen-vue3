@@ -12,7 +12,9 @@ export const api = new Api(async ({uri, method, body}) => {
         }
     });
     if (response.status !== 200) {
-        throw await response.json();
+        const result = await response.json()
+        alert(JSON.stringify(result))
+        throw result
     }
     const text = await response.text();
     if (text.length === 0) {

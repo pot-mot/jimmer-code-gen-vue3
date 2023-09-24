@@ -22,10 +22,17 @@ const emits = defineEmits<SchemaItemEmits>()
 
 const allSchemas = ref<GenSchemaDto['DEFAULT'][]>([])
 
+const showAllSchemas = ref(false)
+
 const viewSchemas = (dataSourceId: number) => {
-	api.dataSourceService.viewSchemas({ dataSourceId }).then(res => {
-		allSchemas.value = res
-	})
+	if (!showAllSchemas.value) {
+		api.dataSourceService.viewSchemas({ dataSourceId }).then(res => {
+			allSchemas.value = res
+		})
+	} else {
+		allSchemas.value = []
+	}
+	showAllSchemas.value = !showAllSchemas.value
 }
 
 const schemas = ref<GenSchemaView[]>([])
@@ -53,17 +60,20 @@ const importSchema = (name: string, dataSourceId: number = props.dataSource.id) 
 		dataSourceId,
 		name
 	}).then(res => {
-		schemas.value = [
-			...schemas.value,
-			...res.map(it => <GenSchemaView>it),
-		]
+		if (res > 0) {
+			getSchemas()
+		}
 	})
 }
 
 const isEdit = ref(false)
+const x = ref(0)
+const y = ref(0)
 
-const handleEdit = () => {
+const handleEdit = (e: MouseEvent) => {
 	isEdit.value = true
+	x.value = e.clientX
+	y.value = e.clientY
 }
 
 const handleEditFinish = () => {
@@ -73,34 +83,29 @@ const handleEditFinish = () => {
 
 const handleSchemaDelete = (id: number) => {
 	alert(`删除 schema ${id} 成功`)
-	console.log("change");
-	
 	getSchemas()
 }
 </script>
 
 <template>
-	<DataSourceDialog v-if="isEdit" :data-source="dataSource" :id="dataSource.id" @edit="handleEditFinish"
-		@close="isEdit = false"></DataSourceDialog>
 	<details open>
 		<summary>
 			<span>{{ dataSource.name }}</span>
-			<button @click="viewSchemas(dataSource.id)">查看全部</button>
+			<button @click="viewSchemas(dataSource.id)">全部 schema</button>
 			<button @click="handleEdit">编辑</button>
 			<button @click="deleteDataSource()">删除</button>
 		</summary>
-		<div v-if="allSchemas.length > 0" style="padding-left: 3em">
-			<details open>
-				<div v-for="schema in allSchemas">
-					<span>{{ schema.name }}</span>
-					<button @click="importSchema(schema.name)">导入</button>
-				</div>
-			</details>
+		<div v-show="showAllSchemas" style="padding-left: 3em">
+			<div v-for="schema in allSchemas">
+				<span @click="importSchema(schema.name)">{{ schema.name }}</span>
+			</div>
 		</div>
 		<template v-for="schema in schemas">
 			<SchemaItem :schema="schema" @delete="handleSchemaDelete" />
 		</template>
 	</details>
+	<DataSourceDialog v-if="isEdit" :data-source="dataSource" :id="dataSource.id" @edit="handleEditFinish" :x="x" :y="y"
+		@close="isEdit = false"></DataSourceDialog>
 </template>
 
 <style scoped></style>

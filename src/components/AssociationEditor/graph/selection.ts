@@ -10,4 +10,8 @@ export const useSelection = (graph: Graph) => {
             rubberEdge: true,
         })
     )
+
+    graph.on("cell:selected", ({cell}) => {
+        cell.toFront()
+    })
 };

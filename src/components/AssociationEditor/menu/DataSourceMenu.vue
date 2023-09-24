@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import {onMounted, ref} from "vue";
-import {api} from "../../../api";
-import {GenDataSourceView} from "../../../api/__generated/model/static";
+import { onMounted, ref } from "vue";
+import { api } from "../../../api";
+import { GenDataSourceView } from "../../../api/__generated/model/static";
 import DataSourceItem from "./DataSourceItem.vue";
 import DataSourceDialog from "./DataSourceDialog.vue";
 
@@ -18,9 +18,13 @@ onMounted(() => {
 })
 
 const isSave = ref(false)
+const x = ref(0)
+const y = ref(0)
 
-const handleSave = () => {
+const handleSave = (e: MouseEvent) => {
 	isSave.value = true
+	x.value = e.clientX
+	y.value = e.clientY
 }
 
 const handleSaveFinish = (dataSouce: GenDataSourceView) => {
@@ -39,13 +43,14 @@ const handleDelete = (id: number) => {
 </script>
 
 <template>
-	<DataSourceDialog v-if="isSave" :data-source="{}" @save="handleSaveFinish" @close="isSave = false"></DataSourceDialog>
 	<div class="wrapper" style="font-size: 12px;">
-		<button @click="handleSave()">新增</button>
+		<button @click="handleSave">新增</button>
 		<template v-for="dataSource in dataSources">
-			<DataSourceItem :data-source="dataSource" @change="handleChange" @delete="handleDelete"/>
+			<DataSourceItem :data-source="dataSource" @change="handleChange" @delete="handleDelete" />
 		</template>
 	</div>
+	<DataSourceDialog v-if="isSave" :data-source="{}" @save="handleSaveFinish" @close="isSave = false" :x="x" :y="y">
+	</DataSourceDialog>
 </template>
 
 <style scoped>

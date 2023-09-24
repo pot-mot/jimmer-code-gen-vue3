@@ -12,7 +12,7 @@
 		</ul>
 		<ul class="toolbar right-top">
 			<li>
-				<button @click="store.fit">适应画布</button>
+				<button @click="store.fit">缩放居中</button>
 			</li>
 			<li>
 				<button @click="store.removeAll">清除所有</button>
@@ -52,6 +52,23 @@
 				<div class="minimap" ref="minimap"></div>
 			</template>
 		</div>
+		<DragDialog v-if="showSearch" @close="showSearch = false">
+			<div style="padding-left: 10px; font-size: 0.8em;">
+				<input autofocus v-model="store.keyword" @change="store.searchNodes()">
+				<div v-if="store.searchResult.length == 0">
+					暂无数据
+				</div>
+				<div style="max-height: 60vh; overflow: auto;">
+					<table>
+						<tr v-for="node in store.searchResult" @click="store.focusNode(node)">
+							<td :class="node.data.table.type"></td>
+							<td>{{ node.data.table.name }}</td>
+							<td>{{ node.data.table.name }}</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</DragDialog>
 	</div>
 </template>
 
@@ -125,6 +142,7 @@ import { useSwitchAssociationType } from "./edge/AssociationEdge.ts";
 import { clearGraph, loadGraph } from "./graph/localStorage.ts";
 import { useTableEditorGraphStore } from "../../store/tableEditorGraph.ts";
 import { useMiniMap } from "./graph/miniMap.ts";
+import DragDialog from "../common/DragDialog.vue";
 
 const container = ref<HTMLDivElement | null>(null);
 const wrapper = ref<HTMLDivElement | null>(null);
@@ -155,6 +173,8 @@ const init = () => {
 	useKeyEvent()
 }
 
+const showSearch = ref(false)
+
 const useKeyEvent = () => {
 	document.documentElement.addEventListener('keydown', (e: KeyboardEvent) => {
 		if (e.ctrlKey || e.metaKey) {
@@ -170,6 +190,10 @@ const useKeyEvent = () => {
 			} else if (e.key == 'a') {
 				e.preventDefault()
 				store.selectAll()
+			} else if (e.key == 'f') {
+				e.preventDefault()
+				store.searchResult = []
+				showSearch.value = true
 			}
 		}
 	})

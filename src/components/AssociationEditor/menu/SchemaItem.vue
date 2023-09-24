@@ -4,6 +4,8 @@ import { GenSchemaView, GenTableCommonView } from "../../../api/__generated/mode
 import { api } from "../../../api";
 import { useTableEditorGraphStore } from "../../../store/tableEditorGraph";
 
+const store = useTableEditorGraphStore()
+
 interface SchemaItemProps {
 	schema: GenSchemaView
 }
@@ -28,15 +30,27 @@ watch(() => props.schema, () => {
 	getTables()
 }, { immediate: true })
 
-const deleteSchema = (schemaId: number = props.schema.id) => {
-	api.schemaService.delete({ ids: [schemaId] }).then(res => {
-		if (res >= 1) {
-			emits("delete", schemaId)
+const deleteSchema = () => {
+	api.schemaService.delete({ ids: [props.schema.id] }).then(res => {
+		if (res > 0) {
+			emits("delete", props.schema.id)
 		}
 	})
 }
 
-const store = useTableEditorGraphStore()
+const keywords = ref("")
+
+const query = () => {
+	api.tableService.query({
+		query: {
+			keywords: keywords.value.split(" "),
+			schemaIds: [props.schema.id]
+		}
+	}).then(res => {
+		tables.value = res
+	})
+}
+
 </script>
 
 <template>
@@ -44,9 +58,12 @@ const store = useTableEditorGraphStore()
 		<details>
 			<summary>
 				<span @click.prevent="store.importSchema([...tables.map(table => table.id)])">{{ schema.name }}</span>
-				<button @click.prevent="deleteSchema()">删除</button>
+				<button @click.prevent="deleteSchema">删除</button>
 			</summary>
 			<table style="padding-left: 2em;" class="tableList">
+				<tr>
+					<input v-model="keywords" @change="query">
+				</tr>
 				<tr v-for="table in tables" :class="table.type" @click.prevent="store.importTable(table.id)">
 					<td>{{ table.name }}</td>
 					<td>{{ table.comment }}</td>
@@ -58,6 +75,12 @@ const store = useTableEditorGraphStore()
 
 <style scoped lang="scss">
 .tableList {
+	cursor: default;
+
+	tr:hover {
+		font-weight: 600;
+	}
+
 	td {
 		min-width: 3em;
 		max-width: 10em;

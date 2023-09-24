@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import DragResize from 'vue3-draggable-resizable'
 import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
-import {ref} from 'vue'
+import { ref } from 'vue'
 
 interface DragResizeProps {
 	x?: number
@@ -12,32 +12,17 @@ interface DragResizeProps {
 	minH?: number
 }
 
-withDefaults(
-	defineProps<DragResizeProps>(),
-	{
-		x: 0,
-		y: 0,
-		initH: 350,
-		initW: 450,
-		minH: 150,
-		minW: 200
-	}
-)
+defineProps<DragResizeProps>()
 
 const draggable = ref(true)
 </script>
 
 <template>
-	<DragResize 
-		:parent="true" :draggable="draggable" 
-		style="border: none;"
-		:x="x" :y="y"
-		:initH="initH" :initW="initW" 
-		:minH="minH" :minW="minW" 
-		>
+	<DragResize :parent="true" :draggable="draggable" :resizable="true" style="border: none;" :x="x" :y="y"
+		:initH="initH" :initW="initW" :minH="minH" :minW="minW">
 		<div class="wrapper">
-			<div @mouseenter="draggable = false" @mouseleave="draggable = true" 
-			style="cursor: default; position: relative; overflow: auto;">
+			<div @mouseenter="draggable = false" @mouseleave="draggable = true"
+				style="cursor: default; overflow: auto; padding: 10px; scrollbar-gutter: stable;">
 				<slot></slot>
 			</div>
 		</div>
@@ -53,9 +38,11 @@ const draggable = ref(true)
 	border: 1px solid rgba(0, 0, 0, .5);
 	cursor: all-scroll;
 	background-color: #fff;
+	position: relative;
+	overflow: hidden;
 }
 
-.dragging > .wrapper {
+.dragging>.wrapper {
 	border-color: #000;
 }
 

@@ -12,7 +12,7 @@ import { GenTableColumnsView_TargetOf_columns } from "../api/__generated/model/s
 import { layoutByLevels } from "../components/AssociationEditor/graph/layout.ts";
 import { saveGraph } from "../components/AssociationEditor/graph/localStorage.ts";
 import { defaultZoomRange } from "../components/AssociationEditor/graph/scale.ts";
-import { Ref, ref, onMounted } from 'vue';
+import { Ref, ref, onMounted, nextTick } from 'vue';
 
 export const useTableEditorGraphStore =
     defineStore(
@@ -26,7 +26,7 @@ export const useTableEditorGraphStore =
              */
             const load = (graph: Graph) => {
                 _graph = graph
-                fit()
+                fitAndLayout()
             }
 
             /**
@@ -67,7 +67,7 @@ export const useTableEditorGraphStore =
              * @param tableIds 
              * @returns 过滤结果
              */
-            const getExistedIds = (tableIds : readonly number[]): number[] => {
+            const getExistedIds = (tableIds: readonly number[]): number[] => {
                 const idSet = new Set(tableIds);
                 return tables()
                     .filter(table => idSet.has(table.id))
@@ -159,9 +159,6 @@ export const useTableEditorGraphStore =
                 }
 
                 await api.associationService.deleteByTable({ tableIds: [...tableMap.keys()] })
-                
-                console.log(inputs);
-
                 await api.associationService.save({ body: inputs.map(viewToInput) })
             }
 
@@ -256,8 +253,7 @@ export const useTableEditorGraphStore =
             const importSchema = async (tableIds: number[], select: boolean = false) => {
                 removeAll()
                 await importTables(tableIds, false)
-                layout()
-                fit()
+                fitAndLayout()
                 if (select) graph().select(tableIds.map(id => tableIdToNodeId(id)))
             }
 
@@ -266,31 +262,84 @@ export const useTableEditorGraphStore =
              * @param id tableId
              * @param focus 结束后是否将目标表选中并居中
              */
-            const importTable = async (id: number, focus: boolean = true, padding: number = 200) => {
+            const importTable = async (id: number, focus: boolean = true, padding: number = 300) => {
                 await importTables([id], false)
                 if (!focus) return
                 const cell = graph().getCellById(tableIdToNodeId(id))
                 if (cell.isNode()) {
                     const node = cell as Node
-                    node.toFront()
-                    graph().cleanSelection()
-                    graph().centerCell(node)
-                    graph().select(node)
+                    focusNode(node, padding)
+                }
+            }
 
-                    const {width, height} = node.getSize()
-                    const {x, y} = node.getPosition()
+            const keyword = ref("")
 
+            const searchResult: Ref<Node[]> = ref([])
+
+            /**
+             * 根据关键词进行节点查找
+             * @param keywords 关键词
+             * @returns 节点列表
+             */
+            const searchNodes = (keywords: string[] = keyword.value.split(" ")): Node[] => {
+                if (keywords.length == 0) {
+                    searchResult.value = []
+                    return []
+                }
+
+                searchResult.value = graph().getNodes().filter(node => {
+                    if (node.data && node.data.table) {
+                        const table: GenTableColumnsView = node.data.table
+                        for (const keyword of keywords) {
+                            if (table.name.includes(keyword) || table.comment.includes(keyword)) {
+                                return true
+                            }
+                        }
+                    }
+                })
+                return searchResult.value
+            }
+
+            /**
+             * 聚焦于某个节点，进行缩放
+             * @param node 目标节点
+             * @param padding 缩放内边距
+             */
+            const focusNode = (node: Node, padding: number = 300) => {
+                node.toFront()
+                graph().cleanSelection()
+                graph().centerCell(node)
+                graph().select(node)
+
+                const { width, height } = node.getSize()
+                const { x, y } = node.getPosition()
+
+                nextTick(() => {
                     graph().zoomToRect({
                         width: width + padding * 2,
                         x: x - padding,
                         y: y - padding,
                         height: height + padding * 2
                     })
-                }
+                })
+            }
+
+            /**
+             * 延时适应画布并布局
+             */
+            const fitAndLayout = () => {
+                nextTick(() => {
+                    setTimeout(() => {
+                        layout()
+                        nextTick(() => {
+                            fit()
+                        })
+                    }, 500)
+                });
             }
 
             return {
-                graph,
+                graph,                
 
                 tables,
                 associations,
@@ -318,7 +367,14 @@ export const useTableEditorGraphStore =
 
                 match,
                 matchType,
-                matchTypes
+                matchTypes,
+
+                focusNode,
+                fitAndLayout,
+
+                searchNodes,
+                keyword,
+                searchResult
             }
         }
     )
