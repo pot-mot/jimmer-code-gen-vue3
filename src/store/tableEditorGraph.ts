@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import {
-    GenAssociationCommonInput, GenAssociationMatchView,
+    GenAssociationInput, GenAssociationMatchView,
     GenTableColumnsView
 } from "../api/__generated/model/static";
 import { api } from "../api";
@@ -105,7 +105,7 @@ export const useTableEditorGraphStore =
                     })
                 })
 
-                const viewToInput = (view: GenAssociationMatchView): GenAssociationCommonInput => {
+                const viewToInput = (view: GenAssociationMatchView): GenAssociationInput => {
                     const tempComment: string[] = []
                     const tempRemark: string[] = []
 
@@ -159,8 +159,10 @@ export const useTableEditorGraphStore =
                 }
 
                 await api.associationService.deleteByTable({ tableIds: [...tableMap.keys()] })
+                
+                console.log(inputs);
 
-                return await api.associationService.save({ body: inputs.map(viewToInput) })
+                await api.associationService.save({ body: inputs.map(viewToInput) })
             }
 
             const matchTypes: Ref<ReadonlyArray<AssociationMatchType>> = ref([])

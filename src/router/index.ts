@@ -7,19 +7,19 @@ const routes: RouteRecordRaw[] = [
         component: () => import("../views/Index.vue")
     },
     {
-        path: "/table/graph",
-        name: "TableGraph",
-        component: () => import("../views/table/Graph.vue"),
+        path: "/graph",
+        name: "Graph",
+        component: () => import("../views/Graph.vue"),
     },
     {
-        path: "/table/list",
-        name: "TableList",
-        component: () => import("../views/table/List.vue"),
+        path: "/data",
+        name: "Data",
+        component: () => import("../views/Data.vue"),
     },
     {
         path: "/entity",
-        name: "entity",
-        component: () => import("../views/entity/Index.vue")
+        name: "Entity",
+        component: () => import("../views/Entity.vue")
     }
 ]
 

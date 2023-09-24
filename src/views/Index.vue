@@ -6,21 +6,20 @@
 	</div>
 
 	<div class="part">
-		<h2>主要功能</h2>
 		<ul class="main">
-			<RouterLink to="/table/graph">
+			<RouterLink to="/graph">
 				<li>
 					关联编辑
 				</li>
 			</RouterLink>
-			<RouterLink to="/table/list">
-				<li>
-					数据管理
-				</li>
-			</RouterLink>
 			<RouterLink to="/entity">
 				<li>
-					实体
+					实体生成
+				</li>
+			</RouterLink>
+			<RouterLink to="/data">
+				<li>
+					数据管理
 				</li>
 			</RouterLink>
 		</ul>

@@ -7,10 +7,14 @@ import DataSourceDialog from "./DataSourceDialog.vue";
 
 const dataSources = ref<GenDataSourceView[]>([])
 
-onMounted(() => {
+const getData = () => {
 	api.dataSourceService.list().then(res => {
 		dataSources.value = res
 	})
+}
+
+onMounted(() => {
+	getData()
 })
 
 const isSave = ref(false)
@@ -20,8 +24,17 @@ const handleSave = () => {
 }
 
 const handleSaveFinish = (dataSouce: GenDataSourceView) => {
+	dataSources.value.push(dataSouce)
 	isSave.value = false
-	console.log(dataSouce);
+}
+
+const handleChange = () => {
+	getData()
+}
+
+const handleDelete = (id: number) => {
+	alert(`删除 dataSource ${id} 成功`)
+	getData()
 }
 </script>
 
@@ -30,7 +43,7 @@ const handleSaveFinish = (dataSouce: GenDataSourceView) => {
 	<div class="wrapper" style="font-size: 12px;">
 		<button @click="handleSave()">新增</button>
 		<template v-for="dataSource in dataSources">
-			<DataSourceItem :data-source="dataSource"/>
+			<DataSourceItem :data-source="dataSource" @change="handleChange" @delete="handleDelete"/>
 		</template>
 	</div>
 </template>

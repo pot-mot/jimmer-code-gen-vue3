@@ -32,7 +32,7 @@
 				<button @click="store.redo">redo</button>
 			</li>
 			<li>
-				<button @click="store.saveAssociations">保存关联（入库）</button>
+				<button @click="store.saveAssociations()">保存关联（入库）</button>
 			</li>
 			<li>
 				<button @click="store.layout">布局</button>

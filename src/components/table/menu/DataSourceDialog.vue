@@ -2,15 +2,15 @@
 import { onMounted, ref, watch } from 'vue';
 import { api } from "../../../api";
 import { GenDataSourceInput, GenDataSourceView } from "../../../api/__generated/model/static";
-import {DataSourceType} from "../../../api/__generated/model/enums";
+import { DataSourceType } from "../../../api/__generated/model/enums";
 import DragResizeBox from "../../common/DragResizeBox.vue";
 
 const dataSourceTypes = ref<DataSourceType[]>([])
 
 onMounted(() => {
     api.dataSourceService.listTypes().then(res => {
-		dataSourceTypes.value = res
-	})
+        dataSourceTypes.value = res
+    })
 })
 
 interface DataSourceDialogProps {
@@ -65,7 +65,7 @@ const submit = () => {
             id: props.id,
             body: dataSource.value
         }).then(count => {
-            if (count == 1) {
+            if (count >= 1) {
                 emits("edit")
             }
         })
@@ -89,17 +89,40 @@ const close = () => {
 
 <template>
     <Teleport to="body">
-        <DragResizeBox style="background-color: #fff;">
-            <button @click="close">x</button>
-            <input v-model="dataSource.name">
-            <input v-model="dataSource.host">
-            <input v-model="dataSource.port">
-            <input v-model="dataSource.username">
-            <input v-model="dataSource.password">
-            <select v-model="dataSource.type">
-                <option v-for="(type) in dataSourceTypes" :value="type">{{ type }}</option>
-            </select>
-            <input v-model="dataSource.remark">
+        <DragResizeBox :x="300" :y="100">
+            <button style="position: absolute; top: 0; right: 0;" @click="close">x</button>
+            <table>
+                <tr>
+                    <td><label>name</label></td>
+                    <td><input v-model="dataSource.name"></td>
+                </tr>
+                <tr>
+                    <td><label>host</label></td>
+                    <td><input v-model="dataSource.host"></td>
+                </tr>
+                <tr>
+                    <td><label>port</label></td>
+                    <td><input v-model="dataSource.port"></td>
+                </tr>
+                <tr>
+                    <td><label>username</label></td>
+                    <td><input v-model="dataSource.username"></td>
+                </tr>
+                <tr>
+                    <td><label>password</label></td>
+                    <td><input v-model="dataSource.password"></td>
+                </tr>
+                <tr>
+                    <td><label>type</label></td>
+                    <select v-model="dataSource.type">
+                        <option v-for="(type) in dataSourceTypes" :value="type">{{ type }}</option>
+                    </select>
+                </tr>
+                <tr>
+                    <td><label>remark</label></td>
+                    <td><input v-model="dataSource.remark"></td>
+                </tr>
+            </table>
             <button @click="test">测试</button>
             <button @click="submit">提交</button>
         </DragResizeBox>

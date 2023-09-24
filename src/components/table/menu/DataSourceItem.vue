@@ -43,7 +43,6 @@ watch(() => props.dataSource, () => {
 const deleteDataSource = (dataSourceId: number = props.dataSource.id) => {
 	api.dataSourceService.delete({ ids: [dataSourceId] }).then(res => {
 		if (res == 1) {
-			alert("删除成功")
 			emits("delete", dataSourceId)
 		}
 	})
@@ -71,6 +70,13 @@ const handleEditFinish = () => {
 	isEdit.value = false
 	emits("change", props.dataSource.id)
 }
+
+const handleSchemaDelete = (id: number) => {
+	alert(`删除 schema ${id} 成功`)
+	console.log("change");
+	
+	getSchemas()
+}
 </script>
 
 <template>
@@ -92,7 +98,7 @@ const handleEditFinish = () => {
 			</details>
 		</div>
 		<template v-for="schema in schemas">
-			<SchemaItem :schema="schema" @delete="getSchemas" />
+			<SchemaItem :schema="schema" @delete="handleSchemaDelete" />
 		</template>
 	</details>
 </template>

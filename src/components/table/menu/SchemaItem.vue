@@ -30,8 +30,7 @@ watch(() => props.schema, () => {
 
 const deleteSchema = (schemaId: number = props.schema.id) => {
 	api.schemaService.delete({ ids: [schemaId] }).then(res => {
-		if (res == 1) {
-			alert("删除成功")
+		if (res >= 1) {
 			emits("delete", schemaId)
 		}
 	})
