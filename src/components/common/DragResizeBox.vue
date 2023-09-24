@@ -36,7 +36,8 @@ const draggable = ref(true)
 		:minH="minH" :minW="minW" 
 		>
 		<div class="wrapper">
-			<div @mouseenter="draggable = false" @mouseleave="draggable = true" style="cursor: default; position: relative;">
+			<div @mouseenter="draggable = false" @mouseleave="draggable = true" 
+			style="cursor: default; position: relative; overflow: auto;">
 				<slot></slot>
 			</div>
 		</div>

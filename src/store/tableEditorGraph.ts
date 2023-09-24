@@ -6,12 +6,12 @@ import {
 import { api } from "../api";
 import { AssociationMatchType } from "../api/__generated/model/enums";
 import { Graph, Node } from "@antv/x6";
-import { addAssociationEdges, getAssociations } from "../components/table/edge/AssociationEdge.ts";
-import { addTableNodes, getTables, nodeIdToTableId, removeTableNodes, tableIdToNodeId } from "../components/table/node/TableNode.ts";
+import { addAssociationEdges, getAssociations } from "../components/AssociationEditor/edge/AssociationEdge.ts";
+import { addTableNodes, getTables, nodeIdToTableId, removeTableNodes, tableIdToNodeId } from "../components/AssociationEditor/node/TableNode.ts";
 import { GenTableColumnsView_TargetOf_columns } from "../api/__generated/model/static/GenTableColumnsView.ts";
-import { layoutByLevels } from "../components/table/graphEditor/layout.ts";
-import { saveGraph } from "../components/table/graphEditor/localStorage.ts";
-import { defaultZoomRange } from "../components/table/graphEditor/scale.ts";
+import { layoutByLevels } from "../components/AssociationEditor/graph/layout.ts";
+import { saveGraph } from "../components/AssociationEditor/graph/localStorage.ts";
+import { defaultZoomRange } from "../components/AssociationEditor/graph/scale.ts";
 import { Ref, ref, onMounted } from 'vue';
 
 export const useTableEditorGraphStore =

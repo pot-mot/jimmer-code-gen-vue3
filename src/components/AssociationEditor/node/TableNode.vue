@@ -1,16 +1,17 @@
 <template>
 	<div v-if="table" class="node">
 		<table ref="wrapper" class="node-wrapper">
-			<tr>
-				<td class="tableName" colspan="3">{{ table.name }} {{ table.comment }}</td>
+			<tr class="tableName">
+				<td :class="table.type"></td>
+				<td colspan="3">{{ table.name }} {{ table.comment }}</td>
 			</tr>
-			<tr v-for="column in table.columns" 
-			:class="{
-				'pk': column.pk, 
-				'fk': column.fk, 
-				'notNull': column.notNull, 
-				'unique': column.unique,
-			}">
+			<tr v-for="column in table.columns">
+				<td :class="{
+					'pk': column.pk,
+					'fk': column.fk,
+					'notNull': column.notNull,
+					'unique': column.unique,
+				}"></td>
 				<td>{{ column.name }}</td>
 				<td>{{ `${column.type}(${column.displaySize}, ${column.numericPrecision})` }}</td>
 				<td>{{ column.comment }}</td>
@@ -50,10 +51,10 @@
 </style>
 
 <script lang='ts' setup>
-import {inject, nextTick, onMounted, ref} from "vue";
-import {GenTableColumnsView} from "../../../api/__generated/model/static";
-import {Node} from '@antv/x6'
-import {useTableEditorGraphStore} from "../../../store/tableEditorGraph.ts";
+import { inject, nextTick, onMounted, ref } from "vue";
+import { GenTableColumnsView } from "../../../api/__generated/model/static";
+import { Node } from '@antv/x6'
+import { useTableEditorGraphStore } from "../../../store/tableEditorGraph.ts";
 
 const wrapper = ref<HTMLElement | null>()
 

@@ -7,9 +7,6 @@
 				<button @click="toggleMinimap">minimap</button>
 			</li>
 			<li>
-				<button @click="toggleOutline">outline</button>
-			</li>
-			<li>
 				<button @click="toggleLog">log</button>
 			</li>
 		</ul>
@@ -32,9 +29,6 @@
 				<button @click="store.redo">redo</button>
 			</li>
 			<li>
-				<button @click="store.saveAssociations()">保存关联（入库）</button>
-			</li>
-			<li>
 				<button @click="store.layout">布局</button>
 				<select v-model="store.layoutDirection">
 					<option value="LR">左右</option>
@@ -48,6 +42,9 @@
 				<select v-model="store.matchType">
 					<option v-for="(type) in store.matchTypes" :value="type">{{ type }}</option>
 				</select>
+			</li>
+			<li>
+				<button @click="store.saveAssociations()">保存关联（入库）</button>
 			</li>
 		</ul>
 		<div class="toolbar right-bottom">
@@ -116,18 +113,18 @@ import { ColumnPort } from "./port/ColumnPort.ts";
 
 import { register } from "@antv/x6-vue-shape";
 import TableNode from "./node/TableNode.vue";
-import { initGraph } from "./graphEditor/init.ts";
-import { COLUMN_PORT } from "./constant";
-import { useHistory } from "./graphEditor/history.ts";
-import { useSelection } from "./graphEditor/selection.ts";
+import { initGraph } from "./graph/init.ts";
+import { COLUMN_PORT } from "./constant/index.ts";
+import { useHistory } from "./graph/history.ts";
+import { useSelection } from "./graph/selection.ts";
 import {
 	useEdgeColor,
 	useHoverToFront
-} from "./graphEditor/eventListen.ts";
+} from "./graph/eventListen.ts";
 import { useSwitchAssociationType } from "./edge/AssociationEdge.ts";
-import { clearGraph, loadGraph } from "./graphEditor/localStorage.ts";
+import { clearGraph, loadGraph } from "./graph/localStorage.ts";
 import { useTableEditorGraphStore } from "../../store/tableEditorGraph.ts";
-import { useMiniMap } from "./graphEditor/miniMap.ts";
+import { useMiniMap } from "./graph/miniMap.ts";
 
 const container = ref<HTMLDivElement | null>(null);
 const wrapper = ref<HTMLDivElement | null>(null);
@@ -205,12 +202,6 @@ const showLog = ref(false)
 
 const toggleLog = () => {
 	showLog.value = !showLog.value
-}
-
-const showOutline = ref(false)
-
-const toggleOutline = () => {
-	showOutline.value = !showOutline.value
 }
 
 const showMinimap = ref(false)
