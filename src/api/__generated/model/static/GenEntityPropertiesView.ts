@@ -1,5 +1,3 @@
-import type { QueryType, SortDirection } from '../enums';
-
 export interface GenEntityPropertiesView {
     
     add: boolean;
@@ -41,37 +39,19 @@ export interface GenEntityPropertiesView {
 
 export interface GenEntityPropertiesView_TargetOf_properties {
     
-    add: boolean;
-    
-    addRequired: boolean;
-    
-    addSort: number;
-    
     columnId?: number;
     
     createdTime: string;
     
-    edit: boolean;
-    
-    editReadOnly: boolean;
-    
-    editRequired: boolean;
-    
-    editSort: number;
-    
     entityId: number;
     
-    enumId: number;
+    enumId?: number;
     
     id: boolean;
     
     idGenerationType: string;
     
     key: boolean;
-    
-    list: boolean;
-    
-    listSort: number;
     
     logicalDelete: boolean;
     
@@ -87,15 +67,5 @@ export interface GenEntityPropertiesView_TargetOf_properties {
     
     propertyType: string;
     
-    query: boolean;
-    
-    querySort: number;
-    
-    queryType: QueryType;
-    
     remark: string;
-    
-    sort: boolean;
-    
-    sortDirection: SortDirection;
 }

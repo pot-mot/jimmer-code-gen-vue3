@@ -123,7 +123,7 @@
 </style>
 
 <script lang="ts" setup>
-import { onMounted, ref, nextTick } from "vue";
+import { onMounted, ref, nextTick, onBeforeUnmount, onUnmounted } from "vue";
 import { Graph } from "@antv/x6";
 
 import { ColumnPort } from "./port/ColumnPort.ts";
@@ -170,53 +170,66 @@ const init = () => {
 	useHoverToFront(graph)
 	useEdgeColor(graph)
 	useSwitchAssociationType(graph)
-	useKeyEvent()
 }
 
 const showSearch = ref(false)
 
-const useKeyEvent = () => {
-	document.documentElement.addEventListener('keydown', (e: KeyboardEvent) => {
-		if (e.ctrlKey || e.metaKey) {
-			if (e.key == 'z') {
-				e.preventDefault()
-				store.undo()
-			} else if (e.key == 'Z') {
-				e.preventDefault()
-				store.redo()
-			} else if (e.key == 's') {
-				e.preventDefault()
-				store.save()
-			} else if (e.key == 'a') {
-				e.preventDefault()
-				store.selectAll()
-			} else if (e.key == 'f') {
-				e.preventDefault()
-				store.searchResult = []
-				showSearch.value = true
-			}
+const handleKeyEvent = (e: KeyboardEvent) => {
+	if (e.ctrlKey || e.metaKey) {
+		if (e.key == 'z') {
+			e.preventDefault()
+			store.undo()
+		} else if (e.key == 'Z') {
+			e.preventDefault()
+			store.redo()
+		} else if (e.key == 's') {
+			e.preventDefault()
+			store.save()
+		} else if (e.key == 'a') {
+			e.preventDefault()
+			store.selectAll()
+		} else if (e.key == 'f') {
+			e.preventDefault()
+			store.searchResult = []
+			showSearch.value = true
 		}
-	})
+	}
 
-	document.documentElement.addEventListener('keydown', (event) => {
-		if (graph && event.key === 'Delete') {
-			const selectedCells = graph.getSelectedCells()
-			graph.cleanSelection()
+	if (graph && e.key === 'Delete') {
+		const selectedCells = graph.getSelectedCells()
+		graph.cleanSelection()
 
-			// 删除选中的元素
-			graph?.removeCells(selectedCells)
-		}
-	});
+		// 删除选中的元素
+		graph?.removeCells(selectedCells)
+	}
 }
+
+const handlePopState = () => {
+	store.save()
+}
+
+onMounted(() => {
+	document.documentElement.addEventListener('keydown', handleKeyEvent)
+	window.addEventListener('popstate', handlePopState)
+	window.addEventListener('unload', handlePopState)
+})
+
+onBeforeUnmount(() => {
+	document.documentElement.removeEventListener('keydown', handleKeyEvent)
+})
+
+/** 需要在卸载后略微延迟 */
+onUnmounted(() => {
+	window.removeEventListener('unload', handlePopState)
+	setTimeout(() => {
+		window.removeEventListener('popstate', handlePopState)
+	}, 0)
+})
 
 const load = () => {
 	try {
 		loadGraph(graph)
 		store.load(graph)
-
-		window.addEventListener('beforeunload', () => {
-			store.save()
-		})
 	} catch (e) {
 		clearGraph(graph)
 	}

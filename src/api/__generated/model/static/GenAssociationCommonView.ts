@@ -1,4 +1,4 @@
-import type { AssociationType } from '../enums';
+import type { AssociationType, DissociateAction } from '../enums';
 
 export interface GenAssociationCommonView {
     
@@ -7,6 +7,8 @@ export interface GenAssociationCommonView {
     comment: string;
     
     createdTime: string;
+    
+    dissociateAction?: DissociateAction;
     
     id: number;
     

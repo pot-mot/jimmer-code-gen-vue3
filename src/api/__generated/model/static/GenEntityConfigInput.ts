@@ -1,5 +1,3 @@
-import type { QueryType, SortDirection } from '../enums';
-
 export interface GenEntityConfigInput {
     
     add: boolean;
@@ -35,31 +33,13 @@ export interface GenEntityConfigInput {
 
 export interface GenEntityConfigInput_TargetOf_properties {
     
-    add: boolean;
-    
-    addRequired: boolean;
-    
-    addSort: number;
-    
-    edit: boolean;
-    
-    editReadOnly: boolean;
-    
-    editRequired: boolean;
-    
-    editSort: number;
-    
-    enumId: number;
+    enumId?: number;
     
     id: boolean;
     
     idGenerationType: string;
     
     key: boolean;
-    
-    list: boolean;
-    
-    listSort: number;
     
     logicalDelete: boolean;
     
@@ -73,15 +53,5 @@ export interface GenEntityConfigInput_TargetOf_properties {
     
     propertyType: string;
     
-    query: boolean;
-    
-    querySort: number;
-    
-    queryType: QueryType;
-    
     remark: string;
-    
-    sort: boolean;
-    
-    sortDirection: SortDirection;
 }
