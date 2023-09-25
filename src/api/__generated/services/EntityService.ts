@@ -1,10 +1,11 @@
-import type { Executor } from '../';
-import type { EntityQuery, GenEntityConfigInput, GenEntityPropertiesView } from '../model/static';
+import type {Executor} from '../';
+import type {EntityQuery, GenEntityConfigInput, GenEntityPropertiesView} from '../model/static';
 
 export class EntityService {
-    
-    constructor(private executor: Executor) {}
-    
+
+    constructor(private executor: Executor) {
+    }
+
     async config(options: EntityServiceOptions['config']): Promise<number> {
         let _uri = '/entity/config';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -116,13 +117,13 @@ export class EntityService {
         }
         return (await this.executor({uri: _uri, method: 'PUT'})) as number
     }
-    
+
     async delete(options: EntityServiceOptions['delete']): Promise<number> {
         let _uri = '/entity/';
         _uri += encodeURIComponent(options.ids.join(','));
         return (await this.executor({uri: _uri, method: 'DELETE'})) as number
     }
-    
+
     async mapping(options: EntityServiceOptions['mapping']): Promise<
         number[]
     > {
@@ -138,7 +139,7 @@ export class EntityService {
         }
         return (await this.executor({uri: _uri, method: 'POST'})) as number[]
     }
-    
+
     async query(options: EntityServiceOptions['query']): Promise<
         GenEntityPropertiesView[]
     > {
@@ -171,8 +172,8 @@ export class EntityService {
 }
 
 export type EntityServiceOptions = {
-    'config': {entity: GenEntityConfigInput},
-    'delete': {ids: number[]},
-    'mapping': {tableIds: number[]},
-    'query': {query: EntityQuery}
+    'config': { entity: GenEntityConfigInput },
+    'delete': { ids: number[] },
+    'mapping': { tableIds: number[] },
+    'query': { query: EntityQuery }
 }

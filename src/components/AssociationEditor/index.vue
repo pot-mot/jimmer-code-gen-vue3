@@ -38,9 +38,9 @@
 				</select>
 			</li>
 			<li>
-				<button @click="store.match">匹配关联</button>
-				<select v-model="store.matchType">
-					<option v-for="(type) in store.matchTypes" :value="type">{{ type }}</option>
+				<button @click="match">匹配关联</button>
+				<select v-model="matchType">
+					<option v-for="(type) in matchTypes" :value="type">{{ type }}</option>
 				</select>
 			</li>
 			<li>
@@ -49,18 +49,19 @@
 		</ul>
 		<div class="toolbar right-bottom">
 			<template v-if="showMinimap">
-				<div class="minimap" ref="minimap"></div>
+				<div ref="minimap" class="minimap"></div>
 			</template>
 		</div>
 		<DragDialog v-if="showSearch" @close="showSearch = false">
 			<div class="search-box">
-				<input autofocus v-model="keyword" @change="handleSearch">
+				<input v-model="keyword" autofocus @change="search">
 				<div v-if="searchResult.length == 0">
 					暂无数据
 				</div>
 				<div style="max-height: 60vh; overflow: auto;">
 					<table>
-						<tr class="hover-item" :class="node.data.table.type" v-for="node in searchResult" @click="store.focusNode(node)">
+						<tr v-for="node in searchResult" :class="node.data.table.type" class="hover-item"
+							@click="store.focusNode(node)">
 							<td style="white-space: nowrap;">{{ node.data.table.name }}</td>
 							<td style="white-space: nowrap;">{{ node.data.table.comment }}</td>
 						</tr>
@@ -114,7 +115,7 @@
 }
 
 .search-box {
-	padding-left: 10px; 
+	padding-left: 10px;
 	font-size: 12px;
 	width: 25em;
 }
@@ -129,30 +130,29 @@
 </style>
 
 <script lang="ts" setup>
-import { onMounted, ref, nextTick, onBeforeUnmount, onUnmounted } from "vue";
-import { Graph, Node } from "@antv/x6";
+import {onMounted, ref} from "vue";
+import {Graph} from "@antv/x6";
 
-import { ColumnPort } from "./port/ColumnPort.ts";
+import {ColumnPort} from "./port/ColumnPort.ts";
 
-import { register } from "@antv/x6-vue-shape";
+import {register} from "@antv/x6-vue-shape";
 import TableNode from "./node/TableNode.vue";
-import { initGraph } from "./graph/init.ts";
-import { COLUMN_PORT } from "./constant/index.ts";
-import { useHistory } from "./graph/history.ts";
-import { useSelection } from "./graph/selection.ts";
-import {
-	useEdgeColor,
-	useHoverToFront
-} from "./graph/eventListen.ts";
-import { useSwitchAssociationType } from "./edge/AssociationEdge.ts";
-import { clearGraph, loadGraph } from "./graph/localStorage.ts";
-import { useTableEditorGraphStore } from "../../store/tableEditorGraph.ts";
-import { useMiniMap } from "./graph/miniMap.ts";
+import {initGraph} from "./graph/init.ts";
+import {COLUMN_PORT} from "./constant";
+import {useHistory, useHistoryKeyEvent} from "./graph/useHistory.ts";
+import {useSelection, useSelectionKeyEvent} from "./graph/useSelection.ts";
+import {useSwitchAssociationType} from "./edge/AssociationEdge.ts";
+import {loadGraph} from "./graph/localStorage.ts";
+import {useTableEditorGraphStore} from "../../store/tableEditorGraph.ts";
+import {useMiniMap} from "./graph/useMiniMap.ts";
 import DragDialog from "../common/DragDialog.vue";
+import {useTableEditorMatch} from "./graph/useMatch.ts";
+import {useTableEditorSearch} from "./graph/useSearch.ts";
+import {useSave} from "./graph/useSave.ts";
 
-const container = ref<HTMLDivElement | null>(null);
-const wrapper = ref<HTMLDivElement | null>(null);
-const minimap = ref<HTMLDivElement | null>(null);
+const container = ref<HTMLElement>();
+const wrapper = ref<HTMLElement>();
+const minimap = ref<HTMLElement>();
 
 let graph: Graph
 
@@ -169,77 +169,21 @@ register({
 	component: TableNode
 });
 
-const init = () => {
+onMounted(() => {
 	graph = initGraph(container.value!, wrapper.value!)
+
+	useSwitchAssociationType(graph)
+	loadGraph(graph)
+	store.load(graph)
+
 	useHistory(graph)
 	useSelection(graph)
-	useHoverToFront(graph)
-	useEdgeColor(graph)
-	useSwitchAssociationType(graph)
-}
-
-const showSearch = ref(false)
-
-const handleKeyEvent = (e: KeyboardEvent) => {
-	if (e.ctrlKey || e.metaKey) {
-		if (e.key == 'z') {
-			e.preventDefault()
-			store.undo()
-		} else if (e.key == 'Z') {
-			e.preventDefault()
-			store.redo()
-		} else if (e.key == 's') {
-			e.preventDefault()
-			store.save()
-		} else if (e.key == 'a') {
-			e.preventDefault()
-			store.selectAll()
-		} else if (e.key == 'f') {
-			e.preventDefault()
-			searchResult.value = []
-			showSearch.value = true
-		}
-	}
-
-	if (graph && e.key === 'Delete') {
-		const selectedCells = graph.getSelectedCells()
-		graph.cleanSelection()
-
-		// 删除选中的元素
-		graph?.removeCells(selectedCells)
-	}
-}
-
-const handlePopState = () => {
-	store.save()
-}
-
-onMounted(() => {
-	document.documentElement.addEventListener('keydown', handleKeyEvent)
-	window.addEventListener('popstate', handlePopState)
-	window.addEventListener('unload', handlePopState)
 })
 
-onBeforeUnmount(() => {
-	document.documentElement.removeEventListener('keydown', handleKeyEvent)
-})
+useSave(() => graph)
 
-/** 需要在卸载后略微延迟 */
-onUnmounted(() => {
-	window.removeEventListener('unload', handlePopState)
-	setTimeout(() => {
-		window.removeEventListener('popstate', handlePopState)
-	}, 0)
-})
-
-const load = () => {
-	try {
-		loadGraph(graph)
-		store.load(graph)
-	} catch (e) {
-		clearGraph(graph)
-	}
-}
+useHistoryKeyEvent(() => graph)
+useSelectionKeyEvent(() => graph)
 
 const showLog = ref(false)
 
@@ -247,38 +191,10 @@ const toggleLog = () => {
 	showLog.value = !showLog.value
 }
 
-const showMinimap = ref(false)
+const {toggleMinimap, showMinimap} = useMiniMap(() => graph, () => minimap.value)
 
-const toggleMinimap = () => {
-	showMinimap.value = !showMinimap.value
-	if (showMinimap.value) {
-		nextTick(() => {
-			if (minimap.value) {
-				useMiniMap(graph, minimap.value)
-			}
-		})
-	}
-}
+const {search, keyword, searchResult, showSearch} = useTableEditorSearch(() => graph)
 
-const keyword = ref("")
+const {match, matchTypes, matchType} = useTableEditorMatch(() => graph)
 
-const searchResult = ref<Node[]>([])
-
-const handleSearch = () => {
-	searchResult.value = store.searchNodes(keyword.value.split(" "))
-}
-
-onMounted(() => {
-	init()
-
-	load()
-
-	if (showMinimap.value) {
-		nextTick(() => {
-			if (minimap.value) {
-				useMiniMap(graph, minimap.value)
-			}
-		})
-	}
-});
 </script>

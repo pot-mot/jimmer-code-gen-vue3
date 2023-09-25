@@ -1,21 +1,28 @@
-import type { Executor } from './';
+import type {Executor} from './';
 
-import { AssociationService, ColumnService, DataSourceService, EntityService, SchemaService, TableService } from './services';
+import {
+    AssociationService,
+    ColumnService,
+    DataSourceService,
+    EntityService,
+    SchemaService,
+    TableService
+} from './services';
 
 export class Api {
-    
+
     readonly associationService: AssociationService;
-    
+
     readonly columnService: ColumnService;
-    
+
     readonly dataSourceService: DataSourceService;
-    
+
     readonly entityService: EntityService;
-    
+
     readonly schemaService: SchemaService;
-    
+
     readonly tableService: TableService;
-    
+
     constructor(executor: Executor) {
         this.associationService = new AssociationService(executor);
         this.columnService = new ColumnService(executor);

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {Splitpanes, Pane} from 'splitpanes'
+import {Pane, Splitpanes} from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
 </script>
 

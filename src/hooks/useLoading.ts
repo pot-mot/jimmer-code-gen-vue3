@@ -1,4 +1,4 @@
-import {ref, computed, onMounted, onBeforeMount} from "vue";
+import {computed, onBeforeMount, onMounted, ref} from "vue";
 
 export const useLoading = (immediate: boolean = true) => {
     const loadingCount = ref(0);

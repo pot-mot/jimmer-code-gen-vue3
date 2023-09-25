@@ -1,1 +1,1 @@
-export type { GenSchemaDto } from './GenSchemaDto';
+export type {GenSchemaDto} from './GenSchemaDto';

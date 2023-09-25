@@ -1,16 +1,17 @@
-import type { Executor } from '../';
-import type { GenSchemaView } from '../model/static';
+import type {Executor} from '../';
+import type {GenSchemaView} from '../model/static';
 
 export class SchemaService {
-    
-    constructor(private executor: Executor) {}
-    
+
+    constructor(private executor: Executor) {
+    }
+
     async delete(options: SchemaServiceOptions['delete']): Promise<number> {
         let _uri = '/schema/';
         _uri += encodeURIComponent(options.ids.join(','));
         return (await this.executor({uri: _uri, method: 'DELETE'})) as number
     }
-    
+
     async list(options: SchemaServiceOptions['list']): Promise<
         GenSchemaView[]
     > {
@@ -29,6 +30,6 @@ export class SchemaService {
 }
 
 export type SchemaServiceOptions = {
-    'delete': {ids: number[]},
-    'list': {dataSourceId: number}
+    'delete': { ids: number[] },
+    'list': { dataSourceId: number }
 }

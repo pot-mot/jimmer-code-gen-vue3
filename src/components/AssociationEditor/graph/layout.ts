@@ -1,6 +1,7 @@
-import { Graph, Node, Edge } from "@antv/x6"
-import { nodeIdToTableId } from "../node/TableNode.ts"
-import { Point } from "@antv/x6-geometry"
+import {Edge, Graph, Node} from "@antv/x6"
+import {nodeIdToTableId} from "../node/TableNode.ts"
+import {Point} from "@antv/x6-geometry"
+import {getSelectEdges, getSelectNodes} from "./useSelection.ts";
 
 interface LayoutNode {
     id: number
@@ -52,14 +53,14 @@ const toLayoutEdges = (edges: readonly Edge[]): LayoutEdge[] => {
 
         const target = nodeIdToTableId(targetNode.id)
         const source = nodeIdToTableId(sourceNode.id)
-        result.push({ target, source })
+        result.push({target, source})
     })
 
     return result
 }
 
 /**
- * 根据从顺序第一个节点开始进行 bfs 生成森林，为节点设置 level 
+ * 根据从顺序第一个节点开始进行 bfs 生成森林，为节点设置 level
  * @param nodes 布局节点
  * @param edges 布局边
  */
@@ -98,7 +99,7 @@ const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
         nodeMap.set(node.id, node)
     }
 
-    for (const { source, target } of edges) {
+    for (const {source, target} of edges) {
         const targetNode = nodeMap.get(target)
         const sourceNode = nodeMap.get(source)
         if (targetNode && sourceNode) {
@@ -122,7 +123,7 @@ const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
  * @returns 均分成多个部分的二维数组
  */
 const splitArrayIntoChunks = <T>(
-    array: T[], 
+    array: T[],
     chunkSize: number = Math.ceil(Math.sqrt(array.length))
 ): T[][] => {
     const chunks: T[][] = [];
@@ -217,7 +218,7 @@ const getPoint = (nodes: Node[], direction: "LT" | "RT" | "LB" | "RB" = "LT"): P
         }
 
         return targetPoint // 当前点不是目标位置的点，保持累积的点不变
-    }, { x: 0, y: 0 })
+    }, {x: 0, y: 0})
 }
 
 const getMaxWidth = (nodes: Node[]): number => {
@@ -253,7 +254,7 @@ const defaultLayoutOptions: LayoutOptions = {
 }
 
 const layoutLR = (options: Partial<LevelLayoutOptions>) => {
-    const { nodeLevels, startX, startY, gapX, gapY } = Object.assign(defaultLayoutOptions, options)
+    const {nodeLevels, startX, startY, gapX, gapY} = Object.assign(defaultLayoutOptions, options)
 
     if (!nodeLevels) return
 
@@ -277,7 +278,7 @@ const layoutLR = (options: Partial<LevelLayoutOptions>) => {
 }
 
 const layoutTB = (options: Partial<LevelLayoutOptions>) => {
-    const { nodeLevels, startX, startY, gapX, gapY } = Object.assign(defaultLayoutOptions, options)
+    const {nodeLevels, startX, startY, gapX, gapY} = Object.assign(defaultLayoutOptions, options)
 
     if (!nodeLevels) return
 
@@ -318,9 +319,9 @@ const layoutBT = (options: Partial<LevelLayoutOptions>) => {
  * @param gapY 垂直排布间距
  */
 export const layoutByLevels = (
-    graph: Graph, 
-    direction: "LR" | "TB" | "RL" | "BT" = "LR", 
-    gapX: number = 200, 
+    graph: Graph,
+    direction: "LR" | "TB" | "RL" | "BT" = "LR",
+    gapX: number = 200,
     gapY: number = 100
 ) => {
     let nodes
@@ -330,8 +331,8 @@ export const layoutByLevels = (
         nodes = toLayoutNodes(graph.getNodes())
         edges = toLayoutEdges(graph.getEdges())
     } else {
-        nodes = toLayoutNodes(graph.getSelectedCells().filter(cell => cell.isNode()) as Node[])
-        edges = toLayoutEdges(graph.getSelectedCells().filter(cell => cell.isEdge()) as Edge[])
+        nodes = toLayoutNodes(getSelectNodes(graph))
+        edges = toLayoutEdges(getSelectEdges(graph))
     }
 
     setLevel(nodes, edges)
@@ -340,7 +341,7 @@ export const layoutByLevels = (
 
     graph.startBatch('layout')
 
-    const { x: startX, y: startY } = getPoint(nodes.map(node => node.node), "LT")
+    const {x: startX, y: startY} = getPoint(nodes.map(node => node.node), "LT")
 
     const options: LevelLayoutOptions = {
         nodeLevels,

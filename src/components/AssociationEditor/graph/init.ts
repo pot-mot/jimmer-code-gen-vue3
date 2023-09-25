@@ -1,7 +1,8 @@
-import { Graph } from "@antv/x6"
-import { AssociationEdgeConnecting } from "../edge/AssociationEdge.ts"
-import { defaultZoomRange } from "./scale.ts"
-import { debounce } from 'lodash'
+import {Graph} from "@antv/x6"
+import {AssociationEdgeConnecting} from "../edge/AssociationEdge.ts"
+import {defaultZoomRange} from "./scale.ts"
+import {debounce} from 'lodash'
+import {COMMON_COLOR, HIGHLIGHT_COLOR} from "../constant";
 
 export const initGraph = (container: HTMLElement, wrapper: HTMLElement): Graph => {
     const graph = new Graph({
@@ -20,7 +21,7 @@ export const initGraph = (container: HTMLElement, wrapper: HTMLElement): Graph =
             eventTypes: ['rightMouseDown']
         },
 
-        connecting: AssociationEdgeConnecting,
+        connecting: AssociationEdgeConnecting as any,
     })
 
     const resizeOb = new ResizeObserver(debounce(() => {
@@ -29,5 +30,23 @@ export const initGraph = (container: HTMLElement, wrapper: HTMLElement): Graph =
 
     resizeOb.observe(wrapper)
 
+    useHoverToFront(graph)
+    useEdgeColor(graph)
+
     return graph
+}
+
+const useHoverToFront = (graph: Graph) => {
+    graph.on('node:mouseenter', ({node}) => {
+        node.toFront()
+    })
+}
+
+const useEdgeColor = (graph: Graph) => {
+    graph.on('edge:selected', ({edge}) => {
+        edge.attr('line/stroke', HIGHLIGHT_COLOR)
+    })
+    graph.on('edge:unselected', ({edge}) => {
+        edge.attr('line/stroke', COMMON_COLOR)
+    })
 }

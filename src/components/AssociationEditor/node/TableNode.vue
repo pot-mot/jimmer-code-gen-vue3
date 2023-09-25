@@ -20,7 +20,7 @@
 				<td>{{ column.comment }}</td>
 			</tr>
 		</table>
-		<TableDialog v-if="showTableDialog" @close="showTableDialog = false" :table="table"></TableDialog>
+		<TableDialog v-if="showTableDialog" :table="table" @close="showTableDialog = false"></TableDialog>
 	</div>
 </template>
 
@@ -60,10 +60,10 @@
 </style>
 
 <script lang='ts' setup>
-import { inject, nextTick, onMounted, ref } from "vue";
-import { GenTableColumnsView } from "../../../api/__generated/model/static";
-import { Node } from '@antv/x6'
-import { useTableEditorGraphStore } from "../../../store/tableEditorGraph.ts";
+import {inject, nextTick, onMounted, ref} from "vue";
+import {GenTableColumnsView} from "../../../api/__generated/model/static";
+import {Node} from '@antv/x6'
+import {useTableEditorGraphStore} from "../../../store/tableEditorGraph.ts";
 import TableDialog from "./TableDialog.vue"
 
 const wrapper = ref<HTMLElement | null>()

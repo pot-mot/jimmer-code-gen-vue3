@@ -11,7 +11,6 @@
     "rm_readonly": "node scripts/removeReadonly.js"
   },
   "dependencies": {
-    "@antv/layout": "^0.3.23",
     "@antv/x6": "^2.13.1",
     "@antv/x6-plugin-history": "^2.2.3",
     "@antv/x6-plugin-minimap": "^2.0.5",
@@ -27,6 +26,7 @@
     "vue3-draggable-resizable": "^1.6.5"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.199",
     "@types/splitpanes": "^2.2.1",
     "@vitejs/plugin-vue": "^4.2.3",
     "adm-zip": "^0.5.10",

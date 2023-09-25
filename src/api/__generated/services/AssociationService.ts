@@ -1,17 +1,18 @@
-import type { Executor } from '../';
-import type { AssociationMatchType, SelectType } from '../model/enums';
-import type { AssociationQuery, GenAssociationInput, GenAssociationMatchView, GenAssociationView } from '../model/static';
+import type {Executor} from '../';
+import type {AssociationMatchType, SelectType} from '../model/enums';
+import type {AssociationQuery, GenAssociationInput, GenAssociationMatchView, GenAssociationView} from '../model/static';
 
 export class AssociationService {
-    
-    constructor(private executor: Executor) {}
-    
+
+    constructor(private executor: Executor) {
+    }
+
     async delete(options: AssociationServiceOptions['delete']): Promise<number> {
         let _uri = '/association/';
         _uri += encodeURIComponent(options.ids.join(','));
         return (await this.executor({uri: _uri, method: 'DELETE'})) as number
     }
-    
+
     async deleteByColumn(options: AssociationServiceOptions['deleteByColumn']): Promise<number> {
         let _uri = '/association/column/';
         _uri += encodeURIComponent(options.columnIds.join(','));
@@ -26,7 +27,7 @@ export class AssociationService {
         }
         return (await this.executor({uri: _uri, method: 'DELETE'})) as number
     }
-    
+
     async deleteByTable(options: AssociationServiceOptions['deleteByTable']): Promise<number> {
         let _uri = '/association/table/';
         _uri += encodeURIComponent(options.tableIds.join(','));
@@ -41,14 +42,14 @@ export class AssociationService {
         }
         return (await this.executor({uri: _uri, method: 'DELETE'})) as number
     }
-    
+
     async listMatchType(): Promise<
         AssociationMatchType[]
     > {
         let _uri = '/association/matchType';
         return (await this.executor({uri: _uri, method: 'GET'})) as AssociationMatchType[]
     }
-    
+
     async match(options: AssociationServiceOptions['match']): Promise<
         GenAssociationMatchView[]
     > {
@@ -64,7 +65,7 @@ export class AssociationService {
         }
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as GenAssociationMatchView[]
     }
-    
+
     async query(options: AssociationServiceOptions['query']): Promise<
         GenAssociationView[]
     > {
@@ -115,14 +116,14 @@ export class AssociationService {
         }
         return (await this.executor({uri: _uri, method: 'GET'})) as GenAssociationView[]
     }
-    
+
     async save(options: AssociationServiceOptions['save']): Promise<
         number[]
     > {
         let _uri = '/association/save';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number[]
     }
-    
+
     async selectByColumn(options: AssociationServiceOptions['selectByColumn']): Promise<
         GenAssociationView[]
     > {
@@ -139,7 +140,7 @@ export class AssociationService {
         }
         return (await this.executor({uri: _uri, method: 'GET'})) as GenAssociationView[]
     }
-    
+
     async selectByTable(options: AssociationServiceOptions['selectByTable']): Promise<
         GenAssociationView[]
     > {
@@ -159,13 +160,13 @@ export class AssociationService {
 }
 
 export type AssociationServiceOptions = {
-    'delete': {ids: number[]},
-    'deleteByColumn': {columnIds: number[], selectType?: SelectType},
-    'deleteByTable': {tableIds: number[], selectType?: SelectType},
+    'delete': { ids: number[] },
+    'deleteByColumn': { columnIds: number[], selectType?: SelectType },
+    'deleteByTable': { tableIds: number[], selectType?: SelectType },
     'listMatchType': {},
-    'match': {body: number[], matchType?: AssociationMatchType},
-    'query': {query: AssociationQuery},
-    'save': {body: GenAssociationInput[]},
-    'selectByColumn': {columnIds: number[], selectType?: SelectType},
-    'selectByTable': {tableIds: number[], selectType?: SelectType}
+    'match': { body: number[], matchType?: AssociationMatchType },
+    'query': { query: AssociationQuery },
+    'save': { body: GenAssociationInput[] },
+    'selectByColumn': { columnIds: number[], selectType?: SelectType },
+    'selectByTable': { tableIds: number[], selectType?: SelectType }
 }

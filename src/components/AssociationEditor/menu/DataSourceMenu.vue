@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
-import { api } from "../../../api";
-import { GenDataSourceView } from "../../../api/__generated/model/static";
+import {onMounted, ref} from "vue";
+import {api} from "../../../api";
+import {GenDataSourceView} from "../../../api/__generated/model/static";
 import DataSourceItem from "./DataSourceItem.vue";
 import DataSourceDialog from "./DataSourceDialog.vue";
 
@@ -46,10 +46,10 @@ const handleDelete = (id: number) => {
 	<div class="wrapper" style="font-size: 12px;">
 		<button @click="handleSave">新增</button>
 		<template v-for="dataSource in dataSources">
-			<DataSourceItem :data-source="dataSource" @change="handleChange" @delete="handleDelete" />
+			<DataSourceItem :data-source="dataSource" @change="handleChange" @delete="handleDelete"/>
 		</template>
 	</div>
-	<DataSourceDialog v-if="isSave" :data-source="{}" @save="handleSaveFinish" @close="isSave = false" :x="x" :y="y">
+	<DataSourceDialog v-if="isSave" :data-source="{}" :x="x" :y="y" @close="isSave = false" @save="handleSaveFinish">
 	</DataSourceDialog>
 </template>
 

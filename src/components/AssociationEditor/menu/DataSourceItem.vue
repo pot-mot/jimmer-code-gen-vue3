@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ref, watch } from "vue";
-import { GenDataSourceView, GenSchemaView } from "../../../api/__generated/model/static";
+import {ref, watch} from "vue";
+import {GenDataSourceView, GenSchemaView} from "../../../api/__generated/model/static";
 
 import SchemaItem from "./SchemaItem.vue";
-import { api } from "../../../api";
-import { GenSchemaDto } from "../../../api/__generated/model/dto";
+import {api} from "../../../api";
+import {GenSchemaDto} from "../../../api/__generated/model/dto";
 import DataSourceDialog from "./DataSourceDialog.vue";
 
 interface DataSourceItemProps {
@@ -15,6 +15,7 @@ const props = defineProps<DataSourceItemProps>()
 
 interface SchemaItemEmits {
 	(event: "change", dataSourceId: number): void
+
 	(event: "delete", dataSourceId: number): void
 }
 
@@ -26,7 +27,7 @@ const showAllSchemas = ref(false)
 
 const viewSchemas = (dataSourceId: number) => {
 	if (!showAllSchemas.value) {
-		api.dataSourceService.viewSchemas({ dataSourceId }).then(res => {
+		api.dataSourceService.viewSchemas({dataSourceId}).then(res => {
 			allSchemas.value = res
 		})
 	} else {
@@ -38,17 +39,17 @@ const viewSchemas = (dataSourceId: number) => {
 const schemas = ref<GenSchemaView[]>([])
 
 const getSchemas = (dataSourceId: number = props.dataSource.id) => {
-	api.schemaService.list({ dataSourceId }).then(res => {
+	api.schemaService.list({dataSourceId}).then(res => {
 		schemas.value = res
 	})
 }
 
 watch(() => props.dataSource, () => {
 	getSchemas()
-}, { immediate: true })
+}, {immediate: true})
 
 const deleteDataSource = (dataSourceId: number = props.dataSource.id) => {
-	api.dataSourceService.delete({ ids: [dataSourceId] }).then(res => {
+	api.dataSourceService.delete({ids: [dataSourceId]}).then(res => {
 		if (res == 1) {
 			emits("delete", dataSourceId)
 		}
@@ -101,9 +102,9 @@ const handleSchemaDelete = (id: number) => {
 			</div>
 		</div>
 		<template v-for="schema in schemas">
-			<SchemaItem :schema="schema" @delete="handleSchemaDelete" />
+			<SchemaItem :schema="schema" @delete="handleSchemaDelete"/>
 		</template>
 	</details>
-	<DataSourceDialog v-if="isEdit" :data-source="dataSource" :id="dataSource.id" @edit="handleEditFinish" :x="x" :y="y"
-		@close="isEdit = false"></DataSourceDialog>
+	<DataSourceDialog v-if="isEdit" :id="dataSource.id" :data-source="dataSource" :x="x" :y="y" @close="isEdit = false"
+					  @edit="handleEditFinish"></DataSourceDialog>
 </template>

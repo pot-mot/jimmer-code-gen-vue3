@@ -1,11 +1,13 @@
-import { Edge, Graph, Shape } from "@antv/x6";
-import { COMMON_COLOR, MANY_TO_ONE, ONE_TO_ONE } from "../constant";
-import { AssociationType } from "../../../api/__generated/model/enums";
-import { GenAssociationMatchView } from "../../../api/__generated/model/static";
-import { columnIdToPortId, portIdToColumnId } from "../port/ColumnPort.ts";
-import { nodeIdToTableId, tableIdToNodeId } from "../node/TableNode.ts";
-import { Options } from "@antv/x6/es/graph/options";
+import {Edge, Graph, Shape} from "@antv/x6";
+import {COMMON_COLOR, MANY_TO_ONE, ONE_TO_ONE} from "../constant";
+import {AssociationType} from "../../../api/__generated/model/enums";
+import {GenAssociationInput, GenAssociationMatchView, GenTableColumnsView} from "../../../api/__generated/model/static";
+import {columnIdToPortId, portIdToColumnId} from "../port/ColumnPort.ts";
+import {getTables, nodeIdToTableId, tableIdToNodeId} from "../node/TableNode.ts";
+import {Options} from "@antv/x6/es/graph/options";
 import Connecting = Options.Connecting;
+import {GenTableColumnsView_TargetOf_columns} from "../../../api/__generated/model/static/GenTableColumnsView.ts";
+import {api} from "../../../api";
 
 const baseColumnEdge = {
     attrs: {
@@ -16,7 +18,7 @@ const baseColumnEdge = {
     },
     labels: [{
         attrs: {
-            label: { text: MANY_TO_ONE }
+            label: {text: MANY_TO_ONE}
         }
     }]
 }
@@ -30,8 +32,9 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
         },
     },
 
-    validateConnection({sourcePort,targetPort}) {
-        return searchEdgesIgnoreDirection(this, sourcePort, targetPort).length == 0
+    validateConnection({sourcePort, targetPort}) {
+        if (!sourcePort || !targetPort) return false
+        return searchEdgesIgnoreDirection(<any>this, sourcePort, targetPort).length == 0
     },
 
     // @ts-ignore
@@ -46,24 +49,14 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
     allowEdge: false,
 }
 
+/**
+ * 判断节点是否存在
+ * @param graph
+ * @param nodeId
+ */
 export const nodeIsExist = (graph: Graph, nodeId: string): boolean => {
     const cell = graph.getCellById(nodeId)
     return cell && cell.isNode()
-}
-
-/**
- * 寻找 Edge，忽视方向
- * @param graph 图
- * @param port1 连接桩1 
- * @param port2 连接桩2
- * @returns Edge 数组
- */
-export const searchEdgesIgnoreDirection = (graph: Graph, port1: string, port2: string): Edge[] => {
-    return graph.getEdges().filter(
-        edge => 
-        (edge.getTargetPortId() == port1 && edge.getSourcePortId() == port2) ||
-        (edge.getTargetPortId() == port2 && edge.getSourcePortId() == port1)
-    )
 }
 
 /**
@@ -77,6 +70,21 @@ export const searchEdges = (graph: Graph, sourcePort: string, targetPort: string
     return graph.getEdges().filter(edge => edge.getSourcePortId() == sourcePort && edge.getTargetPortId() == targetPort)
 }
 
+/**
+ * 寻找 Edge，忽视方向
+ * @param graph 图
+ * @param port1 连接桩1
+ * @param port2 连接桩2
+ * @returns Edge 数组
+ */
+export const searchEdgesIgnoreDirection = (graph: Graph, port1: string, port2: string): Edge[] => {
+    return graph.getEdges().filter(
+        edge =>
+            (edge.getTargetPortId() == port1 && edge.getSourcePortId() == port2) ||
+            (edge.getTargetPortId() == port2 && edge.getSourcePortId() == port1)
+    )
+}
+
 export const setLabel = (edge: Edge, label: string) => {
     edge.setLabelAt(0, label)
 }
@@ -85,6 +93,7 @@ export const getLabel = (edge: Edge): AssociationType => {
     return edge.labels[0].attrs!.label.text as AssociationType;
 }
 
+/** 转换关联为 Edge */
 export const associationToEdge = (association: GenAssociationMatchView): Edge => {
     const edge: Edge = new Shape.Edge<Edge.Properties>({
         ...baseColumnEdge,
@@ -101,6 +110,7 @@ export const associationToEdge = (association: GenAssociationMatchView): Edge =>
     return edge
 }
 
+/** 转换 Edge 为关联 */
 export const edgeToAssociation = (edge: Edge): GenAssociationMatchView => {
     return {
         sourceColumn: {
@@ -123,7 +133,12 @@ export const getAssociations = (graph: Graph): GenAssociationMatchView[] => {
     return graph.getEdges().map(edgeToAssociation)
 }
 
-export const addAssociationEdges = (graph: Graph, associations: readonly GenAssociationMatchView[]) => {
+/**
+ * 插入 AssociationEdge
+ * @param graph
+ * @param associations
+ */
+export const importAssociationEdges = (graph: Graph, associations: readonly GenAssociationMatchView[]) => {
     graph.startBatch('add edge')
 
     associations.map(associationToEdge).forEach(newEdge => {
@@ -151,9 +166,83 @@ export const addAssociationEdges = (graph: Graph, associations: readonly GenAsso
     graph.stopBatch('add edge')
 }
 
+/**
+ * 保存 AssociationEdge
+ */
+export const saveAssociations = async (graph: Graph) => {
+    const tables = getTables(graph)
+    const associations = getAssociations(graph)
+
+    const tableMap = new Map<number, GenTableColumnsView>
+    const columnMap = new Map<number, GenTableColumnsView_TargetOf_columns>
+
+    tables.forEach(table => {
+        tableMap.set(table.id, table)
+        table.columns.forEach(column => {
+            columnMap.set(column.id, column)
+        })
+    })
+
+    const viewToInput = (view: GenAssociationMatchView): GenAssociationInput => {
+        const tempComment: string[] = []
+        const tempRemark: string[] = []
+
+        tempComment.push("[")
+
+        if (view.targetColumn.table) {
+            const targetTable = tableMap.get(view.targetColumn.table.id)
+            if (targetTable) {
+                tempRemark.push(targetTable.comment)
+                tempComment.push(targetTable.name)
+            }
+        }
+        const targetColumn = columnMap.get(view.targetColumn.id)
+        if (targetColumn) {
+            tempComment.push(".")
+            tempComment.push(targetColumn.name)
+
+            tempRemark.push(".")
+            tempRemark.push(targetColumn.comment)
+        }
+
+        tempComment.push("] -> [")
+        tempRemark.push(" -> ")
+
+        if (view.sourceColumn.table) {
+            const sourceTable = tableMap.get(view.sourceColumn.table.id)
+            if (sourceTable) {
+                tempComment.push(sourceTable.name)
+                tempRemark.push(sourceTable.comment)
+            }
+        }
+        const sourceColumn = columnMap.get(view.sourceColumn.id)
+        if (sourceColumn) {
+            tempComment.push(".")
+            tempComment.push(sourceColumn.name)
+
+            tempRemark.push(".")
+            tempRemark.push(sourceColumn.comment)
+        }
+
+        tempComment.push("]")
+
+        return {
+            associationType: view.associationType,
+            targetColumnId: view.targetColumn.id,
+            sourceColumnId: view.sourceColumn.id,
+            orderKey: 0,
+            comment: tempComment.join(""),
+            remark: tempRemark.join(""),
+        }
+    }
+
+    await api.associationService.deleteByTable({tableIds: [...tableMap.keys()]})
+    await api.associationService.save({body: associations.map(viewToInput)})
+}
+
 
 export const useSwitchAssociationType = (graph: Graph) => {
-    graph.on('edge:click', ({ edge }) => {
+    graph.on('edge:click', ({edge}) => {
         if (!edge) return;
 
         if (getLabel(edge) == MANY_TO_ONE) {

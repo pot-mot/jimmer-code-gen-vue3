@@ -81,8 +81,8 @@
 		height: 50px;
 		line-height: 50px;
 
-		>label,
-		>a {
+		> label,
+		> a {
 			padding: 1em;
 		}
 	}
@@ -93,7 +93,7 @@
 		height: 40px;
 		line-height: 40px;
 
-		>a {
+		> a {
 			padding: 1em;
 		}
 	}

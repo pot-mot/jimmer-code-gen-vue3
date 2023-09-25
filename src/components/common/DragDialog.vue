@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import DragResize from 'vue3-draggable-resizable'
 import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
-import { onMounted, ref } from 'vue'
+import {onMounted, ref} from 'vue'
 
 interface DragResizeProps {
 	x?: number
@@ -41,12 +41,12 @@ onMounted(() => {
 
 <template>
 	<Teleport to="body">
-		<DragResize :parent="true" :draggable="draggable" :resizable="false" style="border: none;" :x="x" :y="y"
-			:initH="initH" :initW="initW" :minH="minH" :minW="minW" :h="h">
+		<DragResize :draggable="draggable" :h="h" :initH="initH" :initW="initW" :minH="minH" :minW="minW"
+					:parent="true" :resizable="false" :x="x" :y="y" style="border: none;">
 			<div class="wrapper">
 				<div class="close" @click="close">x</div>
-				<div @mouseenter="draggable = false" @mouseleave="draggable = true"
-					style="cursor: default; overflow: auto; scrollbar-gutter: stable;" ref="content">
+				<div ref="content" style="cursor: default; overflow: auto; scrollbar-gutter: stable;"
+					 @mouseenter="draggable = false" @mouseleave="draggable = true">
 					<slot></slot>
 				</div>
 			</div>
@@ -79,7 +79,7 @@ onMounted(() => {
 	position: relative;
 }
 
-.dragging>.wrapper {
+.dragging > .wrapper {
 	border-color: #000;
 }
 </style>
