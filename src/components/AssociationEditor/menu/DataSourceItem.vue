@@ -97,7 +97,7 @@ const handleSchemaDelete = (id: number) => {
 		</summary>
 		<div v-show="showAllSchemas" style="padding-left: 3em">
 			<div v-for="schema in allSchemas">
-				<span @click="importSchema(schema.name)">{{ schema.name }}</span>
+				<span class="hover-item" @click="importSchema(schema.name)">{{ schema.name }}</span>
 			</div>
 		</div>
 		<template v-for="schema in schemas">
@@ -107,5 +107,3 @@ const handleSchemaDelete = (id: number) => {
 	<DataSourceDialog v-if="isEdit" :data-source="dataSource" :id="dataSource.id" @edit="handleEditFinish" :x="x" :y="y"
 		@close="isEdit = false"></DataSourceDialog>
 </template>
-
-<style scoped></style>

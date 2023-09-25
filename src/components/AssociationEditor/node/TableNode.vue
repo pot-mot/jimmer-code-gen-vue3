@@ -1,9 +1,12 @@
 <template>
-	<div v-if="table" class="node">
+	<div v-if="table" class="node" @contextmenu="showTableDialog = true">
 		<table ref="wrapper" class="node-wrapper">
 			<tr class="tableName">
 				<td :class="table.type"></td>
-				<td colspan="3">{{ table.name }} {{ table.comment }}</td>
+				<td colspan="3">
+					<span>{{ table.name }}</span>
+					<span>{{ table.comment }}</span>
+				</td>
 			</tr>
 			<tr v-for="column in table.columns">
 				<td :class="{
@@ -17,6 +20,7 @@
 				<td>{{ column.comment }}</td>
 			</tr>
 		</table>
+		<TableDialog v-if="showTableDialog" @close="showTableDialog = false" :table="table"></TableDialog>
 	</div>
 </template>
 
@@ -40,6 +44,11 @@
 			border-bottom: 1px solid var(--common-color);
 			font-size: 20px;
 			font-weight: 600;
+
+			span {
+				color: #333;
+				margin-right: 1em;
+			}
 		}
 	}
 }
@@ -55,12 +64,15 @@ import { inject, nextTick, onMounted, ref } from "vue";
 import { GenTableColumnsView } from "../../../api/__generated/model/static";
 import { Node } from '@antv/x6'
 import { useTableEditorGraphStore } from "../../../store/tableEditorGraph.ts";
+import TableDialog from "./TableDialog.vue"
 
 const wrapper = ref<HTMLElement | null>()
 
 const getNode = inject<() => Node>("getNode")!;
 
 const table = ref<GenTableColumnsView>()
+
+const showTableDialog = ref(false)
 
 const store = useTableEditorGraphStore()
 

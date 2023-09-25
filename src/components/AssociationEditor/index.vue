@@ -12,6 +12,12 @@
 		</ul>
 		<ul class="toolbar right-top">
 			<li>
+				<button @click="store.undo">undo</button>
+			</li>
+			<li>
+				<button @click="store.redo">redo</button>
+			</li>
+			<li>
 				<button @click="store.fit">缩放居中</button>
 			</li>
 			<li>
@@ -22,12 +28,6 @@
 			</li>
 		</ul>
 		<ul class="toolbar left-top">
-			<li>
-				<button @click="store.undo">undo</button>
-			</li>
-			<li>
-				<button @click="store.redo">redo</button>
-			</li>
 			<li>
 				<button @click="store.layout">布局</button>
 				<select v-model="store.layoutDirection">
@@ -53,17 +53,16 @@
 			</template>
 		</div>
 		<DragDialog v-if="showSearch" @close="showSearch = false">
-			<div style="padding-left: 10px; font-size: 0.8em;">
-				<input autofocus v-model="store.keyword" @change="store.searchNodes()">
-				<div v-if="store.searchResult.length == 0">
+			<div class="search-box">
+				<input autofocus v-model="keyword" @change="handleSearch">
+				<div v-if="searchResult.length == 0">
 					暂无数据
 				</div>
 				<div style="max-height: 60vh; overflow: auto;">
 					<table>
-						<tr v-for="node in store.searchResult" @click="store.focusNode(node)">
-							<td :class="node.data.table.type"></td>
-							<td>{{ node.data.table.name }}</td>
-							<td>{{ node.data.table.name }}</td>
+						<tr class="hover-item" :class="node.data.table.type" v-for="node in searchResult" @click="store.focusNode(node)">
+							<td style="white-space: nowrap;">{{ node.data.table.name }}</td>
+							<td style="white-space: nowrap;">{{ node.data.table.comment }}</td>
 						</tr>
 					</table>
 				</div>
@@ -83,6 +82,7 @@
 }
 
 .toolbar {
+	font-size: 12px;
 	position: absolute;
 	border: 1px var(--common-color) solid;
 	background-color: #fff;
@@ -113,6 +113,12 @@
 	}
 }
 
+.search-box {
+	padding-left: 10px; 
+	font-size: 12px;
+	width: 25em;
+}
+
 .x6-node-selected .node-wrapper {
 	border: 2px solid var(--highlight-color);
 }
@@ -124,7 +130,7 @@
 
 <script lang="ts" setup>
 import { onMounted, ref, nextTick, onBeforeUnmount, onUnmounted } from "vue";
-import { Graph } from "@antv/x6";
+import { Graph, Node } from "@antv/x6";
 
 import { ColumnPort } from "./port/ColumnPort.ts";
 
@@ -190,7 +196,7 @@ const handleKeyEvent = (e: KeyboardEvent) => {
 			store.selectAll()
 		} else if (e.key == 'f') {
 			e.preventDefault()
-			store.searchResult = []
+			searchResult.value = []
 			showSearch.value = true
 		}
 	}
@@ -252,6 +258,14 @@ const toggleMinimap = () => {
 			}
 		})
 	}
+}
+
+const keyword = ref("")
+
+const searchResult = ref<Node[]>([])
+
+const handleSearch = () => {
+	searchResult.value = store.searchNodes(keyword.value.split(" "))
 }
 
 onMounted(() => {

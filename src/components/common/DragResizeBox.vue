@@ -18,15 +18,17 @@ const draggable = ref(true)
 </script>
 
 <template>
-	<DragResize :parent="true" :draggable="draggable" :resizable="true" style="border: none;" :x="x" :y="y"
-		:initH="initH" :initW="initW" :minH="minH" :minW="minW">
-		<div class="wrapper">
-			<div @mouseenter="draggable = false" @mouseleave="draggable = true"
-				style="cursor: default; overflow: auto; padding: 10px; scrollbar-gutter: stable;">
-				<slot></slot>
+	<Teleport to="body">
+		<DragResize :parent="true" :draggable="draggable" :resizable="true" style="border: none;" :x="x" :y="y"
+			:initH="initH" :initW="initW" :minH="minH" :minW="minW">
+			<div class="wrapper">
+				<div @mouseenter="draggable = false" @mouseleave="draggable = true"
+					style="cursor: default; overflow: auto; padding: 10px; scrollbar-gutter: stable;">
+					<slot></slot>
+				</div>
 			</div>
-		</div>
-	</DragResize>
+		</DragResize>
+	</Teleport>
 </template>
 
 <style scoped>

@@ -88,7 +88,7 @@ export const useTableEditorGraphStore =
                 }
             }
 
-            /** 保存 */
+            /** 保存画布本身 */
             const save = () => {
                 saveGraph(graph())
             }
@@ -272,22 +272,17 @@ export const useTableEditorGraphStore =
                 }
             }
 
-            const keyword = ref("")
-
-            const searchResult: Ref<Node[]> = ref([])
-
             /**
              * 根据关键词进行节点查找
              * @param keywords 关键词
              * @returns 节点列表
              */
-            const searchNodes = (keywords: string[] = keyword.value.split(" ")): Node[] => {
+            const searchNodes = (keywords: string[]): Node[] => {
                 if (keywords.length == 0) {
-                    searchResult.value = []
                     return []
                 }
 
-                searchResult.value = graph().getNodes().filter(node => {
+                return graph().getNodes().filter(node => {
                     if (node.data && node.data.table) {
                         const table: GenTableColumnsView = node.data.table
                         for (const keyword of keywords) {
@@ -297,7 +292,6 @@ export const useTableEditorGraphStore =
                         }
                     }
                 })
-                return searchResult.value
             }
 
             /**
@@ -372,9 +366,7 @@ export const useTableEditorGraphStore =
                 focusNode,
                 fitAndLayout,
 
-                searchNodes,
-                keyword,
-                searchResult
+                searchNodes
             }
         }
     )

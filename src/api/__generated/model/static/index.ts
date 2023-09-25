@@ -1,9 +1,9 @@
 export type { AssociationQuery } from './AssociationQuery';
 export type { ColumnQuery } from './ColumnQuery';
 export type { EntityQuery } from './EntityQuery';
-export type { GenAssociationCommonView } from './GenAssociationCommonView';
 export type { GenAssociationInput } from './GenAssociationInput';
 export type { GenAssociationMatchView } from './GenAssociationMatchView';
+export type { GenAssociationView } from './GenAssociationView';
 export type { GenColumnCommonView } from './GenColumnCommonView';
 export type { GenDataSourceInput } from './GenDataSourceInput';
 export type { GenDataSourceView } from './GenDataSourceView';

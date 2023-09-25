@@ -1,6 +1,6 @@
 import type { Executor } from '../';
 import type { AssociationMatchType, SelectType } from '../model/enums';
-import type { AssociationQuery, GenAssociationCommonView, GenAssociationInput, GenAssociationMatchView } from '../model/static';
+import type { AssociationQuery, GenAssociationInput, GenAssociationMatchView, GenAssociationView } from '../model/static';
 
 export class AssociationService {
     
@@ -66,7 +66,7 @@ export class AssociationService {
     }
     
     async query(options: AssociationServiceOptions['query']): Promise<
-        GenAssociationCommonView[]
+        GenAssociationView[]
     > {
         let _uri = '/association/query';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -113,7 +113,7 @@ export class AssociationService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenAssociationCommonView[]
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenAssociationView[]
     }
     
     async save(options: AssociationServiceOptions['save']): Promise<
@@ -124,7 +124,7 @@ export class AssociationService {
     }
     
     async selectByColumn(options: AssociationServiceOptions['selectByColumn']): Promise<
-        GenAssociationMatchView[]
+        GenAssociationView[]
     > {
         let _uri = '/association/select/column/';
         _uri += encodeURIComponent(options.columnIds.join(','));
@@ -137,11 +137,11 @@ export class AssociationService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenAssociationMatchView[]
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenAssociationView[]
     }
     
     async selectByTable(options: AssociationServiceOptions['selectByTable']): Promise<
-        GenAssociationMatchView[]
+        GenAssociationView[]
     > {
         let _uri = '/association/select/table/';
         _uri += encodeURIComponent(options.tableIds.join(','));
@@ -154,7 +154,7 @@ export class AssociationService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenAssociationMatchView[]
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenAssociationView[]
     }
 }
 

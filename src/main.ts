@@ -4,6 +4,7 @@ import {router} from './router'
 import {pinia} from './store'
 
 import './assets/base.css'
+import './assets/common.css'
 
 const app = createApp(App)
 

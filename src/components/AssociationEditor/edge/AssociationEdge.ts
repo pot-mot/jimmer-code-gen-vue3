@@ -30,13 +30,8 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
         },
     },
 
-    validateConnection(
-        {
-            sourcePort,
-            targetPort,
-        }
-    ) {
-        return !edgeIsExist(this, sourcePort, targetPort)
+    validateConnection({sourcePort,targetPort}) {
+        return searchEdgesIgnoreDirection(this, sourcePort, targetPort).length == 0
     },
 
     // @ts-ignore
@@ -57,25 +52,29 @@ export const nodeIsExist = (graph: Graph, nodeId: string): boolean => {
 }
 
 /**
- * 校验 Edge 在节点间是否已经存在，无论方向
+ * 寻找 Edge，忽视方向
  * @param graph 图
- * @param sourcePort 源连接桩 
- * @param targetPort 目标连接桩
- * @returns 是否存在
+ * @param port1 连接桩1 
+ * @param port2 连接桩2
+ * @returns Edge 数组
  */
-export const edgeIsExist = (graph: Graph, sourcePort: string | null | undefined, targetPort: string | null | undefined): boolean => {
-    const edges = graph.getEdges()
+export const searchEdgesIgnoreDirection = (graph: Graph, port1: string, port2: string): Edge[] => {
+    return graph.getEdges().filter(
+        edge => 
+        (edge.getTargetPortId() == port1 && edge.getSourcePortId() == port2) ||
+        (edge.getTargetPortId() == port2 && edge.getSourcePortId() == port1)
+    )
+}
 
-    for (let edge of edges) {
-        if (
-            (edge.getTargetPortId() == targetPort && edge.getSourcePortId() == sourcePort) ||
-            (edge.getTargetPortId() == sourcePort && edge.getSourcePortId() == targetPort)
-        ) {
-            return true
-        }
-    }
-
-    return false
+/**
+ * 寻找 Edge
+ * @param graph 图
+ * @param sourcePort 源连接桩
+ * @param targetPort 目标连接桩
+ * @returns Edge 数组
+ */
+export const searchEdges = (graph: Graph, sourcePort: string, targetPort: string): Edge[] => {
+    return graph.getEdges().filter(edge => edge.getSourcePortId() == sourcePort && edge.getTargetPortId() == targetPort)
 }
 
 export const setLabel = (edge: Edge, label: string) => {
@@ -129,14 +128,21 @@ export const addAssociationEdges = (graph: Graph, associations: readonly GenAsso
 
     associations.map(associationToEdge).forEach(newEdge => {
         try {
-            if (!nodeIsExist(graph, newEdge.getSourceCellId())) return
-            if (!nodeIsExist(graph, newEdge.getTargetCellId())) return
+            const sourceCellId = newEdge.getSourceCellId()
+            if (!sourceCellId || !nodeIsExist(graph, sourceCellId)) return
 
-            const isExist = edgeIsExist(graph, newEdge.getSourcePortId(), newEdge.getTargetPortId())
-            // 如果不存在 source 和 target 相同的边
-            if (!isExist) {
-                graph.addEdge(newEdge)
-            }
+            const targetCellId = newEdge.getTargetCellId()
+            if (!targetCellId || !nodeIsExist(graph, targetCellId)) return
+
+            const sourcePortId = newEdge.getSourcePortId()
+            if (!sourcePortId) return
+            const targetPortId = newEdge.getTargetPortId()
+            if (!targetPortId) return
+
+            const isExist = searchEdgesIgnoreDirection(graph, sourcePortId, targetPortId).length > 0
+            if (isExist) return
+
+            graph.addEdge(newEdge)
         } catch (e) {
             console.warn('add edge fail', newEdge, e)
         }

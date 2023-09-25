@@ -57,14 +57,14 @@ const query = () => {
 	<div style="padding-left: 2em;">
 		<details>
 			<summary>
-				<span @click.prevent="store.importSchema([...tables.map(table => table.id)])">{{ schema.name }}</span>
+				<span class="hover-item" @click.prevent="store.importSchema([...tables.map(table => table.id)])">{{ schema.name }}</span>
 				<button @click.prevent="deleteSchema">删除</button>
 			</summary>
-			<table style="padding-left: 2em;" class="tableList">
+			<table style="padding-left: 2em;">
 				<tr>
 					<input v-model="keywords" @change="query">
 				</tr>
-				<tr v-for="table in tables" :class="table.type" @click.prevent="store.importTable(table.id)">
+				<tr class="hover-item" v-for="table in tables" :class="table.type" @click.prevent="store.importTable(table.id)">
 					<td>{{ table.name }}</td>
 					<td>{{ table.comment }}</td>
 				</tr>
@@ -72,20 +72,3 @@ const query = () => {
 		</details>
 	</div>
 </template>
-
-<style scoped lang="scss">
-.tableList {
-	cursor: default;
-
-	tr:hover {
-		font-weight: 600;
-	}
-
-	td {
-		min-width: 3em;
-		max-width: 10em;
-		text-overflow: ellipsis;
-		overflow: hidden;
-	}
-}
-</style>

@@ -31,7 +31,9 @@ const h = ref(0)
 
 onMounted(() => {
 	const resizeOb = new ResizeObserver(() => {
-		h.value = content.value!.scrollHeight + 20
+		if (content.value) {
+			h.value = content.value.scrollHeight + 20
+		}
 	})
 	resizeOb.observe(content.value!)
 })

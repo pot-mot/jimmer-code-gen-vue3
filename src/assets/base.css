@@ -37,3 +37,33 @@ ol {
 a {
     text-decoration: none;
 }
+
+input,
+textarea,
+select,
+button {
+    background-color: #fff;
+    border: 1px solid #333;
+    border-radius: 2px;
+    font-size: inherit;
+    font-family: inherit;
+    outline: none;
+    color: #333;
+}
+
+button {
+    padding: 0 0.5em;
+    margin: 0.2em;
+    user-select: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #ddd;
+    border-color: #000;
+    color: #000;
+}
+
+detail {
+    outline: none;
+}
