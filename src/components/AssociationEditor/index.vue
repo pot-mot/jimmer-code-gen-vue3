@@ -44,7 +44,7 @@
 				</select>
 			</li>
 			<li>
-				<button @click="store.saveAssociations()">保存关联（入库）</button>
+				<button @click="saveAssociations(graph)">保存关联（入库）</button>
 			</li>
 		</ul>
 		<div class="toolbar right-bottom">
@@ -54,16 +54,17 @@
 		</div>
 		<DragDialog v-if="showSearch" @close="showSearch = false">
 			<div class="search-box">
-				<input v-model="keyword" autofocus @change="search">
+				<input v-model="keyword" autofocus @keydown.enter="search">
+				<button @click="search">搜索</button>
 				<div v-if="searchResult.length == 0">
 					暂无数据
 				</div>
-				<div style="max-height: 60vh; overflow: auto;">
+				<div style="max-height: 60vh; overflow: auto; min-width: 20em;">
 					<table>
 						<tr v-for="node in searchResult" :class="node.data.table.type" class="hover-item"
-							@click="store.focusNode(node)">
-							<td style="white-space: nowrap;">{{ node.data.table.name }}</td>
-							<td style="white-space: nowrap;">{{ node.data.table.comment }}</td>
+							@click="focusNode(graph, node)">
+							<td>{{ node.data.table.name }}</td>
+							<td>{{ node.data.table.comment }}</td>
 						</tr>
 					</table>
 				</div>
@@ -117,7 +118,6 @@
 .search-box {
 	padding-left: 10px;
 	font-size: 12px;
-	width: 25em;
 }
 
 .x6-node-selected .node-wrapper {
@@ -141,7 +141,7 @@ import {initGraph} from "./graph/init.ts";
 import {COLUMN_PORT} from "./constant";
 import {useHistory, useHistoryKeyEvent} from "./graph/useHistory.ts";
 import {useSelection, useSelectionKeyEvent} from "./graph/useSelection.ts";
-import {useSwitchAssociationType} from "./edge/AssociationEdge.ts";
+import {saveAssociations, useSwitchAssociationType} from "./edge/AssociationEdge.ts";
 import {loadGraph} from "./graph/localStorage.ts";
 import {useTableEditorGraphStore} from "../../store/tableEditorGraph.ts";
 import {useMiniMap} from "./graph/useMiniMap.ts";
@@ -149,6 +149,7 @@ import DragDialog from "../common/DragDialog.vue";
 import {useTableEditorMatch} from "./graph/useMatch.ts";
 import {useTableEditorSearch} from "./graph/useSearch.ts";
 import {useSave} from "./graph/useSave.ts";
+import {focusNode} from "./node/TableNode.ts";
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();

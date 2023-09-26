@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import DragResize from 'vue3-draggable-resizable'
 import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
-import {onMounted, ref} from 'vue'
+import {nextTick, onMounted, ref} from 'vue'
 
 interface DragResizeProps {
 	x?: number
@@ -30,19 +30,25 @@ const content = ref<HTMLElement>()
 const h = ref(0)
 
 onMounted(() => {
-	const resizeOb = new ResizeObserver(() => {
+	nextTick(() => {
 		if (content.value) {
-			h.value = content.value.scrollHeight + 20
+			const resizeOb = new ResizeObserver(() => {
+				if (content.value) {
+					h.value = content.value.scrollHeight + 20
+				}
+			})
+
+			resizeOb.observe(content.value)
 		}
 	})
-	resizeOb.observe(content.value!)
 })
 </script>
 
 <template>
 	<Teleport to="body">
-		<DragResize :draggable="draggable" :h="h" :initH="initH" :initW="initW" :minH="minH" :minW="minW"
-					:parent="true" :resizable="false" :x="x" :y="y" style="border: none;">
+		<DragResize :active="true" :draggable="draggable" :parent="true" :resizable="true"
+					:h="h" :initH="initH" :initW="initW" :minH="minH" :minW="minW" :x="x" :y="y"
+					style="border: none;">
 			<div class="wrapper">
 				<div class="close" @click="close">x</div>
 				<div ref="content" style="cursor: default; overflow: auto; scrollbar-gutter: stable;"
@@ -81,5 +87,52 @@ onMounted(() => {
 
 .dragging > .wrapper {
 	border-color: #000;
+}
+
+:deep(.handle) {
+	width: 8px;
+	height: 8px;
+	border: none;
+	background-color: transparent;
+}
+
+:deep(.handle-tl),
+:deep(.handle-tm),
+:deep(.handle-tr) {
+	top: 0;
+}
+
+:deep(.handle-bl),
+:deep(.handle-bm),
+:deep(.handle-br) {
+	bottom: 0;
+}
+
+:deep(.handle-tl),
+:deep(.handle-ml),
+:deep(.handle-bl) {
+	left: 0;
+}
+
+:deep(.handle-tr),
+:deep(.handle-mr),
+:deep(.handle-br) {
+	right: 0;
+}
+
+:deep(.handle-tm) {
+	width: calc(100% - 16px);
+	left: 11px;
+}
+
+:deep(.handle-bm) {
+	width: calc(100% - 16px);
+	left: 12px;
+}
+
+:deep(.handle-ml),
+:deep(.handle-mr) {
+	height: calc(100% - 16px);
+	top: 11px;
 }
 </style>

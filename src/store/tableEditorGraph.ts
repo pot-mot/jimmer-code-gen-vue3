@@ -3,7 +3,6 @@ import {GenAssociationMatchView, GenTableColumnsView} from "../api/__generated/m
 import {Graph, Node} from "@antv/x6";
 import {
     getAssociations,
-    saveAssociations
 } from "../components/AssociationEditor/edge/AssociationEdge.ts";
 import {
     focusNode,
@@ -12,7 +11,6 @@ import {
     tableIdToNodeId
 } from "../components/AssociationEditor/node/TableNode.ts";
 import {layoutByLevels} from "../components/AssociationEditor/graph/layout.ts";
-import {saveGraph} from "../components/AssociationEditor/graph/localStorage.ts";
 import {defaultZoomRange} from "../components/AssociationEditor/graph/scale.ts";
 import {nextTick, Ref, ref} from 'vue';
 import {getSelectEdges} from "../components/AssociationEditor/graph/useSelection.ts";
@@ -174,13 +172,6 @@ export const useTableEditorGraphStore =
                 importSchema,
                 importTable,
 
-                saveGraph: () => {
-                    saveGraph(graph())
-                },
-                saveAssociations: async () => {
-                    await saveAssociations(graph())
-                },
-
                 redo,
                 undo,
 
@@ -192,9 +183,6 @@ export const useTableEditorGraphStore =
                 layout,
                 layoutDirection,
 
-                focusNode: async (node: Node, padding: number = 300) => {
-                    await focusNode(graph(), node, padding)
-                },
                 fitAndLayout,
             }
         }

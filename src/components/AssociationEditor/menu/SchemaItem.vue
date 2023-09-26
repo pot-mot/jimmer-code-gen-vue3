@@ -64,6 +64,7 @@ const query = () => {
 			<table style="padding-left: 2em;">
 				<tr>
 					<input v-model="keywords" @change="query">
+					<button @click="query">搜索</button>
 				</tr>
 				<tr v-for="table in tables" :class="table.type" class="hover-item"
 					@click.prevent="store.importTable(table.id)">

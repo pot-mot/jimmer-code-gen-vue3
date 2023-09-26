@@ -1,8 +1,13 @@
 <script lang="ts" setup>
 import {ref, watch} from 'vue'
-import {api} from '../../../api/index.ts'
+import {api} from '../../../api'
 import {GenAssociationView, GenTableColumnsView} from '../../../api/__generated/model/static'
 import DragDialog from "../../common/DragDialog.vue"
+import {useTableEditorGraphStore} from "../../../store/tableEditorGraph.ts";
+import {focusNode, tableIdToNodeId} from "./TableNode.ts";
+import {Cell, Graph, Node} from "@antv/x6";
+
+const store = useTableEditorGraphStore()
 
 interface TableDialogProps {
 	table: GenTableColumnsView
@@ -24,19 +29,35 @@ watch(() => props.table, async (table) => {
 		selectType: "OR"
 	})
 }, {immediate: true})
+
+const focusTable = (id: number | undefined) => {
+	if (!id) return
+
+	const graph: Graph = store.graph()
+	if (!graph) return
+
+	const cell: Cell = graph.getCellById(tableIdToNodeId(id))
+	if (cell && cell.isNode()) {
+		const node = cell as Node
+		focusNode(graph, node)
+	}
+}
 </script>
 
 <template>
-	<DragDialog @close="emits('close')">
-		<div>
+	<DragDialog :x="200" :y="100" :init-w="800" @close="emits('close')">
+		<div style="text-align: center; white-space: nowrap;">
+			{{ table.name }}
+			{{ table.comment }}
+			{{ table.type }}
+			{{ table.remark }}
+		</div>
+		<div class="wrapper">
 			<details open>
 				<summary>
-					{{ table.name }}
-					{{ table.comment }}
-					{{ table.type }}
-					{{ table.remark }}
+					columns
 				</summary>
-				<table>
+				<table style="padding-left: 2em;">
 					<tr v-for="column in table.columns">
 						<td>
 							{{ column.name }}
@@ -50,21 +71,22 @@ watch(() => props.table, async (table) => {
 					</tr>
 				</table>
 			</details>
-		</div>
-		<div>
-			<details v-for="association in associations">
+			<details open>
 				<summary>
-					{{ association.comment }}
+					associations
 				</summary>
-				<table>
-					<tr>
-						<td>
-							{{ association.sourceColumn }}
+				<table style="padding-left: 2em;">
+					<tr v-for="association in associations">
+						<td @click="focusTable(association.sourceColumn.table?.id)" class="hover-item">
+							<span>{{ association.sourceColumn.table?.name }}</span>
+							<span style="padding: 0 0.2em;">.</span>
+							<span>{{ association.sourceColumn.name }}</span>
 						</td>
-					</tr>
-					<tr>
-						<td>
-							{{ association.targetColumn }}
+						<td style="padding: 0 1em;">{{ association.associationType }}</td>
+						<td @click="focusTable(association.targetColumn.table?.id)" class="hover-item">
+							<span>{{ association.targetColumn.table?.name }}</span>
+							<span style="padding: 0 0.2em;">.</span>
+							<span>{{ association.targetColumn.name }}</span>
 						</td>
 					</tr>
 				</table>
@@ -75,3 +97,10 @@ watch(() => props.table, async (table) => {
 		</div>
 	</DragDialog>
 </template>
+
+<style lang="scss" scoped>
+.wrapper {
+	max-height: 60vh;
+	overflow: auto;
+}
+</style>
