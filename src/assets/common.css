@@ -12,3 +12,18 @@ tr.hover-item > td {
 .hover-item:hover {
     font-weight: 600;
 }
+
+details.right summary {
+    width: fit-content;
+    direction: rtl;
+}
+
+details.right ::marker {
+    direction: ltr;
+    padding-left: 2em;
+}
+
+details.hide ::marker {
+    display: none;
+    font-size: 0;
+}

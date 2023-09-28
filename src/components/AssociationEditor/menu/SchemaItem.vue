@@ -54,24 +54,27 @@ const query = () => {
 </script>
 
 <template>
-	<div style="padding-left: 2em;">
-		<details>
-			<summary>
-				<span class="hover-item"
-					  @click.prevent="store.importSchema([...tables.map(table => table.id)])">{{ schema.name }}</span>
-				<button @click.prevent="deleteSchema">删除</button>
-			</summary>
-			<table style="padding-left: 2em;">
-				<tr>
+	<div>
+		<span class="hover-item"
+			  @click.prevent="store.importSchema([...tables.map(table => table.id)])">{{ schema.name }}</span>
+		<button @click.prevent="deleteSchema">删除</button>
+	</div>
+	<details style="padding-left: 1em;">
+		<summary>
+			TABLE
+		</summary>
+		<table style="padding-left: 1em;">
+			<tr>
+				<td colspan="2">
 					<input v-model="keywords" @change="query">
 					<button @click="query">搜索</button>
-				</tr>
-				<tr v-for="table in tables" :class="table.type" class="hover-item"
-					@click.prevent="store.importTable(table.id)">
-					<td>{{ table.name }}</td>
-					<td>{{ table.comment }}</td>
-				</tr>
-			</table>
-		</details>
-	</div>
+				</td>
+			</tr>
+			<tr v-for="table in tables" :class="table.type" class="hover-item"
+				@click.prevent="store.importTable(table.id)">
+				<td>{{ table.name }}</td>
+				<td>{{ table.comment }}</td>
+			</tr>
+		</table>
+	</details>
 </template>

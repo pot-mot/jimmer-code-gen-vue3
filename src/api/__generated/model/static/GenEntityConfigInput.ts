@@ -1,57 +1,53 @@
+import type { AssociationType, GenerationType } from '../enums';
+
 export interface GenEntityConfigInput {
-
+    
     add: boolean;
-
+    
     author: string;
-
-    classComment: string;
-
-    className: string;
-
+    
+    comment: string;
+    
     edit: boolean;
-
-    functionName: string;
-
+    
     genPath: string;
-
+    
     id?: number;
-
+    
     list: boolean;
-
-    moduleName: string;
-
+    
+    name: string;
+    
     orderKey: number;
-
-    packageName: string;
-
+    
     properties: GenEntityConfigInput_TargetOf_properties[];
-
+    
     query: boolean;
-
+    
     remark: string;
 }
 
 export interface GenEntityConfigInput_TargetOf_properties {
-
+    
+    annotationExpression?: string;
+    
+    associationType?: AssociationType;
+    
+    comment: string;
+    
     enumId?: number;
-
-    id: boolean;
-
-    idGenerationType: string;
-
+    
+    id?: number;
+    
+    idGenerationType?: GenerationType;
+    
     key: boolean;
-
+    
     logicalDelete: boolean;
-
+    
     name: string;
-
-    propertyAnnotationExpression: string;
-
-    propertyAssociationType: string;
-
-    propertyComment: string;
-
-    propertyType: string;
-
+    
     remark: string;
+    
+    type: string;
 }

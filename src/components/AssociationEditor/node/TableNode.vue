@@ -20,7 +20,7 @@
 				<td>{{ column.comment }}</td>
 			</tr>
 		</table>
-		<TableDialog v-if="showTableDialog" :table="table" @close="showTableDialog = false"></TableDialog>
+		<TableDialog v-if="showTableDialog" :id="table.id" @close="showTableDialog = false"></TableDialog>
 	</div>
 </template>
 
@@ -61,7 +61,7 @@
 
 <script lang='ts' setup>
 import {inject, nextTick, onMounted, ref} from "vue";
-import {GenTableColumnsView} from "../../../api/__generated/model/static";
+import {GenTableColumnView} from "../../../api/__generated/model/static";
 import {Node} from '@antv/x6'
 import {useTableEditorGraphStore} from "../../../store/tableEditorGraph.ts";
 import TableDialog from "./TableDialog.vue"
@@ -70,7 +70,7 @@ const wrapper = ref<HTMLElement | null>()
 
 const getNode = inject<() => Node>("getNode")!;
 
-const table = ref<GenTableColumnsView>()
+const table = ref<GenTableColumnView>()
 
 const showTableDialog = ref(false)
 
@@ -83,7 +83,7 @@ onMounted(() => {
 	nextTick(() => {
 		if (!wrapper.value) return
 
-		store.graph().disableHistory()
+		store._graph().disableHistory()
 
 		node.resize(wrapper.value.clientWidth, wrapper.value.clientHeight)
 
@@ -95,7 +95,7 @@ onMounted(() => {
 			})
 		})
 
-		store.graph().enableHistory()
+		store._graph().enableHistory()
 	})
 });
 </script>

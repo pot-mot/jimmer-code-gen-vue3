@@ -64,6 +64,6 @@ button:hover {
     color: #000;
 }
 
-detail {
-    outline: none;
+details summary {
+    outline: 0;
 }

@@ -1,12 +1,12 @@
 import {Edge, Graph, Shape} from "@antv/x6";
 import {COMMON_COLOR, MANY_TO_ONE, ONE_TO_ONE} from "../constant";
 import {AssociationType} from "../../../api/__generated/model/enums";
-import {GenAssociationInput, GenAssociationMatchView, GenTableColumnsView} from "../../../api/__generated/model/static";
+import {GenAssociationInput, GenAssociationMatchView, GenTableColumnView} from "../../../api/__generated/model/static";
 import {columnIdToPortId, portIdToColumnId} from "../port/ColumnPort.ts";
 import {getTables, nodeIdToTableId, tableIdToNodeId} from "../node/TableNode.ts";
 import {Options} from "@antv/x6/es/graph/options";
 import Connecting = Options.Connecting;
-import {GenTableColumnsView_TargetOf_columns} from "../../../api/__generated/model/static/GenTableColumnsView.ts";
+import {GenTableColumnView_TargetOf_columns} from "../../../api/__generated/model/static/GenTableColumnView.ts";
 import {api} from "../../../api";
 
 const baseColumnEdge = {
@@ -173,8 +173,8 @@ export const saveAssociations = async (graph: Graph) => {
     const tables = getTables(graph)
     const associations = getAssociations(graph)
 
-    const tableMap = new Map<number, GenTableColumnsView>
-    const columnMap = new Map<number, GenTableColumnsView_TargetOf_columns>
+    const tableMap = new Map<number, GenTableColumnView>
+    const columnMap = new Map<number, GenTableColumnView_TargetOf_columns>
 
     tables.forEach(table => {
         tableMap.set(table.id, table)
@@ -238,6 +238,8 @@ export const saveAssociations = async (graph: Graph) => {
 
     await api.associationService.deleteByTable({tableIds: [...tableMap.keys()]})
     await api.associationService.save({body: associations.map(viewToInput)})
+
+    alert("保存成功")
 }
 
 

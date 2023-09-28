@@ -1,11 +1,10 @@
-import type {Executor} from '../';
-import type {ColumnQuery, GenColumnCommonView} from '../model/static';
+import type { Executor } from '../';
+import type { ColumnQuery, GenColumnCommonView } from '../model/static';
 
 export class ColumnService {
-
-    constructor(private executor: Executor) {
-    }
-
+    
+    constructor(private executor: Executor) {}
+    
     async query(options: ColumnServiceOptions['query']): Promise<
         GenColumnCommonView[]
     > {
@@ -38,5 +37,5 @@ export class ColumnService {
 }
 
 export type ColumnServiceOptions = {
-    'query': { query: ColumnQuery }
+    'query': {query: ColumnQuery}
 }

@@ -50,7 +50,7 @@ watch(() => props.dataSource, () => {
 
 const deleteDataSource = (dataSourceId: number = props.dataSource.id) => {
 	api.dataSourceService.delete({ids: [dataSourceId]}).then(res => {
-		if (res == 1) {
+		if (res > 0) {
 			emits("delete", dataSourceId)
 		}
 	})
@@ -89,22 +89,28 @@ const handleSchemaDelete = (id: number) => {
 </script>
 
 <template>
-	<details open>
-		<summary>
-			<span>{{ dataSource.name }}</span>
-			<button @click="viewSchemas(dataSource.id)">全部 schema</button>
-			<button @click="handleEdit">编辑</button>
-			<button @click="deleteDataSource()">删除</button>
-		</summary>
-		<div v-show="showAllSchemas" style="padding-left: 3em">
-			<div v-for="schema in allSchemas">
-				<span class="hover-item" @click="importSchema(schema.name)">{{ schema.name }}</span>
-			</div>
+	<div>
+		<span>{{ dataSource.name }}</span>
+		<button @click="viewSchemas(dataSource.id)">全部 schema</button>
+		<button @click="handleEdit">编辑</button>
+		<button @click="deleteDataSource()">删除</button>
+	</div>
+	<div v-show="showAllSchemas" style="padding-left: 3em">
+		<div v-for="schema in allSchemas">
+			<span class="hover-item" @click="importSchema(schema.name)">{{ schema.name }}</span>
 		</div>
-		<template v-for="schema in schemas">
-			<SchemaItem :schema="schema" @delete="handleSchemaDelete"/>
-		</template>
+	</div>
+	<details open style="padding-left: 1em;">
+		<summary>SCHEMA</summary>
+		<div style="padding-left: 1em;">
+			<SchemaItem v-for="schema in schemas" :schema="schema" @delete="handleSchemaDelete"/>
+		</div>
 	</details>
-	<DataSourceDialog v-if="isEdit" :id="dataSource.id" :data-source="dataSource" :x="x" :y="y" @close="isEdit = false"
-					  @edit="handleEditFinish"></DataSourceDialog>
+	<DataSourceDialog v-if="isEdit"
+					  :id="dataSource.id"
+					  :data-source="dataSource"
+					  :x="x" :y="y"
+					  @close="isEdit = false"
+					  @edit="handleEditFinish">
+	</DataSourceDialog>
 </template>

@@ -1,11 +1,10 @@
-import type {Executor} from '../';
-import type {EntityQuery, GenEntityConfigInput, GenEntityPropertiesView} from '../model/static';
+import type { Executor } from '../';
+import type { EntityQuery, GenEntityConfigInput, GenEntityPropertiesView } from '../model/static';
 
 export class EntityService {
-
-    constructor(private executor: Executor) {
-    }
-
+    
+    constructor(private executor: Executor) {}
+    
     async config(options: EntityServiceOptions['config']): Promise<number> {
         let _uri = '/entity/config';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -24,17 +23,10 @@ export class EntityService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        _value = options.entity.classComment;
+        _value = options.entity.comment;
         if (_value !== undefined && _value !== null) {
             _uri += _separator
-            _uri += 'classComment='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.entity.className;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'className='
+            _uri += 'comment='
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
@@ -42,13 +34,6 @@ export class EntityService {
         if (_value !== undefined && _value !== null) {
             _uri += _separator
             _uri += 'edit='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.entity.functionName;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'functionName='
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
@@ -73,10 +58,10 @@ export class EntityService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        _value = options.entity.moduleName;
+        _value = options.entity.name;
         if (_value !== undefined && _value !== null) {
             _uri += _separator
-            _uri += 'moduleName='
+            _uri += 'name='
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
@@ -84,13 +69,6 @@ export class EntityService {
         if (_value !== undefined && _value !== null) {
             _uri += _separator
             _uri += 'orderKey='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.entity.packageName;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'packageName='
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
@@ -117,13 +95,13 @@ export class EntityService {
         }
         return (await this.executor({uri: _uri, method: 'PUT'})) as number
     }
-
+    
     async delete(options: EntityServiceOptions['delete']): Promise<number> {
         let _uri = '/entity/';
         _uri += encodeURIComponent(options.ids.join(','));
         return (await this.executor({uri: _uri, method: 'DELETE'})) as number
     }
-
+    
     async mapping(options: EntityServiceOptions['mapping']): Promise<
         number[]
     > {
@@ -139,7 +117,7 @@ export class EntityService {
         }
         return (await this.executor({uri: _uri, method: 'POST'})) as number[]
     }
-
+    
     async query(options: EntityServiceOptions['query']): Promise<
         GenEntityPropertiesView[]
     > {
@@ -172,8 +150,8 @@ export class EntityService {
 }
 
 export type EntityServiceOptions = {
-    'config': { entity: GenEntityConfigInput },
-    'delete': { ids: number[] },
-    'mapping': { tableIds: number[] },
-    'query': { query: EntityQuery }
+    'config': {entity: GenEntityConfigInput},
+    'delete': {ids: number[]},
+    'mapping': {tableIds: number[]},
+    'query': {query: EntityQuery}
 }

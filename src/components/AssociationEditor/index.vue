@@ -29,7 +29,7 @@
 		</ul>
 		<ul class="toolbar left-top">
 			<li>
-				<button @click="store.layout">布局</button>
+				<button @click="handleLayout">布局</button>
 				<select v-model="store.layoutDirection">
 					<option value="LR">左右</option>
 					<option value="RL">右左</option>
@@ -130,7 +130,7 @@
 </style>
 
 <script lang="ts" setup>
-import {onMounted, ref} from "vue";
+import {nextTick, onMounted, ref} from "vue";
 import {Graph} from "@antv/x6";
 
 import {ColumnPort} from "./port/ColumnPort.ts";
@@ -198,4 +198,10 @@ const {search, keyword, searchResult, showSearch} = useTableEditorSearch(() => g
 
 const {match, matchTypes, matchType} = useTableEditorMatch(() => graph)
 
+const handleLayout = () => {
+	store.layout()
+	nextTick(() => {
+		graph.centerContent()
+	})
+}
 </script>

@@ -1,5 +1,5 @@
-import {GenTableColumnsView} from "../../../api/__generated/model/static";
-import {Graph, Node} from "@antv/x6";
+import {GenTableColumnView} from "../../../api/__generated/model/static";
+import {Cell, Graph, Node} from "@antv/x6";
 import {COLUMN_HEIGHT, COLUMN_PORT} from "../constant";
 import {columnToPort} from "../port/ColumnPort.ts";
 import {api} from "../../../api";
@@ -14,7 +14,7 @@ export const nodeIdToTableId = (id: string) => {
     return parseInt(id.replace('table-', ''))
 }
 
-const tableToNode = (table: GenTableColumnsView, options: any = undefined) => {
+const tableToNode = (table: GenTableColumnView, options: any = undefined) => {
     return {
         ...options,
         shape: "table",
@@ -46,12 +46,19 @@ const tableToNode = (table: GenTableColumnsView, options: any = undefined) => {
     }
 }
 
-export const nodeToTable = (node: Node): GenTableColumnsView => {
+export const nodeToTable = (node: Node): GenTableColumnView => {
     return node.data.table
 }
 
-export const getTables = (graph: Graph): GenTableColumnsView[] => {
+export const getTables = (graph: Graph): GenTableColumnView[] => {
     return graph.getNodes().map(nodeToTable)
+}
+
+export const getTableNode = (graph: Graph, id: number): Node | undefined => {
+    const cell: Cell = graph.getCellById(tableIdToNodeId(id))
+    if (cell && cell.isNode()) {
+        return cell as Node
+    }
 }
 
 /**
@@ -59,7 +66,7 @@ export const getTables = (graph: Graph): GenTableColumnsView[] => {
  * @param graph
  * @param tables
  */
-export const addTableNodes = (graph: Graph, tables: readonly GenTableColumnsView[]) => {
+export const addTableNodes = (graph: Graph, tables: readonly GenTableColumnView[]) => {
     graph.addNodes(tables.map(table => {
         const svgRect = graph.view.svg.getBoundingClientRect()
         return tableToNode(table, graph.graphToLocal(
@@ -70,12 +77,12 @@ export const addTableNodes = (graph: Graph, tables: readonly GenTableColumnsView
 }
 
 /**
- * 获取存在的 TableNode id
+ * 过滤存在的 TableNode id
  * @param graph 图
  * @param tableIds
  * @returns 过滤结果
  */
-const getExistedTableNodeIds = (graph: Graph, tableIds: readonly number[]): number[] => {
+const filterExistedTableNodeIds = (graph: Graph, tableIds: readonly number[]): number[] => {
     const idSet = new Set(tableIds);
     return getTables(graph)
         .filter(table => idSet.has(table.id))
@@ -99,8 +106,8 @@ export const removeTableNodes = (graph: Graph, ids: readonly number[]) => {
  * @returns 新增 table，已存在的 id
  */
 export const importTableNodes = async (graph: Graph, ids: number[], replace: boolean = true) => {
-    const add = await api.tableService.list({ids})
-    const existedIds = getExistedTableNodeIds(graph, ids)
+    const add = await api.tableService.listColumnView({ids})
+    const existedIds = filterExistedTableNodeIds(graph, ids)
 
     if (replace) {
         removeTableNodes(graph, existedIds)
@@ -132,7 +139,7 @@ export const searchTableNodes = (graph: Graph, keywords: string[]): Node[] => {
 
     return graph.getNodes().filter(node => {
         if (node.data && node.data.table) {
-            const table: GenTableColumnsView = node.data.table
+            const table: GenTableColumnView = node.data.table
             for (const keyword of keywords) {
                 if (table.name.includes(keyword) || table.comment.includes(keyword)) {
                     return true
