@@ -37,8 +37,8 @@ export const initGraph = (container: HTMLElement, wrapper: HTMLElement): Graph =
 }
 
 const useHoverToFront = (graph: Graph) => {
-    graph.on('node:mouseenter', ({node}) => {
-        node.toFront()
+    graph.on('cell:mouseenter', ({cell}) => {
+        cell.toFront()
     })
 }
 

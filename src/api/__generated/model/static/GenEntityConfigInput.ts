@@ -37,7 +37,7 @@ export interface GenEntityConfigInput_TargetOf_properties {
     
     enumId?: number;
     
-    id?: number;
+    id: boolean;
     
     idGenerationType?: GenerationType;
     

@@ -18,7 +18,10 @@
 				<button @click="store.redo">redo</button>
 			</li>
 			<li>
-				<button @click="store.fit">缩放居中</button>
+				<button @click="store.fit">适应画布</button>
+			</li>
+			<li>
+				<button @click="graph.centerContent()">居中</button>
 			</li>
 			<li>
 				<button @click="store.removeAll">清除所有</button>
@@ -52,7 +55,7 @@
 				<div ref="minimap" class="minimap"></div>
 			</template>
 		</div>
-		<DragDialog v-if="showSearch" @close="showSearch = false">
+		<DragDialog v-if="showSearch" @close="showSearch = false" :x="400" :y="100">
 			<div class="search-box">
 				<input v-model="keyword" autofocus @keydown.enter="search">
 				<button @click="search">搜索</button>

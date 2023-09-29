@@ -36,6 +36,14 @@ const focusTable = (id: number | undefined) => {
 	const node = getTableNode(graph, id)
 	if (node) focusNode(graph, node)
 }
+
+const handleGenerate = () => {
+	if (table.value) {
+		api.entityService.mapping({body: [table.value.id]}).then(res => {
+			alert("实体映射成功，实体id：" + res)
+		})
+	}
+}
 </script>
 
 <template>
@@ -86,7 +94,7 @@ const focusTable = (id: number | undefined) => {
 				</div>
 			</div>
 			<div>
-				<button>生成实体</button>
+				<button @click="handleGenerate">生成实体</button>
 			</div>
 		</template>
 		<div v-else>

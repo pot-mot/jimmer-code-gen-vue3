@@ -5,30 +5,34 @@ import {nextTick, ref} from "vue";
 export const useMiniMap = (_graph: () => Graph, _container: () => HTMLElement | undefined) => {
     const showMinimap = ref(false)
 
+    const minimap = ref<MiniMap | undefined>()
+
     const setMiniMap = async () => {
+        await nextTick()
+
         const graph = _graph()
         const container = _container()
 
         if (!graph || !container) return
 
-        await nextTick()
-        graph.use(
-            new MiniMap({
-                container,
-                width: container.clientWidth,
-                height: container.clientHeight,
-                scalable: false,
+        minimap.value = new MiniMap({
+            container,
+            width: container.clientWidth,
+            height: container.clientHeight,
 
-                graphOptions: {
-                    async: true,
-                    createCellView(cell) {
-                        // 在小地图中不渲染边
-                        if (cell.isEdge()) {
-                            return null
-                        }
-                    },
-                }
-            })
+            graphOptions: {
+                async: true,
+                createCellView(cell) {
+                    // 在小地图中不渲染边
+                    if (cell.isEdge()) {
+                        return null
+                    }
+                },
+            }
+        })
+
+        graph.use(
+            minimap.value
         );
     }
 
@@ -36,6 +40,8 @@ export const useMiniMap = (_graph: () => Graph, _container: () => HTMLElement | 
         showMinimap.value = !showMinimap.value
         if (showMinimap.value) {
             await setMiniMap()
+        } else {
+            minimap.value?.dispose()
         }
     }
 
