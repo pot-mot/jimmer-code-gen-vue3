@@ -4,6 +4,7 @@ import {api} from "../../../api";
 import {GenDataSourceView} from "../../../api/__generated/model/static";
 import DataSourceItem from "./DataSourceItem.vue";
 import DataSourceDialog from "./DataSourceDialog.vue";
+import {sendMessage} from "../../../utils/message.ts";
 
 const dataSources = ref<GenDataSourceView[]>([])
 
@@ -37,7 +38,7 @@ const handleChange = () => {
 }
 
 const handleDelete = (id: number) => {
-	alert(`删除 dataSource ${id} 成功`)
+	sendMessage(`删除 dataSource ${id} 成功`, "Success")
 	getData()
 }
 </script>

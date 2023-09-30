@@ -39,9 +39,7 @@ const focusTable = (id: number | undefined) => {
 
 const handleGenerate = () => {
 	if (table.value) {
-		api.entityService.mapping({body: [table.value.id]}).then(res => {
-			alert("实体映射成功，实体id：" + res)
-		})
+		store.generate([table.value.id])
 	}
 }
 </script>

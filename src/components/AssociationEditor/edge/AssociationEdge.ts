@@ -8,6 +8,7 @@ import {Options} from "@antv/x6/es/graph/options";
 import Connecting = Options.Connecting;
 import {GenTableColumnView_TargetOf_columns} from "../../../api/__generated/model/static/GenTableColumnView.ts";
 import {api} from "../../../api";
+import {sendMessage} from "../../../utils/message.ts";
 
 const baseColumnEdge = {
     attrs: {
@@ -239,7 +240,7 @@ export const saveAssociations = async (graph: Graph) => {
     await api.associationService.deleteByTable({tableIds: [...tableMap.keys()]})
     await api.associationService.save({body: associations.map(viewToInput)})
 
-    alert("保存成功")
+    sendMessage("保存成功", "Success")
 }
 
 

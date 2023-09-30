@@ -1,5 +1,5 @@
 import type { Executor } from '../';
-import type { EntityQuery, GenEntityConfigInput, GenEntityPropertiesView } from '../model/static';
+import type { EntityQuery, GenEntityConfigInput, GenEntityPropertiesView, byte } from '../model/static';
 
 export class EntityService {
     
@@ -14,6 +14,13 @@ export class EntityService {
         let _uri = '/entity/';
         _uri += encodeURIComponent(options.ids.join(','));
         return (await this.executor({uri: _uri, method: 'DELETE'})) as number
+    }
+    
+    async generate(options: EntityServiceOptions['generate']): Promise<
+        byte[]
+    > {
+        let _uri = '/entity/generate';
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as byte[]
     }
     
     async mapping(options: EntityServiceOptions['mapping']): Promise<
@@ -57,6 +64,7 @@ export class EntityService {
 export type EntityServiceOptions = {
     'config': {body: GenEntityConfigInput},
     'delete': {ids: number[]},
+    'generate': {body: number[]},
     'mapping': {body: number[]},
     'query': {query: EntityQuery}
 }

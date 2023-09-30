@@ -12,16 +12,6 @@
 					关联编辑
 				</li>
 			</RouterLink>
-			<RouterLink to="/entity">
-				<li>
-					实体生成
-				</li>
-			</RouterLink>
-			<RouterLink to="/data">
-				<li>
-					数据管理
-				</li>
-			</RouterLink>
 		</ul>
 	</div>
 

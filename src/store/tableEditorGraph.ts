@@ -8,11 +8,11 @@ import {
     focusNode,
     getTables,
     importTableNodes,
-    tableIdToNodeId
+    tableIdToNodeId, mappingEntities, generateEntities
 } from "../components/AssociationEditor/node/TableNode.ts";
 import {defaultZoomRange} from "../components/AssociationEditor/graph/scale.ts";
 import {nextTick, Ref, ref} from 'vue';
-import {getSelectEdges} from "../components/AssociationEditor/graph/useSelection.ts";
+import {getSelectedEdges} from "../components/AssociationEditor/graph/useSelection.ts";
 import {layoutByLevels} from "../components/AssociationEditor/graph/layout.ts";
 
 export const useTableEditorGraphStore =
@@ -95,7 +95,7 @@ export const useTableEditorGraphStore =
                 if (graph.isSelectionEmpty()) {
                     graph.removeCells(graph.getEdges())
                 } else {
-                    graph.removeCells(getSelectEdges(graph))
+                    graph.removeCells(getSelectedEdges(graph))
                 }
             }
 
@@ -158,6 +158,11 @@ export const useTableEditorGraphStore =
                 }, 500)
             }
 
+            const generate = async (tableIds?: number[]) => {
+                const entityIds = await mappingEntities(_graph(), tableIds)
+                await generateEntities(entityIds)
+            }
+
             return {
                 _graph,
 
@@ -182,6 +187,8 @@ export const useTableEditorGraphStore =
                 layoutDirection,
 
                 fitAndLayout,
+
+                generate
             }
         }
     )

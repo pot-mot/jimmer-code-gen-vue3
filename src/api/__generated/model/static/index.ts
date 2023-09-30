@@ -15,3 +15,4 @@ export type { GenTableColumnView } from './GenTableColumnView';
 export type { GenTableCommonView } from './GenTableCommonView';
 export type { TableQuery } from './TableQuery';
 export type { TimeRangeQueryParam } from './TimeRangeQueryParam';
+export type { byte } from './byte';

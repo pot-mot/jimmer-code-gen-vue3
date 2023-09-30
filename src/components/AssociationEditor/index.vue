@@ -1,5 +1,5 @@
 <template>
-	<div ref="wrapper" class="wrapper">
+	<div ref="wrapper" class="wrapper" id="AssociationEditor">
 		<div ref="container"></div>
 
 		<ul class="toolbar left-bottom">
@@ -47,7 +47,13 @@
 				</select>
 			</li>
 			<li>
-				<button @click="saveAssociations(graph)">保存关联（入库）</button>
+				<button @click="saveGraph(graph)">保存编辑区</button>
+			</li>
+			<li>
+				<button @click="saveAssociations(graph)">保存关联</button>
+			</li>
+			<li>
+				<button @click="store.generate()">生成实体</button>
 			</li>
 		</ul>
 		<div class="toolbar right-bottom">
@@ -55,25 +61,25 @@
 				<div ref="minimap" class="minimap"></div>
 			</template>
 		</div>
-		<DragDialog v-if="showSearch" @close="showSearch = false" :x="400" :y="100">
-			<div class="search-box">
-				<input v-model="keyword" autofocus @keydown.enter="search">
-				<button @click="search">搜索</button>
-				<div v-if="searchResult.length == 0">
-					暂无数据
-				</div>
-				<div style="max-height: 60vh; overflow: auto; min-width: 20em;">
-					<table>
-						<tr v-for="node in searchResult" :class="node.data.table.type" class="hover-item"
-							@click="focusNode(graph, node)">
-							<td>{{ node.data.table.name }}</td>
-							<td>{{ node.data.table.comment }}</td>
-						</tr>
-					</table>
-				</div>
-			</div>
-		</DragDialog>
 	</div>
+	<DragDialog v-if="showSearch" @close="showSearch = false" :y="100" to="#AssociationEditor">
+		<div class="search-box">
+			<input v-model="keyword" autofocus @keydown.enter="search">
+			<button @click="search">搜索</button>
+			<div v-if="searchResult.length == 0">
+				暂无数据
+			</div>
+			<div style="max-height: 60vh; overflow: auto; min-width: 20em;">
+				<table>
+					<tr v-for="node in searchResult" :class="node.data.table.type" class="hover-item"
+						@click="focusNode(graph, node)">
+						<td>{{ node.data.table.name }}</td>
+						<td>{{ node.data.table.comment }}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</DragDialog>
 </template>
 
 <style lang="scss" scoped>
@@ -145,7 +151,7 @@ import {COLUMN_PORT} from "./constant";
 import {useHistory, useHistoryKeyEvent} from "./graph/useHistory.ts";
 import {useSelection, useSelectionKeyEvent} from "./graph/useSelection.ts";
 import {saveAssociations, useSwitchAssociationType} from "./edge/AssociationEdge.ts";
-import {loadGraph} from "./graph/localStorage.ts";
+import {loadGraph, saveGraph} from "./graph/localStorage.ts";
 import {useTableEditorGraphStore} from "../../store/tableEditorGraph.ts";
 import {useMiniMap} from "./graph/useMiniMap.ts";
 import DragDialog from "../common/DragDialog.vue";

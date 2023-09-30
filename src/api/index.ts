@@ -1,5 +1,5 @@
 import {Api} from "./__generated";
-
+import {sendMessage} from "../utils/message.ts";
 
 const BASE_URL = "/api";
 
@@ -11,14 +11,24 @@ export const api = new Api(async ({uri, method, body}) => {
             'content-type': 'application/json;charset=UTF-8',
         }
     });
-    if (response.status !== 200) {
+    if (response.status != 200) {
         const result = await response.json()
-        alert(JSON.stringify(result))
+        sendMessage(JSON.stringify(result), "Error", result)
         throw result
     }
-    const text = await response.text();
-    if (text.length === 0) {
-        return null;
+
+    const contentType = response.headers.get("content-type");
+
+    if (!contentType) {
+        return null
+    } else if (contentType.includes("application/json")) {
+        return await response.json()
+    } else  if (contentType.includes("application/octet-stream")) {
+        return await response.blob()
+    } else {
+        // 其他类型的响应内容
+        console.log(contentType)
+        return response.body
     }
-    return JSON.parse(text);
-});
+
+})

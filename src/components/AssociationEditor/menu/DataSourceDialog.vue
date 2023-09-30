@@ -4,6 +4,7 @@ import {api} from "../../../api";
 import {GenDataSourceInput, GenDataSourceView} from "../../../api/__generated/model/static";
 import {DataSourceType} from "../../../api/__generated/model/enums";
 import DragDialog from "../../common/DragDialog.vue";
+import {sendMessage} from "../../../utils/message.ts";
 
 const dataSourceTypes = ref<DataSourceType[]>([])
 
@@ -56,9 +57,9 @@ const test = () => {
 		body: dataSource.value
 	}).then(res => {
 		if (res) {
-			alert("测试成功")
+			sendMessage("数据源测试成功", "Success")
 		} else {
-			alert("测试失败")
+			sendMessage("数据源测试失败", "Warning")
 		}
 	})
 }

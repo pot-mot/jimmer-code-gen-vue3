@@ -10,9 +10,12 @@ interface DragResizeProps {
 	initW?: number
 	minW?: number
 	minH?: number
+	to?: string
 }
 
-defineProps<DragResizeProps>()
+withDefaults(defineProps<DragResizeProps>(), {
+	to: "body"
+})
 
 interface DragDialogEmits {
 	(event: "close"): void
@@ -45,7 +48,7 @@ onMounted(() => {
 </script>
 
 <template>
-	<Teleport to="body">
+	<Teleport :to="to">
 		<DragResize :active="true" :draggable="draggable" :parent="true" :resizable="true"
 					:h="h" :initH="initH" :initW="initW" :minH="minH" :minW="minW" :x="x" :y="y"
 					style="border: none;">

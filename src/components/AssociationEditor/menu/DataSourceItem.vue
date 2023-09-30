@@ -6,6 +6,7 @@ import SchemaItem from "./SchemaItem.vue";
 import {api} from "../../../api";
 import {GenSchemaDto} from "../../../api/__generated/model/dto";
 import DataSourceDialog from "./DataSourceDialog.vue";
+import {sendMessage} from "../../../utils/message.ts";
 
 interface DataSourceItemProps {
 	dataSource: GenDataSourceView
@@ -83,7 +84,7 @@ const handleEditFinish = () => {
 }
 
 const handleSchemaDelete = (id: number) => {
-	alert(`删除 schema ${id} 成功`)
+	sendMessage(`删除 schema ${id} 成功`, "Success")
 	getSchemas()
 }
 </script>

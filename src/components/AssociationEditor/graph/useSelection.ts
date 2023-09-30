@@ -45,10 +45,10 @@ export const useSelectionKeyEvent = (_graph: () => Graph) => {
     })
 }
 
-export const getSelectNodes = (graph: Graph): Node[] => {
+export const getSelectedNodes = (graph: Graph): Node[] => {
     return graph.getSelectedCells().filter(cell => cell.isNode()).map(cell => cell as Node)
 }
 
-export const getSelectEdges = (graph: Graph): Edge[] => {
+export const getSelectedEdges = (graph: Graph): Edge[] => {
     return graph.getSelectedCells().filter(cell => cell.isEdge()).map(cell => cell as Edge)
 }

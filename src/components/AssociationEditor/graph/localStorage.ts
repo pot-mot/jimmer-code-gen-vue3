@@ -1,4 +1,5 @@
 import {Graph} from "@antv/x6";
+import {sendMessage} from "../../../utils/message.ts";
 
 export const saveGraph = (graph: Graph) => {
     if (!graph) return
@@ -6,11 +7,10 @@ export const saveGraph = (graph: Graph) => {
     try {
         graph.cleanSelection()
         localStorage.setItem('graph', JSON.stringify(graph.toJSON()))
-        alert("保存成功")
+        sendMessage("保存成功", "Success")
     } catch (e) {
         clearGraph(graph)
-        alert("保存失败")
-        console.error(e)
+        sendMessage("保存失败", "Error", e)
     }
 }
 

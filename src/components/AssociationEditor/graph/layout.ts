@@ -1,7 +1,7 @@
 import {Edge, Graph, Node} from "@antv/x6"
 import {nodeIdToTableId} from "../node/TableNode.ts"
 import {Point} from "@antv/x6-geometry"
-import {getSelectEdges, getSelectNodes} from "./useSelection.ts";
+import {getSelectedEdges, getSelectedNodes} from "./useSelection.ts";
 
 interface LayoutNode {
     id: number
@@ -331,8 +331,8 @@ export const layoutByLevels = (
         nodes = toLayoutNodes(graph.getNodes())
         edges = toLayoutEdges(graph.getEdges())
     } else {
-        nodes = toLayoutNodes(getSelectNodes(graph))
-        edges = toLayoutEdges(getSelectEdges(graph))
+        nodes = toLayoutNodes(getSelectedNodes(graph))
+        edges = toLayoutEdges(getSelectedEdges(graph))
     }
 
     setLevel(nodes, edges)
