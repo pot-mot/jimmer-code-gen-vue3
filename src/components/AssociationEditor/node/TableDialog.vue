@@ -37,6 +37,24 @@ const focusTable = (id: number | undefined) => {
 	if (node) focusNode(graph, node)
 }
 
+const previewEntities = ref<{ name: string, value: string }[]>([])
+
+const previewShow = ref(false)
+
+const handlePreview = async () => {
+	if (table.value) {
+		const res = await store.preview([table.value.id])
+		previewEntities.value = []
+		Object.entries(res).forEach(([key, value]) => {
+			previewEntities.value?.push({
+				name: key,
+				value
+			})
+		})
+		previewShow.value = true
+	}
+}
+
 const handleGenerate = () => {
 	if (table.value) {
 		store.generate([table.value.id])
@@ -56,7 +74,7 @@ const handleGenerate = () => {
 			<div class="wrapper">
 				<div v-for="column in table.columns" style="padding-left: 1em;">
 					<details class="right"
-						:class="{'hide': column.inAssociations.length == 0 && column.outAssociations.length == 0}">
+							 :class="{'hide': column.inAssociations.length == 0 && column.outAssociations.length == 0}">
 						<summary>
 							<span>
 								{{ column.name }}
@@ -92,8 +110,17 @@ const handleGenerate = () => {
 				</div>
 			</div>
 			<div>
+				<button @click="handlePreview">预览实体</button>
 				<button @click="handleGenerate">生成实体</button>
 			</div>
+			<DragDialog v-if="previewShow" @close="previewShow = false">
+				<div style="height: 80vh; width: 80vw; overflow: auto;">
+					<div v-for="item in previewEntities">
+						<div>{{ item.name }}</div>
+						<div v-text="item.value" style="white-space: pre;"></div>
+					</div>
+				</div>
+			</DragDialog>
 		</template>
 		<div v-else>
 			Table 不在数据库中

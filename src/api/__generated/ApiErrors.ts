@@ -42,6 +42,8 @@ export type ApiErrors = {
     },
     "entityService": {
     },
+    "packageService": {
+    },
     "schemaService": {
     },
     "tableService": {

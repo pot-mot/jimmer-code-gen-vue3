@@ -195,6 +195,11 @@ export const mappingEntities = async (graph: Graph, tableIds?: number[]) => {
     return res
 }
 
+export const previewEntities = async (graph: Graph, tableIds?: number[]) => {
+    const entityIds = await mappingEntities(graph, tableIds)
+    return await api.entityService.preview({entityIds})
+}
+
 export const generateEntities = async (body: number[]) => {
     const res = (await api.entityService.generate({body})) as any as Blob
     const file = new File([res], "entities.zip")

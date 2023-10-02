@@ -12,6 +12,8 @@ export interface GenEntityPropertiesView {
     
     edit: boolean;
     
+    genPackage?: GenEntityPropertiesView_TargetOf_genPackage;
+    
     genPath: string;
     
     id: number;
@@ -33,9 +35,27 @@ export interface GenEntityPropertiesView {
     tableId?: number;
 }
 
+export interface GenEntityPropertiesView_TargetOf_genPackage {
+    
+    id: number;
+    
+    name: string;
+    
+    parent?: GenEntityPropertiesView_TargetOf_genPackage_TargetOf_parent;
+}
+
+export interface GenEntityPropertiesView_TargetOf_genPackage_TargetOf_parent {
+    
+    id: number;
+    
+    name: string;
+    
+    parent?: GenEntityPropertiesView_TargetOf_genPackage_TargetOf_parent;
+}
+
 export interface GenEntityPropertiesView_TargetOf_properties {
     
-    annotationExpression?: string;
+    associationAnnotation?: string;
     
     associationType?: AssociationType;
     
@@ -45,6 +65,8 @@ export interface GenEntityPropertiesView_TargetOf_properties {
     
     createdTime: string;
     
+    dissociateAnnotation?: string;
+    
     entityId: number;
     
     enumId?: number;
@@ -53,7 +75,13 @@ export interface GenEntityPropertiesView_TargetOf_properties {
     
     idGenerationType?: GenerationType;
     
+    idView: boolean;
+    
+    idViewAnnotation?: string;
+    
     key: boolean;
+    
+    list: boolean;
     
     logicalDelete: boolean;
     
@@ -61,7 +89,13 @@ export interface GenEntityPropertiesView_TargetOf_properties {
     
     name: string;
     
+    notNull: boolean;
+    
+    otherAnnotation?: string;
+    
     remark: string;
     
     type: string;
+    
+    typeTableId?: number;
 }

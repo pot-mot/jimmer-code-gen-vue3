@@ -8,7 +8,7 @@ import {
     focusNode,
     getTables,
     importTableNodes,
-    tableIdToNodeId, mappingEntities, generateEntities
+    tableIdToNodeId, mappingEntities, generateEntities, previewEntities
 } from "../components/AssociationEditor/node/TableNode.ts";
 import {defaultZoomRange} from "../components/AssociationEditor/graph/scale.ts";
 import {nextTick, Ref, ref} from 'vue';
@@ -163,6 +163,10 @@ export const useTableEditorGraphStore =
                 await generateEntities(entityIds)
             }
 
+            const preview = async (tableIds?: number[]) => {
+                return await previewEntities(_graph(), tableIds)
+            }
+
             return {
                 _graph,
 
@@ -188,6 +192,7 @@ export const useTableEditorGraphStore =
 
                 fitAndLayout,
 
+                preview,
                 generate
             }
         }

@@ -29,11 +29,13 @@ export interface GenEntityConfigInput {
 
 export interface GenEntityConfigInput_TargetOf_properties {
     
-    annotationExpression?: string;
+    associationAnnotation?: string;
     
     associationType?: AssociationType;
     
     comment: string;
+    
+    dissociateAnnotation?: string;
     
     enumId?: number;
     
@@ -41,11 +43,21 @@ export interface GenEntityConfigInput_TargetOf_properties {
     
     idGenerationType?: GenerationType;
     
+    idView: boolean;
+    
+    idViewAnnotation?: string;
+    
     key: boolean;
+    
+    list: boolean;
     
     logicalDelete: boolean;
     
     name: string;
+    
+    notNull: boolean;
+    
+    otherAnnotation?: string;
     
     remark: string;
     

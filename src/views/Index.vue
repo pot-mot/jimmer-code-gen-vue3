@@ -12,6 +12,11 @@
 					关联编辑
 				</li>
 			</RouterLink>
+			<RouterLink to="/entity">
+				<li>
+					实体管理
+				</li>
+			</RouterLink>
 		</ul>
 	</div>
 
@@ -89,3 +94,5 @@
 	}
 }
 </style>
+<script setup lang="ts">
+</script>

@@ -1,1 +1,1 @@
-export type DataSourceType = 'MYSQL';
+export type DataSourceType = 'MySQL' | 'PostgreSQL';

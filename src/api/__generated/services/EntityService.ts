@@ -1,4 +1,5 @@
 import type { Executor } from '../';
+import type { GenLanguage } from '../model/enums';
 import type { EntityQuery, GenEntityConfigInput, GenEntityPropertiesView, byte } from '../model/static';
 
 export class EntityService {
@@ -20,6 +21,15 @@ export class EntityService {
         byte[]
     > {
         let _uri = '/entity/generate';
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.language;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'language='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as byte[]
     }
     
@@ -28,6 +38,23 @@ export class EntityService {
     > {
         let _uri = '/entity/mapping';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number[]
+    }
+    
+    async preview(options: EntityServiceOptions['preview']): Promise<
+        { [key: string]: string }
+    > {
+        let _uri = '/entity/preview/';
+        _uri += encodeURIComponent(options.entityIds.join(','));
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.language;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'language='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        return (await this.executor({uri: _uri, method: 'GET'})) as { [key: string]: string }
     }
     
     async query(options: EntityServiceOptions['query']): Promise<
@@ -64,7 +91,8 @@ export class EntityService {
 export type EntityServiceOptions = {
     'config': {body: GenEntityConfigInput},
     'delete': {ids: number[]},
-    'generate': {body: number[]},
+    'generate': {body: number[], language?: GenLanguage},
     'mapping': {body: number[]},
+    'preview': {entityIds: number[], language?: GenLanguage},
     'query': {query: EntityQuery}
 }
