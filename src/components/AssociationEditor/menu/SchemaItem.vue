@@ -3,6 +3,7 @@ import {ref, watch} from "vue";
 import {GenSchemaView, GenTableCommonView} from "../../../api/__generated/model/static";
 import {api} from "../../../api";
 import {useTableEditorGraphStore} from "../../../store/tableEditorGraph";
+import Details from "../../common/Details.vue";
 
 const store = useTableEditorGraphStore()
 
@@ -54,27 +55,31 @@ const query = () => {
 </script>
 
 <template>
-	<div>
-		<span class="hover-item"
-			  @click.prevent="store.importSchema([...tables.map(table => table.id)])">{{ schema.name }}</span>
-		<button @click.prevent="deleteSchema">删除</button>
-	</div>
-	<details style="padding-left: 1em;">
-		<summary>
-			TABLE
-		</summary>
+	<Details>
+		<template #title>
+			<div style="height: 2.5em; line-height: 2.5em;">
+				<span
+					@click.prevent.stop="store.importSchema([...tables.map(table => table.id)])">{{
+						schema.name
+					}}</span>
+				<el-button @click.prevent.stop="deleteSchema">删除</el-button>
+			</div>
+		</template>
 		<table style="padding-left: 1em;">
 			<tr>
 				<td colspan="2">
-					<input v-model="keywords" @change="query">
-					<button @click="query">搜索</button>
+					<el-input v-model="keywords" @change="query">
+						<template #append>
+							<el-button @click="query">搜索</el-button>
+						</template>
+					</el-input>
 				</td>
 			</tr>
-			<tr v-for="table in tables" :class="table.type" class="hover-item"
-				@click.prevent="store.importTable(table.id)">
+			<tr v-for="table in tables" :class="table.type"
+				@click.prevent.stop="store.importTable(table.id)">
 				<td>{{ table.name }}</td>
 				<td>{{ table.comment }}</td>
 			</tr>
 		</table>
-	</details>
+	</Details>
 </template>

@@ -4,56 +4,56 @@
 
 		<ul class="toolbar left-bottom">
 			<li>
-				<button @click="toggleMinimap">minimap</button>
+				<el-button @click="toggleMinimap">minimap</el-button>
 			</li>
 			<li>
-				<button @click="toggleLog">log</button>
+				<el-button @click="toggleLog">log</el-button>
 			</li>
 		</ul>
 		<ul class="toolbar right-top">
 			<li>
-				<button @click="store.undo">undo</button>
+				<el-button @click="store.undo">undo</el-button>
 			</li>
 			<li>
-				<button @click="store.redo">redo</button>
+				<el-button @click="store.redo">redo</el-button>
 			</li>
 			<li>
-				<button @click="store.fit">适应画布</button>
+				<el-button @click="store.fit">适应画布</el-button>
 			</li>
 			<li>
-				<button @click="graph.centerContent()">居中</button>
+				<el-button @click="graph.centerContent()">居中</el-button>
 			</li>
 			<li>
-				<button @click="store.removeAll">清除所有</button>
+				<el-button @click="store.removeAll">清除所有</el-button>
 			</li>
 			<li>
-				<button @click="store.removeAssociation">清除关联</button>
+				<el-button @click="store.removeAssociation">清除关联</el-button>
 			</li>
 		</ul>
 		<ul class="toolbar left-top">
 			<li>
-				<button @click="handleLayout">布局</button>
-				<select v-model="store.layoutDirection">
-					<option value="LR">左右</option>
-					<option value="RL">右左</option>
-					<option value="TB">上下</option>
-					<option value="BT">下上</option>
-				</select>
+				<el-button @click="handleLayout">布局</el-button>
+				<el-select v-model="store.layoutDirection">
+					<el-option value="LR">左右</el-option>
+					<el-option value="RL">右左</el-option>
+					<el-option value="TB">上下</el-option>
+					<el-option value="BT">下上</el-option>
+				</el-select>
 			</li>
 			<li>
-				<button @click="match">匹配关联</button>
-				<select v-model="matchType">
-					<option v-for="(type) in matchTypes" :value="type">{{ type }}</option>
-				</select>
+				<el-button @click="match">匹配关联</el-button>
+				<el-select v-model="matchType">
+					<el-option v-for="(type) in matchTypes" :value="type">{{ type }}</el-option>
+				</el-select>
 			</li>
 			<li>
-				<button @click="saveGraph(graph)">保存编辑区</button>
+				<el-button @click="saveGraph(graph)">保存编辑区</el-button>
 			</li>
 			<li>
-				<button @click="saveAssociations(graph)">保存关联</button>
+				<el-button @click="saveAssociations(graph)">保存关联</el-button>
 			</li>
 			<li>
-				<button @click="store.generate()">生成实体</button>
+				<el-button @click="store.generate()">生成实体</el-button>
 			</li>
 		</ul>
 		<div class="toolbar right-bottom">
@@ -63,15 +63,18 @@
 		</div>
 	</div>
 	<DragDialog v-if="showSearch" @close="showSearch = false" :y="100" to="#AssociationEditor">
-		<div class="search-box">
-			<input v-model="keyword" autofocus @keydown.enter="search">
-			<button @click="search">搜索</button>
+		<div>
+			<el-input v-model="keyword" autofocus @keydown.enter="search">
+				<template #append>
+					<el-button @click="search">搜索</el-button>
+				</template>
+			</el-input>
 			<div v-if="searchResult.length == 0">
 				暂无数据
 			</div>
 			<div style="max-height: 60vh; overflow: auto; min-width: 20em;">
 				<table>
-					<tr v-for="node in searchResult" :class="node.data.table.type" class="hover-item"
+					<tr v-for="node in searchResult" :class="node.data.table.type"
 						@click="focusNode(graph, node)">
 						<td>{{ node.data.table.name }}</td>
 						<td>{{ node.data.table.comment }}</td>
@@ -122,11 +125,6 @@
 		width: max(15vw, 200px);
 		height: max(20vh, 200px);
 	}
-}
-
-.search-box {
-	padding-left: 10px;
-	font-size: 12px;
 }
 
 .x6-node-selected .node-wrapper {

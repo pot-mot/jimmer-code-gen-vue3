@@ -32,7 +32,7 @@ export interface GenEntityPropertiesView {
     
     remark: string;
     
-    tableId?: number;
+    tableId: number;
 }
 
 export interface GenEntityPropertiesView_TargetOf_genPackage {
@@ -68,8 +68,6 @@ export interface GenEntityPropertiesView_TargetOf_properties {
     dissociateAnnotation?: string;
     
     entityId: number;
-    
-    enumId?: number;
     
     id: boolean;
     

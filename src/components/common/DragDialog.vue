@@ -11,10 +11,12 @@ interface DragResizeProps {
 	minW?: number
 	minH?: number
 	to?: string
+	resizable?: boolean
 }
 
 withDefaults(defineProps<DragResizeProps>(), {
-	to: "body"
+	to: "body",
+	resizable: false,
 })
 
 interface DragDialogEmits {
@@ -49,7 +51,7 @@ onMounted(() => {
 
 <template>
 	<Teleport :to="to">
-		<DragResize :active="true" :draggable="draggable" :parent="true" :resizable="true"
+		<DragResize :active="true" :draggable="draggable" :parent="true" :resizable="resizable"
 					:h="h" :initH="initH" :initW="initW" :minH="minH" :minW="minW" :x="x" :y="y"
 					style="border: none;">
 			<div class="wrapper">
@@ -81,15 +83,11 @@ onMounted(() => {
 	height: calc(100% - 8px);
 	width: calc(100% - 8px);
 	margin: 4px;
-	padding: 10px;
-	border: 1px solid rgba(0, 0, 0, .5);
-	cursor: all-scroll;
+	padding: 1em;
+	box-shadow: var(--el-box-shadow);
 	background-color: #fff;
+	cursor: all-scroll;
 	position: relative;
-}
-
-.dragging > .wrapper {
-	border-color: #000;
 }
 
 :deep(.handle) {

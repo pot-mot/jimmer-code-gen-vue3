@@ -37,8 +37,6 @@ export interface GenEntityConfigInput_TargetOf_properties {
     
     dissociateAnnotation?: string;
     
-    enumId?: number;
-    
     id: boolean;
     
     idGenerationType?: GenerationType;

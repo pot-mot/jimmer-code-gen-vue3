@@ -3,7 +3,7 @@ import {onMounted, ref} from "vue";
 import {api} from "../../../api";
 import {GenDataSourceView} from "../../../api/__generated/model/static";
 import DataSourceItem from "./DataSourceItem.vue";
-import DataSourceDialog from "./DataSourceDialog.vue";
+import DataSourceDialog from "../../dialog/DataSourceDialog.vue";
 import {sendMessage} from "../../../utils/message.ts";
 
 const dataSources = ref<GenDataSourceView[]>([])
@@ -44,8 +44,8 @@ const handleDelete = (id: number) => {
 </script>
 
 <template>
-	<div class="wrapper" style="font-size: 12px;">
-		<button @click="handleSave">新增</button>
+	<div class="wrapper">
+		<el-button @click="handleSave">新增</el-button>
 		<template v-for="dataSource in dataSources">
 			<DataSourceItem :data-source="dataSource" @change="handleChange" @delete="handleDelete"/>
 		</template>
@@ -60,6 +60,8 @@ const handleDelete = (id: number) => {
 	width: 100%;
 	overflow: auto;
 	white-space: nowrap;
-	padding-bottom: 20px;
+	padding-bottom: 2em;
+	padding-left: 1em;
+	scrollbar-gutter: stable;
 }
 </style>

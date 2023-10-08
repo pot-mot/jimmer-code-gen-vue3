@@ -64,7 +64,7 @@ import {inject, nextTick, onMounted, ref} from "vue";
 import {GenTableColumnView} from "../../../api/__generated/model/static";
 import {Node} from '@antv/x6'
 import {useTableEditorGraphStore} from "../../../store/tableEditorGraph.ts";
-import TableDialog from "./TableDialog.vue"
+import TableDialog from "../../dialog/TableDialog.vue"
 
 const wrapper = ref<HTMLElement | null>()
 

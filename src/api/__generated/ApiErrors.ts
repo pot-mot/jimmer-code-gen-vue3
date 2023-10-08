@@ -18,21 +18,7 @@ export type ApiErrors = {
                 readonly [key:string]: any
             }
         ),
-        "importSchema": AllErrors & (
-            {
-                readonly family: 'DATA_SOURCE_ERROR_CODE',
-                readonly code: 'CONNECT_FAIL',
-                readonly [key:string]: any
-            }
-        ),
         "insert": AllErrors & (
-            {
-                readonly family: 'DATA_SOURCE_ERROR_CODE',
-                readonly code: 'CONNECT_FAIL',
-                readonly [key:string]: any
-            }
-        ),
-        "viewSchemas": AllErrors & (
             {
                 readonly family: 'DATA_SOURCE_ERROR_CODE',
                 readonly code: 'CONNECT_FAIL',
@@ -45,6 +31,20 @@ export type ApiErrors = {
     "packageService": {
     },
     "schemaService": {
+        "import": AllErrors & (
+            {
+                readonly family: 'DATA_SOURCE_ERROR_CODE',
+                readonly code: 'CONNECT_FAIL',
+                readonly [key:string]: any
+            }
+        ),
+        "preview": AllErrors & (
+            {
+                readonly family: 'DATA_SOURCE_ERROR_CODE',
+                readonly code: 'CONNECT_FAIL',
+                readonly [key:string]: any
+            }
+        )
     },
     "tableService": {
     }

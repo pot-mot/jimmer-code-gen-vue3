@@ -1,12 +1,16 @@
 <script lang="ts" setup>
 import {ref, watch} from "vue";
 import {GenDataSourceView, GenSchemaView} from "../../../api/__generated/model/static";
-
 import SchemaItem from "./SchemaItem.vue";
 import {api} from "../../../api";
 import {GenSchemaDto} from "../../../api/__generated/model/dto";
-import DataSourceDialog from "./DataSourceDialog.vue";
+import DataSourceDialog from "../../dialog/DataSourceDialog.vue";
 import {sendMessage} from "../../../utils/message.ts";
+import Details from "../../common/Details.vue";
+import {useLoading} from "../../../hooks/useLoading.ts";
+import {unionWith} from "lodash";
+
+const {loading, startLoading, endLoading} = useLoading()
 
 interface DataSourceItemProps {
 	dataSource: GenDataSourceView
@@ -26,23 +30,28 @@ const allSchemas = ref<GenSchemaDto['DEFAULT'][]>([])
 
 const showAllSchemas = ref(false)
 
-const viewSchemas = (dataSourceId: number) => {
-	if (!showAllSchemas.value) {
-		api.dataSourceService.viewSchemas({dataSourceId}).then(res => {
-			allSchemas.value = res
-		})
+const toggleShowAllSchemas = async (dataSourceId: number) => {
+	showAllSchemas.value = !showAllSchemas.value
+
+	if (showAllSchemas.value) {
+		allSchemas.value = await api.schemaService.preview({dataSourceId})
 	} else {
 		allSchemas.value = []
 	}
-	showAllSchemas.value = !showAllSchemas.value
+}
+
+const closeAllSchemas = () => {
+	showAllSchemas.value = false
+	allSchemas.value = []
 }
 
 const schemas = ref<GenSchemaView[]>([])
 
-const getSchemas = (dataSourceId: number = props.dataSource.id) => {
-	api.schemaService.list({dataSourceId}).then(res => {
-		schemas.value = res
-	})
+const getSchemas = async (schemaIds: number[] = []) => {
+	startLoading()
+	const res = await api.schemaService.list({dataSourceId: props.dataSource.id, schemaIds})
+	schemas.value = unionWith(schemas.value, res, (a, b) => {return a.id == b.id})
+	endLoading()
 }
 
 watch(() => props.dataSource, () => {
@@ -57,15 +66,16 @@ const deleteDataSource = (dataSourceId: number = props.dataSource.id) => {
 	})
 }
 
-const importSchema = (name: string, dataSourceId: number = props.dataSource.id) => {
-	api.dataSourceService.importSchema({
+const importSchema = async (name: string, dataSourceId: number = props.dataSource.id) => {
+	const importIds = await api.schemaService.import({
 		dataSourceId,
 		name
-	}).then(res => {
-		if (res > 0) {
-			getSchemas()
-		}
 	})
+
+	if (importIds.length > 0) {
+		await getSchemas(importIds)
+		closeAllSchemas()
+	}
 }
 
 const isEdit = ref(false)
@@ -90,28 +100,31 @@ const handleSchemaDelete = (id: number) => {
 </script>
 
 <template>
-	<div>
-		<span>{{ dataSource.name }}</span>
-		<button @click="viewSchemas(dataSource.id)">全部 schema</button>
-		<button @click="handleEdit">编辑</button>
-		<button @click="deleteDataSource()">删除</button>
-	</div>
-	<div v-show="showAllSchemas" style="padding-left: 3em">
-		<div v-for="schema in allSchemas">
-			<span class="hover-item" @click="importSchema(schema.name)">{{ schema.name }}</span>
-		</div>
-	</div>
-	<details open style="padding-left: 1em;">
-		<summary>SCHEMA</summary>
-		<div style="padding-left: 1em;">
+	<Details :open="true">
+		<template #title>
+			<div style="height: 3em; line-height: 3em;">
+				<span>{{ dataSource.name }}</span>
+				<el-button @click.prevent.stop="handleEdit">编辑</el-button>
+				<el-button @click.prevent.stop="deleteDataSource()">删除</el-button>
+
+				<el-popover :visible="showAllSchemas">
+					<template #reference>
+						<el-button @click.prevent.stop="toggleShowAllSchemas(dataSource.id)">schemas</el-button>
+					</template>
+					<div v-for="schema in allSchemas" @click.prevent.stop="importSchema(schema.name)">{{ schema.name }}</div>
+				</el-popover>
+			</div>
+		</template>
+		<div v-loading="loading" style="padding-left: 1em;">
 			<SchemaItem v-for="schema in schemas" :schema="schema" @delete="handleSchemaDelete"/>
 		</div>
-	</details>
-	<DataSourceDialog v-if="isEdit"
-					  :id="dataSource.id"
-					  :data-source="dataSource"
-					  :x="x" :y="y"
-					  @close="isEdit = false"
-					  @edit="handleEditFinish">
+	</Details>
+	<DataSourceDialog
+		v-if="isEdit"
+		:id="dataSource.id"
+		:data-source="dataSource"
+		:x="x" :y="y"
+		@close="isEdit = false"
+		@edit="handleEditFinish">
 	</DataSourceDialog>
 </template>

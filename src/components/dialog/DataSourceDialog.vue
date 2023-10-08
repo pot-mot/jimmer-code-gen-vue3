@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import {onMounted, ref, watch} from 'vue';
-import {api} from "../../../api";
-import {GenDataSourceInput, GenDataSourceView} from "../../../api/__generated/model/static";
-import {DataSourceType} from "../../../api/__generated/model/enums";
-import DragDialog from "../../common/DragDialog.vue";
-import {sendMessage} from "../../../utils/message.ts";
+import {api} from "../../api";
+import {GenDataSourceInput, GenDataSourceView} from "../../api/__generated/model/static";
+import {DataSourceType} from "../../api/__generated/model/enums";
+import DragDialog from "../common/DragDialog.vue";
+import {sendMessage} from "../../utils/message.ts";
+import {ElForm, ElFormItem} from "element-plus";
 
 const dataSourceTypes = ref<DataSourceType[]>([])
 
@@ -39,7 +40,7 @@ const defaultDataSource: GenDataSourceInput = {
 	username: "",
 	password: "",
 	remark: "",
-	type: "MYSQL"
+	type: "MySQL"
 }
 
 const dataSource = ref<GenDataSourceInput>({
@@ -94,39 +95,34 @@ const close = () => {
 
 <template>
 	<DragDialog :x="props.x" :y="props.y" @close="close">
-		<table style="width: 100%;">
-			<tr>
-				<td><label>name</label></td>
-				<td><input v-model="dataSource.name"></td>
-			</tr>
-			<tr>
-				<td><label>host</label></td>
-				<td><input v-model="dataSource.host"></td>
-			</tr>
-			<tr>
-				<td><label>port</label></td>
-				<td><input v-model="dataSource.port"></td>
-			</tr>
-			<tr>
-				<td><label>username</label></td>
-				<td><input v-model="dataSource.username"></td>
-			</tr>
-			<tr>
-				<td><label>password</label></td>
-				<td><input v-model="dataSource.password" type="password"></td>
-			</tr>
-			<tr>
-				<td><label>type</label></td>
-				<select v-model="dataSource.type">
-					<option v-for="(type) in dataSourceTypes" :value="type">{{ type }}</option>
-				</select>
-			</tr>
-			<tr>
-				<td><label>remark</label></td>
-				<td><textarea v-model="dataSource.remark"></textarea></td>
-			</tr>
-		</table>
-		<button @click="test">测试</button>
-		<button @click="submit">提交</button>
+		<el-form label-position="left" label-width="6em">
+			<el-form-item label="name">
+				<el-input v-model="dataSource.name"></el-input>
+			</el-form-item>
+			<el-form-item label="host">
+				<el-input v-model="dataSource.host"></el-input>
+			</el-form-item>
+			<el-form-item label="port">
+				<el-input v-model="dataSource.port"></el-input>
+			</el-form-item>
+			<el-form-item label="username">
+				<el-input v-model="dataSource.username"></el-input>
+			</el-form-item>
+			<el-form-item label="password">
+				<el-input v-model="dataSource.password" show-password></el-input>
+			</el-form-item>
+			<el-form-item label="type">
+				<el-select v-model="dataSource.type">
+					<el-option v-for="(type) in dataSourceTypes" :value="type">{{ type }}</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="remark">
+				<el-input type="textarea" v-model="dataSource.remark"></el-input>
+			</el-form-item>
+			<el-form-item>
+				<el-button @click="test" type="info">测试</el-button>
+				<el-button @click="submit" type="warning">提交</el-button>
+			</el-form-item>
+		</el-form>
 	</DragDialog>
 </template>
