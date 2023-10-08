@@ -32,7 +32,6 @@ vite
 
 ```
 npm run api
-npm run rm_readonly
 ```
 
 ### 打包
