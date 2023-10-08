@@ -18,7 +18,7 @@
 
 下载全部依赖
 ```
-npm install
+pnpm install
 ```
 
 启动
@@ -31,7 +31,7 @@ vite
 进入项目根目录
 
 ```
-npm run api
+pnpm run api
 ```
 
 ### 打包
