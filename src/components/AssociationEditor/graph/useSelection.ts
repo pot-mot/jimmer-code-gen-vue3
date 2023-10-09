@@ -14,6 +14,11 @@ export const useSelection = (graph: Graph) => {
 
     graph.on("cell:selected", ({cell}) => {
         cell.toFront()
+        if (cell.isNode()) {
+            graph.getConnectedEdges(cell).forEach(edge => {
+                edge.toFront()
+            })
+        }
     })
 }
 

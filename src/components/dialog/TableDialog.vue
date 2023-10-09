@@ -7,7 +7,19 @@ import {useTableEditorGraphStore} from "../../store/tableEditorGraph.ts";
 import {focusNode, getTableNode} from "../AssociationEditor/node/TableNode.ts";
 import {Graph} from "@antv/x6";
 import {MANY_TO_ONE, ONE_TO_ONE} from "../AssociationEditor/constant";
-import {ElInput, ElSelect, ElOption, ElButton, ElForm, ElFormItem, ElTable, ElTableColumn} from "element-plus";
+import {
+	ElInput,
+	ElSelect,
+	ElOption,
+	ElButton,
+	ElForm,
+	ElFormItem,
+	ElTable,
+	ElTableColumn,
+	ElTabs,
+	ElTabPane
+} from "element-plus";
+import {sendMessage} from "../../utils/message.ts";
 
 const store = useTableEditorGraphStore()
 
@@ -25,8 +37,16 @@ const emits = defineEmits<TableDialogEmits>()
 
 const table = ref<GenTableAssociationView | undefined>()
 
+const judgeTable = () => {
+	if (!table.value) {
+		sendMessage("Table not exist", "Warning")
+		throw new Error("Table not exist")
+	}
+}
+
 watch(() => props.id, async (id) => {
 	table.value = await api.tableService.getAssociationView({id})
+	judgeTable()
 }, {immediate: true})
 
 const focusTable = (id: number | undefined) => {
@@ -47,6 +67,8 @@ const previewEntities = ref<{
 const previewShow = ref(false)
 
 const handlePreview = async () => {
+	judgeTable()
+
 	if (table.value) {
 		const res = await store.preview([table.value.id])
 		previewEntities.value = []
@@ -61,6 +83,8 @@ const handlePreview = async () => {
 }
 
 const handleGenerate = () => {
+	judgeTable()
+
 	if (table.value) {
 		store.generate([table.value.id])
 	}
@@ -73,17 +97,19 @@ const handleSaveTable = () => {
 
 <template>
 	<DragDialog :x="200" :y="100" :init-w="800" @close="emits('close')">
-		<div v-if="table" class="wrapper">
-			<el-form size="small">
-				<el-form-item label="name">
-					{{ table.name }}
-				</el-form-item>
-				<el-form-item label="type">
-					{{ table.type }}
-				</el-form-item>
-				<el-form-item label="comment">
-					{{ table.comment }}
-				</el-form-item>
+
+		<el-form v-if="table" size="small">
+			<el-form-item label="name">
+				{{ table.name }}
+			</el-form-item>
+			<el-form-item label="type">
+				{{ table.type }}
+			</el-form-item>
+			<el-form-item label="comment">
+				{{ table.comment }}
+			</el-form-item>
+
+			<div class="wrapper">
 				<el-form-item label="remark">
 					<el-input v-model="table.remark" type="textarea"></el-input>
 				</el-form-item>
@@ -136,25 +162,22 @@ const handleSaveTable = () => {
 						</el-table-column>
 					</el-table>
 				</el-form-item>
-				<el-form-item>
-					<el-button @click.prevent.self="handleSaveTable">保存变更</el-button>
-					<el-button @click.prevent.self="handlePreview">预览实体</el-button>
-					<el-button @click.prevent.self="handleGenerate">生成实体</el-button>
-				</el-form-item>
-			</el-form>
+			</div>
 
-			<DragDialog v-if="previewShow" @close="previewShow = false">
-				<div style="height: 60vh; width: 60vw; overflow: auto; scrollbar-gutter: stable; padding: 1em;">
-					<div v-for="item in previewEntities">
-						<div>{{ item.name }}</div>
-						<div v-text="item.value" style="white-space: pre; cursor: auto;"></div>
-					</div>
-				</div>
-			</DragDialog>
-		</div>
-		<div v-else>
-			Table 不在数据库中
-		</div>
+			<el-form-item>
+				<el-button @click="handleSaveTable">保存变更</el-button>
+				<el-button @click="handlePreview">预览实体</el-button>
+				<el-button @click="handleGenerate">生成实体</el-button>
+			</el-form-item>
+		</el-form>
+
+		<DragDialog v-if="previewShow" @close="previewShow = false">
+			<el-tabs class="wrapper" style="min-width: 60vw;">
+				<el-tab-pane v-for="item in previewEntities" :label="item.name">
+					<pre v-text="item.value"></pre>
+				</el-tab-pane>
+			</el-tabs>
+		</DragDialog>
 	</DragDialog>
 </template>
 
@@ -162,9 +185,5 @@ const handleSaveTable = () => {
 .wrapper {
 	max-height: 60vh;
 	overflow: auto;
-}
-
-:deep(.el-tabs__active-bar) .is-left {
-	display: none;
 }
 </style>

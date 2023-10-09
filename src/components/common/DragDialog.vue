@@ -53,7 +53,7 @@ onMounted(() => {
 	<Teleport :to="to">
 		<DragResize :active="true" :draggable="draggable" :parent="true" :resizable="resizable"
 					:h="h" :initH="initH" :initW="initW" :minH="minH" :minW="minW" :x="x" :y="y"
-					style="border: none;">
+					style="border: none; z-index: 10000;">
 			<div class="wrapper">
 				<div class="close" @click="close">x</div>
 				<div ref="content" style="cursor: default; overflow: auto; scrollbar-gutter: stable;"

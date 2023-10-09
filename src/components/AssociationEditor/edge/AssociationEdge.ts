@@ -18,8 +18,16 @@ const baseColumnEdge = {
         },
     },
     labels: [{
+        markup: [
+            {
+                tagName: 'text',
+                selector: 'label',
+            },
+        ],
         attrs: {
-            label: {text: MANY_TO_ONE}
+            label: {
+                text: MANY_TO_ONE
+            },
         }
     }],
     data: {
@@ -27,15 +35,21 @@ const baseColumnEdge = {
     }
 }
 
-export const AssociationEdgeConnecting: Partial<Connecting> = {
-    router: {
-        name: 'er',
-        args: {
-            offset: 25,
-            direction: 'H',
-        },
-    },
+const erRouter = {
+    name: 'er',
+    args: {
+        direction: 'H',
+    }
+}
 
+const orthRouter = {
+    name: 'orth',
+    args: {
+        padding: 20,
+    },
+}
+
+export const AssociationEdgeConnecting: Partial<Connecting> = {
     validateConnection({sourcePort, targetPort}) {
         if (!sourcePort || !targetPort) return false
         return searchEdgesIgnoreDirection(<any>this, sourcePort, targetPort).length == 0
@@ -44,8 +58,16 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
     // @ts-ignore
     createEdge() {
         return new Shape.Edge({
-            ...baseColumnEdge
+            ...baseColumnEdge,
+            router: erRouter
         })
+    },
+    // 在连接建立后调整 router
+    validateEdge(edge) {
+          if (edge.edge.getTargetCellId() == edge.edge.getSourceCellId()) {
+              edge.edge.router = orthRouter
+          }
+          return true
     },
 
     allowBlank: false,
@@ -163,6 +185,12 @@ export const importAssociationEdges = (graph: Graph, associations: readonly GenA
             const isExist = searchEdgesIgnoreDirection(graph, sourcePortId, targetPortId).length > 0
             if (isExist) return
 
+            if (targetCellId == sourceCellId) {
+                newEdge.router = orthRouter
+            } else {
+                newEdge.router = erRouter
+            }
+
             graph.addEdge(newEdge)
         } catch (e) {
             console.warn('add edge fail', newEdge, e)
@@ -255,14 +283,19 @@ export const useSwitchAssociationType = (graph: Graph) => {
         cell.edge.getData().selectFlag = false
     })
 
-    graph.on('edge:click', ({edge}) => {
-        if (!edge) return
-
-        graph.select(edge.getTargetCellId())
-        graph.select(edge.getSourceCellId())
+    graph.on('edge:click', ({edge, e}) => {
+        if (!edge ||  e.ctrlKey) return
 
         if (!edge.getData().selectFlag) {
             edge.getData().selectFlag = true
+
+            if (edge.getTargetCellId() != edge.getSourceCellId()) {
+                graph.select(edge.getTargetCellId())
+                graph.select(edge.getSourceCellId())
+            } else {
+                graph.select(edge.getTargetCellId())
+            }
+
             return
         }
 

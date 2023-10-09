@@ -39,6 +39,11 @@ export const initGraph = (container: HTMLElement, wrapper: HTMLElement): Graph =
 const useHoverToFront = (graph: Graph) => {
     graph.on('cell:mouseenter', ({cell}) => {
         cell.toFront()
+        if (cell.isNode()) {
+            graph.getConnectedEdges(cell).forEach(edge => {
+                edge.toFront()
+            })
+        }
     })
 }
 

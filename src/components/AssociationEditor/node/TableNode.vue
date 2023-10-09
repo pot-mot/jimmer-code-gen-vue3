@@ -26,6 +26,8 @@
 
 <style lang="scss" scoped>
 .node {
+	padding-bottom: 10px;
+
 	.node-wrapper {
 		background-color: #fff;
 		border: 1px solid #000;

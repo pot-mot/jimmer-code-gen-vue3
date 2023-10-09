@@ -68,7 +68,7 @@ export interface GenTableAssociationView_TargetOf_columns {
 
 export interface GenTableAssociationView_TargetOf_columns_TargetOf_inAssociations {
     
-    associationType?: AssociationType;
+    associationType: AssociationType;
     
     dissociateAction?: DissociateAction;
     
@@ -99,7 +99,7 @@ export interface GenTableAssociationView_TargetOf_columns_TargetOf_inAssociation
 
 export interface GenTableAssociationView_TargetOf_columns_TargetOf_outAssociations {
     
-    associationType?: AssociationType;
+    associationType: AssociationType;
     
     dissociateAction?: DissociateAction;
     

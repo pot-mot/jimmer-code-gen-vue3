@@ -2,7 +2,7 @@ import type { AssociationType } from '../enums';
 
 export interface GenAssociationMatchView {
     
-    associationType?: AssociationType;
+    associationType: AssociationType;
     
     sourceColumn: GenAssociationMatchView_TargetOf_sourceColumn;
     

@@ -2,7 +2,7 @@ import type { AssociationType, DissociateAction } from '../enums';
 
 export interface GenAssociationView {
     
-    associationType?: AssociationType;
+    associationType: AssociationType;
     
     comment: string;
     
