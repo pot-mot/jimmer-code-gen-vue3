@@ -69,7 +69,7 @@ export interface GenEntityPropertiesView_TargetOf_properties {
     
     entityId: number;
     
-    id: boolean;
+    id: number;
     
     idGenerationType?: GenerationType;
     

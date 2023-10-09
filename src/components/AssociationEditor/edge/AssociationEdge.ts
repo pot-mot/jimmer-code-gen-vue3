@@ -21,7 +21,10 @@ const baseColumnEdge = {
         attrs: {
             label: {text: MANY_TO_ONE}
         }
-    }]
+    }],
+    data: {
+        selectFlag: false
+    }
 }
 
 export const AssociationEdgeConnecting: Partial<Connecting> = {
@@ -107,7 +110,9 @@ export const associationToEdge = (association: GenAssociationMatchView): Edge =>
             port: columnIdToPortId(association.targetColumn.id)
         },
     })
-    setLabel(edge, association.associationType)
+    if (association.associationType) {
+        setLabel(edge, association.associationType)
+    }
     return edge
 }
 
@@ -245,8 +250,21 @@ export const saveAssociations = async (graph: Graph) => {
 
 
 export const useSwitchAssociationType = (graph: Graph) => {
+    graph.on('edge:unselected', (cell) => {
+        if (!cell) return
+        cell.edge.getData().selectFlag = false
+    })
+
     graph.on('edge:click', ({edge}) => {
-        if (!edge) return;
+        if (!edge) return
+
+        graph.select(edge.getTargetCellId())
+        graph.select(edge.getSourceCellId())
+
+        if (!edge.getData().selectFlag) {
+            edge.getData().selectFlag = true
+            return
+        }
 
         if (getLabel(edge) == MANY_TO_ONE) {
             setLabel(edge, ONE_TO_ONE)

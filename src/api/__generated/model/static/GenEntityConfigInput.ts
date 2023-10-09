@@ -37,7 +37,7 @@ export interface GenEntityConfigInput_TargetOf_properties {
     
     dissociateAnnotation?: string;
     
-    id: boolean;
+    id?: number;
     
     idGenerationType?: GenerationType;
     
