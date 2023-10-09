@@ -28,8 +28,8 @@ const handleSave = (e: MouseEvent) => {
 	y.value = e.clientY
 }
 
-const handleSaveFinish = (dataSouce: GenDataSourceView) => {
-	dataSources.value.push(dataSouce)
+const handleSaveFinish = (dataSource: GenDataSourceView) => {
+	dataSources.value.push(dataSource)
 	isSave.value = false
 }
 
@@ -50,7 +50,9 @@ const handleDelete = (id: number) => {
 			<DataSourceItem :data-source="dataSource" @change="handleChange" @delete="handleDelete"/>
 		</template>
 	</div>
-	<DataSourceDialog v-if="isSave" :data-source="{}" :x="x" :y="y" @close="isSave = false" @save="handleSaveFinish">
+	<DataSourceDialog
+		v-if="isSave" :data-source="{}" :x="x" :y="y"
+		@close="isSave = false" @save="handleSaveFinish">
 	</DataSourceDialog>
 </template>
 

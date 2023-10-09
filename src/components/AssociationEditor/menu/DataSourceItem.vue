@@ -8,7 +8,6 @@ import DataSourceDialog from "../../dialog/DataSourceDialog.vue";
 import {sendMessage} from "../../../utils/message.ts";
 import Details from "../../common/Details.vue";
 import {useLoading} from "../../../hooks/useLoading.ts";
-import {unionWith} from "lodash";
 
 const {loading, startLoading, endLoading} = useLoading()
 
@@ -49,8 +48,7 @@ const schemas = ref<GenSchemaView[]>([])
 
 const getSchemas = async (schemaIds: number[] = []) => {
 	startLoading()
-	const res = await api.schemaService.list({dataSourceId: props.dataSource.id, schemaIds})
-	schemas.value = unionWith(schemas.value, res, (a, b) => {return a.id == b.id})
+	schemas.value = await api.schemaService.list({dataSourceId: props.dataSource.id, schemaIds})
 	endLoading()
 }
 
@@ -93,9 +91,9 @@ const handleEditFinish = () => {
 	emits("change", props.dataSource.id)
 }
 
-const handleSchemaDelete = (id: number) => {
+const handleSchemaDelete = async (id: number) => {
 	sendMessage(`删除 schema ${id} 成功`, "Success")
-	getSchemas()
+	await getSchemas()
 }
 </script>
 

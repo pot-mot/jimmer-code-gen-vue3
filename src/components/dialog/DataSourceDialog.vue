@@ -70,8 +70,8 @@ const submit = () => {
 		api.dataSourceService.edit({
 			id: props.id,
 			body: dataSource.value
-		}).then(count => {
-			if (count > 0) {
+		}).then(id => {
+			if (id == props.id) {
 				emits("edit")
 			}
 		})
