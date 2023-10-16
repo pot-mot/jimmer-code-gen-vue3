@@ -1,18 +1,10 @@
 import type { DataSourceType } from '../enums';
 
-export interface GenDataSourceView {
-    
-    createdTime: string;
+export interface GenDataSourceTemplateView {
     
     host: string;
     
-    id: number;
-    
-    modifiedTime: string;
-    
     name: string;
-    
-    orderKey: number;
     
     port: string;
     
@@ -21,4 +13,6 @@ export interface GenDataSourceView {
     type: DataSourceType;
     
     urlSuffix: string;
+    
+    username: string;
 }

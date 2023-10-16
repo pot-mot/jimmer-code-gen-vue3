@@ -11,6 +11,13 @@ export class EntityService {
         return (await this.executor({uri: _uri, method: 'PUT', body: options.body})) as number
     }
     
+    async convert(options: EntityServiceOptions['convert']): Promise<
+        number[]
+    > {
+        let _uri = '/entity/convert';
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number[]
+    }
+    
     async delete(options: EntityServiceOptions['delete']): Promise<number> {
         let _uri = '/entity/';
         _uri += encodeURIComponent(options.ids.join(','));
@@ -33,11 +40,11 @@ export class EntityService {
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as byte[]
     }
     
-    async mapping(options: EntityServiceOptions['mapping']): Promise<
-        number[]
+    async listLanguage(): Promise<
+        GenLanguage[]
     > {
-        let _uri = '/entity/mapping';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number[]
+        let _uri = '/entity/language';
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenLanguage[]
     }
     
     async preview(options: EntityServiceOptions['preview']): Promise<
@@ -90,9 +97,10 @@ export class EntityService {
 
 export type EntityServiceOptions = {
     'config': {body: GenEntityConfigInput},
+    'convert': {body: number[]},
     'delete': {ids: number[]},
     'generate': {body: number[], language?: GenLanguage},
-    'mapping': {body: number[]},
+    'listLanguage': {},
     'preview': {entityIds: number[], language?: GenLanguage},
     'query': {query: EntityQuery}
 }

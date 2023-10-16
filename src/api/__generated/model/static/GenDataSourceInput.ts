@@ -16,5 +16,7 @@ export interface GenDataSourceInput {
     
     type: DataSourceType;
     
+    urlSuffix: string;
+    
     username: string;
 }

@@ -7,10 +7,10 @@ export const saveGraph = (graph: Graph) => {
     try {
         graph.cleanSelection()
         localStorage.setItem('graph', JSON.stringify(graph.toJSON()))
-        sendMessage("保存成功", "Success")
+        sendMessage("保存成功", "success")
     } catch (e) {
         clearGraph(graph)
-        sendMessage("保存失败", "Error", e)
+        sendMessage("保存失败", "error", e)
     }
 }
 

@@ -150,7 +150,7 @@ import {useHistory, useHistoryKeyEvent} from "./graph/useHistory.ts";
 import {useSelection, useSelectionKeyEvent} from "./graph/useSelection.ts";
 import {saveAssociations, useSwitchAssociationType} from "./edge/AssociationEdge.ts";
 import {loadGraph, saveGraph} from "./graph/localStorage.ts";
-import {useTableEditorGraphStore} from "../../store/tableEditorGraph.ts";
+import {useAssociationEditorGraphStore} from "../../store/AssociationEditorGraphStore.ts";
 import {useMiniMap} from "./graph/useMiniMap.ts";
 import DragDialog from "../common/DragDialog.vue";
 import {useTableEditorMatch} from "./graph/useMatch.ts";
@@ -164,7 +164,7 @@ const minimap = ref<HTMLElement>();
 
 let graph: Graph
 
-const store = useTableEditorGraphStore()
+const store = useAssociationEditorGraphStore()
 
 Graph.registerPortLayout(
 	COLUMN_PORT,

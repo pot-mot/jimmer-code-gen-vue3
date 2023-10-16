@@ -6,14 +6,18 @@ import {pinia} from './store'
 import './assets/base.css'
 
 import ElementPlus from 'element-plus'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import 'element-plus/dist/index.css'
-import './assets/button-overwrite.css'
+import './assets/element-overwrite.css'
 
 const app = createApp(App)
 
 app.use(router)
 app.use(pinia)
 
-app.use(ElementPlus, { size: 'small', zIndex: 5000 })
+app.use(ElementPlus, { size: 'small', zIndex: 2000 })
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+    app.component(key, component)
+}
 
 app.mount('#app')

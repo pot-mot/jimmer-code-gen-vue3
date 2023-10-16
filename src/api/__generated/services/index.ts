@@ -2,6 +2,8 @@ export { AssociationService } from './AssociationService';
 export type { AssociationServiceOptions } from './AssociationService';
 export { ColumnService } from './ColumnService';
 export type { ColumnServiceOptions } from './ColumnService';
+export { ConfigService } from './ConfigService';
+export type { ConfigServiceOptions } from './ConfigService';
 export { DataSourceService } from './DataSourceService';
 export type { DataSourceServiceOptions } from './DataSourceService';
 export { EntityService } from './EntityService';

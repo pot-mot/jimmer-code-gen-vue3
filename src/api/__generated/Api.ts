@@ -1,12 +1,14 @@
 import type { Executor } from './';
 
-import { AssociationService, ColumnService, DataSourceService, EntityService, PackageService, SchemaService, TableService } from './services';
+import { AssociationService, ColumnService, ConfigService, DataSourceService, EntityService, PackageService, SchemaService, TableService } from './services';
 
 export class Api {
     
     readonly associationService: AssociationService;
     
     readonly columnService: ColumnService;
+    
+    readonly configService: ConfigService;
     
     readonly dataSourceService: DataSourceService;
     
@@ -21,6 +23,7 @@ export class Api {
     constructor(executor: Executor) {
         this.associationService = new AssociationService(executor);
         this.columnService = new ColumnService(executor);
+        this.configService = new ConfigService(executor);
         this.dataSourceService = new DataSourceService(executor);
         this.entityService = new EntityService(executor);
         this.packageService = new PackageService(executor);

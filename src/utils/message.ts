@@ -1,28 +1,24 @@
+import { ElMessage } from 'element-plus'
+
 /**
  * 向用户发送消息
- * @param msg 消息体
+ * @param message 消息体
  * @param type 消息类型
  * @param data 额外数据，例如报错
  */
-export const sendMessage = (msg: string, type: "Info" | "Success" | "Warning" | "Error" = "Info", data?: any ) => {
-    if (type == "Success") {
-        alert(msg)
-        console.log(msg)
+export const sendMessage = (message: string, type: "info" | "success" | "warning" | "error" = "info", data?: any ) => {
+    ElMessage({
+        type,
+        message,
+    })
+
+    if (type == "success") {
         if (data) console.log(data)
-    } else if (type == "Error") {
-        alert(msg)
-        console.log(msg)
+    } else if (type == "error") {
         if (data) console.error(data)
-    } else if (type == "Info") {
-        console.log(msg)
+    } else if (type == "info") {
         if (data) console.log(data)
-    } else if (type == "Warning") {
-        alert(msg)
-        console.log(msg)
+    } else if (type == "warning") {
         if (data) console.warn(data)
     }
-}
-
-export const saveLog = (msg: string) => {
-    console.log(msg)
 }

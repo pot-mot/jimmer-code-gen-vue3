@@ -69,12 +69,12 @@ export const getTableNode = (graph: Graph, id: number): Node | undefined => {
  * @param graph
  * @param tables
  */
-export const addTableNodes = (graph: Graph, tables: readonly GenTableColumnView[]) => {
+export const importTableNodes = (graph: Graph, tables: readonly GenTableColumnView[]) => {
     graph.addNodes(tables.map(table => {
         const svgRect = graph.view.svg.getBoundingClientRect()
         return tableToNode(table, graph.graphToLocal(
-            svgRect.width / 2 - svgRect.width / 8,
-            svgRect.height / 2 - svgRect.height / 8
+            svgRect.width / 2,
+            svgRect.height / 2
         ))
     }))
 }
@@ -108,7 +108,12 @@ export const removeTableNodes = (graph: Graph, ids: readonly number[]) => {
  * @param replace 替换已存在的 node
  * @returns 新增 table，已存在的 id
  */
-export const importTableNodes = async (graph: Graph, ids: number[], replace: boolean = true) => {
+export const loadTableNodes = async (graph: Graph, ids: number[], replace: boolean = true) => {
+    if (ids.length == 0) {
+        sendMessage("该 schema 无表，无法加载", "error")
+        return;
+    }
+
     const add = await api.tableService.listColumnView({ids})
     const existedIds = filterExistedTableNodeIds(graph, ids)
 
@@ -118,7 +123,7 @@ export const importTableNodes = async (graph: Graph, ids: number[], replace: boo
 
     graph.startBatch('add nodes')
 
-    addTableNodes(graph, add)
+    importTableNodes(graph, add)
 
     const associations = await api.associationService.selectByTable({tableIds: ids})
 
@@ -156,28 +161,17 @@ export const searchTableNodes = (graph: Graph, keywords: string[]): Node[] => {
  * 聚焦于某个节点，进行缩放
  * @param graph 图
  * @param node 目标节点
- * @param padding 缩放内边距
  */
-export const focusNode = async (graph: Graph, node: Node, padding: number = 300) => {
+export const focusNode = async (graph: Graph, node: Node) => {
     node.toFront()
     graph.cleanSelection()
     graph.centerCell(node)
     graph.select(node)
 
-    const {width, height} = node.getSize()
-    const {x, y} = node.getPosition()
-
     await nextTick()
-
-    graph.zoomToRect({
-        width: width + padding * 2,
-        x: x - padding,
-        y: y - padding,
-        height: height + padding * 2
-    })
 }
 
-export const mappingEntities = async (graph: Graph, tableIds?: number[]) => {
+export const convertEntities = async (graph: Graph, tableIds?: number[]) => {
     const body: number[] = []
 
     if (!tableIds) {
@@ -190,13 +184,13 @@ export const mappingEntities = async (graph: Graph, tableIds?: number[]) => {
         body.push(...tableIds)
     }
 
-    const res = await api.entityService.mapping({body})
-    sendMessage("实体映射成功，实体id：" + res, "Success")
+    const res = await api.entityService.convert({body})
+    sendMessage("实体映射成功，实体id：" + res, "success")
     return res
 }
 
 export const previewEntities = async (graph: Graph, tableIds?: number[]) => {
-    const entityIds = await mappingEntities(graph, tableIds)
+    const entityIds = await convertEntities(graph, tableIds)
     return await api.entityService.preview({entityIds})
 }
 

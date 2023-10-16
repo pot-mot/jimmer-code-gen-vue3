@@ -1,5 +1,5 @@
 <template>
-	<div v-if="table" class="node" @contextmenu="showTableDialog = true">
+	<div v-if="table" class="node" @contextmenu="TableDialogEventEmitter.emit('addTableDialog', table.id)">
 		<table ref="wrapper" class="node-wrapper">
 			<tr class="tableName">
 				<td :class="table.type"></td>
@@ -20,7 +20,6 @@
 				<td>{{ column.comment }}</td>
 			</tr>
 		</table>
-		<TableDialog v-if="showTableDialog" :id="table.id" @close="showTableDialog = false"></TableDialog>
 	</div>
 </template>
 
@@ -65,8 +64,8 @@
 import {inject, nextTick, onMounted, ref} from "vue";
 import {GenTableColumnView} from "../../../api/__generated/model/static";
 import {Node} from '@antv/x6'
-import {useTableEditorGraphStore} from "../../../store/tableEditorGraph.ts";
-import TableDialog from "../../dialog/TableDialog.vue"
+import {useAssociationEditorGraphStore} from "../../../store/AssociationEditorGraphStore.ts";
+import {TableDialogEventEmitter} from "../../../eventBus/TableDialogEventEmitter.ts";
 
 const wrapper = ref<HTMLElement | null>()
 
@@ -74,9 +73,7 @@ const getNode = inject<() => Node>("getNode")!;
 
 const table = ref<GenTableColumnView>()
 
-const showTableDialog = ref(false)
-
-const store = useTableEditorGraphStore()
+const store = useAssociationEditorGraphStore()
 
 onMounted(() => {
 	const node = getNode()

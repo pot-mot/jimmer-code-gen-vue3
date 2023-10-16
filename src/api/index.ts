@@ -13,7 +13,7 @@ export const api = new Api(async ({uri, method, body}) => {
     });
     if (response.status != 200) {
         const result = await response.json()
-        sendMessage(JSON.stringify(result), "Error", result)
+        sendMessage(JSON.stringify(result), "error", result)
         throw result
     }
 

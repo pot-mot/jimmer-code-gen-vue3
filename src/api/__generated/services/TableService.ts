@@ -1,4 +1,5 @@
 import type { Executor } from '../';
+import type { DataSourceType } from '../model/enums';
 import type { GenTableAssociationView, GenTableColumnView, GenTableCommonView, TableQuery } from '../model/static';
 
 export class TableService {
@@ -17,6 +18,23 @@ export class TableService {
         let _uri = '/table/associationView/';
         _uri += encodeURIComponent(options.id);
         return (await this.executor({uri: _uri, method: 'GET'})) as GenTableAssociationView | undefined
+    }
+    
+    async getDDL(options: TableServiceOptions['getDDL']): Promise<
+        { [key: string]: string }
+    > {
+        let _uri = '/table/ddl/';
+        _uri += encodeURIComponent(options.id);
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.dataSourceTypes?.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'dataSourceTypes='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        return (await this.executor({uri: _uri, method: 'GET'})) as { [key: string]: string }
     }
     
     async listColumnView(options: TableServiceOptions['listColumnView']): Promise<
@@ -68,6 +86,7 @@ export class TableService {
 export type TableServiceOptions = {
     'delete': {ids: number[]},
     'getAssociationView': {id: number},
+    'getDDL': {id: number, dataSourceTypes?: DataSourceType[]},
     'listColumnView': {ids: number[]},
     'query': {query: TableQuery}
 }

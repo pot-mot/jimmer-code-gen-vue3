@@ -10,8 +10,6 @@ export interface GenEntityConfigInput {
     
     edit: boolean;
     
-    genPath: string;
-    
     id?: number;
     
     list: boolean;
@@ -37,7 +35,7 @@ export interface GenEntityConfigInput_TargetOf_properties {
     
     dissociateAnnotation?: string;
     
-    id?: number;
+    id: boolean;
     
     idGenerationType?: GenerationType;
     

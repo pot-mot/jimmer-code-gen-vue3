@@ -12,16 +12,6 @@ export class SchemaService {
         return (await this.executor({uri: _uri, method: 'DELETE'})) as number
     }
     
-    async import(options: SchemaServiceOptions['import']): Promise<
-        number[]
-    > {
-        let _uri = '/dataSource/';
-        _uri += encodeURIComponent(options.dataSourceId);
-        _uri += '/schema/';
-        _uri += encodeURIComponent(options.name);
-        return (await this.executor({uri: _uri, method: 'POST'})) as number[]
-    }
-    
     async list(options: SchemaServiceOptions['list']): Promise<
         GenSchemaView[]
     > {
@@ -30,6 +20,16 @@ export class SchemaService {
         _uri += '/schema/';
         _uri += encodeURIComponent(options.schemaIds.join(','));
         return (await this.executor({uri: _uri, method: 'GET'})) as GenSchemaView[]
+    }
+    
+    async load(options: SchemaServiceOptions['load']): Promise<
+        number[]
+    > {
+        let _uri = '/dataSource/';
+        _uri += encodeURIComponent(options.dataSourceId);
+        _uri += '/schema/';
+        _uri += encodeURIComponent(options.name);
+        return (await this.executor({uri: _uri, method: 'POST'})) as number[]
     }
     
     async preview(options: SchemaServiceOptions['preview']): Promise<
@@ -44,7 +44,7 @@ export class SchemaService {
 
 export type SchemaServiceOptions = {
     'delete': {ids: number[]},
-    'import': {dataSourceId: number, name: string},
     'list': {dataSourceId: number, schemaIds: number[]},
+    'load': {dataSourceId: number, name: string},
     'preview': {dataSourceId: number}
 }

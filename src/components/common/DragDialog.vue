@@ -2,6 +2,8 @@
 import DragResize from 'vue3-draggable-resizable'
 import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
 import {nextTick, onMounted, ref} from 'vue'
+import {ElButton} from "element-plus";
+import {Close} from "@element-plus/icons-vue";
 
 interface DragResizeProps {
 	x?: number
@@ -10,13 +12,39 @@ interface DragResizeProps {
 	initW?: number
 	minW?: number
 	minH?: number
+	maxW?: number
+	maxH?: number
 	to?: string
 	resizable?: boolean
 }
 
-withDefaults(defineProps<DragResizeProps>(), {
+const props = withDefaults(defineProps<DragResizeProps>(), {
 	to: "body",
 	resizable: false,
+	initW: 800,
+})
+
+const x = ref(0)
+const w = ref(0)
+
+onMounted(() => {
+	const maxWidth = document.documentElement.clientWidth
+
+	if (maxWidth < props.initW) {
+		x.value = 0
+		w.value = maxWidth
+	} else if (props.x) {
+		w.value = props.initW
+
+		if (props.initW + props.x > maxWidth) {
+			x.value = maxWidth - props.x - 20
+		} else {
+			x.value = props.x
+		}
+	} else {
+		w.value = props.initW
+		x.value = (maxWidth - w.value) / 2
+	}
 })
 
 interface DragDialogEmits {
@@ -52,10 +80,15 @@ onMounted(() => {
 <template>
 	<Teleport :to="to">
 		<DragResize :active="true" :draggable="draggable" :parent="true" :resizable="resizable"
-					:h="h" :initH="initH" :initW="initW" :minH="minH" :minW="minW" :x="x" :y="y"
-					style="border: none; z-index: 10000;">
+					:h="h" :w="w" :initH="initH" :initW="initW" :minH="minH" :minW="minW" :maxH="maxH" :maxW="maxW"
+					:x="x" :y="y"
+					style="border: none; z-index: 2000;">
 			<div class="wrapper">
-				<div class="close" @click="close">x</div>
+				<div class="close" @click="close">
+					<slot name="close">
+						<el-button type="danger" :icon="Close" size="default" link></el-button>
+					</slot>
+				</div>
 				<div ref="content" style="cursor: default; overflow: auto; scrollbar-gutter: stable;"
 					 @mouseenter="draggable = false" @mouseleave="draggable = true">
 					<slot></slot>
@@ -75,15 +108,12 @@ onMounted(() => {
 	font-weight: 600;
 }
 
-.close:hover {
-	color: red;
-}
-
 .wrapper {
 	height: calc(100% - 8px);
 	width: calc(100% - 8px);
 	margin: 4px;
 	padding: 1em;
+	border-radius: var(--el-border-radius-base);
 	box-shadow: var(--el-box-shadow);
 	background-color: #fff;
 	cursor: all-scroll;

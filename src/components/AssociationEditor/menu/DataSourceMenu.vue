@@ -5,17 +5,20 @@ import {GenDataSourceView} from "../../../api/__generated/model/static";
 import DataSourceItem from "./DataSourceItem.vue";
 import DataSourceDialog from "../../dialog/DataSourceDialog.vue";
 import {sendMessage} from "../../../utils/message.ts";
+import {useLoading} from "../../../hooks/useLoading.ts";
+
+const dataSourcesLoading = useLoading()
 
 const dataSources = ref<GenDataSourceView[]>([])
 
-const getData = () => {
-	api.dataSourceService.list().then(res => {
-		dataSources.value = res
-	})
+const getDataSources = async () => {
+	dataSourcesLoading.add()
+	dataSources.value = await api.dataSourceService.list()
+	dataSourcesLoading.sub()
 }
 
 onMounted(() => {
-	getData()
+	getDataSources()
 })
 
 const isSave = ref(false)
@@ -34,17 +37,17 @@ const handleSaveFinish = (dataSource: GenDataSourceView) => {
 }
 
 const handleChange = () => {
-	getData()
+	getDataSources()
 }
 
 const handleDelete = (id: number) => {
-	sendMessage(`删除 dataSource ${id} 成功`, "Success")
-	getData()
+	sendMessage(`删除 dataSource ${id} 成功`, "success")
+	getDataSources()
 }
 </script>
 
 <template>
-	<div class="wrapper">
+	<div class="wrapper" v-loading="dataSourcesLoading.isLoading()">
 		<el-button @click="handleSave">新增</el-button>
 		<template v-for="dataSource in dataSources">
 			<DataSourceItem :data-source="dataSource" @change="handleChange" @delete="handleDelete"/>
@@ -52,7 +55,7 @@ const handleDelete = (id: number) => {
 	</div>
 	<DataSourceDialog
 		v-if="isSave" :data-source="{}" :x="x" :y="y"
-		@close="isSave = false" @save="handleSaveFinish">
+		@close="isSave = false" @added="handleSaveFinish">
 	</DataSourceDialog>
 </template>
 

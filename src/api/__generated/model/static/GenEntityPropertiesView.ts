@@ -14,8 +14,6 @@ export interface GenEntityPropertiesView {
     
     genPackage?: GenEntityPropertiesView_TargetOf_genPackage;
     
-    genPath: string;
-    
     id: number;
     
     list: boolean;
@@ -69,7 +67,9 @@ export interface GenEntityPropertiesView_TargetOf_properties {
     
     entityId: number;
     
-    id: number;
+    enum?: GenEntityPropertiesView_TargetOf_properties_TargetOf_enum;
+    
+    id: boolean;
     
     idGenerationType?: GenerationType;
     
@@ -95,5 +95,70 @@ export interface GenEntityPropertiesView_TargetOf_properties {
     
     type: string;
     
-    typeTableId?: number;
+    typeTable?: GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable;
+}
+
+export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum {
+    
+    comment: string;
+    
+    genPackage?: GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_TargetOf_genPackage;
+    
+    id: number;
+    
+    name: string;
+}
+
+export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_TargetOf_genPackage {
+    
+    id: number;
+    
+    name: string;
+    
+    parent?: GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_TargetOf_genPackage_TargetOf_parent;
+}
+
+export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_TargetOf_genPackage_TargetOf_parent {
+    
+    id: number;
+    
+    name: string;
+    
+    parent?: GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_TargetOf_genPackage_TargetOf_parent;
+}
+
+export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable {
+    
+    entity?: GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_TargetOf_entity;
+    
+    id: number;
+}
+
+export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_TargetOf_entity {
+    
+    comment: string;
+    
+    genPackage?: GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_TargetOf_entity_TargetOf_genPackage;
+    
+    id: number;
+    
+    name: string;
+}
+
+export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_TargetOf_entity_TargetOf_genPackage {
+    
+    id: number;
+    
+    name: string;
+    
+    parent?: GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_TargetOf_entity_TargetOf_genPackage_TargetOf_parent;
+}
+
+export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_TargetOf_entity_TargetOf_genPackage_TargetOf_parent {
+    
+    id: number;
+    
+    name: string;
+    
+    parent?: GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_TargetOf_entity_TargetOf_genPackage_TargetOf_parent;
 }

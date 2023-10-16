@@ -1,9 +1,13 @@
 import {computed, onBeforeMount, onMounted, ref} from "vue";
 
-export const useLoading = (immediate: boolean = true) => {
+export const useLoading = (immediate: boolean = false) => {
     const loadingCount = ref(0)
 
-    const loading = computed(() => {
+    const isLoading = () => {
+        return loadingCount.value > 0
+    }
+
+    const loadingState = computed(() => {
         return loadingCount.value > 0
     })
 
@@ -23,10 +27,12 @@ export const useLoading = (immediate: boolean = true) => {
     }
 
     return {
-        loading,
-        addLoading: add,
-        subLoading: sub,
-        startLoading: add,
-        endLoading: clear,
+        isLoading,
+        count: loadingCount,
+        state: loadingState,
+        add: add,
+        sub: sub,
+        start: add,
+        end: clear,
     }
 }

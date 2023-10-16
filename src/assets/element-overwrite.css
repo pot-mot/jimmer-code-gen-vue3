@@ -1,0 +1,36 @@
+.el-button:focus {
+    color: var(--el-button-text-color);
+    background-color: var(--el-button-bg-color);
+    border-color: var(--el-button-border-color);
+    outline: 0;
+}
+
+.el-button:hover {
+    color: var(--el-button-hover-text-color);
+    border-color: var(--el-button-hover-border-color);
+    background-color: var(--el-button-hover-bg-color);
+    outline: 0;
+}
+
+.el-select-dropdown {
+    min-height: 2em;
+    min-width: 2em;
+}
+
+.el-button + .el-button {
+    margin-left: 0.6em;
+}
+
+.cling-left .el-input__wrapper {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    padding-left: 0;
+    border-left: 1px solid #fff;
+}
+
+.cling-right .el-input__wrapper {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    padding-right: 0;
+    border-right: 1px solid #fff;
+}

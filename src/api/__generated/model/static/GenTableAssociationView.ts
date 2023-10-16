@@ -1,4 +1,4 @@
-import type { AssociationType, DissociateAction, TableType } from '../enums';
+import type { AssociationType, DataSourceType, DissociateAction, TableType } from '../enums';
 
 export interface GenTableAssociationView {
     
@@ -18,7 +18,7 @@ export interface GenTableAssociationView {
     
     remark: string;
     
-    schemaId: number;
+    schema: GenTableAssociationView_TargetOf_schema;
     
     type: TableType;
 }
@@ -126,4 +126,18 @@ export interface GenTableAssociationView_TargetOf_columns_TargetOf_outAssociatio
     id: number;
     
     name: string;
+}
+
+export interface GenTableAssociationView_TargetOf_schema {
+    
+    dataSource: GenTableAssociationView_TargetOf_schema_TargetOf_dataSource;
+    
+    name: string;
+}
+
+export interface GenTableAssociationView_TargetOf_schema_TargetOf_dataSource {
+    
+    name: string;
+    
+    type: DataSourceType;
 }

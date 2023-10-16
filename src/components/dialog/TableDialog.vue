@@ -3,34 +3,41 @@ import {ref, watch} from 'vue'
 import {api} from '../../api'
 import {GenTableAssociationView} from '../../api/__generated/model/static'
 import DragDialog from "../common/DragDialog.vue"
-import {useTableEditorGraphStore} from "../../store/tableEditorGraph.ts";
+import {useAssociationEditorGraphStore} from "../../store/AssociationEditorGraphStore.ts";
 import {focusNode, getTableNode} from "../AssociationEditor/node/TableNode.ts";
 import {Graph} from "@antv/x6";
 import {MANY_TO_ONE, ONE_TO_ONE} from "../AssociationEditor/constant";
 import {
+	ElText,
 	ElInput,
 	ElSelect,
 	ElOption,
 	ElButton,
 	ElForm,
 	ElFormItem,
-	ElTable,
-	ElTableColumn,
 	ElTabs,
 	ElTabPane
 } from "element-plus";
 import {sendMessage} from "../../utils/message.ts";
+import CodePreview from "../common/CodePreview.vue";
+import Details from "../common/Details.vue";
 
-const store = useTableEditorGraphStore()
+const store = useAssociationEditorGraphStore()
 
 interface TableDialogProps {
 	id: number
+	x?: number
+	y?: number
+	w?: number
 }
 
-const props = defineProps<TableDialogProps>()
+const props = withDefaults(defineProps<TableDialogProps>(), {
+	y: 100
+})
 
 interface TableDialogEmits {
 	(event: "close"): void
+	(event: "updated"): void
 }
 
 const emits = defineEmits<TableDialogEmits>()
@@ -39,7 +46,7 @@ const table = ref<GenTableAssociationView | undefined>()
 
 const judgeTable = () => {
 	if (!table.value) {
-		sendMessage("Table not exist", "Warning")
+		sendMessage("Table not exist", "warning")
 		throw new Error("Table not exist")
 	}
 }
@@ -59,26 +66,29 @@ const focusTable = (id: number | undefined) => {
 	if (node) focusNode(graph, node)
 }
 
-const previewEntities = ref<{
-	name: string,
-	value: string
-}[]>([])
+const ddlShow = ref(false)
 
-const previewShow = ref(false)
+const ddlMap = ref<{ [key: string]: string }>({})
 
-const handlePreview = async () => {
+const handleDDLShow = async () => {
 	judgeTable()
 
 	if (table.value) {
-		const res = await store.preview([table.value.id])
-		previewEntities.value = []
-		Object.entries(res).forEach(([key, value]) => {
-			previewEntities.value?.push({
-				name: key,
-				value
-			})
-		})
-		previewShow.value = true
+		ddlMap.value = await api.tableService.getDDL({id: table.value.id})
+		ddlShow.value = true
+	}
+}
+
+const entityPreviewShow = ref(false)
+
+const previewEntitiesMap = ref<{ [key: string]: string }>({})
+
+const handleEntityPreview = async () => {
+	judgeTable()
+
+	if (table.value) {
+		previewEntitiesMap.value = await store.preview([table.value.id])
+		entityPreviewShow.value = true
 	}
 }
 
@@ -91,99 +101,81 @@ const handleGenerate = () => {
 }
 
 const handleSaveTable = () => {
-
+	emits("updated")
 }
 </script>
 
 <template>
-	<DragDialog :x="200" :y="100" :init-w="800" @close="emits('close')">
-
+	<DragDialog :x="x" :y="y" :init-w="w" @close="emits('close')" :resizable="true">
 		<el-form v-if="table" size="small">
-			<el-form-item label="name">
+			<el-text>
 				{{ table.name }}
-			</el-form-item>
-			<el-form-item label="type">
 				{{ table.type }}
-			</el-form-item>
-			<el-form-item label="comment">
 				{{ table.comment }}
-			</el-form-item>
+			</el-text>
 
-			<div class="wrapper">
-				<el-form-item label="remark">
-					<el-input v-model="table.remark" type="textarea"></el-input>
-				</el-form-item>
-				<el-form-item>
-					<el-table :data="table.columns">
-						<el-table-column fixed type="expand">
-							<template #default="scope">
-								<div>{{ scope.row }}</div>
+			<div style="max-height: 60vh; overflow-y: auto;">
+				<el-input v-model="table.remark" type="textarea"></el-input>
 
-								<div v-for="association in scope.row.inAssociations">
-									<span> {{ " <- " }} </span>
-									<el-select v-model="association.associationType">
-										<el-option :value="MANY_TO_ONE">{{ MANY_TO_ONE }}</el-option>
-										<el-option :value="ONE_TO_ONE">{{ ONE_TO_ONE }}</el-option>
-									</el-select>
-									<span @click="focusTable(association.sourceColumn.table.id)">{{
-											association.sourceColumn.table.name
-										}}</span>
-									<span>.</span>
-									<span>{{ association.sourceColumn.name }}</span>
-								</div>
+				<Details v-for="column in table.columns">
+					<template #title>
+						{{ column }}
+					</template>
 
-								<div v-for="association in scope.row.outAssociations">
-									<span> {{ " -> " }} </span>
-									<el-select v-model="association.associationType">
-										<el-option :value="MANY_TO_ONE">{{ MANY_TO_ONE }}</el-option>
-										<el-option :value="ONE_TO_ONE">{{ ONE_TO_ONE }}</el-option>
-									</el-select>
-									<span @click="focusTable(association.targetColumn.table.id)">{{
-											association.targetColumn.table.name
-										}}</span>
-									<span>.</span>
-									<span>{{ association.targetColumn.name }}</span>
-								</div>
-							</template>
-						</el-table-column>
-						<el-table-column fixed prop="name"></el-table-column>
-						<el-table-column>
-							<template #default="scope">
-							<span>{{
-									`${scope.row.type}(${scope.row.displaySize}, ${scope.row.numericPrecision})`
-								}}</span>
-							</template>
-						</el-table-column>
-						<el-table-column prop="comment" show-overflow-tooltip></el-table-column>
-						<el-table-column prop="remark">
-							<template #default="scope">
-								<el-input v-model="scope.row.remark"></el-input>
-							</template>
-						</el-table-column>
-					</el-table>
-				</el-form-item>
+					<div v-for="association in column.inAssociations">
+						<span> {{ " <- " }} </span>
+						<el-select v-model="association.associationType">
+							<el-option :value="MANY_TO_ONE">{{ MANY_TO_ONE }}</el-option>
+							<el-option :value="ONE_TO_ONE">{{ ONE_TO_ONE }}</el-option>
+						</el-select>
+						<span @click="focusTable(association.sourceColumn.table.id)">{{
+								association.sourceColumn.table.name
+							}}</span>
+						<span>.</span>
+						<span>{{ association.sourceColumn.name }}</span>
+					</div>
+
+					<div v-for="association in column.outAssociations">
+						<span> {{ " -> " }} </span>
+						<el-select v-model="association.associationType">
+							<el-option :value="MANY_TO_ONE">{{ MANY_TO_ONE }}</el-option>
+							<el-option :value="ONE_TO_ONE">{{ ONE_TO_ONE }}</el-option>
+						</el-select>
+						<span @click="focusTable(association.targetColumn.table.id)">{{
+								association.targetColumn.table.name
+							}}</span>
+						<span>.</span>
+						<span>{{ association.targetColumn.name }}</span>
+					</div>
+				</Details>
 			</div>
 
 			<el-form-item>
+				<el-button @click="handleDDLShow">查看 DDL</el-button>
+
 				<el-button @click="handleSaveTable">保存变更</el-button>
-				<el-button @click="handlePreview">预览实体</el-button>
+
+				<el-button @click="handleEntityPreview">预览实体</el-button>
 				<el-button @click="handleGenerate">生成实体</el-button>
 			</el-form-item>
 		</el-form>
 
-		<DragDialog v-if="previewShow" @close="previewShow = false">
-			<el-tabs class="wrapper" style="min-width: 60vw;">
-				<el-tab-pane v-for="item in previewEntities" :label="item.name">
-					<pre v-text="item.value"></pre>
+		<DragDialog v-if="ddlShow" @close="ddlShow = false" :resizable="true" :y="100">
+			<el-tabs style="min-width: 60vw;">
+				<el-tab-pane v-for="name in Object.keys(ddlMap)" :label="name">
+					<CodePreview style="max-height: 60vh;" :code="ddlMap[name]"></CodePreview>
 				</el-tab-pane>
 			</el-tabs>
+			<div v-if="Object.keys(ddlMap).length == 0">生成失败</div>
+		</DragDialog>
+
+		<DragDialog v-if="entityPreviewShow" @close="entityPreviewShow = false" :resizable="true" :y="100">
+			<el-tabs style="min-width: 60vw;">
+				<el-tab-pane v-for="name in Object.keys(previewEntitiesMap)" :label="name">
+					<CodePreview style="max-height: 60vh;" :code="previewEntitiesMap[name]"></CodePreview>
+				</el-tab-pane>
+			</el-tabs>
+			<div v-if="Object.keys(ddlMap).length == 0">生成失败</div>
 		</DragDialog>
 	</DragDialog>
 </template>
-
-<style lang="scss" scoped>
-.wrapper {
-	max-height: 60vh;
-	overflow: auto;
-}
-</style>

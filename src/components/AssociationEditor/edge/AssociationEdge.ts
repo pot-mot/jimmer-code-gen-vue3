@@ -273,7 +273,7 @@ export const saveAssociations = async (graph: Graph) => {
     await api.associationService.deleteByTable({tableIds: [...tableMap.keys()]})
     await api.associationService.save({body: associations.map(viewToInput)})
 
-    sendMessage("保存成功", "Success")
+    sendMessage("保存成功", "success")
 }
 
 

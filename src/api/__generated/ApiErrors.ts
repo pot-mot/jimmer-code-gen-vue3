@@ -10,6 +10,8 @@ export type ApiErrors = {
     },
     "columnService": {
     },
+    "configService": {
+    },
     "dataSourceService": {
         "edit": AllErrors & (
             {
@@ -31,7 +33,7 @@ export type ApiErrors = {
     "packageService": {
     },
     "schemaService": {
-        "import": AllErrors & (
+        "load": AllErrors & (
             {
                 readonly family: 'DATA_SOURCE_ERROR_CODE',
                 readonly code: 'CONNECT_FAIL',

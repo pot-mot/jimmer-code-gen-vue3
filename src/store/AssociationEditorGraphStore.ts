@@ -7,17 +7,18 @@ import {
 import {
     focusNode,
     getTables,
-    importTableNodes,
-    tableIdToNodeId, mappingEntities, generateEntities, previewEntities
+    loadTableNodes,
+    tableIdToNodeId, convertEntities, generateEntities, previewEntities
 } from "../components/AssociationEditor/node/TableNode.ts";
 import {defaultZoomRange} from "../components/AssociationEditor/graph/scale.ts";
 import {nextTick, Ref, ref} from 'vue';
 import {getSelectedEdges} from "../components/AssociationEditor/graph/useSelection.ts";
 import {layoutByLevels} from "../components/AssociationEditor/graph/layout.ts";
+import {sendMessage} from "../utils/message.ts";
 
-export const useTableEditorGraphStore =
+export const useAssociationEditorGraphStore =
     defineStore(
-        'tableEditorGraph',
+        'AssociationEditorGraph',
         () => {
             let graph: Graph
 
@@ -33,7 +34,10 @@ export const useTableEditorGraphStore =
              * 获取 graph
              */
             const _graph = () => {
-                if (!graph) throw new Error("graph is not init")
+                if (!graph) {
+                    sendMessage("Graph 未初始化", "error")
+                    throw new Error("graph is not init")
+                }
                 return graph
             }
 
@@ -117,11 +121,11 @@ export const useTableEditorGraphStore =
              * @param tableIds table id
              * @param select 结束后是否选中全部
              */
-            const importSchema = async (tableIds: number[], select: boolean = false) => {
+            const loadSchema = async (tableIds: number[], select: boolean = false) => {
                 const graph = _graph()
 
                 removeAll()
-                await importTableNodes(graph, tableIds, false)
+                await loadTableNodes(graph, tableIds, false)
                 if (select) graph.select(tableIds.map(id => tableIdToNodeId(id)))
                 await fitAndLayout()
             }
@@ -130,17 +134,16 @@ export const useTableEditorGraphStore =
              * 导入 table，不进行 replace
              * @param id tableId
              * @param focus 结束后是否将目标表选中并居中
-             * @param padding 与画布的间距
              */
-            const importTable = async (id: number, focus: boolean = true, padding: number = 300) => {
+            const loadTable = async (id: number, focus: boolean = true) => {
                 const graph = _graph()
 
-                await importTableNodes(graph, [id], false)
+                await loadTableNodes(graph, [id], false)
                 if (!focus) return
                 const cell = graph.getCellById(tableIdToNodeId(id))
                 if (cell.isNode()) {
                     const node = cell as Node
-                    await focusNode(graph, node, padding)
+                    await focusNode(graph, node)
                 }
             }
 
@@ -159,7 +162,7 @@ export const useTableEditorGraphStore =
             }
 
             const generate = async (tableIds?: number[]) => {
-                const entityIds = await mappingEntities(_graph(), tableIds)
+                const entityIds = await convertEntities(_graph(), tableIds)
                 await generateEntities(entityIds)
             }
 
@@ -176,8 +179,8 @@ export const useTableEditorGraphStore =
                 load,
                 fit,
 
-                importSchema,
-                importTable,
+                loadSchema,
+                loadTable,
 
                 redo,
                 undo,
