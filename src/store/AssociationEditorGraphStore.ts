@@ -1,6 +1,6 @@
 import {defineStore} from "pinia";
-import {GenAssociationMatchView, GenTableColumnView} from "../api/__generated/model/static";
-import {Graph, Node} from "@antv/x6";
+import {GenAssociationMatchView, GenTableAssociationView, GenTableColumnView} from "../api/__generated/model/static";
+import {Graph, Node, Edge} from "@antv/x6";
 import {
     getAssociations,
 } from "../components/AssociationEditor/edge/AssociationEdge.ts";
@@ -8,37 +8,95 @@ import {
     focusNode,
     getTables,
     loadTableNodes,
-    tableIdToNodeId, convertEntities, generateEntities, previewEntities
+    tableIdToNodeId
 } from "../components/AssociationEditor/node/TableNode.ts";
 import {defaultZoomRange} from "../components/AssociationEditor/graph/scale.ts";
-import {nextTick, Ref, ref} from 'vue';
-import {getSelectedEdges} from "../components/AssociationEditor/graph/useSelection.ts";
+import {computed, nextTick, Ref, ref, watch} from 'vue';
+import {getSelectedEdges, getSelectedNodes} from "../components/AssociationEditor/graph/useSelection.ts";
 import {layoutByLevels} from "../components/AssociationEditor/graph/layout.ts";
 import {sendMessage} from "../utils/message.ts";
+import {AssociationEditorGraphEventBus} from "../eventBus/AssociationEditorGraphEventBus.ts";
+import {api} from "../api";
+import {AssociationEditorMenuEventBus} from "../eventBus/AssociationEditorMenuEventBus.ts";
 
 export const useAssociationEditorGraphStore =
     defineStore(
         'AssociationEditorGraph',
         () => {
-            let graph: Graph
+            const graph: Ref<Graph | undefined> = ref()
+
+            /**
+             * 获取 graph
+             */
+            const _graph = (): Graph => {
+                if (!graph.value) {
+                    sendMessage("Graph 未初始化", "error")
+                    throw new Error("graph is not init")
+                }
+                return graph.value
+            }
 
             /**
              * 加载 graph，初始化
              */
             const load = async (_graph: Graph) => {
-                graph = _graph
-                await fitAndLayout()
+                graph.value = _graph
+                await layoutAndFit()
             }
 
-            /**
-             * 获取 graph
-             */
-            const _graph = () => {
-                if (!graph) {
-                    sendMessage("Graph 未初始化", "error")
-                    throw new Error("graph is not init")
+            const isLoaded = computed(() => {
+                return !!graph.value
+            })
+
+            // 状态监听以实现部分数据的响应式
+            const isSelectionEmpty = ref(true)
+            const selectedNodes = ref(<Node[]>[])
+            const selectedEdges = ref(<Edge[]>[])
+            const canUndo = ref(false)
+            const canRedo = ref(false)
+            const scaling = ref(0)
+            const formatScaling = ref(0)
+
+            const selectedTables = computed((): GenTableAssociationView[] => {
+                return selectedNodes.value.map(node => node.data.table)
+            })
+
+            const initWatcher = watch(() => graph.value, () => {
+                if (isLoaded.value) {
+                    const graph = _graph()
+
+                    graph.on('selection:changed', () => {
+                        isSelectionEmpty.value = graph.isSelectionEmpty()
+                        selectedNodes.value = getSelectedNodes(graph)
+                        selectedEdges.value = getSelectedEdges(graph)
+                    })
+
+                    graph.on('history:change', () => {
+                        canUndo.value = graph.canUndo()
+                        canRedo.value = graph.canRedo()
+                    })
+
+                    scaling.value = graph.zoom()
+
+                    graph.on('scale', ({sx}) => {
+                        scaling.value = sx
+                        formatScaling.value = Math.log2(sx)
+                    })
+
+                    watch(() => formatScaling.value, (newValue) => {
+                        scaling.value = Math.pow(2, newValue)
+                        graph.zoomTo(scaling.value)
+                    })
+
+                    initWatcher()
                 }
-                return graph
+            }, {deep: true, immediate: true})
+
+            const layoutDirection: Ref<"LR" | "TB" | "RL" | "BT"> = ref("LR")
+
+            /** 布局 */
+            const layout = (direction: "LR" | "TB" | "RL" | "BT" = layoutDirection.value) => {
+                layoutByLevels(_graph(), direction)
             }
 
             /**
@@ -52,12 +110,49 @@ export const useAssociationEditorGraphStore =
             }
 
             /**
+             * 延时适应画布并布局
+             */
+            const layoutAndFit = async (direction: "LR" | "TB" | "RL" | "BT" = layoutDirection.value) => {
+                await nextTick()
+                setTimeout(() => {
+                    layout(direction)
+                    nextTick(() => {
+                        fit()
+                    })
+                }, 500)
+            }
+
+            /**
              * 根据 node 获取 graph 中的 table
              * @returns table
              */
             const tables = (): GenTableColumnView[] => {
                 return getTables(_graph())
             }
+
+            const removeTables = (judge: (table: GenTableColumnView) => boolean) => {
+                const removeTableIds: number[] = []
+
+                tables().forEach(table => {
+                    if (judge(table)) {
+                        removeTableIds.push(table.id)
+                    }
+                })
+
+                const graph = _graph()
+                const removeNodeIds = removeTableIds.map(tableId => tableIdToNodeId(tableId))
+
+                graph.unselect(removeNodeIds)
+                graph.removeCells(removeNodeIds)
+            }
+
+            AssociationEditorMenuEventBus.on('deleteDataSource', ({id}) => {
+                removeTables(table => table.schema.dataSource.id == id)
+            })
+
+            AssociationEditorMenuEventBus.on('deleteSchema', ({id}) => {
+                removeTables(table => table.schema.id == id)
+            })
 
             /**
              * 根据 edge 获取 graph 中的 association
@@ -68,70 +163,85 @@ export const useAssociationEditorGraphStore =
             }
 
             /** 撤回 */
-            const undo = () => {
+            AssociationEditorGraphEventBus.on('undo', () => {
                 const graph = _graph()
 
                 if (graph.canUndo()) {
                     graph.undo()
                 }
-            }
+            })
 
             /** 重做 */
-            const redo = () => {
+            AssociationEditorGraphEventBus.on('redo', () => {
                 const graph = _graph()
 
                 if (graph.canRedo()) {
                     graph.redo()
                 }
-            }
+            })
 
             /** 移除全部 */
-            const removeAll = () => {
+            const removeAllOrSelectedCells = () => {
                 const graph = _graph()
 
-                graph.removeCells(graph.getCells())
+                if (graph.isSelectionEmpty()) {
+                    graph.unselect(graph.getCells())
+                    graph.removeCells(graph.getCells())
+                } else {
+                    const cells = graph.getSelectedCells()
+                    graph.unselect(cells)
+                    graph.removeCells(cells)
+                }
             }
 
+            AssociationEditorGraphEventBus.on('removeAllOrSelectedCells', removeAllOrSelectedCells)
+
             /** 移除选中区域关联，如果没有选中则移除全部关联 */
-            const removeAssociation = () => {
+            const removeAllOrSelectedAssociations = () => {
                 const graph = _graph()
 
                 if (graph.isSelectionEmpty()) {
                     graph.removeCells(graph.getEdges())
                 } else {
-                    graph.removeCells(getSelectedEdges(graph))
+                    const edges = getSelectedEdges(graph)
+                    graph.unselect(edges)
+                    graph.removeCells(edges)
                 }
             }
+
+            AssociationEditorGraphEventBus.on('removeAllOrSelectedAssociations', removeAllOrSelectedAssociations)
 
             /** 选中全部 */
             const selectAll = () => {
                 _graph().resetSelection(_graph().getCells())
             }
 
-            const layoutDirection: Ref<"LR" | "TB" | "RL" | "BT"> = ref("LR")
+            AssociationEditorGraphEventBus.on('selectAll', selectAll)
 
-            /** 布局 */
-            const layout = (direction: "LR" | "TB" | "RL" | "BT" = layoutDirection.value) => {
-                layoutByLevels(_graph(), direction)
-            }
+            AssociationEditorGraphEventBus.on('layout', ({direction}) => {
+                layout(direction)
+            })
 
             /**
-             * 导入 schema (tableList)，不进行 replace
-             * 将清空当前画布
-             * @param tableIds table id
+             * 向画布导入 schema
+             * @param id schema id
              * @param select 结束后是否选中全部
              */
-            const loadSchema = async (tableIds: number[], select: boolean = false) => {
+            const loadSchema = async (id: number, select: boolean = false) => {
                 const graph = _graph()
-
-                removeAll()
+                const res = await api.tableService.query({query: {schemaIds: [id]}})
+                const tableIds = res.map(table => table.id)
                 await loadTableNodes(graph, tableIds, false)
                 if (select) graph.select(tableIds.map(id => tableIdToNodeId(id)))
-                await fitAndLayout()
+                await layoutAndFit()
             }
 
+            AssociationEditorGraphEventBus.on('loadSchema', async ({id, select}) => {
+                await loadSchema(id, select)
+            })
+
             /**
-             * 导入 table，不进行 replace
+             * 向画布导入 table
              * @param id tableId
              * @param focus 结束后是否将目标表选中并居中
              */
@@ -147,56 +257,40 @@ export const useAssociationEditorGraphStore =
                 }
             }
 
-            /**
-             * 延时适应画布并布局
-             */
-            const fitAndLayout = async () => {
-                await nextTick()
-
-                setTimeout(() => {
-                    layout()
-                    nextTick(() => {
-                        fit()
-                    })
-                }, 500)
-            }
-
-            const generate = async (tableIds?: number[]) => {
-                const entityIds = await convertEntities(_graph(), tableIds)
-                await generateEntities(entityIds)
-            }
-
-            const preview = async (tableIds?: number[]) => {
-                return await previewEntities(_graph(), tableIds)
-            }
+            AssociationEditorGraphEventBus.on('loadTable', async ({id, focus}) => {
+                await loadTable(id, focus)
+            })
 
             return {
+                isLoaded,
+                load,
                 _graph,
 
                 tables,
                 associations,
 
-                load,
+                isSelectionEmpty,
+                selectedNodes,
+                selectedTables,
+                selectedEdges,
+                canUndo,
+                canRedo,
+                scaling,
+                formatScaling,
+
+                layoutDirection,
                 fit,
-
-                loadSchema,
-                loadTable,
-
-                redo,
-                undo,
-
-                removeAll,
-                removeAssociation,
+                layout,
+                layoutAndFit,
 
                 selectAll,
 
-                layout,
-                layoutDirection,
+                removeTables,
+                removeAllOrSelectedCells,
+                removeAllOrSelectedAssociations,
 
-                fitAndLayout,
-
-                preview,
-                generate
+                loadSchema,
+                loadTable,
             }
         }
     )

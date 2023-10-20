@@ -22,6 +22,7 @@ export const useHistory = (graph: Graph) => {
         })
     )
 
+    // 合并移动事件
     graph.on('node:move', () => {
         graph.startBatch('node move')
     })

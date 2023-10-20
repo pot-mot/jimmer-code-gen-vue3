@@ -10,6 +10,7 @@ export type { GenConfigProperties } from './GenConfigProperties';
 export type { GenDataSourceInput } from './GenDataSourceInput';
 export type { GenDataSourceTemplateView } from './GenDataSourceTemplateView';
 export type { GenDataSourceView } from './GenDataSourceView';
+export type { GenEntityCommonView } from './GenEntityCommonView';
 export type { GenEntityConfigInput } from './GenEntityConfigInput';
 export type { GenEntityPropertiesView } from './GenEntityPropertiesView';
 export type { GenSchemaView } from './GenSchemaView';

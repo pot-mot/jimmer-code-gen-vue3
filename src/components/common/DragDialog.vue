@@ -59,19 +59,34 @@ const close = () => {
 
 const draggable = ref(true)
 
+const wrapper = ref<HTMLElement>()
 const content = ref<HTMLElement>()
 const h = ref(0)
+let resizeFlag = false
 
 onMounted(() => {
 	nextTick(() => {
-		if (content.value) {
-			const resizeOb = new ResizeObserver(() => {
-				if (content.value) {
-					h.value = content.value.scrollHeight + 20
+		if (content.value && wrapper.value) {
+			const wrapperResizeOb = new ResizeObserver(() => {
+				if (wrapper.value && content.value) {
+					content.value.style.height = wrapper.value.offsetHeight - 35 + 'px'
+					resizeFlag = true
 				}
 			})
 
-			resizeOb.observe(content.value)
+			wrapperResizeOb.observe(wrapper.value)
+
+			const contentResizeOb = new ResizeObserver(() => {
+				if (content.value) {
+					if (resizeFlag) {
+						resizeFlag = false
+					} else {
+						h.value = content.value.scrollHeight + 35
+					}
+				}
+			})
+
+			contentResizeOb.observe(content.value)
 		}
 	})
 })
@@ -83,13 +98,13 @@ onMounted(() => {
 					:h="h" :w="w" :initH="initH" :initW="initW" :minH="minH" :minW="minW" :maxH="maxH" :maxW="maxW"
 					:x="x" :y="y"
 					style="border: none; z-index: 2000;">
-			<div class="wrapper">
+			<div ref="wrapper" class="wrapper">
 				<div class="close" @click="close">
 					<slot name="close">
-						<el-button type="danger" :icon="Close" size="default" link></el-button>
+						<el-button type="danger" :icon="Close" size="large" link></el-button>
 					</slot>
 				</div>
-				<div ref="content" style="cursor: default; overflow: auto; scrollbar-gutter: stable;"
+				<div ref="content"  class="content"
 					 @mouseenter="draggable = false" @mouseleave="draggable = true">
 					<slot></slot>
 				</div>
@@ -109,15 +124,19 @@ onMounted(() => {
 }
 
 .wrapper {
-	height: calc(100% - 8px);
-	width: calc(100% - 8px);
-	margin: 4px;
-	padding: 1em;
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+	padding: 20px 10px 10px;
+	background-color: #fff;
 	border-radius: var(--el-border-radius-base);
 	box-shadow: var(--el-box-shadow);
-	background-color: #fff;
 	cursor: all-scroll;
 	position: relative;
+}
+
+.content {
+	cursor: default;
 }
 
 :deep(.handle) {

@@ -5,16 +5,17 @@ import SchemaItem from "./SchemaItem.vue";
 import {api} from "../../../api";
 import {GenSchemaDto} from "../../../api/__generated/model/dto";
 import DataSourceDialog from "../../dialog/DataSourceDialog.vue";
-import {sendMessage} from "../../../utils/message.ts";
 import Details from "../../common/Details.vue";
 import {useLoading} from "../../../hooks/useLoading.ts";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {ElMessageBox} from 'element-plus'
 import DataSourceIcon from "../../icons/database/DataSourceIcon.vue";
+import {AssociationEditorMenuEventBus} from "../../../eventBus/AssociationEditorMenuEventBus.ts";
+import {sendMessage} from "../../../utils/message.ts";
 
 const genSchemaLoading = useLoading()
 
-const viewSchemaLoading = useLoading()
+const previewSchemaLoading = useLoading()
 
 interface DataSourceItemProps {
 	dataSource: GenDataSourceView
@@ -22,20 +23,12 @@ interface DataSourceItemProps {
 
 const props = defineProps<DataSourceItemProps>()
 
-interface SchemaItemEmits {
-	(event: "change", dataSourceId: number): void
+const previewSchemas = ref<GenSchemaDto['DEFAULT'][]>([])
 
-	(event: "delete", dataSourceId: number): void
-}
-
-const emits = defineEmits<SchemaItemEmits>()
-
-const allSchemas = ref<GenSchemaDto['DEFAULT'][]>([])
-
-const previewSchemas = async (dataSourceId: number) => {
-	viewSchemaLoading.start()
-	allSchemas.value = await api.schemaService.preview({dataSourceId})
-	viewSchemaLoading.end()
+const getPreviewSchemas = async (dataSourceId: number) => {
+	previewSchemaLoading.start()
+	previewSchemas.value = await api.schemaService.preview({dataSourceId})
+	previewSchemaLoading.end()
 }
 
 const schemas = ref<GenSchemaView[]>([])
@@ -52,22 +45,22 @@ const toggleShowAllSchemas = async (dataSourceId: number) => {
 	showAllSchemas.value = !showAllSchemas.value
 
 	if (showAllSchemas.value) {
-		previewSchemas(dataSourceId)
+		await getPreviewSchemas(dataSourceId)
 	} else {
-		allSchemas.value = []
+		previewSchemas.value = []
 	}
 }
 
 const closeAllSchemas = () => {
 	showAllSchemas.value = false
-	allSchemas.value = []
+	previewSchemas.value = []
 }
 
 watch(() => props.dataSource, () => {
 	getSchemas()
 }, {immediate: true})
 
-const deleteDataSource = (dataSourceId: number = props.dataSource.id) => {
+const handleDelete = () => {
 	ElMessageBox.confirm(
 		`确定要删除 ${props.dataSource.name} 吗？`,
 		{
@@ -77,9 +70,12 @@ const deleteDataSource = (dataSourceId: number = props.dataSource.id) => {
 			type: "error"
 		}
 	).then(() => {
-		api.dataSourceService.delete({ids: [dataSourceId]}).then(res => {
+		const id = props.dataSource.id
+
+		api.dataSourceService.delete({ids: [id]}).then(res => {
 			if (res > 0) {
-				emits("delete", dataSourceId)
+				sendMessage(`删除 dataSource ${id} 成功`, "success")
+				AssociationEditorMenuEventBus.emit('deleteDataSource', {id})
 			}
 		})
 	})
@@ -94,7 +90,18 @@ const loadSchema = async (name: string, dataSourceId: number = props.dataSource.
 	})
 
 	if (loadIds.length > 0) {
-		await getSchemas()
+		const newSchemas = await api.schemaService.list({schemaIds: loadIds, dataSourceId: dataSourceId})
+
+		newSchemas.forEach(newSchema => {
+			const index = schemas.value.findIndex(schema => schema.id == newSchema.id)
+
+			if (index == -1) {
+				schemas.value.push(newSchema)
+			} else {
+				schemas.value[index] = newSchema
+			}
+		})
+
 		closeAllSchemas()
 	}
 
@@ -113,13 +120,14 @@ const handleEdit = (e: MouseEvent) => {
 
 const handleEditFinish = () => {
 	isEdit.value = false
-	emits("change", props.dataSource.id)
+	AssociationEditorMenuEventBus.emit('editDataSource', {id: props.dataSource.id})
 }
 
-const handleSchemaDelete = async (id: number) => {
-	sendMessage(`删除 schema ${id} 成功`, "success")
-	await getSchemas()
-}
+AssociationEditorMenuEventBus.on('deleteSchema', ({id}) => {
+	if (schemas.value.map(schema => schema.id).includes(id)) {
+		schemas.value = schemas.value.filter(schema => schema.id != id)
+	}
+})
 </script>
 
 <template>
@@ -138,8 +146,8 @@ const handleSchemaDelete = async (id: number) => {
 							</el-button>
 						</template>
 
-						<div v-loading="viewSchemaLoading.isLoading()">
-							<div v-for="schema in allSchemas">
+						<div v-loading="previewSchemaLoading.isLoading()">
+							<div v-for="schema in previewSchemas">
 								<el-text>
 									<el-button @click="loadSchema(schema.name)" link>{{ schema.name }}</el-button>
 								</el-text>
@@ -149,13 +157,13 @@ const handleSchemaDelete = async (id: number) => {
 
 					<el-button @click="handleEdit" title="编辑" :icon="EditPen"
 							   type="warning" link></el-button>
-					<el-button @click="deleteDataSource()" title="删除" :icon="Delete"
+					<el-button @click="handleDelete" title="删除" :icon="Delete"
 							   type="danger" link></el-button>
 				</el-text>
 			</div>
 		</template>
 		<div v-loading="genSchemaLoading.isLoading()" style="padding: 0 0 0.5em 0.5em;">
-			<SchemaItem v-for="schema in schemas" :schema="schema" @delete="handleSchemaDelete"/>
+			<SchemaItem v-for="schema in schemas" :schema="schema"/>
 		</div>
 	</Details>
 	<DataSourceDialog

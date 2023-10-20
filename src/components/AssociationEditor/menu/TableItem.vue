@@ -3,7 +3,7 @@ import {EditPen} from "@element-plus/icons-vue";
 import {GenTableCommonView} from "../../../api/__generated/model/static";
 import {useAssociationEditorGraphStore} from "../../../store/AssociationEditorGraphStore.ts";
 import TableIcon from "../../icons/database/TableIcon.vue";
-import {TableDialogEventEmitter} from "../../../eventBus/TableDialogEventEmitter.ts";
+import {TableDialogEventBus} from "../../../eventBus/TableDialogEventBus.ts";
 
 const store = useAssociationEditorGraphStore()
 
@@ -22,7 +22,7 @@ defineProps<TableItemProps>()
 			{{ table.name }} {{ table.comment }}
 		</el-button>
 
-		<el-button @click="TableDialogEventEmitter.emit('addTableDialog', table.id)" title="编辑" :icon="EditPen"
+		<el-button @click="TableDialogEventBus.emit('addTableDialog', table.id)" title="编辑" :icon="EditPen"
 				   type="warning" link>
 		</el-button>
 	</el-text>

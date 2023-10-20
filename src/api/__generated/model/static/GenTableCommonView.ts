@@ -16,7 +16,19 @@ export interface GenTableCommonView {
     
     remark: string;
     
-    schemaId: number;
+    schema: GenTableCommonView_TargetOf_schema;
     
     type: TableType;
+}
+
+export interface GenTableCommonView_TargetOf_schema {
+    
+    dataSource: GenTableCommonView_TargetOf_schema_TargetOf_dataSource;
+    
+    id: number;
+}
+
+export interface GenTableCommonView_TargetOf_schema_TargetOf_dataSource {
+    
+    id: number;
 }

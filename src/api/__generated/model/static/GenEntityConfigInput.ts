@@ -2,25 +2,17 @@ import type { AssociationType, GenerationType } from '../enums';
 
 export interface GenEntityConfigInput {
     
-    add: boolean;
-    
     author: string;
     
     comment: string;
     
-    edit: boolean;
-    
     id?: number;
-    
-    list: boolean;
     
     name: string;
     
     orderKey: number;
     
     properties: GenEntityConfigInput_TargetOf_properties[];
-    
-    query: boolean;
     
     remark: string;
 }
@@ -35,17 +27,19 @@ export interface GenEntityConfigInput_TargetOf_properties {
     
     dissociateAnnotation?: string;
     
-    id: boolean;
+    id?: number;
     
     idGenerationType?: GenerationType;
+    
+    idProperty: boolean;
     
     idView: boolean;
     
     idViewAnnotation?: string;
     
-    key: boolean;
+    keyProperty: boolean;
     
-    list: boolean;
+    listType: boolean;
     
     logicalDelete: boolean;
     

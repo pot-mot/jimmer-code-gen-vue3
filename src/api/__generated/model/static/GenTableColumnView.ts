@@ -18,7 +18,7 @@ export interface GenTableColumnView {
     
     remark: string;
     
-    schemaId: number;
+    schema: GenTableColumnView_TargetOf_schema;
     
     type: TableType;
 }
@@ -35,8 +35,6 @@ export interface GenTableColumnView_TargetOf_columns {
     
     displaySize: number;
     
-    fk: boolean;
-    
     id: number;
     
     modifiedTime: string;
@@ -49,7 +47,11 @@ export interface GenTableColumnView_TargetOf_columns {
     
     orderKey: number;
     
-    pk: boolean;
+    partOfFk: boolean;
+    
+    partOfPk: boolean;
+    
+    partOfUniqueIdx: boolean;
     
     remark: string;
     
@@ -58,6 +60,16 @@ export interface GenTableColumnView_TargetOf_columns {
     type: string;
     
     typeCode: number;
+}
+
+export interface GenTableColumnView_TargetOf_schema {
     
-    unique: boolean;
+    dataSource: GenTableColumnView_TargetOf_schema_TargetOf_dataSource;
+    
+    id: number;
+}
+
+export interface GenTableColumnView_TargetOf_schema_TargetOf_dataSource {
+    
+    id: number;
 }

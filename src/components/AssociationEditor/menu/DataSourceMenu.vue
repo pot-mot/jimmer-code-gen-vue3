@@ -4,8 +4,9 @@ import {api} from "../../../api";
 import {GenDataSourceView} from "../../../api/__generated/model/static";
 import DataSourceItem from "./DataSourceItem.vue";
 import DataSourceDialog from "../../dialog/DataSourceDialog.vue";
-import {sendMessage} from "../../../utils/message.ts";
 import {useLoading} from "../../../hooks/useLoading.ts";
+import {AssociationEditorMenuEventBus} from "../../../eventBus/AssociationEditorMenuEventBus.ts";
+import {sendMessage} from "../../../utils/message.ts";
 
 const dataSourcesLoading = useLoading()
 
@@ -34,23 +35,38 @@ const handleSave = (e: MouseEvent) => {
 const handleSaveFinish = (dataSource: GenDataSourceView) => {
 	dataSources.value.push(dataSource)
 	isSave.value = false
+	AssociationEditorMenuEventBus.emit('loadDateSource', {})
 }
 
-const handleChange = () => {
-	getDataSources()
-}
+AssociationEditorMenuEventBus.on('editDataSource', async ({id}) => {
+	const newDataSource = await api.dataSourceService.get({id})
 
-const handleDelete = (id: number) => {
-	sendMessage(`删除 dataSource ${id} 成功`, "success")
-	getDataSources()
-}
+	if (!newDataSource) {
+		sendMessage('获取新 dataSource 失败', 'error')
+		return
+	}
+
+	const index = dataSources.value.findIndex(dataSource => dataSource.id == id)
+
+	if (index == -1) {
+		dataSources.value.push(newDataSource)
+	} else {
+		dataSources.value[index] = newDataSource
+	}
+})
+
+AssociationEditorMenuEventBus.on('deleteDataSource', ({id}) => {
+	if (dataSources.value.map(dataSource => dataSource.id).includes(id)) {
+		dataSources.value = dataSources.value.filter(dataSource => dataSource.id != id)
+	}
+})
 </script>
 
 <template>
 	<div class="wrapper" v-loading="dataSourcesLoading.isLoading()">
 		<el-button @click="handleSave">新增</el-button>
 		<template v-for="dataSource in dataSources">
-			<DataSourceItem :data-source="dataSource" @change="handleChange" @delete="handleDelete"/>
+			<DataSourceItem :data-source="dataSource"/>
 		</template>
 	</div>
 	<DataSourceDialog

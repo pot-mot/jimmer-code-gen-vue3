@@ -8,6 +8,8 @@ export interface GenTableAssociationView {
     
     createdTime: string;
     
+    entityId?: number;
+    
     id: number;
     
     modifiedTime: string;
@@ -35,8 +37,6 @@ export interface GenTableAssociationView_TargetOf_columns {
     
     displaySize: number;
     
-    fk: boolean;
-    
     id: number;
     
     inAssociations: GenTableAssociationView_TargetOf_columns_TargetOf_inAssociations[];
@@ -53,7 +53,11 @@ export interface GenTableAssociationView_TargetOf_columns {
     
     outAssociations: GenTableAssociationView_TargetOf_columns_TargetOf_outAssociations[];
     
-    pk: boolean;
+    partOfFk: boolean;
+    
+    partOfPk: boolean;
+    
+    partOfUniqueIdx: boolean;
     
     remark: string;
     
@@ -62,8 +66,6 @@ export interface GenTableAssociationView_TargetOf_columns {
     type: string;
     
     typeCode: number;
-    
-    unique: boolean;
 }
 
 export interface GenTableAssociationView_TargetOf_columns_TargetOf_inAssociations {
@@ -71,6 +73,8 @@ export interface GenTableAssociationView_TargetOf_columns_TargetOf_inAssociation
     associationType: AssociationType;
     
     dissociateAction?: DissociateAction;
+    
+    fake: boolean;
     
     id: number;
     
@@ -103,6 +107,8 @@ export interface GenTableAssociationView_TargetOf_columns_TargetOf_outAssociatio
     
     dissociateAction?: DissociateAction;
     
+    fake: boolean;
+    
     id: number;
     
     targetColumn: GenTableAssociationView_TargetOf_columns_TargetOf_outAssociations_TargetOf_targetColumn;
@@ -132,10 +138,14 @@ export interface GenTableAssociationView_TargetOf_schema {
     
     dataSource: GenTableAssociationView_TargetOf_schema_TargetOf_dataSource;
     
+    id: number;
+    
     name: string;
 }
 
 export interface GenTableAssociationView_TargetOf_schema_TargetOf_dataSource {
+    
+    id: number;
     
     name: string;
     

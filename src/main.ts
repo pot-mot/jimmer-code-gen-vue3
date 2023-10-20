@@ -21,3 +21,18 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 
 app.mount('#app')
+
+export const convertToMap = <V> (obj: { [key: string]: V }): Map<string, V> => {
+    const map = new Map<string, V>();
+
+    // 遍历对象中的每个键值对
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            const value = obj[key];
+            // 使用 set 方法将键和值添加到 Map 中
+            map.set(key, value);
+        }
+    }
+
+    return map;
+};

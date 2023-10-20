@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import {nextTick, ref} from 'vue'
-import {TableDialogEventEmitter} from "../../eventBus/TableDialogEventEmitter.ts";
-import TableDialog from "../dialog/TableDialog.vue";
+import {TableDialogEventBus} from "../../eventBus/TableDialogEventBus.ts";
+import TableDialog from "../dialog/TableDialog/index.vue";
 
 const tableIds = ref<Set<number>>(new Set)
 
-TableDialogEventEmitter.on('addTableDialog', (id: number) => {
+TableDialogEventBus.on('addTableDialog', (id: number) => {
 	if (tableIds.value.has(id)) {
 		tableIds.value.delete(id)
 		nextTick(() => {
@@ -16,7 +16,7 @@ TableDialogEventEmitter.on('addTableDialog', (id: number) => {
 	}
 })
 
-TableDialogEventEmitter.on('removeTableDialog', (id: number) => {
+TableDialogEventBus.on('removeTableDialog', (id: number) => {
 	tableIds.value.delete(id)
 })
 </script>
@@ -25,8 +25,7 @@ TableDialogEventEmitter.on('removeTableDialog', (id: number) => {
 	<template v-for="id in [...tableIds.values()]">
 		<TableDialog
 			:id="id"
-			@close="tableIds.delete(id)"
-			@updated="tableIds.add(id)">
+			@close="tableIds.delete(id)">
 		</TableDialog>
 	</template>
 </template>

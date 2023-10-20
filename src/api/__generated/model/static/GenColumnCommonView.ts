@@ -10,8 +10,6 @@ export interface GenColumnCommonView {
     
     displaySize: number;
     
-    fk: boolean;
-    
     id: number;
     
     modifiedTime: string;
@@ -24,7 +22,11 @@ export interface GenColumnCommonView {
     
     orderKey: number;
     
-    pk: boolean;
+    partOfFk: boolean;
+    
+    partOfPk: boolean;
+    
+    partOfUniqueIdx: boolean;
     
     remark: string;
     
@@ -33,6 +35,4 @@ export interface GenColumnCommonView {
     type: string;
     
     typeCode: number;
-    
-    unique: boolean;
 }

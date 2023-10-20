@@ -10,6 +10,8 @@ export interface GenAssociationView {
     
     dissociateAction?: DissociateAction;
     
+    fake: boolean;
+    
     id: number;
     
     modifiedTime: string;

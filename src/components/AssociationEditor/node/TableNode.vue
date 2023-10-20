@@ -1,5 +1,5 @@
 <template>
-	<div v-if="table" class="node" @contextmenu="TableDialogEventEmitter.emit('addTableDialog', table.id)">
+	<el-text v-if="table" class="node" @contextmenu="TableDialogEventBus.emit('addTableDialog', table.id)">
 		<table ref="wrapper" class="node-wrapper">
 			<tr class="tableName">
 				<td :class="table.type"></td>
@@ -9,18 +9,13 @@
 				</td>
 			</tr>
 			<tr v-for="column in table.columns">
-				<td :class="{
-					'pk': column.pk,
-					'fk': column.fk,
-					'notNull': column.notNull,
-					'unique': column.unique,
-				}"></td>
+				<td></td>
 				<td>{{ column.name }}</td>
-				<td>{{ `${column.type}(${column.displaySize}, ${column.numericPrecision})` }}</td>
+				<td>{{ column.type }}</td>
 				<td>{{ column.comment }}</td>
 			</tr>
 		</table>
-	</div>
+	</el-text>
 </template>
 
 <style lang="scss" scoped>
@@ -37,7 +32,7 @@
 			padding: 0 0.5em;
 			height: 30px;
 			line-height: 30px;
-			font-size: 16px;
+			font-size: 14px;
 		}
 
 		.tableName {
@@ -65,7 +60,8 @@ import {inject, nextTick, onMounted, ref} from "vue";
 import {GenTableColumnView} from "../../../api/__generated/model/static";
 import {Node} from '@antv/x6'
 import {useAssociationEditorGraphStore} from "../../../store/AssociationEditorGraphStore.ts";
-import {TableDialogEventEmitter} from "../../../eventBus/TableDialogEventEmitter.ts";
+import {TableDialogEventBus} from "../../../eventBus/TableDialogEventBus.ts";
+import {ElText} from "element-plus";
 
 const wrapper = ref<HTMLElement | null>()
 
@@ -82,7 +78,9 @@ onMounted(() => {
 	nextTick(() => {
 		if (!wrapper.value) return
 
-		store._graph().disableHistory()
+		const graph = store._graph()
+
+		graph.disableHistory()
 
 		node.resize(wrapper.value.clientWidth, wrapper.value.clientHeight)
 
@@ -94,7 +92,7 @@ onMounted(() => {
 			})
 		})
 
-		store._graph().enableHistory()
+		graph.enableHistory()
 	})
 });
 </script>

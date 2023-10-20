@@ -8,6 +8,8 @@ export interface GenAssociationInput {
     
     dissociateAction?: DissociateAction;
     
+    fake: boolean;
+    
     orderKey: number;
     
     remark: string;

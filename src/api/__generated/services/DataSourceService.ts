@@ -19,11 +19,11 @@ export class DataSourceService {
     }
     
     async get(options: DataSourceServiceOptions['get']): Promise<
-        GenDataSourceView[]
+        GenDataSourceView | undefined
     > {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.id);
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenDataSourceView[]
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenDataSourceView | undefined
     }
     
     async getDefaultDataSource(options: DataSourceServiceOptions['getDefaultDataSource']): Promise<

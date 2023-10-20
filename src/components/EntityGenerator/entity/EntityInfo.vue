@@ -5,8 +5,7 @@ interface EntityInfoProps {
 	entity: GenEntityPropertiesView
 }
 
-const props = defineProps<EntityInfoProps>()
-
+defineProps<EntityInfoProps>()
 </script>
 
 <template>
@@ -14,9 +13,6 @@ const props = defineProps<EntityInfoProps>()
 		<div>{{ entity.name }}</div>
 		<div>{{ entity.comment }}</div>
 		<table v-for="property in entity.properties">
-			<tr>
-				<td>{{ property.annotationExpression }}</td>
-			</tr>
 			<tr>
 				<td>{{ property.name }}</td>
 				<td>{{ property.type }}</td>

@@ -2,20 +2,17 @@
 	<div ref="wrapper" class="wrapper" id="AssociationEditor">
 		<div ref="container"></div>
 
-		<ul class="toolbar left-bottom">
+		<ul v-if="store.isLoaded" class="toolbar left-bottom">
 			<li>
 				<el-button @click="toggleMinimap">minimap</el-button>
 			</li>
-			<li>
-				<el-button @click="toggleLog">log</el-button>
-			</li>
 		</ul>
-		<ul class="toolbar right-top">
+		<ul v-if="store.isLoaded" class="toolbar right-top">
 			<li>
-				<el-button @click="store.undo">undo</el-button>
+				<el-button @click="graph.undo()">undo</el-button>
 			</li>
 			<li>
-				<el-button @click="store.redo">redo</el-button>
+				<el-button @click="graph.redo()">redo</el-button>
 			</li>
 			<li>
 				<el-button @click="store.fit">适应画布</el-button>
@@ -24,13 +21,30 @@
 				<el-button @click="graph.centerContent()">居中</el-button>
 			</li>
 			<li>
-				<el-button @click="store.removeAll">清除所有</el-button>
+				<el-slider v-model="store.formatScaling"
+						   :step="0.25"
+						   :min="Math.log2(defaultZoomRange.minScale)"
+						   :max="Math.log2(defaultZoomRange.maxScale)"
+						   :show-tooltip="false">
+				</el-slider>
 			</li>
 			<li>
-				<el-button @click="store.removeAssociation">清除关联</el-button>
+				<el-input-number v-model="store.formatScaling" :step="0.25" :precision="2" :min="Math.log2(defaultZoomRange.minScale)"
+								 :max="Math.log2(defaultZoomRange.maxScale)">
+				</el-input-number>
+			</li>
+			<li>
+				<el-button @click="store.removeAllOrSelectedCells()">
+					{{ store.isSelectionEmpty ? "清除所有" : "清除选中" }}
+				</el-button>
+			</li>
+			<li>
+				<el-button @click="store.removeAllOrSelectedAssociations()">
+					{{ store.isSelectionEmpty ? "清除关联" : "清除选中关联" }}
+				</el-button>
 			</li>
 		</ul>
-		<ul class="toolbar left-top">
+		<ul v-if="store.isLoaded" class="toolbar left-top">
 			<li>
 				<el-button @click="handleLayout">布局</el-button>
 				<el-select v-model="store.layoutDirection">
@@ -53,36 +67,16 @@
 				<el-button @click="saveAssociations(graph)">保存关联</el-button>
 			</li>
 			<li>
-				<el-button @click="store.generate()">生成实体</el-button>
+				<el-button @click="generateEntities(store.isSelectionEmpty ? store.tables().map(table => table.id) : store.selectedTables.map(table => table.id))">生成实体</el-button>
 			</li>
 		</ul>
-		<div class="toolbar right-bottom">
-			<template v-if="showMinimap">
-				<div ref="minimap" class="minimap"></div>
-			</template>
+
+		<Searcher></Searcher>
+
+		<div v-if="store.isLoaded" class="toolbar right-bottom">
+			<MiniMap ref="minimap"></MiniMap>
 		</div>
 	</div>
-	<DragDialog v-if="showSearch" @close="showSearch = false" :y="100" to="#AssociationEditor">
-		<div>
-			<el-input v-model="keyword" autofocus @keydown.enter="search">
-				<template #append>
-					<el-button @click="search">搜索</el-button>
-				</template>
-			</el-input>
-			<div v-if="searchResult.length == 0">
-				暂无数据
-			</div>
-			<div style="max-height: 60vh; overflow: auto; min-width: 20em;">
-				<table>
-					<tr v-for="node in searchResult" :class="node.data.table.type"
-						@click="focusNode(graph, node)">
-						<td>{{ node.data.table.name }}</td>
-						<td>{{ node.data.table.comment }}</td>
-					</tr>
-				</table>
-			</div>
-		</div>
-	</DragDialog>
 </template>
 
 <style lang="scss" scoped>
@@ -120,11 +114,6 @@
 		bottom: 0;
 		left: 0;
 	}
-
-	.minimap {
-		width: max(15vw, 200px);
-		height: max(20vh, 200px);
-	}
 }
 
 .x6-node-selected .node-wrapper {
@@ -151,16 +140,15 @@ import {useSelection, useSelectionKeyEvent} from "./graph/useSelection.ts";
 import {saveAssociations, useSwitchAssociationType} from "./edge/AssociationEdge.ts";
 import {loadGraph, saveGraph} from "./graph/localStorage.ts";
 import {useAssociationEditorGraphStore} from "../../store/AssociationEditorGraphStore.ts";
-import {useMiniMap} from "./graph/useMiniMap.ts";
-import DragDialog from "../common/DragDialog.vue";
 import {useTableEditorMatch} from "./graph/useMatch.ts";
-import {useTableEditorSearch} from "./graph/useSearch.ts";
 import {useSave} from "./graph/useSave.ts";
-import {focusNode} from "./node/TableNode.ts";
+import Searcher from "./graph/Searcher.vue";
+import MiniMap from "./graph/MiniMap.vue";
+import {defaultZoomRange} from "./graph/scale.ts";
+import {generateEntities} from "./node/TableNode.ts";
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();
-const minimap = ref<HTMLElement>();
 
 let graph: Graph
 
@@ -193,15 +181,11 @@ useSave(() => graph)
 useHistoryKeyEvent(() => graph)
 useSelectionKeyEvent(() => graph)
 
-const showLog = ref(false)
+const minimap = ref()
 
-const toggleLog = () => {
-	showLog.value = !showLog.value
+const toggleMinimap = () => {
+	minimap.value.toggle()
 }
-
-const {toggleMinimap, showMinimap} = useMiniMap(() => graph, () => minimap.value)
-
-const {search, keyword, searchResult, showSearch} = useTableEditorSearch(() => graph)
 
 const {match, matchTypes, matchType} = useTableEditorMatch(() => graph)
 

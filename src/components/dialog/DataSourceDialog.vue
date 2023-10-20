@@ -83,8 +83,8 @@ const submit = () => {
 			body: dataSource.value
 		}).then(id => {
 			api.dataSourceService.get({id}).then(res => {
-				if (res.length > 0) {
-					emits("added", res[0])
+				if (!!res) {
+					emits("added", res)
 				}
 			})
 		})

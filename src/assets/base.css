@@ -4,11 +4,14 @@
     padding: 0;
 }
 
+body {
+    overflow: hidden;
+}
+
 /* layout */
 .layout {
     height: 100vh;
     width: 100vw;
-    overflow: hidden;
 }
 
 /* splitpanes */

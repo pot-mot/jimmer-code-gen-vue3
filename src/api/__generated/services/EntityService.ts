@@ -1,6 +1,6 @@
 import type { Executor } from '../';
 import type { GenLanguage } from '../model/enums';
-import type { EntityQuery, GenEntityConfigInput, GenEntityPropertiesView, byte } from '../model/static';
+import type { EntityQuery, GenEntityCommonView, GenEntityConfigInput, GenEntityPropertiesView, byte } from '../model/static';
 
 export class EntityService {
     
@@ -38,6 +38,21 @@ export class EntityService {
             _separator = '&';
         }
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as byte[]
+    }
+    
+    async get(options: EntityServiceOptions['get']): Promise<
+        GenEntityPropertiesView | undefined
+    > {
+        let _uri = '/entity/';
+        _uri += encodeURIComponent(options.id);
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenEntityPropertiesView | undefined
+    }
+    
+    async list(): Promise<
+        GenEntityCommonView[]
+    > {
+        let _uri = '/entity/';
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenEntityCommonView[]
     }
     
     async listLanguage(): Promise<
@@ -100,6 +115,8 @@ export type EntityServiceOptions = {
     'convert': {body: number[]},
     'delete': {ids: number[]},
     'generate': {body: number[], language?: GenLanguage},
+    'get': {id: number},
+    'list': {},
     'listLanguage': {},
     'preview': {entityIds: number[], language?: GenLanguage},
     'query': {query: EntityQuery}

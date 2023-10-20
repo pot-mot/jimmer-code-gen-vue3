@@ -6,7 +6,6 @@ import {api} from "../../../api";
 import {importAssociationEdges} from "../edge/AssociationEdge.ts";
 import {nextTick} from "vue";
 import {sendMessage} from "../../../utils/message.ts";
-import {getSelectedNodes} from "../graph/useSelection.ts";
 import { saveAs } from 'file-saver';
 
 export const tableIdToNodeId = (id: number) => {
@@ -171,31 +170,16 @@ export const focusNode = async (graph: Graph, node: Node) => {
     await nextTick()
 }
 
-export const convertEntities = async (graph: Graph, tableIds?: number[]) => {
-    const body: number[] = []
-
-    if (!tableIds) {
-        if (graph.isSelectionEmpty()) {
-            body.push(...graph.getNodes().map(node => nodeIdToTableId(node.id)))
-        } else {
-            body.push(...getSelectedNodes(graph).map(node => nodeIdToTableId(node.id)))
-        }
-    } else {
-        body.push(...tableIds)
-    }
-
-    const res = await api.entityService.convert({body})
-    sendMessage("实体映射成功，实体id：" + res, "success")
-    return res
+export const convertEntities = async (tableIds: number[]) => {
+    return await api.entityService.convert({body: tableIds})
 }
 
-export const previewEntities = async (graph: Graph, tableIds?: number[]) => {
-    const entityIds = await convertEntities(graph, tableIds)
+export const previewEntities = async (entityIds: number[]) => {
     return await api.entityService.preview({entityIds})
 }
 
-export const generateEntities = async (body: number[]) => {
-    const res = (await api.entityService.generate({body})) as any as Blob
+export const generateEntities = async (entityIds: number[]) => {
+    const res = (await api.entityService.generate({body: entityIds})) as any as Blob
     const file = new File([res], "entities.zip")
     saveAs(file)
 }
