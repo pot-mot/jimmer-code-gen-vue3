@@ -1,6 +1,6 @@
 import type { Executor } from '../';
 import type { GenLanguage } from '../model/enums';
-import type { EntityQuery, GenEntityCommonView, GenEntityConfigInput, GenEntityPropertiesView, byte } from '../model/static';
+import type { EntityQuery, GenEntityCommonView, GenEntityConfigInput, GenEntityPropertiesView } from '../model/static';
 
 export class EntityService {
     
@@ -11,33 +11,10 @@ export class EntityService {
         return (await this.executor({uri: _uri, method: 'PUT', body: options.body})) as number
     }
     
-    async convert(options: EntityServiceOptions['convert']): Promise<
-        number[]
-    > {
-        let _uri = '/entity/convert';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number[]
-    }
-    
     async delete(options: EntityServiceOptions['delete']): Promise<number> {
         let _uri = '/entity/';
         _uri += encodeURIComponent(options.ids.join(','));
         return (await this.executor({uri: _uri, method: 'DELETE'})) as number
-    }
-    
-    async generate(options: EntityServiceOptions['generate']): Promise<
-        byte[]
-    > {
-        let _uri = '/entity/generate';
-        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
-        let _value: any = undefined;
-        _value = options.language;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'language='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as byte[]
     }
     
     async get(options: EntityServiceOptions['get']): Promise<
@@ -60,23 +37,6 @@ export class EntityService {
     > {
         let _uri = '/entity/language';
         return (await this.executor({uri: _uri, method: 'GET'})) as GenLanguage[]
-    }
-    
-    async preview(options: EntityServiceOptions['preview']): Promise<
-        { [key: string]: string }
-    > {
-        let _uri = '/entity/preview/';
-        _uri += encodeURIComponent(options.entityIds.join(','));
-        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
-        let _value: any = undefined;
-        _value = options.language;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'language='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        return (await this.executor({uri: _uri, method: 'GET'})) as { [key: string]: string }
     }
     
     async query(options: EntityServiceOptions['query']): Promise<
@@ -112,12 +72,9 @@ export class EntityService {
 
 export type EntityServiceOptions = {
     'config': {body: GenEntityConfigInput},
-    'convert': {body: number[]},
     'delete': {ids: number[]},
-    'generate': {body: number[], language?: GenLanguage},
     'get': {id: number},
     'list': {},
     'listLanguage': {},
-    'preview': {entityIds: number[], language?: GenLanguage},
     'query': {query: EntityQuery}
 }

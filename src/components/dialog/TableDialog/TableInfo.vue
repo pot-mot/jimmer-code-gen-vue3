@@ -52,8 +52,12 @@ const selectAssociation = (
 	}
 }
 
-const handleSave = () => {
+const deleteAssociation = () => {
+	// TODO
+}
 
+const saveTableEdit = () => {
+	// TODO
 }
 </script>
 
@@ -125,7 +129,7 @@ const handleSave = () => {
 								{{ association.sourceColumn.name }}
 							</el-button>
 
-							<el-button>删除</el-button>
+							<el-button @click="deleteAssociation">删除</el-button>
 						</el-text>
 					</div>
 				</div>
@@ -156,15 +160,11 @@ const handleSave = () => {
 								{{ association.targetColumn.name }}
 							</el-button>
 
-							<el-button>删除</el-button>
+							<el-button @click="deleteAssociation">删除</el-button>
 						</el-text>
 					</div>
 				</div>
 			</Details>
 		</div>
-
-		<el-form-item>
-			<el-button @click="handleSave">保存变更</el-button>
-		</el-form-item>
 	</el-form>
 </template>

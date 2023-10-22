@@ -44,10 +44,18 @@ vite build
 
 ## TODO
 
-### 实体生成
-- 包管理
-- 属性修改配置
-- 枚举生成
+> 此处是包括前后端在内的未完成功能点
+
+- 全局配置修改  
+[GenConfigDialog.vue](src%2Fcomponents%2Fdialog%2FGenConfigDialog.vue)
+- 包管理（实体类与枚举的包，包自身的树形管理等）  
+[EntityMenu.vue](src%2Fcomponents%2FEntityGenerator%2Fmenu%2FEntityMenu.vue)
+- 实体类属性新增修改删除   
+[EntityInfo.vue](src%2Fcomponents%2FEntityGenerator%2Fentity%2FEntityInfo.vue)  
+(未来这一块的目录应该会有较大变动)
+  - 枚举管理
+- 表关联新增修改删除  
+[index.vue](src%2Fcomponents%2Fdialog%2FTableDialog%2Findex.vue)
 
 ## LICENSE
 

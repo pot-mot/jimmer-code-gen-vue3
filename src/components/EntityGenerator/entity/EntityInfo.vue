@@ -16,7 +16,6 @@ defineProps<EntityInfoProps>()
 			<tr>
 				<td>{{ property.name }}</td>
 				<td>{{ property.type }}</td>
-				<td>{{ property.key }}</td>
 				<td>{{ property.id }}</td>
 				<td>{{ property.comment }}</td>
 			</tr>

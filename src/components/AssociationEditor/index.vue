@@ -66,6 +66,15 @@
 			<li>
 				<el-button @click="saveAssociations(graph)">保存关联</el-button>
 			</li>
+			<li>
+				<el-button @click="generateEntitiesByTable(
+					store.isSelectionEmpty ?
+					store.tables().map(table => table.id) :
+					store.selectedTables.map(table => table.id)
+				)">
+					生成实体
+				</el-button>
+			</li>
 		</ul>
 
 		<Searcher></Searcher>
@@ -142,6 +151,7 @@ import {useSave} from "./graph/useSave.ts";
 import Searcher from "./graph/Searcher.vue";
 import MiniMap from "./graph/MiniMap.vue";
 import {defaultZoomRange} from "./graph/scale.ts";
+import {generateEntitiesByTable} from "./node/TableNode.ts";
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();

@@ -4,7 +4,7 @@ import {GenEntityPropertiesView, GenTableAssociationView} from '../../../api/__g
 import DragDialog from "../../common/DragDialog.vue"
 import TableInfo from "./TableInfo.vue";
 import {api} from "../../../api";
-import {convertEntities} from "../../AssociationEditor/node/TableNode.ts";
+import {convertEntities, generateEntities} from "../../AssociationEditor/node/TableNode.ts";
 import {sendMessage} from "../../../utils/message.ts";
 import TableDefine from "./TableDefine.vue";
 import PreviewCode from "./CodePreview.vue";
@@ -83,6 +83,7 @@ watch(() => props.id, async (id) => {
 						<el-tab-pane name="TableInfo" label="表"></el-tab-pane>
 						<el-tab-pane name="EntityInfo" label="实体"></el-tab-pane>
 					</el-tabs>
+					<el-button class="generate-button" @click="generateEntities([entity.id])">生成实体</el-button>
 				</div>
 
 				<div v-if="typeState == 'TableInfo'" class="body">
@@ -94,7 +95,6 @@ watch(() => props.id, async (id) => {
 					<EntityInfo :entity="entity"></EntityInfo>
 					<PreviewCode :id="entity.id"></PreviewCode>
 				</div>
-
 			</template>
 			<el-empty class="empty" v-else></el-empty>
 		</div>
@@ -129,7 +129,12 @@ watch(() => props.id, async (id) => {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	user-select: none;
+}
+
+.generate-button {
+	position: absolute;
+	top: 0;
+	right: 1em;
 }
 
 .body {

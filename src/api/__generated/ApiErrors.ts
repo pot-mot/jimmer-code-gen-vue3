@@ -30,6 +30,8 @@ export type ApiErrors = {
     },
     "entityService": {
     },
+    "generateService": {
+    },
     "packageService": {
     },
     "schemaService": {

@@ -8,6 +8,8 @@ export { DataSourceService } from './DataSourceService';
 export type { DataSourceServiceOptions } from './DataSourceService';
 export { EntityService } from './EntityService';
 export type { EntityServiceOptions } from './EntityService';
+export { GenerateService } from './GenerateService';
+export type { GenerateServiceOptions } from './GenerateService';
 export { PackageService } from './PackageService';
 export type { PackageServiceOptions } from './PackageService';
 export { SchemaService } from './SchemaService';
