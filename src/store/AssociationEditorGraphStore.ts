@@ -5,7 +5,7 @@ import {
     getAssociations,
 } from "../components/AssociationEditor/edge/AssociationEdge.ts";
 import {
-    focusNode,
+    focusCell,
     getTables,
     loadTableNodes,
     tableIdToNodeId
@@ -253,7 +253,7 @@ export const useAssociationEditorGraphStore =
                 const cell = graph.getCellById(tableIdToNodeId(id))
                 if (cell.isNode()) {
                     const node = cell as Node
-                    await focusNode(graph, node)
+                    await focusCell(graph, node)
                 }
             }
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {focusNode, searchTableNodes} from "../node/TableNode.ts";
+import {focusCell, searchTableNodes} from "../node/TableNode.ts";
 import {onBeforeUnmount, onMounted, ref} from "vue";
 import {Node} from "@antv/x6";
 import DragDialog from "../../common/DragDialog.vue";
@@ -52,7 +52,7 @@ onBeforeUnmount(() => {
 			<div style="max-height: 60vh; overflow: auto; min-width: 20em;">
 				<table>
 					<tr v-for="node in searchResult"
-						@click="focusNode(store._graph(), node as any)">
+						@click="focusCell(store._graph(), node as any)">
 						<td>{{ node.data.table.name }}</td>
 						<td>{{ node.data.table.comment }}</td>
 					</tr>

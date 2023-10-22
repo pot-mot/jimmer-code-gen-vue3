@@ -267,6 +267,7 @@ export const saveAssociations = async (graph: Graph) => {
             orderKey: 0,
             comment: tempComment.join(""),
             remark: tempRemark.join(""),
+            fake: true
         }
     }
 

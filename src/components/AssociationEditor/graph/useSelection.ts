@@ -22,22 +22,53 @@ export const useSelection = (graph: Graph) => {
     })
 }
 
+const normalMoveStep = 40
+const smallMoveStep = 10
+
 export const useSelectionKeyEvent = (_graph: () => Graph) => {
     const handleKeyEvent = (e: KeyboardEvent) => {
         const graph = _graph()
         if (!graph) return
 
-        if (e.ctrlKey || e.metaKey) {
-            if (e.key == 'a') {
-                e.preventDefault()
-                graph.resetSelection(graph.getCells())
-            }
+        if ((e.ctrlKey || e.metaKey) && e.key == 'a') {
+            e.preventDefault()
+            graph.resetSelection(graph.getCells())
         }
 
-        if (e.key === 'Delete') {
+        if (e.key == 'Delete') {
             const selectedCells = graph.getSelectedCells()
             graph.cleanSelection()
             graph.removeCells(selectedCells)
+        }
+
+
+        if (!graph.isSelectionEmpty()) {
+            const nodes= graph.getSelectedCells()
+                .filter(cell => cell.isNode())
+                .map(cell => <Node>cell)
+
+            const size = e.ctrlKey ? smallMoveStep : normalMoveStep
+
+            if (e.key == 'ArrowUp') {
+                nodes.forEach(node => {
+                    node.setPosition({x: node.position().x, y: node.position().y - size})
+                })
+            }
+            if (e.key == 'ArrowDown') {
+                nodes.forEach(node => {
+                    node.setPosition({x: node.position().x, y: node.position().y + size})
+                })
+            }
+            if (e.key == 'ArrowLeft') {
+                nodes.forEach(node => {
+                    node.setPosition({x: node.position().x - size, y: node.position().y})
+                })
+            }
+            if (e.key == 'ArrowRight') {
+                nodes.forEach(node => {
+                    node.setPosition({x: node.position().x + size, y: node.position().y})
+                })
+            }
         }
     }
 

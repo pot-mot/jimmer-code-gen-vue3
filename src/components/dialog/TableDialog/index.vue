@@ -24,6 +24,12 @@ const props = withDefaults(defineProps<TableDialogProps>(), {
 	type: 'TableInfo'
 })
 
+const typeState = ref("TableInfo")
+
+watch(() => props.type, () => {
+	typeState.value = props.type
+}, {immediate: true})
+
 interface TableDialogEmits {
 	(event: "close"): void
 }
@@ -69,14 +75,64 @@ watch(() => props.id, async (id) => {
 
 <template>
 	<DragDialog :x="x" :y="y" :init-w="w" @close="emits('close')" :resizable="true">
-		<div style="height: 100%; width: 100%; overflow: auto; scrollbar-gutter: stable">
+		<div class="wrapper">
 			<template v-if="table && entity">
-				<TableInfo :table="table"></TableInfo>
-				<TableDefine :id="id"></TableDefine>
-				<EntityInfo :entity="entity"></EntityInfo>
-				<PreviewCode :id="entity.id"></PreviewCode>
+				<div class="header">
+					<el-text class="title" size="large">{{ table.name }}</el-text>
+					<el-tabs v-model="typeState">
+						<el-tab-pane name="TableInfo" label="表"></el-tab-pane>
+						<el-tab-pane name="EntityInfo" label="实体"></el-tab-pane>
+					</el-tabs>
+				</div>
+
+				<div v-if="typeState == 'TableInfo'" class="body">
+					<TableInfo :table="table"></TableInfo>
+					<TableDefine :id="id"></TableDefine>
+				</div>
+
+				<div v-if="typeState == 'EntityInfo'" class="body">
+					<EntityInfo :entity="entity"></EntityInfo>
+					<PreviewCode :id="entity.id"></PreviewCode>
+				</div>
+
 			</template>
-			<el-empty style="height: 65vh;" v-else></el-empty>
+			<el-empty class="empty" v-else></el-empty>
 		</div>
 	</DragDialog>
 </template>
+
+<style scoped>
+.wrapper {
+	height: 100%;
+	width: 100%;
+	overflow: auto;
+	scrollbar-gutter: stable
+}
+
+.empty {
+	height: 65vh;
+}
+
+.header {
+	position: absolute;
+	top: 0;
+	margin-top: 1em;
+	padding: 0 0.5em;
+	height: 4em;
+	width: calc(100% - 1em);
+	background-color: #fff;
+	z-index: 5000;
+}
+
+.title {
+	height: 2em;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	user-select: none;
+}
+
+.body {
+	margin-top: 4em;
+}
+</style>

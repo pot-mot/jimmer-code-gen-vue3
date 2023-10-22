@@ -159,13 +159,13 @@ export const searchTableNodes = (graph: Graph, keywords: string[]): Node[] => {
 /**
  * 聚焦于某个节点，进行缩放
  * @param graph 图
- * @param node 目标节点
+ * @param cell 目标 Cell
  */
-export const focusNode = async (graph: Graph, node: Node) => {
-    node.toFront()
+export const focusCell = async (graph: Graph, cell: Cell) => {
+    cell.toFront()
     graph.cleanSelection()
-    graph.centerCell(node)
-    graph.select(node)
+    graph.centerCell(cell)
+    graph.select(cell)
 
     await nextTick()
 }
