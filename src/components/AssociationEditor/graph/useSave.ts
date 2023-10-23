@@ -9,15 +9,17 @@ export const useSave = (_graph: () => Graph) => {
 
         if (!graph) return
 
-        await saveAssociations(graph)
         saveGraph(graph)
     }
 
-    const handleKeyEvent = (e: KeyboardEvent) => {
+    const handleKeyEvent = async (e: KeyboardEvent) => {
         if (e.ctrlKey || e.metaKey) {
             if (e.key == 's') {
                 e.preventDefault()
-                handleSave()
+                await handleSave()
+
+                const graph = _graph()
+                await saveAssociations(graph)
             }
         }
     }

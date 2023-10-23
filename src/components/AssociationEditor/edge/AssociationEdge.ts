@@ -64,10 +64,10 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
     },
     // 在连接建立后调整 router
     validateEdge(edge) {
-          if (edge.edge.getTargetCellId() == edge.edge.getSourceCellId()) {
-              edge.edge.router = orthRouter
-          }
-          return true
+        if (edge.edge.getTargetCellId() == edge.edge.getSourceCellId()) {
+            edge.edge.router = orthRouter
+        }
+        return true
     },
 
     allowBlank: false,
@@ -170,11 +170,11 @@ export const getAssociations = (graph: Graph): GenAssociationMatchView[] => {
  * @param graph
  * @param associations
  */
-export const importAssociationEdges = (graph: Graph, associations: readonly GenAssociationMatchView[]) => {
-    graph.startBatch('add edge')
+export const importAssociationEdges = (graph: Graph, associations: readonly GenAssociationMatchView[]): Edge[] => {
+    const edges: Edge[] = []
 
-    associations.map(associationToEdge).forEach(newEdge => {
-        try {
+    try {
+        associations.map(associationToEdge).forEach(newEdge => {
             const sourceCellId = newEdge.getSourceCellId()
             if (!sourceCellId || !nodeIsExist(graph, sourceCellId)) return
 
@@ -195,13 +195,15 @@ export const importAssociationEdges = (graph: Graph, associations: readonly GenA
                 newEdge.router = erRouter
             }
 
-            graph.addEdge(newEdge)
-        } catch (e) {
-            console.warn('add edge fail', newEdge, e)
-        }
-    })
+            edges.push(newEdge)
+        })
 
-    graph.stopBatch('add edge')
+        graph.addEdges(edges)
+    } catch (e) {
+        sendMessage('edge import fail', 'error', e)
+    }
+
+    return edges
 }
 
 /**
@@ -293,7 +295,7 @@ export const useSwitchAssociationType = (graph: Graph) => {
     })
 
     graph.on('edge:click', ({edge, e}) => {
-        if (!edge ||  e.ctrlKey) return
+        if (!edge || e.ctrlKey) return
 
         if (!edge.getData().selectFlag) {
             edge.getData().selectFlag = true

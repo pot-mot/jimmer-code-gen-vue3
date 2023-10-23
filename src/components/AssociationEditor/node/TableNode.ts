@@ -1,5 +1,5 @@
 import {GenTableColumnView} from "../../../api/__generated/model/static";
-import {Cell, Graph, Node} from "@antv/x6";
+import {Cell, Graph, Node, Edge} from "@antv/x6";
 import {COLUMN_HEIGHT, COLUMN_PORT} from "../constant";
 import {columnToPort} from "../port/ColumnPort.ts";
 import {api} from "../../../api";
@@ -68,14 +68,17 @@ export const getTableNode = (graph: Graph, id: number): Node | undefined => {
  * @param graph
  * @param tables
  */
-export const importTableNodes = (graph: Graph, tables: readonly GenTableColumnView[]) => {
-    graph.addNodes(tables.map(table => {
+export const importTableNodes = (graph: Graph, tables: readonly GenTableColumnView[]): Node[] => {
+    const nodes: Node[] = tables.map(table => {
         const svgRect = graph.view.svg.getBoundingClientRect()
         return tableToNode(table, graph.graphToLocal(
             svgRect.width / 2,
             svgRect.height / 2
         ))
-    }))
+    })
+
+    graph.addNodes(nodes)
+    return nodes
 }
 
 /**
@@ -107,13 +110,17 @@ export const removeTableNodes = (graph: Graph, ids: readonly number[]) => {
  * @param replace 替换已存在的 node
  * @returns 新增 table，已存在的 id
  */
-export const loadTableNodes = async (graph: Graph, ids: number[], replace: boolean = true) => {
+export const loadTableNodes = async (graph: Graph, ids: number[], replace: boolean = true): Promise<{
+    nodes: Node[],
+    edges: Edge[],
+    existedIds: number[],
+}> => {
     if (ids.length == 0) {
-        sendMessage("该 schema 无表，无法加载", "error")
-        return;
+        sendMessage("表数量为 0，无法加载", "error")
+        throw new Error("table ids is empty, can not load")
     }
 
-    const add = await api.tableService.listColumnView({ids})
+    const tables = await api.tableService.listColumnView({ids})
     const existedIds = filterExistedTableNodeIds(graph, ids)
 
     if (replace) {
@@ -122,15 +129,15 @@ export const loadTableNodes = async (graph: Graph, ids: number[], replace: boole
 
     graph.startBatch('add nodes')
 
-    importTableNodes(graph, add)
+    const nodes = importTableNodes(graph, tables)
 
     const associations = await api.associationService.selectByTable({tableIds: ids})
 
-    importAssociationEdges(graph, associations)
+    const edges = importAssociationEdges(graph, associations)
 
     graph.stopBatch('add nodes')
 
-    return {add, existedIds}
+    return {nodes, edges, existedIds}
 }
 
 /**

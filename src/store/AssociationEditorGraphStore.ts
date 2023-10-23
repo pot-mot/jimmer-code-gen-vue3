@@ -114,11 +114,10 @@ export const useAssociationEditorGraphStore =
              */
             const layoutAndFit = async (direction: "LR" | "TB" | "RL" | "BT" = layoutDirection.value) => {
                 await nextTick()
-                setTimeout(() => {
+                setTimeout(async () => {
                     layout(direction)
-                    nextTick(() => {
-                        fit()
-                    })
+                    await nextTick()
+                    fit()
                 }, 500)
             }
 
@@ -234,10 +233,19 @@ export const useAssociationEditorGraphStore =
              */
             const loadSchema = async (id: number, select: boolean = false) => {
                 const graph = _graph()
+
                 const res = await api.tableService.query({query: {schemaIds: [id]}})
                 const tableIds = res.map(table => table.id)
-                await loadTableNodes(graph, tableIds, false)
-                if (select) graph.select(tableIds.map(id => tableIdToNodeId(id)))
+
+                const {nodes, edges} = await loadTableNodes(graph, tableIds, false)
+
+                if (select) {
+                    graph.resetSelection([
+                        ...nodes.map(it => it.id),
+                        ...edges.map(it => it.id)
+                    ])
+                }
+
                 await layoutAndFit()
             }
 
