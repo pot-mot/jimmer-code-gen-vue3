@@ -22,8 +22,10 @@
     "mitt": "^3.0.1",
     "pinia": "^2.1.6",
     "pinia-plugin-persistedstate": "^3.2.0",
+    "prismjs": "^1.29.0",
     "sass": "^1.66.1",
     "splitpanes": "^3.1.5",
+    "vite-plugin-prismjs": "^0.0.8",
     "vue": "^3.3.4",
     "vue-router": "^4.2.4",
     "vue3-draggable-resizable": "^1.6.5"
@@ -31,6 +33,7 @@
   "devDependencies": {
     "@types/file-saver": "^2.0.5",
     "@types/lodash": "^4.14.199",
+    "@types/prismjs": "^1.26.2",
     "@types/splitpanes": "^2.2.1",
     "@vitejs/plugin-vue": "^4.2.3",
     "adm-zip": "^0.5.10",

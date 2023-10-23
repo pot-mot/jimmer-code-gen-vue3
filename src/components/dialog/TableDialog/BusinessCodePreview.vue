@@ -19,7 +19,7 @@ watch(() => props.id, async (id) => {
 <template>
 	<el-tabs type="border-card">
 		<el-tab-pane v-for="name in Object.keys(previewCodesMap)" :label="name">
-			<CodePreview :code="previewCodesMap[name]"></CodePreview>
+			<CodePreview :language="name.endsWith('kt') ? 'kt' : 'java' " :code="previewCodesMap[name]"></CodePreview>
 		</el-tab-pane>
 	</el-tabs>
 </template>

@@ -9,6 +9,7 @@ import ElementPlus from 'element-plus'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import 'element-plus/dist/index.css'
 import './assets/element-overwrite.css'
+import './assets/prism-overwrite.css'
 
 const app = createApp(App)
 

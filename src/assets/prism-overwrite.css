@@ -1,0 +1,22 @@
+div.code-toolbar > .toolbar {
+    top: 0;
+    right: 0;
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a,
+div.code-toolbar > .toolbar > .toolbar-item > button,
+div.code-toolbar > .toolbar > .toolbar-item > span {
+    box-shadow: none;
+    border: 1px solid var(--el-border-color);
+    border-radius: var(--el-border-radius-small);
+    color: var(--el-text-color-placeholder);
+}
+
+div.code-toolbar > .toolbar > .toolbar-item > a:hover,
+div.code-toolbar > .toolbar > .toolbar-item > a:focus,
+div.code-toolbar > .toolbar > .toolbar-item > button:hover,
+div.code-toolbar > .toolbar > .toolbar-item > button:focus,
+div.code-toolbar > .toolbar > .toolbar-item > span:hover,
+div.code-toolbar > .toolbar > .toolbar-item > span:focus {
+    color: var(--el-text-color-placeholder);
+}

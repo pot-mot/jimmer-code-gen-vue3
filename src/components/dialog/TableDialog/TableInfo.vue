@@ -11,8 +11,8 @@ import {searchEdgesByColumn} from "../../AssociationEditor/edge/AssociationEdge.
 import {
 	GenTableAssociationView_TargetOf_columns_TargetOf_inAssociations,
 	GenTableAssociationView_TargetOf_columns_TargetOf_outAssociations,
-	GenTableAssociationView_TargetOf_columns_TargetOf_outAssociations_TargetOf_targetColumn
 } from "../../../api/__generated/model/static/GenTableAssociationView.ts";
+import {Delete} from "@element-plus/icons-vue";
 
 const store = useAssociationEditorGraphStore()
 
@@ -148,7 +148,7 @@ const saveTableEdit = () => {
 								{{ association.sourceColumn.name }}
 							</el-button>
 
-							<el-button @click="deleteInAssociation(column.id, association)">删除</el-button>
+							<el-button @click="deleteInAssociation(column.id, association)" type="danger" :icon="Delete" link></el-button>
 						</el-text>
 					</div>
 				</div>
@@ -177,7 +177,7 @@ const saveTableEdit = () => {
 								{{ association.targetColumn.name }}
 							</el-button>
 
-							<el-button @click="deleteOutAssociation(column.id, association)">删除</el-button>
+							<el-button @click="deleteOutAssociation(column.id, association)" type="danger" :icon="Delete" link></el-button>
 						</el-text>
 					</div>
 				</div>

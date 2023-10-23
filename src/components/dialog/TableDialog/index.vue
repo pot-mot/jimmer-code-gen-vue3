@@ -7,7 +7,7 @@ import {api} from "../../../api";
 import {convertEntities, generateEntities} from "../../AssociationEditor/node/TableNode.ts";
 import {sendMessage} from "../../../utils/message.ts";
 import TableDefine from "./TableDefine.vue";
-import PreviewCode from "./CodePreview.vue";
+import BusinessCodePreview from "./BusinessCodePreview.vue";
 import EntityInfo from "../../EntityGenerator/entity/EntityInfo.vue";
 
 interface TableDialogProps {
@@ -93,7 +93,7 @@ watch(() => props.id, async (id) => {
 
 				<div v-if="typeState == 'EntityInfo'" class="body">
 					<EntityInfo :entity="entity"></EntityInfo>
-					<PreviewCode :id="entity.id"></PreviewCode>
+					<BusinessCodePreview :id="entity.id"></BusinessCodePreview>
 				</div>
 			</template>
 			<el-empty class="empty" v-else></el-empty>

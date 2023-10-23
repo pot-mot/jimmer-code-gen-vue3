@@ -19,7 +19,7 @@ watch(() => props.id, async (id) => {
 <template>
 	<el-tabs type="border-card">
 		<el-tab-pane v-for="name in Object.keys(tableDefineMap)" :label="name">
-			<CodePreview :code="tableDefineMap[name]"></CodePreview>
+			<CodePreview language="sql" :code="tableDefineMap[name]"></CodePreview>
 		</el-tab-pane>
 	</el-tabs>
 </template>
