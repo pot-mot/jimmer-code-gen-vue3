@@ -34,15 +34,19 @@
 				</el-input-number>
 			</li>
 			<li>
-				<el-button @click="store.removeAllOrSelectedCells()">
-					{{ store.isSelectionEmpty ? "清除所有" : "清除选中" }}
-				</el-button>
+				<el-button @click="store.removeAllCells()">清除所有</el-button>
 			</li>
 			<li>
-				<el-button @click="store.removeAllOrSelectedAssociations()">
-					{{ store.isSelectionEmpty ? "清除关联" : "清除选中关联" }}
-				</el-button>
+				<el-button @click="store.removeAllAssociations()">清除关联</el-button>
 			</li>
+			<template v-if="!store.isSelectionEmpty">
+				<li>
+					<el-button @click="store.removeSelectedCells()">清除选中</el-button>
+				</li>
+				<li>
+					<el-button @click="store.removeSelectedAssociations()">清除选中关联</el-button>
+				</li>
+			</template>
 		</ul>
 		<ul v-if="store.isLoaded" class="toolbar left-top">
 			<li>

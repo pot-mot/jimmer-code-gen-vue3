@@ -7,8 +7,12 @@ import {useAssociationEditorGraphStore} from "../../../store/AssociationEditorGr
 import {Graph} from "@antv/x6";
 import {focusCell, getTableNode} from "../../AssociationEditor/node/TableNode.ts";
 import {watch} from "vue";
-import {searchEdges} from "../../AssociationEditor/edge/AssociationEdge.ts";
-import {columnIdToPortId} from "../../AssociationEditor/port/ColumnPort.ts";
+import {searchEdgesByColumn} from "../../AssociationEditor/edge/AssociationEdge.ts";
+import {
+	GenTableAssociationView_TargetOf_columns_TargetOf_inAssociations,
+	GenTableAssociationView_TargetOf_columns_TargetOf_outAssociations,
+	GenTableAssociationView_TargetOf_columns_TargetOf_outAssociations_TargetOf_targetColumn
+} from "../../../api/__generated/model/static/GenTableAssociationView.ts";
 
 const store = useAssociationEditorGraphStore()
 
@@ -44,7 +48,7 @@ const selectAssociation = (
 	focus: boolean = false
 ) => {
 	const graph: Graph = store._graph()
-	const edges = searchEdges(graph, columnIdToPortId(sourceId), columnIdToPortId(targetId))
+	const edges = searchEdgesByColumn(graph, sourceId, targetId)
 	if (focus && edges.length == 1) {
 		focusCell(graph, edges[0])
 	} else {
@@ -52,8 +56,26 @@ const selectAssociation = (
 	}
 }
 
-const deleteAssociation = () => {
-	// TODO
+const deleteOutAssociation = (
+	columnId: number,
+	association: GenTableAssociationView_TargetOf_columns_TargetOf_outAssociations
+) => {
+	store.deleteAssociations(columnId, association.targetColumn.id)
+	props.table.columns.forEach(column => {
+		column.outAssociations = column.outAssociations.filter(it => it.id != association.id)
+		column.inAssociations = column.inAssociations.filter(it => it.id != association.id)
+	})
+}
+
+const deleteInAssociation = (
+	columnId: number,
+	association: GenTableAssociationView_TargetOf_columns_TargetOf_inAssociations
+) => {
+	store.deleteAssociations(association.sourceColumn.id, columnId)
+	props.table.columns.forEach(column => {
+		column.inAssociations = column.inAssociations.filter(it => it.id != association.id)
+		column.outAssociations = column.outAssociations.filter(it => it.id != association.id)
+	})
 }
 
 const saveTableEdit = () => {
@@ -68,7 +90,6 @@ const saveTableEdit = () => {
 			{{ table.type }}
 			{{ table.comment }}
 		</el-text>
-
 
 		<div>
 			<el-input v-model="table.remark" type="textarea"></el-input>
@@ -106,8 +127,6 @@ const saveTableEdit = () => {
 				<div style="padding-left: 3em;">
 					<div v-for="association in column.inAssociations">
 						<el-text>
-							<span>{{ association.fake }}</span>
-
 							<span> {{ " <- " }} </span>
 							<el-select v-model="association.associationType">
 								<el-option :value="MANY_TO_ONE">{{ MANY_TO_ONE }}</el-option>
@@ -129,7 +148,7 @@ const saveTableEdit = () => {
 								{{ association.sourceColumn.name }}
 							</el-button>
 
-							<el-button @click="deleteAssociation">删除</el-button>
+							<el-button @click="deleteInAssociation(column.id, association)">删除</el-button>
 						</el-text>
 					</div>
 				</div>
@@ -137,8 +156,6 @@ const saveTableEdit = () => {
 				<div style="padding-left: 3em;">
 					<div v-for="association in column.outAssociations">
 						<el-text>
-							<span>{{ association.fake }}</span>
-
 							<span> {{ " -> " }} </span>
 							<el-select v-model="association.associationType">
 								<el-option :value="MANY_TO_ONE">{{ MANY_TO_ONE }}</el-option>
@@ -160,7 +177,7 @@ const saveTableEdit = () => {
 								{{ association.targetColumn.name }}
 							</el-button>
 
-							<el-button @click="deleteAssociation">删除</el-button>
+							<el-button @click="deleteOutAssociation(column.id, association)">删除</el-button>
 						</el-text>
 					</div>
 				</div>

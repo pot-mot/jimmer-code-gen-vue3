@@ -96,6 +96,10 @@ export const searchEdges = (graph: Graph, sourcePort: string, targetPort: string
     return graph.getEdges().filter(edge => edge.getSourcePortId() == sourcePort && edge.getTargetPortId() == targetPort)
 }
 
+export const searchEdgesByColumn = (graph: Graph, sourceColumnId: number, targetColumnId: number) => {
+    return searchEdges(graph, columnIdToPortId(sourceColumnId), columnIdToPortId(targetColumnId))
+}
+
 /**
  * 寻找 Edge，忽视方向
  * @param graph 图
@@ -204,77 +208,81 @@ export const importAssociationEdges = (graph: Graph, associations: readonly GenA
  * 保存 AssociationEdge
  */
 export const saveAssociations = async (graph: Graph) => {
-    const tables = getTables(graph)
-    const associations = getAssociations(graph)
+    try {
+        const tables = getTables(graph)
+        const associations = getAssociations(graph)
 
-    const tableMap = new Map<number, GenTableColumnView>
-    const columnMap = new Map<number, GenTableColumnView_TargetOf_columns>
+        const tableMap = new Map<number, GenTableColumnView>
+        const columnMap = new Map<number, GenTableColumnView_TargetOf_columns>
 
-    tables.forEach(table => {
-        tableMap.set(table.id, table)
-        table.columns.forEach(column => {
-            columnMap.set(column.id, column)
+        tables.forEach(table => {
+            tableMap.set(table.id, table)
+            table.columns.forEach(column => {
+                columnMap.set(column.id, column)
+            })
         })
-    })
 
-    const viewToInput = (view: GenAssociationMatchView): GenAssociationInput => {
-        const tempComment: string[] = []
-        const tempRemark: string[] = []
+        const viewToInput = (view: GenAssociationMatchView): GenAssociationInput => {
+            const tempComment: string[] = []
+            const tempRemark: string[] = []
 
-        tempComment.push("[")
+            tempComment.push("[")
 
-        if (view.targetColumn.table) {
-            const targetTable = tableMap.get(view.targetColumn.table.id)
-            if (targetTable) {
-                tempRemark.push(targetTable.comment)
-                tempComment.push(targetTable.name)
+            if (view.targetColumn.table) {
+                const targetTable = tableMap.get(view.targetColumn.table.id)
+                if (targetTable) {
+                    tempRemark.push(targetTable.comment)
+                    tempComment.push(targetTable.name)
+                }
+            }
+            const targetColumn = columnMap.get(view.targetColumn.id)
+            if (targetColumn) {
+                tempComment.push(".")
+                tempComment.push(targetColumn.name)
+
+                tempRemark.push(".")
+                tempRemark.push(targetColumn.comment)
+            }
+
+            tempComment.push("] -> [")
+            tempRemark.push(" -> ")
+
+            if (view.sourceColumn.table) {
+                const sourceTable = tableMap.get(view.sourceColumn.table.id)
+                if (sourceTable) {
+                    tempComment.push(sourceTable.name)
+                    tempRemark.push(sourceTable.comment)
+                }
+            }
+            const sourceColumn = columnMap.get(view.sourceColumn.id)
+            if (sourceColumn) {
+                tempComment.push(".")
+                tempComment.push(sourceColumn.name)
+
+                tempRemark.push(".")
+                tempRemark.push(sourceColumn.comment)
+            }
+
+            tempComment.push("]")
+
+            return {
+                associationType: view.associationType,
+                targetColumnId: view.targetColumn.id,
+                sourceColumnId: view.sourceColumn.id,
+                orderKey: 0,
+                comment: tempComment.join(""),
+                remark: tempRemark.join(""),
+                fake: true
             }
         }
-        const targetColumn = columnMap.get(view.targetColumn.id)
-        if (targetColumn) {
-            tempComment.push(".")
-            tempComment.push(targetColumn.name)
 
-            tempRemark.push(".")
-            tempRemark.push(targetColumn.comment)
-        }
+        await api.associationService.deleteByTable({tableIds: [...tableMap.keys()]})
+        await api.associationService.save({body: associations.map(viewToInput)})
 
-        tempComment.push("] -> [")
-        tempRemark.push(" -> ")
-
-        if (view.sourceColumn.table) {
-            const sourceTable = tableMap.get(view.sourceColumn.table.id)
-            if (sourceTable) {
-                tempComment.push(sourceTable.name)
-                tempRemark.push(sourceTable.comment)
-            }
-        }
-        const sourceColumn = columnMap.get(view.sourceColumn.id)
-        if (sourceColumn) {
-            tempComment.push(".")
-            tempComment.push(sourceColumn.name)
-
-            tempRemark.push(".")
-            tempRemark.push(sourceColumn.comment)
-        }
-
-        tempComment.push("]")
-
-        return {
-            associationType: view.associationType,
-            targetColumnId: view.targetColumn.id,
-            sourceColumnId: view.sourceColumn.id,
-            orderKey: 0,
-            comment: tempComment.join(""),
-            remark: tempRemark.join(""),
-            fake: true
-        }
+        sendMessage("关联保存成功", "success")
+    } catch (e) {
+        sendMessage("关联保存失败", "error", e)
     }
-
-    await api.associationService.deleteByTable({tableIds: [...tableMap.keys()]})
-    await api.associationService.save({body: associations.map(viewToInput)})
-
-    sendMessage("保存成功", "success")
 }
 
 

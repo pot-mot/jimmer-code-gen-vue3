@@ -1,13 +1,15 @@
 import {Graph} from "@antv/x6";
 import {saveGraph} from "./localStorage";
 import {onBeforeUnmount, onMounted, onUnmounted} from "vue";
+import {saveAssociations} from "../edge/AssociationEdge.ts";
 
 export const useSave = (_graph: () => Graph) => {
-    const handleSave = () => {
+    const handleSave = async () => {
         const graph = _graph()
 
         if (!graph) return
 
+        await saveAssociations(graph)
         saveGraph(graph)
     }
 

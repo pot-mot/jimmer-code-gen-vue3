@@ -13,10 +13,23 @@ export class AssociationService {
     }
     
     async deleteByColumn(options: AssociationServiceOptions['deleteByColumn']): Promise<number> {
-        let _uri = '/association/column/';
-        _uri += encodeURIComponent(options.columnIds.join(','));
+        let _uri = '/association/column';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
+        _value = options.sourceColumnIds.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'sourceColumnIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.targetColumnIds.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'targetColumnIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         _value = options.selectType;
         if (_value !== undefined && _value !== null) {
             _uri += _separator
@@ -28,10 +41,16 @@ export class AssociationService {
     }
     
     async deleteByTable(options: AssociationServiceOptions['deleteByTable']): Promise<number> {
-        let _uri = '/association/table/';
-        _uri += encodeURIComponent(options.tableIds.join(','));
+        let _uri = '/association/table';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
+        _value = options.tableIds.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'tableIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         _value = options.selectType;
         if (_value !== undefined && _value !== null) {
             _uri += _separator
@@ -126,10 +145,23 @@ export class AssociationService {
     async selectByColumn(options: AssociationServiceOptions['selectByColumn']): Promise<
         GenAssociationView[]
     > {
-        let _uri = '/association/select/column/';
-        _uri += encodeURIComponent(options.columnIds.join(','));
+        let _uri = '/association/column';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
+        _value = options.sourceColumnIds.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'sourceColumnIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.targetColumnIds.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'targetColumnIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         _value = options.selectType;
         if (_value !== undefined && _value !== null) {
             _uri += _separator
@@ -143,10 +175,16 @@ export class AssociationService {
     async selectByTable(options: AssociationServiceOptions['selectByTable']): Promise<
         GenAssociationView[]
     > {
-        let _uri = '/association/select/table/';
-        _uri += encodeURIComponent(options.tableIds.join(','));
+        let _uri = '/association/table';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
+        _value = options.tableIds.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'tableIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         _value = options.selectType;
         if (_value !== undefined && _value !== null) {
             _uri += _separator
@@ -160,12 +198,20 @@ export class AssociationService {
 
 export type AssociationServiceOptions = {
     'delete': {ids: number[]},
-    'deleteByColumn': {columnIds: number[], selectType?: SelectType},
+    'deleteByColumn': {
+        sourceColumnIds: number[], 
+        targetColumnIds: number[], 
+        selectType?: SelectType
+    },
     'deleteByTable': {tableIds: number[], selectType?: SelectType},
     'listMatchType': {},
     'match': {body: number[], matchType?: AssociationMatchType},
     'query': {query: AssociationQuery},
     'save': {body: GenAssociationInput[]},
-    'selectByColumn': {columnIds: number[], selectType?: SelectType},
+    'selectByColumn': {
+        sourceColumnIds: number[], 
+        targetColumnIds: number[], 
+        selectType?: SelectType
+    },
     'selectByTable': {tableIds: number[], selectType?: SelectType}
 }

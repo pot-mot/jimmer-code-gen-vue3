@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 import {GenAssociationMatchView, GenTableAssociationView, GenTableColumnView} from "../api/__generated/model/static";
 import {Graph, Node, Edge} from "@antv/x6";
 import {
-    getAssociations,
+    getAssociations, searchEdgesByColumn,
 } from "../components/AssociationEditor/edge/AssociationEdge.ts";
 import {
     focusCell,
@@ -180,36 +180,41 @@ export const useAssociationEditorGraphStore =
                 }
             })
 
-            /** 移除全部 */
-            const removeAllOrSelectedCells = () => {
+            const removeAllCells = () => {
                 const graph = _graph()
 
-                if (graph.isSelectionEmpty()) {
-                    graph.unselect(graph.getCells())
-                    graph.removeCells(graph.getCells())
-                } else {
-                    const cells = graph.getSelectedCells()
-                    graph.unselect(cells)
-                    graph.removeCells(cells)
-                }
+                graph.unselect(graph.getCells())
+                graph.removeCells(graph.getCells())
             }
 
-            AssociationEditorGraphEventBus.on('removeAllOrSelectedCells', removeAllOrSelectedCells)
-
-            /** 移除选中区域关联，如果没有选中则移除全部关联 */
-            const removeAllOrSelectedAssociations = () => {
+            const removeSelectedCells = () => {
                 const graph = _graph()
 
-                if (graph.isSelectionEmpty()) {
-                    graph.removeCells(graph.getEdges())
-                } else {
-                    const edges = getSelectedEdges(graph)
-                    graph.unselect(edges)
-                    graph.removeCells(edges)
-                }
+                const cells = graph.getSelectedCells()
+                graph.unselect(cells)
+                graph.removeCells(cells)
             }
 
-            AssociationEditorGraphEventBus.on('removeAllOrSelectedAssociations', removeAllOrSelectedAssociations)
+            AssociationEditorGraphEventBus.on('removeAllCells', removeAllCells)
+            AssociationEditorGraphEventBus.on('removeSelectedCells', removeSelectedCells)
+
+            const removeAllAssociations = () => {
+                const graph = _graph()
+
+                graph.removeCells(graph.getEdges())
+            }
+
+            const removeSelectedAssociations = () => {
+                const graph = _graph()
+
+                const edges = getSelectedEdges(graph)
+                graph.unselect(edges)
+                graph.removeCells(edges)
+            }
+
+            AssociationEditorGraphEventBus.on('removeAllAssociations', removeAllAssociations)
+
+            AssociationEditorGraphEventBus.on('removeSelectedAssociations', removeSelectedAssociations)
 
             /** 选中全部 */
             const selectAll = () => {
@@ -261,6 +266,31 @@ export const useAssociationEditorGraphStore =
                 await loadTable(id, focus)
             })
 
+            const deleteAssociations = async (
+                sourceColumnId: number,
+                targetColumnId: number,
+            ) => {
+                await api.associationService.deleteByColumn({
+                    sourceColumnIds: [sourceColumnId],
+                    targetColumnIds: [targetColumnId]
+                })
+
+                const graph = _graph()
+                const edges = searchEdgesByColumn(graph, sourceColumnId, targetColumnId)
+                graph.removeCells(edges)
+
+                AssociationEditorGraphEventBus.emit('deletedAssociations', {
+                    sourceColumnId,
+                    targetColumnId
+                })
+            }
+
+            AssociationEditorGraphEventBus.on('deleteAssociations', async (
+                {sourceColumnId, targetColumnId}
+            ) => {
+                await deleteAssociations(sourceColumnId, targetColumnId)
+            })
+
             return {
                 isLoaded,
                 load,
@@ -286,8 +316,12 @@ export const useAssociationEditorGraphStore =
                 selectAll,
 
                 removeTables,
-                removeAllOrSelectedCells,
-                removeAllOrSelectedAssociations,
+                removeAllCells,
+                removeSelectedCells,
+                removeAllAssociations,
+                removeSelectedAssociations,
+
+                deleteAssociations,
 
                 loadSchema,
                 loadTable,

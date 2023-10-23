@@ -7,8 +7,13 @@ type AssociationEditorGraphEvents = {
     redo: {},
     undo: {},
 
-    removeAllOrSelectedCells: {},
-    removeAllOrSelectedAssociations: {},
+    removeAllCells: {},
+    removeAllAssociations: {},
+    removeSelectedCells: {},
+    removeSelectedAssociations: {},
+
+    deleteAssociations: {sourceColumnId: number, targetColumnId: number},
+    deletedAssociations: {sourceColumnId: number, targetColumnId: number},
 
     selectAll: {},
 
