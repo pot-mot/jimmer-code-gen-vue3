@@ -2,6 +2,7 @@ import {Graph, Node, Edge} from "@antv/x6";
 import {Selection} from "@antv/x6-plugin-selection";
 import {onBeforeUnmount, onMounted} from "vue";
 import {AssociationEditorGraphEventBus} from "../../../eventBus/AssociationEditorGraphEventBus.ts";
+import {searchEdgesByNode} from "../edge/AssociationEdge.ts";
 
 export const useSelection = (graph: Graph) => {
     graph.use(
@@ -89,5 +90,18 @@ export const getSelectedNodes = (graph: Graph): Node[] => {
 }
 
 export const getSelectedEdges = (graph: Graph): Edge[] => {
-    return graph.getSelectedCells().filter(cell => cell.isEdge()).map(cell => cell as Edge)
+    const selectedNodes = getSelectedNodes(graph)
+    const baseSelectedEdges = graph.getSelectedCells().filter(cell => cell.isEdge()).map(cell => cell as Edge)
+
+    selectedNodes.forEach(node => {
+        const selectEdges = searchEdgesByNode(graph, {
+            targetNodeId: node.id,
+            sourceNodeId: node.id,
+            selectType: 'OR'
+        })
+
+        baseSelectedEdges.push(...selectEdges)
+    })
+
+    return baseSelectedEdges
 }

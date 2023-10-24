@@ -16,11 +16,16 @@ onMounted(() => {
 </script>
 
 <template>
-	<div v-for="entity in entities">
-		<EntityInfo :entity="entity"></EntityInfo>
+	<div class="wrapper">
+		<div v-for="entity in entities">
+			<EntityInfo :entity="entity"></EntityInfo>
+		</div>
 	</div>
 </template>
 
 <style scoped>
-
+.wrapper {
+	height: 100%;
+	overflow: auto;
+}
 </style>

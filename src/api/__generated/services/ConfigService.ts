@@ -1,19 +1,19 @@
 import type { Executor } from '../';
-import type { GenConfigProperties, GenConfig_Companion } from '../model/static';
+import type { GenConfig, GenConfigProperties } from '../model/static';
 
 export class ConfigService {
     
     constructor(private executor: Executor) {}
     
     async getConfig(): Promise<
-        GenConfig_Companion
+        GenConfig
     > {
-        let _uri = '/service/';
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenConfig_Companion
+        let _uri = '/config/';
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenConfig
     }
     
     async setConfig(options: ConfigServiceOptions['setConfig']): Promise<void> {
-        let _uri = '/service/';
+        let _uri = '/config/';
         return (await this.executor({uri: _uri, method: 'PUT', body: options.body})) as void
     }
 }

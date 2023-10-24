@@ -34,17 +34,17 @@
 				</el-input-number>
 			</li>
 			<li>
-				<el-button @click="store.removeAllCells()">清除所有</el-button>
+				<el-button @click="store.removeAllCells()">清理画布</el-button>
 			</li>
 			<li>
-				<el-button @click="store.removeAllAssociations()">清除关联</el-button>
+				<el-button @click="store.removeAllAssociations()">清除所有关联</el-button>
 			</li>
 			<template v-if="!store.isSelectionEmpty">
 				<li>
-					<el-button @click="store.removeSelectedCells()">清除选中</el-button>
+					<el-button @click="store.removeSelectedCells()">移除选中节点及关联</el-button>
 				</li>
 				<li>
-					<el-button @click="store.removeSelectedAssociations()">清除选中关联</el-button>
+					<el-button @click="store.removeSelectedAssociations()">清除选中关联与选中节点关联</el-button>
 				</li>
 			</template>
 		</ul>
@@ -59,7 +59,9 @@
 				</el-select>
 			</li>
 			<li>
-				<el-button @click="match">匹配关联</el-button>
+				<el-button @click="match">
+					{{ store.isSelectionEmpty ? "匹配关联" : "匹配选中表的关联" }}
+				</el-button>
 				<el-select v-model="matchType">
 					<el-option v-for="(type) in matchTypes" :value="type">{{ type }}</el-option>
 				</el-select>
@@ -68,7 +70,15 @@
 				<el-button @click="saveGraph(graph)">保存编辑区</el-button>
 			</li>
 			<li>
-				<el-button @click="saveAssociations(graph)">保存关联</el-button>
+				<el-tooltip>
+					<template #content>
+						注意！！<br>
+						此处保存的关联变更<strong>仅</strong>是<strong>目前编辑器中的表</strong>之间的关联的更新<br>
+						<strong>不包括历史编辑的关联</strong><br>
+						因此请尽量保证编辑器中为全部你所需要的表<br>
+					</template>
+					<el-button @click="saveAssociations(graph)">保存关联变更</el-button>
+				</el-tooltip>
 			</li>
 			<li>
 				<el-button @click="generateEntitiesByTable(

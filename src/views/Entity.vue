@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import LeftTopBottomLayout from "../components/layout/LeftRightLayout.vue"
 import EntityGenerator from "../components/EntityGenerator/index.vue"
-
 </script>
 
 <template>

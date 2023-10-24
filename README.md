@@ -47,7 +47,7 @@ vite build
 > 此处是包括前后端在内的未完成功能点
 
 ### 全局配置修改  
-[GenConfigDialog.vue](src%2Fcomponents%2Fdialog%2FGenConfigDialog.vue)
+[GenerateConfigurator.vue](src%2Fcomponents%2Fglobal%2FGenerateConfigurator.vue)
 
 ### 表关联管理
 - 表关联新增修改删除  

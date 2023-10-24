@@ -67,8 +67,22 @@ const toLayoutEdges = (edges: readonly Edge[]): LayoutEdge[] => {
 const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
     const nodeMap: Map<number, LayoutNode> = new Map()
 
+    for (const node of nodes) {
+        nodeMap.set(node.id, node)
+    }
+
+    for (const {source, target} of edges) {
+        const targetNode = nodeMap.get(target)
+        const sourceNode = nodeMap.get(source)
+        if (targetNode && sourceNode) {
+            targetNode.children.push(sourceNode)
+            sourceNode.outDegree++
+            targetNode.inDegree++
+        }
+    }
+
     /**
-     * 对树进行广度优先搜索，并给节点设置层级信息
+     * 对树进行广度优先搜索，给节点设置层级信息
      * @param root 根节点
      */
     const bfs = (root: LayoutNode) => {
@@ -87,25 +101,11 @@ const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
                 }
             }
 
-            if (currentLevelNodes.length === 0) {
+            if (currentLevelNodes.length == 0) {
                 currentLevel++
                 currentLevelNodes = nextLevelNodes
                 nextLevelNodes = []
             }
-        }
-    }
-
-    for (const node of nodes) {
-        nodeMap.set(node.id, node)
-    }
-
-    for (const {source, target} of edges) {
-        const targetNode = nodeMap.get(target)
-        const sourceNode = nodeMap.get(source)
-        if (targetNode && sourceNode) {
-            targetNode.children.push(sourceNode)
-            sourceNode.outDegree++
-            targetNode.inDegree++
         }
     }
 
@@ -334,6 +334,10 @@ export const layoutByLevels = (
         nodes = toLayoutNodes(getSelectedNodes(graph))
         edges = toLayoutEdges(getSelectedEdges(graph))
     }
+
+    nodes.sort((node1, node2) => {
+        return node1.node.data.table.name.localeCompare(node2.node.data.table.name)
+    })
 
     setLevel(nodes, edges)
 

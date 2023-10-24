@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import {ref, watch} from 'vue'
-import {GenEntityPropertiesView, GenTableAssociationView} from '../../../api/__generated/model/static'
+import {GenTableAssociationView} from '../../../api/__generated/model/static'
 import DragDialog from "../../common/DragDialog.vue"
 import TableInfo from "./TableInfo.vue";
 import {api} from "../../../api";
-import {convertEntities, generateEntities} from "../../AssociationEditor/node/TableNode.ts";
+import {convertEntities} from "../../AssociationEditor/node/TableNode.ts";
 import {sendMessage} from "../../../utils/message.ts";
 import TableDefine from "./TableDefine.vue";
-import BusinessCodePreview from "./BusinessCodePreview.vue";
+import BusinessCodePreview from "../../EntityGenerator/entity/BusinessCodePreview.vue";
 import EntityInfo from "../../EntityGenerator/entity/EntityInfo.vue";
 
 interface TableDialogProps {
@@ -38,35 +38,24 @@ const emits = defineEmits<TableDialogEmits>()
 
 const table = ref<GenTableAssociationView | undefined>()
 
-const entity = ref<GenEntityPropertiesView | undefined>()
+const entityId = ref<number | undefined>()
 
 watch(() => props.id, async (id) => {
 	table.value = await api.tableService.getAssociationView({id})
 	if (table.value) {
-		let entityId = table.value.entityId
+		entityId.value = table.value.entityId
 
-		if (!entityId) {
+		if (!entityId.value) {
 			try {
-				entityId = (await convertEntities([id]))[0]
-				if (!entityId) {
-					throw new Error('entity 未成功映射，通过 tableId 映射 entity 返回的 entityId 为 null')
+				entityId.value = (await convertEntities([id]))[0]
+				if (!entityId.value) {
+					sendMessage('entity 未成功映射，通过 tableId 映射 entity 返回的 entityId 为 null, 需要排查后端问题', 'error')
 				}
 			} catch (e) {
 				sendMessage('entity 映射错误', 'error', e)
 				return
 			}
 		}
-
-		try {
-			entity.value = await api.entityService.get({id: entityId})
-			if (!entity.value) {
-				throw new Error('entity 未成功映射，通过 entityId 获取的 entity 为 null')
-			}
-		} catch (e) {
-			sendMessage('entity 映射错误', 'error', e)
-			return
-		}
-
 	} else {
 		sendMessage('table 获取失败，可能不在数据库中', 'error')
 	}
@@ -76,14 +65,13 @@ watch(() => props.id, async (id) => {
 <template>
 	<DragDialog :x="x" :y="y" :init-w="w" @close="emits('close')" :resizable="true">
 		<div class="wrapper">
-			<template v-if="table && entity">
+			<template v-if="table">
 				<div class="header">
 					<el-text class="title" size="large">{{ table.name }}</el-text>
 					<el-tabs v-model="typeState">
 						<el-tab-pane name="TableInfo" label="表"></el-tab-pane>
 						<el-tab-pane name="EntityInfo" label="实体"></el-tab-pane>
 					</el-tabs>
-					<el-button class="generate-button" @click="generateEntities([entity.id])">生成实体</el-button>
 				</div>
 
 				<div v-if="typeState == 'TableInfo'" class="body">
@@ -91,9 +79,9 @@ watch(() => props.id, async (id) => {
 					<TableDefine :id="id"></TableDefine>
 				</div>
 
-				<div v-if="typeState == 'EntityInfo'" class="body">
-					<EntityInfo :entity="entity"></EntityInfo>
-					<BusinessCodePreview :id="entity.id"></BusinessCodePreview>
+				<div v-if="entityId && typeState == 'EntityInfo'" class="body">
+					<EntityInfo :id="entityId"></EntityInfo>
+					<BusinessCodePreview :id="entityId"></BusinessCodePreview>
 				</div>
 			</template>
 			<el-empty class="empty" v-else></el-empty>
@@ -129,12 +117,6 @@ watch(() => props.id, async (id) => {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-}
-
-.generate-button {
-	position: absolute;
-	top: 0;
-	right: 1em;
 }
 
 .body {

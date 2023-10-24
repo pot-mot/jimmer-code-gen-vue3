@@ -1,15 +1,12 @@
 import type { DataSourceType, GenLanguage } from '../enums';
 
 export interface GenConfig {
-}
-
-export interface GenConfig_Companion {
     
     author: string;
     
-    columnPrefix: string[];
+    columnPrefix: string;
     
-    columnSuffix: string[];
+    columnSuffix: string;
     
     dataSourceType: DataSourceType;
     
@@ -27,7 +24,7 @@ export interface GenConfig_Companion {
     
     separator: string;
     
-    tablePrefix: string[];
+    tablePrefix: string;
     
-    tableSuffix: string[];
+    tableSuffix: string;
 }

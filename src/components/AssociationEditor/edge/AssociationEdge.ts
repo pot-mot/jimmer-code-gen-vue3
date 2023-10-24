@@ -1,6 +1,6 @@
 import {Edge, Graph, Shape} from "@antv/x6";
 import {COMMON_COLOR, MANY_TO_ONE, ONE_TO_ONE} from "../constant";
-import {AssociationType} from "../../../api/__generated/model/enums";
+import {AssociationType, SelectType} from "../../../api/__generated/model/enums";
 import {GenAssociationInput, GenAssociationMatchView, GenTableColumnView} from "../../../api/__generated/model/static";
 import {columnIdToPortId, portIdToColumnId} from "../port/ColumnPort.ts";
 import {getTables, nodeIdToTableId, tableIdToNodeId} from "../node/TableNode.ts";
@@ -87,17 +87,68 @@ export const nodeIsExist = (graph: Graph, nodeId: string): boolean => {
 
 /**
  * 寻找 Edge
- * @param graph 图
- * @param sourcePort 源连接桩
- * @param targetPort 目标连接桩
- * @returns Edge 数组
  */
-export const searchEdges = (graph: Graph, sourcePort: string, targetPort: string): Edge[] => {
-    return graph.getEdges().filter(edge => edge.getSourcePortId() == sourcePort && edge.getTargetPortId() == targetPort)
+export const searchEdgesByPort = (
+    graph: Graph,
+    opt: {
+        sourcePortId?: string
+        targetPortId?: string
+        selectType?: SelectType
+    }
+): Edge[] => {
+    return graph.getEdges().filter(
+        edge => {
+            let sourceFlag = true
+            let targetFlag = true
+
+            if (opt.sourcePortId) {
+                sourceFlag = edge.getSourcePortId() == opt.sourcePortId
+            }
+            if (opt.targetPortId) {
+                targetFlag = edge.getTargetPortId() == opt.targetPortId
+            }
+
+            if (!opt.selectType || opt.selectType == 'AND') {
+                return targetFlag && sourceFlag
+            } else {
+                return targetFlag || sourceFlag
+            }
+        })
+}
+
+export const searchEdgesByNode = (
+    graph: Graph,
+    opt: {
+        sourceNodeId?: string,
+        targetNodeId?: string,
+        selectType?: SelectType
+    }
+): Edge[] => {
+    return graph.getEdges().filter(
+        edge => {
+            let sourceFlag = true
+            let targetFlag = true
+
+            if (opt.sourceNodeId) {
+                sourceFlag = edge.getSourceNode()?.id == opt.sourceNodeId
+            }
+            if (opt.targetNodeId) {
+                targetFlag = edge.getTargetNode()?.id == opt.targetNodeId
+            }
+
+            if (!opt.selectType || opt.selectType == 'AND') {
+                return targetFlag && sourceFlag
+            } else {
+                return targetFlag || sourceFlag
+            }
+        })
 }
 
 export const searchEdgesByColumn = (graph: Graph, sourceColumnId: number, targetColumnId: number) => {
-    return searchEdges(graph, columnIdToPortId(sourceColumnId), columnIdToPortId(targetColumnId))
+    return searchEdgesByPort(graph, {
+        sourcePortId: columnIdToPortId(sourceColumnId),
+        targetPortId: columnIdToPortId(targetColumnId)
+    })
 }
 
 /**

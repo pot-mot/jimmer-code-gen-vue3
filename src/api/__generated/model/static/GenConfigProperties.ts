@@ -4,9 +4,9 @@ export interface GenConfigProperties {
     
     author?: string;
     
-    columnPrefix?: string[];
+    columnPrefix?: string;
     
-    columnSuffix?: string[];
+    columnSuffix?: string;
     
     language?: GenLanguage;
     
@@ -22,7 +22,7 @@ export interface GenConfigProperties {
     
     separator?: string;
     
-    tablePrefix?: string[];
+    tablePrefix?: string;
     
-    tableSuffix?: string[];
+    tableSuffix?: string;
 }
