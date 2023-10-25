@@ -63,7 +63,7 @@ watch(() => props.id, async (id) => {
 </script>
 
 <template>
-	<DragDialog :x="x" :y="y" :init-w="w" @close="emits('close')" :resizable="true">
+	<DragDialog :x="x" :y="y" :init-w="w" @close="emits('close')" :can-resize="true">
 		<div class="wrapper">
 			<template v-if="table">
 				<div class="header">

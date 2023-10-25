@@ -237,8 +237,10 @@ export const importAssociationEdges = (graph: Graph, associations: readonly GenA
             const targetPortId = newEdge.getTargetPortId()
             if (!targetPortId) return
 
-            const isExist = searchEdgesIgnoreDirection(graph, sourcePortId, targetPortId).length > 0
-            if (isExist) return
+            const existAssociations = searchEdgesIgnoreDirection(graph, sourcePortId, targetPortId)
+            if (existAssociations) {
+                graph.removeCells(existAssociations)
+            }
 
             if (targetCellId == sourceCellId) {
                 newEdge.router = orthRouter
@@ -338,7 +340,6 @@ export const saveAssociations = async (graph: Graph) => {
     }
 }
 
-
 export const useSwitchAssociationType = (graph: Graph) => {
     graph.on('edge:unselected', (cell) => {
         if (!cell) return
@@ -350,14 +351,6 @@ export const useSwitchAssociationType = (graph: Graph) => {
 
         if (!edge.getData().selectFlag) {
             edge.getData().selectFlag = true
-
-            if (edge.getTargetCellId() != edge.getSourceCellId()) {
-                graph.select(edge.getTargetCellId())
-                graph.select(edge.getSourceCellId())
-            } else {
-                graph.select(edge.getTargetCellId())
-            }
-
             return
         }
 

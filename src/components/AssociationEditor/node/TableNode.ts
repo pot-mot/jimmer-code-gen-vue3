@@ -1,5 +1,5 @@
 import {GenTableColumnView} from "../../../api/__generated/model/static";
-import {Cell, Graph, Node, Edge} from "@antv/x6";
+import {Graph, Node, Edge} from "@antv/x6";
 import {COLUMN_HEIGHT, COLUMN_PORT} from "../constant";
 import {columnToPort} from "../port/ColumnPort.ts";
 import {api} from "../../../api";
@@ -55,13 +55,6 @@ export const getTables = (graph: Graph): GenTableColumnView[] => {
     return graph.getNodes().map(nodeToTable)
 }
 
-export const getTableNode = (graph: Graph, id: number): Node | undefined => {
-    const cell: Cell = graph.getCellById(tableIdToNodeId(id))
-    if (cell && cell.isNode()) {
-        return cell as Node
-    }
-}
-
 /**
  * 插入 TableNode
  * @param graph
@@ -81,16 +74,30 @@ export const importTableNodes = (graph: Graph, tables: readonly GenTableColumnVi
 }
 
 /**
- * 过滤存在的 TableNode id
+ * 根据是否存在在图中将 TableNode id 分组
  * @param graph 图
  * @param tableIds
  * @returns 过滤结果
  */
-const filterExistedTableNodeIds = (graph: Graph, tableIds: readonly number[]): number[] => {
-    const idSet = new Set(tableIds);
-    return getTables(graph)
-        .filter(table => idSet.has(table.id))
-        .map(table => table.id);
+const groupTableIdByExisted = (graph: Graph, tableIds: readonly number[]) => {
+    const idSet = new Set( getTables(graph).map(table => table.id))
+
+    const existedIds: number[] = []
+    const newIds: number[] = []
+
+   tableIds.forEach(id => {
+        if (idSet.has(id)) {
+            existedIds.push(id)
+        } else {
+            newIds.push(id)
+        }
+    })
+
+
+    return {
+        existedIds,
+        newIds,
+    }
 }
 
 /**
@@ -119,14 +126,19 @@ export const loadTableNodes = async (graph: Graph, ids: number[], replace: boole
         throw new Error("table ids is empty, can not load")
     }
 
-    const tables = await api.tableService.listColumnView({ids})
-    const existedIds = filterExistedTableNodeIds(graph, ids)
+    const {existedIds, newIds} = groupTableIdByExisted(graph, ids)
+
+    let requestIds = newIds
 
     if (replace) {
         removeTableNodes(graph, existedIds)
+        requestIds = ids
     }
 
     graph.startBatch('add nodes')
+
+    const tables = requestIds.length > 0 ?
+        await api.tableService.listColumnView({ids: requestIds}) : []
 
     const nodes = importTableNodes(graph, tables)
 

@@ -15,12 +15,14 @@ interface DragResizeProps {
 	maxW?: number
 	maxH?: number
 	to?: string
-	resizable?: boolean
+	canResize?: boolean
+	canDrag?: boolean
 }
 
 const props = withDefaults(defineProps<DragResizeProps>(), {
 	to: "body",
-	resizable: false,
+	canResize: false,
+	canDrag: true,
 	initW: 800,
 })
 
@@ -90,22 +92,30 @@ onMounted(() => {
 		}
 	})
 })
+
+const handleContentMouseEnter = () => {
+	draggable.value = props.canDrag && false
+}
+
+const handleContentMouseLeave = () => {
+	draggable.value = props.canDrag && true
+}
 </script>
 
 <template>
 	<Teleport :to="to">
-		<DragResize :active="true" :draggable="draggable" :parent="true" :resizable="resizable"
+		<DragResize :active="true" :draggable="draggable" :parent="true" :resizable="canResize"
 					:h="h" :w="w" :initH="initH" :initW="initW" :minH="minH" :minW="minW" :maxH="maxH" :maxW="maxW"
 					:x="x" :y="y"
 					style="border: none; z-index: 2000;">
-			<div ref="wrapper" class="wrapper">
+			<div ref="wrapper" class="wrapper" :style="draggable ? 'cursor: all-scroll;' : 'cursor: default;'">
 				<div class="close" @click="close">
 					<slot name="close">
 						<el-button type="danger" :icon="Close" size="large" link></el-button>
 					</slot>
 				</div>
 				<div ref="content"  class="content"
-					 @mouseenter="draggable = false" @mouseleave="draggable = true">
+					 @mouseenter="handleContentMouseEnter" @mouseleave="handleContentMouseLeave">
 					<slot></slot>
 				</div>
 			</div>
@@ -131,7 +141,6 @@ onMounted(() => {
 	background-color: #fff;
 	border-radius: var(--el-border-radius-base);
 	box-shadow: var(--el-box-shadow);
-	cursor: all-scroll;
 	position: relative;
 }
 

@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import {ElIcon} from "element-plus";
-import {
-	GenTableAssociationView_TargetOf_columns
-} from "../../../api/__generated/model/static/GenTableAssociationView.ts";
+import {GenColumnCommonView} from "../../../api/__generated/model/static";
 
 interface DataSourceIconProps {
-	column: GenTableAssociationView_TargetOf_columns
+	column: Partial<GenColumnCommonView>
 }
 
 defineProps<DataSourceIconProps>()

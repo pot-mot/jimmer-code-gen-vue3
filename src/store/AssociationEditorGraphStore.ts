@@ -18,6 +18,53 @@ import {AssociationEditorGraphEventBus} from "../eventBus/AssociationEditorGraph
 import {api} from "../api";
 import {AssociationEditorMenuEventBus} from "../eventBus/AssociationEditorMenuEventBus.ts";
 
+type CellInput = Cell | string | number
+
+type CellProperty = Cell | string
+
+const processCell = (cell: CellInput): CellProperty => {
+    if (typeof cell == 'number') {
+        return tableIdToNodeId(cell)
+    } else {
+        return cell
+    }
+}
+
+const getFirst = (input: CellInput | CellInput[]): CellProperty | undefined => {
+    if (Array.isArray(input)) {
+        if (input.length > 0) {
+            return processCell(input[0])
+        }
+    } else {
+        return processCell(input)
+    }
+}
+
+const processCells = (cells: CellInput[]): CellProperty[] => {
+    if (Array.isArray(cells)) {
+        return cells.map(processCell)
+    } else {
+        return cells
+    }
+}
+
+const process = (input: CellInput | CellInput[]): CellProperty | CellProperty[] => {
+    if (Array.isArray(input)) {
+        return processCells(input);
+    } else {
+        return processCell(input);
+    }
+}
+
+const getCell = (graph: Graph, input: CellInput): Cell => {
+    const temp = processCell(input)
+    if (typeof temp == 'string') {
+        return graph.getCellById(temp)
+    } else {
+        return temp
+    }
+}
+
 export const useAssociationEditorGraphStore =
     defineStore(
         'AssociationEditorGraph',
@@ -237,28 +284,33 @@ export const useAssociationEditorGraphStore =
             /**
              * 向画布导入 schema
              * @param id schema id
-             * @param select 结束后是否选中全部
              */
-            const loadSchema = async (id: number, select: boolean = false) => {
+            const loadSchema = async (id: number) => {
                 const graph = _graph()
+
+                const oldTables = tables().filter(table => table.schema.id == id)
+
+                if (oldTables.length > 0) {
+                    select(oldTables.map(table => table.id))
+                }
 
                 const res = await api.tableService.query({query: {schemaIds: [id]}})
                 const tableIds = res.map(table => table.id)
 
                 const {nodes, edges} = await loadTableNodes(graph, tableIds, false)
 
-                if (select) {
-                    graph.resetSelection([
-                        ...nodes.map(it => it.id),
-                        ...edges.map(it => it.id)
-                    ])
-                }
+                await nextTick()
 
+                graph.resetSelection([
+                    ...oldTables.map(it => tableIdToNodeId(it.id)),
+                    ...nodes.map(it => it.id),
+                    ...edges.map(it => it.id)
+                ])
                 await layoutAndFit()
             }
 
             /**
-             * 向画布导入 table
+             * 向画布导入 table，如果表已存在则仅更新关联
              * @param id tableId
              */
             const loadTable = async (id: number) => {
@@ -293,48 +345,38 @@ export const useAssociationEditorGraphStore =
 
             /**
              * 聚焦 cell，将移动画布并选中 cell
-             * @param graph 图
-             * @param cellId 目标 cell id
              */
-            const focusCell = async (graph: Graph, cellId: string) => {
-                const cell = graph.getCellById(cellId)
+
+            const unselect = (cells: CellInput | CellInput[]) => {
+                _graph().unselect(process(cells))
+            }
+
+            const select = (cells: CellInput | CellInput[]) => {
+                _graph().select(process(cells))
+            }
+
+            /**
+             * 切换 cell 选中状态
+             */
+            const toggleSelect = (cells: CellInput | CellInput[]) => {
+                const graph = _graph()
+                const firstCell = getFirst(cells)
+                if (firstCell && graph.isSelected(firstCell)) {
+                    graph.unselect(process(cells))
+                } else {
+                    graph.select(process(cells))
+                }
+            }
+
+            const focus = (cellInput: CellInput) => {
+                const graph = _graph()
+
+                const cell = getCell(graph, cellInput)
 
                 cell.toFront()
                 graph.cleanSelection()
                 graph.centerCell(cell)
                 graph.select(cell)
-
-                await nextTick()
-            }
-
-            /**
-             * 切换 cell 选中状态
-             * @param graph
-             * @param cells
-             */
-            const toggleCellSelect = (graph: Graph, cells: Cell | string | Cell[] | string[]) => {
-                const firstCell = Array.isArray(cells) ? cells[0] : cells
-                if (graph.isSelected(firstCell)) {
-                    graph.unselect(cells)
-                } else {
-                    graph.select(cells)
-                }
-            }
-
-            const unselect = (cells: Cell | string | Cell[] | string[]) => {
-                _graph().unselect(cells)
-            }
-
-            const select = (cells: Cell | string | Cell[] | string[]) => {
-                _graph().select(cells)
-            }
-
-            const toggleSelect = (cells: Cell | string | Cell[] | string[]) => {
-                toggleCellSelect(_graph(), cells)
-            }
-
-            const focus = async (id: string) => {
-                await focusCell(_graph(), id)
             }
 
             return {

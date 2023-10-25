@@ -1,18 +1,23 @@
 <template>
-	<el-text v-if="table" class="node" @contextmenu="TableDialogEventBus.emit('addTableDialog', table.id)">
-		<table ref="wrapper" class="node-wrapper">
+	<el-text v-if="table" class="node" @dblclick="store.focus(table.id)" @contextmenu="TableDialogEventBus.emit('addTableDialog', table.id)">
+		<table ref="wrapper" class="table-wrapper">
 			<tr class="tableName">
-				<td :class="table.type"></td>
-				<td colspan="3">
+				<td colspan="2">
 					<span>{{ table.name }}</span>
-					<span>{{ table.comment }}</span>
+					<span class="comment">/* {{ table.comment }} */</span>
 				</td>
 			</tr>
-			<tr v-for="column in table.columns">
-				<td></td>
-				<td>{{ column.name }}</td>
-				<td>{{ column.type }}</td>
-				<td>{{ column.comment }}</td>
+			<tr v-for="column in table.columns" class="column">
+				<td>
+					<span class="icon">
+						<ColumnIcon :column="column"></ColumnIcon>
+					</span>
+					<span>{{ column.name }}</span>
+					<span class="comment">/* {{ column.comment }} */</span>
+				</td>
+				<td>
+					<span class="type">{{ column.type }}</span>
+				</td>
 			</tr>
 		</table>
 	</el-text>
@@ -22,34 +27,47 @@
 .node {
 	padding-bottom: 10px;
 
-	.node-wrapper {
+	.table-wrapper {
 		background-color: #fff;
 		border: 1px solid #000;
 		border-collapse: collapse;
 
-		td {
-			white-space: nowrap;
-			padding: 0 0.5em;
-			height: 30px;
-			line-height: 30px;
-			font-size: 14px;
+		.comment {
+			padding: 0 0.3em;
+			color: var(--el-text-color-placeholder);
+			font-size: 0.8em;
+			font-weight: 400;
 		}
 
 		.tableName {
 			text-align: center;
 			border-bottom: 1px solid var(--common-color);
-			font-size: 20px;
+			font-size: 16px;
+			height: 30px;
 			font-weight: 600;
+			white-space: nowrap;
+		}
 
-			span {
-				color: #333;
-				margin-right: 1em;
+		.column {
+			white-space: nowrap;
+			height: 30px;
+			line-height: 30px;
+			font-size: 14px;
+
+			.icon {
+				width: 2em;
+				padding: 0 0.5em;
+			}
+
+			.type {
+				padding: 0 0.5em;
+				text-align: right;
 			}
 		}
 	}
 }
 
-.x6-node-selected .node-wrapper {
+.x6-node-selected .table-wrapper {
 	outline: 2px solid var(--highlight-color);
 	outline-offset: 4px;
 }
@@ -62,6 +80,7 @@ import {Node} from '@antv/x6'
 import {useAssociationEditorGraphStore} from "../../../store/AssociationEditorGraphStore.ts";
 import {TableDialogEventBus} from "../../../eventBus/TableDialogEventBus.ts";
 import {ElText} from "element-plus";
+import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 
 const wrapper = ref<HTMLElement | null>()
 

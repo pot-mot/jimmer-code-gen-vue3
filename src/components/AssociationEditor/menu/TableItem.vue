@@ -5,7 +5,6 @@ import {useAssociationEditorGraphStore} from "../../../store/AssociationEditorGr
 import TableIcon from "../../icons/database/TableIcon.vue";
 import {TableDialogEventBus} from "../../../eventBus/TableDialogEventBus.ts";
 import {processClickFunction} from "../../../utils/clickTimer.ts";
-import {tableIdToNodeId} from "../node/TableNode.ts";
 
 const store = useAssociationEditorGraphStore()
 
@@ -19,12 +18,13 @@ const {
 	click: loadTable,
 	dblClick: loadTableAndFocus
 } = processClickFunction(
-	(id: number) => {
-		store.loadTable(id)
+	async (id: number) => {
+		await store.loadTable(id)
+		store.select(id)
 	},
 	async (id: number) => {
 		await store.loadTable(id)
-		await store.focus(tableIdToNodeId(id))
+		store.focus(id)
 	}
 )
 </script>

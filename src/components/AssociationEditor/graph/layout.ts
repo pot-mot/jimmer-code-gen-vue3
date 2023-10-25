@@ -103,7 +103,9 @@ const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
 
             if (currentLevelNodes.length == 0) {
                 currentLevel++
-                currentLevelNodes = nextLevelNodes
+                currentLevelNodes = nextLevelNodes.sort((node1, node2) => {
+                    return node1.inDegree - node2.inDegree
+                })
                 nextLevelNodes = []
             }
         }
@@ -150,7 +152,7 @@ const groupByLevel = (nodes: readonly LayoutNode[]): Node[][] => {
     const unrelatedNodes: Node[] = []
 
     nodes.forEach(node => {
-        if (node.inDegree == 0 && node.outDegree == 0) {
+        if (!node.visited || (node.inDegree == 0 && node.outDegree == 0)) {
             unrelatedNodes.push(node.node)
             return
         }

@@ -5,7 +5,6 @@ import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import Details from "../../common/Details.vue";
 import {useAssociationEditorGraphStore} from "../../../store/AssociationEditorGraphStore.ts";
 import {Graph} from "@antv/x6";
-import {getTableNode, tableIdToNodeId} from "../../AssociationEditor/node/TableNode.ts";
 import {watch} from "vue";
 import {searchEdgesByColumn} from "../../AssociationEditor/edge/AssociationEdge.ts";
 import {
@@ -32,10 +31,10 @@ const {
 	dblClick: focusTable
 } = processClickFunction(
 	(id: number) => {
-		store.select(tableIdToNodeId(id))
+		store.select(id)
 	},
 	(id: number) => {
-		store.focus(tableIdToNodeId(id))
+		store.focus(id)
 	}
 )
 

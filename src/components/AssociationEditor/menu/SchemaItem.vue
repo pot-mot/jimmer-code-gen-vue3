@@ -10,7 +10,6 @@ import SchemaIcon from "../../icons/database/SchemaIcon.vue";
 import {useAssociationEditorGraphStore} from "../../../store/AssociationEditorGraphStore.ts";
 import {AssociationEditorMenuEventBus} from "../../../eventBus/AssociationEditorMenuEventBus.ts";
 import {sendMessage} from "../../../utils/message.ts";
-import {tableIdToNodeId} from "../node/TableNode.ts";
 
 const store = useAssociationEditorGraphStore()
 
@@ -33,17 +32,7 @@ watch(() => props.schema, () => {
 }, {immediate: true})
 
 const handleLoadOrSelect = () => {
-	const tables = store.tables().filter(table => table.schema.id == props.schema.id)
-
-	const graph = store._graph()
-
-	if (tables.length > 0) {
-		graph.unselect(graph.getCells())
-		graph.select(tables.map(table => tableIdToNodeId(table.id)))
-	} else {
-		graph.unselect(graph.getCells())
-		store.loadSchema(props.schema.id, true)
-	}
+	store.loadSchema(props.schema.id)
 }
 
 const handleDelete = () => {

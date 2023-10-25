@@ -22,6 +22,15 @@ export const useSelection = (graph: Graph) => {
             })
         }
     })
+
+    graph.on("edge:dblclick", ({edge}) => {
+        if (edge.getTargetCellId() != edge.getSourceCellId()) {
+            graph.select(edge.getTargetCellId())
+            graph.select(edge.getSourceCellId())
+        } else {
+            graph.select(edge.getTargetCellId())
+        }
+    })
 }
 
 const normalMoveStep = 40

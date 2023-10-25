@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onBeforeUnmount, onMounted, ref} from "vue";
+import {nextTick, onBeforeUnmount, onMounted, ref} from "vue";
 import {Graph, Node} from "@antv/x6";
 import DragDialog from "../../common/DragDialog.vue";
 import {useAssociationEditorGraphStore} from "../../../store/AssociationEditorGraphStore.ts";
@@ -39,9 +39,16 @@ const searchTableNodes = (graph: Graph, keywords: string[]): Node[] => {
 
 const search = () => {
 	const graph = store._graph()
-	if (!graph) return
-	searchResult.value = searchTableNodes(graph, keyword.value.split(" "))
+
+	if (keyword.value.trim().length > 0) {
+		const keywords = keyword.value.split(" ")
+		searchResult.value = searchTableNodes(graph, keywords)
+	} else {
+		searchResult.value = []
+	}
 }
+
+const input = ref()
 
 const handleSearchKeyDown = (e: KeyboardEvent) => {
 	if (e.ctrlKey || e.metaKey) {
@@ -49,6 +56,11 @@ const handleSearchKeyDown = (e: KeyboardEvent) => {
 			e.preventDefault()
 			searchResult.value = []
 			showSearch.value = true
+			nextTick(() => {
+				if (input) {
+					input.value.focus()
+				}
+			})
 		}
 	}
 }
@@ -75,26 +87,32 @@ const {
 </script>
 
 <template>
-	<DragDialog v-if="showSearch" @close="showSearch = false" :init-w="500" :y="100" to="#AssociationEditor">
-		<el-input v-model="keyword" autofocus @keydown.enter="search">
-			<template #append>
-				<el-button @click="search">搜索</el-button>
+	<DragDialog v-if="showSearch" @close="showSearch = false; keyword = '';" :init-w="400" :y="50" to="#AssociationEditor" :can-drag="false">
+		<el-popover :visible="keyword.length > 0" width="390">
+			<template #reference>
+				<el-input ref="input" v-model="keyword" @input="search" @change="search" clearable>
+					<template #append>
+						<el-button @click="search">搜索</el-button>
+					</template>
+				</el-input>
 			</template>
-		</el-input>
-		<div v-if="searchResult.length == 0">
-			无搜索结果
-		</div>
-		<div style="max-height: 60vh; overflow: auto; width: 100%;">
-			<div v-for="node in searchResult">
-				<el-button
-					@click="handleSelectCell(node.id)"
-					@dblclick="handleFocusCell(node.id)"
-					size="default"
-					link>
-					{{ node.data.table.name }} {{ node.data.table.comment }}
-				</el-button>
+
+			<div style="max-height: 60vh; overflow: auto">
+				<div v-if="keyword.length > 0 && searchResult.length == 0">
+					无搜索结果
+				</div>
+
+				<div v-for="node in searchResult">
+					<el-button
+						@click="handleSelectCell(node.id)"
+						@dblclick="handleFocusCell(node.id)"
+						size="default"
+						link>
+						{{ node.data.table.name }} {{ node.data.table.comment }}
+					</el-button>
+				</div>
 			</div>
-		</div>
+		</el-popover>
 	</DragDialog>
 </template>
 
