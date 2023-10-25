@@ -71,18 +71,20 @@ const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
         nodeMap.set(node.id, node)
     }
 
+    // 设置入度和出度，并设置 children
     for (const {source, target} of edges) {
         const targetNode = nodeMap.get(target)
         const sourceNode = nodeMap.get(source)
         if (targetNode && sourceNode) {
-            targetNode.children.push(sourceNode)
             sourceNode.outDegree++
+
             targetNode.inDegree++
+            targetNode.children.push(sourceNode)
         }
     }
 
     /**
-     * 对树进行广度优先搜索，给节点设置层级信息
+     * 广度优先搜索，给节点设置层级信息
      * @param root 根节点
      */
     const bfs = (root: LayoutNode) => {
@@ -93,6 +95,7 @@ const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
         while (currentLevelNodes.length > 0) {
             const currentNode = currentLevelNodes.shift()!
             currentNode.level = currentLevel
+            currentNode.visited = true
 
             for (const child of currentNode.children) {
                 if (!child.visited) {
@@ -103,15 +106,17 @@ const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
 
             if (currentLevelNodes.length == 0) {
                 currentLevel++
-                currentLevelNodes = nextLevelNodes.sort((node1, node2) => {
-                    return node1.inDegree - node2.inDegree
-                })
+                currentLevelNodes = nextLevelNodes
                 nextLevelNodes = []
             }
         }
     }
 
-    for (const node of nodeMap.values()) {
+    nodes.sort((node1, node2) => {
+        return node1.outDegree - node2.outDegree
+    })
+
+    for (const node of nodes) {
         if (!node.visited) {
             bfs(node)
         }
@@ -119,7 +124,7 @@ const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
 }
 
 /**
- * 均分数组
+ * 均分数组（用来形成接近正方形的图像）
  * @param array 待分割的数组
  * @param chunkSize 每个部分的大小
  * @returns 均分成多个部分的二维数组
@@ -152,7 +157,8 @@ const groupByLevel = (nodes: readonly LayoutNode[]): Node[][] => {
     const unrelatedNodes: Node[] = []
 
     nodes.forEach(node => {
-        if (!node.visited || (node.inDegree == 0 && node.outDegree == 0)) {
+        // 出入度均为 0 即无关联点，在其他点后作为额外 level 进行布局
+        if (node.inDegree == 0 && node.outDegree == 0) {
             unrelatedNodes.push(node.node)
             return
         }
@@ -337,6 +343,7 @@ export const layoutByLevels = (
         edges = toLayoutEdges(getSelectedEdges(graph))
     }
 
+    // 根据字典序对表名进行排序，保证多次布局的入参一致
     nodes.sort((node1, node2) => {
         return node1.node.data.table.name.localeCompare(node2.node.data.table.name)
     })
