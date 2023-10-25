@@ -2,36 +2,31 @@
 	<div ref="wrapper" class="wrapper" id="AssociationEditor">
 		<div ref="container"></div>
 
-		<ul v-if="store.isLoaded" class="toolbar left-bottom">
+		<ul v-if="store.isLoaded" class="toolbar left-top">
 			<li>
-				<el-button @click="toggleMinimap">minimap</el-button>
-			</li>
-		</ul>
-		<ul v-if="store.isLoaded" class="toolbar right-top">
-			<li>
-				<el-button @click="graph.undo()">undo</el-button>
+				<el-button @click="handleSaveGraph">保存编辑区</el-button>
 			</li>
 			<li>
-				<el-button @click="graph.redo()">redo</el-button>
+				<el-button v-show="store.canUndo" @click="handleUndo">undo</el-button>
 			</li>
 			<li>
-				<el-button @click="store.fit">适应画布</el-button>
+				<el-button v-show="store.canRedo" @click="handleRedo">redo</el-button>
 			</li>
 			<li>
-				<el-button @click="graph.centerContent()">居中</el-button>
+				<el-button @click="handleLayout">布局</el-button>
+				<el-select v-model="store.layoutDirection">
+					<el-option value="LR">左右</el-option>
+					<el-option value="RL">右左</el-option>
+					<el-option value="TB">上下</el-option>
+					<el-option value="BT">下上</el-option>
+				</el-select>
+			</li>
+
+			<li>
+				<el-button @click="handleFit">适应画布</el-button>
 			</li>
 			<li>
-				<el-slider v-model="store.formatScaling"
-						   :step="0.25"
-						   :min="Math.log2(defaultZoomRange.minScale)"
-						   :max="Math.log2(defaultZoomRange.maxScale)"
-						   :show-tooltip="false">
-				</el-slider>
-			</li>
-			<li>
-				<el-input-number v-model="store.formatScaling" :step="0.25" :precision="2" :min="Math.log2(defaultZoomRange.minScale)"
-								 :max="Math.log2(defaultZoomRange.maxScale)">
-				</el-input-number>
+				<el-button @click="handleCenterContent">居中</el-button>
 			</li>
 			<li>
 				<el-button @click="store.removeAllCells()">清理画布</el-button>
@@ -48,16 +43,8 @@
 				</li>
 			</template>
 		</ul>
-		<ul v-if="store.isLoaded" class="toolbar left-top">
-			<li>
-				<el-button @click="handleLayout">布局</el-button>
-				<el-select v-model="store.layoutDirection">
-					<el-option value="LR">左右</el-option>
-					<el-option value="RL">右左</el-option>
-					<el-option value="TB">上下</el-option>
-					<el-option value="BT">下上</el-option>
-				</el-select>
-			</li>
+
+		<ul v-if="store.isLoaded" class="toolbar right-top">
 			<li>
 				<el-button @click="match">
 					{{ store.isSelectionEmpty ? "匹配关联" : "匹配选中表的关联" }}
@@ -65,9 +52,6 @@
 				<el-select v-model="matchType">
 					<el-option v-for="(type) in matchTypes" :value="type">{{ type }}</el-option>
 				</el-select>
-			</li>
-			<li>
-				<el-button @click="saveGraph(graph)">保存编辑区</el-button>
 			</li>
 			<li>
 				<el-tooltip>
@@ -81,20 +65,25 @@
 				</el-tooltip>
 			</li>
 			<li>
-				<el-button @click="generateEntitiesByTable(
-					store.isSelectionEmpty ?
-					store.tables().map(table => table.id) :
-					store.selectedTables.map(table => table.id)
-				)">
-					生成实体
-				</el-button>
+				<el-button @click="handleGenerateEntities">生成实体</el-button>
 			</li>
 		</ul>
 
 		<Searcher></Searcher>
 
-		<div v-if="store.isLoaded" class="toolbar right-bottom">
+		<div v-if="store.isLoaded" class="toolbar right-bottom" style="width:  max(15vw, 200px);">
 			<MiniMap ref="minimap"></MiniMap>
+			<el-button @click="toggleMinimap">minimap</el-button>
+			<el-slider v-model="store.formatScaling"
+					   :step="0.25"
+					   :min="Math.log2(defaultZoomRange.minScale)"
+					   :max="Math.log2(defaultZoomRange.maxScale)"
+					   :show-tooltip="false">
+			</el-slider>
+			<el-input-number v-model="store.formatScaling" :step="0.25" :precision="2"
+							 :min="Math.log2(defaultZoomRange.minScale)"
+							 :max="Math.log2(defaultZoomRange.maxScale)">
+			</el-input-number>
 		</div>
 	</div>
 </template>
@@ -209,10 +198,38 @@ const toggleMinimap = () => {
 
 const {match, matchTypes, matchType} = useTableEditorMatch(() => graph)
 
+const handleSaveGraph = () => {
+	saveGraph(graph)
+}
+
+const handleUndo = () => {
+	graph.undo()
+}
+
+const handleRedo = () => {
+	graph.redo()
+}
+
 const handleLayout = () => {
 	store.layout()
 	nextTick(() => {
 		graph.centerContent()
 	})
+}
+
+const handleFit = () => {
+	store.fit()
+}
+
+const handleCenterContent = () => {
+	graph.centerContent()
+}
+
+const handleGenerateEntities = () => {
+	generateEntitiesByTable(
+		store.isSelectionEmpty ?
+			store.tables().map(table => table.id) :
+			store.selectedTables.map(table => table.id)
+	)
 }
 </script>

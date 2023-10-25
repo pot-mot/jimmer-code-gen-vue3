@@ -4,7 +4,6 @@ import {COLUMN_HEIGHT, COLUMN_PORT} from "../constant";
 import {columnToPort} from "../port/ColumnPort.ts";
 import {api} from "../../../api";
 import {importAssociationEdges} from "../edge/AssociationEdge.ts";
-import {nextTick} from "vue";
 import {sendMessage} from "../../../utils/message.ts";
 import { saveAs } from 'file-saver';
 
@@ -138,43 +137,6 @@ export const loadTableNodes = async (graph: Graph, ids: number[], replace: boole
     graph.stopBatch('add nodes')
 
     return {nodes, edges, existedIds}
-}
-
-/**
- * 根据关键词进行节点查找
- * @param graph 图
- * @param keywords 关键词
- * @returns 节点列表
- */
-export const searchTableNodes = (graph: Graph, keywords: string[]): Node[] => {
-    if (keywords.length == 0) {
-        return []
-    }
-
-    return graph.getNodes().filter(node => {
-        if (node.data && node.data.table) {
-            const table: GenTableColumnView = node.data.table
-            for (const keyword of keywords) {
-                if (table.name.includes(keyword) || table.comment.includes(keyword)) {
-                    return true
-                }
-            }
-        }
-    })
-}
-
-/**
- * 聚焦于某个节点，进行缩放
- * @param graph 图
- * @param cell 目标 Cell
- */
-export const focusCell = async (graph: Graph, cell: Cell) => {
-    cell.toFront()
-    graph.cleanSelection()
-    graph.centerCell(cell)
-    graph.select(cell)
-
-    await nextTick()
 }
 
 export const convertEntities = async (tableIds: number[]) => {

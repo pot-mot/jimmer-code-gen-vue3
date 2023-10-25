@@ -5,7 +5,7 @@ import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import Details from "../../common/Details.vue";
 import {useAssociationEditorGraphStore} from "../../../store/AssociationEditorGraphStore.ts";
 import {Graph} from "@antv/x6";
-import {focusCell, getTableNode} from "../../AssociationEditor/node/TableNode.ts";
+import {getTableNode, tableIdToNodeId} from "../../AssociationEditor/node/TableNode.ts";
 import {watch} from "vue";
 import {searchEdgesByColumn} from "../../AssociationEditor/edge/AssociationEdge.ts";
 import {
@@ -13,6 +13,7 @@ import {
 	GenTableAssociationView_TargetOf_columns_TargetOf_outAssociations,
 } from "../../../api/__generated/model/static/GenTableAssociationView.ts";
 import {Delete} from "@element-plus/icons-vue";
+import {processClickFunction} from "../../../utils/clickTimer.ts";
 
 const store = useAssociationEditorGraphStore()
 
@@ -26,35 +27,43 @@ watch(() => props.table, () => {
 	console.log('change')
 }, {deep: true})
 
-const selectTable = (id: number | undefined, focus: boolean = false) => {
-	if (!id) return
+const {
+	click: toggleTableSelect,
+	dblClick: focusTable
+} = processClickFunction(
+	(id: number) => {
+		store.select(tableIdToNodeId(id))
+	},
+	(id: number) => {
+		store.focus(tableIdToNodeId(id))
+	}
+)
 
-	const graph: Graph = store._graph()
-	if (!graph) return
-
-	const node = getTableNode(graph, id)
-	if (node) {
-		if (focus) {
-			focusCell(graph, node)
+const {
+	click: selectAssociation,
+	dblClick: focusAssociation
+} = processClickFunction(
+	(
+		sourceId: number,
+		targetId: number,
+	) => {
+		const graph: Graph = store._graph()
+		const edges = searchEdgesByColumn(graph, sourceId, targetId)
+		store.select(edges)
+	},
+	(
+		sourceId: number,
+		targetId: number,
+	) => {
+		const graph: Graph = store._graph()
+		const edges = searchEdgesByColumn(graph, sourceId, targetId)
+		if (edges.length == 1) {
+			store.focus(edges[0].id)
 		} else {
-			graph.select(node)
+			store.select(edges)
 		}
 	}
-}
-
-const selectAssociation = (
-	sourceId: number,
-	targetId: number,
-	focus: boolean = false
-) => {
-	const graph: Graph = store._graph()
-	const edges = searchEdgesByColumn(graph, sourceId, targetId)
-	if (focus && edges.length == 1) {
-		focusCell(graph, edges[0])
-	} else {
-		graph.select(edges)
-	}
-}
+)
 
 const deleteOutAssociation = (
 	columnId: number,
@@ -134,8 +143,8 @@ const saveTableEdit = () => {
 							</el-select>
 
 							<el-button
-								@click="selectTable(association.sourceColumn.table.id)"
-								@dblclick="selectTable(association.sourceColumn.table.id, true)"
+								@click="toggleTableSelect(association.sourceColumn.table.id)"
+								@dblclick="focusTable(association.sourceColumn.table.id)"
 								link>
 								{{ association.sourceColumn.table.name }}
 							</el-button>
@@ -143,7 +152,7 @@ const saveTableEdit = () => {
 							<el-button
 								style="margin-left: 0;"
 								@click="selectAssociation(association.sourceColumn.id, column.id)"
-								@dblclick="selectAssociation(association.sourceColumn.id, column.id, true)"
+								@dblclick="focusAssociation(association.sourceColumn.id, column.id)"
 								link>
 								{{ association.sourceColumn.name }}
 							</el-button>
@@ -163,8 +172,8 @@ const saveTableEdit = () => {
 							</el-select>
 
 							<el-button
-								@click="selectTable(association.targetColumn.table.id)"
-								@dblclick="selectTable(association.targetColumn.table.id, true)"
+								@click="toggleTableSelect(association.targetColumn.table.id)"
+								@dblclick="focusTable(association.targetColumn.table.id)"
 								link>
 								{{ association.targetColumn.table.name }}
 							</el-button>
@@ -172,7 +181,7 @@ const saveTableEdit = () => {
 							<el-button
 								style="margin-left: 0;"
 								@click="selectAssociation(column.id, association.targetColumn.id)"
-								@dblclick="selectAssociation(column.id, association.targetColumn.id, true)"
+								@dblclick="focusAssociation(column.id, association.targetColumn.id)"
 								link>
 								{{ association.targetColumn.name }}
 							</el-button>

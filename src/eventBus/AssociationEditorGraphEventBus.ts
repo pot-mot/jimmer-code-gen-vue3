@@ -1,9 +1,6 @@
 import mitt from 'mitt'
 
 type AssociationEditorGraphEvents = {
-    loadSchema: {id: number, select?: boolean},
-    loadTable: {id: number, focus?: boolean},
-
     redo: {},
     undo: {},
 

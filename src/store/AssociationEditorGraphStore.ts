@@ -1,11 +1,10 @@
 import {defineStore} from "pinia";
 import {GenAssociationMatchView, GenTableAssociationView, GenTableColumnView} from "../api/__generated/model/static";
-import {Graph, Node, Edge} from "@antv/x6";
+import {Graph, Node, Edge, Cell} from "@antv/x6";
 import {
     getAssociations, searchEdgesByColumn,
 } from "../components/AssociationEditor/edge/AssociationEdge.ts";
 import {
-    focusCell,
     getTables,
     loadTableNodes,
     tableIdToNodeId
@@ -48,14 +47,15 @@ export const useAssociationEditorGraphStore =
                 return !!graph.value
             })
 
-            // 状态监听以实现部分数据的响应式
-            const isSelectionEmpty = ref(true)
-            const selectedNodes = ref(<Node[]>[])
-            const selectedEdges = ref(<Edge[]>[])
+            // 状态与响应式数据
             const canUndo = ref(false)
             const canRedo = ref(false)
             const scaling = ref(0)
             const formatScaling = ref(0)
+
+            const isSelectionEmpty = ref(true)
+            const selectedNodes = ref(<Node[]>[])
+            const selectedEdges = ref(<Edge[]>[])
 
             const selectedTables = computed((): GenTableAssociationView[] => {
                 return selectedNodes.value.map(node => node.data.table)
@@ -74,6 +74,14 @@ export const useAssociationEditorGraphStore =
                     graph.on('history:change', () => {
                         canUndo.value = graph.canUndo()
                         canRedo.value = graph.canRedo()
+                    })
+
+                    graph.on('history:redo', () => {
+                        canRedo.value = graph.canRedo()
+                    })
+
+                    graph.on('history:undo', () => {
+                        canUndo.value = graph.canUndo()
                     })
 
                     scaling.value = graph.zoom()
@@ -249,30 +257,14 @@ export const useAssociationEditorGraphStore =
                 await layoutAndFit()
             }
 
-            AssociationEditorGraphEventBus.on('loadSchema', async ({id, select}) => {
-                await loadSchema(id, select)
-            })
-
             /**
              * 向画布导入 table
              * @param id tableId
-             * @param focus 结束后是否将目标表选中并居中
              */
-            const loadTable = async (id: number, focus: boolean = true) => {
+            const loadTable = async (id: number) => {
                 const graph = _graph()
-
                 await loadTableNodes(graph, [id], false)
-                if (!focus) return
-                const cell = graph.getCellById(tableIdToNodeId(id))
-                if (cell.isNode()) {
-                    const node = cell as Node
-                    await focusCell(graph, node)
-                }
             }
-
-            AssociationEditorGraphEventBus.on('loadTable', async ({id, focus}) => {
-                await loadTable(id, focus)
-            })
 
             const deleteAssociations = async (
                 sourceColumnId: number,
@@ -299,6 +291,52 @@ export const useAssociationEditorGraphStore =
                 await deleteAssociations(sourceColumnId, targetColumnId)
             })
 
+            /**
+             * 聚焦 cell，将移动画布并选中 cell
+             * @param graph 图
+             * @param cellId 目标 cell id
+             */
+            const focusCell = async (graph: Graph, cellId: string) => {
+                const cell = graph.getCellById(cellId)
+
+                cell.toFront()
+                graph.cleanSelection()
+                graph.centerCell(cell)
+                graph.select(cell)
+
+                await nextTick()
+            }
+
+            /**
+             * 切换 cell 选中状态
+             * @param graph
+             * @param cells
+             */
+            const toggleCellSelect = (graph: Graph, cells: Cell | string | Cell[] | string[]) => {
+                const firstCell = Array.isArray(cells) ? cells[0] : cells
+                if (graph.isSelected(firstCell)) {
+                    graph.unselect(cells)
+                } else {
+                    graph.select(cells)
+                }
+            }
+
+            const unselect = (cells: Cell | string | Cell[] | string[]) => {
+                _graph().unselect(cells)
+            }
+
+            const select = (cells: Cell | string | Cell[] | string[]) => {
+                _graph().select(cells)
+            }
+
+            const toggleSelect = (cells: Cell | string | Cell[] | string[]) => {
+                toggleCellSelect(_graph(), cells)
+            }
+
+            const focus = async (id: string) => {
+                await focusCell(_graph(), id)
+            }
+
             return {
                 isLoaded,
                 load,
@@ -322,6 +360,10 @@ export const useAssociationEditorGraphStore =
                 layoutAndFit,
 
                 selectAll,
+                select,
+                unselect,
+                toggleSelect,
+                focus,
 
                 removeTables,
                 removeAllCells,

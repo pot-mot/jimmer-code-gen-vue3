@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import {focusCell, searchTableNodes} from "../node/TableNode.ts";
 import {onBeforeUnmount, onMounted, ref} from "vue";
-import {Node} from "@antv/x6";
+import {Graph, Node} from "@antv/x6";
 import DragDialog from "../../common/DragDialog.vue";
 import {useAssociationEditorGraphStore} from "../../../store/AssociationEditorGraphStore.ts";
+import {GenTableColumnView} from "../../../api/__generated/model/static";
+import {processClickFunction} from "../../../utils/clickTimer.ts";
 
 const store = useAssociationEditorGraphStore()
 
@@ -12,6 +13,29 @@ const keyword = ref("")
 const searchResult = ref<Node[]>([])
 
 const showSearch = ref(false)
+
+/**
+ * 根据关键词进行节点查找
+ * @param graph 图
+ * @param keywords 关键词
+ * @returns 节点列表
+ */
+const searchTableNodes = (graph: Graph, keywords: string[]): Node[] => {
+	if (keywords.length == 0) {
+		return []
+	}
+
+	return graph.getNodes().filter(node => {
+		if (node.data && node.data.table) {
+			const table: GenTableColumnView = node.data.table
+			for (const keyword of keywords) {
+				if (table.name.includes(keyword) || table.comment.includes(keyword)) {
+					return true
+				}
+			}
+		}
+	})
+}
 
 const search = () => {
 	const graph = store._graph()
@@ -36,27 +60,39 @@ onMounted(() => {
 onBeforeUnmount(() => {
 	document.documentElement.removeEventListener('keydown', handleSearchKeyDown)
 })
+
+const {
+	click: handleSelectCell,
+	dblClick: handleFocusCell
+} = processClickFunction(
+	(id: string) => {
+		store.toggleSelect(id)
+	},
+	(id: string) => {
+		store.focus(id)
+	}
+)
 </script>
 
 <template>
-	<DragDialog v-if="showSearch" @close="showSearch = false" :y="100" to="#AssociationEditor">
-		<div>
-			<el-input v-model="keyword" autofocus @keydown.enter="search">
-				<template #append>
-					<el-button @click="search">搜索</el-button>
-				</template>
-			</el-input>
-			<div v-if="searchResult.length == 0">
-				暂无数据
-			</div>
-			<div style="max-height: 60vh; overflow: auto; min-width: 20em;">
-				<table>
-					<tr v-for="node in searchResult"
-						@click="focusCell(store._graph(), node as any)">
-						<td>{{ node.data.table.name }}</td>
-						<td>{{ node.data.table.comment }}</td>
-					</tr>
-				</table>
+	<DragDialog v-if="showSearch" @close="showSearch = false" :init-w="500" :y="100" to="#AssociationEditor">
+		<el-input v-model="keyword" autofocus @keydown.enter="search">
+			<template #append>
+				<el-button @click="search">搜索</el-button>
+			</template>
+		</el-input>
+		<div v-if="searchResult.length == 0">
+			无搜索结果
+		</div>
+		<div style="max-height: 60vh; overflow: auto; width: 100%;">
+			<div v-for="node in searchResult">
+				<el-button
+					@click="handleSelectCell(node.id)"
+					@dblclick="handleFocusCell(node.id)"
+					size="default"
+					link>
+					{{ node.data.table.name }} {{ node.data.table.comment }}
+				</el-button>
 			</div>
 		</div>
 	</DragDialog>
