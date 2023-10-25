@@ -74,16 +74,26 @@
 		<div v-if="store.isLoaded" class="toolbar right-bottom" style="width:  max(15vw, 200px);">
 			<MiniMap ref="minimap"></MiniMap>
 			<el-button @click="toggleMinimap">minimap</el-button>
-			<el-slider v-model="store.formatScaling"
-					   :step="0.25"
-					   :min="Math.log2(defaultZoomRange.minScale)"
-					   :max="Math.log2(defaultZoomRange.maxScale)"
-					   :show-tooltip="false">
-			</el-slider>
-			<el-input-number v-model="store.formatScaling" :step="0.25" :precision="2"
-							 :min="Math.log2(defaultZoomRange.minScale)"
-							 :max="Math.log2(defaultZoomRange.maxScale)">
-			</el-input-number>
+
+			<div style="display: grid; grid-template-columns: 4em 3em 1fr 3em; line-height: 2em; height: 2em;">
+				<div>
+					{{ (store.scaling * 100).toFixed(2) }}%
+				</div>
+				<div style="text-align: center;">
+					<el-button :icon="Minus" link @click="store.formatScaling -= 0.25"></el-button>
+				</div>
+				<div>
+					<el-slider v-model="store.formatScaling"
+							   :step="0.25"
+							   :min="Math.log2(defaultZoomRange.minScale)"
+							   :max="Math.log2(defaultZoomRange.maxScale)"
+							   :show-tooltip="false">
+					</el-slider>
+				</div>
+				<div style="text-align: center;">
+					<el-button :icon="Plus" link @click="store.formatScaling += 0.25"></el-button>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -155,6 +165,7 @@ import Searcher from "./graph/Searcher.vue";
 import MiniMap from "./graph/MiniMap.vue";
 import {defaultZoomRange} from "./graph/scale.ts";
 import {generateEntitiesByTable} from "./node/TableNode.ts";
+import {Minus, Plus} from "@element-plus/icons-vue";
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();

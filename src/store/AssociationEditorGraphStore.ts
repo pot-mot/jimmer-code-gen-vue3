@@ -87,7 +87,6 @@ export const useAssociationEditorGraphStore =
              */
             const load = async (_graph: Graph) => {
                 graph.value = _graph
-                await layoutAndFit()
             }
 
             const isLoaded = computed(() => {
@@ -97,8 +96,19 @@ export const useAssociationEditorGraphStore =
             // 状态与响应式数据
             const canUndo = ref(false)
             const canRedo = ref(false)
-            const scaling = ref(0)
-            const formatScaling = ref(0)
+
+            const scaling = ref(4)
+            const formatScaling = computed<number>({
+                set(newValue) {
+                    if (isLoaded.value) {
+                        scaling.value = Math.pow(2, newValue)
+                        _graph().zoomTo(scaling.value)
+                    }
+                },
+                get() {
+                    return Math.log2(scaling.value)
+                }
+            })
 
             const isSelectionEmpty = ref(true)
             const selectedNodes = ref(<Node[]>[])
@@ -131,19 +141,13 @@ export const useAssociationEditorGraphStore =
                         canUndo.value = graph.canUndo()
                     })
 
-                    scaling.value = graph.zoom()
+                    scaling.value = graph.scale().sx
 
                     graph.on('scale', ({sx}) => {
                         scaling.value = sx
-                        formatScaling.value = Math.log2(sx)
                     })
 
-                    watch(() => formatScaling.value, (newValue) => {
-                        scaling.value = Math.pow(2, newValue)
-                        graph.zoomTo(scaling.value)
-                    })
-
-                    initWatcher()
+                   initWatcher()
                 }
             }, {deep: true, immediate: true})
 
