@@ -31,7 +31,7 @@ const {
 
 <template>
 	<el-text>
-		<TableIcon></TableIcon>
+		<TableIcon :type="table.type"></TableIcon>
 
 		<el-button @click="loadTable(table.id)" @dblclick="loadTableAndFocus(table.id)" link>
 			{{ table.name }} {{ table.comment }}

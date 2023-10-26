@@ -9,6 +9,7 @@ import {sendMessage} from "../../../utils/message.ts";
 import TableDefine from "./TableDefine.vue";
 import BusinessCodePreview from "../../EntityGenerator/entity/BusinessCodePreview.vue";
 import EntityInfo from "../../EntityGenerator/entity/EntityInfo.vue";
+import TableIcon from "../../icons/database/TableIcon.vue";
 
 interface TableDialogProps {
 	id: number
@@ -67,7 +68,13 @@ watch(() => props.id, async (id) => {
 		<div class="wrapper">
 			<template v-if="table">
 				<div class="header">
-					<el-text class="title" size="large">{{ table.name }}</el-text>
+					<el-text class="title" size="large">
+						<span class="icon">
+							<TableIcon :type="table.type"></TableIcon>
+						</span>
+						<span>{{ table.name }}</span>
+						<span class="comment">/* {{ table.comment }} */</span>
+					</el-text>
 					<el-tabs v-model="typeState">
 						<el-tab-pane name="TableInfo" label="表"></el-tab-pane>
 						<el-tab-pane name="EntityInfo" label="实体"></el-tab-pane>
@@ -84,7 +91,7 @@ watch(() => props.id, async (id) => {
 					<BusinessCodePreview :id="entityId"></BusinessCodePreview>
 				</div>
 			</template>
-			<el-empty class="empty" v-else></el-empty>
+			<el-empty v-else class="empty"></el-empty>
 		</div>
 	</DragDialog>
 </template>
@@ -121,5 +128,6 @@ watch(() => props.id, async (id) => {
 
 .body {
 	margin-top: 4em;
+	padding: 0 1em;
 }
 </style>

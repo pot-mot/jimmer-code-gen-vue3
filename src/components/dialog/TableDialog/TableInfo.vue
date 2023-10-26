@@ -85,10 +85,6 @@ const deleteInAssociation = (
 		column.outAssociations = column.outAssociations.filter(it => it.id != association.id)
 	})
 }
-
-const saveTableEdit = () => {
-	// TODO
-}
 </script>
 
 <template>
@@ -112,16 +108,17 @@ const saveTableEdit = () => {
 						<el-col :span="5">
 							<el-text>
 								{{ column.name }}
+								/* {{ column.comment }} */
 							</el-text>
 						</el-col>
-						<el-col :span="5">
+						<el-col :span="3">
 							<el-text>
 								{{ column.type }}
 							</el-text>
 						</el-col>
 						<el-col :span="7">
 							<el-text>
-								{{ column.comment }}
+								= {{ column.defaultValue }}
 							</el-text>
 						</el-col>
 						<el-col :span="6">

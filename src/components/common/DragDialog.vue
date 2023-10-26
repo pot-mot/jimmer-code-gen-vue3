@@ -69,15 +69,6 @@ let resizeFlag = false
 onMounted(() => {
 	nextTick(() => {
 		if (content.value && wrapper.value) {
-			const wrapperResizeOb = new ResizeObserver(() => {
-				if (wrapper.value && content.value) {
-					content.value.style.height = wrapper.value.offsetHeight - 35 + 'px'
-					resizeFlag = true
-				}
-			})
-
-			wrapperResizeOb.observe(wrapper.value)
-
 			const contentResizeOb = new ResizeObserver(() => {
 				if (content.value) {
 					if (resizeFlag) {
@@ -89,6 +80,15 @@ onMounted(() => {
 			})
 
 			contentResizeOb.observe(content.value)
+
+			const wrapperResizeOb = new ResizeObserver(() => {
+				if (wrapper.value && content.value) {
+					content.value.style.height = wrapper.value.offsetHeight - 35 + 'px'
+					resizeFlag = true
+				}
+			})
+
+			wrapperResizeOb.observe(wrapper.value)
 		}
 	})
 })

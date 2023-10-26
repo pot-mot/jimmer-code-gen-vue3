@@ -102,6 +102,8 @@ export const getSelectedEdges = (graph: Graph): Edge[] => {
     const selectedNodes = getSelectedNodes(graph)
     const baseSelectedEdges = graph.getSelectedCells().filter(cell => cell.isEdge()).map(cell => cell as Edge)
 
+    const edgeIdSet = new Set(baseSelectedEdges.map(it => it.id))
+
     selectedNodes.forEach(node => {
         const selectEdges = searchEdgesByNode(graph, {
             targetNodeId: node.id,
@@ -109,7 +111,12 @@ export const getSelectedEdges = (graph: Graph): Edge[] => {
             selectType: 'OR'
         })
 
-        baseSelectedEdges.push(...selectEdges)
+        selectEdges.forEach(edge => {
+            if (!edgeIdSet.has(edge.id)) {
+                baseSelectedEdges.push(edge)
+                edgeIdSet.add(edge.id)
+            }
+        })
     })
 
     return baseSelectedEdges

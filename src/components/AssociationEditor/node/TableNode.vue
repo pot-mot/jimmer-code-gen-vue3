@@ -1,8 +1,12 @@
 <template>
-	<el-text v-if="table" class="node" @dblclick="store.focus(table.id)" @contextmenu="TableDialogEventBus.emit('addTableDialog', table.id)">
+	<el-text v-if="table" class="node" @dblclick="store.focus(table.id)"
+			 @contextmenu="TableDialogEventBus.emit('addTableDialog', table.id)">
 		<table ref="wrapper" class="table-wrapper">
 			<tr class="tableName">
 				<td colspan="2">
+					<span class="icon">
+						<TableIcon :type="table.type"></TableIcon>
+					</span>
 					<span>{{ table.name }}</span>
 					<span class="comment">/* {{ table.comment }} */</span>
 				</td>
@@ -15,7 +19,7 @@
 					<span>{{ column.name }}</span>
 					<span class="comment">/* {{ column.comment }} */</span>
 				</td>
-				<td>
+				<td style="text-align: right;">
 					<span class="type">{{ column.type }}</span>
 				</td>
 			</tr>
@@ -32,6 +36,12 @@
 		border: 1px solid #000;
 		border-collapse: collapse;
 
+		.tableName, .column {
+			white-space: nowrap;
+			height: 30px;
+			line-height: 30px;
+		}
+
 		.comment {
 			padding: 0 0.3em;
 			color: var(--el-text-color-placeholder);
@@ -39,30 +49,18 @@
 			font-weight: 400;
 		}
 
+		.icon, .type {
+			padding: 0 0.5em;
+		}
+
 		.tableName {
 			text-align: center;
 			border-bottom: 1px solid var(--common-color);
 			font-size: 16px;
-			height: 30px;
-			font-weight: 600;
-			white-space: nowrap;
 		}
 
 		.column {
-			white-space: nowrap;
-			height: 30px;
-			line-height: 30px;
 			font-size: 14px;
-
-			.icon {
-				width: 2em;
-				padding: 0 0.5em;
-			}
-
-			.type {
-				padding: 0 0.5em;
-				text-align: right;
-			}
 		}
 	}
 }
@@ -81,6 +79,7 @@ import {useAssociationEditorGraphStore} from "../../../store/AssociationEditorGr
 import {TableDialogEventBus} from "../../../eventBus/TableDialogEventBus.ts";
 import {ElText} from "element-plus";
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
+import TableIcon from "../../icons/database/TableIcon.vue";
 
 const wrapper = ref<HTMLElement | null>()
 

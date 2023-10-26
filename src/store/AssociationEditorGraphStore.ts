@@ -12,11 +12,11 @@ import {
 import {defaultZoomRange} from "../components/AssociationEditor/graph/scale.ts";
 import {computed, nextTick, Ref, ref, watch} from 'vue';
 import {getSelectedEdges, getSelectedNodes} from "../components/AssociationEditor/graph/useSelection.ts";
-import {layoutByLevels} from "../components/AssociationEditor/graph/layout.ts";
 import {sendMessage} from "../utils/message.ts";
 import {AssociationEditorGraphEventBus} from "../eventBus/AssociationEditorGraphEventBus.ts";
 import {api} from "../api";
 import {AssociationEditorMenuEventBus} from "../eventBus/AssociationEditorMenuEventBus.ts";
+import {dagreLayout} from "../components/AssociationEditor/layout/dagre/layout.ts";
 
 type CellInput = Cell | string | number
 
@@ -155,7 +155,7 @@ export const useAssociationEditorGraphStore =
 
             /** 布局 */
             const layout = (direction: "LR" | "TB" | "RL" | "BT" = layoutDirection.value) => {
-                layoutByLevels(_graph(), direction)
+                dagreLayout(_graph(), direction)
             }
 
             /**

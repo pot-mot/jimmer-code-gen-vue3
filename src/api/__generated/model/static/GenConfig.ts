@@ -4,6 +4,10 @@ export interface GenConfig {
     
     author: string;
     
+    columnCommentPrefix: string;
+    
+    columnCommentSuffix: string;
+    
     columnPrefix: string;
     
     columnSuffix: string;
@@ -14,15 +18,13 @@ export interface GenConfig {
     
     logicalDeletedAnnotation: string;
     
-    removeColumnPrefix: boolean;
-    
-    removeColumnSuffix: boolean;
-    
-    removeTablePrefix: boolean;
-    
-    removeTableSuffix: boolean;
-    
     separator: string;
+    
+    tableCommentPrefix: string;
+    
+    tableCommentSuffix: string;
+    
+    tableDefineWithFk: boolean;
     
     tablePrefix: string;
     

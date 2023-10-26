@@ -98,7 +98,7 @@ const close = () => {
 
 <template>
 	<DragDialog :x="props.x" :y="props.y" :init-w="500" @close="close">
-		<el-form label-position="left" label-width="6em" size="small">
+		<el-form label-position="left" label-width="6em" style="padding-right: 1em;">
 			<el-form-item label="name">
 				<el-input v-model="dataSource.name"></el-input>
 			</el-form-item>

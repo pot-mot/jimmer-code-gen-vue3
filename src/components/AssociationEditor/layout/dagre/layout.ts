@@ -1,7 +1,7 @@
 import {Edge, Graph, Node} from "@antv/x6"
-import {nodeIdToTableId} from "../node/TableNode.ts"
+import {nodeIdToTableId} from "../../node/TableNode.ts"
 import {Point} from "@antv/x6-geometry"
-import {getSelectedEdges, getSelectedNodes} from "./useSelection.ts";
+import {getSelectedEdges, getSelectedNodes} from "../../graph/useSelection.ts";
 
 interface LayoutNode {
     id: number
@@ -77,7 +77,6 @@ const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
         const sourceNode = nodeMap.get(source)
         if (targetNode && sourceNode) {
             sourceNode.outDegree++
-
             targetNode.inDegree++
             targetNode.children.push(sourceNode)
         }
@@ -112,13 +111,23 @@ const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
         }
     }
 
-    nodes.sort((node1, node2) => {
-        return node1.outDegree - node2.outDegree
-    })
+    nodes.sort((node1, node2) => node1.outDegree - node2.outDegree)
 
     for (const node of nodes) {
         if (!node.visited) {
             bfs(node)
+        }
+    }
+
+    for (const node of nodes) {
+        if (node.inDegree != 0 && node.outDegree == 0) {
+            node.level = 0
+        }
+
+        for (const child of node.children) {
+            if (child.level <= node.level) {
+                child.level = node.level + 1
+            }
         }
     }
 }
@@ -151,8 +160,17 @@ const splitArrayIntoChunks = <T>(
  * @param nodes 布局节点
  * @returns 节点的二维数组，其中每一个一维数组表示节点层
  */
-const groupByLevel = (nodes: readonly LayoutNode[]): Node[][] => {
-    const levelMap = new Map<number, LayoutNode[]>()
+const getRanks = (nodes: readonly LayoutNode[]): Node[][] => {
+    const rankMap = new Map<number, LayoutNode[]>()
+
+    const setByRank = (node: LayoutNode) => {
+        const rank = rankMap.get(node.level)
+        if (rank) {
+            rank.push(node)
+        } else {
+            rankMap.set(node.level, [node])
+        }
+    }
 
     const unrelatedNodes: Node[] = []
 
@@ -162,23 +180,16 @@ const groupByLevel = (nodes: readonly LayoutNode[]): Node[][] => {
             unrelatedNodes.push(node.node)
             return
         }
-
-        const levelList = levelMap.get(node.level)
-        if (levelList) {
-            levelList.push(node)
-        } else {
-            levelMap.set(node.level, [node])
-        }
+        setByRank(node)
     })
 
     const result: Node[][] = []
 
-    const keys: number[] = [...levelMap.keys()].sort()
+    const keys: number[] = [...rankMap.keys()].sort()
 
     keys.forEach(key => {
         result.push(
-            levelMap.get(key)!
-                .sort((a, b) => b.children.length - a.children.length)
+            rankMap.get(key)!
                 .map(node => node.node)
         )
     })
@@ -251,7 +262,7 @@ interface LayoutOptions {
 }
 
 interface LevelLayoutOptions extends LayoutOptions {
-    nodeLevels: Node[][]
+    nodeRanks: Node[][]
 }
 
 const defaultLayoutOptions: LayoutOptions = {
@@ -262,13 +273,13 @@ const defaultLayoutOptions: LayoutOptions = {
 }
 
 const layoutLR = (options: Partial<LevelLayoutOptions>) => {
-    const {nodeLevels, startX, startY, gapX, gapY} = Object.assign(defaultLayoutOptions, options)
+    const {nodeRanks, startX, startY, gapX, gapY} = Object.assign(defaultLayoutOptions, options)
 
-    if (!nodeLevels) return
+    if (!nodeRanks) return
 
     let tempX = startX
 
-    for (const nodes of nodeLevels) {
+    for (const nodes of nodeRanks) {
         const width = getMaxWidth(nodes)
         let tempY = startY
 
@@ -286,13 +297,13 @@ const layoutLR = (options: Partial<LevelLayoutOptions>) => {
 }
 
 const layoutTB = (options: Partial<LevelLayoutOptions>) => {
-    const {nodeLevels, startX, startY, gapX, gapY} = Object.assign(defaultLayoutOptions, options)
+    const {nodeRanks, startX, startY, gapX, gapY} = Object.assign(defaultLayoutOptions, options)
 
-    if (!nodeLevels) return
+    if (!nodeRanks) return
 
     let tempY = startY
 
-    for (const nodes of nodeLevels) {
+    for (const nodes of nodeRanks) {
         const height = getMaxHeight(nodes)
         let tempX = startX
 
@@ -310,12 +321,12 @@ const layoutTB = (options: Partial<LevelLayoutOptions>) => {
 }
 
 const layoutRL = (options: Partial<LevelLayoutOptions>) => {
-    if (options.nodeLevels) options.nodeLevels.reverse()
+    if (options.nodeRanks) options.nodeRanks.reverse()
     layoutLR(options)
 }
 
 const layoutBT = (options: Partial<LevelLayoutOptions>) => {
-    if (options.nodeLevels) options.nodeLevels.reverse()
+    if (options.nodeRanks) options.nodeRanks.reverse()
     layoutTB(options)
 }
 
@@ -326,7 +337,7 @@ const layoutBT = (options: Partial<LevelLayoutOptions>) => {
  * @param gapX 水平排布间距
  * @param gapY 垂直排布间距
  */
-export const layoutByLevels = (
+export const dagreLayout = (
     graph: Graph,
     direction: "LR" | "TB" | "RL" | "BT" = "LR",
     gapX: number = 200,
@@ -343,6 +354,8 @@ export const layoutByLevels = (
         edges = toLayoutEdges(getSelectedEdges(graph))
     }
 
+    edges = edges.filter(edge => edge.source != edge.target)
+
     // 根据字典序对表名进行排序，保证多次布局的入参一致
     nodes.sort((node1, node2) => {
         return node1.node.data.table.name.localeCompare(node2.node.data.table.name)
@@ -350,14 +363,14 @@ export const layoutByLevels = (
 
     setLevel(nodes, edges)
 
-    const nodeLevels = groupByLevel(nodes)
+    const nodeRanks = getRanks(nodes)
 
     graph.startBatch('layout')
 
     const {x: startX, y: startY} = getPoint(nodes.map(node => node.node), "LT")
 
     const options: LevelLayoutOptions = {
-        nodeLevels,
+        nodeRanks,
         startX,
         startY,
         gapX,
