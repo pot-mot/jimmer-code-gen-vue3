@@ -1,12 +1,10 @@
 import type { TimeRangeQueryParam } from './';
 
-export interface EntityQuery {
+export interface EnumQuery {
     
     createdTime?: TimeRangeQueryParam;
     
     ids?: number[];
-    
-    keywords?: string[];
     
     modifiedTime?: TimeRangeQueryParam;
     

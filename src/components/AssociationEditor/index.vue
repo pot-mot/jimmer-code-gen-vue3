@@ -158,7 +158,7 @@ import {useHistory, useHistoryKeyEvent} from "./graph/useHistory.ts";
 import {useSelection, useSelectionKeyEvent} from "./graph/useSelection.ts";
 import {saveAssociations, useSwitchAssociationType} from "./edge/AssociationEdge.ts";
 import {loadGraph, saveGraph} from "./graph/localStorage.ts";
-import {useAssociationEditorGraphStore} from "../../store/AssociationEditorGraphStore.ts";
+import {useAssociationEditorGraphStore} from "./store/AssociationEditorGraphStore.ts";
 import {useTableEditorMatch} from "./graph/useMatch.ts";
 import {useSave} from "./graph/useSave.ts";
 import Searcher from "./graph/Searcher.vue";

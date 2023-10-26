@@ -1,7 +1,7 @@
 import mitt from 'mitt'
 
 type AssociationEditorMenuEvents = {
-    loadDateSource: {},
+    loadDateSource: undefined,
     editDataSource: {id: number},
     deleteDataSource: {id: number},
 

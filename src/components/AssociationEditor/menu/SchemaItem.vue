@@ -4,12 +4,11 @@ import {GenSchemaView, GenTableCommonView} from "../../../api/__generated/model/
 import {api} from "../../../api";
 import Details from "../../common/Details.vue";
 import {Delete, Search} from "@element-plus/icons-vue";
-import {ElMessageBox} from 'element-plus'
 import TableItem from "./TableItem.vue";
 import SchemaIcon from "../../icons/database/SchemaIcon.vue";
-import {useAssociationEditorGraphStore} from "../../../store/AssociationEditorGraphStore.ts";
-import {AssociationEditorMenuEventBus} from "../../../eventBus/AssociationEditorMenuEventBus.ts";
-import {sendMessage} from "../../../utils/message.ts";
+import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
+import {AssociationEditorMenuEventBus} from "../eventBus/AssociationEditorMenuEventBus.ts";
+import {deleteConfirm, sendMessage} from "../../../utils/message.ts";
 
 const store = useAssociationEditorGraphStore()
 
@@ -36,23 +35,17 @@ const handleLoadOrSelect = () => {
 }
 
 const handleDelete = () => {
-	ElMessageBox.confirm(
-		`确定要删除 ${props.schema.name} 吗？`,
-		{
-			confirmButtonText: 'Yes',
-			cancelButtonText: 'No',
-			icon: Delete,
-			type: "error"
+	deleteConfirm("架构【${props.schema.name}】",
+		() => {
+			const id = props.schema.id
+			api.schemaService.delete({ids: [id]}).then(res => {
+				if (res > 0) {
+					sendMessage(`删除 schema ${id} 成功`, "success")
+					AssociationEditorMenuEventBus.emit('deleteSchema', {id})
+				}
+			})
 		}
-	).then(() => {
-		const id = props.schema.id
-		api.schemaService.delete({ids: [id]}).then(res => {
-			if (res > 0) {
-				sendMessage(`删除 schema ${id} 成功`, "success")
-				AssociationEditorMenuEventBus.emit('deleteSchema', {id})
-			}
-		})
-	})
+	)
 }
 
 const keywords = ref("")

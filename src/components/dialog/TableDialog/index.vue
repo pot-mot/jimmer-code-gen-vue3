@@ -7,7 +7,6 @@ import {api} from "../../../api";
 import {convertEntities} from "../../AssociationEditor/node/TableNode.ts";
 import {sendMessage} from "../../../utils/message.ts";
 import TableDefine from "./TableDefine.vue";
-import BusinessCodePreview from "../../EntityGenerator/entity/BusinessCodePreview.vue";
 import EntityInfo from "../../EntityGenerator/entity/EntityInfo.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
 
@@ -88,7 +87,6 @@ watch(() => props.id, async (id) => {
 
 				<div v-if="entityId && typeState == 'EntityInfo'" class="body">
 					<EntityInfo :id="entityId"></EntityInfo>
-					<BusinessCodePreview :id="entityId"></BusinessCodePreview>
 				</div>
 			</template>
 			<el-empty v-else class="empty"></el-empty>

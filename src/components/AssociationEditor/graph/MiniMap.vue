@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {nextTick, ref} from "vue";
 import {MiniMap} from "@antv/x6-plugin-minimap";
-import {useAssociationEditorGraphStore} from "../../../store/AssociationEditorGraphStore.ts";
+import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
 
 const store = useAssociationEditorGraphStore()
 

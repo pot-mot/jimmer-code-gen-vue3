@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import TableDialogManager from "./components/global/TableDialogManager.vue";
+import TableDialogManager from "./components/global/TableDialogManager/index.vue";
 import GenerateConfigDialog from "./components/dialog/GenerateConfigDialog.vue";
 </script>
 

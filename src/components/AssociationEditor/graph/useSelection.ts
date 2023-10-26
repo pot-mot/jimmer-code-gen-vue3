@@ -1,7 +1,7 @@
 import {Graph, Node, Edge} from "@antv/x6";
 import {Selection} from "@antv/x6-plugin-selection";
 import {onBeforeUnmount, onMounted} from "vue";
-import {AssociationEditorGraphEventBus} from "../../../eventBus/AssociationEditorGraphEventBus.ts";
+import {AssociationEditorGraphEventBus} from "../eventBus/AssociationEditorGraphEventBus.ts";
 import {searchEdgesByNode} from "../edge/AssociationEdge.ts";
 
 export const useSelection = (graph: Graph) => {
@@ -43,14 +43,14 @@ export const useSelectionKeyEvent = (_graph: () => Graph) => {
 
         if ((e.ctrlKey || e.metaKey) && e.key == 'a') {
             e.preventDefault()
-            AssociationEditorGraphEventBus.emit('selectAll', {})
+            AssociationEditorGraphEventBus.emit('selectAll')
         }
 
         if (e.key == 'Delete') {
             if (e.shiftKey) {
-                AssociationEditorGraphEventBus.emit('removeSelectedAssociations', {})
+                AssociationEditorGraphEventBus.emit('removeSelectedAssociations')
             } else {
-                AssociationEditorGraphEventBus.emit('removeSelectedCells', {})
+                AssociationEditorGraphEventBus.emit('removeSelectedCells')
             }
         }
 

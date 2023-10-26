@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {EditPen} from "@element-plus/icons-vue";
 import {GenTableCommonView} from "../../../api/__generated/model/static";
-import {useAssociationEditorGraphStore} from "../../../store/AssociationEditorGraphStore.ts";
+import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
 import TableIcon from "../../icons/database/TableIcon.vue";
-import {TableDialogEventBus} from "../../../eventBus/TableDialogEventBus.ts";
+import {TableDialogEventBus} from "../../global/TableDialogManager/TableDialogEventBus.ts";
 import {processClickFunction} from "../../../utils/clickTimer.ts";
 
 const store = useAssociationEditorGraphStore()

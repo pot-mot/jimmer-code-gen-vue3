@@ -1,4 +1,6 @@
-import { ElMessage } from 'element-plus'
+import {ElMessage, ElMessageBox} from 'element-plus'
+import {Delete} from "@element-plus/icons-vue";
+import {ElMessageBoxOptions} from "element-plus/es/components/message-box/src/message-box.type";
 
 /**
  * 向用户发送消息
@@ -21,4 +23,23 @@ export const sendMessage = (message: string, type: "info" | "success" | "warning
     } else if (type == "warning") {
         if (data) console.warn(data)
     }
+}
+
+export const deleteConfirm = (
+    message: string,
+    callback: () => void,
+    opts?: ElMessageBoxOptions,
+) => {
+    ElMessageBox.confirm(
+        `确定要删除 ${message} 吗？`,
+        {
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            icon: Delete,
+            type: "error",
+            ...opts
+        }
+    ).then(() => {
+        callback()
+    })
 }

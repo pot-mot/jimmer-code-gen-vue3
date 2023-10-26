@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {nextTick, ref} from 'vue'
-import {TableDialogEventBus} from "../../eventBus/TableDialogEventBus.ts";
-import TableDialog from "../dialog/TableDialog/index.vue";
+import TableDialog from "../../dialog/TableDialog/index.vue";
+import {TableDialogEventBus} from "./TableDialogEventBus.ts";
 
 const tableIds = ref<Set<number>>(new Set)
 

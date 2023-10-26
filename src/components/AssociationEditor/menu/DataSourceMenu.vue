@@ -5,7 +5,7 @@ import {GenDataSourceView} from "../../../api/__generated/model/static";
 import DataSourceItem from "./DataSourceItem.vue";
 import DataSourceDialog from "../../dialog/DataSourceDialog.vue";
 import {useLoading} from "../../../hooks/useLoading.ts";
-import {AssociationEditorMenuEventBus} from "../../../eventBus/AssociationEditorMenuEventBus.ts";
+import {AssociationEditorMenuEventBus} from "../eventBus/AssociationEditorMenuEventBus.ts";
 import {sendMessage} from "../../../utils/message.ts";
 
 const dataSourcesLoading = useLoading()
@@ -35,7 +35,7 @@ const handleSave = (e: MouseEvent) => {
 const handleSaveFinish = (dataSource: GenDataSourceView) => {
 	dataSources.value.push(dataSource)
 	isSave.value = false
-	AssociationEditorMenuEventBus.emit('loadDateSource', {})
+	AssociationEditorMenuEventBus.emit('loadDateSource')
 }
 
 AssociationEditorMenuEventBus.on('editDataSource', async ({id}) => {

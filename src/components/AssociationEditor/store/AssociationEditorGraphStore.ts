@@ -1,22 +1,22 @@
 import {defineStore} from "pinia";
-import {GenAssociationMatchView, GenTableAssociationView, GenTableColumnView} from "../api/__generated/model/static";
+import {GenAssociationMatchView, GenTableAssociationView, GenTableColumnView} from "../../../api/__generated/model/static";
 import {Graph, Node, Edge, Cell} from "@antv/x6";
 import {
     getAssociations, searchEdgesByColumn,
-} from "../components/AssociationEditor/edge/AssociationEdge.ts";
+} from "../edge/AssociationEdge.ts";
 import {
     getTables,
     loadTableNodes,
     tableIdToNodeId
-} from "../components/AssociationEditor/node/TableNode.ts";
-import {defaultZoomRange} from "../components/AssociationEditor/graph/scale.ts";
+} from "../node/TableNode.ts";
+import {defaultZoomRange} from "../graph/scale.ts";
 import {computed, nextTick, Ref, ref, watch} from 'vue';
-import {getSelectedEdges, getSelectedNodes} from "../components/AssociationEditor/graph/useSelection.ts";
-import {sendMessage} from "../utils/message.ts";
+import {getSelectedEdges, getSelectedNodes} from "../graph/useSelection.ts";
+import {sendMessage} from "../../../utils/message.ts";
 import {AssociationEditorGraphEventBus} from "../eventBus/AssociationEditorGraphEventBus.ts";
-import {api} from "../api";
+import {api} from "../../../api";
 import {AssociationEditorMenuEventBus} from "../eventBus/AssociationEditorMenuEventBus.ts";
-import {dagreLayout} from "../components/AssociationEditor/layout/dagre/layout.ts";
+import {dagreLayout} from "../layout/dagre/layout.ts";
 
 type CellInput = Cell | string | number
 

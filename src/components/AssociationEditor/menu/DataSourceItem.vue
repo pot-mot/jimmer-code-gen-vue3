@@ -8,10 +8,9 @@ import DataSourceDialog from "../../dialog/DataSourceDialog.vue";
 import Details from "../../common/Details.vue";
 import {useLoading} from "../../../hooks/useLoading.ts";
 import {Delete, EditPen} from "@element-plus/icons-vue";
-import {ElMessageBox} from 'element-plus'
 import DataSourceIcon from "../../icons/database/DataSourceIcon.vue";
-import {AssociationEditorMenuEventBus} from "../../../eventBus/AssociationEditorMenuEventBus.ts";
-import {sendMessage} from "../../../utils/message.ts";
+import {AssociationEditorMenuEventBus} from "../eventBus/AssociationEditorMenuEventBus.ts";
+import {deleteConfirm, sendMessage} from "../../../utils/message.ts";
 
 const genSchemaLoading = useLoading()
 
@@ -61,24 +60,18 @@ watch(() => props.dataSource, () => {
 }, {immediate: true})
 
 const handleDelete = () => {
-	ElMessageBox.confirm(
-		`确定要删除 ${props.dataSource.name} 吗？`,
-		{
-			confirmButtonText: 'Yes',
-			cancelButtonText: 'No',
-			icon: Delete,
-			type: "error"
-		}
-	).then(() => {
-		const id = props.dataSource.id
+	deleteConfirm("数据源【${props.dataSource.name}】",
+		() => {
+			const id = props.dataSource.id
 
-		api.dataSourceService.delete({ids: [id]}).then(res => {
-			if (res > 0) {
-				sendMessage(`删除 dataSource ${id} 成功`, "success")
-				AssociationEditorMenuEventBus.emit('deleteDataSource', {id})
-			}
-		})
-	})
+			api.dataSourceService.delete({ids: [id]}).then(res => {
+				if (res > 0) {
+					sendMessage(`删除 dataSource ${id} 成功`, "success")
+					AssociationEditorMenuEventBus.emit('deleteDataSource', {id})
+				}
+			})
+		}
+	)
 }
 
 const loadSchema = async (name: string, dataSourceId: number = props.dataSource.id) => {

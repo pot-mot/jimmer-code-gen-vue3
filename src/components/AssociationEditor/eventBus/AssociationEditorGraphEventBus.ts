@@ -1,18 +1,17 @@
 import mitt from 'mitt'
 
 type AssociationEditorGraphEvents = {
-    redo: {},
-    undo: {},
+    redo: undefined,
+    undo: undefined,
 
-    removeAllCells: {},
-    removeAllAssociations: {},
-    removeSelectedCells: {},
-    removeSelectedAssociations: {},
+    selectAll: undefined,
+    removeAllCells: undefined,
+    removeAllAssociations: undefined,
+    removeSelectedCells: undefined,
+    removeSelectedAssociations: undefined,
 
     deleteAssociations: {sourceColumnId: number, targetColumnId: number},
     deletedAssociations: {sourceColumnId: number, targetColumnId: number},
-
-    selectAll: {},
 
     fit: {direction: "LR" | "TB" | "RL" | "BT"},
     layout: {direction: "LR" | "TB" | "RL" | "BT"},

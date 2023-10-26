@@ -1,7 +1,11 @@
 import {createApp} from 'vue'
 import App from './App.vue'
 import {router} from './router'
-import {pinia} from './store'
+// 仓库
+import {createPinia} from 'pinia'
+
+// 创建仓库
+export const pinia = createPinia()
 
 import './assets/base.css'
 
