@@ -84,7 +84,7 @@ const handleDelete = (typeMapping: GenTypeMapping) => {
 </script>
 
 <template>
-	<div v-loading="typeMappingLoading.isLoading()">
+	<div>
 		<h3 style="width: 100%; text-align: center; height: 2em; line-height: 2em;">类型映射配置</h3>
 
 		<div class="type-mapping-line">
@@ -173,9 +173,9 @@ const handleDelete = (typeMapping: GenTypeMapping) => {
 				</div>
 			</template>
 		</div>
-
-		<el-empty v-if="typeMappings.length == 0" style="height: 55vh;"></el-empty>
 	</div>
+
+	<el-empty v-if="typeMappingLoading.isLoading()" style="height: 55vh;"></el-empty>
 </template>
 
 <style scoped>

@@ -9,6 +9,7 @@ import {sendMessage} from "../../../utils/message.ts";
 import TableDefine from "./TableDefine.vue";
 import EntityInfo from "../../EntityGenerator/entity/EntityInfo.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
+import Comment from "../../common/Comment.vue";
 
 interface TableDialogProps {
 	id: number
@@ -72,7 +73,7 @@ watch(() => props.id, async (id) => {
 							<TableIcon :type="table.type"></TableIcon>
 						</span>
 						<span>{{ table.name }}</span>
-						<span class="comment">/* {{ table.comment }} */</span>
+						<Comment :comment="table.comment"></Comment>
 					</el-text>
 					<el-tabs v-model="typeState">
 						<el-tab-pane name="TableInfo" label="表"></el-tab-pane>

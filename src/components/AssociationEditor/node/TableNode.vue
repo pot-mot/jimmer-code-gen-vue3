@@ -8,7 +8,7 @@
 						<TableIcon :type="table.type"></TableIcon>
 					</span>
 					<span>{{ table.name }}</span>
-					<span class="comment">/* {{ table.comment }} */</span>
+					<Comment :comment="table.comment"></Comment>
 				</td>
 			</tr>
 			<tr v-for="column in table.columns" class="column">
@@ -17,7 +17,7 @@
 						<ColumnIcon :column="column"></ColumnIcon>
 					</span>
 					<span>{{ column.name }}</span>
-					<span class="comment">/* {{ column.comment }} */</span>
+					<Comment :comment="column.comment"></Comment>
 				</td>
 				<td style="text-align: right;">
 					<span class="type">{{ column.type }}</span>
@@ -40,13 +40,6 @@
 			white-space: nowrap;
 			height: 30px;
 			line-height: 30px;
-		}
-
-		.comment {
-			padding: 0 0.3em;
-			color: var(--el-text-color-placeholder);
-			font-size: 0.8em;
-			font-weight: 400;
 		}
 
 		.icon, .type {
@@ -80,6 +73,7 @@ import {TableDialogEventBus} from "../../global/TableDialogManager/TableDialogEv
 import {ElText} from "element-plus";
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
+import Comment from "../../common/Comment.vue";
 
 const wrapper = ref<HTMLElement | null>()
 

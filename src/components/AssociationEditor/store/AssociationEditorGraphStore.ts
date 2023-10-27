@@ -307,6 +307,7 @@ export const useAssociationEditorGraphStore =
                     ...nodes.map(it => it.id),
                     ...edges.map(it => it.id)
                 ])
+
                 await layoutAndFit()
             }
 

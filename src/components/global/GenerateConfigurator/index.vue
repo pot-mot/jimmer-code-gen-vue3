@@ -39,7 +39,7 @@ watch(() => openState.value, (value) => {
 			<template #reference>
 				<el-button link>
 					<el-icon size="2em">
-						<Tools></Tools>
+						<Tools  @click="openState = true; configType = 'GenerateConfigForm'"></Tools>
 					</el-icon>
 				</el-button>
 			</template>

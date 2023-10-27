@@ -14,7 +14,9 @@ const props = defineProps<EntityInfoProps>()
 
 const entity = ref<GenEntityPropertiesView | undefined>()
 
-const previewCodesMap = ref<{ [key: string]: string }>({})
+const previewCodesMap = ref<{
+	[key: string]: string
+}>({})
 
 const getEntity = async (id: number) => {
 	entity.value = await api.entityService.get({id})
@@ -30,7 +32,7 @@ watch(() => props.id, async (value) => {
 
 const handleConvert = async () => {
 	if (entity.value) {
-		const newEntityIds = await convertEntities([entity.value.tableId])
+		const newEntityIds = await convertEntities([entity.value.table.id])
 		if (newEntityIds.length == 1) {
 			await getEntity(newEntityIds[0])
 		} else {
@@ -53,23 +55,26 @@ const handleGenerate = () => {
 
 		<div>{{ entity.name }}</div>
 		<div>{{ entity.comment }}</div>
-		<table v-for="property in entity.properties">
-			<tr>
-				<td>{{ property.name }}</td>
-				<td>{{ property.type }}</td>
-				<td>{{ property.id }}</td>
-				<td>{{ property.comment }}</td>
-			</tr>
-		</table>
+		<div class="property-line" v-for="property in entity.properties">
+			<div>{{ property.name }}</div>
+			<div>{{ property.type }}</div>
+			<div>{{ property.comment }}</div>
+		</div>
 
 		<el-tabs type="border-card">
 			<el-tab-pane v-for="name in Object.keys(previewCodesMap)" :label="name">
-				<CodePreview :language="name.endsWith('kt') ? 'kt' : 'java' " :code="previewCodesMap[name]"></CodePreview>
+				<CodePreview :language="name.endsWith('kt') ? 'kt' : 'java' "
+							 :code="previewCodesMap[name]"></CodePreview>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
 </template>
 
 <style scoped>
-
+.property-line {
+	display: grid;
+	grid-template-columns: 10em 10em 1fr;
+	height: 2em;
+	line-height: 2em;
+}
 </style>

@@ -4,51 +4,81 @@
 
 		<ul v-if="store.isLoaded" class="toolbar left-top">
 			<li>
-				<el-button @click="handleSaveGraph">保存编辑区</el-button>
+				<el-tooltip content="保存编辑区 [ctrl + s]">
+					<el-button @click="handleSaveGraph">save</el-button>
+				</el-tooltip>
 			</li>
 			<li>
-				<el-button v-show="store.canUndo" @click="handleUndo">undo</el-button>
+				<el-tooltip content="撤回 [ctrl + z]">
+					<el-button @click="handleUndo">undo</el-button>
+				</el-tooltip>
 			</li>
 			<li>
-				<el-button v-show="store.canRedo" @click="handleRedo">redo</el-button>
+				<el-tooltip content="重做 [ctrl + shift + z]">
+					<el-button @click="handleRedo">redo</el-button>
+				</el-tooltip>
 			</li>
 			<li>
-				<el-button @click="handleLayout">布局</el-button>
-				<el-select v-model="store.layoutDirection">
-					<el-option value="LR">左右</el-option>
-					<el-option value="RL">右左</el-option>
-					<el-option value="TB">上下</el-option>
-					<el-option value="BT">下上</el-option>
+				<el-tooltip content="布局">
+					<el-button @click="handleLayout">layout</el-button>
+				</el-tooltip>
+				<el-select style="width: 6em;" v-model="store.layoutDirection" size="small">
+					<el-option value="LR" label="左至右"></el-option>
+					<el-option value="RL" label="右至左"></el-option>
+					<el-option value="TB" label="上至下"></el-option>
+					<el-option value="BT" label="下至上"></el-option>
 				</el-select>
 			</li>
 
 			<li>
-				<el-button @click="handleFit">适应画布</el-button>
+				<el-tooltip content="适应画布">
+					<el-button @click="handleFit">fit graph</el-button>
+				</el-tooltip>
 			</li>
 			<li>
-				<el-button @click="handleCenterContent">居中</el-button>
+				<el-tooltip content="居中">
+					<el-button @click="handleCenterContent">center content</el-button>
+				</el-tooltip>
+			</li>
+
+			<br>
+
+			<li>
+				<el-tooltip content="选中全部 [ctrl + a]">
+					<el-button @click="store.selectAll()">selectAll</el-button>
+				</el-tooltip>
+			</li>
+
+			<li>
+				<el-tooltip content="清理画布 [delete]">
+					<el-button @click="store.removeAllCells()">clear</el-button>
+				</el-tooltip>
 			</li>
 			<li>
-				<el-button @click="store.removeAllCells()">清理画布</el-button>
-			</li>
-			<li>
-				<el-button @click="store.removeAllAssociations()">清除所有关联</el-button>
+				<el-tooltip content="清除关联 [shift + delete]">
+					<el-button @click="store.removeAllAssociations()">remove association</el-button>
+				</el-tooltip>
 			</li>
 			<template v-if="!store.isSelectionEmpty">
 				<li>
-					<el-button @click="store.removeSelectedCells()">移除选中节点及关联</el-button>
+					<el-tooltip content="移除选中节点与关联">
+						<el-button @click="store.removeSelectedCells()">remove selected</el-button>
+					</el-tooltip>
 				</li>
 				<li>
-					<el-button @click="store.removeSelectedAssociations()">清除选中关联与选中节点关联</el-button>
+					<el-tooltip content="清除选中关联">
+						<el-button @click="store.removeSelectedAssociations()">remove selected associations</el-button>
+					</el-tooltip>
 				</li>
 			</template>
 		</ul>
 
 		<ul v-if="store.isLoaded" class="toolbar right-top">
 			<li>
-				<el-button @click="match">
-					{{ store.isSelectionEmpty ? "匹配关联" : "匹配选中表的关联" }}
-				</el-button>
+				<el-tooltip :content="store.isSelectionEmpty ? '匹配关联' : '在选中范围内匹配关联'">
+					<el-button @click="match">match</el-button>
+				</el-tooltip>
+
 				<el-select v-model="matchType">
 					<el-option v-for="(type) in matchTypes" :value="type">{{ type }}</el-option>
 				</el-select>
@@ -56,16 +86,19 @@
 			<li>
 				<el-tooltip>
 					<template #content>
+						保存关联变更<br>
 						注意！！<br>
-						此处保存的关联变更<strong>仅</strong>是<strong>目前编辑器中的表</strong>之间的关联的更新<br>
-						<strong>不包括历史编辑的关联</strong><br>
-						因此请尽量保证编辑器中为全部你所需要的表<br>
+						此处保存的关联<strong>仅</strong>是<strong>目前编辑器中的表</strong>之间的关联<br>
+						<strong>不包括编辑器历史编辑过的关联</strong><br>
+						因此请尽量保证编辑器中为全部你所需要的表，关联为全部你所需要的关联<br>
 					</template>
-					<el-button @click="saveAssociations(graph)">保存关联变更</el-button>
+					<el-button @click="saveAssociations(graph)">save associations</el-button>
 				</el-tooltip>
 			</li>
 			<li>
-				<el-button @click="handleGenerateEntities">生成实体</el-button>
+				<el-tooltip content="生成实体（获得 zip 压缩包）">
+					<el-button @click="handleGenerateEntities">generate</el-button>
+				</el-tooltip>
 			</li>
 		</ul>
 
@@ -103,15 +136,21 @@
 	height: 100%;
 	width: 100%;
 
-	--highlight-color: #239edd;
-	--common-color: #666;
+	--highlight-color: var(--el-color-primary);
+	--common-color: var(--el-color-info);
 }
 
 .toolbar {
 	font-size: 12px;
+	max-width: 50%;
 	position: absolute;
-	border: 1px var(--common-color) solid;
 	background-color: #fff;
+	box-shadow: var(--el-box-shadow);
+
+	li {
+		display: inline;
+		padding-right: 0.5em;
+	}
 
 	&.right-top {
 		top: 0;

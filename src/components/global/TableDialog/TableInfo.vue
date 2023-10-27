@@ -13,6 +13,7 @@ import {
 } from "../../../api/__generated/model/static/GenTableAssociationView.ts";
 import {Delete} from "@element-plus/icons-vue";
 import {processClickFunction} from "../../../utils/clickTimer.ts";
+import Comment from "../../common/Comment.vue";
 
 const store = useAssociationEditorGraphStore()
 
@@ -108,7 +109,7 @@ const deleteInAssociation = (
 						<el-col :span="5">
 							<el-text>
 								{{ column.name }}
-								/* {{ column.comment }} */
+								<Comment :comment="column.comment"></Comment>
 							</el-text>
 						</el-col>
 						<el-col :span="3">

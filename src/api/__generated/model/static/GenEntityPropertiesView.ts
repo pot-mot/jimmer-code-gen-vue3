@@ -22,7 +22,7 @@ export interface GenEntityPropertiesView {
     
     remark: string;
     
-    tableId: number;
+    table: GenEntityPropertiesView_TargetOf_table;
 }
 
 export interface GenEntityPropertiesView_TargetOf_genPackage {
@@ -155,4 +155,20 @@ export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_
     name: string;
     
     parent?: GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_TargetOf_entity_TargetOf_genPackage_TargetOf_parent;
+}
+
+export interface GenEntityPropertiesView_TargetOf_table {
+    
+    id: number;
+    
+    name: string;
+    
+    schema: GenEntityPropertiesView_TargetOf_table_TargetOf_schema;
+}
+
+export interface GenEntityPropertiesView_TargetOf_table_TargetOf_schema {
+    
+    id: number;
+    
+    name: string;
 }

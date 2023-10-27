@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import {PackageMenuEventBus} from "../eventBus/PackageMenuEventBus.ts";
+import Comment from "../../common/Comment.vue";
 
 interface EnumItemProps {
-	genEnum: { id: number, name: string }
+	genEnum: { id: number, name: string, comment: string}
 }
 
 defineProps<EnumItemProps>()
@@ -14,6 +15,7 @@ defineProps<EnumItemProps>()
 				 @dragstart="PackageMenuEventBus.emit('dragStart', {id: genEnum.id, type: 'Enum'})"
 				 @dragend="PackageMenuEventBus.emit('dragEnd')">
 			{{ genEnum.name }}
+			<Comment :comment="genEnum.comment"></Comment>
 		</el-text>
 	</div>
 </template>

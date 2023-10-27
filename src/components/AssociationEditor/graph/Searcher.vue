@@ -5,6 +5,7 @@ import DragDialog from "../../common/DragDialog.vue";
 import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
 import {GenTableColumnView} from "../../../api/__generated/model/static";
 import {processClickFunction} from "../../../utils/clickTimer.ts";
+import Comment from "../../common/Comment.vue";
 
 const store = useAssociationEditorGraphStore()
 
@@ -108,7 +109,8 @@ const {
 						@dblclick="handleFocusCell(node.id)"
 						size="default"
 						link>
-						{{ node.data.table.name }} {{ node.data.table.comment }}
+						{{ node.data.table.name }}
+						<Comment :comment="node.data.table.comment"></Comment>
 					</el-button>
 				</div>
 			</div>

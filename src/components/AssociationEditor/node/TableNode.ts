@@ -5,7 +5,7 @@ import {columnToPort} from "../port/ColumnPort.ts";
 import {api} from "../../../api";
 import {importAssociationEdges} from "../edge/AssociationEdge.ts";
 import {sendMessage} from "../../../utils/message.ts";
-import { saveAs } from 'file-saver';
+import {saveAs} from 'file-saver';
 
 export const tableIdToNodeId = (id: number) => {
     return `table-${id}`
@@ -70,7 +70,8 @@ export const importTableNodes = (graph: Graph, tables: readonly GenTableColumnVi
     })
 
     graph.addNodes(nodes)
-    return nodes
+
+    return graph.getNodes().filter(node => nodes.map(it => it.id).includes(node.id))
 }
 
 /**
@@ -80,12 +81,12 @@ export const importTableNodes = (graph: Graph, tables: readonly GenTableColumnVi
  * @returns 过滤结果
  */
 const groupTableIdByExisted = (graph: Graph, tableIds: readonly number[]) => {
-    const idSet = new Set( getTables(graph).map(table => table.id))
+    const idSet = new Set(getTables(graph).map(table => table.id))
 
     const existedIds: number[] = []
     const newIds: number[] = []
 
-   tableIds.forEach(id => {
+    tableIds.forEach(id => {
         if (idSet.has(id)) {
             existedIds.push(id)
         } else {

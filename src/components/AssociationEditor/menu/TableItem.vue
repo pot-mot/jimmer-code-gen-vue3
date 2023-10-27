@@ -5,6 +5,7 @@ import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphSto
 import TableIcon from "../../icons/database/TableIcon.vue";
 import {TableDialogEventBus} from "../../global/TableDialogManager/TableDialogEventBus.ts";
 import {processClickFunction} from "../../../utils/clickTimer.ts";
+import Comment from "../../common/Comment.vue";
 
 const store = useAssociationEditorGraphStore()
 
@@ -34,7 +35,8 @@ const {
 		<TableIcon :type="table.type"></TableIcon>
 
 		<el-button @click="loadTable(table.id)" @dblclick="loadTableAndFocus(table.id)" link>
-			{{ table.name }} {{ table.comment }}
+			{{ table.name }}
+			<Comment :comment="table.comment"></Comment>
 		</el-button>
 
 		<el-button @click="TableDialogEventBus.emit('addTableDialog', table.id)"
