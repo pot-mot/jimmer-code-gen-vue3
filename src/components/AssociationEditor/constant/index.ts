@@ -2,7 +2,9 @@ export const COLUMN_PORT_GROUP = "COLUMN_PORT_GROUP"
 
 export const COLUMN_PORT = "COLUMN_PORT"
 
-export const COLUMN_HEIGHT = 30
+/** FIXME 原因不明，但 antV X6 vue node 中我的css 明确设置高度为 30px，但实际渲染高度为 31.5，此处为矫正误差。
+ * 未来需要替换 vue node 以实现 column 真正由 port 呈现 */
+export const COLUMN_HEIGHT = 31.25
 
 export const HIGHLIGHT_COLOR = 'var(--highlight-color)'
 
