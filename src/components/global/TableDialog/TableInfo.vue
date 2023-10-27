@@ -101,7 +101,7 @@ const deleteInAssociation = (
 			<Details v-for="column in table.columns"
 					 :disabled="column.inAssociations.length == 0 && column.outAssociations.length == 0">
 				<template #title>
-					<el-row>
+					<el-row style="white-space: nowrap;">
 						<el-col :span="1">
 							<ColumnIcon :column="column"></ColumnIcon>
 						</el-col>
@@ -118,7 +118,7 @@ const deleteInAssociation = (
 						</el-col>
 						<el-col :span="7">
 							<el-text>
-								= {{ column.defaultValue }}
+								{{ column.defaultValue }}
 							</el-text>
 						</el-col>
 						<el-col :span="6">

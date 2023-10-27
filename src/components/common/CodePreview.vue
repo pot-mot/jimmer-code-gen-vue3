@@ -8,18 +8,24 @@
 <script setup lang="ts">
 import * as Prism from 'prismjs';
 import "prismjs/themes/prism.css";
-import {nextTick, onMounted, ref} from "vue";
+import {nextTick, onMounted, ref, watch} from "vue";
 
 interface CodePreviewProps {
 	code: string,
 	language: string,
 }
 
-defineProps<CodePreviewProps>()
+const props = defineProps<CodePreviewProps>()
 
 const container = ref()
 
 onMounted(() => {
+	nextTick(() => {
+		Prism.highlightElement(container.value)
+	})
+})
+
+watch(() => props.code, () => {
 	nextTick(() => {
 		Prism.highlightElement(container.value)
 	})

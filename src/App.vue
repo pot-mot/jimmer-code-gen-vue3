@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import TableDialogManager from "./components/global/TableDialogManager/index.vue";
-import GenerateConfigDialog from "./components/dialog/GenerateConfigDialog.vue";
+import GenerateConfigurator from "./components/global/GenerateConfigurator/index.vue";
 </script>
 
 <template>
@@ -8,6 +8,6 @@ import GenerateConfigDialog from "./components/dialog/GenerateConfigDialog.vue";
 		<RouterView>
 		</RouterView>
 		<TableDialogManager></TableDialogManager>
-		<GenerateConfigDialog></GenerateConfigDialog>
+		<GenerateConfigurator></GenerateConfigurator>
 	</div>
 </template>

@@ -346,6 +346,8 @@ export const dagreLayout = (
     let nodes
     let edges
 
+    graph.startBatch('layout')
+
     if (graph.isSelectionEmpty() || graph.getSelectedCellCount() == 1) {
         nodes = toLayoutNodes(graph.getNodes())
         edges = toLayoutEdges(graph.getEdges())
@@ -364,8 +366,6 @@ export const dagreLayout = (
     setLevel(nodes, edges)
 
     const nodeRanks = getRanks(nodes)
-
-    graph.startBatch('layout')
 
     const {x: startX, y: startY} = getPoint(nodes.map(node => node.node), "LT")
 

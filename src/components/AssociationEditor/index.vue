@@ -73,7 +73,6 @@
 
 		<div v-if="store.isLoaded" class="toolbar right-bottom" style="width:  max(15vw, 200px);">
 			<MiniMap ref="minimap"></MiniMap>
-			<el-button @click="toggleMinimap">minimap</el-button>
 
 			<div style="display: grid; grid-template-columns: 4em 3em 1fr 3em; line-height: 2em; height: 2em;">
 				<div>
@@ -200,12 +199,6 @@ useSave(() => graph)
 
 useHistoryKeyEvent(() => graph)
 useSelectionKeyEvent(() => graph)
-
-const minimap = ref()
-
-const toggleMinimap = () => {
-	minimap.value.toggle()
-}
 
 const {match, matchTypes, matchType} = useTableEditorMatch(() => graph)
 

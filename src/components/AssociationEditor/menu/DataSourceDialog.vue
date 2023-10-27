@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import {onMounted, ref, watch} from 'vue';
-import {api} from "../../api";
-import {GenDataSourceInput, GenDataSourceView} from "../../api/__generated/model/static";
-import {DataSourceType} from "../../api/__generated/model/enums";
-import DragDialog from "../common/DragDialog.vue";
-import {sendMessage} from "../../utils/message.ts";
+import {api} from "../../../api";
+import {GenDataSourceInput, GenDataSourceView} from "../../../api/__generated/model/static";
+import {DataSourceType} from "../../../api/__generated/model/enums";
+import DragDialog from "../../common/DragDialog.vue";
+import {sendMessage} from "../../../utils/message.ts";
 import {ElForm, ElFormItem, ElSelect, ElOption} from "element-plus";
 
 const dataSourceTypes = ref<DataSourceType[]>([])

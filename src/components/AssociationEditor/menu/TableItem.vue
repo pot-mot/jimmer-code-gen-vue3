@@ -37,8 +37,8 @@ const {
 			{{ table.name }} {{ table.comment }}
 		</el-button>
 
-		<el-button @click="TableDialogEventBus.emit('addTableDialog', table.id)" title="编辑" :icon="EditPen"
-				   type="warning" link>
+		<el-button @click="TableDialogEventBus.emit('addTableDialog', table.id)"
+				   title="编辑" :icon="EditPen" type="warning" link>
 		</el-button>
 	</el-text>
 </template>

@@ -173,11 +173,8 @@ export const useAssociationEditorGraphStore =
              */
             const layoutAndFit = async (direction: "LR" | "TB" | "RL" | "BT" = layoutDirection.value) => {
                 await nextTick()
-                setTimeout(async () => {
-                    layout(direction)
-                    await nextTick()
-                    fit()
-                }, 500)
+                layout(direction)
+                fit()
             }
 
             /**

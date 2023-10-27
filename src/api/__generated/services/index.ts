@@ -18,3 +18,5 @@ export { SchemaService } from './SchemaService';
 export type { SchemaServiceOptions } from './SchemaService';
 export { TableService } from './TableService';
 export type { TableServiceOptions } from './TableService';
+export { TypeMappingService } from './TypeMappingService';
+export type { TypeMappingServiceOptions } from './TypeMappingService';

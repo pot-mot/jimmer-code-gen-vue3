@@ -53,5 +53,7 @@ export type ApiErrors = {
         )
     },
     "tableService": {
+    },
+    "typeMappingService": {
     }
 };

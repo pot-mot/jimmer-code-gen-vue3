@@ -2,6 +2,7 @@
 import {nextTick, ref} from "vue";
 import {MiniMap} from "@antv/x6-plugin-minimap";
 import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
+import {ArrowDown, ArrowUp} from "@element-plus/icons-vue";
 
 const store = useAssociationEditorGraphStore()
 
@@ -51,25 +52,29 @@ const close = () => {
 	openState.value = false
 }
 
-defineExpose({
-	openState,
-	open,
-	close,
-	toggle: () => {
-		if (openState.value) {
-			close()
-		} else {
-			open()
-		}
+const toggle = () => {
+	if (openState.value) {
+		close()
+	} else {
+		open()
 	}
-})
+}
 </script>
 
 <template>
-	<div v-if="openState" ref="container" class="minimap"></div>
+	<div class="wrapper">
+		<div style="text-align: center">
+			<el-button :icon="!openState ? ArrowUp : ArrowDown" @click="toggle" size="small"></el-button>
+		</div>
+		<div v-if="openState" ref="container" class="minimap"></div>
+	</div>
 </template>
 
 <style scoped>
+.wrapper {
+	width: max(15vw, 200px);
+}
+
 .minimap {
 	width: max(15vw, 200px);
 	height: max(20vh, 200px);

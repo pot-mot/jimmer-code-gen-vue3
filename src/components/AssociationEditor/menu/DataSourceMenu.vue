@@ -3,7 +3,7 @@ import {onMounted, ref} from "vue";
 import {api} from "../../../api";
 import {GenDataSourceView} from "../../../api/__generated/model/static";
 import DataSourceItem from "./DataSourceItem.vue";
-import DataSourceDialog from "../../dialog/DataSourceDialog.vue";
+import DataSourceDialog from "./DataSourceDialog.vue";
 import {useLoading} from "../../../hooks/useLoading.ts";
 import {AssociationEditorMenuEventBus} from "../eventBus/AssociationEditorMenuEventBus.ts";
 import {sendMessage} from "../../../utils/message.ts";

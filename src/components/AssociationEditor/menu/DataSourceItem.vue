@@ -4,7 +4,7 @@ import {GenDataSourceView, GenSchemaView} from "../../../api/__generated/model/s
 import SchemaItem from "./SchemaItem.vue";
 import {api} from "../../../api";
 import {GenSchemaDto} from "../../../api/__generated/model/dto";
-import DataSourceDialog from "../../dialog/DataSourceDialog.vue";
+import DataSourceDialog from "./DataSourceDialog.vue";
 import Details from "../../common/Details.vue";
 import {useLoading} from "../../../hooks/useLoading.ts";
 import {Delete, EditPen} from "@element-plus/icons-vue";
@@ -148,10 +148,8 @@ AssociationEditorMenuEventBus.on('deleteSchema', ({id}) => {
 						</div>
 					</el-popover>
 
-					<el-button @click="handleEdit" title="编辑" :icon="EditPen"
-							   type="warning" link></el-button>
-					<el-button @click="handleDelete" title="删除" :icon="Delete"
-							   type="danger" link></el-button>
+					<el-button @click="handleEdit" title="编辑" :icon="EditPen" type="warning" link></el-button>
+					<el-button @click="handleDelete" title="删除" :icon="Delete" type="danger" link></el-button>
 				</el-text>
 			</div>
 		</template>

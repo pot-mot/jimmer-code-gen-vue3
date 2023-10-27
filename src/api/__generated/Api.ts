@@ -1,6 +1,6 @@
 import type { Executor } from './';
 
-import { AssociationService, ColumnService, ConfigService, DataSourceService, EntityService, EnumService, GenerateService, PackageService, SchemaService, TableService } from './services';
+import { AssociationService, ColumnService, ConfigService, DataSourceService, EntityService, EnumService, GenerateService, PackageService, SchemaService, TableService, TypeMappingService } from './services';
 
 export class Api {
     
@@ -24,6 +24,8 @@ export class Api {
     
     readonly tableService: TableService;
     
+    readonly typeMappingService: TypeMappingService;
+    
     constructor(executor: Executor) {
         this.associationService = new AssociationService(executor);
         this.columnService = new ColumnService(executor);
@@ -35,5 +37,6 @@ export class Api {
         this.packageService = new PackageService(executor);
         this.schemaService = new SchemaService(executor);
         this.tableService = new TableService(executor);
+        this.typeMappingService = new TypeMappingService(executor);
     }
 }
