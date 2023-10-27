@@ -66,7 +66,7 @@ const query = () => {
 	<Details>
 		<template #title>
 			<div style="height: 1.8em; line-height: 1.8em;">
-				<el-text>
+				<el-text class="hover-show">
 					<SchemaIcon></SchemaIcon>
 
 					<el-button @click="handleLoadOrSelect" link>
@@ -74,7 +74,7 @@ const query = () => {
 					</el-button>
 
 					<el-button @click="handleDelete" title="删除" :icon="Delete"
-							   type="danger" link>
+							   type="danger" class="hover-show-item" link>
 					</el-button>
 				</el-text>
 			</div>

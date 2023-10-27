@@ -159,6 +159,8 @@ export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_
 
 export interface GenEntityPropertiesView_TargetOf_table {
     
+    comment: string;
+    
     id: number;
     
     name: string;

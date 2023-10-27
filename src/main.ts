@@ -8,6 +8,7 @@ import {createPinia} from 'pinia'
 export const pinia = createPinia()
 
 import './assets/base.css'
+import './assets/util.css'
 
 import ElementPlus from 'element-plus'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'

@@ -44,6 +44,8 @@ export interface GenPackageTreeView_TargetOf_children {
 
 export interface GenPackageTreeView_TargetOf_children_TargetOf_entities {
     
+    comment: string;
+    
     id: number;
     
     name: string;
@@ -53,12 +55,16 @@ export interface GenPackageTreeView_TargetOf_children_TargetOf_entities {
 
 export interface GenPackageTreeView_TargetOf_children_TargetOf_enums {
     
+    comment: string;
+    
     id: number;
     
     name: string;
 }
 
 export interface GenPackageTreeView_TargetOf_entities {
+    
+    comment: string;
     
     id: number;
     
@@ -68,6 +74,8 @@ export interface GenPackageTreeView_TargetOf_entities {
 }
 
 export interface GenPackageTreeView_TargetOf_enums {
+    
+    comment: string;
     
     id: number;
     

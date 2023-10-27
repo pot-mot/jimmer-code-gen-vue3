@@ -127,7 +127,7 @@ AssociationEditorMenuEventBus.on('deleteSchema', ({id}) => {
 	<Details open>
 		<template #title>
 			<div style="height: 2em; line-height: 2em;">
-				<el-text>
+				<el-text class="hover-show">
 					<DataSourceIcon :type="dataSource.type"></DataSourceIcon>
 
 					{{ dataSource.name }}
@@ -148,8 +148,10 @@ AssociationEditorMenuEventBus.on('deleteSchema', ({id}) => {
 						</div>
 					</el-popover>
 
-					<el-button @click="handleEdit" title="编辑" :icon="EditPen" type="warning" link></el-button>
-					<el-button @click="handleDelete" title="删除" :icon="Delete" type="danger" link></el-button>
+					<span style="padding-left: 0.5em;" class="hover-show-item">
+						<el-button @click="handleEdit" title="编辑" :icon="EditPen" type="warning" link></el-button>
+						<el-button @click="handleDelete" title="删除" :icon="Delete" type="danger" link></el-button>
+					</span>
 				</el-text>
 			</div>
 		</template>

@@ -10,6 +10,7 @@ import EnumItem from "./EnumItem.vue";
 import PackageCreateDialog from "./PackageCreateDialog.vue";
 import {Delete} from "@element-plus/icons-vue";
 import {deleteConfirm} from "../../../utils/message.ts";
+import PackageIcon from "../../icons/entity/PackageIcon.vue";
 
 const store = usePackageMenuStore()
 
@@ -38,10 +39,14 @@ const handleDelete = () => {
 				@dragend="PackageMenuEventBus.emit('dragEnd')"
 				@dragenter="isDragenter = true; store.targetPackageId = genPackage.id"
 				@dragleave="isDragenter = false"
-				:style="isDragenter ? 'background-color:var(--el-color-info-light-8);' : ''">
-				<el-text style="padding-right: 0.5em;">{{ genPackage.name }}</el-text>
-				<PackageCreateDialog :parent-id="genPackage.id"></PackageCreateDialog>
-				<el-button type="danger" :icon="Delete" @click="handleDelete" link></el-button>
+				:style="isDragenter ? 'background-color:var(--el-color-info-light-8);' : ''"
+				class="hover-show">
+				<PackageIcon></PackageIcon>
+				<el-text>{{ genPackage.name }}</el-text>
+				<span style="padding-left: 0.5em;" class="hover-show-item">
+					<PackageCreateDialog :parent-id="genPackage.id"></PackageCreateDialog>
+					<el-button type="danger" title="删除" :icon="Delete" @click="handleDelete" link></el-button>
+				</span>
 			</div>
 		</template>
 

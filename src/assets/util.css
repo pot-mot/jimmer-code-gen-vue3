@@ -1,0 +1,11 @@
+.hover-show .hover-show-item {
+    visibility: hidden;
+    user-focus: none;
+    user-select: none;
+}
+
+.hover-show:hover .hover-show-item {
+    visibility: visible;
+    user-focus: auto;
+    user-select: auto;
+}

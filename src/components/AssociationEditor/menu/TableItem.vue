@@ -31,7 +31,7 @@ const {
 </script>
 
 <template>
-	<el-text>
+	<el-text class="hover-show">
 		<TableIcon :type="table.type"></TableIcon>
 
 		<el-button @click="loadTable(table.id)" @dblclick="loadTableAndFocus(table.id)" link>
@@ -40,7 +40,7 @@ const {
 		</el-button>
 
 		<el-button @click="TableDialogEventBus.emit('addTableDialog', table.id)"
-				   title="编辑" :icon="EditPen" type="warning" link>
+				   title="编辑" :icon="EditPen" type="warning" class="hover-show-item" link>
 		</el-button>
 	</el-text>
 </template>
