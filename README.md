@@ -46,22 +46,18 @@ vite build
 
 > 此处是包括前后端在内的未完成功能点
 
-### 全局配置修改  
-[GenerateConfigurator.vue](src%2Fcomponents%2Fglobal%2FGenerateConfigurator.vue)
-
-### 表关联管理
-- 表关联新增修改删除  
-  [index.vue](src%2Fcomponents%2Fdialog%2FTableDialog%2Findex.vue)
-
 ### 实体类管理
-(未来这一块的目录应该会有较大变动)
 
-- 包管理（实体类与枚举的包，包自身的树形管理等）  
-[EntityMenu.vue](src%2Fcomponents%2FEntityGenerator%2Fmenu%2FEntityMenu.vue)
-- 实体类属性新增修改删除   
-[EntityInfo.vue](src%2Fcomponents%2FEntityGenerator%2Fentity%2FEntityInfo.vue)  
-  - 枚举管理
-- 表到实体类的关联更新同步
+- 实体属性新增修改删除
+[实体详细信息组件](src%2Fcomponents%2FEntityGenerator%2Fentity%2FEntityInfo.vue)
+
+- 枚举创建管理（在实体属性的类型修改中实现）
+
+### 数据库设计与同步
+
+[表详细信息组件](src%2Fcomponents%2Fglobal%2FTableDialog%2FTableInfo.vue)
+
+[编辑器组件](src%2Fcomponents%2FAssociationEditor%2Findex.vue)
 
 ## LICENSE
 
