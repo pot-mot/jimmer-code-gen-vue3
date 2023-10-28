@@ -44,20 +44,27 @@ vite build
 
 ## TODO
 
-> 此处是包括前后端在内的未完成功能点
-
-### 实体类管理
-
-- 实体属性新增修改删除
-[实体详细信息组件](src%2Fcomponents%2FEntityGenerator%2Fentity%2FEntityInfo.vue)
-
-- 枚举创建管理（在实体属性的类型修改中实现）
-
 ### 数据库设计与同步
 
 [表详细信息组件](src%2Fcomponents%2Fglobal%2FTableDialog%2FTableInfo.vue)
 
-[编辑器组件](src%2Fcomponents%2FAssociationEditor%2Findex.vue)
+[关联编辑器组件](src%2Fcomponents%2FAssociationEditor%2Findex.vue)
+
+### 实体类管理
+
+[实体详细信息组件](src%2Fcomponents%2FEntityGenerator%2Fentity%2FEntityInfo.vue)
+
+- 实体属性新增修改删除
+
+- 枚举创建（在实体属性的类型修改中实现）
+
+[实体生成器 content 组件](src%2Fcomponents%2FEntityGenerator%2Findex.vue)
+
+（这一块暂时没想好怎样设计）
+
+- 实体类管理
+
+- 枚举管理
 
 ## LICENSE
 
