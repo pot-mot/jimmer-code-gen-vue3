@@ -2,13 +2,13 @@
 
 项目基于 Vite + Vue3 + TypeScript + Element-Plus 编写
 
-目前支持如下两个核心功能
-
-- **关联编辑**
-- **实体生成**
-
-目前关联编辑并不携带建模部分，仅支持数据库结构的单向导入，且仅支持在实体类间创建 ManyToOne 或 OneToOne 的单指向关系
-
+> ## 重构内容
+> 将原本 table -> entity 的生成方式改为以 model 为中心的生成方式
+>
+> **在关联编辑中，将以 column 为核心的建立方式转化成以 model 为核心的建立方式**
+> 
+> 补充单独的 model 的建立与编辑功能
+> 
 
 ## 后端项目地址
 
@@ -46,7 +46,7 @@ vite build
 
 ### 数据库设计与同步
 
-[表详细信息组件](src%2Fcomponents%2Fglobal%2FTableDialog%2FTableInfo.vue)
+[表详细信息组件](src%2Fcomponents%2Fglobal%2FTableEntityDialog%2FTableInfo.vue)
 
 [关联编辑器组件](src%2Fcomponents%2FAssociationEditor%2Findex.vue)
 
