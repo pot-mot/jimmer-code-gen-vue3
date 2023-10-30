@@ -3,7 +3,7 @@ import {EditPen} from "@element-plus/icons-vue";
 import {GenTableCommonView} from "../../../api/__generated/model/static";
 import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
 import TableIcon from "../../icons/database/TableIcon.vue";
-import {TableDialogEventBus} from "../../global/TableDialogManager/TableDialogEventBus.ts";
+import {TableEntityDialogEventBus} from "../../global/TableEntityDialogManager/TableEntityDialogEventBus.ts";
 import {processClickFunction} from "../../../utils/clickTimer.ts";
 import Comment from "../../common/Comment.vue";
 
@@ -39,7 +39,7 @@ const {
 			<Comment :comment="table.comment"></Comment>
 		</el-button>
 
-		<el-button @click="TableDialogEventBus.emit('addTableDialog', table.id)"
+		<el-button @click="TableEntityDialogEventBus.emit('addTableEntityDialog', table.id)"
 				   title="编辑" :icon="EditPen" type="warning" class="hover-show-item" link>
 		</el-button>
 	</el-text>

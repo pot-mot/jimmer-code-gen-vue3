@@ -1,4 +1,4 @@
-import type { GenLanguage } from '../enums';
+import type { DataSourceType, GenLanguage } from '../enums';
 
 export interface GenConfigProperties {
     
@@ -11,6 +11,8 @@ export interface GenConfigProperties {
     columnPrefix?: string;
     
     columnSuffix?: string;
+    
+    dataSourceType?: DataSourceType;
     
     language?: GenLanguage;
     

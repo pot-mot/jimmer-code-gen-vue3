@@ -5,6 +5,8 @@ import {ref, watch} from "vue";
 import {api} from "../../../api";
 import {sendMessage} from "../../../utils/message.ts";
 import CodePreview from "../../common/CodePreview.vue";
+import Details from "../../common/Details.vue";
+import Comment from "../../common/Comment.vue";
 
 interface EntityInfoProps {
 	id: number
@@ -53,13 +55,19 @@ const handleGenerate = () => {
 		<el-button @click="handleConvert">重新转换实体</el-button>
 		<el-button @click="handleGenerate">生成实体代码</el-button>
 
-		<div>{{ entity.name }}</div>
-		<div>{{ entity.comment }}</div>
-		<div class="property-line" v-for="property in entity.properties">
-			<div>{{ property.name }}</div>
-			<div>{{ property.type }}</div>
-			<div>{{ property.comment }}</div>
-		</div>
+		<Details v-for="property in entity.properties">
+			<template #title>
+				<div class="property-line">
+					<el-text>
+						{{ property.name }}
+						<Comment :comment="property.comment"></Comment>
+					</el-text>
+					<el-text>{{ property.type }}</el-text>
+					<el-text>{{ property.remark }}</el-text>
+				</div>
+			</template>
+
+		</Details>
 
 		<el-tabs type="border-card">
 			<el-tab-pane v-for="name in Object.keys(previewCodesMap)" :label="name">
@@ -73,8 +81,8 @@ const handleGenerate = () => {
 <style scoped>
 .property-line {
 	display: grid;
-	grid-template-columns: 10em 10em 1fr;
-	height: 2em;
-	line-height: 2em;
+	grid-template-columns: 20em 15em 1fr;
+	line-height: 1.5em;
+	white-space: nowrap;
 }
 </style>

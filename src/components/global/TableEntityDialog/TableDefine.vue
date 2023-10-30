@@ -3,11 +3,11 @@ import CodePreview from "../../common/CodePreview.vue";
 import {ref, watch} from "vue";
 import {api} from "../../../api";
 
-interface TableDialogProps {
+interface TableEntityDialogProps {
 	id: number
 }
 
-const props = defineProps<TableDialogProps>()
+const props = defineProps<TableEntityDialogProps>()
 
 const tableDefineMap = ref<{ [key: string]: string }>({})
 

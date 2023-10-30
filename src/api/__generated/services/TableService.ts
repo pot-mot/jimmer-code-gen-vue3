@@ -62,6 +62,13 @@ export class TableService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
+        _value = options.query.nonSchema;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'nonSchema='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         _value = options.query.schemaIds?.join(',');
         if (_value !== undefined && _value !== null) {
             _uri += _separator

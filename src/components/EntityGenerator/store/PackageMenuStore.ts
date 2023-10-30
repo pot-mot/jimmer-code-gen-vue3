@@ -17,7 +17,6 @@ export const usePackageMenuStore =
             })
 
             PackageMenuEventBus.on('dragEnd', async () => {
-                console.log("dragEnd")
 
                 if (dragId.value && dragType.value && targetPackageId.value) {
                     switch (dragType.value) {

@@ -1,8 +1,12 @@
+import type { EnumType } from '../enums';
+
 export interface GenEnumItemsView {
     
     comment: string;
     
     createdTime: string;
+    
+    enumType?: EnumType;
     
     genPackageId?: number;
     
