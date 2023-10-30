@@ -27,7 +27,7 @@
 			</li>
 
 			<li>
-				<el-tooltip content="布局">
+				<el-tooltip content="整理布局">
 					<el-button @click="handleLayout" class="cling-right" :icon="LayoutIcon"></el-button>
 				</el-tooltip>
 				<el-select style="width: 4em;" class="cling-left" v-model="store.layoutDirection" @change="handleLayout"
@@ -82,27 +82,9 @@
 		<Searcher></Searcher>
 
 		<div v-if="store.isLoaded" class="toolbar right-bottom" style="width:  max(15vw, 200px);">
-			<MiniMap ref="minimap"></MiniMap>
+			<MiniMap :graph="store._graph()" ref="minimap"></MiniMap>
 
-			<div style="display: grid; grid-template-columns: 4em 3em 1fr 3em; line-height: 2em; height: 2em;">
-				<div>
-					{{ (store.scaling * 100).toFixed(2) }}%
-				</div>
-				<div style="text-align: center;">
-					<el-button :icon="Minus" link @click="store.formatScaling -= 0.25"></el-button>
-				</div>
-				<div>
-					<el-slider v-model="store.formatScaling"
-							   :step="0.25"
-							   :min="Math.log2(defaultZoomRange.minScale)"
-							   :max="Math.log2(defaultZoomRange.maxScale)"
-							   :show-tooltip="false">
-					</el-slider>
-				</div>
-				<div style="text-align: center;">
-					<el-button :icon="Plus" link @click="store.formatScaling += 0.25"></el-button>
-				</div>
-			</div>
+			<ScaleBar :init-scaling="0.5" :graph="store._graph()"></ScaleBar>
 		</div>
 	</div>
 </template>
@@ -172,15 +154,9 @@ import {COLUMN_PORT} from "./constant";
 import {useHistory, useHistoryKeyEvent} from "./graph/useHistory.ts";
 import {useSelection, useSelectionKeyEvent} from "./graph/useSelection.ts";
 import {useSwitchAssociationType} from "./edge/AssociationEdge.ts";
-import {loadGraph} from "./graph/localStorage.ts";
+import {loadGraph} from "./store/localStorage.ts";
 import {useAssociationEditorGraphStore} from "./store/AssociationEditorGraphStore.ts";
-import {useTableEditorMatch} from "./graph/useMatch.ts";
 import {useSave} from "./graph/useSave.ts";
-import Searcher from "./graph/Searcher.vue";
-import MiniMap from "./graph/MiniMap.vue";
-import {defaultZoomRange} from "./graph/scale.ts";
-import {generateEntitiesByTable} from "./node/TableNode.ts";
-import {Minus, Plus} from "@element-plus/icons-vue";
 import SaveIcon from "../icons/toolbar/SaveIcon.vue";
 import UndoIcon from "../icons/toolbar/UndoIcon.vue";
 import RedoIcon from "../icons/toolbar/RedoIcon.vue";
@@ -191,6 +167,11 @@ import AssociationOffIcon from "../icons/toolbar/AssociationOffIcon.vue";
 import AssociationIcon from "../icons/toolbar/AssociationIcon.vue";
 import EraserIcon from "../icons/toolbar/EraserIcon.vue";
 import DownloadIcon from "../icons/toolbar/DownloadIcon.vue";
+import MiniMap from "../../utils/graphEditor/components/MiniMap.vue";
+import ScaleBar from "../../utils/graphEditor/components/ScaleBar.vue";
+import Searcher from "./Searcher.vue";
+import {generateEntitiesByTable} from "./api.ts";
+import {useAssociationMatch} from "./AssociationMatch.ts";
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();
@@ -226,7 +207,7 @@ const {handleSave} = useSave(() => graph)
 useHistoryKeyEvent(() => graph)
 useSelectionKeyEvent(() => graph)
 
-const {handleMatch, matchTypes, matchType} = useTableEditorMatch(() => graph)
+const {handleMatch, matchTypes, matchType} = useAssociationMatch(() => graph)
 
 const handleUndo = () => {
 	graph.undo()

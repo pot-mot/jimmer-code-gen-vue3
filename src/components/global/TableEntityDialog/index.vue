@@ -4,12 +4,12 @@ import {GenTableAssociationView} from '../../../api/__generated/model/static'
 import DragDialog from "../../common/DragDialog.vue"
 import TableInfo from "./TableInfo.vue";
 import {api} from "../../../api";
-import {convertEntities} from "../../AssociationEditor/node/TableNode.ts";
 import {sendMessage} from "../../../utils/message.ts";
 import TableDefine from "./TableDefine.vue";
 import EntityInfo from "../../EntityGenerator/entity/EntityInfo.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
+import {convertEntities} from "../../AssociationEditor/api.ts";
 
 interface TableEntityDialogProps {
 	id: number

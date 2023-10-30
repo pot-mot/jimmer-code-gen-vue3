@@ -6,7 +6,6 @@ import Details from "../../common/Details.vue";
 import {useAssociationEditorGraphStore} from "../../AssociationEditor/store/AssociationEditorGraphStore.ts";
 import {Graph} from "@antv/x6";
 import {watch} from "vue";
-import {searchEdgesByColumn} from "../../AssociationEditor/edge/AssociationEdge.ts";
 import {
 	GenTableAssociationView_TargetOf_columns_TargetOf_inAssociations,
 	GenTableAssociationView_TargetOf_columns_TargetOf_outAssociations,
@@ -14,6 +13,7 @@ import {
 import {Delete} from "@element-plus/icons-vue";
 import {processClickFunction} from "../../../utils/clickTimer.ts";
 import Comment from "../../common/Comment.vue";
+import {searchEdgesByColumn} from "../../../utils/graphEditor/search.ts";
 
 const store = useAssociationEditorGraphStore()
 

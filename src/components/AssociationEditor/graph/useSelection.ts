@@ -1,8 +1,7 @@
-import {Graph, Node, Edge} from "@antv/x6";
+import {Graph, Node} from "@antv/x6";
 import {Selection} from "@antv/x6-plugin-selection";
 import {onBeforeUnmount, onMounted} from "vue";
 import {AssociationEditorGraphEventBus} from "../eventBus/AssociationEditorGraphEventBus.ts";
-import {searchEdgesByNode} from "../edge/AssociationEdge.ts";
 
 export const useSelection = (graph: Graph) => {
     graph.use(
@@ -92,32 +91,4 @@ export const useSelectionKeyEvent = (_graph: () => Graph) => {
     onBeforeUnmount(() => {
         document.documentElement.removeEventListener('keydown', handleKeyEvent)
     })
-}
-
-export const getSelectedNodes = (graph: Graph): Node[] => {
-    return graph.getSelectedCells().filter(cell => cell.isNode()).map(cell => cell as Node)
-}
-
-export const getSelectedEdges = (graph: Graph): Edge[] => {
-    const selectedNodes = getSelectedNodes(graph)
-    const baseSelectedEdges = graph.getSelectedCells().filter(cell => cell.isEdge()).map(cell => cell as Edge)
-
-    const edgeIdSet = new Set(baseSelectedEdges.map(it => it.id))
-
-    selectedNodes.forEach(node => {
-        const selectEdges = searchEdgesByNode(graph, {
-            targetNodeId: node.id,
-            sourceNodeId: node.id,
-            selectType: 'OR'
-        })
-
-        selectEdges.forEach(edge => {
-            if (!edgeIdSet.has(edge.id)) {
-                baseSelectedEdges.push(edge)
-                edgeIdSet.add(edge.id)
-            }
-        })
-    })
-
-    return baseSelectedEdges
 }

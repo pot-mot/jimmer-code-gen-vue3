@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 import {GenAssociationMatchView, GenTableAssociationView, GenTableColumnView} from "../../../api/__generated/model/static";
 import {Graph, Node, Edge, Cell} from "@antv/x6";
 import {
-    getAssociations, searchEdgesByColumn,
+    getAssociations,
 } from "../edge/AssociationEdge.ts";
 import {
     getTables,
@@ -11,12 +11,13 @@ import {
 } from "../node/TableNode.ts";
 import {defaultZoomRange} from "../graph/scale.ts";
 import {computed, nextTick, Ref, ref, watch} from 'vue';
-import {getSelectedEdges, getSelectedNodes} from "../graph/useSelection.ts";
 import {sendMessage} from "../../../utils/message.ts";
 import {AssociationEditorGraphEventBus} from "../eventBus/AssociationEditorGraphEventBus.ts";
 import {api} from "../../../api";
 import {AssociationEditorMenuEventBus} from "../eventBus/AssociationEditorMenuEventBus.ts";
-import {dagreLayout, getPoint} from "../layout/dagre/layout.ts";
+import {getPoint, layoutByLevel} from "../../../utils/graphEditor/layout.ts";
+import {searchEdgesByColumn} from "../../../utils/graphEditor/search.ts";
+import {getSelectedEdges, getSelectedNodes} from "../../../utils/graphEditor/selection.ts";
 
 type CellInput = Cell | string | number
 
@@ -97,19 +98,6 @@ export const useAssociationEditorGraphStore =
             const canUndo = ref(false)
             const canRedo = ref(false)
 
-            const scaling = ref(4)
-            const formatScaling = computed<number>({
-                set(newValue) {
-                    if (isLoaded.value) {
-                        scaling.value = Math.pow(2, newValue)
-                        _graph().zoomTo(scaling.value)
-                    }
-                },
-                get() {
-                    return Math.log2(scaling.value)
-                }
-            })
-
             const isSelectionEmpty = ref(true)
             const selectedNodes = ref(<Node[]>[])
             const selectedEdges = ref(<Edge[]>[])
@@ -143,12 +131,6 @@ export const useAssociationEditorGraphStore =
                         canRedo.value = graph.canRedo()
                     })
 
-                    scaling.value = graph.scale().sx
-
-                    graph.on('scale', ({sx}) => {
-                        scaling.value = sx
-                    })
-
                    initWatcher()
                 }
             }, {deep: true, immediate: true})
@@ -157,7 +139,7 @@ export const useAssociationEditorGraphStore =
 
             /** 布局 */
             const layout = (direction: "LR" | "TB" | "RL" | "BT" = layoutDirection.value) => {
-                dagreLayout(_graph(), direction)
+                layoutByLevel(_graph(), direction)
             }
 
             /**
@@ -429,8 +411,6 @@ export const useAssociationEditorGraphStore =
                 selectedEdges,
                 canUndo,
                 canRedo,
-                scaling,
-                formatScaling,
 
                 layoutDirection,
                 center,

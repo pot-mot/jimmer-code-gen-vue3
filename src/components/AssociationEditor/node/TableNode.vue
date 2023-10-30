@@ -36,6 +36,10 @@
 		border: 1px solid #000;
 		border-collapse: collapse;
 
+		&:hover {
+			box-shadow: var(--el-box-shadow-dark);
+		}
+
 		.tableName, .column {
 			white-space: nowrap;
 			height: 30px;
@@ -60,7 +64,7 @@
 
 .x6-node-selected .table-wrapper {
 	outline: 2px solid var(--highlight-color);
-	outline-offset: 4px;
+	outline-offset: 2px;
 }
 </style>
 

@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import {nextTick, ref} from "vue";
 import {MiniMap} from "@antv/x6-plugin-minimap";
-import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
 import {ArrowDown, ArrowUp} from "@element-plus/icons-vue";
-
-const store = useAssociationEditorGraphStore()
+import {Graph} from "@antv/x6";
 
 const openState = ref(false)
 
@@ -12,12 +10,16 @@ const minimap = ref<MiniMap | undefined>()
 
 const container = ref<HTMLElement>()
 
+interface MiniMapProps {
+	graph: Graph
+}
+
+const props = defineProps<MiniMapProps>()
+
 const setMiniMap = async () => {
 	await nextTick()
 
-	const graph = store._graph()
-
-	if (!graph || !container.value) return
+	if (!props.graph || !container.value) return
 
 	minimap.value = new MiniMap({
 		container: container.value,
@@ -35,7 +37,7 @@ const setMiniMap = async () => {
 		}
 	})
 
-	graph.use(
+	props.graph.use(
 		minimap.value
 	);
 }

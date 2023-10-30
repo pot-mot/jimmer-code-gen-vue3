@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import {nextTick, onBeforeUnmount, onMounted, ref} from "vue";
 import {Graph, Node} from "@antv/x6";
-import DragDialog from "../../common/DragDialog.vue";
-import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
-import {GenTableColumnView} from "../../../api/__generated/model/static";
-import {processClickFunction} from "../../../utils/clickTimer.ts";
-import Comment from "../../common/Comment.vue";
+import {useAssociationEditorGraphStore} from "./store/AssociationEditorGraphStore.ts";
+import {GenTableColumnView} from "../../api/__generated/model/static";
+import {processClickFunction} from "../../utils/clickTimer.ts";
+import Comment from "../common/Comment.vue";
+import DragDialog from "../common/DragDialog.vue";
 
 const store = useAssociationEditorGraphStore()
 

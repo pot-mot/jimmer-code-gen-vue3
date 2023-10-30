@@ -2,7 +2,7 @@ import {Graph} from "@antv/x6"
 import {AssociationEdgeConnecting} from "../edge/AssociationEdge.ts"
 import {defaultZoomRange} from "./scale.ts"
 import {debounce} from 'lodash'
-import {COMMON_COLOR, HIGHLIGHT_COLOR} from "../constant";
+import {useEdgeStyle, useHoverToFront} from "../../../utils/graphEditor/style.ts";
 
 export const initGraph = (container: HTMLElement, wrapper: HTMLElement): Graph => {
     const graph = new Graph({
@@ -31,27 +31,7 @@ export const initGraph = (container: HTMLElement, wrapper: HTMLElement): Graph =
     resizeOb.observe(wrapper)
 
     useHoverToFront(graph)
-    useEdgeColor(graph)
+    useEdgeStyle(graph)
 
     return graph
-}
-
-const useHoverToFront = (graph: Graph) => {
-    graph.on('cell:mouseenter', ({cell}) => {
-        cell.toFront()
-        if (cell.isNode()) {
-            graph.getConnectedEdges(cell).forEach(edge => {
-                edge.toFront()
-            })
-        }
-    })
-}
-
-const useEdgeColor = (graph: Graph) => {
-    graph.on('edge:selected', ({edge}) => {
-        edge.attr('line/stroke', HIGHLIGHT_COLOR)
-    })
-    graph.on('edge:unselected', ({edge}) => {
-        edge.attr('line/stroke', COMMON_COLOR)
-    })
 }

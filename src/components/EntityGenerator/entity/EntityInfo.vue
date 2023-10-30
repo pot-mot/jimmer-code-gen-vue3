@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {GenEntityPropertiesView} from "../../../api/__generated/model/static";
-import {convertEntities, generateEntities, previewEntities} from "../../AssociationEditor/node/TableNode.ts";
 import {ref, watch} from "vue";
 import {api} from "../../../api";
 import {sendMessage} from "../../../utils/message.ts";
 import CodePreview from "../../common/CodePreview.vue";
 import Details from "../../common/Details.vue";
 import Comment from "../../common/Comment.vue";
+import {convertEntities, generateEntities, previewEntities} from "../../AssociationEditor/api.ts";
 
 interface EntityInfoProps {
 	id: number

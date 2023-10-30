@@ -3,9 +3,8 @@ import {Graph, Node, Edge} from "@antv/x6";
 import {COLUMN_HEIGHT, COLUMN_PORT} from "../constant";
 import {columnToPort} from "../port/ColumnPort.ts";
 import {api} from "../../../api";
-import {importAssociationEdges} from "../edge/AssociationEdge.ts";
 import {sendMessage} from "../../../utils/message.ts";
-import {saveAs} from 'file-saver';
+import {importAssociationEdges} from "../api.ts";
 
 export const tableIdToNodeId = (id: number) => {
     return `table-${id}`
@@ -150,24 +149,4 @@ export const loadTableNodes = async (graph: Graph, ids: number[], replace: boole
     graph.stopBatch('add nodes')
 
     return {nodes, edges, existedIds}
-}
-
-export const convertEntities = async (tableIds: number[]) => {
-    return await api.generateService.convert({body: tableIds})
-}
-
-export const previewEntities = async (entityIds: number[]) => {
-    return await api.generateService.preview({entityIds})
-}
-
-export const generateEntitiesByTable = async (tableIds: number[]) => {
-    const res = (await api.generateService.generateByTable({body: tableIds})) as any as Blob
-    const file = new File([res], "entities.zip")
-    saveAs(file)
-}
-
-export const generateEntities = async (entityIds: number[]) => {
-    const res = (await api.generateService.generate({body: entityIds})) as any as Blob
-    const file = new File([res], "entities.zip")
-    saveAs(file)
 }

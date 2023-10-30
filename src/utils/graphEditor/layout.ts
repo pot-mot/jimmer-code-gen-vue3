@@ -1,10 +1,9 @@
 import {Edge, Graph, Node} from "@antv/x6"
-import {nodeIdToTableId} from "../../node/TableNode.ts"
 import {Point} from "@antv/x6-geometry"
-import {getSelectedEdges, getSelectedNodes} from "../../graph/useSelection.ts";
+import {getSelectedEdges, getSelectedNodes} from "./selection.ts";
 
 interface LayoutNode {
-    id: number
+    id: string
     level: number
     visited: boolean
     inDegree: number
@@ -14,8 +13,8 @@ interface LayoutNode {
 }
 
 interface LayoutEdge {
-    target: number
-    source: number
+    target: string
+    source: string
 }
 
 /**
@@ -26,7 +25,7 @@ interface LayoutEdge {
 const toLayoutNodes = (nodes: readonly Node[]): LayoutNode[] => {
     return nodes.map(node => {
         return {
-            id: nodeIdToTableId(node.id),
+            id: node.id,
             level: 0,
             visited: false,
             inDegree: 0,
@@ -51,8 +50,8 @@ const toLayoutEdges = (edges: readonly Edge[]): LayoutEdge[] => {
 
         if (!targetNode || !sourceNode) return;
 
-        const target = nodeIdToTableId(targetNode.id)
-        const source = nodeIdToTableId(sourceNode.id)
+        const target = targetNode.id
+        const source = sourceNode.id
         result.push({target, source})
     })
 
@@ -65,7 +64,7 @@ const toLayoutEdges = (edges: readonly Edge[]): LayoutEdge[] => {
  * @param edges 布局边
  */
 const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
-    const nodeMap: Map<number, LayoutNode> = new Map()
+    const nodeMap: Map<string, LayoutNode> = new Map()
 
     for (const node of nodes) {
         nodeMap.set(node.id, node)
@@ -342,7 +341,7 @@ const layoutBT = (options: Partial<LevelLayoutOptions>) => {
  * @param gapX 水平排布间距
  * @param gapY 垂直排布间距
  */
-export const dagreLayout = (
+export const layoutByLevel = (
     graph: Graph,
     direction: "LR" | "TB" | "RL" | "BT" = "LR",
     gapX: number = 200,

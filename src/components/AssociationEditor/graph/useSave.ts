@@ -1,7 +1,7 @@
 import {Graph} from "@antv/x6";
-import {saveGraph} from "./localStorage";
+import {saveGraph} from "../store/localStorage.ts";
 import {onBeforeUnmount, onMounted, onUnmounted} from "vue";
-import {saveAssociations} from "../edge/AssociationEdge.ts";
+import {saveAssociations} from "../api.ts";
 
 export const useSave = (_graph: () => Graph) => {
     const handleSave = async () => {
@@ -10,6 +10,7 @@ export const useSave = (_graph: () => Graph) => {
         if (!graph) return
 
         saveGraph(graph)
+        await saveAssociations(graph)
     }
 
     const handleKeyEvent = async (e: KeyboardEvent) => {
@@ -17,18 +18,31 @@ export const useSave = (_graph: () => Graph) => {
             if (e.key == 's') {
                 e.preventDefault()
                 await handleSave()
-
-                const graph = _graph()
-                await saveAssociations(graph)
             }
         }
+    }
+
+    const handleSaveEditor = () => {
+        const graph = _graph()
+
+        if (!graph) return
+
+        saveGraph(graph)
+    }
+
+    const handleSaveAssociation = async () => {
+        const graph = _graph()
+
+        if (!graph) return
+
+        await saveAssociations(graph)
     }
 
     onMounted(() => {
         document.documentElement.addEventListener('keydown', handleKeyEvent)
 
-        window.addEventListener('popstate', handleSave)
-        window.addEventListener('unload', handleSave)
+        window.addEventListener('popstate', handleSaveEditor)
+        window.addEventListener('unload', handleSaveEditor)
     })
 
     onBeforeUnmount(() => {
@@ -37,13 +51,15 @@ export const useSave = (_graph: () => Graph) => {
 
     /** 需要在卸载后略微延迟 */
     onUnmounted(() => {
-        window.removeEventListener('unload', handleSave)
+        window.removeEventListener('unload', handleSaveEditor)
         setTimeout(() => {
-            window.removeEventListener('popstate', handleSave)
+            window.removeEventListener('popstate', handleSaveEditor)
         }, 0)
     })
 
     return {
-        handleSave
+        handleSave,
+        handleSaveEditor,
+        handleSaveAssociation,
     }
 }
