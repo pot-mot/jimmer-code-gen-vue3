@@ -1,8 +1,10 @@
 import {Graph} from "@antv/x6"
-import {AssociationEdgeConnecting} from "../edge/AssociationEdge.ts"
-import {defaultZoomRange} from "./scale.ts"
+import {AssociationEdgeConnecting} from "./edge/AssociationEdge.ts"
+import {defaultZoomRange} from "./constant.ts"
 import {debounce} from 'lodash'
-import {useEdgeStyle, useHoverToFront} from "../../../utils/graphEditor/style.ts";
+import {useEdgeStyle, useHoverToFront} from "../../utils/graphEditor/style.ts";
+import {useHistory} from "../../utils/graphEditor/history/useHistory.ts";
+import {useSelection} from "../../utils/graphEditor/selection/useSelection.ts";
 
 export const initGraph = (container: HTMLElement, wrapper: HTMLElement): Graph => {
     const graph = new Graph({
@@ -32,6 +34,8 @@ export const initGraph = (container: HTMLElement, wrapper: HTMLElement): Graph =
 
     useHoverToFront(graph)
     useEdgeStyle(graph)
+    useHistory(graph)
+    useSelection(graph)
 
     return graph
 }

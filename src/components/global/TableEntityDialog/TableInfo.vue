@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {MANY_TO_ONE, ONE_TO_ONE} from "../../AssociationEditor/constant";
+import {MANY_TO_ONE, ONE_TO_ONE} from "../../AssociationEditor/constant.ts";
 import {GenTableAssociationView} from "../../../api/__generated/model/static";
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import Details from "../../common/Details.vue";

@@ -1,3 +1,8 @@
+export const defaultZoomRange = {
+    minScale: 0.03125,
+    maxScale: 4,
+}
+
 export const COLUMN_PORT_GROUP = "COLUMN_PORT_GROUP"
 
 export const COLUMN_PORT = "COLUMN_PORT"

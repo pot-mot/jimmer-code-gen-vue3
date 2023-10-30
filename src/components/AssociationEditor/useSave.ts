@@ -1,7 +1,7 @@
 import {Graph} from "@antv/x6";
-import {saveGraph} from "../store/localStorage.ts";
+import {saveGraph} from "./store/localStorage.ts";
 import {onBeforeUnmount, onMounted, onUnmounted} from "vue";
-import {saveAssociations} from "../api.ts";
+import {saveAssociations} from "./api.ts";
 
 export const useSave = (_graph: () => Graph) => {
     const handleSave = async () => {

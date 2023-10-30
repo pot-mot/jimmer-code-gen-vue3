@@ -1,6 +1,6 @@
 import {GenTableColumnView} from "../../../api/__generated/model/static";
 import {Graph, Node, Edge} from "@antv/x6";
-import {COLUMN_HEIGHT, COLUMN_PORT} from "../constant";
+import {COLUMN_HEIGHT, COLUMN_PORT} from "../constant.ts";
 import {columnToPort} from "../port/ColumnPort.ts";
 import {api} from "../../../api";
 import {sendMessage} from "../../../utils/message.ts";

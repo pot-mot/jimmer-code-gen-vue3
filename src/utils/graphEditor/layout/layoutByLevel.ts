@@ -1,6 +1,8 @@
 import {Edge, Graph, Node} from "@antv/x6"
-import {Point} from "@antv/x6-geometry"
-import {getSelectedEdges, getSelectedNodes} from "./selection.ts";
+import {getSelectedEdges, getSelectedNodes} from "../selection/selectOperation.ts";
+import {max, min} from "lodash";
+
+export type LayoutDirection = "LR" | "TB" | "RL" | "BT"
 
 interface LayoutNode {
     id: string
@@ -198,64 +200,28 @@ const getRanks = (nodes: readonly LayoutNode[]): Node[][] => {
     return result
 }
 
-/**
- * 获取节点中的端点位置
- * @param nodes 节点
- * @param direction 位置，左上/右上/左下/右下
- * @returns 端点
- */
-export const getPoint = (nodes: Node[], direction: "LT" | "RT" | "LB" | "RB" = "LT"): Point.PointLike => {
-    return nodes.reduce((targetPoint, node) => {
-            const current = node.getPosition()
-
-            if (!targetPoint) {
-                return current // 第一个点作为初始值
-            }
-
-            switch (direction) {
-                case "LT":
-                    if (current.x < targetPoint.x || (current.x === targetPoint.x && current.y < targetPoint.y)) {
-                        return current // 当前点比累积的点更左上，更新累积的点
-                    }
-                    break
-                case "RT":
-                    if (current.x > targetPoint.x || (current.x === targetPoint.x && current.y < targetPoint.y)) {
-                        return current // 当前点比累积的点更右上，更新累积的点
-                    }
-                    break
-                case "LB":
-                    if (current.x < targetPoint.x || (current.x === targetPoint.x && current.y > targetPoint.y)) {
-                        return current // 当前点比累积的点更左下，更新累积的点
-                    }
-                    break
-                case "RB":
-                    if (current.x > targetPoint.x || (current.x === targetPoint.x && current.y > targetPoint.y)) {
-                        return current // 当前点比累积的点更右下，更新累积的点
-                    }
-                    break
-            }
-
-            return targetPoint // 当前点不是目标位置的点，保持累积的点不变
-        },
-        {
-            x: direction == 'LT' || direction == 'LB' ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER,
-            y: direction == 'LT' || direction == 'RT' ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER,
-        }
-    )
+export const getLeft = (nodes: Node[]): number | undefined => {
+    return min(nodes.map(node => node.getPosition().x))
 }
 
-const getMaxWidth = (nodes: Node[]): number => {
-    return nodes.reduce((maxWidth, node) => {
-        const width = node.getSize().width
-        return Math.max(maxWidth, width)
-    }, 0)
+export const getRight = (nodes: Node[]): number | undefined => {
+    return max(nodes.map(node => node.getPosition().x + node.getSize().width))
 }
 
-const getMaxHeight = (nodes: Node[]): number => {
-    return nodes.reduce((maxHeight, node) => {
-        const height = node.getSize().height
-        return Math.max(maxHeight, height)
-    }, 0)
+export const getTop = (nodes: Node[]): number | undefined => {
+    return min(nodes.map(node => node.getPosition().y))
+}
+
+export const getBottom = (nodes: Node[]): number | undefined => {
+    return max(nodes.map(node => node.getPosition().y + node.getSize().height))
+}
+
+const getMaxWidth = (nodes: Node[]): number | undefined => {
+    return max(nodes.map(node => node.getSize().width))
+}
+
+const getMaxHeight = (nodes: Node[]): number | undefined => {
+    return max(nodes.map(node => node.getSize().height))
 }
 
 interface LayoutOptions {
@@ -284,7 +250,9 @@ const layoutLR = (options: Partial<LevelLayoutOptions>) => {
     let tempX = startX
 
     for (const nodes of nodeRanks) {
-        const width = getMaxWidth(nodes)
+        if (nodes.length == 0) continue
+
+        const width = getMaxWidth(nodes)!
         let tempY = startY
 
         for (const node of nodes) {
@@ -308,7 +276,9 @@ const layoutTB = (options: Partial<LevelLayoutOptions>) => {
     let tempY = startY
 
     for (const nodes of nodeRanks) {
-        const height = getMaxHeight(nodes)
+        if (nodes.length == 0) continue
+
+        const height = getMaxHeight(nodes)!
         let tempX = startX
 
         for (const node of nodes) {
@@ -371,12 +341,10 @@ export const layoutByLevel = (
 
     const nodeRanks = getRanks(nodes)
 
-    const {x: startX, y: startY} = getPoint(nodes.map(node => node.node), "LT")
-
     const options: LevelLayoutOptions = {
         nodeRanks,
-        startX,
-        startY,
+        startX: getLeft(nodes.map(it => it.node))!,
+        startY: getTop(nodes.map(it => it.node))!,
         gapX,
         gapY
     }

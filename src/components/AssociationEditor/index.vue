@@ -18,11 +18,11 @@
 			</li>
 
 			<li>
-				<el-tooltip content="撤回 [Ctrl + z]" :disabled="!store.canUndo">
-					<el-button :disabled="!store.canUndo" @click="handleUndo" :icon="UndoIcon"></el-button>
+				<el-tooltip content="撤回 [Ctrl + z]" :disabled="!canUndo">
+					<el-button :disabled="!canUndo" @click="handleUndo" :icon="UndoIcon"></el-button>
 				</el-tooltip>
-				<el-tooltip content="重做 [Ctrl + Shift + z]" :disabled="!store.canRedo">
-					<el-button :disabled="!store.canRedo" @click="handleRedo" :icon="RedoIcon"></el-button>
+				<el-tooltip content="重做 [Ctrl + Shift + z]" :disabled="!canRedo">
+					<el-button :disabled="!canRedo" @click="handleRedo" :icon="RedoIcon"></el-button>
 				</el-tooltip>
 			</li>
 
@@ -30,7 +30,7 @@
 				<el-tooltip content="整理布局">
 					<el-button @click="handleLayout" class="cling-right" :icon="LayoutIcon"></el-button>
 				</el-tooltip>
-				<el-select style="width: 4em;" class="cling-left" v-model="store.layoutDirection" @change="handleLayout"
+				<el-select style="width: 4em;" class="cling-left" v-model="layoutDirection" @change="handleLayout"
 						   size="small">
 					<el-option value="LR" label="→">左至右</el-option>
 					<el-option value="RL" label="←">右至左</el-option>
@@ -51,20 +51,20 @@
 			</li>
 
 			<li>
-				<el-tooltip :content="(store.isSelectionEmpty ? '清理画布' : '移除选中节点与关联') +'[Delete]'">
-					<el-button @click="store.isSelectionEmpty ? store.removeAllCells() : store.removeSelectedCells()" :icon="EraserIcon"></el-button>
+				<el-tooltip :content="(isSelectionEmpty ? '清理画布' : '移除选中节点与关联') +'[Delete]'">
+					<el-button @click="isSelectionEmpty ? store.removeAllCells() : store.removeSelectedCells()" :icon="EraserIcon"></el-button>
 				</el-tooltip>
 			</li>
 			<li>
-				<el-tooltip :content="(store.isSelectionEmpty ? '清除关联' : '移除选中关联') + '[Shift + Delete]'">
-					<el-button @click="store.isSelectionEmpty ? store.removeAllAssociations() : store.removeSelectedAssociations()" :icon="AssociationOffIcon"></el-button>
+				<el-tooltip :content="(isSelectionEmpty ? '清除关联' : '移除选中关联') + '[Shift + Delete]'">
+					<el-button @click="isSelectionEmpty ? store.removeAllEdges() : store.removeSelectedEdges()" :icon="AssociationOffIcon"></el-button>
 				</el-tooltip>
 			</li>
 		</ul>
 
 		<ul v-if="store.isLoaded" class="toolbar right-top">
 			<li>
-				<el-tooltip :content="store.isSelectionEmpty ? '匹配关联' : '在选中范围内匹配关联'">
+				<el-tooltip :content="isSelectionEmpty ? '匹配关联' : '在选中范围内匹配关联'">
 					<el-button class="cling-right" @click="handleMatch" :icon="AssociationIcon"></el-button>
 				</el-tooltip>
 
@@ -149,14 +149,11 @@ import {ColumnPort} from "./port/ColumnPort.ts";
 
 import {register} from "@antv/x6-vue-shape";
 import TableNode from "./node/TableNode.vue";
-import {initGraph} from "./graph/init.ts";
-import {COLUMN_PORT} from "./constant";
-import {useHistory, useHistoryKeyEvent} from "./graph/useHistory.ts";
-import {useSelection, useSelectionKeyEvent} from "./graph/useSelection.ts";
+import {initGraph} from "./init.ts";
+import {COLUMN_PORT} from "./constant.ts";
 import {useSwitchAssociationType} from "./edge/AssociationEdge.ts";
 import {loadGraph} from "./store/localStorage.ts";
 import {useAssociationEditorGraphStore} from "./store/AssociationEditorGraphStore.ts";
-import {useSave} from "./graph/useSave.ts";
 import SaveIcon from "../icons/toolbar/SaveIcon.vue";
 import UndoIcon from "../icons/toolbar/UndoIcon.vue";
 import RedoIcon from "../icons/toolbar/RedoIcon.vue";
@@ -172,6 +169,13 @@ import ScaleBar from "../../utils/graphEditor/components/ScaleBar.vue";
 import Searcher from "./Searcher.vue";
 import {generateEntitiesByTable} from "./api.ts";
 import {useAssociationMatch} from "./AssociationMatch.ts";
+import {useGraphReactiveState} from "../../utils/graphEditor/useReactiveState.ts";
+import {nodeIdToTableId} from "./node/TableNode.ts";
+import {useHistoryKeyEvent} from "../../utils/graphEditor/history/useHistory.ts";
+import {useSelectionKeyEvent} from "../../utils/graphEditor/selection/useSelection.ts";
+import {useSave} from "./useSave.ts";
+import {useFitAndLayout} from "../../utils/graphEditor/layout/useFitAndLayout.ts";
+import {AssociationEditorMenuEventBus} from "./eventBus/AssociationEditorMenuEventBus.ts";
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();
@@ -197,18 +201,26 @@ onMounted(() => {
 	useSwitchAssociationType(graph)
 	loadGraph(graph)
 	store.load(graph)
-
-	useHistory(graph)
-	useSelection(graph)
 })
 
-const {handleSave} = useSave(() => graph)
+const {
+	isSelectionEmpty,
+	canUndo,
+	canRedo,
+	selectedNodes
+} = useGraphReactiveState(() => graph)
+
+const {
+	handleSave
+} = useSave(() => graph)
+
+const {
+	handleMatch,
+	matchTypes,
+	matchType
+} = useAssociationMatch(() => graph)
 
 useHistoryKeyEvent(() => graph)
-useSelectionKeyEvent(() => graph)
-
-const {handleMatch, matchTypes, matchType} = useAssociationMatch(() => graph)
-
 const handleUndo = () => {
 	graph.undo()
 }
@@ -217,15 +229,23 @@ const handleRedo = () => {
 	graph.redo()
 }
 
+useSelectionKeyEvent(() => graph)
+
+const {
+	layoutDirection,
+	layout,
+	fit
+} = useFitAndLayout(() => graph)
+
 const handleLayout = () => {
-	store.layout()
+	layout()
 	nextTick(() => {
 		graph.centerContent()
 	})
 }
 
 const handleFit = () => {
-	store.fit()
+	fit()
 }
 
 const handleCenter = () => {
@@ -234,9 +254,16 @@ const handleCenter = () => {
 
 const handleGenerateEntities = () => {
 	generateEntitiesByTable(
-		store.isSelectionEmpty ?
-			store.tables().map(table => table.id) :
-			store.selectedTables.map(table => table.id)
+		isSelectionEmpty.value ?
+			store.tables().map(it => it.id) : selectedNodes.value.map(it => nodeIdToTableId(it.id))
 	)
 }
+
+AssociationEditorMenuEventBus.on('deleteDataSource', ({id}) => {
+	store.removeTables(table => table.schema?.dataSource.id == id)
+})
+
+AssociationEditorMenuEventBus.on('deleteSchema', ({id}) => {
+	store.removeTables(table => table.schema?.id == id)
+})
 </script>

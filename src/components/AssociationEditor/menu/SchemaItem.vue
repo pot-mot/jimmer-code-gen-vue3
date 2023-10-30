@@ -35,7 +35,7 @@ const handleLoadOrSelect = () => {
 }
 
 const handleDelete = () => {
-	deleteConfirm("架构【${props.schema.name}】",
+	deleteConfirm(`架构【${props.schema.name}】`,
 		() => {
 			const id = props.schema.id
 			api.schemaService.delete({ids: [id]}).then(res => {

@@ -4,7 +4,7 @@ import {AssociationMatchType} from "../../api/__generated/model/enums";
 import {api} from "../../api";
 import {nodeIdToTableId} from "./node/TableNode.ts";
 import {importAssociationEdges} from "./api.ts";
-import {getSelectedNodes} from "../../utils/graphEditor/selection.ts";
+import {getSelectedNodes} from "../../utils/graphEditor/selection/selectOperation.ts";
 
 export const useAssociationMatch = (_graph: () => Graph) => {
     const matchTypes: Ref<ReadonlyArray<AssociationMatchType>> = ref([])

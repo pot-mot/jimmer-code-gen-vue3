@@ -1,5 +1,5 @@
 import {Edge, Graph, Shape} from "@antv/x6";
-import {COMMON_COLOR, MANY_TO_ONE, ONE_TO_ONE} from "../constant";
+import {COMMON_COLOR, MANY_TO_ONE, ONE_TO_ONE} from "../constant.ts";
 import {AssociationType} from "../../../api/__generated/model/enums";
 import {GenAssociationMatchView} from "../../../api/__generated/model/static";
 import {columnIdToPortId, portIdToColumnId} from "../port/ColumnPort.ts";

@@ -1,5 +1,5 @@
 import {KeyValue} from "@antv/x6";
-import {COLUMN_HEIGHT, COLUMN_PORT_GROUP} from "../constant";
+import {COLUMN_HEIGHT, COLUMN_PORT_GROUP} from "../constant.ts";
 import {GenTableColumnView_TargetOf_columns} from "../../../api/__generated/model/static/GenTableColumnView.ts";
 
 export const ColumnPort = (portsPositionArgs: KeyValue) => {

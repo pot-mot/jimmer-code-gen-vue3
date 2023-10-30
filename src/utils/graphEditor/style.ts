@@ -1,5 +1,5 @@
 import {Graph} from "@antv/x6";
-import {COMMON_COLOR, HIGHLIGHT_COLOR} from "../../components/AssociationEditor/constant";
+import {COMMON_COLOR, HIGHLIGHT_COLOR} from "../../components/AssociationEditor/constant.ts";
 
 export const useHoverToFront = (graph: Graph) => {
     graph.on('cell:mouseenter', ({cell}) => {
