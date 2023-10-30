@@ -46,7 +46,7 @@
 			</li>
 			<li>
 				<el-tooltip content="居中">
-					<el-button @click="handleCenterContent" :icon="CenterIcon"></el-button>
+					<el-button @click="handleCenter" :icon="CenterIcon"></el-button>
 				</el-tooltip>
 			</li>
 
@@ -247,8 +247,8 @@ const handleFit = () => {
 	store.fit()
 }
 
-const handleCenterContent = () => {
-	graph.centerContent()
+const handleCenter = () => {
+	store.center()
 }
 
 const handleGenerateEntities = () => {

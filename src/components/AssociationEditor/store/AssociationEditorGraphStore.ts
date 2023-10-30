@@ -16,7 +16,7 @@ import {sendMessage} from "../../../utils/message.ts";
 import {AssociationEditorGraphEventBus} from "../eventBus/AssociationEditorGraphEventBus.ts";
 import {api} from "../../../api";
 import {AssociationEditorMenuEventBus} from "../eventBus/AssociationEditorMenuEventBus.ts";
-import {dagreLayout} from "../layout/dagre/layout.ts";
+import {dagreLayout, getPoint} from "../layout/dagre/layout.ts";
 
 type CellInput = Cell | string | number
 
@@ -386,6 +386,35 @@ export const useAssociationEditorGraphStore =
                 graph.select(cell)
             }
 
+            const center = () => {
+                const graph = _graph()
+
+                const nodes = getSelectedNodes(graph)
+
+                if (graph.isSelectionEmpty()) {
+                    graph.centerContent()
+                } else if (nodes.length == 1) {
+                    focus(nodes[0].id)
+                } else {
+                    const leftTop = getPoint(nodes, "LT")
+                    const rightBottom = getPoint(nodes, "RB")
+
+                    console.log(leftTop, rightBottom)
+
+                    const centerPoint = {
+                        x: (rightBottom.x - leftTop.x) / 2 + leftTop.x,
+                        y: (rightBottom.y - leftTop.y) / 2 + leftTop.y,
+                    }
+
+                    console.log(centerPoint)
+
+                    graph.centerPoint(
+                        centerPoint.x,
+                        centerPoint.y
+                    )
+                }
+            }
+
             return {
                 isLoaded,
                 load,
@@ -404,6 +433,7 @@ export const useAssociationEditorGraphStore =
                 formatScaling,
 
                 layoutDirection,
+                center,
                 fit,
                 layout,
                 layoutAndFit,

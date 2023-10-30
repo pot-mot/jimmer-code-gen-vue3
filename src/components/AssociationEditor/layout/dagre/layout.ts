@@ -205,39 +205,44 @@ const getRanks = (nodes: readonly LayoutNode[]): Node[][] => {
  * @param direction 位置，左上/右上/左下/右下
  * @returns 端点
  */
-const getPoint = (nodes: Node[], direction: "LT" | "RT" | "LB" | "RB" = "LT"): Point.PointLike => {
+export const getPoint = (nodes: Node[], direction: "LT" | "RT" | "LB" | "RB" = "LT"): Point.PointLike => {
     return nodes.reduce((targetPoint, node) => {
-        const current = node.getPosition()
+            const current = node.getPosition()
 
-        if (!targetPoint) {
-            return current // 第一个点作为初始值
+            if (!targetPoint) {
+                return current // 第一个点作为初始值
+            }
+
+            switch (direction) {
+                case "LT":
+                    if (current.x < targetPoint.x || (current.x === targetPoint.x && current.y < targetPoint.y)) {
+                        return current // 当前点比累积的点更左上，更新累积的点
+                    }
+                    break
+                case "RT":
+                    if (current.x > targetPoint.x || (current.x === targetPoint.x && current.y < targetPoint.y)) {
+                        return current // 当前点比累积的点更右上，更新累积的点
+                    }
+                    break
+                case "LB":
+                    if (current.x < targetPoint.x || (current.x === targetPoint.x && current.y > targetPoint.y)) {
+                        return current // 当前点比累积的点更左下，更新累积的点
+                    }
+                    break
+                case "RB":
+                    if (current.x > targetPoint.x || (current.x === targetPoint.x && current.y > targetPoint.y)) {
+                        return current // 当前点比累积的点更右下，更新累积的点
+                    }
+                    break
+            }
+
+            return targetPoint // 当前点不是目标位置的点，保持累积的点不变
+        },
+        {
+            x: direction == 'LT' || direction == 'LB' ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER,
+            y: direction == 'LT' || direction == 'RT' ? Number.MAX_SAFE_INTEGER : Number.MIN_SAFE_INTEGER,
         }
-
-        switch (direction) {
-            case "LT":
-                if (current.x < targetPoint.x || (current.x === targetPoint.x && current.y < targetPoint.y)) {
-                    return current // 当前点比累积的点更左上，更新累积的点
-                }
-                break
-            case "RT":
-                if (current.x > targetPoint.x || (current.x === targetPoint.x && current.y < targetPoint.y)) {
-                    return current // 当前点比累积的点更右上，更新累积的点
-                }
-                break
-            case "LB":
-                if (current.x < targetPoint.x || (current.x === targetPoint.x && current.y > targetPoint.y)) {
-                    return current // 当前点比累积的点更左下，更新累积的点
-                }
-                break
-            case "RB":
-                if (current.x > targetPoint.x || (current.x === targetPoint.x && current.y > targetPoint.y)) {
-                    return current // 当前点比累积的点更右下，更新累积的点
-                }
-                break
-        }
-
-        return targetPoint // 当前点不是目标位置的点，保持累积的点不变
-    }, {x: 0, y: 0})
+    )
 }
 
 const getMaxWidth = (nodes: Node[]): number => {
