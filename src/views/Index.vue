@@ -7,16 +7,73 @@
 
 	<div class="part">
 		<ul class="main">
-			<RouterLink to="/graph">
-				<li>
-					关联编辑
-				</li>
-			</RouterLink>
-			<RouterLink to="/entity">
-				<li>
-					实体管理
-				</li>
-			</RouterLink>
+			<li>
+				<RouterLink to="/model">
+					// TODO
+					<h2><el-text size="large">模型设计</el-text></h2>
+
+					<div class="body">
+						<el-text size="default">
+							从头开始设计你的数据库模型和关联关系
+						</el-text>
+
+						<ul>
+							<li>
+								<el-text size="default" type="success">
+									支持 ManyToMany
+								</el-text>
+							</li>
+							<li>
+								<el-text size="default" type="success">
+									不依赖数据源，且可以导入不同种类数据源
+								</el-text>
+							</li>
+						</ul>
+					</div>
+				</RouterLink>
+			</li>
+			<li>
+				<RouterLink to="/graph">
+					<h2><el-text size="large">关联编辑</el-text></h2>
+
+					<div class="body">
+						<el-text size="default">
+							基于已有的数据库结构快速生成关联模型与实体
+						</el-text>
+
+						<ul>
+							<li>
+								<el-text size="default" type="warning">
+									不支持 ManyToMany
+								</el-text>
+							</li>
+							<li>
+								<el-text size="default" type="warning">
+									依赖数据源
+								</el-text>
+							</li>
+						</ul>
+					</div>
+				</RouterLink>
+			</li>
+			<li>
+				<RouterLink to="/entity">
+					// TODO
+					<h2><el-text size="large">实体管理</el-text></h2>
+
+					<div class="body">
+						<el-text size="default">
+							管理生成的实体与枚举
+						</el-text>
+
+						<ul>
+							<el-text size="default" type="success">
+								连带包管理与批量生成 // TODO
+							</el-text>
+						</ul>
+					</div>
+				</RouterLink>
+			</li>
 		</ul>
 	</div>
 
@@ -48,15 +105,19 @@
 
 <style lang="scss" scoped>
 .part {
+	line-height: 1.7em;
+
 	h1 {
 		height: 120px;
 		line-height: 120px;
 		text-align: center;
+		color: var(--el-text-color);
 	}
 
 	h2 {
 		height: 45px;
 		line-height: 45px;
+		color: var(--el-text-color);
 	}
 }
 
@@ -64,10 +125,17 @@
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	grid-gap: 2em;
+	margin-bottom: 10px;
 
-	li {
+	> li {
 		height: 250px;
+		padding: 10px 0;
 		text-align: center;
+		box-shadow: var(--el-box-shadow);
+
+		&:hover {
+			box-shadow: var(--el-box-shadow-dark);
+		}
 	}
 }
 
@@ -94,5 +162,6 @@
 	}
 }
 </style>
+
 <script setup lang="ts">
 </script>

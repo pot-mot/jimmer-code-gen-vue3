@@ -64,7 +64,9 @@ AssociationEditorMenuEventBus.on('deleteDataSource', ({id}) => {
 
 <template>
 	<div class="wrapper" v-loading="dataSourcesLoading.isLoading()">
-		<el-button @click="handleSave">新增数据源</el-button>
+		<el-button @click="handleSave">导入数据源</el-button>
+		<el-button>导入模型 // TODO </el-button>
+
 		<template v-for="dataSource in dataSources">
 			<DataSourceItem :data-source="dataSource"/>
 		</template>
