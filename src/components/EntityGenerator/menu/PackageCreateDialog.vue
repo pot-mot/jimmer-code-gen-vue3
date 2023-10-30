@@ -2,7 +2,7 @@
 import {PackageMenuEventBus} from "../eventBus/PackageMenuEventBus.ts";
 import {ref} from "vue";
 import DragDialog from "../../common/DragDialog.vue";
-import {Plus} from "@element-plus/icons-vue";
+import PackageAddIcon from "../../icons/entity/PackageAddIcon.vue";
 
 interface PackageCreateDialogProps {
 	parentId?: number
@@ -32,9 +32,14 @@ const handleCreate = () => {
 </script>
 
 <template>
-	<el-button :icon="Plus" @click="handleOpen" link></el-button>
+	<span @click="handleOpen">
+		<slot name="button">
+			<PackageAddIcon></PackageAddIcon>
+		</slot>
+	</span>
 
 	<DragDialog v-if="openState" @close="openState = false" :can-drag="false" :x="x" :y="y" :init-w="300">
+		<el-text>新软件包名称</el-text>
 		<el-input
 			v-model="newPath"
 			@keydown.enter="handleCreate">

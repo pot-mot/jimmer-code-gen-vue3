@@ -26,12 +26,13 @@ export const sendMessage = (message: string, type: "info" | "success" | "warning
 }
 
 export const deleteConfirm = (
-    message: string,
+    deleteTarget: string,
     callback: () => void,
+    message: string = "",
     opts?: ElMessageBoxOptions,
 ) => {
     ElMessageBox.confirm(
-        `确定要删除 ${message} 吗？`,
+        `确定要删除 ${deleteTarget} 吗？\n${message}`,
         {
             confirmButtonText: 'Yes',
             cancelButtonText: 'No',

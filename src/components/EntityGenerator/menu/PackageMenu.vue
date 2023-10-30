@@ -56,14 +56,14 @@ PackageMenuEventBus.on('deletePackage', async ({id}) => {
 		<div style="padding-left: 1em;">
 			<Details v-if="nonPackageEntities.length > 0" open>
 				<template #title>
-					<el-text>无软件包的实体</el-text>
+					<el-text>无软件包的实体（可拖曳进目标软件包）</el-text>
 				</template>
 
 				<EntityItem v-for="entity in nonPackageEntities" :entity="entity"></EntityItem>
 			</Details>
 			<Details v-if="nonPackageEnums.length > 0" open>
 				<template #title>
-					<el-text>无软件包的枚举</el-text>
+					<el-text>无软件包的枚举（可拖曳进目标软件包）</el-text>
 				</template>
 
 				<EnumItem v-for="genEnum in nonPackageEnums" :gen-enum="genEnum"></EnumItem>

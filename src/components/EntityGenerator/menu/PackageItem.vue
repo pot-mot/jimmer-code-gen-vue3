@@ -8,7 +8,7 @@ import EntityItem from "./EntityItem.vue";
 import {usePackageMenuStore} from "../store/PackageMenuStore.ts";
 import EnumItem from "./EnumItem.vue";
 import PackageCreateDialog from "./PackageCreateDialog.vue";
-import {Delete} from "@element-plus/icons-vue";
+import {Delete, Plus} from "@element-plus/icons-vue";
 import {deleteConfirm} from "../../../utils/message.ts";
 import PackageIcon from "../../icons/entity/PackageIcon.vue";
 
@@ -25,7 +25,7 @@ const isDragenter = ref(false)
 const handleDelete = () => {
 	deleteConfirm(`包【${props.genPackage.name}】`, () => {
 		PackageMenuEventBus.emit('deletePackage', {id: props.genPackage.id})
-	})
+	}, props.genPackage.enums.length > 0 || props.genPackage.entities.length > 0 ? "（删除后包下的实体和枚举不会被删除）" : "")
 }
 </script>
 
@@ -44,7 +44,9 @@ const handleDelete = () => {
 				<PackageIcon></PackageIcon>
 				<el-text>{{ genPackage.name }}</el-text>
 				<span style="padding-left: 0.5em;" class="hover-show-item">
-					<PackageCreateDialog :parent-id="genPackage.id"></PackageCreateDialog>
+					<PackageCreateDialog :parent-id="genPackage.id">
+						<template #button><el-button :icon="Plus" link></el-button></template>
+					</PackageCreateDialog>
 					<el-button type="danger" title="删除" :icon="Delete" @click="handleDelete" link></el-button>
 				</span>
 			</div>

@@ -6,7 +6,7 @@
 			<li>
 				<el-tooltip>
 					<template #content>
-						保存编辑区与关联变更 [ctrl + s]<br>
+						保存编辑区与关联变更 [Ctrl + s]<br>
 						注意！！<br>
 						此处保存的关联<strong>仅</strong>是<strong>目前编辑器中的表</strong>之间的关联<br>
 						<strong>不包括编辑器历史编辑过的关联</strong><br>
@@ -18,10 +18,10 @@
 			</li>
 
 			<li>
-				<el-tooltip content="撤回 [ctrl + z]" :disabled="!store.canUndo">
+				<el-tooltip content="撤回 [Ctrl + z]" :disabled="!store.canUndo">
 					<el-button :disabled="!store.canUndo" @click="handleUndo" :icon="UndoIcon"></el-button>
 				</el-tooltip>
-				<el-tooltip content="重做 [ctrl + shift + z]" :disabled="!store.canRedo">
+				<el-tooltip content="重做 [Ctrl + Shift + z]" :disabled="!store.canRedo">
 					<el-button :disabled="!store.canRedo" @click="handleRedo" :icon="RedoIcon"></el-button>
 				</el-tooltip>
 			</li>
@@ -32,10 +32,10 @@
 				</el-tooltip>
 				<el-select style="width: 4em;" class="cling-left" v-model="store.layoutDirection" @change="handleLayout"
 						   size="small">
-					<el-option value="LR" label="→"></el-option>
-					<el-option value="RL" label="←"></el-option>
-					<el-option value="TB" label="↓"></el-option>
-					<el-option value="BT" label="↑"></el-option>
+					<el-option value="LR" label="→">左至右</el-option>
+					<el-option value="RL" label="←">右至左</el-option>
+					<el-option value="TB" label="↓">上至下</el-option>
+					<el-option value="BT" label="↑">下至上</el-option>
 				</el-select>
 			</li>
 
