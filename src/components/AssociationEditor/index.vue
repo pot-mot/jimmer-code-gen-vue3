@@ -4,100 +4,77 @@
 
 		<ul v-if="store.isLoaded" class="toolbar left-top">
 			<li>
-				<el-tooltip content="保存编辑区 [ctrl + s]">
-					<el-button @click="handleSaveGraph">save</el-button>
-				</el-tooltip>
-			</li>
-			<li>
-				<el-tooltip content="撤回 [ctrl + z]">
-					<el-button @click="handleUndo">undo</el-button>
-				</el-tooltip>
-			</li>
-			<li>
-				<el-tooltip content="重做 [ctrl + shift + z]">
-					<el-button @click="handleRedo">redo</el-button>
-				</el-tooltip>
-			</li>
-			<li>
-				<el-tooltip content="布局">
-					<el-button @click="handleLayout">layout</el-button>
-				</el-tooltip>
-				<el-select style="width: 6em;" v-model="store.layoutDirection" size="small">
-					<el-option value="LR" label="左至右"></el-option>
-					<el-option value="RL" label="右至左"></el-option>
-					<el-option value="TB" label="上至下"></el-option>
-					<el-option value="BT" label="下至上"></el-option>
-				</el-select>
-			</li>
-
-			<li>
-				<el-tooltip content="适应画布">
-					<el-button @click="handleFit">fit graph</el-button>
-				</el-tooltip>
-			</li>
-			<li>
-				<el-tooltip content="居中">
-					<el-button @click="handleCenterContent">center content</el-button>
-				</el-tooltip>
-			</li>
-
-			<br>
-
-			<li>
-				<el-tooltip content="选中全部 [ctrl + a]">
-					<el-button @click="store.selectAll()">selectAll</el-button>
-				</el-tooltip>
-			</li>
-
-			<li>
-				<el-tooltip content="清理画布 [delete]">
-					<el-button @click="store.removeAllCells()">clear</el-button>
-				</el-tooltip>
-			</li>
-			<li>
-				<el-tooltip content="清除关联 [shift + delete]">
-					<el-button @click="store.removeAllAssociations()">remove association</el-button>
-				</el-tooltip>
-			</li>
-			<template v-if="!store.isSelectionEmpty">
-				<li>
-					<el-tooltip content="移除选中节点与关联">
-						<el-button @click="store.removeSelectedCells()">remove selected</el-button>
-					</el-tooltip>
-				</li>
-				<li>
-					<el-tooltip content="清除选中关联">
-						<el-button @click="store.removeSelectedAssociations()">remove selected associations</el-button>
-					</el-tooltip>
-				</li>
-			</template>
-		</ul>
-
-		<ul v-if="store.isLoaded" class="toolbar right-top">
-			<li>
-				<el-tooltip :content="store.isSelectionEmpty ? '匹配关联' : '在选中范围内匹配关联'">
-					<el-button @click="match">match</el-button>
-				</el-tooltip>
-
-				<el-select v-model="matchType">
-					<el-option v-for="(type) in matchTypes" :value="type">{{ type }}</el-option>
-				</el-select>
-			</li>
-			<li>
 				<el-tooltip>
 					<template #content>
-						保存关联变更<br>
+						保存编辑区与关联变更 [ctrl + s]<br>
 						注意！！<br>
 						此处保存的关联<strong>仅</strong>是<strong>目前编辑器中的表</strong>之间的关联<br>
 						<strong>不包括编辑器历史编辑过的关联</strong><br>
 						因此请尽量保证编辑器中为全部你所需要的表，关联为全部你所需要的关联<br>
 					</template>
-					<el-button @click="saveAssociations(graph)">save associations</el-button>
+
+					<el-button @click="handleSave" :icon="SaveIcon"></el-button>
+				</el-tooltip>
+			</li>
+
+			<li>
+				<el-tooltip content="撤回 [ctrl + z]" :disabled="!store.canUndo">
+					<el-button :disabled="!store.canUndo" @click="handleUndo" :icon="UndoIcon"></el-button>
+				</el-tooltip>
+				<el-tooltip content="重做 [ctrl + shift + z]" :disabled="!store.canRedo">
+					<el-button :disabled="!store.canRedo" @click="handleRedo" :icon="RedoIcon"></el-button>
+				</el-tooltip>
+			</li>
+
+			<li>
+				<el-tooltip content="布局">
+					<el-button @click="handleLayout" class="cling-right" :icon="LayoutIcon"></el-button>
+				</el-tooltip>
+				<el-select style="width: 4em;" class="cling-left" v-model="store.layoutDirection" @change="handleLayout"
+						   size="small">
+					<el-option value="LR" label="→"></el-option>
+					<el-option value="RL" label="←"></el-option>
+					<el-option value="TB" label="↓"></el-option>
+					<el-option value="BT" label="↑"></el-option>
+				</el-select>
+			</li>
+
+			<li>
+				<el-tooltip content="适应画布">
+					<el-button @click="handleFit" :icon="FitIcon"></el-button>
 				</el-tooltip>
 			</li>
 			<li>
+				<el-tooltip content="居中">
+					<el-button @click="handleCenterContent" :icon="CenterIcon"></el-button>
+				</el-tooltip>
+			</li>
+
+			<li>
+				<el-tooltip :content="(store.isSelectionEmpty ? '清理画布' : '移除选中节点与关联') +'[Delete]'">
+					<el-button @click="store.isSelectionEmpty ? store.removeAllCells() : store.removeSelectedCells()" :icon="EraserIcon"></el-button>
+				</el-tooltip>
+			</li>
+			<li>
+				<el-tooltip :content="(store.isSelectionEmpty ? '清除关联' : '移除选中关联') + '[Shift + Delete]'">
+					<el-button @click="store.isSelectionEmpty ? store.removeAllAssociations() : store.removeSelectedAssociations()" :icon="AssociationOffIcon"></el-button>
+				</el-tooltip>
+			</li>
+		</ul>
+
+		<ul v-if="store.isLoaded" class="toolbar right-top">
+			<li>
+				<el-tooltip :content="store.isSelectionEmpty ? '匹配关联' : '在选中范围内匹配关联'">
+					<el-button class="cling-right" @click="handleMatch" :icon="AssociationIcon"></el-button>
+				</el-tooltip>
+
+				<el-select v-model="matchType" class="cling-left" @change="handleMatch">
+					<el-option v-for="(type) in matchTypes" :value="type">{{ type }}</el-option>
+				</el-select>
+			</li>
+			<li>
 				<el-tooltip content="生成实体（获得 zip 压缩包）">
-					<el-button @click="handleGenerateEntities">generate</el-button>
+					<el-button @click="handleGenerateEntities" :icon="DownloadIcon"></el-button>
 				</el-tooltip>
 			</li>
 		</ul>
@@ -194,8 +171,8 @@ import {initGraph} from "./graph/init.ts";
 import {COLUMN_PORT} from "./constant";
 import {useHistory, useHistoryKeyEvent} from "./graph/useHistory.ts";
 import {useSelection, useSelectionKeyEvent} from "./graph/useSelection.ts";
-import {saveAssociations, useSwitchAssociationType} from "./edge/AssociationEdge.ts";
-import {loadGraph, saveGraph} from "./graph/localStorage.ts";
+import {useSwitchAssociationType} from "./edge/AssociationEdge.ts";
+import {loadGraph} from "./graph/localStorage.ts";
 import {useAssociationEditorGraphStore} from "./store/AssociationEditorGraphStore.ts";
 import {useTableEditorMatch} from "./graph/useMatch.ts";
 import {useSave} from "./graph/useSave.ts";
@@ -204,6 +181,16 @@ import MiniMap from "./graph/MiniMap.vue";
 import {defaultZoomRange} from "./graph/scale.ts";
 import {generateEntitiesByTable} from "./node/TableNode.ts";
 import {Minus, Plus} from "@element-plus/icons-vue";
+import SaveIcon from "../icons/toolbar/SaveIcon.vue";
+import UndoIcon from "../icons/toolbar/UndoIcon.vue";
+import RedoIcon from "../icons/toolbar/RedoIcon.vue";
+import LayoutIcon from "../icons/toolbar/LayoutIcon.vue";
+import FitIcon from "../icons/toolbar/FitIcon.vue";
+import CenterIcon from "../icons/toolbar/CenterIcon.vue";
+import AssociationOffIcon from "../icons/toolbar/AssociationOffIcon.vue";
+import AssociationIcon from "../icons/toolbar/AssociationIcon.vue";
+import EraserIcon from "../icons/toolbar/EraserIcon.vue";
+import DownloadIcon from "../icons/toolbar/DownloadIcon.vue";
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();
@@ -234,16 +221,12 @@ onMounted(() => {
 	useSelection(graph)
 })
 
-useSave(() => graph)
+const {handleSave} = useSave(() => graph)
 
 useHistoryKeyEvent(() => graph)
 useSelectionKeyEvent(() => graph)
 
-const {match, matchTypes, matchType} = useTableEditorMatch(() => graph)
-
-const handleSaveGraph = () => {
-	saveGraph(graph)
-}
+const {handleMatch, matchTypes, matchType} = useTableEditorMatch(() => graph)
 
 const handleUndo = () => {
 	graph.undo()

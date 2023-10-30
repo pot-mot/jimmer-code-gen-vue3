@@ -134,11 +134,13 @@ export const useAssociationEditorGraphStore =
                     })
 
                     graph.on('history:redo', () => {
+                        canUndo.value = graph.canUndo()
                         canRedo.value = graph.canRedo()
                     })
 
                     graph.on('history:undo', () => {
                         canUndo.value = graph.canUndo()
+                        canRedo.value = graph.canRedo()
                     })
 
                     scaling.value = graph.scale().sx
@@ -202,11 +204,11 @@ export const useAssociationEditorGraphStore =
             }
 
             AssociationEditorMenuEventBus.on('deleteDataSource', ({id}) => {
-                removeTables(table => table.schema.dataSource.id == id)
+                removeTables(table => table.schema?.dataSource.id == id)
             })
 
             AssociationEditorMenuEventBus.on('deleteSchema', ({id}) => {
-                removeTables(table => table.schema.id == id)
+                removeTables(table => table.schema?.id == id)
             })
 
             /**
@@ -238,8 +240,9 @@ export const useAssociationEditorGraphStore =
             const removeAllCells = () => {
                 const graph = _graph()
 
-                graph.unselect(graph.getCells())
-                graph.removeCells(graph.getCells())
+                const cells = graph.getCells()
+                graph.unselect(cells)
+                graph.removeCells(cells)
             }
 
             const removeSelectedCells = () => {
@@ -256,7 +259,9 @@ export const useAssociationEditorGraphStore =
             const removeAllAssociations = () => {
                 const graph = _graph()
 
-                graph.removeCells(graph.getEdges())
+                const edges = graph.getEdges()
+                graph.unselect(edges)
+                graph.removeCells(edges)
             }
 
             const removeSelectedAssociations = () => {
@@ -289,7 +294,7 @@ export const useAssociationEditorGraphStore =
             const loadSchema = async (id: number) => {
                 const graph = _graph()
 
-                const oldTables = tables().filter(table => table.schema.id == id)
+                const oldTables = tables().filter(table => table.schema?.id == id)
 
                 if (oldTables.length > 0) {
                     select(oldTables.map(table => table.id))

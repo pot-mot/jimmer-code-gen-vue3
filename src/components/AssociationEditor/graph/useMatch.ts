@@ -19,7 +19,7 @@ export const useTableEditorMatch = (_graph: () => Graph) => {
     })
 
     /** 匹配关联 */
-    const match = async () => {
+    const handleMatch = async () => {
         const graph = _graph()
 
         if (!graph) return
@@ -41,6 +41,6 @@ export const useTableEditorMatch = (_graph: () => Graph) => {
     return {
         matchTypes,
         matchType,
-        match
+        handleMatch
     }
 }

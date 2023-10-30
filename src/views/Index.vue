@@ -28,6 +28,11 @@
 									不依赖数据源，且可以导入不同种类数据源
 								</el-text>
 							</li>
+							<li>
+								<el-text size="default" type="warning">
+									关联仅于表模型间创建
+								</el-text>
+							</li>
 						</ul>
 					</div>
 				</RouterLink>
@@ -50,6 +55,11 @@
 							<li>
 								<el-text size="default" type="warning">
 									依赖数据源
+								</el-text>
+							</li>
+							<li>
+								<el-text size="default" type="warning">
+									关联于列间创建，导入时保留所有外键
 								</el-text>
 							</li>
 						</ul>

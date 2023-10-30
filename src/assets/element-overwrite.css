@@ -21,16 +21,24 @@
     margin-left: 0.6em;
 }
 
-.cling-left .el-input__wrapper {
+.cling-left .el-input__wrapper,
+.cling-left.el-button {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    padding-left: 0;
     border-left: 1px solid #fff;
 }
 
-.cling-right .el-input__wrapper {
+.cling-left.el-button {
+    padding-left: 3px;
+}
+
+.cling-right .el-input__wrapper,
+.cling-right.el-button {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
-    padding-right: 0;
     border-right: 1px solid #fff;
+}
+
+.cling-right.el-button {
+    padding-right: 3px;
 }

@@ -42,4 +42,8 @@ export const useSave = (_graph: () => Graph) => {
             window.removeEventListener('popstate', handleSave)
         }, 0)
     })
+
+    return {
+        handleSave
+    }
 }
