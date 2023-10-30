@@ -102,32 +102,24 @@ const deleteInAssociation = (
 			<Details v-for="column in table.columns"
 					 :disabled="column.inAssociations.length == 0 && column.outAssociations.length == 0">
 				<template #title>
-					<el-row style="white-space: nowrap;">
-						<el-col :span="1">
+					<div class="column-line">
+						<span>
 							<ColumnIcon :column="column"></ColumnIcon>
-						</el-col>
-						<el-col :span="5">
-							<el-text>
-								{{ column.name }}
-								<Comment :comment="column.comment"></Comment>
-							</el-text>
-						</el-col>
-						<el-col :span="3">
-							<el-text>
-								{{ column.type }}
-							</el-text>
-						</el-col>
-						<el-col :span="7">
-							<el-text>
-								{{ column.defaultValue }}
-							</el-text>
-						</el-col>
-						<el-col :span="6">
-							<el-text>
-								{{ column.remark }}
-							</el-text>
-						</el-col>
-					</el-row>
+						</span>
+						<el-text>
+							{{ column.name }}
+							<Comment :comment="column.comment"></Comment>
+						</el-text>
+						<el-text>
+							{{ column.type }}
+						</el-text>
+						<el-text>
+							{{ column.defaultValue }}
+						</el-text>
+						<el-text>
+							{{ column.remark }}
+						</el-text>
+					</div>
 				</template>
 
 				<div style="padding-left: 3em;">
@@ -154,7 +146,8 @@ const deleteInAssociation = (
 								{{ association.sourceColumn.name }}
 							</el-button>
 
-							<el-button @click="deleteInAssociation(column.id, association)" type="danger" :icon="Delete" link></el-button>
+							<el-button @click="deleteInAssociation(column.id, association)" type="danger" :icon="Delete"
+									   link></el-button>
 						</el-text>
 					</div>
 				</div>
@@ -183,7 +176,8 @@ const deleteInAssociation = (
 								{{ association.targetColumn.name }}
 							</el-button>
 
-							<el-button @click="deleteOutAssociation(column.id, association)" type="danger" :icon="Delete" link></el-button>
+							<el-button @click="deleteOutAssociation(column.id, association)" type="danger"
+									   :icon="Delete" link></el-button>
 						</el-text>
 					</div>
 				</div>
@@ -191,3 +185,12 @@ const deleteInAssociation = (
 		</div>
 	</el-form>
 </template>
+
+<style scoped>
+.column-line {
+	display: grid;
+	grid-template-columns: 1.5em 15em 10em 1fr 1fr;
+	line-height: 1.5em;
+	white-space: nowrap;
+}
+</style>

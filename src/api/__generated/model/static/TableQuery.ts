@@ -12,5 +12,7 @@ export interface TableQuery {
     
     name?: string;
     
+    nonSchema?: boolean;
+    
     schemaIds?: number[];
 }

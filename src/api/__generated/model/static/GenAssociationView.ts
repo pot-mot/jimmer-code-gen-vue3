@@ -34,6 +34,8 @@ export interface GenAssociationView_TargetOf_sourceColumn {
     name: string;
     
     table: GenAssociationView_TargetOf_sourceColumn_TargetOf_table;
+    
+    type: string;
 }
 
 export interface GenAssociationView_TargetOf_sourceColumn_TargetOf_table {
@@ -54,6 +56,8 @@ export interface GenAssociationView_TargetOf_targetColumn {
     name: string;
     
     table: GenAssociationView_TargetOf_targetColumn_TargetOf_table;
+    
+    type: string;
 }
 
 export interface GenAssociationView_TargetOf_targetColumn_TargetOf_table {

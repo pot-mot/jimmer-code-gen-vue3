@@ -1,10 +1,12 @@
-import type { TableType } from '../enums';
+import type { DataSourceType, TableType } from '../enums';
 
 export interface GenTableCommonView {
     
     comment: string;
     
     createdTime: string;
+    
+    entityId?: number;
     
     id: number;
     
@@ -16,7 +18,7 @@ export interface GenTableCommonView {
     
     remark: string;
     
-    schema: GenTableCommonView_TargetOf_schema;
+    schema?: GenTableCommonView_TargetOf_schema;
     
     type: TableType;
 }
@@ -26,9 +28,15 @@ export interface GenTableCommonView_TargetOf_schema {
     dataSource: GenTableCommonView_TargetOf_schema_TargetOf_dataSource;
     
     id: number;
+    
+    name: string;
 }
 
 export interface GenTableCommonView_TargetOf_schema_TargetOf_dataSource {
     
     id: number;
+    
+    name: string;
+    
+    type: DataSourceType;
 }

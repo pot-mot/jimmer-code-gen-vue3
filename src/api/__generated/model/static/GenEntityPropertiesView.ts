@@ -1,4 +1,4 @@
-import type { AssociationType, GenerationType } from '../enums';
+import type { AssociationType, EnumType, GenerationType } from '../enums';
 
 export interface GenEntityPropertiesView {
     
@@ -96,11 +96,17 @@ export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum {
     
     comment: string;
     
+    enumType?: EnumType;
+    
     genPackage?: GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_TargetOf_genPackage;
     
     id: number;
     
+    items: GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_TargetOf_items[];
+    
     name: string;
+    
+    remark: string;
 }
 
 export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_TargetOf_genPackage {
@@ -119,6 +125,19 @@ export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_Targe
     name: string;
     
     parent?: GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_TargetOf_genPackage_TargetOf_parent;
+}
+
+export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_TargetOf_items {
+    
+    comment: string;
+    
+    id: number;
+    
+    name: string;
+    
+    remark: string;
+    
+    value: string;
 }
 
 export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable {
@@ -165,7 +184,7 @@ export interface GenEntityPropertiesView_TargetOf_table {
     
     name: string;
     
-    schema: GenEntityPropertiesView_TargetOf_table_TargetOf_schema;
+    schema?: GenEntityPropertiesView_TargetOf_table_TargetOf_schema;
 }
 
 export interface GenEntityPropertiesView_TargetOf_table_TargetOf_schema {

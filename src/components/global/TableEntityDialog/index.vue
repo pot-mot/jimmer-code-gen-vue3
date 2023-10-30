@@ -11,7 +11,7 @@ import EntityInfo from "../../EntityGenerator/entity/EntityInfo.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
 
-interface TableDialogProps {
+interface TableEntityDialogProps {
 	id: number
 	x?: number
 	y?: number
@@ -19,7 +19,7 @@ interface TableDialogProps {
 	type?: 'TableInfo' | 'EntityInfo'
 }
 
-const props = withDefaults(defineProps<TableDialogProps>(), {
+const props = withDefaults(defineProps<TableEntityDialogProps>(), {
 	y: 100,
 	w: 1000,
 	type: 'TableInfo'
@@ -31,11 +31,11 @@ watch(() => props.type, () => {
 	typeState.value = props.type
 }, {immediate: true})
 
-interface TableDialogEmits {
+interface TableEntityDialogEmits {
 	(event: "close"): void
 }
 
-const emits = defineEmits<TableDialogEmits>()
+const emits = defineEmits<TableEntityDialogEmits>()
 
 const table = ref<GenTableAssociationView | undefined>()
 
@@ -72,7 +72,7 @@ watch(() => props.id, async (id) => {
 						<span class="icon">
 							<TableIcon :type="table.type"></TableIcon>
 						</span>
-						<span>{{ table.name }}</span>
+						<span style="padding-left: 0.5em;">{{ table.name }}</span>
 						<Comment :comment="table.comment"></Comment>
 					</el-text>
 					<el-tabs v-model="typeState">

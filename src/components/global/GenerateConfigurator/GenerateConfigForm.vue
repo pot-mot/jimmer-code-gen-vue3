@@ -2,7 +2,7 @@
 import {api} from "../../../api";
 import {onMounted, ref} from "vue";
 import {GenConfig, GenConfigProperties} from "../../../api/__generated/model/static";
-import {GenLanguage} from "../../../api/__generated/model/enums";
+import {DataSourceType, GenLanguage} from "../../../api/__generated/model/enums";
 import {sendMessage} from "../../../utils/message.ts";
 import DataSourceIcon from "../../icons/database/DataSourceIcon.vue";
 import Details from "../../common/Details.vue";
@@ -10,12 +10,16 @@ import {useLoading} from "../../../hooks/useLoading.ts";
 
 const config = ref<GenConfig | undefined>()
 
+const dataSourceTypes = ref<DataSourceType[]>([])
+
 const languages = ref<GenLanguage[]>([])
 
 const generateConfigLoading = useLoading()
 
 const getData = async () => {
 	generateConfigLoading.start()
+
+	dataSourceTypes.value = await api.dataSourceService.listType()
 
 	config.value = await api.configService.getConfig()
 
@@ -60,8 +64,12 @@ const handleCancel = () => {
 				</el-col>
 				<el-col :span="8">
 					<el-form-item label="数据源类型">
-						<DataSourceIcon :type="config.dataSourceType"></DataSourceIcon>
-						{{ config.dataSourceType }}
+						<el-select v-model="config.dataSourceType">
+							<template #prefix>
+								<DataSourceIcon :type="config.dataSourceType"></DataSourceIcon>
+							</template>
+							<el-option v-for="dataSourceType in dataSourceTypes" :label="dataSourceType" :value="dataSourceType"></el-option>
+						</el-select>
 					</el-form-item>
 				</el-col>
 				<el-col :span="8">

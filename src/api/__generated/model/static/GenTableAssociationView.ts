@@ -20,7 +20,7 @@ export interface GenTableAssociationView {
     
     remark: string;
     
-    schema: GenTableAssociationView_TargetOf_schema;
+    schema?: GenTableAssociationView_TargetOf_schema;
     
     type: TableType;
 }

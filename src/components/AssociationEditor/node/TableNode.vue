@@ -1,6 +1,6 @@
 <template>
-	<el-text v-if="table" class="node" @dblclick="store.focus(table.id)"
-			 @contextmenu="TableDialogEventBus.emit('addTableDialog', table.id)">
+	<el-text v-if="table" class="node"
+			 @dblclick="TableEntityDialogEventBus.emit('addTableEntityDialog', table.id)">
 		<table ref="wrapper" class="table-wrapper">
 			<tr class="tableName">
 				<td colspan="2">
@@ -69,7 +69,7 @@ import {inject, nextTick, onMounted, ref} from "vue";
 import {GenTableColumnView} from "../../../api/__generated/model/static";
 import {Node} from '@antv/x6'
 import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
-import {TableDialogEventBus} from "../../global/TableDialogManager/TableDialogEventBus.ts";
+import {TableEntityDialogEventBus} from "../../global/TableEntityDialogManager/TableEntityDialogEventBus.ts";
 import {ElText} from "element-plus";
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
