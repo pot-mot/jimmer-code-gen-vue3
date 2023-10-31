@@ -3,7 +3,7 @@ import {useLocalStorageOperation} from "./store/localStorage.ts";
 import {onBeforeUnmount, onMounted, onUnmounted} from "vue";
 import {saveAssociations} from "./api.ts";
 
-export const useSave = (_graph: () => Graph, name: string = "AssociationEditorGraph") => {
+export const useSave = (_graph: () => Graph, name: string) => {
     const localStorageOperation = useLocalStorageOperation(_graph, name)
 
     const handleSave = async () => {

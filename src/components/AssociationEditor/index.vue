@@ -159,7 +159,7 @@ register({
 const {
 	handleSave,
 	loadGraph,
-} = useSave(() => graph)
+} = useSave(() => graph, "AssociationEditorGraph")
 
 onMounted(() => {
 	graph = initAssociationEditor(container.value!, wrapper.value!)
