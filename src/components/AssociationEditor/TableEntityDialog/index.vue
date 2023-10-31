@@ -9,7 +9,7 @@ import TableDefine from "./TableDefine.vue";
 import EntityInfo from "../../EntityGenerator/entity/EntityInfo.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
-import {convertEntities} from "../../AssociationEditor/api.ts";
+import {convertEntities} from "../api.ts";
 
 interface TableEntityDialogProps {
 	id: number

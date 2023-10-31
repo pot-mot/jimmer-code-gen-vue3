@@ -1,5 +1,5 @@
 import {Edge, Graph, Node} from "@antv/x6"
-import {getSelectedEdges, getSelectedNodes} from "../selection/selectOperation.ts";
+import {getSelectedEdges, getSelectedNodes} from "./selectOperation.ts";
 import {max, min} from "lodash";
 
 export type LayoutDirection = "LR" | "TB" | "RL" | "BT"

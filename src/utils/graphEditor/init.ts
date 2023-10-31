@@ -1,8 +1,8 @@
 import {Graph} from "@antv/x6";
 import {debounce} from "lodash";
 import {useEdgeStyle, useHoverToFront} from "./style.ts";
-import {useHistory} from "./history/useHistory.ts";
-import {useSelection} from "./selection/useSelection.ts";
+import {useHistory} from "./useHistory.ts";
+import {useSelection} from "./useSelection.ts";
 
 export const initGraph = (
     container: HTMLElement,

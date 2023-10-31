@@ -2,7 +2,7 @@
 import {nextTick, onBeforeUnmount, onMounted, ref} from "vue";
 import {Graph, Node} from "@antv/x6";
 import DragDialog from "../common/DragDialog.vue";
-import {focus} from "../../utils/graphEditor/focus.ts";
+import {focus} from "../../utils/graphEditor/viewOperation.ts";
 
 interface SearcherProps {
 	graph: Graph,

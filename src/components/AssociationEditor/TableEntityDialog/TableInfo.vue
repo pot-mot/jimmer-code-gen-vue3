@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {MANY_TO_ONE, ONE_TO_ONE} from "../../AssociationEditor/constant.ts";
+import {MANY_TO_ONE, ONE_TO_ONE} from "../constant.ts";
 import {GenTableAssociationView} from "../../../api/__generated/model/static";
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import Details from "../../common/Details.vue";
-import {useAssociationEditorGraphStore} from "../../AssociationEditor/store/AssociationEditorGraphStore.ts";
+import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
 import {Graph} from "@antv/x6";
 import {watch} from "vue";
 import {

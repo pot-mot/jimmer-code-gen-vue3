@@ -2,6 +2,7 @@
 import LeftTopBottomLayout from "../components/layout/LeftRightLayout.vue";
 import DataSourceMenu from "../components/AssociationEditor/menu/DataSourceMenu.vue";
 import TableGraph from "../components/AssociationEditor/index.vue";
+import TableEntityDialogManager from "../App.vue";
 </script>
 
 <template>
@@ -13,4 +14,5 @@ import TableGraph from "../components/AssociationEditor/index.vue";
 			<TableGraph></TableGraph>
 		</template>
 	</LeftTopBottomLayout>
+	<TableEntityDialogManager></TableEntityDialogManager>
 </template>

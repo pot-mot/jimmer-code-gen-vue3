@@ -9,5 +9,9 @@
 </style>
 
 <script setup lang="ts">
+import {useModelEditorGraphStore} from "./store/ModelEditorGraphStore.ts";
+
+const store = useModelEditorGraphStore()
+
 
 </script>

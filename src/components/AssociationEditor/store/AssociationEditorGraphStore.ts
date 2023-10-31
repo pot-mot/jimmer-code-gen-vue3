@@ -1,6 +1,5 @@
 import {defineStore} from "pinia";
 import {GenAssociationMatchView, GenTableColumnView} from "../../../api/__generated/model/static";
-import {Graph} from "@antv/x6";
 import {
     getAssociations,
 } from "../edge/AssociationEdge.ts";
@@ -9,48 +8,22 @@ import {
     loadTableNodes,
     tableIdToNodeId
 } from "../node/TableNode.ts";
-import {computed, nextTick, Ref, ref} from 'vue';
-import {sendMessage} from "../../../utils/message.ts";
+import {nextTick} from 'vue';
 import {AssociationEditorGraphEventBus} from "../eventBus/AssociationEditorGraphEventBus.ts";
 import {api} from "../../../api";
 import {searchEdgesByColumn} from "../../../utils/graphEditor/search.ts";
-import {unselect, useSelectOperation} from "../../../utils/graphEditor/selection/selectOperation.ts";
-import {CellInput} from "../../../utils/graphEditor/CellsInputProcess.ts";
-import {center} from "../../../utils/graphEditor/center.ts";
-import {focus} from "../../../utils/graphEditor/focus.ts";
-import {useFitAndLayoutOperation} from "../../../utils/graphEditor/layout/fitAndLayoutOperation.ts";
+import {unselect} from "../../../utils/graphEditor/selectOperation.ts";
+import {commonGraphStoreOperations} from "../../../utils/graphEditor/commonStore.ts";
+
 
 export const useAssociationEditorGraphStore =
     defineStore(
         'AssociationEditorGraph',
         () => {
-            const graph: Ref<Graph | undefined> = ref()
+            const commonStore = commonGraphStoreOperations()
 
-            /**
-             * 获取 graph
-             */
-            const _graph = (): Graph => {
-                if (!graph.value) {
-                    sendMessage("Graph 未初始化", "error")
-                    throw new Error("graph is not init")
-                }
-                return graph.value
-            }
+            const {_graph} = commonStore
 
-            /**
-             * 加载 graph，初始化
-             */
-            const load = async (_graph: Graph) => {
-                graph.value = _graph
-            }
-
-            const isLoaded = computed(() => {
-                return !!graph.value
-            })
-
-            const selectOperations = useSelectOperation(_graph)
-
-            const fitAndLayoutOperations = useFitAndLayoutOperation(_graph)
 
             /**
              * 根据 node 获取 graph 中的 table
@@ -84,22 +57,6 @@ export const useAssociationEditorGraphStore =
                 return getAssociations(_graph())
             }
 
-            const removeAllCells = () => {
-                const graph = _graph()
-
-                const cells = graph.getCells()
-                graph.unselect(cells)
-                graph.removeCells(cells)
-            }
-
-            const removeAllEdges = () => {
-                const graph = _graph()
-
-                const edges = graph.getEdges()
-                graph.unselect(edges)
-                graph.removeCells(edges)
-            }
-
             /**
              * 向画布导入 schema
              * @param id schema id
@@ -125,8 +82,6 @@ export const useAssociationEditorGraphStore =
                     ...nodes.map(it => it.id),
                     ...edges.map(it => it.id)
                 ])
-
-                await fitAndLayoutOperations.layoutAndFit()
 
                 AssociationEditorGraphEventBus.emit('loadSchema')
             }
@@ -168,24 +123,12 @@ export const useAssociationEditorGraphStore =
             })
 
             return {
-                isLoaded,
-                load,
-                _graph,
+                ...commonStore,
 
                 tables,
                 associations,
 
-                center: () => center(_graph()),
-                focus: (cell: CellInput) => focus(_graph(), cell),
-
-                ...selectOperations,
-
-                ...fitAndLayoutOperations,
-
                 removeTables,
-                removeAllCells,
-                removeAllEdges,
-
                 deleteAssociations,
 
                 loadSchema,

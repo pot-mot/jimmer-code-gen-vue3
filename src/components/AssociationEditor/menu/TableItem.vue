@@ -3,9 +3,9 @@ import {EditPen} from "@element-plus/icons-vue";
 import {GenTableCommonView} from "../../../api/__generated/model/static";
 import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
 import TableIcon from "../../icons/database/TableIcon.vue";
-import {TableEntityDialogEventBus} from "../../global/TableEntityDialogManager/TableEntityDialogEventBus.ts";
 import {processClickFunction} from "../../../utils/clickTimer.ts";
 import Comment from "../../common/Comment.vue";
+import {TableEntityDialogEventBus} from "../TableEntityDialogManager/TableEntityDialogEventBus.ts";
 
 const store = useAssociationEditorGraphStore()
 

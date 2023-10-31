@@ -6,7 +6,7 @@ import {defaultZoomRange} from "../AssociationEditor/constant.ts";
 
 interface ScaleBarProps {
 	graph: Graph,
-	initScaling: number,
+	initScaling?: number,
 	min?: number,
 	max?: number,
 }
@@ -21,7 +21,12 @@ const max = ref(Math.log2(defaultZoomRange.maxScale))
 
 onMounted(() => {
 	nextTick(() => {
-		scaling.value = props.initScaling
+		if (props.initScaling) {
+			scaling.value = props.initScaling
+			props.graph.zoomTo(props.initScaling)
+		} else {
+			scaling.value = props.graph.scale().sx
+		}
 
 		if (props.min) {
 			min.value = props.min

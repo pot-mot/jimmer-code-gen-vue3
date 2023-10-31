@@ -1,6 +1,6 @@
 import {Edge, Graph, Node} from "@antv/x6";
-import {searchEdgesByNode} from "../search.ts";
-import {CellInput, getFirst, process} from "../CellsInputProcess.ts";
+import {searchEdgesByNode} from "./search.ts";
+import {CellInput, getFirst, process} from "./cellsInputProcess.ts";
 
 export const useSelectOperation = (_graph: () => Graph) => {
     return {

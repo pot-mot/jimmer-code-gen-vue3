@@ -73,11 +73,11 @@ import {inject, nextTick, onMounted, ref} from "vue";
 import {GenTableColumnView} from "../../../api/__generated/model/static";
 import {Node} from '@antv/x6'
 import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
-import {TableEntityDialogEventBus} from "../../global/TableEntityDialogManager/TableEntityDialogEventBus.ts";
 import {ElText} from "element-plus";
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
+import {TableEntityDialogEventBus} from "../TableEntityDialogManager/TableEntityDialogEventBus.ts";
 
 const wrapper = ref<HTMLElement | null>()
 

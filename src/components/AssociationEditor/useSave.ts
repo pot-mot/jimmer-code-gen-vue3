@@ -51,9 +51,9 @@ export const useSave = (_graph: () => Graph, name: string = "AssociationEditorGr
         document.documentElement.removeEventListener('keydown', handleKeyEvent)
     })
 
-    /** 需要在卸载后略微延迟 */
     onUnmounted(() => {
         window.removeEventListener('unload', handleSaveEditor)
+        /** popstate 这个事件的卸载需要在卸载后略微延迟，使正在执行的 popstate 事件被触发 */
         setTimeout(() => {
             window.removeEventListener('popstate', handleSaveEditor)
         }, 0)
