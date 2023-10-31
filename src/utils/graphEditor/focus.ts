@@ -1,4 +1,4 @@
-import {CellInput, getCell} from "../CellsInputProcess.ts";
+import {CellInput, getCell} from "./CellsInputProcess.ts";
 import {Graph} from "@antv/x6";
 
 /**

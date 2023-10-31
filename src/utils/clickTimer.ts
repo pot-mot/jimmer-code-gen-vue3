@@ -1,7 +1,7 @@
 export const processClickFunction = (
     clickFn: any,
     dblClickFn: any,
-    timeout: number = 200
+    timeout: number = 150
 ) => {
     let timer: number
 

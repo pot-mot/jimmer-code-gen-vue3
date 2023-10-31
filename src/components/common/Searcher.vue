@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import {nextTick, onBeforeUnmount, onMounted, ref} from "vue";
 import {Graph, Node} from "@antv/x6";
-import {useAssociationEditorGraphStore} from "./store/AssociationEditorGraphStore.ts";
-import {GenTableColumnView} from "../../api/__generated/model/static";
-import {processClickFunction} from "../../utils/clickTimer.ts";
-import Comment from "../common/Comment.vue";
 import DragDialog from "../common/DragDialog.vue";
+import {focus} from "../../utils/graphEditor/focus.ts";
 
-const store = useAssociationEditorGraphStore()
+interface SearcherProps {
+	graph: Graph,
+	searchMethod: (node: Node, value: string) => Boolean
+}
+
+const props = defineProps<SearcherProps>()
 
 const keyword = ref("")
 
@@ -15,35 +17,19 @@ const searchResult = ref<Node[]>([])
 
 const showSearch = ref(false)
 
-/**
- * 根据关键词进行节点查找
- * @param graph 图
- * @param keywords 关键词
- * @returns 节点列表
- */
-const searchTableNodes = (graph: Graph, keywords: string[]): Node[] => {
-	if (keywords.length == 0) {
+const searchTableNodes = (graph: Graph): Node[] => {
+	if (keyword.value.length == 0) {
 		return []
 	}
 
 	return graph.getNodes().filter(node => {
-		if (node.data && node.data.table) {
-			const table: GenTableColumnView = node.data.table
-			for (const keyword of keywords) {
-				if (table.name.includes(keyword) || table.comment.includes(keyword)) {
-					return true
-				}
-			}
-		}
+		return props.searchMethod(node, keyword.value)
 	})
 }
 
 const search = () => {
-	const graph = store._graph()
-
 	if (keyword.value.trim().length > 0) {
-		const keywords = keyword.value.split(" ")
-		searchResult.value = searchTableNodes(graph, keywords)
+		searchResult.value = searchTableNodes(props.graph)
 	} else {
 		searchResult.value = []
 	}
@@ -73,22 +59,11 @@ onMounted(() => {
 onBeforeUnmount(() => {
 	document.documentElement.removeEventListener('keydown', handleSearchKeyDown)
 })
-
-const {
-	click: handleSelectCell,
-	dblClick: handleFocusCell
-} = processClickFunction(
-	(id: string) => {
-		store.toggleSelect(id)
-	},
-	(id: string) => {
-		store.focus(id)
-	}
-)
 </script>
 
 <template>
-	<DragDialog v-if="showSearch" @close="showSearch = false; keyword = '';" :init-w="400" :y="50" to="#AssociationEditor" :can-drag="false">
+	<DragDialog v-if="showSearch" @close="showSearch = false; keyword = '';" :init-w="400" :y="50"
+				to="#AssociationEditor" :can-drag="false">
 		<el-popover :visible="keyword.length > 0" width="390">
 			<template #reference>
 				<el-input ref="input" v-model="keyword" @input="search" @change="search" clearable>
@@ -104,14 +79,14 @@ const {
 				</div>
 
 				<div v-for="node in searchResult">
-					<el-button
-						@click="handleSelectCell(node.id)"
-						@dblclick="handleFocusCell(node.id)"
-						size="default"
-						link>
-						{{ node.data.table.name }}
-						<Comment :comment="node.data.table.comment"></Comment>
-					</el-button>
+					<slot name="default" :node="node">
+						<el-button
+							@click="focus(graph, node.id)"
+							size="default"
+							link>
+							{{ node.id }}
+						</el-button>
+					</slot>
 				</div>
 			</div>
 		</el-popover>

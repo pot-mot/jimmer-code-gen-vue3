@@ -1,15 +1,17 @@
 import {Graph} from "@antv/x6";
-import {saveGraph} from "./store/localStorage.ts";
+import {useLocalStorageOperation} from "./store/localStorage.ts";
 import {onBeforeUnmount, onMounted, onUnmounted} from "vue";
 import {saveAssociations} from "./api.ts";
 
-export const useSave = (_graph: () => Graph) => {
+export const useSave = (_graph: () => Graph, name: string = "AssociationEditorGraph") => {
+    const localStorageOperation = useLocalStorageOperation(_graph, name)
+
     const handleSave = async () => {
         const graph = _graph()
 
         if (!graph) return
 
-        saveGraph(graph)
+        localStorageOperation.saveGraph()
         await saveAssociations(graph)
     }
 
@@ -27,7 +29,7 @@ export const useSave = (_graph: () => Graph) => {
 
         if (!graph) return
 
-        saveGraph(graph)
+        localStorageOperation.saveGraph()
     }
 
     const handleSaveAssociation = async () => {
@@ -61,5 +63,7 @@ export const useSave = (_graph: () => Graph) => {
         handleSave,
         handleSaveEditor,
         handleSaveAssociation,
+
+        ...localStorageOperation
     }
 }

@@ -1,5 +1,5 @@
 <template>
-	<div ref="wrapper" class="wrapper" id="AssociationEditor">
+	<div id="AssociationEditor" ref="wrapper" class="wrapper">
 		<div ref="container"></div>
 
 		<ul v-if="store.isLoaded" class="toolbar left-top">
@@ -79,80 +79,41 @@
 			</li>
 		</ul>
 
-		<Searcher></Searcher>
-
 		<div v-if="store.isLoaded" class="toolbar right-bottom" style="width:  max(15vw, 200px);">
 			<MiniMap :graph="store._graph()" ref="minimap"></MiniMap>
 
 			<ScaleBar :init-scaling="0.5" :graph="store._graph()"></ScaleBar>
 		</div>
+
+		<template v-if="store.isLoaded">
+			<Searcher :graph="store._graph()" :search-method="tableNodeMatchMethod">
+				<template v-slot="{node}">
+					<el-button
+						@click="store.focus(node.id)"
+						size="default"
+						link>
+						{{ node.data.table.name }}
+						<Comment :comment="node.data.table.comment"></Comment>
+					</el-button>
+				</template>
+			</Searcher>
+		</template>
 	</div>
 </template>
 
-<style lang="scss" scoped>
-.wrapper {
-	position: relative;
-	height: 100%;
-	width: 100%;
-
-	--highlight-color: var(--el-color-primary);
-	--common-color: var(--el-color-info);
-}
-
-.toolbar {
-	font-size: 12px;
-	max-width: 50%;
-	position: absolute;
-	background-color: #fff;
-	box-shadow: var(--el-box-shadow);
-
-	li {
-		display: inline;
-		padding-right: 0.5em;
-	}
-
-	&.right-top {
-		top: 0;
-		right: 0;
-	}
-
-	&.left-top {
-		top: 0;
-		left: 0;
-	}
-
-	&.right-bottom {
-		bottom: 0;
-		right: 0;
-	}
-
-	&.left-bottom {
-		bottom: 0;
-		left: 0;
-	}
-}
-
-.x6-node-selected .node-wrapper {
-	border: 2px solid var(--highlight-color);
-}
-
-.x6-highlight-stroke {
-	stroke: var(--highlight-color) !important;
-}
+<style scoped>
+@import "../../assets/graph-common.css";
 </style>
 
 <script lang="ts" setup>
 import {nextTick, onMounted, ref} from "vue";
 import {Graph} from "@antv/x6";
-
 import {ColumnPort} from "./port/ColumnPort.ts";
-
 import {register} from "@antv/x6-vue-shape";
 import TableNode from "./node/TableNode.vue";
-import {initGraph} from "./init.ts";
+import {initAssociationEditor} from "./init.ts";
 import {COLUMN_PORT} from "./constant.ts";
 import {useSwitchAssociationType} from "./edge/AssociationEdge.ts";
-import {loadGraph} from "./store/localStorage.ts";
 import {useAssociationEditorGraphStore} from "./store/AssociationEditorGraphStore.ts";
 import SaveIcon from "../icons/toolbar/SaveIcon.vue";
 import UndoIcon from "../icons/toolbar/UndoIcon.vue";
@@ -164,18 +125,19 @@ import AssociationOffIcon from "../icons/toolbar/AssociationOffIcon.vue";
 import AssociationIcon from "../icons/toolbar/AssociationIcon.vue";
 import EraserIcon from "../icons/toolbar/EraserIcon.vue";
 import DownloadIcon from "../icons/toolbar/DownloadIcon.vue";
-import MiniMap from "../../utils/graphEditor/components/MiniMap.vue";
-import ScaleBar from "../../utils/graphEditor/components/ScaleBar.vue";
-import Searcher from "./Searcher.vue";
 import {generateEntitiesByTable} from "./api.ts";
 import {useAssociationMatch} from "./AssociationMatch.ts";
 import {useGraphReactiveState} from "../../utils/graphEditor/useReactiveState.ts";
-import {nodeIdToTableId} from "./node/TableNode.ts";
+import {nodeIdToTableId, tableNodeMatchMethod} from "./node/TableNode.ts";
 import {useHistoryKeyEvent} from "../../utils/graphEditor/history/useHistory.ts";
 import {useSelectionKeyEvent} from "../../utils/graphEditor/selection/useSelection.ts";
 import {useSave} from "./useSave.ts";
-import {useFitAndLayout} from "../../utils/graphEditor/layout/useFitAndLayout.ts";
+import {useFitAndLayoutOperation} from "../../utils/graphEditor/layout/fitAndLayoutOperation.ts";
 import {AssociationEditorMenuEventBus} from "./eventBus/AssociationEditorMenuEventBus.ts";
+import MiniMap from "../common/MiniMap.vue";
+import ScaleBar from "../common/ScaleBar.vue";
+import Searcher from "../common/Searcher.vue";
+import Comment from "../common/Comment.vue";
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();
@@ -195,11 +157,16 @@ register({
 	component: TableNode
 });
 
+const {
+	handleSave,
+	loadGraph,
+} = useSave(() => graph)
+
 onMounted(() => {
-	graph = initGraph(container.value!, wrapper.value!)
+	graph = initAssociationEditor(container.value!, wrapper.value!)
 
 	useSwitchAssociationType(graph)
-	loadGraph(graph)
+	loadGraph()
 	store.load(graph)
 })
 
@@ -209,10 +176,6 @@ const {
 	canRedo,
 	selectedNodes
 } = useGraphReactiveState(() => graph)
-
-const {
-	handleSave
-} = useSave(() => graph)
 
 const {
 	handleMatch,
@@ -235,7 +198,7 @@ const {
 	layoutDirection,
 	layout,
 	fit
-} = useFitAndLayout(() => graph)
+} = useFitAndLayoutOperation(() => graph)
 
 const handleLayout = () => {
 	layout()

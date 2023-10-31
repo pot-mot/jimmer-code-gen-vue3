@@ -150,3 +150,17 @@ export const loadTableNodes = async (graph: Graph, ids: number[], replace: boole
 
     return {nodes, edges, existedIds}
 }
+
+export const tableNodeMatchMethod = (node: Node, keyword: string): boolean => {
+    const keywords = keyword.split(',')
+
+    if (node.data && node.data.table) {
+        const table: GenTableColumnView = node.data.table
+        for (const keyword of keywords) {
+            if (table.name.includes(keyword) || table.comment.includes(keyword)) {
+                return true
+            }
+        }
+    }
+    return false
+}

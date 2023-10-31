@@ -42,3 +42,19 @@
 .cling-right.el-button {
     padding-right: 3px;
 }
+
+.el-slider--small .el-slider__button-wrapper {
+    height: 2em;
+    width: 2em;
+    top: -0.85em;
+}
+
+.el-slider--small .el-slider__button {
+    height: 1em;
+    width: 1em;
+}
+
+.el-slider--small .el-slider__runway,
+.el-slider--small .el-slider__bar {
+    height: 4px;
+}

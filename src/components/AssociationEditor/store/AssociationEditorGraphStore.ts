@@ -16,9 +16,9 @@ import {api} from "../../../api";
 import {searchEdgesByColumn} from "../../../utils/graphEditor/search.ts";
 import {unselect, useSelectOperation} from "../../../utils/graphEditor/selection/selectOperation.ts";
 import {CellInput} from "../../../utils/graphEditor/CellsInputProcess.ts";
-import {center} from "../../../utils/graphEditor/common/center.ts";
-import {focus} from "../../../utils/graphEditor/common/focus.ts";
-import {useFitAndLayout} from "../../../utils/graphEditor/layout/useFitAndLayout.ts";
+import {center} from "../../../utils/graphEditor/center.ts";
+import {focus} from "../../../utils/graphEditor/focus.ts";
+import {useFitAndLayoutOperation} from "../../../utils/graphEditor/layout/fitAndLayoutOperation.ts";
 
 export const useAssociationEditorGraphStore =
     defineStore(
@@ -50,7 +50,7 @@ export const useAssociationEditorGraphStore =
 
             const selectOperations = useSelectOperation(_graph)
 
-            const fitAndLayoutOperations = useFitAndLayout(_graph)
+            const fitAndLayoutOperations = useFitAndLayoutOperation(_graph)
 
             /**
              * 根据 node 获取 graph 中的 table
