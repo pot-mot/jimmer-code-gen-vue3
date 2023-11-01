@@ -13,14 +13,14 @@ export type ApiErrors = {
     "configService": {
     },
     "dataSourceService": {
-        "edit": AllErrors & (
+        "create": AllErrors & (
             {
                 readonly family: 'DATA_SOURCE_ERROR_CODE',
                 readonly code: 'CONNECT_FAIL',
                 readonly [key:string]: any
             }
         ),
-        "insert": AllErrors & (
+        "edit": AllErrors & (
             {
                 readonly family: 'DATA_SOURCE_ERROR_CODE',
                 readonly code: 'CONNECT_FAIL',

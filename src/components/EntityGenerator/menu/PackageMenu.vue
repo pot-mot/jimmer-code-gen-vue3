@@ -39,7 +39,7 @@ PackageMenuEventBus.on('updatePackage', () => {
 })
 
 PackageMenuEventBus.on('createPackage', async ({path, parentId}) => {
-	await api.packageService.createPackage({path, parentId})
+	await api.packageService.create({path, parentId})
 	await getData()
 	sendMessage('软件包创建成功', 'success')
 })

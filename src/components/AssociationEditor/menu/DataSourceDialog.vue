@@ -79,7 +79,7 @@ const submit = () => {
 			}
 		})
 	} else {
-		api.dataSourceService.insert({
+		api.dataSourceService.create({
 			body: dataSource.value
 		}).then(id => {
 			api.dataSourceService.get({id}).then(res => {

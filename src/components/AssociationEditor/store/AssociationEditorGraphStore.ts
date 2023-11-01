@@ -116,12 +116,6 @@ export const useAssociationEditorGraphStore =
                 })
             }
 
-            AssociationEditorGraphEventBus.on('deleteAssociations', async (
-                {sourceColumnId, targetColumnId}
-            ) => {
-                await deleteAssociations(sourceColumnId, targetColumnId)
-            })
-
             return {
                 ...commonStore,
 

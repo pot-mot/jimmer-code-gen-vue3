@@ -5,7 +5,7 @@ import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphSto
 import TableIcon from "../../icons/database/TableIcon.vue";
 import {processClickFunction} from "../../../utils/clickTimer.ts";
 import Comment from "../../common/Comment.vue";
-import {TableEntityDialogEventBus} from "../TableEntityDialogManager/TableEntityDialogEventBus.ts";
+import {TableEntityDialogEventBus} from "../eventBus/TableEntityDialogEventBus.ts";
 
 const store = useAssociationEditorGraphStore()
 

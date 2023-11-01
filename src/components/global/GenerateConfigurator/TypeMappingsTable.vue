@@ -45,7 +45,7 @@ const newTypeMapping = ref<GenTypeMappingInput>({
 })
 
 const handleAdd = async () => {
-	await api.typeMappingService.add({body: newTypeMapping.value})
+	await api.typeMappingService.create({body: newTypeMapping.value})
 	addState.value = false
 	await getData()
 }

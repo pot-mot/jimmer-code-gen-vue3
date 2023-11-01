@@ -1,6 +1,6 @@
 import {Graph} from "@antv/x6";
 import {debounce} from "lodash";
-import {useEdgeStyle, useHoverToFront} from "./style.ts";
+import {useEdgeStyle, useHoverToFront, useNodeStyle} from "./style.ts";
 import {useHistory} from "./useHistory.ts";
 import {useSelection} from "./useSelection.ts";
 
@@ -25,6 +25,7 @@ export const initGraph = (
     resizeOb.observe(wrapper)
 
     useHoverToFront(graph)
+    useNodeStyle(graph)
     useEdgeStyle(graph)
     useHistory(graph)
     useSelection(graph)

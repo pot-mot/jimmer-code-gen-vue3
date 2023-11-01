@@ -20,7 +20,7 @@
 						<ul>
 							<li>
 								<el-text size="default" type="success">
-									支持 ManyToMany
+									支持 ManyToMany 与 OneToMany
 								</el-text>
 							</li>
 							<li>
@@ -49,7 +49,7 @@
 						<ul>
 							<li>
 								<el-text size="default" type="warning">
-									不支持 ManyToMany
+									不支持 ManyToMany 与 OneToMany
 								</el-text>
 							</li>
 							<li>

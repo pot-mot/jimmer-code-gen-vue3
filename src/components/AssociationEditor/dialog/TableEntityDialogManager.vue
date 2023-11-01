@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {nextTick, ref} from 'vue'
-import TableEntityDialog from "../TableEntityDialog/index.vue";
-import {TableEntityDialogEventBus} from "./TableEntityDialogEventBus.ts";
+import {TableEntityDialogEventBus} from "../eventBus/TableEntityDialogEventBus.ts";
+import TableEntityDialog from "./TableEntityDialog.vue";
 
 const tableIds = ref<Set<number>>(new Set)
 

@@ -7,7 +7,7 @@ export class TypeMappingService {
     
     constructor(private executor: Executor) {}
     
-    async add(options: TypeMappingServiceOptions['add']): Promise<number> {
+    async create(options: TypeMappingServiceOptions['create']): Promise<number> {
         let _uri = '/typeMapping/';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number
     }
@@ -40,7 +40,7 @@ export class TypeMappingService {
 }
 
 export type TypeMappingServiceOptions = {
-    'add': {body: GenTypeMappingInput},
+    'create': {body: GenTypeMappingInput},
     'delete': {ids: number[]},
     'get': {id: number},
     'list': {},

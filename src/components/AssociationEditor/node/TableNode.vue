@@ -33,12 +33,8 @@
 
 	.table-wrapper {
 		background-color: #fff;
-		border: 1px solid #000;
+		border: 1px solid var(--el-color-info);
 		border-collapse: collapse;
-
-		&:hover {
-			box-shadow: var(--el-box-shadow-dark);
-		}
 
 		.tableName, .column {
 			white-space: nowrap;
@@ -62,7 +58,11 @@
 	}
 }
 
-.x6-node-selected .table-wrapper {
+.table-wrapper.hovered {
+	border-color: var(--el-color-black);
+}
+
+.table-wrapper.selected {
 	outline: 2px solid var(--highlight-color);
 	outline-offset: 2px;
 }
@@ -77,7 +77,7 @@ import {ElText} from "element-plus";
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
-import {TableEntityDialogEventBus} from "../TableEntityDialogManager/TableEntityDialogEventBus.ts";
+import {TableEntityDialogEventBus} from "../eventBus/TableEntityDialogEventBus.ts";
 
 const wrapper = ref<HTMLElement | null>()
 
@@ -93,6 +93,8 @@ onMounted(() => {
 
 	nextTick(() => {
 		if (!wrapper.value) return
+
+		node.getData().wrapper = wrapper
 
 		const graph = store._graph()
 

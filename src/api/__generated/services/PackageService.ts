@@ -5,7 +5,7 @@ export class PackageService {
     
     constructor(private executor: Executor) {}
     
-    async createPackage(options: PackageServiceOptions['createPackage']): Promise<number | undefined> {
+    async create(options: PackageServiceOptions['create']): Promise<number | undefined> {
         let _uri = '/package/';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
@@ -70,7 +70,7 @@ export class PackageService {
 }
 
 export type PackageServiceOptions = {
-    'createPackage': {path: string, parentId?: number},
+    'create': {path: string, parentId?: number},
     'delete': {ids: number[]},
     'list': {},
     'moveEntity': {id: number, packageId: number},

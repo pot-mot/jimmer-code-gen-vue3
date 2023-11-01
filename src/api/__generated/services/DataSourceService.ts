@@ -6,6 +6,11 @@ export class DataSourceService {
     
     constructor(private executor: Executor) {}
     
+    async create(options: DataSourceServiceOptions['create']): Promise<number> {
+        let _uri = '/dataSource/';
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number
+    }
+    
     async delete(options: DataSourceServiceOptions['delete']): Promise<number> {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.ids.join(','));
@@ -35,11 +40,6 @@ export class DataSourceService {
         return (await this.executor({uri: _uri, method: 'GET'})) as GenDataSourceTemplateView
     }
     
-    async insert(options: DataSourceServiceOptions['insert']): Promise<number> {
-        let _uri = '/dataSource/';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number
-    }
-    
     async list(): Promise<
         GenDataSourceView[]
     > {
@@ -61,11 +61,11 @@ export class DataSourceService {
 }
 
 export type DataSourceServiceOptions = {
+    'create': {body: GenDataSourceInput},
     'delete': {ids: number[]},
     'edit': {id: number, body: GenDataSourceInput},
     'get': {id: number},
     'getDefaultDataSource': {dataSourceType: DataSourceType},
-    'insert': {body: GenDataSourceInput},
     'list': {},
     'listType': {},
     'test': {body: GenDataSourceInput}

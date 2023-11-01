@@ -1,9 +1,14 @@
 import type { Executor } from '../';
-import type { GenTableAssociationView, GenTableColumnView, GenTableCommonView, TableQuery } from '../model/static';
+import type { GenTableAssociationView, GenTableColumnView, GenTableCommonView, GenTableInput, TableQuery } from '../model/static';
 
 export class TableService {
     
     constructor(private executor: Executor) {}
+    
+    async create(options: TableServiceOptions['create']): Promise<number> {
+        let _uri = '/table/';
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number
+    }
     
     async delete(options: TableServiceOptions['delete']): Promise<number> {
         let _uri = '/table/';
@@ -81,6 +86,7 @@ export class TableService {
 }
 
 export type TableServiceOptions = {
+    'create': {body: GenTableInput},
     'delete': {ids: number[]},
     'getAssociationView': {id: number},
     'getTableDefine': {id: number},

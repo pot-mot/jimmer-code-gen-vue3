@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {MANY_TO_ONE, ONE_TO_ONE} from "../constant.ts";
 import {GenTableAssociationView} from "../../../api/__generated/model/static";
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import Details from "../../common/Details.vue";
@@ -125,26 +124,23 @@ const deleteInAssociation = (
 				<div style="padding-left: 3em;">
 					<div v-for="association in column.inAssociations">
 						<el-text>
-							<span> {{ " <- " }} </span>
-							<el-select v-model="association.associationType">
-								<el-option :value="MANY_TO_ONE">{{ MANY_TO_ONE }}</el-option>
-								<el-option :value="ONE_TO_ONE">{{ ONE_TO_ONE }}</el-option>
-							</el-select>
+							<span>{{ " <- " }}</span>
+							<span>{{ ` ${association.associationType.toLowerCase()} ` }}</span>
+<!--							<el-select v-model="association.associationType">-->
+<!--								<el-option :value="MANY_TO_ONE">{{ MANY_TO_ONE }}</el-option>-->
+<!--								<el-option :value="ONE_TO_ONE">{{ ONE_TO_ONE }}</el-option>-->
+<!--							</el-select>-->
+							<span>{{ " - " }}</span>
 
-							<el-button
-								@click="toggleTableSelect(association.sourceColumn.table.id)"
-								@dblclick="focusTable(association.sourceColumn.table.id)"
-								link>
+							<span class="association-link-bottom"
+								  @click="toggleTableSelect(association.sourceColumn.table.id)"
+								  @dblclick="focusTable(association.sourceColumn.table.id)">
 								{{ association.sourceColumn.table.name }}
-							</el-button>
-							.
-							<el-button
-								style="margin-left: 0;"
-								@click="selectAssociation(association.sourceColumn.id, column.id)"
-								@dblclick="focusAssociation(association.sourceColumn.id, column.id)"
-								link>
+							</span>.<span class="association-link-bottom"
+										  @click="selectAssociation(association.sourceColumn.id, column.id)"
+										  @dblclick="focusAssociation(association.sourceColumn.id, column.id)">
 								{{ association.sourceColumn.name }}
-							</el-button>
+							</span>
 
 							<el-button @click="deleteInAssociation(column.id, association)" type="danger" :icon="Delete"
 									   link></el-button>
@@ -155,26 +151,23 @@ const deleteInAssociation = (
 				<div style="padding-left: 3em;">
 					<div v-for="association in column.outAssociations">
 						<el-text>
-							<span> {{ " -> " }} </span>
-							<el-select v-model="association.associationType">
-								<el-option :value="MANY_TO_ONE">{{ MANY_TO_ONE }}</el-option>
-								<el-option :value="ONE_TO_ONE">{{ ONE_TO_ONE }}</el-option>
-							</el-select>
+							<span>{{ " - " }}</span>
+							<span>{{ ` ${association.associationType.toLowerCase()} ` }}</span>
+<!--							<el-select v-model="association.associationType">-->
+<!--								<el-option :value="MANY_TO_ONE">{{ MANY_TO_ONE }}</el-option>-->
+<!--								<el-option :value="ONE_TO_ONE">{{ ONE_TO_ONE }}</el-option>-->
+<!--							</el-select>-->
+							<span>{{ " -> " }}</span>
 
-							<el-button
-								@click="toggleTableSelect(association.targetColumn.table.id)"
-								@dblclick="focusTable(association.targetColumn.table.id)"
-								link>
+							<span class="association-link-bottom"
+								  @click="toggleTableSelect(association.targetColumn.table.id)"
+								  @dblclick="focusTable(association.targetColumn.table.id)">
 								{{ association.targetColumn.table.name }}
-							</el-button>
-							.
-							<el-button
-								style="margin-left: 0;"
-								@click="selectAssociation(column.id, association.targetColumn.id)"
-								@dblclick="focusAssociation(column.id, association.targetColumn.id)"
-								link>
+							</span>.<span class="association-link-bottom"
+										  @click="selectAssociation(column.id, association.targetColumn.id)"
+										  @dblclick="focusAssociation(column.id, association.targetColumn.id)">
 								{{ association.targetColumn.name }}
-							</el-button>
+							</span>
 
 							<el-button @click="deleteOutAssociation(column.id, association)" type="danger"
 									   :icon="Delete" link></el-button>
@@ -192,5 +185,9 @@ const deleteInAssociation = (
 	grid-template-columns: 1.5em 15em 10em 1fr 1fr;
 	line-height: 1.5em;
 	white-space: nowrap;
+}
+
+.association-link-bottom:hover {
+	color: var(--el-color-info-dark-2);
 }
 </style>
