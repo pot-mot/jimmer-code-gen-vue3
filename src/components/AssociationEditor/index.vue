@@ -1,5 +1,5 @@
 <template>
-	<div id="AssociationEditor" ref="wrapper" class="wrapper">
+	<div ref="wrapper" class="wrapper">
 		<div ref="container"></div>
 
 		<ul v-if="store.isLoaded" class="toolbar left-top">
@@ -132,9 +132,9 @@ import {useHistoryKeyEvent} from "../../utils/graphEditor/useHistory.ts";
 import {useSelectionKeyEvent} from "../../utils/graphEditor/useSelection.ts";
 import {useSave} from "./useSave.ts";
 import {AssociationEditorMenuEventBus} from "./eventBus/AssociationEditorMenuEventBus.ts";
-import MiniMap from "../common/MiniMap.vue";
-import ScaleBar from "../common/ScaleBar.vue";
-import Searcher from "../common/Searcher.vue";
+import MiniMap from "../common/graph/MiniMap.vue";
+import ScaleBar from "../common/graph/ScaleBar.vue";
+import Searcher from "../common/graph/Searcher.vue";
 import Comment from "../common/Comment.vue";
 import {AssociationEditorGraphEventBus} from "./eventBus/AssociationEditorGraphEventBus.ts";
 
@@ -201,7 +201,7 @@ const handleCenter = () => {
 const handleGenerateEntities = () => {
 	generateEntitiesByTable(
 		store.isSelectionEmpty ?
-			store.tables().map(it => it.id) : store.selectedNodes.map(it => nodeIdToTableId(it.id))
+			store.tables().map(it => it.id) : store.selectedNodeIds.map(it => nodeIdToTableId(it))
 	)
 }
 

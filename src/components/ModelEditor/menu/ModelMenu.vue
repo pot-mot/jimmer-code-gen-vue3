@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import TopBottomLayout from "../../layout/TopBottomLayout.vue";
-import AssociationList from "./AssociationList.vue";
-import TableList from "./TableList.vue";
 import {ModelDialogEventBus} from "../eventBus/ModelDialogEventBus.ts";
+import {useModelEditorGraphStore} from "../store/ModelEditorGraphStore.ts";
+import NodeList from "../../common/graph/NodeList.vue";
+import EdgeList from "../../common/graph/EdgeList.vue";
+
+const store = useModelEditorGraphStore()
 </script>
 
 <template>
@@ -13,10 +16,18 @@ import {ModelDialogEventBus} from "../eventBus/ModelDialogEventBus.ts";
 		<div>
 			<TopBottomLayout>
 				<template #top>
-					<TableList></TableList>
+					<NodeList :nodes="store.nodes">
+						<template #default="{node}">
+							{{ node }}
+						</template>
+					</NodeList>
 				</template>
 				<template #bottom>
-					<AssociationList></AssociationList>
+					<EdgeList :edges="store.edges">
+						<template #default="{edge}">
+							{{ edge }}
+						</template>
+					</EdgeList>
 				</template>
 			</TopBottomLayout>
 		</div>

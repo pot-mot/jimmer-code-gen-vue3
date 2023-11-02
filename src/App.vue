@@ -4,8 +4,7 @@ import GenerateConfigurator from "./components/global/GenerateConfigurator/index
 
 <template>
 	<div class="layout">
-		<RouterView>
-		</RouterView>
+		<RouterView></RouterView>
 		<GenerateConfigurator></GenerateConfigurator>
 	</div>
 </template>

@@ -2,7 +2,7 @@
 import {Graph} from "@antv/x6";
 import {Minus, Plus} from "@element-plus/icons-vue";
 import {computed, nextTick, onMounted, ref, watch} from "vue";
-import {defaultZoomRange} from "../AssociationEditor/constant.ts";
+import {defaultZoomRange} from "../../AssociationEditor/constant.ts";
 
 interface ScaleBarProps {
 	graph: Graph,

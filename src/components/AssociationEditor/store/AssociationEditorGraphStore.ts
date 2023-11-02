@@ -12,7 +12,6 @@ import {nextTick} from 'vue';
 import {AssociationEditorGraphEventBus} from "../eventBus/AssociationEditorGraphEventBus.ts";
 import {api} from "../../../api";
 import {searchEdgesByColumn} from "../../../utils/graphEditor/search.ts";
-import {unselect} from "../../../utils/graphEditor/selectOperation.ts";
 import {commonGraphStoreOperations} from "../../../utils/graphEditor/commonStore.ts";
 
 
@@ -66,11 +65,7 @@ export const useAssociationEditorGraphStore =
 
                 const oldTables = tables().filter(table => table.schema?.id == id)
 
-                if (oldTables.length > 0) {
-                    unselect(graph, oldTables.map(table => table.id))
-                }
-
-                const res = await api.tableService.query({query: {schemaIds: [id]}})
+                const res = await api.tableService.queryIdView({query: {schemaIds: [id]}})
                 const tableIds = res.map(table => table.id)
 
                 const {nodes, edges} = await loadTableNodes(graph, tableIds, false)

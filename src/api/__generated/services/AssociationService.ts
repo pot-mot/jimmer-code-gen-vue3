@@ -135,14 +135,7 @@ export class AssociationService {
         return (await this.executor({uri: _uri, method: 'GET'})) as GenAssociationView[]
     }
     
-    async save(options: AssociationServiceOptions['save']): Promise<
-        number[]
-    > {
-        let _uri = '/association/save';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number[]
-    }
-    
-    async selectByColumn(options: AssociationServiceOptions['selectByColumn']): Promise<
+    async queryByColumn(options: AssociationServiceOptions['queryByColumn']): Promise<
         GenAssociationView[]
     > {
         let _uri = '/association/column';
@@ -172,7 +165,7 @@ export class AssociationService {
         return (await this.executor({uri: _uri, method: 'GET'})) as GenAssociationView[]
     }
     
-    async selectByTable(options: AssociationServiceOptions['selectByTable']): Promise<
+    async queryByTable(options: AssociationServiceOptions['queryByTable']): Promise<
         GenAssociationView[]
     > {
         let _uri = '/association/table';
@@ -194,6 +187,13 @@ export class AssociationService {
         }
         return (await this.executor({uri: _uri, method: 'GET'})) as GenAssociationView[]
     }
+    
+    async save(options: AssociationServiceOptions['save']): Promise<
+        number[]
+    > {
+        let _uri = '/association/save';
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number[]
+    }
 }
 
 export type AssociationServiceOptions = {
@@ -207,11 +207,11 @@ export type AssociationServiceOptions = {
     'listMatchType': {},
     'match': {body: number[], matchType?: AssociationMatchType},
     'query': {query: AssociationQuery},
-    'save': {body: GenAssociationInput[]},
-    'selectByColumn': {
+    'queryByColumn': {
         sourceColumnIds: number[], 
         targetColumnIds: number[], 
         selectType?: SelectType
     },
-    'selectByTable': {tableIds: number[], selectType?: SelectType}
+    'queryByTable': {tableIds: number[], selectType?: SelectType},
+    'save': {body: GenAssociationInput[]}
 }

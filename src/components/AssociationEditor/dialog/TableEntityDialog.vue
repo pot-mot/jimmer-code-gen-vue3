@@ -42,7 +42,7 @@ const table = ref<GenTableAssociationView | undefined>()
 const entityId = ref<number | undefined>()
 
 watch(() => props.id, async (id) => {
-	table.value = await api.tableService.getAssociationView({id})
+	table.value = (await api.tableService.queryAssociationView({query: {ids: [id]}}))[0]
 	if (table.value) {
 		entityId.value = table.value.entityId
 

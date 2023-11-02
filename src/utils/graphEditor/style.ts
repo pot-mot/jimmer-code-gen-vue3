@@ -13,19 +13,27 @@ export const useHoverToFront = (graph: Graph) => {
 }
 
 const nodeHover = (node: Node) => {
-    (node.getData().wrapper.value as HTMLElement).classList.add('hovered')
+    if (node.getData().wrapper && node.getData().wrapper.value) {
+        (node.getData().wrapper.value as HTMLElement).classList.add('hovered')
+    }
 }
 
 const nodeUnhover = (node: Node) => {
-    (node.getData().wrapper.value as HTMLElement).classList.remove('hovered')
+    if (node.getData().wrapper && node.getData().wrapper.value) {
+        (node.getData().wrapper.value as HTMLElement).classList.remove('hovered')
+    }
 }
 
 const nodeSelected = (node: Node) => {
-    (node.getData().wrapper.value as HTMLElement).classList.add('selected')
+    if (node.getData().wrapper && node.getData().wrapper.value) {
+        (node.getData().wrapper.value as HTMLElement).classList.add('selected')
+    }
 }
 
 const nodeUnselected = (node: Node) => {
-    (node.getData().wrapper.value as HTMLElement).classList.remove('selected')
+    if (node.getData().wrapper && node.getData().wrapper.value) {
+        (node.getData().wrapper.value as HTMLElement).classList.remove('selected')
+    }
 }
 
 const edgeHover = (edge: Edge) => {

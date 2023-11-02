@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import {nextTick, onBeforeUnmount, onMounted, ref} from "vue";
+import {nextTick, onMounted, onUnmounted, ref} from "vue";
 import {Graph, Node} from "@antv/x6";
-import DragDialog from "../common/DragDialog.vue";
-import {focus} from "../../utils/graphEditor/viewOperation.ts";
+import DragDialog from "../../common/DragDialog.vue";
+import {focus} from "../../../utils/graphEditor/viewOperation.ts";
 
 interface SearcherProps {
 	graph: Graph,
-	searchMethod: (node: Node, value: string) => Boolean
+	searchMethod: (node: Node, value: string) => Boolean,
+	to?: string,
 }
 
 const props = defineProps<SearcherProps>()
@@ -15,7 +16,7 @@ const keyword = ref("")
 
 const searchResult = ref<Node[]>([])
 
-const showSearch = ref(false)
+const openState = ref(false)
 
 const searchTableNodes = (graph: Graph): Node[] => {
 	if (keyword.value.length == 0) {
@@ -27,22 +28,18 @@ const searchTableNodes = (graph: Graph): Node[] => {
 	})
 }
 
-const search = () => {
-	if (keyword.value.trim().length > 0) {
-		searchResult.value = searchTableNodes(props.graph)
-	} else {
-		searchResult.value = []
-	}
-}
-
 const input = ref()
+
+const dialog = ref()
 
 const handleSearchKeyDown = (e: KeyboardEvent) => {
 	if (e.ctrlKey || e.metaKey) {
 		if (e.key == 'f') {
+			if (openState.value) return
+
 			e.preventDefault()
 			searchResult.value = []
-			showSearch.value = true
+			openState.value = true
 			nextTick(() => {
 				if (input) {
 					input.value.focus()
@@ -52,28 +49,48 @@ const handleSearchKeyDown = (e: KeyboardEvent) => {
 	}
 }
 
+const searchResultContainer = ref()
+
+const handleSearch = () => {
+	if (keyword.value.trim().length > 0) {
+		searchResult.value = searchTableNodes(props.graph)
+	} else {
+		searchResult.value = []
+	}
+
+	nextTick(() => {
+		dialog.value.syncDialogHeight()
+	})
+}
+
 onMounted(() => {
 	document.documentElement.addEventListener('keydown', handleSearchKeyDown)
 })
 
-onBeforeUnmount(() => {
+onUnmounted(() => {
 	document.documentElement.removeEventListener('keydown', handleSearchKeyDown)
 })
+
+const handleClose = () => {
+	keyword.value = ''
+	searchResult.value = []
+
+	nextTick(() => {
+		openState.value = false
+	})
+}
 </script>
 
 <template>
-	<DragDialog v-if="showSearch" @close="showSearch = false; keyword = '';" :init-w="400" :y="50"
-				to="#AssociationEditor" :can-drag="false">
-		<el-popover :visible="keyword.length > 0" width="390">
-			<template #reference>
-				<el-input ref="input" v-model="keyword" @input="search" @change="search" clearable>
-					<template #append>
-						<el-button @click="search">搜索</el-button>
-					</template>
-				</el-input>
-			</template>
+	<div v-if="openState">
+		<DragDialog ref="dialog" @close="handleClose" :init-w="400" :x="1100" :y="50" :to="to" fit-content>
+			<el-input ref="input" v-model="keyword" @input="handleSearch" @change="handleSearch" clearable>
+				<template #append>
+					<el-button @click="handleSearch">搜索</el-button>
+				</template>
+			</el-input>
 
-			<div style="max-height: 60vh; overflow: auto">
+			<div style="max-height: 60vh; overflow: auto;" ref="searchResultContainer">
 				<div v-if="keyword.length > 0 && searchResult.length == 0">
 					无搜索结果
 				</div>
@@ -89,8 +106,8 @@ onBeforeUnmount(() => {
 					</slot>
 				</div>
 			</div>
-		</el-popover>
-	</DragDialog>
+		</DragDialog>
+	</div>
 </template>
 
 <style scoped>

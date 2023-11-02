@@ -138,11 +138,11 @@ export const loadTableNodes = async (graph: Graph, ids: number[], replace: boole
     graph.startBatch('add nodes')
 
     const tables = requestIds.length > 0 ?
-        await api.tableService.listColumnView({ids: requestIds}) : []
+        await api.tableService.queryColumnView({query: {ids: requestIds}}) : []
 
     const nodes = importTableNodes(graph, tables)
 
-    const associations = await api.associationService.selectByTable({tableIds: ids})
+    const associations = await api.associationService.queryByTable({tableIds: ids})
 
     const edges = importAssociationEdges(graph, associations)
 

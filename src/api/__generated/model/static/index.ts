@@ -23,6 +23,7 @@ export type { GenSchemaView } from './GenSchemaView';
 export type { GenTableAssociationView } from './GenTableAssociationView';
 export type { GenTableColumnView } from './GenTableColumnView';
 export type { GenTableCommonView } from './GenTableCommonView';
+export type { GenTableIdView } from './GenTableIdView';
 export type { GenTableInput } from './GenTableInput';
 export type { GenTypeMappingInput } from './GenTypeMappingInput';
 export type { TableQuery } from './TableQuery';

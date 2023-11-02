@@ -17,6 +17,8 @@ interface DragResizeProps {
 	to?: string
 	canResize?: boolean
 	canDrag?: boolean
+	// 此配置项用于主动使用 syncDialogHeight 时自适应高度
+	fitContent?: boolean
 }
 
 const props = withDefaults(defineProps<DragResizeProps>(), {
@@ -39,7 +41,7 @@ onMounted(() => {
 		w.value = props.initW
 
 		if (props.initW + props.x > maxWidth) {
-			x.value = maxWidth - props.x - 20
+			x.value = maxWidth - props.initW - 20
 		} else {
 			x.value = props.x
 		}
@@ -64,29 +66,32 @@ const draggable = ref(true)
 const wrapper = ref<HTMLElement>()
 const content = ref<HTMLElement>()
 const h = ref(0)
-let resizeFlag = false
+
+const syncDialogHeight = () => {
+	if (content.value) {
+		if (props.fitContent) {
+			content.value.style.height = '0'
+			content.value.style.height = 'auto'
+		}
+
+		h.value = content.value.scrollHeight + 35
+	}
+}
+
+const updateContentHeightByWrapperHeight = () => {
+	if (wrapper.value && content.value) {
+		content.value.style.height = wrapper.value.offsetHeight - 35 + 'px'
+	}
+}
+
+const contentResizeOb = new ResizeObserver(syncDialogHeight)
+
+const wrapperResizeOb = new ResizeObserver(updateContentHeightByWrapperHeight)
 
 onMounted(() => {
 	nextTick(() => {
 		if (content.value && wrapper.value) {
-			const contentResizeOb = new ResizeObserver(() => {
-				if (content.value) {
-					if (resizeFlag) {
-						resizeFlag = false
-					} else {
-						h.value = content.value.scrollHeight + 35
-					}
-				}
-			})
-
 			contentResizeOb.observe(content.value)
-
-			const wrapperResizeOb = new ResizeObserver(() => {
-				if (wrapper.value && content.value) {
-					content.value.style.height = wrapper.value.offsetHeight - 35 + 'px'
-					resizeFlag = true
-				}
-			})
 
 			wrapperResizeOb.observe(wrapper.value)
 		}
@@ -100,6 +105,10 @@ const handleContentMouseEnter = () => {
 const handleContentMouseLeave = () => {
 	draggable.value = props.canDrag && true
 }
+
+defineExpose({
+	syncDialogHeight
+})
 </script>
 
 <template>

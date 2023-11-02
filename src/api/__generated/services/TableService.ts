@@ -1,5 +1,5 @@
 import type { Executor } from '../';
-import type { GenTableAssociationView, GenTableColumnView, GenTableCommonView, GenTableInput, TableQuery } from '../model/static';
+import type { GenTableAssociationView, GenTableColumnView, GenTableCommonView, GenTableIdView, GenTableInput, TableQuery } from '../model/static';
 
 export class TableService {
     
@@ -16,14 +16,6 @@ export class TableService {
         return (await this.executor({uri: _uri, method: 'DELETE'})) as number
     }
     
-    async getAssociationView(options: TableServiceOptions['getAssociationView']): Promise<
-        GenTableAssociationView | undefined
-    > {
-        let _uri = '/table/associationView/';
-        _uri += encodeURIComponent(options.id);
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenTableAssociationView | undefined
-    }
-    
     async getTableDefine(options: TableServiceOptions['getTableDefine']): Promise<
         { [key: string]: string }
     > {
@@ -32,16 +24,8 @@ export class TableService {
         return (await this.executor({uri: _uri, method: 'GET'})) as { [key: string]: string }
     }
     
-    async listColumnView(options: TableServiceOptions['listColumnView']): Promise<
-        GenTableColumnView[]
-    > {
-        let _uri = '/table/columnView/';
-        _uri += encodeURIComponent(options.ids.join(','));
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenTableColumnView[]
-    }
-    
-    async query(options: TableServiceOptions['query']): Promise<
-        GenTableCommonView[]
+    async queryAssociationView(options: TableServiceOptions['queryAssociationView']): Promise<
+        GenTableAssociationView[]
     > {
         let _uri = '/table/query';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -81,15 +65,148 @@ export class TableService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenTableAssociationView[]
+    }
+    
+    async queryColumnView(options: TableServiceOptions['queryColumnView']): Promise<
+        GenTableColumnView[]
+    > {
+        let _uri = '/table/query/columns';
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.query.ids?.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'ids='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.keywords?.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'keywords='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.name;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'name='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.nonSchema;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'nonSchema='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.schemaIds?.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'schemaIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenTableColumnView[]
+    }
+    
+    async queryCommonView(options: TableServiceOptions['queryCommonView']): Promise<
+        GenTableCommonView[]
+    > {
+        let _uri = '/table/query/common';
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.query.ids?.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'ids='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.keywords?.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'keywords='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.name;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'name='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.nonSchema;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'nonSchema='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.schemaIds?.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'schemaIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         return (await this.executor({uri: _uri, method: 'GET'})) as GenTableCommonView[]
+    }
+    
+    async queryIdView(options: TableServiceOptions['queryIdView']): Promise<
+        GenTableIdView[]
+    > {
+        let _uri = '/table/query/id';
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.query.ids?.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'ids='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.keywords?.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'keywords='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.name;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'name='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.nonSchema;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'nonSchema='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.schemaIds?.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'schemaIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenTableIdView[]
     }
 }
 
 export type TableServiceOptions = {
     'create': {body: GenTableInput},
     'delete': {ids: number[]},
-    'getAssociationView': {id: number},
     'getTableDefine': {id: number},
-    'listColumnView': {ids: number[]},
-    'query': {query: TableQuery}
+    'queryAssociationView': {query: TableQuery},
+    'queryColumnView': {query: TableQuery},
+    'queryCommonView': {query: TableQuery},
+    'queryIdView': {query: TableQuery}
 }

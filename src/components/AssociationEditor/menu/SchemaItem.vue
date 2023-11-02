@@ -21,7 +21,7 @@ const props = defineProps<SchemaItemProps>()
 const tables = ref<GenTableCommonView[]>([])
 
 const getTables = (schemaId: number = props.schema.id) => {
-	api.tableService.query({query: {schemaIds: [schemaId]}}).then(res => {
+	api.tableService.queryCommonView({query: {schemaIds: [schemaId]}}).then(res => {
 		tables.value = res
 	})
 }
@@ -51,7 +51,7 @@ const handleDelete = () => {
 const keywords = ref("")
 
 const query = () => {
-	api.tableService.query({
+	api.tableService.queryCommonView({
 		query: {
 			keywords: keywords.value.split(" "),
 			schemaIds: [props.schema.id]
