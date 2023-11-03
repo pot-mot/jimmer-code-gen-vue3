@@ -34,6 +34,8 @@ export type ApiErrors = {
     },
     "generateService": {
     },
+    "modelService": {
+    },
     "packageService": {
     },
     "schemaService": {

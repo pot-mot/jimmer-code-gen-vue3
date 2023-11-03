@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {GenAssociationMatchView, GenTableColumnView} from "../../../api/__generated/model/static";
+import {GenAssociationMatchView, GenTableColumnsView} from "../../../api/__generated/model/static";
 import {
     getAssociations,
 } from "../edge/AssociationEdge.ts";
@@ -28,11 +28,11 @@ export const useAssociationEditorGraphStore =
              * 根据 node 获取 graph 中的 table
              * @returns table
              */
-            const tables = (): GenTableColumnView[] => {
+            const tables = (): GenTableColumnsView[] => {
                 return getTables(_graph())
             }
 
-            const removeTables = (judge: (table: GenTableColumnView) => boolean) => {
+            const removeTables = (judge: (table: GenTableColumnsView) => boolean) => {
                 const removeTableIds: number[] = []
 
                 tables().forEach(table => {

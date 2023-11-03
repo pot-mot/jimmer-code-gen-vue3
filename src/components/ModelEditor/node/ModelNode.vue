@@ -32,12 +32,8 @@
 
 	.table-wrapper {
 		background-color: #fff;
-		border: 1px solid #000;
+		border: 1px solid var(--el-color-info);
 		border-collapse: collapse;
-
-		&:hover {
-			box-shadow: var(--el-box-shadow-dark);
-		}
 
 		.tableName, .column {
 			white-space: nowrap;
@@ -61,7 +57,11 @@
 	}
 }
 
-.x6-node-selected .table-wrapper {
+.table-wrapper.hovered {
+	border-color: var(--el-color-black);
+}
+
+.table-wrapper.selected {
 	outline: 2px solid var(--highlight-color);
 	outline-offset: 2px;
 }
@@ -69,7 +69,7 @@
 
 <script lang='ts' setup>
 import {inject, nextTick, onMounted, ref} from "vue";
-import {GenTableColumnView} from "../../../api/__generated/model/static";
+import {GenTableColumnsInput} from "../../../api/__generated/model/static";
 import {Node} from '@antv/x6'
 import {ElText} from "element-plus";
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
@@ -80,11 +80,13 @@ const wrapper = ref<HTMLElement | null>()
 
 const getNode = inject<() => Node>("getNode")!;
 
-const table = ref<GenTableColumnView>()
+const table = ref<GenTableColumnsInput>()
 
 onMounted(() => {
 	const node = getNode()
 	table.value = node.getData().table
+
+	console.log(table)
 
 	nextTick(() => {
 		if (!wrapper.value) return

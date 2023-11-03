@@ -27,6 +27,7 @@ function replaceInFile(filePath) {
     const updatedContent = fileContent
         .replaceAll("readonly ", "")
         .replace(/ReadonlyArray<(\S+)>/g, "$1[]")
+        .replaceAll("ReadonlyArray", "Array")
         .replaceAll("ReadonlyMap", "Map")
         .replace(/Map<(\S+), (\S+)>/g, "{ [key: $1]: $2 }");
     fs.writeFileSync(filePath, updatedContent, 'utf8');

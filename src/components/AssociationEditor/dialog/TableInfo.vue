@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import {GenTableAssociationView} from "../../../api/__generated/model/static";
+import {GenTableAssociationsView} from "../../../api/__generated/model/static";
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import Details from "../../common/Details.vue";
 import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
 import {Graph} from "@antv/x6";
 import {watch} from "vue";
 import {
-	GenTableAssociationView_TargetOf_columns_TargetOf_inAssociations,
-	GenTableAssociationView_TargetOf_columns_TargetOf_outAssociations,
-} from "../../../api/__generated/model/static/GenTableAssociationView.ts";
+	GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations,
+	GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations,
+} from "../../../api/__generated/model/static/GenTableAssociationsView.ts";
 import {Delete} from "@element-plus/icons-vue";
 import {processClickFunction} from "../../../utils/clickTimer.ts";
 import Comment from "../../common/Comment.vue";
@@ -17,7 +17,7 @@ import {searchEdgesByColumn} from "../../../utils/graphEditor/search.ts";
 const store = useAssociationEditorGraphStore()
 
 interface TableInfoProps {
-	table: GenTableAssociationView
+	table: GenTableAssociationsView
 }
 
 const props = defineProps<TableInfoProps>()
@@ -66,7 +66,7 @@ const {
 
 const deleteOutAssociation = (
 	columnId: number,
-	association: GenTableAssociationView_TargetOf_columns_TargetOf_outAssociations
+	association: GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations
 ) => {
 	store.deleteAssociations(columnId, association.targetColumn.id)
 	props.table.columns.forEach(column => {
@@ -77,7 +77,7 @@ const deleteOutAssociation = (
 
 const deleteInAssociation = (
 	columnId: number,
-	association: GenTableAssociationView_TargetOf_columns_TargetOf_inAssociations
+	association: GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations
 ) => {
 	store.deleteAssociations(association.sourceColumn.id, columnId)
 	props.table.columns.forEach(column => {

@@ -18,14 +18,18 @@ const store = useModelEditorGraphStore()
 				<template #top>
 					<NodeList :nodes="store.nodes">
 						<template #default="{node}">
-							{{ node }}
+							<el-button @click="store.focus(node)">
+								{{ node }}
+							</el-button>
 						</template>
 					</NodeList>
 				</template>
 				<template #bottom>
 					<EdgeList :edges="store.edges">
 						<template #default="{edge}">
-							{{ edge }}
+							<el-button @click="store.focus(edge)">
+								{{ edge }}
+							</el-button>
 						</template>
 					</EdgeList>
 				</template>

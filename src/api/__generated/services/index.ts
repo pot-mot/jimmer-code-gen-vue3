@@ -12,6 +12,8 @@ export { EnumService } from './EnumService';
 export type { EnumServiceOptions } from './EnumService';
 export { GenerateService } from './GenerateService';
 export type { GenerateServiceOptions } from './GenerateService';
+export { ModelService } from './ModelService';
+export type { ModelServiceOptions } from './ModelService';
 export { PackageService } from './PackageService';
 export type { PackageServiceOptions } from './PackageService';
 export { SchemaService } from './SchemaService';

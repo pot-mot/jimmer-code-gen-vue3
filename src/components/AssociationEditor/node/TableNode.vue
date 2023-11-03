@@ -70,7 +70,7 @@
 
 <script lang='ts' setup>
 import {inject, nextTick, onMounted, ref} from "vue";
-import {GenTableColumnView} from "../../../api/__generated/model/static";
+import {GenTableColumnsView} from "../../../api/__generated/model/static";
 import {Node} from '@antv/x6'
 import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
 import {ElText} from "element-plus";
@@ -83,7 +83,7 @@ const wrapper = ref<HTMLElement | null>()
 
 const getNode = inject<() => Node>("getNode")!;
 
-const table = ref<GenTableColumnView>()
+const table = ref<GenTableColumnsView>()
 
 const store = useAssociationEditorGraphStore()
 

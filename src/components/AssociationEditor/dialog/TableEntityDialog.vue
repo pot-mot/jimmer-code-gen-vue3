@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {ref, watch} from 'vue'
-import {GenTableAssociationView} from '../../../api/__generated/model/static'
+import {GenTableAssociationsView} from '../../../api/__generated/model/static'
 import DragDialog from "../../common/DragDialog.vue"
 import TableInfo from "./TableInfo.vue";
 import {api} from "../../../api";
@@ -37,12 +37,12 @@ interface TableEntityDialogEmits {
 
 const emits = defineEmits<TableEntityDialogEmits>()
 
-const table = ref<GenTableAssociationView | undefined>()
+const table = ref<GenTableAssociationsView | undefined>()
 
 const entityId = ref<number | undefined>()
 
 watch(() => props.id, async (id) => {
-	table.value = (await api.tableService.queryAssociationView({query: {ids: [id]}}))[0]
+	table.value = (await api.tableService.queryAssociationsView({query: {ids: [id]}}))[0]
 	if (table.value) {
 		entityId.value = table.value.entityId
 

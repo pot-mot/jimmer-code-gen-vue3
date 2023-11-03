@@ -1,14 +1,9 @@
 import type { Executor } from '../';
-import type { GenTableAssociationView, GenTableColumnView, GenTableCommonView, GenTableIdView, GenTableInput, TableQuery } from '../model/static';
+import type { GenTableAssociationsView, GenTableColumnsView, GenTableCommonView, GenTableIdView, TableQuery } from '../model/static';
 
 export class TableService {
     
     constructor(private executor: Executor) {}
-    
-    async create(options: TableServiceOptions['create']): Promise<number> {
-        let _uri = '/table/';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number
-    }
     
     async delete(options: TableServiceOptions['delete']): Promise<number> {
         let _uri = '/table/';
@@ -24,8 +19,8 @@ export class TableService {
         return (await this.executor({uri: _uri, method: 'GET'})) as { [key: string]: string }
     }
     
-    async queryAssociationView(options: TableServiceOptions['queryAssociationView']): Promise<
-        GenTableAssociationView[]
+    async queryAssociationsView(options: TableServiceOptions['queryAssociationsView']): Promise<
+        GenTableAssociationsView[]
     > {
         let _uri = '/table/query';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -65,11 +60,11 @@ export class TableService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenTableAssociationView[]
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenTableAssociationsView[]
     }
     
-    async queryColumnView(options: TableServiceOptions['queryColumnView']): Promise<
-        GenTableColumnView[]
+    async queryColumnsView(options: TableServiceOptions['queryColumnsView']): Promise<
+        GenTableColumnsView[]
     > {
         let _uri = '/table/query/columns';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -109,7 +104,7 @@ export class TableService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenTableColumnView[]
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenTableColumnsView[]
     }
     
     async queryCommonView(options: TableServiceOptions['queryCommonView']): Promise<
@@ -202,11 +197,10 @@ export class TableService {
 }
 
 export type TableServiceOptions = {
-    'create': {body: GenTableInput},
     'delete': {ids: number[]},
     'getTableDefine': {id: number},
-    'queryAssociationView': {query: TableQuery},
-    'queryColumnView': {query: TableQuery},
+    'queryAssociationsView': {query: TableQuery},
+    'queryColumnsView': {query: TableQuery},
     'queryCommonView': {query: TableQuery},
     'queryIdView': {query: TableQuery}
 }

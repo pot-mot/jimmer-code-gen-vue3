@@ -8,7 +8,6 @@ import {Close} from "@element-plus/icons-vue";
 interface DragResizeProps {
 	x?: number
 	y?: number
-	initH?: number
 	initW?: number
 	minW?: number
 	minH?: number
@@ -114,7 +113,7 @@ defineExpose({
 <template>
 	<Teleport :to="to">
 		<DragResize :active="true" :draggable="draggable" :parent="true" :resizable="canResize"
-					:h="h" :w="w" :initH="initH" :initW="initW" :minH="minH" :minW="minW" :maxH="maxH" :maxW="maxW"
+					:h="h" :w="w" :initW="initW" :minH="minH" :minW="minW" :maxH="maxH" :maxW="maxW"
 					:x="x" :y="y"
 					style="border: none; z-index: 2000;">
 			<div ref="wrapper" class="wrapper" :style="draggable ? 'cursor: all-scroll;' : 'cursor: default;'">

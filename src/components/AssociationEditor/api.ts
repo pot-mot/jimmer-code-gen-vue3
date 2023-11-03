@@ -3,11 +3,11 @@ import {saveAs} from "file-saver";
 import {nodeIsExist, searchEdgesIgnoreDirection} from "../../utils/graphEditor/search.ts";
 import {associationToEdge, getAssociations} from "./edge/AssociationEdge.ts";
 import {Edge, Graph} from "@antv/x6";
-import {GenAssociationInput, GenAssociationMatchView, GenTableColumnView} from "../../api/__generated/model/static";
+import {GenAssociationInput, GenAssociationMatchView, GenTableColumnsView} from "../../api/__generated/model/static";
 import {sendMessage} from "../../utils/message.ts";
 import {erRouter, orthRouter} from "../../utils/graphEditor/router.ts";
 import {getTables} from "./node/TableNode.ts";
-import {GenTableColumnView_TargetOf_columns} from "../../api/__generated/model/static/GenTableColumnView.ts";
+import {GenTableColumnsView_TargetOf_columns} from "../../api/__generated/model/static/GenTableColumnsView.ts";
 
 export const convertEntities = async (tableIds: number[]) => {
     return await api.generateService.convert({body: tableIds})
@@ -80,8 +80,8 @@ export const saveAssociations = async (graph: Graph) => {
         const tables = getTables(graph)
         const associations = getAssociations(graph)
 
-        const tableMap = new Map<number, GenTableColumnView>
-        const columnMap = new Map<number, GenTableColumnView_TargetOf_columns>
+        const tableMap = new Map<number, GenTableColumnsView>
+        const columnMap = new Map<number, GenTableColumnsView_TargetOf_columns>
 
         tables.forEach(table => {
             tableMap.set(table.id, table)

@@ -2,6 +2,7 @@
 import LeftTopBottomLayout from "../components/layout/LeftRightLayout.vue";
 import ModelEditor from "../components/ModelEditor/index.vue";
 import ModelMenu from "../components/ModelEditor/menu/ModelMenu.vue";
+import ModelAddDialog from "../components/ModelEditor/dialog/ModelAddDialog.vue";
 </script>
 
 <template>
@@ -13,6 +14,8 @@ import ModelMenu from "../components/ModelEditor/menu/ModelMenu.vue";
 			<ModelEditor></ModelEditor>
 		</template>
 	</LeftTopBottomLayout>
+
+	<ModelAddDialog></ModelAddDialog>
 </template>
 
 <style scoped>

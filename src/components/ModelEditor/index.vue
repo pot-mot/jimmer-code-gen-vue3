@@ -40,6 +40,10 @@ import ScaleBar from "../common/graph/ScaleBar.vue";
 import Searcher from "../common/graph/Searcher.vue";
 import {tableNodeMatchMethod} from "../AssociationEditor/node/TableNode.ts";
 import Comment from "../common/Comment.vue";
+import {ModelEditorEventBus} from "./eventBus/ModelEditorEventBus.ts";
+import {addModelNode} from "./node/modelNode.ts";
+import {register} from "@antv/x6-vue-shape";
+import ModelNode from "./node/ModelNode.vue";
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();
@@ -47,6 +51,11 @@ const wrapper = ref<HTMLElement>();
 let graph: Graph
 
 const store = useModelEditorGraphStore()
+
+register({
+	shape: "model",
+	component: ModelNode
+});
 
 const {
 	loadGraph,
@@ -62,5 +71,9 @@ onMounted(() => {
 
 onUnmounted(() => {
 	store.unload()
+})
+
+ModelEditorEventBus.on('createdTable', (table) => {
+	addModelNode(graph, table)
 })
 </script>

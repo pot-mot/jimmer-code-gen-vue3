@@ -1,8 +1,8 @@
 import type { DataSourceType, TableType } from '../enums';
 
-export interface GenTableColumnView {
+export interface GenTableColumnsView {
     
-    columns: GenTableColumnView_TargetOf_columns[];
+    columns: GenTableColumnsView_TargetOf_columns[];
     
     comment: string;
     
@@ -20,12 +20,12 @@ export interface GenTableColumnView {
     
     remark: string;
     
-    schema?: GenTableColumnView_TargetOf_schema;
+    schema?: GenTableColumnsView_TargetOf_schema;
     
     type: TableType;
 }
 
-export interface GenTableColumnView_TargetOf_columns {
+export interface GenTableColumnsView_TargetOf_columns {
     
     autoIncrement: boolean;
     
@@ -64,16 +64,16 @@ export interface GenTableColumnView_TargetOf_columns {
     typeCode: number;
 }
 
-export interface GenTableColumnView_TargetOf_schema {
+export interface GenTableColumnsView_TargetOf_schema {
     
-    dataSource: GenTableColumnView_TargetOf_schema_TargetOf_dataSource;
+    dataSource: GenTableColumnsView_TargetOf_schema_TargetOf_dataSource;
     
     id: number;
     
     name: string;
 }
 
-export interface GenTableColumnView_TargetOf_schema_TargetOf_dataSource {
+export interface GenTableColumnsView_TargetOf_schema_TargetOf_dataSource {
     
     id: number;
     

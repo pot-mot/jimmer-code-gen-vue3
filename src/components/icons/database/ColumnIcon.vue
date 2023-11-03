@@ -36,7 +36,7 @@ defineProps<DataSourceIconProps>()
 					  :stroke="column.partOfFk ? '#409EFF' : '#E6A23C'" fill="none"/>
 
 				<path v-if="column.autoIncrement"
-					  d="M 21 12 v -4 m -2 2 h 4"
+					  d="M 20 10 v -6 m -3 3 h 6"
 					  :stroke="column.partOfFk ? '#409EFF' : '#E6A23C'" fill="none"/>
 
 			</svg>

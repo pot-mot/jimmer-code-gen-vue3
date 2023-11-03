@@ -56,7 +56,7 @@ watch(() => props.dataSource, () => {
 
 const emits = defineEmits<SchemaItemEmits>()
 
-const test = () => {
+const handleTest = () => {
 	api.dataSourceService.test({
 		body: dataSource.value
 	}).then(res => {
@@ -68,7 +68,7 @@ const test = () => {
 	})
 }
 
-const submit = () => {
+const handleSubmit = () => {
 	if (props.id) {
 		api.dataSourceService.edit({
 			id: props.id,
@@ -136,8 +136,8 @@ const close = () => {
 				<el-input type="textarea" v-model="dataSource.remark"></el-input>
 			</el-form-item>
 			<el-form-item>
-				<el-button @click="test" type="info">测试</el-button>
-				<el-button @click="submit" type="warning">提交</el-button>
+				<el-button @click="handleTest" type="info">测试</el-button>
+				<el-button @click="handleSubmit" type="warning">提交</el-button>
 			</el-form-item>
 		</el-form>
 	</DragDialog>

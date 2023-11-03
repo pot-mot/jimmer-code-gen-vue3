@@ -1,4 +1,4 @@
-import {GenTableColumnView} from "../../../api/__generated/model/static";
+import {GenTableColumnsView} from "../../../api/__generated/model/static";
 import {Graph, Node, Edge} from "@antv/x6";
 import {COLUMN_HEIGHT, COLUMN_PORT} from "../constant.ts";
 import {columnToPort} from "../port/ColumnPort.ts";
@@ -14,7 +14,7 @@ export const nodeIdToTableId = (id: string) => {
     return parseInt(id.replace('table-', ''))
 }
 
-const tableToNode = (table: GenTableColumnView, options: any = undefined) => {
+const tableToNode = (table: GenTableColumnsView, options: any = undefined) => {
     return {
         ...options,
         shape: "table",
@@ -46,11 +46,11 @@ const tableToNode = (table: GenTableColumnView, options: any = undefined) => {
     }
 }
 
-export const nodeToTable = (node: Node): GenTableColumnView => {
+export const nodeToTable = (node: Node): GenTableColumnsView => {
     return node.data.table
 }
 
-export const getTables = (graph: Graph): GenTableColumnView[] => {
+export const getTables = (graph: Graph): GenTableColumnsView[] => {
     return graph.getNodes().map(nodeToTable)
 }
 
@@ -59,7 +59,7 @@ export const getTables = (graph: Graph): GenTableColumnView[] => {
  * @param graph
  * @param tables
  */
-export const importTableNodes = (graph: Graph, tables: readonly GenTableColumnView[]): Node[] => {
+export const importTableNodes = (graph: Graph, tables: readonly GenTableColumnsView[]): Node[] => {
     const nodes: Node[] = tables.map(table => {
         const svgRect = graph.view.svg.getBoundingClientRect()
         return tableToNode(table, graph.graphToLocal(
@@ -138,7 +138,7 @@ export const loadTableNodes = async (graph: Graph, ids: number[], replace: boole
     graph.startBatch('add nodes')
 
     const tables = requestIds.length > 0 ?
-        await api.tableService.queryColumnView({query: {ids: requestIds}}) : []
+        await api.tableService.queryColumnsView({query: {ids: requestIds}}) : []
 
     const nodes = importTableNodes(graph, tables)
 
@@ -155,7 +155,7 @@ export const tableNodeMatchMethod = (node: Node, keyword: string): boolean => {
     const keywords = keyword.split(',')
 
     if (node.data && node.data.table) {
-        const table: GenTableColumnView = node.data.table
+        const table: GenTableColumnsView = node.data.table
         for (const keyword of keywords) {
             if (table.name.includes(keyword) || table.comment.includes(keyword)) {
                 return true
