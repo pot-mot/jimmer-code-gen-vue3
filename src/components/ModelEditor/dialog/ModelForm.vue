@@ -7,7 +7,6 @@ import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import {api} from "../../../api";
 import {objToMap} from "../../../utils/mapOperation.ts";
 import {useLoading} from "../../../hooks/useLoading.ts";
-import {deepClone} from "../../../utils/deepClone.ts";
 
 const columnTypeMap = ref(new Map<string, number>)
 
@@ -61,18 +60,19 @@ interface ModelFormEmits {
 
 const emits = defineEmits<ModelFormEmits>()
 
-const table = ref<GenTableColumnsInput>(deepClone(defaultTable))
+const table = ref<GenTableColumnsInput>({...defaultTable})
 
 watch(() => props.table, () => {
 	if (!props.table) return
 
-
 	table.value = {
 		...table.value,
 		...toRaw(props.table),
-		columns: deepClone([
-			...Object.values(toRaw(props.table.columns))
-		])
+		columns: [
+			...Object.values(toRaw(props.table.columns)).map(it => {
+				return {...it}
+			})
+		]
 	}
 }, {immediate: true})
 
@@ -81,7 +81,7 @@ const handleSubmit = () => {
 }
 
 const handleAddColumn = () => {
-	table.value.columns.push(deepClone(defaultColumn))
+	table.value.columns.push({...defaultColumn})
 }
 
 const handleRemoveColumn = (removedIndex: number) => {

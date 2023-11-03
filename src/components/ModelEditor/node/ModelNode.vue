@@ -1,6 +1,7 @@
 <template>
-	<div v-if="table" class="node" @dblclick="ModelEditorEventBus.emit('modifyTable', {id: getNode().id, table})">
-		<table ref="wrapper" class="table-wrapper">
+	<div class="node">
+		<table v-if="table" ref="wrapper" class="table-wrapper"
+			   @dblclick="ModelEditorEventBus.emit('modifyTable', {id: getNode().id, table})">
 			<tr class="tableName">
 				<td colspan="2">
 					<span class="icon">
@@ -84,32 +85,34 @@ const getNode = inject<() => Node>("getNode")!;
 
 const table = ref<GenTableColumnsInput>()
 
-onMounted(() => {
-	const node = getNode()!
+onMounted(async () => {
+	const node = getNode()
 
+	// 绑定数据
 	table.value = node.getData().table
 
 	node.on('change:data', () => {
 		table.value = node.getData().table
 	})
 
-	nextTick(() => {
+	await nextTick()
+
+	if (!wrapper.value) return
+
+	// 响应式更新尺寸
+	node.getData().wrapper = wrapper
+
+	const resize = () => {
 		if (!wrapper.value) return
+		node.resize(wrapper.value.clientWidth, wrapper.value.clientHeight)
+	}
 
-		node.getData().wrapper = wrapper
+	resize()
 
-		const resize = () => {
-			if (!wrapper.value) return
-			node.resize(wrapper.value.clientWidth, wrapper.value.clientHeight)
-		}
-
+	const wrapperResizeObserver = new ResizeObserver(() => {
 		resize()
-
-		const wrapperResizeObserver = new ResizeObserver(() => {
-			resize()
-		})
-
-		wrapperResizeObserver.observe(wrapper.value)
 	})
+
+	wrapperResizeObserver.observe(wrapper.value)
 });
 </script>

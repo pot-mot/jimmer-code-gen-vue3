@@ -2,9 +2,7 @@
 	<div ref="wrapper" class="wrapper">
 		<div ref="container"></div>
 
-		<div v-if="store.isLoaded" class="toolbar right-bottom" style="width:  max(15vw, 200px);">
-			<MiniMap :graph="store._graph()" ref="minimap"></MiniMap>
-
+		<div v-if="store.isLoaded" class="toolbar right-bottom" style="width: max(15vw, 200px);">
 			<ScaleBar :graph="store._graph()"></ScaleBar>
 		</div>
 
@@ -35,7 +33,6 @@ import {Graph} from "@antv/x6";
 import {useSave} from "../AssociationEditor/useSave.ts";
 import {initAssociationEditor} from "../AssociationEditor/init.ts";
 import {useSwitchAssociationType} from "../AssociationEditor/edge/AssociationEdge.ts";
-import MiniMap from "../common/graph/MiniMap.vue";
 import ScaleBar from "../common/graph/ScaleBar.vue";
 import Searcher from "../common/graph/Searcher.vue";
 import {tableNodeMatchMethod} from "../AssociationEditor/node/TableNode.ts";
@@ -86,7 +83,7 @@ ModelEditorEventBus.on('createdTable', (table) => {
 ModelEditorEventBus.on('modifiedTable', ({id, table}) => {
 	const cell = graph.getCellById(id)
 	if (cell.isNode()) {
-		cell.setData({...cell.getData(), table}, {overwrite: true})
+		cell.setData({...cell.getData(), table}, {overwrite: true, deep: true})
 	}
 })
 

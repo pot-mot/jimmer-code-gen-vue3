@@ -80,8 +80,6 @@
 		</ul>
 
 		<div v-if="store.isLoaded" class="toolbar right-bottom" style="width:  max(15vw, 200px);">
-			<MiniMap :graph="store._graph()" ref="minimap"></MiniMap>
-
 			<ScaleBar :graph="store._graph()"></ScaleBar>
 		</div>
 
@@ -132,7 +130,6 @@ import {useHistoryKeyEvent} from "../../utils/graphEditor/useHistory.ts";
 import {useSelectionKeyEvent} from "../../utils/graphEditor/useSelection.ts";
 import {useSave} from "./useSave.ts";
 import {AssociationEditorMenuEventBus} from "./eventBus/AssociationEditorMenuEventBus.ts";
-import MiniMap from "../common/graph/MiniMap.vue";
 import ScaleBar from "../common/graph/ScaleBar.vue";
 import Searcher from "../common/graph/Searcher.vue";
 import Comment from "../common/Comment.vue";

@@ -50,7 +50,9 @@ const open = () => {
 }
 
 const close = () => {
-	minimap.value?.dispose()
+	if (minimap.value) {
+		minimap.value.dispose()
+	}
 	openState.value = false
 }
 

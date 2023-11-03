@@ -1,7 +1,7 @@
 <template>
-	<div v-if="table" class="node"
-			 @dblclick="TableEntityDialogEventBus.emit('addTableEntityDialog', table.id)">
-		<table ref="wrapper" class="table-wrapper">
+	<div class="node">
+		<table v-if="table"  ref="wrapper" class="table-wrapper"
+			   @dblclick="TableEntityDialogEventBus.emit('addTableEntityDialog', table.id)">
 			<tr class="tableName">
 				<td colspan="2">
 					<span class="icon">
@@ -88,30 +88,51 @@ const table = ref<GenTableColumnsView>()
 
 const store = useAssociationEditorGraphStore()
 
-onMounted(() => {
+onMounted(async () => {
 	const node = getNode()
+
+	// 绑定数据
 	table.value = node.getData().table
 
-	nextTick(() => {
-		if (!wrapper.value) return
-
-		node.getData().wrapper = wrapper
-
-		const graph = store._graph()
-
-		graph.disableHistory()
-
-		node.resize(wrapper.value.clientWidth, wrapper.value.clientHeight)
-
-		node.ports.items.forEach(port => {
-			node.setPortProp(port.id!, 'attrs', {
-				portBody: {
-					width: wrapper.value!.clientWidth,
-				}
-			})
-		})
-
-		graph.enableHistory()
+	node.on('change:data', () => {
+		table.value = node.getData().table
 	})
+
+	await nextTick()
+
+	if (!wrapper.value) return
+
+	// 响应式更新尺寸
+	node.getData().wrapper = wrapper
+
+	const resize = () => {
+		if (!wrapper.value) return
+		node.resize(wrapper.value.clientWidth, wrapper.value.clientHeight)
+	}
+
+	resize()
+
+	const wrapperResizeObserver = new ResizeObserver(() => {
+		resize()
+	})
+
+	wrapperResizeObserver.observe(wrapper.value)
+
+	// 添加 column port
+	const graph = store._graph()
+
+	graph.disableHistory()
+
+	node.resize(wrapper.value.clientWidth, wrapper.value.clientHeight)
+
+	node.ports.items.forEach(port => {
+		node.setPortProp(port.id!, 'attrs', {
+			portBody: {
+				width: wrapper.value!.clientWidth,
+			}
+		})
+	})
+
+	graph.enableHistory()
 });
 </script>
