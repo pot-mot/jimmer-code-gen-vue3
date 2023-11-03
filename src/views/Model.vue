@@ -3,6 +3,7 @@ import LeftTopBottomLayout from "../components/layout/LeftRightLayout.vue";
 import ModelEditor from "../components/ModelEditor/index.vue";
 import ModelMenu from "../components/ModelEditor/menu/ModelMenu.vue";
 import ModelAddDialog from "../components/ModelEditor/dialog/ModelAddDialog.vue";
+import ModelModifiyDialogManager from "../components/ModelEditor/dialog/ModelModifiyDialogManager.vue";
 </script>
 
 <template>
@@ -16,6 +17,7 @@ import ModelAddDialog from "../components/ModelEditor/dialog/ModelAddDialog.vue"
 	</LeftTopBottomLayout>
 
 	<ModelAddDialog></ModelAddDialog>
+	<ModelModifiyDialogManager></ModelModifiyDialogManager>
 </template>
 
 <style scoped>

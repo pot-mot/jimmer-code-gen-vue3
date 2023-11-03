@@ -1,5 +1,5 @@
 <template>
-	<el-text v-if="table" class="node"
+	<div v-if="table" class="node"
 			 @dblclick="TableEntityDialogEventBus.emit('addTableEntityDialog', table.id)">
 		<table ref="wrapper" class="table-wrapper">
 			<tr class="tableName">
@@ -24,12 +24,14 @@
 				</td>
 			</tr>
 		</table>
-	</el-text>
+	</div>
 </template>
 
 <style lang="scss" scoped>
 .node {
 	padding-bottom: 10px;
+	font-family: var(--el-font-family);
+	color: var(--el-color-info-dark-2);
 
 	.table-wrapper {
 		background-color: #fff;
@@ -73,7 +75,6 @@ import {inject, nextTick, onMounted, ref} from "vue";
 import {GenTableColumnsView} from "../../../api/__generated/model/static";
 import {Node} from '@antv/x6'
 import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
-import {ElText} from "element-plus";
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";

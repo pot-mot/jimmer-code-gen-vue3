@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, ref} from 'vue'
+import {onMounted, ref, toRaw, watch} from 'vue'
 import {GenTableColumnsInput} from "../../../api/__generated/model/static";
 import {GenTableColumnsInput_TargetOf_columns} from "../../../api/__generated/model/static/GenTableColumnsInput.ts";
 import {Delete, Plus} from "@element-plus/icons-vue";
@@ -7,6 +7,7 @@ import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import {api} from "../../../api";
 import {objToMap} from "../../../utils/mapOperation.ts";
 import {useLoading} from "../../../hooks/useLoading.ts";
+import {deepClone} from "../../../utils/deepClone.ts";
 
 const columnTypeMap = ref(new Map<string, number>)
 
@@ -60,17 +61,27 @@ interface ModelFormEmits {
 
 const emits = defineEmits<ModelFormEmits>()
 
-const table = ref<GenTableColumnsInput>({
-	...defaultTable,
-	...props.table
-})
+const table = ref<GenTableColumnsInput>(deepClone(defaultTable))
+
+watch(() => props.table, () => {
+	if (!props.table) return
+
+
+	table.value = {
+		...table.value,
+		...toRaw(props.table),
+		columns: deepClone([
+			...Object.values(toRaw(props.table.columns))
+		])
+	}
+}, {immediate: true})
 
 const handleSubmit = () => {
 	emits('submit', table.value)
 }
 
 const handleAddColumn = () => {
-	table.value.columns.push({...defaultColumn})
+	table.value.columns.push(deepClone(defaultColumn))
 }
 
 const handleRemoveColumn = (removedIndex: number) => {
@@ -108,9 +119,6 @@ const handleColumnToPk = (pkIndex: number) => {
 				</el-col>
 			</el-row>
 
-			<el-row>
-			</el-row>
-
 			<template v-for="(column, index) in table.columns">
 				<el-row style="height: 2em; line-height: 2em;" :gutter="12">
 					<el-col :span="1">
@@ -119,10 +127,13 @@ const handleColumnToPk = (pkIndex: number) => {
 
 					<el-col :span="1">
 						<el-tooltip content="主键">
-							<el-checkbox v-model="column.partOfPk" @change="(value: boolean) => {if (value) handleColumnToPk(index)}" style="width: 1em; padding: 0; margin: 0;"></el-checkbox>
+							<el-checkbox v-model="column.partOfPk"
+										 @change="(value: boolean) => {if (value) handleColumnToPk(index)}"
+										 style="width: 1em; padding: 0; margin: 0;"></el-checkbox>
 						</el-tooltip>
-						<el-tooltip content="自增">
-							<el-checkbox v-if="column.partOfPk" v-model="column.autoIncrement" style="width: 1em; padding: 0; margin: 0;"></el-checkbox>
+						<el-tooltip v-if="column.partOfPk" content="自增">
+							<el-checkbox v-model="column.autoIncrement"
+										 style="width: 1em; padding: 0; margin: 0;"></el-checkbox>
 						</el-tooltip>
 					</el-col>
 
@@ -130,7 +141,8 @@ const handleColumnToPk = (pkIndex: number) => {
 						<el-input v-model="column.name" placeholder="name"></el-input>
 					</el-col>
 					<el-col :span="4">
-						<el-text style="display: grid; grid-template-columns: 1em 1fr 1em; color: var(--el-text-color-placeholder); padding-right: 0.5em;">
+						<el-text
+							style="display: grid; grid-template-columns: 1em 1fr 1em; color: var(--el-text-color-placeholder); padding-right: 0.5em;">
 							<span>/* </span>
 							<span><el-input v-model="column.comment" placeholder="comment"></el-input></span>
 							<span> */</span>

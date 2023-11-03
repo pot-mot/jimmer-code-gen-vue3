@@ -1,17 +1,20 @@
 import mitt from 'mitt'
-import {AssociationType} from "../../../api/__generated/model/enums";
-import {GenTableColumnsView, GenTableColumnsInput, GenAssociationView} from "../../../api/__generated/model/static";
+import {GenTableColumnsInput, GenAssociationModelInput} from "../../../api/__generated/model/static";
 
 type ModelEditorEvents = {
+    createTable: undefined,
     createdTable: GenTableColumnsInput,
-    modifiedTable: GenTableColumnsInput,
+    modifyTable: {id: string, table: GenTableColumnsInput},
+    modifiedTable: {id: string, table: GenTableColumnsInput},
     removeTable: string,
 
-    createAssociation: {sourceTable: string, targetTable: string, targetColumn: string, type: AssociationType},
-    modifiedAssociation: {sourceTable: string, targetTable: string, targetColumn: string, type: AssociationType},
-    removeAssociations: {sourceTable: string, targetTable: string, targetColumn: string},
+    createAssociation: GenAssociationModelInput,
+    createdAssociation: GenAssociationModelInput,
+    modifyAssociation: {id: string, association: GenAssociationModelInput},
+    modifiedAssociation: {id: string, association: GenAssociationModelInput},
+    removeAssociation: string,
 
-    saveToDataSource: {tables: GenTableColumnsView[], associations: GenAssociationView[], schemaId: number}
+    saveToDataSource: {tables: GenTableColumnsInput[], associations: GenAssociationModelInput[], schemaId: number}
 }
 
 export const ModelEditorEventBus = mitt<ModelEditorEvents>()

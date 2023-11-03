@@ -44,6 +44,8 @@ import {ModelEditorEventBus} from "./eventBus/ModelEditorEventBus.ts";
 import {addModelNode} from "./node/modelNode.ts";
 import {register} from "@antv/x6-vue-shape";
 import ModelNode from "./node/ModelNode.vue";
+import {useHistoryKeyEvent} from "../../utils/graphEditor/useHistory.ts";
+import {useSelectionKeyEvent} from "../../utils/graphEditor/useSelection.ts";
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();
@@ -73,7 +75,26 @@ onUnmounted(() => {
 	store.unload()
 })
 
+useHistoryKeyEvent(() => graph)
+
+useSelectionKeyEvent(() => graph)
+
 ModelEditorEventBus.on('createdTable', (table) => {
 	addModelNode(graph, table)
+})
+
+ModelEditorEventBus.on('modifiedTable', ({id, table}) => {
+	const cell = graph.getCellById(id)
+	if (cell.isNode()) {
+		cell.setData({...cell.getData(), table}, {overwrite: true})
+	}
+})
+
+ModelEditorEventBus.on('removeTable', (id) => {
+	graph.removeNode(id)
+})
+
+ModelEditorEventBus.on('removeAssociation', (id) => {
+	graph.removeEdge(id)
 })
 </script>

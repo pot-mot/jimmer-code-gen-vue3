@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import TopBottomLayout from "../../layout/TopBottomLayout.vue";
-import {ModelDialogEventBus} from "../eventBus/ModelDialogEventBus.ts";
+import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
 import {useModelEditorGraphStore} from "../store/ModelEditorGraphStore.ts";
 import NodeList from "../../common/graph/NodeList.vue";
 import EdgeList from "../../common/graph/EdgeList.vue";
+import NodeItem from "./NodeItem.vue";
+import EdgeItem from "./EdgeItem.vue";
 
 const store = useModelEditorGraphStore()
 </script>
@@ -11,25 +13,21 @@ const store = useModelEditorGraphStore()
 <template>
 	<div style="height: 100%; display: grid; grid-template-rows: auto 1fr;">
 		<div>
-			<el-button @click="ModelDialogEventBus.emit('createTable')">创建表</el-button>
+			<el-button @click="ModelEditorEventBus.emit('createTable')">创建表</el-button>
 		</div>
 		<div>
 			<TopBottomLayout>
 				<template #top>
 					<NodeList :nodes="store.nodes">
 						<template #default="{node}">
-							<el-button @click="store.focus(node)">
-								{{ node }}
-							</el-button>
+							<NodeItem :node="node"></NodeItem>
 						</template>
 					</NodeList>
 				</template>
 				<template #bottom>
 					<EdgeList :edges="store.edges">
 						<template #default="{edge}">
-							<el-button @click="store.focus(edge)">
-								{{ edge }}
-							</el-button>
+							<EdgeItem :edge="edge"></EdgeItem>
 						</template>
 					</EdgeList>
 				</template>

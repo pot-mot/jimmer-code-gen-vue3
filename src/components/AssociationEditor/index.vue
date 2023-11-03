@@ -173,15 +173,15 @@ onUnmounted(() => {
 	store.unload()
 })
 
+useHistoryKeyEvent(() => graph)
+
+useSelectionKeyEvent(() => graph)
+
 const {
 	handleMatch,
 	matchTypes,
 	matchType
 } = useAssociationMatch(() => graph)
-
-useHistoryKeyEvent(() => graph)
-
-useSelectionKeyEvent(() => graph)
 
 const handleLayout = () => {
 	store.layout()

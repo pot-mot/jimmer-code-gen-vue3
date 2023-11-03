@@ -11,7 +11,7 @@ defineProps<TableIconProps>()
 
 <template>
 	<el-icon size="1.3em" style="transform: translateY(0.2em)">
-		<template v-if="type == 'TABLE'">
+		<template v-if="!type || type == 'TABLE'">
 			<!-- https://tablericons.com/ table-->
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1" stroke="#2c3e50" fill="none"
 				 stroke-linecap="round" stroke-linejoin="round">

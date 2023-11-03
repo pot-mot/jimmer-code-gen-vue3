@@ -1,5 +1,5 @@
 <template>
-	<el-text v-if="table" class="node">
+	<div v-if="table" class="node" @dblclick="ModelEditorEventBus.emit('modifyTable', {id: getNode().id, table})">
 		<table ref="wrapper" class="table-wrapper">
 			<tr class="tableName">
 				<td colspan="2">
@@ -23,12 +23,14 @@
 				</td>
 			</tr>
 		</table>
-	</el-text>
+	</div>
 </template>
 
 <style lang="scss" scoped>
 .node {
 	padding-bottom: 10px;
+	font-family: var(--el-font-family);
+	color: var(--el-color-info-dark-2);
 
 	.table-wrapper {
 		background-color: #fff;
@@ -71,10 +73,10 @@
 import {inject, nextTick, onMounted, ref} from "vue";
 import {GenTableColumnsInput} from "../../../api/__generated/model/static";
 import {Node} from '@antv/x6'
-import {ElText} from "element-plus";
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
+import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
 
 const wrapper = ref<HTMLElement | null>()
 
@@ -83,10 +85,13 @@ const getNode = inject<() => Node>("getNode")!;
 const table = ref<GenTableColumnsInput>()
 
 onMounted(() => {
-	const node = getNode()
+	const node = getNode()!
+
 	table.value = node.getData().table
 
-	console.log(table)
+	node.on('change:data', () => {
+		table.value = node.getData().table
+	})
 
 	nextTick(() => {
 		if (!wrapper.value) return

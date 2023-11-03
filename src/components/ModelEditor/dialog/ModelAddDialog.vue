@@ -2,22 +2,23 @@
 import {ref} from 'vue'
 import DragDialog from "../../common/DragDialog.vue";
 import ModelForm from "./ModelForm.vue";
-import {ModelDialogEventBus} from "../eventBus/ModelDialogEventBus.ts";
 import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
+import {GenTableColumnsInput} from "../../../api/__generated/model/static";
 
 const openState = ref(false)
 
-ModelDialogEventBus.on('createTable', () => {
+ModelEditorEventBus.on('createTable', () => {
 	openState.value = true
 })
+
+const handleSubmit = (table: GenTableColumnsInput) => {
+	ModelEditorEventBus.emit('createdTable', table)
+	openState.value = false
+}
 </script>
 
 <template>
 	<DragDialog v-if="openState" @close="openState = false" :can-resize="true" :y="100" :init-w="1000">
-		<ModelForm @submit="(table) => ModelEditorEventBus.emit('createdTable', table)"></ModelForm>
+		<ModelForm @submit="handleSubmit"></ModelForm>
 	</DragDialog>
 </template>
-
-<style scoped>
-
-</style>
