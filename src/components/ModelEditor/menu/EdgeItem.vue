@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {Edge} from '@antv/x6'
-import {useModelEditorGraphStore} from "../store/ModelEditorGraphStore.ts";
+import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 
 interface EdgeItem {
 	edge: Edge
@@ -8,7 +8,7 @@ interface EdgeItem {
 
 defineProps<EdgeItem>()
 
-const store = useModelEditorGraphStore()
+const store = useModelEditorStore()
 </script>
 
 <template>

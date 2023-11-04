@@ -1,5 +1,5 @@
 import {Graph, Cell} from "@antv/x6";
-import {sendMessage} from "../../../utils/message.ts";
+import {sendMessage} from "../message.ts";
 
 type GraphEditorData = {
     json: {cells: Cell.Properties[]},
@@ -35,7 +35,7 @@ const loadGraphFromEditorData = (graph: Graph, data: GraphEditorData) => {
 }
 
 
-export const saveGraph = (graph: Graph, name: string) => {
+export const saveGraph = (graph: Graph, name: string, message: boolean = false) => {
     if (!graph) return
 
     try {
@@ -45,13 +45,23 @@ export const saveGraph = (graph: Graph, name: string) => {
             graphToEditorData(graph)
         ))
 
-        sendMessage("编辑区保存成功", "success")
+        if (message) {
+            sendMessage("编辑区保存成功", "success")
+        }
     } catch (e) {
         clearGraph(graph, name)
-        sendMessage("编辑区保存失败", "error", e)
+        if (message) {
+            sendMessage("编辑区保存失败", "error", e)
+        }
     }
 }
 
+/**
+ * 从本地缓存中加载图像
+ * @param graph
+ * @param name
+ * @param canUnload 可以在初始时不存在
+ */
 export const loadGraph = (graph: Graph, name: string, canUnload: boolean = true) => {
     if (!graph) return
 
@@ -77,5 +87,5 @@ export const loadGraph = (graph: Graph, name: string, canUnload: boolean = true)
 export const clearGraph = (graph: Graph, name: string) => {
     localStorage.removeItem(name)
     // 为了避免错误数据残留，必须也清空原图
-    if (graph) graph.clearCells()
+    if (graph) graph.removeCells(graph.getCells())
 }

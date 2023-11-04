@@ -5,7 +5,7 @@ import 'splitpanes/dist/splitpanes.css'
 
 <template>
 	<splitpanes horizontal>
-		<pane size="50">
+		<pane size="20">
 			<slot name="top"/>
 		</pane>
 		<pane>

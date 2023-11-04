@@ -1,7 +1,8 @@
-import {computed, nextTick, onMounted, ref} from "vue";
+import {computed, ref} from "vue";
 import {Node, Edge, Graph} from "@antv/x6";
 import {getSelectedEdges, getSelectedNodes} from "./selectOperation.ts";
 import {arrayToMap} from "../mapOperation.ts";
+import {sendMessage} from "../message.ts";
 
 export const useGraphReactiveState = (_graph: () => Graph) => {
     // 状态与响应式数据
@@ -47,9 +48,7 @@ export const useGraphReactiveState = (_graph: () => Graph) => {
         return [...edgeMap.value.keys()]
     })
 
-    onMounted(async () => {
-        await nextTick()
-
+    const loadData = () => {
         const graph = _graph()
 
         if (!graph) return
@@ -59,11 +58,62 @@ export const useGraphReactiveState = (_graph: () => Graph) => {
 
         selectedNodeMap.value = arrayToMap(getSelectedNodes(graph), "id")
         selectedEdgeMap.value = arrayToMap(getSelectedEdges(graph), "id")
+    }
+
+    let count = 0
+
+    const interval = setInterval(async () => {
+        count ++
+        if (count > 10) {
+            sendMessage('图无法正常加载', 'error')
+            clearInterval(interval)
+            return
+        }
+
+        const graph = _graph()
+
+        if (!graph) return
+
+        loadData()
 
         graph.on('selection:changed', () => {
             isSelectionEmpty.value = graph.isSelectionEmpty()
         })
 
+        // 全量更新
+        // graph.on('node:selected', () => {
+        //     selectedNodeMap.value = arrayToMap(getSelectedNodes(graph), "id")
+        // })
+        //
+        // graph.on('node:unselected', () => {
+        //     selectedNodeMap.value = arrayToMap(getSelectedNodes(graph), "id")
+        // })
+        //
+        // graph.on('edge:selected', () => {
+        //     selectedEdgeMap.value = arrayToMap(getSelectedEdges(graph), "id")
+        // })
+        //
+        // graph.on('edge:unselected', () => {
+        //     selectedEdgeMap.value = arrayToMap(getSelectedEdges(graph), "id")
+        // })
+        //
+        // graph.on('node:added', () => {
+        //     nodeMap.value = arrayToMap(graph.getNodes(), "id")
+        // })
+        //
+        // graph.on('node:removed', () => {
+        //     nodeMap.value = arrayToMap(graph.getNodes(), "id")
+        // })
+        //
+        // graph.on('edge:added', () => {
+        //     edgeMap.value = arrayToMap(graph.getEdges(), "id")
+        // })
+        //
+        // graph.on('edge:removed', () => {
+        //     edgeMap.value = arrayToMap(graph.getEdges(), "id")
+        // })
+
+        // 差量更新
         graph.on('node:selected', ({node}) => {
             selectedNodeMap.value.set(node.id, node)
         })
@@ -110,7 +160,9 @@ export const useGraphReactiveState = (_graph: () => Graph) => {
             canUndo.value = graph.canUndo()
             canRedo.value = graph.canRedo()
         })
-    })
+
+        clearInterval(interval)
+    }, 100)
 
     return {
         nodeMap,
@@ -133,5 +185,7 @@ export const useGraphReactiveState = (_graph: () => Graph) => {
 
         canUndo,
         canRedo,
+
+        loadData
     }
 }

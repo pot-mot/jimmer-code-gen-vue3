@@ -18,7 +18,7 @@ const handleSubmit = (table: GenTableColumnsInput) => {
 </script>
 
 <template>
-	<DragDialog v-if="openState" @close="openState = false" :can-resize="true" :y="100" :init-w="1000">
+	<DragDialog v-if="openState" @close="openState = false" :can-resize="true" :y="100" :init-w="1200">
 		<ModelForm @submit="handleSubmit" @cancel="openState = false"></ModelForm>
 	</DragDialog>
 </template>

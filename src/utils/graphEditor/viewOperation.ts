@@ -1,4 +1,4 @@
-import {ref, Ref} from "vue";
+import {ref, Ref, nextTick} from "vue";
 import {LayoutDirection, layoutByLevel, getLeft, getRight, getTop, getBottom} from "./layoutByLevel.ts";
 import {Graph} from "@antv/x6";
 import {defaultZoomRange} from "../../components/AssociationEditor/constant.ts";
@@ -12,6 +12,15 @@ export const useViewOperation = (_graph: () => Graph) => {
         layoutDirection,
         layout: () => layout(_graph(), layoutDirection.value),
         fit: () => fit(_graph()),
+        layoutAndFit: async () => {
+            const graph = _graph()
+
+            if (!graph) return
+
+            layout(graph, layoutDirection.value)
+            await nextTick()
+            center(graph)
+        },
         focus: (cell: CellInput) => focus(_graph(), cell),
         center: () => center(_graph())
     }

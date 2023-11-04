@@ -7,7 +7,7 @@ export const ColumnPort = (portsPositionArgs: KeyValue) => {
         return {
             position: {
                 x: 0,
-                y: (index + 1) * COLUMN_HEIGHT,
+                y: (index + 1) * COLUMN_HEIGHT + 3,
             },
             angle: 0,
         }

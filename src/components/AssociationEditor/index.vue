@@ -13,7 +13,7 @@
 						因此请尽量保证编辑器中为全部你所需要的表，关联为全部你所需要的关联<br>
 					</template>
 
-					<el-button @click="handleSave" :icon="SaveIcon"></el-button>
+					<el-button @click="handleSaveAll" :icon="SaveIcon"></el-button>
 				</el-tooltip>
 			</li>
 
@@ -28,9 +28,9 @@
 
 			<li>
 				<el-tooltip content="整理布局">
-					<el-button @click="handleLayout" class="cling-right" :icon="LayoutIcon"></el-button>
+					<el-button @click="store.layoutAndFit()" class="cling-right" :icon="LayoutIcon"></el-button>
 				</el-tooltip>
-				<el-select style="width: 4em;" class="cling-left" v-model="store.layoutDirection" @change="handleLayout"
+				<el-select style="width: 4em;" class="cling-left" v-model="store.layoutDirection" @change="store.layoutAndFit()"
 						   size="small">
 					<el-option value="LR" label="→">左至右</el-option>
 					<el-option value="RL" label="←">右至左</el-option>
@@ -41,12 +41,12 @@
 
 			<li>
 				<el-tooltip content="适应画布">
-					<el-button @click="handleFit" :icon="FitIcon"></el-button>
+					<el-button @click="store.fit()" :icon="FitIcon"></el-button>
 				</el-tooltip>
 			</li>
 			<li>
 				<el-tooltip content="居中">
-					<el-button @click="handleCenter" :icon="CenterIcon"></el-button>
+					<el-button @click="store.center()" :icon="CenterIcon"></el-button>
 				</el-tooltip>
 			</li>
 
@@ -104,7 +104,7 @@
 </style>
 
 <script lang="ts" setup>
-import {nextTick, onMounted, onUnmounted, ref} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import {Graph} from "@antv/x6";
 import {ColumnPort} from "./port/ColumnPort.ts";
 import {register} from "@antv/x6-vue-shape";
@@ -112,7 +112,7 @@ import TableNode from "./node/TableNode.vue";
 import {initAssociationEditor} from "./init.ts";
 import {COLUMN_PORT} from "./constant.ts";
 import {useSwitchAssociationType} from "./edge/AssociationEdge.ts";
-import {useAssociationEditorGraphStore} from "./store/AssociationEditorGraphStore.ts";
+import {useAssociationEditorStore} from "./store/AssociationEditorStore.ts";
 import SaveIcon from "../icons/toolbar/SaveIcon.vue";
 import UndoIcon from "../icons/toolbar/UndoIcon.vue";
 import RedoIcon from "../icons/toolbar/RedoIcon.vue";
@@ -123,12 +123,12 @@ import AssociationOffIcon from "../icons/toolbar/AssociationOffIcon.vue";
 import AssociationIcon from "../icons/toolbar/AssociationIcon.vue";
 import EraserIcon from "../icons/toolbar/EraserIcon.vue";
 import DownloadIcon from "../icons/toolbar/DownloadIcon.vue";
-import {generateEntitiesByTable} from "./api.ts";
+import {generateEntitiesByTable, saveAssociations} from "./api.ts";
 import {useAssociationMatch} from "./AssociationMatch.ts";
 import {nodeIdToTableId, tableNodeMatchMethod} from "./node/TableNode.ts";
 import {useHistoryKeyEvent} from "../../utils/graphEditor/useHistory.ts";
 import {useSelectionKeyEvent} from "../../utils/graphEditor/useSelection.ts";
-import {useSave} from "./useSave.ts";
+import {useSave} from "../../utils/graphEditor/useSave.ts";
 import {AssociationEditorMenuEventBus} from "./eventBus/AssociationEditorMenuEventBus.ts";
 import ScaleBar from "../common/graph/ScaleBar.vue";
 import Searcher from "../common/graph/Searcher.vue";
@@ -140,7 +140,7 @@ const wrapper = ref<HTMLElement>();
 
 let graph: Graph
 
-const store = useAssociationEditorGraphStore()
+const store = useAssociationEditorStore()
 
 Graph.registerPortLayout(
 	COLUMN_PORT,
@@ -154,9 +154,16 @@ register({
 });
 
 const {
-	handleSave,
+	handleSaveAll,
 	loadGraph,
-} = useSave(() => graph, "AssociationEditorGraph")
+} = useSave(() => graph, "AssociationEditorGraph", [
+	{
+		auto: false,
+		fn: (graph) => {
+			saveAssociations(graph)
+		}
+	}
+])
 
 onMounted(() => {
 	graph = initAssociationEditor(container.value!, wrapper.value!)
@@ -179,21 +186,6 @@ const {
 	matchTypes,
 	matchType
 } = useAssociationMatch(() => graph)
-
-const handleLayout = () => {
-	store.layout()
-	nextTick(() => {
-		store.center()
-	})
-}
-
-const handleFit = () => {
-	store.fit()
-}
-
-const handleCenter = () => {
-	store.center()
-}
 
 const handleGenerateEntities = () => {
 	generateEntitiesByTable(

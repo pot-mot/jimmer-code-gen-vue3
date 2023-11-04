@@ -74,7 +74,7 @@
 import {inject, nextTick, onMounted, ref} from "vue";
 import {GenTableColumnsView} from "../../../api/__generated/model/static";
 import {Node} from '@antv/x6'
-import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
+import {useAssociationEditorStore} from "../store/AssociationEditorStore.ts";
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
@@ -86,7 +86,7 @@ const getNode = inject<() => Node>("getNode")!;
 
 const table = ref<GenTableColumnsView>()
 
-const store = useAssociationEditorGraphStore()
+const store = useAssociationEditorStore()
 
 onMounted(async () => {
 	const node = getNode()

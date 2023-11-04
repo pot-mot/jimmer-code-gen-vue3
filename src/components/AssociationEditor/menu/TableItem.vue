@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {EditPen} from "@element-plus/icons-vue";
 import {GenTableCommonView} from "../../../api/__generated/model/static";
-import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
+import {useAssociationEditorStore} from "../store/AssociationEditorStore.ts";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import {processClickFunction} from "../../../utils/clickTimer.ts";
 import Comment from "../../common/Comment.vue";
 import {TableEntityDialogEventBus} from "../eventBus/TableEntityDialogEventBus.ts";
 
-const store = useAssociationEditorGraphStore()
+const store = useAssociationEditorStore()
 
 interface TableItemProps {
 	table: GenTableCommonView

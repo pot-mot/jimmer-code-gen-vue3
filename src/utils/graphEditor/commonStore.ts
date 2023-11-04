@@ -20,11 +20,14 @@ export const commonGraphStoreOperations = () => {
             return graph.value
         }
 
+        const reactiveState = useGraphReactiveState(_graph)
+
         /**
          * 加载 graph，初始化
          */
         const load = (_graph: Graph) => {
             graph.value = _graph
+            reactiveState.loadData()
         }
 
         const unload = () => {
@@ -73,7 +76,7 @@ export const commonGraphStoreOperations = () => {
 
             ...fitAndLayoutOperations,
 
-            ...useGraphReactiveState(_graph)
+            ...reactiveState
         }
     })()
 }

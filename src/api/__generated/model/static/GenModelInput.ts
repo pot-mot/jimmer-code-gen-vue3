@@ -1,6 +1,10 @@
 export interface GenModelInput {
     
+    id?: number;
+    
     name: string;
     
-    value: string;
+    remark: string;
+    
+    value?: string;
 }

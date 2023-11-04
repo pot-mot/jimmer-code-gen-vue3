@@ -1,7 +1,7 @@
 <template>
 	<div class="node">
-		<table v-if="table" ref="wrapper" class="table-wrapper"
-			   @dblclick="ModelEditorEventBus.emit('modifyTable', {id: getNode().id, table})">
+		<table v-if="node && table" ref="wrapper" class="table-wrapper"
+			   @dblclick="ModelEditorEventBus.emit('modifyTable', {id: node.id, table})">
 			<tr class="tableName">
 				<td colspan="2">
 					<span class="icon">
@@ -78,21 +78,31 @@ import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
 import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
+import {sendMessage} from "../../../utils/message.ts";
 
 const wrapper = ref<HTMLElement | null>()
 
 const getNode = inject<() => Node>("getNode")!;
 
+const node = ref<Node>()
+
 const table = ref<GenTableColumnsInput>()
 
 onMounted(async () => {
-	const node = getNode()
+	node.value = getNode()
+
+	if (!node.value) {
+		sendMessage('Node 获取失败', 'error')
+		return
+	}
 
 	// 绑定数据
-	table.value = node.getData().table
+	table.value = node.value.getData().table
 
-	node.on('change:data', () => {
-		table.value = node.getData().table
+	console.log(node.value.id, table.value?.name)
+
+	node.value.on('change:data', () => {
+		table.value = node.value!.getData().table
 	})
 
 	await nextTick()
@@ -100,11 +110,11 @@ onMounted(async () => {
 	if (!wrapper.value) return
 
 	// 响应式更新尺寸
-	node.getData().wrapper = wrapper
+	node.value.getData().wrapper = wrapper
 
 	const resize = () => {
 		if (!wrapper.value) return
-		node.resize(wrapper.value.clientWidth, wrapper.value.clientHeight)
+		node.value!.resize(wrapper.value.clientWidth, wrapper.value.clientHeight)
 	}
 
 	resize()

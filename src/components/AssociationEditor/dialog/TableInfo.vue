@@ -2,7 +2,7 @@
 import {GenTableAssociationsView} from "../../../api/__generated/model/static";
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import Details from "../../common/Details.vue";
-import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
+import {useAssociationEditorStore} from "../store/AssociationEditorStore.ts";
 import {Graph} from "@antv/x6";
 import {watch} from "vue";
 import {
@@ -14,7 +14,7 @@ import {processClickFunction} from "../../../utils/clickTimer.ts";
 import Comment from "../../common/Comment.vue";
 import {searchEdgesByColumn} from "../../../utils/graphEditor/search.ts";
 
-const store = useAssociationEditorGraphStore()
+const store = useAssociationEditorStore()
 
 interface TableInfoProps {
 	table: GenTableAssociationsView

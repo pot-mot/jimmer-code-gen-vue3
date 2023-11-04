@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {Node} from '@antv/x6'
-import {useModelEditorGraphStore} from "../store/ModelEditorGraphStore.ts";
+import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import {computed} from "vue";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
@@ -21,7 +21,7 @@ const comment = computed(() => {
 	return props.node.data.table.comment
 })
 
-const store = useModelEditorGraphStore()
+const store = useModelEditorStore()
 
 const handleEdit = () => {
 	ModelEditorEventBus.emit('modifyTable', {id: props.node.id, table: props.node.data.table})
@@ -34,7 +34,7 @@ const handleDelete = () => {
 
 <template>
 	<div>
-		<el-text class="hover-show">
+		<el-text class="hover-show" style="white-space: nowrap;">
 			<TableIcon></TableIcon>
 
 			<el-button @click="store.focus(node)" link>

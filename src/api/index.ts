@@ -17,8 +17,8 @@ export const api = new Api(async ({uri, method, body}) => {
 
         if (response.status != 200) {
             const result = await response.json()
-            sendMessage(JSON.stringify(result), "error", result)
-            throw result
+            sendMessage(`请求 [${method}] ${BASE_URL}${uri} 时出现问题，错误为 ${JSON.stringify(result)}`, "error", result)
+            return
         }
 
         const contentType = response.headers.get("content-type");
@@ -36,6 +36,6 @@ export const api = new Api(async ({uri, method, body}) => {
             return response.body
         }
     } catch (e) {
-        sendMessage(`请求 ${url} 时出现问题`, 'error', e)
+        sendMessage(`请求 [${method}] ${BASE_URL}${uri} 时出现问题`, 'error', e)
     }
 })

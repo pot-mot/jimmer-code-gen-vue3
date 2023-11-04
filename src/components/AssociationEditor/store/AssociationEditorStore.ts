@@ -15,7 +15,7 @@ import {searchEdgesByColumn} from "../../../utils/graphEditor/search.ts";
 import {commonGraphStoreOperations} from "../../../utils/graphEditor/commonStore.ts";
 
 
-export const useAssociationEditorGraphStore =
+export const useAssociationEditorStore =
     defineStore(
         'AssociationEditorGraph',
         () => {

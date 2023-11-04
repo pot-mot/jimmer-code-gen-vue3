@@ -57,6 +57,7 @@ const props = defineProps<ModelFormProps>()
 
 interface ModelFormEmits {
 	(event: "submit", table: GenTableColumnsInput): void,
+
 	(event: "cancel", table: GenTableColumnsInput): void
 }
 
@@ -112,6 +113,7 @@ const handleRemoveColumn = (removedIndex: number) => {
 	table.value.columns = table.value.columns.filter((_, index) => index != removedIndex)
 }
 
+
 const handleColumnToPk = (pkIndex: number) => {
 	const pkColumn = table.value.columns[pkIndex]
 	pkColumn.notNull = true
@@ -143,81 +145,80 @@ const handleColumnToPk = (pkIndex: number) => {
 				</el-col>
 
 				<el-col :span="18">
-					<el-input v-model="table.remark" placeholder="remark" type="textarea" :autosize="{ minRows: 1, maxRows: 4 }"></el-input>
+					<el-input v-model="table.remark" placeholder="remark" type="textarea"
+							  :autosize="{ minRows: 1, maxRows: 4 }"></el-input>
 				</el-col>
 			</el-row>
 
-			<template v-for="(column, index) in table.columns">
-				<el-row style="height: 2em; line-height: 2em;" :gutter="8">
-					<el-col :span="0.5">
-						<ColumnIcon :column="column"></ColumnIcon>
-					</el-col>
+			<div v-for="(column, index) in table.columns"
+				 style="height: 2em; line-height: 2em; display: grid; grid-template-columns: 1.5em 2em 1fr 1.2fr 1.5em 1fr 1.5fr 1.5em 1fr 3em; grid-gap: 0.2em;">
+				<span>
+					<ColumnIcon :column="column"></ColumnIcon>
+				</span>
 
-					<el-col :span="1">
-						<el-tooltip content="主键">
-							<el-checkbox v-model="column.partOfPk"
-										 @change="(value: boolean) => {if (value) handleColumnToPk(index)}"
-										 style="width: 1em; padding: 0; margin: 0;"></el-checkbox>
-						</el-tooltip>
-						<el-tooltip v-if="column.partOfPk" content="自增">
-							<el-checkbox v-model="column.autoIncrement"
-										 style="width: 1em; padding: 0; margin: 0;"></el-checkbox>
-						</el-tooltip>
-					</el-col>
+				<span style="white-space: nowrap;">
+					<el-tooltip content="主键" :auto-close="500">
+						<el-checkbox v-model="column.partOfPk"
+									 @change="(value: boolean) => {if (value) handleColumnToPk(index)}"
+									 style="width: 1em; padding: 0; margin: 0;"></el-checkbox>
+					</el-tooltip>
+					<el-tooltip v-if="column.partOfPk" content="自增" :auto-close="500">
+						<el-checkbox v-model="column.autoIncrement"
+									 style="width: 1em; padding: 0; margin: 0;"></el-checkbox>
+					</el-tooltip>
+				</span>
 
-					<el-col :span="3">
-						<el-input v-model="column.name" placeholder="name"></el-input>
-					</el-col>
-					<el-col :span="4">
-						<el-text class="comment">
-							<span>/* </span>
-							<span><el-input v-model="column.comment" placeholder="comment"></el-input></span>
-							<span> */</span>
-						</el-text>
-					</el-col>
+				<span>
+					<el-input v-model="column.name" placeholder="name"></el-input>
+				</span>
 
-					<el-col :span="0.5">
-						<el-tooltip content="不重复">
-							<el-checkbox v-model="column.partOfUniqueIdx"></el-checkbox>
-						</el-tooltip>
-					</el-col>
+				<el-text class="comment">
+					<span>/* </span>
+					<span><el-input v-model="column.comment" placeholder="comment"></el-input></span>
+					<span> */</span>
+				</el-text>
 
-					<el-col :span="3">
-						<el-tooltip>
-							<el-select v-model="column.type"
-									   @change="(value: string) => {column.typeCode = columnTypeMap.get(value)!}">
-								<el-option v-for="type in [...columnTypeMap.keys()]" :value="type"></el-option>
-							</el-select>
+				<span>
+					<el-tooltip content="不重复" :auto-close="500">
+						<el-checkbox v-model="column.partOfUniqueIdx"></el-checkbox>
+					</el-tooltip>
+				</span>
 
-							<template #content>
-								对应 java.sql.Types 中的 {{ column.typeCode }}
-							</template>
-						</el-tooltip>
-					</el-col>
-					<el-col :span="5">
-						<el-text style="display: grid; grid-template-columns: 0.5em 1fr 1em 1fr 0.5em">
-							<span>(</span>
-							<span><el-input v-model="column.displaySize"></el-input></span>
-							<span style="padding-left: 0.3em;">,</span>
-							<span><el-input v-model="column.numericPrecision"></el-input></span>
-							<span style="padding-left: 0.3em;">)</span>
-						</el-text>
-					</el-col>
-					<el-col :span="0.5">
-						<el-tooltip content="非空">
-							<el-checkbox v-model="column.notNull"></el-checkbox>
-						</el-tooltip>
-					</el-col>
+				<span>
+					<el-tooltip :auto-close="500">
+						<el-select v-model="column.type"
+								   @change="(value: string) => {column.typeCode = columnTypeMap.get(value)!}">
+							<el-option v-for="type in [...columnTypeMap.keys()]" :value="type"></el-option>
+						</el-select>
 
-					<el-col :span="3">
-						<el-input v-model="column.defaultValue" placeholder="default"></el-input>
-					</el-col>
-					<el-col :span="2">
-						<el-button :icon="Plus" @click="handleAddColumn(index)" link></el-button>
-						<el-button :icon="Delete" @click="handleRemoveColumn(index)" type="danger" link></el-button>
-					</el-col>
-				</el-row>
-			</template>
+						<template #content>
+							对应 java.sql.Types 中的 {{ column.typeCode }}
+						</template>
+					</el-tooltip>
+				</span>
+
+				<el-text style="display: grid; grid-template-columns: 0.5em 1fr 1em 1fr 0.5em">
+					<span>(</span>
+					<span><el-input v-model="column.displaySize"></el-input></span>
+					<span style="padding-left: 0.3em;">,</span>
+					<span><el-input v-model="column.numericPrecision"></el-input></span>
+					<span style="padding-left: 0.3em;">)</span>
+				</el-text>
+
+				<span>
+					<el-tooltip content="非空" :auto-close="500">
+						<el-checkbox v-model="column.notNull"></el-checkbox>
+					</el-tooltip>
+				</span>
+
+				<span>
+					<el-input v-model="column.defaultValue" placeholder="default"></el-input>
+				</span>
+				<span style="white-space: nowrap;">
+					<el-button :icon="Plus" @click="handleAddColumn(index)" link></el-button>
+					<el-button :icon="Delete" @click="handleRemoveColumn(index)" type="danger" link></el-button>
+				</span>
+			</div>
 
 			<div style="height: 2em; line-height: 2em; transform: translateY(-5px);">
 				<el-button :icon="Plus" @click="handleAddColumn(table.columns.length - 1)" link></el-button>

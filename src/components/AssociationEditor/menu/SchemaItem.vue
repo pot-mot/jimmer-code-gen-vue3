@@ -6,11 +6,11 @@ import Details from "../../common/Details.vue";
 import {Delete, Search} from "@element-plus/icons-vue";
 import TableItem from "./TableItem.vue";
 import SchemaIcon from "../../icons/database/SchemaIcon.vue";
-import {useAssociationEditorGraphStore} from "../store/AssociationEditorGraphStore.ts";
+import {useAssociationEditorStore} from "../store/AssociationEditorStore.ts";
 import {AssociationEditorMenuEventBus} from "../eventBus/AssociationEditorMenuEventBus.ts";
 import {deleteConfirm, sendMessage} from "../../../utils/message.ts";
 
-const store = useAssociationEditorGraphStore()
+const store = useAssociationEditorStore()
 
 interface SchemaItemProps {
 	schema: GenSchemaView

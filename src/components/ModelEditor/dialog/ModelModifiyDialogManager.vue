@@ -17,7 +17,7 @@ ModelEditorEventBus.on('modifyTable', ({id, table}) => {
 	}
 })
 
-ModelEditorEventBus.on('modifiedTable', ({id}) => {
+ModelEditorEventBus.on('closeModifiedTable', (id) => {
 	tableMap.value.delete(id)
 })
 </script>

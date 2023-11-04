@@ -8,7 +8,7 @@
 	<div class="part">
 		<ul class="main">
 			<li>
-				<RouterLink to="/model">
+				<RouterLink to="/models">
 					// TODO
 					<h2><el-text size="large">模型设计</el-text></h2>
 
