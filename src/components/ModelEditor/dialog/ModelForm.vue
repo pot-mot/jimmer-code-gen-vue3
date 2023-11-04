@@ -7,6 +7,7 @@ import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import {api} from "../../../api";
 import {objToMap} from "../../../utils/mapOperation.ts";
 import {useLoading} from "../../../hooks/useLoading.ts";
+import {sendMessage} from "../../../utils/message.ts";
 
 const columnTypeMap = ref(new Map<string, number>)
 
@@ -37,7 +38,7 @@ const defaultColumn: GenTableColumnsInput_TargetOf_columns = {
 	comment: "",
 	type: "VARCHAR",
 	typeCode: 12,
-	notNull: false,
+	notNull: true,
 	displaySize: 0,
 	numericPrecision: 0,
 	defaultValue: undefined,
@@ -55,7 +56,8 @@ interface ModelFormProps {
 const props = defineProps<ModelFormProps>()
 
 interface ModelFormEmits {
-	(event: "submit", table: GenTableColumnsInput): void
+	(event: "submit", table: GenTableColumnsInput): void,
+	(event: "cancel", table: GenTableColumnsInput): void
 }
 
 const emits = defineEmits<ModelFormEmits>()
@@ -69,6 +71,7 @@ watch(() => props.table, () => {
 		...table.value,
 		...toRaw(props.table),
 		columns: [
+			...defaultTable.columns,
 			...Object.values(toRaw(props.table.columns)).map(it => {
 				return {...it}
 			})
@@ -77,11 +80,32 @@ watch(() => props.table, () => {
 }, {immediate: true})
 
 const handleSubmit = () => {
+	const messageList: string[] = []
+
+	if (table.value.name.trim().length == 0) {
+		messageList.push('模型名称不得为空')
+	}
+	if (table.value.columns.filter(column => column.partOfPk).length != 1) {
+		messageList.push('模型必须有且仅有一个主键列')
+	}
+	if (table.value.columns.filter(column => column.name.trim().length == 0).length > 0) {
+		messageList.push('列名称不得为空')
+	}
+
+	if (messageList.length > 0) {
+		messageList.forEach(it => sendMessage(it, 'warning'))
+		return
+	}
+
 	emits('submit', table.value)
 }
 
-const handleAddColumn = () => {
-	table.value.columns.push({...defaultColumn})
+const handleCancel = () => {
+	emits('cancel', table.value)
+}
+
+const handleAddColumn = (index: number) => {
+	table.value.columns.splice(index + 1, 0, {...defaultColumn})
 }
 
 const handleRemoveColumn = (removedIndex: number) => {
@@ -105,23 +129,27 @@ const handleColumnToPk = (pkIndex: number) => {
 <template>
 	<div class="wrapper">
 		<el-form v-if="!columnTypeMapLoading.isLoading()">
-			<el-row :gutter="16">
-				<el-col :span="12">
-					<el-form-item label="表名">
-						<el-input v-model="table.name"></el-input>
-					</el-form-item>
+			<el-row style="line-height: 2em; padding-left: 1em;" :gutter="12">
+				<el-col :span="6">
+					<el-input v-model="table.name" placeholder="name"></el-input>
 				</el-col>
 
-				<el-col :span="12">
-					<el-form-item label="注释">
-						<el-input v-model="table.comment"></el-input>
-					</el-form-item>
+				<el-col :span="8">
+					<el-text class="comment">
+						<span>/* </span>
+						<span><el-input v-model="table.comment" placeholder="comment"></el-input></span>
+						<span> */</span>
+					</el-text>
+				</el-col>
+
+				<el-col :span="18">
+					<el-input v-model="table.remark" placeholder="remark" type="textarea" :autosize="{ minRows: 1, maxRows: 4 }"></el-input>
 				</el-col>
 			</el-row>
 
 			<template v-for="(column, index) in table.columns">
-				<el-row style="height: 2em; line-height: 2em;" :gutter="12">
-					<el-col :span="1">
+				<el-row style="height: 2em; line-height: 2em;" :gutter="8">
+					<el-col :span="0.5">
 						<ColumnIcon :column="column"></ColumnIcon>
 					</el-col>
 
@@ -141,15 +169,14 @@ const handleColumnToPk = (pkIndex: number) => {
 						<el-input v-model="column.name" placeholder="name"></el-input>
 					</el-col>
 					<el-col :span="4">
-						<el-text
-							style="display: grid; grid-template-columns: 1em 1fr 1em; color: var(--el-text-color-placeholder); padding-right: 0.5em;">
+						<el-text class="comment">
 							<span>/* </span>
 							<span><el-input v-model="column.comment" placeholder="comment"></el-input></span>
 							<span> */</span>
 						</el-text>
 					</el-col>
 
-					<el-col :span="1">
+					<el-col :span="0.5">
 						<el-tooltip content="不重复">
 							<el-checkbox v-model="column.partOfUniqueIdx"></el-checkbox>
 						</el-tooltip>
@@ -167,7 +194,7 @@ const handleColumnToPk = (pkIndex: number) => {
 							</template>
 						</el-tooltip>
 					</el-col>
-					<el-col :span="6">
+					<el-col :span="5">
 						<el-text style="display: grid; grid-template-columns: 0.5em 1fr 1em 1fr 0.5em">
 							<span>(</span>
 							<span><el-input v-model="column.displaySize"></el-input></span>
@@ -176,7 +203,7 @@ const handleColumnToPk = (pkIndex: number) => {
 							<span style="padding-left: 0.3em;">)</span>
 						</el-text>
 					</el-col>
-					<el-col :span="1">
+					<el-col :span="0.5">
 						<el-tooltip content="非空">
 							<el-checkbox v-model="column.notNull"></el-checkbox>
 						</el-tooltip>
@@ -185,17 +212,19 @@ const handleColumnToPk = (pkIndex: number) => {
 					<el-col :span="3">
 						<el-input v-model="column.defaultValue" placeholder="default"></el-input>
 					</el-col>
-					<el-col :span="1">
+					<el-col :span="2">
+						<el-button :icon="Plus" @click="handleAddColumn(index)" link></el-button>
 						<el-button :icon="Delete" @click="handleRemoveColumn(index)" type="danger" link></el-button>
 					</el-col>
 				</el-row>
 			</template>
 
-			<div style="height: 2em; line-height: 2em;">
-				<el-button :icon="Plus" @click="handleAddColumn" link></el-button>
+			<div style="height: 2em; line-height: 2em; transform: translateY(-5px);">
+				<el-button :icon="Plus" @click="handleAddColumn(table.columns.length - 1)" link></el-button>
 			</div>
 
-			<div>
+			<div style="text-align: right;">
+				<el-button @click="handleCancel" type="info">取消</el-button>
 				<el-button @click="handleSubmit" type="warning">提交</el-button>
 			</div>
 		</el-form>
@@ -213,5 +242,12 @@ const handleColumnToPk = (pkIndex: number) => {
 
 .empty {
 	height: 65vh;
+}
+
+.comment {
+	display: grid;
+	grid-template-columns: 1em 1fr 1em;
+	color: var(--el-text-color-placeholder);
+	padding-right: 0.5em;
 }
 </style>

@@ -20,14 +20,18 @@ const store = useModelEditorGraphStore()
 				<template #top>
 					<NodeList :nodes="store.nodes">
 						<template #default="{node}">
-							<NodeItem :node="node"></NodeItem>
+							<div style="padding-left: 2em;">
+								<NodeItem :node="node"></NodeItem>
+							</div>
 						</template>
 					</NodeList>
 				</template>
 				<template #bottom>
 					<EdgeList :edges="store.edges">
 						<template #default="{edge}">
-							<EdgeItem :edge="edge"></EdgeItem>
+							<div style="padding-left: 2em;">
+								<EdgeItem :edge="edge"></EdgeItem>
+							</div>
 						</template>
 					</EdgeList>
 				</template>
