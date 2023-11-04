@@ -1,13 +1,10 @@
 import mitt from 'mitt'
 import {
     GenTableColumnsInput,
-    GenAssociationModelInput, GenModelView,
+    GenAssociationModelInput,
 } from "../../../api/__generated/model/static";
 
 type ModelEditorEvents = {
-    chooseModel: GenModelView,
-    toggleModel: GenModelView,
-
     createTable: undefined,
     createdTable: GenTableColumnsInput,
     modifyTable: {id: string, table: GenTableColumnsInput},

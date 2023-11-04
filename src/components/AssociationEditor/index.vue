@@ -129,11 +129,9 @@ import {nodeIdToTableId, tableNodeMatchMethod} from "./node/TableNode.ts";
 import {useHistoryKeyEvent} from "../../utils/graphEditor/useHistory.ts";
 import {useSelectionKeyEvent} from "../../utils/graphEditor/useSelection.ts";
 import {useSave} from "../../utils/graphEditor/useSave.ts";
-import {AssociationEditorMenuEventBus} from "./eventBus/AssociationEditorMenuEventBus.ts";
 import ScaleBar from "../common/graph/ScaleBar.vue";
 import Searcher from "../common/graph/Searcher.vue";
 import Comment from "../common/Comment.vue";
-import {AssociationEditorGraphEventBus} from "./eventBus/AssociationEditorGraphEventBus.ts";
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();

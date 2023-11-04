@@ -9,6 +9,7 @@ export const COLUMN_PORT = "COLUMN_PORT"
 
 export const COLUMN_HEIGHT = 30
 
+
 export const HIGHLIGHT_COLOR = 'var(--highlight-color)'
 
 export const COMMON_COLOR = 'var(--common-color)'

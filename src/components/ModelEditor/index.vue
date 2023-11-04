@@ -81,7 +81,7 @@
 		listStore.currentModel = model
 		handleSaveModel()
 		openModelDialog = false
-	}" @close="openModelDialog = false"></ModelDialog>
+	}" @cancel="openModelDialog = false"></ModelDialog>
 </template>
 
 <style scoped>
@@ -110,7 +110,7 @@ import EraserIcon from "../icons/toolbar/EraserIcon.vue";
 import AssociationOffIcon from "../icons/toolbar/AssociationOffIcon.vue";
 import {initModelEditor} from "./init.ts";
 import {saveModel} from "./api.ts";
-import ModelDialog from "./menu/ModelDialog.vue";
+import ModelDialog from "./dialog/ModelDialog.vue";
 import {sendMessage} from "../../utils/message.ts";
 import {useModelListStore} from "./store/ModelListStore.ts";
 import {useAutoSave, useSaveKeyEvent} from "../../utils/graphEditor/useSave.ts";

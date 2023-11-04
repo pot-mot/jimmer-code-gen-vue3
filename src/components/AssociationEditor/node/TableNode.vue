@@ -1,6 +1,6 @@
 <template>
-	<div class="node">
-		<table v-if="table"  ref="wrapper" class="table-wrapper"
+	<div class="table-wrapper" ref="wrapper">
+		<table v-if="table" ref="container"
 			   @dblclick="TableEntityDialogEventBus.emit('addTableEntityDialog', table.id)">
 			<tr class="tableName">
 				<td colspan="2">
@@ -27,47 +27,8 @@
 	</div>
 </template>
 
-<style lang="scss" scoped>
-.node {
-	padding-bottom: 10px;
-	font-family: var(--el-font-family);
-	color: var(--el-color-info-dark-2);
-
-	.table-wrapper {
-		background-color: #fff;
-		border: 1px solid var(--el-color-info);
-		border-collapse: collapse;
-
-		.tableName, .column {
-			white-space: nowrap;
-			height: 30px;
-			line-height: 30px;
-		}
-
-		.icon, .type {
-			padding: 0 0.5em;
-		}
-
-		.tableName {
-			text-align: center;
-			border-bottom: 1px solid var(--common-color);
-			font-size: 16px;
-		}
-
-		.column {
-			font-size: 14px;
-		}
-	}
-}
-
-.table-wrapper.hovered {
-	border-color: var(--el-color-black);
-}
-
-.table-wrapper.selected {
-	outline: 2px solid var(--highlight-color);
-	outline-offset: 2px;
-}
+<style scoped>
+@import "../../../assets/node-common.css";
 </style>
 
 <script lang='ts' setup>
@@ -79,35 +40,48 @@ import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
 import {TableEntityDialogEventBus} from "../eventBus/TableEntityDialogEventBus.ts";
+import {sendMessage} from "../../../utils/message.ts";
 
 const wrapper = ref<HTMLElement | null>()
 
+const container = ref<HTMLElement | null>()
+
 const getNode = inject<() => Node>("getNode")!;
+
+const node = ref<Node>()
 
 const table = ref<GenTableColumnsView>()
 
 const store = useAssociationEditorStore()
 
 onMounted(async () => {
-	const node = getNode()
+	node.value = getNode()
+
+	if (!node.value) {
+		sendMessage('Node 获取失败', 'error')
+		return
+	}
 
 	// 绑定数据
-	table.value = node.getData().table
+	table.value = node.value.getData().table
 
-	node.on('change:data', () => {
-		table.value = node.getData().table
+	node.value.on('change:data', () => {
+		table.value = node.value!.getData().table
 	})
 
 	await nextTick()
 
-	if (!wrapper.value) return
+	if (!wrapper.value || !container.value) {
+		sendMessage(`${table.value?.name}节点 dom 元素 ref 异常`, 'error')
+		return
+	}
+
+	node.value.getData().wrapper = wrapper
 
 	// 响应式更新尺寸
-	node.getData().wrapper = wrapper
-
 	const resize = () => {
-		if (!wrapper.value) return
-		node.resize(wrapper.value.clientWidth, wrapper.value.clientHeight)
+		if (!container.value) return
+		node.value!.resize(container.value.clientWidth, container.value.clientHeight)
 	}
 
 	resize()
@@ -116,17 +90,15 @@ onMounted(async () => {
 		resize()
 	})
 
-	wrapperResizeObserver.observe(wrapper.value)
+	wrapperResizeObserver.observe(container.value)
 
-	// 添加 column port
+	// 设置 ports
 	const graph = store._graph()
 
 	graph.disableHistory()
 
-	node.resize(wrapper.value.clientWidth, wrapper.value.clientHeight)
-
-	node.ports.items.forEach(port => {
-		node.setPortProp(port.id!, 'attrs', {
+	node.value.ports.items.forEach(port => {
+		node.value!.setPortProp(port.id!, 'attrs', {
 			portBody: {
 				width: wrapper.value!.clientWidth,
 			}

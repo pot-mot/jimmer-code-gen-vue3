@@ -17,11 +17,13 @@ const store = useModelEditorStore()
 			<el-button @click="ModelEditorEventBus.emit('createTable')">创建表</el-button>
 		</template>
 
-		<NodeList :nodes="store.nodes">
-			<template #default="{node}">
-				<NodeItem :node="node"></NodeItem>
-			</template>
-		</NodeList>
+		<div style="padding-bottom: 1em;">
+			<NodeList :nodes="store.nodes">
+				<template #default="{node}">
+					<NodeItem :node="node"></NodeItem>
+				</template>
+			</NodeList>
+		</div>
 	</Details>
 
 	<Details open>
@@ -30,11 +32,13 @@ const store = useModelEditorStore()
 			<el-button @click="ModelEditorEventBus.emit('createAssociation')">创建关联</el-button>
 		</template>
 
-		<EdgeList :edges="store.edges">
-			<template #default="{edge}">
-				<EdgeItem :edge="edge"></EdgeItem>
-			</template>
-		</EdgeList>
+		<div style="padding-bottom: 1em;">
+			<EdgeList :edges="store.edges">
+				<template #default="{edge}">
+					<EdgeItem :edge="edge"></EdgeItem>
+				</template>
+			</EdgeList>
+		</div>
 	</Details>
 </template>
 

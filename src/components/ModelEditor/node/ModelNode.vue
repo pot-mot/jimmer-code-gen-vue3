@@ -1,21 +1,21 @@
 <template>
-	<div class="node">
-		<table v-if="node && table" ref="wrapper" class="table-wrapper"
+	<div class="table-wrapper" ref="wrapper">
+		<table v-if="node && table" ref="container"
 			   @dblclick="ModelEditorEventBus.emit('modifyTable', {id: node.id, table})">
 			<tr class="tableName">
 				<td colspan="2">
-					<span class="icon">
-						<TableIcon :type="table.type"></TableIcon>
-					</span>
+				<span class="icon">
+					<TableIcon :type="table.type"></TableIcon>
+				</span>
 					<span>{{ table.name }}</span>
 					<Comment :comment="table.comment"></Comment>
 				</td>
 			</tr>
 			<tr v-for="column in table.columns" class="column">
 				<td>
-					<span class="icon">
-						<ColumnIcon :column="column"></ColumnIcon>
-					</span>
+				<span class="icon">
+					<ColumnIcon :column="column"></ColumnIcon>
+				</span>
 					<span>{{ column.name }}</span>
 					<Comment :comment="column.comment"></Comment>
 				</td>
@@ -27,47 +27,8 @@
 	</div>
 </template>
 
-<style lang="scss" scoped>
-.node {
-	padding-bottom: 10px;
-	font-family: var(--el-font-family);
-	color: var(--el-color-info-dark-2);
-
-	.table-wrapper {
-		background-color: #fff;
-		border: 1px solid var(--el-color-info);
-		border-collapse: collapse;
-
-		.tableName, .column {
-			white-space: nowrap;
-			height: 30px;
-			line-height: 30px;
-		}
-
-		.icon, .type {
-			padding: 0 0.5em;
-		}
-
-		.tableName {
-			text-align: center;
-			border-bottom: 1px solid var(--common-color);
-			font-size: 16px;
-		}
-
-		.column {
-			font-size: 14px;
-		}
-	}
-}
-
-.table-wrapper.hovered {
-	border-color: var(--el-color-black);
-}
-
-.table-wrapper.selected {
-	outline: 2px solid var(--highlight-color);
-	outline-offset: 2px;
-}
+<style scoped>
+@import "../../../assets/node-common.css";
 </style>
 
 <script lang='ts' setup>
@@ -81,6 +42,8 @@ import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
 import {sendMessage} from "../../../utils/message.ts";
 
 const wrapper = ref<HTMLElement | null>()
+
+const container = ref<HTMLElement | null>()
 
 const getNode = inject<() => Node>("getNode")!;
 
@@ -99,22 +62,23 @@ onMounted(async () => {
 	// 绑定数据
 	table.value = node.value.getData().table
 
-	console.log(node.value.id, table.value?.name)
-
 	node.value.on('change:data', () => {
 		table.value = node.value!.getData().table
 	})
 
 	await nextTick()
 
-	if (!wrapper.value) return
+	if (!wrapper.value || !container.value) {
+		sendMessage(`${table.value?.name}节点 dom 元素 ref 异常`, 'error')
+		return
+	}
 
-	// 响应式更新尺寸
 	node.value.getData().wrapper = wrapper
 
+	// 响应式更新尺寸
 	const resize = () => {
-		if (!wrapper.value) return
-		node.value!.resize(wrapper.value.clientWidth, wrapper.value.clientHeight)
+		if (!container.value) return
+		node.value!.resize(container.value.clientWidth, container.value.clientHeight)
 	}
 
 	resize()
@@ -123,6 +87,6 @@ onMounted(async () => {
 		resize()
 	})
 
-	wrapperResizeObserver.observe(wrapper.value)
+	wrapperResizeObserver.observe(container.value)
 });
 </script>

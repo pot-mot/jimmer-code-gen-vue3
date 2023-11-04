@@ -4,7 +4,7 @@
     width: 100%;
 
     --highlight-color: var(--el-color-primary);
-    --common-color: var(--el-color-info);
+    --common-color: var(--el-color-info-dark-2);
 }
 
 .toolbar {
