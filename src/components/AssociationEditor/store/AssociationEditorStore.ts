@@ -13,7 +13,7 @@ import {AssociationEditorGraphEventBus} from "../eventBus/AssociationEditorGraph
 import {api} from "../../../api";
 import {searchEdgesByColumn} from "../../../utils/graphEditor/search.ts";
 import {commonGraphStoreOperations} from "../../../utils/graphEditor/commonStore.ts";
-
+import {AssociationEditorMenuEventBus} from "../eventBus/AssociationEditorMenuEventBus.ts";
 
 export const useAssociationEditorStore =
     defineStore(
@@ -110,6 +110,19 @@ export const useAssociationEditorStore =
                     targetColumnId
                 })
             }
+
+            AssociationEditorGraphEventBus.on('loadSchema', () => {
+                commonStore.layout()
+                commonStore.center()
+            })
+
+            AssociationEditorMenuEventBus.on('deleteDataSource', ({id}) => {
+                removeTables(table => table.schema?.dataSource.id == id)
+            })
+
+            AssociationEditorMenuEventBus.on('deleteSchema', ({id}) => {
+                removeTables(table => table.schema?.id == id)
+            })
 
             return {
                 ...commonStore,

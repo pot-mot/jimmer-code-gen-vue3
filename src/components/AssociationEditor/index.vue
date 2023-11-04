@@ -193,17 +193,4 @@ const handleGenerateEntities = () => {
 			store.tables().map(it => it.id) : store.selectedNodeIds.map(it => nodeIdToTableId(it))
 	)
 }
-
-AssociationEditorGraphEventBus.on('loadSchema', () => {
-	store.layout()
-	store.center()
-})
-
-AssociationEditorMenuEventBus.on('deleteDataSource', ({id}) => {
-	store.removeTables(table => table.schema?.dataSource.id == id)
-})
-
-AssociationEditorMenuEventBus.on('deleteSchema', ({id}) => {
-	store.removeTables(table => table.schema?.id == id)
-})
 </script>

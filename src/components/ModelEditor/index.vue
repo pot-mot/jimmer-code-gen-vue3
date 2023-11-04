@@ -96,8 +96,6 @@ import ScaleBar from "../common/graph/ScaleBar.vue";
 import Searcher from "../common/graph/Searcher.vue";
 import {tableNodeMatchMethod} from "../AssociationEditor/node/TableNode.ts";
 import Comment from "../common/Comment.vue";
-import {ModelEditorEventBus} from "./eventBus/ModelEditorEventBus.ts";
-import {addModelNode} from "./node/modelNode.ts";
 import {register} from "@antv/x6-vue-shape";
 import ModelNode from "./node/ModelNode.vue";
 import {useHistoryKeyEvent} from "../../utils/graphEditor/useHistory.ts";
@@ -170,26 +168,4 @@ onUnmounted(() => {
 useHistoryKeyEvent(() => graph)
 
 useSelectionKeyEvent(() => graph)
-
-ModelEditorEventBus.on('createdTable', (table) => {
-	addModelNode(graph, table)
-})
-
-ModelEditorEventBus.on('modifiedTable', ({id, table}) => {
-	const cell = graph.getCellById(id)
-	if (cell && cell.isNode()) {
-		cell.setData({...cell.getData(), table}, {overwrite: true, deep: true})
-	} else {
-		sendMessage(`Node ${id} 找不到，无法被更改`, 'error')
-	}
-	ModelEditorEventBus.emit('closeModifiedTable', id)
-})
-
-ModelEditorEventBus.on('removeTable', (id) => {
-	graph.removeNode(id)
-})
-
-ModelEditorEventBus.on('removeAssociation', (id) => {
-	graph.removeEdge(id)
-})
 </script>
