@@ -42,7 +42,7 @@ const handleSubmit = () => {
 </script>
 
 <template>
-	<el-dialog :model-value="true" @close="handleCancel">
+	<el-dialog :model-value="true" title="模型" @close="handleCancel">
 		<el-input v-model="model.name"></el-input>
 		<el-input v-model="model.remark" type="textarea"></el-input>
 

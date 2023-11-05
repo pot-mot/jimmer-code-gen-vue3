@@ -25,9 +25,9 @@ export const commonGraphStoreOperations = () => {
         /**
          * 加载 graph，初始化
          */
-        const load = (_graph: Graph) => {
+        const load = async (_graph: Graph) => {
             graph.value = _graph
-            reactiveState.loadData()
+            await reactiveState.loadReactiveState()
         }
 
         const unload = () => {

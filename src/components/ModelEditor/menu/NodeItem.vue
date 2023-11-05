@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import {Node} from '@antv/x6'
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
-import {computed} from "vue";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
+import {ref, watch} from "vue";
+import {sendMessage} from "../../../utils/message.ts";
 
 interface NodeItem {
 	node: Node
@@ -13,15 +14,25 @@ interface NodeItem {
 
 const props = defineProps<NodeItem>()
 
-const name = computed(() => {
-	return props.node.data.table.name
-})
-
-const comment = computed(() => {
-	return props.node.data.table.comment
-})
-
 const store = useModelEditorStore()
+
+const name = ref("")
+
+const comment = ref("")
+
+watch(() => props.node, (node) => {
+	try {
+		name.value = node.getData().table.name
+		comment.value = node.getData().table.comment
+
+		node.on('change:data', () => {
+			name.value = node.getData().table.name
+			comment.value = node.getData().table.comment
+		})
+	} catch (e) {
+		sendMessage('节点获取node数据异常', 'error')
+	}
+}, {immediate: true})
 
 const handleEdit = () => {
 	ModelEditorEventBus.emit('modifyTable', {id: props.node.id, table: props.node.data.table})

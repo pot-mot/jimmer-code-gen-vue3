@@ -48,7 +48,7 @@ export const useGraphReactiveState = (_graph: () => Graph) => {
         return [...edgeMap.value.keys()]
     })
 
-    const loadData = () => {
+    const loadReactiveState = async () => {
         const graph = _graph()
 
         if (!graph) return
@@ -58,23 +58,17 @@ export const useGraphReactiveState = (_graph: () => Graph) => {
 
         selectedNodeMap.value = arrayToMap(getSelectedNodes(graph), "id")
         selectedEdgeMap.value = arrayToMap(getSelectedEdges(graph), "id")
+
+        await addReactiveEventListen()
     }
 
-    let count = 0
-
-    const interval = setInterval(async () => {
-        count ++
-        if (count > 10) {
-            sendMessage('图无法正常加载', 'error')
-            clearInterval(interval)
-            return
-        }
-
+    const addReactiveEventListen = async () => {
         const graph = _graph()
 
-        if (!graph) return
-
-        loadData()
+        if (!graph) {
+            sendMessage('graph 无法获取，响应式数据无法正常设置', 'error')
+            return
+        }
 
         graph.on('selection:changed', () => {
             isSelectionEmpty.value = graph.isSelectionEmpty()
@@ -160,11 +154,11 @@ export const useGraphReactiveState = (_graph: () => Graph) => {
             canUndo.value = graph.canUndo()
             canRedo.value = graph.canRedo()
         })
-
-        clearInterval(interval)
-    }, 100)
+    }
 
     return {
+        loadReactiveState,
+
         nodeMap,
         nodes,
         nodeIds,
@@ -185,7 +179,5 @@ export const useGraphReactiveState = (_graph: () => Graph) => {
 
         canUndo,
         canRedo,
-
-        loadData
     }
 }

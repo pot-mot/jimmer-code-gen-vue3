@@ -69,8 +69,6 @@ const handleDelete = (model: GenModelView) => {
 					<el-text size="large">{{ model.name }}</el-text>
 				</el-row>
 
-
-
 				<el-row>
 					<el-col :span="12">
 						<el-text>{{ datetimeFormat(model.createdTime) }}</el-text>
@@ -98,6 +96,7 @@ const handleDelete = (model: GenModelView) => {
 	overflow-y: auto;
 	padding: 1em;
 	box-shadow: var(--el-box-shadow);
+	cursor: default;
 }
 
 .model-card:hover {
