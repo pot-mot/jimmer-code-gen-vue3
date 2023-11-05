@@ -148,11 +148,10 @@ const handleSaveModel = async () => {
 	if (!listStore.currentModel) {
 		openModelDialog.value = true
 	} else {
-		const modelJSONStr = toDataJSONStr()
+		listStore.currentModel.value = toDataJSONStr()
 
-		await saveModel(listStore.currentModel, modelJSONStr)
+		await saveModel(listStore.currentModel)
 
-		listStore.currentModel.value = modelJSONStr
 		localStorage.setItem('currentModel', JSON.stringify(listStore.currentModel))
 
 		sendMessage("模型保存成功", "success")

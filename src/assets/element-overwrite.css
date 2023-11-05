@@ -58,3 +58,7 @@
 .el-slider--small .el-slider__bar {
     height: 4px;
 }
+
+.el-dialog__body {
+    padding: 0 1.5em 1em;
+}

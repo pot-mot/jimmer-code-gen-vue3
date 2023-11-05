@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {GenModelView} from "../api/__generated/model/static";
+import {GenModelInput, GenModelView} from "../api/__generated/model/static";
 import {api} from "../api";
 import {useModelListStore} from "../components/ModelEditor/store/ModelListStore.ts";
 import {useRouter} from "vue-router";
 import {datetimeFormat} from "../utils/dataFormat.ts";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {deleteConfirm, sendMessage} from "../utils/message.ts";
+import ModelDialog from "../components/ModelEditor/dialog/ModelDialog.vue";
+import {saveModel} from "../components/ModelEditor/api.ts";
+import {useLoading} from "../hooks/useLoading.ts";
 
 const router = useRouter()
 
@@ -14,8 +17,12 @@ const listStore = useModelListStore()
 
 const models = ref<GenModelView[]>([])
 
+const modelsLoading = useLoading()
+
 const getModels = async () => {
+	modelsLoading.start()
 	models.value = await api.modelService.list()
+	modelsLoading.end()
 }
 
 onMounted(() => {
@@ -28,8 +35,17 @@ const toModel = (isNew: boolean, model?: GenModelView) => {
 	router.push('/model')
 }
 
+const editModel = ref<GenModelView | undefined>()
+
 const handleEdit = (model: GenModelView) => {
-	// TODO
+	editModel.value = model
+}
+
+const handleSubmit = async (model: GenModelInput) => {
+	await saveModel(model)
+	editModel.value = undefined
+	sendMessage('修改成功', 'success')
+	await getModels()
 }
 
 const handleDelete = (model: GenModelView) => {
@@ -49,7 +65,7 @@ const handleDelete = (model: GenModelView) => {
 </script>
 
 <template>
-	<div class="container">
+	<div v-loading="modelsLoading.isLoading()" class="container">
 		<div class="model-card" @click="toModel(true)">
 			<el-row>
 				<el-text size="large">创建新模型</el-text>
@@ -69,17 +85,24 @@ const handleDelete = (model: GenModelView) => {
 					<el-text size="large">{{ model.name }}</el-text>
 				</el-row>
 
-				<el-row>
-					<el-col :span="12">
-						<el-text>{{ datetimeFormat(model.createdTime) }}</el-text>
-					</el-col>
-					<el-col :span="12">
-						<el-text>{{ datetimeFormat(model.modifiedTime) }}</el-text>
-					</el-col>
-				</el-row>
+				<div style="padding-top: 0.5em;">
+					<el-text type="info">创建于 {{ datetimeFormat(model.createdTime) }}</el-text>
+				</div>
+
+				<div style="padding-bottom: 0.5em;">
+					<el-text type="info">修改于 {{ datetimeFormat(model.modifiedTime) }}</el-text>
+				</div>
+
+				<div style="min-height: 2em; line-height: 1.4em;">
+					<el-text size="default">{{ model.remark }}</el-text>
+				</div>
 			</div>
 		</template>
 	</div>
+
+	<template v-if="editModel">
+		<ModelDialog @submit="handleSubmit" @cancel="editModel = undefined" :model="editModel"></ModelDialog>
+	</template>
 </template>
 
 <style scoped>
