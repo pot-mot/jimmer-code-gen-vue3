@@ -1,5 +1,5 @@
 import {Graph} from "@antv/x6";
-import {useLocalStorageOperation} from "./localStorage.ts";
+import {useLocalStorageSave} from "./localStorage.ts";
 import {onBeforeUnmount, onMounted, onUnmounted} from "vue";
 
 export const useSaveKeyEvent = (callback: () => any) => {
@@ -22,7 +22,7 @@ export const useSaveKeyEvent = (callback: () => any) => {
 }
 
 export const useAutoSave = (_graph: () => Graph, name: string) => {
-    const localStorageOperation = useLocalStorageOperation(_graph, name)
+    const localStorageOperation = useLocalStorageSave(_graph, name)
 
     const handleAutoSave = () => {
         const graph = _graph()
@@ -51,7 +51,7 @@ export const useAutoSave = (_graph: () => Graph, name: string) => {
 }
 
 export const useSave = (_graph: () => Graph, name: string, otherSaveFns?: Array<{auto: boolean, fn: (graph: Graph, name: string) => any}>) => {
-    const localStorageOperation = useLocalStorageOperation(_graph, name)
+    const localStorageOperation = useLocalStorageSave(_graph, name)
 
     const handleSaveEditor = () => {
         const graph = _graph()

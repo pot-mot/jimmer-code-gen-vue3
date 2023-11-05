@@ -113,7 +113,8 @@ import {saveModel} from "./api.ts";
 import ModelDialog from "./dialog/ModelDialog.vue";
 import {sendMessage} from "../../utils/message.ts";
 import {useModelListStore} from "./store/ModelListStore.ts";
-import {useAutoSave, useSaveKeyEvent} from "../../utils/graphEditor/useSave.ts";
+import {useSaveKeyEvent} from "../../utils/graphEditor/useSave.ts";
+import {useLocalStorageOperation} from "../../utils/graphEditor/localStorage.ts";
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();
@@ -131,12 +132,53 @@ register({
 
 const openModelDialog = ref(false)
 
-const handleSaveModel = () => {
+
+const {
+	toDataJSONStr,
+	loadGraphByJSONStr
+} = useLocalStorageOperation(() => graph)
+
+/**
+ * 保存模型
+ * 涉及两步操作：
+ * 1. 使用 api saveModel 使后端保存当前模型的数据
+ * 2. 修改当前 listStore 中保存的当前模型，确保数据一致，并缓存这个当前模型
+ */
+const handleSaveModel = async () => {
 	if (!listStore.currentModel) {
 		openModelDialog.value = true
 	} else {
+		const modelJSONStr = toDataJSONStr()
+
+		await saveModel(listStore.currentModel, modelJSONStr)
+
+		listStore.currentModel.value = modelJSONStr
+		localStorage.setItem('currentModel', JSON.stringify(listStore.currentModel))
+
 		sendMessage("模型保存成功", "success")
-		saveModel(listStore.currentModel, JSON.stringify(graph.toJSON()))
+	}
+}
+
+/**
+ * 加载模型
+ * 同样两步操作：
+ * 1. 将本地缓存中的这个模型读取出来录入 listStore 的 currentModel
+ * 2. 将读出的模型载入当前的 graph
+ *
+ * 其中第一步操作需要判断 listStore 中是否已经有 currentModel，如果有，则不进行覆盖
+ */
+const handleLoadModel = () => {
+	// 从缓存中读取 currentModel
+	if (!listStore.currentModel) {
+		const currentModelJSONStr = localStorage.getItem('currentModel')
+		if (currentModelJSONStr) {
+			listStore.currentModel = JSON.parse(currentModelJSONStr)
+		}
+	}
+
+	// 加载 currentModel
+	if (listStore.currentModel && listStore.currentModel.value) {
+		loadGraphByJSONStr(listStore.currentModel.value)
 	}
 }
 
@@ -144,20 +186,18 @@ onMounted(() => {
 	graph = initModelEditor(container.value!, wrapper.value!)
 
 	try {
-		if (listStore.currentModel && listStore.currentModel.value) {
-			graph.fromJSON(JSON.parse(listStore.currentModel.value))
-		} else if (!listStore.isNew){
-			loadGraph()
+		if (!listStore.isNew){
+			handleLoadModel()
+		} else {
+			// 新模型，则移除全部缓存
+			localStorage.removeItem('currentModel')
 		}
 	} catch (e) {
 		sendMessage('后端获取的模型加载失败', 'error')
 	}
 
 	store.load(graph)
-	store.fit()
 })
-
-const {loadGraph} = useAutoSave(() => graph, "ModelEditor")
 
 useSaveKeyEvent(handleSaveModel)
 
