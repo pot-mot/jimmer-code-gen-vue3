@@ -16,8 +16,6 @@ export interface GenColumnCommonView {
     
     name: string;
     
-    notNull: boolean;
-    
     numericPrecision: number;
     
     orderKey: number;
@@ -35,4 +33,6 @@ export interface GenColumnCommonView {
     type: string;
     
     typeCode: number;
+    
+    typeNotNull: boolean;
 }

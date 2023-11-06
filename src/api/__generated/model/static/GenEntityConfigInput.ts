@@ -45,11 +45,11 @@ export interface GenEntityConfigInput_TargetOf_properties {
     
     name: string;
     
-    notNull: boolean;
-    
     otherAnnotation?: string;
     
     remark: string;
     
     type: string;
+    
+    typeNotNull: boolean;
 }

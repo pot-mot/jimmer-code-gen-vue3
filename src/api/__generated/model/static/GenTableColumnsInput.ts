@@ -33,8 +33,6 @@ export interface GenTableColumnsInput_TargetOf_columns {
     
     name: string;
     
-    notNull: boolean;
-    
     numericPrecision: number;
     
     orderKey: number;
@@ -50,6 +48,8 @@ export interface GenTableColumnsInput_TargetOf_columns {
     type: string;
     
     typeCode: number;
+    
+    typeNotNull: boolean;
 }
 
 export interface GenTableColumnsInput_TargetOf_schema {

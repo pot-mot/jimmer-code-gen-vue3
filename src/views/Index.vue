@@ -21,17 +21,7 @@
 							<ul>
 								<li>
 									<el-text size="default" type="success">
-										支持 ManyToMany 与 OneToMany
-									</el-text>
-								</li>
-								<li>
-									<el-text size="default" type="success">
-										不依赖数据源，且可以导入不同种类数据源
-									</el-text>
-								</li>
-								<li>
-									<el-text size="default" type="warning">
-										关联仅于表模型间创建
+										不依赖数据源，可以导入任意数据库中的模型
 									</el-text>
 								</li>
 							</ul>
@@ -46,23 +36,13 @@
 
 						<div class="body">
 							<el-text size="default">
-								基于已有的数据库结构快速生成关联模型与实体
+								基于已有的数据库结构映射和创建关联
 							</el-text>
 
 							<ul>
 								<li>
 									<el-text size="default" type="warning">
-										不支持 ManyToMany 与 OneToMany
-									</el-text>
-								</li>
-								<li>
-									<el-text size="default" type="warning">
 										依赖数据源
-									</el-text>
-								</li>
-								<li>
-									<el-text size="default" type="warning">
-										关联于列间创建，导入时保留所有外键
 									</el-text>
 								</li>
 							</ul>

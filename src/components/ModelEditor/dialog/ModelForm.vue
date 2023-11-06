@@ -41,7 +41,7 @@ const defaultColumn: GenTableColumnsInput_TargetOf_columns = {
 	comment: "",
 	type: "VARCHAR",
 	typeCode: 12,
-	notNull: true,
+	typeNotNull: true,
 	displaySize: 0,
 	numericPrecision: 0,
 	defaultValue: undefined,
@@ -139,7 +139,7 @@ const handleRemoveColumn = (removedIndex: number) => {
 
 const handleColumnToPk = (pkIndex: number) => {
 	const pkColumn = table.value.columns[pkIndex]
-	pkColumn.notNull = true
+	pkColumn.typeNotNull = true
 	pkColumn.type = "BIGINT"
 	pkColumn.partOfUniqueIdx = true
 
@@ -230,7 +230,7 @@ const handleColumnToPk = (pkIndex: number) => {
 
 				<span>
 					<el-tooltip content="非空" :auto-close="500">
-						<el-checkbox v-model="column.notNull"></el-checkbox>
+						<el-checkbox v-model="column.typeNotNull"></el-checkbox>
 					</el-tooltip>
 				</span>
 

@@ -12,7 +12,7 @@ defineProps<DataSourceIconProps>()
 <template>
 	<el-tooltip effect="light" trigger="click" :disabled="
 	!column.partOfPk && !column.partOfFk && !column.partOfUniqueIdx
-	&& !column.notNull && !column.autoIncrement
+	&& !column.typeNotNull && !column.autoIncrement
 ">
 		<el-icon size="1.2em" style="transform: translateY(0.2em)">
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 26 26"
@@ -22,7 +22,7 @@ defineProps<DataSourceIconProps>()
 				<path d="M3 3m0 1a1 1 0 011-1h16a1 1 0 011 1v16a1 1 0 01-1 1h-16a1 1 0 01-1-1zm6-1v18"
 					  stroke="#aaa"/>
 
-				<path v-if="column.notNull"
+				<path v-if="column.typeNotNull"
 					  d="M4 16a3 3 0 110 6 3 3 0 110-6"
 					  stroke="#aaa"/>
 
@@ -45,7 +45,7 @@ defineProps<DataSourceIconProps>()
 		<template #content>
 			<div v-if="column.partOfPk">PK</div>
 			<div v-if="column.autoIncrement">AUTO INCREMENT</div>
-			<div v-if="column.notNull">NOT NULL</div>
+			<div v-if="column.typeNotNull">NOT NULL</div>
 			<div v-if="column.partOfUniqueIdx">UNIQUE</div>
 			<div v-if="column.partOfFk">FK</div>
 		</template>

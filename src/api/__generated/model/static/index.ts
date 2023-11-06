@@ -31,4 +31,5 @@ export type { GenTableIdView } from './GenTableIdView';
 export type { GenTypeMappingInput } from './GenTypeMappingInput';
 export type { TableQuery } from './TableQuery';
 export type { TimeRangeQueryParam } from './TimeRangeQueryParam';
+export type { Tuple2 } from './Tuple2';
 export type { byte } from './byte';

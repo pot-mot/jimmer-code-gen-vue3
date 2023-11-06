@@ -1,6 +1,6 @@
 import {KeyValue} from "@antv/x6";
 import {
-    COLUMN_HEIGHT,
+    COLUMN_HEIGHT, COLUMN_INIT_WIDTH,
     COLUMN_PORT,
     COLUMN_PORT_GROUP,
     COLUMN_PORT_SELECTOR
@@ -19,7 +19,8 @@ export const columnPortGroup = {
         COLUMN_PORT_SELECTOR: {
             magnet: true,
             fill: "rgba(0,0,0,0)",
-            height: COLUMN_HEIGHT
+            height: COLUMN_HEIGHT,
+            width: COLUMN_INIT_WIDTH
         }
     }
 }

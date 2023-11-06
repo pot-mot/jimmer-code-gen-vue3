@@ -81,13 +81,13 @@ export interface GenEntityPropertiesView_TargetOf_properties {
     
     name: string;
     
-    notNull: boolean;
-    
     otherAnnotation?: string;
     
     remark: string;
     
     type: string;
+    
+    typeNotNull: boolean;
     
     typeTable?: GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable;
 }

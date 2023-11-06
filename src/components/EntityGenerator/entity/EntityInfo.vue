@@ -4,7 +4,6 @@ import {ref, watch} from "vue";
 import {api} from "../../../api";
 import {sendMessage} from "../../../utils/message.ts";
 import CodePreview from "../../common/CodePreview.vue";
-import Details from "../../common/Details.vue";
 import Comment from "../../common/Comment.vue";
 import {convertEntities, generateEntities, previewEntities} from "../../AssociationEditor/api.ts";
 
@@ -55,19 +54,14 @@ const handleGenerate = () => {
 		<el-button @click="handleConvert">重新转换实体</el-button>
 		<el-button @click="handleGenerate">生成实体代码</el-button>
 
-		<Details v-for="property in entity.properties">
-			<template #title>
-				<div class="property-line">
-					<el-text>
-						{{ property.name }}
-						<Comment :comment="property.comment"></Comment>
-					</el-text>
-					<el-text>{{ property.type }}</el-text>
-					<el-text>{{ property.remark }}</el-text>
-				</div>
-			</template>
-
-		</Details>
+		<div v-for="property in entity.properties" class="property-line">
+			<el-text>
+				{{ property.name }}
+				<Comment :comment="property.comment"></Comment>
+			</el-text>
+			<el-text>{{ property.type }}</el-text>
+			<el-text>{{ property.remark }}</el-text>
+		</div>
 
 		<el-tabs type="border-card">
 			<el-tab-pane v-for="name in Object.keys(previewCodesMap)" :label="name">

@@ -1,8 +1,8 @@
 import {Edge, Graph, Shape} from "@antv/x6";
 import {
-    ASSOCIATION_LABEL_SELECTOR,
-    COMMON_COLOR,
-    MANY_TO_ONE,
+    ASSOCIATION_LABEL_TEXT_SELECTOR,
+    COMMON_COLOR, MANY_TO_MANY,
+    MANY_TO_ONE, ONE_TO_MANY,
     ONE_TO_ONE
 } from "../../../utils/graphEditor/constant.ts";
 import {AssociationType} from "../../../api/__generated/model/enums";
@@ -17,11 +17,11 @@ const baseLabel = {
     markup: [
         {
             tagName: 'text',
-            selector: ASSOCIATION_LABEL_SELECTOR,
+            selector: ASSOCIATION_LABEL_TEXT_SELECTOR,
         },
     ],
     attrs: {
-        ASSOCIATION_LABEL_SELECTOR: {
+        ASSOCIATION_LABEL_TEXT_SELECTOR: {
             text: MANY_TO_ONE
         },
     },
@@ -65,11 +65,11 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
 }
 
 export const setLabel = (edge: Edge, label: string) => {
-    edge.setLabelAt(0, {...baseLabel, attrs: {ASSOCIATION_LABEL_SELECTOR: {text: label}}})
+    edge.setLabelAt(0, {...baseLabel, attrs: {ASSOCIATION_LABEL_TEXT_SELECTOR: {text: label}}})
 }
 
 export const getAssociationType = (edge: Edge): AssociationType => {
-    return edge.getLabelAt(0)!.attrs![ASSOCIATION_LABEL_SELECTOR].text as AssociationType;
+    return edge.getLabelAt(0)!.attrs![ASSOCIATION_LABEL_TEXT_SELECTOR].text as AssociationType;
 }
 
 /** 转换关联为 Edge */
@@ -114,6 +114,11 @@ export const getAssociations = (graph: Graph): GenAssociationMatchView[] => {
     return graph.getEdges().map(edgeToAssociation)
 }
 
+const judgeClickBox = (box: DOMRect, x: number, y: number) => {
+    return box.x < x && box.x + box.width > x &&
+        box.y < y && box.y + box.height > y
+}
+
 export const useSwitchAssociationType = (graph: Graph) => {
     graph.on('edge:unselected', (cell) => {
         if (!cell) return
@@ -134,13 +139,14 @@ export const useSwitchAssociationType = (graph: Graph) => {
 
         const labelBox = label.getBoundingClientRect()
 
-        if (
-            labelBox.x < e.clientX && labelBox.x + labelBox.width > e.clientX &&
-            labelBox.y < e.clientY && labelBox.y + labelBox.height > e.clientY
-        ) {
+        if (judgeClickBox(labelBox, e.clientX, e.clientY)) {
             if (getAssociationType(edge) == MANY_TO_ONE) {
                 setLabel(edge, ONE_TO_ONE)
-            } else {
+            } else if (getAssociationType(edge) == ONE_TO_ONE) {
+                setLabel(edge, MANY_TO_MANY)
+            } else if (getAssociationType(edge) == MANY_TO_MANY) {
+                setLabel(edge, ONE_TO_MANY)
+            } else if (getAssociationType(edge) == ONE_TO_MANY) {
                 setLabel(edge, MANY_TO_ONE)
             }
 

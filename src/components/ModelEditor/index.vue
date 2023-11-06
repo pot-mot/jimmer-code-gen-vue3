@@ -26,7 +26,8 @@
 				<el-tooltip content="整理布局">
 					<el-button @click="store.layoutAndFit()" class="cling-right" :icon="LayoutIcon"></el-button>
 				</el-tooltip>
-				<el-select style="width: 4em;" class="cling-left" v-model="store.layoutDirection" @change="store.layoutAndFit()"
+				<el-select style="width: 4em;" class="cling-left" v-model="store.layoutDirection"
+						   @change="store.layoutAndFit()"
 						   size="small">
 					<el-option value="LR" label="→">左至右</el-option>
 					<el-option value="RL" label="←">右至左</el-option>
@@ -45,15 +46,19 @@
 					<el-button @click="store.center()" :icon="CenterIcon"></el-button>
 				</el-tooltip>
 			</li>
+		</ul>
 
+		<ul v-if="store.isLoaded" class="toolbar left-bottom">
 			<li>
 				<el-tooltip :content="(store.isSelectionEmpty ? '清理画布' : '移除选中节点与关联') +'[Delete]'">
-					<el-button @click="store.isSelectionEmpty ? store.removeAllCells() : store.removeSelectedCells()" :icon="EraserIcon"></el-button>
+					<el-button @click="store.isSelectionEmpty ? store.removeAllCells() : store.removeSelectedCells()"
+							   :icon="EraserIcon"></el-button>
 				</el-tooltip>
 			</li>
 			<li>
 				<el-tooltip :content="(store.isSelectionEmpty ? '清除关联' : '移除选中关联') + '[Shift + Delete]'">
-					<el-button @click="store.isSelectionEmpty ? store.removeAllEdges() : store.removeSelectedEdges()" :icon="AssociationOffIcon"></el-button>
+					<el-button @click="store.isSelectionEmpty ? store.removeAllEdges() : store.removeSelectedEdges()"
+							   :icon="AssociationOffIcon"></el-button>
 				</el-tooltip>
 			</li>
 		</ul>
@@ -185,7 +190,7 @@ onMounted(() => {
 	graph = initModelEditor(container.value!, wrapper.value!)
 
 	try {
-		if (!listStore.isNew){
+		if (!listStore.isNew) {
 			handleLoadModel()
 		} else {
 			// 新模型，则移除全部缓存

@@ -45,8 +45,6 @@ export interface GenTableAssociationsView_TargetOf_columns {
     
     name: string;
     
-    notNull: boolean;
-    
     numericPrecision: number;
     
     orderKey: number;
@@ -66,6 +64,8 @@ export interface GenTableAssociationsView_TargetOf_columns {
     type: string;
     
     typeCode: number;
+    
+    typeNotNull: boolean;
 }
 
 export interface GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations {

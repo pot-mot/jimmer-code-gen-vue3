@@ -32,7 +32,7 @@
 </style>
 
 <script lang='ts' setup>
-import {inject, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
+import {inject, nextTick, onMounted, ref} from "vue";
 import {GenTableColumnsView} from "../../../api/__generated/model/static";
 import {Node} from '@antv/x6'
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
@@ -51,8 +51,6 @@ const getNode = inject<() => Node>("getNode")!;
 const node = ref<Node>()
 
 const table = ref<GenTableColumnsView>()
-
-let wrapperResizeObserver: ResizeObserver
 
 onMounted(async () => {
 	node.value = getNode()
@@ -92,16 +90,10 @@ onMounted(async () => {
 
 	resize()
 
-	wrapperResizeObserver = new ResizeObserver(() => {
+	const wrapperResizeObserver = new ResizeObserver(() => {
 		resize()
 	})
 
 	wrapperResizeObserver.observe(container.value)
-})
-
-onBeforeUnmount(() => {
-	if (wrapperResizeObserver && container.value) {
-		wrapperResizeObserver.unobserve(container.value)
-	}
 })
 </script>

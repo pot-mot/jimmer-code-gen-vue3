@@ -35,6 +35,12 @@ pnpm run api
 
 ### 打包
 
+> 项目没有配置部署环境，需要根据实际情况修改: 
+> 1. [vite.config.ts](vite.config.ts) 
+> 2. [api/index.ts](src%2Fapi%2Findex.ts) 中的 BASE_URL
+> 3. 后端项目的跨域设置
+> 以解决访问问题
+
 ```
 vite build
 ```
