@@ -65,52 +65,53 @@ const handleDelete = (model: GenModelView) => {
 </script>
 
 <template>
-	<div v-loading="modelsLoading.isLoading()" class="container">
-		<div class="model-card" @click="toModel(true)">
-			<el-row>
-				<el-text size="large">创建新模型</el-text>
-			</el-row>
+	<div class="wrapper">
+		<el-button @click="toModel(true)">创建新模型</el-button>
+
+		<div v-loading="modelsLoading.isLoading()" class="container">
+			<template v-for="model in models">
+				<div class="model-card hover-show" @click="toModel(false, model)">
+					<div class="buttons hover-show-item">
+						<el-button @click.prevent.stop="handleEdit(model)" title="编辑" :icon="EditPen" type="warning"
+								   link></el-button>
+						<el-button @click.prevent.stop="handleDelete(model)" title="删除" :icon="Delete" type="danger"
+								   link></el-button>
+					</div>
+
+					<div class="title">{{ model.name }}</div>
+
+					<div style="padding-top: 0.5em;">
+						<el-text type="info">创建于 {{ datetimeFormat(model.createdTime) }}</el-text>
+					</div>
+
+					<div style="padding-bottom: 0.5em;">
+						<el-text type="info">修改于 {{ datetimeFormat(model.modifiedTime) }}</el-text>
+					</div>
+
+					<div style="line-height: 1.4em;">
+						<el-text size="default">{{ model.remark }}</el-text>
+					</div>
+				</div>
+			</template>
 		</div>
 
-		<template v-for="model in models">
-			<div class="model-card hover-show" @click="toModel(false, model)">
-				<div class="buttons hover-show-item">
-					<el-button @click.prevent.stop="handleEdit(model)" title="编辑" :icon="EditPen" type="warning"
-							   link></el-button>
-					<el-button @click.prevent.stop="handleDelete(model)" title="删除" :icon="Delete" type="danger"
-							   link></el-button>
-				</div>
-
-				<el-row>
-					<el-text size="large">{{ model.name }}</el-text>
-				</el-row>
-
-				<div style="padding-top: 0.5em;">
-					<el-text type="info">创建于 {{ datetimeFormat(model.createdTime) }}</el-text>
-				</div>
-
-				<div style="padding-bottom: 0.5em;">
-					<el-text type="info">修改于 {{ datetimeFormat(model.modifiedTime) }}</el-text>
-				</div>
-
-				<div style="min-height: 2em; line-height: 1.4em;">
-					<el-text size="default">{{ model.remark }}</el-text>
-				</div>
-			</div>
+		<template v-if="editModel">
+			<ModelDialog @submit="handleSubmit" @cancel="editModel = undefined" :model="editModel"></ModelDialog>
 		</template>
 	</div>
-
-	<template v-if="editModel">
-		<ModelDialog @submit="handleSubmit" @cancel="editModel = undefined" :model="editModel"></ModelDialog>
-	</template>
 </template>
 
 <style scoped>
+.wrapper {
+	padding-left: 1em;
+	padding-top: 0.2em;
+}
+
 .container {
 	display: grid;
 	grid-template-columns: repeat(5, 1fr);
 	grid-gap: 1em;
-	padding: 1em;
+	padding-top: 1em;
 }
 
 .model-card {
@@ -122,8 +123,18 @@ const handleDelete = (model: GenModelView) => {
 	cursor: default;
 }
 
+.model-card .title {
+	font-family: var(--el-font-family);
+	font-size: var(--el-font-size-large);
+	color: var(--el-color-info-dark-2);
+}
+
 .model-card:hover {
 	box-shadow: var(--el-box-shadow-dark);
+}
+
+.model-card:hover .title {
+	color: var(--el-text-color-primary);
 }
 
 .model-card .buttons {

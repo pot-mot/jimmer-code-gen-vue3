@@ -3,6 +3,10 @@ export const defaultZoomRange = {
     maxScale: 4,
 }
 
+export const ASSOCIATION_LABEL_SELECTOR = "ASSOCIATION_LABEL_SELECTOR"
+
+export const COLUMN_PORT_SELECTOR = "COLUMN_PORT_SELECTOR"
+
 export const COLUMN_PORT_GROUP = "COLUMN_PORT_GROUP"
 
 export const COLUMN_PORT = "COLUMN_PORT"

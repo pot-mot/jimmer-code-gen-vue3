@@ -1,6 +1,6 @@
 import {Edge, Graph} from "@antv/x6";
 import {SelectType} from "../../api/__generated/model/enums";
-import {columnIdToPortId} from "../../components/AssociationEditor/port/ColumnPort.ts";
+import {columnIdToPortId} from "../../components/AssociationEditor/node/ColumnPort.ts";
 
 /**
  * 判断节点是否存在

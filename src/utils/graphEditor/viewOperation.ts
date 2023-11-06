@@ -1,7 +1,7 @@
 import {ref, Ref, nextTick} from "vue";
 import {LayoutDirection, layoutByLevel, getLeft, getRight, getTop, getBottom} from "./layoutByLevel.ts";
 import {Graph} from "@antv/x6";
-import {defaultZoomRange} from "../../components/AssociationEditor/constant.ts";
+import {defaultZoomRange} from "./constant.ts";
 import {getSelectedNodes} from "./selectOperation.ts";
 import {CellInput, getCell} from "./cellsInputProcess.ts";
 
@@ -19,7 +19,7 @@ export const useViewOperation = (_graph: () => Graph) => {
 
             layout(graph, layoutDirection.value)
             await nextTick()
-            center(graph)
+            fit(graph)
         },
         focus: (cell: CellInput) => focus(_graph(), cell),
         center: () => center(_graph())

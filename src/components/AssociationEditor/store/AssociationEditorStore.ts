@@ -111,9 +111,8 @@ export const useAssociationEditorStore =
                 })
             }
 
-            AssociationEditorGraphEventBus.on('loadSchema', () => {
-                commonStore.layout()
-                commonStore.center()
+            AssociationEditorGraphEventBus.on('loadSchema', async () => {
+                await commonStore.layoutAndFit()
             })
 
             AssociationEditorMenuEventBus.on('deleteDataSource', ({id}) => {

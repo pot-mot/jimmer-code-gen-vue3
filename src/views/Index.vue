@@ -9,78 +9,84 @@
 		<ul class="main">
 			<li>
 				<RouterLink to="/models">
-					// TODO
-					<h2><el-text size="large">模型设计</el-text></h2>
+					<div class="container">
+						// TODO
+						<h2><el-text size="large">模型设计</el-text></h2>
 
-					<div class="body">
-						<el-text size="default">
-							从头开始设计你的数据库模型和关联关系
-						</el-text>
+						<div class="body">
+							<el-text size="default">
+								设计数据库模型和关联
+							</el-text>
 
-						<ul>
-							<li>
-								<el-text size="default" type="success">
-									支持 ManyToMany 与 OneToMany
-								</el-text>
-							</li>
-							<li>
-								<el-text size="default" type="success">
-									不依赖数据源，且可以导入不同种类数据源
-								</el-text>
-							</li>
-							<li>
-								<el-text size="default" type="warning">
-									关联仅于表模型间创建
-								</el-text>
-							</li>
-						</ul>
+							<ul>
+								<li>
+									<el-text size="default" type="success">
+										支持 ManyToMany 与 OneToMany
+									</el-text>
+								</li>
+								<li>
+									<el-text size="default" type="success">
+										不依赖数据源，且可以导入不同种类数据源
+									</el-text>
+								</li>
+								<li>
+									<el-text size="default" type="warning">
+										关联仅于表模型间创建
+									</el-text>
+								</li>
+							</ul>
+						</div>
 					</div>
 				</RouterLink>
 			</li>
 			<li>
 				<RouterLink to="/graph">
-					<h2><el-text size="large">关联编辑</el-text></h2>
+					<div class="container">
+						<h2><el-text size="large">关联编辑</el-text></h2>
 
-					<div class="body">
-						<el-text size="default">
-							基于已有的数据库结构快速生成关联模型与实体
-						</el-text>
+						<div class="body">
+							<el-text size="default">
+								基于已有的数据库结构快速生成关联模型与实体
+							</el-text>
 
-						<ul>
-							<li>
-								<el-text size="default" type="warning">
-									不支持 ManyToMany 与 OneToMany
-								</el-text>
-							</li>
-							<li>
-								<el-text size="default" type="warning">
-									依赖数据源
-								</el-text>
-							</li>
-							<li>
-								<el-text size="default" type="warning">
-									关联于列间创建，导入时保留所有外键
-								</el-text>
-							</li>
-						</ul>
+							<ul>
+								<li>
+									<el-text size="default" type="warning">
+										不支持 ManyToMany 与 OneToMany
+									</el-text>
+								</li>
+								<li>
+									<el-text size="default" type="warning">
+										依赖数据源
+									</el-text>
+								</li>
+								<li>
+									<el-text size="default" type="warning">
+										关联于列间创建，导入时保留所有外键
+									</el-text>
+								</li>
+							</ul>
+						</div>
 					</div>
 				</RouterLink>
 			</li>
 			<li>
 				<RouterLink to="/entity">
-					// TODO
-					<h2><el-text size="large">实体管理</el-text></h2>
+					<div class="container">
+						// TODO
+						<h2><el-text size="large">实体管理</el-text></h2>
 
-					<div class="body">
-						<el-text size="default">
-							管理生成的实体与枚举
-						</el-text>
-
-						<ul>
-							<el-text size="default" type="success">
-								连带包管理与批量生成 // TODO
+						<div class="body">
+							<el-text size="default">
+								管理生成的实体与枚举
 							</el-text>
-						</ul>
+
+							<ul>
+								<el-text size="default" type="success">
+									连带包管理与批量生成 // TODO
+								</el-text>
+							</ul>
+						</div>
 					</div>
 				</RouterLink>
 			</li>
@@ -145,6 +151,10 @@
 
 		&:hover {
 			box-shadow: var(--el-box-shadow-dark);
+		}
+
+		.container {
+			height: 100%;
 		}
 	}
 }

@@ -1,7 +1,6 @@
 import {GenTableColumnsView} from "../../../api/__generated/model/static";
 import {Graph, Node, Edge} from "@antv/x6";
-import {COLUMN_HEIGHT, COLUMN_PORT} from "../constant.ts";
-import {columnToPort} from "../port/ColumnPort.ts";
+import {columnPortGroup, columnToPort} from "./ColumnPort.ts";
 import {api} from "../../../api";
 import {sendMessage} from "../../../utils/message.ts";
 import {importAssociationEdges} from "../api.ts";
@@ -22,22 +21,7 @@ const tableToNode = (table: GenTableColumnsView, options: any = undefined) => {
         id: tableIdToNodeId(table.id),
         ports: {
             groups: {
-                COLUMN_PORT_GROUP: {
-                    position: COLUMN_PORT,
-                    markup: [
-                        {
-                            tagName: 'rect',
-                            selector: 'portBody',
-                        }
-                    ],
-                    attrs: {
-                        portBody: {
-                            magnet: true,
-                            fill: "rgba(0,0,0,0)",
-                            height: COLUMN_HEIGHT
-                        }
-                    }
-                },
+                COLUMN_PORT_GROUP: columnPortGroup,
             },
             items: [
                 ...table.columns.map(columnToPort)

@@ -1,6 +1,6 @@
 import {Graph} from "@antv/x6"
 import {initGraph} from "../../utils/graphEditor/init.ts";
-import {defaultZoomRange} from "./constant.ts";
+import {defaultZoomRange} from "../../utils/graphEditor/constant.ts";
 import {AssociationEdgeConnecting} from "./edge/AssociationEdge.ts";
 
 export const initAssociationEditor = (container: HTMLElement, wrapper: HTMLElement): Graph => {

@@ -11,37 +11,37 @@ const store = useModelEditorStore()
 </script>
 
 <template>
-	<Details open>
-		<template #title>
-			<el-text>Nodes</el-text>
-			<el-button @click="ModelEditorEventBus.emit('createTable')">创建表</el-button>
-		</template>
+	<el-button style="margin-bottom: 0.5em;" >从数据源导入</el-button>
 
-		<div style="padding-bottom: 1em;">
-			<NodeList :nodes="store.nodes">
-				<template #default="{node}">
-					<NodeItem :node="node"></NodeItem>
-				</template>
-			</NodeList>
-		</div>
-	</Details>
+	<div>
+		<Details open>
+			<template #title>
+				<el-text>Nodes</el-text>
+				<el-button style="margin-left: 0.5em;" @click="ModelEditorEventBus.emit('createTable')">创建表</el-button>
+			</template>
 
-	<Details open>
-		<template #title>
-			<el-text>Edges</el-text>
-			<el-button @click="ModelEditorEventBus.emit('createAssociation')">创建关联</el-button>
-		</template>
+			<div style="padding-bottom: 1em;">
+				<NodeList :nodes="store.nodes">
+					<template #default="{node}">
+						<NodeItem :node="node"></NodeItem>
+					</template>
+				</NodeList>
+			</div>
+		</Details>
 
-		<div style="padding-bottom: 1em;">
-			<EdgeList :edges="store.edges">
-				<template #default="{edge}">
-					<EdgeItem :edge="edge"></EdgeItem>
-				</template>
-			</EdgeList>
-		</div>
-	</Details>
+		<Details open>
+			<template #title>
+				<el-text>Edges</el-text>
+				<el-button style="margin-left: 0.5em;" @click="ModelEditorEventBus.emit('createAssociation')">创建关联</el-button>
+			</template>
+
+			<div style="padding-bottom: 1em;">
+				<EdgeList :edges="store.edges">
+					<template #default="{edge}">
+						<EdgeItem :edge="edge"></EdgeItem>
+					</template>
+				</EdgeList>
+			</div>
+		</Details>
+	</div>
 </template>
-
-<style scoped>
-
-</style>

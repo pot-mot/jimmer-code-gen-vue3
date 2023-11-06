@@ -3,7 +3,7 @@ import {AssociationType} from "../../../api/__generated/model/enums";
 import {Options} from "@antv/x6/es/graph/options";
 import Connecting = Options.Connecting;
 import {erRouter, orthRouter} from "../../../utils/graphEditor/router.ts";
-import {COMMON_COLOR, MANY_TO_ONE} from "../../AssociationEditor/constant.ts";
+import {COMMON_COLOR, MANY_TO_ONE} from "../../../utils/graphEditor/constant.ts";
 
 const baseModelEdge = {
     attrs: {
@@ -38,8 +38,8 @@ export const ModelEdgeConnecting: Partial<Connecting> = {
             router: erRouter
         })
     },
-    // 在连接建立后调整 router
     validateEdge(edge) {
+        // 在连接建立后调整 router
         if (edge.edge.getTargetCellId() == edge.edge.getSourceCellId()) {
             edge.edge.router = orthRouter
         }
@@ -47,9 +47,10 @@ export const ModelEdgeConnecting: Partial<Connecting> = {
     },
 
     allowBlank: false,
+    allowNode: false,
     allowEdge: false,
-    allowPort: false,
 }
+
 export const setLabel = (edge: Edge, label: string) => {
     edge.setLabelAt(0, label)
 }

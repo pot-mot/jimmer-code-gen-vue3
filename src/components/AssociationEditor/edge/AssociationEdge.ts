@@ -1,13 +1,31 @@
 import {Edge, Graph, Shape} from "@antv/x6";
-import {COMMON_COLOR, MANY_TO_ONE, ONE_TO_ONE} from "../constant.ts";
+import {
+    ASSOCIATION_LABEL_SELECTOR,
+    COMMON_COLOR,
+    MANY_TO_ONE,
+    ONE_TO_ONE
+} from "../../../utils/graphEditor/constant.ts";
 import {AssociationType} from "../../../api/__generated/model/enums";
 import {GenAssociationMatchView} from "../../../api/__generated/model/static";
-import {columnIdToPortId, portIdToColumnId} from "../port/ColumnPort.ts";
+import {columnIdToPortId, portIdToColumnId} from "../node/ColumnPort.ts";
 import {nodeIdToTableId, tableIdToNodeId} from "../node/TableNode.ts";
 import {Options} from "@antv/x6/es/graph/options";
 import Connecting = Options.Connecting;
-import {searchEdgesIgnoreDirection} from "../../../utils/graphEditor/search.ts";
 import {erRouter, orthRouter} from "../../../utils/graphEditor/router.ts";
+
+const baseLabel = {
+    markup: [
+        {
+            tagName: 'text',
+            selector: ASSOCIATION_LABEL_SELECTOR,
+        },
+    ],
+    attrs: {
+        ASSOCIATION_LABEL_SELECTOR: {
+            text: MANY_TO_ONE
+        },
+    },
+}
 
 const baseColumnEdge = {
     attrs: {
@@ -16,30 +34,15 @@ const baseColumnEdge = {
             strokeWidth: 1,
         },
     },
-    labels: [{
-        markup: [
-            {
-                tagName: 'text',
-                selector: 'label',
-            },
-        ],
-        attrs: {
-            label: {
-                text: MANY_TO_ONE
-            },
-        }
-    }],
+    labels: [
+        {...baseLabel}
+    ],
     data: {
         selectFlag: false
     }
 }
 
 export const AssociationEdgeConnecting: Partial<Connecting> = {
-    validateConnection({sourcePort, targetPort}) {
-        if (!sourcePort || !targetPort) return false
-        return searchEdgesIgnoreDirection(<any>this, sourcePort, targetPort).length == 0
-    },
-
     // @ts-ignore
     createEdge() {
         return new Shape.Edge({
@@ -47,24 +50,26 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
             router: erRouter
         })
     },
-    // 在连接建立后调整 router
     validateEdge(edge) {
+        // 在连接建立后调整 router
         if (edge.edge.getTargetCellId() == edge.edge.getSourceCellId()) {
             edge.edge.router = orthRouter
         }
         return true
     },
 
+    allowMulti: 'withPort',
     allowBlank: false,
     allowNode: false,
     allowEdge: false,
 }
+
 export const setLabel = (edge: Edge, label: string) => {
-    edge.setLabelAt(0, label)
+    edge.setLabelAt(0, {...baseLabel, attrs: {ASSOCIATION_LABEL_SELECTOR: {text: label}}})
 }
 
-export const getLabel = (edge: Edge): AssociationType => {
-    return edge.labels[0].attrs!.label.text as AssociationType;
+export const getAssociationType = (edge: Edge): AssociationType => {
+    return edge.getLabelAt(0)!.attrs![ASSOCIATION_LABEL_SELECTOR].text as AssociationType;
 }
 
 /** 转换关联为 Edge */
@@ -101,7 +106,7 @@ export const edgeToAssociation = (edge: Edge): GenAssociationMatchView => {
                 id: nodeIdToTableId(edge.getTargetNode()!.id)
             }
         },
-        associationType: getLabel(edge),
+        associationType: getAssociationType(edge),
     }
 }
 
@@ -123,10 +128,24 @@ export const useSwitchAssociationType = (graph: Graph) => {
             return
         }
 
-        if (getLabel(edge) == MANY_TO_ONE) {
-            setLabel(edge, ONE_TO_ONE)
-        } else {
-            setLabel(edge, MANY_TO_ONE)
+        const edgeSvg = document.documentElement.querySelector(`[data-cell-id="${edge.id}"]`)! as SVGGElement
+
+        const label = edgeSvg.querySelector('.x6-edge-label') as SVGGElement
+
+        const labelBox = label.getBoundingClientRect()
+
+        if (
+            labelBox.x < e.clientX && labelBox.x + labelBox.width > e.clientX &&
+            labelBox.y < e.clientY && labelBox.y + labelBox.height > e.clientY
+        ) {
+            if (getAssociationType(edge) == MANY_TO_ONE) {
+                setLabel(edge, ONE_TO_ONE)
+            } else {
+                setLabel(edge, MANY_TO_ONE)
+            }
+
+            e.preventDefault()
+            e.stopPropagation()
         }
     })
 }

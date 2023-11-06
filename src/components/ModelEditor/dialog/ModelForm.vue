@@ -8,6 +8,9 @@ import {api} from "../../../api";
 import {objToMap} from "../../../utils/mapOperation.ts";
 import {useLoading} from "../../../hooks/useLoading.ts";
 import {sendMessage} from "../../../utils/message.ts";
+import {useModelEditorStore} from "../store/ModelEditorStore.ts";
+
+const store = useModelEditorStore()
 
 const columnTypeMap = ref(new Map<string, number>)
 
@@ -50,6 +53,7 @@ const defaultColumn: GenTableColumnsInput_TargetOf_columns = {
 }
 
 interface ModelFormProps {
+	id?: string,
 	table?: GenTableColumnsInput
 }
 
@@ -84,13 +88,32 @@ const handleSubmit = () => {
 	const messageList: string[] = []
 
 	if (table.value.name.trim().length == 0) {
-		messageList.push('模型名称不得为空')
+		messageList.push('表名不得为空')
 	}
+
+	if (store.nodes
+		.filter(node => node.id != props.id)
+		.map(it => it.getData().table.name.trim())
+		.filter(name => name == table.value.name.trim())
+		.length > 0) {
+		messageList.push('表名不可重复')
+	}
+
 	if (table.value.columns.filter(column => column.partOfPk).length != 1) {
-		messageList.push('模型必须有且仅有一个主键列')
+		messageList.push('表必须有且仅有一个主键列')
 	}
-	if (table.value.columns.filter(column => column.name.trim().length == 0).length > 0) {
-		messageList.push('列名称不得为空')
+
+	const nameSet = new Set<string>(table.value.columns.map(it => it.name.trim()))
+
+	for (let columnName of nameSet.values()) {
+		if (columnName.length == 0) {
+			messageList.push('列名不得为空')
+			break
+		}
+	}
+
+	if (nameSet.size < table.value.columns.length) {
+		messageList.push('列名不可重复')
 	}
 
 	if (messageList.length > 0) {

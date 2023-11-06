@@ -3,7 +3,6 @@ import {EditPen} from "@element-plus/icons-vue";
 import {GenTableCommonView} from "../../../api/__generated/model/static";
 import {useAssociationEditorStore} from "../store/AssociationEditorStore.ts";
 import TableIcon from "../../icons/database/TableIcon.vue";
-import {processClickFunction} from "../../../utils/clickTimer.ts";
 import Comment from "../../common/Comment.vue";
 import {TableEntityDialogEventBus} from "../eventBus/TableEntityDialogEventBus.ts";
 
@@ -15,26 +14,17 @@ interface TableItemProps {
 
 defineProps<TableItemProps>()
 
-const {
-	click: loadTable,
-	dblClick: loadTableAndFocus
-} = processClickFunction(
-	async (id: number) => {
-		await store.loadTable(id)
-		store.select(id)
-	},
-	async (id: number) => {
-		await store.loadTable(id)
-		store.focus(id)
-	}
-)
+const handleLoadAndFocus = async (id: number) => {
+	await store.loadTable(id)
+	store.focus(id)
+}
 </script>
 
 <template>
 	<el-text class="hover-show">
 		<TableIcon :type="table.type"></TableIcon>
 
-		<el-button @click="loadTable(table.id)" @dblclick="loadTableAndFocus(table.id)" link>
+		<el-button @click="handleLoadAndFocus(table.id)" link>
 			{{ table.name }}
 			<Comment :comment="table.comment"></Comment>
 		</el-button>

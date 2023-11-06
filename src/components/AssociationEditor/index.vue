@@ -106,11 +106,11 @@
 <script lang="ts" setup>
 import {onMounted, onUnmounted, ref} from "vue";
 import {Graph} from "@antv/x6";
-import {ColumnPort} from "./port/ColumnPort.ts";
+import {columnPortPosition} from "./node/ColumnPort.ts";
 import {register} from "@antv/x6-vue-shape";
 import TableNode from "./node/TableNode.vue";
 import {initAssociationEditor} from "./init.ts";
-import {COLUMN_PORT} from "./constant.ts";
+import {COLUMN_PORT} from "../../utils/graphEditor/constant.ts";
 import {useSwitchAssociationType} from "./edge/AssociationEdge.ts";
 import {useAssociationEditorStore} from "./store/AssociationEditorStore.ts";
 import SaveIcon from "../icons/toolbar/SaveIcon.vue";
@@ -142,7 +142,7 @@ const store = useAssociationEditorStore()
 
 Graph.registerPortLayout(
 	COLUMN_PORT,
-	ColumnPort,
+	columnPortPosition,
 	true
 )
 

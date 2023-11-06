@@ -15,7 +15,7 @@ onMounted(async () => {
 
 interface DataSourceDialogProps {
 	id?: number,
-	dataSource: Partial<GenDataSourceInput>,
+	dataSource?: Partial<GenDataSourceInput>,
 	x?: number
 	y?: number
 }
@@ -43,15 +43,23 @@ const dataSource = ref<GenDataSourceInput>({
 	type: "MySQL"
 })
 
-watch(() => dataSource.value.type, async (newValue) => {
+watch(() => dataSource.value.type, async (type) => {
 	if (!props.id) {
-		const defaultDataSource = await api.dataSourceService.getDefaultDataSource({dataSourceType: newValue})
-		Object.assign(dataSource.value, {...defaultDataSource})
+		const defaultDataSource = await api.dataSourceService.getDefaultDataSource({dataSourceType: type})
+		dataSource.value = {
+			...defaultDataSource,
+			...dataSource.value
+		}
 	}
 }, {immediate: true})
 
-watch(() => props.dataSource, () => {
-	Object.assign(dataSource.value, {...props.dataSource})
+watch(() => props.dataSource, (prop) => {
+	if (prop) {
+		dataSource.value = {
+			...dataSource.value,
+			...prop
+		}
+	}
 }, {immediate: true})
 
 const emits = defineEmits<SchemaItemEmits>()

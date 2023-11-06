@@ -15,7 +15,11 @@ export const useModelEditorStore =
 
                 if (!graph) return
 
-                addModelNode(graph, table)
+                const node = addModelNode(graph, table)
+
+                setTimeout(() => {
+                    commonStore.focus(node)
+                }, 200)
             })
 
             ModelEditorEventBus.on('modifiedTable', ({id, table}) => {

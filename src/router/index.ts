@@ -1,4 +1,5 @@
 import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
+import {useGlobalLoadingStore} from "../components/global/store/GlobalLoadingStore.ts";
 
 const routes: RouteRecordRaw[] = [
     {
@@ -41,5 +42,10 @@ export const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
+    useGlobalLoadingStore().start()
     next()
+})
+
+router.afterEach((to, from, next) => {
+    useGlobalLoadingStore().end()
 })

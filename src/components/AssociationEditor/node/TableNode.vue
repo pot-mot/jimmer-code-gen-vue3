@@ -41,6 +41,7 @@ import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
 import {TableEntityDialogEventBus} from "../eventBus/TableEntityDialogEventBus.ts";
 import {sendMessage} from "../../../utils/message.ts";
+import {COLUMN_PORT_SELECTOR} from "../../../utils/graphEditor/constant.ts";
 
 const wrapper = ref<HTMLElement | null>()
 
@@ -80,8 +81,20 @@ onMounted(async () => {
 
 	// 响应式更新尺寸
 	const resize = () => {
-		if (!container.value) return
+		if (!container.value || !node.value) return
+
 		node.value!.resize(container.value.clientWidth, container.value.clientHeight)
+
+		// 设置 ports 宽度
+		const graph = store._graph()
+
+		graph.disableHistory()
+
+		node.value.ports.items.forEach(port => {
+			node.value!.setPortProp(port.id!, `attrs/${COLUMN_PORT_SELECTOR}/width`, container.value!.clientWidth)
+		})
+
+		graph.enableHistory()
 	}
 
 	resize()
@@ -91,20 +104,5 @@ onMounted(async () => {
 	})
 
 	wrapperResizeObserver.observe(container.value)
-
-	// 设置 ports
-	const graph = store._graph()
-
-	graph.disableHistory()
-
-	node.value.ports.items.forEach(port => {
-		node.value!.setPortProp(port.id!, 'attrs', {
-			portBody: {
-				width: wrapper.value!.clientWidth,
-			}
-		})
-	})
-
-	graph.enableHistory()
 });
 </script>
