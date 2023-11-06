@@ -32,10 +32,9 @@
 </style>
 
 <script lang='ts' setup>
-import {inject, nextTick, onMounted, ref} from "vue";
+import {inject, nextTick, onBeforeUnmount, onMounted, ref} from "vue";
 import {GenTableColumnsView} from "../../../api/__generated/model/static";
 import {Node} from '@antv/x6'
-import {useAssociationEditorStore} from "../store/AssociationEditorStore.ts";
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
@@ -53,7 +52,7 @@ const node = ref<Node>()
 
 const table = ref<GenTableColumnsView>()
 
-const store = useAssociationEditorStore()
+let wrapperResizeObserver: ResizeObserver
 
 onMounted(async () => {
 	node.value = getNode()
@@ -86,23 +85,23 @@ onMounted(async () => {
 		node.value!.resize(container.value.clientWidth, container.value.clientHeight)
 
 		// 设置 ports 宽度
-		const graph = store._graph()
-
-		graph.disableHistory()
-
 		node.value.ports.items.forEach(port => {
 			node.value!.setPortProp(port.id!, `attrs/${COLUMN_PORT_SELECTOR}/width`, container.value!.clientWidth)
 		})
-
-		graph.enableHistory()
 	}
 
 	resize()
 
-	const wrapperResizeObserver = new ResizeObserver(() => {
+	wrapperResizeObserver = new ResizeObserver(() => {
 		resize()
 	})
 
 	wrapperResizeObserver.observe(container.value)
-});
+})
+
+onBeforeUnmount(() => {
+	if (wrapperResizeObserver && container.value) {
+		wrapperResizeObserver.unobserve(container.value)
+	}
+})
 </script>

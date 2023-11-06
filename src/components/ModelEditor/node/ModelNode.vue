@@ -40,6 +40,7 @@ import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
 import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
 import {sendMessage} from "../../../utils/message.ts";
+import {onBeforeUnmount} from "vue";
 
 const wrapper = ref<HTMLElement | null>()
 
@@ -50,6 +51,8 @@ const getNode = inject<() => Node>("getNode")!;
 const node = ref<Node>()
 
 const table = ref<GenTableColumnsInput>()
+
+let wrapperResizeObserver: ResizeObserver
 
 onMounted(async () => {
 	node.value = getNode()
@@ -83,10 +86,16 @@ onMounted(async () => {
 
 	resize()
 
-	const wrapperResizeObserver = new ResizeObserver(() => {
+	wrapperResizeObserver = new ResizeObserver(() => {
 		resize()
 	})
 
 	wrapperResizeObserver.observe(container.value)
-});
+})
+
+onBeforeUnmount(() => {
+	if (wrapperResizeObserver && container.value) {
+		wrapperResizeObserver.unobserve(container.value)
+	}
+})
 </script>
