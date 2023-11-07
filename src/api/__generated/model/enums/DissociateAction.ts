@@ -1,1 +1,7 @@
-export type DissociateAction = 'NONE' | 'SET_NULL' | 'DELETE';
+export type DissociateAction = 
+    'NONE' | 
+    'LAX' | 
+    'CHECK' | 
+    'SET_NULL' | 
+    'DELETE'
+;

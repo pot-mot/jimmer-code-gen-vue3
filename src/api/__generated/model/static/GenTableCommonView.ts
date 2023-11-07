@@ -25,14 +25,14 @@ export interface GenTableCommonView {
 
 export interface GenTableCommonView_TargetOf_schema {
     
-    dataSource: GenTableCommonView_TargetOf_schema_TargetOf_dataSource;
+    dataSource: GenTableCommonView_TargetOf_schema_TargetOf_dataSource_2;
     
     id: number;
     
     name: string;
 }
 
-export interface GenTableCommonView_TargetOf_schema_TargetOf_dataSource {
+export interface GenTableCommonView_TargetOf_schema_TargetOf_dataSource_2 {
     
     id: number;
     

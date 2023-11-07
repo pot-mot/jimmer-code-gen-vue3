@@ -39,7 +39,7 @@ export interface GenTableAssociationsView_TargetOf_columns {
     
     id: number;
     
-    inAssociations: GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations[];
+    inAssociations: GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_2[];
     
     modifiedTime: string;
     
@@ -49,7 +49,7 @@ export interface GenTableAssociationsView_TargetOf_columns {
     
     orderKey: number;
     
-    outAssociations: GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations[];
+    outAssociations: GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_2[];
     
     partOfFk: boolean;
     
@@ -68,7 +68,7 @@ export interface GenTableAssociationsView_TargetOf_columns {
     typeNotNull: boolean;
 }
 
-export interface GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations {
+export interface GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_2 {
     
     associationType: AssociationType;
     
@@ -78,10 +78,10 @@ export interface GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociatio
     
     id: number;
     
-    sourceColumn: GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_TargetOf_sourceColumn;
+    sourceColumn: GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_2_TargetOf_sourceColumn_3;
 }
 
-export interface GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_TargetOf_sourceColumn {
+export interface GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_2_TargetOf_sourceColumn_3 {
     
     comment: string;
     
@@ -89,10 +89,10 @@ export interface GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociatio
     
     name: string;
     
-    table: GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_TargetOf_sourceColumn_TargetOf_table;
+    table: GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_2_TargetOf_sourceColumn_3_TargetOf_table_4;
 }
 
-export interface GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_TargetOf_sourceColumn_TargetOf_table {
+export interface GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_2_TargetOf_sourceColumn_3_TargetOf_table_4 {
     
     comment: string;
     
@@ -101,7 +101,7 @@ export interface GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociatio
     name: string;
 }
 
-export interface GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations {
+export interface GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_2 {
     
     associationType: AssociationType;
     
@@ -111,10 +111,10 @@ export interface GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociati
     
     id: number;
     
-    targetColumn: GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_TargetOf_targetColumn;
+    targetColumn: GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_2_TargetOf_targetColumn_3;
 }
 
-export interface GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_TargetOf_targetColumn {
+export interface GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_2_TargetOf_targetColumn_3 {
     
     comment: string;
     
@@ -122,10 +122,10 @@ export interface GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociati
     
     name: string;
     
-    table: GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_TargetOf_targetColumn_TargetOf_table;
+    table: GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_2_TargetOf_targetColumn_3_TargetOf_table_4;
 }
 
-export interface GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_TargetOf_targetColumn_TargetOf_table {
+export interface GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_2_TargetOf_targetColumn_3_TargetOf_table_4 {
     
     comment: string;
     
@@ -136,14 +136,14 @@ export interface GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociati
 
 export interface GenTableAssociationsView_TargetOf_schema {
     
-    dataSource: GenTableAssociationsView_TargetOf_schema_TargetOf_dataSource;
+    dataSource: GenTableAssociationsView_TargetOf_schema_TargetOf_dataSource_2;
     
     id: number;
     
     name: string;
 }
 
-export interface GenTableAssociationsView_TargetOf_schema_TargetOf_dataSource {
+export interface GenTableAssociationsView_TargetOf_schema_TargetOf_dataSource_2 {
     
     id: number;
     

@@ -6,8 +6,8 @@ import {useAssociationEditorStore} from "../store/AssociationEditorStore.ts";
 import {Graph} from "@antv/x6";
 import {watch} from "vue";
 import {
-	GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations,
-	GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations,
+	GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_2 as InAssociation,
+	GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_2 as OutAssociation,
 } from "../../../api/__generated/model/static/GenTableAssociationsView.ts";
 import {Delete} from "@element-plus/icons-vue";
 import {processClickFunction} from "../../../utils/clickTimer.ts";
@@ -66,7 +66,7 @@ const {
 
 const deleteOutAssociation = (
 	columnId: number,
-	association: GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations
+	association: OutAssociation
 ) => {
 	store.deleteAssociations(columnId, association.targetColumn.id)
 	props.table.columns.forEach(column => {
@@ -77,7 +77,7 @@ const deleteOutAssociation = (
 
 const deleteInAssociation = (
 	columnId: number,
-	association: GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations
+	association: InAssociation
 ) => {
 	store.deleteAssociations(association.sourceColumn.id, columnId)
 	props.table.columns.forEach(column => {

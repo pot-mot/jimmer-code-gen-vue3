@@ -13,12 +13,12 @@ export interface GenAssociationModelInput_TargetOf_sourceColumn {
     
     name: string;
     
-    table: GenAssociationModelInput_TargetOf_sourceColumn_TargetOf_table;
+    table: GenAssociationModelInput_TargetOf_sourceColumn_TargetOf_table_2;
     
     type: string;
 }
 
-export interface GenAssociationModelInput_TargetOf_sourceColumn_TargetOf_table {
+export interface GenAssociationModelInput_TargetOf_sourceColumn_TargetOf_table_2 {
     
     comment: string;
     
@@ -29,12 +29,12 @@ export interface GenAssociationModelInput_TargetOf_targetColumn {
     
     name: string;
     
-    table: GenAssociationModelInput_TargetOf_targetColumn_TargetOf_table;
+    table: GenAssociationModelInput_TargetOf_targetColumn_TargetOf_table_2;
     
     type: string;
 }
 
-export interface GenAssociationModelInput_TargetOf_targetColumn_TargetOf_table {
+export interface GenAssociationModelInput_TargetOf_targetColumn_TargetOf_table_2 {
     
     comment: string;
     

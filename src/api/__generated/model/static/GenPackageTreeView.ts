@@ -27,9 +27,9 @@ export interface GenPackageTreeView_TargetOf_children {
     
     createdTime: string;
     
-    entities: GenPackageTreeView_TargetOf_children_TargetOf_entities[];
+    entities: GenPackageTreeView_TargetOf_children_TargetOf_entities_2[];
     
-    enums: GenPackageTreeView_TargetOf_children_TargetOf_enums[];
+    enums: GenPackageTreeView_TargetOf_children_TargetOf_enums_2[];
     
     id: number;
     
@@ -42,7 +42,7 @@ export interface GenPackageTreeView_TargetOf_children {
     remark: string;
 }
 
-export interface GenPackageTreeView_TargetOf_children_TargetOf_entities {
+export interface GenPackageTreeView_TargetOf_children_TargetOf_entities_2 {
     
     comment: string;
     
@@ -53,7 +53,7 @@ export interface GenPackageTreeView_TargetOf_children_TargetOf_entities {
     tableId: number;
 }
 
-export interface GenPackageTreeView_TargetOf_children_TargetOf_enums {
+export interface GenPackageTreeView_TargetOf_children_TargetOf_enums_2 {
     
     comment: string;
     

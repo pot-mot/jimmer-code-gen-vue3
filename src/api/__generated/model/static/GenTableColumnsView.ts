@@ -66,14 +66,14 @@ export interface GenTableColumnsView_TargetOf_columns {
 
 export interface GenTableColumnsView_TargetOf_schema {
     
-    dataSource: GenTableColumnsView_TargetOf_schema_TargetOf_dataSource;
+    dataSource: GenTableColumnsView_TargetOf_schema_TargetOf_dataSource_2;
     
     id: number;
     
     name: string;
 }
 
-export interface GenTableColumnsView_TargetOf_schema_TargetOf_dataSource {
+export interface GenTableColumnsView_TargetOf_schema_TargetOf_dataSource_2 {
     
     id: number;
     
