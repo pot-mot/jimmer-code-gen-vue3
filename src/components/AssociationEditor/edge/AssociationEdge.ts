@@ -22,7 +22,7 @@ const baseLabel = {
     ],
     attrs: {
         ASSOCIATION_LABEL_TEXT_SELECTOR: {
-            text: MANY_TO_ONE
+            text: MANY_TO_ONE,
         },
     },
 }
@@ -50,10 +50,20 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
             router: erRouter
         })
     },
-    validateEdge(edge) {
+    validateEdge({edge}) {
+        const targetPort = edge.getTargetNode()?.getPort(edge.getTargetPortId()!)
+        if (!targetPort) return false
+
+        const sourcePort = edge.getSourceNode()?.getPort(edge.getSourcePortId()!)
+        if (!sourcePort) return false
+
+        if (targetPort.data.column.typeCode != sourcePort.data.column.typeCode) {
+            return false
+        }
+
         // 在连接建立后调整 router
-        if (edge.edge.getTargetCellId() == edge.edge.getSourceCellId()) {
-            edge.edge.router = orthRouter
+        if (edge.getTargetCellId() == edge.getSourceCellId()) {
+            edge.router = orthRouter
         }
         return true
     },

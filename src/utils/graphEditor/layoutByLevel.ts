@@ -141,7 +141,7 @@ const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
  */
 const splitArrayIntoChunks = <T>(
     array: T[],
-    chunkSize: number = Math.ceil(Math.sqrt(array.length))
+    chunkSize: number = Math.floor(Math.sqrt(array.length))
 ): T[][] => {
     const chunks: T[][] = [];
     const length = array.length;

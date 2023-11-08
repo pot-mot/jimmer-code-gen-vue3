@@ -54,13 +54,13 @@
 
 		<ul v-if="store.isLoaded" class="toolbar left-bottom">
 			<li>
-				<el-tooltip :content="(store.isSelectionEmpty ? '清理画布' : '移除选中节点与关联') +'[Delete]'">
+				<el-tooltip :content="store.isSelectionEmpty ? '清理画布' : '移除选中节点与关联[Delete]'">
 					<el-button @click="store.isSelectionEmpty ? store.removeAllCells() : store.removeSelectedCells()"
 							   :icon="EraserIcon"></el-button>
 				</el-tooltip>
 			</li>
 			<li>
-				<el-tooltip :content="(store.isSelectionEmpty ? '清除关联' : '移除选中关联') + '[Shift + Delete]'">
+				<el-tooltip :content="store.isSelectionEmpty ? '清除关联' : '移除选中关联[Shift + Delete]'">
 					<el-button @click="store.isSelectionEmpty ? store.removeAllEdges() : store.removeSelectedEdges()"
 							   :icon="AssociationOffIcon"></el-button>
 				</el-tooltip>
@@ -170,6 +170,10 @@ const {
 
 onMounted(() => {
 	graph = initAssociationEditor(container.value!, wrapper.value!)
+
+	graph.on('edge:change:*', ({edge}) => {
+		console.log(edge.markup)
+	})
 
 	useSwitchAssociationType(graph)
 	loadGraph()

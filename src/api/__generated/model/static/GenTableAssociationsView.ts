@@ -59,7 +59,7 @@ export interface GenTableAssociationsView_TargetOf_columns {
     
     remark: string;
     
-    tableId: number;
+    table: GenTableAssociationsView_TargetOf_columns_TargetOf_table_2;
     
     type: string;
     
@@ -128,6 +128,13 @@ export interface GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociati
 export interface GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_2_TargetOf_targetColumn_3_TargetOf_table_4 {
     
     comment: string;
+    
+    id: number;
+    
+    name: string;
+}
+
+export interface GenTableAssociationsView_TargetOf_columns_TargetOf_table_2 {
     
     id: number;
     

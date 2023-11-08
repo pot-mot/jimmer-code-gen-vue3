@@ -46,17 +46,23 @@
 					<el-button @click="store.center()" :icon="CenterIcon"></el-button>
 				</el-tooltip>
 			</li>
+
+			<li style="padding-left: 1em;">
+				<el-tooltip content="操作方式切换为拖曳">
+					<el-button :icon="Rank"></el-button>
+				</el-tooltip>
+			</li>
 		</ul>
 
 		<ul v-if="store.isLoaded" class="toolbar left-bottom">
 			<li>
-				<el-tooltip :content="(store.isSelectionEmpty ? '清理画布' : '移除选中节点与关联') +'[Delete]'">
+				<el-tooltip :content="store.isSelectionEmpty ? '清理画布' : '移除选中节点与关联[Delete]'">
 					<el-button @click="store.isSelectionEmpty ? store.removeAllCells() : store.removeSelectedCells()"
 							   :icon="EraserIcon"></el-button>
 				</el-tooltip>
 			</li>
 			<li>
-				<el-tooltip :content="(store.isSelectionEmpty ? '清除关联' : '移除选中关联') + '[Shift + Delete]'">
+				<el-tooltip :content="store.isSelectionEmpty ? '清除关联' : '移除选中关联[Shift + Delete]'">
 					<el-button @click="store.isSelectionEmpty ? store.removeAllEdges() : store.removeSelectedEdges()"
 							   :icon="AssociationOffIcon"></el-button>
 				</el-tooltip>
@@ -120,6 +126,9 @@ import {sendMessage} from "../../utils/message.ts";
 import {useModelListStore} from "./store/ModelListStore.ts";
 import {useSaveKeyEvent} from "../../utils/graphEditor/useSave.ts";
 import {useLocalStorageOperation} from "../../utils/graphEditor/localStorage.ts";
+import {Rank} from "@element-plus/icons-vue";
+import {COLUMN_PORT} from "../../utils/graphEditor/constant.ts";
+import {columnPortPosition} from "../AssociationEditor/node/ColumnPort.ts";
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();
@@ -129,6 +138,12 @@ let graph: Graph
 const store = useModelEditorStore()
 
 const listStore = useModelListStore()
+
+Graph.registerPortLayout(
+	COLUMN_PORT,
+	columnPortPosition,
+	true
+)
 
 register({
 	shape: "model",

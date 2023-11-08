@@ -49,5 +49,8 @@ export const columnToPort = (column: GenTableColumnsView_TargetOf_columns) => {
     return {
         id: columnIdToPortId(column.id),
         group: COLUMN_PORT_GROUP,
+        data: {
+            column
+        }
     }
 }

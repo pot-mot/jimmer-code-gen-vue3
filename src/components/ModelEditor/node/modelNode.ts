@@ -1,5 +1,17 @@
 import {GenTableColumnsInput} from "../../../api/__generated/model/static";
 import {Graph} from "@antv/x6";
+import {columnPortGroup} from "../../AssociationEditor/node/ColumnPort.ts";
+import {COLUMN_PORT_GROUP} from "../../../utils/graphEditor/constant.ts";
+import {GenTableColumnsInput_TargetOf_columns} from "../../../api/__generated/model/static/GenTableColumnsInput.ts";
+
+export const modelColumnToPort = (column: GenTableColumnsInput_TargetOf_columns) => {
+    return {
+        group: COLUMN_PORT_GROUP,
+        data: {
+            column
+        }
+    }
+}
 
 const modelToNode = (table: GenTableColumnsInput, options: any = undefined) => {
     return {
@@ -8,42 +20,12 @@ const modelToNode = (table: GenTableColumnsInput, options: any = undefined) => {
         data: {table},
         ports: {
             groups: {
-                right: {
-                    position: 'right',
-                    zindex: 'auto',
-                    attrs: {
-                        circle: {
-                            r: 4,
-                            magnet: true,
-                            stroke: '#5F95FF',
-                            strokeWidth: 1,
-                            fill: '#fff',
-                        },
-                    },
-                },
-                left: {
-                    position: 'left',
-                    zindex: 'auto',
-                    attrs: {
-                        circle: {
-                            r: 4,
-                            magnet: true,
-                            stroke: '#5F95FF',
-                            strokeWidth: 1,
-                            fill: '#fff',
-                        },
-                    },
-                },
+                COLUMN_PORT_GROUP: columnPortGroup,
             },
             items: [
-                {
-                    group: 'right',
-                },
-                {
-                    group: 'left',
-                },
-            ],
-        }
+                ...table.columns.map(modelColumnToPort)
+            ]
+        },
     }
 }
 
