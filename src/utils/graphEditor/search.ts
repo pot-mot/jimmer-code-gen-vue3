@@ -1,6 +1,15 @@
-import {Edge, Graph} from "@antv/x6";
+import {Node, Edge, Graph} from "@antv/x6";
 import {SelectType} from "../../api/__generated/model/enums";
 import {columnIdToPortId} from "../../components/AssociationEditor/node/ColumnPort.ts";
+import {PortManager} from "@antv/x6/es/model/port";
+
+export const searchNodeByTableName = (graph: Graph, tableName: string): Node | undefined => {
+    return graph.getNodes().filter(node => node.getData().table.name == tableName)[0]
+}
+
+export const searchPortByColumnName = (node: Node, columnName: string): PortManager.PortMetadata | undefined => {
+    return node.getPorts().filter(port => port.data.column.name == columnName)[0]
+}
 
 /**
  * 判断节点是否存在

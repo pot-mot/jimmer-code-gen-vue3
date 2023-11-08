@@ -1,7 +1,7 @@
 import {Graph} from "@antv/x6"
 import {initGraph} from "../../utils/graphEditor/init.ts";
 import {defaultZoomRange} from "../../utils/graphEditor/constant.ts";
-import {ModelEdgeConnecting} from "./edge/ModelAssociationEdge.ts";
+import {AssociationEdgeConnecting} from "../AssociationEditor/edge/AssociationEdge.ts";
 
 export const initModelEditor = (container: HTMLElement, wrapper: HTMLElement): Graph => {
     return initGraph(
@@ -17,7 +17,7 @@ export const initModelEditor = (container: HTMLElement, wrapper: HTMLElement): G
                 eventTypes: ['rightMouseDown']
             },
 
-            connecting: ModelEdgeConnecting as any,
+            connecting: AssociationEdgeConnecting as any,
         }
     )
 }

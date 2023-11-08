@@ -129,6 +129,7 @@ import {useLocalStorageOperation} from "../../utils/graphEditor/localStorage.ts"
 import {Rank} from "@element-plus/icons-vue";
 import {COLUMN_PORT} from "../../utils/graphEditor/constant.ts";
 import {columnPortPosition} from "../AssociationEditor/node/ColumnPort.ts";
+import {useSwitchAssociationType} from "../AssociationEditor/edge/AssociationEdge.ts";
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();
@@ -215,6 +216,7 @@ onMounted(() => {
 		sendMessage('后端获取的模型加载失败', 'error')
 	}
 
+	useSwitchAssociationType(graph)
 	store.load(graph)
 })
 
