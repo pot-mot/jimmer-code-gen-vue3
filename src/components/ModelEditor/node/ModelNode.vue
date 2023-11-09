@@ -43,8 +43,7 @@ import {sendMessage} from "../../../utils/message.ts";
 import {COLUMN_PORT_SELECTOR} from "../../../utils/graphEditor/constant.ts";
 import {modelColumnToPort} from "./modelNode.ts";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
-import {getAssociationType} from "../../AssociationEditor/edge/AssociationEdge.ts";
-import {searchNodeByTableName, searchPortByColumnName} from "../../../utils/graphEditor/search.ts";
+import {mapDataToEdge, mapEdgeToData} from "../edge/ModelEdge.ts";
 
 const store = useModelEditorStore()
 
@@ -106,37 +105,18 @@ onMounted(async () => {
 		if (node.value && table.value && store.isLoaded) {
 			const graph = store._graph()
 
-			const edgesData = graph.getConnectedEdges(node.value.id).map(edge => {
-				return {
-					sourceTableName: edge.getSourceNode()?.getData().table.name,
-					targetTableName: edge.getTargetNode()?.getData().table.name,
-					sourceColumnName: edge.getSourceNode()?.getPort(edge.getSourcePortId()!)?.data.column.name,
-					targetColumnName: edge.getTargetNode()?.getPort(edge.getTargetPortId()!)?.data.column.name,
-					associationType: getAssociationType(edge),
-					edge,
-				}
-			})
+			const edgeDatas = graph.getConnectedEdges(node.value.id).map(mapEdgeToData)
 
 			node.value.removePorts()
 			node.value.addPorts(
 				table.value.columns.map(modelColumnToPort)
 			)
 
-			edgesData.forEach(data => {
-				const sourceNode = searchNodeByTableName(graph, data.sourceTableName)
-				const targetNode = searchNodeByTableName(graph, data.targetTableName)
-
-				if (!sourceNode || !targetNode) return
-
-				const sourcePort = searchPortByColumnName(sourceNode, data.sourceColumnName)
-				const targetPort = searchPortByColumnName(targetNode, data.targetColumnName)
-
-				if (!sourcePort || !targetPort) return
-
-				data.edge.setSource({cell: sourceNode.id, port: sourcePort.id})
-				data.edge.setTarget({cell: targetNode.id, port: targetPort.id})
-
-				graph.addEdge(data.edge)
+			edgeDatas.forEach(data => {
+				const edge = mapDataToEdge(graph, data)
+				if (edge) {
+					graph.addEdge(edge)
+				}
 			})
 		}
 	}, {deep: true})

@@ -13,6 +13,7 @@ import {Delete} from "@element-plus/icons-vue";
 import {processClickFunction} from "../../../utils/clickTimer.ts";
 import Comment from "../../common/Comment.vue";
 import {searchEdgesByColumn} from "../../../utils/graphEditor/search.ts";
+import {showAssociationType} from "../../../utils/simplifyAssociationType.ts";
 
 const store = useAssociationEditorStore()
 
@@ -124,13 +125,7 @@ const deleteInAssociation = (
 				<div style="padding-left: 3em;">
 					<div v-for="association in column.inAssociations">
 						<el-text>
-							<span>{{ " <- " }}</span>
-							<span>{{ ` ${association.associationType.toLowerCase()} ` }}</span>
-<!--							<el-select v-model="association.associationType">-->
-<!--								<el-option :value="MANY_TO_ONE">{{ MANY_TO_ONE }}</el-option>-->
-<!--								<el-option :value="ONE_TO_ONE">{{ ONE_TO_ONE }}</el-option>-->
-<!--							</el-select>-->
-							<span>{{ " - " }}</span>
+							<span>{{ showAssociationType(association.associationType) }}</span>
 
 							<span class="association-link-bottom"
 								  @click="toggleTableSelect(association.sourceColumn.table.id)"
@@ -151,13 +146,7 @@ const deleteInAssociation = (
 				<div style="padding-left: 3em;">
 					<div v-for="association in column.outAssociations">
 						<el-text>
-							<span>{{ " - " }}</span>
-							<span>{{ ` ${association.associationType.toLowerCase()} ` }}</span>
-<!--							<el-select v-model="association.associationType">-->
-<!--								<el-option :value="MANY_TO_ONE">{{ MANY_TO_ONE }}</el-option>-->
-<!--								<el-option :value="ONE_TO_ONE">{{ ONE_TO_ONE }}</el-option>-->
-<!--							</el-select>-->
-							<span>{{ " -> " }}</span>
+							<span>{{ showAssociationType(association.associationType) }}</span>
 
 							<span class="association-link-bottom"
 								  @click="toggleTableSelect(association.targetColumn.table.id)"
