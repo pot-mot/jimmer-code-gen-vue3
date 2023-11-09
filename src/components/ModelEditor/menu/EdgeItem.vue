@@ -17,8 +17,12 @@ const store = useModelEditorStore()
 
 const data = ref<EdgeData>()
 
-watch(() => props.edge, (value) => {
-	data.value = mapEdgeToData(value)
+watch(() => props.edge, (edge) => {
+	data.value = mapEdgeToData(edge)
+
+	edge.on('change:*', () => {
+		data.value = mapEdgeToData(edge)
+	})
 }, {immediate: true})
 
 const handleDelete = () => {

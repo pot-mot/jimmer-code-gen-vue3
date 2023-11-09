@@ -141,6 +141,7 @@ const handleColumnToPk = (pkIndex: number) => {
 	const pkColumn = table.value.columns[pkIndex]
 	pkColumn.typeNotNull = true
 	pkColumn.type = "BIGINT"
+	pkColumn.typeCode = columnTypeMap.value!.get(pkColumn.type)!
 	pkColumn.partOfUniqueIdx = true
 
 	table.value.columns.forEach((column, index) => {
