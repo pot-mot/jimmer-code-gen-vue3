@@ -2,10 +2,11 @@
 import {Edge} from '@antv/x6'
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import {ref, watch} from "vue";
-import {EdgeData, mapEdgeToData} from "../edge/ModelEdge.ts";
+import {edgeToModelAssociation} from "../edge/ModelEdge.ts";
 import {Delete} from "@element-plus/icons-vue";
 import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
 import {showAssociationType} from "../../../utils/simplifyAssociationType.ts";
+import {GenAssociationModelInput} from "../../../api/__generated/model/static";
 
 interface EdgeItem {
 	edge: Edge
@@ -15,13 +16,15 @@ const props = defineProps<EdgeItem>()
 
 const store = useModelEditorStore()
 
-const data = ref<EdgeData>()
+const association = ref<GenAssociationModelInput>()
 
 watch(() => props.edge, (edge) => {
-	data.value = mapEdgeToData(edge)
+	association.value = edgeToModelAssociation(edge)
+	edge.setData({association: association.value})
 
 	edge.on('change:*', () => {
-		data.value = mapEdgeToData(edge)
+		association.value = edgeToModelAssociation(edge)
+		edge.setData({association: association.value})
 	})
 }, {immediate: true})
 
@@ -31,10 +34,10 @@ const handleDelete = () => {
 </script>
 
 <template>
-	<div v-if="data">
+	<div v-if="association">
 		<el-text class="hover-show">
 			<el-button @click="store.focus(edge)" link>
-				{{ data.sourceTableName }}.{{ data.sourceColumnName }} {{ showAssociationType(data.associationType) }} {{ data.targetTableName }}.{{ data.targetColumnName }}
+				{{ association.sourceColumn.table.name }}.{{ association.sourceColumn.name }} {{ showAssociationType(association.associationType) }} {{ association.targetColumn.table.name }}.{{ association.targetColumn.name }}
 			</el-button>
 
 			<span style="padding-left: 0.5em;" class="hover-show-item">

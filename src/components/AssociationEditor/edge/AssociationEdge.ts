@@ -12,6 +12,7 @@ import {nodeIdToTableId, tableIdToNodeId} from "../node/TableNode.ts";
 import {Options} from "@antv/x6/es/graph/options";
 import Connecting = Options.Connecting;
 import {erRouter, orthRouter} from "../../../utils/graphEditor/router.ts";
+import {sendMessage} from "../../../utils/message.ts";
 
 const baseLabel = {
     markup: [
@@ -58,6 +59,7 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
         if (!sourcePort) return false
 
         if (targetPort.data.column.typeCode != sourcePort.data.column.typeCode) {
+            sendMessage('关联两端类型不一致', 'warning')
             return false
         }
 

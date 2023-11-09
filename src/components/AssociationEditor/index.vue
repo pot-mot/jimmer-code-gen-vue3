@@ -171,10 +171,6 @@ const {
 onMounted(() => {
 	graph = initAssociationEditor(container.value!, wrapper.value!)
 
-	graph.on('edge:change:*', ({edge}) => {
-		console.log(edge.markup)
-	})
-
 	useSwitchAssociationType(graph)
 	loadGraph()
 	store.load(graph)

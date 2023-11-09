@@ -43,7 +43,7 @@ import {sendMessage} from "../../../utils/message.ts";
 import {COLUMN_PORT_SELECTOR} from "../../../utils/graphEditor/constant.ts";
 import {modelColumnToPort} from "./modelNode.ts";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
-import {mapDataToEdge, mapEdgeToData} from "../edge/ModelEdge.ts";
+import {dataToEdge, edgeToData} from "../edge/ModelEdge.ts";
 
 const store = useModelEditorStore()
 
@@ -105,7 +105,7 @@ onMounted(async () => {
 		if (node.value && table.value && store.isLoaded) {
 			const graph = store._graph()
 
-			const edgeDatas = graph.getConnectedEdges(node.value.id).map(mapEdgeToData)
+			const edgeDatas = graph.getConnectedEdges(node.value.id).map(edgeToData)
 
 			node.value.removePorts()
 			node.value.addPorts(
@@ -113,7 +113,7 @@ onMounted(async () => {
 			)
 
 			edgeDatas.forEach(data => {
-				const edge = mapDataToEdge(graph, data)
+				const edge = dataToEdge(graph, data)
 				if (edge) {
 					graph.addEdge(edge)
 				}

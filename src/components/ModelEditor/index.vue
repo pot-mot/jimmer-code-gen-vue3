@@ -166,16 +166,20 @@ const {
  * 2. 修改当前 listStore 中保存的当前模型，确保数据一致，并缓存这个当前模型
  */
 const handleSaveModel = async () => {
-	if (!listStore.currentModel) {
-		openModelDialog.value = true
-	} else {
-		listStore.currentModel.value = toDataJSONStr()
+	try {
+		if (!listStore.currentModel) {
+			openModelDialog.value = true
+		} else {
+			listStore.currentModel.value = toDataJSONStr()
 
-		await saveModel(listStore.currentModel)
+			await saveModel(listStore.currentModel)
 
-		localStorage.setItem('currentModel', JSON.stringify(listStore.currentModel))
+			localStorage.setItem('currentModel', JSON.stringify(listStore.currentModel))
 
-		sendMessage("模型保存成功", "success")
+			sendMessage("模型保存成功", "success")
+		}
+	} catch (e) {
+		sendMessage(`模型保存失败，原因：${e}`, 'error', e)
 	}
 }
 
