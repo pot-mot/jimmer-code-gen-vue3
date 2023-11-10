@@ -11,6 +11,8 @@ export interface GenAssociationModelInput {
 
 export interface GenAssociationModelInput_TargetOf_sourceColumn {
     
+    comment: string;
+    
     name: string;
     
     table: GenAssociationModelInput_TargetOf_sourceColumn_TargetOf_table_2;
@@ -26,6 +28,8 @@ export interface GenAssociationModelInput_TargetOf_sourceColumn_TargetOf_table_2
 }
 
 export interface GenAssociationModelInput_TargetOf_targetColumn {
+    
+    comment: string;
     
     name: string;
     

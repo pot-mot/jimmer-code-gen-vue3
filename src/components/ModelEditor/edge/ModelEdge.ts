@@ -37,6 +37,7 @@ export const edgeToModelAssociation = (edge: Edge): GenAssociationModelInput => 
     return {
         sourceColumn: {
             name: sourceColumn.name,
+            comment: sourceColumn.comment,
             type: sourceColumn.type,
 
             table: {
@@ -46,6 +47,7 @@ export const edgeToModelAssociation = (edge: Edge): GenAssociationModelInput => 
         },
         targetColumn: {
             name: targetColumn.name,
+            comment: targetColumn.comment,
             type: targetColumn.type,
 
             table: {

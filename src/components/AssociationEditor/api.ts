@@ -17,12 +17,6 @@ export const previewEntities = async (entityIds: number[]) => {
     return await api.generateService.preview({entityIds})
 }
 
-export const generateEntitiesByTable = async (tableIds: number[]) => {
-    const res = (await api.generateService.generateByTable({body: tableIds})) as any as Blob
-    const file = new File([res], "entities.zip")
-    saveAs(file)
-}
-
 export const generateEntities = async (entityIds: number[]) => {
     const res = (await api.generateService.generate({body: entityIds})) as any as Blob
     const file = new File([res], "entities.zip")

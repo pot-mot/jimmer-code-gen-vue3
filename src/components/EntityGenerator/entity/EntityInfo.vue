@@ -3,9 +3,9 @@ import {GenEntityPropertiesView} from "../../../api/__generated/model/static";
 import {ref, watch} from "vue";
 import {api} from "../../../api";
 import {sendMessage} from "../../../utils/message.ts";
-import CodePreview from "../../common/CodePreview.vue";
 import Comment from "../../common/Comment.vue";
 import {convertEntities, generateEntities, previewEntities} from "../../AssociationEditor/api.ts";
+import MultiCodePreview from "../../common/MultiCodePreview.vue";
 
 interface EntityInfoProps {
 	id: number
@@ -15,16 +15,14 @@ const props = defineProps<EntityInfoProps>()
 
 const entity = ref<GenEntityPropertiesView | undefined>()
 
-const previewCodesMap = ref<{
-	[key: string]: string
-}>({})
+const codesMap = ref<{ [key: string]: string }>({})
 
 const getEntity = async (id: number) => {
 	entity.value = await api.entityService.get({id})
 	if (!entity.value) {
 		sendMessage('entity 获取失败', 'error')
 	}
-	previewCodesMap.value = await previewEntities([id])
+	codesMap.value = await previewEntities([id])
 }
 
 watch(() => props.id, async (value) => {
@@ -63,12 +61,7 @@ const handleGenerate = () => {
 			<el-text>{{ property.remark }}</el-text>
 		</div>
 
-		<el-tabs type="border-card">
-			<el-tab-pane v-for="name in Object.keys(previewCodesMap)" :label="name">
-				<CodePreview :language="name.endsWith('kt') ? 'kt' : 'java' "
-							 :code="previewCodesMap[name]"></CodePreview>
-			</el-tab-pane>
-		</el-tabs>
+		<MultiCodePreview :codes-map="codesMap"></MultiCodePreview>
 	</div>
 </template>
 

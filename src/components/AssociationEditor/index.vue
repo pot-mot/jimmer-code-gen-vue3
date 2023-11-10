@@ -77,9 +77,28 @@
 					<el-option v-for="(type) in matchTypes" :value="type">{{ type }}</el-option>
 				</el-select>
 			</li>
+
 			<li>
-				<el-tooltip content="生成实体（获得 zip 压缩包）">
-					<el-button @click="handleGenerateEntities" :icon="DownloadIcon"></el-button>
+				<el-tooltip content="预览代码">
+					<el-button @click="codePreviewDialogOpenState = true" :icon="PreviewIcon"></el-button>
+				</el-tooltip>
+
+				<el-dialog v-model="codePreviewDialogOpenState" append-to-body fullscreen>
+					<div style="height: calc(100vh - 5em); overflow: auto;">
+						<MultiCodePreview :codes-map="codesMap"></MultiCodePreview>
+					</div>
+
+					<div style="position: absolute; bottom: 2em; right: 2em">
+						<el-tooltip content="下载代码">
+							<el-button @click="handleDownload" :icon="DownloadIcon" size="large" round></el-button>
+						</el-tooltip>
+					</div>
+				</el-dialog>
+			</li>
+
+			<li>
+				<el-tooltip content="生成代码（获得 zip 压缩包）">
+					<el-button @click="handleDownload" :icon="DownloadIcon"></el-button>
 				</el-tooltip>
 			</li>
 		</ul>
@@ -109,7 +128,7 @@
 </style>
 
 <script lang="ts" setup>
-import {onMounted, onUnmounted, ref} from "vue";
+import {computed, onMounted, onUnmounted, ref, watch} from "vue";
 import {Graph} from "@antv/x6";
 import {columnPortPosition} from "./node/ColumnPort.ts";
 import {register} from "@antv/x6-vue-shape";
@@ -128,7 +147,7 @@ import AssociationOffIcon from "../icons/toolbar/AssociationOffIcon.vue";
 import AssociationIcon from "../icons/toolbar/AssociationIcon.vue";
 import EraserIcon from "../icons/toolbar/EraserIcon.vue";
 import DownloadIcon from "../icons/toolbar/DownloadIcon.vue";
-import {generateEntitiesByTable, saveAssociations} from "./api.ts";
+import {saveAssociations} from "./api.ts";
 import {useAssociationMatch} from "./AssociationMatch.ts";
 import {nodeIdToTableId, tableNodeMatchMethod} from "./node/TableNode.ts";
 import {useHistoryKeyEvent} from "../../utils/graphEditor/useHistory.ts";
@@ -137,6 +156,10 @@ import {useSave} from "../../utils/graphEditor/useSave.ts";
 import ScaleBar from "../common/graph/ScaleBar.vue";
 import Searcher from "../common/graph/Searcher.vue";
 import Comment from "../common/Comment.vue";
+import {api} from "../../api";
+import PreviewIcon from "../icons/toolbar/PreviewIcon.vue";
+import MultiCodePreview from "../common/MultiCodePreview.vue";
+import {saveAs} from "file-saver";
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();
@@ -190,10 +213,26 @@ const {
 	matchType
 } = useAssociationMatch(() => graph)
 
-const handleGenerateEntities = () => {
-	generateEntitiesByTable(
-		store.isSelectionEmpty ?
-			store.tables().map(it => it.id) : store.selectedNodeIds.map(it => nodeIdToTableId(it))
-	)
+const tableIds = computed(() => {
+	return store.isSelectionEmpty ?
+		store.tables().map(it => it.id) : store.selectedNodeIds.map(it => nodeIdToTableId(it))
+})
+
+const handleDownload = async () => {
+	const res = (await api.generateService.generateByTable({body: tableIds.value})) as any as Blob
+	const file = new File([res], "entities.zip")
+	saveAs(file)
 }
+
+const codePreviewDialogOpenState = ref(false)
+
+const codesMap = ref<{ [key: string]: string }>({})
+
+watch(() => codePreviewDialogOpenState.value, async (openState) => {
+	if (openState) {
+		codesMap.value = await api.generateService.previewByTable({tableIds: tableIds.value})
+	} else {
+		codesMap.value = {}
+	}
+})
 </script>

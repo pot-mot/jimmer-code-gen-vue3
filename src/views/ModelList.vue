@@ -8,7 +8,6 @@ import {datetimeFormat} from "../utils/dataFormat.ts";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {deleteConfirm, sendMessage} from "../utils/message.ts";
 import ModelDialog from "../components/ModelEditor/dialog/ModelDialog.vue";
-import {saveModel} from "../components/ModelEditor/api.ts";
 import {useLoading} from "../hooks/useLoading.ts";
 
 const router = useRouter()
@@ -42,10 +41,14 @@ const handleEdit = (model: GenModelView) => {
 }
 
 const handleSubmit = async (model: GenModelInput) => {
-	await saveModel(model)
-	editModel.value = undefined
-	sendMessage('修改成功', 'success')
-	await getModels()
+	try {
+		await api.modelService.save({body: model})
+		editModel.value = undefined
+		sendMessage('修改成功', 'success')
+		await getModels()
+	} catch (e) {
+		sendMessage(`模型修改失败，原因：${e}`, 'error', e)
+	}
 }
 
 const handleDelete = (model: GenModelView) => {

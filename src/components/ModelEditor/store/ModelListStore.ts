@@ -1,12 +1,12 @@
 import {defineStore} from "pinia";
 import {ref} from "vue";
-import {GenModelInput} from "../../../api/__generated/model/static";
+import {GenModelView} from "../../../api/__generated/model/static";
 
 export const useModelListStore =
     defineStore(
         'ModelListGraph',
         () => {
-            const currentModel = ref<GenModelInput>()
+            const currentModel = ref<GenModelView>()
 
             const isNew = ref(false)
 

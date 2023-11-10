@@ -62,3 +62,10 @@
 .el-dialog__body {
     padding: 0 1.5em 1em;
 }
+
+.el-dialog__headerbtn {
+    height: auto;
+    min-height: 2em;
+    width: auto;
+    min-width: 2em;
+}

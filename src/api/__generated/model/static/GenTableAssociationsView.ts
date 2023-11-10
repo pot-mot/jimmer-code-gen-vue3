@@ -136,6 +136,8 @@ export interface GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociati
 
 export interface GenTableAssociationsView_TargetOf_columns_TargetOf_table_2 {
     
+    comment: string;
+    
     id: number;
     
     name: string;

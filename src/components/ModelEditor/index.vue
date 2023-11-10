@@ -69,6 +69,32 @@
 			</li>
 		</ul>
 
+		<ul v-if="store.isLoaded && listStore.currentModel" class="toolbar right-top">
+			<li>
+				<el-tooltip content="预览代码">
+					<el-button @click="codePreviewDialogOpenState = true" :icon="PreviewIcon"></el-button>
+				</el-tooltip>
+
+				<el-dialog v-model="codePreviewDialogOpenState" append-to-body fullscreen>
+					<div style="height: calc(100vh - 5em); overflow: auto;">
+						<MultiCodePreview :codes-map="codesMap"></MultiCodePreview>
+					</div>
+
+					<div style="position: absolute; bottom: 2em; right: 2em">
+						<el-tooltip content="下载代码">
+							<el-button @click="handleDownload" :icon="DownloadIcon" size="large" round></el-button>
+						</el-tooltip>
+					</div>
+				</el-dialog>
+			</li>
+
+			<li>
+				<el-tooltip content="生成代码（获得 zip 压缩包）">
+					<el-button @click="handleDownload" :icon="DownloadIcon"></el-button>
+				</el-tooltip>
+			</li>
+		</ul>
+
 		<div v-if="store.isLoaded" class="toolbar right-bottom" style="width: max(15vw, 200px);">
 			<ScaleBar :graph="store._graph()"></ScaleBar>
 		</div>
@@ -88,11 +114,7 @@
 		</template>
 	</div>
 
-	<ModelDialog v-if="openModelDialog" @submit="(model) => {
-		listStore.currentModel = model
-		handleSaveModel()
-		openModelDialog = false
-	}" @cancel="openModelDialog = false"></ModelDialog>
+	<ModelDialog v-if="openModelDialog" @submit="handleSaveDialogSubmit" @cancel="openModelDialog = false"></ModelDialog>
 </template>
 
 <style scoped>
@@ -101,7 +123,7 @@
 
 <script setup lang="ts">
 import {useModelEditorStore} from "./store/ModelEditorStore.ts";
-import {ref, onMounted, onUnmounted} from "vue";
+import {ref, onMounted, onUnmounted, watch} from "vue";
 import {Graph} from "@antv/x6";
 import ScaleBar from "../common/graph/ScaleBar.vue";
 import Searcher from "../common/graph/Searcher.vue";
@@ -120,7 +142,6 @@ import CenterIcon from "../icons/toolbar/CenterIcon.vue";
 import EraserIcon from "../icons/toolbar/EraserIcon.vue";
 import AssociationOffIcon from "../icons/toolbar/AssociationOffIcon.vue";
 import {initModelEditor} from "./init.ts";
-import {saveModel} from "./api.ts";
 import ModelDialog from "./dialog/ModelDialog.vue";
 import {sendMessage} from "../../utils/message.ts";
 import {useModelListStore} from "./store/ModelListStore.ts";
@@ -130,6 +151,12 @@ import {Rank} from "@element-plus/icons-vue";
 import {COLUMN_PORT} from "../../utils/graphEditor/constant.ts";
 import {columnPortPosition} from "../AssociationEditor/node/ColumnPort.ts";
 import {useSwitchAssociationType} from "../AssociationEditor/edge/AssociationEdge.ts";
+import DownloadIcon from "../icons/toolbar/DownloadIcon.vue";
+import PreviewIcon from "../icons/toolbar/PreviewIcon.vue";
+import {api} from "../../api";
+import MultiCodePreview from "../common/MultiCodePreview.vue";
+import {saveAs} from "file-saver";
+import {GenModelInput} from "../../api/__generated/model/static";
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();
@@ -172,12 +199,24 @@ const handleSaveModel = async () => {
 		} else {
 			listStore.currentModel.value = toDataJSONStr()
 
-			await saveModel(listStore.currentModel)
+			await api.modelService.save({body: listStore.currentModel})
 
 			localStorage.setItem('currentModel', JSON.stringify(listStore.currentModel))
 
 			sendMessage("模型保存成功", "success")
 		}
+	} catch (e) {
+		sendMessage(`模型保存失败，原因：${e}`, 'error', e)
+	}
+}
+
+const handleSaveDialogSubmit = async (model: GenModelInput) => {
+	try {
+		const id = await api.modelService.save({body: model})
+
+		listStore.currentModel = (await api.modelService.get({id}))!
+
+		openModelDialog.value = false
 	} catch (e) {
 		sendMessage(`模型保存失败，原因：${e}`, 'error', e)
 	}
@@ -224,7 +263,9 @@ onMounted(() => {
 	store.load(graph)
 })
 
-useSaveKeyEvent(handleSaveModel)
+useSaveKeyEvent(() => {
+	handleSaveModel()
+})
 
 onUnmounted(() => {
 	store.unload()
@@ -233,4 +274,32 @@ onUnmounted(() => {
 useHistoryKeyEvent(() => graph)
 
 useSelectionKeyEvent(() => graph)
+
+const handleDownload = async () => {
+	if (!listStore.currentModel) {
+		sendMessage('当前模型不存在，无法生成', 'error')
+		return
+	}
+
+	const res = (await api.generateService.generateByModel({body: listStore.currentModel.id})) as any as Blob
+	const file = new File([res], "entities.zip")
+	saveAs(file)
+}
+
+const codePreviewDialogOpenState = ref(false)
+
+const codesMap = ref<{ [key: string]: string }>({})
+
+watch(() => codePreviewDialogOpenState.value, async (openState) => {
+	if (openState) {
+		if (!listStore.currentModel) {
+			sendMessage('当前模型不存在，无法预览', 'error')
+			return
+		}
+
+		codesMap.value = await api.generateService.previewByModel({modelId: listStore.currentModel.id})
+	} else {
+		codesMap.value = {}
+	}
+})
 </script>
