@@ -108,3 +108,15 @@ export const useEdgeStyle = (graph: Graph) => {
         edgeUnselected(edge)
     })
 }
+
+export const unStyleAll = (graph: Graph) => {
+    graph.cleanSelection()
+
+    graph.getEdges().forEach(it => {
+        edgeUnhover(it)
+    })
+
+    graph.getNodes().forEach(it => {
+        nodeUnhover(it)
+    })
+}

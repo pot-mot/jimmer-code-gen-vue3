@@ -1,5 +1,6 @@
 import {Graph, Cell} from "@antv/x6";
 import {sendMessage} from "../message.ts";
+import {unStyleAll} from "./style.ts";
 
 type GraphEditorData = {
     json: {cells: Cell.Properties[]},
@@ -25,6 +26,8 @@ export const useLocalStorageOperation = (_graph: () => Graph) => {
 }
 
 const graphToEditorData = (graph: Graph): GraphEditorData => {
+    unStyleAll(graph)
+
     return {
         json: graph.toJSON(),
         zoom: graph.zoom(),

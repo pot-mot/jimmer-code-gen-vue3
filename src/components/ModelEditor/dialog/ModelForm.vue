@@ -2,13 +2,14 @@
 import {onMounted, ref, toRaw, watch} from 'vue'
 import {GenTableColumnsInput} from "../../../api/__generated/model/static";
 import {GenTableColumnsInput_TargetOf_columns} from "../../../api/__generated/model/static/GenTableColumnsInput.ts";
-import {Delete, Plus} from "@element-plus/icons-vue";
+import {ArrowDown, ArrowUp, Delete, Plus} from "@element-plus/icons-vue";
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import {api} from "../../../api";
 import {objToMap} from "../../../utils/mapOperation.ts";
 import {useLoading} from "../../../hooks/useLoading.ts";
 import {sendMessage} from "../../../utils/message.ts";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
+import {swapItems} from "../../../utils/arrayOperation.ts";
 
 const store = useModelEditorStore()
 
@@ -128,6 +129,14 @@ const handleCancel = () => {
 	emits('cancel', table.value)
 }
 
+const handleMoveColumnUp = (index: number) => {
+	swapItems(table.value.columns, index, index - 1)
+}
+
+const handleMoveColumnDown = (index: number) => {
+	swapItems(table.value.columns, index, index + 1)
+}
+
 const handleAddColumn = (index: number) => {
 	table.value.columns.splice(index + 1, 0, {...defaultColumn})
 }
@@ -175,7 +184,7 @@ const handleColumnToPk = (pkIndex: number) => {
 			</el-row>
 
 			<div v-for="(column, index) in table.columns"
-				 style="height: 2em; line-height: 2em; display: grid; grid-template-columns: 1.5em 2em 1fr 1.2fr 1.5em 1fr 1.5fr 1.5em 1fr 3em; grid-gap: 0.2em;">
+				 style="height: 2em; line-height: 2em; display: grid; grid-template-columns: 1.5em 2em 1fr 1.2fr 1.5em 1fr 1.5fr 1.5em 1fr 6em; grid-gap: 0.2em;">
 				<span>
 					<ColumnIcon :column="column"></ColumnIcon>
 				</span>
@@ -239,6 +248,8 @@ const handleColumnToPk = (pkIndex: number) => {
 					<el-input v-model="column.defaultValue" placeholder="default"></el-input>
 				</span>
 				<span style="white-space: nowrap;">
+					<el-button :icon="ArrowUp" @click="handleMoveColumnUp(index)" :disabled="index == 0" link></el-button>
+					<el-button :icon="ArrowDown" @click="handleMoveColumnDown(index)" :disabled="index == table.columns.length - 1" link></el-button>
 					<el-button :icon="Plus" @click="handleAddColumn(index)" link></el-button>
 					<el-button :icon="Delete" @click="handleRemoveColumn(index)" type="danger" link></el-button>
 				</span>

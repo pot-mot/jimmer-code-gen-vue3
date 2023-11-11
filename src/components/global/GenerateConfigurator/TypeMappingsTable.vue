@@ -3,7 +3,7 @@ import {onMounted, ref} from "vue";
 import {api} from "../../../api";
 import {GenTypeMapping} from "../../../api/__generated/model/entities";
 import {useLoading} from "../../../hooks/useLoading.ts";
-import {Check, Close, Delete, EditPen} from "@element-plus/icons-vue";
+import {Check, Close, Delete, EditPen, Plus} from "@element-plus/icons-vue";
 import {deleteConfirm} from "../../../utils/message.ts";
 import {GenTypeMappingInput} from "../../../api/__generated/model/static";
 
@@ -140,9 +140,9 @@ const handleDelete = (typeMapping: GenTypeMapping) => {
 					<el-input v-model="typeMapping.remark"></el-input>
 				</div>
 				<div>
-					<el-button @click="handleEditCancel(typeMapping.id)" title="取消" :icon="Close" type="info"
+					<el-button @click="handleEditCancel(typeMapping.id)" title="保存" :icon="Check" type="success"
 							   link></el-button>
-					<el-button @click="handleEdit(typeMapping)" title="保存" :icon="Check" type="warning"
+					<el-button @click="handleEdit(typeMapping)" title="取消" :icon="Close" type="danger"
 							   link></el-button>
 				</div>
 			</template>
@@ -150,7 +150,7 @@ const handleDelete = (typeMapping: GenTypeMapping) => {
 
 		<div class="type-mapping-line">
 			<div v-if="!addState">
-				<el-button @click="addState = true">新增</el-button>
+				<el-button @click="addState = true" :icon="Plus"></el-button>
 			</div>
 			<template v-else>
 				<div>
