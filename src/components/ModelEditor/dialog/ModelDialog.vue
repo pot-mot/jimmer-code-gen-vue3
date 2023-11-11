@@ -5,6 +5,7 @@ import {GenModelInput} from "../../../api/__generated/model/static";
 const defaultValue: GenModelInput = {
 	name: "",
 	remark: "",
+	value: "",
 }
 
 const model = ref<GenModelInput>({...defaultValue})

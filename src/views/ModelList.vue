@@ -42,10 +42,22 @@ const handleEdit = (model: GenModelView) => {
 
 const handleSubmit = async (model: GenModelInput) => {
 	try {
-		await api.modelService.save({body: model})
+		if (!model.id) {
+			sendMessage('模型无 id，无法进行修改', 'error')
+			return
+		}
+
+		await api.modelService.update({body: model})
 		editModel.value = undefined
-		sendMessage('修改成功', 'success')
-		await getModels()
+		sendMessage('模型修改成功', 'success')
+
+		const newModel = await api.modelService.get({id: model.id})
+		if (!newModel) {
+			sendMessage('模型重新获取失败', 'error')
+			return
+		}
+		const index = models.value.findIndex(model => model.id == newModel.id)
+		models.value[index] = newModel
 	} catch (e) {
 		sendMessage(`模型修改失败，原因：${e}`, 'error', e)
 	}

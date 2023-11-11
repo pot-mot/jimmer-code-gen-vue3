@@ -47,8 +47,8 @@ watch(() => dataSource.value.type, async (type) => {
 	if (!props.id) {
 		const defaultDataSource = await api.dataSourceService.getDefaultDataSource({dataSourceType: type})
 		dataSource.value = {
+			...dataSource.value,
 			...defaultDataSource,
-			...dataSource.value
 		}
 	}
 }, {immediate: true})

@@ -199,7 +199,7 @@ const handleSaveModel = async () => {
 		} else {
 			listStore.currentModel.value = toDataJSONStr()
 
-			await api.modelService.save({body: listStore.currentModel})
+			await api.modelService.update({body: listStore.currentModel})
 
 			localStorage.setItem('currentModel', JSON.stringify(listStore.currentModel))
 
@@ -212,11 +212,15 @@ const handleSaveModel = async () => {
 
 const handleSaveDialogSubmit = async (model: GenModelInput) => {
 	try {
-		const id = await api.modelService.save({body: model})
+		model.value = toDataJSONStr()
+
+		const id = await api.modelService.create({body: model})
 
 		listStore.currentModel = (await api.modelService.get({id}))!
 
 		openModelDialog.value = false
+
+		sendMessage("模型保存成功", "success")
 	} catch (e) {
 		sendMessage(`模型保存失败，原因：${e}`, 'error', e)
 	}

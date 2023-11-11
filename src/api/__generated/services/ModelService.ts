@@ -5,6 +5,11 @@ export class ModelService {
     
     constructor(private executor: Executor) {}
     
+    async create(options: ModelServiceOptions['create']): Promise<number> {
+        let _uri = '/model/';
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number
+    }
+    
     async delete(options: ModelServiceOptions['delete']): Promise<number> {
         let _uri = '/model/';
         _uri += encodeURIComponent(options.ids.join(','));
@@ -135,13 +140,14 @@ export class ModelService {
         return (await this.executor({uri: _uri, method: 'POST'})) as string | undefined
     }
     
-    async save(options: ModelServiceOptions['save']): Promise<number> {
+    async update(options: ModelServiceOptions['update']): Promise<number> {
         let _uri = '/model/';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number
+        return (await this.executor({uri: _uri, method: 'PUT', body: options.body})) as number
     }
 }
 
 export type ModelServiceOptions = {
+    'create': {body: GenModelInput},
     'delete': {ids: number[]},
     'executeSql': {
         id: number, 
@@ -158,5 +164,5 @@ export type ModelServiceOptions = {
     'list': {},
     'listDataBaseType': {},
     'previewSql': {id: number, dataSourceId: number},
-    'save': {body: GenModelInput}
+    'update': {body: GenModelInput}
 }

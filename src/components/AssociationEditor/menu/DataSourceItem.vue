@@ -60,7 +60,7 @@ watch(() => props.dataSource, () => {
 }, {immediate: true})
 
 const handleDelete = () => {
-	deleteConfirm("数据源【${props.dataSource.name}】",
+	deleteConfirm(`数据源【${props.dataSource.name}】`,
 		() => {
 			const id = props.dataSource.id
 
