@@ -5,27 +5,6 @@ export class ModelService {
     
     constructor(private executor: Executor) {}
     
-    async createSql(options: ModelServiceOptions['createSql']): Promise<string | undefined> {
-        let _uri = '/model/sql';
-        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
-        let _value: any = undefined;
-        _value = options.id;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'id='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.dataSourceId;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'dataSourceId='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        return (await this.executor({uri: _uri, method: 'POST'})) as string | undefined
-    }
-    
     async delete(options: ModelServiceOptions['delete']): Promise<number> {
         let _uri = '/model/';
         _uri += encodeURIComponent(options.ids.join(','));
@@ -135,6 +114,27 @@ export class ModelService {
         return (await this.executor({uri: _uri, method: 'GET'})) as { [key: string]: number }
     }
     
+    async previewSql(options: ModelServiceOptions['previewSql']): Promise<string | undefined> {
+        let _uri = '/model/sql';
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.id;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'id='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.dataSourceId;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'dataSourceId='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        return (await this.executor({uri: _uri, method: 'POST'})) as string | undefined
+    }
+    
     async save(options: ModelServiceOptions['save']): Promise<number> {
         let _uri = '/model/';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number
@@ -142,7 +142,6 @@ export class ModelService {
 }
 
 export type ModelServiceOptions = {
-    'createSql': {id: number, dataSourceId: number},
     'delete': {ids: number[]},
     'executeSql': {
         id: number, 
@@ -158,5 +157,6 @@ export type ModelServiceOptions = {
     },
     'list': {},
     'listDataBaseType': {},
+    'previewSql': {id: number, dataSourceId: number},
     'save': {body: GenModelInput}
 }

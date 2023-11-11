@@ -34,7 +34,7 @@
 <script lang='ts' setup>
 import {inject, nextTick, onMounted, ref} from "vue";
 import {GenTableColumnsView} from "../../../api/__generated/model/static";
-import {Node} from '@antv/x6'
+import {Node, Graph} from '@antv/x6'
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
@@ -46,13 +46,19 @@ const wrapper = ref<HTMLElement | null>()
 
 const container = ref<HTMLElement | null>()
 
-const getNode = inject<() => Node>("getNode")!;
+const getGraph = inject<() => Graph>("getGraph")!
+
+const getNode = inject<() => Node>("getNode")!
+
+const graph = ref<Graph>()
 
 const node = ref<Node>()
 
 const table = ref<GenTableColumnsView>()
 
 onMounted(async () => {
+	graph.value = getGraph()
+
 	node.value = getNode()
 
 	if (!node.value) {
@@ -67,6 +73,17 @@ onMounted(async () => {
 		table.value = node.value!.getData().table
 	})
 
+	node.value.on('change:size', () => {
+		if (!node.value || !container.value) return
+
+		const width = container.value.clientWidth
+
+		// 设置 ports 宽度
+		node.value.ports.items.forEach(port => {
+			node.value!.setPortProp(port.id!, `attrs/${COLUMN_PORT_SELECTOR}/width`, width)
+		})
+	})
+
 	await nextTick()
 
 	if (!wrapper.value || !container.value) {
@@ -78,14 +95,9 @@ onMounted(async () => {
 
 	// 响应式更新尺寸
 	const resize = () => {
-		if (!container.value || !node.value) return
+		if (!graph.value || !node.value || !container.value) return
 
 		node.value!.resize(container.value.clientWidth, container.value.clientHeight)
-
-		// 设置 ports 宽度
-		node.value.ports.items.forEach(port => {
-			node.value!.setPortProp(port.id!, `attrs/${COLUMN_PORT_SELECTOR}/width`, container.value!.clientWidth)
-		})
 	}
 
 	resize()

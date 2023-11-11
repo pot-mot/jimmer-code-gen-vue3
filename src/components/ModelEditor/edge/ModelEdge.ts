@@ -2,27 +2,24 @@ import {Edge, Graph} from "@antv/x6";
 import {getAssociationType} from "../../AssociationEditor/edge/AssociationEdge.ts";
 import {searchNodeByTableName, searchPortByColumnName} from "../../../utils/graphEditor/search.ts";
 import {GenAssociationModelInput} from "../../../api/__generated/model/static";
-import {sendMessage} from "../../../utils/message.ts";
 
 export interface EdgeData extends GenAssociationModelInput {
     edge: Edge
 }
 
-export const edgeToModelAssociation = (edge: Edge): GenAssociationModelInput => {
+export const edgeToModelAssociation = (edge: Edge): GenAssociationModelInput | undefined => {
     const sourceNode = edge.getSourceNode()
     const targetNode = edge.getTargetNode()
     const sourcePortId = edge.getSourcePortId()
     const targetPortId = edge.getTargetPortId()
     if (!sourceNode || !targetNode || !sourcePortId || !targetPortId) {
-        sendMessage('association 关联数据解析出错')
-        throw new Error
+        return
     }
 
     const sourcePort = sourceNode.getPort(sourcePortId)
     const targetPort = targetNode.getPort(targetPortId)
     if (!sourcePort || !targetPort) {
-        sendMessage('association 关联数据解析出错')
-        throw new Error
+        return
     }
 
     const sourceTable = sourceNode.getData().table
@@ -30,8 +27,7 @@ export const edgeToModelAssociation = (edge: Edge): GenAssociationModelInput => 
     const targetTable = targetNode.getData().table
     const targetColumn = targetPort.data.column
     if (!sourceTable || !sourceColumn || !targetTable || !targetColumn) {
-        sendMessage('association 关联数据解析出错')
-        throw new Error
+        return
     }
 
     return {
@@ -59,9 +55,13 @@ export const edgeToModelAssociation = (edge: Edge): GenAssociationModelInput => 
     }
 }
 
-export const edgeToData = (edge: Edge): EdgeData => {
+export const edgeToData = (edge: Edge): EdgeData | undefined => {
+    const modelAssociation = edgeToModelAssociation(edge)
+
+    if (!modelAssociation) return
+
     return {
-        ...edgeToModelAssociation(edge),
+        ...modelAssociation,
         edge,
     }
 }

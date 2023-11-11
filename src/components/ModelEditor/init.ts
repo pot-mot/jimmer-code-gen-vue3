@@ -18,6 +18,7 @@ export const initModelEditor = (container: HTMLElement, wrapper: HTMLElement): G
             },
 
             connecting: AssociationEdgeConnecting as any,
+            magnetThreshold: 'onleave'
         }
     )
 }

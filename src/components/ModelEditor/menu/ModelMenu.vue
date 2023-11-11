@@ -38,7 +38,7 @@ const store = useModelEditorStore()
 			<div style="padding-bottom: 1em;">
 				<EdgeList :edges="store.edges">
 					<template #default="{edge}">
-						<EdgeItem :edge="edge"></EdgeItem>
+						<EdgeItem :edge="edge" :key="edge.getSourcePortId() + '---' + edge.getTargetPortId()"></EdgeItem>
 					</template>
 				</EdgeList>
 			</div>

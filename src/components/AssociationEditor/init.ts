@@ -17,6 +17,7 @@ export const initAssociationEditor = (container: HTMLElement, wrapper: HTMLEleme
                 eventTypes: ['rightMouseDown']
             },
             connecting: AssociationEdgeConnecting as any,
+            magnetThreshold: 'onleave'
         }
     )
 }

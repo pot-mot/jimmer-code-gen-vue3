@@ -20,11 +20,15 @@ const association = ref<GenAssociationModelInput>()
 
 watch(() => props.edge, (edge) => {
 	association.value = edgeToModelAssociation(edge)
-	edge.setData({association: association.value})
+	if (association.value) {
+		edge.setData({association: association.value})
+	}
 
 	edge.on('change:*', () => {
 		association.value = edgeToModelAssociation(edge)
-		edge.setData({association: association.value})
+		if (association.value) {
+			edge.setData({association: association.value})
+		}
 	})
 }, {immediate: true})
 
@@ -45,8 +49,7 @@ const handleDelete = () => {
 			</span>
 		</el-text>
 	</div>
+	<div v-else>
+		<el-text type="warning">无效关联</el-text>
+	</div>
 </template>
-
-<style scoped>
-
-</style>
