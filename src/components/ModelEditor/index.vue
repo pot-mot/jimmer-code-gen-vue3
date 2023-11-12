@@ -163,7 +163,6 @@ import DataSourceMenu from "../global/DataSourceMenu/DataSourceMenu.vue"
 import DragDialog from "../common/DragDialog.vue"
 import {Emitter} from "mitt";
 import {DataSourceMenuEvents} from "../global/DataSourceMenu/DataSourceMenuEventBus.ts";
-import {loadModelNodes} from "./node/loadModelNodes.ts";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -335,19 +334,13 @@ watch(() => menu.value, () => {
 
 	eventBus.on('clickSchema', async ({id}) => {
 		loadingStore.start()
-
-		const tables = await api.tableService.queryColumnsView({query: {schemaIds: [id]}})
-		await loadModelNodes(graph, tables)
-
+		await store.loadSchema(id)
 		loadingStore.end()
 	})
 
 	eventBus.on('clickTable', async ({id}) => {
 		loadingStore.start()
-
-		const tables = await api.tableService.queryColumnsView({query: {ids: [id]}})
-		await loadModelNodes(graph, tables)
-
+		await store.loadTable(id)
 		loadingStore.end()
 	})
 })

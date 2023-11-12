@@ -163,7 +163,7 @@ const handleColumnToPk = (pkIndex: number) => {
 
 <template>
 	<div class="wrapper">
-		<el-form v-if="!columnTypeMapLoading.isLoading()">
+		<el-form v-if="!columnTypeMapLoading.isLoading()" style="width: 98%;">
 			<el-row style="line-height: 2em; padding-left: 1em;" :gutter="12">
 				<el-col :span="6">
 					<el-input v-model="table.name" placeholder="name"></el-input>
@@ -184,7 +184,7 @@ const handleColumnToPk = (pkIndex: number) => {
 			</el-row>
 
 			<div v-for="(column, index) in table.columns"
-				 style="height: 2em; line-height: 2em; display: grid; grid-template-columns: 1.5em 2em 1fr 1.2fr 1.5em 1fr 1.5fr 1.5em 1fr 6em; grid-gap: 0.2em;">
+				 style="height: 2em; line-height: 2em; display: grid; grid-template-columns: 1.5em 2em 1fr 1.2fr 1.5em 1fr 1.5fr 1.5em 1fr 4em; grid-gap: 0.2em;">
 				<span>
 					<ColumnIcon :column="column"></ColumnIcon>
 				</span>
@@ -249,9 +249,9 @@ const handleColumnToPk = (pkIndex: number) => {
 				</span>
 				<span style="white-space: nowrap;">
 					<el-button :icon="ArrowUp" @click="handleMoveColumnUp(index)" :disabled="index == 0" link></el-button>
-					<el-button :icon="ArrowDown" @click="handleMoveColumnDown(index)" :disabled="index == table.columns.length - 1" link></el-button>
-					<el-button :icon="Plus" @click="handleAddColumn(index)" link></el-button>
-					<el-button :icon="Delete" @click="handleRemoveColumn(index)" type="danger" link></el-button>
+					<el-button :icon="ArrowDown" @click="handleMoveColumnDown(index)" :disabled="index == table.columns.length - 1"  style="margin-left: 0.3em;" link></el-button>
+					<el-button :icon="Plus" @click="handleAddColumn(index)"  style="margin-left: 0.3em;" link></el-button>
+					<el-button :icon="Delete" @click="handleRemoveColumn(index)" type="danger"  style="margin-left: 0.3em;" link></el-button>
 				</span>
 			</div>
 
@@ -273,7 +273,7 @@ const handleColumnToPk = (pkIndex: number) => {
 	height: 100%;
 	width: 100%;
 	overflow: auto;
-	scrollbar-gutter: stable
+	scrollbar-gutter: stable;
 }
 
 .empty {

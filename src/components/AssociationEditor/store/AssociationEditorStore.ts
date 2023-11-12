@@ -8,7 +8,6 @@ import {
     tableIdToNodeId
 } from "../node/TableNode.ts";
 import {nextTick} from 'vue';
-import {AssociationEditorEventBus} from "../eventBus/AssociationEditorEventBus.ts";
 import {api} from "../../../api";
 import {searchEdgesByColumn} from "../../../utils/graphEditor/search.ts";
 import {commonGraphStoreOperations} from "../../../utils/graphEditor/commonStore.ts";
@@ -77,7 +76,7 @@ export const useAssociationEditorStore =
                     ...edges.map(it => it.id)
                 ])
 
-                AssociationEditorEventBus.emit('loadSchema')
+                await commonStore.layoutAndFit()
             }
 
             /**
@@ -87,8 +86,7 @@ export const useAssociationEditorStore =
             const loadTable = async (id: number) => {
                 const graph = _graph()
                 await loadTableNodes(graph, [id], false)
-
-                AssociationEditorEventBus.emit('loadTable')
+                commonStore.focus(id)
             }
 
             const deleteAssociations = async (
@@ -103,16 +101,7 @@ export const useAssociationEditorStore =
                 const graph = _graph()
                 const edges = searchEdgesByColumn(graph, sourceColumnId, targetColumnId)
                 graph.removeCells(edges)
-
-                AssociationEditorEventBus.emit('deletedAssociations', {
-                    sourceColumnId,
-                    targetColumnId
-                })
             }
-
-            AssociationEditorEventBus.on('loadSchema', async () => {
-                await commonStore.layoutAndFit()
-            })
 
             return {
                 ...commonStore,

@@ -16,8 +16,10 @@ const store = useModelEditorStore()
 	<div>
 		<Details open>
 			<template #title>
-				<el-text>Nodes</el-text>
-				<el-button style="margin-left: 0.5em;" @click="ModelEditorEventBus.emit('createTable')">创建表</el-button>
+				<div style="height: 2em; line-height: 2em;">
+					<el-text>Nodes</el-text>
+					<el-button style="margin-left: 0.5em;" @click="ModelEditorEventBus.emit('createTable')">创建表</el-button>
+				</div>
 			</template>
 
 			<div style="padding-bottom: 1em;">
@@ -31,8 +33,9 @@ const store = useModelEditorStore()
 
 		<Details open>
 			<template #title>
-				<el-text>Edges</el-text>
-				<el-button style="margin-left: 0.5em;" @click="ModelEditorEventBus.emit('createAssociation')">创建关联</el-button>
+				<div style="height: 2em; line-height: 2em;">
+					<el-text>Edges</el-text>
+				</div>
 			</template>
 
 			<div style="padding-bottom: 1em;">

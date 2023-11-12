@@ -1,5 +1,5 @@
 import {GenTableColumnsInput} from "../../../api/__generated/model/static";
-import {Graph} from "@antv/x6";
+import {Graph, Node} from "@antv/x6";
 import {columnPortGroup} from "../../AssociationEditor/node/ColumnPort.ts";
 import {COLUMN_PORT_GROUP} from "../../../utils/graphEditor/constant.ts";
 import {GenTableColumnsInput_TargetOf_columns} from "../../../api/__generated/model/static/GenTableColumnsInput.ts";
@@ -29,12 +29,16 @@ const modelToNode = (table: GenTableColumnsInput, options: any = undefined) => {
     }
 }
 
-export const addModelNode = (graph: Graph, table: GenTableColumnsInput) => {
-    const svgRect = graph.view.svg.getBoundingClientRect()
-    const node = modelToNode(table, graph.graphToLocal(
-        svgRect.width / 2,
-        svgRect.height / 2
-    ))
+export const importModelNodes = (graph: Graph, tables: readonly GenTableColumnsInput[]): Node[] => {
+    const nodes: Node[] = tables.map(table => {
+        const svgRect = graph.view.svg.getBoundingClientRect()
+        return modelToNode(table, graph.graphToLocal(
+            svgRect.width / 2,
+            svgRect.height / 2
+        ))
+    })
 
-    return graph.addNode(node)
+    graph.addNodes(nodes)
+
+    return graph.getNodes().filter(node => tables.map(it => it.name).includes(node.getData().table.name))
 }

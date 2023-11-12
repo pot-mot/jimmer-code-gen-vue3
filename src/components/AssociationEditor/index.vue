@@ -250,19 +250,26 @@ watch(() => codePreviewDialogOpenState.value, async (openState) => {
 })
 
 props.eventBus.on('clickTable', async ({id}) => {
+	loadingStore.start()
 	await store.loadTable(id)
-	store.focus(id)
+	loadingStore.end()
 })
 
 props.eventBus.on('clickSchema', async ({id}) => {
+	loadingStore.start()
 	await store.loadSchema(id)
+	loadingStore.end()
 })
 
 props.eventBus.on('deleteDataSource', ({id}) => {
+	loadingStore.start()
 	store.removeTables(table => table.schema?.dataSource.id == id)
+	loadingStore.end()
 })
 
 props.eventBus.on('deleteSchema', ({id}) => {
+	loadingStore.start()
 	store.removeTables(table => table.schema?.id == id)
+	loadingStore.end()
 })
 </script>
