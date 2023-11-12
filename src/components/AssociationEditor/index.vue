@@ -80,7 +80,7 @@
 
 			<li>
 				<el-tooltip content="预览代码">
-					<el-button @click="codePreviewDialogOpenState = true" :icon="PreviewIcon"></el-button>
+					<el-button @click="handleCodePreview" :icon="PreviewIcon"></el-button>
 				</el-tooltip>
 
 				<el-dialog v-model="codePreviewDialogOpenState" append-to-body fullscreen>
@@ -90,7 +90,7 @@
 
 					<div style="position: absolute; bottom: 2em; right: 2em">
 						<el-tooltip content="下载代码">
-							<el-button @click="handleDownload" :icon="DownloadIcon" size="large" round></el-button>
+							<el-button @click="handleCodeDownload" :icon="DownloadIcon" size="large" round></el-button>
 						</el-tooltip>
 					</div>
 				</el-dialog>
@@ -98,7 +98,7 @@
 
 			<li>
 				<el-tooltip content="生成代码（获得 zip 压缩包）">
-					<el-button @click="handleDownload" :icon="DownloadIcon"></el-button>
+					<el-button @click="handleCodeDownload" :icon="DownloadIcon"></el-button>
 				</el-tooltip>
 			</li>
 		</ul>
@@ -160,6 +160,10 @@ import {api} from "../../api";
 import PreviewIcon from "../icons/toolbar/PreviewIcon.vue";
 import MultiCodePreview from "../common/MultiCodePreview.vue";
 import {saveAs} from "file-saver";
+import {DataSourceMenuEventBusProps} from "../global/DataSourceMenu/DataSourceMenuEventBus.ts";
+import {useGlobalLoadingStore} from "../global/store/GlobalLoadingStore.ts";
+
+const props = defineProps<DataSourceMenuEventBusProps>()
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();
@@ -167,6 +171,8 @@ const wrapper = ref<HTMLElement>();
 let graph: Graph
 
 const store = useAssociationEditorStore()
+
+const loadingStore = useGlobalLoadingStore()
 
 Graph.registerPortLayout(
 	COLUMN_PORT,
@@ -218,21 +224,45 @@ const tableIds = computed(() => {
 		store.tables().map(it => it.id) : store.selectedNodeIds.map(it => nodeIdToTableId(it))
 })
 
-const handleDownload = async () => {
+const handleCodeDownload = async () => {
+	loadingStore.start()
 	const res = (await api.generateService.generateByTable({body: tableIds.value})) as any as Blob
 	const file = new File([res], "entities.zip")
 	saveAs(file)
+	loadingStore.end()
 }
 
 const codePreviewDialogOpenState = ref(false)
 
 const codesMap = ref<{ [key: string]: string }>({})
 
+const handleCodePreview = async () => {
+	loadingStore.start()
+	codesMap.value = await api.generateService.previewByTable({tableIds: tableIds.value})
+	codePreviewDialogOpenState.value = true
+	loadingStore.end()
+}
+
 watch(() => codePreviewDialogOpenState.value, async (openState) => {
-	if (openState) {
-		codesMap.value = await api.generateService.previewByTable({tableIds: tableIds.value})
-	} else {
+	if (!openState) {
 		codesMap.value = {}
 	}
+})
+
+props.eventBus.on('clickTable', async ({id}) => {
+	await store.loadTable(id)
+	store.focus(id)
+})
+
+props.eventBus.on('clickSchema', async ({id}) => {
+	await store.loadSchema(id)
+})
+
+props.eventBus.on('deleteDataSource', ({id}) => {
+	store.removeTables(table => table.schema?.dataSource.id == id)
+})
+
+props.eventBus.on('deleteSchema', ({id}) => {
+	store.removeTables(table => table.schema?.id == id)
 })
 </script>

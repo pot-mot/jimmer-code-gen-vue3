@@ -14,6 +14,8 @@ export interface GenConfigProperties {
     
     dataSourceType?: DataSourceType;
     
+    defaultPackagePath?: string;
+    
     language?: GenLanguage;
     
     logicalDeletedAnnotation?: string;

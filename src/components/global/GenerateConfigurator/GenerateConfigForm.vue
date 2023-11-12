@@ -94,6 +94,10 @@ const handleCancel = () => {
 				</el-col>
 			</el-row>
 
+			<el-form-item label="默认包路径">
+				<el-input v-model="config.defaultPackagePath"></el-input>
+			</el-form-item>
+
 			<el-form-item label="逻辑删除注释">
 				<el-input v-model="config.logicalDeletedAnnotation"></el-input>
 			</el-form-item>

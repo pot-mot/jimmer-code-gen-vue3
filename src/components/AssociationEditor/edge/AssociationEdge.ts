@@ -28,7 +28,7 @@ const baseLabel = {
     },
 }
 
-const baseColumnEdge = {
+export const baseAssociationEdge = {
     attrs: {
         line: {
             stroke: COMMON_COLOR,
@@ -47,7 +47,7 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
     // @ts-ignore
     createEdge() {
         return new Shape.Edge({
-            ...baseColumnEdge,
+            ...baseAssociationEdge,
             router: erRouter
         })
     },
@@ -87,7 +87,7 @@ export const getAssociationType = (edge: Edge): AssociationType => {
 /** 转换关联为 Edge */
 export const associationToEdge = (association: GenAssociationMatchView): Edge => {
     const edge: Edge = new Shape.Edge<Edge.Properties>({
-        ...baseColumnEdge,
+        ...baseAssociationEdge,
         source: {
             cell: tableIdToNodeId(association.sourceColumn.table!.id),
             port: columnIdToPortId(association.sourceColumn.id)

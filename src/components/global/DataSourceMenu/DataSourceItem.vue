@@ -9,7 +9,7 @@ import Details from "../../common/Details.vue";
 import {useLoading} from "../../../hooks/useLoading.ts";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import DataSourceIcon from "../../icons/database/DataSourceIcon.vue";
-import {AssociationEditorMenuEventBus} from "../eventBus/AssociationEditorMenuEventBus.ts";
+import {DataSourceMenuEventBusProps} from "./DataSourceMenuEventBus.ts";
 import {deleteConfirm, sendMessage} from "../../../utils/message.ts";
 
 const genSchemaLoading = useLoading()
@@ -20,7 +20,7 @@ interface DataSourceItemProps {
 	dataSource: GenDataSourceView
 }
 
-const props = defineProps<DataSourceItemProps>()
+const props = defineProps<DataSourceItemProps & DataSourceMenuEventBusProps>()
 
 const previewSchemas = ref<GenSchemaDto['DEFAULT'][]>([])
 
@@ -67,7 +67,7 @@ const handleDelete = () => {
 			api.dataSourceService.delete({ids: [id]}).then(res => {
 				if (res > 0) {
 					sendMessage(`删除 dataSource ${id} 成功`, "success")
-					AssociationEditorMenuEventBus.emit('deleteDataSource', {id})
+					props.eventBus.emit('deleteDataSource', {id})
 				}
 			})
 		}
@@ -113,10 +113,10 @@ const handleEdit = (e: MouseEvent) => {
 
 const handleEditFinish = () => {
 	isEdit.value = false
-	AssociationEditorMenuEventBus.emit('editDataSource', {id: props.dataSource.id})
+	props.eventBus.emit('editDataSource', {id: props.dataSource.id})
 }
 
-AssociationEditorMenuEventBus.on('deleteSchema', ({id}) => {
+props.eventBus.on('deleteSchema', ({id}) => {
 	if (schemas.value.map(schema => schema.id).includes(id)) {
 		schemas.value = schemas.value.filter(schema => schema.id != id)
 	}
@@ -156,7 +156,7 @@ AssociationEditorMenuEventBus.on('deleteSchema', ({id}) => {
 			</div>
 		</template>
 		<div v-loading="genSchemaLoading.isLoading()" style="padding: 0 0 0.5em 0.5em;">
-			<SchemaItem v-for="schema in schemas" :schema="schema"/>
+			<SchemaItem v-for="schema in schemas" :schema="schema" :event-bus="eventBus"/>
 		</div>
 	</Details>
 	<DataSourceDialog

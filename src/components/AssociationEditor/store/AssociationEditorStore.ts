@@ -5,15 +5,14 @@ import {
 } from "../edge/AssociationEdge.ts";
 import {
     getTables,
-    loadTableNodes,
     tableIdToNodeId
 } from "../node/TableNode.ts";
 import {nextTick} from 'vue';
-import {AssociationEditorGraphEventBus} from "../eventBus/AssociationEditorGraphEventBus.ts";
+import {AssociationEditorEventBus} from "../eventBus/AssociationEditorEventBus.ts";
 import {api} from "../../../api";
 import {searchEdgesByColumn} from "../../../utils/graphEditor/search.ts";
 import {commonGraphStoreOperations} from "../../../utils/graphEditor/commonStore.ts";
-import {AssociationEditorMenuEventBus} from "../eventBus/AssociationEditorMenuEventBus.ts";
+import {loadTableNodes} from "../node/loadTableNodes.ts";
 
 export const useAssociationEditorStore =
     defineStore(
@@ -78,7 +77,7 @@ export const useAssociationEditorStore =
                     ...edges.map(it => it.id)
                 ])
 
-                AssociationEditorGraphEventBus.emit('loadSchema')
+                AssociationEditorEventBus.emit('loadSchema')
             }
 
             /**
@@ -89,7 +88,7 @@ export const useAssociationEditorStore =
                 const graph = _graph()
                 await loadTableNodes(graph, [id], false)
 
-                AssociationEditorGraphEventBus.emit('loadTable')
+                AssociationEditorEventBus.emit('loadTable')
             }
 
             const deleteAssociations = async (
@@ -105,22 +104,14 @@ export const useAssociationEditorStore =
                 const edges = searchEdgesByColumn(graph, sourceColumnId, targetColumnId)
                 graph.removeCells(edges)
 
-                AssociationEditorGraphEventBus.emit('deletedAssociations', {
+                AssociationEditorEventBus.emit('deletedAssociations', {
                     sourceColumnId,
                     targetColumnId
                 })
             }
 
-            AssociationEditorGraphEventBus.on('loadSchema', async () => {
+            AssociationEditorEventBus.on('loadSchema', async () => {
                 await commonStore.layoutAndFit()
-            })
-
-            AssociationEditorMenuEventBus.on('deleteDataSource', ({id}) => {
-                removeTables(table => table.schema?.dataSource.id == id)
-            })
-
-            AssociationEditorMenuEventBus.on('deleteSchema', ({id}) => {
-                removeTables(table => table.schema?.id == id)
             })
 
             return {

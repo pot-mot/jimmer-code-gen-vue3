@@ -68,6 +68,13 @@ const props = withDefaults(defineProps<DetailProps>(), {
 	disabled: false
 })
 
+interface DetailsEmits {
+	(event: "open"): void
+	(event: "close"): void
+}
+
+const emits = defineEmits<DetailsEmits>()
+
 const openState = ref(false)
 
 watch(() => props.open, (newValue) => {
@@ -77,4 +84,12 @@ watch(() => props.open, (newValue) => {
 const handleToggle = () => {
 	openState.value = !openState.value
 }
+
+watch(() => openState.value, (value) => {
+	if (value) {
+		emits("open")
+	} else {
+		emits("close")
+	}
+})
 </script>

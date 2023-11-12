@@ -1,7 +1,7 @@
 <template>
 	<div class="table-wrapper" ref="wrapper">
 		<table v-if="table" ref="container"
-			   @dblclick="TableEntityDialogEventBus.emit('addTableEntityDialog', table.id)">
+			   @dblclick="TableDialogEventBus.emit('openTable', table.id)">
 			<tr class="tableName">
 				<td colspan="2">
 					<span class="icon">
@@ -38,7 +38,7 @@ import {Node, Graph} from '@antv/x6'
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
-import {TableEntityDialogEventBus} from "../eventBus/TableEntityDialogEventBus.ts";
+import {TableDialogEventBus} from "../../global/TableInfo/TableDialogEventBus.ts";
 import {sendMessage} from "../../../utils/message.ts";
 import {COLUMN_PORT_SELECTOR} from "../../../utils/graphEditor/constant.ts";
 

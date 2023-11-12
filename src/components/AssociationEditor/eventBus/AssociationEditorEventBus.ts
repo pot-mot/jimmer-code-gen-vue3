@@ -1,10 +1,10 @@
 import mitt from 'mitt'
 
-type AssociationEditorGraphEvents = {
+type AssociationEditorEvents = {
     loadSchema: undefined,
     loadTable: undefined,
 
     deletedAssociations: {sourceColumnId: number, targetColumnId: number},
 }
 
-export const AssociationEditorGraphEventBus = mitt<AssociationEditorGraphEvents>()
+export const AssociationEditorEventBus = mitt<AssociationEditorEvents>()

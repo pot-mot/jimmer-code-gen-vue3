@@ -45,9 +45,7 @@ export const importAssociationEdges = (graph: Graph, associations: readonly GenA
             if (!targetPortId) return
 
             const existAssociations = searchEdgesIgnoreDirection(graph, sourcePortId, targetPortId)
-            if (existAssociations) {
-                graph.removeCells(existAssociations)
-            }
+            graph.removeCells(existAssociations)
 
             if (targetCellId == sourceCellId) {
                 newEdge.router = orthRouter

@@ -3,12 +3,15 @@ import {commonGraphStoreOperations} from "../../../utils/graphEditor/commonStore
 import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
 import {addModelNode} from "../node/modelNode.ts";
 import {sendMessage} from "../../../utils/message.ts";
+import {ref} from "vue";
 
 export const useModelEditorStore =
     defineStore(
         'ModelEditorGraph',
         () => {
             const commonStore = commonGraphStoreOperations()
+
+            const openDataSourceMenu = ref(false)
 
             ModelEditorEventBus.on('createdTable', (table) => {
                 const graph = commonStore._graph()
@@ -54,6 +57,8 @@ export const useModelEditorStore =
 
             return {
                 ...commonStore,
+
+                openDataSourceMenu
             }
         }
     )

@@ -1,18 +1,19 @@
 <script lang="ts" setup>
 import LeftTopBottomLayout from "../components/layout/LeftRightLayout.vue";
-import DataSourceMenu from "../components/AssociationEditor/menu/DataSourceMenu.vue";
+import DataSourceMenu from "../components/global/DataSourceMenu/DataSourceMenu.vue";
 import TableGraph from "../components/AssociationEditor/index.vue";
-import TableEntityDialogManager from "../components/AssociationEditor/dialog/TableEntityDialogManager.vue";
+import {ref} from "vue";
+
+const menu = ref()
 </script>
 
 <template>
 	<LeftTopBottomLayout>
 		<template #left>
-			<DataSourceMenu></DataSourceMenu>
+			<DataSourceMenu ref="menu"></DataSourceMenu>
 		</template>
-		<template #right>
-			<TableGraph></TableGraph>
+		<template #right v-if="menu">
+			<TableGraph :event-bus="menu.eventBus"></TableGraph>
 		</template>
 	</LeftTopBottomLayout>
-	<TableEntityDialogManager></TableEntityDialogManager>
 </template>

@@ -6,17 +6,14 @@ import Details from "../../common/Details.vue";
 import {Delete, Search} from "@element-plus/icons-vue";
 import TableItem from "./TableItem.vue";
 import SchemaIcon from "../../icons/database/SchemaIcon.vue";
-import {useAssociationEditorStore} from "../store/AssociationEditorStore.ts";
-import {AssociationEditorMenuEventBus} from "../eventBus/AssociationEditorMenuEventBus.ts";
+import {DataSourceMenuEventBusProps} from "./DataSourceMenuEventBus.ts";
 import {deleteConfirm, sendMessage} from "../../../utils/message.ts";
-
-const store = useAssociationEditorStore()
 
 interface SchemaItemProps {
 	schema: GenSchemaView
 }
 
-const props = defineProps<SchemaItemProps>()
+const props = defineProps<SchemaItemProps & DataSourceMenuEventBusProps>()
 
 const tables = ref<GenTableCommonView[]>([])
 
@@ -30,10 +27,6 @@ watch(() => props.schema, () => {
 	getTables()
 }, {immediate: true})
 
-const handleLoadOrSelect = () => {
-	store.loadSchema(props.schema.id)
-}
-
 const handleDelete = () => {
 	deleteConfirm(`架构【${props.schema.name}】`,
 		() => {
@@ -41,7 +34,7 @@ const handleDelete = () => {
 			api.schemaService.delete({ids: [id]}).then(res => {
 				if (res > 0) {
 					sendMessage(`删除 schema ${id} 成功`, "success")
-					AssociationEditorMenuEventBus.emit('deleteSchema', {id})
+					props.eventBus.emit('deleteSchema', {id})
 				}
 			})
 		}
@@ -69,7 +62,7 @@ const query = () => {
 				<el-text class="hover-show">
 					<SchemaIcon></SchemaIcon>
 
-					<el-button @click="handleLoadOrSelect" link>
+					<el-button @click="eventBus.emit('clickSchema', {id: schema.id})" link>
 						{{ schema.name }}
 					</el-button>
 
@@ -88,7 +81,7 @@ const query = () => {
 			</el-input>
 			<ul style="padding: 0 0 0.5em 0.5em;">
 				<li v-for="table in tables">
-					<TableItem :table="table"></TableItem>
+					<TableItem :table="table" :event-bus="eventBus"></TableItem>
 				</li>
 			</ul>
 		</div>

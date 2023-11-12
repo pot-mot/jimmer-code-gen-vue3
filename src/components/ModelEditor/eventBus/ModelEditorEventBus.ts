@@ -18,6 +18,9 @@ type ModelEditorEvents = {
     modifiedAssociation: {id: string, association: GenAssociationModelInput},
     removeAssociation: string,
 
+    loadSchema: {id: number},
+    loadTable: {id: number},
+
     saveToDataSource: {tables: GenTableColumnsInput[], associations: GenAssociationModelInput[], schemaId: number}
 }
 

@@ -26,7 +26,7 @@
 				<el-tooltip content="整理布局">
 					<el-button @click="store.layoutAndFit()" class="cling-right" :icon="LayoutIcon"></el-button>
 				</el-tooltip>
-				<el-select style="width: 4em;" class="cling-left" v-model="store.layoutDirection"
+				<el-select style="width: 4em" class="cling-left" v-model="store.layoutDirection"
 						   @change="store.layoutAndFit()"
 						   size="small">
 					<el-option value="LR" label="→">左至右</el-option>
@@ -44,12 +44,6 @@
 			<li>
 				<el-tooltip content="居中">
 					<el-button @click="store.center()" :icon="CenterIcon"></el-button>
-				</el-tooltip>
-			</li>
-
-			<li style="padding-left: 1em;">
-				<el-tooltip content="操作方式切换为拖曳">
-					<el-button :icon="Rank"></el-button>
 				</el-tooltip>
 			</li>
 		</ul>
@@ -72,17 +66,17 @@
 		<ul v-if="store.isLoaded && listStore.currentModel" class="toolbar right-top">
 			<li>
 				<el-tooltip content="预览代码">
-					<el-button @click="codePreviewDialogOpenState = true" :icon="PreviewIcon"></el-button>
+					<el-button @click="handleCodePreview" :icon="PreviewIcon"></el-button>
 				</el-tooltip>
 
 				<el-dialog v-model="codePreviewDialogOpenState" append-to-body fullscreen>
-					<div style="height: calc(100vh - 5em); overflow: auto;">
+					<div style="height: calc(100vh - 5em); overflow: auto">
 						<MultiCodePreview :codes-map="codesMap"></MultiCodePreview>
 					</div>
 
-					<div style="position: absolute; bottom: 2em; right: 2em">
+					<div style="position: absolute; bottom: 2em; right: 2em;">
 						<el-tooltip content="下载代码">
-							<el-button @click="handleDownload" :icon="DownloadIcon" size="large" round></el-button>
+							<el-button @click="handleCodeDownload" :icon="DownloadIcon" size="large" round></el-button>
 						</el-tooltip>
 					</div>
 				</el-dialog>
@@ -90,12 +84,12 @@
 
 			<li>
 				<el-tooltip content="生成代码（获得 zip 压缩包）">
-					<el-button @click="handleDownload" :icon="DownloadIcon"></el-button>
+					<el-button @click="handleCodeDownload" :icon="DownloadIcon"></el-button>
 				</el-tooltip>
 			</li>
 		</ul>
 
-		<div v-if="store.isLoaded" class="toolbar right-bottom" style="width: max(15vw, 200px);">
+		<div v-if="store.isLoaded" class="toolbar right-bottom" style="width: max(15vw, 200px)">
 			<ScaleBar :graph="store._graph()"></ScaleBar>
 		</div>
 
@@ -114,7 +108,15 @@
 		</template>
 	</div>
 
-	<ModelDialog v-if="openModelDialog" @submit="handleSaveDialogSubmit" @cancel="openModelDialog = false"></ModelDialog>
+	<ModelDialog v-if="openModelDialog" @submit="handleSaveDialogSubmit"
+				 @cancel="openModelDialog = false"></ModelDialog>
+
+	<DragDialog v-if="store.openDataSourceMenu" @close="store.openDataSourceMenu = false" :can-resize="true"
+				:init-w="500" :x="100" :y="10">
+		<div style="height: 70vh; overflow: auto; scrollbar-gutter: stable;">
+			<DataSourceMenu ref="menu"></DataSourceMenu>
+		</div>
+	</DragDialog>
 </template>
 
 <style scoped>
@@ -122,50 +124,57 @@
 </style>
 
 <script setup lang="ts">
-import {useModelEditorStore} from "./store/ModelEditorStore.ts";
-import {ref, onMounted, onUnmounted, watch} from "vue";
-import {Graph} from "@antv/x6";
-import ScaleBar from "../common/graph/ScaleBar.vue";
-import Searcher from "../common/graph/Searcher.vue";
-import {tableNodeMatchMethod} from "../AssociationEditor/node/TableNode.ts";
-import Comment from "../common/Comment.vue";
-import {register} from "@antv/x6-vue-shape";
-import ModelNode from "./node/ModelNode.vue";
-import {useHistoryKeyEvent} from "../../utils/graphEditor/useHistory.ts";
-import {useSelectionKeyEvent} from "../../utils/graphEditor/useSelection.ts";
-import SaveIcon from "../icons/toolbar/SaveIcon.vue";
-import UndoIcon from "../icons/toolbar/UndoIcon.vue";
-import RedoIcon from "../icons/toolbar/RedoIcon.vue";
-import LayoutIcon from "../icons/toolbar/LayoutIcon.vue";
-import FitIcon from "../icons/toolbar/FitIcon.vue";
-import CenterIcon from "../icons/toolbar/CenterIcon.vue";
-import EraserIcon from "../icons/toolbar/EraserIcon.vue";
-import AssociationOffIcon from "../icons/toolbar/AssociationOffIcon.vue";
-import {initModelEditor} from "./init.ts";
-import ModelDialog from "./dialog/ModelDialog.vue";
-import {sendMessage} from "../../utils/message.ts";
-import {useModelListStore} from "./store/ModelListStore.ts";
-import {useSaveKeyEvent} from "../../utils/graphEditor/useSave.ts";
-import {useLocalStorageOperation} from "../../utils/graphEditor/localStorage.ts";
-import {Rank} from "@element-plus/icons-vue";
-import {COLUMN_PORT} from "../../utils/graphEditor/constant.ts";
-import {columnPortPosition} from "../AssociationEditor/node/ColumnPort.ts";
-import {useSwitchAssociationType} from "../AssociationEditor/edge/AssociationEdge.ts";
-import DownloadIcon from "../icons/toolbar/DownloadIcon.vue";
-import PreviewIcon from "../icons/toolbar/PreviewIcon.vue";
-import {api} from "../../api";
-import MultiCodePreview from "../common/MultiCodePreview.vue";
-import {saveAs} from "file-saver";
-import {GenModelInput} from "../../api/__generated/model/static";
+import {useModelEditorStore} from "./store/ModelEditorStore.ts"
+import {ref, onMounted, onUnmounted, watch} from "vue"
+import {Graph} from "@antv/x6"
+import ScaleBar from "../common/graph/ScaleBar.vue"
+import Searcher from "../common/graph/Searcher.vue"
+import {tableNodeMatchMethod} from "../AssociationEditor/node/TableNode.ts"
+import Comment from "../common/Comment.vue"
+import {register} from "@antv/x6-vue-shape"
+import ModelNode from "./node/ModelNode.vue"
+import {useHistoryKeyEvent} from "../../utils/graphEditor/useHistory.ts"
+import {useSelectionKeyEvent} from "../../utils/graphEditor/useSelection.ts"
+import SaveIcon from "../icons/toolbar/SaveIcon.vue"
+import UndoIcon from "../icons/toolbar/UndoIcon.vue"
+import RedoIcon from "../icons/toolbar/RedoIcon.vue"
+import LayoutIcon from "../icons/toolbar/LayoutIcon.vue"
+import FitIcon from "../icons/toolbar/FitIcon.vue"
+import CenterIcon from "../icons/toolbar/CenterIcon.vue"
+import EraserIcon from "../icons/toolbar/EraserIcon.vue"
+import AssociationOffIcon from "../icons/toolbar/AssociationOffIcon.vue"
+import {initModelEditor} from "./init.ts"
+import ModelDialog from "./dialog/ModelDialog.vue"
+import {sendMessage} from "../../utils/message.ts"
+import {useModelListStore} from "./store/ModelListStore.ts"
+import {useSaveKeyEvent} from "../../utils/graphEditor/useSave.ts"
+import {useLocalStorageOperation} from "../../utils/graphEditor/localStorage.ts"
+import {COLUMN_PORT} from "../../utils/graphEditor/constant.ts"
+import {columnPortPosition} from "../AssociationEditor/node/ColumnPort.ts"
+import {useSwitchAssociationType} from "../AssociationEditor/edge/AssociationEdge.ts"
+import DownloadIcon from "../icons/toolbar/DownloadIcon.vue"
+import PreviewIcon from "../icons/toolbar/PreviewIcon.vue"
+import {api} from "../../api"
+import MultiCodePreview from "../common/MultiCodePreview.vue"
+import {saveAs} from "file-saver"
+import {GenModelInput} from "../../api/__generated/model/static"
+import {useGlobalLoadingStore} from "../global/store/GlobalLoadingStore.ts"
+import DataSourceMenu from "../global/DataSourceMenu/DataSourceMenu.vue"
+import DragDialog from "../common/DragDialog.vue"
+import {Emitter} from "mitt";
+import {DataSourceMenuEvents} from "../global/DataSourceMenu/DataSourceMenuEventBus.ts";
+import {loadModelNodes} from "./node/loadModelNodes.ts";
 
-const container = ref<HTMLElement>();
-const wrapper = ref<HTMLElement>();
+const container = ref<HTMLElement>()
+const wrapper = ref<HTMLElement>()
 
 let graph: Graph
 
 const store = useModelEditorStore()
 
 const listStore = useModelListStore()
+
+const loadingStore = useGlobalLoadingStore()
 
 Graph.registerPortLayout(
 	COLUMN_PORT,
@@ -176,10 +185,9 @@ Graph.registerPortLayout(
 register({
 	shape: "model",
 	component: ModelNode
-});
+})
 
 const openModelDialog = ref(false)
-
 
 const {
 	toDataJSONStr,
@@ -279,7 +287,9 @@ useHistoryKeyEvent(() => graph)
 
 useSelectionKeyEvent(() => graph)
 
-const handleDownload = async () => {
+const handleCodeDownload = async () => {
+	loadingStore.start()
+
 	if (!listStore.currentModel) {
 		sendMessage('当前模型不存在，无法生成', 'error')
 		return
@@ -288,22 +298,57 @@ const handleDownload = async () => {
 	const res = (await api.generateService.generateByModel({body: listStore.currentModel.id})) as any as Blob
 	const file = new File([res], "entities.zip")
 	saveAs(file)
+
+	loadingStore.end()
 }
 
 const codePreviewDialogOpenState = ref(false)
 
 const codesMap = ref<{ [key: string]: string }>({})
 
-watch(() => codePreviewDialogOpenState.value, async (openState) => {
-	if (openState) {
-		if (!listStore.currentModel) {
-			sendMessage('当前模型不存在，无法预览', 'error')
-			return
-		}
+const handleCodePreview = async () => {
+	loadingStore.start()
 
-		codesMap.value = await api.generateService.previewByModel({modelId: listStore.currentModel.id})
-	} else {
+	if (!listStore.currentModel) {
+		sendMessage('当前模型不存在，无法预览', 'error')
+		return
+	}
+
+	codesMap.value = await api.generateService.previewByModel({modelId: listStore.currentModel.id})
+	codePreviewDialogOpenState.value = true
+
+	loadingStore.end()
+}
+
+watch(() => codePreviewDialogOpenState.value, async (openState) => {
+	if (!openState) {
 		codesMap.value = {}
 	}
+})
+
+const menu = ref()
+
+watch(() => menu.value, () => {
+	if (!menu.value) return
+
+	const eventBus: Emitter<DataSourceMenuEvents> = menu.value.eventBus
+
+	eventBus.on('clickSchema', async ({id}) => {
+		loadingStore.start()
+
+		const tables = await api.tableService.queryColumnsView({query: {schemaIds: [id]}})
+		await loadModelNodes(graph, tables)
+
+		loadingStore.end()
+	})
+
+	eventBus.on('clickTable', async ({id}) => {
+		loadingStore.start()
+
+		const tables = await api.tableService.queryColumnsView({query: {ids: [id]}})
+		await loadModelNodes(graph, tables)
+
+		loadingStore.end()
+	})
 })
 </script>

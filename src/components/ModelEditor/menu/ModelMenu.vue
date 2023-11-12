@@ -11,7 +11,7 @@ const store = useModelEditorStore()
 </script>
 
 <template>
-	<el-button style="margin-bottom: 0.5em;" >从数据源导入</el-button>
+	<el-button style="margin-bottom: 0.5em;" @click="store.openDataSourceMenu = true">从数据源导入</el-button>
 
 	<div>
 		<Details open>
