@@ -1,5 +1,5 @@
 import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
-import {useGlobalLoadingStore} from "../components/global/store/GlobalLoadingStore.ts";
+import {useGlobalLoadingStore} from "../components/global/loading/GlobalLoadingStore.ts";
 
 const routes: RouteRecordRaw[] = [
     {

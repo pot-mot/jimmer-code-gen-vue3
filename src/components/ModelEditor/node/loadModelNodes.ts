@@ -29,7 +29,10 @@ const tableViewToInput = (tableView: GenTableColumnsView): GenTableColumnsInput 
                 remark: column.remark,
                 type: column.type,
                 typeCode: column.typeCode,
-                typeNotNull: column.typeNotNull
+                typeNotNull: column.typeNotNull,
+                logicalDelete: column.logicalDelete,
+                businessKey: column.businessKey,
+                enumId: column.enumId
             }
         }),
     }

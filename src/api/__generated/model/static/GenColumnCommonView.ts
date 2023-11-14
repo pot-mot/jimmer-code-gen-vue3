@@ -2,6 +2,8 @@ export interface GenColumnCommonView {
     
     autoIncrement: boolean;
     
+    businessKey: boolean;
+    
     comment: string;
     
     createdTime: string;
@@ -11,6 +13,8 @@ export interface GenColumnCommonView {
     displaySize: number;
     
     id: number;
+    
+    logicalDelete: boolean;
     
     modifiedTime: string;
     

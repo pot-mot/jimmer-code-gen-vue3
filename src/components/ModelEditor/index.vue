@@ -65,11 +65,29 @@
 
 		<ul v-if="store.isLoaded && listStore.currentModel" class="toolbar right-top">
 			<li>
-				<el-tooltip content="预览代码">
-					<el-button @click="handleCodePreview" :icon="PreviewIcon"></el-button>
+				<el-tooltip content="预览 SQL">
+					<el-button @click="async () => {
+						await handleSaveModel()
+						await handleSQLPreview()
+					}" :icon="SQLIcon"></el-button>
 				</el-tooltip>
 
-				<el-dialog v-model="codePreviewDialogOpenState" append-to-body fullscreen>
+				<el-dialog v-model="openSQLPreviewDialog" :z-index="2000" fullscreen>
+					<div style="height: calc(100vh - 5em); overflow: auto">
+						<MultiCodePreview :codes-map="sqlMap"></MultiCodePreview>
+					</div>
+				</el-dialog>
+			</li>
+
+			<li>
+				<el-tooltip content="预览代码">
+					<el-button @click="async () => {
+						await handleSaveModel()
+						await handleCodePreview()
+					}" :icon="PreviewIcon"></el-button>
+				</el-tooltip>
+
+				<el-dialog v-model="codePreviewDialogOpenState" :z-index="2000" fullscreen>
 					<div style="height: calc(100vh - 5em); overflow: auto">
 						<MultiCodePreview :codes-map="codesMap"></MultiCodePreview>
 					</div>
@@ -84,7 +102,10 @@
 
 			<li>
 				<el-tooltip content="生成代码（获得 zip 压缩包）">
-					<el-button @click="handleCodeDownload" :icon="DownloadIcon"></el-button>
+					<el-button @click="async () => {
+						await handleSaveModel()
+						await handleCodeDownload()
+					}" :icon="DownloadIcon"></el-button>
 				</el-tooltip>
 			</li>
 		</ul>
@@ -111,10 +132,10 @@
 	<ModelDialog v-if="openModelDialog" @submit="handleSaveDialogSubmit"
 				 @cancel="openModelDialog = false"></ModelDialog>
 
-	<DragDialog v-if="store.openDataSourceMenu" @close="store.openDataSourceMenu = false" :can-resize="true"
+	<DragDialog v-if="store.openDataSourceLoadMenu" @close="store.openDataSourceLoadMenu = false" :can-resize="true"
 				:init-w="500" :x="100" :y="10">
 		<div style="height: 70vh; overflow: auto; scrollbar-gutter: stable;">
-			<DataSourceMenu ref="menu"></DataSourceMenu>
+			<DataSourceMenu ref="dataSourceLoadMenu"></DataSourceMenu>
 		</div>
 	</DragDialog>
 </template>
@@ -144,7 +165,7 @@ import CenterIcon from "../icons/toolbar/CenterIcon.vue"
 import EraserIcon from "../icons/toolbar/EraserIcon.vue"
 import AssociationOffIcon from "../icons/toolbar/AssociationOffIcon.vue"
 import {initModelEditor} from "./init.ts"
-import ModelDialog from "./dialog/ModelDialog.vue"
+import ModelDialog from "../global/ModelInfo/ModelDialog.vue"
 import {sendMessage} from "../../utils/message.ts"
 import {useModelListStore} from "./store/ModelListStore.ts"
 import {useSaveKeyEvent} from "../../utils/graphEditor/useSave.ts"
@@ -155,14 +176,15 @@ import {useSwitchAssociationType} from "../AssociationEditor/edge/AssociationEdg
 import DownloadIcon from "../icons/toolbar/DownloadIcon.vue"
 import PreviewIcon from "../icons/toolbar/PreviewIcon.vue"
 import {api} from "../../api"
-import MultiCodePreview from "../common/MultiCodePreview.vue"
+import MultiCodePreview from "../common/code/MultiCodePreview.vue"
 import {saveAs} from "file-saver"
 import {GenModelInput} from "../../api/__generated/model/static"
-import {useGlobalLoadingStore} from "../global/store/GlobalLoadingStore.ts"
-import DataSourceMenu from "../global/DataSourceMenu/DataSourceMenu.vue"
-import DragDialog from "../common/DragDialog.vue"
+import {useGlobalLoadingStore} from "../global/loading/GlobalLoadingStore.ts"
+import DataSourceMenu from "../global/dataSource/DataSourceMenu.vue"
+import DragDialog from "../common/dragDialog/DragDialog.vue"
 import {Emitter} from "mitt";
-import {DataSourceMenuEvents} from "../global/DataSourceMenu/DataSourceMenuEventBus.ts";
+import {DataSourceMenuEvents} from "../global/dataSource/events/DataSourceMenuEvents.ts";
+import SQLIcon from "../icons/toolbar/SQLIcon.vue";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -200,13 +222,15 @@ const {
  * 2. 修改当前 listStore 中保存的当前模型，确保数据一致，并缓存这个当前模型
  */
 const handleSaveModel = async () => {
+	loadingStore.add()
+
 	try {
 		if (!listStore.currentModel) {
 			openModelDialog.value = true
 		} else {
 			listStore.currentModel.value = toDataJSONStr()
 
-			await api.modelService.update({body: listStore.currentModel})
+			await api.modelService.save({body: listStore.currentModel})
 
 			localStorage.setItem('currentModel', JSON.stringify(listStore.currentModel))
 
@@ -215,13 +239,15 @@ const handleSaveModel = async () => {
 	} catch (e) {
 		sendMessage(`模型保存失败，原因：${e}`, 'error', e)
 	}
+
+	loadingStore.sub()
 }
 
 const handleSaveDialogSubmit = async (model: GenModelInput) => {
 	try {
 		model.value = toDataJSONStr()
 
-		const id = await api.modelService.create({body: model})
+		const id = await api.modelService.save({body: model})
 
 		listStore.currentModel = (await api.modelService.get({id}))!
 
@@ -287,18 +313,17 @@ useHistoryKeyEvent(() => graph)
 useSelectionKeyEvent(() => graph)
 
 const handleCodeDownload = async () => {
-	loadingStore.start()
+	loadingStore.add()
 
 	if (!listStore.currentModel) {
-		sendMessage('当前模型不存在，无法生成', 'error')
+		sendMessage('当前模型未保存至数据库，无法生成', 'error')
 		return
 	}
-
 	const res = (await api.generateService.generateByModel({body: listStore.currentModel.id})) as any as Blob
 	const file = new File([res], "entities.zip")
 	saveAs(file)
 
-	loadingStore.end()
+	loadingStore.sub()
 }
 
 const codePreviewDialogOpenState = ref(false)
@@ -306,17 +331,16 @@ const codePreviewDialogOpenState = ref(false)
 const codesMap = ref<{ [key: string]: string }>({})
 
 const handleCodePreview = async () => {
-	loadingStore.start()
+	loadingStore.add()
 
 	if (!listStore.currentModel) {
-		sendMessage('当前模型不存在，无法预览', 'error')
+		sendMessage('当前模型未保存至数据库，无法预览', 'error')
 		return
 	}
-
 	codesMap.value = await api.generateService.previewByModel({modelId: listStore.currentModel.id})
 	codePreviewDialogOpenState.value = true
 
-	loadingStore.end()
+	loadingStore.sub()
 }
 
 watch(() => codePreviewDialogOpenState.value, async (openState) => {
@@ -325,23 +349,37 @@ watch(() => codePreviewDialogOpenState.value, async (openState) => {
 	}
 })
 
-const menu = ref()
+const dataSourceLoadMenu = ref()
 
-watch(() => menu.value, () => {
-	if (!menu.value) return
+watch(() => dataSourceLoadMenu.value, () => {
+	if (!dataSourceLoadMenu.value) return
 
-	const eventBus: Emitter<DataSourceMenuEvents> = menu.value.eventBus
+	const eventBus: Emitter<DataSourceMenuEvents> = dataSourceLoadMenu.value.eventBus
 
 	eventBus.on('clickSchema', async ({id}) => {
-		loadingStore.start()
+		loadingStore.add()
 		await store.loadSchema(id)
-		loadingStore.end()
+		loadingStore.sub()
 	})
 
 	eventBus.on('clickTable', async ({id}) => {
-		loadingStore.start()
+		loadingStore.add()
 		await store.loadTable(id)
-		loadingStore.end()
+		loadingStore.sub()
 	})
 })
+
+const openSQLPreviewDialog = ref(false)
+
+const sqlMap = ref<{ [key: string]: string }>({})
+
+const handleSQLPreview = async () => {
+	if (!listStore.currentModel) return
+
+	loadingStore.add()
+
+	openSQLPreviewDialog.value = true
+	sqlMap.value = await api.modelService.previewSql({id: listStore.currentModel.id})
+	loadingStore.sub()
+}
 </script>

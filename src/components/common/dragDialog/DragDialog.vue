@@ -4,27 +4,16 @@ import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
 import {nextTick, onMounted, ref} from 'vue'
 import {ElButton} from "element-plus";
 import {Close} from "@element-plus/icons-vue";
-
-interface DragResizeProps {
-	x?: number
-	y?: number
-	initW?: number
-	minW?: number
-	minH?: number
-	maxW?: number
-	maxH?: number
-	to?: string
-	canResize?: boolean
-	canDrag?: boolean
-	// 此配置项用于主动使用 syncDialogHeight 时自适应高度
-	fitContent?: boolean
-}
+import {DragResizeProps} from "./DragDialogProps.ts";
+import {DragDialogEmits} from "./DragDialogEmits.ts";
 
 const props = withDefaults(defineProps<DragResizeProps>(), {
 	to: "body",
 	canResize: false,
 	canDrag: true,
 	initW: 800,
+	disableTeleport: false,
+	limitByParent: true
 })
 
 const x = ref(0)
@@ -49,10 +38,6 @@ onMounted(() => {
 		x.value = (maxWidth - w.value) / 2
 	}
 })
-
-interface DragDialogEmits {
-	(event: "close"): void
-}
 
 const emits = defineEmits<DragDialogEmits>()
 
@@ -111,8 +96,8 @@ defineExpose({
 </script>
 
 <template>
-	<Teleport :to="to">
-		<DragResize :active="true" :draggable="draggable" :parent="true" :resizable="canResize"
+	<Teleport :to="to" :disabled="disableTeleport">
+		<DragResize :active="true" :draggable="draggable" :parent="limitByParent" :resizable="canResize"
 					:h="h" :w="w" :initW="initW" :minH="minH" :minW="minW" :maxH="maxH" :maxW="maxW"
 					:x="x" :y="y"
 					style="border: none; z-index: 2000;">

@@ -16,6 +16,12 @@ export interface GenConfigProperties {
     
     defaultPackagePath?: string;
     
+    idViewProperty?: boolean;
+    
+    joinColumnAnnotation?: boolean;
+    
+    joinTableAnnotation?: boolean;
+    
     language?: GenLanguage;
     
     logicalDeletedAnnotation?: string;

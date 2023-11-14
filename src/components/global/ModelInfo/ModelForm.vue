@@ -8,7 +8,7 @@ import {api} from "../../../api";
 import {objToMap} from "../../../utils/mapOperation.ts";
 import {useLoading} from "../../../hooks/useLoading.ts";
 import {sendMessage} from "../../../utils/message.ts";
-import {useModelEditorStore} from "../store/ModelEditorStore.ts";
+import {useModelEditorStore} from "../../ModelEditor/store/ModelEditorStore.ts";
 import {swapItems} from "../../../utils/arrayOperation.ts";
 
 const store = useModelEditorStore()
@@ -51,6 +51,9 @@ const defaultColumn: GenTableColumnsInput_TargetOf_columns = {
 	partOfFk: false,
 	partOfUniqueIdx: false,
 	remark: "",
+	logicalDelete: false,
+	businessKey: false,
+	enumId: undefined,
 }
 
 interface ModelFormProps {
@@ -219,7 +222,7 @@ const handleColumnToPk = (pkIndex: number) => {
 
 				<span>
 					<el-tooltip :auto-close="500">
-						<el-select v-model="column.type"
+						<el-select v-model="column.type" filterable clearable
 								   @change="(value: string) => {column.typeCode = columnTypeMap.get(value)!}">
 							<el-option v-for="type in [...columnTypeMap.keys()]" :value="type"></el-option>
 						</el-select>
@@ -245,7 +248,13 @@ const handleColumnToPk = (pkIndex: number) => {
 				</span>
 
 				<span>
-					<el-input v-model="column.defaultValue" placeholder="default"></el-input>
+					<el-tooltip :auto-close="2000">
+						<el-input v-model="column.defaultValue" placeholder="default"></el-input>
+
+						<template #content>
+							此处将直接拼入 ddl，如果是字符串请加上引号
+						</template>
+					</el-tooltip>
 				</span>
 				<span style="white-space: nowrap;">
 					<el-button :icon="ArrowUp" @click="handleMoveColumnUp(index)" :disabled="index == 0" link></el-button>

@@ -80,10 +80,13 @@
 
 			<li>
 				<el-tooltip content="预览代码">
-					<el-button @click="handleCodePreview" :icon="PreviewIcon"></el-button>
+					<el-button @click="async () => {
+						await handleSaveAll()
+						await handleCodePreview()
+					}" :icon="PreviewIcon"></el-button>
 				</el-tooltip>
 
-				<el-dialog v-model="codePreviewDialogOpenState" append-to-body fullscreen>
+				<el-dialog v-model="codePreviewDialogOpenState" :z-index="2000" fullscreen>
 					<div style="height: calc(100vh - 5em); overflow: auto;">
 						<MultiCodePreview :codes-map="codesMap"></MultiCodePreview>
 					</div>
@@ -98,7 +101,10 @@
 
 			<li>
 				<el-tooltip content="生成代码（获得 zip 压缩包）">
-					<el-button @click="handleCodeDownload" :icon="DownloadIcon"></el-button>
+					<el-button @click="async () => {
+						await handleSaveAll()
+						await handleCodeDownload()
+					}" :icon="DownloadIcon"></el-button>
 				</el-tooltip>
 			</li>
 		</ul>
@@ -158,10 +164,10 @@ import Searcher from "../common/graph/Searcher.vue";
 import Comment from "../common/Comment.vue";
 import {api} from "../../api";
 import PreviewIcon from "../icons/toolbar/PreviewIcon.vue";
-import MultiCodePreview from "../common/MultiCodePreview.vue";
+import MultiCodePreview from "../common/code/MultiCodePreview.vue";
 import {saveAs} from "file-saver";
-import {DataSourceMenuEventBusProps} from "../global/DataSourceMenu/DataSourceMenuEventBus.ts";
-import {useGlobalLoadingStore} from "../global/store/GlobalLoadingStore.ts";
+import {DataSourceMenuEventBusProps} from "../global/dataSource/events/DataSourceMenuEvents.ts";
+import {useGlobalLoadingStore} from "../global/loading/GlobalLoadingStore.ts";
 
 const props = defineProps<DataSourceMenuEventBusProps>()
 
@@ -225,11 +231,11 @@ const tableIds = computed(() => {
 })
 
 const handleCodeDownload = async () => {
-	loadingStore.start()
+	loadingStore.add()
 	const res = (await api.generateService.generateByTable({body: tableIds.value})) as any as Blob
 	const file = new File([res], "entities.zip")
 	saveAs(file)
-	loadingStore.end()
+	loadingStore.sub()
 }
 
 const codePreviewDialogOpenState = ref(false)
@@ -237,10 +243,10 @@ const codePreviewDialogOpenState = ref(false)
 const codesMap = ref<{ [key: string]: string }>({})
 
 const handleCodePreview = async () => {
-	loadingStore.start()
+	loadingStore.add()
 	codesMap.value = await api.generateService.previewByTable({tableIds: tableIds.value})
 	codePreviewDialogOpenState.value = true
-	loadingStore.end()
+	loadingStore.sub()
 }
 
 watch(() => codePreviewDialogOpenState.value, async (openState) => {
@@ -250,26 +256,26 @@ watch(() => codePreviewDialogOpenState.value, async (openState) => {
 })
 
 props.eventBus.on('clickTable', async ({id}) => {
-	loadingStore.start()
+	loadingStore.add()
 	await store.loadTable(id)
-	loadingStore.end()
+	loadingStore.sub()
 })
 
 props.eventBus.on('clickSchema', async ({id}) => {
-	loadingStore.start()
+	loadingStore.add()
 	await store.loadSchema(id)
-	loadingStore.end()
+	loadingStore.sub()
 })
 
 props.eventBus.on('deleteDataSource', ({id}) => {
-	loadingStore.start()
+	loadingStore.add()
 	store.removeTables(table => table.schema?.dataSource.id == id)
-	loadingStore.end()
+	loadingStore.sub()
 })
 
 props.eventBus.on('deleteSchema', ({id}) => {
-	loadingStore.start()
+	loadingStore.add()
 	store.removeTables(table => table.schema?.id == id)
-	loadingStore.end()
+	loadingStore.sub()
 })
 </script>

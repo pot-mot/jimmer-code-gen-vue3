@@ -7,7 +7,7 @@ import {useRouter} from "vue-router";
 import {datetimeFormat} from "../utils/dataFormat.ts";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {deleteConfirm, sendMessage} from "../utils/message.ts";
-import ModelDialog from "../components/ModelEditor/dialog/ModelDialog.vue";
+import ModelDialog from "../components/global/ModelInfo/ModelDialog.vue";
 import {useLoading} from "../hooks/useLoading.ts";
 
 const router = useRouter()

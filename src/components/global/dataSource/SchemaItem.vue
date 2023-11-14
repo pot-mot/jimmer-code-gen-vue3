@@ -6,7 +6,7 @@ import Details from "../../common/Details.vue";
 import {Delete, Search} from "@element-plus/icons-vue";
 import TableItem from "./TableItem.vue";
 import SchemaIcon from "../../icons/database/SchemaIcon.vue";
-import {DataSourceMenuEventBusProps} from "./DataSourceMenuEventBus.ts";
+import {DataSourceMenuEventBusProps} from "./events/DataSourceMenuEvents.ts";
 import {deleteConfirm, sendMessage} from "../../../utils/message.ts";
 
 interface SchemaItemProps {
@@ -43,7 +43,7 @@ const handleDelete = () => {
 
 const keywords = ref("")
 
-const query = () => {
+const handleQueryTables = () => {
 	api.tableService.queryCommonView({
 		query: {
 			keywords: keywords.value.split(" "),
@@ -62,28 +62,36 @@ const query = () => {
 				<el-text class="hover-show">
 					<SchemaIcon></SchemaIcon>
 
-					<el-button @click="eventBus.emit('clickSchema', {id: schema.id})" link>
-						{{ schema.name }}
-					</el-button>
+					<slot name="operations" :schema="schema" :tables="tables" :eventBus="eventBus">
+						<el-button @click="eventBus.emit('clickSchema', {id: schema.id})" link>
+							{{ schema.name }}
+						</el-button>
 
-					<el-button @click="handleDelete" title="删除" :icon="Delete"
-							   type="danger" class="hover-show-item" link>
-					</el-button>
+						<el-button @click="handleDelete" title="删除" :icon="Delete"
+								   type="danger" class="hover-show-item" link>
+						</el-button>
+					</slot>
 				</el-text>
 			</div>
 		</template>
 
 		<div style="padding-left: 0.5em;">
-			<el-input v-model="keywords" @change="query" clearable>
-				<template #append>
-					<el-button @click="query" title="搜索" :icon="Search"></el-button>
-				</template>
-			</el-input>
-			<ul style="padding: 0 0 0.5em 0.5em;">
-				<li v-for="table in tables">
-					<TableItem :table="table" :event-bus="eventBus"></TableItem>
-				</li>
-			</ul>
+			<slot name="searcher" :schema="schema" :tables="tables" :eventBus="eventBus" :keywords="keywords" :handleQuery="handleQueryTables">
+				<el-input v-model="keywords" @change="handleQueryTables" clearable>
+					<template #append>
+						<el-button @click="handleQueryTables" title="搜索" :icon="Search"></el-button>
+					</template>
+				</el-input>
+			</slot>
+			<slot name="tables" :schema="schema" :tables="tables" :eventBus="eventBus">
+				<ul style="padding: 0 0 0.5em 0.5em;">
+					<li v-for="table in tables">
+						<slot name="table" :schema="schema" :tables="tables" :table="table" :eventBus="eventBus">
+							<TableItem :table="table" :event-bus="eventBus"></TableItem>
+						</slot>
+					</li>
+				</ul>
+			</slot>
 		</div>
 	</Details>
 </template>

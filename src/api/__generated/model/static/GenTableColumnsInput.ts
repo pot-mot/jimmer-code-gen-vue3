@@ -8,6 +8,8 @@ export interface GenTableColumnsInput {
     
     id?: number;
     
+    modelId?: number;
+    
     name: string;
     
     orderKey: number;
@@ -23,13 +25,19 @@ export interface GenTableColumnsInput_TargetOf_columns {
     
     autoIncrement: boolean;
     
+    businessKey: boolean;
+    
     comment: string;
     
     defaultValue?: string;
     
     displaySize: number;
     
+    enumId?: number;
+    
     id?: number;
+    
+    logicalDelete: boolean;
     
     name: string;
     

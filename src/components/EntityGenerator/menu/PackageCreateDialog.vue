@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {PackageMenuEventBus} from "../eventBus/PackageMenuEventBus.ts";
 import {ref} from "vue";
-import DragDialog from "../../common/DragDialog.vue";
+import DragDialog from "../../common/dragDialog/DragDialog.vue";
 import PackageAddIcon from "../../icons/entity/PackageAddIcon.vue";
 
 interface PackageCreateDialogProps {

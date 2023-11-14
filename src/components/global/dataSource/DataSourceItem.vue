@@ -4,12 +4,12 @@ import {GenDataSourceView, GenSchemaView} from "../../../api/__generated/model/s
 import SchemaItem from "./SchemaItem.vue";
 import {api} from "../../../api";
 import {GenSchemaDto} from "../../../api/__generated/model/dto";
-import DataSourceDialog from "./DataSourceDialog.vue";
+import DataSourceDialog from "./dialog/DataSourceDialog.vue";
 import Details from "../../common/Details.vue";
 import {useLoading} from "../../../hooks/useLoading.ts";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import DataSourceIcon from "../../icons/database/DataSourceIcon.vue";
-import {DataSourceMenuEventBusProps} from "./DataSourceMenuEventBus.ts";
+import {DataSourceMenuEventBusProps} from "./events/DataSourceMenuEvents.ts";
 import {deleteConfirm, sendMessage} from "../../../utils/message.ts";
 
 const genSchemaLoading = useLoading()
@@ -24,9 +24,9 @@ const props = defineProps<DataSourceItemProps & DataSourceMenuEventBusProps>()
 
 const previewSchemas = ref<GenSchemaDto['DEFAULT'][]>([])
 
-const getPreviewSchemas = async (dataSourceId: number) => {
+const getPreviewSchemas = async () => {
 	previewSchemaLoading.start()
-	previewSchemas.value = await api.schemaService.preview({dataSourceId})
+	previewSchemas.value = await api.schemaService.preview({dataSourceId: props.dataSource.id})
 	previewSchemaLoading.end()
 }
 
@@ -40,11 +40,11 @@ const getSchemas = async (schemaIds: number[] = []) => {
 
 const showAllSchemas = ref(false)
 
-const toggleShowAllSchemas = async (dataSourceId: number) => {
+const toggleShowAllSchemas = async () => {
 	showAllSchemas.value = !showAllSchemas.value
 
 	if (showAllSchemas.value) {
-		await getPreviewSchemas(dataSourceId)
+		await getPreviewSchemas()
 	} else {
 		previewSchemas.value = []
 	}
@@ -57,6 +57,7 @@ const closeAllSchemas = () => {
 
 watch(() => props.dataSource, () => {
 	getSchemas()
+	getPreviewSchemas()
 }, {immediate: true})
 
 const handleDelete = () => {
@@ -132,32 +133,58 @@ props.eventBus.on('deleteSchema', ({id}) => {
 
 					{{ dataSource.name }}
 
-					<el-popover :visible="showAllSchemas" width="300px" placement="bottom-end">
-						<template #reference>
-							<el-button @click="toggleShowAllSchemas(dataSource.id)">
-								schemas
-							</el-button>
-						</template>
+					<slot name="previewSchemas"
+						  :dataSource="dataSource"
+						  :schemas="schemas" :genSchemaLoading="genSchemaLoading"
+						  :previewSchemas="previewSchemas" :previewSchemaLoading="previewSchemaLoading"
+						  :eventBus="eventBus">
+						<el-popover :visible="showAllSchemas" width="300px" placement="bottom-end">
+							<template #reference>
+								<el-button @click="toggleShowAllSchemas()">
+									schemas
+								</el-button>
+							</template>
 
-						<div v-loading="previewSchemaLoading.isLoading()">
-							<div v-for="schema in previewSchemas">
-								<el-text>
-									<el-button @click="loadSchema(schema.name)" link>{{ schema.name }}</el-button>
-								</el-text>
+							<div v-loading="previewSchemaLoading.isLoading()">
+								<div v-for="schema in previewSchemas">
+									<el-text>
+										<el-button @click="loadSchema(schema.name)" link>{{ schema.name }}</el-button>
+									</el-text>
+								</div>
 							</div>
-						</div>
-					</el-popover>
+						</el-popover>
+					</slot>
 
-					<span style="padding-left: 0.5em;" class="hover-show-item">
-						<el-button @click="handleEdit" title="编辑" :icon="EditPen" type="warning" link></el-button>
-						<el-button @click="handleDelete" title="删除" :icon="Delete" type="danger" link></el-button>
-					</span>
+					<slot name="operations"
+						  :dataSource="dataSource"
+						  :schemas="schemas" :genSchemaLoading="genSchemaLoading"
+						  :previewSchemas="previewSchemas" :previewSchemaLoading="previewSchemaLoading"
+						  :eventBus="eventBus">
+						<span style="padding-left: 0.5em;" class="hover-show-item">
+							<el-button @click="handleEdit" title="编辑" :icon="EditPen" type="warning" link></el-button>
+							<el-button @click="handleDelete" title="删除" :icon="Delete" type="danger" link></el-button>
+						</span>
+					</slot>
 				</el-text>
 			</div>
 		</template>
-		<div v-loading="genSchemaLoading.isLoading()" style="padding: 0 0 0.5em 0.5em;">
-			<SchemaItem v-for="schema in schemas" :schema="schema" :event-bus="eventBus"/>
-		</div>
+		<slot name="schemas"
+			  :dataSource="dataSource"
+			  :schemas="schemas" :genSchemaLoading="genSchemaLoading"
+			  :previewSchemas="previewSchemas" :previewSchemaLoading="previewSchemaLoading"
+			  :eventBus="eventBus">
+			<ul v-loading="genSchemaLoading.isLoading()" style="padding: 0 0 0.5em 0.5em;">
+				<li v-for="schema in schemas">
+					<slot name="schema"
+						  :dataSource="dataSource"
+						  :schemas="schemas" :genSchemaLoading="genSchemaLoading" :schema="schema"
+						  :previewSchemas="previewSchemas" :previewSchemaLoading="previewSchemaLoading"
+						  :eventBus="eventBus">
+						<SchemaItem :schema="schema" :event-bus="eventBus"/>
+					</slot>
+				</li>
+			</ul>
+		</slot>
 	</Details>
 	<DataSourceDialog
 		v-if="isEdit"

@@ -1,7 +1,7 @@
 import {Edge, Graph} from "@antv/x6";
 import {getAssociationType} from "../../AssociationEditor/edge/AssociationEdge.ts";
 import {searchNodeByTableName, searchPortByColumnName} from "../../../utils/graphEditor/search.ts";
-import {GenAssociationModelInput} from "../../../api/__generated/model/static";
+import {GenAssociationModelInput, GenTableColumnsInput} from "../../../api/__generated/model/static";
 
 export interface EdgeData extends GenAssociationModelInput {
     edge: Edge
@@ -22,10 +22,10 @@ export const edgeToModelAssociation = (edge: Edge): GenAssociationModelInput | u
         return
     }
 
-    const sourceTable = sourceNode.getData().table
-    const sourceColumn = sourcePort.data.column
-    const targetTable = targetNode.getData().table
-    const targetColumn = targetPort.data.column
+    const sourceTable = sourceNode.getData().table as GenTableColumnsInput
+    const sourceColumn = sourceTable.columns.filter(column => column.name == sourcePort.data.column.name)[0]
+    const targetTable = targetNode.getData().table as GenTableColumnsInput
+    const targetColumn = targetTable.columns.filter(column => column.name == targetPort.data.column.name)[0]
     if (!sourceTable || !sourceColumn || !targetTable || !targetColumn) {
         return
     }
@@ -35,6 +35,7 @@ export const edgeToModelAssociation = (edge: Edge): GenAssociationModelInput | u
             name: sourceColumn.name,
             comment: sourceColumn.comment,
             type: sourceColumn.type,
+            typeCode: sourceColumn.typeCode,
 
             table: {
                 name: sourceTable.name,
@@ -45,6 +46,7 @@ export const edgeToModelAssociation = (edge: Edge): GenAssociationModelInput | u
             name: targetColumn.name,
             comment: targetColumn.comment,
             type: targetColumn.type,
+            typeCode: targetColumn.typeCode,
 
             table: {
                 name: targetTable.name,
@@ -52,6 +54,9 @@ export const edgeToModelAssociation = (edge: Edge): GenAssociationModelInput | u
             }
         },
         associationType: getAssociationType(edge),
+        fake: true,
+        dissociateAction: undefined,
+        comment: ""
     }
 }
 
@@ -67,6 +72,8 @@ export const edgeToData = (edge: Edge): EdgeData | undefined => {
 }
 
 export const dataToEdge = (graph: Graph, data: EdgeData): Edge | undefined => {
+    if (data.targetColumn.typeCode != data.sourceColumn.typeCode) return
+
     const sourceNode = searchNodeByTableName(graph, data.sourceColumn.table.name)
     const targetNode = searchNodeByTableName(graph, data.targetColumn.table.name)
 

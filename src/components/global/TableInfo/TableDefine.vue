@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import CodePreview from "../../common/CodePreview.vue";
+import CodePreview from "../../common/code/CodePreview.vue";
 import {ref, watch} from "vue";
 import {api} from "../../../api";
 

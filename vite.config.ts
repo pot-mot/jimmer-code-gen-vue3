@@ -22,7 +22,7 @@ export default defineConfig({
                 'git',
                 'log',
             ],
-            'plugins': ['line-numbers', 'copy-to-clipboard', 'inline-color'],
+            'plugins': ['copy-to-clipboard', 'inline-color'],
             css: true
         }),
     ],

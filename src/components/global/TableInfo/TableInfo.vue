@@ -2,7 +2,7 @@
 import {GenTableAssociationsView} from "../../../api/__generated/model/static";
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import Details from "../../common/Details.vue";
-import {useAssociationEditorStore} from "../store/AssociationEditorStore.ts";
+import {useAssociationEditorStore} from "../../AssociationEditor/store/AssociationEditorStore.ts";
 import {Graph} from "@antv/x6";
 import {watch} from "vue";
 import {
@@ -111,11 +111,13 @@ const deleteInAssociation = (
 							<Comment :comment="column.comment"></Comment>
 						</el-text>
 						<el-text>
-							{{ column.type }}
+							{{ column.fullType }}
 						</el-text>
+
 						<el-text>
 							{{ column.defaultValue }}
 						</el-text>
+
 						<el-text>
 							{{ column.remark }}
 						</el-text>

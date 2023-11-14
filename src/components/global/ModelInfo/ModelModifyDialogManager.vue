@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {nextTick, ref} from 'vue'
-import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
+import {ModelEditorEventBus} from "../../ModelEditor/eventBus/ModelEditorEventBus.ts";
 import {GenTableColumnsInput} from "../../../api/__generated/model/static";
 import ModelModifyDialog from "./ModelModifyDialog.vue";
 

@@ -3,7 +3,7 @@ import {commonGraphStoreOperations} from "../../../utils/graphEditor/commonStore
 import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
 import {importModelNodes} from "../node/modelNode.ts";
 import {sendMessage} from "../../../utils/message.ts";
-import {ref, nextTick} from "vue";
+import {nextTick, ref} from "vue";
 import {api} from "../../../api";
 import {loadModelNodes} from "../node/loadModelNodes.ts";
 
@@ -15,7 +15,8 @@ export const useModelEditorStore =
 
             const {_graph} = commonStore
 
-            const openDataSourceMenu = ref(false)
+
+            const openDataSourceLoadMenu = ref(false)
 
             /**
              * 向画布导入 schema
@@ -100,7 +101,7 @@ export const useModelEditorStore =
             return {
                 ...commonStore,
 
-                openDataSourceMenu,
+                openDataSourceLoadMenu,
 
                 loadSchema,
                 loadTable

@@ -25,9 +25,9 @@ export const sendMessage = (message: string, type: "info" | "success" | "warning
     }
 }
 
-export const confirm = (
+export const messageConfirm = (
     callback: () => void,
-    message: string = "",
+    message: string,
     opts?: ElMessageBoxOptions,
 ) => {
     ElMessageBox.confirm(
@@ -35,8 +35,7 @@ export const confirm = (
         {
             confirmButtonText: 'Yes',
             cancelButtonText: 'No',
-            icon: Delete,
-            type: "error",
+            type: 'warning',
             ...opts
         }
     ).then(() => {

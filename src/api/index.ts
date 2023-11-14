@@ -27,7 +27,9 @@ export const api = new Api(async ({uri, method, body}) => {
             return null
         } else if (contentType.includes("application/json")) {
             return await response.json()
-        } else  if (contentType.includes("application/octet-stream")) {
+        } else if (contentType.includes("text/plain")) {
+            return await response.text()
+        } else if (contentType.includes("application/octet-stream")) {
             return await response.blob()
         } else {
             // 其他类型的响应内容

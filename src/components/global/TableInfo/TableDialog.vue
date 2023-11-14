@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import {ref, watch} from 'vue'
 import {GenTableAssociationsView} from '../../../api/__generated/model/static'
-import DragDialog from "../../common/DragDialog.vue"
-import TableInfo from "../../AssociationEditor/dialog/TableInfo.vue";
+import DragDialog from "../../common/dragDialog/DragDialog.vue"
+import TableInfo from "./TableInfo.vue";
 import {api} from "../../../api";
 import {sendMessage} from "../../../utils/message.ts";
-import TableDefine from "../../AssociationEditor/dialog/TableDefine.vue";
+import TableDefine from "./TableDefine.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
 import {convertEntities} from "../../AssociationEditor/api.ts";

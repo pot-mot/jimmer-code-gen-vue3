@@ -88,19 +88,45 @@ const handleCancel = () => {
 					</el-form-item>
 				</el-col>
 				<el-col :span="12">
-					<el-form-item label="生成 tableDefine 时携带外键语句">
+					<el-form-item label="生成 ddl 时携带外键">
 						<el-switch v-model="config.tableDefineWithFk"></el-switch>
 					</el-form-item>
 				</el-col>
 			</el-row>
 
-			<el-form-item label="默认包路径">
-				<el-input v-model="config.defaultPackagePath"></el-input>
-			</el-form-item>
+			<el-row :gutter="24">
+				<el-col :span="12">
+					<el-form-item label="默认包路径">
+						<el-input v-model="config.defaultPackagePath"></el-input>
+					</el-form-item>
+				</el-col>
 
-			<el-form-item label="逻辑删除注释">
-				<el-input v-model="config.logicalDeletedAnnotation"></el-input>
-			</el-form-item>
+				<el-col :span="12">
+					<el-form-item label="逻辑删除注释">
+						<el-input v-model="config.logicalDeletedAnnotation"></el-input>
+					</el-form-item>
+				</el-col>
+			</el-row>
+
+			<el-row :gutter="24">
+				<el-col :span="8">
+					<el-form-item label="生成 JoinColumn 注释">
+						<el-switch v-model="config.joinColumnAnnotation"></el-switch>
+					</el-form-item>
+				</el-col>
+
+				<el-col :span="8">
+					<el-form-item label="生成 JoinTable 注释">
+						<el-switch v-model="config.joinTableAnnotation"></el-switch>
+					</el-form-item>
+				</el-col>
+
+				<el-col :span="8">
+					<el-form-item label="生成 IdView 属性">
+						<el-switch v-model="config.idViewProperty"></el-switch>
+					</el-form-item>
+				</el-col>
+			</el-row>
 
 			<Details open>
 				<template #title>

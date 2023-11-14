@@ -72,22 +72,13 @@ onMounted(async () => {
 	}
 
 	// 绑定数据
-	table.value = node.value.getData().table
+	const setData = () => {
+		if (!node.value) return
+		table.value = node.value.getData().table
 
-	node.value.on('change:data', () => {
-		table.value = node.value!.getData().table
-	})
+	}
 
-	node.value.on('change:size', () => {
-		if (!node.value || !container.value) return
-
-		const width = container.value.clientWidth
-
-		// 设置 ports 宽度
-		node.value.ports.items.forEach(port => {
-			node.value!.setPortProp(port.id!, `attrs/${COLUMN_PORT_SELECTOR}/width`, width)
-		})
-	})
+	setData()
 
 	await nextTick()
 
@@ -98,31 +89,52 @@ onMounted(async () => {
 
 	node.value.getData().wrapper = wrapper
 
-	// 响应式更新尺寸
-	const resize = () => {
-		if (!graph.value || !node.value || !container.value) return
+	node.value.on('change:data', () => {
+		setData()
+	})
 
-		node.value!.resize(container.value.clientWidth, container.value.clientHeight)
+	// 更新尺寸
+	const resizeNode = () => {
+		if (!node.value || !container.value) return
+
+		node.value.resize(container.value.clientWidth, container.value.clientHeight)
 	}
 
-	resize()
-
 	const wrapperResizeObserver = new ResizeObserver(() => {
-		resize()
+		resizeNode()
 	})
 
 	wrapperResizeObserver.observe(container.value)
 
+	const resizePort = () => {
+		if (!node.value) return
+
+		// 设置 ports 宽度
+		for (let port of node.value.ports.items) {
+			node.value.setPortProp(port.id!, `attrs/${COLUMN_PORT_SELECTOR}/width`, node.value.getSize().width)
+		}
+	}
+
+	node.value.on('change:size', () => {
+		resizePort()
+	})
+
+	resizeNode()
+
+	// 根据数据更新更新 port 和 edge
 	watch(() => table.value, () => {
 		if (node.value && table.value && store.isLoaded) {
 			const graph = store._graph()
 
-			const edgeDatas = graph.getConnectedEdges(node.value.id).map(edgeToData)
+			const edgeDatas = graph
+				.getConnectedEdges(node.value.id)
+				.map((edge) => edgeToData(edge))
 
 			node.value.removePorts()
 			node.value.addPorts(
 				table.value.columns.map(modelColumnToPort)
 			)
+			resizePort()
 
 			edgeDatas.forEach(data => {
 				if (!data) return

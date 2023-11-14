@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import LeftTopBottomLayout from "../components/layout/LeftRightLayout.vue";
-import DataSourceMenu from "../components/global/DataSourceMenu/DataSourceMenu.vue";
+import DataSourceMenu from "../components/global/dataSource/DataSourceMenu.vue";
 import TableGraph from "../components/AssociationEditor/index.vue";
 import {ref} from "vue";
 

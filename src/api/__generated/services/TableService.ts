@@ -1,4 +1,5 @@
 import type { Executor } from '../';
+import type { DataSourceType } from '../model/enums';
 import type { GenTableAssociationsView, GenTableColumnsView, GenTableCommonView, GenTableIdView, TableQuery } from '../model/static';
 
 export class TableService {
@@ -16,6 +17,15 @@ export class TableService {
     > {
         let _uri = '/table/define/';
         _uri += encodeURIComponent(options.id);
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.type;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'type='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         return (await this.executor({uri: _uri, method: 'GET'})) as { [key: string]: string }
     }
     
@@ -198,7 +208,7 @@ export class TableService {
 
 export type TableServiceOptions = {
     'delete': {ids: number[]},
-    'getTableDefine': {id: number},
+    'getTableDefine': {id: number, type?: DataSourceType},
     'queryAssociationsView': {query: TableQuery},
     'queryColumnsView': {query: TableQuery},
     'queryCommonView': {query: TableQuery},

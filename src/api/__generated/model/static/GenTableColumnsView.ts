@@ -29,6 +29,8 @@ export interface GenTableColumnsView_TargetOf_columns {
     
     autoIncrement: boolean;
     
+    businessKey: boolean;
+    
     comment: string;
     
     createdTime: string;
@@ -37,7 +39,11 @@ export interface GenTableColumnsView_TargetOf_columns {
     
     displaySize: number;
     
+    enumId?: number;
+    
     id: number;
+    
+    logicalDelete: boolean;
     
     modifiedTime: string;
     

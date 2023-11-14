@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {nextTick, onMounted, onUnmounted, ref} from "vue";
 import {Graph, Node} from "@antv/x6";
-import DragDialog from "../../common/DragDialog.vue";
+import DragDialog from "../dragDialog/DragDialog.vue";
 import {focus} from "../../../utils/graphEditor/viewOperation.ts";
 
 interface SearcherProps {

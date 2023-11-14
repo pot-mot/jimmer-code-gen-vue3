@@ -5,7 +5,7 @@ import {api} from "../../../api";
 import {sendMessage} from "../../../utils/message.ts";
 import Comment from "../../common/Comment.vue";
 import {convertEntities, generateEntities, previewEntities} from "../../AssociationEditor/api.ts";
-import MultiCodePreview from "../../common/MultiCodePreview.vue";
+import MultiCodePreview from "../../common/code/MultiCodePreview.vue";
 
 interface EntityInfoProps {
 	id: number
