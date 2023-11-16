@@ -83,7 +83,7 @@ const handleClose = () => {
 
 <template>
 	<div v-if="openState">
-		<DragDialog ref="dialog" @close="handleClose" :init-w="400" :x="1100" :y="50" :to="to" fit-content>
+		<DragDialog ref="dialog" @close="handleClose" :init-w="400" :init-x="1100" :init-y="50" :to="to" fit-content>
 			<el-input ref="input" v-model="keyword" @input="handleSearch" @change="handleSearch" clearable>
 				<template #append>
 					<el-button @click="handleSearch">搜索</el-button>

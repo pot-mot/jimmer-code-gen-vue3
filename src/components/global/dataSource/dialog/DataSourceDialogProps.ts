@@ -1,8 +1,8 @@
 import {DataSourceFormProps} from "../form/DataSourceFormProps.ts";
 
 export interface DataSourceDialogProps extends DataSourceFormProps {
-    x?: number
-    y?: number
+    initX?: number
+    initY?: number
     limitByParent?: boolean
     disableTeleport?: boolean
     to?: string

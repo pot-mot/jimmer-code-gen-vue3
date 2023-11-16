@@ -38,7 +38,7 @@ const handleCreate = () => {
 		</slot>
 	</span>
 
-	<DragDialog v-if="openState" @close="openState = false" :can-drag="false" :x="x" :y="y" :init-w="300">
+	<DragDialog v-if="openState" @close="openState = false" :can-drag="false" :init-x="x" :init-y="y" :init-w="300">
 		<el-text>新软件包名称</el-text>
 		<el-input
 			v-model="newPath"

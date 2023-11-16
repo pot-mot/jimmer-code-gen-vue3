@@ -75,7 +75,6 @@ onMounted(async () => {
 	const setData = () => {
 		if (!node.value) return
 		table.value = node.value.getData().table
-
 	}
 
 	setData()

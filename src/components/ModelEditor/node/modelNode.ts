@@ -17,7 +17,9 @@ const modelToNode = (table: GenTableColumnsInput, options: any = undefined) => {
     return {
         ...options,
         shape: "model",
-        data: {table},
+        data: {
+            table
+        },
         ports: {
             groups: {
                 COLUMN_PORT_GROUP: columnPortGroup,

@@ -103,10 +103,6 @@ const handleSubmit = () => {
 		messageList.push('表名不可重复')
 	}
 
-	if (table.value.columns.filter(column => column.partOfPk).length != 1) {
-		messageList.push('表必须有且仅有一个主键列')
-	}
-
 	const nameSet = new Set<string>(table.value.columns.map(it => it.name.trim()))
 
 	for (let columnName of nameSet.values()) {
@@ -118,6 +114,20 @@ const handleSubmit = () => {
 
 	if (nameSet.size < table.value.columns.length) {
 		messageList.push('列名不可重复')
+	}
+
+	if (table.value.columns.filter(column => column.partOfPk).length != 1) {
+		messageList.push('表必须有且仅有一个主键列')
+	} else {
+		const pk = table.value.columns.filter(column => column.partOfPk)[0]
+
+		if (!pk.partOfUniqueIdx) {
+			messageList.push('主键列必须唯一')
+		}
+
+		if (!pk.typeNotNull) {
+			messageList.push('主键列必须非空')
+		}
 	}
 
 	if (messageList.length > 0) {

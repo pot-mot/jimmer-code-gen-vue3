@@ -7,7 +7,7 @@ export interface EdgeData extends GenAssociationModelInput {
     edge: Edge
 }
 
-export const edgeToModelAssociation = (edge: Edge): GenAssociationModelInput | undefined => {
+export const getEdgeConnect = (edge: Edge) => {
     const sourceNode = edge.getSourceNode()
     const targetNode = edge.getTargetNode()
     const sourcePortId = edge.getSourcePortId()
@@ -22,13 +22,41 @@ export const edgeToModelAssociation = (edge: Edge): GenAssociationModelInput | u
         return
     }
 
+    return {
+        sourceNode,
+        sourcePort,
+        targetNode,
+        targetPort
+    }
+}
+
+export const getEdgeConnectData = (edge: Edge) => {
+    const connect = getEdgeConnect(edge)
+
+    if (!connect) return
+
+    const {sourceNode, sourcePort, targetNode, targetPort} = connect
+
     const sourceTable = sourceNode.getData().table as GenTableColumnsInput
     const sourceColumn = sourceTable.columns.filter(column => column.name == sourcePort.data.column.name)[0]
     const targetTable = targetNode.getData().table as GenTableColumnsInput
     const targetColumn = targetTable.columns.filter(column => column.name == targetPort.data.column.name)[0]
-    if (!sourceTable || !sourceColumn || !targetTable || !targetColumn) {
-        return
+
+    return {
+        ...connect,
+        sourceTable,
+        sourceColumn,
+        targetTable,
+        targetColumn
     }
+}
+
+export const edgeToModelAssociation = (edge: Edge): GenAssociationModelInput | undefined => {
+    const connect = getEdgeConnectData(edge)
+
+    if (!connect) return
+
+    const {sourceTable, sourceColumn, targetTable, targetColumn} = connect
 
     return {
         sourceColumn: {

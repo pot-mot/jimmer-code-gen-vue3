@@ -13,6 +13,7 @@ import {Options} from "@antv/x6/es/graph/options";
 import Connecting = Options.Connecting;
 import {erRouter, orthRouter} from "../../../utils/graphEditor/router.ts";
 import {sendMessage} from "../../../utils/message.ts";
+import {judgeClickBox} from "../../../utils/clickBox.ts";
 
 const baseLabel = {
     markup: [
@@ -126,15 +127,9 @@ export const getAssociations = (graph: Graph): GenAssociationMatchView[] => {
     return graph.getEdges().map(edgeToAssociation)
 }
 
-const judgeClickBox = (box: DOMRect, x: number, y: number) => {
-    return box.x < x && box.x + box.width > x &&
-        box.y < y && box.y + box.height > y
-}
-
 export const useSwitchAssociationType = (graph: Graph) => {
-    graph.on('edge:unselected', (cell) => {
-        if (!cell) return
-        cell.edge.getData().selectFlag = false
+    graph.on('edge:unselected', ({edge}) => {
+        edge.getData().selectFlag = false
     })
 
     graph.on('edge:click', ({edge, e}) => {

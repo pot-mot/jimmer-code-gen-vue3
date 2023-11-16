@@ -87,6 +87,6 @@ defineExpose({
 	</slot>
 
 	<DataSourceDialog
-		v-if="saveDialogOpenState" :x="x" :y="y" @close="saveDialogOpenState = false" @added="handleSaveFinish">
+		v-if="saveDialogOpenState" :init-x="x" :init-y="y" @close="saveDialogOpenState = false" @added="handleSaveFinish">
 	</DataSourceDialog>
 </template>

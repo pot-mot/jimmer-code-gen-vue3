@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import DragResize from 'vue3-draggable-resizable'
 import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
-import {nextTick, onMounted, ref} from 'vue'
+import {nextTick, onBeforeMount, onMounted, ref} from 'vue'
 import {ElButton} from "element-plus";
 import {Close} from "@element-plus/icons-vue";
 import {DragResizeProps} from "./DragDialogProps.ts";
@@ -19,19 +19,19 @@ const props = withDefaults(defineProps<DragResizeProps>(), {
 const x = ref(0)
 const w = ref(0)
 
-onMounted(() => {
+onBeforeMount(() => {
 	const maxWidth = document.documentElement.clientWidth
 
 	if (maxWidth < props.initW) {
 		x.value = 0
 		w.value = maxWidth
-	} else if (props.x) {
+	} else if (props.initX) {
 		w.value = props.initW
 
-		if (props.initW + props.x > maxWidth) {
-			x.value = maxWidth - props.initW - 20
+		if (props.initW + props.initX > maxWidth) {
+			x.value = maxWidth - props.initW
 		} else {
-			x.value = props.x
+			x.value = props.initX
 		}
 	} else {
 		w.value = props.initW
@@ -98,8 +98,11 @@ defineExpose({
 <template>
 	<Teleport :to="to" :disabled="disableTeleport">
 		<DragResize :active="true" :draggable="draggable" :parent="limitByParent" :resizable="canResize"
-					:h="h" :w="w" :initW="initW" :minH="minH" :minW="minW" :maxH="maxH" :maxW="maxW"
-					:x="x" :y="y"
+					:h="h" :w="w" :initW="initW"
+					:minH="minH" :minW="minW" :maxH="maxH" :maxW="maxW"
+					:x="x" :y="initY"
+					:disableX="disableX" :disableY="disableY"
+					:disableW="disableW" :disableH="disableH"
 					style="border: none; z-index: 2000;">
 			<div ref="wrapper" class="wrapper" :style="draggable ? 'cursor: all-scroll;' : 'cursor: default;'">
 				<div class="close" @click="close">

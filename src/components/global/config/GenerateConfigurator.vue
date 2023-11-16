@@ -56,7 +56,7 @@ watch(() => openState.value, (value) => {
 
 	</div>
 
-	<DragDialog v-if="openState" @close="openState = false" :y="100" can-resize>
+	<DragDialog v-if="openState" @close="openState = false" :init-y="100" can-resize>
 		<div class="wrapper">
 			<GenerateConfigForm v-if="configType == 'GenerateConfigForm'" @cancel="openState = false" @submit="openState = false"></GenerateConfigForm>
 

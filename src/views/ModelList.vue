@@ -47,7 +47,9 @@ const handleSubmit = async (model: GenModelInput) => {
 			return
 		}
 
-		await api.modelService.update({body: model})
+		model.value = undefined
+
+		await api.modelService.save({body: model})
 		editModel.value = undefined
 		sendMessage('模型修改成功', 'success')
 

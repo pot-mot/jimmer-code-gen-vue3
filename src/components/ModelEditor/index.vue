@@ -72,11 +72,9 @@
 					}" :icon="SQLIcon"></el-button>
 				</el-tooltip>
 
-				<el-dialog v-model="openSQLPreviewDialog" :z-index="2000" fullscreen>
-					<div style="height: calc(100vh - 5em); overflow: auto">
-						<MultiCodePreview :codes-map="sqlMap"></MultiCodePreview>
-					</div>
-				</el-dialog>
+				<DragDialog v-if="openSQLPreviewDialog" @close="openSQLPreviewDialog = false" can-drag can-resize disable-h :init-w="700" :init-x="5000">
+					<MultiCodePreview style="height: 100vh; width: 100%;" height="calc(100vh - 5em)" width="100%" :codes-map="sqlMap"></MultiCodePreview>
+				</DragDialog>
 			</li>
 
 			<li>
@@ -87,17 +85,15 @@
 					}" :icon="PreviewIcon"></el-button>
 				</el-tooltip>
 
-				<el-dialog v-model="codePreviewDialogOpenState" :z-index="2000" fullscreen>
-					<div style="height: calc(100vh - 5em); overflow: auto">
-						<MultiCodePreview :codes-map="codesMap"></MultiCodePreview>
-					</div>
+				<DragDialog v-if="codePreviewDialogOpenState" @close="codePreviewDialogOpenState = false" can-drag can-resize disable-h :init-w="700" :init-x="5000">
+					<MultiCodePreview style="height: 100vh; width: 100%;" height="calc(100vh - 5em)" width="100%" :codes-map="codesMap"></MultiCodePreview>
 
 					<div style="position: absolute; bottom: 2em; right: 2em;">
 						<el-tooltip content="下载代码">
 							<el-button @click="handleCodeDownload" :icon="DownloadIcon" size="large" round></el-button>
 						</el-tooltip>
 					</div>
-				</el-dialog>
+				</DragDialog>
 			</li>
 
 			<li>
@@ -132,8 +128,8 @@
 	<ModelDialog v-if="openModelDialog" @submit="handleSaveDialogSubmit"
 				 @cancel="openModelDialog = false"></ModelDialog>
 
-	<DragDialog v-if="store.openDataSourceLoadMenu" @close="store.openDataSourceLoadMenu = false" :can-resize="true"
-				:init-w="500" :x="100" :y="10">
+	<DragDialog v-if="store.openDataSourceLoadMenu" @close="store.openDataSourceLoadMenu = false" can-resize
+				:init-w="500" :init-x="100" :init-y="10">
 		<div style="height: 70vh; overflow: auto; scrollbar-gutter: stable;">
 			<DataSourceMenu ref="dataSourceLoadMenu"></DataSourceMenu>
 		</div>

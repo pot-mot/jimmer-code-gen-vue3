@@ -23,7 +23,7 @@ const handleSubmit = (table: GenTableColumnsInput) => {
 </script>
 
 <template>
-	<DragDialog @close="emits('close')" :can-resize="true" :y="100" :init-w="1200">
+	<DragDialog @close="emits('close')" :can-resize="true" :init-y="100" :init-w="1200">
 		<ModelForm :id="id" :table="table" @submit="handleSubmit" @cancel="emits('close')"></ModelForm>
 	</DragDialog>
 </template>

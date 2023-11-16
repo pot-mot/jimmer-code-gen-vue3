@@ -1,12 +1,16 @@
 export interface DragResizeProps {
-    x?: number
-    y?: number
+    initX?: number
+    initY?: number
     initW?: number
     minW?: number
     minH?: number
     maxW?: number
     maxH?: number
     to?: string
+    disableX?: boolean
+    disableY?: boolean
+    disableW?: boolean
+    disableH?: boolean
     disableTeleport?: boolean
     limitByParent?: boolean
     canResize?: boolean

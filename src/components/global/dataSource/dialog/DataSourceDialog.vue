@@ -36,7 +36,7 @@ const handleAdded = (dataSource: GenDataSourceView) => {
 </script>
 
 <template>
-	<DragDialog :x="props.x" :y="props.y" :init-w="500" @close="handleClose" :disable-teleport="disableTeleport" :limit-by-parent="limitByParent" :to="to">
+	<DragDialog :init-x="props.initX" :init-y="props.initY" :init-w="500" @close="handleClose" :disable-teleport="disableTeleport" :limit-by-parent="limitByParent" :to="to">
 		<DataSourceForm
 			:data-source="dataSource" :id="id"
 			@updated="handleUpdated" @added="handleAdded"

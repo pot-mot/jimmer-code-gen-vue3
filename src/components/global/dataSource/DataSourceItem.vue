@@ -125,7 +125,7 @@ props.eventBus.on('deleteSchema', ({id}) => {
 </script>
 
 <template>
-	<Details open>
+	<Details open v-loading="previewSchemaLoading.isLoading() || genSchemaLoading.isLoading()">
 		<template #title>
 			<div style="height: 2em; line-height: 2em;">
 				<el-text class="hover-show">
@@ -145,7 +145,7 @@ props.eventBus.on('deleteSchema', ({id}) => {
 								</el-button>
 							</template>
 
-							<div v-loading="previewSchemaLoading.isLoading()">
+							<div>
 								<div v-for="schema in previewSchemas">
 									<el-text>
 										<el-button @click="loadSchema(schema.name)" link>{{ schema.name }}</el-button>
@@ -173,7 +173,7 @@ props.eventBus.on('deleteSchema', ({id}) => {
 			  :schemas="schemas" :genSchemaLoading="genSchemaLoading"
 			  :previewSchemas="previewSchemas" :previewSchemaLoading="previewSchemaLoading"
 			  :eventBus="eventBus">
-			<ul v-loading="genSchemaLoading.isLoading()" style="padding: 0 0 0.5em 0.5em;">
+			<ul style="padding: 0 0 0.5em 0.5em;">
 				<li v-for="schema in schemas">
 					<slot name="schema"
 						  :dataSource="dataSource"
@@ -190,7 +190,7 @@ props.eventBus.on('deleteSchema', ({id}) => {
 		v-if="isEdit"
 		:id="dataSource.id"
 		:data-source="dataSource"
-		:x="x" :y="y"
+		:init-x="x" :init-y="y"
 		@close="isEdit = false"
 		@updated="handleEditFinish">
 	</DataSourceDialog>
