@@ -1,11 +1,6 @@
-# Jimmer Code Gen 代码生成器
+# Jimmer Code Gen 模型设计器
 
 项目基于 Vite + Vue3 + TypeScript + Element-Plus 编写
-
-> ## 重构内容
-> 
-> 补充单独的模型设计器
-> 
 
 ## 后端项目地址
 
@@ -47,45 +42,50 @@ vite build
 
 ## 核心设计说明
 
-### 图表操作封装层
+### 组件封装
 
-[graphEditor](src%2Futils%2FgraphEditor) 文件夹
+> 此处存在大量封装不明确与职责划分模糊，未来仍需改进
 
-基于函数式的设计封装了 init、selection、history、focus、center、layout 等常用操作
+#### 图表操作工具层
+
+[graphEditor](src%2Futils%2FgraphEditor)
+
+基于函数式的设计封装了 init、selection、history、focus、center、layout 等常用操作。
+基本入口为 [commonStore.ts](src%2Futils%2FgraphEditor%2FcommonStore.ts)，如果需要再设计 graph 也仅需将一个新的 graph 示例 load 入 store 即可。
 
 > 其中 layout 为 "为适应不同 node 尺寸" 因此没有在框架基础上实现，而是单独书写，可能存在较大问题，未来会考虑再次重构
 
-基于该层补充业务逻辑即可组装出编辑器
+#### 关联编辑器
 
-业务逻辑主要基于事件和状态实现，即对应组件中的 eventBus 和 store
+[AssociationEditor](src%2Fcomponents%2FAssociationEditor)
 
-> 这部分设计是因为涉及编辑器与菜单栏联动，因此很有必要将业务功能中的核心操作（比如菜单向图中导入多张表，或者 schema 本身的删除）与编辑器内部的行为进行拆分
+作为较早期设计，基于直接从数据库获取结构进行关联设置。
 
-## TODO
+正如命名，因不涉及表结构变更，因此整体功能非常简单，直接根据表结构与关联映射为实体。
 
-### 数据库设计与同步
+前置需求是**需要具备现成的数据库结构与可以直接连接的数据源**
 
-[表详细信息组件](src%2Fcomponents%2Fglobal%2FTableEntityDialog%2FTableInfo.vue)
+#### 模型设计器
 
-[模型设计器组件](src%2Fcomponents%2FModelEditor%2Findex.vue)
+[ModelEditor](src%2Fcomponents%2FModelEditor)
 
-[关联编辑器组件](src%2Fcomponents%2FAssociationEditor%2Findex.vue)
+基于关联编辑器重新调整的模型设计器，可以不依赖数据源直接设计模型结构。
 
-### 实体类管理
+表节点结构为实时更新补充了相当多数据监听，但仍有很多情况不可正常的触发视图更新，很多地方存在需要强行书写的情况，因此谨慎调整相关代码。
 
-[实体详细信息组件](src%2Fcomponents%2FEntityGenerator%2Fentity%2FEntityInfo.vue)
+代码预览部分需要依靠后端的严格类型系统进行，因此**预览操作均会触发保存**。
+
+- 未来将补充 log 功能。
+
+#### DragDialog
+
+考虑到有同时查看多个的需求，项目中大部分会话框使用 [DragDialog.vue](src%2Fcomponents%2Fcommon%2FdragDialog%2FDragDialog.vue) 而不是 ElDialog。
+
+#### 实体类管理（TODO）
 
 - 实体属性新增修改删除
 
-- 枚举创建（在实体属性的类型修改中实现）
-
-[实体生成器 content 组件](src%2Fcomponents%2FEntityGenerator%2Findex.vue)
-
-（这一块暂时没想好怎样设计）
-
-- 实体类管理
-
-- 枚举管理
+- 枚举创建（在模型及实体的属性的类型修改中实现）
 
 ## LICENSE
 

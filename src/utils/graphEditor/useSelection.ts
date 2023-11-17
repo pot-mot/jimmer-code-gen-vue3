@@ -29,6 +29,7 @@ const smallMoveStep = 10
 export const useSelectionKeyEvent = (_graph: () => Graph) => {
     const handleKeyEvent = (e: KeyboardEvent) => {
         const graph = _graph()
+
         if (!graph) return
 
         if ((e.ctrlKey || e.metaKey) && e.key == 'a') {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import CodePreview from "../../common/code/CodePreview.vue";
+import CodePreview from "../common/code/CodePreview.vue";
 import {ref, watch} from "vue";
-import {api} from "../../../api";
+import {api} from "../../api";
 
 interface TableEntityDialogProps {
 	id: number

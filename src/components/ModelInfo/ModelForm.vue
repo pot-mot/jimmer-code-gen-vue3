@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import {onMounted, ref, toRaw, watch} from 'vue'
-import {GenTableColumnsInput} from "../../../api/__generated/model/static";
-import {GenTableColumnsInput_TargetOf_columns} from "../../../api/__generated/model/static/GenTableColumnsInput.ts";
+import {GenTableColumnsInput} from "../../api/__generated/model/static";
+import {GenTableColumnsInput_TargetOf_columns} from "../../api/__generated/model/static/GenTableColumnsInput.ts";
 import {ArrowDown, ArrowUp, Delete, Plus} from "@element-plus/icons-vue";
-import ColumnIcon from "../../icons/database/ColumnIcon.vue";
-import {api} from "../../../api";
-import {objToMap} from "../../../utils/mapOperation.ts";
-import {useLoading} from "../../../hooks/useLoading.ts";
-import {sendMessage} from "../../../utils/message.ts";
-import {useModelEditorStore} from "../../ModelEditor/store/ModelEditorStore.ts";
-import {swapItems} from "../../../utils/arrayOperation.ts";
+import ColumnIcon from "../icons/database/ColumnIcon.vue";
+import {api} from "../../api";
+import {objToMap} from "../../utils/mapOperation.ts";
+import {useLoading} from "../../hooks/useLoading.ts";
+import {sendMessage} from "../../utils/message.ts";
+import {useModelEditorStore} from "../ModelEditor/store/ModelEditorStore.ts";
+import {swapItems} from "../../utils/arrayOperation.ts";
 
 const store = useModelEditorStore()
 
@@ -169,6 +169,7 @@ const handleColumnToPk = (pkIndex: number) => {
 	table.value.columns.forEach((column, index) => {
 		if (index != pkIndex && column.partOfPk) {
 			column.partOfPk = false
+			column.autoIncrement = false
 		}
 	})
 }

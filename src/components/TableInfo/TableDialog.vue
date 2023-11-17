@@ -1,14 +1,14 @@
 <script lang="ts" setup>
 import {ref, watch} from 'vue'
-import {GenTableAssociationsView} from '../../../api/__generated/model/static'
-import DragDialog from "../../common/dragDialog/DragDialog.vue"
+import {GenTableAssociationsView} from '../../api/__generated/model/static'
+import DragDialog from "../common/dragDialog/DragDialog.vue"
 import TableInfo from "./TableInfo.vue";
-import {api} from "../../../api";
-import {sendMessage} from "../../../utils/message.ts";
+import {api} from "../../api";
+import {sendMessage} from "../../utils/message.ts";
 import TableDefine from "./TableDefine.vue";
-import TableIcon from "../../icons/database/TableIcon.vue";
-import Comment from "../../common/Comment.vue";
-import {convertEntities} from "../../AssociationEditor/api.ts";
+import TableIcon from "../icons/database/TableIcon.vue";
+import Comment from "../common/Comment.vue";
+import {convertEntities} from "../AssociationEditor/api.ts";
 
 interface TableEntityDialogProps {
 	id: number

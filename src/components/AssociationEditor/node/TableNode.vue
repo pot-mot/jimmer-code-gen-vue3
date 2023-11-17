@@ -38,7 +38,7 @@ import {Node, Graph} from '@antv/x6'
 import ColumnIcon from "../../icons/database/ColumnIcon.vue";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
-import {TableDialogEventBus} from "../../global/TableInfo/TableDialogEventBus.ts";
+import {TableDialogEventBus} from "../../TableInfo/TableDialogEventBus.ts";
 import {sendMessage} from "../../../utils/message.ts";
 import {COLUMN_PORT_SELECTOR} from "../../../utils/graphEditor/constant.ts";
 

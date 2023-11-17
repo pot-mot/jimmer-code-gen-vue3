@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {nextTick, ref} from 'vue'
-import {ModelEditorEventBus} from "../../ModelEditor/eventBus/ModelEditorEventBus.ts";
-import {GenTableColumnsInput} from "../../../api/__generated/model/static";
+import {ModelEditorEventBus} from "../ModelEditor/eventBus/ModelEditorEventBus.ts";
+import {GenTableColumnsInput} from "../../api/__generated/model/static";
 import ModelModifyDialog from "./ModelModifyDialog.vue";
 
 const tableMap = ref<Map<string, GenTableColumnsInput>>(new Map)

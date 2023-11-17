@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import {GenTableAssociationsView} from "../../../api/__generated/model/static";
-import ColumnIcon from "../../icons/database/ColumnIcon.vue";
-import Details from "../../common/Details.vue";
-import {useAssociationEditorStore} from "../../AssociationEditor/store/AssociationEditorStore.ts";
-import {Graph} from "@antv/x6";
+import {GenTableAssociationsView} from "../../api/__generated/model/static";
+import ColumnIcon from "../icons/database/ColumnIcon.vue";
+import Details from "../common/Details.vue";
+import {useAssociationEditorStore} from "../AssociationEditor/store/AssociationEditorStore.ts";
 import {watch} from "vue";
 import {
 	GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_2 as InAssociation,
 	GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_2 as OutAssociation,
-} from "../../../api/__generated/model/static/GenTableAssociationsView.ts";
+} from "../../api/__generated/model/static/GenTableAssociationsView.ts";
 import {Delete} from "@element-plus/icons-vue";
-import {processClickFunction} from "../../../utils/clickTimer.ts";
-import Comment from "../../common/Comment.vue";
-import {searchEdgesByColumn} from "../../../utils/graphEditor/search.ts";
-import {showAssociationType} from "../../../utils/simplifyAssociationType.ts";
+import Comment from "../common/Comment.vue";
+import {showAssociationType} from "../../utils/simplifyAssociationType.ts";
 
 const store = useAssociationEditorStore()
 
@@ -26,44 +23,6 @@ const props = defineProps<TableInfoProps>()
 watch(() => props.table, () => {
 	console.log('change')
 }, {deep: true})
-
-const {
-	click: toggleTableSelect,
-	dblClick: focusTable
-} = processClickFunction(
-	(id: number) => {
-		store.select(id)
-	},
-	(id: number) => {
-		store.focus(id)
-	}
-)
-
-const {
-	click: selectAssociation,
-	dblClick: focusAssociation
-} = processClickFunction(
-	(
-		sourceId: number,
-		targetId: number,
-	) => {
-		const graph: Graph = store._graph()
-		const edges = searchEdgesByColumn(graph, sourceId, targetId)
-		store.select(edges)
-	},
-	(
-		sourceId: number,
-		targetId: number,
-	) => {
-		const graph: Graph = store._graph()
-		const edges = searchEdgesByColumn(graph, sourceId, targetId)
-		if (edges.length == 1) {
-			store.focus(edges[0].id)
-		} else {
-			store.select(edges)
-		}
-	}
-)
 
 const deleteOutAssociation = (
 	columnId: number,
@@ -100,7 +59,7 @@ const deleteInAssociation = (
 			<el-input v-model="table.remark" type="textarea"></el-input>
 
 			<Details v-for="column in table.columns"
-					 :disabled="column.inAssociations.length == 0 && column.outAssociations.length == 0">
+					 :disabled="column.inAssociations.length == 0 && column.outAssociations.length == 0" open>
 				<template #title>
 					<div class="column-line">
 						<span>
@@ -129,13 +88,9 @@ const deleteInAssociation = (
 						<el-text>
 							<span>{{ showAssociationType(association.associationType) }}</span>
 
-							<span class="association-link-bottom"
-								  @click="toggleTableSelect(association.sourceColumn.table.id)"
-								  @dblclick="focusTable(association.sourceColumn.table.id)">
+							<span>
 								{{ association.sourceColumn.table.name }}
-							</span>.<span class="association-link-bottom"
-										  @click="selectAssociation(association.sourceColumn.id, column.id)"
-										  @dblclick="focusAssociation(association.sourceColumn.id, column.id)">
+							</span>.<span>
 								{{ association.sourceColumn.name }}
 							</span>
 
@@ -150,13 +105,9 @@ const deleteInAssociation = (
 						<el-text>
 							<span>{{ showAssociationType(association.associationType) }}</span>
 
-							<span class="association-link-bottom"
-								  @click="toggleTableSelect(association.targetColumn.table.id)"
-								  @dblclick="focusTable(association.targetColumn.table.id)">
+							<span>
 								{{ association.targetColumn.table.name }}
-							</span>.<span class="association-link-bottom"
-										  @click="selectAssociation(column.id, association.targetColumn.id)"
-										  @dblclick="focusAssociation(column.id, association.targetColumn.id)">
+							</span>.<span>
 								{{ association.targetColumn.name }}
 							</span>
 
@@ -176,9 +127,5 @@ const deleteInAssociation = (
 	grid-template-columns: 1.5em 15em 10em 1fr 1fr;
 	line-height: 1.5em;
 	white-space: nowrap;
-}
-
-.association-link-bottom:hover {
-	color: var(--el-color-info-dark-2);
 }
 </style>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {ref} from 'vue'
-import DragDialog from "../../common/dragDialog/DragDialog.vue";
+import DragDialog from "../common/dragDialog/DragDialog.vue";
 import ModelForm from "./ModelForm.vue";
-import {ModelEditorEventBus} from "../../ModelEditor/eventBus/ModelEditorEventBus.ts";
-import {GenTableColumnsInput} from "../../../api/__generated/model/static";
+import {ModelEditorEventBus} from "../ModelEditor/eventBus/ModelEditorEventBus.ts";
+import {GenTableColumnsInput} from "../../api/__generated/model/static";
 
 const openState = ref(false)
 

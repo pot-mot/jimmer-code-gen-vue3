@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import GenerateConfigurator from "./components/global/config/GenerateConfigurator.vue";
 import {useGlobalLoadingStore} from "./components/global/loading/GlobalLoadingStore.ts";
-import TableDialogManager from "./components/global/TableInfo/TableDialogManager.vue";
+import TableDialogManager from "./components/TableInfo/TableDialogManager.vue";
 
 const loadingStore = useGlobalLoadingStore()
 </script>

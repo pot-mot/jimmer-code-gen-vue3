@@ -18,6 +18,8 @@ const searchResult = ref<Node[]>([])
 
 const openState = ref(false)
 
+const mouseenterState = ref(false)
+
 const searchTableNodes = (graph: Graph): Node[] => {
 	if (keyword.value.length == 0) {
 		return []
@@ -35,6 +37,8 @@ const dialog = ref()
 const handleSearchKeyDown = (e: KeyboardEvent) => {
 	if (e.ctrlKey || e.metaKey) {
 		if (e.key == 'f') {
+			if (!mouseenterState.value) return
+
 			if (openState.value) return
 
 			e.preventDefault()
@@ -63,11 +67,27 @@ const handleSearch = () => {
 	})
 }
 
+const handleMouseenter = () => {
+	mouseenterState.value = true
+}
+
+const handleMouseleave = () => {
+	mouseenterState.value = false
+}
+
 onMounted(() => {
+	props.graph.container.addEventListener('mouseenter', handleMouseenter)
+
+	props.graph.container.addEventListener('mouseleave', handleMouseleave)
+
 	document.documentElement.addEventListener('keydown', handleSearchKeyDown)
 })
 
 onUnmounted(() => {
+	props.graph.container.removeEventListener('mouseenter', handleMouseenter)
+
+	props.graph.container.removeEventListener('mouseleave', handleMouseleave)
+
 	document.documentElement.removeEventListener('keydown', handleSearchKeyDown)
 })
 

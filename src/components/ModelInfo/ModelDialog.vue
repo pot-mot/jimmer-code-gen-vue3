@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {ref, watch} from "vue";
-import {GenModelInput} from "../../../api/__generated/model/static";
+import {GenModelInput} from "../../api/__generated/model/static";
 
 const defaultValue: GenModelInput = {
 	name: "",

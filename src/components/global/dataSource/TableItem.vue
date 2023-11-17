@@ -4,7 +4,7 @@ import {GenTableCommonView} from "../../../api/__generated/model/static";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
 import {DataSourceMenuEventBusProps} from "./events/DataSourceMenuEvents.ts";
-import {TableDialogEventBus} from "../TableInfo/TableDialogEventBus.ts";
+import {TableDialogEventBus} from "../../TableInfo/TableDialogEventBus.ts";
 
 interface TableItemProps {
 	table: GenTableCommonView
