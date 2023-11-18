@@ -18,6 +18,15 @@ export const useModelEditorStore =
 
             const openDataSourceLoadMenu = ref(false)
 
+            commonStore.onLoaded(() => {
+                const graph = _graph()
+                if (graph) {
+                    graph.on('blank:dblclick', ({e}) => {
+                        ModelEditorEventBus.emit('createTable', {x: e.offsetX, y: e.offsetY})
+                    })
+                }
+            })
+
             /**
              * 向画布导入 schema
              * @param id schema id
@@ -52,19 +61,21 @@ export const useModelEditorStore =
                 if (nodes.length > 0) {
                     setTimeout(() => {
                         commonStore.focus(nodes[0])
-                    }, 500)
+                    }, 200)
                 }
             }
 
-            ModelEditorEventBus.on('createdTable', (table) => {
+            ModelEditorEventBus.on('createdTable', ({table, x, y}) => {
                 const graph = commonStore._graph()
 
                 if (!graph) return
 
-                const node = importModelNodes(graph, [table])[0]
+                const node = importModelNodes(graph, [table], x, y)[0]
 
                 if (node) {
-                    commonStore.focus(node)
+                    setTimeout(() => {
+                        commonStore.select(node)
+                    }, 200)
                 }
             })
 

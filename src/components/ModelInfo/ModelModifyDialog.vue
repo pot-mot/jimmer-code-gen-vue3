@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DragDialog from "../common/dragDialog/DragDialog.vue";
+import DragDialog from "../common/DragDialog/DragDialog.vue";
 import ModelForm from "./ModelForm.vue";
 import {ModelEditorEventBus} from "../ModelEditor/eventBus/ModelEditorEventBus.ts";
 import {GenTableColumnsInput} from "../../api/__generated/model/static";

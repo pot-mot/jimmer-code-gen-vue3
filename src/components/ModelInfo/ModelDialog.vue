@@ -11,7 +11,7 @@ const defaultValue: GenModelInput = {
 const model = ref<GenModelInput>({...defaultValue})
 
 interface ModelDialogProps {
-	model?: GenModelInput
+	model?: GenModelInput,
 }
 
 const props = defineProps<ModelDialogProps>()

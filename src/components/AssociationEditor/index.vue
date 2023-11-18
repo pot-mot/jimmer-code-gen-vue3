@@ -156,18 +156,18 @@ import DownloadIcon from "../icons/toolbar/DownloadIcon.vue";
 import {saveAssociations} from "./api.ts";
 import {useAssociationMatch} from "./AssociationMatch.ts";
 import {nodeIdToTableId, tableNodeMatchMethod} from "./node/TableNode.ts";
-import {useHistoryKeyEvent} from "../../utils/graphEditor/useHistory.ts";
-import {useSelectionKeyEvent} from "../../utils/graphEditor/useSelection.ts";
 import {useSave} from "../../utils/graphEditor/useSave.ts";
-import ScaleBar from "../common/graph/ScaleBar.vue";
-import Searcher from "../common/graph/Searcher.vue";
+import ScaleBar from "../common/GraphEditorTool/ScaleBar.vue";
+import Searcher from "../common/GraphEditorTool/Searcher.vue";
 import Comment from "../common/Comment.vue";
 import {api} from "../../api";
 import PreviewIcon from "../icons/toolbar/PreviewIcon.vue";
-import MultiCodePreview from "../common/code/MultiCodePreview.vue";
+import MultiCodePreview from "../common/CodePreview/MultiCodePreview.vue";
 import {saveAs} from "file-saver";
 import {DataSourceMenuEventBusProps} from "../global/dataSource/events/DataSourceMenuEvents.ts";
 import {useGlobalLoadingStore} from "../global/loading/GlobalLoadingStore.ts";
+import {handleHistoryKeyEvent} from "../../utils/graphEditor/useHistory.ts";
+import {handleSelectionKeyEvent} from "../../utils/graphEditor/useSelection.ts";
 
 const props = defineProps<DataSourceMenuEventBusProps>()
 
@@ -203,6 +203,10 @@ const {
 	}
 ])
 
+store.addEventListener('keydown', handleHistoryKeyEvent)
+
+store.addEventListener('keydown', handleSelectionKeyEvent)
+
 onMounted(() => {
 	graph = initAssociationEditor(container.value!, wrapper.value!)
 
@@ -214,10 +218,6 @@ onMounted(() => {
 onUnmounted(() => {
 	store.unload()
 })
-
-useHistoryKeyEvent(() => graph)
-
-useSelectionKeyEvent(() => graph)
 
 const {
 	handleMatch,

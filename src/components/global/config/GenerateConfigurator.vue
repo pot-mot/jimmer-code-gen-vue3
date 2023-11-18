@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {api} from "../../../api";
-import DragDialog from "../../common/dragDialog/DragDialog.vue";
+import DragDialog from "../../common/DragDialog/DragDialog.vue";
 import {ref, watch} from "vue";
 import {GenConfig} from "../../../api/__generated/model/static";
 import {GenLanguage} from "../../../api/__generated/model/enums";

@@ -3,7 +3,7 @@ import {onMounted, ref} from 'vue';
 import {api} from "../../../../api";
 import {GenDataSourceView} from "../../../../api/__generated/model/static";
 import {DataSourceType} from "../../../../api/__generated/model/enums";
-import DragDialog from "../../../common/dragDialog/DragDialog.vue";
+import DragDialog from "../../../common/DragDialog/DragDialog.vue";
 import DataSourceForm from "../form/DataSourceForm.vue";
 import {DataSourceFormEmits} from "../form/DataSourceFormEmits.ts";
 import {DataSourceDialogProps} from "./DataSourceDialogProps.ts";

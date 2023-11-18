@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {ref, watch} from 'vue'
 import {GenTableAssociationsView} from '../../api/__generated/model/static'
-import DragDialog from "../common/dragDialog/DragDialog.vue"
+import DragDialog from "../common/DragDialog/DragDialog.vue"
 import TableInfo from "./TableInfo.vue";
 import {api} from "../../api";
 import {sendMessage} from "../../utils/message.ts";

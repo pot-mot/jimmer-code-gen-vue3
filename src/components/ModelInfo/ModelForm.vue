@@ -135,6 +135,10 @@ const handleSubmit = () => {
 		return
 	}
 
+	table.value.columns.forEach((column, index) => {
+		column.orderKey = index + 1
+	})
+
 	emits('submit', table.value)
 }
 

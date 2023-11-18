@@ -144,14 +144,12 @@
 import {useModelEditorStore} from "./store/ModelEditorStore.ts"
 import {ref, onMounted, onUnmounted, watch} from "vue"
 import {Graph} from "@antv/x6"
-import ScaleBar from "../common/graph/ScaleBar.vue"
-import Searcher from "../common/graph/Searcher.vue"
+import ScaleBar from "../common/GraphEditorTool/ScaleBar.vue"
+import Searcher from "../common/GraphEditorTool/Searcher.vue"
 import {tableNodeMatchMethod} from "../AssociationEditor/node/TableNode.ts"
 import Comment from "../common/Comment.vue"
 import {register} from "@antv/x6-vue-shape"
 import ModelNode from "./node/ModelNode.vue"
-import {useHistoryKeyEvent} from "../../utils/graphEditor/useHistory.ts"
-import {useSelectionKeyEvent} from "../../utils/graphEditor/useSelection.ts"
 import SaveIcon from "../icons/toolbar/SaveIcon.vue"
 import UndoIcon from "../icons/toolbar/UndoIcon.vue"
 import RedoIcon from "../icons/toolbar/RedoIcon.vue"
@@ -172,15 +170,17 @@ import {useSwitchAssociationType} from "../AssociationEditor/edge/AssociationEdg
 import DownloadIcon from "../icons/toolbar/DownloadIcon.vue"
 import PreviewIcon from "../icons/toolbar/PreviewIcon.vue"
 import {api} from "../../api"
-import MultiCodePreview from "../common/code/MultiCodePreview.vue"
+import MultiCodePreview from "../common/CodePreview/MultiCodePreview.vue"
 import {saveAs} from "file-saver"
 import {GenModelInput} from "../../api/__generated/model/static"
 import {useGlobalLoadingStore} from "../global/loading/GlobalLoadingStore.ts"
 import DataSourceMenu from "../global/dataSource/DataSourceMenu.vue"
-import DragDialog from "../common/dragDialog/DragDialog.vue"
+import DragDialog from "../common/DragDialog/DragDialog.vue"
 import {Emitter} from "mitt";
 import {DataSourceMenuEvents} from "../global/dataSource/events/DataSourceMenuEvents.ts";
 import SQLIcon from "../icons/toolbar/SQLIcon.vue";
+import {handleHistoryKeyEvent} from "../../utils/graphEditor/useHistory.ts";
+import {handleSelectionKeyEvent} from "../../utils/graphEditor/useSelection.ts";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -278,6 +278,10 @@ const handleLoadModel = () => {
 	}
 }
 
+store.addEventListener('keydown', handleHistoryKeyEvent)
+
+store.addEventListener('keydown', handleSelectionKeyEvent)
+
 onMounted(() => {
 	graph = initModelEditor(container.value!, wrapper.value!)
 
@@ -296,17 +300,13 @@ onMounted(() => {
 	store.load(graph)
 })
 
-useSaveKeyEvent(() => {
-	handleSaveModel()
-})
-
 onUnmounted(() => {
 	store.unload()
 })
 
-useHistoryKeyEvent(() => graph)
-
-useSelectionKeyEvent(() => graph)
+useSaveKeyEvent(() => {
+	handleSaveModel()
+})
 
 const handleCodeDownload = async () => {
 	loadingStore.add()

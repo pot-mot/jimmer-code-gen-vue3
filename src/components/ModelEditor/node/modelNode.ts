@@ -31,12 +31,12 @@ const modelToNode = (table: GenTableColumnsInput, options: any = undefined) => {
     }
 }
 
-export const importModelNodes = (graph: Graph, tables: readonly GenTableColumnsInput[]): Node[] => {
+export const importModelNodes = (graph: Graph, tables: readonly GenTableColumnsInput[], initX?: number, initY?: number): Node[] => {
     const nodes: Node[] = tables.map(table => {
         const svgRect = graph.view.svg.getBoundingClientRect()
         return modelToNode(table, graph.graphToLocal(
-            svgRect.width / 2,
-            svgRect.height / 2
+            initX ? initX : svgRect.width * 3/8,
+            initY ? initY : svgRect.height * 3/8
         ))
     })
 

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
-import NodeList from "../../common/graph/NodeList.vue";
-import EdgeList from "../../common/graph/EdgeList.vue";
+import NodeList from "../../common/GraphEditorTool/NodeList.vue";
+import EdgeList from "../../common/GraphEditorTool/EdgeList.vue";
 import NodeItem from "./NodeItem.vue";
 import EdgeItem from "./EdgeItem.vue";
 import Details from "../../common/Details.vue";

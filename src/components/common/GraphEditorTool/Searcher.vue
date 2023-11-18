@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {nextTick, onMounted, onUnmounted, ref} from "vue";
 import {Graph, Node} from "@antv/x6";
-import DragDialog from "../dragDialog/DragDialog.vue";
+import DragDialog from "../DragDialog/DragDialog.vue";
 import {focus} from "../../../utils/graphEditor/viewOperation.ts";
 
 interface SearcherProps {
@@ -34,7 +34,7 @@ const input = ref()
 
 const dialog = ref()
 
-const handleSearchKeyDown = (e: KeyboardEvent) => {
+const handleSearchKeyEvent = (e: KeyboardEvent) => {
 	if (e.ctrlKey || e.metaKey) {
 		if (e.key == 'f') {
 			if (!mouseenterState.value) return
@@ -80,7 +80,7 @@ onMounted(() => {
 
 	props.graph.container.addEventListener('mouseleave', handleMouseleave)
 
-	document.documentElement.addEventListener('keydown', handleSearchKeyDown)
+	document.documentElement.addEventListener('keydown', handleSearchKeyEvent)
 })
 
 onUnmounted(() => {
@@ -88,7 +88,7 @@ onUnmounted(() => {
 
 	props.graph.container.removeEventListener('mouseleave', handleMouseleave)
 
-	document.documentElement.removeEventListener('keydown', handleSearchKeyDown)
+	document.documentElement.removeEventListener('keydown', handleSearchKeyEvent)
 })
 
 const handleClose = () => {

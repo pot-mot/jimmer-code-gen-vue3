@@ -5,8 +5,8 @@ import {
 } from "../../../api/__generated/model/static";
 
 type ModelEditorEvents = {
-    createTable: undefined,
-    createdTable: GenTableColumnsInput,
+    createTable: undefined | {x: number, y: number},
+    createdTable: {table: GenTableColumnsInput, x?: number, y?: number},
     modifyTable: {id: string, table: GenTableColumnsInput},
     modifiedTable: {id: string, table: GenTableColumnsInput},
     closeModifiedTable: string,
