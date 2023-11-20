@@ -29,6 +29,7 @@ export type { GenTableColumnsView } from './GenTableColumnsView';
 export type { GenTableCommonView } from './GenTableCommonView';
 export type { GenTableIdView } from './GenTableIdView';
 export type { GenTypeMappingInput } from './GenTypeMappingInput';
+export type { GenTypeMappingView } from './GenTypeMappingView';
 export type { Pair } from './Pair';
 export type { TableQuery } from './TableQuery';
 export type { TimeRangeQueryParam } from './TimeRangeQueryParam';

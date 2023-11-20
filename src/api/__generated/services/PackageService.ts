@@ -33,10 +33,10 @@ export class PackageService {
     }
     
     async list(): Promise<
-        GenPackageTreeView[]
+        Array<GenPackageTreeView>
     > {
         let _uri = '/package/';
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenPackageTreeView[]
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenPackageTreeView>
     }
     
     async moveEntity(options: PackageServiceOptions['moveEntity']): Promise<number> {
@@ -71,7 +71,7 @@ export class PackageService {
 
 export type PackageServiceOptions = {
     'create': {path: string, parentId?: number},
-    'delete': {ids: number[]},
+    'delete': {ids: Array<number>},
     'list': {},
     'moveEntity': {id: number, packageId: number},
     'moveEnum': {id: number, packageId: number},

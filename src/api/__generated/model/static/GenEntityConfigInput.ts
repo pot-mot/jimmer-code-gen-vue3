@@ -12,7 +12,7 @@ export interface GenEntityConfigInput {
     
     orderKey: number;
     
-    properties: GenEntityConfigInput_TargetOf_properties[];
+    properties: Array<GenEntityConfigInput_TargetOf_properties>;
     
     remark: string;
 }
@@ -44,6 +44,8 @@ export interface GenEntityConfigInput_TargetOf_properties {
     logicalDelete: boolean;
     
     name: string;
+    
+    orderKey: number;
     
     otherAnnotation?: string;
     

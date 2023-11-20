@@ -19,7 +19,7 @@ export class EnumService {
     }
     
     async query(options: EnumServiceOptions['query']): Promise<
-        GenEnumView[]
+        Array<GenEnumView>
     > {
         let _uri = '/enum/query';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -52,7 +52,7 @@ export class EnumService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenEnumView[]
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenEnumView>
     }
 }
 

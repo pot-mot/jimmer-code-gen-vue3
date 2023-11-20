@@ -4,9 +4,9 @@ export interface TableQuery {
     
     createdTime?: TimeRangeQueryParam;
     
-    ids?: number[];
+    ids?: Array<number>;
     
-    keywords?: string[];
+    keywords?: Array<string>;
     
     modifiedTime?: TimeRangeQueryParam;
     
@@ -14,5 +14,5 @@ export interface TableQuery {
     
     nonSchema?: boolean;
     
-    schemaIds?: number[];
+    schemaIds?: Array<number>;
 }

@@ -21,29 +21,29 @@ export class ModelService {
     }
     
     async getValueData(options: ModelServiceOptions['getValueData']): Promise<
-        Pair<GenTableColumnsInput[], GenAssociationModelInput>[] | undefined
+        Pair<Array<GenTableColumnsInput>, Array<GenAssociationModelInput>> | undefined
     > {
         let _uri = '/model/valueData/';
         _uri += encodeURIComponent(options.id);
-        return (await this.executor({uri: _uri, method: 'GET'})) as Pair<GenTableColumnsInput[], GenAssociationModelInput>[] | undefined
+        return (await this.executor({uri: _uri, method: 'GET'})) as Pair<Array<GenTableColumnsInput>, Array<GenAssociationModelInput>> | undefined
     }
     
     async list(): Promise<
-        GenModelView[]
+        Array<GenModelView>
     > {
         let _uri = '/model/';
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenModelView[]
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenModelView>
     }
     
-    async listDataBaseType(): Promise<
-        { [key: string]: number }
+    async listDatabaseType(): Promise<
+        {[key:string]: number}
     > {
         let _uri = '/model/type';
-        return (await this.executor({uri: _uri, method: 'GET'})) as { [key: string]: number }
+        return (await this.executor({uri: _uri, method: 'GET'})) as {[key:string]: number}
     }
     
     async previewSql(options: ModelServiceOptions['previewSql']): Promise<
-        { [key: string]: string }
+        {[key:string]: string}
     > {
         let _uri = '/model/sql';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -62,7 +62,7 @@ export class ModelService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'POST'})) as { [key: string]: string }
+        return (await this.executor({uri: _uri, method: 'POST'})) as {[key:string]: string}
     }
     
     async save(options: ModelServiceOptions['save']): Promise<number> {
@@ -72,11 +72,11 @@ export class ModelService {
 }
 
 export type ModelServiceOptions = {
-    'delete': {ids: number[]},
+    'delete': {ids: Array<number>},
     'get': {id: number},
     'getValueData': {id: number},
     'list': {},
-    'listDataBaseType': {},
+    'listDatabaseType': {},
     'previewSql': {id: number, type?: DataSourceType},
     'save': {body: GenModelInput}
 }

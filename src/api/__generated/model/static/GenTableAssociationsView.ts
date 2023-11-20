@@ -2,7 +2,7 @@ import type { AssociationType, DataSourceType, DissociateAction, TableType } fro
 
 export interface GenTableAssociationsView {
     
-    columns: GenTableAssociationsView_TargetOf_columns[];
+    columns: Array<GenTableAssociationsView_TargetOf_columns>;
     
     comment: string;
     
@@ -45,7 +45,7 @@ export interface GenTableAssociationsView_TargetOf_columns {
     
     id: number;
     
-    inAssociations: GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_2[];
+    inAssociations: Array<GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_2>;
     
     logicalDelete: boolean;
     
@@ -57,7 +57,7 @@ export interface GenTableAssociationsView_TargetOf_columns {
     
     orderKey: number;
     
-    outAssociations: GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_2[];
+    outAssociations: Array<GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_2>;
     
     partOfFk: boolean;
     

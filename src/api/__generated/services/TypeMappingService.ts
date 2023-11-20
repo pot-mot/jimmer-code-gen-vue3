@@ -1,7 +1,6 @@
 import type { Dynamic, Executor } from '../';
-import type { GenTypeMappingDto } from '../model/dto';
 import type { GenTypeMapping } from '../model/entities';
-import type { GenTypeMappingInput } from '../model/static';
+import type { GenTypeMappingInput, GenTypeMappingView } from '../model/static';
 
 export class TypeMappingService {
     
@@ -19,18 +18,25 @@ export class TypeMappingService {
     }
     
     async get(options: TypeMappingServiceOptions['get']): Promise<
-        GenTypeMappingDto['DEFAULT'] | undefined
+        GenTypeMappingView | undefined
     > {
         let _uri = '/typeMapping/';
         _uri += encodeURIComponent(options.id);
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenTypeMappingDto['DEFAULT'] | undefined
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenTypeMappingView | undefined
+    }
+    
+    async getDefault(): Promise<
+        GenTypeMappingInput
+    > {
+        let _uri = '/typeMapping/default';
+        return (await this.executor({uri: _uri, method: 'GET'})) as GenTypeMappingInput
     }
     
     async list(): Promise<
-        GenTypeMappingDto['DEFAULT'][]
+        Array<GenTypeMappingView>
     > {
         let _uri = '/typeMapping/';
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenTypeMappingDto['DEFAULT'][]
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenTypeMappingView>
     }
     
     async update(options: TypeMappingServiceOptions['update']): Promise<number> {
@@ -41,8 +47,9 @@ export class TypeMappingService {
 
 export type TypeMappingServiceOptions = {
     'create': {body: GenTypeMappingInput},
-    'delete': {ids: number[]},
+    'delete': {ids: Array<number>},
     'get': {id: number},
+    'getDefault': {},
     'list': {},
     'update': {body: Dynamic<GenTypeMapping>}
 }

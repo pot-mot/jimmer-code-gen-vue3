@@ -1,4 +1,4 @@
-import {AssociationType} from "../api/__generated/model/enums";
+import {AssociationType} from "@/api/__generated/model/enums";
 
 export type simpleAssociationTypeLabel = "1:1" | "N:1" | "1:N" | "N:M"
 

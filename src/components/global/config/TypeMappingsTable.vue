@@ -1,11 +1,12 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import {onMounted, ref} from "vue";
-import {api} from "../../../api";
-import {GenTypeMapping} from "../../../api/__generated/model/entities";
+import {api} from "@/api";
+import {GenTypeMapping} from "@/api/__generated/model/entities";
 import {useLoading} from "../../../hooks/useLoading.ts";
 import {Check, Close, Delete, EditPen, Plus} from "@element-plus/icons-vue";
-import {deleteConfirm} from "../../../utils/message.ts";
-import {GenTypeMappingInput} from "../../../api/__generated/model/static";
+import {deleteConfirm} from "@/utils/message.ts";
+import {GenTypeMappingInput} from "@/api/__generated/model/static";
+import {dataSourceTypes, languages} from "../../../constant/enums.ts";
 
 interface EditState {
 	isEdit: Boolean
@@ -15,8 +16,23 @@ const typeMappings = ref<(GenTypeMapping & EditState)[]>([])
 
 const typeMappingLoading = useLoading()
 
+const defaultTypeMapping = ref<GenTypeMappingInput>()
+
+const newTypeMapping = ref<GenTypeMappingInput>({
+	dataSourceType: "MySQL",
+	language: "JAVA",
+	propertyType: "",
+	remark: "",
+	typeExpression: ""
+})
+
 const getData = async () => {
 	typeMappingLoading.start()
+
+	defaultTypeMapping.value = await api.typeMappingService.getDefault()
+
+	newTypeMapping.value = {...defaultTypeMapping.value}
+
 	typeMappings.value = (await api.typeMappingService.list()).map(it => {
 		return {
 			...it,
@@ -32,18 +48,6 @@ onMounted(() => {
 
 const addState = ref(false)
 
-const defaultTypeMapping: GenTypeMappingInput = {
-	typeExpression: "",
-	regex: false,
-	propertyType: "java.lang.String",
-	remark: "",
-}
-
-
-const newTypeMapping = ref<GenTypeMappingInput>({
-	...defaultTypeMapping
-})
-
 const handleAdd = async () => {
 	await api.typeMappingService.create({body: newTypeMapping.value})
 	addState.value = false
@@ -51,7 +55,10 @@ const handleAdd = async () => {
 }
 
 const handleAddCancel = () => {
-	newTypeMapping.value = {...defaultTypeMapping}
+	newTypeMapping.value = {
+		...newTypeMapping.value,
+		...defaultTypeMapping.value
+	}
 	addState.value = false
 }
 
@@ -89,10 +96,13 @@ const handleDelete = (typeMapping: GenTypeMapping) => {
 
 		<div class="type-mapping-line">
 			<el-text>
-				数据库类型匹配表达式
+				数据源类型
 			</el-text>
 			<el-text>
-				是否正则
+				数据库类型匹配表达式（正则）
+			</el-text>
+			<el-text>
+				语言
 			</el-text>
 			<el-text>
 				映射类型
@@ -105,13 +115,16 @@ const handleDelete = (typeMapping: GenTypeMapping) => {
 			</el-text>
 		</div>
 
-		<div class="type-mapping-line" v-for="typeMapping in typeMappings">
+		<div v-for="typeMapping in typeMappings" class="type-mapping-line">
 			<template v-if="!typeMapping.isEdit">
+				<el-text>
+					{{ typeMapping.dataSourceType }}
+				</el-text>
 				<el-text>
 					{{ typeMapping.typeExpression }}
 				</el-text>
 				<el-text>
-					{{ typeMapping.regex }}
+					{{ typeMapping.language }}
 				</el-text>
 				<el-text>
 					{{ typeMapping.propertyType }}
@@ -120,18 +133,25 @@ const handleDelete = (typeMapping: GenTypeMapping) => {
 					{{ typeMapping.remark }}
 				</el-text>
 				<el-text>
-					<el-button @click="typeMapping.isEdit = true" title="编辑" :icon="EditPen" type="warning"
-							   link></el-button>
-					<el-button @click="handleDelete(typeMapping)" title="删除" :icon="Delete" type="danger"
-							   link></el-button>
+					<el-button :icon="EditPen" link title="编辑" type="warning"
+							   @click="typeMapping.isEdit = true"></el-button>
+					<el-button :icon="Delete" link title="删除" type="danger"
+							   @click="handleDelete(typeMapping)"></el-button>
 				</el-text>
 			</template>
 			<template v-else>
 				<div>
+					<el-select v-model="typeMapping.dataSourceType">
+						<el-option v-for="dataSourceType in dataSourceTypes" :value="dataSourceType"></el-option>
+					</el-select>
+				</div>
+				<div>
 					<el-input v-model="typeMapping.typeExpression"></el-input>
 				</div>
 				<div>
-					<el-switch v-model="typeMapping.regex"></el-switch>
+					<el-select v-model="typeMapping.language">
+						<el-option v-for="language in languages" :value="language"></el-option>
+					</el-select>
 				</div>
 				<div>
 					<el-input v-model="typeMapping.propertyType"></el-input>
@@ -140,24 +160,31 @@ const handleDelete = (typeMapping: GenTypeMapping) => {
 					<el-input v-model="typeMapping.remark"></el-input>
 				</div>
 				<div>
-					<el-button @click="handleEditCancel(typeMapping.id)" title="保存" :icon="Check" type="success"
-							   link></el-button>
-					<el-button @click="handleEdit(typeMapping)" title="取消" :icon="Close" type="danger"
-							   link></el-button>
+					<el-button :icon="Check" link title="保存" type="success"
+							   @click="handleEditCancel(typeMapping.id)"></el-button>
+					<el-button :icon="Close" link title="取消" type="danger"
+							   @click="handleEdit(typeMapping)"></el-button>
 				</div>
 			</template>
 		</div>
 
 		<div class="type-mapping-line">
 			<div v-if="!addState">
-				<el-button @click="addState = true" :icon="Plus"></el-button>
+				<el-button :icon="Plus" @click="addState = true"></el-button>
 			</div>
 			<template v-else>
+				<div>
+					<el-select v-model="newTypeMapping.dataSourceType">
+						<el-option v-for="dataSourceType in dataSourceTypes" :value="dataSourceType"></el-option>
+					</el-select>
+				</div>
 				<div>
 					<el-input v-model="newTypeMapping.typeExpression"></el-input>
 				</div>
 				<div>
-					<el-switch v-model="newTypeMapping.regex"></el-switch>
+					<el-select v-model="newTypeMapping.language">
+						<el-option v-for="language in languages" :value="language"></el-option>
+					</el-select>
 				</div>
 				<div>
 					<el-input v-model="newTypeMapping.propertyType"></el-input>
@@ -166,10 +193,10 @@ const handleDelete = (typeMapping: GenTypeMapping) => {
 					<el-input v-model="newTypeMapping.remark"></el-input>
 				</div>
 				<div>
-					<el-button @click="handleAdd" title="保存" :icon="Check" type="success"
-							   link></el-button>
-					<el-button @click="handleAddCancel" title="取消" :icon="Close" type="danger"
-							   link></el-button>
+					<el-button :icon="Check" link title="保存" type="success"
+							   @click="handleAdd"></el-button>
+					<el-button :icon="Close" link title="取消" type="danger"
+							   @click="handleAddCancel"></el-button>
 				</div>
 			</template>
 		</div>
@@ -181,9 +208,10 @@ const handleDelete = (typeMapping: GenTypeMapping) => {
 <style scoped>
 .type-mapping-line {
 	display: grid;
-	grid-template-columns: 15em 5em 15em 1fr 3em;
-	grid-gap: 5px;
+	grid-template-columns: 7em 1fr 7em 1fr 1fr 3em;
+	grid-gap: 0.2em;
 	height: 2em;
 	line-height: 2em;
+	white-space: nowrap;
 }
 </style>

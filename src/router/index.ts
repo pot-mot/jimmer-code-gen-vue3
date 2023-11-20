@@ -5,27 +5,27 @@ const routes: RouteRecordRaw[] = [
     {
         path: "",
         name: "Index",
-        component: () => import("../views/Index.vue")
+        component: () => import("../components/pages/Index/Page.vue")
     },
     {
-        path: "/graph",
-        name: "Graph",
-        component: () => import("../views/Graph.vue"),
+        path: "/association",
+        name: "AssociationEditor",
+        component: () => import("../components/pages/AssociationEditor/Page.vue"),
     },
     {
         path: "/entity",
-        name: "Entity",
-        component: () => import("../views/Entity.vue")
+        name: "EntityGenerator",
+        component: () => import("../components/pages/EntityGenerator/Page.vue")
     },
     {
         path: "/models",
         name: "ModelList",
-        component: () => import("../views/ModelList.vue")
+        component: () => import("../components/pages/ModelEditor/ModelList.vue")
     },
     {
         path: "/model",
-        name: "Model",
-        component: () => import("../views/Model.vue")
+        name: "ModelEditor",
+        component: () => import("../components/pages/ModelEditor/Page.vue")
     }
 ]
 

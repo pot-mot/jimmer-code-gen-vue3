@@ -12,7 +12,7 @@ export interface GenEnumItemsView {
     
     id: number;
     
-    items: GenEnumItemsView_TargetOf_items[];
+    items: Array<GenEnumItemsView_TargetOf_items>;
     
     modifiedTime: string;
     

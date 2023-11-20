@@ -4,13 +4,13 @@ export interface EnumQuery {
     
     createdTime?: TimeRangeQueryParam;
     
-    ids?: number[];
+    ids?: Array<number>;
     
     modifiedTime?: TimeRangeQueryParam;
     
-    names?: string[];
+    names?: Array<string>;
     
     nonPackage?: boolean;
     
-    packageIds?: number[];
+    packageIds?: Array<number>;
 }

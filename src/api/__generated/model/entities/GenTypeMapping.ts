@@ -1,3 +1,5 @@
+import type { DataSourceType, GenLanguage } from '../enums';
+
 export interface GenTypeMapping {
     
     createdTime: string;
@@ -8,9 +10,11 @@ export interface GenTypeMapping {
     
     id: number;
     
-    typeExpression: string;
+    dataSourceType: DataSourceType;
     
-    regex: boolean;
+    language: GenLanguage;
+    
+    typeExpression: string;
     
     propertyType: string;
     

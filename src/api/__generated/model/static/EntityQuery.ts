@@ -4,15 +4,15 @@ export interface EntityQuery {
     
     createdTime?: TimeRangeQueryParam;
     
-    ids?: number[];
+    ids?: Array<number>;
     
-    keywords?: string[];
+    keywords?: Array<string>;
     
     modifiedTime?: TimeRangeQueryParam;
     
-    names?: string[];
+    names?: Array<string>;
     
     nonPackage?: boolean;
     
-    packageIds?: number[];
+    packageIds?: Array<number>;
 }

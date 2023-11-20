@@ -6,7 +6,7 @@ export class ColumnService {
     constructor(private executor: Executor) {}
     
     async query(options: ColumnServiceOptions['query']): Promise<
-        GenColumnCommonView[]
+        Array<GenColumnCommonView>
     > {
         let _uri = '/column/query';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -32,7 +32,7 @@ export class ColumnService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenColumnCommonView[]
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenColumnCommonView>
     }
 }
 

@@ -13,38 +13,38 @@ export class SchemaService {
     }
     
     async list(options: SchemaServiceOptions['list']): Promise<
-        GenSchemaView[]
+        Array<GenSchemaView>
     > {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.dataSourceId);
         _uri += '/schema/';
         _uri += encodeURIComponent(options.schemaIds.join(','));
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenSchemaView[]
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenSchemaView>
     }
     
     async load(options: SchemaServiceOptions['load']): Promise<
-        number[]
+        Array<number>
     > {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.dataSourceId);
         _uri += '/schema/';
         _uri += encodeURIComponent(options.name);
-        return (await this.executor({uri: _uri, method: 'POST'})) as number[]
+        return (await this.executor({uri: _uri, method: 'POST'})) as Array<number>
     }
     
     async preview(options: SchemaServiceOptions['preview']): Promise<
-        GenSchemaDto['DEFAULT'][]
+        Array<GenSchemaDto['DEFAULT']>
     > {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.dataSourceId);
         _uri += '/schema/preview';
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenSchemaDto['DEFAULT'][]
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenSchemaDto['DEFAULT']>
     }
 }
 
 export type SchemaServiceOptions = {
-    'delete': {ids: number[]},
-    'list': {dataSourceId: number, schemaIds: number[]},
+    'delete': {ids: Array<number>},
+    'list': {dataSourceId: number, schemaIds: Array<number>},
     'load': {dataSourceId: number, name: string},
     'preview': {dataSourceId: number}
 }

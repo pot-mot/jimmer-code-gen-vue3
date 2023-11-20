@@ -1,8 +1,12 @@
+import type { DataSourceType, GenLanguage } from '../enums';
+
 export interface GenTypeMappingInput {
     
-    propertyType: string;
+    dataSourceType: DataSourceType;
     
-    regex: boolean;
+    language: GenLanguage;
+    
+    propertyType: string;
     
     remark?: string;
     

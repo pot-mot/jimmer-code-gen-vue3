@@ -1,21 +1,14 @@
 <script lang="ts" setup>
-import {onMounted, ref, watch} from 'vue';
-import {api} from "../../../../api";
-import {GenDataSourceInput} from "../../../../api/__generated/model/static";
-import {DataSourceType} from "../../../../api/__generated/model/enums";
-import {sendMessage} from "../../../../utils/message.ts";
-import {ElForm, ElFormItem, ElSelect, ElOption} from "element-plus";
+import {ref, watch} from 'vue';
+import {api} from "@/api";
+import {GenDataSourceInput} from "@/api/__generated/model/static";
+import {sendMessage} from "@/utils/message.ts";
+import {ElForm, ElFormItem, ElOption, ElSelect} from "element-plus";
 import {DataSourceFormEmits} from "./DataSourceFormEmits.ts";
 import {DataSourceFormProps} from "./DataSourceFormProps.ts";
-
-const dataSourceTypes = ref<DataSourceType[]>([])
-
-onMounted(async () => {
-	dataSourceTypes.value = await api.dataSourceService.listType()
-})
+import {dataSourceTypes} from "../../../../constant/enums.ts";
 
 const props = defineProps<DataSourceFormProps>()
-
 
 const dataSource = ref<GenDataSourceInput>({
 	name: "",
@@ -31,7 +24,7 @@ const dataSource = ref<GenDataSourceInput>({
 
 watch(() => dataSource.value.type, async (type) => {
 	if (!props.id) {
-		const defaultDataSource = await api.dataSourceService.getDefaultDataSource({dataSourceType: type})
+		const defaultDataSource = await api.dataSourceService.getDefault({dataSourceType: type})
 		dataSource.value = {
 			...dataSource.value,
 			...defaultDataSource,
@@ -93,10 +86,10 @@ const handleSubmit = () => {
 		</el-form-item>
 		<el-form-item label="url">
 			<el-col :span="9">
-				<el-select v-model="dataSource.type" filterable class="cling-right" name="type">
+				<el-select v-model="dataSource.type" class="cling-right" filterable name="type">
 					<template #prefix>jdbc:</template>
-					<el-option v-for="(type) in dataSourceTypes" :value="type"
-							   :label="type.toLowerCase()"></el-option>
+					<el-option v-for="(type) in dataSourceTypes" :label="type.toLowerCase()"
+							   :value="type"></el-option>
 				</el-select>
 			</el-col>
 			<el-col :span="6">
@@ -122,11 +115,11 @@ const handleSubmit = () => {
 			<el-input v-model="dataSource.password" show-password></el-input>
 		</el-form-item>
 		<el-form-item label="remark">
-			<el-input type="textarea" v-model="dataSource.remark"></el-input>
+			<el-input v-model="dataSource.remark" type="textarea"></el-input>
 		</el-form-item>
 		<el-form-item>
-			<el-button @click="handleTest" type="info">测试</el-button>
-			<el-button @click="handleSubmit" type="warning">提交</el-button>
+			<el-button type="info" @click="handleTest">测试</el-button>
+			<el-button type="warning" @click="handleSubmit">提交</el-button>
 		</el-form-item>
 	</el-form>
 </template>

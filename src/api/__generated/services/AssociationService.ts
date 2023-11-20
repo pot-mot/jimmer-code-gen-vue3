@@ -61,15 +61,8 @@ export class AssociationService {
         return (await this.executor({uri: _uri, method: 'DELETE'})) as number
     }
     
-    async listMatchType(): Promise<
-        AssociationMatchType[]
-    > {
-        let _uri = '/association/matchType';
-        return (await this.executor({uri: _uri, method: 'GET'})) as AssociationMatchType[]
-    }
-    
     async match(options: AssociationServiceOptions['match']): Promise<
-        GenAssociationMatchView[]
+        Array<GenAssociationMatchView>
     > {
         let _uri = '/association/match';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -81,11 +74,11 @@ export class AssociationService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as GenAssociationMatchView[]
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Array<GenAssociationMatchView>
     }
     
     async query(options: AssociationServiceOptions['query']): Promise<
-        GenAssociationView[]
+        Array<GenAssociationView>
     > {
         let _uri = '/association/query';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -132,11 +125,11 @@ export class AssociationService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenAssociationView[]
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenAssociationView>
     }
     
     async queryByColumn(options: AssociationServiceOptions['queryByColumn']): Promise<
-        GenAssociationView[]
+        Array<GenAssociationView>
     > {
         let _uri = '/association/column';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -162,11 +155,11 @@ export class AssociationService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenAssociationView[]
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenAssociationView>
     }
     
     async queryByTable(options: AssociationServiceOptions['queryByTable']): Promise<
-        GenAssociationView[]
+        Array<GenAssociationView>
     > {
         let _uri = '/association/table';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -185,33 +178,32 @@ export class AssociationService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenAssociationView[]
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenAssociationView>
     }
     
     async save(options: AssociationServiceOptions['save']): Promise<
-        number[]
+        Array<number>
     > {
         let _uri = '/association/save';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number[]
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Array<number>
     }
 }
 
 export type AssociationServiceOptions = {
-    'delete': {ids: number[]},
+    'delete': {ids: Array<number>},
     'deleteByColumn': {
-        sourceColumnIds: number[], 
-        targetColumnIds: number[], 
+        sourceColumnIds: Array<number>, 
+        targetColumnIds: Array<number>, 
         selectType?: SelectType
     },
-    'deleteByTable': {tableIds: number[], selectType?: SelectType},
-    'listMatchType': {},
-    'match': {body: number[], matchType?: AssociationMatchType},
+    'deleteByTable': {tableIds: Array<number>, selectType?: SelectType},
+    'match': {body: Array<number>, matchType?: AssociationMatchType},
     'query': {query: AssociationQuery},
     'queryByColumn': {
-        sourceColumnIds: number[], 
-        targetColumnIds: number[], 
+        sourceColumnIds: Array<number>, 
+        targetColumnIds: Array<number>, 
         selectType?: SelectType
     },
-    'queryByTable': {tableIds: number[], selectType?: SelectType},
-    'save': {body: GenAssociationInput[]}
+    'queryByTable': {tableIds: Array<number>, selectType?: SelectType},
+    'save': {body: Array<GenAssociationInput>}
 }

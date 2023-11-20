@@ -26,21 +26,21 @@ export class EntityService {
     }
     
     async list(): Promise<
-        GenEntityCommonView[]
+        Array<GenEntityCommonView>
     > {
         let _uri = '/entity/';
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenEntityCommonView[]
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenEntityCommonView>
     }
     
     async listLanguage(): Promise<
-        GenLanguage[]
+        Array<GenLanguage>
     > {
         let _uri = '/entity/language';
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenLanguage[]
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenLanguage>
     }
     
     async query(options: EntityServiceOptions['query']): Promise<
-        GenEntityPropertiesView[]
+        Array<GenEntityPropertiesView>
     > {
         let _uri = '/entity/query';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -80,13 +80,13 @@ export class EntityService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenEntityPropertiesView[]
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenEntityPropertiesView>
     }
 }
 
 export type EntityServiceOptions = {
     'config': {body: GenEntityConfigInput},
-    'delete': {ids: number[]},
+    'delete': {ids: Array<number>},
     'get': {id: number},
     'list': {},
     'listLanguage': {},

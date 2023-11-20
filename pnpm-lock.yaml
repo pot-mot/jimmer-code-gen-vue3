@@ -23,6 +23,9 @@ dependencies:
   '@element-plus/icons-vue':
     specifier: ^2.1.0
     version: registry.npmmirror.com/@element-plus/icons-vue@2.1.0(vue@3.3.4)
+  '@types/node':
+    specifier: ^20.9.2
+    version: registry.npmmirror.com/@types/node@20.9.2
   element-plus:
     specifier: ^2.3.14
     version: registry.npmmirror.com/element-plus@2.3.14(vue@3.3.4)
@@ -96,7 +99,7 @@ devDependencies:
     version: registry.npmmirror.com/uuid@9.0.0
   vite:
     specifier: ^4.4.5
-    version: registry.npmmirror.com/vite@4.4.9(sass@1.66.1)
+    version: registry.npmmirror.com/vite@4.4.9(@types/node@20.9.2)(sass@1.66.1)
   vue-tsc:
     specifier: ^1.8.5
     version: registry.npmmirror.com/vue-tsc@1.8.8(typescript@5.2.2)
@@ -776,6 +779,13 @@ packages:
     name: '@types/lodash'
     version: 4.14.199
 
+  registry.npmmirror.com/@types/node@20.9.2:
+    resolution: {integrity: sha512-WHZXKFCEyIUJzAwh3NyyTHYSR35SevJ6mZ1nWwJafKtiQbqRTIKSRcw3Ma3acqgsent3RRDqeVwpHntMk+9irg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/node/-/node-20.9.2.tgz}
+    name: '@types/node'
+    version: 20.9.2
+    dependencies:
+      undici-types: registry.npmmirror.com/undici-types@5.26.5
+
   registry.npmmirror.com/@types/prismjs@1.26.2:
     resolution: {integrity: sha512-/r7Cp7iUIk7gts26mHXD66geUC+2Fo26TZYjQK6Nr4LDfi6lmdRmMqM0oPwfiMhUwoBAOFe8GstKi2pf6hZvwA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/prismjs/-/prismjs-1.26.2.tgz}
     name: '@types/prismjs'
@@ -806,7 +816,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: registry.npmmirror.com/vite@4.4.9(sass@1.66.1)
+      vite: registry.npmmirror.com/vite@4.4.9(@types/node@20.9.2)(sass@1.66.1)
       vue: registry.npmmirror.com/vue@3.3.4
     dev: true
 
@@ -1682,6 +1692,11 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  registry.npmmirror.com/undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/undici-types/-/undici-types-5.26.5.tgz}
+    name: undici-types
+    version: 5.26.5
+
   registry.npmmirror.com/universalify@2.0.0:
     resolution: {integrity: sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/universalify/-/universalify-2.0.0.tgz}
     name: universalify
@@ -1731,7 +1746,7 @@ packages:
       - supports-color
     dev: false
 
-  registry.npmmirror.com/vite@4.4.9(sass@1.66.1):
+  registry.npmmirror.com/vite@4.4.9(@types/node@20.9.2)(sass@1.66.1):
     resolution: {integrity: sha512-2mbUn2LlUmNASWwSCNSJ/EG2HuSRTnVNaydp6vMCm5VIqJsjMfbIWtbH2kDuwUVW5mMUKKZvGPX/rqeqVvv1XA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vite/-/vite-4.4.9.tgz}
     id: registry.npmmirror.com/vite/4.4.9
     name: vite
@@ -1762,6 +1777,7 @@ packages:
       terser:
         optional: true
     dependencies:
+      '@types/node': registry.npmmirror.com/@types/node@20.9.2
       esbuild: registry.npmmirror.com/esbuild@0.18.20
       postcss: registry.npmmirror.com/postcss@8.4.28
       rollup: registry.npmmirror.com/rollup@3.28.1

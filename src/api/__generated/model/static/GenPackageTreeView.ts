@@ -1,12 +1,12 @@
 export interface GenPackageTreeView {
     
-    children?: GenPackageTreeView_TargetOf_children[];
+    children?: Array<GenPackageTreeView_TargetOf_children>;
     
     createdTime: string;
     
-    entities: GenPackageTreeView_TargetOf_entities[];
+    entities: Array<GenPackageTreeView_TargetOf_entities>;
     
-    enums: GenPackageTreeView_TargetOf_enums[];
+    enums: Array<GenPackageTreeView_TargetOf_enums>;
     
     id: number;
     
@@ -23,13 +23,13 @@ export interface GenPackageTreeView {
 
 export interface GenPackageTreeView_TargetOf_children {
     
-    children?: GenPackageTreeView_TargetOf_children[];
+    children?: Array<GenPackageTreeView_TargetOf_children>;
     
     createdTime: string;
     
-    entities: GenPackageTreeView_TargetOf_children_TargetOf_entities_2[];
+    entities: Array<GenPackageTreeView_TargetOf_children_TargetOf_entities_2>;
     
-    enums: GenPackageTreeView_TargetOf_children_TargetOf_enums_2[];
+    enums: Array<GenPackageTreeView_TargetOf_children_TargetOf_enums_2>;
     
     id: number;
     

@@ -2,7 +2,7 @@ import type { TableType } from '../enums';
 
 export interface GenTableColumnsInput {
     
-    columns: GenTableColumnsInput_TargetOf_columns[];
+    columns: Array<GenTableColumnsInput_TargetOf_columns>;
     
     comment: string;
     

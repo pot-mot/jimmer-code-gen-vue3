@@ -4,7 +4,7 @@ export interface GenEnumItemsInput {
     
     genPackageId?: number;
     
-    items: GenEnumItemsInput_TargetOf_items[];
+    items: Array<GenEnumItemsInput_TargetOf_items>;
     
     name: string;
 }

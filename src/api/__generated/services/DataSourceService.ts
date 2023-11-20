@@ -31,27 +31,34 @@ export class DataSourceService {
         return (await this.executor({uri: _uri, method: 'GET'})) as GenDataSourceView | undefined
     }
     
-    async getDefaultDataSource(options: DataSourceServiceOptions['getDefaultDataSource']): Promise<
+    async getDefault(options: DataSourceServiceOptions['getDefault']): Promise<
         GenDataSourceTemplateView
     > {
-        let _uri = '/dataSource/type/';
-        _uri += encodeURIComponent(options.dataSourceType);
-        _uri += '/default';
+        let _uri = '/dataSource/default';
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.dataSourceType;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'dataSourceType='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         return (await this.executor({uri: _uri, method: 'GET'})) as GenDataSourceTemplateView
     }
     
-    async list(): Promise<
-        GenDataSourceView[]
+    async getDefaults(): Promise<
+        Array<GenDataSourceTemplateView>
     > {
-        let _uri = '/dataSource/';
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenDataSourceView[]
+        let _uri = '/dataSource/defaults';
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenDataSourceTemplateView>
     }
     
-    async listType(): Promise<
-        DataSourceType[]
+    async list(): Promise<
+        Array<GenDataSourceView>
     > {
-        let _uri = '/dataSource/type';
-        return (await this.executor({uri: _uri, method: 'GET'})) as DataSourceType[]
+        let _uri = '/dataSource/';
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenDataSourceView>
     }
     
     async test(options: DataSourceServiceOptions['test']): Promise<boolean> {
@@ -62,11 +69,11 @@ export class DataSourceService {
 
 export type DataSourceServiceOptions = {
     'create': {body: GenDataSourceInput},
-    'delete': {ids: number[]},
+    'delete': {ids: Array<number>},
     'edit': {id: number, body: GenDataSourceInput},
     'get': {id: number},
-    'getDefaultDataSource': {dataSourceType: DataSourceType},
+    'getDefault': {dataSourceType: DataSourceType},
+    'getDefaults': {},
     'list': {},
-    'listType': {},
     'test': {body: GenDataSourceInput}
 }

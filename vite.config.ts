@@ -1,9 +1,16 @@
 import {defineConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import {prismjsPlugin} from "vite-plugin-prismjs"
+import {join} from "path"
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    // https://juejin.cn/post/7065314821129895967
+    resolve: {
+        alias: {
+            '@': join(__dirname, "src"),
+        }
+    },
     plugins: [
         vue(),
         prismjsPlugin({

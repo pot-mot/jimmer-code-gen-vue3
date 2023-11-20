@@ -1,29 +1,21 @@
-<script setup lang="ts">
-import {api} from "../../../api";
+<script lang="ts" setup>
+import {api} from "@/api";
 import {onMounted, ref} from "vue";
-import {GenConfig, GenConfigProperties} from "../../../api/__generated/model/static";
-import {DataSourceType, GenLanguage} from "../../../api/__generated/model/enums";
-import {sendMessage} from "../../../utils/message.ts";
-import DataSourceIcon from "../../icons/database/DataSourceIcon.vue";
-import Details from "../../common/Details.vue";
+import {GenConfig, GenConfigProperties} from "@/api/__generated/model/static";
+import {sendMessage} from "@/utils/message.ts";
+import DataSourceIcon from "../icons/database/DataSourceIcon.vue";
+import Details from "../common/Details.vue";
 import {useLoading} from "../../../hooks/useLoading.ts";
+import {dataSourceTypes, languages} from "../../../constant/enums.ts";
 
-const config = ref<GenConfig | undefined>()
-
-const dataSourceTypes = ref<DataSourceType[]>([])
-
-const languages = ref<GenLanguage[]>([])
+const config = ref<GenConfig>()
 
 const generateConfigLoading = useLoading()
 
 const getData = async () => {
 	generateConfigLoading.start()
 
-	dataSourceTypes.value = await api.dataSourceService.listType()
-
 	config.value = await api.configService.getConfig()
-
-	languages.value = await api.entityService.listLanguage()
 
 	generateConfigLoading.end()
 }
@@ -68,7 +60,8 @@ const handleCancel = () => {
 							<template #prefix>
 								<DataSourceIcon :type="config.dataSourceType"></DataSourceIcon>
 							</template>
-							<el-option v-for="dataSourceType in dataSourceTypes" :label="dataSourceType" :value="dataSourceType"></el-option>
+							<el-option v-for="dataSourceType in dataSourceTypes" :label="dataSourceType"
+									   :value="dataSourceType"></el-option>
 						</el-select>
 					</el-form-item>
 				</el-col>

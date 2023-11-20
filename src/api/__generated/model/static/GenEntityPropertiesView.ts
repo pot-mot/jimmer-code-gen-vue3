@@ -18,7 +18,7 @@ export interface GenEntityPropertiesView {
     
     orderKey: number;
     
-    properties: GenEntityPropertiesView_TargetOf_properties[];
+    properties: Array<GenEntityPropertiesView_TargetOf_properties>;
     
     remark: string;
     
@@ -81,6 +81,8 @@ export interface GenEntityPropertiesView_TargetOf_properties {
     
     name: string;
     
+    orderKey: number;
+    
     otherAnnotation?: string;
     
     remark: string;
@@ -102,7 +104,7 @@ export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2 {
     
     id: number;
     
-    items: GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2_TargetOf_items_3[];
+    items: Array<GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2_TargetOf_items_3>;
     
     name: string;
     
