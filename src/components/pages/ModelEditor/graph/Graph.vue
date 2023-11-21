@@ -72,9 +72,9 @@
 					}"></el-button>
 				</el-tooltip>
 
-				<DragDialog v-if="openSQLPreviewDialog" :init-w="700" :init-x="5000" can-drag
-							can-resize disable-h @close="openSQLPreviewDialog = false">
-					<MultiCodePreview :codes-map="sqlMap" height="calc(100vh - 5em)" style="height: 100vh; width: 100%;"
+				<DragDialog v-model="openSQLPreviewDialog" :init-w="700" :init-x="5000" can-drag
+							can-resize disable-h>
+					<MultiCodePreview :codes-map="sqlMap" height="calc(100vh - 5em - 30px)" style="height: calc(100vh - 30px); width: 100%;"
 									  width="100%"></MultiCodePreview>
 				</DragDialog>
 			</li>
@@ -87,9 +87,9 @@
 					}"></el-button>
 				</el-tooltip>
 
-				<DragDialog v-if="codePreviewDialogOpenState" :init-w="700" :init-x="5000"
-							can-drag can-resize disable-h @close="codePreviewDialogOpenState = false">
-					<MultiCodePreview :codes-map="codesMap" height="calc(100vh - 5em)" style="height: 100vh; width: 100%;"
+				<DragDialog v-model="codePreviewDialogOpenState" :init-w="700" :init-x="5000"
+							can-drag can-resize disable-h>
+					<MultiCodePreview :codes-map="codesMap" height="calc(100vh - 5em - 30px)" style="height: calc(100vh - 30px); width: 100%;"
 									  width="100%"></MultiCodePreview>
 
 					<div style="position: absolute; bottom: 2em; right: 2em;">
@@ -132,11 +132,9 @@
 	<ModelDialog v-if="openModelDialog" @cancel="openModelDialog = false"
 				 @submit="handleSaveDialogSubmit"></ModelDialog>
 
-	<DragDialog v-if="store.openDataSourceLoadMenu" :init-w="500" :init-x="100"
-				:init-y="10" can-resize @close="store.openDataSourceLoadMenu = false">
-		<div style="height: 70vh; overflow: auto; scrollbar-gutter: stable;">
-			<DataSourceMenu ref="dataSourceLoadMenu"></DataSourceMenu>
-		</div>
+	<DragDialog v-model="store.openDataSourceLoadMenu" :init-w="500" :init-x="100"
+				:init-y="10" :init-h="600" can-resize>
+		<DataSourceMenu ref="dataSourceLoadMenu"></DataSourceMenu>
 	</DragDialog>
 </template>
 
@@ -171,7 +169,7 @@ import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
 import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";
 import LayoutIcon from "@/components/global/icons/toolbar/LayoutIcon.vue";
 import MultiCodePreview from "@/components/global/code/MultiCodePreview.vue";
-import DragDialog from "@/components/global/DragDialog/DragDialog.vue";
+import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import SQLIcon from "@/components/global/icons/toolbar/SQLIcon.vue";
 import FitIcon from "@/components/global/icons/toolbar/FitIcon.vue";
 import CenterIcon from "@/components/global/icons/toolbar/CenterIcon.vue";

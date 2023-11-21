@@ -2,7 +2,7 @@
 import {ref, watch} from 'vue'
 import {api} from "@/api";
 import {GenTableAssociationsView} from '@/api/__generated/model/static'
-import DragDialog from "@/components/global/DragDialog/DragDialog.vue"
+import DragDialog from "@/components/global/dialog/DragDialog.vue"
 import TableInfo from "./TableInfo.vue";
 import {sendMessage} from "@/utils/message.ts";
 import TableDefine from "./TableDefine.vue";
@@ -55,7 +55,7 @@ watch(() => props.id, async (id) => {
 </script>
 
 <template>
-	<DragDialog :can-resize="true" :init-w="w" :init-x="x" :init-y="y" @close="emits('close')">
+	<DragDialog :model-value="true" :can-resize="true" :init-w="w" :init-x="x" :init-y="y" @close="emits('close')">
 		<div class="wrapper">
 			<template v-if="table">
 				<div class="header">

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import DragDialog from "@/components/global/DragDialog/DragDialog.vue";
+import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {ref} from "vue";
 import {Tools} from "@element-plus/icons-vue"
 import GenerateConfigForm from "@/components/global/config/GenerateConfigForm.vue";
@@ -34,24 +34,16 @@ const configType = ref<'GenerateConfigForm' | 'TypeMappingsTable' | undefined>()
 
 	</div>
 
-	<DragDialog v-if="openState" :init-w="900" :init-y="100" can-resize @close="openState = false">
-		<div class="wrapper">
+	<DragDialog v-model="openState" :init-w="900" :init-y="100" can-resize>
+		<div style="width: calc(100% - 1em)">
 			<GenerateConfigForm v-if="configType == 'GenerateConfigForm'" @cancel="openState = false"
 								@submit="openState = false"></GenerateConfigForm>
-
 			<TypeMappingsTable v-else-if="configType == 'TypeMappingsTable'"></TypeMappingsTable>
 		</div>
 	</DragDialog>
 </template>
 
 <style scoped>
-.wrapper {
-	height: 100%;
-	width: 100%;
-	overflow: auto;
-	scrollbar-gutter: stable;
-}
-
 .button {
 	position: fixed;
 	left: 0.5em;

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {ref} from 'vue'
-import DragDialog from "@/components/global/DragDialog/DragDialog.vue";
+import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import ModelForm from "./ModelForm.vue";
 import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
 import {GenTableColumnsInput} from "@/api/__generated/model/static";
@@ -26,7 +26,7 @@ const handleSubmit = (table: GenTableColumnsInput) => {
 </script>
 
 <template>
-	<DragDialog v-if="openState" :can-resize="true" :init-w="1200" :init-y="100" @close="openState = false">
+	<DragDialog v-model="openState" :can-resize="true" :init-w="1200" :init-h="600" :init-y="100">
 		<ModelForm @cancel="openState = false" @submit="handleSubmit"></ModelForm>
 	</DragDialog>
 </template>

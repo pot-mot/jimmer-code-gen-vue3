@@ -1,7 +1,10 @@
 export interface DragResizeProps {
+    modelValue: boolean
+
     initX?: number
     initY?: number
     initW?: number
+    initH?: number
     minW?: number
     minH?: number
     maxW?: number

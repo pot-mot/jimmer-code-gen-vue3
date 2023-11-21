@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {PackageMenuEventBus} from "./PackageMenuEventBus.ts";
 import {ref} from "vue";
-import DragDialog from "@/components/global/DragDialog/DragDialog.vue";
+import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import PackageAddIcon from "@/components/global/icons/entity/PackageAddIcon.vue";
 
 interface PackageCreateDialogProps {
@@ -38,7 +38,7 @@ const handleCreate = () => {
 		</slot>
 	</span>
 
-	<DragDialog v-if="openState" :can-drag="false" :init-w="300" :init-x="x" :init-y="y" @close="openState = false">
+	<DragDialog v-model="openState" :can-drag="false" :init-w="300" :init-x="x" :init-y="y">
 		<el-text>新软件包名称</el-text>
 		<el-input
 			v-model="newPath"

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import DragResize from 'vue3-draggable-resizable'
 import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
-import {nextTick, onBeforeMount, onMounted, ref} from 'vue'
+import {nextTick, onBeforeMount, onMounted, ref, watch} from 'vue'
 import {ElButton} from "element-plus";
 import {Close} from "@element-plus/icons-vue";
 import {DragResizeProps} from "./DragDialogProps.ts";
@@ -17,7 +17,9 @@ const props = withDefaults(defineProps<DragResizeProps>(), {
 })
 
 const x = ref(0)
+const y = ref(0)
 const w = ref(0)
+const h = ref(0)
 
 onBeforeMount(() => {
 	const maxWidth = document.documentElement.clientWidth
@@ -37,19 +39,35 @@ onBeforeMount(() => {
 		w.value = props.initW
 		x.value = (maxWidth - w.value) / 2
 	}
+
+	if (props.initH) {
+		h.value = props.initH
+	}
+
+	if (props.initY) {
+		y.value = props.initY
+	}
 })
 
 const emits = defineEmits<DragDialogEmits>()
 
+watch(() => props.modelValue, (modelValue) => {
+	if (modelValue) {
+		emits('open')
+	}
+})
+
 const close = () => {
 	emits("close")
+	emits('update:modelValue', false)
+	emits("closed")
 }
 
 const draggable = ref(true)
+const resizable = ref(props.canResize)
 
 const wrapper = ref<HTMLElement>()
 const content = ref<HTMLElement>()
-const h = ref(0)
 
 const syncDialogHeight = () => {
 	if (content.value) {
@@ -68,15 +86,11 @@ const updateContentHeightByWrapperHeight = () => {
 	}
 }
 
-const contentResizeOb = new ResizeObserver(syncDialogHeight)
-
 const wrapperResizeOb = new ResizeObserver(updateContentHeightByWrapperHeight)
 
 onMounted(() => {
 	nextTick(() => {
 		if (content.value && wrapper.value) {
-			contentResizeOb.observe(content.value)
-
 			wrapperResizeOb.observe(wrapper.value)
 		}
 	})
@@ -96,27 +110,31 @@ defineExpose({
 </script>
 
 <template>
-	<Teleport :disabled="disableTeleport" :to="to">
-		<DragResize :active="true" :disableH="disableH" :disableW="disableW" :disableX="disableX"
-					:disableY="disableY" :draggable="draggable" :h="h"
-					:initW="initW" :maxH="maxH" :maxW="maxW" :minH="minH"
-					:minW="minW" :parent="limitByParent"
-					:resizable="canResize" :w="w"
-					:x="x" :y="initY"
-					style="border: none; z-index: 2000;">
-			<div ref="wrapper" :style="draggable ? 'cursor: all-scroll;' : 'cursor: default;'" class="wrapper">
-				<div class="close" @click="close">
-					<slot name="close">
-						<el-button :icon="Close" link size="large" type="danger"></el-button>
-					</slot>
+	<template v-if="modelValue">
+		<Teleport :disabled="disableTeleport" :to="to">
+			<DragResize :active="true"
+						:draggable="draggable"
+						:resizable="resizable"
+						:x="x" :disableX="disableX"
+						:y="y" :disableY="disableY"
+						:parent="limitByParent"
+						:h="h" :maxH="maxH" :minH="minH" :disableH="disableH"
+						:w="w" :maxW="maxW" :minW="minW" :disableW="disableW"
+						style="border: none; z-index: 2000;">
+				<div ref="wrapper" :style="draggable ? 'cursor: all-scroll;' : 'cursor: default;'" class="wrapper">
+					<div class="close" @click="close">
+						<slot name="close">
+							<el-button :icon="Close" link size="large" type="danger"></el-button>
+						</slot>
+					</div>
+					<div ref="content" class="content"
+						 @mouseenter="handleContentMouseEnter" @mouseleave="handleContentMouseLeave">
+						<slot></slot>
+					</div>
 				</div>
-				<div ref="content" class="content"
-					 @mouseenter="handleContentMouseEnter" @mouseleave="handleContentMouseLeave">
-					<slot></slot>
-				</div>
-			</div>
-		</DragResize>
-	</Teleport>
+			</DragResize>
+		</Teleport>
+	</template>
 </template>
 
 <style scoped>
@@ -142,6 +160,9 @@ defineExpose({
 
 .content {
 	cursor: default;
+	height: 100%;
+	width: 100%;
+	overflow: auto;
 }
 
 :deep(.handle) {

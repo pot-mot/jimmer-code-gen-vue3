@@ -6,7 +6,7 @@ import {ArrowDown, ArrowUp, Delete, Plus} from "@element-plus/icons-vue";
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import {api} from "@/api";
 import {objToMap} from "@/utils/mapOperation.ts";
-import {useLoading} from "../../../../hooks/useLoading.ts";
+import {useLoading} from "@/hooks/useLoading.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import {swapItems} from "@/utils/arrayOperation.ts";
@@ -180,48 +180,47 @@ const handleColumnToPk = (pkIndex: number) => {
 </script>
 
 <template>
-	<div class="wrapper">
-		<el-form v-if="!columnTypeMapLoading.isLoading()" style="width: 98%;">
-			<el-row :gutter="12" style="line-height: 2em; padding-left: 1em;">
-				<el-col :span="6">
-					<el-input v-model="table.name" placeholder="name"></el-input>
-				</el-col>
+	<el-form v-if="!columnTypeMapLoading.isLoading()" style="width: 98%;">
+		<el-row :gutter="12" style="line-height: 2em; padding-left: 1em;">
+			<el-col :span="6">
+				<el-input v-model="table.name" placeholder="name"></el-input>
+			</el-col>
 
-				<el-col :span="8">
-					<el-text class="comment">
-						<span>/* </span>
-						<span><el-input v-model="table.comment" placeholder="comment"></el-input></span>
-						<span> */</span>
-					</el-text>
-				</el-col>
+			<el-col :span="8">
+				<el-text class="comment">
+					<span>/* </span>
+					<span><el-input v-model="table.comment" placeholder="comment"></el-input></span>
+					<span> */</span>
+				</el-text>
+			</el-col>
 
-				<el-col :span="18">
-					<el-input v-model="table.remark" :autosize="{ minRows: 1, maxRows: 4 }" placeholder="remark"
-							  type="textarea"></el-input>
-				</el-col>
-			</el-row>
+			<el-col :span="18">
+				<el-input v-model="table.remark" :autosize="{ minRows: 1, maxRows: 4 }" placeholder="remark"
+						  type="textarea"></el-input>
+			</el-col>
+		</el-row>
 
-			<div class="column-line title">
-				<span></span>
-				<span>主键</span>
-				<span>列名</span>
-				<span>注释</span>
-				<span>唯一</span>
-				<span>字面类型</span>
-				<span>JDBC 类型</span>
-				<span>长度与精度</span>
-				<span>非空</span>
-				<span>默认值</span>
-				<span>操作</span>
-			</div>
+		<div class="column-line title">
+			<span></span>
+			<span>主键</span>
+			<span>列名</span>
+			<span>注释</span>
+			<span>唯一</span>
+			<span>字面类型</span>
+			<span>JDBC 类型</span>
+			<span>长度与精度</span>
+			<span>非空</span>
+			<span>默认值</span>
+			<span>操作</span>
+		</div>
 
-			<div v-for="(column, index) in table.columns"
-				 class="column-line">
+		<div v-for="(column, index) in table.columns"
+			 class="column-line">
 				<span>
 					<ColumnIcon :column="column"></ColumnIcon>
 				</span>
 
-				<span style="white-space: nowrap;">
+			<span style="white-space: nowrap;">
 					<el-checkbox v-model="column.partOfPk"
 								 style="width: 1em; padding: 0; margin: 0;"
 								 @change="(value: boolean) => {if (value) handleColumnToPk(index)}"></el-checkbox>
@@ -231,43 +230,43 @@ const handleColumnToPk = (pkIndex: number) => {
 					</el-tooltip>
 				</span>
 
-				<span>
+			<span>
 					<el-input v-model="column.name" placeholder="name"></el-input>
 				</span>
 
-				<el-text class="comment">
-					<span>/* </span>
-					<span><el-input v-model="column.comment" placeholder="comment"></el-input></span>
-					<span> */</span>
-				</el-text>
+			<el-text class="comment">
+				<span>/* </span>
+				<span><el-input v-model="column.comment" placeholder="comment"></el-input></span>
+				<span> */</span>
+			</el-text>
 
-				<span>
+			<span>
 					<el-checkbox v-model="column.partOfUniqueIdx"></el-checkbox>
 				</span>
 
-				<span>
+			<span>
 					<el-input v-model="column.type"></el-input>
 				</span>
-				<span>
+			<span>
 					<el-select v-model="column.typeCode" clearable filterable>
 						<el-option v-for="key in [...columnTypeMap.keys()]" :label="key"
 								   :value="columnTypeMap.get(key)!"></el-option>
 					</el-select>
 				</span>
 
-				<el-text style="display: grid; grid-template-columns: 0.5em 1fr 1em 1fr 0.5em">
-					<span>(</span>
-					<span><el-input v-model="column.displaySize"></el-input></span>
-					<span style="padding-left: 0.3em;">,</span>
-					<span><el-input v-model="column.numericPrecision"></el-input></span>
-					<span style="padding-left: 0.3em;">)</span>
-				</el-text>
+			<el-text style="display: grid; grid-template-columns: 0.5em 1fr 1em 1fr 0.5em">
+				<span>(</span>
+				<span><el-input v-model="column.displaySize"></el-input></span>
+				<span style="padding-left: 0.3em;">,</span>
+				<span><el-input v-model="column.numericPrecision"></el-input></span>
+				<span style="padding-left: 0.3em;">)</span>
+			</el-text>
 
-				<span>
+			<span>
 					<el-checkbox v-model="column.typeNotNull"></el-checkbox>
 				</span>
 
-				<span>
+			<span>
 					<el-tooltip :auto-close="2000">
 						<el-input v-model="column.defaultValue" placeholder="default"></el-input>
 
@@ -276,7 +275,7 @@ const handleColumnToPk = (pkIndex: number) => {
 						</template>
 					</el-tooltip>
 				</span>
-				<span style="white-space: nowrap;">
+			<span style="white-space: nowrap;">
 					<el-button :disabled="index == 0" :icon="ArrowUp" link
 							   @click="handleMoveColumnUp(index)"></el-button>
 					<el-button :disabled="index == table.columns.length - 1" :icon="ArrowDown"
@@ -287,33 +286,21 @@ const handleColumnToPk = (pkIndex: number) => {
 					<el-button :icon="Delete" link style="margin-left: 0.3em;"
 							   type="danger" @click="handleRemoveColumn(index)"></el-button>
 				</span>
-			</div>
+		</div>
 
-			<div style="height: 2em; line-height: 2em; transform: translateY(-5px);">
-				<el-button :icon="Plus" link @click="handleAddColumn(table.columns.length - 1)"></el-button>
-			</div>
+		<div style="height: 2em; line-height: 2em; transform: translateY(-5px);">
+			<el-button :icon="Plus" @click="handleAddColumn(table.columns.length - 1)"></el-button>
+		</div>
 
-			<div style="text-align: right;">
-				<el-button type="info" @click="handleCancel">取消</el-button>
-				<el-button type="warning" @click="handleSubmit">提交</el-button>
-			</div>
-		</el-form>
-		<el-empty v-else class="empty"></el-empty>
-	</div>
+		<div style="text-align: right;">
+			<el-button type="info" @click="handleCancel">取消</el-button>
+			<el-button type="warning" @click="handleSubmit">提交</el-button>
+		</div>
+	</el-form>
+	<el-empty v-else></el-empty>
 </template>
 
 <style scoped>
-.wrapper {
-	height: 100%;
-	width: 100%;
-	overflow: auto;
-	scrollbar-gutter: stable;
-}
-
-.empty {
-	height: 65vh;
-}
-
 .comment {
 	display: grid;
 	grid-template-columns: 1em 1fr 1em;

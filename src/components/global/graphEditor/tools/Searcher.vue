@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {nextTick, onMounted, onUnmounted, ref} from "vue";
 import {Graph, Node} from "@antv/x6";
-import DragDialog from "../../DragDialog/DragDialog.vue";
+import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {focus} from "../operations/viewOperation.ts";
 
 interface SearcherProps {
@@ -94,40 +94,34 @@ onUnmounted(() => {
 const handleClose = () => {
 	keyword.value = ''
 	searchResult.value = []
-
-	nextTick(() => {
-		openState.value = false
-	})
 }
 </script>
 
 <template>
-	<div v-if="openState">
-		<DragDialog ref="dialog" :init-w="400" :init-x="1100" :init-y="50" :to="to" fit-content @close="handleClose">
-			<el-input ref="input" v-model="keyword" clearable @change="handleSearch" @input="handleSearch">
-				<template #append>
-					<el-button @click="handleSearch">搜索</el-button>
-				</template>
-			</el-input>
+	<DragDialog v-model="openState" ref="dialog" :init-w="400" :init-x="1100" :init-y="50" :to="to" fit-content @close="handleClose">
+		<el-input ref="input" v-model="keyword" clearable @change="handleSearch" @input="handleSearch">
+			<template #append>
+				<el-button @click="handleSearch">搜索</el-button>
+			</template>
+		</el-input>
 
-			<div ref="searchResultContainer" style="max-height: 60vh; overflow: auto;">
-				<div v-if="keyword.length > 0 && searchResult.length == 0">
-					无搜索结果
-				</div>
-
-				<div v-for="node in searchResult">
-					<slot :node="node" name="default">
-						<el-button
-							link
-							size="default"
-							@click="focus(graph, node.id)">
-							{{ node.id }}
-						</el-button>
-					</slot>
-				</div>
+		<div ref="searchResultContainer" style="max-height: 60vh; overflow: auto;">
+			<div v-if="keyword.length > 0 && searchResult.length == 0">
+				无搜索结果
 			</div>
-		</DragDialog>
-	</div>
+
+			<div v-for="node in searchResult">
+				<slot :node="node" name="default">
+					<el-button
+						link
+						size="default"
+						@click="focus(graph, node.id)">
+						{{ node.id }}
+					</el-button>
+				</slot>
+			</div>
+		</div>
+	</DragDialog>
 </template>
 
 <style scoped>
