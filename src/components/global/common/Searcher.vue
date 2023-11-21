@@ -1,16 +1,19 @@
 <script lang="ts" setup>
 import {nextTick, onMounted, onUnmounted, ref} from "vue";
-import {Graph, Node} from "@antv/x6";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
-import {focus} from "../operations/viewOperation.ts";
 
-interface SearcherProps {
-	graph: Graph,
-	searchMethod: (node: Node, value: string) => Boolean,
-	to?: string,
+interface SearcherProps<T> {
+	target: HTMLElement
+	data: () => T[]
+	match: (keyword: string, item: T) => Boolean
+	choose: (item: T) => void
+	to?: string
+	initX?: number
+	initY?: number
+
 }
 
-const props = defineProps<SearcherProps>()
+const props = defineProps<SearcherProps<any>>()
 
 const keyword = ref("")
 
@@ -19,16 +22,6 @@ const searchResult = ref<Node[]>([])
 const openState = ref(false)
 
 const mouseenterState = ref(false)
-
-const searchTableNodes = (graph: Graph): Node[] => {
-	if (keyword.value.length == 0) {
-		return []
-	}
-
-	return graph.getNodes().filter(node => {
-		return props.searchMethod(node, keyword.value)
-	})
-}
 
 const input = ref()
 
@@ -45,9 +38,9 @@ const handleSearchKeyEvent = (e: KeyboardEvent) => {
 			searchResult.value = []
 			openState.value = true
 			nextTick(() => {
-				if (input) {
-					input.value.focus()
-				}
+				dialog.value?.syncDialogHeight()
+
+				input.value?.focus()
 			})
 		}
 	}
@@ -57,13 +50,19 @@ const searchResultContainer = ref()
 
 const handleSearch = () => {
 	if (keyword.value.trim().length > 0) {
-		searchResult.value = searchTableNodes(props.graph)
+		if (keyword.value.length == 0) {
+			searchResult.value = []
+		} else {
+			searchResult.value = props.data().filter(item => {
+				return props.match(keyword.value, item)
+			})
+		}
 	} else {
 		searchResult.value = []
 	}
 
 	nextTick(() => {
-		dialog.value.syncDialogHeight()
+		dialog.value?.syncDialogHeight()
 	})
 }
 
@@ -76,17 +75,17 @@ const handleMouseleave = () => {
 }
 
 onMounted(() => {
-	props.graph.container.addEventListener('mouseenter', handleMouseenter)
+	props.target.addEventListener('mouseenter', handleMouseenter)
 
-	props.graph.container.addEventListener('mouseleave', handleMouseleave)
+	props.target.addEventListener('mouseleave', handleMouseleave)
 
 	document.documentElement.addEventListener('keydown', handleSearchKeyEvent)
 })
 
 onUnmounted(() => {
-	props.graph.container.removeEventListener('mouseenter', handleMouseenter)
+	props.target.removeEventListener('mouseenter', handleMouseenter)
 
-	props.graph.container.removeEventListener('mouseleave', handleMouseleave)
+	props.target.removeEventListener('mouseleave', handleMouseleave)
 
 	document.documentElement.removeEventListener('keydown', handleSearchKeyEvent)
 })
@@ -98,7 +97,7 @@ const handleClose = () => {
 </script>
 
 <template>
-	<DragDialog v-model="openState" ref="dialog" :init-w="400" :init-x="1100" :init-y="50" :to="to" fit-content @close="handleClose">
+	<DragDialog v-model="openState" ref="dialog" :init-w="400" :init-x="initX" :init-y="initY" :to="to" fit-content @close="handleClose">
 		<el-input ref="input" v-model="keyword" clearable @change="handleSearch" @input="handleSearch">
 			<template #append>
 				<el-button @click="handleSearch">搜索</el-button>
@@ -107,23 +106,22 @@ const handleClose = () => {
 
 		<div ref="searchResultContainer" style="max-height: 60vh; overflow: auto;">
 			<div v-if="keyword.length > 0 && searchResult.length == 0">
-				无搜索结果
-			</div>
-
-			<div v-for="node in searchResult">
-				<slot :node="node" name="default">
-					<el-button
-						link
-						size="default"
-						@click="focus(graph, node.id)">
-						{{ node.id }}
-					</el-button>
+				<slot name="empty" :keyword="keyword">
+					<el-text>无搜索结果</el-text>
 				</slot>
 			</div>
+
+			<slot name="items" :items="searchResult" :choose="choose">
+				<div v-for="item in searchResult">
+					<slot name="item" :items="searchResult" :item="item" :choose="choose">
+						<el-button link size="default" @click="choose(item)">
+							<slot name="buttonContent" :items="searchResult" :item="item">
+								{{ item }}
+							</slot>
+						</el-button>
+					</slot>
+				</div>
+			</slot>
 		</div>
 	</DragDialog>
 </template>
-
-<style scoped>
-
-</style>

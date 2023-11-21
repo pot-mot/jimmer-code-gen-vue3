@@ -62,17 +62,3 @@ export const importTableNodes = (graph: Graph, tables: readonly GenTableColumnsV
 export const removeTableNodes = (graph: Graph, ids: readonly number[]) => {
     graph.removeCells(ids.map(id => tableIdToNodeId(id)))
 }
-
-export const tableNodeMatchMethod = (node: Node, keyword: string): boolean => {
-    const keywords = keyword.split(',')
-
-    if (node.data && node.data.table) {
-        const table: GenTableColumnsView = node.data.table
-        for (const keyword of keywords) {
-            if (table.name.includes(keyword) || table.comment.includes(keyword)) {
-                return true
-            }
-        }
-    }
-    return false
-}

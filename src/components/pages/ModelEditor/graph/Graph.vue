@@ -115,17 +115,7 @@
 		</div>
 
 		<template v-if="store.isLoaded">
-			<Searcher :graph="store._graph()" :search-method="tableNodeMatchMethod">
-				<template v-slot="{node}">
-					<el-button
-						link
-						size="default"
-						@click="store.focus(node.id)">
-						{{ node.data.table.name }}
-						<Comment :comment="node.data.table.comment"></Comment>
-					</el-button>
-				</template>
-			</Searcher>
+			<GraphSearcher :graph="store._graph()"></GraphSearcher>
 		</template>
 	</div>
 
@@ -177,11 +167,9 @@ import EraserIcon from "@/components/global/icons/toolbar/EraserIcon.vue";
 import AssociationOffIcon from "@/components/global/icons/toolbar/AssociationOffIcon.vue";
 import PreviewIcon from "@/components/global/icons/toolbar/PreviewIcon.vue";
 import DownloadIcon from "@/components/global/icons/toolbar/DownloadIcon.vue";
-import {tableNodeMatchMethod} from "../../AssociationEditor/graph/node/TableNode.ts";
 import {saveAs} from "file-saver";
 import ScaleBar from "@/components/global/graphEditor/tools/ScaleBar.vue";
-import Searcher from "@/components/global/graphEditor/tools/Searcher.vue";
-import Comment from "@/components/global/common/Comment.vue";
+import GraphSearcher from "@/components/global/graphEditor/tools/GraphSearcher.vue";
 import DataSourceMenu from "@/components/global/dataSource/menu/DataSourceMenu.vue";
 
 const container = ref<HTMLElement>()

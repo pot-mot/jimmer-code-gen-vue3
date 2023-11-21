@@ -7,6 +7,18 @@ export const searchNodeByTableName = (graph: Graph, tableName: string): Node | u
     return graph.getNodes().filter(node => node.getData().table.name == tableName)[0]
 }
 
+export const matchNode = (node: Node, keywords: string[]): boolean => {
+    for (let keyword of keywords) {
+        if (
+            node.getData().table.name.includes(keyword) ||
+            node.getData().table.comment.includes(keyword)
+        ) {
+            return true
+        }
+    }
+    return false
+}
+
 export const searchPortByColumnName = (node: Node, columnName: string): PortManager.PortMetadata | undefined => {
     return node.getPorts().filter(port => port.data.column.name == columnName)[0]
 }

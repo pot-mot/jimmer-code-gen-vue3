@@ -114,17 +114,7 @@
 		</div>
 
 		<template v-if="store.isLoaded">
-			<Searcher :graph="store._graph()" :search-method="tableNodeMatchMethod">
-				<template v-slot="{node}">
-					<el-button
-						link
-						size="default"
-						@click="store.focus(node.id)">
-						{{ node.data.table.name }}
-						<Comment :comment="node.data.table.comment"></Comment>
-					</el-button>
-				</template>
-			</Searcher>
+			<GraphSearcher :graph="store._graph()"></GraphSearcher>
 		</template>
 	</div>
 </template>
@@ -141,7 +131,7 @@ import {register} from "@antv/x6-vue-shape";
 import TableNode from "./node/TableNode.vue";
 import {initAssociationEditor} from "./init.ts";
 import {useSwitchAssociationType} from "./edge/AssociationEdge.ts";
-import {nodeIdToTableId, tableNodeMatchMethod} from "./node/TableNode.ts";
+import {nodeIdToTableId} from "./node/TableNode.ts";
 import {saveAs} from "file-saver";
 import {DataSourceMenuEventBusProps} from "@/components/global/dataSource/events/DataSourceMenuEvents.ts";
 import {useAssociationEditorStore} from "./store/AssociationEditorStore.ts";
@@ -167,8 +157,7 @@ import PreviewIcon from "@/components/global/icons/toolbar/PreviewIcon.vue";
 import MultiCodePreview from "@/components/global/code/MultiCodePreview.vue";
 import DownloadIcon from "@/components/global/icons/toolbar/DownloadIcon.vue";
 import ScaleBar from "@/components/global/graphEditor/tools/ScaleBar.vue";
-import Searcher from "@/components/global/graphEditor/tools/Searcher.vue";
-import Comment from "@/components/global/common/Comment.vue";
+import GraphSearcher from "@/components/global/graphEditor/tools/GraphSearcher.vue";
 
 const props = defineProps<DataSourceMenuEventBusProps>()
 
