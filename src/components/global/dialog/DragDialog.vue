@@ -1,28 +1,55 @@
 <script lang="ts" setup>
 import DragResize from 'vue3-draggable-resizable'
 import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
-import {nextTick, onBeforeMount, onMounted, ref, watch} from 'vue'
+import {nextTick, onMounted, ref, toRaw, watch} from 'vue'
 import {ElButton} from "element-plus";
 import {Close} from "@element-plus/icons-vue";
 import {DragResizeProps} from "./DragDialogProps.ts";
 import {DragDialogEmits} from "./DragDialogEmits.ts";
+import {sendMessage} from "@/utils/message.ts";
 
 const props = withDefaults(defineProps<DragResizeProps>(), {
 	to: "body",
 	canResize: false,
 	canDrag: true,
 	initW: 800,
-	disableTeleport: false,
 	limitByParent: true
 })
+
+const wrapper = ref<HTMLElement>()
+const content = ref<HTMLElement>()
+
+const draggable = ref(props.canDrag)
+const resizable = ref(props.canResize)
 
 const x = ref(0)
 const y = ref(0)
 const w = ref(0)
 const h = ref(0)
 
-onBeforeMount(() => {
-	const maxWidth = document.documentElement.clientWidth
+const setPositionAndSize = () => {
+	let maxWidth: number
+
+	if (props.limitByParent) {
+		let parent: HTMLElement | null
+
+		const to: string | HTMLElement = toRaw(props.to)
+
+		if (typeof to == "string") {
+			parent = document.querySelector(to)
+		} else {
+			parent = to
+		}
+
+		if (!parent) {
+			sendMessage('dialog 创建失败', 'error')
+			return
+		}
+
+		maxWidth = parent.clientWidth
+	} else {
+		maxWidth = document.documentElement.clientWidth
+	}
 
 	if (maxWidth < props.initW) {
 		x.value = 0
@@ -47,12 +74,13 @@ onBeforeMount(() => {
 	if (props.initY) {
 		y.value = props.initY
 	}
-})
+}
 
 const emits = defineEmits<DragDialogEmits>()
 
 watch(() => props.modelValue, (modelValue) => {
 	if (modelValue) {
+		setPositionAndSize()
 		emits('open')
 	}
 })
@@ -62,12 +90,6 @@ const close = () => {
 	emits('update:modelValue', false)
 	emits("closed")
 }
-
-const draggable = ref(true)
-const resizable = ref(props.canResize)
-
-const wrapper = ref<HTMLElement>()
-const content = ref<HTMLElement>()
 
 const syncDialogHeight = () => {
 	if (content.value) {
@@ -110,31 +132,30 @@ defineExpose({
 </script>
 
 <template>
-	<template v-if="modelValue">
-		<Teleport :disabled="disableTeleport" :to="to">
-			<DragResize :active="true"
-						:draggable="draggable"
-						:resizable="resizable"
-						:x="x" :disableX="disableX"
-						:y="y" :disableY="disableY"
-						:parent="limitByParent"
-						:h="h" :maxH="maxH" :minH="minH" :disableH="disableH"
-						:w="w" :maxW="maxW" :minW="minW" :disableW="disableW"
-						style="border: none; z-index: 2000;">
-				<div ref="wrapper" :style="draggable ? 'cursor: all-scroll;' : 'cursor: default;'" class="wrapper">
-					<div class="close" @click="close">
-						<slot name="close">
-							<el-button :icon="Close" link size="large" type="danger"></el-button>
-						</slot>
-					</div>
-					<div ref="content" class="content"
-						 @mouseenter="handleContentMouseEnter" @mouseleave="handleContentMouseLeave">
-						<slot></slot>
-					</div>
+	<Teleport :to="to">
+		<DragResize v-if="modelValue"
+					:active="true"
+					:draggable="draggable"
+					:resizable="resizable"
+					:x="x" :disableX="disableX"
+					:y="y" :disableY="disableY"
+					:parent="limitByParent"
+					:h="h" :maxH="maxH" :minH="minH" :disableH="disableH"
+					:w="w" :maxW="maxW" :minW="minW" :disableW="disableW"
+					style="border: none; z-index: 2000;">
+			<div ref="wrapper" :style="draggable ? 'cursor: all-scroll;' : 'cursor: default;'" class="wrapper">
+				<div class="close" @click="close">
+					<slot name="close">
+						<el-button :icon="Close" link size="large" type="danger"></el-button>
+					</slot>
 				</div>
-			</DragResize>
-		</Teleport>
-	</template>
+				<div ref="content" class="content"
+					 @mouseenter="handleContentMouseEnter" @mouseleave="handleContentMouseLeave">
+					<slot></slot>
+				</div>
+			</div>
+		</DragResize>
+	</Teleport>
 </template>
 
 <style scoped>

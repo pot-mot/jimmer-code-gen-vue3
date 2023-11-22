@@ -4,7 +4,7 @@ import {Delete, EditPen} from "@element-plus/icons-vue";
 import {useRouter} from "vue-router";
 import {useModelListStore} from "./store/ModelListStore.ts";
 import {GenModelInput, GenModelView} from "@/api/__generated/model/static";
-import {useLoading} from "../../../hooks/useLoading.ts";
+import {useLoading} from "@/hooks/useLoading.ts";
 import {api} from "@/api";
 import {deleteConfirm, sendMessage} from "@/utils/message.ts";
 import {datetimeFormat} from "@/utils/dataFormat.ts";

@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {useLoading} from "../../../hooks/useLoading.ts";
+import {useLoading} from "@/hooks/useLoading.ts";
 
 export const useGlobalLoadingStore =
     defineStore(

@@ -153,7 +153,7 @@ import {handleHistoryKeyEvent} from "@/components/global/graphEditor/useHistory.
 import {handleSelectionKeyEvent} from "@/components/global/graphEditor/useSelection.ts";
 import {useSwitchAssociationType} from "../../AssociationEditor/graph/edge/AssociationEdge.ts";
 import {useSaveKeyEvent} from "@/components/global/graphEditor/useSave.ts";
-import {DataSourceMenuEvents} from "@/components/global/dataSource/events/DataSourceMenuEvents.ts";
+import {DataSourceMenuEvents} from "@/components/global/dataSource/menu/DataSourceMenuEvents.ts";
 import SaveIcon from "@/components/global/icons/toolbar/SaveIcon.vue";
 import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
 import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";

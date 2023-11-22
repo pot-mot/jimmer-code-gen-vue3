@@ -4,6 +4,8 @@ export interface GenConfigProperties {
     
     author?: string;
     
+    columnAnnotation?: boolean;
+    
     columnCommentPrefix?: string;
     
     columnCommentSuffix?: string;
@@ -27,6 +29,8 @@ export interface GenConfigProperties {
     logicalDeletedAnnotation?: string;
     
     separator?: string;
+    
+    tableAnnotation?: boolean;
     
     tableCommentPrefix?: string;
     

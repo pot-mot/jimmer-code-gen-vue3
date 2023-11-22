@@ -5,9 +5,10 @@ import {GenDataSourceView} from "@/api/__generated/model/static";
 import DataSourceItem from "./DataSourceItem.vue";
 import DataSourceDialog from "../dialog/DataSourceDialog.vue";
 import {useLoading} from "@/hooks/useLoading.ts";
-import {DataSourceMenuEvents} from "../events/DataSourceMenuEvents.ts";
+import {DataSourceMenuEvents} from "./DataSourceMenuEvents.ts";
 import {sendMessage} from "@/utils/message.ts";
 import mitt from 'mitt'
+import {DataSourceMenuSlots} from "@/components/global/dataSource/menu/DataSourceMenuSlots.ts";
 
 const eventBus = mitt<DataSourceMenuEvents>()
 
@@ -67,19 +68,23 @@ eventBus.on('deleteDataSource', ({id}) => {
 defineExpose({
 	eventBus
 })
+
+defineSlots<DataSourceMenuSlots>()
 </script>
 
 <template>
 	<el-button style="margin-bottom: 0.5em;" @click="handleSave">新增数据源</el-button>
 
-	<slot :dataSourceLoading="dataSourcesLoading"
-		  :dataSources="dataSources" :eventBus="eventBus"
-		  name="dataSources">
+	<slot name="dataSources"
+		  :loading="dataSourcesLoading.isLoading()"
+		  :dataSources="dataSources"
+		  :eventBus="eventBus">
 		<ul v-loading="dataSourcesLoading.isLoading()">
 			<li v-for="dataSource in dataSources">
-				<slot :dataSource="dataSource"
-					  :dataSourceLoading="dataSourcesLoading" :dataSources="dataSources" :eventBus="eventBus"
-					  name="dataSource">
+				<slot name="dataSource"
+					  :loading="dataSourcesLoading.isLoading()"
+					  :dataSources="dataSources" :dataSource="dataSource"
+					  :eventBus="eventBus">
 					<DataSourceItem :data-source="dataSource" :event-bus="eventBus"/>
 				</slot>
 			</li>
@@ -87,7 +92,6 @@ defineExpose({
 	</slot>
 
 	<DataSourceDialog
-		v-if="saveDialogOpenState" :init-x="x" :init-y="y" @added="handleSaveFinish"
-		@close="saveDialogOpenState = false">
+		v-model="saveDialogOpenState" :init-x="x" :init-y="y" @added="handleSaveFinish">
 	</DataSourceDialog>
 </template>

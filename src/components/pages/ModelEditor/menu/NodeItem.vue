@@ -7,6 +7,7 @@ import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {ref, watch} from "vue";
 import {sendMessage} from "@/utils/message.ts";
+import {TableType} from "@/api/__generated/model/enums";
 
 interface NodeItem {
 	node: Node
@@ -16,12 +17,15 @@ const props = defineProps<NodeItem>()
 
 const store = useModelEditorStore()
 
+const type = ref<TableType>("TABLE")
+
 const name = ref("")
 
 const comment = ref("")
 
 watch(() => props.node, (node) => {
 	try {
+		type.value = node.getData().table.type
 		name.value = node.getData().table.name
 		comment.value = node.getData().table.comment
 
@@ -46,7 +50,7 @@ const handleDelete = () => {
 <template>
 	<div>
 		<el-text class="hover-show" style="white-space: nowrap;">
-			<TableIcon></TableIcon>
+			<TableIcon :type="type"></TableIcon>
 
 			<el-button link @click="store.focus(node)">
 				{{ name }}

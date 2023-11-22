@@ -4,6 +4,8 @@ export interface GenConfig {
     
     author: string;
     
+    columnAnnotation: boolean;
+    
     columnCommentPrefix: string;
     
     columnCommentSuffix: string;
@@ -27,6 +29,8 @@ export interface GenConfig {
     logicalDeletedAnnotation: string;
     
     separator: string;
+    
+    tableAnnotation: boolean;
     
     tableCommentPrefix: string;
     

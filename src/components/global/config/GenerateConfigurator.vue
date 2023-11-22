@@ -34,7 +34,7 @@ const configType = ref<'GenerateConfigForm' | 'TypeMappingsTable' | undefined>()
 
 	</div>
 
-	<DragDialog v-model="openState" :init-w="900" :init-y="100" can-resize>
+	<DragDialog v-model="openState" :init-w="900" :init-y="100" :init-h="600" can-resize>
 		<div style="width: calc(100% - 1em)">
 			<GenerateConfigForm v-if="configType == 'GenerateConfigForm'" @cancel="openState = false"
 								@submit="openState = false"></GenerateConfigForm>

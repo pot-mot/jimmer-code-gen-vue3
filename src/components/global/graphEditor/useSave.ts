@@ -71,11 +71,13 @@ export const useSave = (_graph: () => Graph, name: string, otherSaveFns?: Array<
 
         localStorageOperation.saveGraph()
 
-        otherSaveFns?.forEach(({auto, fn}) => {
+        if (!otherSaveFns) return
+
+        for (let {fn, auto} of otherSaveFns) {
             if (auto) {
-                fn(graph, name)
+                await fn(graph, name)
             }
-        })
+        }
     }
 
     const handleSaveAll = async () => {
@@ -85,9 +87,11 @@ export const useSave = (_graph: () => Graph, name: string, otherSaveFns?: Array<
 
         localStorageOperation.saveGraph()
 
-        otherSaveFns?.forEach(({fn}) => {
-            fn(graph, name)
-        })
+        if (!otherSaveFns) return
+
+        for (let {fn} of otherSaveFns) {
+            await fn(graph, name)
+        }
     }
 
     const handleKeyEvent = async (e: KeyboardEvent) => {

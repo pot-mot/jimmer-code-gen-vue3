@@ -3,7 +3,7 @@ import {EditPen} from "@element-plus/icons-vue";
 import {GenTableCommonView} from "@/api/__generated/model/static";
 import TableIcon from "../../icons/database/TableIcon.vue";
 import Comment from "../../common/Comment.vue";
-import {DataSourceMenuEventBusProps} from "../events/DataSourceMenuEvents.ts";
+import {DataSourceMenuEventBusProps} from "./DataSourceMenuEvents.ts";
 import {TableDialogManagerEventBus} from "@/components/pages/AssociationEditor/TableInfo/TableDialogManagerEventBus.ts";
 
 interface TableItemProps {

@@ -6,7 +6,7 @@ import {sendMessage} from "@/utils/message.ts";
 import {ElForm, ElFormItem, ElOption, ElSelect} from "element-plus";
 import {DataSourceFormEmits} from "./DataSourceFormEmits.ts";
 import {DataSourceFormProps} from "./DataSourceFormProps.ts";
-import {dataSourceTypes} from "../../../../constant/enums.ts";
+import {DataSourceType_CONSTANTS} from "@/api/__generated/model/enums";
 
 const props = defineProps<DataSourceFormProps>()
 
@@ -80,7 +80,7 @@ const handleSubmit = () => {
 </script>
 
 <template>
-	<el-form label-position="left" label-width="6em" style="padding-right: 1em;">
+	<el-form label-position="left" label-width="6em">
 		<el-form-item label="name">
 			<el-input v-model="dataSource.name"></el-input>
 		</el-form-item>
@@ -88,7 +88,7 @@ const handleSubmit = () => {
 			<el-col :span="9">
 				<el-select v-model="dataSource.type" class="cling-right" filterable name="type">
 					<template #prefix>jdbc:</template>
-					<el-option v-for="(type) in dataSourceTypes" :label="type.toLowerCase()"
+					<el-option v-for="(type) in DataSourceType_CONSTANTS" :label="type.toLowerCase()"
 							   :value="type"></el-option>
 				</el-select>
 			</el-col>

@@ -5,8 +5,8 @@ import {GenConfig, GenConfigProperties} from "@/api/__generated/model/static";
 import {sendMessage} from "@/utils/message.ts";
 import DataSourceIcon from "../icons/database/DataSourceIcon.vue";
 import Details from "../common/Details.vue";
-import {useLoading} from "../../../hooks/useLoading.ts";
-import {dataSourceTypes, languages} from "../../../constant/enums.ts";
+import {useLoading} from "@/hooks/useLoading.ts";
+import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated/model/enums";
 
 const config = ref<GenConfig>()
 
@@ -47,20 +47,15 @@ const handleCancel = () => {
 	<div v-loading="generateConfigLoading.isLoading()">
 		<h3 style="width: 100%; text-align: center; height: 2em; line-height: 2em;">全局生成配置</h3>
 
-		<el-form v-if="config" size="default">
+		<el-form v-if="config">
 			<el-row :gutter="24">
-				<el-col :span="8">
-					<el-form-item label="作者">
-						<el-input v-model="config.author"></el-input>
-					</el-form-item>
-				</el-col>
 				<el-col :span="8">
 					<el-form-item label="数据源类型">
 						<el-select v-model="config.dataSourceType">
 							<template #prefix>
 								<DataSourceIcon :type="config.dataSourceType"></DataSourceIcon>
 							</template>
-							<el-option v-for="dataSourceType in dataSourceTypes" :label="dataSourceType"
+							<el-option v-for="dataSourceType in DataSourceType_CONSTANTS" :label="dataSourceType"
 									   :value="dataSourceType"></el-option>
 						</el-select>
 					</el-form-item>
@@ -68,65 +63,106 @@ const handleCancel = () => {
 				<el-col :span="8">
 					<el-form-item label="语言">
 						<el-select v-model="config.language">
-							<el-option v-for="language in languages" :label="language" :value="language"></el-option>
+							<el-option v-for="language in GenLanguage_CONSTANTS" :label="language" :value="language"></el-option>
 						</el-select>
 					</el-form-item>
 				</el-col>
 			</el-row>
 
-			<el-row :gutter="24">
-				<el-col :span="6">
-					<el-form-item label="分隔符">
-						<el-input v-model="config.separator"></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :span="12">
-					<el-form-item label="生成 ddl 时携带外键">
-						<el-switch v-model="config.tableDefineWithFk"></el-switch>
-					</el-form-item>
-				</el-col>
-			</el-row>
-
-			<el-row :gutter="24">
-				<el-col :span="12">
-					<el-form-item label="默认包路径">
-						<el-input v-model="config.defaultPackagePath"></el-input>
-					</el-form-item>
-				</el-col>
-
-				<el-col :span="12">
-					<el-form-item label="逻辑删除注释">
-						<el-input v-model="config.logicalDeletedAnnotation"></el-input>
-					</el-form-item>
-				</el-col>
-			</el-row>
-
-			<el-row :gutter="24">
-				<el-col :span="8">
-					<el-form-item label="生成 JoinColumn 注释">
-						<el-switch v-model="config.joinColumnAnnotation"></el-switch>
-					</el-form-item>
-				</el-col>
-
-				<el-col :span="8">
-					<el-form-item label="生成 JoinTable 注释">
-						<el-switch v-model="config.joinTableAnnotation"></el-switch>
-					</el-form-item>
-				</el-col>
-
-				<el-col :span="8">
-					<el-form-item label="生成 IdView 属性">
-						<el-switch v-model="config.idViewProperty"></el-switch>
-					</el-form-item>
-				</el-col>
-			</el-row>
+<!--			<el-row :gutter="24">-->
+<!--				<el-col :span="6">-->
+<!--					<el-form-item label="分隔符">-->
+<!--						<el-input v-model="config.separator"></el-input>-->
+<!--					</el-form-item>-->
+<!--				</el-col>-->
+<!--			</el-row>-->
 
 			<Details open>
 				<template #title>
-					<el-text>生成实体移除的前后缀</el-text>
+					<el-text style="line-height: 2em;">表定义</el-text>
 				</template>
 
-				<div style="width: calc(100% - 3px - 1em); padding-top: 1em;">
+				<div style="width: calc(100% - 3px - 1em);">
+					<el-row :gutter="24">
+						<el-col :span="12">
+							<el-form-item label="生成外键">
+								<el-switch v-model="config.tableDefineWithFk"></el-switch>
+							</el-form-item>
+						</el-col>
+					</el-row>
+				</div>
+			</Details>
+
+			<Details open>
+				<template #title>
+					<el-text style="line-height: 2em;">业务代码</el-text>
+				</template>
+
+				<div style="width: calc(100% - 3px - 1em);">
+					<el-row :gutter="24">
+						<el-col :span="8">
+							<el-form-item label="作者">
+								<el-input v-model="config.author"></el-input>
+							</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row :gutter="24">
+						<el-col :span="12">
+							<el-form-item label="默认包路径">
+								<el-input v-model="config.defaultPackagePath"></el-input>
+							</el-form-item>
+						</el-col>
+
+						<el-col :span="12">
+							<el-form-item label="逻辑删除注释">
+								<el-input v-model="config.logicalDeletedAnnotation"></el-input>
+							</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row :gutter="24">
+						<el-col :span="8">
+							<el-form-item label="生成 Table 注释">
+								<el-switch v-model="config.tableAnnotation"></el-switch>
+							</el-form-item>
+						</el-col>
+
+						<el-col :span="8">
+							<el-form-item label="生成 Column 注释">
+								<el-switch v-model="config.columnAnnotation"></el-switch>
+							</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row :gutter="24">
+						<el-col :span="8">
+							<el-form-item label="生成 JoinColumn 注释">
+								<el-switch v-model="config.joinColumnAnnotation"></el-switch>
+							</el-form-item>
+						</el-col>
+
+						<el-col :span="8">
+							<el-form-item label="生成 JoinTable 注释">
+								<el-switch v-model="config.joinTableAnnotation"></el-switch>
+							</el-form-item>
+						</el-col>
+
+						<el-col :span="8">
+							<el-form-item label="生成 IdView 属性">
+								<el-switch v-model="config.idViewProperty"></el-switch>
+							</el-form-item>
+						</el-col>
+					</el-row>
+				</div>
+			</Details>
+
+			<Details open>
+				<template #title>
+					<el-text style="line-height: 2em;">移除前后缀</el-text>
+				</template>
+
+				<div style="width: calc(100% - 3px - 1em);">
 					<el-row :gutter="24">
 						<el-col :span="12">
 							<el-form-item label="表名前缀">

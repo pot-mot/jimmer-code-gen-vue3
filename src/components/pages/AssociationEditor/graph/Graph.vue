@@ -74,7 +74,7 @@
 				</el-tooltip>
 
 				<el-select v-model="matchType" class="cling-left" @change="handleMatch">
-					<el-option v-for="type in associationMatchTypes" :value="type">{{ type }}</el-option>
+					<el-option v-for="type in AssociationMatchType_CONSTANTS" :value="type">{{ type }}</el-option>
 				</el-select>
 			</li>
 
@@ -133,7 +133,7 @@ import {initAssociationEditor} from "./init.ts";
 import {useSwitchAssociationType} from "./edge/AssociationEdge.ts";
 import {nodeIdToTableId} from "./node/TableNode.ts";
 import {saveAs} from "file-saver";
-import {DataSourceMenuEventBusProps} from "@/components/global/dataSource/events/DataSourceMenuEvents.ts";
+import {DataSourceMenuEventBusProps} from "@/components/global/dataSource/menu/DataSourceMenuEvents.ts";
 import {useAssociationEditorStore} from "./store/AssociationEditorStore.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {COLUMN_PORT} from "@/components/global/graphEditor/constant.ts";
@@ -152,12 +152,12 @@ import CenterIcon from "@/components/global/icons/toolbar/CenterIcon.vue";
 import EraserIcon from "@/components/global/icons/toolbar/EraserIcon.vue";
 import AssociationOffIcon from "@/components/global/icons/toolbar/AssociationOffIcon.vue";
 import AssociationIcon from "@/components/global/icons/toolbar/AssociationIcon.vue";
-import {associationMatchTypes} from "@/constant/enums.ts";
 import PreviewIcon from "@/components/global/icons/toolbar/PreviewIcon.vue";
 import MultiCodePreview from "@/components/global/code/MultiCodePreview.vue";
 import DownloadIcon from "@/components/global/icons/toolbar/DownloadIcon.vue";
 import ScaleBar from "@/components/global/graphEditor/tools/ScaleBar.vue";
 import GraphSearcher from "@/components/global/graphEditor/tools/GraphSearcher.vue";
+import {AssociationMatchType_CONSTANTS} from "@/api/__generated/model/enums";
 
 const props = defineProps<DataSourceMenuEventBusProps>()
 
@@ -187,8 +187,8 @@ const {
 } = useSave(() => graph, "AssociationEditorGraph", [
 	{
 		auto: false,
-		fn: (graph) => {
-			saveAssociations(graph)
+		fn: async (graph) => {
+			await saveAssociations(graph)
 		}
 	}
 ])

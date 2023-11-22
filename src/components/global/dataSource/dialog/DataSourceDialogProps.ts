@@ -4,6 +4,5 @@ export interface DataSourceDialogProps extends DataSourceFormProps {
     initX?: number
     initY?: number
     limitByParent?: boolean
-    disableTeleport?: boolean
     to?: string
 }

@@ -49,7 +49,7 @@ export interface GenEntityPropertiesView_TargetOf_properties {
     
     associationType?: AssociationType;
     
-    columnId?: number;
+    column?: GenEntityPropertiesView_TargetOf_properties_TargetOf_column_2;
     
     comment: string;
     
@@ -92,6 +92,13 @@ export interface GenEntityPropertiesView_TargetOf_properties {
     typeNotNull: boolean;
     
     typeTable?: GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_2;
+}
+
+export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_column_2 {
+    
+    id: number;
+    
+    name: string;
 }
 
 export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2 {

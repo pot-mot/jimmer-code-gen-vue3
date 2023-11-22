@@ -2,11 +2,11 @@
 import {onMounted, ref} from "vue";
 import {api} from "@/api";
 import {GenTypeMapping} from "@/api/__generated/model/entities";
-import {useLoading} from "../../../hooks/useLoading.ts";
+import {useLoading} from "@/hooks/useLoading.ts";
 import {Check, Close, Delete, EditPen, Plus} from "@element-plus/icons-vue";
 import {deleteConfirm} from "@/utils/message.ts";
 import {GenTypeMappingInput} from "@/api/__generated/model/static";
-import {dataSourceTypes, languages} from "../../../constant/enums.ts";
+import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated/model/enums";
 
 interface EditState {
 	isEdit: Boolean
@@ -142,7 +142,7 @@ const handleDelete = (typeMapping: GenTypeMapping) => {
 			<template v-else>
 				<div>
 					<el-select v-model="typeMapping.dataSourceType">
-						<el-option v-for="dataSourceType in dataSourceTypes" :value="dataSourceType"></el-option>
+						<el-option v-for="dataSourceType in DataSourceType_CONSTANTS" :value="dataSourceType"></el-option>
 					</el-select>
 				</div>
 				<div>
@@ -150,7 +150,7 @@ const handleDelete = (typeMapping: GenTypeMapping) => {
 				</div>
 				<div>
 					<el-select v-model="typeMapping.language">
-						<el-option v-for="language in languages" :value="language"></el-option>
+						<el-option v-for="language in GenLanguage_CONSTANTS" :value="language"></el-option>
 					</el-select>
 				</div>
 				<div>
@@ -175,7 +175,7 @@ const handleDelete = (typeMapping: GenTypeMapping) => {
 			<template v-else>
 				<div>
 					<el-select v-model="newTypeMapping.dataSourceType">
-						<el-option v-for="dataSourceType in dataSourceTypes" :value="dataSourceType"></el-option>
+						<el-option v-for="dataSourceType in DataSourceType_CONSTANTS" :value="dataSourceType"></el-option>
 					</el-select>
 				</div>
 				<div>
@@ -183,7 +183,7 @@ const handleDelete = (typeMapping: GenTypeMapping) => {
 				</div>
 				<div>
 					<el-select v-model="newTypeMapping.language">
-						<el-option v-for="language in languages" :value="language"></el-option>
+						<el-option v-for="language in GenLanguage_CONSTANTS" :value="language"></el-option>
 					</el-select>
 				</div>
 				<div>

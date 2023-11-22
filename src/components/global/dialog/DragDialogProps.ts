@@ -9,12 +9,11 @@ export interface DragResizeProps {
     minH?: number
     maxW?: number
     maxH?: number
-    to?: string
+    to?: HTMLElement | string
     disableX?: boolean
     disableY?: boolean
     disableW?: boolean
     disableH?: boolean
-    disableTeleport?: boolean
     limitByParent?: boolean
     canResize?: boolean
     canDrag?: boolean
