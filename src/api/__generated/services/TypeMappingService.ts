@@ -1,21 +1,9 @@
-import type { Dynamic, Executor } from '../';
-import type { GenTypeMapping } from '../model/entities';
+import type { Executor } from '../';
 import type { GenTypeMappingInput, GenTypeMappingView } from '../model/static';
 
 export class TypeMappingService {
     
     constructor(private executor: Executor) {}
-    
-    async create(options: TypeMappingServiceOptions['create']): Promise<number> {
-        let _uri = '/typeMapping/';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number
-    }
-    
-    async delete(options: TypeMappingServiceOptions['delete']): Promise<number> {
-        let _uri = '/typeMapping/';
-        _uri += encodeURIComponent(options.ids.join(','));
-        return (await this.executor({uri: _uri, method: 'DELETE'})) as number
-    }
     
     async get(options: TypeMappingServiceOptions['get']): Promise<
         GenTypeMappingView | undefined
@@ -39,17 +27,17 @@ export class TypeMappingService {
         return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenTypeMappingView>
     }
     
-    async update(options: TypeMappingServiceOptions['update']): Promise<number> {
+    async saveAll(options: TypeMappingServiceOptions['saveAll']): Promise<
+        Array<number>
+    > {
         let _uri = '/typeMapping/';
-        return (await this.executor({uri: _uri, method: 'PUT', body: options.body})) as number
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Array<number>
     }
 }
 
 export type TypeMappingServiceOptions = {
-    'create': {body: GenTypeMappingInput},
-    'delete': {ids: Array<number>},
     'get': {id: number},
     'getDefault': {},
     'list': {},
-    'update': {body: Dynamic<GenTypeMapping>}
+    'saveAll': {body: Array<GenTypeMappingInput>}
 }

@@ -133,14 +133,14 @@ import {initAssociationEditor} from "./init.ts";
 import {useSwitchAssociationType} from "./edge/AssociationEdge.ts";
 import {nodeIdToTableId} from "./node/TableNode.ts";
 import {saveAs} from "file-saver";
-import {DataSourceMenuEventBusProps} from "@/components/global/dataSource/menu/DataSourceMenuEvents.ts";
-import {useAssociationEditorStore} from "./store/AssociationEditorStore.ts";
+import {DataSourceMenuEventsProps} from "@/components/business/dataSource/menu/DataSourceMenuEvents.ts";
+import {useAssociationEditorStore} from "@/components/pages/AssociationEditor/store/AssociationEditorStore.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
-import {COLUMN_PORT} from "@/components/global/graphEditor/constant.ts";
-import {useSave} from "@/components/global/graphEditor/useSave.ts";
+import {COLUMN_PORT} from "@/components/business/graphEditor/constant.ts";
+import {useSave} from "@/components/business/graphEditor/storage/useSave.ts";
 import {saveAssociations} from "../business/graphOperation.ts";
-import {handleHistoryKeyEvent} from "@/components/global/graphEditor/useHistory.ts";
-import {handleSelectionKeyEvent} from "@/components/global/graphEditor/useSelection.ts";
+import {handleHistoryKeyEvent} from "@/components/business/graphEditor/history/useHistory.ts";
+import {handleSelectionKeyEvent} from "@/components/business/graphEditor/selection/useSelection.ts";
 import {useAssociationMatch} from "../business/AssociationMatch.ts";
 import {api} from "@/api";
 import SaveIcon from "@/components/global/icons/toolbar/SaveIcon.vue";
@@ -155,11 +155,11 @@ import AssociationIcon from "@/components/global/icons/toolbar/AssociationIcon.v
 import PreviewIcon from "@/components/global/icons/toolbar/PreviewIcon.vue";
 import MultiCodePreview from "@/components/global/code/MultiCodePreview.vue";
 import DownloadIcon from "@/components/global/icons/toolbar/DownloadIcon.vue";
-import ScaleBar from "@/components/global/graphEditor/tools/ScaleBar.vue";
-import GraphSearcher from "@/components/global/graphEditor/tools/GraphSearcher.vue";
+import ScaleBar from "@/components/business/graphEditor/tools/ScaleBar.vue";
+import GraphSearcher from "@/components/business/graphEditor/tools/GraphSearcher.vue";
 import {AssociationMatchType_CONSTANTS} from "@/api/__generated/model/enums";
 
-const props = defineProps<DataSourceMenuEventBusProps>()
+const props = defineProps<DataSourceMenuEventsProps>()
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();

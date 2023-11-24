@@ -38,9 +38,9 @@ import {Graph, Node} from '@antv/x6'
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
-import {TableDialogManagerEventBus} from "../../TableInfo/TableDialogManagerEventBus.ts";
+import {TableDialogManagerEventBus} from "@/components/pages/AssociationEditor/tableInfo/TableDialogManagerEventBus.ts";
 import {sendMessage} from "@/utils/message.ts";
-import {COLUMN_PORT_SELECTOR} from "@/components/global/graphEditor/constant.ts";
+import {COLUMN_PORT_SELECTOR} from "@/components/business/graphEditor/constant.ts";
 
 const wrapper = ref<HTMLElement | null>()
 

@@ -1,7 +1,7 @@
 import {Edge, Graph} from "@antv/x6";
 import {getAssociationType} from "../../../AssociationEditor/graph/edge/AssociationEdge.ts";
 import {GenAssociationModelInput, GenTableColumnsInput} from "@/api/__generated/model/static";
-import {searchNodeByTableName, searchPortByColumnName} from "@/components/global/graphEditor/search.ts";
+import {searchNodeByTableName, searchPortByColumnName} from "@/components/business/graphEditor/common/search.ts";
 
 export interface EdgeData extends GenAssociationModelInput {
     edge: Edge

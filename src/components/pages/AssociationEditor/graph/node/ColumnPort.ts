@@ -5,7 +5,7 @@ import {
     COLUMN_PORT,
     COLUMN_PORT_GROUP,
     COLUMN_PORT_SELECTOR
-} from "@/components/global/graphEditor/constant.ts";
+} from "@/components/business/graphEditor/constant.ts";
 import {GenTableColumnsView_TargetOf_columns} from "@/api/__generated/model/static/GenTableColumnsView.ts";
 
 export const columnPortGroup = {

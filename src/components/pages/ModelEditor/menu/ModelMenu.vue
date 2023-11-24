@@ -3,8 +3,8 @@ import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import NodeItem from "./NodeItem.vue";
 import EdgeItem from "./EdgeItem.vue";
-import NodeList from "@/components/global/graphEditor/tools/NodeList.vue";
-import EdgeList from "@/components/global/graphEditor/tools/EdgeList.vue";
+import NodeList from "@/components/business/graphEditor/tools/NodeList.vue";
+import EdgeList from "@/components/business/graphEditor/tools/EdgeList.vue";
 import Details from "@/components/global/common/Details.vue";
 
 const store = useModelEditorStore()

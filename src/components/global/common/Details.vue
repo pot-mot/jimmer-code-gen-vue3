@@ -91,5 +91,5 @@ watch(() => openState.value, (value) => {
 	} else {
 		emits("close")
 	}
-})
+}, {immediate: true})
 </script>

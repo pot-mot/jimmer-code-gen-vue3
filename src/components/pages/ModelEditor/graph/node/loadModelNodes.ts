@@ -3,8 +3,8 @@ import {GenTableColumnsInput_TargetOf_columns} from "@/api/__generated/model/sta
 import {api} from "@/api";
 import {importModelNodes} from "./modelNode.ts";
 import {Edge, Graph, Node, Shape} from '@antv/x6'
-import {searchEdgesIgnoreDirection} from "@/components/global/graphEditor/search.ts";
-import {erRouter, orthRouter} from "@/components/global/graphEditor/edgeRouter.ts";
+import {searchEdgesIgnoreDirection} from "@/components/business/graphEditor/common/search.ts";
+import {erRouter, orthRouter} from "@/components/business/graphEditor/edgeRouter.ts";
 import {baseAssociationEdge} from "@/components/pages/AssociationEditor/graph/edge/AssociationEdge.ts";
 
 const tableViewToInput = (tableView: GenTableColumnsView): GenTableColumnsInput => {

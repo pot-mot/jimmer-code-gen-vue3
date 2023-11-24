@@ -48,10 +48,10 @@ export class DataSourceService {
     }
     
     async getDefaults(): Promise<
-        Array<GenDataSourceTemplateView>
+        {[key:string]: GenDataSourceTemplateView}
     > {
         let _uri = '/dataSource/defaults';
-        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenDataSourceTemplateView>
+        return (await this.executor({uri: _uri, method: 'GET'})) as {[key:string]: GenDataSourceTemplateView}
     }
     
     async list(): Promise<

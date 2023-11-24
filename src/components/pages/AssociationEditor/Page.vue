@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import {ref} from "vue";
 import LeftRightLayout from "@/components/global/layout/LeftRightLayout.vue";
-import DataSourceMenu from "@/components/global/dataSource/menu/DataSourceMenu.vue";
+import DataSourceMenu from "@/components/business/dataSource/menu/DataSourceMenu.vue";
 import Graph from "../AssociationEditor/graph/Graph.vue";
-import TableDialogManager from "./TableInfo/TableDialogManager.vue";
+import TableDialogManager from "@/components/pages/AssociationEditor/tableInfo/TableDialogManager.vue";
 
 const menu = ref()
 </script>

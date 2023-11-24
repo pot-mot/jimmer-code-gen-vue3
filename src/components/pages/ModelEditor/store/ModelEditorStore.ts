@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {commonGraphStoreOperations} from "@/components/global/graphEditor/commonStore.ts";
+import {createCommonGraphOperations} from "@/components/business/graphEditor";
 import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
 import {importModelNodes} from "../graph/node/modelNode.ts";
 import {sendMessage} from "@/utils/message.ts";
@@ -11,7 +11,7 @@ export const useModelEditorStore =
     defineStore(
         'ModelEditorGraph',
         () => {
-            const commonStore = commonGraphStoreOperations()
+            const commonStore = createCommonGraphOperations()
 
             const {_graph} = commonStore
 

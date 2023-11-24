@@ -1,7 +1,7 @@
 import {Graph} from "@antv/x6";
 import {ref, Ref} from "vue";
 import {AssociationMatchType} from "@/api/__generated/model/enums";
-import {getSelectedNodes} from "@/components/global/graphEditor/operations/selectOperation.ts";
+import {getSelectedNodes} from "@/components/business/graphEditor/selection/selectOperation.ts";
 import {api} from "@/api";
 import {nodeIdToTableId} from "../graph/node/TableNode.ts";
 import {importAssociationEdges} from "./graphOperation.ts";

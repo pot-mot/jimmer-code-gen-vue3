@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import DragResize from 'vue3-draggable-resizable'
 import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
-import {nextTick, onMounted, ref, toRaw, watch} from 'vue'
+import {nextTick, onBeforeMount, onMounted, ref, toRaw, watch} from 'vue'
 import {ElButton} from "element-plus";
 import {Close} from "@element-plus/icons-vue";
 import {DragResizeProps} from "./DragDialogProps.ts";
@@ -77,6 +77,12 @@ const setPositionAndSize = () => {
 }
 
 const emits = defineEmits<DragDialogEmits>()
+
+onBeforeMount(() => {
+	if (props.modelValue) {
+		setPositionAndSize()
+	}
+})
 
 watch(() => props.modelValue, (modelValue) => {
 	if (modelValue) {

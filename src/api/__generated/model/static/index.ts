@@ -21,6 +21,7 @@ export type { GenEnumView } from './GenEnumView';
 export type { GenModelInput } from './GenModelInput';
 export type { GenModelView } from './GenModelView';
 export type { GenPackageInput } from './GenPackageInput';
+export type { GenPackagePathInput } from './GenPackagePathInput';
 export type { GenPackageTreeView } from './GenPackageTreeView';
 export type { GenSchemaView } from './GenSchemaView';
 export type { GenTableAssociationsView } from './GenTableAssociationsView';

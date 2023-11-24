@@ -1,7 +1,7 @@
 import {GenTableColumnsInput} from "@/api/__generated/model/static";
 import {Graph, Node} from "@antv/x6";
 import {columnPortGroup} from "../../../AssociationEditor/graph/node/ColumnPort.ts";
-import {COLUMN_PORT_GROUP} from "@/components/global/graphEditor/constant.ts";
+import {COLUMN_PORT_GROUP} from "@/components/business/graphEditor/constant.ts";
 import {GenTableColumnsInput_TargetOf_columns} from "@/api/__generated/model/static/GenTableColumnsInput.ts";
 
 export const modelColumnToPort = (column: GenTableColumnsInput_TargetOf_columns) => {

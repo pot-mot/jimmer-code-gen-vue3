@@ -1,5 +1,5 @@
 import type { Executor } from '../';
-import type { GenPackageInput, GenPackageTreeView } from '../model/static';
+import type { GenPackageInput, GenPackagePathInput, GenPackageTreeView } from '../model/static';
 
 export class PackageService {
     
@@ -7,23 +7,7 @@ export class PackageService {
     
     async create(options: PackageServiceOptions['create']): Promise<number | undefined> {
         let _uri = '/package/';
-        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
-        let _value: any = undefined;
-        _value = options.path;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'path='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.parentId;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'parentId='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        return (await this.executor({uri: _uri, method: 'POST'})) as number | undefined
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number | undefined
     }
     
     async delete(options: PackageServiceOptions['delete']): Promise<number> {
@@ -70,7 +54,7 @@ export class PackageService {
 }
 
 export type PackageServiceOptions = {
-    'create': {path: string, parentId?: number},
+    'create': {body: GenPackagePathInput},
     'delete': {ids: Array<number>},
     'list': {},
     'moveEntity': {id: number, packageId: number},

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {onMounted, ref} from "vue";
+import {nextTick, onMounted, ref} from "vue";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {useRouter} from "vue-router";
 import {useModelListStore} from "./store/ModelListStore.ts";
@@ -8,7 +8,7 @@ import {useLoading} from "@/hooks/useLoading.ts";
 import {api} from "@/api";
 import {deleteConfirm, sendMessage} from "@/utils/message.ts";
 import {datetimeFormat} from "@/utils/dataFormat.ts";
-import ModelDialog from "./ModelInfo/ModelDialog.vue";
+import ModelDialog from "@/components/pages/ModelEditor/modelInfo/ModelDialog.vue";
 
 const router = useRouter()
 
@@ -20,7 +20,11 @@ const modelsLoading = useLoading()
 
 const getModels = async () => {
 	modelsLoading.start()
+	await nextTick()
+
 	models.value = await api.modelService.list()
+
+	await nextTick()
 	modelsLoading.end()
 }
 
@@ -70,7 +74,7 @@ const handleDelete = (model: GenModelView) => {
 		`模型【${model.name}】`,
 		async () => {
 			const count = await api.modelService.delete({ids: [model.id]})
-			if (count == 1) {
+			if (count > 0) {
 				sendMessage('删除模型成功', 'success')
 				await getModels()
 			} else {

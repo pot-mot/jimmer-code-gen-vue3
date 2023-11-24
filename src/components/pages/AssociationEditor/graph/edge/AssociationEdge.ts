@@ -6,13 +6,13 @@ import {
     MANY_TO_ONE,
     ONE_TO_MANY,
     ONE_TO_ONE
-} from "@/components/global/graphEditor/constant.ts";
+} from "@/components/business/graphEditor/constant.ts";
 import {AssociationType} from "@/api/__generated/model/enums";
 import {GenAssociationMatchView} from "@/api/__generated/model/static";
 import {columnIdToPortId, portIdToColumnId} from "../node/ColumnPort.ts";
 import {nodeIdToTableId, tableIdToNodeId} from "../node/TableNode.ts";
 import {Options} from "@antv/x6/es/graph/options";
-import {erRouter, orthRouter} from "@/components/global/graphEditor/edgeRouter.ts";
+import {erRouter, orthRouter} from "@/components/business/graphEditor/edgeRouter.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {judgeClickBox} from "@/utils/clickBox.ts";
 import Connecting = Options.Connecting;

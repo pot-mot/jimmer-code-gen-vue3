@@ -35,6 +35,8 @@ export interface GenEnumItemsView_TargetOf_items {
     
     name: string;
     
+    orderKey: number;
+    
     remark: string;
     
     value: string;
