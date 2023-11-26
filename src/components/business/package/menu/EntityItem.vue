@@ -19,7 +19,3 @@ defineProps<EntityItemProps & PackageMenuEventsProps>()
 		</el-text>
 	</div>
 </template>
-
-<style scoped>
-
-</style>

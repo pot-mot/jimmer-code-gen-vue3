@@ -8,7 +8,7 @@ import {useLoading} from "@/hooks/useLoading.ts";
 import {api} from "@/api";
 import {deleteConfirm, sendMessage} from "@/utils/message.ts";
 import {datetimeFormat} from "@/utils/dataFormat.ts";
-import ModelDialog from "@/components/pages/ModelEditor/modelInfo/ModelDialog.vue";
+import ModelDialog from "@/components/pages/ModelEditor/menu/ModelDialog.vue";
 
 const router = useRouter()
 

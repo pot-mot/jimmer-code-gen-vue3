@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import {ref, watch} from "vue";
+import {cloneDeep} from 'lodash'
 import {GenModelInput} from "@/api/__generated/model/static";
+import {FormEmits} from "@/components/global/form/FormEmits.ts";
 
 const defaultValue: GenModelInput = {
 	name: "",
@@ -8,7 +10,7 @@ const defaultValue: GenModelInput = {
 	value: "",
 }
 
-const model = ref<GenModelInput>({...defaultValue})
+const model = ref<GenModelInput>(cloneDeep(defaultValue))
 
 interface ModelDialogProps {
 	model?: GenModelInput,
@@ -18,23 +20,14 @@ const props = defineProps<ModelDialogProps>()
 
 watch(() => props.model, (value) => {
 	if (value) {
-		model.value = {
-			...model.value,
-			...value,
-		}
+		model.value = cloneDeep(value)
 	}
 }, {immediate: true})
 
-interface ModelDialogEvent {
-	(event: "submit", model: GenModelInput): void,
-
-	(event: "cancel"): void,
-}
-
-const emits = defineEmits<ModelDialogEvent>()
+const emits = defineEmits<FormEmits<GenModelInput>>()
 
 const handleCancel = () => {
-	emits('cancel')
+	emits('cancel', model.value)
 }
 
 const handleSubmit = () => {
@@ -59,7 +52,3 @@ const handleSubmit = () => {
 		</el-form>
 	</el-dialog>
 </template>
-
-<style scoped>
-
-</style>

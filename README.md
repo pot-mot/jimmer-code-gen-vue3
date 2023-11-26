@@ -54,7 +54,7 @@ vite build
 
 内部补充了[响应式数据](src%2Fcomponents%2Fbusiness%2FgraphEditor%2Fcommon%2FreactiveState.ts)以实现页面响应式变更。
 
-如果需要复用 graph 通用操作仅需调用 createCommonGraphOperations 并将一个新的 graph 实例 load 入即可。
+如果需要复用 graph 通用操作仅需调用 useCommonGraphOperations 并将一个新的 graph 实例 load 入即可。
 
 #### [关联编辑器 AssociationEditor](src%2Fcomponents%2Fpages%2FAssociationEditor%2FPage.vue)
 

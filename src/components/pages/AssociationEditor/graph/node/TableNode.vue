@@ -1,7 +1,7 @@
 <template>
 	<div ref="wrapper" class="table-wrapper">
 		<table v-if="table" ref="container"
-			   @dblclick="TableDialogManagerEventBus.emit('openTable', table.id)">
+			   @dblclick="TableDialogsStore.open(table.id)">
 			<tr class="tableName">
 				<td colspan="2">
 					<span class="icon">
@@ -38,23 +38,22 @@ import {Graph, Node} from '@antv/x6'
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
-import {TableDialogManagerEventBus} from "@/components/pages/AssociationEditor/tableInfo/TableDialogManagerEventBus.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {COLUMN_PORT_SELECTOR} from "@/components/business/graphEditor/constant.ts";
-
-const wrapper = ref<HTMLElement | null>()
-
-const container = ref<HTMLElement | null>()
+import {useTableDialogsStore} from "@/components/pages/AssociationEditor/nodeDialog/TableDialogManageStore.ts";
 
 const getGraph = inject<() => Graph>("getGraph")!
-
 const getNode = inject<() => Node>("getNode")!
 
 const graph = ref<Graph>()
-
 const node = ref<Node>()
 
 const table = ref<GenTableColumnsView>()
+
+const TableDialogsStore = useTableDialogsStore()
+
+const wrapper = ref<HTMLElement | null>()
+const container = ref<HTMLElement | null>()
 
 onMounted(async () => {
 	graph.value = getGraph()

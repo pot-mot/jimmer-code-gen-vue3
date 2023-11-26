@@ -3,9 +3,9 @@ import {ref, watch} from 'vue'
 import {api} from "@/api";
 import {GenTableAssociationsView} from '@/api/__generated/model/static'
 import DragDialog from "@/components/global/dialog/DragDialog.vue"
-import TableInfo from "./TableInfo.vue";
+import TableInfo from "../../../business/table/TableInfo.vue";
 import {sendMessage} from "@/utils/message.ts";
-import TableDefine from "./TableDefine.vue";
+import TableDefine from "../../../business/table/TableDefine.vue";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {convertEntities} from "../business/graphOperation.ts";
@@ -22,11 +22,11 @@ const props = withDefaults(defineProps<TableEntityDialogProps>(), {
 	w: 1000,
 })
 
-interface TableEntityDialogEmits {
+interface TableDialogEmits {
 	(event: "close"): void
 }
 
-const emits = defineEmits<TableEntityDialogEmits>()
+const emits = defineEmits<TableDialogEmits>()
 
 const table = ref<GenTableAssociationsView | undefined>()
 

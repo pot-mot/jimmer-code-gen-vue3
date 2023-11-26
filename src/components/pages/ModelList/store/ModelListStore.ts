@@ -4,7 +4,7 @@ import {GenModelView} from "@/api/__generated/model/static";
 
 export const useModelListStore =
     defineStore(
-        'ModelListGraph',
+        'ModelList',
         () => {
             const currentModel = ref<GenModelView>()
 

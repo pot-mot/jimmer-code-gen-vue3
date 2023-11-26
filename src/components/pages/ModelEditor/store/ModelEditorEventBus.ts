@@ -6,7 +6,6 @@ type ModelEditorEvents = {
     createdTable: { table: GenTableColumnsInput, x?: number, y?: number },
     modifyTable: { id: string, table: GenTableColumnsInput },
     modifiedTable: { id: string, table: GenTableColumnsInput },
-    closeModifiedTable: string,
     removeTable: string,
 
     createAssociation: undefined,

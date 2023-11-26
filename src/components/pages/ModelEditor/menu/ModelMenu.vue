@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
+import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import NodeItem from "./NodeItem.vue";
 import EdgeItem from "./EdgeItem.vue";

@@ -138,14 +138,14 @@ import {Graph} from "@antv/x6"
 import {register} from "@antv/x6-vue-shape"
 import ModelNode from "./node/ModelNode.vue"
 import {initModelEditor} from "./init.ts"
-import ModelDialog from "@/components/pages/ModelEditor/modelInfo/ModelDialog.vue"
+import ModelDialog from "@/components/pages/ModelEditor/menu/ModelDialog.vue"
 import {Emitter} from "mitt";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
-import {useModelListStore} from "../store/ModelListStore.ts";
+import {useModelListStore} from "../../ModelList/store/ModelListStore.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {COLUMN_PORT} from "@/components/business/graphEditor/constant.ts";
 import {columnPortPosition} from "../../AssociationEditor/graph/node/ColumnPort.ts";
-import {useLocalStorageOperation} from "@/components/business/graphEditor/storage/localStorage.ts";
+import {useGraphDataOperation} from "@/components/business/graphEditor/storage/localStorage.ts";
 import {api} from "@/api";
 import {sendMessage} from "@/utils/message.ts";
 import {GenModelInput} from "@/api/__generated/model/static";
@@ -171,6 +171,7 @@ import {saveAs} from "file-saver";
 import ScaleBar from "@/components/business/graphEditor/tools/ScaleBar.vue";
 import GraphSearcher from "@/components/business/graphEditor/tools/GraphSearcher.vue";
 import DataSourceMenu from "@/components/business/dataSource/menu/DataSourceMenu.vue";
+import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -199,7 +200,7 @@ const openModelDialog = ref(false)
 const {
 	toDataJSONStr,
 	loadGraphByJSONStr
-} = useLocalStorageOperation(() => graph)
+} = useGraphDataOperation(() => graph)
 
 /**
  * 保存模型

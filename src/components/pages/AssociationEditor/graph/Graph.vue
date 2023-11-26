@@ -133,11 +133,10 @@ import {initAssociationEditor} from "./init.ts";
 import {useSwitchAssociationType} from "./edge/AssociationEdge.ts";
 import {nodeIdToTableId} from "./node/TableNode.ts";
 import {saveAs} from "file-saver";
-import {DataSourceMenuEventsProps} from "@/components/business/dataSource/menu/DataSourceMenuEvents.ts";
 import {useAssociationEditorStore} from "@/components/pages/AssociationEditor/store/AssociationEditorStore.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {COLUMN_PORT} from "@/components/business/graphEditor/constant.ts";
-import {useSave} from "@/components/business/graphEditor/storage/useSave.ts";
+import {useSaveOperation} from "@/components/business/graphEditor/storage/useSave.ts";
 import {saveAssociations} from "../business/graphOperation.ts";
 import {handleHistoryKeyEvent} from "@/components/business/graphEditor/history/useHistory.ts";
 import {handleSelectionKeyEvent} from "@/components/business/graphEditor/selection/useSelection.ts";
@@ -158,8 +157,6 @@ import DownloadIcon from "@/components/global/icons/toolbar/DownloadIcon.vue";
 import ScaleBar from "@/components/business/graphEditor/tools/ScaleBar.vue";
 import GraphSearcher from "@/components/business/graphEditor/tools/GraphSearcher.vue";
 import {AssociationMatchType_CONSTANTS} from "@/api/__generated/model/enums";
-
-const props = defineProps<DataSourceMenuEventsProps>()
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();
@@ -184,14 +181,18 @@ register({
 const {
 	handleSaveAll,
 	loadGraph,
-} = useSave(() => graph, "AssociationEditorGraph", [
-	{
-		auto: false,
-		fn: async (graph) => {
-			await saveAssociations(graph)
+} = useSaveOperation(
+	() => graph,
+	"AssociationEditorGraph",
+	[
+		{
+			auto: false,
+			fn: async (graph) => {
+				await saveAssociations(graph)
+			}
 		}
-	}
-])
+	]
+)
 
 store.addEventListener('keydown', handleHistoryKeyEvent)
 
@@ -242,29 +243,5 @@ watch(() => codePreviewDialogOpenState.value, async (openState) => {
 	if (!openState) {
 		codesMap.value = {}
 	}
-})
-
-props.eventBus.on('clickTable', async ({id}) => {
-	loadingStore.add()
-	await store.loadTable(id)
-	loadingStore.sub()
-})
-
-props.eventBus.on('clickSchema', async ({id}) => {
-	loadingStore.add()
-	await store.loadSchema(id)
-	loadingStore.sub()
-})
-
-props.eventBus.on('deleteDataSource', ({id}) => {
-	loadingStore.add()
-	store.removeTables(table => table.schema?.dataSource.id == id)
-	loadingStore.sub()
-})
-
-props.eventBus.on('deleteSchema', ({id}) => {
-	loadingStore.add()
-	store.removeTables(table => table.schema?.id == id)
-	loadingStore.sub()
 })
 </script>

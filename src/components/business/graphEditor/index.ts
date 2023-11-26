@@ -5,7 +5,7 @@ import {useSelectOperation} from "@/components/business/graphEditor/selection/se
 import {useViewOperation} from "@/components/business/graphEditor/common/viewOperation.ts";
 import {useGraphReactiveState} from "./common/reactiveState.ts";
 
-export const createCommonGraphOperations = () => {
+export const useCommonGraphOperations = () => {
     return (() => {
         const graph: Ref<Graph | undefined | null> = ref()
 

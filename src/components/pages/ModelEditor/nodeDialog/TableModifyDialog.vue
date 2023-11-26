@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
-import ModelForm from "./ModelForm.vue";
-import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
+import TableForm from "../../../business/table/TableForm.vue";
+import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import {GenTableColumnsInput} from "@/api/__generated/model/static";
 
-interface ModelModifyDialogProps {
+interface TableModifyDialogProps {
 	id: string,
 	table: GenTableColumnsInput
 }
 
-const props = defineProps<ModelModifyDialogProps>()
+const props = defineProps<TableModifyDialogProps>()
 
 interface TableEntityDialogEmits {
 	(event: "close"): void
@@ -24,6 +24,6 @@ const handleSubmit = (table: GenTableColumnsInput) => {
 
 <template>
 	<DragDialog :model-value="true" :can-resize="true" :init-w="1200" :init-h="600" :init-y="100" @close="emits('close')">
-		<ModelForm :id="id" :table="table" @cancel="emits('close')" @submit="handleSubmit"></ModelForm>
+		<TableForm :id="id" :table="table" @cancel="emits('close')" @submit="handleSubmit"></TableForm>
 	</DragDialog>
 </template>

@@ -7,6 +7,7 @@ import {
     ONE_TO_MANY,
     ONE_TO_ONE
 } from "@/components/business/graphEditor/constant.ts";
+import {cloneDeep} from 'lodash'
 import {AssociationType} from "@/api/__generated/model/enums";
 import {GenAssociationMatchView} from "@/api/__generated/model/static";
 import {columnIdToPortId, portIdToColumnId} from "../node/ColumnPort.ts";
@@ -39,7 +40,7 @@ export const baseAssociationEdge = {
         },
     },
     labels: [
-        {...baseLabel}
+        cloneDeep(baseLabel)
     ],
     data: {
         selectFlag: false
@@ -80,7 +81,7 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
 }
 
 export const setLabel = (edge: Edge, label: string) => {
-    edge.setLabelAt(0, {...baseLabel, attrs: {ASSOCIATION_LABEL_TEXT_SELECTOR: {text: label}}})
+    edge.setLabelAt(0, {...cloneDeep(baseLabel), attrs: {ASSOCIATION_LABEL_TEXT_SELECTOR: {text: label}}})
 }
 
 export const getAssociationType = (edge: Edge): AssociationType => {

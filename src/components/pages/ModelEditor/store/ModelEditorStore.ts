@@ -1,17 +1,19 @@
 import {defineStore} from "pinia";
-import {createCommonGraphOperations} from "@/components/business/graphEditor";
-import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
+import {useCommonGraphOperations} from "@/components/business/graphEditor";
+import {ModelEditorEventBus} from "./ModelEditorEventBus.ts";
 import {importModelNodes} from "../graph/node/modelNode.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {nextTick, ref} from "vue";
 import {api} from "@/api";
 import {loadModelNodes} from "../graph/node/loadModelNodes.ts";
+import {useTableModifyDialogsStore} from "@/components/pages/ModelEditor/nodeDialog/TableModifyDialogManageStore.ts";
+import {useTableCreateDialogStore} from "@/components/pages/ModelEditor/nodeDialog/TableCreateDialogStore.ts";
 
 export const useModelEditorStore =
     defineStore(
         'ModelEditorGraph',
         () => {
-            const commonStore = createCommonGraphOperations()
+            const commonStore = useCommonGraphOperations()
 
             const {_graph} = commonStore
 
@@ -65,6 +67,17 @@ export const useModelEditorStore =
                 }
             }
 
+            const createDialogStore = useTableCreateDialogStore()
+
+            ModelEditorEventBus.on('createTable', (props) => {
+                createDialogStore.dialogOpenState = true
+
+                if (props) {
+                    createDialogStore.nodeX = props.x
+                    createDialogStore.nodeY = props.y
+                }
+            })
+
             ModelEditorEventBus.on('createdTable', ({table, x, y}) => {
                 const graph = commonStore._graph()
 
@@ -73,10 +86,18 @@ export const useModelEditorStore =
                 const node = importModelNodes(graph, [table], x, y)[0]
 
                 if (node) {
+                    createDialogStore.dialogOpenState = false
+
                     setTimeout(() => {
                         commonStore.select(node)
                     }, 200)
                 }
+            })
+
+            const modifyDialogStore = useTableModifyDialogsStore()
+
+            ModelEditorEventBus.on('modifyTable', ({id, table}) => {
+                modifyDialogStore.open(id, table)
             })
 
             ModelEditorEventBus.on('modifiedTable', ({id, table}) => {
@@ -90,7 +111,7 @@ export const useModelEditorStore =
                 } else {
                     sendMessage(`Node ${id} 找不到，无法被更改`, 'error')
                 }
-                ModelEditorEventBus.emit('closeModifiedTable', id)
+                modifyDialogStore.close(id)
             })
 
             ModelEditorEventBus.on('removeTable', (id) => {

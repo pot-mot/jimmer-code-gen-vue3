@@ -1,15 +1,16 @@
 <script lang="ts" setup>
-import {nextTick, onMounted, ref, toRaw, watch} from 'vue'
+import {nextTick, onMounted, ref, watch} from 'vue'
+import {cloneDeep} from 'lodash'
 import {GenTableColumnsInput} from "@/api/__generated/model/static";
 import {GenTableColumnsInput_TargetOf_columns} from "@/api/__generated/model/static/GenTableColumnsInput.ts";
 import {api} from "@/api";
 import {objToMap} from "@/utils/mapOperation.ts";
 import {useLoading} from "@/hooks/useLoading.ts";
 import {sendMessage} from "@/utils/message.ts";
-import {useModelEditorStore} from "../store/ModelEditorStore.ts";
+import {useModelEditorStore} from "../../pages/ModelEditor/store/ModelEditorStore.ts";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import EditList from "@/components/global/list/EditList.vue";
-import {PropListColumn, ListColumn} from "@/components/global/list/ListProps.ts";
+import {ListColumn, PropListColumn} from "@/components/global/list/ListProps.ts";
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 
 const store = useModelEditorStore()
@@ -17,18 +18,6 @@ const store = useModelEditorStore()
 const columnTypeMap = ref(new Map<string, number>)
 
 const columnTypeMapLoading = useLoading()
-
-// 	<span></span>
-// 	<span>主键</span>
-// 	<span>列名</span>
-// 	<span>注释</span>
-// 	<span>唯一</span>
-// 	<span>字面类型</span>
-// 	<span>JDBC 类型</span>
-// <span>长度与精度</span>
-// <span>非空</span>
-// <span>默认值</span>
-// <span>操作</span>
 
 const tableColumnProps = <(PropListColumn<GenTableColumnsInput_TargetOf_columns> | ListColumn<GenTableColumnsInput_TargetOf_columns>)[]>[
 	{
@@ -51,8 +40,8 @@ const tableColumnProps = <(PropListColumn<GenTableColumnsInput_TargetOf_columns>
 	},
 	{
 		prop: 'partOfUniqueIdx',
-		label: '唯一',
-		span: '1.5em',
+		label: '唯一/键',
+		span: '3em',
 	},
 	{
 		prop: 'type',
@@ -128,21 +117,13 @@ const props = defineProps<ModelFormProps>()
 
 const emits = defineEmits<FormEmits<GenTableColumnsInput>>()
 
-const table = ref<GenTableColumnsInput>({...defaultTable})
+const table = ref<GenTableColumnsInput>(cloneDeep(defaultTable))
 
-watch(() => props.table, () => {
-	if (!props.table) return
+watch(() => props.table, (value) => {
+	if (!value) return
 
-	table.value = {
-		...table.value,
-		...toRaw(props.table),
-		columns: [
-			...defaultTable.columns,
-			...Object.values(toRaw(props.table.columns)).map(it => {
-				return {...it}
-			})
-		]
-	}
+	table.value = cloneDeep(value)
+
 }, {immediate: true})
 
 const handleColumnToPk = (pkIndex: number) => {
@@ -251,11 +232,10 @@ const handleCancel = () => {
 
 			<template #partOfPk="{data, index}">
 				<el-checkbox v-model="data.partOfPk"
-							 style="width: 1em; padding: 0; margin: 0;"
+							 class="cling-checkbox"
 							 @change="(value: boolean) => {if (value) handleColumnToPk(index)}"></el-checkbox>
 				<el-tooltip v-if="data.partOfPk" :auto-close="500" content="自增">
-					<el-checkbox v-model="data.autoIncrement"
-								 style="width: 1em; padding: 0; margin: 0;"></el-checkbox>
+					<el-checkbox v-model="data.autoIncrement" class="cling-checkbox"></el-checkbox>
 				</el-tooltip>
 			</template>
 
@@ -268,7 +248,8 @@ const handleCancel = () => {
 			</template>
 
 			<template #partOfUniqueIdx="{data}">
-				<el-checkbox v-model="data.partOfUniqueIdx"></el-checkbox>
+				<el-checkbox v-model="data.partOfUniqueIdx" class="cling-checkbox"></el-checkbox>
+				<el-checkbox v-model="data.businessKey" class="cling-checkbox"></el-checkbox>
 			</template>
 
 			<template #typeCode="{data}">
@@ -317,5 +298,11 @@ const handleCancel = () => {
 	grid-template-columns: 1em 1fr 1em;
 	color: var(--el-text-color-placeholder);
 	padding-right: 0.5em;
+}
+
+.cling-checkbox {
+	width: 1em;
+	padding: 0;
+	margin: 0;
 }
 </style>

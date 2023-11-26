@@ -4,7 +4,7 @@ import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import {ref, watch} from "vue";
 import {edgeToModelAssociation} from "../graph/edge/ModelEdge.ts";
 import {Delete} from "@element-plus/icons-vue";
-import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
+import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import {showAssociationType} from "@/utils/simplifyAssociationType.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 

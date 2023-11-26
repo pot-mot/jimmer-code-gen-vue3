@@ -19,7 +19,3 @@ defineProps<EnumItemProps & PackageMenuEventsProps>()
 		</el-text>
 	</div>
 </template>
-
-<style scoped>
-
-</style>

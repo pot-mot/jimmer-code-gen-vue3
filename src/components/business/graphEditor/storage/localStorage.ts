@@ -8,7 +8,7 @@ type GraphEditorData = {
     transform: string | null
 }
 
-export const useLocalStorageSave = (_graph: () => Graph, name: string) => {
+export const useGraphLocalStorage = (_graph: () => Graph, name: string) => {
     return {
         saveGraph: () => saveGraph(_graph(), name),
         loadGraph: (canUnload: boolean = true) => loadGraph(_graph(), name, canUnload),
@@ -16,7 +16,7 @@ export const useLocalStorageSave = (_graph: () => Graph, name: string) => {
     }
 }
 
-export const useLocalStorageOperation = (_graph: () => Graph) => {
+export const useGraphDataOperation = (_graph: () => Graph) => {
     return {
         toData: (): GraphEditorData => graphToEditorData(_graph()),
         toDataJSONStr: (): string => JSON.stringify(graphToEditorData(_graph())),
@@ -47,7 +47,7 @@ const loadGraphFromEditorData = (graph: Graph, data: GraphEditorData) => {
 }
 
 
-export const saveGraph = (graph: Graph, name: string, message: boolean = false) => {
+const saveGraph = (graph: Graph, name: string, message: boolean = false) => {
     if (!graph) return
 
     try {

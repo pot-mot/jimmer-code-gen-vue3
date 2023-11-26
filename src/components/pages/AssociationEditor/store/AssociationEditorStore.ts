@@ -1,6 +1,6 @@
 import {nextTick} from 'vue';
 import {defineStore} from "pinia";
-import {createCommonGraphOperations} from "@/components/business/graphEditor";
+import {useCommonGraphOperations} from "@/components/business/graphEditor";
 import {GenAssociationMatchView, GenTableColumnsView} from "@/api/__generated/model/static";
 import {getTables, tableIdToNodeId} from "../graph/node/TableNode.ts";
 import {getAssociations} from "../graph/edge/AssociationEdge.ts";
@@ -12,10 +12,9 @@ export const useAssociationEditorStore =
     defineStore(
         'AssociationEditorGraph',
         () => {
-            const commonStore = createCommonGraphOperations()
+            const commonStore = useCommonGraphOperations()
 
             const {_graph} = commonStore
-
 
             /**
              * 根据 node 获取 graph 中的 table
@@ -101,14 +100,14 @@ export const useAssociationEditorStore =
             return {
                 ...commonStore,
 
+                loadSchema,
+                loadTable,
+
                 tables,
                 associations,
 
                 removeTables,
                 deleteAssociations,
-
-                loadSchema,
-                loadTable,
             }
         }
     )

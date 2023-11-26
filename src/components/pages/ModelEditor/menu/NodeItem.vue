@@ -2,7 +2,7 @@
 import {Node} from '@antv/x6'
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import {Delete, EditPen} from "@element-plus/icons-vue";
-import {ModelEditorEventBus} from "../eventBus/ModelEditorEventBus.ts";
+import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {ref, watch} from "vue";

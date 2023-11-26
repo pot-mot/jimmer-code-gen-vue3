@@ -1,5 +1,6 @@
 <script setup generic="T extends { [key: string]: any }" lang="ts">
 import {Ref, ref, watch} from 'vue'
+import {cloneDeep} from 'lodash'
 import {EditListEmits, EditListProps} from "@/components/global/list/ListProps.ts";
 import LineItem from "@/components/global/list/LineItem.vue";
 import Line from "@/components/global/list/Line.vue";
@@ -42,17 +43,21 @@ const getDefaultLine = async (): Promise<T> => {
 		defaultLine = <T>props.defaultLine
 	}
 
-	return {...defaultLine}
+	return cloneDeep(defaultLine)
+}
+
+const getTempLines = () => {
+	return cloneDeep(dataLines.value)
 }
 
 const handleMoveLineUp = (index: number) => {
-	const tempLines = [...dataLines.value]
+	const tempLines = getTempLines()
 	swapItems(tempLines, index, index - 1)
 	emits('update:lines', tempLines)
 }
 
 const handleMoveLineDown = (index: number) => {
-	const tempLines = [...dataLines.value]
+	const tempLines = getTempLines()
 	swapItems(tempLines, index, index + 1)
 	emits('update:lines', tempLines)
 }
@@ -60,8 +65,7 @@ const handleMoveLineDown = (index: number) => {
 const handleAddLine = async (index?: number) => {
 	const defaultLine = await getDefaultLine()
 
-	const tempLines = [...dataLines.value]
-
+	const tempLines = getTempLines()
 	if (index != undefined) {
 		tempLines.splice(index + 1, 0, defaultLine)
 	} else {
@@ -76,8 +80,10 @@ const handleRemoveLine = (removedIndex: number) => {
 
 defineExpose({
 	props,
+	emits,
 	dataLines,
 	getDefaultLine,
+	getTempLines,
 	handleMoveLineUp,
 	handleMoveLineDown,
 	handleAddLine,
@@ -150,6 +156,20 @@ defineExpose({
 						:handleMoveLineDown="handleMoveLineDown"
 						:handleAddLine="handleAddLine"
 						:handleRemoveLine="handleRemoveLine">
+
+						<slot
+							name="beforeOperation"
+							:columns="columns"
+							:lines="lines"
+							:data="data"
+							:index="index"
+							:getDefaultLine="getDefaultLine"
+							:handleMoveLineUp="handleMoveLineUp"
+							:handleMoveLineDown="handleMoveLineDown"
+							:handleAddLine="handleAddLine"
+							:handleRemoveLine="handleRemoveLine">
+						</slot>
+
 						<el-button :disabled="index == 0"
 								   @click="handleMoveLineUp(index)"
 								   :icon="ArrowUp" link></el-button>
@@ -162,7 +182,7 @@ defineExpose({
 								   :icon="Delete" link style="margin-left: 0.3em;"></el-button>
 
 						<slot
-							name="otherOperation"
+							name="afterOperation"
 							:columns="columns"
 							:lines="lines"
 							:data="data"

@@ -1,19 +1,27 @@
-export interface DragResizeProps {
-    modelValue: boolean
+export interface ModelValueProps<T> {
+    modelValue: T
+}
 
+export interface DialogInitPositionProps {
     initX?: number
     initY?: number
+}
+
+export interface DialogInitSizeProps {
     initW?: number
     initH?: number
+}
+
+export interface DragResizeDialogProps extends ModelValueProps<boolean>, DialogInitPositionProps, DialogInitSizeProps {
     minW?: number
     minH?: number
     maxW?: number
     maxH?: number
-    to?: HTMLElement | string
     disableX?: boolean
     disableY?: boolean
     disableW?: boolean
     disableH?: boolean
+    to?: HTMLElement | string
     limitByParent?: boolean
     canResize?: boolean
     canDrag?: boolean

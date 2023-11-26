@@ -2,8 +2,8 @@
 import LeftTopBottomLayout from "@/components/global/layout/LeftRightLayout.vue";
 import ModelMenu from "./menu/ModelMenu.vue";
 import Graph from "./graph/Graph.vue";
-import ModelAddDialog from "@/components/pages/ModelEditor/modelInfo/ModelAddDialog.vue";
-import ModelModifyDialogManager from "@/components/pages/ModelEditor/modelInfo/ModelModifyDialogManager.vue";
+import TableCreateDialog from "@/components/pages/ModelEditor/nodeDialog/TableCreateDialog.vue";
+import TableModifyDialogManager from "@/components/pages/ModelEditor/nodeDialog/TableModifyDialogManager.vue";
 </script>
 
 <template>
@@ -16,6 +16,6 @@ import ModelModifyDialogManager from "@/components/pages/ModelEditor/modelInfo/M
 		</template>
 	</LeftTopBottomLayout>
 
-	<ModelAddDialog></ModelAddDialog>
-	<ModelModifyDialogManager></ModelModifyDialogManager>
+	<TableCreateDialog></TableCreateDialog>
+	<TableModifyDialogManager></TableModifyDialogManager>
 </template>

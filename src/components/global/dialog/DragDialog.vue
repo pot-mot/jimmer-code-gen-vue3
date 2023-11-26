@@ -4,11 +4,11 @@ import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
 import {nextTick, onBeforeMount, onMounted, ref, toRaw, watch} from 'vue'
 import {ElButton} from "element-plus";
 import {Close} from "@element-plus/icons-vue";
-import {DragResizeProps} from "./DragDialogProps.ts";
+import {DragResizeDialogProps} from "./DragDialogProps.ts";
 import {DragDialogEmits} from "./DragDialogEmits.ts";
 import {sendMessage} from "@/utils/message.ts";
 
-const props = withDefaults(defineProps<DragResizeProps>(), {
+const props = withDefaults(defineProps<DragResizeDialogProps>(), {
 	to: "body",
 	canResize: false,
 	canDrag: true,
