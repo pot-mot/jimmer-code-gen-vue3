@@ -141,7 +141,7 @@ defineSlots<DataSourceItemSlots>()
 					<slot
 						:dataSource="dataSource" :eventBus="eventBus"
 						:loadedSchemaLoading="loadedSchemaLoading.isLoading()"
-						:loadedSchemas="loadedSchemas"
+						:schemas="loadedSchemas"
 						:previewSchemaLoading="previewSchemaLoading.isLoading()"
 						:previewSchemas="previewSchemas">
 						{{ dataSource.name }}
@@ -151,7 +151,7 @@ defineSlots<DataSourceItemSlots>()
 						name="previewSchemas"
 						:dataSource="dataSource" :eventBus="eventBus"
 						:loadedSchemaLoading="loadedSchemaLoading.isLoading()"
-						:loadedSchemas="loadedSchemas"
+						:schemas="loadedSchemas"
 						:previewSchemaLoading="previewSchemaLoading.isLoading()"
 						:previewSchemas="previewSchemas">
 						<el-popover :visible="previewSchemasOpenState" placement="bottom-end" width="300px">
@@ -167,7 +167,7 @@ defineSlots<DataSourceItemSlots>()
 										name="previewSchema"
 										:dataSource="dataSource" :eventBus="eventBus"
 										:loadedSchemaLoading="loadedSchemaLoading.isLoading()"
-										:loadedSchemas="loadedSchemas"
+										:schemas="loadedSchemas"
 										:previewSchemaLoading="previewSchemaLoading.isLoading()"
 										:previewSchemas="previewSchemas" :previewSchema="schema">
 										<el-text>
@@ -183,7 +183,7 @@ defineSlots<DataSourceItemSlots>()
 						name="operations"
 						:dataSource="dataSource" :eventBus="eventBus"
 						:loadedSchemaLoading="loadedSchemaLoading.isLoading()"
-						:loadedSchemas="loadedSchemas"
+						:schemas="loadedSchemas"
 						:previewSchemaLoading="previewSchemaLoading.isLoading()"
 						:previewSchemas="previewSchemas">
 						<span class="hover-show-item" style="padding-left: 0.5em;">
@@ -199,7 +199,7 @@ defineSlots<DataSourceItemSlots>()
 			:dataSource="dataSource"
 			:eventBus="eventBus"
 			:loadedSchemaLoading="loadedSchemaLoading.isLoading()"
-			:loadedSchemas="loadedSchemas"
+			:schemas="loadedSchemas"
 			:previewSchemaLoading="previewSchemaLoading.isLoading()"
 			:previewSchemas="previewSchemas">
 			<ul style="padding: 0 0 0.5em 0.5em;">
@@ -208,7 +208,7 @@ defineSlots<DataSourceItemSlots>()
 						name="loadedSchema"
 						:dataSource="dataSource" :eventBus="eventBus"
 						:loadedSchemaLoading="loadedSchemaLoading.isLoading()"
-						:loadedSchemas="loadedSchemas" :loadedSchema="schema"
+						:schemas="loadedSchemas" :schema="schema"
 						:previewSchemaLoading="previewSchemaLoading.isLoading()"
 						:previewSchemas="previewSchemas">
 						<SchemaItem :event-bus="eventBus" :schema="schema"/>

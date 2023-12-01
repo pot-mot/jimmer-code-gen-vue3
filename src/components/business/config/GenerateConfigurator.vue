@@ -3,7 +3,7 @@ import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {ref} from "vue";
 import {Tools} from "@element-plus/icons-vue"
 import GenerateConfigForm from "@/components/business/config/GenerateConfigForm.vue";
-import TypeMappingsTable from "@/components/business/config/TypeMappingsTable.vue";
+import TypeMappingsEditor from "@/components/business/config/TypeMappingsEditor.vue";
 
 const openState = ref(false)
 
@@ -38,8 +38,7 @@ const configType = ref<'GenerateConfigForm' | 'TypeMappingsTable' | undefined>()
 		<div style="width: calc(100% - 1em)">
 			<GenerateConfigForm v-if="configType == 'GenerateConfigForm'"
 								@cancel="openState = false" @submit="openState = false"></GenerateConfigForm>
-			<TypeMappingsTable v-else-if="configType == 'TypeMappingsTable'"
-							   @cancel="openState = false" @submit="openState = false"></TypeMappingsTable>
+			<TypeMappingsEditor v-else-if="configType == 'TypeMappingsTable'"></TypeMappingsEditor>
 		</div>
 	</DragDialog>
 </template>

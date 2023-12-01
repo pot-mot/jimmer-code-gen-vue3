@@ -2,19 +2,18 @@
 import {nextTick, onMounted, onUnmounted, Ref, ref} from "vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {Search} from "@element-plus/icons-vue";
+import {
+	DialogInitPositionProps,
+	DialogInitSizeProps,
+	DialogTeleportProps
+} from "@/components/global/dialog/DragDialogProps.ts";
 
-interface SearcherProps {
+interface SearcherProps extends DialogTeleportProps, DialogInitSizeProps, DialogInitPositionProps {
 	target: HTMLElement
 	search: (keyword: string) => T[] | Promise<T[]>
 	choose?: (item: T) => void
 
-	dialog?: boolean
-
-	to?: string
 	canDrag?: boolean
-	initX?: number
-	initY?: number
-	initW?: number
 }
 
 const props = withDefaults(defineProps<SearcherProps>(), {
@@ -23,10 +22,14 @@ const props = withDefaults(defineProps<SearcherProps>(), {
 
 interface SearcherSlots {
 	empty(props: {}): any
-	items(props: {items: T[], choose?: (item: T) => any}): any
-	tools(props: {items: T[], choose?: (item: T) => any}): any
-	item(props: {items: T[], item: T, choose?: (item: T) => any}): any
-	buttonContent(props: {items: T[], item: T}): any
+
+	items(props: { items: T[], choose?: (item: T) => any }): any
+
+	tools(props: { items: T[], choose?: (item: T) => any }): any
+
+	item(props: { items: T[], item: T, choose?: (item: T) => any }): any
+
+	buttonContent(props: { items: T[], item: T }): any
 }
 
 defineSlots<SearcherSlots>()
@@ -118,7 +121,7 @@ const handleClose = () => {
 	<DragDialog
 		v-model="openState"
 		ref="dialog"
-		:init-w="initW" :init-x="x" :init-y="y" :to="to"
+		:init-w="initW" :init-h="initH" :init-x="x" :init-y="y" :to="to"
 		:can-drag="canDrag"
 		fit-content
 		@close="handleClose">

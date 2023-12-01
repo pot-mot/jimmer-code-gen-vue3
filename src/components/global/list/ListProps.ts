@@ -31,7 +31,7 @@ export interface EditListProps<T extends { [key: string]: any }> extends LineSty
     operation?: ListColumn<T>,
     lines: T[],
     labelLine?: boolean
-    defaultLine: T | (() => T | Promise<T>)
+    defaultLine: Partial<T> | (() => Partial<T> | Promise<Partial<T>>)
 }
 
 export interface EditListEmits<T extends { [key: string]: any }> {

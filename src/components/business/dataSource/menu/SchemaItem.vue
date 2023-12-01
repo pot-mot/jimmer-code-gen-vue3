@@ -18,6 +18,8 @@ interface SchemaItemProps {
 
 const props = defineProps<SchemaItemProps & DataSourceMenuEventsProps>()
 
+const container = ref<HTMLElement>()
+
 const tables = ref<GenTableCommonView[]>([])
 
 const getTables = (schemaId: number = props.schema.id) => {
@@ -56,50 +58,52 @@ defineSlots<SchemaItemSlots>()
 </script>
 
 <template>
-	<Details>
-		<template #title>
-			<div style="height: 1.8em; line-height: 1.8em;">
-				<el-text class="hover-show">
-					<SchemaIcon></SchemaIcon>
+	<div ref="container" style="position: relative;">
+		<Details>
+			<template #title>
+				<div style="height: 1.8em; line-height: 1.8em;">
+					<el-text class="hover-show">
+						<SchemaIcon></SchemaIcon>
 
-					<slot :eventBus="eventBus" :schema="schema" :tables="tables">
-						<el-button link @click="eventBus.emit('clickSchema', {id: schema.id})">
-							{{ schema.name }}
-						</el-button>
-					</slot>
-
-					<slot :eventBus="eventBus" :schema="schema" :tables="tables" name="operations">
-						<el-button :icon="Delete" class="hover-show-item" link
-								   title="删除" type="danger" @click="handleDelete">
-						</el-button>
-					</slot>
-				</el-text>
-			</div>
-		</template>
-
-		<Searcher v-if="tablesContainer"
-				  :init-x="tablesContainer.offsetX"
-				  :init-y="tablesContainer.offsetY"
-				  :init-w="300"
-				  :target="tablesContainer"
-				  :search="handleQueryTables">
-			<template #buttonContent="{item}">
-				<slot :eventBus="eventBus" :schema="schema" :table="item" :tables="tables" name="table">
-					<TableItem :event-bus="eventBus" :table="item"></TableItem>
-				</slot>
-			</template>
-		</Searcher>
-
-		<div style="padding-left: 0.5em;" ref="tablesContainer">
-			<slot :eventBus="eventBus" :schema="schema" :tables="tables" name="tables">
-				<ul style="padding: 0 0 0.5em 0.5em;">
-					<li v-for="table in tables">
-						<slot :eventBus="eventBus" :schema="schema" :table="table" :tables="tables" name="table">
-							<TableItem :event-bus="eventBus" :table="table"></TableItem>
+						<slot :eventBus="eventBus" :schema="schema" :tables="tables">
+							<el-button link @click="eventBus.emit('clickSchema', {id: schema.id})">
+								{{ schema.name }}
+							</el-button>
 						</slot>
-					</li>
-				</ul>
-			</slot>
-		</div>
-	</Details>
+
+						<slot :eventBus="eventBus" :schema="schema" :tables="tables" name="operations">
+							<el-button :icon="Delete" class="hover-show-item" link
+									   title="删除" type="danger" @click="handleDelete">
+							</el-button>
+						</slot>
+					</el-text>
+				</div>
+			</template>
+
+			<div style="padding-left: 0.5em;" ref="tablesContainer">
+				<slot :eventBus="eventBus" :schema="schema" :tables="tables" name="tables">
+					<ul style="padding: 0 0 0.5em 0.5em;">
+						<li v-for="table in tables">
+							<slot :eventBus="eventBus" :schema="schema" :table="table" :tables="tables" name="table">
+								<TableItem :event-bus="eventBus" :table="table"></TableItem>
+							</slot>
+						</li>
+					</ul>
+				</slot>
+			</div>
+
+			<Searcher v-if="tablesContainer && container"
+					  :init-w="300"
+					  :init-y="30"
+					  :target="tablesContainer"
+					  :search="handleQueryTables"
+					  :to="container">
+				<template #buttonContent="{item}">
+					<slot :eventBus="eventBus" :schema="schema" :table="item" :tables="tables" name="table">
+						<TableItem :event-bus="eventBus" :table="item"></TableItem>
+					</slot>
+				</template>
+			</Searcher>
+		</Details>
+	</div>
 </template>

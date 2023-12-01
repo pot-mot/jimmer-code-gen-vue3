@@ -3,7 +3,7 @@ import {ref, watch} from 'vue'
 import {api} from "@/api";
 import {GenTableAssociationsView} from '@/api/__generated/model/static'
 import DragDialog from "@/components/global/dialog/DragDialog.vue"
-import TableInfo from "../../../business/table/TableInfo.vue";
+import TableViewer from "../../../business/table/TableViewer.vue";
 import {sendMessage} from "@/utils/message.ts";
 import TableDefine from "../../../business/table/TableDefine.vue";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
@@ -67,7 +67,7 @@ watch(() => props.id, async (id) => {
 				</div>
 
 				<div class="body">
-					<TableInfo :table="table"></TableInfo>
+					<TableViewer :table="table"></TableViewer>
 					<TableDefine :id="id"></TableDefine>
 				</div>
 			</template>

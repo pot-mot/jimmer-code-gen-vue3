@@ -12,16 +12,28 @@ export interface DialogInitSizeProps {
     initH?: number
 }
 
-export interface DragResizeDialogProps extends ModelValueProps<boolean>, DialogInitPositionProps, DialogInitSizeProps {
+export interface DialogSizeRangeProps {
     minW?: number
     minH?: number
     maxW?: number
     maxH?: number
+}
+
+export interface DialogTeleportProps {
+    to?: HTMLElement | string
+}
+
+export interface DragResizeDialogProps extends
+    ModelValueProps<boolean>,
+    DialogInitPositionProps,
+    DialogInitSizeProps,
+    DialogTeleportProps,
+    DialogSizeRangeProps
+{
     disableX?: boolean
     disableY?: boolean
     disableW?: boolean
     disableH?: boolean
-    to?: HTMLElement | string
     limitByParent?: boolean
     canResize?: boolean
     canDrag?: boolean

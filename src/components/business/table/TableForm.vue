@@ -25,9 +25,9 @@ const tableColumnProps = <(PropListColumn<GenTableColumnsInput_TargetOf_columns>
 		span: '1.5em'
 	},
 	{
-		prop: 'partOfPk',
-		label: '主键',
-		span: '2em',
+		name: 'columnType',
+		label: '类别',
+		span: '3em',
 	},
 	{
 		prop: 'name',
@@ -40,8 +40,8 @@ const tableColumnProps = <(PropListColumn<GenTableColumnsInput_TargetOf_columns>
 	},
 	{
 		prop: 'partOfUniqueIdx',
-		label: '唯一/键',
-		span: '3em',
+		label: '唯一',
+		span: '2em',
 	},
 	{
 		prop: 'type',
@@ -165,7 +165,7 @@ const handleSubmit = () => {
 		}
 	}
 
-	if (nameSet.size < table.value.columns.length) {
+	if (nameSet.size != table.value.columns.length) {
 		messageList.push('列名不可重复')
 	}
 
@@ -230,12 +230,19 @@ const handleCancel = () => {
 				<ColumnIcon :column="data"></ColumnIcon>
 			</template>
 
-			<template #partOfPk="{data, index}">
-				<el-checkbox v-model="data.partOfPk"
-							 class="cling-checkbox"
-							 @change="(value: boolean) => {if (value) handleColumnToPk(index)}"></el-checkbox>
+			<template #columnType="{data, index}">
+				<el-tooltip :auto-close="500" content="主键">
+					<el-checkbox v-model="data.partOfPk"
+								 class="cling-checkbox"
+								 @change="(value: boolean) => {if (value) handleColumnToPk(index)}"></el-checkbox>
+				</el-tooltip>
+
 				<el-tooltip v-if="data.partOfPk" :auto-close="500" content="自增">
 					<el-checkbox v-model="data.autoIncrement" class="cling-checkbox"></el-checkbox>
+				</el-tooltip>
+
+				<el-tooltip v-if="!data.partOfPk" :auto-close="500" content="业务键">
+					<el-checkbox v-model="data.businessKey" class="cling-checkbox"></el-checkbox>
 				</el-tooltip>
 			</template>
 
@@ -249,7 +256,6 @@ const handleCancel = () => {
 
 			<template #partOfUniqueIdx="{data}">
 				<el-checkbox v-model="data.partOfUniqueIdx" class="cling-checkbox"></el-checkbox>
-				<el-checkbox v-model="data.businessKey" class="cling-checkbox"></el-checkbox>
 			</template>
 
 			<template #typeCode="{data}">
@@ -262,9 +268,9 @@ const handleCancel = () => {
 			<template #displaySize="{data}">
 				<el-text style="display: grid; grid-template-columns: 0.5em 1fr 1em 1fr 0.5em">
 					<span>(</span>
-					<span><el-input v-model="data.displaySize"></el-input></span>
+					<span><el-input type="number" v-model="data.displaySize"></el-input></span>
 					<span style="padding-left: 0.3em;">,</span>
-					<span><el-input v-model="data.numericPrecision"></el-input></span>
+					<span><el-input type="number" v-model="data.numericPrecision"></el-input></span>
 					<span style="padding-left: 0.3em;">)</span>
 				</el-text>
 			</template>

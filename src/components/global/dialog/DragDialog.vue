@@ -5,7 +5,7 @@ import {nextTick, onBeforeMount, onMounted, ref, toRaw, watch} from 'vue'
 import {ElButton} from "element-plus";
 import {Close} from "@element-plus/icons-vue";
 import {DragResizeDialogProps} from "./DragDialogProps.ts";
-import {DragDialogEmits} from "./DragDialogEmits.ts";
+import {DragDialogEmits, ModelValueEmits} from "./DragDialogEmits.ts";
 import {sendMessage} from "@/utils/message.ts";
 
 const props = withDefaults(defineProps<DragResizeDialogProps>(), {
@@ -54,7 +54,7 @@ const setPositionAndSize = () => {
 	if (maxWidth < props.initW) {
 		x.value = 0
 		w.value = maxWidth
-	} else if (props.initX) {
+	} else if (props.initX != undefined) {
 		w.value = props.initW
 
 		if (props.initW + props.initX > maxWidth) {
@@ -76,26 +76,30 @@ const setPositionAndSize = () => {
 	}
 }
 
-const emits = defineEmits<DragDialogEmits>()
+const emits = defineEmits<DragDialogEmits & ModelValueEmits<boolean>>()
+
+const handleOpen = () => {
+	setPositionAndSize()
+	emits('opened')
+}
+
+const handleClose = () => {
+	emits("close")
+	emits('update:modelValue', false)
+	emits("closed")
+}
 
 onBeforeMount(() => {
 	if (props.modelValue) {
-		setPositionAndSize()
+		handleOpen()
 	}
 })
 
 watch(() => props.modelValue, (modelValue) => {
 	if (modelValue) {
-		setPositionAndSize()
-		emits('open')
+		handleOpen()
 	}
 })
-
-const close = () => {
-	emits("close")
-	emits('update:modelValue', false)
-	emits("closed")
-}
 
 const syncDialogHeight = () => {
 	if (content.value) {
@@ -150,7 +154,7 @@ defineExpose({
 					:w="w" :maxW="maxW" :minW="minW" :disableW="disableW"
 					style="border: none; z-index: 2000;">
 			<div ref="wrapper" :style="draggable ? 'cursor: all-scroll;' : 'cursor: default;'" class="wrapper">
-				<div class="close" @click="close">
+				<div class="close" @click="handleClose">
 					<slot name="close">
 						<el-button :icon="Close" link size="large" type="danger"></el-button>
 					</slot>

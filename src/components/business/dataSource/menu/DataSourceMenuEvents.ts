@@ -1,7 +1,7 @@
 import {MenuEventBusProps} from "@/components/global/menu/MenuEventBusProps.ts";
 
 export type DataSourceMenuEvents = {
-    loadDateSource: {
+    loadedDateSource: {
         id: number
     },
     editDataSource: {

@@ -17,7 +17,7 @@ defineProps<DataSourceIconProps>()
 		<el-icon size="1.2em" style="transform: translateY(0.2em)">
 			<svg fill="none" stroke-linecap="round"
 				 stroke-linejoin="round"
-				 stroke-width="1.5" viewBox="-2 -2 26 26" xmlns="http://www.w3.org/2000/svg">
+				 stroke-width="1.5" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg">
 
 				<path d="M3 3m0 1a1 1 0 011-1h16a1 1 0 011 1v16a1 1 0 01-1 1h-16a1 1 0 01-1-1zm6-1v18"
 					  stroke="#aaa"/>

@@ -21,16 +21,16 @@ const props = withDefaults(
 	}
 )
 
-const emits = defineEmits<EditListEmits<T>>()
+const emits = defineEmits<EditListEmits<Partial<T>>>()
 
-const dataLines: Ref<T[]> = ref([])
+const dataLines: Ref<Partial<T>[]> = ref([])
 
 watch(() => props.lines, (lines) => {
 	dataLines.value = lines
 }, {immediate: true, deep: true})
 
-const getDefaultLine = async (): Promise<T> => {
-	let defaultLine: T
+const getDefaultLine = async (): Promise<Partial<T>> => {
+	let defaultLine: Partial<T>
 
 	if (props.defaultLine instanceof Function) {
 		const temp = props.defaultLine()

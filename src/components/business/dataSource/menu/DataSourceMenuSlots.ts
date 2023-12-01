@@ -30,11 +30,11 @@ interface SchemaLoadingSlotProps {
 }
 
 interface SchemasSlotProps {
-    loadedSchemas: GenSchemaView[]
+    schemas: GenSchemaView[]
 }
 
 interface SchemaSlotProps {
-    loadedSchema: GenSchemaView
+    schema: GenSchemaView
 }
 
 interface PreviewSchemasSlotProps {

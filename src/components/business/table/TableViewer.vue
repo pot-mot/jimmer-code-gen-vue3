@@ -2,44 +2,14 @@
 import {GenTableAssociationsView} from "@/api/__generated/model/static";
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import Details from "@/components/global/common/Details.vue";
-import {useAssociationEditorStore} from "@/components/pages/AssociationEditor/store/AssociationEditorStore.ts";
-import {
-	GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_2 as InAssociation,
-	GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_2 as OutAssociation,
-} from "@/api/__generated/model/static/GenTableAssociationsView.ts";
-import {Delete} from "@element-plus/icons-vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {showAssociationType} from "@/utils/simplifyAssociationType.ts";
 
-const store = useAssociationEditorStore()
-
-interface TableInfoProps {
+interface TableViewerProps {
 	table: GenTableAssociationsView
 }
 
-const props = defineProps<TableInfoProps>()
-
-const deleteOutAssociation = (
-	columnId: number,
-	association: OutAssociation
-) => {
-	store.deleteAssociations(columnId, association.targetColumn.id)
-	props.table.columns.forEach(column => {
-		column.outAssociations = column.outAssociations.filter(it => it.id != association.id)
-		column.inAssociations = column.inAssociations.filter(it => it.id != association.id)
-	})
-}
-
-const deleteInAssociation = (
-	columnId: number,
-	association: InAssociation
-) => {
-	store.deleteAssociations(association.sourceColumn.id, columnId)
-	props.table.columns.forEach(column => {
-		column.inAssociations = column.inAssociations.filter(it => it.id != association.id)
-		column.outAssociations = column.outAssociations.filter(it => it.id != association.id)
-	})
-}
+defineProps<TableViewerProps>()
 </script>
 
 <template>
@@ -64,6 +34,7 @@ const deleteInAssociation = (
 							{{ column.name }}
 							<Comment :comment="column.comment"></Comment>
 						</el-text>
+
 						<el-text>
 							{{ column.fullType }}
 						</el-text>
@@ -88,9 +59,6 @@ const deleteInAssociation = (
 							</span>.<span>
 								{{ association.sourceColumn.name }}
 							</span>
-
-							<el-button :icon="Delete" link type="danger"
-									   @click="deleteInAssociation(column.id, association)"></el-button>
 						</el-text>
 					</div>
 				</div>
@@ -105,9 +73,6 @@ const deleteInAssociation = (
 							</span>.<span>
 								{{ association.targetColumn.name }}
 							</span>
-
-							<el-button :icon="Delete" link
-									   type="danger" @click="deleteOutAssociation(column.id, association)"></el-button>
 						</el-text>
 					</div>
 				</div>

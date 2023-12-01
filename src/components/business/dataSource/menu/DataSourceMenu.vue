@@ -39,7 +39,7 @@ const handleSave = (e: MouseEvent) => {
 const handleSaveFinish = (dataSource: GenDataSourceView) => {
 	dataSources.value.push(dataSource)
 	saveDialogOpenState.value = false
-	eventBus.emit('loadDateSource', {id: dataSource.id})
+	eventBus.emit('loadedDateSource', {id: dataSource.id})
 }
 
 eventBus.on('editDataSource', async ({id}) => {

@@ -151,7 +151,7 @@ export type GenerateServiceOptions = {
     'convert': {body: Array<number>},
     'generate': {body: Array<number>, language?: GenLanguage},
     'generateByModel': {body: number, language?: GenLanguage},
-    'generateByPackage': {body: number, language?: GenLanguage},
+    'generateByPackage': {body: Array<number>, language?: GenLanguage},
     'generateByTable': {body: Array<number>, language?: GenLanguage},
     'preview': {entityIds: Array<number>, language?: GenLanguage},
     'previewByModel': {modelId: number, language?: GenLanguage},
