@@ -50,9 +50,7 @@ interface BaseDataSourceItemSlotProps extends MenuEventBusSlotProps, DataSourceS
 export type DataSourceItemSlots = {
     default(props: BaseDataSourceItemSlotProps): any
     operations(props: BaseDataSourceItemSlotProps): any
-    loadedSchemas(props: BaseDataSourceItemSlotProps): any
     loadedSchema(props: SchemaSlotProps & BaseDataSourceItemSlotProps): any
-    previewSchemas(props: BaseDataSourceItemSlotProps): any
     previewSchema(props: PreviewSchemaSlotProps & BaseDataSourceItemSlotProps): any
 }
 

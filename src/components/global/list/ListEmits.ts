@@ -1,3 +1,3 @@
 export interface ListItemEmits<T> {
-    (event: 'item:click', item: T): void
+    (event: 'clickItem', item: T): void
 }

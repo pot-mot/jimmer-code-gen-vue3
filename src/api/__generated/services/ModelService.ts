@@ -43,7 +43,7 @@ export class ModelService {
     }
     
     async previewSql(options: ModelServiceOptions['previewSql']): Promise<
-        {[key:string]: string}
+        Array<Pair<string, string>>
     > {
         let _uri = '/model/sql';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -62,7 +62,7 @@ export class ModelService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'POST'})) as {[key:string]: string}
+        return (await this.executor({uri: _uri, method: 'POST'})) as Array<Pair<string, string>>
     }
     
     async save(options: ModelServiceOptions['save']): Promise<number> {

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {ref, watch} from "vue";
+import {ref} from "vue";
 import {GenSchemaView, GenTableCommonView} from "@/api/__generated/model/static";
 import {api} from "@/api";
 import Details from "../../../global/common/Details.vue";
@@ -11,6 +11,7 @@ import {deleteConfirm, sendMessage} from "@/utils/message.ts";
 import {SchemaItemSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlots.ts";
 import Searcher from "@/components/global/common/Searcher.vue";
 import {matchByKeywords} from "@/components/business/graphEditor/common/search.ts";
+import {useLoading} from "@/hooks/useLoading.ts";
 
 interface SchemaItemProps {
 	schema: GenSchemaView
@@ -22,15 +23,15 @@ const container = ref<HTMLElement>()
 
 const tables = ref<GenTableCommonView[]>([])
 
-const getTables = (schemaId: number = props.schema.id) => {
-	api.tableService.queryCommonView({query: {schemaIds: [schemaId]}}).then(res => {
-		tables.value = res
-	})
-}
+const tablesLoading = useLoading()
 
-watch(() => props.schema, () => {
-	getTables()
-}, {immediate: true})
+const getTables = async (schemaId: number = props.schema.id) => {
+	tablesLoading.start()
+
+	tables.value = await api.tableService.queryCommonView({query: {schemaIds: [schemaId]}})
+
+	tablesLoading.end()
+}
 
 const handleDelete = () => {
 	deleteConfirm(`架构【${props.schema.name}】`,
@@ -58,8 +59,8 @@ defineSlots<SchemaItemSlots>()
 </script>
 
 <template>
-	<div ref="container" style="position: relative;">
-		<Details>
+	<div ref="container" style="position: relative;" v-loading="tablesLoading.isLoading()">
+		<Details @open="getTables()">
 			<template #title>
 				<div style="height: 1.8em; line-height: 1.8em;">
 					<el-text class="hover-show">

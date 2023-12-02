@@ -1,6 +1,6 @@
 import type { Executor } from '../';
 import type { GenLanguage } from '../model/enums';
-import type { byte } from '../model/static';
+import type { Pair, byte } from '../model/static';
 
 export class GenerateService {
     
@@ -78,7 +78,7 @@ export class GenerateService {
     }
     
     async preview(options: GenerateServiceOptions['preview']): Promise<
-        {[key:string]: string}
+        Array<Pair<string, string>>
     > {
         let _uri = '/generate/preview';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -97,11 +97,11 @@ export class GenerateService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as {[key:string]: string}
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<Pair<string, string>>
     }
     
     async previewByModel(options: GenerateServiceOptions['previewByModel']): Promise<
-        {[key:string]: string}
+        Array<Pair<string, string>>
     > {
         let _uri = '/generate/preview/model';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -120,11 +120,11 @@ export class GenerateService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as {[key:string]: string}
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<Pair<string, string>>
     }
     
     async previewByTable(options: GenerateServiceOptions['previewByTable']): Promise<
-        {[key:string]: string}
+        Array<Pair<string, string>>
     > {
         let _uri = '/generate/preview/table';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -143,7 +143,7 @@ export class GenerateService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'POST'})) as {[key:string]: string}
+        return (await this.executor({uri: _uri, method: 'POST'})) as Array<Pair<string, string>>
     }
 }
 

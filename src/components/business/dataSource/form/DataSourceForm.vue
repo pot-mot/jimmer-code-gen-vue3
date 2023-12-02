@@ -117,9 +117,12 @@ const handleSubmit = () => {
 		<el-form-item label="remark">
 			<el-input v-model="dataSource.remark" type="textarea"></el-input>
 		</el-form-item>
+
 		<el-form-item>
-			<el-button type="info" @click="handleTest">测试</el-button>
-			<el-button type="warning" @click="handleSubmit">提交</el-button>
+			<div style="text-align: right;">
+				<el-button type="info" @click="handleTest">测试</el-button>
+				<el-button type="warning" @click="handleSubmit">提交</el-button>
+			</div>
 		</el-form-item>
 	</el-form>
 </template>

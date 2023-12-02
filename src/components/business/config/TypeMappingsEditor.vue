@@ -86,6 +86,10 @@ const handleSubmit = async () => {
 		return true
 	})
 
+	if (tempTypeMappings.value.some(mapping => mapping.typeExpression.length == 0 || mapping.propertyType.length == 0)) {
+		messageList.push('TypeMapping 数据库类型表达式与属性均不可为空');
+	}
+
 	if (uniqueTypeMappings.length != tempTypeMappings.value.length) {
 		messageList.push('TypeMapping 不可重复');
 	}
@@ -139,7 +143,6 @@ const handleCancel = () => {
 
 			<div style="text-align: right">
 				<el-button type="info" @click="handleCancel">取消</el-button>
-
 				<el-button type="warning" @click="handleSubmit">保存</el-button>
 			</div>
 		</template>

@@ -74,7 +74,7 @@
 
 				<DragDialog v-model="openSQLPreviewDialog" :init-w="700" :init-x="5000" can-drag
 							can-resize disable-h>
-					<MultiCodePreview :codes-map="sqlMap" height="calc(100vh - 5em - 30px)" style="height: calc(100vh - 30px); width: 100%;"
+					<MultiCodePreview :code-files="sqlFiles" height="calc(100vh - 5em - 30px)" style="height: calc(100vh - 30px); width: 100%;"
 									  width="100%"></MultiCodePreview>
 				</DragDialog>
 			</li>
@@ -89,7 +89,7 @@
 
 				<DragDialog v-model="codePreviewDialogOpenState" :init-w="700" :init-x="5000"
 							can-drag can-resize disable-h>
-					<MultiCodePreview :codes-map="codesMap" height="calc(100vh - 5em - 30px)" style="height: calc(100vh - 30px); width: 100%;"
+					<MultiCodePreview :code-files="codeFiles" height="calc(100vh - 5em - 30px)" style="height: calc(100vh - 30px); width: 100%;"
 									  width="100%"></MultiCodePreview>
 
 					<div style="position: absolute; bottom: 2em; right: 2em;">
@@ -148,7 +148,7 @@ import {columnPortPosition} from "../../AssociationEditor/graph/node/ColumnPort.
 import {useGraphDataOperation} from "@/components/business/graphEditor/storage/localStorage.ts";
 import {api} from "@/api";
 import {sendMessage} from "@/utils/message.ts";
-import {GenModelInput} from "@/api/__generated/model/static";
+import {GenModelInput, Pair} from "@/api/__generated/model/static";
 import {handleHistoryKeyEvent} from "@/components/business/graphEditor/history/useHistory.ts";
 import {handleSelectionKeyEvent} from "@/components/business/graphEditor/selection/useSelection.ts";
 import {useSwitchAssociationType} from "../../AssociationEditor/graph/edge/AssociationEdge.ts";
@@ -171,7 +171,6 @@ import {saveAs} from "file-saver";
 import ScaleBar from "@/components/business/graphEditor/tools/ScaleBar.vue";
 import GraphSearcher from "@/components/business/graphEditor/tools/GraphSearcher.vue";
 import DataSourceMenu from "@/components/business/dataSource/menu/DataSourceMenu.vue";
-import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -315,7 +314,7 @@ const handleCodeDownload = async () => {
 
 const codePreviewDialogOpenState = ref(false)
 
-const codesMap = ref<{ [key: string]: string }>({})
+const codeFiles = ref<Array<Pair<string, string>>>([])
 
 const handleCodePreview = async () => {
 	loadingStore.add()
@@ -324,7 +323,7 @@ const handleCodePreview = async () => {
 		sendMessage('当前模型未保存至数据库，无法预览', 'error')
 		return
 	}
-	codesMap.value = await api.generateService.previewByModel({modelId: listStore.currentModel.id})
+	codeFiles.value = await api.generateService.previewByModel({modelId: listStore.currentModel.id})
 	codePreviewDialogOpenState.value = true
 
 	loadingStore.sub()
@@ -332,7 +331,7 @@ const handleCodePreview = async () => {
 
 watch(() => codePreviewDialogOpenState.value, async (openState) => {
 	if (!openState) {
-		codesMap.value = {}
+		codeFiles.value = []
 	}
 })
 
@@ -358,7 +357,7 @@ watch(() => dataSourceLoadMenu.value, () => {
 
 const openSQLPreviewDialog = ref(false)
 
-const sqlMap = ref<{ [key: string]: string }>({})
+const sqlFiles = ref<Array<Pair<string, string>>>([])
 
 const handleSQLPreview = async () => {
 	if (!listStore.currentModel) return
@@ -366,7 +365,7 @@ const handleSQLPreview = async () => {
 	loadingStore.add()
 
 	openSQLPreviewDialog.value = true
-	sqlMap.value = await api.modelService.previewSql({id: listStore.currentModel.id})
+	sqlFiles.value = await api.modelService.previewSql({id: listStore.currentModel.id})
 	loadingStore.sub()
 }
 </script>

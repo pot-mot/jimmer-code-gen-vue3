@@ -88,7 +88,7 @@
 
 				<el-dialog v-model="codePreviewDialogOpenState" :z-index="2000" fullscreen>
 					<div style="height: calc(100vh - 5em); overflow: auto;">
-						<MultiCodePreview :codes-map="codesMap"></MultiCodePreview>
+						<MultiCodePreview :code-files="codeFiles"></MultiCodePreview>
 					</div>
 
 					<div style="position: absolute; bottom: 2em; right: 2em">
@@ -157,6 +157,7 @@ import DownloadIcon from "@/components/global/icons/toolbar/DownloadIcon.vue";
 import ScaleBar from "@/components/business/graphEditor/tools/ScaleBar.vue";
 import GraphSearcher from "@/components/business/graphEditor/tools/GraphSearcher.vue";
 import {AssociationMatchType_CONSTANTS} from "@/api/__generated/model/enums";
+import {Pair} from "@/api/__generated/model/static";
 
 const container = ref<HTMLElement>();
 const wrapper = ref<HTMLElement>();
@@ -230,18 +231,18 @@ const handleCodeDownload = async () => {
 
 const codePreviewDialogOpenState = ref(false)
 
-const codesMap = ref<{ [key: string]: string }>({})
+const codeFiles = ref<Array<Pair<string, string>>>([])
 
 const handleCodePreview = async () => {
 	loadingStore.add()
-	codesMap.value = await api.generateService.previewByTable({tableIds: tableIds.value})
+	codeFiles.value = await api.generateService.previewByTable({tableIds: tableIds.value})
 	codePreviewDialogOpenState.value = true
 	loadingStore.sub()
 }
 
 watch(() => codePreviewDialogOpenState.value, async (openState) => {
 	if (!openState) {
-		codesMap.value = {}
+		codeFiles.value = []
 	}
 })
 </script>

@@ -1,82 +1,44 @@
 <script lang="ts" setup>
 import {nextTick, onMounted, ref, watch} from 'vue'
 import {cloneDeep} from 'lodash'
-import {GenTableColumnsInput} from "@/api/__generated/model/static";
+import {GenEnumView, GenTableColumnsInput} from "@/api/__generated/model/static";
 import {GenTableColumnsInput_TargetOf_columns} from "@/api/__generated/model/static/GenTableColumnsInput.ts";
 import {api} from "@/api";
-import {objToMap} from "@/utils/mapOperation.ts";
 import {useLoading} from "@/hooks/useLoading.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {useModelEditorStore} from "../../pages/ModelEditor/store/ModelEditorStore.ts";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import EditList from "@/components/global/list/EditList.vue";
-import {ListColumn, PropListColumn} from "@/components/global/list/ListProps.ts";
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
+import {tableColumnColumns} from "@/components/business/table/tableColumnColumns.ts";
+import ColumnTypeForm from "@/components/business/table/ColumnTypeForm.vue";
 
 const store = useModelEditorStore()
 
-const columnTypeMap = ref(new Map<string, number>)
-
 const columnTypeMapLoading = useLoading()
 
-const tableColumnProps = <(PropListColumn<GenTableColumnsInput_TargetOf_columns> | ListColumn<GenTableColumnsInput_TargetOf_columns>)[]>[
-	{
-		name: 'icon',
-		span: '1.5em'
-	},
-	{
-		name: 'columnType',
-		label: '类别',
-		span: '3em',
-	},
-	{
-		prop: 'name',
-		label: '列名',
-	},
-	{
-		prop: 'comment',
-		label: '注释',
-		span: '1.2fr',
-	},
-	{
-		prop: 'partOfUniqueIdx',
-		label: '唯一',
-		span: '2em',
-	},
-	{
-		prop: 'type',
-		label: '字面类型',
-	},
-	{
-		prop: 'typeCode',
-		label: 'JDBC 类型',
-	},
-	{
-		prop: 'displaySize',
-		label: '长度与精度',
-		span: '1.5fr',
-	},
-	{
-		name: 'typeNotNull',
-		label: '非空',
-		span: '1.5em',
-	},
-	{
-		prop: 'defaultValue',
-		label: '默认值',
-	},
-]
+const databaseTypeObj = ref<{[key:string]: number}>({})
+
+const enums = ref<GenEnumView[]>([])
 
 onMounted(async () => {
 	columnTypeMapLoading.start()
 	await nextTick()
 
-	const columnTypeMapObj = await api.modelService.listDatabaseType()
-	columnTypeMap.value = objToMap(columnTypeMapObj)
+	await getDatabaseTypeObj()
+	await getEnums()
 
 	await nextTick()
 	columnTypeMapLoading.end()
 })
+
+const getDatabaseTypeObj = async () => {
+	databaseTypeObj.value = await api.modelService.listDatabaseType()
+}
+
+const getEnums = async () => {
+	enums.value = await api.enumService.query({query: {}})
+}
 
 
 const defaultTable: GenTableColumnsInput = {
@@ -127,10 +89,15 @@ watch(() => props.table, (value) => {
 }, {immediate: true})
 
 const handleColumnToPk = (pkIndex: number) => {
+	if (!databaseTypeObj.value) {
+		sendMessage('数据库类型未成功获取')
+		return
+	}
+
 	const pkColumn = table.value.columns[pkIndex]
 	pkColumn.typeNotNull = true
 	pkColumn.type = "BIGINT"
-	pkColumn.typeCode = columnTypeMap.value!.get(pkColumn.type)!
+	pkColumn.typeCode = databaseTypeObj.value[pkColumn.type]!
 	pkColumn.partOfUniqueIdx = true
 
 	table.value.columns.forEach((column, index) => {
@@ -222,7 +189,7 @@ const handleCancel = () => {
 		</el-row>
 
 		<EditList
-			:columns="tableColumnProps"
+			:columns="tableColumnColumns"
 			v-model:lines="table.columns"
 			:default-line="defaultColumn">
 
@@ -258,21 +225,12 @@ const handleCancel = () => {
 				<el-checkbox v-model="data.partOfUniqueIdx" class="cling-checkbox"></el-checkbox>
 			</template>
 
-			<template #typeCode="{data}">
-				<el-select v-model="data.typeCode" clearable filterable>
-					<el-option v-for="key in [...columnTypeMap.keys()]" :label="key"
-							   :value="columnTypeMap.get(key)!"></el-option>
-				</el-select>
-			</template>
-
-			<template #displaySize="{data}">
-				<el-text style="display: grid; grid-template-columns: 0.5em 1fr 1em 1fr 0.5em">
-					<span>(</span>
-					<span><el-input type="number" v-model="data.displaySize"></el-input></span>
-					<span style="padding-left: 0.3em;">,</span>
-					<span><el-input type="number" v-model="data.numericPrecision"></el-input></span>
-					<span style="padding-left: 0.3em;">)</span>
-				</el-text>
+			<template #type="{data}">
+				<ColumnTypeForm v-if="databaseTypeObj"
+								:database-type-obj="databaseTypeObj"
+								:enums="enums"
+								:model-value="data"
+								@updateEnums="getEnums()"></ColumnTypeForm>
 			</template>
 
 			<template #typeNotNull="{data}">

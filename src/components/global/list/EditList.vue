@@ -200,7 +200,9 @@ defineExpose({
 	</template>
 
 	<slot name="tailLines" :columns="columns" :lines="lines" :gap="gap" :height="height">
-		<el-button :icon="Plus" style="width: 100%;" @click="handleAddLine()" link></el-button>
+		<Line :height="height" style="margin: auto; width: min(40%, 6em);">
+			<el-button :icon="Plus" style="width: 100%" @click="handleAddLine()"></el-button>
+		</Line>
 		<slot name="otherTailLines" :columns="columns" :lines="lines" :gap="gap" :height="height"></slot>
 	</slot>
 </template>

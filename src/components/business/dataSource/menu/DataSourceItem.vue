@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {nextTick, ref} from "vue";
+import {nextTick, ref, watch} from "vue";
 import {GenDataSourceView, GenSchemaView} from "@/api/__generated/model/static";
 import SchemaItem from "./SchemaItem.vue";
 import {api} from "@/api";
@@ -21,11 +21,6 @@ interface DataSourceItemProps {
 	dataSource: GenDataSourceView
 }
 
-const handleOpen = () => {
-	getSchemas()
-	getPreviewSchemas()
-}
-
 const props = defineProps<DataSourceItemProps & DataSourceMenuEventsProps>()
 
 const previewSchemas = ref<GenSchemaDto['DEFAULT'][]>([])
@@ -40,29 +35,22 @@ const getPreviewSchemas = async () => {
 	previewSchemaLoading.end()
 }
 
+const previewSchemaTooltipOpenState = ref(false)
+
+watch(() => previewSchemaTooltipOpenState.value, (value) => {
+	if (value) {
+		getPreviewSchemas()
+	} else {
+		previewSchemas.value = []
+	}
+}, {immediate: true})
+
 const loadedSchemas = ref<GenSchemaView[]>([])
 
 const getSchemas = async (schemaIds: number[] = []) => {
 	loadedSchemaLoading.add()
 	loadedSchemas.value = await api.schemaService.list({dataSourceId: props.dataSource.id, schemaIds})
 	loadedSchemaLoading.sub()
-}
-
-const previewSchemasOpenState = ref(false)
-
-const togglePreviewSchemas = async () => {
-	previewSchemasOpenState.value = !previewSchemasOpenState.value
-
-	if (previewSchemasOpenState.value) {
-		await getPreviewSchemas()
-	} else {
-		previewSchemas.value = []
-	}
-}
-
-const handleClosePreviewSchema = () => {
-	previewSchemasOpenState.value = false
-	previewSchemas.value = []
 }
 
 const handleDelete = () => {
@@ -81,8 +69,6 @@ const handleDelete = () => {
 }
 
 const loadSchema = async (name: string, dataSourceId: number = props.dataSource.id) => {
-	handleClosePreviewSchema()
-
 	loadedSchemaLoading.add()
 
 	const loadIds = await api.schemaService.load({
@@ -132,7 +118,7 @@ defineSlots<DataSourceItemSlots>()
 </script>
 
 <template>
-	<Details v-loading="previewSchemaLoading.isLoading() || loadedSchemaLoading.isLoading()" open @open="handleOpen">
+	<Details v-loading="previewSchemaLoading.isLoading() || loadedSchemaLoading.isLoading()" open @open="getSchemas()">
 		<template #title>
 			<div style="height: 2em; line-height: 2em;">
 				<el-text class="hover-show">
@@ -147,37 +133,26 @@ defineSlots<DataSourceItemSlots>()
 						{{ dataSource.name }}
 					</slot>
 
-					<slot
-						name="previewSchemas"
-						:dataSource="dataSource" :eventBus="eventBus"
-						:loadedSchemaLoading="loadedSchemaLoading.isLoading()"
-						:schemas="loadedSchemas"
-						:previewSchemaLoading="previewSchemaLoading.isLoading()"
-						:previewSchemas="previewSchemas">
-						<el-popover :visible="previewSchemasOpenState" placement="bottom-end" width="300px">
-							<template #reference>
-								<el-button @click="togglePreviewSchemas()" style="margin-left: 0.3em;">
-									schemas
-								</el-button>
-							</template>
+					<el-tooltip v-model:visible="previewSchemaTooltipOpenState" trigger="click" placement="bottom-start" width="300px" effect="light">
+						<el-button style="margin-left: 0.3em;">schemas</el-button>
 
-							<div>
-								<div v-for="schema in previewSchemas">
-									<slot
-										name="previewSchema"
-										:dataSource="dataSource" :eventBus="eventBus"
-										:loadedSchemaLoading="loadedSchemaLoading.isLoading()"
-										:schemas="loadedSchemas"
-										:previewSchemaLoading="previewSchemaLoading.isLoading()"
-										:previewSchemas="previewSchemas" :previewSchema="schema">
-										<el-text>
-											<el-button link @click="loadSchema(schema.name)">{{ schema.name }}</el-button>
-										</el-text>
-									</slot>
-								</div>
+						<template #content>
+							<div v-for="schema in previewSchemas">
+								<slot
+									name="previewSchema"
+									:dataSource="dataSource" :eventBus="eventBus"
+									:loadedSchemaLoading="loadedSchemaLoading.isLoading()"
+									:schemas="loadedSchemas"
+									:previewSchemaLoading="previewSchemaLoading.isLoading()"
+									:previewSchemas="previewSchemas" :previewSchema="schema">
+									<el-text>
+										<el-button link @click="loadSchema(schema.name)">{{ schema.name }}</el-button>
+									</el-text>
+								</slot>
 							</div>
-						</el-popover>
-					</slot>
+						</template>
+
+					</el-tooltip>
 
 					<slot
 						name="operations"
@@ -194,29 +169,22 @@ defineSlots<DataSourceItemSlots>()
 				</el-text>
 			</div>
 		</template>
-		<slot
-			name="loadedSchemas"
-			:dataSource="dataSource"
-			:eventBus="eventBus"
-			:loadedSchemaLoading="loadedSchemaLoading.isLoading()"
-			:schemas="loadedSchemas"
-			:previewSchemaLoading="previewSchemaLoading.isLoading()"
-			:previewSchemas="previewSchemas">
-			<ul style="padding: 0 0 0.5em 0.5em;">
-				<li v-for="schema in loadedSchemas">
-					<slot
-						name="loadedSchema"
-						:dataSource="dataSource" :eventBus="eventBus"
-						:loadedSchemaLoading="loadedSchemaLoading.isLoading()"
-						:schemas="loadedSchemas" :schema="schema"
-						:previewSchemaLoading="previewSchemaLoading.isLoading()"
-						:previewSchemas="previewSchemas">
-						<SchemaItem :event-bus="eventBus" :schema="schema"/>
-					</slot>
-				</li>
-			</ul>
-		</slot>
+
+		<ul style="padding: 0 0 0.5em 0.5em;">
+			<li v-for="schema in loadedSchemas">
+				<slot
+					name="loadedSchema"
+					:dataSource="dataSource" :eventBus="eventBus"
+					:loadedSchemaLoading="loadedSchemaLoading.isLoading()"
+					:schemas="loadedSchemas" :schema="schema"
+					:previewSchemaLoading="previewSchemaLoading.isLoading()"
+					:previewSchemas="previewSchemas">
+					<SchemaItem :event-bus="eventBus" :schema="schema"/>
+				</slot>
+			</li>
+		</ul>
 	</Details>
+
 	<DataSourceDialog
 		v-model="isEdit"
 		:id="dataSource.id"

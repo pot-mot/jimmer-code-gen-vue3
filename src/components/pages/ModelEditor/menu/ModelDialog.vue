@@ -26,12 +26,12 @@ watch(() => props.model, (value) => {
 
 const emits = defineEmits<FormEmits<GenModelInput>>()
 
-const handleCancel = () => {
-	emits('cancel', model.value)
-}
-
 const handleSubmit = () => {
 	emits('submit', model.value)
+}
+
+const handleCancel = () => {
+	emits('cancel', model.value)
 }
 </script>
 

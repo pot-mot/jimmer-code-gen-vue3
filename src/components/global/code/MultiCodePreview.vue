@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import CodePreview from "./CodePreview.vue";
+import {Pair} from "@/api/__generated/model/static";
 
 interface MultiCodePreviewProps {
-	codesMap: { [key: string]: string },
+	codeFiles: Array<Pair<string, string>>,
 	width?: string
 	height?: string
 }
@@ -15,10 +16,10 @@ withDefaults(defineProps<MultiCodePreviewProps>(), {
 
 <template>
 	<el-tabs type="border-card">
-		<el-tab-pane v-for="name in Object.keys(codesMap)" :label="name">
+		<el-tab-pane v-for="codeFile in codeFiles" :label="codeFile.first">
 			<div :style="`width: ${width}; height: ${height}; overflow: auto;`">
-				<CodePreview :code="codesMap[name]"
-							 :language="name.split('.')[name.split.length - 1]"></CodePreview>
+				<CodePreview :code="codeFile.second"
+							 :language="codeFile.first.split('.')[codeFile.first.split.length - 1]"></CodePreview>
 			</div>
 		</el-tab-pane>
 	</el-tabs>

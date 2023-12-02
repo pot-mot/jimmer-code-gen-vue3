@@ -5,11 +5,6 @@ export class EnumService {
     
     constructor(private executor: Executor) {}
     
-    async create(options: EnumServiceOptions['create']): Promise<number> {
-        let _uri = '/enum/';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number
-    }
-    
     async get(options: EnumServiceOptions['get']): Promise<
         GenEnumItemsView | undefined
     > {
@@ -54,10 +49,15 @@ export class EnumService {
         }
         return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenEnumView>
     }
+    
+    async save(options: EnumServiceOptions['save']): Promise<number> {
+        let _uri = '/enum/';
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number
+    }
 }
 
 export type EnumServiceOptions = {
-    'create': {body: GenEnumItemsInput},
     'get': {id: number},
-    'query': {query: EnumQuery}
+    'query': {query: EnumQuery},
+    'save': {body: GenEnumItemsInput}
 }

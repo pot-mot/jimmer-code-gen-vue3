@@ -5,7 +5,7 @@ import {LineProps} from "@/components/global/list/ListProps.ts";
 
 const props = withDefaults(defineProps<LineProps>(), {
 	gap: '0.2em',
-	height: '1.7em'
+	height: '2em'
 })
 
 const slots = defineSlots<{
