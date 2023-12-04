@@ -64,13 +64,15 @@ export const useAssociationEditorStore =
 
                 await nextTick()
 
-                graph.resetSelection([
-                    ...oldTables.map(it => tableIdToNodeId(it.id)),
-                    ...nodes.map(it => it.id),
-                    ...edges.map(it => it.id)
-                ])
+                setTimeout(() => {
+                    graph.resetSelection([
+                        ...oldTables.map(it => tableIdToNodeId(it.id)),
+                        ...nodes.map(it => it.id),
+                        ...edges.map(it => it.id)
+                    ])
 
-                await commonStore.layoutAndFit()
+                    commonStore.layoutAndFit()
+                }, 500)
             }
 
             /**
@@ -80,7 +82,10 @@ export const useAssociationEditorStore =
             const loadTable = async (id: number) => {
                 const graph = _graph()
                 await loadTableNodes(graph, [id], false)
-                commonStore.focus(id)
+
+                setTimeout(() => {
+                    commonStore.focus(id)
+                }, 200)
             }
 
             const deleteAssociations = async (

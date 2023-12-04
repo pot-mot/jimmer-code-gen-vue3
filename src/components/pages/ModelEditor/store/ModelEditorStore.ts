@@ -60,6 +60,7 @@ export const useModelEditorStore =
                 const graph = _graph()
                 const tables = await api.tableService.queryColumnsView({query: {ids: [id]}})
                 const {nodes} = await loadModelNodes(graph, tables)
+
                 if (nodes.length > 0) {
                     setTimeout(() => {
                         commonStore.focus(nodes[0])

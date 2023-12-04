@@ -80,8 +80,8 @@
 			</li>
 
 			<li>
-				<el-tooltip content="预览代码">
-					<el-button :icon="PreviewIcon" @click="async () => {
+				<el-tooltip content="业务代码">
+					<el-button :icon="CodeIcon" @click="async () => {
 						await handleSaveModel()
 						await handleCodePreview()
 					}"></el-button>
@@ -165,12 +165,12 @@ import FitIcon from "@/components/global/icons/toolbar/FitIcon.vue";
 import CenterIcon from "@/components/global/icons/toolbar/CenterIcon.vue";
 import EraserIcon from "@/components/global/icons/toolbar/EraserIcon.vue";
 import AssociationOffIcon from "@/components/global/icons/toolbar/AssociationOffIcon.vue";
-import PreviewIcon from "@/components/global/icons/toolbar/PreviewIcon.vue";
 import DownloadIcon from "@/components/global/icons/toolbar/DownloadIcon.vue";
 import {saveAs} from "file-saver";
 import ScaleBar from "@/components/business/graphEditor/tools/ScaleBar.vue";
 import GraphSearcher from "@/components/business/graphEditor/tools/GraphSearcher.vue";
 import DataSourceMenu from "@/components/business/dataSource/menu/DataSourceMenu.vue";
+import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()

@@ -130,9 +130,26 @@ const handleDelete = (model: GenModelView) => {
 
 .container {
 	display: grid;
-	grid-template-columns: repeat(5, 1fr);
 	grid-gap: 1em;
 	padding-top: 1em;
+}
+
+@media screen and (max-width: 540px) {
+	.container {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media screen and (min-width: 540px) {
+	.container {
+		grid-template-columns: repeat(3, 1fr);
+	}
+}
+
+@media screen and (min-width: 900px) {
+	.container {
+		grid-template-columns: repeat(5, 1fr);
+	}
 }
 
 .model-card {

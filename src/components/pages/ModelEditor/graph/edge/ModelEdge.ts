@@ -39,8 +39,13 @@ export const getEdgeConnectData = (edge: Edge) => {
 
     const sourceTable = sourceNode.getData().table as GenTableColumnsInput
     const sourceColumn = sourceTable.columns.filter(column => column.name == sourcePort.data.column.name)[0]
+
+    if (!sourceTable || !sourceColumn) return
+
     const targetTable = targetNode.getData().table as GenTableColumnsInput
     const targetColumn = targetTable.columns.filter(column => column.name == targetPort.data.column.name)[0]
+
+    if (!targetTable || !targetColumn) return
 
     return {
         ...connect,

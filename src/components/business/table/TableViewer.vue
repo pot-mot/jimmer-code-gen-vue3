@@ -20,9 +20,9 @@ defineProps<TableViewerProps>()
 			{{ table.comment }}
 		</el-text>
 
-		<div>
-			<el-input v-model="table.remark" type="textarea"></el-input>
+		<el-input :model-value="table.remark" type="textarea" readonly></el-input>
 
+		<div>
 			<Details v-for="column in table.columns"
 					 :disabled="column.inAssociations.length == 0 && column.outAssociations.length == 0" open>
 				<template #title>
