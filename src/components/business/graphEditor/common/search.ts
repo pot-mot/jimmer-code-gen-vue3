@@ -1,11 +1,6 @@
 import {Edge, Graph, Node} from "@antv/x6";
 import {SelectType} from "@/api/__generated/model/enums";
-import {PortManager} from "@antv/x6/es/model/port";
-import {columnIdToPortId} from "@/components/pages/AssociationEditor/graph/node/ColumnPort.ts";
-
-export const searchNodeByTableName = (graph: Graph, tableName: string): Node | undefined => {
-    return graph.getNodes().filter(node => node.getData().table.name == tableName)[0]
-}
+import {columnIdToPortId} from "@/components/pages/AssociationEditor/graph/columnPort.ts";
 
 export const matchByKeywords = (target: {name: string, comment: string}, keywords: string[]): boolean => {
     for (let keyword of keywords) {
@@ -20,10 +15,6 @@ export const matchByKeywords = (target: {name: string, comment: string}, keyword
 }
 
 export const matchNode = (node: Node, keywords: string[]): boolean => matchByKeywords(node.getData().table, keywords)
-
-export const searchPortByColumnName = (node: Node, columnName: string): PortManager.PortMetadata | undefined => {
-    return node.getPorts().filter(port => port.data.column.name == columnName)[0]
-}
 
 /**
  * 判断节点是否存在

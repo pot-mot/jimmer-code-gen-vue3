@@ -1,6 +1,7 @@
 import {GenTableColumnsView} from "@/api/__generated/model/static";
 import {Graph, Node} from "@antv/x6";
-import {columnPortGroup, columnToPort} from "./ColumnPort.ts";
+import {columnToPort} from "./columnPort.ts";
+import {columnPortGroup} from "@/components/business/model/columnPort.ts";
 
 export const tableIdToNodeId = (id: number) => {
     return `table-${id}`

@@ -1,7 +1,6 @@
 import {Edge, Graph, Shape} from "@antv/x6";
 import {
     ASSOCIATION_LABEL_TEXT_SELECTOR,
-    COMMON_COLOR,
     MANY_TO_MANY,
     MANY_TO_ONE,
     ONE_TO_MANY,
@@ -10,75 +9,11 @@ import {
 import {cloneDeep} from 'lodash'
 import {AssociationType} from "@/api/__generated/model/enums";
 import {GenAssociationMatchView} from "@/api/__generated/model/static";
-import {columnIdToPortId, portIdToColumnId} from "../node/ColumnPort.ts";
-import {nodeIdToTableId, tableIdToNodeId} from "../node/TableNode.ts";
-import {Options} from "@antv/x6/es/graph/options";
-import {erRouter, orthRouter} from "@/components/business/graphEditor/edgeRouter.ts";
-import {sendMessage} from "@/utils/message.ts";
+import {columnIdToPortId, portIdToColumnId} from "./columnPort.ts";
+import {nodeIdToTableId, tableIdToNodeId} from "./tableNode.ts";
 import {judgeClickBox} from "@/utils/clickBox.ts";
-import Connecting = Options.Connecting;
 
-const baseLabel = {
-    markup: [
-        {
-            tagName: 'text',
-            selector: ASSOCIATION_LABEL_TEXT_SELECTOR,
-        },
-    ],
-    attrs: {
-        ASSOCIATION_LABEL_TEXT_SELECTOR: {
-            text: MANY_TO_ONE,
-        },
-    },
-}
-
-export const baseAssociationEdge = {
-    attrs: {
-        line: {
-            stroke: COMMON_COLOR,
-            strokeWidth: 1,
-        },
-    },
-    labels: [
-        cloneDeep(baseLabel)
-    ],
-    data: {
-        selectFlag: false
-    }
-}
-
-export const AssociationEdgeConnecting: Partial<Connecting> = {
-    // @ts-ignore
-    createEdge() {
-        return new Shape.Edge({
-            ...baseAssociationEdge,
-            router: erRouter
-        })
-    },
-    validateEdge({edge}) {
-        const targetPort = edge.getTargetNode()?.getPort(edge.getTargetPortId()!)
-        if (!targetPort) return false
-
-        const sourcePort = edge.getSourceNode()?.getPort(edge.getSourcePortId()!)
-        if (!sourcePort) return false
-
-        if (targetPort.data.column.typeCode != sourcePort.data.column.typeCode) {
-            sendMessage('关联两端类型不一致', 'warning')
-            return false
-        }
-
-        // 在连接建立后调整 router
-        if (edge.getTargetCellId() == edge.getSourceCellId()) {
-            edge.router = orthRouter
-        }
-        return true
-    },
-
-    allowMulti: 'withPort',
-    allowBlank: false,
-    allowNode: false,
-    allowEdge: false,
-}
+import {baseAssociationEdge, baseLabel} from "@/components/business/model/associationEdge/define.ts";
 
 export const setLabel = (edge: Edge, label: string) => {
     edge.setLabelAt(0, {...cloneDeep(baseLabel), attrs: {ASSOCIATION_LABEL_TEXT_SELECTOR: {text: label}}})

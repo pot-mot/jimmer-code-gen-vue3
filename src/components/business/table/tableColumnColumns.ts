@@ -21,11 +21,6 @@ export const tableColumnColumns = <(PropListColumn<GenTableColumnsInput_TargetOf
         span: '1.2fr',
     },
     {
-        prop: 'partOfUniqueIdx',
-        label: '唯一',
-        span: '2em',
-    },
-    {
         prop: 'type',
         label: '类型',
     },

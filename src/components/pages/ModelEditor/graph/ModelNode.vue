@@ -28,7 +28,7 @@
 </template>
 
 <style scoped>
-@import "../../../../../assets/node-common.css";
+@import "../../../../assets/node-common.css";
 </style>
 
 <script lang='ts' setup>
@@ -38,12 +38,12 @@ import {Graph, Node} from '@antv/x6'
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
-import {ModelEditorEventBus} from "../../store/ModelEditorEventBus.ts";
+import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {COLUMN_PORT_SELECTOR} from "@/components/business/graphEditor/constant.ts";
-import {modelColumnToPort} from "./modelNode.ts";
-import {useModelEditorStore} from "../../store/ModelEditorStore.ts";
-import {dataToEdge, edgeToData} from "../edge/ModelEdge.ts";
+import {useModelEditorStore} from "../store/ModelEditorStore.ts";
+import {dataToEdge, edgeToData} from "./modelEdge.ts";
+import {modelColumnToPort} from "@/components/pages/ModelEditor/graph/modelNode.ts";
 
 const store = useModelEditorStore()
 

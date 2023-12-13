@@ -3,7 +3,7 @@ import {ref, Ref} from "vue";
 import {AssociationMatchType} from "@/api/__generated/model/enums";
 import {getSelectedNodes} from "@/components/business/graphEditor/selection/selectOperation.ts";
 import {api} from "@/api";
-import {nodeIdToTableId} from "../graph/node/TableNode.ts";
+import {nodeIdToTableId} from "../graph/tableNode.ts";
 import {importAssociationEdges} from "./graphOperation.ts";
 
 export const useAssociationMatch = (_graph: () => Graph) => {

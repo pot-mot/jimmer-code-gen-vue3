@@ -2,7 +2,7 @@
 import {Edge} from '@antv/x6'
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import {ref, watch} from "vue";
-import {edgeToModelAssociation} from "../graph/edge/ModelEdge.ts";
+import {edgeToModelAssociation} from "../graph/modelEdge.ts";
 import {Delete} from "@element-plus/icons-vue";
 import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import {showAssociationType} from "@/utils/simplifyAssociationType.ts";
@@ -42,9 +42,8 @@ const handleDelete = () => {
 		<el-text class="hover-show">
 			<el-button link @click="store.focus(edge)">
 				{{ association.sourceColumn.table.name }}.{{ association.sourceColumn.name }}
-				{{ showAssociationType(association.associationType) }} {{
-					association.targetColumn.table.name
-				}}.{{ association.targetColumn.name }}
+				{{ showAssociationType(association.associationType) }}
+				{{ association.targetColumn.table.name }}.{{ association.targetColumn.name }}
 			</el-button>
 
 			<span class="hover-show-item" style="padding-left: 0.5em;">

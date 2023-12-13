@@ -28,7 +28,7 @@
 </template>
 
 <style scoped>
-@import "../../../../../assets/node-common.css";
+@import "../../../../assets/node-common.css";
 </style>
 
 <script lang='ts' setup>

@@ -126,21 +126,17 @@
 <script lang="ts" setup>
 import {computed, onMounted, onUnmounted, ref, watch} from "vue";
 import {Graph} from "@antv/x6";
-import {columnPortPosition} from "./node/ColumnPort.ts";
-import {register} from "@antv/x6-vue-shape";
-import TableNode from "./node/TableNode.vue";
 import {initAssociationEditor} from "./init.ts";
-import {useSwitchAssociationType} from "./edge/AssociationEdge.ts";
-import {nodeIdToTableId} from "./node/TableNode.ts";
+import {useSwitchAssociationType} from "./associationEdge.ts";
+import {nodeIdToTableId} from "./tableNode.ts";
 import {saveAs} from "file-saver";
 import {useAssociationEditorStore} from "@/components/pages/AssociationEditor/store/AssociationEditorStore.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
-import {COLUMN_PORT} from "@/components/business/graphEditor/constant.ts";
 import {useSaveOperation} from "@/components/business/graphEditor/storage/useSave.ts";
 import {saveAssociations} from "../business/graphOperation.ts";
 import {handleHistoryKeyEvent} from "@/components/business/graphEditor/history/useHistory.ts";
 import {handleSelectionKeyEvent} from "@/components/business/graphEditor/selection/useSelection.ts";
-import {useAssociationMatch} from "../business/AssociationMatch.ts";
+import {useAssociationMatch} from "../business/associationMatch.ts";
 import {api} from "@/api";
 import SaveIcon from "@/components/global/icons/toolbar/SaveIcon.vue";
 import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
@@ -167,17 +163,6 @@ let graph: Graph
 const store = useAssociationEditorStore()
 
 const loadingStore = useGlobalLoadingStore()
-
-Graph.registerPortLayout(
-	COLUMN_PORT,
-	columnPortPosition,
-	true
-)
-
-register({
-	shape: "table",
-	component: TableNode
-});
 
 const {
 	handleSaveAll,

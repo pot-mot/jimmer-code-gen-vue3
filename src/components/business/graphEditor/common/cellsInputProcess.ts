@@ -1,5 +1,5 @@
 import {Cell, Graph} from "@antv/x6";
-import {tableIdToNodeId} from "@/components/pages/AssociationEditor/graph/node/TableNode.ts";
+import {tableIdToNodeId} from "@/components/pages/AssociationEditor/graph/tableNode.ts";
 
 export type CellInput = Cell | string | number
 

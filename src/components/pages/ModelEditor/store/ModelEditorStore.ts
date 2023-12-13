@@ -1,11 +1,11 @@
 import {defineStore} from "pinia";
 import {useCommonGraphOperations} from "@/components/business/graphEditor";
 import {ModelEditorEventBus} from "./ModelEditorEventBus.ts";
-import {importModelNodes} from "../graph/node/modelNode.ts";
+import {importModelNodes} from "../graph/modelNode.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {nextTick, ref} from "vue";
 import {api} from "@/api";
-import {loadModelNodes} from "../graph/node/loadModelNodes.ts";
+import {loadModelNodes} from "../graph/loadModelNodes.ts";
 import {useTableModifyDialogsStore} from "@/components/pages/ModelEditor/nodeDialog/TableModifyDialogManageStore.ts";
 import {useTableCreateDialogStore} from "@/components/pages/ModelEditor/nodeDialog/TableCreateDialogStore.ts";
 

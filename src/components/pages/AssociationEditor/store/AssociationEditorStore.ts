@@ -2,10 +2,10 @@ import {nextTick} from 'vue';
 import {defineStore} from "pinia";
 import {useCommonGraphOperations} from "@/components/business/graphEditor";
 import {GenAssociationMatchView, GenTableColumnsView} from "@/api/__generated/model/static";
-import {getTables, tableIdToNodeId} from "../graph/node/TableNode.ts";
-import {getAssociations} from "../graph/edge/AssociationEdge.ts";
+import {getTables, tableIdToNodeId} from "../graph/tableNode.ts";
+import {getAssociations} from "../graph/associationEdge.ts";
 import {api} from "@/api";
-import {loadTableNodes} from "../graph/node/loadTableNodes.ts";
+import {loadTableNodes} from "../graph/loadTableNodes.ts";
 import {searchEdgesByColumn} from "@/components/business/graphEditor/common/search.ts";
 
 export const useAssociationEditorStore =

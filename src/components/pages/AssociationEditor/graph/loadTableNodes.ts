@@ -1,5 +1,5 @@
 import {Edge, Graph, Node} from "@antv/x6";
-import {getTables, importTableNodes, removeTableNodes} from "./TableNode.ts";
+import {getTables, importTableNodes, removeTableNodes} from "./tableNode.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {api} from "@/api";
 import {importAssociationEdges} from "@/components/pages/AssociationEditor/business/graphOperation.ts";

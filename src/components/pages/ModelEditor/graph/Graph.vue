@@ -135,23 +135,19 @@
 <script lang="ts" setup>
 import {onMounted, onUnmounted, ref, watch} from "vue"
 import {Graph} from "@antv/x6"
-import {register} from "@antv/x6-vue-shape"
-import ModelNode from "./node/ModelNode.vue"
 import {initModelEditor} from "./init.ts"
 import ModelDialog from "@/components/pages/ModelEditor/menu/ModelDialog.vue"
 import {Emitter} from "mitt";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import {useModelListStore} from "../../ModelList/store/ModelListStore.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
-import {COLUMN_PORT} from "@/components/business/graphEditor/constant.ts";
-import {columnPortPosition} from "../../AssociationEditor/graph/node/ColumnPort.ts";
 import {useGraphDataOperation} from "@/components/business/graphEditor/storage/localStorage.ts";
 import {api} from "@/api";
 import {sendMessage} from "@/utils/message.ts";
 import {GenModelInput, Pair} from "@/api/__generated/model/static";
 import {handleHistoryKeyEvent} from "@/components/business/graphEditor/history/useHistory.ts";
 import {handleSelectionKeyEvent} from "@/components/business/graphEditor/selection/useSelection.ts";
-import {useSwitchAssociationType} from "../../AssociationEditor/graph/edge/AssociationEdge.ts";
+import {useSwitchAssociationType} from "../../AssociationEditor/graph/associationEdge.ts";
 import {useSaveKeyEvent} from "@/components/business/graphEditor/storage/useSave.ts";
 import {DataSourceMenuEvents} from "@/components/business/dataSource/menu/DataSourceMenuEvents.ts";
 import SaveIcon from "@/components/global/icons/toolbar/SaveIcon.vue";
@@ -182,17 +178,6 @@ const store = useModelEditorStore()
 const listStore = useModelListStore()
 
 const loadingStore = useGlobalLoadingStore()
-
-Graph.registerPortLayout(
-	COLUMN_PORT,
-	columnPortPosition,
-	true
-)
-
-register({
-	shape: "model",
-	component: ModelNode
-})
 
 const openModelDialog = ref(false)
 
@@ -283,7 +268,7 @@ onMounted(() => {
 			localStorage.removeItem('currentModel')
 		}
 	} catch (e) {
-		sendMessage('后端获取的模型加载失败', 'error')
+		sendMessage('后端获取的模型加载失败', 'error', e)
 	}
 
 	useSwitchAssociationType(graph)

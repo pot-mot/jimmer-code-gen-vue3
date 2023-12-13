@@ -229,6 +229,10 @@ const handleCancel = () => {
 				<el-tooltip v-if="!data.partOfPk" :auto-close="500" content="业务键">
 					<el-checkbox v-model="data.businessKey" class="cling-checkbox"></el-checkbox>
 				</el-tooltip>
+
+				<el-tooltip v-if="!data.partOfPk" :auto-close="500" content="唯一索引">
+					<el-checkbox v-model="data.partOfUniqueIdx" class="cling-checkbox"></el-checkbox>
+				</el-tooltip>
 			</template>
 
 			<template #comment="{data}">
@@ -237,10 +241,6 @@ const handleCancel = () => {
 					<span><el-input v-model="data.comment" placeholder="comment"></el-input></span>
 					<span> */</span>
 				</el-text>
-			</template>
-
-			<template #partOfUniqueIdx="{data}">
-				<el-checkbox v-model="data.partOfUniqueIdx" class="cling-checkbox" :disabled="data.partOfPk"></el-checkbox>
 			</template>
 
 			<template #type="{data}">
@@ -257,7 +257,7 @@ const handleCancel = () => {
 
 			<template #defaultValue="{data}">
 				<el-tooltip :auto-close="2000" :disabled="data.partOfPk">
-					<el-input v-model="data.defaultValue" placeholder="default" :disabled="data.partOfPk"></el-input>
+					<el-input v-model="data.defaultValue" :disabled="data.partOfPk"></el-input>
 
 					<template #content>
 						此处将直接拼入 ddl，如果是字符串请加上引号

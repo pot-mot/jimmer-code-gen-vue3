@@ -5,7 +5,8 @@ import {importModelNodes} from "./modelNode.ts";
 import {Edge, Graph, Node, Shape} from '@antv/x6'
 import {searchEdgesIgnoreDirection} from "@/components/business/graphEditor/common/search.ts";
 import {erRouter, orthRouter} from "@/components/business/graphEditor/edgeRouter.ts";
-import {baseAssociationEdge} from "@/components/pages/AssociationEditor/graph/edge/AssociationEdge.ts";
+
+import {baseAssociationEdge} from "@/components/business/model/associationEdge/define.ts";
 
 const tableViewToInput = (tableView: GenTableColumnsView): GenTableColumnsInput => {
     return {

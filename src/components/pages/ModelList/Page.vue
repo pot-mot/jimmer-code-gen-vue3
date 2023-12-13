@@ -63,6 +63,10 @@ const handleSubmit = async (model: GenModelInput) => {
 			return
 		}
 		const index = models.value.findIndex(model => model.id == newModel.id)
+		if (index == -1) {
+			sendMessage('未找到匹配的模型', 'error')
+			return
+		}
 		models.value[index] = newModel
 	} catch (e) {
 		sendMessage(`模型修改失败，原因：${e}`, 'error', e)
