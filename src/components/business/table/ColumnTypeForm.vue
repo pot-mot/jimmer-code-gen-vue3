@@ -54,12 +54,10 @@ const databaseType = computed({
 
 const enumDialogOpenState = ref(false)
 
-const editEnumId = ref<number>()
-
 const handleSaveEnum = async (genEnum: GenEnumItemsInput) => {
 	const id = await api.enumService.save({body: genEnum})
 	enumDialogOpenState.value = false
-	if (!editEnumId.value) {
+	if (id != undefined) {
 		props.modelValue.enumId = id
 	}
 	emits('updateEnums')
@@ -68,7 +66,7 @@ const handleSaveEnum = async (genEnum: GenEnumItemsInput) => {
 
 const handleCancelEditEnum = async () => {
 	enumDialogOpenState.value = false
-	popoverOpenState.value = true
+	handleStopPopoverClose()
 }
 
 const popoverOpenState = ref(false)
@@ -85,7 +83,7 @@ const handleStopPopoverClose = () => {
 		<template #reference>
 			<el-text>
 				<el-input readonly :model-value="modelValue.type">
-					<template v-if="modelValue.enumId" #prefix>
+					<template v-if="modelValue.enumId != undefined" #prefix>
 						【Enum】
 					</template>
 				</el-input>
@@ -127,19 +125,23 @@ const handleStopPopoverClose = () => {
 			</el-form-item>
 
 			<el-form-item label="映射枚举">
-				<el-select v-model="modelValue.enumId" clearable filterable @change="handleStopPopoverClose()">
+				<el-select :model-value="modelValue.enumId" clearable filterable @change="(value: number) => {
+					modelValue.enumId = value
+					handleStopPopoverClose()
+				}">
 					<el-option v-for="genEnum in enums" :label="genEnum.name" :value="genEnum.id">
-						{{ genEnum.name }} <Comment :comment="genEnum.comment"></Comment>
+						{{ genEnum.name }}
+						<Comment :comment="genEnum.comment"></Comment>
 					</el-option>
 				</el-select>
 
-				<el-button :icon="modelValue.enumId ? EditPen : Plus"
-						   @click="enumDialogOpenState = true; editEnumId = modelValue.enumId"></el-button>
+				<el-button :icon="modelValue.enumId == undefined ? EditPen : Plus"
+						   @click="enumDialogOpenState = true;"></el-button>
 			</el-form-item>
 		</el-form>
 	</el-popover>
 
-	<el-dialog v-model="enumDialogOpenState" append-to-body>
-		<EnumForm :id="editEnumId" @submit="handleSaveEnum" @cancel="handleCancelEditEnum"></EnumForm>
+	<el-dialog v-model="enumDialogOpenState" append-to-body @close="handleCancelEditEnum">
+		<EnumForm :id="modelValue.enumId" @submit="handleSaveEnum" @cancel="handleCancelEditEnum"></EnumForm>
 	</el-dialog>
 </template>

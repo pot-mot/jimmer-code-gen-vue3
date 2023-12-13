@@ -103,6 +103,7 @@ const handleColumnToPk = (pkIndex: number) => {
 	pkColumn.type = "BIGINT"
 	pkColumn.typeCode = databaseTypeObj.value[pkColumn.type]!
 	pkColumn.partOfUniqueIdx = true
+	pkColumn.defaultValue = undefined
 
 	if (checkConfig.value.onlyOnePk) {
 		table.value.columns.forEach((column, index) => {
@@ -154,6 +155,11 @@ const handleSubmit = () => {
 		for (let pkColumn of pkColumns) {
 			if (!pkColumn.typeNotNull) {
 				messageList.push('主键列必须非空')
+			}
+
+			if (pkColumn.defaultValue) {
+				pkColumn.defaultValue = undefined
+				sendMessage(`主键列[${pkColumn.name}]默认值无意义，已覆盖为 null`, 'warning')
 			}
 		}
 	}
@@ -234,7 +240,7 @@ const handleCancel = () => {
 			</template>
 
 			<template #partOfUniqueIdx="{data}">
-				<el-checkbox v-model="data.partOfUniqueIdx" class="cling-checkbox"></el-checkbox>
+				<el-checkbox v-model="data.partOfUniqueIdx" class="cling-checkbox" :disabled="data.partOfPk"></el-checkbox>
 			</template>
 
 			<template #type="{data}">
@@ -246,12 +252,12 @@ const handleCancel = () => {
 			</template>
 
 			<template #typeNotNull="{data}">
-				<el-checkbox v-model="data.typeNotNull"></el-checkbox>
+				<el-checkbox v-model="data.typeNotNull" :disabled="data.partOfPk"></el-checkbox>
 			</template>
 
 			<template #defaultValue="{data}">
-				<el-tooltip :auto-close="2000">
-					<el-input v-model="data.defaultValue" placeholder="default"></el-input>
+				<el-tooltip :auto-close="2000" :disabled="data.partOfPk">
+					<el-input v-model="data.defaultValue" placeholder="default" :disabled="data.partOfPk"></el-input>
 
 					<template #content>
 						此处将直接拼入 ddl，如果是字符串请加上引号
