@@ -21,7 +21,7 @@ export const useSaveKeyEvent = (callback: () => any) => {
     })
 }
 
-export const useSaveOperation = (_graph: () => Graph, name: string, otherSaveFns?: Array<{
+export const useSave = (_graph: () => Graph, name: string, otherSaveFns?: Array<{
     auto: boolean,
     fn: (graph: Graph, name: string) => any
 }>) => {

@@ -1,10 +1,11 @@
 import {KeyValue} from "@antv/x6";
+
 import {
     COLUMN_HEIGHT,
     COLUMN_INIT_WIDTH,
     COLUMN_PORT,
     COLUMN_PORT_SELECTOR
-} from "@/components/business/graphEditor/constant.ts";
+} from "@/components/business/model/constant.ts";
 
 export const columnPortGroup = {
     position: COLUMN_PORT,

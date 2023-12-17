@@ -3,9 +3,10 @@ import {initGraph} from "@/components/business/graphEditor/common/init.ts";
 import {defaultZoomRange} from "@/components/business/graphEditor/constant.ts";
 
 import {AssociationEdgeConnecting} from "@/components/business/model/associationEdge/define.ts";
+import {useAssociationType} from "@/components/business/model/associationEdge/associationType.ts";
 
 export const initAssociationEditor = (container: HTMLElement, wrapper: HTMLElement): Graph => {
-    return initGraph(
+    const graph = initGraph(
         container,
         wrapper,
         {
@@ -21,4 +22,8 @@ export const initAssociationEditor = (container: HTMLElement, wrapper: HTMLEleme
             magnetThreshold: 'onleave'
         }
     )
+
+    useAssociationType(graph)
+
+    return graph
 }

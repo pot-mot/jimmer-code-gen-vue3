@@ -63,7 +63,7 @@
 			</li>
 		</ul>
 
-		<ul v-if="store.isLoaded && listStore.currentModel" class="toolbar right-top">
+		<ul v-if="store.isLoaded && modelListStore.currentModel" class="toolbar right-top">
 			<li>
 				<el-tooltip content="预览 SQL">
 					<el-button :icon="SQLIcon" @click="async () => {
@@ -141,13 +141,11 @@ import {Emitter} from "mitt";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import {useModelListStore} from "../../ModelList/store/ModelListStore.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
-import {useGraphDataOperation} from "@/components/business/graphEditor/storage/localStorage.ts";
 import {api} from "@/api";
 import {sendMessage} from "@/utils/message.ts";
 import {GenModelInput, Pair} from "@/api/__generated/model/static";
 import {handleHistoryKeyEvent} from "@/components/business/graphEditor/history/useHistory.ts";
 import {handleSelectionKeyEvent} from "@/components/business/graphEditor/selection/useSelection.ts";
-import {useSwitchAssociationType} from "../../AssociationEditor/graph/associationEdge.ts";
 import {useSaveKeyEvent} from "@/components/business/graphEditor/storage/useSave.ts";
 import {DataSourceMenuEvents} from "@/components/business/dataSource/menu/DataSourceMenuEvents.ts";
 import SaveIcon from "@/components/global/icons/toolbar/SaveIcon.vue";
@@ -167,6 +165,7 @@ import ScaleBar from "@/components/business/graphEditor/tools/ScaleBar.vue";
 import GraphSearcher from "@/components/business/graphEditor/tools/GraphSearcher.vue";
 import DataSourceMenu from "@/components/business/dataSource/menu/DataSourceMenu.vue";
 import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
+import {useGraphDataOperation} from "@/components/business/graphEditor/storage/graphData.ts";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -175,7 +174,7 @@ let graph: Graph
 
 const store = useModelEditorStore()
 
-const listStore = useModelListStore()
+const modelListStore = useModelListStore()
 
 const loadingStore = useGlobalLoadingStore()
 
@@ -186,24 +185,28 @@ const {
 	loadGraphByJSONStr
 } = useGraphDataOperation(() => graph)
 
+const handleLoadModel = () => {
+	// 加载 currentModel
+	if (modelListStore.currentModel && modelListStore.currentModel.value) {
+		loadGraphByJSONStr(modelListStore.currentModel.value)
+	}
+}
+
 /**
  * 保存模型
  * 涉及两步操作：
  * 1. 使用 api saveModel 使后端保存当前模型的数据
- * 2. 修改当前 listStore 中保存的当前模型，确保数据一致，并缓存这个当前模型
+ * 2. 修改当前 modelListStore 中保存的当前模型，确保数据一致，并缓存这个当前模型
  */
 const handleSaveModel = async () => {
 	loadingStore.add()
 
 	try {
-		if (!listStore.currentModel) {
+		if (!modelListStore.currentModel) {
 			openModelDialog.value = true
 		} else {
-			listStore.currentModel.value = toDataJSONStr()
-
-			await api.modelService.save({body: listStore.currentModel})
-
-			localStorage.setItem('currentModel', JSON.stringify(listStore.currentModel))
+			modelListStore.currentModel.value = toDataJSONStr()
+			await api.modelService.save({body: modelListStore.currentModel})
 
 			sendMessage("模型保存成功", "success")
 		}
@@ -217,39 +220,14 @@ const handleSaveModel = async () => {
 const handleSaveDialogSubmit = async (model: GenModelInput) => {
 	try {
 		model.value = toDataJSONStr()
-
 		const id = await api.modelService.save({body: model})
-
-		listStore.currentModel = (await api.modelService.get({id}))!
+		modelListStore.currentModel = (await api.modelService.get({id}))!
 
 		openModelDialog.value = false
 
 		sendMessage("模型保存成功", "success")
 	} catch (e) {
 		sendMessage(`模型保存失败，原因：${e}`, 'error', e)
-	}
-}
-
-/**
- * 加载模型
- * 同样两步操作：
- * 1. 将本地缓存中的这个模型读取出来录入 listStore 的 currentModel
- * 2. 将读出的模型载入当前的 graph
- *
- * 其中第一步操作需要判断 listStore 中是否已经有 currentModel，如果有，则不进行覆盖
- */
-const handleLoadModel = () => {
-	// 从缓存中读取 currentModel
-	if (!listStore.currentModel) {
-		const currentModelJSONStr = localStorage.getItem('currentModel')
-		if (currentModelJSONStr) {
-			listStore.currentModel = JSON.parse(currentModelJSONStr)
-		}
-	}
-
-	// 加载 currentModel
-	if (listStore.currentModel && listStore.currentModel.value) {
-		loadGraphByJSONStr(listStore.currentModel.value)
 	}
 }
 
@@ -261,17 +239,12 @@ onMounted(() => {
 	graph = initModelEditor(container.value!, wrapper.value!)
 
 	try {
-		if (!listStore.isNew) {
+		if (!modelListStore.isNew) {
 			handleLoadModel()
-		} else {
-			// 新模型，则移除全部缓存
-			localStorage.removeItem('currentModel')
 		}
 	} catch (e) {
 		sendMessage('后端获取的模型加载失败', 'error', e)
 	}
-
-	useSwitchAssociationType(graph)
 	store.load(graph)
 })
 
@@ -286,11 +259,11 @@ useSaveKeyEvent(() => {
 const handleCodeDownload = async () => {
 	loadingStore.add()
 
-	if (!listStore.currentModel) {
+	if (!modelListStore.currentModel) {
 		sendMessage('当前模型未保存至数据库，无法生成', 'error')
 		return
 	}
-	const res = (await api.generateService.generateByModel({body: listStore.currentModel.id})) as any as Blob
+	const res = (await api.generateService.generateByModel({body: modelListStore.currentModel.id})) as any as Blob
 	const file = new File([res], "entities.zip")
 	saveAs(file)
 
@@ -304,11 +277,11 @@ const codeFiles = ref<Array<Pair<string, string>>>([])
 const handleCodePreview = async () => {
 	loadingStore.add()
 
-	if (!listStore.currentModel) {
+	if (!modelListStore.currentModel) {
 		sendMessage('当前模型未保存至数据库，无法预览', 'error')
 		return
 	}
-	codeFiles.value = await api.generateService.previewByModel({modelId: listStore.currentModel.id})
+	codeFiles.value = await api.generateService.previewByModel({modelId: modelListStore.currentModel.id})
 	codePreviewDialogOpenState.value = true
 
 	loadingStore.sub()
@@ -345,12 +318,12 @@ const openSQLPreviewDialog = ref(false)
 const sqlFiles = ref<Array<Pair<string, string>>>([])
 
 const handleSQLPreview = async () => {
-	if (!listStore.currentModel) return
+	if (!modelListStore.currentModel) return
 
 	loadingStore.add()
 
 	openSQLPreviewDialog.value = true
-	sqlFiles.value = await api.modelService.previewSql({id: listStore.currentModel.id})
+	sqlFiles.value = await api.modelService.previewSql({id: modelListStore.currentModel.id})
 	loadingStore.sub()
 }
 </script>

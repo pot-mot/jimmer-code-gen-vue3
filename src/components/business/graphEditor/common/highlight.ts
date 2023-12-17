@@ -52,7 +52,7 @@ const edgeUnselected = (edge: Edge) => {
     edge.attr('line/stroke', COMMON_COLOR)
 }
 
-export const useNodeStyle = (graph: Graph) => {
+export const useStyle = (graph: Graph) => {
     graph.on('node:selected', ({node}) => {
         nodeSelected(node)
     })
@@ -77,9 +77,7 @@ export const useNodeStyle = (graph: Graph) => {
         nodeUnhover(node)
         nodeUnselected(node)
     })
-}
 
-export const useEdgeStyle = (graph: Graph) => {
     graph.on('edge:selected', ({edge}) => {
         edgeSelected(edge)
     })
@@ -106,6 +104,14 @@ export const useEdgeStyle = (graph: Graph) => {
     graph.on('edge:added', ({edge}) => {
         edgeUnhover(edge)
         edgeUnselected(edge)
+    })
+
+    graph.on('node:removed', ({node}) => {
+        unStyleAll(graph)
+    })
+
+    graph.on('edge:removed', ({edge}) => {
+        unStyleAll(graph)
     })
 }
 

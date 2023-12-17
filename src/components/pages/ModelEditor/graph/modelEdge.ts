@@ -1,16 +1,11 @@
 import {Node, Edge, Graph} from "@antv/x6";
-import {getAssociationType} from "../../AssociationEditor/graph/associationEdge.ts";
 import {GenAssociationModelInput, GenTableColumnsInput, GenTableColumnsView} from "@/api/__generated/model/static";
 import {EdgeConnectData, getEdgeConnectData} from "@/components/business/model/associationEdge/connectData.ts";
-import {AssociationType} from "@/api/__generated/model/enums";
 
-export interface EdgeData<T extends GenTableColumnsInput | GenTableColumnsView> {
-    edge: Edge,
-    association: GenAssociationModelInput,
-    connectData: EdgeConnectData<T>
-}
-
-const connectDataToAssociation = (connectData: EdgeConnectData, associationType: AssociationType): GenAssociationModelInput => {
+export const connectDataToAssociationInput = (
+    connectData: EdgeConnectData,
+    oldAssociation: GenAssociationModelInput | undefined
+): GenAssociationModelInput => {
     const {
         sourceTable,
         sourceColumn,
@@ -41,19 +36,39 @@ const connectDataToAssociation = (connectData: EdgeConnectData, associationType:
                 comment: targetTable.comment,
             }
         },
-        associationType,
-        fake: true,
+        associationType: oldAssociation ? oldAssociation.associationType : 'MANY_TO_ONE',
+        fake: oldAssociation ? oldAssociation.fake : true,
         dissociateAction: undefined,
         comment: ""
     }
 }
 
-export const edgeToModelAssociation = (edge: Edge): GenAssociationModelInput | undefined => {
+const setEdgeData = (edge: Edge) => {
     const connectData = getEdgeConnectData(edge)
 
     if (!connectData) return
 
-    return connectDataToAssociation(connectData, getAssociationType(edge))
+    const association = connectDataToAssociationInput(connectData, edge.getData()?.association)
+
+    if (association) {
+        edge.setData({association})
+    }
+}
+
+export const addEdgeDataSyncListener = (graph: Graph) => {
+    graph.on('edge:added', ({edge}) => {
+        setEdgeData(edge)
+
+        edge.on('change:*', () => {
+            setEdgeData(edge)
+        })
+    })
+}
+
+export interface EdgeData<T extends GenTableColumnsInput | GenTableColumnsView> {
+    edge: Edge,
+    association: GenAssociationModelInput,
+    connectData: EdgeConnectData<T>
 }
 
 export const edgeToData = <T extends GenTableColumnsInput | GenTableColumnsView> (edge: Edge): EdgeData<T> | undefined => {
@@ -61,7 +76,7 @@ export const edgeToData = <T extends GenTableColumnsInput | GenTableColumnsView>
 
     if (!connectData) return
 
-    const association = connectDataToAssociation(connectData, getAssociationType(edge))
+    const association = edge.data.association
 
     if (!association) return
 

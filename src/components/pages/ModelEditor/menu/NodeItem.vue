@@ -7,7 +7,7 @@ import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {ref, watch} from "vue";
 import {sendMessage} from "@/utils/message.ts";
-import {TableType} from "@/api/__generated/model/enums";
+import {GenTableColumnsInput} from "@/api/__generated/model/static";
 
 interface NodeItem {
 	node: Node
@@ -17,24 +17,17 @@ const props = defineProps<NodeItem>()
 
 const store = useModelEditorStore()
 
-const type = ref<TableType>("TABLE")
-
-const name = ref("")
-
-const comment = ref("")
+const table = ref<GenTableColumnsInput>()
 
 watch(() => props.node, (node) => {
 	try {
-		type.value = node.getData().table.type
-		name.value = node.getData().table.name
-		comment.value = node.getData().table.comment
+		table.value = node.getData()?.table
 
 		node.on('change:data', () => {
-			name.value = node.getData().table.name
-			comment.value = node.getData().table.comment
+			table.value = node.getData()?.table
 		})
 	} catch (e) {
-		sendMessage('节点获取node数据异常', 'error')
+		sendMessage('从 Node 获取 Table 失败', 'error', e)
 	}
 }, {immediate: true})
 
@@ -48,13 +41,13 @@ const handleDelete = () => {
 </script>
 
 <template>
-	<div>
+	<div v-if="table">
 		<el-text class="hover-show" style="white-space: nowrap;">
-			<TableIcon :type="type"></TableIcon>
+			<TableIcon :type="table.type"></TableIcon>
 
 			<el-button link @click="store.focus(node)">
-				{{ name }}
-				<Comment :comment="comment"></Comment>
+				{{ table.name }}
+				<Comment :comment="table.comment"></Comment>
 			</el-button>
 
 			<span class="hover-show-item" style="padding-left: 0.5em;">
@@ -63,8 +56,9 @@ const handleDelete = () => {
 			</span>
 		</el-text>
 	</div>
+	<div v-else>
+		<el-text type="warning">
+			无效表 {{ node.id }}
+		</el-text>
+	</div>
 </template>
-
-<style scoped>
-
-</style>

@@ -1,7 +1,5 @@
 import {
-    ASSOCIATION_LABEL_TEXT_SELECTOR,
-    COMMON_COLOR,
-    MANY_TO_ONE
+    COMMON_COLOR
 } from "@/components/business/graphEditor/constant.ts";
 import {cloneDeep} from "lodash";
 import {Shape} from "@antv/x6";
@@ -10,6 +8,8 @@ import {sendMessage} from "@/utils/message.ts";
 import {Options} from "@antv/x6/es/graph/options";
 import Connecting = Options.Connecting;
 import {getEdgeConnectData} from "@/components/business/model/associationEdge/connectData.ts";
+import {ASSOCIATION_LABEL_TEXT_SELECTOR} from "@/components/business/model/constant.ts";
+import {setAssociationType} from "@/components/business/model/associationEdge/associationType.ts";
 
 export const baseLabel = {
     markup: [
@@ -20,7 +20,7 @@ export const baseLabel = {
     ],
     attrs: {
         ASSOCIATION_LABEL_TEXT_SELECTOR: {
-            text: MANY_TO_ONE,
+            text: '',
         },
     },
 }
@@ -34,10 +34,8 @@ export const baseAssociationEdge = {
     labels: [
         cloneDeep(baseLabel)
     ],
-    data: {
-        selectFlag: false
-    }
 }
+
 export const AssociationEdgeConnecting: Partial<Connecting> = {
     // @ts-ignore
     createEdge() {
@@ -62,7 +60,13 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
         // 在连接建立后调整 router
         if (edge.getTargetCellId() == edge.getSourceCellId()) {
             edge.router = orthRouter
+        } else {
+            edge.router = erRouter
         }
+
+        // @ts-ignore
+        setAssociationType(edge, "MANY_TO_ONE")
+
         return true
     },
 

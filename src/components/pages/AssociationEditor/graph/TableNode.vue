@@ -39,8 +39,8 @@ import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {sendMessage} from "@/utils/message.ts";
-import {COLUMN_PORT_SELECTOR} from "@/components/business/graphEditor/constant.ts";
 import {useTableDialogsStore} from "@/components/pages/AssociationEditor/nodeDialog/TableDialogManageStore.ts";
+import {COLUMN_PORT_SELECTOR} from "@/components/business/model/constant.ts";
 
 const getGraph = inject<() => Graph>("getGraph")!
 const getNode = inject<() => Node>("getNode")!

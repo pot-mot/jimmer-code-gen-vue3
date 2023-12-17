@@ -3,10 +3,10 @@ import {defineStore} from "pinia";
 import {useCommonGraphOperations} from "@/components/business/graphEditor";
 import {GenAssociationMatchView, GenTableColumnsView} from "@/api/__generated/model/static";
 import {getTables, tableIdToNodeId} from "../graph/tableNode.ts";
-import {getAssociations} from "../graph/associationEdge.ts";
 import {api} from "@/api";
 import {loadTableNodes} from "../graph/loadTableNodes.ts";
 import {searchEdgesByColumn} from "@/components/business/graphEditor/common/search.ts";
+import {getAssociations} from "@/components/business/model/associationEdge/associationType.ts";
 
 export const useAssociationEditorStore =
     defineStore(

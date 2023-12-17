@@ -1,12 +1,10 @@
-import {Cell, Graph} from "@antv/x6";
+import {Graph} from "@antv/x6";
 import {sendMessage} from "@/utils/message.ts";
-import {unStyleAll} from "../common/graphHighlight.ts";
-
-type GraphEditorData = {
-    json: { cells: Cell.Properties[] },
-    zoom: number,
-    transform: string | null
-}
+import {
+    GraphEditorData,
+    graphToEditorData,
+    loadGraphFromEditorData
+} from "@/components/business/graphEditor/storage/graphData.ts";
 
 export const useGraphLocalStorage = (_graph: () => Graph, name: string) => {
     return {
@@ -15,37 +13,6 @@ export const useGraphLocalStorage = (_graph: () => Graph, name: string) => {
         clearGraph: () => clearGraph(_graph(), name)
     }
 }
-
-export const useGraphDataOperation = (_graph: () => Graph) => {
-    return {
-        toData: (): GraphEditorData => graphToEditorData(_graph()),
-        toDataJSONStr: (): string => JSON.stringify(graphToEditorData(_graph())),
-        loadGraphByData: (data: GraphEditorData) => loadGraphFromEditorData(_graph(), data),
-        loadGraphByJSONStr: (JSONStr: string) => loadGraphFromEditorData(_graph(), JSON.parse(JSONStr)),
-    }
-}
-
-const graphToEditorData = (graph: Graph): GraphEditorData => {
-    unStyleAll(graph)
-
-    return {
-        json: graph.toJSON(),
-        zoom: graph.zoom(),
-        transform: graph.view.viewport.getAttribute('transform')
-    }
-}
-
-const loadGraphFromEditorData = (graph: Graph, data: GraphEditorData) => {
-    const {json, zoom, transform} = data
-
-    graph.fromJSON(json)
-    graph.zoomTo(zoom)
-
-    if (transform) {
-        graph.view.viewport.setAttribute('transform', transform)
-    }
-}
-
 
 const saveGraph = (graph: Graph, name: string, message: boolean = false) => {
     if (!graph) return

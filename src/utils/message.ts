@@ -1,6 +1,7 @@
 import {ElMessage, ElMessageBox} from 'element-plus'
 import {Delete} from "@element-plus/icons-vue";
 import {ElMessageBoxOptions} from "element-plus/es/components/message-box/src/message-box.type";
+import {markRaw} from "vue";
 
 /**
  * 向用户发送消息
@@ -54,11 +55,11 @@ export const deleteConfirm = (
         {
             confirmButtonText: 'Yes',
             cancelButtonText: 'No',
-            icon: Delete,
+            icon: markRaw(Delete),
             type: "error",
             ...opts
         }
     ).then(() => {
         callback()
-    })
+    }).catch(() => {})
 }

@@ -39,5 +39,6 @@ export const api = new Api(async ({uri, method, body}) => {
         }
     } catch (e) {
         sendMessage(`请求 [${method}] ${BASE_URL}${uri} 时出现问题`, 'error', e)
+        throw e
     }
 })

@@ -2,11 +2,11 @@
 import {Edge} from '@antv/x6'
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import {ref, watch} from "vue";
-import {edgeToModelAssociation} from "../graph/modelEdge.ts";
 import {Delete} from "@element-plus/icons-vue";
 import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import {showAssociationType} from "@/utils/simplifyAssociationType.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
+import {sendMessage} from "@/utils/message.ts";
 
 interface EdgeItem {
 	edge: Edge
@@ -19,17 +19,15 @@ const store = useModelEditorStore()
 const association = ref<GenAssociationModelInput>()
 
 watch(() => props.edge, (edge) => {
-	association.value = edgeToModelAssociation(edge)
-	if (association.value) {
-		edge.setData({association: association.value})
-	}
+	try {
+		association.value = edge.getData()?.association
 
-	edge.on('change:*', () => {
-		association.value = edgeToModelAssociation(edge)
-		if (association.value) {
-			edge.setData({association: association.value})
-		}
-	})
+		edge.on('change:data', () => {
+			association.value = edge.getData()?.association
+		})
+	} catch (e) {
+		sendMessage('从 Edge 获取 Association 失败', 'error', e)
+	}
 }, {immediate: true})
 
 const handleDelete = () => {
@@ -52,6 +50,8 @@ const handleDelete = () => {
 		</el-text>
 	</div>
 	<div v-else>
-		<el-text type="warning">无效关联</el-text>
+		<el-text type="warning">
+			无效关联 {{ edge.id }}
+		</el-text>
 	</div>
 </template>

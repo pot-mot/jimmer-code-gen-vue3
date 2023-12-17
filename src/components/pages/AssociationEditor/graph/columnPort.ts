@@ -1,5 +1,5 @@
-import {COLUMN_PORT_GROUP} from "@/components/business/graphEditor/constant.ts";
 import {GenTableColumnsView_TargetOf_columns} from "@/api/__generated/model/static/GenTableColumnsView.ts";
+import {COLUMN_PORT_GROUP} from "@/components/business/model/constant.ts";
 
 export const columnIdToPortId = (id: number) => {
     return `column-${id}`

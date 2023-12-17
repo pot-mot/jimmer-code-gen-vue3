@@ -40,10 +40,10 @@ import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import {sendMessage} from "@/utils/message.ts";
-import {COLUMN_PORT_SELECTOR} from "@/components/business/graphEditor/constant.ts";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import {dataToEdge, edgeToData} from "./modelEdge.ts";
 import {modelColumnToPort} from "@/components/pages/ModelEditor/graph/modelNode.ts";
+import {COLUMN_PORT_SELECTOR} from "@/components/business/model/constant.ts";
 
 const store = useModelEditorStore()
 
