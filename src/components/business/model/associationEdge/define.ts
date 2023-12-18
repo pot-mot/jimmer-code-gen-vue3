@@ -1,29 +1,13 @@
 import {
     COMMON_COLOR
 } from "@/components/business/graphEditor/constant.ts";
-import {cloneDeep} from "lodash";
 import {Shape} from "@antv/x6";
 import {erRouter, orthRouter} from "@/components/business/graphEditor/edgeRouter.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {Options} from "@antv/x6/es/graph/options";
 import Connecting = Options.Connecting;
 import {getEdgeConnectData} from "@/components/business/model/associationEdge/connectData.ts";
-import {ASSOCIATION_LABEL_TEXT_SELECTOR} from "@/components/business/model/constant.ts";
-import {setAssociationType} from "@/components/business/model/associationEdge/associationType.ts";
 
-export const baseLabel = {
-    markup: [
-        {
-            tagName: 'text',
-            selector: ASSOCIATION_LABEL_TEXT_SELECTOR,
-        },
-    ],
-    attrs: {
-        ASSOCIATION_LABEL_TEXT_SELECTOR: {
-            text: '',
-        },
-    },
-}
 export const baseAssociationEdge = {
     attrs: {
         line: {
@@ -31,9 +15,6 @@ export const baseAssociationEdge = {
             strokeWidth: 1,
         },
     },
-    labels: [
-        cloneDeep(baseLabel)
-    ],
 }
 
 export const AssociationEdgeConnecting: Partial<Connecting> = {
@@ -63,9 +44,6 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
         } else {
             edge.router = erRouter
         }
-
-        // @ts-ignore
-        setAssociationType(edge, "MANY_TO_ONE")
 
         return true
     },

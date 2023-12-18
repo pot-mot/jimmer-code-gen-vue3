@@ -1,0 +1,9 @@
+.edit-list > .edit-list-body > .line-container,
+.view-list > .view-list-body > .line-container {
+    background-color: #fff;
+}
+
+.edit-list > .edit-list-body > .line-container:hover,
+.view-list > .view-list-body > .line-container:hover {
+    background-color: #f5f5f5;
+}

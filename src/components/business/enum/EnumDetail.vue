@@ -6,7 +6,7 @@ import Details from "@/components/global/common/Details.vue";
 import {sendMessage} from "@/utils/message.ts";
 import Comment from "@/components/global/common/Comment.vue";
 import {enumItemColumns} from "@/components/business/enum/enumItemColumns.ts";
-import List from "@/components/global/list/List.vue";
+import ViewList from "@/components/global/list/ViewList.vue";
 
 const props = defineProps<{
 	genEnum: GenEnumView
@@ -38,6 +38,6 @@ const handleGetItems = async () => {
 			</el-text>
 		</template>
 
-		<List :lines="genEnum.items" :columns="enumItemColumns"></List>
+		<ViewList :lines="genEnum.items" :columns="enumItemColumns"></ViewList>
 	</Details>
 </template>

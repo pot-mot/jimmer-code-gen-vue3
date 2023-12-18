@@ -7,7 +7,7 @@ import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated
 import EditList from "@/components/global/list/EditList.vue";
 import {PropListColumn} from "@/components/global/list/ListProps.ts";
 import {sendMessage} from "@/utils/message.ts";
-import List from "@/components/global/list/List.vue";
+import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep, uniqWith} from "lodash";
 
 const editState = ref(false)
@@ -148,7 +148,7 @@ const handleCancel = () => {
 		</template>
 
 		<template v-else>
-			<List :columns="typeMappingProps" :lines="typeMappings" height="2em"></List>
+			<ViewList :columns="typeMappingProps" :lines="typeMappings" height="2em"></ViewList>
 
 			<div style="text-align: right">
 				<el-button type="warning" @click="handleEdit">编辑</el-button>

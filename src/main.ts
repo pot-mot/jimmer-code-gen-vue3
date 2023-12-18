@@ -2,12 +2,14 @@ import {createApp} from 'vue'
 import App from './App.vue'
 import {router} from './router'
 import {createPinia} from 'pinia'
-import './assets/base.css'
-import './assets/util.css'
 
 import ElementPlus from 'element-plus'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import 'element-plus/dist/index.css'
+
+import './assets/base.css'
+import './assets/util.css'
+import './components/global/list/list.css'
 import './assets/element-overwrite.css'
 
 import {registerModelShape} from "@/components/business/model/register.ts";

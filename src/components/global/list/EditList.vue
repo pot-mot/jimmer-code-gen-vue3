@@ -92,117 +92,123 @@ defineExpose({
 </script>
 
 <template>
-	<Line v-if="labelLine" :gap="gap" :height="height">
-		<LineItem v-for="column in columns" :span="column.span">
-			<slot name="label">
-				<el-text v-if="column.label">{{ column.label }}</el-text>
-			</slot>
-		</LineItem>
-		<LineItem :span="operation.span">
-			<el-text v-if="operation.label">{{ operation.label }}</el-text>
-		</LineItem>
-	</Line>
-
-	<slot name="headLines" :columns="columns" :lines="lines"></slot>
-
-	<template v-for="(data, index) in lines">
-		<slot name="line" :data="data" :columns="columns" :gap="gap" :height="height">
-			<Line :gap="gap" :height="height">
+	<div class="edit-list">
+		<div class="edit-list-head">
+			<Line v-if="labelLine" :gap="gap" :height="height">
 				<LineItem v-for="column in columns" :span="column.span">
-					<slot
-						v-if="'name' in column"
-						:name="column.name"
-						:span="column.span"
-						:prop="column.prop"
-						:propData="column.prop ? data[column.prop] : undefined"
-						:data="data"
-						:index="index">
-						<slot name="defaultNoPropItem"
-							  :span="column.span"
-							  :prop="column.prop"
-							  :propData="column.prop ? data[column.prop] : undefined"
-							  :data="data"
-							  :index="index">
-						</slot>
-					</slot>
-					<slot
-						v-else
-						:name="column.prop"
-						:span="column.span"
-						:prop="column.prop"
-						:propData="column.prop ? data[column.prop] : undefined"
-						:data="data"
-						:index="index">
-						<slot name="defaultPropItem"
-							  :span="column.span"
-							  :prop="column.prop"
-							  :propData="column.prop ? data[column.prop] : undefined"
-							  :data="data"
-							  :index="index">
-							<el-input v-model="data[column.prop]"></el-input>
-						</slot>
+					<slot name="label">
+						<el-text v-if="column.label">{{ column.label }}</el-text>
 					</slot>
 				</LineItem>
-
 				<LineItem :span="operation.span">
-					<slot
-						name="operation"
-						:columns="columns"
-						:lines="lines"
-						:data="data"
-						:index="index"
-						:getDefaultLine="getDefaultLine"
-						:handleMoveLineUp="handleMoveLineUp"
-						:handleMoveLineDown="handleMoveLineDown"
-						:handleAddLine="handleAddLine"
-						:handleRemoveLine="handleRemoveLine">
-
-						<slot
-							name="beforeOperation"
-							:columns="columns"
-							:lines="lines"
-							:data="data"
-							:index="index"
-							:getDefaultLine="getDefaultLine"
-							:handleMoveLineUp="handleMoveLineUp"
-							:handleMoveLineDown="handleMoveLineDown"
-							:handleAddLine="handleAddLine"
-							:handleRemoveLine="handleRemoveLine">
-						</slot>
-
-						<el-button :disabled="index == 0"
-								   @click="handleMoveLineUp(index)"
-								   :icon="ArrowUp" link></el-button>
-						<el-button :disabled="index == lines.length - 1"
-								   @click="handleMoveLineDown(index)"
-								   :icon="ArrowDown" link style="margin-left: 0.3em;"></el-button>
-						<el-button @click="handleAddLine(index)"
-								   :icon="Plus" link style="margin-left: 0.3em;"></el-button>
-						<el-button type="danger" @click="handleRemoveLine(index)"
-								   :icon="Delete" link style="margin-left: 0.3em;"></el-button>
-
-						<slot
-							name="afterOperation"
-							:columns="columns"
-							:lines="lines"
-							:data="data"
-							:index="index"
-							:getDefaultLine="getDefaultLine"
-							:handleMoveLineUp="handleMoveLineUp"
-							:handleMoveLineDown="handleMoveLineDown"
-							:handleAddLine="handleAddLine"
-							:handleRemoveLine="handleRemoveLine">
-						</slot>
-					</slot>
+					<el-text v-if="operation.label">{{ operation.label }}</el-text>
 				</LineItem>
 			</Line>
-		</slot>
-	</template>
+		</div>
 
-	<slot name="tailLines" :columns="columns" :lines="lines" :gap="gap" :height="height">
-		<Line :height="height" style="margin: auto; width: min(40%, 6em);">
-			<el-button :icon="Plus" style="width: 100%" @click="handleAddLine()"></el-button>
-		</Line>
-		<slot name="otherTailLines" :columns="columns" :lines="lines" :gap="gap" :height="height"></slot>
-	</slot>
+		<div class="edit-list-body">
+			<slot name="headLines" :columns="columns" :lines="lines"></slot>
+
+			<template v-for="(data, index) in lines">
+				<slot name="line" :data="data" :columns="columns" :gap="gap" :height="height">
+					<Line :gap="gap" :height="height">
+						<LineItem v-for="column in columns" :span="column.span">
+							<slot
+								v-if="'name' in column"
+								:name="column.name"
+								:span="column.span"
+								:prop="column.prop"
+								:propData="column.prop ? data[column.prop] : undefined"
+								:data="data"
+								:index="index">
+								<slot name="defaultNoPropItem"
+									  :span="column.span"
+									  :prop="column.prop"
+									  :propData="column.prop ? data[column.prop] : undefined"
+									  :data="data"
+									  :index="index">
+								</slot>
+							</slot>
+							<slot
+								v-else
+								:name="column.prop"
+								:span="column.span"
+								:prop="column.prop"
+								:propData="column.prop ? data[column.prop] : undefined"
+								:data="data"
+								:index="index">
+								<slot name="defaultPropItem"
+									  :span="column.span"
+									  :prop="column.prop"
+									  :propData="column.prop ? data[column.prop] : undefined"
+									  :data="data"
+									  :index="index">
+									<el-input v-model="data[column.prop]"></el-input>
+								</slot>
+							</slot>
+						</LineItem>
+
+						<LineItem :span="operation.span">
+							<slot
+								name="operation"
+								:columns="columns"
+								:lines="lines"
+								:data="data"
+								:index="index"
+								:getDefaultLine="getDefaultLine"
+								:handleMoveLineUp="handleMoveLineUp"
+								:handleMoveLineDown="handleMoveLineDown"
+								:handleAddLine="handleAddLine"
+								:handleRemoveLine="handleRemoveLine">
+
+								<slot
+									name="beforeOperation"
+									:columns="columns"
+									:lines="lines"
+									:data="data"
+									:index="index"
+									:getDefaultLine="getDefaultLine"
+									:handleMoveLineUp="handleMoveLineUp"
+									:handleMoveLineDown="handleMoveLineDown"
+									:handleAddLine="handleAddLine"
+									:handleRemoveLine="handleRemoveLine">
+								</slot>
+
+								<el-button :disabled="index == 0"
+										   @click="handleMoveLineUp(index)"
+										   :icon="ArrowUp" link></el-button>
+								<el-button :disabled="index == lines.length - 1"
+										   @click="handleMoveLineDown(index)"
+										   :icon="ArrowDown" link style="margin-left: 0.3em;"></el-button>
+								<el-button @click="handleAddLine(index)"
+										   :icon="Plus" link style="margin-left: 0.3em;"></el-button>
+								<el-button type="danger" @click="handleRemoveLine(index)"
+										   :icon="Delete" link style="margin-left: 0.3em;"></el-button>
+
+								<slot
+									name="afterOperation"
+									:columns="columns"
+									:lines="lines"
+									:data="data"
+									:index="index"
+									:getDefaultLine="getDefaultLine"
+									:handleMoveLineUp="handleMoveLineUp"
+									:handleMoveLineDown="handleMoveLineDown"
+									:handleAddLine="handleAddLine"
+									:handleRemoveLine="handleRemoveLine">
+								</slot>
+							</slot>
+						</LineItem>
+					</Line>
+				</slot>
+			</template>
+
+			<slot name="tailLines" :columns="columns" :lines="lines" :gap="gap" :height="height">
+				<div style="margin: auto; width: min(40%, 6em);">
+					<el-button :icon="Plus" style="width: 100%" @click="handleAddLine()"></el-button>
+				</div>
+				<slot name="otherTailLines" :columns="columns" :lines="lines" :gap="gap" :height="height"></slot>
+			</slot>
+		</div>
+	</div>
 </template>

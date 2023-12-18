@@ -4,7 +4,7 @@ import {columnIdToPortId, portIdToColumnId} from "./columnPort.ts";
 import {nodeIdToTableId, tableIdToNodeId} from "./tableNode.ts";
 
 import {baseAssociationEdge} from "@/components/business/model/associationEdge/define.ts";
-import {getAssociationType, setAssociationTypeData} from "@/components/business/model/associationEdge/associationType.ts";
+import {getAssociationType, setAssociationType} from "@/components/business/model/associationEdge/associationType.ts";
 
 /** 转换关联为 Edge */
 export const associationToEdge = (association: GenAssociationMatchView): Edge => {
@@ -20,7 +20,7 @@ export const associationToEdge = (association: GenAssociationMatchView): Edge =>
         },
     })
     if (association.associationType) {
-        setAssociationTypeData(edge, association.associationType)
+        setAssociationType(edge, association.associationType)
     }
     return edge
 }
