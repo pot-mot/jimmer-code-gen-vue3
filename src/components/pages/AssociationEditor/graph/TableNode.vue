@@ -86,7 +86,6 @@ onMounted(async () => {
 	await nextTick()
 
 	if (!wrapper.value || !container.value) {
-		sendMessage(`${table.value?.name}节点 dom 元素 ref 异常`, 'error')
 		return
 	}
 

@@ -129,10 +129,10 @@ export const saveAssociations = async (graph: Graph) => {
                 associationType: view.associationType,
                 targetColumnId: view.targetColumn.id,
                 sourceColumnId: view.sourceColumn.id,
+                fake: view.fake,
                 orderKey: 0,
                 comment: tempComment.join(""),
                 remark: tempRemark.join(""),
-                fake: true
             }
         }
 

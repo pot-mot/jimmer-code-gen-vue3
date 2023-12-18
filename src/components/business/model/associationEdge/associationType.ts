@@ -60,8 +60,7 @@ export const setAssociationType = (edge: Edge, associationType: AssociationType)
 export const getAssociationType = (edge: Edge): AssociationType | undefined => {
     const dataAssociationType = edge.getData()?.association.associationType
 
-    // @ts-ignore
-    const labelAssociationType = getAssociationTypeLabel(edge)?.label.attrs[ASSOCIATION_LABEL_TEXT_SELECTOR]?.text
+    const labelAssociationType = getAssociationTypeLabel(edge)?.label.attrs?.ASSOCIATION_LABEL_TEXT_SELECTOR?.text
 
     if (!!dataAssociationType) {
         if (dataAssociationType == labelAssociationType) {
@@ -73,7 +72,7 @@ export const getAssociationType = (edge: Edge): AssociationType | undefined => {
     }
 }
 
-const setAssociationTypeIfNotExisted = (edge: Edge, defaultAssociationType: AssociationType = 'MANY_TO_ONE') => {
+const syncAssociationType = (edge: Edge, defaultAssociationType: AssociationType = 'MANY_TO_ONE') => {
     const currentAssociationType = getAssociationType(edge)
     if (!currentAssociationType) {
         setAssociationType(edge, defaultAssociationType)
@@ -85,17 +84,17 @@ const setAssociationTypeIfNotExisted = (edge: Edge, defaultAssociationType: Asso
  */
 export const useAssociationType = (graph: Graph) => {
     /**
-     * 在边被创建时或数据改变时获取 AssociationType，以同步 label 为 data
+     * 同步 label 为 data
      */
     graph.on('edge:added', ({edge}) => {
-        setAssociationTypeIfNotExisted(edge)
+        syncAssociationType(edge)
     })
     graph.on('edge:change:data', ({edge}) => {
-        setAssociationTypeIfNotExisted(edge)
+        syncAssociationType(edge)
     })
 
     /**
-     * 当 Edge 被点击时，切换关联类型
+     * 当 Edge 的 AssociationLabel 被点击时，切换关联类型
      *
      * 此时因为存在 edge:select 事件且触发在 edge:click 之前，所以需要 SWITCH_ASSOCIATION_TYPE_FLAG 阻止初次点击效果
      */

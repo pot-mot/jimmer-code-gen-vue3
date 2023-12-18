@@ -41,7 +41,7 @@ import Comment from "@/components/global/common/Comment.vue";
 import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
-import {dataToEdge, edgeToData} from "./modelEdge.ts";
+import {associationDataToEdge, edgeToAssociationData} from "./modelEdge.ts";
 import {modelColumnToPort} from "@/components/pages/ModelEditor/graph/modelNode.ts";
 import {COLUMN_PORT_SELECTOR} from "@/components/business/model/constant.ts";
 
@@ -82,7 +82,6 @@ onMounted(async () => {
 	await nextTick()
 
 	if (!wrapper.value || !container.value) {
-		sendMessage(`${table.value?.name}节点 dom 元素 ref 异常`, 'error')
 		return
 	}
 
@@ -127,7 +126,7 @@ onMounted(async () => {
 
 			const edgeDatas = graph
 				.getConnectedEdges(node.value.id)
-				.map((edge) => edgeToData(edge))
+				.map((edge) => edgeToAssociationData(edge))
 
 			node.value.removePorts()
 			node.value.addPorts(
@@ -138,7 +137,7 @@ onMounted(async () => {
 			edgeDatas.forEach(data => {
 				if (!data) return
 
-				const edge = dataToEdge(graph, data)
+				const edge = associationDataToEdge(graph, data)
 				if (edge) {
 					graph.addEdge(edge)
 				}

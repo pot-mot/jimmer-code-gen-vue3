@@ -3,8 +3,9 @@ import {initGraph} from "@/components/business/graphEditor/common/init.ts";
 import {defaultZoomRange} from "@/components/business/graphEditor/constant.ts";
 
 import {AssociationEdgeConnecting} from "@/components/business/model/associationEdge/define.ts";
-import {addEdgeDataSyncListener} from "@/components/pages/ModelEditor/graph/modelEdge.ts";
+import {useEdgeAssociationData} from "@/components/pages/ModelEditor/graph/modelEdge.ts";
 import {useAssociationType} from "@/components/business/model/associationEdge/associationType.ts";
+import {useAssociationFake} from "@/components/business/model/associationEdge/associationFake.ts";
 
 export const initModelEditor = (container: HTMLElement, wrapper: HTMLElement): Graph => {
     const graph = initGraph(
@@ -25,8 +26,9 @@ export const initModelEditor = (container: HTMLElement, wrapper: HTMLElement): G
         }
     )
 
-    addEdgeDataSyncListener(graph)
+    useEdgeAssociationData(graph)
     useAssociationType(graph)
+    useAssociationFake(graph)
 
     return graph
 }

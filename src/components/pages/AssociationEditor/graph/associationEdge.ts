@@ -5,6 +5,7 @@ import {nodeIdToTableId, tableIdToNodeId} from "./tableNode.ts";
 
 import {baseAssociationEdge} from "@/components/business/model/associationEdge/define.ts";
 import {getAssociationType, setAssociationType} from "@/components/business/model/associationEdge/associationType.ts";
+import {getAssociationFake, setAssociationFake} from "@/components/business/model/associationEdge/associationFake.ts";
 
 /** 转换关联为 Edge */
 export const associationToEdge = (association: GenAssociationMatchView): Edge => {
@@ -22,12 +23,15 @@ export const associationToEdge = (association: GenAssociationMatchView): Edge =>
     if (association.associationType) {
         setAssociationType(edge, association.associationType)
     }
+    setAssociationFake(edge, association.fake)
+
     return edge
 }
 
 /** 转换 Edge 为关联 */
 export const edgeToAssociation = (edge: Edge): GenAssociationMatchView => {
     const associationType = getAssociationType(edge)
+    const fake = getAssociationFake(edge)
 
     return {
         sourceColumn: {
@@ -43,6 +47,7 @@ export const edgeToAssociation = (edge: Edge): GenAssociationMatchView => {
             }
         },
         associationType: associationType ? associationType : 'MANY_TO_MANY',
+        fake
     }
 }
 

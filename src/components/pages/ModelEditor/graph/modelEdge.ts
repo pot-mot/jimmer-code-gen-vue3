@@ -46,7 +46,7 @@ export const connectDataToAssociationInput = (
     }
 }
 
-const setEdgeData = (edge: Edge) => {
+const setEdgeAssociationData = (edge: Edge) => {
     const connectData = getEdgeConnectData(edge)
 
     if (!connectData) return
@@ -58,23 +58,23 @@ const setEdgeData = (edge: Edge) => {
     }
 }
 
-export const addEdgeDataSyncListener = (graph: Graph) => {
+export const useEdgeAssociationData = (graph: Graph) => {
     graph.on('edge:added', ({edge}) => {
-        setEdgeData(edge)
+        setEdgeAssociationData(edge)
 
         edge.on('change:*', () => {
-            setEdgeData(edge)
+            setEdgeAssociationData(edge)
         })
     })
 }
 
-export interface EdgeData<T extends GenTableColumnsInput | GenTableColumnsView> {
+export interface EdgeAssociationData<T extends GenTableColumnsInput | GenTableColumnsView> {
     edge: Edge,
     association: GenAssociationModelInput,
     connectData: EdgeConnectData<T>
 }
 
-export const edgeToData = <T extends GenTableColumnsInput | GenTableColumnsView> (edge: Edge): EdgeData<T> | undefined => {
+export const edgeToAssociationData = <T extends GenTableColumnsInput | GenTableColumnsView> (edge: Edge): EdgeAssociationData<T> | undefined => {
     const connectData = getEdgeConnectData<T>(edge)
 
     if (!connectData) return
@@ -93,7 +93,7 @@ export const edgeToData = <T extends GenTableColumnsInput | GenTableColumnsView>
 /**
  * 将 EdgeData 重新转换成 Edge，并更新 source 和 target
  */
-export const dataToEdge = <T extends GenTableColumnsInput | GenTableColumnsView> (graph: Graph, data: EdgeData<T>): Edge | undefined => {
+export const associationDataToEdge = <T extends GenTableColumnsInput | GenTableColumnsView> (graph: Graph, data: EdgeAssociationData<T>): Edge | undefined => {
     if (data.connectData.targetColumn.typeCode != data.connectData.sourceColumn.typeCode) return
 
     const sourceNode = graph.getCellById(data.connectData.sourceNode.id) as Node

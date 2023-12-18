@@ -3,7 +3,7 @@ import {GenTableAssociationsView} from "@/api/__generated/model/static";
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import Details from "@/components/global/common/Details.vue";
 import Comment from "@/components/global/common/Comment.vue";
-import {showAssociationType} from "@/utils/simplifyAssociationType.ts";
+import AssociationIcon from "@/components/global/icons/database/AssociationIcon.vue";
 
 interface TableViewerProps {
 	table: GenTableAssociationsView
@@ -52,13 +52,19 @@ defineProps<TableViewerProps>()
 				<div style="padding-left: 3em;">
 					<div v-for="association in column.inAssociations">
 						<el-text>
-							<span>{{ showAssociationType(association.associationType) }}</span>
+							<span style="padding-right: 0.3em;">
+								<association-icon :association-type="association.associationType" :fake="association.fake"></association-icon>
+							</span>
 
 							<span>
 								{{ association.sourceColumn.table.name }}
 							</span>.<span>
 								{{ association.sourceColumn.name }}
 							</span>
+
+							<span>{{ " --> " }}</span>
+
+							<span>{{ column.name }}</span>
 						</el-text>
 					</div>
 				</div>
@@ -66,7 +72,13 @@ defineProps<TableViewerProps>()
 				<div style="padding-left: 3em;">
 					<div v-for="association in column.outAssociations">
 						<el-text>
-							<span>{{ showAssociationType(association.associationType) }}</span>
+							<span style="padding-right: 0.3em;">
+								<association-icon :association-type="association.associationType" :fake="association.fake"></association-icon>
+							</span>
+
+							<span>{{ column.name }}</span>
+
+							<span>{{ " --> " }}</span>
 
 							<span>
 								{{ association.targetColumn.table.name }}

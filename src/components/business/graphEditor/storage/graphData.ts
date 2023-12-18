@@ -27,6 +27,15 @@ export const loadGraphFromEditorData = (graph: Graph, data: GraphEditorData) => 
     const {json, zoom, transform} = data
 
     graph.fromJSON(json)
+
+    // 触发 node:added 和 edge:added
+    const tempNodes = graph.getNodes()
+    const tempEdges = graph.getEdges()
+    graph.removeCells(tempEdges)
+    graph.removeCells(tempNodes)
+    graph.addNodes(tempNodes)
+    graph.addEdges(tempEdges)
+
     graph.zoomTo(zoom)
 
     if (transform) {

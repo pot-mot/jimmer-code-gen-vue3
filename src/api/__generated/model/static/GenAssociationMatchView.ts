@@ -4,6 +4,8 @@ export interface GenAssociationMatchView {
     
     associationType: AssociationType;
     
+    fake: boolean;
+    
     sourceColumn: GenAssociationMatchView_TargetOf_sourceColumn;
     
     targetColumn: GenAssociationMatchView_TargetOf_targetColumn;
