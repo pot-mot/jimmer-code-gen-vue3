@@ -209,7 +209,7 @@ const handleCancel = () => {
 		<EditList
 			:columns="tableColumnColumns"
 			v-model:lines="table.columns"
-			:default-line="defaultColumn">
+			:defaultLine="defaultColumn">
 
 			<template #icon="{data}">
 				<ColumnIcon :column="data"></ColumnIcon>

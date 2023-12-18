@@ -125,7 +125,7 @@ const handleCancel = () => {
 			<EditList
 				:columns="typeMappingProps"
 				v-model:lines="tempTypeMappings"
-				:default-line="defaultTypeMapping"
+				:defaultLine="defaultTypeMapping"
 				height="2em">
 				<template #dataSourceType="{data}">
 					<el-select v-model="data.dataSourceType">

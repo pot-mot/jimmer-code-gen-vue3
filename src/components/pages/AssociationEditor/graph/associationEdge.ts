@@ -30,6 +30,8 @@ export const associationToEdge = (association: GenAssociationMatchView): Edge =>
 
 /** 转换 Edge 为关联 */
 export const edgeToAssociation = (edge: Edge): GenAssociationMatchView => {
+    const associationType = getAssociationType(edge)
+
     return {
         sourceColumn: {
             id: portIdToColumnId(edge.getSourcePortId()!),
@@ -43,7 +45,7 @@ export const edgeToAssociation = (edge: Edge): GenAssociationMatchView => {
                 id: nodeIdToTableId(edge.getTargetNode()!.id)
             }
         },
-        associationType: getAssociationType(edge),
+        associationType: associationType ? associationType : 'MANY_TO_MANY',
     }
 }
 

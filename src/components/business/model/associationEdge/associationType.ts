@@ -20,21 +20,19 @@ export const getAssociationType = (edge: Edge): AssociationType | undefined => {
     // @ts-ignore
     const labelAssociationType = edge.getLabelAt(0)?.attrs[ASSOCIATION_LABEL_TEXT_SELECTOR]?.text
 
-    if (dataAssociationType == labelAssociationType) {
-        return dataAssociationType
-    } else {
-        setAssociationType(edge, dataAssociationType)
-        return dataAssociationType
+    if (!!dataAssociationType) {
+        if (dataAssociationType == labelAssociationType) {
+            return dataAssociationType
+        } else {
+            setAssociationType(edge, dataAssociationType)
+            return dataAssociationType
+        }
     }
 }
 export const getAssociations = (graph: Graph): GenAssociationMatchView[] => {
     return graph.getEdges().map(edgeToAssociation)
 }
 export const useAssociationType = (graph: Graph) => {
-    graph.on('edge:added', ({edge}) => {
-        getAssociationType(edge)
-    })
-
     graph.on('edge:click', ({edge, e}) => {
         if (!edge || e.ctrlKey || e.metaKey) return
 

@@ -41,9 +41,6 @@ dependencies:
   pinia:
     specifier: ^2.1.6
     version: registry.npmmirror.com/pinia@2.1.6(typescript@5.2.2)(vue@3.3.4)
-  pinia-plugin-persistedstate:
-    specifier: ^3.2.0
-    version: registry.npmmirror.com/pinia-plugin-persistedstate@3.2.0(pinia@2.1.6)
   prismjs:
     specifier: ^1.29.0
     version: registry.npmmirror.com/prismjs@1.29.0
@@ -1540,17 +1537,6 @@ packages:
     name: picomatch
     version: 2.3.1
     engines: {node: '>=8.6'}
-
-  registry.npmmirror.com/pinia-plugin-persistedstate@3.2.0(pinia@2.1.6):
-    resolution: {integrity: sha512-tZbNGf2vjAQcIm7alK40sE51Qu/m9oWr+rEgNm/2AWr1huFxj72CjvpQcIQzMknDBJEkQznCLAGtJTIcLKrKdw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/pinia-plugin-persistedstate/-/pinia-plugin-persistedstate-3.2.0.tgz}
-    id: registry.npmmirror.com/pinia-plugin-persistedstate/3.2.0
-    name: pinia-plugin-persistedstate
-    version: 3.2.0
-    peerDependencies:
-      pinia: ^2.0.0
-    dependencies:
-      pinia: registry.npmmirror.com/pinia@2.1.6(typescript@5.2.2)(vue@3.3.4)
-    dev: false
 
   registry.npmmirror.com/pinia@2.1.6(typescript@5.2.2)(vue@3.3.4):
     resolution: {integrity: sha512-bIU6QuE5qZviMmct5XwCesXelb5VavdOWKWaB17ggk++NUwQWWbP5YnsONTk3b752QkW9sACiR81rorpeOMSvQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/pinia/-/pinia-2.1.6.tgz}

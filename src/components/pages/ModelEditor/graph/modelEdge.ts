@@ -1,10 +1,13 @@
 import {Node, Edge, Graph} from "@antv/x6";
 import {GenAssociationModelInput, GenTableColumnsInput, GenTableColumnsView} from "@/api/__generated/model/static";
 import {EdgeConnectData, getEdgeConnectData} from "@/components/business/model/associationEdge/connectData.ts";
+import {AssociationType} from "@/api/__generated/model/enums";
+import {getAssociationType} from "@/components/business/model/associationEdge/associationType.ts";
 
 export const connectDataToAssociationInput = (
     connectData: EdgeConnectData,
-    oldAssociation: GenAssociationModelInput | undefined
+    associationType: AssociationType | undefined,
+    fake: boolean | undefined
 ): GenAssociationModelInput => {
     const {
         sourceTable,
@@ -36,8 +39,8 @@ export const connectDataToAssociationInput = (
                 comment: targetTable.comment,
             }
         },
-        associationType: oldAssociation ? oldAssociation.associationType : 'MANY_TO_ONE',
-        fake: oldAssociation ? oldAssociation.fake : true,
+        associationType: associationType ? associationType : 'MANY_TO_ONE',
+        fake: fake != undefined ? fake : true,
         dissociateAction: undefined,
         comment: ""
     }
@@ -48,7 +51,7 @@ const setEdgeData = (edge: Edge) => {
 
     if (!connectData) return
 
-    const association = connectDataToAssociationInput(connectData, edge.getData()?.association)
+    const association = connectDataToAssociationInput(connectData, getAssociationType(edge), edge.getData()?.association?.fake)
 
     if (association) {
         edge.setData({association})
