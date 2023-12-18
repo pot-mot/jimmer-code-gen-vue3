@@ -106,11 +106,11 @@ export const useStyle = (graph: Graph) => {
         edgeUnselected(edge)
     })
 
-    graph.on('node:removed', ({node}) => {
+    graph.on('node:removed', () => {
         unStyleAll(graph)
     })
 
-    graph.on('edge:removed', ({edge}) => {
+    graph.on('edge:removed', () => {
         unStyleAll(graph)
     })
 }

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {GenEntityPropertiesView} from "@/api/__generated/model/static";
+import {GenEntityPropertiesView, type Pair} from "@/api/__generated/model/static";
 import {ref, watch} from "vue";
 import {api} from "@/api";
 import {sendMessage} from "@/utils/message.ts";
@@ -19,7 +19,7 @@ const props = defineProps<EntityInfoProps>()
 
 const entity = ref<GenEntityPropertiesView | undefined>()
 
-const codesMap = ref<{ [key: string]: string }>({})
+const codesMap = ref<Array<Pair<string, string>>>([])
 
 const getEntity = async (id: number) => {
 	entity.value = await api.entityService.get({id})
@@ -65,7 +65,7 @@ const handleGenerate = () => {
 			<el-text>{{ property.remark }}</el-text>
 		</div>
 
-		<MultiCodePreview :codes-map="codesMap"></MultiCodePreview>
+		<MultiCodePreview :code-files="codesMap"></MultiCodePreview>
 	</div>
 </template>
 

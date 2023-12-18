@@ -6,7 +6,8 @@ import {getTables, tableIdToNodeId} from "../graph/tableNode.ts";
 import {api} from "@/api";
 import {loadTableNodes} from "../graph/loadTableNodes.ts";
 import {searchEdgesByColumn} from "@/components/business/graphEditor/common/search.ts";
-import {getAssociations} from "@/components/business/model/associationEdge/associationType.ts";
+
+import {getAssociations} from "@/components/pages/AssociationEditor/graph/associationEdge.ts";
 
 export const useAssociationEditorStore =
     defineStore(

@@ -2,13 +2,12 @@ import {saveAs} from "file-saver";
 import {Edge, Graph} from "@antv/x6";
 import {api} from "@/api";
 import {GenAssociationInput, GenAssociationMatchView, GenTableColumnsView} from "@/api/__generated/model/static";
-import {associationToEdge} from "../graph/associationEdge.ts";
+import {associationToEdge, getAssociations} from "../graph/associationEdge.ts";
 import {nodeIsExist, searchEdgesIgnoreDirection} from "@/components/business/graphEditor/common/search.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {getTables} from "../graph/tableNode.ts";
 import {GenTableColumnsView_TargetOf_columns} from "@/api/__generated/model/static/GenTableColumnsView.ts";
 import {erRouter, orthRouter} from "@/components/business/graphEditor/edgeRouter.ts";
-import {getAssociations} from "@/components/business/model/associationEdge/associationType.ts";
 
 export const convertEntities = async (tableIds: number[]) => {
     return await api.generateService.convert({body: tableIds})
