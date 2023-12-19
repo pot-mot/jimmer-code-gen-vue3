@@ -23,17 +23,21 @@ export interface DialogTeleportProps {
     to?: HTMLElement | string
 }
 
-export interface DragResizeDialogProps extends
-    ModelValueProps<boolean>,
-    DialogInitPositionProps,
-    DialogInitSizeProps,
-    DialogTeleportProps,
-    DialogSizeRangeProps
-{
+export interface DialogDisableProps {
     disableX?: boolean
     disableY?: boolean
     disableW?: boolean
     disableH?: boolean
+}
+
+export interface DragDialogProps extends
+    ModelValueProps<boolean>,
+    DialogInitPositionProps,
+    DialogInitSizeProps,
+    DialogTeleportProps,
+    DialogSizeRangeProps,
+    DialogDisableProps
+{
     limitByParent?: boolean
     canResize?: boolean
     canDrag?: boolean

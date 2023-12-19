@@ -13,6 +13,7 @@ import './components/global/list/list.css'
 import './assets/element-overwrite.css'
 
 import {registerModelShape} from "@/components/business/model/register.ts";
+import {useCodeEditor} from "@/components/global/code/CodeEditorWorkers.ts";
 
 const app = createApp(App)
 
@@ -27,5 +28,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 
 registerModelShape()
+
+useCodeEditor()
 
 app.mount('#app')

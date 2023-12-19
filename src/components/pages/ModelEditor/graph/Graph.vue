@@ -76,7 +76,8 @@
 
 				<DragDialog v-model="openSQLPreviewDialog" :init-w="700" :init-x="5000" can-drag
 							can-resize disable-h>
-					<MultiCodePreview :code-files="sqlFiles" height="calc(100vh - 5em - 30px)" style="height: calc(100vh - 30px); width: 100%;"
+					<MultiCodePreview :code-files="sqlFiles" height="calc(100vh - 5em - 30px)"
+									  style="height: calc(100vh - 30px); width: 100%;"
 									  width="100%"></MultiCodePreview>
 				</DragDialog>
 			</li>
@@ -91,7 +92,8 @@
 
 				<DragDialog v-model="codePreviewDialogOpenState" :init-w="700" :init-x="5000"
 							can-drag can-resize disable-h>
-					<MultiCodePreview :code-files="codeFiles" height="calc(100vh - 5em - 30px)" style="height: calc(100vh - 30px); width: 100%;"
+					<MultiCodePreview :code-files="codeFiles" height="calc(100vh - 5em - 30px)"
+									  style="height: calc(100vh - 30px); width: 100%;"
 									  width="100%"></MultiCodePreview>
 
 					<div style="position: absolute; bottom: 2em; right: 2em;">
@@ -121,8 +123,9 @@
 		</template>
 	</div>
 
-	<ModelDialog v-if="editModel"
+	<ModelDialog :model-value="!!editModel"
 				 :model="editModel"
+				 edit-value
 				 @cancel="editModel = undefined"
 				 @submit="handleSubmit"></ModelDialog>
 
@@ -140,7 +143,7 @@
 import {onMounted, onUnmounted, ref, watch} from "vue"
 import {Graph} from "@antv/x6"
 import {initModelEditor} from "./init.ts"
-import ModelDialog from "@/components/business/model/ModelDialog.vue"
+import ModelDialog from "@/components/business/model/dialog/ModelDialog.vue"
 import {Emitter} from "mitt";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
@@ -227,8 +230,14 @@ const handleSaveModel = async () => {
 
 	try {
 		const model = _currentModel()
-		model.value = toDataJSONStr()
-		await api.modelService.save({body: model})
+
+		if (model.value != toDataJSONStr()) {
+			model.value = toDataJSONStr()
+			await api.modelService.save({body: model})
+		} else {
+			await api.modelService.save({body: {...model, value: undefined}})
+		}
+
 		sendMessage("模型保存成功", "success")
 	} catch (e) {
 		sendMessage(`模型保存失败，原因：${e}`, 'error', e)
@@ -248,6 +257,11 @@ const handleSubmit = async (model: GenModelInput) => {
 	loadingStore.add()
 
 	try {
+		// 尽可能规避编辑 json value
+		if (model.value && model.value == toDataJSONStr()) {
+			model.value = undefined
+		}
+
 		const id = await api.modelService.save({body: model})
 		currentModel.value = (await api.modelService.get({id}))!
 		loadGraphByJSONStr(_currentModel().value)

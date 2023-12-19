@@ -7,7 +7,7 @@ import {useLoading} from "@/hooks/useLoading.ts";
 import {api} from "@/api";
 import {deleteConfirm, sendMessage} from "@/utils/message.ts";
 import {datetimeFormat} from "@/utils/dataFormat.ts";
-import ModelDialog from "@/components/business/model/ModelDialog.vue";
+import ModelDialog from "@/components/business/model/dialog/ModelDialog.vue";
 import {cloneDeep} from "lodash";
 import {defaultModel} from "@/components/business/model/defaultModel.ts";
 
@@ -18,13 +18,14 @@ const models = ref<GenModelSimpleView[]>([])
 const modelsLoading = useLoading()
 
 const getModels = async () => {
-	modelsLoading.start()
+	modelsLoading.add()
 	await nextTick()
 
 	models.value = await api.modelService.list()
 
 	await nextTick()
-	modelsLoading.end()
+
+	modelsLoading.sub()
 }
 
 onMounted(() => {
@@ -42,6 +43,8 @@ const handleEdit = (model: GenModelInput = cloneDeep(defaultModel)) => {
 }
 
 const handleSubmit = async (model: GenModelInput) => {
+	modelsLoading.add()
+
 	try {
 		const updateFlag = (model.id != undefined)
 
@@ -70,12 +73,16 @@ const handleSubmit = async (model: GenModelInput) => {
 	} catch (e) {
 		sendMessage(`模型修改失败，原因：${e}`, 'error', e)
 	}
+
+	modelsLoading.sub()
 }
 
 const handleDelete = (model: GenModelSimpleView) => {
 	deleteConfirm(
 		`模型【${model.name}】`,
 		async () => {
+			modelsLoading.add()
+
 			const count = await api.modelService.delete({ids: [model.id]})
 			if (count > 0) {
 				sendMessage('删除模型成功', 'success')
@@ -83,6 +90,8 @@ const handleDelete = (model: GenModelSimpleView) => {
 			} else {
 				sendMessage('删除模型失败', 'error')
 			}
+
+			modelsLoading.sub()
 		}
 	)
 }
@@ -119,7 +128,7 @@ const handleDelete = (model: GenModelSimpleView) => {
 			</template>
 		</div>
 
-		<ModelDialog v-if="editModel"
+		<ModelDialog :model-value="!!editModel"
 					 :model="editModel"
 					 @cancel="editModel = undefined"
 					 @submit="handleSubmit"></ModelDialog>

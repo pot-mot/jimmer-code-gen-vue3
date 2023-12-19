@@ -26,6 +26,8 @@ export const graphToEditorData = (graph: Graph): GraphEditorData => {
 export const loadGraphFromEditorData = (graph: Graph, data: GraphEditorData) => {
     const {json, zoom, transform} = data
 
+    graph.startBatch('load from JSON')
+
     // 预先移除所有过去的 cells
     graph.removeCells(graph.getCells())
 
@@ -43,4 +45,6 @@ export const loadGraphFromEditorData = (graph: Graph, data: GraphEditorData) => 
     if (transform) {
         graph.view.viewport.setAttribute('transform', transform)
     }
+
+    graph.stopBatch('load from JSON')
 }
