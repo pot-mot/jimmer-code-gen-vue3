@@ -211,7 +211,11 @@ onMounted(async () => {
 
 	graph = initModelEditor(container.value!, wrapper.value!)
 	if (_currentModel().value.length > 0) {
-		loadGraphByJSONStr(_currentModel().value)
+		try {
+			loadGraphByJSONStr(_currentModel().value)
+		} catch (e) {
+			sendMessage('模型数据解析出错', 'error', e)
+		}
 	}
 	await store.load(graph)
 
@@ -241,16 +245,19 @@ const handleEdit = (model: GenModelInput = cloneDeep(_currentModel())) => {
 }
 
 const handleSubmit = async (model: GenModelInput) => {
+	loadingStore.add()
+
 	try {
 		const id = await api.modelService.save({body: model})
 		currentModel.value = (await api.modelService.get({id}))!
-
+		loadGraphByJSONStr(_currentModel().value)
 		editModel.value = undefined
-
 		sendMessage("模型保存成功", "success")
 	} catch (e) {
 		sendMessage(`模型保存失败，原因：${e}`, 'error', e)
 	}
+
+	loadingStore.sub()
 }
 
 store.addEventListener('keydown', handleHistoryKeyEvent)

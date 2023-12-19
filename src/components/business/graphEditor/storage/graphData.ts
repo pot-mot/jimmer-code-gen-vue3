@@ -26,13 +26,15 @@ export const graphToEditorData = (graph: Graph): GraphEditorData => {
 export const loadGraphFromEditorData = (graph: Graph, data: GraphEditorData) => {
     const {json, zoom, transform} = data
 
+    // 预先移除所有过去的 cells
+    graph.removeCells(graph.getCells())
+
     graph.fromJSON(json)
 
-    // 触发 node:added 和 edge:added
+    // 通过移除和重新添加的方式触发 node:added 和 edge:added
     const tempNodes = graph.getNodes()
     const tempEdges = graph.getEdges()
-    graph.removeCells(tempEdges)
-    graph.removeCells(tempNodes)
+    graph.removeCells(graph.getCells())
     graph.addNodes(tempNodes)
     graph.addEdges(tempEdges)
 

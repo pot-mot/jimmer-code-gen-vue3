@@ -85,7 +85,9 @@ onMounted(async () => {
 		return
 	}
 
+	// 绑定 wrapper 容器和 node，并且设置成不可枚举
 	node.value.getData().wrapper = wrapper
+	Object.defineProperty(node.value.getData(), 'wrapper', { enumerable: false, writable: true })
 
 	node.value.on('change:data', () => {
 		setData()

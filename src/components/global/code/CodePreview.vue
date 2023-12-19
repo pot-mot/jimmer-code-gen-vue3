@@ -1,9 +1,11 @@
 <template>
 	<div class="container">
 		<div class="toolbar">
-			<el-button style="padding: 0.3em 0.5em;">
-				<CopyIcon :finish="copyFinish" @click="handleCopy"></CopyIcon>
-			</el-button>
+			<slot name="toolbar" v-bind="props">
+				<el-button style="padding: 0.3em 0.5em;">
+					<CopyIcon :finish="copyFinish" @click="handleCopy"></CopyIcon>
+				</el-button>
+			</slot>
 		</div>
 		<div class="wrapper" :style="{gridTemplateColumns: showLineCounts ? '3em 1fr' : '1fr'}">
 			<div v-if="showLineCounts" class="line-counts" v-text="lineCounts"></div>

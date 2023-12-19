@@ -5,7 +5,7 @@ import {GenModelInput} from "@/api/__generated/model/static";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated/model/enums";
 import {defaultModel} from "@/components/business/model/defaultModel.ts";
-import CodePreview from "@/components/global/code/CodePreview.vue";
+import {jsonFormatter, jsonParser} from "@/utils/json.ts";
 
 const model = ref<GenModelInput>(cloneDeep(defaultModel))
 
@@ -60,8 +60,8 @@ const handleCancel = () => {
 				<el-input v-model="model.remark" type="textarea"></el-input>
 			</el-form-item>
 
-			<el-form-item v-if="model.value" label="内容">
-				<CodePreview :code="model.value" language="json" :show-line-counts="false"></CodePreview>
+			<el-form-item v-if="model.value != undefined" label="内容">
+				<el-input v-model="model.value" :formatter="jsonFormatter" :parser="jsonParser" type="textarea" resize="none" :autosize="{minRows: 6, maxRows: 16}"></el-input>
 			</el-form-item>
 
 			<div style="text-align: right;">
