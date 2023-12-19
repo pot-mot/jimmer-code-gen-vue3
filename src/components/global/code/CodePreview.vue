@@ -5,8 +5,8 @@
 				<CopyIcon :finish="copyFinish" @click="handleCopy"></CopyIcon>
 			</el-button>
 		</div>
-		<div class="wrapper">
-			<div class="line-counts" v-text="lineCounts"></div>
+		<div class="wrapper" :style="{gridTemplateColumns: showLineCounts ? '3em 1fr' : '1fr'}">
+			<div v-if="showLineCounts" class="line-counts" v-text="lineCounts"></div>
 			<pre class="code"><code ref="container" :class="`language-${language}`" v-text="code"></code></pre>
 		</div>
 	</div>
@@ -22,9 +22,12 @@ import {sendMessage} from "@/utils/message.ts";
 interface CodePreviewProps {
 	code: string,
 	language: string,
+	showLineCounts?: boolean
 }
 
-const props = defineProps<CodePreviewProps>()
+const props = withDefaults(defineProps<CodePreviewProps>(), {
+	showLineCounts: true
+})
 
 const container = ref()
 
@@ -71,7 +74,6 @@ const handleCopy = () => {
 
 .wrapper {
 	display: grid;
-	grid-template-columns: 3em 1fr;
 	max-height: 100%;
 	overflow-y: auto;
 	overflow-x: hidden;

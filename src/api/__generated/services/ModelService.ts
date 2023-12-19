@@ -1,6 +1,6 @@
 import type { Executor } from '../';
 import type { DataSourceType } from '../model/enums';
-import type { GenAssociationModelInput, GenModelInput, GenModelView, GenTableColumnsInput, Pair } from '../model/static';
+import type { GenAssociationModelInput, GenModelInput, GenModelSimpleView, GenModelView, GenTableColumnsInput, Pair } from '../model/static';
 
 export class ModelService {
     
@@ -29,10 +29,10 @@ export class ModelService {
     }
     
     async list(): Promise<
-        Array<GenModelView>
+        Array<GenModelSimpleView>
     > {
         let _uri = '/model/';
-        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenModelView>
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenModelSimpleView>
     }
     
     async listDatabaseType(): Promise<

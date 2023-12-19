@@ -4,12 +4,14 @@
 
 		<ul v-if="store.isLoaded" class="toolbar left-top">
 			<li>
-				<el-tooltip>
-					<template #content>
-						保存模型 [Ctrl + s]
-					</template>
-
+				<el-tooltip content="保存模型 [Ctrl + s]">
 					<el-button :icon="SaveIcon" @click="handleSaveModel"></el-button>
+				</el-tooltip>
+			</li>
+
+			<li>
+				<el-tooltip content="编辑模型">
+					<el-button :icon="EditPen" @click="handleEdit()"></el-button>
 				</el-tooltip>
 			</li>
 
@@ -63,7 +65,7 @@
 			</li>
 		</ul>
 
-		<ul v-if="store.isLoaded && modelListStore.currentModel" class="toolbar right-top">
+		<ul v-if="store.isLoaded" class="toolbar right-top">
 			<li>
 				<el-tooltip content="预览 SQL">
 					<el-button :icon="SQLIcon" @click="async () => {
@@ -119,8 +121,10 @@
 		</template>
 	</div>
 
-	<ModelDialog v-if="openModelDialog" @cancel="openModelDialog = false"
-				 @submit="handleSaveDialogSubmit"></ModelDialog>
+	<ModelDialog v-if="editModel"
+				 :model="editModel"
+				 @cancel="editModel = undefined"
+				 @submit="handleSubmit"></ModelDialog>
 
 	<DragDialog v-model="store.openDataSourceLoadMenu" :init-w="500" :init-x="100"
 				:init-y="10" :init-h="600" can-resize>
@@ -136,14 +140,13 @@
 import {onMounted, onUnmounted, ref, watch} from "vue"
 import {Graph} from "@antv/x6"
 import {initModelEditor} from "./init.ts"
-import ModelDialog from "@/components/pages/ModelEditor/menu/ModelDialog.vue"
+import ModelDialog from "@/components/business/model/ModelDialog.vue"
 import {Emitter} from "mitt";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
-import {useModelListStore} from "../../ModelList/store/ModelListStore.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {api} from "@/api";
 import {sendMessage} from "@/utils/message.ts";
-import {GenModelInput, Pair} from "@/api/__generated/model/static";
+import {GenModelInput, GenModelView, Pair} from "@/api/__generated/model/static";
 import {handleHistoryKeyEvent} from "@/components/business/graphEditor/history/useHistory.ts";
 import {handleSelectionKeyEvent} from "@/components/business/graphEditor/selection/useSelection.ts";
 import {useSaveKeyEvent} from "@/components/business/graphEditor/storage/useSave.ts";
@@ -166,6 +169,9 @@ import GraphSearcher from "@/components/business/graphEditor/tools/GraphSearcher
 import DataSourceMenu from "@/components/business/dataSource/menu/DataSourceMenu.vue";
 import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
 import {useGraphDataOperation} from "@/components/business/graphEditor/storage/graphData.ts";
+import {useRoute, useRouter} from "vue-router";
+import {EditPen} from "@element-plus/icons-vue";
+import {cloneDeep} from "lodash";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -174,42 +180,52 @@ let graph: Graph
 
 const store = useModelEditorStore()
 
-const modelListStore = useModelListStore()
-
 const loadingStore = useGlobalLoadingStore()
 
-const openModelDialog = ref(false)
+const route = useRoute()
+const router = useRouter()
+
+const currentModel = ref<GenModelView>()
+
+const _currentModel = (): GenModelView => {
+	if (!currentModel.value) {
+		sendMessage('当前模型不存在', 'error')
+		router.push('/models')
+		throw currentModel
+	}
+	return currentModel.value
+}
 
 const {
 	toDataJSONStr,
 	loadGraphByJSONStr
 } = useGraphDataOperation(() => graph)
 
-const handleLoadModel = () => {
-	// 加载 currentModel
-	if (modelListStore.currentModel && modelListStore.currentModel.value) {
-		loadGraphByJSONStr(modelListStore.currentModel.value)
-	}
-}
+onMounted(async () => {
+	loadingStore.add()
 
-/**
- * 保存模型
- * 涉及两步操作：
- * 1. 使用 api saveModel 使后端保存当前模型的数据
- * 2. 修改当前 modelListStore 中保存的当前模型，确保数据一致，并缓存这个当前模型
- */
+	let paramId: string | string[] | undefined = route.params.id
+	if (paramId instanceof Array) paramId = paramId[0]
+	const id = parseInt(paramId)
+	currentModel.value = await api.modelService.get({id})
+
+	graph = initModelEditor(container.value!, wrapper.value!)
+	if (_currentModel().value.length > 0) {
+		loadGraphByJSONStr(_currentModel().value)
+	}
+	await store.load(graph)
+
+	loadingStore.sub()
+})
+
 const handleSaveModel = async () => {
 	loadingStore.add()
 
 	try {
-		if (!modelListStore.currentModel) {
-			openModelDialog.value = true
-		} else {
-			modelListStore.currentModel.value = toDataJSONStr()
-			await api.modelService.save({body: modelListStore.currentModel})
-
-			sendMessage("模型保存成功", "success")
-		}
+		const model = _currentModel()
+		model.value = toDataJSONStr()
+		await api.modelService.save({body: model})
+		sendMessage("模型保存成功", "success")
 	} catch (e) {
 		sendMessage(`模型保存失败，原因：${e}`, 'error', e)
 	}
@@ -217,13 +233,19 @@ const handleSaveModel = async () => {
 	loadingStore.sub()
 }
 
-const handleSaveDialogSubmit = async (model: GenModelInput) => {
-	try {
-		model.value = toDataJSONStr()
-		const id = await api.modelService.save({body: model})
-		modelListStore.currentModel = (await api.modelService.get({id}))!
+const editModel = ref<GenModelInput>()
 
-		openModelDialog.value = false
+const handleEdit = (model: GenModelInput = cloneDeep(_currentModel())) => {
+	model.value = toDataJSONStr()
+	editModel.value = model
+}
+
+const handleSubmit = async (model: GenModelInput) => {
+	try {
+		const id = await api.modelService.save({body: model})
+		currentModel.value = (await api.modelService.get({id}))!
+
+		editModel.value = undefined
 
 		sendMessage("模型保存成功", "success")
 	} catch (e) {
@@ -234,19 +256,6 @@ const handleSaveDialogSubmit = async (model: GenModelInput) => {
 store.addEventListener('keydown', handleHistoryKeyEvent)
 
 store.addEventListener('keydown', handleSelectionKeyEvent)
-
-onMounted(() => {
-	graph = initModelEditor(container.value!, wrapper.value!)
-
-	try {
-		if (!modelListStore.isNew) {
-			handleLoadModel()
-		}
-	} catch (e) {
-		sendMessage('后端获取的模型加载失败', 'error', e)
-	}
-	store.load(graph)
-})
 
 onUnmounted(() => {
 	store.unload()
@@ -259,11 +268,9 @@ useSaveKeyEvent(() => {
 const handleCodeDownload = async () => {
 	loadingStore.add()
 
-	if (!modelListStore.currentModel) {
-		sendMessage('当前模型未保存至数据库，无法生成', 'error')
-		return
-	}
-	const res = (await api.generateService.generateByModel({body: modelListStore.currentModel.id})) as any as Blob
+	const res = (await api.generateService.generateByModel({
+		body: _currentModel().id, language: _currentModel().language
+	})) as any as Blob
 	const file = new File([res], "entities.zip")
 	saveAs(file)
 
@@ -277,11 +284,9 @@ const codeFiles = ref<Array<Pair<string, string>>>([])
 const handleCodePreview = async () => {
 	loadingStore.add()
 
-	if (!modelListStore.currentModel) {
-		sendMessage('当前模型未保存至数据库，无法预览', 'error')
-		return
-	}
-	codeFiles.value = await api.generateService.previewByModel({modelId: modelListStore.currentModel.id})
+	codeFiles.value = await api.generateService.previewByModel({
+		modelId: _currentModel().id, language: _currentModel().language
+	})
 	codePreviewDialogOpenState.value = true
 
 	loadingStore.sub()
@@ -318,12 +323,12 @@ const openSQLPreviewDialog = ref(false)
 const sqlFiles = ref<Array<Pair<string, string>>>([])
 
 const handleSQLPreview = async () => {
-	if (!modelListStore.currentModel) return
-
 	loadingStore.add()
 
 	openSQLPreviewDialog.value = true
-	sqlFiles.value = await api.modelService.previewSql({id: modelListStore.currentModel.id})
+	sqlFiles.value = await api.modelService.previewSql({
+		id: _currentModel().id, type: _currentModel().dataSourceType
+	})
 	loadingStore.sub()
 }
 </script>

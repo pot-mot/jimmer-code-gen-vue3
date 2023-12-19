@@ -2,19 +2,18 @@
 import {nextTick, onMounted, ref} from "vue";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {useRouter} from "vue-router";
-import {useModelListStore} from "./store/ModelListStore.ts";
-import {GenModelInput, GenModelView} from "@/api/__generated/model/static";
+import {GenModelInput, GenModelSimpleView} from "@/api/__generated/model/static";
 import {useLoading} from "@/hooks/useLoading.ts";
 import {api} from "@/api";
 import {deleteConfirm, sendMessage} from "@/utils/message.ts";
 import {datetimeFormat} from "@/utils/dataFormat.ts";
-import ModelDialog from "@/components/pages/ModelEditor/menu/ModelDialog.vue";
+import ModelDialog from "@/components/business/model/ModelDialog.vue";
+import {cloneDeep} from "lodash";
+import {defaultModel} from "@/components/business/model/defaultModel.ts";
 
 const router = useRouter()
 
-const listStore = useModelListStore()
-
-const models = ref<GenModelView[]>([])
+const models = ref<GenModelSimpleView[]>([])
 
 const modelsLoading = useLoading()
 
@@ -32,48 +31,48 @@ onMounted(() => {
 	getModels()
 })
 
-const toModel = (isNew: boolean, model?: GenModelView) => {
-	listStore.currentModel = model
-	listStore.isNew = isNew
-	router.push('/model')
+const toModel = (id: number) => {
+	router.push(`/model/${id}`)
 }
 
-const editModel = ref<GenModelView | undefined>()
+const editModel = ref<GenModelInput>()
 
-const handleEdit = (model: GenModelView) => {
+const handleEdit = (model: GenModelInput = cloneDeep(defaultModel)) => {
 	editModel.value = model
 }
 
 const handleSubmit = async (model: GenModelInput) => {
 	try {
-		if (!model.id) {
-			sendMessage('模型无 id，无法进行修改', 'error')
-			return
+		const updateFlag = (model.id != undefined)
+
+		if (updateFlag) {
+			model.value = undefined
 		}
 
-		model.value = undefined
-
-		await api.modelService.save({body: model})
+		const newId = await api.modelService.save({body: model})
 		editModel.value = undefined
-		sendMessage('模型修改成功', 'success')
 
-		const newModel = await api.modelService.get({id: model.id})
-		if (!newModel) {
+		sendMessage(updateFlag ? '模型修改成功' : '模型保存成功', 'success')
+
+		const newModel = await api.modelService.get({id: newId})
+		if (!newModel || !newModel.id) {
 			sendMessage('模型重新获取失败', 'error')
 			return
 		}
-		const index = models.value.findIndex(model => model.id == newModel.id)
-		if (index == -1) {
-			sendMessage('未找到匹配的模型', 'error')
-			return
+
+		if (updateFlag) {
+			const index = models.value.findIndex(it => it.id == model.id)
+			models.value[index] = newModel
+		} else {
+			models.value.push(newModel)
+			toModel(newModel.id)
 		}
-		models.value[index] = newModel
 	} catch (e) {
 		sendMessage(`模型修改失败，原因：${e}`, 'error', e)
 	}
 }
 
-const handleDelete = (model: GenModelView) => {
+const handleDelete = (model: GenModelSimpleView) => {
 	deleteConfirm(
 		`模型【${model.name}】`,
 		async () => {
@@ -91,11 +90,11 @@ const handleDelete = (model: GenModelView) => {
 
 <template>
 	<div class="wrapper">
-		<el-button @click="toModel(true)">创建新模型</el-button>
+		<el-button @click="handleEdit()">创建新模型</el-button>
 
 		<div v-loading="modelsLoading.isLoading()" class="container">
 			<template v-for="model in models">
-				<div class="model-card hover-show" @click="toModel(false, model)">
+				<div class="model-card hover-show" @click="toModel(model.id)">
 					<div class="buttons hover-show-item">
 						<el-button :icon="EditPen" link title="编辑" type="warning"
 								   @click.prevent.stop="handleEdit(model)"></el-button>
@@ -120,9 +119,10 @@ const handleDelete = (model: GenModelView) => {
 			</template>
 		</div>
 
-		<template v-if="editModel">
-			<ModelDialog :model="editModel" @cancel="editModel = undefined" @submit="handleSubmit"></ModelDialog>
-		</template>
+		<ModelDialog v-if="editModel"
+					 :model="editModel"
+					 @cancel="editModel = undefined"
+					 @submit="handleSubmit"></ModelDialog>
 	</div>
 </template>
 

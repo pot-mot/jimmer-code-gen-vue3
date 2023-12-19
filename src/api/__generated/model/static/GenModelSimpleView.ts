@@ -1,6 +1,6 @@
 import type { DataSourceType, GenLanguage } from '../enums';
 
-export interface GenModelView {
+export interface GenModelSimpleView {
     
     createdTime: string;
     
@@ -15,6 +15,4 @@ export interface GenModelView {
     name: string;
     
     remark: string;
-    
-    value: string;
 }

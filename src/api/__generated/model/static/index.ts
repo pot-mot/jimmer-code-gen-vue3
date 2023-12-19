@@ -19,6 +19,7 @@ export type { GenEnumItemsInput } from './GenEnumItemsInput';
 export type { GenEnumItemsView } from './GenEnumItemsView';
 export type { GenEnumView } from './GenEnumView';
 export type { GenModelInput } from './GenModelInput';
+export type { GenModelSimpleView } from './GenModelSimpleView';
 export type { GenModelView } from './GenModelView';
 export type { GenPackageInput } from './GenPackageInput';
 export type { GenPackagePathInput } from './GenPackagePathInput';

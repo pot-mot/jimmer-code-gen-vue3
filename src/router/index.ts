@@ -23,8 +23,9 @@ const routes: RouteRecordRaw[] = [
         component: () => import("../components/pages/ModelList/Page.vue")
     },
     {
-        path: "/model",
+        path: "/model/:id",
         name: "ModelEditor",
+
         component: () => import("../components/pages/ModelEditor/Page.vue")
     }
 ]
@@ -32,6 +33,7 @@ const routes: RouteRecordRaw[] = [
 export const router = createRouter({
     history: createWebHistory(),
     routes,
+    // @ts-ignore
     scrollBehavior(to, from, savedPosition) {
         if (savedPosition) {
             return savedPosition
@@ -41,11 +43,13 @@ export const router = createRouter({
     },
 });
 
+// @ts-ignore
 router.beforeEach((to, from, next) => {
     useGlobalLoadingStore().start()
     next()
 })
 
+// @ts-ignore
 router.afterEach((to, from, next) => {
     useGlobalLoadingStore().end()
 })
