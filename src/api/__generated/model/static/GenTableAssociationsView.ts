@@ -12,11 +12,17 @@ export interface GenTableAssociationsView {
     
     id: number;
     
+    inAssociations: Array<GenTableAssociationsView_TargetOf_inAssociations>;
+    
+    indexes: Array<GenTableAssociationsView_TargetOf_indexes>;
+    
     modifiedTime: string;
     
     name: string;
     
     orderKey: number;
+    
+    outAssociations: Array<GenTableAssociationsView_TargetOf_outAssociations>;
     
     remark: string;
     
@@ -41,11 +47,7 @@ export interface GenTableAssociationsView_TargetOf_columns {
     
     enumId?: number;
     
-    fullType: string;
-    
     id: number;
-    
-    inAssociations: Array<GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_2>;
     
     logicalDelete: boolean;
     
@@ -57,17 +59,11 @@ export interface GenTableAssociationsView_TargetOf_columns {
     
     orderKey: number;
     
-    outAssociations: Array<GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_2>;
-    
-    partOfFk: boolean;
-    
     partOfPk: boolean;
-    
-    partOfUniqueIdx: boolean;
     
     remark: string;
     
-    table: GenTableAssociationsView_TargetOf_columns_TargetOf_table_2;
+    tableId: number;
     
     type: string;
     
@@ -76,9 +72,13 @@ export interface GenTableAssociationsView_TargetOf_columns {
     typeNotNull: boolean;
 }
 
-export interface GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_2 {
+export interface GenTableAssociationsView_TargetOf_inAssociations {
     
     associationType: AssociationType;
+    
+    columnReferences: Array<GenTableAssociationsView_TargetOf_inAssociations_TargetOf_columnReferences_2>;
+    
+    createdTime: string;
     
     dissociateAction?: DissociateAction;
     
@@ -86,10 +86,25 @@ export interface GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociatio
     
     id: number;
     
-    sourceColumn: GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_2_TargetOf_sourceColumn_3;
+    modifiedTime: string;
+    
+    name: string;
+    
+    orderKey: number;
+    
+    remark: string;
+    
+    sourceTable: GenTableAssociationsView_TargetOf_inAssociations_TargetOf_sourceTable_2;
 }
 
-export interface GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_2_TargetOf_sourceColumn_3 {
+export interface GenTableAssociationsView_TargetOf_inAssociations_TargetOf_columnReferences_2 {
+    
+    sourceColumn: GenTableAssociationsView_TargetOf_inAssociations_TargetOf_columnReferences_2_TargetOf_sourceColumn_3;
+    
+    targetColumnId: number;
+}
+
+export interface GenTableAssociationsView_TargetOf_inAssociations_TargetOf_columnReferences_2_TargetOf_sourceColumn_3 {
     
     comment: string;
     
@@ -97,10 +112,10 @@ export interface GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociatio
     
     name: string;
     
-    table: GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_2_TargetOf_sourceColumn_3_TargetOf_table_4;
+    type: string;
 }
 
-export interface GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociations_2_TargetOf_sourceColumn_3_TargetOf_table_4 {
+export interface GenTableAssociationsView_TargetOf_inAssociations_TargetOf_sourceTable_2 {
     
     comment: string;
     
@@ -109,9 +124,26 @@ export interface GenTableAssociationsView_TargetOf_columns_TargetOf_inAssociatio
     name: string;
 }
 
-export interface GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_2 {
+export interface GenTableAssociationsView_TargetOf_indexes {
+    
+    columnIds: Array<number>;
+    
+    id: number;
+    
+    name: string;
+    
+    tableId: number;
+    
+    uniqueIndex: boolean;
+}
+
+export interface GenTableAssociationsView_TargetOf_outAssociations {
     
     associationType: AssociationType;
+    
+    columnReferences: Array<GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2>;
+    
+    createdTime: string;
     
     dissociateAction?: DissociateAction;
     
@@ -119,10 +151,25 @@ export interface GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociati
     
     id: number;
     
-    targetColumn: GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_2_TargetOf_targetColumn_3;
+    modifiedTime: string;
+    
+    name: string;
+    
+    orderKey: number;
+    
+    remark: string;
+    
+    targetTable: GenTableAssociationsView_TargetOf_outAssociations_TargetOf_targetTable_2;
 }
 
-export interface GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_2_TargetOf_targetColumn_3 {
+export interface GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2 {
+    
+    sourceColumnId: number;
+    
+    targetColumn: GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2_TargetOf_targetColumn_3;
+}
+
+export interface GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2_TargetOf_targetColumn_3 {
     
     comment: string;
     
@@ -130,19 +177,10 @@ export interface GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociati
     
     name: string;
     
-    table: GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_2_TargetOf_targetColumn_3_TargetOf_table_4;
+    type: string;
 }
 
-export interface GenTableAssociationsView_TargetOf_columns_TargetOf_outAssociations_2_TargetOf_targetColumn_3_TargetOf_table_4 {
-    
-    comment: string;
-    
-    id: number;
-    
-    name: string;
-}
-
-export interface GenTableAssociationsView_TargetOf_columns_TargetOf_table_2 {
+export interface GenTableAssociationsView_TargetOf_outAssociations_TargetOf_targetTable_2 {
     
     comment: string;
     

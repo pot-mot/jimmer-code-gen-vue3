@@ -4,7 +4,7 @@ export interface GenAssociationModelInput {
     
     associationType: AssociationType;
     
-    comment: string;
+    columnReferences: Array<GenAssociationModelInput_TargetOf_columnReferences>;
     
     dissociateAction?: DissociateAction;
     
@@ -12,25 +12,43 @@ export interface GenAssociationModelInput {
     
     modelId?: number;
     
-    sourceColumn: GenAssociationModelInput_TargetOf_sourceColumn;
+    name: string;
     
-    targetColumn: GenAssociationModelInput_TargetOf_targetColumn;
+    sourceTable: GenAssociationModelInput_TargetOf_sourceTable;
+    
+    targetTable: GenAssociationModelInput_TargetOf_targetTable;
 }
 
-export interface GenAssociationModelInput_TargetOf_sourceColumn {
+export interface GenAssociationModelInput_TargetOf_columnReferences {
+    
+    sourceColumn: GenAssociationModelInput_TargetOf_columnReferences_TargetOf_sourceColumn_2;
+    
+    targetColumn: GenAssociationModelInput_TargetOf_columnReferences_TargetOf_targetColumn_2;
+}
+
+export interface GenAssociationModelInput_TargetOf_columnReferences_TargetOf_sourceColumn_2 {
     
     comment: string;
     
     name: string;
-    
-    table: GenAssociationModelInput_TargetOf_sourceColumn_TargetOf_table_2;
     
     type: string;
     
     typeCode: number;
 }
 
-export interface GenAssociationModelInput_TargetOf_sourceColumn_TargetOf_table_2 {
+export interface GenAssociationModelInput_TargetOf_columnReferences_TargetOf_targetColumn_2 {
+    
+    comment: string;
+    
+    name: string;
+    
+    type: string;
+    
+    typeCode: number;
+}
+
+export interface GenAssociationModelInput_TargetOf_sourceTable {
     
     comment: string;
     
@@ -39,20 +57,7 @@ export interface GenAssociationModelInput_TargetOf_sourceColumn_TargetOf_table_2
     name: string;
 }
 
-export interface GenAssociationModelInput_TargetOf_targetColumn {
-    
-    comment: string;
-    
-    name: string;
-    
-    table: GenAssociationModelInput_TargetOf_targetColumn_TargetOf_table_2;
-    
-    type: string;
-    
-    typeCode: number;
-}
-
-export interface GenAssociationModelInput_TargetOf_targetColumn_TargetOf_table_2 {
+export interface GenAssociationModelInput_TargetOf_targetTable {
     
     comment: string;
     

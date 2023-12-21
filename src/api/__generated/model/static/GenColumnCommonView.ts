@@ -24,11 +24,7 @@ export interface GenColumnCommonView {
     
     orderKey: number;
     
-    partOfFk: boolean;
-    
     partOfPk: boolean;
-    
-    partOfUniqueIdx: boolean;
     
     remark: string;
     

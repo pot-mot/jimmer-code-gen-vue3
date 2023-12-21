@@ -47,7 +47,8 @@ const defaultTable: GenTableColumnsInput = {
 	remark: "",
 	orderKey: 0,
 	type: "TABLE",
-	columns: []
+	columns: [],
+	indexes: [],
 }
 
 const defaultColumn: GenTableColumnsInput_TargetOf_columns = {
@@ -62,8 +63,6 @@ const defaultColumn: GenTableColumnsInput_TargetOf_columns = {
 	defaultValue: undefined,
 	partOfPk: false,
 	autoIncrement: false,
-	partOfFk: false,
-	partOfUniqueIdx: false,
 	remark: "",
 	logicalDelete: false,
 	businessKey: false,
@@ -102,7 +101,6 @@ const handleColumnToPk = (pkIndex: number) => {
 	pkColumn.typeNotNull = true
 	pkColumn.type = "BIGINT"
 	pkColumn.typeCode = databaseTypeObj.value[pkColumn.type]!
-	pkColumn.partOfUniqueIdx = true
 	pkColumn.defaultValue = undefined
 
 	if (checkConfig.value.onlyOnePk) {
@@ -228,10 +226,6 @@ const handleCancel = () => {
 
 				<el-tooltip v-if="!data.partOfPk" :auto-close="500" content="业务键">
 					<el-checkbox v-model="data.businessKey" class="cling-checkbox"></el-checkbox>
-				</el-tooltip>
-
-				<el-tooltip v-if="!data.partOfPk" :auto-close="500" content="唯一索引">
-					<el-checkbox v-model="data.partOfUniqueIdx" class="cling-checkbox"></el-checkbox>
 				</el-tooltip>
 			</template>
 

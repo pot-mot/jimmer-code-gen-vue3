@@ -3,6 +3,7 @@ import {GenAssociationModelInput, GenTableColumnsInput, GenTableColumnsView} fro
 import {EdgeConnectData, getEdgeConnectData} from "@/components/business/model/associationEdge/connectData.ts";
 import {AssociationType} from "@/api/__generated/model/enums";
 import {getAssociationType} from "@/components/business/model/associationEdge/associationType.ts";
+import {createAssociationName} from "@/utils/associationName.ts";
 
 export const connectDataToAssociationInput = (
     connectData: EdgeConnectData,
@@ -17,32 +18,39 @@ export const connectDataToAssociationInput = (
     } = connectData
 
     return {
-        sourceColumn: {
-            name: sourceColumn.name,
-            comment: sourceColumn.comment,
-            type: sourceColumn.type,
-            typeCode: sourceColumn.typeCode,
-
-            table: {
-                name: sourceTable.name,
-                comment: sourceTable.comment,
-            }
+        name: createAssociationName(
+            sourceTable.name,
+            [sourceColumn.name],
+            targetTable.name,
+            [targetColumn.name]
+        ),
+        sourceTable: {
+            name: sourceTable.name,
+            comment: sourceTable.comment,
         },
-        targetColumn: {
-            name: targetColumn.name,
-            comment: targetColumn.comment,
-            type: targetColumn.type,
-            typeCode: targetColumn.typeCode,
-
-            table: {
-                name: targetTable.name,
-                comment: targetTable.comment,
-            }
+        targetTable: {
+            name: targetTable.name,
+            comment: targetTable.comment,
         },
+        columnReferences: [
+            {
+                sourceColumn: {
+                    name: sourceColumn.name,
+                    comment: sourceColumn.comment,
+                    type: sourceColumn.type,
+                    typeCode: sourceColumn.typeCode,
+                },
+                targetColumn: {
+                    name: targetColumn.name,
+                    comment: targetColumn.comment,
+                    type: targetColumn.type,
+                    typeCode: targetColumn.typeCode,
+                },
+            }
+        ],
         associationType: associationType ? associationType : 'MANY_TO_ONE',
         fake: fake != undefined ? fake : true,
         dissociateAction: undefined,
-        comment: ""
     }
 }
 
@@ -74,7 +82,7 @@ export interface EdgeAssociationData<T extends GenTableColumnsInput | GenTableCo
     connectData: EdgeConnectData<T>
 }
 
-export const edgeToAssociationData = <T extends GenTableColumnsInput | GenTableColumnsView> (edge: Edge): EdgeAssociationData<T> | undefined => {
+export const edgeToAssociationData = <T extends GenTableColumnsInput | GenTableColumnsView>(edge: Edge): EdgeAssociationData<T> | undefined => {
     const connectData = getEdgeConnectData<T>(edge)
 
     if (!connectData) return
@@ -93,7 +101,7 @@ export const edgeToAssociationData = <T extends GenTableColumnsInput | GenTableC
 /**
  * 将 EdgeData 重新转换成 Edge，并更新 source 和 target
  */
-export const associationDataToEdge = <T extends GenTableColumnsInput | GenTableColumnsView> (graph: Graph, data: EdgeAssociationData<T>): Edge | undefined => {
+export const associationDataToEdge = <T extends GenTableColumnsInput | GenTableColumnsView>(graph: Graph, data: EdgeAssociationData<T>): Edge | undefined => {
     if (data.connectData.targetColumn.typeCode != data.connectData.sourceColumn.typeCode) return
 
     const sourceNode = graph.getCellById(data.connectData.sourceNode.id) as Node

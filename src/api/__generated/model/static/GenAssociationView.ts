@@ -4,7 +4,7 @@ export interface GenAssociationView {
     
     associationType: AssociationType;
     
-    comment: string;
+    columnReferences: Array<GenAssociationView_TargetOf_columnReferences>;
     
     createdTime: string;
     
@@ -16,51 +16,56 @@ export interface GenAssociationView {
     
     modifiedTime: string;
     
+    name: string;
+    
     orderKey: number;
     
     remark: string;
     
-    sourceColumn: GenAssociationView_TargetOf_sourceColumn;
+    sourceTable: GenAssociationView_TargetOf_sourceTable;
     
-    targetColumn: GenAssociationView_TargetOf_targetColumn;
+    targetTable: GenAssociationView_TargetOf_targetTable;
 }
 
-export interface GenAssociationView_TargetOf_sourceColumn {
+export interface GenAssociationView_TargetOf_columnReferences {
+    
+    sourceColumn: GenAssociationView_TargetOf_columnReferences_TargetOf_sourceColumn_2;
+    
+    targetColumn: GenAssociationView_TargetOf_columnReferences_TargetOf_targetColumn_2;
+}
+
+export interface GenAssociationView_TargetOf_columnReferences_TargetOf_sourceColumn_2 {
     
     comment: string;
     
     id: number;
     
     name: string;
-    
-    table: GenAssociationView_TargetOf_sourceColumn_TargetOf_table_2;
     
     type: string;
 }
 
-export interface GenAssociationView_TargetOf_sourceColumn_TargetOf_table_2 {
+export interface GenAssociationView_TargetOf_columnReferences_TargetOf_targetColumn_2 {
     
     comment: string;
     
     id: number;
     
     name: string;
-}
-
-export interface GenAssociationView_TargetOf_targetColumn {
-    
-    comment: string;
-    
-    id: number;
-    
-    name: string;
-    
-    table: GenAssociationView_TargetOf_targetColumn_TargetOf_table_2;
     
     type: string;
 }
 
-export interface GenAssociationView_TargetOf_targetColumn_TargetOf_table_2 {
+export interface GenAssociationView_TargetOf_sourceTable {
+    
+    comment: string;
+    
+    id: number;
+    
+    name: string;
+}
+
+export interface GenAssociationView_TargetOf_targetTable {
     
     comment: string;
     

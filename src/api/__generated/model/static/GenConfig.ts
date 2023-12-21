@@ -28,6 +28,8 @@ export interface GenConfig {
     
     logicalDeletedAnnotation: string;
     
+    realFk: boolean;
+    
     separator: string;
     
     tableAnnotation: boolean;
@@ -35,8 +37,6 @@ export interface GenConfig {
     tableCommentPrefix: string;
     
     tableCommentSuffix: string;
-    
-    tableDefineWithFk: boolean;
     
     tablePrefix: string;
     

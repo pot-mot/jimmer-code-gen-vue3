@@ -28,11 +28,13 @@ export const generateEntities = async (entityIds: number[]) => {
  * @param graph
  * @param associations
  */
-export const importAssociationEdges = (graph: Graph, associations: readonly GenAssociationMatchView[]): Edge[] => {
+export const importAssociationEdges = (graph: Graph, associations: GenAssociationMatchView[]): Edge[] => {
     const edges: Edge[] = []
 
     try {
         associations.map(associationToEdge).forEach(newEdge => {
+            if (!newEdge) return
+
             const sourceCellId = newEdge.getSourceCellId()
             if (!sourceCellId || !nodeIsExist(graph, sourceCellId)) return
 
@@ -83,56 +85,22 @@ export const saveAssociations = async (graph: Graph) => {
         }
 
         const viewToInput = (view: GenAssociationMatchView): GenAssociationInput => {
-            const tempComment: string[] = []
-            const tempRemark: string[] = []
-
-            tempComment.push("[")
-
-            if (view.targetColumn.table) {
-                const targetTable = tableMap.get(view.targetColumn.table.id)
-                if (targetTable) {
-                    tempRemark.push(targetTable.comment)
-                    tempComment.push(targetTable.name)
-                }
-            }
-            const targetColumn = columnMap.get(view.targetColumn.id)
-            if (targetColumn) {
-                tempComment.push(".")
-                tempComment.push(targetColumn.name)
-
-                tempRemark.push(".")
-                tempRemark.push(targetColumn.comment)
-            }
-
-            tempComment.push("] -> [")
-            tempRemark.push(" -> ")
-
-            if (view.sourceColumn.table) {
-                const sourceTable = tableMap.get(view.sourceColumn.table.id)
-                if (sourceTable) {
-                    tempComment.push(sourceTable.name)
-                    tempRemark.push(sourceTable.comment)
-                }
-            }
-            const sourceColumn = columnMap.get(view.sourceColumn.id)
-            if (sourceColumn) {
-                tempComment.push(".")
-                tempComment.push(sourceColumn.name)
-
-                tempRemark.push(".")
-                tempRemark.push(sourceColumn.comment)
-            }
-
-            tempComment.push("]")
-
             return {
+                name: view.name,
                 associationType: view.associationType,
-                targetColumnId: view.targetColumn.id,
-                sourceColumnId: view.sourceColumn.id,
                 fake: view.fake,
+
+                targetTableId: view.targetTableId,
+                sourceTableId: view.sourceTableId,
+
+                columnReferences: view.columnReferences.map(it => {
+                    return {
+                        sourceColumnId: it.sourceColumnId,
+                        targetColumnId: it.targetColumnId,
+                    }
+                }),
                 orderKey: 0,
-                comment: tempComment.join(""),
-                remark: tempRemark.join(""),
+                remark: "",
             }
         }
 

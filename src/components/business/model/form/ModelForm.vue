@@ -21,9 +21,8 @@ watch(() => props.model, (propsModel) => {
 
 		if (props.editValue) {
 			tempModel.value = jsonFormatter(propsModel.value ? propsModel.value : '')
-		} else {
-			tempModel.value = undefined
 		}
+
 		model.value = tempModel
 	}
 }, {immediate: true})
@@ -33,8 +32,6 @@ const handleSubmit = () => {
 
 	if (props.editValue) {
 		tempModel.value = jsonParser(tempModel.value ? tempModel.value : '')
-	} else {
-		tempModel.value = undefined
 	}
 
 	emits('submit', tempModel)

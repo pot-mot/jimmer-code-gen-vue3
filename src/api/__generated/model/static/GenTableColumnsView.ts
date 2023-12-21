@@ -12,6 +12,8 @@ export interface GenTableColumnsView {
     
     id: number;
     
+    indexes: Array<GenTableColumnsView_TargetOf_indexes>;
+    
     modifiedTime: string;
     
     name: string;
@@ -53,11 +55,7 @@ export interface GenTableColumnsView_TargetOf_columns {
     
     orderKey: number;
     
-    partOfFk: boolean;
-    
     partOfPk: boolean;
-    
-    partOfUniqueIdx: boolean;
     
     remark: string;
     
@@ -68,6 +66,19 @@ export interface GenTableColumnsView_TargetOf_columns {
     typeCode: number;
     
     typeNotNull: boolean;
+}
+
+export interface GenTableColumnsView_TargetOf_indexes {
+    
+    columnIds: Array<number>;
+    
+    id: number;
+    
+    name: string;
+    
+    tableId: number;
+    
+    uniqueIndex: boolean;
 }
 
 export interface GenTableColumnsView_TargetOf_schema {

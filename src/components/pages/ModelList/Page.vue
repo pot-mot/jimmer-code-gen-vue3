@@ -155,7 +155,7 @@ const handleDelete = (model: GenModelSimpleView) => {
 
 @media screen and (min-width: 540px) {
 	.container {
-		grid-template-columns: repeat(3, 1fr);
+		grid-template-columns: repeat(2, 1fr);
 	}
 }
 

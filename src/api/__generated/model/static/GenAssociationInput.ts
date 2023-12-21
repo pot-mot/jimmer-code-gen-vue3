@@ -4,15 +4,24 @@ export interface GenAssociationInput {
     
     associationType: AssociationType;
     
-    comment: string;
+    columnReferences: Array<GenAssociationInput_TargetOf_columnReferences>;
     
     dissociateAction?: DissociateAction;
     
     fake: boolean;
     
+    name: string;
+    
     orderKey: number;
     
     remark: string;
+    
+    sourceTableId: number;
+    
+    targetTableId: number;
+}
+
+export interface GenAssociationInput_TargetOf_columnReferences {
     
     sourceColumnId: number;
     

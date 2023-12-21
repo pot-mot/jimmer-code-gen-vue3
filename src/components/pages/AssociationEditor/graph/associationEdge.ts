@@ -8,16 +8,20 @@ import {getAssociationType, setAssociationType} from "@/components/business/mode
 import {getAssociationFake, setAssociationFake} from "@/components/business/model/associationEdge/associationFake.ts";
 
 /** 转换关联为 Edge */
-export const associationToEdge = (association: GenAssociationMatchView): Edge => {
+export const associationToEdge = (association: GenAssociationMatchView): Edge | undefined => {
+    if (association.columnReferences.length > 1) return
+
+    const columnReference = association.columnReferences[0]
+
     const edge: Edge = new Shape.Edge<Edge.Properties>({
         ...baseAssociationEdge,
         source: {
-            cell: tableIdToNodeId(association.sourceColumn.table!.id),
-            port: columnIdToPortId(association.sourceColumn.id)
+            cell: tableIdToNodeId(association.sourceTableId),
+            port: columnIdToPortId(columnReference.sourceColumnId)
         },
         target: {
-            cell: tableIdToNodeId(association.targetColumn.table!.id),
-            port: columnIdToPortId(association.targetColumn.id)
+            cell: tableIdToNodeId(association.targetTableId),
+            port: columnIdToPortId(columnReference.targetColumnId)
         },
     })
     if (association.associationType) {
@@ -30,22 +34,21 @@ export const associationToEdge = (association: GenAssociationMatchView): Edge =>
 
 /** 转换 Edge 为关联 */
 export const edgeToAssociation = (edge: Edge): GenAssociationMatchView => {
+    const name = edge.getData()?.association.name
     const associationType = getAssociationType(edge)
     const fake = getAssociationFake(edge)
 
     return {
-        sourceColumn: {
-            id: portIdToColumnId(edge.getSourcePortId()!),
-            table: {
-                id: nodeIdToTableId(edge.getSourceNode()!.id)
+        name: name ? name : edge.id,
+        sourceTableId: nodeIdToTableId(edge.getSourceNode()!.id),
+        targetTableId: nodeIdToTableId(edge.getTargetNode()!.id),
+
+        columnReferences: [
+            {
+                sourceColumnId: portIdToColumnId(edge.getSourcePortId()!),
+                targetColumnId: portIdToColumnId(edge.getTargetPortId()!)
             }
-        },
-        targetColumn: {
-            id: portIdToColumnId(edge.getTargetPortId()!),
-            table: {
-                id: nodeIdToTableId(edge.getTargetNode()!.id)
-            }
-        },
+        ],
         associationType: associationType ? associationType : 'MANY_TO_MANY',
         fake
     }

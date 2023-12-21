@@ -8,6 +8,8 @@ export interface GenTableColumnsInput {
     
     id?: number;
     
+    indexes: Array<GenTableColumnsInput_TargetOf_indexes>;
+    
     modelId?: number;
     
     name: string;
@@ -45,11 +47,7 @@ export interface GenTableColumnsInput_TargetOf_columns {
     
     orderKey: number;
     
-    partOfFk: boolean;
-    
     partOfPk: boolean;
-    
-    partOfUniqueIdx: boolean;
     
     remark: string;
     
@@ -58,6 +56,20 @@ export interface GenTableColumnsInput_TargetOf_columns {
     typeCode: number;
     
     typeNotNull: boolean;
+}
+
+export interface GenTableColumnsInput_TargetOf_indexes {
+    
+    columns: Array<GenTableColumnsInput_TargetOf_indexes_TargetOf_columns_2>;
+    
+    name: string;
+    
+    uniqueIndex: boolean;
+}
+
+export interface GenTableColumnsInput_TargetOf_indexes_TargetOf_columns_2 {
+    
+    name: string;
 }
 
 export interface GenTableColumnsInput_TargetOf_schema {

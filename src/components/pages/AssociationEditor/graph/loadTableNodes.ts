@@ -66,7 +66,23 @@ export const loadTableNodes = async (graph: Graph, ids: number[], replace: boole
 
     const associations = await api.associationService.queryByTable({tableIds: ids})
 
-    const edges = importAssociationEdges(graph, associations)
+    const edges = importAssociationEdges(graph, associations.map(view => {
+        return {
+            associationType: view.associationType,
+            columnReferences: view.columnReferences.map(it => {
+                return {
+                    sourceColumnId: it.sourceColumn.id,
+                    targetColumnId: it.targetColumn.id
+                }
+            }),
+
+            fake: view.fake,
+            name: view.name,
+
+            sourceTableId: view.sourceTable.id,
+            targetTableId: view.targetTable.id
+        }
+    }))
 
     graph.stopBatch('add nodes')
 

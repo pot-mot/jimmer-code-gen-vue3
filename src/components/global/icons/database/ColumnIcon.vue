@@ -11,7 +11,6 @@ const props = defineProps<DataSourceIconProps>()
 
 const columnColor = {
 	PK: '#E6A23C',
-	FK: '#409EFF',
 	BUSINESS_KEY: '#ff5d40',
 	COMMON: '#888'
 }
@@ -19,8 +18,6 @@ const columnColor = {
 const lineColor = computed(() => {
 	if (props.column.partOfPk) {
 		return columnColor.PK
-	} else if (props.column.partOfFk) {
-		return columnColor.FK
 	} else if (props.column.businessKey) {
 		return columnColor.BUSINESS_KEY
 	} else {
@@ -31,7 +28,7 @@ const lineColor = computed(() => {
 
 <template>
 	<el-tooltip :disabled="
-	!column.partOfPk && !column.partOfFk && !column.partOfUniqueIdx
+	!column.partOfPk
 	&& !column.typeNotNull && !column.autoIncrement
 " effect="light" trigger="click">
 		<el-icon size="1.2em" style="transform: translateY(0.2em)">
@@ -46,12 +43,8 @@ const lineColor = computed(() => {
 					  d="M4 16a3 3 0 110 6 3 3 0 110-6"
 					  :stroke="lineColor"/>
 
-				<path v-if="column.partOfUniqueIdx"
-					  d="M4 4l4 2M4 8l4 2M4 12l4 2"
-					  :stroke="lineColor"/>
-
 				<!-- https://tablericons.com/ key -->
-				<path v-if="column.partOfFk || column.partOfPk"
+				<path v-if="column.partOfPk"
 					  :stroke="lineColor"
 					  d="M 15 14 a 3 3 0 1 0 6 0 a 3 3 0 1 0 -6 0 m 3 3 l 0 6 l 3 0 m -3 -3 l 2 0" fill="none"/>
 
@@ -66,8 +59,6 @@ const lineColor = computed(() => {
 			<div v-if="column.partOfPk">PK</div>
 			<div v-if="column.autoIncrement">AUTO INCREMENT</div>
 			<div v-if="column.typeNotNull">NOT NULL</div>
-			<div v-if="column.partOfUniqueIdx">UNIQUE</div>
-			<div v-if="column.partOfFk">FK</div>
 			<div v-if="column.businessKey">BUSINESS KEY</div>
 		</template>
 	</el-tooltip>

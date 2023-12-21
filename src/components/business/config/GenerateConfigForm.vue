@@ -83,8 +83,8 @@ const handleCancel = () => {
 				<div style="width: calc(100% - 3px - 1em);">
 					<el-row :gutter="24">
 						<el-col :span="12">
-							<el-form-item label="生成外键">
-								<el-switch v-model="config.tableDefineWithFk"></el-switch>
+							<el-form-item label="真实外键">
+								<el-switch v-model="config.realFk"></el-switch>
 							</el-form-item>
 						</el-col>
 					</el-row>

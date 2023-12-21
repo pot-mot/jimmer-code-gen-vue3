@@ -13,10 +13,6 @@ import {erRouter, orthRouter} from "@/components/business/graphEditor/edgeRouter
 
 import {baseAssociationEdge} from "@/components/business/model/associationEdge/define.ts";
 import {cloneDeep} from "lodash";
-import {
-    GenAssociationModelInput_TargetOf_sourceColumn, GenAssociationModelInput_TargetOf_sourceColumn_TargetOf_table_2,
-    GenAssociationModelInput_TargetOf_targetColumn, GenAssociationModelInput_TargetOf_targetColumn_TargetOf_table_2
-} from "@/api/__generated/model/static/GenAssociationModelInput.ts";
 
 const tableViewToInput = (tableView: GenTableColumnsView): GenTableColumnsInput => {
     return {
@@ -25,6 +21,18 @@ const tableViewToInput = (tableView: GenTableColumnsView): GenTableColumnsInput 
         orderKey: tableView.orderKey,
         remark: tableView.remark,
         type: tableView.type,
+        indexes: tableView.indexes.map(indexView => {
+            return {
+                name: indexView.name,
+                uniqueIndex: indexView.uniqueIndex,
+                columns: tableView.columns
+                    .filter(it => indexView.columnIds.includes(it.id))
+                    .map(it => it.name)
+                    .map(it => {
+                        return {name: it}
+                    })
+            }
+        }),
         columns: tableView.columns.map(column => {
             return <GenTableColumnsInput_TargetOf_columns>{
                 autoIncrement: column.autoIncrement,
@@ -34,9 +42,7 @@ const tableViewToInput = (tableView: GenTableColumnsView): GenTableColumnsInput 
                 name: column.name,
                 numericPrecision: column.numericPrecision,
                 orderKey: column.orderKey,
-                partOfFk: column.partOfFk,
                 partOfPk: column.partOfPk,
-                partOfUniqueIdx: column.partOfUniqueIdx,
                 remark: column.remark,
                 type: column.type,
                 typeCode: column.typeCode,
@@ -58,29 +64,32 @@ const associationViewToInput = (
 ): GenAssociationModelInput => {
     return {
         associationType: associationView.associationType,
-        comment: associationView.comment,
+        name: associationView.name,
         dissociateAction: associationView.dissociateAction,
         fake: associationView.fake,
-        sourceColumn: <GenAssociationModelInput_TargetOf_sourceColumn>{
-            comment: sourceColumn.comment,
-            name: sourceColumn.name,
-            table: <GenAssociationModelInput_TargetOf_sourceColumn_TargetOf_table_2>{
-                comment: sourceTable.comment,
-                name: sourceTable.name
-            },
-            type: sourceColumn.type,
-            typeCode: sourceColumn.typeCode,
+        sourceTable: {
+            comment: sourceTable.comment,
+            name: sourceTable.name
         },
-        targetColumn: <GenAssociationModelInput_TargetOf_targetColumn>{
-            comment: targetColumn.comment,
-            name: targetColumn.name,
-            table: <GenAssociationModelInput_TargetOf_targetColumn_TargetOf_table_2>{
-                comment: targetTable.comment,
-                name: targetTable.name
-            },
-            type: targetColumn.type,
-            typeCode: targetColumn.typeCode,
+        targetTable: {
+            comment: targetTable.comment,
+            name: targetTable.name
         },
+
+        columnReferences: [{
+            sourceColumn: {
+                comment: sourceColumn.comment,
+                name: sourceColumn.name,
+                type: sourceColumn.type,
+                typeCode: sourceColumn.typeCode,
+            },
+            targetColumn: {
+                comment: targetColumn.comment,
+                name: targetColumn.name,
+                type: targetColumn.type,
+                typeCode: targetColumn.typeCode,
+            },
+        }]
     }
 }
 
@@ -88,9 +97,9 @@ const importAssociationViews = (graph: Graph, associations: readonly GenAssociat
     const edges: Edge[] = []
 
     associations.map(association => {
-        const sourceNode = graph.getNodes().filter(it => it.getData()?.table.name == association.sourceColumn.table.name)[0]
+        const sourceNode = graph.getNodes().filter(it => it.getData()?.table.name == association.sourceTable.name)[0]
         if (!sourceNode) return
-        const targetNode = graph.getNodes().filter(it => it.getData()?.table.name == association.targetColumn.table.name)[0]
+        const targetNode = graph.getNodes().filter(it => it.getData()?.table.name == association.targetTable.name)[0]
         if (!targetNode) return
 
         const sourceTable = sourceNode.getData()?.table as GenTableColumnsInput
@@ -98,9 +107,9 @@ const importAssociationViews = (graph: Graph, associations: readonly GenAssociat
         const targetTable = targetNode.getData()?.table as GenTableColumnsInput
         if (!targetTable) return
 
-        const sourceColumnIndex = sourceTable.columns.findIndex(column => column.name == association.sourceColumn.name)
+        const sourceColumnIndex = sourceTable.columns.findIndex(column => column.name == association.columnReferences[0]?.sourceColumn.name)
         if (sourceColumnIndex == -1) return
-        const targetColumnIndex = targetTable.columns.findIndex(column => column.name == association.targetColumn.name)
+        const targetColumnIndex = targetTable.columns.findIndex(column => column.name == association.columnReferences[0]?.targetColumn.name)
         if (targetColumnIndex == -1) return
 
         const sourcePort = sourceNode.ports.items[sourceColumnIndex]

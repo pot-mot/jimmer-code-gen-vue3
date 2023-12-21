@@ -7,6 +7,7 @@ import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {sendMessage} from "@/utils/message.ts";
 import AssociationIcon from "@/components/global/icons/database/AssociationIcon.vue";
+import {getAssociationName} from "@/utils/associationName.ts";
 
 interface EdgeItem {
 	edge: Edge
@@ -40,31 +41,8 @@ const edgeLabel = computed<string | undefined>(() => {
 	if (!association.value) {
 		return
 	}
-
 	try {
-		const tempEdgeLabel: string[] = []
-
-		if (association.value.sourceColumn && association.value.sourceColumn.table) {
-			tempEdgeLabel.push(association.value.sourceColumn.table.name)
-			tempEdgeLabel.push('.')
-			tempEdgeLabel.push(association.value.sourceColumn.name)
-		} else {
-			tempEdgeLabel.push('[无来源] ')
-		}
-
-		if (association.value.associationType) {
-			tempEdgeLabel.push(" --> ")
-		}
-
-		if (association.value.targetColumn && association.value.targetColumn.table) {
-			tempEdgeLabel.push(association.value.targetColumn.table.name)
-			tempEdgeLabel.push('.')
-			tempEdgeLabel.push(association.value.targetColumn.name)
-		} else {
-			tempEdgeLabel.push(' [无目标]')
-		}
-
-		return tempEdgeLabel.join('')
+		return getAssociationName(association.value)
 	} catch (e) {
 		return
 	}

@@ -4,33 +4,20 @@ export interface GenAssociationMatchView {
     
     associationType: AssociationType;
     
+    columnReferences: Array<GenAssociationMatchView_TargetOf_columnReferences>;
+    
     fake: boolean;
     
-    sourceColumn: GenAssociationMatchView_TargetOf_sourceColumn;
+    name: string;
     
-    targetColumn: GenAssociationMatchView_TargetOf_targetColumn;
+    sourceTableId: number;
+    
+    targetTableId: number;
 }
 
-export interface GenAssociationMatchView_TargetOf_sourceColumn {
+export interface GenAssociationMatchView_TargetOf_columnReferences {
     
-    id: number;
+    sourceColumnId: number;
     
-    table: GenAssociationMatchView_TargetOf_sourceColumn_TargetOf_table_2;
-}
-
-export interface GenAssociationMatchView_TargetOf_sourceColumn_TargetOf_table_2 {
-    
-    id: number;
-}
-
-export interface GenAssociationMatchView_TargetOf_targetColumn {
-    
-    id: number;
-    
-    table: GenAssociationMatchView_TargetOf_targetColumn_TargetOf_table_2;
-}
-
-export interface GenAssociationMatchView_TargetOf_targetColumn_TargetOf_table_2 {
-    
-    id: number;
+    targetColumnId: number;
 }
