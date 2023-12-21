@@ -5,7 +5,7 @@ import {importModelNodes} from "../graph/modelNode.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {nextTick, ref} from "vue";
 import {api} from "@/api";
-import {loadModelNodes} from "../graph/loadModelNodes.ts";
+import {loadTables} from "../graph/loadTables.ts";
 import {useTableModifyDialogsStore} from "@/components/pages/ModelEditor/nodeDialog/TableModifyDialogManageStore.ts";
 import {useTableCreateDialogStore} from "@/components/pages/ModelEditor/nodeDialog/TableCreateDialogStore.ts";
 
@@ -38,7 +38,7 @@ export const useModelEditorStore =
 
                 const tables = await api.tableService.queryColumnsView({query: {schemaIds: [id]}})
 
-                const {nodes, edges} = await loadModelNodes(graph, tables)
+                const {nodes, edges} = await loadTables(graph, tables)
 
                 await nextTick()
 
@@ -59,7 +59,7 @@ export const useModelEditorStore =
             const loadTable = async (id: number) => {
                 const graph = _graph()
                 const tables = await api.tableService.queryColumnsView({query: {ids: [id]}})
-                const {nodes} = await loadModelNodes(graph, tables)
+                const {nodes} = await loadTables(graph, tables)
 
                 if (nodes.length > 0) {
                     setTimeout(() => {

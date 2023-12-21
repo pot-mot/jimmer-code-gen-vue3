@@ -43,34 +43,36 @@ const handleCancel = () => {
 </script>
 
 <template>
-	<el-form size="default">
-		<el-form-item label="名称">
-			<el-input v-model="model.name"></el-input>
-		</el-form-item>
+	<el-form size="default" :style="editValue ? 'height: 100%; display: grid; grid-template-rows: 160px 1fr 40px;' : 'height: 100%; display: grid; grid-template-rows: 160px 40px;'">
+		<div>
+			<el-form-item label="名称">
+				<el-input v-model="model.name"></el-input>
+			</el-form-item>
 
-		<el-row>
-			<el-col :span="12">
-				<el-form-item label="语言">
-					<el-select v-model="model.language">
-						<el-option v-for="language in GenLanguage_CONSTANTS" :value="language"></el-option>
-					</el-select>
-				</el-form-item>
-			</el-col>
-			<el-col :span="12">
-				<el-form-item label="数据源类型">
-					<el-select v-model="model.dataSourceType">
-						<el-option v-for="dataSourceType in DataSourceType_CONSTANTS" :value="dataSourceType"></el-option>
-					</el-select>
-				</el-form-item>
-			</el-col>
-		</el-row>
+			<el-row>
+				<el-col :span="12">
+					<el-form-item label="语言">
+						<el-select v-model="model.language">
+							<el-option v-for="language in GenLanguage_CONSTANTS" :value="language"></el-option>
+						</el-select>
+					</el-form-item>
+				</el-col>
+				<el-col :span="12">
+					<el-form-item label="数据源类型">
+						<el-select v-model="model.dataSourceType">
+							<el-option v-for="dataSourceType in DataSourceType_CONSTANTS" :value="dataSourceType"></el-option>
+						</el-select>
+					</el-form-item>
+				</el-col>
+			</el-row>
 
-		<el-form-item label="备注">
-			<el-input v-model="model.remark" type="textarea"></el-input>
-		</el-form-item>
+			<el-form-item label="备注">
+				<el-input v-model="model.remark" type="textarea" :rows="2" :autosize="false"></el-input>
+			</el-form-item>
+		</div>
 
 		<el-form-item label="内容" v-if="editValue && model.value">
-			<CodeEditor style="height: 16em; border: 1px solid #ccc; border-radius: 8px;" v-model="model.value" language="json"></CodeEditor>
+			<CodeEditor style="height: 100%; min-height: 450px; max-height: calc(100vh - 300px); border: 1px solid #ccc; border-radius: 8px;" v-model="model.value" language="json"></CodeEditor>
 		</el-form-item>
 
 		<div style="text-align: right;">

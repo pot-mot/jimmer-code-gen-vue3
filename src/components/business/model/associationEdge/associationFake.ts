@@ -19,7 +19,7 @@ export const setAssociationFake = (edge: Edge, fake: boolean) => {
     setAssociationFakeStyle(edge, fake)
 }
 
-export const getAssociationFake = (edge: Edge, defaultAssociationFake: boolean = true): boolean => {
+export const getAssociationFake = (edge: Edge, defaultAssociationFake: boolean = false): boolean => {
     const dataAssociationFake = edge.getData()?.association.fake
 
     if (dataAssociationFake != undefined || dataAssociationFake != null) {

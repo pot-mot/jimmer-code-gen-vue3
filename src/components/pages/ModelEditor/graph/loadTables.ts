@@ -14,6 +14,36 @@ import {erRouter, orthRouter} from "@/components/business/graphEditor/edgeRouter
 import {baseAssociationEdge} from "@/components/business/model/associationEdge/define.ts";
 import {cloneDeep} from "lodash";
 
+/**
+ * 将 tables 导入画布
+ */
+export const loadTables = async (graph: Graph, tables: GenTableColumnsView[]) => {
+    graph.startBatch('loadModelNodes')
+
+    const existedNodes = graph.getNodes()
+        .filter(it =>
+            tables
+                .map(it => it.name)
+                .includes(it.getData()?.table?.name)
+        )
+
+    graph.removeCells(existedNodes)
+
+    const nodes: Node[] = importModelNodes(graph, tables.map(it => tableViewToInput(it)))
+
+    const associations = await api.associationService.queryByTable({
+        tableIds: tables.map(it => it.id),
+        selectType: "OR"
+    })
+
+    const edges: Edge[] = importAssociationViews(graph, associations)
+
+    graph.stopBatch('loadModelNodes')
+
+    return {nodes, edges}
+}
+
+
 const tableViewToInput = (tableView: GenTableColumnsView): GenTableColumnsInput => {
     return {
         comment: tableView.comment,
@@ -58,9 +88,11 @@ const tableViewToInput = (tableView: GenTableColumnsView): GenTableColumnsInput 
 const associationViewToInput = (
     associationView: GenAssociationView,
     sourceTable: GenTableColumnsInput,
-    sourceColumn: GenTableColumnsInput_TargetOf_columns,
     targetTable: GenTableColumnsInput,
-    targetColumn: GenTableColumnsInput_TargetOf_columns
+    columnReferences: {
+        sourceColumn: GenTableColumnsInput_TargetOf_columns,
+        targetColumn: GenTableColumnsInput_TargetOf_columns
+    }[]
 ): GenAssociationModelInput => {
     return {
         associationType: associationView.associationType,
@@ -76,20 +108,22 @@ const associationViewToInput = (
             name: targetTable.name
         },
 
-        columnReferences: [{
-            sourceColumn: {
-                comment: sourceColumn.comment,
-                name: sourceColumn.name,
-                type: sourceColumn.type,
-                typeCode: sourceColumn.typeCode,
-            },
-            targetColumn: {
-                comment: targetColumn.comment,
-                name: targetColumn.name,
-                type: targetColumn.type,
-                typeCode: targetColumn.typeCode,
-            },
-        }]
+        columnReferences: columnReferences.map(({sourceColumn, targetColumn}) => {
+            return {
+                sourceColumn: {
+                    comment: sourceColumn.comment,
+                    name: sourceColumn.name,
+                    type: sourceColumn.type,
+                    typeCode: sourceColumn.typeCode,
+                },
+                targetColumn: {
+                    comment: targetColumn.comment,
+                    name: targetColumn.name,
+                    type: targetColumn.type,
+                    typeCode: targetColumn.typeCode,
+                },
+            }
+        })
     }
 }
 
@@ -107,6 +141,8 @@ const importAssociationViews = (graph: Graph, associations: readonly GenAssociat
         const targetTable = targetNode.getData()?.table as GenTableColumnsInput
         if (!targetTable) return
 
+        // TODO 处理多列关联
+
         const sourceColumnIndex = sourceTable.columns.findIndex(column => column.name == association.columnReferences[0]?.sourceColumn.name)
         if (sourceColumnIndex == -1) return
         const targetColumnIndex = targetTable.columns.findIndex(column => column.name == association.columnReferences[0]?.targetColumn.name)
@@ -114,7 +150,7 @@ const importAssociationViews = (graph: Graph, associations: readonly GenAssociat
 
         const sourcePort = sourceNode.ports.items[sourceColumnIndex]
         if (!sourcePort || !sourcePort.id) return
-        const targetPort = sourceNode.ports.items[targetColumnIndex]
+        const targetPort = targetNode.ports.items[targetColumnIndex]
         if (!targetPort || !targetPort.id) return
 
         const sourceColumn = sourceTable.columns[sourceColumnIndex]
@@ -137,11 +173,15 @@ const importAssociationViews = (graph: Graph, associations: readonly GenAssociat
             data: {
                 association: associationViewToInput(
                     association,
-                    sourceTable, sourceColumn,
-                    targetTable, targetColumn
+                    sourceTable, targetTable,
+                    [{sourceColumn, targetColumn}]
                 )
             }
         })
+
+        console.log(sourcePort.id, targetPort.id)
+        console.log(newEdge.getSourcePortId(), newEdge.getTargetPortId())
+        console.log(newEdge.getData())
 
         if (targetNode.id == sourceNode.id) {
             newEdge.router = orthRouter
@@ -155,30 +195,4 @@ const importAssociationViews = (graph: Graph, associations: readonly GenAssociat
     })
 
     return edges
-}
-
-export const loadModelNodes = async (graph: Graph, tables: GenTableColumnsView[]) => {
-    graph.startBatch('loadModelNodes')
-
-    const existedNodes = graph.getNodes()
-        .filter(it =>
-            tables
-                .map(it => it.name)
-                .includes(it.getData()?.table?.name)
-        )
-
-    graph.removeCells(existedNodes)
-
-    const nodes: Node[] = importModelNodes(graph, tables.map(it => tableViewToInput(it)))
-
-    const associations = await api.associationService.queryByTable({
-        tableIds: tables.map(it => it.id),
-        selectType: "OR"
-    })
-
-    const edges: Edge[] = importAssociationViews(graph, associations)
-
-    graph.stopBatch('loadModelNodes')
-
-    return {nodes, edges}
 }

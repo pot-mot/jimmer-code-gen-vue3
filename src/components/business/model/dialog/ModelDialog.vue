@@ -13,7 +13,7 @@ const emits = defineEmits<FormEmits<GenModelInput>>()
 </script>
 
 <template>
-	<DragDialog :model-value="!!props.model" :init-w="800" :init-y="50" can-resize @close="emits('cancel', props.model ? props.model : cloneDeep(defaultModel))">
+	<DragDialog :model-value="!!props.model" :init-w="1000" :init-y="50" :min-h="250" can-resize @close="emits('cancel', props.model ? props.model : cloneDeep(defaultModel))">
 		<ModelForm :model="model" :edit-value="editValue"
 				   @cancel="data => emits('cancel', data)"
 				   @submit="data => emits('submit', data)"

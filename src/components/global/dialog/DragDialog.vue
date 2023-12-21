@@ -147,11 +147,11 @@ defineExpose({
 					:active="true"
 					:draggable="draggable"
 					:resizable="resizable"
-					:x="x" :disableX="disableX"
-					:y="y" :disableY="disableY"
+					:x="x" :disabledX="disabledX"
+					:y="y" :disabledY="disabledY"
 					:parent="limitByParent"
-					:h="h" :maxH="maxH" :minH="minH" :disableH="disableH"
-					:w="w" :maxW="maxW" :minW="minW" :disableW="disableW"
+					:h="h" :maxH="maxH" :minH="minH" :disabledH="disabledH"
+					:w="w" :maxW="maxW" :minW="minW" :disabledW="disabledW"
 					style="border: none; z-index: 2000;">
 			<div ref="wrapper" :style="draggable ? 'cursor: all-scroll;' : 'cursor: default;'" class="wrapper">
 				<div class="close" @click="handleClose">

@@ -75,7 +75,7 @@
 				</el-tooltip>
 
 				<DragDialog v-model="openSQLPreviewDialog" :init-w="700" :init-x="5000" can-drag
-							can-resize disable-h>
+							can-resize disabled-h disabled-y>
 					<MultiCodePreview :code-files="sqlFiles" height="calc(100vh - 5em - 30px)"
 									  style="height: calc(100vh - 30px); width: 100%;"
 									  width="100%"></MultiCodePreview>
@@ -91,7 +91,7 @@
 				</el-tooltip>
 
 				<DragDialog v-model="codePreviewDialogOpenState" :init-w="700" :init-x="5000"
-							can-drag can-resize disable-h>
+							can-drag can-resize disabled-h disabled-y>
 					<MultiCodePreview :code-files="codeFiles" height="calc(100vh - 5em - 30px)"
 									  style="height: calc(100vh - 30px); width: 100%;"
 									  width="100%"></MultiCodePreview>

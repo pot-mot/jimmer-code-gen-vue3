@@ -49,7 +49,7 @@ export const connectDataToAssociationInput = (
             }
         ],
         associationType: associationType ? associationType : 'MANY_TO_ONE',
-        fake: fake != undefined ? fake : true,
+        fake: fake != undefined ? fake : false,
         dissociateAction: undefined,
     }
 }

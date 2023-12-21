@@ -24,10 +24,10 @@ export interface DialogTeleportProps {
 }
 
 export interface DialogDisableProps {
-    disableX?: boolean
-    disableY?: boolean
-    disableW?: boolean
-    disableH?: boolean
+    disabledX?: boolean
+    disabledY?: boolean
+    disabledW?: boolean
+    disabledH?: boolean
 }
 
 export interface DragDialogProps extends
