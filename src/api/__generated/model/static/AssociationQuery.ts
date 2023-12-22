@@ -1,6 +1,9 @@
+import type { AssociationType } from '../enums';
 import type { TimeRangeQueryParam } from './';
 
 export interface AssociationQuery {
+    
+    associationType?: AssociationType;
     
     createdTime?: TimeRangeQueryParam;
     

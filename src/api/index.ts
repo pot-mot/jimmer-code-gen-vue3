@@ -33,8 +33,8 @@ export const api = new Api(async ({uri, method, body}) => {
             return await response.blob()
         } else {
             // 其他类型的响应内容
-            sendMessage(`接收到了未设置的响应类型: ${contentType}，来源是 ${fetchUrl}`, 'info')
-            console.log(contentType)
+            const msg = `接收到了未设置的响应类型: ${contentType}，来源是 ${fetchUrl}`
+            sendMessage(msg, 'info', msg)
             return response.body
         }
     } catch (e) {

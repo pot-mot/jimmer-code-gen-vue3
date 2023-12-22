@@ -1,6 +1,6 @@
 import {Graph} from "@antv/x6";
 import debounce from "lodash/debounce";
-import {useStyle, useHoverToFront} from "./highlight.ts";
+import {useStyle, useHoverToFront} from "../../modelGraphEditor/highlight.ts";
 import {useHistory} from "../history/useHistory.ts";
 import {useSelection} from "../selection/useSelection.ts";
 

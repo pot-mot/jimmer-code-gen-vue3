@@ -10,5 +10,11 @@ export interface ColumnQuery {
     
     modifiedTime?: TimeRangeQueryParam;
     
+    partOfPk?: boolean;
+    
     tableIds?: Array<number>;
+    
+    type?: string;
+    
+    typeCode?: number;
 }

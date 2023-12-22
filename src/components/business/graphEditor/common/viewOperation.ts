@@ -1,9 +1,9 @@
 import {nextTick, Ref, ref} from "vue";
 import {getBottom, getLeft, getRight, getTop, layoutByLevel, LayoutDirection} from "../layout/layoutByLevel.ts";
 import {Graph} from "@antv/x6";
-import {defaultZoomRange} from "../constant.ts";
 import {getSelectedNodes} from "../selection/selectOperation.ts";
 import {CellInput, getCell} from "./cellsInputProcess.ts";
+import {DEFAULT_ZOOM_RANGE} from "@/components/business/modelGraphEditor/constant.ts";
 
 export const useViewOperation = (_graph: () => Graph) => {
     const layoutDirection: Ref<LayoutDirection> = ref("LR")
@@ -35,7 +35,7 @@ export const layout = (graph: Graph, direction: LayoutDirection) => {
  * 使画布适应内容
  */
 export const fit = (graph: Graph) => {
-    graph.scaleContentToFit({...defaultZoomRange, padding: 100})
+    graph.scaleContentToFit({...DEFAULT_ZOOM_RANGE, padding: 100})
     graph.centerContent()
 }
 

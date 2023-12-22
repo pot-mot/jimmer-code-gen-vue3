@@ -1,11 +1,13 @@
 import {Graph} from "@antv/x6"
 import {initGraph} from "@/components/business/graphEditor/common/init.ts";
-import {defaultZoomRange} from "@/components/business/graphEditor/constant.ts";
 
-import {AssociationEdgeConnecting} from "@/components/business/model/associationEdge/define.ts";
-import {useEdgeAssociationData} from "@/components/pages/ModelEditor/graph/modelEdge.ts";
-import {useAssociationType} from "@/components/business/model/associationEdge/associationType.ts";
-import {useAssociationFake} from "@/components/business/model/associationEdge/associationFake.ts";
+import {AssociationEdgeConnecting} from "@/components/business/modelGraphEditor/associationEdge/define.ts";
+import {useEdgeAssociationData} from "@/components/pages/ModelEditor/graph/associationEdge.ts";
+import {useAssociationFake} from "@/components/business/modelGraphEditor/associationEdge/associationFake.ts";
+import {DEFAULT_ZOOM_RANGE} from "@/components/business/modelGraphEditor/constant.ts";
+import {
+    useAssociationType
+} from "@/components/business/modelGraphEditor/associationEdge/associationTypeLabels.ts";
 
 export const initModelEditor = (container: HTMLElement, wrapper: HTMLElement): Graph => {
     const graph = initGraph(
@@ -14,7 +16,7 @@ export const initModelEditor = (container: HTMLElement, wrapper: HTMLElement): G
         {
             mousewheel: {
                 enabled: true,
-                ...defaultZoomRange,
+                ...DEFAULT_ZOOM_RANGE,
             },
             panning: {
                 enabled: true,

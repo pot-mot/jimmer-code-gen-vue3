@@ -16,6 +16,8 @@ export type ApiErrors = {
     },
     "configService": {
     },
+    "dataSourceColumnTypeService": {
+    },
     "dataSourceService": {
         "create": AllErrors & (
             {

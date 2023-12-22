@@ -4,12 +4,12 @@ import {ref, watch} from "vue";
 import {api} from "@/api";
 import {sendMessage} from "@/utils/message.ts";
 import Comment from "@/components/global/common/Comment.vue";
+import MultiCodePreview from "@/components/global/code/MultiCodePreview.vue";
 import {
 	convertEntities,
 	generateEntities,
 	previewEntities
-} from "../../../AssociationEditor/business/graphOperation.ts";
-import MultiCodePreview from "@/components/global/code/MultiCodePreview.vue";
+} from "@/components/pages/EntityGenerator/business/entityOperations.ts";
 
 interface EntityInfoProps {
 	id: number

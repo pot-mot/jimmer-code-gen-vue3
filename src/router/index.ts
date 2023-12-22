@@ -7,12 +7,6 @@ const routes: RouteRecordRaw[] = [
         name: "Index",
         component: () => import("../components/pages/Index/Page.vue")
     },
-    // @Deprecated
-    // {
-    //     path: "/association",
-    //     name: "AssociationEditor",
-    //     component: () => import("../components/pages/AssociationEditor/Page.vue"),
-    // },
     {
         path: "/entity",
         name: "EntityGenerator",

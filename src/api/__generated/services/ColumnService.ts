@@ -25,10 +25,31 @@ export class ColumnService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
+        _value = options.query.partOfPk;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'partOfPk='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         _value = options.query.tableIds?.join(',');
         if (_value !== undefined && _value !== null) {
             _uri += _separator
             _uri += 'tableIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.type;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'type='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.typeCode;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'typeCode='
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }

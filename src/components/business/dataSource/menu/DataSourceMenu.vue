@@ -8,7 +8,7 @@ import {useLoading} from "@/hooks/useLoading.ts";
 import {DataSourceMenuEvents} from "./DataSourceMenuEvents.ts";
 import {sendMessage} from "@/utils/message.ts";
 import mitt from 'mitt'
-import {DataSourceMenuSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlots.ts";
+import {DataSourceMenuSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlotProps.ts";
 
 const eventBus = mitt<DataSourceMenuEvents>()
 

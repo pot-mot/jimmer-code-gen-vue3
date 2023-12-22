@@ -1,20 +1,32 @@
 import {Edge, Graph, Node} from "@antv/x6";
 import {SelectType} from "@/api/__generated/model/enums";
-import {columnIdToPortId} from "@/components/pages/AssociationEditor/graph/columnPort.ts";
 
-export const matchByKeywords = (target: {name: string, comment: string}, keywords: string[]): boolean => {
+export const matchByKeywords = <T extends {[key: string]: any}> (target: T, keywords: string[], props: Array<keyof T> = ['name', 'comment']): boolean => {
     for (let keyword of keywords) {
-        if (
-            target.name.includes(keyword) ||
-            target.comment.includes(keyword)
-        ) {
-            return true
+        for (let prop of props) {
+            if (target[prop].includes(keyword)) {
+                return true
+            }
         }
     }
     return false
 }
 
-export const matchNode = (node: Node, keywords: string[]): boolean => matchByKeywords(node.getData().table, keywords)
+const matchNode = (node: Node, keywords: string[]): boolean => {
+    const table = node.getData().table
+    if (table && Object.keys(table).includes('name') && Object.keys(table).includes('comment')) {
+        return matchByKeywords(node.getData().table, keywords)
+    }
+    return false
+}
+
+export const searchNodesByKeywords = (graph: Graph, keywords: string[]) => {
+    return graph.getNodes().filter(node => matchNode(node, keywords))
+}
+
+export const searchNodesByNames = (graph: Graph, names: string[]) => {
+    return graph.getNodes().filter(node => names.includes(node.getData()?.table?.name))
+}
 
 /**
  * 判断节点是否存在
@@ -83,13 +95,6 @@ export const searchEdgesByNode = (
                 return targetFlag || sourceFlag
             }
         })
-}
-
-export const searchEdgesByColumn = (graph: Graph, sourceColumnId: number, targetColumnId: number) => {
-    return searchEdgesByPort(graph, {
-        sourcePortId: columnIdToPortId(sourceColumnId),
-        targetPortId: columnIdToPortId(targetColumnId)
-    })
 }
 
 /**

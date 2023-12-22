@@ -101,10 +101,21 @@ export interface GenTableAssociationsView_TargetOf_inAssociations_TargetOf_colum
     
     sourceColumn: GenTableAssociationsView_TargetOf_inAssociations_TargetOf_columnReferences_2_TargetOf_sourceColumn_3;
     
-    targetColumnId: number;
+    targetColumn: GenTableAssociationsView_TargetOf_inAssociations_TargetOf_columnReferences_2_TargetOf_targetColumn_3;
 }
 
 export interface GenTableAssociationsView_TargetOf_inAssociations_TargetOf_columnReferences_2_TargetOf_sourceColumn_3 {
+    
+    comment: string;
+    
+    id: number;
+    
+    name: string;
+    
+    type: string;
+}
+
+export interface GenTableAssociationsView_TargetOf_inAssociations_TargetOf_columnReferences_2_TargetOf_targetColumn_3 {
     
     comment: string;
     
@@ -164,9 +175,20 @@ export interface GenTableAssociationsView_TargetOf_outAssociations {
 
 export interface GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2 {
     
-    sourceColumnId: number;
+    sourceColumn: GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2_TargetOf_sourceColumn_3;
     
     targetColumn: GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2_TargetOf_targetColumn_3;
+}
+
+export interface GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2_TargetOf_sourceColumn_3 {
+    
+    comment: string;
+    
+    id: number;
+    
+    name: string;
+    
+    type: string;
 }
 
 export interface GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2_TargetOf_targetColumn_3 {

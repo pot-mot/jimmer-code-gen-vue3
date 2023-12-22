@@ -1,3 +1,4 @@
+import type { TableType } from '../enums';
 import type { TimeRangeQueryParam } from './';
 
 export interface TableQuery {
@@ -8,11 +9,15 @@ export interface TableQuery {
     
     keywords?: Array<string>;
     
+    modelIds?: Array<number>;
+    
     modifiedTime?: TimeRangeQueryParam;
     
-    name?: string;
+    nonModel?: boolean;
     
     nonSchema?: boolean;
     
     schemaIds?: Array<number>;
+    
+    type?: TableType;
 }

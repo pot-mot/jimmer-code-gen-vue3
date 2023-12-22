@@ -2,7 +2,7 @@
 import {Graph} from "@antv/x6";
 import Searcher from "@/components/global/common/Searcher.vue";
 import {focus} from "@/components/business/graphEditor/common/viewOperation.ts"
-import {matchNode} from "@/components/business/graphEditor/common/search.ts";
+import {searchNodesByKeywords} from "@/components/business/graphEditor/common/search.ts";
 import Comment from "@/components/global/common/Comment.vue";
 
 interface SearcherProps {
@@ -14,7 +14,7 @@ const props = defineProps<SearcherProps>()
 
 <template>
 	<Searcher
-		:search="(keyword) => graph.getNodes().filter(node => matchNode(node, keyword.split(/\s+/)))"
+		:search="(keyword) => searchNodesByKeywords(graph, keyword.split(/\s+/))"
 		:choose="(item) => focus(props.graph, item)"
 		:target="graph.container"
 		:init-x="1050"

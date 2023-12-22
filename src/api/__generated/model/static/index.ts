@@ -9,6 +9,8 @@ export type { GenAssociationView } from './GenAssociationView';
 export type { GenColumnCommonView } from './GenColumnCommonView';
 export type { GenConfig } from './GenConfig';
 export type { GenConfigProperties } from './GenConfigProperties';
+export type { GenDataSourceColumnTypeInput } from './GenDataSourceColumnTypeInput';
+export type { GenDataSourceColumnTypeView } from './GenDataSourceColumnTypeView';
 export type { GenDataSourceInput } from './GenDataSourceInput';
 export type { GenDataSourceTemplateView } from './GenDataSourceTemplateView';
 export type { GenDataSourceView } from './GenDataSourceView';

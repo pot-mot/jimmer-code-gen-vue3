@@ -49,10 +49,17 @@ export class TableService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        _value = options.query.name;
+        _value = options.query.modelIds?.join(',');
         if (_value !== undefined && _value !== null) {
             _uri += _separator
-            _uri += 'name='
+            _uri += 'modelIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.nonModel;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'nonModel='
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
@@ -93,10 +100,17 @@ export class TableService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        _value = options.query.name;
+        _value = options.query.modelIds?.join(',');
         if (_value !== undefined && _value !== null) {
             _uri += _separator
-            _uri += 'name='
+            _uri += 'modelIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.nonModel;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'nonModel='
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
@@ -137,10 +151,17 @@ export class TableService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        _value = options.query.name;
+        _value = options.query.modelIds?.join(',');
         if (_value !== undefined && _value !== null) {
             _uri += _separator
-            _uri += 'name='
+            _uri += 'modelIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.nonModel;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'nonModel='
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
@@ -181,10 +202,17 @@ export class TableService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        _value = options.query.name;
+        _value = options.query.modelIds?.join(',');
         if (_value !== undefined && _value !== null) {
             _uri += _separator
-            _uri += 'name='
+            _uri += 'modelIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.nonModel;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'nonModel='
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }

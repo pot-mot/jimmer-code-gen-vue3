@@ -1,14 +1,9 @@
 <script lang="ts" setup>
-import {GenTableCommonView} from "@/api/__generated/model/static";
 import TableIcon from "../../../global/icons/database/TableIcon.vue";
 import Comment from "../../../global/common/Comment.vue";
-import {DataSourceMenuEventsProps} from "./DataSourceMenuEvents.ts";
+import {TableItemProps} from "@/components/business/dataSource/menu/DataSourceMenuProps.ts";
 
-interface TableItemProps {
-	table: GenTableCommonView
-}
-
-defineProps<TableItemProps & DataSourceMenuEventsProps>()
+defineProps<TableItemProps>()
 </script>
 
 <template>

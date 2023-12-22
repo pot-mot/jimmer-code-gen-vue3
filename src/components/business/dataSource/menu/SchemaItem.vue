@@ -1,23 +1,19 @@
 <script lang="ts" setup>
 import {ref} from "vue";
-import {GenSchemaView, GenTableCommonView} from "@/api/__generated/model/static";
+import {GenTableCommonView} from "@/api/__generated/model/static";
 import {api} from "@/api";
 import Details from "../../../global/common/Details.vue";
 import {Delete} from "@element-plus/icons-vue";
 import TableItem from "./TableItem.vue";
 import SchemaIcon from "../../../global/icons/database/SchemaIcon.vue";
-import {DataSourceMenuEventsProps} from "./DataSourceMenuEvents.ts";
 import {deleteConfirm, sendMessage} from "@/utils/message.ts";
-import {SchemaItemSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlots.ts";
+import {SchemaItemSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlotProps.ts";
 import Searcher from "@/components/global/common/Searcher.vue";
 import {matchByKeywords} from "@/components/business/graphEditor/common/search.ts";
 import {useLoading} from "@/hooks/useLoading.ts";
+import {SchemaItemProps} from "@/components/business/dataSource/menu/DataSourceMenuProps.ts";
 
-interface SchemaItemProps {
-	schema: GenSchemaView
-}
-
-const props = defineProps<SchemaItemProps & DataSourceMenuEventsProps>()
+const props = defineProps<SchemaItemProps>()
 
 const container = ref<HTMLElement>()
 

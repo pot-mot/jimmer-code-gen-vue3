@@ -4,6 +4,7 @@ import {sendMessage} from "@/utils/message.ts";
 import {useSelectOperation} from "@/components/business/graphEditor/selection/selectOperation.ts";
 import {useViewOperation} from "@/components/business/graphEditor/common/viewOperation.ts";
 import {useGraphReactiveState} from "./common/reactiveState.ts";
+import {useGraphDataOperation} from "@/components/business/graphEditor/storage/graphData.ts";
 
 export const useCommonGraphOperations = () => {
     return (() => {
@@ -169,6 +170,8 @@ export const useCommonGraphOperations = () => {
             graph.removeCells(edges)
         }
 
+        const graphDataOperation = useGraphDataOperation(_graph)
+
         return {
             isLoaded,
             load,
@@ -192,7 +195,9 @@ export const useCommonGraphOperations = () => {
 
             ...fitAndLayoutOperations,
 
-            ...reactiveState
+            ...reactiveState,
+
+            ...graphDataOperation
         }
     })()
 }

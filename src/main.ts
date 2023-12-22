@@ -11,8 +11,9 @@ import './assets/base.css'
 import './assets/util.css'
 import './components/global/list/list.css'
 import './assets/element-overwrite.css'
+import './assets/antv-x6-animation.css'
 
-import {registerModelShape} from "@/components/business/model/register.ts";
+import {registerModelShape} from "@/components/business/modelGraphEditor/register.ts";
 import {useCodeEditor} from "@/components/global/code/CodeEditorWorkers.ts";
 
 const app = createApp(App)

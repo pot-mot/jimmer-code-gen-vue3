@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {nextTick, ref, watch} from "vue";
-import {GenDataSourceView, GenSchemaView} from "@/api/__generated/model/static";
+import {GenSchemaView} from "@/api/__generated/model/static";
 import SchemaItem from "./SchemaItem.vue";
 import {api} from "@/api";
 import {GenSchemaDto} from "@/api/__generated/model/dto";
@@ -9,19 +9,15 @@ import Details from "../../../global/common/Details.vue";
 import {useLoading} from "@/hooks/useLoading.ts";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import DataSourceIcon from "../../../global/icons/database/DataSourceIcon.vue";
-import {DataSourceMenuEventsProps} from "./DataSourceMenuEvents.ts";
 import {deleteConfirm, sendMessage} from "@/utils/message.ts";
-import {DataSourceItemSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlots.ts";
+import {DataSourceItemSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlotProps.ts";
+import {DataSourceItemProps} from "@/components/business/dataSource/menu/DataSourceMenuProps.ts";
 
 const loadedSchemaLoading = useLoading()
 
 const previewSchemaLoading = useLoading()
 
-interface DataSourceItemProps {
-	dataSource: GenDataSourceView
-}
-
-const props = defineProps<DataSourceItemProps & DataSourceMenuEventsProps>()
+const props = defineProps<DataSourceItemProps>()
 
 const previewSchemas = ref<GenSchemaDto['DEFAULT'][]>([])
 

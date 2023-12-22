@@ -1,5 +1,5 @@
 import {Cell, Graph} from "@antv/x6";
-import {unStyleAll} from "@/components/business/graphEditor/common/highlight.ts";
+import {unStyleAll} from "@/components/business/modelGraphEditor/highlight.ts";
 
 export type GraphEditorData = {
     json: { cells: Cell.Properties[] },

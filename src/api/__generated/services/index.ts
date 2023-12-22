@@ -4,6 +4,8 @@ export { ColumnService } from './ColumnService';
 export type { ColumnServiceOptions } from './ColumnService';
 export { ConfigService } from './ConfigService';
 export type { ConfigServiceOptions } from './ConfigService';
+export { DataSourceColumnTypeService } from './DataSourceColumnTypeService';
+export type { DataSourceColumnTypeServiceOptions } from './DataSourceColumnTypeService';
 export { DataSourceService } from './DataSourceService';
 export type { DataSourceServiceOptions } from './DataSourceService';
 export { EntityService } from './EntityService';

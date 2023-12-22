@@ -62,14 +62,6 @@ vite build
 
 如果需要复用 graph 通用操作仅需调用 useCommonGraphOperations 并将一个新的 graph 实例 load 入即可。
 
-#### [关联编辑器 AssociationEditor](src%2Fcomponents%2Fpages%2FAssociationEditor%2FPage.vue)
-
-作为较早期设计，基于直接从数据库获取结构进行关联设置。
-
-正如命名，因不涉及表结构变更，因此整体功能非常简单，直接根据表结构与关联映射为实体。
-
-前置需求是**需要具备现成的数据库结构与可以直接连接的数据源**
-
 #### [模型设计器 ModelEditor](src%2Fcomponents%2Fpages%2FModelEditor%2FPage.vue)
 
 基于关联编辑器重新调整的模型设计器，可以不依赖数据源直接设计模型结构。

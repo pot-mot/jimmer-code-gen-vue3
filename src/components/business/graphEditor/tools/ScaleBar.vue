@@ -2,7 +2,8 @@
 import {Graph} from "@antv/x6";
 import {Minus, Plus} from "@element-plus/icons-vue";
 import {computed, nextTick, onMounted, ref, watch} from "vue";
-import {defaultZoomRange} from "../constant.ts";
+
+import {DEFAULT_ZOOM_RANGE} from "@/components/business/modelGraphEditor/constant.ts";
 
 interface ScaleBarProps {
 	graph: Graph,
@@ -15,9 +16,9 @@ const props = defineProps<ScaleBarProps>()
 
 const scaling = ref(1)
 
-const min = ref(Math.log2(defaultZoomRange.minScale))
+const min = ref(Math.log2(DEFAULT_ZOOM_RANGE.minScale))
 
-const max = ref(Math.log2(defaultZoomRange.maxScale))
+const max = ref(Math.log2(DEFAULT_ZOOM_RANGE.maxScale))
 
 onMounted(() => {
 	nextTick(() => {

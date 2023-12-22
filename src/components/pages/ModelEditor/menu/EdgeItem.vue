@@ -7,7 +7,7 @@ import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {sendMessage} from "@/utils/message.ts";
 import AssociationIcon from "@/components/global/icons/database/AssociationIcon.vue";
-import {getAssociationName} from "@/utils/associationName.ts";
+import {getAssociationSourceLabel, getAssociationTargetLabel} from "@/components/business/modelGraphEditor/associationEdge/associationName.ts";
 
 interface EdgeItem {
 	edge: Edge
@@ -37,12 +37,19 @@ const handleDelete = () => {
 
 const defaultLabel = '无效关联'
 
-const edgeLabel = computed<string | undefined>(() => {
-	if (!association.value) {
+const sourceLabel = computed<string | undefined>(() => {
+	if (!association.value) return
+	try {
+		return getAssociationSourceLabel(association.value)
+	} catch (e) {
 		return
 	}
+})
+
+const targetLabel = computed<string | undefined>(() => {
+	if (!association.value) return
 	try {
-		return getAssociationName(association.value)
+		return getAssociationTargetLabel(association.value)
 	} catch (e) {
 		return
 	}
@@ -52,12 +59,17 @@ const edgeLabel = computed<string | undefined>(() => {
 <template>
 	<div>
 		<el-text class="hover-show">
-			<AssociationIcon v-if="association"
-							 :association-type="association.associationType"
-							 :fake="association.fake"></AssociationIcon>
-
-			<el-button v-if="edgeLabel" link @click="store.focus(edge)">
-				{{ edgeLabel }}
+			<el-button v-if="association && sourceLabel && targetLabel" link @click="store.focus(edge)">
+				<span>
+					{{ sourceLabel }}
+				</span>
+				<span style="padding: 0 0.3em;">
+					<AssociationIcon :association-type="association.associationType"
+									 :fake="association.fake"></AssociationIcon>
+				</span>
+				<span>
+					{{ targetLabel }}
+				</span>
 			</el-button>
 			<el-text v-else type="warning">
 				{{ defaultLabel }}

@@ -1,12 +1,12 @@
 import {Edge, Graph, Node} from "@antv/x6";
 import {searchEdgesByNode} from "../common/search.ts";
-import {CellInput, getFirst, process} from "../common/cellsInputProcess.ts";
+import {CellProperty, getFirst} from "../common/cellsInputProcess.ts";
 
 export const useSelectOperation = (_graph: () => Graph) => {
     return {
-        select: (cells: CellInput | CellInput[]) => select(_graph(), cells),
-        unselect: (cells: CellInput | CellInput[]) => unselect(_graph(), cells),
-        toggleSelect: (cells: CellInput | CellInput[]) => toggleSelect(_graph(), cells),
+        select: (cells: CellProperty | CellProperty[]) => select(_graph(), cells),
+        unselect: (cells: CellProperty | CellProperty[]) => unselect(_graph(), cells),
+        toggleSelect: (cells: CellProperty | CellProperty[]) => toggleSelect(_graph(), cells),
         selectAll: () => selectAll(_graph()),
         getSelectedEdges: () => getSelectedEdges(_graph()),
         getSelectedNodes: () => getSelectedNodes(_graph()),
@@ -20,23 +20,23 @@ export const selectAll = (graph: Graph) => {
     graph.resetSelection(graph.getCells())
 }
 
-export const unselect = (graph: Graph, cells: CellInput | CellInput[]) => {
-    graph.unselect(process(cells))
+export const unselect = (graph: Graph, cells: CellProperty | CellProperty[]) => {
+    graph.unselect(cells)
 }
 
-export const select = (graph: Graph, cells: CellInput | CellInput[]) => {
-    graph.select(process(cells))
+export const select = (graph: Graph, cells: CellProperty | CellProperty[]) => {
+    graph.select(cells)
 }
 
 /**
  * 切换 cell 选中状态
  */
-export const toggleSelect = (graph: Graph, cells: CellInput | CellInput[]) => {
+export const toggleSelect = (graph: Graph, cells: CellProperty | CellProperty[]) => {
     const firstCell = getFirst(cells)
     if (firstCell && graph.isSelected(firstCell)) {
-        graph.unselect(process(cells))
+        graph.unselect(cells)
     } else {
-        graph.select(process(cells))
+        graph.select(cells)
     }
 }
 

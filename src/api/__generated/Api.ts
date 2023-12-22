@@ -1,6 +1,6 @@
 import type { Executor } from './';
 
-import { AssociationService, ColumnService, ConfigService, DataSourceService, EntityService, EnumService, GenerateService, ModelService, PackageService, SchemaService, TableService, TypeMappingService } from './services';
+import { AssociationService, ColumnService, ConfigService, DataSourceColumnTypeService, DataSourceService, EntityService, EnumService, GenerateService, ModelService, PackageService, SchemaService, TableService, TypeMappingService } from './services';
 
 export class Api {
     
@@ -9,6 +9,8 @@ export class Api {
     readonly columnService: ColumnService;
     
     readonly configService: ConfigService;
+    
+    readonly dataSourceColumnTypeService: DataSourceColumnTypeService;
     
     readonly dataSourceService: DataSourceService;
     
@@ -32,6 +34,7 @@ export class Api {
         this.associationService = new AssociationService(executor);
         this.columnService = new ColumnService(executor);
         this.configService = new ConfigService(executor);
+        this.dataSourceColumnTypeService = new DataSourceColumnTypeService(executor);
         this.dataSourceService = new DataSourceService(executor);
         this.entityService = new EntityService(executor);
         this.enumService = new EnumService(executor);

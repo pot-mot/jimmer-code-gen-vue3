@@ -11,7 +11,7 @@
 
 			<li>
 				<el-tooltip content="编辑模型">
-					<el-button :icon="EditPen" @click="handleEdit()"></el-button>
+					<el-button :icon="EditPen" @click="store.handleEditModel"></el-button>
 				</el-tooltip>
 			</li>
 
@@ -122,17 +122,6 @@
 			<GraphSearcher :graph="store._graph()"></GraphSearcher>
 		</template>
 	</div>
-
-	<ModelDialog :model-value="!!editModel"
-				 :model="editModel"
-				 edit-value
-				 @cancel="editModel = undefined"
-				 @submit="handleSubmit"></ModelDialog>
-
-	<DragDialog v-model="store.openDataSourceLoadMenu" :init-w="500" :init-x="100"
-				:init-y="10" :init-h="600" can-resize>
-		<DataSourceMenu ref="dataSourceLoadMenu"></DataSourceMenu>
-	</DragDialog>
 </template>
 
 <style scoped>
@@ -143,17 +132,14 @@
 import {onMounted, onUnmounted, ref, watch} from "vue"
 import {Graph} from "@antv/x6"
 import {initModelEditor} from "./init.ts"
-import ModelDialog from "@/components/business/model/dialog/ModelDialog.vue"
-import {Emitter} from "mitt";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {api} from "@/api";
 import {sendMessage} from "@/utils/message.ts";
-import {GenModelInput, GenModelView, Pair} from "@/api/__generated/model/static";
+import {Pair} from "@/api/__generated/model/static";
 import {handleHistoryKeyEvent} from "@/components/business/graphEditor/history/useHistory.ts";
 import {handleSelectionKeyEvent} from "@/components/business/graphEditor/selection/useSelection.ts";
 import {useSaveKeyEvent} from "@/components/business/graphEditor/storage/useSave.ts";
-import {DataSourceMenuEvents} from "@/components/business/dataSource/menu/DataSourceMenuEvents.ts";
 import SaveIcon from "@/components/global/icons/toolbar/SaveIcon.vue";
 import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
 import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";
@@ -169,12 +155,8 @@ import DownloadIcon from "@/components/global/icons/toolbar/DownloadIcon.vue";
 import {saveAs} from "file-saver";
 import ScaleBar from "@/components/business/graphEditor/tools/ScaleBar.vue";
 import GraphSearcher from "@/components/business/graphEditor/tools/GraphSearcher.vue";
-import DataSourceMenu from "@/components/business/dataSource/menu/DataSourceMenu.vue";
 import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
-import {useGraphDataOperation} from "@/components/business/graphEditor/storage/graphData.ts";
-import {useRoute, useRouter} from "vue-router";
 import {EditPen} from "@element-plus/icons-vue";
-import {cloneDeep} from "lodash";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -185,41 +167,10 @@ const store = useModelEditorStore()
 
 const loadingStore = useGlobalLoadingStore()
 
-const route = useRoute()
-const router = useRouter()
-
-const currentModel = ref<GenModelView>()
-
-const _currentModel = (): GenModelView => {
-	if (!currentModel.value) {
-		sendMessage('当前模型不存在', 'error')
-		router.push('/models')
-		throw currentModel
-	}
-	return currentModel.value
-}
-
-const {
-	toDataJSONStr,
-	loadGraphByJSONStr
-} = useGraphDataOperation(() => graph)
-
 onMounted(async () => {
 	loadingStore.add()
 
-	let paramId: string | string[] | undefined = route.params.id
-	if (paramId instanceof Array) paramId = paramId[0]
-	const id = parseInt(paramId)
-	currentModel.value = await api.modelService.get({id})
-
 	graph = initModelEditor(container.value!, wrapper.value!)
-	if (_currentModel().value.length > 0) {
-		try {
-			loadGraphByJSONStr(_currentModel().value)
-		} catch (e) {
-			sendMessage('模型数据解析出错', 'error', e)
-		}
-	}
 	await store.load(graph)
 
 	loadingStore.sub()
@@ -229,43 +180,15 @@ const handleSaveModel = async () => {
 	loadingStore.add()
 
 	try {
-		const model = _currentModel()
+		const model = store._currentModel()
 
-		if (model.value != toDataJSONStr()) {
-			model.value = toDataJSONStr()
+		if (model.value != store.toDataJSONStr()) {
+			model.value = store.toDataJSONStr()
 			await api.modelService.save({body: model})
 		} else {
 			await api.modelService.save({body: {...model, value: undefined}})
 		}
 
-		sendMessage("模型保存成功", "success")
-	} catch (e) {
-		sendMessage(`模型保存失败，原因：${e}`, 'error', e)
-	}
-
-	loadingStore.sub()
-}
-
-const editModel = ref<GenModelInput>()
-
-const handleEdit = (model: GenModelInput = cloneDeep(_currentModel())) => {
-	model.value = toDataJSONStr()
-	editModel.value = model
-}
-
-const handleSubmit = async (model: GenModelInput) => {
-	loadingStore.add()
-
-	try {
-		// 尽可能规避编辑 json value
-		if (model.value && model.value == toDataJSONStr()) {
-			model.value = undefined
-		}
-
-		const id = await api.modelService.save({body: model})
-		currentModel.value = (await api.modelService.get({id}))!
-		loadGraphByJSONStr(_currentModel().value)
-		editModel.value = undefined
 		sendMessage("模型保存成功", "success")
 	} catch (e) {
 		sendMessage(`模型保存失败，原因：${e}`, 'error', e)
@@ -290,7 +213,7 @@ const handleCodeDownload = async () => {
 	loadingStore.add()
 
 	const res = (await api.generateService.generateByModel({
-		body: _currentModel().id, language: _currentModel().language
+		body: store._currentModel().id, language: store._currentModel().language
 	})) as any as Blob
 	const file = new File([res], "entities.zip")
 	saveAs(file)
@@ -306,7 +229,7 @@ const handleCodePreview = async () => {
 	loadingStore.add()
 
 	codeFiles.value = await api.generateService.previewByModel({
-		modelId: _currentModel().id, language: _currentModel().language
+		modelId: store._currentModel().id, language: store._currentModel().language
 	})
 	codePreviewDialogOpenState.value = true
 
@@ -319,26 +242,6 @@ watch(() => codePreviewDialogOpenState.value, async (openState) => {
 	}
 })
 
-const dataSourceLoadMenu = ref()
-
-watch(() => dataSourceLoadMenu.value, () => {
-	if (!dataSourceLoadMenu.value) return
-
-	const eventBus: Emitter<DataSourceMenuEvents> = dataSourceLoadMenu.value.eventBus
-
-	eventBus.on('clickSchema', async ({id}) => {
-		loadingStore.add()
-		await store.loadSchema(id)
-		loadingStore.sub()
-	})
-
-	eventBus.on('clickTable', async ({id}) => {
-		loadingStore.add()
-		await store.loadTable(id)
-		loadingStore.sub()
-	})
-})
-
 const openSQLPreviewDialog = ref(false)
 
 const sqlFiles = ref<Array<Pair<string, string>>>([])
@@ -348,7 +251,7 @@ const handleSQLPreview = async () => {
 
 	openSQLPreviewDialog.value = true
 	sqlFiles.value = await api.modelService.previewSql({
-		id: _currentModel().id, type: _currentModel().dataSourceType
+		id: store._currentModel().id, type: store._currentModel().dataSourceType
 	})
 	loadingStore.sub()
 }
