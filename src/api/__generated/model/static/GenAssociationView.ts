@@ -43,6 +43,8 @@ export interface GenAssociationView_TargetOf_columnReferences_TargetOf_sourceCol
     name: string;
     
     type: string;
+    
+    typeCode: number;
 }
 
 export interface GenAssociationView_TargetOf_columnReferences_TargetOf_targetColumn_2 {
@@ -54,6 +56,8 @@ export interface GenAssociationView_TargetOf_columnReferences_TargetOf_targetCol
     name: string;
     
     type: string;
+    
+    typeCode: number;
 }
 
 export interface GenAssociationView_TargetOf_sourceTable {

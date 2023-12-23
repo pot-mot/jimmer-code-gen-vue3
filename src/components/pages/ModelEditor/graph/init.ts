@@ -2,7 +2,7 @@ import {Graph} from "@antv/x6"
 import {initGraph} from "@/components/business/graphEditor/common/init.ts";
 
 import {AssociationEdgeConnecting} from "@/components/business/modelGraphEditor/associationEdge/define.ts";
-import {useEdgeAssociationData} from "@/components/pages/ModelEditor/graph/associationEdge.ts";
+import {useAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge.ts";
 import {useAssociationFake} from "@/components/business/modelGraphEditor/associationEdge/associationFake.ts";
 import {DEFAULT_ZOOM_RANGE} from "@/components/business/modelGraphEditor/constant.ts";
 import {
@@ -28,7 +28,7 @@ export const initModelEditor = (container: HTMLElement, wrapper: HTMLElement): G
         }
     )
 
-    useEdgeAssociationData(graph)
+    useAssociationEdgeData(graph)
     useAssociationType(graph)
     useAssociationFake(graph)
 

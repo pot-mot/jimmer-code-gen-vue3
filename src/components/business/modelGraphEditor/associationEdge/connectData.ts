@@ -1,5 +1,5 @@
 import {Node, Edge} from "@antv/x6";
-import {GenTableColumnsInput, GenTableColumnsView} from "@/api/__generated/model/static";
+import {GenTableColumnsInput} from "@/api/__generated/model/static";
 import {PortManager} from "@antv/x6/es/model/port";
 import PortMetadata = PortManager.PortMetadata;
 import {TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
@@ -45,29 +45,25 @@ export const getEdgeConnect = (edge: Edge): EdgeConnect | undefined => {
     }
 }
 
-export interface EdgeConnectData<
-    T extends GenTableColumnsInput | GenTableColumnsView = GenTableColumnsInput,
-> extends EdgeConnect {
-    sourceTable: T,
-    sourceColumn?: T['columns'][number],
-    targetTable: T,
-    targetColumn?: T['columns'][number],
+export interface EdgeConnectData extends EdgeConnect {
+    sourceTable: GenTableColumnsInput,
+    sourceColumn?: GenTableColumnsInput['columns'][number],
+    targetTable: GenTableColumnsInput,
+    targetColumn?: GenTableColumnsInput['columns'][number],
 }
 
-export const getEdgeConnectData = <
-    T extends GenTableColumnsInput | GenTableColumnsView = GenTableColumnsInput,
->(edge: Edge): EdgeConnectData<T> | undefined => {
+export const getEdgeConnectData = (edge: Edge): EdgeConnectData | undefined => {
     const connect = getEdgeConnect(edge)
 
     if (!connect) return
 
     const {sourceNode, sourcePortIndex, targetNode, targetPortIndex} = connect
 
-    const sourceTable = sourceNode.getData().table as T | undefined
+    const sourceTable = sourceNode.getData().table as GenTableColumnsInput | undefined
     if (!sourceTable) return
     const sourceColumn = sourcePortIndex != undefined ? sourceTable.columns[sourcePortIndex] : undefined
 
-    const targetTable = targetNode.getData().table as T | undefined
+    const targetTable = targetNode.getData().table as GenTableColumnsInput | undefined
     if (!targetTable) return
     const targetColumn = targetPortIndex != undefined ? targetTable.columns[targetPortIndex] : undefined
 

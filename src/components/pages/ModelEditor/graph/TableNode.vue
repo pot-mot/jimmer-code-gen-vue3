@@ -39,7 +39,7 @@ import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {sendMessage} from "@/utils/message.ts";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
-import {associationDataToEdge, edgeToAssociationData} from "./associationEdge.ts";
+import {importAssociationInput} from "./associationEdge.ts";
 import {columnToPort} from "@/components/pages/ModelEditor/graph/tableNode.ts";
 import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
 
@@ -127,9 +127,8 @@ onMounted(async () => {
 
 		graph.startBatch("update table_node data, port, association")
 
-		const edgeDatas = graph
+		const oldEdges = graph
 			.getConnectedEdges(node.value.id)
-			.map((edge) => edgeToAssociationData(edge))
 
 		node.value.removePorts()
 		node.value.addPorts(
@@ -137,16 +136,15 @@ onMounted(async () => {
 		)
 		resizePort()
 
-		edgeDatas.forEach(data => {
-			if (!data) return
+		setTimeout(() => {
+			oldEdges.forEach(edge => {
+				if (edge.getData()?.association) {
+					importAssociationInput(graph, edge.getData().association)
+				}
+			})
 
-			const edge = associationDataToEdge(graph, data)
-			if (edge) {
-				graph.addEdge(edge)
-			}
-		})
-
-		graph.stopBatch("update table_node data, port, association")
+			graph.stopBatch("update table_node data, port, association")
+		}, 100)
 
 	}, {deep: true})
 })

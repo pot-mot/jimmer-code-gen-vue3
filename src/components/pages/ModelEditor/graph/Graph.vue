@@ -168,7 +168,7 @@ onMounted(async () => {
 	await store.load(graph)
 
 	graph.on('node:dblclick', ({node}) => {
-		tableModifyDialogsStore.open(node.getData().table.id, node.getData().table)
+		tableModifyDialogsStore.open(node.id, node.getData().table)
 	})
 
 	graph.on('history:change', (args) => {

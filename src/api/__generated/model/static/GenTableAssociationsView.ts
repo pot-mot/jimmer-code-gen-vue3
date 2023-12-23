@@ -117,13 +117,7 @@ export interface GenTableAssociationsView_TargetOf_inAssociations_TargetOf_colum
 
 export interface GenTableAssociationsView_TargetOf_inAssociations_TargetOf_columnReferences_2_TargetOf_targetColumn_3 {
     
-    comment: string;
-    
     id: number;
-    
-    name: string;
-    
-    type: string;
 }
 
 export interface GenTableAssociationsView_TargetOf_inAssociations_TargetOf_sourceTable_2 {
@@ -182,13 +176,7 @@ export interface GenTableAssociationsView_TargetOf_outAssociations_TargetOf_colu
 
 export interface GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2_TargetOf_sourceColumn_3 {
     
-    comment: string;
-    
     id: number;
-    
-    name: string;
-    
-    type: string;
 }
 
 export interface GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2_TargetOf_targetColumn_3 {

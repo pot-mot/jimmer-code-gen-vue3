@@ -12,17 +12,6 @@ import {
     getAssociationTypeLabel
 } from "@/components/business/modelGraphEditor/associationEdge/associationTypeLabels.ts";
 
-export const useHoverToFront = (graph: Graph) => {
-    graph.on('cell:mouseenter', ({cell}) => {
-        cell.toFront()
-        if (cell.isNode()) {
-            graph.getConnectedEdges(cell).forEach(edge => {
-                edge.toFront()
-            })
-        }
-    })
-}
-
 const judgeNode = (node: Node) => {
     return node && node.shape == TABLE_NODE && node.getData()?.wrapper && node.getData()?.wrapper.value
 }
@@ -115,6 +104,14 @@ const stopHistoryAction = (graph: Graph, fn: Function) => {
     graph.disableHistory()
     fn()
     graph.enableHistory()
+}
+
+export const useHoverToFront = (graph: Graph) => {
+    graph.on('cell:mouseenter', ({cell}) => {
+        stopHistoryAction(graph, () => {
+            cell.toFront()
+        })
+    })
 }
 
 export const useStyle = (graph: Graph) => {
