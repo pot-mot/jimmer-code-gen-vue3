@@ -26,6 +26,11 @@
       "@/*": ["src/*"],
     }
   },
+
+  // https://blog.csdn.net/KlausLily/article/details/128541531
+  // deepkit 运行时类型检查
+  "reflection":true,
+
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

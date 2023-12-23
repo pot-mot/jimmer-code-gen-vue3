@@ -9,9 +9,13 @@ export type GraphEditorData = {
 export const useGraphDataOperation = (_graph: () => Graph) => {
     return {
         toData: (): GraphEditorData => graphToEditorData(_graph()),
-        loadGraphByData: (data: GraphEditorData) => loadGraphFromEditorData(_graph(), data),
+        loadGraphByData: (data: GraphEditorData) => {
+            loadEditorData(_graph(), data)
+        },
         toDataJSONStr: (): string => JSON.stringify(graphToEditorData(_graph())),
-        loadGraphByJSONStr: (JSONStr: string) => loadGraphFromEditorData(_graph(), JSON.parse(JSONStr)),
+        loadGraphByJSONStr: (JSONStr: string) => {
+            loadEditorData(_graph(), JSON.parse(JSONStr))
+        },
     }
 }
 export const graphToEditorData = (graph: Graph): GraphEditorData => {
@@ -23,13 +27,13 @@ export const graphToEditorData = (graph: Graph): GraphEditorData => {
         transform: graph.view.viewport.getAttribute('transform')
     }
 }
-export const loadGraphFromEditorData = (graph: Graph, data: GraphEditorData) => {
+export const loadEditorData = (graph: Graph, data: GraphEditorData, reset: boolean = true) => {
     const {json, zoom, transform} = data
 
     graph.startBatch('load from JSON')
 
     // 预先移除所有过去的 cells
-    graph.removeCells(graph.getCells())
+    if (reset) graph.removeCells(graph.getCells())
 
     const cells = graph.parseJSON(json)
     const nodes = <Node[]>cells.filter(it => it.isNode())
