@@ -7,6 +7,10 @@ import {
     HIGHLIGHT_COLOR,
     TABLE_NODE
 } from "@/components/business/modelGraphEditor/constant.ts";
+import {
+    createBaseLabel,
+    getAssociationTypeLabel
+} from "@/components/business/modelGraphEditor/associationEdge/associationTypeLabels.ts";
 
 export const useHoverToFront = (graph: Graph) => {
     graph.on('cell:mouseenter', ({cell}) => {
@@ -58,24 +62,52 @@ const nodeUnselected = (node: Node) => {
 const edgeHover = (edge: Edge) => {
     if (judgeEdge(edge)) {
         edge.attr('line/strokeWidth', HIGHLIGHT_ASSOCIATION_LINE_WIDTH)
+
+        const associationTypeLabel = getAssociationTypeLabel(edge)
+        if (associationTypeLabel) {
+            edge.setLabelAt(associationTypeLabel.index, createBaseLabel({
+                fontWeight: 'bold'
+            }, associationTypeLabel.label))
+        }
     }
 }
 
 const edgeUnhover = (edge: Edge) => {
     if (judgeEdge(edge)) {
         edge.attr('line/strokeWidth', ASSOCIATION_LINE_WIDTH)
+
+        const associationTypeLabel = getAssociationTypeLabel(edge)
+        if (associationTypeLabel) {
+            edge.setLabelAt(associationTypeLabel.index, createBaseLabel({
+                fontWeight: 'normal'
+            }, associationTypeLabel.label))
+        }
     }
 }
 
 const edgeSelected = (edge: Edge) => {
     if (judgeEdge(edge)) {
         edge.attr('line/stroke', HIGHLIGHT_COLOR)
+
+        const associationTypeLabel = getAssociationTypeLabel(edge)
+        if (associationTypeLabel) {
+            edge.setLabelAt(associationTypeLabel.index, createBaseLabel({
+                fill: HIGHLIGHT_COLOR
+            }, associationTypeLabel.label))
+        }
     }
 }
 
 const edgeUnselected = (edge: Edge) => {
     if (judgeEdge(edge)) {
         edge.attr('line/stroke', COMMON_COLOR)
+
+        const associationTypeLabel = getAssociationTypeLabel(edge)
+        if (associationTypeLabel) {
+            edge.setLabelAt(associationTypeLabel.index, createBaseLabel({
+                fill: COMMON_COLOR
+            }, associationTypeLabel.label))
+        }
     }
 }
 
@@ -115,14 +147,12 @@ export const useStyle = (graph: Graph) => {
         edgeHover(edge)
 
         const nodes = [edge.getSourceNode(), edge.getTargetNode()]
-        console.log(nodes)
         nodes.forEach(node => {if (node) {nodeHover(node)}})
     })
     graph.on('edge:mouseleave', ({edge}) => {
         edgeUnhover(edge)
 
         const nodes = [edge.getSourceNode(), edge.getTargetNode()]
-        console.log(nodes)
         nodes.forEach(node => {if (node) {nodeUnhover(node)}})
     })
 

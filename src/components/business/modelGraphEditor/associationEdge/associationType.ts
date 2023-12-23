@@ -1,4 +1,4 @@
-import {AssociationType} from "@/api/__generated/model/enums";
+import {AssociationType, AssociationType_CONSTANTS} from "@/api/__generated/model/enums";
 
 export const AssociationPart_CONSTANTS = ["SOURCE", "TARGET"] as const;
 export type AssociationPart = typeof AssociationPart_CONSTANTS[number]
@@ -42,7 +42,7 @@ export const associationTypeToPair = (associationType: AssociationType): Associa
 }
 
 export const associationPairToType = (associationPair: AssociationPair): AssociationType => {
-    return reverseSingleAssociationType(associationPair.source) + "_TO_" + reverseSingleAssociationType(associationPair.target) as AssociationType
+    return associationPair.source + "_TO_" + associationPair.target as AssociationType
 }
 
 export const reverseSinglePartAssociationType = (
@@ -50,13 +50,11 @@ export const reverseSinglePartAssociationType = (
     part: AssociationPart
 ): AssociationType => {
     let {source, target} = associationTypeToPair(associationType)
-
     if (part == "SOURCE") {
         source = reverseSingleAssociationType(source)
     } else if (part == "TARGET") {
         target = reverseSingleAssociationType(target)
     }
-
     return associationPairToType({source, target})
 }
 
@@ -69,3 +67,13 @@ export const reverseAssociationType = (associationType: AssociationType): Associ
     return associationType
 }
 
+
+export const toggleAssociationType = (associationType: AssociationType | undefined): AssociationType => {
+    for (let i = 0; i < AssociationType_CONSTANTS.length; i++) {
+        if (associationType == AssociationType_CONSTANTS[i]) {
+            return AssociationType_CONSTANTS[i + 1 < AssociationType_CONSTANTS.length ? i + 1 : 0]
+        }
+    }
+
+    return AssociationType_CONSTANTS[0]
+}

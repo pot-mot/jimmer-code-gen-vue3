@@ -10,7 +10,15 @@ import ColumnItem from "@/components/business/model/menu/ColumnItem.vue";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 
-const props = defineProps<TableItemProps>()
+const props = withDefaults(defineProps<TableItemProps>(), {
+	showConfig(props) {
+	    return {
+			showColumns: false,
+			showAssociations: true,
+			...props.showConfig
+		}
+	},
+})
 
 const columns = ref<GenColumnCommonView[]>([])
 const associations = ref<GenAssociationView[]>([])
@@ -19,12 +27,14 @@ const columnsLoading = useLoading()
 const associationsLoading = useLoading()
 
 const getColumns = async () => {
+	if (!props.showConfig.showColumns) return
 	columnsLoading.add()
 	columns.value = await api.columnService.query({query: {tableIds: [props.table.id]}})
 	columnsLoading.sub()
 }
 
 const getAssociations = async () => {
+	if (!props.showConfig.showAssociations) return
 	associationsLoading.add()
 	associations.value = await api.associationService.queryByTable({tableIds: [props.table.id], selectType: "OR"})
 	associationsLoading.sub()
@@ -35,37 +45,57 @@ const getAssociations = async () => {
 	<Details v-loading="columnsLoading.isLoading() && associationsLoading.isLoading()" @open="() => {
 		getColumns()
 		getAssociations()
-	}">
+	}" :disabled="!showConfig.showColumns && !showConfig.showAssociations">
 		<template #title>
 			<el-text>
-				<span><TableIcon :type="table.type"></TableIcon></span>
-				{{ table.name }}
-				<Comment :comment="table.comment"></Comment>
+				<TableIcon :type="table.type"></TableIcon>
+				<el-button @click="eventBus.emit('clickTable', {id: table.id})" link>
+					{{ table.name }}
+					<Comment :comment="table.comment"></Comment>
+				</el-button>
 			</el-text>
 		</template>
 
-		<Details v-loading="columnsLoading.isLoading()" @open="getColumns">
-			<template #title>
-				<el-text>Columns</el-text>
-			</template>
+		<template v-if="showConfig.showColumns && showConfig.showAssociations">
+			<Details v-loading="columnsLoading.isLoading()" @open="getColumns">
+				<template #title>
+					<el-text>Columns</el-text>
+				</template>
 
-			<ul>
+				<ul style="padding: 0 0 0.5em 0.5em;">
+					<li v-for="column in columns">
+						<ColumnItem :column="column" :event-bus="eventBus"></ColumnItem>
+					</li>
+				</ul>
+			</Details>
+
+			<Details v-loading="associationsLoading.isLoading()" @open="getAssociations">
+				<template #title>
+					<el-text>Associations</el-text>
+				</template>
+
+				<ul style="padding: 0 0 0.5em 0.5em;">
+					<li v-for="association in associations">
+						<AssociationItem :association="association" :event-bus="eventBus" :show-config="showConfig"></AssociationItem>
+					</li>
+				</ul>
+			</Details>
+		</template>
+
+		<template v-else-if="showConfig.showColumns">
+			<ul style="padding: 0 0 0.5em 0.5em;">
 				<li v-for="column in columns">
-					<ColumnItem :column="column"></ColumnItem>
+					<ColumnItem :column="column" :event-bus="eventBus"></ColumnItem>
 				</li>
 			</ul>
-		</Details>
+		</template>
 
-		<Details v-loading="associationsLoading.isLoading()" @open="getAssociations">
-			<template #title>
-				<el-text>Associations</el-text>
-			</template>
-
-			<ul>
+		<template v-else-if="showConfig.showAssociations">
+			<ul style="padding: 0 0 0.5em 0.5em;">
 				<li v-for="association in associations">
-					<AssociationItem :association="association"></AssociationItem>
+					<AssociationItem :association="association" :event-bus="eventBus" :show-config="showConfig"></AssociationItem>
 				</li>
 			</ul>
-		</Details>
+		</template>
 	</Details>
 </template>

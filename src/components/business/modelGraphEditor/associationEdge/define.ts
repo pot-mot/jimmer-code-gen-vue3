@@ -3,32 +3,33 @@ import {sendMessage} from "@/utils/message.ts";
 import {Options} from "@antv/x6/es/graph/options";
 import Connecting = Options.Connecting;
 import {getEdgeConnectData} from "@/components/business/modelGraphEditor/associationEdge/connectData.ts";
-import {Edge} from "@antv/x6";
 import {
     ASSOCIATION_EDGE,
-    ASSOCIATION_LINE_WIDTH,
-    COMMON_COLOR,
+    ASSOCIATION_LINE_WIDTH, COMMON_COLOR,
 } from "@/components/business/modelGraphEditor/constant.ts";
 
-export const associationEdge = {
+export const associationEdgeBase = {
     inherit: 'edge',
+    router: erRouter,
     attrs: {
         line: {
             stroke: COMMON_COLOR,
             strokeWidth: ASSOCIATION_LINE_WIDTH,
         },
-    },
+    }
 }
 
 export const AssociationEdgeConnecting: Partial<Connecting> = {
-    // @ts-ignore
-    createEdge() {
-        return new Edge({
+    createEdge({sourceCell}) {
+        return this.addEdge({
             shape: ASSOCIATION_EDGE,
-            router: erRouter
+            source: sourceCell
         })
     },
+
     validateEdge({edge}) {
+        if (edge.shape != ASSOCIATION_EDGE) return true
+
         // @ts-ignore d.ts 的类型声明与 ts 不一致
         const connectData = getEdgeConnectData(edge)
 

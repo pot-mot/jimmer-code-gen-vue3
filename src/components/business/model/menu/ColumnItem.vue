@@ -3,15 +3,18 @@ import {ColumnItemProps} from "@/components/business/model/menu/ModelMenuProps.t
 import Comment from "@/components/global/common/Comment.vue";
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 
-const props = defineProps<ColumnItemProps>()
+defineProps<ColumnItemProps>()
 </script>
 
 <template>
 	<div>
 		<el-text>
-			<span><ColumnIcon :column="column"></ColumnIcon></span>
-			{{ column.name }}
-			<Comment :comment="column.comment"></Comment>
+			<ColumnIcon :column="column"></ColumnIcon>
+
+			<el-button @click="eventBus.emit('clickColumn', {id: column.id})" link>
+				{{ column.name }}
+				<Comment :comment="column.comment"></Comment>
+			</el-button>
 		</el-text>
 	</div>
 </template>

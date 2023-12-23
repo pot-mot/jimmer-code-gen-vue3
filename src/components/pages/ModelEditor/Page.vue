@@ -17,6 +17,7 @@ import {api} from "@/api";
 import {sendMessage} from "@/utils/message.ts";
 import {useRoute, useRouter} from "vue-router";
 import ModelMenu from "@/components/business/model/menu/ModelMenu.vue";
+import {ModelMenuEvents} from "@/components/business/model/menu/ModelMenuEvents.ts";
 
 const store = useModelEditorStore()
 
@@ -70,8 +71,20 @@ const modelLoadMenu = ref()
 watch(() => modelLoadMenu.value, () => {
 	if (!modelLoadMenu.value) return
 
-	// TODO
-})
+	const eventBus: Emitter<ModelMenuEvents> = modelLoadMenu.value.eventBus
+
+	eventBus.on('clickModel', async ({id}) => {
+		loadingStore.add()
+		await store.loadModel(id)
+		loadingStore.sub()
+	})
+
+	eventBus.on('clickTable', async ({id}) => {
+		loadingStore.add()
+		await store.loadTable(id)
+		loadingStore.sub()
+	})
+}, {immediate: true})
 </script>
 
 <template>

@@ -121,10 +121,33 @@ export const useModelEditorStore =
             const dataSourceLoadMenuOpenState = ref(false)
 
             /**
+             * 向画布导入 model
+             * @param id model id
+             */
+            const importModel = async (id: number) => {
+                const graph = _graph()
+
+                const tables = await api.tableService.queryColumnsView({query: {modelIds: [id]}})
+
+                const {nodes, edges} = await loadTables(graph, tables)
+
+                await nextTick()
+
+                setTimeout(() => {
+                    graph.resetSelection([
+                        ...nodes.map(it => it.id),
+                        ...edges.map(it => it.id)
+                    ])
+
+                    commonOperations.layoutAndFit()
+                }, 500)
+            }
+
+            /**
              * 向画布导入 schema
              * @param id schema id
              */
-            const loadSchema = async (id: number) => {
+            const importSchema = async (id: number) => {
                 const graph = _graph()
 
                 const tables = await api.tableService.queryColumnsView({query: {schemaIds: [id]}})
@@ -147,7 +170,7 @@ export const useModelEditorStore =
              * 向画布导入 table，如果表已存在则仅更新关联
              * @param id tableId
              */
-            const loadTable = async (id: number) => {
+            const importTable = async (id: number) => {
                 const graph = _graph()
                 const tables = await api.tableService.queryColumnsView({query: {ids: [id]}})
                 const {nodes} = await loadTables(graph, tables)
@@ -241,8 +264,9 @@ export const useModelEditorStore =
                 dataSourceLoadMenuOpenState,
                 modelLoadMenuOpenState,
 
-                loadSchema,
-                loadTable,
+                loadModel: importModel,
+                loadSchema: importSchema,
+                loadTable: importTable,
             }
         }
     )

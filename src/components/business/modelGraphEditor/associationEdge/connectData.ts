@@ -2,13 +2,17 @@ import {Node, Edge} from "@antv/x6";
 import {GenTableColumnsInput, GenTableColumnsView} from "@/api/__generated/model/static";
 import {PortManager} from "@antv/x6/es/model/port";
 import PortMetadata = PortManager.PortMetadata;
+import {TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
 
 export interface EdgeConnect {
     sourceNode: Node,
+
     sourcePortId: string,
     sourcePortIndex: number,
     sourcePort: PortMetadata,
+
     targetNode: Node,
+
     targetPortId: string,
     targetPortIndex: number,
     targetPort: PortMetadata,
@@ -16,9 +20,10 @@ export interface EdgeConnect {
 
 export const getEdgeConnect = (edge: Edge): EdgeConnect | undefined => {
     const sourceNode = edge.getSourceNode()
-    if (!sourceNode) return
+    if (!sourceNode || sourceNode.shape != TABLE_NODE) return
     const targetNode = edge.getTargetNode()
-    if (!targetNode) return
+    if (!targetNode || targetNode.shape != TABLE_NODE) return
+
     const sourcePortId = edge.getSourcePortId()
     if (!sourcePortId) return
     const targetPortId = edge.getTargetPortId()

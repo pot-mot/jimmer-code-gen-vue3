@@ -5,9 +5,11 @@ import {
     GenTableColumnsInput,
     GenTableColumnsView
 } from "@/api/__generated/model/static";
-import {EdgeConnectData, getEdgeConnectData} from "@/components/business/modelGraphEditor/associationEdge/connectData.ts";
+import {
+    EdgeConnectData,
+    getEdgeConnectData
+} from "@/components/business/modelGraphEditor/associationEdge/connectData.ts";
 import {createAssociationName} from "@/components/business/modelGraphEditor/associationEdge/associationName.ts";
-import {searchEdgesIgnoreDirection} from "@/components/business/graphEditor/common/search.ts";
 import {erRouter, orthRouter} from "@/components/business/graphEditor/edgeRouter.ts";
 import {GenTableColumnsInput_TargetOf_columns} from "@/api/__generated/model/static/GenTableColumnsInput.ts";
 import {ASSOCIATION_EDGE} from "@/components/business/modelGraphEditor/constant.ts";
@@ -195,7 +197,9 @@ const associationViewToInput = (
 export const importAssociationViews = (graph: Graph, associations: readonly GenAssociationView[]): Edge[] => {
     const edges: Edge[] = []
 
-    associations.map(association => {
+    associations.forEach(association => {
+        if (association.columnReferences.length == 0) return
+
         const sourceNode = graph.getNodes().filter(it =>
             it.getData()?.table.name == association.sourceTable.name
         )[0]
@@ -210,51 +214,71 @@ export const importAssociationViews = (graph: Graph, associations: readonly GenA
         const targetTable = targetNode.getData()?.table as GenTableColumnsInput
         if (!targetTable) return
 
-        // TODO 处理多列关联
+        const columnReferences = <{
+            sourceColumn: GenTableColumnsInput_TargetOf_columns,
+            targetColumn: GenTableColumnsInput_TargetOf_columns
+        }[]>[]
 
-        const sourceColumnIndex = sourceTable.columns.findIndex(column => column.name == association.columnReferences[0]?.sourceColumn.name)
-        if (sourceColumnIndex == -1) return
-        const targetColumnIndex = targetTable.columns.findIndex(column => column.name == association.columnReferences[0]?.targetColumn.name)
-        if (targetColumnIndex == -1) return
+        const portPairIndexes = <{
+            sourcePortIndex: number,
+            targetPortIndex: number
+        }[]>[]
 
-        const sourcePort = sourceNode.ports.items[sourceColumnIndex]
-        if (!sourcePort || !sourcePort.id) return
-        const targetPort = targetNode.ports.items[targetColumnIndex]
-        if (!targetPort || !targetPort.id) return
+        for (let columnReference of association.columnReferences) {
+            const sourceColumnIndex = sourceTable.columns.findIndex(column => column.name == columnReference.sourceColumn.name)
+            if (sourceColumnIndex == -1) continue
+            const targetColumnIndex = targetTable.columns.findIndex(column => column.name == columnReference.targetColumn.name)
+            if (targetColumnIndex == -1) continue
 
-        const sourceColumn = sourceTable.columns[sourceColumnIndex]
-        const targetColumn = targetTable.columns[targetColumnIndex]
+            columnReferences.push({
+                sourceColumn: sourceTable.columns[sourceColumnIndex],
+                targetColumn: targetTable.columns[targetColumnIndex]
+            })
 
-        const existAssociations = searchEdgesIgnoreDirection(graph, sourcePort.id, targetPort.id)
+            portPairIndexes.push({
+                sourcePortIndex: sourceColumnIndex,
+                targetPortIndex: targetColumnIndex
+            })
+        }
 
-        graph.removeCells(existAssociations)
-
-        const newEdge = new Edge({
+        /**
+         * 当 columnReference 多于一个时，只能在 cell 间直接建立关联
+         */
+        const edgeMeta: Edge.Metadata = {
             shape: ASSOCIATION_EDGE,
-            source: {
-                cell: sourceNode.id,
-                port: sourcePort.id
-            },
-            target: {
-                cell: targetNode.id,
-                port: targetPort.id
-            },
+            source: (
+                portPairIndexes.length > 1 ?
+                    {
+                        cell: sourceNode.id,
+                    } : {
+                        cell: sourceNode.id,
+                        port: sourceNode.ports.items[portPairIndexes[0].sourcePortIndex].id
+                    }
+            ),
+            target: (
+                portPairIndexes.length > 1 ?
+                    {
+                        cell: targetNode.id,
+                    } : {
+                        cell: targetNode.id,
+                        port: targetNode.ports.items[portPairIndexes[0].targetPortIndex].id
+                    }
+            ),
             data: {
                 association: associationViewToInput(
                     association,
                     sourceTable, targetTable,
-                    [{sourceColumn, targetColumn}]
+                    columnReferences,
                 )
-            }
-        })
-
-        if (targetNode.id == sourceNode.id) {
-            newEdge.router = orthRouter
-        } else {
-            newEdge.router = erRouter
+            },
+            router: erRouter
         }
 
-        graph.addEdge(newEdge)
+        if (targetNode.id == sourceNode.id) {
+            edgeMeta.router = orthRouter
+        }
+
+        const newEdge = graph.addEdge(edgeMeta)
 
         edges.push(newEdge)
     })

@@ -7,13 +7,19 @@ import {api} from "@/api";
 import {ModelItemProps} from "@/components/business/model/menu/ModelMenuProps.ts";
 import TableItem from "@/components/business/model/menu/TableItem.vue";
 
-const props = defineProps<ModelItemProps>()
+const props = withDefaults(defineProps<ModelItemProps>(), {
+	showConfig(props) {
+		return {showModelTables: true, ...props.showConfig}
+	},
+})
+
 
 const tables = ref<GenTableCommonView[]>()
 
 const loading = useLoading()
 
 const getData = async () => {
+	if (!props.showConfig.showModelTables) return
 	loading.add()
 	tables.value = await api.tableService.queryCommonView({query: {modelIds: [props.model.id]}})
 	loading.sub()
@@ -21,13 +27,19 @@ const getData = async () => {
 </script>
 
 <template>
-	<Details v-loading="loading.isLoading()" @open="getData">
+	<Details v-loading="loading.isLoading()" @open="getData" :disabled="!showConfig.showModelTables">
 		<template #title>
-			<el-text>{{ model.name }}</el-text>
+			<div style="height: 1.8em; line-height: 1.8em;">
+				<el-button @click="eventBus.emit('clickModel', {id: model.id})" link>
+					<el-text>{{ model.name }}</el-text>
+				</el-button>
+			</div>
 		</template>
 
-		<ul v-for="table in tables">
-			<TableItem :table="table"></TableItem>
+		<ul style="padding: 0 0 0.5em 0.5em;">
+			<li v-for="table in tables">
+				<TableItem :table="table" :event-bus="eventBus" :show-config="showConfig"></TableItem>
+			</li>
 		</ul>
 	</Details>
 </template>

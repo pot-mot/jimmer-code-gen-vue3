@@ -1,19 +1,24 @@
 import {Edge, Graph} from "@antv/x6";
 import {
     ASSOCIATION_EDGE,
-    ASSOCIATION_LABEL_TEXT_SELECTOR,
+    ASSOCIATION_LABEL_TEXT_SELECTOR, COMMON_COLOR,
     DEFAULT_ASSOCIATION_TYPE,
     SWITCH_ASSOCIATION_TYPE_FLAG
 } from "@/components/business/modelGraphEditor/constant.ts";
 import {AssociationType} from "@/api/__generated/model/enums";
 import {judgeClickBox} from "@/utils/clickBox.ts";
 import {
-    reverseSinglePartAssociationType
+    reverseSinglePartAssociationType,
 } from "@/components/business/modelGraphEditor/associationEdge/associationType.ts";
+import Label = Edge.Label;
 
-const createBaseLabel = (associationType: AssociationType) => {
+export const createBaseLabel = (attrs?: any, oldLabel?: Label, bodyAttrs?: any) => {
     return {
         markup: [
+            {
+                tagName: 'rect',
+                selector: 'body',
+            },
             {
                 tagName: 'text',
                 selector: ASSOCIATION_LABEL_TEXT_SELECTOR,
@@ -21,39 +26,45 @@ const createBaseLabel = (associationType: AssociationType) => {
         ],
         attrs: {
             ASSOCIATION_LABEL_TEXT_SELECTOR: {
-                text: associationType,
+                ...oldLabel?.attrs?.ASSOCIATION_LABEL_TEXT_SELECTOR,
+                ...attrs
             },
+            body: {
+                ref: ASSOCIATION_LABEL_TEXT_SELECTOR,
+                fill: '#f5f5f5',
+                ...bodyAttrs,
+            }
         },
     }
 }
-const getAssociationTypeLabel = (edge: Edge): { label: Edge.Label, index: number } | undefined => {
+
+export const getAssociationTypeLabel = (edge: Edge): { label: Edge.Label, index: number } | undefined => {
     const AssociationTypeLabels = edge.labels
         .map((label, index) => ({label, index}))
         .filter(({label}) => label.attrs && ASSOCIATION_LABEL_TEXT_SELECTOR in label.attrs)
 
     if (AssociationTypeLabels.length == 0) {
         return
-    } else if (AssociationTypeLabels.length > 1) {
-        for (let i = 0; i < AssociationTypeLabels.length - 1; i++) {
-            edge.removeLabelAt(AssociationTypeLabels[i].index)
-        }
-        return AssociationTypeLabels[AssociationTypeLabels.length - 1]
-    } else if (AssociationTypeLabels.length == 1) {
-        return AssociationTypeLabels[0]
     }
+
+    return AssociationTypeLabels[0]
 }
 const setAssociationTypeData = (edge: Edge, associationType: AssociationType) => {
     edge.setData({association: {associationType}}, {deep: true})
 }
 const setAssociationTypeDataLabel = (edge: Edge, associationType: AssociationType) => {
-    const newLabel = createBaseLabel(associationType)
-
     const oldLabel = getAssociationTypeLabel(edge)
 
     if (oldLabel) {
-        edge.setLabelAt(oldLabel.index, newLabel)
+        edge.setLabelAt(oldLabel.index, createBaseLabel({
+            text: associationType
+        }, oldLabel.label))
     } else {
-        edge.appendLabel(newLabel)
+        edge.appendLabel(createBaseLabel({
+            text: associationType,
+            fill: COMMON_COLOR,
+            fontWeight: 'normal'
+        }))
     }
 }
 export const setAssociationType = (edge: Edge, associationType: AssociationType) => {
@@ -110,7 +121,7 @@ export const useAssociationType = (graph: Graph) => {
             edgeWithFlag.SWITCH_ASSOCIATION_TYPE_FLAG = true
             // 使 SWITCH_ASSOCIATION_TYPE_FLAG 不被序列化
             Object.defineProperty(edgeWithFlag, SWITCH_ASSOCIATION_TYPE_FLAG, {enumerable: false, writable: true})
-            return;
+            return
         } else if (!edgeWithFlag.SWITCH_ASSOCIATION_TYPE_FLAG) {
             edgeWithFlag.SWITCH_ASSOCIATION_TYPE_FLAG = true
             return
@@ -128,8 +139,7 @@ export const useAssociationType = (graph: Graph) => {
 
             const oldAssociationType = getAssociationType(edge)
 
-            const left = e.clientX - labelBox.x < (labelBox.width / 2)
-
+            const left = (e.clientX - labelBox.x) < (labelBox.width / 2)
             setAssociationType(
                 edge,
                 reverseSinglePartAssociationType(
