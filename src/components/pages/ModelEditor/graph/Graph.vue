@@ -16,15 +16,6 @@
 			</li>
 
 			<li>
-				<el-tooltip :disabled="!store.canUndo" content="撤回 [Ctrl + z]">
-					<el-button :disabled="!store.canUndo" :icon="UndoIcon" @click="store.undo()"></el-button>
-				</el-tooltip>
-				<el-tooltip :disabled="!store.canRedo" content="重做 [Ctrl + Shift + z]">
-					<el-button :disabled="!store.canRedo" :icon="RedoIcon" @click="store.redo()"></el-button>
-				</el-tooltip>
-			</li>
-
-			<li>
 				<el-tooltip content="整理布局">
 					<el-button :icon="LayoutIcon" class="cling-right" @click="store.layoutAndFit()"></el-button>
 				</el-tooltip>
@@ -137,12 +128,9 @@ import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingSt
 import {api} from "@/api";
 import {sendMessage} from "@/utils/message.ts";
 import {Pair} from "@/api/__generated/model/static";
-import {handleHistoryKeyEvent} from "@/components/business/graphEditor/history/useHistory.ts";
 import {handleSelectionKeyEvent} from "@/components/business/graphEditor/selection/useSelection.ts";
 import {useSaveKeyEvent} from "@/components/business/graphEditor/storage/useSave.ts";
 import SaveIcon from "@/components/global/icons/toolbar/SaveIcon.vue";
-import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
-import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";
 import LayoutIcon from "@/components/global/icons/toolbar/LayoutIcon.vue";
 import MultiCodePreview from "@/components/global/code/MultiCodePreview.vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
@@ -157,6 +145,10 @@ import ScaleBar from "@/components/business/graphEditor/tools/ScaleBar.vue";
 import GraphSearcher from "@/components/business/graphEditor/tools/GraphSearcher.vue";
 import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
 import {EditPen} from "@element-plus/icons-vue";
+import {
+	useTableModifyDialogsStore
+} from "@/components/business/modelGraphEditor/tableEditDialog/TableModifyDialogsStore.ts";
+import {debugLog} from "@/utils/debugLog.ts";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -167,11 +159,21 @@ const store = useModelEditorStore()
 
 const loadingStore = useGlobalLoadingStore()
 
+const tableModifyDialogsStore = useTableModifyDialogsStore()
+
 onMounted(async () => {
 	loadingStore.add()
 
 	graph = initModelEditor(container.value!, wrapper.value!)
 	await store.load(graph)
+
+	graph.on('node:dblclick', ({node}) => {
+		tableModifyDialogsStore.open(node.getData().table.id, node.getData().table)
+	})
+
+	graph.on('history:change', (args) => {
+		debugLog('history change log', args)
+	})
 
 	loadingStore.sub()
 })
@@ -196,8 +198,6 @@ const handleSaveModel = async () => {
 
 	loadingStore.sub()
 }
-
-store.addEventListener('keydown', handleHistoryKeyEvent)
 
 store.addEventListener('keydown', handleSelectionKeyEvent)
 

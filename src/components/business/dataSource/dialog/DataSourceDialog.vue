@@ -26,7 +26,7 @@ const handleModelValueUpdate = (modelValue: boolean) => {
 
 <template>
 	<DragDialog :model-value="modelValue" @update:model-value="handleModelValueUpdate"
-				:init-w="500" :init-x="props.initX" :init-y="props.initY">
+				:init-w="600" :init-x="props.initX" :init-y="props.initY">
 		<DataSourceForm
 			style="height: calc(100% - 1em)"
 			:id="id" :data-source="dataSource"

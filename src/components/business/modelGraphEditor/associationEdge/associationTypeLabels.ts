@@ -133,20 +133,24 @@ export const useAssociationType = (graph: Graph) => {
 
         const labelBox = label.getBoundingClientRect()
 
-        if (judgeClickBox(labelBox, e.clientX, e.clientY)) {
-            e.preventDefault()
-            e.stopPropagation()
+        if (!judgeClickBox(labelBox, e.clientX, e.clientY)) return
 
-            const oldAssociationType = getAssociationType(edge)
+        e.preventDefault()
+        e.stopPropagation()
 
-            const left = (e.clientX - labelBox.x) < (labelBox.width / 2)
-            setAssociationType(
-                edge,
-                reverseSinglePartAssociationType(
-                    oldAssociationType ? oldAssociationType : DEFAULT_ASSOCIATION_TYPE,
-                    left ? "SOURCE" : "TARGET")
-            )
-        }
+        graph.startBatch("set association_edge type")
+
+        const oldAssociationType = getAssociationType(edge)
+
+        const left = (e.clientX - labelBox.x) < (labelBox.width / 2)
+        setAssociationType(
+            edge,
+            reverseSinglePartAssociationType(
+                oldAssociationType ? oldAssociationType : DEFAULT_ASSOCIATION_TYPE,
+                left ? "SOURCE" : "TARGET")
+        )
+
+        graph.stopBatch("set association_edge type")
     })
     /**
      * 在 edge:unselected 后，重置 SWITCH_ASSOCIATION_TYPE_FLAG

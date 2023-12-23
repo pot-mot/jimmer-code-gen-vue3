@@ -24,7 +24,7 @@ export const useHoverToFront = (graph: Graph) => {
 }
 
 const judgeNode = (node: Node) => {
-    return node && node.shape == TABLE_NODE && node.getData().wrapper && node.getData().wrapper.value
+    return node && node.shape == TABLE_NODE && node.getData()?.wrapper && node.getData()?.wrapper.value
 }
 
 const judgeEdge = (edge: Edge) => {
@@ -111,73 +111,102 @@ const edgeUnselected = (edge: Edge) => {
     }
 }
 
+const stopHistoryAction = (graph: Graph, fn: Function) => {
+    graph.disableHistory()
+    fn()
+    graph.enableHistory()
+}
+
 export const useStyle = (graph: Graph) => {
     graph.on('node:selected', ({node}) => {
-        nodeSelected(node)
+        stopHistoryAction(graph, () => nodeSelected(node))
     })
     graph.on('node:unselected', ({node}) => {
-        nodeUnselected(node)
+        stopHistoryAction(graph, () => nodeUnselected(node))
     })
 
     graph.on('node:mouseenter', ({node}) => {
-        nodeHover(node)
+        stopHistoryAction(graph, () => {
+            nodeHover(node)
 
-        const edges = graph.getConnectedEdges(node)
-        edges.forEach(edge => edgeHover(edge))
+            const edges = graph.getConnectedEdges(node)
+            edges.forEach(edge => edgeHover(edge))
+        })
     })
     graph.on('node:mouseleave', ({node}) => {
-        nodeUnhover(node)
+        stopHistoryAction(graph, () => {
+            nodeUnhover(node)
 
-        const edges = graph.getConnectedEdges(node)
-        edges.forEach(edge => edgeUnhover(edge))
+            const edges = graph.getConnectedEdges(node)
+            edges.forEach(edge => edgeUnhover(edge))
+        })
     })
 
     graph.on('node:added', ({node}) => {
-        nodeUnhover(node)
-        nodeUnselected(node)
+        stopHistoryAction(graph, () => {
+            nodeUnhover(node)
+            nodeUnselected(node)
+        })
     })
 
     graph.on('edge:selected', ({edge}) => {
-        edgeSelected(edge)
+        stopHistoryAction(graph, () => edgeSelected(edge))
     })
     graph.on('edge:unselected', ({edge}) => {
-        edgeUnselected(edge)
+        stopHistoryAction(graph, () => edgeUnselected(edge))
     })
-    graph.on('edge:mouseenter', ({edge}) => {
-        edgeHover(edge)
 
-        const nodes = [edge.getSourceNode(), edge.getTargetNode()]
-        nodes.forEach(node => {if (node) {nodeHover(node)}})
+    graph.on('edge:mouseenter', ({edge}) => {
+        stopHistoryAction(graph, () => {
+            edgeHover(edge)
+
+            const nodes = [edge.getSourceNode(), edge.getTargetNode()]
+            nodes.forEach(node => {
+                if (node) {
+                    nodeHover(node)
+                }
+            })
+        })
     })
     graph.on('edge:mouseleave', ({edge}) => {
-        edgeUnhover(edge)
+        stopHistoryAction(graph, () => {
+            edgeUnhover(edge)
 
-        const nodes = [edge.getSourceNode(), edge.getTargetNode()]
-        nodes.forEach(node => {if (node) {nodeUnhover(node)}})
+            const nodes = [edge.getSourceNode(), edge.getTargetNode()]
+            nodes.forEach(node => {
+                if (node) {
+                    nodeUnhover(node)
+                }
+            })
+        })
     })
 
     graph.on('edge:added', ({edge}) => {
-        edgeUnhover(edge)
-        edgeUnselected(edge)
+        stopHistoryAction(graph, () => {
+            edgeUnhover(edge)
+            edgeUnselected(edge)
+        })
     })
 
     graph.on('node:removed', () => {
-        unStyleAll(graph)
+        stopHistoryAction(graph, () => unStyleAll(graph))
     })
 
     graph.on('edge:removed', () => {
-        unStyleAll(graph)
+        stopHistoryAction(graph, () => unStyleAll(graph))
     })
 }
 
 export const unStyleAll = (graph: Graph) => {
-    graph.cleanSelection()
+    stopHistoryAction(graph, () => {
+        graph.cleanSelection()
 
-    graph.getEdges().forEach(edge => {
-        edgeUnhover(edge)
-    })
+        graph.getEdges().forEach(edge => {
+            edgeUnhover(edge)
+        })
 
-    graph.getNodes().forEach(node => {
-        nodeUnhover(node)
+        graph.getNodes().forEach(node => {
+            nodeUnhover(node)
+        })
     })
 }

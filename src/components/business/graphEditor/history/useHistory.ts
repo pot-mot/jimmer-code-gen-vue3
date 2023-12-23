@@ -5,23 +5,10 @@ export const useHistory = (graph: Graph) => {
     graph.use(
         new History({
             enabled: true,
-            beforeAddCommand: (event, args) => {
-                if (event == "cell:change:*" && args && 'key' in args) {
-                    if (args.key == 'zIndex') {
-                        return false
-                    } else if (args.key == 'target') {
-                        return false
-                    } else if (args.key == 'attrs') {
-                        return false
-                    }
-                }
-
-                return true
-            }
         })
     )
 
-    // 合并移动事件
+    // 默认合并移动事件
     graph.on('node:move', () => {
         graph.startBatch('node move')
     })
@@ -29,16 +16,4 @@ export const useHistory = (graph: Graph) => {
     graph.on('node:moved', () => {
         graph.stopBatch('node move')
     })
-}
-
-export const handleHistoryKeyEvent = (graph: Graph, e: KeyboardEvent) => {
-    if (e.ctrlKey || e.metaKey) {
-        if (e.key == 'z') {
-            e.preventDefault()
-            graph.undo()
-        } else if (e.key == 'Z') {
-            e.preventDefault()
-            graph.redo()
-        }
-    }
 }

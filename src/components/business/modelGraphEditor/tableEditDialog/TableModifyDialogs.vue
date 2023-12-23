@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import ModelModifyDialog from "./TableModifyDialog.vue";
-import {useTableModifyDialogsStore} from "@/components/pages/ModelEditor/nodeDialog/TableModifyDialogManageStore.ts";
+import ModelModifyDialog from "./TableModifyDialog.vue"
+import {
+	useTableModifyDialogsStore
+} from "@/components/business/modelGraphEditor/tableEditDialog/TableModifyDialogsStore.ts";
 
 const store = useTableModifyDialogsStore()
 </script>

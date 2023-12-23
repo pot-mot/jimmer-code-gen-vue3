@@ -29,12 +29,31 @@ export const connectDataToAssociationInput = (
     const associationType = edge.getData()?.association?.associationType
     const fake: boolean | undefined = edge.getData()?.association?.fake
 
+    const columnReferences = []
+
+    if (sourceColumn && targetColumn) {
+        columnReferences.push({
+            sourceColumn: {
+                name: sourceColumn.name,
+                comment: sourceColumn.comment,
+                type: sourceColumn.type,
+                typeCode: sourceColumn.typeCode,
+            },
+            targetColumn: {
+                name: targetColumn.name,
+                comment: targetColumn.comment,
+                type: targetColumn.type,
+                typeCode: targetColumn.typeCode,
+            },
+        })
+    }
+
     return {
         name: name ? name : createAssociationName(
             sourceTable.name,
-            [sourceColumn.name],
+            [sourceColumn ? sourceColumn.name : ''],
             targetTable.name,
-            [targetColumn.name]
+            [targetColumn ? targetColumn.name : '']
         ),
         sourceTable: {
             name: sourceTable.name,
@@ -44,22 +63,7 @@ export const connectDataToAssociationInput = (
             name: targetTable.name,
             comment: targetTable.comment,
         },
-        columnReferences: [
-            {
-                sourceColumn: {
-                    name: sourceColumn.name,
-                    comment: sourceColumn.comment,
-                    type: sourceColumn.type,
-                    typeCode: sourceColumn.typeCode,
-                },
-                targetColumn: {
-                    name: targetColumn.name,
-                    comment: targetColumn.comment,
-                    type: targetColumn.type,
-                    typeCode: targetColumn.typeCode,
-                },
-            }
-        ],
+        columnReferences,
         associationType: associationType ? associationType : 'MANY_TO_ONE',
         fake: fake != undefined ? fake : false,
         dissociateAction: undefined,
@@ -114,7 +118,10 @@ export const edgeToAssociationData = <T extends GenTableColumnsInput | GenTableC
  * 将 EdgeData 重新转换成 Edge，并更新 source 和 target
  */
 export const associationDataToEdge = <T extends GenTableColumnsInput | GenTableColumnsView>(graph: Graph, data: EdgeAssociationData<T>): Edge | undefined => {
-    if (data.connectData.targetColumn.typeCode != data.connectData.sourceColumn.typeCode) return
+    const sourceColumn = data.connectData.sourceColumn
+    const targetColumn = data.connectData.targetColumn
+
+    if (sourceColumn && targetColumn && targetColumn.typeCode != sourceColumn.typeCode) return
 
     const sourceNode = graph.getCellById(data.connectData.sourceNode.id) as Node
     if (!sourceNode) return
@@ -126,28 +133,36 @@ export const associationDataToEdge = <T extends GenTableColumnsInput | GenTableC
     const targetTable = targetNode.getData().table as T | undefined
     if (!targetTable) return
 
-    const sourceColumnNewIndex = sourceTable.columns.findIndex(
-        column =>
-            column.name == data.connectData.sourceColumn.name &&
-            column.typeCode == data.connectData.sourceColumn.typeCode &&
-            column.type == data.connectData.sourceColumn.type
-    )
-    if (sourceColumnNewIndex == -1) return
-    const sourcePort = sourceNode.ports.items[sourceColumnNewIndex]
-    if (!sourcePort) return
+    data.edge.setSource({cell: sourceNode.id})
+    data.edge.setTarget({cell: targetNode.id})
 
-    const targetColumnNewIndex = targetTable.columns.findIndex(
-        column =>
-            column.name == data.connectData.targetColumn.name &&
-            column.typeCode == data.connectData.targetColumn.typeCode &&
-            column.type == data.connectData.targetColumn.type
-    )
-    if (targetColumnNewIndex == -1) return
-    const targetPort = targetNode.ports.items[targetColumnNewIndex]
-    if (!targetPort) return
+    if (sourceColumn) {
+        const sourceColumnNewIndex = sourceTable.columns.findIndex(
+            column =>
+                column.name == sourceColumn.name &&
+                column.typeCode == sourceColumn.typeCode &&
+                column.type == sourceColumn.type
+        )
+        if (sourceColumnNewIndex != -1) {
+            const sourcePort = sourceNode.ports.items[sourceColumnNewIndex]
+            if (sourcePort)
+                data.edge.setSource({cell: sourceNode.id, port: sourcePort.id})
+        }
+    }
 
-    data.edge.setSource({cell: sourceNode.id, port: sourcePort.id})
-    data.edge.setTarget({cell: targetNode.id, port: targetPort.id})
+    if (targetColumn) {
+        const targetColumnNewIndex = targetTable.columns.findIndex(
+            column =>
+                column.name == targetColumn.name &&
+                column.typeCode == targetColumn.typeCode &&
+                column.type == targetColumn.type
+        )
+        if (targetColumnNewIndex != -1) {
+            const targetPort = targetNode.ports.items[targetColumnNewIndex]
+            if (targetPort)
+                data.edge.setTarget({cell: targetNode.id, port: targetPort.id})
+        }
+    }
 
     return data.edge
 }

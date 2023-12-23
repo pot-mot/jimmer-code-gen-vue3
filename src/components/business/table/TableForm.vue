@@ -101,7 +101,8 @@ const handleColumnToPk = (pkIndex: number) => {
 	pkColumn.typeNotNull = true
 	pkColumn.type = "BIGINT"
 	pkColumn.typeCode = databaseTypeObj.value[pkColumn.type]!
-	pkColumn.defaultValue = undefined
+	pkColumn.logicalDelete = false
+	pkColumn.businessKey = false
 
 	if (checkConfig.value.onlyOnePk) {
 		table.value.columns.forEach((column, index) => {

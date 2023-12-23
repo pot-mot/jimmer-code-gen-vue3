@@ -7,15 +7,15 @@ import {TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
 export interface EdgeConnect {
     sourceNode: Node,
 
-    sourcePortId: string,
-    sourcePortIndex: number,
-    sourcePort: PortMetadata,
+    sourcePortId?: string,
+    sourcePort?: PortMetadata,
+    sourcePortIndex: number | undefined,
 
     targetNode: Node,
 
-    targetPortId: string,
-    targetPortIndex: number,
-    targetPort: PortMetadata,
+    targetPortId?: string,
+    targetPort?: PortMetadata,
+    targetPortIndex: number | undefined,
 }
 
 export const getEdgeConnect = (edge: Edge): EdgeConnect | undefined => {
@@ -25,26 +25,22 @@ export const getEdgeConnect = (edge: Edge): EdgeConnect | undefined => {
     if (!targetNode || targetNode.shape != TABLE_NODE) return
 
     const sourcePortId = edge.getSourcePortId()
-    if (!sourcePortId) return
     const targetPortId = edge.getTargetPortId()
-    if (!targetPortId) return
 
-    const sourcePort = sourceNode.getPort(sourcePortId)
-    if (!sourcePort) return
+    const sourcePort = sourcePortId ? sourceNode.getPort(sourcePortId) : undefined
     const sourcePortIndex = sourceNode.ports.items.findIndex((value) => value.id == sourcePortId)
 
-    const targetPort = targetNode.getPort(targetPortId)
-    if (!targetPort) return
+    const targetPort = targetPortId ? targetNode.getPort(targetPortId) : undefined
     const targetPortIndex = targetNode.ports.items.findIndex((value) => value.id == targetPortId)
 
     return {
         sourceNode,
         sourcePortId,
-        sourcePortIndex,
+        sourcePortIndex: sourcePortIndex == -1 ? undefined : sourcePortIndex,
         sourcePort,
         targetNode,
         targetPortId,
-        targetPortIndex,
+        targetPortIndex: targetPortIndex == -1 ? undefined : targetPortIndex,
         targetPort
     }
 }
@@ -53,9 +49,9 @@ export interface EdgeConnectData<
     T extends GenTableColumnsInput | GenTableColumnsView = GenTableColumnsInput,
 > extends EdgeConnect {
     sourceTable: T,
-    sourceColumn: T['columns'][number],
+    sourceColumn?: T['columns'][number],
     targetTable: T,
-    targetColumn: T['columns'][number],
+    targetColumn?: T['columns'][number],
 }
 
 export const getEdgeConnectData = <
@@ -69,13 +65,11 @@ export const getEdgeConnectData = <
 
     const sourceTable = sourceNode.getData().table as T | undefined
     if (!sourceTable) return
-    const sourceColumn = sourceTable.columns[sourcePortIndex]
-    if (!sourceColumn) return
+    const sourceColumn = sourcePortIndex != undefined ? sourceTable.columns[sourcePortIndex] : undefined
 
     const targetTable = targetNode.getData().table as T | undefined
     if (!targetTable) return
-    const targetColumn = targetTable.columns[targetPortIndex]
-    if (!targetColumn) return
+    const targetColumn = targetPortIndex != undefined ? targetTable.columns[targetPortIndex] : undefined
 
     return {
         ...connect,

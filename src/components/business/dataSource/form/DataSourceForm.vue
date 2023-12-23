@@ -7,6 +7,8 @@ import {ElForm, ElFormItem, ElOption, ElSelect} from "element-plus";
 import {DataSourceFormEmits} from "./DataSourceFormEmits.ts";
 import {DataSourceFormProps} from "./DataSourceFormProps.ts";
 import {DataSourceType_CONSTANTS} from "@/api/__generated/model/enums";
+import Line from "@/components/global/list/Line.vue";
+import LineItem from "@/components/global/list/LineItem.vue";
 
 const props = defineProps<DataSourceFormProps>()
 
@@ -84,36 +86,45 @@ const handleSubmit = () => {
 		<el-form-item label="name">
 			<el-input v-model="dataSource.name"></el-input>
 		</el-form-item>
+
 		<el-form-item label="url">
-			<el-col :span="9">
-				<el-select v-model="dataSource.type" class="cling-right" filterable name="type">
-					<template #prefix>jdbc:</template>
-					<el-option v-for="(type) in DataSourceType_CONSTANTS" :label="type.toLowerCase()"
-							   :value="type"></el-option>
-				</el-select>
-			</el-col>
-			<el-col :span="6">
-				<el-input v-model="dataSource.host" class="cling-left cling-right" name="host">
-					<template #prefix>://</template>
-				</el-input>
-			</el-col>
-			<el-col :span="4">
-				<el-input v-model="dataSource.port" class="cling-left cling-right" name="port">
-					<template #prefix>:</template>
-				</el-input>
-			</el-col>
-			<el-col :span="5">
-				<el-input v-model="dataSource.urlSuffix" class="cling-left" name="urlSuffix">
-					<template #prefix>&nbsp</template>
-				</el-input>
-			</el-col>
+			<Line>
+				<LineItem span="1fr">
+					<el-select v-model="dataSource.type" class="cling-right" filterable name="type">
+						<template #prefix>jdbc:</template>
+						<el-option v-for="(type) in DataSourceType_CONSTANTS" :label="type.toLowerCase()"
+								   :value="type"></el-option>
+					</el-select>
+				</LineItem>
+
+				<LineItem span="1fr">
+					<el-input v-model="dataSource.host" class="cling-left cling-right" name="host">
+						<template #prefix>://</template>
+					</el-input>
+				</LineItem>
+
+				<LineItem span="0.6fr">
+					<el-input v-model="dataSource.port" class="cling-left cling-right" name="port">
+						<template #prefix>:</template>
+					</el-input>
+				</LineItem>
+
+				<LineItem span="0.6fr">
+					<el-input v-model="dataSource.urlSuffix" class="cling-left" name="urlSuffix">
+						<template #prefix>&nbsp</template>
+					</el-input>
+				</LineItem>
+			</Line>
 		</el-form-item>
+
 		<el-form-item label="username">
 			<el-input v-model="dataSource.username"></el-input>
 		</el-form-item>
+
 		<el-form-item label="password">
 			<el-input v-model="dataSource.password" show-password></el-input>
 		</el-form-item>
+
 		<el-form-item label="remark">
 			<el-input v-model="dataSource.remark" type="textarea"></el-input>
 		</el-form-item>

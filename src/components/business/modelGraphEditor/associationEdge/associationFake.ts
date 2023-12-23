@@ -84,7 +84,11 @@ export const useAssociationFake = (graph: Graph) => {
         e.preventDefault()
         e.stopPropagation()
 
+        graph.startBatch("set association_edge fake")
+
         setAssociationFake(edge, !getAssociationFake(edge))
+
+        graph.stopBatch("set association_edge fake")
     })
     /**
      * 在 edge:unselected 后，重置 SWITCH_ASSOCIATION_FAKE_FLAG

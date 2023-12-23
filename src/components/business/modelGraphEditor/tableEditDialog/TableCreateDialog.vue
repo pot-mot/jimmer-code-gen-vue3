@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
-import ModelForm from "../../../business/table/TableForm.vue";
-import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
+import ModelForm from "../../table/TableForm.vue";
+import {ModelEditorEventBus} from "../../../pages/ModelEditor/store/ModelEditorEventBus.ts";
 import {GenTableColumnsInput} from "@/api/__generated/model/static";
-import {useTableCreateDialogStore} from "@/components/pages/ModelEditor/nodeDialog/TableCreateDialogStore.ts";
+import {
+	useTableCreateDialogStore
+} from "@/components/business/modelGraphEditor/tableEditDialog/TableCreateDialogStore.ts";
 
 const store = useTableCreateDialogStore()
 

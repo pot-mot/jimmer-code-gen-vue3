@@ -1,7 +1,6 @@
 <template>
 	<div ref="wrapper" class="table-wrapper">
-		<table v-if="node && table" ref="container"
-			   @dblclick="ModelEditorEventBus.emit('modifyTable', {id: node.id, table})">
+		<table v-if="node && table" ref="container">
 			<tr class="tableName">
 				<td colspan="2">
 				<span class="icon">
@@ -34,39 +33,38 @@
 <script lang='ts' setup>
 import {inject, nextTick, onMounted, ref, watch} from "vue";
 import {GenTableColumnsInput} from "@/api/__generated/model/static";
-import {Graph, Node} from '@antv/x6'
+import {Node} from '@antv/x6'
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
-import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import {associationDataToEdge, edgeToAssociationData} from "./associationEdge.ts";
 import {columnToPort} from "@/components/pages/ModelEditor/graph/tableNode.ts";
-import {COLUMN_PORT_SELECTOR} from "@/components/business/modelGraphEditor/constant.ts";
+import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
 
 const store = useModelEditorStore()
 
-const wrapper = ref<HTMLElement | null>()
+const wrapper = ref<HTMLElement>()
 
-const container = ref<HTMLElement | null>()
+const container = ref<HTMLElement>()
 
-const getGraph = inject<() => Graph>("getGraph")!
-
-const getNode = inject<() => Node>("getNode")!;
-
-const graph = ref<Graph>()
+const getNode = inject<() => Node>("getNode")!
 
 const node = ref<Node>()
 
 const table = ref<GenTableColumnsInput>()
 
-onMounted(async () => {
-	graph.value = getGraph()
+let wrapperResizeObserver
 
+onMounted(async () => {
 	node.value = getNode()
 
-	if (!node.value) {
+	if (!node.value || !store.isLoaded) return
+
+	const graph = store._graph()
+
+	if (!node.value || node.value.shape != TABLE_NODE) {
 		sendMessage('Node 获取失败', 'error')
 		return
 	}
@@ -76,75 +74,80 @@ onMounted(async () => {
 		if (!node.value) return
 		table.value = node.value.getData().table
 	}
-
 	setData()
-
-	await nextTick()
-
-	if (!wrapper.value || !container.value) {
-		return
-	}
-
-	// 绑定 wrapper 容器和 node，并且设置成不可枚举
-	node.value.getData().wrapper = wrapper
-	Object.defineProperty(node.value.getData(), 'wrapper', { enumerable: false, writable: true })
 
 	node.value.on('change:data', () => {
 		setData()
 	})
 
-	// 更新尺寸
-	const resizeNode = () => {
-		if (!node.value || !container.value) return
+	await nextTick()
 
+	if (!wrapper.value || !container.value) return
+
+	// 绑定 wrapper 容器和 node，并且设置成不可枚举
+	node.value.getData().wrapper = wrapper
+	Object.defineProperty(node.value.getData(), 'wrapper', { enumerable: false, writable: true })
+
+	// 更新尺寸
+	const syncNodeSizeWithContainer = () => {
+		if (!node.value || !container.value) return
+		graph.disableHistory()
 		node.value.resize(container.value.clientWidth, container.value.clientHeight)
+		graph.enableHistory()
 	}
 
-	const wrapperResizeObserver = new ResizeObserver(() => {
-		resizeNode()
+	wrapperResizeObserver = new ResizeObserver(() => {
+		syncNodeSizeWithContainer()
 	})
 
-	wrapperResizeObserver.observe(container.value)
+	wrapperResizeObserver.observe(container.value!)
 
 	const resizePort = () => {
-		if (!node.value) return
+		if (!node.value || !store.isLoaded) return
+
+		graph.startBatch("update table_node port")
 
 		// 设置 ports 宽度
 		for (let port of node.value.ports.items) {
 			node.value.setPortProp(port.id!, `attrs/${COLUMN_PORT_SELECTOR}/width`, node.value.getSize().width)
 		}
+
+		graph.stopBatch("update table_node port")
 	}
 
 	node.value.on('change:size', () => {
 		resizePort()
 	})
 
-	resizeNode()
+	syncNodeSizeWithContainer()
 
 	// 根据数据更新更新 port 和 edge
 	watch(() => table.value, () => {
-		if (node.value && table.value && store.isLoaded) {
-			const graph = store._graph()
+		if (!node.value || !table.value || !store.isLoaded) return
 
-			const edgeDatas = graph
-				.getConnectedEdges(node.value.id)
-				.map((edge) => edgeToAssociationData(edge))
+		graph.startBatch("update table_node data, port, association")
 
-			node.value.removePorts()
-			node.value.addPorts(
-				table.value.columns.map(columnToPort)
-			)
-			resizePort()
+		const edgeDatas = graph
+			.getConnectedEdges(node.value.id)
+			.map((edge) => edgeToAssociationData(edge))
 
-			edgeDatas.forEach(data => {
-				if (!data) return
+		node.value.removePorts()
+		node.value.addPorts(
+			table.value.columns.map(columnToPort)
+		)
+		resizePort()
 
-				const edge = associationDataToEdge(graph, data)
-				if (edge) {
-					graph.addEdge(edge)
-				}
-			})
-		}
+		edgeDatas.forEach(data => {
+			if (!data) return
+
+			const edge = associationDataToEdge(graph, data)
+			if (edge) {
+				graph.addEdge(edge)
+			}
+		})
+
+		graph.stopBatch("update table_node data, port, association")
+
 	}, {deep: true})
 })
 </script>

@@ -6,10 +6,14 @@ import {sendMessage} from "@/utils/message.ts";
 import {computed, nextTick, ref} from "vue";
 import {api} from "@/api";
 import {loadTables} from "../graph/loadTables.ts";
-import {useTableModifyDialogsStore} from "@/components/pages/ModelEditor/nodeDialog/TableModifyDialogManageStore.ts";
-import {useTableCreateDialogStore} from "@/components/pages/ModelEditor/nodeDialog/TableCreateDialogStore.ts";
 import {GenModelInput, GenModelView} from "@/api/__generated/model/static";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
+import {
+    useTableCreateDialogStore
+} from "@/components/business/modelGraphEditor/tableEditDialog/TableCreateDialogStore.ts";
+import {
+    useTableModifyDialogsStore
+} from "@/components/business/modelGraphEditor/tableEditDialog/TableModifyDialogsStore.ts";
 
 export const useModelEditorStore =
     defineStore(
@@ -225,7 +229,7 @@ export const useModelEditorStore =
 
                 const cell = graph.getCellById(id)
                 if (cell && cell.isNode()) {
-                    cell.setData({...cell.getData(), table}, {overwrite: true, deep: true})
+                    cell.setData({wrapper: cell.getData().wrapper, table}, {overwrite: true, deep: true})
                 } else {
                     sendMessage(`Node ${id} 找不到，无法被更改`, 'error')
                 }

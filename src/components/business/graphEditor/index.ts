@@ -88,23 +88,16 @@ export const useCommonGraphOperations = () => {
         // 判断鼠标是否在 graph 范围内
         const mouseenterState = ref(false)
 
-        const handleMouseenter = () => {
-            mouseenterState.value = true
-        }
-
-        const handleMouseleave = () => {
-            mouseenterState.value = false
-        }
+        const handleMouseenter = () => {mouseenterState.value = true}
+        const handleMouseleave = () => {mouseenterState.value = false}
 
         onLoaded(({graph}) => {
             graph.container.addEventListener('mouseenter', handleMouseenter)
-
             graph.container.addEventListener('mouseleave', handleMouseleave)
         })
 
         onBeforeUnload(({graph}) => {
             graph.container.removeEventListener('mouseenter', handleMouseenter)
-
             graph.container.removeEventListener('mouseleave', handleMouseleave)
         })
 
@@ -187,9 +180,6 @@ export const useCommonGraphOperations = () => {
 
             removeAllCells,
             removeAllEdges,
-
-            undo: () => _graph().undo(),
-            redo: () => _graph().redo(),
 
             ...selectOperations,
 

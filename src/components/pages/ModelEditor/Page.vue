@@ -2,8 +2,6 @@
 import LeftTopBottomLayout from "@/components/global/layout/LeftRightLayout.vue";
 import ModelEditorMainMenu from "./menu/ModelEditorMainMenu.vue";
 import Graph from "./graph/Graph.vue";
-import TableCreateDialog from "@/components/pages/ModelEditor/nodeDialog/TableCreateDialog.vue";
-import TableModifyDialogManager from "@/components/pages/ModelEditor/nodeDialog/TableModifyDialogManager.vue";
 import {onMounted, ref, watch} from "vue";
 import {Emitter} from "mitt";
 import {DataSourceMenuEvents} from "@/components/business/dataSource/menu/DataSourceMenuEvents.ts";
@@ -18,6 +16,8 @@ import {sendMessage} from "@/utils/message.ts";
 import {useRoute, useRouter} from "vue-router";
 import ModelMenu from "@/components/business/model/menu/ModelMenu.vue";
 import {ModelMenuEvents} from "@/components/business/model/menu/ModelMenuEvents.ts";
+import TableCreateDialog from "@/components/business/modelGraphEditor/tableEditDialog/TableCreateDialog.vue";
+import TableModifyDialogs from "@/components/business/modelGraphEditor/tableEditDialog/TableModifyDialogs.vue";
 
 const store = useModelEditorStore()
 
@@ -115,5 +115,5 @@ watch(() => modelLoadMenu.value, () => {
 				 @submit="store.handleSubmitModelEdit"></ModelDialog>
 
 	<TableCreateDialog></TableCreateDialog>
-	<TableModifyDialogManager></TableModifyDialogManager>
+	<TableModifyDialogs></TableModifyDialogs>
 </template>

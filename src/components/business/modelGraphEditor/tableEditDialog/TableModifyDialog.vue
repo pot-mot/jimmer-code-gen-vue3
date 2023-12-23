@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
-import TableForm from "../../../business/table/TableForm.vue";
-import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
+import TableForm from "../../table/TableForm.vue";
+import {ModelEditorEventBus} from "../../../pages/ModelEditor/store/ModelEditorEventBus.ts";
 import {GenTableColumnsInput} from "@/api/__generated/model/static";
 
 interface TableModifyDialogProps {

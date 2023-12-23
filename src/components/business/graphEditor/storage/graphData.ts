@@ -1,4 +1,4 @@
-import {Cell, Graph} from "@antv/x6";
+import {Cell, Node, Edge, Graph} from "@antv/x6";
 import {unStyleAll} from "@/components/business/modelGraphEditor/highlight.ts";
 
 export type GraphEditorData = {
@@ -31,14 +31,12 @@ export const loadGraphFromEditorData = (graph: Graph, data: GraphEditorData) => 
     // 预先移除所有过去的 cells
     graph.removeCells(graph.getCells())
 
-    graph.fromJSON(json)
+    const cells = graph.parseJSON(json)
+    const nodes = <Node[]>cells.filter(it => it.isNode())
+    const edges = <Edge[]>cells.filter(it => it.isEdge())
 
-    // 通过移除和重新添加的方式触发 node:added 和 edge:added
-    const tempNodes = graph.getNodes()
-    const tempEdges = graph.getEdges()
-    graph.removeCells(graph.getCells())
-    graph.addNodes(tempNodes)
-    graph.addEdges(tempEdges)
+    graph.addNodes(nodes)
+    graph.addEdges(edges)
 
     graph.zoomTo(zoom)
 
