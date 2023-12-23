@@ -1,4 +1,4 @@
-import {Graph} from "@antv/x6";
+import {Cell, Graph} from "@antv/x6";
 import {TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
 import {getSelectedNodes} from "@/components/business/graphEditor/selection/selectOperation.ts";
 import {sendMessage} from "@/utils/message.ts";
@@ -26,7 +26,7 @@ export const handleTableNoteClipBoardKeyEvent = (graph: Graph, e: KeyboardEvent)
     }
 }
 
-const graphDateKeys: string[] = ['json', 'zoom', 'transform']
+const graphDataKeys: string[] = ['json', 'zoom', 'transform']
 
 const tableKeys: string[] = ['name', 'type', 'comment', 'columns', 'indexes', ]
 
@@ -45,8 +45,17 @@ export const tableNodePaste = async (graph: Graph) => {
 
         if (Array.isArray(value) && (value as any[]).filter(it => isSubSet(Object.keys(it), tableKeys)).length == value.length) {
             importTables(graph, value)
-        } else if (isSubSet(Object.keys(value), graphDateKeys)) {
-            loadEditorData(graph, value, false)
+        } else if (isSubSet(Object.keys(value), graphDataKeys)) {
+            if (Object.keys(value.json).includes("cells")) {
+                try {
+                    const cells = value.json.cells as Cell[]
+                    graph.parseJSON(cells)
+
+                    loadEditorData(graph, value, false)
+                } catch (e) {
+                    sendMessage('剪切板中数据无法直接导入画布', 'info', text)
+                }
+            }
         }
 
     } catch (e) {

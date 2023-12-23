@@ -97,11 +97,6 @@ export const useModelEditorStore =
                         return
                     }
 
-                    // 尽可能规避编辑 json value
-                    if (model.value && model.value == commonOperations.toDataJSONStr()) {
-                        model.value = undefined
-                    }
-
                     const id = await api.modelService.save({body: model})
                     const savedModel = (await api.modelService.get({id}))!
 
