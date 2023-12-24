@@ -1,12 +1,11 @@
 import {defineStore} from "pinia";
 import {useCommonGraphOperations} from "@/components/business/graphEditor";
 import {ModelEditorEventBus} from "./ModelEditorEventBus.ts";
-import {importTables} from "../graph/tableNode.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {computed, nextTick, ref} from "vue";
 import {api} from "@/api";
 import {loadTables} from "../graph/loadTables.ts";
-import {GenModelInput, GenModelView} from "@/api/__generated/model/static";
+import {GenModelInput, GenModelView, GenTableColumnsView} from "@/api/__generated/model/static";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {
     useTableCreateDialogStore
@@ -14,6 +13,8 @@ import {
 import {
     useTableModifyDialogsStore
 } from "@/components/business/modelGraphEditor/tableEditDialog/TableModifyDialogsStore.ts";
+import {importTables} from "@/components/pages/ModelEditor/graph/tableNode.ts";
+import {useGenContextStore} from "@/components/business/context/GenContextStore.ts";
 
 export const useModelEditorStore =
     defineStore(
@@ -22,15 +23,6 @@ export const useModelEditorStore =
             const commonOperations = useCommonGraphOperations()
 
             const {_graph} = commonOperations
-
-            commonOperations.onLoaded(() => {
-                const graph = _graph()
-                if (graph) {
-                    graph.on('blank:dblclick', ({e}) => {
-                        ModelEditorEventBus.emit('createTable', {x: e.offsetX, y: e.offsetY})
-                    })
-                }
-            })
 
             const currentModel = ref<GenModelView>()
 
@@ -59,6 +51,11 @@ export const useModelEditorStore =
             }
 
             const loadCurrentModel = (model: GenModelView) => {
+                const contextStore = useGenContextStore()
+
+                contextStore.dataSourceType = model.dataSourceType
+                contextStore.language = model.language
+
                 currentModel.value = model
 
                 if (!model.value || model.value.length == 0 || model.value == '{}') {
@@ -124,22 +121,8 @@ export const useModelEditorStore =
              * @param id model id
              */
             const importModel = async (id: number) => {
-                const graph = _graph()
-
                 const tables = await api.tableService.queryColumnsView({query: {modelIds: [id]}})
-
-                const {nodes, edges} = await loadTables(graph, tables)
-
-                await nextTick()
-
-                setTimeout(() => {
-                    graph.resetSelection([
-                        ...nodes.map(it => it.id),
-                        ...edges.map(it => it.id)
-                    ])
-
-                    commonOperations.layoutAndFit()
-                }, 500)
+                await importTableInfoGraph(tables)
             }
 
             /**
@@ -147,22 +130,8 @@ export const useModelEditorStore =
              * @param id schema id
              */
             const importSchema = async (id: number) => {
-                const graph = _graph()
-
                 const tables = await api.tableService.queryColumnsView({query: {schemaIds: [id]}})
-
-                const {nodes, edges} = await loadTables(graph, tables)
-
-                await nextTick()
-
-                setTimeout(() => {
-                    graph.resetSelection([
-                        ...nodes.map(it => it.id),
-                        ...edges.map(it => it.id)
-                    ])
-
-                    commonOperations.layoutAndFit()
-                }, 500)
+                await importTableInfoGraph(tables)
             }
 
             /**
@@ -170,15 +139,29 @@ export const useModelEditorStore =
              * @param id tableId
              */
             const importTable = async (id: number) => {
-                const graph = _graph()
                 const tables = await api.tableService.queryColumnsView({query: {ids: [id]}})
-                const {nodes} = await loadTables(graph, tables)
+                await importTableInfoGraph(tables)
+            }
 
-                if (nodes.length > 0) {
-                    setTimeout(() => {
+            const importTableInfoGraph = async (tables: GenTableColumnsView[]) => {
+                const graph = _graph()
+
+                const {nodes, edges} = await loadTables(graph, tables)
+
+                await nextTick()
+
+                setTimeout(() => {
+                    if (nodes.length == 1) {
                         commonOperations.focus(nodes[0])
-                    }, 200)
-                }
+                    } else {
+                        graph.resetSelection([
+                            ...nodes.map(it => it.id),
+                            ...edges.map(it => it.id)
+                        ])
+
+                        commonOperations.layoutAndFit()
+                    }
+                }, 500)
             }
 
             const modelLoadMenuOpenState = ref(false)
@@ -263,9 +246,10 @@ export const useModelEditorStore =
                 dataSourceLoadMenuOpenState,
                 modelLoadMenuOpenState,
 
-                loadModel: importModel,
-                loadSchema: importSchema,
-                loadTable: importTable,
+                importTableInfoGraph,
+                importModel,
+                importSchema,
+                importTable,
             }
         }
     )

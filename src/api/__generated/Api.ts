@@ -1,16 +1,16 @@
 import type { Executor } from './';
 
-import { AssociationService, ColumnService, ConfigService, DataSourceColumnTypeService, DataSourceService, EntityService, EnumService, GenerateService, ModelService, PackageService, SchemaService, TableService, TypeMappingService } from './services';
+import { AssociationService, ColumnDefaultService, ColumnService, ConfigService, DataSourceService, EntityService, EnumService, GenerateService, JDBCService, ModelService, PackageService, SchemaService, TableService, TypeMappingService } from './services';
 
 export class Api {
     
     readonly associationService: AssociationService;
     
+    readonly columnDefaultService: ColumnDefaultService;
+    
     readonly columnService: ColumnService;
     
     readonly configService: ConfigService;
-    
-    readonly dataSourceColumnTypeService: DataSourceColumnTypeService;
     
     readonly dataSourceService: DataSourceService;
     
@@ -19,6 +19,8 @@ export class Api {
     readonly enumService: EnumService;
     
     readonly generateService: GenerateService;
+    
+    readonly jdbcservice: JDBCService;
     
     readonly modelService: ModelService;
     
@@ -32,13 +34,14 @@ export class Api {
     
     constructor(executor: Executor) {
         this.associationService = new AssociationService(executor);
+        this.columnDefaultService = new ColumnDefaultService(executor);
         this.columnService = new ColumnService(executor);
         this.configService = new ConfigService(executor);
-        this.dataSourceColumnTypeService = new DataSourceColumnTypeService(executor);
         this.dataSourceService = new DataSourceService(executor);
         this.entityService = new EntityService(executor);
         this.enumService = new EnumService(executor);
         this.generateService = new GenerateService(executor);
+        this.jdbcservice = new JDBCService(executor);
         this.modelService = new ModelService(executor);
         this.packageService = new PackageService(executor);
         this.schemaService = new SchemaService(executor);

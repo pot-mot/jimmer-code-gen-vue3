@@ -150,6 +150,7 @@ import {
 } from "@/components/business/modelGraphEditor/tableEditDialog/TableModifyDialogsStore.ts";
 import {debugLog} from "@/utils/debugLog.ts";
 import {handleTableNoteClipBoardKeyEvent} from "@/components/business/modelGraphEditor/tableNode/tableNodeCopy.ts";
+import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -174,6 +175,10 @@ onMounted(async () => {
 
 	graph.on('history:change', (args) => {
 		debugLog('history change log', args)
+	})
+
+	graph.on('blank:dblclick', ({e}) => {
+		ModelEditorEventBus.emit('createTable', {x: e.offsetX, y: e.offsetY})
 	})
 
 	loadingStore.sub()

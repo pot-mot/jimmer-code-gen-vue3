@@ -12,11 +12,11 @@ export type AllErrors =
 export type ApiErrors = {
     "associationService": {
     },
+    "columnDefaultService": {
+    },
     "columnService": {
     },
     "configService": {
-    },
-    "dataSourceColumnTypeService": {
     },
     "dataSourceService": {
         "create": AllErrors & (
@@ -49,6 +49,8 @@ export type ApiErrors = {
     "enumService": {
     },
     "generateService": {
+    },
+    "jdbcservice": {
     },
     "modelService": {
         "previewSql": AllErrors & (

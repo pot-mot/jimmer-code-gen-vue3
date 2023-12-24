@@ -35,13 +35,6 @@ export class ModelService {
         return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenModelSimpleView>
     }
     
-    async listDatabaseType(): Promise<
-        {[key:string]: number}
-    > {
-        let _uri = '/model/type';
-        return (await this.executor({uri: _uri, method: 'GET'})) as {[key:string]: number}
-    }
-    
     async previewSql(options: ModelServiceOptions['previewSql']): Promise<
         Array<Pair<string, string>>
     > {
@@ -76,7 +69,6 @@ export type ModelServiceOptions = {
     'get': {id: number},
     'getValueData': {id: number},
     'list': {},
-    'listDatabaseType': {},
     'previewSql': {id: number, type?: DataSourceType},
     'save': {body: GenModelInput}
 }

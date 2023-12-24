@@ -2,12 +2,14 @@
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {ref} from "vue";
 import {Tools} from "@element-plus/icons-vue"
-import GenerateConfigForm from "@/components/business/config/GenerateConfigForm.vue";
+import GenerateConfigForm from "@/components/business/config/GenConfigForm.vue";
 import TypeMappingsEditor from "@/components/business/config/TypeMappingsEditor.vue";
+import ColumnDefaultEditor from "@/components/business/config/ColumnDefaultEditor.vue";
+import {GenerateConfiguratorOption, GenerateConfiguratorOptions} from "@/components/business/config/constant.ts";
 
 const openState = ref(false)
 
-const configType = ref<'GenerateConfigForm' | 'TypeMappingsTable' | undefined>()
+const configType = ref<GenerateConfiguratorOption | undefined>()
 </script>
 
 <template>
@@ -15,30 +17,29 @@ const configType = ref<'GenerateConfigForm' | 'TypeMappingsTable' | undefined>()
 		<el-popover placement="top-end">
 			<template #reference>
 				<el-button link>
-					<el-icon size="2em">
-						<Tools @click="openState = true; configType = 'GenerateConfigForm'"></Tools>
-					</el-icon>
+					<el-icon size="2em"><Tools></Tools></el-icon>
 				</el-button>
 			</template>
 
 			<ul>
-				<li>
-					<el-button link @click="openState = true; configType = 'GenerateConfigForm'">全局生成配置
+				<li v-for="option in GenerateConfiguratorOptions">
+					<el-button link @click="openState = true; configType = option.name">{{ option.label }}
 					</el-button>
-				</li>
-				<li>
-					<el-button link @click="openState = true; configType = 'TypeMappingsTable'">类型映射配置</el-button>
 				</li>
 			</ul>
 		</el-popover>
-
 	</div>
 
 	<DragDialog v-model="openState" :init-w="900" :init-y="100" :init-h="600" can-resize>
 		<div style="width: calc(100% - 1em)">
-			<GenerateConfigForm v-if="configType == 'GenerateConfigForm'"
-								@cancel="openState = false" @submit="openState = false"></GenerateConfigForm>
-			<TypeMappingsEditor v-else-if="configType == 'TypeMappingsTable'"></TypeMappingsEditor>
+			<GenerateConfigForm
+				v-if="configType == 'GenConfigForm'"
+				@cancel="openState = false"
+				@submit="openState = false"></GenerateConfigForm>
+			<TypeMappingsEditor
+				v-else-if="configType == 'TypeMappingsEditor'"></TypeMappingsEditor>
+			<ColumnDefaultEditor
+				v-else-if="configType == 'ColumnDefaultEditor'"></ColumnDefaultEditor>
 		</div>
 	</DragDialog>
 </template>

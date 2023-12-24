@@ -12,12 +12,13 @@ import EditList from "@/components/global/list/EditList.vue";
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import {tableColumnColumns} from "@/components/business/table/tableColumnColumns.ts";
 import ColumnTypeForm from "@/components/business/table/ColumnTypeForm.vue";
+import {useJDBCTypeStore} from "@/components/business/jdbcType/JDBCTypeStore.ts";
 
 const store = useModelEditorStore()
 
 const columnTypeMapLoading = useLoading()
 
-const databaseTypeObj = ref<{[key:string]: number}>({})
+const jdbcTypeStore = useJDBCTypeStore()
 
 const enums = ref<GenEnumView[]>([])
 
@@ -25,16 +26,11 @@ onMounted(async () => {
 	columnTypeMapLoading.start()
 	await nextTick()
 
-	await getDatabaseTypeObj()
 	await getEnums()
 
 	await nextTick()
 	columnTypeMapLoading.end()
 })
-
-const getDatabaseTypeObj = async () => {
-	databaseTypeObj.value = await api.modelService.listDatabaseType()
-}
 
 const getEnums = async () => {
 	enums.value = await api.enumService.query({query: {}})
@@ -92,7 +88,7 @@ const checkConfig = ref({
 })
 
 const handleColumnToPk = (pkIndex: number) => {
-	if (!databaseTypeObj.value) {
+	if (!jdbcTypeStore.isLoaded) {
 		sendMessage('数据库类型未成功获取')
 		return
 	}
@@ -100,7 +96,7 @@ const handleColumnToPk = (pkIndex: number) => {
 	const pkColumn = table.value.columns[pkIndex]
 	pkColumn.typeNotNull = true
 	pkColumn.type = "BIGINT"
-	pkColumn.typeCode = databaseTypeObj.value[pkColumn.type]!
+	pkColumn.typeCode = jdbcTypeStore.jdbcTypes[pkColumn.type]!
 	pkColumn.logicalDelete = false
 	pkColumn.businessKey = false
 
@@ -239,8 +235,7 @@ const handleCancel = () => {
 			</template>
 
 			<template #type="{data}">
-				<ColumnTypeForm v-if="databaseTypeObj"
-								:database-type-obj="databaseTypeObj"
+				<ColumnTypeForm v-if="jdbcTypeStore.isLoaded"
 								:enums="enums"
 								:model-value="data"
 								@updateEnums="getEnums()"></ColumnTypeForm>

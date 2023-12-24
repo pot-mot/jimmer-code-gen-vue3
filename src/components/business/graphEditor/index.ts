@@ -5,6 +5,7 @@ import {useSelectOperation} from "@/components/business/graphEditor/selection/se
 import {useViewOperation} from "@/components/business/graphEditor/common/viewOperation.ts";
 import {useGraphReactiveState} from "./common/reactiveState.ts";
 import {useGraphDataOperation} from "@/components/business/graphEditor/storage/graphData.ts";
+import {useLoadHooks} from "@/utils/asyncHooks.ts";
 
 export const useCommonGraphOperations = () => {
     return (() => {
@@ -24,65 +25,34 @@ export const useCommonGraphOperations = () => {
         const reactiveState = useGraphReactiveState(_graph)
 
         // 生命周期钩子
-
-        const beforeLoadFns = ref<(() => any)[]>([])
-
-        const onBeforeLoad = (callback: (() => any)) => {
-            beforeLoadFns.value.push(callback)
-        }
-
-        const loadedFns = ref<((props: { graph: Graph }) => any)[]>([])
-
-        const onLoaded = (callback: (props: { graph: Graph }) => any) => {
-            loadedFns.value.push(callback)
-        }
-
-        const beforeUnloadFns = ref<((props: { graph: Graph }) => any)[]>([])
-
-        const onBeforeUnload = (callback: ((props: { graph: Graph }) => any)) => {
-            beforeUnloadFns.value.push(callback)
-        }
-
-        const unloadedFns = ref<(() => any)[]>([])
-
-        const onUnloaded = (callback: (() => any)) => {
-            unloadedFns.value.push(callback)
-        }
+        const loadHooks = useLoadHooks(() => graph.value)
 
         /**
          * 初始化加载函数
          */
         const load = async (_graph: Graph) => {
-            beforeLoadFns.value.forEach(cb => {
-                cb()
-            })
+            await loadHooks.beforeLoad()
 
             graph.value = _graph
             await reactiveState.loadReactiveState()
 
-            loadedFns.value.forEach(cb => {
-                cb({graph: _graph})
-            })
+            await loadHooks.loaded()
         }
 
         /**
          * 卸载函数
          */
-        const unload = () => {
+        const unload = async () => {
             if (!graph.value) {
                 sendMessage('图未加载，无法卸载', 'error')
                 return
             }
 
-            beforeUnloadFns.value.forEach(cb => {
-                cb({graph: graph.value!})
-            })
+            await loadHooks.beforeUnload()
 
             graph.value = null
 
-            unloadedFns.value.forEach(cb => {
-                cb()
-            })
+            await loadHooks.unloaded()
         }
 
         // 判断鼠标是否在 graph 范围内
@@ -91,17 +61,19 @@ export const useCommonGraphOperations = () => {
         const handleMouseenter = () => {mouseenterState.value = true}
         const handleMouseleave = () => {mouseenterState.value = false}
 
-        onLoaded(({graph}) => {
+        loadHooks.onLoaded((graph) => {
+            if (!graph) return
             graph.container.addEventListener('mouseenter', handleMouseenter)
             graph.container.addEventListener('mouseleave', handleMouseleave)
         })
 
-        onBeforeUnload(({graph}) => {
+        loadHooks.onBeforeUnload((graph) => {
+            if (!graph) return
             graph.container.removeEventListener('mouseenter', handleMouseenter)
             graph.container.removeEventListener('mouseleave', handleMouseleave)
         })
 
-        onUnloaded(() => {
+        loadHooks.onUnloaded(() => {
             mouseenterState.value = false
         })
 
@@ -130,11 +102,11 @@ export const useCommonGraphOperations = () => {
                 }
             }
 
-            onLoaded(() => {
+            loadHooks.onLoaded(() => {
                 document.documentElement.addEventListener(eventType, callbackWrapper)
             })
 
-            onBeforeUnload(() => {
+            loadHooks.onBeforeUnload(() => {
                 document.documentElement.removeEventListener(eventType, callbackWrapper)
             })
         }
@@ -171,10 +143,7 @@ export const useCommonGraphOperations = () => {
             unload,
             _graph,
 
-            onBeforeLoad,
-            onLoaded,
-            onBeforeUnload,
-            onUnloaded,
+            ...loadHooks,
 
             addEventListener,
 

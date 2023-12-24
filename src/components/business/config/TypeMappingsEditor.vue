@@ -9,6 +9,8 @@ import {PropListColumn} from "@/components/global/list/ListProps.ts";
 import {sendMessage} from "@/utils/message.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep, uniqWith} from "lodash";
+import {GenerateConfigurator} from "./constant.ts";
+import {useGenConfigStore} from "@/components/business/config/GenConfigStore.ts";
 
 const editState = ref(false)
 
@@ -46,17 +48,25 @@ const typeMappingLoading = useLoading()
 const defaultTypeMapping = ref<GenTypeMappingInput>({
 	dataSourceType: "MySQL",
 	language: "JAVA",
-	propertyType: "",
+	propertyType: "java.lang.String",
+	typeExpression: "(.*)",
 	remark: "",
-	typeExpression: "",
 	orderKey: 0,
+})
+
+const genConfigStore = useGenConfigStore()
+
+genConfigStore.onLoaded(() => {
+	if (genConfigStore.genConfig) {
+		defaultTypeMapping.value.dataSourceType = genConfigStore.genConfig.dataSourceType
+		defaultTypeMapping.value.language = genConfigStore.genConfig.language
+		defaultTypeMapping.value.propertyType = defaultTypeMapping.value.language == "JAVA" ? "java.lang.String" : "kotlin.String"
+	}
 })
 
 const getData = async () => {
 	typeMappingLoading.start()
 	await nextTick()
-
-	defaultTypeMapping.value = await api.typeMappingService.getDefault()
 
 	typeMappings.value = await api.typeMappingService.list()
 
@@ -119,7 +129,9 @@ const handleCancel = () => {
 
 <template>
 	<div v-loading="typeMappingLoading.isLoading()">
-		<h3 style="width: 100%; text-align: center; height: 2em; line-height: 2em;">类型映射配置</h3>
+		<h3 style="width: 100%; text-align: center; height: 2em; line-height: 2em;">
+			{{ GenerateConfigurator.TypeMappingsEditor.label }}
+		</h3>
 
 		<template v-if="editState">
 			<EditList

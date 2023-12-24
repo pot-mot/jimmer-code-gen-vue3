@@ -1,30 +1,25 @@
 <script lang="ts" setup>
 import {api} from "@/api";
-import {nextTick, onMounted, ref} from "vue";
+import {onMounted, ref} from "vue";
 import {GenConfig, GenConfigProperties} from "@/api/__generated/model/static";
 import {sendMessage} from "@/utils/message.ts";
 import DataSourceIcon from "../../global/icons/database/DataSourceIcon.vue";
 import Details from "../../global/common/Details.vue";
-import {useLoading} from "@/hooks/useLoading.ts";
 import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated/model/enums"
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
+import {GenerateConfigurator} from "@/components/business/config/constant.ts";
+import {useGenConfigStore} from "@/components/business/config/GenConfigStore.ts";
+
+const genConfigStore = useGenConfigStore()
 
 const config = ref<GenConfig>()
 
-const generateConfigLoading = useLoading()
-
-const getData = async () => {
-	generateConfigLoading.start()
-	await nextTick()
-
-	config.value = await api.configService.getConfig()
-
-	await nextTick()
-	generateConfigLoading.end()
-}
-
-onMounted(() => {
-	getData()
+onMounted(async () => {
+	if (genConfigStore.isLoaded) {
+		config.value = genConfigStore.genConfig
+	} else {
+		config.value = await genConfigStore.reset()
+	}
 })
 
 const emits = defineEmits<FormEmits<GenConfigProperties>>()
@@ -32,6 +27,7 @@ const emits = defineEmits<FormEmits<GenConfigProperties>>()
 const handleSubmit = async () => {
 	const newConfig = <GenConfigProperties>config.value
 	await api.configService.setConfig({body: newConfig})
+	await genConfigStore.reset()
 	sendMessage('配置修改成功', 'success')
 	emits('submit', newConfig)
 }
@@ -42,8 +38,8 @@ const handleCancel = () => {
 </script>
 
 <template>
-	<div v-loading="generateConfigLoading.isLoading()">
-		<h3 style="width: 100%; text-align: center; height: 2em; line-height: 2em;">全局生成配置</h3>
+	<div v-loading="!genConfigStore.isLoaded">
+		<h3 style="width: 100%; text-align: center; height: 2em; line-height: 2em;">{{ GenerateConfigurator.GenConfigForm.label }}</h3>
 
 		<el-form v-if="config">
 			<el-row :gutter="24">

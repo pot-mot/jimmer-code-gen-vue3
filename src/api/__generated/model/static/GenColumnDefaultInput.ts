@@ -1,8 +1,6 @@
 import type { DataSourceType } from '../enums';
 
-export interface GenDataSourceColumnTypeView {
-    
-    createdTime: string;
+export interface GenColumnDefaultInput {
     
     dataSourceType: DataSourceType;
     
@@ -10,9 +8,7 @@ export interface GenDataSourceColumnTypeView {
     
     displaySize: number;
     
-    id: number;
-    
-    modifiedTime: string;
+    id?: number;
     
     numericPrecision: number;
     

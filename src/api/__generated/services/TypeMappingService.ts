@@ -13,13 +13,6 @@ export class TypeMappingService {
         return (await this.executor({uri: _uri, method: 'GET'})) as GenTypeMappingView | undefined
     }
     
-    async getDefault(): Promise<
-        GenTypeMappingInput
-    > {
-        let _uri = '/typeMapping/default';
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenTypeMappingInput
-    }
-    
     async list(): Promise<
         Array<GenTypeMappingView>
     > {
@@ -37,7 +30,6 @@ export class TypeMappingService {
 
 export type TypeMappingServiceOptions = {
     'get': {id: number},
-    'getDefault': {},
     'list': {},
     'saveAll': {body: Array<GenTypeMappingInput>}
 }

@@ -55,13 +55,13 @@ watch(() => dataSourceLoadMenu.value, () => {
 
 	eventBus.on('clickSchema', async ({id}) => {
 		loadingStore.add()
-		await store.loadSchema(id)
+		await store.importSchema(id)
 		loadingStore.sub()
 	})
 
 	eventBus.on('clickTable', async ({id}) => {
 		loadingStore.add()
-		await store.loadTable(id)
+		await store.importTable(id)
 		loadingStore.sub()
 	})
 }, {immediate: true})
@@ -75,13 +75,13 @@ watch(() => modelLoadMenu.value, () => {
 
 	eventBus.on('clickModel', async ({id}) => {
 		loadingStore.add()
-		await store.loadModel(id)
+		await store.importModel(id)
 		loadingStore.sub()
 	})
 
 	eventBus.on('clickTable', async ({id}) => {
 		loadingStore.add()
-		await store.loadTable(id)
+		await store.importTable(id)
 		loadingStore.sub()
 	})
 }, {immediate: true})
