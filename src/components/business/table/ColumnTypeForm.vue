@@ -60,6 +60,7 @@ const handleTypeCodeChange = () => {
 		props.modelValue.type = columnDefault.type
 		props.modelValue.displaySize = columnDefault.displaySize
 		props.modelValue.numericPrecision = columnDefault.numericPrecision
+		if (columnDefault.defaultValue) props.modelValue.defaultValue = columnDefault.defaultValue
 	} else {
 		const type = jdbcTypeStore.map.get(typeCode)
 		if (type) {
@@ -72,64 +73,65 @@ const handleTypeCodeChange = () => {
 </script>
 
 <template>
-	<template v-if="jdbcTypeStore.isLoaded && columnDefaultStore.isLoaded">
-		<el-popover v-model:visible="popoverOpenState" trigger="click" width="450px">
-			<template #reference>
-				<el-text>
-					<el-input readonly :model-value="modelValue.type">
-						<template v-if="modelValue.enumId != undefined" #prefix>
-							【Enum】
-						</template>
-					</el-input>
+	<el-popover v-model:visible="popoverOpenState" trigger="click" width="450px">
+		<template #reference>
+			<el-input readonly :model-value="modelValue.type">
+				<template v-if="modelValue.enumId != undefined" #prefix>
+					【Enum】
+				</template>
+			</el-input>
+		</template>
+
+
+		<el-form v-if="jdbcTypeStore.isLoaded && columnDefaultStore.isLoaded">
+			<el-form-item label="jdbc 类型">
+				<el-select
+					v-model="modelValue.typeCode"
+					@change="handleTypeCodeChange"
+					filterable
+					style="width: 100%">
+					<el-option v-for="type in jdbcTypeStore.list"
+							   :label="type.type" :value="type.typeCode"></el-option>
+				</el-select>
+			</el-form-item>
+
+			<el-form-item label="字面类型">
+				<el-input v-model="modelValue.type"></el-input>
+			</el-form-item>
+
+			<el-form-item label="长度精度">
+				<el-text style="display: grid; grid-template-columns: 0.5em 1fr 1em 1fr 0.5em">
+					<span>(</span>
+					<span><el-input type="number" v-model="modelValue.displaySize"></el-input></span>
+					<span style="padding-left: 0.3em;">,</span>
+					<span><el-input type="number" v-model="modelValue.numericPrecision"></el-input></span>
+					<span style="padding-left: 0.3em;">)</span>
 				</el-text>
-			</template>
+			</el-form-item>
 
+			<el-form-item label="映射枚举">
+				<el-select :model-value="modelValue.enumId" clearable filterable
+						   @clear="() => {
+							   modelValue.enumId = undefined
+							   handleStopPopoverClose()
+						   }"
+						   @change="(value: number) => {
+								modelValue.enumId = value
+								handleStopPopoverClose()
+							}">
+					<el-option v-for="genEnum in enums" :label="genEnum.name" :value="genEnum.id">
+						{{ genEnum.name }}
+						<Comment :comment="genEnum.comment"></Comment>
+					</el-option>
+				</el-select>
 
-			<el-form>
-				<el-form-item label="字面类型">
-					<el-input v-model="modelValue.type"></el-input>
-				</el-form-item>
+				<el-button :icon="modelValue.enumId == undefined ? EditPen : Plus"
+						   @click="enumDialogOpenState = true;"></el-button>
+			</el-form-item>
+		</el-form>
+	</el-popover>
 
-				<el-form-item label="jdbc 类型">
-					<el-select
-						v-model="modelValue.typeCode"
-						@change="handleTypeCodeChange"
-						clearable filterable
-						style="width: 100%">
-						<el-option v-for="type in jdbcTypeStore.list"
-								   :label="type.type" :value="type.typeCode"></el-option>
-					</el-select>
-				</el-form-item>
-
-				<el-form-item label="长度精度">
-					<el-text style="display: grid; grid-template-columns: 0.5em 1fr 1em 1fr 0.5em">
-						<span>(</span>
-						<span><el-input type="number" v-model="modelValue.displaySize"></el-input></span>
-						<span style="padding-left: 0.3em;">,</span>
-						<span><el-input type="number" v-model="modelValue.numericPrecision"></el-input></span>
-						<span style="padding-left: 0.3em;">)</span>
-					</el-text>
-				</el-form-item>
-
-				<el-form-item label="映射枚举">
-					<el-select :model-value="modelValue.enumId" clearable filterable @change="(value: number) => {
-					modelValue.enumId = value
-					handleStopPopoverClose()
-				}">
-						<el-option v-for="genEnum in enums" :label="genEnum.name" :value="genEnum.id">
-							{{ genEnum.name }}
-							<Comment :comment="genEnum.comment"></Comment>
-						</el-option>
-					</el-select>
-
-					<el-button :icon="modelValue.enumId == undefined ? EditPen : Plus"
-							   @click="enumDialogOpenState = true;"></el-button>
-				</el-form-item>
-			</el-form>
-		</el-popover>
-
-		<el-dialog v-model="enumDialogOpenState" append-to-body @close="handleCancelEditEnum">
-			<EnumForm :id="modelValue.enumId" @submit="handleSaveEnum" @cancel="handleCancelEditEnum"></EnumForm>
-		</el-dialog>
-	</template>
+	<el-dialog v-model="enumDialogOpenState" append-to-body @close="handleCancelEditEnum">
+		<EnumForm :id="modelValue.enumId" @submit="handleSaveEnum" @cancel="handleCancelEditEnum"></EnumForm>
+	</el-dialog>
 </template>

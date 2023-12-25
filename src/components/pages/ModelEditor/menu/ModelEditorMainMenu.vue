@@ -13,7 +13,7 @@ const store = useModelEditorStore()
 <template>
 	<div>
 		<el-button style="margin-bottom: 0.5em;" @click="store.dataSourceLoadMenuOpenState = true">从数据源导入</el-button>
-		<el-button style="margin-bottom: 0.5em;" @click="store.modelLoadMenuOpenState = true">从其他模型导入</el-button>
+		<el-button style="margin-bottom: 0.5em;" @click="store.modelLoadMenuOpenState = true">从模型导入</el-button>
 
 		<Details open>
 			<template #title>

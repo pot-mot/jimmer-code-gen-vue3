@@ -20,7 +20,7 @@ watch(() => props.model, (propsModel) => {
 		const tempModel = cloneDeep(propsModel)
 
 		if (props.editValue) {
-			tempModel.value = jsonFormatter(propsModel.value ? propsModel.value : '')
+			tempModel.graphData = jsonFormatter(propsModel.graphData ? propsModel.graphData : '')
 		}
 
 		model.value = tempModel
@@ -31,7 +31,7 @@ const handleSubmit = () => {
 	const tempModel = cloneDeep(model.value)
 
 	if (props.editValue) {
-		tempModel.value = jsonParser(tempModel.value ? tempModel.value : '')
+		tempModel.graphData = jsonParser(tempModel.graphData ? tempModel.graphData : '')
 	}
 
 	emits('submit', tempModel)
@@ -71,8 +71,8 @@ const handleCancel = () => {
 			</el-form-item>
 		</div>
 
-		<el-form-item label="内容" v-if="editValue && model.value">
-			<CodeEditor style="height: 100%; min-height: 450px; max-height: calc(100vh - 300px); border: 1px solid #ccc; border-radius: 8px;" v-model="model.value" language="json"></CodeEditor>
+		<el-form-item label="内容" v-if="editValue && model.graphData">
+			<CodeEditor style="height: 100%; min-height: 450px; max-height: calc(100vh - 300px); border: 1px solid #ccc; border-radius: 8px;" v-model="model.graphData" language="json"></CodeEditor>
 		</el-form-item>
 
 		<div style="text-align: right;">

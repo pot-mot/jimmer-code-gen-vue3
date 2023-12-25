@@ -9,6 +9,9 @@ import {DataSourceFormProps} from "./DataSourceFormProps.ts";
 import {DataSourceType_CONSTANTS} from "@/api/__generated/model/enums";
 import Line from "@/components/global/list/Line.vue";
 import LineItem from "@/components/global/list/LineItem.vue";
+import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
+
+const loadingStore = useGlobalLoadingStore()
 
 const props = defineProps<DataSourceFormProps>()
 
@@ -45,16 +48,20 @@ watch(() => props.dataSource, (prop) => {
 
 const emits = defineEmits<DataSourceFormEmits>()
 
-const handleTest = () => {
-	api.dataSourceService.test({
+const handleTest = async () => {
+	loadingStore.add()
+
+	const res = await api.dataSourceService.test({
 		body: dataSource.value
-	}).then(res => {
-		if (res) {
-			sendMessage("数据源测试成功", "success")
-		} else {
-			sendMessage("数据源测试失败", "error")
-		}
 	})
+
+	loadingStore.sub()
+
+	if (res) {
+		sendMessage("数据源测试成功", "success")
+	} else {
+		sendMessage("数据源测试失败", "error")
+	}
 }
 
 const handleSubmit = () => {

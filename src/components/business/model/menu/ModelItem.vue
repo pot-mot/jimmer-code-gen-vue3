@@ -29,9 +29,9 @@ const getData = async () => {
 <template>
 	<Details v-loading="loading.isLoading()" @open="getData" :disabled="!showConfig.showModelTables">
 		<template #title>
-			<div style="height: 1.8em; line-height: 1.8em;">
-				<el-button @click="eventBus.emit('clickModel', {id: model.id})" link>
-					<el-text>{{ model.name }}</el-text>
+			<div style="height: 2em; line-height: 2em;">
+				<el-button @click="eventBus.emit('clickModel', {id: model.id})" size="default" link>
+					{{ model.name }}
 				</el-button>
 			</div>
 		</template>

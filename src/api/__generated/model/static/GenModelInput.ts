@@ -4,6 +4,8 @@ export interface GenModelInput {
     
     dataSourceType: DataSourceType;
     
+    graphData?: string;
+    
     id?: number;
     
     language: GenLanguage;
@@ -11,6 +13,4 @@ export interface GenModelInput {
     name: string;
     
     remark: string;
-    
-    value?: string;
 }

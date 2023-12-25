@@ -6,6 +6,8 @@ export interface GenModelView {
     
     dataSourceType: DataSourceType;
     
+    graphData: string;
+    
     id: number;
     
     language: GenLanguage;
@@ -15,6 +17,4 @@ export interface GenModelView {
     name: string;
     
     remark: string;
-    
-    value: string;
 }

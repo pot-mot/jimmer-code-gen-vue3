@@ -190,11 +190,11 @@ const handleSaveModel = async () => {
 	try {
 		const model = store._currentModel()
 
-		if (model.value != store.toDataJSONStr()) {
-			model.value = store.toDataJSONStr()
+		if (model.graphData != store.toDataJSONStr()) {
+			model.graphData = store.toDataJSONStr()
 			await api.modelService.save({body: model})
 		} else {
-			await api.modelService.save({body: {...model, value: undefined}})
+			await api.modelService.save({body: {...model, graphData: undefined}})
 		}
 
 		sendMessage("模型保存成功", "success")

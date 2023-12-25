@@ -49,7 +49,7 @@ const handleSubmit = async (model: GenModelInput) => {
 		const updateFlag = (model.id != undefined)
 
 		if (updateFlag) {
-			model.value = undefined
+			model.graphData = undefined
 		}
 
 		const newId = await api.modelService.save({body: model})

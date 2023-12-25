@@ -58,16 +58,16 @@ export const useModelEditorStore =
 
                 currentModel.value = model
 
-                if (!model.value || model.value.length == 0 || model.value == '{}') {
+                if (!model.graphData || model.graphData.length == 0) {
                     sendMessage('当前模型为空', 'info')
                     return
                 }
 
                 if (commonOperations.isLoaded) {
-                    loadGraphByJSONStr(model.value)
+                    loadGraphByJSONStr(model.graphData)
                 } else {
                     commonOperations.onLoaded(() => {
-                        loadGraphByJSONStr(model.value)
+                        loadGraphByJSONStr(model.graphData)
                     })
                 }
             }
@@ -75,7 +75,7 @@ export const useModelEditorStore =
             const modelEditDialogOpenState = ref(false)
 
             const handleEditModel = () => {
-                _currentModel().value = commonOperations.toDataJSONStr()
+                _currentModel().graphData = commonOperations.toDataJSONStr()
                 modelEditDialogOpenState.value = true
             }
 

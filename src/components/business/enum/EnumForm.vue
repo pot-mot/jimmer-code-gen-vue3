@@ -26,7 +26,8 @@ const defaultEnum = {
 const defaultItem = {
 	name: "",
 	value: "",
-	comment: ""
+	comment: "",
+	remark: ""
 }
 
 const emits = defineEmits<FormEmits<GenEnumItemsInput>>()

@@ -4,7 +4,7 @@ import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated
 export const defaultModel: GenModelInput = {
     name: "",
     remark: "",
-    value: "",
+    graphData: "",
     language: GenLanguage_CONSTANTS[0],
     dataSourceType: DataSourceType_CONSTANTS[0]
 }

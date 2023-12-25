@@ -225,7 +225,8 @@ export const importAssociationViews = (graph: Graph, associations: readonly GenA
     const edges: Edge[] = []
 
     associations.forEach(association => {
-        importAssociationInput(graph, associationViewToInput(association))
+        const edge = importAssociationInput(graph, associationViewToInput(association))
+        if (edge) edges.push(edge)
     })
 
     return edges

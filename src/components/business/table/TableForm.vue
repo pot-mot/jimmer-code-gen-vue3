@@ -96,6 +96,7 @@ const handleColumnToPk = (pkIndex: number) => {
 	const pkColumn = table.value.columns[pkIndex]
 	pkColumn.typeNotNull = true
 	pkColumn.type = "BIGINT"
+	pkColumn.enumId = undefined
 	pkColumn.typeCode = jdbcTypeStore.jdbcTypes[pkColumn.type]!
 	pkColumn.logicalDelete = false
 	pkColumn.businessKey = false
@@ -152,9 +153,8 @@ const handleSubmit = () => {
 				messageList.push('主键列必须非空')
 			}
 
-			if (pkColumn.defaultValue) {
-				pkColumn.defaultValue = undefined
-				sendMessage(`主键列[${pkColumn.name}]默认值无意义，已覆盖为 null`, 'warning')
+			if (pkColumn.enumId) {
+				messageList.push('主键列不可为枚举类型')
 			}
 		}
 	}

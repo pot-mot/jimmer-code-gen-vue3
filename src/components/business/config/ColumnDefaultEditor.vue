@@ -165,7 +165,7 @@ const handleCancel = () => {
 							@change="(typeCode: number) => {
 								data.type = jdbcTypeStore.map.get(typeCode)!
 							}"
-							clearable filterable
+							filterable
 							style="width: 100%">
 							<el-option v-for="type in jdbcTypeStore.list"
 									   :label="type.type" :value="type.typeCode"></el-option>

@@ -12,6 +12,9 @@ import DataSourceIcon from "../../../global/icons/database/DataSourceIcon.vue";
 import {deleteConfirm, sendMessage} from "@/utils/message.ts";
 import {DataSourceItemSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlotProps.ts";
 import {DataSourceItemProps} from "@/components/business/dataSource/menu/DataSourceMenuProps.ts";
+import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
+
+const loadingStore = useGlobalLoadingStore()
 
 const loadedSchemaLoading = useLoading()
 
@@ -65,7 +68,7 @@ const handleDelete = () => {
 }
 
 const loadSchema = async (name: string, dataSourceId: number = props.dataSource.id) => {
-	loadedSchemaLoading.add()
+	loadingStore.add()
 
 	const loadIds = await api.schemaService.load({
 		dataSourceId,
@@ -86,7 +89,7 @@ const loadSchema = async (name: string, dataSourceId: number = props.dataSource.
 		})
 	}
 
-	loadedSchemaLoading.sub()
+	loadingStore.sub()
 }
 
 const isEdit = ref(false)
@@ -141,9 +144,7 @@ defineSlots<DataSourceItemSlots>()
 									:schemas="loadedSchemas"
 									:previewSchemaLoading="previewSchemaLoading.isLoading()"
 									:previewSchemas="previewSchemas" :previewSchema="schema">
-									<el-text>
-										<el-button link @click="loadSchema(schema.name)">{{ schema.name }}</el-button>
-									</el-text>
+									<el-button link @click="loadSchema(schema.name)">{{ schema.name }}</el-button>
 								</slot>
 							</div>
 						</template>
