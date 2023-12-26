@@ -50,7 +50,7 @@ vite build
 
 ## 项目说明
 
-### [图表操作](src%2Fcomponents%2Fbusiness%2FgraphEditor%2Findex.ts)
+### [图操作](src%2Fcomponents%2Fbusiness%2FgraphEditor%2Findex.ts)
 
 基于函数式的设计封装了 init、selection、history、focus、center、layout 等常用操作，通过该 common store 作为组合式入口。
 
@@ -72,12 +72,6 @@ vite build
 ### [拖曳缩放会话框 DragDialog.vue](src%2Fcomponents%2Fglobal%2Fdialog%2FDragDialog.vue)
 
 考虑到有打开多个会话框进行数据对比的需要，项目中部分会话框使用基于 [Vue3DraggableResizable](https://github.com/a7650/vue3-draggable-resizable/blob/main/docs/document_zh.md) 实现而不使用 ElDialog。
-
-### [（TODO）实体类、枚举、包管理](src%2Fcomponents%2Fpages%2FEntityGenerator%2FPage.vue)
-
-目前只有包目录可用
-
-- 未来将补充实体、枚举、业务类、dto 的编辑。
 
 ## LICENSE
 

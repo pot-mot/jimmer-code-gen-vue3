@@ -4,7 +4,7 @@ import {cloneDeep} from 'lodash'
 import {GenModelInput} from "@/api/__generated/model/static";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated/model/enums";
-import {defaultModel} from "@/components/business/model/defaultModel.ts";
+import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
 import {jsonFormatter, jsonParser} from "@/utils/json.ts";
 import CodeEditor from "@/components/global/code/CodeEditor.vue";
 import {ModelFormProps} from "@/components/business/model/form/ModelFormProps.ts";
@@ -13,7 +13,7 @@ const props = defineProps<ModelFormProps>()
 
 const emits = defineEmits<FormEmits<GenModelInput>>()
 
-const model = ref<GenModelInput>(cloneDeep(defaultModel))
+const model = ref<GenModelInput>(getDefaultModel())
 
 watch(() => props.model, (propsModel) => {
 	if (propsModel) {
@@ -43,13 +43,13 @@ const handleCancel = () => {
 </script>
 
 <template>
-	<el-form size="default" :style="editValue ? 'height: 100%; display: grid; grid-template-rows: 160px 1fr 40px;' : 'height: 100%; display: grid; grid-template-rows: 160px 40px;'">
+	<el-form size="default" :style="editValue ? 'height: 100%; display: grid; grid-template-rows: 220px 1fr 40px;' : 'height: 100%; display: grid; grid-template-rows: 220px 40px;'">
 		<div>
 			<el-form-item label="名称">
 				<el-input v-model="model.name"></el-input>
 			</el-form-item>
 
-			<el-row>
+			<el-row gutter="24">
 				<el-col :span="12">
 					<el-form-item label="语言">
 						<el-select v-model="model.language">
@@ -62,6 +62,17 @@ const handleCancel = () => {
 						<el-select v-model="model.dataSourceType">
 							<el-option v-for="dataSourceType in DataSourceType_CONSTANTS" :value="dataSourceType"></el-option>
 						</el-select>
+					</el-form-item>
+				</el-col>
+
+				<el-col :span="12">
+					<el-form-item label="包路径">
+						<el-input v-model="model.packagePath"></el-input>
+					</el-form-item>
+				</el-col>
+				<el-col :span="12">
+					<el-form-item label="同步转换实体">
+						<el-switch v-model="model.syncConvertEntity"></el-switch>
 					</el-form-item>
 				</el-col>
 			</el-row>

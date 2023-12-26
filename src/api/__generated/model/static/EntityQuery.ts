@@ -11,8 +11,4 @@ export interface EntityQuery {
     modifiedTime?: TimeRangeQueryParam;
     
     names?: Array<string>;
-    
-    nonPackage?: boolean;
-    
-    packageIds?: Array<number>;
 }

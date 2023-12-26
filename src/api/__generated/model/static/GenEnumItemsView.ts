@@ -8,8 +8,6 @@ export interface GenEnumItemsView {
     
     enumType?: EnumType;
     
-    genPackageId?: number;
-    
     id: number;
     
     items: Array<GenEnumItemsView_TargetOf_items>;
@@ -19,6 +17,8 @@ export interface GenEnumItemsView {
     name: string;
     
     orderKey: number;
+    
+    packagePath: string;
     
     remark: string;
 }

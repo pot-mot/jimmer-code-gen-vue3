@@ -6,8 +6,6 @@ export interface GenEnumItemsInput {
     
     enumType?: EnumType;
     
-    genPackageId?: number;
-    
     id?: number;
     
     items: Array<GenEnumItemsInput_TargetOf_items>;
@@ -15,6 +13,8 @@ export interface GenEnumItemsInput {
     name: string;
     
     orderKey: number;
+    
+    packagePath: string;
     
     remark: string;
 }

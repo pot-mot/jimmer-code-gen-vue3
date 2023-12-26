@@ -8,8 +8,7 @@ import {api} from "@/api";
 import {deleteConfirm, sendMessage} from "@/utils/message.ts";
 import {datetimeFormat} from "@/utils/dataFormat.ts";
 import ModelDialog from "@/components/business/model/dialog/ModelDialog.vue";
-import {cloneDeep} from "lodash";
-import {defaultModel} from "@/components/business/model/defaultModel.ts";
+import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
 
 const router = useRouter()
 
@@ -38,7 +37,7 @@ const toModel = (id: number) => {
 
 const editModel = ref<GenModelInput>()
 
-const handleEdit = (model: GenModelInput = cloneDeep(defaultModel)) => {
+const handleEdit = (model: GenModelInput = getDefaultModel()) => {
 	editModel.value = model
 }
 

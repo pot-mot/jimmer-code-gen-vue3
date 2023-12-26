@@ -9,7 +9,7 @@ import {sendMessage} from "@/utils/message.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep, uniqWith} from "lodash";
 import {useJDBCTypeStore} from "@/components/business/jdbcType/JDBCTypeStore.ts";
-import {useGenColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
+import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
 import {useGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
 import {GenerateConfigurator} from "../globalConfig/constant.ts";
 
@@ -52,7 +52,7 @@ const jdbcTypeStore = useJDBCTypeStore()
 
 const genConfigStore = useGenConfigStore()
 
-const columnDefaultStore = useGenColumnDefaultStore()
+const columnDefaultStore = useColumnDefaultStore()
 
 const columnDefaults = ref<GenColumnDefaultView[]>([])
 

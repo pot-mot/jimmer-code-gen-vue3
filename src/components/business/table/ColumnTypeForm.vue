@@ -9,11 +9,11 @@ import EnumForm from "@/components/business/enum/EnumForm.vue";
 import {api} from "@/api";
 import Comment from "@/components/global/common/Comment.vue";
 import {useJDBCTypeStore} from "@/components/business/jdbcType/JDBCTypeStore.ts";
-import {useGenColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
+import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
 
 const jdbcTypeStore = useJDBCTypeStore()
 
-const columnDefaultStore = useGenColumnDefaultStore()
+const columnDefaultStore = useColumnDefaultStore()
 
 const props = defineProps<
 	ModelValueProps<GenTableColumnsInput_TargetOf_columns> &

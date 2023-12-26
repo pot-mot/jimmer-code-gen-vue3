@@ -12,5 +12,9 @@ export interface GenModelInput {
     
     name: string;
     
+    packagePath: string;
+    
     remark: string;
+    
+    syncConvertEntity: boolean;
 }

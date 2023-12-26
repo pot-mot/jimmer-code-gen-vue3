@@ -33,20 +33,6 @@ export class EnumService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        _value = options.query.nonPackage;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'nonPackage='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.query.packageIds?.join(',');
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'packageIds='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
         return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenEnumView>
     }
     

@@ -8,11 +8,6 @@ const routes: RouteRecordRaw[] = [
         component: () => import("../components/pages/Index/Page.vue")
     },
     {
-        path: "/entity",
-        name: "EntityGenerator",
-        component: () => import("../components/pages/EntityGenerator/Page.vue")
-    },
-    {
         path: "/models",
         name: "ModelList",
         component: () => import("../components/pages/ModelList/Page.vue")

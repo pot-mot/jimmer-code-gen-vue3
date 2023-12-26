@@ -9,8 +9,4 @@ export interface EnumQuery {
     modifiedTime?: TimeRangeQueryParam;
     
     names?: Array<string>;
-    
-    nonPackage?: boolean;
-    
-    packageIds?: Array<number>;
 }

@@ -18,6 +18,8 @@ export type ApiErrors = {
     },
     "configService": {
     },
+    "convertService": {
+    },
     "dataSourceService": {
         "create": AllErrors & (
             {
@@ -65,8 +67,6 @@ export type ApiErrors = {
                 readonly [key:string]: any
             }
         )
-    },
-    "packageService": {
     },
     "schemaService": {
         "load": AllErrors & (

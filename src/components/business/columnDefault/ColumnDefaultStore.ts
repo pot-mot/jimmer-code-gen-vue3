@@ -6,7 +6,7 @@ import {GenColumnDefaultView} from "@/api/__generated/model/static";
 import {DataSourceType} from "@/api/__generated/model/enums";
 import {useGenContextStore} from "@/components/business/context/GenContextStore.ts";
 
-export const useGenColumnDefaultStore = defineStore(
+export const useColumnDefaultStore = defineStore(
     'GenColumnDefault',
     () => {
         const columnDefaultsState = ref<GenColumnDefaultView[]>()

@@ -29,29 +29,6 @@
 						</div>
 					</RouterLink>
 				</li>
-
-				<li>
-					<RouterLink to="/entity">
-						<div class="container">
-							// TODO
-							<h2>
-								<el-text size="large">实体管理</el-text>
-							</h2>
-
-							<div class="body">
-								<el-text size="default">
-									管理生成的实体与枚举
-								</el-text>
-
-								<ul>
-									<el-text size="default" type="success">
-										连带包管理与批量生成 // TODO
-									</el-text>
-								</ul>
-							</div>
-						</div>
-					</RouterLink>
-				</li>
 			</ul>
 		</div>
 

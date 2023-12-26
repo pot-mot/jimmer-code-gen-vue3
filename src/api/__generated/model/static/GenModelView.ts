@@ -16,5 +16,9 @@ export interface GenModelView {
     
     name: string;
     
+    packagePath: string;
+    
     remark: string;
+    
+    syncConvertEntity: boolean;
 }

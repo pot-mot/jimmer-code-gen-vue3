@@ -8,8 +8,6 @@ export interface GenEnumView {
     
     enumType?: EnumType;
     
-    genPackageId?: number;
-    
     id: number;
     
     modifiedTime: string;
@@ -17,6 +15,8 @@ export interface GenEnumView {
     name: string;
     
     orderKey: number;
+    
+    packagePath: string;
     
     remark: string;
 }

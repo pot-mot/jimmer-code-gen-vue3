@@ -6,8 +6,6 @@ export interface GenEntityCommonView {
     
     createdTime: string;
     
-    genPackage?: GenEntityCommonView_TargetOf_genPackage;
-    
     id: number;
     
     modifiedTime: string;
@@ -16,25 +14,9 @@ export interface GenEntityCommonView {
     
     orderKey: number;
     
+    packagePath: string;
+    
     remark: string;
     
     tableId: number;
-}
-
-export interface GenEntityCommonView_TargetOf_genPackage {
-    
-    id: number;
-    
-    name: string;
-    
-    parent?: GenEntityCommonView_TargetOf_genPackage_TargetOf_parent_2;
-}
-
-export interface GenEntityCommonView_TargetOf_genPackage_TargetOf_parent_2 {
-    
-    id: number;
-    
-    name: string;
-    
-    parent?: GenEntityCommonView_TargetOf_genPackage_TargetOf_parent_2;
 }

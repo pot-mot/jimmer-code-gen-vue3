@@ -8,8 +8,6 @@ export interface GenEntityPropertiesView {
     
     createdTime: string;
     
-    genPackage?: GenEntityPropertiesView_TargetOf_genPackage;
-    
     id: number;
     
     modifiedTime: string;
@@ -18,29 +16,13 @@ export interface GenEntityPropertiesView {
     
     orderKey: number;
     
+    packagePath: string;
+    
     properties: Array<GenEntityPropertiesView_TargetOf_properties>;
     
     remark: string;
     
     table: GenEntityPropertiesView_TargetOf_table;
-}
-
-export interface GenEntityPropertiesView_TargetOf_genPackage {
-    
-    id: number;
-    
-    name: string;
-    
-    parent?: GenEntityPropertiesView_TargetOf_genPackage_TargetOf_parent_2;
-}
-
-export interface GenEntityPropertiesView_TargetOf_genPackage_TargetOf_parent_2 {
-    
-    id: number;
-    
-    name: string;
-    
-    parent?: GenEntityPropertiesView_TargetOf_genPackage_TargetOf_parent_2;
 }
 
 export interface GenEntityPropertiesView_TargetOf_properties {
@@ -107,33 +89,15 @@ export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2 {
     
     enumType?: EnumType;
     
-    genPackage?: GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2_TargetOf_genPackage_3;
-    
     id: number;
     
     items: Array<GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2_TargetOf_items_3>;
     
     name: string;
     
+    packagePath: string;
+    
     remark: string;
-}
-
-export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2_TargetOf_genPackage_3 {
-    
-    id: number;
-    
-    name: string;
-    
-    parent?: GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2_TargetOf_genPackage_3_TargetOf_parent_4;
-}
-
-export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2_TargetOf_genPackage_3_TargetOf_parent_4 {
-    
-    id: number;
-    
-    name: string;
-    
-    parent?: GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2_TargetOf_genPackage_3_TargetOf_parent_4;
 }
 
 export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2_TargetOf_items_3 {
@@ -160,29 +124,11 @@ export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_
     
     comment: string;
     
-    genPackage?: GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_2_TargetOf_entity_3_TargetOf_genPackage_4;
-    
-    id: number;
-    
-    name: string;
-}
-
-export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_2_TargetOf_entity_3_TargetOf_genPackage_4 {
-    
     id: number;
     
     name: string;
     
-    parent?: GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_2_TargetOf_entity_3_TargetOf_genPackage_4_TargetOf_parent_5;
-}
-
-export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_2_TargetOf_entity_3_TargetOf_genPackage_4_TargetOf_parent_5 {
-    
-    id: number;
-    
-    name: string;
-    
-    parent?: GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_2_TargetOf_entity_3_TargetOf_genPackage_4_TargetOf_parent_5;
+    packagePath: string;
 }
 
 export interface GenEntityPropertiesView_TargetOf_table {

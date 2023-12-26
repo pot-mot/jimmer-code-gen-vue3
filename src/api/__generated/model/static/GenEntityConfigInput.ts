@@ -12,6 +12,8 @@ export interface GenEntityConfigInput {
     
     orderKey: number;
     
+    packagePath: string;
+    
     properties: Array<GenEntityConfigInput_TargetOf_properties>;
     
     remark: string;

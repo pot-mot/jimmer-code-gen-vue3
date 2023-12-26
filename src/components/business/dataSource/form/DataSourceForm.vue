@@ -64,27 +64,30 @@ const handleTest = async () => {
 	}
 }
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
+	loadingStore.add()
+
 	if (props.id) {
-		api.dataSourceService.edit({
+		await api.dataSourceService.edit({
 			id: props.id,
 			body: dataSource.value
-		}).then(id => {
-			if (id == props.id) {
-				emits("updated")
-			}
 		})
+
+		emits("updated")
 	} else {
-		api.dataSourceService.create({
+		const id = await api.dataSourceService.create({
 			body: dataSource.value
-		}).then(id => {
-			api.dataSourceService.get({id}).then(res => {
-				if (!!res) {
-					emits("added", res)
-				}
-			})
 		})
+		const savedDataSource = await api.dataSourceService.get({id})
+
+		if (savedDataSource) {
+			emits("added", savedDataSource)
+		} else {
+			sendMessage('数据源保存失败', 'error', savedDataSource)
+		}
 	}
+
+	loadingStore.sub()
 }
 </script>
 
