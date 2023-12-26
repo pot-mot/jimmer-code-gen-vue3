@@ -2,10 +2,10 @@
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {ref} from "vue";
 import {Tools} from "@element-plus/icons-vue"
-import GenerateConfigForm from "@/components/business/config/GenConfigForm.vue";
-import TypeMappingsEditor from "@/components/business/config/TypeMappingsEditor.vue";
-import ColumnDefaultEditor from "@/components/business/config/ColumnDefaultEditor.vue";
-import {GenerateConfiguratorOption, GenerateConfiguratorOptions} from "@/components/business/config/constant.ts";
+import GenerateConfigForm from "@/components/business/genConfig/GenConfigForm.vue";
+import TypeMappingsEditor from "@/components/business/typeMapping/TypeMappingsEditor.vue";
+import ColumnDefaultEditor from "@/components/business/columnDefault/ColumnDefaultEditor.vue";
+import {GenerateConfiguratorOption, GenerateConfiguratorOptions} from "@/components/business/globalConfig/constant.ts";
 
 const openState = ref(false)
 

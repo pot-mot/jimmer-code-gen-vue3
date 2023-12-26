@@ -9,8 +9,8 @@ import {PropListColumn} from "@/components/global/list/ListProps.ts";
 import {sendMessage} from "@/utils/message.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep, uniqWith} from "lodash";
-import {GenerateConfigurator} from "./constant.ts";
-import {useGenConfigStore} from "@/components/business/config/GenConfigStore.ts";
+import {useGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
+import {GenerateConfigurator} from "../globalConfig/constant.ts";
 
 const editState = ref(false)
 

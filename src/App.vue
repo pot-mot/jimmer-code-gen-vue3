@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import GenerateConfigurator from "./components/business/config/GenerateConfigurator.vue";
 import {useGlobalLoadingStore} from "./components/global/loading/GlobalLoadingStore.ts";
+import GenerateConfigurator from "@/components/business/globalConfig/GenerateConfigurator.vue";
 
 const loadingStore = useGlobalLoadingStore()
 </script>

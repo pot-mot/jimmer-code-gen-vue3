@@ -8,10 +8,10 @@ import {PropListColumn} from "@/components/global/list/ListProps.ts";
 import {sendMessage} from "@/utils/message.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep, uniqWith} from "lodash";
-import {GenerateConfigurator} from "@/components/business/config/constant.ts";
 import {useJDBCTypeStore} from "@/components/business/jdbcType/JDBCTypeStore.ts";
-import {useGenConfigStore} from "@/components/business/config/GenConfigStore.ts";
-import {useGenColumnDefaultStore} from "@/components/business/config/ColumnDefaultStore.ts";
+import {useGenColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
+import {useGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
+import {GenerateConfigurator} from "../globalConfig/constant.ts";
 
 const editState = ref(false)
 

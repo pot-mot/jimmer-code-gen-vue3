@@ -36,7 +36,6 @@ const getEnums = async () => {
 	enums.value = await api.enumService.query({query: {}})
 }
 
-
 const defaultTable: GenTableColumnsInput = {
 	name: "",
 	comment: "",

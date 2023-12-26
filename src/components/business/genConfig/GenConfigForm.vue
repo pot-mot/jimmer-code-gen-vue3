@@ -7,8 +7,8 @@ import DataSourceIcon from "../../global/icons/database/DataSourceIcon.vue";
 import Details from "../../global/common/Details.vue";
 import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated/model/enums"
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
-import {GenerateConfigurator} from "@/components/business/config/constant.ts";
-import {useGenConfigStore} from "@/components/business/config/GenConfigStore.ts";
+import {useGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
+import {GenerateConfigurator} from "../globalConfig/constant.ts";
 
 const genConfigStore = useGenConfigStore()
 
