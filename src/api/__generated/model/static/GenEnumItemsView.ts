@@ -31,6 +31,8 @@ export interface GenEnumItemsView_TargetOf_items {
     
     id: number;
     
+    mappedValue: string;
+    
     modifiedTime: string;
     
     name: string;
@@ -38,6 +40,4 @@ export interface GenEnumItemsView_TargetOf_items {
     orderKey: number;
     
     remark: string;
-    
-    value: string;
 }

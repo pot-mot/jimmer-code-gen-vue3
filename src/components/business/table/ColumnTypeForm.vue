@@ -125,7 +125,7 @@ const handleTypeCodeChange = () => {
 					</el-option>
 				</el-select>
 
-				<el-button :icon="modelValue.enumId == undefined ? EditPen : Plus"
+				<el-button :icon="modelValue.enumId == undefined ?  Plus : EditPen"
 						   @click="enumDialogOpenState = true;"></el-button>
 			</el-form-item>
 		</el-form>

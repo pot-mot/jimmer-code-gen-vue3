@@ -25,11 +25,11 @@ export interface GenEnumItemsInput_TargetOf_items {
     
     id?: number;
     
+    mappedValue: string;
+    
     name: string;
     
     orderKey: number;
     
     remark: string;
-    
-    value: string;
 }

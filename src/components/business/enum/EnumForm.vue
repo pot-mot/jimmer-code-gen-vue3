@@ -8,31 +8,16 @@ import {EnumType, EnumType_CONSTANTS} from "@/api/__generated/model/enums";
 import Line from "@/components/global/list/Line.vue";
 import LineItem from "@/components/global/list/LineItem.vue";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
-import {cloneDeep} from "lodash";
 import {sendMessage} from "@/utils/message.ts";
+import {getDefaultEnum, getDefaultEnumItem} from "@/components/business/enum/defaultEnum.ts";
 
 const props = defineProps<{
 	id: number | undefined
 }>()
 
-const defaultEnum = {
-	name: "",
-	comment: "",
-	remark: "",
-	items: [],
-	orderKey: 0,
-}
-
-const defaultItem = {
-	name: "",
-	value: "",
-	comment: "",
-	remark: ""
-}
-
 const emits = defineEmits<FormEmits<GenEnumItemsInput>>()
 
-const genEnum = ref<GenEnumItemsInput>(cloneDeep(defaultEnum))
+const genEnum = ref<GenEnumItemsInput>(getDefaultEnum())
 
 const getData = async () => {
 	if (props.id) {
@@ -41,10 +26,10 @@ const getData = async () => {
 			genEnum.value = res
 		} else {
 			sendMessage('枚举不存在', 'error')
-			genEnum.value = cloneDeep(defaultEnum)
+			genEnum.value = getDefaultEnum()
 		}
  	} else {
-		genEnum.value = cloneDeep(defaultEnum)
+		genEnum.value = getDefaultEnum()
 	}
 }
 
@@ -55,11 +40,11 @@ onMounted(() => {
 watch(() => genEnum.value.enumType, (value) => {
 	if (value == 'NAME') {
 		genEnum.value.items.forEach((item) => {
-			item.value = item.name
+			item.mappedValue = item.name
 		})
 	} else if (value == 'ORDINAL') {
 		genEnum.value.items.forEach((item, index) => {
-			item.value = index.toString()
+			item.mappedValue = index.toString()
 		})
 	}
 })
@@ -72,22 +57,22 @@ const handleSubmit = () => {
 		messageList.push('必须至少要有一个枚举项');
 	}
 	if (genEnum.value.items.some(item => item.name.length == 0)) {
-		messageList.push('枚举项必须不为空');
+		messageList.push('枚举项的名称必须不为空');
 	} else {
 		const uniqueItemNames = new Set(genEnum.value.items.map(item => item.name))
 		if (uniqueItemNames.size != genEnum.value.items.length) {
-			messageList.push('枚举项必须不重复');
+			messageList.push('枚举项的名称必须不重复');
 		}
 	}
 
 	if (genEnum.value.enumType == 'ORDINAL') {
 		try {
-			if (genEnum.value.items.some(item => !Number.isInteger(Number(item.value)))) {
+			if (genEnum.value.items.some(item => !Number.isInteger(Number(item.mappedValue)))) {
 				messageList.push('ordinal 枚举项的值必须为整数');
 			}
 
 			genEnum.value.items.forEach((item) => {
-				item.value = parseInt(item.value).toString()
+				item.mappedValue = parseInt(item.mappedValue).toString()
 			})
 		} catch (e) {
 			messageList.push('ordinal 枚举项的值必须为整数');
@@ -95,12 +80,12 @@ const handleSubmit = () => {
 	}
 
 	if (genEnum.value.enumType == "NAME" || genEnum.value.enumType == 'ORDINAL') {
-		if (genEnum.value.items.some(item => item.value.length == 0)) {
-			messageList.push('值必须不为空');
+		if (genEnum.value.items.some(item => item.mappedValue.length == 0)) {
+			messageList.push('枚举项的值必须不为空');
 		} else {
-			const uniqueItemNames = new Set(genEnum.value.items.map(item => item.value))
+			const uniqueItemNames = new Set(genEnum.value.items.map(item => item.mappedValue))
 			if (uniqueItemNames.size != genEnum.value.items.length) {
-				messageList.push('枚举项必须不重复');
+				messageList.push('枚举项的值必须不重复');
 			}
 		}
 	}
@@ -160,11 +145,11 @@ const handleCancel = () => {
 		<EditList
 			v-model:lines="genEnum.items"
 			:columns="enumItemColumns"
-			:defaultLine="defaultItem">
+			:defaultLine="getDefaultEnumItem">
 			<template #value="{data}">
-				<el-input v-if="genEnum.enumType == 'NAME'" v-model="data.value"></el-input>
-				<el-input v-else-if="genEnum.enumType == 'ORDINAL'" type="number" v-model="data.value"></el-input>
-				<el-input v-else disabled :model-value="data.value"></el-input>
+				<el-input v-if="genEnum.enumType == 'NAME'" v-model="data.mappedValue"></el-input>
+				<el-input v-else-if="genEnum.enumType == 'ORDINAL'" type="number" v-model="data.mappedValue"></el-input>
+				<el-input v-else disabled :model-value="data.mappedValue"></el-input>
 			</template>
 		</EditList>
 

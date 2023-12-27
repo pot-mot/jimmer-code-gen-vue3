@@ -55,6 +55,7 @@ export const useModelEditorStore =
 
                 contextStore.dataSourceType = model.dataSourceType
                 contextStore.language = model.language
+                contextStore.packagePath = model.packagePath
 
                 currentModel.value = model
 

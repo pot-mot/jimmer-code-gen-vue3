@@ -106,11 +106,11 @@ export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2_Tar
     
     id: number;
     
+    mappedValue: string;
+    
     name: string;
     
     remark: string;
-    
-    value: string;
 }
 
 export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_2 {

@@ -9,9 +9,12 @@ export const useGenContextStore = defineStore(
 
         const language = ref<GenLanguage>("JAVA")
 
+        const packagePath = ref<string>("")
+
         return {
             dataSourceType,
-            language
+            language,
+            packagePath
         }
     }
 )
