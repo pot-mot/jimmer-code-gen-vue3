@@ -16,6 +16,15 @@
 			</li>
 
 			<li>
+				<el-tooltip :disabled="!store.canUndo" content="撤回 [Ctrl + z]">
+					<el-button :disabled="!store.canUndo" :icon="UndoIcon" @click="store.undo()"></el-button>
+				</el-tooltip>
+				<el-tooltip :disabled="!store.canRedo" content="重做 [Ctrl + Shift + z]">
+					<el-button :disabled="!store.canRedo" :icon="RedoIcon" @click="store.redo()"></el-button>
+				</el-tooltip>
+			</li>
+
+			<li>
 				<el-tooltip content="整理布局">
 					<el-button :icon="LayoutIcon" class="cling-right" @click="store.layoutAndFit()"></el-button>
 				</el-tooltip>
@@ -151,6 +160,9 @@ import {
 import {debugLog} from "@/utils/debugLog.ts";
 import {handleTableNodeClipBoardKeyEvent} from "@/components/pages/ModelEditor/graph/clipBoard.ts";
 import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
+import {handleHistoryKeyEvent} from "@/components/business/graphEditor/history/useHistory.ts";
+import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";
+import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -174,7 +186,7 @@ onMounted(async () => {
 	})
 
 	graph.on('history:change', (args) => {
-		debugLog('history change log', args)
+		debugLog(args.options.name, args)
 	})
 
 	graph.on('blank:dblclick', ({e}) => {
@@ -213,6 +225,8 @@ onUnmounted(() => {
 store.addEventListener('keydown', handleSelectionKeyEvent)
 
 store.addEventListener('keydown', handleTableNodeClipBoardKeyEvent)
+
+store.addEventListener('keydown', handleHistoryKeyEvent)
 
 // 全局的操作
 useSaveKeyEvent(() => {handleSaveModel()})

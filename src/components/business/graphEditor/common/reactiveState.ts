@@ -44,6 +44,10 @@ export const useGraphReactiveState = (_graph: () => Graph) => {
         return [...edgeMap.value.keys()]
     })
 
+    const canUndo = ref(false)
+
+    const canRedo = ref(false)
+
     const loadReactiveState = async () => {
         const graph = _graph()
 
@@ -102,6 +106,11 @@ export const useGraphReactiveState = (_graph: () => Graph) => {
         graph.on('edge:removed', ({edge}) => {
             edgeMap.value.delete(edge.id)
         })
+
+        graph.on('history:change', () => {
+            canUndo.value = graph.canUndo()
+            canRedo.value = graph.canRedo()
+        })
     }
 
     return {
@@ -124,5 +133,8 @@ export const useGraphReactiveState = (_graph: () => Graph) => {
         selectedEdgeMap,
         selectedEdges,
         selectedEdgeIds,
+
+        canUndo,
+        canRedo,
     }
 }

@@ -15,6 +15,7 @@ import {
 } from "@/components/business/modelGraphEditor/tableEditDialog/TableModifyDialogsStore.ts";
 import {importTables} from "@/components/pages/ModelEditor/graph/tableNode.ts";
 import {useGenContextStore} from "@/components/business/context/GenContextStore.ts";
+import {redo, undo} from "@/components/business/graphEditor/history/useHistory.ts";
 
 export const useModelEditorStore =
     defineStore(
@@ -247,6 +248,9 @@ export const useModelEditorStore =
                 importModel,
                 importSchema,
                 importTable,
+
+                undo: () => {undo(_graph())},
+                redo: () => {redo(_graph())}
             }
         }
     )
