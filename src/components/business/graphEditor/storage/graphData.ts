@@ -49,4 +49,6 @@ export const loadEditorData = (graph: Graph, data: GraphEditorData, reset: boole
     }
 
     graph.stopBatch('load from JSON')
+
+    return {nodes, edges}
 }

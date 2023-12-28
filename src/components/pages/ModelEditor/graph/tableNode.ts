@@ -69,19 +69,35 @@ const tableViewToInput = (tableView: GenTableColumnsView): GenTableColumnsInput 
     }
 }
 
-export const importTables = <T extends GenTableColumnsInput | GenTableColumnsView> (
+export const getTableNameMap = <T extends GenTableColumnsInput | GenTableColumnsView>(graph: Graph): Map<string, T[]> => {
+    const tableNameMap = new Map<string, T[]>
+
+    graph.getNodes()
+        .filter(it => it.shape == TABLE_NODE && it.getData()?.table != undefined)
+        .forEach(node => {
+            const table = node.getData().table
+            if (tableNameMap.has(table.name)) {
+                const count = tableNameMap.get(table.name)!.length
+                table.name = `${table.name}(${count})`
+                node.setData({wrapper: node.getData().wrapper, table}, {deep: true})
+                tableNameMap.get(table.name)!.push(table)
+            } else {
+                tableNameMap.set(table.name, [table])
+            }
+        })
+
+    return tableNameMap
+}
+
+export const importTables = <T extends GenTableColumnsInput | GenTableColumnsView>(
     graph: Graph,
     tables: T[],
     initX?: number, initY?: number
 ): {
     nodes: Node[],
-    tableNameMap: Map<string, T[]>// 表与名称重复的表的最终 map，除了已经存在的名称，后续的名称将自动向后追加 count
+    tableNameMap: Map<string, (GenTableColumnsInput | GenTableColumnsView)[]>// 表与名称重复的表的最终 map，除了已经存在的名称，后续的名称将自动向后追加 count
 } => {
-    const tableNameMap = new Map<string, T[]>
-
-    graph.getNodes().map(it => it.getData()?.table).forEach(table => {
-        tableNameMap.set(table.name, [table])
-    })
+    const tableNameMap = getTableNameMap(graph)
 
     const nodes: Node[] = tables.map(table => {
         const svgRect = graph.view.svg.getBoundingClientRect()

@@ -1,8 +1,8 @@
-import {nextTick, Ref, ref} from "vue";
+import {Ref, ref} from "vue";
 import {getBottom, getLeft, getRight, getTop, layoutByLevel, LayoutDirection} from "../layout/layoutByLevel.ts";
 import {Graph} from "@antv/x6";
 import {getSelectedNodes} from "../selection/selectOperation.ts";
-import {CellInput, getCell} from "./cellsInputProcess.ts";
+import {CellProperty, getCell} from "./cellsInputProcess.ts";
 import {DEFAULT_ZOOM_RANGE} from "@/components/business/modelGraphEditor/constant.ts";
 
 export const useViewOperation = (_graph: () => Graph) => {
@@ -12,16 +12,15 @@ export const useViewOperation = (_graph: () => Graph) => {
         layoutDirection,
         layout: () => layout(_graph(), layoutDirection.value),
         fit: () => fit(_graph()),
-        layoutAndFit: async () => {
+        layoutAndFit: () => {
             const graph = _graph()
 
             if (!graph) return
 
             layout(graph, layoutDirection.value)
-            await nextTick()
             fit(graph)
         },
-        focus: (cell: CellInput) => focus(_graph(), cell),
+        focus: (cell: CellProperty) => focus(_graph(), cell),
         center: () => center(_graph())
     }
 }
@@ -42,8 +41,8 @@ export const fit = (graph: Graph) => {
 /**
  * 聚焦 cell，将移动画布并选中 cell
  */
-export const focus = (graph: Graph, cellInput: CellInput) => {
-    const cell = getCell(graph, cellInput)
+export const focus = (graph: Graph, input: string | CellProperty) => {
+    const cell = getCell(graph, input)
 
     cell.toFront()
     graph.cleanSelection()

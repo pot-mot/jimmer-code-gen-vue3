@@ -4,7 +4,7 @@ import {ModelEditorEventBus} from "./ModelEditorEventBus.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {computed, nextTick, ref} from "vue";
 import {api} from "@/api";
-import {loadTables} from "../graph/loadTables.ts";
+import {loadByTableViews} from "../graph/loadData.ts";
 import {GenModelInput, GenModelView, GenTableColumnsView} from "@/api/__generated/model/static";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {
@@ -123,7 +123,7 @@ export const useModelEditorStore =
              */
             const importModel = async (id: number) => {
                 const tables = await api.tableService.queryColumnsView({query: {modelIds: [id]}})
-                await importTableInfoGraph(tables)
+                await importTableIntoGraph(tables)
             }
 
             /**
@@ -132,7 +132,7 @@ export const useModelEditorStore =
              */
             const importSchema = async (id: number) => {
                 const tables = await api.tableService.queryColumnsView({query: {schemaIds: [id]}})
-                await importTableInfoGraph(tables)
+                await importTableIntoGraph(tables)
             }
 
             /**
@@ -141,13 +141,13 @@ export const useModelEditorStore =
              */
             const importTable = async (id: number) => {
                 const tables = await api.tableService.queryColumnsView({query: {ids: [id]}})
-                await importTableInfoGraph(tables)
+                await importTableIntoGraph(tables)
             }
 
-            const importTableInfoGraph = async (tables: GenTableColumnsView[]) => {
+            const importTableIntoGraph = async (tables: GenTableColumnsView[]) => {
                 const graph = _graph()
 
-                const {nodes, edges} = await loadTables(graph, tables)
+                const {nodes, edges} = await loadByTableViews(graph, tables)
 
                 await nextTick()
 
@@ -155,14 +155,10 @@ export const useModelEditorStore =
                     if (nodes.length == 1) {
                         commonOperations.focus(nodes[0])
                     } else {
-                        graph.resetSelection([
-                            ...nodes.map(it => it.id),
-                            ...edges.map(it => it.id)
-                        ])
-
+                        graph.resetSelection([...nodes, ...edges])
                         commonOperations.layoutAndFit()
                     }
-                }, 500)
+                }, 200)
             }
 
             const modelLoadMenuOpenState = ref(false)
@@ -208,7 +204,7 @@ export const useModelEditorStore =
 
                 const cell = graph.getCellById(id)
                 if (cell && cell.isNode()) {
-                    cell.setData({wrapper: cell.getData().wrapper, table}, {overwrite: true, deep: true})
+                    cell.setData({wrapper: cell.getData().wrapper, table}, {deep: true})
                 } else {
                     sendMessage(`Node ${id} 找不到，无法被更改`, 'error')
                 }
@@ -247,7 +243,7 @@ export const useModelEditorStore =
                 dataSourceLoadMenuOpenState,
                 modelLoadMenuOpenState,
 
-                importTableInfoGraph,
+                importTableIntoGraph,
                 importModel,
                 importSchema,
                 importTable,

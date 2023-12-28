@@ -47,7 +47,7 @@ const popoverOpenState = ref(false)
 const handleStopPopoverClose = () => {
 	setTimeout(() => {
 		popoverOpenState.value = true
-	}, 200)
+	}, 100)
 }
 
 const handleTypeCodeChange = () => {

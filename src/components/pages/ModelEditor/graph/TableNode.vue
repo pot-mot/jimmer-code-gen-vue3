@@ -39,7 +39,7 @@ import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {sendMessage} from "@/utils/message.ts";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
-import {importAssociationInput} from "./associationEdge.ts";
+import {importAssociation} from "./associationEdge.ts";
 import {columnToPort} from "@/components/pages/ModelEditor/graph/tableNode.ts";
 import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
 
@@ -76,6 +76,10 @@ onMounted(async () => {
 	}
 	setData()
 
+	// 绑定 wrapper 容器和 node，并且设置成不可枚举
+	node.value.getData().wrapper = wrapper
+	Object.defineProperty(node.value.getData(), 'wrapper', { enumerable: false, writable: true })
+
 	node.value.on('change:data', () => {
 		setData()
 	})
@@ -83,10 +87,6 @@ onMounted(async () => {
 	await nextTick()
 
 	if (!wrapper.value || !container.value) return
-
-	// 绑定 wrapper 容器和 node，并且设置成不可枚举
-	node.value.getData().wrapper = wrapper
-	Object.defineProperty(node.value.getData(), 'wrapper', { enumerable: false, writable: true })
 
 	// 更新尺寸
 	const syncNodeSizeWithContainer = () => {
@@ -139,7 +139,7 @@ onMounted(async () => {
 		setTimeout(() => {
 			oldEdges.forEach(edge => {
 				if (edge.getData()?.association) {
-					importAssociationInput(graph, edge.getData().association)
+					importAssociation(graph, edge.getData().association)
 				}
 			})
 

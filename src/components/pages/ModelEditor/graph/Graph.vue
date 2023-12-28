@@ -149,7 +149,7 @@ import {
 	useTableModifyDialogsStore
 } from "@/components/business/modelGraphEditor/tableEditDialog/TableModifyDialogsStore.ts";
 import {debugLog} from "@/utils/debugLog.ts";
-import {handleTableNoteClipBoardKeyEvent} from "@/components/business/modelGraphEditor/tableNode/tableNodeCopy.ts";
+import {handleTableNodeClipBoardKeyEvent} from "@/components/pages/ModelEditor/graph/clipBoard.ts";
 import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
 
 const container = ref<HTMLElement>()
@@ -212,7 +212,7 @@ onUnmounted(() => {
 // 仅在图内允许的操作
 store.addEventListener('keydown', handleSelectionKeyEvent)
 
-store.addEventListener('keydown', handleTableNoteClipBoardKeyEvent)
+store.addEventListener('keydown', handleTableNodeClipBoardKeyEvent)
 
 // 全局的操作
 useSaveKeyEvent(() => {handleSaveModel()})
