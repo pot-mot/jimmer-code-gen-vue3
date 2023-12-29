@@ -55,6 +55,8 @@ export interface GenTableColumnsView_TargetOf_columns {
     
     orderKey: number;
     
+    overwriteByType: boolean;
+    
     partOfPk: boolean;
     
     remark: string;

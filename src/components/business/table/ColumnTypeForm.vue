@@ -95,8 +95,12 @@ const handleTypeCodeChange = () => {
 				</el-select>
 			</el-form-item>
 
+			<el-form-item label="生成 DDL 时以字面类型覆盖 jdbc 类型">
+				<el-switch v-model="modelValue.overwriteByType"></el-switch>
+			</el-form-item>
+
 			<el-form-item label="字面类型">
-				<el-input v-model="modelValue.type"></el-input>
+				<el-input v-model="modelValue.type" :disabled="!modelValue.overwriteByType"></el-input>
 			</el-form-item>
 
 			<el-form-item label="长度精度">

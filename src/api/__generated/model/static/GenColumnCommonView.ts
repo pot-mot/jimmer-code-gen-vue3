@@ -12,6 +12,8 @@ export interface GenColumnCommonView {
     
     displaySize: number;
     
+    enumId?: number;
+    
     id: number;
     
     logicalDelete: boolean;
@@ -23,6 +25,8 @@ export interface GenColumnCommonView {
     numericPrecision: number;
     
     orderKey: number;
+    
+    overwriteByType: boolean;
     
     partOfPk: boolean;
     

@@ -5,7 +5,7 @@ import {useSelectOperation} from "@/components/business/graphEditor/selection/se
 import {useViewOperation} from "@/components/business/graphEditor/common/viewOperation.ts";
 import {useGraphReactiveState} from "./common/reactiveState.ts";
 import {useGraphDataOperation} from "@/components/business/graphEditor/storage/graphData.ts";
-import {useLoadHooks} from "@/utils/asyncHooks.ts";
+import {useLoadHooks} from "@/utils/useLoadHooks.ts";
 
 export const useCommonGraphOperations = () => {
     return (() => {
@@ -31,12 +31,12 @@ export const useCommonGraphOperations = () => {
          * 初始化加载函数
          */
         const load = async (_graph: Graph) => {
-            await loadHooks.beforeLoad()
+            loadHooks.beforeLoad()
 
             graph.value = _graph
             await reactiveState.loadReactiveState()
 
-            await loadHooks.loaded()
+            loadHooks.loaded()
         }
 
         /**
@@ -48,11 +48,11 @@ export const useCommonGraphOperations = () => {
                 return
             }
 
-            await loadHooks.beforeUnload()
+            loadHooks.beforeUnload()
 
             graph.value = null
 
-            await loadHooks.unloaded()
+            loadHooks.unloaded()
         }
 
         // 判断鼠标是否在 graph 范围内

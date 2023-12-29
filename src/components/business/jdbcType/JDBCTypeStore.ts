@@ -1,47 +1,28 @@
 import {defineStore} from "pinia";
-import {computed, ref} from "vue";
+import {computed} from "vue";
 import {api} from "@/api";
-import {useLoadHooks} from "@/utils/asyncHooks.ts";
+import {useAsyncStoreOperations} from "@/utils/useAsyncStoreOperations.ts";
 
 export const useJDBCTypeStore = defineStore(
     'JDBCType',
     () => {
-        const jdbcTypesState = ref<{[key:string]: number}>()
-
-        const loadHooks = useLoadHooks(() => jdbcTypesState.value)
-
-        const isLoaded = computed(() => {
-            return !!jdbcTypesState.value
+        const {
+            data: _jdbcTypes,
+            isLoaded,
+            getData: getJDBCTypes,
+            resetData: resetJDBCTypes,
+            loadHooks,
+        } = useAsyncStoreOperations<{[key:string]: number}>(() => {
+            return api.jdbcservice.listType()
         })
-
-        const getJDBCTypes = async () => {
-            await loadHooks.beforeLoad()
-
-            jdbcTypesState.value = await api.jdbcservice.listType()
-
-            await loadHooks.loaded()
-
-            return jdbcTypesState.value
-        }
-
-        const cleanJDBCTypes = async () => {
-            await loadHooks.beforeUnload()
-            jdbcTypesState.value = undefined
-            await loadHooks.unloaded()
-        }
-
-        const resetJDBCTypes = async () => {
-            await cleanJDBCTypes()
-            await getJDBCTypes()
-        }
 
         getJDBCTypes().then()
 
-        const jdbcTypes = computed(() => {
-            if (!jdbcTypesState.value) {
+        const jdbcTypes = computed<{[key:string]: number}>(() => {
+            if (!_jdbcTypes.value) {
                 throw "jdbcTypes Not Loaded"
             }
-            return jdbcTypesState.value
+            return _jdbcTypes.value
         })
 
         const jdbcTypeList = computed(() => {
@@ -55,8 +36,8 @@ export const useJDBCTypeStore = defineStore(
 
         const jdbcTypeMap = computed(() => {
             const map = new Map<number, string>()
-            jdbcTypeList.value.forEach(type => {
-                map.set(type.typeCode, type.type)
+            jdbcTypeList.value.forEach(({type, typeCode}) => {
+                map.set(typeCode, type)
             })
             return map
         })

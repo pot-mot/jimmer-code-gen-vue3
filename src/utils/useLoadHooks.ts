@@ -1,8 +1,24 @@
-import {ref} from "vue";
+import {Ref, ref} from "vue";
 
-export const useLoadHooks = <T> (getProps: () => T | Promise<T>) => {
-    const batchExe = async (fns: ((props: T) => any)[]) => {
-        const props = await getProps()
+export const useLoadHooks = <T> (getProps: () => T): {
+    beforeLoadFns: Ref<((props: T) => any)[]>,
+    onBeforeLoad: (callback: (props: T) => any) => void
+    beforeLoad: () => void,
+
+    loadedFns: Ref<((props: T) => any)[]>,
+    onLoaded: (callback: (props: T) => any) => void
+    loaded: () => void,
+
+    beforeUnloadFns: Ref<((props: T) => any)[]>,
+    onBeforeUnload: (callback: (props: T) => any) => void
+    beforeUnload: () => void,
+
+    unloadedFns: Ref<((props: T) => any)[]>,
+    onUnloaded: (callback: (props: T) => any) => void
+    unloaded: () => void,
+} => {
+    const batchExe = (fns: ((props: T) => any)[]) => {
+        const props = getProps()
 
         fns.forEach(fn => {
             fn(props)
@@ -29,7 +45,7 @@ export const useLoadHooks = <T> (getProps: () => T | Promise<T>) => {
 
     const unloadedFns = ref<((props: T) => any)[]>([])
 
-    const onUnloaded = (callback: (() => any)) => {
+    const onUnloaded = (callback: ((props: T) => any)) => {
         unloadedFns.value.push(callback)
     }
 
