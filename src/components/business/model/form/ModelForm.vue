@@ -49,7 +49,7 @@ const handleCancel = () => {
 				<el-input v-model="model.name"></el-input>
 			</el-form-item>
 
-			<el-row gutter="24">
+			<el-row :gutter="24">
 				<el-col :span="12">
 					<el-form-item label="语言">
 						<el-select v-model="model.language">

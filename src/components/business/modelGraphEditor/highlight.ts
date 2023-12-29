@@ -110,6 +110,12 @@ export const useHoverToFront = (graph: Graph) => {
     graph.on('cell:mouseenter', ({cell}) => {
         stopHistoryAction(graph, () => {
             cell.toFront()
+
+            if (cell.isNode()) {
+                graph.getConnectedEdges(cell).forEach(edge => {
+                    edge.toFront()
+                })
+            }
         })
     })
 }

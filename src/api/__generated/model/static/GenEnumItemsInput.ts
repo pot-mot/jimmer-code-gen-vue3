@@ -10,6 +10,8 @@ export interface GenEnumItemsInput {
     
     items: Array<GenEnumItemsInput_TargetOf_items>;
     
+    modelId?: number;
+    
     name: string;
     
     orderKey: number;

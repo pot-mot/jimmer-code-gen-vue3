@@ -12,6 +12,8 @@ export interface GenEnumItemsView {
     
     items: Array<GenEnumItemsView_TargetOf_items>;
     
+    modelId?: number;
+    
     modifiedTime: string;
     
     name: string;

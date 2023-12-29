@@ -10,6 +10,8 @@ export interface GenEnumView {
     
     id: number;
     
+    modelId?: number;
+    
     modifiedTime: string;
     
     name: string;
