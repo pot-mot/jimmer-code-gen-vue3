@@ -156,9 +156,9 @@ export const importAssociation = (graph: Graph, association: GenAssociationModel
     }[]>[]
 
     for (let columnReference of association.columnReferences) {
-        const sourceColumnIndex = sourceTable.columns.findIndex(column => column.name == columnReference.sourceColumn.name)
+        const sourceColumnIndex = sourceTable.columns.findIndex(column => column.name == columnReference.sourceColumn.name && column.type == columnReference.sourceColumn.type)
         if (sourceColumnIndex == -1) continue
-        const targetColumnIndex = targetTable.columns.findIndex(column => column.name == columnReference.targetColumn.name)
+        const targetColumnIndex = targetTable.columns.findIndex(column => column.name == columnReference.targetColumn.name && column.type == columnReference.targetColumn.type)
         if (targetColumnIndex == -1) continue
 
         const sourceColumn = sourceTable.columns[sourceColumnIndex]

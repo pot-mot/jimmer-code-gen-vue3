@@ -32,7 +32,7 @@
 
 <script lang='ts' setup>
 import {inject, nextTick, onMounted, ref, watch} from "vue";
-import {GenTableColumnsInput} from "@/api/__generated/model/static";
+import {GenAssociationModelInput, GenTableColumnsInput} from "@/api/__generated/model/static";
 import {Node} from '@antv/x6'
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
@@ -122,24 +122,36 @@ onMounted(async () => {
 	syncNodeSizeWithContainer()
 
 	// 根据数据更新更新 port 和 edge
-	watch(() => table.value, () => {
-		if (!node.value || !table.value || !store.isLoaded) return
+	watch(() => table.value, (newTableData) => {
+		if (!node.value || !newTableData || !store.isLoaded) return
+
+		const nodeId = node.value.id
 
 		graph.startBatch("update table_node data, port, association")
 
 		const oldEdges = graph
-			.getConnectedEdges(node.value.id)
+			.getConnectedEdges(nodeId)
 
 		node.value.removePorts()
 		node.value.addPorts(
-			table.value.columns.map(columnToPort)
+			newTableData.columns.map(columnToPort)
 		)
 		resizePort()
 
 		setTimeout(() => {
 			oldEdges.forEach(edge => {
 				if (edge.getData()?.association) {
-					importAssociation(graph, edge.getData().association)
+					const association = edge.getData().association as GenAssociationModelInput
+
+					if (edge.getSourceCellId() == nodeId) {
+						association.sourceTable.name = newTableData.name
+						association.sourceTable.comment = newTableData.comment
+					} else {
+						association.targetTable.name = newTableData.name
+						association.targetTable.comment = newTableData.comment
+					}
+
+					importAssociation(graph, association)
 				}
 			})
 
