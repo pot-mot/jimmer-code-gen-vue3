@@ -42,12 +42,12 @@ onMounted(async () => {
 	store.loadCurrentModel(model)
 })
 
-/**
- * 数据源导入部分
- */
 
 const dataSourceLoadMenu = ref()
 
+/**
+ * 基于数据源的导入，在组件初始化后绑定事件
+ */
 watch(() => dataSourceLoadMenu.value, () => {
 	if (!dataSourceLoadMenu.value) return
 
@@ -68,6 +68,9 @@ watch(() => dataSourceLoadMenu.value, () => {
 
 const modelLoadMenu = ref()
 
+/**
+ * 基于模型的导入，在组件初始化后绑定事件
+ */
 watch(() => modelLoadMenu.value, () => {
 	if (!modelLoadMenu.value) return
 

@@ -142,8 +142,6 @@ onMounted(async () => {
 				if (edge.getData()?.association) {
 					const association = edge.getData().association as GenAssociationModelInput
 
-					debugger
-
 					if (edge.getSourceCellId() == nodeId) {
 						association.sourceTable.name = newTableData.name
 						association.sourceTable.comment = newTableData.comment

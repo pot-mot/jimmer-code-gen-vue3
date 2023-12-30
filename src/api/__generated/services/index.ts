@@ -20,6 +20,8 @@ export { JDBCService } from './JDBCService';
 export type { JDBCServiceOptions } from './JDBCService';
 export { ModelService } from './ModelService';
 export type { ModelServiceOptions } from './ModelService';
+export { PreviewService } from './PreviewService';
+export type { PreviewServiceOptions } from './PreviewService';
 export { SchemaService } from './SchemaService';
 export type { SchemaServiceOptions } from './SchemaService';
 export { TableService } from './TableService';

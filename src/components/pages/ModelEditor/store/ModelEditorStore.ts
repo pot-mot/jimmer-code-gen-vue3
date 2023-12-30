@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 import {useCommonGraphOperations} from "@/components/business/graphEditor";
 import {ModelEditorEventBus} from "./ModelEditorEventBus.ts";
 import {sendMessage} from "@/utils/message.ts";
-import {computed, nextTick, ref} from "vue";
+import {nextTick, ref} from "vue";
 import {api} from "@/api";
 import {loadByTableViews} from "../graph/loadData.ts";
 import {GenModelInput, GenModelView, GenTableColumnsView} from "@/api/__generated/model/static";
@@ -25,11 +25,25 @@ export const useModelEditorStore =
 
             const {_graph} = commonOperations
 
+            const loadGraphByJSONStr = (jsonStr: string) => {
+                try {
+                    if (jsonStr) {
+                        commonOperations.loadGraphByJSONStr(jsonStr)
+                    } else {
+                        commonOperations._graph().removeCells(commonOperations._graph().getCells())
+                    }
+                } catch (e) {
+                    sendMessage(`图加载错误: ${e}`, "error", {
+                        error: e,
+                        jsonStr
+                    })
+                }
+            }
+
+
             const currentModel = ref<GenModelView>()
 
-            const isModelLoaded = computed(() => {
-                return !!currentModel.value
-            })
+            const isModelLoaded = ref(false)
 
             const _currentModel = (): GenModelView => {
                 if (!currentModel.value) {
@@ -37,18 +51,6 @@ export const useModelEditorStore =
                     throw currentModel
                 }
                 return currentModel.value
-            }
-
-
-            const loadGraphByJSONStr = (jsonStr: string) => {
-                try {
-                    commonOperations.loadGraphByJSONStr(jsonStr)
-                } catch (e) {
-                    sendMessage(`图加载错误: ${e}`, "error", {
-                        error: e,
-                        jsonStr
-                    })
-                }
             }
 
             const loadCurrentModel = (model: GenModelView) => {
@@ -60,10 +62,7 @@ export const useModelEditorStore =
 
                 currentModel.value = model
 
-                if (!model.graphData || model.graphData.length == 0) {
-                    sendMessage('当前模型为空', 'info')
-                    return
-                }
+                isModelLoaded.value = true
 
                 if (commonOperations.isLoaded) {
                     loadGraphByJSONStr(model.graphData)
@@ -97,6 +96,9 @@ export const useModelEditorStore =
                     }
 
                     const id = await api.modelService.save({body: model})
+
+                    isModelLoaded.value = false
+
                     const savedModel = (await api.modelService.get({id}))!
 
                     if (!savedModel) {
@@ -104,10 +106,11 @@ export const useModelEditorStore =
                         return
                     }
 
+                    handleCancelModelEdit()
+
                     // 同步数据
                     loadCurrentModel(savedModel)
 
-                    handleCancelModelEdit()
                     sendMessage("模型保存成功", "success")
                 } catch (e) {
                     sendMessage(`模型保存失败，原因：${e}`, 'error', e)
@@ -115,6 +118,7 @@ export const useModelEditorStore =
 
                 loadingStore.sub()
             }
+
 
             const dataSourceLoadMenuOpenState = ref(false)
 
@@ -249,8 +253,12 @@ export const useModelEditorStore =
                 importSchema,
                 importTable,
 
-                undo: () => {undo(_graph())},
-                redo: () => {redo(_graph())}
+                undo: () => {
+                    undo(_graph())
+                },
+                redo: () => {
+                    redo(_graph())
+                }
             }
         }
     )

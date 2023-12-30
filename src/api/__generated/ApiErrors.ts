@@ -55,7 +55,9 @@ export type ApiErrors = {
     "jdbcservice": {
     },
     "modelService": {
-        "previewSql": AllErrors & (
+    },
+    "previewService": {
+        "previewModelSql": AllErrors & (
             {
                 readonly family: 'DATA_SOURCE_ERROR_CODE',
                 readonly code: 'CONNECT_FAIL',

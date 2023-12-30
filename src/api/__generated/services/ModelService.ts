@@ -1,5 +1,4 @@
 import type { Executor } from '../';
-import type { DataSourceType } from '../model/enums';
 import type { GenAssociationModelInput, GenModelInput, GenModelSimpleView, GenModelView, GenTableColumnsInput, Pair } from '../model/static';
 
 export class ModelService {
@@ -35,29 +34,6 @@ export class ModelService {
         return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenModelSimpleView>
     }
     
-    async previewSql(options: ModelServiceOptions['previewSql']): Promise<
-        Array<Pair<string, string>>
-    > {
-        let _uri = '/model/sql';
-        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
-        let _value: any = undefined;
-        _value = options.id;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'id='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.type;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'type='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        return (await this.executor({uri: _uri, method: 'POST'})) as Array<Pair<string, string>>
-    }
-    
     async save(options: ModelServiceOptions['save']): Promise<number> {
         let _uri = '/model/';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number
@@ -69,6 +45,5 @@ export type ModelServiceOptions = {
     'get': {id: number},
     'getValueData': {id: number},
     'list': {},
-    'previewSql': {id: number, type?: DataSourceType},
     'save': {body: GenModelInput}
 }

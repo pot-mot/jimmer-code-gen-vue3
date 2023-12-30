@@ -74,11 +74,16 @@
 					}"></el-button>
 				</el-tooltip>
 
-				<DragDialog v-model="openSQLPreviewDialog" :init-w="700" :init-x="5000" can-drag
+				<DragDialog v-model="sqlPreviewDialogOpenState" :init-w="700" :init-x="5000" can-drag
 							can-resize disabled-h disabled-y>
-					<MultiCodePreview :code-files="sqlFiles" height="calc(100vh - 5em - 30px)"
-									  style="height: calc(100vh - 30px); width: 100%;"
-									  width="100%"></MultiCodePreview>
+					<MultiCodePreview :code-files="sqlFiles"
+									  height="calc(100vh - 5em - 30px)"
+									  width="100%"
+									  class="multi-code-preview"></MultiCodePreview>
+					<div class="code-download-button">
+						<el-button :icon="DownloadIcon" round size="large"
+								   @click="handleSQLDownload"></el-button>
+					</div>
 				</DragDialog>
 			</li>
 
@@ -86,20 +91,19 @@
 				<el-tooltip content="业务代码">
 					<el-button :icon="CodeIcon" @click="async () => {
 						await handleSaveModel()
-						await handleCodePreview()
+						await handleEntityPreview()
 					}"></el-button>
 				</el-tooltip>
 
-				<DragDialog v-model="codePreviewDialogOpenState" :init-w="700" :init-x="5000"
+				<DragDialog v-model="entityPreviewDialogOpenState" :init-w="700" :init-x="5000"
 							can-drag can-resize disabled-h disabled-y>
-					<MultiCodePreview :code-files="codeFiles" height="calc(100vh - 5em - 30px)"
-									  style="height: calc(100vh - 30px); width: 100%;"
-									  width="100%"></MultiCodePreview>
-
-					<div style="position: absolute; bottom: 2em; right: 2em;">
-						<el-tooltip content="下载代码">
-							<el-button :icon="DownloadIcon" round size="large" @click="handleCodeDownload"></el-button>
-						</el-tooltip>
+					<MultiCodePreview :code-files="codeFiles"
+									  height="calc(100vh - 5em - 30px)"
+									  width="100%"
+									  class="multi-code-preview"></MultiCodePreview>
+					<div class="code-download-button">
+						<el-button :icon="DownloadIcon" round size="large"
+								   @click="handleEntityDownload"></el-button>
 					</div>
 				</DragDialog>
 			</li>
@@ -108,7 +112,7 @@
 				<el-tooltip content="生成代码（获得 zip 压缩包）">
 					<el-button :icon="DownloadIcon" @click="async () => {
 						await handleSaveModel()
-						await handleCodeDownload()
+						await handleModelDownload()
 					}"></el-button>
 				</el-tooltip>
 			</li>
@@ -126,6 +130,17 @@
 
 <style scoped>
 @import "../../../../assets/graph-common.css";
+
+.multi-code-preview {
+	height: calc(100vh - 30px);
+	width: 100%;
+}
+
+.code-download-button {
+	position: absolute;
+	bottom: 2em;
+	right: 2em;
+}
 </style>
 
 <script lang="ts" setup>
@@ -229,52 +244,102 @@ store.addEventListener('keydown', handleTableNodeClipBoardKeyEvent)
 store.addEventListener('keydown', handleHistoryKeyEvent)
 
 // 全局的操作
-useSaveKeyEvent(() => {handleSaveModel()})
+useSaveKeyEvent(() => {
+	handleSaveModel()
+})
 
-const handleCodeDownload = async () => {
-	loadingStore.add()
 
-	const res = (await api.generateService.generateByModel({
-		body: store._currentModel().id, language: store._currentModel().language
-	})) as any as Blob
-	const file = new File([res], "entities.zip")
-	saveAs(file)
-
-	loadingStore.sub()
-}
-
-const codePreviewDialogOpenState = ref(false)
+const entityPreviewDialogOpenState = ref(false)
 
 const codeFiles = ref<Array<Pair<string, string>>>([])
 
-const handleCodePreview = async () => {
+const handleEntityPreview = async () => {
 	loadingStore.add()
 
-	codeFiles.value = await api.generateService.previewByModel({
-		modelId: store._currentModel().id, language: store._currentModel().language
+	codeFiles.value = await api.previewService.previewModelEntity({
+		id: store._currentModel().id
 	})
-	codePreviewDialogOpenState.value = true
+	entityPreviewDialogOpenState.value = true
 
 	loadingStore.sub()
 }
 
-watch(() => codePreviewDialogOpenState.value, async (openState) => {
+watch(() => entityPreviewDialogOpenState.value, async (openState) => {
 	if (!openState) {
 		codeFiles.value = []
 	}
 })
 
-const openSQLPreviewDialog = ref(false)
+const handleEntityDownload = async () => {
+	loadingStore.add()
+
+	const currentModel = store._currentModel()
+
+	const res = (await api.generateService.generateModelEntity({
+		body: currentModel.id
+	})) as any as Blob
+	const file = new File([res], `[${currentModel.name}]-entities.zip`)
+	saveAs(file)
+
+	loadingStore.sub()
+}
+
+
+const sqlPreviewDialogOpenState = ref(false)
 
 const sqlFiles = ref<Array<Pair<string, string>>>([])
 
 const handleSQLPreview = async () => {
 	loadingStore.add()
 
-	openSQLPreviewDialog.value = true
-	sqlFiles.value = await api.modelService.previewSql({
-		id: store._currentModel().id, type: store._currentModel().dataSourceType
+	sqlPreviewDialogOpenState.value = true
+	sqlFiles.value = await api.previewService.previewModelSql({
+		id: store._currentModel().id
 	})
 	loadingStore.sub()
 }
+
+const handleSQLDownload = async () => {
+	loadingStore.add()
+
+	const currentModel = store._currentModel()
+
+	const res = (await api.generateService.generateModelSql({
+		body: currentModel.id
+	})) as any as Blob
+	const file = new File([res], `[${currentModel.name}]-tables.zip`)
+	saveAs(file)
+
+	loadingStore.sub()
+}
+
+
+const handleModelDownload = async () => {
+	loadingStore.add()
+
+	const currentModel = store._currentModel()
+
+	const res = (await api.generateService.generateModel({
+		body: currentModel.id
+	})) as any as Blob
+	const file = new File([res], `[${currentModel.name}]-model.zip`)
+	saveAs(file)
+
+	loadingStore.sub()
+}
+
+
+watch(() => store.isModelLoaded, (loaded) => {
+	console.log(loaded)
+
+	if (loaded) {
+		if (sqlPreviewDialogOpenState.value) {
+			handleSQLPreview()
+		}
+
+		if (entityPreviewDialogOpenState.value) {
+			handleEntityPreview()
+		}
+	}
+})
 </script>
