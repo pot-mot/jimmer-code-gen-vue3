@@ -105,8 +105,12 @@ export const importTables = <T extends GenTableColumnsInput | GenTableColumnsVie
 
         const name = table.name
         if (tableNameMap.has(name)) {
-            const count = tableNameMap.get(name)!.length
-            table.name = `${name}(${count})`
+            let count = tableNameMap.get(name)!.length
+            let tempName = `${name}(${count})`
+            while (tableNameMap.has(tempName)) {
+                tempName = `${name}(${count++})`
+            }
+            table.name = tempName
             tableNameMap.get(name)!.push(table)
         } else {
             tableNameMap.set(name, [table])
@@ -115,8 +119,8 @@ export const importTables = <T extends GenTableColumnsInput | GenTableColumnsVie
         const tableInput: GenTableColumnsInput = Object.keys(table).includes('id') ? tableViewToInput(table as GenTableColumnsView) : table as GenTableColumnsInput
 
         return tableToNode(tableInput, graph.graphToLocal(
-            initX ? initX : svgRect.width * 3 / 8,
-            initY ? initY : svgRect.height * 3 / 8
+            initX ? initX : svgRect.width * 3 / 8 + Math.random() * 20,
+            initY ? initY : svgRect.height * 3 / 8 + Math.random() * 20
         ))
     })
 
