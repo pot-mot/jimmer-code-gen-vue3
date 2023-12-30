@@ -129,8 +129,7 @@ onMounted(async () => {
 
 		graph.startBatch("update table_node data, port, association")
 
-		const oldEdges = graph
-			.getConnectedEdges(nodeId)
+		const oldEdges = graph.getConnectedEdges(nodeId)
 
 		node.value.removePorts()
 		node.value.addPorts(
@@ -143,10 +142,14 @@ onMounted(async () => {
 				if (edge.getData()?.association) {
 					const association = edge.getData().association as GenAssociationModelInput
 
+					debugger
+
 					if (edge.getSourceCellId() == nodeId) {
 						association.sourceTable.name = newTableData.name
 						association.sourceTable.comment = newTableData.comment
-					} else {
+					}
+
+					if (edge.getTargetCellId() == nodeId) {
 						association.targetTable.name = newTableData.name
 						association.targetTable.comment = newTableData.comment
 					}
