@@ -1,5 +1,5 @@
 import type { Executor } from '../';
-import type { GenAssociationModelInput, GenModelInput, GenModelSimpleView, GenModelView, GenTableColumnsInput, Pair } from '../model/static';
+import type { GenAssociationModelInput, GenModelInput, GenModelSimpleView, GenModelView, GenTableModelInput, Pair } from '../model/static';
 
 export class ModelService {
     
@@ -20,11 +20,11 @@ export class ModelService {
     }
     
     async getValueData(options: ModelServiceOptions['getValueData']): Promise<
-        Pair<Array<GenTableColumnsInput>, Array<GenAssociationModelInput>> | undefined
+        Pair<Array<GenTableModelInput>, Array<GenAssociationModelInput>> | undefined
     > {
         let _uri = '/model/valueData/';
         _uri += encodeURIComponent(options.id);
-        return (await this.executor({uri: _uri, method: 'GET'})) as Pair<Array<GenTableColumnsInput>, Array<GenAssociationModelInput>> | undefined
+        return (await this.executor({uri: _uri, method: 'GET'})) as Pair<Array<GenTableModelInput>, Array<GenAssociationModelInput>> | undefined
     }
     
     async list(): Promise<

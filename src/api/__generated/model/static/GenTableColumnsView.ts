@@ -41,7 +41,7 @@ export interface GenTableColumnsView_TargetOf_columns {
     
     displaySize: number;
     
-    enumId?: number;
+    enum?: GenTableColumnsView_TargetOf_columns_TargetOf_enum_2;
     
     id: number;
     
@@ -68,6 +68,13 @@ export interface GenTableColumnsView_TargetOf_columns {
     typeCode: number;
     
     typeNotNull: boolean;
+}
+
+export interface GenTableColumnsView_TargetOf_columns_TargetOf_enum_2 {
+    
+    id: number;
+    
+    name: string;
 }
 
 export interface GenTableColumnsView_TargetOf_indexes {

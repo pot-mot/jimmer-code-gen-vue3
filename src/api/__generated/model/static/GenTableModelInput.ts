@@ -1,14 +1,12 @@
 import type { TableType } from '../enums';
 
-export interface GenTableColumnsInput {
+export interface GenTableModelInput {
     
-    columns: Array<GenTableColumnsInput_TargetOf_columns>;
+    columns: Array<GenTableModelInput_TargetOf_columns>;
     
     comment: string;
     
-    id?: number;
-    
-    indexes: Array<GenTableColumnsInput_TargetOf_indexes>;
+    indexes: Array<GenTableModelInput_TargetOf_indexes>;
     
     modelId?: number;
     
@@ -18,12 +16,12 @@ export interface GenTableColumnsInput {
     
     remark: string;
     
-    schema?: GenTableColumnsInput_TargetOf_schema;
+    schema?: GenTableModelInput_TargetOf_schema;
     
     type: TableType;
 }
 
-export interface GenTableColumnsInput_TargetOf_columns {
+export interface GenTableModelInput_TargetOf_columns {
     
     autoIncrement: boolean;
     
@@ -35,9 +33,7 @@ export interface GenTableColumnsInput_TargetOf_columns {
     
     displaySize: number;
     
-    enumId?: number;
-    
-    id?: number;
+    enum?: GenTableModelInput_TargetOf_columns_TargetOf_enum_2;
     
     logicalDelete: boolean;
     
@@ -60,23 +56,26 @@ export interface GenTableColumnsInput_TargetOf_columns {
     typeNotNull: boolean;
 }
 
-export interface GenTableColumnsInput_TargetOf_indexes {
+export interface GenTableModelInput_TargetOf_columns_TargetOf_enum_2 {
     
-    columns: Array<GenTableColumnsInput_TargetOf_indexes_TargetOf_columns_2>;
+    name: string;
+}
+
+export interface GenTableModelInput_TargetOf_indexes {
+    
+    columns: Array<GenTableModelInput_TargetOf_indexes_TargetOf_columns_2>;
     
     name: string;
     
     uniqueIndex: boolean;
 }
 
-export interface GenTableColumnsInput_TargetOf_indexes_TargetOf_columns_2 {
+export interface GenTableModelInput_TargetOf_indexes_TargetOf_columns_2 {
     
     name: string;
 }
 
-export interface GenTableColumnsInput_TargetOf_schema {
-    
-    id?: number;
+export interface GenTableModelInput_TargetOf_schema {
     
     name: string;
 }

@@ -7,7 +7,7 @@ import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {ref, watch} from "vue";
 import {sendMessage} from "@/utils/message.ts";
-import {GenTableColumnsInput} from "@/api/__generated/model/static";
+import {GenTableModelInput} from "@/api/__generated/model/static";
 
 interface NodeItem {
 	node: Node
@@ -17,7 +17,7 @@ const props = defineProps<NodeItem>()
 
 const store = useModelEditorStore()
 
-const table = ref<GenTableColumnsInput>()
+const table = ref<GenTableModelInput>()
 
 watch(() => props.node, (node) => {
 	try {

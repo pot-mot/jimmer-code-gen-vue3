@@ -1,8 +1,8 @@
-import {GenTableColumnsInput, GenTableColumnsView} from "@/api/__generated/model/static";
+import {GenTableModelInput, GenTableColumnsView} from "@/api/__generated/model/static";
 import {Graph, Node} from "@antv/x6";
 import {columnPortGroup} from "@/components/business/modelGraphEditor/columnPort.ts";
 import {COLUMN_PORT_GROUP, TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
-import {GenTableColumnsInput_TargetOf_columns} from "@/api/__generated/model/static/GenTableColumnsInput.ts";
+import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static/GenTableModelInput.ts";
 
 export const columnToPort = () => {
     return {
@@ -10,7 +10,7 @@ export const columnToPort = () => {
     }
 }
 
-const tableToNode = (table: GenTableColumnsInput, options: any = undefined) => {
+const tableToNode = (table: GenTableModelInput, options: any = undefined) => {
     return {
         ...options,
         shape: TABLE_NODE,
@@ -28,7 +28,7 @@ const tableToNode = (table: GenTableColumnsInput, options: any = undefined) => {
     }
 }
 
-const tableViewToInput = (tableView: GenTableColumnsView): GenTableColumnsInput => {
+export const tableViewToInput = (tableView: GenTableColumnsView): GenTableModelInput => {
     return {
         comment: tableView.comment,
         name: tableView.name,
@@ -48,7 +48,7 @@ const tableViewToInput = (tableView: GenTableColumnsView): GenTableColumnsInput 
             }
         }),
         columns: tableView.columns.map(column => {
-            return <GenTableColumnsInput_TargetOf_columns>{
+            return <GenTableModelInput_TargetOf_columns>{
                 autoIncrement: column.autoIncrement,
                 comment: column.comment,
                 defaultValue: column.defaultValue,
@@ -64,13 +64,16 @@ const tableViewToInput = (tableView: GenTableColumnsView): GenTableColumnsInput 
                 typeNotNull: column.typeNotNull,
                 logicalDelete: column.logicalDelete,
                 businessKey: column.businessKey,
-                enumId: column.enumId
+                enum:
+                    column.enum ?
+                        {name: column.enum.name} :
+                        undefined
             }
         }),
     }
 }
 
-export const getTableNameMap = <T extends GenTableColumnsInput | GenTableColumnsView>(graph: Graph): Map<string, T[]> => {
+export const getTableNameMap = <T extends GenTableModelInput | GenTableColumnsView>(graph: Graph): Map<string, T[]> => {
     const tableNameMap = new Map<string, T[]>
 
     graph.getNodes()
@@ -90,13 +93,13 @@ export const getTableNameMap = <T extends GenTableColumnsInput | GenTableColumns
     return tableNameMap
 }
 
-export const importTables = <T extends GenTableColumnsInput | GenTableColumnsView>(
+export const importTables = <T extends GenTableModelInput | GenTableColumnsView>(
     graph: Graph,
     tables: T[],
     initX?: number, initY?: number
 ): {
     nodes: Node[],
-    tableNameMap: Map<string, (GenTableColumnsInput | GenTableColumnsView)[]>// 表与名称重复的表的最终 map，除了已经存在的名称，后续的名称将自动向后追加 count
+    tableNameMap: Map<string, (GenTableModelInput | GenTableColumnsView)[]>// 表与名称重复的表的最终 map，除了已经存在的名称，后续的名称将自动向后追加 count
 } => {
     const tableNameMap = getTableNameMap(graph)
 
@@ -116,7 +119,7 @@ export const importTables = <T extends GenTableColumnsInput | GenTableColumnsVie
             tableNameMap.set(name, [table])
         }
 
-        const tableInput: GenTableColumnsInput = Object.keys(table).includes('id') ? tableViewToInput(table as GenTableColumnsView) : table as GenTableColumnsInput
+        const tableInput: GenTableModelInput = Object.keys(table).includes('id') ? tableViewToInput(table as GenTableColumnsView) : table as GenTableModelInput
 
         return tableToNode(tableInput, graph.graphToLocal(
             initX ? initX : svgRect.width * 3 / 8 + Math.random() * 20,

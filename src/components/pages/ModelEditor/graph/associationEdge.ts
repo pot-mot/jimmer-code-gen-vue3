@@ -2,7 +2,7 @@ import {Edge, Graph} from "@antv/x6";
 import {
     GenAssociationModelInput,
     GenAssociationView,
-    GenTableColumnsInput,
+    GenTableModelInput,
 } from "@/api/__generated/model/static";
 import {
     EdgeConnectData,
@@ -10,7 +10,7 @@ import {
 } from "@/components/business/modelGraphEditor/associationEdge/connectData.ts";
 import {createAssociationName} from "@/components/business/modelGraphEditor/associationEdge/associationName.ts";
 import {erRouter, orthRouter} from "@/components/business/graphEditor/edgeRouter.ts";
-import {GenTableColumnsInput_TargetOf_columns} from "@/api/__generated/model/static/GenTableColumnsInput.ts";
+import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static/GenTableModelInput.ts";
 import {ASSOCIATION_EDGE} from "@/components/business/modelGraphEditor/constant.ts";
 import {PortManager} from "@antv/x6/es/model/port";
 
@@ -140,14 +140,14 @@ export const importAssociation = (graph: Graph, association: GenAssociationModel
     )[0]
     if (!targetNode) return
 
-    const sourceTable = sourceNode.getData()?.table as GenTableColumnsInput
+    const sourceTable = sourceNode.getData()?.table as GenTableModelInput
     if (!sourceTable) return
-    const targetTable = targetNode.getData()?.table as GenTableColumnsInput
+    const targetTable = targetNode.getData()?.table as GenTableModelInput
     if (!targetTable) return
 
     const columnReferences = <{
-        sourceColumn: GenTableColumnsInput_TargetOf_columns,
-        targetColumn: GenTableColumnsInput_TargetOf_columns
+        sourceColumn: GenTableModelInput_TargetOf_columns,
+        targetColumn: GenTableModelInput_TargetOf_columns
     }[]>[]
 
     const portPairs = <{

@@ -1,12 +1,12 @@
 import {useDialogListState} from "@/components/global/dialog/DialogListState.ts";
 import {defineStore} from "pinia";
-import {GenTableColumnsInput} from "@/api/__generated/model/static";
+import {GenTableModelInput} from "@/api/__generated/model/static";
 
 export const useTableModifyDialogsStore = defineStore(
     'TableModifyDialogs',
     () => {
         return {
-            ...useDialogListState<string, GenTableColumnsInput>()
+            ...useDialogListState<string, GenTableModelInput>()
         }
     }
 )

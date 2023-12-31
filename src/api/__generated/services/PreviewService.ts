@@ -1,5 +1,5 @@
 import type { Executor } from '../';
-import type { GenLanguage } from '../model/enums';
+import type { DataSourceType, GenLanguage } from '../model/enums';
 import type { Pair } from '../model/static';
 
 export class PreviewService {
@@ -26,6 +26,13 @@ export class PreviewService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
+        _value = options.withPath;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'withPath='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         return (await this.executor({uri: _uri, method: 'GET'})) as Array<Pair<string, string>>
     }
     
@@ -42,10 +49,17 @@ export class PreviewService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        _value = options.packagePath;
+        _value = options.modelId;
         if (_value !== undefined && _value !== null) {
             _uri += _separator
-            _uri += 'packagePath='
+            _uri += 'modelId='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.dataSourceType;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'dataSourceType='
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
@@ -53,6 +67,20 @@ export class PreviewService {
         if (_value !== undefined && _value !== null) {
             _uri += _separator
             _uri += 'language='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.packagePath;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'packagePath='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.withPath;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'withPath='
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
@@ -88,6 +116,13 @@ export class PreviewService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
+        _value = options.withPath;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'withPath='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         return (await this.executor({uri: _uri, method: 'GET'})) as Array<Pair<string, string>>
     }
     
@@ -109,13 +144,20 @@ export class PreviewService {
 }
 
 export type PreviewServiceOptions = {
-    'previewEntity': {entityIds: Array<number>, language?: GenLanguage},
+    'previewEntity': {
+        entityIds: Array<number>, 
+        language?: GenLanguage, 
+        withPath?: boolean
+    },
     'previewEntityByTable': {
         tableIds: Array<number>, 
+        modelId?: number, 
+        dataSourceType?: DataSourceType, 
+        language?: GenLanguage, 
         packagePath?: string, 
-        language?: GenLanguage
+        withPath?: boolean
     },
     'previewModel': {id: number},
-    'previewModelEntity': {id: number},
+    'previewModelEntity': {id: number, withPath?: boolean},
     'previewModelSql': {id: number}
 }

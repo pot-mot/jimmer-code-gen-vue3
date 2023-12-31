@@ -2,14 +2,14 @@
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import ModelForm from "../../table/TableForm.vue";
 import {ModelEditorEventBus} from "../../../pages/ModelEditor/store/ModelEditorEventBus.ts";
-import {GenTableColumnsInput} from "@/api/__generated/model/static";
+import {GenTableModelInput} from "@/api/__generated/model/static";
 import {
 	useTableCreateDialogStore
 } from "@/components/business/modelGraphEditor/tableEditDialog/TableCreateDialogStore.ts";
 
 const store = useTableCreateDialogStore()
 
-const handleSubmit = (table: GenTableColumnsInput) => {
+const handleSubmit = (table: GenTableModelInput) => {
 	ModelEditorEventBus.emit('createdTable', {table, x: store.nodeX, y: store.nodeY})
 }
 </script>

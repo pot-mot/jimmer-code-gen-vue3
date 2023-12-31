@@ -1,11 +1,11 @@
 import mitt from 'mitt'
-import {GenAssociationModelInput, GenTableColumnsInput,} from "@/api/__generated/model/static";
+import {GenAssociationModelInput, GenTableModelInput,} from "@/api/__generated/model/static";
 
 type ModelEditorEvents = {
     createTable: undefined | { x: number, y: number },
-    createdTable: { table: GenTableColumnsInput, x?: number, y?: number },
-    modifyTable: { id: string, table: GenTableColumnsInput },
-    modifiedTable: { id: string, table: GenTableColumnsInput },
+    createdTable: { table: GenTableModelInput, x?: number, y?: number },
+    modifyTable: { id: string, table: GenTableModelInput },
+    modifiedTable: { id: string, table: GenTableModelInput },
     removeTable: string,
 
     createAssociation: undefined,
@@ -17,7 +17,7 @@ type ModelEditorEvents = {
     loadSchema: { id: number },
     loadTable: { id: number },
 
-    saveToDataSource: { tables: GenTableColumnsInput[], associations: GenAssociationModelInput[], schemaId: number }
+    saveToDataSource: { tables: GenTableModelInput[], associations: GenAssociationModelInput[], schemaId: number }
 }
 
 export const ModelEditorEventBus = mitt<ModelEditorEvents>()

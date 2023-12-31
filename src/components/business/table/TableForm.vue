@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import {nextTick, onMounted, ref, watch} from 'vue'
 import {cloneDeep} from 'lodash'
-import {GenEnumView, GenTableColumnsInput} from "@/api/__generated/model/static";
-import {GenTableColumnsInput_TargetOf_columns} from "@/api/__generated/model/static/GenTableColumnsInput.ts";
+import {GenEnumView, GenTableModelInput} from "@/api/__generated/model/static";
+import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static/GenTableModelInput.ts";
 import {api} from "@/api";
 import {useLoading} from "@/hooks/useLoading.ts";
 import {sendMessage} from "@/utils/message.ts";
@@ -36,7 +36,7 @@ const getEnums = async () => {
 	enums.value = await api.enumService.query({query: {}})
 }
 
-const defaultTable: GenTableColumnsInput = {
+const defaultTable: GenTableModelInput = {
 	name: "",
 	comment: "",
 	remark: "",
@@ -46,7 +46,7 @@ const defaultTable: GenTableColumnsInput = {
 	indexes: [],
 }
 
-const defaultColumn: GenTableColumnsInput_TargetOf_columns = {
+const defaultColumn: GenTableModelInput_TargetOf_columns = {
 	orderKey: 0,
 	name: "",
 	comment: "",
@@ -62,19 +62,19 @@ const defaultColumn: GenTableColumnsInput_TargetOf_columns = {
 	remark: "",
 	logicalDelete: false,
 	businessKey: false,
-	enumId: undefined,
+	enum: undefined,
 }
 
 interface ModelFormProps {
 	id?: string,
-	table?: GenTableColumnsInput
+	table?: GenTableModelInput
 }
 
 const props = defineProps<ModelFormProps>()
 
-const emits = defineEmits<FormEmits<GenTableColumnsInput>>()
+const emits = defineEmits<FormEmits<GenTableModelInput>>()
 
-const table = ref<GenTableColumnsInput>(cloneDeep(defaultTable))
+const table = ref<GenTableModelInput>(cloneDeep(defaultTable))
 
 watch(() => props.table, (value) => {
 	if (!value) return
@@ -96,7 +96,7 @@ const handleColumnToPk = (pkIndex: number) => {
 	const pkColumn = table.value.columns[pkIndex]
 	pkColumn.typeNotNull = true
 	pkColumn.type = "BIGINT"
-	pkColumn.enumId = undefined
+	pkColumn.enum = undefined
 	pkColumn.typeCode = jdbcTypeStore.jdbcTypes[pkColumn.type]!
 	pkColumn.logicalDelete = false
 	pkColumn.businessKey = false
@@ -153,7 +153,7 @@ const handleSubmit = () => {
 				messageList.push('主键列必须非空')
 			}
 
-			if (pkColumn.enumId) {
+			if (pkColumn.enum) {
 				messageList.push('主键列不可为枚举类型')
 			}
 		}

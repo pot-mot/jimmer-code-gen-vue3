@@ -173,7 +173,7 @@ import {
 	useTableModifyDialogsStore
 } from "@/components/business/modelGraphEditor/tableEditDialog/TableModifyDialogsStore.ts";
 import {debugLog} from "@/utils/debugLog.ts";
-import {handleTableNodeClipBoardKeyEvent} from "@/components/pages/ModelEditor/graph/clipBoard.ts";
+import {handleTableNodeClipBoardKeyEvent} from "@/components/business/modelGraphEditor/clipBoard/clipBoard.ts";
 import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
 import {handleHistoryKeyEvent} from "@/components/business/graphEditor/history/useHistory.ts";
 import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";
@@ -330,8 +330,6 @@ const handleModelDownload = async () => {
 
 
 watch(() => store.isModelLoaded, (loaded) => {
-	console.log(loaded)
-
 	if (loaded) {
 		if (sqlPreviewDialogOpenState.value) {
 			handleSQLPreview()

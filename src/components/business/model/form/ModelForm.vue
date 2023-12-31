@@ -9,6 +9,7 @@ import {jsonFormatter, jsonParser} from "@/utils/json.ts";
 import CodeEditor from "@/components/global/code/CodeEditor.vue";
 import {ModelFormProps} from "@/components/business/model/form/ModelFormProps.ts";
 import {sendMessage} from "@/utils/message.ts";
+import {validateGraphData} from "@/shape/GraphData.ts";
 
 const props = defineProps<ModelFormProps>()
 
@@ -38,9 +39,17 @@ const handleSubmit = () => {
 
 	if (props.editValue) {
 		try {
-			tempModel.graphData = jsonParser(tempModel.graphData != undefined ? tempModel.graphData : '')
+			if (tempModel.graphData == undefined) {
+				throw "graphData undefined"
+			}
+
+			if (!validateGraphData(JSON.parse(tempModel.graphData))) {
+				throw "graphData validate fail"
+			}
+
+			tempModel.graphData = jsonParser(tempModel.graphData)
 		} catch (e) {
-			sendMessage('json 格式校验失败', 'error')
+			sendMessage('json 格式校验失败', 'error', e)
 			return
 		}
 	}

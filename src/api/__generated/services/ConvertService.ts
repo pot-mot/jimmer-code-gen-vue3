@@ -1,5 +1,5 @@
 import type { Executor } from '../';
-import type { GenLanguage } from '../model/enums';
+import type { DataSourceType, GenLanguage } from '../model/enums';
 
 export class ConvertService {
     
@@ -11,10 +11,17 @@ export class ConvertService {
         let _uri = '/convert/';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
-        _value = options.packagePath;
+        _value = options.modelId;
         if (_value !== undefined && _value !== null) {
             _uri += _separator
-            _uri += 'packagePath='
+            _uri += 'modelId='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.dataSourceType;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'dataSourceType='
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
@@ -25,6 +32,13 @@ export class ConvertService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
+        _value = options.packagePath;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'packagePath='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Array<number>
     }
 }
@@ -32,7 +46,9 @@ export class ConvertService {
 export type ConvertServiceOptions = {
     'convert': {
         body: Array<number>, 
-        packagePath?: string, 
-        language?: GenLanguage
+        modelId?: number, 
+        dataSourceType?: DataSourceType, 
+        language?: GenLanguage, 
+        packagePath?: string
     }
 }

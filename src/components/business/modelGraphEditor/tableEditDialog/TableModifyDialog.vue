@@ -2,11 +2,11 @@
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import TableForm from "../../table/TableForm.vue";
 import {ModelEditorEventBus} from "../../../pages/ModelEditor/store/ModelEditorEventBus.ts";
-import {GenTableColumnsInput} from "@/api/__generated/model/static";
+import {GenTableModelInput} from "@/api/__generated/model/static";
 
 interface TableModifyDialogProps {
 	id: string,
-	table: GenTableColumnsInput
+	table: GenTableModelInput
 }
 
 const props = defineProps<TableModifyDialogProps>()
@@ -17,7 +17,7 @@ interface TableEntityDialogEmits {
 
 const emits = defineEmits<TableEntityDialogEmits>()
 
-const handleSubmit = (table: GenTableColumnsInput) => {
+const handleSubmit = (table: GenTableModelInput) => {
 	ModelEditorEventBus.emit('modifiedTable', {id: props.id, table})
 }
 </script>

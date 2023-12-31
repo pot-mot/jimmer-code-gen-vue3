@@ -16,6 +16,7 @@ import {
 import {importTables} from "@/components/pages/ModelEditor/graph/tableNode.ts";
 import {useGenContextStore} from "@/components/business/context/GenContextStore.ts";
 import {redo, undo} from "@/components/business/graphEditor/history/useHistory.ts";
+import {validateGraphData} from "@/shape/GraphData.ts";
 
 export const useModelEditorStore =
     defineStore(
@@ -27,7 +28,7 @@ export const useModelEditorStore =
 
             const loadGraphByJSONStr = (jsonStr: string) => {
                 try {
-                    if (jsonStr) {
+                    if (jsonStr && validateGraphData(JSON.parse(jsonStr))) {
                         commonOperations.loadGraphByJSONStr(jsonStr)
                     } else {
                         commonOperations._graph().removeCells(commonOperations._graph().getCells())

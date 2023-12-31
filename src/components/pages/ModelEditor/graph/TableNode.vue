@@ -32,7 +32,7 @@
 
 <script lang='ts' setup>
 import {inject, nextTick, onMounted, ref, watch} from "vue";
-import {GenAssociationModelInput, GenTableColumnsInput} from "@/api/__generated/model/static";
+import {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static";
 import {Node} from '@antv/x6'
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
@@ -53,7 +53,7 @@ const getNode = inject<() => Node>("getNode")!
 
 const node = ref<Node>()
 
-const table = ref<GenTableColumnsInput>()
+const table = ref<GenTableModelInput>()
 
 let wrapperResizeObserver
 

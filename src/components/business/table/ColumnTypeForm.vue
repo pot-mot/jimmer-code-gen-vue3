@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {ModelValueProps} from "@/components/global/dialog/DragDialogProps.ts";
-import {GenTableColumnsInput_TargetOf_columns} from "@/api/__generated/model/static/GenTableColumnsInput.ts";
+import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static/GenTableModelInput.ts";
 import {ModelValueEmits} from "@/components/global/dialog/DragDialogEmits.ts";
 import {ref} from "vue";
 import {EditPen, Plus} from "@element-plus/icons-vue";
@@ -16,31 +16,14 @@ const jdbcTypeStore = useJDBCTypeStore()
 const columnDefaultStore = useColumnDefaultStore()
 
 const props = defineProps<
-	ModelValueProps<GenTableColumnsInput_TargetOf_columns> &
+	ModelValueProps<GenTableModelInput_TargetOf_columns> &
 	{ enums: GenEnumView[] }
 >()
 
 const emits = defineEmits<
-	ModelValueEmits<GenTableColumnsInput_TargetOf_columns> &
+	ModelValueEmits<GenTableModelInput_TargetOf_columns> &
 	{ (event: "updateEnums"): void }
 >()
-
-const enumDialogOpenState = ref(false)
-
-const handleSaveEnum = async (genEnum: GenEnumItemsInput) => {
-	const id = await api.enumService.save({body: genEnum})
-	enumDialogOpenState.value = false
-	if (id != undefined) {
-		props.modelValue.enumId = id
-	}
-	emits('updateEnums')
-	popoverOpenState.value = true
-}
-
-const handleCancelEditEnum = async () => {
-	enumDialogOpenState.value = false
-	handleStopPopoverClose()
-}
 
 const popoverOpenState = ref(false)
 
@@ -70,13 +53,33 @@ const handleTypeCodeChange = () => {
 
 	handleStopPopoverClose()
 }
+
+const enumDialogOpenState = ref(false)
+
+const enumId = ref<number>()
+
+const handleSaveEnum = async (genEnum: GenEnumItemsInput) => {
+	const id = await api.enumService.save({body: genEnum})
+	enumDialogOpenState.value = false
+	if (id != undefined) {
+		props.modelValue.enum = { name: genEnum.name }
+		enumId.value = id
+	}
+	emits('updateEnums')
+	popoverOpenState.value = true
+}
+
+const handleCancelEditEnum = async () => {
+	enumDialogOpenState.value = false
+	handleStopPopoverClose()
+}
 </script>
 
 <template>
 	<el-popover v-model:visible="popoverOpenState" trigger="click" width="450px">
 		<template #reference>
 			<el-input readonly :model-value="modelValue.type">
-				<template v-if="modelValue.enumId != undefined" #prefix>
+				<template v-if="modelValue.enum != undefined" #prefix>
 					【Enum】
 				</template>
 			</el-input>
@@ -114,28 +117,28 @@ const handleTypeCodeChange = () => {
 			</el-form-item>
 
 			<el-form-item label="映射枚举">
-				<el-select :model-value="modelValue.enumId" clearable filterable
+				<el-select :model-value="modelValue.enum" clearable filterable
 						   @clear="() => {
-							   modelValue.enumId = undefined
+							   modelValue.enum = undefined
 							   handleStopPopoverClose()
 						   }"
-						   @change="(value: number) => {
-								modelValue.enumId = value
+						   @change="(value: string) => {
+								modelValue.enum = { name: value }
 								handleStopPopoverClose()
 							}">
-					<el-option v-for="genEnum in enums" :label="genEnum.name" :value="genEnum.id">
+					<el-option v-for="genEnum in enums" :value="genEnum.name">
 						{{ genEnum.name }}
 						<Comment :comment="genEnum.comment"></Comment>
 					</el-option>
 				</el-select>
 
-				<el-button :icon="modelValue.enumId == undefined ?  Plus : EditPen"
+				<el-button :icon="modelValue.enum == undefined ?  Plus : EditPen"
 						   @click="enumDialogOpenState = true;"></el-button>
 			</el-form-item>
 		</el-form>
 	</el-popover>
 
 	<el-dialog v-model="enumDialogOpenState" append-to-body @close="handleCancelEditEnum">
-		<EnumForm :id="modelValue.enumId" @submit="handleSaveEnum" @cancel="handleCancelEditEnum"></EnumForm>
+		<EnumForm :id="enumId" @submit="handleSaveEnum" @cancel="handleCancelEditEnum"></EnumForm>
 	</el-dialog>
 </template>

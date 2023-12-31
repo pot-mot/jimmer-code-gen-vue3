@@ -3,6 +3,8 @@ import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelGraphEdit
 import {sendMessage} from "@/utils/message.ts";
 import {loadEditorData} from "@/components/business/graphEditor/storage/graphData.ts";
 import {loadByTableAndAssociationInputs} from "@/components/pages/ModelEditor/graph/loadData.ts";
+import {validateCopyData} from "@/shape/CopyData.ts";
+import {validateGraphData} from "@/shape/GraphData.ts";
 
 export const handleTableNodeClipBoardKeyEvent = async (graph: Graph, e: KeyboardEvent) => {
     if (e.ctrlKey || e.metaKey) {
@@ -43,21 +45,6 @@ export const tableNodeCut = async (graph: Graph) => {
     return {nodes, edges}
 }
 
-const graphDataKeys: string[] = ['json', 'zoom', 'transform']
-
-const copyDataKeys: string[] = ['tables', 'associations']
-
-const tableKeys: string[] = ['name', 'type', 'comment', 'columns', 'indexes',]
-
-const associationKeys: string[] = ['associationType', 'columnReferences', 'fake', 'name', 'sourceTable', 'targetTable']
-
-const isSubSet = (from: string[], values: string[]) => {
-    for (const value of values) {
-        if (!from.includes(value)) return false
-    }
-    return true
-}
-
 export const tableNodePaste = async (graph: Graph) => {
     const text = await navigator.clipboard.readText()
 
@@ -66,27 +53,17 @@ export const tableNodePaste = async (graph: Graph) => {
 
         let res: {nodes: Node[], edges: Edge[]} | undefined
 
-        if (isSubSet(Object.keys(value), copyDataKeys)) {
+        if (validateCopyData(value)) {
             const {tables, associations} = value
 
-            if (Array.isArray(tables) && (tables as any[]).filter(it => isSubSet(Object.keys(it), tableKeys)).length == tables.length) {
-            } else {
-                return
-            }
-
-            if (Array.isArray(associations) && (associations as any[]).filter(it => isSubSet(Object.keys(it), associationKeys)).length == associations.length) {
-            } else {
-                return
-            }
+            graph.startBatch("paste")
 
             res = loadByTableAndAssociationInputs(graph, tables, associations)
-        } else if (isSubSet(Object.keys(value), graphDataKeys)) {
-            if (!Object.keys(value.json).includes("cells")) {
-                return
-            }
-
+        } else if (validateGraphData(value)) {
             const cells = value.json.cells as Cell[]
             graph.parseJSON(cells)
+
+            graph.startBatch("paste")
 
             res = loadEditorData(graph, value, false)
         }
@@ -94,6 +71,8 @@ export const tableNodePaste = async (graph: Graph) => {
         if (res) {
             setTimeout(() => {
                 graph.resetSelection([...res!.nodes, ...res!.edges])
+
+                graph.stopBatch("paste")
             }, 200)
         }
 
