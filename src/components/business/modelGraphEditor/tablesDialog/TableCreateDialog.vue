@@ -5,7 +5,7 @@ import {ModelEditorEventBus} from "../../../pages/ModelEditor/store/ModelEditorE
 import {GenTableModelInput} from "@/api/__generated/model/static";
 import {
 	useTableCreateDialogStore
-} from "@/components/business/modelGraphEditor/tableEditDialog/TableCreateDialogStore.ts";
+} from "@/components/business/modelGraphEditor/tablesDialog/TableCreateDialogStore.ts";
 
 const store = useTableCreateDialogStore()
 

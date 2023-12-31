@@ -97,11 +97,11 @@ defineExpose({
 			<Line v-if="labelLine" :gap="gap" :height="height">
 				<LineItem v-for="column in columns" :span="column.span">
 					<slot name="label">
-						<el-text v-if="column.label">{{ column.label }}</el-text>
+						<el-text v-if="column.label" style="padding-left: 0.5em;">{{ column.label }}</el-text>
 					</slot>
 				</LineItem>
 				<LineItem :span="operation.span">
-					<el-text v-if="operation.label">{{ operation.label }}</el-text>
+					<el-text v-if="operation.label" style="padding-left: 0.5em;">{{ operation.label }}</el-text>
 				</LineItem>
 			</Line>
 		</div>

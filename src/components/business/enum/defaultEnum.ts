@@ -20,6 +20,7 @@ export const getDefaultEnumItem = (): GenEnumItemsInput_TargetOf_items => {
         name: "",
         mappedValue: "",
         comment: "",
-        remark: ""
+        remark: "",
+        orderKey: 0,
     }
 }

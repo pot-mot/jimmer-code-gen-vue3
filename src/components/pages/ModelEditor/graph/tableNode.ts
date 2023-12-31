@@ -3,6 +3,7 @@ import {Graph, Node} from "@antv/x6";
 import {columnPortGroup} from "@/components/business/modelGraphEditor/columnPort.ts";
 import {COLUMN_PORT_GROUP, TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
 import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static/GenTableModelInput.ts";
+import {updateTableNodeData} from "@/components/business/modelGraphEditor/tableNode/tableNodeData.ts";
 
 export const columnToPort = () => {
     return {
@@ -83,7 +84,7 @@ export const getTableNameMap = <T extends GenTableModelInput | GenTableColumnsVi
             if (tableNameMap.has(table.name)) {
                 const count = tableNameMap.get(table.name)!.length
                 table.name = `${table.name}(${count})`
-                node.setData({wrapper: node.getData().wrapper, table}, {deep: true})
+                updateTableNodeData(node, table)
                 tableNameMap.get(table.name)!.push(table)
             } else {
                 tableNameMap.set(table.name, [table])

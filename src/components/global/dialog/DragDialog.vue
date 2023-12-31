@@ -7,6 +7,7 @@ import {Close} from "@element-plus/icons-vue";
 import {DragDialogProps} from "./DragDialogProps.ts";
 import {DragDialogEmits, ModelValueEmits} from "./DragDialogEmits.ts";
 import {sendMessage} from "@/utils/message.ts";
+import {useZIndex} from "element-plus";
 
 const props = withDefaults(defineProps<DragDialogProps>(), {
 	to: "body",
@@ -26,6 +27,8 @@ const x = ref(0)
 const y = ref(0)
 const w = ref(0)
 const h = ref(0)
+
+const zIndexManager = useZIndex()
 
 const setPositionAndSize = () => {
 	let maxWidth: number
@@ -78,8 +81,11 @@ const setPositionAndSize = () => {
 
 const emits = defineEmits<DragDialogEmits & ModelValueEmits<boolean>>()
 
+const currentZIndex = ref<number>()
+
 const handleOpen = () => {
 	setPositionAndSize()
+	currentZIndex.value = zIndexManager.nextZIndex()
 	emits('opened')
 }
 
@@ -152,7 +158,7 @@ defineExpose({
 					:parent="limitByParent"
 					:h="h" :maxH="maxH" :minH="minH" :disabledH="disabledH"
 					:w="w" :maxW="maxW" :minW="minW" :disabledW="disabledW"
-					style="border: none; z-index: 2000;">
+					:style="`border: none; z-index: ${currentZIndex};`">
 			<div ref="wrapper" :style="draggable ? 'cursor: all-scroll;' : 'cursor: default;'" class="wrapper">
 				<div class="close" @click="handleClose">
 					<slot name="close">

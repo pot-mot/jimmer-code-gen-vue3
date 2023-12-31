@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import {nextTick, onMounted, ref, watch} from 'vue'
+import {ref, watch} from 'vue'
 import {cloneDeep} from 'lodash'
-import {GenEnumView, GenTableModelInput} from "@/api/__generated/model/static";
+import {GenTableModelInput} from "@/api/__generated/model/static";
 import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static/GenTableModelInput.ts";
-import {api} from "@/api";
 import {useLoading} from "@/hooks/useLoading.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {useModelEditorStore} from "../../pages/ModelEditor/store/ModelEditorStore.ts";
@@ -13,28 +12,14 @@ import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import {tableColumnColumns} from "@/components/business/table/tableColumnColumns.ts";
 import ColumnTypeForm from "@/components/business/table/ColumnTypeForm.vue";
 import {useJDBCTypeStore} from "@/components/business/jdbcType/JDBCTypeStore.ts";
+import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
+import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
 
 const store = useModelEditorStore()
 
 const columnTypeMapLoading = useLoading()
 
 const jdbcTypeStore = useJDBCTypeStore()
-
-const enums = ref<GenEnumView[]>([])
-
-onMounted(async () => {
-	columnTypeMapLoading.start()
-	await nextTick()
-
-	await getEnums()
-
-	await nextTick()
-	columnTypeMapLoading.end()
-})
-
-const getEnums = async () => {
-	enums.value = await api.enumService.query({query: {}})
-}
 
 const defaultTable: GenTableModelInput = {
 	name: "",
@@ -235,10 +220,16 @@ const handleCancel = () => {
 			</template>
 
 			<template #type="{data}">
-				<ColumnTypeForm v-if="jdbcTypeStore.isLoaded"
-								:enums="enums"
+				<ColumnTypeForm v-if="jdbcTypeStore.isLoaded && store.isModelLoaded"
+								:enumNames="store._currentModel().enums.map(it => it.name)"
 								:model-value="data"
-								@updateEnums="getEnums()"></ColumnTypeForm>
+								@create-enum="() => ModelEditorEventBus.emit('createEnum')"
+								@edit-enum="(name) => {
+									let genEnum = store._currentModel().enums.filter(it => it.name == name)[0]
+									if (!genEnum) genEnum = {...getDefaultEnum(),name}
+									ModelEditorEventBus.emit('modifyEnum', {name, genEnum})
+								}"
+				></ColumnTypeForm>
 			</template>
 
 			<template #typeNotNull="{data}">

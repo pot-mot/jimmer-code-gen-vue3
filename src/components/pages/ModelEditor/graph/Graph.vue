@@ -171,7 +171,7 @@ import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
 import {EditPen} from "@element-plus/icons-vue";
 import {
 	useTableModifyDialogsStore
-} from "@/components/business/modelGraphEditor/tableEditDialog/TableModifyDialogsStore.ts";
+} from "@/components/business/modelGraphEditor/tablesDialog/TableModifyDialogsStore.ts";
 import {debugLog} from "@/utils/debugLog.ts";
 import {handleTableNodeClipBoardKeyEvent} from "@/components/business/modelGraphEditor/clipBoard/clipBoard.ts";
 import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";

@@ -16,8 +16,10 @@ import {sendMessage} from "@/utils/message.ts";
 import {useRoute, useRouter} from "vue-router";
 import ModelMenu from "@/components/business/model/menu/ModelMenu.vue";
 import {ModelMenuEvents} from "@/components/business/model/menu/ModelMenuEvents.ts";
-import TableCreateDialog from "@/components/business/modelGraphEditor/tableEditDialog/TableCreateDialog.vue";
-import TableModifyDialogs from "@/components/business/modelGraphEditor/tableEditDialog/TableModifyDialogs.vue";
+import TableCreateDialog from "@/components/business/modelGraphEditor/tablesDialog/TableCreateDialog.vue";
+import TableModifyDialogs from "@/components/business/modelGraphEditor/tablesDialog/TableModifyDialogs.vue";
+import EnumCreateDialog from "@/components/business/modelGraphEditor/enumsDialog/EnumCreateDialog.vue";
+import EnumModifyDialogs from "@/components/business/modelGraphEditor/enumsDialog/EnumModifyDialogs.vue";
 
 const store = useModelEditorStore()
 
@@ -119,4 +121,7 @@ watch(() => modelLoadMenu.value, () => {
 
 	<TableCreateDialog></TableCreateDialog>
 	<TableModifyDialogs></TableModifyDialogs>
+
+	<EnumCreateDialog></EnumCreateDialog>
+	<EnumModifyDialogs></EnumModifyDialogs>
 </template>

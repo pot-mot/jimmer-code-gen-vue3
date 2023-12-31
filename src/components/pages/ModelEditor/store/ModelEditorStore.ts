@@ -5,18 +5,22 @@ import {sendMessage} from "@/utils/message.ts";
 import {nextTick, ref} from "vue";
 import {api} from "@/api";
 import {loadByTableViews} from "../graph/loadData.ts";
-import {GenModelInput, GenModelView, GenTableColumnsView} from "@/api/__generated/model/static";
+import {GenModelInput, GenModelView, GenTableColumnsView, GenTableModelInput} from "@/api/__generated/model/static";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {
     useTableCreateDialogStore
-} from "@/components/business/modelGraphEditor/tableEditDialog/TableCreateDialogStore.ts";
+} from "@/components/business/modelGraphEditor/tablesDialog/TableCreateDialogStore.ts";
 import {
     useTableModifyDialogsStore
-} from "@/components/business/modelGraphEditor/tableEditDialog/TableModifyDialogsStore.ts";
+} from "@/components/business/modelGraphEditor/tablesDialog/TableModifyDialogsStore.ts";
 import {importTables} from "@/components/pages/ModelEditor/graph/tableNode.ts";
 import {useGenContextStore} from "@/components/business/context/GenContextStore.ts";
 import {redo, undo} from "@/components/business/graphEditor/history/useHistory.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
+import {TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
+import {updateTableNodeData} from "@/components/business/modelGraphEditor/tableNode/tableNodeData.ts";
+import {useEnumCreateDialogStore} from "@/components/business/modelGraphEditor/enumsDialog/EnumCreateDialogStore.ts";
+import {useEnumModifyDialogsStore} from "@/components/business/modelGraphEditor/enumsDialog/EnumModifyDialogsStore.ts";
 
 export const useModelEditorStore =
     defineStore(
@@ -123,6 +127,8 @@ export const useModelEditorStore =
 
             const dataSourceLoadMenuOpenState = ref(false)
 
+            const modelLoadMenuOpenState = ref(false)
+
             /**
              * 向画布导入 model
              * @param id model id
@@ -167,16 +173,15 @@ export const useModelEditorStore =
                 }, 200)
             }
 
-            const modelLoadMenuOpenState = ref(false)
 
-            const createDialogStore = useTableCreateDialogStore()
+            const tableCreateStore = useTableCreateDialogStore()
 
             ModelEditorEventBus.on('createTable', (props) => {
-                createDialogStore.dialogOpenState = true
+                tableCreateStore.dialogOpenState = true
 
                 if (props) {
-                    createDialogStore.nodeX = props.x
-                    createDialogStore.nodeY = props.y
+                    tableCreateStore.nodeX = props.x
+                    tableCreateStore.nodeY = props.y
                 }
             })
 
@@ -188,7 +193,7 @@ export const useModelEditorStore =
                 const node = importTables(graph, [table], x, y).nodes[0]
 
                 if (node) {
-                    createDialogStore.dialogOpenState = false
+                    tableCreateStore.dialogOpenState = false
 
                     setTimeout(() => {
                         commonOperations.select(node)
@@ -197,10 +202,10 @@ export const useModelEditorStore =
             })
 
 
-            const modifyDialogStore = useTableModifyDialogsStore()
+            const tableModifyStore = useTableModifyDialogsStore()
 
             ModelEditorEventBus.on('modifyTable', ({id, table}) => {
-                modifyDialogStore.open(id, table)
+                tableModifyStore.open(id, table)
             })
 
             ModelEditorEventBus.on('modifiedTable', ({id, table}) => {
@@ -210,27 +215,86 @@ export const useModelEditorStore =
 
                 const cell = graph.getCellById(id)
                 if (cell && cell.isNode()) {
-                    cell.setData({wrapper: cell.getData().wrapper, table}, {deep: true})
+                    updateTableNodeData(cell, table)
                 } else {
                     sendMessage(`Node ${id} 找不到，无法被更改`, 'error')
                 }
-                modifyDialogStore.close(id)
+                tableModifyStore.close(id)
             })
 
             ModelEditorEventBus.on('removeTable', (id) => {
-                const graph = commonOperations._graph()
-
-                if (!graph) return
-
-                graph.removeNode(id)
+                commonOperations._graph().removeNode(id)
             })
 
             ModelEditorEventBus.on('removeAssociation', (id) => {
-                const graph = commonOperations._graph()
+                commonOperations._graph().removeEdge(id)
+            })
 
-                if (!graph) return
 
-                graph.removeEdge(id)
+            const enumCreateStore = useEnumCreateDialogStore()
+
+            ModelEditorEventBus.on('createEnum', () => {
+                enumCreateStore.dialogOpenState = true
+            })
+
+            ModelEditorEventBus.on('createdEnum', (genEnum) => {
+                _currentModel().enums.push(genEnum)
+                enumCreateStore.dialogOpenState = false
+            })
+
+            const enumModifyStore = useEnumModifyDialogsStore()
+
+            ModelEditorEventBus.on('modifyEnum', ({name, genEnum}) => {
+                enumModifyStore.open(name, genEnum)
+            })
+
+            ModelEditorEventBus.on('modifiedEnum', ({name, genEnum}) => {
+                const currentModel = _currentModel()
+
+                currentModel.enums = currentModel.enums.filter(it => it.name != name)
+                currentModel.enums.push(genEnum)
+
+                const graph = _graph()
+
+                const nodes = graph.getNodes().filter(it => it.shape == TABLE_NODE)
+
+                for (let node of nodes) {
+                    const table = node.getData()?.table as GenTableModelInput | undefined
+                    if (table) {
+                        table.columns.forEach(column => {
+                            if (column.enum && column.enum.name == name) {
+                                column.enum.name = genEnum.name
+                            }
+                        })
+
+                        updateTableNodeData(node, table)
+                    }
+                }
+
+                enumModifyStore.close(name)
+            })
+
+            ModelEditorEventBus.on('removeEnum', (name) => {
+                const currentModel = _currentModel()
+
+                currentModel.enums = currentModel.enums.filter(it => it.name != name)
+
+                const graph = _graph()
+
+                const nodes = graph.getNodes().filter(it => it.shape == TABLE_NODE)
+
+                for (let node of nodes) {
+                    const table = node.getData()?.table as GenTableModelInput | undefined
+                    if (table) {
+                        table.columns.forEach(column => {
+                            if (column.enum && column.enum.name == name) {
+                                column.enum = undefined
+                            }
+                        })
+
+                        updateTableNodeData(node, table)
+                    }
+                }
             })
 
             return {

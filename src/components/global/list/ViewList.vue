@@ -14,7 +14,7 @@ withDefaults(defineProps<ListProps<T>>(), {
 			<Line v-if="labelLine" :gap="gap" :height="height">
 				<LineItem v-for="column in columns" :span="column.span">
 					<slot name="label">
-						<el-text v-if="column.label">{{ column.label }}</el-text>
+						<el-text style="padding-left: 0.5em;" v-if="column.label">{{ column.label }}</el-text>
 					</slot>
 				</LineItem>
 			</Line>

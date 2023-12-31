@@ -1,5 +1,6 @@
 import mitt from 'mitt'
 import {GenAssociationModelInput, GenTableModelInput,} from "@/api/__generated/model/static";
+import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static/GenModelInput.ts";
 
 type ModelEditorEvents = {
     createTable: undefined | { x: number, y: number },
@@ -13,6 +14,12 @@ type ModelEditorEvents = {
     modifyAssociation: { id: string, association: GenAssociationModelInput },
     modifiedAssociation: { id: string, association: GenAssociationModelInput },
     removeAssociation: string,
+
+    createEnum: undefined,
+    createdEnum: GenModelInput_TargetOf_enums,
+    modifyEnum: { name: string, genEnum: GenModelInput_TargetOf_enums },
+    modifiedEnum: { name: string, genEnum: GenModelInput_TargetOf_enums },
+    removeEnum: string,
 
     loadSchema: { id: number },
     loadTable: { id: number },

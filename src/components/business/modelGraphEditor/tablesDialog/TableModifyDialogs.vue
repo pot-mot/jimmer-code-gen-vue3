@@ -2,7 +2,7 @@
 import ModelModifyDialog from "./TableModifyDialog.vue"
 import {
 	useTableModifyDialogsStore
-} from "@/components/business/modelGraphEditor/tableEditDialog/TableModifyDialogsStore.ts";
+} from "@/components/business/modelGraphEditor/tablesDialog/TableModifyDialogsStore.ts";
 
 const store = useTableModifyDialogsStore()
 </script>

@@ -2,7 +2,6 @@
 import EditList from "@/components/global/list/EditList.vue";
 import {GenEnumItemsInput} from "@/api/__generated/model/static";
 import {onMounted, ref, watch} from "vue";
-import {api} from "@/api";
 import {enumItemColumns} from "@/components/business/enum/enumItemColumns.ts";
 import {EnumType, EnumType_CONSTANTS} from "@/api/__generated/model/enums";
 import Line from "@/components/global/list/Line.vue";
@@ -10,9 +9,10 @@ import LineItem from "@/components/global/list/LineItem.vue";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {getDefaultEnum, getDefaultEnumItem} from "@/components/business/enum/defaultEnum.ts";
+import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static/GenModelInput.ts";
 
 const props = defineProps<{
-	id: number | undefined
+	enum?: Partial<GenModelInput_TargetOf_enums>
 }>()
 
 const emits = defineEmits<FormEmits<GenEnumItemsInput>>()
@@ -20,13 +20,10 @@ const emits = defineEmits<FormEmits<GenEnumItemsInput>>()
 const genEnum = ref<GenEnumItemsInput>(getDefaultEnum())
 
 const getData = async () => {
-	if (props.id) {
-		const res = await api.enumService.get({id: props.id})
-		if (res) {
-			genEnum.value = res
-		} else {
-			sendMessage('枚举不存在', 'error')
-			genEnum.value = getDefaultEnum()
+	if (props.enum) {
+		genEnum.value = {
+			...getDefaultEnum(),
+			...props.enum
 		}
  	} else {
 		genEnum.value = getDefaultEnum()
@@ -108,7 +105,7 @@ const handleCancel = () => {
 </script>
 
 <template>
-	<el-form>
+	<el-form style="width: 98%;">
 		<Line height="3em">
 			<LineItem>
 				<el-form-item label="名称">
