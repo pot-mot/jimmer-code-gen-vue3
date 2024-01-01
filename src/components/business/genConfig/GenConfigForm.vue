@@ -63,17 +63,9 @@ const handleCancel = () => {
 				</el-col>
 			</el-row>
 
-<!--			<el-row :gutter="24">-->
-<!--				<el-col :span="6">-->
-<!--					<el-form-item label="分隔符">-->
-<!--						<el-input v-model="config.separator"></el-input>-->
-<!--					</el-form-item>-->
-<!--				</el-col>-->
-<!--			</el-row>-->
-
-			<Details open>
+			<Details open style="padding-bottom: 0.5em">
 				<template #title>
-					<el-text style="line-height: 2em;">表定义</el-text>
+					<el-text style="line-height: 2.5em;" size="default">表定义</el-text>
 				</template>
 
 				<div style="width: calc(100% - 3px - 1em);">
@@ -87,9 +79,9 @@ const handleCancel = () => {
 				</div>
 			</Details>
 
-			<Details open>
+			<Details open style="padding-bottom: 0.5em">
 				<template #title>
-					<el-text style="line-height: 2em;">业务代码</el-text>
+					<el-text style="line-height: 2.5em;" size="default">业务代码</el-text>
 				</template>
 
 				<div style="width: calc(100% - 3px - 1em);">
@@ -151,9 +143,9 @@ const handleCancel = () => {
 				</div>
 			</Details>
 
-			<Details open>
+			<Details open style="padding-bottom: 3em">
 				<template #title>
-					<el-text style="line-height: 2em;">移除前后缀</el-text>
+					<el-text style="line-height: 2.5em;" size="default">移除前后缀</el-text>
 				</template>
 
 				<div style="width: calc(100% - 3px - 1em);">
@@ -211,7 +203,7 @@ const handleCancel = () => {
 				</div>
 			</Details>
 
-			<div style="text-align: right">
+			<div style="text-align: right; position: absolute; bottom: 0.5em; left: 1em; right: 1em;">
 				<el-button type="info" @click="handleCancel">取消</el-button>
 				<el-button type="warning" @click="handleSubmit">保存</el-button>
 			</div>

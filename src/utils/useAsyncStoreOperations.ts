@@ -42,7 +42,7 @@ export const useAsyncStoreOperations = <T> (
 
     const resetData = async () => {
         await cleanData()
-        await getData()
+        return await getData()
     }
 
     return {
