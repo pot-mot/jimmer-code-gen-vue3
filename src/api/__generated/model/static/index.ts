@@ -34,4 +34,3 @@ export type { GenTypeMappingView } from './GenTypeMappingView';
 export type { Pair } from './Pair';
 export type { TableQuery } from './TableQuery';
 export type { TimeRangeQueryParam } from './TimeRangeQueryParam';
-export type { byte } from './byte';

@@ -51,7 +51,7 @@ const GraphDataShapeJsonSchema = {
 
         "GraphData": {
             "type": "object",
-            "required": ["json"],
+            "required": ["json", "zoom"],
             "properties": {
                 "json": {
                     "type": "object",
@@ -72,7 +72,7 @@ const GraphDataShapeJsonSchema = {
                     "type": "number"
                 },
                 "transform": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 }
             }
         }

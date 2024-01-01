@@ -87,6 +87,36 @@ export class PreviewService {
         return (await this.executor({uri: _uri, method: 'GET'})) as Array<Pair<string, string>>
     }
     
+    async previewEnums(options: PreviewServiceOptions['previewEnums']): Promise<
+        Array<Pair<string, string>>
+    > {
+        let _uri = '/preview/enum';
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.enumIds.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'enumIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.language;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'language='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.withPath;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'withPath='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        return (await this.executor({uri: _uri, method: 'GET'})) as Array<Pair<string, string>>
+    }
+    
     async previewModel(options: PreviewServiceOptions['previewModel']): Promise<
         Array<Pair<string, string>>
     > {
@@ -155,6 +185,11 @@ export type PreviewServiceOptions = {
         dataSourceType?: DataSourceType, 
         language?: GenLanguage, 
         packagePath?: string, 
+        withPath?: boolean
+    },
+    'previewEnums': {
+        enumIds: Array<number>, 
+        language?: GenLanguage, 
         withPath?: boolean
     },
     'previewModel': {id: number},

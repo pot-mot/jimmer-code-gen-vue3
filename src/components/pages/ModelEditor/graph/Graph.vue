@@ -165,6 +165,7 @@ import EraserIcon from "@/components/global/icons/toolbar/EraserIcon.vue";
 import AssociationOffIcon from "@/components/global/icons/toolbar/AssociationOffIcon.vue";
 import DownloadIcon from "@/components/global/icons/toolbar/DownloadIcon.vue";
 import {saveAs} from "file-saver";
+import * as JSZip from "jszip";
 import ScaleBar from "@/components/business/graphEditor/tools/ScaleBar.vue";
 import GraphSearcher from "@/components/business/graphEditor/tools/GraphSearcher.vue";
 import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
@@ -249,6 +250,9 @@ useSaveKeyEvent(() => {
 })
 
 
+/**
+ * 代码预览与下载
+ */
 const entityPreviewDialogOpenState = ref(false)
 
 const codeFiles = ref<Array<Pair<string, string>>>([])
@@ -256,8 +260,10 @@ const codeFiles = ref<Array<Pair<string, string>>>([])
 const handleEntityPreview = async () => {
 	loadingStore.add()
 
+	const currentModel = store._currentModel()
+
 	codeFiles.value = await api.previewService.previewModelEntity({
-		id: store._currentModel().id
+		id: currentModel.id
 	})
 	entityPreviewDialogOpenState.value = true
 
@@ -270,20 +276,6 @@ watch(() => entityPreviewDialogOpenState.value, async (openState) => {
 	}
 })
 
-const handleEntityDownload = async () => {
-	loadingStore.add()
-
-	const currentModel = store._currentModel()
-
-	const res = (await api.generateService.generateModelEntity({
-		body: currentModel.id
-	})) as any as Blob
-	const file = new File([res], `[${currentModel.name}]-entities.zip`)
-	saveAs(file)
-
-	loadingStore.sub()
-}
-
 
 const sqlPreviewDialogOpenState = ref(false)
 
@@ -292,10 +284,47 @@ const sqlFiles = ref<Array<Pair<string, string>>>([])
 const handleSQLPreview = async () => {
 	loadingStore.add()
 
+	const currentModel = store._currentModel()
+
 	sqlPreviewDialogOpenState.value = true
 	sqlFiles.value = await api.previewService.previewModelSql({
-		id: store._currentModel().id
+		id: currentModel.id
 	})
+	loadingStore.sub()
+}
+
+
+const createZip = async (files: Array<Pair<string, string>>): Promise<Blob> => {
+	const zip = new JSZip
+
+	const nameCountMap = new Map<string, number>
+
+	files.forEach(it => {
+		if (nameCountMap.has(it.first)) {
+			const count = nameCountMap.get(it.first)!
+			nameCountMap.set(it.first, count + 1)
+			zip.file(`${it.first}(${count})`, it.second)
+		} else {
+			nameCountMap.set(it.first, 1)
+			zip.file(it.first, it.second)
+		}
+	})
+
+	return await zip.generateAsync({type:"blob"})
+}
+
+const handleEntityDownload = async () => {
+	loadingStore.add()
+
+	const currentModel = store._currentModel()
+
+	const res = await api.previewService.previewModelEntity({
+		id: currentModel.id,
+		withPath: true
+	})
+	const file = await createZip(res)
+	saveAs(file, `[${currentModel.name}]-entities.zip`)
+
 	loadingStore.sub()
 }
 
@@ -304,11 +333,8 @@ const handleSQLDownload = async () => {
 
 	const currentModel = store._currentModel()
 
-	const res = (await api.generateService.generateModelSql({
-		body: currentModel.id
-	})) as any as Blob
-	const file = new File([res], `[${currentModel.name}]-tables.zip`)
-	saveAs(file)
+	const file = await createZip(sqlFiles.value)
+	saveAs(file, `[${currentModel.name}]-tables.zip`)
 
 	loadingStore.sub()
 }
@@ -319,11 +345,11 @@ const handleModelDownload = async () => {
 
 	const currentModel = store._currentModel()
 
-	const res = (await api.generateService.generateModel({
-		body: currentModel.id
-	})) as any as Blob
-	const file = new File([res], `[${currentModel.name}]-model.zip`)
-	saveAs(file)
+	const res = await api.previewService.previewModel({
+		id: currentModel.id
+	})
+	const file = await createZip(res)
+	saveAs(file, `[${currentModel.name}]-model.zip`)
 
 	loadingStore.sub()
 }

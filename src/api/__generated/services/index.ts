@@ -14,8 +14,6 @@ export { EntityService } from './EntityService';
 export type { EntityServiceOptions } from './EntityService';
 export { EnumService } from './EnumService';
 export type { EnumServiceOptions } from './EnumService';
-export { GenerateService } from './GenerateService';
-export type { GenerateServiceOptions } from './GenerateService';
 export { JDBCService } from './JDBCService';
 export type { JDBCServiceOptions } from './JDBCService';
 export { ModelService } from './ModelService';

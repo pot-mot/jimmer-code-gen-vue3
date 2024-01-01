@@ -126,21 +126,17 @@ const handleSubmit = () => {
 
 	const pkColumns = table.value.columns.filter(column => column.partOfPk)
 
-	if (pkColumns.length == 0) {
-		messageList.push('表必须有至少一个主键列')
-	} else {
-		if (pkColumns.length > 1 && checkConfig.value.onlyOnePk) {
-			messageList.push('实体模型主键列要求仅有一个')
+	if (pkColumns.length != 1 && checkConfig.value.onlyOnePk) {
+		messageList.push('实体模型主键列仅可有一个')
+	}
+
+	for (let pkColumn of pkColumns) {
+		if (!pkColumn.typeNotNull) {
+			messageList.push('主键列必须非空')
 		}
 
-		for (let pkColumn of pkColumns) {
-			if (!pkColumn.typeNotNull) {
-				messageList.push('主键列必须非空')
-			}
-
-			if (pkColumn.enum) {
-				messageList.push('主键列不可为枚举类型')
-			}
+		if (pkColumn.enum) {
+			messageList.push('主键列不可为枚举类型')
 		}
 	}
 
