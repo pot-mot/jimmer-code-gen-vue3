@@ -2,7 +2,6 @@
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {AssociationType_CONSTANTS, DissociateAction_CONSTANTS} from "@/api/__generated/model/enums";
 import Comment from "@/components/global/common/Comment.vue";
-import AssociationIcon from "@/components/global/icons/database/AssociationIcon.vue";
 import {RefreshRight} from "@element-plus/icons-vue";
 import {
 	createAssociationNameByInput
@@ -54,10 +53,7 @@ const handleCancel = () => {
 							<Comment :comment="association.sourceTable.comment"></Comment>
 						</el-text>
 					</td>
-					<td>
-						<AssociationIcon :association-type="association.associationType"
-										 :fake="association.fake"></AssociationIcon>
-					</td>
+					<td></td>
 					<td>
 						<el-text style="padding-left: 1em;">
 							{{ association.targetTable.name }}

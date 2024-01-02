@@ -14,7 +14,9 @@ import {
 import AssociationForm from "@/components/business/association/AssociationForm.vue";
 
 interface EdgeItem {
-	edge: Edge
+	edge: Edge,
+	showName: boolean,
+	showConnect: boolean,
 }
 
 const props = defineProps<EdgeItem>()
@@ -73,30 +75,31 @@ const handleEdit = () => {
 		style="
 			display: grid;
 			grid-template-columns: 1fr 1fr;
-			grid-template-areas:
-				'associationName   operation'
-				'associationDefine operation';
 			padding-bottom: 0.3em;
 		">
 
-		<el-text style="grid-area: associationName">
-			<el-button link @click="store.focus(edge)">
-				[ {{ association.name }} ]
-			</el-button>
-		</el-text>
+		<div>
+			<div v-show="showName">
+				<el-button link @click="store.focus(edge)">
+					{{ association.name }}
+				</el-button>
+			</div>
 
-		<el-text style="grid-area: associationDefine">
-			<el-button link @click="store.focus(edge.getSourceCellId())">
-				{{ sourceLabel }}
-			</el-button>
-			<AssociationIcon :association-type="association.associationType"
-							 :fake="association.fake"></AssociationIcon>
-			<el-button link @click="store.focus(edge.getTargetCellId())">
-				{{ targetLabel }}
-			</el-button>
-		</el-text>
+			<div v-show="showConnect">
+				<el-button link @click="store.focus(edge.getSourceCellId())">
+					{{ sourceLabel }}
+				</el-button>
+				<span>
+					<AssociationIcon :association-type="association.associationType"
+									 :fake="association.fake"></AssociationIcon>
+				</span>
+				<el-button link @click="store.focus(edge.getTargetCellId())">
+					{{ targetLabel }}
+				</el-button>
+			</div>
+		</div>
 
-		<span class="hover-show-item" style="grid-area: operation;">
+		<span class="hover-show-item" style="padding-left: 0.5em;">
 			<el-button :icon="EditPen" link title="编辑" type="warning" @click="handleEdit"></el-button>
 			<el-button :icon="Delete" link title="删除" type="danger" @click="handleDelete"></el-button>
 		</span>

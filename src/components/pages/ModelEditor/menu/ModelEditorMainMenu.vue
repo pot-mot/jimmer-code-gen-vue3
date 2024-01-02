@@ -8,6 +8,7 @@ import EnumItem from "@/components/pages/ModelEditor/menu/EnumItem.vue";
 import {ASSOCIATION_EDGE} from "@/components/business/modelGraphEditor/constant.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {createAssociationNameByInput} from "@/components/business/modelGraphEditor/associationEdge/associationName.ts";
+import {ref} from 'vue'
 
 const store = useModelEditorStore()
 
@@ -29,6 +30,17 @@ const handleRenameAllAssociation = () => {
 
 	graph.stopBatch('rename association edge name')
 }
+
+const EdgeShow_CONSTANTS = ["connect", "name"] as const
+
+type EdgeShow = typeof EdgeShow_CONSTANTS[number]
+
+const edgeShow = ref<EdgeShow>(EdgeShow_CONSTANTS[0])
+
+const toggleEdgeShow = () => {
+	const currentIndex = EdgeShow_CONSTANTS.indexOf(edgeShow.value)
+	edgeShow.value = EdgeShow_CONSTANTS[currentIndex + 1 < EdgeShow_CONSTANTS.length ? currentIndex + 1 : 0]
+}
 </script>
 
 <template>
@@ -48,6 +60,7 @@ const handleRenameAllAssociation = () => {
 
 			<div style="padding-bottom: 1em;">
 				<NodeItem v-for="node in store.nodes"
+						  :key="node.id"
 						  :node="node"></NodeItem>
 			</div>
 		</Details>
@@ -56,13 +69,16 @@ const handleRenameAllAssociation = () => {
 			<template #title>
 				<div style="height: 2em; line-height: 2em;">
 					<el-text>Edges</el-text>
-					<el-button style="margin-left: 0.5em;" @click="handleRenameAllAssociation">重命名所有关联名称
-					</el-button>
+					<el-button style="margin-left: 0.5em;" @click="toggleEdgeShow">{{ edgeShow }}</el-button>
+					<el-button style="margin-left: 0.5em;" @click="handleRenameAllAssociation">重命名所有</el-button>
 				</div>
 			</template>
 
 			<div style="padding-bottom: 1em;">
 				<EdgeItem v-for="edge in store.edges"
+						  :key="edge.id"
+						  :show-connect="edgeShow == 'connect'"
+						  :show-name="edgeShow == 'name'"
 						  :edge="edge"></EdgeItem>
 			</div>
 		</Details>
@@ -78,6 +94,7 @@ const handleRenameAllAssociation = () => {
 
 			<div style="padding-bottom: 1em;" v-if="store.isModelLoaded">
 				<EnumItem v-for="genEnum in store._currentModel().enums"
+						  :key="genEnum.name + genEnum.comment"
 						  :gen-enum="genEnum"></EnumItem>
 			</div>
 		</Details>
