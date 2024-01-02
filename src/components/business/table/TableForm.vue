@@ -6,7 +6,6 @@ import {
 	GenTableModelInput_TargetOf_columns,
 	GenTableModelInput_TargetOf_indexes, GenTableModelInput_TargetOf_indexes_TargetOf_columns_2
 } from "@/api/__generated/model/static/GenTableModelInput.ts";
-import {useLoading} from "@/hooks/useLoading.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {useModelEditorStore} from "../../pages/ModelEditor/store/ModelEditorStore.ts";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
@@ -21,8 +20,6 @@ import {tableIndexColumns} from "@/components/business/table/tableIndexColumns.t
 import Details from "@/components/global/common/Details.vue";
 
 const store = useModelEditorStore()
-
-const columnTypeMapLoading = useLoading()
 
 const jdbcTypeStore = useJDBCTypeStore()
 
@@ -229,7 +226,7 @@ const handleCancel = () => {
 </script>
 
 <template>
-	<el-form v-if="!columnTypeMapLoading.isLoading()" style="width: 98%;">
+	<el-form style="width: 98%;">
 		<el-row :gutter="12" style="line-height: 2em; padding-left: 1em;">
 			<el-col :span="6">
 				<el-input v-model="table.name" placeholder="name"></el-input>
@@ -351,7 +348,6 @@ const handleCancel = () => {
 			<el-button type="warning" @click="handleSubmit">提交</el-button>
 		</div>
 	</el-form>
-	<el-empty v-else style="height: 55vh;"></el-empty>
 </template>
 
 <style scoped>

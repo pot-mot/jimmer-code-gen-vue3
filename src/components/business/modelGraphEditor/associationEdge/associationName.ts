@@ -33,6 +33,29 @@ export const createAssociationName = (
     sourceColumnNames: string[],
     targetTableName: string,
     targetColumnNames: string[],
+    fake: boolean | undefined,
 ): string => {
-    return `fk_${sourceTableName}_${sourceColumnNames.join("_")}_${targetTableName}_${targetColumnNames.join("_")}`
+    let sourceColumnNameStr = sourceColumnNames.join("_")
+    if (sourceColumnNameStr) {
+        sourceColumnNameStr = '_' + sourceColumnNameStr
+    }
+
+    let targetColumnNameStr = targetColumnNames.join("_")
+    if (targetColumnNameStr) {
+        targetColumnNameStr = '_' + targetColumnNameStr
+    }
+
+    return `${fake ? '[logical]' : 'fk'}_${sourceTableName}${sourceColumnNameStr}_${targetTableName}${targetColumnNameStr}`
+}
+
+export const createAssociationNameByInput = (
+    association: GenAssociationModelInput
+): string => {
+    return createAssociationName(
+        association.sourceTable.name,
+        association.columnReferences.map(it => it.sourceColumn.name),
+        association.targetTable.name,
+        association.columnReferences.map(it => it.targetColumn.name),
+        association.fake,
+    )
 }

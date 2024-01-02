@@ -5,8 +5,30 @@ import NodeItem from "./NodeItem.vue";
 import EdgeItem from "./EdgeItem.vue";
 import Details from "@/components/global/common/Details.vue";
 import EnumItem from "@/components/pages/ModelEditor/menu/EnumItem.vue";
+import {ASSOCIATION_EDGE} from "@/components/business/modelGraphEditor/constant.ts";
+import {GenAssociationModelInput} from "@/api/__generated/model/static";
+import {createAssociationNameByInput} from "@/components/business/modelGraphEditor/associationEdge/associationName.ts";
 
 const store = useModelEditorStore()
+
+const handleRenameAllAssociation = () => {
+	const graph = store._graph()
+
+	graph.startBatch('rename association edge name')
+
+	store.edges
+		.filter(it => it.shape == ASSOCIATION_EDGE)
+		.forEach(edge => {
+			const association = edge.getData()?.association as GenAssociationModelInput | undefined
+			if (association) {
+				const newName = createAssociationNameByInput(association)
+				if (newName != association.name)
+					edge.setData({association: {name: newName}}, {deep: true})
+			}
+		})
+
+	graph.stopBatch('rename association edge name')
+}
 </script>
 
 <template>
@@ -19,7 +41,8 @@ const store = useModelEditorStore()
 			<template #title>
 				<div style="height: 2em; line-height: 2em;">
 					<el-text>Nodes</el-text>
-					<el-button style="margin-left: 0.5em;" @click="ModelEditorEventBus.emit('createTable')">创建表</el-button>
+					<el-button style="margin-left: 0.5em;" @click="ModelEditorEventBus.emit('createTable')">创建表
+					</el-button>
 				</div>
 			</template>
 
@@ -33,6 +56,8 @@ const store = useModelEditorStore()
 			<template #title>
 				<div style="height: 2em; line-height: 2em;">
 					<el-text>Edges</el-text>
+					<el-button style="margin-left: 0.5em;" @click="handleRenameAllAssociation">重命名所有关联名称
+					</el-button>
 				</div>
 			</template>
 
@@ -46,7 +71,8 @@ const store = useModelEditorStore()
 			<template #title>
 				<div style="height: 2em; line-height: 2em;">
 					<el-text>Enums</el-text>
-					<el-button style="margin-left: 0.5em;" @click="ModelEditorEventBus.emit('createEnum')">创建枚举</el-button>
+					<el-button style="margin-left: 0.5em;" @click="ModelEditorEventBus.emit('createEnum')">创建枚举
+					</el-button>
 				</div>
 			</template>
 

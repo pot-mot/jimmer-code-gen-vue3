@@ -53,7 +53,8 @@ export const connectDataToAssociationInput = (
             sourceTable.name,
             [sourceColumn ? sourceColumn.name : ''],
             targetTable.name,
-            [targetColumn ? targetColumn.name : '']
+            [targetColumn ? targetColumn.name : ''],
+            fake
         ),
         sourceTable: {
             name: sourceTable.name,
