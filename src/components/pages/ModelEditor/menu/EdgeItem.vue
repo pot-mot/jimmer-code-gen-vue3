@@ -69,35 +69,30 @@ const handleEdit = () => {
 </script>
 
 <template>
-	<div
-		v-if="association && sourceLabel && targetLabel"
-		class="hover-show"
-		style="
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-			padding-bottom: 0.3em;
-		">
+	<div v-if="association && sourceLabel && targetLabel"
+		 class="hover-show">
 
-		<div>
-			<div v-show="showName">
+		<span>
+			<el-text v-if="showName">
 				<el-button link @click="store.focus(edge)">
 					{{ association.name }}
 				</el-button>
-			</div>
+			</el-text>
 
-			<div v-show="showConnect">
+			<el-text v-if="showConnect">
 				<el-button link @click="store.focus(edge.getSourceCellId())">
 					{{ sourceLabel }}
 				</el-button>
 				<span>
 					<AssociationIcon :association-type="association.associationType"
-									 :fake="association.fake"></AssociationIcon>
+									 :fake="association.fake"
+									 style="transform: translateY(0.3em)"></AssociationIcon>
 				</span>
 				<el-button link @click="store.focus(edge.getTargetCellId())">
 					{{ targetLabel }}
 				</el-button>
-			</div>
-		</div>
+			</el-text>
+		</span>
 
 		<span class="hover-show-item" style="padding-left: 0.5em;">
 			<el-button :icon="EditPen" link title="编辑" type="warning" @click="handleEdit"></el-button>

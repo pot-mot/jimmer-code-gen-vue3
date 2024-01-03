@@ -11,7 +11,7 @@ defineProps<AssociationIconProps>()
 </script>
 
 <template>
-	<el-icon size="1.3em" style="transform: translateY(0.1em)">
+	<el-icon size="1em">
 		<svg fill="none" :stroke="fake ? '#999' : '#666'" stroke-linecap="round"
 			 stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 

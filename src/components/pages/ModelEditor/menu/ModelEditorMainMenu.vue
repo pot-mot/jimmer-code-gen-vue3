@@ -8,7 +8,7 @@ import EnumItem from "@/components/pages/ModelEditor/menu/EnumItem.vue";
 import {ASSOCIATION_EDGE} from "@/components/business/modelGraphEditor/constant.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {createAssociationNameByInput} from "@/components/business/modelGraphEditor/associationEdge/associationName.ts";
-import {ref} from 'vue'
+import {computed, ref} from 'vue'
 
 const store = useModelEditorStore()
 
@@ -35,12 +35,21 @@ const EdgeShow_CONSTANTS = ["connect", "name"] as const
 
 type EdgeShow = typeof EdgeShow_CONSTANTS[number]
 
-const edgeShow = ref<EdgeShow>(EdgeShow_CONSTANTS[0])
+const edgeShowType = ref<EdgeShow>(EdgeShow_CONSTANTS[0])
 
 const toggleEdgeShow = () => {
-	const currentIndex = EdgeShow_CONSTANTS.indexOf(edgeShow.value)
-	edgeShow.value = EdgeShow_CONSTANTS[currentIndex + 1 < EdgeShow_CONSTANTS.length ? currentIndex + 1 : 0]
+	const currentIndex = EdgeShow_CONSTANTS.indexOf(edgeShowType.value)
+	edgeShowType.value = EdgeShow_CONSTANTS[currentIndex + 1 < EdgeShow_CONSTANTS.length ? currentIndex + 1 : 0]
 }
+
+const formattedEdgeShowType = computed(() => {
+	switch (edgeShowType.value) {
+		case "connect":
+			return "显示：连接"
+		case "name":
+			return "显示：名称"
+	}
+})
 </script>
 
 <template>
@@ -69,16 +78,16 @@ const toggleEdgeShow = () => {
 			<template #title>
 				<div style="height: 2em; line-height: 2em;">
 					<el-text>Edges</el-text>
-					<el-button style="margin-left: 0.5em;" @click="toggleEdgeShow">{{ edgeShow }}</el-button>
 					<el-button style="margin-left: 0.5em;" @click="handleRenameAllAssociation">重命名所有</el-button>
+					<el-button style="margin-left: 0.5em;" @click="toggleEdgeShow">{{ formattedEdgeShowType }}</el-button>
 				</div>
 			</template>
 
 			<div style="padding-bottom: 1em;">
 				<EdgeItem v-for="edge in store.edges"
 						  :key="edge.id"
-						  :show-connect="edgeShow == 'connect'"
-						  :show-name="edgeShow == 'name'"
+						  :show-connect="edgeShowType == 'connect'"
+						  :show-name="edgeShowType == 'name'"
 						  :edge="edge"></EdgeItem>
 			</div>
 		</Details>
