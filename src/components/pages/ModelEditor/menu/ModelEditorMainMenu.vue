@@ -31,11 +31,11 @@ const handleRenameAllAssociation = () => {
 	graph.stopBatch('rename association edge name')
 }
 
-const EdgeShow_CONSTANTS = ["connect", "name"] as const
+const EdgeShow_CONSTANTS = ["name", "table", "column"] as const
 
 type EdgeShow = typeof EdgeShow_CONSTANTS[number]
 
-const edgeShowType = ref<EdgeShow>(EdgeShow_CONSTANTS[0])
+const edgeShowType = ref<EdgeShow>('name')
 
 const toggleEdgeShow = () => {
 	const currentIndex = EdgeShow_CONSTANTS.indexOf(edgeShowType.value)
@@ -44,10 +44,12 @@ const toggleEdgeShow = () => {
 
 const formattedEdgeShowType = computed(() => {
 	switch (edgeShowType.value) {
-		case "connect":
-			return "显示：连接"
 		case "name":
 			return "显示：名称"
+		case "table":
+			return "显示：连接表"
+		case "column":
+			return "显示：连接列"
 	}
 })
 </script>
@@ -86,8 +88,9 @@ const formattedEdgeShowType = computed(() => {
 			<div style="padding-bottom: 1em;">
 				<EdgeItem v-for="edge in store.edges"
 						  :key="edge.id"
-						  :show-connect="edgeShowType == 'connect'"
 						  :show-name="edgeShowType == 'name'"
+						  :show-table="edgeShowType == 'table'"
+						  :show-column="edgeShowType == 'column'"
 						  :edge="edge"></EdgeItem>
 			</div>
 		</Details>

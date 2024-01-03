@@ -16,7 +16,8 @@ import AssociationForm from "@/components/business/association/AssociationForm.v
 interface EdgeItem {
 	edge: Edge,
 	showName: boolean,
-	showConnect: boolean,
+	showTable: boolean,
+	showColumn: boolean,
 }
 
 const props = defineProps<EdgeItem>()
@@ -79,9 +80,9 @@ const handleEdit = () => {
 				</el-button>
 			</el-text>
 
-			<el-text v-if="showConnect">
+			<el-text v-if="showColumn || showTable">
 				<el-button link @click="store.focus(edge.getSourceCellId())">
-					{{ sourceLabel }}
+					{{ showColumn ? sourceLabel : association.sourceTable.name }}
 				</el-button>
 				<span>
 					<AssociationIcon :association-type="association.associationType"
@@ -89,7 +90,7 @@ const handleEdit = () => {
 									 style="transform: translateY(0.3em)"></AssociationIcon>
 				</span>
 				<el-button link @click="store.focus(edge.getTargetCellId())">
-					{{ targetLabel }}
+					{{ showColumn ? targetLabel : association.targetTable.name}}
 				</el-button>
 			</el-text>
 		</span>

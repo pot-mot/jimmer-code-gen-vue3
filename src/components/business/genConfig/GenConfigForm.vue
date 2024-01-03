@@ -61,6 +61,11 @@ const handleCancel = () => {
 						</el-select>
 					</el-form-item>
 				</el-col>
+				<el-col :span="8">
+					<el-form-item label="作者">
+						<el-input v-model="config.author"></el-input>
+					</el-form-item>
+				</el-col>
 			</el-row>
 
 			<Details open style="padding-bottom: 0.5em">
@@ -81,18 +86,10 @@ const handleCancel = () => {
 
 			<Details open style="padding-bottom: 0.5em">
 				<template #title>
-					<el-text style="line-height: 2.5em;" size="default">业务代码</el-text>
+					<el-text style="line-height: 2.5em;" size="default">实体类配置</el-text>
 				</template>
 
 				<div style="width: calc(100% - 3px - 1em);">
-					<el-row :gutter="24">
-						<el-col :span="8">
-							<el-form-item label="作者">
-								<el-input v-model="config.author"></el-input>
-							</el-form-item>
-						</el-col>
-					</el-row>
-
 					<el-row :gutter="24">
 						<el-col :span="12">
 							<el-form-item label="默认包路径">
@@ -103,6 +100,14 @@ const handleCancel = () => {
 						<el-col :span="12">
 							<el-form-item label="逻辑删除注释">
 								<el-input v-model="config.logicalDeletedAnnotation"></el-input>
+							</el-form-item>
+						</el-col>
+					</el-row>
+
+					<el-row :gutter="24">
+						<el-col :span="8">
+							<el-form-item label="启用小写映射">
+								<el-switch v-model="config.lowerCaseName"></el-switch>
 							</el-form-item>
 						</el-col>
 					</el-row>
@@ -135,7 +140,7 @@ const handleCancel = () => {
 						</el-col>
 
 						<el-col :span="8">
-							<el-form-item label="生成 IdView 属性">
+							<el-form-item label="生成 IdView">
 								<el-switch v-model="config.idViewProperty"></el-switch>
 							</el-form-item>
 						</el-col>
