@@ -1,12 +1,8 @@
-import type { TimeRangeQueryParam } from './';
+import type {TimeRangeQueryParam} from './';
 
 export interface EnumQuery {
-    
-    createdTime?: TimeRangeQueryParam;
-    
-    ids?: Array<number>;
-    
-    modifiedTime?: TimeRangeQueryParam;
-    
-    names?: Array<string>;
+    ids?: Array<number> | undefined;
+    createdTime?: TimeRangeQueryParam | undefined;
+    modifiedTime?: TimeRangeQueryParam | undefined;
+    names?: Array<string> | undefined;
 }

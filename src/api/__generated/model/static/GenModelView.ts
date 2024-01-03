@@ -1,58 +1,49 @@
-import type { DataSourceType, EnumType, GenLanguage } from '../enums';
+import type {DataSourceType, GenLanguage} from '../enums/';
+import type {GenModelView_TargetOf_enums} from './';
 
 export interface GenModelView {
-    
-    createdTime: string;
-    
-    dataSourceType: DataSourceType;
-    
-    enums: Array<GenModelView_TargetOf_enums>;
-    
-    graphData: string;
-    
+    /**
+     * ID
+     */
     id: number;
-    
-    language: GenLanguage;
-    
+    /**
+     * 创建事件
+     */
+    createdTime: string;
+    /**
+     * 修改时间
+     */
     modifiedTime: string;
-    
-    name: string;
-    
-    packagePath: string;
-    
+    /**
+     * 备注
+     */
     remark: string;
-    
+    /**
+     * 名称
+     */
+    name: string;
+    /**
+     * Graph 数据
+     */
+    graphData: string;
+    /**
+     * 语言
+     */
+    language: GenLanguage;
+    /**
+     * 数据源类型
+     */
+    dataSourceType: DataSourceType;
+    /**
+     * 包路径
+     */
+    packagePath: string;
+    /**
+     * 同步转换实体
+     */
     syncConvertEntity: boolean;
-}
-
-export interface GenModelView_TargetOf_enums {
-    
-    comment: string;
-    
-    enumType?: EnumType;
-    
-    items: Array<GenModelView_TargetOf_enums_TargetOf_items_2>;
-    
-    modelId?: number;
-    
-    name: string;
-    
-    orderKey: number;
-    
-    packagePath: string;
-    
-    remark: string;
-}
-
-export interface GenModelView_TargetOf_enums_TargetOf_items_2 {
-    
-    comment: string;
-    
-    mappedValue: string;
-    
-    name: string;
-    
-    orderKey: number;
-    
-    remark: string;
+    /**
+     * 实体
+     */
+    enums: Array<GenModelView_TargetOf_enums>;
 }

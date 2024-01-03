@@ -1,14 +1,9 @@
-import type { TimeRangeQueryParam } from './';
+import type {TimeRangeQueryParam} from './';
 
 export interface EntityQuery {
-    
-    createdTime?: TimeRangeQueryParam;
-    
-    ids?: Array<number>;
-    
-    keywords?: Array<string>;
-    
-    modifiedTime?: TimeRangeQueryParam;
-    
-    names?: Array<string>;
+    ids?: Array<number> | undefined;
+    createdTime?: TimeRangeQueryParam | undefined;
+    modifiedTime?: TimeRangeQueryParam | undefined;
+    keywords?: Array<string> | undefined;
+    names?: Array<string> | undefined;
 }

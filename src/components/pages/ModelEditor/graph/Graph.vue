@@ -179,6 +179,7 @@ import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEdi
 import {handleHistoryKeyEvent} from "@/components/business/graphEditor/history/useHistory.ts";
 import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";
 import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
+import {jsonFormat, jsonStrFormat} from "@/utils/json.ts";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -310,7 +311,7 @@ const createZip = async (files: Array<Pair<string, string>>): Promise<Blob> => {
 		}
 	})
 
-	return await zip.generateAsync({type:"blob"})
+	return await zip.generateAsync({type: "blob"})
 }
 
 const handleEntityDownload = async () => {
@@ -345,10 +346,27 @@ const handleModelDownload = async () => {
 
 	const currentModel = store._currentModel()
 
-	const res = await api.previewService.previewModel({
+	let entityCodes = await api.previewService.previewModelEntity({
+		id: currentModel.id,
+		withPath: true
+	})
+	entityCodes = entityCodes.map(({first, second}) => {
+		return {first: `${currentModel.language.toLowerCase()}/${first}`, second}
+	})
+
+	let sqlFiles = await api.previewService.previewModelSql({
 		id: currentModel.id
 	})
-	const file = await createZip(res)
+	sqlFiles = sqlFiles.map(({first, second}) => {
+		return {first: `${currentModel.dataSourceType.toLowerCase()}/${first}`, second}
+	})
+
+	const modelFiles = [
+		{first: "model/model.json", second: jsonFormat(currentModel)},
+		{first: "model/graphData.json", second: jsonStrFormat(store.toDataJSONStr())}
+	]
+
+	const file = await createZip([...modelFiles, ...entityCodes, ...sqlFiles])
 	saveAs(file, `[${currentModel.name}]-model.zip`)
 
 	loadingStore.sub()

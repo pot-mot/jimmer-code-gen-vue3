@@ -1,109 +1,53 @@
-import type { DataSourceType, TableType } from '../enums';
+import type {TableType} from '../enums/';
+import type {GenTableColumnsView_TargetOf_columns, GenTableColumnsView_TargetOf_indexes, GenTableColumnsView_TargetOf_schema} from './';
 
 export interface GenTableColumnsView {
-    
-    columns: Array<GenTableColumnsView_TargetOf_columns>;
-    
-    comment: string;
-    
-    createdTime: string;
-    
-    entityId?: number;
-    
+    /**
+     * ID
+     */
     id: number;
-    
-    indexes: Array<GenTableColumnsView_TargetOf_indexes>;
-    
+    /**
+     * 创建事件
+     */
+    createdTime: string;
+    /**
+     * 修改时间
+     */
     modifiedTime: string;
-    
-    name: string;
-    
-    orderKey: number;
-    
+    /**
+     * 备注
+     */
     remark: string;
-    
-    schema?: GenTableColumnsView_TargetOf_schema;
-    
+    /**
+     * 表名称
+     */
+    name: string;
+    /**
+     * 表注释
+     */
+    comment: string;
+    /**
+     * 表种类
+     */
     type: TableType;
-}
-
-export interface GenTableColumnsView_TargetOf_columns {
-    
-    autoIncrement: boolean;
-    
-    businessKey: boolean;
-    
-    comment: string;
-    
-    createdTime: string;
-    
-    defaultValue?: string;
-    
-    displaySize: number;
-    
-    enum?: GenTableColumnsView_TargetOf_columns_TargetOf_enum_2;
-    
-    id: number;
-    
-    logicalDelete: boolean;
-    
-    modifiedTime: string;
-    
-    name: string;
-    
-    numericPrecision: number;
-    
+    /**
+     * 自定排序
+     */
     orderKey: number;
-    
-    overwriteByType: boolean;
-    
-    partOfPk: boolean;
-    
-    remark: string;
-    
-    tableId: number;
-    
-    type: string;
-    
-    typeCode: number;
-    
-    typeNotNull: boolean;
-}
-
-export interface GenTableColumnsView_TargetOf_columns_TargetOf_enum_2 {
-    
-    id: number;
-    
-    name: string;
-}
-
-export interface GenTableColumnsView_TargetOf_indexes {
-    
-    columnIds: Array<number>;
-    
-    id: number;
-    
-    name: string;
-    
-    tableId: number;
-    
-    uniqueIndex: boolean;
-}
-
-export interface GenTableColumnsView_TargetOf_schema {
-    
-    dataSource: GenTableColumnsView_TargetOf_schema_TargetOf_dataSource_2;
-    
-    id: number;
-    
-    name: string;
-}
-
-export interface GenTableColumnsView_TargetOf_schema_TargetOf_dataSource_2 {
-    
-    id: number;
-    
-    name: string;
-    
-    type: DataSourceType;
+    /**
+     * 对应实体
+     */
+    entityId?: number | undefined;
+    /**
+     * 数据架构
+     */
+    schema?: GenTableColumnsView_TargetOf_schema | undefined;
+    /**
+     * 列
+     */
+    columns: Array<GenTableColumnsView_TargetOf_columns>;
+    /**
+     * 唯一索引
+     */
+    indexes: Array<GenTableColumnsView_TargetOf_indexes>;
 }

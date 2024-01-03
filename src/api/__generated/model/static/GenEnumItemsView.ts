@@ -1,45 +1,49 @@
-import type { EnumType } from '../enums';
+import type {EnumType} from '../enums/';
+import type {GenEnumItemsView_TargetOf_items} from './';
 
 export interface GenEnumItemsView {
-    
-    comment: string;
-    
-    createdTime: string;
-    
-    enumType?: EnumType;
-    
+    /**
+     * ID
+     */
     id: number;
-    
-    items: Array<GenEnumItemsView_TargetOf_items>;
-    
-    modelId?: number;
-    
+    /**
+     * 创建事件
+     */
+    createdTime: string;
+    /**
+     * 修改时间
+     */
     modifiedTime: string;
-    
-    name: string;
-    
-    orderKey: number;
-    
+    /**
+     * 备注
+     */
+    remark: string;
+    /**
+     * 包路径
+     */
     packagePath: string;
-    
-    remark: string;
-}
-
-export interface GenEnumItemsView_TargetOf_items {
-    
-    comment: string;
-    
-    createdTime: string;
-    
-    id: number;
-    
-    mappedValue: string;
-    
-    modifiedTime: string;
-    
+    /**
+     * 枚举名
+     */
     name: string;
-    
+    /**
+     * 枚举注释
+     */
+    comment: string;
+    /**
+     * 枚举类型
+     */
+    enumType?: EnumType | undefined;
+    /**
+     * 自定排序
+     */
     orderKey: number;
-    
-    remark: string;
+    /**
+     * 模型
+     */
+    modelId?: number | undefined;
+    /**
+     * 生成枚举元素
+     */
+    items: Array<GenEnumItemsView_TargetOf_items>;
 }

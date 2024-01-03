@@ -1,23 +1,14 @@
-import type { AssociationType } from '../enums';
-import type { TimeRangeQueryParam } from './';
+import type {AssociationType} from '../enums/';
+import type {TimeRangeQueryParam} from './';
 
 export interface AssociationQuery {
-    
-    associationType?: AssociationType;
-    
-    createdTime?: TimeRangeQueryParam;
-    
-    ids?: Array<number>;
-    
-    keywords?: Array<string>;
-    
-    modifiedTime?: TimeRangeQueryParam;
-    
-    sourceColumnId?: number;
-    
-    sourceTableId?: number;
-    
-    targetColumnId?: number;
-    
-    targetTableId?: number;
+    ids?: Array<number> | undefined;
+    associationType?: AssociationType | undefined;
+    createdTime?: TimeRangeQueryParam | undefined;
+    modifiedTime?: TimeRangeQueryParam | undefined;
+    keywords?: Array<string> | undefined;
+    sourceTableId?: number | undefined;
+    targetTableId?: number | undefined;
+    sourceColumnId?: number | undefined;
+    targetColumnId?: number | undefined;
 }

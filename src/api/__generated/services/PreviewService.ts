@@ -1,6 +1,6 @@
-import type { Executor } from '../';
-import type { DataSourceType, GenLanguage } from '../model/enums';
-import type { Pair } from '../model/static';
+import type {Executor} from '../';
+import type {DataSourceType, GenLanguage} from '../model/enums/';
+import type {Pair} from '../model/static/';
 
 export class PreviewService {
     
@@ -33,7 +33,7 @@ export class PreviewService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as Array<Pair<string, string>>
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<Pair<string, string>>>;
     }
     
     async previewEntityByTable(options: PreviewServiceOptions['previewEntityByTable']): Promise<
@@ -84,7 +84,7 @@ export class PreviewService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as Array<Pair<string, string>>
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<Pair<string, string>>>;
     }
     
     async previewEnums(options: PreviewServiceOptions['previewEnums']): Promise<
@@ -114,23 +114,7 @@ export class PreviewService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as Array<Pair<string, string>>
-    }
-    
-    async previewModel(options: PreviewServiceOptions['previewModel']): Promise<
-        Array<Pair<string, string>>
-    > {
-        let _uri = '/preview/model';
-        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
-        let _value: any = undefined;
-        _value = options.id;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'id='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        return (await this.executor({uri: _uri, method: 'GET'})) as Array<Pair<string, string>>
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<Pair<string, string>>>;
     }
     
     async previewModelEntity(options: PreviewServiceOptions['previewModelEntity']): Promise<
@@ -153,7 +137,7 @@ export class PreviewService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as Array<Pair<string, string>>
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<Pair<string, string>>>;
     }
     
     async previewModelSql(options: PreviewServiceOptions['previewModelSql']): Promise<
@@ -169,30 +153,33 @@ export class PreviewService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'POST'})) as Array<Pair<string, string>>
+        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<Pair<string, string>>>;
     }
 }
-
 export type PreviewServiceOptions = {
     'previewEntity': {
         entityIds: Array<number>, 
-        language?: GenLanguage, 
-        withPath?: boolean
-    },
-    'previewEntityByTable': {
-        tableIds: Array<number>, 
-        modelId?: number, 
-        dataSourceType?: DataSourceType, 
-        language?: GenLanguage, 
-        packagePath?: string, 
-        withPath?: boolean
-    },
+        language?: GenLanguage | undefined, 
+        withPath?: boolean | undefined
+    }, 
     'previewEnums': {
         enumIds: Array<number>, 
-        language?: GenLanguage, 
-        withPath?: boolean
-    },
-    'previewModel': {id: number},
-    'previewModelEntity': {id: number, withPath?: boolean},
-    'previewModelSql': {id: number}
+        language?: GenLanguage | undefined, 
+        withPath?: boolean | undefined
+    }, 
+    'previewEntityByTable': {
+        tableIds: Array<number>, 
+        modelId?: number | undefined, 
+        dataSourceType?: DataSourceType | undefined, 
+        language?: GenLanguage | undefined, 
+        packagePath?: string | undefined, 
+        withPath?: boolean | undefined
+    }, 
+    'previewModelSql': {
+        id: number
+    }, 
+    'previewModelEntity': {
+        id: number, 
+        withPath?: boolean | undefined
+    }
 }

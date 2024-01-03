@@ -1,15 +1,23 @@
-import type { Executor } from '../';
-import type { DataSourceType } from '../model/enums';
-import type { GenTableAssociationsView, GenTableColumnsView, GenTableCommonView, GenTableIdView, TableQuery } from '../model/static';
+import type {Executor} from '../';
+import type {DataSourceType} from '../model/enums/';
+import type {
+    GenTableAssociationsView, 
+    GenTableColumnsView, 
+    GenTableCommonView, 
+    GenTableIdView, 
+    TableQuery
+} from '../model/static/';
 
 export class TableService {
     
     constructor(private executor: Executor) {}
     
-    async delete(options: TableServiceOptions['delete']): Promise<number> {
+    async delete(options: TableServiceOptions['delete']): Promise<
+        number
+    > {
         let _uri = '/table/';
         _uri += encodeURIComponent(options.ids.join(','));
-        return (await this.executor({uri: _uri, method: 'DELETE'})) as number
+        return (await this.executor({uri: _uri, method: 'DELETE'})) as Promise<number>;
     }
     
     async getTableDefine(options: TableServiceOptions['getTableDefine']): Promise<
@@ -26,7 +34,7 @@ export class TableService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as {[key:string]: string}
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<{[key:string]: string}>;
     }
     
     async queryAssociationsView(options: TableServiceOptions['queryAssociationsView']): Promise<
@@ -49,6 +57,20 @@ export class TableService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
+        _value = options.query.schemaIds?.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'schemaIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.nonSchema;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'nonSchema='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         _value = options.query.modelIds?.join(',');
         if (_value !== undefined && _value !== null) {
             _uri += _separator
@@ -63,21 +85,7 @@ export class TableService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        _value = options.query.nonSchema;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'nonSchema='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.query.schemaIds?.join(',');
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'schemaIds='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenTableAssociationsView>
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenTableAssociationsView>>;
     }
     
     async queryColumnsView(options: TableServiceOptions['queryColumnsView']): Promise<
@@ -100,6 +108,20 @@ export class TableService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
+        _value = options.query.schemaIds?.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'schemaIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.nonSchema;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'nonSchema='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         _value = options.query.modelIds?.join(',');
         if (_value !== undefined && _value !== null) {
             _uri += _separator
@@ -114,21 +136,7 @@ export class TableService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        _value = options.query.nonSchema;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'nonSchema='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.query.schemaIds?.join(',');
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'schemaIds='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenTableColumnsView>
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenTableColumnsView>>;
     }
     
     async queryCommonView(options: TableServiceOptions['queryCommonView']): Promise<
@@ -151,6 +159,20 @@ export class TableService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
+        _value = options.query.schemaIds?.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'schemaIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.nonSchema;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'nonSchema='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         _value = options.query.modelIds?.join(',');
         if (_value !== undefined && _value !== null) {
             _uri += _separator
@@ -165,21 +187,7 @@ export class TableService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        _value = options.query.nonSchema;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'nonSchema='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.query.schemaIds?.join(',');
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'schemaIds='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenTableCommonView>
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenTableCommonView>>;
     }
     
     async queryIdView(options: TableServiceOptions['queryIdView']): Promise<
@@ -202,6 +210,20 @@ export class TableService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
+        _value = options.query.schemaIds?.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'schemaIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.query.nonSchema;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'nonSchema='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         _value = options.query.modelIds?.join(',');
         if (_value !== undefined && _value !== null) {
             _uri += _separator
@@ -216,29 +238,27 @@ export class TableService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        _value = options.query.nonSchema;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'nonSchema='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.query.schemaIds?.join(',');
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'schemaIds='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenTableIdView>
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenTableIdView>>;
     }
 }
-
 export type TableServiceOptions = {
-    'delete': {ids: Array<number>},
-    'getTableDefine': {id: number, type?: DataSourceType},
-    'queryAssociationsView': {query: TableQuery},
-    'queryColumnsView': {query: TableQuery},
-    'queryCommonView': {query: TableQuery},
-    'queryIdView': {query: TableQuery}
+    'queryIdView': {
+        query: TableQuery
+    }, 
+    'queryCommonView': {
+        query: TableQuery
+    }, 
+    'queryColumnsView': {
+        query: TableQuery
+    }, 
+    'queryAssociationsView': {
+        query: TableQuery
+    }, 
+    'getTableDefine': {
+        id: number, 
+        type?: DataSourceType | undefined
+    }, 
+    'delete': {
+        ids: Array<number>
+    }
 }

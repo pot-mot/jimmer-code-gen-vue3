@@ -1,5 +1,5 @@
-import type { Executor } from '../';
-import type { ColumnQuery, GenColumnCommonView } from '../model/static';
+import type {Executor} from '../';
+import type {ColumnQuery, GenColumnCommonView} from '../model/static/';
 
 export class ColumnService {
     
@@ -25,13 +25,6 @@ export class ColumnService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        _value = options.query.partOfPk;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'partOfPk='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
         _value = options.query.tableIds?.join(',');
         if (_value !== undefined && _value !== null) {
             _uri += _separator
@@ -53,10 +46,18 @@ export class ColumnService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenColumnCommonView>
+        _value = options.query.partOfPk;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'partOfPk='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenColumnCommonView>>;
     }
 }
-
 export type ColumnServiceOptions = {
-    'query': {query: ColumnQuery}
+    'query': {
+        query: ColumnQuery
+    }
 }

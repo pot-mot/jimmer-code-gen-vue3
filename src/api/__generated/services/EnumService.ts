@@ -1,5 +1,10 @@
-import type { Executor } from '../';
-import type { EnumQuery, GenEnumItemsInput, GenEnumItemsView, GenEnumView } from '../model/static';
+import type {Executor} from '../';
+import type {
+    EnumQuery, 
+    GenEnumItemsInput, 
+    GenEnumItemsView, 
+    GenEnumView
+} from '../model/static/';
 
 export class EnumService {
     
@@ -10,7 +15,7 @@ export class EnumService {
     > {
         let _uri = '/enum/';
         _uri += encodeURIComponent(options.id);
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenEnumItemsView | undefined
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<GenEnumItemsView | undefined>;
     }
     
     async query(options: EnumServiceOptions['query']): Promise<
@@ -33,17 +38,24 @@ export class EnumService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenEnumView>
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenEnumView>>;
     }
     
-    async save(options: EnumServiceOptions['save']): Promise<number> {
+    async save(options: EnumServiceOptions['save']): Promise<
+        number
+    > {
         let _uri = '/enum/';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as number
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<number>;
     }
 }
-
 export type EnumServiceOptions = {
-    'get': {id: number},
-    'query': {query: EnumQuery},
-    'save': {body: GenEnumItemsInput}
+    'save': {
+        body: GenEnumItemsInput
+    }, 
+    'get': {
+        id: number
+    }, 
+    'query': {
+        query: EnumQuery
+    }
 }

@@ -5,7 +5,7 @@ import {GenModelInput} from "@/api/__generated/model/static";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated/model/enums";
 import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
-import {jsonFormatter, jsonParser} from "@/utils/json.ts";
+import {jsonStrFormat, jsonStrCompress} from "@/utils/json.ts";
 import CodeEditor from "@/components/global/code/CodeEditor.vue";
 import {ModelFormProps} from "@/components/business/model/form/ModelFormProps.ts";
 import {sendMessage} from "@/utils/message.ts";
@@ -23,7 +23,7 @@ watch(() => props.model, (propsModel) => {
 
 		if (props.editValue) {
 			try {
-				tempModel.graphData = jsonFormatter(propsModel.graphData ? propsModel.graphData : '')
+				tempModel.graphData = jsonStrFormat(propsModel.graphData ? propsModel.graphData : '')
 			} catch (e) {
 				sendMessage('json 格式校验失败', 'error')
 				tempModel.graphData = ''
@@ -47,7 +47,7 @@ const handleSubmit = () => {
 				throw "graphData validate fail"
 			}
 
-			tempModel.graphData = jsonParser(tempModel.graphData)
+			tempModel.graphData = jsonStrCompress(tempModel.graphData)
 		} catch (e) {
 			sendMessage('json 格式校验失败', 'error', e)
 			return

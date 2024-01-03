@@ -1,59 +1,36 @@
-import type { AssociationType, GenerationType } from '../enums';
+import type {GenEntityConfigInput_TargetOf_properties} from './';
 
 export interface GenEntityConfigInput {
-    
-    author: string;
-    
-    comment: string;
-    
-    id?: number;
-    
-    name: string;
-    
-    orderKey: number;
-    
+    /**
+     * ID
+     */
+    id?: number | undefined;
+    /**
+     * 备注
+     */
+    remark: string;
+    /**
+     * 包路径
+     */
     packagePath: string;
-    
-    properties: Array<GenEntityConfigInput_TargetOf_properties>;
-    
-    remark: string;
-}
-
-export interface GenEntityConfigInput_TargetOf_properties {
-    
-    associationAnnotation?: string;
-    
-    associationType?: AssociationType;
-    
-    comment: string;
-    
-    dissociateAnnotation?: string;
-    
-    id?: number;
-    
-    idGenerationType?: GenerationType;
-    
-    idProperty: boolean;
-    
-    idView: boolean;
-    
-    idViewAnnotation?: string;
-    
-    keyProperty: boolean;
-    
-    listType: boolean;
-    
-    logicalDelete: boolean;
-    
+    /**
+     * 类名称
+     */
     name: string;
-    
+    /**
+     * 类注释
+     */
+    comment: string;
+    /**
+     * 作者
+     */
+    author: string;
+    /**
+     * 自定排序
+     */
     orderKey: number;
-    
-    otherAnnotation?: string;
-    
-    remark: string;
-    
-    type: string;
-    
-    typeNotNull: boolean;
+    /**
+     * 属性
+     */
+    properties: Array<GenEntityConfigInput_TargetOf_properties>;
 }

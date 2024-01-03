@@ -1,220 +1,70 @@
-import type { AssociationType, DataSourceType, DissociateAction, TableType } from '../enums';
+import type {TableType} from '../enums/';
+import type {
+    GenTableAssociationsView_TargetOf_columns, 
+    GenTableAssociationsView_TargetOf_inAssociations, 
+    GenTableAssociationsView_TargetOf_indexes, 
+    GenTableAssociationsView_TargetOf_outAssociations, 
+    GenTableAssociationsView_TargetOf_schema
+} from './';
 
+/**
+ * base on GenTableColumnsView and single part of GenAssociationView
+ */
 export interface GenTableAssociationsView {
-    
-    columns: Array<GenTableAssociationsView_TargetOf_columns>;
-    
-    comment: string;
-    
-    createdTime: string;
-    
-    entityId?: number;
-    
+    /**
+     * ID
+     */
     id: number;
-    
-    inAssociations: Array<GenTableAssociationsView_TargetOf_inAssociations>;
-    
-    indexes: Array<GenTableAssociationsView_TargetOf_indexes>;
-    
+    /**
+     * 创建事件
+     */
+    createdTime: string;
+    /**
+     * 修改时间
+     */
     modifiedTime: string;
-    
-    name: string;
-    
-    orderKey: number;
-    
-    outAssociations: Array<GenTableAssociationsView_TargetOf_outAssociations>;
-    
+    /**
+     * 备注
+     */
     remark: string;
-    
-    schema?: GenTableAssociationsView_TargetOf_schema;
-    
+    /**
+     * 表名称
+     */
+    name: string;
+    /**
+     * 表注释
+     */
+    comment: string;
+    /**
+     * 表种类
+     */
     type: TableType;
-}
-
-export interface GenTableAssociationsView_TargetOf_columns {
-    
-    autoIncrement: boolean;
-    
-    businessKey: boolean;
-    
-    comment: string;
-    
-    createdTime: string;
-    
-    defaultValue?: string;
-    
-    displaySize: number;
-    
-    enumId?: number;
-    
-    id: number;
-    
-    logicalDelete: boolean;
-    
-    modifiedTime: string;
-    
-    name: string;
-    
-    numericPrecision: number;
-    
+    /**
+     * 自定排序
+     */
     orderKey: number;
-    
-    overwriteByType: boolean;
-    
-    partOfPk: boolean;
-    
-    remark: string;
-    
-    tableId: number;
-    
-    type: string;
-    
-    typeCode: number;
-    
-    typeNotNull: boolean;
-}
-
-export interface GenTableAssociationsView_TargetOf_inAssociations {
-    
-    associationType: AssociationType;
-    
-    columnReferences: Array<GenTableAssociationsView_TargetOf_inAssociations_TargetOf_columnReferences_2>;
-    
-    createdTime: string;
-    
-    dissociateAction?: DissociateAction;
-    
-    fake: boolean;
-    
-    id: number;
-    
-    modifiedTime: string;
-    
-    name: string;
-    
-    orderKey: number;
-    
-    remark: string;
-    
-    sourceTable: GenTableAssociationsView_TargetOf_inAssociations_TargetOf_sourceTable_2;
-}
-
-export interface GenTableAssociationsView_TargetOf_inAssociations_TargetOf_columnReferences_2 {
-    
-    sourceColumn: GenTableAssociationsView_TargetOf_inAssociations_TargetOf_columnReferences_2_TargetOf_sourceColumn_3;
-    
-    targetColumn: GenTableAssociationsView_TargetOf_inAssociations_TargetOf_columnReferences_2_TargetOf_targetColumn_3;
-}
-
-export interface GenTableAssociationsView_TargetOf_inAssociations_TargetOf_columnReferences_2_TargetOf_sourceColumn_3 {
-    
-    comment: string;
-    
-    id: number;
-    
-    name: string;
-    
-    type: string;
-}
-
-export interface GenTableAssociationsView_TargetOf_inAssociations_TargetOf_columnReferences_2_TargetOf_targetColumn_3 {
-    
-    id: number;
-}
-
-export interface GenTableAssociationsView_TargetOf_inAssociations_TargetOf_sourceTable_2 {
-    
-    comment: string;
-    
-    id: number;
-    
-    name: string;
-}
-
-export interface GenTableAssociationsView_TargetOf_indexes {
-    
-    columnIds: Array<number>;
-    
-    id: number;
-    
-    name: string;
-    
-    tableId: number;
-    
-    uniqueIndex: boolean;
-}
-
-export interface GenTableAssociationsView_TargetOf_outAssociations {
-    
-    associationType: AssociationType;
-    
-    columnReferences: Array<GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2>;
-    
-    createdTime: string;
-    
-    dissociateAction?: DissociateAction;
-    
-    fake: boolean;
-    
-    id: number;
-    
-    modifiedTime: string;
-    
-    name: string;
-    
-    orderKey: number;
-    
-    remark: string;
-    
-    targetTable: GenTableAssociationsView_TargetOf_outAssociations_TargetOf_targetTable_2;
-}
-
-export interface GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2 {
-    
-    sourceColumn: GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2_TargetOf_sourceColumn_3;
-    
-    targetColumn: GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2_TargetOf_targetColumn_3;
-}
-
-export interface GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2_TargetOf_sourceColumn_3 {
-    
-    id: number;
-}
-
-export interface GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2_TargetOf_targetColumn_3 {
-    
-    comment: string;
-    
-    id: number;
-    
-    name: string;
-    
-    type: string;
-}
-
-export interface GenTableAssociationsView_TargetOf_outAssociations_TargetOf_targetTable_2 {
-    
-    comment: string;
-    
-    id: number;
-    
-    name: string;
-}
-
-export interface GenTableAssociationsView_TargetOf_schema {
-    
-    dataSource: GenTableAssociationsView_TargetOf_schema_TargetOf_dataSource_2;
-    
-    id: number;
-    
-    name: string;
-}
-
-export interface GenTableAssociationsView_TargetOf_schema_TargetOf_dataSource_2 {
-    
-    id: number;
-    
-    name: string;
-    
-    type: DataSourceType;
+    /**
+     * 对应实体
+     */
+    entityId?: number | undefined;
+    /**
+     * 数据架构
+     */
+    schema?: GenTableAssociationsView_TargetOf_schema | undefined;
+    /**
+     * 列
+     */
+    columns: Array<GenTableAssociationsView_TargetOf_columns>;
+    /**
+     * 唯一索引
+     */
+    indexes: Array<GenTableAssociationsView_TargetOf_indexes>;
+    /**
+     * 入关联
+     */
+    inAssociations: Array<GenTableAssociationsView_TargetOf_inAssociations>;
+    /**
+     * 出关联
+     */
+    outAssociations: Array<GenTableAssociationsView_TargetOf_outAssociations>;
 }

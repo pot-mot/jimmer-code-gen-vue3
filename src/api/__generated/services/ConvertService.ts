@@ -1,5 +1,5 @@
-import type { Executor } from '../';
-import type { DataSourceType, GenLanguage } from '../model/enums';
+import type {Executor} from '../';
+import type {DataSourceType, GenLanguage} from '../model/enums/';
 
 export class ConvertService {
     
@@ -39,16 +39,15 @@ export class ConvertService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Array<number>
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<number>>;
     }
 }
-
 export type ConvertServiceOptions = {
     'convert': {
         body: Array<number>, 
-        modelId?: number, 
-        dataSourceType?: DataSourceType, 
-        language?: GenLanguage, 
-        packagePath?: string
+        modelId?: number | undefined, 
+        dataSourceType?: DataSourceType | undefined, 
+        language?: GenLanguage | undefined, 
+        packagePath?: string | undefined
     }
 }

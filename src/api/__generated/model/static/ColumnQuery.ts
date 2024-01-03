@@ -1,20 +1,12 @@
-import type { TimeRangeQueryParam } from './';
+import type {TimeRangeQueryParam} from './';
 
 export interface ColumnQuery {
-    
-    createdTime?: TimeRangeQueryParam;
-    
-    ids?: Array<number>;
-    
-    keywords?: Array<string>;
-    
-    modifiedTime?: TimeRangeQueryParam;
-    
-    partOfPk?: boolean;
-    
-    tableIds?: Array<number>;
-    
-    type?: string;
-    
-    typeCode?: number;
+    ids?: Array<number> | undefined;
+    createdTime?: TimeRangeQueryParam | undefined;
+    modifiedTime?: TimeRangeQueryParam | undefined;
+    keywords?: Array<string> | undefined;
+    tableIds?: Array<number> | undefined;
+    type?: string | undefined;
+    typeCode?: number | undefined;
+    partOfPk?: boolean | undefined;
 }

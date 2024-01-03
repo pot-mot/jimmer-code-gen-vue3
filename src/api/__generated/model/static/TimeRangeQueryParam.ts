@@ -1,6 +1,4 @@
 export interface TimeRangeQueryParam {
-    
-    end: string;
-    
     start: string;
+    end: string;
 }

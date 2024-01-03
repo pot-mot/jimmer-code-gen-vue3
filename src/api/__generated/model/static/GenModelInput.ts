@@ -1,54 +1,41 @@
-import type { DataSourceType, EnumType, GenLanguage } from '../enums';
+import type {DataSourceType, GenLanguage} from '../enums/';
+import type {GenModelInput_TargetOf_enums} from './';
 
 export interface GenModelInput {
-    
-    dataSourceType: DataSourceType;
-    
-    enums: Array<GenModelInput_TargetOf_enums>;
-    
-    graphData?: string;
-    
-    id?: number;
-    
+    /**
+     * ID
+     */
+    id?: number | undefined;
+    /**
+     * 名称
+     */
+    name: string;
+    /**
+     * 备注
+     */
+    remark: string;
+    /**
+     * 语言
+     */
     language: GenLanguage;
-    
-    name: string;
-    
+    /**
+     * 数据源类型
+     */
+    dataSourceType: DataSourceType;
+    /**
+     * 包路径
+     */
     packagePath: string;
-    
-    remark: string;
-    
+    /**
+     * 同步转换实体
+     */
     syncConvertEntity: boolean;
-}
-
-export interface GenModelInput_TargetOf_enums {
-    
-    comment: string;
-    
-    enumType?: EnumType;
-    
-    items: Array<GenModelInput_TargetOf_enums_TargetOf_items_2>;
-    
-    modelId?: number;
-    
-    name: string;
-    
-    orderKey: number;
-    
-    packagePath: string;
-    
-    remark: string;
-}
-
-export interface GenModelInput_TargetOf_enums_TargetOf_items_2 {
-    
-    comment: string;
-    
-    mappedValue: string;
-    
-    name: string;
-    
-    orderKey: number;
-    
-    remark: string;
+    /**
+     * Graph 数据
+     */
+    graphData?: string | undefined;
+    /**
+     * 实体
+     */
+    enums: Array<GenModelInput_TargetOf_enums>;
 }

@@ -1,36 +1,50 @@
-import type { Executor } from './';
-
-import { AssociationService, ColumnDefaultService, ColumnService, ConfigService, ConvertService, DataSourceService, EntityService, EnumService, JDBCService, ModelService, PreviewService, SchemaService, TableService, TypeMappingService } from './services';
+import type {Executor} from './';
+import {
+    AssociationService, 
+    ColumnDefaultService, 
+    ColumnService, 
+    ConfigService, 
+    ConvertService, 
+    DataSourceService, 
+    EntityService, 
+    EnumService, 
+    JDBCService, 
+    ModelService, 
+    PreviewService, 
+    SchemaService, 
+    TableService, 
+    TypeMappingService
+} from './services/';
 
 export class Api {
     
-    readonly associationService: AssociationService;
+    readonly associationService: AssociationService
     
-    readonly columnDefaultService: ColumnDefaultService;
+    readonly columnDefaultService: ColumnDefaultService
     
-    readonly columnService: ColumnService;
+    readonly columnService: ColumnService
     
-    readonly configService: ConfigService;
+    readonly configService: ConfigService
     
-    readonly convertService: ConvertService;
+    readonly convertService: ConvertService
     
-    readonly dataSourceService: DataSourceService;
+    readonly dataSourceService: DataSourceService
     
-    readonly entityService: EntityService;
+    readonly entityService: EntityService
     
-    readonly enumService: EnumService;
+    readonly enumService: EnumService
     
-    readonly jdbcservice: JDBCService;
+    readonly jdbcservice: JDBCService
     
-    readonly modelService: ModelService;
+    readonly modelService: ModelService
     
-    readonly previewService: PreviewService;
+    readonly previewService: PreviewService
     
-    readonly schemaService: SchemaService;
+    readonly schemaService: SchemaService
     
-    readonly tableService: TableService;
+    readonly tableService: TableService
     
-    readonly typeMappingService: TypeMappingService;
+    readonly typeMappingService: TypeMappingService
     
     constructor(executor: Executor) {
         this.associationService = new AssociationService(executor);

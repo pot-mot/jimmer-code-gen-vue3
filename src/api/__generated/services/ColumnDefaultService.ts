@@ -1,6 +1,6 @@
-import type { Executor } from '../';
-import type { DataSourceType } from '../model/enums';
-import type { GenColumnDefaultInput, GenColumnDefaultView } from '../model/static';
+import type {Executor} from '../';
+import type {DataSourceType} from '../model/enums/';
+import type {GenColumnDefaultInput, GenColumnDefaultView} from '../model/static/';
 
 export class ColumnDefaultService {
     
@@ -11,7 +11,7 @@ export class ColumnDefaultService {
     > {
         let _uri = '/columnDefault/';
         _uri += encodeURIComponent(options.id);
-        return (await this.executor({uri: _uri, method: 'GET'})) as GenColumnDefaultView | undefined
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<GenColumnDefaultView | undefined>;
     }
     
     async list(options: ColumnDefaultServiceOptions['list']): Promise<
@@ -27,27 +27,32 @@ export class ColumnDefaultService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        return (await this.executor({uri: _uri, method: 'GET'})) as Array<GenColumnDefaultView>
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenColumnDefaultView>>;
     }
     
     async listDatabaseType(): Promise<
         {[key:string]: number}
     > {
         let _uri = '/columnDefault/type';
-        return (await this.executor({uri: _uri, method: 'GET'})) as {[key:string]: number}
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<{[key:string]: number}>;
     }
     
     async saveAll(options: ColumnDefaultServiceOptions['saveAll']): Promise<
         Array<number>
     > {
         let _uri = '/columnDefault/';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Array<number>
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<number>>;
     }
 }
-
 export type ColumnDefaultServiceOptions = {
-    'get': {id: number},
-    'list': {dataSourceType?: DataSourceType},
-    'listDatabaseType': {},
-    'saveAll': {body: Array<GenColumnDefaultInput>}
+    'listDatabaseType': {}, 
+    'get': {
+        id: number
+    }, 
+    'list': {
+        dataSourceType?: DataSourceType | undefined
+    }, 
+    'saveAll': {
+        body: Array<GenColumnDefaultInput>
+    }
 }

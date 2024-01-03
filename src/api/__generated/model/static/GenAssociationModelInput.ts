@@ -1,67 +1,37 @@
-import type { AssociationType, DissociateAction } from '../enums';
+import type {AssociationType, DissociateAction} from '../enums/';
+import type {GenAssociationModelInput_TargetOf_columnReferences, GenAssociationModelInput_TargetOf_sourceTable, GenAssociationModelInput_TargetOf_targetTable} from './';
 
 export interface GenAssociationModelInput {
-    
+    /**
+     * 模型
+     */
+    modelId?: number | undefined;
+    /**
+     * 名称
+     */
+    name: string;
+    /**
+     * 关联类型
+     */
     associationType: AssociationType;
-    
-    columnReferences: Array<GenAssociationModelInput_TargetOf_columnReferences>;
-    
-    dissociateAction?: DissociateAction;
-    
+    /**
+     * 脱钩行为
+     */
+    dissociateAction?: DissociateAction | undefined;
+    /**
+     * 是否伪外键
+     */
     fake: boolean;
-    
-    modelId?: number;
-    
-    name: string;
-    
+    /**
+     * 主表
+     */
     sourceTable: GenAssociationModelInput_TargetOf_sourceTable;
-    
+    /**
+     * 从表
+     */
     targetTable: GenAssociationModelInput_TargetOf_targetTable;
-}
-
-export interface GenAssociationModelInput_TargetOf_columnReferences {
-    
-    sourceColumn: GenAssociationModelInput_TargetOf_columnReferences_TargetOf_sourceColumn_2;
-    
-    targetColumn: GenAssociationModelInput_TargetOf_columnReferences_TargetOf_targetColumn_2;
-}
-
-export interface GenAssociationModelInput_TargetOf_columnReferences_TargetOf_sourceColumn_2 {
-    
-    comment: string;
-    
-    name: string;
-    
-    type: string;
-    
-    typeCode: number;
-}
-
-export interface GenAssociationModelInput_TargetOf_columnReferences_TargetOf_targetColumn_2 {
-    
-    comment: string;
-    
-    name: string;
-    
-    type: string;
-    
-    typeCode: number;
-}
-
-export interface GenAssociationModelInput_TargetOf_sourceTable {
-    
-    comment: string;
-    
-    modelId?: number;
-    
-    name: string;
-}
-
-export interface GenAssociationModelInput_TargetOf_targetTable {
-    
-    comment: string;
-    
-    modelId?: number;
-    
-    name: string;
+    /**
+     * 列引用
+     */
+    columnReferences: Array<GenAssociationModelInput_TargetOf_columnReferences>;
 }

@@ -1,4 +1,4 @@
-import type { Executor } from '../';
+import type {Executor} from '../';
 
 export class JDBCService {
     
@@ -8,10 +8,9 @@ export class JDBCService {
         {[key:string]: number}
     > {
         let _uri = '/jdbc/type';
-        return (await this.executor({uri: _uri, method: 'GET'})) as {[key:string]: number}
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<{[key:string]: number}>;
     }
 }
-
 export type JDBCServiceOptions = {
     'listType': {}
 }

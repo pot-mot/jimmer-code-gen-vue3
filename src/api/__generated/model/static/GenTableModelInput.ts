@@ -1,81 +1,41 @@
-import type { TableType } from '../enums';
+import type {TableType} from '../enums/';
+import type {GenTableModelInput_TargetOf_columns, GenTableModelInput_TargetOf_indexes, GenTableModelInput_TargetOf_schema} from './';
 
 export interface GenTableModelInput {
-    
-    columns: Array<GenTableModelInput_TargetOf_columns>;
-    
-    comment: string;
-    
-    indexes: Array<GenTableModelInput_TargetOf_indexes>;
-    
-    modelId?: number;
-    
-    name: string;
-    
-    orderKey: number;
-    
+    /**
+     * 备注
+     */
     remark: string;
-    
-    schema?: GenTableModelInput_TargetOf_schema;
-    
+    /**
+     * 表名称
+     */
+    name: string;
+    /**
+     * 表注释
+     */
+    comment: string;
+    /**
+     * 表种类
+     */
     type: TableType;
-}
-
-export interface GenTableModelInput_TargetOf_columns {
-    
-    autoIncrement: boolean;
-    
-    businessKey: boolean;
-    
-    comment: string;
-    
-    defaultValue?: string;
-    
-    displaySize: number;
-    
-    enum?: GenTableModelInput_TargetOf_columns_TargetOf_enum_2;
-    
-    logicalDelete: boolean;
-    
-    name: string;
-    
-    numericPrecision: number;
-    
+    /**
+     * 自定排序
+     */
     orderKey: number;
-    
-    overwriteByType: boolean;
-    
-    partOfPk: boolean;
-    
-    remark: string;
-    
-    type: string;
-    
-    typeCode: number;
-    
-    typeNotNull: boolean;
-}
-
-export interface GenTableModelInput_TargetOf_columns_TargetOf_enum_2 {
-    
-    name: string;
-}
-
-export interface GenTableModelInput_TargetOf_indexes {
-    
-    columns: Array<GenTableModelInput_TargetOf_indexes_TargetOf_columns_2>;
-    
-    name: string;
-    
-    uniqueIndex: boolean;
-}
-
-export interface GenTableModelInput_TargetOf_indexes_TargetOf_columns_2 {
-    
-    name: string;
-}
-
-export interface GenTableModelInput_TargetOf_schema {
-    
-    name: string;
+    /**
+     * 模型
+     */
+    modelId?: number | undefined;
+    /**
+     * 数据架构
+     */
+    schema?: GenTableModelInput_TargetOf_schema | undefined;
+    /**
+     * 列
+     */
+    columns: Array<GenTableModelInput_TargetOf_columns>;
+    /**
+     * 唯一索引
+     */
+    indexes: Array<GenTableModelInput_TargetOf_indexes>;
 }
