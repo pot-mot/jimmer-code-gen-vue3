@@ -1,5 +1,5 @@
 export const SelectType_CONSTANTS = [
-    'AND',
+    'AND', 
     'OR'
 ] as const;
 export type SelectType = typeof SelectType_CONSTANTS[number];

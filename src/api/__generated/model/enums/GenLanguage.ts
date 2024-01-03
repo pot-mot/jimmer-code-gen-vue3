@@ -1,5 +1,5 @@
 export const GenLanguage_CONSTANTS = [
-    'KOTLIN',
+    'KOTLIN', 
     'JAVA'
 ] as const;
 /**

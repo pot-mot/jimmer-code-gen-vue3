@@ -43,7 +43,7 @@ export interface GenModelView {
      */
     syncConvertEntity: boolean;
     /**
-     * 实体
+     * 枚举
      */
     enums: Array<GenModelView_TargetOf_enums>;
 }

@@ -62,11 +62,11 @@ export interface Dynamic_GenModel {
      */
     entityIds?: Array<number>;
     /**
-     * 实体
+     * 枚举
      */
     enums?: Array<Dynamic_GenEnum>;
     /**
-     * 实体 ID 视图
+     * 枚举 ID 视图
      */
     enumIds?: Array<number>;
 }

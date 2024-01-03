@@ -35,7 +35,7 @@ export interface GenModelInput {
      */
     graphData?: string | undefined;
     /**
-     * 实体
+     * 枚举
      */
     enums: Array<GenModelInput_TargetOf_enums>;
 }
