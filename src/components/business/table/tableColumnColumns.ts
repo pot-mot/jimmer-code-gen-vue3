@@ -1,5 +1,5 @@
 import {ListColumn, PropListColumn} from "@/components/global/list/ListProps.ts";
-import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static/GenTableModelInput.ts";
+import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static";
 
 export const tableColumnColumns = <(PropListColumn<GenTableModelInput_TargetOf_columns> | ListColumn<GenTableModelInput_TargetOf_columns>)[]>[
     {

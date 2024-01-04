@@ -13,6 +13,7 @@ export const sendMessage = (message: string, type: "info" | "success" | "warning
     ElMessage({
         type,
         message,
+        showClose: true,
     })
 
     const dataObj = {

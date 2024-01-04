@@ -1,6 +1,5 @@
 import {useGenContextStore} from "@/components/business/context/GenContextStore.ts";
-import {GenEnumItemsInput} from "@/api/__generated/model/static";
-import {GenEnumItemsInput_TargetOf_items} from "@/api/__generated/model/static/GenEnumItemsInput.ts";
+import {GenEnumItemsInput, GenEnumItemsInput_TargetOf_items} from "@/api/__generated/model/static";
 
 export const getDefaultEnum = (): GenEnumItemsInput => {
     const contextStore = useGenContextStore()

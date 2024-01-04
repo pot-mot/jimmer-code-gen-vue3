@@ -97,7 +97,7 @@
 
 				<DragDialog v-model="entityPreviewDialogOpenState" :init-w="700" :init-x="5000"
 							can-drag can-resize disabled-h disabled-y>
-					<MultiCodePreview :code-files="codeFiles"
+					<MultiCodePreview :code-files="entityFiles"
 									  height="calc(100vh - 5em - 30px)"
 									  width="100%"
 									  class="multi-code-preview"></MultiCodePreview>
@@ -173,8 +173,6 @@ import CenterIcon from "@/components/global/icons/toolbar/CenterIcon.vue";
 import EraserIcon from "@/components/global/icons/toolbar/EraserIcon.vue";
 import AssociationOffIcon from "@/components/global/icons/toolbar/AssociationOffIcon.vue";
 import DownloadIcon from "@/components/global/icons/toolbar/DownloadIcon.vue";
-import {saveAs} from "file-saver";
-import * as JSZip from "jszip";
 import ScaleBar from "@/components/business/graphEditor/tools/ScaleBar.vue";
 import GraphSearcher from "@/components/business/graphEditor/tools/GraphSearcher.vue";
 import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
@@ -188,8 +186,13 @@ import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEdi
 import {handleHistoryKeyEvent} from "@/components/business/graphEditor/history/useHistory.ts";
 import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";
 import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
-import {jsonFormat, jsonStrFormat} from "@/utils/json.ts";
 import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
+import {
+	downloadModel,
+	downloadModelEntity, downloadModelSql, exportModel,
+	previewModelEntity,
+	previewModelSql
+} from "@/components/business/model/file/modelFileOperations.ts";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -266,137 +269,68 @@ useSaveKeyEvent(() => {
  */
 const entityPreviewDialogOpenState = ref(false)
 
-const codeFiles = ref<Array<Pair<string, string>>>([])
-
-const handleEntityPreview = async () => {
-	loadingStore.add()
-
-	const currentModel = store._currentModel()
-
-	codeFiles.value = await api.previewService.previewModelEntity({
-		id: currentModel.id
-	})
-	entityPreviewDialogOpenState.value = true
-
-	loadingStore.sub()
-}
+const entityFiles = ref<Array<Pair<string, string>>>([])
 
 watch(() => entityPreviewDialogOpenState.value, async (openState) => {
 	if (!openState) {
-		codeFiles.value = []
+		entityFiles.value = []
 	}
 })
 
+const handleEntityPreview = async () => {
+	loadingStore.add()
+	const currentModel = store._currentModel()
+	entityFiles.value = await previewModelEntity(currentModel.id)
+	entityPreviewDialogOpenState.value = true
+	loadingStore.sub()
+}
 
 const sqlPreviewDialogOpenState = ref(false)
 
 const sqlFiles = ref<Array<Pair<string, string>>>([])
 
+watch(() => sqlPreviewDialogOpenState.value, async (openState) => {
+	if (!openState) {
+		sqlFiles.value = []
+	}
+})
+
 const handleSQLPreview = async () => {
 	loadingStore.add()
-
 	const currentModel = store._currentModel()
-
 	sqlPreviewDialogOpenState.value = true
-	sqlFiles.value = await api.previewService.previewModelSql({
-		id: currentModel.id
-	})
+	sqlFiles.value = await previewModelSql(currentModel.id)
 	loadingStore.sub()
 }
 
 
-const createZip = async (files: Array<Pair<string, string>>): Promise<Blob> => {
-	const zip = new JSZip
-
-	const nameCountMap = new Map<string, number>
-
-	files.forEach(it => {
-		if (nameCountMap.has(it.first)) {
-			const count = nameCountMap.get(it.first)!
-			nameCountMap.set(it.first, count + 1)
-			zip.file(`${it.first}(${count})`, it.second)
-		} else {
-			nameCountMap.set(it.first, 1)
-			zip.file(it.first, it.second)
-		}
-	})
-
-	return await zip.generateAsync({type: "blob"})
-}
-
 const handleEntityDownload = async () => {
 	loadingStore.add()
-
 	const currentModel = store._currentModel()
-
-	const res = await api.previewService.previewModelEntity({
-		id: currentModel.id,
-		withPath: true
-	})
-	const file = await createZip(res)
-	saveAs(file, `[${currentModel.name}]-entities.zip`)
-
+	await downloadModelEntity(currentModel)
 	loadingStore.sub()
 }
 
 const handleSQLDownload = async () => {
 	loadingStore.add()
-
 	const currentModel = store._currentModel()
-
-	const file = await createZip(sqlFiles.value)
-	saveAs(file, `[${currentModel.name}]-tables.zip`)
-
+	await downloadModelSql(currentModel)
 	loadingStore.sub()
 }
 
-
 const handleModelExport = async () => {
 	loadingStore.add()
-
 	const currentModel = store._currentModel()
-
-	const modelJsonBlob = new Blob(
-		[jsonFormat(currentModel)],
-		{type: "application/json"}
-	)
-
-	saveAs(modelJsonBlob, 'model.json')
-
+	await exportModel(currentModel)
 	loadingStore.sub()
 }
 
 const handleModelDownload = async () => {
 	loadingStore.add()
-
 	const currentModel = store._currentModel()
-
-	let entityCodes = await api.previewService.previewModelEntity({
-		id: currentModel.id,
-		withPath: true
-	})
-	entityCodes = entityCodes.map(({first, second}) => {
-		return {first: `${currentModel.language.toLowerCase()}/${first}`, second}
-	})
-
-	let sqlFiles = await api.previewService.previewModelSql({
-		id: currentModel.id
-	})
-	sqlFiles = sqlFiles.map(({first, second}) => {
-		return {first: `${currentModel.dataSourceType.toLowerCase()}/${first}`, second}
-	})
-
-	const modelFiles = [
-		{first: "model/model.json", second: jsonFormat(currentModel)},
-		{first: "model/graphData.json", second: jsonStrFormat(store.toDataJSONStr())}
-	]
-
-	const file = await createZip([...modelFiles, ...entityCodes, ...sqlFiles])
-	saveAs(file, `[${currentModel.name}]-model.zip`)
-
+	await downloadModel(currentModel)
 	loadingStore.sub()
 }
-
 
 watch(() => store.isModelLoaded, (loaded) => {
 	if (loaded) {

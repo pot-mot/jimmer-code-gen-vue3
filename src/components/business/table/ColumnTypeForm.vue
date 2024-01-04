@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {ModelValueProps} from "@/components/global/dialog/DragDialogProps.ts";
-import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static/GenTableModelInput.ts";
+import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static";
 import {ModelValueEmits} from "@/components/global/dialog/DragDialogEmits.ts";
 import {ref} from "vue";
 import {Close, EditPen, Plus} from "@element-plus/icons-vue";

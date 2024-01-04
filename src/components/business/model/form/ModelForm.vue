@@ -110,7 +110,7 @@ const handleCancel = () => {
 				v-model="model.graphData" language="json"></CodeEditor>
 		</el-form-item>
 
-		<div style="text-align: right;">
+		<div style="text-align: right; position: absolute; bottom: 0.5em; left: 1em; right: 1em;">
 			<el-button type="info" @click="handleCancel">取消</el-button>
 			<el-button type="warning" @click="handleSubmit">提交</el-button>
 		</div>

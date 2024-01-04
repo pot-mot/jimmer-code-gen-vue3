@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {ModelEditorEventBus} from "../../../pages/ModelEditor/store/ModelEditorEventBus.ts";
-import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static/GenModelInput.ts";
 import EnumForm from "@/components/business/enum/EnumForm.vue";
 import {cloneDeep} from "lodash";
+import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 
 interface EnumModifyDialogProps {
 	genEnum?: Partial<GenModelInput_TargetOf_enums>

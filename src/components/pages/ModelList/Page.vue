@@ -9,7 +9,8 @@ import {deleteConfirm, sendMessage} from "@/utils/message.ts";
 import {datetimeFormat} from "@/utils/dataFormat.ts";
 import ModelDialog from "@/components/business/model/dialog/ModelDialog.vue";
 import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
-import {validateModelInputStr} from "@/shape/ModelInput.ts";
+import {exportModel, importModel} from "@/components/business/model/file/modelFileOperations.ts";
+import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
 
 const router = useRouter()
 
@@ -32,64 +33,102 @@ onMounted(() => {
 	getModels()
 })
 
-const toModel = (id: number) => {
+const toEditorEditor = (id: number) => {
 	router.push(`/model/${id}`)
 }
 
 const editModel = ref<GenModelInput>()
 
-const handleEdit = (model?: Partial<GenModelInput>) => {
-	editModel.value = {...getDefaultModel(), ...model}
+const updateModelList = async (id: number, toEditor: boolean = false) => {
+	const newModel = await api.modelService.get({id})
+	if (!newModel || !newModel.id) {
+		sendMessage('模型重新获取失败', 'error')
+		return
+	}
+
+	const index = models.value.findIndex(it => it.id == id)
+
+	if (index == -1) {
+		models.value.push(newModel)
+	} else {
+		models.value[index] = newModel
+	}
+
+	if (toEditor) {
+		toEditorEditor(id)
+	}
+}
+
+const modelUploader = ref()
+
+const emitLoadModelJson = () => {
+	if (modelUploader.value) {
+		console.log(modelUploader.value)
+		modelUploader.value.click()
+	}
 }
 
 const handleLoadModelJson = async (e: Event) => {
 	modelsLoading.add()
 
-	const file = (e.target as HTMLInputElement)?.files?.[0]
+	const input = e.target as HTMLInputElement
 
+	const file = input.files?.[0]
 	if (file) {
 		const modelJson = await file.text()
+		const id = await importModel(modelJson)
 
-		if (validateModelInputStr(modelJson)) {
-			const modelInput = JSON.parse(modelJson)
-			modelInput.id = undefined
-			await handleSubmit(modelInput)
+		if (id != undefined) {
+			sendMessage('模型导入成功', 'success')
+			await updateModelList(id, true)
+		} else {
+			sendMessage('模型导入失败', 'error')
 		}
+	} else {
+		sendMessage('文件不存在', 'error')
 	}
+
+	input.value = ''
 
 	modelsLoading.sub()
 }
 
+const handleEdit = (model?: Partial<GenModelInput>) => {
+	editModel.value = {...getDefaultModel(), ...model}
+}
 const handleSubmit = async (model: GenModelInput) => {
 	modelsLoading.add()
 
 	try {
-		const updateFlag = (model.id != undefined)
+		const isUpdate = (model.id != undefined)
 
-		if (updateFlag) {
+		// 在列表页编辑不可更新 graphData
+		if (isUpdate) {
 			model.graphData = undefined
 		}
 
 		const newId = await api.modelService.save({body: model})
 		editModel.value = undefined
 
-		sendMessage(updateFlag ? '模型修改成功' : '模型保存成功', 'success')
+		await updateModelList(newId, !isUpdate)
 
-		const newModel = await api.modelService.get({id: newId})
-		if (!newModel || !newModel.id) {
-			sendMessage('模型重新获取失败', 'error')
-			return
-		}
-
-		if (updateFlag) {
-			const index = models.value.findIndex(it => it.id == model.id)
-			models.value[index] = newModel
-		} else {
-			models.value.push(newModel)
-			toModel(newModel.id)
-		}
+		sendMessage(isUpdate ? '模型修改成功' : '模型保存成功', 'success')
 	} catch (e) {
 		sendMessage(`模型修改失败，原因：${e}`, 'error', e)
+	}
+
+	modelsLoading.sub()
+}
+
+const handleExport = async (model: GenModelSimpleView) => {
+	modelsLoading.add()
+
+	const modeView = await api.modelService.get({id: model.id})
+
+	if (modeView) {
+		await exportModel(modeView)
+	} else {
+		sendMessage('模型导出失败', 'error', model)
 	}
 
 	modelsLoading.sub()
@@ -119,16 +158,22 @@ const handleDelete = (model: GenModelSimpleView) => {
 	<div class="wrapper" v-loading="modelsLoading.isLoading()">
 		<el-button @click="handleEdit()">创建新模型</el-button>
 
-		<input ref="fileUploader" type="file" accept="application/json" @change="handleLoadModelJson"/>
+		<el-button @click="emitLoadModelJson">导入 model.json</el-button>
+		<input v-show="false" ref="modelUploader" type="file" accept="application/json" @change="handleLoadModelJson"/>
 
 		<div class="container">
 			<template v-for="model in models">
-				<div class="model-card hover-show" @click="toModel(model.id)">
-					<div class="buttons hover-show-item">
+				<div class="model-card hover-show" @click="toEditorEditor(model.id)">
+					<div class="right-top hover-show-item">
 						<el-button :icon="EditPen" link title="编辑" type="warning"
 								   @click.prevent.stop="handleEdit(model)"></el-button>
 						<el-button :icon="Delete" link title="删除" type="danger"
 								   @click.prevent.stop="handleDelete(model)"></el-button>
+					</div>
+
+					<div class="right-bottom hover-show-item">
+						<el-button :icon="ExportIcon" link title="导出" type="info"
+								   @click.prevent.stop="handleExport(model)"></el-button>
 					</div>
 
 					<div class="title">{{ model.name }}</div>
@@ -158,6 +203,7 @@ const handleDelete = (model: GenModelSimpleView) => {
 <style scoped>
 .wrapper {
 	padding-left: 1em;
+	padding-right: 1em;
 	padding-top: 0.2em;
 }
 
@@ -208,9 +254,15 @@ const handleDelete = (model: GenModelSimpleView) => {
 	color: var(--el-text-color-primary);
 }
 
-.model-card .buttons {
+.model-card .right-top {
 	position: absolute;
-	top: 0;
-	right: 0;
+	top: 0.5em;
+	right: 0.5em;
+}
+
+.model-card .right-bottom {
+	position: absolute;
+	bottom: 0.5em;
+	right: 0.5em;
 }
 </style>

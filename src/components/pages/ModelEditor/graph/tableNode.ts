@@ -1,8 +1,11 @@
-import {GenTableModelInput, GenTableColumnsView} from "@/api/__generated/model/static";
+import {
+    GenTableModelInput,
+    GenTableColumnsView,
+    GenTableModelInput_TargetOf_columns
+} from "@/api/__generated/model/static";
 import {Graph, Node} from "@antv/x6";
 import {columnPortGroup} from "@/components/business/modelGraphEditor/columnPort.ts";
 import {COLUMN_PORT_GROUP, TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
-import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static/GenTableModelInput.ts";
 import {updateTableNodeData} from "@/components/business/modelGraphEditor/tableNode/tableNodeData.ts";
 
 export const columnToPort = () => {

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import {computed, ref, watch} from 'vue'
 import {cloneDeep} from 'lodash'
-import {GenTableModelInput} from "@/api/__generated/model/static";
 import {
+	GenTableModelInput,
 	GenTableModelInput_TargetOf_columns,
 	GenTableModelInput_TargetOf_indexes, GenTableModelInput_TargetOf_indexes_TargetOf_columns_2
-} from "@/api/__generated/model/static/GenTableModelInput.ts";
+} from "@/api/__generated/model/static";
 import {sendMessage} from "@/utils/message.ts";
 import {useModelEditorStore} from "../../pages/ModelEditor/store/ModelEditorStore.ts";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";

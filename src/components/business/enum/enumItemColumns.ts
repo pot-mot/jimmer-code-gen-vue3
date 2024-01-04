@@ -1,6 +1,5 @@
 import {PropListColumn} from "@/components/global/list/ListProps.ts";
-import {GenEnumItemsView_TargetOf_items} from "@/api/__generated/model/static/GenEnumItemsView.ts";
-import {GenEnumItemsInput_TargetOf_items} from "@/api/__generated/model/static/GenEnumItemsInput.ts";
+import {GenEnumItemsInput_TargetOf_items, GenEnumItemsView_TargetOf_items} from "@/api/__generated/model/static";
 
 export const enumItemColumns =
     <PropListColumn<GenEnumItemsView_TargetOf_items | GenEnumItemsInput_TargetOf_items>[]>[

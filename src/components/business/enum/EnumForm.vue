@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import EditList from "@/components/global/list/EditList.vue";
-import {GenEnumItemsInput} from "@/api/__generated/model/static";
+import {GenEnumItemsInput, GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 import {onMounted, ref, watch} from "vue";
 import {enumItemColumns} from "@/components/business/enum/enumItemColumns.ts";
 import {EnumType, EnumType_CONSTANTS} from "@/api/__generated/model/enums";
@@ -9,7 +9,6 @@ import LineItem from "@/components/global/list/LineItem.vue";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {getDefaultEnum, getDefaultEnumItem} from "@/components/business/enum/defaultEnum.ts";
-import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static/GenModelInput.ts";
 
 const props = defineProps<{
 	enum?: Partial<GenModelInput_TargetOf_enums>
