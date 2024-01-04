@@ -9,6 +9,7 @@ import {deleteConfirm, sendMessage} from "@/utils/message.ts";
 import {datetimeFormat} from "@/utils/dataFormat.ts";
 import ModelDialog from "@/components/business/model/dialog/ModelDialog.vue";
 import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
+import {validateModelInputStr} from "@/shape/ModelInput.ts";
 
 const router = useRouter()
 
@@ -37,8 +38,26 @@ const toModel = (id: number) => {
 
 const editModel = ref<GenModelInput>()
 
-const handleEdit = (model: GenModelInput = getDefaultModel()) => {
-	editModel.value = model
+const handleEdit = (model?: Partial<GenModelInput>) => {
+	editModel.value = {...getDefaultModel(), ...model}
+}
+
+const handleLoadModelJson = async (e: Event) => {
+	modelsLoading.add()
+
+	const file = (e.target as HTMLInputElement)?.files?.[0]
+
+	if (file) {
+		const modelJson = await file.text()
+
+		if (validateModelInputStr(modelJson)) {
+			const modelInput = JSON.parse(modelJson)
+			modelInput.id = undefined
+			await handleSubmit(modelInput)
+		}
+	}
+
+	modelsLoading.sub()
 }
 
 const handleSubmit = async (model: GenModelInput) => {
@@ -97,10 +116,12 @@ const handleDelete = (model: GenModelSimpleView) => {
 </script>
 
 <template>
-	<div class="wrapper">
+	<div class="wrapper" v-loading="modelsLoading.isLoading()">
 		<el-button @click="handleEdit()">创建新模型</el-button>
 
-		<div v-loading="modelsLoading.isLoading()" class="container">
+		<input ref="fileUploader" type="file" accept="application/json" @change="handleLoadModelJson"/>
+
+		<div class="container">
 			<template v-for="model in models">
 				<div class="model-card hover-show" @click="toModel(model.id)">
 					<div class="buttons hover-show-item">

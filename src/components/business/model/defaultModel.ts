@@ -30,5 +30,7 @@ export const getDefaultModel = (): GenModelInput => {
         packagePath,
 
         syncConvertEntity: true,
+
+        enums: []
     }
 }

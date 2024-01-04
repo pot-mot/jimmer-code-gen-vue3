@@ -9,20 +9,25 @@ import {markRaw} from "vue";
  * @param type 消息类型
  * @param data 额外数据，例如报错
  */
-export const sendMessage = (message: string, type: "info" | "success" | "warning" | "error" = "info", data?: any ) => {
+export const sendMessage = (message: string, type: "info" | "success" | "warning" | "error" = "info", data?: any) => {
     ElMessage({
         type,
         message,
     })
 
+    const dataObj = {
+        message,
+        data
+    }
+
     if (type == "success") {
-        if (data) console.log(data)
+        if (data) console.log(dataObj)
     } else if (type == "error") {
-        if (data) console.error(data)
+        if (data) console.error(dataObj)
     } else if (type == "info") {
-        if (data) console.log(data)
+        if (data) console.log(dataObj)
     } else if (type == "warning") {
-        if (data) console.warn(data)
+        if (data) console.warn(dataObj)
     }
 }
 
@@ -61,5 +66,6 @@ export const deleteConfirm = (
         }
     ).then(() => {
         callback()
-    }).catch(() => {})
+    }).catch(() => {
+    })
 }

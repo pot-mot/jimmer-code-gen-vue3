@@ -109,7 +109,16 @@
 			</li>
 
 			<li>
-				<el-tooltip content="生成代码（获得 zip 压缩包）">
+				<el-tooltip content="导出模型">
+					<el-button :icon="ExportIcon" @click="async () => {
+						await handleSaveModel()
+						await handleModelExport()
+					}"></el-button>
+				</el-tooltip>
+			</li>
+
+			<li>
+				<el-tooltip content="下载全部（获得 zip 压缩包）">
 					<el-button :icon="DownloadIcon" @click="async () => {
 						await handleSaveModel()
 						await handleModelDownload()
@@ -180,6 +189,7 @@ import {handleHistoryKeyEvent} from "@/components/business/graphEditor/history/u
 import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";
 import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
 import {jsonFormat, jsonStrFormat} from "@/utils/json.ts";
+import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -340,6 +350,21 @@ const handleSQLDownload = async () => {
 	loadingStore.sub()
 }
 
+
+const handleModelExport = async () => {
+	loadingStore.add()
+
+	const currentModel = store._currentModel()
+
+	const modelJsonBlob = new Blob(
+		[jsonFormat(currentModel)],
+		{type: "application/json"}
+	)
+
+	saveAs(modelJsonBlob, 'model.json')
+
+	loadingStore.sub()
+}
 
 const handleModelDownload = async () => {
 	loadingStore.add()

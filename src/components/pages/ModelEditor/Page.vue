@@ -29,19 +29,24 @@ const router = useRouter()
 const route = useRoute()
 
 onMounted(async () => {
-	let paramId: string | string[] | undefined = route.params.id
-	if (paramId instanceof Array) paramId = paramId[0]
-	const id = parseInt(paramId)
+	try {
+		let paramId: string | string[] | undefined = route.params.id
+		if (paramId instanceof Array) paramId = paramId[0]
+		const id = parseInt(paramId)
 
-	const model = await api.modelService.get({id})
+		const model = await api.modelService.get({id})
 
-	if (!model) {
-		sendMessage('当前模型不存在', 'error')
+		if (!model) {
+			sendMessage('当前模型不存在', 'error', {modelId: id})
+			await router.replace("/models")
+			return
+		}
+
+		store.loadCurrentModel(model)
+	} catch (e) {
+		sendMessage('当前模型解析出现问题', 'error')
 		await router.replace("/models")
-		return
 	}
-
-	store.loadCurrentModel(model)
 })
 
 
