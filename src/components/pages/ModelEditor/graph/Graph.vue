@@ -251,9 +251,18 @@ const handleSaveModel = async () => {
 	loadingStore.sub()
 }
 
-useKeyEvent((e) => handleSelectionKeyEvent(store._graph(), e))
-useKeyEvent((e) => handleTableNodeClipBoardKeyEvent(store._graph(), e))
-useKeyEvent((e) => handleHistoryKeyEvent(store._graph(), e))
+useKeyEvent((e) => {
+	if (store.mouseenterState) handleSelectionKeyEvent(store._graph(), e)
+})
+
+useKeyEvent((e) => {
+	if (store.mouseenterState) handleTableNodeClipBoardKeyEvent(store._graph(), e)
+})
+
+useKeyEvent((e) => {
+	if (store.mouseenterState) handleHistoryKeyEvent(store._graph(), e)
+})
+
 useKeyEvent(async (e) => {
 	if (e.ctrlKey || e.metaKey) {
 		if (e.key == 's') {

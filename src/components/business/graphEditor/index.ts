@@ -43,42 +43,17 @@ export const useCommonGraphOperations = () => {
      */
     const unload = async () => {
         if (!graph.value) {
-            sendMessage('图未加载，无法卸载', 'error')
-            return
+            sendMessage('图在 unload 前已经不存在', 'error')
         }
 
         loadHooks.beforeUnload()
 
+
+        reactiveState.clearReactiveState()
         graph.value = null
 
         loadHooks.unloaded()
     }
-
-    // 判断鼠标是否在 graph 范围内
-    const mouseenterState = ref(false)
-
-    const handleMouseenter = () => {
-        mouseenterState.value = true
-    }
-    const handleMouseleave = () => {
-        mouseenterState.value = false
-    }
-
-    loadHooks.onLoaded((graph) => {
-        if (!graph) return
-        graph.container.addEventListener('mouseenter', handleMouseenter)
-        graph.container.addEventListener('mouseleave', handleMouseleave)
-    })
-
-    loadHooks.onBeforeUnload((graph) => {
-        if (!graph) return
-        graph.container.removeEventListener('mouseenter', handleMouseenter)
-        graph.container.removeEventListener('mouseleave', handleMouseleave)
-    })
-
-    loadHooks.onUnloaded(() => {
-        mouseenterState.value = false
-    })
 
     const isLoaded = computed(() => {
         return !!graph.value

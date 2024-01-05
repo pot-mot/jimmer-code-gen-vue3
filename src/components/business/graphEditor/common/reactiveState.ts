@@ -48,6 +48,9 @@ export const useGraphReactiveState = (_graph: () => Graph) => {
 
     const canRedo = ref(false)
 
+    // 判断鼠标是否在 graph 范围内
+    const mouseenterState = ref(false)
+
     const loadReactiveState = async () => {
         const graph = _graph()
 
@@ -62,6 +65,17 @@ export const useGraphReactiveState = (_graph: () => Graph) => {
         await addReactiveEventListen()
     }
 
+    const clearReactiveState = () => {
+        nodeMap.value.clear()
+        edgeMap.value.clear()
+        isSelectionEmpty.value = true
+        selectedNodeMap.value.clear()
+        selectedEdgeMap.value.clear()
+        mouseenterState.value = false
+        canRedo.value = false
+        canUndo.value = false
+    }
+
     const addReactiveEventListen = async () => {
         const graph = _graph()
 
@@ -69,6 +83,13 @@ export const useGraphReactiveState = (_graph: () => Graph) => {
             sendMessage('graph 无法获取，响应式数据无法正常设置', 'error')
             return
         }
+
+        graph.on('graph:mouseenter', () => {
+            mouseenterState.value = true
+        })
+        graph.on('graph:mouseleave', () => {
+            mouseenterState.value = false
+        })
 
         graph.on('selection:changed', () => {
             isSelectionEmpty.value = graph.isSelectionEmpty()
@@ -115,6 +136,9 @@ export const useGraphReactiveState = (_graph: () => Graph) => {
 
     return {
         loadReactiveState,
+        clearReactiveState,
+
+        mouseenterState,
 
         nodeMap,
         nodes,
