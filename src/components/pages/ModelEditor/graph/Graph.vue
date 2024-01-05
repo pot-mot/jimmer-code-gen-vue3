@@ -162,7 +162,6 @@ import {api} from "@/api";
 import {sendMessage} from "@/utils/message.ts";
 import {Pair} from "@/api/__generated/model/static";
 import {handleSelectionKeyEvent} from "@/components/business/graphEditor/selection/useSelection.ts";
-import {useSaveKeyEvent} from "@/components/business/graphEditor/storage/useSave.ts";
 import SaveIcon from "@/components/global/icons/toolbar/SaveIcon.vue";
 import LayoutIcon from "@/components/global/icons/toolbar/LayoutIcon.vue";
 import MultiCodePreview from "@/components/global/code/MultiCodePreview.vue";
@@ -181,7 +180,7 @@ import {
 	useTableModifyDialogsStore
 } from "@/components/business/modelGraphEditor/tablesDialog/TableModifyDialogsStore.ts";
 import {debugLog} from "@/utils/debugLog.ts";
-import {handleTableNodeClipBoardKeyEvent} from "@/components/business/modelGraphEditor/clipBoard/clipBoard.ts";
+import {handleTableNodeClipBoardKeyEvent} from "@/components/business/modelGraphEditor/clipBoard.ts";
 import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
 import {handleHistoryKeyEvent} from "@/components/business/graphEditor/history/useHistory.ts";
 import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";
@@ -193,6 +192,7 @@ import {
 	previewModelEntity,
 	previewModelSql
 } from "@/components/business/model/file/modelFileOperations.ts";
+import {useKeyEvent} from "@/components/global/eventHooks/mouseEventHooks.ts";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -226,6 +226,10 @@ onMounted(async () => {
 	loadingStore.sub()
 })
 
+onUnmounted(() => {
+	store.unload()
+})
+
 const handleSaveModel = async () => {
 	loadingStore.add()
 
@@ -247,20 +251,16 @@ const handleSaveModel = async () => {
 	loadingStore.sub()
 }
 
-onUnmounted(() => {
-	store.unload()
-})
-
-// 仅在图内允许的操作
-store.addEventListener('keydown', handleSelectionKeyEvent)
-
-store.addEventListener('keydown', handleTableNodeClipBoardKeyEvent)
-
-store.addEventListener('keydown', handleHistoryKeyEvent)
-
-// 全局的操作
-useSaveKeyEvent(() => {
-	handleSaveModel()
+useKeyEvent((e) => handleSelectionKeyEvent(store._graph(), e))
+useKeyEvent((e) => handleTableNodeClipBoardKeyEvent(store._graph(), e))
+useKeyEvent((e) => handleHistoryKeyEvent(store._graph(), e))
+useKeyEvent(async (e) => {
+	if (e.ctrlKey || e.metaKey) {
+		if (e.key == 's') {
+			e.preventDefault()
+			await handleSaveModel()
+		}
+	}
 })
 
 

@@ -1,7 +1,7 @@
 import {Cell, Node, Edge, Graph} from "@antv/x6";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
 import {sendMessage} from "@/utils/message.ts";
-import {loadEditorData} from "@/components/business/graphEditor/storage/graphData.ts";
+import {loadEditorData} from "@/components/business/graphEditor/common/graphData.ts";
 import {loadByTableAndAssociationInputs} from "@/components/pages/ModelEditor/graph/loadData.ts";
 import {validateCopyData} from "@/shape/CopyData.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";

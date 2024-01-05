@@ -68,10 +68,9 @@ vite build
 
 代码预览与下载需要依靠后端进行，因此**预览操作均会触发保存**。
 
+### [文件压缩与下载](src%2Fcomponents%2Fbusiness%2Fmodel%2Ffile%2FmodelFileOperations.ts)
 
-### [拖曳缩放会话框 DragDialog.vue](src%2Fcomponents%2Fglobal%2Fdialog%2FDragDialog.vue)
-
-考虑到有打开多个会话框进行数据对比的需要，项目中部分会话框使用基于 [Vue3DraggableResizable](https://github.com/a7650/vue3-draggable-resizable/blob/main/docs/document_zh.md) 实现而不使用 ElDialog。
+后端进行强类型复杂结构操作与生成结果，而前端则负责压缩包创建与下载，规避后端提供两套一摸一样仅结果不同的接口，这是一个从各种角度来说都更合理的模式。
 
 ## LICENSE
 

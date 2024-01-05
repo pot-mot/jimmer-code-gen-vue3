@@ -4,159 +4,125 @@ import {sendMessage} from "@/utils/message.ts";
 import {useSelectOperation} from "@/components/business/graphEditor/selection/selectOperation.ts";
 import {useViewOperation} from "@/components/business/graphEditor/common/viewOperation.ts";
 import {useGraphReactiveState} from "./common/reactiveState.ts";
-import {useGraphDataOperation} from "@/components/business/graphEditor/storage/graphData.ts";
+import {useGraphDataOperation} from "@/components/business/graphEditor/common/graphData.ts";
 import {useLoadHooks} from "@/utils/useLoadHooks.ts";
 
 export const useCommonGraphOperations = () => {
-    return (() => {
-        const graph: Ref<Graph | undefined | null> = ref()
+    const graph: Ref<Graph | undefined | null> = ref()
 
-        /**
-         * 获取 graph
-         */
-        const _graph = (): Graph => {
-            if (!graph.value) {
-                sendMessage("Graph 未初始化", "error")
-                throw new Error("graph is not init")
-            }
-            return graph.value
+    /**
+     * 获取 graph
+     */
+    const _graph = (): Graph => {
+        if (!graph.value) {
+            sendMessage("Graph 未初始化", "error")
+            throw new Error("graph is not init")
+        }
+        return graph.value
+    }
+
+    const reactiveState = useGraphReactiveState(_graph)
+
+    // 生命周期钩子
+    const loadHooks = useLoadHooks(() => graph.value)
+
+    /**
+     * 初始化加载函数
+     */
+    const load = async (_graph: Graph) => {
+        loadHooks.beforeLoad()
+
+        graph.value = _graph
+        await reactiveState.loadReactiveState()
+
+        loadHooks.loaded()
+    }
+
+    /**
+     * 卸载函数
+     */
+    const unload = async () => {
+        if (!graph.value) {
+            sendMessage('图未加载，无法卸载', 'error')
+            return
         }
 
-        const reactiveState = useGraphReactiveState(_graph)
+        loadHooks.beforeUnload()
 
-        // 生命周期钩子
-        const loadHooks = useLoadHooks(() => graph.value)
+        graph.value = null
 
-        /**
-         * 初始化加载函数
-         */
-        const load = async (_graph: Graph) => {
-            loadHooks.beforeLoad()
+        loadHooks.unloaded()
+    }
 
-            graph.value = _graph
-            await reactiveState.loadReactiveState()
+    // 判断鼠标是否在 graph 范围内
+    const mouseenterState = ref(false)
 
-            loadHooks.loaded()
-        }
+    const handleMouseenter = () => {
+        mouseenterState.value = true
+    }
+    const handleMouseleave = () => {
+        mouseenterState.value = false
+    }
 
-        /**
-         * 卸载函数
-         */
-        const unload = async () => {
-            if (!graph.value) {
-                sendMessage('图未加载，无法卸载', 'error')
-                return
-            }
+    loadHooks.onLoaded((graph) => {
+        if (!graph) return
+        graph.container.addEventListener('mouseenter', handleMouseenter)
+        graph.container.addEventListener('mouseleave', handleMouseleave)
+    })
 
-            loadHooks.beforeUnload()
+    loadHooks.onBeforeUnload((graph) => {
+        if (!graph) return
+        graph.container.removeEventListener('mouseenter', handleMouseenter)
+        graph.container.removeEventListener('mouseleave', handleMouseleave)
+    })
 
-            graph.value = null
+    loadHooks.onUnloaded(() => {
+        mouseenterState.value = false
+    })
 
-            loadHooks.unloaded()
-        }
+    const isLoaded = computed(() => {
+        return !!graph.value
+    })
 
-        // 判断鼠标是否在 graph 范围内
-        const mouseenterState = ref(false)
+    const selectOperations = useSelectOperation(_graph)
 
-        const handleMouseenter = () => {mouseenterState.value = true}
-        const handleMouseleave = () => {mouseenterState.value = false}
+    const fitAndLayoutOperations = useViewOperation(_graph)
 
-        loadHooks.onLoaded((graph) => {
-            if (!graph) return
-            graph.container.addEventListener('mouseenter', handleMouseenter)
-            graph.container.addEventListener('mouseleave', handleMouseleave)
-        })
+    const removeAllCells = () => {
+        const graph = _graph()
 
-        loadHooks.onBeforeUnload((graph) => {
-            if (!graph) return
-            graph.container.removeEventListener('mouseenter', handleMouseenter)
-            graph.container.removeEventListener('mouseleave', handleMouseleave)
-        })
+        const cells = graph.getCells()
+        graph.unselect(cells)
+        graph.removeCells(cells)
+    }
 
-        loadHooks.onUnloaded(() => {
-            mouseenterState.value = false
-        })
+    const removeAllEdges = () => {
+        const graph = _graph()
 
-        /**
-         * 添加事件绑定
-         * !! 只能在初始化前 (beforeLoad) 进行设置
-         */
-        const addEventListener = <K extends keyof HTMLElementEventMap>(
-            eventType: K,
-            callback: (graph: Graph, e: HTMLElementEventMap[K]) => any,
-            opt?: {
-                global: boolean
-            }
-        ) => {
-            const callbackWrapper = (e: HTMLElementEventMap[K]) => {
-                const graph = _graph()
+        const edges = graph.getEdges()
+        graph.unselect(edges)
+        graph.removeCells(edges)
+    }
 
-                if (!graph) {
-                    sendMessage('图不存在，无法执行事件', 'error')
-                }
+    const graphDataOperation = useGraphDataOperation(_graph)
 
-                if (opt?.global) {
-                    callback(graph, e)
-                } else if (mouseenterState.value) {
-                    callback(graph, e)
-                }
-            }
+    return {
+        isLoaded,
+        load,
+        unload,
+        _graph,
 
-            loadHooks.onLoaded(() => {
-                document.documentElement.addEventListener(eventType, callbackWrapper)
-            })
+        ...loadHooks,
 
-            loadHooks.onBeforeUnload(() => {
-                document.documentElement.removeEventListener(eventType, callbackWrapper)
-            })
-        }
+        removeAllCells,
+        removeAllEdges,
 
-        const isLoaded = computed(() => {
-            return !!graph.value
-        })
+        ...selectOperations,
 
-        const selectOperations = useSelectOperation(_graph)
+        ...fitAndLayoutOperations,
 
-        const fitAndLayoutOperations = useViewOperation(_graph)
+        ...reactiveState,
 
-        const removeAllCells = () => {
-            const graph = _graph()
-
-            const cells = graph.getCells()
-            graph.unselect(cells)
-            graph.removeCells(cells)
-        }
-
-        const removeAllEdges = () => {
-            const graph = _graph()
-
-            const edges = graph.getEdges()
-            graph.unselect(edges)
-            graph.removeCells(edges)
-        }
-
-        const graphDataOperation = useGraphDataOperation(_graph)
-
-        return {
-            isLoaded,
-            load,
-            unload,
-            _graph,
-
-            ...loadHooks,
-
-            addEventListener,
-
-            removeAllCells,
-            removeAllEdges,
-
-            ...selectOperations,
-
-            ...fitAndLayoutOperations,
-
-            ...reactiveState,
-
-            ...graphDataOperation
-        }
-    })()
+        ...graphDataOperation
+    }
 }
