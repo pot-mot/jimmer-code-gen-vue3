@@ -2,6 +2,8 @@
 
 项目基于 Vite + Vue3 + TypeScript + Element-Plus 编写
 
+[项目文档](https://pot-mot.github.io/jimmer-code-gen-doc/)
+
 ## Git 仓库地址
 
 ### 前端
