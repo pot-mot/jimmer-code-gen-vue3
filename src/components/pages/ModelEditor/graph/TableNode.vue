@@ -105,14 +105,14 @@ onMounted(async () => {
 	const resizePort = () => {
 		if (!node.value || !store.isLoaded) return
 
-		graph.startBatch("update table_node port")
+		graph.startBatch("Sync table_node port")
 
 		// 设置 ports 宽度
 		for (let port of node.value.ports.items) {
 			node.value.setPortProp(port.id!, `attrs/${COLUMN_PORT_SELECTOR}/width`, node.value.getSize().width)
 		}
 
-		graph.stopBatch("update table_node port")
+		graph.stopBatch("Sync table_node port")
 	}
 
 	node.value.on('change:size', () => {
@@ -127,7 +127,7 @@ onMounted(async () => {
 
 		const nodeId = node.value.id
 
-		graph.startBatch("update table_node data, port, association")
+		graph.startBatch("Sync table_node data")
 
 		const oldEdges = graph.getConnectedEdges(nodeId)
 
@@ -156,7 +156,7 @@ onMounted(async () => {
 				}
 			})
 
-			graph.stopBatch("update table_node data, port, association")
+			graph.stopBatch("Sync table_node data")
 		}, 100)
 
 	}, {deep: true})

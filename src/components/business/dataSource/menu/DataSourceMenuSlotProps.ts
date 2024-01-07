@@ -1,7 +1,7 @@
 import {Emitter} from "mitt";
 import {GenDataSourceView, GenSchemaView, GenTableCommonView} from "@/api/__generated/model/static";
 import {DataSourceMenuEvents} from "@/components/business/dataSource/menu/DataSourceMenuEvents.ts";
-import {GenSchemaDto} from "@/api/__generated/model/dto";
+import type {Dynamic_GenSchema} from "@/api/__generated/model/dynamic";
 
 interface LoadingSlotProps {
     loading: boolean
@@ -38,11 +38,11 @@ interface SchemaSlotProps {
 }
 
 interface PreviewSchemasSlotProps {
-    previewSchemas: GenSchemaDto['DEFAULT'][]
+    previewSchemas: Array<Dynamic_GenSchema>
 }
 
 interface PreviewSchemaSlotProps {
-    previewSchema: GenSchemaDto['DEFAULT']
+    previewSchema: Dynamic_GenSchema
 }
 
 interface BaseDataSourceItemSlotProps extends MenuEventBusSlotProps, DataSourceSlotProps, SchemaLoadingSlotProps, PreviewSchemasSlotProps, SchemasSlotProps {}

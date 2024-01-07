@@ -1,6 +1,9 @@
 import mitt from 'mitt'
-import {GenAssociationModelInput, GenTableModelInput,} from "@/api/__generated/model/static";
-import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static/GenModelInput.ts";
+import {
+    GenAssociationModelInput,
+    GenModelInput_TargetOf_enums,
+    GenTableModelInput,
+} from "@/api/__generated/model/static";
 
 type ModelEditorEvents = {
     createTable: undefined | { x: number, y: number },

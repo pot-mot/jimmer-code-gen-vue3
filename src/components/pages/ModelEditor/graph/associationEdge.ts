@@ -2,7 +2,7 @@ import {Edge, Graph} from "@antv/x6";
 import {
     GenAssociationModelInput,
     GenAssociationView,
-    GenTableModelInput,
+    GenTableModelInput, GenTableModelInput_TargetOf_columns,
 } from "@/api/__generated/model/static";
 import {
     EdgeConnectData,
@@ -10,7 +10,6 @@ import {
 } from "@/components/business/modelGraphEditor/associationEdge/connectData.ts";
 import {createAssociationName} from "@/components/business/modelGraphEditor/associationEdge/associationName.ts";
 import {erRouter, orthRouter} from "@/components/business/graphEditor/edgeRouter.ts";
-import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static/GenTableModelInput.ts";
 import {ASSOCIATION_EDGE} from "@/components/business/modelGraphEditor/constant.ts";
 import {PortManager} from "@antv/x6/es/model/port";
 

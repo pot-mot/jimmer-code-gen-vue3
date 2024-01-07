@@ -3,7 +3,6 @@ import {nextTick, ref, watch} from "vue";
 import {GenSchemaView} from "@/api/__generated/model/static";
 import SchemaItem from "./SchemaItem.vue";
 import {api} from "@/api";
-import {GenSchemaDto} from "@/api/__generated/model/dto";
 import DataSourceDialog from "../dialog/DataSourceDialog.vue";
 import Details from "../../../global/common/Details.vue";
 import {useLoading} from "@/hooks/useLoading.ts";
@@ -13,6 +12,7 @@ import {deleteConfirm, sendMessage} from "@/utils/message.ts";
 import {DataSourceItemSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlotProps.ts";
 import {DataSourceItemProps} from "@/components/business/dataSource/menu/DataSourceMenuProps.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
+import type {Dynamic_GenSchema} from "@/api/__generated/model/dynamic";
 
 const loadingStore = useGlobalLoadingStore()
 
@@ -22,7 +22,7 @@ const previewSchemaLoading = useLoading()
 
 const props = defineProps<DataSourceItemProps>()
 
-const previewSchemas = ref<GenSchemaDto['DEFAULT'][]>([])
+const previewSchemas = ref<Array<Dynamic_GenSchema>>([])
 
 const getPreviewSchemas = async () => {
 	previewSchemaLoading.start()
@@ -137,15 +137,17 @@ defineSlots<DataSourceItemSlots>()
 
 						<template #content>
 							<div v-for="schema in previewSchemas">
-								<slot
-									name="previewSchema"
-									:dataSource="dataSource" :eventBus="eventBus"
-									:loadedSchemaLoading="loadedSchemaLoading.isLoading()"
-									:schemas="loadedSchemas"
-									:previewSchemaLoading="previewSchemaLoading.isLoading()"
-									:previewSchemas="previewSchemas" :previewSchema="schema">
-									<el-button link @click="loadSchema(schema.name)">{{ schema.name }}</el-button>
-								</slot>
+								<template v-if="schema.name != undefined">
+									<slot
+										name="previewSchema"
+										:dataSource="dataSource" :eventBus="eventBus"
+										:loadedSchemaLoading="loadedSchemaLoading.isLoading()"
+										:schemas="loadedSchemas"
+										:previewSchemaLoading="previewSchemaLoading.isLoading()"
+										:previewSchemas="previewSchemas" :previewSchema="schema">
+										<el-button link @click="loadSchema(schema.name)">{{ schema.name }}</el-button>
+									</slot>
+								</template>
 							</div>
 						</template>
 

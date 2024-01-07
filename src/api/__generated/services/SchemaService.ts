@@ -20,7 +20,15 @@ export class SchemaService {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.dataSourceId);
         _uri += '/schema/';
-        _uri += encodeURIComponent(options.schemaIds);
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.schemaIds?.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'schemaIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenSchemaView>>;
     }
     

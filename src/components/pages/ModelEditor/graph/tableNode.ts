@@ -125,16 +125,14 @@ export const importTables = <T extends GenTableModelInput | GenTableColumnsView>
 
         const tableInput: GenTableModelInput = Object.keys(table).includes('id') ? tableViewToInput(table as GenTableColumnsView) : table as GenTableModelInput
 
-        return tableToNode(tableInput, graph.graphToLocal(
+        return graph.addNode(tableToNode(tableInput, graph.graphToLocal(
             initX ? initX : svgRect.width * 3 / 8 + Math.random() * 20,
             initY ? initY : svgRect.height * 3 / 8 + Math.random() * 20
-        ))
+        )))
     })
 
-    graph.addNodes(nodes)
-
     return {
-        nodes: graph.getNodes().filter(node => tables.map(it => it.name).includes(node.getData().table.name)),
+        nodes,
         tableNameMap,
     }
 }

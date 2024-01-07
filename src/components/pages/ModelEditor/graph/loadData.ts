@@ -5,15 +5,13 @@ import {
 } from "@/api/__generated/model/static";
 import {api} from "@/api";
 import {importTables, tableViewToInput} from "./tableNode.ts";
-import {Edge, Graph} from '@antv/x6'
+import {Graph} from '@antv/x6'
 import {associationViewToInput, importAssociations} from "@/components/pages/ModelEditor/graph/associationEdge.ts";
 
 /**
  * 将 tables 导入画布
  */
 export const loadByTableViews = async (graph: Graph, tables: GenTableColumnsView[]) => {
-    graph.startBatch('loadModel')
-
     let associations = await api.associationService.queryByTable({
         tableIds: tables.map(it => it.id),
         selectType: "OR"
@@ -27,7 +25,7 @@ export const loadByTableViews = async (graph: Graph, tables: GenTableColumnsView
 }
 
 export const loadByTableAndAssociationInputs = (graph: Graph, tables: GenTableModelInput[], associations: GenAssociationModelInput[]) => {
-    graph.startBatch('loadModel')
+    graph.startBatch('Load from inputs')
 
     const {nodes, tableNameMap} = importTables(graph, tables)
 
@@ -48,9 +46,9 @@ export const loadByTableAndAssociationInputs = (graph: Graph, tables: GenTableMo
         }
     })
 
-    const edges: Edge[] = importAssociations(graph, associations)
+    const edges = importAssociations(graph, associations)
 
-    graph.stopBatch('loadModel')
+    graph.stopBatch('Load from inputs')
 
     return {nodes, edges}
 }

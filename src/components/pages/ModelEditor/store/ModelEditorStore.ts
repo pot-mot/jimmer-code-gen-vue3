@@ -2,7 +2,7 @@ import {defineStore} from "pinia";
 import {useCommonGraphOperations} from "@/components/business/graphEditor";
 import {ModelEditorEventBus} from "./ModelEditorEventBus.ts";
 import {sendMessage} from "@/utils/message.ts";
-import {nextTick, ref} from "vue";
+import {ref} from "vue";
 import {api} from "@/api";
 import {loadByTableViews} from "../graph/loadData.ts";
 import {GenModelInput, GenModelView, GenTableColumnsView, GenTableModelInput} from "@/api/__generated/model/static";
@@ -161,8 +161,6 @@ export const useModelEditorStore =
 
                 const {nodes, edges} = await loadByTableViews(graph, tables)
 
-                await nextTick()
-
                 setTimeout(() => {
                     if (nodes.length == 1) {
                         commonOperations.focus(nodes[0])
@@ -170,7 +168,7 @@ export const useModelEditorStore =
                         graph.resetSelection([...nodes, ...edges])
                         commonOperations.layoutAndFit()
                     }
-                }, 200)
+                }, 100 + nodes.length * 40)
             }
 
 

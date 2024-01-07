@@ -145,13 +145,6 @@ export const useStyle = (graph: Graph) => {
         })
     })
 
-    graph.on('node:added', ({node}) => {
-        stopHistoryAction(graph, () => {
-            nodeUnhover(node)
-            nodeUnselected(node)
-        })
-    })
-
     graph.on('edge:selected', ({edge}) => {
         stopHistoryAction(graph, () => edgeSelected(edge))
     })
@@ -181,13 +174,6 @@ export const useStyle = (graph: Graph) => {
                     nodeUnhover(node)
                 }
             })
-        })
-    })
-
-    graph.on('edge:added', ({edge}) => {
-        stopHistoryAction(graph, () => {
-            edgeUnhover(edge)
-            edgeUnselected(edge)
         })
     })
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
-import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static/GenModelInput.ts";
+import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 interface EdgeItem {
 	genEnum: GenModelInput_TargetOf_enums
 }
