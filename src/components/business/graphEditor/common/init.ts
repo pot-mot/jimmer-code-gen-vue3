@@ -3,6 +3,7 @@ import debounce from "lodash/debounce";
 import {useStyle, useHoverToFront} from "../../modelGraphEditor/highlight.ts";
 import {useHistory} from "../history/useHistory.ts";
 import {useSelection} from "../selection/useSelection.ts";
+import {useKeyBoard} from "@/components/business/graphEditor/keyboard/useKeyBoard.ts";
 
 export const initGraph = (
     container: HTMLElement,
@@ -26,6 +27,7 @@ export const initGraph = (
 
     useHoverToFront(graph)
     useStyle(graph)
+    useKeyBoard(graph)
     useHistory(graph)
     useSelection(graph)
 

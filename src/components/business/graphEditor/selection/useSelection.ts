@@ -25,47 +25,69 @@ export const useSelection = (graph: Graph) => {
 const normalMoveStep = 40
 const smallMoveStep = 10
 
-export const handleSelectionKeyEvent = (graph: Graph, e: KeyboardEvent) => {
-    if ((e.ctrlKey || e.metaKey) && e.key == 'a') {
-        e.preventDefault()
-        selectAll(graph)
-    }
-
-    if (e.key == 'Delete') {
-        if (e.shiftKey) {
-            removeSelectedEdges(graph)
-        } else {
-            removeSelectedCells(graph)
-        }
-    }
-
-
-    if (!graph.isSelectionEmpty()) {
-        const nodes = graph.getSelectedCells()
+const getSelectNodes = (graph: Graph) => {
+    if (!graph.isSelectionEmpty())
+        return graph.getSelectedCells()
             .filter(cell => cell.isNode())
             .map(cell => <Node>cell)
+}
 
-        const size = e.ctrlKey ? smallMoveStep : normalMoveStep
+export const handleSelectionKeyEvent = (graph: Graph) => {
+    graph.bindKey(["ctrl+a", "command+a"], (e) => {
+        e.preventDefault()
+        selectAll(graph)
+    })
 
-        if (e.key == 'ArrowUp') {
-            nodes.forEach(node => {
-                node.setPosition({x: node.position().x, y: node.position().y - size})
-            })
-        }
-        if (e.key == 'ArrowDown') {
-            nodes.forEach(node => {
-                node.setPosition({x: node.position().x, y: node.position().y + size})
-            })
-        }
-        if (e.key == 'ArrowLeft') {
-            nodes.forEach(node => {
-                node.setPosition({x: node.position().x - size, y: node.position().y})
-            })
-        }
-        if (e.key == 'ArrowRight') {
-            nodes.forEach(node => {
-                node.setPosition({x: node.position().x + size, y: node.position().y})
-            })
-        }
-    }
+    graph.bindKey(["delete", "backspace"], (e) => {
+        e.preventDefault()
+        removeSelectedCells(graph)
+    })
+    graph.bindKey(["shift+delete", "shift+backspace"], (e) => {
+        e.preventDefault()
+        removeSelectedEdges(graph)
+    })
+
+    graph.bindKey(["up"], () => {
+        getSelectNodes(graph)?.forEach(node => {
+            node.setPosition({x: node.position().x, y: node.position().y - normalMoveStep})
+        })
+    })
+    graph.bindKey(["ctrl+up"], () => {
+        getSelectNodes(graph)?.forEach(node => {
+            node.setPosition({x: node.position().x, y: node.position().y - smallMoveStep})
+        })
+    })
+
+    graph.bindKey(["down"], () => {
+        getSelectNodes(graph)?.forEach(node => {
+            node.setPosition({x: node.position().x, y: node.position().y + normalMoveStep})
+        })
+    })
+    graph.bindKey(["ctrl+down"], () => {
+        getSelectNodes(graph)?.forEach(node => {
+            node.setPosition({x: node.position().x, y: node.position().y + smallMoveStep})
+        })
+    })
+
+    graph.bindKey(["left"], () => {
+        getSelectNodes(graph)?.forEach(node => {
+            node.setPosition({x: node.position().x - normalMoveStep, y: node.position().y})
+        })
+    })
+    graph.bindKey(["ctrl+left"], () => {
+        getSelectNodes(graph)?.forEach(node => {
+            node.setPosition({x: node.position().x - smallMoveStep, y: node.position().y})
+        })
+    })
+
+    graph.bindKey(["right"], () => {
+        getSelectNodes(graph)?.forEach(node => {
+            node.setPosition({x: node.position().x + normalMoveStep, y: node.position().y})
+        })
+    })
+    graph.bindKey(["ctrl+right"], () => {
+        getSelectNodes(graph)?.forEach(node => {
+            node.setPosition({x: node.position().x + smallMoveStep, y: node.position().y})
+        })
+    })
 }

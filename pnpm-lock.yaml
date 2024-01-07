@@ -11,6 +11,9 @@ dependencies:
   '@antv/x6-plugin-history':
     specifier: ^2.2.3
     version: registry.npmmirror.com/@antv/x6-plugin-history@2.2.3(@antv/x6@2.13.1)
+  '@antv/x6-plugin-keyboard':
+    specifier: ^2.2.1
+    version: registry.npmmirror.com/@antv/x6-plugin-keyboard@2.2.1(@antv/x6@2.13.1)
   '@antv/x6-plugin-minimap':
     specifier: ^2.0.5
     version: registry.npmmirror.com/@antv/x6-plugin-minimap@2.0.5(@antv/x6@2.13.1)
@@ -152,6 +155,18 @@ packages:
       '@antv/x6': ^2.x
     dependencies:
       '@antv/x6': registry.npmmirror.com/@antv/x6@2.13.1
+    dev: false
+
+  registry.npmmirror.com/@antv/x6-plugin-keyboard@2.2.1(@antv/x6@2.13.1):
+    resolution: {integrity: sha512-sqfN0h4txVO211uIeKBd3zQ/IN2zPzDThWNTEhRx7Lecg1fO7uRXWBbOA48j3EgpRFXVexdSzIEVJEx+IWUdYw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@antv/x6-plugin-keyboard/-/x6-plugin-keyboard-2.2.1.tgz}
+    id: registry.npmmirror.com/@antv/x6-plugin-keyboard/2.2.1
+    name: '@antv/x6-plugin-keyboard'
+    version: 2.2.1
+    peerDependencies:
+      '@antv/x6': ^2.x
+    dependencies:
+      '@antv/x6': registry.npmmirror.com/@antv/x6@2.13.1
+      mousetrap: registry.npmmirror.com/mousetrap@1.6.5
     dev: false
 
   registry.npmmirror.com/@antv/x6-plugin-minimap@2.0.5(@antv/x6@2.13.1):
@@ -1937,6 +1952,12 @@ packages:
     resolution: {integrity: sha512-mjv1G1ZzfEE3k9HZN0dQ2olMdwIfaeAAjFiwNprLfYNRSz7ctv9XuCT7gPtBGrMUeV1/iZzYKj17Khu1hxoHOA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/monaco-editor/-/monaco-editor-0.45.0.tgz}
     name: monaco-editor
     version: 0.45.0
+    dev: false
+
+  registry.npmmirror.com/mousetrap@1.6.5:
+    resolution: {integrity: sha512-QNo4kEepaIBwiT8CDhP98umTetp+JNfQYBWvC1pc6/OAibuXtRcxZ58Qz8skvEHYvURne/7R8T5VoOI7rDsEUA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/mousetrap/-/mousetrap-1.6.5.tgz}
+    name: mousetrap
+    version: 1.6.5
     dev: false
 
   registry.npmmirror.com/ms@2.1.2:

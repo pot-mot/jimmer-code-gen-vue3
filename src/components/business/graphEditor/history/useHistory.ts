@@ -45,14 +45,8 @@ export const redo = (graph: Graph) => {
     }
 }
 
-export const handleHistoryKeyEvent = (graph: Graph, e: KeyboardEvent) => {
-    if (e.ctrlKey || e.metaKey) {
-        if (e.key == 'z') {
-            e.preventDefault()
-            undo(graph)
-        } else if (e.key == 'Z') {
-            e.preventDefault()
-            redo(graph)
-        }
-    }
+export const handleHistoryKeyEvent = (graph: Graph) => {
+    graph.bindKey(["ctrl+z", "command+z"], () => undo(graph))
+
+    graph.bindKey(["ctrl+shift+z", "command+shift+z"], () => redo(graph))
 }

@@ -192,7 +192,6 @@ import {
 	previewModelEntity,
 	previewModelSql
 } from "@/components/business/model/file/modelFileOperations.ts";
-import {useKeyEvent} from "@/components/global/eventHooks/mouseEventHooks.ts";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -223,6 +222,17 @@ onMounted(async () => {
 		ModelEditorEventBus.emit('createTable', {x: e.offsetX, y: e.offsetY})
 	})
 
+	handleSelectionKeyEvent(graph)
+
+	handleTableNodeClipBoardKeyEvent(graph)
+
+	handleHistoryKeyEvent(graph)
+
+	graph.bindKey(["ctrl+s", "command+s"], (e) => {
+		e.preventDefault()
+		handleSaveModel()
+	})
+
 	loadingStore.sub()
 })
 
@@ -250,27 +260,6 @@ const handleSaveModel = async () => {
 
 	loadingStore.sub()
 }
-
-useKeyEvent((e) => {
-	if (store.mouseenterState) handleSelectionKeyEvent(store._graph(), e)
-})
-
-useKeyEvent((e) => {
-	if (store.mouseenterState) handleTableNodeClipBoardKeyEvent(store._graph(), e)
-})
-
-useKeyEvent((e) => {
-	if (store.mouseenterState) handleHistoryKeyEvent(store._graph(), e)
-})
-
-useKeyEvent(async (e) => {
-	if (e.ctrlKey || e.metaKey) {
-		if (e.key == 's') {
-			e.preventDefault()
-			await handleSaveModel()
-		}
-	}
-})
 
 
 /**

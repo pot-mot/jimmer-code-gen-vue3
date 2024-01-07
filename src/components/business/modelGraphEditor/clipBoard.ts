@@ -6,19 +6,18 @@ import {loadByTableAndAssociationInputs} from "@/components/pages/ModelEditor/gr
 import {validateCopyData} from "@/shape/CopyData.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
 
-export const handleTableNodeClipBoardKeyEvent = async (graph: Graph, e: KeyboardEvent) => {
-    if (e.ctrlKey || e.metaKey) {
-        if (e.key == 'c') {
-            e.preventDefault()
-            await tableNodeCopy(graph)
-        } else if (e.key == 'x') {
-            e.preventDefault()
-            await tableNodeCut(graph)
-        } else if (e.key == 'v') {
-            e.preventDefault()
-            await tableNodePaste(graph)
-        }
-    }
+export const handleTableNodeClipBoardKeyEvent = (graph: Graph) => {
+    graph.bindKey(["ctrl+c", "command+c"], () => {
+        tableNodeCopy(graph)
+    })
+
+    graph.bindKey(["ctrl+x", "command+x"], () => {
+        tableNodeCut(graph)
+    })
+
+    graph.bindKey(["ctrl+v", "command+v"], () => {
+        tableNodePaste(graph)
+    })
 }
 
 export const tableNodeCopy = async (graph: Graph) => {
@@ -51,7 +50,7 @@ export const tableNodePaste = async (graph: Graph) => {
     try {
         const value = JSON.parse(text)
 
-        let res: {nodes: Node[], edges: Edge[]} | undefined
+        let res: { nodes: Node[], edges: Edge[] } | undefined
 
         if (validateCopyData(value)) {
             const {tables, associations} = value
