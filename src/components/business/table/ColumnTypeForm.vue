@@ -3,7 +3,7 @@ import {ModelValueProps} from "@/components/global/dialog/DragDialogProps.ts";
 import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static";
 import {ModelValueEmits} from "@/components/global/dialog/DragDialogEmits.ts";
 import {ref, watch} from "vue";
-import {Close, EditPen, Plus} from "@element-plus/icons-vue";
+import {EditPen, Plus} from "@element-plus/icons-vue";
 import {useJDBCTypeStore} from "@/components/business/jdbcType/JDBCTypeStore.ts";
 import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
 
@@ -30,9 +30,11 @@ const handleTypeCodeChange = () => {
 	const typeCode = props.modelValue.typeCode
 
 	const columnDefaults = columnDefaultStore.get(typeCode)
+
 	if (columnDefaults.length == 1) {
 		const columnDefault = columnDefaults[0]
 
+		props.modelValue.overwriteByType = true
 		props.modelValue.type = columnDefault.type
 		props.modelValue.displaySize = columnDefault.displaySize
 		props.modelValue.numericPrecision = columnDefault.numericPrecision
@@ -42,6 +44,9 @@ const handleTypeCodeChange = () => {
 		if (type) {
 			props.modelValue.type = type
 		}
+		props.modelValue.overwriteByType = false
+		props.modelValue.displaySize = 0
+		props.modelValue.numericPrecision = 0
 	}
 }
 
@@ -61,11 +66,6 @@ watch(() => props.modelValue.typeCode, () => {
 				</el-input>
 			</div>
 		</template>
-
-		<div style="position: absolute; top: 0; right: 0;">
-			<el-button :icon="Close" @click="popoverOpenState = false" type="danger" link></el-button>
-		</div>
-
 
 		<el-form v-if="jdbcTypeStore.isLoaded && columnDefaultStore.isLoaded">
 			<el-form-item label="jdbc 类型">
@@ -106,6 +106,10 @@ watch(() => props.modelValue.typeCode, () => {
 				<el-button v-if="modelValue.enum == undefined" :icon="Plus" @click="emits('createEnum')"></el-button>
 				<el-button v-else :icon="EditPen" @click="emits('editEnum', modelValue.enum.name)"></el-button>
 			</el-form-item>
+
+			<div style="text-align: right;">
+				<el-button @click="popoverOpenState = false">关闭</el-button>
+			</div>
 		</el-form>
 	</el-popover>
 </template>

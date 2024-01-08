@@ -106,7 +106,7 @@ const handleCancel = () => {
 
 		<el-form-item label="内容" v-if="editValue && model.graphData != undefined">
 			<CodeEditor
-				style="height: 100%; min-height: 450px; max-height: calc(100vh - 300px); border: 1px solid #ccc; border-radius: 8px;"
+				style="height: 100%; max-height: calc(100vh - 300px); border: 1px solid #ccc; border-radius: 8px;"
 				v-model="model.graphData" language="json"></CodeEditor>
 		</el-form-item>
 
