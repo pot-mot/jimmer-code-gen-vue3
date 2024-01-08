@@ -30,13 +30,16 @@ export const useColumnDefaultStore = defineStore(
             return _columnDefaults.value
         })
 
-        const getColumnDefaults = (jdbcTypeCode: number, dataSourceType?: DataSourceType) => {
+        const getColumnDefaults = (jdbcTypeCode: number, dataSourceType?: DataSourceType): GenColumnDefaultView[] => {
             const contextStore = useGenContextStore()
 
             if (!dataSourceType) {
                 dataSourceType = contextStore.dataSourceType
             }
-            return columnDefaults.value?.filter(it => it.dataSourceType == dataSourceType && it.typeCode == jdbcTypeCode)
+
+            if (!columnDefaults.value) return []
+
+            return columnDefaults.value.filter(it => it.dataSourceType == dataSourceType && it.typeCode == jdbcTypeCode)
         }
 
         return {

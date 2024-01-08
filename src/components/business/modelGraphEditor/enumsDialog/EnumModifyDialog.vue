@@ -2,7 +2,6 @@
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {ModelEditorEventBus} from "../../../pages/ModelEditor/store/ModelEditorEventBus.ts";
 import EnumForm from "@/components/business/enum/EnumForm.vue";
-import {cloneDeep} from "lodash";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 
 interface EnumModifyDialogProps {
@@ -24,6 +23,6 @@ const handleSubmit = (genEnum: GenModelInput_TargetOf_enums) => {
 
 <template>
 	<DragDialog :model-value="true" :can-resize="true" :init-w="800" :init-h="600" :init-y="100" @close="emits('close')">
-		<EnumForm :enum="cloneDeep(genEnum)" @cancel="emits('close')" @submit="handleSubmit"></EnumForm>
+		<EnumForm :enum="genEnum" @cancel="emits('close')" @submit="handleSubmit"></EnumForm>
 	</DragDialog>
 </template>

@@ -18,10 +18,13 @@ import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEdi
 import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
 import {tableIndexColumns} from "@/components/business/table/tableIndexColumns.ts";
 import Details from "@/components/global/common/Details.vue";
+import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
 
 const store = useModelEditorStore()
 
 const jdbcTypeStore = useJDBCTypeStore()
+
+const columnDefaultStore = useColumnDefaultStore()
 
 const defaultTable: GenTableModelInput = {
 	name: "",
@@ -58,6 +61,24 @@ const defaultIndex: GenTableModelInput_TargetOf_indexes = {
 	columns: []
 }
 
+const getDefaultColumn = () => {
+	const columnDefaults = columnDefaultStore.get(defaultColumn.typeCode)
+
+	if (columnDefaults.length == 0) {
+		return defaultColumn
+	} else {
+		const columnDefault = columnDefaults[0]
+		return {
+			...defaultColumn,
+			overwriteByType: true,
+			type: columnDefault.type,
+			displaySize: columnDefault.displaySize,
+			numericPrecision: columnDefault.numericPrecision,
+			defaultValue: columnDefault.defaultValue
+		}
+	}
+}
+
 interface ModelFormProps {
 	id?: string,
 	table?: GenTableModelInput
@@ -71,9 +92,7 @@ const table = ref<GenTableModelInput>(cloneDeep(defaultTable))
 
 watch(() => props.table, (value) => {
 	if (!value) return
-
-	table.value = cloneDeep(value)
-
+	table.value = value
 }, {immediate: true})
 
 const checkConfig = ref({
@@ -258,7 +277,7 @@ const handleCancel = () => {
 			<EditList
 				:columns="tableColumnColumns"
 				v-model:lines="table.columns"
-				:defaultLine="defaultColumn"
+				:defaultLine="getDefaultColumn"
 				style="width: 98%;">
 
 				<template #icon="{data}">

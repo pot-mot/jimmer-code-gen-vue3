@@ -52,7 +52,7 @@ const handleTypeCodeChange = () => {
 
 watch(() => props.modelValue.typeCode, () => {
 	handleTypeCodeChange()
-}, {immediate: true})
+})
 </script>
 
 <template>

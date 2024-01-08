@@ -246,28 +246,54 @@ export const useModelEditorStore =
                 enumModifyStore.open(name, genEnum)
             })
 
+            const syncEnumNameInTable = (table: GenTableModelInput, oldEnumName: string, newEnumName: string | undefined): GenTableModelInput => {
+                table.columns.forEach(column => {
+                    if (column.enum && column.enum.name == oldEnumName) {
+                        if (newEnumName == undefined) {
+                            column.enum = undefined
+                        } else {
+                            column.enum.name = newEnumName
+                        }
+                    }
+                })
+
+                return table
+            }
+
+            const judgeEnumInTable = (enumName: string, table: GenTableModelInput): boolean => {
+                return table.columns
+                    .flatMap(it => it.enum?.name).filter(it => it != undefined)
+                    .includes(enumName)
+            }
+
+            const syncEnumNameForTables = (oldEnumName: string, newEnumName: string | undefined) => {
+                const graph = _graph()
+
+                const nodes = graph.getNodes().filter(it => it.shape == TABLE_NODE)
+
+                tableModifyStore.items.forEach((value, key) => {
+                    if (value && judgeEnumInTable(oldEnumName, value)) {
+                        const newTable = syncEnumNameInTable(value, oldEnumName, newEnumName)
+                        tableModifyStore.set(key, newTable)
+                    }
+                })
+
+                for (let node of nodes) {
+                    const table = node.getData()?.table as GenTableModelInput | undefined
+                    if (table && judgeEnumInTable(oldEnumName, table)) {
+                        const newTable = syncEnumNameInTable(table, oldEnumName, newEnumName)
+                        updateTableNodeData(node, newTable)
+                    }
+                }
+            }
+
             ModelEditorEventBus.on('modifiedEnum', ({name, genEnum}) => {
                 const currentModel = _currentModel()
 
                 currentModel.enums = currentModel.enums.filter(it => it.name != name)
                 currentModel.enums.push(genEnum)
 
-                const graph = _graph()
-
-                const nodes = graph.getNodes().filter(it => it.shape == TABLE_NODE)
-
-                for (let node of nodes) {
-                    const table = node.getData()?.table as GenTableModelInput | undefined
-                    if (table) {
-                        table.columns.forEach(column => {
-                            if (column.enum && column.enum.name == name) {
-                                column.enum.name = genEnum.name
-                            }
-                        })
-
-                        updateTableNodeData(node, table)
-                    }
-                }
+                syncEnumNameForTables(name, genEnum.name)
 
                 enumModifyStore.close(name)
             })
@@ -277,22 +303,7 @@ export const useModelEditorStore =
 
                 currentModel.enums = currentModel.enums.filter(it => it.name != name)
 
-                const graph = _graph()
-
-                const nodes = graph.getNodes().filter(it => it.shape == TABLE_NODE)
-
-                for (let node of nodes) {
-                    const table = node.getData()?.table as GenTableModelInput | undefined
-                    if (table) {
-                        table.columns.forEach(column => {
-                            if (column.enum && column.enum.name == name) {
-                                column.enum = undefined
-                            }
-                        })
-
-                        updateTableNodeData(node, table)
-                    }
-                }
+                syncEnumNameForTables(name, undefined)
             })
 
             return {

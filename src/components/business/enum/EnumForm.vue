@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import EditList from "@/components/global/list/EditList.vue";
 import {GenEnumItemsInput, GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
-import {onMounted, ref, watch} from "vue";
+import {ref, watch} from "vue";
 import {enumItemColumns} from "@/components/business/enum/enumItemColumns.ts";
 import {EnumType, EnumType_CONSTANTS} from "@/api/__generated/model/enums";
 import Line from "@/components/global/list/Line.vue";
@@ -29,9 +29,9 @@ const getData = async () => {
 	}
 }
 
-onMounted(() => {
+watch(() => props.enum, () => {
 	getData()
-})
+}, {immediate: true})
 
 watch(() => genEnum.value.enumType, (value) => {
 	if (value == 'NAME') {
@@ -141,7 +141,8 @@ const handleCancel = () => {
 		<EditList
 			v-model:lines="genEnum.items"
 			:columns="enumItemColumns"
-			:defaultLine="getDefaultEnumItem">
+			:defaultLine="getDefaultEnumItem"
+			style="padding-bottom: 2em;">
 			<template #value="{data}">
 				<el-input v-if="genEnum.enumType == 'NAME'" v-model="data.mappedValue"></el-input>
 				<el-input v-else-if="genEnum.enumType == 'ORDINAL'" type="number" v-model="data.mappedValue"></el-input>
@@ -149,7 +150,7 @@ const handleCancel = () => {
 			</template>
 		</EditList>
 
-		<div style="text-align: right;">
+		<div style="text-align: right; position: absolute; bottom: 0.5em; left: 1em; right: 1em;">
 			<el-button type="info" @click="handleCancel">取消</el-button>
 			<el-button type="warning" @click="handleSubmit">提交</el-button>
 		</div>

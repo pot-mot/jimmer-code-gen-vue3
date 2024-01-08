@@ -17,14 +17,18 @@ export const loadByTableViews = async (graph: Graph, tables: GenTableColumnsView
         selectType: "OR"
     })
 
-    return loadByTableAndAssociationInputs(
+    return loadByInputs(
         graph,
         tables.map(it => tableViewToInput(it)),
         associations.map(it => associationViewToInput(it))
     )
 }
 
-export const loadByTableAndAssociationInputs = (graph: Graph, tables: GenTableModelInput[], associations: GenAssociationModelInput[]) => {
+export const loadByInputs = (
+    graph: Graph,
+    tables: GenTableModelInput[],
+    associations: GenAssociationModelInput[]
+) => {
     graph.startBatch('Load from inputs')
 
     const {nodes, tableNameMap} = importTables(graph, tables)
