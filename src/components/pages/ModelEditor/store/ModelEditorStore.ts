@@ -21,6 +21,7 @@ import {TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
 import {updateTableNodeData} from "@/components/business/modelGraphEditor/tableNode/tableNodeData.ts";
 import {useEnumCreateDialogStore} from "@/components/business/modelGraphEditor/enumsDialog/EnumCreateDialogStore.ts";
 import {useEnumModifyDialogsStore} from "@/components/business/modelGraphEditor/enumsDialog/EnumModifyDialogsStore.ts";
+import {cloneDeep} from "lodash";
 
 export const useModelEditorStore =
     defineStore(
@@ -203,7 +204,7 @@ export const useModelEditorStore =
             const tableModifyStore = useTableModifyDialogsStore()
 
             ModelEditorEventBus.on('modifyTable', ({id, table}) => {
-                tableModifyStore.open(id, table)
+                tableModifyStore.open(id, cloneDeep(table))
             })
 
             ModelEditorEventBus.on('modifiedTable', ({id, table}) => {
@@ -243,11 +244,13 @@ export const useModelEditorStore =
             const enumModifyStore = useEnumModifyDialogsStore()
 
             ModelEditorEventBus.on('modifyEnum', ({name, genEnum}) => {
-                enumModifyStore.open(name, genEnum)
+                enumModifyStore.open(name, cloneDeep(genEnum))
             })
 
             const syncEnumNameInTable = (table: GenTableModelInput, oldEnumName: string, newEnumName: string | undefined): GenTableModelInput => {
-                table.columns.forEach(column => {
+                const tempTable = cloneDeep(table)
+
+                tempTable.columns.forEach(column => {
                     if (column.enum && column.enum.name == oldEnumName) {
                         if (newEnumName == undefined) {
                             column.enum = undefined
@@ -257,7 +260,7 @@ export const useModelEditorStore =
                     }
                 })
 
-                return table
+                return tempTable
             }
 
             const judgeEnumInTable = (enumName: string, table: GenTableModelInput): boolean => {
