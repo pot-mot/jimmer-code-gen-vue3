@@ -126,10 +126,10 @@ const handleSubmit = async () => {
 	})
 	const ids = await api.columnDefaultService.saveAll({body: tempColumnDefaults.value})
 
-	const result = await columnDefaultStore.reset()
+	await columnDefaultStore.reset()
 
-	if (ids.length == tempColumnDefaults.value.length && result) {
-		columnDefaults.value = result
+	if (ids.length == tempColumnDefaults.value.length) {
+		columnDefaults.value = tempColumnDefaults.value
 		sendMessage('配置修改成功', 'success')
 		editState.value = false
 	} else {

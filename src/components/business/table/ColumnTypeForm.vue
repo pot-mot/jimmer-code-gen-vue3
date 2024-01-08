@@ -2,7 +2,7 @@
 import {ModelValueProps} from "@/components/global/dialog/DragDialogProps.ts";
 import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static";
 import {ModelValueEmits} from "@/components/global/dialog/DragDialogEmits.ts";
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {Close, EditPen, Plus} from "@element-plus/icons-vue";
 import {useJDBCTypeStore} from "@/components/business/jdbcType/JDBCTypeStore.ts";
 import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
@@ -44,6 +44,10 @@ const handleTypeCodeChange = () => {
 		}
 	}
 }
+
+watch(() => props.modelValue.typeCode, () => {
+	handleTypeCodeChange()
+}, {immediate: true})
 </script>
 
 <template>
@@ -67,7 +71,6 @@ const handleTypeCodeChange = () => {
 			<el-form-item label="jdbc 类型">
 				<el-select
 					v-model="modelValue.typeCode"
-					@change="handleTypeCodeChange"
 					filterable
 					style="width: 100%">
 					<el-option v-for="type in jdbcTypeStore.list"
