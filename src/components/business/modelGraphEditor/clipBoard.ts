@@ -68,14 +68,14 @@ export const tableNodePaste = async (graph: Graph) => {
 
         let res: { nodes: Node[], edges: Edge[] } | undefined
 
+        graph.startBatch("paste")
+
         if (validateCopyData(value)) {
             const {
                 tables,
                 associations,
                 enums
             } = value as CopyData
-
-            graph.startBatch("paste")
 
             res = loadByInputs(graph, tables, associations)
 
@@ -103,18 +103,20 @@ export const tableNodePaste = async (graph: Graph) => {
             const cells = value.json.cells as Cell[]
             graph.parseJSON(cells)
 
-            graph.startBatch("paste")
-
             res = loadEditorData(graph, value, false)
         }
 
-        if (res) {
-            setTimeout(() => {
-                graph.resetSelection([...res!.nodes, ...res!.edges])
+        if (res != undefined) {
+            const {nodes, edges} = res
 
-                graph.stopBatch("paste")
-            }, 200)
+            setTimeout(() => {
+                graph.resetSelection([...nodes.map(it => it.id), ...edges.map(it => it.id)])
+            }, 100 + nodes.length * 30 + edges.length * 20)
+        } else {
+            sendMessage('剪切板中数据无法直接导入画布', 'info', text)
         }
+
+        graph.stopBatch("paste")
 
     } catch (e) {
         sendMessage('剪切板中数据无法直接导入画布', 'info', {error: e, clipboardValue: text})

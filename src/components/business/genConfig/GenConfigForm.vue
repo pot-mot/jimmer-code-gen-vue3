@@ -41,7 +41,7 @@ const handleCancel = () => {
 	<div v-loading="!genConfigStore.isLoaded">
 		<h3 style="width: 100%; text-align: center; height: 2em; line-height: 2em;">{{ GenerateConfigurator.GenConfigForm.label }}</h3>
 
-		<el-form v-if="config">
+		<el-form v-if="config" size="small">
 			<el-row :gutter="24">
 				<el-col :span="8">
 					<el-form-item label="数据源类型">

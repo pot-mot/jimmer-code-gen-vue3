@@ -39,8 +39,8 @@ export const loadEditorData = (graph: Graph, data: GraphEditorData, reset: boole
     const nodes = <Node[]>cells.filter(it => it.isNode())
     const edges = <Edge[]>cells.filter(it => it.isEdge())
 
-    graph.addNodes(nodes)
-    graph.addEdges(edges)
+    const insertedNodes = nodes.map(it => graph.addNode(it))
+    const insertedEdges = edges.map(it => graph.addEdge(it))
 
     graph.zoomTo(zoom)
 
@@ -50,5 +50,5 @@ export const loadEditorData = (graph: Graph, data: GraphEditorData, reset: boole
 
     graph.stopBatch('Load from JSON')
 
-    return {nodes, edges}
+    return {nodes: insertedNodes, edges: insertedEdges}
 }

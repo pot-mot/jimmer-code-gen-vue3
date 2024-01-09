@@ -162,10 +162,10 @@ export const useModelEditorStore =
                     if (nodes.length == 1) {
                         commonOperations.focus(nodes[0])
                     } else {
-                        graph.resetSelection([...nodes, ...edges])
+                        graph.resetSelection([...nodes.map(it => it.id), ...edges.map(it => it.id)])
                         commonOperations.layoutAndFit()
                     }
-                }, 100 + nodes.length * 40)
+                }, 100 + nodes.length * 30 + edges.length * 20)
             }
 
             const tableDialogsStore = useTableDialogsStore()

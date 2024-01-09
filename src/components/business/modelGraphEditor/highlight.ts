@@ -20,8 +20,8 @@ const judgeEdge = (edge: Edge) => {
     return edge && edge.shape == ASSOCIATION_EDGE
 }
 
-const getWrapper = (node: Node): HTMLElement => {
-    return node?.getData()?.wrapper?.value as HTMLElement
+const getWrapper = (node: Node): HTMLElement | undefined => {
+    return node.getData()?.wrapper?.value as HTMLElement | undefined
 }
 
 const nodeHover = (node: Node) => {
@@ -122,7 +122,9 @@ export const useHoverToFront = (graph: Graph) => {
 
 export const useStyle = (graph: Graph) => {
     graph.on('node:selected', ({node}) => {
-        stopHistoryAction(graph, () => nodeSelected(node))
+        stopHistoryAction(graph, () => {
+            nodeSelected(node)
+        })
     })
     graph.on('node:unselected', ({node}) => {
         stopHistoryAction(graph, () => nodeUnselected(node))

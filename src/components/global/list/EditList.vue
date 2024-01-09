@@ -73,15 +73,22 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 				const value = JSON.parse(text)
 				const tempLines = getTempLines()
 
-				let insertIndex = tempLines.findIndex(it => it == selectedItems[selectedItems.length - 1])
-				if (insertIndex == -1) insertIndex = tempLines.length - 1
+				let insertIndex = tempLines.findIndex(it => JSON.stringify(it) == JSON.stringify(selectedItems[selectedItems.length - 1]))
+
+				if (insertIndex == -1) {
+					insertIndex = tempLines.length
+				} else {
+					insertIndex = insertIndex + 1
+				}
 
 				if (Array.isArray(value) && value.filter(item => props.jsonSchemaValidate(item)).length == value.length) {
-					tempLines.splice(insertIndex - 1, 0, ...value)
+					tempLines.splice(insertIndex, 0, ...value)
 					emits('update:lines', tempLines)
 				} else if (props.jsonSchemaValidate(value)) {
-					tempLines.splice(insertIndex - 1, 0, value)
+					tempLines.splice(insertIndex, 0, value)
 					emits('update:lines', tempLines)
+				} else {
+					sendMessage('剪切板中数据无法直接导入列表', 'info', text)
 				}
 			} catch (e) {
 				sendMessage('剪切板中数据无法直接导入列表', 'info', {error: e, clipboardValue: text})
