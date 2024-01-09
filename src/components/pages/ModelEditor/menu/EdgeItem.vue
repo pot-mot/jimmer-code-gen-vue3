@@ -38,6 +38,14 @@ watch(() => props.edge, (edge) => {
 	}
 }, {immediate: true})
 
+const handleClickLabel = (e: MouseEvent) => {
+	if (e.ctrlKey) {
+		store.select(props.edge.id)
+	} else {
+		store.focus(props.edge.id)
+	}
+}
+
 const handleDelete = () => {
 	ModelEditorEventBus.emit('removeAssociation', props.edge.id)
 }
@@ -67,20 +75,31 @@ const editDialogOpenState = ref(false)
 const handleEdit = () => {
 	editDialogOpenState.value = true
 }
+
+const isSelected = computed(() => {
+	return store.selectedEdgeMap.has(props.edge.id)
+})
 </script>
+
+<style scoped>
+.selected {
+	background-color: rgba(220, 220, 220, 0.3);
+}
+</style>
 
 <template>
 	<div v-if="association && sourceLabel && targetLabel"
-		 class="hover-show">
+		 class="hover-show" :class="isSelected ? 'selected' : ''">
 
-		<span>
-			<el-text v-if="showName">
-				<el-button link @click="store.focus(edge)">
+		<el-text style="white-space: nowrap;">
+			<template v-if="showName">
+				<el-button link @click="handleClickLabel">
 					{{ association.name }}
+					<span>{{ association.fake ? '【logical】' : '' }}</span>
 				</el-button>
-			</el-text>
+			</template>
 
-			<el-text v-if="showColumn || showTable">
+			<template v-if="showColumn || showTable">
 				<el-button link @click="store.focus(edge.getSourceCellId())">
 					{{ showColumn ? sourceLabel : association.sourceTable.name }}
 				</el-button>
@@ -92,8 +111,8 @@ const handleEdit = () => {
 				<el-button link @click="store.focus(edge.getTargetCellId())">
 					{{ showColumn ? targetLabel : association.targetTable.name}}
 				</el-button>
-			</el-text>
-		</span>
+			</template>
+		</el-text>
 
 		<span class="hover-show-item" style="padding-left: 0.5em;">
 			<el-button :icon="EditPen" link title="编辑" type="warning" @click="handleEdit"></el-button>

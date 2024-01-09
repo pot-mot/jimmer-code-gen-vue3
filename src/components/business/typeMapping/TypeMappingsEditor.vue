@@ -11,6 +11,7 @@ import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep, uniqWith} from "lodash";
 import {useGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
 import {GenerateConfigurator} from "../globalConfig/constant.ts";
+import {validateTypeMappingInput} from "@/shape/GenTypeMappingInput.ts";
 
 const editState = ref(false)
 
@@ -138,6 +139,7 @@ const handleCancel = () => {
 				:columns="typeMappingProps"
 				v-model:lines="tempTypeMappings"
 				:defaultLine="defaultTypeMapping"
+				:json-schema-validate="validateTypeMappingInput"
 				height="2em">
 				<template #dataSourceType="{data}">
 					<el-select v-model="data.dataSourceType">

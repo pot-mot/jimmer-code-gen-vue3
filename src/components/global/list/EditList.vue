@@ -1,11 +1,16 @@
 <script setup generic="T extends { [key: string]: any }" lang="ts">
-import {Ref, ref, watch} from 'vue'
+import {nextTick, Ref, ref, watch} from 'vue'
 import {cloneDeep} from 'lodash'
-import {EditListEmits, EditListProps} from "@/components/global/list/ListProps.ts";
+import {EditListProps} from "@/components/global/list/ListProps.ts";
 import LineItem from "@/components/global/list/LineItem.vue";
 import Line from "@/components/global/list/Line.vue";
-import {ArrowDown, ArrowUp, Delete, Plus} from "@element-plus/icons-vue";
-import {swapItems} from "@/utils/arrayOperation.ts";
+import {Delete, Plus} from "@element-plus/icons-vue";
+import {EditListEmits, ListEmits} from "@/components/global/list/ListEmits.ts";
+import {useListSelection} from "@/components/global/list/listSelection.ts";
+import {useClickOutside} from "@/components/global/list/useClickOutside.ts";
+import {sendMessage} from "@/utils/message.ts";
+
+const editList = ref()
 
 const props = withDefaults(
 	defineProps<EditListProps<T>>(),
@@ -15,13 +20,125 @@ const props = withDefaults(
 			return {
 				name: 'operation',
 				label: '操作',
-				span: '5em'
+				span: '2.5em'
 			}
 		}
 	}
 )
 
-const emits = defineEmits<EditListEmits<Partial<T>>>()
+const emits = defineEmits<EditListEmits<Partial<T>> & ListEmits<Partial<T>>>()
+
+const listSelection = useListSelection<Partial<T>>()
+
+const cleanSelection = () => {
+	listSelection.cleanSelection()
+}
+
+const handleItemClick = (e: MouseEvent, item: T) => {
+	emits('clickItem', item)
+
+	if (e.ctrlKey) {
+		if (!listSelection.isSelected(item)) {
+			listSelection.select(item)
+		} else {
+			listSelection.unselect(item)
+		}
+	} else {
+		cleanSelection()
+		listSelection.select(item)
+	}
+}
+
+useClickOutside(() => editList.value, () => {
+	cleanSelection()
+})
+
+const handleListClipBoardEvent = async (e: KeyboardEvent) => {
+	const selectedItems = listSelection.getRawItems()
+
+	if (e.ctrlKey || e.metaKey) {
+		if (e.key == 'c') {
+			e.preventDefault()
+			await navigator.clipboard.writeText(JSON.stringify(selectedItems))
+		} else if (e.key == 'x') {
+			e.preventDefault()
+			await navigator.clipboard.writeText(JSON.stringify(selectedItems))
+			cleanSelection()
+			const tempLines = dataLines.value.filter(it => !selectedItems.includes(it))
+			emits('update:lines', tempLines)
+		} else if (e.key == 'v') {
+			e.preventDefault()
+			const text = await navigator.clipboard.readText()
+			try {
+				const value = JSON.parse(text)
+				const tempLines = getTempLines()
+
+				let insertIndex = tempLines.findIndex(it => it == selectedItems[selectedItems.length - 1])
+				if (insertIndex == -1) insertIndex = tempLines.length - 1
+
+				if (Array.isArray(value) && value.filter(item => props.jsonSchemaValidate(item)).length == value.length) {
+					tempLines.splice(insertIndex - 1, 0, ...value)
+					emits('update:lines', tempLines)
+				} else if (props.jsonSchemaValidate(value)) {
+					tempLines.splice(insertIndex - 1, 0, value)
+					emits('update:lines', tempLines)
+				}
+			} catch (e) {
+				sendMessage('剪切板中数据无法直接导入列表', 'info', {error: e, clipboardValue: text})
+			}
+		}
+	}
+
+	if (e.key == 'ArrowUp') {
+		e.preventDefault()
+		let tempLines = getTempLines()
+		const selectedItemStr = selectedItems.map(it => JSON.stringify(it))
+		const newSelectIndexes: number[] = []
+
+		for (let i = 1; i < tempLines.length; i++) {
+			const value = tempLines[i]
+			if (selectedItemStr.includes(JSON.stringify(value))) {
+				tempLines[i] = tempLines[i - 1]
+				tempLines[i - 1] = value
+				newSelectIndexes.push(i - 1)
+			}
+		}
+
+		emits('update:lines', tempLines)
+
+		await nextTick()
+
+		listSelection.cleanSelection()
+		newSelectIndexes.forEach(index => {
+			listSelection.select(dataLines.value[index])
+		})
+	}
+
+	if (e.key == 'ArrowDown') {
+		e.preventDefault()
+		let tempLines = getTempLines()
+		const selectedItemStr = selectedItems.map(it => JSON.stringify(it))
+		const newSelectIndexes: number[] = []
+
+		for (let i = tempLines.length - 2; i >= 0; i--) {
+			const value = tempLines[i]
+			if (selectedItemStr.includes(JSON.stringify(value))) {
+				tempLines[i] = tempLines[i + 1]
+				tempLines[i + 1] = value
+				newSelectIndexes.push(i + 1)
+			}
+		}
+
+		emits('update:lines', tempLines)
+
+		await nextTick()
+
+		listSelection.cleanSelection()
+		newSelectIndexes.forEach(index => {
+			listSelection.select(dataLines.value[index])
+		})
+	}
+}
 
 const dataLines: Ref<Partial<T>[]> = ref([])
 
@@ -50,18 +167,6 @@ const getTempLines = () => {
 	return cloneDeep(dataLines.value)
 }
 
-const handleMoveLineUp = (index: number) => {
-	const tempLines = getTempLines()
-	swapItems(tempLines, index, index - 1)
-	emits('update:lines', tempLines)
-}
-
-const handleMoveLineDown = (index: number) => {
-	const tempLines = getTempLines()
-	swapItems(tempLines, index, index + 1)
-	emits('update:lines', tempLines)
-}
-
 const handleAddLine = async (index?: number) => {
 	const defaultLine = await getDefaultLine()
 
@@ -75,7 +180,10 @@ const handleAddLine = async (index?: number) => {
 }
 
 const handleRemoveLine = (removedIndex: number) => {
-	emits('update:lines', dataLines.value.filter((_, index) => index != removedIndex))
+	const newDataLines = dataLines.value.filter((_, index) => index != removedIndex)
+	const removedLine = dataLines.value[removedIndex]
+	listSelection.unselect(removedLine)
+	emits('update:lines', newDataLines)
 }
 
 defineExpose({
@@ -84,15 +192,13 @@ defineExpose({
 	dataLines,
 	getDefaultLine,
 	getTempLines,
-	handleMoveLineUp,
-	handleMoveLineDown,
 	handleAddLine,
 	handleRemoveLine
 })
 </script>
 
 <template>
-	<div class="edit-list">
+	<div class="edit-list" ref="editList" tabindex="-1" @keydown="handleListClipBoardEvent">
 		<div class="edit-list-head">
 			<Line v-if="labelLine" :gap="gap" :height="height">
 				<LineItem v-for="column in columns" :span="column.span">
@@ -111,7 +217,10 @@ defineExpose({
 
 			<template v-for="(data, index) in lines">
 				<slot name="line" :data="data" :columns="columns" :gap="gap" :height="height">
-					<Line :gap="gap" :height="height">
+					<Line :gap="gap" :height="height"
+						  @click="(e) => {handleItemClick(e, data)}"
+						  :class="listSelection.isSelected(data) ? 'selected' : ''">
+
 						<LineItem v-for="column in columns" :span="column.span">
 							<slot
 								v-if="'name' in column"
@@ -156,8 +265,6 @@ defineExpose({
 								:data="data"
 								:index="index"
 								:getDefaultLine="getDefaultLine"
-								:handleMoveLineUp="handleMoveLineUp"
-								:handleMoveLineDown="handleMoveLineDown"
 								:handleAddLine="handleAddLine"
 								:handleRemoveLine="handleRemoveLine">
 
@@ -168,18 +275,10 @@ defineExpose({
 									:data="data"
 									:index="index"
 									:getDefaultLine="getDefaultLine"
-									:handleMoveLineUp="handleMoveLineUp"
-									:handleMoveLineDown="handleMoveLineDown"
 									:handleAddLine="handleAddLine"
 									:handleRemoveLine="handleRemoveLine">
 								</slot>
 
-								<el-button :disabled="index == 0"
-										   @click="handleMoveLineUp(index)"
-										   :icon="ArrowUp" link></el-button>
-								<el-button :disabled="index == lines.length - 1"
-										   @click="handleMoveLineDown(index)"
-										   :icon="ArrowDown" link style="margin-left: 0.3em;"></el-button>
 								<el-button @click="handleAddLine(index)"
 										   :icon="Plus" link style="margin-left: 0.3em;"></el-button>
 								<el-button type="danger" @click="handleRemoveLine(index)"
@@ -192,8 +291,6 @@ defineExpose({
 									:data="data"
 									:index="index"
 									:getDefaultLine="getDefaultLine"
-									:handleMoveLineUp="handleMoveLineUp"
-									:handleMoveLineDown="handleMoveLineDown"
 									:handleAddLine="handleAddLine"
 									:handleRemoveLine="handleRemoveLine">
 								</slot>

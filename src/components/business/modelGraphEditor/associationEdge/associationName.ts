@@ -1,6 +1,9 @@
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {useGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
 import {removeSplitPrefixAndSuffix} from "@/utils/suffixAndPrefix.ts";
+import {AssociationType} from "@/api/__generated/model/enums";
+import {Edge} from "@antv/x6"
+import {ASSOCIATION_EDGE} from "@/components/business/modelGraphEditor/constant.ts";
 
 export const getAssociationSourceLabel = (association: GenAssociationModelInput) => {
     const tempEdgeName: string[] = []
@@ -35,7 +38,7 @@ export const createAssociationName = (
     sourceColumnNames: string[],
     targetTableName: string,
     targetColumnNames: string[],
-    fake: boolean | undefined,
+    associationType: AssociationType,
 ): string => {
     const genConfigStore = useGenConfigStore()
 
@@ -57,17 +60,17 @@ export const createAssociationName = (
         })
     }
 
-    let sourceColumnNameStr = sourceColumnNames.join("_")
-    if (sourceColumnNameStr) {
-        sourceColumnNameStr = '_' + sourceColumnNameStr
-    }
+    let associationName
 
-    let targetColumnNameStr = targetColumnNames.join("_")
-    if (targetColumnNameStr) {
-        targetColumnNameStr = '_' + targetColumnNameStr
+    // 多对多的关联名称是中间表
+    if (associationType == 'MANY_TO_MANY') {
+        associationName = `${sourceTableName}_${targetTableName}_mapping`
+    // 一对多的外键名称要反向
+    } else if (associationType == 'ONE_TO_MANY') {
+        associationName = `fk_${targetTableName}_${sourceTableName}`
+    } else {
+        associationName = `fk_${sourceTableName}_${targetTableName}`
     }
-
-    let associationName = `${fake ? '[logical]' : 'fk'}_${sourceTableName}${sourceColumnNameStr}_${targetTableName}${targetColumnNameStr}`
 
     return lowerCaseName ? associationName.toLowerCase() : associationName.toUpperCase()
 }
@@ -80,6 +83,17 @@ export const createAssociationNameByInput = (
         association.columnReferences.map(it => it.sourceColumn.name),
         association.targetTable.name,
         association.columnReferences.map(it => it.targetColumn.name),
-        association.fake,
+        association.associationType,
     )
+}
+
+export const syncAssociationName = (
+    edge: Edge
+) => {
+    if (edge.shape == ASSOCIATION_EDGE && edge.getData()?.association != undefined) {
+        const association = edge.getData().association as GenAssociationModelInput
+        const newName = createAssociationNameByInput(association)
+        if (newName != association.name)
+            edge.setData({association: {name: newName}}, {deep: true})
+    }
 }

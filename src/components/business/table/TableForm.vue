@@ -1,10 +1,8 @@
 <script lang="ts" setup>
 import {computed, ref, watch} from 'vue'
-import {cloneDeep} from 'lodash'
 import {
 	GenTableModelInput,
-	GenTableModelInput_TargetOf_columns,
-	GenTableModelInput_TargetOf_indexes, GenTableModelInput_TargetOf_indexes_TargetOf_columns_2
+	GenTableModelInput_TargetOf_indexes_TargetOf_columns_2
 } from "@/api/__generated/model/static";
 import {sendMessage} from "@/utils/message.ts";
 import {useModelEditorStore} from "../../pages/ModelEditor/store/ModelEditorStore.ts";
@@ -18,66 +16,12 @@ import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEdi
 import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
 import {tableIndexColumns} from "@/components/business/table/tableIndexColumns.ts";
 import Details from "@/components/global/common/Details.vue";
-import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
+import {getDefaultTable, getDefaultColumn, getDefaultIndex} from "@/components/business/table/defaultTable.ts";
+import {validateColumn, validateIndex} from "@/shape/GenTableModelInput.ts";
 
 const store = useModelEditorStore()
 
 const jdbcTypeStore = useJDBCTypeStore()
-
-const columnDefaultStore = useColumnDefaultStore()
-
-const defaultTable: GenTableModelInput = {
-	name: "",
-	comment: "",
-	remark: "",
-	orderKey: 0,
-	type: "TABLE",
-	columns: [],
-	indexes: [],
-}
-
-const defaultColumn: GenTableModelInput_TargetOf_columns = {
-	orderKey: 0,
-	name: "",
-	comment: "",
-	typeCode: 12,
-	overwriteByType: false,
-	type: "VARCHAR",
-	typeNotNull: true,
-	displaySize: 0,
-	numericPrecision: 0,
-	defaultValue: undefined,
-	partOfPk: false,
-	autoIncrement: false,
-	remark: "",
-	logicalDelete: false,
-	businessKey: false,
-	enum: undefined,
-}
-
-const defaultIndex: GenTableModelInput_TargetOf_indexes = {
-	name: "",
-	uniqueIndex: false,
-	columns: []
-}
-
-const getDefaultColumn = () => {
-	const columnDefaults = columnDefaultStore.get(defaultColumn.typeCode)
-
-	if (columnDefaults.length == 0) {
-		return defaultColumn
-	} else {
-		const columnDefault = columnDefaults[0]
-		return {
-			...defaultColumn,
-			overwriteByType: true,
-			type: columnDefault.type,
-			displaySize: columnDefault.displaySize,
-			numericPrecision: columnDefault.numericPrecision,
-			defaultValue: columnDefault.defaultValue
-		}
-	}
-}
 
 interface ModelFormProps {
 	id?: string,
@@ -88,7 +32,7 @@ const props = defineProps<ModelFormProps>()
 
 const emits = defineEmits<FormEmits<GenTableModelInput>>()
 
-const table = ref<GenTableModelInput>(cloneDeep(defaultTable))
+const table = ref<GenTableModelInput>(getDefaultTable())
 
 watch(() => props.table, (value) => {
 	if (!value) return
@@ -278,6 +222,7 @@ const handleCancel = () => {
 				:columns="tableColumnColumns"
 				v-model:lines="table.columns"
 				:defaultLine="getDefaultColumn"
+				:json-schema-validate="validateColumn"
 				style="width: 98%;">
 
 				<template #icon="{data}">
@@ -314,10 +259,10 @@ const handleCancel = () => {
 									:model-value="data"
 									@create-enum="() => ModelEditorEventBus.emit('createEnum')"
 									@edit-enum="(name) => {
-									let genEnum = store._currentModel().enums.filter(it => it.name == name)[0]
-									if (!genEnum) genEnum = {...getDefaultEnum(),name}
-									ModelEditorEventBus.emit('modifyEnum', {name, genEnum})
-								}"
+										let genEnum = store._currentModel().enums.filter(it => it.name == name)[0]
+										if (!genEnum) genEnum = {...getDefaultEnum(),name}
+										ModelEditorEventBus.emit('modifyEnum', {name, genEnum})
+									}"
 					></ColumnTypeForm>
 				</template>
 
@@ -343,9 +288,10 @@ const handleCancel = () => {
 			</template>
 
 			<EditList
-				:default-line="defaultIndex"
+				:default-line="getDefaultIndex"
 				:columns="tableIndexColumns"
 				v-model:lines="table.indexes"
+				:json-schema-validate="validateIndex"
 				height="auto"
 				style="width: 98%;">
 

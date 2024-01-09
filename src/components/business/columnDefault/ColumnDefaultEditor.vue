@@ -12,6 +12,7 @@ import {useJDBCTypeStore} from "@/components/business/jdbcType/JDBCTypeStore.ts"
 import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
 import {useGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
 import {GenerateConfigurator} from "../globalConfig/constant.ts";
+import {validateColumnDefaultInput} from "@/shape/GenColumnDefaultInput.ts";
 
 const editState = ref(false)
 
@@ -154,6 +155,7 @@ const handleCancel = () => {
 					:columns="columnDefaultProps"
 					v-model:lines="tempColumnDefaults"
 					:defaultLine="defaultColumnDefault"
+					:json-schema-validate="validateColumnDefaultInput"
 					height="2em">
 					<template #dataSourceType="{data}">
 						<el-select v-model="data.dataSourceType">

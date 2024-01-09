@@ -31,9 +31,7 @@ export interface EditListProps<T extends { [key: string]: any }> extends LineSty
     operation?: ListColumn<T>,
     lines: T[],
     labelLine?: boolean,
-    defaultLine: T | Partial<T> | (() => Partial<T> | Promise<Partial<T>>)
+    defaultLine: T | Partial<T> | (() => Partial<T> | Promise<Partial<T>>),
+    jsonSchemaValidate: (json: any) => boolean | Promise<T>
 }
 
-export interface EditListEmits<T extends { [key: string]: any }> {
-    (event: "update:lines", lines: T[]): void
-}

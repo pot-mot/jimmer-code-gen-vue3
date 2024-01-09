@@ -11,6 +11,8 @@ import {
     reverseSinglePartAssociationType,
 } from "@/components/business/modelGraphEditor/associationEdge/associationType.ts";
 import Label = Edge.Label;
+import {syncAssociationName} from "@/components/business/modelGraphEditor/associationEdge/associationName.ts";
+import {setAssociationFake} from "@/components/business/modelGraphEditor/associationEdge/associationFake.ts";
 
 export const createBaseLabel = (attrs?: any, oldLabel?: Label, bodyAttrs?: any) => {
     return {
@@ -51,6 +53,9 @@ export const getAssociationTypeLabel = (edge: Edge): { label: Edge.Label, index:
 }
 const setAssociationTypeData = (edge: Edge, associationType: AssociationType) => {
     edge.setData({association: {associationType}}, {deep: true})
+    if (associationType == 'MANY_TO_MANY') {
+        setAssociationFake(edge, false)
+    }
 }
 const setAssociationTypeDataLabel = (edge: Edge, associationType: AssociationType) => {
     const oldLabel = getAssociationTypeLabel(edge)
@@ -138,7 +143,7 @@ export const useAssociationType = (graph: Graph) => {
         e.preventDefault()
         e.stopPropagation()
 
-        graph.startBatch("set association_edge type")
+        graph.startBatch("Update association_edge type")
 
         const oldAssociationType = getAssociationType(edge)
 
@@ -149,8 +154,9 @@ export const useAssociationType = (graph: Graph) => {
                 oldAssociationType ? oldAssociationType : DEFAULT_ASSOCIATION_TYPE,
                 left ? "SOURCE" : "TARGET")
         )
+        syncAssociationName(edge)
 
-        graph.stopBatch("set association_edge type")
+        graph.stopBatch("Update association_edge type")
     })
     /**
      * 在 edge:unselected 后，重置 SWITCH_ASSOCIATION_TYPE_FLAG

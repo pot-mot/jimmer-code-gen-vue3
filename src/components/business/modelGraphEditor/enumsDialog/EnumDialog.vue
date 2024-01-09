@@ -4,11 +4,12 @@ import {ModelEditorEventBus} from "../../../pages/ModelEditor/store/ModelEditorE
 import EnumForm from "@/components/business/enum/EnumForm.vue";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 
-interface EnumModifyDialogProps {
+interface EnumDialogProps {
+	name: string,
 	genEnum?: Partial<GenModelInput_TargetOf_enums>
 }
 
-const props = defineProps<EnumModifyDialogProps>()
+const props = defineProps<EnumDialogProps>()
 
 interface EnumEntityDialogEmits {
 	(event: "close"): void
@@ -17,7 +18,11 @@ interface EnumEntityDialogEmits {
 const emits = defineEmits<EnumEntityDialogEmits>()
 
 const handleSubmit = (genEnum: GenModelInput_TargetOf_enums) => {
-	ModelEditorEventBus.emit('modifiedEnum', {name: props.genEnum?.name ? props.genEnum.name : genEnum.name, genEnum})
+	if (props.name.length > 0) {
+		ModelEditorEventBus.emit('modifiedEnum', {name: props.name, genEnum})
+	} else {
+		ModelEditorEventBus.emit('createdEnum', genEnum)
+	}
 }
 </script>
 

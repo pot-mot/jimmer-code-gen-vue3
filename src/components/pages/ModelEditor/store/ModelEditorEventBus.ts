@@ -7,7 +7,7 @@ import {
 
 type ModelEditorEvents = {
     createTable: undefined | { x: number, y: number },
-    createdTable: { table: GenTableModelInput, x?: number, y?: number },
+    createdTable: GenTableModelInput,
     modifyTable: { id: string, table: GenTableModelInput },
     modifiedTable: { id: string, table: GenTableModelInput },
     removeTable: string,

@@ -9,10 +9,10 @@ export const useShapeValidate = <T>(type: string, schema: any) => {
 
     return {
         ajv,
-        validate: (data: any, showErrors: boolean = true) => {
+        validate: (data: any) => {
             const result = validate(data)
 
-            if (!result && showErrors) {
+            if (!result) {
                 throw {type, errors: validate.errors, data}
             }
 

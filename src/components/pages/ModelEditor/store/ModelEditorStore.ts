@@ -7,21 +7,17 @@ import {api} from "@/api";
 import {loadByTableViews} from "../graph/loadData.ts";
 import {GenModelInput, GenModelView, GenTableColumnsView, GenTableModelInput} from "@/api/__generated/model/static";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
-import {
-    useTableCreateDialogStore
-} from "@/components/business/modelGraphEditor/tablesDialog/TableCreateDialogStore.ts";
-import {
-    useTableModifyDialogsStore
-} from "@/components/business/modelGraphEditor/tablesDialog/TableModifyDialogsStore.ts";
 import {importTables} from "@/components/pages/ModelEditor/graph/tableNode.ts";
 import {useGenContextStore} from "@/components/business/context/GenContextStore.ts";
 import {redo, undo} from "@/components/business/graphEditor/history/useHistory.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
 import {TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
 import {updateTableNodeData} from "@/components/business/modelGraphEditor/tableNode/tableNodeData.ts";
-import {useEnumCreateDialogStore} from "@/components/business/modelGraphEditor/enumsDialog/EnumCreateDialogStore.ts";
-import {useEnumModifyDialogsStore} from "@/components/business/modelGraphEditor/enumsDialog/EnumModifyDialogsStore.ts";
+import {useEnumDialogsStore} from "@/components/business/modelGraphEditor/enumsDialog/EnumDialogsStore.ts";
 import {cloneDeep} from "lodash";
+import {getDefaultTable} from "@/components/business/table/defaultTable.ts";
+import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
+import {useTableDialogsStore} from "@/components/business/modelGraphEditor/tablesDialog/TableDialogsStore.ts";
 
 export const useModelEditorStore =
     defineStore(
@@ -172,27 +168,32 @@ export const useModelEditorStore =
                 }, 100 + nodes.length * 40)
             }
 
+            const tableDialogsStore = useTableDialogsStore()
 
-            const tableCreateStore = useTableCreateDialogStore()
+            const newTablePosition = ref<{x: number, y: number}>()
 
             ModelEditorEventBus.on('createTable', (props) => {
-                tableCreateStore.dialogOpenState = true
+                tableDialogsStore.open("", getDefaultTable())
 
                 if (props) {
-                    tableCreateStore.nodeX = props.x
-                    tableCreateStore.nodeY = props.y
+                    newTablePosition.value = props
                 }
             })
 
-            ModelEditorEventBus.on('createdTable', ({table, x, y}) => {
+            ModelEditorEventBus.on('createdTable', (table) => {
                 const graph = commonOperations._graph()
 
                 if (!graph) return
 
-                const node = importTables(graph, [table], x, y).nodes[0]
+                const node = importTables(
+                    graph,
+                    [table],
+                    newTablePosition.value?.x,
+                    newTablePosition.value?.y
+                ).nodes[0]
 
                 if (node) {
-                    tableCreateStore.dialogOpenState = false
+                    tableDialogsStore.close("")
 
                     setTimeout(() => {
                         commonOperations.select(node)
@@ -200,11 +201,8 @@ export const useModelEditorStore =
                 }
             })
 
-
-            const tableModifyStore = useTableModifyDialogsStore()
-
             ModelEditorEventBus.on('modifyTable', ({id, table}) => {
-                tableModifyStore.open(id, cloneDeep(table))
+                tableDialogsStore.open(id, cloneDeep(table))
             })
 
             ModelEditorEventBus.on('modifiedTable', ({id, table}) => {
@@ -218,7 +216,7 @@ export const useModelEditorStore =
                 } else {
                     sendMessage(`Node ${id} 找不到，无法被更改`, 'error')
                 }
-                tableModifyStore.close(id)
+                tableDialogsStore.close(id)
             })
 
             ModelEditorEventBus.on('removeTable', (id) => {
@@ -229,22 +227,19 @@ export const useModelEditorStore =
                 commonOperations._graph().removeEdge(id)
             })
 
-
-            const enumCreateStore = useEnumCreateDialogStore()
+            const enumDialogsStore = useEnumDialogsStore()
 
             ModelEditorEventBus.on('createEnum', () => {
-                enumCreateStore.dialogOpenState = true
+                enumDialogsStore.open("", getDefaultEnum())
             })
 
             ModelEditorEventBus.on('createdEnum', (genEnum) => {
                 _currentModel().enums.push(genEnum)
-                enumCreateStore.dialogOpenState = false
+                enumDialogsStore.close("")
             })
 
-            const enumModifyStore = useEnumModifyDialogsStore()
-
             ModelEditorEventBus.on('modifyEnum', ({name, genEnum}) => {
-                enumModifyStore.open(name, cloneDeep(genEnum))
+                enumDialogsStore.open(name, cloneDeep(genEnum))
             })
 
             const syncEnumNameInTable = (table: GenTableModelInput, oldEnumName: string, newEnumName: string | undefined): GenTableModelInput => {
@@ -274,10 +269,10 @@ export const useModelEditorStore =
 
                 const nodes = graph.getNodes().filter(it => it.shape == TABLE_NODE)
 
-                tableModifyStore.items.forEach((value, key) => {
+                tableDialogsStore.items.forEach((value, key) => {
                     if (value && judgeEnumInTable(oldEnumName, value)) {
                         const newTable = syncEnumNameInTable(value, oldEnumName, newEnumName)
-                        tableModifyStore.set(key, newTable)
+                        tableDialogsStore.set(key, newTable)
                     }
                 })
 
@@ -298,7 +293,7 @@ export const useModelEditorStore =
 
                 syncEnumNameForTables(name, genEnum.name)
 
-                enumModifyStore.close(name)
+                enumDialogsStore.close(name)
             })
 
             ModelEditorEventBus.on('removeEnum', (name) => {

@@ -28,22 +28,6 @@ export const useGraphReactiveState = (_graph: () => Graph) => {
     const selectedNodeMap = ref<Map<string, Node>>(new Map)
     const selectedEdgeMap = ref<Map<string, Edge>>(new Map)
 
-    const selectedNodes = computed<Node[]>(() => {
-        return [...selectedNodeMap.value.values()]
-    })
-
-    const selectedEdges = computed<Edge[]>(() => {
-        return [...selectedEdgeMap.value.values()]
-    })
-
-    const selectedNodeIds = computed(() => {
-        return [...nodeMap.value.keys()]
-    })
-
-    const selectedEdgeIds = computed(() => {
-        return [...edgeMap.value.keys()]
-    })
-
     const canUndo = ref(false)
 
     const canRedo = ref(false)
@@ -151,12 +135,7 @@ export const useGraphReactiveState = (_graph: () => Graph) => {
         isSelectionEmpty,
 
         selectedNodeMap,
-        selectedNodes,
-        selectedNodeIds,
-
         selectedEdgeMap,
-        selectedEdges,
-        selectedEdgeIds,
 
         canUndo,
         canRedo,

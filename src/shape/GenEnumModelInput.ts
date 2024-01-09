@@ -1,3 +1,9 @@
+import {useShapeValidate} from "@/utils/shapeValidate.ts";
+import {
+    GenModelView_TargetOf_enums,
+    GenModelView_TargetOf_enums_TargetOf_items_2
+} from "@/api/__generated/model/static";
+
 // typescript-json-schema src/api/__generated/model/static/GenModelView_TargetOf_enums.ts * --required
 export const GenEnumModelInputJsonSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -89,3 +95,15 @@ export const GenEnumModelInputJsonSchema = {
         }
     }
 }
+
+export const {validate: validateEnum} =
+    useShapeValidate<GenModelView_TargetOf_enums>(
+        "GenModelView_TargetOf_enums",
+        GenEnumModelInputJsonSchema
+    )
+
+export const {validate: validateEnumItem} =
+    useShapeValidate<GenModelView_TargetOf_enums_TargetOf_items_2>(
+        "GenModelView_TargetOf_enums_TargetOf_items_2",
+        GenEnumModelInputJsonSchema
+    )

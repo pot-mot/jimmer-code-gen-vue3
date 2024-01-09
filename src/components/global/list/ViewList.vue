@@ -2,14 +2,57 @@
 import {ListProps} from "@/components/global/list/ListProps.ts";
 import Line from "@/components/global/list/Line.vue";
 import LineItem from "@/components/global/list/LineItem.vue";
+import {ListEmits} from "@/components/global/list/ListEmits.ts";
+import {useListSelection} from "@/components/global/list/listSelection.ts";
+import {ref} from "vue";
+import {useClickOutside} from "@/components/global/list/useClickOutside.ts";
+
+const viewList = ref()
 
 withDefaults(defineProps<ListProps<T>>(), {
 	labelLine: true
 })
+
+const emits = defineEmits<ListEmits<T>>()
+
+const listSelection = useListSelection<T>()
+
+const cleanSelection = () => {
+	listSelection.cleanSelection()
+}
+
+const handleItemClick = (e: MouseEvent, item: T) => {
+	emits('clickItem', item)
+
+	if (e.ctrlKey) {
+		if (!listSelection.isSelected(item)) {
+			listSelection.select(item)
+		} else {
+			listSelection.unselect(item)
+		}
+	} else {
+		cleanSelection()
+		listSelection.select(item)
+	}
+}
+
+useClickOutside(() => viewList.value, () => {
+	cleanSelection()
+})
+
+const handleListClipBoardEvent = async (e: KeyboardEvent) => {
+	if (e.ctrlKey || e.metaKey) {
+		if (e.key == 'c') {
+			e.preventDefault()
+			const data = JSON.stringify(listSelection.getRawItems())
+			await navigator.clipboard.writeText(data)
+		}
+	}
+}
 </script>
 
 <template>
-	<div class="view-list">
+	<div class="view-list" ref="viewList" tabindex="-1" @keydown="handleListClipBoardEvent">
 		<div class="view-list-head">
 			<Line v-if="labelLine" :gap="gap" :height="height">
 				<LineItem v-for="column in columns" :span="column.span">
@@ -25,7 +68,10 @@ withDefaults(defineProps<ListProps<T>>(), {
 
 			<template v-for="data in lines">
 				<slot name="line" :data="data" :columns="columns" :gap="gap" :height="height">
-					<Line :gap="gap" :height="height">
+					<Line :gap="gap" :height="height"
+						  @click="(e) => {handleItemClick(e, data)}"
+						  :class="listSelection.isSelected(data) ? 'selected' : ''">
+
 						<LineItem v-for="(column, index) in columns" :span="column.span">
 							<slot
 								v-if="'name' in column"

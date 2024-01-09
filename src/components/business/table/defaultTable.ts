@@ -1,0 +1,65 @@
+import {
+    GenTableModelInput,
+    GenTableModelInput_TargetOf_columns,
+    GenTableModelInput_TargetOf_indexes
+} from "@/api/__generated/model/static";
+import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
+
+export const getDefaultTable = (): GenTableModelInput => {
+    return {
+        name: "",
+        comment: "",
+        remark: "",
+        orderKey: 0,
+        type: "TABLE",
+        columns: [],
+        indexes: [],
+    }
+}
+
+export const getDefaultIndex = (): GenTableModelInput_TargetOf_indexes => {
+    return {
+        name: "",
+        uniqueIndex: false,
+        columns: []
+    }
+}
+
+export const getDefaultColumn = (): GenTableModelInput_TargetOf_columns => {
+    const columnDefaultStore = useColumnDefaultStore()
+
+    const defaultColumn = {
+        orderKey: 0,
+        name: "",
+        comment: "",
+        typeCode: 12,
+        overwriteByType: false,
+        type: "VARCHAR",
+        typeNotNull: true,
+        displaySize: 0,
+        numericPrecision: 0,
+        defaultValue: undefined,
+        partOfPk: false,
+        autoIncrement: false,
+        remark: "",
+        logicalDelete: false,
+        businessKey: false,
+        enum: undefined,
+    }
+
+    const columnDefaults = columnDefaultStore.get(defaultColumn.typeCode)
+
+    if (columnDefaults.length == 0) {
+        return defaultColumn
+    } else {
+        const columnDefault = columnDefaults[0]
+        return {
+            ...defaultColumn,
+            overwriteByType: true,
+            type: columnDefault.type,
+            displaySize: columnDefault.displaySize,
+            numericPrecision: columnDefault.numericPrecision,
+            defaultValue: columnDefault.defaultValue
+        }
+    }
+}

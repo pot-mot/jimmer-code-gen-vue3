@@ -5,7 +5,7 @@ import {Delete, EditPen} from "@element-plus/icons-vue";
 import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import {sendMessage} from "@/utils/message.ts";
 import {GenTableModelInput} from "@/api/__generated/model/static";
 
@@ -31,6 +31,14 @@ watch(() => props.node, (node) => {
 	}
 }, {immediate: true})
 
+const handleClickLabel = (e: MouseEvent) => {
+	if (e.ctrlKey) {
+		store.select(props.node.id)
+	} else {
+		store.focus(props.node.id)
+	}
+}
+
 const handleEdit = () => {
 	ModelEditorEventBus.emit('modifyTable', {id: props.node.id, table: props.node.data.table})
 }
@@ -38,24 +46,37 @@ const handleEdit = () => {
 const handleDelete = () => {
 	ModelEditorEventBus.emit('removeTable', props.node.id)
 }
+
+const isSelected = computed(() => {
+	return store.selectedNodeMap.has(props.node.id)
+})
 </script>
 
+<style scoped>
+.selected {
+	background-color: rgba(220, 220, 220, 0.3);
+}
+</style>
+
 <template>
-	<div v-if="table">
-		<el-text class="hover-show" style="white-space: nowrap;">
+	<div v-if="table"
+		 class="hover-show" :class="isSelected ? 'selected' : ''">
+
+		<el-text style="white-space: nowrap;">
 			<TableIcon :type="table.type"></TableIcon>
 
-			<el-button link @click="store.focus(node)">
+			<el-button link @click="handleClickLabel">
 				{{ table.name }}
 				<Comment :comment="table.comment"></Comment>
 			</el-button>
-
-			<span class="hover-show-item" style="padding-left: 0.5em;">
-				<el-button :icon="EditPen" link title="编辑" type="warning" @click="handleEdit"></el-button>
-				<el-button :icon="Delete" link title="删除" type="danger" @click="handleDelete"></el-button>
-			</span>
 		</el-text>
+
+		<span class="hover-show-item" style="padding-left: 0.5em;">
+			<el-button :icon="EditPen" link title="编辑" type="warning" @click="handleEdit"></el-button>
+			<el-button :icon="Delete" link title="删除" type="danger" @click="handleDelete"></el-button>
+		</span>
 	</div>
+
 	<div v-else>
 		<el-text type="warning">
 			无效表 {{ node.id }}

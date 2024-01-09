@@ -7,3 +7,12 @@
 .view-list > .view-list-body > .line-container:hover {
     background-color: #f5f5f5;
 }
+
+.edit-list > .edit-list-body > .line-container.selected,
+.view-list > .view-list-body > .line-container.selected {
+    background-color: #eee;
+}
+
+.edit-list:focus, .view-list:focus {
+    outline: 0;
+}

@@ -6,6 +6,7 @@ import {
     FAKE_ASSOCIATION_LINE_DASHARRAY,
 } from "@/components/business/modelGraphEditor/constant.ts";
 import {judgeClickBox} from "@/utils/clickBox.ts";
+import {getAssociationType} from "@/components/business/modelGraphEditor/associationEdge/associationTypeLabels.ts";
 
 const setAssociationFakeData = (edge: Edge, fake: boolean) => {
     edge.setData({association: {fake}}, {deep: true})
@@ -84,11 +85,19 @@ export const useAssociationFake = (graph: Graph) => {
         e.preventDefault()
         e.stopPropagation()
 
-        graph.startBatch("set association_edge fake")
+        graph.startBatch("Update association_edge fake")
 
-        setAssociationFake(edge, !getAssociationFake(edge))
+        const associationType = getAssociationType(edge)
 
-        graph.stopBatch("set association_edge fake")
+        // 多对多的外键必须为真实外键
+        if (associationType == 'MANY_TO_MANY') {
+            setAssociationFake(edge, false)
+        } else {
+            const oldAssociationFake = getAssociationFake(edge)
+            setAssociationFake(edge, !oldAssociationFake)
+        }
+
+        graph.stopBatch("Update association_edge fake")
     })
     /**
      * 在 edge:unselected 后，重置 SWITCH_ASSOCIATION_FAKE_FLAG

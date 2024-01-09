@@ -19,7 +19,8 @@
 					<Comment :comment="column.comment"></Comment>
 				</td>
 				<td style="text-align: right;">
-					<span class="type">{{ column.type }}</span>
+					<span v-if="column.enum">【{{column.enum.name}}】</span>
+					<span class="type" v-else>{{ column.type }}</span>
 				</td>
 			</tr>
 		</table>
@@ -42,6 +43,7 @@ import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import {importAssociation} from "./associationEdge.ts";
 import {columnToPort} from "@/components/pages/ModelEditor/graph/tableNode.ts";
 import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
+import {createAssociationNameByInput} from "@/components/business/modelGraphEditor/associationEdge/associationName.ts";
 
 const store = useModelEditorStore()
 
@@ -122,8 +124,8 @@ onMounted(async () => {
 	syncNodeSizeWithContainer()
 
 	// 根据数据更新更新 port 和 edge
-	watch(() => table.value, (newTableData) => {
-		if (!node.value || !newTableData || !store.isLoaded) return
+	watch(() => table.value, (newTable) => {
+		if (!node.value || !newTable || !store.isLoaded) return
 
 		const nodeId = node.value.id
 
@@ -133,7 +135,7 @@ onMounted(async () => {
 
 		node.value.removePorts()
 		node.value.addPorts(
-			newTableData.columns.map(columnToPort)
+			newTable.columns.map(columnToPort)
 		)
 		resizePort()
 
@@ -143,14 +145,16 @@ onMounted(async () => {
 					const association = edge.getData().association as GenAssociationModelInput
 
 					if (edge.getSourceCellId() == nodeId) {
-						association.sourceTable.name = newTableData.name
-						association.sourceTable.comment = newTableData.comment
+						association.sourceTable.name = newTable.name
+						association.sourceTable.comment = newTable.comment
 					}
 
 					if (edge.getTargetCellId() == nodeId) {
-						association.targetTable.name = newTableData.name
-						association.targetTable.comment = newTableData.comment
+						association.targetTable.name = newTable.name
+						association.targetTable.comment = newTable.comment
 					}
+
+					association.name = createAssociationNameByInput(association)
 
 					importAssociation(graph, association)
 				}

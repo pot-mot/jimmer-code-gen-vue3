@@ -4,12 +4,12 @@ import TableForm from "../../table/TableForm.vue";
 import {ModelEditorEventBus} from "../../../pages/ModelEditor/store/ModelEditorEventBus.ts";
 import {GenTableModelInput} from "@/api/__generated/model/static";
 
-interface TableModifyDialogProps {
+interface TableDialogProps {
 	id: string,
 	table: GenTableModelInput
 }
 
-const props = defineProps<TableModifyDialogProps>()
+const props = defineProps<TableDialogProps>()
 
 interface TableEntityDialogEmits {
 	(event: "close"): void
@@ -18,7 +18,11 @@ interface TableEntityDialogEmits {
 const emits = defineEmits<TableEntityDialogEmits>()
 
 const handleSubmit = (table: GenTableModelInput) => {
-	ModelEditorEventBus.emit('modifiedTable', {id: props.id, table})
+	if (props.id.length > 0) {
+		ModelEditorEventBus.emit('modifiedTable', {id: props.id, table})
+	} else {
+		ModelEditorEventBus.emit('createdTable', table)
+	}
 }
 </script>
 

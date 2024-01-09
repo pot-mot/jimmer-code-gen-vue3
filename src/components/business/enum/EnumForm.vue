@@ -9,6 +9,7 @@ import LineItem from "@/components/global/list/LineItem.vue";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {getDefaultEnum, getDefaultEnumItem} from "@/components/business/enum/defaultEnum.ts";
+import {validateEnumItem} from "@/shape/GenEnumModelInput.ts";
 
 const props = defineProps<{
 	enum?: Partial<GenModelInput_TargetOf_enums>
@@ -142,6 +143,7 @@ const handleCancel = () => {
 			v-model:lines="genEnum.items"
 			:columns="enumItemColumns"
 			:defaultLine="getDefaultEnumItem"
+			:json-schema-validate="validateEnumItem"
 			style="padding-bottom: 2em;">
 			<template #value="{data}">
 				<el-input v-if="genEnum.enumType == 'NAME'" v-model="data.mappedValue"></el-input>

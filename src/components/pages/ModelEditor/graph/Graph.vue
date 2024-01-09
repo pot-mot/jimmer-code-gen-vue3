@@ -177,8 +177,8 @@ import GraphSearcher from "@/components/business/graphEditor/tools/GraphSearcher
 import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
 import {EditPen} from "@element-plus/icons-vue";
 import {
-	useTableModifyDialogsStore
-} from "@/components/business/modelGraphEditor/tablesDialog/TableModifyDialogsStore.ts";
+	useTableDialogsStore
+} from "@/components/business/modelGraphEditor/tablesDialog/TableDialogsStore.ts";
 import {debugLog} from "@/utils/debugLog.ts";
 import {handleTableNodeClipBoardKeyEvent} from "@/components/business/modelGraphEditor/clipBoard.ts";
 import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
@@ -192,6 +192,8 @@ import {
 	previewModelEntity,
 	previewModelSql
 } from "@/components/business/model/file/modelFileOperations.ts";
+import {cloneDeep} from "lodash";
+import {TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -202,7 +204,7 @@ const store = useModelEditorStore()
 
 const loadingStore = useGlobalLoadingStore()
 
-const tableModifyDialogsStore = useTableModifyDialogsStore()
+const tableDialogsStore = useTableDialogsStore()
 
 onMounted(async () => {
 	loadingStore.add()
@@ -211,7 +213,9 @@ onMounted(async () => {
 	await store.load(graph)
 
 	graph.on('node:dblclick', ({node}) => {
-		tableModifyDialogsStore.open(node.id, node.getData().table)
+		if (node.shape == TABLE_NODE && node.getData()?.table != undefined) {
+			tableDialogsStore.open(node.id, cloneDeep(node.getData().table))
+		}
 	})
 
 	graph.on('history:change', (args) => {
@@ -228,15 +232,14 @@ onMounted(async () => {
 
 	handleHistoryKeyEvent(graph)
 
-	graph.bindKey(["ctrl+s", "command+s"], (e) => {
-		e.preventDefault()
-		handleSaveModel()
-	})
+	document.documentElement.addEventListener('keydown', handleSaveEvent)
 
 	loadingStore.sub()
 })
 
 onUnmounted(() => {
+	document.documentElement.removeEventListener('keydown', handleSaveEvent)
+
 	store.unload()
 })
 
@@ -253,12 +256,29 @@ const handleSaveModel = async () => {
 			await api.modelService.save({body: {...model, graphData: undefined}})
 		}
 
+		if (sqlPreviewDialogOpenState.value) {
+			await handleSQLPreview()
+		}
+
+		if (entityPreviewDialogOpenState.value) {
+			await handleEntityPreview()
+		}
+
 		sendMessage("模型保存成功", "success")
 	} catch (e) {
 		sendMessage(`模型保存失败，原因：${e}`, 'error', e)
 	}
 
 	loadingStore.sub()
+}
+
+const handleSaveEvent = (e: KeyboardEvent) => {
+	if (e.ctrlKey || e.metaKey) {
+		if (e.key == 's') {
+			e.preventDefault()
+			handleSaveModel()
+		}
+	}
 }
 
 
@@ -329,16 +349,4 @@ const handleModelDownload = async () => {
 	await downloadModel(currentModel)
 	loadingStore.sub()
 }
-
-watch(() => store.isModelLoaded, (loaded) => {
-	if (loaded) {
-		if (sqlPreviewDialogOpenState.value) {
-			handleSQLPreview()
-		}
-
-		if (entityPreviewDialogOpenState.value) {
-			handleEntityPreview()
-		}
-	}
-})
 </script>
