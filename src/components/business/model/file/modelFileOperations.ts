@@ -1,12 +1,12 @@
 import {GenModelView, Pair} from "@/api/__generated/model/static";
-import * as JSZip from "jszip";
+import JSZip from "jszip";
 import {api} from "@/api";
 import {saveAs} from "file-saver";
 import {jsonFormat, jsonStrFormat} from "@/utils/json.ts";
 import {validateModelInputStr} from "@/shape/ModelInput.ts";
 
 const createZip = async (files: Array<Pair<string, string>>): Promise<Blob> => {
-    const zip = new JSZip
+    const zip = new JSZip()
 
     const nameCountMap = new Map<string, number>
 
