@@ -2,7 +2,7 @@
 import Details from "@/components/global/common/Details.vue";
 import {ref} from "vue";
 import {GenAssociationView, GenColumnCommonView} from "@/api/__generated/model/static";
-import {useLoading} from "@/hooks/useLoading.ts";
+import {useLoading} from "@/utils/useLoading.ts";
 import {api} from "@/api";
 import {TableItemProps} from "@/components/business/model/menu/ModelMenuProps.ts";
 import AssociationItem from "@/components/business/model/menu/AssociationItem.vue";

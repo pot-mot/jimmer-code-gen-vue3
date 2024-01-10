@@ -10,7 +10,7 @@ import {deleteConfirm, sendMessage} from "@/utils/message.ts";
 import {SchemaItemSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlotProps.ts";
 import Searcher from "@/components/global/common/Searcher.vue";
 import {matchByKeywords} from "@/components/business/graphEditor/common/search.ts";
-import {useLoading} from "@/hooks/useLoading.ts";
+import {useLoading} from "@/utils/useLoading.ts";
 import {SchemaItemProps} from "@/components/business/dataSource/menu/DataSourceMenuProps.ts";
 
 const props = defineProps<SchemaItemProps>()

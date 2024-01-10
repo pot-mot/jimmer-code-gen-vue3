@@ -1,30 +1,35 @@
 import {ref} from "vue";
 
 export const useListSelection = <T>() => {
-    const selectedItems = ref(new Set<T>)
+    const selectedItemSet = ref(new Set<T>)
 
     const select = (item: T) => {
-        selectedItems.value.add(item)
+        selectedItemSet.value.add(item)
     }
 
     const unselect = (item: T) => {
-        selectedItems.value.delete(item)
+        selectedItemSet.value.delete(item)
     }
 
     const cleanSelection = () => {
-        selectedItems.value.clear()
+        selectedItemSet.value.clear()
     }
 
     const isSelected = (item: T) => {
-        return selectedItems.value.has(item)
+        return selectedItemSet.value.has(item)
+    }
+
+    const resetSelection = (items: T[]) => {
+        selectedItemSet.value.clear()
+        items.forEach(it => selectedItemSet.value.add(it))
     }
 
     return {
-        selectedItems,
-        getRawItems: () => [...selectedItems.value.values()],
+        selectedItemSet,
         select,
         unselect,
         cleanSelection,
+        resetSelection,
         isSelected
     }
 }

@@ -1,5 +1,4 @@
 import type {Executor} from '../';
-import type {DataSourceType} from '../model/enums/';
 import type {
     GenTableAssociationsView, 
     GenTableColumnsView, 
@@ -18,23 +17,6 @@ export class TableService {
         let _uri = '/table/';
         _uri += encodeURIComponent(options.ids.join(','));
         return (await this.executor({uri: _uri, method: 'DELETE'})) as Promise<number>;
-    }
-    
-    async getTableDefine(options: TableServiceOptions['getTableDefine']): Promise<
-        {[key:string]: string}
-    > {
-        let _uri = '/table/define/';
-        _uri += encodeURIComponent(options.id);
-        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
-        let _value: any = undefined;
-        _value = options.type;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'type='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<{[key:string]: string}>;
     }
     
     async queryAssociationsView(options: TableServiceOptions['queryAssociationsView']): Promise<
@@ -253,10 +235,6 @@ export type TableServiceOptions = {
     }, 
     'queryAssociationsView': {
         query: TableQuery
-    }, 
-    'getTableDefine': {
-        id: number, 
-        type?: DataSourceType | undefined
     }, 
     'delete': {
         ids: Array<number>

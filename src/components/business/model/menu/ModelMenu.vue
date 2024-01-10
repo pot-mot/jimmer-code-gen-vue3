@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import {GenModelSimpleView} from "@/api/__generated/model/static";
-import {useLoading} from "@/hooks/useLoading.ts";
+import {useLoading} from "@/utils/useLoading.ts";
 import ModelItem from "@/components/business/model/menu/ModelItem.vue";
 import {api} from "@/api";
 import mitt from "mitt";

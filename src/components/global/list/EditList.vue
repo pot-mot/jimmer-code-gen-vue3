@@ -6,11 +6,9 @@ import LineItem from "@/components/global/list/LineItem.vue";
 import Line from "@/components/global/list/Line.vue";
 import {Delete, Plus} from "@element-plus/icons-vue";
 import {EditListEmits, ListEmits} from "@/components/global/list/ListEmits.ts";
-import {useListSelection} from "@/components/global/list/listSelection.ts";
 import {useClickOutside} from "@/components/global/list/useClickOutside.ts";
 import {sendMessage} from "@/utils/message.ts";
-
-const editList = ref()
+import {useListSelection} from "@/components/global/list/listSelection.ts";
 
 const props = withDefaults(
 	defineProps<EditListProps<T>>(),
@@ -28,33 +26,63 @@ const props = withDefaults(
 
 const emits = defineEmits<EditListEmits<Partial<T>> & ListEmits<Partial<T>>>()
 
-const listSelection = useListSelection<Partial<T>>()
+const {
+	selectedItemSet,
+	isSelected,
+	select,
+	unselect,
+	cleanSelection,
+	resetSelection,
+} = useListSelection<number>()
 
-const cleanSelection = () => {
-	listSelection.cleanSelection()
-}
-
-const handleItemClick = (e: MouseEvent, item: T) => {
-	emits('clickItem', item)
+const handleItemClick = (e: MouseEvent, item: T, index: number) => {
+	emits('clickItem', item, index)
 
 	if (e.ctrlKey) {
-		if (!listSelection.isSelected(item)) {
-			listSelection.select(item)
+		if (!isSelected(index)) {
+			select(index)
 		} else {
-			listSelection.unselect(item)
+			unselect(index)
 		}
 	} else {
-		cleanSelection()
-		listSelection.select(item)
+		resetSelection([index])
 	}
 }
 
-useClickOutside(() => editList.value, () => {
+const editListBody = ref()
+
+useClickOutside(() => editListBody.value, () => {
 	cleanSelection()
 })
 
 const handleListClipBoardEvent = async (e: KeyboardEvent) => {
-	const selectedItems = listSelection.getRawItems()
+	if ((e.target as HTMLElement).tagName != 'DIV') {
+		return
+	}
+
+	const {
+		selectedItems,
+		unselectedItems
+	} = dataLines.value.reduce(
+		(result, _, index) => {
+			const { selectedItems, unselectedItems } = result
+			const item = dataLines.value[index]
+
+			if (selectedItemSet.value.has(index)) {
+				selectedItems.push(item)
+			} else {
+				unselectedItems.push(item)
+			}
+
+			return result
+		},
+		{ selectedItems: <Partial<T>[]>[], unselectedItems: <Partial<T>[]>[] }
+	)
+
+	if (e.key == 'Delete') {
+		e.preventDefault()
+		emits('update:lines', selectedItems)
+	}
 
 	if (e.ctrlKey || e.metaKey) {
 		if (e.key == 'c') {
@@ -64,8 +92,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 			e.preventDefault()
 			await navigator.clipboard.writeText(JSON.stringify(selectedItems))
 			cleanSelection()
-			const tempLines = dataLines.value.filter(it => !selectedItems.includes(it))
-			emits('update:lines', tempLines)
+			emits('update:lines', unselectedItems)
 		} else if (e.key == 'v') {
 			e.preventDefault()
 			const text = await navigator.clipboard.readText()
@@ -73,22 +100,27 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 				const value = JSON.parse(text)
 				const tempLines = getTempLines()
 
-				let insertIndex = tempLines.findIndex(it => JSON.stringify(it) == JSON.stringify(selectedItems[selectedItems.length - 1]))
+				let insertIndex = selectedItemSet.value.size > 0 ? Math.max(...selectedItemSet.value.values()) + 1 : selectedItems.length
 
-				if (insertIndex == -1) {
-					insertIndex = tempLines.length
-				} else {
-					insertIndex = insertIndex + 1
-				}
+				let insertLength = 0
 
 				if (Array.isArray(value) && value.filter(item => props.jsonSchemaValidate(item)).length == value.length) {
 					tempLines.splice(insertIndex, 0, ...value)
-					emits('update:lines', tempLines)
+					insertLength = value.length
 				} else if (props.jsonSchemaValidate(value)) {
 					tempLines.splice(insertIndex, 0, value)
-					emits('update:lines', tempLines)
+					insertLength = 1
 				} else {
 					sendMessage('剪切板中数据无法直接导入列表', 'info', text)
+					return
+				}
+
+				emits('update:lines', tempLines)
+				await nextTick()
+
+				cleanSelection()
+				for (let i = insertIndex; i < insertIndex + insertLength; i++) {
+					select(i)
 				}
 			} catch (e) {
 				sendMessage('剪切板中数据无法直接导入列表', 'info', {error: e, clipboardValue: text})
@@ -99,15 +131,18 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 	if (e.key == 'ArrowUp') {
 		e.preventDefault()
 		let tempLines = getTempLines()
-		const selectedItemStr = selectedItems.map(it => JSON.stringify(it))
-		const newSelectIndexes: number[] = []
+		const newSelectIndexes: Set<number> = new Set
 
-		for (let i = 1; i < tempLines.length; i++) {
+		for (let i = 0; i < tempLines.length; i++) {
 			const value = tempLines[i]
-			if (selectedItemStr.includes(JSON.stringify(value))) {
-				tempLines[i] = tempLines[i - 1]
-				tempLines[i - 1] = value
-				newSelectIndexes.push(i - 1)
+			if (selectedItemSet.value.has(i)) {
+				if (i == 0 || newSelectIndexes.has(i - 1)) {
+					newSelectIndexes.add(i)
+				} else {
+					tempLines[i] = tempLines[i - 1]
+					tempLines[i - 1] = value
+					newSelectIndexes.add(i - 1)
+				}
 			}
 		}
 
@@ -115,24 +150,24 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 
 		await nextTick()
 
-		listSelection.cleanSelection()
-		newSelectIndexes.forEach(index => {
-			listSelection.select(dataLines.value[index])
-		})
+		resetSelection([...newSelectIndexes])
 	}
 
 	if (e.key == 'ArrowDown') {
 		e.preventDefault()
 		let tempLines = getTempLines()
-		const selectedItemStr = selectedItems.map(it => JSON.stringify(it))
-		const newSelectIndexes: number[] = []
+		const newSelectIndexes: Set<number> = new Set
 
-		for (let i = tempLines.length - 2; i >= 0; i--) {
+		for (let i = tempLines.length - 1; i >= 0; i--) {
 			const value = tempLines[i]
-			if (selectedItemStr.includes(JSON.stringify(value))) {
-				tempLines[i] = tempLines[i + 1]
-				tempLines[i + 1] = value
-				newSelectIndexes.push(i + 1)
+			if (selectedItemSet.value.has(i)) {
+				if (i == tempLines.length - 1 || newSelectIndexes.has(i + 1)) {
+					newSelectIndexes.add(i)
+				} else {
+					tempLines[i] = tempLines[i + 1]
+					tempLines[i + 1] = value
+					newSelectIndexes.add(i + 1)
+				}
 			}
 		}
 
@@ -140,10 +175,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 
 		await nextTick()
 
-		listSelection.cleanSelection()
-		newSelectIndexes.forEach(index => {
-			listSelection.select(dataLines.value[index])
-		})
+		resetSelection([...newSelectIndexes])
 	}
 }
 
@@ -174,23 +206,31 @@ const getTempLines = () => {
 	return cloneDeep(dataLines.value)
 }
 
-const handleAddLine = async (index?: number) => {
+const handleAddLine = async (index: number = dataLines.value.length - 1) => {
 	const defaultLine = await getDefaultLine()
 
 	const tempLines = getTempLines()
-	if (index != undefined) {
-		tempLines.splice(index + 1, 0, defaultLine)
-	} else {
-		tempLines.push(defaultLine)
-	}
+	tempLines.splice(index + 1, 0, defaultLine)
 	emits('update:lines', tempLines)
+
+	await nextTick()
+
+	const newSelectedIndex: number[] = []
+	selectedItemSet.value.forEach(i => {
+		if (i > index) {
+			newSelectedIndex.push(i + 1)
+		} else {
+			newSelectedIndex.push(i)
+		}
+	})
+	resetSelection(newSelectedIndex)
 }
 
-const handleRemoveLine = (removedIndex: number) => {
+const handleRemoveLine = async (removedIndex: number) => {
 	const newDataLines = dataLines.value.filter((_, index) => index != removedIndex)
-	const removedLine = dataLines.value[removedIndex]
-	listSelection.unselect(removedLine)
 	emits('update:lines', newDataLines)
+	await nextTick()
+	unselect(removedIndex)
 }
 
 defineExpose({
@@ -205,7 +245,7 @@ defineExpose({
 </script>
 
 <template>
-	<div class="edit-list" ref="editList" tabindex="-1" @keydown="handleListClipBoardEvent">
+	<div class="edit-list" tabindex="-1" @keydown="handleListClipBoardEvent">
 		<div class="edit-list-head">
 			<Line v-if="labelLine" :gap="gap" :height="height">
 				<LineItem v-for="column in columns" :span="column.span">
@@ -219,14 +259,14 @@ defineExpose({
 			</Line>
 		</div>
 
-		<div class="edit-list-body">
+		<div class="edit-list-body" ref="editListBody">
 			<slot name="headLines" :columns="columns" :lines="lines"></slot>
 
 			<template v-for="(data, index) in lines">
 				<slot name="line" :data="data" :columns="columns" :gap="gap" :height="height">
 					<Line :gap="gap" :height="height"
-						  @click="(e) => {handleItemClick(e, data)}"
-						  :class="listSelection.isSelected(data) ? 'selected' : ''">
+						  @click="(e) => {handleItemClick(e, data, index)}"
+						  :class="isSelected(index) ? 'selected' : ''">
 
 						<LineItem v-for="column in columns" :span="column.span">
 							<slot
@@ -286,10 +326,10 @@ defineExpose({
 									:handleRemoveLine="handleRemoveLine">
 								</slot>
 
-								<el-button @click="handleAddLine(index)"
+								<el-button @click.prevent.stop="handleAddLine(index)"
 										   :icon="Plus" link style="margin-left: 0.3em;"></el-button>
-								<el-button type="danger" @click="handleRemoveLine(index)"
-										   :icon="Delete" link style="margin-left: 0.3em;"></el-button>
+								<el-button @click.prevent.stop="handleRemoveLine(index)"
+										   :icon="Delete" link style="margin-left: 0.3em;" type="danger"></el-button>
 
 								<slot
 									name="afterOperation"

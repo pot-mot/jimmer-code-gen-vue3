@@ -3,7 +3,7 @@ import {nextTick, onMounted, ref} from "vue";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {useRouter} from "vue-router";
 import {GenModelInput, GenModelSimpleView} from "@/api/__generated/model/static";
-import {useLoading} from "@/hooks/useLoading.ts";
+import {useLoading} from "@/utils/useLoading.ts";
 import {api} from "@/api";
 import {deleteConfirm, sendMessage} from "@/utils/message.ts";
 import {datetimeFormat} from "@/utils/dataFormat.ts";

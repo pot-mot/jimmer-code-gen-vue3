@@ -4,7 +4,7 @@ import {api} from "@/api";
 import {GenDataSourceView} from "@/api/__generated/model/static";
 import DataSourceItem from "./DataSourceItem.vue";
 import DataSourceDialog from "../dialog/DataSourceDialog.vue";
-import {useLoading} from "@/hooks/useLoading.ts";
+import {useLoading} from "@/utils/useLoading.ts";
 import {DataSourceMenuEvents} from "./DataSourceMenuEvents.ts";
 import {sendMessage} from "@/utils/message.ts";
 import mitt from 'mitt'

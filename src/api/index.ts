@@ -1,5 +1,6 @@
 import {Api} from "./__generated";
 import {sendMessage} from "../utils/message.ts";
+import {handleError} from "@/api/handleError.ts";
 
 // 开发通过 proxy 进行请求的根路径
 const BASE_URL = "/api";
@@ -18,9 +19,13 @@ export const api = new Api(async ({uri, method, body}) => {
             }
         })
 
-        if (response.status != 200) {
+        if (response.status == 500) {
+            const error = await response.json()
+            handleError(fetchUrl, error)
+            return
+        } else if (response.status != 200) {
             const result = await response.json()
-            sendMessage(`请求 [${method}] ${BASE_URL}${uri} 时出现问题，错误为 ${JSON.stringify(result)}`, "error", result)
+            sendMessage(`请求 ${fetchUrl} 时出现问题，错误为 ${JSON.stringify(result)}`, "error", result)
             return
         }
 
@@ -36,12 +41,12 @@ export const api = new Api(async ({uri, method, body}) => {
             return await response.blob()
         } else {
             // 其他类型的响应内容
-            const msg = `接收到了未设置的响应类型: ${contentType}，来源是 ${fetchUrl}`
-            sendMessage(msg, 'info', msg)
+            const content = await response.text()
+            sendMessage(`接收到了未设置的响应类型: ${contentType}，来源是 ${fetchUrl}`, 'info', content)
             return response.body
         }
     } catch (e) {
-        sendMessage(`请求 [${method}] ${BASE_URL}${uri} 时出现问题`, 'error', e)
+        sendMessage(`请求 [${method}] ${BASE_URL}${uri} 时出现预期外异常，请前往 git 仓库提出 issue 并提供问题复现素材`, 'error', e)
         throw e
     }
 })

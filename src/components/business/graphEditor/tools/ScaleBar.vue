@@ -57,23 +57,32 @@ const formatScaling = computed<number>({
 	}
 })
 
-const inputModelValue = ref("")
+const scalingInput = ref(scaling.value * 100)
 
 const parseInputModelValue = (value: string) => {
-	scaling.value = parseFloat(value) / 100
+	try {
+		scaling.value = parseFloat(value) / 100
+	} catch (e) {
+		scaling.value = 1
+	}
 }
 </script>
 
 <template>
 	<div class="scale-bar">
 		<div>
-			<el-popover trigger="click">
+			<el-popover trigger="click" @show="scalingInput = scaling * 100">
 				<template #reference>
 					{{ (scaling * 100).toFixed(2) }} %
 				</template>
-				<el-input v-model="inputModelValue" @change="parseInputModelValue">
-					<template #suffix>%</template>
-				</el-input>
+				<el-input-number
+					v-model="scalingInput"
+					@change="parseInputModelValue"
+					controls-position="right"
+					:max="DEFAULT_ZOOM_RANGE.maxScale * 100"
+					:min="DEFAULT_ZOOM_RANGE.minScale * 100"
+					:precision="2">
+				</el-input-number>
 			</el-popover>
 		</div>
 		<div style="text-align: center; transform: translateY(-0.2em)">

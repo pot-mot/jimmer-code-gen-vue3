@@ -10,7 +10,7 @@
 
 .edit-list > .edit-list-body > .line-container.selected,
 .view-list > .view-list-body > .line-container.selected {
-    background-color: #eee;
+    background-color: #e5e5e5;
 }
 
 .edit-list:focus, .view-list:focus {

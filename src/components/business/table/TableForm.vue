@@ -98,23 +98,24 @@ const handleSubmit = () => {
 		messageList.push('表名不可重复')
 	}
 
-
-
 	for (let column of table.value.columns) {
 		if (column.enum != undefined && !store._currentModel().enums.map(it => it.name).includes(column.enum.name)) {
 			messageList.push(`column ${column.name} 对应的 enum ${column.enum.name} 不存在，已自动移除`)
 			column.enum = undefined
 		}
+		if (!column.name) {
+			messageList.push('列名不得为空')
+		}
+		if (column.displaySize == null) {
+			messageList.push('column 的 displaySize 不可为空');
+		}
+		if (column.numericPrecision == null) {
+			messageList.push('column 的 numericPrecision 不可为空');
+		}
 	}
 
 	const columnNameSet = new Set<string>(table.value.columns.map(it => it.name))
 
-	for (let columnName of columnNameSet.values()) {
-		if (columnName.length == 0) {
-			messageList.push('列名不得为空')
-			break
-		}
-	}
 	if (columnNameSet.size != table.value.columns.length) {
 		messageList.push('列名不可重复')
 	}

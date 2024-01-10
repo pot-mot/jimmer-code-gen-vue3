@@ -169,8 +169,35 @@ export class PreviewService {
         }
         return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<Pair<string, string>>>;
     }
+    
+    async previewTableDefine(options: PreviewServiceOptions['previewTableDefine']): Promise<
+        Array<Pair<string, string>>
+    > {
+        let _uri = '/preview/tableDefine';
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.tableIds.join(',');
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'tableIds='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        _value = options.dataSourceType;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'dataSourceType='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<Pair<string, string>>>;
+    }
 }
 export type PreviewServiceOptions = {
+    'previewTableDefine': {
+        tableIds: Array<number>, 
+        dataSourceType?: DataSourceType | undefined
+    }, 
     'previewEntity': {
         entityIds: Array<number>, 
         dataSourceType?: DataSourceType | undefined, 

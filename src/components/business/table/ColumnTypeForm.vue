@@ -89,9 +89,9 @@ watch(() => props.modelValue.typeCode, () => {
 			<el-form-item label="长度精度">
 				<el-text style="display: grid; grid-template-columns: 0.5em 1fr 1em 1fr 0.5em">
 					<span>(</span>
-					<span><el-input type="number" v-model="modelValue.displaySize"></el-input></span>
+					<span><el-input-number v-model="modelValue.displaySize" controls-position="right"></el-input-number></span>
 					<span style="padding-left: 0.3em;">,</span>
-					<span><el-input type="number" v-model="modelValue.numericPrecision"></el-input></span>
+					<span><el-input-number v-model="modelValue.numericPrecision" controls-position="right"></el-input-number></span>
 					<span style="padding-left: 0.3em;">)</span>
 				</el-text>
 			</el-form-item>

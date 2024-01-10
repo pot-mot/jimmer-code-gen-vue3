@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {nextTick, onMounted, ref} from "vue";
 import {api} from "@/api";
-import {useLoading} from "@/hooks/useLoading.ts";
+import {useLoading} from "@/utils/useLoading.ts";
 import {GenTypeMappingInput, GenTypeMappingView} from "@/api/__generated/model/static";
 import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated/model/enums";
 import EditList from "@/components/global/list/EditList.vue";

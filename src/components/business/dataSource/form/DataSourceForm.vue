@@ -59,12 +59,18 @@ const handleTest = async () => {
 
 	if (res) {
 		sendMessage("数据源测试成功", "success")
+		return true
 	} else {
 		sendMessage("数据源测试失败", "error")
+		return false
 	}
 }
 
 const handleSubmit = async () => {
+	const testResult = await handleTest()
+
+	if (!testResult) return
+
 	loadingStore.add()
 
 	if (props.id) {

@@ -117,6 +117,15 @@ const handleSubmit = async () => {
 		messageList.push('ColumnDefault 的 dataSourceType 和 typeCode 不可重复');
 	}
 
+	tempColumnDefaults.value.forEach((columnDefault) => {
+		if (columnDefault.displaySize == null) {
+			messageList.push('ColumnDefault 的 displaySize 不可为空');
+		}
+		if (columnDefault.numericPrecision == null) {
+			messageList.push('ColumnDefault 的 numericPrecision 不可为空');
+		}
+	})
+
 	if (messageList.length > 0) {
 		messageList.forEach(it => sendMessage(it, 'warning'))
 		return
@@ -175,6 +184,14 @@ const handleCancel = () => {
 							<el-option v-for="type in jdbcTypeStore.list"
 									   :label="type.type" :value="type.typeCode"></el-option>
 						</el-select>
+					</template>
+
+					<template #displaySize="{data}">
+						<el-input-number v-model="data.displaySize" controls-position="right"></el-input-number>
+					</template>
+
+					<template #numericPrecision="{data}">
+						<el-input-number v-model="data.numericPrecision" controls-position="right"></el-input-number>
 					</template>
 				</EditList>
 

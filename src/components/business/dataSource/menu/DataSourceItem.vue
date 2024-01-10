@@ -5,7 +5,7 @@ import SchemaItem from "./SchemaItem.vue";
 import {api} from "@/api";
 import DataSourceDialog from "../dialog/DataSourceDialog.vue";
 import Details from "../../../global/common/Details.vue";
-import {useLoading} from "@/hooks/useLoading.ts";
+import {useLoading} from "@/utils/useLoading.ts";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import DataSourceIcon from "../../../global/icons/database/DataSourceIcon.vue";
 import {deleteConfirm, sendMessage} from "@/utils/message.ts";

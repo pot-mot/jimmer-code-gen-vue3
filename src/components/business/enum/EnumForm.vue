@@ -147,7 +147,7 @@ const handleCancel = () => {
 			style="padding-bottom: 2em;">
 			<template #value="{data}">
 				<el-input v-if="genEnum.enumType == 'NAME'" v-model="data.mappedValue"></el-input>
-				<el-input v-else-if="genEnum.enumType == 'ORDINAL'" type="number" v-model="data.mappedValue"></el-input>
+				<el-input-number v-else-if="genEnum.enumType == 'ORDINAL'" v-model="data.mappedValue"></el-input-number>
 				<el-input v-else disabled :model-value="data.mappedValue"></el-input>
 			</template>
 		</EditList>

@@ -3,48 +3,71 @@ import {ListProps} from "@/components/global/list/ListProps.ts";
 import Line from "@/components/global/list/Line.vue";
 import LineItem from "@/components/global/list/LineItem.vue";
 import {ListEmits} from "@/components/global/list/ListEmits.ts";
-import {useListSelection} from "@/components/global/list/listSelection.ts";
 import {ref} from "vue";
 import {useClickOutside} from "@/components/global/list/useClickOutside.ts";
+import {useListSelection} from "@/components/global/list/listSelection.ts";
 
-const viewList = ref()
-
-withDefaults(defineProps<ListProps<T>>(), {
+const props = withDefaults(defineProps<ListProps<T>>(), {
 	labelLine: true
 })
 
 const emits = defineEmits<ListEmits<T>>()
 
-const listSelection = useListSelection<T>()
+const {
+	selectedItemSet,
+	isSelected,
+	select,
+	unselect,
+	cleanSelection,
+	resetSelection,
+} = useListSelection<number>()
 
-const cleanSelection = () => {
-	listSelection.cleanSelection()
-}
-
-const handleItemClick = (e: MouseEvent, item: T) => {
-	emits('clickItem', item)
+const handleItemClick = (e: MouseEvent, item: T, index: number) => {
+	emits('clickItem', item, index)
 
 	if (e.ctrlKey) {
-		if (!listSelection.isSelected(item)) {
-			listSelection.select(item)
+		if (!isSelected(index)) {
+			select(index)
 		} else {
-			listSelection.unselect(item)
+			unselect(index)
 		}
 	} else {
-		cleanSelection()
-		listSelection.select(item)
+		resetSelection([index])
 	}
 }
 
-useClickOutside(() => viewList.value, () => {
+const viewListBody = ref()
+
+useClickOutside(() => viewListBody.value, () => {
 	cleanSelection()
 })
 
 const handleListClipBoardEvent = async (e: KeyboardEvent) => {
+	if ((e.target as HTMLElement).tagName != 'DIV') {
+		return
+	}
+
 	if (e.ctrlKey || e.metaKey) {
 		if (e.key == 'c') {
 			e.preventDefault()
-			const data = JSON.stringify(listSelection.getRawItems())
+
+			const {
+				selectedItems
+			} = props.lines.reduce(
+				(result, _, index) => {
+					const { selectedItems } = result
+					const item = props.lines[index]
+
+					if (selectedItemSet.value.has(index)) {
+						selectedItems.push(item)
+					}
+
+					return result
+				},
+				{ selectedItems: <T[]>[] }
+			)
+
+			const data = JSON.stringify(selectedItems)
 			await navigator.clipboard.writeText(data)
 		}
 	}
@@ -52,7 +75,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 </script>
 
 <template>
-	<div class="view-list" ref="viewList" tabindex="-1" @keydown="handleListClipBoardEvent">
+	<div class="view-list" tabindex="-1" @keydown="handleListClipBoardEvent">
 		<div class="view-list-head">
 			<Line v-if="labelLine" :gap="gap" :height="height">
 				<LineItem v-for="column in columns" :span="column.span">
@@ -63,14 +86,14 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 			</Line>
 		</div>
 
-		<div class="view-list-body">
+		<div class="view-list-body" ref="viewListBody">
 			<slot name="headLines" :columns="columns" :lines="lines" :gap="gap" :height="height"></slot>
 
-			<template v-for="data in lines">
+			<template v-for="(data, index) in lines">
 				<slot name="line" :data="data" :columns="columns" :gap="gap" :height="height">
 					<Line :gap="gap" :height="height"
-						  @click="(e) => {handleItemClick(e, data)}"
-						  :class="listSelection.isSelected(data) ? 'selected' : ''">
+						  @click="(e) => {handleItemClick(e, data, index)}"
+						  :class="isSelected(index) ? 'selected' : ''">
 
 						<LineItem v-for="(column, index) in columns" :span="column.span">
 							<slot
