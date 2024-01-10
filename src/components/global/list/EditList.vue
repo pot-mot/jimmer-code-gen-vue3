@@ -81,7 +81,8 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 
 	if (e.key == 'Delete') {
 		e.preventDefault()
-		emits('update:lines', selectedItems)
+		cleanSelection()
+		emits('update:lines', unselectedItems)
 	}
 
 	if (e.ctrlKey || e.metaKey) {
@@ -226,11 +227,19 @@ const handleAddLine = async (index: number = dataLines.value.length - 1) => {
 	resetSelection(newSelectedIndex)
 }
 
-const handleRemoveLine = async (removedIndex: number) => {
-	const newDataLines = dataLines.value.filter((_, index) => index != removedIndex)
+const handleRemoveLine = async (index: number) => {
+	const newDataLines = dataLines.value.filter((_, i) => i != index)
 	emits('update:lines', newDataLines)
 	await nextTick()
-	unselect(removedIndex)
+	const newSelectedIndex: number[] = []
+	selectedItemSet.value.forEach(i => {
+		if (i > index) {
+			newSelectedIndex.push(i - 1)
+		} else if (i < index) {
+			newSelectedIndex.push(i)
+		}
+	})
+	resetSelection(newSelectedIndex)
 }
 
 defineExpose({
