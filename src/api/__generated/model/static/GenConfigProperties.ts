@@ -16,7 +16,7 @@ export interface GenConfigProperties {
     /**
      * 默认包路径
      */
-    defaultPackagePath?: string | undefined;
+    packagePath?: string | undefined;
     /**
      * 默认启用小写命名
      */

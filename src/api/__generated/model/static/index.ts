@@ -1,11 +1,11 @@
+export type {AssociationColumnQuery} from './AssociationColumnQuery';
 export type {AssociationQuery} from './AssociationQuery';
+export type {AssociationTableQuery} from './AssociationTableQuery';
 export type {ColumnQuery} from './ColumnQuery';
 export type {EntityQuery} from './EntityQuery';
 export type {EnumQuery} from './EnumQuery';
 export type {GenAssociationInput} from './GenAssociationInput';
 export type {GenAssociationInput_TargetOf_columnReferences} from './GenAssociationInput_TargetOf_columnReferences';
-export type {GenAssociationMatchView} from './GenAssociationMatchView';
-export type {GenAssociationMatchView_TargetOf_columnReferences} from './GenAssociationMatchView_TargetOf_columnReferences';
 export type {GenAssociationModelInput} from './GenAssociationModelInput';
 export type {GenAssociationModelInput_TargetOf_columnReferences} from './GenAssociationModelInput_TargetOf_columnReferences';
 export type {GenAssociationModelInput_TargetOf_columnReferences_TargetOf_sourceColumn_2} from './GenAssociationModelInput_TargetOf_columnReferences_TargetOf_sourceColumn_2';

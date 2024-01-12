@@ -10,8 +10,8 @@ import AssociationIcon from "@/components/global/icons/database/AssociationIcon.
 import {
 	getAssociationSourceLabel,
 	getAssociationTargetLabel
-} from "@/components/business/modelGraphEditor/associationEdge/associationName.ts";
-import AssociationForm from "@/components/business/association/AssociationForm.vue";
+} from "@/components/pages/ModelEditor/graph/associationEdge/associationName.ts";
+import AssociationForm from "@/components/pages/ModelEditor/form/association/AssociationForm.vue";
 
 interface EdgeItem {
 	edge: Edge,

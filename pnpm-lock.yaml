@@ -6,23 +6,23 @@ settings:
 
 dependencies:
   '@antv/x6':
-    specifier: ^2.13.1
-    version: registry.npmmirror.com/@antv/x6@2.13.1
+    specifier: ^2.17.1
+    version: registry.npmmirror.com/@antv/x6@2.17.1
   '@antv/x6-plugin-history':
-    specifier: ^2.2.3
-    version: registry.npmmirror.com/@antv/x6-plugin-history@2.2.3(@antv/x6@2.13.1)
+    specifier: ^2.2.4
+    version: registry.npmmirror.com/@antv/x6-plugin-history@2.2.4(@antv/x6@2.17.1)
   '@antv/x6-plugin-keyboard':
-    specifier: ^2.2.1
-    version: registry.npmmirror.com/@antv/x6-plugin-keyboard@2.2.1(@antv/x6@2.13.1)
+    specifier: ^2.2.2
+    version: registry.npmmirror.com/@antv/x6-plugin-keyboard@2.2.2(@antv/x6@2.17.1)
   '@antv/x6-plugin-minimap':
-    specifier: ^2.0.5
-    version: registry.npmmirror.com/@antv/x6-plugin-minimap@2.0.5(@antv/x6@2.13.1)
+    specifier: ^2.0.6
+    version: registry.npmmirror.com/@antv/x6-plugin-minimap@2.0.6(@antv/x6@2.17.1)
   '@antv/x6-plugin-selection':
-    specifier: ^2.1.7
-    version: registry.npmmirror.com/@antv/x6-plugin-selection@2.1.7(@antv/x6@2.13.1)
+    specifier: ^2.2.1
+    version: registry.npmmirror.com/@antv/x6-plugin-selection@2.2.1(@antv/x6@2.17.1)
   '@antv/x6-vue-shape':
     specifier: ^2.1.1
-    version: registry.npmmirror.com/@antv/x6-vue-shape@2.1.1(@antv/x6@2.13.1)(vue@3.3.4)
+    version: registry.npmmirror.com/@antv/x6-vue-shape@2.1.1(@antv/x6@2.17.1)(vue@3.3.4)
   '@element-plus/icons-vue':
     specifier: ^2.1.0
     version: registry.npmmirror.com/@element-plus/icons-vue@2.1.0(vue@3.3.4)
@@ -131,10 +131,10 @@ packages:
       '@jridgewell/trace-mapping': registry.npmmirror.com/@jridgewell/trace-mapping@0.3.20
     dev: false
 
-  registry.npmmirror.com/@antv/x6-common@2.0.14:
-    resolution: {integrity: sha512-/8OmYV2hxUIwNKt/YurWhGmhbTBu95mZRcF5cwUVp0oR0SmOGNFqMT710w1uvLAfWmfdoq/oEcCuScW/L8mOLw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@antv/x6-common/-/x6-common-2.0.14.tgz}
+  registry.npmmirror.com/@antv/x6-common@2.0.17:
+    resolution: {integrity: sha512-37g7vmRkNdYzZPdwjaMSZEGv/MMH0S4r70/Jwoab1mioycmuIBN73iyziX8m56BvJSDucZ3J/6DU07otWqzS6A==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@antv/x6-common/-/x6-common-2.0.17.tgz}
     name: '@antv/x6-common'
-    version: 2.0.14
+    version: 2.0.17
     dependencies:
       lodash-es: registry.npmmirror.com/lodash-es@4.17.21
       utility-types: registry.npmmirror.com/utility-types@3.10.0
@@ -146,52 +146,52 @@ packages:
     version: 2.0.5
     dev: false
 
-  registry.npmmirror.com/@antv/x6-plugin-history@2.2.3(@antv/x6@2.13.1):
-    resolution: {integrity: sha512-yiv5e7CQKm1HrJe7je4iWjkzDzU+I0WsyL8En2j0UwXJrUNaKYyv4BkRg2tvyi52hydxidMgi3tNnNQHEZwoMg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@antv/x6-plugin-history/-/x6-plugin-history-2.2.3.tgz}
-    id: registry.npmmirror.com/@antv/x6-plugin-history/2.2.3
+  registry.npmmirror.com/@antv/x6-plugin-history@2.2.4(@antv/x6@2.17.1):
+    resolution: {integrity: sha512-9gHHvEW4Fla+1hxUV49zNgJyIMoV9CjVM52MrFgAJcvyRn1Kvxz4MfxiKlG+DEZUs+/zvfjl9pS6gJOd8laRkg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@antv/x6-plugin-history/-/x6-plugin-history-2.2.4.tgz}
+    id: registry.npmmirror.com/@antv/x6-plugin-history/2.2.4
     name: '@antv/x6-plugin-history'
-    version: 2.2.3
+    version: 2.2.4
     peerDependencies:
       '@antv/x6': ^2.x
     dependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6@2.13.1
+      '@antv/x6': registry.npmmirror.com/@antv/x6@2.17.1
     dev: false
 
-  registry.npmmirror.com/@antv/x6-plugin-keyboard@2.2.1(@antv/x6@2.13.1):
-    resolution: {integrity: sha512-sqfN0h4txVO211uIeKBd3zQ/IN2zPzDThWNTEhRx7Lecg1fO7uRXWBbOA48j3EgpRFXVexdSzIEVJEx+IWUdYw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@antv/x6-plugin-keyboard/-/x6-plugin-keyboard-2.2.1.tgz}
-    id: registry.npmmirror.com/@antv/x6-plugin-keyboard/2.2.1
+  registry.npmmirror.com/@antv/x6-plugin-keyboard@2.2.2(@antv/x6@2.17.1):
+    resolution: {integrity: sha512-9Zwja+1TGxvIjRl0FDZ/rKANXMUx1iV3e6UbQI+nS4PBS/PuosT0Ud/ixEL9FwW/6h8jt/BCK8apibKdXn5ckQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@antv/x6-plugin-keyboard/-/x6-plugin-keyboard-2.2.2.tgz}
+    id: registry.npmmirror.com/@antv/x6-plugin-keyboard/2.2.2
     name: '@antv/x6-plugin-keyboard'
+    version: 2.2.2
+    peerDependencies:
+      '@antv/x6': ^2.x
+    dependencies:
+      '@antv/x6': registry.npmmirror.com/@antv/x6@2.17.1
+      mousetrap: registry.npmmirror.com/mousetrap@1.6.5
+    dev: false
+
+  registry.npmmirror.com/@antv/x6-plugin-minimap@2.0.6(@antv/x6@2.17.1):
+    resolution: {integrity: sha512-of16qYK+M+wiIdEu/AP2oOep49a+SV2XxoD6SX5gnqH5/liGOUKzdatITncW3c3iBgniwRrUmz8XS6GTQNKN0Q==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@antv/x6-plugin-minimap/-/x6-plugin-minimap-2.0.6.tgz}
+    id: registry.npmmirror.com/@antv/x6-plugin-minimap/2.0.6
+    name: '@antv/x6-plugin-minimap'
+    version: 2.0.6
+    peerDependencies:
+      '@antv/x6': ^2.x
+    dependencies:
+      '@antv/x6': registry.npmmirror.com/@antv/x6@2.17.1
+    dev: false
+
+  registry.npmmirror.com/@antv/x6-plugin-selection@2.2.1(@antv/x6@2.17.1):
+    resolution: {integrity: sha512-9rV4jKcvqNqcGNBAm14nwOBtC+XC8/6qJTce8f8YBsE3XGSxrr8gNn2bmgzcV+3R+McXbAUaQT5P+vQV1Q6raA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@antv/x6-plugin-selection/-/x6-plugin-selection-2.2.1.tgz}
+    id: registry.npmmirror.com/@antv/x6-plugin-selection/2.2.1
+    name: '@antv/x6-plugin-selection'
     version: 2.2.1
     peerDependencies:
       '@antv/x6': ^2.x
     dependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6@2.13.1
-      mousetrap: registry.npmmirror.com/mousetrap@1.6.5
+      '@antv/x6': registry.npmmirror.com/@antv/x6@2.17.1
     dev: false
 
-  registry.npmmirror.com/@antv/x6-plugin-minimap@2.0.5(@antv/x6@2.13.1):
-    resolution: {integrity: sha512-6L+W80AvoEZG4cwRxgPxvYLeKhqkBJEt4hTnZ2NWWcvBx02F9RJKRZVEEUemqE12mKUv4HT6WtbQV0QIfkTEMw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@antv/x6-plugin-minimap/-/x6-plugin-minimap-2.0.5.tgz}
-    id: registry.npmmirror.com/@antv/x6-plugin-minimap/2.0.5
-    name: '@antv/x6-plugin-minimap'
-    version: 2.0.5
-    peerDependencies:
-      '@antv/x6': ^2.x
-    dependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6@2.13.1
-    dev: false
-
-  registry.npmmirror.com/@antv/x6-plugin-selection@2.1.7(@antv/x6@2.13.1):
-    resolution: {integrity: sha512-ODfYLNwKSaLgIYMYfMW4dYQ9KKFOVBEdH0BzvyG8mfRol+JtZuyrm4BRbAvMryQKHrSxs4JCYXTFd2F7ZTuxLQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@antv/x6-plugin-selection/-/x6-plugin-selection-2.1.7.tgz}
-    id: registry.npmmirror.com/@antv/x6-plugin-selection/2.1.7
-    name: '@antv/x6-plugin-selection'
-    version: 2.1.7
-    peerDependencies:
-      '@antv/x6': ^2.x
-    dependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6@2.13.1
-    dev: false
-
-  registry.npmmirror.com/@antv/x6-vue-shape@2.1.1(@antv/x6@2.13.1)(vue@3.3.4):
+  registry.npmmirror.com/@antv/x6-vue-shape@2.1.1(@antv/x6@2.17.1)(vue@3.3.4):
     resolution: {integrity: sha512-XQwKyQmKH1m12tQ7ybh/p3XXe/XKWEa6zihoIb/IQd+w5WyTTosVfgXbn1io3Nb6zXc2R853R6iGe+T1+tWhfg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@antv/x6-vue-shape/-/x6-vue-shape-2.1.1.tgz}
     id: registry.npmmirror.com/@antv/x6-vue-shape/2.1.1
     name: '@antv/x6-vue-shape'
@@ -204,17 +204,17 @@ packages:
       '@vue/composition-api':
         optional: true
     dependencies:
-      '@antv/x6': registry.npmmirror.com/@antv/x6@2.13.1
+      '@antv/x6': registry.npmmirror.com/@antv/x6@2.17.1
       vue: registry.npmmirror.com/vue@3.3.4
       vue-demi: registry.npmmirror.com/vue-demi@0.14.6(vue@3.3.4)
     dev: false
 
-  registry.npmmirror.com/@antv/x6@2.13.1:
-    resolution: {integrity: sha512-aAj3SlOi4KhBhpoiX4WCsJ61glztSmZy6Vb0aWZTFZXErfp1sUjTmrThJeTG6IQZbXW+7GcGjFGI04roOa05Bg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@antv/x6/-/x6-2.13.1.tgz}
+  registry.npmmirror.com/@antv/x6@2.17.1:
+    resolution: {integrity: sha512-OndqBbstObovIA9dg4Gu2FmplB6jP5kV1df5MSRiAxBaIBN0ydiPQ6qo60d8n1yWoYsY5bwdRJ4cRH1QuZxdlQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@antv/x6/-/x6-2.17.1.tgz}
     name: '@antv/x6'
-    version: 2.13.1
+    version: 2.17.1
     dependencies:
-      '@antv/x6-common': registry.npmmirror.com/@antv/x6-common@2.0.14
+      '@antv/x6-common': registry.npmmirror.com/@antv/x6-common@2.0.17
       '@antv/x6-geometry': registry.npmmirror.com/@antv/x6-geometry@2.0.5
       utility-types: registry.npmmirror.com/utility-types@3.10.0
     dev: false

@@ -74,8 +74,7 @@
 					}"></el-button>
 				</el-tooltip>
 
-				<DragDialog v-model="sqlPreviewDialogOpenState" :init-w="700" :init-x="5000" can-drag
-							can-resize disabled-h disabled-y>
+				<DragDialog v-model="sqlPreviewDialogOpenState" :init-w="700" :init-x="5000" can-drag can-resize>
 					<MultiCodePreview :code-files="sqlFiles"
 									  height="calc(100vh - 5em - 30px)"
 									  width="100%"
@@ -95,8 +94,7 @@
 					}"></el-button>
 				</el-tooltip>
 
-				<DragDialog v-model="entityPreviewDialogOpenState" :init-w="700" :init-x="5000"
-							can-drag can-resize disabled-h disabled-y>
+				<DragDialog v-model="entityPreviewDialogOpenState" :init-w="700" :init-x="5000" can-drag can-resize>
 					<MultiCodePreview :code-files="entityFiles"
 									  height="calc(100vh - 5em - 30px)"
 									  width="100%"
@@ -154,14 +152,14 @@
 
 <script lang="ts" setup>
 import {onMounted, onUnmounted, ref, watch} from "vue"
-import {Graph} from "@antv/x6"
+import {Graph, Node} from "@antv/x6"
 import {initModelEditor} from "./init.ts"
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {api} from "@/api";
 import {sendMessage} from "@/utils/message.ts";
-import {Pair} from "@/api/__generated/model/static";
-import {handleSelectionKeyEvent} from "@/components/business/graphEditor/selection/useSelection.ts";
+import {GenTableModelInput, Pair} from "@/api/__generated/model/static";
+import {handleSelectionKeyEvent} from "@/components/global/graphEditor/selection/useSelection.ts";
 import SaveIcon from "@/components/global/icons/toolbar/SaveIcon.vue";
 import LayoutIcon from "@/components/global/icons/toolbar/LayoutIcon.vue";
 import MultiCodePreview from "@/components/global/code/MultiCodePreview.vue";
@@ -172,17 +170,14 @@ import CenterIcon from "@/components/global/icons/toolbar/CenterIcon.vue";
 import EraserIcon from "@/components/global/icons/toolbar/EraserIcon.vue";
 import AssociationOffIcon from "@/components/global/icons/toolbar/AssociationOffIcon.vue";
 import DownloadIcon from "@/components/global/icons/toolbar/DownloadIcon.vue";
-import ScaleBar from "@/components/business/graphEditor/tools/ScaleBar.vue";
-import GraphSearcher from "@/components/business/graphEditor/tools/GraphSearcher.vue";
+import ScaleBar from "@/components/global/graphEditor/tools/ScaleBar.vue";
+import GraphSearcher from "@/components/global/graphEditor/tools/GraphSearcher.vue";
 import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
 import {EditPen} from "@element-plus/icons-vue";
-import {
-	useTableDialogsStore
-} from "@/components/business/modelGraphEditor/tablesDialog/TableDialogsStore.ts";
 import {debugLog} from "@/utils/debugLog.ts";
-import {handleTableNodeClipBoardKeyEvent} from "@/components/business/modelGraphEditor/clipBoard.ts";
+import {handleTableNodeClipBoardKeyEvent} from "@/components/pages/ModelEditor/graph/data/clipBoard.ts";
 import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
-import {handleHistoryKeyEvent} from "@/components/business/graphEditor/history/useHistory.ts";
+import {handleHistoryKeyEvent} from "@/components/global/graphEditor/history/useHistory.ts";
 import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";
 import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
 import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
@@ -193,7 +188,7 @@ import {
 	previewModelSql
 } from "@/components/business/model/file/modelFileOperations.ts";
 import {cloneDeep} from "lodash";
-import {TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
+import {TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -204,19 +199,11 @@ const store = useModelEditorStore()
 
 const loadingStore = useGlobalLoadingStore()
 
-const tableDialogsStore = useTableDialogsStore()
-
 onMounted(async () => {
 	loadingStore.add()
 
 	graph = initModelEditor(container.value!, wrapper.value!)
 	await store.load(graph)
-
-	graph.on('node:dblclick', ({node}) => {
-		if (node.shape == TABLE_NODE && node.getData()?.table != undefined) {
-			tableDialogsStore.open(node.id, cloneDeep(node.getData().table))
-		}
-	})
 
 	graph.on('history:change', (args) => {
 		debugLog(args.options.name, args)
@@ -224,6 +211,10 @@ onMounted(async () => {
 
 	graph.on('blank:dblclick', ({e}) => {
 		ModelEditorEventBus.emit('createTable', {x: e.offsetX, y: e.offsetY})
+	})
+
+	graph.on('node:click', ({node}) => {
+		handleNodeClick(node)
 	})
 
 	handleSelectionKeyEvent(graph)
@@ -243,26 +234,46 @@ onUnmounted(() => {
 	store.unload()
 })
 
+// 表编辑事件
+const doubleClickWaitNodes = new Set<string>
+
+const DOUBLE_CLICK_TIMEOUT = 300
+
+const handleNodeClick = (node: Node) => {
+	if (node.shape == TABLE_NODE && node.getData()?.table != undefined) {
+		const id = node.id
+		const table = node.getData()?.table as GenTableModelInput
+
+		if (doubleClickWaitNodes.has(id)) {
+			doubleClickWaitNodes.delete(id)
+			ModelEditorEventBus.emit('modifyTable', {id, table: cloneDeep(table)})
+		} else {
+			graph.select(node)
+			doubleClickWaitNodes.add(id)
+			setTimeout(() => {
+				doubleClickWaitNodes.delete(id)
+			}, DOUBLE_CLICK_TIMEOUT)
+		}
+	}
+}
+
 const handleSaveModel = async () => {
 	loadingStore.add()
 
 	try {
-		const model = store._currentModel()
+		let model = store._currentModel()
 
-		if (model.graphData != store.toDataJSONStr()) {
-			model.graphData = store.toDataJSONStr()
+		store.isModelLoaded = false
+
+		if (model.graphData != store.getGraphData()) {
+			graph.cleanSelection()
+			model.graphData = store.getGraphData()
 			await api.modelService.save({body: model})
 		} else {
 			await api.modelService.save({body: {...model, graphData: undefined}})
 		}
 
-		if (sqlPreviewDialogOpenState.value) {
-			await handleSQLPreview()
-		}
-
-		if (entityPreviewDialogOpenState.value) {
-			await handleEntityPreview()
-		}
+		store.isModelLoaded = true
 
 		sendMessage("模型保存成功", "success")
 	} catch (e) {
@@ -281,6 +292,17 @@ const handleSaveEvent = (e: KeyboardEvent) => {
 	}
 }
 
+watch(() => store.isModelLoaded, async (value) => {
+	if (value) {
+		if (sqlPreviewDialogOpenState.value) {
+			await handleSQLPreview()
+		}
+
+		if (entityPreviewDialogOpenState.value) {
+			await handleEntityPreview()
+		}
+	}
+})
 
 /**
  * 代码预览与下载

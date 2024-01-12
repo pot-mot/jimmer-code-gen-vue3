@@ -9,7 +9,7 @@ import SchemaIcon from "../../../global/icons/database/SchemaIcon.vue";
 import {deleteConfirm, sendMessage} from "@/utils/message.ts";
 import {SchemaItemSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlotProps.ts";
 import Searcher from "@/components/global/common/Searcher.vue";
-import {matchByKeywords} from "@/components/business/graphEditor/common/search.ts";
+import {matchByKeywords} from "@/components/global/graphEditor/common/search.ts";
 import {useLoading} from "@/utils/useLoading.ts";
 import {SchemaItemProps} from "@/components/business/dataSource/menu/DataSourceMenuProps.ts";
 
@@ -24,7 +24,11 @@ const tablesLoading = useLoading()
 const getTables = async (schemaId: number = props.schema.id) => {
 	tablesLoading.start()
 
-	tables.value = await api.tableService.queryCommonView({query: {schemaIds: [schemaId]}})
+	tables.value = await api.tableService.queryCommonView({
+		body: {
+			schemaIds: [schemaId]
+		}
+	})
 
 	tablesLoading.end()
 }

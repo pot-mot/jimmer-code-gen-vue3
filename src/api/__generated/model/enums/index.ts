@@ -1,5 +1,3 @@
-export type {AssociationMatchType} from './AssociationMatchType';
-export {AssociationMatchType_CONSTANTS} from './AssociationMatchType';
 export type {AssociationType} from './AssociationType';
 export {AssociationType_CONSTANTS} from './AssociationType';
 export type {DataSourceType} from './DataSourceType';

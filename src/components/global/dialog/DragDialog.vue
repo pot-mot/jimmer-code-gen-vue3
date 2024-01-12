@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<DragDialogProps>(), {
 	canResize: false,
 	canDrag: true,
 	initW: 800,
-	limitByParent: true
+	limitByParent: false
 })
 
 const wrapper = ref<HTMLElement>()

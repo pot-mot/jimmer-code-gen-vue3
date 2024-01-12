@@ -1,13 +1,14 @@
 import {Graph} from "@antv/x6"
-import {initGraph} from "@/components/business/graphEditor/common/init.ts";
+import {initGraph} from "@/components/global/graphEditor/common/init.ts";
 
-import {AssociationEdgeConnecting} from "@/components/business/modelGraphEditor/associationEdge/define.ts";
-import {useAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge.ts";
-import {useAssociationFake} from "@/components/business/modelGraphEditor/associationEdge/associationFake.ts";
-import {DEFAULT_ZOOM_RANGE} from "@/components/business/modelGraphEditor/constant.ts";
+import {AssociationEdgeConnecting} from "@/components/pages/ModelEditor/graph/associationEdge/define.ts";
+import {useAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge/associationEdge.ts";
+import {useAssociationFake} from "@/components/pages/ModelEditor/graph/associationEdge/associationFake.ts";
+import {DEFAULT_ZOOM_RANGE} from "@/components/business/modelEditor/constant.ts";
 import {
     useAssociationType
-} from "@/components/business/modelGraphEditor/associationEdge/associationTypeLabels.ts";
+} from "@/components/pages/ModelEditor/graph/associationEdge/associationTypeButton.ts";
+import {useHoverToFront, useStyle} from "@/components/pages/ModelEditor/graph/highlight/highlight.ts";
 
 export const initModelEditor = (container: HTMLElement, wrapper: HTMLElement): Graph => {
     const graph = initGraph(
@@ -28,6 +29,8 @@ export const initModelEditor = (container: HTMLElement, wrapper: HTMLElement): G
         }
     )
 
+    useStyle(graph)
+    useHoverToFront(graph)
     useAssociationEdgeData(graph)
     useAssociationType(graph)
     useAssociationFake(graph)

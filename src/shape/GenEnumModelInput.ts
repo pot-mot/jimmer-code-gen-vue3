@@ -1,14 +1,14 @@
 import {useShapeValidate} from "@/utils/shapeValidate.ts";
 import {
-    GenModelView_TargetOf_enums,
-    GenModelView_TargetOf_enums_TargetOf_items_2
+    GenModelInput_TargetOf_enums,
+    GenModelInput_TargetOf_enums_TargetOf_items_2
 } from "@/api/__generated/model/static";
 
-// typescript-json-schema src/api/__generated/model/static/GenModelView_TargetOf_enums.ts * --required
+// typescript-json-schema src/api/__generated/model/static/GenModelInput_TargetOf_enums.ts * --required
 export const GenEnumModelInputJsonSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
-        "GenModelView_TargetOf_enums": {
+        "GenModelInput_TargetOf_enums": {
             "properties": {
                 "comment": {
                     "description": "枚举注释",
@@ -26,7 +26,7 @@ export const GenEnumModelInputJsonSchema = {
                 "items": {
                     "description": "生成枚举元素",
                     "items": {
-                        "$ref": "#/definitions/GenModelView_TargetOf_enums_TargetOf_items_2"
+                        "$ref": "#/definitions/GenModelInput_TargetOf_enums_TargetOf_items_2"
                     },
                     "type": "array"
                 },
@@ -61,7 +61,7 @@ export const GenEnumModelInputJsonSchema = {
             ],
             "type": "object"
         },
-        "GenModelView_TargetOf_enums_TargetOf_items_2": {
+        "GenModelInput_TargetOf_enums_TargetOf_items_2": {
             "properties": {
                 "comment": {
                     "description": "元素注释",
@@ -97,13 +97,13 @@ export const GenEnumModelInputJsonSchema = {
 }
 
 export const {validate: validateEnum} =
-    useShapeValidate<GenModelView_TargetOf_enums>(
-        "GenModelView_TargetOf_enums",
+    useShapeValidate<GenModelInput_TargetOf_enums>(
+        "GenModelInput_TargetOf_enums",
         GenEnumModelInputJsonSchema
     )
 
 export const {validate: validateEnumItem} =
-    useShapeValidate<GenModelView_TargetOf_enums_TargetOf_items_2>(
-        "GenModelView_TargetOf_enums_TargetOf_items_2",
+    useShapeValidate<GenModelInput_TargetOf_enums_TargetOf_items_2>(
+        "GenModelInput_TargetOf_enums_TargetOf_items_2",
         GenEnumModelInputJsonSchema
     )

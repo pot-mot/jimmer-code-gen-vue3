@@ -93,7 +93,7 @@ const handleCancel = () => {
 					<el-row :gutter="24">
 						<el-col :span="12">
 							<el-form-item label="默认包路径">
-								<el-input v-model="config.defaultPackagePath"></el-input>
+								<el-input v-model="config.packagePath"></el-input>
 							</el-form-item>
 						</el-col>
 

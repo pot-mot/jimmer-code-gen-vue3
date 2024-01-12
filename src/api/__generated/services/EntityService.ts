@@ -58,30 +58,7 @@ export class EntityService {
         Array<GenEntityPropertiesView>
     > {
         let _uri = '/entity/query';
-        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
-        let _value: any = undefined;
-        _value = options.query.ids?.join(',');
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'ids='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.query.keywords?.join(',');
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'keywords='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.query.names?.join(',');
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'names='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenEntityPropertiesView>>;
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<GenEntityPropertiesView>>;
     }
 }
 export type EntityServiceOptions = {
@@ -94,7 +71,7 @@ export type EntityServiceOptions = {
         body: GenEntityConfigInput
     }, 
     'query': {
-        query: EntityQuery
+        body: EntityQuery
     }, 
     'delete': {
         ids: Array<number>

@@ -46,13 +46,13 @@ export const downloadModelSql = async (model: GenModelView) => {
 
 
 export const importModel = async (modelInputJsonStr: string) => {
-    if (validateModelInputStr(modelInputJsonStr)) {
+    const result = validateModelInputStr(modelInputJsonStr, true)
+
+    if (result) {
         const modelInput = JSON.parse(modelInputJsonStr)
         modelInput.id = undefined
         return await api.modelService.save({body: modelInput})
     }
-
-    return undefined
 }
 
 export const exportModel = async (model: GenModelView) => {
@@ -60,7 +60,7 @@ export const exportModel = async (model: GenModelView) => {
         [jsonFormat(model)],
         {type: "application/json"}
     )
-    saveAs(modelJsonBlob, 'model.json')
+    saveAs(modelJsonBlob, `model-${model.name}.json`)
 }
 
 export const downloadModel = async (model: GenModelView) => {

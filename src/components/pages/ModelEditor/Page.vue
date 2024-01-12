@@ -16,8 +16,8 @@ import {sendMessage} from "@/utils/message.ts";
 import {useRoute, useRouter} from "vue-router";
 import ModelMenu from "@/components/business/model/menu/ModelMenu.vue";
 import {ModelMenuEvents} from "@/components/business/model/menu/ModelMenuEvents.ts";
-import TableDialogs from "@/components/business/modelGraphEditor/tablesDialog/TableDialogs.vue";
-import EnumDialogs from "@/components/business/modelGraphEditor/enumsDialog/EnumDialogs.vue";
+import TableDialogs from "@/components/pages/ModelEditor/dialogs/table/TableDialogs.vue";
+import EnumDialogs from "@/components/pages/ModelEditor/dialogs/enum/EnumDialogs.vue";
 
 const store = useModelEditorStore()
 

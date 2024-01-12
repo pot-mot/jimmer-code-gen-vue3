@@ -36,7 +36,7 @@ const CopyDataShapeJsonSchema = {
                 "enums": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/GenModelView_TargetOf_enums"
+                        "$ref": "#/definitions/GenModelInput_TargetOf_enums"
                     }
                 }
             }

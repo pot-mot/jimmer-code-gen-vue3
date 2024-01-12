@@ -63,7 +63,6 @@ const modelUploader = ref()
 
 const emitLoadModelJson = () => {
 	if (modelUploader.value) {
-		console.log(modelUploader.value)
 		modelUploader.value.click()
 	}
 }
@@ -158,22 +157,29 @@ const handleDelete = (model: GenModelSimpleView) => {
 	<div class="wrapper" v-loading="modelsLoading.isLoading()">
 		<el-button @click="handleEdit()">创建新模型</el-button>
 
-		<el-button @click="emitLoadModelJson">导入 model.json</el-button>
+		<el-button @click="emitLoadModelJson">导入模型 JSON</el-button>
 		<input v-show="false" ref="modelUploader" type="file" accept="application/json" @change="handleLoadModelJson"/>
 
 		<div class="container">
 			<template v-for="model in models">
 				<div class="model-card hover-show" @click="toEditorEditor(model.id)">
 					<div class="right-top hover-show-item">
-						<el-button :icon="EditPen" link title="编辑" type="warning"
-								   @click.prevent.stop="handleEdit(model)"></el-button>
-						<el-button :icon="Delete" link title="删除" type="danger"
-								   @click.prevent.stop="handleDelete(model)"></el-button>
+						<el-tooltip content="编辑">
+							<el-button :icon="EditPen" link type="warning"
+									   @click.prevent.stop="handleEdit(model)"></el-button>
+						</el-tooltip>
+
+						<el-tooltip content="删除">
+							<el-button :icon="Delete" link type="danger"
+									   @click.prevent.stop="handleDelete(model)"></el-button>
+						</el-tooltip>
 					</div>
 
 					<div class="right-bottom hover-show-item">
-						<el-button :icon="ExportIcon" link title="导出" type="info"
-								   @click.prevent.stop="handleExport(model)"></el-button>
+						<el-tooltip content="导出">
+							<el-button :icon="ExportIcon" link type="info"
+									   @click.prevent.stop="handleExport(model)"></el-button>
+						</el-tooltip>
 					</div>
 
 					<div class="title">{{ model.name }}</div>

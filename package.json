@@ -10,11 +10,11 @@
     "api": "node scripts/generateApi.js"
   },
   "dependencies": {
-    "@antv/x6": "^2.13.1",
-    "@antv/x6-plugin-history": "^2.2.3",
-    "@antv/x6-plugin-keyboard": "^2.2.1",
-    "@antv/x6-plugin-minimap": "^2.0.5",
-    "@antv/x6-plugin-selection": "^2.1.7",
+    "@antv/x6": "^2.17.1",
+    "@antv/x6-plugin-history": "^2.2.4",
+    "@antv/x6-plugin-keyboard": "^2.2.2",
+    "@antv/x6-plugin-minimap": "^2.0.6",
+    "@antv/x6-plugin-selection": "^2.2.1",
     "@antv/x6-vue-shape": "^2.1.1",
     "@element-plus/icons-vue": "^2.1.0",
     "@types/jszip": "^3.4.1",

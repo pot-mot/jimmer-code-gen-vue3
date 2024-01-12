@@ -1,23 +1,25 @@
 import {defineStore} from "pinia";
-import {useCommonGraphOperations} from "@/components/business/graphEditor";
+import {useCommonGraphOperations} from "@/components/global/graphEditor";
 import {ModelEditorEventBus} from "./ModelEditorEventBus.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {ref} from "vue";
 import {api} from "@/api";
-import {loadByTableViews} from "../graph/loadData.ts";
+import {loadByTableViews} from "../graph/data/loadData.ts";
 import {GenModelInput, GenModelView, GenTableColumnsView, GenTableModelInput} from "@/api/__generated/model/static";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
-import {importTables} from "@/components/pages/ModelEditor/graph/tableNode.ts";
+import {importTables} from "@/components/pages/ModelEditor/graph/tableNode/tableNode.ts";
 import {useGenContextStore} from "@/components/business/context/GenContextStore.ts";
-import {redo, undo} from "@/components/business/graphEditor/history/useHistory.ts";
+import {redo, undo} from "@/components/global/graphEditor/history/useHistory.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
-import {TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
-import {updateTableNodeData} from "@/components/business/modelGraphEditor/tableNode/tableNodeData.ts";
-import {useEnumDialogsStore} from "@/components/business/modelGraphEditor/enumsDialog/EnumDialogsStore.ts";
+import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
+import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/tableNodeData.ts";
+import {useEnumDialogsStore} from "@/components/pages/ModelEditor/dialogs/enum/EnumDialogsStore.ts";
 import {cloneDeep} from "lodash";
 import {getDefaultTable} from "@/components/business/table/defaultTable.ts";
 import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
-import {useTableDialogsStore} from "@/components/business/modelGraphEditor/tablesDialog/TableDialogsStore.ts";
+import {useTableDialogsStore} from "@/components/pages/ModelEditor/dialogs/table/TableDialogsStore.ts";
+import {unStyleAll} from "@/components/pages/ModelEditor/graph/highlight/highlight.ts";
+import {GraphEditorData} from "@/components/global/graphEditor/common/graphData.ts";
 
 export const useModelEditorStore =
     defineStore(
@@ -27,21 +29,40 @@ export const useModelEditorStore =
 
             const {_graph} = commonOperations
 
-            const loadGraphByJSONStr = (jsonStr: string) => {
+            // 在获取数据时调整
+            const getGraphData = () => {
+                const graphData = JSON.parse(commonOperations.getGraphData()) as GraphEditorData
+                graphData.json.cells.forEach(cell => {
+                    if (cell.shape == TABLE_NODE) {
+                        cell.ports = undefined
+                        cell.data = {table: cell.data.table}
+                    }
+                    if (cell.shape == ASSOCIATION_EDGE) {
+                        cell.tools = undefined
+                        cell.data = {association: cell.data.association}
+                    }
+                })
+                return JSON.stringify(graphData)
+            }
+
+            const loadGraphData = (jsonStr: string, reset: boolean = false) => {
                 try {
                     if (jsonStr && validateGraphData(JSON.parse(jsonStr))) {
-                        commonOperations.loadGraphByJSONStr(jsonStr)
+                        unStyleAll(_graph())
+                        return commonOperations.loadGraphData(jsonStr, reset)
                     } else {
-                        commonOperations._graph().removeCells(commonOperations._graph().getCells())
+                        const graph = commonOperations._graph()
+                        graph.removeCells(graph.getCells())
+                        return {nodes: [], edges: []}
                     }
                 } catch (e) {
                     sendMessage(`图加载错误: ${e}`, "error", {
                         error: e,
                         jsonStr
                     })
+                    return {nodes: [], edges: []}
                 }
             }
-
 
             const currentModel = ref<GenModelView>()
 
@@ -67,10 +88,10 @@ export const useModelEditorStore =
                 isModelLoaded.value = true
 
                 if (commonOperations.isLoaded) {
-                    loadGraphByJSONStr(model.graphData)
+                    loadGraphData(model.graphData)
                 } else {
                     commonOperations.onLoaded(() => {
-                        loadGraphByJSONStr(model.graphData)
+                        loadGraphData(model.graphData)
                     })
                 }
             }
@@ -78,7 +99,7 @@ export const useModelEditorStore =
             const modelEditDialogOpenState = ref(false)
 
             const handleEditModel = () => {
-                _currentModel().graphData = commonOperations.toDataJSONStr()
+                _currentModel().graphData = getGraphData()
                 modelEditDialogOpenState.value = true
             }
 
@@ -92,11 +113,6 @@ export const useModelEditorStore =
                 loadingStore.add()
 
                 try {
-                    if (!model) {
-                        sendMessage(`模型保存失败，临时编辑模型不存在`, 'error')
-                        return
-                    }
-
                     const id = await api.modelService.save({body: model})
 
                     isModelLoaded.value = false
@@ -131,7 +147,11 @@ export const useModelEditorStore =
              * @param id model id
              */
             const importModel = async (id: number) => {
-                const tables = await api.tableService.queryColumnsView({query: {modelIds: [id]}})
+                const tables = await api.tableService.queryColumnsView({
+                    body: {
+                        modelIds: [id]
+                    }
+                })
                 await importTableIntoGraph(tables)
             }
 
@@ -140,7 +160,11 @@ export const useModelEditorStore =
              * @param id schema id
              */
             const importSchema = async (id: number) => {
-                const tables = await api.tableService.queryColumnsView({query: {schemaIds: [id]}})
+                const tables = await api.tableService.queryColumnsView({
+                    body: {
+                        schemaIds: [id]
+                    }
+                })
                 await importTableIntoGraph(tables)
             }
 
@@ -149,7 +173,11 @@ export const useModelEditorStore =
              * @param id tableId
              */
             const importTable = async (id: number) => {
-                const tables = await api.tableService.queryColumnsView({query: {ids: [id]}})
+                const tables = await api.tableService.queryColumnsView({
+                    body: {
+                        ids: [id]
+                    }
+                })
                 await importTableIntoGraph(tables)
             }
 
@@ -170,7 +198,7 @@ export const useModelEditorStore =
 
             const tableDialogsStore = useTableDialogsStore()
 
-            const newTablePosition = ref<{x: number, y: number}>()
+            const newTablePosition = ref<{ x: number, y: number }>()
 
             ModelEditorEventBus.on('createTable', (props) => {
                 tableDialogsStore.open("", getDefaultTable())
@@ -306,7 +334,9 @@ export const useModelEditorStore =
 
             return {
                 ...commonOperations,
-                loadGraphByJSONStr,
+
+                getGraphData,
+                loadGraphData,
 
                 _currentModel,
                 isModelLoaded,

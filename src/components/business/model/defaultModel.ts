@@ -17,7 +17,7 @@ export const getDefaultModel = (): GenModelInput => {
     if (genConfigStore.isLoaded) {
         language = genConfigStore.genConfig.language
         dataSourceType = genConfigStore.genConfig.dataSourceType
-        packagePath = genConfigStore.genConfig.defaultPackagePath
+        packagePath = genConfigStore.genConfig.packagePath
     }
 
     return {

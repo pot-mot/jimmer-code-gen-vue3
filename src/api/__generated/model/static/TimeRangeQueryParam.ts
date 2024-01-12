@@ -1,4 +1,4 @@
 export interface TimeRangeQueryParam {
-    start: string;
-    end: string;
+    start?: string | undefined;
+    end?: string | undefined;
 }

@@ -1,7 +1,7 @@
 import {GenAssociationModelInputJsonSchema} from "@/shape/GenAssociationModelInput.ts";
 import {GenTableModelInputJsonSchema} from "@/shape/GenTableModelInput.ts";
 import {useShapeValidate} from "@/utils/shapeValidate.ts";
-import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelGraphEditor/constant.ts";
+import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 
 const GraphDataShapeJsonSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",

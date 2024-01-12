@@ -19,6 +19,13 @@ export class PreviewService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
+        _value = options.withPath;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'withPath='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         _value = options.dataSourceType;
         if (_value !== undefined && _value !== null) {
             _uri += _separator
@@ -30,13 +37,6 @@ export class PreviewService {
         if (_value !== undefined && _value !== null) {
             _uri += _separator
             _uri += 'language='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.withPath;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'withPath='
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
@@ -63,6 +63,13 @@ export class PreviewService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
+        _value = options.withPath;
+        if (_value !== undefined && _value !== null) {
+            _uri += _separator
+            _uri += 'withPath='
+            _uri += encodeURIComponent(_value);
+            _separator = '&';
+        }
         _value = options.dataSourceType;
         if (_value !== undefined && _value !== null) {
             _uri += _separator
@@ -81,13 +88,6 @@ export class PreviewService {
         if (_value !== undefined && _value !== null) {
             _uri += _separator
             _uri += 'packagePath='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.withPath;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'withPath='
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
@@ -200,9 +200,9 @@ export type PreviewServiceOptions = {
     }, 
     'previewEntity': {
         entityIds: Array<number>, 
+        withPath?: boolean | undefined, 
         dataSourceType?: DataSourceType | undefined, 
-        language?: GenLanguage | undefined, 
-        withPath?: boolean | undefined
+        language?: GenLanguage | undefined
     }, 
     'previewEnums': {
         enumIds: Array<number>, 
@@ -213,10 +213,10 @@ export type PreviewServiceOptions = {
     'previewEntityByTable': {
         tableIds: Array<number>, 
         modelId?: number | undefined, 
+        withPath?: boolean | undefined, 
         dataSourceType?: DataSourceType | undefined, 
         language?: GenLanguage | undefined, 
-        packagePath?: string | undefined, 
-        withPath?: boolean | undefined
+        packagePath?: string | undefined
     }, 
     'previewModelSql': {
         id: number

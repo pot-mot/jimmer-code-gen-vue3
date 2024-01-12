@@ -23,16 +23,14 @@ const loading = useLoading()
 
 const getData = async () => {
 	loading.add()
-	tables.value = await api.tableService.queryCommonView(
-		{
-			query: {
-				ids: [
-					props.association.sourceTable.id,
-					props.association.targetTable.id,
-				]
-			}
+	tables.value = await api.tableService.queryCommonView({
+		body: {
+			ids: [
+				props.association.sourceTable.id,
+				props.association.targetTable.id,
+			]
 		}
-	)
+	})
 	loading.sub()
 }
 </script>
@@ -41,7 +39,8 @@ const getData = async () => {
 	<Details v-loading="loading.isLoading()" @open="getData" :disabled="!showConfig.showAssociationTables">
 		<template #title>
 			<el-text>
-				<AssociationIcon :association-type="association.associationType" :fake="association.fake"></AssociationIcon>
+				<AssociationIcon :association-type="association.associationType"
+								 :fake="association.fake"></AssociationIcon>
 
 				<el-button @click="eventBus.emit('clickAssociation', {id: association.id})" link>
 					{{ association.name }}

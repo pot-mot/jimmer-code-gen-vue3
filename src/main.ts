@@ -13,7 +13,7 @@ import './components/global/list/list.css'
 import './assets/element-overwrite.css'
 import './assets/antv-x6-animation.css'
 
-import {registerModelShape} from "@/components/business/modelGraphEditor/register.ts";
+import {registerModelEditorShape} from "@/components/business/modelEditor/register.ts";
 import {useCodeEditor} from "@/components/global/code/CodeEditorWorkers.ts";
 
 const app = createApp(App)
@@ -28,7 +28,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }
 
-registerModelShape()
+registerModelEditorShape()
 
 useCodeEditor()
 

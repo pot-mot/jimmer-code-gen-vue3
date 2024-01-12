@@ -12,7 +12,7 @@ import Comment from "@/components/global/common/Comment.vue";
 
 const props = withDefaults(defineProps<TableItemProps>(), {
 	showConfig(props) {
-	    return {
+		return {
 			showColumns: false,
 			showAssociations: true,
 			...props.showConfig
@@ -29,14 +29,23 @@ const associationsLoading = useLoading()
 const getColumns = async () => {
 	if (!props.showConfig.showColumns) return
 	columnsLoading.add()
-	columns.value = await api.columnService.query({query: {tableIds: [props.table.id]}})
+	columns.value = await api.columnService.query({
+		body: {
+			tableIds: [props.table.id]
+		}
+	})
 	columnsLoading.sub()
 }
 
 const getAssociations = async () => {
 	if (!props.showConfig.showAssociations) return
 	associationsLoading.add()
-	associations.value = await api.associationService.queryByTable({tableIds: [props.table.id], selectType: "OR"})
+	associations.value = await api.associationService.queryByTable({
+		body: {
+			tableIds: [props.table.id],
+			selectType: "OR"
+		}
+	})
 	associationsLoading.sub()
 }
 </script>
@@ -76,7 +85,8 @@ const getAssociations = async () => {
 
 				<ul style="padding: 0 0 0.5em 0.5em;">
 					<li v-for="association in associations">
-						<AssociationItem :association="association" :event-bus="eventBus" :show-config="showConfig"></AssociationItem>
+						<AssociationItem :association="association" :event-bus="eventBus"
+										 :show-config="showConfig"></AssociationItem>
 					</li>
 				</ul>
 			</Details>
@@ -93,7 +103,8 @@ const getAssociations = async () => {
 		<template v-else-if="showConfig.showAssociations">
 			<ul style="padding: 0 0 0.5em 0.5em;">
 				<li v-for="association in associations">
-					<AssociationItem :association="association" :event-bus="eventBus" :show-config="showConfig"></AssociationItem>
+					<AssociationItem :association="association" :event-bus="eventBus"
+									 :show-config="showConfig"></AssociationItem>
 				</li>
 			</ul>
 		</template>
