@@ -90,8 +90,7 @@ export const tableNodePaste = async (graph: Graph) => {
         } else if (validateGraphData(value)) {
             const cells = value.json.cells as Cell[]
             graph.parseJSON(cells)
-
-            res = store.loadGraphData(value, false)
+            res = store.loadGraphData(text, false)
         } else if (validateModelInput(value)) {
             const model = value as GenModelInput
 
