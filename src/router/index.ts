@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
 ]
 
 export const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHistory("model-editor-ui"),
     routes,
     // @ts-ignore
     scrollBehavior(to, from, savedPosition) {
