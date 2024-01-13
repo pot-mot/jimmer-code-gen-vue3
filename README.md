@@ -25,42 +25,30 @@ pnpm install
 
 启动
 ```
-vite
+pnpm run dev
 ```
 
-### 更新 api
-
-进入项目根目录
-
+更新 api
 ```
 pnpm run api
 ```
 
-### 打包
-
-> 项目没有配置部署环境，需要根据实际情况修改: 
-> 
-> 1. [vite.config.ts](vite.config.ts) 中的 proxy
-> 2. [api/index.ts](src%2Fapi%2Findex.ts) 中的 BASE_URL
-> 3. 后端项目的跨域设置
-> 
-> 以解决访问问题
-
+打包
 ```
-vite build
+pnpm run build
 ```
 
 ## 项目说明
 
-### [图操作](src%2Fcomponents%2Fbusiness%2FgraphEditor%2Findex.ts)
+### [图编辑器](src%2Fcomponents%2Fglobal%2FgraphEditor)
 
 基于函数式的设计封装了 init、selection、history、focus、center、layout 等常用操作，通过该 common store 作为组合式入口。
 
-内部补充了[响应式数据](src%2Fcomponents%2Fbusiness%2FgraphEditor%2Fcommon%2FreactiveState.ts)以实现页面响应式变更。
+内部补充了[响应式数据](src%2Fcomponents%2Fglobal%2FgraphEditor%2Fcommon%2FreactiveState.ts)以实现页面响应式变更。
 
-如果需要复用 graph 通用操作仅需调用 useCommonGraphOperations 并将一个新的 graph 实例 load 入即可。
+如果需要复用 graph 通用操作仅需调用 [index.ts](src%2Fcomponents%2Fglobal%2FgraphEditor%2Findex.ts) 创建 commonOperations 并将一个新的 graph 实例 load 入即可。
 
-### [模型设计器 ModelEditor](src%2Fcomponents%2Fpages%2FModelEditor%2FPage.vue)
+### [模型设计器](src%2Fcomponents%2Fpages%2FModelEditor)
 
 不依赖数据源直接设计模型结构，也可直接导入来自数据源的表结构以及其他模型。
 
