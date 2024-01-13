@@ -6,7 +6,7 @@ import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {computed, ref, watch} from "vue";
-import {sendMessage} from "@/utils/message.ts";
+import {deleteConfirm, sendMessage} from "@/utils/message.ts";
 import {GenTableModelInput} from "@/api/__generated/model/static";
 
 interface NodeItem {
@@ -44,7 +44,9 @@ const handleEdit = () => {
 }
 
 const handleDelete = () => {
-	ModelEditorEventBus.emit('removeTable', props.node.id)
+	deleteConfirm(`关联【${table.value?.name}】`, () => {
+		ModelEditorEventBus.emit('removeTable', props.node.id)
+	})
 }
 
 const isSelected = computed(() => {
@@ -72,8 +74,12 @@ const isSelected = computed(() => {
 		</el-text>
 
 		<span class="hover-show-item" style="padding-left: 0.5em;">
-			<el-button :icon="EditPen" link title="编辑" type="warning" @click="handleEdit"></el-button>
-			<el-button :icon="Delete" link title="删除" type="danger" @click="handleDelete"></el-button>
+			<el-tooltip content="编辑">
+				<el-button :icon="EditPen" link type="warning" @click="handleEdit"></el-button>
+			</el-tooltip>
+			<el-tooltip content="删除">
+				<el-button :icon="Delete" link type="danger" @click="handleDelete"></el-button>
+			</el-tooltip>
 		</span>
 	</div>
 

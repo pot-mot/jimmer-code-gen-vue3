@@ -189,6 +189,7 @@ import {
 } from "@/components/business/model/file/modelFileOperations.ts";
 import {cloneDeep} from "lodash";
 import {TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
+import {useDocumentEvent} from "@/components/pages/ModelEditor/graph/event/useDocumentEvent.ts";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -223,14 +224,10 @@ onMounted(async () => {
 
 	handleHistoryKeyEvent(graph)
 
-	document.documentElement.addEventListener('keydown', handleSaveEvent)
-
 	loadingStore.sub()
 })
 
 onUnmounted(() => {
-	document.documentElement.removeEventListener('keydown', handleSaveEvent)
-
 	store.unload()
 })
 
@@ -291,6 +288,8 @@ const handleSaveEvent = (e: KeyboardEvent) => {
 		}
 	}
 }
+
+useDocumentEvent('keydown', handleSaveEvent)
 
 watch(() => store.isModelLoaded, async (value) => {
 	if (value) {

@@ -132,7 +132,8 @@ defineSlots<DataSourceItemSlots>()
 						{{ dataSource.name }}
 					</slot>
 
-					<el-tooltip v-model:visible="previewSchemaTooltipOpenState" trigger="click" placement="bottom-start" width="300px" effect="light">
+					<el-tooltip v-model:visible="previewSchemaTooltipOpenState" trigger="click" placement="bottom-start"
+								width="300px" effect="light">
 						<el-button style="margin-left: 0.3em;">schemas</el-button>
 
 						<template #content>
@@ -161,8 +162,12 @@ defineSlots<DataSourceItemSlots>()
 						:previewSchemaLoading="previewSchemaLoading.isLoading()"
 						:previewSchemas="previewSchemas">
 						<span class="hover-show-item" style="padding-left: 0.5em;">
-							<el-button :icon="EditPen" link title="编辑" type="warning" @click="handleEdit"></el-button>
-							<el-button :icon="Delete" link title="删除" type="danger" @click="handleDelete"></el-button>
+							<el-tooltip content="编辑">
+								<el-button :icon="EditPen" link type="warning" @click="handleEdit"></el-button>
+							</el-tooltip>
+							<el-tooltip content="删除">
+								<el-button :icon="Delete" link type="danger" @click="handleDelete"></el-button>
+							</el-tooltip>
 						</span>
 					</slot>
 				</el-text>

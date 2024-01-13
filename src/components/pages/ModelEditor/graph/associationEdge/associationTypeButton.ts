@@ -18,7 +18,17 @@ const createAssociationTypeButtonAttrs = (
     hover: boolean = false,
     select: boolean = false
 ) => {
-    const width = associationType.length * 16
+    let width = associationType.length * 11
+    let height = 22
+
+    if (hover) {
+        const diff = (HIGHLIGHT_ASSOCIATION_LINE_WIDTH - ASSOCIATION_LINE_WIDTH)
+        width += diff * 2
+        height += diff * 2
+    }
+
+    let x = -width / 2
+    let y = -height / 2
 
     return {
         type: ASSOCIATION_TYPE_BUTTON,
@@ -29,12 +39,12 @@ const createAssociationTypeButtonAttrs = (
             {
                 tagName: 'rect',
                 attrs: {
-                    height: 26,
-                    width,
                     stroke: select ? HIGHLIGHT_COLOR : COMMON_COLOR,
                     strokeWidth: hover ? HIGHLIGHT_ASSOCIATION_LINE_WIDTH : ASSOCIATION_LINE_WIDTH,
-                    x: -width / 2,
-                    y: -13,
+                    height,
+                    width,
+                    x,
+                    y,
                     rx: 5,
                     ry: 5,
                     fill: 'white',
@@ -46,8 +56,8 @@ const createAssociationTypeButtonAttrs = (
                 textContent: associationType,
                 attrs: {
                     fill: select ? HIGHLIGHT_COLOR : COMMON_COLOR,
-                    fontWeight: hover ? 600 : 400,
-                    fontSize: 16,
+                    fontWeight: 400,
+                    fontSize: 14,
                     y: 5,
                     textAnchor: 'middle',
                     pointerEvents: 'none',
@@ -94,7 +104,7 @@ const handleButtonClick = (edge: Edge, graph: Graph, e: MouseEvent) => {
 export const setAssociationTypeButton = (
     edge: Edge,
     graph: Graph,
-    state: {hover?: boolean, select?: boolean} = {}
+    state: { hover?: boolean, select?: boolean } = {}
 ) => {
     const tools = edge.getTools()
 

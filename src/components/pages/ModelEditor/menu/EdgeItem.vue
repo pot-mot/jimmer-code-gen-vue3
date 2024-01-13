@@ -5,7 +5,7 @@ import {computed, ref, watch} from "vue";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
-import {sendMessage} from "@/utils/message.ts";
+import {deleteConfirm, sendMessage} from "@/utils/message.ts";
 import AssociationIcon from "@/components/global/icons/database/AssociationIcon.vue";
 import {
 	getAssociationSourceLabel,
@@ -38,7 +38,7 @@ watch(() => props.edge, (edge) => {
 	}
 }, {immediate: true})
 
-const handleClickLabel = (e: MouseEvent) => {
+const handleClickName = (e: MouseEvent) => {
 	if (e.ctrlKey) {
 		store.select(props.edge.id)
 	} else {
@@ -47,7 +47,9 @@ const handleClickLabel = (e: MouseEvent) => {
 }
 
 const handleDelete = () => {
-	ModelEditorEventBus.emit('removeAssociation', props.edge.id)
+	deleteConfirm(`关联【${association.value?.name}】`, () => {
+		ModelEditorEventBus.emit('removeAssociation', props.edge.id)
+	})
 }
 
 const defaultLabel = '无效关联'
@@ -93,8 +95,13 @@ const isSelected = computed(() => {
 
 		<el-text style="white-space: nowrap;">
 			<template v-if="showName">
-				<el-button link @click="handleClickLabel">
-					{{ association.name }}
+				<el-button link @click="handleClickName">
+					<template v-if="association.name">
+						{{ association.name }}
+					</template>
+					<template v-else>
+						{{ "暂无名称" }}
+					</template>
 					<span>{{ association.fake ? '【logical】' : '' }}</span>
 				</el-button>
 			</template>
@@ -115,8 +122,12 @@ const isSelected = computed(() => {
 		</el-text>
 
 		<span class="hover-show-item" style="padding-left: 0.5em;">
-			<el-button :icon="EditPen" link title="编辑" type="warning" @click="handleEdit"></el-button>
-			<el-button :icon="Delete" link title="删除" type="danger" @click="handleDelete"></el-button>
+			<el-tooltip content="编辑">
+				<el-button :icon="EditPen" link type="warning" @click="handleEdit"></el-button>
+			</el-tooltip>
+			<el-tooltip content="删除">
+				<el-button :icon="Delete" link type="danger" @click="handleDelete"></el-button>
+			</el-tooltip>
 		</span>
 	</div>
 

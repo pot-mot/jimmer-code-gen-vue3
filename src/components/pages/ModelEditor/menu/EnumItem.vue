@@ -2,6 +2,7 @@
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
+import {deleteConfirm} from "@/utils/message.ts";
 interface EdgeItem {
 	genEnum: GenModelInput_TargetOf_enums
 }
@@ -13,7 +14,9 @@ const handleEdit = () => {
 }
 
 const handleDelete = () => {
-	ModelEditorEventBus.emit('removeEnum', props.genEnum.name)
+	deleteConfirm(`枚举【${props.genEnum.name}】`, () => {
+		ModelEditorEventBus.emit('removeEnum', props.genEnum.name)
+	})
 }
 </script>
 
@@ -23,8 +26,12 @@ const handleDelete = () => {
 			{{ genEnum.name }} <template v-if="genEnum.items.length == 0">[无枚举项]</template>
 
 			<span class="hover-show-item" style="padding-left: 0.5em;">
-				<el-button :icon="EditPen" link title="编辑" type="warning" @click="handleEdit"></el-button>
-				<el-button :icon="Delete" link title="删除" type="danger" @click="handleDelete"></el-button>
+				<el-tooltip content="编辑">
+				<el-button :icon="EditPen" link type="warning" @click="handleEdit"></el-button>
+			</el-tooltip>
+				<el-tooltip content="删除">
+				<el-button :icon="Delete" link type="danger" @click="handleDelete"></el-button>
+			</el-tooltip>
 			</span>
 		</el-text>
 	</div>

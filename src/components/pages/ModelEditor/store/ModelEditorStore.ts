@@ -34,7 +34,6 @@ export const useModelEditorStore =
                 const graphData = JSON.parse(commonOperations.getGraphData()) as GraphEditorData
                 graphData.json.cells.forEach(cell => {
                     if (cell.shape == TABLE_NODE) {
-                        cell.ports = undefined
                         cell.data = {table: cell.data.table}
                     }
                     if (cell.shape == ASSOCIATION_EDGE) {
