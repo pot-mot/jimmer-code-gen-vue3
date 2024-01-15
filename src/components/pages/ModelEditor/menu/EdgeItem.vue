@@ -52,8 +52,6 @@ const handleDelete = () => {
 	})
 }
 
-const defaultLabel = '无效关联'
-
 const sourceLabel = computed<string | undefined>(() => {
 	if (!association.value) return
 	try {
@@ -83,15 +81,9 @@ const isSelected = computed(() => {
 })
 </script>
 
-<style scoped>
-.selected {
-	background-color: rgba(220, 220, 220, 0.3);
-}
-</style>
-
 <template>
 	<div v-if="association && sourceLabel && targetLabel"
-		 class="hover-show" :class="isSelected ? 'selected' : ''">
+		 class="hover-show" :class="isSelected ? 'selected-menu-item' : ''">
 
 		<el-text style="white-space: nowrap;">
 			<template v-if="showName">
@@ -102,7 +94,7 @@ const isSelected = computed(() => {
 					<template v-else>
 						{{ "暂无名称" }}
 					</template>
-					<span>{{ association.fake ? '【logical】' : '' }}</span>
+					<span>{{ association.fake ? '【fake】' : '' }}</span>
 				</el-button>
 			</template>
 
@@ -133,7 +125,7 @@ const isSelected = computed(() => {
 
 	<div v-else>
 		<el-text type="warning">
-			{{ defaultLabel }}
+			{{ edge.id }}
 		</el-text>
 	</div>
 

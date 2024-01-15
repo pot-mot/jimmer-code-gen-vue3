@@ -244,6 +244,10 @@ const handleCancel = () => {
 					<el-tooltip v-if="!data.partOfPk" :auto-close="500" content="业务键">
 						<el-checkbox v-model="data.businessKey" class="cling-checkbox"></el-checkbox>
 					</el-tooltip>
+
+					<el-tooltip v-if="!data.partOfPk" :auto-close="500" content="逻辑删除">
+						<el-checkbox v-model="data.logicalDelete" class="cling-checkbox"></el-checkbox>
+					</el-tooltip>
 				</template>
 
 				<template #comment="{data}">

@@ -1,5 +1,9 @@
 <template>
-	<div class="container">
+	<div class="code-preview">
+		<div class="code-preview-wrapper">
+			<div v-if="showLineCounts" class="line-counts" v-text="lineCounts"></div>
+			<pre class="code"><code ref="container" :class="`language-${language}`" v-text="code"></code></pre>
+		</div>
 		<div class="toolbar">
 			<slot name="toolbar" v-bind="props">
 				<el-button style="padding: 0.3em 0.5em;">
@@ -7,11 +11,8 @@
 				</el-button>
 			</slot>
 		</div>
-		<div class="wrapper" :style="{gridTemplateColumns: showLineCounts ? '3em 1fr' : '1fr'}">
-			<div v-if="showLineCounts" class="line-counts" v-text="lineCounts"></div>
-			<pre class="code"><code ref="container" :class="`language-${language}`" v-text="code"></code></pre>
-		</div>
 	</div>
+
 </template>
 
 <script lang="ts" setup>
@@ -50,7 +51,7 @@ const lineCounts = computed(() => {
 
 	let counts = []
 
-	for (let i = 1; i <= length; i++) {
+	for (let i = 1; i <= length - 1; i++) {
 		counts.push(i)
 	}
 
@@ -67,29 +68,35 @@ const handleCopy = () => {
 </script>
 
 <style scoped>
-.container {
+.code-preview {
 	position: relative;
-	height: 100%;
 	width: 100%;
+	height: 100%;
 	overflow: hidden;
 }
 
-.wrapper {
-	display: grid;
-	max-height: 100%;
-	overflow-y: auto;
-	overflow-x: hidden;
-	scrollbar-gutter: stable;
+.code-preview-wrapper {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: scroll;
 }
 
 .code {
-	padding: 0.3em 0.5em 0.3em 1em;
+	padding: 0.3em 0.5em 0.3em 4em;
 	font-size: var(--el-font-size-extra-small);
 	line-height: 1.7;
 	background-color: transparent;
+	overflow: visible;
+	cursor: text;
 }
 
 .line-counts {
+	position: absolute;
+	top: 0;
+	left: 0;
+
+	width: 3em;
 	padding: 0.3em 0.5em;
 	line-height: 1.7;
 	user-select: none;

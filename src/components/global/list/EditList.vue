@@ -9,6 +9,7 @@ import {EditListEmits, ListEmits} from "@/components/global/list/ListEmits.ts";
 import {useClickOutside} from "@/components/global/list/useClickOutside.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {useListSelection} from "@/components/global/list/listSelection.ts";
+import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 
 const props = withDefaults(
 	defineProps<EditListProps<T>>(),
@@ -24,7 +25,7 @@ const props = withDefaults(
 	}
 )
 
-const emits = defineEmits<EditListEmits<Partial<T>> & ListEmits<Partial<T>>>()
+const emits = defineEmits<EditListEmits<T> & ListEmits<T>>()
 
 const {
 	selectedItemSet,
@@ -45,7 +46,9 @@ const handleItemClick = (e: MouseEvent, item: T, index: number) => {
 			unselect(index)
 		}
 	} else {
-		resetSelection([index])
+		if (!judgeTargetIsInteraction(e)) {
+			resetSelection([index])
+		}
 	}
 }
 
@@ -76,7 +79,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 
 			return result
 		},
-		{ selectedItems: <Partial<T>[]>[], unselectedItems: <Partial<T>[]>[] }
+		{ selectedItems: <T[]>[], unselectedItems: <T[]>[] }
 	)
 
 	if (e.key == 'Delete') {
@@ -180,14 +183,14 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 	}
 }
 
-const dataLines: Ref<Partial<T>[]> = ref([])
+const dataLines: Ref<T[]> = ref([])
 
 watch(() => props.lines, (lines) => {
 	dataLines.value = lines
 }, {immediate: true, deep: true})
 
-const getDefaultLine = async (): Promise<Partial<T>> => {
-	let defaultLine: Partial<T>
+const getDefaultLine = async (): Promise<T> => {
+	let defaultLine: T
 
 	if (props.defaultLine instanceof Function) {
 		const temp = props.defaultLine()

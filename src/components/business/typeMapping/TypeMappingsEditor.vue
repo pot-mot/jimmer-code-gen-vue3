@@ -10,7 +10,6 @@ import {sendMessage} from "@/utils/message.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep, uniqWith} from "lodash";
 import {useGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
-import {GenerateConfigurator} from "../globalConfig/constant.ts";
 import {validateTypeMappingInput} from "@/shape/GenTypeMappingInput.ts";
 
 const editState = ref(false)
@@ -130,10 +129,6 @@ const handleCancel = () => {
 
 <template>
 	<div v-loading="typeMappingLoading.isLoading()">
-		<h3 style="width: 100%; text-align: center; height: 2em; line-height: 2em;">
-			{{ GenerateConfigurator.TypeMappingsEditor.label }}
-		</h3>
-
 		<template v-if="editState">
 			<EditList
 				:columns="typeMappingProps"

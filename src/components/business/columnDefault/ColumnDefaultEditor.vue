@@ -11,7 +11,6 @@ import {cloneDeep, uniqWith} from "lodash";
 import {useJDBCTypeStore} from "@/components/business/jdbcType/JDBCTypeStore.ts";
 import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
 import {useGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
-import {GenerateConfigurator} from "../globalConfig/constant.ts";
 import {validateColumnDefaultInput} from "@/shape/GenColumnDefaultInput.ts";
 
 const editState = ref(false)
@@ -154,10 +153,6 @@ const handleCancel = () => {
 
 <template>
 	<div v-loading="!columnDefaultStore.isLoaded">
-		<h3 style="width: 100%; text-align: center; height: 2em; line-height: 2em;">
-			{{ GenerateConfigurator.ColumnDefaultEditor.label }}
-		</h3>
-
 		<template v-if="columnDefaultStore.isLoaded">
 			<template v-if="editState">
 				<EditList

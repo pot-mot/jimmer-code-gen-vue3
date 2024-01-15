@@ -98,7 +98,9 @@ watch(() => modelLoadMenu.value, () => {
 <template>
 	<LeftTopBottomLayout>
 		<template #left>
-			<ModelEditorMainMenu></ModelEditorMainMenu>
+			<div class="layout-menu-wrapper">
+				<ModelEditorMainMenu></ModelEditorMainMenu>
+			</div>
 		</template>
 		<template #right>
 			<Graph></Graph>

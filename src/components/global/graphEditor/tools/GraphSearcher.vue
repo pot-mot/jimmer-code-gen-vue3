@@ -20,7 +20,7 @@ const initX = ref(document.documentElement.clientWidth - initW.value - 100)
 <template>
 	<Searcher
 		:search="(keyword) => searchNodesByKeywords(graph, keyword.split(/\s+/))"
-		:choose="(item) => focus(props.graph, item)"
+		@select="(item) => focus(props.graph, item)"
 		:target="graph.container"
 		:init-x="initX"
 		:init-w="initW"

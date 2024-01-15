@@ -38,8 +38,9 @@ const handleCancel = () => {
 	<el-form>
 		<el-form-item label="名称">
 			<el-input v-model="association.name">
-				<template #prefix>
-					<el-button :icon="RefreshRight" @click="association.name = createAssociationNameByInput(association)"></el-button>
+				<template #append>
+					<el-button :icon="RefreshRight"
+							   @click="association.name = createAssociationNameByInput(association)"></el-button>
 				</template>
 			</el-input>
 		</el-form-item>
@@ -97,7 +98,9 @@ const handleCancel = () => {
 		</el-form-item>
 
 		<el-form-item label="脱钩动作">
-			<el-select v-model="association.dissociateAction">
+			<el-select :disabled="association.associationType == 'MANY_TO_MANY'"
+					   v-model="association.dissociateAction"
+					   clearable @clear="association.dissociateAction = undefined">
 				<el-option v-for="dissociateAction in DissociateAction_CONSTANTS" :value="dissociateAction"></el-option>
 			</el-select>
 		</el-form-item>

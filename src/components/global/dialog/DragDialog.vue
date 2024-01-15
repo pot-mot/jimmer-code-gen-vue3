@@ -8,6 +8,7 @@ import {DragDialogProps} from "./DragDialogProps.ts";
 import {DragDialogEmits, ModelValueEmits} from "./DragDialogEmits.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {useZIndex} from "element-plus";
+import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 
 const props = withDefaults(defineProps<DragDialogProps>(), {
 	to: "body",
@@ -84,6 +85,7 @@ const emits = defineEmits<DragDialogEmits & ModelValueEmits<boolean>>()
 const currentZIndex = ref<number>()
 
 const handleOpen = () => {
+	emits('open')
 	setPositionAndSize()
 	currentZIndex.value = zIndexManager.nextZIndex()
 	emits('opened')
@@ -118,13 +120,14 @@ const syncDialogHeight = () => {
 	}
 }
 
-const updateContentHeightByWrapperHeight = () => {
+const updateContentSizeByWrapper = () => {
 	if (wrapper.value && content.value) {
 		content.value.style.height = wrapper.value.offsetHeight - 35 + 'px'
+		content.value.style.width = wrapper.value?.offsetWidth - 20 + 'px'
 	}
 }
 
-const wrapperResizeOb = new ResizeObserver(updateContentHeightByWrapperHeight)
+const wrapperResizeOb = new ResizeObserver(updateContentSizeByWrapper)
 
 onMounted(() => {
 	nextTick(() => {
@@ -134,12 +137,22 @@ onMounted(() => {
 	})
 })
 
-const handleContentMouseEnter = () => {
-	draggable.value = props.canDrag && false
+const handleContentMouseOver = (e: MouseEvent) => {
+	if (!props.canDrag) {
+		draggable.value = false
+		return
+	}
+
+	draggable.value = !judgeTargetIsInteraction(e);
 }
 
 const handleContentMouseLeave = () => {
-	draggable.value = props.canDrag && true
+	if (!props.canDrag) {
+		draggable.value = false
+		return
+	}
+
+	draggable.value = true
 }
 
 defineExpose({
@@ -158,15 +171,16 @@ defineExpose({
 					:parent="limitByParent"
 					:h="h" :maxH="maxH" :minH="minH" :disabledH="disabledH"
 					:w="w" :maxW="maxW" :minW="minW" :disabledW="disabledW"
-					:style="`border: none; z-index: ${currentZIndex};`">
-			<div ref="wrapper" :style="draggable ? 'cursor: all-scroll;' : 'cursor: default;'" class="wrapper">
+					:style="`border: none; z-index: ${currentZIndex};`"
+					:class="{disabledW, disabledH, disabledX, disabledY}">
+			<div ref="wrapper" class="wrapper" style="cursor: all-scroll;">
 				<div class="close" @click="handleClose">
 					<slot name="close">
 						<el-button :icon="Close" link size="large" type="danger"></el-button>
 					</slot>
 				</div>
 				<div ref="content" class="content"
-					 @mouseenter="handleContentMouseEnter" @mouseleave="handleContentMouseLeave">
+					 @mouseover="handleContentMouseOver" @mouseleave="handleContentMouseLeave">
 					<slot></slot>
 				</div>
 			</div>
@@ -200,6 +214,7 @@ defineExpose({
 	height: 100%;
 	width: 100%;
 	overflow: auto;
+	scrollbar-gutter: stable;
 }
 
 :deep(.handle) {
@@ -247,5 +262,23 @@ defineExpose({
 :deep(.handle-mr) {
 	height: calc(100% - 16px);
 	top: 11px;
+}
+
+.disabledH > :deep(.handle-tl),
+.disabledH > :deep(.handle-tm),
+.disabledH > :deep(.handle-tr),
+.disabledH > :deep(.handle-bl),
+.disabledH > :deep(.handle-bm),
+.disabledH > :deep(.handle-br) {
+	display: none !important;
+}
+
+.disabledW > :deep(.handle-tl),
+.disabledW > :deep(.handle-ml),
+.disabledW > :deep(.handle-bl),
+.disabledW > :deep(.handle-tr),
+.disabledW > :deep(.handle-mr),
+.disabledW > :deep(.handle-br) {
+	display: none !important;
 }
 </style>

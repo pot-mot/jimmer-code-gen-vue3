@@ -3,6 +3,7 @@ export interface ModelValueEmits<T> {
 }
 
 export interface DragDialogEmits{
+    (event: "open"): void
     (event: "opened"): void
     (event: "close"): void
     (event: "closed"): void

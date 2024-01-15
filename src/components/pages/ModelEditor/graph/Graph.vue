@@ -74,7 +74,7 @@
 					}"></el-button>
 				</el-tooltip>
 
-				<DragDialog v-model="sqlPreviewDialogOpenState" :init-w="700" :init-x="5000" can-drag can-resize>
+				<DragDialog v-model="sqlPreviewDialogOpenState" :init-w="700" :init-x="5000" can-drag can-resize disabled-h disabled-y limit-by-parent>
 					<MultiCodePreview :code-files="sqlFiles"
 									  height="calc(100vh - 5em - 30px)"
 									  width="100%"
@@ -94,7 +94,7 @@
 					}"></el-button>
 				</el-tooltip>
 
-				<DragDialog v-model="entityPreviewDialogOpenState" :init-w="700" :init-x="5000" can-drag can-resize>
+				<DragDialog v-model="entityPreviewDialogOpenState" :init-w="700" :init-x="5000" can-drag can-resize disabled-h disabled-y limit-by-parent>
 					<MultiCodePreview :code-files="entityFiles"
 									  height="calc(100vh - 5em - 30px)"
 									  width="100%"

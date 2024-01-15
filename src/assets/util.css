@@ -9,3 +9,7 @@
     user-focus: auto;
     user-select: auto;
 }
+
+.selected-menu-item {
+    background-color: rgba(220, 220, 220, 0.3);
+}

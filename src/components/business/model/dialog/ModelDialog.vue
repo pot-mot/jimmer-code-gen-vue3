@@ -12,10 +12,15 @@ const emits = defineEmits<FormEmits<GenModelInput>>()
 </script>
 
 <template>
-	<DragDialog :model-value="!!props.model" :init-w="1000" :init-y="50" :min-h="250" :init-h="editValue ? 600 : 360" can-resize @close="emits('cancel', props.model ? props.model : getDefaultModel())">
+	<DragDialog
+		:model-value="!!props.model"
+		:init-w="900" :init-y="50" :min-h="300" :min-w="500"
+		:init-h="editValue ? 600 : 300"
+		:can-resize="editValue"
+		limit-by-parent
+		@close="emits('cancel', props.model ? props.model : getDefaultModel())">
 		<ModelForm :model="model" :edit-value="editValue"
 				   @cancel="data => emits('cancel', data)"
-				   @submit="data => emits('submit', data)"
-					style="padding: 2em 1em 1em;"></ModelForm>
+				   @submit="data => emits('submit', data)"></ModelForm>
 	</DragDialog>
 </template>

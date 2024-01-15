@@ -3,10 +3,10 @@
 		<div :class="position" :style="{paddingLeft: position == 'left' ? `calc(3px + ${buttonSize})` : 0}"
 			 class="title">
 			<slot name="title"></slot>
-			<div v-if="!disabled" :style="{width: buttonSize, top: `calc(50% - ${buttonSize}/2)`}" class="button"
+			<div v-if="!disabled" :style="{width: buttonSize}" class="button"
 				 @click="handleToggle">
 				<slot name="button">
-					<el-icon :size="buttonSize" style="transform: translateY(0.1em);">
+					<el-icon :size="buttonSize" style="display: inline;">
 						<CaretRight v-if="!openState && position == 'left'"></CaretRight>
 						<CaretLeft v-else-if="!openState && position == 'right'"></CaretLeft>
 						<CaretBottom v-else></CaretBottom>
@@ -38,6 +38,8 @@
 	position: absolute;
 	top: 0;
 	height: 100%;
+	display: flex;
+	align-items: center;
 }
 
 .left .button {

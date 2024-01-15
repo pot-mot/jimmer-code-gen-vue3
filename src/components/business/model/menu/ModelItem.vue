@@ -5,7 +5,7 @@ import {GenTableCommonView} from "@/api/__generated/model/static";
 import {useLoading} from "@/utils/useLoading.ts";
 import {api} from "@/api";
 import {ModelItemProps} from "@/components/business/model/menu/ModelMenuProps.ts";
-import TableItem from "@/components/business/model/menu/TableItem.vue";
+import TableItem from "@/components/business/model/menu/ModelTableItem.vue";
 
 const props = withDefaults(defineProps<ModelItemProps>(), {
 	showConfig(props) {

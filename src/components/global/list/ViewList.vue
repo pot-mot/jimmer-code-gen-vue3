@@ -6,6 +6,7 @@ import {ListEmits} from "@/components/global/list/ListEmits.ts";
 import {ref} from "vue";
 import {useClickOutside} from "@/components/global/list/useClickOutside.ts";
 import {useListSelection} from "@/components/global/list/listSelection.ts";
+import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 
 const props = withDefaults(defineProps<ListProps<T>>(), {
 	labelLine: true
@@ -32,7 +33,9 @@ const handleItemClick = (e: MouseEvent, item: T, index: number) => {
 			unselect(index)
 		}
 	} else {
-		resetSelection([index])
+		if (!judgeTargetIsInteraction(e)) {
+			resetSelection([index])
+		}
 	}
 }
 

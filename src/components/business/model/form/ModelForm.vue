@@ -63,8 +63,15 @@ const handleCancel = () => {
 </script>
 
 <template>
-	<el-form size="default"
-			 :style="editValue ? 'height: 100%; display: grid; grid-template-rows: 220px 1fr 40px;' : 'height: 100%; display: grid; grid-template-rows: 220px 40px;'">
+	<el-form
+		:style="{
+			height: '100%',
+			width: '98%',
+			paddingTop: '1em',
+			paddingLeft: '8px',
+			display: 'grid',
+			gridTemplateRows: editValue ? '220px 1fr 30px' : '220px',
+		}">
 		<div>
 			<el-form-item label="名称">
 				<el-input v-model="model.name"></el-input>
@@ -100,13 +107,13 @@ const handleCancel = () => {
 			</el-row>
 
 			<el-form-item label="备注">
-				<el-input v-model="model.remark" type="textarea" :rows="2" :autosize="false"></el-input>
+				<el-input v-model="model.remark" type="textarea" :rows="4" resize="none"></el-input>
 			</el-form-item>
 		</div>
 
 		<el-form-item label="内容" v-if="editValue && model.graphData != undefined">
 			<CodeEditor
-				style="height: 100%; max-height: calc(100vh - 300px); border: 1px solid #ccc; border-radius: 8px;"
+				style="height: 100%; border: 1px solid #ccc; border-radius: 8px;"
 				v-model="model.graphData" language="json"></CodeEditor>
 		</el-form-item>
 

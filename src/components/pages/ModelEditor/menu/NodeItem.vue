@@ -54,15 +54,9 @@ const isSelected = computed(() => {
 })
 </script>
 
-<style scoped>
-.selected {
-	background-color: rgba(220, 220, 220, 0.3);
-}
-</style>
-
 <template>
 	<div v-if="table"
-		 class="hover-show" :class="isSelected ? 'selected' : ''">
+		 class="hover-show" :class="isSelected ? 'selected-menu-item' : ''">
 
 		<el-text style="white-space: nowrap;">
 			<TableIcon :type="table.type"></TableIcon>
@@ -85,7 +79,7 @@ const isSelected = computed(() => {
 
 	<div v-else>
 		<el-text type="warning">
-			无效表 {{ node.id }}
+			{{ node.id }}
 		</el-text>
 	</div>
 </template>

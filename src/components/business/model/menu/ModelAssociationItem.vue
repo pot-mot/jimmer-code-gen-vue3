@@ -5,7 +5,7 @@ import {GenTableCommonView} from "@/api/__generated/model/static";
 import {useLoading} from "@/utils/useLoading.ts";
 import {api} from "@/api";
 import {AssociationItemProps} from "@/components/business/model/menu/ModelMenuProps.ts";
-import TableItem from "@/components/business/model/menu/TableItem.vue";
+import TableItem from "@/components/business/model/menu/ModelTableItem.vue";
 import AssociationIcon from "@/components/global/icons/database/AssociationIcon.vue";
 
 const props = withDefaults(defineProps<AssociationItemProps>(), {

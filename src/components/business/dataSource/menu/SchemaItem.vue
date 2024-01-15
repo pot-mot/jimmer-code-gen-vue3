@@ -93,18 +93,17 @@ defineSlots<SchemaItemSlots>()
 				</slot>
 			</div>
 
-			<Searcher v-if="tablesContainer && container"
-					  :init-w="300"
-					  :init-y="30"
-					  :target="tablesContainer"
-					  :search="handleQueryTables"
-					  :to="container">
-				<template #buttonContent="{item}">
-					<slot :eventBus="eventBus" :schema="schema" :table="item" :tables="tables" name="table">
-						<TableItem :event-bus="eventBus" :table="item"></TableItem>
-					</slot>
-				</template>
-			</Searcher>
+			<template v-if="tablesContainer && container">
+				<Searcher :target="tablesContainer"
+						  :search="handleQueryTables"
+						  :init-w="300">
+					<template #buttonContent="{item}">
+						<slot :eventBus="eventBus" :schema="schema" :table="item" :tables="tables" name="table">
+							<TableItem :event-bus="eventBus" :table="item"></TableItem>
+						</slot>
+					</template>
+				</Searcher>
+			</template>
 		</Details>
 	</div>
 </template>

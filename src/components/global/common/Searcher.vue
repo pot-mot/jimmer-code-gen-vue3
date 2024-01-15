@@ -1,38 +1,45 @@
 <script lang="ts" generic="T" setup>
 import {nextTick, onMounted, onUnmounted, Ref, ref} from "vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
-import {Search} from "@element-plus/icons-vue";
 import {
 	DialogInitPositionProps,
 	DialogInitSizeProps,
-	DialogTeleportProps
 } from "@/components/global/dialog/DragDialogProps.ts";
 
-interface SearcherProps extends DialogTeleportProps, DialogInitSizeProps, DialogInitPositionProps {
+interface SearcherProps extends DialogInitSizeProps, DialogInitPositionProps {
 	target: HTMLElement
 	search: (keyword: string) => T[] | Promise<T[]>
-	choose?: (item: T) => void
+	placeholder?: string
 
 	canDrag?: boolean
 }
 
 const props = withDefaults(defineProps<SearcherProps>(), {
-	canDrag: true
+	canDrag: true,
+	to: "body"
 })
 
 interface SearcherSlots {
 	empty(props: {}): any
 
-	items(props: { items: T[], choose?: (item: T) => any }): any
+	items(props: { items: T[] }): any
 
-	tools(props: { items: T[], choose?: (item: T) => any }): any
+	tools(props: { items: T[] }): any
 
-	item(props: { items: T[], item: T, choose?: (item: T) => any }): any
+	item(props: { items: T[], item: T }): any
 
 	buttonContent(props: { items: T[], item: T }): any
 }
 
 defineSlots<SearcherSlots>()
+
+interface SearcherEmits {
+	(event: "open"): void
+	(event: "close"): void
+	(event: 'select', item: T): void
+}
+
+const emits = defineEmits<SearcherEmits>()
 
 const keyword = ref("")
 
@@ -59,8 +66,18 @@ const handleSearchKeyEvent = (e: KeyboardEvent) => {
 			e.preventDefault()
 			searchResult.value = []
 
-			if (props.initX) x.value = props.initX
-			if (props.initY) y.value = props.initY
+			const box = props.target.getBoundingClientRect()
+
+			if (props.initX) {
+				x.value = props.initX
+			} else {
+				x.value = box.x
+			}
+			if (props.initY) {
+				y.value = props.initY
+			} else {
+				y.value = box.y
+			}
 
 			openState.value = true
 
@@ -111,9 +128,14 @@ onUnmounted(() => {
 	document.documentElement.removeEventListener('keydown', handleSearchKeyEvent)
 })
 
+const handleOpen = () => {
+	emits('open')
+}
+
 const handleClose = () => {
 	keyword.value = ''
 	searchResult.value = []
+	emits('close')
 }
 </script>
 
@@ -121,18 +143,16 @@ const handleClose = () => {
 	<DragDialog
 		v-model="openState"
 		ref="dialog"
-		:init-w="initW" :init-h="initH" :init-x="x" :init-y="y" :to="to"
+		:init-w="initW" :init-h="initH" :init-x="x" :init-y="y"
 		:can-drag="canDrag"
 		fit-content
+		@open="handleOpen"
 		@close="handleClose">
-		<el-input ref="input" v-model="keyword" clearable @change="handleSearch" @input="handleSearch">
-			<template #append>
-				<el-button @click="handleSearch" :icon="Search"></el-button>
-			</template>
+		<el-input ref="input" v-model="keyword" clearable @change="handleSearch" @input="handleSearch" :placeholder="placeholder">
 		</el-input>
 
 		<div ref="searchResultContainer" style="max-height: 60vh; overflow: auto;">
-			<slot name="tools" :items="searchResult" :choose="choose"></slot>
+			<slot name="tools" :items="searchResult"></slot>
 
 			<div v-if="keyword.length > 0 && searchResult.length == 0">
 				<slot name="empty">
@@ -140,10 +160,10 @@ const handleClose = () => {
 				</slot>
 			</div>
 
-			<slot name="items" :items="searchResult" :choose="choose">
+			<slot name="items" :items="searchResult">
 				<div v-for="item in searchResult">
-					<slot name="item" :items="searchResult" :item="item" :choose="choose">
-						<el-button link size="default" @click="choose?.(item)">
+					<slot name="item" :items="searchResult" :item="item">
+						<el-button link size="default" @click="emits('select', item)">
 							<slot name="buttonContent" :items="searchResult" :item="item">
 								{{ item }}
 							</slot>

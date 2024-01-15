@@ -14,6 +14,15 @@ body {
     width: 100vw;
 }
 
+.layout-menu-wrapper {
+    padding: 0.2em 0 3em 1em;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    white-space: nowrap;
+    scrollbar-gutter: stable;
+}
+
 /* splitpanes */
 .splitpanes__splitter {
     background-color: #ddd;
@@ -23,13 +32,31 @@ body {
     background-color: #aaa;
 }
 
-
 .splitpanes--vertical > .splitpanes__splitter {
     min-width: 6px !important;
 }
 
 .splitpanes--horizontal > .splitpanes__splitter {
     min-height: 6px !important;
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: transparent;
 }
 
 ul,

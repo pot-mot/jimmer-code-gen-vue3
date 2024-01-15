@@ -98,7 +98,7 @@ watch(() => props.modelValue.typeCode, () => {
 
 			<el-form-item label="映射枚举">
 				<el-select :model-value="modelValue.enum?.name" clearable filterable
-						   @clear="() => {modelValue.enum = undefined}"
+						   @clear="modelValue.enum = undefined"
 						   @change="(name: string) => {modelValue.enum = { name: name }}">
 					<el-option v-for="enumName in enumNames" :value="enumName"></el-option>
 				</el-select>

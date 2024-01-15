@@ -5,8 +5,8 @@ import {GenAssociationView, GenColumnCommonView} from "@/api/__generated/model/s
 import {useLoading} from "@/utils/useLoading.ts";
 import {api} from "@/api";
 import {TableItemProps} from "@/components/business/model/menu/ModelMenuProps.ts";
-import AssociationItem from "@/components/business/model/menu/AssociationItem.vue";
-import ColumnItem from "@/components/business/model/menu/ColumnItem.vue";
+import AssociationItem from "@/components/business/model/menu/ModelAssociationItem.vue";
+import ColumnItem from "@/components/business/model/menu/ModelColumnItem.vue";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 

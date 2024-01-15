@@ -5,18 +5,18 @@ const routes: RouteRecordRaw[] = [
     {
         path: "",
         name: "Index",
-        component: () => import("../components/pages/Index/Page.vue")
+        component: () => import("../components/pages/Index/IndexPage.vue")
     },
     {
         path: "/models",
         name: "ModelList",
-        component: () => import("../components/pages/ModelList/Page.vue")
+        component: () => import("../components/pages/ModelList/ModelListPage.vue")
     },
     {
         path: "/model/:id",
         name: "ModelEditor",
 
-        component: () => import("../components/pages/ModelEditor/Page.vue")
+        component: () => import("../components/pages/ModelEditor/ModelEditorPage.vue")
     }
 ]
 
@@ -35,11 +35,11 @@ export const router = createRouter({
 
 // @ts-ignore
 router.beforeEach((to, from, next) => {
-    useGlobalLoadingStore().start()
+    useGlobalLoadingStore().add()
     next()
 })
 
 // @ts-ignore
 router.afterEach((to, from, next) => {
-    useGlobalLoadingStore().end()
+    useGlobalLoadingStore().sub()
 })

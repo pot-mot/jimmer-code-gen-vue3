@@ -1,15 +1,24 @@
 <script lang="ts" setup>
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {Tools} from "@element-plus/icons-vue"
 import GenerateConfigForm from "@/components/business/genConfig/GenConfigForm.vue";
 import TypeMappingsEditor from "@/components/business/typeMapping/TypeMappingsEditor.vue";
 import ColumnDefaultEditor from "@/components/business/columnDefault/ColumnDefaultEditor.vue";
 import {GenerateConfiguratorOption, GenerateConfiguratorOptions} from "@/components/business/globalConfig/constant.ts";
 
-const openState = ref(false)
-
 const configType = ref<GenerateConfiguratorOption | undefined>()
+
+const openState = computed<boolean>({
+	get() {
+		return !!configType.value
+	},
+	set(value: boolean) {
+		if (!value) {
+			configType.value = undefined
+		}
+	}
+})
 </script>
 
 <template>
@@ -17,13 +26,15 @@ const configType = ref<GenerateConfiguratorOption | undefined>()
 		<el-popover placement="top-end">
 			<template #reference>
 				<el-button link>
-					<el-icon size="2em"><Tools></Tools></el-icon>
+					<el-icon size="2em">
+						<Tools></Tools>
+					</el-icon>
 				</el-button>
 			</template>
 
 			<ul>
 				<li v-for="option in GenerateConfiguratorOptions">
-					<el-button link @click="openState = true; configType = option.name">{{ option.label }}
+					<el-button link @click="configType = option;">{{ option.label }}
 					</el-button>
 				</li>
 			</ul>
@@ -31,15 +42,19 @@ const configType = ref<GenerateConfiguratorOption | undefined>()
 	</div>
 
 	<DragDialog v-model="openState" :init-w="900" :init-y="100" :init-h="600" can-resize>
+		<h3 style="padding-bottom: 20px; text-align: center;">
+			{{ configType?.label }}
+		</h3>
+
 		<div style="width: calc(100% - 1em)">
 			<GenerateConfigForm
-				v-if="configType == 'GenConfigForm'"
+				v-if="configType?.name == 'GenConfigForm'"
 				@cancel="openState = false"
 				@submit="openState = false"></GenerateConfigForm>
 			<TypeMappingsEditor
-				v-else-if="configType == 'TypeMappingsEditor'"></TypeMappingsEditor>
+				v-else-if="configType?.name == 'TypeMappingsEditor'"></TypeMappingsEditor>
 			<ColumnDefaultEditor
-				v-else-if="configType == 'ColumnDefaultEditor'"></ColumnDefaultEditor>
+				v-else-if="configType?.name == 'ColumnDefaultEditor'"></ColumnDefaultEditor>
 		</div>
 	</DragDialog>
 </template>

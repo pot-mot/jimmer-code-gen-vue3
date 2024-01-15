@@ -8,7 +8,6 @@ import Details from "../../global/common/Details.vue";
 import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated/model/enums"
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {useGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
-import {GenerateConfigurator} from "../globalConfig/constant.ts";
 
 const genConfigStore = useGenConfigStore()
 
@@ -37,11 +36,16 @@ const handleCancel = () => {
 }
 </script>
 
+<style scoped>
+.gen-config-form-part-title {
+	font-weight: 600;
+	line-height: 2.5em;
+}
+</style>
+
 <template>
 	<div v-loading="!genConfigStore.isLoaded">
-		<h3 style="width: 100%; text-align: center; height: 2em; line-height: 2em;">{{ GenerateConfigurator.GenConfigForm.label }}</h3>
-
-		<el-form v-if="config" size="small">
+		<el-form v-if="config">
 			<el-row :gutter="24">
 				<el-col :span="8">
 					<el-form-item label="数据源类型">
@@ -68,9 +72,9 @@ const handleCancel = () => {
 				</el-col>
 			</el-row>
 
-			<Details open style="padding-bottom: 0.5em">
+			<Details open>
 				<template #title>
-					<el-text style="line-height: 2.5em;" size="default">表定义</el-text>
+					<el-text class="gen-config-form-part-title" size="default">表定义</el-text>
 				</template>
 
 				<div style="width: calc(100% - 3px - 1em);">
@@ -80,13 +84,19 @@ const handleCancel = () => {
 								<el-switch v-model="config.realFk"></el-switch>
 							</el-form-item>
 						</el-col>
+
+						<el-col :span="12">
+							<el-form-item label="启用小写映射">
+								<el-switch v-model="config.lowerCaseName"></el-switch>
+							</el-form-item>
+						</el-col>
 					</el-row>
 				</div>
 			</Details>
 
-			<Details open style="padding-bottom: 0.5em">
+			<Details open>
 				<template #title>
-					<el-text style="line-height: 2.5em;" size="default">实体类配置</el-text>
+					<el-text class="gen-config-form-part-title" size="default">实体类配置</el-text>
 				</template>
 
 				<div style="width: calc(100% - 3px - 1em);">
@@ -100,14 +110,6 @@ const handleCancel = () => {
 						<el-col :span="12">
 							<el-form-item label="逻辑删除注释">
 								<el-input v-model="config.logicalDeletedAnnotation"></el-input>
-							</el-form-item>
-						</el-col>
-					</el-row>
-
-					<el-row :gutter="24">
-						<el-col :span="8">
-							<el-form-item label="启用小写映射">
-								<el-switch v-model="config.lowerCaseName"></el-switch>
 							</el-form-item>
 						</el-col>
 					</el-row>
@@ -148,9 +150,9 @@ const handleCancel = () => {
 				</div>
 			</Details>
 
-			<Details open style="padding-bottom: 3em">
+			<Details open>
 				<template #title>
-					<el-text style="line-height: 2.5em;" size="default">移除前后缀</el-text>
+					<el-text class="gen-config-form-part-title" size="default">移除前后缀</el-text>
 				</template>
 
 				<div style="width: calc(100% - 3px - 1em);">
