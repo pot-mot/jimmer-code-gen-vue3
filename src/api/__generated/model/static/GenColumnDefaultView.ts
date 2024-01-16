@@ -22,7 +22,7 @@ export interface GenColumnDefaultView {
      */
     dataSourceType: DataSourceType;
     /**
-     * JDBCType 码值
+     * JdbcType 码值
      */
     typeCode: number;
     /**

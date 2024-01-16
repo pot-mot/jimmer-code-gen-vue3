@@ -3,26 +3,26 @@ import {computed} from "vue";
 import {api} from "@/api";
 import {useAsyncStoreOperations} from "@/utils/useAsyncStoreOperations.ts";
 
-export const useJDBCTypeStore = defineStore(
-    'JDBCType',
+export const useJdbcTypeStore = defineStore(
+    'JdbcType',
     () => {
         const {
-            data: _jdbcTypes,
+            data,
             isLoaded,
-            getData: getJDBCTypes,
-            resetData: resetJDBCTypes,
+            getData,
+            resetData,
             loadHooks,
         } = useAsyncStoreOperations<{[key:string]: number}>(() => {
-            return api.jdbcservice.listType()
+            return api.jdbcService.listType()
         })
 
-        getJDBCTypes().then()
+        getData().then()
 
         const jdbcTypes = computed<{[key:string]: number}>(() => {
-            if (!_jdbcTypes.value) {
+            if (!data.value) {
                 throw "jdbcTypes Not Loaded"
             }
-            return _jdbcTypes.value
+            return data.value
         })
 
         const jdbcTypeList = computed(() => {
@@ -47,7 +47,7 @@ export const useJDBCTypeStore = defineStore(
             list: jdbcTypeList,
             map: jdbcTypeMap,
             isLoaded,
-            reset: resetJDBCTypes,
+            reset: resetData,
 
             ...loadHooks,
         }

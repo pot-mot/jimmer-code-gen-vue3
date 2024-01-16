@@ -8,7 +8,7 @@ import {
     DataSourceService, 
     EntityService, 
     EnumService, 
-    JDBCService, 
+    JdbcService, 
     ModelService, 
     PreviewService, 
     SchemaService, 
@@ -34,7 +34,7 @@ export class Api {
     
     readonly enumService: EnumService
     
-    readonly jdbcservice: JDBCService
+    readonly jdbcService: JdbcService
     
     readonly modelService: ModelService
     
@@ -55,7 +55,7 @@ export class Api {
         this.dataSourceService = new DataSourceService(executor);
         this.entityService = new EntityService(executor);
         this.enumService = new EnumService(executor);
-        this.jdbcservice = new JDBCService(executor);
+        this.jdbcService = new JdbcService(executor);
         this.modelService = new ModelService(executor);
         this.previewService = new PreviewService(executor);
         this.schemaService = new SchemaService(executor);

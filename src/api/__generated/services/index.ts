@@ -6,7 +6,7 @@ export {ConvertService} from './ConvertService';
 export {DataSourceService} from './DataSourceService';
 export {EntityService} from './EntityService';
 export {EnumService} from './EnumService';
-export {JDBCService} from './JDBCService';
+export {JdbcService} from './JdbcService';
 export {ModelService} from './ModelService';
 export {PreviewService} from './PreviewService';
 export {SchemaService} from './SchemaService';

@@ -11,7 +11,7 @@ import EditList from "@/components/global/list/EditList.vue";
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import {tableColumnColumns} from "@/components/business/table/tableColumnColumns.ts";
 import ColumnTypeForm from "@/components/business/table/ColumnTypeForm.vue";
-import {useJDBCTypeStore} from "@/components/business/jdbcType/JDBCTypeStore.ts";
+import {useJdbcTypeStore} from "@/components/business/jdbcType/jdbcTypeStore.ts";
 import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
 import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
 import {tableIndexColumns} from "@/components/business/table/tableIndexColumns.ts";
@@ -21,7 +21,7 @@ import {validateColumn, validateIndex} from "@/shape/GenTableModelInput.ts";
 
 const store = useModelEditorStore()
 
-const jdbcTypeStore = useJDBCTypeStore()
+const jdbcTypeStore = useJdbcTypeStore()
 
 interface ModelFormProps {
 	id?: string,

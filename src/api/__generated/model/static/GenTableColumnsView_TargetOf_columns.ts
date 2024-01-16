@@ -26,7 +26,7 @@ export interface GenTableColumnsView_TargetOf_columns {
      */
     name: string;
     /**
-     * 列 JDBCType 码值
+     * 列 JdbcType 码值
      */
     typeCode: number;
     /**

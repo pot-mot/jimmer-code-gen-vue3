@@ -1,32 +1,30 @@
 <script lang="ts" setup>
-import {api} from "@/api";
-import {onMounted, ref} from "vue";
+import {ref, watch} from "vue";
 import {GenConfig, GenConfigProperties} from "@/api/__generated/model/static";
 import {sendMessage} from "@/utils/message.ts";
 import DataSourceIcon from "../../global/icons/database/DataSourceIcon.vue";
 import Details from "../../global/common/Details.vue";
 import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated/model/enums"
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
-import {useGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
+import {ModelValueProps} from "@/components/global/dialog/DragDialogProps.ts";
+import {ModelValueEmits} from "@/components/global/dialog/DragDialogEmits.ts";
+import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
 
-const genConfigStore = useGenConfigStore()
+const props = defineProps<ModelValueProps<GenConfigProperties>>()
 
-const config = ref<GenConfig>()
+const config = ref<GenConfig>(getDefaultModel())
 
-onMounted(async () => {
-	if (genConfigStore.isLoaded) {
-		config.value = genConfigStore.genConfig
-	} else {
-		config.value = await genConfigStore.reset()
+watch(() => props.modelValue, () => {
+	config.value = {
+		...config.value,
+		...props.modelValue
 	}
-})
+}, {immediate: true})
 
-const emits = defineEmits<FormEmits<GenConfigProperties>>()
+const emits = defineEmits<ModelValueEmits<GenConfigProperties> & FormEmits<GenConfigProperties>>()
 
 const handleSubmit = async () => {
 	const newConfig = <GenConfigProperties>config.value
-	await api.configService.setConfig({body: newConfig})
-	await genConfigStore.reset()
 	sendMessage('配置修改成功', 'success')
 	emits('submit', newConfig)
 }
@@ -44,7 +42,7 @@ const handleCancel = () => {
 </style>
 
 <template>
-	<div v-loading="!genConfigStore.isLoaded">
+	<div>
 		<el-form v-if="config">
 			<el-row :gutter="24">
 				<el-col :span="8">
@@ -63,11 +61,6 @@ const handleCancel = () => {
 						<el-select v-model="config.language">
 							<el-option v-for="language in GenLanguage_CONSTANTS" :label="language" :value="language"></el-option>
 						</el-select>
-					</el-form-item>
-				</el-col>
-				<el-col :span="8">
-					<el-form-item label="作者">
-						<el-input v-model="config.author"></el-input>
 					</el-form-item>
 				</el-col>
 			</el-row>
@@ -159,12 +152,12 @@ const handleCancel = () => {
 					<el-row :gutter="24">
 						<el-col :span="12">
 							<el-form-item label="表名前缀">
-								<el-input v-model="config.tablePrefix"></el-input>
+								<el-input v-model="config.tableNamePrefixes"></el-input>
 							</el-form-item>
 						</el-col>
 						<el-col :span="12">
 							<el-form-item label="表名后缀">
-								<el-input v-model="config.tableSuffix"></el-input>
+								<el-input v-model="config.tableNameSuffixes"></el-input>
 							</el-form-item>
 						</el-col>
 					</el-row>
@@ -172,12 +165,12 @@ const handleCancel = () => {
 					<el-row :gutter="24">
 						<el-col :span="12">
 							<el-form-item label="表注释前缀">
-								<el-input v-model="config.tableCommentPrefix"></el-input>
+								<el-input v-model="config.tableCommentPrefixes"></el-input>
 							</el-form-item>
 						</el-col>
 						<el-col :span="12">
 							<el-form-item label="表注释后缀">
-								<el-input v-model="config.tableCommentSuffix"></el-input>
+								<el-input v-model="config.tableCommentSuffixes"></el-input>
 							</el-form-item>
 						</el-col>
 					</el-row>
@@ -185,12 +178,12 @@ const handleCancel = () => {
 					<el-row :gutter="24">
 						<el-col :span="12">
 							<el-form-item label="列名前缀">
-								<el-input v-model="config.columnPrefix"></el-input>
+								<el-input v-model="config.columnNamePrefixes"></el-input>
 							</el-form-item>
 						</el-col>
 						<el-col :span="12">
 							<el-form-item label="列名后缀">
-								<el-input v-model="config.columnSuffix"></el-input>
+								<el-input v-model="config.columnNameSuffixes"></el-input>
 							</el-form-item>
 						</el-col>
 					</el-row>
@@ -198,12 +191,12 @@ const handleCancel = () => {
 					<el-row :gutter="24">
 						<el-col :span="12">
 							<el-form-item label="列注释前缀">
-								<el-input v-model="config.columnCommentPrefix"></el-input>
+								<el-input v-model="config.columnCommentPrefixes"></el-input>
 							</el-form-item>
 						</el-col>
 						<el-col :span="12">
 							<el-form-item label="列注释后缀">
-								<el-input v-model="config.columnCommentSuffix"></el-input>
+								<el-input v-model="config.columnCommentSuffixes"></el-input>
 							</el-form-item>
 						</el-col>
 					</el-row>

@@ -12,7 +12,7 @@ export interface GenAssociationModelInput_TargetOf_columnReferences_TargetOf_tar
      */
     type: string;
     /**
-     * 列 JDBCType 码值
+     * 列 JdbcType 码值
      */
     typeCode: number;
 }

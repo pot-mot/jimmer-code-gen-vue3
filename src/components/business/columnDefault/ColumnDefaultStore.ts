@@ -3,17 +3,17 @@ import {computed} from "vue";
 import {api} from "@/api";
 import {GenColumnDefaultView} from "@/api/__generated/model/static";
 import {DataSourceType} from "@/api/__generated/model/enums";
-import {useGenContextStore} from "@/components/business/context/GenContextStore.ts";
+import {useGenConfigContextStore} from "@/components/business/context/GenContextStore.ts";
 import {useAsyncStoreOperations} from "@/utils/useAsyncStoreOperations.ts";
 
 export const useColumnDefaultStore = defineStore(
     'GenColumnDefault',
     () => {
         const {
-            data: _columnDefaults,
+            data,
             isLoaded,
-            getData: getGenColumnDefaults,
-            resetData: resetGenColumnDefaults,
+            getData,
+            resetData,
             loadHooks,
         } = useAsyncStoreOperations<GenColumnDefaultView[]>(
             () => {
@@ -21,20 +21,20 @@ export const useColumnDefaultStore = defineStore(
             }
         )
 
-        getGenColumnDefaults().then()
+        getData().then()
 
         const columnDefaults = computed(() => {
-            if (!_columnDefaults.value) {
+            if (!data.value) {
                 throw "columnDefaults Not Loaded"
             }
-            return _columnDefaults.value
+            return data.value
         })
 
         const getColumnDefaults = (jdbcTypeCode: number, dataSourceType?: DataSourceType): GenColumnDefaultView[] => {
-            const contextStore = useGenContextStore()
+            const contextStore = useGenConfigContextStore()
 
             if (!dataSourceType) {
-                dataSourceType = contextStore.dataSourceType
+                dataSourceType = contextStore.context.dataSourceType
             }
 
             if (!columnDefaults.value) return []
@@ -45,7 +45,7 @@ export const useColumnDefaultStore = defineStore(
         return {
             columnDefaults,
             isLoaded,
-            reset: resetGenColumnDefaults,
+            reset: resetData,
             get: getColumnDefaults,
 
             ...loadHooks,

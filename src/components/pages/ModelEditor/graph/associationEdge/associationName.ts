@@ -1,5 +1,5 @@
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
-import {useGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
+import {useGlobalGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
 import {removeSplitPrefixAndSuffix} from "@/utils/suffixAndPrefix.ts";
 import {AssociationType} from "@/api/__generated/model/enums";
 import {Edge} from "@antv/x6"
@@ -40,7 +40,7 @@ export const createAssociationName = (
     targetColumnNames: string[],
     associationType: AssociationType,
 ): string => {
-    const genConfigStore = useGenConfigStore()
+    const genConfigStore = useGlobalGenConfigStore()
 
     let lowerCaseName = false
 
@@ -49,14 +49,14 @@ export const createAssociationName = (
 
         lowerCaseName = genConfig.lowerCaseName
 
-        sourceTableName = removeSplitPrefixAndSuffix(sourceTableName, genConfig.tablePrefix, genConfig.tableSuffix)
-        targetTableName = removeSplitPrefixAndSuffix(targetTableName, genConfig.tablePrefix, genConfig.tableSuffix)
+        sourceTableName = removeSplitPrefixAndSuffix(sourceTableName, genConfig.tableNamePrefixes, genConfig.tableNameSuffixes)
+        targetTableName = removeSplitPrefixAndSuffix(targetTableName, genConfig.tableNamePrefixes, genConfig.tableNameSuffixes)
 
         sourceColumnNames = sourceColumnNames.map(it => {
-            return removeSplitPrefixAndSuffix(it, genConfig.columnPrefix, genConfig.columnSuffix)
+            return removeSplitPrefixAndSuffix(it, genConfig.columnNamePrefixes, genConfig.columnNameSuffixes)
         })
         targetColumnNames = targetColumnNames.map(it => {
-            return removeSplitPrefixAndSuffix(it, genConfig.columnPrefix, genConfig.columnSuffix)
+            return removeSplitPrefixAndSuffix(it, genConfig.columnNamePrefixes, genConfig.columnNameSuffixes)
         })
     }
 

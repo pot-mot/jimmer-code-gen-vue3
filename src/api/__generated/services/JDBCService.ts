@@ -1,6 +1,6 @@
 import type {Executor} from '../';
 
-export class JDBCService {
+export class JdbcService {
     
     constructor(private executor: Executor) {}
     
@@ -11,6 +11,6 @@ export class JDBCService {
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<{[key:string]: number}>;
     }
 }
-export type JDBCServiceOptions = {
+export type JdbcServiceOptions = {
     'listType': {}
 }

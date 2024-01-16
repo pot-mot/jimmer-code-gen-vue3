@@ -10,8 +10,11 @@ import {DataSourceType_CONSTANTS} from "@/api/__generated/model/enums";
 import Line from "@/components/global/list/Line.vue";
 import LineItem from "@/components/global/list/LineItem.vue";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
+import {useDataSourceDefaultStore} from "@/components/business/dataSource/dataSourceDefaultStore.ts";
 
 const loadingStore = useGlobalLoadingStore()
+
+const dataSourceDefaults = useDataSourceDefaultStore()
 
 const props = defineProps<DataSourceFormProps>()
 
@@ -29,7 +32,7 @@ const dataSource = ref<GenDataSourceInput>({
 
 watch(() => dataSource.value.type, async (type) => {
 	if (!props.id) {
-		const defaultDataSource = await api.dataSourceService.getDefault({dataSourceType: type})
+		const defaultDataSource = dataSourceDefaults.get(type)
 		dataSource.value = {
 			...dataSource.value,
 			...defaultDataSource,

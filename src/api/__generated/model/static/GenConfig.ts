@@ -2,83 +2,87 @@ import type {DataSourceType, GenLanguage} from '../enums/';
 
 export interface GenConfig {
     /**
+     * 同步转换实体
+     */
+    syncConvertEntity: boolean;
+    /**
+     * 语言
+     */
+    language: GenLanguage;
+    /**
      * 数据源类型
      */
     dataSourceType: DataSourceType;
-    /**
-     * 语言，java/kotlin
-     */
-    language: GenLanguage;
     /**
      * 作者
      */
     author: string;
     /**
-     * 默认包路径
+     * 包路径
      */
     packagePath: string;
     /**
-     * 默认启用小写命名
+     * 启用小写命名
      */
     lowerCaseName: boolean;
     /**
-     * 默认真实外键
+     * 启用真实外键
      */
     realFk: boolean;
     /**
-     * 是否生成 IdView 注释
+     * 生成 IdView 属性
      */
     idViewProperty: boolean;
     /**
-     * 逻辑删除默认配置
+     * 逻辑删除注解
      */
     logicalDeletedAnnotation: string;
     /**
-     * 是否生成 Table 注释
+     * 生成 Table 注解
      */
     tableAnnotation: boolean;
     /**
-     * 是否生成 Column 注释
+     * 生成 Column 注解
      */
     columnAnnotation: boolean;
     /**
-     * 是否生成 JoinTable 注释
+     * 生成 JoinTable 注解
      */
     joinTableAnnotation: boolean;
     /**
-     * 是否生成 JoinColumn 注释
+     * 生成 JoinColumn 注解
      */
     joinColumnAnnotation: boolean;
     /**
-     * 表名前缀
+     * 转换实体时移除的表名前缀
      */
-    tablePrefix: string;
+    tableNamePrefixes: string;
     /**
-     * 表名后缀
+     * 转换实体时移除的表名后缀
      */
-    tableSuffix: string;
+    tableNameSuffixes: string;
     /**
-     * 表注释前缀
+     * 转换实体时移除的表注释前缀
      */
-    tableCommentPrefix: string;
+    tableCommentPrefixes: string;
     /**
-     * 表注释后缀
+     * 转换实体时移除的表注释后缀
      */
-    tableCommentSuffix: string;
+    tableCommentSuffixes: string;
     /**
-     * 列名前缀
+     * 转换属性时移除的列名前缀
      */
-    columnPrefix: string;
+    columnNamePrefixes: string;
     /**
-     * 列名后缀
+     * 转换属性时移除的列名后缀
      */
-    columnSuffix: string;
+    columnNameSuffixes: string;
     /**
-     * 列注释前缀
+     * 转换属性时移除的列注释前缀
      */
-    columnCommentPrefix: string;
+    columnCommentPrefixes: string;
     /**
-     * 列注释后缀
+     * 转换属性时移除的列注释后缀
      */
-    columnCommentSuffix: string;
+    columnCommentSuffixes: string;
 }

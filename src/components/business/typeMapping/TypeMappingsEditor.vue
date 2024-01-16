@@ -9,7 +9,7 @@ import {PropListColumn} from "@/components/global/list/ListProps.ts";
 import {sendMessage} from "@/utils/message.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep, uniqWith} from "lodash";
-import {useGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
+import {useGlobalGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
 import {validateTypeMappingInput} from "@/shape/GenTypeMappingInput.ts";
 
 const editState = ref(false)
@@ -54,7 +54,7 @@ const defaultTypeMapping = ref<GenTypeMappingInput>({
 	orderKey: 0,
 })
 
-const genConfigStore = useGenConfigStore()
+const genConfigStore = useGlobalGenConfigStore()
 
 genConfigStore.onLoaded(() => {
 	if (genConfigStore.genConfig) {

@@ -2,99 +2,87 @@ import type {DataSourceType, GenLanguage} from '../enums/';
 
 export interface GenConfigProperties {
     /**
+     * 同步转换实体
+     */
+    syncConvertEntity?: boolean | undefined;
+    /**
+     * 语言
+     */
+    language?: GenLanguage | undefined;
+    /**
      * 数据源类型
      */
     dataSourceType?: DataSourceType | undefined;
-    /**
-     * 语言，java/kotlin
-     */
-    language?: GenLanguage | undefined;
     /**
      * 作者
      */
     author?: string | undefined;
     /**
-     * 默认包路径
+     * 包路径
      */
     packagePath?: string | undefined;
     /**
-     * 默认启用小写命名
+     * 启用小写命名
      */
     lowerCaseName?: boolean | undefined;
     /**
-     * 默认真实外键
+     * 启用真实外键
      */
     realFk?: boolean | undefined;
     /**
-     * 是否生成 IdView 注释
+     * 生成 IdView 属性
      */
     idViewProperty?: boolean | undefined;
     /**
-     * 逻辑删除默认配置
+     * 逻辑删除注解
      */
     logicalDeletedAnnotation?: string | undefined;
     /**
-     * 是否生成 Table 注释
+     * 生成 Table 注解
      */
     tableAnnotation?: boolean | undefined;
     /**
-     * 是否生成 Column 注释
+     * 生成 Column 注解
      */
     columnAnnotation?: boolean | undefined;
     /**
-     * 是否生成 JoinTable 注释
+     * 生成 JoinTable 注解
      */
     joinTableAnnotation?: boolean | undefined;
     /**
-     * 是否生成 JoinColumn 注释
+     * 生成 JoinColumn 注解
      */
     joinColumnAnnotation?: boolean | undefined;
     /**
-     * 表名前缀
-     * 关联匹配与实体名生成时生效
-     * 配置文件中由 ',' 进行分割
+     * 转换实体时移除的表名前缀
      */
-    tablePrefix?: string | undefined;
+    tableNamePrefixes?: string | undefined;
     /**
-     * 表名后缀
-     * 关联匹配与实体名生成时生效
-     * 配置文件中由 ',' 进行分割
+     * 转换实体时移除的表名后缀
      */
-    tableSuffix?: string | undefined;
+    tableNameSuffixes?: string | undefined;
     /**
-     * 表注释前缀
-     * 实体注释生成时生效
-     * 配置文件中由 ',' 进行分割
+     * 转换实体时移除的表注释前缀
      */
-    tableCommentPrefix?: string | undefined;
+    tableCommentPrefixes?: string | undefined;
     /**
-     * 表注释后缀
-     * 实体注释生成时生效
-     * 配置文件中由 ',' 进行分割
+     * 转换实体时移除的表注释后缀
      */
-    tableCommentSuffix?: string | undefined;
+    tableCommentSuffixes?: string | undefined;
     /**
-     * 列名前缀
-     * 属性名生成时生效
-     * 配置文件中由 ',' 进行分割
+     * 转换属性时移除的列名前缀
      */
-    columnPrefix?: string | undefined;
+    columnNamePrefixes?: string | undefined;
     /**
-     * 列名后缀
-     * 属性名生成时生效
-     * 配置文件中由 ',' 进行分割
+     * 转换属性时移除的列名后缀
      */
-    columnSuffix?: string | undefined;
+    columnNameSuffixes?: string | undefined;
     /**
-     * 列注释前缀
-     * 属性名生成时生效
-     * 配置文件中由 ',' 进行分割
+     * 转换属性时移除的列注释前缀
      */
-    columnCommentPrefix?: string | undefined;
+    columnCommentPrefixes?: string | undefined;
     /**
-     * 列注释后缀
-     * 属性注释生成时生效
-     * 配置文件中由 ',' 进行分割
+     * 转换属性时移除的列注释后缀
      */
-    columnCommentSuffix?: string | undefined;
+    columnCommentSuffixes?: string | undefined;
 }

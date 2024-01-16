@@ -97,7 +97,7 @@ export type ApiErrors = {
     }, 
     'enumService': {
     }, 
-    'jdbcservice': {
+    'jdbcService': {
     }, 
     'modelService': {
         'save': AllErrors & ({

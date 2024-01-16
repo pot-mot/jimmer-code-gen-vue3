@@ -1,6 +1,5 @@
 import type {Executor} from '../';
-import type {DataSourceType, GenLanguage} from '../model/enums/';
-import type {Pair} from '../model/static/';
+import type {GenConfigProperties, Pair} from '../model/static/';
 
 export class PreviewService {
     
@@ -23,20 +22,6 @@ export class PreviewService {
         if (_value !== undefined && _value !== null) {
             _uri += _separator
             _uri += 'withPath='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.dataSourceType;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'dataSourceType='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.language;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'language='
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
@@ -70,27 +55,6 @@ export class PreviewService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        _value = options.dataSourceType;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'dataSourceType='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.language;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'language='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.packagePath;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'packagePath='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<Pair<string, string>>>;
     }
     
@@ -104,20 +68,6 @@ export class PreviewService {
         if (_value !== undefined && _value !== null) {
             _uri += _separator
             _uri += 'enumIds='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.dataSourceType;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'dataSourceType='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
-        _value = options.language;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'language='
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
@@ -183,40 +133,29 @@ export class PreviewService {
             _uri += encodeURIComponent(_value);
             _separator = '&';
         }
-        _value = options.dataSourceType;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'dataSourceType='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<Pair<string, string>>>;
     }
 }
 export type PreviewServiceOptions = {
     'previewTableDefine': {
         tableIds: Array<number>, 
-        dataSourceType?: DataSourceType | undefined
+        properties?: GenConfigProperties | undefined
     }, 
     'previewEntity': {
         entityIds: Array<number>, 
         withPath?: boolean | undefined, 
-        dataSourceType?: DataSourceType | undefined, 
-        language?: GenLanguage | undefined
+        properties?: GenConfigProperties | undefined
     }, 
     'previewEnums': {
         enumIds: Array<number>, 
-        dataSourceType?: DataSourceType | undefined, 
-        language?: GenLanguage | undefined, 
-        withPath?: boolean | undefined
+        withPath?: boolean | undefined, 
+        properties?: GenConfigProperties | undefined
     }, 
     'previewEntityByTable': {
         tableIds: Array<number>, 
         modelId?: number | undefined, 
         withPath?: boolean | undefined, 
-        dataSourceType?: DataSourceType | undefined, 
-        language?: GenLanguage | undefined, 
-        packagePath?: string | undefined
+        properties?: GenConfigProperties | undefined
     }, 
     'previewModelSql': {
         id: number

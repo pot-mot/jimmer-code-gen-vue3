@@ -4,10 +4,10 @@ import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/stati
 import {ModelValueEmits} from "@/components/global/dialog/DragDialogEmits.ts";
 import {ref, watch} from "vue";
 import {EditPen, Plus} from "@element-plus/icons-vue";
-import {useJDBCTypeStore} from "@/components/business/jdbcType/JDBCTypeStore.ts";
+import {useJdbcTypeStore} from "@/components/business/jdbcType/jdbcTypeStore.ts";
 import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
 
-const jdbcTypeStore = useJDBCTypeStore()
+const jdbcTypeStore = useJdbcTypeStore()
 
 const columnDefaultStore = useColumnDefaultStore()
 

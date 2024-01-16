@@ -1,20 +1,15 @@
 import {defineStore} from "pinia";
-import {DataSourceType, GenLanguage} from "@/api/__generated/model/enums";
-import {ref} from "vue";
+import {ref} from 'vue';
+import {GenConfig} from "@/api/__generated/model/static";
+import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
 
-export const useGenContextStore = defineStore(
-    "GenContext",
+export const useGenConfigContextStore = defineStore(
+    "GenConfigContext",
     () => {
-        const dataSourceType = ref<DataSourceType>("MySQL")
-
-        const language = ref<GenLanguage>("JAVA")
-
-        const packagePath = ref<string>("")
+        const contextGenConfig = ref<GenConfig>(getDefaultModel())
 
         return {
-            dataSourceType,
-            language,
-            packagePath
+            context: contextGenConfig
         }
     }
 )

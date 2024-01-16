@@ -1,36 +1,50 @@
 import {GenModelInput} from "@/api/__generated/model/static";
 import {
-    DataSourceType,
     DataSourceType_CONSTANTS,
-    GenLanguage,
     GenLanguage_CONSTANTS
 } from "@/api/__generated/model/enums";
-import {useGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
+import {useGlobalGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
 
 export const getDefaultModel = (): GenModelInput => {
-    const genConfigStore = useGenConfigStore()
+    const genConfigStore = useGlobalGenConfigStore()
 
-    let language: GenLanguage = GenLanguage_CONSTANTS[0]
-    let dataSourceType: DataSourceType = DataSourceType_CONSTANTS[0]
-    let packagePath = ""
+    const defaultModel: GenModelInput = {
+        remark: "",
+        name: "",
+        syncConvertEntity: true,
+        graphData: "",
+        language: GenLanguage_CONSTANTS[0],
+        dataSourceType: DataSourceType_CONSTANTS[0],
+        author: "",
+        packagePath: "",
+        lowerCaseName: true,
+        realFk: true,
+        idViewProperty: true,
+        logicalDeletedAnnotation: "",
+        tableAnnotation: true,
+        columnAnnotation: true,
+        joinTableAnnotation: true,
+        joinColumnAnnotation: true,
+        tableNamePrefixes: "",
+        tableNameSuffixes: "",
+        tableCommentPrefixes: "",
+        tableCommentSuffixes: "",
+        columnNamePrefixes: "",
+        columnNameSuffixes: "",
+        columnCommentPrefixes: "",
+        columnCommentSuffixes: "",
+        enums: [],
+    }
 
     if (genConfigStore.isLoaded) {
-        language = genConfigStore.genConfig.language
-        dataSourceType = genConfigStore.genConfig.dataSourceType
-        packagePath = genConfigStore.genConfig.packagePath
+        const globalGenConfig = genConfigStore.genConfig
+        for (let key of Object.keys(globalGenConfig)) {
+            if (key in defaultModel) {
+                // @ts-ignore
+                defaultModel[key] = globalGenConfig[key]
+            }
+        }
     }
 
-    return {
-        name: "",
-        remark: "",
-        graphData: "",
-
-        language,
-        dataSourceType,
-        packagePath,
-
-        syncConvertEntity: true,
-
-        enums: []
-    }
+    return defaultModel
 }

@@ -16,7 +16,7 @@ export interface GenAssociationView_TargetOf_columnReferences_TargetOf_sourceCol
      */
     type: string;
     /**
-     * 列 JDBCType 码值
+     * 列 JdbcType 码值
      */
     typeCode: number;
 }

@@ -30,13 +30,6 @@ export class ColumnDefaultService {
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenColumnDefaultView>>;
     }
     
-    async listDatabaseType(): Promise<
-        {[key:string]: number}
-    > {
-        let _uri = '/columnDefault/type';
-        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<{[key:string]: number}>;
-    }
-    
     async saveAll(options: ColumnDefaultServiceOptions['saveAll']): Promise<
         Array<number>
     > {
@@ -45,7 +38,6 @@ export class ColumnDefaultService {
     }
 }
 export type ColumnDefaultServiceOptions = {
-    'listDatabaseType': {}, 
     'get': {
         id: number
     }, 

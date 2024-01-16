@@ -68,10 +68,7 @@
 		<ul v-if="store.isLoaded" class="toolbar right-top">
 			<li>
 				<el-tooltip content="预览 SQL">
-					<el-button :icon="SQLIcon" @click="async () => {
-						await handleSaveModel()
-						await handleSQLPreview()
-					}"></el-button>
+					<el-button :icon="SQLIcon" @click="handleSQLPreview"></el-button>
 				</el-tooltip>
 
 				<DragDialog v-model="sqlPreviewDialogOpenState" :init-w="700" :init-x="5000" can-drag can-resize disabled-h disabled-y limit-by-parent>
@@ -87,11 +84,8 @@
 			</li>
 
 			<li>
-				<el-tooltip content="业务代码">
-					<el-button :icon="CodeIcon" @click="async () => {
-						await handleSaveModel()
-						await handleEntityPreview()
-					}"></el-button>
+				<el-tooltip content="实体代码">
+					<el-button :icon="CodeIcon" @click="handleEntityPreview"></el-button>
 				</el-tooltip>
 
 				<DragDialog v-model="entityPreviewDialogOpenState" :init-w="700" :init-x="5000" can-drag can-resize disabled-h disabled-y limit-by-parent>
@@ -108,19 +102,13 @@
 
 			<li>
 				<el-tooltip content="导出模型">
-					<el-button :icon="ExportIcon" @click="async () => {
-						await handleSaveModel()
-						await handleModelExport()
-					}"></el-button>
+					<el-button :icon="ExportIcon" @click="handleModelExport"></el-button>
 				</el-tooltip>
 			</li>
 
 			<li>
 				<el-tooltip content="下载全部（获得 zip 压缩包）">
-					<el-button :icon="DownloadIcon" @click="async () => {
-						await handleSaveModel()
-						await handleModelDownload()
-					}"></el-button>
+					<el-button :icon="DownloadIcon" @click="handleModelDownload"></el-button>
 				</el-tooltip>
 			</li>
 		</ul>

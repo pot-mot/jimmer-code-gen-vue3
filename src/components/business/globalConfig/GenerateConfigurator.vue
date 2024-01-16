@@ -6,6 +6,7 @@ import GenerateConfigForm from "@/components/business/genConfig/GenConfigForm.vu
 import TypeMappingsEditor from "@/components/business/typeMapping/TypeMappingsEditor.vue";
 import ColumnDefaultEditor from "@/components/business/columnDefault/ColumnDefaultEditor.vue";
 import {GenerateConfiguratorOption, GenerateConfiguratorOptions} from "@/components/business/globalConfig/constant.ts";
+import {useGlobalGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
 
 const configType = ref<GenerateConfiguratorOption | undefined>()
 
@@ -19,6 +20,8 @@ const openState = computed<boolean>({
 		}
 	}
 })
+
+const globalGenConfigStore = useGlobalGenConfigStore()
 </script>
 
 <template>
@@ -48,9 +51,13 @@ const openState = computed<boolean>({
 
 		<div style="width: calc(100% - 1em)">
 			<GenerateConfigForm
-				v-if="configType?.name == 'GenConfigForm'"
+				v-if="configType?.name == 'GenConfigForm' && globalGenConfigStore.isLoaded"
+				v-model="globalGenConfigStore.genConfig"
 				@cancel="openState = false"
-				@submit="openState = false"></GenerateConfigForm>
+				@submit="() => {
+					globalGenConfigStore.reset()
+					openState = false
+				}"></GenerateConfigForm>
 			<TypeMappingsEditor
 				v-else-if="configType?.name == 'TypeMappingsEditor'"></TypeMappingsEditor>
 			<ColumnDefaultEditor

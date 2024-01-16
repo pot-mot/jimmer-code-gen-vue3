@@ -47,7 +47,7 @@ export const GenColumnDefaultInputJsonSchema = {
                     "type": "string"
                 },
                 "typeCode": {
-                    "description": "JDBCType 码值",
+                    "description": "JdbcType 码值",
                     "type": "number"
                 }
             },

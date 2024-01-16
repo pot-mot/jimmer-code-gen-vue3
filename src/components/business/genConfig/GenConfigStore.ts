@@ -4,32 +4,32 @@ import {api} from "@/api";
 import {GenConfig} from "@/api/__generated/model/static";
 import {useAsyncStoreOperations} from "@/utils/useAsyncStoreOperations.ts";
 
-export const useGenConfigStore = defineStore(
-    'GenConfig',
+export const useGlobalGenConfigStore = defineStore(
+    'GlobalGenConfig',
     () => {
         const {
-            data: _genConfig,
+            data,
             isLoaded,
-            getData: getGenConfig,
-            resetData: resetGenConfig,
+            getData,
+            resetData,
             loadHooks,
         } = useAsyncStoreOperations<GenConfig>(
             () => {return api.configService.getConfig()}
         )
 
-        getGenConfig().then()
+        getData().then()
 
         const genConfig = computed(() => {
-            if (!_genConfig.value) {
+            if (!data.value) {
                 throw "genConfig not loaded"
             }
-            return _genConfig.value
+            return data.value
         })
 
         return {
             genConfig,
             isLoaded,
-            reset: resetGenConfig,
+            reset: resetData,
 
             ...loadHooks,
         }

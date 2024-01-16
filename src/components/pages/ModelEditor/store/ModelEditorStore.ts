@@ -8,7 +8,7 @@ import {loadByTableViews} from "../graph/data/loadData.ts";
 import {GenModelInput, GenModelView, GenTableColumnsView, GenTableModelInput} from "@/api/__generated/model/static";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {importTables} from "@/components/pages/ModelEditor/graph/tableNode/tableNode.ts";
-import {useGenContextStore} from "@/components/business/context/GenContextStore.ts";
+import {useGenConfigContextStore} from "@/components/business/context/GenContextStore.ts";
 import {redo, undo} from "@/components/global/graphEditor/history/useHistory.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
@@ -76,11 +76,9 @@ export const useModelEditorStore =
             }
 
             const loadCurrentModel = (model: GenModelView) => {
-                const contextStore = useGenContextStore()
+                const contextStore = useGenConfigContextStore()
 
-                contextStore.dataSourceType = model.dataSourceType
-                contextStore.language = model.language
-                contextStore.packagePath = model.packagePath
+                contextStore.context = model
 
                 currentModel.value = model
 

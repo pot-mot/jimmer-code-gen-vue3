@@ -8,9 +8,9 @@ import {PropListColumn} from "@/components/global/list/ListProps.ts";
 import {sendMessage} from "@/utils/message.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep, uniqWith} from "lodash";
-import {useJDBCTypeStore} from "@/components/business/jdbcType/JDBCTypeStore.ts";
+import {useJdbcTypeStore} from "@/components/business/jdbcType/jdbcTypeStore.ts";
 import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
-import {useGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
+import {useGlobalGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
 import {validateColumnDefaultInput} from "@/shape/GenColumnDefaultInput.ts";
 
 const editState = ref(false)
@@ -23,7 +23,7 @@ const columnDefaultProps = <PropListColumn<GenColumnDefaultInput>[]>[
 	},
 	{
 		prop: 'typeCode',
-		label: 'JDBC 类型',
+		label: 'Jdbc 类型',
 	},
 
 	{
@@ -48,9 +48,9 @@ const columnDefaultProps = <PropListColumn<GenColumnDefaultInput>[]>[
 	},
 ]
 
-const jdbcTypeStore = useJDBCTypeStore()
+const jdbcTypeStore = useJdbcTypeStore()
 
-const genConfigStore = useGenConfigStore()
+const genConfigStore = useGlobalGenConfigStore()
 
 const columnDefaultStore = useColumnDefaultStore()
 

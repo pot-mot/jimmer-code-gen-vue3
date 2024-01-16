@@ -1,14 +1,8 @@
-import type {DataSourceType} from '../enums/';
-
 export interface GenDataSourceTemplateView {
     /**
      * 名称
      */
     name: string;
-    /**
-     * 数据库类型
-     */
-    type: DataSourceType;
     /**
      * 主机
      */
