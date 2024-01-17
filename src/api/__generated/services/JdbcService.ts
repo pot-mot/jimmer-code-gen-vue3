@@ -1,9 +1,9 @@
 import type {Executor} from '../';
 
 export class JdbcService {
-
+    
     constructor(private executor: Executor) {}
-
+    
     async listType(): Promise<
         {[key:string]: number}
     > {
