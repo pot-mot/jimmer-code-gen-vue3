@@ -2,10 +2,7 @@ import {Api} from "./__generated";
 import {sendMessage} from "../utils/message.ts";
 import {handleError} from "@/api/handleError.ts";
 
-// 开发通过 proxy 进行请求的根路径
 const BASE_URL = "/api";
-// 打包时直接请求
-// const BASE_URL = "";
 
 export const api = new Api(async ({uri, method, body}) => {
     try {

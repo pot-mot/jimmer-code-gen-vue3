@@ -12,12 +12,10 @@ export default defineConfig({
     server: {
         open: true,//启动项目自动弹出浏览器
         port: 4000,//启动端口
-        // 如果需要打包请注释掉代理
         proxy: {
             '/api': {
                 target: 'http://localhost:8080',	//实际请求地址
                 changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/api/, '')
             },
         }
     },

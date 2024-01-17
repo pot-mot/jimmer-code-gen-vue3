@@ -1,4 +1,4 @@
-import {createRouter, createWebHashHistory, RouteRecordRaw} from 'vue-router'
+import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
 import {useGlobalLoadingStore} from "../components/global/loading/GlobalLoadingStore.ts";
 
 const routes: RouteRecordRaw[] = [
@@ -21,7 +21,7 @@ const routes: RouteRecordRaw[] = [
 ]
 
 export const router = createRouter({
-    history: createWebHashHistory(),
+    history: createWebHistory(),
     routes,
     // @ts-ignore
     scrollBehavior(to, from, savedPosition) {

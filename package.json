@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/replaceForPackage.js && vue-tsc && vite build && node scripts/replaceForDev.js",
+    "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "api": "node scripts/generateApi.js"
   },
