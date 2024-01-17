@@ -33,7 +33,7 @@ function traverseFile(filePath, replaceFn) {
 traverseFile("src/api/index.ts", (content) => {
     return content
         .replace("const BASE_URL = \"/api\";", "// const BASE_URL = \"/api\";")
-        .replace("// const BASE_URL = \"http://localhost:8080\";", "const BASE_URL = \"http://localhost:8080\";")
+        .replace("// const BASE_URL = \"\";", "const BASE_URL = \"\";")
 })
 
 // 执行替换操作
