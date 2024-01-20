@@ -10,16 +10,16 @@ export interface AssociationPair {
     target: SingleAssociationType,
 }
 
-export const getAssociationSourceType = (associationType: AssociationType): SingleAssociationType => {
-    if ( associationType == "ONE_TO_ONE" || associationType == "ONE_TO_MANY") {
+export const getAssociationSourceType = (type: AssociationType): SingleAssociationType => {
+    if (type == "ONE_TO_ONE" || type == "ONE_TO_MANY") {
         return "ONE"
     } else {
         return "MANY"
     }
 }
 
-export const getAssociationTargetType = (associationType: AssociationType): SingleAssociationType => {
-    if (associationType == "ONE_TO_ONE" || associationType == "MANY_TO_ONE") {
+export const getAssociationTargetType = (type: AssociationType): SingleAssociationType => {
+    if (type == "ONE_TO_ONE" || type == "MANY_TO_ONE") {
         return "ONE"
     } else {
         return "MANY"
@@ -58,19 +58,19 @@ export const reverseSinglePartAssociationType = (
     return associationPairToType({source, target})
 }
 
-export const reverseAssociationType = (associationType: AssociationType): AssociationType => {
-    if (associationType == "MANY_TO_ONE") {
+export const reverseAssociationType = (type: AssociationType): AssociationType => {
+    if (type == "MANY_TO_ONE") {
         return "ONE_TO_MANY"
-    } else if (associationType == "ONE_TO_MANY") {
+    } else if (type == "ONE_TO_MANY") {
         return "MANY_TO_ONE"
     }
-    return associationType
+    return type
 }
 
 
-export const toggleAssociationType = (associationType: AssociationType | undefined): AssociationType => {
+export const toggleAssociationType = (type: AssociationType | undefined): AssociationType => {
     for (let i = 0; i < AssociationType_CONSTANTS.length; i++) {
-        if (associationType == AssociationType_CONSTANTS[i]) {
+        if (type == AssociationType_CONSTANTS[i]) {
             return AssociationType_CONSTANTS[i + 1 < AssociationType_CONSTANTS.length ? i + 1 : 0]
         }
     }

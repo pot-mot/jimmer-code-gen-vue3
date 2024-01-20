@@ -20,7 +20,7 @@
 				</td>
 				<td style="text-align: right;">
 					<span v-if="column.enum">【{{column.enum.name}}】</span>
-					<span class="type" v-else>{{ column.type }}</span>
+					<span class="type" v-else>{{ column.rawType }}</span>
 				</td>
 			</tr>
 		</table>

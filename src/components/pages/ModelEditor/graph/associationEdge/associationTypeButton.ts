@@ -138,7 +138,7 @@ export const setAssociationTypeButton = (
 }
 
 export const getAssociationType = (edge: Edge, defaultAssociationType: AssociationType = DEFAULT_ASSOCIATION_TYPE): AssociationType => {
-    let temp = edge.getData()?.association.associationType
+    let temp = edge.getData()?.association.type
     if (temp == undefined) {
         setAssociationType(edge, defaultAssociationType)
         temp = defaultAssociationType
@@ -146,9 +146,10 @@ export const getAssociationType = (edge: Edge, defaultAssociationType: Associati
     return temp
 }
 
-const setAssociationType = (edge: Edge, associationType: AssociationType) => {
-    edge.setData({association: {associationType}}, {deep: true})
-    if (associationType == 'MANY_TO_MANY') {
+const setAssociationType = (edge: Edge, type: AssociationType) => {
+    console.log(type)
+    edge.setData({association: {type}}, {deep: true})
+    if (type == 'MANY_TO_MANY') {
         setAssociationFake(edge, false)
     }
 }
@@ -162,7 +163,7 @@ export const useAssociationType = (graph: Graph) => {
         if (edge.shape != ASSOCIATION_EDGE) return
 
         const associationType = getAssociationType(edge)
-        if (associationType == null) {
+        if (associationType == undefined) {
             setAssociationType(edge, DEFAULT_ASSOCIATION_TYPE)
         }
         setAssociationTypeButton(edge, graph)

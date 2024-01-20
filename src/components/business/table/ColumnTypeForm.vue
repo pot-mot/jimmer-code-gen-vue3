@@ -34,17 +34,17 @@ const handleTypeCodeChange = () => {
 	if (columnDefaults.length == 1) {
 		const columnDefault = columnDefaults[0]
 
-		props.modelValue.overwriteByType = true
-		props.modelValue.type = columnDefault.type
+		props.modelValue.overwriteByRaw = true
+		props.modelValue.rawType = columnDefault.type
 		props.modelValue.displaySize = columnDefault.displaySize
 		props.modelValue.numericPrecision = columnDefault.numericPrecision
 		if (columnDefault.defaultValue) props.modelValue.defaultValue = columnDefault.defaultValue
 	} else {
 		const type = jdbcTypeStore.map.get(typeCode)
 		if (type) {
-			props.modelValue.type = type
+			props.modelValue.rawType = type
 		}
-		props.modelValue.overwriteByType = false
+		props.modelValue.overwriteByRaw = false
 		props.modelValue.displaySize = 0
 		props.modelValue.numericPrecision = 0
 	}
@@ -59,7 +59,7 @@ watch(() => props.modelValue.typeCode, () => {
 	<el-popover :visible="popoverOpenState" width="450px">
 		<template #reference>
 			<div @click="popoverOpenState = !popoverOpenState">
-				<el-input readonly :model-value="modelValue.type">
+				<el-input readonly :model-value="modelValue.rawType">
 					<template v-if="modelValue.enum != undefined" #prefix>
 						【{{ modelValue.enum.name }}】
 					</template>
@@ -79,11 +79,11 @@ watch(() => props.modelValue.typeCode, () => {
 			</el-form-item>
 
 			<el-form-item label="生成 DDL 时以字面类型覆盖 jdbc 类型">
-				<el-switch v-model="modelValue.overwriteByType"></el-switch>
+				<el-switch v-model="modelValue.overwriteByRaw"></el-switch>
 			</el-form-item>
 
 			<el-form-item label="字面类型">
-				<el-input v-model="modelValue.type" :disabled="!modelValue.overwriteByType"></el-input>
+				<el-input v-model="modelValue.rawType" :disabled="!modelValue.overwriteByRaw"></el-input>
 			</el-form-item>
 
 			<el-form-item label="长度精度">
@@ -103,8 +103,8 @@ watch(() => props.modelValue.typeCode, () => {
 					<el-option v-for="enumName in enumNames" :value="enumName"></el-option>
 				</el-select>
 
-				<el-button v-if="modelValue.enum == undefined" :icon="Plus" @click="emits('createEnum')"></el-button>
-				<el-button v-else :icon="EditPen" @click="emits('editEnum', modelValue.enum.name)"></el-button>
+				<el-button v-if="modelValue.enum" :icon="EditPen" @click="emits('editEnum', modelValue.enum!.name)"></el-button>
+				<el-button v-else :icon="Plus" @click="emits('createEnum')"></el-button>
 			</el-form-item>
 
 			<div style="text-align: right;">

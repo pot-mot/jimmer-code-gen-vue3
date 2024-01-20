@@ -14,63 +14,80 @@ export const GenAssociationModelInputJsonSchema = {
             ],
             "type": "string"
         },
-        "DissociateAction": {
-            "enum": [
-                "CHECK",
-                "DELETE",
-                "LAX",
-                "NONE",
-                "SET_NULL"
-            ],
-            "type": "string"
-        },
         "GenAssociationModelInput": {
             "properties": {
-                "associationType": {
-                    "$ref": "#/definitions/AssociationType"
-                },
                 "columnReferences": {
+                    "description": "列引用",
                     "items": {
                         "$ref": "#/definitions/GenAssociationModelInput_TargetOf_columnReferences"
                     },
                     "type": "array"
                 },
+                "deleteAction": {
+                    "description": "删除行为",
+                    "type": "string"
+                },
                 "dissociateAction": {
-                    "$ref": "#/definitions/DissociateAction"
+                    "description": "脱钩行为",
+                    "enum": [
+                        "CHECK",
+                        "DELETE",
+                        "LAX",
+                        "NONE",
+                        "SET_NULL"
+                    ],
+                    "type": "string"
                 },
                 "fake": {
+                    "description": "是否伪外键",
                     "type": "boolean"
                 },
                 "modelId": {
+                    "description": "模型",
                     "type": "number"
                 },
                 "name": {
+                    "description": "名称",
                     "type": "string"
                 },
                 "sourceTable": {
-                    "$ref": "#/definitions/GenAssociationModelInput_TargetOf_sourceTable"
+                    "$ref": "#/definitions/GenAssociationModelInput_TargetOf_sourceTable",
+                    "description": "主表"
                 },
                 "targetTable": {
-                    "$ref": "#/definitions/GenAssociationModelInput_TargetOf_targetTable"
+                    "$ref": "#/definitions/GenAssociationModelInput_TargetOf_targetTable",
+                    "description": "从表"
+                },
+                "type": {
+                    "$ref": "#/definitions/AssociationType",
+                    "description": "类型"
+                },
+                "updateAction": {
+                    "description": "更新行为",
+                    "type": "string"
                 }
             },
             "required": [
-                "associationType",
                 "columnReferences",
+                "deleteAction",
                 "fake",
                 "name",
                 "sourceTable",
-                "targetTable"
+                "targetTable",
+                "type",
+                "updateAction"
             ],
             "type": "object"
         },
         "GenAssociationModelInput_TargetOf_columnReferences": {
             "properties": {
                 "sourceColumn": {
-                    "$ref": "#/definitions/GenAssociationModelInput_TargetOf_columnReferences_TargetOf_sourceColumn_2"
+                    "$ref": "#/definitions/GenAssociationModelInput_TargetOf_columnReferences_TargetOf_sourceColumn_2",
+                    "description": "主列"
                 },
                 "targetColumn": {
-                    "$ref": "#/definitions/GenAssociationModelInput_TargetOf_columnReferences_TargetOf_targetColumn_2"
+                    "$ref": "#/definitions/GenAssociationModelInput_TargetOf_columnReferences_TargetOf_targetColumn_2",
+                    "description": "从列"
                 }
             },
             "required": [
@@ -82,22 +99,26 @@ export const GenAssociationModelInputJsonSchema = {
         "GenAssociationModelInput_TargetOf_columnReferences_TargetOf_sourceColumn_2": {
             "properties": {
                 "comment": {
+                    "description": "注释",
                     "type": "string"
                 },
                 "name": {
+                    "description": "名称",
                     "type": "string"
                 },
-                "type": {
+                "rawType": {
+                    "description": "字面类型",
                     "type": "string"
                 },
                 "typeCode": {
+                    "description": "JdbcType 码值",
                     "type": "number"
                 }
             },
             "required": [
                 "comment",
                 "name",
-                "type",
+                "rawType",
                 "typeCode"
             ],
             "type": "object"
@@ -105,22 +126,26 @@ export const GenAssociationModelInputJsonSchema = {
         "GenAssociationModelInput_TargetOf_columnReferences_TargetOf_targetColumn_2": {
             "properties": {
                 "comment": {
+                    "description": "注释",
                     "type": "string"
                 },
                 "name": {
+                    "description": "名称",
                     "type": "string"
                 },
-                "type": {
+                "rawType": {
+                    "description": "字面类型",
                     "type": "string"
                 },
                 "typeCode": {
+                    "description": "JdbcType 码值",
                     "type": "number"
                 }
             },
             "required": [
                 "comment",
                 "name",
-                "type",
+                "rawType",
                 "typeCode"
             ],
             "type": "object"
@@ -128,12 +153,15 @@ export const GenAssociationModelInputJsonSchema = {
         "GenAssociationModelInput_TargetOf_sourceTable": {
             "properties": {
                 "comment": {
+                    "description": "注释",
                     "type": "string"
                 },
                 "modelId": {
+                    "description": "模型",
                     "type": "number"
                 },
                 "name": {
+                    "description": "名称",
                     "type": "string"
                 }
             },
@@ -146,12 +174,15 @@ export const GenAssociationModelInputJsonSchema = {
         "GenAssociationModelInput_TargetOf_targetTable": {
             "properties": {
                 "comment": {
+                    "description": "注释",
                     "type": "string"
                 },
                 "modelId": {
+                    "description": "模型",
                     "type": "number"
                 },
                 "name": {
+                    "description": "名称",
                     "type": "string"
                 }
             },

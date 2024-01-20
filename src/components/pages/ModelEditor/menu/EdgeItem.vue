@@ -103,7 +103,7 @@ const isSelected = computed(() => {
 					{{ showColumn ? sourceLabel : association.sourceTable.name }}
 				</el-button>
 				<span>
-					<AssociationIcon :association-type="association.associationType"
+					<AssociationIcon :type="association.type"
 									 :fake="association.fake"
 									 style="transform: translateY(0.3em)"></AssociationIcon>
 				</span>

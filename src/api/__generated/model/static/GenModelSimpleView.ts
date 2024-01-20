@@ -42,6 +42,10 @@ export interface GenModelSimpleView {
      */
     packagePath: string;
     /**
+     * 表路径
+     */
+    tablePath: string;
+    /**
      * 启用小写命名
      */
     lowerCaseName: boolean;

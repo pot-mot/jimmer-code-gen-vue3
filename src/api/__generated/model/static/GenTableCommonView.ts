@@ -1,5 +1,4 @@
 import type {TableType} from '../enums/';
-import type {GenTableCommonView_TargetOf_schema} from './';
 
 export interface GenTableCommonView {
     /**
@@ -19,15 +18,15 @@ export interface GenTableCommonView {
      */
     remark: string;
     /**
-     * 表名称
+     * 名称
      */
     name: string;
     /**
-     * 表注释
+     * 注释
      */
     comment: string;
     /**
-     * 表种类
+     * 种类
      */
     type: TableType;
     /**
@@ -38,8 +37,4 @@ export interface GenTableCommonView {
      * 对应实体
      */
     entityId?: number | undefined;
-    /**
-     * 数据架构
-     */
-    schema?: GenTableCommonView_TargetOf_schema | undefined;
 }

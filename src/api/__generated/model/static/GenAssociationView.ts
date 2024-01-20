@@ -23,13 +23,21 @@ export interface GenAssociationView {
      */
     name: string;
     /**
-     * 关联类型
+     * 类型
      */
-    associationType: AssociationType;
+    type: AssociationType;
     /**
      * 脱钩行为
      */
     dissociateAction?: DissociateAction | undefined;
+    /**
+     * 更新行为
+     */
+    updateAction: string;
+    /**
+     * 删除行为
+     */
+    deleteAction: string;
     /**
      * 是否伪外键
      */

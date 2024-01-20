@@ -40,15 +40,15 @@ export interface Dynamic_GenTable {
      */
     entity?: Dynamic_GenEntity | undefined;
     /**
-     * 表名称
+     * 名称
      */
     name?: string;
     /**
-     * 表注释
+     * 注释
      */
     comment?: string;
     /**
-     * 表种类
+     * 种类
      */
     type?: TableType;
     /**

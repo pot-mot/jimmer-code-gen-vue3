@@ -4,15 +4,11 @@ export interface GenTableAssociationsView_TargetOf_inAssociations_TargetOf_colum
      */
     id: number;
     /**
-     * 列名称
+     * 名称
      */
     name: string;
     /**
-     * 列注释
+     * 注释
      */
     comment: string;
-    /**
-     * 列字面类型
-     */
-    type: string;
 }

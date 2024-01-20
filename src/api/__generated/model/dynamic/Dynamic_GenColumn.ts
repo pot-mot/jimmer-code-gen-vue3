@@ -14,14 +14,6 @@ export interface Dynamic_GenColumn {
      */
     id?: number;
     /**
-     * 对应属性
-     */
-    properties?: Array<Dynamic_GenProperty>;
-    /**
-     * 对应属性 ID 视图
-     */
-    propertyIds?: Array<number>;
-    /**
      * 归属表
      */
     table?: Dynamic_GenTable;
@@ -30,39 +22,39 @@ export interface Dynamic_GenColumn {
      */
     tableId?: number;
     /**
-     * 列在表中顺序
-     */
-    orderKey?: number;
-    /**
-     * 列名称
+     * 名称
      */
     name?: string;
     /**
-     * 列 JdbcType 码值
+     * JdbcType 码值
      */
     typeCode?: number;
     /**
      * 覆盖为字面类型
      */
-    overwriteByType?: boolean;
+    overwriteByRaw?: boolean;
     /**
-     * 列字面类型
+     * 字面类型
      */
-    type?: string;
+    rawType?: string;
     /**
-     * 列展示长度
+     * 是否非空
+     */
+    typeNotNull?: boolean;
+    /**
+     * 展示长度
      */
     displaySize?: number;
     /**
-     * 列精度
+     * 数字精度
      */
     numericPrecision?: number;
     /**
-     * 列默认值
+     * 默认值
      */
     defaultValue?: string | undefined;
     /**
-     * 列注释
+     * 注释
      */
     comment?: string;
     /**
@@ -74,10 +66,6 @@ export interface Dynamic_GenColumn {
      */
     autoIncrement?: boolean;
     /**
-     * 是否非空
-     */
-    typeNotNull?: boolean;
-    /**
      * 是否为业务键
      */
     businessKey?: boolean;
@@ -85,6 +73,10 @@ export interface Dynamic_GenColumn {
      * 是否为逻辑删除
      */
     logicalDelete?: boolean;
+    /**
+     * 在表中顺序
+     */
+    orderKey?: number;
     /**
      * 生成枚举
      */
@@ -105,4 +97,12 @@ export interface Dynamic_GenColumn {
      * 出关联
      */
     outColumnReferences?: Array<Dynamic_GenColumnReference>;
+    /**
+     * 对应属性
+     */
+    properties?: Array<Dynamic_GenProperty>;
+    /**
+     * 对应属性 ID 视图
+     */
+    propertyIds?: Array<number>;
 }

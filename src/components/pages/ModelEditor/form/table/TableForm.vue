@@ -67,9 +67,9 @@ const handleColumnToPk = (pkIndex: number) => {
 
 	const pkColumn = table.value.columns[pkIndex]
 	pkColumn.typeNotNull = true
-	pkColumn.type = "BIGINT"
+	pkColumn.rawType = "BIGINT"
 	pkColumn.enum = undefined
-	pkColumn.typeCode = jdbcTypeStore.jdbcTypes[pkColumn.type]!
+	pkColumn.typeCode = jdbcTypeStore.jdbcTypes[pkColumn.rawType]!
 	pkColumn.logicalDelete = false
 	pkColumn.businessKey = false
 

@@ -38,7 +38,7 @@ export const createAssociationName = (
     sourceColumnNames: string[],
     targetTableName: string,
     targetColumnNames: string[],
-    associationType: AssociationType,
+    type: AssociationType,
 ): string => {
     const genConfigStore = useGlobalGenConfigStore()
 
@@ -63,10 +63,10 @@ export const createAssociationName = (
     let associationName
 
     // 多对多的关联名称是中间表
-    if (associationType == 'MANY_TO_MANY') {
+    if (type == 'MANY_TO_MANY') {
         associationName = `${sourceTableName}_${targetTableName}_mapping`
     // 一对多的外键名称要反向
-    } else if (associationType == 'ONE_TO_MANY') {
+    } else if (type == 'ONE_TO_MANY') {
         associationName = `fk_${targetTableName}_${sourceTableName}`
     } else {
         associationName = `fk_${sourceTableName}_${targetTableName}`
@@ -83,7 +83,7 @@ export const createAssociationNameByInput = (
         association.columnReferences.map(it => it.sourceColumn.name),
         association.targetTable.name,
         association.columnReferences.map(it => it.targetColumn.name),
-        association.associationType,
+        association.type,
     )
 }
 

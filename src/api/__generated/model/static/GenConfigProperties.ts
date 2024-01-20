@@ -22,6 +22,10 @@ export interface GenConfigProperties {
      */
     packagePath?: string | undefined;
     /**
+     * 表路径
+     */
+    tablePath?: string | undefined;
+    /**
      * 启用小写命名
      */
     lowerCaseName?: boolean | undefined;

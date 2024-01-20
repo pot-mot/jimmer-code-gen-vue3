@@ -33,8 +33,8 @@ export const getDefaultColumn = (): GenTableModelInput_TargetOf_columns => {
         name: "",
         comment: "",
         typeCode: 12,
-        overwriteByType: false,
-        type: "VARCHAR",
+        overwriteByRaw: false,
+        rawType: "VARCHAR",
         typeNotNull: true,
         displaySize: 0,
         numericPrecision: 0,
@@ -55,8 +55,8 @@ export const getDefaultColumn = (): GenTableModelInput_TargetOf_columns => {
         const columnDefault = columnDefaults[0]
         return {
             ...defaultColumn,
-            overwriteByType: true,
-            type: columnDefault.type,
+            overwriteByRaw: true,
+            rawType: columnDefault.type,
             displaySize: columnDefault.displaySize,
             numericPrecision: columnDefault.numericPrecision,
             defaultValue: columnDefault.defaultValue

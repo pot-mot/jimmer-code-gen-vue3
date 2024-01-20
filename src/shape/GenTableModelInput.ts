@@ -7,44 +7,49 @@ import {
 
 
 // typescript-json-schema src/api/__generated/model/static/GenTableModelInput.ts * --required
-// 手动修正了 columns defaultValue nullable
+// 手动修正了 columns defaultValue ["string", "null"]
 export const GenTableModelInputJsonSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
         "GenTableModelInput": {
             "properties": {
                 "columns": {
+                    "description": "列",
                     "items": {
                         "$ref": "#/definitions/GenTableModelInput_TargetOf_columns"
                     },
                     "type": "array"
                 },
                 "comment": {
+                    "description": "注释",
                     "type": "string"
                 },
                 "indexes": {
+                    "description": "唯一索引",
                     "items": {
                         "$ref": "#/definitions/GenTableModelInput_TargetOf_indexes"
                     },
                     "type": "array"
                 },
                 "modelId": {
+                    "description": "模型",
                     "type": "number"
                 },
                 "name": {
+                    "description": "名称",
                     "type": "string"
                 },
                 "orderKey": {
+                    "description": "自定排序",
                     "type": "number"
                 },
                 "remark": {
+                    "description": "备注",
                     "type": "string"
                 },
-                "schema": {
-                    "$ref": "#/definitions/GenTableModelInput_TargetOf_schema"
-                },
                 "type": {
-                    "$ref": "#/definitions/TableType"
+                    "$ref": "#/definitions/TableType",
+                    "description": "种类"
                 }
             },
             "required": [
@@ -61,51 +66,67 @@ export const GenTableModelInputJsonSchema = {
         "GenTableModelInput_TargetOf_columns": {
             "properties": {
                 "autoIncrement": {
+                    "description": "是否自增",
                     "type": "boolean"
                 },
                 "businessKey": {
+                    "description": "是否为业务键",
                     "type": "boolean"
                 },
                 "comment": {
+                    "description": "注释",
                     "type": "string"
                 },
                 "defaultValue": {
+                    "description": "默认值",
                     "type": ["string", "null"]
                 },
                 "displaySize": {
+                    "description": "展示长度",
                     "type": "number"
                 },
                 "enum": {
-                    "$ref": "#/definitions/GenTableModelInput_TargetOf_columns_TargetOf_enum_2"
+                    "$ref": "#/definitions/GenTableModelInput_TargetOf_columns_TargetOf_enum_2",
+                    "description": "生成枚举"
                 },
                 "logicalDelete": {
+                    "description": "是否为逻辑删除",
                     "type": "boolean"
                 },
                 "name": {
+                    "description": "名称",
                     "type": "string"
                 },
                 "numericPrecision": {
+                    "description": "数字精度",
                     "type": "number"
                 },
                 "orderKey": {
+                    "description": "在表中顺序",
                     "type": "number"
                 },
-                "overwriteByType": {
+                "overwriteByRaw": {
+                    "description": "覆盖为字面类型",
                     "type": "boolean"
                 },
                 "partOfPk": {
+                    "description": "是否主键",
                     "type": "boolean"
                 },
-                "remark": {
+                "rawType": {
+                    "description": "字面类型",
                     "type": "string"
                 },
-                "type": {
+                "remark": {
+                    "description": "备注",
                     "type": "string"
                 },
                 "typeCode": {
+                    "description": "JdbcType 码值",
                     "type": "number"
                 },
                 "typeNotNull": {
+                    "description": "是否非空",
                     "type": "boolean"
                 }
             },
@@ -118,10 +139,10 @@ export const GenTableModelInputJsonSchema = {
                 "name",
                 "numericPrecision",
                 "orderKey",
-                "overwriteByType",
+                "overwriteByRaw",
                 "partOfPk",
+                "rawType",
                 "remark",
-                "type",
                 "typeCode",
                 "typeNotNull"
             ],
@@ -130,6 +151,7 @@ export const GenTableModelInputJsonSchema = {
         "GenTableModelInput_TargetOf_columns_TargetOf_enum_2": {
             "properties": {
                 "name": {
+                    "description": "枚举名",
                     "type": "string"
                 }
             },
@@ -141,15 +163,18 @@ export const GenTableModelInputJsonSchema = {
         "GenTableModelInput_TargetOf_indexes": {
             "properties": {
                 "columns": {
+                    "description": "列",
                     "items": {
                         "$ref": "#/definitions/GenTableModelInput_TargetOf_indexes_TargetOf_columns_2"
                     },
                     "type": "array"
                 },
                 "name": {
+                    "description": "名称",
                     "type": "string"
                 },
                 "uniqueIndex": {
+                    "description": "唯一索引",
                     "type": "boolean"
                 }
             },
@@ -163,17 +188,7 @@ export const GenTableModelInputJsonSchema = {
         "GenTableModelInput_TargetOf_indexes_TargetOf_columns_2": {
             "properties": {
                 "name": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "name"
-            ],
-            "type": "object"
-        },
-        "GenTableModelInput_TargetOf_schema": {
-            "properties": {
-                "name": {
+                    "description": "名称",
                     "type": "string"
                 }
             },
@@ -185,6 +200,7 @@ export const GenTableModelInputJsonSchema = {
         "TableType": {
             "enum": [
                 "ALIAS",
+                "Companion",
                 "GLOBAL_TEMPORARY",
                 "LOCAL_TEMPORARY",
                 "SYSTEM_TABLE",

@@ -3,8 +3,7 @@ import type {
     GenTableAssociationsView_TargetOf_columns, 
     GenTableAssociationsView_TargetOf_inAssociations, 
     GenTableAssociationsView_TargetOf_indexes, 
-    GenTableAssociationsView_TargetOf_outAssociations, 
-    GenTableAssociationsView_TargetOf_schema
+    GenTableAssociationsView_TargetOf_outAssociations
 } from './';
 
 /**
@@ -28,15 +27,15 @@ export interface GenTableAssociationsView {
      */
     remark: string;
     /**
-     * 表名称
+     * 名称
      */
     name: string;
     /**
-     * 表注释
+     * 注释
      */
     comment: string;
     /**
-     * 表种类
+     * 种类
      */
     type: TableType;
     /**
@@ -47,10 +46,6 @@ export interface GenTableAssociationsView {
      * 对应实体
      */
     entityId?: number | undefined;
-    /**
-     * 数据架构
-     */
-    schema?: GenTableAssociationsView_TargetOf_schema | undefined;
     /**
      * 列
      */

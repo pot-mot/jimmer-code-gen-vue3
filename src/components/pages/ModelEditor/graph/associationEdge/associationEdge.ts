@@ -1,6 +1,6 @@
 import {Edge, Graph} from "@antv/x6";
 import {
-    GenAssociationModelInput,
+    GenAssociationModelInput, GenAssociationModelInput_TargetOf_columnReferences,
     GenAssociationView,
     GenTableModelInput, GenTableModelInput_TargetOf_columns,
 } from "@/api/__generated/model/static";
@@ -25,23 +25,23 @@ export const connectDataToAssociationInput = (
     } = connectData
 
     const name: string | undefined = edge.getData()?.association?.name
-    const associationType = edge.getData()?.association?.associationType
+    const type = edge.getData()?.association?.type
     const fake: boolean | undefined = edge.getData()?.association?.fake
 
-    const columnReferences = []
+    const columnReferences: Array<GenAssociationModelInput_TargetOf_columnReferences> = []
 
     if (sourceColumn && targetColumn) {
         columnReferences.push({
             sourceColumn: {
                 name: sourceColumn.name,
                 comment: sourceColumn.comment,
-                type: sourceColumn.type,
+                rawType: sourceColumn.rawType,
                 typeCode: sourceColumn.typeCode,
             },
             targetColumn: {
                 name: targetColumn.name,
                 comment: targetColumn.comment,
-                type: targetColumn.type,
+                rawType: targetColumn.rawType,
                 typeCode: targetColumn.typeCode,
             },
         })
@@ -53,7 +53,7 @@ export const connectDataToAssociationInput = (
             [sourceColumn ? sourceColumn.name : ''],
             targetTable.name,
             [targetColumn ? targetColumn.name : ''],
-            associationType,
+            type,
         ),
         sourceTable: {
             name: sourceTable.name,
@@ -64,9 +64,11 @@ export const connectDataToAssociationInput = (
             comment: targetTable.comment,
         },
         columnReferences,
-        associationType: associationType ? associationType : 'MANY_TO_ONE',
+        type: type ? type : 'MANY_TO_ONE',
         fake: fake != undefined ? fake : false,
         dissociateAction: undefined,
+        updateAction: "",
+        deleteAction: ""
     }
 }
 
@@ -96,9 +98,11 @@ export const associationViewToInput = (
     view: GenAssociationView,
 ): GenAssociationModelInput => {
     return {
-        associationType: view.associationType,
+        type: view.type,
         name: view.name,
         dissociateAction: view.dissociateAction,
+        updateAction: view.updateAction,
+        deleteAction: view.deleteAction,
         fake: view.fake,
         sourceTable: {
             comment: view.sourceTable.comment,
@@ -114,13 +118,13 @@ export const associationViewToInput = (
                 sourceColumn: {
                     comment: sourceColumn.comment,
                     name: sourceColumn.name,
-                    type: sourceColumn.type,
+                    rawType: sourceColumn.rawType,
                     typeCode: sourceColumn.typeCode,
                 },
                 targetColumn: {
                     comment: targetColumn.comment,
                     name: targetColumn.name,
-                    type: targetColumn.type,
+                    rawType: targetColumn.rawType,
                     typeCode: targetColumn.typeCode,
                 },
             }
@@ -156,9 +160,17 @@ export const importAssociation = (graph: Graph, association: GenAssociationModel
     }[]>[]
 
     for (let columnReference of association.columnReferences) {
-        const sourceColumnIndex = sourceTable.columns.findIndex(column => column.name == columnReference.sourceColumn.name && column.type == columnReference.sourceColumn.type)
+        const sourceColumnIndex = sourceTable.columns.findIndex(column =>
+            column.name == columnReference.sourceColumn.name &&
+            column.rawType == columnReference.sourceColumn.rawType &&
+            column.typeCode == columnReference.sourceColumn.typeCode
+        )
         if (sourceColumnIndex == -1) continue
-        const targetColumnIndex = targetTable.columns.findIndex(column => column.name == columnReference.targetColumn.name && column.type == columnReference.targetColumn.type)
+        const targetColumnIndex = targetTable.columns.findIndex(column =>
+            column.name == columnReference.targetColumn.name &&
+            column.rawType == columnReference.targetColumn.rawType &&
+            column.typeCode == columnReference.targetColumn.typeCode
+        )
         if (targetColumnIndex == -1) continue
 
         const sourceColumn = sourceTable.columns[sourceColumnIndex]

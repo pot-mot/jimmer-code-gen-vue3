@@ -26,6 +26,30 @@ export const GenModelInputJsonSchema = {
         },
         "GenModelInput": {
             "properties": {
+                "author": {
+                    "description": "作者",
+                    "type": "string"
+                },
+                "columnAnnotation": {
+                    "description": "生成 Column 注解",
+                    "type": "boolean"
+                },
+                "columnCommentPrefixes": {
+                    "description": "转换属性时移除的列注释前缀",
+                    "type": "string"
+                },
+                "columnCommentSuffixes": {
+                    "description": "转换属性时移除的列注释后缀",
+                    "type": "string"
+                },
+                "columnNamePrefixes": {
+                    "description": "转换属性时移除的列名前缀",
+                    "type": "string"
+                },
+                "columnNameSuffixes": {
+                    "description": "转换属性时移除的列名后缀",
+                    "type": "string"
+                },
                 "dataSourceType": {
                     "$ref": "#/definitions/DataSourceType",
                     "description": "数据源类型"
@@ -39,15 +63,35 @@ export const GenModelInputJsonSchema = {
                 },
                 "graphData": {
                     "description": "Graph 数据",
-                    "type": ["string", "null"]
+                    "type": "string"
                 },
                 "id": {
                     "description": "ID",
                     "type": "number"
                 },
+                "idViewProperty": {
+                    "description": "生成 IdView 属性",
+                    "type": "boolean"
+                },
+                "joinColumnAnnotation": {
+                    "description": "生成 JoinColumn 注解",
+                    "type": "boolean"
+                },
+                "joinTableAnnotation": {
+                    "description": "生成 JoinTable 注解",
+                    "type": "boolean"
+                },
                 "language": {
                     "$ref": "#/definitions/GenLanguage",
                     "description": "语言"
+                },
+                "logicalDeletedAnnotation": {
+                    "description": "逻辑删除注解",
+                    "type": "string"
+                },
+                "lowerCaseName": {
+                    "description": "启用小写命名",
+                    "type": "boolean"
                 },
                 "name": {
                     "description": "名称",
@@ -57,6 +101,10 @@ export const GenModelInputJsonSchema = {
                     "description": "包路径",
                     "type": "string"
                 },
+                "realFk": {
+                    "description": "启用真实外键",
+                    "type": "boolean"
+                },
                 "remark": {
                     "description": "备注",
                     "type": "string"
@@ -64,16 +112,58 @@ export const GenModelInputJsonSchema = {
                 "syncConvertEntity": {
                     "description": "同步转换实体",
                     "type": "boolean"
+                },
+                "tableAnnotation": {
+                    "description": "生成 Table 注解",
+                    "type": "boolean"
+                },
+                "tableCommentPrefixes": {
+                    "description": "转换实体时移除的表注释前缀",
+                    "type": "string"
+                },
+                "tableCommentSuffixes": {
+                    "description": "转换实体时移除的表注释后缀",
+                    "type": "string"
+                },
+                "tableNamePrefixes": {
+                    "description": "转换实体时移除的表名前缀",
+                    "type": "string"
+                },
+                "tableNameSuffixes": {
+                    "description": "转换实体时移除的表名后缀",
+                    "type": "string"
+                },
+                "tablePath": {
+                    "description": "表路径",
+                    "type": "string"
                 }
             },
             "required": [
+                "author",
+                "columnAnnotation",
+                "columnCommentPrefixes",
+                "columnCommentSuffixes",
+                "columnNamePrefixes",
+                "columnNameSuffixes",
                 "dataSourceType",
                 "enums",
+                "idViewProperty",
+                "joinColumnAnnotation",
+                "joinTableAnnotation",
                 "language",
+                "logicalDeletedAnnotation",
+                "lowerCaseName",
                 "name",
                 "packagePath",
+                "realFk",
                 "remark",
-                "syncConvertEntity"
+                "syncConvertEntity",
+                "tableAnnotation",
+                "tableCommentPrefixes",
+                "tableCommentSuffixes",
+                "tableNamePrefixes",
+                "tableNameSuffixes",
+                "tablePath"
             ],
             "type": "object"
         },

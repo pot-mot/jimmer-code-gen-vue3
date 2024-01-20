@@ -1,7 +1,7 @@
-// typescript-json-schema src/api/__generated/model/static/GenTypeMappingInput.ts * --required
 import {useShapeValidate} from "@/utils/shapeValidate.ts";
 import {GenTypeMappingInput} from "@/api/__generated/model/static";
 
+// typescript-json-schema src/api/__generated/model/static/GenTypeMappingInput.ts * --required
 export const GenTypeMappingInputJsonSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {

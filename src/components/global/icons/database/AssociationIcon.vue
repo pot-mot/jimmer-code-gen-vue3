@@ -3,7 +3,7 @@ import {ElIcon} from "element-plus";
 import {AssociationType} from "@/api/__generated/model/enums";
 
 interface AssociationIconProps {
-	associationType: AssociationType,
+	type: AssociationType,
 	fake: boolean,
 }
 
@@ -17,9 +17,9 @@ defineProps<AssociationIconProps>()
 
 			<path d="M2 12h22"></path>
 
-			<path v-if="associationType == 'MANY_TO_MANY' || associationType == 'MANY_TO_ONE'" d="M10 12l-7 -5M10 12l-7 5"/>
+			<path v-if="type == 'MANY_TO_MANY' || type == 'MANY_TO_ONE'" d="M10 12l-7 -5M10 12l-7 5"/>
 
-			<path v-if="associationType == 'ONE_TO_MANY' || associationType == 'MANY_TO_MANY'" d="M14 12l7 -5M14 12l7 5"/>
+			<path v-if="type == 'ONE_TO_MANY' || type == 'MANY_TO_MANY'" d="M14 12l7 -5M14 12l7 5"/>
 		</svg>
 	</el-icon>
 </template>

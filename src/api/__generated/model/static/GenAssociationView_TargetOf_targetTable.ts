@@ -4,11 +4,11 @@ export interface GenAssociationView_TargetOf_targetTable {
      */
     id: number;
     /**
-     * 表名称
+     * 名称
      */
     name: string;
     /**
-     * 表注释
+     * 注释
      */
     comment: string;
 }

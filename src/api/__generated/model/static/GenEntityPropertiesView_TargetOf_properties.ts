@@ -27,7 +27,7 @@ export interface GenEntityPropertiesView_TargetOf_properties {
      */
     comment: string;
     /**
-     * 属性类型
+     * 字面类型
      */
     type: string;
     /**

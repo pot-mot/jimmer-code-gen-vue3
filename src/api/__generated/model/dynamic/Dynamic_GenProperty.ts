@@ -38,7 +38,7 @@ export interface Dynamic_GenProperty {
      */
     comment?: string;
     /**
-     * 属性类型
+     * 字面类型
      */
     type?: string;
     /**

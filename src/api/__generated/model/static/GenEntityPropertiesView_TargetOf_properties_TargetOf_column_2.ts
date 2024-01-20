@@ -4,7 +4,7 @@ export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_column_2 {
      */
     id: number;
     /**
-     * 列名称
+     * 名称
      */
     name: string;
 }

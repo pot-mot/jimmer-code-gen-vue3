@@ -5,6 +5,7 @@ import {
 } from "@/api/__generated/model/static";
 
 // typescript-json-schema src/api/__generated/model/static/GenModelInput_TargetOf_enums.ts * --required
+// 调整 enumType "type": ["string", "null"] "enum": ["NAME", "ORDINAL", null]
 export const GenEnumModelInputJsonSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
@@ -16,12 +17,12 @@ export const GenEnumModelInputJsonSchema = {
                 },
                 "enumType": {
                     "description": "枚举类型",
-                    "type": ["string", "null"],
                     "enum": [
                         "NAME",
                         "ORDINAL",
                         null
-                    ]
+                    ],
+                    "type": ["string", "null"]
                 },
                 "items": {
                     "description": "生成枚举元素",

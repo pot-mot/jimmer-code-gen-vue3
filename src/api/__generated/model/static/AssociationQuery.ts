@@ -3,7 +3,7 @@ import type {TimeRangeQueryParam} from './';
 
 export interface AssociationQuery {
     keywords?: Array<string> | undefined;
-    associationType?: AssociationType | undefined;
+    type?: AssociationType | undefined;
     sourceTableId?: number | undefined;
     targetTableId?: number | undefined;
     sourceColumnId?: number | undefined;

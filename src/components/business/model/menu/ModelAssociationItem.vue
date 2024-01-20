@@ -39,7 +39,7 @@ const getData = async () => {
 	<Details v-loading="loading.isLoading()" @open="getData" :disabled="!showConfig.showAssociationTables">
 		<template #title>
 			<el-text>
-				<AssociationIcon :association-type="association.associationType"
+				<AssociationIcon :type="association.type"
 								 :fake="association.fake"></AssociationIcon>
 
 				<el-button @click="eventBus.emit('clickAssociation', {id: association.id})" link>

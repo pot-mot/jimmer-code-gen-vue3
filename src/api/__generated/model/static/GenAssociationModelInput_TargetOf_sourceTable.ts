@@ -4,11 +4,11 @@ export interface GenAssociationModelInput_TargetOf_sourceTable {
      */
     modelId?: number | undefined;
     /**
-     * 表名称
+     * 名称
      */
     name: string;
     /**
-     * 表注释
+     * 注释
      */
     comment: string;
 }

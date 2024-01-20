@@ -1,5 +1,5 @@
 import type {TableType} from '../enums/';
-import type {GenTableModelInput_TargetOf_columns, GenTableModelInput_TargetOf_indexes, GenTableModelInput_TargetOf_schema} from './';
+import type {GenTableModelInput_TargetOf_columns, GenTableModelInput_TargetOf_indexes} from './';
 
 export interface GenTableModelInput {
     /**
@@ -7,15 +7,15 @@ export interface GenTableModelInput {
      */
     remark: string;
     /**
-     * 表名称
+     * 名称
      */
     name: string;
     /**
-     * 表注释
+     * 注释
      */
     comment: string;
     /**
-     * 表种类
+     * 种类
      */
     type: TableType;
     /**
@@ -26,10 +26,6 @@ export interface GenTableModelInput {
      * 模型
      */
     modelId?: number | undefined;
-    /**
-     * 数据架构
-     */
-    schema?: GenTableModelInput_TargetOf_schema | undefined;
     /**
      * 列
      */

@@ -17,6 +17,7 @@ export const getDefaultModel = (): GenModelInput => {
         dataSourceType: DataSourceType_CONSTANTS[0],
         author: "",
         packagePath: "",
+        tablePath: "",
         lowerCaseName: true,
         realFk: true,
         idViewProperty: true,

@@ -2,6 +2,7 @@ import {useShapeValidate} from "@/utils/shapeValidate.ts";
 import {GenColumnDefaultInput} from "@/api/__generated/model/static";
 
 // typescript-json-schema src/api/__generated/model/static/GenColumnDefaultInput.ts * --required
+// 调整 defaultValue type ["string", "null"]
 export const GenColumnDefaultInputJsonSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
