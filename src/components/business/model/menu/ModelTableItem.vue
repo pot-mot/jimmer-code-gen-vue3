@@ -23,35 +23,35 @@ const props = withDefaults(defineProps<TableItemProps>(), {
 const columns = ref<GenColumnCommonView[]>([])
 const associations = ref<GenAssociationView[]>([])
 
-const columnsLoading = useLoading()
-const associationsLoading = useLoading()
+const columnsLoading = useLoading('ModelTableItem:columnsLoading')
+const associationsLoading = useLoading('ModelTableItem:associationsLoading')
 
 const getColumns = async () => {
 	if (!props.showConfig.showColumns) return
-	columnsLoading.add()
+	const flag = columnsLoading.add('get')
 	columns.value = await api.columnService.query({
 		body: {
 			tableIds: [props.table.id]
 		}
 	})
-	columnsLoading.sub()
+	columnsLoading.sub(flag)
 }
 
 const getAssociations = async () => {
 	if (!props.showConfig.showAssociations) return
-	associationsLoading.add()
+	const flag = associationsLoading.add('get')
 	associations.value = await api.associationService.queryByTable({
 		body: {
 			tableIds: [props.table.id],
 			selectType: "OR"
 		}
 	})
-	associationsLoading.sub()
+	associationsLoading.sub(flag)
 }
 </script>
 
 <template>
-	<Details v-loading="columnsLoading.isLoading() && associationsLoading.isLoading()" @open="() => {
+	<Details v-loading="columnsLoading.isLoading.value && associationsLoading.isLoading.value" @open="() => {
 		getColumns()
 		getAssociations()
 	}" :disabled="!showConfig.showColumns && !showConfig.showAssociations">
@@ -66,7 +66,7 @@ const getAssociations = async () => {
 		</template>
 
 		<template v-if="showConfig.showColumns && showConfig.showAssociations">
-			<Details v-loading="columnsLoading.isLoading()" @open="getColumns">
+			<Details v-loading="columnsLoading.isLoading.value" @open="getColumns">
 				<template #title>
 					<el-text>Columns</el-text>
 				</template>
@@ -78,7 +78,7 @@ const getAssociations = async () => {
 				</ul>
 			</Details>
 
-			<Details v-loading="associationsLoading.isLoading()" @open="getAssociations">
+			<Details v-loading="associationsLoading.isLoading.value" @open="getAssociations">
 				<template #title>
 					<el-text>Associations</el-text>
 				</template>

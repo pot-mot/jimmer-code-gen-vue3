@@ -152,61 +152,59 @@ const handleCancel = () => {
 </script>
 
 <template>
-	<div v-loading="!columnDefaultStore.isLoaded">
-		<template v-if="columnDefaultStore.isLoaded">
-			<template v-if="editState">
-				<EditList
-					:columns="columnDefaultProps"
-					v-model:lines="tempColumnDefaults"
-					:defaultLine="defaultColumnDefault"
-					:json-schema-validate="validateColumnDefaultInput"
-					height="2em">
-					<template #dataSourceType="{data}">
-						<el-select v-model="data.dataSourceType">
-							<el-option v-for="dataSourceType in DataSourceType_CONSTANTS"
-									   :value="dataSourceType"></el-option>
-						</el-select>
-					</template>
+	<template v-if="columnDefaultStore.isLoaded">
+		<template v-if="editState">
+			<EditList
+				:columns="columnDefaultProps"
+				v-model:lines="tempColumnDefaults"
+				:defaultLine="defaultColumnDefault"
+				:json-schema-validate="validateColumnDefaultInput"
+				height="2em">
+				<template #dataSourceType="{data}">
+					<el-select v-model="data.dataSourceType">
+						<el-option v-for="dataSourceType in DataSourceType_CONSTANTS"
+								   :value="dataSourceType"></el-option>
+					</el-select>
+				</template>
 
-					<template #typeCode="{data}">
-						<el-select
-							v-model="data.typeCode"
-							@change="(typeCode: number) => {
+				<template #typeCode="{data}">
+					<el-select
+						v-model="data.typeCode"
+						@change="(typeCode: number) => {
 								data.type = jdbcTypeStore.map.get(typeCode)!
 							}"
-							filterable
-							style="width: 100%">
-							<el-option v-for="type in jdbcTypeStore.list"
-									   :label="type.type" :value="type.typeCode"></el-option>
-						</el-select>
-					</template>
+						filterable
+						style="width: 100%">
+						<el-option v-for="type in jdbcTypeStore.list"
+								   :label="type.type" :value="type.typeCode"></el-option>
+					</el-select>
+				</template>
 
-					<template #displaySize="{data}">
-						<el-input-number v-model="data.displaySize" controls-position="right"></el-input-number>
-					</template>
+				<template #displaySize="{data}">
+					<el-input-number v-model="data.displaySize" controls-position="right"></el-input-number>
+				</template>
 
-					<template #numericPrecision="{data}">
-						<el-input-number v-model="data.numericPrecision" controls-position="right"></el-input-number>
-					</template>
-				</EditList>
+				<template #numericPrecision="{data}">
+					<el-input-number v-model="data.numericPrecision" controls-position="right"></el-input-number>
+				</template>
+			</EditList>
 
-				<div style="text-align: right">
-					<el-button type="info" @click="handleCancel">取消</el-button>
-					<el-button type="warning" @click="handleSubmit">保存</el-button>
-				</div>
-			</template>
-
-			<template v-else>
-				<ViewList :columns="columnDefaultProps" :lines="columnDefaults" height="2em">
-					<template #typeCode="{data}">
-						<el-text>{{ jdbcTypeStore.map.get(data.typeCode) }}</el-text>
-					</template>
-				</ViewList>
-
-				<div style="text-align: right">
-					<el-button type="warning" @click="handleEdit">编辑</el-button>
-				</div>
-			</template>
+			<div style="text-align: right">
+				<el-button type="info" @click="handleCancel">取消</el-button>
+				<el-button type="warning" @click="handleSubmit">保存</el-button>
+			</div>
 		</template>
-	</div>
+
+		<template v-else>
+			<ViewList :columns="columnDefaultProps" :lines="columnDefaults" height="2em">
+				<template #typeCode="{data}">
+					<el-text>{{ jdbcTypeStore.map.get(data.typeCode) }}</el-text>
+				</template>
+			</ViewList>
+
+			<div style="text-align: right">
+				<el-button type="warning" @click="handleEdit">编辑</el-button>
+			</div>
+		</template>
+	</template>
 </template>

@@ -15,7 +15,8 @@ const props = withDefaults(defineProps<DragDialogProps>(), {
 	canResize: false,
 	canDrag: true,
 	initW: 800,
-	limitByParent: false
+	limitByParent: false,
+	modal: true
 })
 
 const wrapper = ref<HTMLElement>()
@@ -162,6 +163,8 @@ defineExpose({
 
 <template>
 	<Teleport :to="to">
+		<div v-if="modelValue && modal" class="modal" :style="`z-index: ${currentZIndex};`"></div>
+
 		<DragResize v-if="modelValue"
 					:active="true"
 					:draggable="draggable"
@@ -215,6 +218,16 @@ defineExpose({
 	width: 100%;
 	overflow: auto;
 	scrollbar-gutter: stable;
+}
+
+.modal {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: var(--el-popup-modal-bg-color);
+	opacity: var(--el-popup-modal-opacity);
 }
 
 :deep(.handle) {

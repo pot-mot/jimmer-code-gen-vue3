@@ -15,7 +15,7 @@ useDataSourceDefaultStore()
 </script>
 
 <template>
-	<div class="layout" v-loading.fullscreen.lock="loadingStore.isLoading()">
+	<div class="layout" v-loading.fullscreen.lock="loadingStore.isLoading">
 		<RouterView></RouterView>
 		<GenerateConfigurator></GenerateConfigurator>
 	</div>

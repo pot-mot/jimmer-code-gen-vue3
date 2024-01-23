@@ -2,6 +2,7 @@ import {defineStore} from "pinia";
 import {computed} from "vue";
 import {api} from "@/api";
 import {useAsyncStoreOperations} from "@/utils/useAsyncStoreOperations.ts";
+import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 
 export const useJdbcTypeStore = defineStore(
     'JdbcType',
@@ -16,7 +17,11 @@ export const useJdbcTypeStore = defineStore(
             return api.jdbcService.listType()
         })
 
-        getData().then()
+        const loadingStore = useGlobalLoadingStore()
+        const flag = loadingStore.add('JdbcTypeStore init')
+        getData().then(() => {
+            loadingStore.sub(flag)
+        })
 
         const jdbcTypes = computed<{[key:string]: number}>(() => {
             if (!data.value) {
@@ -43,10 +48,10 @@ export const useJdbcTypeStore = defineStore(
         })
 
         return {
+            isLoaded,
             jdbcTypes,
             list: jdbcTypeList,
             map: jdbcTypeMap,
-            isLoaded,
             reset: resetData,
 
             ...loadHooks,

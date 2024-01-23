@@ -71,7 +71,11 @@
 					<el-button :icon="SQLIcon" @click="handleSQLPreview"></el-button>
 				</el-tooltip>
 
-				<DragDialog v-model="sqlPreviewDialogOpenState" :init-w="700" :init-x="5000" can-drag can-resize disabled-h disabled-y limit-by-parent>
+				<DragDialog v-model="sqlPreviewDialogOpenState"
+							:init-w="700" :init-x="5000"
+							can-drag can-resize
+							disabled-h disabled-y
+							limit-by-parent :modal="false">
 					<MultiCodePreview :code-files="sqlFiles"
 									  height="calc(100vh - 5em - 30px)"
 									  width="100%"
@@ -84,11 +88,15 @@
 			</li>
 
 			<li>
-				<el-tooltip content="实体代码">
+				<el-tooltip content="预览实体">
 					<el-button :icon="CodeIcon" @click="handleEntityPreview"></el-button>
 				</el-tooltip>
 
-				<DragDialog v-model="entityPreviewDialogOpenState" :init-w="700" :init-x="5000" can-drag can-resize disabled-h disabled-y limit-by-parent>
+				<DragDialog v-model="entityPreviewDialogOpenState"
+							:init-w="700" :init-x="5000"
+							can-drag can-resize
+							disabled-h disabled-y
+							limit-by-parent :modal="false">
 					<MultiCodePreview :code-files="entityFiles"
 									  height="calc(100vh - 5em - 30px)"
 									  width="100%"
@@ -189,7 +197,7 @@ const store = useModelEditorStore()
 const loadingStore = useGlobalLoadingStore()
 
 onMounted(async () => {
-	loadingStore.add()
+	const flag = loadingStore.add('ModelEditorGraph onMounted')
 
 	graph = initModelEditor(container.value!, wrapper.value!)
 	await store.load(graph)
@@ -212,7 +220,7 @@ onMounted(async () => {
 
 	handleHistoryKeyEvent(graph)
 
-	loadingStore.sub()
+	loadingStore.sub(flag)
 })
 
 onUnmounted(() => {
@@ -243,7 +251,7 @@ const handleNodeClick = (node: Node) => {
 }
 
 const handleSaveModel = async () => {
-	loadingStore.add()
+	const flag = loadingStore.add('ModelEditorGraph handleSaveModel')
 
 	try {
 		let model = store._currentModel()
@@ -265,7 +273,7 @@ const handleSaveModel = async () => {
 		sendMessage(`模型保存失败，原因：${e}`, 'error', e)
 	}
 
-	loadingStore.sub()
+	loadingStore.sub(flag)
 }
 
 const handleSaveEvent = (e: KeyboardEvent) => {
@@ -294,6 +302,22 @@ watch(() => store.isModelLoaded, async (value) => {
 /**
  * 代码预览与下载
  */
+
+const judgeGraphDataIsChange = () => {
+	if (store.isLoaded && store.isModelLoaded) {
+		if (store.getGraphData() == store._currentModel().graphData) {
+			return false
+		}
+	}
+	return true
+}
+
+const sendGraphDataChangeMessage = () => {
+	if (judgeGraphDataIsChange()) {
+		sendMessage('模型有变更尚未保存', 'warning')
+	}
+}
+
 const entityPreviewDialogOpenState = ref(false)
 
 const entityFiles = ref<Array<Pair<string, string>>>([])
@@ -305,11 +329,12 @@ watch(() => entityPreviewDialogOpenState.value, async (openState) => {
 })
 
 const handleEntityPreview = async () => {
-	loadingStore.add()
+	sendGraphDataChangeMessage()
+	const flag = loadingStore.add('ModelEditorGraph handleEntityPreview')
 	const currentModel = store._currentModel()
 	entityFiles.value = await previewModelEntity(currentModel.id)
 	entityPreviewDialogOpenState.value = true
-	loadingStore.sub()
+	loadingStore.sub(flag)
 }
 
 const sqlPreviewDialogOpenState = ref(false)
@@ -323,39 +348,44 @@ watch(() => sqlPreviewDialogOpenState.value, async (openState) => {
 })
 
 const handleSQLPreview = async () => {
-	loadingStore.add()
+	sendGraphDataChangeMessage()
+	const flag = loadingStore.add('ModelEditorGraph handleSQLPreview')
 	const currentModel = store._currentModel()
 	sqlPreviewDialogOpenState.value = true
 	sqlFiles.value = await previewModelSql(currentModel.id)
-	loadingStore.sub()
+	loadingStore.sub(flag)
 }
 
 
 const handleEntityDownload = async () => {
-	loadingStore.add()
+	sendGraphDataChangeMessage()
+	const flag = loadingStore.add('ModelEditorGraph handleEntityDownload')
 	const currentModel = store._currentModel()
 	await downloadModelEntity(currentModel)
-	loadingStore.sub()
+	loadingStore.sub(flag)
 }
 
 const handleSQLDownload = async () => {
-	loadingStore.add()
+	sendGraphDataChangeMessage()
+	const flag = loadingStore.add('ModelEditorGraph handleSQLDownload')
 	const currentModel = store._currentModel()
 	await downloadModelSql(currentModel)
-	loadingStore.sub()
+	loadingStore.sub(flag)
 }
 
 const handleModelExport = async () => {
-	loadingStore.add()
+	sendGraphDataChangeMessage()
+	const flag = loadingStore.add('ModelEditorGraph handleModelExport')
 	const currentModel = store._currentModel()
 	await exportModel(currentModel)
-	loadingStore.sub()
+	loadingStore.sub(flag)
 }
 
 const handleModelDownload = async () => {
-	loadingStore.add()
+	sendGraphDataChangeMessage()
+	const flag = loadingStore.add('ModelEditorGraph handleModelDownload')
 	const currentModel = store._currentModel()
 	await downloadModel(currentModel)
-	loadingStore.sub()
+	loadingStore.sub(flag)
 }
 </script>

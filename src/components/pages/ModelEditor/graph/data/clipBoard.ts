@@ -64,7 +64,7 @@ export const tableNodeCut = async (graph: Graph) => {
 
 export const tableNodePaste = async (graph: Graph) => {
     const loadingStore = useGlobalLoadingStore()
-    loadingStore.add()
+    const flag = loadingStore.add('clipBoard paste')
 
     graph.startBatch("paste")
 
@@ -116,5 +116,5 @@ export const tableNodePaste = async (graph: Graph) => {
 
     graph.stopBatch("paste")
 
-    loadingStore.sub()
+    loadingStore.sub(flag)
 }

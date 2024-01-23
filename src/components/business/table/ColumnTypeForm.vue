@@ -6,6 +6,10 @@ import {ref, watch} from "vue";
 import {EditPen, Plus} from "@element-plus/icons-vue";
 import {useJdbcTypeStore} from "@/components/business/jdbcType/jdbcTypeStore.ts";
 import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
+import {useClickOutside} from "@/components/global/list/useClickOutside.ts";
+import {containsClassList, interactionTagClassList, judgeTarget} from "@/utils/clickUtils.ts";
+import Line from "@/components/global/list/Line.vue";
+import LineItem from "@/components/global/list/LineItem.vue";
 
 const jdbcTypeStore = useJdbcTypeStore()
 
@@ -53,12 +57,31 @@ const handleTypeCodeChange = () => {
 watch(() => props.modelValue.typeCode, () => {
 	handleTypeCodeChange()
 })
+
+const wrapper = ref()
+
+useClickOutside(() => wrapper.value, (e) => {
+	if (!popoverOpenState.value) return
+	if (!judgeTarget(e, (el) => {
+		if ('contenteditable' in el) {
+			return true
+		}
+		if (interactionTagClassList.includes(el.tagName)) {
+			return true
+		}
+		if (containsClassList(el, [...interactionTagClassList, 'column-type-input'])) {
+			return true
+		}
+	})) {
+		popoverOpenState.value = false
+	}
+})
 </script>
 
 <template>
 	<el-popover :visible="popoverOpenState" width="450px">
 		<template #reference>
-			<div @click="popoverOpenState = !popoverOpenState">
+			<div @click="popoverOpenState = !popoverOpenState" class="column-type-input">
 				<el-input readonly :model-value="modelValue.rawType">
 					<template v-if="modelValue.enum != undefined" #prefix>
 						【{{ modelValue.enum.name }}】
@@ -67,49 +90,55 @@ watch(() => props.modelValue.typeCode, () => {
 			</div>
 		</template>
 
-		<el-form v-if="jdbcTypeStore.isLoaded && columnDefaultStore.isLoaded">
-			<el-form-item label="jdbc 类型">
-				<el-select
-					v-model="modelValue.typeCode"
-					filterable
-					style="width: 100%">
-					<el-option v-for="type in jdbcTypeStore.list"
-							   :label="type.type" :value="type.typeCode"></el-option>
-				</el-select>
-			</el-form-item>
+		<div ref="wrapper">
+			<el-form v-if="jdbcTypeStore.isLoaded && columnDefaultStore.isLoaded">
+				<el-form-item label="jdbc 类型">
+					<el-select
+						v-model="modelValue.typeCode"
+						filterable
+						style="width: 100%">
+						<el-option v-for="type in jdbcTypeStore.list"
+								   :label="type.type" :value="type.typeCode"></el-option>
+					</el-select>
+				</el-form-item>
 
-			<el-form-item label="生成 DDL 时以字面类型覆盖 jdbc 类型">
-				<el-switch v-model="modelValue.overwriteByRaw"></el-switch>
-			</el-form-item>
+				<el-form-item label="生成 DDL 时以字面类型覆盖 jdbc 类型">
+					<el-switch v-model="modelValue.overwriteByRaw"></el-switch>
+				</el-form-item>
 
-			<el-form-item label="字面类型">
-				<el-input v-model="modelValue.rawType" :disabled="!modelValue.overwriteByRaw"></el-input>
-			</el-form-item>
+				<el-form-item label="字面类型">
+					<el-input v-model="modelValue.rawType" :disabled="!modelValue.overwriteByRaw"></el-input>
+				</el-form-item>
 
-			<el-form-item label="长度精度">
-				<el-text style="display: grid; grid-template-columns: 0.5em 1fr 1em 1fr 0.5em">
-					<span>(</span>
-					<span><el-input-number v-model="modelValue.displaySize" controls-position="right"></el-input-number></span>
-					<span style="padding-left: 0.3em;">,</span>
-					<span><el-input-number v-model="modelValue.numericPrecision" controls-position="right"></el-input-number></span>
-					<span style="padding-left: 0.3em;">)</span>
-				</el-text>
-			</el-form-item>
+				<el-form-item label="长度精度">
+					<el-text style="display: grid; grid-template-columns: 0.5em 1fr 1em 1fr 0.5em">
+						<span>(</span>
+						<span><el-input-number v-model="modelValue.displaySize"
+											   controls-position="right"></el-input-number></span>
+						<span style="padding-left: 0.3em;">,</span>
+						<span><el-input-number v-model="modelValue.numericPrecision"
+											   controls-position="right"></el-input-number></span>
+						<span style="padding-left: 0.3em;">)</span>
+					</el-text>
+				</el-form-item>
 
-			<el-form-item label="映射枚举">
-				<el-select :model-value="modelValue.enum?.name" clearable filterable
-						   @clear="modelValue.enum = undefined"
-						   @change="(name: string) => {modelValue.enum = { name: name }}">
-					<el-option v-for="enumName in enumNames" :value="enumName"></el-option>
-				</el-select>
-
-				<el-button v-if="modelValue.enum" :icon="EditPen" @click="emits('editEnum', modelValue.enum!.name)"></el-button>
-				<el-button v-else :icon="Plus" @click="emits('createEnum')"></el-button>
-			</el-form-item>
-
-			<div style="text-align: right;">
-				<el-button @click="popoverOpenState = false">关闭</el-button>
-			</div>
-		</el-form>
+				<el-form-item label="映射枚举">
+					<Line style="width: 100%;">
+						<LineItem span="3em">
+							<el-button v-if="modelValue.enum" :icon="EditPen"
+									   @click="emits('editEnum', modelValue.enum!.name)"></el-button>
+							<el-button v-else :icon="Plus" @click="emits('createEnum')"></el-button>
+						</LineItem>
+						<LineItem>
+							<el-select :model-value="modelValue.enum?.name" clearable filterable
+									   @clear="modelValue.enum = undefined"
+									   @change="(name: string) => {modelValue.enum = { name: name }}">
+								<el-option v-for="enumName in enumNames" :value="enumName"></el-option>
+							</el-select>
+						</LineItem>
+					</Line>
+				</el-form-item>
+			</el-form>
+		</div>
 	</el-popover>
 </template>

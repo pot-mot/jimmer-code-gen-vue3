@@ -16,22 +16,20 @@ import type {Dynamic_GenSchema} from "@/api/__generated/model/dynamic";
 
 const loadingStore = useGlobalLoadingStore()
 
-const loadedSchemaLoading = useLoading()
+const loadedSchemaLoading = useLoading('DataSourceItem:loadedSchemaLoading')
 
-const previewSchemaLoading = useLoading()
+const previewSchemaLoading = useLoading('DataSourceItem:previewSchemaLoading')
 
 const props = defineProps<DataSourceItemProps>()
 
 const previewSchemas = ref<Array<Dynamic_GenSchema>>([])
 
 const getPreviewSchemas = async () => {
-	previewSchemaLoading.start()
+	const flag = previewSchemaLoading.add('get')
 	await nextTick()
-
 	previewSchemas.value = await api.schemaService.preview({dataSourceId: props.dataSource.id})
-
 	await nextTick()
-	previewSchemaLoading.end()
+	previewSchemaLoading.sub(flag)
 }
 
 const previewSchemaTooltipOpenState = ref(false)
@@ -47,9 +45,9 @@ watch(() => previewSchemaTooltipOpenState.value, (value) => {
 const loadedSchemas = ref<GenSchemaView[]>([])
 
 const getSchemas = async (schemaIds: number[] = []) => {
-	loadedSchemaLoading.add()
+	const flag = loadedSchemaLoading.add('get')
 	loadedSchemas.value = await api.schemaService.list({dataSourceId: props.dataSource.id, schemaIds})
-	loadedSchemaLoading.sub()
+	loadedSchemaLoading.sub(flag)
 }
 
 const handleDelete = () => {
@@ -68,7 +66,7 @@ const handleDelete = () => {
 }
 
 const loadSchema = async (name: string, dataSourceId: number = props.dataSource.id) => {
-	loadingStore.add()
+	const flag = loadingStore.add('DataSourceItem loadSchema')
 
 	const loadIds = await api.schemaService.load({
 		dataSourceId,
@@ -89,7 +87,7 @@ const loadSchema = async (name: string, dataSourceId: number = props.dataSource.
 		})
 	}
 
-	loadingStore.sub()
+	loadingStore.sub(flag)
 }
 
 const isEdit = ref(false)
@@ -117,7 +115,7 @@ defineSlots<DataSourceItemSlots>()
 </script>
 
 <template>
-	<Details v-loading="previewSchemaLoading.isLoading() || loadedSchemaLoading.isLoading()" open @open="getSchemas()">
+	<Details v-loading="previewSchemaLoading.isLoading.value || loadedSchemaLoading.isLoading.value" open @open="getSchemas()">
 		<template #title>
 			<div style="height: 2em; line-height: 2em;">
 				<el-text class="hover-show">
@@ -125,9 +123,9 @@ defineSlots<DataSourceItemSlots>()
 
 					<slot
 						:dataSource="dataSource" :eventBus="eventBus"
-						:loadedSchemaLoading="loadedSchemaLoading.isLoading()"
+						:loadedSchemaLoading="loadedSchemaLoading.isLoading"
 						:schemas="loadedSchemas"
-						:previewSchemaLoading="previewSchemaLoading.isLoading()"
+						:previewSchemaLoading="previewSchemaLoading.isLoading"
 						:previewSchemas="previewSchemas">
 						{{ dataSource.name }}
 					</slot>
@@ -142,9 +140,9 @@ defineSlots<DataSourceItemSlots>()
 									<slot
 										name="previewSchema"
 										:dataSource="dataSource" :eventBus="eventBus"
-										:loadedSchemaLoading="loadedSchemaLoading.isLoading()"
+										:loadedSchemaLoading="loadedSchemaLoading.isLoading"
 										:schemas="loadedSchemas"
-										:previewSchemaLoading="previewSchemaLoading.isLoading()"
+										:previewSchemaLoading="previewSchemaLoading.isLoading"
 										:previewSchemas="previewSchemas" :previewSchema="schema">
 										<el-button link @click="loadSchema(schema.name)">{{ schema.name }}</el-button>
 									</slot>
@@ -157,17 +155,13 @@ defineSlots<DataSourceItemSlots>()
 					<slot
 						name="operations"
 						:dataSource="dataSource" :eventBus="eventBus"
-						:loadedSchemaLoading="loadedSchemaLoading.isLoading()"
+						:loadedSchemaLoading="loadedSchemaLoading.isLoading"
 						:schemas="loadedSchemas"
-						:previewSchemaLoading="previewSchemaLoading.isLoading()"
+						:previewSchemaLoading="previewSchemaLoading.isLoading"
 						:previewSchemas="previewSchemas">
 						<span class="hover-show-item" style="padding-left: 0.5em;">
-							<el-tooltip content="编辑">
-								<el-button :icon="EditPen" link type="warning" @click="handleEdit"></el-button>
-							</el-tooltip>
-							<el-tooltip content="删除">
-								<el-button :icon="Delete" link type="danger" @click="handleDelete"></el-button>
-							</el-tooltip>
+							<el-button :icon="EditPen" link type="warning" @click="handleEdit"></el-button>
+							<el-button :icon="Delete" link type="danger" @click="handleDelete"></el-button>
 						</span>
 					</slot>
 				</el-text>
@@ -179,9 +173,9 @@ defineSlots<DataSourceItemSlots>()
 				<slot
 					name="loadedSchema"
 					:dataSource="dataSource" :eventBus="eventBus"
-					:loadedSchemaLoading="loadedSchemaLoading.isLoading()"
+					:loadedSchemaLoading="loadedSchemaLoading.isLoading"
 					:schemas="loadedSchemas" :schema="schema"
-					:previewSchemaLoading="previewSchemaLoading.isLoading()"
+					:previewSchemaLoading="previewSchemaLoading.isLoading"
 					:previewSchemas="previewSchemas">
 					<SchemaItem :event-bus="eventBus" :schema="schema"/>
 				</slot>

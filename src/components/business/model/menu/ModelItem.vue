@@ -16,22 +16,22 @@ const props = withDefaults(defineProps<ModelItemProps>(), {
 
 const tables = ref<GenTableCommonView[]>()
 
-const loading = useLoading()
+const tablesLoading = useLoading('ModelItem:tablesLoading')
 
 const getData = async () => {
 	if (!props.showConfig.showModelTables) return
-	loading.add()
+	const flag = tablesLoading.add('get')
 	tables.value = await api.tableService.queryCommonView({
 		body: {
 			modelIds: [props.model.id]
 		}
 	})
-	loading.sub()
+	tablesLoading.sub(flag)
 }
 </script>
 
 <template>
-	<Details v-loading="loading.isLoading()" @open="getData" :disabled="!showConfig.showModelTables">
+	<Details v-loading="tablesLoading.isLoading.value" @open="getData" :disabled="!showConfig.showModelTables">
 		<template #title>
 			<div style="height: 2em; line-height: 2em;">
 				<el-button @click="eventBus.emit('clickModel', {id: model.id})" size="default" link>

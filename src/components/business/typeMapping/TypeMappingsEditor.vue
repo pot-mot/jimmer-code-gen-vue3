@@ -43,7 +43,7 @@ const typeMappings = ref<GenTypeMappingView[]>([])
 
 const tempTypeMappings = ref<GenTypeMappingView[]>([])
 
-const typeMappingLoading = useLoading()
+const typeMappingLoading = useLoading('TypeMappingsEditor:typeMappingLoading')
 
 const defaultTypeMapping = ref<GenTypeMappingInput>({
 	dataSourceType: "MySQL",
@@ -65,13 +65,13 @@ genConfigStore.onLoaded(() => {
 })
 
 const getData = async () => {
-	typeMappingLoading.start()
+	const flag = typeMappingLoading.add('get')
 	await nextTick()
 
 	typeMappings.value = await api.typeMappingService.list()
 
 	await nextTick()
-	typeMappingLoading.end()
+	typeMappingLoading.sub(flag)
 }
 
 onMounted(() => {
@@ -128,7 +128,7 @@ const handleCancel = () => {
 </script>
 
 <template>
-	<div v-loading="typeMappingLoading.isLoading()">
+	<div v-loading="typeMappingLoading.isLoading.value">
 		<template v-if="editState">
 			<EditList
 				:columns="typeMappingProps"

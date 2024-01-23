@@ -40,8 +40,8 @@ import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {sendMessage} from "@/utils/message.ts";
 import {useModelEditorStore} from "../../store/ModelEditorStore.ts";
-import {importAssociation} from "../associationEdge/associationEdge.ts";
-import {columnToPort} from "@/components/pages/ModelEditor/graph/tableNode/tableNode.ts";
+import {importAssociation} from "../associationEdge/importAssociation.ts";
+import {columnToPort} from "@/components/pages/ModelEditor/graph/tableNode/importTable.ts";
 import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {createAssociationNameByInput} from "@/components/pages/ModelEditor/graph/associationEdge/associationName.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
@@ -129,7 +129,7 @@ onMounted(async () => {
 	watch(() => table.value, (newTable) => {
 		if (!node.value || !newTable || !store.isLoaded) return
 
-		loadingStore.add()
+		const flag = loadingStore.add('TableNode syncPortAndEdgeByData')
 
 		const nodeId = node.value.id
 
@@ -166,7 +166,7 @@ onMounted(async () => {
 
 			graph.stopBatch("Sync table_node data")
 
-			loadingStore.sub()
+			loadingStore.sub(flag)
 		}, 100 + oldEdges.length * 20)
 
 	}, {deep: true})

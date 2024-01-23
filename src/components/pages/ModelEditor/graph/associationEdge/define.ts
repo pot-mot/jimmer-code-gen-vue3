@@ -2,11 +2,15 @@ import {erRouter, orthRouter} from "@/components/global/graphEditor/edgeRouter.t
 import {sendMessage} from "@/utils/message.ts";
 import {Options} from "@antv/x6/es/graph/options";
 import Connecting = Options.Connecting;
-import {getEdgeConnectData} from "@/components/pages/ModelEditor/graph/associationEdge/connectData.ts";
 import {
     ASSOCIATION_EDGE,
     ASSOCIATION_LINE_WIDTH, COMMON_COLOR,
 } from "@/components/business/modelEditor/constant.ts";
+import {
+    getTableColumnByEdgeConnect,
+    setEdgeAssociationData
+} from "@/components/pages/ModelEditor/graph/associationEdge/associationData.ts";
+import {getEdgeConnect} from "@/components/global/graphEditor/edge/connectData.ts";
 
 export const associationEdgeBase = {
     inherit: 'edge',
@@ -30,12 +34,13 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
     validateEdge({edge}) {
         if (edge.shape != ASSOCIATION_EDGE) return true
 
-        // @ts-ignore d.ts 的类型声明与 ts 不一致
-        const connectData = getEdgeConnectData(edge)
+        const edgeConnect = getEdgeConnect(edge as any)
+        if (!edgeConnect) return false
 
-        if (!connectData) return false
+        const edgeConnectData = getTableColumnByEdgeConnect(edgeConnect)
+        if (!edgeConnectData) return false
 
-        const {sourceColumn, targetColumn} = connectData
+        const {sourceColumn, targetColumn} = edgeConnectData
 
         if (!sourceColumn || !targetColumn) return false
 
@@ -43,6 +48,8 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
             sendMessage('关联两端类型不一致', 'warning')
             return false
         }
+
+        setEdgeAssociationData(edge as any)
 
         // 在连接建立后调整 router
         if (edge.getTargetCellId() == edge.getSourceCellId()) {

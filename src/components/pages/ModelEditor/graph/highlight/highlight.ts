@@ -55,7 +55,6 @@ const edgeHover = (edge: Edge, graph: Graph) => {
     if (judgeEdge(edge)) {
         stopHistoryAction(graph, () => {
             edge.attr('line/strokeWidth', HIGHLIGHT_ASSOCIATION_LINE_WIDTH)
-            setAssociationTypeButton(edge, graph, {hover: true})
         })
     }
 }
@@ -64,7 +63,6 @@ const edgeUnhover = (edge: Edge, graph: Graph) => {
     if (judgeEdge(edge)) {
         stopHistoryAction(graph, () => {
             edge.attr('line/strokeWidth', ASSOCIATION_LINE_WIDTH)
-            setAssociationTypeButton(edge, graph, {hover: false})
         })
     }
 }
@@ -133,8 +131,6 @@ export const useStyle = (graph: Graph) => {
     })
 
     graph.on('node:mouseenter', ({node}) => {
-        unHoverAll(graph)
-
         nodeHover(node)
         for (let edge of graph.getConnectedEdges(node)) {
             edgeHover(edge, graph)
@@ -160,8 +156,6 @@ export const useStyle = (graph: Graph) => {
     })
 
     graph.on('edge:mouseenter', ({edge}) => {
-        unHoverAll(graph)
-
         edgeHover(edge, graph)
         const nodes = [edge.getSourceNode(), edge.getTargetNode()]
         nodes.forEach(node => {

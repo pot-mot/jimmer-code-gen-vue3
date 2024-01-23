@@ -59,15 +59,15 @@ watch(() => dataSourceLoadMenu.value, () => {
 	const eventBus: Emitter<DataSourceMenuEvents> = dataSourceLoadMenu.value.eventBus
 
 	eventBus.on('clickSchema', async ({id}) => {
-		loadingStore.add()
+		const flag = loadingStore.add('ModelEditorPage syncClickSchemaEvent')
 		await store.importSchema(id)
-		loadingStore.sub()
+		loadingStore.sub(flag)
 	})
 
 	eventBus.on('clickTable', async ({id}) => {
-		loadingStore.add()
+		const flag = loadingStore.add('ModelEditorPage syncClickTableEvent')
 		await store.importTable(id)
-		loadingStore.sub()
+		loadingStore.sub(flag)
 	})
 }, {immediate: true})
 
@@ -82,15 +82,15 @@ watch(() => modelLoadMenu.value, () => {
 	const eventBus: Emitter<ModelMenuEvents> = modelLoadMenu.value.eventBus
 
 	eventBus.on('clickModel', async ({id}) => {
-		loadingStore.add()
+		const flag = loadingStore.add('ModelEditorPage syncClickModelEvent')
 		await store.importModel(id)
-		loadingStore.sub()
+		loadingStore.sub(flag)
 	})
 
 	eventBus.on('clickTable', async ({id}) => {
-		loadingStore.add()
+		const flag = loadingStore.add('ModelEditorPage syncClickTableEvent')
 		await store.importTable(id)
-		loadingStore.sub()
+		loadingStore.sub(flag)
 	})
 }, {immediate: true})
 </script>
@@ -107,12 +107,12 @@ watch(() => modelLoadMenu.value, () => {
 		</template>
 	</LeftTopBottomLayout>
 
-	<DragDialog v-model="store.dataSourceLoadMenuOpenState" :init-w="500" :init-x="100"
+	<DragDialog v-model="store.dataSourceLoadMenuOpenState" :init-w="500" :init-x="100" :modal="false"
 				:init-y="10" :init-h="600" can-resize>
 		<DataSourceMenu ref="dataSourceLoadMenu"></DataSourceMenu>
 	</DragDialog>
 
-	<DragDialog v-model="store.modelLoadMenuOpenState" :init-w="500" :init-x="100"
+	<DragDialog v-model="store.modelLoadMenuOpenState" :init-w="500" :init-x="100" :modal="false"
 				:init-y="10" :init-h="600" can-resize>
 		<ModelMenu ref="modelLoadMenu"></ModelMenu>
 	</DragDialog>

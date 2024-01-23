@@ -59,6 +59,7 @@ body {
     background-color: transparent;
 }
 
+/* common */
 ul,
 ol {
     list-style: none;
@@ -66,4 +67,10 @@ ol {
 
 a {
     text-decoration: none;
+}
+
+
+/* svg text */
+g.x6-edge-tool > text::selection {
+    background-color: transparent;
 }

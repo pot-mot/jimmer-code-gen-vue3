@@ -80,7 +80,7 @@ const handleOpenOtherConfigDialog = () => {
 			paddingTop: '1em',
 			paddingLeft: '8px',
 			display: 'grid',
-			gridTemplateRows: editValue ? '220px 1fr 30px' : '220px',
+			gridTemplateRows: editValue ? '275px 1fr 30px' : '275px',
 		}">
 		<div>
 			<el-row :gutter="24">
@@ -118,13 +118,22 @@ const handleOpenOtherConfigDialog = () => {
 						<el-input v-model="model.packagePath"></el-input>
 					</el-form-item>
 				</el-col>
-				<el-col :span="6">
-					<el-form-item label="同步转换实体">
-						<el-switch v-model="model.syncConvertEntity"></el-switch>
+				<el-col :span="12">
+					<el-form-item label="表路径">
+						<el-input v-model="model.tablePath"></el-input>
 					</el-form-item>
 				</el-col>
+
+<!--				<el-col :span="6">-->
+<!--					<el-form-item label="同步转换实体">-->
+<!--						<el-switch v-model="model.syncConvertEntity"></el-switch>-->
+<!--					</el-form-item>-->
+<!--				</el-col>-->
+
 				<el-col :span="6">
-					<el-button @click="handleOpenOtherConfigDialog">其他配置项</el-button>
+					<el-form-item>
+						<el-button @click="handleOpenOtherConfigDialog">其他配置项</el-button>
+					</el-form-item>
 				</el-col>
 			</el-row>
 
@@ -145,7 +154,7 @@ const handleOpenOtherConfigDialog = () => {
 		</div>
 	</el-form>
 
-	<DragDialog v-model="otherConfigOpenState">
+	<DragDialog v-model="otherConfigOpenState" :init-y="100" :modal="false">
 		<GenConfigForm
 			v-model="model"
 			@submit="(data) => {

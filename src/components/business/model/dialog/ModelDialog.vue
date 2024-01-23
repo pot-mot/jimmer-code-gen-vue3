@@ -15,7 +15,7 @@ const emits = defineEmits<FormEmits<GenModelInput>>()
 	<DragDialog
 		:model-value="!!props.model"
 		:init-w="900" :init-y="50" :min-h="300" :min-w="500"
-		:init-h="editValue ? 600 : 300"
+		:init-h="editValue ? 650 : 350"
 		:can-resize="editValue"
 		limit-by-parent
 		@close="emits('cancel', props.model ? props.model : getDefaultModel())">

@@ -1,5 +1,6 @@
 import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
 import {useGlobalLoadingStore} from "../components/global/loading/GlobalLoadingStore.ts";
+import {sendMessage} from "@/utils/message.ts";
 
 const routes: RouteRecordRaw[] = [
     {
@@ -33,13 +34,17 @@ export const router = createRouter({
     },
 });
 
-// @ts-ignore
+let routerChangeFlag: string
+
 router.beforeEach((to, from, next) => {
-    useGlobalLoadingStore().add()
+    routerChangeFlag = useGlobalLoadingStore().add(`to: ${JSON.stringify(to)}, from: ${JSON.stringify(from)}`)
     next()
 })
 
-// @ts-ignore
-router.afterEach((to, from, next) => {
-    useGlobalLoadingStore().sub()
+router.afterEach((to, from) => {
+    if (routerChangeFlag) {
+        useGlobalLoadingStore().sub(routerChangeFlag)
+    } else {
+        sendMessage('出现未经 beforeEach 设置 loadingFlag 跳转的路由', 'warning', {to, from})
+    }
 })

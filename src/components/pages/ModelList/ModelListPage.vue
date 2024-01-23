@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {nextTick, onMounted, ref} from "vue";
+import {onMounted, ref} from "vue";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {useRouter} from "vue-router";
 import {GenModelInput, GenModelSimpleView} from "@/api/__generated/model/static";
@@ -16,17 +16,12 @@ const router = useRouter()
 
 const models = ref<GenModelSimpleView[]>([])
 
-const modelsLoading = useLoading()
+const modelsLoading = useLoading('ModelListPage:modelsLoading')
 
 const getModels = async () => {
-	modelsLoading.add()
-	await nextTick()
-
+	const flag = modelsLoading.add('get')
 	models.value = await api.modelService.list()
-
-	await nextTick()
-
-	modelsLoading.sub()
+	modelsLoading.sub(flag)
 }
 
 onMounted(() => {
@@ -68,7 +63,7 @@ const emitLoadModelJson = () => {
 }
 
 const handleLoadModelJson = async (e: Event) => {
-	modelsLoading.add()
+	const flag = modelsLoading.add('loadModelJson')
 
 	const input = e.target as HTMLInputElement
 
@@ -89,14 +84,14 @@ const handleLoadModelJson = async (e: Event) => {
 
 	input.value = ''
 
-	modelsLoading.sub()
+	modelsLoading.sub(flag)
 }
 
 const handleEdit = (model?: Partial<GenModelInput>) => {
 	editModel.value = {...getDefaultModel(), ...model}
 }
 const handleSubmit = async (model: GenModelInput) => {
-	modelsLoading.add()
+	const flag = modelsLoading.add('handleSubmit')
 
 	try {
 		const isUpdate = (model.id != undefined)
@@ -116,11 +111,11 @@ const handleSubmit = async (model: GenModelInput) => {
 		sendMessage(`模型修改失败，原因：${e}`, 'error', e)
 	}
 
-	modelsLoading.sub()
+	modelsLoading.sub(flag)
 }
 
 const handleExport = async (model: GenModelSimpleView) => {
-	modelsLoading.add()
+	const flag = modelsLoading.add('handleExport')
 
 	const modeView = await api.modelService.get({id: model.id})
 
@@ -130,14 +125,14 @@ const handleExport = async (model: GenModelSimpleView) => {
 		sendMessage('模型导出失败', 'error', model)
 	}
 
-	modelsLoading.sub()
+	modelsLoading.sub(flag)
 }
 
 const handleDelete = (model: GenModelSimpleView) => {
 	deleteConfirm(
 		`模型【${model.name}】`,
 		async () => {
-			modelsLoading.add()
+			const flag = modelsLoading.add('handleDelete')
 
 			const count = await api.modelService.delete({ids: [model.id]})
 			if (count > 0) {
@@ -147,14 +142,14 @@ const handleDelete = (model: GenModelSimpleView) => {
 				sendMessage('删除模型失败', 'error')
 			}
 
-			modelsLoading.sub()
+			modelsLoading.sub(flag)
 		}
 	)
 }
 </script>
 
 <template>
-	<div class="wrapper" v-loading="modelsLoading.isLoading()">
+	<div class="wrapper" v-loading="modelsLoading.isLoading.value">
 		<el-button @click="handleEdit()">创建新模型</el-button>
 
 		<el-button @click="emitLoadModelJson">导入模型 JSON</el-button>
@@ -164,15 +159,10 @@ const handleDelete = (model: GenModelSimpleView) => {
 			<template v-for="model in models">
 				<div class="model-card hover-show" @click="toEditorEditor(model.id)">
 					<div class="right-top hover-show-item">
-						<el-tooltip content="编辑">
-							<el-button :icon="EditPen" link type="warning"
-									   @click.prevent.stop="handleEdit(model)"></el-button>
-						</el-tooltip>
-
-						<el-tooltip content="删除">
-							<el-button :icon="Delete" link type="danger"
-									   @click.prevent.stop="handleDelete(model)"></el-button>
-						</el-tooltip>
+						<el-button :icon="EditPen" link type="warning"
+								   @click.prevent.stop="handleEdit(model)"></el-button>
+						<el-button :icon="Delete" link type="danger"
+								   @click.prevent.stop="handleDelete(model)"></el-button>
 					</div>
 
 					<div class="right-bottom hover-show-item">

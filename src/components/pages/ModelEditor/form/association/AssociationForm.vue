@@ -98,12 +98,25 @@ const handleCancel = () => {
 		</el-form-item>
 
 		<el-form-item label="脱钩动作">
-			<el-select :disabled="association.type == 'MANY_TO_MANY'"
-					   v-model="association.dissociateAction"
+			<el-select v-model="association.dissociateAction"
 					   clearable @clear="association.dissociateAction = undefined">
 				<el-option v-for="dissociateAction in DissociateAction_CONSTANTS" :value="dissociateAction"></el-option>
 			</el-select>
 		</el-form-item>
+
+		<el-row :gutter="24">
+			<el-col :span="12">
+				<el-form-item label="更新动作">
+					<el-input v-model="association.updateAction" :disabled="association.type == 'MANY_TO_MANY'"></el-input>
+				</el-form-item>
+			</el-col>
+
+			<el-col :span="12">
+				<el-form-item label="删除动作">
+					<el-input v-model="association.deleteAction" :disabled="association.type == 'MANY_TO_MANY'"></el-input>
+				</el-form-item>
+			</el-col>
+		</el-row>
 
 		<div style="text-align: right; position: absolute; bottom: 0.5em; left: 1em; right: 1em;">
 			<el-button type="info" @click="handleCancel">取消</el-button>

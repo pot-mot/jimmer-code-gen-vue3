@@ -5,6 +5,7 @@ import {GenColumnDefaultView} from "@/api/__generated/model/static";
 import {DataSourceType} from "@/api/__generated/model/enums";
 import {useGenConfigContextStore} from "@/components/business/context/GenContextStore.ts";
 import {useAsyncStoreOperations} from "@/utils/useAsyncStoreOperations.ts";
+import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 
 export const useColumnDefaultStore = defineStore(
     'GenColumnDefault',
@@ -21,7 +22,11 @@ export const useColumnDefaultStore = defineStore(
             }
         )
 
-        getData().then()
+        const loadingStore = useGlobalLoadingStore()
+        const flag = loadingStore.add('getColumnDefault')
+        getData().then(() => {
+            loadingStore.sub(flag)
+        })
 
         const columnDefaults = computed(() => {
             if (!data.value) {

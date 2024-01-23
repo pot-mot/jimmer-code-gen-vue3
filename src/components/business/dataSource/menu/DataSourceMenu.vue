@@ -12,14 +12,14 @@ import {DataSourceMenuSlots} from "@/components/business/dataSource/menu/DataSou
 
 const eventBus = mitt<DataSourceMenuEvents>()
 
-const dataSourcesLoading = useLoading()
+const dataSourcesLoading = useLoading('DataSourceMenu:dataSourcesLoading')
 
 const dataSources = ref<GenDataSourceView[]>([])
 
 const getDataSources = async () => {
-	dataSourcesLoading.add()
+	const flag = dataSourcesLoading.add('get')
 	dataSources.value = await api.dataSourceService.list()
-	dataSourcesLoading.sub()
+	dataSourcesLoading.sub(flag)
 }
 
 onMounted(() => {
@@ -76,13 +76,13 @@ defineSlots<DataSourceMenuSlots>()
 	<el-button style="margin-bottom: 0.5em;" @click="handleSave">新增数据源</el-button>
 
 	<slot name="dataSources"
-		  :loading="dataSourcesLoading.isLoading()"
+		  :loading="dataSourcesLoading.isLoading"
 		  :dataSources="dataSources"
 		  :eventBus="eventBus">
-		<ul v-loading="dataSourcesLoading.isLoading()">
+		<ul v-loading="dataSourcesLoading.isLoading.value">
 			<li v-for="dataSource in dataSources">
 				<slot name="dataSource"
-					  :loading="dataSourcesLoading.isLoading()"
+					  :loading="dataSourcesLoading.isLoading"
 					  :dataSources="dataSources" :dataSource="dataSource"
 					  :eventBus="eventBus">
 					<DataSourceItem :data-source="dataSource" :event-bus="eventBus"/>

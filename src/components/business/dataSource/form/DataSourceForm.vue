@@ -52,13 +52,13 @@ watch(() => props.dataSource, (prop) => {
 const emits = defineEmits<DataSourceFormEmits>()
 
 const handleTest = async () => {
-	loadingStore.add()
+	const flag = loadingStore.add('DataSourceForm handleTest')
 
 	const res = await api.dataSourceService.test({
 		body: dataSource.value
 	})
 
-	loadingStore.sub()
+	loadingStore.sub(flag)
 
 	if (res) {
 		sendMessage("数据源测试成功", "success")
@@ -74,7 +74,7 @@ const handleSubmit = async () => {
 
 	if (!testResult) return
 
-	loadingStore.add()
+	const flag = loadingStore.add('DataSourceForm handleSubmit')
 
 	if (props.id) {
 		await api.dataSourceService.edit({
@@ -96,7 +96,7 @@ const handleSubmit = async () => {
 		}
 	}
 
-	loadingStore.sub()
+	loadingStore.sub(flag)
 }
 </script>
 

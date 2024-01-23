@@ -7,12 +7,12 @@ import {api} from "@/api";
 import {loadByTableViews} from "../graph/data/loadData.ts";
 import {GenModelInput, GenModelView, GenTableColumnsView, GenTableModelInput} from "@/api/__generated/model/static";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
-import {importTables} from "@/components/pages/ModelEditor/graph/tableNode/tableNode.ts";
+import {importTables} from "@/components/pages/ModelEditor/graph/tableNode/importTable.ts";
 import {useGenConfigContextStore} from "@/components/business/context/GenContextStore.ts";
 import {redo, undo} from "@/components/global/graphEditor/history/useHistory.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
-import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/tableNodeData.ts";
+import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
 import {useEnumDialogsStore} from "@/components/pages/ModelEditor/dialogs/enum/EnumDialogsStore.ts";
 import {cloneDeep} from "lodash";
 import {getDefaultTable} from "@/components/business/table/defaultTable.ts";
@@ -107,7 +107,7 @@ export const useModelEditorStore =
             const handleSubmitModelEdit = async (model: GenModelInput) => {
                 const loadingStore = useGlobalLoadingStore()
 
-                loadingStore.add()
+                const flag = loadingStore.add('ModelEditorStore handleSubmitModelEdit')
 
                 try {
                     const id = await api.modelService.save({body: model})
@@ -131,7 +131,7 @@ export const useModelEditorStore =
                     sendMessage(`模型保存失败，原因：${e}`, 'error', e)
                 }
 
-                loadingStore.sub()
+                loadingStore.sub(flag)
             }
 
 

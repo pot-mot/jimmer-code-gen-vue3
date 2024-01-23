@@ -45,7 +45,7 @@ const handleCancel = () => {
 	<div>
 		<el-form v-if="config">
 			<el-row :gutter="24">
-				<el-col :span="8">
+				<el-col :span="12">
 					<el-form-item label="数据源类型">
 						<el-select v-model="config.dataSourceType">
 							<template #prefix>
@@ -56,7 +56,7 @@ const handleCancel = () => {
 						</el-select>
 					</el-form-item>
 				</el-col>
-				<el-col :span="8">
+				<el-col :span="12">
 					<el-form-item label="语言">
 						<el-select v-model="config.language">
 							<el-option v-for="language in GenLanguage_CONSTANTS" :label="language" :value="language"></el-option>
@@ -95,8 +95,13 @@ const handleCancel = () => {
 				<div style="width: calc(100% - 3px - 1em);">
 					<el-row :gutter="24">
 						<el-col :span="12">
-							<el-form-item label="默认包路径">
+							<el-form-item label="包路径">
 								<el-input v-model="config.packagePath"></el-input>
+							</el-form-item>
+						</el-col>
+						<el-col :span="12">
+							<el-form-item label="表路径">
+								<el-input v-model="config.tablePath"></el-input>
 							</el-form-item>
 						</el-col>
 

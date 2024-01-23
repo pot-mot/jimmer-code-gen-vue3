@@ -44,12 +44,12 @@ const globalGenConfigStore = useGlobalGenConfigStore()
 		</el-popover>
 	</div>
 
-	<DragDialog v-model="openState" :init-w="900" :init-y="100" :init-h="600" can-resize>
+	<DragDialog v-model="openState" :init-w="900" :init-y="100" :init-h="630" can-resize>
 		<h3 style="padding-bottom: 20px; text-align: center;">
 			{{ configType?.label }}
 		</h3>
 
-		<div style="width: calc(100% - 1em)">
+		<div style="width: calc(100% - 1em); padding-left: 0.5em;">
 			<GenerateConfigForm
 				v-if="configType?.name == 'GenConfigForm' && globalGenConfigStore.isLoaded"
 				v-model="globalGenConfigStore.genConfig"

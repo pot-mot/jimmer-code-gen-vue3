@@ -19,10 +19,10 @@ const container = ref<HTMLElement>()
 
 const tables = ref<GenTableCommonView[]>([])
 
-const tablesLoading = useLoading()
+const tablesLoading = useLoading('SchemaItem:tablesLoading')
 
 const getTables = async (schemaId: number = props.schema.id) => {
-	tablesLoading.start()
+	const flag = tablesLoading.add('get')
 
 	tables.value = await api.tableService.queryCommonView({
 		body: {
@@ -30,7 +30,7 @@ const getTables = async (schemaId: number = props.schema.id) => {
 		}
 	})
 
-	tablesLoading.end()
+	tablesLoading.sub(flag)
 }
 
 const handleDelete = () => {
@@ -59,7 +59,7 @@ defineSlots<SchemaItemSlots>()
 </script>
 
 <template>
-	<div ref="container" style="position: relative;" v-loading="tablesLoading.isLoading()">
+	<div ref="container" style="position: relative;" v-loading="tablesLoading.isLoading.value">
 		<Details @open="getTables()">
 			<template #title>
 				<div style="height: 1.8em; line-height: 1.8em;">

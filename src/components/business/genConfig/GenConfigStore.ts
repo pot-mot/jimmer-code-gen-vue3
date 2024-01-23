@@ -3,6 +3,7 @@ import {computed} from "vue";
 import {api} from "@/api";
 import {GenConfig} from "@/api/__generated/model/static";
 import {useAsyncStoreOperations} from "@/utils/useAsyncStoreOperations.ts";
+import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 
 export const useGlobalGenConfigStore = defineStore(
     'GlobalGenConfig',
@@ -17,7 +18,11 @@ export const useGlobalGenConfigStore = defineStore(
             () => {return api.configService.getConfig()}
         )
 
-        getData().then()
+        const loadingStore = useGlobalLoadingStore()
+        const flag = loadingStore.add('GlobalGenConfigStore init')
+        getData().then(() => {
+            loadingStore.sub(flag)
+        })
 
         const genConfig = computed(() => {
             if (!data.value) {

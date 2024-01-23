@@ -259,8 +259,7 @@ const handleCancel = () => {
 				</template>
 
 				<template #type="{data}">
-					<ColumnTypeForm v-if="jdbcTypeStore.isLoaded && store.isModelLoaded"
-									:enumNames="store._currentModel().enums.map(it => it.name)"
+					<ColumnTypeForm :enumNames="store._currentModel().enums.map(it => it.name)"
 									:model-value="data"
 									@create-enum="() => ModelEditorEventBus.emit('createEnum')"
 									@edit-enum="(name) => {
@@ -276,13 +275,7 @@ const handleCancel = () => {
 				</template>
 
 				<template #defaultValue="{data}">
-					<el-tooltip :auto-close="2000" :disabled="data.partOfPk">
-						<el-input v-model="data.defaultValue" :disabled="data.partOfPk"></el-input>
-
-						<template #content>
-							此处将直接拼入 ddl，如果是字符串请加上引号
-						</template>
-					</el-tooltip>
+					<el-input v-model="data.defaultValue" :disabled="data.partOfPk"></el-input>
 				</template>
 			</EditList>
 		</Details>

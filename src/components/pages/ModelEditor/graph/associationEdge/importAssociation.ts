@@ -1,98 +1,13 @@
 import {Edge, Graph} from "@antv/x6";
 import {
-    GenAssociationModelInput, GenAssociationModelInput_TargetOf_columnReferences,
+    GenAssociationModelInput,
     GenAssociationView,
-    GenTableModelInput, GenTableModelInput_TargetOf_columns,
+    GenTableModelInput,
+    GenTableModelInput_TargetOf_columns,
 } from "@/api/__generated/model/static";
-import {
-    EdgeConnectData,
-    getEdgeConnectData
-} from "@/components/pages/ModelEditor/graph/associationEdge/connectData.ts";
-import {createAssociationName} from "@/components/pages/ModelEditor/graph/associationEdge/associationName.ts";
 import {erRouter, orthRouter} from "@/components/global/graphEditor/edgeRouter.ts";
 import {ASSOCIATION_EDGE} from "@/components/business/modelEditor/constant.ts";
 import {PortManager} from "@antv/x6/es/model/port";
-
-export const connectDataToAssociationInput = (
-    connectData: EdgeConnectData,
-    edge: Edge,
-): GenAssociationModelInput => {
-    const {
-        sourceTable,
-        sourceColumn,
-        targetTable,
-        targetColumn
-    } = connectData
-
-    const name: string | undefined = edge.getData()?.association?.name
-    const type = edge.getData()?.association?.type
-    const fake: boolean | undefined = edge.getData()?.association?.fake
-
-    const columnReferences: Array<GenAssociationModelInput_TargetOf_columnReferences> = []
-
-    if (sourceColumn && targetColumn) {
-        columnReferences.push({
-            sourceColumn: {
-                name: sourceColumn.name,
-                comment: sourceColumn.comment,
-                rawType: sourceColumn.rawType,
-                typeCode: sourceColumn.typeCode,
-            },
-            targetColumn: {
-                name: targetColumn.name,
-                comment: targetColumn.comment,
-                rawType: targetColumn.rawType,
-                typeCode: targetColumn.typeCode,
-            },
-        })
-    }
-
-    return {
-        name: name ? name : createAssociationName(
-            sourceTable.name,
-            [sourceColumn ? sourceColumn.name : ''],
-            targetTable.name,
-            [targetColumn ? targetColumn.name : ''],
-            type,
-        ),
-        sourceTable: {
-            name: sourceTable.name,
-            comment: sourceTable.comment,
-        },
-        targetTable: {
-            name: targetTable.name,
-            comment: targetTable.comment,
-        },
-        columnReferences,
-        type: type ? type : 'MANY_TO_ONE',
-        fake: fake != undefined ? fake : false,
-        dissociateAction: undefined,
-        updateAction: "",
-        deleteAction: ""
-    }
-}
-
-const setEdgeAssociationData = (edge: Edge) => {
-    const connectData = getEdgeConnectData(edge)
-
-    if (!connectData) return
-
-    const association = connectDataToAssociationInput(connectData, edge)
-
-    if (association) {
-        edge.setData({association})
-    }
-}
-
-export const useAssociationEdgeData = (graph: Graph) => {
-    graph.on('edge:added', ({edge}) => {
-        setEdgeAssociationData(edge)
-
-        edge.on('change:*', () => {
-            setEdgeAssociationData(edge)
-        })
-    })
-}
 
 export const associationViewToInput = (
     view: GenAssociationView,

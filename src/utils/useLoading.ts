@@ -1,33 +1,31 @@
-import {onBeforeMount, onMounted, ref} from "vue";
+import {computed, ref} from "vue";
 
-export const useLoading = (immediate: boolean = false) => {
-    const loadingCount = ref(0)
+export const useLoading = (prefix: string) => {
+    const loadingSet = ref<Set<string>>(new Set())
 
-    const isLoading = () => {
-        return loadingCount.value > 0
+    const isLoading = computed(() => {
+        return loadingSet.value.size > 0
+    })
+
+    const add = (name: string) => {
+        const flag = `${prefix} ${name} ${Date.now()}`
+        loadingSet.value.add(flag)
+        return flag
     }
 
-    const add = () => loadingCount.value++
+    const sub = (flag: string) => {
+        loadingSet.value.delete(flag)
+    }
 
-    const sub = () => loadingCount.value--
-
-    const clear = () => loadingCount.value = 0
-
-    if (immediate) {
-        onBeforeMount(() => {
-            add()
-        })
-        onMounted(() => {
-            sub()
-        })
+    const clear = () => {
+        loadingSet.value.clear()
     }
 
     return {
         isLoading,
-        count: loadingCount,
-        add: add,
-        sub: sub,
-        start: add,
-        end: clear,
+        loadingSet,
+        add,
+        sub,
+        clear
     }
 }

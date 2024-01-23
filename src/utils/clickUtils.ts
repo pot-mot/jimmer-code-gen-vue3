@@ -39,10 +39,10 @@ export const processClickFunction = (
 
 const interactionTagNames = ["INPUT", "TEXTAREA", "BUTTON"]
 
-const interactionTagClassList = ["el-input", "el-input-number", "el-checkbox", "el-switch", "el-select", "monaco-editor", "code-preview", "splitpanes__splitter"]
+export const interactionTagClassList = ["el-input", "el-input-number", "el-checkbox", "el-switch", "el-select", "monaco-editor", "code-preview", "splitpanes__splitter"]
 
-const containInteractionTagClassList = (e: HTMLElement) => {
-    for (let className of interactionTagClassList) {
+export const containsClassList = (e: HTMLElement, classNames: string[]) => {
+    for (let className of classNames) {
         if (e.classList.contains(className)) {
             return true
         }
@@ -50,28 +50,32 @@ const containInteractionTagClassList = (e: HTMLElement) => {
     return false
 }
 
-export const judgeTargetIsInteraction = (e: MouseEvent) => {
-    const target = (e.target as HTMLElement | undefined)
+export const judgeTarget = (
+    e: MouseEvent,
+    judge: (el: HTMLElement) => boolean | undefined
+) => {
+    let target = (e.target as HTMLElement | undefined | null)
 
-    if (target) {
-        const tagName = target.tagName
-        if (interactionTagNames.includes(tagName)) {
-            return true
-        }
-        if ('contenteditable' in target) {
-            return true
-        }
-        if (containInteractionTagClassList(target)) {
-            return true
-        }
-        let parent = target.parentElement
-        while (parent) {
-            if (containInteractionTagClassList(parent)) {
-                return true
-            } else {
-                parent = parent.parentElement
-            }
-        }
+    while (target) {
+        const result = judge(target)
+        if (result) return result
+        target = target.parentElement
     }
     return false
+}
+
+export const judgeTargetIsInteraction = (
+    e: MouseEvent
+) => {
+    return judgeTarget(e, (el) => {
+        if ('contenteditable' in el) {
+            return true
+        }
+        if (interactionTagNames.includes(el.tagName)) {
+            return true
+        }
+        if (containsClassList(el, interactionTagClassList)) {
+            return true
+        }
+    })
 }

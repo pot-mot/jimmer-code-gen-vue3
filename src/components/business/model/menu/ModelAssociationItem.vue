@@ -19,10 +19,10 @@ const props = withDefaults(defineProps<AssociationItemProps>(), {
 
 const tables = ref<GenTableCommonView[]>()
 
-const loading = useLoading()
+const tablesLoading = useLoading('ModelAssociationItem:tablesLoading')
 
 const getData = async () => {
-	loading.add()
+	const flag = tablesLoading.add('get')
 	tables.value = await api.tableService.queryCommonView({
 		body: {
 			ids: [
@@ -31,12 +31,12 @@ const getData = async () => {
 			]
 		}
 	})
-	loading.sub()
+	tablesLoading.sub(flag)
 }
 </script>
 
 <template>
-	<Details v-loading="loading.isLoading()" @open="getData" :disabled="!showConfig.showAssociationTables">
+	<Details v-loading="tablesLoading.isLoading.value" @open="getData" :disabled="!showConfig.showAssociationTables">
 		<template #title>
 			<el-text>
 				<AssociationIcon :type="association.type"

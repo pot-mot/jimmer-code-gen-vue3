@@ -12,16 +12,16 @@ const eventBus = mitt<ModelMenuEvents>()
 
 const models = ref<GenModelSimpleView[]>()
 
-const modelsLoading = useLoading()
+const modelsLoading = useLoading('ModelMenu:modelsLoading')
 
 const getModels = async () => {
+	const flag = modelsLoading.add('get')
 	models.value = await api.modelService.list()
+	modelsLoading.sub(flag)
 }
 
 onMounted(() => {
-	modelsLoading.add()
 	getModels()
-	modelsLoading.sub()
 })
 
 const props = withDefaults(defineProps<ModelMenuProps>(), {
@@ -37,7 +37,7 @@ defineExpose({
 </script>
 
 <template>
-	<ul v-loading="modelsLoading.isLoading()">
+	<ul v-loading="modelsLoading.isLoading.value">
 		<li v-for="model in models">
 			<ModelItem :model="model" :event-bus="eventBus" :show-config="props"></ModelItem>
 		</li>

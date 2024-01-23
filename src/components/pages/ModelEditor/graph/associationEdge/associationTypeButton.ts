@@ -61,6 +61,7 @@ const createAssociationTypeButtonAttrs = (
                     y: 5,
                     textAnchor: 'middle',
                     pointerEvents: 'none',
+                    userSelect: 'none',
                 },
             },
         ],
@@ -147,15 +148,10 @@ export const getAssociationType = (edge: Edge, defaultAssociationType: Associati
 }
 
 const setAssociationType = (edge: Edge, type: AssociationType) => {
-    console.log(type)
     edge.setData({association: {type}}, {deep: true})
     if (type == 'MANY_TO_MANY') {
         setAssociationFake(edge, false)
     }
-}
-
-const syncAssociationType = (edge: Edge, graph: Graph) => {
-    setAssociationTypeButton(edge, graph)
 }
 
 export const useAssociationType = (graph: Graph) => {
@@ -171,7 +167,6 @@ export const useAssociationType = (graph: Graph) => {
 
     graph.on('edge:change:data', ({edge}) => {
         if (edge.shape != ASSOCIATION_EDGE) return
-
-        syncAssociationType(edge, graph)
+        setAssociationTypeButton(edge, graph)
     })
 }

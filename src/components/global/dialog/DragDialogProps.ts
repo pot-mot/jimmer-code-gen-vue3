@@ -39,6 +39,7 @@ export interface DragDialogProps extends
     DialogDisableProps
 {
     limitByParent?: boolean
+    modal?: boolean
     canResize?: boolean
     canDrag?: boolean
     // 此配置项用于主动使用 syncDialogHeight 时自适应高度

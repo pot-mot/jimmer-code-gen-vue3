@@ -68,12 +68,8 @@ const isSelected = computed(() => {
 		</el-text>
 
 		<span class="hover-show-item" style="padding-left: 0.5em;">
-			<el-tooltip content="编辑">
-				<el-button :icon="EditPen" link type="warning" @click="handleEdit"></el-button>
-			</el-tooltip>
-			<el-tooltip content="删除">
-				<el-button :icon="Delete" link type="danger" @click="handleDelete"></el-button>
-			</el-tooltip>
+			<el-button :icon="EditPen" link type="warning" @click="handleEdit"></el-button>
+			<el-button :icon="Delete" link type="danger" @click="handleDelete"></el-button>
 		</span>
 	</div>
 

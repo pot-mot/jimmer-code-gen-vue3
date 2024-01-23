@@ -9,9 +9,9 @@ import 'element-plus/dist/index.css'
 
 import './assets/base.css'
 import './assets/util.css'
-import './components/global/list/list.css'
 import './assets/element-overwrite.css'
-import './assets/antv-x6-animation.css'
+
+import './components/global/list/list.css'
 
 import {registerModelEditorShape} from "@/components/business/modelEditor/register.ts";
 import {useCodeEditor} from "@/components/global/code/CodeEditorWorkers.ts";
