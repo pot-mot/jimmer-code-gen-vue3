@@ -64,7 +64,7 @@ export const useGraphReactiveState = (_graph: () => Graph) => {
         const graph = _graph()
 
         if (!graph) {
-            sendMessage('graph 无法获取，响应式数据无法正常设置', 'error')
+            sendMessage('graph 获取失败，响应式数据无法正常设置', 'error')
             return
         }
 

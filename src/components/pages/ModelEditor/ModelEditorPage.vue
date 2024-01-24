@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import LeftTopBottomLayout from "@/components/global/layout/LeftRightLayout.vue";
 import ModelEditorMainMenu from "./menu/ModelEditorMainMenu.vue";
-import Graph from "./graph/Graph.vue";
+import ModelEditorGraph from "./graph/ModelEditorGraph.vue";
 import {onMounted, ref, watch} from "vue";
 import {Emitter} from "mitt";
 import {DataSourceMenuEvents} from "@/components/business/dataSource/menu/DataSourceMenuEvents.ts";
@@ -42,7 +42,7 @@ onMounted(async () => {
 
 		store.loadCurrentModel(model)
 	} catch (e) {
-		sendMessage('当前模型解析出现问题', 'error')
+		sendMessage('模型解析出现问题', 'error', e)
 		await router.replace("/models")
 	}
 })
@@ -103,7 +103,7 @@ watch(() => modelLoadMenu.value, () => {
 			</div>
 		</template>
 		<template #right>
-			<Graph></Graph>
+			<ModelEditorGraph></ModelEditorGraph>
 		</template>
 	</LeftTopBottomLayout>
 

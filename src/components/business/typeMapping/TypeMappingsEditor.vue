@@ -118,7 +118,7 @@ const handleSubmit = async () => {
 		typeMappings.value = tempTypeMappings.value
 		editState.value = false
 	} else {
-		sendMessage('配置修改出错', 'error')
+		sendMessage('配置修改出错', 'error', tempTypeMappings)
 	}
 }
 

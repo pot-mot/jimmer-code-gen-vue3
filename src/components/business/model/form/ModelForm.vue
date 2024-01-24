@@ -27,7 +27,7 @@ watch(() => props.model, (propsModel) => {
 			try {
 				tempModel.graphData = jsonStrFormat(propsModel.graphData ? propsModel.graphData : '')
 			} catch (e) {
-				sendMessage('json 格式校验失败', 'error')
+				sendMessage('json 格式校验失败', 'error', propsModel.graphData)
 				tempModel.graphData = ''
 			}
 		}
@@ -42,11 +42,12 @@ const handleSubmit = () => {
 	if (props.editValue) {
 		try {
 			if (tempModel.graphData == undefined) {
-				throw "graphData undefined"
+				throw "graphData is undefined"
 			}
 
-			if (!validateGraphData(JSON.parse(tempModel.graphData))) {
-				throw "graphData validate fail"
+			let validateErrors
+			if (!validateGraphData(JSON.parse(tempModel.graphData), e => validateErrors = e)) {
+				throw validateErrors
 			}
 
 			tempModel.graphData = jsonStrCompress(tempModel.graphData)
@@ -124,22 +125,18 @@ const handleOpenOtherConfigDialog = () => {
 					</el-form-item>
 				</el-col>
 
-<!--				<el-col :span="6">-->
-<!--					<el-form-item label="同步转换实体">-->
-<!--						<el-switch v-model="model.syncConvertEntity"></el-switch>-->
-<!--					</el-form-item>-->
-<!--				</el-col>-->
+				<el-col :span="24">
+					<el-form-item label="备注">
+						<el-input v-model="model.remark" type="textarea" :rows="4" resize="none"></el-input>
+					</el-form-item>
+				</el-col>
 
-				<el-col :span="6">
+				<el-col :span="4" :offset="20">
 					<el-form-item>
 						<el-button @click="handleOpenOtherConfigDialog">其他配置项</el-button>
 					</el-form-item>
 				</el-col>
 			</el-row>
-
-			<el-form-item label="备注">
-				<el-input v-model="model.remark" type="textarea" :rows="4" resize="none"></el-input>
-			</el-form-item>
 		</div>
 
 		<el-form-item label="内容" v-if="editValue && model.graphData != undefined">

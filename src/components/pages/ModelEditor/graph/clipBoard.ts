@@ -1,7 +1,7 @@
 import {Cell, Node, Edge, Graph} from "@antv/x6";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {sendMessage} from "@/utils/message.ts";
-import {loadByInputs} from "@/components/pages/ModelEditor/graph/data/loadData.ts";
+import {loadByInputs} from "@/components/pages/ModelEditor/graph/loadData.ts";
 import {CopyData, validateCopyData} from "@/shape/CopyData.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
 import {useModelEditorStore} from "@/components/pages/ModelEditor/store/ModelEditorStore.ts";
@@ -68,16 +68,18 @@ export const tableNodePaste = async (graph: Graph) => {
 
     graph.startBatch("paste")
 
-    const text = await navigator.clipboard.readText()
-
     try {
+        const text = await navigator.clipboard.readText()
+
         let res: { nodes: Node[], edges: Edge[] } | undefined
 
         const value = JSON.parse(text)
 
         const store = useModelEditorStore()
 
-        if (validateCopyData(value)) {
+        const validateErrors: any = []
+
+        if (validateCopyData(value, (e) => validateErrors.push(e))) {
             const {
                 tables,
                 associations,
@@ -87,18 +89,19 @@ export const tableNodePaste = async (graph: Graph) => {
             res = loadByInputs(graph, tables, associations)
 
             importEnums(enums)
-        } else if (validateGraphData(value)) {
+        } else if (validateGraphData(value, (e) => validateErrors.push(e))) {
             const cells = value.json.cells as Cell[]
             graph.parseJSON(cells)
             res = store.loadGraphData(text, false)
-        } else if (validateModelInput(value)) {
+        } else if (validateModelInput(value, (e) => validateErrors.push(e))) {
             const model = value as GenModelInput
 
             if (model.graphData) {
                 res = store.loadGraphData(model.graphData, false)
             }
-
             importEnums(model.enums)
+        } else {
+            sendMessage('剪切板中数据无法直接导入画布', 'error', validateErrors)
         }
 
         if (res != undefined) {
@@ -107,11 +110,9 @@ export const tableNodePaste = async (graph: Graph) => {
             setTimeout(() => {
                 graph.resetSelection([...nodes.map(it => it.id), ...edges.map(it => it.id)])
             }, 100 + nodes.length * 30 + edges.length * 20)
-        } else {
-            sendMessage('剪切板中数据无法直接导入画布', 'info', text)
         }
     } catch (e) {
-        sendMessage('粘贴数据出现问题', 'info', {error: e, clipboardValue: text})
+        sendMessage('剪切板中数据无法直接导入画布', 'error', e)
     }
 
     graph.stopBatch("paste")

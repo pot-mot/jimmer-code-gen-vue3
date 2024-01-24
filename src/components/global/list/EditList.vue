@@ -68,7 +68,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 		unselectedItems
 	} = dataLines.value.reduce(
 		(result, _, index) => {
-			const { selectedItems, unselectedItems } = result
+			const {selectedItems, unselectedItems} = result
 			const item = dataLines.value[index]
 
 			if (selectedItemSet.value.has(index)) {
@@ -79,7 +79,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 
 			return result
 		},
-		{ selectedItems: <T[]>[], unselectedItems: <T[]>[] }
+		{selectedItems: <T[]>[], unselectedItems: <T[]>[]}
 	)
 
 	if (e.key == 'Delete') {
@@ -108,14 +108,19 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 
 				let insertLength = 0
 
-				if (Array.isArray(value) && value.filter(item => props.jsonSchemaValidate(item)).length == value.length) {
+				const validateErrorsMap = new Map
+
+				if (
+					Array.isArray(value) &&
+					value.filter((item, index) => props.jsonSchemaValidate(item, (e) => validateErrorsMap.set(index, e))).length == value.length
+				) {
 					tempLines.splice(insertIndex, 0, ...value)
 					insertLength = value.length
-				} else if (props.jsonSchemaValidate(value)) {
+				} else if (props.jsonSchemaValidate(value, (e) => validateErrorsMap.set(0, e))) {
 					tempLines.splice(insertIndex, 0, value)
 					insertLength = 1
 				} else {
-					sendMessage('剪切板中数据无法直接导入列表', 'info', text)
+					sendMessage('剪切板中数据无法直接导入列表', 'error', validateErrorsMap)
 					return
 				}
 
@@ -127,7 +132,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 					select(i)
 				}
 			} catch (e) {
-				sendMessage('剪切板中数据无法直接导入列表', 'info', {error: e, clipboardValue: text})
+				sendMessage('剪切板中数据无法直接导入列表', 'error', {error: e, clipboardValue: text})
 			}
 		}
 	}
