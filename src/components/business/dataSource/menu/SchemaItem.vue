@@ -43,7 +43,7 @@ const handleDelete = () => {
 				sendMessage(`删除 schema ${id} 成功`, "success")
 				props.eventBus.emit('deleteSchema', {id})
 			} else {
-				sendMessage('删除 schema 失败', 'error')
+				sendMessage('删除 schema 失败', 'error', props.schema)
 			}
 		}
 	)

@@ -142,7 +142,7 @@ const handleSubmit = async () => {
 		sendMessage('配置修改成功', 'success')
 		editState.value = false
 	} else {
-		sendMessage('配置修改出错', 'error')
+		sendMessage('配置修改出错', 'error', tempColumnDefaults)
 	}
 }
 

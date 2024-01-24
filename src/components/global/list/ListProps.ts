@@ -32,6 +32,6 @@ export interface EditListProps<T extends { [key: string]: any }> extends LineSty
     lines: T[],
     labelLine?: boolean,
     defaultLine: T | (() => T | Promise<T>),
-    jsonSchemaValidate: (json: any) => boolean | Promise<T>
+    jsonSchemaValidate: (json: any, onError: (e: any) => void) => boolean | Promise<T>
 }
 

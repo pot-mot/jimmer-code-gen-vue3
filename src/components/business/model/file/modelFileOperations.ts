@@ -4,6 +4,7 @@ import {api} from "@/api";
 import {saveAs} from "file-saver";
 import {jsonFormat, jsonStrFormat} from "@/utils/json.ts";
 import {validateModelInputStr} from "@/shape/ModelInput.ts";
+import {sendMessage} from "@/utils/message.ts";
 
 const createZip = async (files: Array<Pair<string, string>>): Promise<Blob> => {
     const zip = new JSZip()
@@ -46,12 +47,13 @@ export const downloadModelSql = async (model: GenModelView) => {
 
 
 export const importModel = async (modelInputJsonStr: string) => {
-    const result = validateModelInputStr(modelInputJsonStr, true)
-
-    if (result) {
+    let validateErrors
+    if (validateModelInputStr(modelInputJsonStr, e => validateErrors = e)) {
         const modelInput = JSON.parse(modelInputJsonStr)
         modelInput.id = undefined
         return await api.modelService.save({body: modelInput})
+    } else {
+        sendMessage('模型导入出错', 'error', validateErrors)
     }
 }
 

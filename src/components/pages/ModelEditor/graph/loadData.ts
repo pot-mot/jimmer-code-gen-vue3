@@ -4,7 +4,7 @@ import {
     GenTableColumnsView
 } from "@/api/__generated/model/static";
 import {api} from "@/api";
-import {importTables, tableViewToInput} from "../tableNode/importTable.ts";
+import {importTables, tableViewToInput} from "./tableNode/importTable.ts";
 import {Graph} from '@antv/x6'
 import {associationViewToInput, importAssociations} from "@/components/pages/ModelEditor/graph/associationEdge/importAssociation.ts";
 

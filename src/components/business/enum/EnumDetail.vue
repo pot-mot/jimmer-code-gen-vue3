@@ -24,7 +24,7 @@ const handleGetItems = async () => {
 	if (tempEnum) {
 		genEnum.value = tempEnum
 	} else {
-		sendMessage('该枚举可能已经被删除', 'error')
+		sendMessage('该枚举可能已经被删除', 'error', tempEnum)
 	}
 }
 </script>

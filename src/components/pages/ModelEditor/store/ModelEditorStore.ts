@@ -4,7 +4,7 @@ import {ModelEditorEventBus} from "./ModelEditorEventBus.ts";
 import {sendMessage} from "@/utils/message.ts";
 import {ref} from "vue";
 import {api} from "@/api";
-import {loadByTableViews} from "../graph/data/loadData.ts";
+import {loadByTableViews} from "../graph/loadData.ts";
 import {GenModelInput, GenModelView, GenTableColumnsView, GenTableModelInput} from "@/api/__generated/model/static";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {importTables} from "@/components/pages/ModelEditor/graph/tableNode/importTable.ts";
@@ -18,7 +18,7 @@ import {cloneDeep} from "lodash";
 import {getDefaultTable} from "@/components/business/table/defaultTable.ts";
 import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
 import {useTableDialogsStore} from "@/components/pages/ModelEditor/dialogs/table/TableDialogsStore.ts";
-import {unStyleAll} from "@/components/pages/ModelEditor/graph/highlight/highlight.ts";
+import {unStyleAll} from "@/components/pages/ModelEditor/graph/highlight.ts";
 import {GraphEditorData} from "@/components/global/graphEditor/common/graphData.ts";
 
 export const useModelEditorStore =
@@ -45,8 +45,9 @@ export const useModelEditorStore =
             }
 
             const loadGraphData = (jsonStr: string, reset: boolean = false) => {
+                let validateErrors
                 try {
-                    if (jsonStr && validateGraphData(JSON.parse(jsonStr))) {
+                    if (jsonStr && validateGraphData(JSON.parse(jsonStr), e => validateErrors = e)) {
                         unStyleAll(_graph())
                         return commonOperations.loadGraphData(jsonStr, reset)
                     } else {
@@ -55,7 +56,7 @@ export const useModelEditorStore =
                         return {nodes: [], edges: []}
                     }
                 } catch (e) {
-                    sendMessage(`图加载错误: ${e}`, "error", {
+                    sendMessage(`图加载错误: ${e}`, "error", validateErrors ? validateErrors : {
                         error: e,
                         jsonStr
                     })

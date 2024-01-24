@@ -16,38 +16,21 @@ export const sendMessage = (message: string, type: "info" | "success" | "warning
         showClose: true,
     })
 
-    const dataObj = {
+    const obj = {
         message,
         data
     }
 
     if (type == "success") {
-        if (data) console.log(dataObj)
-    } else if (type == "error") {
-        if (data) console.error(dataObj)
+        if (data) console.log(obj)
     } else if (type == "info") {
-        if (data) console.log(dataObj)
+        if (data) console.log(obj)
     } else if (type == "warning") {
-        if (data) console.warn(dataObj)
+        if (data) console.warn(obj)
+    } else if (type == "error") {
+        console.error(new Error(message))
+        if (data) console.error(obj)
     }
-}
-
-export const messageConfirm = (
-    callback: () => void,
-    message: string,
-    opts?: ElMessageBoxOptions,
-) => {
-    ElMessageBox.confirm(
-        message,
-        {
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No',
-            type: 'warning',
-            ...opts
-        }
-    ).then(() => {
-        callback()
-    })
 }
 
 export const deleteConfirm = (

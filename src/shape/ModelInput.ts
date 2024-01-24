@@ -176,12 +176,12 @@ const {validate: validateModelInputJson} =
         GenModelInputJsonSchema
     )
 
-export const validateModelInput = (data: any, throwErrors: boolean = false) => {
-    const result = validateModelInputJson(data, throwErrors)
+export const validateModelInput = (data: any, onErrors: (e: any) => void) => {
+    const result = validateModelInputJson(data, onErrors)
 
     if (result) {
         if ("graphData" in data) {
-            return validateGraphData(JSON.parse(data["graphData"]), throwErrors)
+            return validateGraphData(JSON.parse(data["graphData"]), onErrors)
         } else {
             return result
         }
@@ -190,7 +190,7 @@ export const validateModelInput = (data: any, throwErrors: boolean = false) => {
     return result
 }
 
-export const validateModelInputStr = (jsonStr: string, throwErrors: boolean = false) => {
+export const validateModelInputStr = (jsonStr: string, onErrors: (e: any) => void) => {
     const modelInput = JSON.parse(jsonStr)
-    return validateModelInput(modelInput, throwErrors)
+    return validateModelInput(modelInput, onErrors)
 }

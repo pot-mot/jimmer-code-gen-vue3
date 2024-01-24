@@ -7,7 +7,7 @@ import {DEFAULT_ZOOM_RANGE} from "@/components/business/modelEditor/constant.ts"
 import {
     useAssociationType
 } from "@/components/pages/ModelEditor/graph/associationEdge/associationTypeButton.ts";
-import {useHoverToFront, useStyle} from "@/components/pages/ModelEditor/graph/highlight/highlight.ts";
+import {useHoverToFront, useStyle} from "@/components/pages/ModelEditor/graph/highlight.ts";
 import {useAssociationData} from "@/components/pages/ModelEditor/graph/associationEdge/associationData.ts";
 
 export const initModelEditor = (container: HTMLElement, wrapper: HTMLElement): Graph => {

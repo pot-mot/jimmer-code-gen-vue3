@@ -171,7 +171,7 @@ import GraphSearcher from "@/components/global/graphEditor/tools/GraphSearcher.v
 import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
 import {EditPen} from "@element-plus/icons-vue";
 import {debugLog} from "@/utils/debugLog.ts";
-import {handleTableNodeClipBoardKeyEvent} from "@/components/pages/ModelEditor/graph/data/clipBoard.ts";
+import {handleTableNodeClipBoardKeyEvent} from "@/components/pages/ModelEditor/graph/clipBoard.ts";
 import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
 import {handleHistoryKeyEvent} from "@/components/global/graphEditor/history/useHistory.ts";
 import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";
@@ -185,7 +185,7 @@ import {
 } from "@/components/business/model/file/modelFileOperations.ts";
 import {cloneDeep} from "lodash";
 import {TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
-import {useDocumentEvent} from "@/components/pages/ModelEditor/graph/event/useDocumentEvent.ts";
+import {useDocumentEvent} from "@/utils/useDocumentEvent.ts";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
