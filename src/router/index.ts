@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
+import {createRouter, createWebHashHistory, RouteRecordRaw} from 'vue-router'
 import {useGlobalLoadingStore} from "../components/global/loading/GlobalLoadingStore.ts";
 import {sendMessage} from "@/utils/message.ts";
 
@@ -22,7 +22,7 @@ const routes: RouteRecordRaw[] = [
 ]
 
 export const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes,
     // @ts-ignore
     scrollBehavior(to, from, savedPosition) {
@@ -37,7 +37,7 @@ export const router = createRouter({
 let routerChangeFlag: string
 
 router.beforeEach((to, from, next) => {
-    routerChangeFlag = useGlobalLoadingStore().add(`to: ${JSON.stringify(to)}, from: ${JSON.stringify(from)}`)
+    routerChangeFlag = useGlobalLoadingStore().add(`to: ${to.fullPath}, from: ${from.fullPath}`)
     next()
 })
 
