@@ -4,10 +4,6 @@ export interface GenEnumItemsInput_TargetOf_items {
      */
     id?: number | undefined;
     /**
-     * 备注
-     */
-    remark: string;
-    /**
      * 元素名
      */
     name: string;
@@ -20,7 +16,11 @@ export interface GenEnumItemsInput_TargetOf_items {
      */
     comment: string;
     /**
-     * 自定排序
+     * 排序键
      */
     orderKey: number;
+    /**
+     * 备注
+     */
+    remark: string;
 }

@@ -6,10 +6,6 @@ export interface GenColumnDefaultInput {
      */
     id?: number | undefined;
     /**
-     * 备注
-     */
-    remark: string;
-    /**
      * 数据源类型
      */
     dataSourceType: DataSourceType;
@@ -20,13 +16,13 @@ export interface GenColumnDefaultInput {
     /**
      * 数据库类型表达式
      */
-    type: string;
+    rawType: string;
     /**
-     * 列展示长度
+     * 长度
      */
-    displaySize: number;
+    dataSize: number;
     /**
-     * 列精度
+     * 精度
      */
     numericPrecision: number;
     /**
@@ -34,7 +30,11 @@ export interface GenColumnDefaultInput {
      */
     defaultValue?: string | undefined;
     /**
-     * 自定排序
+     * 排序键
      */
     orderKey: number;
+    /**
+     * 备注
+     */
+    remark: string;
 }

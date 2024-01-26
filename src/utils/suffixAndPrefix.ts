@@ -52,17 +52,6 @@ export const removeSuffixes = (
     return result;
 }
 
-export const removePrefixesAndSuffixes = (
-    str: string,
-    prefixes: string[],
-    suffixes: string[],
-    separator: string = "_"
-) => {
-    let temp = removePrefixes(str, prefixes, separator)
-    temp = removeSuffixes(temp, suffixes, separator)
-    return temp
-}
-
 export const removeSplitPrefixAndSuffix = (
     str: string,
     prefixes: string,

@@ -59,15 +59,15 @@ watch(() => dataSourceLoadMenu.value, () => {
 	const eventBus: Emitter<DataSourceMenuEvents> = dataSourceLoadMenu.value.eventBus
 
 	eventBus.on('clickSchema', async ({id}) => {
-		const flag = loadingStore.add('ModelEditorPage syncClickSchemaEvent')
+		const flag = loadingStore.start('ModelEditorPage syncClickSchemaEvent')
 		await store.importSchema(id)
-		loadingStore.sub(flag)
+		loadingStore.stop(flag)
 	})
 
 	eventBus.on('clickTable', async ({id}) => {
-		const flag = loadingStore.add('ModelEditorPage syncClickTableEvent')
+		const flag = loadingStore.start('ModelEditorPage syncClickTableEvent')
 		await store.importTable(id)
-		loadingStore.sub(flag)
+		loadingStore.stop(flag)
 	})
 }, {immediate: true})
 
@@ -82,15 +82,15 @@ watch(() => modelLoadMenu.value, () => {
 	const eventBus: Emitter<ModelMenuEvents> = modelLoadMenu.value.eventBus
 
 	eventBus.on('clickModel', async ({id}) => {
-		const flag = loadingStore.add('ModelEditorPage syncClickModelEvent')
+		const flag = loadingStore.start('ModelEditorPage syncClickModelEvent')
 		await store.importModel(id)
-		loadingStore.sub(flag)
+		loadingStore.stop(flag)
 	})
 
 	eventBus.on('clickTable', async ({id}) => {
-		const flag = loadingStore.add('ModelEditorPage syncClickTableEvent')
+		const flag = loadingStore.start('ModelEditorPage syncClickTableEvent')
 		await store.importTable(id)
-		loadingStore.sub(flag)
+		loadingStore.stop(flag)
 	})
 }, {immediate: true})
 </script>

@@ -27,6 +27,7 @@ export class TypeMappingService {
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<number>>;
     }
 }
+
 export type TypeMappingServiceOptions = {
     'get': {
         id: number

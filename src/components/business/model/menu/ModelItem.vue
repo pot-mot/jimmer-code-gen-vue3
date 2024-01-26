@@ -20,13 +20,13 @@ const tablesLoading = useLoading('ModelItem:tablesLoading')
 
 const getData = async () => {
 	if (!props.showConfig.showModelTables) return
-	const flag = tablesLoading.add('get')
+	const flag = tablesLoading.start('get')
 	tables.value = await api.tableService.queryCommonView({
 		body: {
 			modelIds: [props.model.id]
 		}
 	})
-	tablesLoading.sub(flag)
+	tablesLoading.stop(flag)
 }
 </script>
 

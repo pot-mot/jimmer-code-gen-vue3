@@ -4,7 +4,7 @@ import {Options} from "@antv/x6/es/graph/options";
 import Connecting = Options.Connecting;
 import {
     ASSOCIATION_EDGE,
-    ASSOCIATION_LINE_WIDTH, COMMON_COLOR,
+    LINE_WIDTH, COMMON_COLOR
 } from "@/components/business/modelEditor/constant.ts";
 import {
     getTableColumnByEdgeConnect,
@@ -18,7 +18,7 @@ export const associationEdgeBase = {
     attrs: {
         line: {
             stroke: COMMON_COLOR,
-            strokeWidth: ASSOCIATION_LINE_WIDTH,
+            strokeWidth: LINE_WIDTH,
         },
     }
 }
@@ -27,7 +27,7 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
     createEdge({sourceCell}) {
         return this.addEdge({
             shape: ASSOCIATION_EDGE,
-            source: sourceCell
+            source: sourceCell,
         })
     },
 
@@ -44,7 +44,7 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
 
         if (!sourceColumn || !targetColumn) return false
 
-        if (sourceColumn.typeCode != targetColumn.typeCode || sourceColumn.rawType != targetColumn.rawType || sourceColumn.typeCode != targetColumn.typeCode) {
+        if (sourceColumn.typeCode != targetColumn.typeCode || sourceColumn.rawType != targetColumn.rawType) {
             sendMessage('关联两端类型不一致', 'warning')
             return false
         }

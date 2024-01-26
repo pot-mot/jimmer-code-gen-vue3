@@ -8,7 +8,7 @@ import {loadByTableViews} from "../graph/loadData.ts";
 import {GenModelInput, GenModelView, GenTableColumnsView, GenTableModelInput} from "@/api/__generated/model/static";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {importTables} from "@/components/pages/ModelEditor/graph/tableNode/importTable.ts";
-import {useGenConfigContextStore} from "@/components/business/context/GenContextStore.ts";
+import {useGenConfigContextStore} from "@/components/business/genConfig/ContextGenConfigStore.ts";
 import {redo, undo} from "@/components/global/graphEditor/history/useHistory.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
@@ -31,7 +31,8 @@ export const useModelEditorStore =
 
             // 在获取数据时调整
             const getGraphData = () => {
-                const graphData = JSON.parse(commonOperations.getGraphData()) as GraphEditorData
+                const graphData =
+                    JSON.parse(commonOperations.getGraphData()) as GraphEditorData
                 graphData.json.cells.forEach(cell => {
                     if (cell.shape == TABLE_NODE) {
                         cell.data = {table: cell.data.table}
@@ -79,7 +80,7 @@ export const useModelEditorStore =
             const loadCurrentModel = (model: GenModelView) => {
                 const contextStore = useGenConfigContextStore()
 
-                contextStore.context = model
+                contextStore.merge(model)
 
                 currentModel.value = model
 
@@ -108,7 +109,7 @@ export const useModelEditorStore =
             const handleSubmitModelEdit = async (model: GenModelInput) => {
                 const loadingStore = useGlobalLoadingStore()
 
-                const flag = loadingStore.add('ModelEditorStore handleSubmitModelEdit')
+                const flag = loadingStore.start('ModelEditorStore handleSubmitModelEdit')
 
                 try {
                     const id = await api.modelService.save({body: model})
@@ -132,7 +133,7 @@ export const useModelEditorStore =
                     sendMessage(`模型保存失败，原因：${e}`, 'error', e)
                 }
 
-                loadingStore.sub(flag)
+                loadingStore.stop(flag)
             }
 
 

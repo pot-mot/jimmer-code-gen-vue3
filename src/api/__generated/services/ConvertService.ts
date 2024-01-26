@@ -21,6 +21,7 @@ export class ConvertService {
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<number>>;
     }
 }
+
 export type ConvertServiceOptions = {
     'convert': {
         body: Array<number>, 

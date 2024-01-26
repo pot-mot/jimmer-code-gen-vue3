@@ -10,7 +10,6 @@ export const getDefaultTable = (): GenTableModelInput => {
         name: "",
         comment: "",
         remark: "",
-        orderKey: 0,
         type: "TABLE",
         columns: [],
         indexes: [],
@@ -21,6 +20,7 @@ export const getDefaultIndex = (): GenTableModelInput_TargetOf_indexes => {
     return {
         name: "",
         uniqueIndex: false,
+        remark: "",
         columns: []
     }
 }
@@ -28,7 +28,7 @@ export const getDefaultIndex = (): GenTableModelInput_TargetOf_indexes => {
 export const getDefaultColumn = (): GenTableModelInput_TargetOf_columns => {
     const columnDefaultStore = useColumnDefaultStore()
 
-    const defaultColumn = {
+    const defaultColumn: GenTableModelInput_TargetOf_columns = {
         orderKey: 0,
         name: "",
         comment: "",
@@ -36,11 +36,12 @@ export const getDefaultColumn = (): GenTableModelInput_TargetOf_columns => {
         overwriteByRaw: false,
         rawType: "VARCHAR",
         typeNotNull: true,
-        displaySize: 0,
+        dataSize: 0,
         numericPrecision: 0,
         defaultValue: undefined,
         partOfPk: false,
         autoIncrement: false,
+        idGeneration: false,
         remark: "",
         logicalDelete: false,
         businessKey: false,
@@ -56,8 +57,8 @@ export const getDefaultColumn = (): GenTableModelInput_TargetOf_columns => {
         return {
             ...defaultColumn,
             overwriteByRaw: true,
-            rawType: columnDefault.type,
-            displaySize: columnDefault.displaySize,
+            rawType: columnDefault.rawType,
+            dataSize: columnDefault.dataSize,
             numericPrecision: columnDefault.numericPrecision,
             defaultValue: columnDefault.defaultValue
         }

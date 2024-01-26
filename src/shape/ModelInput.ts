@@ -4,6 +4,7 @@ import {validateGraphData} from "@/shape/GraphData.ts";
 import {GenEnumModelInputJsonSchema} from "@/shape/GenEnumModelInput.ts";
 
 // typescript-json-schema src/api/__generated/model/static/GenModelInput.ts * --required
+// 添加 ...GenEnumModelInputJsonSchema.definitions,
 export const GenModelInputJsonSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
@@ -68,6 +69,10 @@ export const GenModelInputJsonSchema = {
                 "id": {
                     "description": "ID",
                     "type": "number"
+                },
+                "idGenerationType": {
+                    "$ref": "#/definitions/GenerationType",
+                    "description": "ID 生成类型"
                 },
                 "idViewProperty": {
                     "description": "生成 IdView 属性",
@@ -147,6 +152,7 @@ export const GenModelInputJsonSchema = {
                 "columnNameSuffixes",
                 "dataSourceType",
                 "enums",
+                "idGenerationType",
                 "idViewProperty",
                 "joinColumnAnnotation",
                 "joinTableAnnotation",
@@ -167,6 +173,15 @@ export const GenModelInputJsonSchema = {
             ],
             "type": "object"
         },
+        "GenerationType": {
+            "enum": [
+                "AUTO",
+                "IDENTITY",
+                "SEQUENCE",
+                "USER"
+            ],
+            "type": "string"
+        }
     }
 }
 

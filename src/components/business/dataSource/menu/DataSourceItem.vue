@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {nextTick, ref, watch} from "vue";
-import {GenSchemaView} from "@/api/__generated/model/static";
+import {GenSchemaPreview, GenSchemaView} from "@/api/__generated/model/static";
 import SchemaItem from "./SchemaItem.vue";
 import {api} from "@/api";
 import DataSourceDialog from "../dialog/DataSourceDialog.vue";
@@ -12,7 +12,6 @@ import {deleteConfirm, sendMessage} from "@/utils/message.ts";
 import {DataSourceItemSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlotProps.ts";
 import {DataSourceItemProps} from "@/components/business/dataSource/menu/DataSourceMenuProps.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
-import type {Dynamic_GenSchema} from "@/api/__generated/model/dynamic";
 
 const loadingStore = useGlobalLoadingStore()
 
@@ -22,14 +21,14 @@ const previewSchemaLoading = useLoading('DataSourceItem:previewSchemaLoading')
 
 const props = defineProps<DataSourceItemProps>()
 
-const previewSchemas = ref<Array<Dynamic_GenSchema>>([])
+const previewSchemas = ref<Array<GenSchemaPreview>>([])
 
 const getPreviewSchemas = async () => {
-	const flag = previewSchemaLoading.add('get')
+	const flag = previewSchemaLoading.start('get')
 	await nextTick()
 	previewSchemas.value = await api.schemaService.preview({dataSourceId: props.dataSource.id})
 	await nextTick()
-	previewSchemaLoading.sub(flag)
+	previewSchemaLoading.stop(flag)
 }
 
 const previewSchemaTooltipOpenState = ref(false)
@@ -45,9 +44,9 @@ watch(() => previewSchemaTooltipOpenState.value, (value) => {
 const loadedSchemas = ref<GenSchemaView[]>([])
 
 const getSchemas = async (schemaIds: number[] = []) => {
-	const flag = loadedSchemaLoading.add('get')
+	const flag = loadedSchemaLoading.start('get')
 	loadedSchemas.value = await api.schemaService.list({dataSourceId: props.dataSource.id, schemaIds})
-	loadedSchemaLoading.sub(flag)
+	loadedSchemaLoading.stop(flag)
 }
 
 const handleDelete = () => {
@@ -66,7 +65,7 @@ const handleDelete = () => {
 }
 
 const loadSchema = async (name: string, dataSourceId: number = props.dataSource.id) => {
-	const flag = loadingStore.add('DataSourceItem loadSchema')
+	const flag = loadingStore.start('DataSourceItem loadSchema')
 
 	const loadIds = await api.schemaService.load({
 		dataSourceId,
@@ -87,7 +86,7 @@ const loadSchema = async (name: string, dataSourceId: number = props.dataSource.
 		})
 	}
 
-	loadingStore.sub(flag)
+	loadingStore.stop(flag)
 }
 
 const isEdit = ref(false)

@@ -22,7 +22,7 @@ const tables = ref<GenTableCommonView[]>([])
 const tablesLoading = useLoading('SchemaItem:tablesLoading')
 
 const getTables = async (schemaId: number = props.schema.id) => {
-	const flag = tablesLoading.add('get')
+	const flag = tablesLoading.start('get')
 
 	tables.value = await api.tableService.queryCommonView({
 		body: {
@@ -30,7 +30,7 @@ const getTables = async (schemaId: number = props.schema.id) => {
 		}
 	})
 
-	tablesLoading.sub(flag)
+	tablesLoading.stop(flag)
 }
 
 const handleDelete = () => {

@@ -37,13 +37,13 @@ export const router = createRouter({
 let routerChangeFlag: string
 
 router.beforeEach((to, from, next) => {
-    routerChangeFlag = useGlobalLoadingStore().add(`to: ${to.fullPath}, from: ${from.fullPath}`)
+    routerChangeFlag = useGlobalLoadingStore().start(`to: ${to.fullPath}, from: ${from.fullPath}`)
     next()
 })
 
 router.afterEach((to, from) => {
     if (routerChangeFlag) {
-        useGlobalLoadingStore().sub(routerChangeFlag)
+        useGlobalLoadingStore().stop(routerChangeFlag)
     } else {
         sendMessage('出现未经 beforeEach 设置 loadingFlag 跳转的路由', 'warning', {to, from})
     }

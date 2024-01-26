@@ -15,10 +15,6 @@ export interface GenEntityPropertiesView_TargetOf_properties {
      */
     modifiedTime: string;
     /**
-     * 备注
-     */
-    remark: string;
-    /**
      * 属性名
      */
     name: string;
@@ -39,11 +35,11 @@ export interface GenEntityPropertiesView_TargetOf_properties {
      */
     typeNotNull: boolean;
     /**
-     * 是否Id
+     * 是否 ID 属性
      */
     idProperty: boolean;
     /**
-     * Id 生成类型
+     * ID 生成类型
      */
     idGenerationType?: GenerationType | undefined;
     /**
@@ -79,9 +75,13 @@ export interface GenEntityPropertiesView_TargetOf_properties {
      */
     otherAnnotation?: string | undefined;
     /**
-     * 自定排序
+     * 排序键
      */
     orderKey: number;
+    /**
+     * 备注
+     */
+    remark: string;
     /**
      * 归属实体
      */

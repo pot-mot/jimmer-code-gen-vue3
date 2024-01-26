@@ -4,9 +4,13 @@ export interface GenTableColumnsView_TargetOf_indexes {
      */
     id: number;
     /**
-     * 归属表
+     * 创建事件
      */
-    tableId: number;
+    createdTime: string;
+    /**
+     * 修改时间
+     */
+    modifiedTime: string;
     /**
      * 名称
      */
@@ -15,6 +19,14 @@ export interface GenTableColumnsView_TargetOf_indexes {
      * 唯一索引
      */
     uniqueIndex: boolean;
+    /**
+     * 备注
+     */
+    remark: string;
+    /**
+     * 归属表
+     */
+    tableId: number;
     /**
      * 列 ID 视图
      */

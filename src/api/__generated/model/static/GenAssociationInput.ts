@@ -3,9 +3,9 @@ import type {GenAssociationInput_TargetOf_columnReferences} from './';
 
 export interface GenAssociationInput {
     /**
-     * 备注
+     * ID
      */
-    remark: string;
+    id?: number | undefined;
     /**
      * 名称
      */
@@ -31,9 +31,9 @@ export interface GenAssociationInput {
      */
     fake: boolean;
     /**
-     * 自定排序
+     * 备注
      */
-    orderKey: number;
+    remark: string;
     /**
      * 主表
      */

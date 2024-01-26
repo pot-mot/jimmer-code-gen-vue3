@@ -23,8 +23,8 @@ export const GenColumnDefaultInputJsonSchema = {
                     "description": "默认值",
                     "type": ["string", "null"]
                 },
-                "displaySize": {
-                    "description": "列展示长度",
+                "dataSize": {
+                    "description": "长度",
                     "type": "number"
                 },
                 "id": {
@@ -32,19 +32,19 @@ export const GenColumnDefaultInputJsonSchema = {
                     "type": "number"
                 },
                 "numericPrecision": {
-                    "description": "列精度",
+                    "description": "精度",
                     "type": "number"
                 },
                 "orderKey": {
-                    "description": "自定排序",
+                    "description": "排序键",
                     "type": "number"
+                },
+                "rawType": {
+                    "description": "数据库类型表达式",
+                    "type": "string"
                 },
                 "remark": {
                     "description": "备注",
-                    "type": "string"
-                },
-                "type": {
-                    "description": "数据库类型表达式",
                     "type": "string"
                 },
                 "typeCode": {
@@ -54,11 +54,11 @@ export const GenColumnDefaultInputJsonSchema = {
             },
             "required": [
                 "dataSourceType",
-                "displaySize",
+                "dataSize",
                 "numericPrecision",
                 "orderKey",
+                "rawType",
                 "remark",
-                "type",
                 "typeCode"
             ],
             "type": "object"

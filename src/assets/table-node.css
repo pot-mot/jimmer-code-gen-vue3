@@ -1,10 +1,11 @@
-.table-wrapper {
+.table-node {
     padding-bottom: 10px;
     font-family: var(--el-font-family);
     color: var(--el-color-info-dark-2);
+    cursor: default;
 }
 
-.table-wrapper table {
+.table-node table {
     background-color: #fff;
     border-collapse: separate;
     border-spacing: 0;
@@ -12,34 +13,34 @@
     border-radius: var(--el-border-radius-base);
 }
 
-.table-wrapper .tableName,
-.table-wrapper .column {
+.table-node .tableName,
+.table-node .column {
     white-space: nowrap;
     height: 30px;
     line-height: 30px;
 }
 
-.table-wrapper .icon,
-.table-wrapper .type {
+.table-node .icon,
+.table-node .type {
     padding: 0 0.5em;
 }
 
-.table-wrapper .tableName td {
+.table-node .tableName td {
     text-align: center;
     font-size: 16px;
     border-bottom: 1px solid var(--common-color);
 }
 
-.table-wrapper .column {
+.table-node .column {
     font-size: 14px;
 }
 
-.table-wrapper.hovered table {
+.x6-node.hovered .table-node table {
     border: 3px solid var(--common-color);
     transform: translateX(-2px) translateY(-2px);
 }
 
-.table-wrapper.selected table {
+.x6-node.selected .table-node table {
     outline: 3px solid var(--highlight-color);
     outline-offset: 3px;
 }

@@ -1,0 +1,23 @@
+.x6-edge.hovered > path:nth-child(2) {
+    stroke-width: 3;
+}
+
+.x6-edge.selected > path:nth-child(2) {
+    stroke: var(--highlight-color);
+}
+
+.x6-cell-tool-button.hovered > rect {
+    stroke-width: 3;
+}
+
+.x6-cell-tool-button.hovered > text {
+    font-weight: 600;
+}
+
+.x6-cell-tool-button.selected > rect {
+    stroke: var(--highlight-color);
+}
+
+.x6-cell-tool-button.selected > text {
+    fill: var(--highlight-color);
+}

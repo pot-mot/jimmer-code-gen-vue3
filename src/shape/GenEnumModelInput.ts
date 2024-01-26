@@ -39,10 +39,6 @@ export const GenEnumModelInputJsonSchema = {
                     "description": "枚举名",
                     "type": "string"
                 },
-                "orderKey": {
-                    "description": "自定排序",
-                    "type": "number"
-                },
                 "packagePath": {
                     "description": "包路径",
                     "type": "string"
@@ -56,7 +52,6 @@ export const GenEnumModelInputJsonSchema = {
                 "comment",
                 "items",
                 "name",
-                "orderKey",
                 "packagePath",
                 "remark"
             ],
@@ -77,7 +72,7 @@ export const GenEnumModelInputJsonSchema = {
                     "type": "string"
                 },
                 "orderKey": {
-                    "description": "自定排序",
+                    "description": "排序键",
                     "type": "number"
                 },
                 "remark": {

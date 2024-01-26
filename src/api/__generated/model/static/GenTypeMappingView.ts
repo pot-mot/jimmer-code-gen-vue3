@@ -11,10 +11,6 @@ export interface GenTypeMappingView {
      */
     modifiedTime: string;
     /**
-     * 备注
-     */
-    remark: string;
-    /**
      * 数据源类型
      */
     dataSourceType: DataSourceType;
@@ -31,7 +27,11 @@ export interface GenTypeMappingView {
      */
     propertyType: string;
     /**
-     * 自定排序
+     * 排序键
      */
     orderKey: number;
+    /**
+     * 备注
+     */
+    remark: string;
 }

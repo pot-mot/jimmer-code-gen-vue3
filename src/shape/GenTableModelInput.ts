@@ -1,6 +1,5 @@
 import {useShapeValidate} from "@/utils/shapeValidate.ts";
 import {
-    GenTableModelInput,
     GenTableModelInput_TargetOf_columns,
     GenTableModelInput_TargetOf_indexes
 } from "@/api/__generated/model/static";
@@ -39,10 +38,6 @@ export const GenTableModelInputJsonSchema = {
                     "description": "名称",
                     "type": "string"
                 },
-                "orderKey": {
-                    "description": "自定排序",
-                    "type": "number"
-                },
                 "remark": {
                     "description": "备注",
                     "type": "string"
@@ -57,7 +52,6 @@ export const GenTableModelInputJsonSchema = {
                 "comment",
                 "indexes",
                 "name",
-                "orderKey",
                 "remark",
                 "type"
             ],
@@ -81,13 +75,17 @@ export const GenTableModelInputJsonSchema = {
                     "description": "默认值",
                     "type": ["string", "null"]
                 },
-                "displaySize": {
-                    "description": "展示长度",
+                "dataSize": {
+                    "description": "长度",
                     "type": "number"
                 },
                 "enum": {
                     "$ref": "#/definitions/GenTableModelInput_TargetOf_columns_TargetOf_enum_2",
                     "description": "生成枚举"
+                },
+                "idGeneration": {
+                    "description": "是否为 ID 生成",
+                    "type": "boolean"
                 },
                 "logicalDelete": {
                     "description": "是否为逻辑删除",
@@ -98,11 +96,11 @@ export const GenTableModelInputJsonSchema = {
                     "type": "string"
                 },
                 "numericPrecision": {
-                    "description": "数字精度",
+                    "description": "精度",
                     "type": "number"
                 },
                 "orderKey": {
-                    "description": "在表中顺序",
+                    "description": "排序键",
                     "type": "number"
                 },
                 "overwriteByRaw": {
@@ -110,7 +108,7 @@ export const GenTableModelInputJsonSchema = {
                     "type": "boolean"
                 },
                 "partOfPk": {
-                    "description": "是否主键",
+                    "description": "是否为主键的部分",
                     "type": "boolean"
                 },
                 "rawType": {
@@ -134,7 +132,8 @@ export const GenTableModelInputJsonSchema = {
                 "autoIncrement",
                 "businessKey",
                 "comment",
-                "displaySize",
+                "dataSize",
+                "idGeneration",
                 "logicalDelete",
                 "name",
                 "numericPrecision",
@@ -173,6 +172,10 @@ export const GenTableModelInputJsonSchema = {
                     "description": "名称",
                     "type": "string"
                 },
+                "remark": {
+                    "description": "备注",
+                    "type": "string"
+                },
                 "uniqueIndex": {
                     "description": "唯一索引",
                     "type": "boolean"
@@ -181,6 +184,7 @@ export const GenTableModelInputJsonSchema = {
             "required": [
                 "columns",
                 "name",
+                "remark",
                 "uniqueIndex"
             ],
             "type": "object"
@@ -212,12 +216,6 @@ export const GenTableModelInputJsonSchema = {
         }
     }
 }
-
-export const {validate: validateTableModelInput} =
-    useShapeValidate<GenTableModelInput>(
-        "GenTableModelInput",
-        GenTableModelInputJsonSchema
-    )
 
 export const {validate: validateColumn} =
     useShapeValidate<GenTableModelInput_TargetOf_columns>(

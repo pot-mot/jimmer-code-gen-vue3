@@ -17,6 +17,7 @@ export class ConfigService {
         return (await this.executor({uri: _uri, method: 'PUT', body: options.body})) as Promise<void>;
     }
 }
+
 export type ConfigServiceOptions = {
     'getConfig': {}, 
     'setConfig': {

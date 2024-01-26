@@ -146,6 +146,7 @@ const handleClose = () => {
 		:init-w="initW" :init-h="initH" :init-x="x" :init-y="y"
 		:can-drag="canDrag"
 		fit-content
+		:modal="false"
 		@open="handleOpen"
 		@close="handleClose">
 		<el-input ref="input" v-model="keyword" clearable @change="handleSearch" @input="handleSearch" :placeholder="placeholder">

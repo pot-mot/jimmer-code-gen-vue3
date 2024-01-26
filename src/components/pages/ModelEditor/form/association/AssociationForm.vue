@@ -3,12 +3,10 @@ import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {AssociationType_CONSTANTS, DissociateAction_CONSTANTS} from "@/api/__generated/model/enums";
 import Comment from "@/components/global/common/Comment.vue";
 import {RefreshRight} from "@element-plus/icons-vue";
-import {
-	createAssociationNameByInput
-} from "@/components/pages/ModelEditor/graph/associationEdge/associationName.ts";
 import {ref, watch} from "vue";
 import {cloneDeep} from "lodash";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
+import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
 
 interface AssociationFormProps {
 	id?: string,
@@ -40,7 +38,7 @@ const handleCancel = () => {
 			<el-input v-model="association.name">
 				<template #append>
 					<el-button :icon="RefreshRight"
-							   @click="association.name = createAssociationNameByInput(association)"></el-button>
+							   @click="association.name = createAssociationName(association)"></el-button>
 				</template>
 			</el-input>
 		</el-form-item>

@@ -39,17 +39,17 @@ const handleTypeCodeChange = () => {
 		const columnDefault = columnDefaults[0]
 
 		props.modelValue.overwriteByRaw = true
-		props.modelValue.rawType = columnDefault.type
-		props.modelValue.displaySize = columnDefault.displaySize
+		props.modelValue.rawType = columnDefault.rawType
+		props.modelValue.dataSize = columnDefault.dataSize
 		props.modelValue.numericPrecision = columnDefault.numericPrecision
 		if (columnDefault.defaultValue) props.modelValue.defaultValue = columnDefault.defaultValue
 	} else {
-		const type = jdbcTypeStore.map.get(typeCode)
+		const type = jdbcTypeStore.jdbcTypeMap.get(typeCode)
 		if (type) {
 			props.modelValue.rawType = type
 		}
 		props.modelValue.overwriteByRaw = false
-		props.modelValue.displaySize = 0
+		props.modelValue.dataSize = 0
 		props.modelValue.numericPrecision = 0
 	}
 }
@@ -97,7 +97,7 @@ useClickOutside(() => wrapper.value, (e) => {
 						v-model="modelValue.typeCode"
 						filterable
 						style="width: 100%">
-						<el-option v-for="type in jdbcTypeStore.list"
+						<el-option v-for="type in jdbcTypeStore.jdbcTypeList"
 								   :label="type.type" :value="type.typeCode"></el-option>
 					</el-select>
 				</el-form-item>
@@ -113,7 +113,7 @@ useClickOutside(() => wrapper.value, (e) => {
 				<el-form-item label="长度精度">
 					<el-text style="display: grid; grid-template-columns: 0.5em 1fr 1em 1fr 0.5em">
 						<span>(</span>
-						<span><el-input-number v-model="modelValue.displaySize"
+						<span><el-input-number v-model="modelValue.dataSize"
 											   controls-position="right"></el-input-number></span>
 						<span style="padding-left: 0.3em;">,</span>
 						<span><el-input-number v-model="modelValue.numericPrecision"

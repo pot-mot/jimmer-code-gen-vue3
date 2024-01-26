@@ -32,6 +32,7 @@ export class EnumService {
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<number>;
     }
 }
+
 export type EnumServiceOptions = {
     'save': {
         body: GenEnumItemsInput

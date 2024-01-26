@@ -15,10 +15,6 @@ export interface GenTableColumnsView {
      */
     modifiedTime: string;
     /**
-     * 备注
-     */
-    remark: string;
-    /**
      * 名称
      */
     name: string;
@@ -31,9 +27,9 @@ export interface GenTableColumnsView {
      */
     type: TableType;
     /**
-     * 自定排序
+     * 备注
      */
-    orderKey: number;
+    remark: string;
     /**
      * 对应实体
      */

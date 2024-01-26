@@ -1,4 +1,4 @@
-import type {DataSourceType, GenLanguage} from '../enums/';
+import type {DataSourceType, GenLanguage, GenerationType} from '../enums/';
 import type {GenModelView_TargetOf_enums} from './';
 
 export interface GenModelView {
@@ -14,10 +14,6 @@ export interface GenModelView {
      * 修改时间
      */
     modifiedTime: string;
-    /**
-     * 备注
-     */
-    remark: string;
     /**
      * 名称
      */
@@ -62,6 +58,10 @@ export interface GenModelView {
      * 生成 IdView 属性
      */
     idViewProperty: boolean;
+    /**
+     * ID 生成类型
+     */
+    idGenerationType: GenerationType;
     /**
      * 逻辑删除注解
      */
@@ -114,6 +114,10 @@ export interface GenModelView {
      * 转换属性时移除的列注释后缀
      */
     columnCommentSuffixes: string;
+    /**
+     * 备注
+     */
+    remark: string;
     /**
      * 枚举
      */

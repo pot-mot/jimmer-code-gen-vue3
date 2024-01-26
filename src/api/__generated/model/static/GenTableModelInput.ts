@@ -3,10 +3,6 @@ import type {GenTableModelInput_TargetOf_columns, GenTableModelInput_TargetOf_in
 
 export interface GenTableModelInput {
     /**
-     * 备注
-     */
-    remark: string;
-    /**
      * 名称
      */
     name: string;
@@ -19,9 +15,9 @@ export interface GenTableModelInput {
      */
     type: TableType;
     /**
-     * 自定排序
+     * 备注
      */
-    orderKey: number;
+    remark: string;
     /**
      * 模型
      */

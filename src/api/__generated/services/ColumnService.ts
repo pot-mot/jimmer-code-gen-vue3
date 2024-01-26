@@ -12,6 +12,7 @@ export class ColumnService {
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<GenColumnCommonView>>;
     }
 }
+
 export type ColumnServiceOptions = {
     'query': {
         body: ColumnQuery

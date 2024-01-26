@@ -10,8 +10,11 @@ import 'element-plus/dist/index.css'
 import './assets/base.css'
 import './assets/util.css'
 import './assets/element-overwrite.css'
-
 import './components/global/list/list.css'
+
+import './assets/model-editor-graph.css'
+import './assets/table-node.css'
+import './assets/association-edge.css'
 
 import {registerModelEditorShape} from "@/components/business/modelEditor/register.ts";
 import {useCodeEditor} from "@/components/global/code/CodeEditorWorkers.ts";

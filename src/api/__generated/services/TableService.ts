@@ -47,6 +47,7 @@ export class TableService {
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<GenTableIdView>>;
     }
 }
+
 export type TableServiceOptions = {
     'queryIdView': {
         body: TableQuery

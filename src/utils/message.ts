@@ -2,6 +2,8 @@ import {ElMessage, ElMessageBox} from 'element-plus'
 import {Delete} from "@element-plus/icons-vue";
 import {ElMessageBoxOptions} from "element-plus/es/components/message-box/src/message-box.type";
 import {markRaw} from "vue";
+import {DEBUG_LOG__MESSAGE} from "@/config/debug.ts";
+import {debugLog} from "@/utils/debugLog.ts";
 
 /**
  * 向用户发送消息
@@ -30,6 +32,10 @@ export const sendMessage = (message: string, type: "info" | "success" | "warning
     } else if (type == "error") {
         console.error(new Error(message))
         if (data) console.error(obj)
+    }
+
+    if (DEBUG_LOG__MESSAGE) {
+        debugLog(`[${type}] ` + message, obj)
     }
 }
 

@@ -6,7 +6,7 @@ import GenerateConfigForm from "@/components/business/genConfig/GenConfigForm.vu
 import TypeMappingsEditor from "@/components/business/typeMapping/TypeMappingsEditor.vue";
 import ColumnDefaultEditor from "@/components/business/columnDefault/ColumnDefaultEditor.vue";
 import {GenerateConfiguratorOption, GenerateConfiguratorOptions} from "@/components/business/globalConfig/constant.ts";
-import {useGlobalGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
+import {useGlobalGenConfigStore} from "@/components/business/genConfig/GlobalGenConfigStore.ts";
 
 const configType = ref<GenerateConfiguratorOption | undefined>()
 

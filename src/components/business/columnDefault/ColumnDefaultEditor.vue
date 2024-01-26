@@ -10,7 +10,7 @@ import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep, uniqWith} from "lodash";
 import {useJdbcTypeStore} from "@/components/business/jdbcType/jdbcTypeStore.ts";
 import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
-import {useGlobalGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
+import {useGlobalGenConfigStore} from "@/components/business/genConfig/GlobalGenConfigStore.ts";
 import {validateColumnDefaultInput} from "@/shape/GenColumnDefaultInput.ts";
 
 const editState = ref(false)
@@ -27,11 +27,11 @@ const columnDefaultProps = <PropListColumn<GenColumnDefaultInput>[]>[
 	},
 
 	{
-		prop: 'type',
+		prop: 'rawType',
 		label: '类型',
 	},
 	{
-		prop: 'displaySize',
+		prop: 'dataSize',
 		label: '长度',
 	},
 	{
@@ -60,9 +60,9 @@ const tempColumnDefaults = ref<GenColumnDefaultView[]>([])
 
 const defaultColumnDefault = ref<GenColumnDefaultInput>({
 	dataSourceType: "MySQL",
-	type: 'BIGINT',
+	rawType: 'BIGINT',
 	typeCode: -7,
-	displaySize: 0,
+	dataSize: 0,
 	numericPrecision: 0,
 	remark: "",
 	orderKey: 0,
@@ -75,10 +75,10 @@ genConfigStore.onLoaded(() => {
 })
 
 jdbcTypeStore.onLoaded(() => {
-	const first = jdbcTypeStore.list[0]
+	const first = jdbcTypeStore.jdbcTypeList[0]
 
 	if (first) {
-		defaultColumnDefault.value.type = first.type
+		defaultColumnDefault.value.rawType = first.type
 		defaultColumnDefault.value.typeCode = first.typeCode
 	}
 })
@@ -117,8 +117,8 @@ const handleSubmit = async () => {
 	}
 
 	tempColumnDefaults.value.forEach((columnDefault) => {
-		if (columnDefault.displaySize == null) {
-			messageList.push('ColumnDefault 的 displaySize 不可为空');
+		if (columnDefault.dataSize == null) {
+			messageList.push('ColumnDefault 的 dataSize 不可为空');
 		}
 		if (columnDefault.numericPrecision == null) {
 			messageList.push('ColumnDefault 的 numericPrecision 不可为空');
@@ -171,17 +171,17 @@ const handleCancel = () => {
 					<el-select
 						v-model="data.typeCode"
 						@change="(typeCode: number) => {
-								data.type = jdbcTypeStore.map.get(typeCode)!
+								data.rawType = jdbcTypeStore.jdbcTypeMap.get(typeCode)!
 							}"
 						filterable
 						style="width: 100%">
-						<el-option v-for="type in jdbcTypeStore.list"
+						<el-option v-for="type in jdbcTypeStore.jdbcTypeList"
 								   :label="type.type" :value="type.typeCode"></el-option>
 					</el-select>
 				</template>
 
-				<template #displaySize="{data}">
-					<el-input-number v-model="data.displaySize" controls-position="right"></el-input-number>
+				<template #dataSize="{data}">
+					<el-input-number v-model="data.dataSize" controls-position="right"></el-input-number>
 				</template>
 
 				<template #numericPrecision="{data}">
@@ -198,7 +198,7 @@ const handleCancel = () => {
 		<template v-else>
 			<ViewList :columns="columnDefaultProps" :lines="columnDefaults" height="2em">
 				<template #typeCode="{data}">
-					<el-text>{{ jdbcTypeStore.map.get(data.typeCode) }}</el-text>
+					<el-text v-text="jdbcTypeStore.jdbcTypeMap.get(data.typeCode)"></el-text>
 				</template>
 			</ViewList>
 

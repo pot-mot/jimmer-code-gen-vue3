@@ -1,9 +1,5 @@
 export interface GenModelInput_TargetOf_enums_TargetOf_items_2 {
     /**
-     * 备注
-     */
-    remark: string;
-    /**
      * 元素名
      */
     name: string;
@@ -16,7 +12,11 @@ export interface GenModelInput_TargetOf_enums_TargetOf_items_2 {
      */
     comment: string;
     /**
-     * 自定排序
+     * 排序键
      */
     orderKey: number;
+    /**
+     * 备注
+     */
+    remark: string;
 }

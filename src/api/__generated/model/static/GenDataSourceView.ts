@@ -14,10 +14,6 @@ export interface GenDataSourceView {
      */
     modifiedTime: string;
     /**
-     * 备注
-     */
-    remark: string;
-    /**
      * 数据库类型
      */
     type: DataSourceType;
@@ -38,7 +34,7 @@ export interface GenDataSourceView {
      */
     urlSuffix: string;
     /**
-     * 自定排序
+     * 备注
      */
-    orderKey: number;
+    remark: string;
 }

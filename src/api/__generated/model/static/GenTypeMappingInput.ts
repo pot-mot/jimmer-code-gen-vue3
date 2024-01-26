@@ -3,10 +3,6 @@ import type {DataSourceType, GenLanguage} from '../enums/';
 export interface GenTypeMappingInput {
     id?: number | undefined;
     /**
-     * 备注
-     */
-    remark: string;
-    /**
      * 数据源类型
      */
     dataSourceType: DataSourceType;
@@ -23,7 +19,11 @@ export interface GenTypeMappingInput {
      */
     propertyType: string;
     /**
-     * 自定排序
+     * 排序键
      */
     orderKey: number;
+    /**
+     * 备注
+     */
+    remark: string;
 }

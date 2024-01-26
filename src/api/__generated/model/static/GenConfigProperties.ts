@@ -1,4 +1,4 @@
-import type {DataSourceType, GenLanguage} from '../enums/';
+import type {DataSourceType, GenLanguage, GenerationType} from '../enums/';
 
 export interface GenConfigProperties {
     /**
@@ -37,6 +37,10 @@ export interface GenConfigProperties {
      * 生成 IdView 属性
      */
     idViewProperty?: boolean | undefined;
+    /**
+     * ID 生成类型
+     */
+    idGenerationType?: GenerationType | undefined;
     /**
      * 逻辑删除注解
      */

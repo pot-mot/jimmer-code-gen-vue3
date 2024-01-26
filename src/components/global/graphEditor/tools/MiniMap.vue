@@ -2,7 +2,8 @@
 import {nextTick, ref} from "vue";
 import {MiniMap} from "@antv/x6-plugin-minimap";
 import {ArrowDown, ArrowUp} from "@element-plus/icons-vue";
-import {Graph} from "@antv/x6";
+import {Graph, Node} from "@antv/x6";
+import {SimpleNodeView} from "@/components/pages/ModelEditor/graph/tableNode/simpleNode.ts";
 
 const openState = ref(false)
 
@@ -33,6 +34,9 @@ const setMiniMap = async () => {
 				if (cell.isEdge()) {
 					return null
 				}
+				if (cell.isNode()) {
+					return SimpleNodeView
+				}
 			},
 		}
 	})
@@ -50,9 +54,6 @@ const open = () => {
 }
 
 const close = () => {
-	if (minimap.value) {
-		minimap.value.dispose()
-	}
 	openState.value = false
 }
 

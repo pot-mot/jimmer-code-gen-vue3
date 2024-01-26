@@ -136,6 +136,7 @@ export class PreviewService {
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<Pair<string, string>>>;
     }
 }
+
 export type PreviewServiceOptions = {
     'previewTableDefine': {
         tableIds: Array<number>, 

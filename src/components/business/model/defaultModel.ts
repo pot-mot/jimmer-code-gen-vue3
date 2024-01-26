@@ -3,7 +3,7 @@ import {
     DataSourceType_CONSTANTS,
     GenLanguage_CONSTANTS
 } from "@/api/__generated/model/enums";
-import {useGlobalGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
+import {useGlobalGenConfigStore} from "@/components/business/genConfig/GlobalGenConfigStore.ts";
 
 export const getDefaultModel = (): GenModelInput => {
     const genConfigStore = useGlobalGenConfigStore()
@@ -21,6 +21,7 @@ export const getDefaultModel = (): GenModelInput => {
         lowerCaseName: true,
         realFk: true,
         idViewProperty: true,
+        idGenerationType: "IDENTITY",
         logicalDeletedAnnotation: "",
         tableAnnotation: true,
         columnAnnotation: true,

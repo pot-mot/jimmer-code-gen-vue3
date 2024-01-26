@@ -15,9 +15,9 @@ const models = ref<GenModelSimpleView[]>()
 const modelsLoading = useLoading('ModelMenu:modelsLoading')
 
 const getModels = async () => {
-	const flag = modelsLoading.add('get')
+	const flag = modelsLoading.start('get')
 	models.value = await api.modelService.list()
-	modelsLoading.sub(flag)
+	modelsLoading.stop(flag)
 }
 
 onMounted(() => {

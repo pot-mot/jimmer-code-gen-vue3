@@ -3,10 +3,6 @@ import type {GenModelInput_TargetOf_enums_TargetOf_items_2} from './';
 
 export interface GenModelInput_TargetOf_enums {
     /**
-     * 备注
-     */
-    remark: string;
-    /**
      * 包路径
      */
     packagePath: string;
@@ -23,9 +19,9 @@ export interface GenModelInput_TargetOf_enums {
      */
     enumType?: EnumType | undefined;
     /**
-     * 自定排序
+     * 备注
      */
-    orderKey: number;
+    remark: string;
     /**
      * 模型
      */

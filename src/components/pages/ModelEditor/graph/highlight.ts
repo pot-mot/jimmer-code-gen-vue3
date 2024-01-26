@@ -1,19 +1,15 @@
-import {Edge, Graph, Node} from "@antv/x6";
+import {Edge, Graph, Node, Cell} from "@antv/x6";
 import {
     ASSOCIATION_EDGE,
-    ASSOCIATION_LINE_WIDTH,
-    HIGHLIGHT_ASSOCIATION_LINE_WIDTH,
-    COMMON_COLOR,
-    HIGHLIGHT_COLOR,
     TABLE_NODE
 } from "@/components/business/modelEditor/constant.ts";
-import {setAssociationTypeButton} from "@/components/pages/ModelEditor/graph/associationEdge/associationTypeButton.ts";
 
-const stopHistoryAction = (graph: Graph, fn: Function) => {
-    graph.disableHistory()
-    fn()
-    graph.enableHistory()
-}
+
+const SELECT_CLASS = "selected"
+
+const HOVER_CLASS = "hovered"
+
+const STATE_CLASSES = [SELECT_CLASS, HOVER_CLASS]
 
 const judgeNode = (node: Node) => {
     return node && node.shape == TABLE_NODE && node.getData()?.wrapper && node.getData()?.wrapper.value
@@ -23,71 +19,61 @@ const judgeEdge = (edge: Edge) => {
     return edge && edge.shape == ASSOCIATION_EDGE
 }
 
-const getWrapper = (node: Node): HTMLElement | undefined => {
-    return node.getData()?.wrapper?.value as HTMLElement | undefined
+const getElements = (cellId: string): NodeListOf<HTMLElement> => {
+    return document.documentElement.querySelectorAll(`[data-cell-id='${cellId}']`)
 }
 
 const nodeHover = (node: Node) => {
     if (judgeNode(node)) {
-        getWrapper(node)?.classList.add('hovered')
+        getElements(node.id).forEach(it => it.classList.add(HOVER_CLASS))
     }
 }
 
 const nodeUnhover = (node: Node) => {
     if (judgeNode(node)) {
-        getWrapper(node)?.classList.remove('hovered')
+        getElements(node.id).forEach(it => it.classList.remove(HOVER_CLASS))
     }
 }
 
 const nodeSelected = (node: Node) => {
     if (judgeNode(node)) {
-        getWrapper(node)?.classList.add('selected')
+        getElements(node.id).forEach(it => it.classList.add(SELECT_CLASS))
     }
 }
 
 const nodeUnselected = (node: Node) => {
     if (judgeNode(node)) {
-        getWrapper(node)?.classList.remove('selected')
+        getElements(node.id).forEach(it => it.classList.remove(SELECT_CLASS))
     }
 }
 
-const edgeHover = (edge: Edge, graph: Graph) => {
+const edgeHover = (edge: Edge) => {
     if (judgeEdge(edge)) {
-        stopHistoryAction(graph, () => {
-            edge.attr('line/strokeWidth', HIGHLIGHT_ASSOCIATION_LINE_WIDTH)
-        })
+        getElements(edge.id).forEach(it => it.classList.add(HOVER_CLASS))
     }
 }
 
-const edgeUnhover = (edge: Edge, graph: Graph) => {
+const edgeUnhover = (edge: Edge) => {
     if (judgeEdge(edge)) {
-        stopHistoryAction(graph, () => {
-            edge.attr('line/strokeWidth', ASSOCIATION_LINE_WIDTH)
-        })
+        getElements(edge.id).forEach(it => it.classList.remove(HOVER_CLASS))
     }
 }
 
-const edgeSelected = (edge: Edge, graph: Graph) => {
+const edgeSelected = (edge: Edge) => {
     if (judgeEdge(edge)) {
-        stopHistoryAction(graph, () => {
-            edge.attr('line/stroke', HIGHLIGHT_COLOR)
-            setAssociationTypeButton(edge, graph, {select: true})
-        })
+        getElements(edge.id).forEach(it => it.classList.add(SELECT_CLASS))
     }
 }
 
-const edgeUnselected = (edge: Edge, graph: Graph) => {
+const edgeUnselected = (edge: Edge) => {
     if (judgeEdge(edge)) {
-        stopHistoryAction(graph, () => {
-            edge.attr('line/stroke', COMMON_COLOR)
-            setAssociationTypeButton(edge, graph, {select: false})
-        })
+        getElements(edge.id).forEach(it => it.classList.remove(SELECT_CLASS))
     }
 }
 
 export const unHoverAll = (graph: Graph) => {
     for (let edge of graph.getEdges()) {
-        edgeUnhover(edge, graph)
+        edgeUnhover(edge)
     }
 
     for (let node of graph.getNodes()) {
@@ -96,24 +82,30 @@ export const unHoverAll = (graph: Graph) => {
 }
 
 export const unStyleAll = (graph: Graph) => {
-    stopHistoryAction(graph, () => {
-        graph.cleanSelection()
-    })
+    graph.disableHistory()
+    graph.cleanSelection()
     unHoverAll(graph)
-
+    graph.enableHistory()
 }
 
-export const useHoverToFront = (graph: Graph) => {
-    graph.on('cell:mouseenter', ({cell}) => {
-        stopHistoryAction(graph, () => {
-            cell.toFront()
+const toFront = (cell: Cell, graph: Graph) => {
+    graph.disableHistory()
+    cell.toFront()
+    if (cell.isNode()) {
+        for (let edge of graph.getConnectedEdges(cell)) {
+            edge.toFront()
+        }
+    }
+    graph.enableHistory()
+}
 
-            if (cell.isNode()) {
-                for (let edge of graph.getConnectedEdges(cell)) {
-                    edge.toFront()
-                }
-            }
-        })
+export const useInteractionToFront = (graph: Graph) => {
+    graph.on('cell:mouseenter', ({cell}) => {
+        toFront(cell, graph)
+    })
+
+    graph.on('cell:selected', ({cell}) => {
+        toFront(cell, graph)
     })
 }
 
@@ -133,30 +125,30 @@ export const useStyle = (graph: Graph) => {
     graph.on('node:mouseenter', ({node}) => {
         nodeHover(node)
         for (let edge of graph.getConnectedEdges(node)) {
-            edgeHover(edge, graph)
+            edgeHover(edge)
         }
     })
     graph.on('node:mouseleave', ({node}) => {
         nodeUnhover(node)
         for (let edge of graph.getConnectedEdges(node)) {
-            edgeUnhover(edge, graph)
+            edgeUnhover(edge)
         }
     })
 
     graph.on('edge:added', ({edge}) => {
-        edgeUnhover(edge, graph)
-        edgeUnselected(edge, graph)
+        edgeUnhover(edge)
+        edgeUnselected(edge)
     })
 
     graph.on('edge:selected', ({edge}) => {
-        edgeSelected(edge, graph)
+        edgeSelected(edge)
     })
     graph.on('edge:unselected', ({edge}) => {
-        edgeUnselected(edge, graph)
+        edgeUnselected(edge)
     })
 
     graph.on('edge:mouseenter', ({edge}) => {
-        edgeHover(edge, graph)
+        edgeHover(edge)
         const nodes = [edge.getSourceNode(), edge.getTargetNode()]
         nodes.forEach(node => {
             if (node) {
@@ -165,7 +157,7 @@ export const useStyle = (graph: Graph) => {
         })
     })
     graph.on('edge:mouseleave', ({edge}) => {
-        edgeUnhover(edge, graph)
+        edgeUnhover(edge)
         const nodes = [edge.getSourceNode(), edge.getTargetNode()]
         nodes.forEach(node => {
             if (node) {
@@ -174,11 +166,18 @@ export const useStyle = (graph: Graph) => {
         })
     })
 
-    graph.on('node:removed', () => {
-        unStyleAll(graph)
-    })
+    // 将 edge 的样式状态同步到 tools
+    graph.on('edge:change:tools', ({edge}) => {
+        const edgeElement = document.documentElement.querySelector(`[data-cell-id='${edge.id}'].x6-edge`)
 
-    graph.on('edge:removed', () => {
-        unStyleAll(graph)
+        if (edgeElement) {
+            setTimeout(() => {
+                STATE_CLASSES.forEach(stateClass => {
+                    if (edgeElement.classList.contains(stateClass)) {
+                        getElements(edge.id).forEach(it => it.classList.add(stateClass))
+                    }
+                })
+            }, (edge.getTools()?.items.length ?? 0) * 40)
+        }
     })
 }

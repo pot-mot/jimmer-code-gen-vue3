@@ -19,9 +19,9 @@ const models = ref<GenModelSimpleView[]>([])
 const modelsLoading = useLoading('ModelListPage:modelsLoading')
 
 const getModels = async () => {
-	const flag = modelsLoading.add('get')
+	const flag = modelsLoading.start('get')
 	models.value = await api.modelService.list()
-	modelsLoading.sub(flag)
+	modelsLoading.stop(flag)
 }
 
 onMounted(() => {
@@ -63,7 +63,7 @@ const emitLoadModelJson = () => {
 }
 
 const handleLoadModelJson = async (e: Event) => {
-	const flag = modelsLoading.add('loadModelJson')
+	const flag = modelsLoading.start('loadModelJson')
 
 	const input = e.target as HTMLInputElement
 
@@ -84,14 +84,14 @@ const handleLoadModelJson = async (e: Event) => {
 
 	input.value = ''
 
-	modelsLoading.sub(flag)
+	modelsLoading.stop(flag)
 }
 
 const handleEdit = (model?: Partial<GenModelInput>) => {
 	editModel.value = {...getDefaultModel(), ...model}
 }
 const handleSubmit = async (model: GenModelInput) => {
-	const flag = modelsLoading.add('handleSubmit')
+	const flag = modelsLoading.start('handleSubmit')
 
 	try {
 		const isUpdate = (model.id != undefined)
@@ -111,11 +111,11 @@ const handleSubmit = async (model: GenModelInput) => {
 		sendMessage(`模型修改失败，原因：${e}`, 'error', e)
 	}
 
-	modelsLoading.sub(flag)
+	modelsLoading.stop(flag)
 }
 
 const handleExport = async (model: GenModelSimpleView) => {
-	const flag = modelsLoading.add('handleExport')
+	const flag = modelsLoading.start('handleExport')
 
 	const modeView = await api.modelService.get({id: model.id})
 
@@ -125,14 +125,14 @@ const handleExport = async (model: GenModelSimpleView) => {
 		sendMessage('模型导出失败', 'error', model)
 	}
 
-	modelsLoading.sub(flag)
+	modelsLoading.stop(flag)
 }
 
 const handleDelete = (model: GenModelSimpleView) => {
 	deleteConfirm(
 		`模型【${model.name}】`,
 		async () => {
-			const flag = modelsLoading.add('handleDelete')
+			const flag = modelsLoading.start('handleDelete')
 
 			const count = await api.modelService.delete({ids: [model.id]})
 			if (count > 0) {
@@ -142,7 +142,7 @@ const handleDelete = (model: GenModelSimpleView) => {
 				sendMessage('删除模型失败', 'error')
 			}
 
-			modelsLoading.sub(flag)
+			modelsLoading.stop(flag)
 		}
 	)
 }

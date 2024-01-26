@@ -28,25 +28,25 @@ const associationsLoading = useLoading('ModelTableItem:associationsLoading')
 
 const getColumns = async () => {
 	if (!props.showConfig.showColumns) return
-	const flag = columnsLoading.add('get')
+	const flag = columnsLoading.start('get')
 	columns.value = await api.columnService.query({
 		body: {
 			tableIds: [props.table.id]
 		}
 	})
-	columnsLoading.sub(flag)
+	columnsLoading.stop(flag)
 }
 
 const getAssociations = async () => {
 	if (!props.showConfig.showAssociations) return
-	const flag = associationsLoading.add('get')
+	const flag = associationsLoading.start('get')
 	associations.value = await api.associationService.queryByTable({
 		body: {
 			tableIds: [props.table.id],
 			selectType: "OR"
 		}
 	})
-	associationsLoading.sub(flag)
+	associationsLoading.stop(flag)
 }
 </script>
 

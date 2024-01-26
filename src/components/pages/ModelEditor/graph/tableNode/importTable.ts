@@ -36,13 +36,13 @@ export const tableViewToInput = (tableView: GenTableColumnsView): GenTableModelI
     return {
         comment: tableView.comment,
         name: tableView.name,
-        orderKey: tableView.orderKey,
         remark: tableView.remark,
         type: tableView.type,
         indexes: tableView.indexes.map(indexView => {
             return {
                 name: indexView.name,
                 uniqueIndex: indexView.uniqueIndex,
+                remark: indexView.remark,
                 columns: tableView.columns
                     .filter(it => indexView.columnIds.includes(it.id))
                     .map(it => it.name)
@@ -56,7 +56,7 @@ export const tableViewToInput = (tableView: GenTableColumnsView): GenTableModelI
                 autoIncrement: column.autoIncrement,
                 comment: column.comment,
                 defaultValue: column.defaultValue,
-                displaySize: column.displaySize,
+                dataSize: column.dataSize,
                 name: column.name,
                 numericPrecision: column.numericPrecision,
                 orderKey: column.orderKey,

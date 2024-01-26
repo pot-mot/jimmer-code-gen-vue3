@@ -11,6 +11,7 @@ export class JdbcService {
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<{[key:string]: number}>;
     }
 }
+
 export type JdbcServiceOptions = {
     'listType': {}
 }

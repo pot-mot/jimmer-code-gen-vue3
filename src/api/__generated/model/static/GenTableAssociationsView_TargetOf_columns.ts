@@ -12,10 +12,6 @@ export interface GenTableAssociationsView_TargetOf_columns {
      */
     modifiedTime: string;
     /**
-     * 备注
-     */
-    remark: string;
-    /**
      * 名称
      */
     name: string;
@@ -36,11 +32,11 @@ export interface GenTableAssociationsView_TargetOf_columns {
      */
     typeNotNull: boolean;
     /**
-     * 展示长度
+     * 长度
      */
-    displaySize: number;
+    dataSize: number;
     /**
-     * 数字精度
+     * 精度
      */
     numericPrecision: number;
     /**
@@ -52,7 +48,7 @@ export interface GenTableAssociationsView_TargetOf_columns {
      */
     comment: string;
     /**
-     * 是否主键
+     * 是否为主键的部分
      */
     partOfPk: boolean;
     /**
@@ -64,13 +60,21 @@ export interface GenTableAssociationsView_TargetOf_columns {
      */
     businessKey: boolean;
     /**
+     * 是否为 ID 生成
+     */
+    idGeneration: boolean;
+    /**
      * 是否为逻辑删除
      */
     logicalDelete: boolean;
     /**
-     * 在表中顺序
+     * 排序键
      */
     orderKey: number;
+    /**
+     * 备注
+     */
+    remark: string;
     /**
      * 归属表
      */

@@ -1,4 +1,4 @@
-.wrapper {
+.model-editor-graph {
     position: relative;
     height: 100%;
     width: 100%;
@@ -7,7 +7,11 @@
     --common-color: var(--el-color-info-dark-2);
 }
 
-.toolbar {
+.model-editor-graph.non-drag .x6-graph-svg {
+    cursor: default;
+}
+
+.model-editor-graph .toolbar {
     font-size: 12px;
     max-width: 50%;
     position: absolute;
@@ -15,35 +19,35 @@
     box-shadow: var(--el-box-shadow);
 }
 
-ul.toolbar > li {
+.model-editor-graph ul.toolbar > li {
     display: inline;
     padding-right: 0.5em;
 }
 
-.toolbar.right-top {
+.model-editor-graph .toolbar.right-top {
     top: 0;
     right: 0;
 }
 
-.toolbar.left-top {
+.model-editor-graph .toolbar.left-top {
     top: 0;
     left: 0;
 }
 
-.toolbar.right-bottom {
+.model-editor-graph .toolbar.right-bottom {
     bottom: 0;
     right: 0;
 }
 
-.toolbar.left-bottom {
+.model-editor-graph .toolbar.left-bottom {
     bottom: 0;
     left: 0;
 }
 
-.x6-node-selected .node-wrapper {
+.model-editor-graph .x6-node-selected .node-wrapper {
     border: 2px solid var(--highlight-color);
 }
 
-.x6-highlight-stroke {
+.model-editor-graph .x6-highlight-stroke {
     stroke: var(--highlight-color) !important;
 }

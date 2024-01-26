@@ -18,6 +18,7 @@ import {tableIndexColumns} from "@/components/business/table/tableIndexColumns.t
 import Details from "@/components/global/common/Details.vue";
 import {getDefaultTable, getDefaultColumn, getDefaultIndex} from "@/components/business/table/defaultTable.ts";
 import {validateColumn, validateIndex} from "@/shape/GenTableModelInput.ts";
+import {createIndexName} from "@/components/pages/ModelEditor/graph/nameTemplate/createIndexName.ts";
 
 const store = useModelEditorStore()
 
@@ -106,8 +107,8 @@ const handleSubmit = () => {
 		if (!column.name) {
 			messageList.push('列名不得为空')
 		}
-		if (column.displaySize == null) {
-			messageList.push('column 的 displaySize 不可为空');
+		if (column.dataSize == null) {
+			messageList.push('column 的 dataSize 不可为空');
 		}
 		if (column.numericPrecision == null) {
 			messageList.push('column 的 numericPrecision 不可为空');
@@ -140,6 +141,11 @@ const handleSubmit = () => {
 			} else {
 				newColumns.push(column)
 			}
+		}
+
+		if (newColumns.length == 0) {
+			messageList.push('索引引用列不得为空')
+			break
 		}
 
 		const columnNameSet = new Set<string>(newColumns.map(it => it.name))
@@ -241,6 +247,10 @@ const handleCancel = () => {
 						<el-checkbox v-model="data.autoIncrement" class="cling-checkbox"></el-checkbox>
 					</el-tooltip>
 
+					<el-tooltip v-if="data.partOfPk" :auto-close="500" content="id 生成">
+						<el-checkbox v-model="data.idGeneration" class="cling-checkbox"></el-checkbox>
+					</el-tooltip>
+
 					<el-tooltip v-if="!data.partOfPk" :auto-close="500" content="业务键">
 						<el-checkbox v-model="data.businessKey" class="cling-checkbox"></el-checkbox>
 					</el-tooltip>
@@ -294,12 +304,16 @@ const handleCancel = () => {
 				style="width: 98%;">
 
 				<template #uniqueIndex="{data}">
-					<el-switch v-model="data.uniqueIndex"></el-switch>
+					<el-switch v-model="data.uniqueIndex"
+							   @change="data.name = createIndexName(data)"></el-switch>
 				</template>
 
 				<template #columns="{data}">
 					<el-select :model-value="data.columns.map(it => it.name)" multiple style="width: 100%;"
-							   @change="(value: string[]) => {data.columns = value.map(it => {return {name: it}})}">
+							   @change="(value: string[]) => {
+								   data.columns = value.map(it => {return {name: it}})
+								   data.name = createIndexName(data)
+							   }">
 						<el-option v-for="name in columnNames" :value="name"></el-option>
 					</el-select>
 				</template>

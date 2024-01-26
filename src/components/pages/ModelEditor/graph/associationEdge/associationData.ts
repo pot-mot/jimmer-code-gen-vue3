@@ -10,7 +10,7 @@ import {
     GenAssociationModelInput_TargetOf_columnReferences, GenTableModelInput
 } from "@/api/__generated/model/static";
 import {AssociationType} from "@/api/__generated/model/enums";
-import {createAssociationName} from "@/components/pages/ModelEditor/graph/associationEdge/associationName.ts";
+import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
 
 export const getTableColumnByEdgeConnect = (
     edgeConnect: EdgeConnect
@@ -72,14 +72,7 @@ const createAssociationByEdge = (
             DEFAULT_ASSOCIATION_FAKE
 
     const name: string = association?.name ?
-        association.name :
-        createAssociationName(
-            sourceTable.name,
-            [sourceColumn ? sourceColumn.name : ''],
-            targetTable.name,
-            [targetColumn ? targetColumn.name : ''],
-            type,
-        )
+        association.name : ""
     const dissociateAction =
         association?.dissociateAction ?
             association.dissociateAction : undefined
@@ -126,7 +119,7 @@ const createAssociationByEdge = (
         })
     }
 
-    return {
+    const newAssociation: GenAssociationModelInput = {
         name,
         sourceTable: {
             name: sourceTable.name,
@@ -143,6 +136,12 @@ const createAssociationByEdge = (
         updateAction,
         deleteAction
     }
+
+    if (newAssociation.name.trim().length == 0) {
+        newAssociation.name = createAssociationName(newAssociation)
+    }
+
+    return newAssociation
 }
 export const setEdgeAssociationData = (edge: Edge) => {
     const association = createAssociationByEdge(edge)

@@ -1,5 +1,5 @@
 <template>
-	<div ref="wrapper" class="wrapper">
+	<div ref="wrapper" class="model-editor-graph" :class="isDragging ? '' : 'non-drag'">
 		<div ref="container"></div>
 
 		<ul v-if="store.isLoaded" class="toolbar left-top">
@@ -122,18 +122,17 @@
 		</ul>
 
 		<div v-if="store.isLoaded" class="toolbar right-bottom" style="width: max(15vw, 200px)">
-			<ScaleBar :graph="store._graph()"></ScaleBar>
+			<MiniMap :graph="graph"></MiniMap>
+			<ScaleBar :graph="graph"></ScaleBar>
 		</div>
 
 		<template v-if="store.isLoaded">
-			<GraphSearcher :graph="store._graph()"></GraphSearcher>
+			<GraphSearcher :graph="graph"></GraphSearcher>
 		</template>
 	</div>
 </template>
 
 <style scoped>
-@import "../../../../assets/graph-common.css";
-
 .multi-code-preview {
 	height: calc(100vh - 30px);
 	width: 100%;
@@ -166,8 +165,8 @@ import CenterIcon from "@/components/global/icons/toolbar/CenterIcon.vue";
 import EraserIcon from "@/components/global/icons/toolbar/EraserIcon.vue";
 import AssociationOffIcon from "@/components/global/icons/toolbar/AssociationOffIcon.vue";
 import DownloadIcon from "@/components/global/icons/toolbar/DownloadIcon.vue";
-import ScaleBar from "@/components/global/graphEditor/tools/ScaleBar.vue";
-import GraphSearcher from "@/components/global/graphEditor/tools/GraphSearcher.vue";
+import ScaleBar from "@/components/global/graphEditor/scale/ScaleBar.vue";
+import GraphSearcher from "@/components/pages/ModelEditor/searcher/GraphSearcher.vue";
 import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
 import {EditPen} from "@element-plus/icons-vue";
 import {debugLog} from "@/utils/debugLog.ts";
@@ -186,6 +185,8 @@ import {
 import {cloneDeep} from "lodash";
 import {TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {useDocumentEvent} from "@/utils/useDocumentEvent.ts";
+import {DEBUG_LOG__MODEL_EDITOR_HISTORY} from "@/config/debug.ts";
+import MiniMap from "@/components/global/graphEditor/tools/MiniMap.vue";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -197,13 +198,14 @@ const store = useModelEditorStore()
 const loadingStore = useGlobalLoadingStore()
 
 onMounted(async () => {
-	const flag = loadingStore.add('ModelEditorGraph onMounted')
+	const flag = loadingStore.start('ModelEditorGraph onMounted')
 
 	graph = initModelEditor(container.value!, wrapper.value!)
 	await store.load(graph)
 
 	graph.on('history:change', (args) => {
-		debugLog(args.options.name, args)
+		if (DEBUG_LOG__MODEL_EDITOR_HISTORY)
+			debugLog(args.options.name, args)
 	})
 
 	graph.on('blank:dblclick', ({e}) => {
@@ -220,7 +222,7 @@ onMounted(async () => {
 
 	handleHistoryKeyEvent(graph)
 
-	loadingStore.sub(flag)
+	loadingStore.stop(flag)
 })
 
 onUnmounted(() => {
@@ -251,7 +253,7 @@ const handleNodeClick = (node: Node) => {
 }
 
 const handleSaveModel = async () => {
-	const flag = loadingStore.add('ModelEditorGraph handleSaveModel')
+	const flag = loadingStore.start('ModelEditorGraph handleSaveModel')
 
 	try {
 		let model = store._currentModel()
@@ -273,7 +275,7 @@ const handleSaveModel = async () => {
 		sendMessage(`模型保存失败，原因：${e}`, 'error', e)
 	}
 
-	loadingStore.sub(flag)
+	loadingStore.stop(flag)
 }
 
 const handleSaveEvent = (e: KeyboardEvent) => {
@@ -286,6 +288,20 @@ const handleSaveEvent = (e: KeyboardEvent) => {
 }
 
 useDocumentEvent('keydown', handleSaveEvent)
+
+const isDragging = ref(false)
+
+useDocumentEvent('mousedown', (e) => {
+	if (e.button == 2) {
+		isDragging.value = true
+	}
+})
+
+useDocumentEvent('mouseup', (e) => {
+	if (e.button == 2) {
+		isDragging.value = false
+	}
+})
 
 watch(() => store.isModelLoaded, async (value) => {
 	if (value) {
@@ -330,11 +346,11 @@ watch(() => entityPreviewDialogOpenState.value, async (openState) => {
 
 const handleEntityPreview = async () => {
 	sendGraphDataChangeMessage()
-	const flag = loadingStore.add('ModelEditorGraph handleEntityPreview')
+	const flag = loadingStore.start('ModelEditorGraph handleEntityPreview')
 	const currentModel = store._currentModel()
 	entityFiles.value = await previewModelEntity(currentModel.id)
 	entityPreviewDialogOpenState.value = true
-	loadingStore.sub(flag)
+	loadingStore.stop(flag)
 }
 
 const sqlPreviewDialogOpenState = ref(false)
@@ -349,43 +365,43 @@ watch(() => sqlPreviewDialogOpenState.value, async (openState) => {
 
 const handleSQLPreview = async () => {
 	sendGraphDataChangeMessage()
-	const flag = loadingStore.add('ModelEditorGraph handleSQLPreview')
+	const flag = loadingStore.start('ModelEditorGraph handleSQLPreview')
 	const currentModel = store._currentModel()
 	sqlPreviewDialogOpenState.value = true
 	sqlFiles.value = await previewModelSql(currentModel.id)
-	loadingStore.sub(flag)
+	loadingStore.stop(flag)
 }
 
 
 const handleEntityDownload = async () => {
 	sendGraphDataChangeMessage()
-	const flag = loadingStore.add('ModelEditorGraph handleEntityDownload')
+	const flag = loadingStore.start('ModelEditorGraph handleEntityDownload')
 	const currentModel = store._currentModel()
 	await downloadModelEntity(currentModel)
-	loadingStore.sub(flag)
+	loadingStore.stop(flag)
 }
 
 const handleSQLDownload = async () => {
 	sendGraphDataChangeMessage()
-	const flag = loadingStore.add('ModelEditorGraph handleSQLDownload')
+	const flag = loadingStore.start('ModelEditorGraph handleSQLDownload')
 	const currentModel = store._currentModel()
 	await downloadModelSql(currentModel)
-	loadingStore.sub(flag)
+	loadingStore.stop(flag)
 }
 
 const handleModelExport = async () => {
 	sendGraphDataChangeMessage()
-	const flag = loadingStore.add('ModelEditorGraph handleModelExport')
+	const flag = loadingStore.start('ModelEditorGraph handleModelExport')
 	const currentModel = store._currentModel()
 	await exportModel(currentModel)
-	loadingStore.sub(flag)
+	loadingStore.stop(flag)
 }
 
 const handleModelDownload = async () => {
 	sendGraphDataChangeMessage()
-	const flag = loadingStore.add('ModelEditorGraph handleModelDownload')
+	const flag = loadingStore.start('ModelEditorGraph handleModelDownload')
 	const currentModel = store._currentModel()
 	await downloadModel(currentModel)
-	loadingStore.sub(flag)
+	loadingStore.stop(flag)
 }
 </script>

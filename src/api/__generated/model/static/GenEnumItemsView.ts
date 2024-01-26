@@ -15,10 +15,6 @@ export interface GenEnumItemsView {
      */
     modifiedTime: string;
     /**
-     * 备注
-     */
-    remark: string;
-    /**
      * 包路径
      */
     packagePath: string;
@@ -35,9 +31,9 @@ export interface GenEnumItemsView {
      */
     enumType?: EnumType | undefined;
     /**
-     * 自定排序
+     * 备注
      */
-    orderKey: number;
+    remark: string;
     /**
      * 模型
      */

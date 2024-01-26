@@ -23,8 +23,8 @@ export const COLUMN_PORT = "COLUMN_PORT"
 export const COLUMN_HEIGHT = 30
 export const COLUMN_INIT_WIDTH = 200
 
-export const ASSOCIATION_LINE_WIDTH = 1
-export const HIGHLIGHT_ASSOCIATION_LINE_WIDTH = 3
+export const LINE_WIDTH = 1
+export const HIGHLIGHT_LINE_WIDTH = 3
 
 
 export const FAKE_ASSOCIATION_LINE_DASHARRAY = 10
@@ -34,3 +34,6 @@ export const COMMON_COLOR = 'var(--common-color)'
 
 // ASSOCIATION_TYPE 常量
 export const ASSOCIATION_TYPE_BUTTON = "ASSOCIATION_TYPE_BUTTON"
+
+// EDGE_SELECT 常量
+export const EDGE_SELECT_FLAG = "EDGE_SELECT_FLAG"

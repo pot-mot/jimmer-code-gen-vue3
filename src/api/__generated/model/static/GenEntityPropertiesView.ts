@@ -14,10 +14,6 @@ export interface GenEntityPropertiesView {
      */
     modifiedTime: string;
     /**
-     * 备注
-     */
-    remark: string;
-    /**
      * 包路径
      */
     packagePath: string;
@@ -34,9 +30,9 @@ export interface GenEntityPropertiesView {
      */
     author: string;
     /**
-     * 自定排序
+     * 备注
      */
-    orderKey: number;
+    remark: string;
     /**
      * 对应表
      */

@@ -14,10 +14,6 @@ export interface GenColumnDefaultView {
      */
     modifiedTime: string;
     /**
-     * 备注
-     */
-    remark: string;
-    /**
      * 数据源类型
      */
     dataSourceType: DataSourceType;
@@ -28,13 +24,13 @@ export interface GenColumnDefaultView {
     /**
      * 数据库类型表达式
      */
-    type: string;
+    rawType: string;
     /**
-     * 列展示长度
+     * 长度
      */
-    displaySize: number;
+    dataSize: number;
     /**
-     * 列精度
+     * 精度
      */
     numericPrecision: number;
     /**
@@ -42,7 +38,11 @@ export interface GenColumnDefaultView {
      */
     defaultValue?: string | undefined;
     /**
-     * 自定排序
+     * 排序键
      */
     orderKey: number;
+    /**
+     * 备注
+     */
+    remark: string;
 }

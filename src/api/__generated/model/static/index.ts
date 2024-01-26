@@ -49,6 +49,7 @@ export type {GenModelSimpleView} from './GenModelSimpleView';
 export type {GenModelView} from './GenModelView';
 export type {GenModelView_TargetOf_enums} from './GenModelView_TargetOf_enums';
 export type {GenModelView_TargetOf_enums_TargetOf_items_2} from './GenModelView_TargetOf_enums_TargetOf_items_2';
+export type {GenSchemaPreview} from './GenSchemaPreview';
 export type {GenSchemaView} from './GenSchemaView';
 export type {GenTableAssociationsView} from './GenTableAssociationsView';
 export type {GenTableAssociationsView_TargetOf_columns} from './GenTableAssociationsView_TargetOf_columns';

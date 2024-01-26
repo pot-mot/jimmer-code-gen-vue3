@@ -6,10 +6,6 @@ export interface GenEntityConfigInput_TargetOf_properties {
      */
     id?: number | undefined;
     /**
-     * 备注
-     */
-    remark: string;
-    /**
      * 属性名
      */
     name: string;
@@ -30,11 +26,11 @@ export interface GenEntityConfigInput_TargetOf_properties {
      */
     typeNotNull: boolean;
     /**
-     * 是否Id
+     * 是否 ID 属性
      */
     idProperty: boolean;
     /**
-     * Id 生成类型
+     * ID 生成类型
      */
     idGenerationType?: GenerationType | undefined;
     /**
@@ -70,7 +66,11 @@ export interface GenEntityConfigInput_TargetOf_properties {
      */
     otherAnnotation?: string | undefined;
     /**
-     * 自定排序
+     * 排序键
      */
     orderKey: number;
+    /**
+     * 备注
+     */
+    remark: string;
 }

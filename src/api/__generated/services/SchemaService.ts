@@ -1,6 +1,5 @@
 import type {Executor} from '../';
-import type {Dynamic_GenSchema} from '../model/dynamic/';
-import type {GenSchemaView} from '../model/static/';
+import type {GenSchemaPreview, GenSchemaView} from '../model/static/';
 
 export class SchemaService {
     
@@ -49,14 +48,15 @@ export class SchemaService {
      * 预览数据源中全部的 schema
      */
     async preview(options: SchemaServiceOptions['preview']): Promise<
-        Array<Dynamic_GenSchema>
+        Array<GenSchemaPreview>
     > {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.dataSourceId);
         _uri += '/schema/preview';
-        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<Dynamic_GenSchema>>;
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenSchemaPreview>>;
     }
 }
+
 export type SchemaServiceOptions = {
     'preview': {
         dataSourceId: number

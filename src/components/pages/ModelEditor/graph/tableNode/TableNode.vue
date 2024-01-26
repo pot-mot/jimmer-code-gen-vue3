@@ -1,5 +1,5 @@
 <template>
-	<div ref="wrapper" class="table-wrapper">
+	<div ref="wrapper" class="table-node">
 		<table v-if="node && table" ref="container">
 			<tr class="tableName">
 				<td colspan="2">
@@ -27,10 +27,6 @@
 	</div>
 </template>
 
-<style scoped>
-@import "../../../../../assets/node-common.css";
-</style>
-
 <script lang='ts' setup>
 import {inject, nextTick, onMounted, ref, watch} from "vue";
 import {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static";
@@ -43,8 +39,8 @@ import {useModelEditorStore} from "../../store/ModelEditorStore.ts";
 import {importAssociation} from "../associationEdge/importAssociation.ts";
 import {columnToPort} from "@/components/pages/ModelEditor/graph/tableNode/importTable.ts";
 import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
-import {createAssociationNameByInput} from "@/components/pages/ModelEditor/graph/associationEdge/associationName.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
+import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
 
 const store = useModelEditorStore()
 
@@ -129,7 +125,7 @@ onMounted(async () => {
 	watch(() => table.value, (newTable) => {
 		if (!node.value || !newTable || !store.isLoaded) return
 
-		const flag = loadingStore.add('TableNode syncPortAndEdgeByData')
+		const flag = loadingStore.start('TableNode syncPortAndEdgeByData')
 
 		const nodeId = node.value.id
 
@@ -149,16 +145,26 @@ onMounted(async () => {
 					const association = edge.getData().association as GenAssociationModelInput
 
 					if (edge.getSourceCellId() == nodeId) {
+						const oldSourceTable = association.sourceTable
+
 						association.sourceTable.name = newTable.name
 						association.sourceTable.comment = newTable.comment
+
+						if (oldSourceTable.name != newTable.name) {
+							association.name = createAssociationName(association)
+						}
 					}
 
 					if (edge.getTargetCellId() == nodeId) {
+						const oldTargetTable = association.targetTable
+
 						association.targetTable.name = newTable.name
 						association.targetTable.comment = newTable.comment
-					}
 
-					association.name = createAssociationNameByInput(association)
+						if (oldTargetTable.name != newTable.name) {
+							association.name = createAssociationName(association)
+						}
+					}
 
 					importAssociation(graph, association)
 				}
@@ -166,7 +172,7 @@ onMounted(async () => {
 
 			graph.stopBatch("Sync table_node data")
 
-			loadingStore.sub(flag)
+			loadingStore.stop(flag)
 		}, 100 + oldEdges.length * 20)
 
 	}, {deep: true})

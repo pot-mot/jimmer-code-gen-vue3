@@ -18,9 +18,9 @@ export const useJdbcTypeStore = defineStore(
         })
 
         const loadingStore = useGlobalLoadingStore()
-        const flag = loadingStore.add('JdbcTypeStore init')
+        const flag = loadingStore.start('JdbcTypeStore init')
         getData().then(() => {
-            loadingStore.sub(flag)
+            loadingStore.stop(flag)
         })
 
         const jdbcTypes = computed<{[key:string]: number}>(() => {
@@ -50,9 +50,9 @@ export const useJdbcTypeStore = defineStore(
         return {
             isLoaded,
             jdbcTypes,
-            list: jdbcTypeList,
-            map: jdbcTypeMap,
-            reset: resetData,
+            jdbcTypeList,
+            jdbcTypeMap,
+            resetData,
 
             ...loadHooks,
         }

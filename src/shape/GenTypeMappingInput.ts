@@ -34,7 +34,7 @@ export const GenTypeMappingInputJsonSchema = {
                     "description": "语言"
                 },
                 "orderKey": {
-                    "description": "自定排序",
+                    "description": "排序键",
                     "type": "number"
                 },
                 "propertyType": {

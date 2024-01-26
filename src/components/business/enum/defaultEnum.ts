@@ -1,4 +1,4 @@
-import {useGenConfigContextStore} from "@/components/business/context/GenContextStore.ts";
+import {useGenConfigContextStore} from "@/components/business/genConfig/ContextGenConfigStore.ts";
 import {GenEnumItemsInput, GenEnumItemsInput_TargetOf_items} from "@/api/__generated/model/static";
 
 export const getDefaultEnum = (): GenEnumItemsInput => {
@@ -10,7 +10,6 @@ export const getDefaultEnum = (): GenEnumItemsInput => {
         comment: "",
         remark: "",
         items: [],
-        orderKey: 0,
     }
 }
 

@@ -10,6 +10,10 @@ export interface GenTableModelInput_TargetOf_indexes {
      */
     uniqueIndex: boolean;
     /**
+     * 备注
+     */
+    remark: string;
+    /**
      * 列
      */
     columns: Array<GenTableModelInput_TargetOf_indexes_TargetOf_columns_2>;

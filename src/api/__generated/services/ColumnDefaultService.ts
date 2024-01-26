@@ -37,6 +37,7 @@ export class ColumnDefaultService {
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<number>>;
     }
 }
+
 export type ColumnDefaultServiceOptions = {
     'get': {
         id: number

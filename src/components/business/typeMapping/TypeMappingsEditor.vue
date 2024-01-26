@@ -9,7 +9,7 @@ import {PropListColumn} from "@/components/global/list/ListProps.ts";
 import {sendMessage} from "@/utils/message.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep, uniqWith} from "lodash";
-import {useGlobalGenConfigStore} from "@/components/business/genConfig/GenConfigStore.ts";
+import {useGlobalGenConfigStore} from "@/components/business/genConfig/GlobalGenConfigStore.ts";
 import {validateTypeMappingInput} from "@/shape/GenTypeMappingInput.ts";
 
 const editState = ref(false)
@@ -65,13 +65,13 @@ genConfigStore.onLoaded(() => {
 })
 
 const getData = async () => {
-	const flag = typeMappingLoading.add('get')
+	const flag = typeMappingLoading.start('get')
 	await nextTick()
 
 	typeMappings.value = await api.typeMappingService.list()
 
 	await nextTick()
-	typeMappingLoading.sub(flag)
+	typeMappingLoading.stop(flag)
 }
 
 onMounted(() => {

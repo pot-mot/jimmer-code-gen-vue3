@@ -19,9 +19,9 @@ export const useGlobalGenConfigStore = defineStore(
         )
 
         const loadingStore = useGlobalLoadingStore()
-        const flag = loadingStore.add('GlobalGenConfigStore init')
+        const flag = loadingStore.start('GlobalGenConfigStore init')
         getData().then(() => {
-            loadingStore.sub(flag)
+            loadingStore.stop(flag)
         })
 
         const genConfig = computed(() => {

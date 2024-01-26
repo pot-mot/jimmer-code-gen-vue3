@@ -25,9 +25,18 @@ watch(() => props.model, (propsModel) => {
 
 		if (props.editValue) {
 			try {
-				tempModel.graphData = jsonStrFormat(propsModel.graphData ? propsModel.graphData : '')
+				if (tempModel.graphData == undefined) {
+					throw "graphData is undefined"
+				}
+
+				validateGraphData(
+					JSON.parse(tempModel.graphData),
+					(e) => {throw e}
+				)
+
+				tempModel.graphData = jsonStrFormat(tempModel.graphData)
 			} catch (e) {
-				sendMessage('json 格式校验失败', 'error', propsModel.graphData)
+				sendMessage('json 格式校验失败', 'error', e)
 				tempModel.graphData = ''
 			}
 		}
@@ -52,7 +61,7 @@ const handleSubmit = () => {
 
 			tempModel.graphData = jsonStrCompress(tempModel.graphData)
 		} catch (e) {
-			sendMessage(`${e}`, 'error', e)
+			sendMessage("模型提交失败", 'error', e)
 			return
 		}
 	}

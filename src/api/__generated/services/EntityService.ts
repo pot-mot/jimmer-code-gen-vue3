@@ -61,6 +61,7 @@ export class EntityService {
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<GenEntityPropertiesView>>;
     }
 }
+
 export type EntityServiceOptions = {
     'list': {}, 
     'get': {

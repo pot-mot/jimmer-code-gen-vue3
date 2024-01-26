@@ -21,9 +21,9 @@ export const useDataSourceDefaultStore = defineStore(
         )
 
         const loadingStore = useGlobalLoadingStore()
-        const flag = loadingStore.add('DataSourceDefaultStore init')
+        const flag = loadingStore.start('DataSourceDefaultStore init')
         getData().then(() => {
-            loadingStore.sub(flag)
+            loadingStore.stop(flag)
         })
 
         const dataSourceDefaults = computed<Array<Pair<string, GenDataSourceTemplateView>>>(() => {

@@ -47,6 +47,7 @@ export class AssociationService {
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<number>>;
     }
 }
+
 export type AssociationServiceOptions = {
     'query': {
         body: AssociationQuery
