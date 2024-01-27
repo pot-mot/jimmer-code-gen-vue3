@@ -186,7 +186,7 @@ import {cloneDeep} from "lodash";
 import {TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {useDocumentEvent} from "@/utils/useDocumentEvent.ts";
 import {DEBUG_LOG__MODEL_EDITOR_HISTORY} from "@/config/debug.ts";
-import MiniMap from "@/components/global/graphEditor/tools/MiniMap.vue";
+import MiniMap from "@/components/global/graphEditor/minimap/MiniMap.vue";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()

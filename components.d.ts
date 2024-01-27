@@ -66,7 +66,7 @@ declare module 'vue' {
     LeftRightLayout: typeof import('./src/components/global/layout/LeftRightLayout.vue')['default']
     Line: typeof import('./src/components/global/list/Line.vue')['default']
     LineItem: typeof import('./src/components/global/list/LineItem.vue')['default']
-    MiniMap: typeof import('./src/components/global/graphEditor/tools/MiniMap.vue')['default']
+    MiniMap: typeof import('./src/components/global/graphEditor/minimap/MiniMap.vue')['default']
     ModelAssociationItem: typeof import('./src/components/business/model/menu/ModelAssociationItem.vue')['default']
     ModelColumnItem: typeof import('./src/components/business/model/menu/ModelColumnItem.vue')['default']
     ModelDialog: typeof import('./src/components/business/model/dialog/ModelDialog.vue')['default']
