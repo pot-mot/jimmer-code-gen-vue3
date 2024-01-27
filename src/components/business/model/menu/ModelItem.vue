@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<ModelItemProps>(), {
 
 const tables = ref<GenTableCommonView[]>()
 
-const tablesLoading = useLoading('ModelItem:tablesLoading')
+const tablesLoading = useLoading('ModelItem.tablesLoading')
 
 const getData = async () => {
 	if (!props.showConfig.showModelTables) return

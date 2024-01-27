@@ -1,6 +1,6 @@
 import {GenTableModelInputJsonSchema} from "@/shape/GenTableModelInput.ts";
 import {GenAssociationModelInputJsonSchema} from "@/shape/GenAssociationModelInput.ts";
-import {useShapeValidate} from "@/utils/shapeValidate.ts";
+import {useShapeValidate} from "@/shape/shapeValidate.ts";
 import {
     GenAssociationModelInput,
     GenModelInput_TargetOf_enums,

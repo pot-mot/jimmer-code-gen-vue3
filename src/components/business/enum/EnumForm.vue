@@ -7,7 +7,7 @@ import {EnumType, EnumType_CONSTANTS} from "@/api/__generated/model/enums";
 import Line from "@/components/global/list/Line.vue";
 import LineItem from "@/components/global/list/LineItem.vue";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import {getDefaultEnum, getDefaultEnumItem} from "@/components/business/enum/defaultEnum.ts";
 import {validateEnumItem} from "@/shape/GenEnumModelInput.ts";
 

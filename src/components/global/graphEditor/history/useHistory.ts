@@ -1,6 +1,6 @@
 import {Graph} from "@antv/x6";
 import {History} from "@antv/x6-plugin-history";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 
 export const useHistory = (graph: Graph) => {
     graph.use(

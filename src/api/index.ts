@@ -1,5 +1,5 @@
 import {Api} from "./__generated";
-import {sendMessage} from "../utils/message.ts";
+import {sendMessage} from "../message/message.ts";
 import {handleError} from "@/api/handleError.ts";
 
 const BASE_URL = "/api";
@@ -10,7 +10,7 @@ export const api = new Api(async ({uri, method, body}) => {
 
         const response = await fetch(fetchUrl, {
             method,
-            body: body !== undefined ? JSON.stringify(body) : undefined,
+            body: body != undefined ? JSON.stringify(body) : undefined,
             headers: {
                 'content-type': 'application/json;charset=UTF-8',
             }

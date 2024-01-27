@@ -7,7 +7,7 @@ import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
 import {jsonStrFormat, jsonStrCompress} from "@/utils/json.ts";
 import CodeEditor from "@/components/global/code/CodeEditor.vue";
 import {ModelFormProps} from "@/components/business/model/form/ModelFormProps.ts";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
 import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated/model/enums";
 import GenConfigForm from "@/components/business/genConfig/GenConfigForm.vue";

@@ -6,7 +6,7 @@ import {GenTypeMappingInput, GenTypeMappingView} from "@/api/__generated/model/s
 import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated/model/enums";
 import EditList from "@/components/global/list/EditList.vue";
 import {PropListColumn} from "@/components/global/list/ListProps.ts";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep, uniqWith} from "lodash";
 import {useGlobalGenConfigStore} from "@/components/business/genConfig/GlobalGenConfigStore.ts";
@@ -43,7 +43,7 @@ const typeMappings = ref<GenTypeMappingView[]>([])
 
 const tempTypeMappings = ref<GenTypeMappingView[]>([])
 
-const typeMappingLoading = useLoading('TypeMappingsEditor:typeMappingLoading')
+const typeMappingLoading = useLoading('TypeMappingsEditor.typeMappingLoading')
 
 const defaultTypeMapping = ref<GenTypeMappingInput>({
 	dataSourceType: "MySQL",

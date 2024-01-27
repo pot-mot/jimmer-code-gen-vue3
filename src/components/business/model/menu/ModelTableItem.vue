@@ -23,8 +23,8 @@ const props = withDefaults(defineProps<TableItemProps>(), {
 const columns = ref<GenColumnCommonView[]>([])
 const associations = ref<GenAssociationView[]>([])
 
-const columnsLoading = useLoading('ModelTableItem:columnsLoading')
-const associationsLoading = useLoading('ModelTableItem:associationsLoading')
+const columnsLoading = useLoading('ModelTableItem.columnsLoading')
+const associationsLoading = useLoading('ModelTableItem.associationsLoading')
 
 const getColumns = async () => {
 	if (!props.showConfig.showColumns) return

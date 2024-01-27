@@ -7,6 +7,7 @@ import TypeMappingsEditor from "@/components/business/typeMapping/TypeMappingsEd
 import ColumnDefaultEditor from "@/components/business/columnDefault/ColumnDefaultEditor.vue";
 import {GenerateConfiguratorOption, GenerateConfiguratorOptions} from "@/components/business/globalConfig/constant.ts";
 import {useGlobalGenConfigStore} from "@/components/business/genConfig/GlobalGenConfigStore.ts";
+import DebugForm from "@/debug/DebugForm.vue";
 
 const configType = ref<GenerateConfiguratorOption | undefined>()
 
@@ -62,6 +63,8 @@ const globalGenConfigStore = useGlobalGenConfigStore()
 				v-else-if="configType?.name == 'TypeMappingsEditor'"></TypeMappingsEditor>
 			<ColumnDefaultEditor
 				v-else-if="configType?.name == 'ColumnDefaultEditor'"></ColumnDefaultEditor>
+			<DebugForm
+				v-else-if="configType?.name == 'DebugForm'"></DebugForm>
 		</div>
 	</DragDialog>
 </template>

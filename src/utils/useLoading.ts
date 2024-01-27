@@ -1,6 +1,5 @@
 import {computed, ref} from "vue";
-import {DEBUG_LOG__LOADING} from "@/config/debug.ts";
-import {debugLog} from "@/utils/debugLog.ts";
+import {useDebugStore} from "@/debug/debugStore.ts";
 
 export const useLoading = (prefix: string) => {
     const loadingSet = ref<Set<string>>(new Set())
@@ -9,20 +8,18 @@ export const useLoading = (prefix: string) => {
         return loadingSet.value.size > 0
     })
 
+    const debugStore = useDebugStore()
+
     const start = (name: string) => {
-        const flag = `${prefix} ${name} ${Date.now()}`
+        const flag = `${prefix} ${name}`
         loadingSet.value.add(flag)
-        if (DEBUG_LOG__LOADING) {
-            debugLog(`loading start [${flag}]`)
-        }
+        debugStore.log('LOADING', `start [${flag}]`)
         return flag
     }
 
     const stop = (flag: string) => {
         loadingSet.value.delete(flag)
-        if (DEBUG_LOG__LOADING) {
-            debugLog(`loading stop [${flag}]`)
-        }
+        debugStore.log('LOADING', `stop [${flag}]`)
     }
 
     const clear = () => {

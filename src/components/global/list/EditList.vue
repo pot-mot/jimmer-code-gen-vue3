@@ -7,7 +7,7 @@ import Line from "@/components/global/list/Line.vue";
 import {Delete, Plus} from "@element-plus/icons-vue";
 import {EditListEmits, ListEmits} from "@/components/global/list/ListEmits.ts";
 import {useClickOutside} from "@/components/global/list/useClickOutside.ts";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import {useListSelection} from "@/components/global/list/listSelection.ts";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 

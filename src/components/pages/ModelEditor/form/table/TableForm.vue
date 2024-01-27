@@ -4,7 +4,7 @@ import {
 	GenTableModelInput,
 	GenTableModelInput_TargetOf_indexes_TargetOf_columns_2
 } from "@/api/__generated/model/static";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import {useModelEditorStore} from "../../store/ModelEditorStore.ts";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import EditList from "@/components/global/list/EditList.vue";

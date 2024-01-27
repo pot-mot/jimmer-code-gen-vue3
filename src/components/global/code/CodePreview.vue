@@ -20,7 +20,7 @@ import * as Prism from 'prismjs';
 import "prismjs/themes/prism.css";
 import {computed, nextTick, onMounted, ref, watch} from "vue";
 import CopyIcon from "../icons/toolbar/CopyIcon.vue";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 
 interface CodePreviewProps {
 	code: string,

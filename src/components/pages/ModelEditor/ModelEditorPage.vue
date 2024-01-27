@@ -12,7 +12,7 @@ import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingSt
 import ModelDialog from "@/components/business/model/dialog/ModelDialog.vue";
 import {cloneDeep} from "lodash";
 import {api} from "@/api";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import {useRoute, useRouter} from "vue-router";
 import ModelMenu from "@/components/business/model/menu/ModelMenu.vue";
 import {ModelMenuEvents} from "@/components/business/model/menu/ModelMenuEvents.ts";
@@ -60,13 +60,13 @@ watch(() => dataSourceLoadMenu.value, () => {
 
 	eventBus.on('clickSchema', async ({id}) => {
 		const flag = loadingStore.start('ModelEditorPage syncClickSchemaEvent')
-		await store.importSchema(id)
+		await store.loadSchema(id)
 		loadingStore.stop(flag)
 	})
 
 	eventBus.on('clickTable', async ({id}) => {
 		const flag = loadingStore.start('ModelEditorPage syncClickTableEvent')
-		await store.importTable(id)
+		await store.loadTable(id)
 		loadingStore.stop(flag)
 	})
 }, {immediate: true})
@@ -83,13 +83,13 @@ watch(() => modelLoadMenu.value, () => {
 
 	eventBus.on('clickModel', async ({id}) => {
 		const flag = loadingStore.start('ModelEditorPage syncClickModelEvent')
-		await store.importModel(id)
+		await store.loadModel(id)
 		loadingStore.stop(flag)
 	})
 
 	eventBus.on('clickTable', async ({id}) => {
 		const flag = loadingStore.start('ModelEditorPage syncClickTableEvent')
-		await store.importTable(id)
+		await store.loadTable(id)
 		loadingStore.stop(flag)
 	})
 }, {immediate: true})

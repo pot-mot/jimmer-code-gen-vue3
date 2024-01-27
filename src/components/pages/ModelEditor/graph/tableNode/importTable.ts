@@ -1,7 +1,6 @@
 import {
     GenTableModelInput,
     GenTableColumnsView,
-    GenTableModelInput_TargetOf_columns
 } from "@/api/__generated/model/static";
 import {Graph, Node} from "@antv/x6";
 import {columnPortGroup} from "@/components/pages/ModelEditor/graph/tableNode/columnPort.ts";
@@ -52,7 +51,7 @@ export const tableViewToInput = (tableView: GenTableColumnsView): GenTableModelI
             }
         }),
         columns: tableView.columns.map(column => {
-            return <GenTableModelInput_TargetOf_columns>{
+            return {
                 autoIncrement: column.autoIncrement,
                 comment: column.comment,
                 defaultValue: column.defaultValue,
@@ -66,6 +65,7 @@ export const tableViewToInput = (tableView: GenTableColumnsView): GenTableModelI
                 overwriteByRaw: column.overwriteByRaw,
                 rawType: column.rawType,
                 typeNotNull: column.typeNotNull,
+                idGeneration: column.idGeneration,
                 logicalDelete: column.logicalDelete,
                 businessKey: column.businessKey,
                 enum:

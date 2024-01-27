@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<AssociationItemProps>(), {
 
 const tables = ref<GenTableCommonView[]>()
 
-const tablesLoading = useLoading('ModelAssociationItem:tablesLoading')
+const tablesLoading = useLoading('ModelAssociationItem.tablesLoading')
 
 const getData = async () => {
 	const flag = tablesLoading.start('get')

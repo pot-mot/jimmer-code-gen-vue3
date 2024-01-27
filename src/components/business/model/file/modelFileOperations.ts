@@ -4,7 +4,7 @@ import {api} from "@/api";
 import {saveAs} from "file-saver";
 import {jsonFormat, jsonStrFormat} from "@/utils/json.ts";
 import {validateModelInputStr} from "@/shape/ModelInput.ts";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 
 const createZip = async (files: Array<Pair<string, string>>): Promise<Blob> => {
     const zip = new JSZip()

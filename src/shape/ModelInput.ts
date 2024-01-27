@@ -1,4 +1,4 @@
-import {useShapeValidate} from "@/utils/shapeValidate.ts";
+import {useShapeValidate} from "@/shape/shapeValidate.ts";
 import {GenModelInput} from "@/api/__generated/model/static";
 import {validateGraphData} from "@/shape/GraphData.ts";
 import {GenEnumModelInputJsonSchema} from "@/shape/GenEnumModelInput.ts";

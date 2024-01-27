@@ -5,18 +5,19 @@ import {useRouter} from "vue-router";
 import {GenModelInput, GenModelSimpleView} from "@/api/__generated/model/static";
 import {useLoading} from "@/utils/useLoading.ts";
 import {api} from "@/api";
-import {deleteConfirm, sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import {datetimeFormat} from "@/utils/dataFormat.ts";
 import ModelDialog from "@/components/business/model/dialog/ModelDialog.vue";
 import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
 import {exportModel, importModel} from "@/components/business/model/file/modelFileOperations.ts";
 import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
+import {deleteConfirm} from "@/message/confirm.ts";
 
 const router = useRouter()
 
 const models = ref<GenModelSimpleView[]>([])
 
-const modelsLoading = useLoading('ModelListPage:modelsLoading')
+const modelsLoading = useLoading('ModelListPage.modelsLoading')
 
 const getModels = async () => {
 	const flag = modelsLoading.start('get')

@@ -1,5 +1,5 @@
 import {erRouter, orthRouter} from "@/components/global/graphEditor/edgeRouter.ts";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import {Options} from "@antv/x6/es/graph/options";
 import Connecting = Options.Connecting;
 import {

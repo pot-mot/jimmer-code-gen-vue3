@@ -1,4 +1,4 @@
-import {useShapeValidate} from "@/utils/shapeValidate.ts";
+import {useShapeValidate} from "@/shape/shapeValidate.ts";
 import {
     GenModelInput_TargetOf_enums,
     GenModelInput_TargetOf_enums_TargetOf_items_2

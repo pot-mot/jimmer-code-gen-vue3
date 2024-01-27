@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {ref, watch} from "vue";
 import {GenConfig, GenConfigProperties} from "@/api/__generated/model/static";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import DataSourceIcon from "../../global/icons/database/DataSourceIcon.vue";
 import Details from "../../global/common/Details.vue";
 import {

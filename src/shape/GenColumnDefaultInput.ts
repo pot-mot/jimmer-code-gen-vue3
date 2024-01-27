@@ -1,4 +1,4 @@
-import {useShapeValidate} from "@/utils/shapeValidate.ts";
+import {useShapeValidate} from "@/shape/shapeValidate.ts";
 import {GenColumnDefaultInput} from "@/api/__generated/model/static";
 
 // typescript-json-schema src/api/__generated/model/static/GenColumnDefaultInput.ts * --required

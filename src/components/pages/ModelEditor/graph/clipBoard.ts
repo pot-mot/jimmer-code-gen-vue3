@@ -1,6 +1,6 @@
 import {Cell, Node, Edge, Graph} from "@antv/x6";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import {loadByInputs} from "@/components/pages/ModelEditor/graph/loadData.ts";
 import {CopyData, validateCopyData} from "@/shape/CopyData.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
@@ -12,6 +12,7 @@ import {
 import {validateModelInput} from "@/shape/ModelInput.ts";
 import {importEnums} from "@/components/pages/ModelEditor/graph/enums/genEnum.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
+import {syncTimeout} from "@/utils/syncTimeout.ts";
 
 export const handleTableNodeClipBoardKeyEvent = (graph: Graph) => {
     graph.bindKey(["ctrl+c", "command+c"], async () => {
@@ -107,9 +108,9 @@ export const tableNodePaste = async (graph: Graph) => {
         if (res != undefined) {
             const {nodes, edges} = res
 
-            setTimeout(() => {
-                graph.resetSelection([...nodes.map(it => it.id), ...edges.map(it => it.id)])
-            }, 100 + nodes.length * 30 + edges.length * 20)
+            await syncTimeout(100 + nodes.length * 30 + edges.length * 20)
+
+            graph.resetSelection([...nodes.map(it => it.id), ...edges.map(it => it.id)])
         }
     } catch (e) {
         sendMessage('剪切板中数据无法直接导入画布', 'error', e)

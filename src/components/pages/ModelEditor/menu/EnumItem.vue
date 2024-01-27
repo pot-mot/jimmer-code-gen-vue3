@@ -2,7 +2,8 @@
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
-import {deleteConfirm} from "@/utils/message.ts";
+
+import {deleteConfirm} from "@/message/confirm.ts";
 interface EdgeItem {
 	genEnum: GenModelInput_TargetOf_enums
 }

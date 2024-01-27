@@ -6,13 +6,13 @@ import DataSourceItem from "./DataSourceItem.vue";
 import DataSourceDialog from "../dialog/DataSourceDialog.vue";
 import {useLoading} from "@/utils/useLoading.ts";
 import {DataSourceMenuEvents} from "./DataSourceMenuEvents.ts";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import mitt from 'mitt'
 import {DataSourceMenuSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlotProps.ts";
 
 const eventBus = mitt<DataSourceMenuEvents>()
 
-const dataSourcesLoading = useLoading('DataSourceMenu:dataSourcesLoading')
+const dataSourcesLoading = useLoading('DataSourceMenu.dataSourcesLoading')
 
 const dataSources = ref<GenDataSourceView[]>([])
 

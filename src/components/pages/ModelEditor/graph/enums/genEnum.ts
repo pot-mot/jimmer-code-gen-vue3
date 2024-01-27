@@ -1,5 +1,5 @@
 import {useModelEditorStore} from "@/components/pages/ModelEditor/store/ModelEditorStore.ts";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 
 export const importEnums = (enums: Array<GenModelInput_TargetOf_enums>) => {

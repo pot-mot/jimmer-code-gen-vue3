@@ -6,12 +6,13 @@ import Details from "../../../global/common/Details.vue";
 import {Delete} from "@element-plus/icons-vue";
 import TableItem from "./TableItem.vue";
 import SchemaIcon from "../../../global/icons/database/SchemaIcon.vue";
-import {deleteConfirm, sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import {SchemaItemSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlotProps.ts";
 import Searcher from "@/components/global/common/Searcher.vue";
 import {matchByKeywords} from "@/components/global/graphEditor/common/search.ts";
 import {useLoading} from "@/utils/useLoading.ts";
 import {SchemaItemProps} from "@/components/business/dataSource/menu/DataSourceMenuProps.ts";
+import {deleteConfirm} from "@/message/confirm.ts";
 
 const props = defineProps<SchemaItemProps>()
 
@@ -19,7 +20,7 @@ const container = ref<HTMLElement>()
 
 const tables = ref<GenTableCommonView[]>([])
 
-const tablesLoading = useLoading('SchemaItem:tablesLoading')
+const tablesLoading = useLoading('SchemaItem.tablesLoading')
 
 const getTables = async (schemaId: number = props.schema.id) => {
 	const flag = tablesLoading.start('get')

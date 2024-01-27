@@ -12,7 +12,7 @@ const eventBus = mitt<ModelMenuEvents>()
 
 const models = ref<GenModelSimpleView[]>()
 
-const modelsLoading = useLoading('ModelMenu:modelsLoading')
+const modelsLoading = useLoading('ModelMenu.modelsLoading')
 
 const getModels = async () => {
 	const flag = modelsLoading.start('get')

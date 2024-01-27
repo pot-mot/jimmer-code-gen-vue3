@@ -26,11 +26,16 @@
 
 			<li>
 				<el-tooltip content="整理布局">
-					<el-button :icon="LayoutIcon" class="cling-right" @click="store.layoutAndFit()"></el-button>
+					<el-button :icon="LayoutIcon" class="cling-right" @click="() => {
+						store.layout()
+						if (graph.isSelectionEmpty()) {
+							store.fit()
+						}
+					}"></el-button>
 				</el-tooltip>
 				<el-select v-model="store.layoutDirection" class="cling-left" size="small"
 						   style="width: 4em"
-						   @change="store.layoutAndFit()">
+						   @change="store.layout()">
 					<el-option label="→" value="LR">左至右</el-option>
 					<el-option label="←" value="RL">右至左</el-option>
 					<el-option label="↓" value="TB">上至下</el-option>
@@ -152,7 +157,7 @@ import {initModelEditor} from "./init.ts"
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {api} from "@/api";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import {GenTableModelInput, Pair} from "@/api/__generated/model/static";
 import {handleSelectionKeyEvent} from "@/components/global/graphEditor/selection/useSelection.ts";
 import SaveIcon from "@/components/global/icons/toolbar/SaveIcon.vue";
@@ -169,7 +174,6 @@ import ScaleBar from "@/components/global/graphEditor/scale/ScaleBar.vue";
 import GraphSearcher from "@/components/pages/ModelEditor/searcher/GraphSearcher.vue";
 import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
 import {EditPen} from "@element-plus/icons-vue";
-import {debugLog} from "@/utils/debugLog.ts";
 import {handleTableNodeClipBoardKeyEvent} from "@/components/pages/ModelEditor/graph/clipBoard.ts";
 import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
 import {handleHistoryKeyEvent} from "@/components/global/graphEditor/history/useHistory.ts";
@@ -185,8 +189,8 @@ import {
 import {cloneDeep} from "lodash";
 import {TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {useDocumentEvent} from "@/utils/useDocumentEvent.ts";
-import {DEBUG_LOG__MODEL_EDITOR_HISTORY} from "@/config/debug.ts";
 import MiniMap from "@/components/global/graphEditor/minimap/MiniMap.vue";
+import {useDebugStore} from "@/debug/debugStore.ts";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -197,6 +201,8 @@ const store = useModelEditorStore()
 
 const loadingStore = useGlobalLoadingStore()
 
+const debugStore = useDebugStore()
+
 onMounted(async () => {
 	const flag = loadingStore.start('ModelEditorGraph onMounted')
 
@@ -204,8 +210,7 @@ onMounted(async () => {
 	await store.load(graph)
 
 	graph.on('history:change', (args) => {
-		if (DEBUG_LOG__MODEL_EDITOR_HISTORY)
-			debugLog(args.options.name, args)
+		debugStore.log('HISTORY', args.options.name, args)
 	})
 
 	graph.on('blank:dblclick', ({e}) => {

@@ -6,7 +6,7 @@ import {ElButton} from "element-plus";
 import {Close} from "@element-plus/icons-vue";
 import {DragDialogProps} from "./DragDialogProps.ts";
 import {DragDialogEmits, ModelValueEmits} from "./DragDialogEmits.ts";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import {useZIndex} from "element-plus";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 

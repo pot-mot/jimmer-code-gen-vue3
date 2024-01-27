@@ -5,7 +5,7 @@ import {GenColumnDefaultInput, GenColumnDefaultView} from "@/api/__generated/mod
 import {DataSourceType_CONSTANTS} from "@/api/__generated/model/enums";
 import EditList from "@/components/global/list/EditList.vue";
 import {PropListColumn} from "@/components/global/list/ListProps.ts";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep, uniqWith} from "lodash";
 import {useJdbcTypeStore} from "@/components/business/jdbcType/jdbcTypeStore.ts";

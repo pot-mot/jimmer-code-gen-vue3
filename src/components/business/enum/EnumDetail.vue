@@ -3,7 +3,7 @@ import {ref} from "vue";
 import {api} from "@/api";
 import {GenEnumItemsView, GenEnumView} from "@/api/__generated/model/static";
 import Details from "@/components/global/common/Details.vue";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import Comment from "@/components/global/common/Comment.vue";
 import {enumItemColumns} from "@/components/business/enum/enumItemColumns.ts";
 import ViewList from "@/components/global/list/ViewList.vue";

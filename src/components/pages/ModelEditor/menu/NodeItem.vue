@@ -6,8 +6,9 @@ import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {computed, ref, watch} from "vue";
-import {deleteConfirm, sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import {GenTableModelInput} from "@/api/__generated/model/static";
+import {deleteConfirm} from "@/message/confirm.ts";
 
 interface NodeItem {
 	node: Node

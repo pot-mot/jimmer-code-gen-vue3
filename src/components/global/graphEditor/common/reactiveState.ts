@@ -2,7 +2,7 @@ import {computed, ref} from "vue";
 import {Edge, Graph, Node} from "@antv/x6";
 import {getSelectedEdges, getSelectedNodes} from "@/components/global/graphEditor/selection/selectOperation.ts";
 import {arrayToMap} from "@/utils/mapOperation.ts";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 
 export const useGraphReactiveState = (_graph: () => Graph) => {
     const nodeMap = ref<Map<string, Node>>(new Map)

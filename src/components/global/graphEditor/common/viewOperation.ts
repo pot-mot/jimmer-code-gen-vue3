@@ -12,14 +12,6 @@ export const useViewOperation = (_graph: () => Graph) => {
         layoutDirection,
         layout: () => layout(_graph(), layoutDirection.value),
         fit: () => fit(_graph()),
-        layoutAndFit: () => {
-            const graph = _graph()
-
-            if (!graph) return
-
-            layout(graph, layoutDirection.value)
-            fit(graph)
-        },
         focus: (cell: CellProperty) => focus(_graph(), cell),
         center: () => center(_graph())
     }

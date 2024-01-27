@@ -8,16 +8,17 @@ import Details from "../../../global/common/Details.vue";
 import {useLoading} from "@/utils/useLoading.ts";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import DataSourceIcon from "../../../global/icons/database/DataSourceIcon.vue";
-import {deleteConfirm, sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import {DataSourceItemSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlotProps.ts";
 import {DataSourceItemProps} from "@/components/business/dataSource/menu/DataSourceMenuProps.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
+import {deleteConfirm} from "@/message/confirm.ts";
 
 const loadingStore = useGlobalLoadingStore()
 
-const loadedSchemaLoading = useLoading('DataSourceItem:loadedSchemaLoading')
+const loadedSchemaLoading = useLoading('DataSourceItem.loadedSchemaLoading')
 
-const previewSchemaLoading = useLoading('DataSourceItem:previewSchemaLoading')
+const previewSchemaLoading = useLoading('DataSourceItem.previewSchemaLoading')
 
 const props = defineProps<DataSourceItemProps>()
 

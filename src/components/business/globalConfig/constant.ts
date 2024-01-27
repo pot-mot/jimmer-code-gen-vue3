@@ -10,6 +10,10 @@ export const GenerateConfiguratorOptions = [
     {
         name: 'ColumnDefaultEditor',
         label: '列默认配置'
+    },
+    {
+        name: 'DebugForm',
+        label: 'Debug 日志'
     }
 ]
 

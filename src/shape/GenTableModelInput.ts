@@ -1,4 +1,4 @@
-import {useShapeValidate} from "@/utils/shapeValidate.ts";
+import {useShapeValidate} from "@/shape/shapeValidate.ts";
 import {
     GenTableModelInput_TargetOf_columns,
     GenTableModelInput_TargetOf_indexes

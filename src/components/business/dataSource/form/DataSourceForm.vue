@@ -2,7 +2,7 @@
 import {ref, watch} from 'vue';
 import {api} from "@/api";
 import {GenDataSourceInput} from "@/api/__generated/model/static";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import {ElForm, ElFormItem, ElOption, ElSelect} from "element-plus";
 import {DataSourceFormEmits} from "./DataSourceFormEmits.ts";
 import {DataSourceFormProps} from "./DataSourceFormProps.ts";

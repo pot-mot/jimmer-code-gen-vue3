@@ -1,6 +1,6 @@
 import {computed, ref, Ref} from "vue";
 import {Graph} from "@antv/x6";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import {useSelectOperation} from "@/components/global/graphEditor/selection/selectOperation.ts";
 import {useViewOperation} from "@/components/global/graphEditor/common/viewOperation.ts";
 import {useGraphReactiveState} from "./common/reactiveState.ts";

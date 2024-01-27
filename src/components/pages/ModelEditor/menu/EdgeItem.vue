@@ -5,13 +5,14 @@ import {computed, ref, watch} from "vue";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
-import {deleteConfirm, sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import AssociationIcon from "@/components/global/icons/database/AssociationIcon.vue";
 import {
 	getAssociationSourceLabel,
 	getAssociationTargetLabel
 } from "@/components/pages/ModelEditor/graph/associationEdge/associationName.ts";
 import AssociationForm from "@/components/pages/ModelEditor/form/association/AssociationForm.vue";
+import {deleteConfirm} from "@/message/confirm.ts";
 
 interface EdgeItem {
 	edge: Edge,

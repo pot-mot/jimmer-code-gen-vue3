@@ -1,5 +1,5 @@
 import {AllErrors} from "@/api/__generated";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 
 export const handleError = (url: string, error: AllErrors) => {
     sendMessage(

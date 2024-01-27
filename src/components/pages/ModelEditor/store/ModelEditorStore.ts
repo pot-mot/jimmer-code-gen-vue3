@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import {useCommonGraphOperations} from "@/components/global/graphEditor";
 import {ModelEditorEventBus} from "./ModelEditorEventBus.ts";
-import {sendMessage} from "@/utils/message.ts";
+import {sendMessage} from "@/message/message.ts";
 import {ref} from "vue";
 import {api} from "@/api";
 import {loadByTableViews} from "../graph/loadData.ts";
@@ -20,11 +20,17 @@ import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
 import {useTableDialogsStore} from "@/components/pages/ModelEditor/dialogs/table/TableDialogsStore.ts";
 import {unStyleAll} from "@/components/pages/ModelEditor/graph/highlight.ts";
 import {GraphEditorData} from "@/components/global/graphEditor/common/graphData.ts";
+import {useDebugStore} from "@/debug/debugStore.ts";
+import {syncTimeout} from "@/utils/syncTimeout.ts";
 
 export const useModelEditorStore =
     defineStore(
         'ModelEditorGraph',
         () => {
+            const loadingStore = useGlobalLoadingStore()
+
+            const debugStore = useDebugStore()
+
             const commonOperations = useCommonGraphOperations()
 
             const {_graph} = commonOperations
@@ -107,9 +113,7 @@ export const useModelEditorStore =
             }
 
             const handleSubmitModelEdit = async (model: GenModelInput) => {
-                const loadingStore = useGlobalLoadingStore()
-
-                const flag = loadingStore.start('ModelEditorStore handleSubmitModelEdit')
+                const flag = loadingStore.start('ModelEditorStore.handleSubmitModelEdit')
 
                 try {
                     const id = await api.modelService.save({body: model})
@@ -145,54 +149,72 @@ export const useModelEditorStore =
              * 向画布导入 model
              * @param id model id
              */
-            const importModel = async (id: number) => {
+            const loadModel = async (id: number) => {
+                const flag = loadingStore.start('ModelEditorStore.loadModel')
+
                 const tables = await api.tableService.queryColumnsView({
                     body: {
                         modelIds: [id]
                     }
                 })
-                await importTableIntoGraph(tables)
+                await loadTableViews(tables)
+
+                loadingStore.stop(flag)
             }
 
             /**
              * 向画布导入 schema
              * @param id schema id
              */
-            const importSchema = async (id: number) => {
+            const loadSchema = async (id: number) => {
+                const flag = loadingStore.start('ModelEditorStore.loadSchema')
+
                 const tables = await api.tableService.queryColumnsView({
                     body: {
                         schemaIds: [id]
                     }
                 })
-                await importTableIntoGraph(tables)
+                await loadTableViews(tables)
+
+                loadingStore.stop(flag)
             }
 
             /**
-             * 向画布导入 table，如果表已存在则仅更新关联
+             * 向画布导入 table
              * @param id tableId
              */
-            const importTable = async (id: number) => {
+            const loadTable = async (id: number) => {
+                const flag = loadingStore.start('ModelEditorStore.loadTables')
+
                 const tables = await api.tableService.queryColumnsView({
                     body: {
                         ids: [id]
                     }
                 })
-                await importTableIntoGraph(tables)
+                await loadTableViews(tables)
+
+                loadingStore.stop(flag)
             }
 
-            const importTableIntoGraph = async (tables: GenTableColumnsView[]) => {
+            /**
+             * 导入表的基本函数，接收 tableView 并查询获得 association
+             */
+            const loadTableViews = async (tables: GenTableColumnsView[]) => {
                 const graph = _graph()
 
                 const {nodes, edges} = await loadByTableViews(graph, tables)
 
-                setTimeout(() => {
-                    if (nodes.length == 1) {
-                        commonOperations.focus(nodes[0])
-                    } else {
-                        graph.resetSelection([...nodes.map(it => it.id), ...edges.map(it => it.id)])
-                        commonOperations.layoutAndFit()
-                    }
-                }, 100 + nodes.length * 30 + edges.length * 20)
+                debugStore.log('HISTORY', 'loadByTableViews', {nodes, edges})
+
+                await syncTimeout(100 + nodes.length * 30 + edges.length * 20)
+
+                if (nodes.length == 1) {
+                    commonOperations.focus(nodes[0])
+                } else {
+                    graph.resetSelection([...nodes.map(it => it.id), ...edges.map(it => it.id)])
+                    commonOperations.layout()
+                    commonOperations.fit()
+                }
             }
 
             const tableDialogsStore = useTableDialogsStore()
@@ -349,10 +371,9 @@ export const useModelEditorStore =
                 dataSourceLoadMenuOpenState,
                 modelLoadMenuOpenState,
 
-                importTableIntoGraph,
-                importModel,
-                importSchema,
-                importTable,
+                loadModel,
+                loadSchema,
+                loadTable,
 
                 undo: () => {
                     undo(_graph())
