@@ -24,7 +24,6 @@ declare module 'vue' {
     DataSourceIcon: typeof import('./src/components/global/icons/database/DataSourceIcon.vue')['default']
     DataSourceItem: typeof import('./src/components/business/dataSource/menu/DataSourceItem.vue')['default']
     DataSourceMenu: typeof import('./src/components/business/dataSource/menu/DataSourceMenu.vue')['default']
-    DebugForm: typeof import('./src/components/business/debug/form/DebugForm.vue')['default']
     Details: typeof import('./src/components/global/common/Details.vue')['default']
     DownloadIcon: typeof import('./src/components/global/icons/toolbar/DownloadIcon.vue')['default']
     DragDialog: typeof import('./src/components/global/dialog/DragDialog.vue')['default']
