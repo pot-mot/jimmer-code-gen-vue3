@@ -4,9 +4,10 @@ import {
     GenModelInput_TargetOf_enums,
     GenTableModelInput,
 } from "@/api/__generated/model/static";
+import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/loadData.ts";
 
 type ModelEditorEvents = {
-    createTable: undefined | { x: number, y: number },
+    createTable: TableLoadOptions,
     createdTable: GenTableModelInput,
     modifyTable: { id: string, table: GenTableModelInput },
     modifiedTable: { id: string, table: GenTableModelInput },

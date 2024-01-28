@@ -6,6 +6,7 @@ import {Graph, Node} from "@antv/x6";
 import {columnPortGroup} from "@/components/pages/ModelEditor/graph/tableNode/columnPort.ts";
 import {COLUMN_PORT_GROUP, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
+import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/loadData.ts";
 
 export const columnToPort = () => {
     return {
@@ -13,9 +14,11 @@ export const columnToPort = () => {
     }
 }
 
-const tableToNode = (table: GenTableModelInput, options: any = undefined) => {
+const tableToNode = (
+    table: GenTableModelInput,
+    options?: any
+): Node => {
     return {
-        ...options,
         shape: TABLE_NODE,
         data: {
             table
@@ -28,6 +31,7 @@ const tableToNode = (table: GenTableModelInput, options: any = undefined) => {
                 ...table.columns.map(columnToPort)
             ]
         },
+        ...options,
     }
 }
 
@@ -97,10 +101,10 @@ export const getTableNameMap = <T extends GenTableModelInput | GenTableColumnsVi
     return tableNameMap
 }
 
-export const importTables = <T extends GenTableModelInput | GenTableColumnsView>(
+export const loadTableModelInputs = <T extends GenTableModelInput | GenTableColumnsView>(
     graph: Graph,
     tables: T[],
-    initX?: number, initY?: number
+    options?: TableLoadOptions
 ): {
     nodes: Node[],
     tableNameMap: Map<string, (GenTableModelInput | GenTableColumnsView)[]>// 表与名称重复的表的最终 map，除了已经存在的名称，后续的名称将自动向后追加 count
@@ -108,8 +112,6 @@ export const importTables = <T extends GenTableModelInput | GenTableColumnsView>
     const tableNameMap = getTableNameMap(graph)
 
     const nodes: Node[] = tables.map(table => {
-        const svgRect = graph.view.svg.getBoundingClientRect()
-
         const name = table.name
         if (tableNameMap.has(name)) {
             let count = tableNameMap.get(name)!.length
@@ -123,12 +125,15 @@ export const importTables = <T extends GenTableModelInput | GenTableColumnsView>
             tableNameMap.set(name, [table])
         }
 
-        const tableInput: GenTableModelInput = Object.keys(table).includes('id') ? tableViewToInput(table as GenTableColumnsView) : table as GenTableModelInput
+        const tableInput: GenTableModelInput = Object.keys(table).includes('id') ?
+            tableViewToInput(table as GenTableColumnsView) : table as GenTableModelInput
 
-        return graph.addNode(tableToNode(tableInput, graph.graphToLocal(
-            initX ? initX : svgRect.width * 3 / 8 + Math.random() * 20,
-            initY ? initY : svgRect.height * 3 / 8 + Math.random() * 20
-        )))
+        const node = tableToNode(
+            tableInput,
+            options
+        )
+
+        return graph.addNode(node)
     })
 
     return {

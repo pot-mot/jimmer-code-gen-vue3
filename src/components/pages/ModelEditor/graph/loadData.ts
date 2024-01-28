@@ -4,9 +4,9 @@ import {
     GenTableColumnsView
 } from "@/api/__generated/model/static";
 import {api} from "@/api";
-import {importTables, tableViewToInput} from "./tableNode/importTable.ts";
+import {loadTableModelInputs, tableViewToInput} from "./tableNode/load.ts";
 import {Graph} from '@antv/x6'
-import {associationViewToInput, importAssociations} from "@/components/pages/ModelEditor/graph/associationEdge/importAssociation.ts";
+import {associationViewToInput, loadAssociationModelInputs} from "@/components/pages/ModelEditor/graph/associationEdge/load.ts";
 
 /**
  * 将 tables 导入画布
@@ -26,14 +26,20 @@ export const loadByTableViews = async (graph: Graph, tables: GenTableColumnsView
     )
 }
 
+export interface TableLoadOptions {
+    x?: number,
+    y?: number
+}
+
 export const loadByInputs = (
     graph: Graph,
     tables: GenTableModelInput[],
-    associations: GenAssociationModelInput[]
+    associations: GenAssociationModelInput[],
+    options?: TableLoadOptions
 ) => {
     graph.startBatch('Load from inputs')
 
-    const {nodes, tableNameMap} = importTables(graph, tables)
+    const {nodes, tableNameMap} = loadTableModelInputs(graph, tables, options)
 
     associations = associations
         .filter(it => tableNameMap.has(it.targetTable.name))
@@ -52,7 +58,7 @@ export const loadByInputs = (
         }
     })
 
-    const edges = importAssociations(graph, associations)
+    const edges = loadAssociationModelInputs(graph, associations)
 
     graph.stopBatch('Load from inputs')
 

@@ -50,7 +50,7 @@ const debugStore = useDebugStore()
 			<template #message="{data, propData}">
 				<Details :disabled="!(data.data)" position="right">
 					<template #title>
-						<el-text v-text="propData ?? ''"></el-text>
+						<el-text v-text="propData ?? '[no message]'"></el-text>
 					</template>
 
 					<div style="max-width: 30em; white-space: pre;">

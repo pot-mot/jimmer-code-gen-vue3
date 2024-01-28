@@ -1,15 +1,14 @@
 import {defineStore} from "pinia";
-import {useCommonGraphOperations} from "@/components/global/graphEditor";
+import {CommonGraphOperations, useCommonGraphOperations} from "@/components/global/graphEditor";
 import {ModelEditorEventBus} from "./ModelEditorEventBus.ts";
 import {sendMessage} from "@/message/message.ts";
-import {ref} from "vue";
+import {Ref, ref} from "vue";
 import {api} from "@/api";
-import {loadByTableViews} from "../graph/loadData.ts";
+import {loadByTableViews, TableLoadOptions} from "../graph/loadData.ts";
 import {GenModelInput, GenModelView, GenTableColumnsView, GenTableModelInput} from "@/api/__generated/model/static";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
-import {importTables} from "@/components/pages/ModelEditor/graph/tableNode/importTable.ts";
+import {loadTableModelInputs} from "@/components/pages/ModelEditor/graph/tableNode/load.ts";
 import {useGenConfigContextStore} from "@/components/business/genConfig/ContextGenConfigStore.ts";
-import {redo, undo} from "@/components/global/graphEditor/history/useHistory.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
@@ -19,18 +18,48 @@ import {getDefaultTable} from "@/components/business/table/defaultTable.ts";
 import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
 import {useTableDialogsStore} from "@/components/pages/ModelEditor/dialogs/table/TableDialogsStore.ts";
 import {unStyleAll} from "@/components/pages/ModelEditor/graph/highlight.ts";
-import {GraphEditorData} from "@/components/global/graphEditor/common/graphData.ts";
+import {GraphEditorData} from "@/components/global/graphEditor/data/graphData.ts";
 import {useDebugStore} from "@/debug/debugStore.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
+import {Node, Edge} from '@antv/x6';
+
+interface CurrentModelState {
+    _currentModel: () => GenModelView
+    isModelLoaded: Ref<boolean>
+    loadCurrentModel: (model: GenModelView) => void
+}
+
+interface ModelEditorDialogState {
+    modelEditDialogOpenState: Ref<boolean>
+    handleStartEditModel: () => void
+    handleCancelModelEdit: () => void
+    handleSubmitModelEdit: (model: GenModelInput) => void
+}
+
+interface DataSourceLoadDialogState {
+    dataSourceLoadMenuOpenState: Ref<boolean>,
+}
+
+interface ModelLoadDialogState {
+    modelLoadMenuOpenState: Ref<boolean>,
+}
+
+export interface ModelEditorStore extends
+    CommonGraphOperations,
+    CurrentModelState,
+    ModelEditorDialogState,
+    DataSourceLoadDialogState,
+    ModelLoadDialogState
+{
+    loadModel: (id: number) => Promise<{nodes: Node[], edges: Edge[]}>
+    loadSchema: (id: number) => Promise<{nodes: Node[], edges: Edge[]}>
+    loadTable: (id: number) => Promise<{nodes: Node[], edges: Edge[]}>
+}
 
 export const useModelEditorStore =
     defineStore(
         'ModelEditorGraph',
-        () => {
-            const loadingStore = useGlobalLoadingStore()
-
-            const debugStore = useDebugStore()
-
+        (): ModelEditorStore  => {
             const commonOperations = useCommonGraphOperations()
 
             const {_graph} = commonOperations
@@ -101,9 +130,15 @@ export const useModelEditorStore =
                 }
             }
 
+
+            const loadingStore = useGlobalLoadingStore()
+
+            const debugStore = useDebugStore()
+
+
             const modelEditDialogOpenState = ref(false)
 
-            const handleEditModel = () => {
+            const handleStartEditModel = () => {
                 _currentModel().graphData = getGraphData()
                 modelEditDialogOpenState.value = true
             }
@@ -157,9 +192,11 @@ export const useModelEditorStore =
                         modelIds: [id]
                     }
                 })
-                await loadTableViews(tables)
+                const res = await loadTableViews(tables)
 
                 loadingStore.stop(flag)
+
+                return res
             }
 
             /**
@@ -174,9 +211,11 @@ export const useModelEditorStore =
                         schemaIds: [id]
                     }
                 })
-                await loadTableViews(tables)
+                const res = await loadTableViews(tables)
 
                 loadingStore.stop(flag)
+
+                return res
             }
 
             /**
@@ -191,9 +230,11 @@ export const useModelEditorStore =
                         ids: [id]
                     }
                 })
-                await loadTableViews(tables)
+                const res = await loadTableViews(tables)
 
                 loadingStore.stop(flag)
+
+                return res
             }
 
             /**
@@ -215,18 +256,23 @@ export const useModelEditorStore =
                     commonOperations.layout()
                     commonOperations.fit()
                 }
+
+                return {nodes, edges}
             }
+
+
+            ModelEditorEventBus.on('*', (type, event) => {
+                debugStore.log('HISTORY', type, event)
+            })
+
 
             const tableDialogsStore = useTableDialogsStore()
 
-            const newTablePosition = ref<{ x: number, y: number }>()
+            const tableCreateOption = ref<TableLoadOptions>()
 
-            ModelEditorEventBus.on('createTable', (props) => {
+            ModelEditorEventBus.on('createTable', (option) => {
                 tableDialogsStore.open("", getDefaultTable())
-
-                if (props) {
-                    newTablePosition.value = props
-                }
+                tableCreateOption.value = option
             })
 
             ModelEditorEventBus.on('createdTable', (table) => {
@@ -234,12 +280,13 @@ export const useModelEditorStore =
 
                 if (!graph) return
 
-                const node = importTables(
+                const node = loadTableModelInputs(
                     graph,
                     [table],
-                    newTablePosition.value?.x,
-                    newTablePosition.value?.y
+                    tableCreateOption.value
                 ).nodes[0]
+
+                tableCreateOption.value = undefined
 
                 if (node) {
                     tableDialogsStore.close("")
@@ -364,7 +411,7 @@ export const useModelEditorStore =
                 loadCurrentModel,
 
                 modelEditDialogOpenState,
-                handleEditModel,
+                handleStartEditModel,
                 handleCancelModelEdit,
                 handleSubmitModelEdit,
 
@@ -374,13 +421,6 @@ export const useModelEditorStore =
                 loadModel,
                 loadSchema,
                 loadTable,
-
-                undo: () => {
-                    undo(_graph())
-                },
-                redo: () => {
-                    redo(_graph())
-                }
             }
         }
     )

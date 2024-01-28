@@ -1,7 +1,7 @@
 import {Cell, Node, Edge, Graph} from "@antv/x6";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {sendMessage} from "@/message/message.ts";
-import {loadByInputs} from "@/components/pages/ModelEditor/graph/loadData.ts";
+import {loadByInputs, TableLoadOptions} from "@/components/pages/ModelEditor/graph/loadData.ts";
 import {CopyData, validateCopyData} from "@/shape/CopyData.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
 import {useModelEditorStore} from "@/components/pages/ModelEditor/store/ModelEditorStore.ts";
@@ -13,6 +13,7 @@ import {validateModelInput} from "@/shape/ModelInput.ts";
 import {importEnums} from "@/components/pages/ModelEditor/graph/enums/genEnum.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
+import {validateTable} from "@/shape/GenTableModelInput.ts";
 
 export const handleTableNodeClipBoardKeyEvent = (graph: Graph) => {
     graph.bindKey(["ctrl+c", "command+c"], async () => {
@@ -64,6 +65,7 @@ export const tableNodeCut = async (graph: Graph) => {
 }
 
 export const tableNodePaste = async (graph: Graph) => {
+    const store = useModelEditorStore()
     const loadingStore = useGlobalLoadingStore()
     const flag = loadingStore.start('clipBoard paste')
 
@@ -76,18 +78,25 @@ export const tableNodePaste = async (graph: Graph) => {
 
         const value = JSON.parse(text)
 
-        const store = useModelEditorStore()
-
         const validateErrors: any = []
 
-        if (validateCopyData(value, (e) => validateErrors.push(e))) {
+        const options: TableLoadOptions = {
+            x: store.mousePosition.x,
+            y: store.mousePosition.y
+        }
+
+        if (validateTable(value, (e) => validateErrors.push(e))) {
+            const table = value as GenTableModelInput
+
+            res = loadByInputs(graph, [table], [], options)
+        } else if (validateCopyData(value, (e) => validateErrors.push(e))) {
             const {
                 tables,
                 associations,
                 enums
             } = value as CopyData
 
-            res = loadByInputs(graph, tables, associations)
+            res = loadByInputs(graph, tables, associations, options)
 
             importEnums(enums)
         } else if (validateGraphData(value, (e) => validateErrors.push(e))) {

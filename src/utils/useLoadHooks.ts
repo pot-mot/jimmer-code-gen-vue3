@@ -1,6 +1,6 @@
 import {Ref, ref} from "vue";
 
-export const useLoadHooks = <T> (getProps: () => T): {
+export interface LoadHooks<T> {
     beforeLoadFns: Ref<((props: T) => any)[]>,
     onBeforeLoad: (callback: (props: T) => any) => void
     beforeLoad: () => void,
@@ -16,7 +16,9 @@ export const useLoadHooks = <T> (getProps: () => T): {
     unloadedFns: Ref<((props: T) => any)[]>,
     onUnloaded: (callback: (props: T) => any) => void
     unloaded: () => void,
-} => {
+}
+
+export const useLoadHooks = <T> (getProps: () => T): LoadHooks<T> => {
     const batchExe = (fns: ((props: T) => any)[]) => {
         const props = getProps()
 

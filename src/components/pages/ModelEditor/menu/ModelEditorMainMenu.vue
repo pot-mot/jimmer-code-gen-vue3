@@ -42,7 +42,13 @@ const formattedEdgeShowType = computed(() => {
 			<template #title>
 				<div style="height: 2em; line-height: 2em;">
 					<el-text>Nodes</el-text>
-					<el-button style="margin-left: 0.5em;" @click="ModelEditorEventBus.emit('createTable')">创建表
+					<el-button
+						style="margin-left: 0.5em;"
+						@click="ModelEditorEventBus.emit(
+						'createTable',
+						{x: store.getCenterPoint().x * 3/4, y: store.getCenterPoint().y * 3/4}
+						)">
+						创建表
 					</el-button>
 				</div>
 			</template>

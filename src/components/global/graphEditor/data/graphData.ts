@@ -5,9 +5,15 @@ export type GraphEditorData = {
     zoom: number,
     transform: string | null
 }
-export const useGraphDataOperation = (_graph: () => Graph) => {
+
+export interface GraphDataOperation {
+    getGraphData: () => string
+    loadGraphData: (jsonStr: string, reset: boolean) => {nodes: Node[], edges: Edge[]}
+}
+
+export const useGraphDataOperation = (_graph: () => Graph): GraphDataOperation => {
     return {
-        getGraphData: (): string => {
+        getGraphData: () => {
             return JSON.stringify(graphToEditorData(_graph()))
         },
         loadGraphData: (jsonStr: string, reset: boolean = true) => {

@@ -1,14 +1,31 @@
-import {computed, ref, Ref} from "vue";
+import {computed, ComputedRef, ref, Ref} from "vue";
 import {Graph} from "@antv/x6";
 import {sendMessage} from "@/message/message.ts";
-import {useSelectOperation} from "@/components/global/graphEditor/selection/selectOperation.ts";
-import {useViewOperation} from "@/components/global/graphEditor/common/viewOperation.ts";
-import {useGraphReactiveState} from "./common/reactiveState.ts";
-import {useGraphDataOperation} from "@/components/global/graphEditor/common/graphData.ts";
-import {useLoadHooks} from "@/utils/useLoadHooks.ts";
+import {SelectOperation, useSelectOperation} from "@/components/global/graphEditor/selection/selectOperation.ts";
+import {useViewOperation, ViewOperation} from "@/components/global/graphEditor/view/viewOperation.ts";
+import {GraphReactiveState, useGraphReactiveState} from "./data/reactiveState.ts";
+import {GraphDataOperation, useGraphDataOperation} from "@/components/global/graphEditor/data/graphData.ts";
+import {LoadHooks, useLoadHooks} from "@/utils/useLoadHooks.ts";
+import {HistoryOperations, useHistoryOperations} from "@/components/global/graphEditor/history/useHistory.ts";
 
-export const useCommonGraphOperations = () => {
-    const graph: Ref<Graph | undefined | null> = ref()
+export interface CommonGraphOperations extends GraphReactiveState,
+    LoadHooks<Graph | undefined>,
+    SelectOperation,
+    ViewOperation,
+    GraphDataOperation,
+    HistoryOperations
+{
+    isLoaded: ComputedRef<boolean>
+    _graph: () => Graph
+    load: (_graph: Graph) => void
+    unload: () => void
+
+    removeAllCells: () => void
+    removeAllEdges: () => void
+}
+
+export const useCommonGraphOperations = (): CommonGraphOperations => {
+    const graph: Ref<Graph | undefined> = ref()
 
     /**
      * 获取 graph
@@ -48,9 +65,8 @@ export const useCommonGraphOperations = () => {
 
         loadHooks.beforeUnload()
 
-
         reactiveState.clearReactiveState()
-        graph.value = null
+        graph.value = undefined
 
         loadHooks.unloaded()
     }
@@ -81,16 +97,16 @@ export const useCommonGraphOperations = () => {
 
     const graphDataOperation = useGraphDataOperation(_graph)
 
+    const historyOperations = useHistoryOperations(_graph)
+
     return {
+        _graph,
+
         isLoaded,
         load,
         unload,
-        _graph,
 
         ...loadHooks,
-
-        removeAllCells,
-        removeAllEdges,
 
         ...selectOperations,
 
@@ -98,6 +114,11 @@ export const useCommonGraphOperations = () => {
 
         ...reactiveState,
 
-        ...graphDataOperation
+        ...graphDataOperation,
+
+        ...historyOperations,
+
+        removeAllCells,
+        removeAllEdges,
     }
 }

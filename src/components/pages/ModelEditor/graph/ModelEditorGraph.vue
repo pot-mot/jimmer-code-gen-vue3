@@ -11,7 +11,7 @@
 
 			<li>
 				<el-tooltip content="编辑模型">
-					<el-button :icon="EditPen" @click="store.handleEditModel"></el-button>
+					<el-button :icon="EditPen" @click="store.handleStartEditModel"></el-button>
 				</el-tooltip>
 			</li>
 
@@ -207,14 +207,15 @@ onMounted(async () => {
 	const flag = loadingStore.start('ModelEditorGraph onMounted')
 
 	graph = initModelEditor(container.value!, wrapper.value!)
-	await store.load(graph)
+
+	store.load(graph)
 
 	graph.on('history:change', (args) => {
 		debugStore.log('HISTORY', args.options.name, args)
 	})
 
-	graph.on('blank:dblclick', ({e}) => {
-		ModelEditorEventBus.emit('createTable', {x: e.offsetX, y: e.offsetY})
+	graph.on('blank:dblclick', () => {
+		ModelEditorEventBus.emit('createTable', store.mousePosition)
 	})
 
 	graph.on('node:click', ({node}) => {

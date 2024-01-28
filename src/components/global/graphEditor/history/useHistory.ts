@@ -29,7 +29,18 @@ export const useHistory = (graph: Graph) => {
     })
 }
 
-export const undo = (graph: Graph) => {
+export interface HistoryOperations {
+    undo: () => void
+    redo: () => void
+}
+
+export const useHistoryOperations = (_graph: () => Graph): HistoryOperations => {
+    return {
+        redo: () => redo(_graph()),
+        undo: () => undo(_graph())
+    }
+}
+const undo = (graph: Graph) => {
     if (graph.canUndo()) {
         graph.undo()
     } else {
@@ -37,7 +48,7 @@ export const undo = (graph: Graph) => {
     }
 }
 
-export const redo = (graph: Graph) => {
+const redo = (graph: Graph) => {
     if (graph.canRedo()) {
         graph.redo()
     } else {

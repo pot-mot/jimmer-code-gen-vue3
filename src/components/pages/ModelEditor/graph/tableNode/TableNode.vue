@@ -36,8 +36,8 @@ import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {sendMessage} from "@/message/message.ts";
 import {useModelEditorStore} from "../../store/ModelEditorStore.ts";
-import {importAssociation} from "../associationEdge/importAssociation.ts";
-import {columnToPort} from "@/components/pages/ModelEditor/graph/tableNode/importTable.ts";
+import {loadAssociationModelInputs} from "../associationEdge/load.ts";
+import {columnToPort} from "@/components/pages/ModelEditor/graph/tableNode/load.ts";
 import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
@@ -166,7 +166,7 @@ onMounted(async () => {
 						}
 					}
 
-					importAssociation(graph, association)
+					loadAssociationModelInputs(graph, [association])
 				}
 			})
 

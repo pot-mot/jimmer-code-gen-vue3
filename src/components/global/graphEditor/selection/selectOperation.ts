@@ -1,15 +1,28 @@
-import {Edge, Graph, Node} from "@antv/x6";
+import {Edge, Graph, Node, Cell} from "@antv/x6";
 import {searchEdgesByNode} from "../common/search.ts";
 import {CellProperty, getFirst} from "../common/cellsInputProcess.ts";
 
-export const useSelectOperation = (_graph: () => Graph) => {
+export interface SelectOperation {
+    select: (cells: CellProperty | CellProperty[]) => void
+    unselect: (cells: CellProperty | CellProperty[]) => void
+    toggleSelect: (cells: CellProperty | CellProperty[]) => void
+    selectAll: () => void
+    getSelectedNodes: () => Node[]
+    getSelectedEdges: () => Edge[]
+    getSelectedNodeConnectedEdges: () => Edge[]
+    removeSelectedCells: () => Cell[]
+    removeSelectedNodes: () => Node[]
+    removeSelectedEdges: () => Edge[]
+}
+
+export const useSelectOperation = (_graph: () => Graph): SelectOperation => {
     return {
         select: (cells: CellProperty | CellProperty[]) => select(_graph(), cells),
         unselect: (cells: CellProperty | CellProperty[]) => unselect(_graph(), cells),
         toggleSelect: (cells: CellProperty | CellProperty[]) => toggleSelect(_graph(), cells),
         selectAll: () => selectAll(_graph()),
-        getSelectedEdges: () => getSelectedEdges(_graph()),
         getSelectedNodes: () => getSelectedNodes(_graph()),
+        getSelectedEdges: () => getSelectedEdges(_graph()),
         getSelectedNodeConnectedEdges: () => getSelectedNodeConnectedEdges(_graph()),
         removeSelectedCells: () => removeSelectedCells(_graph()),
         removeSelectedNodes: () => removeSelectedNodes(_graph()),
@@ -73,16 +86,19 @@ export const removeSelectedCells = (graph: Graph) => {
     const cells = graph.getSelectedCells()
     graph.unselect(cells)
     graph.removeCells(cells)
+    return cells
 }
 
 export const removeSelectedNodes = (graph: Graph) => {
     const nodes = getSelectedNodes(graph)
     graph.unselect(nodes)
     graph.removeCells(nodes)
+    return nodes
 }
 
 export const removeSelectedEdges = (graph: Graph) => {
     const edges = getSelectedEdges(graph)
     graph.unselect(edges)
     graph.removeCells(edges)
+    return edges
 }

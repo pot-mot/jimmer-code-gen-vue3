@@ -47,7 +47,10 @@ export const associationViewToInput = (
     }
 }
 
-export const importAssociation = (graph: Graph, association: GenAssociationModelInput): Edge | undefined => {
+const associationToEdgeMeta = (
+    graph: Graph,
+    association: GenAssociationModelInput
+): Edge.Metadata | undefined => {
     if (association.columnReferences.length == 0) return
 
     const sourceNode = graph.getNodes().filter(it =>
@@ -145,15 +148,18 @@ export const importAssociation = (graph: Graph, association: GenAssociationModel
         edgeMeta.router = orthRouter
     }
 
-    return graph.addEdge(edgeMeta)
+    return edgeMeta
 }
 
-export const importAssociations = (graph: Graph, associations: readonly GenAssociationModelInput[]): Edge[] => {
+export const loadAssociationModelInputs = (
+    graph: Graph,
+    associations: readonly GenAssociationModelInput[]
+): Edge[] => {
     const edges: Edge[] = []
 
     associations.forEach(association => {
-        const edge = importAssociation(graph, association)
-        if (edge) edges.push(edge)
+        const edgeMeta = associationToEdgeMeta(graph, association)
+        if (edgeMeta) edges.push(graph.addEdge(edgeMeta))
     })
 
     return edges

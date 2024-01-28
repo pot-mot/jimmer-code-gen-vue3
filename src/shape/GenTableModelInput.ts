@@ -1,5 +1,6 @@
 import {useShapeValidate} from "@/shape/shapeValidate.ts";
 import {
+    GenTableModelInput,
     GenTableModelInput_TargetOf_columns,
     GenTableModelInput_TargetOf_indexes
 } from "@/api/__generated/model/static";
@@ -216,6 +217,12 @@ export const GenTableModelInputJsonSchema = {
         }
     }
 }
+
+export const {validate: validateTable} =
+    useShapeValidate<GenTableModelInput>(
+        "GenTableModelInput",
+        GenTableModelInputJsonSchema
+    )
 
 export const {validate: validateColumn} =
     useShapeValidate<GenTableModelInput_TargetOf_columns>(
