@@ -7,6 +7,7 @@ import {
     GenTableModelInput
 } from "@/api/__generated/model/static";
 import {GenEnumModelInputJsonSchema} from "@/shape/GenEnumModelInput.ts";
+import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/loadData.ts";
 
 const CopyDataShapeJsonSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -14,6 +15,18 @@ const CopyDataShapeJsonSchema = {
         ...GenTableModelInputJsonSchema.definitions,
         ...GenAssociationModelInputJsonSchema.definitions,
         ...GenEnumModelInputJsonSchema.definitions,
+
+        "TableLoadOptions": {
+            "properties": {
+                "x": {
+                    "type": "number"
+                },
+                "y": {
+                    "type": "number"
+                },
+            },
+            "type": "object"
+        },
 
         "CopyData": {
             "type": "object",
@@ -24,6 +37,13 @@ const CopyDataShapeJsonSchema = {
                     "items": {
                         "$ref": "#/definitions/GenTableModelInput"
                     },
+                },
+
+                "optionsList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/TableLoadOptions",
+                    }
                 },
 
                 "associations": {
@@ -46,6 +66,7 @@ const CopyDataShapeJsonSchema = {
 
 export interface CopyData {
     tables: GenTableModelInput[],
+    optionsList?: TableLoadOptions[],
     associations: GenAssociationModelInput[],
     enums: GenModelInput_TargetOf_enums[]
 }

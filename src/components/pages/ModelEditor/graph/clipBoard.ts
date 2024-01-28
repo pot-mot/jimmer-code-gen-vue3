@@ -49,12 +49,32 @@ export const tableNodeCopy = async (graph: Graph) => {
         store.isModelLoaded ?
             store._currentModel().enums.filter(it => tableEnumNames.includes(it.name)) : []
 
-    await navigator.clipboard.writeText(JSON.stringify({tables, associations, enums}))
+    const nodePositions = nodes.map(it => (it as Node).getPosition())
+
+    let minX = Number.MAX_VALUE
+    let minY = Number.MAX_VALUE
+    nodePositions.forEach(it => {
+        if (it.x < minX) minX = it.x
+        if (it.y < minY) minY = it.y
+    })
+
+    const optionsList: TableLoadOptions[] = []
+    nodePositions.forEach(it => {
+        optionsList.push({
+            x: it.x - minX,
+            y: it.y - minY
+        })
+    })
+
+
+    const copyData: CopyData = {tables, associations, enums, optionsList}
+
+    await navigator.clipboard.writeText(JSON.stringify(copyData))
 
     return {
         nodes,
         edges,
-        enums,
+        ...copyData
     }
 }
 
@@ -87,16 +107,16 @@ export const tableNodePaste = async (graph: Graph) => {
 
         if (validateTable(value, (e) => validateErrors.push(e))) {
             const table = value as GenTableModelInput
-
             res = loadByInputs(graph, [table], [], options)
         } else if (validateCopyData(value, (e) => validateErrors.push(e))) {
             const {
                 tables,
                 associations,
-                enums
+                enums,
+                optionsList
             } = value as CopyData
 
-            res = loadByInputs(graph, tables, associations, options)
+            res = loadByInputs(graph, tables, associations, options, optionsList)
 
             importEnums(enums)
         } else if (validateGraphData(value, (e) => validateErrors.push(e))) {

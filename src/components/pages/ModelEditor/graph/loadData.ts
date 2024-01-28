@@ -6,7 +6,10 @@ import {
 import {api} from "@/api";
 import {loadTableModelInputs, tableViewToInput} from "./tableNode/load.ts";
 import {Graph} from '@antv/x6'
-import {associationViewToInput, loadAssociationModelInputs} from "@/components/pages/ModelEditor/graph/associationEdge/load.ts";
+import {
+    associationViewToInput,
+    loadAssociationModelInputs
+} from "@/components/pages/ModelEditor/graph/associationEdge/load.ts";
 
 /**
  * 将 tables 导入画布
@@ -35,11 +38,20 @@ export const loadByInputs = (
     graph: Graph,
     tables: GenTableModelInput[],
     associations: GenAssociationModelInput[],
-    options?: TableLoadOptions
+    commonOptions?: TableLoadOptions,
+    optionsList?: TableLoadOptions[]
 ) => {
     graph.startBatch('Load from inputs')
 
-    const {nodes, tableNameMap} = loadTableModelInputs(graph, tables, options)
+    const {
+        nodes,
+        tableNameMap
+    } = loadTableModelInputs(
+        graph,
+        tables,
+        commonOptions,
+        optionsList
+    )
 
     associations = associations
         .filter(it => tableNameMap.has(it.targetTable.name))

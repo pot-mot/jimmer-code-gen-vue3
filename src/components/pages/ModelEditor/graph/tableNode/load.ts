@@ -104,14 +104,15 @@ export const getTableNameMap = <T extends GenTableModelInput | GenTableColumnsVi
 export const loadTableModelInputs = <T extends GenTableModelInput | GenTableColumnsView>(
     graph: Graph,
     tables: T[],
-    options?: TableLoadOptions
+    commonOptions?: TableLoadOptions,
+    optionsList?: TableLoadOptions[]
 ): {
     nodes: Node[],
     tableNameMap: Map<string, (GenTableModelInput | GenTableColumnsView)[]>// 表与名称重复的表的最终 map，除了已经存在的名称，后续的名称将自动向后追加 count
 } => {
     const tableNameMap = getTableNameMap(graph)
 
-    const nodes: Node[] = tables.map(table => {
+    const nodes: Node[] = tables.map((table, index) => {
         const name = table.name
         if (tableNameMap.has(name)) {
             let count = tableNameMap.get(name)!.length
@@ -130,7 +131,12 @@ export const loadTableModelInputs = <T extends GenTableModelInput | GenTableColu
 
         const node = tableToNode(
             tableInput,
-            options
+            {
+                x: (commonOptions?.x != undefined && optionsList && optionsList[index] && optionsList[index].x  != undefined) ?
+                    commonOptions.x + optionsList[index].x! : undefined,
+                y: (commonOptions?.y != undefined && optionsList && optionsList[index] && optionsList[index].y  != undefined) ?
+                    commonOptions.y + optionsList[index].y! : undefined,
+            }
         )
 
         return graph.addNode(node)
