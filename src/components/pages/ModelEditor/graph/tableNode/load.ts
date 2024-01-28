@@ -133,9 +133,9 @@ export const loadTableModelInputs = <T extends GenTableModelInput | GenTableColu
             tableInput,
             {
                 x: (commonOptions?.x != undefined && optionsList && optionsList[index] && optionsList[index].x  != undefined) ?
-                    commonOptions.x + optionsList[index].x! : undefined,
+                    commonOptions.x + optionsList[index].x! : commonOptions?.x,
                 y: (commonOptions?.y != undefined && optionsList && optionsList[index] && optionsList[index].y  != undefined) ?
-                    commonOptions.y + optionsList[index].y! : undefined,
+                    commonOptions.y + optionsList[index].y! : commonOptions?.y,
             }
         )
 
