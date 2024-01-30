@@ -69,7 +69,6 @@ export const tableViewToInput = (tableView: GenTableColumnsView): GenTableModelI
                 overwriteByRaw: column.overwriteByRaw,
                 rawType: column.rawType,
                 typeNotNull: column.typeNotNull,
-                idGeneration: column.idGeneration,
                 logicalDelete: column.logicalDelete,
                 businessKey: column.businessKey,
                 enum:

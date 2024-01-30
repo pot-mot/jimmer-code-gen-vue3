@@ -60,10 +60,6 @@ export interface GenColumnCommonView {
      */
     businessKey: boolean;
     /**
-     * 是否为 ID 生成
-     */
-    idGeneration: boolean;
-    /**
      * 是否为逻辑删除
      */
     logicalDelete: boolean;

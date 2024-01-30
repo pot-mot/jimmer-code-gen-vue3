@@ -6,7 +6,6 @@ import DataSourceIcon from "../../global/icons/database/DataSourceIcon.vue";
 import Details from "../../global/common/Details.vue";
 import {
 	DataSourceType_CONSTANTS,
-	GenerationType_CONSTANTS,
 	GenLanguage_CONSTANTS
 } from "@/api/__generated/model/enums"
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
@@ -98,22 +97,14 @@ const handleCancel = () => {
 
 			<div style="width: calc(100% - 3px - 1em);">
 				<el-row :gutter="24">
-					<el-col :span="8">
+					<el-col :span="12">
 						<el-form-item label="包路径">
 							<el-input v-model="config.packagePath"></el-input>
 						</el-form-item>
 					</el-col>
-					<el-col :span="8">
+					<el-col :span="12">
 						<el-form-item label="映射表路径">
 							<el-input v-model="config.tablePath"></el-input>
-						</el-form-item>
-					</el-col>
-
-					<el-col :span="8">
-						<el-form-item label="ID 生成类型">
-							<el-select v-model="config.idGenerationType">
-								<el-option v-for="item in GenerationType_CONSTANTS" :value="item"></el-option>
-							</el-select>
 						</el-form-item>
 					</el-col>
 

@@ -1,4 +1,4 @@
-import type {AssociationType, GenerationType} from '../enums/';
+import type {AssociationType} from '../enums/';
 import type {GenEntityPropertiesView_TargetOf_properties_TargetOf_column_2, GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2, GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_2} from './';
 
 export interface GenEntityPropertiesView_TargetOf_properties {
@@ -41,7 +41,7 @@ export interface GenEntityPropertiesView_TargetOf_properties {
     /**
      * ID 生成类型
      */
-    idGenerationType?: GenerationType | undefined;
+    idGenerationAnnotation?: string | undefined;
     /**
      * 是否为业务键属性
      */

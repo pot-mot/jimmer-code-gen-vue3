@@ -41,7 +41,6 @@ export const getDefaultColumn = (): GenTableModelInput_TargetOf_columns => {
         defaultValue: undefined,
         partOfPk: false,
         autoIncrement: false,
-        idGeneration: false,
         remark: "",
         logicalDelete: false,
         businessKey: false,

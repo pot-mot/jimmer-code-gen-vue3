@@ -1,4 +1,4 @@
-import {Ref, ref} from "vue";
+import {computed, Ref, ref} from "vue";
 import {defineStore} from "pinia";
 
 export const DEBUG_CONSTANTS = [
@@ -27,7 +27,16 @@ export const useDebugStore = defineStore(
 
         const outputTypes: Ref<DebugType[]> = ref([])
 
+        const filterTypes: Ref<DebugType[]> = ref([
+            'HISTORY',
+            'LOADING'
+        ])
+
         const debugLogs: Ref<DebugLog[]> = ref([])
+
+        const filteredLogs = computed(() => {
+            return debugLogs.value.filter(it => filterTypes.value.includes(it.type))
+        })
 
         const log = (type: DebugType, message: string, data?: any) => {
             if (collectTypes.value.includes(type)) {
@@ -48,10 +57,13 @@ export const useDebugStore = defineStore(
             debugLogs,
 
             log,
+            cleanLogs,
 
             collectTypes,
             outputTypes,
-            cleanLogs,
+
+            filterTypes,
+            filteredLogs,
         }
     }
 )

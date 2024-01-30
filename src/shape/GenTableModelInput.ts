@@ -84,10 +84,6 @@ export const GenTableModelInputJsonSchema = {
                     "$ref": "#/definitions/GenTableModelInput_TargetOf_columns_TargetOf_enum_2",
                     "description": "生成枚举"
                 },
-                "idGeneration": {
-                    "description": "是否为 ID 生成",
-                    "type": "boolean"
-                },
                 "logicalDelete": {
                     "description": "是否为逻辑删除",
                     "type": "boolean"
@@ -134,7 +130,6 @@ export const GenTableModelInputJsonSchema = {
                 "businessKey",
                 "comment",
                 "dataSize",
-                "idGeneration",
                 "logicalDelete",
                 "name",
                 "numericPrecision",

@@ -1,4 +1,4 @@
-import type {AssociationType, GenerationType} from '../enums/';
+import type {AssociationType} from '../enums/';
 
 export interface GenEntityConfigInput_TargetOf_properties {
     /**
@@ -32,7 +32,7 @@ export interface GenEntityConfigInput_TargetOf_properties {
     /**
      * ID 生成类型
      */
-    idGenerationType?: GenerationType | undefined;
+    idGenerationAnnotation?: string | undefined;
     /**
      * 是否为业务键属性
      */

@@ -21,7 +21,6 @@ export const getDefaultModel = (): GenModelInput => {
         lowerCaseName: true,
         realFk: true,
         idViewProperty: true,
-        idGenerationType: "IDENTITY",
         logicalDeletedAnnotation: "",
         tableAnnotation: true,
         columnAnnotation: true,

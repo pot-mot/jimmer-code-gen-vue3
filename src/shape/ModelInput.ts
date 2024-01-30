@@ -70,10 +70,6 @@ export const GenModelInputJsonSchema = {
                     "description": "ID",
                     "type": "number"
                 },
-                "idGenerationType": {
-                    "$ref": "#/definitions/GenerationType",
-                    "description": "ID 生成类型"
-                },
                 "idViewProperty": {
                     "description": "生成 IdView 属性",
                     "type": "boolean"
@@ -152,7 +148,6 @@ export const GenModelInputJsonSchema = {
                 "columnNameSuffixes",
                 "dataSourceType",
                 "enums",
-                "idGenerationType",
                 "idViewProperty",
                 "joinColumnAnnotation",
                 "joinTableAnnotation",
@@ -172,15 +167,6 @@ export const GenModelInputJsonSchema = {
                 "tablePath"
             ],
             "type": "object"
-        },
-        "GenerationType": {
-            "enum": [
-                "AUTO",
-                "IDENTITY",
-                "SEQUENCE",
-                "USER"
-            ],
-            "type": "string"
         }
     }
 }

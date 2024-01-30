@@ -1,4 +1,4 @@
-import type {DataSourceType, GenLanguage, GenerationType} from '../enums/';
+import type {DataSourceType, GenLanguage} from '../enums/';
 import type {GenModelInput_TargetOf_enums} from './';
 
 export interface GenModelInput {
@@ -46,10 +46,6 @@ export interface GenModelInput {
      * 生成 IdView 属性
      */
     idViewProperty: boolean;
-    /**
-     * ID 生成类型
-     */
-    idGenerationType: GenerationType;
     /**
      * 逻辑删除注解
      */

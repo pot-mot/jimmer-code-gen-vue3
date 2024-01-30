@@ -8,7 +8,7 @@ const debugStore = useDebugStore()
 </script>
 
 <template>
-	<el-form label-position="top">
+	<el-form label-width="6em" label-position="left">
 		<el-form-item label="收集">
 			<el-select multiple v-model="debugStore.collectTypes">
 				<el-option v-for="item in DEBUG_CONSTANTS" :value="item"></el-option>
@@ -16,6 +16,11 @@ const debugStore = useDebugStore()
 		</el-form-item>
 		<el-form-item label="控制台输出">
 			<el-select multiple v-model="debugStore.outputTypes">
+				<el-option v-for="item in DEBUG_CONSTANTS" :value="item"></el-option>
+			</el-select>
+		</el-form-item>
+		<el-form-item label="类型过滤">
+			<el-select multiple v-model="debugStore.filterTypes">
 				<el-option v-for="item in DEBUG_CONSTANTS" :value="item"></el-option>
 			</el-select>
 		</el-form-item>
@@ -28,7 +33,7 @@ const debugStore = useDebugStore()
 		</div>
 
 		<ViewList
-			:lines="debugStore.debugLogs"
+			:lines="debugStore.filteredLogs"
 			:columns="[
 				{
 					prop: 'type',

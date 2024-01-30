@@ -8,8 +8,6 @@ export type {EnumType} from './EnumType';
 export {EnumType_CONSTANTS} from './EnumType';
 export type {GenLanguage} from './GenLanguage';
 export {GenLanguage_CONSTANTS} from './GenLanguage';
-export type {GenerationType} from './GenerationType';
-export {GenerationType_CONSTANTS} from './GenerationType';
 export type {SelectType} from './SelectType';
 export {SelectType_CONSTANTS} from './SelectType';
 export type {TableType} from './TableType';

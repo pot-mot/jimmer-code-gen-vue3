@@ -247,10 +247,6 @@ const handleCancel = () => {
 						<el-checkbox v-model="data.autoIncrement" class="cling-checkbox"></el-checkbox>
 					</el-tooltip>
 
-					<el-tooltip v-if="data.partOfPk" :auto-close="500" content="id 生成">
-						<el-checkbox v-model="data.idGeneration" class="cling-checkbox"></el-checkbox>
-					</el-tooltip>
-
 					<el-tooltip v-if="!data.partOfPk" :auto-close="500" content="业务键">
 						<el-checkbox v-model="data.businessKey" class="cling-checkbox"></el-checkbox>
 					</el-tooltip>
