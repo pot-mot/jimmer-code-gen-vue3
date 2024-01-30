@@ -46,7 +46,7 @@ export interface GenEntityConfigInput_TargetOf_properties {
      */
     idView: boolean;
     /**
-     * ID 视图注释
+     * ID 视图注解
      */
     idViewAnnotation?: string | undefined;
     /**
@@ -54,15 +54,15 @@ export interface GenEntityConfigInput_TargetOf_properties {
      */
     associationType?: AssociationType | undefined;
     /**
-     * 关联注释
+     * 关联注解
      */
     associationAnnotation?: string | undefined;
     /**
-     * 脱钩注释
+     * 脱钩注解
      */
     dissociateAnnotation?: string | undefined;
     /**
-     * 其他注释
+     * 其他注解
      */
     otherAnnotation?: string | undefined;
     /**
