@@ -1,8 +1,8 @@
 import {Edge, Graph} from "@antv/x6";
 import {
+    TABLE_NODE,
     ASSOCIATION_EDGE,
-    DEFAULT_ASSOCIATION_FAKE,
-    DEFAULT_ASSOCIATION_TYPE, TABLE_NODE
+    DEFAULT_ASSOCIATION_TYPE,
 } from "@/components/business/modelEditor/constant.ts";
 import {EdgeConnect, getEdgeConnect} from "@/components/global/graphEditor/edge/connectData.ts";
 import {
@@ -11,6 +11,7 @@ import {
 } from "@/api/__generated/model/static";
 import {AssociationType} from "@/api/__generated/model/enums";
 import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
+import {useGenConfigContextStore} from "@/components/business/genConfig/ContextGenConfigStore.ts";
 
 export const getTableColumnByEdgeConnect = (
     edgeConnect: EdgeConnect
@@ -63,25 +64,19 @@ const createAssociationByEdge = (
     const association = edge.getData()?.association as GenAssociationModelInput | undefined
 
     const type: AssociationType =
-        association?.type ?
-            association.type :
+        association?.type ??
             DEFAULT_ASSOCIATION_TYPE
     const fake: boolean =
-        association?.fake ?
-            association.fake :
-            DEFAULT_ASSOCIATION_FAKE
+        association?.fake ??
+            !(useGenConfigContextStore().context.realFk)
 
-    const name: string = association?.name ?
-        association.name : ""
+    const name: string = association?.name ?? ""
     const dissociateAction =
-        association?.dissociateAction ?
-            association.dissociateAction : undefined
+        association?.dissociateAction ?? undefined
     const updateAction =
-        association?.updateAction ?
-            association.updateAction : ""
+        association?.updateAction ?? ""
     const deleteAction =
-        association?.deleteAction ?
-            association.deleteAction : ""
+        association?.deleteAction ?? ""
 
     const columnReferences: Array<GenAssociationModelInput_TargetOf_columnReferences> = []
 

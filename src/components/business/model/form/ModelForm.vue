@@ -78,8 +78,6 @@ const otherConfigOpenState = ref(false)
 const handleOpenOtherConfigDialog = () => {
 	otherConfigOpenState.value = true
 }
-
-
 </script>
 
 <template>
@@ -90,7 +88,7 @@ const handleOpenOtherConfigDialog = () => {
 			paddingTop: '1em',
 			paddingLeft: '8px',
 			display: 'grid',
-			gridTemplateRows: editValue ? '275px 1fr 30px' : '275px',
+			gridTemplateRows: editValue ? '275px 1fr 30px' : '275px'
 		}">
 		<div>
 			<el-row :gutter="24">

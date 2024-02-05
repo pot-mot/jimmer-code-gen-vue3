@@ -77,6 +77,7 @@ export type {GenTableModelInput_TargetOf_indexes} from './GenTableModelInput_Tar
 export type {GenTableModelInput_TargetOf_indexes_TargetOf_columns_2} from './GenTableModelInput_TargetOf_indexes_TargetOf_columns_2';
 export type {GenTypeMappingInput} from './GenTypeMappingInput';
 export type {GenTypeMappingView} from './GenTypeMappingView';
+export type {ModelInputEntities} from './ModelInputEntities';
 export type {Pair} from './Pair';
 export type {TableQuery} from './TableQuery';
 export type {TimeRangeQueryParam} from './TimeRangeQueryParam';

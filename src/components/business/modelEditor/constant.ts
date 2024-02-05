@@ -7,7 +7,6 @@ export const DEFAULT_ZOOM_RANGE = {
 
 
 export const DEFAULT_ASSOCIATION_TYPE: AssociationType = "MANY_TO_ONE"
-export const DEFAULT_ASSOCIATION_FAKE: boolean = false
 
 // shape 常量
 export const TABLE_NODE = "TABLE_NODE"

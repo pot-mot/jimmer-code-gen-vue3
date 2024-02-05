@@ -2,18 +2,18 @@ import http from "http";
 import fs from "fs";
 import fse from "fs-extra";
 import { v4 } from "uuid";
-import tempDir from "temp-dir";
+import os from "os";
 import AdmZip from "adm-zip";
 
 const sourceUrl = "http://localhost:8080/ts.zip";
-const tmpFilePath = tempDir + "/" + v4() + ".zip";
+const tmpFilePath = os.tmpdir() + "/" + v4() + ".zip";
 const generatePath = "src/api/__generated";
 
 console.log("Downloading " + sourceUrl + "...");
 
 const tmpFile = fs.createWriteStream(tmpFilePath);
 
-const request = http.get(sourceUrl, (response) => {
+http.get(sourceUrl, (response) => {
     response.pipe(tmpFile);
     tmpFile.on("finish", () => {
         tmpFile.close();
@@ -28,8 +28,8 @@ const request = http.get(sourceUrl, (response) => {
 
         // Unzip the file using adm-zip
         console.log("Unzipping the file...");
-        const zip = new AdmZip(tmpFilePath);
-        zip.extractAllTo(generatePath, true);
+        const zip = new AdmZip(tmpFilePath, {});
+        zip.extractAllTo(generatePath, true, false, undefined);
         console.log("File unzipped successfully.");
 
         // Remove the temporary file

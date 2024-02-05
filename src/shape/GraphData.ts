@@ -79,20 +79,16 @@ const GraphDataShapeJsonSchema = {
     }
 } as const
 
+export interface GraphData {
+    json: {
+        cells: []
+    },
+    zoom: string,
+    transform: number | undefined,
+}
+
 export const {validate: validateGraphData} =
-    useShapeValidate(
+    useShapeValidate<GraphData>(
         "GraphData",
-        GraphDataShapeJsonSchema
-    )
-
-export const {validate: validateTableNode} =
-    useShapeValidate(
-        "TableNode",
-        GraphDataShapeJsonSchema
-    )
-
-export const {validate: validateAssociationEdge} =
-    useShapeValidate(
-        "AssociationEdge",
         GraphDataShapeJsonSchema
     )

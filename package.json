@@ -42,12 +42,11 @@
     "@types/splitpanes": "^2.2.1",
     "@vitejs/plugin-vue": "^5.0.3",
     "adm-zip": "^0.5.10",
-    "fs-extra": "^11.1.1",
-    "temp-dir": "^3.0.0",
+    "fs-extra": "^11.2.0",
     "typescript": "^5.0.2",
     "unplugin-auto-import": "^0.17.3",
     "unplugin-vue-components": "^0.26.0",
-    "uuid": "^9.0.0",
+    "uuid": "^9.0.1",
     "vite": "^5.0.10",
     "vue-tsc": "^1.8.27"
   }

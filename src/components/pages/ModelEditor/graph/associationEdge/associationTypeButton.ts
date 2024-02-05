@@ -7,7 +7,6 @@ import {
     DEFAULT_ASSOCIATION_TYPE,
 } from "@/components/business/modelEditor/constant.ts";
 import {AssociationType} from "@/api/__generated/model/enums";
-import {setAssociationFake} from "@/components/pages/ModelEditor/graph/associationEdge/associationFake.ts";
 import {
     reverseSinglePartAssociationType
 } from "@/components/pages/ModelEditor/graph/associationEdge/associationTypeData.ts";
@@ -140,9 +139,6 @@ const getAssociationType = (edge: Edge, defaultAssociationType: AssociationType 
 
 const setAssociationType = (edge: Edge, type: AssociationType) => {
     edge.setData({association: {type}}, {deep: true})
-    if (type == 'MANY_TO_MANY') {
-        setAssociationFake(edge, false)
-    }
 }
 
 export const useAssociationType = (graph: Graph) => {

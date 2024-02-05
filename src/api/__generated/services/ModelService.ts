@@ -1,11 +1,9 @@
 import type {Executor} from '../';
 import type {
-    GenAssociationModelInput, 
     GenModelInput, 
     GenModelSimpleView, 
     GenModelView, 
-    GenTableModelInput, 
-    Pair
+    ModelInputEntities
 } from '../model/static/';
 
 export class ModelService {
@@ -29,11 +27,11 @@ export class ModelService {
     }
     
     async getValueData(options: ModelServiceOptions['getValueData']): Promise<
-        Pair<Array<GenTableModelInput>, Array<GenAssociationModelInput>> | undefined
+        ModelInputEntities | undefined
     > {
         let _uri = '/model/valueData/';
         _uri += encodeURIComponent(options.id);
-        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Pair<Array<GenTableModelInput>, Array<GenAssociationModelInput>> | undefined>;
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<ModelInputEntities | undefined>;
     }
     
     async list(): Promise<

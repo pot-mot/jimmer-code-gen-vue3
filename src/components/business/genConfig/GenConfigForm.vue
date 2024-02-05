@@ -76,7 +76,7 @@ const handleCancel = () => {
 			<div style="width: calc(100% - 3px - 1em);">
 				<el-row :gutter="24">
 					<el-col :span="12">
-						<el-form-item label="真实外键">
+						<el-form-item label="默认使用真实外键">
 							<el-switch v-model="config.realFk"></el-switch>
 						</el-form-item>
 					</el-col>

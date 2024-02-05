@@ -1,7 +1,6 @@
 import {Edge, Graph} from "@antv/x6";
 import {
     ASSOCIATION_EDGE,
-    DEFAULT_ASSOCIATION_FAKE,
     FAKE_ASSOCIATION_LINE_DASHARRAY
 } from "@/components/business/modelEditor/constant.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
@@ -9,14 +8,16 @@ import {
     getEdgeSelectFlag,
     setEdgeSelectFlag
 } from "@/components/pages/ModelEditor/graph/associationEdge/edgeSelectedState.ts";
+import {useGenConfigContextStore} from "@/components/business/genConfig/ContextGenConfigStore.ts";
 
-export const setAssociationFake = (edge: Edge, fake: boolean) => {
+const setAssociationFake = (edge: Edge, fake: boolean) => {
     edge.setData({association: {fake}}, {deep: true})
 }
 
-export const getAssociationFake = (edge: Edge, defaultAssociationFake: boolean = DEFAULT_ASSOCIATION_FAKE): boolean => {
+const getAssociationFake = (edge: Edge): boolean => {
     let temp = edge.getData()?.association.fake
     if (temp == undefined) {
+        const defaultAssociationFake = !(useGenConfigContextStore().context.realFk)
         setAssociationFake(edge, defaultAssociationFake)
         temp = defaultAssociationFake
     }
