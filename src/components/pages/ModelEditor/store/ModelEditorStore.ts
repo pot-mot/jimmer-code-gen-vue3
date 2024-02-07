@@ -121,10 +121,10 @@ export const useModelEditorStore =
                 isModelLoaded.value = true
 
                 if (commonOperations.isLoaded) {
-                    loadGraphData(model.graphData)
+                    loadGraphData(model.graphData, true)
                 } else {
                     commonOperations.onLoaded(() => {
-                        loadGraphData(model.graphData)
+                        loadGraphData(model.graphData, true)
                     })
                 }
             }
