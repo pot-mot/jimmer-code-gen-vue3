@@ -3,12 +3,9 @@ import {ref, watch} from 'vue';
 import {api} from "@/api";
 import {GenDataSourceInput} from "@/api/__generated/model/static";
 import {sendMessage} from "@/message/message.ts";
-import {ElForm, ElFormItem, ElOption, ElSelect} from "element-plus";
 import {DataSourceFormEmits} from "./DataSourceFormEmits.ts";
 import {DataSourceFormProps} from "./DataSourceFormProps.ts";
 import {DataSourceType_CONSTANTS} from "@/api/__generated/model/enums";
-import Line from "@/components/global/list/Line.vue";
-import LineItem from "@/components/global/list/LineItem.vue";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {useDataSourceDefaultStore} from "@/components/business/dataSource/dataSourceDefaultStore.ts";
 
@@ -20,9 +17,7 @@ const props = defineProps<DataSourceFormProps>()
 
 const dataSource = ref<GenDataSourceInput>({
 	name: "",
-	host: "127.0.0.1",
-	port: "3306",
-	urlSuffix: "",
+	url: "",
 	username: "",
 	password: "",
 	remark: "",
@@ -106,33 +101,15 @@ const handleSubmit = async () => {
 		</el-form-item>
 
 		<el-form-item label="url">
-			<Line>
-				<LineItem span="1fr">
-					<el-select v-model="dataSource.type" class="cling-right" filterable name="type">
-						<template #prefix>jdbc:</template>
-						<el-option v-for="(type) in DataSourceType_CONSTANTS" :label="type.toLowerCase()"
-								   :value="type"></el-option>
-					</el-select>
-				</LineItem>
-
-				<LineItem span="1fr">
-					<el-input v-model="dataSource.host" class="cling-left cling-right" name="host">
-						<template #prefix>://</template>
-					</el-input>
-				</LineItem>
-
-				<LineItem span="0.6fr">
-					<el-input v-model="dataSource.port" class="cling-left cling-right" name="port">
-						<template #prefix>:</template>
-					</el-input>
-				</LineItem>
-
-				<LineItem span="0.6fr">
-					<el-input v-model="dataSource.urlSuffix" class="cling-left" name="urlSuffix">
-						<template #prefix>&nbsp</template>
-					</el-input>
-				</LineItem>
-			</Line>
+			<el-col :span="6">
+				<el-select v-model="dataSource.type" filterable name="type">
+					<el-option v-for="(type) in DataSourceType_CONSTANTS" :label="type.toLowerCase()"
+							   :value="type"></el-option>
+				</el-select>
+			</el-col>
+			<el-col :span="18">
+				<el-input v-model="dataSource.url" style="width: 100%;"></el-input>
+			</el-col>
 		</el-form-item>
 
 		<el-form-item label="username">

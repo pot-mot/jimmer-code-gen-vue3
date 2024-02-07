@@ -1,5 +1,6 @@
 export const DataSourceType_CONSTANTS = [
     'MySQL', 
-    'PostgreSQL'
+    'PostgreSQL', 
+    'H2'
 ] as const;
 export type DataSourceType = typeof DataSourceType_CONSTANTS[number];

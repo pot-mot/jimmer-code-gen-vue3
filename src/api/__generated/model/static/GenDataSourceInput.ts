@@ -10,17 +10,9 @@ export interface GenDataSourceInput {
      */
     name: string;
     /**
-     * 主机
+     * 链接
      */
-    host: string;
-    /**
-     * 端口
-     */
-    port: string;
-    /**
-     * 链接后缀
-     */
-    urlSuffix: string;
+    url: string;
     /**
      * 用户名
      */
