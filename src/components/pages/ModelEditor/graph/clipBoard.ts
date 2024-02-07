@@ -1,7 +1,7 @@
 import {Cell, Node, Edge, Graph} from "@antv/x6";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {sendMessage} from "@/message/message.ts";
-import {loadByInputs, TableLoadOptions} from "@/components/pages/ModelEditor/graph/loadData.ts";
+import {loadModelInputs, TableLoadOptions} from "@/components/pages/ModelEditor/graph/loadData.ts";
 import {CopyData, validateCopyData} from "@/shape/CopyData.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
 import {useModelEditorStore} from "@/components/pages/ModelEditor/store/ModelEditorStore.ts";
@@ -107,7 +107,7 @@ export const tableNodePaste = async (graph: Graph) => {
 
         if (validateTable(value, (e) => validateErrors.push(e))) {
             const table = value as GenTableModelInput
-            res = loadByInputs(graph, [table], [], options)
+            res = loadModelInputs(graph, [table], [], options)
         } else if (validateCopyData(value, (e) => validateErrors.push(e))) {
             const {
                 tables,
@@ -116,7 +116,7 @@ export const tableNodePaste = async (graph: Graph) => {
                 optionsList
             } = value as CopyData
 
-            res = loadByInputs(graph, tables, associations, options, optionsList)
+            res = loadModelInputs(graph, tables, associations, options, optionsList)
 
             importEnums(enums)
         } else if (validateGraphData(value, (e) => validateErrors.push(e))) {

@@ -4,7 +4,7 @@ import {ModelEditorEventBus} from "./ModelEditorEventBus.ts";
 import {sendMessage} from "@/message/message.ts";
 import {Ref, ref} from "vue";
 import {api} from "@/api";
-import {loadByTableViews, TableLoadOptions} from "../graph/loadData.ts";
+import {loadModelInputs, produceTableViewsToInputs, TableLoadOptions} from "../graph/loadData.ts";
 import {GenModelInput, GenModelView, GenTableColumnsView, GenTableModelInput} from "@/api/__generated/model/static";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {loadTableModelInputs} from "@/components/pages/ModelEditor/graph/tableNode/load.ts";
@@ -22,6 +22,7 @@ import {GraphEditorData} from "@/components/global/graphEditor/data/graphData.ts
 import {useDebugStore} from "@/debug/debugStore.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {Node, Edge} from '@antv/x6';
+import {getCenterPoint} from "@/components/global/graphEditor/view/viewOperation.ts";
 
 interface CurrentModelState {
     _currentModel: () => GenModelView
@@ -44,22 +45,20 @@ interface ModelLoadDialogState {
     modelLoadMenuOpenState: Ref<boolean>,
 }
 
-export interface ModelEditorStore extends
-    CommonGraphOperations,
+export interface ModelEditorStore extends CommonGraphOperations,
     CurrentModelState,
     ModelEditorDialogState,
     DataSourceLoadDialogState,
-    ModelLoadDialogState
-{
-    loadModel: (id: number) => Promise<{nodes: Node[], edges: Edge[]}>
-    loadSchema: (id: number) => Promise<{nodes: Node[], edges: Edge[]}>
-    loadTable: (id: number) => Promise<{nodes: Node[], edges: Edge[]}>
+    ModelLoadDialogState {
+    loadModel: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
+    loadSchema: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
+    loadTable: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
 }
 
 export const useModelEditorStore =
     defineStore(
         'ModelEditorGraph',
-        (): ModelEditorStore  => {
+        (): ModelEditorStore => {
             const commonOperations = useCommonGraphOperations()
 
             const {_graph} = commonOperations
@@ -136,6 +135,10 @@ export const useModelEditorStore =
             const debugStore = useDebugStore()
 
 
+            /**
+             * 模型编辑对话框相关
+             */
+
             const modelEditDialogOpenState = ref(false)
 
             const handleStartEditModel = () => {
@@ -176,9 +179,48 @@ export const useModelEditorStore =
             }
 
 
+            /**
+             * 外部数据导入相关
+             */
+
             const dataSourceLoadMenuOpenState = ref(false)
 
             const modelLoadMenuOpenState = ref(false)
+
+            /**
+             * 导入表的基本函数，接收 tableView 并查询获得 association
+             */
+            const loadTableViews = async (tableViews: GenTableColumnsView[]) => {
+                const graph = _graph()
+
+                const {tables, associations} =
+                    await produceTableViewsToInputs(tableViews)
+
+                const {nodes, edges} =
+                    loadModelInputs(
+                        graph,
+                        tables,
+                        associations,
+                        getCenterPoint(graph)
+                    )
+
+                debugStore.log('HISTORY', 'loadTableViews', {tables, associations, nodes, edges})
+
+                await syncTimeout(100 + nodes.length * 30 + edges.length * 20)
+
+                if (nodes.length == 1) {
+                    commonOperations.focus(nodes[0])
+                } else {
+                    graph.resetSelection([
+                        ...nodes.map(it => it.id),
+                        ...edges.map(it => it.id)
+                    ])
+                    commonOperations.layout()
+                    commonOperations.fit()
+                }
+
+                return {nodes, edges}
+            }
 
             /**
              * 向画布导入 model
@@ -237,34 +279,18 @@ export const useModelEditorStore =
                 return res
             }
 
+
             /**
-             * 导入表的基本函数，接收 tableView 并查询获得 association
+             * 在 ModelEditorEventBus 发生变更时，记录入 debugStore
              */
-            const loadTableViews = async (tables: GenTableColumnsView[]) => {
-                const graph = _graph()
-
-                const {nodes, edges} = await loadByTableViews(graph, tables)
-
-                debugStore.log('HISTORY', 'loadByTableViews', {nodes, edges})
-
-                await syncTimeout(100 + nodes.length * 30 + edges.length * 20)
-
-                if (nodes.length == 1) {
-                    commonOperations.focus(nodes[0])
-                } else {
-                    graph.resetSelection([...nodes.map(it => it.id), ...edges.map(it => it.id)])
-                    commonOperations.layout()
-                    commonOperations.fit()
-                }
-
-                return {nodes, edges}
-            }
-
-
             ModelEditorEventBus.on('*', (type, event) => {
                 debugStore.log('HISTORY', type, event)
             })
 
+
+            /**
+             * 表编辑对话框相关
+             */
 
             const tableDialogsStore = useTableDialogsStore()
 
@@ -322,6 +348,11 @@ export const useModelEditorStore =
             ModelEditorEventBus.on('removeAssociation', (id) => {
                 commonOperations._graph().removeEdge(id)
             })
+
+
+            /**
+             * 枚举编辑对话框相关
+             */
 
             const enumDialogsStore = useEnumDialogsStore()
 
@@ -400,6 +431,9 @@ export const useModelEditorStore =
                 syncEnumNameForTables(name, undefined)
             })
 
+            /**
+             * 最终导出
+             */
             return {
                 ...commonOperations,
 

@@ -103,8 +103,8 @@ export const getTableNameMap = <T extends GenTableModelInput | GenTableColumnsVi
 export const loadTableModelInputs = <T extends GenTableModelInput | GenTableColumnsView>(
     graph: Graph,
     tables: T[],
-    commonOptions?: TableLoadOptions,
-    optionsList?: TableLoadOptions[]
+    baseOptions?: TableLoadOptions,
+    eachTableOptions?: TableLoadOptions[]
 ): {
     nodes: Node[],
     tableNameMap: Map<string, (GenTableModelInput | GenTableColumnsView)[]>// 表与名称重复的表的最终 map，除了已经存在的名称，后续的名称将自动向后追加 count
@@ -131,10 +131,10 @@ export const loadTableModelInputs = <T extends GenTableModelInput | GenTableColu
         const node = tableToNode(
             tableInput,
             {
-                x: (commonOptions?.x != undefined && optionsList && optionsList[index] && optionsList[index].x  != undefined) ?
-                    commonOptions.x + optionsList[index].x! : commonOptions?.x,
-                y: (commonOptions?.y != undefined && optionsList && optionsList[index] && optionsList[index].y  != undefined) ?
-                    commonOptions.y + optionsList[index].y! : commonOptions?.y,
+                x: (baseOptions?.x != undefined && eachTableOptions && eachTableOptions[index] && eachTableOptions[index].x != undefined) ?
+                    baseOptions.x + eachTableOptions[index].x! : baseOptions?.x,
+                y: (baseOptions?.y != undefined && eachTableOptions && eachTableOptions[index] && eachTableOptions[index].y  != undefined) ?
+                    baseOptions.y + eachTableOptions[index].y! : baseOptions?.y,
             }
         )
 

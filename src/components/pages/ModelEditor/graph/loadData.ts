@@ -14,7 +14,7 @@ import {
 /**
  * 将 tables 导入画布
  */
-export const loadByTableViews = async (graph: Graph, tables: GenTableColumnsView[]) => {
+export const produceTableViewsToInputs = async (tables: GenTableColumnsView[]) => {
     let associations = await api.associationService.queryByTable({
         body: {
             tableIds: tables.map(it => it.id),
@@ -22,11 +22,10 @@ export const loadByTableViews = async (graph: Graph, tables: GenTableColumnsView
         }
     })
 
-    return loadByInputs(
-        graph,
-        tables.map(it => tableViewToInput(it)),
-        associations.map(it => associationViewToInput(it))
-    )
+    return {
+        tables: tables.map(it => tableViewToInput(it)),
+        associations: associations.map(it => associationViewToInput(it))
+    }
 }
 
 export interface TableLoadOptions {
@@ -34,12 +33,12 @@ export interface TableLoadOptions {
     y?: number
 }
 
-export const loadByInputs = (
+export const loadModelInputs = (
     graph: Graph,
     tables: GenTableModelInput[],
     associations: GenAssociationModelInput[],
-    commonOptions?: TableLoadOptions,
-    optionsList?: TableLoadOptions[]
+    baseOptions?: TableLoadOptions,
+    eachTableOptions?: TableLoadOptions[]
 ) => {
     graph.startBatch('Load from inputs')
 
@@ -49,8 +48,8 @@ export const loadByInputs = (
     } = loadTableModelInputs(
         graph,
         tables,
-        commonOptions,
-        optionsList
+        baseOptions,
+        eachTableOptions
     )
 
     associations = associations
