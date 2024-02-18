@@ -6,7 +6,7 @@ import {GenModelInput, GenModelSimpleView} from "@/api/__generated/model/static"
 import {useLoading} from "@/utils/useLoading.ts";
 import {api} from "@/api";
 import {sendMessage} from "@/message/message.ts";
-import {datetimeFormat} from "@/utils/dataFormat.ts";
+import {datetimeFormat} from "@/utils/dateFormat.ts";
 import ModelDialog from "@/components/business/model/dialog/ModelDialog.vue";
 import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
 import {exportModel, importModel} from "@/components/business/model/file/modelFileOperations.ts";
