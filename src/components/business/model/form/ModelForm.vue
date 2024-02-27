@@ -31,12 +31,14 @@ watch(() => props.model, (propsModel) => {
 
 				validateGraphData(
 					JSON.parse(tempModel.graphData),
-					(e) => {throw e}
+					e => {
+						throw e
+					}
 				)
 
 				tempModel.graphData = jsonStrFormat(tempModel.graphData)
 			} catch (e) {
-				sendMessage('json 格式校验失败', 'error', e)
+				sendMessage('json 格式校验失败', 'error', {graphData: tempModel.graphData, e})
 				tempModel.graphData = ''
 			}
 		}
@@ -54,14 +56,16 @@ const handleSubmit = () => {
 				throw "graphData is undefined"
 			}
 
-			let validateErrors
-			if (!validateGraphData(JSON.parse(tempModel.graphData), e => validateErrors = e)) {
-				throw validateErrors
-			}
+			validateGraphData(
+				JSON.parse(tempModel.graphData),
+				e => {
+					throw e
+				}
+			)
 
 			tempModel.graphData = jsonStrCompress(tempModel.graphData)
 		} catch (e) {
-			sendMessage("模型提交失败", 'error', e)
+			sendMessage("模型提交失败", 'error', {graphData: tempModel.graphData, e})
 			return
 		}
 	}
@@ -149,7 +153,8 @@ const handleOpenOtherConfigDialog = () => {
 		<el-form-item label="内容" v-if="editValue && model.graphData != undefined">
 			<CodeEditor
 				style="height: 100%; border: 1px solid #ccc; border-radius: 8px;"
-				v-model="model.graphData" language="json"></CodeEditor>
+				v-model="model.graphData"
+				language="json"></CodeEditor>
 		</el-form-item>
 
 		<div style="text-align: right; position: absolute; bottom: 0.5em; left: 1em; right: 1em;">

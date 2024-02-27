@@ -52,9 +52,9 @@ let editorInstance: IStandaloneCodeEditor
 onMounted(() => {
 	editorInstance = monaco.editor.create(editorContainer.value!, {...options.value, ...props.options})
 
-	editorInstance.onDidChangeModelContent(throttle(() => {
+	editorInstance.onDidChangeModelContent(() => {
 		emits('update:modelValue', editorInstance.getValue())
-	}, 2000))
+	})
 })
 </script>
 
