@@ -1,5 +1,5 @@
 import type {EnumType} from '../enums/';
-import type {GenModelView_TargetOf_enums_TargetOf_items_2} from './';
+import type {GenModelView_TargetOf_enums_TargetOf_items} from './';
 
 export interface GenModelView_TargetOf_enums {
     /**
@@ -29,5 +29,5 @@ export interface GenModelView_TargetOf_enums {
     /**
      * 生成枚举元素
      */
-    items: Array<GenModelView_TargetOf_enums_TargetOf_items_2>;
+    items: Array<GenModelView_TargetOf_enums_TargetOf_items>;
 }

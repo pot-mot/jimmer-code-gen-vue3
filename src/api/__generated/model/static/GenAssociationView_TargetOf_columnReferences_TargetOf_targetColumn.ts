@@ -1,4 +1,4 @@
-export interface GenAssociationView_TargetOf_columnReferences_TargetOf_targetColumn_2 {
+export interface GenAssociationView_TargetOf_columnReferences_TargetOf_targetColumn {
     /**
      * ID
      */

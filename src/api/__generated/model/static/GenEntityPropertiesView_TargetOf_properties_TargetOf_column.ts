@@ -1,4 +1,4 @@
-export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_column_2 {
+export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_column {
     /**
      * ID
      */

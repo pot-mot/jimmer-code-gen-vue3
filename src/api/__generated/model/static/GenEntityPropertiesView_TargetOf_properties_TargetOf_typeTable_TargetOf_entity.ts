@@ -1,4 +1,4 @@
-export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_2_TargetOf_entity_3 {
+export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_TargetOf_entity {
     /**
      * ID
      */

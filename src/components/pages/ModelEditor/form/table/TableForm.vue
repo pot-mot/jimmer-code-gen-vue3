@@ -2,7 +2,7 @@
 import {computed, ref, watch} from 'vue'
 import {
 	GenTableModelInput,
-	GenTableModelInput_TargetOf_indexes_TargetOf_columns_2
+	GenTableModelInput_TargetOf_indexes_TargetOf_columns
 } from "@/api/__generated/model/static";
 import {sendMessage} from "@/message/message.ts";
 import {useModelEditorStore} from "../../store/ModelEditorStore.ts";
@@ -50,7 +50,7 @@ const columnNames = computed<string[]>(() => {
 
 watch(() => table.value.columns, () => {
 	table.value.indexes.forEach(index => {
-		const newColumns: GenTableModelInput_TargetOf_indexes_TargetOf_columns_2[] = []
+		const newColumns: GenTableModelInput_TargetOf_indexes_TargetOf_columns[] = []
 		index.columns.forEach(column => {
 			if (columnNames.value.includes(column.name)) {
 				newColumns.push(column)

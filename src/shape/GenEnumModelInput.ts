@@ -1,7 +1,7 @@
 import {useShapeValidate} from "@/shape/shapeValidate.ts";
 import {
     GenModelInput_TargetOf_enums,
-    GenModelInput_TargetOf_enums_TargetOf_items_2
+    GenModelInput_TargetOf_enums_TargetOf_items
 } from "@/api/__generated/model/static";
 
 // typescript-json-schema src/api/__generated/model/static/GenModelInput_TargetOf_enums.ts * --required
@@ -99,7 +99,7 @@ export const {validate: validateEnum} =
     )
 
 export const {validate: validateEnumItem} =
-    useShapeValidate<GenModelInput_TargetOf_enums_TargetOf_items_2>(
+    useShapeValidate<GenModelInput_TargetOf_enums_TargetOf_items>(
         "GenModelInput_TargetOf_enums_TargetOf_items_2",
         GenEnumModelInputJsonSchema
     )

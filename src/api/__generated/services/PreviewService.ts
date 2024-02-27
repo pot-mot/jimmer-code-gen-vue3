@@ -5,9 +5,9 @@ export class PreviewService {
     
     constructor(private executor: Executor) {}
     
-    async previewEntity(options: PreviewServiceOptions['previewEntity']): Promise<
+    readonly previewEntity: (options: PreviewServiceOptions['previewEntity']) => Promise<
         Array<Pair<string, string>>
-    > {
+    > = async(options) => {
         let _uri = '/preview/entity';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
@@ -28,9 +28,9 @@ export class PreviewService {
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<Pair<string, string>>>;
     }
     
-    async previewEntityByTable(options: PreviewServiceOptions['previewEntityByTable']): Promise<
+    readonly previewEntityByTable: (options: PreviewServiceOptions['previewEntityByTable']) => Promise<
         Array<Pair<string, string>>
-    > {
+    > = async(options) => {
         let _uri = '/preview/entity/byTable';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
@@ -58,9 +58,9 @@ export class PreviewService {
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<Pair<string, string>>>;
     }
     
-    async previewEnums(options: PreviewServiceOptions['previewEnums']): Promise<
+    readonly previewEnums: (options: PreviewServiceOptions['previewEnums']) => Promise<
         Array<Pair<string, string>>
-    > {
+    > = async(options) => {
         let _uri = '/preview/enum';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
@@ -81,9 +81,9 @@ export class PreviewService {
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<Pair<string, string>>>;
     }
     
-    async previewModelEntity(options: PreviewServiceOptions['previewModelEntity']): Promise<
+    readonly previewModelEntity: (options: PreviewServiceOptions['previewModelEntity']) => Promise<
         Array<Pair<string, string>>
-    > {
+    > = async(options) => {
         let _uri = '/preview/model/entity';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
@@ -104,9 +104,9 @@ export class PreviewService {
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<Pair<string, string>>>;
     }
     
-    async previewModelSql(options: PreviewServiceOptions['previewModelSql']): Promise<
+    readonly previewModelSql: (options: PreviewServiceOptions['previewModelSql']) => Promise<
         Array<Pair<string, string>>
-    > {
+    > = async(options) => {
         let _uri = '/preview/model/sql';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
@@ -120,9 +120,9 @@ export class PreviewService {
         return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<Pair<string, string>>>;
     }
     
-    async previewTableDefine(options: PreviewServiceOptions['previewTableDefine']): Promise<
+    readonly previewTableDefine: (options: PreviewServiceOptions['previewTableDefine']) => Promise<
         Array<Pair<string, string>>
-    > {
+    > = async(options) => {
         let _uri = '/preview/tableDefine';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;

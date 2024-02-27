@@ -5,9 +5,9 @@ export class ConvertService {
     
     constructor(private executor: Executor) {}
     
-    async convert(options: ConvertServiceOptions['convert']): Promise<
+    readonly convert: (options: ConvertServiceOptions['convert']) => Promise<
         Array<number>
-    > {
+    > = async(options) => {
         let _uri = '/convert/';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;

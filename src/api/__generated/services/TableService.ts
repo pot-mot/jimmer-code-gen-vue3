@@ -11,38 +11,38 @@ export class TableService {
     
     constructor(private executor: Executor) {}
     
-    async delete(options: TableServiceOptions['delete']): Promise<
+    readonly delete: (options: TableServiceOptions['delete']) => Promise<
         number
-    > {
+    > = async(options) => {
         let _uri = '/table/';
         _uri += encodeURIComponent(options.ids.join(','));
         return (await this.executor({uri: _uri, method: 'DELETE'})) as Promise<number>;
     }
     
-    async queryAssociationsView(options: TableServiceOptions['queryAssociationsView']): Promise<
+    readonly queryAssociationsView: (options: TableServiceOptions['queryAssociationsView']) => Promise<
         Array<GenTableAssociationsView>
-    > {
+    > = async(options) => {
         let _uri = '/table/query';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<GenTableAssociationsView>>;
     }
     
-    async queryColumnsView(options: TableServiceOptions['queryColumnsView']): Promise<
+    readonly queryColumnsView: (options: TableServiceOptions['queryColumnsView']) => Promise<
         Array<GenTableColumnsView>
-    > {
+    > = async(options) => {
         let _uri = '/table/query/columns';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<GenTableColumnsView>>;
     }
     
-    async queryCommonView(options: TableServiceOptions['queryCommonView']): Promise<
+    readonly queryCommonView: (options: TableServiceOptions['queryCommonView']) => Promise<
         Array<GenTableCommonView>
-    > {
+    > = async(options) => {
         let _uri = '/table/query/common';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<GenTableCommonView>>;
     }
     
-    async queryIdView(options: TableServiceOptions['queryIdView']): Promise<
+    readonly queryIdView: (options: TableServiceOptions['queryIdView']) => Promise<
         Array<GenTableIdView>
-    > {
+    > = async(options) => {
         let _uri = '/table/query/id';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<GenTableIdView>>;
     }

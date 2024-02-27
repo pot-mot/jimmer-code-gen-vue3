@@ -13,9 +13,9 @@ export class DataSourceService {
     /**
      * 创建数据源
      */
-    async create(options: DataSourceServiceOptions['create']): Promise<
+    readonly create: (options: DataSourceServiceOptions['create']) => Promise<
         number
-    > {
+    > = async(options) => {
         let _uri = '/dataSource/';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<number>;
     }
@@ -23,9 +23,9 @@ export class DataSourceService {
     /**
      * 删除数据源
      */
-    async delete(options: DataSourceServiceOptions['delete']): Promise<
+    readonly delete: (options: DataSourceServiceOptions['delete']) => Promise<
         number
-    > {
+    > = async(options) => {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.ids.join(','));
         return (await this.executor({uri: _uri, method: 'DELETE'})) as Promise<number>;
@@ -34,9 +34,9 @@ export class DataSourceService {
     /**
      * 编辑数据源
      */
-    async edit(options: DataSourceServiceOptions['edit']): Promise<
+    readonly edit: (options: DataSourceServiceOptions['edit']) => Promise<
         number
-    > {
+    > = async(options) => {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.id);
         return (await this.executor({uri: _uri, method: 'PUT', body: options.body})) as Promise<number>;
@@ -45,9 +45,9 @@ export class DataSourceService {
     /**
      * 获取单个数据源
      */
-    async get(options: DataSourceServiceOptions['get']): Promise<
+    readonly get: (options: DataSourceServiceOptions['get']) => Promise<
         GenDataSourceView | undefined
-    > {
+    > = async(options) => {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.id);
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<GenDataSourceView | undefined>;
@@ -56,9 +56,9 @@ export class DataSourceService {
     /**
      * 获取默认数据库配置
      */
-    async getDefaults(): Promise<
+    readonly getDefaults: () => Promise<
         Array<Pair<string, GenDataSourceTemplateView>>
-    > {
+    > = async() => {
         let _uri = '/dataSource/defaults';
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<Pair<string, GenDataSourceTemplateView>>>;
     }
@@ -66,9 +66,9 @@ export class DataSourceService {
     /**
      * 列出所有数据源
      */
-    async list(): Promise<
+    readonly list: () => Promise<
         Array<GenDataSourceView>
-    > {
+    > = async() => {
         let _uri = '/dataSource/';
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenDataSourceView>>;
     }
@@ -76,9 +76,9 @@ export class DataSourceService {
     /**
      * 测试数据源
      */
-    async test(options: DataSourceServiceOptions['test']): Promise<
+    readonly test: (options: DataSourceServiceOptions['test']) => Promise<
         boolean
-    > {
+    > = async(options) => {
         let _uri = '/dataSource/test';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<boolean>;
     }

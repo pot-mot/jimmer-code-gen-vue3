@@ -1,4 +1,4 @@
-import type {GenTableColumnsView_TargetOf_columns_TargetOf_enum_2} from './';
+import type {GenTableColumnsView_TargetOf_columns_TargetOf_enum} from './';
 
 export interface GenTableColumnsView_TargetOf_columns {
     /**
@@ -80,5 +80,5 @@ export interface GenTableColumnsView_TargetOf_columns {
     /**
      * 生成枚举
      */
-    enum?: GenTableColumnsView_TargetOf_columns_TargetOf_enum_2 | undefined;
+    enum?: GenTableColumnsView_TargetOf_columns_TargetOf_enum | undefined;
 }

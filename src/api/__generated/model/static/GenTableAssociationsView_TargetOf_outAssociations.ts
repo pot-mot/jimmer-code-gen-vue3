@@ -1,5 +1,5 @@
 import type {AssociationType, DissociateAction} from '../enums/';
-import type {GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2, GenTableAssociationsView_TargetOf_outAssociations_TargetOf_targetTable_2} from './';
+import type {GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences, GenTableAssociationsView_TargetOf_outAssociations_TargetOf_targetTable} from './';
 
 export interface GenTableAssociationsView_TargetOf_outAssociations {
     /**
@@ -45,9 +45,9 @@ export interface GenTableAssociationsView_TargetOf_outAssociations {
     /**
      * 从表
      */
-    targetTable: GenTableAssociationsView_TargetOf_outAssociations_TargetOf_targetTable_2;
+    targetTable: GenTableAssociationsView_TargetOf_outAssociations_TargetOf_targetTable;
     /**
      * 列引用
      */
-    columnReferences: Array<GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences_2>;
+    columnReferences: Array<GenTableAssociationsView_TargetOf_outAssociations_TargetOf_columnReferences>;
 }

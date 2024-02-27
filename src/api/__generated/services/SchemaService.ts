@@ -5,17 +5,17 @@ export class SchemaService {
     
     constructor(private executor: Executor) {}
     
-    async delete(options: SchemaServiceOptions['delete']): Promise<
+    readonly delete: (options: SchemaServiceOptions['delete']) => Promise<
         number
-    > {
+    > = async(options) => {
         let _uri = '/schema/';
         _uri += encodeURIComponent(options.ids.join(','));
         return (await this.executor({uri: _uri, method: 'DELETE'})) as Promise<number>;
     }
     
-    async list(options: SchemaServiceOptions['list']): Promise<
+    readonly list: (options: SchemaServiceOptions['list']) => Promise<
         Array<GenSchemaView>
-    > {
+    > = async(options) => {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.dataSourceId);
         _uri += '/schema/';
@@ -34,9 +34,9 @@ export class SchemaService {
     /**
      * 导入 schema
      */
-    async load(options: SchemaServiceOptions['load']): Promise<
+    readonly load: (options: SchemaServiceOptions['load']) => Promise<
         Array<number>
-    > {
+    > = async(options) => {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.dataSourceId);
         _uri += '/schema/';
@@ -47,9 +47,9 @@ export class SchemaService {
     /**
      * 预览数据源中全部的 schema
      */
-    async preview(options: SchemaServiceOptions['preview']): Promise<
+    readonly preview: (options: SchemaServiceOptions['preview']) => Promise<
         Array<GenSchemaPreview>
-    > {
+    > = async(options) => {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.dataSourceId);
         _uri += '/schema/preview';

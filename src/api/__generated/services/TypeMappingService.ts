@@ -5,24 +5,24 @@ export class TypeMappingService {
     
     constructor(private executor: Executor) {}
     
-    async get(options: TypeMappingServiceOptions['get']): Promise<
+    readonly get: (options: TypeMappingServiceOptions['get']) => Promise<
         GenTypeMappingView | undefined
-    > {
+    > = async(options) => {
         let _uri = '/typeMapping/';
         _uri += encodeURIComponent(options.id);
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<GenTypeMappingView | undefined>;
     }
     
-    async list(): Promise<
+    readonly list: () => Promise<
         Array<GenTypeMappingView>
-    > {
+    > = async() => {
         let _uri = '/typeMapping/';
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenTypeMappingView>>;
     }
     
-    async saveAll(options: TypeMappingServiceOptions['saveAll']): Promise<
+    readonly saveAll: (options: TypeMappingServiceOptions['saveAll']) => Promise<
         Array<number>
-    > {
+    > = async(options) => {
         let _uri = '/typeMapping/';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<number>>;
     }

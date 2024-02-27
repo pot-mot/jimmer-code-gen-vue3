@@ -1,4 +1,8 @@
-export interface GenModelView_TargetOf_enums_TargetOf_items_2 {
+export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_TargetOf_items {
+    /**
+     * ID
+     */
+    id: number;
     /**
      * 元素名
      */
@@ -11,10 +15,6 @@ export interface GenModelView_TargetOf_enums_TargetOf_items_2 {
      * 元素注释
      */
     comment: string;
-    /**
-     * 排序键
-     */
-    orderKey: number;
     /**
      * 备注
      */

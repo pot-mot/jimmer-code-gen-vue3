@@ -10,40 +10,40 @@ export class ModelService {
     
     constructor(private executor: Executor) {}
     
-    async delete(options: ModelServiceOptions['delete']): Promise<
+    readonly delete: (options: ModelServiceOptions['delete']) => Promise<
         number
-    > {
+    > = async(options) => {
         let _uri = '/model/';
         _uri += encodeURIComponent(options.ids.join(','));
         return (await this.executor({uri: _uri, method: 'DELETE'})) as Promise<number>;
     }
     
-    async get(options: ModelServiceOptions['get']): Promise<
+    readonly get: (options: ModelServiceOptions['get']) => Promise<
         GenModelView | undefined
-    > {
+    > = async(options) => {
         let _uri = '/model/';
         _uri += encodeURIComponent(options.id);
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<GenModelView | undefined>;
     }
     
-    async getValueData(options: ModelServiceOptions['getValueData']): Promise<
+    readonly getValueData: (options: ModelServiceOptions['getValueData']) => Promise<
         ModelInputEntities | undefined
-    > {
+    > = async(options) => {
         let _uri = '/model/valueData/';
         _uri += encodeURIComponent(options.id);
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<ModelInputEntities | undefined>;
     }
     
-    async list(): Promise<
+    readonly list: () => Promise<
         Array<GenModelSimpleView>
-    > {
+    > = async() => {
         let _uri = '/model/';
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenModelSimpleView>>;
     }
     
-    async save(options: ModelServiceOptions['save']): Promise<
+    readonly save: (options: ModelServiceOptions['save']) => Promise<
         number
-    > {
+    > = async(options) => {
         let _uri = '/model/';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<number>;
     }

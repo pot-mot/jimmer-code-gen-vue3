@@ -1,4 +1,4 @@
-import type {GenTableModelInput_TargetOf_indexes_TargetOf_columns_2} from './';
+import type {GenTableModelInput_TargetOf_indexes_TargetOf_columns} from './';
 
 export interface GenTableModelInput_TargetOf_indexes {
     /**
@@ -16,5 +16,5 @@ export interface GenTableModelInput_TargetOf_indexes {
     /**
      * 列
      */
-    columns: Array<GenTableModelInput_TargetOf_indexes_TargetOf_columns_2>;
+    columns: Array<GenTableModelInput_TargetOf_indexes_TargetOf_columns>;
 }

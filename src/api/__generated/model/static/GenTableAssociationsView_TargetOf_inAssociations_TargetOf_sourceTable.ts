@@ -1,4 +1,4 @@
-export interface GenTableAssociationsView_TargetOf_inAssociations_TargetOf_sourceTable_2 {
+export interface GenTableAssociationsView_TargetOf_inAssociations_TargetOf_sourceTable {
     /**
      * ID
      */

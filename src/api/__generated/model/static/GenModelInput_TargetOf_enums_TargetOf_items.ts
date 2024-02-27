@@ -1,4 +1,4 @@
-export interface GenModelInput_TargetOf_enums_TargetOf_items_2 {
+export interface GenModelInput_TargetOf_enums_TargetOf_items {
     /**
      * 元素名
      */

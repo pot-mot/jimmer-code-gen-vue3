@@ -11,38 +11,38 @@ export class AssociationService {
     
     constructor(private executor: Executor) {}
     
-    async delete(options: AssociationServiceOptions['delete']): Promise<
+    readonly delete: (options: AssociationServiceOptions['delete']) => Promise<
         number
-    > {
+    > = async(options) => {
         let _uri = '/association/';
         _uri += encodeURIComponent(options.ids.join(','));
         return (await this.executor({uri: _uri, method: 'DELETE'})) as Promise<number>;
     }
     
-    async query(options: AssociationServiceOptions['query']): Promise<
+    readonly query: (options: AssociationServiceOptions['query']) => Promise<
         Array<GenAssociationView>
-    > {
+    > = async(options) => {
         let _uri = '/association/query';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<GenAssociationView>>;
     }
     
-    async queryByColumn(options: AssociationServiceOptions['queryByColumn']): Promise<
+    readonly queryByColumn: (options: AssociationServiceOptions['queryByColumn']) => Promise<
         Array<GenAssociationView>
-    > {
+    > = async(options) => {
         let _uri = '/association/queryByColumn';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<GenAssociationView>>;
     }
     
-    async queryByTable(options: AssociationServiceOptions['queryByTable']): Promise<
+    readonly queryByTable: (options: AssociationServiceOptions['queryByTable']) => Promise<
         Array<GenAssociationView>
-    > {
+    > = async(options) => {
         let _uri = '/association/queryByTable';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<GenAssociationView>>;
     }
     
-    async save(options: AssociationServiceOptions['save']): Promise<
+    readonly save: (options: AssociationServiceOptions['save']) => Promise<
         Array<number>
-    > {
+    > = async(options) => {
         let _uri = '/association/save';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<number>>;
     }

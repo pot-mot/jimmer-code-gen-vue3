@@ -6,17 +6,17 @@ export class ColumnDefaultService {
     
     constructor(private executor: Executor) {}
     
-    async get(options: ColumnDefaultServiceOptions['get']): Promise<
+    readonly get: (options: ColumnDefaultServiceOptions['get']) => Promise<
         GenColumnDefaultView | undefined
-    > {
+    > = async(options) => {
         let _uri = '/columnDefault/';
         _uri += encodeURIComponent(options.id);
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<GenColumnDefaultView | undefined>;
     }
     
-    async list(options: ColumnDefaultServiceOptions['list']): Promise<
+    readonly list: (options: ColumnDefaultServiceOptions['list']) => Promise<
         Array<GenColumnDefaultView>
-    > {
+    > = async(options) => {
         let _uri = '/columnDefault/';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
@@ -30,9 +30,9 @@ export class ColumnDefaultService {
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenColumnDefaultView>>;
     }
     
-    async saveAll(options: ColumnDefaultServiceOptions['saveAll']): Promise<
+    readonly saveAll: (options: ColumnDefaultServiceOptions['saveAll']) => Promise<
         Array<number>
-    > {
+    > = async(options) => {
         let _uri = '/columnDefault/';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<number>>;
     }

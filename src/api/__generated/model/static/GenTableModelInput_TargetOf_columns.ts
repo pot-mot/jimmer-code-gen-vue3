@@ -1,4 +1,4 @@
-import type {GenTableModelInput_TargetOf_columns_TargetOf_enum_2} from './';
+import type {GenTableModelInput_TargetOf_columns_TargetOf_enum} from './';
 
 export interface GenTableModelInput_TargetOf_columns {
     /**
@@ -64,5 +64,5 @@ export interface GenTableModelInput_TargetOf_columns {
     /**
      * 生成枚举
      */
-    enum?: GenTableModelInput_TargetOf_columns_TargetOf_enum_2 | undefined;
+    enum?: GenTableModelInput_TargetOf_columns_TargetOf_enum | undefined;
 }

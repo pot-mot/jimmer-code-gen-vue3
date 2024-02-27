@@ -1,5 +1,5 @@
 import type {AssociationType} from '../enums/';
-import type {GenEntityPropertiesView_TargetOf_properties_TargetOf_column_2, GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2, GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_2} from './';
+import type {GenEntityPropertiesView_TargetOf_properties_TargetOf_column, GenEntityPropertiesView_TargetOf_properties_TargetOf_enum, GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable} from './';
 
 export interface GenEntityPropertiesView_TargetOf_properties {
     /**
@@ -89,13 +89,13 @@ export interface GenEntityPropertiesView_TargetOf_properties {
     /**
      * 对应列
      */
-    column?: GenEntityPropertiesView_TargetOf_properties_TargetOf_column_2 | undefined;
+    column?: GenEntityPropertiesView_TargetOf_properties_TargetOf_column | undefined;
     /**
      * 类型对应表
      */
-    typeTable?: GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_2 | undefined;
+    typeTable?: GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable | undefined;
     /**
      * 生成枚举
      */
-    enum?: GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2 | undefined;
+    enum?: GenEntityPropertiesView_TargetOf_properties_TargetOf_enum | undefined;
 }

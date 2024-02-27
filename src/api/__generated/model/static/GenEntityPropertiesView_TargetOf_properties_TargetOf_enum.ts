@@ -1,7 +1,7 @@
 import type {EnumType} from '../enums/';
-import type {GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2_TargetOf_items_3} from './';
+import type {GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_TargetOf_items} from './';
 
-export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2 {
+export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum {
     /**
      * ID
      */
@@ -29,5 +29,5 @@ export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2 {
     /**
      * 生成枚举元素
      */
-    items: Array<GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_2_TargetOf_items_3>;
+    items: Array<GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_TargetOf_items>;
 }

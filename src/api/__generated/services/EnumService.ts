@@ -10,24 +10,24 @@ export class EnumService {
     
     constructor(private executor: Executor) {}
     
-    async get(options: EnumServiceOptions['get']): Promise<
+    readonly get: (options: EnumServiceOptions['get']) => Promise<
         GenEnumItemsView | undefined
-    > {
+    > = async(options) => {
         let _uri = '/enum/';
         _uri += encodeURIComponent(options.id);
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<GenEnumItemsView | undefined>;
     }
     
-    async query(options: EnumServiceOptions['query']): Promise<
+    readonly query: (options: EnumServiceOptions['query']) => Promise<
         Array<GenEnumView>
-    > {
+    > = async(options) => {
         let _uri = '/enum/query';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<GenEnumView>>;
     }
     
-    async save(options: EnumServiceOptions['save']): Promise<
+    readonly save: (options: EnumServiceOptions['save']) => Promise<
         number
-    > {
+    > = async(options) => {
         let _uri = '/enum/';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<number>;
     }

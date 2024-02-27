@@ -1,4 +1,4 @@
-export interface GenAssociationModelInput_TargetOf_columnReferences_TargetOf_sourceColumn_2 {
+export interface GenAssociationModelInput_TargetOf_columnReferences_TargetOf_targetColumn {
     /**
      * 名称
      */
