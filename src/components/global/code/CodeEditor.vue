@@ -12,7 +12,6 @@ import IStandaloneCodeEditor = editor.IStandaloneCodeEditor
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions
 import {ModelValueProps} from "@/components/global/dialog/DragDialogProps.ts";
 import {ModelValueEmits} from "@/components/global/dialog/DragDialogEmits.ts";
-import {throttle} from "lodash";
 
 const props = defineProps<
 	ModelValueProps<string> &
