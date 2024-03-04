@@ -32,7 +32,7 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
     },
 
     validateEdge({edge}) {
-        if (edge.shape != ASSOCIATION_EDGE) return true
+        if (edge.shape !== ASSOCIATION_EDGE) return true
 
         const edgeConnect = getEdgeConnect(edge as any)
         if (!edgeConnect) return false
@@ -44,7 +44,7 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
 
         if (!sourceColumn || !targetColumn) return false
 
-        if (sourceColumn.typeCode != targetColumn.typeCode || sourceColumn.rawType != targetColumn.rawType) {
+        if (sourceColumn.typeCode !== targetColumn.typeCode || sourceColumn.rawType !== targetColumn.rawType) {
             sendMessage('关联两端类型不一致', 'warning')
             return false
         }
@@ -52,7 +52,7 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
         setEdgeAssociationData(edge as any)
 
         // 在连接建立后调整 router
-        if (edge.getTargetCellId() == edge.getSourceCellId()) {
+        if (edge.getTargetCellId() === edge.getSourceCellId()) {
             edge.router = orthRouter
         } else {
             edge.router = erRouter

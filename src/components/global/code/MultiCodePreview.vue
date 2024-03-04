@@ -27,7 +27,7 @@ const currentCodeFile = computed(() => props.codeFiles?.[currentIndex.value])
 		<template #left>
 			<div style="padding: 0.5em;">
 				<div v-for="(item, index) in codeFiles"
-					 :class="[currentIndex == index ? 'selected-menu-item' : '']"
+					 :class="[currentIndex === index ? 'selected-menu-item' : '']"
 					 @click="currentIndex = index">
 					<el-button link>
 						{{ item.first }}

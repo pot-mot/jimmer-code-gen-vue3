@@ -25,7 +25,7 @@ watch(() => props.model, (propsModel) => {
 
 		if (props.editValue) {
 			try {
-				if (tempModel.graphData == undefined) {
+				if (tempModel.graphData === undefined) {
 					throw "graphData is undefined"
 				}
 
@@ -52,7 +52,7 @@ const handleSubmit = () => {
 
 	if (props.editValue) {
 		try {
-			if (tempModel.graphData == undefined) {
+			if (tempModel.graphData === undefined) {
 				throw "graphData is undefined"
 			}
 
@@ -150,7 +150,7 @@ const handleOpenOtherConfigDialog = () => {
 			</el-row>
 		</div>
 
-		<el-form-item label="内容" v-if="editValue && model.graphData != undefined">
+		<el-form-item label="内容" v-if="editValue && model.graphData !== undefined">
 			<CodeEditor
 				style="height: 100%; border: 1px solid #ccc; border-radius: 8px;"
 				v-model="model.graphData"

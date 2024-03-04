@@ -95,7 +95,7 @@ const createAssociationTypeButtonAttrs = (
 const getAssociationTypeButtons = (edge: Edge) => {
     return edge.getTools()?.items
         .filter(it => {
-            return (it as any)?.name == 'button' && (it as any)?.args.type == ASSOCIATION_TYPE_BUTTON
+            return (it as any)?.name === 'button' && (it as any)?.args.type === ASSOCIATION_TYPE_BUTTON
         })
 }
 
@@ -106,13 +106,13 @@ const setAssociationTypeButton = (
 
     const newTools: Cell.ToolItem[] = []
 
-    if (tools && tools.items.length != 0) {
+    if (tools && tools.items.length !== 0) {
         const typeBottoms = getAssociationTypeButtons(edge)
 
         if (typeBottoms && typeBottoms.length > 0) {
             newTools.push(
                 ...tools.items.filter(it => {
-                    return !((it as any)?.name == 'button' && (it as any)?.args.type == ASSOCIATION_TYPE_BUTTON)
+                    return !((it as any)?.name === 'button' && (it as any)?.args.type === ASSOCIATION_TYPE_BUTTON)
                 })
             )
         }
@@ -130,7 +130,7 @@ const setAssociationTypeButton = (
 
 const getAssociationType = (edge: Edge, defaultAssociationType: AssociationType = DEFAULT_ASSOCIATION_TYPE): AssociationType => {
     let temp = edge.getData()?.association.type
-    if (temp == undefined) {
+    if (temp === undefined) {
         setAssociationType(edge, defaultAssociationType)
         temp = defaultAssociationType
     }
@@ -143,22 +143,22 @@ const setAssociationType = (edge: Edge, type: AssociationType) => {
 
 export const useAssociationType = (graph: Graph) => {
     graph.on('edge:added', ({edge}) => {
-        if (edge.shape != ASSOCIATION_EDGE) return
+        if (edge.shape !== ASSOCIATION_EDGE) return
 
         const associationType = getAssociationType(edge)
-        if (associationType == undefined) {
+        if (associationType === undefined) {
             setAssociationType(edge, DEFAULT_ASSOCIATION_TYPE)
         }
         setAssociationTypeButton(edge)
     })
 
     graph.on('edge:change:data', ({edge, previous, current}) => {
-        if (edge.shape != ASSOCIATION_EDGE) return
+        if (edge.shape !== ASSOCIATION_EDGE) return
 
         const previousData = previous as {association?: GenAssociationModelInput}
         const currentData = current as {association?: GenAssociationModelInput}
 
-        if (previousData?.association?.type == currentData?.association?.type) return
+        if (previousData?.association?.type === currentData?.association?.type) return
 
         setAssociationTypeButton(edge)
     })

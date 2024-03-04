@@ -13,7 +13,7 @@ export const getFirst = (input: CellProperty | CellProperty[]): CellProperty | u
 }
 
 export const getCell = (graph: Graph, input: CellProperty): Cell => {
-    if (typeof input == 'string') {
+    if (typeof input === 'string') {
         return graph.getCellById(input)
     } else {
         return input

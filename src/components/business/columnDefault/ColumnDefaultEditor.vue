@@ -105,22 +105,22 @@ const handleSubmit = async () => {
 	const uniqueColumnDefaults = uniqWith(tempColumnDefaults.value, (mapping1, mapping2) => {
 		const keys = <(keyof GenColumnDefaultInput)[]>['dataSourceType', 'typeCode']
 		for (let key of keys) {
-			if (mapping1[key] != mapping2[key]) {
+			if (mapping1[key] !== mapping2[key]) {
 				return false
 			}
 		}
 		return true
 	})
 
-	if (uniqueColumnDefaults.length != tempColumnDefaults.value.length) {
+	if (uniqueColumnDefaults.length !== tempColumnDefaults.value.length) {
 		messageList.push('ColumnDefault 的 dataSourceType 和 typeCode 不可重复');
 	}
 
 	tempColumnDefaults.value.forEach((columnDefault) => {
-		if (columnDefault.dataSize == null) {
+		if (columnDefault.dataSize === null) {
 			messageList.push('ColumnDefault 的 dataSize 不可为空');
 		}
-		if (columnDefault.numericPrecision == null) {
+		if (columnDefault.numericPrecision === null) {
 			messageList.push('ColumnDefault 的 numericPrecision 不可为空');
 		}
 	})
@@ -137,7 +137,7 @@ const handleSubmit = async () => {
 
 	await columnDefaultStore.reset()
 
-	if (ids.length == tempColumnDefaults.value.length) {
+	if (ids.length === tempColumnDefaults.value.length) {
 		columnDefaults.value = tempColumnDefaults.value
 		sendMessage('配置修改成功', 'success')
 		editState.value = false

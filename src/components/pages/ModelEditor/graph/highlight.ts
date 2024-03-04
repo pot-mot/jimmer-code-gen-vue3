@@ -12,11 +12,11 @@ const HOVER_CLASS = "hovered"
 const STATE_CLASSES = [SELECT_CLASS, HOVER_CLASS]
 
 const judgeNode = (node: Node) => {
-    return node && node.shape == TABLE_NODE && node.getData()?.wrapper && node.getData()?.wrapper.value
+    return node && node.shape === TABLE_NODE && node.getData()?.wrapper && node.getData()?.wrapper.value
 }
 
 const judgeEdge = (edge: Edge) => {
-    return edge && edge.shape == ASSOCIATION_EDGE
+    return edge && edge.shape === ASSOCIATION_EDGE
 }
 
 const getElements = (cellId: string): NodeListOf<HTMLElement> => {

@@ -241,7 +241,7 @@ const doubleClickWaitNodes = new Set<string>
 const DOUBLE_CLICK_TIMEOUT = 300
 
 const handleNodeClick = (node: Node) => {
-	if (node.shape == TABLE_NODE && node.getData()?.table != undefined) {
+	if (node.shape === TABLE_NODE && node.getData()?.table !== undefined) {
 		const id = node.id
 		const table = node.getData()?.table as GenTableModelInput
 
@@ -266,7 +266,7 @@ const handleSaveModel = async () => {
 
 		store.isModelLoaded = false
 
-		if (model.graphData != store.getGraphData()) {
+		if (model.graphData !== store.getGraphData()) {
 			graph.cleanSelection()
 			model.graphData = store.getGraphData()
 			await api.modelService.save({body: model})
@@ -286,7 +286,7 @@ const handleSaveModel = async () => {
 
 const handleSaveEvent = (e: KeyboardEvent) => {
 	if (e.ctrlKey || e.metaKey) {
-		if (e.key == 's') {
+		if (e.key === 's') {
 			e.preventDefault()
 			handleSaveModel()
 		}
@@ -298,13 +298,13 @@ useDocumentEvent('keydown', handleSaveEvent)
 const isDragging = ref(false)
 
 useDocumentEvent('mousedown', (e) => {
-	if (e.button == 2) {
+	if (e.button === 2) {
 		isDragging.value = true
 	}
 })
 
 useDocumentEvent('mouseup', (e) => {
-	if (e.button == 2) {
+	if (e.button === 2) {
 		isDragging.value = false
 	}
 })
@@ -327,7 +327,7 @@ watch(() => store.isModelLoaded, async (value) => {
 
 const judgeGraphDataIsChange = () => {
 	if (store.isLoaded && store.isModelLoaded) {
-		if (store.getGraphData() == store._currentModel().graphData) {
+		if (store.getGraphData() === store._currentModel().graphData) {
 			return false
 		}
 	}

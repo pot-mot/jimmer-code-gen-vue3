@@ -68,10 +68,10 @@ export const useModelEditorStore =
                 const graphData =
                     JSON.parse(commonOperations.getGraphData()) as GraphEditorData
                 graphData.json.cells.forEach(cell => {
-                    if (cell.shape == TABLE_NODE) {
+                    if (cell.shape === TABLE_NODE) {
                         cell.data = {table: cell.data.table}
                     }
-                    if (cell.shape == ASSOCIATION_EDGE) {
+                    if (cell.shape === ASSOCIATION_EDGE) {
                         cell.tools = undefined
                         cell.data = {association: cell.data.association}
                     }
@@ -208,7 +208,7 @@ export const useModelEditorStore =
 
                 await syncTimeout(100 + nodes.length * 30 + edges.length * 20)
 
-                if (nodes.length == 1) {
+                if (nodes.length === 1) {
                     commonOperations.focus(nodes[0])
                 } else {
                     graph.resetSelection([
@@ -373,8 +373,8 @@ export const useModelEditorStore =
                 const tempTable = cloneDeep(table)
 
                 tempTable.columns.forEach(column => {
-                    if (column.enum && column.enum.name == oldEnumName) {
-                        if (newEnumName == undefined) {
+                    if (column.enum && column.enum.name === oldEnumName) {
+                        if (newEnumName === undefined) {
                             column.enum = undefined
                         } else {
                             column.enum.name = newEnumName
@@ -387,14 +387,14 @@ export const useModelEditorStore =
 
             const judgeEnumInTable = (enumName: string, table: GenTableModelInput): boolean => {
                 return table.columns
-                    .flatMap(it => it.enum?.name).filter(it => it != undefined)
+                    .flatMap(it => it.enum?.name).filter(it => it !== undefined)
                     .includes(enumName)
             }
 
             const syncEnumNameForTables = (oldEnumName: string, newEnumName: string | undefined) => {
                 const graph = _graph()
 
-                const nodes = graph.getNodes().filter(it => it.shape == TABLE_NODE)
+                const nodes = graph.getNodes().filter(it => it.shape === TABLE_NODE)
 
                 tableDialogsStore.items.forEach((value, key) => {
                     if (value && judgeEnumInTable(oldEnumName, value)) {
@@ -415,7 +415,7 @@ export const useModelEditorStore =
             ModelEditorEventBus.on('modifiedEnum', ({name, genEnum}) => {
                 const currentModel = _currentModel()
 
-                currentModel.enums = currentModel.enums.filter(it => it.name != name)
+                currentModel.enums = currentModel.enums.filter(it => it.name !== name)
                 currentModel.enums.push(genEnum)
 
                 syncEnumNameForTables(name, genEnum.name)
@@ -426,7 +426,7 @@ export const useModelEditorStore =
             ModelEditorEventBus.on('removeEnum', (name) => {
                 const currentModel = _currentModel()
 
-                currentModel.enums = currentModel.enums.filter(it => it.name != name)
+                currentModel.enums = currentModel.enums.filter(it => it.name !== name)
 
                 syncEnumNameForTables(name, undefined)
             })

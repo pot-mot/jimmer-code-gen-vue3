@@ -76,7 +76,7 @@ const handleColumnToPk = (pkIndex: number) => {
 
 	if (checkConfig.value.onlyOnePk) {
 		table.value.columns.forEach((column, index) => {
-			if (index != pkIndex && column.partOfPk) {
+			if (index !== pkIndex && column.partOfPk) {
 				column.partOfPk = false
 				column.autoIncrement = false
 			}
@@ -87,49 +87,49 @@ const handleColumnToPk = (pkIndex: number) => {
 const handleSubmit = () => {
 	const messageList: string[] = []
 
-	if (table.value.name.length == 0) {
+	if (table.value.name.length === 0) {
 		messageList.push('表名不得为空')
 	}
 
 	if (store.nodes
-		.filter(node => node.id != props.id)
+		.filter(node => node.id !== props.id)
 		.map(it => it.getData().table.name)
-		.filter(name => name == table.value.name)
+		.filter(name => name === table.value.name)
 		.length > 0) {
 		messageList.push('表名不可重复')
 	}
 
 	for (let column of table.value.columns) {
-		if (column.enum != undefined && !store._currentModel().enums.map(it => it.name).includes(column.enum.name)) {
+		if (column.enum !== undefined && !store._currentModel().enums.map(it => it.name).includes(column.enum.name)) {
 			messageList.push(`column ${column.name} 对应的 enum ${column.enum.name} 不存在，已自动移除`)
 			column.enum = undefined
 		}
 		if (!column.name) {
 			messageList.push('列名不得为空')
 		}
-		if (column.dataSize == null) {
+		if (column.dataSize === null) {
 			messageList.push('column 的 dataSize 不可为空');
 		}
-		if (column.numericPrecision == null) {
+		if (column.numericPrecision === null) {
 			messageList.push('column 的 numericPrecision 不可为空');
 		}
 	}
 
 	const columnNameSet = new Set<string>(table.value.columns.map(it => it.name))
 
-	if (columnNameSet.size != table.value.columns.length) {
+	if (columnNameSet.size !== table.value.columns.length) {
 		messageList.push('列名不可重复')
 	}
 
 	const indexNameSet = new Set<string>(table.value.indexes.map(it => it.name))
 
 	for (let indexName of indexNameSet.values()) {
-		if (indexName.length == 0) {
+		if (indexName.length === 0) {
 			messageList.push('索引名不得为空')
 			break
 		}
 	}
-	if (indexNameSet.size != table.value.indexes.length) {
+	if (indexNameSet.size !== table.value.indexes.length) {
 		messageList.push('索引名不可重复')
 	}
 
@@ -143,19 +143,19 @@ const handleSubmit = () => {
 			}
 		}
 
-		if (newColumns.length == 0) {
+		if (newColumns.length === 0) {
 			messageList.push('索引引用列不得为空')
 			break
 		}
 
 		const columnNameSet = new Set<string>(newColumns.map(it => it.name))
 		for (let columnName of columnNameSet.values()) {
-			if (columnName.length == 0) {
+			if (columnName.length === 0) {
 				messageList.push('索引引用列名不得为空')
 				break
 			}
 		}
-		if (columnNameSet.size != newColumns.length) {
+		if (columnNameSet.size !== newColumns.length) {
 			messageList.push('索引引用列名不可重复')
 		}
 
@@ -164,7 +164,7 @@ const handleSubmit = () => {
 
 	const pkColumns = table.value.columns.filter(column => column.partOfPk)
 
-	if (pkColumns.length != 1 && checkConfig.value.onlyOnePk) {
+	if (pkColumns.length !== 1 && checkConfig.value.onlyOnePk) {
 		messageList.push('实体模型主键列数量仅可为一')
 	}
 
@@ -269,7 +269,7 @@ const handleCancel = () => {
 									:model-value="data"
 									@create-enum="() => ModelEditorEventBus.emit('createEnum')"
 									@edit-enum="(name) => {
-										let genEnum = store._currentModel().enums.filter(it => it.name == name)[0]
+										let genEnum = store._currentModel().enums.filter(it => it.name === name)[0]
 										if (!genEnum) genEnum = {...getDefaultEnum(),name}
 										ModelEditorEventBus.emit('modifyEnum', {name, genEnum})
 									}"

@@ -55,13 +55,13 @@ export const searchEdgesByPort = (
             let targetFlag = true
 
             if (opt.sourcePortId) {
-                sourceFlag = edge.getSourcePortId() == opt.sourcePortId
+                sourceFlag = edge.getSourcePortId() === opt.sourcePortId
             }
             if (opt.targetPortId) {
-                targetFlag = edge.getTargetPortId() == opt.targetPortId
+                targetFlag = edge.getTargetPortId() === opt.targetPortId
             }
 
-            if (!opt.selectType || opt.selectType == 'AND') {
+            if (!opt.selectType || opt.selectType === 'AND') {
                 return targetFlag && sourceFlag
             } else {
                 return targetFlag || sourceFlag
@@ -83,13 +83,13 @@ export const searchEdgesByNode = (
             let targetFlag = true
 
             if (opt.sourceNodeId) {
-                sourceFlag = edge.getSourceNode()?.id == opt.sourceNodeId
+                sourceFlag = edge.getSourceNode()?.id === opt.sourceNodeId
             }
             if (opt.targetNodeId) {
-                targetFlag = edge.getTargetNode()?.id == opt.targetNodeId
+                targetFlag = edge.getTargetNode()?.id === opt.targetNodeId
             }
 
-            if (!opt.selectType || opt.selectType == 'AND') {
+            if (!opt.selectType || opt.selectType === 'AND') {
                 return targetFlag && sourceFlag
             } else {
                 return targetFlag || sourceFlag
@@ -107,7 +107,7 @@ export const searchEdgesByNode = (
 export const searchEdgesIgnoreDirection = (graph: Graph, port1: string, port2: string): Edge[] => {
     return graph.getEdges().filter(
         edge =>
-            (edge.getTargetPortId() == port1 && edge.getSourcePortId() == port2) ||
-            (edge.getTargetPortId() == port2 && edge.getSourcePortId() == port1)
+            (edge.getTargetPortId() === port1 && edge.getSourcePortId() === port2) ||
+            (edge.getTargetPortId() === port2 && edge.getSourcePortId() === port1)
     )
 }

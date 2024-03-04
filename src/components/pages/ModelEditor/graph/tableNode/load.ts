@@ -84,7 +84,7 @@ export const getTableNameMap = <T extends GenTableModelInput | GenTableColumnsVi
     const tableNameMap = new Map<string, T[]>
 
     graph.getNodes()
-        .filter(it => it.shape == TABLE_NODE && it.getData()?.table != undefined)
+        .filter(it => it.shape === TABLE_NODE && it.getData()?.table !== undefined)
         .forEach(node => {
             const table = node.getData().table
             if (tableNameMap.has(table.name)) {
@@ -131,9 +131,9 @@ export const loadTableModelInputs = <T extends GenTableModelInput | GenTableColu
         const node = tableToNode(
             tableInput,
             {
-                x: (baseOptions?.x != undefined && eachTableOptions && eachTableOptions[index] && eachTableOptions[index].x != undefined) ?
+                x: (baseOptions?.x !== undefined && eachTableOptions && eachTableOptions[index] && eachTableOptions[index].x !== undefined) ?
                     baseOptions.x + eachTableOptions[index].x! : baseOptions?.x,
-                y: (baseOptions?.y != undefined && eachTableOptions && eachTableOptions[index] && eachTableOptions[index].y  != undefined) ?
+                y: (baseOptions?.y !== undefined && eachTableOptions && eachTableOptions[index] && eachTableOptions[index].y  !== undefined) ?
                     baseOptions.y + eachTableOptions[index].y! : baseOptions?.y,
             }
         )

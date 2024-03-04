@@ -34,7 +34,7 @@ export const useDataSourceDefaultStore = defineStore(
         })
 
         const getDataSourceDefault = (dataSourceType: string): GenDataSourceTemplateView | undefined => {
-            return dataSourceDefaults.value.filter(it => it.first == dataSourceType)[0]?.second
+            return dataSourceDefaults.value.filter(it => it.first === dataSourceType)[0]?.second
         }
 
         return {

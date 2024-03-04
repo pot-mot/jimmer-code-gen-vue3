@@ -59,7 +59,7 @@ useClickOutside(() => editListBody.value, () => {
 })
 
 const handleListClipBoardEvent = async (e: KeyboardEvent) => {
-	if ((e.target as HTMLElement).tagName != 'DIV') {
+	if ((e.target as HTMLElement).tagName !== 'DIV') {
 		return
 	}
 
@@ -82,22 +82,22 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 		{selectedItems: <T[]>[], unselectedItems: <T[]>[]}
 	)
 
-	if (e.key == 'Delete') {
+	if (e.key === 'Delete') {
 		e.preventDefault()
 		cleanSelection()
 		emits('update:lines', unselectedItems)
 	}
 
 	if (e.ctrlKey || e.metaKey) {
-		if (e.key == 'c') {
+		if (e.key === 'c') {
 			e.preventDefault()
 			await navigator.clipboard.writeText(JSON.stringify(selectedItems))
-		} else if (e.key == 'x') {
+		} else if (e.key === 'x') {
 			e.preventDefault()
 			await navigator.clipboard.writeText(JSON.stringify(selectedItems))
 			cleanSelection()
 			emits('update:lines', unselectedItems)
-		} else if (e.key == 'v') {
+		} else if (e.key === 'v') {
 			e.preventDefault()
 			const text = await navigator.clipboard.readText()
 			try {
@@ -112,7 +112,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 
 				if (
 					Array.isArray(value) &&
-					value.filter((item, index) => props.jsonSchemaValidate(item, (e) => validateErrorsMap.set(index, e))).length == value.length
+					value.filter((item, index) => props.jsonSchemaValidate(item, (e) => validateErrorsMap.set(index, e))).length === value.length
 				) {
 					tempLines.splice(insertIndex, 0, ...value)
 					insertLength = value.length
@@ -137,7 +137,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 		}
 	}
 
-	if (e.key == 'ArrowUp') {
+	if (e.key === 'ArrowUp') {
 		e.preventDefault()
 		let tempLines = getTempLines()
 		const newSelectIndexes: Set<number> = new Set
@@ -145,7 +145,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 		for (let i = 0; i < tempLines.length; i++) {
 			const value = tempLines[i]
 			if (selectedItemSet.value.has(i)) {
-				if (i == 0 || newSelectIndexes.has(i - 1)) {
+				if (i === 0 || newSelectIndexes.has(i - 1)) {
 					newSelectIndexes.add(i)
 				} else {
 					tempLines[i] = tempLines[i - 1]
@@ -162,7 +162,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 		resetSelection([...newSelectIndexes])
 	}
 
-	if (e.key == 'ArrowDown') {
+	if (e.key === 'ArrowDown') {
 		e.preventDefault()
 		let tempLines = getTempLines()
 		const newSelectIndexes: Set<number> = new Set
@@ -170,7 +170,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 		for (let i = tempLines.length - 1; i >= 0; i--) {
 			const value = tempLines[i]
 			if (selectedItemSet.value.has(i)) {
-				if (i == tempLines.length - 1 || newSelectIndexes.has(i + 1)) {
+				if (i === tempLines.length - 1 || newSelectIndexes.has(i + 1)) {
 					newSelectIndexes.add(i)
 				} else {
 					tempLines[i] = tempLines[i + 1]
@@ -236,7 +236,7 @@ const handleAddLine = async (index: number = dataLines.value.length - 1) => {
 }
 
 const handleRemoveLine = async (index: number) => {
-	const newDataLines = dataLines.value.filter((_, i) => i != index)
+	const newDataLines = dataLines.value.filter((_, i) => i !== index)
 	emits('update:lines', newDataLines)
 	await nextTick()
 	const newSelectedIndex: number[] = []

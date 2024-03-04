@@ -105,13 +105,13 @@ const handleCancel = () => {
 		<el-row :gutter="24">
 			<el-col :span="12">
 				<el-form-item label="更新动作">
-					<el-input v-model="association.updateAction" :disabled="association.type == 'MANY_TO_MANY'"></el-input>
+					<el-input v-model="association.updateAction" :disabled="association.type === 'MANY_TO_MANY'"></el-input>
 				</el-form-item>
 			</el-col>
 
 			<el-col :span="12">
 				<el-form-item label="删除动作">
-					<el-input v-model="association.deleteAction" :disabled="association.type == 'MANY_TO_MANY'"></el-input>
+					<el-input v-model="association.deleteAction" :disabled="association.type === 'MANY_TO_MANY'"></el-input>
 				</el-form-item>
 			</el-col>
 		</el-row>

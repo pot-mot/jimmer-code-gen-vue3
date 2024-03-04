@@ -41,7 +41,7 @@ onMounted(() => {
 		})
 
 		props.graph.on('scale', ({sx}) => {
-			if (sx != scaling.value) {
+			if (sx !== scaling.value) {
 				scaling.value = sx
 			}
 		})

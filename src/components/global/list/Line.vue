@@ -21,12 +21,12 @@ const setSpansAndTemplateColumns = () => {
 	spans.value = []
 
 	slots.default({}).forEach((item: any) => {
-		if (item.type.__name == "LineItem") {
+		if (item.type.__name === "LineItem") {
 			const span = item.props?.span ? item.props.span : item.type.props.span.default
 			if (span) spans.value.push(span)
-		} else if (item.type.toString() == "Symbol(v-fgt)") {
+		} else if (item.type.toString() === "Symbol(v-fgt)") {
 			item.children.forEach((item: any) => {
-				if (item.type.__name == "LineItem") {
+				if (item.type.__name === "LineItem") {
 					const span = item.props?.span ? item.props.span : item.type.props.span.default
 					if (span) spans.value.push(span)
 				}

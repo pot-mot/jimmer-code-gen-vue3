@@ -36,10 +36,10 @@ export const getAssociationTargetLabel = (association: GenAssociationModelInput)
 export const syncAssociationName = (
     edge: Edge
 ) => {
-    if (edge.shape == ASSOCIATION_EDGE && edge.getData()?.association != undefined) {
+    if (edge.shape === ASSOCIATION_EDGE && edge.getData()?.association !== undefined) {
         const association = edge.getData().association as GenAssociationModelInput
         const newName = createAssociationName(association)
-        if (newName != association.name)
+        if (newName !== association.name)
             edge.setData({association: {name: newName}}, {deep: true})
     }
 }

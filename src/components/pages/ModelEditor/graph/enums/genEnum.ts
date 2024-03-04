@@ -8,12 +8,12 @@ export const importEnums = (enums: Array<GenModelInput_TargetOf_enums>) => {
     if (store.isModelLoaded) {
         // 进行枚举重复校验并导入
         enums.forEach(genEnum => {
-            const sameNameEnums = store._currentModel().enums.filter(it => it.name == genEnum.name)
-            if (sameNameEnums.length == 0) {
+            const sameNameEnums = store._currentModel().enums.filter(it => it.name === genEnum.name)
+            if (sameNameEnums.length === 0) {
                 store._currentModel().enums.push(...enums)
             } else {
                 // 如果只有一个重名且内容完全一样，则无所谓
-                if (sameNameEnums.length == 1 && JSON.stringify(sameNameEnums[0]) == JSON.stringify(genEnum)) {
+                if (sameNameEnums.length === 1 && JSON.stringify(sameNameEnums[0]) === JSON.stringify(genEnum)) {
                 } else {
                     sendMessage(`枚举【${genEnum.name}】已存在`, 'warning',
                         {

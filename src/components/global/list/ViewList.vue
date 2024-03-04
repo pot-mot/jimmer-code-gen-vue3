@@ -46,12 +46,12 @@ useClickOutside(() => viewListBody.value, () => {
 })
 
 const handleListClipBoardEvent = async (e: KeyboardEvent) => {
-	if ((e.target as HTMLElement).tagName != 'DIV') {
+	if ((e.target as HTMLElement).tagName !== 'DIV') {
 		return
 	}
 
 	if (e.ctrlKey || e.metaKey) {
-		if (e.key == 'c') {
+		if (e.key === 'c') {
 			e.preventDefault()
 
 			const {

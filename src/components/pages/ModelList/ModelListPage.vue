@@ -42,9 +42,9 @@ const updateModelList = async (id: number, toEditor: boolean = false) => {
 		return
 	}
 
-	const index = models.value.findIndex(it => it.id == id)
+	const index = models.value.findIndex(it => it.id === id)
 
-	if (index == -1) {
+	if (index === -1) {
 		models.value.push(newModel)
 	} else {
 		models.value[index] = newModel
@@ -73,7 +73,7 @@ const handleLoadModelJson = async (e: Event) => {
 		const modelJson = await file.text()
 		const id = await importModel(modelJson)
 
-		if (id != undefined) {
+		if (id !== undefined) {
 			sendMessage('模型导入成功', 'success')
 			await updateModelList(id, true)
 		} else {
@@ -95,7 +95,7 @@ const handleSubmit = async (model: GenModelInput) => {
 	const flag = modelsLoading.start('handleSubmit')
 
 	try {
-		const isUpdate = (model.id != undefined)
+		const isUpdate = (model.id !== undefined)
 
 		// 在列表页编辑不可更新 graphData
 		if (isUpdate) {

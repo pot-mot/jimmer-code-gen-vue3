@@ -51,14 +51,14 @@ const associationToEdgeMeta = (
     graph: Graph,
     association: GenAssociationModelInput
 ): Edge.Metadata | undefined => {
-    if (association.columnReferences.length == 0) return
+    if (association.columnReferences.length === 0) return
 
     const sourceNode = graph.getNodes().filter(it =>
-        it.getData()?.table.name == association.sourceTable.name
+        it.getData()?.table.name === association.sourceTable.name
     )[0]
     if (!sourceNode) return
     const targetNode = graph.getNodes().filter(it =>
-        it.getData()?.table.name == association.targetTable.name
+        it.getData()?.table.name === association.targetTable.name
     )[0]
     if (!targetNode) return
 
@@ -79,17 +79,17 @@ const associationToEdgeMeta = (
 
     for (let columnReference of association.columnReferences) {
         const sourceColumnIndex = sourceTable.columns.findIndex(column =>
-            column.name == columnReference.sourceColumn.name &&
-            column.rawType == columnReference.sourceColumn.rawType &&
-            column.typeCode == columnReference.sourceColumn.typeCode
+            column.name === columnReference.sourceColumn.name &&
+            column.rawType === columnReference.sourceColumn.rawType &&
+            column.typeCode === columnReference.sourceColumn.typeCode
         )
-        if (sourceColumnIndex == -1) continue
+        if (sourceColumnIndex === -1) continue
         const targetColumnIndex = targetTable.columns.findIndex(column =>
-            column.name == columnReference.targetColumn.name &&
-            column.rawType == columnReference.targetColumn.rawType &&
-            column.typeCode == columnReference.targetColumn.typeCode
+            column.name === columnReference.targetColumn.name &&
+            column.rawType === columnReference.targetColumn.rawType &&
+            column.typeCode === columnReference.targetColumn.typeCode
         )
-        if (targetColumnIndex == -1) continue
+        if (targetColumnIndex === -1) continue
 
         const sourceColumn = sourceTable.columns[sourceColumnIndex]
         if (!sourceColumn) continue
@@ -112,7 +112,7 @@ const associationToEdgeMeta = (
         })
     }
 
-    if (portPairs.length == 0 || columnReferences.length == 0) return
+    if (portPairs.length === 0 || columnReferences.length === 0) return
 
     /**
      * 当 columnReference 多于一个时，在 cell 间直接建立关联
@@ -144,7 +144,7 @@ const associationToEdgeMeta = (
         router: erRouter
     }
 
-    if (targetNode.id == sourceNode.id) {
+    if (targetNode.id === sourceNode.id) {
         edgeMeta.router = orthRouter
     }
 

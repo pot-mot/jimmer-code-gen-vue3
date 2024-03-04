@@ -107,7 +107,7 @@ const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
                 }
             }
 
-            if (currentLevelNodes.length == 0) {
+            if (currentLevelNodes.length === 0) {
                 currentLevel++
                 currentLevelNodes = nextLevelNodes
                 nextLevelNodes = []
@@ -124,7 +124,7 @@ const setLevel = (nodes: LayoutNode[], edges: readonly LayoutEdge[]) => {
     }
 
     for (const node of nodes) {
-        if (node.inDegree != 0 && node.outDegree == 0) {
+        if (node.inDegree !== 0 && node.outDegree === 0) {
             node.level = 0
         }
 
@@ -180,7 +180,7 @@ const getRanks = (nodes: readonly LayoutNode[]): Node[][] => {
 
     nodes.forEach(node => {
         // 出入度均为 0 即无关联点，在其他点后作为额外 level 进行布局
-        if (node.inDegree == 0 && node.outDegree == 0) {
+        if (node.inDegree === 0 && node.outDegree === 0) {
             unrelatedNodes.push(node.node)
             return
         }
@@ -253,7 +253,7 @@ const layoutLR = (options: Partial<LevelLayoutOptions>) => {
     let tempX = startX
 
     for (const nodes of nodeRanks) {
-        if (nodes.length == 0) continue
+        if (nodes.length === 0) continue
 
         const width = getMaxWidth(nodes)!
         let tempY = startY
@@ -279,7 +279,7 @@ const layoutTB = (options: Partial<LevelLayoutOptions>) => {
     let tempY = startY
 
     for (const nodes of nodeRanks) {
-        if (nodes.length == 0) continue
+        if (nodes.length === 0) continue
 
         const height = getMaxHeight(nodes)!
         let tempX = startX
@@ -325,7 +325,7 @@ export const layoutByLevel = (
 
     graph.startBatch('layout')
 
-    if (graph.isSelectionEmpty() || graph.getSelectedCellCount() == 1) {
+    if (graph.isSelectionEmpty() || graph.getSelectedCellCount() === 1) {
         nodes = toLayoutNodes(graph.getNodes())
         edges = toLayoutEdges(graph.getEdges())
     } else {
@@ -333,7 +333,7 @@ export const layoutByLevel = (
         edges = toLayoutEdges(getSelectedNodeConnectedEdges(graph))
     }
 
-    edges = edges.filter(edge => edge.source != edge.target)
+    edges = edges.filter(edge => edge.source !== edge.target)
 
     // 根据字典序对表名进行排序，保证多次布局的入参一致
     nodes.sort((node1, node2) => {

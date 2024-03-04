@@ -40,7 +40,7 @@ const setPositionAndSize = () => {
 
 		const to: string | HTMLElement = toRaw(props.to)
 
-		if (typeof to == "string") {
+		if (typeof to === "string") {
 			parent = document.querySelector(to)
 		} else {
 			parent = to
@@ -59,7 +59,7 @@ const setPositionAndSize = () => {
 	if (maxWidth < props.initW) {
 		x.value = 0
 		w.value = maxWidth
-	} else if (props.initX != undefined) {
+	} else if (props.initX !== undefined) {
 		w.value = props.initW
 
 		if (props.initW + props.initX > maxWidth) {

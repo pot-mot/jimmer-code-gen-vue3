@@ -33,17 +33,17 @@ export const tableNodeCopy = async (graph: Graph) => {
     const store = useModelEditorStore()
 
     const nodes = graph.getSelectedCells()
-        .filter(it => it.shape == TABLE_NODE && it.getData()?.table != undefined)
+        .filter(it => it.shape === TABLE_NODE && it.getData()?.table !== undefined)
 
     const edges = graph.getSelectedCells()
-        .filter(it => it.shape == ASSOCIATION_EDGE && it.getData()?.association != undefined)
+        .filter(it => it.shape === ASSOCIATION_EDGE && it.getData()?.association !== undefined)
 
     const tables = nodes.map(it => it.getData().table as GenTableModelInput)
     const associations = edges.map(it => it.getData().association as GenAssociationModelInput)
 
     const tableEnumNames = tables
         .flatMap(it => it.columns.map(it => it.enum?.name))
-        .filter(it => it != undefined)
+        .filter(it => it !== undefined)
 
     const enums =
         store.isModelLoaded ?
@@ -134,7 +134,7 @@ export const tableNodePaste = async (graph: Graph) => {
             sendMessage('剪切板中数据无法直接导入画布', 'error', validateErrors)
         }
 
-        if (res != undefined) {
+        if (res !== undefined) {
             const {nodes, edges} = res
 
             await syncTimeout(100 + nodes.length * 30 + edges.length * 20)

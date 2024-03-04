@@ -65,7 +65,7 @@ onMounted(async () => {
 
 	const graph = store._graph()
 
-	if (!node.value || node.value.shape != TABLE_NODE) {
+	if (!node.value || node.value.shape !== TABLE_NODE) {
 		sendMessage('Node 获取失败', 'error')
 		return
 	}
@@ -144,24 +144,24 @@ onMounted(async () => {
 				if (edge.getData()?.association) {
 					const association = edge.getData().association as GenAssociationModelInput
 
-					if (edge.getSourceCellId() == nodeId) {
+					if (edge.getSourceCellId() === nodeId) {
 						const oldSourceTable = association.sourceTable
 
 						association.sourceTable.name = newTable.name
 						association.sourceTable.comment = newTable.comment
 
-						if (oldSourceTable.name != newTable.name) {
+						if (oldSourceTable.name !== newTable.name) {
 							association.name = createAssociationName(association)
 						}
 					}
 
-					if (edge.getTargetCellId() == nodeId) {
+					if (edge.getTargetCellId() === nodeId) {
 						const oldTargetTable = association.targetTable
 
 						association.targetTable.name = newTable.name
 						association.targetTable.comment = newTable.comment
 
-						if (oldTargetTable.name != newTable.name) {
+						if (oldTargetTable.name !== newTable.name) {
 							association.name = createAssociationName(association)
 						}
 					}

@@ -35,7 +35,7 @@ const handleTypeCodeChange = () => {
 
 	const columnDefaults = columnDefaultStore.get(typeCode)
 
-	if (columnDefaults.length == 1) {
+	if (columnDefaults.length === 1) {
 		const columnDefault = columnDefaults[0]
 
 		props.modelValue.overwriteByRaw = true
@@ -83,7 +83,7 @@ useClickOutside(() => wrapper.value, (e) => {
 		<template #reference>
 			<div @click="popoverOpenState = !popoverOpenState" class="column-type-input">
 				<el-input readonly :model-value="modelValue.rawType">
-					<template v-if="modelValue.enum != undefined" #prefix>
+					<template v-if="modelValue.enum !== undefined" #prefix>
 						【{{ modelValue.enum.name }}】
 					</template>
 				</el-input>

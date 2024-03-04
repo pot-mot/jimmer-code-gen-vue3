@@ -14,14 +14,14 @@ export const sendMessage = (message: string, type: "info" | "success" | "warning
         showClose: true,
     })
 
-    if (type == "success") {
+    if (type === "success") {
         if (data) console.log(message, data)
-    } else if (type == "info") {
+    } else if (type === "info") {
         if (data) console.log(message, data)
-    } else if (type == "warning") {
+    } else if (type === "warning") {
         console.warn(message)
         if (data) console.warn(data)
-    } else if (type == "error") {
+    } else if (type === "error") {
         console.error(new Error(message))
         if (data) console.error(data)
     }

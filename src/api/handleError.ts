@@ -18,63 +18,63 @@ const parseFamilyAndCode = (error: AllErrors): string => {
 
     let codeStr
 
-    if (error.family == "DATA_SOURCE") {
+    if (error.family === "DATA_SOURCE") {
         familyStr = "数据源"
-        if (error.code == "CONNECT_FAIL") {
+        if (error.code === "CONNECT_FAIL") {
             codeStr = "连接失败"
         }
-    } else if (error.family == "MODEL_LOAD") {
+    } else if (error.family === "MODEL_LOAD") {
         familyStr = "模型加载"
-        if (error.code == "TABLE") {
+        if (error.code === "TABLE") {
             codeStr = "表"
-        } else if (error.code == "COLUMN") {
+        } else if (error.code === "COLUMN") {
             codeStr = "列"
-        } else if (error.code == "ASSOCIATION") {
+        } else if (error.code === "ASSOCIATION") {
             codeStr = "关联"
-        } else if (error.code == "INDEX") {
+        } else if (error.code === "INDEX") {
             codeStr = "索引"
-        } else if (error.code == "ENUM") {
+        } else if (error.code === "ENUM") {
             codeStr = "枚举"
         }
-    } else if (error.family == "DATA_SOURCE_LOAD") {
+    } else if (error.family === "DATA_SOURCE_LOAD") {
         familyStr = "数据源加载"
-        if (error.code == "TABLE") {
+        if (error.code === "TABLE") {
             codeStr = "表"
-        } else if (error.code == "COLUMN") {
+        } else if (error.code === "COLUMN") {
             codeStr = "列"
-        } else if (error.code == "ASSOCIATION") {
+        } else if (error.code === "ASSOCIATION") {
             codeStr = "关联"
-        } else if (error.code == "INDEX") {
+        } else if (error.code === "INDEX") {
             codeStr = "索引"
         }
-    } else if (error.family == "CONVERT_ENTITY") {
+    } else if (error.family === "CONVERT_ENTITY") {
         familyStr = "转换实体"
-        if (error.code == "ASSOCIATION") {
+        if (error.code === "ASSOCIATION") {
             codeStr = "关联"
         }
-    } else if (error.family == "COLUMN_TYPE") {
+    } else if (error.family === "COLUMN_TYPE") {
         familyStr = "列类型"
-        if (error.code == "MISS_REQUIRED_PARAM") {
+        if (error.code === "MISS_REQUIRED_PARAM") {
             codeStr = "缺失必要条件"
         }
-    } else if (error.family == "GENERATE_TABLE_DEFINE") {
+    } else if (error.family === "GENERATE_TABLE_DEFINE") {
         familyStr = "生成表定义"
-        if (error.code == "TABLE") {
+        if (error.code === "TABLE") {
             codeStr = "表"
-        } else if (error.code == "COLUMN") {
+        } else if (error.code === "COLUMN") {
             codeStr = "列"
-        } else if (error.code == "INDEX") {
+        } else if (error.code === "INDEX") {
             codeStr = "索引"
         }
-    } else if (error.family == "GENERATE_ENTITY") {
+    } else if (error.family === "GENERATE_ENTITY") {
         familyStr = "生成实体"
-        if (error.code == "TABLE") {
+        if (error.code === "TABLE") {
             codeStr = "表"
-        } else if (error.code == "COLUMN") {
+        } else if (error.code === "COLUMN") {
             codeStr = "列"
-        } else if (error.code == "ASSOCIATION") {
+        } else if (error.code === "ASSOCIATION") {
             codeStr = "关联"
-        } else if (error.code == "ENUM") {
+        } else if (error.code === "ENUM") {
             codeStr = "枚举"
         }
     }

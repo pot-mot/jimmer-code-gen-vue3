@@ -16,7 +16,7 @@ const setAssociationFake = (edge: Edge, fake: boolean) => {
 
 const getAssociationFake = (edge: Edge): boolean => {
     let temp = edge.getData()?.association.fake
-    if (temp == undefined) {
+    if (temp === undefined) {
         const defaultAssociationFake = !(useGenConfigContextStore().context.realFk)
         setAssociationFake(edge, defaultAssociationFake)
         temp = defaultAssociationFake
@@ -36,17 +36,17 @@ const syncAssociationFake = (edge: Edge) => {
 
 export const useAssociationFake = (graph: Graph) => {
     graph.on('edge:added', ({edge}) => {
-        if (edge.shape != ASSOCIATION_EDGE) return
+        if (edge.shape !== ASSOCIATION_EDGE) return
 
         syncAssociationFake(edge)
     })
     graph.on('edge:change:data', ({edge, previous, current}) => {
-        if (edge.shape != ASSOCIATION_EDGE) return
+        if (edge.shape !== ASSOCIATION_EDGE) return
 
         const previousData = previous as {association?: GenAssociationModelInput}
         const currentData = current as {association?: GenAssociationModelInput}
 
-        if (previousData?.association?.fake == currentData?.association?.fake) return
+        if (previousData?.association?.fake === currentData?.association?.fake) return
 
         syncAssociationFake(edge)
     })
@@ -57,7 +57,7 @@ export const useAssociationFake = (graph: Graph) => {
      * 此时因为存在 edge:select 事件且触发在 edge:click 之前，所以需要 EDGE_SELECT_FLAG 阻止初次点击效果
      */
     graph.on('edge:click', ({edge, e}) => {
-        if (edge.shape != ASSOCIATION_EDGE) return
+        if (edge.shape !== ASSOCIATION_EDGE) return
 
         if (e.ctrlKey || e.metaKey) return
 

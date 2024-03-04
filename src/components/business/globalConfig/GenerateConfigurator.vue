@@ -52,7 +52,7 @@ const globalGenConfigStore = useGlobalGenConfigStore()
 
 		<div style="width: calc(100% - 1em); padding-left: 0.5em;">
 			<GenerateConfigForm
-				v-if="configType?.name == 'GenConfigForm' && globalGenConfigStore.isLoaded"
+				v-if="configType?.name === 'GenConfigForm' && globalGenConfigStore.isLoaded"
 				v-model="globalGenConfigStore.genConfig"
 				@cancel="openState = false"
 				@submit="() => {
@@ -60,11 +60,11 @@ const globalGenConfigStore = useGlobalGenConfigStore()
 					openState = false
 				}"></GenerateConfigForm>
 			<TypeMappingsEditor
-				v-else-if="configType?.name == 'TypeMappingsEditor'"></TypeMappingsEditor>
+				v-else-if="configType?.name === 'TypeMappingsEditor'"></TypeMappingsEditor>
 			<ColumnDefaultEditor
-				v-else-if="configType?.name == 'ColumnDefaultEditor'"></ColumnDefaultEditor>
+				v-else-if="configType?.name === 'ColumnDefaultEditor'"></ColumnDefaultEditor>
 			<DebugForm
-				v-else-if="configType?.name == 'DebugForm'"></DebugForm>
+				v-else-if="configType?.name === 'DebugForm'"></DebugForm>
 		</div>
 	</DragDialog>
 </template>

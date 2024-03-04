@@ -44,7 +44,7 @@ export const useColumnDefaultStore = defineStore(
 
             if (!columnDefaults.value) return []
 
-            return columnDefaults.value.filter(it => it.dataSourceType == dataSourceType && it.typeCode == jdbcTypeCode)
+            return columnDefaults.value.filter(it => it.dataSourceType === dataSourceType && it.typeCode === jdbcTypeCode)
         }
 
         return {

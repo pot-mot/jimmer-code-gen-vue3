@@ -11,7 +11,7 @@ defineProps<DataSourceIconProps>()
 
 <template>
 	<el-icon size="1.5em" style="transform: translateY(0.1em)">
-		<template v-if="type == 'MySQL'">
+		<template v-if="type === 'MySQL'">
 			<!-- https://www.iconfont.cn/collections/detail?spm=a313x.search_index.0.da5a778a4.18d93a81FyjO44&cid=46449 Mysql -->
 			<svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
 				<path
@@ -19,7 +19,7 @@ defineProps<DataSourceIconProps>()
 					fill="#3480AF"/>
 			</svg>
 		</template>
-		<template v-else-if="type == 'PostgreSQL'">
+		<template v-else-if="type === 'PostgreSQL'">
 			<!-- https://www.iconfont.cn/collections/detail?spm=a313x.search_index.0.da5a778a4.18d93a81FyjO44&cid=12938 PostgreSQL -->
 			<svg class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
 				<path

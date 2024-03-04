@@ -71,9 +71,9 @@ const formattedEdgeShowType = computed(() => {
 			<div style="padding-bottom: 1em;">
 				<EdgeItem v-for="edge in store.edges"
 						  :key="edge.id"
-						  :show-name="edgeShowType == 'name'"
-						  :show-table="edgeShowType == 'table'"
-						  :show-column="edgeShowType == 'column'"
+						  :show-name="edgeShowType === 'name'"
+						  :show-table="edgeShowType === 'table'"
+						  :show-column="edgeShowType === 'column'"
 						  :edge="edge"></EdgeItem>
 			</div>
 		</Details>

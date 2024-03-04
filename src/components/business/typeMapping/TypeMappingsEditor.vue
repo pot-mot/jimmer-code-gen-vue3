@@ -60,7 +60,7 @@ genConfigStore.onLoaded(() => {
 	if (genConfigStore.genConfig) {
 		defaultTypeMapping.value.dataSourceType = genConfigStore.genConfig.dataSourceType
 		defaultTypeMapping.value.language = genConfigStore.genConfig.language
-		defaultTypeMapping.value.propertyType = defaultTypeMapping.value.language == "JAVA" ? "java.lang.String" : "kotlin.String"
+		defaultTypeMapping.value.propertyType = defaultTypeMapping.value.language === "JAVA" ? "java.lang.String" : "kotlin.String"
 	}
 })
 
@@ -89,18 +89,18 @@ const handleSubmit = async () => {
 	const uniqueTypeMappings = uniqWith(tempTypeMappings.value, (mapping1, mapping2) => {
 		const keys = <(keyof GenTypeMappingInput)[]>['dataSourceType', 'language', 'propertyType', 'typeExpression']
 		for (let key of keys) {
-			if (mapping1[key] != mapping2[key]) {
+			if (mapping1[key] !== mapping2[key]) {
 				return false
 			}
 		}
 		return true
 	})
 
-	if (tempTypeMappings.value.some(mapping => mapping.typeExpression.length == 0 || mapping.propertyType.length == 0)) {
+	if (tempTypeMappings.value.some(mapping => mapping.typeExpression.length === 0 || mapping.propertyType.length === 0)) {
 		messageList.push('TypeMapping 数据库类型表达式与属性均不可为空');
 	}
 
-	if (uniqueTypeMappings.length != tempTypeMappings.value.length) {
+	if (uniqueTypeMappings.length !== tempTypeMappings.value.length) {
 		messageList.push('TypeMapping 不可重复');
 	}
 
@@ -113,7 +113,7 @@ const handleSubmit = async () => {
 		typeMapping.orderKey = index
 	})
 	const ids = await api.typeMappingService.saveAll({body: tempTypeMappings.value})
-	if (ids.length == tempTypeMappings.value.length) {
+	if (ids.length === tempTypeMappings.value.length) {
 		sendMessage('配置修改成功', 'success')
 		typeMappings.value = tempTypeMappings.value
 		editState.value = false

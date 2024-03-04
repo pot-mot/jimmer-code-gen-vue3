@@ -77,9 +77,9 @@ const loadSchema = async (name: string, dataSourceId: number = props.dataSource.
 		const newSchemas = await api.schemaService.list({schemaIds: loadIds, dataSourceId: dataSourceId})
 
 		newSchemas.forEach(newSchema => {
-			const index = loadedSchemas.value.findIndex(schema => schema.id == newSchema.id)
+			const index = loadedSchemas.value.findIndex(schema => schema.id === newSchema.id)
 
-			if (index == -1) {
+			if (index === -1) {
 				loadedSchemas.value.push(newSchema)
 			} else {
 				loadedSchemas.value[index] = newSchema
@@ -107,7 +107,7 @@ const handleEditFinish = () => {
 
 props.eventBus.on('deleteSchema', ({id}) => {
 	if (loadedSchemas.value.map(schema => schema.id).includes(id)) {
-		loadedSchemas.value = loadedSchemas.value.filter(schema => schema.id != id)
+		loadedSchemas.value = loadedSchemas.value.filter(schema => schema.id !== id)
 	}
 })
 
@@ -136,7 +136,7 @@ defineSlots<DataSourceItemSlots>()
 
 						<template #content>
 							<div v-for="schema in previewSchemas">
-								<template v-if="schema.name != undefined">
+								<template v-if="schema.name !== undefined">
 									<slot
 										name="previewSchema"
 										:dataSource="dataSource" :eventBus="eventBus"

@@ -29,9 +29,9 @@ const associationNameTemplate = (
     const targetName = targetTableName + (withColumnNames ? "_" + targetColumnNames.join("_") : "")
 
     // 多对多的关联名称是中间表
-    if (type == 'MANY_TO_MANY') {
+    if (type === 'MANY_TO_MANY') {
         associationName = `${sourceName}_${targetName}_mapping`
-    } else if (type == 'ONE_TO_MANY') {
+    } else if (type === 'ONE_TO_MANY') {
         // 一对多的外键名称要反向
         associationName = `fk_${targetName}_${sourceName}`
     } else {

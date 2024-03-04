@@ -11,7 +11,7 @@ defineProps<TableIconProps>()
 
 <template>
 	<el-icon size="1.3em" style="transform: translateY(0.2em)">
-		<template v-if="!type || type == 'TABLE'">
+		<template v-if="!type || type === 'TABLE'">
 			<!-- https://tablericons.com/ table-->
 			<svg fill="none" stroke="#2c3e50" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
 				 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -20,7 +20,7 @@ defineProps<TableIconProps>()
 				<path d="M10 3v18"/>
 			</svg>
 		</template>
-		<template v-else-if="type == 'ALIAS'">
+		<template v-else-if="type === 'ALIAS'">
 			<!-- https://tablericons.com/ link-->
 			<svg fill="none" stroke="#2c3e50" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
 				 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -29,7 +29,7 @@ defineProps<TableIconProps>()
 				<path d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463"/>
 			</svg>
 		</template>
-		<template v-else-if="type == 'VIEW'">
+		<template v-else-if="type === 'VIEW'">
 			<!-- https://tablericons.com/ eyeglass-->
 			<svg fill="none" stroke="#2c3e50" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
 				 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

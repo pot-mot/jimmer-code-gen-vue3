@@ -26,19 +26,19 @@ export const getEdgeConnect = (edge: Edge): EdgeConnect | undefined => {
     const targetPortId = edge.getTargetPortId()
 
     const sourcePort = sourcePortId ? sourceNode.getPort(sourcePortId) : undefined
-    const sourcePortIndex = sourceNode.ports.items.findIndex((value) => value.id == sourcePortId)
+    const sourcePortIndex = sourceNode.ports.items.findIndex((value) => value.id === sourcePortId)
 
     const targetPort = targetPortId ? targetNode.getPort(targetPortId) : undefined
-    const targetPortIndex = targetNode.ports.items.findIndex((value) => value.id == targetPortId)
+    const targetPortIndex = targetNode.ports.items.findIndex((value) => value.id === targetPortId)
 
     return {
         sourceNode,
         sourcePortId,
-        sourcePortIndex: sourcePortIndex == -1 ? undefined : sourcePortIndex,
+        sourcePortIndex: sourcePortIndex === -1 ? undefined : sourcePortIndex,
         sourcePort,
         targetNode,
         targetPortId,
-        targetPortIndex: targetPortIndex == -1 ? undefined : targetPortIndex,
+        targetPortIndex: targetPortIndex === -1 ? undefined : targetPortIndex,
         targetPort
     }
 }

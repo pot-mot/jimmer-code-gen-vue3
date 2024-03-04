@@ -23,11 +23,11 @@ export const getTableColumnByEdgeConnect = (
         targetPortIndex,
     } = edgeConnect
 
-    if (sourceNode.shape != TABLE_NODE) return
-    if (targetNode.shape != TABLE_NODE) return
+    if (sourceNode.shape !== TABLE_NODE) return
+    if (targetNode.shape !== TABLE_NODE) return
 
-    if (sourcePortIndex == undefined) return
-    if (targetPortIndex == undefined) return
+    if (sourcePortIndex === undefined) return
+    if (targetPortIndex === undefined) return
 
     const sourceTable = sourceNode.getData()?.table as GenTableModelInput | undefined
     if (!sourceTable) return
@@ -132,7 +132,7 @@ const createAssociationByEdge = (
         deleteAction
     }
 
-    if (newAssociation.name.trim().length == 0) {
+    if (newAssociation.name.trim().length === 0) {
         newAssociation.name = createAssociationName(newAssociation)
     }
 
@@ -145,7 +145,7 @@ export const setEdgeAssociationData = (edge: Edge) => {
 }
 export const useAssociationData = (graph: Graph) => {
     graph.on('edge:added', ({edge}) => {
-        if (edge.shape != ASSOCIATION_EDGE) return
+        if (edge.shape !== ASSOCIATION_EDGE) return
         setEdgeAssociationData(edge)
     })
 }

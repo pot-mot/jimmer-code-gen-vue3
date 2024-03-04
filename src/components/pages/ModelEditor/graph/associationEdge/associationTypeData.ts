@@ -11,7 +11,7 @@ export interface AssociationPair {
 }
 
 export const getAssociationSourceType = (type: AssociationType): SingleAssociationType => {
-    if (type == "ONE_TO_ONE" || type == "ONE_TO_MANY") {
+    if (type === "ONE_TO_ONE" || type === "ONE_TO_MANY") {
         return "ONE"
     } else {
         return "MANY"
@@ -19,7 +19,7 @@ export const getAssociationSourceType = (type: AssociationType): SingleAssociati
 }
 
 export const getAssociationTargetType = (type: AssociationType): SingleAssociationType => {
-    if (type == "ONE_TO_ONE" || type == "MANY_TO_ONE") {
+    if (type === "ONE_TO_ONE" || type === "MANY_TO_ONE") {
         return "ONE"
     } else {
         return "MANY"
@@ -27,7 +27,7 @@ export const getAssociationTargetType = (type: AssociationType): SingleAssociati
 }
 
 export const reverseSingleAssociationType = (singleAssociationType: SingleAssociationType): SingleAssociationType => {
-    if (singleAssociationType == "MANY") {
+    if (singleAssociationType === "MANY") {
         return "ONE"
     } else {
         return "MANY"
@@ -50,18 +50,18 @@ export const reverseSinglePartAssociationType = (
     part: AssociationPart
 ): AssociationType => {
     let {source, target} = associationTypeToPair(associationType)
-    if (part == "SOURCE") {
+    if (part === "SOURCE") {
         source = reverseSingleAssociationType(source)
-    } else if (part == "TARGET") {
+    } else if (part === "TARGET") {
         target = reverseSingleAssociationType(target)
     }
     return associationPairToType({source, target})
 }
 
 export const reverseAssociationType = (type: AssociationType): AssociationType => {
-    if (type == "MANY_TO_ONE") {
+    if (type === "MANY_TO_ONE") {
         return "ONE_TO_MANY"
-    } else if (type == "ONE_TO_MANY") {
+    } else if (type === "ONE_TO_MANY") {
         return "MANY_TO_ONE"
     }
     return type
@@ -70,7 +70,7 @@ export const reverseAssociationType = (type: AssociationType): AssociationType =
 
 export const toggleAssociationType = (type: AssociationType | undefined): AssociationType => {
     for (let i = 0; i < AssociationType_CONSTANTS.length; i++) {
-        if (type == AssociationType_CONSTANTS[i]) {
+        if (type === AssociationType_CONSTANTS[i]) {
             return AssociationType_CONSTANTS[i + 1 < AssociationType_CONSTANTS.length ? i + 1 : 0]
         }
     }

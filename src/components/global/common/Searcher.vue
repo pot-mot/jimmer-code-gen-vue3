@@ -58,7 +58,7 @@ const y = ref(0)
 
 const handleSearchKeyEvent = (e: KeyboardEvent) => {
 	if (e.ctrlKey || e.metaKey) {
-		if (e.key == 'f') {
+		if (e.key === 'f') {
 			if (!mouseenterState.value) return
 
 			if (openState.value) return
@@ -155,7 +155,7 @@ const handleClose = () => {
 		<div ref="searchResultContainer" style="max-height: 60vh; overflow: auto;">
 			<slot name="tools" :items="searchResult"></slot>
 
-			<div v-if="keyword.length > 0 && searchResult.length == 0">
+			<div v-if="keyword.length > 0 && searchResult.length === 0">
 				<slot name="empty">
 					<el-text>无搜索结果</el-text>
 				</slot>

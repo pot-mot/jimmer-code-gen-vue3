@@ -50,9 +50,9 @@ eventBus.on('editDataSource', async ({id}) => {
 		return
 	}
 
-	const index = dataSources.value.findIndex(dataSource => dataSource.id == id)
+	const index = dataSources.value.findIndex(dataSource => dataSource.id === id)
 
-	if (index == -1) {
+	if (index === -1) {
 		dataSources.value.push(newDataSource)
 	} else {
 		dataSources.value[index] = newDataSource
@@ -61,7 +61,7 @@ eventBus.on('editDataSource', async ({id}) => {
 
 eventBus.on('deleteDataSource', ({id}) => {
 	if (dataSources.value.map(dataSource => dataSource.id).includes(id)) {
-		dataSources.value = dataSources.value.filter(dataSource => dataSource.id != id)
+		dataSources.value = dataSources.value.filter(dataSource => dataSource.id !== id)
 	}
 })
 

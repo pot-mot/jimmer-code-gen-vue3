@@ -1,14 +1,14 @@
 <template>
 	<div>
-		<div :class="position" :style="{paddingLeft: position == 'left' ? `calc(3px + ${buttonSize})` : 0}"
+		<div :class="position" :style="{paddingLeft: position === 'left' ? `calc(3px + ${buttonSize})` : 0}"
 			 class="title">
 			<slot name="title"></slot>
 			<div v-if="!disabled" :style="{width: buttonSize}" class="button"
 				 @click="handleToggle">
 				<slot name="button">
 					<el-icon :size="buttonSize" style="display: inline;">
-						<CaretRight v-if="!openState && position == 'left'"></CaretRight>
-						<CaretLeft v-else-if="!openState && position == 'right'"></CaretLeft>
+						<CaretRight v-if="!openState && position === 'left'"></CaretRight>
+						<CaretLeft v-else-if="!openState && position === 'right'"></CaretLeft>
 						<CaretBottom v-else></CaretBottom>
 					</el-icon>
 				</slot>
@@ -17,7 +17,7 @@
 		<el-collapse-transition v-if="!disabled">
 			<div
 				v-show="openState"
-				:style="{paddingLeft: position == 'left' ? `calc(3px + ${buttonSize})` : ``}"
+				:style="{paddingLeft: position === 'left' ? `calc(3px + ${buttonSize})` : ``}"
 				class="content">
 				<slot></slot>
 			</div>

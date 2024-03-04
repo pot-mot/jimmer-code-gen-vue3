@@ -7,9 +7,9 @@ export const useHistory = (graph: Graph) => {
         new History({
             enabled: true,
             beforeAddCommand: (event, args) => {
-                if (event == "cell:change:*" && args && 'key' in args) {
+                if (event === "cell:change:*" && args && 'key' in args) {
                     // 取消记录所有变更 zIndex
-                    if (args.key == 'zIndex') {
+                    if (args.key === 'zIndex') {
                         return false
                     }
                 }

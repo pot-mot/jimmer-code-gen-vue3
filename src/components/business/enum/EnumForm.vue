@@ -35,11 +35,11 @@ watch(() => props.enum, () => {
 }, {immediate: true})
 
 watch(() => genEnum.value.enumType, (value) => {
-	if (value == 'NAME') {
+	if (value === 'NAME') {
 		genEnum.value.items.forEach((item) => {
 			item.mappedValue = item.name
 		})
-	} else if (value == 'ORDINAL') {
+	} else if (value === 'ORDINAL') {
 		genEnum.value.items.forEach((item, index) => {
 			item.mappedValue = index.toString()
 		})
@@ -50,19 +50,19 @@ watch(() => genEnum.value.enumType, (value) => {
 const handleSubmit = () => {
 	const messageList: string[] = []
 
-	if (genEnum.value.items.length == 0) {
+	if (genEnum.value.items.length === 0) {
 		messageList.push('必须至少要有一个枚举项');
 	}
-	if (genEnum.value.items.some(item => item.name.length == 0)) {
+	if (genEnum.value.items.some(item => item.name.length === 0)) {
 		messageList.push('枚举项的名称必须不为空');
 	} else {
 		const uniqueItemNames = new Set(genEnum.value.items.map(item => item.name))
-		if (uniqueItemNames.size != genEnum.value.items.length) {
+		if (uniqueItemNames.size !== genEnum.value.items.length) {
 			messageList.push('枚举项的名称必须不重复');
 		}
 	}
 
-	if (genEnum.value.enumType == 'ORDINAL') {
+	if (genEnum.value.enumType === 'ORDINAL') {
 		try {
 			if (genEnum.value.items.some(item => !Number.isInteger(Number(item.mappedValue)))) {
 				messageList.push('ordinal 枚举项的值必须为整数');
@@ -76,12 +76,12 @@ const handleSubmit = () => {
 		}
 	}
 
-	if (genEnum.value.enumType == "NAME" || genEnum.value.enumType == 'ORDINAL') {
-		if (genEnum.value.items.some(item => item.mappedValue.length == 0)) {
+	if (genEnum.value.enumType === "NAME" || genEnum.value.enumType === 'ORDINAL') {
+		if (genEnum.value.items.some(item => item.mappedValue.length === 0)) {
 			messageList.push('枚举项的值必须不为空');
 		} else {
 			const uniqueItemNames = new Set(genEnum.value.items.map(item => item.mappedValue))
-			if (uniqueItemNames.size != genEnum.value.items.length) {
+			if (uniqueItemNames.size !== genEnum.value.items.length) {
 				messageList.push('枚举项的值必须不重复');
 			}
 		}
@@ -146,8 +146,8 @@ const handleCancel = () => {
 			:json-schema-validate="validateEnumItem"
 			style="padding-bottom: 2em;">
 			<template #value="{data}">
-				<el-input v-if="genEnum.enumType == 'NAME'" v-model="data.mappedValue"></el-input>
-				<el-input-number v-else-if="genEnum.enumType == 'ORDINAL'" v-model="data.mappedValue"></el-input-number>
+				<el-input v-if="genEnum.enumType === 'NAME'" v-model="data.mappedValue"></el-input>
+				<el-input-number v-else-if="genEnum.enumType === 'ORDINAL'" v-model="data.mappedValue"></el-input-number>
 				<el-input v-else disabled :model-value="data.mappedValue"></el-input>
 			</template>
 		</EditList>

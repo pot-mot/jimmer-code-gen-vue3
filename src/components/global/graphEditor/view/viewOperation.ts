@@ -62,7 +62,7 @@ export const center = (graph: Graph) => {
 
     if (graph.isSelectionEmpty()) {
         graph.centerContent()
-    } else if (nodes.length == 1) {
+    } else if (nodes.length === 1) {
         focus(graph, nodes[0].id)
     } else {
         const left = getLeft(nodes)!

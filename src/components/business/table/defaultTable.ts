@@ -49,7 +49,7 @@ export const getDefaultColumn = (): GenTableModelInput_TargetOf_columns => {
 
     const columnDefaults = columnDefaultStore.get(defaultColumn.typeCode)
 
-    if (columnDefaults.length == 0) {
+    if (columnDefaults.length === 0) {
         return defaultColumn
     } else {
         const columnDefault = columnDefaults[0]
