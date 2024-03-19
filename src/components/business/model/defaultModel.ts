@@ -18,7 +18,7 @@ export const getDefaultModel = (): GenModelInput => {
         author: "",
         packagePath: "",
         tablePath: "",
-        lowerCaseName: true,
+        databaseNamingStrategy: "LOWER_CASE",
         realFk: true,
         idViewProperty: true,
         logicalDeletedAnnotation: "",

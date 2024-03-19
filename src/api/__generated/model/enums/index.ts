@@ -2,6 +2,8 @@ export type {AssociationType} from './AssociationType';
 export {AssociationType_CONSTANTS} from './AssociationType';
 export type {DataSourceType} from './DataSourceType';
 export {DataSourceType_CONSTANTS} from './DataSourceType';
+export type {DatabaseNamingStrategyType} from './DatabaseNamingStrategyType';
+export {DatabaseNamingStrategyType_CONSTANTS} from './DatabaseNamingStrategyType';
 export type {DissociateAction} from './DissociateAction';
 export {DissociateAction_CONSTANTS} from './DissociateAction';
 export type {EnumType} from './EnumType';

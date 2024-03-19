@@ -18,7 +18,11 @@ const indexNameTemplate = (
         indexName = "u" + indexName
     }
 
-    return context.lowerCaseName ? indexName.toLowerCase() : indexName.toUpperCase()
+    switch(context.databaseNamingStrategy) {
+        case "LOWER_CASE": return indexName.toLowerCase()
+        case "UPPER_CASE": return indexName.toUpperCase()
+        case "RAW": return indexName
+    }
 }
 
 export const createIndexName = (

@@ -5,6 +5,7 @@ import {sendMessage} from "@/message/message.ts";
 import DataSourceIcon from "../../global/icons/database/DataSourceIcon.vue";
 import Details from "../../global/common/Details.vue";
 import {
+	DatabaseNamingStrategyType_CONSTANTS,
 	DataSourceType_CONSTANTS,
 	GenLanguage_CONSTANTS
 } from "@/api/__generated/model/enums"
@@ -53,7 +54,8 @@ const handleCancel = () => {
 						<template #prefix>
 							<DataSourceIcon :type="config.dataSourceType"></DataSourceIcon>
 						</template>
-						<el-option v-for="dataSourceType in DataSourceType_CONSTANTS" :label="dataSourceType"
+						<el-option v-for="dataSourceType in DataSourceType_CONSTANTS"
+								   :label="dataSourceType"
 								   :value="dataSourceType"></el-option>
 					</el-select>
 				</el-form-item>
@@ -61,7 +63,8 @@ const handleCancel = () => {
 			<el-col :span="12">
 				<el-form-item label="语言">
 					<el-select v-model="config.language">
-						<el-option v-for="language in GenLanguage_CONSTANTS" :label="language"
+						<el-option v-for="language in GenLanguage_CONSTANTS"
+								   :label="language"
 								   :value="language"></el-option>
 					</el-select>
 				</el-form-item>
@@ -82,8 +85,12 @@ const handleCancel = () => {
 					</el-col>
 
 					<el-col :span="12">
-						<el-form-item label="启用小写映射">
-							<el-switch v-model="config.lowerCaseName"></el-switch>
+						<el-form-item label="数据库命名策略">
+							<el-select v-model="config.databaseNamingStrategy">
+								<el-option v-for="namingStrategy in DatabaseNamingStrategyType_CONSTANTS"
+										   :label="namingStrategy"
+										   :value="namingStrategy"></el-option>
+							</el-select>
 						</el-form-item>
 					</el-col>
 				</el-row>

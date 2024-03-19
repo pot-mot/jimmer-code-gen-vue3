@@ -1,4 +1,4 @@
-import type {DataSourceType, GenLanguage} from '../enums/';
+import type {DataSourceType, DatabaseNamingStrategyType, GenLanguage} from '../enums/';
 
 export interface GenConfigProperties {
     /**
@@ -26,9 +26,9 @@ export interface GenConfigProperties {
      */
     tablePath?: string | undefined;
     /**
-     * 启用小写命名
+     * 数据库命名策略
      */
-    lowerCaseName?: boolean | undefined;
+    databaseNamingStrategy?: DatabaseNamingStrategyType | undefined;
     /**
      * 启用真实外键
      */

@@ -1,4 +1,4 @@
-import type {DataSourceType, GenLanguage} from '../enums/';
+import type {DataSourceType, DatabaseNamingStrategyType, GenLanguage} from '../enums/';
 import type {GenModelView_TargetOf_enums} from './';
 
 export interface GenModelView {
@@ -47,9 +47,9 @@ export interface GenModelView {
      */
     tablePath: string;
     /**
-     * 启用小写命名
+     * 数据库命名策略
      */
-    lowerCaseName: boolean;
+    databaseNamingStrategy: DatabaseNamingStrategyType;
     /**
      * 启用真实外键
      */

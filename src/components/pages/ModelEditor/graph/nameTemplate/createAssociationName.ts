@@ -38,7 +38,11 @@ const associationNameTemplate = (
         associationName = `fk_${sourceName}_${targetName}`
     }
 
-    return context.lowerCaseName ? associationName.toLowerCase() : associationName.toUpperCase()
+    switch(context.databaseNamingStrategy) {
+        case "LOWER_CASE": return associationName.toLowerCase()
+        case "UPPER_CASE": return associationName.toUpperCase()
+        case "RAW": return associationName
+    }
 }
 
 export const createAssociationName = (
