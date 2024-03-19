@@ -8,6 +8,8 @@ import ColumnDefaultEditor from "@/components/business/columnDefault/ColumnDefau
 import {GenerateConfiguratorOption, GenerateConfiguratorOptions} from "@/components/business/globalConfig/constant.ts";
 import {useGlobalGenConfigStore} from "@/components/business/genConfig/GlobalGenConfigStore.ts";
 import DebugForm from "@/debug/DebugForm.vue";
+import {GenConfigProperties} from "@/api/__generated/model/static";
+import {api} from "@/api";
 
 const configType = ref<GenerateConfiguratorOption | undefined>()
 
@@ -23,6 +25,12 @@ const openState = computed<boolean>({
 })
 
 const globalGenConfigStore = useGlobalGenConfigStore()
+
+const handleGlobalGenConfigSubmit = async (properties: GenConfigProperties) => {
+	await api.configService.setConfig({body: properties})
+	await globalGenConfigStore.reset()
+	openState.value = false
+}
 </script>
 
 <template>
@@ -55,10 +63,7 @@ const globalGenConfigStore = useGlobalGenConfigStore()
 				v-if="configType?.name === 'GenConfigForm' && globalGenConfigStore.isLoaded"
 				v-model="globalGenConfigStore.genConfig"
 				@cancel="openState = false"
-				@submit="() => {
-					globalGenConfigStore.reset()
-					openState = false
-				}"></GenerateConfigForm>
+				@submit="handleGlobalGenConfigSubmit"></GenerateConfigForm>
 			<TypeMappingsEditor
 				v-else-if="configType?.name === 'TypeMappingsEditor'"></TypeMappingsEditor>
 			<ColumnDefaultEditor
