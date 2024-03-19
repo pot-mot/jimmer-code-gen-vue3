@@ -8,6 +8,7 @@ export const GenColumnDefaultInputJsonSchema = {
     "definitions": {
         "DataSourceType": {
             "enum": [
+                "H2",
                 "MySQL",
                 "PostgreSQL"
             ],

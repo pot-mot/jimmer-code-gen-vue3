@@ -7,6 +7,7 @@ export const GenTypeMappingInputJsonSchema = {
     "definitions": {
         "DataSourceType": {
             "enum": [
+                "H2",
                 "MySQL",
                 "PostgreSQL"
             ],

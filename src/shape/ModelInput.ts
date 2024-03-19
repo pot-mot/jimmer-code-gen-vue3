@@ -12,8 +12,17 @@ export const GenModelInputJsonSchema = {
 
         "DataSourceType": {
             "enum": [
+                "H2",
                 "MySQL",
                 "PostgreSQL"
+            ],
+            "type": "string"
+        },
+        "DatabaseNamingStrategyType": {
+            "enum": [
+                "LOWER_CASE",
+                "RAW",
+                "UPPER_CASE"
             ],
             "type": "string"
         },
@@ -55,6 +64,10 @@ export const GenModelInputJsonSchema = {
                     "$ref": "#/definitions/DataSourceType",
                     "description": "数据源类型"
                 },
+                "databaseNamingStrategy": {
+                    "$ref": "#/definitions/DatabaseNamingStrategyType",
+                    "description": "数据库命名策略"
+                },
                 "enums": {
                     "description": "枚举",
                     "items": {
@@ -89,10 +102,6 @@ export const GenModelInputJsonSchema = {
                 "logicalDeletedAnnotation": {
                     "description": "逻辑删除注解",
                     "type": "string"
-                },
-                "lowerCaseName": {
-                    "description": "启用小写命名",
-                    "type": "boolean"
                 },
                 "name": {
                     "description": "名称",
@@ -147,13 +156,13 @@ export const GenModelInputJsonSchema = {
                 "columnNamePrefixes",
                 "columnNameSuffixes",
                 "dataSourceType",
+                "databaseNamingStrategy",
                 "enums",
                 "idViewProperty",
                 "joinColumnAnnotation",
                 "joinTableAnnotation",
                 "language",
                 "logicalDeletedAnnotation",
-                "lowerCaseName",
                 "name",
                 "packagePath",
                 "realFk",
