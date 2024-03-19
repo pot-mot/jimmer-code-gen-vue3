@@ -8,7 +8,7 @@ import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/loadData.ts
 
 type ModelEditorEvents = {
     createTable: TableLoadOptions,
-    createdTable: GenTableModelInput,
+    createdTable: { id: string, table: GenTableModelInput },
     modifyTable: { id: string, table: GenTableModelInput },
     modifiedTable: { id: string, table: GenTableModelInput },
     removeTable: string,

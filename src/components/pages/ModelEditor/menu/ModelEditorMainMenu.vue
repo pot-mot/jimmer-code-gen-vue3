@@ -36,7 +36,8 @@ const formattedEdgeShowType = computed(() => {
 	<div>
 		<el-button style="margin-bottom: 0.5em;" @click="store.dataSourceLoadMenuOpenState = true">从数据源导入
 		</el-button>
-		<el-button style="margin-bottom: 0.5em;" @click="store.modelLoadMenuOpenState = true">从已持久化的模型导入</el-button>
+		<el-button style="margin-bottom: 0.5em;" @click="store.modelLoadMenuOpenState = true">从已持久化的模型导入
+		</el-button>
 
 		<Details open>
 			<template #title>
@@ -45,9 +46,10 @@ const formattedEdgeShowType = computed(() => {
 					<el-button
 						style="margin-left: 0.5em;"
 						@click="ModelEditorEventBus.emit(
-						'createTable',
-						{x: store.getCenterPoint().x * 3/4, y: store.getCenterPoint().y * 3/4}
-						)">
+							'createTable',
+							{x: store.getCenterPoint().x * 3/4, y: store.getCenterPoint().y * 3/4}
+							)"
+					>
 						创建表
 					</el-button>
 				</div>
@@ -64,7 +66,10 @@ const formattedEdgeShowType = computed(() => {
 			<template #title>
 				<div style="height: 2em; line-height: 2em;">
 					<el-text>Edges</el-text>
-					<el-button style="margin-left: 0.5em;" @click="toggleEdgeShow">{{ formattedEdgeShowType }}</el-button>
+					<el-button style="margin-left: 0.5em;" @click="toggleEdgeShow">{{
+							formattedEdgeShowType
+						}}
+					</el-button>
 				</div>
 			</template>
 

@@ -16,7 +16,10 @@ import {useEnumDialogsStore} from "@/components/pages/ModelEditor/dialogs/enum/E
 import {cloneDeep} from "lodash";
 import {getDefaultTable} from "@/components/business/table/defaultTable.ts";
 import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
-import {useTableDialogsStore} from "@/components/pages/ModelEditor/dialogs/table/TableDialogsStore.ts";
+import {
+    TABLE_CREATE_PREFIX,
+    useTableDialogsStore
+} from "@/components/pages/ModelEditor/dialogs/table/TableDialogsStore.ts";
 import {unStyleAll} from "@/components/pages/ModelEditor/graph/highlight.ts";
 import {GraphEditorData} from "@/components/global/graphEditor/data/graphData.ts";
 import {useDebugStore} from "@/debug/debugStore.ts";
@@ -297,11 +300,11 @@ export const useModelEditorStore =
             const tableCreateOption = ref<TableLoadOptions>()
 
             ModelEditorEventBus.on('createTable', (option) => {
-                tableDialogsStore.open("", getDefaultTable())
+                tableDialogsStore.open(TABLE_CREATE_PREFIX + Date.now(), getDefaultTable())
                 tableCreateOption.value = option
             })
 
-            ModelEditorEventBus.on('createdTable', (table) => {
+            ModelEditorEventBus.on('createdTable', ({id, table}) => {
                 const graph = commonOperations._graph()
 
                 if (!graph) return
@@ -315,7 +318,7 @@ export const useModelEditorStore =
                 tableCreateOption.value = undefined
 
                 if (node) {
-                    tableDialogsStore.close("")
+                    tableDialogsStore.close(id)
 
                     setTimeout(() => {
                         commonOperations.select(node)
