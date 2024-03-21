@@ -27,8 +27,6 @@ export type {GenDataSourceInput} from './GenDataSourceInput';
 export type {GenDataSourceTemplateView} from './GenDataSourceTemplateView';
 export type {GenDataSourceView} from './GenDataSourceView';
 export type {GenEntityCommonView} from './GenEntityCommonView';
-export type {GenEntityConfigInput} from './GenEntityConfigInput';
-export type {GenEntityConfigInput_TargetOf_properties} from './GenEntityConfigInput_TargetOf_properties';
 export type {GenEntityPropertiesView} from './GenEntityPropertiesView';
 export type {GenEntityPropertiesView_TargetOf_properties} from './GenEntityPropertiesView_TargetOf_properties';
 export type {GenEntityPropertiesView_TargetOf_properties_TargetOf_column} from './GenEntityPropertiesView_TargetOf_properties_TargetOf_column';
@@ -36,6 +34,7 @@ export type {GenEntityPropertiesView_TargetOf_properties_TargetOf_enum} from './
 export type {GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_TargetOf_items} from './GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_TargetOf_items';
 export type {GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable} from './GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable';
 export type {GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_TargetOf_entity} from './GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_TargetOf_entity';
+export type {GenEntityPropertiesView_TargetOf_superEntities} from './GenEntityPropertiesView_TargetOf_superEntities';
 export type {GenEntityPropertiesView_TargetOf_table} from './GenEntityPropertiesView_TargetOf_table';
 export type {GenEnumItemsInput} from './GenEnumItemsInput';
 export type {GenEnumItemsInput_TargetOf_items} from './GenEnumItemsInput_TargetOf_items';
@@ -75,6 +74,7 @@ export type {GenTableModelInput_TargetOf_columns} from './GenTableModelInput_Tar
 export type {GenTableModelInput_TargetOf_columns_TargetOf_enum} from './GenTableModelInput_TargetOf_columns_TargetOf_enum';
 export type {GenTableModelInput_TargetOf_indexes} from './GenTableModelInput_TargetOf_indexes';
 export type {GenTableModelInput_TargetOf_indexes_TargetOf_columns} from './GenTableModelInput_TargetOf_indexes_TargetOf_columns';
+export type {GenTableModelInput_TargetOf_superTables} from './GenTableModelInput_TargetOf_superTables';
 export type {GenTypeMappingInput} from './GenTypeMappingInput';
 export type {GenTypeMappingView} from './GenTypeMappingView';
 export type {ModelInputEntities} from './ModelInputEntities';

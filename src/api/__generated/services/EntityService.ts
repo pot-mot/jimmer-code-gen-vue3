@@ -1,22 +1,10 @@
 import type {Executor} from '../';
 import type {GenLanguage} from '../model/enums/';
-import type {
-    EntityQuery, 
-    GenEntityCommonView, 
-    GenEntityConfigInput, 
-    GenEntityPropertiesView
-} from '../model/static/';
+import type {EntityQuery, GenEntityCommonView, GenEntityPropertiesView} from '../model/static/';
 
 export class EntityService {
     
     constructor(private executor: Executor) {}
-    
-    readonly config: (options: EntityServiceOptions['config']) => Promise<
-        number
-    > = async(options) => {
-        let _uri = '/entity/config';
-        return (await this.executor({uri: _uri, method: 'PUT', body: options.body})) as Promise<number>;
-    }
     
     readonly delete: (options: EntityServiceOptions['delete']) => Promise<
         number
@@ -68,9 +56,6 @@ export type EntityServiceOptions = {
         id: number
     }, 
     'listLanguage': {}, 
-    'config': {
-        body: GenEntityConfigInput
-    }, 
     'query': {
         body: EntityQuery
     }, 

@@ -43,6 +43,10 @@ export interface GenTableAssociationsView {
      */
     entityId?: number | undefined;
     /**
+     * 上级表
+     */
+    superTables?: Array<GenTableAssociationsView> | undefined;
+    /**
      * 列
      */
     columns: Array<GenTableAssociationsView_TargetOf_columns>;

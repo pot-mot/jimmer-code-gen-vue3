@@ -1,5 +1,5 @@
 import type {TableType} from '../enums/';
-import type {GenTableModelInput_TargetOf_columns, GenTableModelInput_TargetOf_indexes} from './';
+import type {GenTableModelInput_TargetOf_columns, GenTableModelInput_TargetOf_indexes, GenTableModelInput_TargetOf_superTables} from './';
 
 export interface GenTableModelInput {
     /**
@@ -22,6 +22,10 @@ export interface GenTableModelInput {
      * 模型
      */
     modelId?: number | undefined;
+    /**
+     * 上级表
+     */
+    superTables: Array<GenTableModelInput_TargetOf_superTables>;
     /**
      * 列
      */

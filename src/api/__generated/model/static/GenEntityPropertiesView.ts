@@ -1,4 +1,4 @@
-import type {GenEntityPropertiesView_TargetOf_properties, GenEntityPropertiesView_TargetOf_table} from './';
+import type {GenEntityPropertiesView_TargetOf_properties, GenEntityPropertiesView_TargetOf_superEntities, GenEntityPropertiesView_TargetOf_table} from './';
 
 export interface GenEntityPropertiesView {
     /**
@@ -37,6 +37,10 @@ export interface GenEntityPropertiesView {
      * 对应表
      */
     table: GenEntityPropertiesView_TargetOf_table;
+    /**
+     * 上级实体
+     */
+    superEntities: Array<GenEntityPropertiesView_TargetOf_superEntities>;
     /**
      * 属性
      */
