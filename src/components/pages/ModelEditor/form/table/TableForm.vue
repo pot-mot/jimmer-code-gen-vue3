@@ -246,11 +246,11 @@ const handleCancel = () => {
 <template>
 	<el-form style="width: 98%;">
 		<el-row :gutter="12" style="line-height: 2em; padding-left: 1em;">
-			<el-col :span="6">
+			<el-col :span="8">
 				<el-input v-model="table.name" placeholder="name"></el-input>
 			</el-col>
 
-			<el-col :span="6">
+			<el-col :span="8">
 				<el-text class="comment">
 					<span>/* </span>
 					<span><el-input v-model="table.comment" placeholder="comment"></el-input></span>
@@ -258,11 +258,11 @@ const handleCancel = () => {
 				</el-text>
 			</el-col>
 
-			<el-col :span="6">
+			<el-col :span="7">
 				<el-select disabled :placeholder="table.type"></el-select>
 			</el-col>
 
-			<el-col :span="18">
+			<el-col :span="23">
 				<el-input v-model="table.remark" :autosize="{ minRows: 1, maxRows: 4 }" placeholder="remark"
 						  type="textarea"></el-input>
 			</el-col>
@@ -345,14 +345,15 @@ const handleCancel = () => {
 				</template>
 
 				<template #type="{data}">
-					<ColumnTypeForm :enumNames="store._currentModel().enums.map(it => it.name)"
-									:model-value="data"
-									@create-enum="() => ModelEditorEventBus.emit('createEnum')"
-									@edit-enum="(name) => {
-										let genEnum = store._currentModel().enums.filter(it => it.name === name)[0]
-										if (!genEnum) genEnum = {...getDefaultEnum(),name}
-										ModelEditorEventBus.emit('modifyEnum', {name, genEnum})
-									}"
+					<ColumnTypeForm
+						:enumNames="store._currentModel().enums.map(it => it.name)"
+						:model-value="data"
+						@create-enum="() => ModelEditorEventBus.emit('createEnum')"
+						@edit-enum="(name) => {
+							let genEnum = store._currentModel().enums.filter(it => it.name === name)[0]
+							if (!genEnum) genEnum = {...getDefaultEnum(),name}
+							ModelEditorEventBus.emit('modifyEnum', {name, genEnum})
+						}"
 					></ColumnTypeForm>
 				</template>
 

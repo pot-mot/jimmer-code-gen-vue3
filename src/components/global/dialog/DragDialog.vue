@@ -3,7 +3,7 @@ import DragResize from 'vue3-draggable-resizable'
 import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
 import {nextTick, onBeforeMount, onMounted, ref, toRaw, watch} from 'vue'
 import {ElButton} from "element-plus";
-import {Close} from "@element-plus/icons-vue";
+import {Close, FullScreen} from "@element-plus/icons-vue";
 import {DragDialogProps} from "./DragDialogProps.ts";
 import {DragDialogEmits, ModelValueEmits} from "./DragDialogEmits.ts";
 import {sendMessage} from "@/message/message.ts";
@@ -32,7 +32,7 @@ const h = ref(0)
 
 const zIndexManager = useZIndex()
 
-const setPositionAndSize = () => {
+const initPositionAndSize = () => {
 	let maxWidth: number
 
 	if (props.limitByParent) {
@@ -87,7 +87,7 @@ const currentZIndex = ref<number>()
 
 const handleOpen = () => {
 	emits('open')
-	setPositionAndSize()
+	initPositionAndSize()
 	currentZIndex.value = zIndexManager.nextZIndex()
 	emits('opened')
 }
@@ -98,9 +98,21 @@ const handleClose = () => {
 	emits("closed")
 }
 
-const handleCommonClick = () => {
-	if (!currentZIndex.value || currentZIndex.value < zIndexManager.currentZIndex.value) {
-		currentZIndex.value = zIndexManager.nextZIndex()
+const handleToggleFullScreen = () => {
+	currentZIndex.value = zIndexManager.nextZIndex()
+
+	if (
+		x.value === 0 &&
+		y.value === 0 &&
+		h.value - document.documentElement.offsetHeight === 0 &&
+		w.value - document.documentElement.offsetWidth === 0
+	) {
+		initPositionAndSize()
+	} else {
+		x.value = 0
+		y.value = 0
+		h.value = document.documentElement.offsetHeight
+		w.value = document.documentElement.offsetWidth
 	}
 }
 
@@ -181,14 +193,13 @@ defineExpose({
 					:h="h" :maxH="maxH" :minH="minH" :disabledH="disabledH"
 					:w="w" :maxW="maxW" :minW="minW" :disabledW="disabledW"
 					:style="`border: none; z-index: ${currentZIndex};`"
-					:class="{disabledW, disabledH, disabledX, disabledY}"
-					@click="handleCommonClick">
+					:class="{disabledW, disabledH, disabledX, disabledY}">
 			<div ref="wrapper" class="wrapper" style="cursor: all-scroll;">
-				<div class="close" @click="handleClose">
-					<slot name="close">
-						<el-button :icon="Close" link size="large" type="danger"></el-button>
-					</slot>
+				<div class="right-top" >
+					<el-button :icon="FullScreen" link size="large" @click="handleToggleFullScreen"></el-button>
+					<el-button :icon="Close" link size="large" type="danger" @click="handleClose"></el-button>
 				</div>
+
 				<div ref="content" class="content"
 					 @mouseover="handleContentMouseOver" @mouseleave="handleContentMouseLeave">
 					<slot></slot>
@@ -199,7 +210,7 @@ defineExpose({
 </template>
 
 <style scoped>
-.close {
+.right-top {
 	position: absolute;
 	top: 0;
 	right: 0;

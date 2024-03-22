@@ -10,6 +10,7 @@ import {useClickOutside} from "@/components/global/list/useClickOutside.ts";
 import {containsClassList, interactionTagClassList, judgeTarget} from "@/utils/clickUtils.ts";
 import Line from "@/components/global/list/Line.vue";
 import LineItem from "@/components/global/list/LineItem.vue";
+import {useZIndex} from "element-plus";
 
 const jdbcTypeStore = useJdbcTypeStore()
 
@@ -29,6 +30,16 @@ const emits = defineEmits<
 >()
 
 const popoverOpenState = ref(false)
+
+const zIndexManager = useZIndex()
+const currentZIndex = ref<number>()
+watch(() => popoverOpenState.value, (value) => {
+	if (value) {
+		if (currentZIndex.value == undefined || currentZIndex.value <= zIndexManager.currentZIndex.value) {
+			currentZIndex.value = zIndexManager.nextZIndex()
+		}
+	}
+})
 
 const handleTypeCodeChange = () => {
 	const typeCode = props.modelValue.typeCode
@@ -69,7 +80,7 @@ useClickOutside(() => wrapper.value, (e) => {
 		if (interactionTagClassList.includes(el.tagName)) {
 			return true
 		}
-		if (containsClassList(el, [...interactionTagClassList, 'column-type-input'])) {
+		if (containsClassList(el, [...interactionTagClassList, 'column-type-form-input'])) {
 			return true
 		}
 	})) {
@@ -79,18 +90,17 @@ useClickOutside(() => wrapper.value, (e) => {
 </script>
 
 <template>
-	<el-popover :visible="popoverOpenState" width="450px">
-		<template #reference>
-			<div @click="popoverOpenState = !popoverOpenState" class="column-type-input">
-				<el-input readonly :model-value="modelValue.rawType">
-					<template v-if="modelValue.enum !== undefined" #prefix>
-						【{{ modelValue.enum.name }}】
-					</template>
-				</el-input>
-			</div>
-		</template>
+	<div class="column-type-form">
+		<div @click="popoverOpenState = !popoverOpenState" class="column-type-form-input">
+			<el-input readonly :model-value="modelValue.rawType">
+				<template v-if="modelValue.enum !== undefined" #prefix>
+					【{{ modelValue.enum.name }}】
+				</template>
+			</el-input>
+		</div>
 
-		<div ref="wrapper">
+		<div ref="wrapper" class="column-type-form-wrapper" v-show="popoverOpenState"
+			 :style="`z-index: ${currentZIndex};`">
 			<el-form v-if="jdbcTypeStore.isLoaded && columnDefaultStore.isLoaded">
 				<el-form-item label="jdbc 类型">
 					<el-select
@@ -140,5 +150,20 @@ useClickOutside(() => wrapper.value, (e) => {
 				</el-form-item>
 			</el-form>
 		</div>
-	</el-popover>
+	</div>
 </template>
+
+<style scoped>
+.column-type-form {
+	position: relative;
+}
+
+.column-type-form-wrapper {
+	position: absolute;
+	top: 2em;
+	padding: 20px 10px 10px;
+	background-color: #fff;
+	border-radius: var(--el-border-radius-base);
+	box-shadow: var(--el-box-shadow);
+}
+</style>

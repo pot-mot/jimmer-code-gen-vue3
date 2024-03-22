@@ -30,10 +30,6 @@
 	position: relative;
 }
 
-.content {
-	overflow-y: hidden;
-}
-
 .button {
 	position: absolute;
 	top: 0;
