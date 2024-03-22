@@ -43,6 +43,13 @@ export const GenTableModelInputJsonSchema = {
                     "description": "备注",
                     "type": "string"
                 },
+                "superTables": {
+                    "description": "上级表",
+                    "items": {
+                        "$ref": "#/definitions/GenTableModelInput_TargetOf_superTables"
+                    },
+                    "type": "array"
+                },
                 "type": {
                     "$ref": "#/definitions/TableType",
                     "description": "种类"
@@ -54,6 +61,7 @@ export const GenTableModelInputJsonSchema = {
                 "indexes",
                 "name",
                 "remark",
+                "superTables",
                 "type"
             ],
             "type": "object"
@@ -72,16 +80,16 @@ export const GenTableModelInputJsonSchema = {
                     "description": "注释",
                     "type": "string"
                 },
-                "defaultValue": {
-                    "description": "默认值",
-                    "type": ["string", "null"]
-                },
                 "dataSize": {
                     "description": "长度",
                     "type": "number"
                 },
+                "defaultValue": {
+                    "description": "默认值",
+                    "type": ["string", "null"]
+                },
                 "enum": {
-                    "$ref": "#/definitions/GenTableModelInput_TargetOf_columns_TargetOf_enum_2",
+                    "$ref": "#/definitions/GenTableModelInput_TargetOf_columns_TargetOf_enum",
                     "description": "生成枚举"
                 },
                 "logicalDelete": {
@@ -143,7 +151,7 @@ export const GenTableModelInputJsonSchema = {
             ],
             "type": "object"
         },
-        "GenTableModelInput_TargetOf_columns_TargetOf_enum_2": {
+        "GenTableModelInput_TargetOf_columns_TargetOf_enum": {
             "properties": {
                 "name": {
                     "description": "枚举名",
@@ -160,7 +168,7 @@ export const GenTableModelInputJsonSchema = {
                 "columns": {
                     "description": "列",
                     "items": {
-                        "$ref": "#/definitions/GenTableModelInput_TargetOf_indexes_TargetOf_columns_2"
+                        "$ref": "#/definitions/GenTableModelInput_TargetOf_indexes_TargetOf_columns"
                     },
                     "type": "array"
                 },
@@ -185,7 +193,19 @@ export const GenTableModelInputJsonSchema = {
             ],
             "type": "object"
         },
-        "GenTableModelInput_TargetOf_indexes_TargetOf_columns_2": {
+        "GenTableModelInput_TargetOf_indexes_TargetOf_columns": {
+            "properties": {
+                "name": {
+                    "description": "名称",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "type": "object"
+        },
+        "GenTableModelInput_TargetOf_superTables": {
             "properties": {
                 "name": {
                     "description": "名称",
@@ -203,6 +223,7 @@ export const GenTableModelInputJsonSchema = {
                 "Companion",
                 "GLOBAL_TEMPORARY",
                 "LOCAL_TEMPORARY",
+                "SUPER_TABLE",
                 "SYSTEM_TABLE",
                 "TABLE",
                 "UNKNOWN",

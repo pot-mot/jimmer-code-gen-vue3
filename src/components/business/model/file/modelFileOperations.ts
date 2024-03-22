@@ -46,7 +46,7 @@ export const downloadModelSql = async (model: GenModelView) => {
 }
 
 
-export const importModel = async (modelInputJsonStr: string) => {
+export const importModel = async (modelInputJsonStr: string): Promise<number | undefined> => {
     let validateErrors
     if (validateModelInputStr(modelInputJsonStr, e => validateErrors = e)) {
         const modelInput = JSON.parse(modelInputJsonStr)

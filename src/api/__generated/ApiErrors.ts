@@ -2,6 +2,9 @@ export type AllErrors = {
         family: 'CONVERT_ENTITY', 
         code: 'ASSOCIATION'
     } | {
+        family: 'CONVERT_ENTITY', 
+        code: 'SUPER_TABLE'
+    } | {
         family: 'COLUMN_TYPE', 
         code: 'MISS_REQUIRED_PARAM'
     } | {
@@ -69,6 +72,10 @@ export type ApiErrors = {
         'convert': AllErrors & ({
                 family: 'CONVERT_ENTITY', 
                 code: 'ASSOCIATION', 
+                readonly [key:string]: any
+            } | {
+                family: 'CONVERT_ENTITY', 
+                code: 'SUPER_TABLE', 
                 readonly [key:string]: any
             } | {
                 family: 'COLUMN_TYPE', 
@@ -162,6 +169,10 @@ export type ApiErrors = {
                 code: 'ASSOCIATION', 
                 readonly [key:string]: any
             } | {
+                family: 'CONVERT_ENTITY', 
+                code: 'SUPER_TABLE', 
+                readonly [key:string]: any
+            } | {
                 family: 'COLUMN_TYPE', 
                 code: 'MISS_REQUIRED_PARAM', 
                 readonly [key:string]: any
@@ -202,6 +213,10 @@ export type ApiErrors = {
         'previewModelEntity': AllErrors & ({
                 family: 'CONVERT_ENTITY', 
                 code: 'ASSOCIATION', 
+                readonly [key:string]: any
+            } | {
+                family: 'CONVERT_ENTITY', 
+                code: 'SUPER_TABLE', 
                 readonly [key:string]: any
             } | {
                 family: 'COLUMN_TYPE', 

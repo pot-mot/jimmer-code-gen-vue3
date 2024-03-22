@@ -41,6 +41,7 @@ export const tableViewToInput = (tableView: GenTableColumnsView): GenTableModelI
         name: tableView.name,
         remark: tableView.remark,
         type: tableView.type,
+        superTables: [],
         indexes: tableView.indexes.map(indexView => {
             return {
                 name: indexView.name,

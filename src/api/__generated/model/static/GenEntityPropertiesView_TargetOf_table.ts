@@ -1,3 +1,5 @@
+import type {TableType} from '../enums/';
+
 export interface GenEntityPropertiesView_TargetOf_table {
     /**
      * ID
@@ -7,4 +9,8 @@ export interface GenEntityPropertiesView_TargetOf_table {
      * 名称
      */
     name: string;
+    /**
+     * 种类
+     */
+    type: TableType;
 }

@@ -1,5 +1,6 @@
 export const TableType_CONSTANTS = [
     'TABLE', 
+    'SUPER_TABLE', 
     'VIEW', 
     'SYSTEM_TABLE', 
     'GLOBAL_TEMPORARY', 

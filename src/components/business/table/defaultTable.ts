@@ -11,6 +11,7 @@ export const getDefaultTable = (): GenTableModelInput => {
         comment: "",
         remark: "",
         type: "TABLE",
+        superTables: [],
         columns: [],
         indexes: [],
     }

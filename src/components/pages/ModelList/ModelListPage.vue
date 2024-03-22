@@ -76,8 +76,6 @@ const handleLoadModelJson = async (e: Event) => {
 		if (id !== undefined) {
 			sendMessage('模型导入成功', 'success')
 			await updateModelList(id, true)
-		} else {
-			sendMessage('模型导入失败', 'error')
 		}
 	} else {
 		sendMessage('文件不存在', 'error')
