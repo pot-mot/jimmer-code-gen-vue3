@@ -26,6 +26,8 @@ import {useDebugStore} from "@/debug/debugStore.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {Node, Edge} from '@antv/x6';
 import {getCenterPoint} from "@/components/global/graphEditor/view/viewOperation.ts";
+import {syncEnumNameForTables} from "@/components/pages/ModelEditor/sync/syncEnum.ts";
+import {syncSuperTableNameForTables} from "@/components/pages/ModelEditor/sync/syncSuperTable.ts";
 
 interface CurrentModelState {
     _currentModel: () => GenModelView
@@ -336,16 +338,41 @@ export const useModelEditorStore =
                 if (!graph) return
 
                 const cell = graph.getCellById(id)
-                if (cell && cell.isNode()) {
-                    updateTableNodeData(cell, table)
+                if (!cell || !cell.isNode()) {
+                    sendMessage(`更改节点【${id}】失败，无法被找到`, 'error')
                 } else {
-                    sendMessage(`Node ${id} 找不到，无法被更改`, 'error')
+                    const oldTable = cell.getData().table
+
+                    // 当高级表被修改时，调整其他表中的 superTables
+                    if (oldTable.type === "SUPER_TABLE") {
+                        if (table.type === "SUPER_TABLE") {
+                            syncSuperTableNameForTables(_graph(), oldTable.name, table.name)
+                        } else {
+                            syncSuperTableNameForTables(_graph(), oldTable.name, undefined)
+                        }
+                    }
+                    updateTableNodeData(cell, table)
                 }
                 tableDialogsStore.close(id)
             })
 
             ModelEditorEventBus.on('removeTable', (id) => {
-                commonOperations._graph().removeNode(id)
+                const graph = commonOperations._graph()
+
+                const cell = graph.getCellById(id)
+                if (!cell || !cell.isNode()) {
+                    sendMessage(`删除节点【${id}】失败，节点不存在或目标不是节点`, 'error')
+                } else {
+                    if (cell.shape === TABLE_NODE && cell.getData().table) {
+                        const table = cell.getData().table as GenTableModelInput
+                        // 当高级表被删除时，调整其他表中的 superTables
+                        if (table.type === "SUPER_TABLE") {
+                            syncSuperTableNameForTables(_graph(), table.name, undefined)
+                        }
+                    }
+                }
+
+                graph.removeNode(id)
             })
 
             ModelEditorEventBus.on('removeAssociation', (id) => {
@@ -372,56 +399,13 @@ export const useModelEditorStore =
                 enumDialogsStore.open(name, cloneDeep(genEnum))
             })
 
-            const syncEnumNameInTable = (table: GenTableModelInput, oldEnumName: string, newEnumName: string | undefined): GenTableModelInput => {
-                const tempTable = cloneDeep(table)
-
-                tempTable.columns.forEach(column => {
-                    if (column.enum && column.enum.name === oldEnumName) {
-                        if (newEnumName === undefined) {
-                            column.enum = undefined
-                        } else {
-                            column.enum.name = newEnumName
-                        }
-                    }
-                })
-
-                return tempTable
-            }
-
-            const judgeEnumInTable = (enumName: string, table: GenTableModelInput): boolean => {
-                return table.columns
-                    .flatMap(it => it.enum?.name).filter(it => it !== undefined)
-                    .includes(enumName)
-            }
-
-            const syncEnumNameForTables = (oldEnumName: string, newEnumName: string | undefined) => {
-                const graph = _graph()
-
-                const nodes = graph.getNodes().filter(it => it.shape === TABLE_NODE)
-
-                tableDialogsStore.items.forEach((value, key) => {
-                    if (value && judgeEnumInTable(oldEnumName, value)) {
-                        const newTable = syncEnumNameInTable(value, oldEnumName, newEnumName)
-                        tableDialogsStore.set(key, newTable)
-                    }
-                })
-
-                for (let node of nodes) {
-                    const table = node.getData()?.table as GenTableModelInput | undefined
-                    if (table && judgeEnumInTable(oldEnumName, table)) {
-                        const newTable = syncEnumNameInTable(table, oldEnumName, newEnumName)
-                        updateTableNodeData(node, newTable)
-                    }
-                }
-            }
-
             ModelEditorEventBus.on('modifiedEnum', ({name, genEnum}) => {
                 const currentModel = _currentModel()
 
                 currentModel.enums = currentModel.enums.filter(it => it.name !== name)
                 currentModel.enums.push(genEnum)
 
-                syncEnumNameForTables(name, genEnum.name)
+                syncEnumNameForTables(_graph(), name, genEnum.name)
 
                 enumDialogsStore.close(name)
             })
@@ -431,7 +415,7 @@ export const useModelEditorStore =
 
                 currentModel.enums = currentModel.enums.filter(it => it.name !== name)
 
-                syncEnumNameForTables(name, undefined)
+                syncEnumNameForTables(_graph(), name, undefined)
             })
 
             /**

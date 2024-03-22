@@ -19,6 +19,8 @@ import Details from "@/components/global/common/Details.vue";
 import {getDefaultTable, getDefaultColumn, getDefaultIndex} from "@/components/business/table/defaultTable.ts";
 import {validateColumn, validateIndex} from "@/shape/GenTableModelInput.ts";
 import {createIndexName} from "@/components/pages/ModelEditor/graph/nameTemplate/createIndexName.ts";
+import {TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
+import {Refresh} from "@element-plus/icons-vue";
 
 const store = useModelEditorStore()
 
@@ -40,17 +42,15 @@ watch(() => props.table, (value) => {
 	table.value = value
 }, {immediate: true})
 
-const otherTables = computed<GenTableModelInput[]>(() => {
-	return store.nodes.filter(it => it.shape === "TABLE_NODE" && it.id !== props.id).map(it => it.data.table)
-})
+const getOtherTables = () => {
+	return store.nodes.filter(it => it.shape === TABLE_NODE && it.id !== props.id).map(it => it.data.table)
+}
 
-const superTables = computed<GenTableModelInput[]>(() => {
-	return otherTables.value.filter(it => it.type == "SUPER_TABLE")
-})
+const getSuperTableNames = () => {
+	return getOtherTables().filter(it => it.type === "SUPER_TABLE").map(it => it.name)
+}
 
-const superTableNames = computed<string[]>(() => {
-	return superTables.value.map(it => it.name)
-})
+const superTableNames = ref(getSuperTableNames())
 
 const columnNames = computed<string[]>(() => {
 	return table.value.columns.map(it => it.name)
@@ -123,7 +123,7 @@ const handleSubmit = () => {
 		messageList.push('表名不得为空')
 	}
 
-	if (otherTables.value
+	if (getOtherTables()
 		.filter(it => it.name === table.value.name)
 		.length > 0) {
 		messageList.push('表名不可重复')
@@ -131,7 +131,7 @@ const handleSubmit = () => {
 
 	let filteredSuperTableName: GenTableModelInput_TargetOf_superTables[] = []
 	for (let superTable of table.value.superTables) {
-		if (!superTableNames.value
+		if (!getSuperTableNames()
 			.includes(superTable.name)) {
 			messageList.push(`上级表【${superTable.name}】不存在或不是超级表，已自动移除`)
 		} else {
@@ -206,9 +206,13 @@ const handleSubmit = () => {
 
 	const pkColumns = table.value.columns.filter(column => column.partOfPk)
 
-	if (pkColumns.length !== 1 && !isSuperTable.value) {
-		messageList.push('普通实体表仅可有一个主键')
-	} else if (pkColumns.length > 0 && isSuperTable.value) {
+	if (!isSuperTable.value) {
+		if (pkColumns.length > 1) {
+			messageList.push('普通实体表仅可有一个主键')
+		} else if (pkColumns.length === 0) {
+			messageList.push('普通实体表必须要有一个主键')
+		}
+	} else if (pkColumns.length > 0) {
 		messageList.push('上级表不可拥有主键')
 	}
 
@@ -254,20 +258,8 @@ const handleCancel = () => {
 				</el-text>
 			</el-col>
 
-			<el-col :span="2">
-				<el-tooltip :content="`切换上级表/普通表`">
-					<el-checkbox v-model="isSuperTable" :label="table.type"
-								 @change="(value: boolean) => {if (value) handleTableToSuperTable()}"></el-checkbox>
-				</el-tooltip>
-			</el-col>
-
-			<el-col :span="10">
-				<el-select :model-value="table.superTables.map(it => it.name)" multiple style="width: 100%;"
-						   @change="(value: string[]) => {
-							   table.superTables = value.map(it => {return {name: it}})
-						   }">
-					<el-option v-for="name in superTableNames" :value="name"></el-option>
-				</el-select>
+			<el-col :span="6">
+				<el-select disabled :placeholder="table.type"></el-select>
 			</el-col>
 
 			<el-col :span="18">
@@ -278,7 +270,36 @@ const handleCancel = () => {
 
 		<Details open style="padding-bottom: 0.5em">
 			<template #title>
-				<el-text style="line-height: 2.5em;" size="default">列配置</el-text>
+				<el-text style="line-height: 2.5em;" size="default">继承与上级表</el-text>
+			</template>
+
+			<el-row :gutter="12" style="line-height: 2em; width: 80%;">
+				<el-col :span="6">
+					<el-checkbox v-model="isSuperTable" label="作为上级表"
+								 @change="(value: boolean) => {if (value) handleTableToSuperTable()}"></el-checkbox>
+				</el-col>
+
+				<el-col :span="16">
+					<el-select :model-value="table.superTables.map(it => it.name)" multiple
+							   placeholder="继承的上级表" style="width: 100%;"
+							   @change="(value: string[]) => {
+							   table.superTables = value.map(it => {return {name: it}})
+						   }">
+						<el-option v-for="name in superTableNames" :value="name"></el-option>
+					</el-select>
+				</el-col>
+
+				<el-col :span="2">
+					<el-tooltip content="刷新高级表多选列表">
+						<el-button :icon="Refresh" @click="superTableNames = getSuperTableNames()"></el-button>
+					</el-tooltip>
+				</el-col>
+			</el-row>
+		</Details>
+
+		<Details open style="padding-bottom: 0.5em">
+			<template #title>
+				<el-text style="line-height: 2.5em;" size="default">列</el-text>
 			</template>
 
 			<EditList

@@ -98,6 +98,12 @@ const handleClose = () => {
 	emits("closed")
 }
 
+const handleCommonClick = () => {
+	if (!currentZIndex.value || currentZIndex.value < zIndexManager.currentZIndex.value) {
+		currentZIndex.value = zIndexManager.nextZIndex()
+	}
+}
+
 onBeforeMount(() => {
 	if (props.modelValue) {
 		handleOpen()
@@ -175,7 +181,8 @@ defineExpose({
 					:h="h" :maxH="maxH" :minH="minH" :disabledH="disabledH"
 					:w="w" :maxW="maxW" :minW="minW" :disabledW="disabledW"
 					:style="`border: none; z-index: ${currentZIndex};`"
-					:class="{disabledW, disabledH, disabledX, disabledY}">
+					:class="{disabledW, disabledH, disabledX, disabledY}"
+					@click="handleCommonClick">
 			<div ref="wrapper" class="wrapper" style="cursor: all-scroll;">
 				<div class="close" @click="handleClose">
 					<slot name="close">

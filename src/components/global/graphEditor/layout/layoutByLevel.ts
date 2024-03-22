@@ -337,7 +337,7 @@ export const layoutByLevel = (
 
     // 根据字典序对表名进行排序，保证多次布局的入参一致
     nodes.sort((node1, node2) => {
-        return node1.node.data.table.name.localeCompare(node2.node.data.table.name)
+        return node1.node.getData().table.name.localeCompare(node2.node.getData().table.name)
     })
 
     setLevel(nodes, edges)

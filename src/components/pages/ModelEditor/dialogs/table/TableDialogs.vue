@@ -6,7 +6,7 @@ const store = useTableDialogsStore()
 </script>
 
 <template>
-	<template v-for="[key, value] in store.items">
+	<template v-for="[key, value] in store.items" :key="key">
 		<ModelModifyDialog :id="key" :table="value" @close="store.close(key)"></ModelModifyDialog>
 	</template>
 </template>
