@@ -46,8 +46,56 @@ const getOtherTables = () => {
 	return store.nodes.filter(it => it.shape === TABLE_NODE && it.id !== props.id).map(it => it.data.table)
 }
 
-const getSuperTableNames = () => {
-	return getOtherTables().filter(it => it.type === "SUPER_TABLE").map(it => it.name)
+// 获取可选取的 superTable 的名称列表
+const getSuperTableNames = (): string[] => {
+	const tableNodes = store.nodes.filter(it => it.shape === TABLE_NODE)
+	const superTables: GenTableModelInput[] = tableNodes.map(it => it.data.table).filter(it => it.type === "SUPER_TABLE")
+
+	const allSuperTableNames = superTables.map(it => it.name)
+
+	if (table.value.type != "SUPER_TABLE") {
+		return allSuperTableNames
+	}
+
+	const inheritMap = createInheritMap(superTables)
+	const allChildren = collectAllChildren(table.value.name, inheritMap)
+
+	console.log(superTables, inheritMap, allChildren)
+
+	return allSuperTableNames.filter(it => it != table.value.name).filter(it => !allChildren.includes(it))
+}
+
+const createInheritMap = (tables: GenTableModelInput[]): Map<string, string[]> => {
+	const inheritMap = new Map<string, string[]>
+	for (let table of tables) {
+		const {name, superTables} = table
+		superTables.forEach(it => {
+			const value = inheritMap.get(it.name)
+			if (value != undefined) {
+				value.push(name)
+			} else {
+				inheritMap.set(it.name, [name])
+			}
+		})
+	}
+	return inheritMap
+}
+
+const collectAllChildren = (root: string, inheritMap: Map<string, string[]>, visited: Set<string> = new Set): string[] => {
+	const result: string[] = []
+
+	const children = inheritMap.get(root)
+	if (!children) return []
+	for (let child of children) {
+		if (!visited.has(child)) {
+			result.push(child)
+			visited.add(child)
+
+			result.push(...collectAllChildren(child, inheritMap, visited))
+		}
+	}
+
+	return result
 }
 
 const superTableNames = ref(getSuperTableNames())
@@ -133,7 +181,7 @@ const handleSubmit = () => {
 	for (let superTable of table.value.superTables) {
 		if (!getSuperTableNames()
 			.includes(superTable.name)) {
-			messageList.push(`上级表【${superTable.name}】不存在或不是超级表，已自动移除`)
+			messageList.push(`上级表【${superTable.name}】不存在/不是超级表/存在循环依赖，已自动移除`)
 		} else {
 			filteredSuperTableName.push(superTable)
 		}
@@ -280,7 +328,7 @@ const handleCancel = () => {
 				</el-col>
 
 				<el-col :span="16">
-					<el-select :model-value="table.superTables.map(it => it.name)" multiple
+					<el-select :model-value="table.superTables.map(it => it.name)" multiple filterable
 							   placeholder="继承的上级表" style="width: 100%;"
 							   @change="(value: string[]) => {
 							   table.superTables = value.map(it => {return {name: it}})
@@ -386,7 +434,7 @@ const handleCancel = () => {
 				</template>
 
 				<template #columns="{data}">
-					<el-select :model-value="data.columns.map(it => it.name)" multiple style="width: 100%;"
+					<el-select :model-value="data.columns.map(it => it.name)" multiple filterable style="width: 100%;"
 							   @change="(value: string[]) => {
 								   data.columns = value.map(it => {return {name: it}})
 								   data.name = createIndexName(data)
