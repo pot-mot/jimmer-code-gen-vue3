@@ -61,7 +61,6 @@ export const GenTableModelInputJsonSchema = {
                 "indexes",
                 "name",
                 "remark",
-                "superTables",
                 "type"
             ],
             "type": "object"

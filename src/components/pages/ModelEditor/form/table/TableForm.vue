@@ -2,7 +2,7 @@
 import {computed, ref, watch} from 'vue'
 import {
 	GenTableModelInput,
-	GenTableModelInput_TargetOf_indexes_TargetOf_columns
+	GenTableModelInput_TargetOf_indexes_TargetOf_columns, type GenTableModelInput_TargetOf_superTables
 } from "@/api/__generated/model/static";
 import {sendMessage} from "@/message/message.ts";
 import {useModelEditorStore} from "../../store/ModelEditorStore.ts";
@@ -40,12 +40,33 @@ watch(() => props.table, (value) => {
 	table.value = value
 }, {immediate: true})
 
-const checkConfig = ref({
-	onlyOnePk: true
+const otherTables = computed<GenTableModelInput[]>(() => {
+	return store.nodes.filter(it => it.shape === "TABLE_NODE" && it.id !== props.id).map(it => it.data.table)
+})
+
+const superTables = computed<GenTableModelInput[]>(() => {
+	return otherTables.value.filter(it => it.type == "SUPER_TABLE")
+})
+
+const superTableNames = computed<string[]>(() => {
+	return superTables.value.map(it => it.name)
 })
 
 const columnNames = computed<string[]>(() => {
 	return table.value.columns.map(it => it.name)
+})
+
+// 记录原始表类型
+let baseTableType = (props.table?.type === "SUPER_TABLE" ? "TABLE" : props.table?.type) ?? "TABLE"
+
+// 是否是上级表
+const isSuperTable = computed<boolean>({
+	get: () =>
+		table.value.type === "SUPER_TABLE",
+	set: (value: boolean) => {
+		if (value) table.value.type = "SUPER_TABLE"
+		else table.value.type = baseTableType
+	}
 })
 
 watch(() => table.value.columns, () => {
@@ -74,13 +95,24 @@ const handleColumnToPk = (pkIndex: number) => {
 	pkColumn.logicalDelete = false
 	pkColumn.businessKey = false
 
-	if (checkConfig.value.onlyOnePk) {
+	// 如果非 super table，主键变更将排除其他主键
+	if (!isSuperTable.value) {
 		table.value.columns.forEach((column, index) => {
 			if (index !== pkIndex && column.partOfPk) {
 				column.partOfPk = false
 				column.autoIncrement = false
 			}
 		})
+	}
+}
+
+const handleTableToSuperTable = () => {
+	table.value.type = "SUPER_TABLE"
+
+	for (let column of table.value.columns) {
+		if (column.partOfPk) {
+			column.partOfPk = false
+		}
 	}
 }
 
@@ -91,27 +123,37 @@ const handleSubmit = () => {
 		messageList.push('表名不得为空')
 	}
 
-	if (store.nodes
-		.filter(node => node.id !== props.id)
-		.map(it => it.getData().table.name)
-		.filter(name => name === table.value.name)
+	if (otherTables.value
+		.filter(it => it.name === table.value.name)
 		.length > 0) {
 		messageList.push('表名不可重复')
 	}
 
+	let filteredSuperTableName: GenTableModelInput_TargetOf_superTables[] = []
+	for (let superTable of table.value.superTables) {
+		if (!superTableNames.value
+			.includes(superTable.name)) {
+			messageList.push(`上级表【${superTable.name}】不存在或不是超级表，已自动移除`)
+		} else {
+			filteredSuperTableName.push(superTable)
+		}
+	}
+	table.value.superTables = filteredSuperTableName
+
+
 	for (let column of table.value.columns) {
 		if (column.enum !== undefined && !store._currentModel().enums.map(it => it.name).includes(column.enum.name)) {
-			messageList.push(`column ${column.name} 对应的 enum ${column.enum.name} 不存在，已自动移除`)
+			messageList.push(`列【${column.name}】对应枚举【${column.enum.name}】不存在，已自动移除`)
 			column.enum = undefined
 		}
 		if (!column.name) {
 			messageList.push('列名不得为空')
 		}
 		if (column.dataSize === null) {
-			messageList.push('column 的 dataSize 不可为空');
+			messageList.push(`列【${column.name}】的长度不可为空`);
 		}
 		if (column.numericPrecision === null) {
-			messageList.push('column 的 numericPrecision 不可为空');
+			messageList.push('列【${column.name}】的精度不可为空');
 		}
 	}
 
@@ -137,7 +179,7 @@ const handleSubmit = () => {
 		const newColumns = []
 		for (let column of index.columns) {
 			if (!columnNames.value.includes(column.name)) {
-				messageList.push(`索引 ${index.name} 引用列 ${column.name} 不存在，已自动移除`)
+				messageList.push(`索引【${index.name}】引用列【${column.name}】不存在，已自动移除`)
 			} else {
 				newColumns.push(column)
 			}
@@ -164,8 +206,10 @@ const handleSubmit = () => {
 
 	const pkColumns = table.value.columns.filter(column => column.partOfPk)
 
-	if (pkColumns.length !== 1 && checkConfig.value.onlyOnePk) {
-		messageList.push('实体模型主键列数量仅可为一')
+	if (pkColumns.length !== 1 && !isSuperTable.value) {
+		messageList.push('普通实体表仅可有一个主键')
+	} else if (pkColumns.length > 0 && isSuperTable.value) {
+		messageList.push('上级表不可拥有主键')
 	}
 
 	for (let pkColumn of pkColumns) {
@@ -202,12 +246,28 @@ const handleCancel = () => {
 				<el-input v-model="table.name" placeholder="name"></el-input>
 			</el-col>
 
-			<el-col :span="8">
+			<el-col :span="6">
 				<el-text class="comment">
 					<span>/* </span>
 					<span><el-input v-model="table.comment" placeholder="comment"></el-input></span>
 					<span> */</span>
 				</el-text>
+			</el-col>
+
+			<el-col :span="2">
+				<el-tooltip :content="`切换上级表/普通表`">
+					<el-checkbox v-model="isSuperTable" :label="table.type"
+								 @change="(value: boolean) => {if (value) handleTableToSuperTable()}"></el-checkbox>
+				</el-tooltip>
+			</el-col>
+
+			<el-col :span="10">
+				<el-select :model-value="table.superTables.map(it => it.name)" multiple style="width: 100%;"
+						   @change="(value: string[]) => {
+							   table.superTables = value.map(it => {return {name: it}})
+						   }">
+					<el-option v-for="name in superTableNames" :value="name"></el-option>
+				</el-select>
 			</el-col>
 
 			<el-col :span="18">
@@ -221,10 +281,6 @@ const handleCancel = () => {
 				<el-text style="line-height: 2.5em;" size="default">列配置</el-text>
 			</template>
 
-			<el-form-item label="唯一主键列" style="margin-bottom: 0.3em;">
-				<el-checkbox v-model="checkConfig.onlyOnePk"></el-checkbox>
-			</el-form-item>
-
 			<EditList
 				:columns="tableColumnColumns"
 				v-model:lines="table.columns"
@@ -237,22 +293,25 @@ const handleCancel = () => {
 				</template>
 
 				<template #columnType="{data, index}">
-					<el-tooltip :auto-close="500" content="主键">
+					<el-tooltip v-if="!isSuperTable" :auto-close="500" content="主键">
 						<el-checkbox v-model="data.partOfPk"
 									 class="cling-checkbox"
 									 @change="(value: boolean) => {if (value) handleColumnToPk(index)}"></el-checkbox>
 					</el-tooltip>
 
 					<el-tooltip v-if="data.partOfPk" :auto-close="500" content="自增">
-						<el-checkbox v-model="data.autoIncrement" class="cling-checkbox"></el-checkbox>
+						<el-checkbox v-model="data.autoIncrement"
+									 class="cling-checkbox"></el-checkbox>
 					</el-tooltip>
 
 					<el-tooltip v-if="!data.partOfPk" :auto-close="500" content="业务键">
-						<el-checkbox v-model="data.businessKey" class="cling-checkbox"></el-checkbox>
+						<el-checkbox v-model="data.businessKey"
+									 class="cling-checkbox"></el-checkbox>
 					</el-tooltip>
 
 					<el-tooltip v-if="!data.partOfPk" :auto-close="500" content="逻辑删除">
-						<el-checkbox v-model="data.logicalDelete" class="cling-checkbox"></el-checkbox>
+						<el-checkbox v-model="data.logicalDelete"
+									 class="cling-checkbox"></el-checkbox>
 					</el-tooltip>
 				</template>
 
