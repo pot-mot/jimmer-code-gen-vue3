@@ -117,10 +117,10 @@ const handleSubmit = async () => {
 	}
 
 	tempColumnDefaults.value.forEach((columnDefault) => {
-		if (columnDefault.dataSize === null) {
+		if (columnDefault.dataSize as number | null === null) {
 			messageList.push('ColumnDefault 的 dataSize 不可为空');
 		}
-		if (columnDefault.numericPrecision === null) {
+		if (columnDefault.numericPrecision as number | null === null) {
 			messageList.push('ColumnDefault 的 numericPrecision 不可为空');
 		}
 	})

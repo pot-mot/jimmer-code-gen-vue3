@@ -15,22 +15,24 @@ import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingSt
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {validateTable} from "@/shape/GenTableModelInput.ts";
 
-export const handleTableNodeClipBoardKeyEvent = (graph: Graph) => {
+export const useClipBoard = (graph: Graph) => {
     graph.bindKey(["ctrl+c", "command+c"], async () => {
-        await tableNodeCopy(graph)
+        await tableNodeCopy()
     })
 
     graph.bindKey(["ctrl+x", "command+x"], async () => {
-        await tableNodeCut(graph)
+        await tableNodeCut()
     })
 
     graph.bindKey(["ctrl+v", "command+v"], async () => {
-        await tableNodePaste(graph)
+        await tableNodePaste()
     })
 }
 
-export const tableNodeCopy = async (graph: Graph) => {
-    const store = useModelEditorStore()
+const tableNodeCopy = async () => {
+    const {GRAPH, MODEL} = useModelEditorStore()
+
+    const graph = GRAPH._graph()
 
     const nodes = graph.getSelectedCells()
         .filter(it => it.shape === TABLE_NODE && it.getData()?.table !== undefined)
@@ -46,8 +48,8 @@ export const tableNodeCopy = async (graph: Graph) => {
         .filter(it => it !== undefined)
 
     const enums =
-        store.isModelLoaded ?
-            store._currentModel().enums.filter(it => tableEnumNames.includes(it.name)) : []
+        MODEL.isLoaded ?
+            MODEL._model().enums.filter(it => tableEnumNames.includes(it.name)) : []
 
     const nodePositions = nodes.map(it => (it as Node).getPosition())
 
@@ -78,16 +80,19 @@ export const tableNodeCopy = async (graph: Graph) => {
     }
 }
 
-export const tableNodeCut = async (graph: Graph) => {
-    const {nodes, edges, enums} = await tableNodeCopy(graph)
-    graph.removeCells([...nodes, ...edges])
+const tableNodeCut = async () => {
+    const {REMOVE} = useModelEditorStore()
+    const {nodes, edges, enums} = await tableNodeCopy()
+    REMOVE.removeCells([...nodes, ...edges])
     return {nodes, edges, enums}
 }
 
-export const tableNodePaste = async (graph: Graph) => {
-    const store = useModelEditorStore()
+const tableNodePaste = async () => {
+    const {GRAPH, GRAPH_DATA} = useModelEditorStore()
     const loadingStore = useGlobalLoadingStore()
     const flag = loadingStore.start('clipBoard paste')
+
+    const graph = GRAPH._graph()
 
     graph.startBatch("paste")
 
@@ -101,8 +106,8 @@ export const tableNodePaste = async (graph: Graph) => {
         const validateErrors: any = []
 
         const options: TableLoadOptions = {
-            x: store.mousePosition.x,
-            y: store.mousePosition.y
+            x: GRAPH.mousePosition.x,
+            y: GRAPH.mousePosition.y
         }
 
         if (validateTable(value, (e) => validateErrors.push(e))) {
@@ -122,12 +127,12 @@ export const tableNodePaste = async (graph: Graph) => {
         } else if (validateGraphData(value, (e) => validateErrors.push(e))) {
             const cells = value.json.cells as Cell[]
             graph.parseJSON(cells)
-            res = store.loadGraphData(text, false)
+            res = GRAPH_DATA.loadGraphData(text, false)
         } else if (validateModelInput(value, (e) => validateErrors.push(e))) {
             const model = value as GenModelInput
 
             if (model.graphData) {
-                res = store.loadGraphData(model.graphData, false)
+                res = GRAPH_DATA.loadGraphData(model.graphData, false)
             }
             importEnums(model.enums)
         } else {

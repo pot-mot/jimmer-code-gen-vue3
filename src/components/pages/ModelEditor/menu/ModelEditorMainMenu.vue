@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import {Node, Edge} from '@antv/x6'
 import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import NodeItem from "./NodeItem.vue";
@@ -7,7 +8,7 @@ import Details from "@/components/global/common/Details.vue";
 import EnumItem from "@/components/pages/ModelEditor/menu/EnumItem.vue";
 import {computed, ref} from 'vue'
 
-const store = useModelEditorStore()
+const {GRAPH, MODEL, VIEW, LOAD} = useModelEditorStore()
 
 const EdgeShow_CONSTANTS = ["name", "table", "column"] as const
 
@@ -34,9 +35,9 @@ const formattedEdgeShowType = computed(() => {
 
 <template>
 	<div>
-		<el-button style="margin-bottom: 0.5em;" @click="store.dataSourceLoadMenuOpenState = true">从数据源导入
+		<el-button style="margin-bottom: 0.5em;" @click="LOAD.dataSourceLoadMenuOpenState = true">从数据源导入
 		</el-button>
-		<el-button style="margin-bottom: 0.5em;" @click="store.modelLoadMenuOpenState = true">从已持久化的模型导入
+		<el-button style="margin-bottom: 0.5em;" @click="LOAD.modelLoadMenuOpenState = true">从已持久化的模型导入
 		</el-button>
 
 		<Details open>
@@ -47,7 +48,7 @@ const formattedEdgeShowType = computed(() => {
 						style="margin-left: 0.5em;"
 						@click="ModelEditorEventBus.emit(
 							'createTable',
-							{x: store.getCenterPoint().x * 3/4, y: store.getCenterPoint().y * 3/4}
+							{x: VIEW.getCenterPoint().x * 3/4, y: VIEW.getCenterPoint().y * 3/4}
 							)"
 					>
 						创建表
@@ -56,9 +57,9 @@ const formattedEdgeShowType = computed(() => {
 			</template>
 
 			<div style="padding-bottom: 1em;">
-				<NodeItem v-for="node in store.nodes"
+				<NodeItem v-for="node in GRAPH.nodes"
 						  :key="node.id"
-						  :node="node"></NodeItem>
+						  :node="node as Node"></NodeItem>
 			</div>
 		</Details>
 
@@ -74,12 +75,12 @@ const formattedEdgeShowType = computed(() => {
 			</template>
 
 			<div style="padding-bottom: 1em;">
-				<EdgeItem v-for="edge in store.edges"
+				<EdgeItem v-for="edge in GRAPH.edges"
 						  :key="edge.id"
 						  :show-name="edgeShowType === 'name'"
 						  :show-table="edgeShowType === 'table'"
 						  :show-column="edgeShowType === 'column'"
-						  :edge="edge"></EdgeItem>
+						  :edge="edge as Edge"></EdgeItem>
 			</div>
 		</Details>
 
@@ -92,8 +93,8 @@ const formattedEdgeShowType = computed(() => {
 				</div>
 			</template>
 
-			<div style="padding-bottom: 1em;" v-if="store.isModelLoaded">
-				<EnumItem v-for="genEnum in store._currentModel().enums"
+			<div style="padding-bottom: 1em;" v-if="MODEL.isLoaded">
+				<EnumItem v-for="genEnum in MODEL._model().enums"
 						  :key="genEnum.name + genEnum.comment"
 						  :gen-enum="genEnum"></EnumItem>
 			</div>

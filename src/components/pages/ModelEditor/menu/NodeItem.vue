@@ -16,7 +16,7 @@ interface NodeItem {
 
 const props = defineProps<NodeItem>()
 
-const store = useModelEditorStore()
+const {GRAPH, SELECT, VIEW} = useModelEditorStore()
 
 const table = ref<GenTableModelInput>()
 
@@ -34,9 +34,9 @@ watch(() => props.node, (node) => {
 
 const handleClickLabel = (e: MouseEvent) => {
 	if (e.ctrlKey) {
-		store.select(props.node.id)
+		SELECT.select(props.node.id)
 	} else {
-		store.focus(props.node.id)
+		VIEW.focus(props.node.id)
 	}
 }
 
@@ -45,13 +45,13 @@ const handleEdit = () => {
 }
 
 const handleDelete = () => {
-	deleteConfirm(`关联【${table.value?.name}】`, () => {
+	deleteConfirm(`表【${table.value?.name}】`, () => {
 		ModelEditorEventBus.emit('removeTable', props.node.id)
 	})
 }
 
 const isSelected = computed(() => {
-	return store.selectedNodeMap.has(props.node.id)
+	return GRAPH.selectedNodeMap.has(props.node.id)
 })
 </script>
 

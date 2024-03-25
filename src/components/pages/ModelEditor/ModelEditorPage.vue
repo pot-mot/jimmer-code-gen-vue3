@@ -19,7 +19,7 @@ import {ModelMenuEvents} from "@/components/business/model/menu/ModelMenuEvents.
 import TableDialogs from "@/components/pages/ModelEditor/dialogs/table/TableDialogs.vue";
 import EnumDialogs from "@/components/pages/ModelEditor/dialogs/enum/EnumDialogs.vue";
 
-const store = useModelEditorStore()
+const {MODEL, LOAD, EDIT} = useModelEditorStore()
 
 const loadingStore = useGlobalLoadingStore()
 
@@ -40,7 +40,7 @@ onMounted(async () => {
 			return
 		}
 
-		store.loadCurrentModel(model)
+		MODEL.load(model)
 	} catch (e) {
 		sendMessage('模型解析出现问题', 'error', e)
 		await router.replace("/models")
@@ -60,13 +60,13 @@ watch(() => dataSourceLoadMenu.value, () => {
 
 	eventBus.on('clickSchema', async ({id}) => {
 		const flag = loadingStore.start('ModelEditorPage syncClickSchemaEvent')
-		await store.loadSchema(id)
+		await LOAD.loadSchema(id)
 		loadingStore.stop(flag)
 	})
 
 	eventBus.on('clickTable', async ({id}) => {
 		const flag = loadingStore.start('ModelEditorPage syncClickTableEvent')
-		await store.loadTable(id)
+		await LOAD.loadTable(id)
 		loadingStore.stop(flag)
 	})
 }, {immediate: true})
@@ -83,13 +83,13 @@ watch(() => modelLoadMenu.value, () => {
 
 	eventBus.on('clickModel', async ({id}) => {
 		const flag = loadingStore.start('ModelEditorPage syncClickModelEvent')
-		await store.loadModel(id)
+		await LOAD.loadModel(id)
 		loadingStore.stop(flag)
 	})
 
 	eventBus.on('clickTable', async ({id}) => {
 		const flag = loadingStore.start('ModelEditorPage syncClickTableEvent')
-		await store.loadTable(id)
+		await LOAD.loadTable(id)
 		loadingStore.stop(flag)
 	})
 }, {immediate: true})
@@ -107,22 +107,22 @@ watch(() => modelLoadMenu.value, () => {
 		</template>
 	</LeftTopBottomLayout>
 
-	<DragDialog v-model="store.dataSourceLoadMenuOpenState" :init-w="500" :init-x="100" :modal="false"
+	<DragDialog v-model="LOAD.dataSourceLoadMenuOpenState" :init-w="500" :init-x="100" :modal="false"
 				:init-y="10" :init-h="600" can-resize>
 		<DataSourceMenu ref="dataSourceLoadMenu"></DataSourceMenu>
 	</DragDialog>
 
-	<DragDialog v-model="store.modelLoadMenuOpenState" :init-w="500" :init-x="100" :modal="false"
+	<DragDialog v-model="LOAD.modelLoadMenuOpenState" :init-w="500" :init-x="100" :modal="false"
 				:init-y="10" :init-h="600" can-resize>
 		<ModelMenu ref="modelLoadMenu"></ModelMenu>
 	</DragDialog>
 
-	<ModelDialog v-if="store.isModelLoaded"
-				 v-model="store.modelEditDialogOpenState"
-				 :model="cloneDeep(store._currentModel())"
+	<ModelDialog v-if="MODEL.isLoaded"
+				 v-model="EDIT.modelEditDialogOpenState"
+				 :model="cloneDeep(MODEL._model())"
 				 edit-value
-				 @cancel="store.handleCancelModelEdit"
-				 @submit="store.handleSubmitModelEdit"></ModelDialog>
+				 @cancel="EDIT.handleCancel"
+				 @submit="EDIT.handleSubmit"></ModelDialog>
 
 	<TableDialogs></TableDialogs>
 

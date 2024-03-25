@@ -42,7 +42,7 @@ import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/business/modelEdito
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
 
-const store = useModelEditorStore()
+const {GRAPH} = useModelEditorStore()
 
 const loadingStore = useGlobalLoadingStore()
 
@@ -61,9 +61,9 @@ let wrapperResizeObserver
 onMounted(async () => {
 	node.value = getNode()
 
-	if (!node.value || !store.isLoaded) return
+	if (!node.value || !GRAPH.isLoaded) return
 
-	const graph = store._graph()
+	const graph = GRAPH._graph()
 
 	if (!node.value || node.value.shape !== TABLE_NODE) {
 		sendMessage('Node 获取失败', 'error')
@@ -103,7 +103,7 @@ onMounted(async () => {
 	wrapperResizeObserver.observe(container.value!)
 
 	const resizePort = () => {
-		if (!node.value || !store.isLoaded) return
+		if (!node.value || !GRAPH.isLoaded) return
 
 		graph.startBatch("Sync table_node port")
 
@@ -123,7 +123,7 @@ onMounted(async () => {
 
 	// 根据数据更新同步 port 和 edge
 	watch(() => table.value, (newTable) => {
-		if (!node.value || !newTable || !store.isLoaded) return
+		if (!node.value || !newTable || !GRAPH.isLoaded) return
 
 		const flag = loadingStore.start('TableNode syncPortAndEdgeByData')
 

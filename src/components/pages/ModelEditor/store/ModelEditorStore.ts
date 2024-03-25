@@ -1,5 +1,4 @@
-import {defineStore} from "pinia";
-import {CommonGraphOperations, useCommonGraphOperations} from "@/components/global/graphEditor";
+import {GraphLoadState, useGraphLoadState} from "@/components/global/graphEditor/load/GraphLoadState.ts";
 import {ModelEditorEventBus} from "./ModelEditorEventBus.ts";
 import {sendMessage} from "@/message/message.ts";
 import {Ref, ref} from "vue";
@@ -21,25 +20,39 @@ import {
     useTableDialogsStore
 } from "@/components/pages/ModelEditor/dialogs/table/TableDialogsStore.ts";
 import {unStyleAll} from "@/components/pages/ModelEditor/graph/highlight.ts";
-import {GraphEditorData} from "@/components/global/graphEditor/data/graphData.ts";
+import {
+    GraphDataOperation,
+    GraphEditorData,
+    useGraphDataOperation
+} from "@/components/global/graphEditor/data/graphData.ts";
 import {useDebugStore} from "@/debug/debugStore.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {Node, Edge} from '@antv/x6';
-import {getCenterPoint} from "@/components/global/graphEditor/view/viewOperation.ts";
+import {getCenterPoint, useViewOperation, ViewOperation} from "@/components/global/graphEditor/view/viewOperation.ts";
 import {syncEnumNameForTables} from "@/components/pages/ModelEditor/sync/syncEnum.ts";
 import {syncSuperTableNameForTables} from "@/components/pages/ModelEditor/sync/syncSuperTable.ts";
+import {SelectOperation, useSelectOperation} from "@/components/global/graphEditor/selection/selectOperation.ts";
+import {HistoryOperation, useHistoryOperations} from "@/components/global/graphEditor/history/useHistory.ts";
+import {RemoveOperation, useRemoveOperation} from "@/components/global/graphEditor/remove/removeOperation.ts";
+import {defineStore} from "pinia";
 
 interface CurrentModelState {
-    _currentModel: () => GenModelView
-    isModelLoaded: Ref<boolean>
-    loadCurrentModel: (model: GenModelView) => void
+    _model: () => GenModelView
+    isLoaded: Ref<boolean>
+    load: (model: GenModelView) => void
 }
 
-interface ModelEditorDialogState {
+interface ModelLoadOperation {
+    loadModel: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
+    loadSchema: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
+    loadTable: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
+}
+
+interface ModelEditDialogState {
     modelEditDialogOpenState: Ref<boolean>
-    handleStartEditModel: () => void
-    handleCancelModelEdit: () => void
-    handleSubmitModelEdit: (model: GenModelInput) => void
+    handleEdit: () => void
+    handleCancel: () => void
+    handleSubmit: (model: GenModelInput) => void
 }
 
 interface DataSourceLoadDialogState {
@@ -50,398 +63,438 @@ interface ModelLoadDialogState {
     modelLoadMenuOpenState: Ref<boolean>,
 }
 
-export interface ModelEditorStore extends CommonGraphOperations,
-    CurrentModelState,
-    ModelEditorDialogState,
-    DataSourceLoadDialogState,
-    ModelLoadDialogState {
-    loadModel: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
-    loadSchema: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
-    loadTable: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
+export interface ModelEditorStore {
+    GRAPH: GraphLoadState
+
+    MODEL: CurrentModelState
+    EDIT: ModelEditDialogState
+    LOAD: ModelLoadOperation & DataSourceLoadDialogState & ModelLoadDialogState
+
+    SELECT: SelectOperation
+    VIEW: ViewOperation
+    GRAPH_DATA: GraphDataOperation
+    HISTORY: HistoryOperation
+    REMOVE: RemoveOperation
 }
 
-export const useModelEditorStore =
-    defineStore(
-        'ModelEditorGraph',
-        (): ModelEditorStore => {
-            const commonOperations = useCommonGraphOperations()
+export const useModelEditorStore = defineStore(
+    'ModelEditor',
+    (): ModelEditorStore => {
+        const GRAPH = useGraphLoadState()
 
-            const {_graph} = commonOperations
+        const {_graph} = GRAPH
 
-            // 在获取数据时调整
-            const getGraphData = () => {
-                const graphData =
-                    JSON.parse(commonOperations.getGraphData()) as GraphEditorData
-                graphData.json.cells.forEach(cell => {
-                    if (cell.shape === TABLE_NODE) {
-                        cell.data = {table: cell.data.table}
-                    }
-                    if (cell.shape === ASSOCIATION_EDGE) {
-                        cell.tools = undefined
-                        cell.data = {association: cell.data.association}
-                    }
-                })
-                return JSON.stringify(graphData)
-            }
+        const GRAPH_DATA = useGraphDataOperation(_graph)
 
-            const loadGraphData = (jsonStr: string, reset: boolean = false) => {
-                let validateErrors
-                try {
-                    if (jsonStr && validateGraphData(JSON.parse(jsonStr), e => validateErrors = e)) {
-                        unStyleAll(_graph())
-                        return commonOperations.loadGraphData(jsonStr, reset)
-                    } else {
-                        const graph = commonOperations._graph()
-                        graph.removeCells(graph.getCells())
-                        return {nodes: [], edges: []}
-                    }
-                } catch (e) {
-                    sendMessage(`图加载错误: ${e}`, "error", validateErrors ? validateErrors : {
-                        error: e,
-                        jsonStr
-                    })
+        const SELECT = useSelectOperation(_graph)
+
+        const VIEW = useViewOperation(_graph)
+
+        const HISTORY = useHistoryOperations(_graph)
+
+        const REMOVE = useRemoveOperation(_graph, (_, cells) => {
+            cells.forEach(cell => {
+                if (cell.isNode() && cell.shape === TABLE_NODE) {
+                    ModelEditorEventBus.emit('removeTable', cell.id)
+                } else if (cell.isEdge() && cell.shape === ASSOCIATION_EDGE) {
+                    ModelEditorEventBus.emit('removeAssociation', cell.id)
+                }
+            })
+        })
+
+        // 在获取数据时调整
+        const getGraphData = () => {
+            const graphData =
+                JSON.parse(GRAPH_DATA.getGraphData()) as GraphEditorData
+            graphData.json.cells.forEach(cell => {
+                if (cell.shape === TABLE_NODE) {
+                    cell.data = {table: cell.data.table}
+                }
+                if (cell.shape === ASSOCIATION_EDGE) {
+                    cell.tools = undefined
+                    cell.data = {association: cell.data.association}
+                }
+            })
+            return JSON.stringify(graphData)
+        }
+
+        const loadGraphData = (jsonStr: string, reset: boolean = false) => {
+            let validateErrors
+            try {
+                if (jsonStr && validateGraphData(JSON.parse(jsonStr), e => validateErrors = e)) {
+                    unStyleAll(_graph())
+                    return GRAPH_DATA.loadGraphData(jsonStr, reset)
+                } else {
+                    const graph = _graph()
+                    graph.removeCells(graph.getCells())
                     return {nodes: [], edges: []}
                 }
+            } catch (e) {
+                sendMessage(`图加载错误: ${e}`, "error", validateErrors ? validateErrors : {
+                    error: e,
+                    jsonStr
+                })
+                return {nodes: [], edges: []}
             }
+        }
 
-            const currentModel = ref<GenModelView>()
+        const OVERRIDE_GRAPH_DATA: GraphDataOperation = {
+            getGraphData,
+            loadGraphData
+        }
 
-            const isModelLoaded = ref(false)
+        const currentModel = ref<GenModelView>()
 
-            const _currentModel = (): GenModelView => {
-                if (!currentModel.value) {
-                    sendMessage('当前模型不存在', 'error')
-                    throw currentModel
-                }
-                return currentModel.value
+        const isLoaded = ref(false)
+
+        const _model = (): GenModelView => {
+            if (!currentModel.value) {
+                sendMessage('当前模型不存在', 'error')
+                throw currentModel
             }
+            return currentModel.value
+        }
 
-            const loadCurrentModel = (model: GenModelView) => {
-                const contextStore = useGenConfigContextStore()
+        const load = (model: GenModelView) => {
+            const contextStore = useGenConfigContextStore()
 
-                contextStore.merge(model)
+            contextStore.merge(model)
 
-                currentModel.value = model
+            currentModel.value = model
 
-                isModelLoaded.value = true
+            isLoaded.value = true
 
-                if (commonOperations.isLoaded) {
+            if (GRAPH.isLoaded) {
+                loadGraphData(model.graphData, true)
+            } else {
+                GRAPH.onLoaded(() => {
                     loadGraphData(model.graphData, true)
-                } else {
-                    commonOperations.onLoaded(() => {
-                        loadGraphData(model.graphData, true)
-                    })
-                }
+                })
             }
+        }
+
+        const MODEL: CurrentModelState = {
+            _model,
+            isLoaded,
+            load,
+        }
 
 
-            const loadingStore = useGlobalLoadingStore()
+        const loadingStore = useGlobalLoadingStore()
 
-            const debugStore = useDebugStore()
+        const debugStore = useDebugStore()
 
 
-            /**
-             * 模型编辑对话框相关
-             */
+        /**
+         * 模型编辑对话框相关
+         */
 
-            const modelEditDialogOpenState = ref(false)
+        const modelEditDialogOpenState = ref(false)
 
-            const handleStartEditModel = () => {
-                _currentModel().graphData = getGraphData()
-                modelEditDialogOpenState.value = true
-            }
+        const handleEdit = () => {
+            _model().graphData = getGraphData()
+            modelEditDialogOpenState.value = true
+        }
 
-            const handleCancelModelEdit = () => {
-                modelEditDialogOpenState.value = false
-            }
+        const handleCancel = () => {
+            modelEditDialogOpenState.value = false
+        }
 
-            const handleSubmitModelEdit = async (model: GenModelInput) => {
-                const flag = loadingStore.start('ModelEditorStore.handleSubmitModelEdit')
+        const handleSubmit = async (model: GenModelInput) => {
+            const flag = loadingStore.start('ModelEditorStore.handleSubmitModelEdit')
 
-                try {
-                    const id = await api.modelService.save({body: model})
+            try {
+                const id = await api.modelService.save({body: model})
 
-                    isModelLoaded.value = false
+                isLoaded.value = false
 
-                    const savedModel = (await api.modelService.get({id}))!
+                const savedModel = (await api.modelService.get({id}))!
 
-                    if (!savedModel) {
-                        sendMessage(`模型保存失败，保存返回模型不存在`, 'error')
-                        return
-                    }
-
-                    handleCancelModelEdit()
-
-                    // 同步数据
-                    loadCurrentModel(savedModel)
-
-                    sendMessage("模型保存成功", "success")
-                } catch (e) {
-                    sendMessage(`模型保存失败，原因：${e}`, 'error', e)
+                if (!savedModel) {
+                    sendMessage(`模型保存失败，保存返回模型不存在`, 'error')
+                    return
                 }
 
-                loadingStore.stop(flag)
+                handleCancel()
+
+                // 同步数据
+                MODEL.load(savedModel)
+
+                sendMessage("模型保存成功", "success")
+            } catch (e) {
+                sendMessage(`模型保存失败，原因：${e}`, 'error', e)
             }
 
+            loadingStore.stop(flag)
+        }
 
-            /**
-             * 外部数据导入相关
-             */
+        const EDIT: ModelEditDialogState = {
+            modelEditDialogOpenState,
+            handleEdit,
+            handleCancel,
+            handleSubmit,
+        }
 
-            const dataSourceLoadMenuOpenState = ref(false)
 
-            const modelLoadMenuOpenState = ref(false)
+        /**
+         * 外部数据导入相关
+         */
 
-            /**
-             * 导入表的基本函数，接收 tableView 并查询获得 association
-             */
-            const loadTableViews = async (tableViews: GenTableColumnsView[]) => {
-                const graph = _graph()
+        const dataSourceLoadMenuOpenState = ref(false)
 
-                const {tables, associations} =
-                    await produceTableViewsToInputs(tableViews)
+        const modelLoadMenuOpenState = ref(false)
 
-                const {nodes, edges} =
-                    loadModelInputs(
-                        graph,
-                        tables,
-                        associations,
-                        getCenterPoint(graph)
-                    )
+        /**
+         * 导入表的基本函数，接收 tableView 并查询获得 association
+         */
+        const loadTableViews = async (tableViews: GenTableColumnsView[]) => {
+            const graph = _graph()
 
-                debugStore.log('HISTORY', 'loadTableViews', {tables, associations, nodes, edges})
+            const {tables, associations} =
+                await produceTableViewsToInputs(tableViews)
 
-                await syncTimeout(100 + nodes.length * 30 + edges.length * 20)
+            const {nodes, edges} =
+                loadModelInputs(
+                    graph,
+                    tables,
+                    associations,
+                    getCenterPoint(graph)
+                )
 
-                if (nodes.length === 1) {
-                    commonOperations.focus(nodes[0])
-                } else {
-                    graph.resetSelection([
-                        ...nodes.map(it => it.id),
-                        ...edges.map(it => it.id)
-                    ])
-                    commonOperations.layout()
-                    commonOperations.fit()
+            debugStore.log('HISTORY', 'loadTableViews', {tables, associations, nodes, edges})
+
+            await syncTimeout(100 + nodes.length * 30 + edges.length * 20)
+
+            if (nodes.length === 1) {
+                VIEW.focus(nodes[0])
+            } else {
+                graph.resetSelection([
+                    ...nodes.map(it => it.id),
+                    ...edges.map(it => it.id)
+                ])
+                VIEW.layout()
+                VIEW.fit()
+            }
+
+            return {nodes, edges}
+        }
+
+        /**
+         * 向画布导入 model
+         * @param id model id
+         */
+        const loadModel = async (id: number) => {
+            const flag = loadingStore.start('ModelEditorStore.loadModel')
+
+            const tables = await api.tableService.queryColumnsView({
+                body: {
+                    modelIds: [id]
                 }
+            })
+            const res = await loadTableViews(tables)
 
-                return {nodes, edges}
-            }
+            loadingStore.stop(flag)
 
-            /**
-             * 向画布导入 model
-             * @param id model id
-             */
-            const loadModel = async (id: number) => {
-                const flag = loadingStore.start('ModelEditorStore.loadModel')
+            return res
+        }
 
-                const tables = await api.tableService.queryColumnsView({
-                    body: {
-                        modelIds: [id]
-                    }
-                })
-                const res = await loadTableViews(tables)
+        /**
+         * 向画布导入 schema
+         * @param id schema id
+         */
+        const loadSchema = async (id: number) => {
+            const flag = loadingStore.start('ModelEditorStore.loadSchema')
 
-                loadingStore.stop(flag)
+            const tables = await api.tableService.queryColumnsView({
+                body: {
+                    schemaIds: [id]
+                }
+            })
+            const res = await loadTableViews(tables)
 
-                return res
-            }
+            loadingStore.stop(flag)
 
-            /**
-             * 向画布导入 schema
-             * @param id schema id
-             */
-            const loadSchema = async (id: number) => {
-                const flag = loadingStore.start('ModelEditorStore.loadSchema')
+            return res
+        }
 
-                const tables = await api.tableService.queryColumnsView({
-                    body: {
-                        schemaIds: [id]
-                    }
-                })
-                const res = await loadTableViews(tables)
+        /**
+         * 向画布导入 table
+         * @param id tableId
+         */
+        const loadTable = async (id: number) => {
+            const flag = loadingStore.start('ModelEditorStore.loadTables')
 
-                loadingStore.stop(flag)
+            const tables = await api.tableService.queryColumnsView({
+                body: {
+                    ids: [id]
+                }
+            })
+            const res = await loadTableViews(tables)
 
-                return res
-            }
+            loadingStore.stop(flag)
 
-            /**
-             * 向画布导入 table
-             * @param id tableId
-             */
-            const loadTable = async (id: number) => {
-                const flag = loadingStore.start('ModelEditorStore.loadTables')
+            return res
+        }
 
-                const tables = await api.tableService.queryColumnsView({
-                    body: {
-                        ids: [id]
-                    }
-                })
-                const res = await loadTableViews(tables)
-
-                loadingStore.stop(flag)
-
-                return res
-            }
+        const LOAD = {
+            dataSourceLoadMenuOpenState,
+            modelLoadMenuOpenState,
+            loadModel,
+            loadSchema,
+            loadTable,
+        }
 
 
-            /**
-             * 在 ModelEditorEventBus 发生变更时，记录入 debugStore
-             */
-            ModelEditorEventBus.on('*', (type, event) => {
+        /**
+         * 在 ModelEditorEventBus 发生变更时，记录入 debugStore
+         */
+        ModelEditorEventBus
+            .on('*', (type, event) => {
                 debugStore.log('HISTORY', type, event)
             })
 
 
-            /**
-             * 表编辑对话框相关
-             */
+        /**
+         * 表编辑对话框相关
+         */
 
-            const tableDialogsStore = useTableDialogsStore()
+        const tableDialogsStore = useTableDialogsStore()
 
-            const tableCreateOption = ref<TableLoadOptions>()
+        const tableCreateOption = ref<TableLoadOptions>()
 
-            ModelEditorEventBus.on('createTable', (option) => {
-                tableDialogsStore.open(TABLE_CREATE_PREFIX + Date.now(), getDefaultTable())
-                tableCreateOption.value = option
-            })
+        ModelEditorEventBus.on('createTable', (option) => {
+            tableDialogsStore.open(TABLE_CREATE_PREFIX + Date.now(), getDefaultTable())
+            tableCreateOption.value = option
+        })
 
-            ModelEditorEventBus.on('createdTable', ({id, table}) => {
-                const graph = commonOperations._graph()
+        ModelEditorEventBus.on('createdTable', ({id, table}) => {
+            const graph = _graph()
 
-                if (!graph) return
+            if (!graph) return
 
-                const node = loadTableModelInputs(
-                    graph,
-                    [table],
-                    tableCreateOption.value
-                ).nodes[0]
+            const node = loadTableModelInputs(
+                graph,
+                [table],
+                tableCreateOption.value
+            ).nodes[0]
 
-                tableCreateOption.value = undefined
+            tableCreateOption.value = undefined
 
-                if (node) {
-                    tableDialogsStore.close(id)
-
-                    setTimeout(() => {
-                        commonOperations.select(node)
-                    }, 200)
-                }
-            })
-
-            ModelEditorEventBus.on('modifyTable', ({id, table}) => {
-                tableDialogsStore.open(id, cloneDeep(table))
-            })
-
-            ModelEditorEventBus.on('modifiedTable', ({id, table}) => {
-                const graph = commonOperations._graph()
-
-                if (!graph) return
-
-                const cell = graph.getCellById(id)
-                if (!cell || !cell.isNode()) {
-                    sendMessage(`更改节点【${id}】失败，无法被找到`, 'error')
-                } else {
-                    const oldTable = cell.getData().table
-
-                    // 当高级表被修改时，调整其他表中的 superTables
-                    if (oldTable.type === "SUPER_TABLE") {
-                        if (table.type === "SUPER_TABLE") {
-                            syncSuperTableNameForTables(_graph(), oldTable.name, table.name)
-                        } else {
-                            syncSuperTableNameForTables(_graph(), oldTable.name, undefined)
-                        }
-                    }
-                    updateTableNodeData(cell, table)
-                }
+            if (node) {
                 tableDialogsStore.close(id)
-            })
 
-            ModelEditorEventBus.on('removeTable', (id) => {
-                const graph = commonOperations._graph()
+                setTimeout(() => {
+                    SELECT.select(node)
+                }, 200)
+            }
+        })
 
-                const cell = graph.getCellById(id)
-                if (!cell || !cell.isNode()) {
-                    sendMessage(`删除节点【${id}】失败，节点不存在或目标不是节点`, 'error')
-                } else {
-                    if (cell.shape === TABLE_NODE && cell.getData().table) {
-                        const table = cell.getData().table as GenTableModelInput
-                        // 当高级表被删除时，调整其他表中的 superTables
-                        if (table.type === "SUPER_TABLE") {
-                            syncSuperTableNameForTables(_graph(), table.name, undefined)
-                        }
+        ModelEditorEventBus.on('modifyTable', ({id, table}) => {
+            tableDialogsStore.open(id, cloneDeep(table))
+        })
+
+        ModelEditorEventBus.on('modifiedTable', ({id, table}) => {
+            const graph = _graph()
+
+            if (!graph) return
+
+            const cell = graph.getCellById(id)
+            if (!cell || !cell.isNode()) {
+                sendMessage(`更改节点【${id}】失败，无法被找到`, 'error')
+            } else {
+                const oldTable = cell.getData().table
+
+                // 当高级表被修改时，调整其他表中的 superTables
+                if (oldTable.type === "SUPER_TABLE") {
+                    if (table.type === "SUPER_TABLE") {
+                        syncSuperTableNameForTables(graph, oldTable.name, table.name)
+                    } else {
+                        syncSuperTableNameForTables(graph, oldTable.name, undefined)
                     }
                 }
-
-                graph.removeNode(id)
-            })
-
-            ModelEditorEventBus.on('removeAssociation', (id) => {
-                commonOperations._graph().removeEdge(id)
-            })
-
-
-            /**
-             * 枚举编辑对话框相关
-             */
-
-            const enumDialogsStore = useEnumDialogsStore()
-
-            ModelEditorEventBus.on('createEnum', () => {
-                enumDialogsStore.open("", getDefaultEnum())
-            })
-
-            ModelEditorEventBus.on('createdEnum', (genEnum) => {
-                _currentModel().enums.push(genEnum)
-                enumDialogsStore.close("")
-            })
-
-            ModelEditorEventBus.on('modifyEnum', ({name, genEnum}) => {
-                enumDialogsStore.open(name, cloneDeep(genEnum))
-            })
-
-            ModelEditorEventBus.on('modifiedEnum', ({name, genEnum}) => {
-                const currentModel = _currentModel()
-
-                currentModel.enums = currentModel.enums.filter(it => it.name !== name)
-                currentModel.enums.push(genEnum)
-
-                syncEnumNameForTables(_graph(), name, genEnum.name)
-
-                enumDialogsStore.close(name)
-            })
-
-            ModelEditorEventBus.on('removeEnum', (name) => {
-                const currentModel = _currentModel()
-
-                currentModel.enums = currentModel.enums.filter(it => it.name !== name)
-
-                syncEnumNameForTables(_graph(), name, undefined)
-            })
-
-            /**
-             * 最终导出
-             */
-            return {
-                ...commonOperations,
-
-                getGraphData,
-                loadGraphData,
-
-                _currentModel,
-                isModelLoaded,
-                loadCurrentModel,
-
-                modelEditDialogOpenState,
-                handleStartEditModel,
-                handleCancelModelEdit,
-                handleSubmitModelEdit,
-
-                dataSourceLoadMenuOpenState,
-                modelLoadMenuOpenState,
-
-                loadModel,
-                loadSchema,
-                loadTable,
+                updateTableNodeData(cell, table)
             }
+            tableDialogsStore.close(id)
+        })
+
+        ModelEditorEventBus.on('removeTable', (id) => {
+            const graph = _graph()
+
+            const cell = graph.getCellById(id)
+            if (!cell || !cell.isNode()) {
+                sendMessage(`删除节点【${id}】失败，节点不存在或目标不是节点`, 'error')
+            } else {
+                if (cell.shape === TABLE_NODE && cell.getData().table) {
+                    const table = cell.getData().table as GenTableModelInput
+                    // 当高级表被删除时，调整其他表中的 superTables
+                    if (table.type === "SUPER_TABLE") {
+                        syncSuperTableNameForTables(graph, table.name, undefined)
+                    }
+                }
+            }
+
+            graph.removeNode(id)
+        })
+
+        ModelEditorEventBus.on('removeAssociation', (id) => {
+            _graph().removeEdge(id)
+        })
+
+
+        /**
+         * 枚举编辑对话框相关
+         */
+
+        const enumDialogsStore = useEnumDialogsStore()
+
+        ModelEditorEventBus.on('createEnum', () => {
+            enumDialogsStore.open("", getDefaultEnum())
+        })
+
+        ModelEditorEventBus.on('createdEnum', (genEnum) => {
+            _model().enums.push(genEnum)
+            enumDialogsStore.close("")
+        })
+
+        ModelEditorEventBus.on('modifyEnum', ({name, genEnum}) => {
+            enumDialogsStore.open(name, cloneDeep(genEnum))
+        })
+
+        ModelEditorEventBus.on('modifiedEnum', ({name, genEnum}) => {
+            const currentModel = _model()
+
+            currentModel.enums = currentModel.enums.filter(it => it.name !== name)
+            currentModel.enums.push(genEnum)
+
+            syncEnumNameForTables(_graph(), name, genEnum.name)
+
+            enumDialogsStore.close(name)
+        })
+
+        ModelEditorEventBus.on('removeEnum', (name) => {
+            const currentModel = _model()
+
+            currentModel.enums = currentModel.enums.filter(it => it.name !== name)
+
+            syncEnumNameForTables(_graph(), name, undefined)
+        })
+
+        /**
+         * 最终导出
+         */
+        return {
+            GRAPH,
+
+            GRAPH_DATA: OVERRIDE_GRAPH_DATA,
+
+            SELECT,
+            VIEW,
+            HISTORY,
+            REMOVE,
+
+            MODEL,
+            EDIT,
+            LOAD
         }
-    )
+    }
+)

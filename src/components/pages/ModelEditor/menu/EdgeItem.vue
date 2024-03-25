@@ -23,7 +23,7 @@ interface EdgeItem {
 
 const props = defineProps<EdgeItem>()
 
-const store = useModelEditorStore()
+const {GRAPH, VIEW, SELECT} = useModelEditorStore()
 
 const association = ref<GenAssociationModelInput>()
 
@@ -41,9 +41,9 @@ watch(() => props.edge, (edge) => {
 
 const handleClickName = (e: MouseEvent) => {
 	if (e.ctrlKey) {
-		store.select(props.edge.id)
+		SELECT.select(props.edge.id)
 	} else {
-		store.focus(props.edge.id)
+		VIEW.focus(props.edge.id)
 	}
 }
 
@@ -78,7 +78,7 @@ const handleEdit = () => {
 }
 
 const isSelected = computed(() => {
-	return store.selectedEdgeMap.has(props.edge.id)
+	return GRAPH.selectedEdgeMap.has(props.edge.id)
 })
 </script>
 
@@ -100,7 +100,7 @@ const isSelected = computed(() => {
 			</template>
 
 			<template v-if="showColumn || showTable">
-				<el-button link @click="store.focus(edge.getSourceCellId())">
+				<el-button link @click="VIEW.focus(edge.getSourceCellId())">
 					{{ showColumn ? sourceLabel : association.sourceTable.name }}
 				</el-button>
 				<span>
@@ -108,7 +108,7 @@ const isSelected = computed(() => {
 									 :fake="association.fake"
 									 style="transform: translateY(0.3em)"></AssociationIcon>
 				</span>
-				<el-button link @click="store.focus(edge.getTargetCellId())">
+				<el-button link @click="VIEW.focus(edge.getTargetCellId())">
 					{{ showColumn ? targetLabel : association.targetTable.name}}
 				</el-button>
 			</template>

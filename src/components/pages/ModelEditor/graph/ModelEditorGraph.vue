@@ -2,7 +2,7 @@
 	<div ref="wrapper" class="model-editor-graph" :class="isDragging ? '' : 'non-drag'">
 		<div ref="container"></div>
 
-		<ul v-if="store.isLoaded" class="toolbar left-top">
+		<ul v-if="GRAPH.isLoaded" class="toolbar left-top">
 			<li>
 				<el-tooltip content="保存模型 [Ctrl + s]">
 					<el-button :icon="SaveIcon" @click="handleSaveModel"></el-button>
@@ -11,31 +11,31 @@
 
 			<li>
 				<el-tooltip content="编辑模型">
-					<el-button :icon="EditPen" @click="store.handleStartEditModel"></el-button>
+					<el-button :icon="EditPen" @click="EDIT.handleEdit"></el-button>
 				</el-tooltip>
 			</li>
 
 			<li>
-				<el-tooltip :disabled="!store.canUndo" content="撤回 [Ctrl + z]">
-					<el-button :disabled="!store.canUndo" :icon="UndoIcon" @click="store.undo()"></el-button>
+				<el-tooltip :disabled="!GRAPH.canUndo" content="撤回 [Ctrl + z]">
+					<el-button :disabled="!GRAPH.canUndo" :icon="UndoIcon" @click="HISTORY.undo()"></el-button>
 				</el-tooltip>
-				<el-tooltip :disabled="!store.canRedo" content="重做 [Ctrl + Shift + z]">
-					<el-button :disabled="!store.canRedo" :icon="RedoIcon" @click="store.redo()"></el-button>
+				<el-tooltip :disabled="!GRAPH.canRedo" content="重做 [Ctrl + Shift + z]">
+					<el-button :disabled="!GRAPH.canRedo" :icon="RedoIcon" @click="HISTORY.redo()"></el-button>
 				</el-tooltip>
 			</li>
 
 			<li>
 				<el-tooltip content="整理布局">
 					<el-button :icon="LayoutIcon" class="cling-right" @click="() => {
-						store.layout()
+						VIEW.layout()
 						if (graph.isSelectionEmpty()) {
-							store.fit()
+							VIEW.fit()
 						}
 					}"></el-button>
 				</el-tooltip>
-				<el-select v-model="store.layoutDirection" class="cling-left" size="small"
+				<el-select v-model="VIEW.layoutDirection" class="cling-left" size="small"
 						   style="width: 4em"
-						   @change="store.layout()">
+						   @change="VIEW.layout()">
 					<el-option label="→" value="LR">左至右</el-option>
 					<el-option label="←" value="RL">右至左</el-option>
 					<el-option label="↓" value="TB">上至下</el-option>
@@ -45,32 +45,32 @@
 
 			<li>
 				<el-tooltip content="适应画布">
-					<el-button :icon="FitIcon" @click="store.fit()"></el-button>
+					<el-button :icon="FitIcon" @click="VIEW.fit()"></el-button>
 				</el-tooltip>
 			</li>
 			<li>
 				<el-tooltip content="居中">
-					<el-button :icon="CenterIcon" @click="store.center()"></el-button>
+					<el-button :icon="CenterIcon" @click="VIEW.center()"></el-button>
 				</el-tooltip>
 			</li>
 		</ul>
 
-		<ul v-if="store.isLoaded" class="toolbar left-bottom">
+		<ul v-if="GRAPH.isLoaded" class="toolbar left-bottom">
 			<li>
-				<el-tooltip :content="store.isSelectionEmpty ? '清理画布' : '移除选中节点与关联[Delete]'">
+				<el-tooltip :content="GRAPH.isSelectionEmpty ? '清理画布' : '移除选中节点与关联[Delete]'">
 					<el-button :icon="EraserIcon"
-							   @click="store.isSelectionEmpty ? store.removeAllCells() : store.removeSelectedCells()"></el-button>
+							   @click="GRAPH.isSelectionEmpty ? REMOVE.removeAllCells() : REMOVE.removeSelectedCells()"></el-button>
 				</el-tooltip>
 			</li>
 			<li>
-				<el-tooltip :content="store.isSelectionEmpty ? '清除关联' : '移除选中关联[Shift + Delete]'">
+				<el-tooltip :content="GRAPH.isSelectionEmpty ? '清除关联' : '移除选中关联[Shift + Delete]'">
 					<el-button :icon="AssociationOffIcon"
-							   @click="store.isSelectionEmpty ? store.removeAllEdges() : store.removeSelectedEdges()"></el-button>
+							   @click="GRAPH.isSelectionEmpty ? REMOVE.removeAllEdges() : REMOVE.removeSelectedEdges()"></el-button>
 				</el-tooltip>
 			</li>
 		</ul>
 
-		<ul v-if="store.isLoaded" class="toolbar right-top">
+		<ul v-if="GRAPH.isLoaded" class="toolbar right-top">
 			<li>
 				<el-tooltip content="预览 SQL">
 					<el-button :icon="SQLIcon" @click="handleSQLPreview"></el-button>
@@ -126,12 +126,12 @@
 			</li>
 		</ul>
 
-		<div v-if="store.isLoaded" class="toolbar right-bottom" style="width: max(15vw, 200px)">
+		<div v-if="GRAPH.isLoaded" class="toolbar right-bottom" style="width: max(15vw, 200px)">
 			<MiniMap :graph="graph"></MiniMap>
 			<ScaleBar :graph="graph"></ScaleBar>
 		</div>
 
-		<template v-if="store.isLoaded">
+		<template v-if="GRAPH.isLoaded">
 			<GraphSearcher :graph="graph"></GraphSearcher>
 		</template>
 	</div>
@@ -159,7 +159,6 @@ import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingSt
 import {api} from "@/api";
 import {sendMessage} from "@/message/message.ts";
 import {GenTableModelInput, Pair} from "@/api/__generated/model/static";
-import {handleSelectionKeyEvent} from "@/components/global/graphEditor/selection/useSelection.ts";
 import SaveIcon from "@/components/global/icons/toolbar/SaveIcon.vue";
 import LayoutIcon from "@/components/global/icons/toolbar/LayoutIcon.vue";
 import MultiCodePreview from "@/components/global/code/MultiCodePreview.vue";
@@ -174,9 +173,8 @@ import ScaleBar from "@/components/global/graphEditor/scale/ScaleBar.vue";
 import GraphSearcher from "@/components/pages/ModelEditor/searcher/GraphSearcher.vue";
 import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
 import {EditPen} from "@element-plus/icons-vue";
-import {handleTableNodeClipBoardKeyEvent} from "@/components/pages/ModelEditor/graph/clipBoard.ts";
+import {useClipBoard} from "@/components/pages/ModelEditor/graph/clipBoard/clipBoard.ts";
 import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
-import {handleHistoryKeyEvent} from "@/components/global/graphEditor/history/useHistory.ts";
 import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";
 import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
 import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
@@ -191,13 +189,14 @@ import {TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {useDocumentEvent} from "@/utils/useDocumentEvent.ts";
 import MiniMap from "@/components/global/graphEditor/minimap/MiniMap.vue";
 import {useDebugStore} from "@/debug/debugStore.ts";
+import {handleModelEditorKeyEvent} from "@/components/pages/ModelEditor/graph/keyEvent/keyEvent.ts";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
 
 let graph: Graph
 
-const store = useModelEditorStore()
+const {GRAPH, HISTORY, EDIT, VIEW, REMOVE, MODEL, GRAPH_DATA} = useModelEditorStore()
 
 const loadingStore = useGlobalLoadingStore()
 
@@ -208,31 +207,29 @@ onMounted(async () => {
 
 	graph = initModelEditor(container.value!, wrapper.value!)
 
-	store.load(graph)
+	GRAPH.load(graph)
 
 	graph.on('history:change', (args) => {
 		debugStore.log('HISTORY', args.options.name, args)
 	})
 
 	graph.on('blank:dblclick', () => {
-		ModelEditorEventBus.emit('createTable', store.mousePosition)
+		ModelEditorEventBus.emit('createTable', GRAPH.mousePosition)
 	})
 
 	graph.on('node:click', ({node}) => {
 		handleNodeClick(node)
 	})
 
-	handleSelectionKeyEvent(graph)
+	handleModelEditorKeyEvent(graph)
 
-	handleTableNodeClipBoardKeyEvent(graph)
-
-	handleHistoryKeyEvent(graph)
+	useClipBoard(graph)
 
 	loadingStore.stop(flag)
 })
 
 onUnmounted(() => {
-	store.unload()
+	GRAPH.unload()
 })
 
 // 表编辑事件
@@ -262,19 +259,19 @@ const handleSaveModel = async () => {
 	const flag = loadingStore.start('ModelEditorGraph handleSaveModel')
 
 	try {
-		let model = store._currentModel()
+		let model = MODEL._model()
 
-		store.isModelLoaded = false
+		MODEL.isLoaded = false
 
-		if (model.graphData !== store.getGraphData()) {
+		if (model.graphData !== GRAPH_DATA.getGraphData()) {
 			graph.cleanSelection()
-			model.graphData = store.getGraphData()
+			model.graphData = GRAPH_DATA.getGraphData()
 			await api.modelService.save({body: model})
 		} else {
 			await api.modelService.save({body: {...model, graphData: undefined}})
 		}
 
-		store.isModelLoaded = true
+		MODEL.isLoaded = true
 
 		sendMessage("模型保存成功", "success")
 	} catch (e) {
@@ -309,7 +306,7 @@ useDocumentEvent('mouseup', (e) => {
 	}
 })
 
-watch(() => store.isModelLoaded, async (value) => {
+watch(() => MODEL.isLoaded, async (value) => {
 	if (value) {
 		if (sqlPreviewDialogOpenState.value) {
 			await handleSQLPreview()
@@ -326,8 +323,8 @@ watch(() => store.isModelLoaded, async (value) => {
  */
 
 const judgeGraphDataIsChange = () => {
-	if (store.isLoaded && store.isModelLoaded) {
-		if (store.getGraphData() === store._currentModel().graphData) {
+	if (GRAPH.isLoaded && MODEL.isLoaded) {
+		if (GRAPH_DATA.getGraphData() === MODEL._model().graphData) {
 			return false
 		}
 	}
@@ -353,8 +350,8 @@ watch(() => entityPreviewDialogOpenState.value, async (openState) => {
 const handleEntityPreview = async () => {
 	sendGraphDataChangeMessage()
 	const flag = loadingStore.start('ModelEditorGraph handleEntityPreview')
-	const currentModel = store._currentModel()
-	entityFiles.value = await previewModelEntity(currentModel.id)
+	const model = MODEL._model()
+	entityFiles.value = await previewModelEntity(model.id)
 	entityPreviewDialogOpenState.value = true
 	loadingStore.stop(flag)
 }
@@ -372,9 +369,9 @@ watch(() => sqlPreviewDialogOpenState.value, async (openState) => {
 const handleSQLPreview = async () => {
 	sendGraphDataChangeMessage()
 	const flag = loadingStore.start('ModelEditorGraph handleSQLPreview')
-	const currentModel = store._currentModel()
+	const model = MODEL._model()
 	sqlPreviewDialogOpenState.value = true
-	sqlFiles.value = await previewModelSql(currentModel.id)
+	sqlFiles.value = await previewModelSql(model.id)
 	loadingStore.stop(flag)
 }
 
@@ -382,32 +379,32 @@ const handleSQLPreview = async () => {
 const handleEntityDownload = async () => {
 	sendGraphDataChangeMessage()
 	const flag = loadingStore.start('ModelEditorGraph handleEntityDownload')
-	const currentModel = store._currentModel()
-	await downloadModelEntity(currentModel)
+	const model = MODEL._model()
+	await downloadModelEntity(model)
 	loadingStore.stop(flag)
 }
 
 const handleSQLDownload = async () => {
 	sendGraphDataChangeMessage()
 	const flag = loadingStore.start('ModelEditorGraph handleSQLDownload')
-	const currentModel = store._currentModel()
-	await downloadModelSql(currentModel)
+	const model = MODEL._model()
+	await downloadModelSql(model)
 	loadingStore.stop(flag)
 }
 
 const handleModelExport = async () => {
 	sendGraphDataChangeMessage()
 	const flag = loadingStore.start('ModelEditorGraph handleModelExport')
-	const currentModel = store._currentModel()
-	await exportModel(currentModel)
+	const model = MODEL._model()
+	await exportModel(model)
 	loadingStore.stop(flag)
 }
 
 const handleModelDownload = async () => {
 	sendGraphDataChangeMessage()
 	const flag = loadingStore.start('ModelEditorGraph handleModelDownload')
-	const currentModel = store._currentModel()
-	await downloadModel(currentModel)
+	const model = MODEL._model()
+	await downloadModel(model)
 	loadingStore.stop(flag)
 }
 </script>

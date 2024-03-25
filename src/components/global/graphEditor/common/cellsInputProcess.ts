@@ -1,6 +1,6 @@
 import {Cell, Graph} from "@antv/x6";
 
-export type CellProperty = Cell | string
+export type CellProperty  = Cell | string
 
 export const getFirst = (input: CellProperty | CellProperty[]): CellProperty | undefined => {
     if (Array.isArray(input)) {

@@ -29,12 +29,12 @@ export const useHistory = (graph: Graph) => {
     })
 }
 
-export interface HistoryOperations {
+export interface HistoryOperation {
     undo: () => void
     redo: () => void
 }
 
-export const useHistoryOperations = (_graph: () => Graph): HistoryOperations => {
+export const useHistoryOperations = (_graph: () => Graph): HistoryOperation => {
     return {
         redo: () => redo(_graph()),
         undo: () => undo(_graph())
@@ -54,10 +54,4 @@ const redo = (graph: Graph) => {
     } else {
         sendMessage('暂无可重做的操作')
     }
-}
-
-export const handleHistoryKeyEvent = (graph: Graph) => {
-    graph.bindKey(["ctrl+z", "command+z"], () => undo(graph))
-
-    graph.bindKey(["ctrl+shift+z", "command+shift+z"], () => redo(graph))
 }

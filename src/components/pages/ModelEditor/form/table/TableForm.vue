@@ -22,7 +22,7 @@ import {createIndexName} from "@/components/pages/ModelEditor/graph/nameTemplate
 import {TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {Refresh} from "@element-plus/icons-vue";
 
-const store = useModelEditorStore()
+const {GRAPH, MODEL} = useModelEditorStore()
 
 const jdbcTypeStore = useJdbcTypeStore()
 
@@ -43,12 +43,12 @@ watch(() => props.table, (value) => {
 }, {immediate: true})
 
 const getOtherTables = () => {
-	return store.nodes.filter(it => it.shape === TABLE_NODE && it.id !== props.id).map(it => it.data.table)
+	return GRAPH.nodes.filter(it => it.shape === TABLE_NODE && it.id !== props.id).map(it => it.data.table)
 }
 
 // 获取可选取的 superTable 的名称列表
 const getSuperTableNames = (): string[] => {
-	const tableNodes = store.nodes.filter(it => it.shape === TABLE_NODE)
+	const tableNodes = GRAPH.nodes.filter(it => it.shape === TABLE_NODE)
 	const superTables: GenTableModelInput[] = tableNodes.map(it => it.data.table).filter(it => it.type === "SUPER_TABLE")
 
 	const allSuperTableNames = superTables.map(it => it.name)
@@ -190,18 +190,19 @@ const handleSubmit = () => {
 
 
 	for (let column of table.value.columns) {
-		if (column.enum !== undefined && !store._currentModel().enums.map(it => it.name).includes(column.enum.name)) {
+		if (column.enum !== undefined && !MODEL._model().enums.map(it => it.name).includes(column.enum.name)) {
 			messageList.push(`列【${column.name}】对应枚举【${column.enum.name}】不存在，已自动移除`)
 			column.enum = undefined
 		}
 		if (!column.name) {
 			messageList.push('列名不得为空')
 		}
-		if (column.dataSize === null) {
+
+		if (column.dataSize as number | null === null) {
 			messageList.push(`列【${column.name}】的长度不可为空`);
 		}
-		if (column.numericPrecision === null) {
-			messageList.push('列【${column.name}】的精度不可为空');
+		if (column.numericPrecision as number | null === null) {
+			messageList.push(`列【${column.name}】的精度不可为空`);
 		}
 	}
 
@@ -394,11 +395,11 @@ const handleCancel = () => {
 
 				<template #type="{data}">
 					<ColumnTypeForm
-						:enumNames="store._currentModel().enums.map(it => it.name)"
+						:enumNames="MODEL._model().enums.map(it => it.name)"
 						:model-value="data"
 						@create-enum="() => ModelEditorEventBus.emit('createEnum')"
 						@edit-enum="(name) => {
-							let genEnum = store._currentModel().enums.filter(it => it.name === name)[0]
+							let genEnum = MODEL._model().enums.filter(it => it.name === name)[0]
 							if (!genEnum) genEnum = {...getDefaultEnum(),name}
 							ModelEditorEventBus.emit('modifyEnum', {name, genEnum})
 						}"
