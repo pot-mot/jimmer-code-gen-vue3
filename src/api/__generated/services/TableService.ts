@@ -1,6 +1,5 @@
 import type {Executor} from '../';
 import type {
-    GenTableAssociationsView, 
     GenTableColumnsView, 
     GenTableCommonView, 
     GenTableIdView, 
@@ -17,13 +16,6 @@ export class TableService {
         let _uri = '/table/';
         _uri += encodeURIComponent(options.ids.join(','));
         return (await this.executor({uri: _uri, method: 'DELETE'})) as Promise<number>;
-    }
-    
-    readonly queryAssociationsView: (options: TableServiceOptions['queryAssociationsView']) => Promise<
-        Array<GenTableAssociationsView>
-    > = async(options) => {
-        let _uri = '/table/query';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<GenTableAssociationsView>>;
     }
     
     readonly queryColumnsView: (options: TableServiceOptions['queryColumnsView']) => Promise<
@@ -56,9 +48,6 @@ export type TableServiceOptions = {
         body: TableQuery
     }, 
     'queryColumnsView': {
-        body: TableQuery
-    }, 
-    'queryAssociationsView': {
         body: TableQuery
     }, 
     'delete': {

@@ -12,12 +12,10 @@ export class PreviewService {
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
         _value = options.entityIds.join(',');
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'entityIds='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
+        _uri += _separator
+        _uri += 'entityIds='
+        _uri += encodeURIComponent(_value);
+        _separator = '&';
         _value = options.withPath;
         if (_value !== undefined && _value !== null) {
             _uri += _separator
@@ -35,12 +33,10 @@ export class PreviewService {
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
         _value = options.tableIds.join(',');
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'tableIds='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
+        _uri += _separator
+        _uri += 'tableIds='
+        _uri += encodeURIComponent(_value);
+        _separator = '&';
         _value = options.modelId;
         if (_value !== undefined && _value !== null) {
             _uri += _separator
@@ -65,12 +61,10 @@ export class PreviewService {
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
         _value = options.enumIds.join(',');
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'enumIds='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
+        _uri += _separator
+        _uri += 'enumIds='
+        _uri += encodeURIComponent(_value);
+        _separator = '&';
         _value = options.withPath;
         if (_value !== undefined && _value !== null) {
             _uri += _separator
@@ -88,12 +82,10 @@ export class PreviewService {
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
         _value = options.id;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'id='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
+        _uri += _separator
+        _uri += 'id='
+        _uri += encodeURIComponent(_value);
+        _separator = '&';
         _value = options.withPath;
         if (_value !== undefined && _value !== null) {
             _uri += _separator
@@ -111,12 +103,10 @@ export class PreviewService {
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
         _value = options.id;
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'id='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
+        _uri += _separator
+        _uri += 'id='
+        _uri += encodeURIComponent(_value);
+        _separator = '&';
         return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<Pair<string, string>>>;
     }
     
@@ -127,12 +117,10 @@ export class PreviewService {
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
         _value = options.tableIds.join(',');
-        if (_value !== undefined && _value !== null) {
-            _uri += _separator
-            _uri += 'tableIds='
-            _uri += encodeURIComponent(_value);
-            _separator = '&';
-        }
+        _uri += _separator
+        _uri += 'tableIds='
+        _uri += encodeURIComponent(_value);
+        _separator = '&';
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<Pair<string, string>>>;
     }
 }
