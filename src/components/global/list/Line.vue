@@ -10,7 +10,7 @@ const props = withDefaults(defineProps<LineProps>(), {
 
 const slots = defineSlots<{
 	default(props: {}): any,
-	[key: string]: (props: {span: string}) => any
+	[key: string]: (props: { span: string }) => any
 }>()
 
 const spans = ref(<string[]>[])

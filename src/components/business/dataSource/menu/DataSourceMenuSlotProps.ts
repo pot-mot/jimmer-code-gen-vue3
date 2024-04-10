@@ -45,7 +45,8 @@ interface PreviewSchemaSlotProps {
     previewSchema: GenSchemaPreview
 }
 
-interface BaseDataSourceItemSlotProps extends MenuEventBusSlotProps, DataSourceSlotProps, SchemaLoadingSlotProps, PreviewSchemasSlotProps, SchemasSlotProps {}
+interface BaseDataSourceItemSlotProps extends MenuEventBusSlotProps, DataSourceSlotProps, SchemaLoadingSlotProps, PreviewSchemasSlotProps, SchemasSlotProps {
+}
 
 export type DataSourceItemSlots = {
     default(props: BaseDataSourceItemSlotProps): any
@@ -62,7 +63,8 @@ interface TableSlotProps {
     table: GenTableCommonView
 }
 
-interface BaseSchemaItemSlotProps extends MenuEventBusSlotProps, SchemaSlotProps, TablesSlotProps {}
+interface BaseSchemaItemSlotProps extends MenuEventBusSlotProps, SchemaSlotProps, TablesSlotProps {
+}
 
 export type SchemaItemSlots = {
     default(props: BaseSchemaItemSlotProps): any

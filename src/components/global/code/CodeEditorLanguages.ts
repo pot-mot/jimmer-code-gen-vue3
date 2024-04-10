@@ -8,7 +8,7 @@ export const CodeEditorLanguage_CONSTANTS = [
     'sql',
 ] as const;
 
-export type CodeEditorLanguage =  typeof CodeEditorLanguage_CONSTANTS[number]
+export type CodeEditorLanguage = typeof CodeEditorLanguage_CONSTANTS[number]
 
 // @ts-ignore
 import EditorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
@@ -25,11 +25,14 @@ import TSWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker'
 
 export const getWorker = (language: CodeEditorLanguage | string | undefined) => {
     switch (language) {
-        case "typescript": case "javascript":
+        case "typescript":
+        case "javascript":
             return new TSWorker()
         case "html":
             return new HTMLWorker()
-        case "css": case "scss": case "less":
+        case "css":
+        case "scss":
+        case "less":
             return new CSSWorker()
         case "json":
             return new JSONWorker()

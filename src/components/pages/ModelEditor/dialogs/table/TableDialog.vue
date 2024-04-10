@@ -28,7 +28,8 @@ const handleSubmit = (table: GenTableModelInput) => {
 </script>
 
 <template>
-	<DragDialog :model-value="true" :can-resize="true" :init-w="1200" :init-h="600" :init-y="100" @close="emits('close')" :modal="false">
+	<DragDialog :model-value="true" :can-resize="true" :init-w="1200" :init-h="600" :init-y="100"
+				@close="emits('close')" :modal="false">
 		<TableForm :id="id" :table="table" @cancel="emits('close')" @submit="handleSubmit"></TableForm>
 	</DragDialog>
 </template>

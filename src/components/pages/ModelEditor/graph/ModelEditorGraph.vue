@@ -180,7 +180,9 @@ import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
 import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
 import {
 	downloadModel,
-	downloadModelEntity, downloadModelSql, exportModel,
+	downloadModelEntity,
+	downloadModelSql,
+	exportModel,
 	previewModelEntity,
 	previewModelSql
 } from "@/components/business/model/file/modelFileOperations.ts";

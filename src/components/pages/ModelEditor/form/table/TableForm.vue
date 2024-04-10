@@ -2,7 +2,8 @@
 import {computed, ref, watch} from 'vue'
 import {
 	GenTableModelInput,
-	GenTableModelInput_TargetOf_indexes_TargetOf_columns, type GenTableModelInput_TargetOf_superTables
+	GenTableModelInput_TargetOf_indexes_TargetOf_columns,
+	type GenTableModelInput_TargetOf_superTables
 } from "@/api/__generated/model/static";
 import {sendMessage} from "@/message/message.ts";
 import {useModelEditorStore} from "../../store/ModelEditorStore.ts";
@@ -16,7 +17,7 @@ import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEdi
 import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
 import {tableIndexColumns} from "@/components/business/table/tableIndexColumns.ts";
 import Details from "@/components/global/common/Details.vue";
-import {getDefaultTable, getDefaultColumn, getDefaultIndex} from "@/components/business/table/defaultTable.ts";
+import {getDefaultColumn, getDefaultIndex, getDefaultTable} from "@/components/business/table/defaultTable.ts";
 import {validateColumn, validateIndex} from "@/shape/GenTableModelInput.ts";
 import {createIndexName} from "@/components/pages/ModelEditor/graph/nameTemplate/createIndexName.ts";
 import {TABLE_NODE} from "@/components/business/modelEditor/constant.ts";

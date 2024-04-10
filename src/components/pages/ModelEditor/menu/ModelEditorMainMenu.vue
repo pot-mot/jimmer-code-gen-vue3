@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {Node, Edge} from '@antv/x6'
+import {Edge, Node} from '@antv/x6'
 import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import NodeItem from "./NodeItem.vue";

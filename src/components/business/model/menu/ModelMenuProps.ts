@@ -6,7 +6,8 @@ import {
 } from "@/api/__generated/model/static";
 import {ModelMenuEventsProps} from "@/components/business/model/menu/ModelMenuEvents.ts";
 
-export interface ModelMenuProps extends ShowConfig {}
+export interface ModelMenuProps extends ShowConfig {
+}
 
 export interface ModelItemProps extends ModelMenuEventsProps {
     model: GenModelSimpleView

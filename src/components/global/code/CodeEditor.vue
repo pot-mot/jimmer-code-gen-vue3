@@ -5,13 +5,13 @@
  */
 
 import * as monaco from 'monaco-editor'
+import {editor} from 'monaco-editor'
 import {onMounted, ref} from "vue";
 import {CodeEditorLanguage} from "@/components/global/code/CodeEditorLanguages.ts";
-import {editor} from "monaco-editor";
-import IStandaloneCodeEditor = editor.IStandaloneCodeEditor
-import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions
 import {ModelValueProps} from "@/components/global/dialog/DragDialogProps.ts";
 import {ModelValueEmits} from "@/components/global/dialog/DragDialogEmits.ts";
+import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
+import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
 
 const props = defineProps<
 	ModelValueProps<string> &

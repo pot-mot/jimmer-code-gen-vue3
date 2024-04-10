@@ -27,7 +27,8 @@ const handleSubmit = (genEnum: GenModelInput_TargetOf_enums) => {
 </script>
 
 <template>
-	<DragDialog :model-value="true" :can-resize="true" :init-w="800" :init-h="600" :init-y="100" @close="emits('close')">
+	<DragDialog :model-value="true" :can-resize="true" :init-w="800" :init-h="600" :init-y="100"
+				@close="emits('close')">
 		<EnumForm :enum="genEnum" @cancel="emits('close')" @submit="handleSubmit"></EnumForm>
 	</DragDialog>
 </template>

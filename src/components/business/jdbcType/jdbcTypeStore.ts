@@ -13,7 +13,7 @@ export const useJdbcTypeStore = defineStore(
             getData,
             resetData,
             loadHooks,
-        } = useAsyncStoreOperations<{[key:string]: number}>(() => {
+        } = useAsyncStoreOperations<{ [key: string]: number }>(() => {
             return api.jdbcService.listType()
         })
 
@@ -23,7 +23,7 @@ export const useJdbcTypeStore = defineStore(
             loadingStore.stop(flag)
         })
 
-        const jdbcTypes = computed<{[key:string]: number}>(() => {
+        const jdbcTypes = computed<{ [key: string]: number }>(() => {
             if (!data.value) {
                 throw "jdbcTypes Not Loaded"
             }

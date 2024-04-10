@@ -109,7 +109,7 @@ const isSelected = computed(() => {
 									 style="transform: translateY(0.3em)"></AssociationIcon>
 				</span>
 				<el-button link @click="VIEW.focus(edge.getTargetCellId())">
-					{{ showColumn ? targetLabel : association.targetTable.name}}
+					{{ showColumn ? targetLabel : association.targetTable.name }}
 				</el-button>
 			</template>
 		</el-text>

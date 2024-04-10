@@ -24,7 +24,8 @@ defineProps<TableIconProps>()
 			<!-- https://tablericons.com/ table-->
 			<svg fill="none" stroke="#2c3e50" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
 				 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-				<path d="M3 5a2 2 0 012-2h5m4 0h5a2 2 0 012 2v5m0 4v5a2 2 0 01-2 2h-5m-4 0h-5a2 2 0 01-2-2v-5m0-4v-5zM3 10h14M10 3v13"/>
+				<path
+					d="M3 5a2 2 0 012-2h5m4 0h5a2 2 0 012 2v5m0 4v5a2 2 0 01-2 2h-5m-4 0h-5a2 2 0 01-2-2v-5m0-4v-5zM3 10h14M10 3v13"/>
 			</svg>
 		</template>
 		<template v-else-if="type === 'ALIAS'">

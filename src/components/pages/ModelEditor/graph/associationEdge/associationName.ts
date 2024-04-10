@@ -1,9 +1,7 @@
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {Edge} from "@antv/x6"
 import {ASSOCIATION_EDGE} from "@/components/business/modelEditor/constant.ts";
-import {
-    createAssociationName
-} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
+import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
 
 export const getAssociationSourceLabel = (association: GenAssociationModelInput) => {
     const tempEdgeName: string[] = []

@@ -5,8 +5,7 @@ import {GraphReactiveState, useGraphReactiveState} from "../data/reactiveState.t
 import {LoadHooks, useLoadHooks} from "@/utils/useLoadHooks.ts";
 
 export interface GraphLoadState extends GraphReactiveState,
-    LoadHooks<Graph | undefined>
-{
+    LoadHooks<Graph | undefined> {
     isLoaded: ComputedRef<boolean>
     _graph: () => Graph
     load: (_graph: Graph) => void

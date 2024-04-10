@@ -4,6 +4,7 @@ import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEdi
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 
 import {deleteConfirm} from "@/message/confirm.ts";
+
 interface EdgeItem {
 	genEnum: GenModelInput_TargetOf_enums
 }
@@ -24,7 +25,8 @@ const handleDelete = () => {
 <template>
 	<div>
 		<el-text class="hover-show" :type="genEnum.items.length > 0 ? '' : 'warning'">
-			{{ genEnum.name }} <template v-if="genEnum.items.length === 0">[无枚举项]</template>
+			{{ genEnum.name }}
+			<template v-if="genEnum.items.length === 0">[无枚举项]</template>
 
 			<span class="hover-show-item" style="padding-left: 0.5em;">
 				<el-button :icon="EditPen" link type="warning" @click="handleEdit"></el-button>

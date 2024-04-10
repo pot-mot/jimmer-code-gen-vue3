@@ -1,4 +1,4 @@
-import {Cell, Node, Edge, Graph} from "@antv/x6";
+import {Cell, Edge, Graph, Node} from "@antv/x6";
 
 export type GraphEditorData = {
     json: { cells: Cell.Properties[] },
@@ -8,7 +8,7 @@ export type GraphEditorData = {
 
 export interface GraphDataOperation {
     getGraphData: () => string
-    loadGraphData: (jsonStr: string, reset: boolean) => {nodes: Node[], edges: Edge[]}
+    loadGraphData: (jsonStr: string, reset: boolean) => { nodes: Node[], edges: Edge[] }
 }
 
 export const useGraphDataOperation = (_graph: () => Graph): GraphDataOperation => {

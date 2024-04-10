@@ -115,7 +115,8 @@ defineSlots<DataSourceItemSlots>()
 </script>
 
 <template>
-	<Details v-loading="previewSchemaLoading.isLoading.value || loadedSchemaLoading.isLoading.value" open @open="getSchemas()">
+	<Details v-loading="previewSchemaLoading.isLoading.value || loadedSchemaLoading.isLoading.value" open
+			 @open="getSchemas()">
 		<template #title>
 			<div style="height: 2em; line-height: 2em;">
 				<el-text class="hover-show">

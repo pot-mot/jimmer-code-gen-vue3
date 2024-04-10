@@ -18,4 +18,5 @@ export type ModelMenuEvents = {
     }
 }
 
-export interface ModelMenuEventsProps extends MenuEventBusProps<ModelMenuEvents> {}
+export interface ModelMenuEventsProps extends MenuEventBusProps<ModelMenuEvents> {
+}

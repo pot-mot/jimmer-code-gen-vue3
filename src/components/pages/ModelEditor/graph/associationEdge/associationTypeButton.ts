@@ -1,10 +1,10 @@
 import {Cell, Edge, Graph} from "@antv/x6";
 import {
     ASSOCIATION_EDGE,
-    LINE_WIDTH,
     ASSOCIATION_TYPE_BUTTON,
     COMMON_COLOR,
     DEFAULT_ASSOCIATION_TYPE,
+    LINE_WIDTH,
 } from "@/components/business/modelEditor/constant.ts";
 import {AssociationType} from "@/api/__generated/model/enums";
 import {
@@ -155,8 +155,8 @@ export const useAssociationType = (graph: Graph) => {
     graph.on('edge:change:data', ({edge, previous, current}) => {
         if (edge.shape !== ASSOCIATION_EDGE) return
 
-        const previousData = previous as {association?: GenAssociationModelInput}
-        const currentData = current as {association?: GenAssociationModelInput}
+        const previousData = previous as { association?: GenAssociationModelInput }
+        const currentData = current as { association?: GenAssociationModelInput }
 
         if (previousData?.association?.type === currentData?.association?.type) return
 

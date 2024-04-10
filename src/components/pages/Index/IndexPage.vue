@@ -37,7 +37,8 @@
 			<ul class="dependence" v-for="dependences in [backendDependences, frontendDependences]">
 				<li v-for="dependence in dependences">
 					<a target="_blank" :href="dependence.link">
-						<div v-if="dependence.icon && dependence.icon.startsWith('<svg')" class="icon" v-html="dependence.icon"></div>
+						<div v-if="dependence.icon && dependence.icon.startsWith('<svg')" class="icon"
+							 v-html="dependence.icon"></div>
 						<img v-else-if="dependence.icon" :src="dependence.icon" class="icon" :alt="dependence.icon">
 						{{ dependence.label }}
 					</a>

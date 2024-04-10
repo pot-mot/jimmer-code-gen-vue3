@@ -1,13 +1,10 @@
 import {Edge, Graph} from "@antv/x6";
-import {
-    TABLE_NODE,
-    ASSOCIATION_EDGE,
-    DEFAULT_ASSOCIATION_TYPE,
-} from "@/components/business/modelEditor/constant.ts";
+import {ASSOCIATION_EDGE, DEFAULT_ASSOCIATION_TYPE, TABLE_NODE,} from "@/components/business/modelEditor/constant.ts";
 import {EdgeConnect, getEdgeConnect} from "@/components/global/graphEditor/edge/connectData.ts";
 import {
     GenAssociationModelInput,
-    GenAssociationModelInput_TargetOf_columnReferences, GenTableModelInput
+    GenAssociationModelInput_TargetOf_columnReferences,
+    GenTableModelInput
 } from "@/api/__generated/model/static";
 import {AssociationType} from "@/api/__generated/model/enums";
 import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
@@ -65,10 +62,10 @@ const createAssociationByEdge = (
 
     const type: AssociationType =
         association?.type ??
-            DEFAULT_ASSOCIATION_TYPE
+        DEFAULT_ASSOCIATION_TYPE
     const fake: boolean =
         association?.fake ??
-            !(useGenConfigContextStore().context.realFk)
+        !(useGenConfigContextStore().context.realFk)
 
     const name: string = association?.name ?? ""
     const dissociateAction =

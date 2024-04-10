@@ -1,8 +1,5 @@
 import {GenModelInput} from "@/api/__generated/model/static";
-import {
-    DataSourceType_CONSTANTS,
-    GenLanguage_CONSTANTS
-} from "@/api/__generated/model/enums";
+import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated/model/enums";
 import {useGlobalGenConfigStore} from "@/components/business/genConfig/GlobalGenConfigStore.ts";
 
 export const getDefaultModel = (): GenModelInput => {

@@ -4,9 +4,7 @@ import {initGraph} from "@/components/global/graphEditor/common/init.ts";
 import {AssociationEdgeConnecting} from "@/components/pages/ModelEditor/graph/associationEdge/define.ts";
 import {useAssociationFake} from "@/components/pages/ModelEditor/graph/associationEdge/associationFake.ts";
 import {DEFAULT_ZOOM_RANGE} from "@/components/business/modelEditor/constant.ts";
-import {
-    useAssociationType
-} from "@/components/pages/ModelEditor/graph/associationEdge/associationTypeButton.ts";
+import {useAssociationType} from "@/components/pages/ModelEditor/graph/associationEdge/associationTypeButton.ts";
 import {useInteractionToFront, useStyle} from "@/components/pages/ModelEditor/graph/highlight.ts";
 import {useAssociationData} from "@/components/pages/ModelEditor/graph/associationEdge/associationData.ts";
 

@@ -1,8 +1,4 @@
-import {
-    GenAssociationModelInput,
-    GenTableModelInput,
-    GenTableColumnsView
-} from "@/api/__generated/model/static";
+import {GenAssociationModelInput, GenTableColumnsView, GenTableModelInput} from "@/api/__generated/model/static";
 import {api} from "@/api";
 import {loadTableModelInputs, tableViewToInput} from "./tableNode/load.ts";
 import {Graph} from '@antv/x6'

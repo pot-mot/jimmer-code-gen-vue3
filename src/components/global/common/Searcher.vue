@@ -1,10 +1,7 @@
 <script lang="ts" generic="T" setup>
 import {nextTick, onMounted, onUnmounted, Ref, ref} from "vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
-import {
-	DialogInitPositionProps,
-	DialogInitSizeProps,
-} from "@/components/global/dialog/DragDialogProps.ts";
+import {DialogInitPositionProps, DialogInitSizeProps,} from "@/components/global/dialog/DragDialogProps.ts";
 
 interface SearcherProps extends DialogInitSizeProps, DialogInitPositionProps {
 	target: HTMLElement
@@ -35,7 +32,9 @@ defineSlots<SearcherSlots>()
 
 interface SearcherEmits {
 	(event: "open"): void
+
 	(event: "close"): void
+
 	(event: 'select', item: T): void
 }
 
@@ -149,7 +148,8 @@ const handleClose = () => {
 		:modal="false"
 		@open="handleOpen"
 		@close="handleClose">
-		<el-input ref="input" v-model="keyword" clearable @change="handleSearch" @input="handleSearch" :placeholder="placeholder">
+		<el-input ref="input" v-model="keyword" clearable @change="handleSearch" @input="handleSearch"
+				  :placeholder="placeholder">
 		</el-input>
 
 		<div ref="searchResultContainer" style="max-height: 60vh; overflow: auto;">

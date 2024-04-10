@@ -1,8 +1,5 @@
-import {Edge, Graph, Node, Cell} from "@antv/x6";
-import {
-    ASSOCIATION_EDGE,
-    TABLE_NODE
-} from "@/components/business/modelEditor/constant.ts";
+import {Cell, Edge, Graph, Node} from "@antv/x6";
+import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 
 
 const SELECT_CLASS = "selected"

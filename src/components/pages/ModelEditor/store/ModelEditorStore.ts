@@ -27,7 +27,7 @@ import {
 } from "@/components/global/graphEditor/data/graphData.ts";
 import {useDebugStore} from "@/debug/debugStore.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
-import {Node, Edge} from '@antv/x6';
+import {Edge, Node} from '@antv/x6';
 import {getCenterPoint, useViewOperation, ViewOperation} from "@/components/global/graphEditor/view/viewOperation.ts";
 import {syncEnumNameForTables} from "@/components/pages/ModelEditor/sync/syncEnum.ts";
 import {syncSuperTableNameForTables} from "@/components/pages/ModelEditor/sync/syncSuperTable.ts";

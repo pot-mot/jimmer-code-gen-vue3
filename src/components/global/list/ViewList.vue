@@ -58,7 +58,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 				selectedItems
 			} = props.lines.reduce(
 				(result, _, index) => {
-					const { selectedItems } = result
+					const {selectedItems} = result
 					const item = props.lines[index]
 
 					if (selectedItemSet.value.has(index)) {
@@ -67,7 +67,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 
 					return result
 				},
-				{ selectedItems: <T[]>[] }
+				{selectedItems: <T[]>[]}
 			)
 
 			const data = JSON.stringify(selectedItems)

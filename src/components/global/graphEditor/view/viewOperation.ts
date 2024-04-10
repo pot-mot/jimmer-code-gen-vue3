@@ -7,7 +7,7 @@ import {DEFAULT_ZOOM_RANGE} from "@/components/business/modelEditor/constant.ts"
 
 export interface ViewOperation {
     layoutDirection: Ref<LayoutDirection>,
-    getCenterPoint: () => {x: number, y: number},
+    getCenterPoint: () => { x: number, y: number },
     layout: () => void,
     fit: () => void
     focus: (cell: CellProperty) => void
@@ -29,7 +29,7 @@ export const useViewOperation = (_graph: () => Graph): ViewOperation => {
 
 export const getCenterPoint = (graph: Graph) => {
     const svgRect = graph.view.svg.getBoundingClientRect()
-    return graph.graphToLocal({x: svgRect.width / 2, y: svgRect.height/2})
+    return graph.graphToLocal({x: svgRect.width / 2, y: svgRect.height / 2})
 }
 
 /** 布局 */

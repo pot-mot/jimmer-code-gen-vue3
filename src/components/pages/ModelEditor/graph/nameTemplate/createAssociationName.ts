@@ -38,10 +38,13 @@ const associationNameTemplate = (
         associationName = `fk_${sourceName}_${targetName}`
     }
 
-    switch(context.databaseNamingStrategy) {
-        case "LOWER_CASE": return associationName.toLowerCase()
-        case "UPPER_CASE": return associationName.toUpperCase()
-        case "RAW": return associationName
+    switch (context.databaseNamingStrategy) {
+        case "LOWER_CASE":
+            return associationName.toLowerCase()
+        case "UPPER_CASE":
+            return associationName.toUpperCase()
+        case "RAW":
+            return associationName
     }
 }
 

@@ -3,16 +3,16 @@ import {GenEnumItemsInput_TargetOf_items, GenEnumItemsView_TargetOf_items} from 
 
 export const enumItemColumns =
     <PropListColumn<GenEnumItemsView_TargetOf_items | GenEnumItemsInput_TargetOf_items>[]>[
-    {
-        prop: "name",
-        label: "枚举项"
-    },
-    {
-        prop: "value",
-        label: "值"
-    },
-    {
-        prop: "comment",
-        label: "注释"
-    }
-]
+        {
+            prop: "name",
+            label: "枚举项"
+        },
+        {
+            prop: "value",
+            label: "值"
+        },
+        {
+            prop: "comment",
+            label: "注释"
+        }
+    ]

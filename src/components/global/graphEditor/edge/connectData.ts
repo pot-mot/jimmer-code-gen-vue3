@@ -1,4 +1,4 @@
-import {Node, Edge} from "@antv/x6";
+import {Edge, Node} from "@antv/x6";
 import {PortManager} from "@antv/x6/es/model/port";
 import PortMetadata = PortManager.PortMetadata;
 

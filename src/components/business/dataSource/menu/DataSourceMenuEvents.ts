@@ -27,4 +27,5 @@ export type DataSourceMenuEvents = {
     },
 }
 
-export interface DataSourceMenuEventsProps extends MenuEventBusProps<DataSourceMenuEvents> {}
+export interface DataSourceMenuEventsProps extends MenuEventBusProps<DataSourceMenuEvents> {
+}

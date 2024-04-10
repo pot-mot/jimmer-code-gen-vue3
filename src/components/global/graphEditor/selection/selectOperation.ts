@@ -56,7 +56,7 @@ export const getSelectedEdges = (graph: Graph): Edge[] => {
     return graph.getSelectedCells().filter(cell => cell.isEdge()).map(cell => cell as Edge)
 }
 
-export const getSelectedNodeConnectedEdges =  (graph: Graph): Edge[] => {
+export const getSelectedNodeConnectedEdges = (graph: Graph): Edge[] => {
     const selectedNodes = getSelectedNodes(graph)
 
     const connectedEdges: Edge[] = []

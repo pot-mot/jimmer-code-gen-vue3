@@ -2,12 +2,11 @@
 import DragResize from 'vue3-draggable-resizable'
 import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
 import {nextTick, onBeforeMount, onMounted, ref, toRaw, watch} from 'vue'
-import {ElButton} from "element-plus";
+import {ElButton, useZIndex} from "element-plus";
 import {Close, FullScreen} from "@element-plus/icons-vue";
 import {DragDialogProps} from "./DragDialogProps.ts";
 import {DragDialogEmits, ModelValueEmits} from "./DragDialogEmits.ts";
 import {sendMessage} from "@/message/message.ts";
-import {useZIndex} from "element-plus";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 
 const props = withDefaults(defineProps<DragDialogProps>(), {
@@ -195,7 +194,7 @@ defineExpose({
 					:style="`border: none; z-index: ${currentZIndex};`"
 					:class="{disabledW, disabledH, disabledX, disabledY}">
 			<div ref="wrapper" class="wrapper" style="cursor: all-scroll;">
-				<div class="right-top" >
+				<div class="right-top">
 					<el-button :icon="FullScreen" link size="large" @click="handleToggleFullScreen"></el-button>
 					<el-button :icon="Close" link size="large" type="danger" @click="handleClose"></el-button>
 				</div>

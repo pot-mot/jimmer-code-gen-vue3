@@ -1,5 +1,5 @@
 import {NodeView} from '@antv/x6'
-import {LINE_WIDTH, COMMON_COLOR} from "@/components/business/modelEditor/constant.ts";
+import {COMMON_COLOR, LINE_WIDTH} from "@/components/business/modelEditor/constant.ts";
 
 export class SimpleNodeView extends NodeView {
     protected renderMarkup() {

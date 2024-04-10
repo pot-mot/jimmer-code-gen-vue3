@@ -1,16 +1,13 @@
 import {erRouter, orthRouter} from "@/components/global/graphEditor/edgeRouter.ts";
 import {sendMessage} from "@/message/message.ts";
 import {Options} from "@antv/x6/es/graph/options";
-import Connecting = Options.Connecting;
-import {
-    ASSOCIATION_EDGE,
-    LINE_WIDTH, COMMON_COLOR
-} from "@/components/business/modelEditor/constant.ts";
+import {ASSOCIATION_EDGE, COMMON_COLOR, LINE_WIDTH} from "@/components/business/modelEditor/constant.ts";
 import {
     getTableColumnByEdgeConnect,
     setEdgeAssociationData
 } from "@/components/pages/ModelEditor/graph/associationEdge/associationData.ts";
 import {getEdgeConnect} from "@/components/global/graphEditor/edge/connectData.ts";
+import Connecting = Options.Connecting;
 
 export const associationEdgeBase = {
     inherit: 'edge',

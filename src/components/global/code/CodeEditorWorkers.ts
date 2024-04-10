@@ -1,9 +1,7 @@
 /**
  * 全局导入 Monaca Editor Worker
  */
-import {
-    getWorker
-} from "@/components/global/code/CodeEditorLanguages.ts";
+import {getWorker} from "@/components/global/code/CodeEditorLanguages.ts";
 
 export const useCodeEditor = () => {
     // @ts-ignore: worker 导入方式可以参考vite官网 https://cn.vitejs.dev/guide/features.html#web-workers

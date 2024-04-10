@@ -1,7 +1,4 @@
-import {
-    GenTableModelInput,
-    GenTableColumnsView,
-} from "@/api/__generated/model/static";
+import {GenTableColumnsView, GenTableModelInput,} from "@/api/__generated/model/static";
 import {Graph, Node} from "@antv/x6";
 import {columnPortGroup} from "@/components/pages/ModelEditor/graph/tableNode/columnPort.ts";
 import {COLUMN_PORT_GROUP, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
@@ -134,7 +131,7 @@ export const loadTableModelInputs = <T extends GenTableModelInput | GenTableColu
             {
                 x: (baseOptions?.x !== undefined && eachTableOptions && eachTableOptions[index] && eachTableOptions[index].x !== undefined) ?
                     baseOptions.x + eachTableOptions[index].x! : baseOptions?.x,
-                y: (baseOptions?.y !== undefined && eachTableOptions && eachTableOptions[index] && eachTableOptions[index].y  !== undefined) ?
+                y: (baseOptions?.y !== undefined && eachTableOptions && eachTableOptions[index] && eachTableOptions[index].y !== undefined) ?
                     baseOptions.y + eachTableOptions[index].y! : baseOptions?.y,
             }
         )

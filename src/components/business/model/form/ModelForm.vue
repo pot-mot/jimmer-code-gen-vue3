@@ -4,7 +4,7 @@ import {cloneDeep} from 'lodash'
 import {GenModelInput} from "@/api/__generated/model/static";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
-import {jsonStrFormat, jsonStrCompress} from "@/utils/json.ts";
+import {jsonStrCompress, jsonStrFormat} from "@/utils/json.ts";
 import CodeEditor from "@/components/global/code/CodeEditor.vue";
 import {ModelFormProps} from "@/components/business/model/form/ModelFormProps.ts";
 import {sendMessage} from "@/message/message.ts";

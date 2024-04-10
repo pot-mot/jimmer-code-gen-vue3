@@ -2,8 +2,8 @@ import {nextTick, ref} from 'vue'
 import mitt from "mitt";
 
 type DialogManageEvents<K, V> = {
-    open: {key: K, value: V},
-    close: {key: K}
+    open: { key: K, value: V },
+    close: { key: K }
 }
 
 export const useDialogListState = <K, V>() => {

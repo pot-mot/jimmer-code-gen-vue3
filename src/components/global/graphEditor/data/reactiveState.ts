@@ -1,5 +1,5 @@
 import {computed, ComputedRef, Ref, ref} from "vue";
-import {Graph, Node, Edge} from "@antv/x6";
+import {Edge, Graph, Node} from "@antv/x6";
 import {getSelectedEdges, getSelectedNodes} from "@/components/global/graphEditor/selection/selectOperation.ts";
 import {arrayToMap} from "@/utils/mapOperation.ts";
 import {sendMessage} from "@/message/message.ts";
@@ -24,7 +24,7 @@ export interface GraphReactiveState {
     canRedo: Ref<boolean>
 
     mouseenterState: Ref<boolean>
-    mousePosition: Ref<{x: number, y: number}>
+    mousePosition: Ref<{ x: number, y: number }>
 }
 
 export const useGraphReactiveState = (_graph: () => Graph): GraphReactiveState => {

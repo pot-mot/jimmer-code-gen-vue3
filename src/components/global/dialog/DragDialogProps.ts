@@ -30,14 +30,12 @@ export interface DialogDisableProps {
     disabledH?: boolean
 }
 
-export interface DragDialogProps extends
-    ModelValueProps<boolean>,
+export interface DragDialogProps extends ModelValueProps<boolean>,
     DialogInitPositionProps,
     DialogInitSizeProps,
     DialogTeleportProps,
     DialogSizeRangeProps,
-    DialogDisableProps
-{
+    DialogDisableProps {
     limitByParent?: boolean
     modal?: boolean
     canResize?: boolean

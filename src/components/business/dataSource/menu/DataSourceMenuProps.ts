@@ -9,6 +9,6 @@ export interface SchemaItemProps extends DataSourceMenuEventsProps {
     schema: GenSchemaView
 }
 
-export interface TableItemProps extends DataSourceMenuEventsProps{
+export interface TableItemProps extends DataSourceMenuEventsProps {
     table: GenTableCommonView
 }

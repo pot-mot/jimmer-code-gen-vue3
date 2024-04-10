@@ -15,7 +15,9 @@ export const useGlobalGenConfigStore = defineStore(
             resetData,
             loadHooks,
         } = useAsyncStoreOperations<GenConfig>(
-            () => {return api.configService.getConfig()}
+            () => {
+                return api.configService.getConfig()
+            }
         )
 
         const loadingStore = useGlobalLoadingStore()
