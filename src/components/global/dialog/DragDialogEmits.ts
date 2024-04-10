@@ -10,4 +10,8 @@ export interface DragDialogEmits {
     (event: "close"): void
 
     (event: "closed"): void
+
+    (event: "fullScreenToggle"): void
+
+    (event: "fullScreenToggled"): void
 }

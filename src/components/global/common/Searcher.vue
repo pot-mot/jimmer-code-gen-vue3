@@ -1,9 +1,9 @@
 <script lang="ts" generic="T" setup>
 import {nextTick, onMounted, onUnmounted, Ref, ref} from "vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
-import {DialogInitPositionProps, DialogInitSizeProps,} from "@/components/global/dialog/DragDialogProps.ts";
+import {DialogInitProps,} from "@/components/global/dialog/DragDialogProps.ts";
 
-interface SearcherProps extends DialogInitSizeProps, DialogInitPositionProps {
+interface SearcherProps extends DialogInitProps {
 	target: HTMLElement
 	search: (keyword: string) => T[] | Promise<T[]>
 	placeholder?: string
@@ -144,6 +144,7 @@ const handleClose = () => {
 		ref="dialog"
 		:init-w="initW" :init-h="initH" :init-x="x" :init-y="y"
 		:can-drag="canDrag"
+		:can-full-screen="false"
 		fit-content
 		:modal="false"
 		@open="handleOpen"

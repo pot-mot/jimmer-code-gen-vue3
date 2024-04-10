@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import DragResize from 'vue3-draggable-resizable'
 import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
-import {nextTick, onBeforeMount, onMounted, ref, toRaw, watch} from 'vue'
+import {nextTick, onMounted, ref, toRaw, watch} from 'vue'
 import {ElButton, useZIndex} from "element-plus";
 import {Close, FullScreen} from "@element-plus/icons-vue";
 import {DragDialogProps} from "./DragDialogProps.ts";
@@ -13,10 +13,13 @@ const props = withDefaults(defineProps<DragDialogProps>(), {
 	to: "body",
 	canResize: false,
 	canDrag: true,
+	canFullScreen: true,
 	initW: 800,
 	limitByParent: false,
 	modal: true
 })
+
+const emits = defineEmits<DragDialogEmits & ModelValueEmits<boolean>>()
 
 const wrapper = ref<HTMLElement>()
 const content = ref<HTMLElement>()
@@ -29,97 +32,127 @@ const y = ref(0)
 const w = ref(0)
 const h = ref(0)
 
+const currentZIndex = ref<number>()
+
 const zIndexManager = useZIndex()
 
-const initPositionAndSize = () => {
+const getParent = (): HTMLElement | null => {
+	let parent: HTMLElement | null
+
+	const to: string | HTMLElement = toRaw(props.to)
+
+	if (typeof to === "string") {
+		parent = document.querySelector(to)
+	} else {
+		parent = to
+	}
+
+	return parent
+}
+
+const initXW = () => {
+	let tempX = x.value
+	let tempW = w.value
+
 	let maxWidth: number
 
 	if (props.limitByParent) {
-		let parent: HTMLElement | null
-
-		const to: string | HTMLElement = toRaw(props.to)
-
-		if (typeof to === "string") {
-			parent = document.querySelector(to)
-		} else {
-			parent = to
-		}
-
+		let parent = getParent()
 		if (!parent) {
-			sendMessage('dialog 创建失败', 'error')
+			sendMessage('DragDialog has no match parent', 'error')
 			return
 		}
-
 		maxWidth = parent.clientWidth
 	} else {
 		maxWidth = document.documentElement.clientWidth
 	}
-
 	if (maxWidth < props.initW) {
-		x.value = 0
-		w.value = maxWidth
+		tempX = 0
+		tempW = maxWidth
 	} else if (props.initX !== undefined) {
-		w.value = props.initW
-
-		if (props.initW + props.initX > maxWidth) {
-			x.value = maxWidth - props.initW
-		} else {
-			x.value = props.initX
-		}
+		tempX = props.initW + props.initX > maxWidth ? maxWidth - props.initW : props.initX
+		tempW = props.initW
 	} else {
-		w.value = props.initW
-		x.value = (maxWidth - w.value) / 2
+		tempX = (maxWidth - props.initW) / 2
+		tempW = props.initW
 	}
 
-	if (props.initH) {
-		h.value = props.initH
-	}
+	x.value = tempX
+	w.value = tempW
+}
 
+const initYH = () => {
 	if (props.initY) {
 		y.value = props.initY
 	}
+	if (props.initH) {
+		h.value = props.initH
+	}
 }
 
-const emits = defineEmits<DragDialogEmits & ModelValueEmits<boolean>>()
+const isFullScreen = (): boolean =>
+	x.value === 0 &&
+	y.value === 0 &&
+	h.value === document.documentElement.offsetHeight &&
+	w.value === document.documentElement.offsetWidth
 
-const currentZIndex = ref<number>()
+const fullScreenPositionAndSize = () => {
+	x.value = 0
+	y.value = 0
+	h.value = document.documentElement.offsetHeight
+	w.value = document.documentElement.offsetWidth
+}
 
 const handleOpen = () => {
 	emits('open')
-	initPositionAndSize()
+	initXW()
+	initYH()
 	currentZIndex.value = zIndexManager.nextZIndex()
-	emits('opened')
+	nextTick(() => {
+		emits('opened')
+	})
 }
 
 const handleClose = () => {
 	emits("close")
 	emits('update:modelValue', false)
-	emits("closed")
+	nextTick(() => {
+		emits('closed')
+	})
 }
 
 const handleToggleFullScreen = () => {
+	emits("fullScreenToggle")
+
+	if (!props.canFullScreen) {
+		sendMessage('DragDialog can not be full-screen when props.canFullScreen is false', 'error')
+		return
+	}
+
 	currentZIndex.value = zIndexManager.nextZIndex()
 
-	if (
-		x.value === 0 &&
-		y.value === 0 &&
-		h.value - document.documentElement.offsetHeight === 0 &&
-		w.value - document.documentElement.offsetWidth === 0
-	) {
-		initPositionAndSize()
+	if (isFullScreen()) {
+		initXW()
+		initYH()
 	} else {
-		x.value = 0
-		y.value = 0
-		h.value = document.documentElement.offsetHeight
-		w.value = document.documentElement.offsetWidth
+		fullScreenPositionAndSize()
+	}
+
+	if (props.limitByParent) {
+		// FIXME 修复 limitByParent 时 x y 作用问题
+		nextTick(() => {
+			x.value = -x.value
+			y.value = -y.value
+			nextTick(() => {
+				x.value = -x.value
+				y.value = -y.value
+			})
+		})
+		emits("fullScreenToggled")
+	} else {
+		emits("fullScreenToggled")
 	}
 }
-
-onBeforeMount(() => {
-	if (props.modelValue) {
-		handleOpen()
-	}
-})
 
 watch(() => props.modelValue, (modelValue) => {
 	if (modelValue) {
@@ -148,6 +181,12 @@ const updateContentSizeByWrapper = () => {
 const wrapperResizeOb = new ResizeObserver(updateContentSizeByWrapper)
 
 onMounted(() => {
+	if (props.modelValue) {
+		handleOpen()
+	}
+	if (props.canFullScreen && props.initFullScreen) {
+		fullScreenPositionAndSize()
+	}
 	nextTick(() => {
 		if (content.value && wrapper.value) {
 			wrapperResizeOb.observe(wrapper.value)
@@ -186,16 +225,16 @@ defineExpose({
 					:active="true"
 					:draggable="draggable"
 					:resizable="resizable"
+					:parent="limitByParent"
 					:x="x" :disabledX="disabledX"
 					:y="y" :disabledY="disabledY"
-					:parent="limitByParent"
 					:h="h" :maxH="maxH" :minH="minH" :disabledH="disabledH"
 					:w="w" :maxW="maxW" :minW="minW" :disabledW="disabledW"
 					:style="`border: none; z-index: ${currentZIndex};`"
 					:class="{disabledW, disabledH, disabledX, disabledY}">
 			<div ref="wrapper" class="wrapper" style="cursor: all-scroll;">
 				<div class="right-top">
-					<el-button :icon="FullScreen" link size="large" @click="handleToggleFullScreen"></el-button>
+					<el-button :icon="FullScreen" link size="large" @click="handleToggleFullScreen" v-if="canFullScreen"></el-button>
 					<el-button :icon="Close" link size="large" type="danger" @click="handleClose"></el-button>
 				</div>
 
@@ -242,8 +281,8 @@ defineExpose({
 	bottom: 0;
 	left: 0;
 	right: 0;
-	background-color: var(--el-popup-modal-bg-color);
 	opacity: var(--el-popup-modal-opacity);
+	backdrop-filter: brightness(0.6);
 }
 
 :deep(.handle) {

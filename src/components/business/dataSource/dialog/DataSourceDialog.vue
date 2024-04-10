@@ -3,11 +3,11 @@ import {GenDataSourceView} from "@/api/__generated/model/static";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import DataSourceForm from "../form/DataSourceForm.vue";
 import {DataSourceFormEmits} from "../form/DataSourceFormEmits.ts";
-import {DialogInitPositionProps, ModelValueProps} from "@/components/global/dialog/DragDialogProps.ts";
+import {DialogInitProps, ModelValueProps} from "@/components/global/dialog/DragDialogProps.ts";
 import {DataSourceFormProps} from "@/components/business/dataSource/form/DataSourceFormProps.ts";
 import {ModelValueEmits} from "@/components/global/dialog/DragDialogEmits.ts";
 
-const props = defineProps<ModelValueProps<boolean> & DataSourceFormProps & DialogInitPositionProps>()
+const props = defineProps<ModelValueProps<boolean> & DataSourceFormProps & DialogInitProps>()
 
 const emits = defineEmits<ModelValueEmits<boolean> & DataSourceFormEmits>()
 
@@ -26,7 +26,7 @@ const handleModelValueUpdate = (modelValue: boolean) => {
 
 <template>
 	<DragDialog :model-value="modelValue" @update:model-value="handleModelValueUpdate"
-				:init-w="600" :init-x="props.initX" :init-y="props.initY" :modal="false">
+				:init-x="props.initX" :init-y="props.initY" :init-w="props.initW ?? 600" :init-h="props.initH" :modal="false">
 		<DataSourceForm
 			style="height: calc(100% - 1em)"
 			:id="id" :data-source="dataSource"

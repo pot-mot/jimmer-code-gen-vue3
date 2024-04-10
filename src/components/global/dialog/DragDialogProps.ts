@@ -2,12 +2,9 @@ export interface ModelValueProps<T> {
     modelValue: T
 }
 
-export interface DialogInitPositionProps {
+export interface DialogInitProps {
     initX?: number
     initY?: number
-}
-
-export interface DialogInitSizeProps {
     initW?: number
     initH?: number
 }
@@ -31,8 +28,7 @@ export interface DialogDisableProps {
 }
 
 export interface DragDialogProps extends ModelValueProps<boolean>,
-    DialogInitPositionProps,
-    DialogInitSizeProps,
+    DialogInitProps,
     DialogTeleportProps,
     DialogSizeRangeProps,
     DialogDisableProps {
@@ -40,6 +36,8 @@ export interface DragDialogProps extends ModelValueProps<boolean>,
     modal?: boolean
     canResize?: boolean
     canDrag?: boolean
+    canFullScreen?: boolean
+    initFullScreen?: boolean
     // 此配置项用于主动使用 syncDialogHeight 时自适应高度
     fitContent?: boolean
 }

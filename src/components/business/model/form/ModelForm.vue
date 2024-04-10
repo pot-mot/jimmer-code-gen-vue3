@@ -163,7 +163,7 @@ const handleOpenOtherConfigDialog = () => {
 		</div>
 	</el-form>
 
-	<DragDialog v-model="otherConfigOpenState" :init-y="100" :modal="false">
+	<DragDialog v-model="otherConfigOpenState" :init-y="100" :init-h="620">
 		<GenConfigForm
 			v-model="model"
 			@submit="(data) => {
