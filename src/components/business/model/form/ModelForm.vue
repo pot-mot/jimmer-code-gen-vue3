@@ -23,24 +23,17 @@ watch(() => props.model, (propsModel) => {
 	if (propsModel) {
 		const tempModel = cloneDeep(propsModel)
 
-		if (props.editValue) {
-			try {
-				if (tempModel.graphData === undefined) {
-					throw "graphData is undefined"
+		try {
+			validateGraphData(
+				JSON.parse(tempModel.graphData),
+				e => {
+					throw e
 				}
+			)
 
-				validateGraphData(
-					JSON.parse(tempModel.graphData),
-					e => {
-						throw e
-					}
-				)
-
-				tempModel.graphData = jsonStrFormat(tempModel.graphData)
-			} catch (e) {
-				sendMessage('json 格式校验失败', 'error', {graphData: tempModel.graphData, e})
-				tempModel.graphData = ''
-			}
+			tempModel.graphData = jsonStrFormat(tempModel.graphData)
+		} catch (e) {
+			sendMessage('json 格式校验失败', 'error', {graphData: tempModel.graphData, e})
 		}
 
 		model.value = tempModel
@@ -50,24 +43,18 @@ watch(() => props.model, (propsModel) => {
 const handleSubmit = () => {
 	const tempModel = cloneDeep(model.value)
 
-	if (props.editValue) {
-		try {
-			if (tempModel.graphData === undefined) {
-				throw "graphData is undefined"
+	try {
+		validateGraphData(
+			JSON.parse(tempModel.graphData),
+			e => {
+				throw e
 			}
+		)
 
-			validateGraphData(
-				JSON.parse(tempModel.graphData),
-				e => {
-					throw e
-				}
-			)
-
-			tempModel.graphData = jsonStrCompress(tempModel.graphData)
-		} catch (e) {
-			sendMessage("模型提交失败", 'error', {graphData: tempModel.graphData, e})
-			return
-		}
+		tempModel.graphData = jsonStrCompress(tempModel.graphData)
+	} catch (e) {
+		sendMessage("模型提交失败", 'error', {graphData: tempModel.graphData, e})
+		return
 	}
 
 	emits('submit', tempModel)
@@ -92,7 +79,7 @@ const handleOpenOtherConfigDialog = () => {
 			paddingTop: '1em',
 			paddingLeft: '8px',
 			display: 'grid',
-			gridTemplateRows: editValue ? '275px 1fr 30px' : '275px'
+			gridTemplateRows: '275px 1fr 30px'
 		}">
 		<div>
 			<el-row :gutter="24">
@@ -150,7 +137,7 @@ const handleOpenOtherConfigDialog = () => {
 			</el-row>
 		</div>
 
-		<el-form-item label="内容" v-if="editValue && model.graphData !== undefined">
+		<el-form-item label="内容">
 			<CodeEditor
 				style="height: 100%; border: 1px solid #ccc; border-radius: 8px;"
 				v-model="model.graphData"

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import Details from "@/components/global/common/Details.vue";
 import {ref} from "vue";
-import {GenAssociationView, GenColumnCommonView} from "@/api/__generated/model/static";
+import {GenAssociationView, GenColumnView} from "@/api/__generated/model/static";
 import {useLoading} from "@/utils/useLoading.ts";
 import {api} from "@/api";
 import {TableItemProps} from "@/components/business/model/menu/ModelMenuProps.ts";
@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<TableItemProps>(), {
 	},
 })
 
-const columns = ref<GenColumnCommonView[]>([])
+const columns = ref<GenColumnView[]>([])
 const associations = ref<GenAssociationView[]>([])
 
 const columnsLoading = useLoading('ModelTableItem.columnsLoading')

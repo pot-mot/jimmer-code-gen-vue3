@@ -1,4 +1,4 @@
-export interface GenColumnCommonView {
+export interface GenColumnView {
     /**
      * ID
      */

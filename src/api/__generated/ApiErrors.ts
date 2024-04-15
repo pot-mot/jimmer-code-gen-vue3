@@ -69,7 +69,20 @@ export type ApiErrors = {
     'configService': {
     }, 
     'convertService': {
-        'convert': AllErrors & ({
+        'convertTable': AllErrors & ({
+                family: 'CONVERT_ENTITY', 
+                code: 'ASSOCIATION', 
+                readonly [key:string]: any
+            } | {
+                family: 'CONVERT_ENTITY', 
+                code: 'SUPER_TABLE', 
+                readonly [key:string]: any
+            } | {
+                family: 'COLUMN_TYPE', 
+                code: 'MISS_REQUIRED_PARAM', 
+                readonly [key:string]: any
+            }), 
+        'convertModel': AllErrors & ({
                 family: 'CONVERT_ENTITY', 
                 code: 'ASSOCIATION', 
                 readonly [key:string]: any
@@ -148,35 +161,6 @@ export type ApiErrors = {
                 readonly [key:string]: any
             }), 
         'previewEntity': AllErrors & ({
-                family: 'GENERATE_ENTITY', 
-                code: 'TABLE', 
-                readonly [key:string]: any
-            } | {
-                family: 'GENERATE_ENTITY', 
-                code: 'COLUMN', 
-                readonly [key:string]: any
-            } | {
-                family: 'GENERATE_ENTITY', 
-                code: 'ASSOCIATION', 
-                readonly [key:string]: any
-            } | {
-                family: 'GENERATE_ENTITY', 
-                code: 'ENUM', 
-                readonly [key:string]: any
-            }), 
-        'previewEntityByTable': AllErrors & ({
-                family: 'CONVERT_ENTITY', 
-                code: 'ASSOCIATION', 
-                readonly [key:string]: any
-            } | {
-                family: 'CONVERT_ENTITY', 
-                code: 'SUPER_TABLE', 
-                readonly [key:string]: any
-            } | {
-                family: 'COLUMN_TYPE', 
-                code: 'MISS_REQUIRED_PARAM', 
-                readonly [key:string]: any
-            } | {
                 family: 'GENERATE_ENTITY', 
                 code: 'TABLE', 
                 readonly [key:string]: any

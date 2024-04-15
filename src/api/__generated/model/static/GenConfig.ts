@@ -2,10 +2,6 @@ import type {DataSourceType, DatabaseNamingStrategyType, GenLanguage} from '../e
 
 export interface GenConfig {
     /**
-     * 同步转换实体
-     */
-    syncConvertEntity: boolean;
-    /**
      * 语言
      */
     language: GenLanguage;

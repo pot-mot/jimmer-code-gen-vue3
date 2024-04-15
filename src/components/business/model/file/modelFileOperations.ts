@@ -25,6 +25,10 @@ const createZip = async (files: Array<Pair<string, string>>): Promise<Blob> => {
     return await zip.generateAsync({type: "blob"})
 }
 
+export const convertModel = async (id: number) => {
+    return await api.convertService.convertModel({id})
+}
+
 export const previewModelSql = async (id: number) => {
     return await api.previewService.previewModelSql({id})
 }

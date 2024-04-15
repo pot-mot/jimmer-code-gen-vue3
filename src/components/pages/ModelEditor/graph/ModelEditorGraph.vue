@@ -179,6 +179,7 @@ import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";
 import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
 import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
 import {
+	convertModel,
 	downloadModel,
 	downloadModelEntity,
 	downloadModelSql,
@@ -268,10 +269,8 @@ const handleSaveModel = async () => {
 		if (model.graphData !== GRAPH_DATA.getGraphData()) {
 			graph.cleanSelection()
 			model.graphData = GRAPH_DATA.getGraphData()
-			await api.modelService.save({body: model})
-		} else {
-			await api.modelService.save({body: {...model, graphData: undefined}})
 		}
+		await api.modelService.save({body: model})
 
 		MODEL.isLoaded = true
 
@@ -353,6 +352,7 @@ const handleEntityPreview = async () => {
 	sendGraphDataChangeMessage()
 	const flag = loadingStore.start('ModelEditorGraph handleEntityPreview')
 	const model = MODEL._model()
+	await convertModel(model.id)
 	entityFiles.value = await previewModelEntity(model.id)
 	entityPreviewDialogOpenState.value = true
 	loadingStore.stop(flag)
@@ -382,6 +382,7 @@ const handleEntityDownload = async () => {
 	sendGraphDataChangeMessage()
 	const flag = loadingStore.start('ModelEditorGraph handleEntityDownload')
 	const model = MODEL._model()
+	await convertModel(model.id)
 	await downloadModelEntity(model)
 	loadingStore.stop(flag)
 }
@@ -406,6 +407,7 @@ const handleModelDownload = async () => {
 	sendGraphDataChangeMessage()
 	const flag = loadingStore.start('ModelEditorGraph handleModelDownload')
 	const model = MODEL._model()
+	await convertModel(model.id)
 	await downloadModel(model)
 	loadingStore.stop(flag)
 }

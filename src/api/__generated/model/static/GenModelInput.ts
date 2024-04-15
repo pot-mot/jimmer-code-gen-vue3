@@ -11,9 +11,9 @@ export interface GenModelInput {
      */
     name: string;
     /**
-     * 同步转换实体
+     * Graph 数据
      */
-    syncConvertEntity: boolean;
+    graphData: string;
     /**
      * 语言
      */
@@ -102,10 +102,6 @@ export interface GenModelInput {
      * 备注
      */
     remark: string;
-    /**
-     * Graph 数据
-     */
-    graphData?: string | undefined;
     /**
      * 枚举
      */

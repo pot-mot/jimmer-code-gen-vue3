@@ -398,7 +398,7 @@ const handleCancel = () => {
 					<ColumnTypeForm
 						:enumNames="MODEL._model().enums.map(it => it.name)"
 						:model-value="data"
-						@create-enum="() => ModelEditorEventBus.emit('createEnum')"
+						@create-enum="ModelEditorEventBus.emit('createEnum')"
 						@edit-enum="(name) => {
 							let genEnum = MODEL._model().enums.filter(it => it.name === name)[0]
 							if (!genEnum) genEnum = {...getDefaultEnum(),name}

@@ -8,8 +8,14 @@ export const getDefaultModel = (): GenModelInput => {
     const defaultModel: GenModelInput = {
         remark: "",
         name: "",
-        syncConvertEntity: true,
-        graphData: "",
+        graphData:
+`{
+    "json": {
+        "cells": []
+    },
+    "zoom": 1,
+    "transform": null
+}`,
         language: GenLanguage_CONSTANTS[0],
         dataSourceType: DataSourceType_CONSTANTS[0],
         author: "",

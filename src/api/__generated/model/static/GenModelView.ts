@@ -23,10 +23,6 @@ export interface GenModelView {
      */
     graphData: string;
     /**
-     * 同步转换实体
-     */
-    syncConvertEntity: boolean;
-    /**
      * 语言
      */
     language: GenLanguage;

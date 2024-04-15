@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import {ElIcon, ElTooltip} from "element-plus";
-import {GenColumnCommonView} from "@/api/__generated/model/static";
+import {GenColumnView} from "@/api/__generated/model/static";
 import {computed} from "vue";
 
 interface DataSourceIconProps {
-	column: Partial<GenColumnCommonView>
+	column: Partial<GenColumnView>
 }
 
 const props = defineProps<DataSourceIconProps>()

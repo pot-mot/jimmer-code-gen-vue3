@@ -18,9 +18,9 @@ export type {GenAssociationView_TargetOf_columnReferences_TargetOf_sourceColumn}
 export type {GenAssociationView_TargetOf_columnReferences_TargetOf_targetColumn} from './GenAssociationView_TargetOf_columnReferences_TargetOf_targetColumn';
 export type {GenAssociationView_TargetOf_sourceTable} from './GenAssociationView_TargetOf_sourceTable';
 export type {GenAssociationView_TargetOf_targetTable} from './GenAssociationView_TargetOf_targetTable';
-export type {GenColumnCommonView} from './GenColumnCommonView';
 export type {GenColumnDefaultInput} from './GenColumnDefaultInput';
 export type {GenColumnDefaultView} from './GenColumnDefaultView';
+export type {GenColumnView} from './GenColumnView';
 export type {GenConfig} from './GenConfig';
 export type {GenConfigProperties} from './GenConfigProperties';
 export type {GenDataSourceInput} from './GenDataSourceInput';

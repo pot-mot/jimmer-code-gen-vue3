@@ -1,6 +1,6 @@
 import {
     GenAssociationView,
-    GenColumnCommonView,
+    GenColumnView,
     GenModelSimpleView,
     GenTableCommonView
 } from "@/api/__generated/model/static";
@@ -25,7 +25,7 @@ export interface AssociationItemProps extends ModelMenuEventsProps {
 }
 
 export interface ColumnItemProps extends ModelMenuEventsProps {
-    column: GenColumnCommonView
+    column: GenColumnView
 }
 
 interface ShowConfig {

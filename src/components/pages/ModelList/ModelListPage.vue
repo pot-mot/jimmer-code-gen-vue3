@@ -29,7 +29,7 @@ onMounted(() => {
 	getModels()
 })
 
-const toEditorEditor = (id: number) => {
+const toModelEditor = (id: number) => {
 	router.push(`/model/${id}`)
 }
 
@@ -37,7 +37,7 @@ const editModel = ref<GenModelInput>()
 
 const updateModelList = async (id: number, toEditor: boolean = false) => {
 	const newModel = await api.modelService.get({id})
-	if (!newModel || !newModel.id) {
+	if (!newModel) {
 		sendMessage('模型重新获取失败', 'error')
 		return
 	}
@@ -51,7 +51,7 @@ const updateModelList = async (id: number, toEditor: boolean = false) => {
 	}
 
 	if (toEditor) {
-		toEditorEditor(id)
+		toModelEditor(id)
 	}
 }
 
@@ -86,21 +86,22 @@ const handleLoadModelJson = async (e: Event) => {
 	modelsLoading.stop(flag)
 }
 
-const handleEdit = (model?: Partial<GenModelInput>) => {
-	editModel.value = {...getDefaultModel(), ...model}
+const handleCreate = () => {
+	editModel.value = getDefaultModel()
 }
+
+const handleEdit = async (id: number) => {
+	editModel.value = await api.modelService.get({id})
+}
+
 const handleSubmit = async (model: GenModelInput) => {
 	const flag = modelsLoading.start('handleSubmit')
 
 	try {
 		const isUpdate = (model.id !== undefined)
 
-		// 在列表页编辑不可更新 graphData
-		if (isUpdate) {
-			model.graphData = undefined
-		}
-
 		const newId = await api.modelService.save({body: model})
+
 		editModel.value = undefined
 
 		await updateModelList(newId, !isUpdate)
@@ -149,17 +150,17 @@ const handleDelete = (model: GenModelSimpleView) => {
 
 <template>
 	<div class="wrapper" v-loading="modelsLoading.isLoading.value">
-		<el-button @click="handleEdit()">创建新模型</el-button>
+		<el-button @click="handleCreate()">创建新模型</el-button>
 
 		<el-button @click="emitLoadModelJson">导入模型 JSON</el-button>
 		<input v-show="false" ref="modelUploader" type="file" accept="application/json" @change="handleLoadModelJson"/>
 
 		<div class="container">
 			<template v-for="model in models">
-				<div class="model-card hover-show" @click="toEditorEditor(model.id)">
+				<div class="model-card hover-show" @click="toModelEditor(model.id)">
 					<div class="right-top hover-show-item">
 						<el-button :icon="EditPen" link type="warning"
-								   @click.prevent.stop="handleEdit(model)"></el-button>
+								   @click.prevent.stop="handleEdit(model.id)"></el-button>
 						<el-button :icon="Delete" link type="danger"
 								   @click.prevent.stop="handleDelete(model)"></el-button>
 					</div>
