@@ -11,40 +11,40 @@ export type AllErrors = {
         family: 'DATA_SOURCE', 
         code: 'CONNECT_FAIL'
     } | {
-        family: 'MODEL_LOAD', 
+        family: 'GENERATE_TABLE_DEFINE', 
         code: 'TABLE'
     } | {
-        family: 'MODEL_LOAD', 
+        family: 'GENERATE_TABLE_DEFINE', 
         code: 'COLUMN'
     } | {
-        family: 'MODEL_LOAD', 
+        family: 'GENERATE_TABLE_DEFINE', 
         code: 'INDEX'
     } | {
-        family: 'MODEL_LOAD', 
+        family: 'GENERATE_ENTITY', 
+        code: 'TABLE'
+    } | {
+        family: 'GENERATE_ENTITY', 
+        code: 'COLUMN'
+    } | {
+        family: 'GENERATE_ENTITY', 
         code: 'ASSOCIATION'
     } | {
-        family: 'MODEL_LOAD', 
+        family: 'GENERATE_ENTITY', 
         code: 'ENUM'
     } | {
-        family: 'GENERATE_TABLE_DEFINE', 
+        family: 'MODEL_LOAD', 
         code: 'TABLE'
     } | {
-        family: 'GENERATE_TABLE_DEFINE', 
+        family: 'MODEL_LOAD', 
         code: 'COLUMN'
     } | {
-        family: 'GENERATE_TABLE_DEFINE', 
+        family: 'MODEL_LOAD', 
         code: 'INDEX'
     } | {
-        family: 'GENERATE_ENTITY', 
-        code: 'TABLE'
-    } | {
-        family: 'GENERATE_ENTITY', 
-        code: 'COLUMN'
-    } | {
-        family: 'GENERATE_ENTITY', 
+        family: 'MODEL_LOAD', 
         code: 'ASSOCIATION'
     } | {
-        family: 'GENERATE_ENTITY', 
+        family: 'MODEL_LOAD', 
         code: 'ENUM'
     } | {
         family: 'DATA_SOURCE_LOAD', 
@@ -117,33 +117,8 @@ export type ApiErrors = {
     }, 
     'enumService': {
     }, 
-    'jdbcService': {
-    }, 
-    'modelService': {
-        'save': AllErrors & ({
-                family: 'MODEL_LOAD', 
-                code: 'TABLE', 
-                readonly [key:string]: any
-            } | {
-                family: 'MODEL_LOAD', 
-                code: 'COLUMN', 
-                readonly [key:string]: any
-            } | {
-                family: 'MODEL_LOAD', 
-                code: 'INDEX', 
-                readonly [key:string]: any
-            } | {
-                family: 'MODEL_LOAD', 
-                code: 'ASSOCIATION', 
-                readonly [key:string]: any
-            } | {
-                family: 'MODEL_LOAD', 
-                code: 'ENUM', 
-                readonly [key:string]: any
-            })
-    }, 
-    'previewService': {
-        'previewTableDefine': AllErrors & ({
+    'generateService': {
+        'generateTableDefine': AllErrors & ({
                 family: 'GENERATE_TABLE_DEFINE', 
                 code: 'TABLE', 
                 readonly [key:string]: any
@@ -160,7 +135,7 @@ export type ApiErrors = {
                 code: 'MISS_REQUIRED_PARAM', 
                 readonly [key:string]: any
             }), 
-        'previewEntity': AllErrors & ({
+        'generateEntity': AllErrors & ({
                 family: 'GENERATE_ENTITY', 
                 code: 'TABLE', 
                 readonly [key:string]: any
@@ -177,7 +152,7 @@ export type ApiErrors = {
                 code: 'ENUM', 
                 readonly [key:string]: any
             }), 
-        'previewModelSql': AllErrors & ({
+        'generateModelSql': AllErrors & ({
                 family: 'GENERATE_TABLE_DEFINE', 
                 code: 'TABLE', 
                 readonly [key:string]: any
@@ -194,7 +169,7 @@ export type ApiErrors = {
                 code: 'MISS_REQUIRED_PARAM', 
                 readonly [key:string]: any
             }), 
-        'previewModelEntity': AllErrors & ({
+        'generateModelEntity': AllErrors & ({
                 family: 'CONVERT_ENTITY', 
                 code: 'ASSOCIATION', 
                 readonly [key:string]: any
@@ -220,6 +195,31 @@ export type ApiErrors = {
                 readonly [key:string]: any
             } | {
                 family: 'GENERATE_ENTITY', 
+                code: 'ENUM', 
+                readonly [key:string]: any
+            })
+    }, 
+    'jdbcService': {
+    }, 
+    'modelService': {
+        'save': AllErrors & ({
+                family: 'MODEL_LOAD', 
+                code: 'TABLE', 
+                readonly [key:string]: any
+            } | {
+                family: 'MODEL_LOAD', 
+                code: 'COLUMN', 
+                readonly [key:string]: any
+            } | {
+                family: 'MODEL_LOAD', 
+                code: 'INDEX', 
+                readonly [key:string]: any
+            } | {
+                family: 'MODEL_LOAD', 
+                code: 'ASSOCIATION', 
+                readonly [key:string]: any
+            } | {
+                family: 'MODEL_LOAD', 
                 code: 'ENUM', 
                 readonly [key:string]: any
             })

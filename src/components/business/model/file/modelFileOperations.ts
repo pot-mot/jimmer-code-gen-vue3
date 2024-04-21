@@ -30,21 +30,21 @@ export const convertModel = async (id: number) => {
 }
 
 export const previewModelSql = async (id: number) => {
-    return await api.previewService.previewModelSql({id})
+    return await api.generateService.generateModelSql({id})
 }
 
 export const previewModelEntity = async (id: number) => {
-    return await api.previewService.previewModelEntity({id})
+    return await api.generateService.generateModelEntity({id})
 }
 
 export const downloadModelEntity = async (model: GenModelView) => {
-    const res = await api.previewService.previewModelEntity({id: model.id, withPath: true})
+    const res = await api.generateService.generateModelEntity({id: model.id, withPath: true})
     const file = await createZip(res)
     saveAs(file, `[${model.name}]-entities.zip`)
 }
 
 export const downloadModelSql = async (model: GenModelView) => {
-    const res = await api.previewService.previewModelSql({id: model.id})
+    const res = await api.generateService.generateModelSql({id: model.id})
     const file = await createZip(res)
     saveAs(file, `[${model.name}]-tables.zip`)
 }
@@ -70,12 +70,12 @@ export const exportModel = async (model: GenModelView) => {
 }
 
 export const downloadModel = async (model: GenModelView) => {
-    let entityCodes = await api.previewService.previewModelEntity({id: model.id, withPath: true})
+    let entityCodes = await api.generateService.generateModelEntity({id: model.id, withPath: true})
     entityCodes = entityCodes.map(({first, second}) => {
         return {first: `${model.language.toLowerCase()}/${first}`, second}
     })
 
-    let sqlFiles = await api.previewService.previewModelSql({id: model.id})
+    let sqlFiles = await api.generateService.generateModelSql({id: model.id})
     sqlFiles = sqlFiles.map(({first, second}) => {
         return {first: `${model.dataSourceType.toLowerCase()}/${first}`, second}
     })

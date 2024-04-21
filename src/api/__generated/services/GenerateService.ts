@@ -1,11 +1,11 @@
 import type {Executor} from '../';
 import type {GenConfigProperties, Pair} from '../model/static/';
 
-export class PreviewService {
+export class GenerateService {
     
     constructor(private executor: Executor) {}
     
-    readonly previewEntity: (options: PreviewServiceOptions['previewEntity']) => Promise<
+    readonly generateEntity: (options: GenerateServiceOptions['generateEntity']) => Promise<
         Array<Pair<string, string>>
     > = async(options) => {
         let _uri = '/preview/entity';
@@ -26,7 +26,7 @@ export class PreviewService {
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<Pair<string, string>>>;
     }
     
-    readonly previewEnums: (options: PreviewServiceOptions['previewEnums']) => Promise<
+    readonly generateEnums: (options: GenerateServiceOptions['generateEnums']) => Promise<
         Array<Pair<string, string>>
     > = async(options) => {
         let _uri = '/preview/enum';
@@ -47,7 +47,7 @@ export class PreviewService {
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<Pair<string, string>>>;
     }
     
-    readonly previewModelEntity: (options: PreviewServiceOptions['previewModelEntity']) => Promise<
+    readonly generateModelEntity: (options: GenerateServiceOptions['generateModelEntity']) => Promise<
         Array<Pair<string, string>>
     > = async(options) => {
         let _uri = '/preview/model/entity';
@@ -68,7 +68,7 @@ export class PreviewService {
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<Pair<string, string>>>;
     }
     
-    readonly previewModelSql: (options: PreviewServiceOptions['previewModelSql']) => Promise<
+    readonly generateModelSql: (options: GenerateServiceOptions['generateModelSql']) => Promise<
         Array<Pair<string, string>>
     > = async(options) => {
         let _uri = '/preview/model/sql';
@@ -82,7 +82,7 @@ export class PreviewService {
         return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<Pair<string, string>>>;
     }
     
-    readonly previewTableDefine: (options: PreviewServiceOptions['previewTableDefine']) => Promise<
+    readonly generateTableDefine: (options: GenerateServiceOptions['generateTableDefine']) => Promise<
         Array<Pair<string, string>>
     > = async(options) => {
         let _uri = '/preview/tableDefine';
@@ -97,25 +97,25 @@ export class PreviewService {
     }
 }
 
-export type PreviewServiceOptions = {
-    'previewTableDefine': {
+export type GenerateServiceOptions = {
+    'generateTableDefine': {
         tableIds: Array<number>, 
         properties?: GenConfigProperties | undefined
     }, 
-    'previewEntity': {
+    'generateEntity': {
         entityIds: Array<number>, 
         withPath?: boolean | undefined, 
         properties?: GenConfigProperties | undefined
     }, 
-    'previewEnums': {
+    'generateEnums': {
         enumIds: Array<number>, 
         withPath?: boolean | undefined, 
         properties?: GenConfigProperties | undefined
     }, 
-    'previewModelSql': {
+    'generateModelSql': {
         id: number
     }, 
-    'previewModelEntity': {
+    'generateModelEntity': {
         id: number, 
         withPath?: boolean | undefined
     }
