@@ -7,26 +7,26 @@ import {validateGraphData} from "@/shape/GraphData.ts";
 import {useModelEditorStore} from "@/components/pages/ModelEditor/store/ModelEditorStore.ts";
 import {GenAssociationModelInput, GenModelInput, GenTableModelInput} from "@/api/__generated/model/static";
 import {validateModelInput} from "@/shape/ModelInput.ts";
-import {importEnums} from "@/components/pages/ModelEditor/graph/enums/genEnum.ts";
+import {importEnums} from "@/components/pages/ModelEditor/graph/clipBoard/importEnums.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {validateTable} from "@/shape/GenTableModelInput.ts";
 
 export const useClipBoard = (graph: Graph) => {
     graph.bindKey(["ctrl+c", "command+c"], async () => {
-        await tableNodeCopy()
+        await copy()
     })
 
     graph.bindKey(["ctrl+x", "command+x"], async () => {
-        await tableNodeCut()
+        await cut()
     })
 
     graph.bindKey(["ctrl+v", "command+v"], async () => {
-        await tableNodePaste()
+        await paste()
     })
 }
 
-const tableNodeCopy = async () => {
+const copy = async () => {
     const {GRAPH, MODEL} = useModelEditorStore()
 
     const graph = GRAPH._graph()
@@ -77,14 +77,14 @@ const tableNodeCopy = async () => {
     }
 }
 
-const tableNodeCut = async () => {
+const cut = async () => {
     const {REMOVE} = useModelEditorStore()
-    const {nodes, edges, enums} = await tableNodeCopy()
+    const {nodes, edges, enums} = await copy()
     REMOVE.removeCells([...nodes, ...edges])
     return {nodes, edges, enums}
 }
 
-const tableNodePaste = async () => {
+const paste = async () => {
     const {GRAPH, GRAPH_DATA} = useModelEditorStore()
     const loadingStore = useGlobalLoadingStore()
     const flag = loadingStore.start('clipBoard paste')

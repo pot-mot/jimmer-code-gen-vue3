@@ -120,7 +120,6 @@ watch(() => modelLoadMenu.value, () => {
 	<ModelDialog v-if="MODEL.isLoaded"
 				 v-model="EDIT.modelEditDialogOpenState"
 				 :model="cloneDeep(MODEL._model())"
-				 edit-value
 				 @cancel="EDIT.handleCancel"
 				 @submit="EDIT.handleSubmit"></ModelDialog>
 

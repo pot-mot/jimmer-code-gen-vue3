@@ -1,5 +1,5 @@
 import {Edge, Graph, Node} from "@antv/x6";
-import {searchEdgesByNode} from "../search/search.ts";
+import {searchEdgesByNode} from "@/components/pages/ModelEditor/search/search.ts";
 import {CellProperty, getFirst} from "../common/cellsInputProcess.ts";
 
 export interface SelectOperation {

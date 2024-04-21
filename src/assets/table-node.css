@@ -13,7 +13,7 @@
     border-radius: var(--el-border-radius-base);
 }
 
-.table-node .tableName,
+.table-node .head,
 .table-node .column {
     white-space: nowrap;
     height: 30px;
@@ -25,10 +25,28 @@
     padding: 0 0.5em;
 }
 
-.table-node .tableName td {
+.table-node .head th {
     text-align: center;
-    font-size: 16px;
     border-bottom: 1px solid var(--common-color);
+    font-size: 16px;
+}
+
+.table-node .head .name {
+    font-weight: 600;
+}
+
+.table-node .head .super-table-separator {
+    font-weight: 400;
+    padding-right: 0.5em;
+}
+
+.table-node .head .super-table {
+    font-weight: 400;
+    padding-right: 0.5em;
+}
+
+.table-node .head .super-table:hover {
+    color: var(--highlight-color);
 }
 
 .table-node .column {

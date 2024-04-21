@@ -8,11 +8,11 @@ import TableItem from "./TableItem.vue";
 import SchemaIcon from "../../../global/icons/database/SchemaIcon.vue";
 import {sendMessage} from "@/message/message.ts";
 import {SchemaItemSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlotProps.ts";
-import Searcher from "@/components/global/common/Searcher.vue";
-import {matchByKeywords} from "@/components/global/graphEditor/search/search.ts";
+import Searcher from "@/components/global/search/Searcher.vue";
 import {useLoading} from "@/utils/useLoading.ts";
 import {SchemaItemProps} from "@/components/business/dataSource/menu/DataSourceMenuProps.ts";
 import {deleteConfirm} from "@/message/confirm.ts";
+import {matchByKeywords} from "@/components/global/match/matchByKeywords.ts";
 
 const props = defineProps<SchemaItemProps>()
 

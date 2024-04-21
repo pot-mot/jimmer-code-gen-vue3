@@ -1,20 +1,27 @@
 <template>
 	<div ref="wrapper" class="table-node">
 		<table v-if="node && table" ref="container">
-			<tr class="tableName">
-				<td colspan="2">
-				<span class="icon">
-					<TableIcon :type="table.type"></TableIcon>
-				</span>
-					<span>{{ table.name }}</span>
+			<tr class="head">
+				<th colspan="2">
+					<span class="icon">
+						<TableIcon :type="table.type"></TableIcon>
+					</span>
+					<span class="name">{{ table.name }}</span>
 					<Comment :comment="table.comment"></Comment>
-				</td>
+					<span class="super-table-separator"
+						  v-if="table.superTables.length > 0">:</span>
+					<span class="super-table"
+						  v-for="superTable in table.superTables"
+						  @click="clickSuperTable(superTable.name)">
+						{{ superTable.name }}
+					</span>
+				</th>
 			</tr>
-			<tr v-for="column in table.columns" class="column">
+			<tr class="column" v-for="column in table.columns">
 				<td>
-				<span class="icon">
-					<ColumnIcon :column="column"></ColumnIcon>
-				</span>
+					<span class="icon">
+						<ColumnIcon :column="column"></ColumnIcon>
+					</span>
 					<span>{{ column.name }}</span>
 					<Comment :comment="column.comment"></Comment>
 				</td>
@@ -41,8 +48,9 @@ import {columnToPort} from "@/components/pages/ModelEditor/graph/tableNode/load.
 import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
+import {searchNodesByTableName} from "@/components/pages/ModelEditor/search/search.ts";
 
-const {GRAPH} = useModelEditorStore()
+const {GRAPH, VIEW} = useModelEditorStore()
 
 const loadingStore = useGlobalLoadingStore()
 
@@ -177,4 +185,10 @@ onMounted(async () => {
 
 	}, {deep: true})
 })
+
+const clickSuperTable = (name: string) => {
+	const graph = GRAPH._graph()
+	const nodes = searchNodesByTableName(graph, name)
+	VIEW.focus(nodes[0])
+}
 </script>

@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import {Graph} from "@antv/x6";
-import Searcher from "@/components/global/common/Searcher.vue";
+import Searcher from "@/components/global/search/Searcher.vue";
 import {focus} from "@/components/global/graphEditor/view/viewOperation.ts"
-import {searchNodesByKeywords} from "@/components/global/graphEditor/search/search.ts";
+import {searchNodesByKeywords} from "@/components/pages/ModelEditor/search/search.ts";
 import Comment from "@/components/global/common/Comment.vue";
 import {ref} from "vue";
 
