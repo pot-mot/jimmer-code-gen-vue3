@@ -136,7 +136,7 @@ defineSlots<DataSourceItemSlots>()
 						<el-button style="margin-left: 0.3em;">schemas</el-button>
 
 						<template #content>
-							<div v-for="schema in previewSchemas">
+							<div v-for="schema in previewSchemas" :key="schema.name">
 								<template v-if="schema.name !== undefined">
 									<slot
 										name="previewSchema"
@@ -170,7 +170,7 @@ defineSlots<DataSourceItemSlots>()
 		</template>
 
 		<ul style="padding: 0 0 0.5em 0.5em;">
-			<li v-for="schema in loadedSchemas">
+			<li v-for="schema in loadedSchemas" :key="schema.id">
 				<slot
 					name="loadedSchema"
 					:dataSource="dataSource" :eventBus="eventBus"

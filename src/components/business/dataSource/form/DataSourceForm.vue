@@ -103,8 +103,8 @@ const handleSubmit = async () => {
 		<el-form-item label="url">
 			<el-col :span="6">
 				<el-select v-model="dataSource.type" filterable name="type">
-					<el-option v-for="(type) in DataSourceType_CONSTANTS" :label="type.toLowerCase()"
-							   :value="type"></el-option>
+					<el-option v-for="type in DataSourceType_CONSTANTS"
+							   :label="type.toLowerCase()" :value="type"></el-option>
 				</el-select>
 			</el-col>
 			<el-col :span="18">

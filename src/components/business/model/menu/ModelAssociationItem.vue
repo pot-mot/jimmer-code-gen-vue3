@@ -49,7 +49,7 @@ const getData = async () => {
 		</template>
 
 		<ul style="padding: 0 0 0.5em 0.5em;">
-			<li v-for="table in tables">
+			<li v-for="table in tables" :key="table.id">
 				<TableItem :table="table" :event-bus="eventBus" :show-config="showConfig"></TableItem>
 			</li>
 		</ul>

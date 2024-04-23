@@ -85,7 +85,7 @@ defineSlots<SchemaItemSlots>()
 			<div style="padding-left: 0.5em;" ref="tablesContainer">
 				<slot :eventBus="eventBus" :schema="schema" :tables="tables" name="tables">
 					<ul style="padding: 0 0 0.5em 0.5em;">
-						<li v-for="table in tables">
+						<li v-for="table in tables" :key="table.id">
 							<slot :eventBus="eventBus" :schema="schema" :table="table" :tables="tables" name="table">
 								<TableItem :event-bus="eventBus" :table="table"></TableItem>
 							</slot>

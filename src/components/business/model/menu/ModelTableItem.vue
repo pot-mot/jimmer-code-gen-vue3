@@ -72,7 +72,7 @@ const getAssociations = async () => {
 				</template>
 
 				<ul style="padding: 0 0 0.5em 0.5em;">
-					<li v-for="column in columns">
+					<li v-for="column in columns" :key="column.id">
 						<ColumnItem :column="column" :event-bus="eventBus"></ColumnItem>
 					</li>
 				</ul>
@@ -84,7 +84,7 @@ const getAssociations = async () => {
 				</template>
 
 				<ul style="padding: 0 0 0.5em 0.5em;">
-					<li v-for="association in associations">
+					<li v-for="association in associations" :key="association.id">
 						<AssociationItem :association="association" :event-bus="eventBus"
 										 :show-config="showConfig"></AssociationItem>
 					</li>
@@ -94,7 +94,7 @@ const getAssociations = async () => {
 
 		<template v-else-if="showConfig.showColumns">
 			<ul style="padding: 0 0 0.5em 0.5em;">
-				<li v-for="column in columns">
+				<li v-for="column in columns" :key="column.id">
 					<ColumnItem :column="column" :event-bus="eventBus"></ColumnItem>
 				</li>
 			</ul>
@@ -102,7 +102,7 @@ const getAssociations = async () => {
 
 		<template v-else-if="showConfig.showAssociations">
 			<ul style="padding: 0 0 0.5em 0.5em;">
-				<li v-for="association in associations">
+				<li v-for="association in associations" :key="association.id">
 					<AssociationItem :association="association" :event-bus="eventBus"
 									 :show-config="showConfig"></AssociationItem>
 				</li>

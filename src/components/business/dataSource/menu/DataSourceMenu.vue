@@ -80,7 +80,7 @@ defineSlots<DataSourceMenuSlots>()
 		  :dataSources="dataSources"
 		  :eventBus="eventBus">
 		<ul v-loading="dataSourcesLoading.isLoading.value">
-			<li v-for="dataSource in dataSources">
+			<li v-for="dataSource in dataSources" :key="dataSource.id">
 				<slot name="dataSource"
 					  :loading="dataSourcesLoading.isLoading"
 					  :dataSources="dataSources" :dataSource="dataSource"
