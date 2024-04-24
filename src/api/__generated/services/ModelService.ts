@@ -37,14 +37,14 @@ export class ModelService {
     readonly list: () => Promise<
         Array<GenModelSimpleView>
     > = async() => {
-        let _uri = '/model/';
+        let _uri = '/model';
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenModelSimpleView>>;
     }
     
     readonly save: (options: ModelServiceOptions['save']) => Promise<
         number
     > = async(options) => {
-        let _uri = '/model/';
+        let _uri = '/model';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<number>;
     }
 }

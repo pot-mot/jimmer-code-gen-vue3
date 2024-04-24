@@ -17,7 +17,7 @@ export class ColumnDefaultService {
     readonly list: (options: ColumnDefaultServiceOptions['list']) => Promise<
         Array<GenColumnDefaultView>
     > = async(options) => {
-        let _uri = '/columnDefault/';
+        let _uri = '/columnDefault';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
         _value = options.dataSourceType;
@@ -33,7 +33,7 @@ export class ColumnDefaultService {
     readonly saveAll: (options: ColumnDefaultServiceOptions['saveAll']) => Promise<
         Array<number>
     > = async(options) => {
-        let _uri = '/columnDefault/';
+        let _uri = '/columnDefault';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<number>>;
     }
 }

@@ -16,14 +16,14 @@ export class TypeMappingService {
     readonly list: () => Promise<
         Array<GenTypeMappingView>
     > = async() => {
-        let _uri = '/typeMapping/';
+        let _uri = '/typeMapping';
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenTypeMappingView>>;
     }
     
     readonly saveAll: (options: TypeMappingServiceOptions['saveAll']) => Promise<
         Array<number>
     > = async(options) => {
-        let _uri = '/typeMapping/';
+        let _uri = '/typeMapping';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<number>>;
     }
 }

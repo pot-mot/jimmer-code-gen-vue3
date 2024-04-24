@@ -31,7 +31,7 @@ export class EntityService {
     readonly list: () => Promise<
         Array<GenEntityCommonView>
     > = async() => {
-        let _uri = '/entity/';
+        let _uri = '/entity';
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenEntityCommonView>>;
     }
     

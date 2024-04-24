@@ -28,7 +28,7 @@ export class EnumService {
     readonly save: (options: EnumServiceOptions['save']) => Promise<
         number
     > = async(options) => {
-        let _uri = '/enum/';
+        let _uri = '/enum';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<number>;
     }
 }

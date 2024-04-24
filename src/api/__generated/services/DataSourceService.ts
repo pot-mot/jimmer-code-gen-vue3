@@ -16,7 +16,7 @@ export class DataSourceService {
     readonly create: (options: DataSourceServiceOptions['create']) => Promise<
         number
     > = async(options) => {
-        let _uri = '/dataSource/';
+        let _uri = '/dataSource';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<number>;
     }
     
@@ -69,7 +69,7 @@ export class DataSourceService {
     readonly list: () => Promise<
         Array<GenDataSourceView>
     > = async() => {
-        let _uri = '/dataSource/';
+        let _uri = '/dataSource';
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenDataSourceView>>;
     }
     
