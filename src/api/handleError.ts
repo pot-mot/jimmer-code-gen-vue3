@@ -79,5 +79,5 @@ const parseFamilyAndCode = (error: AllErrors): string => {
         }
     }
 
-    return `${familyStr ? familyStr : error.family} ${codeStr ? codeStr : error.code}`
+    return `【${familyStr ? familyStr : error.family}-${codeStr ? codeStr : error.code}】部分出现问题`
 }
