@@ -165,8 +165,8 @@ export const useStyle = (graph: Graph) => {
 
     graph.on('edge:removed', ({edge}) => {
         const nodes = [
-            graph.getCellById(edge.previous('source').cell) as Node | null,
-            graph.getCellById(edge.previous('target').cell) as Node | null
+            graph.getCellById(edge?.previous('source')?.cell) as Node | null,
+            graph.getCellById(edge?.previous('target')?.cell) as Node | null
         ]
         nodes.forEach(node => {
             if (node) {

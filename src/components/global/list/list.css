@@ -5,12 +5,12 @@
 
 .edit-list > .edit-list-body > .line-container:hover,
 .view-list > .view-list-body > .line-container:hover {
-    background-color: #f5f5f5;
+    background-color: #f1f1f1;
 }
 
 .edit-list > .edit-list-body > .line-container.selected,
 .view-list > .view-list-body > .line-container.selected {
-    background-color: #e5e5e5;
+    background-color: #d1ecff;
 }
 
 .edit-list:focus, .view-list:focus {

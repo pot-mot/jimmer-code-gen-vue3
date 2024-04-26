@@ -213,7 +213,8 @@ onMounted(async () => {
 	GRAPH.load(graph)
 
 	graph.on('history:change', (args) => {
-		debugStore.log('HISTORY', args.options.name, args)
+		const message = args.options.name ?? 'history:change'
+		debugStore.log('HISTORY', message, args.cmds)
 	})
 
 	graph.on('blank:dblclick', () => {

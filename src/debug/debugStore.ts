@@ -5,6 +5,7 @@ export const DEBUG_CONSTANTS = [
     'LOADING',
     'MESSAGE',
     'HISTORY',
+    'EVENT',
 ] as const
 
 export type DebugType = typeof DEBUG_CONSTANTS[number]
@@ -22,14 +23,16 @@ export const useDebugStore = defineStore(
         const collectTypes: Ref<DebugType[]> = ref([
             'MESSAGE',
             'LOADING',
+            'HISTORY',
+            'EVENT'
+        ])
+
+        const outputTypes: Ref<DebugType[]> = ref([
             'HISTORY'
         ])
 
-        const outputTypes: Ref<DebugType[]> = ref([])
-
         const filterTypes: Ref<DebugType[]> = ref([
             'HISTORY',
-            'LOADING'
         ])
 
         const debugLogs: Ref<DebugLog[]> = ref([])

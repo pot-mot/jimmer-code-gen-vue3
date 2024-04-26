@@ -5,7 +5,7 @@ import LineItem from "@/components/global/list/LineItem.vue";
 import {ListEmits} from "@/components/global/list/ListEmits.ts";
 import {ref} from "vue";
 import {useClickOutside} from "@/components/global/list/useClickOutside.ts";
-import {useListSelection} from "@/components/global/list/listSelection.ts";
+import {createSelectRange, useListSelection} from "@/components/global/list/listSelection.ts";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 
 const props = withDefaults(defineProps<ListProps<T>>(), {
@@ -15,6 +15,7 @@ const props = withDefaults(defineProps<ListProps<T>>(), {
 const emits = defineEmits<ListEmits<T>>()
 
 const {
+	lastSelect,
 	selectedItemSet,
 	isSelected,
 	select,
@@ -26,15 +27,26 @@ const {
 const handleItemClick = (e: MouseEvent, item: T, index: number) => {
 	emits('clickItem', item, index)
 
+	e.stopPropagation()
+	e.stopImmediatePropagation()
+
 	if (e.ctrlKey) {
 		if (!isSelected(index)) {
 			select(index)
 		} else {
 			unselect(index)
 		}
+	} else if (e.shiftKey) {
+		e.preventDefault()
+		if (lastSelect.value == undefined) {
+			select(index)
+			return
+		}
+		resetSelection(createSelectRange(index, lastSelect.value))
 	} else {
 		if (!judgeTargetIsInteraction(e)) {
 			resetSelection([index])
+			lastSelect.value = index
 		}
 	}
 }
@@ -95,10 +107,10 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 			<template v-for="(data, index) in lines">
 				<slot name="line" :data="data" :columns="columns" :gap="gap" :height="height">
 					<Line :gap="gap" :height="height"
-						  @click="(e) => {handleItemClick(e, data, index)}"
+						  @mousedown="(e) => {handleItemClick(e, data, index)}"
 						  :class="isSelected(index) ? 'selected' : ''">
 
-						<LineItem v-for="(column, index) in columns" :span="column.span">
+						<LineItem v-for="(column, columnIndex) in columns" :span="column.span">
 							<slot
 								v-if="'name' in column"
 								:name="column.name"
@@ -106,13 +118,15 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 								:prop="column.prop"
 								:propData="column.prop ? data[column.prop] : undefined"
 								:data="data"
-								:index="index">
+								:index="index"
+								:columnIndex="columnIndex">
 								<slot name="defaultNoPropItem"
 									  :span="column.span"
 									  :prop="column.prop"
 									  :propData="column.prop ? data[column.prop] : undefined"
 									  :data="data"
-									  :index="index">
+									  :index="index"
+									  :columnIndex="columnIndex">
 								</slot>
 							</slot>
 							<slot
@@ -122,13 +136,15 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 								:prop="column.prop"
 								:propData="column.prop ? data[column.prop] : undefined"
 								:data="data"
-								:index="index">
+								:index="index"
+								:columnIndex="columnIndex">
 								<slot name="defaultPropItem"
 									  :span="column.span"
 									  :prop="column.prop"
 									  :propData="column.prop ? data[column.prop] : undefined"
 									  :data="data"
-									  :index="index">
+									  :index="index"
+									  :columnIndex="columnIndex">
 									<el-text>{{ column.prop ? data[column.prop] : "" }}</el-text>
 								</slot>
 							</slot>

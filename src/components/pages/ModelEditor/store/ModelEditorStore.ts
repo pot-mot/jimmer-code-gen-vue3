@@ -344,14 +344,12 @@ export const useModelEditorStore = defineStore(
             loadTable,
         }
 
-
         /**
          * 在 ModelEditorEventBus 发生变更时，记录入 debugStore
          */
-        ModelEditorEventBus
-            .on('*', (type, event) => {
-                debugStore.log('HISTORY', type, event)
-            })
+        ModelEditorEventBus.on('*', (type, event) => {
+            debugStore.log('EVENT', type, event)
+        })
 
 
         /**

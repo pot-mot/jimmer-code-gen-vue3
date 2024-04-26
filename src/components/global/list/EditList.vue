@@ -8,7 +8,7 @@ import {Delete, Plus} from "@element-plus/icons-vue";
 import {EditListEmits, ListEmits} from "@/components/global/list/ListEmits.ts";
 import {useClickOutside} from "@/components/global/list/useClickOutside.ts";
 import {sendMessage} from "@/message/message.ts";
-import {useListSelection} from "@/components/global/list/listSelection.ts";
+import {createSelectRange, useListSelection} from "@/components/global/list/listSelection.ts";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 
 const props = withDefaults(
@@ -27,7 +27,10 @@ const props = withDefaults(
 
 const emits = defineEmits<EditListEmits<T> & ListEmits<T>>()
 
+const editListBody = ref<HTMLElement>()
+
 const {
+	lastSelect,
 	selectedItemSet,
 	isSelected,
 	select,
@@ -39,27 +42,36 @@ const {
 const handleItemClick = (e: MouseEvent, item: T, index: number) => {
 	emits('clickItem', item, index)
 
+	e.stopPropagation()
+	e.stopImmediatePropagation()
+
 	if (e.ctrlKey) {
 		if (!isSelected(index)) {
 			select(index)
 		} else {
 			unselect(index)
 		}
+	} else if (e.shiftKey) {
+		e.preventDefault()
+		if (lastSelect.value == undefined) {
+			select(index)
+			return
+		}
+		resetSelection(createSelectRange(index, lastSelect.value))
 	} else {
 		if (!judgeTargetIsInteraction(e)) {
 			resetSelection([index])
+			lastSelect.value = index
 		}
 	}
 }
-
-const editListBody = ref()
 
 useClickOutside(() => editListBody.value, () => {
 	cleanSelection()
 })
 
 const handleListClipBoardEvent = async (e: KeyboardEvent) => {
-	if ((e.target as HTMLElement).tagName !== 'DIV') {
+	if (judgeTargetIsInteraction(e)) {
 		return
 	}
 
@@ -282,10 +294,10 @@ defineExpose({
 			<template v-for="(data, index) in lines">
 				<slot name="line" :data="data" :columns="columns" :gap="gap" :height="height">
 					<Line :gap="gap" :height="height"
-						  @click="(e) => {handleItemClick(e, data, index)}"
+						  @mousedown="(e) => {handleItemClick(e, data, index)}"
 						  :class="isSelected(index) ? 'selected' : ''">
 
-						<LineItem v-for="column in columns" :span="column.span">
+						<LineItem v-for="(column, columnIndex) in columns" :span="column.span">
 							<slot
 								v-if="'name' in column"
 								:name="column.name"
@@ -293,13 +305,15 @@ defineExpose({
 								:prop="column.prop"
 								:propData="column.prop ? data[column.prop] : undefined"
 								:data="data"
-								:index="index">
+								:index="index"
+								:columnIndex="columnIndex">
 								<slot name="defaultNoPropItem"
 									  :span="column.span"
 									  :prop="column.prop"
 									  :propData="column.prop ? data[column.prop] : undefined"
 									  :data="data"
-									  :index="index">
+									  :index="index"
+									  :columnIndex="columnIndex">
 								</slot>
 							</slot>
 							<slot
@@ -309,13 +323,15 @@ defineExpose({
 								:prop="column.prop"
 								:propData="column.prop ? data[column.prop] : undefined"
 								:data="data"
-								:index="index">
+								:index="index"
+								:columnIndex="columnIndex">
 								<slot name="defaultPropItem"
 									  :span="column.span"
 									  :prop="column.prop"
 									  :propData="column.prop ? data[column.prop] : undefined"
 									  :data="data"
-									  :index="index">
+									  :index="index"
+									  :columnIndex="columnIndex">
 									<el-input v-model="data[column.prop]"></el-input>
 								</slot>
 							</slot>

@@ -12,7 +12,7 @@ export const containsClassList = (e: HTMLElement, classNames: string[]) => {
 }
 
 export const judgeTarget = (
-    e: MouseEvent,
+    e: UIEvent,
     judge: (el: HTMLElement) => boolean | undefined
 ) => {
     let target = (e.target as HTMLElement | undefined | null)
@@ -26,7 +26,7 @@ export const judgeTarget = (
 }
 
 export const judgeTargetIsInteraction = (
-    e: MouseEvent
+    e: UIEvent
 ) => {
     return judgeTarget(e, (el) => {
         if ('contenteditable' in el) {
