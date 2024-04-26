@@ -92,15 +92,22 @@ export const useModelEditorStore = defineStore(
 
         const HISTORY = useHistoryOperations(_graph)
 
-        const REMOVE = useRemoveOperation(_graph, (_, cells) => {
-            cells.forEach(cell => {
-                if (cell.isNode() && cell.shape === TABLE_NODE) {
-                    ModelEditorEventBus.emit('removeTable', cell.id)
-                } else if (cell.isEdge() && cell.shape === ASSOCIATION_EDGE) {
-                    ModelEditorEventBus.emit('removeAssociation', cell.id)
-                }
-            })
-        })
+        const REMOVE = useRemoveOperation(
+            _graph,
+            (graph, cells, target) => {
+                graph.startBatch(target)
+                cells.forEach(cell => {
+                    if (cell.isNode() && cell.shape === TABLE_NODE) {
+                        ModelEditorEventBus.emit('removeTable', cell.id)
+                    } else if (cell.isEdge() && cell.shape === ASSOCIATION_EDGE) {
+                        ModelEditorEventBus.emit('removeAssociation', cell.id)
+                    }
+                })
+            },
+            (graph, _, target) => {
+                graph.stopBatch(target)
+            }
+        )
 
         // 在获取数据时调整
         const getGraphData = () => {
