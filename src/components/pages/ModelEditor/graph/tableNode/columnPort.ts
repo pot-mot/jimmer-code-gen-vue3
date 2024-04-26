@@ -4,7 +4,7 @@ import {
     COLUMN_HEIGHT,
     COLUMN_INIT_WIDTH,
     COLUMN_PORT,
-    COLUMN_PORT_SELECTOR
+    COLUMN_PORT_SELECTOR, HEAD_HEIGHT
 } from "@/components/business/modelEditor/constant.ts";
 
 export const columnPortGroup = {
@@ -29,7 +29,7 @@ export const columnPortPosition = (portsPositionArgs: KeyValue) => {
         return {
             position: {
                 x: 0,
-                y: (index + 1) * COLUMN_HEIGHT + 3,
+                y: HEAD_HEIGHT + index * COLUMN_HEIGHT + 3,
             },
             angle: 0,
         }

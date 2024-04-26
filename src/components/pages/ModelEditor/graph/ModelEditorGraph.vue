@@ -323,19 +323,26 @@ watch(() => MODEL.isLoaded, async (value) => {
  * 代码预览与下载
  */
 
-const judgeGraphDataIsChange = () => {
+const judgeGraphDataIsChange = (): boolean => {
 	if (GRAPH.isLoaded && MODEL.isLoaded) {
-		if (GRAPH_DATA.getGraphData() === MODEL._model().graphData) {
+		if (
+			JSON.stringify(JSON.parse(GRAPH_DATA.getGraphData())["json"]) ===
+			JSON.stringify(JSON.parse(MODEL._model().graphData)["json"])
+		) {
 			return false
 		}
 	}
 	return true
 }
 
-const sendGraphDataChangeMessage = () => {
-	if (judgeGraphDataIsChange()) {
+const sendGraphDataChangeMessage = (): boolean => {
+	const judge = judgeGraphDataIsChange()
+
+	if (judge) {
 		sendMessage('模型有变更尚未保存', 'warning')
 	}
+
+	return judge
 }
 
 const entityPreviewDialogOpenState = ref(false)
@@ -379,7 +386,7 @@ const handleSQLPreview = async () => {
 
 
 const handleEntityDownload = async () => {
-	sendGraphDataChangeMessage()
+	if (sendGraphDataChangeMessage()) return
 	const flag = loadingStore.start('ModelEditorGraph handleEntityDownload')
 	const model = MODEL._model()
 	await convertModel(model.id)
@@ -388,7 +395,7 @@ const handleEntityDownload = async () => {
 }
 
 const handleSQLDownload = async () => {
-	sendGraphDataChangeMessage()
+	if (sendGraphDataChangeMessage()) return
 	const flag = loadingStore.start('ModelEditorGraph handleSQLDownload')
 	const model = MODEL._model()
 	await downloadModelSql(model)
@@ -396,7 +403,7 @@ const handleSQLDownload = async () => {
 }
 
 const handleModelExport = async () => {
-	sendGraphDataChangeMessage()
+	if (sendGraphDataChangeMessage()) return
 	const flag = loadingStore.start('ModelEditorGraph handleModelExport')
 	const model = MODEL._model()
 	await exportModel(model)
@@ -404,7 +411,7 @@ const handleModelExport = async () => {
 }
 
 const handleModelDownload = async () => {
-	sendGraphDataChangeMessage()
+	if (sendGraphDataChangeMessage()) return
 	const flag = loadingStore.start('ModelEditorGraph handleModelDownload')
 	const model = MODEL._model()
 	await convertModel(model.id)

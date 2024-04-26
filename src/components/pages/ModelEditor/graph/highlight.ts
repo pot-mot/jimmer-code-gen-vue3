@@ -68,7 +68,7 @@ const edgeUnselected = (edge: Edge) => {
     }
 }
 
-export const unHoverAll = (graph: Graph) => {
+const unHoverAll = (graph: Graph) => {
     for (let edge of graph.getEdges()) {
         edgeUnhover(edge)
     }
@@ -156,6 +156,18 @@ export const useStyle = (graph: Graph) => {
     graph.on('edge:mouseleave', ({edge}) => {
         edgeUnhover(edge)
         const nodes = [edge.getSourceNode(), edge.getTargetNode()]
+        nodes.forEach(node => {
+            if (node) {
+                nodeUnhover(node)
+            }
+        })
+    })
+
+    graph.on('edge:removed', ({edge}) => {
+        const nodes = [
+            graph.getCellById(edge.previous('source').cell) as Node | null,
+            graph.getCellById(edge.previous('target').cell) as Node | null
+        ]
         nodes.forEach(node => {
             if (node) {
                 nodeUnhover(node)

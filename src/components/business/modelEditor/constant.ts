@@ -19,6 +19,7 @@ export const COLUMN_PORT = "COLUMN_PORT"
 
 
 // 样式常量
+export const HEAD_HEIGHT = 35
 export const COLUMN_HEIGHT = 30
 export const COLUMN_INIT_WIDTH = 200
 

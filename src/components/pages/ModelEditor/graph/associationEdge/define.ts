@@ -41,7 +41,10 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
 
         if (!sourceColumn || !targetColumn) return false
 
-        if (sourceColumn.typeCode !== targetColumn.typeCode || sourceColumn.rawType !== targetColumn.rawType) {
+        if (
+            (sourceColumn.typeCode !== targetColumn.typeCode) ||
+            ((sourceColumn.overwriteByRaw || targetColumn.overwriteByRaw) && sourceColumn.rawType !== targetColumn.rawType)
+        ) {
             sendMessage('关联两端类型不一致', 'warning')
             return false
         }

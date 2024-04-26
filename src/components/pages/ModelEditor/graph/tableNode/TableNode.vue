@@ -12,7 +12,7 @@
 						  v-if="table.superTables.length > 0">:</span>
 					<span class="super-table"
 						  v-for="superTable in table.superTables"
-						  @click="clickSuperTable(superTable.name)">
+						  @click="focusSuperTable(superTable.name)">
 						{{ superTable.name }}
 					</span>
 				</th>
@@ -186,7 +186,7 @@ onMounted(async () => {
 	}, {deep: true})
 })
 
-const clickSuperTable = (name: string) => {
+const focusSuperTable = (name: string) => {
 	const graph = GRAPH._graph()
 	const nodes = searchNodesByTableName(graph, name)
 	VIEW.focus(nodes[0])

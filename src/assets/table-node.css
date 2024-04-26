@@ -16,8 +16,6 @@
 .table-node .head,
 .table-node .column {
     white-space: nowrap;
-    height: 30px;
-    line-height: 30px;
 }
 
 .table-node .icon,
@@ -25,10 +23,15 @@
     padding: 0 0.5em;
 }
 
+.table-node .head {
+    height: 35px;
+    line-height: 35px;
+    font-size: 16px;
+}
+
 .table-node .head th {
     text-align: center;
     border-bottom: 1px solid var(--common-color);
-    font-size: 16px;
 }
 
 .table-node .head .name {
@@ -42,7 +45,7 @@
 
 .table-node .head .super-table {
     font-weight: 400;
-    padding-right: 0.5em;
+    padding-right: 0.8em;
 }
 
 .table-node .head .super-table:hover {
@@ -50,6 +53,8 @@
 }
 
 .table-node .column {
+    height: 30px;
+    line-height: 30px;
     font-size: 14px;
 }
 
