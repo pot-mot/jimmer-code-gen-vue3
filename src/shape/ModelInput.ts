@@ -119,10 +119,6 @@ export const GenModelInputJsonSchema = {
                     "description": "备注",
                     "type": "string"
                 },
-                "syncConvertEntity": {
-                    "description": "同步转换实体",
-                    "type": "boolean"
-                },
                 "tableAnnotation": {
                     "description": "生成 Table 注解",
                     "type": "boolean"
@@ -167,7 +163,6 @@ export const GenModelInputJsonSchema = {
                 "packagePath",
                 "realFk",
                 "remark",
-                "syncConvertEntity",
                 "tableAnnotation",
                 "tableCommentPrefixes",
                 "tableCommentSuffixes",
