@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import {computed, ref, watch} from 'vue'
 import {
-	GenTableModelInput,
-	GenTableModelInput_TargetOf_indexes_TargetOf_columns,
+	GenTableModelInput, GenTableModelInput_TargetOf_indexes_TargetOf_columns,
 } from "@/api/__generated/model/static";
 import {sendMessage} from "@/message/message.ts";
 import {useModelEditorStore} from "../../store/ModelEditorStore.ts";
@@ -61,9 +60,10 @@ const getSelectableSuperTableNames = () => {
 
 const superTableNames = ref(getSelectableSuperTableNames())
 
-const columnNames = computed<string[]>(() => {
-	return table.value.columns.map(it => it.name)
-})
+const columnNames = ref<string[]>(table.value.columns.map(it => it.name))
+const syncColumnNames = () => {
+	columnNames.value = table.value.columns.map(it => it.name)
+}
 
 // 记录原始表类型
 let baseTableType = (props.table?.type === "SUPER_TABLE" ? "TABLE" : props.table?.type) ?? "TABLE"
@@ -78,17 +78,21 @@ const isSuperTable = computed<boolean>({
 	}
 })
 
-watch(() => table.value.columns, () => {
+const handleChangeColumnName = (newName: string, index: number) => {
+	const oldName = columnNames.value[index]
+
 	table.value.indexes.forEach(index => {
-		const newColumns: GenTableModelInput_TargetOf_indexes_TargetOf_columns[] = []
-		index.columns.forEach(column => {
-			if (columnNames.value.includes(column.name)) {
-				newColumns.push(column)
+		const newIndexColumns: GenTableModelInput_TargetOf_indexes_TargetOf_columns[] = []
+		index.columns.forEach(it => {
+			if (it.name === oldName) {
+				newIndexColumns.push({name: newName})
+			} else {
+				newIndexColumns.push(it)
 			}
 		})
-		index.columns = newColumns
+		index.columns = newIndexColumns
 	})
-})
+}
 
 const handleColumnToPk = (pkIndex: number) => {
 	if (!jdbcTypeStore.isLoaded) {
@@ -127,10 +131,6 @@ const handleSubmit = () => {
 	}
 
 	table.value = newTable
-
-	table.value.columns.forEach((column, index) => {
-		column.orderKey = index + 1
-	})
 
 	emits('submit', table.value)
 }
@@ -179,15 +179,16 @@ const handleCancel = () => {
 					<el-select :model-value="table.superTables.map(it => it.name)" multiple filterable
 							   placeholder="继承的上级表" style="width: 100%;"
 							   @change="(value: string[]) => {
-							   table.superTables = value.map(it => {return {name: it}})
-						   }">
+								   table.superTables = value.map(it => {return {name: it}})
+							   }">
 						<el-option v-for="name in superTableNames" :value="name"></el-option>
 					</el-select>
 				</el-col>
 
 				<el-col :span="2">
 					<el-tooltip content="刷新高级表多选列表">
-						<el-button :icon="Refresh" @click="superTableNames = getSelectableSuperTableNames()"></el-button>
+						<el-button :icon="Refresh"
+								   @click="superTableNames = getSelectableSuperTableNames()"></el-button>
 					</el-tooltip>
 				</el-col>
 			</el-row>
@@ -213,7 +214,9 @@ const handleCancel = () => {
 					<el-tooltip :auto-close="500" content="主键">
 						<el-checkbox v-model="data.partOfPk"
 									 class="cling-checkbox"
-									 @change="(value: boolean) => {if (value) handleColumnToPk(index)}"></el-checkbox>
+									 @change="(value: boolean) => {
+										 if (value) handleColumnToPk(index)
+									 }"></el-checkbox>
 					</el-tooltip>
 
 					<el-tooltip v-if="data.partOfPk" :auto-close="500" content="自增">
@@ -230,6 +233,14 @@ const handleCancel = () => {
 						<el-checkbox v-model="data.logicalDelete"
 									 class="cling-checkbox"></el-checkbox>
 					</el-tooltip>
+				</template>
+
+				<template #name="{data, index}">
+					<el-input v-model="data.name"
+							  @input="(value: string) => {
+								  handleChangeColumnName(value, index)
+								  syncColumnNames()
+							  }"></el-input>
 				</template>
 
 				<template #comment="{data}">
@@ -286,7 +297,8 @@ const handleCancel = () => {
 							   @change="(value: string[]) => {
 								   data.columns = value.map(it => {return {name: it}})
 								   data.name = createIndexName(data)
-							   }">
+							   }"
+							   @focus="syncColumnNames">
 						<el-option v-for="name in columnNames" :value="name"></el-option>
 					</el-select>
 				</template>
