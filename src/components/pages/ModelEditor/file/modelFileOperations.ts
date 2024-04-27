@@ -63,11 +63,12 @@ export const importModel = async (modelInputJsonStr: string): Promise<number | u
 }
 
 export const exportModel = async (model: GenModelView) => {
+    const {id, ...other} = model
     const modelJsonBlob = new Blob(
-        [jsonPrettyFormat(model)],
+        [jsonPrettyFormat(other)],
         {type: "application/json"}
     )
-    saveAs(modelJsonBlob, `model-${model.name}.json`)
+    saveAs(modelJsonBlob, `model-[${model.name}].json`)
 }
 
 export const downloadModel = async (model: GenModelView) => {
@@ -83,12 +84,13 @@ export const downloadModel = async (model: GenModelView) => {
 
     const copyData = getModelAllCopyData(model)
 
+    const {id, ...other} = model
     const modelFiles = [
-        {first: "model/model.json", second: jsonPrettyFormat(model)},
+        {first: "model/model.json", second: jsonPrettyFormat(other)},
         {first: "model/graph-data.json", second: jsonStrPrettyFormat(model.graphData)},
         {first: "model/pure-data.json", second: jsonPrettyFormat(copyData)}
     ]
 
     const file = await createZip([...modelFiles, ...entityCodes, ...sqlFiles])
-    saveAs(file, `[${model.name}]-model.zip`)
+    saveAs(file, `model-[${model.name}].zip`)
 }
