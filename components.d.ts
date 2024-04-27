@@ -7,9 +7,6 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    AnyPreviewer: typeof import('./src/components/global/json/AnyPreviewer.vue')['default']
-    AnyViewer: typeof import('./src/components/global/json/AnyViewer.vue')['default']
-    ArrayPreviewer: typeof import('./src/components/global/json/ArrayPreviewer.vue')['default']
     AssociationForm: typeof import('./src/components/pages/ModelEditor/form/association/AssociationForm.vue')['default']
     AssociationIcon: typeof import('./src/components/global/icons/database/AssociationIcon.vue')['default']
     AssociationOffIcon: typeof import('./src/components/global/icons/toolbar/AssociationOffIcon.vue')['default']
@@ -62,13 +59,10 @@ declare module 'vue' {
     ExportIcon: typeof import('./src/components/global/icons/toolbar/ExportIcon.vue')['default']
     FitIcon: typeof import('./src/components/global/icons/toolbar/FitIcon.vue')['default']
     GenConfigForm: typeof import('./src/components/business/genConfig/GenConfigForm.vue')['default']
-    GenerateConfigurator: typeof import('./src/components/business/globalConfig/GlobalConfig.vue')['default']
     GlobalConfig: typeof import('./src/components/business/globalConfig/GlobalConfig.vue')['default']
     GlobalGenConfigForm: typeof import('./src/components/business/genConfig/GlobalGenConfigForm.vue')['default']
     GraphSearcher: typeof import('./src/components/pages/ModelEditor/search/GraphSearcher.vue')['default']
     IndexPage: typeof import('./src/components/pages/Index/IndexPage.vue')['default']
-    JsonArrayPreviewer: typeof import('./src/components/global/json/JsonArrayPreviewer.vue')['default']
-    JsonPreviewer: typeof import('./src/components/global/json/JsonPreviewer.vue')['default']
     LayoutIcon: typeof import('./src/components/global/icons/toolbar/LayoutIcon.vue')['default']
     LeftRightLayout: typeof import('./src/components/global/layout/LeftRightLayout.vue')['default']
     Line: typeof import('./src/components/global/list/Line.vue')['default']
@@ -87,7 +81,6 @@ declare module 'vue' {
     ModelTableItem: typeof import('./src/components/business/model/menu/ModelTableItem.vue')['default']
     MultiCodePreview: typeof import('./src/components/global/code/MultiCodePreview.vue')['default']
     NodeItem: typeof import('./src/components/pages/ModelEditor/menu/NodeItem.vue')['default']
-    ObjectPreviewer: typeof import('./src/components/global/json/ObjectPreviewer.vue')['default']
     PackageAddIcon: typeof import('./src/components/global/icons/entity/PackageAddIcon.vue')['default']
     PackageIcon: typeof import('./src/components/global/icons/entity/PackageIcon.vue')['default']
     PreviewIcon: typeof import('./src/components/global/icons/toolbar/PreviewIcon.vue')['default']

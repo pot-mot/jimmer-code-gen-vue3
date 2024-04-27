@@ -46,13 +46,11 @@ import {useModelEditorStore} from "../../store/ModelEditorStore.ts";
 import {loadAssociationModelInputs} from "../associationEdge/load.ts";
 import {columnToPort} from "@/components/pages/ModelEditor/graph/tableNode/load.ts";
 import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
-import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
 import {searchNodesByTableName} from "@/components/pages/ModelEditor/search/search.ts";
+import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
 
 const {GRAPH, VIEW} = useModelEditorStore()
-
-const loadingStore = useGlobalLoadingStore()
 
 const wrapper = ref<HTMLElement>()
 
@@ -113,14 +111,14 @@ onMounted(async () => {
 	const resizePort = () => {
 		if (!node.value || !GRAPH.isLoaded) return
 
-		graph.startBatch("Sync table_node port")
+		graph.startBatch("Sync TABLE_NODE port")
 
 		// 设置 ports 宽度
 		for (let port of node.value.ports.items) {
 			node.value.setPortProp(port.id!, `attrs/${COLUMN_PORT_SELECTOR}/width`, node.value.getSize().width)
 		}
 
-		graph.stopBatch("Sync table_node port")
+		graph.stopBatch("Sync TABLE_NODE port")
 	}
 
 	node.value.on('change:size', () => {
@@ -133,11 +131,7 @@ onMounted(async () => {
 	watch(() => table.value, (newTable) => {
 		if (!node.value || !newTable || !GRAPH.isLoaded) return
 
-		const flag = loadingStore.start('TableNode syncPortAndEdgeByData')
-
 		const nodeId = node.value.id
-
-		graph.startBatch("Sync table_node data")
 
 		const oldEdges = graph.getConnectedEdges(nodeId)
 
@@ -178,9 +172,7 @@ onMounted(async () => {
 				}
 			})
 
-			graph.stopBatch("Sync table_node data")
-
-			loadingStore.stop(flag)
+			ModelEditorEventBus.emit('tableModifySynced', {id: node.value!!.id})
 		}, 100 + oldEdges.length * 20)
 
 	}, {deep: true})

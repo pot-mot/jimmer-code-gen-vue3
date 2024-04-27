@@ -11,6 +11,7 @@ type ModelEditorEvents = {
     createdTable: { id: string, table: GenTableModelInput },
     modifyTable: { id: string, table: GenTableModelInput },
     modifiedTable: { id: string, table: GenTableModelInput },
+    tableModifySynced: { id: string},
     removeTable: string,
 
     createAssociation: undefined,
