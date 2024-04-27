@@ -7,11 +7,12 @@ import {
 import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/loadData.ts";
 
 type ModelEditorEvents = {
+    syncedTable: { id: string },
+
     createTable: TableLoadOptions,
     createdTable: { id: string, table: GenTableModelInput },
     editTable: { id: string, table: GenTableModelInput },
     editedTable: { id: string, table: GenTableModelInput },
-    tableModifySynced: { id: string },
     removeTable: string,
 
     editAssociation: { id: string, association: GenAssociationModelInput },
@@ -22,8 +23,8 @@ type ModelEditorEvents = {
 
     createEnum: undefined,
     createdEnum: GenModelInput_TargetOf_enums,
-    modifyEnum: { name: string, genEnum: GenModelInput_TargetOf_enums },
-    modifiedEnum: { name: string, genEnum: GenModelInput_TargetOf_enums },
+    editEnum: { name: string, genEnum: GenModelInput_TargetOf_enums },
+    editedEnum: { name: string, genEnum: GenModelInput_TargetOf_enums },
     removeEnum: string,
 
     loadSchema: { id: number },

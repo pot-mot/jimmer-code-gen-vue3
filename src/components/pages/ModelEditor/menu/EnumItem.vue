@@ -12,7 +12,7 @@ interface EdgeItem {
 const props = defineProps<EdgeItem>()
 
 const handleEdit = () => {
-	ModelEditorEventBus.emit('modifyEnum', {name: props.genEnum.name, genEnum: props.genEnum})
+	ModelEditorEventBus.emit('editEnum', {name: props.genEnum.name, genEnum: props.genEnum})
 }
 
 const handleDelete = () => {

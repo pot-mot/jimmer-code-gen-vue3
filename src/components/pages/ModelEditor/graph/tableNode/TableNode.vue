@@ -212,7 +212,7 @@ onMounted(async () => {
 			})
 			unwatch = watch(() => table.value, tableValueWatcher, {deep: true})
 
-			ModelEditorEventBus.emit('tableModifySynced', {id: node.value!!.id})
+			ModelEditorEventBus.emit('syncedTable', {id: nodeId})
 
 			if (historyFlag) graph.enableHistory()
 		}, 100 + oldEdges.length * 20)

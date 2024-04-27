@@ -19,7 +19,7 @@ const emits = defineEmits<EnumEntityDialogEmits>()
 
 const handleSubmit = (genEnum: GenModelInput_TargetOf_enums) => {
 	if (props.name.length > 0) {
-		ModelEditorEventBus.emit('modifiedEnum', {name: props.name, genEnum})
+		ModelEditorEventBus.emit('editedEnum', {name: props.name, genEnum})
 	} else {
 		ModelEditorEventBus.emit('createdEnum', genEnum)
 	}

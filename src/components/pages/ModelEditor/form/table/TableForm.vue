@@ -259,7 +259,7 @@ const handleCancel = () => {
 						@edit-enum="(name) => {
 							let genEnum = MODEL._model().enums.filter(it => it.name === name)[0]
 							if (!genEnum) genEnum = {...getDefaultEnum(),name}
-							ModelEditorEventBus.emit('modifyEnum', {name, genEnum})
+							ModelEditorEventBus.emit('editEnum', {name, genEnum})
 						}"
 					></ColumnTypeForm>
 				</template>

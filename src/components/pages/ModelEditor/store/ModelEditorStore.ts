@@ -362,6 +362,14 @@ export const useModelEditorStore = defineStore(
             debugStore.log('EVENT', type, event)
         })
 
+        // 表同步相关
+
+        ModelEditorEventBus.on('syncedTable', ({id}) => {
+            const graph = _graph()
+            if (!graph) return
+            graph.stopBatch(`syncTable [id=${id}]`)
+        })
+
 
         /**
          * 表编辑对话框相关
@@ -411,7 +419,7 @@ export const useModelEditorStore = defineStore(
             if (!cell || !cell.isNode()) {
                 sendMessage(`更改节点【${id}】失败，无法被找到`, 'error')
             } else {
-                graph.startBatch(`tableModifySync [id=${id}]`)
+                graph.startBatch(`syncTable [id=${id}]`)
 
                 const oldTable = cell.getData().table
 
@@ -426,14 +434,6 @@ export const useModelEditorStore = defineStore(
                 updateTableNodeData(cell, table)
             }
             tableDialogsStore.close(id)
-        })
-
-        ModelEditorEventBus.on('tableModifySynced', ({id}) => {
-            const graph = _graph()
-
-            if (!graph) return
-
-            graph.stopBatch(`tableModifySync [id=${id}]`)
         })
 
         ModelEditorEventBus.on('removeTable', (id) => {
@@ -474,11 +474,11 @@ export const useModelEditorStore = defineStore(
             if (!cell || !cell.isEdge()) {
                 sendMessage(`更改边【${id}】失败，无法被找到`, 'error')
             } else {
-                graph.startBatch(`associationModifySync [id=${id}]`)
+                graph.startBatch(`editAssociation [id=${id}]`)
 
                 updateAssociationEdgeData(cell, association)
 
-                graph.stopBatch(`associationModifySync [id=${id}]`)
+                graph.stopBatch(`editAssociation [id=${id}]`)
             }
 
             associationDialogsStore.close(id)
@@ -487,13 +487,13 @@ export const useModelEditorStore = defineStore(
         ModelEditorEventBus.on('modifyAssociation', ({id}) => {
             const graph = _graph()
             if (!graph) return
-            graph.startBatch(`associationModifySync [id=${id}]`)
+            graph.startBatch(`modifyAssociation [id=${id}]`)
         })
 
         ModelEditorEventBus.on('modifiedAssociation', ({id}) => {
             const graph = _graph()
             if (!graph) return
-            graph.stopBatch(`associationModifySync [id=${id}]`)
+            graph.stopBatch(`modifyAssociation [id=${id}]`)
         })
 
         ModelEditorEventBus.on('removeAssociation', (id) => {
@@ -516,11 +516,11 @@ export const useModelEditorStore = defineStore(
             enumDialogsStore.close("")
         })
 
-        ModelEditorEventBus.on('modifyEnum', ({name, genEnum}) => {
+        ModelEditorEventBus.on('editEnum', ({name, genEnum}) => {
             enumDialogsStore.open(name, cloneDeep(genEnum))
         })
 
-        ModelEditorEventBus.on('modifiedEnum', ({name, genEnum}) => {
+        ModelEditorEventBus.on('editedEnum', ({name, genEnum}) => {
             const currentModel = _model()
 
             currentModel.enums = currentModel.enums.filter(it => it.name !== name)
