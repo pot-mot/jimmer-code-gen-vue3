@@ -1,5 +1,5 @@
 import type {AssociationType, DissociateAction} from '../enums/';
-import type {GenAssociationModelInput_TargetOf_columnReferences, GenAssociationModelInput_TargetOf_sourceTable, GenAssociationModelInput_TargetOf_targetTable} from './';
+import type {GenAssociationModelInput_TargetOf_columnReferences} from './';
 
 export interface GenAssociationModelInput {
     /**
@@ -31,15 +31,15 @@ export interface GenAssociationModelInput {
      */
     fake: boolean;
     /**
-     * 主表
-     */
-    sourceTable: GenAssociationModelInput_TargetOf_sourceTable;
-    /**
-     * 从表
-     */
-    targetTable: GenAssociationModelInput_TargetOf_targetTable;
-    /**
      * 列引用
      */
     columnReferences: Array<GenAssociationModelInput_TargetOf_columnReferences>;
+    /**
+     * 主表
+     */
+    sourceTableName: string;
+    /**
+     * 从表
+     */
+    targetTableName: string;
 }
