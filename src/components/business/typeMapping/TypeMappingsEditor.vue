@@ -8,9 +8,10 @@ import EditList from "@/components/global/list/EditList.vue";
 import {PropListColumn} from "@/components/global/list/ListProps.ts";
 import {sendMessage} from "@/message/message.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
-import {cloneDeep, uniqWith} from "lodash";
+import {cloneDeep} from "lodash";
 import {useGlobalGenConfigStore} from "@/components/business/genConfig/GlobalGenConfigStore.ts";
 import {validateTypeMappingInput} from "@/shape/GenTypeMappingInput.ts";
+import {validateTypeMappings} from "@/components/business/typeMapping/validate.ts";
 
 const editState = ref(false)
 
@@ -84,25 +85,7 @@ const handleEdit = async () => {
 }
 
 const handleSubmit = async () => {
-	const messageList: string[] = []
-
-	const uniqueTypeMappings = uniqWith(tempTypeMappings.value, (mapping1, mapping2) => {
-		const keys = <(keyof GenTypeMappingInput)[]>['dataSourceType', 'language', 'propertyType', 'typeExpression']
-		for (let key of keys) {
-			if (mapping1[key] !== mapping2[key]) {
-				return false
-			}
-		}
-		return true
-	})
-
-	if (tempTypeMappings.value.some(mapping => mapping.typeExpression.length === 0 || mapping.propertyType.length === 0)) {
-		messageList.push('TypeMapping 数据库类型表达式与属性均不可为空');
-	}
-
-	if (uniqueTypeMappings.length !== tempTypeMappings.value.length) {
-		messageList.push('TypeMapping 不可重复');
-	}
+	const messageList = validateTypeMappings(tempTypeMappings.value)
 
 	if (messageList.length > 0) {
 		messageList.forEach(it => sendMessage(it, 'warning'))

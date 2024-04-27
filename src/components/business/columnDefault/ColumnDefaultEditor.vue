@@ -7,11 +7,12 @@ import EditList from "@/components/global/list/EditList.vue";
 import {PropListColumn} from "@/components/global/list/ListProps.ts";
 import {sendMessage} from "@/message/message.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
-import {cloneDeep, uniqWith} from "lodash";
+import {cloneDeep} from "lodash";
 import {useJdbcTypeStore} from "@/components/business/jdbcType/jdbcTypeStore.ts";
 import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
 import {useGlobalGenConfigStore} from "@/components/business/genConfig/GlobalGenConfigStore.ts";
 import {validateColumnDefaultInput} from "@/shape/GenColumnDefaultInput.ts";
+import {validateColumnDefaults} from "@/components/business/columnDefault/validate.ts";
 
 const editState = ref(false)
 
@@ -100,30 +101,7 @@ const handleEdit = async () => {
 }
 
 const handleSubmit = async () => {
-	const messageList: string[] = []
-
-	const uniqueColumnDefaults = uniqWith(tempColumnDefaults.value, (mapping1, mapping2) => {
-		const keys = <(keyof GenColumnDefaultInput)[]>['dataSourceType', 'typeCode']
-		for (let key of keys) {
-			if (mapping1[key] !== mapping2[key]) {
-				return false
-			}
-		}
-		return true
-	})
-
-	if (uniqueColumnDefaults.length !== tempColumnDefaults.value.length) {
-		messageList.push('ColumnDefault 的 dataSourceType 和 typeCode 不可重复');
-	}
-
-	tempColumnDefaults.value.forEach((columnDefault) => {
-		if (columnDefault.dataSize as number | null === null) {
-			messageList.push('ColumnDefault 的 dataSize 不可为空');
-		}
-		if (columnDefault.numericPrecision as number | null === null) {
-			messageList.push('ColumnDefault 的 numericPrecision 不可为空');
-		}
-	})
+	const messageList = validateColumnDefaults(tempColumnDefaults.value)
 
 	if (messageList.length > 0) {
 		messageList.forEach(it => sendMessage(it, 'warning'))
