@@ -1,6 +1,7 @@
 import {Graph} from "@antv/x6";
 import {History} from "@antv/x6-plugin-history";
 import {sendMessage} from "@/message/message.ts";
+import {Ref, ref} from "vue";
 
 export const useHistory = (graph: Graph) => {
     graph.use(
@@ -30,28 +31,43 @@ export const useHistory = (graph: Graph) => {
 }
 
 export interface HistoryOperation {
+    isUndo: Ref<Boolean>,
+    isRedo: Ref<Boolean>,
     undo: () => void
     redo: () => void
 }
 
 export const useHistoryOperations = (_graph: () => Graph): HistoryOperation => {
-    return {
-        redo: () => redo(_graph()),
-        undo: () => undo(_graph())
-    }
-}
-const undo = (graph: Graph) => {
-    if (graph.canUndo()) {
-        graph.undo()
-    } else {
-        sendMessage('暂无可撤回的操作')
-    }
-}
+    const isRedo = ref(false)
 
-const redo = (graph: Graph) => {
-    if (graph.canRedo()) {
-        graph.redo()
-    } else {
-        sendMessage('暂无可重做的操作')
+    const isUndo = ref(false)
+
+    return {
+        isRedo,
+        isUndo,
+        redo: () => {
+            const graph = _graph()
+            if (graph.canRedo()) {
+                isRedo.value = true
+                graph.redo()
+                setTimeout(() => {
+                    isRedo.value = false
+                }, 0)
+            } else {
+                sendMessage('暂无可重做的操作')
+            }
+        },
+        undo: () => {
+            const graph = _graph()
+            if (graph.canUndo()) {
+                isUndo.value = true
+                graph.undo()
+                setTimeout(() => {
+                    isUndo.value = false
+                }, 0)
+            } else {
+                sendMessage('暂无可撤回的操作')
+            }
+        }
     }
 }

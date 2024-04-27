@@ -104,15 +104,13 @@ const handleColumnToPk = (pkIndex: number) => {
 	pkColumn.logicalDelete = false
 	pkColumn.businessKey = false
 
-	// 如果非 super table，主键变更将排除其他主键
-	if (!isSuperTable.value) {
-		table.value.columns.forEach((column, index) => {
-			if (index !== pkIndex && column.partOfPk) {
-				column.partOfPk = false
-				column.autoIncrement = false
-			}
-		})
-	}
+	// 主键变更将排除其他主键
+	table.value.columns.forEach((column, index) => {
+		if (index !== pkIndex && column.partOfPk) {
+			column.partOfPk = false
+			column.autoIncrement = false
+		}
+	})
 }
 
 const handleSubmit = () => {

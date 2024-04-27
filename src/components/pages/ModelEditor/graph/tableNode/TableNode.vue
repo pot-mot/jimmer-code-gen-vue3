@@ -50,7 +50,7 @@ import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTe
 import {searchNodesByTableName} from "@/components/pages/ModelEditor/search/search.ts";
 import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
 
-const {GRAPH, VIEW} = useModelEditorStore()
+const {GRAPH, VIEW, HISTORY} = useModelEditorStore()
 
 const wrapper = ref<HTMLElement>()
 
@@ -111,14 +111,10 @@ onMounted(async () => {
 	const resizePort = () => {
 		if (!node.value || !GRAPH.isLoaded) return
 
-		graph.startBatch("Sync TABLE_NODE port")
-
 		// 设置 ports 宽度
 		for (let port of node.value.ports.items) {
 			node.value.setPortProp(port.id!, `attrs/${COLUMN_PORT_SELECTOR}/width`, node.value.getSize().width)
 		}
-
-		graph.stopBatch("Sync TABLE_NODE port")
 	}
 
 	node.value.on('change:size', () => {
@@ -130,6 +126,12 @@ onMounted(async () => {
 	// 根据数据更新同步 port 和 edge
 	watch(() => table.value, (newTable) => {
 		if (!node.value || !newTable || !GRAPH.isLoaded) return
+
+		let historyFlag = false
+
+		if (HISTORY.isUndo || HISTORY.isRedo) historyFlag = true
+
+		if (historyFlag) graph.disableHistory()
 
 		const nodeId = node.value.id
 
@@ -171,6 +173,8 @@ onMounted(async () => {
 			})
 
 			ModelEditorEventBus.emit('tableModifySynced', {id: node.value!!.id})
+
+			if (historyFlag) graph.enableHistory()
 		}, 100 + oldEdges.length * 20)
 
 	}, {deep: true})
