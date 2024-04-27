@@ -186,7 +186,7 @@ import {
 	exportModel,
 	previewModelEntity,
 	previewModelSql
-} from "@/components/business/model/file/modelFileOperations.ts";
+} from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
 import {cloneDeep} from "lodash";
 import {TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {useDocumentEvent} from "@/utils/useDocumentEvent.ts";

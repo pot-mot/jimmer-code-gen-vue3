@@ -1,9 +1,9 @@
-export const jsonStrFormat = (text: string): string => {
+export const jsonStrPrettyFormat = (text: string): string => {
     const obj = JSON.parse(text)
-    return JSON.stringify(obj, null, '    ')
+    return jsonPrettyFormat(obj)
 }
 
-export const jsonFormat = (obj: object): string => {
+export const jsonPrettyFormat = (obj: object) => {
     return JSON.stringify(obj, null, '    ')
 }
 

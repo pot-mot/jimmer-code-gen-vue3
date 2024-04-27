@@ -5,7 +5,11 @@ import {loadModelInputs, TableLoadOptions} from "@/components/pages/ModelEditor/
 import {CopyData, validateCopyData} from "@/shape/CopyData.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
 import {useModelEditorStore} from "@/components/pages/ModelEditor/store/ModelEditorStore.ts";
-import {GenAssociationModelInput, GenModelInput, GenTableModelInput} from "@/api/__generated/model/static";
+import {
+    GenAssociationModelInput,
+    GenModelInput,
+    GenTableModelInput
+} from "@/api/__generated/model/static";
 import {validateModelInput} from "@/shape/ModelInput.ts";
 import {importEnums} from "@/components/pages/ModelEditor/graph/clipBoard/importEnums.ts";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
@@ -24,6 +28,42 @@ export const useClipBoard = (graph: Graph) => {
     graph.bindKey(["ctrl+v", "command+v"], async () => {
         await paste()
     })
+}
+
+export const getModelAllCopyData = (model: GenModelInput): CopyData => {
+    const cells = JSON.parse(model.graphData)?.json?.cells
+    const nodes = cells.filter((it: any) => it.shape === TABLE_NODE)
+    const edges = cells.filter((it: any) => it.shape === ASSOCIATION_EDGE)
+
+    return {
+        tables: nodes
+            .map((it: any) => it.data.table)
+            .filter((it: any) => it != undefined) ?? [],
+            associations: edges
+        .map((it: any) => it.data.association)
+        .filter((it: any) => it != undefined) ?? [],
+        enums: model.enums,
+        optionsList: getPositionOptionsList(nodes.map((it: any) => it.position)),
+    }
+}
+
+const getPositionOptionsList = (positions: {x: number, y: number}[]): TableLoadOptions[] => {
+    let minX = Number.MAX_VALUE
+    let minY = Number.MAX_VALUE
+    positions.forEach(it => {
+        if (it.x < minX) minX = it.x
+        if (it.y < minY) minY = it.y
+    })
+
+    const optionsList: TableLoadOptions[] = []
+    positions.forEach(it => {
+        optionsList.push({
+            x: it.x - minX,
+            y: it.y - minY
+        })
+    })
+
+    return optionsList
 }
 
 const copy = async () => {
@@ -49,22 +89,7 @@ const copy = async () => {
             MODEL._model().enums.filter(it => tableEnumNames.includes(it.name)) : []
 
     const nodePositions = nodes.map(it => (it as Node).getPosition())
-
-    let minX = Number.MAX_VALUE
-    let minY = Number.MAX_VALUE
-    nodePositions.forEach(it => {
-        if (it.x < minX) minX = it.x
-        if (it.y < minY) minY = it.y
-    })
-
-    const optionsList: TableLoadOptions[] = []
-    nodePositions.forEach(it => {
-        optionsList.push({
-            x: it.x - minX,
-            y: it.y - minY
-        })
-    })
-
+    const optionsList = getPositionOptionsList(nodePositions)
 
     const copyData: CopyData = {tables, associations, enums, optionsList}
 
@@ -79,9 +104,9 @@ const copy = async () => {
 
 const cut = async () => {
     const {REMOVE} = useModelEditorStore()
-    const {nodes, edges, enums} = await copy()
-    REMOVE.removeCells([...nodes, ...edges])
-    return {nodes, edges, enums}
+    const copyResult = await copy()
+    REMOVE.removeCells([...copyResult.nodes, ...copyResult.edges])
+    return copyResult
 }
 
 const paste = async () => {

@@ -2,9 +2,10 @@ import {GenModelView, Pair} from "@/api/__generated/model/static";
 import JSZip from "jszip";
 import {api} from "@/api";
 import {saveAs} from "file-saver";
-import {jsonFormat, jsonStrFormat} from "@/utils/json.ts";
+import {jsonPrettyFormat, jsonStrPrettyFormat} from "@/utils/json.ts";
 import {validateModelInputStr} from "@/shape/ModelInput.ts";
 import {sendMessage} from "@/message/message.ts";
+import {getModelAllCopyData} from "@/components/pages/ModelEditor/graph/clipBoard/clipBoard.ts";
 
 const createZip = async (files: Array<Pair<string, string>>): Promise<Blob> => {
     const zip = new JSZip()
@@ -63,7 +64,7 @@ export const importModel = async (modelInputJsonStr: string): Promise<number | u
 
 export const exportModel = async (model: GenModelView) => {
     const modelJsonBlob = new Blob(
-        [jsonFormat(model)],
+        [jsonPrettyFormat(model)],
         {type: "application/json"}
     )
     saveAs(modelJsonBlob, `model-${model.name}.json`)
@@ -80,9 +81,12 @@ export const downloadModel = async (model: GenModelView) => {
         return {first: `${model.dataSourceType.toLowerCase()}/${first}`, second}
     })
 
+    const copyData = getModelAllCopyData(model)
+
     const modelFiles = [
-        {first: "model/model.json", second: jsonFormat(model)},
-        {first: "model/graphData.json", second: jsonStrFormat(model.graphData)}
+        {first: "model/model.json", second: jsonPrettyFormat(model)},
+        {first: "model/graph-data.json", second: jsonStrPrettyFormat(model.graphData)},
+        {first: "model/pure-data.json", second: jsonPrettyFormat(copyData)}
     ]
 
     const file = await createZip([...modelFiles, ...entityCodes, ...sqlFiles])
