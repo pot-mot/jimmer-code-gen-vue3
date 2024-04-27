@@ -3,7 +3,6 @@ import {computed, ref, watch} from 'vue'
 import {
 	GenTableModelInput,
 	GenTableModelInput_TargetOf_indexes_TargetOf_columns,
-	type GenTableModelInput_TargetOf_superTables
 } from "@/api/__generated/model/static";
 import {sendMessage} from "@/message/message.ts";
 import {useModelEditorStore} from "../../store/ModelEditorStore.ts";
@@ -22,6 +21,8 @@ import {validateColumn, validateIndex} from "@/shape/GenTableModelInput.ts";
 import {createIndexName} from "@/components/pages/ModelEditor/graph/nameTemplate/createIndexName.ts";
 import {TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {Refresh} from "@element-plus/icons-vue";
+import {validateTableForm} from "@/components/pages/ModelEditor/form/table/validate.ts";
+import {getLegalSuperTables} from "@/components/pages/ModelEditor/form/table/LegalSuperTable.ts";
 
 const {GRAPH, MODEL} = useModelEditorStore()
 
@@ -47,59 +48,18 @@ const getOtherTables = () => {
 	return GRAPH.nodes.filter(it => it.shape === TABLE_NODE && it.id !== props.id).map(it => it.data.table)
 }
 
-// 获取可选取的 superTable 的名称列表
-const getSuperTableNames = (): string[] => {
-	const tableNodes = GRAPH.nodes.filter(it => it.shape === TABLE_NODE)
-	const superTables: GenTableModelInput[] = tableNodes.map(it => it.data.table).filter(it => it.type === "SUPER_TABLE")
-
-	const allSuperTableNames = superTables.map(it => it.name)
-
-	if (table.value.type != "SUPER_TABLE") {
-		return allSuperTableNames
-	}
-
-	const inheritMap = createInheritMap(superTables)
-	const allChildren = collectAllChildren(table.value.name, inheritMap)
-
-	console.log(superTables, inheritMap, allChildren)
-
-	return allSuperTableNames.filter(it => it != table.value.name).filter(it => !allChildren.includes(it))
+const getSelectableSuperTables = () => {
+	return getLegalSuperTables(
+		table.value,
+		GRAPH.nodes.filter(it => it.shape === TABLE_NODE).map(it => it.data.table).filter(it => it.type === "SUPER_TABLE")
+	)
 }
 
-const createInheritMap = (tables: GenTableModelInput[]): Map<string, string[]> => {
-	const inheritMap = new Map<string, string[]>
-	for (let table of tables) {
-		const {name, superTables} = table
-		superTables.forEach(it => {
-			const value = inheritMap.get(it.name)
-			if (value != undefined) {
-				value.push(name)
-			} else {
-				inheritMap.set(it.name, [name])
-			}
-		})
-	}
-	return inheritMap
+const getSelectableSuperTableNames = () => {
+	return getSelectableSuperTables().map(it => it.name)
 }
 
-const collectAllChildren = (root: string, inheritMap: Map<string, string[]>, visited: Set<string> = new Set): string[] => {
-	const result: string[] = []
-
-	const children = inheritMap.get(root)
-	if (!children) return []
-	for (let child of children) {
-		if (!visited.has(child)) {
-			result.push(child)
-			visited.add(child)
-
-			result.push(...collectAllChildren(child, inheritMap, visited))
-		}
-	}
-
-	return result
-}
-
-const superTableNames = ref(getSuperTableNames())
+const superTableNames = ref(getSelectableSuperTableNames())
 
 const columnNames = computed<string[]>(() => {
 	return table.value.columns.map(it => it.name)
@@ -155,131 +115,20 @@ const handleColumnToPk = (pkIndex: number) => {
 	}
 }
 
-const handleTableToSuperTable = () => {
-	table.value.type = "SUPER_TABLE"
-
-	for (let column of table.value.columns) {
-		if (column.partOfPk) {
-			column.partOfPk = false
-		}
-	}
-}
-
 const handleSubmit = () => {
-	const messageList: string[] = []
-
-	if (table.value.name.length === 0) {
-		messageList.push('表名不得为空')
-	}
-
-	if (getOtherTables()
-		.filter(it => it.name === table.value.name)
-		.length > 0) {
-		messageList.push('表名不可重复')
-	}
-
-	let filteredSuperTableName: GenTableModelInput_TargetOf_superTables[] = []
-	for (let superTable of table.value.superTables) {
-		if (!getSuperTableNames()
-			.includes(superTable.name)) {
-			messageList.push(`上级表【${superTable.name}】不存在/不是超级表/存在循环依赖，已自动移除`)
-		} else {
-			filteredSuperTableName.push(superTable)
-		}
-	}
-	table.value.superTables = filteredSuperTableName
-
-
-	for (let column of table.value.columns) {
-		if (column.enum !== undefined && !MODEL._model().enums.map(it => it.name).includes(column.enum.name)) {
-			messageList.push(`列【${column.name}】对应枚举【${column.enum.name}】不存在，已自动移除`)
-			column.enum = undefined
-		}
-		if (!column.name) {
-			messageList.push('列名不得为空')
-		}
-
-		if (column.dataSize as number | null === null) {
-			messageList.push(`列【${column.name}】的长度不可为空`);
-		}
-		if (column.numericPrecision as number | null === null) {
-			messageList.push(`列【${column.name}】的精度不可为空`);
-		}
-	}
-
-	const columnNameSet = new Set<string>(table.value.columns.map(it => it.name))
-
-	if (columnNameSet.size !== table.value.columns.length) {
-		messageList.push('列名不可重复')
-	}
-
-	const indexNameSet = new Set<string>(table.value.indexes.map(it => it.name))
-
-	for (let indexName of indexNameSet.values()) {
-		if (indexName.length === 0) {
-			messageList.push('索引名不得为空')
-			break
-		}
-	}
-	if (indexNameSet.size !== table.value.indexes.length) {
-		messageList.push('索引名不可重复')
-	}
-
-	for (let index of table.value.indexes) {
-		const newColumns = []
-		for (let column of index.columns) {
-			if (!columnNames.value.includes(column.name)) {
-				messageList.push(`索引【${index.name}】引用列【${column.name}】不存在，已自动移除`)
-			} else {
-				newColumns.push(column)
-			}
-		}
-
-		if (newColumns.length === 0) {
-			messageList.push('索引引用列不得为空')
-			break
-		}
-
-		const columnNameSet = new Set<string>(newColumns.map(it => it.name))
-		for (let columnName of columnNameSet.values()) {
-			if (columnName.length === 0) {
-				messageList.push('索引引用列名不得为空')
-				break
-			}
-		}
-		if (columnNameSet.size !== newColumns.length) {
-			messageList.push('索引引用列名不可重复')
-		}
-
-		index.columns = newColumns
-	}
-
-	const pkColumns = table.value.columns.filter(column => column.partOfPk)
-
-	if (!isSuperTable.value) {
-		if (pkColumns.length > 1) {
-			messageList.push('普通实体表仅可有一个主键')
-		} else if (pkColumns.length === 0) {
-			messageList.push('普通实体表必须要有一个主键')
-		}
-	} else if (pkColumns.length > 0) {
-		messageList.push('上级表不可拥有主键')
-	}
-
-	for (let pkColumn of pkColumns) {
-		if (!pkColumn.typeNotNull) {
-			messageList.push('主键列必须非空')
-		}
-
-		if (pkColumn.enum) {
-			messageList.push('主键列不可为枚举类型')
-		}
-	}
+	const {newTable, messageList} = validateTableForm(
+		table.value,
+		getOtherTables(),
+		getSelectableSuperTables(),
+		MODEL._model().enums
+	)
 
 	if (messageList.length > 0) {
 		messageList.forEach(it => sendMessage(it, 'warning'))
 		return
 	}
+
+	table.value = newTable
 
 	table.value.columns.forEach((column, index) => {
 		column.orderKey = index + 1
@@ -325,8 +174,7 @@ const handleCancel = () => {
 
 			<el-row :gutter="12" style="line-height: 2em; width: 80%;">
 				<el-col :span="6">
-					<el-checkbox v-model="isSuperTable" label="作为上级表"
-								 @change="(value: boolean) => {if (value) handleTableToSuperTable()}"></el-checkbox>
+					<el-checkbox v-model="isSuperTable" label="作为上级表"></el-checkbox>
 				</el-col>
 
 				<el-col :span="16">
@@ -341,7 +189,7 @@ const handleCancel = () => {
 
 				<el-col :span="2">
 					<el-tooltip content="刷新高级表多选列表">
-						<el-button :icon="Refresh" @click="superTableNames = getSuperTableNames()"></el-button>
+						<el-button :icon="Refresh" @click="superTableNames = getSelectableSuperTableNames()"></el-button>
 					</el-tooltip>
 				</el-col>
 			</el-row>
@@ -364,7 +212,7 @@ const handleCancel = () => {
 				</template>
 
 				<template #columnType="{data, index}">
-					<el-tooltip v-if="!isSuperTable" :auto-close="500" content="主键">
+					<el-tooltip :auto-close="500" content="主键">
 						<el-checkbox v-model="data.partOfPk"
 									 class="cling-checkbox"
 									 @change="(value: boolean) => {if (value) handleColumnToPk(index)}"></el-checkbox>
