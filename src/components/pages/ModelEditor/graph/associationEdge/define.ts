@@ -1,13 +1,24 @@
 import {erRouter, orthRouter} from "@/components/global/graphEditor/edgeRouter.ts";
 import {sendMessage} from "@/message/message.ts";
 import {Options} from "@antv/x6/es/graph/options";
-import {ASSOCIATION_EDGE, COMMON_COLOR, LINE_WIDTH} from "@/components/business/modelEditor/constant.ts";
 import {
-    getTableColumnByEdgeConnect,
-    setEdgeAssociationData
-} from "@/components/pages/ModelEditor/graph/associationEdge/associationData.ts";
+    ASSOCIATION_EDGE,
+    COMMON_COLOR,
+    DEFAULT_ASSOCIATION_TYPE,
+    LINE_WIDTH
+} from "@/components/business/modelEditor/constant.ts";
+import {
+    EdgeConnectEntities,
+    getEdgeConnectEntities,
+} from "@/components/pages/ModelEditor/graph/associationEdge/edgeConnectEntities.ts";
 import {getEdgeConnect} from "@/components/global/graphEditor/edge/connectData.ts";
 import Connecting = Options.Connecting;
+import {
+    GenAssociationModelInput,
+} from "@/api/__generated/model/static";
+import {useGenConfigContextStore} from "@/components/business/genConfig/ContextGenConfigStore.ts";
+import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
+import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge/updateData.ts";
 
 export const associationEdgeBase = {
     inherit: 'edge',
@@ -34,7 +45,7 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
         const edgeConnect = getEdgeConnect(edge as any)
         if (!edgeConnect) return false
 
-        const edgeConnectData = getTableColumnByEdgeConnect(edgeConnect)
+        const edgeConnectData = getEdgeConnectEntities(edgeConnect)
         if (!edgeConnectData) return false
 
         const {sourceColumn, targetColumn} = edgeConnectData
@@ -49,14 +60,15 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
             return false
         }
 
-        setEdgeAssociationData(edge as any)
-
         // 在连接建立后调整 router
         if (edge.getTargetCellId() === edge.getSourceCellId()) {
             edge.router = orthRouter
         } else {
             edge.router = erRouter
         }
+
+        const association = createAssociation(edgeConnectData)
+        updateAssociationEdgeData(edge as any, association)
 
         return true
     },
@@ -65,4 +77,34 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
     allowBlank: false,
     allowNode: false,
     allowEdge: false,
+}
+
+const createAssociation = (
+    edgeConnectEntities: EdgeConnectEntities
+): GenAssociationModelInput => {
+    const {
+        sourceTable,
+        targetTable,
+        sourceColumn,
+        targetColumn,
+    } = edgeConnectEntities
+
+    const newAssociation: GenAssociationModelInput = {
+        name: "",
+        sourceTableName: sourceTable.name,
+        targetTableName: targetTable.name,
+        columnReferences: [{
+            sourceColumnName: sourceColumn.name,
+            targetColumnName: targetColumn.name,
+        }],
+        type: DEFAULT_ASSOCIATION_TYPE,
+        fake: !(useGenConfigContextStore().context.realFk),
+        dissociateAction: undefined,
+        updateAction: "",
+        deleteAction: ""
+    }
+
+    newAssociation.name = createAssociationName(newAssociation)
+
+    return newAssociation
 }

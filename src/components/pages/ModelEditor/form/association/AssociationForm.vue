@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {AssociationType_CONSTANTS, DissociateAction_CONSTANTS} from "@/api/__generated/model/enums";
-import Comment from "@/components/global/common/Comment.vue";
 import {RefreshRight} from "@element-plus/icons-vue";
 import {ref, watch} from "vue";
 import {cloneDeep} from "lodash";
@@ -33,7 +32,7 @@ const handleCancel = () => {
 </script>
 
 <template>
-	<el-form>
+	<el-form style="width: 98%;">
 		<el-form-item label="名称">
 			<el-input v-model="association.name">
 				<template #append>
@@ -45,28 +44,11 @@ const handleCancel = () => {
 
 		<el-form-item label="映射关系">
 			<table>
-				<tr>
-					<td>
-						<el-text style="padding-left: 1em;">
-							{{ association.sourceTable.name }}
-							<Comment :comment="association.sourceTable.comment"></Comment>
-						</el-text>
-					</td>
-					<td></td>
-					<td>
-						<el-text style="padding-left: 1em;">
-							{{ association.targetTable.name }}
-							<Comment :comment="association.targetTable.comment"></Comment>
-						</el-text>
-					</td>
-				</tr>
-
 				<tr v-for="columnReference in association.columnReferences">
 					<td>
-						<el-text style="padding-left: 3em;">
-							{{ association.targetTable.name }} .
-							{{ columnReference.sourceColumn.name }}
-							<Comment :comment="columnReference.sourceColumn.comment"></Comment>
+						<el-text style="padding: 0 1em;">
+							{{ association.sourceTableName }} .
+							{{ columnReference.sourceColumnName }}
 						</el-text>
 					</td>
 					<td>
@@ -75,10 +57,9 @@ const handleCancel = () => {
 						</el-text>
 					</td>
 					<td>
-						<el-text style="padding-left: 3em;">
-							{{ association.targetTable.name }} .
-							{{ columnReference.targetColumn.name }}
-							<Comment :comment="columnReference.targetColumn.comment"></Comment>
+						<el-text style="padding: 0 1em;">
+							{{ association.targetTableName }} .
+							{{ columnReference.targetColumnName }}
 						</el-text>
 					</td>
 				</tr>

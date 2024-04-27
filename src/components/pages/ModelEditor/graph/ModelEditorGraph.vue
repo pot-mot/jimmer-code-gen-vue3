@@ -248,7 +248,7 @@ const handleNodeClick = (node: Node) => {
 
 		if (doubleClickWaitNodes.has(id)) {
 			doubleClickWaitNodes.delete(id)
-			ModelEditorEventBus.emit('modifyTable', {id, table: cloneDeep(table)})
+			ModelEditorEventBus.emit('editTable', {id, table: cloneDeep(table)})
 		} else {
 			graph.select(node)
 			doubleClickWaitNodes.add(id)

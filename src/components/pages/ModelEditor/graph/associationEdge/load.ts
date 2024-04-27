@@ -19,29 +19,13 @@ export const associationViewToInput = (
         updateAction: view.updateAction,
         deleteAction: view.deleteAction,
         fake: view.fake,
-        sourceTable: {
-            comment: view.sourceTable.comment,
-            name: view.sourceTable.name
-        },
-        targetTable: {
-            comment: view.targetTable.comment,
-            name: view.targetTable.name
-        },
+        sourceTableName: view.sourceTable.name,
+        targetTableName: view.targetTable.name,
 
         columnReferences: view.columnReferences.map(({sourceColumn, targetColumn}) => {
             return {
-                sourceColumn: {
-                    comment: sourceColumn.comment,
-                    name: sourceColumn.name,
-                    rawType: sourceColumn.rawType,
-                    typeCode: sourceColumn.typeCode,
-                },
-                targetColumn: {
-                    comment: targetColumn.comment,
-                    name: targetColumn.name,
-                    rawType: targetColumn.rawType,
-                    typeCode: targetColumn.typeCode,
-                },
+                sourceColumnName: sourceColumn.name,
+                targetColumnName: targetColumn.name,
             }
         })
     }
@@ -54,11 +38,11 @@ const associationToEdgeMeta = (
     if (association.columnReferences.length === 0) return
 
     const sourceNode = graph.getNodes().filter(it =>
-        it.getData()?.table.name === association.sourceTable.name
+        it.getData()?.table.name === association.sourceTableName
     )[0]
     if (!sourceNode) return
     const targetNode = graph.getNodes().filter(it =>
-        it.getData()?.table.name === association.targetTable.name
+        it.getData()?.table.name === association.targetTableName
     )[0]
     if (!targetNode) return
 
@@ -79,15 +63,11 @@ const associationToEdgeMeta = (
 
     for (let columnReference of association.columnReferences) {
         const sourceColumnIndex = sourceTable.columns.findIndex(column =>
-            column.name === columnReference.sourceColumn.name &&
-            column.rawType === columnReference.sourceColumn.rawType &&
-            column.typeCode === columnReference.sourceColumn.typeCode
+            column.name === columnReference.sourceColumnName
         )
         if (sourceColumnIndex === -1) continue
         const targetColumnIndex = targetTable.columns.findIndex(column =>
-            column.name === columnReference.targetColumn.name &&
-            column.rawType === columnReference.targetColumn.rawType &&
-            column.typeCode === columnReference.targetColumn.typeCode
+            column.name === columnReference.targetColumnName
         )
         if (targetColumnIndex === -1) continue
 

@@ -77,17 +77,17 @@ onMounted(async () => {
 	}
 
 	// 绑定数据
-	const setData = () => {
+	const syncNodeDataToLocalTable = () => {
 		if (!node.value) return
 		table.value = node.value.getData().table
 	}
-	setData()
+	syncNodeDataToLocalTable()
 
 	// 绑定 wrapper 容器和 node
 	node.value.getData().wrapper = wrapper
 
 	node.value.on('change:data', () => {
-		setData()
+		syncNodeDataToLocalTable()
 	})
 
 	await nextTick()
@@ -147,23 +147,21 @@ onMounted(async () => {
 					const association = edge.getData().association as GenAssociationModelInput
 
 					if (edge.getSourceCellId() === nodeId) {
-						const oldSourceTable = association.sourceTable
+						const oldSourceTableName = association.sourceTableName
 
-						association.sourceTable.name = newTable.name
-						association.sourceTable.comment = newTable.comment
+						association.sourceTableName = newTable.name
 
-						if (oldSourceTable.name !== newTable.name) {
+						if (oldSourceTableName !== newTable.name) {
 							association.name = createAssociationName(association)
 						}
 					}
 
 					if (edge.getTargetCellId() === nodeId) {
-						const oldTargetTable = association.targetTable
+						const oldTargetTableName = association.targetTableName
 
-						association.targetTable.name = newTable.name
-						association.targetTable.comment = newTable.comment
+						association.targetTableName = newTable.name
 
-						if (oldTargetTable.name !== newTable.name) {
+						if (oldTargetTableName !== newTable.name) {
 							association.name = createAssociationName(association)
 						}
 					}

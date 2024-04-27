@@ -18,6 +18,7 @@ import ModelMenu from "@/components/business/model/menu/ModelMenu.vue";
 import {ModelMenuEvents} from "@/components/business/model/menu/ModelMenuEvents.ts";
 import TableDialogs from "@/components/pages/ModelEditor/dialogs/table/TableDialogs.vue";
 import EnumDialogs from "@/components/pages/ModelEditor/dialogs/enum/EnumDialogs.vue";
+import AssociationDialogs from "@/components/pages/ModelEditor/dialogs/association/AssociationDialogs.vue";
 
 const {MODEL, LOAD, EDIT} = useModelEditorStore()
 
@@ -124,6 +125,8 @@ watch(() => modelLoadMenu.value, () => {
 				 @submit="EDIT.handleSubmit"></ModelDialog>
 
 	<TableDialogs></TableDialogs>
+
+	<AssociationDialogs></AssociationDialogs>
 
 	<EnumDialogs></EnumDialogs>
 </template>

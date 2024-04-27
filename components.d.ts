@@ -7,6 +7,8 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AssociationDialog: typeof import('./src/components/pages/ModelEditor/dialogs/association/AssociationDialog.vue')['default']
+    AssociationDialogs: typeof import('./src/components/pages/ModelEditor/dialogs/association/AssociationDialogs.vue')['default']
     AssociationForm: typeof import('./src/components/pages/ModelEditor/form/association/AssociationForm.vue')['default']
     AssociationIcon: typeof import('./src/components/global/icons/database/AssociationIcon.vue')['default']
     AssociationOffIcon: typeof import('./src/components/global/icons/toolbar/AssociationOffIcon.vue')['default']

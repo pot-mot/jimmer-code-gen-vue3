@@ -22,7 +22,7 @@ const handleSubmit = (table: GenTableModelInput) => {
 	if (props.id.startsWith(TABLE_CREATE_PREFIX)) {
 		ModelEditorEventBus.emit('createdTable', {id: props.id, table})
 	} else {
-		ModelEditorEventBus.emit('modifiedTable', {id: props.id, table})
+		ModelEditorEventBus.emit('editedTable', {id: props.id, table})
 	}
 }
 </script>

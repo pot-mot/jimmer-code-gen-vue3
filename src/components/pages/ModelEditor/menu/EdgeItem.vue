@@ -7,11 +7,6 @@ import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {sendMessage} from "@/message/message.ts";
 import AssociationIcon from "@/components/global/icons/database/AssociationIcon.vue";
-import {
-	getAssociationSourceLabel,
-	getAssociationTargetLabel
-} from "@/components/pages/ModelEditor/graph/associationEdge/associationName.ts";
-import AssociationForm from "@/components/pages/ModelEditor/form/association/AssociationForm.vue";
 import {deleteConfirm} from "@/message/confirm.ts";
 
 interface EdgeItem {
@@ -53,6 +48,26 @@ const handleDelete = () => {
 	})
 }
 
+const getAssociationSourceLabel = (association: GenAssociationModelInput) => {
+	const tempEdgeName: string[] = []
+
+	tempEdgeName.push(association.sourceTableName)
+	tempEdgeName.push(' . ')
+	tempEdgeName.push(association.columnReferences.map(it => it.sourceColumnName).join(","))
+
+	return tempEdgeName.join('')
+}
+
+const getAssociationTargetLabel = (association: GenAssociationModelInput) => {
+	const tempEdgeName: string[] = []
+
+	tempEdgeName.push(association.targetTableName)
+	tempEdgeName.push(' . ')
+	tempEdgeName.push(association.columnReferences.map(it => it.targetColumnName).join(","))
+
+	return tempEdgeName.join('')
+}
+
 const sourceLabel = computed<string | undefined>(() => {
 	if (!association.value) return
 	try {
@@ -71,10 +86,8 @@ const targetLabel = computed<string | undefined>(() => {
 	}
 })
 
-const editDialogOpenState = ref(false)
-
-const handleEdit = () => {
-	editDialogOpenState.value = true
+const handleEdit = (association: GenAssociationModelInput) => {
+	ModelEditorEventBus.emit('editAssociation', {id: props.edge.id, association})
 }
 
 const isSelected = computed(() => {
@@ -101,7 +114,7 @@ const isSelected = computed(() => {
 
 			<template v-if="showColumn || showTable">
 				<el-button link @click="VIEW.focus(edge.getSourceCellId())">
-					{{ showColumn ? sourceLabel : association.sourceTable.name }}
+					{{ showColumn ? sourceLabel : association.sourceTableName }}
 				</el-button>
 				<span>
 					<AssociationIcon :type="association.type"
@@ -109,13 +122,13 @@ const isSelected = computed(() => {
 									 style="transform: translateY(0.3em)"></AssociationIcon>
 				</span>
 				<el-button link @click="VIEW.focus(edge.getTargetCellId())">
-					{{ showColumn ? targetLabel : association.targetTable.name }}
+					{{ showColumn ? targetLabel : association.targetTableName }}
 				</el-button>
 			</template>
 		</el-text>
 
 		<span class="hover-show-item" style="padding-left: 0.5em;">
-			<el-button :icon="EditPen" link type="warning" @click="handleEdit"></el-button>
+			<el-button :icon="EditPen" link type="warning" @click="handleEdit(association)"></el-button>
 			<el-button :icon="Delete" link type="danger" @click="handleDelete"></el-button>
 		</span>
 	</div>
@@ -125,15 +138,4 @@ const isSelected = computed(() => {
 			{{ edge.id }}
 		</el-text>
 	</div>
-
-	<el-dialog v-if="association" v-model="editDialogOpenState">
-		<AssociationForm
-			:association="association"
-			@submit="(newAssociation) => {
-				edge.setData({association: newAssociation}, {overwrite: true})
-				editDialogOpenState = false
-			}"
-			@cancel="editDialogOpenState = false"
-		></AssociationForm>
-	</el-dialog>
 </template>

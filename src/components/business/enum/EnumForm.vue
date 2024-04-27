@@ -10,6 +10,7 @@ import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {sendMessage} from "@/message/message.ts";
 import {getDefaultEnum, getDefaultEnumItem} from "@/components/business/enum/defaultEnum.ts";
 import {validateEnumItem} from "@/shape/GenEnumModelInput.ts";
+import {validateEnum} from "@/components/business/enum/validate.ts";
 
 const props = defineProps<{
 	enum?: Partial<GenModelInput_TargetOf_enums>
@@ -48,44 +49,7 @@ watch(() => genEnum.value.enumType, (value) => {
 
 
 const handleSubmit = () => {
-	const messageList: string[] = []
-
-	if (genEnum.value.items.length === 0) {
-		messageList.push('必须至少要有一个枚举项');
-	}
-	if (genEnum.value.items.some(item => item.name.length === 0)) {
-		messageList.push('枚举项的名称必须不为空');
-	} else {
-		const uniqueItemNames = new Set(genEnum.value.items.map(item => item.name))
-		if (uniqueItemNames.size !== genEnum.value.items.length) {
-			messageList.push('枚举项的名称必须不重复');
-		}
-	}
-
-	if (genEnum.value.enumType === 'ORDINAL') {
-		try {
-			if (genEnum.value.items.some(item => !Number.isInteger(Number(item.mappedValue)))) {
-				messageList.push('ordinal 枚举项的值必须为整数');
-			}
-
-			genEnum.value.items.forEach((item) => {
-				item.mappedValue = parseInt(item.mappedValue).toString()
-			})
-		} catch (e) {
-			messageList.push('ordinal 枚举项的值必须为整数');
-		}
-	}
-
-	if (genEnum.value.enumType === "NAME" || genEnum.value.enumType === 'ORDINAL') {
-		if (genEnum.value.items.some(item => item.mappedValue.length === 0)) {
-			messageList.push('枚举项的值必须不为空');
-		} else {
-			const uniqueItemNames = new Set(genEnum.value.items.map(item => item.mappedValue))
-			if (uniqueItemNames.size !== genEnum.value.items.length) {
-				messageList.push('枚举项的值必须不重复');
-			}
-		}
-	}
+	const messageList = validateEnum(genEnum.value)
 
 	if (messageList.length > 0) {
 		messageList.forEach(it => sendMessage(it, 'warning'))

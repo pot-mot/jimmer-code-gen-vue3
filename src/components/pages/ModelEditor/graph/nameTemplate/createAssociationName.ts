@@ -52,10 +52,10 @@ export const createAssociationName = (
     association: GenAssociationModelInput
 ): string => {
     return associationNameTemplate(
-        association.sourceTable.name,
-        association.targetTable.name,
-        association.columnReferences.map(it => it.sourceColumn.name),
-        association.columnReferences.map(it => it.targetColumn.name),
+        association.sourceTableName,
+        association.targetTableName,
+        association.columnReferences.map(it => it.sourceColumnName),
+        association.columnReferences.map(it => it.targetColumnName),
         association.type,
     )
 }

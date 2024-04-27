@@ -9,15 +9,15 @@ import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/loadData.ts
 type ModelEditorEvents = {
     createTable: TableLoadOptions,
     createdTable: { id: string, table: GenTableModelInput },
-    modifyTable: { id: string, table: GenTableModelInput },
-    modifiedTable: { id: string, table: GenTableModelInput },
-    tableModifySynced: { id: string},
+    editTable: { id: string, table: GenTableModelInput },
+    editedTable: { id: string, table: GenTableModelInput },
+    tableModifySynced: { id: string },
     removeTable: string,
 
-    createAssociation: undefined,
-    createdAssociation: GenAssociationModelInput,
-    modifyAssociation: { id: string, association: GenAssociationModelInput },
-    modifiedAssociation: { id: string, association: GenAssociationModelInput },
+    editAssociation: { id: string, association: GenAssociationModelInput },
+    editedAssociation: { id: string, association: GenAssociationModelInput },
+    modifyAssociation: { id: string },
+    modifiedAssociation: { id: string },
     removeAssociation: string,
 
     createEnum: undefined,

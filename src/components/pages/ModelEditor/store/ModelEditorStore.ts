@@ -35,6 +35,10 @@ import {SelectOperation, useSelectOperation} from "@/components/global/graphEdit
 import {HistoryOperation, useHistoryOperations} from "@/components/global/graphEditor/history/useHistory.ts";
 import {RemoveOperation, useRemoveOperation} from "@/components/global/graphEditor/remove/removeOperation.ts";
 import {defineStore} from "pinia";
+import {
+    useAssociationDialogsStore
+} from "@/components/pages/ModelEditor/dialogs/association/AssociationDialogsStore.ts";
+import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge/updateData.ts";
 
 interface CurrentModelState {
     _model: () => GenModelView
@@ -394,11 +398,11 @@ export const useModelEditorStore = defineStore(
             }
         })
 
-        ModelEditorEventBus.on('modifyTable', ({id, table}) => {
+        ModelEditorEventBus.on('editTable', ({id, table}) => {
             tableDialogsStore.open(id, cloneDeep(table))
         })
 
-        ModelEditorEventBus.on('modifiedTable', ({id, table}) => {
+        ModelEditorEventBus.on('editedTable', ({id, table}) => {
             const graph = _graph()
 
             if (!graph) return
@@ -449,6 +453,47 @@ export const useModelEditorStore = defineStore(
             }
 
             graph.removeNode(id)
+        })
+
+
+        /**
+         * 关联编辑对话框相关
+         */
+        const associationDialogsStore = useAssociationDialogsStore()
+
+        ModelEditorEventBus.on('editAssociation', ({id, association}) => {
+            associationDialogsStore.open(id, cloneDeep(association))
+        })
+
+        ModelEditorEventBus.on('editedAssociation', ({id, association}) => {
+            const graph = _graph()
+
+            if (!graph) return
+
+            const cell = graph.getCellById(id)
+            if (!cell || !cell.isEdge()) {
+                sendMessage(`更改边【${id}】失败，无法被找到`, 'error')
+            } else {
+                graph.startBatch(`associationModifySync [id=${id}]`)
+
+                updateAssociationEdgeData(cell, association)
+
+                graph.stopBatch(`associationModifySync [id=${id}]`)
+            }
+
+            associationDialogsStore.close(id)
+        })
+
+        ModelEditorEventBus.on('modifyAssociation', ({id}) => {
+            const graph = _graph()
+            if (!graph) return
+            graph.startBatch(`associationModifySync [id=${id}]`)
+        })
+
+        ModelEditorEventBus.on('modifiedAssociation', ({id}) => {
+            const graph = _graph()
+            if (!graph) return
+            graph.stopBatch(`associationModifySync [id=${id}]`)
         })
 
         ModelEditorEventBus.on('removeAssociation', (id) => {

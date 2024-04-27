@@ -49,19 +49,19 @@ export const loadModelInputs = (
     )
 
     associations = associations
-        .filter(it => tableNameMap.has(it.targetTable.name))
-        .filter(it => tableNameMap.has(it.sourceTable.name))
+        .filter(it => tableNameMap.has(it.targetTableName))
+        .filter(it => tableNameMap.has(it.sourceTableName))
 
     // 根据同名表覆盖 association 的 source 和 target
     associations.forEach(association => {
-        const sourceSameNameList = tableNameMap.get(association.sourceTable.name)
+        const sourceSameNameList = tableNameMap.get(association.sourceTableName)
         if (sourceSameNameList && sourceSameNameList.length > 1) {
-            association.sourceTable.name = sourceSameNameList[sourceSameNameList.length - 1].name
+            association.sourceTableName = sourceSameNameList[sourceSameNameList.length - 1].name
         }
 
-        const targetSameNameList = tableNameMap.get(association.targetTable.name)
+        const targetSameNameList = tableNameMap.get(association.targetTableName)
         if (targetSameNameList && targetSameNameList.length > 1) {
-            association.targetTable.name = targetSameNameList[targetSameNameList.length - 1].name
+            association.targetTableName = targetSameNameList[targetSameNameList.length - 1].name
         }
     })
 

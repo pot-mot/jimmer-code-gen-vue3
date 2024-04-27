@@ -6,10 +6,7 @@ import {
     setEdgeSelectFlag
 } from "@/components/pages/ModelEditor/graph/associationEdge/edgeSelectedState.ts";
 import {useGenConfigContextStore} from "@/components/business/genConfig/ContextGenConfigStore.ts";
-
-const setAssociationFake = (edge: Edge, fake: boolean) => {
-    edge.setData({association: {fake}}, {deep: true})
-}
+import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
 
 const getAssociationFake = (edge: Edge): boolean => {
     let temp = edge.getData()?.association.fake
@@ -21,7 +18,11 @@ const getAssociationFake = (edge: Edge): boolean => {
     return temp
 }
 
-const syncAssociationFake = (edge: Edge) => {
+const setAssociationFake = (edge: Edge, fake: boolean) => {
+    edge.setData({association: {fake}}, {deep: true})
+}
+
+const setAssociationFakeLine = (edge: Edge) => {
     const fake = getAssociationFake(edge)
 
     if (fake) {
@@ -34,9 +35,9 @@ const syncAssociationFake = (edge: Edge) => {
 export const useAssociationFake = (graph: Graph) => {
     graph.on('edge:added', ({edge}) => {
         if (edge.shape !== ASSOCIATION_EDGE) return
-
-        syncAssociationFake(edge)
+        setAssociationFakeLine(edge)
     })
+
     graph.on('edge:change:data', ({edge, previous, current}) => {
         if (edge.shape !== ASSOCIATION_EDGE) return
 
@@ -45,7 +46,7 @@ export const useAssociationFake = (graph: Graph) => {
 
         if (previousData?.association?.fake === currentData?.association?.fake) return
 
-        syncAssociationFake(edge)
+        setAssociationFakeLine(edge)
     })
 
     /**
@@ -58,17 +59,17 @@ export const useAssociationFake = (graph: Graph) => {
 
         if (e.ctrlKey || e.metaKey) return
 
+        ModelEditorEventBus.emit('modifyAssociation', {id: edge.id})
+
         if (!getEdgeSelectFlag(edge)) {
             setEdgeSelectFlag(edge, true)
             return
         }
 
-        graph.startBatch("Update association_edge fake")
-
         const oldAssociationFake = getAssociationFake(edge)
         setAssociationFake(edge, !oldAssociationFake)
 
-        graph.stopBatch("Update association_edge fake")
+        ModelEditorEventBus.emit('modifiedAssociation', {id: edge.id})
     })
 
     graph.on('edge:unselected', ({edge}) => {

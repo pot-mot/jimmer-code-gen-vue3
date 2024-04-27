@@ -50,13 +50,13 @@ export const GenAssociationModelInputJsonSchema = {
                     "description": "名称",
                     "type": "string"
                 },
-                "sourceTable": {
-                    "$ref": "#/definitions/GenAssociationModelInput_TargetOf_sourceTable",
-                    "description": "主表"
+                "sourceTableName": {
+                    "description": "主表",
+                    "type": "string"
                 },
-                "targetTable": {
-                    "$ref": "#/definitions/GenAssociationModelInput_TargetOf_targetTable",
-                    "description": "从表"
+                "targetTableName": {
+                    "description": "从表",
+                    "type": "string"
                 },
                 "type": {
                     "$ref": "#/definitions/AssociationType",
@@ -72,8 +72,8 @@ export const GenAssociationModelInputJsonSchema = {
                 "deleteAction",
                 "fake",
                 "name",
-                "sourceTable",
-                "targetTable",
+                "sourceTableName",
+                "targetTableName",
                 "type",
                 "updateAction"
             ],
@@ -81,114 +81,18 @@ export const GenAssociationModelInputJsonSchema = {
         },
         "GenAssociationModelInput_TargetOf_columnReferences": {
             "properties": {
-                "sourceColumn": {
-                    "$ref": "#/definitions/GenAssociationModelInput_TargetOf_columnReferences_TargetOf_sourceColumn_2",
-                    "description": "主列"
-                },
-                "targetColumn": {
-                    "$ref": "#/definitions/GenAssociationModelInput_TargetOf_columnReferences_TargetOf_targetColumn_2",
-                    "description": "从列"
-                }
-            },
-            "required": [
-                "sourceColumn",
-                "targetColumn"
-            ],
-            "type": "object"
-        },
-        "GenAssociationModelInput_TargetOf_columnReferences_TargetOf_sourceColumn_2": {
-            "properties": {
-                "comment": {
-                    "description": "注释",
+                "sourceColumnName": {
+                    "description": "主列",
                     "type": "string"
                 },
-                "name": {
-                    "description": "名称",
-                    "type": "string"
-                },
-                "rawType": {
-                    "description": "字面类型",
-                    "type": "string"
-                },
-                "typeCode": {
-                    "description": "JdbcType 码值",
-                    "type": "number"
-                }
-            },
-            "required": [
-                "comment",
-                "name",
-                "rawType",
-                "typeCode"
-            ],
-            "type": "object"
-        },
-        "GenAssociationModelInput_TargetOf_columnReferences_TargetOf_targetColumn_2": {
-            "properties": {
-                "comment": {
-                    "description": "注释",
-                    "type": "string"
-                },
-                "name": {
-                    "description": "名称",
-                    "type": "string"
-                },
-                "rawType": {
-                    "description": "字面类型",
-                    "type": "string"
-                },
-                "typeCode": {
-                    "description": "JdbcType 码值",
-                    "type": "number"
-                }
-            },
-            "required": [
-                "comment",
-                "name",
-                "rawType",
-                "typeCode"
-            ],
-            "type": "object"
-        },
-        "GenAssociationModelInput_TargetOf_sourceTable": {
-            "properties": {
-                "comment": {
-                    "description": "注释",
-                    "type": "string"
-                },
-                "modelId": {
-                    "description": "模型",
-                    "type": "number"
-                },
-                "name": {
-                    "description": "名称",
+                "targetColumnName": {
+                    "description": "从列",
                     "type": "string"
                 }
             },
             "required": [
-                "comment",
-                "name"
-            ],
-            "type": "object"
-        },
-        "GenAssociationModelInput_TargetOf_targetTable": {
-            "properties": {
-                "comment": {
-                    "description": "注释",
-                    "type": "string"
-                },
-                "modelId": {
-                    "description": "模型",
-                    "type": "number"
-                },
-                "name": {
-                    "description": "名称",
-                    "type": "string"
-                }
-            },
-            "required": [
-                "comment",
-                "name"
+                "sourceColumnName",
+                "targetColumnName"
             ],
             "type": "object"
         }

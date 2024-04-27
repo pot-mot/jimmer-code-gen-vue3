@@ -41,7 +41,7 @@ const handleClickLabel = (e: MouseEvent) => {
 }
 
 const handleEdit = () => {
-	ModelEditorEventBus.emit('modifyTable', {id: props.node.id, table: props.node.getData().table})
+	ModelEditorEventBus.emit('editTable', {id: props.node.id, table: props.node.getData().table})
 }
 
 const handleDelete = () => {

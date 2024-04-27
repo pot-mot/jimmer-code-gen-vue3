@@ -9,10 +9,25 @@ import {
 import {AssociationType} from "@/api/__generated/model/enums";
 import {
     reverseSinglePartAssociationType
-} from "@/components/pages/ModelEditor/graph/associationEdge/associationTypeData.ts";
+} from "@/components/pages/ModelEditor/graph/associationEdge/associationTypeExtension.ts";
 import {syncAssociationName} from "@/components/pages/ModelEditor/graph/associationEdge/associationName.ts"
-import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {setEdgeSelectFlag} from "@/components/pages/ModelEditor/graph/associationEdge/edgeSelectedState.ts";
+import {GenAssociationModelInput} from "@/api/__generated/model/static";
+import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
+
+const getAssociationType = (edge: Edge, defaultAssociationType: AssociationType = DEFAULT_ASSOCIATION_TYPE): AssociationType => {
+    let temp = edge.getData()?.association.type
+    if (temp === undefined) {
+        setAssociationType(edge, defaultAssociationType)
+        temp = defaultAssociationType
+    }
+    return temp
+}
+
+const setAssociationType = (edge: Edge, type: AssociationType) => {
+    edge.setData({association: {type}}, {deep: true})
+}
+
 
 const handleButtonClick = (args: any) => {
     const edge: Edge = args.cell
@@ -31,7 +46,7 @@ const handleButtonClick = (args: any) => {
 
     const left = (e.clientX - box.x) < (box.width / 2)
 
-    graph.startBatch("Update association_edge type")
+    ModelEditorEventBus.emit('modifyAssociation', {id: edge.id})
 
     setAssociationType(
         edge,
@@ -43,7 +58,7 @@ const handleButtonClick = (args: any) => {
 
     syncAssociationName(edge)
 
-    graph.stopBatch("Update association_edge type")
+    ModelEditorEventBus.emit('modifiedAssociation', {id: edge.id})
 }
 
 const createAssociationTypeButtonAttrs = (
@@ -126,19 +141,6 @@ const setAssociationTypeButton = (
     )
 
     edge.setTools(newTools)
-}
-
-const getAssociationType = (edge: Edge, defaultAssociationType: AssociationType = DEFAULT_ASSOCIATION_TYPE): AssociationType => {
-    let temp = edge.getData()?.association.type
-    if (temp === undefined) {
-        setAssociationType(edge, defaultAssociationType)
-        temp = defaultAssociationType
-    }
-    return temp
-}
-
-const setAssociationType = (edge: Edge, type: AssociationType) => {
-    edge.setData({association: {type}}, {deep: true})
 }
 
 export const useAssociationType = (graph: Graph) => {
