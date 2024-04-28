@@ -7,8 +7,6 @@ import {
 import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/loadData.ts";
 
 type ModelEditorEvents = {
-    syncedTable: { id: string },
-
     createTable: TableLoadOptions,
     createdTable: { id: string, table: GenTableModelInput },
     editTable: { id: string, table: GenTableModelInput },

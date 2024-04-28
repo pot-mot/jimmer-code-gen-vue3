@@ -12,7 +12,7 @@
 						  v-if="table.superTables.length > 0">:</span>
 					<span class="super-table"
 						  v-for="superTable in table.superTables"
-						  @click="focusSuperTable(superTable.name)">
+						  @mousedown="e => focusSuperTable(superTable.name, e)">
 						{{ superTable.name }}
 					</span>
 				</th>
@@ -48,7 +48,6 @@ import {columnToPort} from "@/components/pages/ModelEditor/graph/tableNode/load.
 import {ASSOCIATION_EDGE, COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
 import {searchNodesByTableName} from "@/components/pages/ModelEditor/search/search.ts";
-import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
 import {cloneDeep} from "lodash";
 
 const {GRAPH, VIEW, HISTORY} = useModelEditorStore()
@@ -212,8 +211,6 @@ onMounted(async () => {
 			})
 			unwatch = watch(() => table.value, tableValueWatcher, {deep: true})
 
-			ModelEditorEventBus.emit('syncedTable', {id: nodeId})
-
 			if (historyFlag) graph.enableHistory()
 		}, 100 + oldEdges.length * 20)
 	}
@@ -221,9 +218,15 @@ onMounted(async () => {
 	let unwatch = watch(() => table.value, tableValueWatcher, {deep: true})
 })
 
-const focusSuperTable = (name: string) => {
+const focusSuperTable = (name: string, e: MouseEvent) => {
 	const graph = GRAPH._graph()
-	const nodes = searchNodesByTableName(graph, name)
-	VIEW.focus(nodes[0])
+
+	if (!graph.isSelected(node.value!!)) {
+		return
+	} else {
+		const nodes = searchNodesByTableName(graph, name)
+		VIEW.focus(nodes[0])
+		e.stopPropagation()
+	}
 }
 </script>

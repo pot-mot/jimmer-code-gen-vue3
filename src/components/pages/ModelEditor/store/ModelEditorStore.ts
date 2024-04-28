@@ -362,14 +362,6 @@ export const useModelEditorStore = defineStore(
             debugStore.log('EVENT', type, event)
         })
 
-        // 表同步相关
-
-        ModelEditorEventBus.on('syncedTable', ({id}) => {
-            const graph = _graph()
-            if (!graph) return
-            graph.stopBatch(`syncTable [id=${id}]`)
-        })
-
 
         /**
          * 表编辑对话框相关
@@ -419,8 +411,6 @@ export const useModelEditorStore = defineStore(
             if (!cell || !cell.isNode()) {
                 sendMessage(`更改节点【${id}】失败，无法被找到`, 'error')
             } else {
-                graph.startBatch(`syncTable [id=${id}]`)
-
                 const oldTable = cell.getData().table
 
                 // 当高级表被修改时，调整其他表中的 superTables

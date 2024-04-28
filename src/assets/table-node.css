@@ -1,6 +1,5 @@
 .table-node {
     padding-bottom: 10px;
-    font-family: var(--el-font-family);
     color: var(--el-color-info-dark-2);
     cursor: default;
 }
@@ -48,7 +47,7 @@
     padding-right: 0.8em;
 }
 
-.table-node .head .super-table:hover {
+.selected .table-node .head .super-table:hover {
     color: var(--highlight-color);
 }
 
