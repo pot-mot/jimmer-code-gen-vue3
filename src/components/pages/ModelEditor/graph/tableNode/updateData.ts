@@ -4,5 +4,6 @@ import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEdi
 
 export const updateTableNodeData = (node: Node, newTable: GenTableModelInput) => {
     ModelEditorEventBus.emit('syncTable', {id: node.id})
-    node.setData({...node.getData(), table: newTable}, {overwrite: true})
+    node.getData().table = newTable
+    node.notify('change:data', {})
 }
