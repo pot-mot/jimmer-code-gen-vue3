@@ -369,8 +369,6 @@ export const useModelEditorStore = defineStore(
         const startBatchSync = <T> (name: string, callback: () => T): T => {
             const graph = _graph()
 
-            debugger
-
             graph.startBatch(name)
             waitBatches.push(name)
 
@@ -393,7 +391,8 @@ export const useModelEditorStore = defineStore(
             const graph = _graph()
             if (!graph) return
 
-            syncTableIds = syncTableIds.filter(it => it !== id)
+            const index = syncTableIds.indexOf(id)
+            syncTableIds.splice(index, 1)
 
             if (syncTableIds.length === 0) {
                 while(waitBatches.length !== 0) {
