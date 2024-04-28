@@ -8,6 +8,7 @@ export const validateTableForm = (
     _table: GenTableModelInput,
     otherTables: GenTableModelInput[],
     superTables: GenTableModelInput[],
+    childTables: GenTableModelInput[],
     enums: GenModelInput_TargetOf_enums[],
 ): {
     newTable: GenTableModelInput,
@@ -172,6 +173,13 @@ export const validateTableForm = (
     for (let column of table.columns) {
         if (superTableColumnNameSet.has(column.name)) {
             messageList.push(`列名【${column.name}】与高级表中的列名重复`)
+        }
+    }
+
+    const childTableColumnNameSet = new Set(childTables.flatMap(it => it.columns.map(it => it.name)))
+    for (let column of table.columns) {
+        if (childTableColumnNameSet.has(column.name)) {
+            messageList.push(`列名【${column.name}】与子表中的列名重复`)
         }
     }
 

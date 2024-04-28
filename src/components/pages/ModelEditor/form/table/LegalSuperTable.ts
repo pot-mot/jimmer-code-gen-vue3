@@ -1,6 +1,6 @@
 import {GenTableModelInput} from "@/api/__generated/model/static";
 
-// 获取合法的 superTable 的名称列表
+// 获取合法的 superTable 列表
 export const getLegalSuperTables = (
     table: GenTableModelInput,
     superTables: GenTableModelInput[],
@@ -10,9 +10,24 @@ export const getLegalSuperTables = (
     }
 
     const inheritMap = createInheritMap(superTables)
-    const allChildren = collectAllChildren(table.name, inheritMap)
+    const allChildren = new Set(collectAllChildren(table.name, inheritMap))
 
-    return superTables.filter(it => it.name != table.name).filter(it => !allChildren.includes(it.name))
+    return superTables.filter(it => it.name != table.name).filter(it => !allChildren.has(it.name))
+}
+
+// 获取全部子表
+export const getAllChildTables = (
+    table: GenTableModelInput,
+    otherTables: GenTableModelInput[],
+): GenTableModelInput[] => {
+    if (table.type != "SUPER_TABLE") {
+        return []
+    }
+
+    const inheritMap = createInheritMap(otherTables)
+    const allChildren = new Set(collectAllChildren(table.name, inheritMap))
+
+    return otherTables.filter(it => it.name != table.name).filter(it => allChildren.has(it.name))
 }
 
 const createInheritMap = (tables: GenTableModelInput[]): Map<string, string[]> => {

@@ -21,7 +21,7 @@ import {createIndexName} from "@/components/pages/ModelEditor/graph/nameTemplate
 import {TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {Refresh} from "@element-plus/icons-vue";
 import {validateTableForm} from "@/components/pages/ModelEditor/form/table/validate.ts";
-import {getLegalSuperTables} from "@/components/pages/ModelEditor/form/table/LegalSuperTable.ts";
+import {getAllChildTables, getLegalSuperTables} from "@/components/pages/ModelEditor/form/table/LegalSuperTable.ts";
 
 const {GRAPH, MODEL} = useModelEditorStore()
 
@@ -125,10 +125,15 @@ const handleColumnToPk = (pkIndex: number) => {
 }
 
 const handleSubmit = () => {
+	const otherTables = getOtherTables()
+	const superTables = getSelectableSuperTables()
+	const childTables = getAllChildTables(table.value, otherTables)
+
 	const {newTable, messageList} = validateTableForm(
 		table.value,
-		getOtherTables(),
-		getSelectableSuperTables(),
+		otherTables,
+		superTables,
+		childTables,
 		MODEL._model().enums
 	)
 
