@@ -7,8 +7,8 @@ import {
 import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/loadData.ts";
 
 type ModelEditorEvents = {
-    syncTable: { id: string },
-    syncedTable: { id: string },
+    syncTable: {id: string},
+    syncedTable: {id: string},
 
     createTable: TableLoadOptions,
     createdTable: { id: string, table: GenTableModelInput },
@@ -30,8 +30,6 @@ type ModelEditorEvents = {
 
     loadSchema: { id: number },
     loadTable: { id: number },
-
-    saveToDataSource: { tables: GenTableModelInput[], associations: GenAssociationModelInput[], schemaId: number }
 }
 
 export const ModelEditorEventBus = mitt<ModelEditorEvents>()

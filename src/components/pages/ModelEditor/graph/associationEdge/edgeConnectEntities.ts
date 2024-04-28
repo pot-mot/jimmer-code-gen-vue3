@@ -4,7 +4,7 @@ import {
     GenTableModelInput, GenTableModelInput_TargetOf_columns
 } from "@/api/__generated/model/static";
 
-export interface EdgeConnectEntities {
+export interface EdgeConnectEntities extends EdgeConnect {
     sourceTable: GenTableModelInput,
     targetTable: GenTableModelInput,
     sourceColumn: GenTableModelInput_TargetOf_columns,
@@ -35,6 +35,7 @@ export const getEdgeConnectEntities = (
     const targetColumn = targetTable.columns[targetPortIndex]
 
     return {
+        ...edgeConnect,
         sourceTable,
         targetTable,
         sourceColumn,

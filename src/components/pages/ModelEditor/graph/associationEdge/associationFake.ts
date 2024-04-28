@@ -54,7 +54,7 @@ export const useAssociationFake = (graph: Graph) => {
      *
      * 此时因为存在 edge:select 事件且触发在 edge:click 之前，所以需要 EDGE_SELECT_FLAG 阻止初次点击效果
      */
-    graph.on('edge:click', ({edge, e}) => {
+    graph.on('edge:mousedown', ({edge, e}) => {
         if (edge.shape !== ASSOCIATION_EDGE) return
 
         if (e.ctrlKey || e.metaKey) return

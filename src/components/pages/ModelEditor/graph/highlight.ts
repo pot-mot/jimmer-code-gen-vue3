@@ -79,21 +79,17 @@ const unHoverAll = (graph: Graph) => {
 }
 
 export const unStyleAll = (graph: Graph) => {
-    graph.disableHistory()
     graph.cleanSelection()
     unHoverAll(graph)
-    graph.enableHistory()
 }
 
 const toFront = (cell: Cell, graph: Graph) => {
-    graph.disableHistory()
     cell.toFront()
     if (cell.isNode()) {
         for (let edge of graph.getConnectedEdges(cell)) {
             edge.toFront()
         }
     }
-    graph.enableHistory()
 }
 
 export const useInteractionToFront = (graph: Graph) => {

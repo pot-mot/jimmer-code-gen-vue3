@@ -35,24 +35,23 @@
 </template>
 
 <script lang='ts' setup>
-import {inject, nextTick, onMounted, ref, watch} from "vue";
-import {
-	GenAssociationModelInput,
-	GenTableModelInput,
-	GenTableModelInput_TargetOf_columns
-} from "@/api/__generated/model/static";
+import {inject, nextTick, onMounted, ref} from "vue";
+import {GenTableModelInput,} from "@/api/__generated/model/static";
 import {Node} from '@antv/x6'
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {sendMessage} from "@/message/message.ts";
 import {useModelEditorStore} from "../../store/ModelEditorStore.ts";
-import {loadAssociationModelInputs} from "../associationEdge/load.ts";
 import {columnToPort} from "@/components/pages/ModelEditor/graph/tableNode/load.ts";
-import {ASSOCIATION_EDGE, COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
-import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
+import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {searchNodesByTableName} from "@/components/pages/ModelEditor/search/search.ts";
-import {cloneDeep} from "lodash";
+import {
+	refreshEdgeAssociation,
+} from "@/components/pages/ModelEditor/graph/associationEdge/sync.ts";
+import {
+	loadAssociationModelInputs
+} from "@/components/pages/ModelEditor/graph/associationEdge/load.ts";
 import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
 
 const {GRAPH, VIEW, HISTORY} = useModelEditorStore()
@@ -69,49 +68,83 @@ const table = ref<GenTableModelInput>()
 
 let wrapperResizeObserver
 
-onMounted(async () => {
+/**
+ * 在 data 变化后，
+ * table 同步 size 到 node 和 port
+ * 同步 edge
+ */
+onMounted(() => {
 	node.value = getNode()
 
 	if (!node.value || !GRAPH.isLoaded) return
 
 	const graph = GRAPH._graph()
 
-	if (!node.value || node.value.shape !== TABLE_NODE) {
+	if (node.value.shape !== TABLE_NODE) {
 		sendMessage('Node 获取失败', 'error')
 		return
 	}
 
-	// 绑定数据
-	const syncNodeDataToLocalTable = () => {
-		if (!node.value) return
-		table.value = node.value.getData().table
-	}
-	syncNodeDataToLocalTable()
-
-	// 绑定 wrapper 容器和 node
 	node.value.getData().wrapper = wrapper
 
+	/**
+	 * 数据同步相关
+	 */
+
 	node.value.on('change:data', () => {
-		syncNodeDataToLocalTable()
+		syncTable()
 	})
 
-	await nextTick()
-
-	if (!wrapper.value || !container.value) return
-
-	// 更新尺寸
-	const syncNodeSizeWithContainer = () => {
-		if (!node.value || !container.value) return
-		graph.disableHistory()
-		node.value.resize(container.value.clientWidth, container.value.clientHeight)
-		graph.enableHistory()
+	const syncTable = () => {
+		if (!node.value) return
+		syncTableEffect(node.value.getData().table, table.value)
+		table.value = node.value.getData().table
 	}
 
-	wrapperResizeObserver = new ResizeObserver(() => {
-		syncNodeSizeWithContainer()
-	})
+	const syncTableEffect = (newTable: GenTableModelInput | undefined, oldTable: GenTableModelInput | undefined) => {
+		if (!node.value || !oldTable || !newTable || !GRAPH.isLoaded) return
 
-	wrapperResizeObserver.observe(container.value!)
+		if (HISTORY.isRedo || HISTORY.isUndo) return
+
+		const nodeId = node.value.id
+
+		const oldEdges = graph.getConnectedEdges(nodeId)
+
+		node.value.removePorts()
+		node.value.addPorts(newTable.columns.map(columnToPort))
+		resizePort()
+
+		setTimeout(() => {
+			if (!node.value) return
+
+			for (let edge of oldEdges) {
+				const association = refreshEdgeAssociation(node.value, edge, oldTable, newTable)
+				if (!association) continue
+				loadAssociationModelInputs(graph, [association])
+			}
+
+			newTable.columns.forEach((column, index) => {
+				column.orderKey = index + 1
+			})
+
+			ModelEditorEventBus.emit('syncedTable', {id: nodeId})
+		}, 100)
+	}
+
+	syncTable()
+
+	/**
+	 * 尺寸同步相关
+	 */
+
+	const resizeNodeSize = () => {
+		if (!node.value || !container.value) return
+
+		graph.disableHistory()
+		node.value.resize(container.value.clientWidth, container.value.clientHeight)
+		resizePort()
+		graph.enableHistory()
+	}
 
 	const resizePort = () => {
 		if (!node.value || !GRAPH.isLoaded) return
@@ -122,110 +155,14 @@ onMounted(async () => {
 		}
 	}
 
-	node.value.on('change:size', () => {
-		resizePort()
+	nextTick(() => {
+		if (!wrapper.value || !container.value) return
+
+		wrapperResizeObserver = new ResizeObserver(resizeNodeSize)
+		wrapperResizeObserver.observe(container.value!)
+
+		resizeNodeSize()
 	})
-
-	syncNodeSizeWithContainer()
-
-	// 监听 table.value
-	const tableValueWatcher = (newTable: GenTableModelInput | undefined, oldTable: GenTableModelInput | undefined) => {
-		if (!node.value || !oldTable || !newTable || !GRAPH.isLoaded) return
-
-		if (HISTORY.isRedo || HISTORY.isUndo) return
-
-		const nodeId = node.value.id
-
-		const oldEdges = graph.getConnectedEdges(nodeId)
-
-		node.value.removePorts()
-		node.value.addPorts(
-			newTable.columns.map(columnToPort)
-		)
-		resizePort()
-
-		setTimeout(() => {
-			for (let edge of oldEdges) {
-				if (edge.shape != ASSOCIATION_EDGE || !edge.getData()?.association) return
-
-				const association = cloneDeep(edge.getData().association) as GenAssociationModelInput
-
-				const oldColumnNameMap = new Map<string, GenTableModelInput_TargetOf_columns>
-				oldTable.columns.forEach(column => {
-					oldColumnNameMap.set(column.name, column)
-				})
-
-				const newColumnOrderKeyMap = new Map<number, GenTableModelInput_TargetOf_columns>
-				newTable.columns.forEach(column => {
-					newColumnOrderKeyMap.set(column.orderKey, column)
-				})
-
-				if (edge.getSourceCellId() === nodeId) {
-					const oldSourceTableName = association.sourceTableName
-
-					association.sourceTableName = newTable.name
-
-					let noColumnFlag = false
-					for (let columnReference of association.columnReferences) {
-						const oldSourceColumn = oldColumnNameMap.get(columnReference.sourceColumnName)
-						if (!oldSourceColumn) {
-							noColumnFlag = true
-							break
-						}
-						const newSourceColumn = newColumnOrderKeyMap.get(oldSourceColumn.orderKey)
-						if (!newSourceColumn) {
-							noColumnFlag = true
-							break
-						}
-						columnReference.sourceColumnName = newSourceColumn.name
-					}
-					if (noColumnFlag) continue
-
-					if (oldSourceTableName !== newTable.name) {
-						association.name = createAssociationName(association)
-					}
-				}
-
-				if (edge.getTargetCellId() === nodeId) {
-					const oldTargetTableName = association.targetTableName
-
-					association.targetTableName = newTable.name
-
-					let noColumnFlag = false
-					for (let columnReference of association.columnReferences) {
-						const oldTargetColumn = oldColumnNameMap.get(columnReference.targetColumnName)
-						if (!oldTargetColumn) {
-							noColumnFlag = true
-							break
-						}
-						const newTargetColumn = newColumnOrderKeyMap.get(oldTargetColumn.orderKey)
-						if (!newTargetColumn) {
-							noColumnFlag = true
-							break
-						}
-						columnReference.targetColumnName = newTargetColumn.name
-					}
-					if (noColumnFlag) continue
-
-					if (oldTargetTableName !== newTable.name) {
-						association.name = createAssociationName(association)
-					}
-				}
-
-				loadAssociationModelInputs(graph, [association])
-			}
-
-			unwatch()
-			newTable.columns.forEach((column, index) => {
-				column.orderKey = index + 1
-			})
-			unwatch = watch(() => table.value, tableValueWatcher, {deep: true})
-
-			ModelEditorEventBus.emit('syncedTable', {id: nodeId})
-		}, 100)
-	}
-
-	let unwatch = watch(() => table.value, tableValueWatcher, {deep: true})
 })
 
 const focusSuperTable = (name: string, e: MouseEvent) => {

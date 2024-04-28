@@ -1,4 +1,4 @@
-import {Edge, Graph} from "@antv/x6";
+import {Node, Edge, Graph} from "@antv/x6";
 import {
     GenAssociationModelInput,
     GenAssociationView,
@@ -31,10 +31,25 @@ export const associationViewToInput = (
     }
 }
 
-const associationToEdgeMeta = (
+export interface AssociationEdgeConnect {
+    association: GenAssociationModelInput
+    sourceNode: Node,
+    sourceTable: GenTableModelInput,
+    targetNode: Node,
+    targetTable: GenTableModelInput,
+    columnReferences: {
+        sourceColumn: GenTableModelInput_TargetOf_columns,
+        sourcePort: PortManager.PortMetadata,
+        targetColumn: GenTableModelInput_TargetOf_columns,
+        targetPort: PortManager.PortMetadata,
+    }[],
+    router: Edge.RouterData
+}
+
+export const associationToEdgeConnect = (
     graph: Graph,
     association: GenAssociationModelInput
-): Edge.Metadata | undefined => {
+): AssociationEdgeConnect | undefined => {
     if (association.columnReferences.length === 0) return
 
     const nodes = graph.getNodes().filter(it => it.shape === TABLE_NODE)
@@ -48,18 +63,15 @@ const associationToEdgeMeta = (
     )[0]
     if (!targetNode) return
 
-    const sourceTable = sourceNode.getData()?.table as GenTableModelInput
+    const sourceTable = sourceNode.getData()?.table as GenTableModelInput | undefined
     if (!sourceTable) return
-    const targetTable = targetNode.getData()?.table as GenTableModelInput
+    const targetTable = targetNode.getData()?.table as GenTableModelInput | undefined
     if (!targetTable) return
 
     const columnReferences = <{
         sourceColumn: GenTableModelInput_TargetOf_columns,
-        targetColumn: GenTableModelInput_TargetOf_columns
-    }[]>[]
-
-    const portPairs = <{
         sourcePort: PortManager.PortMetadata,
+        targetColumn: GenTableModelInput_TargetOf_columns,
         targetPort: PortManager.PortMetadata,
     }[]>[]
 
@@ -85,52 +97,61 @@ const associationToEdgeMeta = (
 
         columnReferences.push({
             sourceColumn,
-            targetColumn
-        })
-
-        portPairs.push({
             sourcePort,
+            targetColumn,
             targetPort
         })
     }
 
-    if (portPairs.length === 0 || columnReferences.length === 0) return
+    if (columnReferences.length === 0) return
 
-    /**
-     * 当 columnReference 多于一个时，在 cell 间直接建立关联
-     */
+    return {
+        association,
+        sourceNode,
+        sourceTable,
+        targetNode,
+        targetTable,
+        columnReferences,
+        router: targetNode.id === sourceNode.id ? orthRouter : erRouter
+    }
+}
 
-    const edgeMeta: Edge.Metadata = {
+export const associationEdgeConnectToEdgeMeta = (
+    associationEdgeConnect: AssociationEdgeConnect,
+): Edge.Metadata => {
+    const {
+        association,
+        sourceNode,
+        targetNode,
+        columnReferences,
+        router
+    } = associationEdgeConnect
+
+    return {
         shape: ASSOCIATION_EDGE,
         source: (
-            portPairs.length > 1 ?
+            columnReferences.length > 1 ?
                 {
                     cell: sourceNode.id,
                 } : {
                     cell: sourceNode.id,
-                    port: portPairs[0].sourcePort.id
+                    port: columnReferences[0].sourcePort.id
                 }
         ),
         target: (
-            portPairs.length > 1 ?
+            columnReferences.length > 1 ?
                 {
                     cell: targetNode.id,
                 } : {
                     cell: targetNode.id,
-                    port: portPairs[0].targetPort.id
+                    port: columnReferences[0].targetPort.id
                 }
         ),
         data: {
             association
         },
-        router: erRouter
+        router
     }
-
-    if (targetNode.id === sourceNode.id) {
-        edgeMeta.router = orthRouter
-    }
-
-    return edgeMeta
 }
 
 export const loadAssociationModelInputs = (
@@ -140,8 +161,11 @@ export const loadAssociationModelInputs = (
     const edges: Edge[] = []
 
     associations.forEach(association => {
-        const edgeMeta = associationToEdgeMeta(graph, association)
-        if (edgeMeta) edges.push(graph.addEdge(edgeMeta))
+        const associationEdgeConnect = associationToEdgeConnect(graph, association)
+        if (!associationEdgeConnect) return
+        const edgeMeta = associationEdgeConnectToEdgeMeta(associationEdgeConnect)
+        if (!edgeMeta) return
+        edges.push(graph.addEdge(edgeMeta))
     })
 
     return edges

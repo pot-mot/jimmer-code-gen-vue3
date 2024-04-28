@@ -1,4 +1,7 @@
-import {GenTableColumnsView, GenTableModelInput,} from "@/api/__generated/model/static";
+import {
+    GenTableColumnsView,
+    GenTableModelInput,
+} from "@/api/__generated/model/static";
 import {Graph, Node} from "@antv/x6";
 import {columnPortGroup} from "@/components/pages/ModelEditor/graph/tableNode/columnPort.ts";
 import {COLUMN_PORT_GROUP, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";

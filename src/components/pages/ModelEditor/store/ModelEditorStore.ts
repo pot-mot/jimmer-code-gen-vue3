@@ -98,18 +98,16 @@ export const useModelEditorStore = defineStore(
 
         const REMOVE = useRemoveOperation(
             _graph,
-            (graph, cells, target) => {
-                graph.startBatch(target)
-                cells.forEach(cell => {
-                    if (cell.isNode() && cell.shape === TABLE_NODE) {
-                        ModelEditorEventBus.emit('removeTable', cell.id)
-                    } else if (cell.isEdge() && cell.shape === ASSOCIATION_EDGE) {
-                        ModelEditorEventBus.emit('removeAssociation', cell.id)
-                    }
+            (_, cells, target) => {
+                startBatchSync(target, () => {
+                    cells.forEach(cell => {
+                        if (cell.isNode() && cell.shape === TABLE_NODE) {
+                            ModelEditorEventBus.emit('removeTable', cell.id)
+                        } else if (cell.isEdge() && cell.shape === ASSOCIATION_EDGE) {
+                            ModelEditorEventBus.emit('removeAssociation', cell.id)
+                        }
+                    })
                 })
-            },
-            (graph, _, target) => {
-                graph.stopBatch(target)
             }
         )
 
@@ -364,29 +362,47 @@ export const useModelEditorStore = defineStore(
 
 
         /**
-         * 同步相关
+         * 历史记录同步
          */
-        const waitSyncTableIds = new Set<string>
+        const waitBatches: string[] = []
+
+        const startBatchSync = <T> (name: string, callback: () => T): T => {
+            const graph = _graph()
+
+            debugger
+
+            graph.startBatch(name)
+            waitBatches.push(name)
+
+            const result = callback()
+
+            if (syncTableIds.length === 0) {
+                graph.stopBatch(name)
+            }
+
+            return result
+        }
+
+        let syncTableIds: string[] = []
 
         ModelEditorEventBus.on('syncTable', ({id}) => {
-            const graph = _graph()
-            if (!graph) return
-
-            if (waitSyncTableIds.size === 0) {
-                graph.startBatch('syncTable')
-            }
-            waitSyncTableIds.add(id)
+            syncTableIds.push(id)
         })
 
         ModelEditorEventBus.on('syncedTable', ({id}) => {
             const graph = _graph()
             if (!graph) return
 
-            waitSyncTableIds.delete(id)
-            if (waitSyncTableIds.size === 0) {
-                graph.stopBatch('syncTable')
+            syncTableIds = syncTableIds.filter(it => it !== id)
+
+            if (syncTableIds.length === 0) {
+                while(waitBatches.length !== 0) {
+                    const name = waitBatches.pop()!
+                    graph.stopBatch(name)
+                }
             }
         })
+
 
         /**
          * 表编辑对话框相关
@@ -433,7 +449,12 @@ export const useModelEditorStore = defineStore(
             const cell = graph.getCellById(id)
             if (!cell || !cell.isNode()) {
                 sendMessage(`更改节点【${id}】失败，无法被找到`, 'error')
-            } else {
+                return
+            }
+
+            tableDialogsStore.close(id)
+
+            startBatchSync('editedTable', () => {
                 const oldTable = cell.getData().table
 
                 // 当高级表被修改时，调整其他表中的 superTables
@@ -444,9 +465,9 @@ export const useModelEditorStore = defineStore(
                         syncSuperTableNameForTables(graph, oldTable.name, undefined)
                     }
                 }
+
                 updateTableNodeData(cell, table)
-            }
-            tableDialogsStore.close(id)
+            })
         })
 
         ModelEditorEventBus.on('removeTable', (id) => {
@@ -455,7 +476,10 @@ export const useModelEditorStore = defineStore(
             const cell = graph.getCellById(id)
             if (!cell || !cell.isNode()) {
                 sendMessage(`删除节点【${id}】失败，节点不存在或目标不是节点`, 'error')
-            } else {
+                return
+            }
+
+            startBatchSync('removeTable', () => {
                 if (cell.shape === TABLE_NODE && cell.getData().table) {
                     const table = cell.getData().table as GenTableModelInput
                     // 当高级表被删除时，调整其他表中的 superTables
@@ -463,9 +487,8 @@ export const useModelEditorStore = defineStore(
                         syncSuperTableNameForTables(graph, table.name, undefined)
                     }
                 }
-            }
-
-            graph.removeNode(id)
+                graph.removeNode(id)
+            })
         })
 
 
@@ -538,9 +561,11 @@ export const useModelEditorStore = defineStore(
             currentModel.enums = currentModel.enums.filter(it => it.name !== name)
             currentModel.enums.push(genEnum)
 
-            syncEnumNameForTables(_graph(), name, genEnum.name)
-
             enumDialogsStore.close(name)
+
+            startBatchSync('editedEnum', () => {
+                syncEnumNameForTables(_graph(), name, genEnum.name)
+            })
         })
 
         ModelEditorEventBus.on('removeEnum', (name) => {
@@ -548,7 +573,9 @@ export const useModelEditorStore = defineStore(
 
             currentModel.enums = currentModel.enums.filter(it => it.name !== name)
 
-            syncEnumNameForTables(_graph(), name, undefined)
+            startBatchSync('removeEnum', () => {
+                syncEnumNameForTables(_graph(), name, undefined)
+            })
         })
 
         /**
