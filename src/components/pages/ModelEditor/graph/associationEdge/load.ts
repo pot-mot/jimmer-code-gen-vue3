@@ -6,7 +6,7 @@ import {
     GenTableModelInput_TargetOf_columns,
 } from "@/api/__generated/model/static";
 import {erRouter, orthRouter} from "@/components/global/graphEditor/edgeRouter.ts";
-import {ASSOCIATION_EDGE} from "@/components/business/modelEditor/constant.ts";
+import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {PortManager} from "@antv/x6/es/model/port";
 
 export const associationViewToInput = (
@@ -37,11 +37,13 @@ const associationToEdgeMeta = (
 ): Edge.Metadata | undefined => {
     if (association.columnReferences.length === 0) return
 
-    const sourceNode = graph.getNodes().filter(it =>
+    const nodes = graph.getNodes().filter(it => it.shape === TABLE_NODE)
+
+    const sourceNode = nodes.filter(it =>
         it.getData()?.table.name === association.sourceTableName
     )[0]
     if (!sourceNode) return
-    const targetNode = graph.getNodes().filter(it =>
+    const targetNode = nodes.filter(it =>
         it.getData()?.table.name === association.targetTableName
     )[0]
     if (!targetNode) return

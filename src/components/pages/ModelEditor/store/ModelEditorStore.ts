@@ -364,6 +364,31 @@ export const useModelEditorStore = defineStore(
 
 
         /**
+         * 同步相关
+         */
+        const waitSyncTableIds = new Set<string>
+
+        ModelEditorEventBus.on('syncTable', ({id}) => {
+            const graph = _graph()
+            if (!graph) return
+
+            if (waitSyncTableIds.size === 0) {
+                graph.startBatch('syncTable')
+            }
+            waitSyncTableIds.add(id)
+        })
+
+        ModelEditorEventBus.on('syncedTable', ({id}) => {
+            const graph = _graph()
+            if (!graph) return
+
+            waitSyncTableIds.delete(id)
+            if (waitSyncTableIds.size === 0) {
+                graph.stopBatch('syncTable')
+            }
+        })
+
+        /**
          * 表编辑对话框相关
          */
 
@@ -378,7 +403,6 @@ export const useModelEditorStore = defineStore(
 
         ModelEditorEventBus.on('createdTable', ({id, table}) => {
             const graph = _graph()
-
             if (!graph) return
 
             const node = loadTableModelInputs(
@@ -404,7 +428,6 @@ export const useModelEditorStore = defineStore(
 
         ModelEditorEventBus.on('editedTable', ({id, table}) => {
             const graph = _graph()
-
             if (!graph) return
 
             const cell = graph.getCellById(id)
@@ -457,7 +480,6 @@ export const useModelEditorStore = defineStore(
 
         ModelEditorEventBus.on('editedAssociation', ({id, association}) => {
             const graph = _graph()
-
             if (!graph) return
 
             const cell = graph.getCellById(id)

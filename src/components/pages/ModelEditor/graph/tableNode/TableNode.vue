@@ -36,7 +36,11 @@
 
 <script lang='ts' setup>
 import {inject, nextTick, onMounted, ref, watch} from "vue";
-import {GenAssociationModelInput, GenTableModelInput, GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static";
+import {
+	GenAssociationModelInput,
+	GenTableModelInput,
+	GenTableModelInput_TargetOf_columns
+} from "@/api/__generated/model/static";
 import {Node} from '@antv/x6'
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
@@ -49,6 +53,7 @@ import {ASSOCIATION_EDGE, COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/b
 import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
 import {searchNodesByTableName} from "@/components/pages/ModelEditor/search/search.ts";
 import {cloneDeep} from "lodash";
+import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
 
 const {GRAPH, VIEW, HISTORY} = useModelEditorStore()
 
@@ -127,10 +132,7 @@ onMounted(async () => {
 	const tableValueWatcher = (newTable: GenTableModelInput | undefined, oldTable: GenTableModelInput | undefined) => {
 		if (!node.value || !oldTable || !newTable || !GRAPH.isLoaded) return
 
-		let historyFlag = false
-		if (HISTORY.isUndo || HISTORY.isRedo) historyFlag = true
-
-		if (historyFlag) graph.disableHistory()
+		if (HISTORY.isRedo || HISTORY.isUndo) return
 
 		const nodeId = node.value.id
 
@@ -165,7 +167,11 @@ onMounted(async () => {
 
 					let noColumnFlag = false
 					for (let columnReference of association.columnReferences) {
-						const oldSourceColumn = oldColumnNameMap.get(columnReference.sourceColumnName)!!
+						const oldSourceColumn = oldColumnNameMap.get(columnReference.sourceColumnName)
+						if (!oldSourceColumn) {
+							noColumnFlag = true
+							break
+						}
 						const newSourceColumn = newColumnOrderKeyMap.get(oldSourceColumn.orderKey)
 						if (!newSourceColumn) {
 							noColumnFlag = true
@@ -187,7 +193,11 @@ onMounted(async () => {
 
 					let noColumnFlag = false
 					for (let columnReference of association.columnReferences) {
-						const oldTargetColumn = oldColumnNameMap.get(columnReference.targetColumnName)!!
+						const oldTargetColumn = oldColumnNameMap.get(columnReference.targetColumnName)
+						if (!oldTargetColumn) {
+							noColumnFlag = true
+							break
+						}
 						const newTargetColumn = newColumnOrderKeyMap.get(oldTargetColumn.orderKey)
 						if (!newTargetColumn) {
 							noColumnFlag = true
@@ -211,8 +221,8 @@ onMounted(async () => {
 			})
 			unwatch = watch(() => table.value, tableValueWatcher, {deep: true})
 
-			if (historyFlag) graph.enableHistory()
-		}, 100 + oldEdges.length * 20)
+			ModelEditorEventBus.emit('syncedTable', {id: nodeId})
+		}, 100)
 	}
 
 	let unwatch = watch(() => table.value, tableValueWatcher, {deep: true})
