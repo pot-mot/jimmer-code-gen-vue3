@@ -81,6 +81,11 @@ const isSuperTable = computed<boolean>({
 const handleChangeColumnName = (newName: string, index: number) => {
 	const oldName = columnNames.value[index]
 
+	if (oldName !== newName && columnNames.value.filter(it => it === newName).length > 0) {
+		sendMessage('新列名存在同名', 'warning')
+		return
+	}
+
 	table.value.indexes.forEach(index => {
 		const newIndexColumns: GenTableModelInput_TargetOf_indexes_TargetOf_columns[] = []
 		index.columns.forEach(it => {
@@ -92,6 +97,8 @@ const handleChangeColumnName = (newName: string, index: number) => {
 		})
 		index.columns = newIndexColumns
 	})
+
+	syncColumnNames()
 }
 
 const handleColumnToPk = (pkIndex: number) => {
@@ -237,9 +244,8 @@ const handleCancel = () => {
 
 				<template #name="{data, index}">
 					<el-input v-model="data.name"
-							  @input="(value: string) => {
+							  @change="(value: string) => {
 								  handleChangeColumnName(value, index)
-								  syncColumnNames()
 							  }"></el-input>
 				</template>
 
