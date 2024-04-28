@@ -78,7 +78,7 @@ const isSuperTable = computed<boolean>({
 	}
 })
 
-const handleChangeColumnName = (newName: string, index: number) => {
+const handleInputColumnName = (newName: string, index: number) => {
 	const oldName = columnNames.value[index]
 
 	if (oldName !== newName && columnNames.value.filter(it => it === newName).length > 0) {
@@ -209,6 +209,7 @@ const handleCancel = () => {
 			<EditList
 				:columns="tableColumnColumns"
 				v-model:lines="table.columns"
+				@update:lines="syncColumnNames"
 				:defaultLine="getDefaultColumn"
 				:json-schema-validate="validateColumn"
 				style="width: 98%;">
@@ -244,8 +245,8 @@ const handleCancel = () => {
 
 				<template #name="{data, index}">
 					<el-input v-model="data.name"
-							  @change="(value: string) => {
-								  handleChangeColumnName(value, index)
+							  @input="(value: string) => {
+								  handleInputColumnName(value, index)
 							  }"></el-input>
 				</template>
 
