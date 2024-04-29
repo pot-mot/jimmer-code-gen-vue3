@@ -375,6 +375,17 @@ export const useModelEditorStore = defineStore(
             const result = callback()
 
             if (syncTableIds.length === 0) {
+                let index: number | undefined
+                for (let i = waitBatches.length - 1; i >= 0; i--) {
+                    if (waitBatches[i] === name) {
+                        index = i
+                        break
+                    }
+                }
+                if (index !== undefined) {
+                    throw Error("some waitBatch stoped before it callback end")
+                }
+                waitBatches.splice(index!, 1)
                 graph.stopBatch(name)
             }
 
