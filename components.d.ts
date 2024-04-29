@@ -16,7 +16,6 @@ declare module 'vue' {
     CodeEditor: typeof import('./src/components/global/code/CodeEditor.vue')['default']
     CodeIcon: typeof import('./src/components/global/icons/toolbar/CodeIcon.vue')['default']
     CodePreview: typeof import('./src/components/global/code/CodePreview.vue')['default']
-    ColumnDefaultEditor: typeof import('./src/components/business/columnDefault/ColumnDefaultForm.vue')['default']
     ColumnDefaultForm: typeof import('./src/components/business/columnDefault/ColumnDefaultForm.vue')['default']
     ColumnIcon: typeof import('./src/components/global/icons/database/ColumnIcon.vue')['default']
     ColumnTypeForm: typeof import('./src/components/business/table/ColumnTypeForm.vue')['default']
@@ -49,7 +48,6 @@ declare module 'vue' {
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElText: typeof import('element-plus/es')['ElText']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
-    EntityForm: typeof import('./src/components/business/entity/EntityForm.vue')['default']
     EntityIcon: typeof import('./src/components/global/icons/entity/EntityIcon.vue')['default']
     EnumDetail: typeof import('./src/components/business/enum/EnumDetail.vue')['default']
     EnumDialog: typeof import('./src/components/pages/ModelEditor/dialogs/enum/EnumDialog.vue')['default']
@@ -104,7 +102,6 @@ declare module 'vue' {
     Title: typeof import('./src/components/global/common/Title.vue')['default']
     TopBottomLayout: typeof import('./src/components/global/layout/TopBottomLayout.vue')['default']
     TypeMappingForm: typeof import('./src/components/business/typeMapping/TypeMappingForm.vue')['default']
-    TypeMappingsEditor: typeof import('./src/components/business/typeMapping/TypeMappingForm.vue')['default']
     UndoIcon: typeof import('./src/components/global/icons/toolbar/UndoIcon.vue')['default']
     ViewList: typeof import('./src/components/global/list/ViewList.vue')['default']
   }

@@ -3,6 +3,7 @@ import {DEBUG_CONSTANTS, useDebugStore} from "@/debug/debugStore.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
 import Details from "@/components/global/common/Details.vue";
 import {DeleteFilled} from "@element-plus/icons-vue";
+import {datetimeFormat} from "@/utils/dateFormat.ts";
 
 const debugStore = useDebugStore()
 </script>
@@ -52,7 +53,7 @@ const debugStore = useDebugStore()
 				{
 					prop: 'timestamp',
 					label: '时间',
-					span: '6em'
+					span: '8em'
 				},
 			]"
 			height="auto">
@@ -67,6 +68,10 @@ const debugStore = useDebugStore()
 						<el-text v-text="data.data"></el-text>
 					</div>
 				</Details>
+			</template>
+
+			<template #timestamp="{propData}">
+				<el-text>{{ datetimeFormat(propData) }}</el-text>
 			</template>
 		</ViewList>
 	</el-form>

@@ -270,7 +270,7 @@ export const useModelEditorStore = defineStore(
                     getCenterPoint(graph)
                 )
 
-            debugStore.log('HISTORY', 'loadTableViews', {tables, associations, nodes, edges})
+            debugStore.log('LOADING', 'loadTableViews', {tables, associations, nodes, edges})
 
             await syncTimeout(100 + nodes.length * 30 + edges.length * 20)
 
