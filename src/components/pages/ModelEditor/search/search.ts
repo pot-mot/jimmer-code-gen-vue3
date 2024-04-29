@@ -1,7 +1,7 @@
 import {Edge, Graph} from "@antv/x6";
 import {SelectType} from "@/api/__generated/model/enums";
 import {matchByKeywords} from "@/components/global/match/matchByKeywords.ts";
-import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
+import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 
 export const searchNodesByKeywords = (graph: Graph, keywords: string[]) => {
     return graph.getNodes()

@@ -1,5 +1,5 @@
 import {Edge} from "@antv/x6";
-import {EDGE_SELECT_FLAG} from "@/components/business/modelEditor/constant.ts";
+import {EDGE_SELECT_FLAG} from "@/components/pages/ModelEditor/constant.ts";
 
 export const getEdgeSelectFlag = (edge: Edge) => {
     const edgeWithFlag = edge as (Edge & { EDGE_SELECT_FLAG?: boolean })

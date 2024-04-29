@@ -48,9 +48,8 @@ const formattedEdgeShowType = computed(() => {
 						style="margin-left: 0.5em;"
 						@click="ModelEditorEventBus.emit(
 							'createTable',
-							{x: VIEW.getCenterPoint().x * 3/4, y: VIEW.getCenterPoint().y * 3/4}
-							)"
-					>
+							{options: {x: VIEW.getCenterPoint().x * 3/4, y: VIEW.getCenterPoint().y * 3/4}}
+						)">
 						创建表
 					</el-button>
 				</div>

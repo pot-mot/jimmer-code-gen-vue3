@@ -12,7 +12,7 @@ import {useJdbcTypeStore} from "@/components/business/jdbcType/jdbcTypeStore.ts"
 import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
 import {useGlobalGenConfigStore} from "@/components/business/genConfig/GlobalGenConfigStore.ts";
 import {validateColumnDefaultInput} from "@/shape/GenColumnDefaultInput.ts";
-import {validateColumnDefaults} from "@/components/business/columnDefault/validate.ts";
+import {validateColumnDefaultForm} from "@/components/business/columnDefault/validate.ts";
 
 const editState = ref(false)
 
@@ -101,7 +101,7 @@ const handleEdit = async () => {
 }
 
 const handleSubmit = async () => {
-	const messageList = validateColumnDefaults(tempColumnDefaults.value)
+	const messageList = validateColumnDefaultForm(tempColumnDefaults.value)
 
 	if (messageList.length > 0) {
 		messageList.forEach(it => sendMessage(it, 'warning'))

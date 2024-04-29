@@ -44,7 +44,7 @@ import Comment from "@/components/global/common/Comment.vue";
 import {sendMessage} from "@/message/message.ts";
 import {useModelEditorStore} from "../../store/ModelEditorStore.ts";
 import {columnToPort} from "@/components/pages/ModelEditor/graph/tableNode/load.ts";
-import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
+import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {searchNodesByTableName} from "@/components/pages/ModelEditor/search/search.ts";
 import {
 	refreshEdgeAssociation,
@@ -66,8 +66,6 @@ const node = ref<Node>()
 
 const table = ref<GenTableModelInput>()
 
-let wrapperResizeObserver
-
 /**
  * 在 data 变化后，
  * table 同步 size 到 node 和 port
@@ -86,6 +84,30 @@ onMounted(() => {
 	}
 
 	node.value.getData().wrapper = wrapper
+
+	/**
+	 * 尺寸同步相关
+	 */
+
+	const resizeNodeSize = () => {
+		if (!node.value || !container.value) return
+
+		const width = container.value.clientWidth
+		const height = container.value.clientHeight
+
+		node.value.resize(width, height)
+
+		// 设置 ports 宽度
+		for (let port of node.value.ports.items) {
+			node.value.setPortProp(port.id!, `attrs/${COLUMN_PORT_SELECTOR}/width`, width)
+		}
+	}
+
+	nextTick(() => {
+		graph.disableHistory()
+		resizeNodeSize()
+		graph.enableHistory()
+	})
 
 	/**
 	 * 数据同步相关
@@ -112,7 +134,10 @@ onMounted(() => {
 
 		node.value.removePorts()
 		node.value.addPorts(newTable.columns.map(columnToPort))
-		resizePort()
+
+		nextTick(() => {
+			resizeNodeSize()
+		})
 
 		setTimeout(() => {
 			if (!node.value) return
@@ -132,37 +157,6 @@ onMounted(() => {
 	}
 
 	syncTable()
-
-	/**
-	 * 尺寸同步相关
-	 */
-
-	const resizeNodeSize = () => {
-		if (!node.value || !container.value) return
-
-		graph.disableHistory()
-		node.value.resize(container.value.clientWidth, container.value.clientHeight)
-		resizePort()
-		graph.enableHistory()
-	}
-
-	const resizePort = () => {
-		if (!node.value || !GRAPH.isLoaded) return
-
-		// 设置 ports 宽度
-		for (let port of node.value.ports.items) {
-			node.value.setPortProp(port.id!, `attrs/${COLUMN_PORT_SELECTOR}/width`, node.value.getSize().width)
-		}
-	}
-
-	nextTick(() => {
-		if (!wrapper.value || !container.value) return
-
-		wrapperResizeObserver = new ResizeObserver(resizeNodeSize)
-		wrapperResizeObserver.observe(container.value!)
-
-		resizeNodeSize()
-	})
 })
 
 const focusSuperTable = (name: string, e: MouseEvent) => {

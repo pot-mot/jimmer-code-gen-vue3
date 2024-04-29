@@ -3,9 +3,14 @@ import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {ModelEditorEventBus} from "../../store/ModelEditorEventBus.ts";
 import EnumForm from "@/components/business/enum/EnumForm.vue";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
+import {validateEnum} from "@/components/business/enum/validateEnum.ts";
+import {useModelEditorStore} from "@/components/pages/ModelEditor/store/ModelEditorStore.ts";
+import {DeepReadonly} from "vue";
+
+const {MODEL} = useModelEditorStore()
 
 interface EnumDialogProps {
-	name: string,
+	id: string,
 	genEnum?: Partial<GenModelInput_TargetOf_enums>
 }
 
@@ -18,17 +23,28 @@ interface EnumEntityDialogEmits {
 const emits = defineEmits<EnumEntityDialogEmits>()
 
 const handleSubmit = (genEnum: GenModelInput_TargetOf_enums) => {
-	if (props.name.length > 0) {
-		ModelEditorEventBus.emit('editedEnum', {name: props.name, genEnum})
+	if (props.id.length > 0) {
+		ModelEditorEventBus.emit('editedEnum', {id: props.id, genEnum})
 	} else {
-		ModelEditorEventBus.emit('createdEnum', genEnum)
+		ModelEditorEventBus.emit('createdEnum', {id: props.id, genEnum})
 	}
+}
+
+const validate = (genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
+	return validateEnum(
+		genEnum,
+		MODEL._model().enums.filter(it => it.name !== props.id)
+	)
 }
 </script>
 
 <template>
 	<DragDialog :model-value="true" :can-resize="true" :init-w="800" :init-h="600" :init-y="100"
 				@close="emits('close')">
-		<EnumForm :enum="genEnum" @cancel="emits('close')" @submit="handleSubmit"></EnumForm>
+		<EnumForm
+			:enum="genEnum"
+			:validate="validate"
+			@cancel="emits('close')"
+			@submit="handleSubmit"></EnumForm>
 	</DragDialog>
 </template>

@@ -1,7 +1,7 @@
 import {PropListColumn} from "@/components/global/list/ListProps.ts";
 import {GenTableModelInput_TargetOf_indexes} from "@/api/__generated/model/static";
 
-export const tableIndexColumns = <PropListColumn<GenTableModelInput_TargetOf_indexes>[]>[
+export const tableIndexColumns = <ReadonlyArray<PropListColumn<GenTableModelInput_TargetOf_indexes>>>[
     {
         prop: "name",
         label: '名称',

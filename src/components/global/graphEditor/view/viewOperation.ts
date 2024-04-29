@@ -3,7 +3,7 @@ import {getBottom, getLeft, getRight, getTop, layoutByLevel, LayoutDirection} fr
 import {Graph} from "@antv/x6";
 import {getSelectedNodes} from "../selection/selectOperation.ts";
 import {CellProperty, getCell} from "../common/cellsInputProcess.ts";
-import {DEFAULT_ZOOM_RANGE} from "@/components/business/modelEditor/constant.ts";
+import {DEFAULT_ZOOM_RANGE} from "@/components/pages/ModelEditor/constant.ts";
 
 export interface ViewOperation {
     layoutDirection: Ref<LayoutDirection>,

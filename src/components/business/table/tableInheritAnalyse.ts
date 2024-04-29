@@ -1,10 +1,11 @@
 import {GenTableModelInput} from "@/api/__generated/model/static";
+import {DeepReadonly} from "vue";
 
 // 获取合法的 superTable 列表
 export const getLegalSuperTables = (
-    table: GenTableModelInput,
-    superTables: GenTableModelInput[],
-): GenTableModelInput[] => {
+    table: DeepReadonly<GenTableModelInput>,
+    superTables: DeepReadonly<Array<GenTableModelInput>>,
+): DeepReadonly<Array<GenTableModelInput>> => {
     if (table.type != "SUPER_TABLE") {
         return superTables
     }
@@ -17,9 +18,9 @@ export const getLegalSuperTables = (
 
 // 获取全部子表
 export const getAllChildTables = (
-    table: GenTableModelInput,
-    otherTables: GenTableModelInput[],
-): GenTableModelInput[] => {
+    table: DeepReadonly<GenTableModelInput>,
+    otherTables: DeepReadonly<Array<GenTableModelInput>>,
+): DeepReadonly<Array<GenTableModelInput>> => {
     if (table.type != "SUPER_TABLE") {
         return []
     }
@@ -30,7 +31,7 @@ export const getAllChildTables = (
     return otherTables.filter(it => it.name != table.name).filter(it => allChildren.has(it.name))
 }
 
-const createInheritMap = (tables: GenTableModelInput[]): Map<string, string[]> => {
+const createInheritMap = (tables: DeepReadonly<Array<GenTableModelInput>>): DeepReadonly<Map<string, string[]>> => {
     const inheritMap = new Map<string, string[]>
     for (let table of tables) {
         const {name, superTables} = table
@@ -46,7 +47,11 @@ const createInheritMap = (tables: GenTableModelInput[]): Map<string, string[]> =
     return inheritMap
 }
 
-const collectAllChildren = (root: string, inheritMap: Map<string, string[]>, visited: Set<string> = new Set): string[] => {
+const collectAllChildren = (
+    root: DeepReadonly<string>,
+    inheritMap: DeepReadonly<Map<string, string[]>>,
+    visited: Set<string> = new Set
+): string[] => {
     const result: string[] = []
 
     const children = inheritMap.get(root)

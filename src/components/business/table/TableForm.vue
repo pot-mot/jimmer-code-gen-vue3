@@ -1,40 +1,46 @@
 <script lang="ts" setup>
-import {computed, ref, watch} from 'vue'
+import {computed, DeepReadonly, ref, watch} from 'vue'
 import {
-	GenTableModelInput, GenTableModelInput_TargetOf_indexes_TargetOf_columns,
+	GenModelInput_TargetOf_enums,
+	GenTableModelInput,
+	GenTableModelInput_TargetOf_indexes,
+	GenTableModelInput_TargetOf_indexes_TargetOf_columns,
 } from "@/api/__generated/model/static";
 import {sendMessage} from "@/message/message.ts";
-import {useModelEditorStore} from "../../store/ModelEditorStore.ts";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import EditList from "@/components/global/list/EditList.vue";
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import {tableColumnColumns} from "@/components/business/table/tableColumnColumns.ts";
 import ColumnTypeForm from "@/components/business/table/ColumnTypeForm.vue";
 import {useJdbcTypeStore} from "@/components/business/jdbcType/jdbcTypeStore.ts";
-import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
-import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
 import {tableIndexColumns} from "@/components/business/table/tableIndexColumns.ts";
 import Details from "@/components/global/common/Details.vue";
 import {getDefaultColumn, getDefaultIndex, getDefaultTable} from "@/components/business/table/defaultTable.ts";
 import {validateColumn, validateIndex} from "@/shape/GenTableModelInput.ts";
-import {createIndexName} from "@/components/pages/ModelEditor/graph/nameTemplate/createIndexName.ts";
-import {TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
 import {Refresh} from "@element-plus/icons-vue";
-import {validateTableForm} from "@/components/pages/ModelEditor/form/table/validate.ts";
-import {getAllChildTables, getLegalSuperTables} from "@/components/pages/ModelEditor/form/table/LegalSuperTable.ts";
-
-const {GRAPH, MODEL} = useModelEditorStore()
+import {getLegalSuperTables} from "@/components/business/table/tableInheritAnalyse.ts";
 
 const jdbcTypeStore = useJdbcTypeStore()
 
 interface ModelFormProps {
-	id?: string,
-	table?: GenTableModelInput
+	table?: GenTableModelInput,
+	getSuperTables: () => DeepReadonly<Array<GenTableModelInput>>,
+	getEnums: () => Array<GenModelInput_TargetOf_enums>,
+
+	validate: (table: DeepReadonly<GenTableModelInput>) => string[],
+
+	createIndexName: (index: DeepReadonly<GenTableModelInput_TargetOf_indexes>) => string
 }
 
 const props = defineProps<ModelFormProps>()
 
-const emits = defineEmits<FormEmits<GenTableModelInput>>()
+interface ModelFormEmits {
+	(event: "createEnum"): void
+
+	(event: "editEnum", data: { genEnum: GenModelInput_TargetOf_enums }): void
+}
+
+const emits = defineEmits<FormEmits<GenTableModelInput> & ModelFormEmits>()
 
 const table = ref<GenTableModelInput>(getDefaultTable())
 
@@ -43,14 +49,10 @@ watch(() => props.table, (value) => {
 	table.value = value
 }, {immediate: true})
 
-const getOtherTables = () => {
-	return GRAPH.nodes.filter(it => it.shape === TABLE_NODE && it.id !== props.id).map(it => it.data.table)
-}
-
 const getSelectableSuperTables = () => {
 	return getLegalSuperTables(
 		table.value,
-		GRAPH.nodes.filter(it => it.shape === TABLE_NODE).map(it => it.data.table).filter(it => it.type === "SUPER_TABLE")
+		props.getSuperTables()
 	)
 }
 
@@ -124,25 +126,28 @@ const handleColumnToPk = (pkIndex: number) => {
 	})
 }
 
-const handleSubmit = () => {
-	const otherTables = getOtherTables()
-	const superTables = getSelectableSuperTables()
-	const childTables = getAllChildTables(table.value, otherTables)
+const handleSuperTablesChange = (value: string[]) => {
+	table.value.superTables = value.map(it => {
+		return {name: it}
+	})
+}
 
-	const {newTable, messageList} = validateTableForm(
-		table.value,
-		otherTables,
-		superTables,
-		childTables,
-		MODEL._model().enums
-	)
+const handleEnumEdit = (name: string) => {
+	let genEnum = props.getEnums().filter(it => it.name === name)[0]
+	if (!genEnum) {
+		sendMessage(`枚举【${name}】不存在`)
+		return
+	}
+	emits('editEnum', {genEnum})
+}
+
+const handleSubmit = () => {
+	const messageList = props.validate(table.value)
 
 	if (messageList.length > 0) {
 		messageList.forEach(it => sendMessage(it, 'warning'))
 		return
 	}
-
-	table.value = newTable
 
 	emits('submit', table.value)
 }
@@ -190,9 +195,7 @@ const handleCancel = () => {
 				<el-col :span="16">
 					<el-select :model-value="table.superTables.map(it => it.name)" multiple filterable
 							   placeholder="继承的上级表" style="width: 100%;"
-							   @change="(value: string[]) => {
-								   table.superTables = value.map(it => {return {name: it}})
-							   }">
+							   @change="handleSuperTablesChange">
 						<el-option v-for="name in superTableNames" :value="name"></el-option>
 					</el-select>
 				</el-col>
@@ -265,14 +268,10 @@ const handleCancel = () => {
 
 				<template #type="{data}">
 					<ColumnTypeForm
-						:enumNames="MODEL._model().enums.map(it => it.name)"
+						:enumNames="getEnums().map(it => it.name)"
 						:model-value="data"
-						@create-enum="ModelEditorEventBus.emit('createEnum')"
-						@edit-enum="(name) => {
-							let genEnum = MODEL._model().enums.filter(it => it.name === name)[0]
-							if (!genEnum) genEnum = {...getDefaultEnum(),name}
-							ModelEditorEventBus.emit('editEnum', {name, genEnum})
-						}"
+						@create-enum="emits('createEnum')"
+						@edit-enum="handleEnumEdit"
 					></ColumnTypeForm>
 				</template>
 

@@ -1,4 +1,4 @@
-import {TABLE_NODE,} from "@/components/business/modelEditor/constant.ts";
+import {TABLE_NODE,} from "@/components/pages/ModelEditor/constant.ts";
 import {EdgeConnect} from "@/components/global/graphEditor/edge/connectData.ts";
 import {
     GenTableModelInput, GenTableModelInput_TargetOf_columns

@@ -6,11 +6,12 @@ import {
     GenTableModelInput_TargetOf_columns,
 } from "@/api/__generated/model/static";
 import {erRouter, orthRouter} from "@/components/global/graphEditor/edgeRouter.ts";
-import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
+import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {PortManager} from "@antv/x6/es/model/port";
+import {DeepReadonly} from "vue";
 
 export const associationViewToInput = (
-    view: GenAssociationView,
+    view: DeepReadonly<GenAssociationView>,
 ): GenAssociationModelInput => {
     return {
         type: view.type,
@@ -48,8 +49,8 @@ export interface AssociationEdgeConnect {
 
 export const associationToEdgeConnect = (
     graph: Graph,
-    association: GenAssociationModelInput
-): AssociationEdgeConnect | undefined => {
+    association: DeepReadonly<GenAssociationModelInput>
+): DeepReadonly<AssociationEdgeConnect> | undefined => {
     if (association.columnReferences.length === 0) return
 
     const nodes = graph.getNodes().filter(it => it.shape === TABLE_NODE)
@@ -117,7 +118,7 @@ export const associationToEdgeConnect = (
 }
 
 export const associationEdgeConnectToEdgeMeta = (
-    associationEdgeConnect: AssociationEdgeConnect,
+    associationEdgeConnect: DeepReadonly<AssociationEdgeConnect>,
 ): Edge.Metadata => {
     const {
         association,
@@ -156,7 +157,7 @@ export const associationEdgeConnectToEdgeMeta = (
 
 export const loadAssociationModelInputs = (
     graph: Graph,
-    associations: readonly GenAssociationModelInput[]
+    associations: DeepReadonly<Array<GenAssociationModelInput>>
 ): Edge[] => {
     const edges: Edge[] = []
 

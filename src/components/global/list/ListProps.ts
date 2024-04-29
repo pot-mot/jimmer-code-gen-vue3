@@ -21,16 +21,13 @@ export interface PropListColumn<T extends { [key: string]: any }> {
 }
 
 export interface ListProps<T extends { [key: string]: any }> extends LineStyleProps {
-    columns: (PropListColumn<T> | ListColumn<T>)[],
+    columns: ReadonlyArray<PropListColumn<T> | ListColumn<T>>,
     lines: T[]
     labelLine?: boolean
 }
 
-export interface EditListProps<T extends { [key: string]: any }> extends LineStyleProps {
-    columns: (PropListColumn<T> | ListColumn<T>)[],
+export interface EditListProps<T extends { [key: string]: any }> extends ListProps<T> {
     operation?: ListColumn<T>,
-    lines: T[],
-    labelLine?: boolean,
     defaultLine: T | (() => T | Promise<T>),
     jsonSchemaValidate: (json: any, onError: (e: any) => void) => boolean | Promise<T>
 }

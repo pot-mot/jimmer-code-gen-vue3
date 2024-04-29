@@ -10,7 +10,7 @@ export const useShapeValidate = <T>(type: string, schema: any) => {
     return {
         ajv,
         validate: (
-            data: any,
+            data: T,
             onErrors: (e: any) => void
         ) => {
             const result = validate(data)

@@ -1,9 +1,10 @@
 import {uniqWith} from "lodash";
 import {GenColumnDefaultInput} from "@/api/__generated/model/static";
+import {DeepReadonly} from "vue";
 
-export const validateColumnDefaults = (
-    columnDefaults: GenColumnDefaultInput[]
-) => {
+export const validateColumnDefaultForm = (
+    columnDefaults: DeepReadonly<Array<GenColumnDefaultInput>>
+): string[] => {
     const messageList: string[] = []
 
     const uniqueColumnDefaults = uniqWith(columnDefaults, (mapping1, mapping2) => {

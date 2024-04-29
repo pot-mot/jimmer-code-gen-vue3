@@ -1,6 +1,6 @@
 import {GenTableModelInput} from "@/api/__generated/model/static";
 import {cloneDeep} from "lodash";
-import {TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
+import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {Graph} from "@antv/x6";
 import {useTableDialogsStore} from "@/components/pages/ModelEditor/dialogs/table/TableDialogsStore.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";

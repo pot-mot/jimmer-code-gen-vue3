@@ -1,9 +1,10 @@
 import {uniqWith} from "lodash";
 import {GenTypeMappingInput, GenTypeMappingView} from "@/api/__generated/model/static";
+import {DeepReadonly} from "vue";
 
-export const validateTypeMappings = (
-    typeMappings: GenTypeMappingView[]
-) => {
+export const validateTypeMappingForm = (
+    typeMappings: DeepReadonly<Array<GenTypeMappingView>>
+): string[] => {
     const messageList: string[] = []
 
     const uniqueTypeMappings = uniqWith(typeMappings, (mapping1, mapping2) => {

@@ -9,9 +9,9 @@ import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingSt
 import {loadTableModelInputs} from "@/components/pages/ModelEditor/graph/tableNode/load.ts";
 import {useGenConfigContextStore} from "@/components/business/genConfig/ContextGenConfigStore.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
-import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
+import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
-import {useEnumDialogsStore} from "@/components/pages/ModelEditor/dialogs/enum/EnumDialogsStore.ts";
+import {ENUM_CREATE_PREFIX, useEnumDialogsStore} from "@/components/pages/ModelEditor/dialogs/enum/EnumDialogsStore.ts";
 import {cloneDeep} from "lodash";
 import {getDefaultTable} from "@/components/business/table/defaultTable.ts";
 import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
@@ -102,9 +102,9 @@ export const useModelEditorStore = defineStore(
                 startBatchSync(target, () => {
                     cells.forEach(cell => {
                         if (cell.isNode() && cell.shape === TABLE_NODE) {
-                            ModelEditorEventBus.emit('removeTable', cell.id)
+                            ModelEditorEventBus.emit('removeTable', {id: cell.id})
                         } else if (cell.isEdge() && cell.shape === ASSOCIATION_EDGE) {
-                            ModelEditorEventBus.emit('removeAssociation', cell.id)
+                            ModelEditorEventBus.emit('removeAssociation', {id: cell.id})
                         }
                     })
                 })
@@ -366,7 +366,7 @@ export const useModelEditorStore = defineStore(
          */
         const waitBatches: string[] = []
 
-        const startBatchSync = <T> (name: string, callback: () => T): T => {
+        const startBatchSync = <T>(name: string, callback: () => T): T => {
             const graph = _graph()
 
             graph.startBatch(name)
@@ -382,8 +382,8 @@ export const useModelEditorStore = defineStore(
                         break
                     }
                 }
-                if (index !== undefined) {
-                    throw Error("some waitBatch stoped before it callback end")
+                if (index === undefined) {
+                    throw Error("some waitBatch stopped before it callback end")
                 }
                 waitBatches.splice(index!, 1)
                 graph.stopBatch(name)
@@ -406,7 +406,7 @@ export const useModelEditorStore = defineStore(
             syncTableIds.splice(index, 1)
 
             if (syncTableIds.length === 0) {
-                while(waitBatches.length !== 0) {
+                while (waitBatches.length !== 0) {
                     const name = waitBatches.pop()!
                     graph.stopBatch(name)
                 }
@@ -420,11 +420,13 @@ export const useModelEditorStore = defineStore(
 
         const tableDialogsStore = useTableDialogsStore()
 
-        const tableCreateOption = ref<TableLoadOptions>()
+        const tableCreateOptionsMap = ref(new Map<string, TableLoadOptions>)
 
-        ModelEditorEventBus.on('createTable', (option) => {
-            tableDialogsStore.open(TABLE_CREATE_PREFIX + Date.now(), getDefaultTable())
-            tableCreateOption.value = option
+        ModelEditorEventBus.on('createTable', ({options}) => {
+            const id = TABLE_CREATE_PREFIX + Date.now()
+
+            tableDialogsStore.open(id, getDefaultTable())
+            tableCreateOptionsMap.value.set(id, options)
         })
 
         ModelEditorEventBus.on('createdTable', ({id, table}) => {
@@ -434,10 +436,10 @@ export const useModelEditorStore = defineStore(
             const node = loadTableModelInputs(
                 graph,
                 [table],
-                tableCreateOption.value
+                tableCreateOptionsMap.value.get(id)
             ).nodes[0]
 
-            tableCreateOption.value = undefined
+            tableCreateOptionsMap.value.delete(id)
 
             if (node) {
                 tableDialogsStore.close(id)
@@ -480,7 +482,7 @@ export const useModelEditorStore = defineStore(
             })
         })
 
-        ModelEditorEventBus.on('removeTable', (id) => {
+        ModelEditorEventBus.on('removeTable', ({id}) => {
             const graph = _graph()
 
             const cell = graph.getCellById(id)
@@ -541,7 +543,7 @@ export const useModelEditorStore = defineStore(
             graph.stopBatch(`modifyAssociation [id=${id}]`)
         })
 
-        ModelEditorEventBus.on('removeAssociation', (id) => {
+        ModelEditorEventBus.on('removeAssociation', ({id}) => {
             _graph().removeEdge(id)
         })
 
@@ -553,38 +555,43 @@ export const useModelEditorStore = defineStore(
         const enumDialogsStore = useEnumDialogsStore()
 
         ModelEditorEventBus.on('createEnum', () => {
-            enumDialogsStore.open("", getDefaultEnum())
+            const id = ENUM_CREATE_PREFIX + Date.now()
+            enumDialogsStore.open(id, getDefaultEnum())
         })
 
-        ModelEditorEventBus.on('createdEnum', (genEnum) => {
+        ModelEditorEventBus.on('createdEnum', ({id, genEnum}) => {
             _model().enums.push(genEnum)
-            enumDialogsStore.close("")
+            enumDialogsStore.close(id)
         })
 
-        ModelEditorEventBus.on('editEnum', ({name, genEnum}) => {
-            enumDialogsStore.open(name, cloneDeep(genEnum))
+        ModelEditorEventBus.on('editEnum', ({id, genEnum}) => {
+            enumDialogsStore.open(id, genEnum)
         })
 
-        ModelEditorEventBus.on('editedEnum', ({name, genEnum}) => {
+        ModelEditorEventBus.on('editedEnum', ({id, genEnum}) => {
             const currentModel = _model()
 
-            currentModel.enums = currentModel.enums.filter(it => it.name !== name)
+            const oldName = id
+
+            currentModel.enums = currentModel.enums.filter(it => it.name !== oldName)
             currentModel.enums.push(genEnum)
 
-            enumDialogsStore.close(name)
+            enumDialogsStore.close(id)
 
             startBatchSync('editedEnum', () => {
-                syncEnumNameForTables(_graph(), name, genEnum.name)
+                syncEnumNameForTables(_graph(), oldName, genEnum.name)
             })
         })
 
-        ModelEditorEventBus.on('removeEnum', (name) => {
+        ModelEditorEventBus.on('removeEnum', ({id}) => {
             const currentModel = _model()
 
-            currentModel.enums = currentModel.enums.filter(it => it.name !== name)
+            const oldName = id
+
+            currentModel.enums = currentModel.enums.filter(it => it.name !== oldName)
 
             startBatchSync('removeEnum', () => {
-                syncEnumNameForTables(_graph(), name, undefined)
+                syncEnumNameForTables(_graph(), oldName, undefined)
             })
         })
 

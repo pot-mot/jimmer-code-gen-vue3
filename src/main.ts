@@ -16,7 +16,7 @@ import './assets/model-editor-graph.css'
 import './assets/table-node.css'
 import './assets/association-edge.css'
 
-import {registerModelEditorShape} from "@/components/business/modelEditor/register.ts";
+import {registerModelEditorShape} from "@/components/pages/ModelEditor/register.ts";
 import {useCodeEditor} from "@/components/global/code/CodeEditorWorkers.ts";
 
 const app = createApp(App)

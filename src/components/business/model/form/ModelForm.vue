@@ -12,6 +12,7 @@ import {validateGraphData} from "@/shape/GraphData.ts";
 import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated/model/enums";
 import GenConfigForm from "@/components/business/genConfig/GenConfigForm.vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
+import {validateModelForm} from "@/components/business/model/form/validateModel.ts";
 
 const props = defineProps<ModelFormProps>()
 
@@ -33,7 +34,7 @@ watch(() => props.model, (propsModel) => {
 
 			tempModel.graphData = jsonStrPrettyFormat(tempModel.graphData)
 		} catch (e) {
-			sendMessage('json 格式校验失败', 'error', {graphData: tempModel.graphData, e})
+			sendMessage('json 格式校验失败，请参考控制台报错', 'warning', {error: e, graphData: tempModel.graphData})
 		}
 
 		model.value = tempModel
@@ -44,16 +45,25 @@ const handleSubmit = () => {
 	const tempModel = cloneDeep(model.value)
 
 	try {
+		const graphData = JSON.parse(tempModel.graphData)
+
 		validateGraphData(
-			JSON.parse(tempModel.graphData),
+			graphData,
 			e => {
 				throw e
 			}
 		)
 
+		const messageList = validateModelForm(model.value)
+
+		if (messageList.length > 0) {
+			messageList.forEach(it => sendMessage(it, 'warning'))
+			return
+		}
+
 		tempModel.graphData = jsonStrCompress(tempModel.graphData)
 	} catch (e) {
-		sendMessage("模型提交失败", 'error', {graphData: tempModel.graphData, e})
+		sendMessage("模型提交失败，请参考控制台报错", 'warning', {error: e, graphData: tempModel.graphData})
 		return
 	}
 

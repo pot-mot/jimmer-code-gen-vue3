@@ -6,7 +6,7 @@ import {
     COMMON_COLOR,
     DEFAULT_ASSOCIATION_TYPE,
     LINE_WIDTH
-} from "@/components/business/modelEditor/constant.ts";
+} from "@/components/pages/ModelEditor/constant.ts";
 import {
     EdgeConnectEntities,
     getEdgeConnectEntities,

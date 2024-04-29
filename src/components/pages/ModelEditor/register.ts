@@ -6,7 +6,7 @@ import {
     ASSOCIATION_EDGE,
     COLUMN_PORT,
     TABLE_NODE
-} from "@/components/business/modelEditor/constant.ts";
+} from "@/components/pages/ModelEditor/constant.ts";
 import {associationEdgeBase} from "@/components/pages/ModelEditor/graph/associationEdge/define.ts";
 
 /**

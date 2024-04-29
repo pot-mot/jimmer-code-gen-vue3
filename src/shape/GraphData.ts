@@ -1,7 +1,8 @@
 import {GenAssociationModelInputJsonSchema} from "@/shape/GenAssociationModelInput.ts";
 import {GenTableModelInputJsonSchema} from "@/shape/GenTableModelInput.ts";
 import {useShapeValidate} from "@/shape/shapeValidate.ts";
-import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
+import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
+import {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static";
 
 const GraphDataShapeJsonSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -11,8 +12,11 @@ const GraphDataShapeJsonSchema = {
 
         "AssociationEdge": {
             "type": "object",
-            "required": ["shape", "data"],
+            "required": ["id", "shape", "data"],
             "properties": {
+                "id": {
+                    "type": "string",
+                },
                 "shape": {
                     "type": "string",
                     "enum": [ASSOCIATION_EDGE]
@@ -31,8 +35,11 @@ const GraphDataShapeJsonSchema = {
 
         "TableNode": {
             "type": "object",
-            "required": ["shape", "data"],
+            "required": ["id", "shape", "data"],
             "properties": {
+                "id": {
+                    "type": "string",
+                },
                 "shape": {
                     "type": "string",
                     "enum": [TABLE_NODE]
@@ -61,8 +68,8 @@ const GraphDataShapeJsonSchema = {
                             "type": "array",
                             "items": {
                                 "anyOf": [
-                                    { "$ref": "#/definitions/TableNode" },
-                                    { "$ref": "#/definitions/AssociationEdge" }
+                                    {"$ref": "#/definitions/TableNode"},
+                                    {"$ref": "#/definitions/AssociationEdge"}
                                 ]
                             }
                         }
@@ -79,9 +86,25 @@ const GraphDataShapeJsonSchema = {
     }
 } as const
 
+export interface TableNode {
+    id: string,
+    data: {
+        table: GenTableModelInput
+    },
+    shape: typeof TABLE_NODE
+}
+
+export interface AssociationEdge {
+    id: string,
+    data: {
+        association: GenAssociationModelInput
+    },
+    shape: typeof ASSOCIATION_EDGE
+}
+
 export interface GraphData {
     json: {
-        cells: []
+        cells: Array<TableNode | AssociationEdge>
     },
     zoom: string,
     transform: number | undefined,

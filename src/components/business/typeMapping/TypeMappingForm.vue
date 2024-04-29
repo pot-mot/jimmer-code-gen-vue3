@@ -11,7 +11,7 @@ import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep} from "lodash";
 import {useGlobalGenConfigStore} from "@/components/business/genConfig/GlobalGenConfigStore.ts";
 import {validateTypeMappingInput} from "@/shape/GenTypeMappingInput.ts";
-import {validateTypeMappings} from "@/components/business/typeMapping/validate.ts";
+import {validateTypeMappingForm} from "@/components/business/typeMapping/validate.ts";
 
 const editState = ref(false)
 
@@ -85,7 +85,7 @@ const handleEdit = async () => {
 }
 
 const handleSubmit = async () => {
-	const messageList = validateTypeMappings(tempTypeMappings.value)
+	const messageList = validateTypeMappingForm(tempTypeMappings.value)
 
 	if (messageList.length > 0) {
 		messageList.forEach(it => sendMessage(it, 'warning'))

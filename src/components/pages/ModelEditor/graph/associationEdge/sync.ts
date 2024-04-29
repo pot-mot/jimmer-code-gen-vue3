@@ -1,4 +1,4 @@
-import {ASSOCIATION_EDGE} from "@/components/business/modelEditor/constant.ts";
+import {ASSOCIATION_EDGE} from "@/components/pages/ModelEditor/constant.ts";
 import {
     GenAssociationModelInput,
     GenTableModelInput,

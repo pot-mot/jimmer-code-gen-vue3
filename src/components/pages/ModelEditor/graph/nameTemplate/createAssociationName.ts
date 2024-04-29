@@ -2,6 +2,7 @@ import {AssociationType} from "@/api/__generated/model/enums";
 import {useGenConfigContextStore} from "@/components/business/genConfig/ContextGenConfigStore.ts";
 import {removeSplitPrefixAndSuffix} from "@/utils/suffixAndPrefix.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
+import {DeepReadonly} from "vue";
 
 const associationNameTemplate = (
     sourceTableName: string,
@@ -49,7 +50,7 @@ const associationNameTemplate = (
 }
 
 export const createAssociationName = (
-    association: GenAssociationModelInput
+    association: DeepReadonly<GenAssociationModelInput>
 ): string => {
     return associationNameTemplate(
         association.sourceTableName,

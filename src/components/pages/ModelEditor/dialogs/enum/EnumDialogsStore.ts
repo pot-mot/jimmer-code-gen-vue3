@@ -10,3 +10,5 @@ export const useEnumDialogsStore = defineStore(
         }
     }
 )
+
+export const ENUM_CREATE_PREFIX = "ENUM_CREATE_PREFIX"

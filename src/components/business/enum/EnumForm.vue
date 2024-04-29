@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import EditList from "@/components/global/list/EditList.vue";
 import {GenEnumItemsInput, GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
-import {ref, watch} from "vue";
+import {DeepReadonly, ref, watch} from "vue";
 import {enumItemColumns} from "@/components/business/enum/enumItemColumns.ts";
 import {EnumType, EnumType_CONSTANTS} from "@/api/__generated/model/enums";
 import Line from "@/components/global/list/Line.vue";
@@ -10,10 +10,11 @@ import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {sendMessage} from "@/message/message.ts";
 import {getDefaultEnum, getDefaultEnumItem} from "@/components/business/enum/defaultEnum.ts";
 import {validateEnumItem} from "@/shape/GenEnumModelInput.ts";
-import {validateEnum} from "@/components/business/enum/validate.ts";
 
 const props = defineProps<{
-	enum?: Partial<GenModelInput_TargetOf_enums>
+	enum?: Partial<GenModelInput_TargetOf_enums>,
+
+	validate: (genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => string[],
 }>()
 
 const emits = defineEmits<FormEmits<GenEnumItemsInput>>()
@@ -47,9 +48,16 @@ watch(() => genEnum.value.enumType, (value) => {
 	}
 })
 
+const handleEnumTypeChange = (value: string) => {
+	if ((EnumType_CONSTANTS as DeepReadonly<Array<string>>).includes(value)) {
+		genEnum.value.enumType = value as EnumType
+	} else {
+		genEnum.value.enumType = undefined
+	}
+}
 
 const handleSubmit = () => {
-	const messageList = validateEnum(genEnum.value)
+	const messageList = props.validate(genEnum.value)
 
 	if (messageList.length > 0) {
 		messageList.forEach(it => sendMessage(it, 'warning'))
@@ -85,13 +93,7 @@ const handleCancel = () => {
 
 			<LineItem>
 				<el-form-item label="类型">
-					<el-select v-model="genEnum.enumType" @change="(value: string) => {
-						if ((EnumType_CONSTANTS as ReadonlyArray<string>).includes(value)) {
-							genEnum.enumType = <EnumType>value
-						} else {
-							genEnum.enumType = undefined
-						}
-					}">
+					<el-select v-model="genEnum.enumType" @change="handleEnumTypeChange">
 						<el-option label="不设置" value=""></el-option>
 						<el-option v-for="type in EnumType_CONSTANTS" :value="type"></el-option>
 					</el-select>

@@ -2,8 +2,8 @@
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {ref} from "vue";
 import {Tools} from "@element-plus/icons-vue"
-import TypeMappingsEditor from "@/components/business/typeMapping/TypeMappingsEditor.vue";
-import ColumnDefaultEditor from "@/components/business/columnDefault/ColumnDefaultEditor.vue";
+import TypeMappingForm from "@/components/business/typeMapping/TypeMappingForm.vue";
+import ColumnDefaultForm from "@/components/business/columnDefault/ColumnDefaultForm.vue";
 import DebugForm from "@/debug/DebugForm.vue";
 import GlobalGenConfigForm from "@/components/business/genConfig/GlobalGenConfigForm.vue";
 
@@ -14,12 +14,12 @@ const globalConfigOptions = [
 		modal: true,
 	},
 	{
-		name: 'TypeMappingsEditor',
+		name: 'TypeMappingForm',
 		label: '类型映射配置',
 		modal: true,
 	},
 	{
-		name: 'ColumnDefaultEditor',
+		name: 'ColumnDefaultForm',
 		label: '列默认配置',
 		modal: true,
 	},
@@ -70,10 +70,10 @@ const openStates = ref<{ [key: GenerateConfiguratorType]: boolean }>({
 					v-if="option.name === 'GlobalGenConfigForm'"
 					@cancel="openStates[option.name] = false"
 					@submit="openStates[option.name] = false"></GlobalGenConfigForm>
-				<TypeMappingsEditor
-					v-else-if="option.name === 'TypeMappingsEditor'"></TypeMappingsEditor>
-				<ColumnDefaultEditor
-					v-else-if="option.name === 'ColumnDefaultEditor'"></ColumnDefaultEditor>
+				<TypeMappingForm
+					v-else-if="option.name === 'TypeMappingsEditor'"></TypeMappingForm>
+				<ColumnDefaultForm
+					v-else-if="option.name === 'ColumnDefaultEditor'"></ColumnDefaultForm>
 				<DebugForm
 					v-else-if="option.name === 'DebugForm'"></DebugForm>
 			</div>

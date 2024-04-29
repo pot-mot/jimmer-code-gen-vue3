@@ -9,7 +9,7 @@ type DialogManageEvents<K, V> = {
 export const useDialogListState = <K, V>() => {
     const eventBus = mitt<DialogManageEvents<K, V>>()
 
-    const items = ref<Map<K, V>>(new Map)
+    const items = ref(new Map<K, V>)
 
     eventBus.on('open', async ({key, value}) => {
         if (items.value.has(key)) {

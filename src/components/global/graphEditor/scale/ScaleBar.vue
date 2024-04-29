@@ -3,7 +3,7 @@ import {Graph} from "@antv/x6";
 import {Minus, Plus} from "@element-plus/icons-vue";
 import {computed, nextTick, onMounted, ref, watch} from "vue";
 
-import {DEFAULT_ZOOM_RANGE} from "@/components/business/modelEditor/constant.ts";
+import {DEFAULT_ZOOM_RANGE} from "@/components/pages/ModelEditor/constant.ts";
 
 interface ScaleBarProps {
 	graph: Graph,

@@ -46,7 +46,7 @@ const handleEdit = () => {
 
 const handleDelete = () => {
 	deleteConfirm(`表【${table.value?.name}】`, () => {
-		ModelEditorEventBus.emit('removeTable', props.node.id)
+		ModelEditorEventBus.emit('removeTable', {id: props.node.id})
 	})
 }
 

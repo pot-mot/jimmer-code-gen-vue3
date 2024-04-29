@@ -2,21 +2,18 @@ import type {
     GenModelInput_TargetOf_enums,
 } from "@/api/__generated/model/static";
 import {GenTableModelInput} from "@/api/__generated/model/static";
-import {cloneDeep} from "lodash";
+import {getAllChildTables, getLegalSuperTables} from "@/components/business/table/tableInheritAnalyse.ts";
+import {DeepReadonly} from "vue";
 
-export const validateTableForm = (
-    _table: GenTableModelInput,
-    otherTables: GenTableModelInput[],
-    superTables: GenTableModelInput[],
-    childTables: GenTableModelInput[],
-    enums: GenModelInput_TargetOf_enums[],
-): {
-    newTable: GenTableModelInput,
-    messageList: string[],
-} => {
-    const table: GenTableModelInput = cloneDeep(_table)
-
+export const validateTable = (
+    table: DeepReadonly<GenTableModelInput>,
+    otherTables: DeepReadonly<Array<GenTableModelInput>>,
+    enums: DeepReadonly<Array<GenModelInput_TargetOf_enums>>,
+): string[] => {
     const messageList: string[] = []
+
+    const superTables = getLegalSuperTables(table, otherTables.filter(it => it.type === "SUPER_TABLE"))
+    const childTables = getAllChildTables(table, otherTables)
 
     if (table.name.length === 0) {
         messageList.push('表名不得为空')
@@ -52,8 +49,7 @@ export const validateTableForm = (
         }
 
         if (column.enum !== undefined && !enums.map(it => it.name).includes(column.enum.name)) {
-            messageList.push(`列【${column.name}】对应枚举【${column.enum.name}】不存在，已自动移除`)
-            column.enum = undefined
+            messageList.push(`列【${column.name}】对应枚举【${column.enum.name}】不存在`)
         }
     }
 
@@ -102,29 +98,23 @@ export const validateTableForm = (
                 indexColumnNameSet.add(column.name)
             }
         }
-
-        index.columns = newColumns
     }
 
 
-    const newSuperTableSet = new Set<GenTableModelInput>
+    const newSuperTableSet = new Set<DeepReadonly<GenTableModelInput>>
 
     for (let superTable of table.superTables) {
         const currentSuperTable = superTables
             .filter(it => it.name === superTable.name)[0]
 
         if (!currentSuperTable) {
-            messageList.push(`上级表【${superTable.name}】不存在/不是超级表/存在循环依赖，已自动移除`)
+            messageList.push(`【${superTable.name}】不存在/不是上级表/存在循环依赖`)
         } else {
             newSuperTableSet.add(currentSuperTable)
         }
     }
 
     const newSuperTables = Array.from(newSuperTableSet)
-
-    table.superTables = newSuperTables.map(it => {
-        return {name: it.name}
-    })
 
     const pkColumns = table.columns.filter(column => column.partOfPk)
 
@@ -152,20 +142,16 @@ export const validateTableForm = (
 
     for (let pkColumn of pkColumns) {
         if (!pkColumn.typeNotNull) {
-            messageList.push('主键列必须非空，已自动修正')
-            pkColumn.typeNotNull = true
+            messageList.push('主键列必须非空')
         }
         if (pkColumn.enum) {
-            messageList.push('主键列不可为枚举类型，已自动修正')
-            pkColumn.enum = undefined
+            messageList.push('主键列不可为枚举类型')
         }
         if (pkColumn.businessKey) {
-            messageList.push('主键列不可为 Key，已自动修正')
-            pkColumn.businessKey = false
+            messageList.push('主键列不可为 Key')
         }
         if (pkColumn.logicalDelete) {
-            messageList.push('主键列不可为逻辑删除，已自动修正')
-            pkColumn.logicalDelete = false
+            messageList.push('主键列不可为逻辑删除')
         }
     }
 
@@ -183,8 +169,5 @@ export const validateTableForm = (
         }
     }
 
-    return {
-        newTable: table,
-        messageList
-    }
+    return messageList
 }

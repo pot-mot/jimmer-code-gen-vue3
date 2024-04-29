@@ -1,5 +1,5 @@
 import {Edge, Graph} from "@antv/x6";
-import {ASSOCIATION_EDGE, FAKE_ASSOCIATION_LINE_DASHARRAY} from "@/components/business/modelEditor/constant.ts";
+import {ASSOCIATION_EDGE, FAKE_ASSOCIATION_LINE_DASHARRAY} from "@/components/pages/ModelEditor/constant.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {
     getEdgeSelectFlag,

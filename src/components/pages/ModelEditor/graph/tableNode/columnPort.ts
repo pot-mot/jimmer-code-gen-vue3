@@ -5,7 +5,7 @@ import {
     COLUMN_INIT_WIDTH,
     COLUMN_PORT,
     COLUMN_PORT_SELECTOR, HEAD_HEIGHT
-} from "@/components/business/modelEditor/constant.ts";
+} from "@/components/pages/ModelEditor/constant.ts";
 
 export const columnPortGroup = {
     position: COLUMN_PORT,

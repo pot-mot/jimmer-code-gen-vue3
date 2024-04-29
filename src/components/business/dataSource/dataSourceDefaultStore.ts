@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {computed} from "vue";
+import {computed, DeepReadonly} from "vue";
 import {api} from "@/api";
 import {GenDataSourceTemplateView, Pair} from "@/api/__generated/model/static";
 import {useAsyncStoreOperations} from "@/utils/useAsyncStoreOperations.ts";
@@ -14,7 +14,7 @@ export const useDataSourceDefaultStore = defineStore(
             getData,
             resetData,
             loadHooks,
-        } = useAsyncStoreOperations<Array<Pair<string, GenDataSourceTemplateView>>>(
+        } = useAsyncStoreOperations<Array<Pair<string, DeepReadonly<GenDataSourceTemplateView>>>>(
             () => {
                 return api.dataSourceService.getDefaults()
             }
@@ -26,14 +26,14 @@ export const useDataSourceDefaultStore = defineStore(
             loadingStore.stop(flag)
         })
 
-        const dataSourceDefaults = computed<Array<Pair<string, GenDataSourceTemplateView>>>(() => {
+        const dataSourceDefaults = computed<Array<Pair<string, DeepReadonly<GenDataSourceTemplateView>>>>(() => {
             if (!data.value) {
                 throw "jdbcTypes Not Loaded"
             }
             return data.value
         })
 
-        const getDataSourceDefault = (dataSourceType: string): GenDataSourceTemplateView | undefined => {
+        const getDataSourceDefault = (dataSourceType: string): DeepReadonly<GenDataSourceTemplateView> | undefined => {
             return dataSourceDefaults.value.filter(it => it.first === dataSourceType)[0]?.second
         }
 

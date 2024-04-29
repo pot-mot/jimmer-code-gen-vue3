@@ -188,11 +188,12 @@ import {
 	previewModelSql
 } from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
 import {cloneDeep} from "lodash";
-import {TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
+import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {useDocumentEvent} from "@/utils/useDocumentEvent.ts";
 import MiniMap from "@/components/global/graphEditor/minimap/MiniMap.vue";
 import {useDebugStore} from "@/debug/debugStore.ts";
 import {handleModelEditorKeyEvent} from "@/components/pages/ModelEditor/graph/keyEvent/keyEvent.ts";
+import {validateModelForm} from "@/components/business/model/form/validateModel.ts";
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -218,7 +219,7 @@ onMounted(async () => {
 	})
 
 	graph.on('blank:dblclick', () => {
-		ModelEditorEventBus.emit('createTable', GRAPH.mousePosition)
+		ModelEditorEventBus.emit('createTable', {options: GRAPH.mousePosition})
 	})
 
 	graph.on('node:click', ({node}) => {
@@ -271,6 +272,15 @@ const handleSaveModel = async () => {
 			graph.cleanSelection()
 			model.graphData = GRAPH_DATA.getGraphData()
 		}
+
+		const messageList = validateModelForm(model)
+
+		if (messageList.length > 0) {
+			messageList.forEach(it => sendMessage(it, 'warning'))
+			loadingStore.stop(flag)
+			return
+		}
+
 		await api.modelService.save({body: model})
 
 		MODEL.isLoaded = true

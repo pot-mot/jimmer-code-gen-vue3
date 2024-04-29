@@ -25,7 +25,7 @@ const currentCodeFile = computed(() => props.codeFiles?.[currentIndex.value])
 <template>
 	<LeftRightLayout v-if="codeFiles && codeFiles.length > 0">
 		<template #left>
-			<div style="padding: 0.5em;">
+			<div style="padding: 0.5em;height: 100%; overflow-y: auto;">
 				<div v-for="(item, index) in codeFiles"
 					 :key="item.first"
 					 :class="[currentIndex === index ? 'selected-menu-item' : '']"

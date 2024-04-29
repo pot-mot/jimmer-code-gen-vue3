@@ -2,14 +2,18 @@
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {AssociationType_CONSTANTS, DissociateAction_CONSTANTS} from "@/api/__generated/model/enums";
 import {RefreshRight} from "@element-plus/icons-vue";
-import {ref, watch} from "vue";
+import {DeepReadonly, ref, watch} from "vue";
 import {cloneDeep} from "lodash";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
+import {sendMessage} from "@/message/message.ts";
 
 interface AssociationFormProps {
-	id?: string,
-	association: GenAssociationModelInput
+	association: GenAssociationModelInput,
+
+	validate: (association: DeepReadonly<GenAssociationModelInput>) => string[],
+
+	createAssociationName: (association: DeepReadonly<GenAssociationModelInput>) => string
 }
 
 const props = defineProps<AssociationFormProps>()
@@ -17,12 +21,19 @@ const props = defineProps<AssociationFormProps>()
 const association = ref<GenAssociationModelInput>(cloneDeep(props.association))
 
 watch(() => props.association, () => {
-	association.value = props.association
+	association.value = cloneDeep(props.association)
 })
 
 const emits = defineEmits<FormEmits<GenAssociationModelInput>>()
 
 const handleSubmit = async () => {
+	const messageList = props.validate(association.value)
+
+	if (messageList.length > 0) {
+		messageList.forEach(it => sendMessage(it, 'warning'))
+		return
+	}
+
 	emits('submit', association.value)
 }
 

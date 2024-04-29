@@ -1,6 +1,6 @@
 // 同步表中的高级表名
 import {GenTableModelInput, GenTableModelInput_TargetOf_superTables} from "@/api/__generated/model/static";
-import {TABLE_NODE} from "@/components/business/modelEditor/constant.ts";
+import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
 import {Graph} from "@antv/x6";
 import {useTableDialogsStore} from "@/components/pages/ModelEditor/dialogs/table/TableDialogsStore.ts";

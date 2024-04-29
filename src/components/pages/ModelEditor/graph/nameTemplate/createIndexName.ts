@@ -1,9 +1,10 @@
 import {useGenConfigContextStore} from "@/components/business/genConfig/ContextGenConfigStore.ts";
 import {removeSplitPrefixAndSuffix} from "@/utils/suffixAndPrefix.ts";
 import {GenTableModelInput_TargetOf_indexes} from "@/api/__generated/model/static";
+import {DeepReadonly} from "vue";
 
 const indexNameTemplate = (
-    columnNames: string[],
+    columnNames: DeepReadonly<Array<string>>,
     unique: boolean,
 ): string => {
     const context = useGenConfigContextStore().context
@@ -29,7 +30,7 @@ const indexNameTemplate = (
 }
 
 export const createIndexName = (
-    index: GenTableModelInput_TargetOf_indexes
+    index: DeepReadonly<GenTableModelInput_TargetOf_indexes>
 ): string => {
     return indexNameTemplate(
         index.columns.map(it => it.name),
