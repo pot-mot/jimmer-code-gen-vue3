@@ -17,7 +17,6 @@ import {tableIndexColumns} from "@/components/business/table/tableIndexColumns.t
 import Details from "@/components/global/common/Details.vue";
 import {getDefaultColumn, getDefaultIndex, getDefaultTable} from "@/components/business/table/defaultTable.ts";
 import {validateColumn, validateIndex} from "@/shape/GenTableModelInput.ts";
-import {Refresh} from "@element-plus/icons-vue";
 import {getLegalSuperTables} from "@/components/business/table/tableInheritAnalyse.ts";
 
 const jdbcTypeStore = useJdbcTypeStore()
@@ -49,6 +48,11 @@ watch(() => props.table, (value) => {
 	table.value = value
 }, {immediate: true})
 
+const columnNames = ref<string[]>(table.value.columns.map(it => it.name))
+const syncColumnNames = () => {
+	columnNames.value = table.value.columns.map(it => it.name)
+}
+
 const getSelectableSuperTables = () => {
 	return getLegalSuperTables(
 		table.value,
@@ -60,11 +64,9 @@ const getSelectableSuperTableNames = () => {
 	return getSelectableSuperTables().map(it => it.name)
 }
 
-const superTableNames = ref(getSelectableSuperTableNames())
-
-const columnNames = ref<string[]>(table.value.columns.map(it => it.name))
-const syncColumnNames = () => {
-	columnNames.value = table.value.columns.map(it => it.name)
+const superTableNames = ref<string[]>(getSelectableSuperTableNames())
+const syncSuperTableNames = () => {
+	superTableNames.value = getSelectableSuperTableNames()
 }
 
 // 记录原始表类型
@@ -192,19 +194,13 @@ const handleCancel = () => {
 					<el-checkbox v-model="isSuperTable" label="作为上级表"></el-checkbox>
 				</el-col>
 
-				<el-col :span="16">
+				<el-col :span="18">
 					<el-select :model-value="table.superTables.map(it => it.name)" multiple filterable
 							   placeholder="继承的上级表" style="width: 100%;"
-							   @change="handleSuperTablesChange">
+							   @change="handleSuperTablesChange"
+							   @focus="syncSuperTableNames">
 						<el-option v-for="name in superTableNames" :value="name"></el-option>
 					</el-select>
-				</el-col>
-
-				<el-col :span="2">
-					<el-tooltip content="刷新高级表多选列表">
-						<el-button :icon="Refresh"
-								   @click="superTableNames = getSelectableSuperTableNames()"></el-button>
-					</el-tooltip>
 				</el-col>
 			</el-row>
 		</Details>
@@ -268,7 +264,7 @@ const handleCancel = () => {
 
 				<template #type="{data}">
 					<ColumnTypeForm
-						:enumNames="getEnums().map(it => it.name)"
+						:get-enums="getEnums"
 						:model-value="data"
 						@create-enum="emits('createEnum')"
 						@edit-enum="handleEnumEdit"

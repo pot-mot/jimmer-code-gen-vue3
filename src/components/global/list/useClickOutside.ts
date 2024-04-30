@@ -1,6 +1,10 @@
 import {onBeforeUnmount, onMounted} from "vue";
 
-export const useClickOutside = (_target: () => HTMLElement | undefined, callback: (e: MouseEvent) => void) => {
+export const useClickOutside = (
+    _target: () => HTMLElement | undefined,
+    callback: (e: MouseEvent) => void,
+    options?: boolean | AddEventListenerOptions
+) => {
     const handler = (e: MouseEvent) => {
         const target = _target()
 
@@ -12,10 +16,10 @@ export const useClickOutside = (_target: () => HTMLElement | undefined, callback
     }
 
     onMounted(() => {
-        document.documentElement.addEventListener('click', handler)
+        document.documentElement.addEventListener('click', handler, options)
     })
 
     onBeforeUnmount(() => {
-        document.documentElement.removeEventListener('click', handler)
+        document.documentElement.removeEventListener('click', handler, options)
     })
 }

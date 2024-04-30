@@ -1,4 +1,4 @@
-import {nextTick, ref} from 'vue'
+import {nextTick, Ref, ref} from 'vue'
 import mitt from "mitt";
 
 type DialogManageEvents<K, V> = {
@@ -9,7 +9,7 @@ type DialogManageEvents<K, V> = {
 export const useDialogListState = <K, V>() => {
     const eventBus = mitt<DialogManageEvents<K, V>>()
 
-    const items = ref(new Map<K, V>)
+    const items = ref(new Map<K, V>) as Ref<Map<K, V>>
 
     eventBus.on('open', async ({key, value}) => {
         if (items.value.has(key)) {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {ModelValueProps} from "@/components/global/dialog/DragDialogProps.ts";
-import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static";
+import {GenModelInput_TargetOf_enums, GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static";
 import {ModelValueEmits} from "@/components/global/dialog/DragDialogEmits.ts";
 import {ref, watch} from "vue";
 import {EditPen, Plus} from "@element-plus/icons-vue";
@@ -18,7 +18,7 @@ const columnDefaultStore = useColumnDefaultStore()
 
 const props = defineProps<
 	ModelValueProps<GenTableModelInput_TargetOf_columns> &
-	{ enumNames: string[] }
+	{ getEnums: () => Array<GenModelInput_TargetOf_enums> }
 >()
 
 const emits = defineEmits<
@@ -40,6 +40,15 @@ watch(() => popoverOpenState.value, (value) => {
 		}
 	}
 })
+
+const getEnumsNames = () => {
+	return props.getEnums().map(it => it.name)
+}
+
+const enumNames = ref<string[]>(getEnumsNames())
+const syncEnumNames = () => {
+	enumNames.value = getEnumsNames()
+}
 
 const handleTypeCodeChange = () => {
 	const typeCode = props.modelValue.typeCode
@@ -142,7 +151,8 @@ useClickOutside(() => wrapper.value, (e) => {
 						<LineItem>
 							<el-select :model-value="modelValue.enum?.name" clearable filterable
 									   @clear="modelValue.enum = undefined"
-									   @change="(name: string) => {modelValue.enum = { name: name }}">
+									   @change="(name: string) => {modelValue.enum = { name: name }}"
+									   @focus="syncEnumNames">
 								<el-option v-for="enumName in enumNames" :value="enumName"></el-option>
 							</el-select>
 						</LineItem>

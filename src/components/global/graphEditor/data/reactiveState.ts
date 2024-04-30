@@ -28,14 +28,14 @@ export interface GraphReactiveState {
 }
 
 export const useGraphReactiveState = (_graph: () => Graph): GraphReactiveState => {
-    const nodeMap = ref<Map<string, Node>>(new Map)
-    const edgeMap = ref<Map<string, Edge>>(new Map)
+    const nodeMap = ref<Map<string, Node>>(new Map) as Ref<Map<string, Node>>
+    const edgeMap = ref<Map<string, Edge>>(new Map) as Ref<Map<string, Edge>>
 
-    const nodes = computed<Node[]>(() => {
+    const nodes = computed(() => {
         return [...nodeMap.value.values()]
     })
 
-    const edges = computed<Edge[]>(() => {
+    const edges = computed(() => {
         return [...edgeMap.value.values()]
     })
 
@@ -48,8 +48,8 @@ export const useGraphReactiveState = (_graph: () => Graph): GraphReactiveState =
     })
 
     const isSelectionEmpty = ref(true)
-    const selectedNodeMap = ref<Map<string, Node>>(new Map)
-    const selectedEdgeMap = ref<Map<string, Edge>>(new Map)
+    const selectedNodeMap = ref<Map<string, Node>>(new Map) as Ref<Map<string, Node>>
+    const selectedEdgeMap = ref<Map<string, Edge>>(new Map) as Ref<Map<string, Edge>>
 
     const canUndo = ref(false)
 
@@ -98,7 +98,7 @@ export const useGraphReactiveState = (_graph: () => Graph): GraphReactiveState =
             mouseenterState.value = false
         })
 
-        graph.container.addEventListener('mousemove', setMousePosition)
+        graph.container.addEventListener('mousemove', setMousePosition, {passive: true})
 
         graph.on('selection:changed', () => {
             isSelectionEmpty.value = graph.isSelectionEmpty()

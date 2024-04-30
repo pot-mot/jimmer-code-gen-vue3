@@ -29,7 +29,7 @@ monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true);
 
 const editorContainer = ref<HTMLElement>()
 
-const options = ref<IStandaloneEditorConstructionOptions>({
+const options: IStandaloneEditorConstructionOptions = {
 	value: props.modelValue, // 初始显示文字
 	language: props.language, // 语言支持
 	theme: 'vs', // 主题色官方自带： vs, hc-black , vs-dark
@@ -42,14 +42,14 @@ const options = ref<IStandaloneEditorConstructionOptions>({
 	readOnly: false, // 只读
 	fontSize: 16, // 字体大小
 	scrollBeyondLastLine: true, // 代码后面的空白
-	overviewRulerBorder: false, // 不要滚动条的边框}
-})
+	overviewRulerBorder: false, // 不要滚动条的边框
+}
 
 // 参照该博客 https://blog.csdn.net/weixin_43977534/article/details/122365734，ref editor instance 可能造成性能问题
 let editorInstance: IStandaloneCodeEditor
 
 onMounted(() => {
-	editorInstance = monaco.editor.create(editorContainer.value!, {...options.value, ...props.options})
+	editorInstance = monaco.editor.create(editorContainer.value!, {...options, ...props.options})
 
 	editorInstance.onDidChangeModelContent(() => {
 		emits('update:modelValue', editorInstance.getValue())
@@ -58,5 +58,7 @@ onMounted(() => {
 </script>
 
 <template>
-	<div ref="editorContainer" style="width: 100%;"></div>
+	<div style="width: 100%; height: 100%; position: relative">
+		<div ref="editorContainer" style="width: 100%;position: absolute !important;"></div>
+	</div>
 </template>

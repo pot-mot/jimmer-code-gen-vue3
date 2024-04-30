@@ -1,9 +1,9 @@
-import {ref} from "vue";
+import {Ref, ref} from "vue";
 
 export const useListSelection = <T>() => {
     const lastSelect = ref<T>()
 
-    const selectedItemSet = ref(new Set<T>)
+    const selectedItemSet = ref(new Set<T>) as Ref<Set<T>>
 
     const select = (item: T) => {
         selectedItemSet.value.add(item)
@@ -20,7 +20,7 @@ export const useListSelection = <T>() => {
         lastSelect.value = undefined
     }
 
-    const isSelected = (item: T) => {
+    const isSelected = (item: T): boolean => {
         return selectedItemSet.value.has(item)
     }
 
