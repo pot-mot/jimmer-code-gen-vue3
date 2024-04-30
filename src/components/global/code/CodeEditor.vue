@@ -58,7 +58,5 @@ onMounted(() => {
 </script>
 
 <template>
-	<div style="width: 100%; height: 100%; position: relative">
-		<div ref="editorContainer" style="width: 100%;position: absolute !important;"></div>
-	</div>
+	<div ref="editorContainer" style="width: 100%; position: absolute !important;"></div>
 </template>
