@@ -6,7 +6,7 @@
 
 import * as monaco from 'monaco-editor'
 import {editor} from 'monaco-editor'
-import {onMounted, ref, watch} from "vue";
+import {onMounted, ref} from "vue";
 import {CodeEditorLanguage} from "@/components/global/code/CodeEditorLanguages.ts";
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
