@@ -1,4 +1,8 @@
-import {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static";
+import {
+    GenAssociationModelInput,
+    GenTableModelInput,
+    GenTableModelInput_TargetOf_columns
+} from "@/api/__generated/model/static";
 import {DeepReadonly} from "vue";
 import {compareArraysIgnoreOrder} from "@/utils/array.ts";
 
@@ -31,6 +35,52 @@ export const validateAssociation = (
         tableNameMap.set(table.name, table);
     })
 
+    const sourceTable = tableNameMap.get(association.sourceTableName)
+    if (!sourceTable) {
+        messageList.push(`关联【${association.name}】的 Source 表【${association.sourceTableName}】不存在`)
+    }
+    const targetTable = tableNameMap.get(association.targetTableName)
+    if (!targetTable) {
+        messageList.push(`关联【${association.name}】的 Target 表【${association.targetTableName}】不存在`)
+    }
+
+    if (targetTable && sourceTable) {
+        const sourceColumnNames = sourceTable.columns.map(it => it.name)
+        const targetColumnNames = targetTable.columns.map(it => it.name)
+
+        const sourceColumns: GenTableModelInput_TargetOf_columns[] = []
+        const targetColumns: GenTableModelInput_TargetOf_columns[] = []
+
+        association.columnReferences.forEach(columnReference => {
+            const sourceColumnIndex = sourceColumnNames.indexOf(columnReference.sourceColumnName)
+            if (sourceColumnIndex !== -1) {
+                sourceColumns.push(sourceTable.columns[sourceColumnIndex])
+            } else {
+                messageList.push(`关联【${association.name}】的 Source 列【${columnReference.sourceColumnName}】不在表【${association.sourceTableName}】中`)
+            }
+
+            const targetColumnIndex = targetColumnNames.indexOf(columnReference.targetColumnName)
+            if (targetColumnIndex !== -1) {
+                targetColumns.push(targetTable.columns[targetColumnIndex])
+            } else {
+                messageList.push(`关联【${association.name}】的 Target 列【${columnReference.targetColumnName}】不在表【${association.targetTableName}】中`)
+            }
+        })
+
+        if (sourceColumns.length === targetColumns.length) {
+            for (let i = 0; i < sourceColumns.length; i++) {
+                const sourceColumn = sourceColumns[i]
+                const targetColumn = targetColumns[i]
+
+                if (
+                    (sourceColumn.typeCode !== targetColumn.typeCode) ||
+                    ((sourceColumn.overwriteByRaw || targetColumn.overwriteByRaw) && sourceColumn.rawType !== targetColumn.rawType)
+                ) {
+                    messageList.push(`关联【${association.name}】两端类型不一致`)
+                }
+            }
+        }
+    }
 
     return messageList
 }

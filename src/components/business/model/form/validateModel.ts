@@ -13,7 +13,7 @@ import {DeepReadonly} from "vue";
 
 export const validateModelForm = (
     model: DeepReadonly<GenModelInput>,
-) => {
+): string[] => {
     const {
         messageList,
         errors

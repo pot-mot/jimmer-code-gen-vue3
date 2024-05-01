@@ -146,6 +146,7 @@ const setAssociationTypeButton = (
 export const useAssociationType = (graph: Graph) => {
     graph.on('edge:added', ({edge}) => {
         if (edge.shape !== ASSOCIATION_EDGE) return
+        if (edge.getData() === undefined || edge.getData().association === undefined) return
 
         const associationType = getAssociationType(edge)
         if (associationType === undefined) {
@@ -156,6 +157,7 @@ export const useAssociationType = (graph: Graph) => {
 
     graph.on('edge:change:data', ({edge, previous, current}) => {
         if (edge.shape !== ASSOCIATION_EDGE) return
+        if (edge.getData() === undefined || edge.getData().association === undefined) return
 
         const previousData = previous as { association?: GenAssociationModelInput }
         const currentData = current as { association?: GenAssociationModelInput }

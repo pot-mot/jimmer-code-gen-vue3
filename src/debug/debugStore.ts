@@ -28,7 +28,8 @@ export const useDebugStore = defineStore(
         ])
 
         const outputTypes: Ref<DebugType[]> = ref([
-            'HISTORY'
+            'HISTORY',
+            'EVENT'
         ])
 
         const filterTypes: Ref<DebugType[]> = ref([

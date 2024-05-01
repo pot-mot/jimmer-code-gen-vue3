@@ -103,12 +103,6 @@ onMounted(() => {
 		}
 	}
 
-	nextTick(() => {
-		graph.disableHistory()
-		resizeNodeSize()
-		graph.enableHistory()
-	})
-
 	/**
 	 * 数据同步相关
 	 */
@@ -137,28 +131,34 @@ onMounted(() => {
 
 		nextTick(() => {
 			resizeNodeSize()
+
+			setTimeout(() => {
+				if (!node.value) return
+
+				for (let edge of oldEdges) {
+					const association = refreshEdgeAssociation(node.value, edge, oldTable, newTable)
+					if (!association) continue
+					loadAssociationModelInputs(graph, [association])
+				}
+
+				newTable.columns.forEach((column, index) => {
+					column.orderKey = index + 1
+				})
+
+				ModelEditorEventBus.emit('syncedTable', {id: nodeId})
+			}, 100)
 		})
-
-		setTimeout(() => {
-			if (!node.value) return
-
-			for (let edge of oldEdges) {
-				const association = refreshEdgeAssociation(node.value, edge, oldTable, newTable)
-				if (!association) continue
-				loadAssociationModelInputs(graph, [association])
-			}
-
-			newTable.columns.forEach((column, index) => {
-				column.orderKey = index + 1
-			})
-
-			ModelEditorEventBus.emit('syncedTable', {id: nodeId})
-		}, 100)
 	}
 
 	syncTable()
 	table.value!.columns.forEach((column, index) => {
 		column.orderKey = index + 1
+	})
+
+	nextTick(() => {
+		graph.disableHistory()
+		resizeNodeSize()
+		graph.enableHistory()
 	})
 })
 

@@ -48,11 +48,6 @@ onMounted(() => {
 		textValue.value = editorInstance.getValue()
 	})
 })
-
-watch(() => textValue.value, () => {
-	if (textValue.value !== undefined)
-		editorInstance!.setValue(textValue.value)
-})
 </script>
 
 <template>

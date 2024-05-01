@@ -35,11 +35,14 @@ const setAssociationFakeLine = (edge: Edge) => {
 export const useAssociationFake = (graph: Graph) => {
     graph.on('edge:added', ({edge}) => {
         if (edge.shape !== ASSOCIATION_EDGE) return
+        if (edge.getData() === undefined || edge.getData().association === undefined) return
+
         setAssociationFakeLine(edge)
     })
 
     graph.on('edge:change:data', ({edge, previous, current}) => {
         if (edge.shape !== ASSOCIATION_EDGE) return
+        if (edge.getData() === undefined || edge.getData().association === undefined) return
 
         const previousData = previous as { association?: GenAssociationModelInput }
         const currentData = current as { association?: GenAssociationModelInput }
@@ -56,10 +59,9 @@ export const useAssociationFake = (graph: Graph) => {
      */
     graph.on('edge:mousedown', ({edge, e}) => {
         if (edge.shape !== ASSOCIATION_EDGE) return
+        if (edge.getData() === undefined || edge.getData().association === undefined) return
 
         if (e.ctrlKey || e.metaKey) return
-
-        ModelEditorEventBus.emit('modifyAssociation', {id: edge.id})
 
         if (!getEdgeSelectFlag(edge)) {
             setEdgeSelectFlag(edge, true)
@@ -67,6 +69,9 @@ export const useAssociationFake = (graph: Graph) => {
         }
 
         const oldAssociationFake = getAssociationFake(edge)
+
+        ModelEditorEventBus.emit('modifyAssociation', {id: edge.id})
+
         setAssociationFake(edge, !oldAssociationFake)
 
         ModelEditorEventBus.emit('modifiedAssociation', {id: edge.id})
