@@ -29,6 +29,7 @@ export interface ListProps<T extends { [key: string]: any }> extends LineStylePr
 export interface EditListProps<T extends { [key: string]: any }> extends ListProps<T> {
     operation?: ListColumn<T>,
     defaultLine: T | (() => T | Promise<T>),
-    jsonSchemaValidate: (json: any, onError: (e: any) => void) => boolean | Promise<T>
+    jsonSchemaValidate: (json: any, onError: (e: any) => void) => boolean | Promise<T>,
+    beforePaste?: (data: T[]) => void
 }
 
