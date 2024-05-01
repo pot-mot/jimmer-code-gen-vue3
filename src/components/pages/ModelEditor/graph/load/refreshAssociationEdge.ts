@@ -17,14 +17,22 @@ export const refreshEdgeAssociation = (
 
     const association = edge.getData().association as GenAssociationModelInput
 
-    const oldColumnNameMap = new Map<string, GenTableModelInput_TargetOf_columns>
+    const oldColumnNameMap = new Map<string, GenTableModelInput_TargetOf_columns[]>
     oldTable.columns.forEach(column => {
-        oldColumnNameMap.set(column.name, column)
+        if (oldColumnNameMap.has(column.name)) {
+            oldColumnNameMap.get(column.name)!.push(column)
+        } else {
+            oldColumnNameMap.set(column.name, [column])
+        }
     })
 
-    const newColumnOrderKeyMap = new Map<number, GenTableModelInput_TargetOf_columns>
+    const newColumnOrderKeyMap = new Map<number, GenTableModelInput_TargetOf_columns[]>
     newTable.columns.forEach(column => {
-        newColumnOrderKeyMap.set(column.orderKey, column)
+        if (newColumnOrderKeyMap.has(column.orderKey)) {
+            newColumnOrderKeyMap.get(column.orderKey)!.push(column)
+        } else {
+            newColumnOrderKeyMap.set(column.orderKey, [column])
+        }
     })
 
     if (edge.getSourceCellId() === node.id) {
@@ -34,17 +42,17 @@ export const refreshEdgeAssociation = (
 
         let noColumnFlag = false
         for (let columnReference of association.columnReferences) {
-            const oldSourceColumn = oldColumnNameMap.get(columnReference.sourceColumnName)
-            if (!oldSourceColumn) {
+            const oldSourceColumns = oldColumnNameMap.get(columnReference.sourceColumnName)
+            if (!oldSourceColumns || oldSourceColumns.length === 0) {
                 noColumnFlag = true
                 break
             }
-            const newSourceColumn = newColumnOrderKeyMap.get(oldSourceColumn.orderKey)
-            if (!newSourceColumn) {
+            const newSourceColumns = newColumnOrderKeyMap.get(oldSourceColumns[0].orderKey)
+            if (!newSourceColumns || newSourceColumns.length === 0) {
                 noColumnFlag = true
                 break
             }
-            columnReference.sourceColumnName = newSourceColumn.name
+            columnReference.sourceColumnName = newSourceColumns[0].name
         }
         if (noColumnFlag) return undefined
 
@@ -60,17 +68,17 @@ export const refreshEdgeAssociation = (
 
         let noColumnFlag = false
         for (let columnReference of association.columnReferences) {
-            const oldTargetColumn = oldColumnNameMap.get(columnReference.targetColumnName)
-            if (!oldTargetColumn) {
+            const oldTargetColumns = oldColumnNameMap.get(columnReference.targetColumnName)
+            if (!oldTargetColumns || oldTargetColumns.length === 0) {
                 noColumnFlag = true
                 break
             }
-            const newTargetColumn = newColumnOrderKeyMap.get(oldTargetColumn.orderKey)
-            if (!newTargetColumn) {
+            const newTargetColumns = newColumnOrderKeyMap.get(oldTargetColumns[0].orderKey)
+            if (!newTargetColumns || newTargetColumns.length === 0) {
                 noColumnFlag = true
                 break
             }
-            columnReference.targetColumnName = newTargetColumn.name
+            columnReference.targetColumnName = newTargetColumns[0].name
         }
         if (noColumnFlag) return undefined
 

@@ -86,7 +86,6 @@ const handleInputColumnName = (newName: string, index: number) => {
 	const oldName = columnNames.value[index]
 
 	if (oldName !== newName && columnNames.value.filter(it => it === newName).length > 0) {
-		sendMessage('新列名存在同名', 'warning')
 		return
 	}
 
@@ -214,6 +213,9 @@ const handleCancel = () => {
 				:columns="tableColumnColumns"
 				v-model:lines="table.columns"
 				@update:lines="syncColumnNames"
+				:before-paste="columns => {
+					columns.forEach(it => {it.orderKey = -1})
+				}"
 				:defaultLine="getDefaultColumn"
 				:json-schema-validate="validateColumn"
 				style="width: 98%;">

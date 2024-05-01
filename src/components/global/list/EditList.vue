@@ -21,6 +21,8 @@ const props = withDefaults(
 				label: '操作',
 				span: '2.5em'
 			}
+		},
+		beforePaste: () => {
 		}
 	}
 )
@@ -126,9 +128,11 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 					Array.isArray(value) &&
 					value.filter((item, index) => props.jsonSchemaValidate(item, (e) => validateErrorsMap.set(index, e))).length === value.length
 				) {
+					props.beforePaste(value)
 					tempLines.splice(insertIndex, 0, ...value)
 					insertLength = value.length
 				} else if (props.jsonSchemaValidate(value, (e) => validateErrorsMap.set(0, e))) {
+					props.beforePaste([value])
 					tempLines.splice(insertIndex, 0, value)
 					insertLength = 1
 				} else {
