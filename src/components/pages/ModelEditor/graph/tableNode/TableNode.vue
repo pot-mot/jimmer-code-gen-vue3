@@ -157,6 +157,9 @@ onMounted(() => {
 	}
 
 	syncTable()
+	table.value!.columns.forEach((column, index) => {
+		column.orderKey = index + 1
+	})
 })
 
 const focusSuperTable = (name: string, e: MouseEvent) => {
