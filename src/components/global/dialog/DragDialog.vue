@@ -5,9 +5,11 @@ import {nextTick, onMounted, ref, toRaw, watch} from 'vue'
 import {ElButton, useZIndex} from "element-plus";
 import {Close, FullScreen} from "@element-plus/icons-vue";
 import {DragDialogProps} from "./DragDialogProps.ts";
-import {DragDialogEmits, ModelValueEmits} from "./DragDialogEmits.ts";
+import {DragDialogEmits} from "./DragDialogEmits.ts";
 import {sendMessage} from "@/message/message.ts";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
+
+const openState = defineModel<boolean>()
 
 const props = withDefaults(defineProps<DragDialogProps>(), {
 	to: "body",
@@ -19,7 +21,7 @@ const props = withDefaults(defineProps<DragDialogProps>(), {
 	modal: true
 })
 
-const emits = defineEmits<DragDialogEmits & ModelValueEmits<boolean>>()
+const emits = defineEmits<DragDialogEmits>()
 
 const wrapper = ref<HTMLElement>()
 const content = ref<HTMLElement>()
@@ -115,7 +117,7 @@ const handleOpen = () => {
 
 const handleClose = () => {
 	emits("close")
-	emits('update:modelValue', false)
+	openState.value = false
 	nextTick(() => {
 		emits('closed')
 	})
@@ -154,8 +156,8 @@ const handleToggleFullScreen = () => {
 	}
 }
 
-watch(() => props.modelValue, (modelValue) => {
-	if (modelValue) {
+watch(() => openState.value, () => {
+	if (openState.value) {
 		handleOpen()
 	}
 })
@@ -181,7 +183,7 @@ const updateContentSizeByWrapper = () => {
 const wrapperResizeOb = new ResizeObserver(updateContentSizeByWrapper)
 
 onMounted(() => {
-	if (props.modelValue) {
+	if (openState.value) {
 		handleOpen()
 	}
 	if (props.canFullScreen && props.initFullScreen) {
@@ -219,9 +221,9 @@ defineExpose({
 
 <template>
 	<Teleport :to="to">
-		<div v-if="modelValue && modal" class="modal" :style="`z-index: ${currentZIndex};`"></div>
+		<div v-if="openState && modal" class="modal" :style="`z-index: ${currentZIndex};`"></div>
 
-		<DragResize v-if="modelValue"
+		<DragResize v-if="openState"
 					:active="true"
 					:draggable="draggable"
 					:resizable="resizable"

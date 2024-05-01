@@ -6,7 +6,6 @@ import {
 } from "@/api/__generated/model/static";
 import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
 import {Edge, Node} from "@antv/x6";
-import {AssociationEdgeConnect} from "@/components/pages/ModelEditor/graph/associationEdge/load.ts";
 
 export const refreshEdgeAssociation = (
     node: Node,
@@ -81,22 +80,4 @@ export const refreshEdgeAssociation = (
     }
 
     return association
-}
-
-export const updateEdgeByAssociationEdgeConnect = (
-    edge: Edge,
-    associationEdgeConnect: AssociationEdgeConnect
-) => {
-    const {
-        sourceNode,
-        targetNode,
-        columnReferences,
-        router,
-        association,
-    } = associationEdgeConnect
-
-    edge.setSource(sourceNode, {port: columnReferences[0].sourcePort.id})
-    edge.setTarget(targetNode, {port: columnReferences[0].targetPort.id})
-    edge.setRouter(router)
-    edge.prop('data', {association})
 }

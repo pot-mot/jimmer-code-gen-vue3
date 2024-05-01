@@ -43,15 +43,15 @@ import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {sendMessage} from "@/message/message.ts";
 import {useModelEditorStore} from "../../store/ModelEditorStore.ts";
-import {columnToPort} from "@/components/pages/ModelEditor/graph/tableNode/load.ts";
+import {columnToPort} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
 import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {searchNodesByTableName} from "@/components/pages/ModelEditor/search/search.ts";
 import {
 	refreshEdgeAssociation,
-} from "@/components/pages/ModelEditor/graph/associationEdge/sync.ts";
+} from "@/components/pages/ModelEditor/graph/load/refreshAssociationEdge.ts";
 import {
 	loadAssociationModelInputs
-} from "@/components/pages/ModelEditor/graph/associationEdge/load.ts";
+} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
 import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
 
 const {GRAPH, VIEW, HISTORY} = useModelEditorStore()

@@ -3,8 +3,8 @@ import {nextTick, ref} from "vue";
 import {MiniMap} from "@antv/x6-plugin-minimap";
 import {ArrowDown, ArrowUp} from "@element-plus/icons-vue";
 import {Graph} from "@antv/x6";
-import {SimpleNodeView} from "@/components/global/graphEditor/minimap/SimpleNodeView.ts";
-import {SimpleEdgeView} from "@/components/global/graphEditor/minimap/SimpleEdgeView.ts";
+import {SimpleNodeView} from "@/components/pages/ModelEditor/minimap/SimpleNodeView.ts";
+import {SimpleEdgeView} from "@/components/pages/ModelEditor/minimap/SimpleEdgeView.ts";
 
 const openState = ref(false)
 

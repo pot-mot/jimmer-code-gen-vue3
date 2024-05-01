@@ -9,6 +9,8 @@ import {erRouter, orthRouter} from "@/components/global/graphEditor/edgeRouter.t
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {PortManager} from "@antv/x6/es/model/port";
 import {DeepReadonly} from "vue";
+import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge/updateData.ts";
+import {cloneDeep} from "lodash";
 
 export const associationViewToInput = (
     view: DeepReadonly<GenAssociationView>,
@@ -155,19 +157,62 @@ export const associationEdgeConnectToEdgeMeta = (
     }
 }
 
+const getAssociationNameMap = (graph: Graph): Map<string, GenAssociationModelInput[]> => {
+    const associationNameMap = new Map<string, GenAssociationModelInput[]>
+
+    graph.getEdges()
+        .filter(it => it.shape === ASSOCIATION_EDGE && it.getData().association !== undefined)
+        .forEach(edge => {
+            const association = edge.getData().association
+            if (associationNameMap.has(association.name)) {
+                const count = associationNameMap.get(association.name)!.length
+                association.name = `${association.name}(${count})`
+                updateAssociationEdgeData(edge, association)
+                associationNameMap.get(association.name)!.push(association)
+            } else {
+                associationNameMap.set(association.name, [association])
+            }
+        })
+
+    return associationNameMap
+}
+
 export const loadAssociationModelInputs = (
     graph: Graph,
-    associations: DeepReadonly<Array<GenAssociationModelInput>>
-): Edge[] => {
+    associations: DeepReadonly<GenAssociationModelInput[]>
+): {
+    edges: Edge[],
+    associationNameMap: Map<string, GenAssociationModelInput[]>// 表与名称重复的表的最终 map，除了已经存在的名称，后续的名称将自动向后追加 count
+} => {
+    const associationNameMap = getAssociationNameMap(graph)
+
     const edges: Edge[] = []
 
     associations.forEach(association => {
-        const associationEdgeConnect = associationToEdgeConnect(graph, association)
+        const name = association.name
+        const tempAssociation = cloneDeep(association) as GenAssociationModelInput
+
+        if (associationNameMap.has(name)) {
+            let count = associationNameMap.get(name)!.length
+            let tempName = `${name}(${count})`
+            while (associationNameMap.has(tempName)) {
+                tempName = `${name}(${count++})`
+            }
+            tempAssociation.name = tempName
+            associationNameMap.get(name)!.push(tempAssociation)
+        } else {
+            associationNameMap.set(name, [tempAssociation])
+        }
+
+        const associationEdgeConnect = associationToEdgeConnect(graph, tempAssociation)
         if (!associationEdgeConnect) return
         const edgeMeta = associationEdgeConnectToEdgeMeta(associationEdgeConnect)
         if (!edgeMeta) return
         edges.push(graph.addEdge(edgeMeta))
     })
 
-    return edges
+    return {
+        edges,
+        associationNameMap
+    }
 }

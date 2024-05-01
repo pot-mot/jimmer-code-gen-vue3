@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import {ModelValueProps} from "@/components/global/dialog/DragDialogProps.ts";
 import {GenModelInput_TargetOf_enums, GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static";
-import {ModelValueEmits} from "@/components/global/dialog/DragDialogEmits.ts";
 import {ref, watch} from "vue";
 import {EditPen, Plus} from "@element-plus/icons-vue";
 import {useJdbcTypeStore} from "@/components/business/jdbcType/jdbcTypeStore.ts";
@@ -16,18 +14,16 @@ const jdbcTypeStore = useJdbcTypeStore()
 
 const columnDefaultStore = useColumnDefaultStore()
 
-const props = defineProps<
-	ModelValueProps<GenTableModelInput_TargetOf_columns> &
-	{ getEnums: () => Array<GenModelInput_TargetOf_enums> }
->()
+const column = defineModel<GenTableModelInput_TargetOf_columns>()
 
-const emits = defineEmits<
-	ModelValueEmits<GenTableModelInput_TargetOf_columns> &
-	{
-		(event: "editEnum", name: string): void,
-		(event: "createEnum"): void,
-	}
->()
+const props = defineProps<{
+	getEnums: () => Array<GenModelInput_TargetOf_enums>
+}>()
+
+const emits = defineEmits<{
+	(event: "editEnum", name: string): void,
+	(event: "createEnum"): void,
+}>()
 
 const popoverOpenState = ref(false)
 
@@ -51,30 +47,32 @@ const syncEnumNames = () => {
 }
 
 const handleTypeCodeChange = () => {
-	const typeCode = props.modelValue.typeCode
+	if (!column.value) return
+
+	const typeCode = column.value.typeCode
 
 	const columnDefaults = columnDefaultStore.get(typeCode)
 
 	if (columnDefaults.length === 1) {
 		const columnDefault = columnDefaults[0]
 
-		props.modelValue.overwriteByRaw = true
-		props.modelValue.rawType = columnDefault.rawType
-		props.modelValue.dataSize = columnDefault.dataSize
-		props.modelValue.numericPrecision = columnDefault.numericPrecision
-		if (columnDefault.defaultValue) props.modelValue.defaultValue = columnDefault.defaultValue
+		column.value.overwriteByRaw = true
+		column.value.rawType = columnDefault.rawType
+		column.value.dataSize = columnDefault.dataSize
+		column.value.numericPrecision = columnDefault.numericPrecision
+		if (columnDefault.defaultValue) column.value.defaultValue = columnDefault.defaultValue
 	} else {
 		const type = jdbcTypeStore.jdbcTypeMap.get(typeCode)
 		if (type) {
-			props.modelValue.rawType = type
+			column.value.rawType = type
 		}
-		props.modelValue.overwriteByRaw = false
-		props.modelValue.dataSize = 0
-		props.modelValue.numericPrecision = 0
+		column.value.overwriteByRaw = false
+		column.value.dataSize = 0
+		column.value.numericPrecision = 0
 	}
 }
 
-watch(() => props.modelValue.typeCode, () => {
+watch(() => column.value?.typeCode, () => {
 	handleTypeCodeChange()
 })
 
@@ -99,11 +97,11 @@ useClickOutside(() => wrapper.value, (e) => {
 </script>
 
 <template>
-	<div class="column-type-form">
+	<div class="column-type-form" v-if="column">
 		<div @click="popoverOpenState = !popoverOpenState" class="column-type-form-input">
-			<el-input readonly :model-value="modelValue.rawType">
-				<template v-if="modelValue.enum !== undefined" #prefix>
-					【{{ modelValue.enum.name }}】
+			<el-input readonly :model-value="column.rawType">
+				<template v-if="column.enum !== undefined" #prefix>
+					【{{ column.enum.name }}】
 				</template>
 			</el-input>
 		</div>
@@ -113,7 +111,7 @@ useClickOutside(() => wrapper.value, (e) => {
 			<el-form v-if="jdbcTypeStore.isLoaded && columnDefaultStore.isLoaded">
 				<el-form-item label="jdbc 类型">
 					<el-select
-						v-model="modelValue.typeCode"
+						v-model="column.typeCode"
 						filterable
 						style="width: 100%">
 						<el-option v-for="type in jdbcTypeStore.jdbcTypeList"
@@ -122,20 +120,20 @@ useClickOutside(() => wrapper.value, (e) => {
 				</el-form-item>
 
 				<el-form-item label="生成 DDL 时以字面类型覆盖 jdbc 类型">
-					<el-switch v-model="modelValue.overwriteByRaw"></el-switch>
+					<el-switch v-model="column.overwriteByRaw"></el-switch>
 				</el-form-item>
 
 				<el-form-item label="字面类型">
-					<el-input v-model="modelValue.rawType" :disabled="!modelValue.overwriteByRaw"></el-input>
+					<el-input v-model="column.rawType" :disabled="!column.overwriteByRaw"></el-input>
 				</el-form-item>
 
 				<el-form-item label="长度精度">
 					<el-text style="display: grid; grid-template-columns: 0.5em 1fr 1em 1fr 0.5em">
 						<span>(</span>
-						<span><el-input-number v-model="modelValue.dataSize"
+						<span><el-input-number v-model="column.dataSize"
 											   controls-position="right"></el-input-number></span>
 						<span style="padding-left: 0.3em;">,</span>
-						<span><el-input-number v-model="modelValue.numericPrecision"
+						<span><el-input-number v-model="column.numericPrecision"
 											   controls-position="right"></el-input-number></span>
 						<span style="padding-left: 0.3em;">)</span>
 					</el-text>
@@ -144,14 +142,14 @@ useClickOutside(() => wrapper.value, (e) => {
 				<el-form-item label="映射枚举">
 					<Line style="width: 100%;">
 						<LineItem span="3em">
-							<el-button v-if="modelValue.enum" :icon="EditPen"
-									   @click="emits('editEnum', modelValue.enum!.name)"></el-button>
+							<el-button v-if="column.enum" :icon="EditPen"
+									   @click="emits('editEnum', column.enum!.name)"></el-button>
 							<el-button v-else :icon="Plus" @click="emits('createEnum')"></el-button>
 						</LineItem>
 						<LineItem>
-							<el-select :model-value="modelValue.enum?.name" clearable filterable
-									   @clear="modelValue.enum = undefined"
-									   @change="(name: string) => {modelValue.enum = { name: name }}"
+							<el-select :model-value="column.enum?.name" clearable filterable
+									   @clear="column.enum = undefined"
+									   @change="(name: string) => {column!.enum = { name: name }}"
 									   @focus="syncEnumNames">
 								<el-option v-for="enumName in enumNames" :value="enumName"></el-option>
 							</el-select>

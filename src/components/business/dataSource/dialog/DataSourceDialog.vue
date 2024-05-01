@@ -3,13 +3,14 @@ import {GenDataSourceView} from "@/api/__generated/model/static";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import DataSourceForm from "../form/DataSourceForm.vue";
 import {DataSourceFormEmits} from "../form/DataSourceFormEmits.ts";
-import {DialogInitProps, ModelValueProps} from "@/components/global/dialog/DragDialogProps.ts";
+import {DialogInitProps} from "@/components/global/dialog/DragDialogProps.ts";
 import {DataSourceFormProps} from "@/components/business/dataSource/form/DataSourceFormProps.ts";
-import {ModelValueEmits} from "@/components/global/dialog/DragDialogEmits.ts";
 
-const props = defineProps<ModelValueProps<boolean> & DataSourceFormProps & DialogInitProps>()
+const openState = defineModel<boolean>()
 
-const emits = defineEmits<ModelValueEmits<boolean> & DataSourceFormEmits>()
+const props = defineProps<DataSourceFormProps & DialogInitProps>()
+
+const emits = defineEmits<DataSourceFormEmits>()
 
 const handleUpdated = () => {
 	emits('updated')
@@ -20,12 +21,12 @@ const handleAdded = (dataSource: GenDataSourceView) => {
 }
 
 const handleModelValueUpdate = (modelValue: boolean) => {
-	emits('update:modelValue', modelValue)
+	openState.value = modelValue
 }
 </script>
 
 <template>
-	<DragDialog :model-value="modelValue" @update:model-value="handleModelValueUpdate"
+	<DragDialog :model-value="openState" @update:model-value="handleModelValueUpdate"
 				:init-x="props.initX" :init-y="props.initY" :init-w="props.initW ?? 600" :init-h="props.initH" :modal="false">
 		<DataSourceForm
 			style="height: calc(100% - 1em)"

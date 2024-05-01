@@ -4,7 +4,7 @@ import {
     GenModelInput_TargetOf_enums,
     GenTableModelInput,
 } from "@/api/__generated/model/static";
-import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/loadData.ts";
+import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadData.ts";
 import {DeepReadonly} from "vue";
 
 type ModelEditorEvents = {

@@ -6,31 +6,24 @@
 
 import * as monaco from 'monaco-editor'
 import {editor} from 'monaco-editor'
-import {onMounted, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {CodeEditorLanguage} from "@/components/global/code/CodeEditorLanguages.ts";
-import {ModelValueProps} from "@/components/global/dialog/DragDialogProps.ts";
-import {ModelValueEmits} from "@/components/global/dialog/DragDialogEmits.ts";
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
 
-const props = defineProps<
-	ModelValueProps<string> &
-	{
-		language?: CodeEditorLanguage,
-		options?: Omit<Partial<IStandaloneEditorConstructionOptions>, 'language' | 'value'>
-	}
->()
+const textValue = defineModel<string>()
 
-const emits = defineEmits<
-	ModelValueEmits<string>
->()
+const props = defineProps<{
+	language?: CodeEditorLanguage,
+	options?: Omit<Partial<IStandaloneEditorConstructionOptions>, 'language' | 'value'>
+}>()
 
 monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true);
 
 const editorContainer = ref<HTMLElement>()
 
 const options: IStandaloneEditorConstructionOptions = {
-	value: props.modelValue, // 初始显示文字
+	value: textValue.value, // 初始显示文字
 	language: props.language, // 语言支持
 	theme: 'vs', // 主题色官方自带： vs, hc-black , vs-dark
 	automaticLayout: true, // 自适应布局 默认true
@@ -52,8 +45,13 @@ onMounted(() => {
 	editorInstance = monaco.editor.create(editorContainer.value!, {...options, ...props.options})
 
 	editorInstance.onDidChangeModelContent(() => {
-		emits('update:modelValue', editorInstance.getValue())
+		textValue.value = editorInstance.getValue()
 	})
+})
+
+watch(() => textValue.value, () => {
+	if (textValue.value !== undefined)
+		editorInstance!.setValue(textValue.value)
 })
 </script>
 

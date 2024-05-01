@@ -1,16 +1,18 @@
 import {GenAssociationModelInput, GenTableColumnsView, GenTableModelInput} from "@/api/__generated/model/static";
 import {api} from "@/api";
-import {loadTableModelInputs, tableViewToInput} from "./tableNode/load.ts";
+import {loadTableModelInputs, tableViewToInput} from "./loadTableNode.ts";
 import {Graph} from '@antv/x6'
 import {
     associationViewToInput,
     loadAssociationModelInputs
-} from "@/components/pages/ModelEditor/graph/associationEdge/load.ts";
+} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
+import {DeepReadonly} from "vue";
+import {cloneDeep} from "lodash";
 
 /**
  * 将 tables 导入画布
  */
-export const produceTableViewsToInputs = async (tables: GenTableColumnsView[]) => {
+export const produceTableViewsToInputs = async (tables: DeepReadonly<GenTableColumnsView[]>) => {
     let associations = await api.associationService.queryByTable({
         body: {
             tableIds: tables.map(it => it.id),
@@ -31,10 +33,10 @@ export interface TableLoadOptions {
 
 export const loadModelInputs = (
     graph: Graph,
-    tables: GenTableModelInput[],
-    associations: GenAssociationModelInput[],
-    baseOptions?: TableLoadOptions,
-    eachTableOptions?: TableLoadOptions[]
+    tables: DeepReadonly<GenTableModelInput[]>,
+    associations: DeepReadonly<GenAssociationModelInput[]>,
+    baseOptions?: DeepReadonly<TableLoadOptions>,
+    eachTableOptions?: DeepReadonly<TableLoadOptions[]>
 ) => {
     graph.startBatch('Load from inputs')
 
@@ -53,19 +55,23 @@ export const loadModelInputs = (
         .filter(it => tableNameMap.has(it.sourceTableName))
 
     // 根据同名表覆盖 association 的 source 和 target
-    associations.forEach(association => {
+    const newAssociations = associations.map(association => {
+        const tempAssociation = cloneDeep(association) as GenAssociationModelInput
+
         const sourceSameNameList = tableNameMap.get(association.sourceTableName)
         if (sourceSameNameList && sourceSameNameList.length > 1) {
-            association.sourceTableName = sourceSameNameList[sourceSameNameList.length - 1].name
+            tempAssociation.sourceTableName = sourceSameNameList[sourceSameNameList.length - 1].name
         }
 
         const targetSameNameList = tableNameMap.get(association.targetTableName)
         if (targetSameNameList && targetSameNameList.length > 1) {
-            association.targetTableName = targetSameNameList[targetSameNameList.length - 1].name
+            tempAssociation.targetTableName = targetSameNameList[targetSameNameList.length - 1].name
         }
+
+        return tempAssociation
     })
 
-    const edges = loadAssociationModelInputs(graph, associations)
+    const {edges} = loadAssociationModelInputs(graph, newAssociations)
 
     graph.stopBatch('Load from inputs')
 

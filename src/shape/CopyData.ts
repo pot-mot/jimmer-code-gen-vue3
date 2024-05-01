@@ -7,7 +7,7 @@ import {
     GenTableModelInput
 } from "@/api/__generated/model/static";
 import {GenEnumModelInputJsonSchema} from "@/shape/GenEnumModelInput.ts";
-import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/loadData.ts";
+import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadData.ts";
 
 const CopyDataShapeJsonSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",

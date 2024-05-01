@@ -10,22 +10,20 @@ import {
 	GenLanguage_CONSTANTS
 } from "@/api/__generated/model/enums"
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
-import {ModelValueProps} from "@/components/global/dialog/DragDialogProps.ts";
-import {ModelValueEmits} from "@/components/global/dialog/DragDialogEmits.ts";
 import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
 
-const props = defineProps<ModelValueProps<GenConfigProperties>>()
+const genConfigProperties = defineModel<GenConfigProperties>()
 
 const config = ref<GenConfig>(getDefaultModel())
 
-watch(() => props.modelValue, () => {
+watch(() => genConfigProperties.value, () => {
 	config.value = {
 		...config.value,
-		...props.modelValue
+		...genConfigProperties.value
 	}
 }, {immediate: true})
 
-const emits = defineEmits<ModelValueEmits<GenConfigProperties> & FormEmits<GenConfigProperties>>()
+const emits = defineEmits<FormEmits<GenConfigProperties>>()
 
 const handleSubmit = async () => {
 	const newConfig = <GenConfigProperties>config.value

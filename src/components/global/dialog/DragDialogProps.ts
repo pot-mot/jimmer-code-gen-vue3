@@ -1,7 +1,3 @@
-export interface ModelValueProps<T> {
-    modelValue: T
-}
-
 export interface DialogInitProps {
     initX?: number
     initY?: number
@@ -27,8 +23,7 @@ export interface DialogDisableProps {
     disabledH?: boolean
 }
 
-export interface DragDialogProps extends ModelValueProps<boolean>,
-    DialogInitProps,
+export interface DragDialogProps extends DialogInitProps,
     DialogTeleportProps,
     DialogSizeRangeProps,
     DialogDisableProps {

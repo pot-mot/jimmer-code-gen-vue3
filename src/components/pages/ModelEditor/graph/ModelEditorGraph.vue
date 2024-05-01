@@ -190,7 +190,7 @@ import {
 import {cloneDeep} from "lodash";
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {useDocumentEvent} from "@/utils/useDocumentEvent.ts";
-import MiniMap from "@/components/global/graphEditor/minimap/MiniMap.vue";
+import MiniMap from "@/components/pages/ModelEditor/minimap/MiniMap.vue";
 import {useDebugStore} from "@/debug/debugStore.ts";
 import {handleModelEditorKeyEvent} from "@/components/pages/ModelEditor/graph/keyEvent/keyEvent.ts";
 import {validateModelForm} from "@/components/business/model/form/validateModel.ts";
