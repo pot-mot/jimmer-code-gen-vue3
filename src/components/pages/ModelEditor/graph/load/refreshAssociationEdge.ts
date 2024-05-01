@@ -35,8 +35,6 @@ export const refreshEdgeAssociation = (
         }
     })
 
-    debugger
-
     if (edge.getSourceCellId() === node.id) {
         const oldSourceTableName = association.sourceTableName
 
