@@ -1,15 +1,16 @@
-import {nextTick, Ref, ref} from 'vue'
+import {nextTick, ref} from 'vue'
 import mitt from "mitt";
+import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple";
 
 type DialogManageEvents<K, V> = {
-    open: { key: K, value: V },
+    open: { key: K, value: UnwrapRefSimple<V> },
     close: { key: K }
 }
 
 export const useDialogListState = <K, V>() => {
     const eventBus = mitt<DialogManageEvents<K, V>>()
 
-    const items = ref(new Map<K, V>) as Ref<Map<K, V>>
+    const items = ref(new Map<K, V>)
 
     eventBus.on('open', async ({key, value}) => {
         if (items.value.has(key)) {
@@ -29,14 +30,14 @@ export const useDialogListState = <K, V>() => {
         has: (key: K): boolean => {
             return items.value.has(key)
         },
-        get: (key: K): V | undefined => {
+        get: (key: K): UnwrapRefSimple<V> | undefined => {
             return items.value.get(key)
         },
-        set: (key: K, value: V) => {
+        set: (key: K, value: UnwrapRefSimple<V>) => {
             return items.value.set(key, value)
         },
 
-        open: (key: K, value: V) => {
+        open: (key: K, value: UnwrapRefSimple<V>) => {
             eventBus.emit('open', {key, value})
         },
         close: (key: K) => {

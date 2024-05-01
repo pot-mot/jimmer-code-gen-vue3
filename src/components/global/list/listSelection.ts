@@ -1,16 +1,17 @@
-import {Ref, ref} from "vue";
+import {ref} from "vue";
+import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 
 export const useListSelection = <T>() => {
-    const lastSelect = ref<T>()
+    const lastSelect = ref<UnwrapRefSimple<T>>()
 
-    const selectedItemSet = ref(new Set<T>) as Ref<Set<T>>
+    const selectedItemSet = ref(new Set<T>)
 
-    const select = (item: T) => {
+    const select = (item: UnwrapRefSimple<T>) => {
         selectedItemSet.value.add(item)
         lastSelect.value = item
     }
 
-    const unselect = (item: T) => {
+    const unselect = (item: UnwrapRefSimple<T>) => {
         selectedItemSet.value.delete(item)
         if (item == lastSelect.value) lastSelect.value = undefined
     }
@@ -20,11 +21,11 @@ export const useListSelection = <T>() => {
         lastSelect.value = undefined
     }
 
-    const isSelected = (item: T): boolean => {
+    const isSelected = (item: UnwrapRefSimple<T>): boolean => {
         return selectedItemSet.value.has(item)
     }
 
-    const resetSelection = (items: T[]) => {
+    const resetSelection = (items: UnwrapRefSimple<T>[]) => {
         selectedItemSet.value.clear()
         items.forEach(it => selectedItemSet.value.add(it))
     }

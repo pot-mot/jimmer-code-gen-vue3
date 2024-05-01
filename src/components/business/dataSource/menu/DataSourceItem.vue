@@ -22,7 +22,7 @@ const previewSchemaLoading = useLoading('DataSourceItem.previewSchemaLoading')
 
 const props = defineProps<DataSourceItemProps>()
 
-const previewSchemas = ref<Array<GenSchemaPreview>>([])
+const previewSchemas = ref<GenSchemaPreview[]>([])
 
 const getPreviewSchemas = async () => {
 	const flag = previewSchemaLoading.start('get')

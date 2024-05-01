@@ -4,21 +4,22 @@ import {getSelectedEdges, getSelectedNodes} from "@/components/global/graphEdito
 import {arrayToMap} from "@/utils/mapOperation.ts";
 import {sendMessage} from "@/message/message.ts";
 import {getCenterPoint} from "@/components/global/graphEditor/view/viewOperation.ts";
+import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 
 export interface GraphReactiveState {
     loadReactiveState: () => any
     clearReactiveState: () => any
 
-    nodeMap: Ref<Map<string, Node>>
-    edgeMap: Ref<Map<string, Edge>>
-    nodes: ComputedRef<Node[]>
+    nodeMap: Ref<Map<string, UnwrapRefSimple<Node>>>
+    edgeMap: Ref<Map<string, UnwrapRefSimple<Edge>>>
+    nodes: ComputedRef<UnwrapRefSimple<Node>[]>
     nodeIds: ComputedRef<string[]>
-    edges: ComputedRef<Edge[]>
+    edges: ComputedRef<UnwrapRefSimple<Edge>[]>
     edgeIds: ComputedRef<string[]>
 
     isSelectionEmpty: Ref<boolean>
-    selectedNodeMap: Ref<Map<string, Node>>
-    selectedEdgeMap: Ref<Map<string, Edge>>
+    selectedNodeMap: Ref<Map<string, UnwrapRefSimple<Node>>>
+    selectedEdgeMap: Ref<Map<string, UnwrapRefSimple<Edge>>>
 
     canUndo: Ref<boolean>
     canRedo: Ref<boolean>
@@ -28,8 +29,8 @@ export interface GraphReactiveState {
 }
 
 export const useGraphReactiveState = (_graph: () => Graph): GraphReactiveState => {
-    const nodeMap = ref<Map<string, Node>>(new Map) as Ref<Map<string, Node>>
-    const edgeMap = ref<Map<string, Edge>>(new Map) as Ref<Map<string, Edge>>
+    const nodeMap = ref<Map<string, Node>>(new Map)
+    const edgeMap = ref<Map<string, Edge>>(new Map)
 
     const nodes = computed(() => {
         return [...nodeMap.value.values()]
@@ -48,8 +49,8 @@ export const useGraphReactiveState = (_graph: () => Graph): GraphReactiveState =
     })
 
     const isSelectionEmpty = ref(true)
-    const selectedNodeMap = ref<Map<string, Node>>(new Map) as Ref<Map<string, Node>>
-    const selectedEdgeMap = ref<Map<string, Edge>>(new Map) as Ref<Map<string, Edge>>
+    const selectedNodeMap = ref<Map<string, Node>>(new Map)
+    const selectedEdgeMap = ref<Map<string, Edge>>(new Map)
 
     const canUndo = ref(false)
 
