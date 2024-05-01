@@ -30,7 +30,7 @@ export const getDefaultColumn = (): GenTableModelInput_TargetOf_columns => {
     const columnDefaultStore = useColumnDefaultStore()
 
     const defaultColumn: GenTableModelInput_TargetOf_columns = {
-        orderKey: 0,
+        orderKey: -1,
         name: "",
         comment: "",
         typeCode: 12,
