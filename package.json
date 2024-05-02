@@ -44,7 +44,7 @@
     "adm-zip": "^0.5.10",
     "fs-extra": "^11.2.0",
     "typescript": "^5.4.5",
-    "unplugin-auto-import": "^0.17.3",
+    "unplugin-auto-import": "^0.17.5",
     "unplugin-vue-components": "^0.26.0",
     "uuid": "^9.0.1",
     "vite": "^5.2.10",

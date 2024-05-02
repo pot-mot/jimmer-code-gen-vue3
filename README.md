@@ -27,17 +27,17 @@ pnpm install
 
 启动
 ```
-pnpm run dev
+pnpm dev
 ```
 
 更新 api
 ```
-pnpm run api
+pnpm api
 ```
 
 打包
 ```
-pnpm run build
+pnpm build
 ```
 
 ## 项目说明
