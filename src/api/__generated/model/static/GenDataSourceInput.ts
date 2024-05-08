@@ -2,6 +2,10 @@ import type {DataSourceType} from '../enums/';
 
 export interface GenDataSourceInput {
     /**
+     * ID
+     */
+    id?: number | undefined;
+    /**
      * 数据库类型
      */
     type: DataSourceType;

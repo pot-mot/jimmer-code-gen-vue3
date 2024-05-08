@@ -1,7 +1,7 @@
 import {useGenConfigContextStore} from "@/components/business/genConfig/ContextGenConfigStore.ts";
-import {GenEnumItemsInput, GenEnumItemsInput_TargetOf_items} from "@/api/__generated/model/static";
+import {GenModelInput_TargetOf_enums, GenModelInput_TargetOf_enums_TargetOf_items} from "@/api/__generated/model/static";
 
-export const getDefaultEnum = (): GenEnumItemsInput => {
+export const getDefaultEnum = (): GenModelInput_TargetOf_enums => {
     const contextStore = useGenConfigContextStore()
 
     return {
@@ -13,7 +13,7 @@ export const getDefaultEnum = (): GenEnumItemsInput => {
     }
 }
 
-export const getDefaultEnumItem = (): GenEnumItemsInput_TargetOf_items => {
+export const getDefaultEnumItem = (): GenModelInput_TargetOf_enums_TargetOf_items => {
     return {
         name: "",
         mappedValue: "",

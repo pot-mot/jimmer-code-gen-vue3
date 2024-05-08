@@ -70,17 +70,13 @@ const handleSubmit = async () => {
 
 	const flag = loadingStore.start('DataSourceForm handleSubmit')
 
-	if (props.id) {
-		await api.dataSourceService.edit({
-			id: props.id,
-			body: dataSource.value
-		})
+	const id = await api.dataSourceService.save({
+		body: dataSource.value
+	})
 
+	if (props.id) {
 		emits("updated")
 	} else {
-		const id = await api.dataSourceService.create({
-			body: dataSource.value
-		})
 		const savedDataSource = await api.dataSourceService.get({id})
 
 		if (savedDataSource) {

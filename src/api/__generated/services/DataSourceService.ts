@@ -11,16 +11,6 @@ export class DataSourceService {
     constructor(private executor: Executor) {}
     
     /**
-     * 创建数据源
-     */
-    readonly create: (options: DataSourceServiceOptions['create']) => Promise<
-        number
-    > = async(options) => {
-        let _uri = '/dataSource';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<number>;
-    }
-    
-    /**
      * 删除数据源
      */
     readonly delete: (options: DataSourceServiceOptions['delete']) => Promise<
@@ -29,17 +19,6 @@ export class DataSourceService {
         let _uri = '/dataSource/';
         _uri += encodeURIComponent(options.ids.join(','));
         return (await this.executor({uri: _uri, method: 'DELETE'})) as Promise<number>;
-    }
-    
-    /**
-     * 编辑数据源
-     */
-    readonly edit: (options: DataSourceServiceOptions['edit']) => Promise<
-        number
-    > = async(options) => {
-        let _uri = '/dataSource/';
-        _uri += encodeURIComponent(options.id);
-        return (await this.executor({uri: _uri, method: 'PUT', body: options.body})) as Promise<number>;
     }
     
     /**
@@ -74,6 +53,16 @@ export class DataSourceService {
     }
     
     /**
+     * 保存数据源
+     */
+    readonly save: (options: DataSourceServiceOptions['save']) => Promise<
+        number
+    > = async(options) => {
+        let _uri = '/dataSource';
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<number>;
+    }
+    
+    /**
      * 测试数据源
      */
     readonly test: (options: DataSourceServiceOptions['test']) => Promise<
@@ -90,11 +79,7 @@ export type DataSourceServiceOptions = {
         id: number
     }, 
     'getDefaults': {}, 
-    'create': {
-        body: GenDataSourceInput
-    }, 
-    'edit': {
-        id: number, 
+    'save': {
         body: GenDataSourceInput
     }, 
     'test': {

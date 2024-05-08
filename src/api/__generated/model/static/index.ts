@@ -32,8 +32,6 @@ export type {GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable} fro
 export type {GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_TargetOf_entity} from './GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_TargetOf_entity';
 export type {GenEntityPropertiesView_TargetOf_superEntities} from './GenEntityPropertiesView_TargetOf_superEntities';
 export type {GenEntityPropertiesView_TargetOf_table} from './GenEntityPropertiesView_TargetOf_table';
-export type {GenEnumItemsInput} from './GenEnumItemsInput';
-export type {GenEnumItemsInput_TargetOf_items} from './GenEnumItemsInput_TargetOf_items';
 export type {GenEnumItemsView} from './GenEnumItemsView';
 export type {GenEnumItemsView_TargetOf_items} from './GenEnumItemsView_TargetOf_items';
 export type {GenEnumView} from './GenEnumView';

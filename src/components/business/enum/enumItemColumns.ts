@@ -1,8 +1,8 @@
 import {PropListColumn} from "@/components/global/list/ListProps.ts";
-import {GenEnumItemsInput_TargetOf_items, GenEnumItemsView_TargetOf_items} from "@/api/__generated/model/static";
+import {GenModelInput_TargetOf_enums_TargetOf_items} from "@/api/__generated/model/static";
 
 export const enumItemColumns =
-    <ReadonlyArray<PropListColumn<GenEnumItemsView_TargetOf_items | GenEnumItemsInput_TargetOf_items>>>[
+    <ReadonlyArray<PropListColumn<GenModelInput_TargetOf_enums_TargetOf_items>>>[
         {
             prop: "name",
             label: "枚举项"

@@ -97,12 +97,7 @@ export type ApiErrors = {
             })
     }, 
     'dataSourceService': {
-        'create': AllErrors & ({
-                family: 'DATA_SOURCE', 
-                code: 'CONNECT_FAIL', 
-                readonly [key:string]: any
-            }), 
-        'edit': AllErrors & ({
+        'save': AllErrors & ({
                 family: 'DATA_SOURCE', 
                 code: 'CONNECT_FAIL', 
                 readonly [key:string]: any

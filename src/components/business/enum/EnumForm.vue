@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import EditList from "@/components/global/list/EditList.vue";
-import {GenEnumItemsInput, GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
+import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 import {DeepReadonly, ref, watch} from "vue";
 import {enumItemColumns} from "@/components/business/enum/enumItemColumns.ts";
 import {EnumType, EnumType_CONSTANTS} from "@/api/__generated/model/enums";
@@ -17,9 +17,9 @@ const props = defineProps<{
 	validate: (genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => string[],
 }>()
 
-const emits = defineEmits<FormEmits<GenEnumItemsInput>>()
+const emits = defineEmits<FormEmits<GenModelInput_TargetOf_enums>>()
 
-const genEnum = ref<GenEnumItemsInput>(getDefaultEnum())
+const genEnum = ref<GenModelInput_TargetOf_enums>(getDefaultEnum())
 
 const getData = async () => {
 	if (props.enum) {
