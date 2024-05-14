@@ -92,6 +92,10 @@ const initYH = () => {
 	}
 }
 
+const toFront = () => {
+	currentZIndex.value = zIndexManager.nextZIndex()
+}
+
 const isFullScreen = (): boolean =>
 	x.value === 0 &&
 	y.value === 0 &&
@@ -109,7 +113,7 @@ const handleOpen = () => {
 	emits('open')
 	initXW()
 	initYH()
-	currentZIndex.value = zIndexManager.nextZIndex()
+	toFront()
 	nextTick(() => {
 		emits('opened')
 	})
@@ -131,7 +135,7 @@ const handleToggleFullScreen = () => {
 		return
 	}
 
-	currentZIndex.value = zIndexManager.nextZIndex()
+	toFront()
 
 	if (isFullScreen()) {
 		initXW()
@@ -141,7 +145,7 @@ const handleToggleFullScreen = () => {
 	}
 
 	if (props.limitByParent) {
-		// FIXME 修复 limitByParent 时 x y 作用问题
+		// FIX 修复 limitByParent 时 x y 作用问题
 		nextTick(() => {
 			x.value = -x.value
 			y.value = -y.value
@@ -234,9 +238,10 @@ defineExpose({
 					:w="w" :maxW="maxW" :minW="minW" :disabledW="disabledW"
 					:style="`border: none; z-index: ${currentZIndex};`"
 					:class="{disabledW, disabledH, disabledX, disabledY}">
-			<div ref="wrapper" class="wrapper" style="cursor: all-scroll;">
+			<div ref="wrapper" class="wrapper" style="cursor: all-scroll;" @mouseenter="toFront">
 				<div class="right-top">
-					<el-button :icon="FullScreen" link size="large" @click="handleToggleFullScreen" v-if="canFullScreen"></el-button>
+					<el-button :icon="FullScreen" link size="large" @click="handleToggleFullScreen"
+							   v-if="canFullScreen"></el-button>
 					<el-button :icon="Close" link size="large" type="danger" @click="handleClose"></el-button>
 				</div>
 
