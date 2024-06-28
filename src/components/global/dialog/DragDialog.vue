@@ -238,7 +238,7 @@ defineExpose({
 					:w="w" :maxW="maxW" :minW="minW" :disabledW="disabledW"
 					:style="`border: none; z-index: ${currentZIndex};`"
 					:class="{disabledW, disabledH, disabledX, disabledY}">
-			<div ref="wrapper" class="wrapper" style="cursor: all-scroll;" @mouseenter="toFront">
+			<div ref="wrapper" class="wrapper" style="cursor: all-scroll;" @mouseup="toFront">
 				<div class="right-top">
 					<el-button :icon="FullScreen" link size="large" @click="handleToggleFullScreen"
 							   v-if="canFullScreen"></el-button>

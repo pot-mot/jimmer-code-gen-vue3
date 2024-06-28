@@ -25,6 +25,10 @@ export const judgeTarget = (
     return false
 }
 
+/**
+ * 判断元素是否是一个交互用元素
+ * @param e
+ */
 export const judgeTargetIsInteraction = (
     e: UIEvent
 ) => {
