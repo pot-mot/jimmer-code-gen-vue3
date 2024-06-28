@@ -43,7 +43,7 @@ export const validateEnum = (
 
     if (genEnum.enumType === "NAME" || genEnum.enumType === 'ORDINAL') {
         for (let item of genEnum.items) {
-            if (!item.mappedValue || item.mappedValue.length === 0) {
+            if (item.mappedValue === null || item.mappedValue === undefined || item.mappedValue.length === 0) {
                 messageList.push('枚举项值不得为空')
                 break
             }
