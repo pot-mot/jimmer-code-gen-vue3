@@ -19,6 +19,7 @@ import {ModelMenuEvents} from "@/components/business/model/menu/ModelMenuEvents.
 import TableDialogs from "@/components/pages/ModelEditor/dialogs/table/TableDialogs.vue";
 import EnumDialogs from "@/components/pages/ModelEditor/dialogs/enum/EnumDialogs.vue";
 import AssociationDialogs from "@/components/pages/ModelEditor/dialogs/association/AssociationDialogs.vue";
+import {confirm} from "@/message/confirm.ts";
 
 const {MODEL, LOAD, EDIT} = useModelEditorStore()
 
@@ -60,9 +61,11 @@ watch(() => dataSourceLoadMenu.value, () => {
 	const eventBus: Emitter<DataSourceMenuEvents> = dataSourceLoadMenu.value.eventBus
 
 	eventBus.on('clickSchema', async ({id}) => {
-		const flag = loadingStore.start('ModelEditorPage syncClickSchemaEvent')
-		await LOAD.loadSchema(id)
-		loadingStore.stop(flag)
+		confirm(`是否导入整个 schema`, async () => {
+			const flag = loadingStore.start('ModelEditorPage syncClickSchemaEvent')
+			await LOAD.loadSchema(id)
+			loadingStore.stop(flag)
+		})
 	})
 
 	eventBus.on('clickTable', async ({id}) => {

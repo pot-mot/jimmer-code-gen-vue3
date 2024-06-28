@@ -45,6 +45,7 @@ const validate = (association: DeepReadonly<GenAssociationModelInput>): string[]
 			:validate="validate"
 			:create-association-name="createAssociationName"
 			@submit="handleSubmit"
+			@cancel="emits('close')"
 			style="padding-top: 0.5em; padding-left: 1em;"></AssociationForm>
 	</DragDialog>
 </template>
