@@ -1,5 +1,8 @@
 import type {GenTableColumnsView_TargetOf_columns_TargetOf_enum} from './';
 
+/**
+ * 生成列
+ */
 export interface GenTableColumnsView_TargetOf_columns {
     /**
      * ID

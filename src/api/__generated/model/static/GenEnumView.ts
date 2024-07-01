@@ -1,5 +1,8 @@
 import type {EnumType} from '../enums/';
 
+/**
+ * 生成枚举
+ */
 export interface GenEnumView {
     /**
      * ID

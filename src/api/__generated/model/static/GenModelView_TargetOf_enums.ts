@@ -1,6 +1,9 @@
 import type {EnumType} from '../enums/';
 import type {GenModelView_TargetOf_enums_TargetOf_items} from './';
 
+/**
+ * 生成枚举
+ */
 export interface GenModelView_TargetOf_enums {
     /**
      * 包路径

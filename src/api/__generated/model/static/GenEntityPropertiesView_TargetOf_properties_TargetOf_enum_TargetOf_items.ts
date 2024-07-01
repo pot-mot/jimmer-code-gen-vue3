@@ -1,3 +1,6 @@
+/**
+ * 生成枚举元素
+ */
 export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_TargetOf_items {
     /**
      * ID

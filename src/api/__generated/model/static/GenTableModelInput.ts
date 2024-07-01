@@ -1,6 +1,9 @@
 import type {TableType} from '../enums/';
 import type {GenTableModelInput_TargetOf_columns, GenTableModelInput_TargetOf_indexes, GenTableModelInput_TargetOf_superTables} from './';
 
+/**
+ * 生成表
+ */
 export interface GenTableModelInput {
     /**
      * 名称

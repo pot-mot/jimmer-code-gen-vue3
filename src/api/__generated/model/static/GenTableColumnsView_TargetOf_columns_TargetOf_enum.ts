@@ -1,3 +1,6 @@
+/**
+ * 生成枚举
+ */
 export interface GenTableColumnsView_TargetOf_columns_TargetOf_enum {
     /**
      * ID

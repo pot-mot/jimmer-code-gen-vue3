@@ -1,3 +1,6 @@
+/**
+ * 生成数据源
+ */
 export interface GenSchemaPreview {
     /**
      * 名称

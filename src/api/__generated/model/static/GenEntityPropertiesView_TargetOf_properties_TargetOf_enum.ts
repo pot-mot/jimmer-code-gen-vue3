@@ -1,6 +1,9 @@
 import type {EnumType} from '../enums/';
 import type {GenEntityPropertiesView_TargetOf_properties_TargetOf_enum_TargetOf_items} from './';
 
+/**
+ * 生成枚举
+ */
 export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_enum {
     /**
      * ID

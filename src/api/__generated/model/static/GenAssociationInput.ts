@@ -1,6 +1,9 @@
 import type {AssociationType, DissociateAction} from '../enums/';
 import type {GenAssociationInput_TargetOf_columnReferences} from './';
 
+/**
+ * 生成关联
+ */
 export interface GenAssociationInput {
     /**
      * ID

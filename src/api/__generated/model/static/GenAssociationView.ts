@@ -1,6 +1,9 @@
 import type {AssociationType, DissociateAction} from '../enums/';
 import type {GenAssociationView_TargetOf_columnReferences, GenAssociationView_TargetOf_sourceTable, GenAssociationView_TargetOf_targetTable} from './';
 
+/**
+ * 生成关联
+ */
 export interface GenAssociationView {
     /**
      * ID

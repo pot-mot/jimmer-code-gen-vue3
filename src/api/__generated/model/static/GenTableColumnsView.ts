@@ -1,6 +1,9 @@
 import type {TableType} from '../enums/';
 import type {GenTableColumnsView_TargetOf_columns, GenTableColumnsView_TargetOf_indexes} from './';
 
+/**
+ * 生成表
+ */
 export interface GenTableColumnsView {
     /**
      * ID

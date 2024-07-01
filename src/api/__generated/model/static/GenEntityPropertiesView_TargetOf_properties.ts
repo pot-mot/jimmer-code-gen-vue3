@@ -1,6 +1,9 @@
 import type {AssociationType} from '../enums/';
 import type {GenEntityPropertiesView_TargetOf_properties_TargetOf_column, GenEntityPropertiesView_TargetOf_properties_TargetOf_enum, GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable} from './';
 
+/**
+ * 生成属性
+ */
 export interface GenEntityPropertiesView_TargetOf_properties {
     /**
      * ID

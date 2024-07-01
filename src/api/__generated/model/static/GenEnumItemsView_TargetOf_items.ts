@@ -1,3 +1,6 @@
+/**
+ * 生成枚举元素
+ */
 export interface GenEnumItemsView_TargetOf_items {
     /**
      * ID

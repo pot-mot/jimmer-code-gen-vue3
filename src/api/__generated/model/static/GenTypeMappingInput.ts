@@ -1,5 +1,8 @@
 import type {DataSourceType, GenLanguage} from '../enums/';
 
+/**
+ * 列到属性类型映射
+ */
 export interface GenTypeMappingInput {
     id?: number | undefined;
     /**

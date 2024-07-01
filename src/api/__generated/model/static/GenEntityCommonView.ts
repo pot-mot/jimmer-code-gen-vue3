@@ -1,3 +1,6 @@
+/**
+ * 生成实体
+ */
 export interface GenEntityCommonView {
     /**
      * ID

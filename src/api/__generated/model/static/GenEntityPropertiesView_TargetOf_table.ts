@@ -1,5 +1,8 @@
 import type {TableType} from '../enums/';
 
+/**
+ * 生成表
+ */
 export interface GenEntityPropertiesView_TargetOf_table {
     /**
      * ID

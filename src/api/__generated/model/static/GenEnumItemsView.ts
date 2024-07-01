@@ -1,6 +1,9 @@
 import type {EnumType} from '../enums/';
 import type {GenEnumItemsView_TargetOf_items} from './';
 
+/**
+ * 生成枚举
+ */
 export interface GenEnumItemsView {
     /**
      * ID

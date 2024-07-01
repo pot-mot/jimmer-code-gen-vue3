@@ -1,3 +1,6 @@
+/**
+ * 生成列
+ */
 export interface GenAssociationView_TargetOf_columnReferences_TargetOf_sourceColumn {
     /**
      * ID

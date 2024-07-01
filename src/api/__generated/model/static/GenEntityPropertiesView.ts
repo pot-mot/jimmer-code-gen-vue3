@@ -1,5 +1,8 @@
 import type {GenEntityPropertiesView_TargetOf_properties, GenEntityPropertiesView_TargetOf_superEntities, GenEntityPropertiesView_TargetOf_table} from './';
 
+/**
+ * 生成实体
+ */
 export interface GenEntityPropertiesView {
     /**
      * ID

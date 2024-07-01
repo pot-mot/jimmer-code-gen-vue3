@@ -1,6 +1,9 @@
 import type {DataSourceType, DatabaseNamingStrategyType, GenLanguage} from '../enums/';
 import type {GenModelInput_TargetOf_enums} from './';
 
+/**
+ * 生成模型
+ */
 export interface GenModelInput {
     /**
      * ID

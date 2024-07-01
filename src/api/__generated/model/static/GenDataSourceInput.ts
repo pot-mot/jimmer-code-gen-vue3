@@ -1,5 +1,8 @@
 import type {DataSourceType} from '../enums/';
 
+/**
+ * 生成数据源
+ */
 export interface GenDataSourceInput {
     /**
      * ID

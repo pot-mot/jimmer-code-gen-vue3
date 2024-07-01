@@ -1,3 +1,6 @@
+/**
+ * 生成枚举元素
+ */
 export interface GenModelInput_TargetOf_enums_TargetOf_items {
     /**
      * 元素名

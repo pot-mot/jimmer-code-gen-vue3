@@ -1,3 +1,6 @@
+/**
+ * 生成列
+ */
 export interface GenTableColumnsView_TargetOf_indexes {
     /**
      * ID

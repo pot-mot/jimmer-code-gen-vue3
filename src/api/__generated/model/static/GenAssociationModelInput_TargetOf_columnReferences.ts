@@ -1,3 +1,6 @@
+/**
+ * 生成关联
+ */
 export interface GenAssociationModelInput_TargetOf_columnReferences {
     /**
      * 主列

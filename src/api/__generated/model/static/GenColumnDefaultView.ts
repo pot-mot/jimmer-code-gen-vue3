@@ -1,5 +1,8 @@
 import type {DataSourceType} from '../enums/';
 
+/**
+ * 数据源列类型
+ */
 export interface GenColumnDefaultView {
     /**
      * ID

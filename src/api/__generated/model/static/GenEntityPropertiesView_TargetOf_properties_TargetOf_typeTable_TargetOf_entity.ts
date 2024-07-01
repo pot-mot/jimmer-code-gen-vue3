@@ -1,3 +1,6 @@
+/**
+ * 生成实体
+ */
 export interface GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable_TargetOf_entity {
     /**
      * ID

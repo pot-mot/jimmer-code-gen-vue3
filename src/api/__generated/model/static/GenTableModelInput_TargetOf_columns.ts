@@ -1,5 +1,8 @@
 import type {GenTableModelInput_TargetOf_columns_TargetOf_enum} from './';
 
+/**
+ * 生成列
+ */
 export interface GenTableModelInput_TargetOf_columns {
     /**
      * 名称
