@@ -8,6 +8,8 @@ export type {DissociateAction} from './DissociateAction';
 export {DissociateAction_CONSTANTS} from './DissociateAction';
 export type {EnumType} from './EnumType';
 export {EnumType_CONSTANTS} from './EnumType';
+export type {ForeignKeyType} from './ForeignKeyType';
+export {ForeignKeyType_CONSTANTS} from './ForeignKeyType';
 export type {GenLanguage} from './GenLanguage';
 export {GenLanguage_CONSTANTS} from './GenLanguage';
 export type {SelectType} from './SelectType';

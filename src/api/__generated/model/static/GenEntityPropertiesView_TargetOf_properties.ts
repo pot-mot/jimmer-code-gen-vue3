@@ -1,5 +1,11 @@
 import type {AssociationType} from '../enums/';
-import type {GenEntityPropertiesView_TargetOf_properties_TargetOf_column, GenEntityPropertiesView_TargetOf_properties_TargetOf_enum, GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable} from './';
+import type {
+    GenEntityPropertiesView_TargetOf_properties_TargetOf_column, 
+    GenEntityPropertiesView_TargetOf_properties_TargetOf_enum, 
+    GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable, 
+    JoinColumnMeta, 
+    JoinTableMeta
+} from './';
 
 /**
  * 生成属性
@@ -76,11 +82,11 @@ export interface GenEntityPropertiesView_TargetOf_properties {
     /**
      * 关联列注解
      */
-    joinColumnAnnotation?: string | undefined;
+    joinColumnMetas?: Array<JoinColumnMeta> | undefined;
     /**
      * 关联表注解
      */
-    joinTableAnnotation?: string | undefined;
+    joinTableMeta?: JoinTableMeta | undefined;
     /**
      * 脱钩注解
      */
