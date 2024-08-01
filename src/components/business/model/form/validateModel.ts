@@ -17,7 +17,7 @@ export const validateModelForm = (
     const {
         messageList,
         errors
-    } = validateFormGraphData(
+    } = validateGraphDataStr(
         model.graphData,
         model.enums
     )
@@ -33,8 +33,8 @@ export const validateModelForm = (
     return messageList
 }
 
-export const validateFormGraphData = (
-    graphDataStr: DeepReadonly<string>,
+const validateGraphDataStr = (
+    graphDataStr: Readonly<string>,
     enums: DeepReadonly<Array<GenModelInput_TargetOf_enums>>
 ): {
     messageList: string[],

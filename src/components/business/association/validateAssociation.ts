@@ -21,12 +21,25 @@ export const validateAssociation = (
         if (otherAssociation.name === association.name) {
             messageList.push(`关联【${association.name}】存在重名`)
         }
+
         if (
             otherAssociation.sourceTableName === association.sourceTableName &&
             otherAssociation.targetTableName === association.targetTableName &&
-            compareArraysIgnoreOrder(otherAssociation.columnReferences, association.columnReferences)
+            compareArraysIgnoreOrder(
+                otherAssociation.columnReferences.map(it => it.sourceColumnName + " " + it.targetColumnName),
+                association.columnReferences.map(it => it.sourceColumnName + " " + it.targetColumnName),
+            )
         ) {
-            messageList.push(`关联【${association.name}】与关联【${otherAssociation.name}】关联信息完全相同`)
+            messageList.push(`关联【${association.name}】与关联【${otherAssociation.name}】使用的表与列相同`)
+        } else if (
+            otherAssociation.sourceTableName === association.targetTableName &&
+            otherAssociation.targetTableName === association.sourceTableName &&
+            compareArraysIgnoreOrder(
+                otherAssociation.columnReferences.map(it => it.sourceColumnName + " " + it.targetColumnName),
+                association.columnReferences.map(it => it.targetColumnName + " " + it.sourceColumnName)
+            )
+        ) {
+            messageList.push(`关联【${association.name}】与关联【${otherAssociation.name}】方向相反但使用的表与列相同`)
         }
     }
 
@@ -79,6 +92,8 @@ export const validateAssociation = (
                     messageList.push(`关联【${association.name}】两端类型不一致`)
                 }
             }
+        } else {
+            messageList.push(`关联【${association.name}】列数量不一致`)
         }
     }
 

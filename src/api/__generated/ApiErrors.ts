@@ -5,6 +5,9 @@ export type AllErrors = {
         family: 'CONVERT_ENTITY', 
         code: 'SUPER_TABLE'
     } | {
+        family: 'CONVERT_ENTITY', 
+        code: 'PROPERTY'
+    } | {
         family: 'COLUMN_TYPE', 
         code: 'MISS_REQUIRED_PARAM'
     } | {
@@ -78,6 +81,10 @@ export type ApiErrors = {
                 code: 'SUPER_TABLE', 
                 readonly [key:string]: any
             } | {
+                family: 'CONVERT_ENTITY', 
+                code: 'PROPERTY', 
+                readonly [key:string]: any
+            } | {
                 family: 'COLUMN_TYPE', 
                 code: 'MISS_REQUIRED_PARAM', 
                 readonly [key:string]: any
@@ -89,6 +96,10 @@ export type ApiErrors = {
             } | {
                 family: 'CONVERT_ENTITY', 
                 code: 'SUPER_TABLE', 
+                readonly [key:string]: any
+            } | {
+                family: 'CONVERT_ENTITY', 
+                code: 'PROPERTY', 
                 readonly [key:string]: any
             } | {
                 family: 'COLUMN_TYPE', 
@@ -171,6 +182,10 @@ export type ApiErrors = {
             } | {
                 family: 'CONVERT_ENTITY', 
                 code: 'SUPER_TABLE', 
+                readonly [key:string]: any
+            } | {
+                family: 'CONVERT_ENTITY', 
+                code: 'PROPERTY', 
                 readonly [key:string]: any
             } | {
                 family: 'COLUMN_TYPE', 

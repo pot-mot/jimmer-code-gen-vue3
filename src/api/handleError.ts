@@ -51,6 +51,8 @@ const parseFamilyAndCode = (error: AllErrors): string => {
         familyStr = "转换实体"
         if (error.code === "ASSOCIATION") {
             codeStr = "关联"
+        } else if (error.code === "PROPERTY") {
+            codeStr = "属性"
         }
     } else if (error.family === "COLUMN_TYPE") {
         familyStr = "列类型"

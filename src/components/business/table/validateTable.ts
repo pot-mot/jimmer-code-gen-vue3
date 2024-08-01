@@ -127,7 +127,7 @@ export const validateTable = (
             if (pkColumns.length > 1) {
                 messageList.push('仅可有一个主键')
             } else if (pkColumns.length === 0) {
-                messageList.push('必须要有一个主键')
+                messageList.push('必须要有一个主键，或作为上级表')
             }
         } else {
             if (pkColumns.length > 0) {

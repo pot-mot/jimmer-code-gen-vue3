@@ -346,14 +346,23 @@ const judgeGraphDataIsChange = (): boolean => {
 	return true
 }
 
-const sendGraphDataChangeMessage = (): boolean => {
+const preJudge = (): boolean => {
 	const judge = judgeGraphDataIsChange()
 
 	if (judge) {
 		sendMessage('模型有变更尚未保存', 'warning')
-	}
+		return false
+	} else {
+		const model = MODEL._model()
+		const messageList = validateModelForm(model)
 
-	return judge
+		if (messageList.length === 0) {
+			return true
+		} else {
+			messageList.forEach(it => sendMessage(it, 'warning'))
+			return false
+		}
+	}
 }
 
 const entityPreviewDialogOpenState = ref(false)
@@ -367,13 +376,14 @@ watch(() => entityPreviewDialogOpenState.value, async (openState) => {
 })
 
 const handleEntityPreview = async () => {
-	sendGraphDataChangeMessage()
-	const flag = loadingStore.start('ModelEditorGraph handleEntityPreview')
-	const model = MODEL._model()
-	await convertModel(model.id)
-	entityFiles.value = await previewModelEntity(model.id)
-	entityPreviewDialogOpenState.value = true
-	loadingStore.stop(flag)
+	if (preJudge()) {
+		const model = MODEL._model()
+		const flag = loadingStore.start('ModelEditorGraph handleEntityPreview')
+		await convertModel(model.id)
+		entityFiles.value = await previewModelEntity(model.id)
+		entityPreviewDialogOpenState.value = true
+		loadingStore.stop(flag)
+	}
 }
 
 const sqlPreviewDialogOpenState = ref(false)
@@ -387,46 +397,51 @@ watch(() => sqlPreviewDialogOpenState.value, async (openState) => {
 })
 
 const handleSQLPreview = async () => {
-	sendGraphDataChangeMessage()
-	const flag = loadingStore.start('ModelEditorGraph handleSQLPreview')
-	const model = MODEL._model()
-	sqlPreviewDialogOpenState.value = true
-	sqlFiles.value = await previewModelSql(model.id)
-	loadingStore.stop(flag)
+	if (preJudge()) {
+		const flag = loadingStore.start('ModelEditorGraph handleSQLPreview')
+		const model = MODEL._model()
+		sqlPreviewDialogOpenState.value = true
+		sqlFiles.value = await previewModelSql(model.id)
+		loadingStore.stop(flag)
+	}
 }
 
 
 const handleEntityDownload = async () => {
-	if (sendGraphDataChangeMessage()) return
-	const flag = loadingStore.start('ModelEditorGraph handleEntityDownload')
-	const model = MODEL._model()
-	await convertModel(model.id)
-	await downloadModelEntity(model)
-	loadingStore.stop(flag)
+	if (preJudge()) {
+		const flag = loadingStore.start('ModelEditorGraph handleEntityDownload')
+		const model = MODEL._model()
+		await convertModel(model.id)
+		await downloadModelEntity(model)
+		loadingStore.stop(flag)
+	}
 }
 
 const handleSQLDownload = async () => {
-	if (sendGraphDataChangeMessage()) return
-	const flag = loadingStore.start('ModelEditorGraph handleSQLDownload')
-	const model = MODEL._model()
-	await downloadModelSql(model)
-	loadingStore.stop(flag)
+	if (preJudge()) {
+		const flag = loadingStore.start('ModelEditorGraph handleSQLDownload')
+		const model = MODEL._model()
+		await downloadModelSql(model)
+		loadingStore.stop(flag)
+	}
 }
 
 const handleModelExport = async () => {
-	if (sendGraphDataChangeMessage()) return
-	const flag = loadingStore.start('ModelEditorGraph handleModelExport')
-	const model = MODEL._model()
-	await exportModel(model)
-	loadingStore.stop(flag)
+	if (preJudge()) {
+		const flag = loadingStore.start('ModelEditorGraph handleModelExport')
+		const model = MODEL._model()
+		await exportModel(model)
+		loadingStore.stop(flag)
+	}
 }
 
 const handleModelDownload = async () => {
-	if (sendGraphDataChangeMessage()) return
-	const flag = loadingStore.start('ModelEditorGraph handleModelDownload')
-	const model = MODEL._model()
-	await convertModel(model.id)
-	await downloadModel(model)
-	loadingStore.stop(flag)
+	if (preJudge()) {
+		const flag = loadingStore.start('ModelEditorGraph handleModelDownload')
+		const model = MODEL._model()
+		await convertModel(model.id)
+		await downloadModel(model)
+		loadingStore.stop(flag)
+	}
 }
 </script>

@@ -48,13 +48,17 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
         const edgeConnectData = getEdgeConnectEntities(edgeConnect)
         if (!edgeConnectData) return false
 
-        const {sourceColumn, targetColumn} = edgeConnectData
-
-        if (!sourceColumn || !targetColumn) return false
+        const {
+            sourceColumn,
+            targetColumn
+        } = edgeConnectData
 
         if (
             (sourceColumn.typeCode !== targetColumn.typeCode) ||
-            ((sourceColumn.overwriteByRaw || targetColumn.overwriteByRaw) && sourceColumn.rawType !== targetColumn.rawType)
+            (
+                (sourceColumn.overwriteByRaw || targetColumn.overwriteByRaw) &&
+                sourceColumn.rawType !== targetColumn.rawType
+            )
         ) {
             sendMessage('关联两端类型不一致', 'warning')
             return false

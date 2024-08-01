@@ -60,15 +60,27 @@ export interface GenEntityPropertiesView_TargetOf_properties {
     /**
      * ID 视图注解
      */
-    idViewAnnotation?: string | undefined;
+    idViewTarget?: string | undefined;
     /**
      * 关联类型
      */
     associationType?: AssociationType | undefined;
     /**
-     * 关联注解
+     * 映射镜像
      */
-    associationAnnotation?: string | undefined;
+    mappedBy?: string | undefined;
+    /**
+     * 输入非空
+     */
+    inputNotNull?: boolean | undefined;
+    /**
+     * 关联列注解
+     */
+    joinColumnAnnotation?: string | undefined;
+    /**
+     * 关联表注解
+     */
+    joinTableAnnotation?: string | undefined;
     /**
      * 脱钩注解
      */
