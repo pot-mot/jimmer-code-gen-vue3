@@ -60,7 +60,6 @@ const columnDefaults = ref<GenColumnDefaultView[]>([])
 const tempColumnDefaults = ref<GenColumnDefaultView[]>([])
 
 const defaultColumnDefault = ref<GenColumnDefaultInput>({
-	dataSourceType: "MySQL",
 	rawType: 'BIGINT',
 	typeCode: -7,
 	dataSize: 0,
@@ -139,7 +138,7 @@ const handleCancel = () => {
 				:json-schema-validate="validateColumnDefaultInput"
 				height="2em">
 				<template #dataSourceType="{data}">
-					<el-select v-model="data.dataSourceType">
+					<el-select v-model="data.dataSourceType" clearable>
 						<el-option v-for="dataSourceType in DataSourceType_CONSTANTS"
 								   :value="dataSourceType"></el-option>
 					</el-select>
@@ -175,6 +174,9 @@ const handleCancel = () => {
 
 		<template v-else>
 			<ViewList :columns="columnDefaultProps" :lines="columnDefaults" height="2em">
+				<template #dataSourceType="{propData}">
+					<el-text v-text="propData ?? '【ANY】'"></el-text>
+				</template>
 				<template #typeCode="{data}">
 					<el-text v-text="jdbcTypeStore.jdbcTypeMap.get(data.typeCode)"></el-text>
 				</template>

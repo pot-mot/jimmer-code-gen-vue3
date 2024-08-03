@@ -11,7 +11,7 @@ export interface GenColumnDefaultInput {
     /**
      * 数据源类型
      */
-    dataSourceType: DataSourceType;
+    dataSourceType?: DataSourceType | undefined;
     /**
      * JdbcType 码值
      */

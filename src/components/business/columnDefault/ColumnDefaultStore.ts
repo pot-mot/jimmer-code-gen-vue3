@@ -35,16 +35,28 @@ export const useColumnDefaultStore = defineStore(
             return data.value
         })
 
-        const getColumnDefaults = (jdbcTypeCode: number, dataSourceType?: DataSourceType): GenColumnDefaultView[] => {
-            const contextStore = useGenConfigContextStore()
+        /**
+         * 获取列默认
+         * @param jdbcTypeCode
+         * @param dataSourceType 如果为 undefined，则设置为当前 context 中的 dataSourceType
+         */
+        const getColumnDefaults = (jdbcTypeCode: number, dataSourceType?: DataSourceType | undefined): GenColumnDefaultView[] => {
+            if (!columnDefaults.value) return []
+
+            const typeCodeMatchedDefaults = columnDefaults.value.filter(it => it.typeCode === jdbcTypeCode)
 
             if (!dataSourceType) {
+                const contextStore = useGenConfigContextStore()
                 dataSourceType = contextStore.context.dataSourceType
             }
 
-            if (!columnDefaults.value) return []
+            const dataSourceMatchedDefaults = typeCodeMatchedDefaults.filter(it => it.dataSourceType === dataSourceType)
 
-            return columnDefaults.value.filter(it => it.dataSourceType === dataSourceType && it.typeCode === jdbcTypeCode)
+            if (dataSourceMatchedDefaults.length > 0) {
+                return dataSourceMatchedDefaults
+            } else {
+                return typeCodeMatchedDefaults.filter(it => !it.dataSourceType)
+            }
         }
 
         return {
