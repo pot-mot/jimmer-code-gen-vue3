@@ -4,7 +4,7 @@ import {api} from "@/api";
 import {GenColumnDefaultInput, GenColumnDefaultView} from "@/api/__generated/model/static";
 import {DataSourceType_CONSTANTS} from "@/api/__generated/model/enums";
 import EditList from "@/components/global/list/EditList.vue";
-import {PropListColumn} from "@/components/global/list/ListProps.ts";
+import {ListColumn, PropListColumn} from "@/components/global/list/ListProps.ts";
 import {sendMessage} from "@/message/message.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep} from "lodash";
@@ -16,7 +16,7 @@ import {validateColumnDefaultForm} from "@/components/business/columnDefault/val
 
 const editState = ref(false)
 
-const columnDefaultProps = <PropListColumn<GenColumnDefaultInput>[]>[
+const columnDefaultProps = <Array<PropListColumn<GenColumnDefaultInput> | ListColumn<GenColumnDefaultInput>>>[
 	{
 		prop: 'dataSourceType',
 		label: '数据源类型',
@@ -28,8 +28,12 @@ const columnDefaultProps = <PropListColumn<GenColumnDefaultInput>[]>[
 	},
 
 	{
+		name: 'segment', label: '→', span: '2em'
+	},
+
+	{
 		prop: 'rawType',
-		label: '类型',
+		label: '字面类型',
 	},
 	{
 		prop: 'dataSize',
@@ -60,8 +64,8 @@ const columnDefaults = ref<GenColumnDefaultView[]>([])
 const tempColumnDefaults = ref<GenColumnDefaultView[]>([])
 
 const defaultColumnDefault = ref<GenColumnDefaultInput>({
-	rawType: 'BIGINT',
-	typeCode: -7,
+	rawType: 'VARCHAR',
+	typeCode: 12,
 	dataSize: 0,
 	numericPrecision: 0,
 	remark: "",
@@ -138,7 +142,7 @@ const handleCancel = () => {
 				:json-schema-validate="validateColumnDefaultInput"
 				height="2em">
 				<template #dataSourceType="{data}">
-					<el-select v-model="data.dataSourceType" clearable>
+					<el-select v-model="data.dataSourceType" clearable placeholder="【ANY】">
 						<el-option v-for="dataSourceType in DataSourceType_CONSTANTS"
 								   :value="dataSourceType"></el-option>
 					</el-select>
