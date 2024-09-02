@@ -42,7 +42,7 @@ export interface GenTableColumnsView {
      */
     columns: Array<GenTableColumnsView_TargetOf_columns>;
     /**
-     * 唯一索引
+     * 索引
      */
     indexes: Array<GenTableColumnsView_TargetOf_indexes>;
 }

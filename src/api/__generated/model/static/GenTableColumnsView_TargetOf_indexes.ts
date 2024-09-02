@@ -19,7 +19,7 @@ export interface GenTableColumnsView_TargetOf_indexes {
      */
     name: string;
     /**
-     * 唯一索引
+     * 索引
      */
     uniqueIndex: boolean;
     /**

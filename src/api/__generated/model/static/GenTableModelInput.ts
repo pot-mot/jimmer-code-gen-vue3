@@ -34,7 +34,7 @@ export interface GenTableModelInput {
      */
     columns: Array<GenTableModelInput_TargetOf_columns>;
     /**
-     * 唯一索引
+     * 索引
      */
     indexes: Array<GenTableModelInput_TargetOf_indexes>;
 }
