@@ -1,35 +1,39 @@
 <template>
 	<div ref="wrapper" class="table-node">
 		<table v-if="node && table" ref="container">
-			<tr class="head">
-				<th colspan="2">
-					<span class="icon">
-						<TableIcon :type="table.type"></TableIcon>
-					</span>
-					<span class="name">{{ table.name }}</span>
-					<Comment :comment="table.comment"></Comment>
-					<span class="super-table-separator"
-						  v-if="table.superTables.length > 0">:</span>
-					<span class="super-table"
-						  v-for="superTable in table.superTables"
-						  @mousedown="e => focusSuperTable(superTable.name, e)">
-						{{ superTable.name }}
-					</span>
-				</th>
-			</tr>
-			<tr class="column" v-for="column in table.columns">
-				<td>
-					<span class="icon">
-						<ColumnIcon :column="column"></ColumnIcon>
-					</span>
-					<span>{{ column.name }}</span>
-					<Comment :comment="column.comment"></Comment>
-				</td>
-				<td style="text-align: right;">
-					<span v-if="column.enum">【{{ column.enum.name }}】</span>
-					<span class="type" v-else>{{ column.rawType }}</span>
-				</td>
-			</tr>
+			<thead>
+				<tr class="head">
+					<th colspan="2">
+						<span class="icon">
+							<TableIcon :type="table.type"></TableIcon>
+						</span>
+						<span class="name">{{ table.name }}</span>
+						<Comment :comment="table.comment"></Comment>
+						<span class="super-table-separator"
+							  v-if="table.superTables.length > 0">:</span>
+						<span class="super-table"
+							  v-for="superTable in table.superTables"
+							  @mousedown="e => focusSuperTable(superTable.name, e)">
+							{{ superTable.name }}
+						</span>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="column" v-for="column in table.columns">
+					<td>
+						<span class="icon">
+							<ColumnIcon :column="column"></ColumnIcon>
+						</span>
+						<span>{{ column.name }}</span>
+						<Comment :comment="column.comment"></Comment>
+					</td>
+					<td style="text-align: right;">
+						<span v-if="column.enum">【{{ column.enum.name }}】</span>
+						<span class="type" v-else>{{ column.rawType }}</span>
+					</td>
+				</tr>
+			</tbody>
 		</table>
 	</div>
 </template>
