@@ -160,15 +160,15 @@ const handleDelete = (model: GenModelSimpleView) => {
 				<div class="model-card hover-show" @click="toModelEditor(model.id)">
 					<div class="right-top hover-show-item">
 						<el-button :icon="EditPen" link type="warning"
-								   @click.prevent.stop="handleEdit(model.id)"></el-button>
+								   @click.prevent.stop="handleEdit(model.id)"/>
 						<el-button :icon="Delete" link type="danger"
-								   @click.prevent.stop="handleDelete(model)"></el-button>
+								   @click.prevent.stop="handleDelete(model)"/>
 					</div>
 
 					<div class="right-bottom hover-show-item">
 						<el-tooltip content="导出">
 							<el-button :icon="ExportIcon" link type="info"
-									   @click.prevent.stop="handleExport(model)"></el-button>
+									   @click.prevent.stop="handleExport(model)"/>
 						</el-tooltip>
 					</div>
 
@@ -192,7 +192,7 @@ const handleDelete = (model: GenModelSimpleView) => {
 		<ModelDialog :model-value="!!editModel"
 					 :model="editModel"
 					 @cancel="editModel = undefined"
-					 @submit="handleSubmit"></ModelDialog>
+					 @submit="handleSubmit"/>
 	</div>
 </template>
 
@@ -237,7 +237,7 @@ const handleDelete = (model: GenModelSimpleView) => {
 }
 
 .model-card .title {
-	font-family: var(--el-font-family);
+	font-family: var(--el-font-family) serif;
 	font-size: var(--el-font-size-large);
 	color: var(--el-color-info-dark-2);
 }

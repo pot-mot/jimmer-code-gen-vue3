@@ -5,13 +5,22 @@ import {useJdbcTypeStore} from "@/components/business/jdbcType/jdbcTypeStore.ts"
 import {useGlobalGenConfigStore} from "@/components/business/genConfig/GlobalGenConfigStore.ts";
 import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
 import {useDataSourceDefaultStore} from "@/components/business/dataSource/dataSourceDefaultStore.ts";
+import {onBeforeMount} from "vue";
 
 const loadingStore = useGlobalLoadingStore()
 
-useJdbcTypeStore()
-useGlobalGenConfigStore()
-useColumnDefaultStore()
-useDataSourceDefaultStore()
+onBeforeMount(async () => {
+    const key = loadingStore.start('Stores init')
+
+    await Promise.all([
+        useJdbcTypeStore().init(),
+        useGlobalGenConfigStore().init(),
+        useColumnDefaultStore().init(),
+        useDataSourceDefaultStore().init()
+    ])
+
+    loadingStore.stop(key)
+})
 </script>
 
 <template>

@@ -5,11 +5,6 @@ import {sendMessage} from "@/message/message.ts";
 const routes: RouteRecordRaw[] = [
     {
         path: "",
-        name: "Index",
-        component: () => import("../components/pages/Index/IndexPage.vue")
-    },
-    {
-        path: "/models",
         name: "ModelList",
         component: () => import("../components/pages/ModelList/ModelListPage.vue")
     },
