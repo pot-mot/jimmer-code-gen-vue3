@@ -9,11 +9,11 @@ import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTe
 import {sendMessage} from "@/message/message.ts";
 
 interface AssociationFormProps {
-	association: GenAssociationModelInput,
+    association: GenAssociationModelInput,
 
-	validate: (association: DeepReadonly<GenAssociationModelInput>) => string[],
+    validate: (association: DeepReadonly<GenAssociationModelInput>) => string[],
 
-	createAssociationName: (association: DeepReadonly<GenAssociationModelInput>) => string
+    createAssociationName: (association: DeepReadonly<GenAssociationModelInput>) => string
 }
 
 const props = defineProps<AssociationFormProps>()
@@ -21,98 +21,99 @@ const props = defineProps<AssociationFormProps>()
 const association = ref<GenAssociationModelInput>(cloneDeep(props.association))
 
 watch(() => props.association, () => {
-	association.value = cloneDeep(props.association)
+    association.value = cloneDeep(props.association)
 })
 
 const emits = defineEmits<FormEmits<GenAssociationModelInput>>()
 
 const handleSubmit = async () => {
-	const messageList = props.validate(association.value)
+    const messageList = props.validate(association.value)
 
-	if (messageList.length > 0) {
-		messageList.forEach(it => sendMessage(it, 'warning'))
-		return
-	}
+    if (messageList.length > 0) {
+        messageList.forEach(it => sendMessage(it, 'warning'))
+        return
+    }
 
-	emits('submit', association.value)
+    emits('submit', association.value)
 }
 
 const handleCancel = () => {
-	emits('cancel', association.value)
+    emits('cancel', association.value)
 }
 </script>
 
 <template>
-	<el-form style="width: 98%;">
-		<el-form-item label="名称">
-			<el-input v-model="association.name">
-				<template #append>
-					<el-button :icon="RefreshRight"
-							   @click="association.name = createAssociationName(association)"></el-button>
-				</template>
-			</el-input>
-		</el-form-item>
+    <el-form style="width: 98%;">
+        <el-form-item label="名称">
+            <el-input v-model="association.name">
+                <template #append>
+                    <el-button
+                        :icon="RefreshRight"
+                        @click="() => association.name = createAssociationName(association)"/>
+                </template>
+            </el-input>
+        </el-form-item>
 
-		<el-form-item label="映射关系">
-			<table>
-				<tr v-for="columnReference in association.columnReferences">
-					<td>
-						<el-text style="padding: 0 1em;">
-							{{ association.sourceTableName }} .
-							{{ columnReference.sourceColumnName }}
-						</el-text>
-					</td>
-					<td>
-						<el-text>
-							{{ " --> " }}
-						</el-text>
-					</td>
-					<td>
-						<el-text style="padding: 0 1em;">
-							{{ association.targetTableName }} .
-							{{ columnReference.targetColumnName }}
-						</el-text>
-					</td>
-				</tr>
-			</table>
-		</el-form-item>
+        <el-form-item label="映射关系">
+            <table>
+                <tr v-for="columnReference in association.columnReferences">
+                    <td>
+                        <el-text style="padding: 0 1em;">
+                            {{ association.sourceTableName }} .
+                            {{ columnReference.sourceColumnName }}
+                        </el-text>
+                    </td>
+                    <td>
+                        <el-text>
+                            {{ " --> " }}
+                        </el-text>
+                    </td>
+                    <td>
+                        <el-text style="padding: 0 1em;">
+                            {{ association.targetTableName }} .
+                            {{ columnReference.targetColumnName }}
+                        </el-text>
+                    </td>
+                </tr>
+            </table>
+        </el-form-item>
 
-		<el-form-item label="关联类型">
-			<el-select v-model="association.type">
-				<el-option v-for="associationType in AssociationType_CONSTANTS" :value="associationType"></el-option>
-			</el-select>
-		</el-form-item>
+        <el-form-item label="关联类型">
+            <el-select v-model="association.type">
+                <el-option v-for="associationType in AssociationType_CONSTANTS" :value="associationType"></el-option>
+            </el-select>
+        </el-form-item>
 
-		<el-form-item label="伪外键">
-			<el-switch v-model="association.fake"></el-switch>
-		</el-form-item>
+        <el-form-item label="伪外键">
+            <el-switch v-model="association.fake"></el-switch>
+        </el-form-item>
 
-		<el-form-item label="脱钩动作">
-			<el-select v-model="association.dissociateAction"
-					   clearable @clear="association.dissociateAction = undefined">
-				<el-option v-for="dissociateAction in DissociateAction_CONSTANTS" :value="dissociateAction"></el-option>
-			</el-select>
-		</el-form-item>
+        <el-form-item label="脱钩动作">
+            <el-select v-model="association.dissociateAction"
+                       clearable @clear="association.dissociateAction = undefined">
+                <el-option v-for="dissociateAction in DissociateAction_CONSTANTS" :value="dissociateAction"></el-option>
+            </el-select>
+        </el-form-item>
 
-		<el-row :gutter="24">
-			<el-col :span="12">
-				<el-form-item label="更新动作">
-					<el-input v-model="association.updateAction"
-							  :disabled="association.type === 'MANY_TO_MANY'"></el-input>
-				</el-form-item>
-			</el-col>
+        <el-row :gutter="24">
+            <el-col :span="12">
+                <el-form-item label="更新动作">
+                    <el-input v-model="association.updateAction"
+                              :disabled="association.type === 'MANY_TO_MANY'"></el-input>
+                </el-form-item>
+            </el-col>
 
-			<el-col :span="12">
-				<el-form-item label="删除动作">
-					<el-input v-model="association.deleteAction"
-							  :disabled="association.type === 'MANY_TO_MANY'"></el-input>
-				</el-form-item>
-			</el-col>
-		</el-row>
+            <el-col :span="12">
+                <el-form-item label="删除动作">
+                    <el-input v-model="association.deleteAction"
+                              :disabled="association.type === 'MANY_TO_MANY'"></el-input>
+                </el-form-item>
+            </el-col>
+        </el-row>
 
-		<div style="text-align: right; position: absolute; bottom: 0.5em; left: 1em; right: 1em;">
-			<el-button type="info" @click="handleCancel">取消</el-button>
-			<el-button type="warning" @click="handleSubmit">保存</el-button>
-		</div>
-	</el-form>
+        <div style="text-align: right; position: absolute; bottom: 0.5em; left: 1em; right: 1em;">
+            <el-button type="info" @click="handleCancel">取消</el-button>
+            <el-button type="warning" @click="handleSubmit">保存</el-button>
+        </div>
+    </el-form>
 </template>

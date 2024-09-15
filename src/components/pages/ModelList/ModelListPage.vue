@@ -150,9 +150,9 @@ const handleDelete = (model: GenModelSimpleView) => {
 
 <template>
 	<div class="wrapper" v-loading="modelsLoading.isLoading.value">
-		<el-button @click="handleCreate()">创建新模型</el-button>
+		<el-button size="large" @click="handleCreate()">创建新模型</el-button>
 
-		<el-button @click="emitLoadModelJson">导入模型 JSON</el-button>
+		<el-button size="large" @click="emitLoadModelJson">导入模型 JSON</el-button>
 		<input v-show="false" ref="modelUploader" type="file" accept="application/json" @change="handleLoadModelJson"/>
 
 		<div class="container">

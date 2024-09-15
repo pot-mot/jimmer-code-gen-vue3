@@ -21,7 +21,7 @@ import EnumDialogs from "@/components/pages/ModelEditor/dialogs/enum/EnumDialogs
 import AssociationDialogs from "@/components/pages/ModelEditor/dialogs/association/AssociationDialogs.vue";
 import {confirm} from "@/message/confirm.ts";
 
-const {MODEL, LOAD, EDIT} = useModelEditorStore()
+const {MODEL, MODEL_LOAD, MODEL_DIALOG_STATE} = useModelEditorStore()
 
 const loadingStore = useGlobalLoadingStore()
 
@@ -42,7 +42,7 @@ onMounted(async () => {
 			return
 		}
 
-		MODEL.load(model)
+        MODEL_LOAD.loadView(model)
 	} catch (e) {
 		sendMessage('模型解析出现问题', 'error', e)
 		await router.replace("/models")
@@ -63,14 +63,14 @@ watch(() => dataSourceLoadMenu.value, () => {
 	eventBus.on('clickSchema', async ({id}) => {
 		confirm(`是否导入整个 schema`, async () => {
 			const flag = loadingStore.start('ModelEditorPage syncClickSchemaEvent')
-			await LOAD.loadSchema(id)
+			await MODEL_LOAD.loadSchema(id)
 			loadingStore.stop(flag)
 		})
 	})
 
 	eventBus.on('clickTable', async ({id}) => {
 		const flag = loadingStore.start('ModelEditorPage syncClickTableEvent')
-		await LOAD.loadTable(id)
+		await MODEL_LOAD.loadTable(id)
 		loadingStore.stop(flag)
 	})
 }, {immediate: true})
@@ -87,13 +87,13 @@ watch(() => modelLoadMenu.value, () => {
 
 	eventBus.on('clickModel', async ({id}) => {
 		const flag = loadingStore.start('ModelEditorPage syncClickModelEvent')
-		await LOAD.loadModel(id)
+		await MODEL_LOAD.loadModel(id)
 		loadingStore.stop(flag)
 	})
 
 	eventBus.on('clickTable', async ({id}) => {
 		const flag = loadingStore.start('ModelEditorPage syncClickTableEvent')
-		await LOAD.loadTable(id)
+		await MODEL_LOAD.loadTable(id)
 		loadingStore.stop(flag)
 	})
 }, {immediate: true})
@@ -103,33 +103,33 @@ watch(() => modelLoadMenu.value, () => {
 	<LeftTopBottomLayout>
 		<template #left>
 			<div class="layout-menu-wrapper">
-				<ModelEditorMainMenu></ModelEditorMainMenu>
+				<ModelEditorMainMenu/>
 			</div>
 		</template>
 		<template #right>
-			<ModelEditorGraph></ModelEditorGraph>
+			<ModelEditorGraph/>
 		</template>
 	</LeftTopBottomLayout>
 
-	<DragDialog v-model="LOAD.dataSourceLoadMenuOpenState" :init-w="500" :init-x="100" :modal="false"
+	<DragDialog v-model="MODEL_DIALOG_STATE.dataSourceLoadMenuOpenState" :init-w="500" :init-x="100" :modal="false"
 				:init-y="10" :init-h="600" can-resize>
-		<DataSourceMenu ref="dataSourceLoadMenu"></DataSourceMenu>
+		<DataSourceMenu ref="dataSourceLoadMenu"/>
 	</DragDialog>
 
-	<DragDialog v-model="LOAD.modelLoadMenuOpenState" :init-w="500" :init-x="100" :modal="false"
+	<DragDialog v-model="MODEL_DIALOG_STATE.modelLoadMenuOpenState" :init-w="500" :init-x="100" :modal="false"
 				:init-y="10" :init-h="600" can-resize>
-		<ModelMenu ref="modelLoadMenu"></ModelMenu>
+		<ModelMenu ref="modelLoadMenu"/>
 	</DragDialog>
 
 	<ModelDialog v-if="MODEL.isLoaded"
-				 v-model="EDIT.modelEditDialogOpenState"
+				 v-model="MODEL_DIALOG_STATE.modelEditDialogOpenState"
 				 :model="cloneDeep(MODEL._model())"
-				 @cancel="EDIT.handleCancel"
-				 @submit="EDIT.handleSubmit"></ModelDialog>
+				 @cancel="MODEL_DIALOG_STATE.handleCancel"
+				 @submit="MODEL_DIALOG_STATE.handleSubmit"/>
 
-	<TableDialogs></TableDialogs>
+	<TableDialogs/>
 
-	<AssociationDialogs></AssociationDialogs>
+	<AssociationDialogs/>
 
-	<EnumDialogs></EnumDialogs>
+	<EnumDialogs/>
 </template>

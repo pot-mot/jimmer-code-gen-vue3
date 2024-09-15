@@ -1,26 +1,26 @@
 <template>
 	<div ref="wrapper" class="model-editor-graph" :class="isDragging ? '' : 'non-drag'">
-		<div ref="container"></div>
+		<div ref="container"/>
 
 		<ul v-if="GRAPH.isLoaded" class="toolbar left-top">
 			<li>
 				<el-tooltip content="保存模型 [Ctrl + s]">
-					<el-button :icon="SaveIcon" @click="handleSaveModel"></el-button>
+					<el-button :icon="SaveIcon" @click="handleSaveModel"/>
 				</el-tooltip>
 			</li>
 
 			<li>
 				<el-tooltip content="编辑模型">
-					<el-button :icon="EditPen" @click="EDIT.handleEdit"></el-button>
+					<el-button :icon="EditPen" @click="MODEL_DIALOG_STATE.handleEdit"/>
 				</el-tooltip>
 			</li>
 
 			<li>
 				<el-tooltip :disabled="!GRAPH.canUndo" content="撤回 [Ctrl + z]">
-					<el-button :disabled="!GRAPH.canUndo" :icon="UndoIcon" @click="HISTORY.undo()"></el-button>
+					<el-button :disabled="!GRAPH.canUndo" :icon="UndoIcon" @click="HISTORY.undo()"/>
 				</el-tooltip>
 				<el-tooltip :disabled="!GRAPH.canRedo" content="重做 [Ctrl + Shift + z]">
-					<el-button :disabled="!GRAPH.canRedo" :icon="RedoIcon" @click="HISTORY.redo()"></el-button>
+					<el-button :disabled="!GRAPH.canRedo" :icon="RedoIcon" @click="HISTORY.redo()"/>
 				</el-tooltip>
 			</li>
 
@@ -31,7 +31,7 @@
 						if (graph.isSelectionEmpty()) {
 							VIEW.fit()
 						}
-					}"></el-button>
+					}"/>
 				</el-tooltip>
 				<el-select v-model="VIEW.layoutDirection" class="cling-left" size="small"
 						   style="width: 4em"
@@ -45,12 +45,12 @@
 
 			<li>
 				<el-tooltip content="适应画布">
-					<el-button :icon="FitIcon" @click="VIEW.fit()"></el-button>
+					<el-button :icon="FitIcon" @click="VIEW.fit()"/>
 				</el-tooltip>
 			</li>
 			<li>
 				<el-tooltip content="居中">
-					<el-button :icon="CenterIcon" @click="VIEW.center()"></el-button>
+					<el-button :icon="CenterIcon" @click="VIEW.center()"/>
 				</el-tooltip>
 			</li>
 		</ul>
@@ -59,13 +59,13 @@
 			<li>
 				<el-tooltip :content="GRAPH.isSelectionEmpty ? '清理画布' : '移除选中节点与关联[Delete]'">
 					<el-button :icon="EraserIcon"
-							   @click="GRAPH.isSelectionEmpty ? REMOVE.removeAllCells() : REMOVE.removeSelectedCells()"></el-button>
+							   @click="GRAPH.isSelectionEmpty ? REMOVE.removeAllCells() : REMOVE.removeSelectedCells()"/>
 				</el-tooltip>
 			</li>
 			<li>
 				<el-tooltip :content="GRAPH.isSelectionEmpty ? '清除关联' : '移除选中关联[Shift + Delete]'">
 					<el-button :icon="AssociationOffIcon"
-							   @click="GRAPH.isSelectionEmpty ? REMOVE.removeAllEdges() : REMOVE.removeSelectedEdges()"></el-button>
+							   @click="GRAPH.isSelectionEmpty ? REMOVE.removeAllEdges() : REMOVE.removeSelectedEdges()"/>
 				</el-tooltip>
 			</li>
 		</ul>
@@ -73,7 +73,7 @@
 		<ul v-if="GRAPH.isLoaded" class="toolbar right-top">
 			<li>
 				<el-tooltip content="预览 SQL">
-					<el-button :icon="SQLIcon" @click="handleSQLPreview"></el-button>
+					<el-button :icon="SQLIcon" @click="handleSQLPreview"/>
 				</el-tooltip>
 
 				<DragDialog v-model="sqlPreviewDialogOpenState"
@@ -84,17 +84,17 @@
 					<MultiCodePreview :code-files="sqlFiles"
 									  height="calc(100vh - 5em - 30px)"
 									  width="100%"
-									  class="multi-code-preview"></MultiCodePreview>
+									  class="multi-code-preview"/>
 					<div class="code-download-button">
 						<el-button :icon="DownloadIcon" round size="large"
-								   @click="handleSQLDownload"></el-button>
+								   @click="handleSQLDownload"/>
 					</div>
 				</DragDialog>
 			</li>
 
 			<li>
 				<el-tooltip content="预览实体">
-					<el-button :icon="CodeIcon" @click="handleEntityPreview"></el-button>
+					<el-button :icon="CodeIcon" @click="handleEntityPreview"/>
 				</el-tooltip>
 
 				<DragDialog v-model="entityPreviewDialogOpenState"
@@ -105,34 +105,34 @@
 					<MultiCodePreview :code-files="entityFiles"
 									  height="calc(100vh - 5em - 30px)"
 									  width="100%"
-									  class="multi-code-preview"></MultiCodePreview>
+									  class="multi-code-preview"/>
 					<div class="code-download-button">
 						<el-button :icon="DownloadIcon" round size="large"
-								   @click="handleEntityDownload"></el-button>
+								   @click="handleEntityDownload"/>
 					</div>
 				</DragDialog>
 			</li>
 
 			<li>
 				<el-tooltip content="导出模型">
-					<el-button :icon="ExportIcon" @click="handleModelExport"></el-button>
+					<el-button :icon="ExportIcon" @click="handleModelExport"/>
 				</el-tooltip>
 			</li>
 
 			<li>
 				<el-tooltip content="下载全部（获得 zip 压缩包）">
-					<el-button :icon="DownloadIcon" @click="handleModelDownload"></el-button>
+					<el-button :icon="DownloadIcon" @click="handleModelDownload"/>
 				</el-tooltip>
 			</li>
 		</ul>
 
 		<div v-if="GRAPH.isLoaded" class="toolbar right-bottom" style="width: max(15vw, 200px)">
-			<MiniMap :graph="graph"></MiniMap>
-			<ScaleBar :graph="graph"></ScaleBar>
+			<MiniMap :graph="graph"/>
+			<ScaleBar :graph="graph"/>
 		</div>
 
 		<template v-if="GRAPH.isLoaded">
-			<GraphSearcher :graph="graph"></GraphSearcher>
+			<GraphSearcher :graph="graph"/>
 		</template>
 	</div>
 </template>
@@ -200,7 +200,7 @@ const wrapper = ref<HTMLElement>()
 
 let graph: Graph
 
-const {GRAPH, HISTORY, EDIT, VIEW, REMOVE, MODEL, GRAPH_DATA} = useModelEditorStore()
+const {GRAPH, GRAPH_DATA, GRAPH_LOAD, MODEL, MODEL_DIALOG_STATE, HISTORY, VIEW, REMOVE} = useModelEditorStore()
 
 const loadingStore = useGlobalLoadingStore()
 
@@ -211,7 +211,7 @@ onMounted(async () => {
 
 	graph = initModelEditor(container.value!, wrapper.value!)
 
-	GRAPH.load(graph)
+    GRAPH_LOAD.load(graph)
 
 	graph.on('history:change', (args) => {
 		const message = args.options.name ?? 'history:change'
@@ -234,7 +234,7 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-	GRAPH.unload()
+    GRAPH_LOAD.unload()
 })
 
 // 表编辑事件

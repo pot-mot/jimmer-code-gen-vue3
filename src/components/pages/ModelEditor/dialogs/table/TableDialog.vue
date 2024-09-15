@@ -33,14 +33,6 @@ const handleSubmit = (table: GenTableModelInput) => {
 	}
 }
 
-const getSuperTable = () => {
-	return GRAPH.nodes.filter(it => it.shape === TABLE_NODE).map(it => it.data.table).filter(it => it.type === "SUPER_TABLE")
-}
-
-const getEnums = () => {
-	return MODEL._model().enums
-}
-
 const getOtherTables = () => {
 	return GRAPH.nodes.filter(it => it.shape === TABLE_NODE && it.id !== props.id).map(it => it.data.table)
 }
@@ -49,7 +41,7 @@ const validate = (table: DeepReadonly<GenTableModelInput>) => {
 	return validateTable(
 		table,
 		getOtherTables(),
-		getEnums()
+		MODEL.enums,
 	)
 }
 </script>
@@ -59,13 +51,11 @@ const validate = (table: DeepReadonly<GenTableModelInput>) => {
 				@close="emits('close')" :modal="false">
 		<TableForm
 			:table="table"
-			:get-super-tables="getSuperTable"
-			:get-enums="getEnums"
 			:validate="validate"
 			:create-index-name="createIndexName"
 			@create-enum="ModelEditorEventBus.emit('createEnum')"
 			@edit-enum="({genEnum}) => ModelEditorEventBus.emit('editEnum', {id: genEnum.name, genEnum})"
 			@cancel="emits('close')"
-			@submit="handleSubmit"></TableForm>
+			@submit="handleSubmit"/>
 	</DragDialog>
 </template>

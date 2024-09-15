@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {GenModelInput_TargetOf_enums, GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static";
+import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static";
 import {ref, watch} from "vue";
 import {EditPen, Plus} from "@element-plus/icons-vue";
 import {useJdbcTypeStore} from "@/components/business/jdbcType/jdbcTypeStore.ts";
@@ -9,16 +9,15 @@ import {containsClassList, interactionTagClassList, judgeTarget} from "@/utils/c
 import Line from "@/components/global/list/Line.vue";
 import LineItem from "@/components/global/list/LineItem.vue";
 import {useZIndex} from "element-plus";
+import {useModelEditorStore} from "@/components/pages/ModelEditor/store/ModelEditorStore.ts";
+
+const {MODEL} = useModelEditorStore()
 
 const jdbcTypeStore = useJdbcTypeStore()
 
 const columnDefaultStore = useColumnDefaultStore()
 
 const column = defineModel<GenTableModelInput_TargetOf_columns>()
-
-const props = defineProps<{
-	getEnums: () => Array<GenModelInput_TargetOf_enums>
-}>()
 
 const emits = defineEmits<{
 	(event: "editEnum", name: string): void,
@@ -38,7 +37,7 @@ watch(() => popoverOpenState.value, (value) => {
 })
 
 const getEnumsNames = () => {
-	return props.getEnums().map(it => it.name)
+	return MODEL.enums.map(it => it.name)
 }
 
 const enumNames = ref<string[]>(getEnumsNames())
@@ -148,8 +147,12 @@ useClickOutside(() => wrapper.value, (e) => {
 						</LineItem>
 						<LineItem>
 							<el-select :model-value="column.enum?.name" clearable filterable
-									   @clear="column.enum = undefined"
-									   @change="(name: string) => {column!.enum = { name: name }}"
+									   @clear="() => {
+                                           if (column) column.enum = undefined
+									   }"
+									   @change="(name: string) => {
+                                           if (column) column.enum = { name: name }
+                                       }"
 									   @focus="syncEnumNames">
 								<el-option v-for="enumName in enumNames" :value="enumName"></el-option>
 							</el-select>

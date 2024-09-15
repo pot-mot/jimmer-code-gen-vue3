@@ -1,10 +1,21 @@
-import {GraphLoadState, useGraphLoadState} from "@/components/global/graphEditor/load/GraphLoadState.ts";
+import {
+    GraphLoadOperation,
+    GraphState,
+    useGraph
+} from "@/components/global/graphEditor/load/GraphLoadState.ts";
 import {ModelEditorEventBus} from "./ModelEditorEventBus.ts";
 import {sendMessage} from "@/message/message.ts";
-import {Ref, ref} from "vue";
+import {computed, ComputedRef, Ref, ref} from "vue";
 import {api} from "@/api";
 import {loadModelInputs, produceTableViewsToInputs, TableLoadOptions} from "../graph/load/loadData.ts";
-import {GenModelInput, GenModelView, GenTableColumnsView, GenTableModelInput} from "@/api/__generated/model/static";
+import {
+    GenAssociationModelInput,
+    GenModelInput,
+    GenModelInput_TargetOf_enums,
+    GenModelView,
+    GenTableColumnsView,
+    GenTableModelInput, Pair
+} from "@/api/__generated/model/static";
 import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
 import {loadTableModelInputs} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
 import {useGenConfigContextStore} from "@/components/business/genConfig/ContextGenConfigStore.ts";
@@ -39,14 +50,27 @@ import {
     useAssociationDialogsStore
 } from "@/components/pages/ModelEditor/dialogs/association/AssociationDialogsStore.ts";
 import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge/updateData.ts";
+import {GraphReactiveState} from "@/components/global/graphEditor/data/reactiveState.ts";
+import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 
-interface CurrentModelState {
+interface ModelReactiveState {
+    tableNodes: ComputedRef<UnwrapRefSimple<Node>[]>,
+    tableNodePairs: ComputedRef<Pair<GenTableModelInput, UnwrapRefSimple<Node>>[]>,
+    tables: ComputedRef<GenTableModelInput[]>,
+    superTables: ComputedRef<GenTableModelInput[]>,
+    associationEdges: ComputedRef<UnwrapRefSimple<Edge>[]>,
+    associationEdgePairs: ComputedRef<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>[]>,
+    associations: ComputedRef<GenAssociationModelInput[]>,
+    enums: ComputedRef<GenModelInput_TargetOf_enums[]>
+}
+
+interface ModelState {
     _model: () => GenModelView
     isLoaded: Ref<boolean>
-    load: (model: GenModelView) => void
 }
 
 interface ModelLoadOperation {
+    loadView: (model: GenModelView) => void,
     loadModel: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
     loadSchema: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
     loadTable: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
@@ -68,15 +92,16 @@ interface ModelLoadDialogState {
 }
 
 export interface ModelEditorStore {
-    GRAPH: GraphLoadState
+    GRAPH: GraphState & GraphReactiveState
+    GRAPH_LOAD: GraphLoadOperation,
+    GRAPH_DATA: GraphDataOperation
 
-    MODEL: CurrentModelState
-    EDIT: ModelEditDialogState
-    LOAD: ModelLoadOperation & DataSourceLoadDialogState & ModelLoadDialogState
+    MODEL: ModelState & ModelReactiveState,
+    MODEL_LOAD: ModelLoadOperation,
+    MODEL_DIALOG_STATE: ModelEditDialogState & DataSourceLoadDialogState & ModelLoadDialogState
 
     SELECT: SelectOperation
     VIEW: ViewOperation
-    GRAPH_DATA: GraphDataOperation
     HISTORY: HistoryOperation
     REMOVE: RemoveOperation
 }
@@ -84,9 +109,9 @@ export interface ModelEditorStore {
 export const useModelEditorStore = defineStore(
     'ModelEditor',
     (): ModelEditorStore => {
-        const GRAPH = useGraphLoadState()
+        const {graphState, graphReactiveState, graphLoadOperation} = useGraph()
 
-        const {_graph} = GRAPH
+        const {_graph} = graphState
 
         const GRAPH_DATA = useGraphDataOperation(_graph)
 
@@ -147,7 +172,7 @@ export const useModelEditorStore = defineStore(
             }
         }
 
-        const OVERRIDE_GRAPH_DATA: GraphDataOperation = {
+        const graphDataOperation: GraphDataOperation = {
             getGraphData,
             loadGraphData
         }
@@ -164,7 +189,7 @@ export const useModelEditorStore = defineStore(
             return currentModel.value
         }
 
-        const load = (model: GenModelView) => {
+        const loadView = (model: GenModelView) => {
             const contextStore = useGenConfigContextStore()
 
             contextStore.merge(model)
@@ -173,19 +198,18 @@ export const useModelEditorStore = defineStore(
 
             isLoaded.value = true
 
-            if (GRAPH.isLoaded) {
+            if (graphState.isLoaded) {
                 loadGraphData(model.graphData, true)
             } else {
-                GRAPH.onLoaded(() => {
+                graphLoadOperation.onLoaded(() => {
                     loadGraphData(model.graphData, true)
                 })
             }
         }
 
-        const MODEL: CurrentModelState = {
+        const modelState: ModelState = {
             _model,
             isLoaded,
-            load,
         }
 
 
@@ -227,7 +251,7 @@ export const useModelEditorStore = defineStore(
                 handleCancel()
 
                 // 同步数据
-                MODEL.load(savedModel)
+                loadView(savedModel)
 
                 sendMessage("模型保存成功", "success")
             } catch (e) {
@@ -237,7 +261,7 @@ export const useModelEditorStore = defineStore(
             loadingStore.stop(flag)
         }
 
-        const EDIT: ModelEditDialogState = {
+        const modelEditDialogState: ModelEditDialogState = {
             modelEditDialogOpenState,
             handleEdit,
             handleCancel,
@@ -345,9 +369,8 @@ export const useModelEditorStore = defineStore(
             return res
         }
 
-        const LOAD = {
-            dataSourceLoadMenuOpenState,
-            modelLoadMenuOpenState,
+        const modelLoadOperations: ModelLoadOperation = {
+            loadView,
             loadModel,
             loadSchema,
             loadTable,
@@ -595,22 +618,74 @@ export const useModelEditorStore = defineStore(
             })
         })
 
+        const tableNodes = computed(() =>
+            graphReactiveState.nodes.value
+                .filter(it => it.shape === TABLE_NODE)
+        )
+
+        const tableNodePairs = computed(() =>
+            tableNodes.value
+                .map(it => {return { first: it.data.table, second: it }})
+        )
+
+        const tables = computed(() =>
+            tableNodes.value
+                .map(it => it.data.table)
+        )
+
+        const superTables = computed(() =>
+            tables.value
+                .filter(it => it.type === 'SUPER_TABLE')
+        )
+
+        const associationEdges = computed(() =>
+            graphReactiveState.edges.value
+                .filter(it => it.shape === ASSOCIATION_EDGE && it.data.association)
+        )
+
+        const associationEdgePairs = computed(() =>
+            associationEdges.value
+                .map(it => {return { first: it.getData().association, second: it}})
+        )
+
+        const associations = computed(() =>
+            associationEdges.value
+                .map(it => it.getData().association)
+        )
+
+        const enums = computed(() => _model().enums)
+
+        const modelReactiveState: ModelReactiveState = {
+            tableNodes,
+            tableNodePairs,
+            tables,
+            superTables,
+            associationEdges,
+            associationEdgePairs,
+            associations,
+            enums,
+        }
+
         /**
          * 最终导出
          */
         return {
-            GRAPH,
+            GRAPH: {...graphState, ...graphReactiveState},
+            GRAPH_LOAD: graphLoadOperation,
+            GRAPH_DATA: graphDataOperation,
 
-            GRAPH_DATA: OVERRIDE_GRAPH_DATA,
+            MODEL: {...modelState, ...modelReactiveState},
+            MODEL_LOAD: modelLoadOperations,
+            MODEL_DIALOG_STATE: {
+                ...modelEditDialogState,
+                dataSourceLoadMenuOpenState,
+                modelLoadMenuOpenState,
+            },
 
             SELECT,
             VIEW,
             HISTORY,
             REMOVE,
-
-            MODEL,
-            EDIT,
-            LOAD
         }
     }
 )

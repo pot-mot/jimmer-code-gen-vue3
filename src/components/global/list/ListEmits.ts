@@ -4,4 +4,5 @@ export interface ListEmits<T> {
 
 export interface EditListEmits<T extends { [key: string]: any }> {
     (event: "update:lines", lines: T[]): void
+    (event: "delete", deletedLines: T[]): void
 }

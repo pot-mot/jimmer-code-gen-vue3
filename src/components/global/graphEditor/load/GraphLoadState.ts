@@ -4,15 +4,21 @@ import {sendMessage} from "@/message/message.ts";
 import {GraphReactiveState, useGraphReactiveState} from "../data/reactiveState.ts";
 import {LoadHooks, useLoadHooks} from "@/utils/useLoadHooks.ts";
 
-export interface GraphLoadState extends GraphReactiveState,
-    LoadHooks<Graph | undefined> {
-    isLoaded: ComputedRef<boolean>
-    _graph: () => Graph
+export interface GraphState {
+    _graph: () => Graph,
+    isLoaded: ComputedRef<boolean>,
+}
+
+export interface GraphLoadOperation extends LoadHooks<Graph | undefined> {
     load: (_graph: Graph) => void
     unload: () => void
 }
 
-export const useGraphLoadState = (): GraphLoadState => {
+export const useGraph = (): {
+    graphState: GraphState,
+    graphReactiveState: GraphReactiveState,
+    graphLoadOperation: GraphLoadOperation,
+} => {
     const graph: Ref<Graph | undefined> = ref()
 
     /**
@@ -64,14 +70,18 @@ export const useGraphLoadState = (): GraphLoadState => {
     })
 
     return {
-        _graph,
+        graphState: {
+            _graph,
+            isLoaded,
+        },
 
-        isLoaded,
-        load,
-        unload,
+        graphReactiveState: reactiveState,
 
-        ...loadHooks,
+        graphLoadOperation: {
+            load,
+            unload,
 
-        ...reactiveState,
+            ...loadHooks,
+        }
     }
 }

@@ -6,10 +6,10 @@ import AssociationForm from "@/components/business/association/AssociationForm.v
 import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
 import {validateAssociation} from "@/components/business/association/validateAssociation.ts";
 import {useModelEditorStore} from "@/components/pages/ModelEditor/store/ModelEditorStore.ts";
-import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
+import {ASSOCIATION_EDGE} from "@/components/pages/ModelEditor/constant.ts";
 import {DeepReadonly} from "vue";
 
-const {GRAPH} = useModelEditorStore()
+const {GRAPH, MODEL} = useModelEditorStore()
 
 interface AssociationDialogProps {
 	id: string,
@@ -31,8 +31,8 @@ const handleSubmit = (association: GenAssociationModelInput) => {
 const validate = (association: DeepReadonly<GenAssociationModelInput>): string[] => {
 	return validateAssociation(
 		association,
-		GRAPH.edges.filter(it => it.shape === ASSOCIATION_EDGE && it.id !== props.id).map(it => it.getData().association),
-		GRAPH.nodes.filter(it => it.shape === TABLE_NODE).map(it => it.data.table)
+        GRAPH.edges.filter(it => it.shape === ASSOCIATION_EDGE && it.id !== props.id).map(it => it.getData().association),
+        MODEL.tables,
 	)
 }
 </script>

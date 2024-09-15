@@ -108,7 +108,11 @@ const createAssociation = (
         deleteAction: ""
     }
 
-    newAssociation.name = createAssociationName(newAssociation)
+    newAssociation.name = createAssociationName(
+        newAssociation,
+        sourceTable.type === 'SUPER_TABLE',
+        targetTable.type === 'SUPER_TABLE'
+    )
 
     return newAssociation
 }

@@ -99,6 +99,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 	if (e.key === 'Delete') {
 		e.preventDefault()
 		cleanSelection()
+        emits('delete', selectedItems)
 		emits('update:lines', unselectedItems)
 	}
 
@@ -110,6 +111,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 			e.preventDefault()
 			await navigator.clipboard.writeText(JSON.stringify(selectedItems))
 			cleanSelection()
+            emits('delete', selectedItems)
 			emits('update:lines', unselectedItems)
 		} else if (e.key === 'v') {
 			e.preventDefault()
@@ -140,7 +142,9 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 					return
 				}
 
+                emits('delete', selectedItems)
 				emits('update:lines', tempLines)
+
 				await nextTick()
 
 				cleanSelection()
@@ -252,6 +256,7 @@ const handleAddLine = async (index: number = dataLines.value.length - 1) => {
 }
 
 const handleRemoveLine = async (index: number) => {
+    emits('delete', [dataLines.value[index]])
 	const newDataLines = dataLines.value.filter((_, i) => i !== index)
 	emits('update:lines', newDataLines)
 	await nextTick()

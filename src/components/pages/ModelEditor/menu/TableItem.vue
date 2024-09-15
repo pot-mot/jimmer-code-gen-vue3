@@ -1,36 +1,23 @@
 <script lang="ts" setup>
-import {Node} from '@antv/x6'
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
-import {computed, ref, watch} from "vue";
-import {sendMessage} from "@/message/message.ts";
+import {computed} from "vue";
 import {GenTableModelInput} from "@/api/__generated/model/static";
 import {deleteConfirm} from "@/message/confirm.ts";
+import {Node} from "@antv/x6";
+import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 
-interface NodeItem {
-	node: Node
+interface TableItemProps {
+    node: UnwrapRefSimple<Node>,
+	table: GenTableModelInput
 }
 
-const props = defineProps<NodeItem>()
+const props = defineProps<TableItemProps>()
 
 const {GRAPH, SELECT, VIEW} = useModelEditorStore()
-
-const table = ref<GenTableModelInput>()
-
-watch(() => props.node, (node) => {
-	try {
-		table.value = node.getData()?.table
-
-		node.on('change:data', () => {
-			table.value = node.getData()?.table
-		})
-	} catch (e) {
-		sendMessage('从 Node 获取 Table 失败', 'error', e)
-	}
-}, {immediate: true})
 
 const handleClickLabel = (e: MouseEvent) => {
 	if (e.ctrlKey) {
@@ -41,11 +28,11 @@ const handleClickLabel = (e: MouseEvent) => {
 }
 
 const handleEdit = () => {
-	ModelEditorEventBus.emit('editTable', {id: props.node.id, table: props.node.getData().table})
+	ModelEditorEventBus.emit('editTable', {id: props.node.id, table: props.table})
 }
 
 const handleDelete = () => {
-	deleteConfirm(`表【${table.value?.name}】`, () => {
+	deleteConfirm(`表【${props.table.name}】`, () => {
 		ModelEditorEventBus.emit('removeTable', {id: props.node.id})
 	})
 }

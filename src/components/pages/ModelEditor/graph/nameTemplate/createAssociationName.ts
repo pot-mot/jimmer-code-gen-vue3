@@ -3,6 +3,7 @@ import {useGenConfigContextStore} from "@/components/business/genConfig/ContextG
 import {removeSplitPrefixAndSuffix} from "@/utils/suffixAndPrefix.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {DeepReadonly} from "vue";
+import {processNamingStrategy} from "@/components/pages/ModelEditor/graph/nameTemplate/namingStrategyProcess.ts";
 
 const associationNameTemplate = (
     sourceTableName: string,
@@ -10,7 +11,7 @@ const associationNameTemplate = (
     sourceColumnNames: string[] = [],
     targetColumnNames: string[] = [],
     type: AssociationType,
-    withColumnNames: boolean = false
+    withTarget: boolean = false
 ): string => {
     const context = useGenConfigContextStore().context
 
@@ -26,35 +27,30 @@ const associationNameTemplate = (
 
     let associationName
 
-    const sourceName = sourceTableName + (withColumnNames ? "_" + sourceColumnNames.join("_") : "")
-    const targetName = targetTableName + (withColumnNames ? "_" + targetColumnNames.join("_") : "")
+    const sourceName = sourceTableName + sourceColumnNames.join("_")
+    const targetName = targetTableName + targetColumnNames.join("_")
 
     // 多对多的关联名称是中间表
     if (type === 'MANY_TO_MANY') {
-        associationName = `${sourceName}_${targetName}_mapping`
+        associationName = `${sourceName}_` + (withTarget ? `${targetName}_` : '') + 'mapping'
     } else if (type === 'ONE_TO_MANY') {
         // 一对多的外键名称要反向
-        associationName = `fk_${targetName}_${sourceName}`
+        associationName = `fk_${targetName}`  + (withTarget ? `${sourceName}_` : '')
     } else {
-        associationName = `fk_${sourceName}_${targetName}`
+        associationName = `fk_${sourceName}` + (withTarget ? `${targetName}_` : '')
     }
 
-    switch (context.databaseNamingStrategy) {
-        case "LOWER_CASE":
-            return associationName.toLowerCase()
-        case "UPPER_CASE":
-            return associationName.toUpperCase()
-        case "RAW":
-            return associationName
-    }
+    return processNamingStrategy(associationName, context.databaseNamingStrategy)
 }
 
 export const createAssociationName = (
-    association: DeepReadonly<GenAssociationModelInput>
+    association: DeepReadonly<Omit<GenAssociationModelInput, 'name'>>,
+    sourceTableIsSuper: boolean = false,
+    targetTableIsSuper: boolean = false,
 ): string => {
     return associationNameTemplate(
-        association.sourceTableName,
-        association.targetTableName,
+        sourceTableIsSuper ? '{}' : association.sourceTableName,
+        targetTableIsSuper ? '{}' : association.targetTableName,
         association.columnReferences.map(it => it.sourceColumnName),
         association.columnReferences.map(it => it.targetColumnName),
         association.type,

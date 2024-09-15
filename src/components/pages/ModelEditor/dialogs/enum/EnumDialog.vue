@@ -33,7 +33,7 @@ const handleSubmit = (genEnum: GenModelInput_TargetOf_enums) => {
 const validate = (genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
 	return validateEnum(
 		genEnum,
-		MODEL._model().enums.filter(it => it.name !== props.id)
+		MODEL.enums.filter(it => it.name !== props.id)
 	)
 }
 </script>

@@ -1,38 +1,24 @@
 <script lang="ts" setup>
-import {Edge} from '@antv/x6'
 import {useModelEditorStore} from "../store/ModelEditorStore.ts";
-import {computed, ref, watch} from "vue";
+import {computed} from "vue";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
-import {sendMessage} from "@/message/message.ts";
 import AssociationIcon from "@/components/global/icons/database/AssociationIcon.vue";
 import {deleteConfirm} from "@/message/confirm.ts";
+import {Edge} from "@antv/x6";
+import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
+import {AssociationItemShowType} from "@/components/pages/ModelEditor/menu/AssociationItemShowType.ts";
 
-interface EdgeItem {
-	edge: Edge,
-	showName: boolean,
-	showTable: boolean,
-	showColumn: boolean,
+interface AssociationItemProps {
+    edge: UnwrapRefSimple<Edge>,
+	association: GenAssociationModelInput,
+	showType: AssociationItemShowType
 }
 
-const props = defineProps<EdgeItem>()
+const props = defineProps<AssociationItemProps>()
 
 const {GRAPH, VIEW, SELECT} = useModelEditorStore()
-
-const association = ref<GenAssociationModelInput>()
-
-watch(() => props.edge, (edge) => {
-	try {
-		association.value = edge.getData()?.association
-
-		edge.on('change:data', () => {
-			association.value = edge.getData()?.association
-		})
-	} catch (e) {
-		sendMessage('从 Edge 获取 Association 失败', 'error', e)
-	}
-}, {immediate: true})
 
 const handleClickName = (e: MouseEvent) => {
 	if (e.ctrlKey) {
@@ -43,7 +29,7 @@ const handleClickName = (e: MouseEvent) => {
 }
 
 const handleDelete = () => {
-	deleteConfirm(`关联【${association.value?.name}】`, () => {
+	deleteConfirm(`关联【${props.association.name}】`, () => {
 		ModelEditorEventBus.emit('removeAssociation', {id: props.edge.id})
 	})
 }
@@ -69,18 +55,18 @@ const getAssociationTargetLabel = (association: GenAssociationModelInput) => {
 }
 
 const sourceLabel = computed<string | undefined>(() => {
-	if (!association.value) return
+	if (!props.association) return
 	try {
-		return getAssociationSourceLabel(association.value)
+		return getAssociationSourceLabel(props.association)
 	} catch (e) {
 		return
 	}
 })
 
 const targetLabel = computed<string | undefined>(() => {
-	if (!association.value) return
+	if (!props.association) return
 	try {
-		return getAssociationTargetLabel(association.value)
+		return getAssociationTargetLabel(props.association)
 	} catch (e) {
 		return
 	}
@@ -100,7 +86,7 @@ const isSelected = computed(() => {
 		 class="hover-show" :class="isSelected ? 'selected-menu-item' : ''">
 
 		<el-text style="white-space: nowrap;">
-			<template v-if="showName">
+			<template v-if="showType === 'NAME'">
 				<el-button link @click="handleClickName">
 					<template v-if="association.name">
 						{{ association.name }}
@@ -112,9 +98,9 @@ const isSelected = computed(() => {
 				</el-button>
 			</template>
 
-			<template v-if="showColumn || showTable">
+			<template v-if="showType === 'TABLE' || showType === 'COLUMN'">
 				<el-button link @click="VIEW.focus(edge.getSourceCellId())">
-					{{ showColumn ? sourceLabel : association.sourceTableName }}
+					{{ showType === 'COLUMN' ? sourceLabel : association.sourceTableName }}
 				</el-button>
 				<span>
 					<AssociationIcon :type="association.type"
@@ -122,7 +108,7 @@ const isSelected = computed(() => {
 									 style="transform: translateY(0.3em)"></AssociationIcon>
 				</span>
 				<el-button link @click="VIEW.focus(edge.getTargetCellId())">
-					{{ showColumn ? targetLabel : association.targetTableName }}
+					{{ showType === 'COLUMN' ? targetLabel : association.targetTableName }}
 				</el-button>
 			</template>
 		</el-text>

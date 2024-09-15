@@ -4,7 +4,6 @@ import {MiniMap} from "@antv/x6-plugin-minimap";
 import {ArrowDown, ArrowUp} from "@element-plus/icons-vue";
 import {Graph} from "@antv/x6";
 import {SimpleNodeView} from "@/components/pages/ModelEditor/minimap/SimpleNodeView.ts";
-import {SimpleEdgeView} from "@/components/pages/ModelEditor/minimap/SimpleEdgeView.ts";
 
 const openState = ref(false)
 
@@ -29,11 +28,10 @@ const setMiniMap = async () => {
 		height: container.value.clientHeight,
 
 		graphOptions: {
-			async: true,
+            async: true,
 			createCellView(cell) {
-				// 在小地图中不渲染边
 				if (cell.isEdge()) {
-					return SimpleEdgeView
+					return null
 				}
 				if (cell.isNode()) {
 					return SimpleNodeView
@@ -70,9 +68,9 @@ const toggle = () => {
 <template>
 	<div class="wrapper">
 		<div style="text-align: center">
-			<el-button :icon="!openState ? ArrowUp : ArrowDown" size="small" @click="toggle"></el-button>
+			<el-button :icon="!openState ? ArrowUp : ArrowDown" size="small" @click="toggle"/>
 		</div>
-		<div v-if="openState" ref="container" class="minimap"></div>
+		<div v-if="openState" ref="container" class="minimap"/>
 	</div>
 </template>
 
