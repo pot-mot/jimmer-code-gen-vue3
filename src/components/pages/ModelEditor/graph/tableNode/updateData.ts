@@ -1,6 +1,6 @@
 import {GenTableModelInput} from "@/api/__generated/model/static";
 import {Node} from '@antv/x6'
-import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
+import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 import {DeepReadonly} from "vue";
 
 export const updateTableNodeData = (node: Node, newTable: DeepReadonly<GenTableModelInput>) => {

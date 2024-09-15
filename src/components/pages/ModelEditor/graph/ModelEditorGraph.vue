@@ -154,8 +154,8 @@
 import {onMounted, onUnmounted, ref, watch} from "vue"
 import {Graph, Node} from "@antv/x6"
 import {initModelEditor} from "./init.ts"
-import {useModelEditorStore} from "../store/ModelEditorStore.ts";
-import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
+import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
+import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import {api} from "@/api";
 import {sendMessage} from "@/message/message.ts";
 import {GenTableModelInput, Pair} from "@/api/__generated/model/static";
@@ -174,7 +174,7 @@ import GraphSearcher from "@/components/pages/ModelEditor/search/GraphSearcher.v
 import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
 import {EditPen} from "@element-plus/icons-vue";
 import {useClipBoard} from "@/components/pages/ModelEditor/graph/clipBoard/clipBoard.ts";
-import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
+import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";
 import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
 import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
@@ -191,7 +191,7 @@ import {cloneDeep} from "lodash";
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {useDocumentEvent} from "@/utils/useDocumentEvent.ts";
 import MiniMap from "@/components/pages/ModelEditor/minimap/MiniMap.vue";
-import {useDebugStore} from "@/debug/debugStore.ts";
+import {useDebugStore} from "@/store/debug/debugStore.ts";
 import {handleModelEditorKeyEvent} from "@/components/pages/ModelEditor/graph/keyEvent/keyEvent.ts";
 import {validateModelForm} from "@/components/business/model/form/validateModel.ts";
 

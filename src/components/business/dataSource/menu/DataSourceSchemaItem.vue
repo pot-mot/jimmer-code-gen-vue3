@@ -4,7 +4,7 @@ import {GenTableCommonView} from "@/api/__generated/model/static";
 import {api} from "@/api";
 import Details from "../../../global/common/Details.vue";
 import {Delete} from "@element-plus/icons-vue";
-import TableItem from "./TableItem.vue";
+import DataSourceTableItem from "./DataSourceTableItem.vue";
 import SchemaIcon from "../../../global/icons/database/SchemaIcon.vue";
 import {sendMessage} from "@/message/message.ts";
 import {SchemaItemSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlotProps.ts";
@@ -65,7 +65,7 @@ defineSlots<SchemaItemSlots>()
 			<template #title>
 				<div style="height: 1.8em; line-height: 1.8em;">
 					<el-text class="hover-show">
-						<SchemaIcon></SchemaIcon>
+						<SchemaIcon/>
 
 						<slot :eventBus="eventBus" :schema="schema" :tables="tables">
 							<el-button link @click="eventBus.emit('clickSchema', {id: schema.id})">
@@ -75,8 +75,7 @@ defineSlots<SchemaItemSlots>()
 
 						<slot :eventBus="eventBus" :schema="schema" :tables="tables" name="operations">
 							<el-button :icon="Delete" class="hover-show-item" link
-									   title="删除" type="danger" @click="handleDelete">
-							</el-button>
+									   title="删除" type="danger" @click="handleDelete"/>
 						</slot>
 					</el-text>
 				</div>
@@ -87,7 +86,7 @@ defineSlots<SchemaItemSlots>()
 					<ul style="padding: 0 0 0.5em 0.5em;">
 						<li v-for="table in tables" :key="table.id">
 							<slot :eventBus="eventBus" :schema="schema" :table="table" :tables="tables" name="table">
-								<TableItem :event-bus="eventBus" :table="table"></TableItem>
+								<DataSourceTableItem :event-bus="eventBus" :table="table"/>
 							</slot>
 						</li>
 					</ul>
@@ -100,7 +99,7 @@ defineSlots<SchemaItemSlots>()
 						  :init-w="300">
 					<template #buttonContent="{item}">
 						<slot :eventBus="eventBus" :schema="schema" :table="item" :tables="tables" name="table">
-							<TableItem :event-bus="eventBus" :table="item"></TableItem>
+							<DataSourceTableItem :event-bus="eventBus" :table="item"/>
 						</slot>
 					</template>
 				</Searcher>

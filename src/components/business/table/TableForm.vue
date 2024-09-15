@@ -12,15 +12,15 @@ import EditList from "@/components/global/list/EditList.vue";
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import {tableColumnColumns} from "@/components/business/table/tableColumnColumns.ts";
 import ColumnTypeForm from "@/components/business/table/ColumnTypeForm.vue";
-import {useJdbcTypeStore} from "@/components/business/jdbcType/jdbcTypeStore.ts";
+import {useJdbcTypeStore} from "@/store/jdbcType/jdbcTypeStore.ts";
 import {tableIndexColumns} from "@/components/business/table/tableIndexColumns.ts";
 import Details from "@/components/global/common/Details.vue";
 import {getDefaultColumn, getDefaultIndex, getDefaultTable} from "@/components/business/table/defaultTable.ts";
 import {validateColumn, validateIndex} from "@/shape/GenTableModelInput.ts";
 import {getLegalSuperTables} from "@/components/business/table/tableInheritAnalyse.ts";
 import {processNamingStrategy} from "@/components/pages/ModelEditor/graph/nameTemplate/namingStrategyProcess.ts";
-import {useGenConfigContextStore} from "@/components/business/genConfig/ContextGenConfigStore.ts";
-import {useModelEditorStore} from "@/components/pages/ModelEditor/store/ModelEditorStore.ts";
+import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts";
+import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {RefreshRight} from "@element-plus/icons-vue";
 
 const {MODEL} = useModelEditorStore()

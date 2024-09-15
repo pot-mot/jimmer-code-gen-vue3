@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {
 	useAssociationDialogsStore
-} from "@/components/pages/ModelEditor/dialogs/association/AssociationDialogsStore.ts";
+} from "@/store/modelEditor/AssociationDialogsStore.ts";
 import AssociationDialog from "@/components/pages/ModelEditor/dialogs/association/AssociationDialog.vue";
 
 const store = useAssociationDialogsStore()

@@ -16,7 +16,7 @@ import Connecting = Options.Connecting;
 import {
     GenAssociationModelInput,
 } from "@/api/__generated/model/static";
-import {useGenConfigContextStore} from "@/components/business/genConfig/ContextGenConfigStore.ts";
+import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts";
 import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
 import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge/updateData.ts";
 

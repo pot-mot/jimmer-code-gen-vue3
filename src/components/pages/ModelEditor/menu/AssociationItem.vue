@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import {useModelEditorStore} from "../store/ModelEditorStore.ts";
+import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {computed} from "vue";
 import {Delete, EditPen} from "@element-plus/icons-vue";
-import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
+import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import AssociationIcon from "@/components/global/icons/database/AssociationIcon.vue";
 import {deleteConfirm} from "@/message/confirm.ts";

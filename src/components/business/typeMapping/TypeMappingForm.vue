@@ -9,7 +9,7 @@ import {PropListColumn} from "@/components/global/list/ListProps.ts";
 import {sendMessage} from "@/message/message.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep} from "lodash";
-import {useGlobalGenConfigStore} from "@/components/business/genConfig/GlobalGenConfigStore.ts";
+import {useGlobalGenConfigStore} from "@/store/config/GlobalGenConfigStore.ts";
 import {validateTypeMappingInput} from "@/shape/GenTypeMappingInput.ts";
 import {validateTypeMappingForm} from "@/components/business/typeMapping/validate.ts";
 

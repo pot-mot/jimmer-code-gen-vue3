@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
-import {useModelEditorStore} from "../store/ModelEditorStore.ts";
+import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
+import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import TableItem from "./TableItem.vue";
 import AssociationItem from "./AssociationItem.vue";
 import Details from "@/components/global/common/Details.vue";

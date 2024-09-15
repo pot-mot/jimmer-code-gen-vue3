@@ -1,4 +1,4 @@
-import {useGenConfigContextStore} from "@/components/business/genConfig/ContextGenConfigStore.ts";
+import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts";
 import {removeSplitPrefixAndSuffix} from "@/utils/suffixAndPrefix.ts";
 import {GenTableModelInput_TargetOf_indexes} from "@/api/__generated/model/static";
 import {DeepReadonly} from "vue";

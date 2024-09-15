@@ -3,7 +3,7 @@ import {computed} from "vue";
 import {api} from "@/api";
 import {GenColumnDefaultView} from "@/api/__generated/model/static";
 import {DataSourceType} from "@/api/__generated/model/enums";
-import {useGenConfigContextStore} from "@/components/business/genConfig/ContextGenConfigStore.ts";
+import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts";
 import {useAsyncStoreOperations} from "@/utils/useAsyncStoreOperations.ts";
 
 export const useColumnDefaultStore = defineStore(

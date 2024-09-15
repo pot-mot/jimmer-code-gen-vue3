@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import {useModelEditorStore} from "../store/ModelEditorStore.ts";
+import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {Delete, EditPen} from "@element-plus/icons-vue";
-import {ModelEditorEventBus} from "../store/ModelEditorEventBus.ts";
+import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {computed} from "vue";

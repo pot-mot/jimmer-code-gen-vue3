@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {nextTick, ref, watch} from "vue";
 import {GenSchemaPreview, GenSchemaView} from "@/api/__generated/model/static";
-import SchemaItem from "./SchemaItem.vue";
+import DataSourceSchemaItem from "./DataSourceSchemaItem.vue";
 import {api} from "@/api";
 import DataSourceDialog from "../dialog/DataSourceDialog.vue";
 import Details from "../../../global/common/Details.vue";
@@ -11,7 +11,7 @@ import DataSourceIcon from "../../../global/icons/database/DataSourceIcon.vue";
 import {sendMessage} from "@/message/message.ts";
 import {DataSourceItemSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlotProps.ts";
 import {DataSourceItemProps} from "@/components/business/dataSource/menu/DataSourceMenuProps.ts";
-import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
+import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import {deleteConfirm} from "@/message/confirm.ts";
 
 const loadingStore = useGlobalLoadingStore()
@@ -120,7 +120,7 @@ defineSlots<DataSourceItemSlots>()
 		<template #title>
 			<div style="height: 2em; line-height: 2em;">
 				<el-text class="hover-show">
-					<DataSourceIcon :type="dataSource.type"></DataSourceIcon>
+					<DataSourceIcon :type="dataSource.type"/>
 
 					<slot
 						:dataSource="dataSource" :eventBus="eventBus"
@@ -137,17 +137,15 @@ defineSlots<DataSourceItemSlots>()
 
 						<template #content>
 							<div v-for="schema in previewSchemas" :key="schema.name">
-								<template v-if="schema.name !== undefined">
-									<slot
-										name="previewSchema"
-										:dataSource="dataSource" :eventBus="eventBus"
-										:loadedSchemaLoading="loadedSchemaLoading.isLoading"
-										:schemas="loadedSchemas"
-										:previewSchemaLoading="previewSchemaLoading.isLoading"
-										:previewSchemas="previewSchemas" :previewSchema="schema">
-										<el-button link @click="loadSchema(schema.name)">{{ schema.name }}</el-button>
-									</slot>
-								</template>
+                                <slot
+                                    name="previewSchema"
+                                    :dataSource="dataSource" :eventBus="eventBus"
+                                    :loadedSchemaLoading="loadedSchemaLoading.isLoading"
+                                    :schemas="loadedSchemas"
+                                    :previewSchemaLoading="previewSchemaLoading.isLoading"
+                                    :previewSchemas="previewSchemas" :previewSchema="schema">
+                                    <el-button link @click="loadSchema(schema.name)">{{ schema.name }}</el-button>
+                                </slot>
 							</div>
 						</template>
 
@@ -161,8 +159,8 @@ defineSlots<DataSourceItemSlots>()
 						:previewSchemaLoading="previewSchemaLoading.isLoading"
 						:previewSchemas="previewSchemas">
 						<span class="hover-show-item" style="padding-left: 0.5em;">
-							<el-button :icon="EditPen" link type="warning" @click="handleEdit"></el-button>
-							<el-button :icon="Delete" link type="danger" @click="handleDelete"></el-button>
+							<el-button :icon="EditPen" link type="warning" @click="handleEdit"/>
+							<el-button :icon="Delete" link type="danger" @click="handleDelete"/>
 						</span>
 					</slot>
 				</el-text>
@@ -178,7 +176,7 @@ defineSlots<DataSourceItemSlots>()
 					:schemas="loadedSchemas" :schema="schema"
 					:previewSchemaLoading="previewSchemaLoading.isLoading"
 					:previewSchemas="previewSchemas">
-					<SchemaItem :event-bus="eventBus" :schema="schema"/>
+					<DataSourceSchemaItem :event-bus="eventBus" :schema="schema"/>
 				</slot>
 			</li>
 		</ul>
@@ -189,6 +187,5 @@ defineSlots<DataSourceItemSlots>()
 		:id="dataSource.id"
 		:data-source="dataSource"
 		:init-x="x" :init-y="y"
-		@updated="handleEditFinish">
-	</DataSourceDialog>
+		@updated="handleEditFinish"/>
 </template>

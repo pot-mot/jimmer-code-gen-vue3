@@ -7,7 +7,7 @@ import {ModelEditorEventBus} from "./ModelEditorEventBus.ts";
 import {sendMessage} from "@/message/message.ts";
 import {computed, ComputedRef, Ref, ref} from "vue";
 import {api} from "@/api";
-import {loadModelInputs, produceTableViewsToInputs, TableLoadOptions} from "../graph/load/loadData.ts";
+import {loadModelInputs, produceTableViewsToInputs, TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadData.ts";
 import {
     GenAssociationModelInput,
     GenModelInput,
@@ -16,27 +16,27 @@ import {
     GenTableColumnsView,
     GenTableModelInput, Pair
 } from "@/api/__generated/model/static";
-import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
+import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import {loadTableModelInputs} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
-import {useGenConfigContextStore} from "@/components/business/genConfig/ContextGenConfigStore.ts";
+import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
-import {ENUM_CREATE_PREFIX, useEnumDialogsStore} from "@/components/pages/ModelEditor/dialogs/enum/EnumDialogsStore.ts";
+import {ENUM_CREATE_PREFIX, useEnumDialogsStore} from "@/store/modelEditor/EnumDialogsStore.ts";
 import {cloneDeep} from "lodash";
 import {getDefaultTable} from "@/components/business/table/defaultTable.ts";
 import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
 import {
     TABLE_CREATE_PREFIX,
     useTableDialogsStore
-} from "@/components/pages/ModelEditor/dialogs/table/TableDialogsStore.ts";
+} from "@/store/modelEditor/TableDialogsStore.ts";
 import {unStyleAll} from "@/components/pages/ModelEditor/graph/highlight.ts";
 import {
     GraphDataOperation,
     GraphEditorData,
     useGraphDataOperation
 } from "@/components/global/graphEditor/data/graphData.ts";
-import {useDebugStore} from "@/debug/debugStore.ts";
+import {useDebugStore} from "@/store/debug/debugStore.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {Edge, Node} from '@antv/x6';
 import {getCenterPoint, useViewOperation, ViewOperation} from "@/components/global/graphEditor/view/viewOperation.ts";
@@ -48,7 +48,7 @@ import {RemoveOperation, useRemoveOperation} from "@/components/global/graphEdit
 import {defineStore} from "pinia";
 import {
     useAssociationDialogsStore
-} from "@/components/pages/ModelEditor/dialogs/association/AssociationDialogsStore.ts";
+} from "@/store/modelEditor/AssociationDialogsStore.ts";
 import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge/updateData.ts";
 import {GraphReactiveState} from "@/components/global/graphEditor/data/reactiveState.ts";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";

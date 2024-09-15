@@ -13,7 +13,7 @@ import {
 import {syncAssociationName} from "@/components/pages/ModelEditor/graph/associationEdge/associationName.ts"
 import {setEdgeSelectFlag} from "@/components/pages/ModelEditor/graph/associationEdge/edgeSelectedState.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
-import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
+import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 
 const getAssociationType = (edge: Edge, defaultAssociationType: AssociationType = DEFAULT_ASSOCIATION_TYPE): AssociationType => {
     let temp = edge.getData()?.association.type

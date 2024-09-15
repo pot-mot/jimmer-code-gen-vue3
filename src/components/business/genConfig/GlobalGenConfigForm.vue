@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import GenConfigForm from "@/components/business/genConfig/GenConfigForm.vue";
-import {useGlobalGenConfigStore} from "@/components/business/genConfig/GlobalGenConfigStore.ts";
+import {useGlobalGenConfigStore} from "@/store/config/GlobalGenConfigStore.ts";
 import {GenConfigProperties} from "@/api/__generated/model/static";
 import {api} from "@/api";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";

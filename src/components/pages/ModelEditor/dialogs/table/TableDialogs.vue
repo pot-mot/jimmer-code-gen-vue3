@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import TableDialog from "./TableDialog.vue"
-import {useTableDialogsStore} from "@/components/pages/ModelEditor/dialogs/table/TableDialogsStore.ts"
+import {useTableDialogsStore} from "@/store/modelEditor/TableDialogsStore.ts"
 
 const store = useTableDialogsStore()
 </script>

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
-import {ModelEditorEventBus} from "../../store/ModelEditorEventBus.ts";
+import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 import EnumForm from "@/components/business/enum/EnumForm.vue";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 import {validateEnum} from "@/components/business/enum/validateEnum.ts";
-import {useModelEditorStore} from "@/components/pages/ModelEditor/store/ModelEditorStore.ts";
+import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {DeepReadonly} from "vue";
 
 const {MODEL} = useModelEditorStore()

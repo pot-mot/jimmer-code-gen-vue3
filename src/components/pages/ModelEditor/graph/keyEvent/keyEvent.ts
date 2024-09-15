@@ -1,5 +1,5 @@
 import {Graph} from "@antv/x6";
-import {useModelEditorStore} from "@/components/pages/ModelEditor/store/ModelEditorStore.ts";
+import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 
 const normalMoveStep = 40
 const smallMoveStep = 10

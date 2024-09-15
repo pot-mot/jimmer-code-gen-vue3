@@ -4,7 +4,7 @@ import {sendMessage} from "@/message/message.ts";
 import {loadModelInputs, TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadData.ts";
 import {CopyData, validateCopyData} from "@/shape/CopyData.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
-import {useModelEditorStore} from "@/components/pages/ModelEditor/store/ModelEditorStore.ts";
+import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {
     GenAssociationModelInput,
     GenModelInput,
@@ -12,7 +12,7 @@ import {
 } from "@/api/__generated/model/static";
 import {validateModelInput} from "@/shape/ModelInput.ts";
 import {importEnums} from "@/components/pages/ModelEditor/graph/clipBoard/importEnums.ts";
-import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
+import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {validateTable} from "@/shape/GenTableModelInput.ts";
 

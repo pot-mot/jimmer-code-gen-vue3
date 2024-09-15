@@ -6,8 +6,8 @@ import {sendMessage} from "@/message/message.ts";
 import {DataSourceFormEmits} from "./DataSourceFormEmits.ts";
 import {DataSourceFormProps} from "./DataSourceFormProps.ts";
 import {DataSourceType_CONSTANTS} from "@/api/__generated/model/enums";
-import {useGlobalLoadingStore} from "@/components/global/loading/GlobalLoadingStore.ts";
-import {useDataSourceDefaultStore} from "@/components/business/dataSource/dataSourceDefaultStore.ts";
+import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
+import {useDataSourceDefaultStore} from "@/store/dataSource/dataSourceDefaultStore.ts";
 
 const loadingStore = useGlobalLoadingStore()
 

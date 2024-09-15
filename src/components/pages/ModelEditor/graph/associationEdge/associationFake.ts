@@ -5,8 +5,8 @@ import {
     getEdgeSelectFlag,
     setEdgeSelectFlag
 } from "@/components/pages/ModelEditor/graph/associationEdge/edgeSelectedState.ts";
-import {useGenConfigContextStore} from "@/components/business/genConfig/ContextGenConfigStore.ts";
-import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
+import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts";
+import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 
 const getAssociationFake = (edge: Edge): boolean => {
     let temp = edge.getData()?.association.fake

@@ -1,5 +1,5 @@
 import {computed, ref} from "vue";
-import {useDebugStore} from "@/debug/debugStore.ts";
+import {useDebugStore} from "@/store/debug/debugStore.ts";
 
 export const useLoading = (prefix: string) => {
     const loadingSet = ref<Set<string>>(new Set())

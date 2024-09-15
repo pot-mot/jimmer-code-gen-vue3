@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {useEnumDialogsStore} from "@/components/pages/ModelEditor/dialogs/enum/EnumDialogsStore.ts";
+import {useEnumDialogsStore} from "@/store/modelEditor/EnumDialogsStore.ts";
 import EnumDialog from "@/components/pages/ModelEditor/dialogs/enum/EnumDialog.vue";
 
 const store = useEnumDialogsStore()

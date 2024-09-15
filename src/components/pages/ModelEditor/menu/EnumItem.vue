@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {Delete, EditPen} from "@element-plus/icons-vue";
-import {ModelEditorEventBus} from "@/components/pages/ModelEditor/store/ModelEditorEventBus.ts";
+import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 
 import {deleteConfirm} from "@/message/confirm.ts";

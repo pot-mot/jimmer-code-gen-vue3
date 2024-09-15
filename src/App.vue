@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import {useGlobalLoadingStore} from "./components/global/loading/GlobalLoadingStore.ts";
+import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import GenerateConfigurator from "@/components/business/globalConfig/GlobalConfig.vue";
-import {useJdbcTypeStore} from "@/components/business/jdbcType/jdbcTypeStore.ts";
-import {useGlobalGenConfigStore} from "@/components/business/genConfig/GlobalGenConfigStore.ts";
+import {useJdbcTypeStore} from "@/store/jdbcType/jdbcTypeStore.ts";
+import {useGlobalGenConfigStore} from "@/store/config/GlobalGenConfigStore.ts";
 import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
-import {useDataSourceDefaultStore} from "@/components/business/dataSource/dataSourceDefaultStore.ts";
+import {useDataSourceDefaultStore} from "@/store/dataSource/dataSourceDefaultStore.ts";
 import {onBeforeMount} from "vue";
 
 const loadingStore = useGlobalLoadingStore()

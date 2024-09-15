@@ -1,4 +1,4 @@
-import {useModelEditorStore} from "@/components/pages/ModelEditor/store/ModelEditorStore.ts";
+import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {sendMessage} from "@/message/message.ts";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 

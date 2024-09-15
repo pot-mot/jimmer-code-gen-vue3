@@ -1,5 +1,5 @@
 import {ElMessage} from 'element-plus'
-import {useDebugStore} from "@/debug/debugStore.ts";
+import {useDebugStore} from "@/store/debug/debugStore.ts";
 
 /**
  * 向用户发送消息

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
-import {ModelEditorEventBus} from "../../store/ModelEditorEventBus.ts";
+import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import AssociationForm from "@/components/business/association/AssociationForm.vue";
 import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
 import {validateAssociation} from "@/components/business/association/validateAssociation.ts";
-import {useModelEditorStore} from "@/components/pages/ModelEditor/store/ModelEditorStore.ts";
+import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {ASSOCIATION_EDGE} from "@/components/pages/ModelEditor/constant.ts";
 import {DeepReadonly} from "vue";
 

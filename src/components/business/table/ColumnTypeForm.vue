@@ -2,14 +2,14 @@
 import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static";
 import {ref, watch} from "vue";
 import {EditPen, Plus} from "@element-plus/icons-vue";
-import {useJdbcTypeStore} from "@/components/business/jdbcType/jdbcTypeStore.ts";
+import {useJdbcTypeStore} from "@/store/jdbcType/jdbcTypeStore.ts";
 import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
 import {useClickOutside} from "@/components/global/list/useClickOutside.ts";
 import {containsClassList, interactionTagClassList, judgeTarget} from "@/utils/clickUtils.ts";
 import Line from "@/components/global/list/Line.vue";
 import LineItem from "@/components/global/list/LineItem.vue";
 import {useZIndex} from "element-plus";
-import {useModelEditorStore} from "@/components/pages/ModelEditor/store/ModelEditorStore.ts";
+import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 
 const {MODEL} = useModelEditorStore()
 

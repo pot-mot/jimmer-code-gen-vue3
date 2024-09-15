@@ -8,9 +8,9 @@ import {ListColumn, PropListColumn} from "@/components/global/list/ListProps.ts"
 import {sendMessage} from "@/message/message.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep} from "lodash";
-import {useJdbcTypeStore} from "@/components/business/jdbcType/jdbcTypeStore.ts";
+import {useJdbcTypeStore} from "@/store/jdbcType/jdbcTypeStore.ts";
 import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
-import {useGlobalGenConfigStore} from "@/components/business/genConfig/GlobalGenConfigStore.ts";
+import {useGlobalGenConfigStore} from "@/store/config/GlobalGenConfigStore.ts";
 import {validateColumnDefaultInput} from "@/shape/GenColumnDefaultInput.ts";
 import {validateColumnDefaultForm} from "@/components/business/columnDefault/validate.ts";
 
