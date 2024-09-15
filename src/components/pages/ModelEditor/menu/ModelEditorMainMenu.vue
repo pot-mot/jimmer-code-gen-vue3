@@ -44,7 +44,7 @@ const formattedEdgeShowType = computed(() => {
         <Details open>
             <template #title>
                 <div style="height: 2em; line-height: 2em;">
-                    <el-text>Nodes</el-text>
+                    <el-text>Tables</el-text>
                     <el-button
                         style="margin-left: 0.5em;"
                         @click="ModelEditorEventBus.emit(
@@ -68,11 +68,8 @@ const formattedEdgeShowType = computed(() => {
         <Details open>
             <template #title>
                 <div style="height: 2em; line-height: 2em;">
-                    <el-text>Edges</el-text>
-                    <el-button style="margin-left: 0.5em;" @click="toggleEdgeShow">{{
-                            formattedEdgeShowType
-                        }}
-                    </el-button>
+                    <el-text>Associations</el-text>
+                    <el-button style="margin-left: 0.5em;" @click="toggleEdgeShow">{{formattedEdgeShowType}}</el-button>
                 </div>
             </template>
 

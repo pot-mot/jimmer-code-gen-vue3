@@ -31,7 +31,6 @@ const handleModelValueUpdate = (modelValue: boolean) => {
 		<DataSourceForm
 			style="height: calc(100% - 1em)"
 			:id="id" :data-source="dataSource"
-			@added="handleAdded" @updated="handleUpdated"
-		></DataSourceForm>
+			@added="handleAdded" @updated="handleUpdated"/>
 	</DragDialog>
 </template>

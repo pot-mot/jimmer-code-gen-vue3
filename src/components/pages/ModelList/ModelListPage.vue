@@ -150,10 +150,16 @@ const handleDelete = (model: GenModelSimpleView) => {
 
 <template>
 	<div class="wrapper" v-loading="modelsLoading.isLoading.value">
-		<el-button size="large" @click="handleCreate()">创建新模型</el-button>
+        <div>
+            <el-button size="large" @click="handleCreate">
+                创建新模型
+            </el-button>
 
-		<el-button size="large" @click="emitLoadModelJson">导入模型 JSON</el-button>
-		<input v-show="false" ref="modelUploader" type="file" accept="application/json" @change="handleLoadModelJson"/>
+            <el-button size="large" @click="emitLoadModelJson">
+                导入模型 JSON
+                <input v-show="false" ref="modelUploader" type="file" accept="application/json" @change="handleLoadModelJson"/>
+            </el-button>
+        </div>
 
 		<div class="container">
 			<template v-for="model in models">
@@ -198,6 +204,7 @@ const handleDelete = (model: GenModelSimpleView) => {
 
 <style scoped>
 .wrapper {
+    height: 100%;
 	padding-left: 1em;
 	padding-right: 1em;
 	padding-top: 0.2em;
@@ -206,7 +213,9 @@ const handleDelete = (model: GenModelSimpleView) => {
 .container {
 	display: grid;
 	grid-gap: 1em;
-	padding-top: 1em;
+    overflow-y: auto;
+    max-height: calc(100% - 3em);
+    padding: 1em;
 }
 
 @media screen and (max-width: 540px) {
