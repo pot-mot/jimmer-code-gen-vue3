@@ -12,6 +12,8 @@ import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
 import {exportModel, importModel} from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
 import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
 import {deleteConfirm} from "@/message/confirm.ts";
+import DataSourceMenu from "@/components/business/dataSource/menu/DataSourceMenu.vue";
+import DragDialog from "@/components/global/dialog/DragDialog.vue";
 
 const router = useRouter()
 
@@ -20,254 +22,275 @@ const models = ref<GenModelSimpleView[]>([])
 const modelsLoading = useLoading('ModelListPage.modelsLoading')
 
 const getModels = async () => {
-	const flag = modelsLoading.start('get')
-	models.value = await api.modelService.list()
-	modelsLoading.stop(flag)
+    const flag = modelsLoading.start('get')
+    models.value = await api.modelService.list()
+    modelsLoading.stop(flag)
 }
 
 onMounted(() => {
-	getModels()
+    getModels()
 })
 
 const toModelEditor = (id: number) => {
-	router.push(`/model/${id}`)
+    router.push(`/model/${id}`)
 }
 
 const editModel = ref<GenModelInput>()
 
 const updateModelList = async (id: number, toEditor: boolean = false) => {
-	const newModel = await api.modelService.get({id})
-	if (!newModel) {
-		sendMessage('模型重新获取失败', 'error')
-		return
-	}
+    const newModel = await api.modelService.get({id})
+    if (!newModel) {
+        sendMessage('模型重新获取失败', 'error')
+        return
+    }
 
-	const index = models.value.findIndex(it => it.id === id)
+    const index = models.value.findIndex(it => it.id === id)
 
-	if (index === -1) {
-		models.value.push(newModel)
-	} else {
-		models.value[index] = newModel
-	}
+    if (index === -1) {
+        models.value.push(newModel)
+    } else {
+        models.value[index] = newModel
+    }
 
-	if (toEditor) {
-		toModelEditor(id)
-	}
+    if (toEditor) {
+        toModelEditor(id)
+    }
 }
 
 const modelUploader = ref()
 
 const emitLoadModelJson = () => {
-	if (modelUploader.value) {
-		modelUploader.value.click()
-	}
+    if (modelUploader.value) {
+        modelUploader.value.click()
+    }
 }
 
 const handleLoadModelJson = async (e: Event) => {
-	const flag = modelsLoading.start('loadModelJson')
+    const flag = modelsLoading.start('loadModelJson')
 
-	const input = e.target as HTMLInputElement
+    const input = e.target as HTMLInputElement
 
-	const file = input.files?.[0]
-	if (file) {
-		const modelJson = await file.text()
-		const id = await importModel(modelJson)
+    const file = input.files?.[0]
+    if (file) {
+        const modelJson = await file.text()
+        const id = await importModel(modelJson)
 
-		if (id !== undefined) {
-			sendMessage('模型导入成功', 'success')
-			await updateModelList(id, true)
-		}
-	} else {
-		sendMessage('文件不存在', 'error')
-	}
+        if (id !== undefined) {
+            sendMessage('模型导入成功', 'success')
+            await updateModelList(id, true)
+        }
+    } else {
+        sendMessage('文件不存在', 'error')
+    }
 
-	input.value = ''
+    input.value = ''
 
-	modelsLoading.stop(flag)
+    modelsLoading.stop(flag)
 }
 
+
+const dataSourceLoadMenuOpenState = ref(false)
+
+const emitLoadDataSource = () => {
+    dataSourceLoadMenuOpenState.value = true
+}
+
+
 const handleCreate = () => {
-	editModel.value = getDefaultModel()
+    editModel.value = getDefaultModel()
 }
 
 const handleEdit = async (id: number) => {
-	editModel.value = await api.modelService.get({id})
+    editModel.value = await api.modelService.get({id})
 }
 
 const handleSubmit = async (model: GenModelInput) => {
-	const flag = modelsLoading.start('handleSubmit')
+    const flag = modelsLoading.start('handleSubmit')
 
-	try {
-		const isUpdate = (model.id !== undefined)
+    try {
+        const isUpdate = (model.id !== undefined)
 
-		const newId = await api.modelService.save({body: model})
+        const newId = await api.modelService.save({body: model})
 
-		editModel.value = undefined
+        editModel.value = undefined
 
-		await updateModelList(newId, !isUpdate)
+        await updateModelList(newId, !isUpdate)
 
-		sendMessage(isUpdate ? '模型修改成功' : '模型保存成功', 'success')
-	} catch (e) {
-		sendMessage(`模型修改失败，原因：${e}`, 'error', e)
-	}
+        sendMessage(isUpdate ? '模型修改成功' : '模型保存成功', 'success')
+    } catch (e) {
+        sendMessage(`模型修改失败，原因：${e}`, 'error', e)
+    }
 
-	modelsLoading.stop(flag)
+    modelsLoading.stop(flag)
 }
 
 const handleExport = async (model: GenModelSimpleView) => {
-	const flag = modelsLoading.start('handleExport')
+    const flag = modelsLoading.start('handleExport')
 
-	const modeView = await api.modelService.get({id: model.id})
+    const modeView = await api.modelService.get({id: model.id})
 
-	if (modeView) {
-		await exportModel(modeView)
-	} else {
-		sendMessage('模型导出失败', 'error', model)
-	}
+    if (modeView) {
+        await exportModel(modeView)
+    } else {
+        sendMessage('模型导出失败', 'error', model)
+    }
 
-	modelsLoading.stop(flag)
+    modelsLoading.stop(flag)
 }
 
 const handleDelete = (model: GenModelSimpleView) => {
-	deleteConfirm(
-		`模型【${model.name}】`,
-		async () => {
-			const flag = modelsLoading.start('handleDelete')
+    deleteConfirm(
+        `模型【${model.name}】`,
+        async () => {
+            const flag = modelsLoading.start('handleDelete')
 
-			const count = await api.modelService.delete({ids: [model.id]})
-			if (count > 0) {
-				sendMessage('删除模型成功', 'success')
-				await getModels()
-			} else {
-				sendMessage('删除模型失败', 'error')
-			}
+            const count = await api.modelService.delete({ids: [model.id]})
+            if (count > 0) {
+                sendMessage('删除模型成功', 'success')
+                await getModels()
+            } else {
+                sendMessage('删除模型失败', 'error')
+            }
 
-			modelsLoading.stop(flag)
-		}
-	)
+            modelsLoading.stop(flag)
+        }
+    )
 }
 </script>
 
 <template>
-	<div class="wrapper" v-loading="modelsLoading.isLoading.value">
+    <div class="wrapper" v-loading="modelsLoading.isLoading.value">
         <div>
             <el-button size="large" @click="handleCreate">
                 创建新模型
             </el-button>
 
+            <el-button size="large" @click="emitLoadDataSource">
+                管理数据源
+            </el-button>
+
             <el-button size="large" @click="emitLoadModelJson">
                 导入模型 JSON
-                <input v-show="false" ref="modelUploader" type="file" accept="application/json" @change="handleLoadModelJson"/>
+                <input v-show="false" ref="modelUploader" type="file" accept="application/json"
+                       @change="handleLoadModelJson"/>
             </el-button>
         </div>
 
-		<div class="container">
-			<template v-for="model in models">
-				<div class="model-card hover-show" @click="toModelEditor(model.id)">
-					<div class="right-top hover-show-item">
-						<el-button :icon="EditPen" link type="warning"
-								   @click.prevent.stop="handleEdit(model.id)"/>
-						<el-button :icon="Delete" link type="danger"
-								   @click.prevent.stop="handleDelete(model)"/>
-					</div>
+        <div class="container">
+            <template v-for="model in models">
+                <div class="model-card hover-show" @click="toModelEditor(model.id)">
+                    <div class="right-top hover-show-item">
+                        <el-button :icon="EditPen" link type="warning"
+                                   @click.prevent.stop="handleEdit(model.id)"/>
+                        <el-button :icon="Delete" link type="danger"
+                                   @click.prevent.stop="handleDelete(model)"/>
+                    </div>
 
-					<div class="right-bottom hover-show-item">
-						<el-tooltip content="导出">
-							<el-button :icon="ExportIcon" link type="info"
-									   @click.prevent.stop="handleExport(model)"/>
-						</el-tooltip>
-					</div>
+                    <div class="right-bottom hover-show-item">
+                        <el-tooltip content="导出">
+                            <el-button :icon="ExportIcon" link type="info"
+                                       @click.prevent.stop="handleExport(model)"/>
+                        </el-tooltip>
+                    </div>
 
-					<div class="title">{{ model.name }}</div>
+                    <div class="title">{{ model.name }}</div>
 
-					<div style="padding-top: 0.5em;">
-						<el-text type="info">创建于 {{ datetimeFormat(model.createdTime) }}</el-text>
-					</div>
+                    <div style="padding-top: 0.5em;">
+                        <el-text type="info">创建于 {{ datetimeFormat(model.createdTime) }}</el-text>
+                    </div>
 
-					<div style="padding-bottom: 0.5em;">
-						<el-text type="info">修改于 {{ datetimeFormat(model.modifiedTime) }}</el-text>
-					</div>
+                    <div style="padding-bottom: 0.5em;">
+                        <el-text type="info">修改于 {{ datetimeFormat(model.modifiedTime) }}</el-text>
+                    </div>
 
-					<div style="line-height: 1.4em;">
-						<el-text size="default">{{ model.remark }}</el-text>
-					</div>
-				</div>
-			</template>
-		</div>
+                    <div style="line-height: 1.4em;">
+                        <el-text size="default">{{ model.remark }}</el-text>
+                    </div>
+                </div>
+            </template>
+        </div>
 
-		<ModelDialog :model-value="!!editModel"
-					 :model="editModel"
-					 @cancel="editModel = undefined"
-					 @submit="handleSubmit"/>
-	</div>
+        <ModelDialog :model-value="!!editModel"
+                     :model="editModel"
+                     @cancel="editModel = undefined"
+                     @submit="handleSubmit"/>
+
+        <DragDialog v-model="dataSourceLoadMenuOpenState"
+                    :modal="false"
+                    :init-x="100" :init-y="10"
+                    :init-w="500" :init-h="600"
+                    can-resize>
+            <DataSourceMenu ref="dataSourceLoadMenu"/>
+        </DragDialog>
+    </div>
 </template>
 
 <style scoped>
 .wrapper {
     height: 100%;
-	padding-left: 1em;
-	padding-right: 1em;
-	padding-top: 0.2em;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: 0.2em;
 }
 
 .container {
-	display: grid;
-	grid-gap: 1em;
+    display: grid;
+    grid-gap: 1em;
     overflow-y: auto;
     max-height: calc(100% - 3em);
     padding: 1em;
 }
 
 @media screen and (max-width: 540px) {
-	.container {
-		grid-template-columns: 1fr;
-	}
+    .container {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media screen and (min-width: 540px) {
-	.container {
-		grid-template-columns: repeat(2, 1fr);
-	}
+    .container {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 
 @media screen and (min-width: 900px) {
-	.container {
-		grid-template-columns: repeat(5, 1fr);
-	}
+    .container {
+        grid-template-columns: repeat(5, 1fr);
+    }
 }
 
 .model-card {
-	position: relative;
-	height: 10em;
-	overflow-y: auto;
-	padding: 1em;
-	box-shadow: var(--el-box-shadow);
-	cursor: default;
+    position: relative;
+    height: 10em;
+    overflow-y: auto;
+    padding: 1em;
+    box-shadow: var(--el-box-shadow);
+    cursor: default;
 }
 
 .model-card .title {
-	font-family: var(--el-font-family) serif;
-	font-size: var(--el-font-size-large);
-	color: var(--el-color-info-dark-2);
+    font-family: var(--el-font-family) serif;
+    font-size: var(--el-font-size-large);
+    color: var(--el-color-info-dark-2);
 }
 
 .model-card:hover {
-	box-shadow: var(--el-box-shadow-dark);
+    box-shadow: var(--el-box-shadow-dark);
 }
 
 .model-card:hover .title {
-	color: var(--el-text-color-primary);
+    color: var(--el-text-color-primary);
 }
 
 .model-card .right-top {
-	position: absolute;
-	top: 0.5em;
-	right: 0.5em;
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
 }
 
 .model-card .right-bottom {
-	position: absolute;
-	bottom: 0.5em;
-	right: 0.5em;
+    position: absolute;
+    bottom: 0.5em;
+    right: 0.5em;
 }
 </style>

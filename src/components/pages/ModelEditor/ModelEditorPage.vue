@@ -111,13 +111,19 @@ watch(() => modelLoadMenu.value, () => {
 		</template>
 	</LeftTopBottomLayout>
 
-	<DragDialog v-model="MODEL_DIALOG_STATE.dataSourceLoadMenuOpenState" :init-w="500" :init-x="100" :modal="false"
-				:init-y="10" :init-h="600" can-resize>
+	<DragDialog v-model="MODEL_DIALOG_STATE.dataSourceLoadMenuOpenState"
+                :modal="false"
+                :init-x="100" :init-y="10"
+                :init-w="500" :init-h="600"
+                can-resize>
 		<DataSourceMenu ref="dataSourceLoadMenu"/>
 	</DragDialog>
 
-	<DragDialog v-model="MODEL_DIALOG_STATE.modelLoadMenuOpenState" :init-w="500" :init-x="100" :modal="false"
-				:init-y="10" :init-h="600" can-resize>
+	<DragDialog v-model="MODEL_DIALOG_STATE.modelLoadMenuOpenState"
+                :modal="false"
+                :init-x="100" :init-y="10"
+                :init-w="500" :init-h="600"
+                can-resize>
 		<ModelMenu ref="modelLoadMenu"/>
 	</DragDialog>
 
