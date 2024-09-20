@@ -80,4 +80,19 @@ export const mainLocaleZhCn: MainLocale = {
     VALIDATE_GenColumnDefault_rawType_cannot_be_empty: "ColumnDefault 的字面类型不可为空",
     VALIDATE_GenColumnDefault_dataSize_cannot_be_empty: 'ColumnDefault 的长度不可为空',
     VALIDATE_GenColumnDefault_numericPrecision_cannot_be_empty: 'ColumnDefault 的精度不可为空',
+
+    LABEL_GenTableColumn_category: '列类别',
+    LABEL_GenTableColumn_name: '列名',
+    LABEL_GenTableColumn_comment: '注释',
+    LABEL_GenTableColumn_type: '类型',
+    LABEL_GenTableColumn_typeNotNull: '非空',
+    LABEL_GenTableColumn_defaultValue: '默认值',
+
+    LABEL_GenTableIndex_name: '名称',
+    LABEL_GenTableIndex_uniqueIndex: '唯一',
+    LABEL_GenTableIndex_columns: '引用列',
+
+    LABEL_GenEnumItem_name: '名称',
+    LABEL_GenEnumItem_value: '值',
+    LABEL_GenEnumItem_comment: '注释',
 }

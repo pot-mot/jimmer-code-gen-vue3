@@ -78,6 +78,22 @@ export type MainLocale = {
     VALIDATE_GenColumnDefault_rawType_cannot_be_empty: string
     VALIDATE_GenColumnDefault_dataSize_cannot_be_empty: string
     VALIDATE_GenColumnDefault_numericPrecision_cannot_be_empty: string
+
+    LABEL_GenTableColumn_category: string,
+    LABEL_GenTableColumn_name: string,
+    LABEL_GenTableColumn_comment: string,
+    LABEL_GenTableColumn_type: string,
+    LABEL_GenTableColumn_typeNotNull: string,
+    LABEL_GenTableColumn_defaultValue: string,
+
+    LABEL_GenTableIndex_name: string
+    LABEL_GenTableIndex_uniqueIndex: string
+    LABEL_GenTableIndex_columns: string
+
+    LABEL_GenEnumItem_name: string
+    LABEL_GenEnumItem_value: string
+    LABEL_GenEnumItem_comment: string
+
 }
 
 export type MainLocaleKey = keyof MainLocale

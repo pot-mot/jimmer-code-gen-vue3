@@ -81,4 +81,19 @@ export const mainLocaleEn: MainLocale = {
     VALIDATE_GenColumnDefault_rawType_cannot_be_empty: 'The Raw Type of ColumnDefault cannot be empty',
     VALIDATE_GenColumnDefault_dataSize_cannot_be_empty: 'The Length of ColumnDefault cannot be empty',
     VALIDATE_GenColumnDefault_numericPrecision_cannot_be_empty: 'The Precision of ColumnDefault cannot be empty',
+
+    LABEL_GenTableColumn_category: 'Category',
+    LABEL_GenTableColumn_name: 'Name',
+    LABEL_GenTableColumn_comment: 'Comment',
+    LABEL_GenTableColumn_type: 'Type',
+    LABEL_GenTableColumn_typeNotNull: 'NonNull',
+    LABEL_GenTableColumn_defaultValue: 'Default Value',
+
+    LABEL_GenTableIndex_name: 'Name',
+    LABEL_GenTableIndex_uniqueIndex: 'Unique',
+    LABEL_GenTableIndex_columns: 'Reference Columns',
+
+    LABEL_GenEnumItem_name: 'Name',
+    LABEL_GenEnumItem_value: 'Value',
+    LABEL_GenEnumItem_comment: 'Comment',
 }

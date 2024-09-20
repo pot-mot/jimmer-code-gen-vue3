@@ -306,32 +306,34 @@ const handleCancel = () => {
                 </template>
 
                 <template #columnType="{data, index}">
-                    <el-tooltip :auto-close="500" content="主键">
-                        <el-checkbox v-model="data.partOfPk"
-                                     class="cling-checkbox"
-                                     @change="(value: boolean) => {
+					<div style="padding: 0 0.5rem;">
+						<el-tooltip :auto-close="500" content="主键">
+							<el-checkbox v-model="data.partOfPk"
+										 class="cling-checkbox"
+										 @change="(value: boolean) => {
 										 if (value) handleColumnToPk(index)
 									 }"/>
-                    </el-tooltip>
+						</el-tooltip>
 
-                    <el-tooltip v-if="data.partOfPk" :auto-close="500" content="自增">
-                        <el-checkbox v-model="data.autoIncrement"
-                                     class="cling-checkbox"/>
-                    </el-tooltip>
+						<el-tooltip v-if="data.partOfPk" :auto-close="500" content="自增">
+							<el-checkbox v-model="data.autoIncrement"
+										 class="cling-checkbox"/>
+						</el-tooltip>
 
-                    <el-tooltip v-if="!data.partOfPk" :auto-close="500" content="业务键">
-                        <el-checkbox v-model="data.businessKey"
-                                     class="cling-checkbox"
-                                     @change="(value: boolean) => {
+						<el-tooltip v-if="!data.partOfPk" :auto-close="500" content="业务键">
+							<el-checkbox v-model="data.businessKey"
+										 class="cling-checkbox"
+										 @change="(value: boolean) => {
 										 if (value) handleColumnToKey()
 										 else handleColumnNotToKey(index)
 									 }"/>
-                    </el-tooltip>
+						</el-tooltip>
 
-                    <el-tooltip v-if="!data.partOfPk" :auto-close="500" content="逻辑删除">
-                        <el-checkbox v-model="data.logicalDelete"
-                                     class="cling-checkbox"/>
-                    </el-tooltip>
+						<el-tooltip v-if="!data.partOfPk" :auto-close="500" content="逻辑删除">
+							<el-checkbox v-model="data.logicalDelete"
+										 class="cling-checkbox"/>
+						</el-tooltip>
+					</div>
                 </template>
 
                 <template #name="{data, index}">
@@ -357,7 +359,9 @@ const handleCancel = () => {
                 </template>
 
                 <template #typeNotNull="{data}">
-                    <el-checkbox v-model="data.typeNotNull" :disabled="data.partOfPk"/>
+					<div style="text-align: center;">
+						<el-checkbox v-model="data.typeNotNull" :disabled="data.partOfPk"/>
+					</div>
                 </template>
 
                 <template #defaultValue="{data}">

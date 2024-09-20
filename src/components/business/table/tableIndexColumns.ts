@@ -4,16 +4,16 @@ import {GenTableModelInput_TargetOf_indexes} from "@/api/__generated/model/stati
 export const tableIndexColumns = <ReadonlyArray<PropListColumn<GenTableModelInput_TargetOf_indexes>>>[
     {
         prop: "name",
-        label: '名称',
+        label: 'LABEL_GenTableIndex_name',
         span: '12em',
     },
     {
         prop: "uniqueIndex",
-        label: '唯一',
+        label: 'LABEL_GenTableIndex_uniqueIndex',
         span: '2.5em',
     },
     {
         prop: "columns",
-        label: "包含列"
+        label: "LABEL_GenTableIndex_columns"
     }
 ]

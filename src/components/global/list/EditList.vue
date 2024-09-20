@@ -22,7 +22,7 @@ const props = withDefaults(
 			return {
 				name: 'operation',
 				label: 'LABEL_OPERATION',
-				span: '2.5em'
+				span: '4em'
 			}
 		},
 		beforePaste: () => {
@@ -368,8 +368,7 @@ defineExpose({
 									:index="index"
 									:getDefaultLine="getDefaultLine"
 									:handleAddLine="handleAddLine"
-									:handleRemoveLine="handleRemoveLine">
-								</slot>
+									:handleRemoveLine="handleRemoveLine"/>
 
 								<el-button @click.prevent.stop="handleAddLine(index)"
 										   :icon="Plus" link style="margin-left: 0.3em;"/>
