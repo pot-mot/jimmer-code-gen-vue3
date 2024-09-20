@@ -1,4 +1,4 @@
-import {computed, ComputedRef, ref, Ref} from "vue";
+import {ref, Ref} from "vue";
 import {Graph} from "@antv/x6";
 import {sendMessage} from "@/message/message.ts";
 import {GraphReactiveState, useGraphReactiveState} from "../data/reactiveState.ts";
@@ -6,7 +6,7 @@ import {LoadHooks, useLoadHooks} from "@/utils/useLoadHooks.ts";
 
 export interface GraphState {
     _graph: () => Graph,
-    isLoaded: ComputedRef<boolean>,
+    isLoaded: Readonly<Ref<boolean>>,
 }
 
 export interface GraphLoadOperation extends LoadHooks<Graph | undefined> {
@@ -19,7 +19,9 @@ export const useGraph = (): {
     graphReactiveState: GraphReactiveState,
     graphLoadOperation: GraphLoadOperation,
 } => {
-    const graph: Ref<Graph | undefined> = ref()
+    const graph = ref<Graph>()
+
+    const isLoaded = ref(false)
 
     /**
      * 获取 graph
@@ -47,6 +49,8 @@ export const useGraph = (): {
         await reactiveState.loadReactiveState()
 
         loadHooks.loaded()
+
+        isLoaded.value = true
     }
 
     /**
@@ -63,11 +67,9 @@ export const useGraph = (): {
         graph.value = undefined
 
         loadHooks.unloaded()
-    }
 
-    const isLoaded = computed(() => {
-        return !!graph.value
-    })
+        isLoaded.value = false
+    }
 
     return {
         graphState: {

@@ -36,7 +36,7 @@ import {
 } from "@/components/global/graphEditor/data/graphData.ts";
 import {useDebugStore} from "@/store/debug/debugStore.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
-import {Edge, Node} from '@antv/x6';
+import {Edge, Graph, Node} from '@antv/x6';
 import {getCenterPoint, useViewOperation, ViewOperation} from "@/components/global/graphEditor/view/viewOperation.ts";
 import {syncEnumNameForTables} from "@/components/pages/ModelEditor/sync/syncEnum.ts";
 import {syncSuperTableNameForTables} from "@/components/pages/ModelEditor/sync/syncSuperTable.ts";
@@ -62,11 +62,12 @@ interface ModelReactiveState {
 
 interface ModelState {
     _model: () => GenModelView
-    isLoaded: Ref<boolean>
+    isLoaded: Readonly<Ref<boolean>>
 }
 
 interface ModelLoadOperation {
-    loadView: (model: GenModelView) => void,
+    load: (model: GenModelView) => void
+    unload: () => void
     loadModel: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
     loadSchema: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
     loadTable: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
@@ -99,8 +100,8 @@ interface ModelEditorStore {
     REMOVE: RemoveOperation
 
     MODEL: UnwrapRefSimple<ModelState & ModelReactiveState>
-    MODEL_LOAD: ModelLoadOperation
     MODEL_DIALOG_STATE: UnwrapRefSimple<ModelEditDialogState & DataSourceLoadDialogState & ModelLoadDialogState>
+    MODEL_LOAD: ModelLoadOperation
 }
 
 const initModelEditorStore = (): ModelEditorStore => {
@@ -150,11 +151,11 @@ const initModelEditorStore = (): ModelEditorStore => {
     const loadGraphData = (jsonStr: string, reset: boolean = false) => {
         let validateErrors
         try {
+            const graph = _graph()
             if (jsonStr && validateGraphData(JSON.parse(jsonStr), e => validateErrors = e)) {
-                unStyleAll(_graph())
+                unStyleAll(graph)
                 return baseGraphData.loadGraphData(jsonStr, reset)
             } else {
-                const graph = _graph()
                 graph.removeCells(graph.getCells())
                 return {nodes: [], edges: []}
             }
@@ -184,7 +185,16 @@ const initModelEditorStore = (): ModelEditorStore => {
         return currentModel.value
     }
 
-    const loadView = (model: GenModelView) => {
+    const modelState: ModelState = {
+        _model,
+        isLoaded,
+    }
+
+    const loadingStore = useGlobalLoadingStore()
+
+    const debugStore = useDebugStore()
+
+    const loadModelView = (model: GenModelView) => {
         const contextStore = useGenConfigContextStore()
 
         contextStore.merge(model)
@@ -193,7 +203,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         isLoaded.value = true
 
-        if (graphState.isLoaded) {
+        if (graphState.isLoaded.value) {
             loadGraphData(model.graphData, true)
         } else {
             graphLoadOperation.onLoaded(() => {
@@ -201,17 +211,6 @@ const initModelEditorStore = (): ModelEditorStore => {
             })
         }
     }
-
-    const modelState: ModelState = {
-        _model,
-        isLoaded,
-    }
-
-
-    const loadingStore = useGlobalLoadingStore()
-
-    const debugStore = useDebugStore()
-
 
     /**
      * 模型编辑对话框相关
@@ -246,7 +245,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             handleCancel()
 
             // 同步数据
-            loadView(savedModel)
+            loadModelView(savedModel)
 
             sendMessage("模型保存成功", "success")
         } catch (e) {
@@ -362,13 +361,6 @@ const initModelEditorStore = (): ModelEditorStore => {
         loadingStore.stop(flag)
 
         return res
-    }
-
-    const modelLoadOperations: ModelLoadOperation = {
-        loadView,
-        loadModel,
-        loadSchema,
-        loadTable,
     }
 
     /**
@@ -620,12 +612,18 @@ const initModelEditorStore = (): ModelEditorStore => {
             .filter(it => it.shape === TABLE_NODE && it.data && it.data.table)
     }
 
-    graphLoadOperation.onLoaded((graph) => {
-        if (!graph) return
+    const addNodeSync = (graph: Graph) => {
         setTableNodes()
         graph.on('node:added', () => setTableNodes())
         graph.on('node:removed', () => setTableNodes())
         graph.on('node:change:data', () => setTableNodes())
+    }
+
+    if (graphState.isLoaded.value) {
+        addNodeSync(graphState._graph())
+    } else graphLoadOperation.onLoaded((graph) => {
+        if (!graph) return
+        addNodeSync(graph)
     })
 
     const tableNodePairs = computed(() =>
@@ -652,12 +650,18 @@ const initModelEditorStore = (): ModelEditorStore => {
             .filter(it => it.shape === ASSOCIATION_EDGE && it.data && it.data.association)
     }
 
-    graphLoadOperation.onLoaded((graph) => {
-        if (!graph) return
+    const addEdgeSync = (graph: Graph) => {
         setAssociationEdges()
         graph.on('edge:added', () => setAssociationEdges())
         graph.on('edge:removed', () => setAssociationEdges())
         graph.on('edge:change:data', () => setAssociationEdges())
+    }
+
+    if (graphState.isLoaded.value) {
+        addEdgeSync(graphState._graph())
+    } else graphLoadOperation.onLoaded((graph) => {
+        if (!graph) return
+        addEdgeSync(graph)
     })
 
     const associationEdgePairs = computed(() =>
@@ -672,7 +676,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             .map(it => it.getData().association)
     )
 
-    const enums = computed(() => _model().enums)
+    const enums = computed(() => currentModel.value?.enums ?? [])
 
     const modelReactiveState: ModelReactiveState = {
         tableNodes,
@@ -703,7 +707,18 @@ const initModelEditorStore = (): ModelEditorStore => {
         }
     )()
 
-    const MODEL_LOAD = modelLoadOperations
+    const unload = () => {
+        if (GRAPH.isLoaded) {
+            GRAPH_LOAD.unload()
+        }
+
+        currentModel.value = undefined
+
+        tableNodes.value = []
+        associationEdges.value = []
+
+        isLoaded.value = false
+    }
 
     const MODEL_DIALOG_STATE = defineStore(
         'MODEL_DIALOG_STATE',
@@ -716,6 +731,16 @@ const initModelEditorStore = (): ModelEditorStore => {
         }
     )()
 
+    const modelLoadOperations: ModelLoadOperation = {
+        load: loadModelView,
+        unload,
+        loadModel,
+        loadSchema,
+        loadTable,
+    }
+
+    const MODEL_LOAD = modelLoadOperations
+
     /**
      * 最终导出
      */
@@ -725,8 +750,8 @@ const initModelEditorStore = (): ModelEditorStore => {
         GRAPH_DATA,
 
         MODEL,
-        MODEL_LOAD,
         MODEL_DIALOG_STATE,
+        MODEL_LOAD,
 
         SELECT,
         VIEW,
