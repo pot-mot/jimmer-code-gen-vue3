@@ -2,7 +2,7 @@ import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts"
 import {removeSplitPrefixAndSuffix} from "@/utils/suffixAndPrefix.ts";
 import {GenTableModelInput_TargetOf_indexes} from "@/api/__generated/model/static";
 import {DeepReadonly} from "vue";
-import {processNamingStrategy} from "@/components/pages/ModelEditor/graph/nameTemplate/namingStrategyProcess.ts";
+import {processNamingStrategy} from "@/components/business/genConfig/namingStrategyProcess.ts";
 
 const indexNameTemplate = (
     tableName: string,

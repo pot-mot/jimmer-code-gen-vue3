@@ -3,7 +3,7 @@ import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts"
 import {removeSplitPrefixAndSuffix} from "@/utils/suffixAndPrefix.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {DeepReadonly} from "vue";
-import {processNamingStrategy} from "@/components/pages/ModelEditor/graph/nameTemplate/namingStrategyProcess.ts";
+import {processNamingStrategy} from "@/components/business/genConfig/namingStrategyProcess.ts";
 
 const associationNameTemplate = (
     sourceTableName: string,
@@ -27,17 +27,17 @@ const associationNameTemplate = (
 
     let associationName
 
-    const sourceName = sourceTableName + sourceColumnNames.join("_")
-    const targetName = targetTableName + targetColumnNames.join("_")
+    const sourceName = sourceTableName + '_' + sourceColumnNames.join("_")
+    const targetName = targetTableName + '_' + targetColumnNames.join("_")
 
     // 多对多的关联名称是中间表
     if (type === 'MANY_TO_MANY') {
         associationName = `${sourceName}_` + (withTarget ? `${targetName}_` : '') + 'mapping'
     } else if (type === 'ONE_TO_MANY') {
         // 一对多的外键名称要反向
-        associationName = `fk_${targetName}`  + (withTarget ? `${sourceName}_` : '')
+        associationName = `fk_${targetName}`  + (withTarget ? `_${sourceName}` : '')
     } else {
-        associationName = `fk_${sourceName}` + (withTarget ? `${targetName}_` : '')
+        associationName = `fk_${sourceName}` + (withTarget ? `_${targetName}` : '')
     }
 
     return processNamingStrategy(associationName, context.databaseNamingStrategy)

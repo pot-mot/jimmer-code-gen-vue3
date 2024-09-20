@@ -4,7 +4,7 @@ import TableForm from "../../../../business/table/TableForm.vue";
 import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 import {GenTableModelInput} from "@/api/__generated/model/static";
 import {TABLE_CREATE_PREFIX} from "@/store/modelEditor/TableDialogsStore.ts";
-import {createIndexName} from "@/components/pages/ModelEditor/graph/nameTemplate/createIndexName.ts";
+import {createIndexName} from "@/components/business/table/createIndexName.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {validateTable} from "@/components/business/table/validateTable.ts";
