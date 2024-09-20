@@ -6,59 +6,68 @@ import TypeMappingForm from "@/components/business/typeMapping/TypeMappingForm.v
 import ColumnDefaultForm from "@/components/business/columnDefault/ColumnDefaultForm.vue";
 import DebugForm from "@/debug/DebugForm.vue";
 import GlobalGenConfigForm from "@/components/business/genConfig/GlobalGenConfigForm.vue";
-import {languageTypes, useInternationalizationStore} from "@/store/internationalization/InternationalizationStore.ts";
+import {languageTypes, useI18nStore} from "@/store/i18n/i18nStore.ts";
+import {MainLocale} from "@/i18n";
 
-const internationalizationStore = useInternationalizationStore()
+const i18nStore = useI18nStore()
 
-const globalConfigOptions = ref([
+const globalConfigOptions = ref<{
+	name: string,
+	label: keyof MainLocale,
+	modal: boolean,
+	openState: boolean,
+}[]>([
 	{
 		name: 'GlobalGenConfigForm',
-		label: '全局生成配置',
+		label: 'LABEL_GlobalGenConfigForm',
 		modal: true,
 		openState: false,
 	},
 	{
 		name: 'TypeMappingForm',
-		label: '类型映射配置',
+		label: 'LABEL_TypeMappingForm',
 		modal: true,
 		openState: false,
 	},
 	{
 		name: 'ColumnDefaultForm',
-		label: '列默认配置',
+		label: 'LABEL_ColumnDefaultForm',
 		modal: true,
 		openState: false,
 	},
 	{
 		name: 'DebugForm',
-		label: 'Debug 日志',
+		label: 'LABEL_DebugLog',
 		modal: false,
 		openState: false,
 	}
 ])
+
+const popoverVisible = ref(false)
 </script>
 
 <template>
 	<div class="button">
-		<el-popover placement="top-end">
+		<el-popover placement="top-end" :visible="popoverVisible">
 			<template #reference>
-				<el-button link>
+				<el-button link @click="popoverVisible = !popoverVisible">
 					<el-icon size="2em">
-						<Tools></Tools>
+						<Tools/>
 					</el-icon>
 				</el-button>
 			</template>
 
 			<ul>
 				<li v-for="option in globalConfigOptions">
-					<el-button link @click="option.openState = true">{{ option.label }}
-					</el-button>
+					<el-button link @click="option.openState = true"
+							   v-text="i18nStore.translate(option.label)"/>
 				</li>
-				<li style="border-top: 1px solid #ccc;">
+				<li style="border-top: 1px solid #ccc; margin-top: 0.5rem;">
 					<el-button
 						v-for="language in languageTypes"
 						v-text="language"
-						@click="internationalizationStore.language = language"
+						@click="i18nStore.language = language"
+						:type="i18nStore.language === language ? 'primary' : ''"
 						link/>
 				</li>
 			</ul>
@@ -68,20 +77,18 @@ const globalConfigOptions = ref([
 	<template v-for="option in globalConfigOptions" :key="option.name">
 		<DragDialog v-model="option.openState" :init-w="900" :init-y="100" :init-h="630" can-resize
 					:modal="option.modal">
-			<h3 style="padding-bottom: 20px; text-align: center;">
-				{{ option.label }}
-			</h3>
+			<h3 style="padding-bottom: 20px; text-align: center;" v-text="i18nStore.translate(option.label)"/>
 			<div style="width: calc(100% - 1em); padding-left: 0.5em;">
 				<GlobalGenConfigForm
 					v-if="option.name === 'GlobalGenConfigForm'"
 					@cancel="option.openState = false"
-					@submit="option.openState = false"></GlobalGenConfigForm>
+					@submit="option.openState = false"/>
 				<TypeMappingForm
-					v-else-if="option.name === 'TypeMappingForm'"></TypeMappingForm>
+					v-else-if="option.name === 'TypeMappingForm'"/>
 				<ColumnDefaultForm
-					v-else-if="option.name === 'ColumnDefaultForm'"></ColumnDefaultForm>
+					v-else-if="option.name === 'ColumnDefaultForm'"/>
 				<DebugForm
-					v-else-if="option.name === 'DebugForm'"></DebugForm>
+					v-else-if="option.name === 'DebugForm'"/>
 			</div>
 		</DragDialog>
 	</template>

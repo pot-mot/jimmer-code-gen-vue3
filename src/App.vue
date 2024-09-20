@@ -6,10 +6,10 @@ import {useGlobalGenConfigStore} from "@/store/config/GlobalGenConfigStore.ts";
 import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
 import {useDataSourceDefaultStore} from "@/store/dataSource/dataSourceDefaultStore.ts";
 import {onBeforeMount} from "vue";
-import {useInternationalizationStore} from "@/store/internationalization/InternationalizationStore.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
 const loadingStore = useGlobalLoadingStore()
-const internationalizationStore = useInternationalizationStore()
+const i18nStore = useI18nStore()
 
 onBeforeMount(async () => {
 	const key = loadingStore.start('Stores init')
@@ -26,7 +26,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-	<el-config-provider :locale="internationalizationStore.locale">
+	<el-config-provider :locale="i18nStore.elementLocale">
 		<div class="layout" v-loading.fullscreen.lock="loadingStore.isLoading">
 			<RouterView/>
 			<GlobalConfig/>
