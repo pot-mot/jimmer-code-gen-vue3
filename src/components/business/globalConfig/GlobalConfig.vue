@@ -6,6 +6,9 @@ import TypeMappingForm from "@/components/business/typeMapping/TypeMappingForm.v
 import ColumnDefaultForm from "@/components/business/columnDefault/ColumnDefaultForm.vue";
 import DebugForm from "@/debug/DebugForm.vue";
 import GlobalGenConfigForm from "@/components/business/genConfig/GlobalGenConfigForm.vue";
+import {languageTypes, useInternationalizationStore} from "@/store/internationalization/InternationalizationStore.ts";
+
+const internationalizationStore = useInternationalizationStore()
 
 const globalConfigOptions = ref([
 	{
@@ -51,12 +54,20 @@ const globalConfigOptions = ref([
 					<el-button link @click="option.openState = true">{{ option.label }}
 					</el-button>
 				</li>
+				<li style="border-top: 1px solid #ccc;">
+					<el-button
+						v-for="language in languageTypes"
+						v-text="language"
+						@click="internationalizationStore.language = language"
+						link/>
+				</li>
 			</ul>
 		</el-popover>
 	</div>
 
 	<template v-for="option in globalConfigOptions" :key="option.name">
-		<DragDialog v-model="option.openState" :init-w="900" :init-y="100" :init-h="630" can-resize :modal="option.modal">
+		<DragDialog v-model="option.openState" :init-w="900" :init-y="100" :init-h="630" can-resize
+					:modal="option.modal">
 			<h3 style="padding-bottom: 20px; text-align: center;">
 				{{ option.label }}
 			</h3>
