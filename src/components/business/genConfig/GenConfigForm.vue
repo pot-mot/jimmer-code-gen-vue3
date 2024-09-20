@@ -11,6 +11,9 @@ import {
 } from "@/api/__generated/model/enums"
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+
+const i18nStore = useI18nStore()
 
 const genConfigProperties = defineModel<GenConfigProperties>()
 
@@ -47,23 +50,23 @@ const handleCancel = () => {
 	<el-form>
 		<el-row :gutter="24">
 			<el-col :span="12">
-				<el-form-item label="数据源类型">
+				<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_dataSourceType')">
 					<el-select v-model="config.dataSourceType">
 						<template #prefix>
 							<DataSourceIcon :type="config.dataSourceType"></DataSourceIcon>
 						</template>
 						<el-option v-for="dataSourceType in DataSourceType_CONSTANTS"
 								   :label="dataSourceType"
-								   :value="dataSourceType"></el-option>
+								   :value="dataSourceType"/>
 					</el-select>
 				</el-form-item>
 			</el-col>
 			<el-col :span="12">
-				<el-form-item label="语言">
+				<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_language')">
 					<el-select v-model="config.language">
 						<el-option v-for="language in GenLanguage_CONSTANTS"
 								   :label="language"
-								   :value="language"></el-option>
+								   :value="language"/>
 					</el-select>
 				</el-form-item>
 			</el-col>
@@ -71,23 +74,23 @@ const handleCancel = () => {
 
 		<Details open>
 			<template #title>
-				<el-text class="gen-config-form-part-title" size="default">表定义</el-text>
+				<el-text class="gen-config-form-part-title" size="default">{{ i18nStore.translate('LABEL_GenConfigForm_tableDefinition') }}</el-text>
 			</template>
 
 			<div style="width: calc(100% - 3px - 1em);">
 				<el-row :gutter="24">
 					<el-col :span="12">
-						<el-form-item label="默认使用真实外键">
-							<el-switch v-model="config.realFk"></el-switch>
+						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_defaultRealFk')">
+							<el-switch v-model="config.realFk"/>
 						</el-form-item>
 					</el-col>
 
 					<el-col :span="12">
-						<el-form-item label="数据库命名策略">
+						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_databaseNamingStrategy')">
 							<el-select v-model="config.databaseNamingStrategy">
 								<el-option v-for="namingStrategy in DatabaseNamingStrategyType_CONSTANTS"
 										   :label="namingStrategy"
-										   :value="namingStrategy"></el-option>
+										   :value="namingStrategy"/>
 							</el-select>
 						</el-form-item>
 					</el-col>
@@ -97,59 +100,59 @@ const handleCancel = () => {
 
 		<Details open>
 			<template #title>
-				<el-text class="gen-config-form-part-title" size="default">实体类配置</el-text>
+				<el-text class="gen-config-form-part-title" size="default">{{ i18nStore.translate('LABEL_GenConfigForm_entityClassConfig') }}</el-text>
 			</template>
 
 			<div style="width: calc(100% - 3px - 1em);">
 				<el-row :gutter="24">
 					<el-col :span="12">
-						<el-form-item label="包路径">
-							<el-input v-model="config.packagePath"></el-input>
+						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_packagePath')">
+							<el-input v-model="config.packagePath"/>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="映射表路径">
-							<el-input v-model="config.tablePath"></el-input>
+						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_tablePath')">
+							<el-input v-model="config.tablePath"/>
 						</el-form-item>
 					</el-col>
 
 					<el-col :span="24">
-						<el-form-item label="逻辑删除注释">
-							<el-input v-model="config.logicalDeletedAnnotation"></el-input>
+						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_logicalDeletedAnnotation')">
+							<el-input v-model="config.logicalDeletedAnnotation"/>
 						</el-form-item>
 					</el-col>
 				</el-row>
 
 				<el-row :gutter="24">
 					<el-col :span="8">
-						<el-form-item label="生成 Table 注释">
-							<el-switch v-model="config.tableAnnotation"></el-switch>
+						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_tableAnnotation')">
+							<el-switch v-model="config.tableAnnotation"/>
 						</el-form-item>
 					</el-col>
 
 					<el-col :span="8">
-						<el-form-item label="生成 Column 注释">
-							<el-switch v-model="config.columnAnnotation"></el-switch>
+						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_columnAnnotation')">
+							<el-switch v-model="config.columnAnnotation"/>
 						</el-form-item>
 					</el-col>
 				</el-row>
 
 				<el-row :gutter="24">
 					<el-col :span="8">
-						<el-form-item label="生成 JoinColumn 注释">
-							<el-switch v-model="config.joinColumnAnnotation"></el-switch>
+						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_joinColumnAnnotation')">
+							<el-switch v-model="config.joinColumnAnnotation"/>
 						</el-form-item>
 					</el-col>
 
 					<el-col :span="8">
-						<el-form-item label="生成 JoinTable 注释">
-							<el-switch v-model="config.joinTableAnnotation"></el-switch>
+						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_joinTableAnnotation')">
+							<el-switch v-model="config.joinTableAnnotation"/>
 						</el-form-item>
 					</el-col>
 
 					<el-col :span="8">
-						<el-form-item label="生成 IdView">
-							<el-switch v-model="config.idViewProperty"></el-switch>
+						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_idViewProperty')">
+							<el-switch v-model="config.idViewProperty"/>
 						</el-form-item>
 					</el-col>
 				</el-row>
@@ -158,58 +161,58 @@ const handleCancel = () => {
 
 		<Details open>
 			<template #title>
-				<el-text class="gen-config-form-part-title" size="default">移除前后缀</el-text>
+				<el-text class="gen-config-form-part-title" size="default">{{ i18nStore.translate('LABEL_GenConfigForm_removeSuffix') }}</el-text>
 			</template>
 
 			<div style="width: calc(100% - 3px - 1em);">
 				<el-row :gutter="24">
 					<el-col :span="12">
-						<el-form-item label="表名前缀">
-							<el-input v-model="config.tableNamePrefixes"></el-input>
+						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_tableNamePrefixes')">
+							<el-input v-model="config.tableNamePrefixes"/>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="表名后缀">
-							<el-input v-model="config.tableNameSuffixes"></el-input>
-						</el-form-item>
-					</el-col>
-				</el-row>
-
-				<el-row :gutter="24">
-					<el-col :span="12">
-						<el-form-item label="表注释前缀">
-							<el-input v-model="config.tableCommentPrefixes"></el-input>
-						</el-form-item>
-					</el-col>
-					<el-col :span="12">
-						<el-form-item label="表注释后缀">
-							<el-input v-model="config.tableCommentSuffixes"></el-input>
+						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_tableNameSuffixes')">
+							<el-input v-model="config.tableNameSuffixes"/>
 						</el-form-item>
 					</el-col>
 				</el-row>
 
 				<el-row :gutter="24">
 					<el-col :span="12">
-						<el-form-item label="列名前缀">
-							<el-input v-model="config.columnNamePrefixes"></el-input>
+						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_tableCommentPrefixes')">
+							<el-input v-model="config.tableCommentPrefixes"/>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="列名后缀">
-							<el-input v-model="config.columnNameSuffixes"></el-input>
+						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_tableCommentSuffixes')">
+							<el-input v-model="config.tableCommentSuffixes"/>
 						</el-form-item>
 					</el-col>
 				</el-row>
 
 				<el-row :gutter="24">
 					<el-col :span="12">
-						<el-form-item label="列注释前缀">
-							<el-input v-model="config.columnCommentPrefixes"></el-input>
+						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_columnNamePrefixes')">
+							<el-input v-model="config.columnNamePrefixes"/>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="列注释后缀">
-							<el-input v-model="config.columnCommentSuffixes"></el-input>
+						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_columnNameSuffixes')">
+							<el-input v-model="config.columnNameSuffixes"/>
+						</el-form-item>
+					</el-col>
+				</el-row>
+
+				<el-row :gutter="24">
+					<el-col :span="12">
+						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_columnCommentPrefixes')">
+							<el-input v-model="config.columnCommentPrefixes"/>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_columnCommentSuffixes')">
+							<el-input v-model="config.columnCommentSuffixes"/>
 						</el-form-item>
 					</el-col>
 				</el-row>
@@ -217,8 +220,8 @@ const handleCancel = () => {
 		</Details>
 
 		<div style="text-align: right; position: absolute; bottom: 0.5em; left: 1em; right: 1em;">
-			<el-button type="info" @click="handleCancel">取消</el-button>
-			<el-button type="warning" @click="handleSubmit">保存</el-button>
+			<el-button type="info" @click="handleCancel">{{ i18nStore.translate('BUTTON_cancel') }}</el-button>
+			<el-button type="warning" @click="handleSubmit">{{ i18nStore.translate('BUTTON_save') }}</el-button>
 		</div>
 	</el-form>
 </template>

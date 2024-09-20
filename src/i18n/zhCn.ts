@@ -1,8 +1,35 @@
 import {MainLocale} from "@/i18n/index.ts";
 
-export default <MainLocale> {
+export const mainLocaleZhCn: MainLocale = {
+    BUTTON_save: "保存",
+    BUTTON_cancel: "取消",
+
     LABEL_GlobalGenConfigForm: "全局生成配置",
     LABEL_TypeMappingForm: "类型映射配置",
     LABEL_ColumnDefaultForm: "列默认配置",
     LABEL_DebugLog: "Debug 日志",
+
+    LABEL_GenConfigForm_dataSourceType: "数据源类型",
+    LABEL_GenConfigForm_language: "语言",
+    LABEL_GenConfigForm_defaultRealFk: "默认使用真实外键",
+    LABEL_GenConfigForm_databaseNamingStrategy: "数据库命名策略",
+    LABEL_GenConfigForm_packagePath: "包路径",
+    LABEL_GenConfigForm_tablePath: "映射表路径",
+    LABEL_GenConfigForm_logicalDeletedAnnotation: "逻辑删除注释",
+    LABEL_GenConfigForm_tableAnnotation: "生成 Table 注释",
+    LABEL_GenConfigForm_columnAnnotation: "生成 Column 注释",
+    LABEL_GenConfigForm_joinColumnAnnotation: "生成 JoinColumn 注释",
+    LABEL_GenConfigForm_joinTableAnnotation: "生成 JoinTable 注释",
+    LABEL_GenConfigForm_idViewProperty: "生成 IdView",
+    LABEL_GenConfigForm_tableNamePrefixes: "表名前缀",
+    LABEL_GenConfigForm_tableNameSuffixes: "表名后缀",
+    LABEL_GenConfigForm_tableCommentPrefixes: "表注释前缀",
+    LABEL_GenConfigForm_tableCommentSuffixes: "表注释后缀",
+    LABEL_GenConfigForm_columnNamePrefixes: "列名前缀",
+    LABEL_GenConfigForm_columnNameSuffixes: "列名后缀",
+    LABEL_GenConfigForm_columnCommentPrefixes: "列注释前缀",
+    LABEL_GenConfigForm_columnCommentSuffixes: "列注释后缀",
+    LABEL_GenConfigForm_tableDefinition: "表定义",
+    LABEL_GenConfigForm_entityClassConfig: "实体类配置",
+    LABEL_GenConfigForm_removeSuffix: "移除前后缀",
 }

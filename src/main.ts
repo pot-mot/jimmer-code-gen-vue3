@@ -3,8 +3,6 @@ import App from './App.vue'
 import {router} from './router'
 import {createPinia} from 'pinia'
 
-import i18n from '@/i18n/zhCn.ts'
-
 import ElementPlus from 'element-plus'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import 'element-plus/dist/index.css'
@@ -27,8 +25,6 @@ app.use(router)
 
 export const pinia = createPinia()
 app.use(pinia)
-
-app.use(i18n)
 
 app.use(ElementPlus, { size: 'small', zIndex: 2000 })
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {

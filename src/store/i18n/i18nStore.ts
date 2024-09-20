@@ -1,18 +1,18 @@
 import {defineStore} from "pinia";
-import {ref, computed} from "vue";
-import mainZhCn from "@/i18n/zhCn.ts"
+import {computed, ref} from "vue";
+import {mainLocaleZhCn} from "@/i18n/zhCn.ts"
 import elementZhCn from 'element-plus/es/locale/lang/zh-cn.mjs'
-import mainEn from '@/i18n/en.ts'
+import {mainLocaleEn} from '@/i18n/en.ts'
 import elementEn from 'element-plus/es/locale/lang/en.mjs'
-import {MainLocale} from "@/i18n";
+import {type MainLocale} from "@/i18n";
 
 const languageOptions = {
     'zh-cn': {
-        main: mainZhCn,
+        main: mainLocaleZhCn,
         element: elementZhCn
     },
     'en': {
-        main: mainEn,
+        main: mainLocaleEn,
         element: elementEn
     },
 }

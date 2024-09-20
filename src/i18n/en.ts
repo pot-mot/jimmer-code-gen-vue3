@@ -1,8 +1,35 @@
 import {MainLocale} from "@/i18n/index.ts";
 
-export default <MainLocale> {
+export const mainLocaleEn: MainLocale = {
+    BUTTON_save: "Save",
+    BUTTON_cancel: "Cancel",
+
     LABEL_GlobalGenConfigForm: "Edit GlobalGenConfig",
     LABEL_TypeMappingForm: "Edit TypeMapping",
     LABEL_ColumnDefaultForm: "Edit ColumnDefault",
     LABEL_DebugLog: "Debug Log",
+
+    LABEL_GenConfigForm_dataSourceType: "Data Source Type",
+    LABEL_GenConfigForm_language: "Language",
+    LABEL_GenConfigForm_defaultRealFk: "Use Real Foreign Key by Default",
+    LABEL_GenConfigForm_databaseNamingStrategy: "Database Naming Strategy",
+    LABEL_GenConfigForm_packagePath: "Package Path",
+    LABEL_GenConfigForm_tablePath: "Mapping Table Path",
+    LABEL_GenConfigForm_logicalDeletedAnnotation: "Logical Deletion Annotation",
+    LABEL_GenConfigForm_tableAnnotation: "Generate Table Annotation",
+    LABEL_GenConfigForm_columnAnnotation: "Generate Column Annotation",
+    LABEL_GenConfigForm_joinColumnAnnotation: "Generate JoinColumn Annotation",
+    LABEL_GenConfigForm_joinTableAnnotation: "Generate JoinTable Annotation",
+    LABEL_GenConfigForm_idViewProperty: "Generate IdView",
+    LABEL_GenConfigForm_tableNamePrefixes: "Table Name Prefixes",
+    LABEL_GenConfigForm_tableNameSuffixes: "Table Name Suffixes",
+    LABEL_GenConfigForm_tableCommentPrefixes: "Table Comment Prefixes",
+    LABEL_GenConfigForm_tableCommentSuffixes: "Table Comment Suffixes",
+    LABEL_GenConfigForm_columnNamePrefixes: "Column Name Prefixes",
+    LABEL_GenConfigForm_columnNameSuffixes: "Column Name Suffixes",
+    LABEL_GenConfigForm_columnCommentPrefixes: "Column Comment Prefixes",
+    LABEL_GenConfigForm_columnCommentSuffixes: "Column Comment Suffixes",
+    LABEL_GenConfigForm_tableDefinition: "Table Definition",
+    LABEL_GenConfigForm_entityClassConfig: "Entity Class Configuration",
+    LABEL_GenConfigForm_removeSuffix: "Remove Prefixes and Suffixes",
 }
