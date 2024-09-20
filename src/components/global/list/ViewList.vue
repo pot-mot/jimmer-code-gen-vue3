@@ -7,6 +7,9 @@ import {ref} from "vue";
 import {useClickOutside} from "@/components/global/list/useClickOutside.ts";
 import {createSelectRange, useListSelection} from "@/components/global/list/listSelection.ts";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+
+const i18nStore = useI18nStore()
 
 const props = withDefaults(defineProps<ListProps<T>>(), {
 	labelLine: true
@@ -95,14 +98,14 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 			<Line v-if="labelLine" :gap="gap" :height="height">
 				<LineItem v-for="column in columns" :span="column.span">
 					<slot name="label">
-						<el-text style="padding-left: 0.5em;" v-if="column.label">{{ column.label }}</el-text>
+						<el-text style="padding-left: 0.5em;" v-if="column.label">{{ i18nStore.translate(column.label) }}</el-text>
 					</slot>
 				</LineItem>
 			</Line>
 		</div>
 
 		<div class="view-list-body" ref="viewListBody">
-			<slot name="headLines" :columns="columns" :lines="lines" :gap="gap" :height="height"></slot>
+			<slot name="headLines" :columns="columns" :lines="lines" :gap="gap" :height="height"/>
 
 			<template v-for="(data, index) in lines">
 				<slot name="line" :data="data" :columns="columns" :gap="gap" :height="height">

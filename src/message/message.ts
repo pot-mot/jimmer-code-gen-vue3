@@ -1,5 +1,7 @@
 import {ElMessage} from 'element-plus'
 import {useDebugStore} from "@/store/debug/debugStore.ts";
+import {MainLocale} from "@/i18n";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
 /**
  * 向用户发送消息
@@ -28,5 +30,11 @@ export const sendMessage = (message: string, type: "info" | "success" | "warning
 
     const debugStore = useDebugStore()
     debugStore.log('MESSAGE', message, data)
+}
+
+export const sendI18nMessage = (key: keyof MainLocale, type: "info" | "success" | "warning" | "error" = "info", data?: any) => {
+    const i18nStore = useI18nStore()
+
+    sendMessage(i18nStore.translate(key), type, data)
 }
 

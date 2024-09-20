@@ -1,8 +1,22 @@
 import {MainLocale} from "@/i18n/index.ts";
 
 export const mainLocaleEn: MainLocale = {
+    BUTTON_edit: "Edit",
+    BUTTON_submit: "Submit",
+    BUTTON_delete: "Delete",
     BUTTON_save: "Save",
     BUTTON_cancel: "Cancel",
+
+    MESSAGE_save_success: 'Save Successful',
+    MESSAGE_save_fail: 'Save Failed',
+    MESSAGE_submit_success: 'Submit Successful',
+    MESSAGE_submit_fail: 'Submit Failed',
+    MESSAGE_edit_success: 'Edit Successful',
+    MESSAGE_edit_fail: 'Edit Failed',
+    MESSAGE_delete_success: 'Delete Successful',
+    MESSAGE_delete_fail: 'Delete Failed',
+
+    LABEL_OPERATION: "Operation",
 
     LABEL_GlobalGenConfigForm: "Edit GlobalGenConfig",
     LABEL_TypeMappingForm: "Edit TypeMapping",
@@ -32,4 +46,13 @@ export const mainLocaleEn: MainLocale = {
     LABEL_GenConfigForm_tableDefinition: "Table Definition",
     LABEL_GenConfigForm_entityClassConfig: "Entity Class Configuration",
     LABEL_GenConfigForm_removeSuffix: "Remove Prefixes and Suffixes",
+
+    LABEL_GenTypeMapping_dataSourceType: 'DataSource',
+    LABEL_GenTypeMapping_typeExpression: 'DatabaseType Match (Regex)',
+    LABEL_GenTypeMapping_language: 'Language',
+    LABEL_GenTypeMapping_propertyType: 'MappingType',
+    LABEL_GenTypeMapping_remark: 'Remark',
+
+    VALIDATE_GenTypeMapping_can_not_be_empty: 'TypeMapping DatabaseType or MappingType cannot be empty',
+    VALIDATE_GenTypeMapping_can_not_be_repeat: 'TypeMapping cannot be duplicate',
 }

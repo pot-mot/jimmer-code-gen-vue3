@@ -1,3 +1,5 @@
+import {MainLocale} from "@/i18n";
+
 interface LineStyleProps {
     gap?: string,
     height?: string
@@ -10,13 +12,13 @@ export interface LineProps extends LineStyleProps {
 export interface ListColumn<T extends { [key: string]: any }> {
     name: keyof T | string
     prop?: keyof T
-    label?: string
+    label?: keyof MainLocale
     span?: string
 }
 
 export interface PropListColumn<T extends { [key: string]: any }> {
     prop: keyof T
-    label?: string
+    label?: keyof MainLocale
     span?: string
 }
 

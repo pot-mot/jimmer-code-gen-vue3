@@ -10,6 +10,9 @@ import {useClickOutside} from "@/components/global/list/useClickOutside.ts";
 import {sendMessage} from "@/message/message.ts";
 import {createSelectRange, useListSelection} from "@/components/global/list/listSelection.ts";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+
+const i18nStore = useI18nStore()
 
 const props = withDefaults(
 	defineProps<EditListProps<T>>(),
@@ -18,7 +21,7 @@ const props = withDefaults(
 		operation: () => {
 			return {
 				name: 'operation',
-				label: '操作',
+				label: 'LABEL_OPERATION',
 				span: '2.5em'
 			}
 		},
@@ -288,11 +291,11 @@ defineExpose({
 			<Line v-if="labelLine" :gap="gap" :height="height">
 				<LineItem v-for="column in columns" :span="column.span">
 					<slot name="label">
-						<el-text v-if="column.label" style="padding-left: 0.5em;">{{ column.label }}</el-text>
+						<el-text v-if="column.label" style="padding-left: 0.5em;">{{ i18nStore.translate(column.label) }}</el-text>
 					</slot>
 				</LineItem>
 				<LineItem :span="operation.span">
-					<el-text v-if="operation.label" style="padding-left: 0.5em;">{{ operation.label }}</el-text>
+					<el-text v-if="operation.label" style="padding-left: 0.5em;">{{ i18nStore.translate(operation.label) }}</el-text>
 				</LineItem>
 			</Line>
 		</div>
@@ -369,9 +372,9 @@ defineExpose({
 								</slot>
 
 								<el-button @click.prevent.stop="handleAddLine(index)"
-										   :icon="Plus" link style="margin-left: 0.3em;"></el-button>
+										   :icon="Plus" link style="margin-left: 0.3em;"/>
 								<el-button @click.prevent.stop="handleRemoveLine(index)"
-										   :icon="Delete" link style="margin-left: 0.3em;" type="danger"></el-button>
+										   :icon="Delete" link style="margin-left: 0.3em;" type="danger"/>
 
 								<slot
 									name="afterOperation"
@@ -381,8 +384,7 @@ defineExpose({
 									:index="index"
 									:getDefaultLine="getDefaultLine"
 									:handleAddLine="handleAddLine"
-									:handleRemoveLine="handleRemoveLine">
-								</slot>
+									:handleRemoveLine="handleRemoveLine"/>
 							</slot>
 						</LineItem>
 					</Line>
@@ -391,9 +393,9 @@ defineExpose({
 
 			<slot name="tailLines" :columns="columns" :lines="lines" :gap="gap" :height="height">
 				<div style="margin: auto; width: min(40%, 6em);">
-					<el-button :icon="Plus" style="width: 100%" @click="handleAddLine()"></el-button>
+					<el-button :icon="Plus" style="width: 100%" @click="handleAddLine()"/>
 				</div>
-				<slot name="otherTailLines" :columns="columns" :lines="lines" :gap="gap" :height="height"></slot>
+				<slot name="otherTailLines" :columns="columns" :lines="lines" :gap="gap" :height="height"/>
 			</slot>
 		</div>
 	</div>

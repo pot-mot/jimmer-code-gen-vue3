@@ -6,37 +6,40 @@ import {GenTypeMappingInput, GenTypeMappingView} from "@/api/__generated/model/s
 import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated/model/enums";
 import EditList from "@/components/global/list/EditList.vue";
 import {PropListColumn} from "@/components/global/list/ListProps.ts";
-import {sendMessage} from "@/message/message.ts";
+import {sendI18nMessage} from "@/message/message.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep} from "lodash";
 import {useGlobalGenConfigStore} from "@/store/config/GlobalGenConfigStore.ts";
 import {validateTypeMappingInput} from "@/shape/GenTypeMappingInput.ts";
 import {validateTypeMappingForm} from "@/components/business/typeMapping/validate.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+
+const i18nStore = useI18nStore()
 
 const editState = ref(false)
 
 const typeMappingProps = <PropListColumn<GenTypeMappingInput>[]>[
 	{
 		prop: 'dataSourceType',
-		label: '数据源类型',
+		label: 'LABEL_GenTypeMapping_dataSourceType',
 		span: '7em'
 	},
 	{
 		prop: 'typeExpression',
-		label: '数据库类型匹配表达式（正则）',
+		label: 'LABEL_GenTypeMapping_typeExpression',
 	},
 	{
 		prop: 'language',
-		label: '后端语言',
+		label: 'LABEL_GenTypeMapping_language',
 		span: '7em'
 	},
 	{
 		prop: 'propertyType',
-		label: '映射类型',
+		label: 'LABEL_GenTypeMapping_propertyType',
 	},
 	{
 		prop: 'remark',
-		label: '备注',
+		label: 'LABEL_GenTypeMapping_remark',
 	},
 ]
 
@@ -88,7 +91,7 @@ const handleSubmit = async () => {
 	const messageList = validateTypeMappingForm(tempTypeMappings.value)
 
 	if (messageList.length > 0) {
-		messageList.forEach(it => sendMessage(it, 'warning'))
+		messageList.forEach(it => sendI18nMessage(it, 'warning'))
 		return
 	}
 
@@ -97,11 +100,11 @@ const handleSubmit = async () => {
 	})
 	const ids = await api.typeMappingService.saveAll({body: tempTypeMappings.value})
 	if (ids.length === tempTypeMappings.value.length) {
-		sendMessage('配置修改成功', 'success')
+		sendI18nMessage('MESSAGE_edit_success', 'success')
 		typeMappings.value = tempTypeMappings.value
 		editState.value = false
 	} else {
-		sendMessage('配置修改出错', 'error', tempTypeMappings)
+		sendI18nMessage('MESSAGE_edit_fail', 'error', tempTypeMappings)
 	}
 }
 
@@ -134,8 +137,8 @@ const handleCancel = () => {
 			</EditList>
 
 			<div style="text-align: right">
-				<el-button type="info" @click="handleCancel">取消</el-button>
-				<el-button type="warning" @click="handleSubmit">保存</el-button>
+				<el-button type="info" @click="handleCancel">{{ i18nStore.translate('BUTTON_cancel') }}</el-button>
+				<el-button type="warning" @click="handleSubmit">{{ i18nStore.translate('BUTTON_submit') }}</el-button>
 			</div>
 		</template>
 
@@ -143,7 +146,7 @@ const handleCancel = () => {
 			<ViewList :columns="typeMappingProps" :lines="typeMappings" height="2em"></ViewList>
 
 			<div style="text-align: right">
-				<el-button type="warning" @click="handleEdit">编辑</el-button>
+				<el-button type="warning" @click="handleEdit">{{ i18nStore.translate('BUTTON_edit') }}</el-button>
 			</div>
 		</template>
 	</div>

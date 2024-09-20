@@ -1,8 +1,22 @@
 import {MainLocale} from "@/i18n/index.ts";
 
 export const mainLocaleZhCn: MainLocale = {
+    BUTTON_edit: "编辑",
+    BUTTON_submit: "提交",
+    BUTTON_delete: "删除",
     BUTTON_save: "保存",
     BUTTON_cancel: "取消",
+
+    MESSAGE_save_success: '保存成功',
+    MESSAGE_save_fail: '保存失败',
+    MESSAGE_submit_success: '提交成功',
+    MESSAGE_submit_fail: '提交失败',
+    MESSAGE_edit_success: '编辑成功',
+    MESSAGE_edit_fail: '编辑失败',
+    MESSAGE_delete_success: '删除成功',
+    MESSAGE_delete_fail: '删除失败',
+
+    LABEL_OPERATION: "操作",
 
     LABEL_GlobalGenConfigForm: "全局生成配置",
     LABEL_TypeMappingForm: "类型映射配置",
@@ -32,4 +46,13 @@ export const mainLocaleZhCn: MainLocale = {
     LABEL_GenConfigForm_tableDefinition: "表定义",
     LABEL_GenConfigForm_entityClassConfig: "实体类配置",
     LABEL_GenConfigForm_removeSuffix: "移除前后缀",
+
+    LABEL_GenTypeMapping_dataSourceType: '数据源类型',
+    LABEL_GenTypeMapping_typeExpression: '数据库类型匹配表达式（正则）',
+    LABEL_GenTypeMapping_language: '后端语言',
+    LABEL_GenTypeMapping_propertyType: '映射类型',
+    LABEL_GenTypeMapping_remark: '备注',
+
+    VALIDATE_GenTypeMapping_can_not_be_empty: 'TypeMapping 数据库类型表达式与属性均不可为空',
+    VALIDATE_GenTypeMapping_can_not_be_repeat: 'TypeMapping 不可重复',
 }
