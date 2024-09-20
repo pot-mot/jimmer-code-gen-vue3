@@ -4,6 +4,7 @@ export const mainLocaleZhCn: MainLocale = {
     BUTTON_edit: "编辑",
     BUTTON_submit: "提交",
     BUTTON_delete: "删除",
+    BUTTON_clear: "清理",
     BUTTON_save: "保存",
     BUTTON_cancel: "取消",
 
@@ -22,6 +23,15 @@ export const mainLocaleZhCn: MainLocale = {
     LABEL_TypeMappingForm: "类型映射配置",
     LABEL_ColumnDefaultForm: "列默认配置",
     LABEL_DebugLog: "Debug 日志",
+
+    LABEL_DebugLog_config: 'Debug 配置',
+    LABEL_DebugLog_filterTypes: '过滤类型',
+    LABEL_DebugLog_outputTypes: '输出类型',
+    LABEL_DebugLog_collectTypes: '收集类型',
+
+    LABEL_DEBUG_type: '类型',
+    LABEL_DEBUG_message: '消息内容',
+    LABEL_DEBUG_timestamp: '时间戳',
 
     LABEL_GenConfigForm_dataSourceType: "数据源类型",
     LABEL_GenConfigForm_language: "语言",

@@ -4,6 +4,7 @@ export const mainLocaleEn: MainLocale = {
     BUTTON_edit: "Edit",
     BUTTON_submit: "Submit",
     BUTTON_delete: "Delete",
+    BUTTON_clear: "Clear",
     BUTTON_save: "Save",
     BUTTON_cancel: "Cancel",
 
@@ -22,6 +23,15 @@ export const mainLocaleEn: MainLocale = {
     LABEL_TypeMappingForm: "Edit TypeMapping",
     LABEL_ColumnDefaultForm: "Edit ColumnDefault",
     LABEL_DebugLog: "Debug Log",
+
+    LABEL_DebugLog_config: 'Debug Config',
+    LABEL_DebugLog_filterTypes: 'Filter',
+    LABEL_DebugLog_outputTypes: 'Output',
+    LABEL_DebugLog_collectTypes: 'Collect',
+
+    LABEL_DEBUG_type: 'Type',
+    LABEL_DEBUG_message: 'Message',
+    LABEL_DEBUG_timestamp: 'Timestamp',
 
     LABEL_GenConfigForm_dataSourceType: "Data Source Type",
     LABEL_GenConfigForm_language: "Language",

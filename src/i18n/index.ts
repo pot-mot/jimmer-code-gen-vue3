@@ -2,6 +2,7 @@ export type MainLocale = {
     BUTTON_edit: string
     BUTTON_submit: string
     BUTTON_delete: string
+    BUTTON_clear: string
     BUTTON_save: string
     BUTTON_cancel: string
 
@@ -20,6 +21,15 @@ export type MainLocale = {
     LABEL_TypeMappingForm: string
     LABEL_ColumnDefaultForm: string
     LABEL_DebugLog: string
+
+    LABEL_DebugLog_config: string
+    LABEL_DebugLog_filterTypes: string
+    LABEL_DebugLog_outputTypes: string
+    LABEL_DebugLog_collectTypes: string
+
+    LABEL_DEBUG_type: string
+    LABEL_DEBUG_message: string
+    LABEL_DEBUG_timestamp: string
 
     LABEL_GenConfigForm_dataSourceType: string
     LABEL_GenConfigForm_language: string
