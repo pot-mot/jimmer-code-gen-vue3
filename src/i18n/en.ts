@@ -53,6 +53,22 @@ export const mainLocaleEn: MainLocale = {
     LABEL_GenTypeMapping_propertyType: 'MappingType',
     LABEL_GenTypeMapping_remark: 'Remark',
 
-    VALIDATE_GenTypeMapping_can_not_be_empty: 'TypeMapping DatabaseType or MappingType cannot be empty',
-    VALIDATE_GenTypeMapping_can_not_be_repeat: 'TypeMapping cannot be duplicate',
+    VALIDATE_GenTypeMapping_cannot_be_duplicate: 'TypeMapping cannot be duplicate',
+    VALIDATE_GenTypeMapping_typeExpression_cannot_be_empty: 'TypeMapping DatabaseType Match cannot be empty',
+    VALIDATE_GenTypeMapping_propertyType_cannot_be_empty: 'TypeMapping MappingType cannot be empty',
+
+
+    LABEL_GenColumnDefault_dataSourceType: 'Data Source Type',
+    LABEL_GenColumnDefault_typeCode: 'Jdbc Type',
+    LABEL_GenColumnDefault_segment: '→',
+    LABEL_GenColumnDefault_rawType: 'Raw Type',
+    LABEL_GenColumnDefault_dataSize: 'Length',
+    LABEL_GenColumnDefault_numericPrecision: 'Precision',
+    LABEL_GenColumnDefault_defaultValue: 'Default Value',
+    LABEL_GenColumnDefault_remark: 'Remark',
+
+    VALIDATE_GenColumnDefault_cannot_be_duplicate: 'The dataSourceType and typeCode of ColumnDefault cannot be duplicate',
+    VALIDATE_GenColumnDefault_rawType_cannot_be_empty: 'The Raw Type of ColumnDefault cannot be empty',
+    VALIDATE_GenColumnDefault_dataSize_cannot_be_empty: 'The Length of ColumnDefault cannot be empty',
+    VALIDATE_GenColumnDefault_numericPrecision_cannot_be_empty: 'The Precision of ColumnDefault cannot be empty',
 }

@@ -53,6 +53,21 @@ export const mainLocaleZhCn: MainLocale = {
     LABEL_GenTypeMapping_propertyType: '映射类型',
     LABEL_GenTypeMapping_remark: '备注',
 
-    VALIDATE_GenTypeMapping_can_not_be_empty: 'TypeMapping 数据库类型表达式与属性均不可为空',
-    VALIDATE_GenTypeMapping_can_not_be_repeat: 'TypeMapping 不可重复',
+    VALIDATE_GenTypeMapping_cannot_be_duplicate: 'TypeMapping 不可重复',
+    VALIDATE_GenTypeMapping_typeExpression_cannot_be_empty: 'TypeMapping 数据库类型表达式不可为空',
+    VALIDATE_GenTypeMapping_propertyType_cannot_be_empty: 'TypeMapping 映射类型不可为空',
+
+    LABEL_GenColumnDefault_dataSourceType: '数据源类型',
+    LABEL_GenColumnDefault_typeCode: 'Jdbc 类型',
+    LABEL_GenColumnDefault_segment: '→',
+    LABEL_GenColumnDefault_rawType: '字面类型',
+    LABEL_GenColumnDefault_dataSize: '长度',
+    LABEL_GenColumnDefault_numericPrecision: '精度',
+    LABEL_GenColumnDefault_defaultValue: '默认值',
+    LABEL_GenColumnDefault_remark: '备注',
+
+    VALIDATE_GenColumnDefault_cannot_be_duplicate: 'ColumnDefault 的 dataSourceType 和 typeCode 不可重复',
+    VALIDATE_GenColumnDefault_rawType_cannot_be_empty: "ColumnDefault 的字面类型不可为空",
+    VALIDATE_GenColumnDefault_dataSize_cannot_be_empty: 'ColumnDefault 的长度不可为空',
+    VALIDATE_GenColumnDefault_numericPrecision_cannot_be_empty: 'ColumnDefault 的精度不可为空',
 }

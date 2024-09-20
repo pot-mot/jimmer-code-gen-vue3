@@ -18,13 +18,18 @@ export const validateTypeMappingForm = (
         return true
     })
 
-    if (typeMappings.some(it => it.typeExpression.length === 0 || it.propertyType.length === 0)) {
-        messageList.push('VALIDATE_GenTypeMapping_can_not_be_empty');
+    if (uniqueTypeMappings.length !== typeMappings.length) {
+        messageList.push('VALIDATE_GenTypeMapping_cannot_be_duplicate');
     }
 
-    if (uniqueTypeMappings.length !== typeMappings.length) {
-        messageList.push('VALIDATE_GenTypeMapping_can_not_be_repeat');
-    }
+    typeMappings.forEach((typeMapping) => {
+        if (!typeMapping.typeExpression) {
+            messageList.push('VALIDATE_GenTypeMapping_typeExpression_cannot_be_empty')
+        }
+        if (!typeMapping.propertyType) {
+            messageList.push('VALIDATE_GenTypeMapping_propertyType_cannot_be_empty')
+        }
+    })
 
     return messageList
 }

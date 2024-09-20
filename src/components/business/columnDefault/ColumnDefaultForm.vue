@@ -5,7 +5,7 @@ import {GenColumnDefaultInput, GenColumnDefaultView} from "@/api/__generated/mod
 import {DataSourceType_CONSTANTS} from "@/api/__generated/model/enums";
 import EditList from "@/components/global/list/EditList.vue";
 import {ListColumn, PropListColumn} from "@/components/global/list/ListProps.ts";
-import {sendMessage} from "@/message/message.ts";
+import {sendI18nMessage} from "@/message/message.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
 import {cloneDeep} from "lodash";
 import {useJdbcTypeStore} from "@/store/jdbcType/jdbcTypeStore.ts";
@@ -13,43 +13,48 @@ import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnD
 import {useGlobalGenConfigStore} from "@/store/config/GlobalGenConfigStore.ts";
 import {validateColumnDefaultInput} from "@/shape/GenColumnDefaultInput.ts";
 import {validateColumnDefaultForm} from "@/components/business/columnDefault/validate.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+
+const i18nStore = useI18nStore()
 
 const editState = ref(false)
 
 const columnDefaultProps = <Array<PropListColumn<GenColumnDefaultInput> | ListColumn<GenColumnDefaultInput>>>[
 	{
 		prop: 'dataSourceType',
-		label: '数据源类型',
+		label: 'LABEL_GenColumnDefault_dataSourceType',
 		span: '7em'
 	},
 	{
 		prop: 'typeCode',
-		label: 'Jdbc 类型',
+		label: 'LABEL_GenColumnDefault_typeCode',
 	},
 
 	{
-		name: 'segment', label: '→', span: '2em'
+		name: 'segment',
+		label: 'LABEL_GenColumnDefault_segment',
+		span: '2em'
 	},
 
 	{
 		prop: 'rawType',
-		label: '字面类型',
+		label: 'LABEL_GenColumnDefault_rawType',
 	},
 	{
 		prop: 'dataSize',
-		label: '长度',
+		label: 'LABEL_GenColumnDefault_dataSize',
 	},
 	{
 		prop: 'numericPrecision',
-		label: '精度',
+		label: 'LABEL_GenColumnDefault_numericPrecision',
 	},
 	{
 		prop: 'defaultValue',
-		label: '默认值',
+		label: 'LABEL_GenColumnDefault_defaultValue',
 	},
 	{
 		prop: 'remark',
-		label: '备注',
+		label: 'LABEL_GenColumnDefault_remark',
 	},
 ]
 
@@ -107,7 +112,7 @@ const handleSubmit = async () => {
 	const messageList = validateColumnDefaultForm(tempColumnDefaults.value)
 
 	if (messageList.length > 0) {
-		messageList.forEach(it => sendMessage(it, 'warning'))
+		messageList.forEach(it => sendI18nMessage(it, 'warning'))
 		return
 	}
 
@@ -120,10 +125,10 @@ const handleSubmit = async () => {
 
 	if (ids.length === tempColumnDefaults.value.length) {
 		columnDefaults.value = tempColumnDefaults.value
-		sendMessage('配置修改成功', 'success')
+		sendI18nMessage('MESSAGE_edit_success', 'success')
 		editState.value = false
 	} else {
-		sendMessage('配置修改出错', 'error', tempColumnDefaults)
+		sendI18nMessage('MESSAGE_edit_fail', 'error', tempColumnDefaults)
 	}
 }
 
@@ -171,8 +176,8 @@ const handleCancel = () => {
 			</EditList>
 
 			<div style="text-align: right">
-				<el-button type="info" @click="handleCancel">取消</el-button>
-				<el-button type="warning" @click="handleSubmit">保存</el-button>
+				<el-button type="info" @click="handleCancel">{{ i18nStore.translate('BUTTON_cancel') }}</el-button>
+				<el-button type="warning" @click="handleSubmit">{{ i18nStore.translate('BUTTON_submit') }}</el-button>
 			</div>
 		</template>
 
@@ -187,7 +192,7 @@ const handleCancel = () => {
 			</ViewList>
 
 			<div style="text-align: right">
-				<el-button type="warning" @click="handleEdit">编辑</el-button>
+				<el-button type="warning" @click="handleEdit">{{ i18nStore.translate('BUTTON_edit') }}</el-button>
 			</div>
 		</template>
 	</template>

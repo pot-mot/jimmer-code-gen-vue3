@@ -45,14 +45,29 @@ export type MainLocale = {
     LABEL_GenConfigForm_entityClassConfig: string
     LABEL_GenConfigForm_removeSuffix: string
 
-    LABEL_GenTypeMapping_dataSourceType: string,
-    LABEL_GenTypeMapping_typeExpression: string,
-    LABEL_GenTypeMapping_language: string,
-    LABEL_GenTypeMapping_propertyType: string,
-    LABEL_GenTypeMapping_remark: string,
+    LABEL_GenTypeMapping_dataSourceType: string
+    LABEL_GenTypeMapping_typeExpression: string
+    LABEL_GenTypeMapping_language: string
+    LABEL_GenTypeMapping_propertyType: string
+    LABEL_GenTypeMapping_remark: string
 
-    VALIDATE_GenTypeMapping_can_not_be_empty: string
-    VALIDATE_GenTypeMapping_can_not_be_repeat: string
+    VALIDATE_GenTypeMapping_cannot_be_duplicate: string
+    VALIDATE_GenTypeMapping_typeExpression_cannot_be_empty: string
+    VALIDATE_GenTypeMapping_propertyType_cannot_be_empty: string
+
+    LABEL_GenColumnDefault_dataSourceType: string
+    LABEL_GenColumnDefault_typeCode: string
+    LABEL_GenColumnDefault_segment: string
+    LABEL_GenColumnDefault_rawType: string
+    LABEL_GenColumnDefault_dataSize: string
+    LABEL_GenColumnDefault_numericPrecision: string
+    LABEL_GenColumnDefault_defaultValue: string
+    LABEL_GenColumnDefault_remark: string
+
+    VALIDATE_GenColumnDefault_cannot_be_duplicate: string
+    VALIDATE_GenColumnDefault_rawType_cannot_be_empty: string
+    VALIDATE_GenColumnDefault_dataSize_cannot_be_empty: string
+    VALIDATE_GenColumnDefault_numericPrecision_cannot_be_empty: string
 }
 
 export type MainLocaleKey = keyof MainLocale

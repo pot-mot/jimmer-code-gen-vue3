@@ -1,11 +1,12 @@
 import {uniqWith} from "lodash";
 import {GenColumnDefaultInput} from "@/api/__generated/model/static";
 import {DeepReadonly} from "vue";
+import {MainLocaleKey} from "@/i18n";
 
 export const validateColumnDefaultForm = (
     columnDefaults: DeepReadonly<Array<GenColumnDefaultInput>>
-): string[] => {
-    const messageList: string[] = []
+): MainLocaleKey[] => {
+    const messageList: MainLocaleKey[] = []
 
     const uniqueColumnDefaults = uniqWith(columnDefaults, (mapping1, mapping2) => {
         const keys = <(keyof GenColumnDefaultInput)[]>['dataSourceType', 'typeCode']
@@ -18,15 +19,18 @@ export const validateColumnDefaultForm = (
     })
 
     if (uniqueColumnDefaults.length !== columnDefaults.length) {
-        messageList.push('ColumnDefault 的 dataSourceType 和 typeCode 不可重复');
+        messageList.push('VALIDATE_GenTypeMapping_cannot_be_duplicate');
     }
 
     columnDefaults.forEach((columnDefault) => {
+        if (!columnDefault.rawType) {
+            messageList.push('VALIDATE_GenColumnDefault_rawType_cannot_be_empty');
+        }
         if (columnDefault.dataSize as number | null === null) {
-            messageList.push('ColumnDefault 的 dataSize 不可为空');
+            messageList.push('VALIDATE_GenColumnDefault_dataSize_cannot_be_empty');
         }
         if (columnDefault.numericPrecision as number | null === null) {
-            messageList.push('ColumnDefault 的 numericPrecision 不可为空');
+            messageList.push('VALIDATE_GenColumnDefault_numericPrecision_cannot_be_empty');
         }
     })
 
