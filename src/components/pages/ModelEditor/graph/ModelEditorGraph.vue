@@ -33,13 +33,13 @@
 						}
 					}"/>
 				</el-tooltip>
-				<el-select v-model="VIEW.layoutDirection" class="cling-left" size="small"
+				<el-select v-model="VIEW.layoutDirection.value" class="cling-left" size="small"
 						   style="width: 4em"
 						   @change="VIEW.layout()">
-					<el-option label="→" value="LR">左至右</el-option>
-					<el-option label="←" value="RL">右至左</el-option>
-					<el-option label="↓" value="TB">上至下</el-option>
-					<el-option label="↑" value="BT">下至上</el-option>
+					<el-option label="→" value="LR">→ 左至右</el-option>
+					<el-option label="←" value="RL">← 右至左</el-option>
+					<el-option label="↓" value="TB">↓ 上至下</el-option>
+					<el-option label="↑" value="BT">↑ 下至上</el-option>
 				</el-select>
 			</li>
 
