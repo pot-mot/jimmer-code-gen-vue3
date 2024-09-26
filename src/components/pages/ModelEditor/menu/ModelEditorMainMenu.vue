@@ -10,6 +10,9 @@ import {
     AssociationItemShowType,
     AssociationItemShowType_CONSTANTS
 } from "@/components/pages/ModelEditor/menu/AssociationItemShowType.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+
+const i18nStore = useI18nStore()
 
 const {MODEL, MODEL_DIALOG_STATE, VIEW} = useModelEditorStore()
 
@@ -23,11 +26,11 @@ const toggleEdgeShow = () => {
 const formattedEdgeShowType = computed(() => {
     switch (associationItemShowType.value) {
         case "NAME":
-            return "显示：名称"
+            return i18nStore.translate('LABEL_ModelEditorMainMenu_associationShow_nameOnly')
         case "TABLE":
-            return "显示：连接表"
+            return i18nStore.translate('LABEL_ModelEditorMainMenu_associationShow_joinTable')
         case "COLUMN":
-            return "显示：连接列"
+            return i18nStore.translate('LABEL_ModelEditorMainMenu_associationShow_joinColumn')
     }
 })
 </script>
@@ -35,10 +38,10 @@ const formattedEdgeShowType = computed(() => {
 <template>
     <div>
         <el-button style="margin-bottom: 0.5em;" @click="() => MODEL_DIALOG_STATE.dataSourceLoadMenuOpenState = true">
-            从数据源导入
+			{{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromDataSource') }}
         </el-button>
         <el-button style="margin-bottom: 0.5em;" @click="() => MODEL_DIALOG_STATE.modelLoadMenuOpenState = true">
-            从已持久化的模型导入
+			{{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromModel') }}
         </el-button>
 
         <Details open>
@@ -51,7 +54,7 @@ const formattedEdgeShowType = computed(() => {
 							'createTable',
 							{options: {x: VIEW.getCenterPoint().x * 3/4, y: VIEW.getCenterPoint().y * 3/4}}
 						)">
-                        创建表
+						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_createTable') }}
                     </el-button>
                 </div>
             </template>
@@ -69,7 +72,9 @@ const formattedEdgeShowType = computed(() => {
             <template #title>
                 <div style="height: 2em; line-height: 2em;">
                     <el-text>Associations</el-text>
-                    <el-button style="margin-left: 0.5em;" @click="toggleEdgeShow">{{formattedEdgeShowType}}</el-button>
+                    <el-button style="margin-left: 0.5em;" @click="toggleEdgeShow">
+						{{formattedEdgeShowType}}
+					</el-button>
                 </div>
             </template>
 
@@ -87,7 +92,8 @@ const formattedEdgeShowType = computed(() => {
             <template #title>
                 <div style="height: 2em; line-height: 2em;">
                     <el-text>Enums</el-text>
-                    <el-button style="margin-left: 0.5em;" @click="ModelEditorEventBus.emit('createEnum')">创建枚举
+                    <el-button style="margin-left: 0.5em;" @click="ModelEditorEventBus.emit('createEnum')">
+						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_createEnum') }}
                     </el-button>
                 </div>
             </template>

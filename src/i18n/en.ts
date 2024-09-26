@@ -60,6 +60,14 @@ export const mainLocaleEn: MainLocale = {
     LABEL_DataSourceForm_password: "Password",
     LABEL_DataSourceForm_remark: "Remark",
 
+    LABEL_ModelEditorMainMenu_loadFromDataSource: "Load From Data Source",
+    LABEL_ModelEditorMainMenu_loadFromModel: "Load From Model",
+    LABEL_ModelEditorMainMenu_createTable: "Create Table",
+    LABEL_ModelEditorMainMenu_createEnum: "Create Enum",
+    LABEL_ModelEditorMainMenu_associationShow_nameOnly: "Show: Name",
+    LABEL_ModelEditorMainMenu_associationShow_joinTable: "Show: Join Table",
+    LABEL_ModelEditorMainMenu_associationShow_joinColumn: "Show: Join Column",
+
     LABEL_GenConfigForm_dataSourceType: "Data Source Type",
     LABEL_GenConfigForm_language: "Language",
     LABEL_GenConfigForm_defaultRealFk: "Use Real Foreign Key by Default",

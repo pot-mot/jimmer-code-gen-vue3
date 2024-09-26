@@ -58,6 +58,14 @@ export type MainLocale = {
     LABEL_DataSourceForm_password: string
     LABEL_DataSourceForm_remark: string
 
+    LABEL_ModelEditorMainMenu_loadFromDataSource: string
+    LABEL_ModelEditorMainMenu_loadFromModel: string
+    LABEL_ModelEditorMainMenu_createTable: string
+    LABEL_ModelEditorMainMenu_createEnum: string
+    LABEL_ModelEditorMainMenu_associationShow_nameOnly: string
+    LABEL_ModelEditorMainMenu_associationShow_joinTable: string
+    LABEL_ModelEditorMainMenu_associationShow_joinColumn: string
+
     LABEL_GenConfigForm_dataSourceType: string
     LABEL_GenConfigForm_language: string
     LABEL_GenConfigForm_defaultRealFk: string

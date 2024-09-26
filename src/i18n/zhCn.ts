@@ -60,6 +60,14 @@ export const mainLocaleZhCn: MainLocale = {
     LABEL_DataSourceForm_password: "密码",
     LABEL_DataSourceForm_remark: "备注",
 
+    LABEL_ModelEditorMainMenu_loadFromDataSource: "从数据源加载",
+    LABEL_ModelEditorMainMenu_loadFromModel: "从模型加载",
+    LABEL_ModelEditorMainMenu_createTable: "新建表",
+    LABEL_ModelEditorMainMenu_createEnum: "新建枚举",
+    LABEL_ModelEditorMainMenu_associationShow_nameOnly: "显示：名称",
+    LABEL_ModelEditorMainMenu_associationShow_joinTable: "显示：连接表",
+    LABEL_ModelEditorMainMenu_associationShow_joinColumn: "显示：连接列",
+
     LABEL_GenConfigForm_dataSourceType: "数据源类型",
     LABEL_GenConfigForm_language: "语言",
     LABEL_GenConfigForm_defaultRealFk: "默认使用真实外键",
