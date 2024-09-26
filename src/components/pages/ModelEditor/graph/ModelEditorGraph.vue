@@ -4,28 +4,30 @@
 
 		<ul v-if="GRAPH.isLoaded" class="toolbar left-top">
 			<li>
-				<el-tooltip content="保存模型 [Ctrl + s]">
+				<el-tooltip :content="`${i18nStore.translate('LABEL_ModelEditorGraph_saveModel')} [Ctrl + s]`">
 					<el-button :icon="SaveIcon" @click="handleSaveModel"/>
 				</el-tooltip>
 			</li>
 
 			<li>
-				<el-tooltip content="编辑模型">
+				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_editModel')">
 					<el-button :icon="EditPen" @click="MODEL_DIALOG_STATE.handleEdit"/>
 				</el-tooltip>
 			</li>
 
 			<li>
-				<el-tooltip :disabled="!GRAPH.canUndo" content="撤回 [Ctrl + z]">
+				<el-tooltip :disabled="!GRAPH.canUndo"
+							:content="`${i18nStore.translate('LABEL_ModelEditorGraph_undo')} [Ctrl + z]`">
 					<el-button :disabled="!GRAPH.canUndo" :icon="UndoIcon" @click="HISTORY.undo()"/>
 				</el-tooltip>
-				<el-tooltip :disabled="!GRAPH.canRedo" content="重做 [Ctrl + Shift + z]">
+				<el-tooltip :disabled="!GRAPH.canRedo"
+							:content="`${i18nStore.translate('LABEL_ModelEditorGraph_redo')} [Ctrl + Shift + z]`">
 					<el-button :disabled="!GRAPH.canRedo" :icon="RedoIcon" @click="HISTORY.redo()"/>
 				</el-tooltip>
 			</li>
 
 			<li>
-				<el-tooltip content="整理布局">
+				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_layoutAndFit')">
 					<el-button :icon="LayoutIcon" class="cling-right" @click="() => {
 						VIEW.layout()
 						if (graph.isSelectionEmpty()) {
@@ -36,20 +38,24 @@
 				<el-select v-model="VIEW.layoutDirection.value" class="cling-left" size="small"
 						   style="width: 4em"
 						   @change="VIEW.layout()">
-					<el-option label="→" value="LR">→ 左至右</el-option>
-					<el-option label="←" value="RL">← 右至左</el-option>
-					<el-option label="↓" value="TB">↓ 上至下</el-option>
-					<el-option label="↑" value="BT">↑ 下至上</el-option>
+					<el-option label="→" value="LR">→ {{ i18nStore.translate('LABEL_ModelEditorGraph_layout_LR') }}
+					</el-option>
+					<el-option label="←" value="RL">← {{ i18nStore.translate('LABEL_ModelEditorGraph_layout_RL') }}
+					</el-option>
+					<el-option label="↓" value="TB">↓ {{ i18nStore.translate('LABEL_ModelEditorGraph_layout_TB') }}
+					</el-option>
+					<el-option label="↑" value="BT">↑ {{ i18nStore.translate('LABEL_ModelEditorGraph_layout_BT') }}
+					</el-option>
 				</el-select>
 			</li>
 
 			<li>
-				<el-tooltip content="适应画布">
+				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_fit')">
 					<el-button :icon="FitIcon" @click="VIEW.fit()"/>
 				</el-tooltip>
 			</li>
 			<li>
-				<el-tooltip content="居中">
+				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_center')">
 					<el-button :icon="CenterIcon" @click="VIEW.center()"/>
 				</el-tooltip>
 			</li>
@@ -57,13 +63,23 @@
 
 		<ul v-if="GRAPH.isLoaded" class="toolbar left-bottom">
 			<li>
-				<el-tooltip :content="GRAPH.isSelectionEmpty ? '清理画布' : '移除选中节点与关联[Delete]'">
+				<el-tooltip
+					:content="
+						GRAPH.isSelectionEmpty ?
+							i18nStore.translate('LABEL_ModelEditorGraph_clean') :
+							i18nStore.translate('LABEL_ModelEditorGraph_cleanSelected') +
+						'[Delete]'">
 					<el-button :icon="EraserIcon"
 							   @click="GRAPH.isSelectionEmpty ? REMOVE.removeAllCells() : REMOVE.removeSelectedCells()"/>
 				</el-tooltip>
 			</li>
 			<li>
-				<el-tooltip :content="GRAPH.isSelectionEmpty ? '清除关联' : '移除选中关联[Shift + Delete]'">
+				<el-tooltip
+					:content="
+						GRAPH.isSelectionEmpty ?
+							i18nStore.translate('LABEL_ModelEditorGraph_cleanAssociation') :
+							i18nStore.translate('LABEL_ModelEditorGraph_cleanSelectedAssociation') +
+						'[Shift + Delete]'">
 					<el-button :icon="AssociationOffIcon"
 							   @click="GRAPH.isSelectionEmpty ? REMOVE.removeAllEdges() : REMOVE.removeSelectedEdges()"/>
 				</el-tooltip>
@@ -194,6 +210,9 @@ import MiniMap from "@/components/pages/ModelEditor/minimap/MiniMap.vue";
 import {useDebugStore} from "@/store/debug/debugStore.ts";
 import {handleModelEditorKeyEvent} from "@/components/pages/ModelEditor/graph/keyEvent/keyEvent.ts";
 import {validateModelForm} from "@/components/business/model/form/validateModel.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+
+const i18nStore = useI18nStore()
 
 const container = ref<HTMLElement>()
 const wrapper = ref<HTMLElement>()
@@ -211,7 +230,7 @@ onMounted(() => {
 
 	graph = initModelEditor(container.value!, wrapper.value!)
 
-    GRAPH_LOAD.load(graph)
+	GRAPH_LOAD.load(graph)
 
 	graph.on('history:change', (args) => {
 		const message = args.options.name ?? 'history:change'
@@ -234,7 +253,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-    GRAPH_LOAD.unload()
+	GRAPH_LOAD.unload()
 })
 
 // 表编辑事件

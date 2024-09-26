@@ -66,6 +66,23 @@ export type MainLocale = {
     LABEL_ModelEditorMainMenu_associationShow_joinTable: string
     LABEL_ModelEditorMainMenu_associationShow_joinColumn: string
 
+    LABEL_ModelEditorGraph_saveModel: string
+    LABEL_ModelEditorGraph_editModel: string
+    LABEL_ModelEditorGraph_undo: string
+    LABEL_ModelEditorGraph_redo: string
+    LABEL_ModelEditorGraph_layoutAndFit: string
+    LABEL_ModelEditorGraph_layout_LR: string
+    LABEL_ModelEditorGraph_layout_RL: string
+    LABEL_ModelEditorGraph_layout_TB: string
+    LABEL_ModelEditorGraph_layout_BT: string
+    LABEL_ModelEditorGraph_fit: string
+    LABEL_ModelEditorGraph_center: string
+
+    LABEL_ModelEditorGraph_clean: string
+    LABEL_ModelEditorGraph_cleanSelected: string
+    LABEL_ModelEditorGraph_cleanAssociation: string
+    LABEL_ModelEditorGraph_cleanSelectedAssociation: string
+
     LABEL_GenConfigForm_dataSourceType: string
     LABEL_GenConfigForm_language: string
     LABEL_GenConfigForm_defaultRealFk: string

@@ -68,6 +68,23 @@ export const mainLocaleZhCn: MainLocale = {
     LABEL_ModelEditorMainMenu_associationShow_joinTable: "显示：连接表",
     LABEL_ModelEditorMainMenu_associationShow_joinColumn: "显示：连接列",
 
+    LABEL_ModelEditorGraph_saveModel: '保存',
+    LABEL_ModelEditorGraph_editModel: '编辑',
+    LABEL_ModelEditorGraph_undo: '撤回',
+    LABEL_ModelEditorGraph_redo: '重做',
+    LABEL_ModelEditorGraph_layoutAndFit: '整理布局',
+    LABEL_ModelEditorGraph_layout_LR: '左至右',
+    LABEL_ModelEditorGraph_layout_RL: '右至左',
+    LABEL_ModelEditorGraph_layout_TB: '上至下',
+    LABEL_ModelEditorGraph_layout_BT: '下至上',
+    LABEL_ModelEditorGraph_fit: '适应画布',
+    LABEL_ModelEditorGraph_center: '居中',
+
+    LABEL_ModelEditorGraph_clean: '清理画布',
+    LABEL_ModelEditorGraph_cleanSelected: '清理选中部分',
+    LABEL_ModelEditorGraph_cleanAssociation: '清理关联',
+    LABEL_ModelEditorGraph_cleanSelectedAssociation: '清理选中关联',
+
     LABEL_GenConfigForm_dataSourceType: "数据源类型",
     LABEL_GenConfigForm_language: "语言",
     LABEL_GenConfigForm_defaultRealFk: "默认使用真实外键",
