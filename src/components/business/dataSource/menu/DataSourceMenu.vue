@@ -96,7 +96,5 @@ defineSlots<DataSourceMenuSlots>()
 		</ul>
 	</slot>
 
-	<DataSourceDialog
-		v-model="saveDialogOpenState" :init-x="x" :init-y="y" @added="handleSaveFinish">
-	</DataSourceDialog>
+	<DataSourceDialog v-model="saveDialogOpenState" :init-x="x" :init-y="y" @added="handleSaveFinish"/>
 </template>

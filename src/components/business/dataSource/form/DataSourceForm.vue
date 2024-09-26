@@ -94,7 +94,7 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-	<el-form label-position="left" label-width="6em">
+	<el-form label-position="left" :label-width="i18nStore.language === 'zh-cn' ? '3rem' : '6em'">
 		<el-form-item :label="i18nStore.translate('LABEL_DataSourceForm_name')">
 			<el-input v-model="dataSource.name"/>
 		</el-form-item>
