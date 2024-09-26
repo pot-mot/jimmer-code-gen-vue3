@@ -41,6 +41,16 @@ export const mainLocaleZhCn: MainLocale = {
     LABEL_DEBUG_message: '消息内容',
     LABEL_DEBUG_timestamp: '时间戳',
 
+    LABEL_ModelForm_name: "名称",
+    LABEL_ModelForm_author: "作者",
+    LABEL_ModelForm_dataSourceType: "数据源类型",
+    LABEL_ModelForm_language: "语言",
+    LABEL_ModelForm_packagePath: "包路径",
+    LABEL_ModelForm_tablePath: "表路径",
+    LABEL_ModelForm_remark: "备注",
+    LABEL_ModelForm_advanceOptions: "高级选项",
+    LABEL_ModelForm_content: "内容",
+
     LABEL_GenConfigForm_dataSourceType: "数据源类型",
     LABEL_GenConfigForm_language: "语言",
     LABEL_GenConfigForm_defaultRealFk: "默认使用真实外键",

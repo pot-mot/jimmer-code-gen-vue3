@@ -41,6 +41,16 @@ export const mainLocaleEn: MainLocale = {
     LABEL_DEBUG_message: 'Message',
     LABEL_DEBUG_timestamp: 'Timestamp',
 
+    LABEL_ModelForm_name: "Name",
+    LABEL_ModelForm_author: "Author",
+    LABEL_ModelForm_dataSourceType: "Data Source",
+    LABEL_ModelForm_language: "Language",
+    LABEL_ModelForm_packagePath: "Package Path",
+    LABEL_ModelForm_tablePath: "Table Path",
+    LABEL_ModelForm_remark: "Remark",
+    LABEL_ModelForm_advanceOptions: "Advance Options",
+    LABEL_ModelForm_content: "Content",
+
     LABEL_GenConfigForm_dataSourceType: "Data Source Type",
     LABEL_GenConfigForm_language: "Language",
     LABEL_GenConfigForm_defaultRealFk: "Use Real Foreign Key by Default",

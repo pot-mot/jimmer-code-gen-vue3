@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {ref, watch} from "vue";
 import {cloneDeep} from 'lodash'
-import {GenModelInput} from "@/api/__generated/model/static";
+import {GenConfigProperties, GenModelInput} from "@/api/__generated/model/static";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
 import {jsonStrCompress, jsonStrPrettyFormat} from "@/utils/json.ts";
@@ -13,6 +13,9 @@ import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated
 import GenConfigForm from "@/components/business/genConfig/GenConfigForm.vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {validateModelForm} from "@/components/business/model/form/validateModel.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+
+const i18nStore = useI18nStore()
 
 const props = defineProps<ModelFormProps>()
 
@@ -86,81 +89,81 @@ const handleOpenOtherConfigDialog = () => {
 		<div>
 			<el-row :gutter="24">
 				<el-col :span="12">
-					<el-form-item label="名称">
-						<el-input v-model="model.name"></el-input>
+					<el-form-item :label="i18nStore.translate('LABEL_ModelForm_name')">
+						<el-input v-model="model.name"/>
 					</el-form-item>
 				</el-col>
 				<el-col :span="12">
-					<el-form-item label="作者">
-						<el-input v-model="model.author"></el-input>
+					<el-form-item :label="i18nStore.translate('LABEL_ModelForm_author')">
+						<el-input v-model="model.author"/>
 					</el-form-item>
 				</el-col>
 			</el-row>
 
 			<el-row :gutter="24">
 				<el-col :span="12">
-					<el-form-item label="数据源类型">
+					<el-form-item :label="i18nStore.translate('LABEL_ModelForm_dataSourceType')">
 						<el-select v-model="model.dataSourceType">
 							<el-option v-for="dataSourceType in DataSourceType_CONSTANTS"
-									   :value="dataSourceType"></el-option>
+									   :value="dataSourceType"/>
 						</el-select>
 					</el-form-item>
 				</el-col>
 				<el-col :span="12">
-					<el-form-item label="语言">
+					<el-form-item :label="i18nStore.translate('LABEL_ModelForm_language')">
 						<el-select v-model="model.language">
-							<el-option v-for="language in GenLanguage_CONSTANTS" :value="language"></el-option>
+							<el-option v-for="language in GenLanguage_CONSTANTS" :value="language"/>
 						</el-select>
 					</el-form-item>
 				</el-col>
 
 				<el-col :span="12">
-					<el-form-item label="包路径">
-						<el-input v-model="model.packagePath"></el-input>
+					<el-form-item :label="i18nStore.translate('LABEL_ModelForm_packagePath')">
+						<el-input v-model="model.packagePath"/>
 					</el-form-item>
 				</el-col>
 				<el-col :span="12">
-					<el-form-item label="表路径">
-						<el-input v-model="model.tablePath"></el-input>
+					<el-form-item :label="i18nStore.translate('LABEL_ModelForm_tablePath')">
+						<el-input v-model="model.tablePath"/>
 					</el-form-item>
 				</el-col>
 
 				<el-col :span="24">
-					<el-form-item label="备注">
-						<el-input v-model="model.remark" type="textarea" :rows="4" resize="none"></el-input>
+					<el-form-item :label="i18nStore.translate('LABEL_ModelForm_remark')">
+						<el-input v-model="model.remark" type="textarea" :rows="4" resize="none"/>
 					</el-form-item>
 				</el-col>
 
 				<el-col :span="4" :offset="20">
 					<el-form-item>
-						<el-button @click="handleOpenOtherConfigDialog">其他配置项</el-button>
+						<el-button @click="handleOpenOtherConfigDialog">{{ i18nStore.translate('LABEL_ModelForm_advanceOptions')
+							}}</el-button>
 					</el-form-item>
 				</el-col>
 			</el-row>
 		</div>
 
-		<el-form-item label="内容">
+		<el-form-item :label="i18nStore.translate('LABEL_ModelForm_content')">
 			<CodeEditor
 				style="height: 100%; border: 1px solid #ccc; border-radius: 8px;"
 				v-model="model.graphData"
-				language="json"></CodeEditor>
+				language="json"/>
 		</el-form-item>
 
 		<div style="text-align: right; position: absolute; bottom: 0.5em; left: 1em; right: 1em;">
-			<el-button type="info" @click="handleCancel">取消</el-button>
-			<el-button type="warning" @click="handleSubmit">提交</el-button>
+			<el-button type="info" @click="handleCancel">{{ i18nStore.translate('BUTTON_cancel') }}</el-button>
+			<el-button type="warning" @click="handleSubmit">{{ i18nStore.translate('BUTTON_submit') }}</el-button>
 		</div>
 	</el-form>
 
 	<DragDialog v-model="otherConfigOpenState" :init-y="100" :init-h="620">
 		<GenConfigForm
 			v-model="model"
-			@submit="(data) => {
+			@submit="(data: GenConfigProperties) => {
 				model = {...model, ...data}
 				otherConfigOpenState = false
 		    }"
 			@cancel="otherConfigOpenState = false"
-			style="padding: 1em 0.5em;">
-		</GenConfigForm>
+			style="padding: 1em 0.5em;"/>
 	</DragDialog>
 </template>

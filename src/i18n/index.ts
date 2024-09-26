@@ -39,6 +39,16 @@ export type MainLocale = {
     LABEL_DEBUG_message: string
     LABEL_DEBUG_timestamp: string
 
+    LABEL_ModelForm_name: string
+    LABEL_ModelForm_author: string
+    LABEL_ModelForm_dataSourceType: string
+    LABEL_ModelForm_language: string
+    LABEL_ModelForm_packagePath: string
+    LABEL_ModelForm_tablePath: string
+    LABEL_ModelForm_remark: string
+    LABEL_ModelForm_advanceOptions: string
+    LABEL_ModelForm_content: string
+
     LABEL_GenConfigForm_dataSourceType: string
     LABEL_GenConfigForm_language: string
     LABEL_GenConfigForm_defaultRealFk: string
