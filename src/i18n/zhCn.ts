@@ -9,6 +9,7 @@ export const mainLocaleZhCn: MainLocale = {
     BUTTON_cancel: "取消",
     BUTTON_load: "导入",
     BUTTON_export: "导出",
+    BUTTON_test: "测试",
 
     MESSAGE_save_success: '保存成功',
     MESSAGE_save_fail: '保存失败',
@@ -50,6 +51,14 @@ export const mainLocaleZhCn: MainLocale = {
     LABEL_ModelForm_remark: "备注",
     LABEL_ModelForm_advanceOptions: "高级选项",
     LABEL_ModelForm_content: "内容",
+
+    LABEL_DataSource_new: "新增数据源",
+
+    LABEL_DataSourceForm_name: "名称",
+    LABEL_DataSourceForm_url: "URL",
+    LABEL_DataSourceForm_username: "用户名",
+    LABEL_DataSourceForm_password: "密码",
+    LABEL_DataSourceForm_remark: "备注",
 
     LABEL_GenConfigForm_dataSourceType: "数据源类型",
     LABEL_GenConfigForm_language: "语言",

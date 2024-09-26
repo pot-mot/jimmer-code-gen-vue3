@@ -9,6 +9,7 @@ import {DataSourceMenuEvents} from "./DataSourceMenuEvents.ts";
 import {sendMessage} from "@/message/message.ts";
 import mitt from 'mitt'
 import {DataSourceMenuSlots} from "@/components/business/dataSource/menu/DataSourceMenuSlotProps.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
 const eventBus = mitt<DataSourceMenuEvents>()
 
@@ -21,6 +22,8 @@ const getDataSources = async () => {
 	dataSources.value = await api.dataSourceService.list()
 	dataSourcesLoading.stop(flag)
 }
+
+const i18nStore = useI18nStore()
 
 onMounted(() => {
 	getDataSources()
@@ -73,7 +76,9 @@ defineSlots<DataSourceMenuSlots>()
 </script>
 
 <template>
-	<el-button style="margin-bottom: 0.5em;" @click="handleSave">新增数据源</el-button>
+	<el-button style="margin-bottom: 0.5em;" @click="handleSave">
+		{{ i18nStore.translate('LABEL_DataSource_new') }}
+	</el-button>
 
 	<slot name="dataSources"
 		  :loading="dataSourcesLoading.isLoading"

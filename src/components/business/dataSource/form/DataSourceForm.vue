@@ -8,6 +8,9 @@ import {DataSourceFormProps} from "./DataSourceFormProps.ts";
 import {DataSourceType_CONSTANTS} from "@/api/__generated/model/enums";
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import {useDataSourceDefaultStore} from "@/store/dataSource/dataSourceDefaultStore.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+
+const i18nStore = useI18nStore()
 
 const loadingStore = useGlobalLoadingStore()
 
@@ -92,38 +95,38 @@ const handleSubmit = async () => {
 
 <template>
 	<el-form label-position="left" label-width="6em">
-		<el-form-item label="name">
-			<el-input v-model="dataSource.name"></el-input>
+		<el-form-item :label="i18nStore.translate('LABEL_DataSourceForm_name')">
+			<el-input v-model="dataSource.name"/>
 		</el-form-item>
 
-		<el-form-item label="url">
+		<el-form-item :label="i18nStore.translate('LABEL_DataSourceForm_url')">
 			<el-col :span="6">
 				<el-select v-model="dataSource.type" filterable name="type">
 					<el-option v-for="type in DataSourceType_CONSTANTS"
-							   :label="type.toLowerCase()" :value="type"></el-option>
+							   :label="type.toLowerCase()" :value="type"/>
 				</el-select>
 			</el-col>
 			<el-col :span="18">
-				<el-input v-model="dataSource.url" style="width: 100%;"></el-input>
+				<el-input v-model="dataSource.url" style="width: 100%;"/>
 			</el-col>
 		</el-form-item>
 
-		<el-form-item label="username">
-			<el-input v-model="dataSource.username"></el-input>
+		<el-form-item :label="i18nStore.translate('LABEL_DataSourceForm_username')">
+			<el-input v-model="dataSource.username"/>
 		</el-form-item>
 
-		<el-form-item label="password">
-			<el-input v-model="dataSource.password" show-password></el-input>
+		<el-form-item :label="i18nStore.translate('LABEL_DataSourceForm_password')">
+			<el-input v-model="dataSource.password" show-password/>
 		</el-form-item>
 
-		<el-form-item label="remark">
-			<el-input v-model="dataSource.remark" type="textarea"></el-input>
+		<el-form-item :label="i18nStore.translate('LABEL_DataSourceForm_remark')">
+			<el-input v-model="dataSource.remark" type="textarea"/>
 		</el-form-item>
 
 		<el-form-item>
 			<div style="text-align: right;">
-				<el-button type="info" @click="handleTest">测试</el-button>
-				<el-button type="warning" @click="handleSubmit">提交</el-button>
+				<el-button type="info" @click="handleTest">{{ i18nStore.translate('BUTTON_test') }}</el-button>
+				<el-button type="warning" @click="handleSubmit">{{ i18nStore.translate('BUTTON_submit') }}</el-button>
 			</div>
 		</el-form-item>
 	</el-form>

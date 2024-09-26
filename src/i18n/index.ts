@@ -7,6 +7,7 @@ export type MainLocale = {
     BUTTON_cancel: string
     BUTTON_load: string
     BUTTON_export: string
+    BUTTON_test: string
 
     MESSAGE_save_success: string
     MESSAGE_save_fail: string
@@ -48,6 +49,14 @@ export type MainLocale = {
     LABEL_ModelForm_remark: string
     LABEL_ModelForm_advanceOptions: string
     LABEL_ModelForm_content: string
+
+    LABEL_DataSource_new: string
+
+    LABEL_DataSourceForm_name: string
+    LABEL_DataSourceForm_url: string
+    LABEL_DataSourceForm_username: string
+    LABEL_DataSourceForm_password: string
+    LABEL_DataSourceForm_remark: string
 
     LABEL_GenConfigForm_dataSourceType: string
     LABEL_GenConfigForm_language: string

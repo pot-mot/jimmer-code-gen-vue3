@@ -136,8 +136,9 @@ const handleOpenOtherConfigDialog = () => {
 
 				<el-col :span="4" :offset="20">
 					<el-form-item>
-						<el-button @click="handleOpenOtherConfigDialog">{{ i18nStore.translate('LABEL_ModelForm_advanceOptions')
-							}}</el-button>
+						<el-button @click="handleOpenOtherConfigDialog">
+							{{ i18nStore.translate('LABEL_ModelForm_advanceOptions') }}
+						</el-button>
 					</el-form-item>
 				</el-col>
 			</el-row>

@@ -9,6 +9,7 @@ export const mainLocaleEn: MainLocale = {
     BUTTON_cancel: "Cancel",
     BUTTON_load: "Load",
     BUTTON_export: "Export",
+    BUTTON_test: "Test",
 
     MESSAGE_save_success: 'Save Successful',
     MESSAGE_save_fail: 'Save Failed',
@@ -50,6 +51,14 @@ export const mainLocaleEn: MainLocale = {
     LABEL_ModelForm_remark: "Remark",
     LABEL_ModelForm_advanceOptions: "Advance Options",
     LABEL_ModelForm_content: "Content",
+
+    LABEL_DataSource_new: "Create New Data Source",
+
+    LABEL_DataSourceForm_name: "Name",
+    LABEL_DataSourceForm_url: "URL",
+    LABEL_DataSourceForm_username: "Username",
+    LABEL_DataSourceForm_password: "Password",
+    LABEL_DataSourceForm_remark: "Remark",
 
     LABEL_GenConfigForm_dataSourceType: "Data Source Type",
     LABEL_GenConfigForm_language: "Language",
