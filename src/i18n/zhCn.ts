@@ -7,6 +7,8 @@ export const mainLocaleZhCn: MainLocale = {
     BUTTON_clear: "清理",
     BUTTON_save: "保存",
     BUTTON_cancel: "取消",
+    BUTTON_load: "导入",
+    BUTTON_export: "导出",
 
     MESSAGE_save_success: '保存成功',
     MESSAGE_save_fail: '保存失败',
@@ -18,6 +20,12 @@ export const mainLocaleZhCn: MainLocale = {
     MESSAGE_delete_fail: '删除失败',
 
     LABEL_OPERATION: "操作",
+    LABEL_CREATE_AT: "创建于",
+    LABEL_MODIFY_AT: "修改于",
+
+    LABEL_ModelListPage_createNewModel: "创建新模型",
+    LABEL_ModelListPage_manageDataSource: "管理数据源",
+    LABEL_ModelListPage_loadModelJson: "导入模型 JSON",
 
     LABEL_GlobalGenConfigForm: "全局生成配置",
     LABEL_TypeMappingForm: "类型映射配置",

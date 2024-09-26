@@ -14,6 +14,9 @@ import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
 import {deleteConfirm} from "@/message/confirm.ts";
 import DataSourceMenu from "@/components/business/dataSource/menu/DataSourceMenu.vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+
+const i18nStore = useI18nStore();
 
 const router = useRouter()
 
@@ -162,15 +165,15 @@ const handleDelete = (model: GenModelSimpleView) => {
     <div class="wrapper" v-loading="modelsLoading.isLoading.value">
         <div>
             <el-button size="large" @click="handleCreate">
-                创建新模型
+				{{ i18nStore.translate('LABEL_ModelListPage_createNewModel') }}
             </el-button>
 
             <el-button size="large" @click="emitLoadDataSource">
-                管理数据源
+				{{ i18nStore.translate('LABEL_ModelListPage_manageDataSource') }}
             </el-button>
 
             <el-button size="large" @click="emitLoadModelJson">
-                导入模型 JSON
+                {{ i18nStore.translate('LABEL_ModelListPage_loadModelJson') }}
                 <input v-show="false" ref="modelUploader" type="file" accept="application/json"
                        @change="handleLoadModelJson"/>
             </el-button>
@@ -187,7 +190,7 @@ const handleDelete = (model: GenModelSimpleView) => {
                     </div>
 
                     <div class="right-bottom hover-show-item">
-                        <el-tooltip content="导出">
+                        <el-tooltip :content="i18nStore.translate('BUTTON_export')">
                             <el-button :icon="ExportIcon" link type="info"
                                        @click.prevent.stop="handleExport(model)"/>
                         </el-tooltip>
@@ -196,11 +199,11 @@ const handleDelete = (model: GenModelSimpleView) => {
                     <div class="title">{{ model.name }}</div>
 
                     <div style="padding-top: 0.5em;">
-                        <el-text type="info">创建于 {{ datetimeFormat(model.createdTime) }}</el-text>
+                        <el-text type="info">{{ i18nStore.translate('LABEL_CREATE_AT') }} {{ datetimeFormat(model.createdTime) }}</el-text>
                     </div>
 
                     <div style="padding-bottom: 0.5em;">
-                        <el-text type="info">修改于 {{ datetimeFormat(model.modifiedTime) }}</el-text>
+                        <el-text type="info">{{ i18nStore.translate('LABEL_MODIFY_AT') }} {{ datetimeFormat(model.modifiedTime) }}</el-text>
                     </div>
 
                     <div style="line-height: 1.4em;">

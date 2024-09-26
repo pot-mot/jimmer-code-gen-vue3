@@ -5,6 +5,8 @@ export type MainLocale = {
     BUTTON_clear: string
     BUTTON_save: string
     BUTTON_cancel: string
+    BUTTON_load: string
+    BUTTON_export: string
 
     MESSAGE_save_success: string
     MESSAGE_save_fail: string
@@ -16,6 +18,12 @@ export type MainLocale = {
     MESSAGE_delete_fail: string
 
     LABEL_OPERATION: string
+    LABEL_CREATE_AT: string
+    LABEL_MODIFY_AT: string
+
+    LABEL_ModelListPage_createNewModel: string
+    LABEL_ModelListPage_manageDataSource: string
+    LABEL_ModelListPage_loadModelJson: string
 
     LABEL_GlobalGenConfigForm: string
     LABEL_TypeMappingForm: string

@@ -7,6 +7,8 @@ export const mainLocaleEn: MainLocale = {
     BUTTON_clear: "Clear",
     BUTTON_save: "Save",
     BUTTON_cancel: "Cancel",
+    BUTTON_load: "Load",
+    BUTTON_export: "Export",
 
     MESSAGE_save_success: 'Save Successful',
     MESSAGE_save_fail: 'Save Failed',
@@ -18,6 +20,12 @@ export const mainLocaleEn: MainLocale = {
     MESSAGE_delete_fail: 'Delete Failed',
 
     LABEL_OPERATION: "Operation",
+    LABEL_CREATE_AT: "Create at",
+    LABEL_MODIFY_AT: "Modify at",
+
+    LABEL_ModelListPage_createNewModel: "Create New Model",
+    LABEL_ModelListPage_manageDataSource: "Manage Data Source",
+    LABEL_ModelListPage_loadModelJson: "Load Model Json",
 
     LABEL_GlobalGenConfigForm: "Edit GlobalGenConfig",
     LABEL_TypeMappingForm: "Edit TypeMapping",
