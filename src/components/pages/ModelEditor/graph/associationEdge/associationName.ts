@@ -1,7 +1,7 @@
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {Edge} from "@antv/x6"
 import {ASSOCIATION_EDGE} from "@/components/pages/ModelEditor/constant.ts";
-import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
+import {createAssociationName} from "@/components/business/association/createAssociationName.ts";
 
 export const syncAssociationName = (
     edge: Edge

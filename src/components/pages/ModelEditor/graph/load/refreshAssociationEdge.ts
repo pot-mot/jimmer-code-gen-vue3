@@ -4,7 +4,7 @@ import {
     GenTableModelInput,
     GenTableModelInput_TargetOf_columns
 } from "@/api/__generated/model/static";
-import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
+import {createAssociationName} from "@/components/business/association/createAssociationName.ts";
 import {Edge, Node} from "@antv/x6";
 
 export const refreshEdgeAssociation = (

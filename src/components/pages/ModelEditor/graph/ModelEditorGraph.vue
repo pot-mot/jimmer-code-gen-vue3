@@ -206,7 +206,7 @@ const loadingStore = useGlobalLoadingStore()
 
 const debugStore = useDebugStore()
 
-onMounted(async () => {
+onMounted(() => {
 	const flag = loadingStore.start('ModelEditorGraph onMounted')
 
 	graph = initModelEditor(container.value!, wrapper.value!)

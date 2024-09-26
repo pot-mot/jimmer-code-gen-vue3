@@ -18,7 +18,7 @@ import Details from "@/components/global/common/Details.vue";
 import {getDefaultColumn, getDefaultIndex, getDefaultTable} from "@/components/business/table/defaultTable.ts";
 import {validateColumn, validateIndex} from "@/shape/GenTableModelInput.ts";
 import {getLegalSuperTables} from "@/components/business/table/tableInheritAnalyse.ts";
-import {processNamingStrategy} from "@/components/pages/ModelEditor/graph/nameTemplate/namingStrategyProcess.ts";
+import {processNamingStrategy} from "@/components/business/genConfig/namingStrategyProcess.ts";
 import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {RefreshRight} from "@element-plus/icons-vue";

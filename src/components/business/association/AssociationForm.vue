@@ -5,7 +5,7 @@ import {RefreshRight} from "@element-plus/icons-vue";
 import {DeepReadonly, ref, watch} from "vue";
 import {cloneDeep} from "lodash";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
-import {createAssociationName} from "@/components/pages/ModelEditor/graph/nameTemplate/createAssociationName.ts";
+import {createAssociationName} from "@/components/business/association/createAssociationName.ts";
 import {sendMessage} from "@/message/message.ts";
 
 interface AssociationFormProps {
@@ -25,6 +25,14 @@ watch(() => props.association, () => {
 })
 
 const emits = defineEmits<FormEmits<GenAssociationModelInput>>()
+
+const handleRefreshAssociationName = () => {
+    association.value.name = createAssociationName(association.value)
+}
+
+const handleCleanDissociateAction = () => {
+    association.value.dissociateAction = undefined
+}
 
 const handleSubmit = async () => {
     const messageList = props.validate(association.value)
@@ -49,7 +57,7 @@ const handleCancel = () => {
                 <template #append>
                     <el-button
                         :icon="RefreshRight"
-                        @click="() => association.name = createAssociationName(association)"/>
+                        @click="handleRefreshAssociationName"/>
                 </template>
             </el-input>
         </el-form-item>
@@ -90,7 +98,7 @@ const handleCancel = () => {
 
         <el-form-item label="脱钩动作">
             <el-select v-model="association.dissociateAction"
-                       clearable @clear="association.dissociateAction = undefined">
+                       clearable @clear="handleCleanDissociateAction">
                 <el-option v-for="dissociateAction in DissociateAction_CONSTANTS" :value="dissociateAction"></el-option>
             </el-select>
         </el-form-item>

@@ -105,23 +105,7 @@ export const useGraphReactiveState = (_graph: () => Graph): GraphReactiveState =
             isSelectionEmpty.value = graph.isSelectionEmpty()
         })
 
-        // 差量更新
-        graph.on('node:selected', ({node}) => {
-            selectedNodeMap.value.set(node.id, node)
-        })
-
-        graph.on('node:unselected', ({node}) => {
-            selectedNodeMap.value.delete(node.id)
-        })
-
-        graph.on('edge:selected', ({edge}) => {
-            selectedEdgeMap.value.set(edge.id, edge)
-        })
-
-        graph.on('edge:unselected', ({edge}) => {
-            selectedEdgeMap.value.delete(edge.id)
-        })
-
+        // 响应式更新
         graph.on('node:added', ({node}) => {
             nodeMap.value.set(node.id, node)
         })
@@ -130,12 +114,28 @@ export const useGraphReactiveState = (_graph: () => Graph): GraphReactiveState =
             nodeMap.value.delete(node.id)
         })
 
+        graph.on('node:selected', ({node}) => {
+            selectedNodeMap.value.set(node.id, node)
+        })
+
+        graph.on('node:unselected', ({node}) => {
+            selectedNodeMap.value.delete(node.id)
+        })
+
         graph.on('edge:added', ({edge}) => {
             edgeMap.value.set(edge.id, edge)
         })
 
         graph.on('edge:removed', ({edge}) => {
             edgeMap.value.delete(edge.id)
+        })
+
+        graph.on('edge:selected', ({edge}) => {
+            selectedEdgeMap.value.set(edge.id, edge)
+        })
+
+        graph.on('edge:unselected', ({edge}) => {
+            selectedEdgeMap.value.delete(edge.id)
         })
 
         graph.on('history:change', () => {

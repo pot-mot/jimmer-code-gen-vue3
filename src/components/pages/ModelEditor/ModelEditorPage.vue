@@ -2,7 +2,7 @@
 import LeftTopBottomLayout from "@/components/global/layout/LeftRightLayout.vue";
 import ModelEditorMainMenu from "./menu/ModelEditorMainMenu.vue";
 import ModelEditorGraph from "./graph/ModelEditorGraph.vue";
-import {onMounted, ref, watch} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 import {Emitter} from "mitt";
 import {DataSourceMenuEvents} from "@/components/business/dataSource/menu/DataSourceMenuEvents.ts";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
@@ -42,13 +42,16 @@ onMounted(async () => {
 			return
 		}
 
-        MODEL_LOAD.loadView(model)
+        MODEL_LOAD.load(model)
 	} catch (e) {
 		sendMessage('模型解析出现问题', 'error', e)
 		await router.replace("/models")
 	}
 })
 
+onUnmounted(() => {
+    MODEL_LOAD.unload()
+})
 
 const dataSourceLoadMenu = ref()
 
