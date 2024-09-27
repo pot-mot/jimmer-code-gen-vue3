@@ -11,7 +11,7 @@ import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {AssociationItemShowType} from "@/components/pages/ModelEditor/menu/AssociationItemShowType.ts";
 
 interface AssociationItemProps {
-    edge: UnwrapRefSimple<Edge>,
+	edge: UnwrapRefSimple<Edge>,
 	association: GenAssociationModelInput,
 	showType: AssociationItemShowType
 }
@@ -20,12 +20,30 @@ const props = defineProps<AssociationItemProps>()
 
 const {GRAPH, VIEW, SELECT} = useModelEditorStore()
 
-const handleClickName = (e: MouseEvent) => {
+const handleClickAssociation = (e: MouseEvent) => {
 	if (e.ctrlKey) {
 		SELECT.select(props.edge.id)
 	} else {
 		VIEW.focus(props.edge.id)
 	}
+}
+
+const handleClickSource = (e: MouseEvent) => {
+	if (e.ctrlKey) {
+		SELECT.select(props.edge.getSourceCellId())
+	} else {
+		VIEW.focus(props.edge.getSourceCellId())
+	}
+	SELECT.select(props.edge.id)
+}
+
+const handleClickTarget = (e: MouseEvent) => {
+	if (e.ctrlKey) {
+		SELECT.select(props.edge.getTargetCellId())
+	} else {
+		VIEW.focus(props.edge.getTargetCellId())
+	}
+	SELECT.select(props.edge.id)
 }
 
 const handleDelete = () => {
@@ -87,7 +105,7 @@ const isSelected = computed(() => {
 
 		<el-text style="white-space: nowrap;">
 			<template v-if="showType === 'NAME'">
-				<el-button link @click="handleClickName">
+				<el-button link @click="handleClickAssociation">
 					<template v-if="association.name">
 						{{ association.name }}
 					</template>
@@ -99,23 +117,24 @@ const isSelected = computed(() => {
 			</template>
 
 			<template v-if="showType === 'TABLE' || showType === 'COLUMN'">
-				<el-button link @click="VIEW.focus(edge.getSourceCellId())">
+				<el-button link @click="handleClickSource">
 					{{ showType === 'COLUMN' ? sourceLabel : association.sourceTableName }}
 				</el-button>
-				<span>
-					<AssociationIcon :type="association.type"
-									 :fake="association.fake"
-									 style="transform: translateY(0.3em)"></AssociationIcon>
+				<span @click="handleClickAssociation">
+					<AssociationIcon
+						:type="association.type"
+						:fake="association.fake"
+						style="transform: translateY(0.25em)"/>
 				</span>
-				<el-button link @click="VIEW.focus(edge.getTargetCellId())">
+				<el-button link @click="handleClickTarget">
 					{{ showType === 'COLUMN' ? targetLabel : association.targetTableName }}
 				</el-button>
 			</template>
 		</el-text>
 
 		<span class="hover-show-item" style="padding-left: 0.5em;">
-			<el-button :icon="EditPen" link type="warning" @click="handleEdit(association)"></el-button>
-			<el-button :icon="Delete" link type="danger" @click="handleDelete"></el-button>
+			<el-button :icon="EditPen" link type="warning" @click="handleEdit(association)"/>
+			<el-button :icon="Delete" link type="danger" @click="handleDelete"/>
 		</span>
 	</div>
 
