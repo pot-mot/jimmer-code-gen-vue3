@@ -64,22 +64,24 @@
 		<ul v-if="GRAPH.isLoaded" class="toolbar left-bottom">
 			<li>
 				<el-tooltip
-					:content="
+					:content="i18nStore.translate(
 						GRAPH.isSelectionEmpty ?
-							i18nStore.translate('LABEL_ModelEditorGraph_clean') :
-							i18nStore.translate('LABEL_ModelEditorGraph_cleanSelected') +
-						'[Delete]'">
+							'LABEL_ModelEditorGraph_clean' :
+							'LABEL_ModelEditorGraph_cleanSelected'
+						) +
+						' [Delete]'">
 					<el-button :icon="EraserIcon"
 							   @click="GRAPH.isSelectionEmpty ? REMOVE.removeAllCells() : REMOVE.removeSelectedCells()"/>
 				</el-tooltip>
 			</li>
 			<li>
 				<el-tooltip
-					:content="
+					:content="i18nStore.translate(
 						GRAPH.isSelectionEmpty ?
-							i18nStore.translate('LABEL_ModelEditorGraph_cleanAssociation') :
-							i18nStore.translate('LABEL_ModelEditorGraph_cleanSelectedAssociation') +
-						'[Shift + Delete]'">
+							'LABEL_ModelEditorGraph_cleanAssociation' :
+							'LABEL_ModelEditorGraph_cleanSelectedAssociation'
+						) +
+						' [Shift + Delete]'">
 					<el-button :icon="AssociationOffIcon"
 							   @click="GRAPH.isSelectionEmpty ? REMOVE.removeAllEdges() : REMOVE.removeSelectedEdges()"/>
 				</el-tooltip>

@@ -80,10 +80,10 @@ export const mainLocaleEn: MainLocale = {
     LABEL_ModelEditorGraph_fit: 'Fit',
     LABEL_ModelEditorGraph_center: 'Center',
 
-    LABEL_ModelEditorGraph_clean: '清理画布',
-    LABEL_ModelEditorGraph_cleanSelected: '清理选中部分',
-    LABEL_ModelEditorGraph_cleanAssociation: '清理关联',
-    LABEL_ModelEditorGraph_cleanSelectedAssociation: '清理选中关联',
+    LABEL_ModelEditorGraph_clean: 'Clean Graph',
+    LABEL_ModelEditorGraph_cleanSelected: 'Clean Selection',
+    LABEL_ModelEditorGraph_cleanAssociation: 'Clean Associations',
+    LABEL_ModelEditorGraph_cleanSelectedAssociation: 'Clean Selected Associations',
 
     LABEL_GenConfigForm_dataSourceType: "Data Source Type",
     LABEL_GenConfigForm_language: "Language",
