@@ -9,7 +9,9 @@ import {DragDialogEmits} from "./DragDialogEmits.ts";
 import {sendMessage} from "@/message/message.ts";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 
-const openState = defineModel<boolean>()
+const openState = defineModel<boolean>({
+    required: true
+})
 
 const props = withDefaults(defineProps<DragDialogProps>(), {
 	to: "body",

@@ -45,8 +45,8 @@ const associationNameTemplate = (
 
 export const createAssociationName = (
     association: DeepReadonly<Omit<GenAssociationModelInput, 'name'>>,
-    sourceTableIsSuper: boolean = false,
-    targetTableIsSuper: boolean = false,
+    sourceTableIsSuper: boolean,
+    targetTableIsSuper: boolean,
 ): string => {
     return associationNameTemplate(
         sourceTableIsSuper ? '{}' : association.sourceTableName,

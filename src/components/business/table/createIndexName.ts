@@ -29,9 +29,10 @@ const indexNameTemplate = (
 export const createIndexName = (
     tableName: string,
     index: DeepReadonly<Omit<GenTableModelInput_TargetOf_indexes, 'name'>>,
+    tableIsSuper: boolean,
 ): string => {
     return indexNameTemplate(
-        tableName,
+        tableIsSuper ? '{}' : tableName,
         index.columns.map(it => it.name),
         index.uniqueIndex,
     )

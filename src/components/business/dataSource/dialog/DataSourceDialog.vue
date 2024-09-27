@@ -6,7 +6,9 @@ import {DataSourceFormEmits} from "../form/DataSourceFormEmits.ts";
 import {DialogInitProps} from "@/components/global/dialog/DragDialogProps.ts";
 import {DataSourceFormProps} from "@/components/business/dataSource/form/DataSourceFormProps.ts";
 
-const openState = defineModel<boolean>()
+const openState = defineModel<boolean>({
+    required: true
+})
 
 const props = defineProps<DataSourceFormProps & DialogInitProps>()
 

@@ -57,7 +57,11 @@ export const refreshEdgeAssociation = (
         if (noColumnFlag) return undefined
 
         if (oldSourceTableName !== newTable.name) {
-            association.name = createAssociationName(association)
+            association.name = createAssociationName(
+                association,
+                newTable.type === "SUPER_TABLE",
+                edge.getTargetNode()?.getData()?.table.type === "SUPER_TABLE",
+            )
         }
     }
 
@@ -83,7 +87,11 @@ export const refreshEdgeAssociation = (
         if (noColumnFlag) return undefined
 
         if (oldTargetTableName !== newTable.name) {
-            association.name = createAssociationName(association)
+            association.name = createAssociationName(
+                association,
+                edge.getSourceNode()?.getData()?.table.type === "SUPER_TABLE",
+                newTable.type === "SUPER_TABLE"
+            )
         }
     }
 

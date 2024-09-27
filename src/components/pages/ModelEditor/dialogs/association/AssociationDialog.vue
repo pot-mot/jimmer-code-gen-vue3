@@ -6,10 +6,9 @@ import AssociationForm from "@/components/business/association/AssociationForm.v
 import {createAssociationName} from "@/components/business/association/createAssociationName.ts";
 import {validateAssociation} from "@/components/business/association/validateAssociation.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import {ASSOCIATION_EDGE} from "@/components/pages/ModelEditor/constant.ts";
 import {DeepReadonly} from "vue";
 
-const {GRAPH, MODEL} = useModelEditorStore()
+const {MODEL} = useModelEditorStore()
 
 interface AssociationDialogProps {
 	id: string,
@@ -31,7 +30,7 @@ const handleSubmit = (association: GenAssociationModelInput) => {
 const validate = (association: DeepReadonly<GenAssociationModelInput>): string[] => {
 	return validateAssociation(
 		association,
-        GRAPH.edges.filter(it => it.shape === ASSOCIATION_EDGE && it.id !== props.id).map(it => it.getData().association),
+        MODEL.associationEdges.filter(it => it.id !== props.id).map(it => it.getData().association),
         MODEL.tables,
 	)
 }
@@ -42,10 +41,11 @@ const validate = (association: DeepReadonly<GenAssociationModelInput>): string[]
 				@close="emits('close')">
 		<AssociationForm
 			:association="props.association"
+            :edge="MODEL.associationEdges.filter(it => it.id === props.id)[0]"
 			:validate="validate"
 			:create-association-name="createAssociationName"
 			@submit="handleSubmit"
 			@cancel="emits('close')"
-			style="padding-top: 0.5em; padding-left: 1em;"></AssociationForm>
+			style="padding-top: 0.5em; padding-left: 1em;"/>
 	</DragDialog>
 </template>

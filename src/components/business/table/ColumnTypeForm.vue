@@ -17,7 +17,9 @@ const jdbcTypeStore = useJdbcTypeStore()
 
 const columnDefaultStore = useColumnDefaultStore()
 
-const column = defineModel<GenTableModelInput_TargetOf_columns>()
+const column = defineModel<GenTableModelInput_TargetOf_columns>({
+    required: true
+})
 
 const emits = defineEmits<{
 	(event: "editEnum", name: string): void,
@@ -114,26 +116,26 @@ useClickOutside(() => wrapper.value, (e) => {
 						filterable
 						style="width: 100%">
 						<el-option v-for="type in jdbcTypeStore.jdbcTypeList"
-								   :label="type.type" :value="type.typeCode"></el-option>
+								   :label="type.type" :value="type.typeCode"/>
 					</el-select>
 				</el-form-item>
 
 				<el-form-item label="生成 DDL 时以字面类型覆盖 jdbc 类型">
-					<el-switch v-model="column.overwriteByRaw"></el-switch>
+					<el-switch v-model="column.overwriteByRaw"/>
 				</el-form-item>
 
 				<el-form-item label="字面类型">
-					<el-input v-model="column.rawType" :disabled="!column.overwriteByRaw"></el-input>
+					<el-input v-model="column.rawType" :disabled="!column.overwriteByRaw"/>
 				</el-form-item>
 
 				<el-form-item label="长度精度">
 					<el-text style="display: grid; grid-template-columns: 0.5em 1fr 1em 1fr 0.5em">
 						<span>(</span>
 						<span><el-input-number v-model="column.dataSize"
-											   controls-position="right"></el-input-number></span>
+											   controls-position="right"/></span>
 						<span style="padding-left: 0.3em;">,</span>
 						<span><el-input-number v-model="column.numericPrecision"
-											   controls-position="right"></el-input-number></span>
+											   controls-position="right"/></span>
 						<span style="padding-left: 0.3em;">)</span>
 					</el-text>
 				</el-form-item>
@@ -142,8 +144,8 @@ useClickOutside(() => wrapper.value, (e) => {
 					<Line style="width: 100%;">
 						<LineItem span="3em">
 							<el-button v-if="column.enum" :icon="EditPen"
-									   @click="emits('editEnum', column.enum!.name)"></el-button>
-							<el-button v-else :icon="Plus" @click="emits('createEnum')"></el-button>
+									   @click="emits('editEnum', column.enum!.name)"/>
+							<el-button v-else :icon="Plus" @click="emits('createEnum')"/>
 						</LineItem>
 						<LineItem>
 							<el-select :model-value="column.enum?.name" clearable filterable
@@ -154,7 +156,7 @@ useClickOutside(() => wrapper.value, (e) => {
                                            if (column) column.enum = { name: name }
                                        }"
 									   @focus="syncEnumNames">
-								<el-option v-for="enumName in enumNames" :value="enumName"></el-option>
+								<el-option v-for="enumName in enumNames" :value="enumName"/>
 							</el-select>
 						</LineItem>
 					</Line>

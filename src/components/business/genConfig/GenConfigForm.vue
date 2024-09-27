@@ -15,7 +15,9 @@ import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
 const i18nStore = useI18nStore()
 
-const genConfigProperties = defineModel<GenConfigProperties>()
+const genConfigProperties = defineModel<GenConfigProperties>({
+    required: true
+})
 
 const config = ref<GenConfig>(getDefaultModel())
 

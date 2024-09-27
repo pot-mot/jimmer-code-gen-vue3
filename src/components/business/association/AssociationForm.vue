@@ -7,13 +7,20 @@ import {cloneDeep} from "lodash";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {createAssociationName} from "@/components/business/association/createAssociationName.ts";
 import {sendMessage} from "@/message/message.ts";
+import {type Edge} from "@antv/x6";
 
 interface AssociationFormProps {
     association: GenAssociationModelInput,
 
+    edge: DeepReadonly<Edge> | undefined,
+
     validate: (association: DeepReadonly<GenAssociationModelInput>) => string[],
 
-    createAssociationName: (association: DeepReadonly<GenAssociationModelInput>) => string
+    createAssociationName: (
+        association: DeepReadonly<GenAssociationModelInput>,
+        sourceTableIsSuper: boolean,
+        targetTableIsSuper: boolean,
+    ) => string
 }
 
 const props = defineProps<AssociationFormProps>()
@@ -27,7 +34,11 @@ watch(() => props.association, () => {
 const emits = defineEmits<FormEmits<GenAssociationModelInput>>()
 
 const handleRefreshAssociationName = () => {
-    association.value.name = createAssociationName(association.value)
+    association.value.name = createAssociationName(
+        association.value,
+        props.edge?.getSourceNode()?.getData()?.table.type === 'SUPER_TABLE',
+        props.edge?.getTargetNode()?.getData()?.table.type === 'SUPER_TABLE',
+    )
 }
 
 const handleCleanDissociateAction = () => {

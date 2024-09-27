@@ -11,7 +11,9 @@ import {CodeEditorLanguage} from "@/components/global/code/CodeEditorLanguages.t
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
 
-const textValue = defineModel<string>()
+const textValue = defineModel<string>({
+    required: true
+})
 
 const props = defineProps<{
 	language?: CodeEditorLanguage,
