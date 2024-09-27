@@ -47,7 +47,9 @@ const formattedEdgeShowType = computed(() => {
         <Details open>
             <template #title>
                 <div style="height: 2em; line-height: 2em;">
-                    <el-text>Tables</el-text>
+                    <el-text>
+						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_tableTitle') }}
+					</el-text>
                     <el-button
                         style="margin-left: 0.5em;"
                         @click="ModelEditorEventBus.emit(
@@ -71,7 +73,9 @@ const formattedEdgeShowType = computed(() => {
         <Details open>
             <template #title>
                 <div style="height: 2em; line-height: 2em;">
-                    <el-text>Associations</el-text>
+                    <el-text>
+						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_associationTitle') }}
+					</el-text>
                     <el-button style="margin-left: 0.5em;" @click="toggleEdgeShow">
 						{{formattedEdgeShowType}}
 					</el-button>
@@ -91,7 +95,9 @@ const formattedEdgeShowType = computed(() => {
         <Details open>
             <template #title>
                 <div style="height: 2em; line-height: 2em;">
-                    <el-text>Enums</el-text>
+                    <el-text>
+						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_enumTitle') }}
+					</el-text>
                     <el-button style="margin-left: 0.5em;" @click="ModelEditorEventBus.emit('createEnum')">
 						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_createEnum') }}
                     </el-button>

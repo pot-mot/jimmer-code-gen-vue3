@@ -60,6 +60,9 @@ export type MainLocale = {
 
     LABEL_ModelEditorMainMenu_loadFromDataSource: string
     LABEL_ModelEditorMainMenu_loadFromModel: string
+    LABEL_ModelEditorMainMenu_tableTitle: string
+    LABEL_ModelEditorMainMenu_associationTitle: string
+    LABEL_ModelEditorMainMenu_enumTitle: string
     LABEL_ModelEditorMainMenu_createTable: string
     LABEL_ModelEditorMainMenu_createEnum: string
     LABEL_ModelEditorMainMenu_associationShow_nameOnly: string

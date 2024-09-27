@@ -62,6 +62,9 @@ export const mainLocaleEn: MainLocale = {
 
     LABEL_ModelEditorMainMenu_loadFromDataSource: "Load from Data Source",
     LABEL_ModelEditorMainMenu_loadFromModel: "Load from Model",
+    LABEL_ModelEditorMainMenu_tableTitle: "Tables",
+    LABEL_ModelEditorMainMenu_associationTitle: "Associations",
+    LABEL_ModelEditorMainMenu_enumTitle: "Enums",
     LABEL_ModelEditorMainMenu_createTable: "Create Table",
     LABEL_ModelEditorMainMenu_createEnum: "Create Enum",
     LABEL_ModelEditorMainMenu_associationShow_nameOnly: "Show: Name",

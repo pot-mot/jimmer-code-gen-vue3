@@ -62,6 +62,9 @@ export const mainLocaleZhCn: MainLocale = {
 
     LABEL_ModelEditorMainMenu_loadFromDataSource: "从数据源加载",
     LABEL_ModelEditorMainMenu_loadFromModel: "从模型加载",
+    LABEL_ModelEditorMainMenu_tableTitle: "表",
+    LABEL_ModelEditorMainMenu_associationTitle: "关联",
+    LABEL_ModelEditorMainMenu_enumTitle: "枚举",
     LABEL_ModelEditorMainMenu_createTable: "新建表",
     LABEL_ModelEditorMainMenu_createEnum: "新建枚举",
     LABEL_ModelEditorMainMenu_associationShow_nameOnly: "显示：名称",
