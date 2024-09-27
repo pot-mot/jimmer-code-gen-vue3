@@ -56,7 +56,7 @@ const getAssociationSourceLabel = (association: GenAssociationModelInput) => {
 	const tempEdgeName: string[] = []
 
 	tempEdgeName.push(association.sourceTableName)
-	tempEdgeName.push(' . ')
+	tempEdgeName.push('.')
 	tempEdgeName.push(association.columnReferences.map(it => it.sourceColumnName).join(","))
 
 	return tempEdgeName.join('')
@@ -66,7 +66,7 @@ const getAssociationTargetLabel = (association: GenAssociationModelInput) => {
 	const tempEdgeName: string[] = []
 
 	tempEdgeName.push(association.targetTableName)
-	tempEdgeName.push(' . ')
+	tempEdgeName.push('.')
 	tempEdgeName.push(association.columnReferences.map(it => it.targetColumnName).join(","))
 
 	return tempEdgeName.join('')
