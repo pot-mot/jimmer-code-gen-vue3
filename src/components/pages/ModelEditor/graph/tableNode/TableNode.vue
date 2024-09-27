@@ -116,15 +116,18 @@ onMounted(() => {
 	})
 
 	const syncTable = () => {
-		if (!node.value) return
-		syncTableEffect(node.value.getData().table, table.value)
-		table.value = node.value.getData().table
+		if (!node.value || !node.value.getData()?.table) return
+
+		const newTable = node.value.getData().table
+
+		syncTableEffect(newTable, table.value)
+		table.value = newTable
 	}
 
 	const syncTableEffect = (newTable: GenTableModelInput | undefined, oldTable: GenTableModelInput | undefined) => {
 		if (!node.value || !oldTable || !newTable || !GRAPH.isLoaded) return
 
-		if (HISTORY.isRedo || HISTORY.isUndo) return
+		if (HISTORY.isRedo.value || HISTORY.isUndo.value) return
 
 		const nodeId = node.value.id
 
