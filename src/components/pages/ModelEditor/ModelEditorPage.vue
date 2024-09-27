@@ -38,14 +38,14 @@ onMounted(async () => {
 
 		if (!model) {
 			sendMessage('当前模型不存在', 'error', {modelId: id})
-			await router.replace("/models")
+			await router.replace("/")
 			return
 		}
 
         MODEL_LOAD.load(model)
 	} catch (e) {
 		sendMessage('模型解析出现问题', 'error', e)
-		await router.replace("/models")
+		await router.replace("/")
 	}
 })
 
