@@ -67,9 +67,18 @@ const handleTest = async () => {
 }
 
 const handleSubmit = async () => {
-	const testResult = await handleTest()
+	const testFlag = loadingStore.start('DataSourceForm handleTest')
 
-	if (!testResult) return
+	const res = await api.dataSourceService.test({
+		body: dataSource.value
+	})
+
+	loadingStore.stop(testFlag)
+
+	if (!res) {
+		sendMessage("数据源测试失败", "error")
+		return
+	}
 
 	const flag = loadingStore.start('DataSourceForm handleSubmit')
 
