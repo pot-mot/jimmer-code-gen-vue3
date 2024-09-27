@@ -86,6 +86,15 @@ export type MainLocale = {
     LABEL_ModelEditorGraph_cleanAssociation: string
     LABEL_ModelEditorGraph_cleanSelectedAssociation: string
 
+    LABEL_TableForm_asSuperTable: string
+    LABEL_TableForm_extendTables: string
+    LABEL_TableForm_columns: string
+    LABEL_TableForm_indexes: string
+    LABEL_TableForm_columnType_pk: string
+    LABEL_TableForm_columnType_autoIncrement: string
+    LABEL_TableForm_columnType_businessKey: string
+    LABEL_TableForm_columnType_logicalDelete: string
+
     LABEL_GenConfigForm_dataSourceType: string
     LABEL_GenConfigForm_language: string
     LABEL_GenConfigForm_defaultRealFk: string

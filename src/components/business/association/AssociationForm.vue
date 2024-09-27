@@ -51,7 +51,7 @@ const handleCancel = () => {
 </script>
 
 <template>
-    <el-form style="width: 98%;">
+    <el-form style="width: calc(100% - 0.5rem);">
         <el-form-item label="名称">
             <el-input v-model="association.name">
                 <template #append>

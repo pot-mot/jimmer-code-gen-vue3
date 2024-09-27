@@ -85,7 +85,7 @@ const handleOpenOtherConfigDialog = () => {
 </script>
 
 <template>
-	<el-form style="height: 100%; width: 98%;padding-top: 1em;padding-left: 8px;display: grid;grid-template-rows: 275px 1fr 30px;">
+	<el-form style="height: 100%; width: calc(100% - 0.5rem);padding-top: 1em;padding-left: 8px;display: grid;grid-template-rows: 275px 1fr 30px;">
 		<div>
 			<el-row :gutter="24">
 				<el-col :span="12">

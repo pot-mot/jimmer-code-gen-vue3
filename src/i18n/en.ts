@@ -88,6 +88,15 @@ export const mainLocaleEn: MainLocale = {
     LABEL_ModelEditorGraph_cleanAssociation: 'Clean Associations',
     LABEL_ModelEditorGraph_cleanSelectedAssociation: 'Clean Selected Associations',
 
+    LABEL_TableForm_asSuperTable: "SuperTable",
+    LABEL_TableForm_extendTables: "extends",
+    LABEL_TableForm_columns: "Columns",
+    LABEL_TableForm_indexes: "Indexes",
+    LABEL_TableForm_columnType_pk: "Primary Key",
+    LABEL_TableForm_columnType_autoIncrement: "Auto Increment",
+    LABEL_TableForm_columnType_businessKey: "Business Key",
+    LABEL_TableForm_columnType_logicalDelete: "Logical Delete",
+
     LABEL_GenConfigForm_dataSourceType: "Data Source Type",
     LABEL_GenConfigForm_language: "Language",
     LABEL_GenConfigForm_defaultRealFk: "Use Real Foreign Key by Default",

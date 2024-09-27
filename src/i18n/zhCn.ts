@@ -88,6 +88,15 @@ export const mainLocaleZhCn: MainLocale = {
     LABEL_ModelEditorGraph_cleanAssociation: '清理关联',
     LABEL_ModelEditorGraph_cleanSelectedAssociation: '清理选中关联',
 
+    LABEL_TableForm_asSuperTable: "作为上级表",
+    LABEL_TableForm_extendTables: "继承的表",
+    LABEL_TableForm_columns: "列",
+    LABEL_TableForm_indexes: "索引",
+    LABEL_TableForm_columnType_pk: "主键",
+    LABEL_TableForm_columnType_autoIncrement: "自增",
+    LABEL_TableForm_columnType_businessKey: "业务键",
+    LABEL_TableForm_columnType_logicalDelete: "逻辑删除",
+
     LABEL_GenConfigForm_dataSourceType: "数据源类型",
     LABEL_GenConfigForm_language: "语言",
     LABEL_GenConfigForm_defaultRealFk: "默认使用真实外键",
