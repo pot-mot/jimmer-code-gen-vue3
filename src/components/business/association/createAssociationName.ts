@@ -11,7 +11,8 @@ const associationNameTemplate = (
     sourceColumnNames: string[] = [],
     targetColumnNames: string[] = [],
     type: AssociationType,
-    withTarget: boolean = false
+    withTarget: boolean,
+    withColumnName: boolean,
 ): string => {
     const context = useGenConfigContextStore().context
 
@@ -27,15 +28,15 @@ const associationNameTemplate = (
 
     let associationName
 
-    const sourceName = sourceTableName + '_' + sourceColumnNames.join("_")
-    const targetName = targetTableName + '_' + targetColumnNames.join("_")
+    const sourceName = sourceTableName + (withColumnName ? '_' + sourceColumnNames.join("_") : '')
+    const targetName = targetTableName + (withColumnName ? '_' + targetColumnNames.join("_") : '')
 
     // 多对多的关联名称是中间表
     if (type === 'MANY_TO_MANY') {
         associationName = `${sourceName}_` + (withTarget ? `${targetName}_` : '') + 'mapping'
     } else if (type === 'ONE_TO_MANY') {
         // 一对多的外键名称要反向
-        associationName = `fk_${targetName}`  + (withTarget ? `_${sourceName}` : '')
+        associationName = `fk_${targetName}` + (withTarget ? `_${sourceName}` : '')
     } else {
         associationName = `fk_${sourceName}` + (withTarget ? `_${targetName}` : '')
     }
@@ -54,5 +55,7 @@ export const createAssociationName = (
         association.columnReferences.map(it => it.sourceColumnName),
         association.columnReferences.map(it => it.targetColumnName),
         association.type,
+        association.type === 'MANY_TO_MANY',
+        association.type !== 'MANY_TO_MANY'
     )
 }

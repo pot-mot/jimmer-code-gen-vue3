@@ -214,8 +214,6 @@ const handleColumnNotToKey = (columnIndex: number) => {
 }
 
 const handleSyncIndexName = (index: number) => {
-    debugger
-
     const oldIndex = table.value.indexes[index]
 
     oldIndex.name = oldIndex.name.startsWith(KEY_INDEX_PREFIX) ?

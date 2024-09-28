@@ -143,7 +143,13 @@ onMounted(() => {
 				if (!node.value) return
 
 				for (let edge of oldEdges) {
-					const association = refreshEdgeAssociation(node.value, edge, oldTable, newTable)
+					const association = refreshEdgeAssociation(
+						graph,
+						node.value,
+						edge,
+						oldTable,
+						newTable
+					)
 					if (!association) continue
 					loadAssociationModelInputs(graph, [association])
 				}

@@ -5,9 +5,10 @@ import {
     GenTableModelInput_TargetOf_columns
 } from "@/api/__generated/model/static";
 import {createAssociationName} from "@/components/business/association/createAssociationName.ts";
-import {Edge, Node} from "@antv/x6";
+import {Edge, Graph, Node} from "@antv/x6";
 
 export const refreshEdgeAssociation = (
+    graph: Graph,
     node: Node,
     edge: Edge,
     oldTable: GenTableModelInput,
@@ -60,7 +61,7 @@ export const refreshEdgeAssociation = (
             association.name = createAssociationName(
                 association,
                 newTable.type === "SUPER_TABLE",
-                edge.getTargetNode()?.getData()?.table.type === "SUPER_TABLE",
+                graph.getCellById(edge.getTargetCellId())?.getData()?.table.type === "SUPER_TABLE",
             )
         }
     }
@@ -89,7 +90,7 @@ export const refreshEdgeAssociation = (
         if (oldTargetTableName !== newTable.name) {
             association.name = createAssociationName(
                 association,
-                edge.getSourceNode()?.getData()?.table.type === "SUPER_TABLE",
+                graph.getCellById(edge.getSourceCellId())?.getData()?.table.type === "SUPER_TABLE",
                 newTable.type === "SUPER_TABLE"
             )
         }
