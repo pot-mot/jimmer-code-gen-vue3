@@ -50,8 +50,8 @@ export const createAssociationName = (
     targetTableIsSuper: boolean,
 ): string => {
     return associationNameTemplate(
-        sourceTableIsSuper ? '{}' : association.sourceTableName,
-        targetTableIsSuper ? '{}' : association.targetTableName,
+        sourceTableIsSuper ? '{SOURCE}' : association.sourceTableName,
+        targetTableIsSuper ? '{TARGET}' : association.targetTableName,
         association.columnReferences.map(it => it.sourceColumnName),
         association.columnReferences.map(it => it.targetColumnName),
         association.type,

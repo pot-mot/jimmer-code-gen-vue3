@@ -99,7 +99,7 @@ const columnCategories = computed<ColumnCategory[]>({
 </script>
 
 <template>
-    <el-select multiple clearable v-model="columnCategories">
+    <el-select multiple clearable placeholder="" v-model="columnCategories">
         <template #tag>
             <span style="padding: 0 0.5rem;">
                 <component v-for="category in columnCategories"
