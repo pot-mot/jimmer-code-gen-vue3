@@ -135,7 +135,7 @@ const handleSubmit = async () => {
 		<el-form-item>
 			<div style="text-align: right;">
 				<el-button type="info" @click="handleTest">{{ i18nStore.translate('BUTTON_test') }}</el-button>
-				<el-button type="warning" @click="handleSubmit">{{ i18nStore.translate('BUTTON_submit') }}</el-button>
+				<el-button type="primary" @click="handleSubmit">{{ i18nStore.translate('BUTTON_submit') }}</el-button>
 			</div>
 		</el-form-item>
 	</el-form>

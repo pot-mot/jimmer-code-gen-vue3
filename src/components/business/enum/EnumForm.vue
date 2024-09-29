@@ -125,12 +125,8 @@ const handleCancel = () => {
 		</EditList>
 
 		<div style="text-align: right; position: absolute; bottom: 0.5em; left: 1em; right: 1em;">
-			<el-button type="info" @click="handleCancel">
-				{{ i18nStore.translate('BUTTON_cancel') }}
-			</el-button>
-			<el-button type="warning" @click="handleSubmit">
-				{{ i18nStore.translate('BUTTON_submit') }}
-			</el-button>
+			<el-button type="info" @click="handleCancel">{{ i18nStore.translate('BUTTON_cancel') }}</el-button>
+			<el-button type="primary" @click="handleSubmit">{{ i18nStore.translate('BUTTON_submit') }}</el-button>
 		</div>
 	</el-form>
 </template>
