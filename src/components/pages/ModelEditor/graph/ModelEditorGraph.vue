@@ -227,9 +227,7 @@ const loadingStore = useGlobalLoadingStore()
 
 const debugStore = useDebugStore()
 
-onMounted(() => {
-	const flag = loadingStore.start('ModelEditorGraph onMounted')
-
+onMounted(loadingStore.withLoading('ModelEditorGraph onMounted', () => {
 	graph = initModelEditor(container.value!, wrapper.value!)
 
 	GRAPH_LOAD.load(graph)
@@ -250,9 +248,7 @@ onMounted(() => {
 	handleModelEditorKeyEvent(graph)
 
 	useClipBoard(graph)
-
-	loadingStore.stop(flag)
-})
+}))
 
 onUnmounted(() => {
 	GRAPH_LOAD.unload()
@@ -281,9 +277,7 @@ const handleNodeClick = (node: Node) => {
 	}
 }
 
-const handleSaveModel = async () => {
-	const flag = loadingStore.start('ModelEditorGraph handleSaveModel')
-
+const handleSaveModel = loadingStore.withLoading('ModelEditorGraph handleSaveModel', async () => {
 	try {
 		let model = MODEL._model()
 
@@ -298,7 +292,6 @@ const handleSaveModel = async () => {
 
 		if (messageList.length > 0) {
 			messageList.forEach(it => sendMessage(it, 'warning'))
-			loadingStore.stop(flag)
 			return
 		}
 
@@ -310,9 +303,7 @@ const handleSaveModel = async () => {
 	} catch (e) {
 		sendMessage(`模型保存失败，原因：${e}`, 'error', e)
 	}
-
-	loadingStore.stop(flag)
-}
+})
 
 const handleSaveEvent = (e: KeyboardEvent) => {
 	if (e.ctrlKey || e.metaKey) {
@@ -396,16 +387,14 @@ watch(() => entityPreviewDialogOpenState.value, async (openState) => {
 	}
 })
 
-const handleEntityPreview = async () => {
-	if (preJudge()) {
-		const model = MODEL._model()
-		const flag = loadingStore.start('ModelEditorGraph handleEntityPreview')
-		await convertModel(model.id)
-		entityFiles.value = await previewModelEntity(model.id)
-		entityPreviewDialogOpenState.value = true
-		loadingStore.stop(flag)
-	}
-}
+const handleEntityPreview = loadingStore.withLoading('ModelEditorGraph handleEntityPreview', async () => {
+	if (!preJudge()) return
+
+	const model = MODEL._model()
+	await convertModel(model.id)
+	entityFiles.value = await previewModelEntity(model.id)
+	entityPreviewDialogOpenState.value = true
+})
 
 const sqlPreviewDialogOpenState = ref(false)
 
@@ -417,52 +406,41 @@ watch(() => sqlPreviewDialogOpenState.value, async (openState) => {
 	}
 })
 
-const handleSQLPreview = async () => {
-	if (preJudge()) {
-		const flag = loadingStore.start('ModelEditorGraph handleSQLPreview')
-		const model = MODEL._model()
-		sqlPreviewDialogOpenState.value = true
-		sqlFiles.value = await previewModelSql(model.id)
-		loadingStore.stop(flag)
-	}
-}
+const handleSQLPreview = loadingStore.withLoading('ModelEditorGraph handleSQLPreview', async () => {
+	if (!preJudge()) return
 
+	const model = MODEL._model()
+	sqlPreviewDialogOpenState.value = true
+	sqlFiles.value = await previewModelSql(model.id)
+})
 
-const handleEntityDownload = async () => {
-	if (preJudge()) {
-		const flag = loadingStore.start('ModelEditorGraph handleEntityDownload')
-		const model = MODEL._model()
-		await convertModel(model.id)
-		await downloadModelEntity(model)
-		loadingStore.stop(flag)
-	}
-}
+const handleEntityDownload = loadingStore.withLoading('ModelEditorGraph handleEntityDownload', async () => {
+	if (!preJudge()) return
 
-const handleSQLDownload = async () => {
-	if (preJudge()) {
-		const flag = loadingStore.start('ModelEditorGraph handleSQLDownload')
-		const model = MODEL._model()
-		await downloadModelSql(model)
-		loadingStore.stop(flag)
-	}
-}
+	const model = MODEL._model()
+	await convertModel(model.id)
+	await downloadModelEntity(model)
+})
 
-const handleModelExport = async () => {
-	if (preJudge()) {
-		const flag = loadingStore.start('ModelEditorGraph handleModelExport')
-		const model = MODEL._model()
-		await exportModel(model)
-		loadingStore.stop(flag)
-	}
-}
+const handleSQLDownload = loadingStore.withLoading('ModelEditorGraph handleSQLDownload', async () => {
+	if (!preJudge()) return
 
-const handleModelDownload = async () => {
-	if (preJudge()) {
-		const flag = loadingStore.start('ModelEditorGraph handleModelDownload')
-		const model = MODEL._model()
-		await convertModel(model.id)
-		await downloadModel(model)
-		loadingStore.stop(flag)
-	}
-}
+	const model = MODEL._model()
+	await downloadModelSql(model)
+})
+
+const handleModelExport = loadingStore.withLoading('ModelEditorGraph handleModelExport', async () => {
+	if (!preJudge()) return
+
+	const model = MODEL._model()
+	await exportModel(model)
+})
+
+const handleModelDownload = loadingStore.withLoading('ModelEditorGraph handleModelDownload', async () => {
+	if (!preJudge()) return
+
+	const model = MODEL._model()
+	await convertModel(model.id)
+	await downloadModel(model)
+})
 </script>

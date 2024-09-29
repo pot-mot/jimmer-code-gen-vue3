@@ -24,13 +24,11 @@ const props = defineProps<DataSourceItemProps>()
 
 const previewSchemas = ref<GenSchemaPreview[]>([])
 
-const getPreviewSchemas = async () => {
-	const flag = previewSchemaLoading.start('get')
+const getPreviewSchemas = previewSchemaLoading.withLoading('get', async () => {
 	await nextTick()
 	previewSchemas.value = await api.schemaService.preview({dataSourceId: props.dataSource.id})
 	await nextTick()
-	previewSchemaLoading.stop(flag)
-}
+})
 
 const previewSchemaTooltipOpenState = ref(false)
 
@@ -44,11 +42,9 @@ watch(() => previewSchemaTooltipOpenState.value, (value) => {
 
 const loadedSchemas = ref<GenSchemaView[]>([])
 
-const getSchemas = async (schemaIds: number[] = []) => {
-	const flag = loadedSchemaLoading.start('get')
+const getSchemas = loadedSchemaLoading.withLoading('get', async (schemaIds: number[] = []) => {
 	loadedSchemas.value = await api.schemaService.list({dataSourceId: props.dataSource.id, schemaIds})
-	loadedSchemaLoading.stop(flag)
-}
+})
 
 const handleDelete = () => {
 	deleteConfirm(`【${props.dataSource.name}】`,
@@ -65,9 +61,7 @@ const handleDelete = () => {
 	)
 }
 
-const loadSchema = async (name: string, dataSourceId: number = props.dataSource.id) => {
-	const flag = loadingStore.start('DataSourceItem loadSchema')
-
+const loadSchema = loadingStore.withLoading('DataSourceItem loadSchema', async (name: string, dataSourceId: number = props.dataSource.id) => {
 	const loadIds = await api.schemaService.load({
 		dataSourceId,
 		name
@@ -86,9 +80,7 @@ const loadSchema = async (name: string, dataSourceId: number = props.dataSource.
 			}
 		})
 	}
-
-	loadingStore.stop(flag)
-}
+})
 
 const isEdit = ref(false)
 const x = ref(0)

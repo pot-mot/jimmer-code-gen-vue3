@@ -111,11 +111,11 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const baseGraphData = useGraphDataOperation(_graph)
 
-    const SELECT =useSelectOperation(_graph)
+    const SELECT = useSelectOperation(_graph)
 
     const VIEW = useViewOperation(_graph)
 
-    const HISTORY =  useHistoryOperations(_graph)
+    const HISTORY = useHistoryOperations(_graph)
 
     const REMOVE = useRemoveOperation(
         _graph,
@@ -227,33 +227,32 @@ const initModelEditorStore = (): ModelEditorStore => {
         modelEditDialogOpenState.value = false
     }
 
-    const handleSubmit = async (model: GenModelInput) => {
-        const flag = loadingStore.start('ModelEditorStore.handleSubmitModelEdit')
+    const handleSubmit = loadingStore.withLoading(
+        'ModelEditorStore.handleSubmitModelEdit',
+        async (model: GenModelInput) => {
+            try {
+                const id = await api.modelService.save({body: model})
 
-        try {
-            const id = await api.modelService.save({body: model})
+                isLoaded.value = false
 
-            isLoaded.value = false
+                const savedModel = (await api.modelService.get({id}))!
 
-            const savedModel = (await api.modelService.get({id}))!
+                if (!savedModel) {
+                    sendMessage(`模型保存失败，保存返回模型不存在`, 'error')
+                    return
+                }
 
-            if (!savedModel) {
-                sendMessage(`模型保存失败，保存返回模型不存在`, 'error')
-                return
+                handleCancel()
+
+                // 同步数据
+                loadModelView(savedModel)
+
+                sendMessage("模型保存成功", "success")
+            } catch (e) {
+                sendMessage(`模型保存失败，原因：${e}`, 'error', e)
             }
-
-            handleCancel()
-
-            // 同步数据
-            loadModelView(savedModel)
-
-            sendMessage("模型保存成功", "success")
-        } catch (e) {
-            sendMessage(`模型保存失败，原因：${e}`, 'error', e)
         }
-
-        loadingStore.stop(flag)
-    }
+    )
 
     const modelEditDialogState: ModelEditDialogState = {
         modelEditDialogOpenState,
@@ -310,58 +309,49 @@ const initModelEditorStore = (): ModelEditorStore => {
      * 向画布导入 model
      * @param id model id
      */
-    const loadModel = async (id: number) => {
-        const flag = loadingStore.start('ModelEditorStore.loadModel')
-
-        const tables = await api.tableService.queryColumnsView({
-            body: {
-                modelIds: [id]
-            }
-        })
-        const res = await loadTableViews(tables)
-
-        loadingStore.stop(flag)
-
-        return res
-    }
+    const loadModel = loadingStore.withLoading(
+        'ModelEditorStore.loadModel',
+        async (id: number) => {
+            const tables = await api.tableService.queryColumnsView({
+                body: {
+                    modelIds: [id]
+                }
+            })
+            return await loadTableViews(tables)
+        }
+    )
 
     /**
      * 向画布导入 schema
      * @param id schema id
      */
-    const loadSchema = async (id: number) => {
-        const flag = loadingStore.start('ModelEditorStore.loadSchema')
-
-        const tables = await api.tableService.queryColumnsView({
-            body: {
-                schemaIds: [id]
-            }
-        })
-        const res = await loadTableViews(tables)
-
-        loadingStore.stop(flag)
-
-        return res
-    }
+    const loadSchema = loadingStore.withLoading(
+        'ModelEditorStore.loadSchema',
+        async (id: number) => {
+            const tables = await api.tableService.queryColumnsView({
+                body: {
+                    schemaIds: [id]
+                }
+            })
+            return await loadTableViews(tables)
+        }
+    )
 
     /**
      * 向画布导入 table
      * @param id tableId
      */
-    const loadTable = async (id: number) => {
-        const flag = loadingStore.start('ModelEditorStore.loadTables')
-
-        const tables = await api.tableService.queryColumnsView({
-            body: {
-                ids: [id]
-            }
-        })
-        const res = await loadTableViews(tables)
-
-        loadingStore.stop(flag)
-
-        return res
-    }
+    const loadTable = loadingStore.withLoading(
+        'ModelEditorStore.loadTables',
+        async (id: number) => {
+            const tables = await api.tableService.queryColumnsView({
+                body: {
+                    ids: [id]
+                }
+            })
+            return await loadTableViews(tables)
+        }
+    )
 
     /**
      * 在 ModelEditorEventBus 发生变更时，记录入 debugStore
@@ -760,7 +750,7 @@ const initModelEditorStore = (): ModelEditorStore => {
     }
 }
 
-let modelEditorStore: ReturnType <typeof initModelEditorStore> | undefined = undefined
+let modelEditorStore: ReturnType<typeof initModelEditorStore> | undefined = undefined
 
 export const useModelEditorStore = () => {
     if (!modelEditorStore) {

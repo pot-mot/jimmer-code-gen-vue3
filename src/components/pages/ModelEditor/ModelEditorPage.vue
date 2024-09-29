@@ -42,7 +42,7 @@ onMounted(async () => {
 			return
 		}
 
-        MODEL_LOAD.load(model)
+		MODEL_LOAD.load(model)
 	} catch (e) {
 		sendMessage('模型解析出现问题', 'error', e)
 		await router.replace("/")
@@ -50,7 +50,7 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-    MODEL_LOAD.unload()
+	MODEL_LOAD.unload()
 })
 
 const dataSourceLoadMenu = ref()
@@ -63,19 +63,23 @@ watch(() => dataSourceLoadMenu.value, () => {
 
 	const eventBus: Emitter<DataSourceMenuEvents> = dataSourceLoadMenu.value.eventBus
 
-	eventBus.on('clickSchema', async ({id}) => {
-		confirm(`是否导入整个 schema`, async () => {
-			const flag = loadingStore.start('ModelEditorPage syncClickSchemaEvent')
-			await MODEL_LOAD.loadSchema(id)
-			loadingStore.stop(flag)
+	eventBus.on(
+		'clickSchema',
+		async ({id}) => {
+			confirm(
+				"是否导入整个 schema",
+				loadingStore.withLoading('ModelEditorPage syncClickSchemaEvent', async () => {
+					await MODEL_LOAD.loadSchema(id)
+				})
+			)
 		})
-	})
 
-	eventBus.on('clickTable', async ({id}) => {
-		const flag = loadingStore.start('ModelEditorPage syncClickTableEvent')
-		await MODEL_LOAD.loadTable(id)
-		loadingStore.stop(flag)
-	})
+	eventBus.on(
+		'clickTable',
+		loadingStore.withLoading('ModelEditorPage syncClickSchemaEvent', async ({id}) => {
+			await MODEL_LOAD.loadTable(id)
+		})
+	)
 }, {immediate: true})
 
 const modelLoadMenu = ref()
@@ -88,17 +92,19 @@ watch(() => modelLoadMenu.value, () => {
 
 	const eventBus: Emitter<ModelMenuEvents> = modelLoadMenu.value.eventBus
 
-	eventBus.on('clickModel', async ({id}) => {
-		const flag = loadingStore.start('ModelEditorPage syncClickModelEvent')
-		await MODEL_LOAD.loadModel(id)
-		loadingStore.stop(flag)
-	})
+	eventBus.on(
+		'clickModel',
+		loadingStore.withLoading('ModelEditorPage syncClickModelEvent', async ({id}) => {
+			await MODEL_LOAD.loadModel(id)
+		})
+	)
 
-	eventBus.on('clickTable', async ({id}) => {
-		const flag = loadingStore.start('ModelEditorPage syncClickTableEvent')
-		await MODEL_LOAD.loadTable(id)
-		loadingStore.stop(flag)
-	})
+	eventBus.on(
+		'clickTable',
+		loadingStore.withLoading('ModelEditorPage syncClickTableEvent', async ({id}) => {
+			await MODEL_LOAD.loadTable(id)
+		})
+	)
 }, {immediate: true})
 </script>
 
@@ -115,18 +121,18 @@ watch(() => modelLoadMenu.value, () => {
 	</LeftTopBottomLayout>
 
 	<DragDialog v-model="MODEL_DIALOG_STATE.dataSourceLoadMenuOpenState"
-                :modal="false"
-                :init-x="100" :init-y="10"
-                :init-w="500" :init-h="600"
-                can-resize>
+				:modal="false"
+				:init-x="100" :init-y="10"
+				:init-w="500" :init-h="600"
+				can-resize>
 		<DataSourceMenu ref="dataSourceLoadMenu"/>
 	</DragDialog>
 
 	<DragDialog v-model="MODEL_DIALOG_STATE.modelLoadMenuOpenState"
-                :modal="false"
-                :init-x="100" :init-y="10"
-                :init-w="500" :init-h="600"
-                can-resize>
+				:modal="false"
+				:init-x="100" :init-y="10"
+				:init-w="500" :init-h="600"
+				can-resize>
 		<ModelMenu ref="modelLoadMenu"/>
 	</DragDialog>
 

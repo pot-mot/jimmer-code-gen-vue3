@@ -26,28 +26,24 @@ const associations = ref<GenAssociationView[]>([])
 const columnsLoading = useLoading('ModelTableItem.columnsLoading')
 const associationsLoading = useLoading('ModelTableItem.associationsLoading')
 
-const getColumns = async () => {
+const getColumns = columnsLoading.withLoading('get', async () => {
 	if (!props.showConfig.showColumns) return
-	const flag = columnsLoading.start('get')
 	columns.value = await api.columnService.query({
 		body: {
 			tableIds: [props.table.id]
 		}
 	})
-	columnsLoading.stop(flag)
-}
+})
 
-const getAssociations = async () => {
+const getAssociations = associationsLoading.withLoading('get', async () => {
 	if (!props.showConfig.showAssociations) return
-	const flag = associationsLoading.start('get')
 	associations.value = await api.associationService.queryByTable({
 		body: {
 			tableIds: [props.table.id],
 			selectType: "OR"
 		}
 	})
-	associationsLoading.stop(flag)
-}
+})
 </script>
 
 <template>

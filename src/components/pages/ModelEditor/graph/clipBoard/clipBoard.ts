@@ -5,11 +5,7 @@ import {loadModelInputs, TableLoadOptions} from "@/components/pages/ModelEditor/
 import {CopyData, validateCopyData} from "@/shape/CopyData.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import {
-    GenAssociationModelInput,
-    GenModelInput,
-    GenTableModelInput
-} from "@/api/__generated/model/static";
+import {GenAssociationModelInput, GenModelInput, GenTableModelInput} from "@/api/__generated/model/static";
 import {validateModelInput} from "@/shape/ModelInput.ts";
 import {importEnums} from "@/components/pages/ModelEditor/graph/clipBoard/importEnums.ts";
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
@@ -39,15 +35,15 @@ export const getModelAllCopyData = (model: GenModelInput): CopyData => {
         tables: nodes
             .map((it: any) => it.data.table)
             .filter((it: any) => it != undefined) ?? [],
-            associations: edges
-        .map((it: any) => it.data.association)
-        .filter((it: any) => it != undefined) ?? [],
+        associations: edges
+            .map((it: any) => it.data.association)
+            .filter((it: any) => it != undefined) ?? [],
         enums: model.enums,
         optionsList: getPositionOptionsList(nodes.map((it: any) => it.position)),
     }
 }
 
-const getPositionOptionsList = (positions: {x: number, y: number}[]): TableLoadOptions[] => {
+const getPositionOptionsList = (positions: { x: number, y: number }[]): TableLoadOptions[] => {
     let minX = Number.MAX_VALUE
     let minY = Number.MAX_VALUE
     positions.forEach(it => {
@@ -109,70 +105,70 @@ const cut = async () => {
     return copyResult
 }
 
-const paste = async () => {
-    const {GRAPH, GRAPH_DATA} = useModelEditorStore()
-    const loadingStore = useGlobalLoadingStore()
-    const flag = loadingStore.start('clipBoard paste')
+const paste = useGlobalLoadingStore().withLoading(
+    'clipBoard paste',
+    async () => {
+        const {GRAPH, GRAPH_DATA} = useModelEditorStore()
 
-    const graph = GRAPH._graph()
+        const graph = GRAPH._graph()
 
-    graph.startBatch("paste")
+        graph.startBatch("paste")
 
-    try {
-        const text = await navigator.clipboard.readText()
+        try {
+            const text = await navigator.clipboard.readText()
 
-        let res: { nodes: Node[], edges: Edge[] } | undefined
+            let res: { nodes: Node[], edges: Edge[] } | undefined
 
-        const value = JSON.parse(text)
+            const value = JSON.parse(text)
 
-        const validateErrors: any = []
+            const validateErrors: any = []
 
-        const options: TableLoadOptions = {
-            x: GRAPH.mousePosition.x,
-            y: GRAPH.mousePosition.y
-        }
-
-        if (validateTable(value, (e) => validateErrors.push(e))) {
-            const table = value as GenTableModelInput
-            res = loadModelInputs(graph, [table], [], options)
-        } else if (validateCopyData(value, (e) => validateErrors.push(e))) {
-            const {
-                tables,
-                associations,
-                enums,
-                optionsList
-            } = value as CopyData
-
-            res = loadModelInputs(graph, tables, associations, options, optionsList)
-
-            importEnums(enums)
-        } else if (validateGraphData(value, (e) => validateErrors.push(e))) {
-            const cells = value.json.cells as Cell[]
-            graph.parseJSON(cells)
-            res = GRAPH_DATA.loadGraphData(text, false)
-        } else if (validateModelInput(value, (e) => validateErrors.push(e))) {
-            const model = value as GenModelInput
-
-            if (model.graphData) {
-                res = GRAPH_DATA.loadGraphData(model.graphData, false)
+            const options: TableLoadOptions = {
+                x: GRAPH.mousePosition.x,
+                y: GRAPH.mousePosition.y
             }
-            importEnums(model.enums)
-        } else {
-            sendMessage('剪切板中数据无法直接导入画布', 'error', validateErrors)
+
+            if (validateTable(value, (e) => validateErrors.push(e))) {
+                const table = value as GenTableModelInput
+                res = loadModelInputs(graph, [table], [], options)
+            } else if (validateCopyData(value, (e) => validateErrors.push(e))) {
+                const {
+                    tables,
+                    associations,
+                    enums,
+                    optionsList
+                } = value as CopyData
+
+                res = loadModelInputs(graph, tables, associations, options, optionsList)
+
+                importEnums(enums)
+            } else if (validateGraphData(value, (e) => validateErrors.push(e))) {
+                const cells = value.json.cells as Cell[]
+                graph.parseJSON(cells)
+                res = GRAPH_DATA.loadGraphData(text, false)
+            } else if (validateModelInput(value, (e) => validateErrors.push(e))) {
+                const model = value as GenModelInput
+
+                if (model.graphData) {
+                    res = GRAPH_DATA.loadGraphData(model.graphData, false)
+                }
+                importEnums(model.enums)
+            } else {
+                sendMessage('剪切板中数据无法直接导入画布', 'error', validateErrors)
+            }
+
+            if (res !== undefined) {
+                const {nodes, edges} = res
+
+                await syncTimeout(100 + nodes.length * 30 + edges.length * 20)
+
+                graph.resetSelection([...nodes.map(it => it.id), ...edges.map(it => it.id)])
+            }
+        } catch (e) {
+            sendMessage('剪切板中数据无法直接导入画布', 'error', e)
         }
 
-        if (res !== undefined) {
-            const {nodes, edges} = res
-
-            await syncTimeout(100 + nodes.length * 30 + edges.length * 20)
-
-            graph.resetSelection([...nodes.map(it => it.id), ...edges.map(it => it.id)])
-        }
-    } catch (e) {
-        sendMessage('剪切板中数据无法直接导入画布', 'error', e)
+        graph.stopBatch("paste")
     }
+)
 
-    graph.stopBatch("paste")
-
-    loadingStore.stop(flag)
-}

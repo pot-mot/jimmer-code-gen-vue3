@@ -17,11 +17,9 @@ const dataSourcesLoading = useLoading('DataSourceMenu.dataSourcesLoading')
 
 const dataSources = ref<GenDataSourceView[]>([])
 
-const getDataSources = async () => {
-	const flag = dataSourcesLoading.start('get')
+const getDataSources = dataSourcesLoading.withLoading('get', async () => {
 	dataSources.value = await api.dataSourceService.list()
-	dataSourcesLoading.stop(flag)
-}
+})
 
 const i18nStore = useI18nStore()
 

@@ -48,14 +48,10 @@ watch(() => props.dataSource, (prop) => {
 
 const emits = defineEmits<DataSourceFormEmits>()
 
-const handleTest = async () => {
-	const flag = loadingStore.start('DataSourceForm handleTest')
-
+const handleTest = loadingStore.withLoading('DataSourceForm handleTest', async () => {
 	const res = await api.dataSourceService.test({
 		body: dataSource.value
 	})
-
-	loadingStore.stop(flag)
 
 	if (res) {
 		sendMessage("数据源测试成功", "success")
@@ -64,23 +60,17 @@ const handleTest = async () => {
 		sendMessage("数据源测试失败", "error")
 		return false
 	}
-}
+})
 
-const handleSubmit = async () => {
-	const testFlag = loadingStore.start('DataSourceForm handleTest')
-
+const handleSubmit = loadingStore.withLoading('DataSourceForm handleSubmit', async () => {
 	const res = await api.dataSourceService.test({
 		body: dataSource.value
 	})
-
-	loadingStore.stop(testFlag)
 
 	if (!res) {
 		sendMessage("数据源测试失败", "error")
 		return
 	}
-
-	const flag = loadingStore.start('DataSourceForm handleSubmit')
 
 	const id = await api.dataSourceService.save({
 		body: dataSource.value
@@ -97,9 +87,7 @@ const handleSubmit = async () => {
 			sendMessage('数据源保存失败', 'error', savedDataSource)
 		}
 	}
-
-	loadingStore.stop(flag)
-}
+})
 </script>
 
 <template>

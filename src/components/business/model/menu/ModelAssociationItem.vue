@@ -21,18 +21,17 @@ const tables = ref<GenTableCommonView[]>()
 
 const tablesLoading = useLoading('ModelAssociationItem.tablesLoading')
 
-const getData = async () => {
-	const flag = tablesLoading.start('get')
-	tables.value = await api.tableService.queryCommonView({
-		body: {
-			ids: [
-				props.association.sourceTable.id,
-				props.association.targetTable.id,
-			]
-		}
-	})
-	tablesLoading.stop(flag)
-}
+const getData = tablesLoading.withLoading('get', async () => {
+		tables.value = await api.tableService.queryCommonView({
+			body: {
+				ids: [
+					props.association.sourceTable.id,
+					props.association.targetTable.id,
+				]
+			}
+		})
+	}
+)
 </script>
 
 <template>

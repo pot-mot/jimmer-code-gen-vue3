@@ -24,11 +24,9 @@ const models = ref<GenModelSimpleView[]>([])
 
 const modelsLoading = useLoading('ModelListPage.modelsLoading')
 
-const getModels = async () => {
-    const flag = modelsLoading.start('get')
+const getModels = modelsLoading.withLoading('get', async () => {
     models.value = await api.modelService.list()
-    modelsLoading.stop(flag)
-}
+})
 
 onMounted(() => {
     getModels()
@@ -68,9 +66,7 @@ const emitLoadModelJson = () => {
     }
 }
 
-const handleLoadModelJson = async (e: Event) => {
-    const flag = modelsLoading.start('loadModelJson')
-
+const handleLoadModelJson = modelsLoading.withLoading('loadModelJson', async (e: Event) => {
     const input = e.target as HTMLInputElement
 
     const file = input.files?.[0]
@@ -87,9 +83,7 @@ const handleLoadModelJson = async (e: Event) => {
     }
 
     input.value = ''
-
-    modelsLoading.stop(flag)
-}
+})
 
 
 const dataSourceLoadMenuOpenState = ref(false)
@@ -107,9 +101,7 @@ const handleEdit = async (id: number) => {
     editModel.value = await api.modelService.get({id})
 }
 
-const handleSubmit = async (model: GenModelInput) => {
-    const flag = modelsLoading.start('handleSubmit')
-
+const handleSubmit = modelsLoading.withLoading('handleSubmit', async (model: GenModelInput) => {
     try {
         const isUpdate = (model.id !== undefined)
 
@@ -123,13 +115,9 @@ const handleSubmit = async (model: GenModelInput) => {
     } catch (e) {
         sendMessage(`模型修改失败，原因：${e}`, 'error', e)
     }
+})
 
-    modelsLoading.stop(flag)
-}
-
-const handleExport = async (model: GenModelSimpleView) => {
-    const flag = modelsLoading.start('handleExport')
-
+const handleExport = modelsLoading.withLoading('handleExport', async (model: GenModelSimpleView) => {
     const modeView = await api.modelService.get({id: model.id})
 
     if (modeView) {
@@ -137,16 +125,12 @@ const handleExport = async (model: GenModelSimpleView) => {
     } else {
         sendMessage('模型导出失败', 'error', model)
     }
-
-    modelsLoading.stop(flag)
-}
+})
 
 const handleDelete = (model: GenModelSimpleView) => {
     deleteConfirm(
-        `模型【${model.name}】`,
-        async () => {
-            const flag = modelsLoading.start('handleDelete')
-
+        `【${model.name}】`,
+		modelsLoading.withLoading('handleDelete', async () => {
             const count = await api.modelService.delete({ids: [model.id]})
             if (count > 0) {
                 sendMessage('删除模型成功', 'success')
@@ -154,9 +138,7 @@ const handleDelete = (model: GenModelSimpleView) => {
             } else {
                 sendMessage('删除模型失败', 'error')
             }
-
-            modelsLoading.stop(flag)
-        }
+		})
     )
 }
 </script>

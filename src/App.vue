@@ -11,18 +11,17 @@ import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 const loadingStore = useGlobalLoadingStore()
 const i18nStore = useI18nStore()
 
-onBeforeMount(async () => {
-	const key = loadingStore.start('Stores init')
-
-	await Promise.all([
-		useJdbcTypeStore().init(),
-		useGlobalGenConfigStore().init(),
-		useColumnDefaultStore().init(),
-		useDataSourceDefaultStore().init()
-	])
-
-	loadingStore.stop(key)
-})
+onBeforeMount(loadingStore.withLoading(
+	'Stores init',
+	async () => {
+		await Promise.all([
+			useJdbcTypeStore().init(),
+			useGlobalGenConfigStore().init(),
+			useColumnDefaultStore().init(),
+			useDataSourceDefaultStore().init()
+		])
+	}
+))
 </script>
 
 <template>

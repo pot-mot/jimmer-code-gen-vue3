@@ -68,15 +68,13 @@ genConfigStore.onLoaded(() => {
 	}
 })
 
-const getData = async () => {
-	const flag = typeMappingLoading.start('get')
+const getData = typeMappingLoading.withLoading('get', async () => {
 	await nextTick()
 
 	typeMappings.value = await api.typeMappingService.list()
 
 	await nextTick()
-	typeMappingLoading.stop(flag)
-}
+})
 
 onMounted(() => {
 	getData()

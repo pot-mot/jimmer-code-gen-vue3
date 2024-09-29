@@ -18,16 +18,14 @@ const tables = ref<GenTableCommonView[]>()
 
 const tablesLoading = useLoading('ModelItem.tablesLoading')
 
-const getData = async () => {
+const getData = tablesLoading.withLoading('get', async () => {
 	if (!props.showConfig.showModelTables) return
-	const flag = tablesLoading.start('get')
 	tables.value = await api.tableService.queryCommonView({
 		body: {
 			modelIds: [props.model.id]
 		}
 	})
-	tablesLoading.stop(flag)
-}
+})
 </script>
 
 <template>
