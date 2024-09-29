@@ -90,7 +90,7 @@
 
 		<ul v-if="GRAPH.isLoaded" class="toolbar right-top">
 			<li>
-				<el-tooltip content="预览 SQL">
+				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_previewSql')">
 					<el-button :icon="SQLIcon" @click="handleSQLPreview"/>
 				</el-tooltip>
 
@@ -111,7 +111,7 @@
 			</li>
 
 			<li>
-				<el-tooltip content="预览实体">
+				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_previewEntity')">
 					<el-button :icon="CodeIcon" @click="handleEntityPreview"/>
 				</el-tooltip>
 
@@ -132,13 +132,13 @@
 			</li>
 
 			<li>
-				<el-tooltip content="导出模型">
+				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_exportModelJson')">
 					<el-button :icon="ExportIcon" @click="handleModelExport"/>
 				</el-tooltip>
 			</li>
 
 			<li>
-				<el-tooltip content="下载全部（获得 zip 压缩包）">
+				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_downloadAll')">
 					<el-button :icon="DownloadIcon" @click="handleModelDownload"/>
 				</el-tooltip>
 			</li>

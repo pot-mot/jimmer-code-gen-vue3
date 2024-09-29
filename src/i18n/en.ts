@@ -26,7 +26,7 @@ export const mainLocaleEn: MainLocale = {
 
     LABEL_ModelListPage_createNewModel: "Create New Model",
     LABEL_ModelListPage_manageDataSource: "Manage Data Source",
-    LABEL_ModelListPage_loadModelJson: "Load Model Json",
+    LABEL_ModelListPage_loadModelJson: "Load Model (JSON)",
 
     LABEL_GlobalGenConfigForm: "Edit GlobalGenConfig",
     LABEL_TypeMappingForm: "Edit TypeMapping",
@@ -82,6 +82,11 @@ export const mainLocaleEn: MainLocale = {
     LABEL_ModelEditorGraph_layout_BT: 'Bottom to Top',
     LABEL_ModelEditorGraph_fit: 'Fit',
     LABEL_ModelEditorGraph_center: 'Center',
+
+    LABEL_ModelEditorGraph_previewSql: 'Preview SQL',
+    LABEL_ModelEditorGraph_previewEntity: 'Preview Entity',
+    LABEL_ModelEditorGraph_exportModelJson: 'Export Model (JSON)',
+    LABEL_ModelEditorGraph_downloadAll: 'Download All (ZIP)',
 
     LABEL_ModelEditorGraph_clean: 'Clean Graph',
     LABEL_ModelEditorGraph_cleanSelected: 'Clean Selection',

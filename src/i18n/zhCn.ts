@@ -26,7 +26,7 @@ export const mainLocaleZhCn: MainLocale = {
 
     LABEL_ModelListPage_createNewModel: "创建新模型",
     LABEL_ModelListPage_manageDataSource: "管理数据源",
-    LABEL_ModelListPage_loadModelJson: "导入模型 JSON",
+    LABEL_ModelListPage_loadModelJson: "导入模型 (JSON)",
 
     LABEL_GlobalGenConfigForm: "全局生成配置",
     LABEL_TypeMappingForm: "类型映射配置",
@@ -82,6 +82,11 @@ export const mainLocaleZhCn: MainLocale = {
     LABEL_ModelEditorGraph_layout_BT: '下至上',
     LABEL_ModelEditorGraph_fit: '适应画布',
     LABEL_ModelEditorGraph_center: '居中',
+
+    LABEL_ModelEditorGraph_previewSql: '预览 SQL',
+    LABEL_ModelEditorGraph_previewEntity: '预览实体',
+    LABEL_ModelEditorGraph_exportModelJson: '导出模型 (JSON)',
+    LABEL_ModelEditorGraph_downloadAll: '下载全部 (ZIP)',
 
     LABEL_ModelEditorGraph_clean: '清理画布',
     LABEL_ModelEditorGraph_cleanSelected: '清理选中部分',
