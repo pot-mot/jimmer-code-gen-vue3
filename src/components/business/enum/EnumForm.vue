@@ -3,13 +3,16 @@ import EditList from "@/components/global/list/EditList.vue";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 import {DeepReadonly, ref, watch} from "vue";
 import {enumItemColumns} from "@/components/business/enum/enumItemColumns.ts";
-import {EnumType, EnumType_CONSTANTS} from "@/api/__generated/model/enums";
+import {EnumType_CONSTANTS} from "@/api/__generated/model/enums";
 import Line from "@/components/global/list/Line.vue";
 import LineItem from "@/components/global/list/LineItem.vue";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {sendMessage} from "@/message/message.ts";
 import {getDefaultEnum, getDefaultEnumItem} from "@/components/business/enum/defaultEnum.ts";
 import {validateEnumItem} from "@/shape/GenEnumModelInput.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+
+const i18nStore = useI18nStore()
 
 const props = defineProps<{
 	enum?: Partial<GenModelInput_TargetOf_enums>,
@@ -48,14 +51,6 @@ watch(() => genEnum.value.enumType, (value) => {
 	}
 })
 
-const handleEnumTypeChange = (value: string) => {
-	if ((EnumType_CONSTANTS as DeepReadonly<Array<string>>).includes(value)) {
-		genEnum.value.enumType = value as EnumType
-	} else {
-		genEnum.value.enumType = undefined
-	}
-}
-
 const handleSubmit = () => {
 	const messageList = props.validate(genEnum.value)
 
@@ -80,29 +75,31 @@ const handleCancel = () => {
 	<el-form style="width: calc(100% - 0.5rem);">
 		<Line height="3em">
 			<LineItem>
-				<el-form-item label="名称">
-					<el-input v-model="genEnum.name"></el-input>
+				<el-form-item :label="i18nStore.translate('LABEL_EnumForm_name')">
+					<el-input v-model="genEnum.name"/>
 				</el-form-item>
 			</LineItem>
 
 			<LineItem>
-				<el-form-item label="注释">
-					<el-input v-model="genEnum.comment"></el-input>
+				<el-form-item :label="i18nStore.translate('LABEL_EnumForm_comment')">
+					<el-input v-model="genEnum.comment"/>
 				</el-form-item>
 			</LineItem>
 
 			<LineItem>
-				<el-form-item label="类型">
-					<el-select v-model="genEnum.enumType" @change="handleEnumTypeChange">
-						<el-option label="不设置" value=""></el-option>
-						<el-option v-for="type in EnumType_CONSTANTS" :value="type"></el-option>
+				<el-form-item :label="i18nStore.translate('LABEL_EnumForm_type')">
+					<el-select
+						v-model="genEnum.enumType"
+						clearable @clear="() => genEnum.enumType = undefined"
+						:placeholder="i18nStore.translate('LABEL_EnumForm_typeUnset')">
+						<el-option v-for="type in EnumType_CONSTANTS" :value="type"/>
 					</el-select>
 				</el-form-item>
 			</LineItem>
 		</Line>
 
 		<el-form-item label="备注">
-			<el-input type="textarea" v-model="genEnum.remark"></el-input>
+			<el-input type="textarea" v-model="genEnum.remark"/>
 		</el-form-item>
 
 		<EditList
@@ -111,17 +108,29 @@ const handleCancel = () => {
 			:defaultLine="getDefaultEnumItem"
 			:json-schema-validate="validateEnumItem"
 			style="padding-bottom: 2em;">
-			<template #value="{data}">
-				<el-input v-if="genEnum.enumType === 'NAME'" v-model="data.mappedValue"></el-input>
-				<el-input-number v-else-if="genEnum.enumType === 'ORDINAL'"
-								 v-model="data.mappedValue"></el-input-number>
-				<el-input v-else disabled :model-value="data.mappedValue"></el-input>
+			<template #mappedValue="{data}">
+				<el-input
+					v-if="genEnum.enumType === 'NAME'"
+					v-model="data.mappedValue"/>
+				<el-input-number
+					v-else-if="genEnum.enumType === 'ORDINAL'"
+					v-model="data.mappedValue"
+					:precision="0"
+					style="width: 100%"/>
+				<el-input
+					v-else
+					disabled
+					:model-value="data.mappedValue"/>
 			</template>
 		</EditList>
 
 		<div style="text-align: right; position: absolute; bottom: 0.5em; left: 1em; right: 1em;">
-			<el-button type="info" @click="handleCancel">取消</el-button>
-			<el-button type="warning" @click="handleSubmit">提交</el-button>
+			<el-button type="info" @click="handleCancel">
+				{{ i18nStore.translate('BUTTON_cancel') }}
+			</el-button>
+			<el-button type="warning" @click="handleSubmit">
+				{{ i18nStore.translate('BUTTON_submit') }}
+			</el-button>
 		</div>
 	</el-form>
 </template>

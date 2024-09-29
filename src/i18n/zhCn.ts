@@ -161,6 +161,11 @@ export const mainLocaleZhCn: MainLocale = {
     LABEL_GenTableIndex_uniqueIndex: '唯一',
     LABEL_GenTableIndex_columns: '引用列',
 
+    LABEL_EnumForm_name: '名称',
+    LABEL_EnumForm_comment: '注释',
+    LABEL_EnumForm_type: '类型',
+    LABEL_EnumForm_typeUnset: '默认',
+
     LABEL_GenEnumItem_name: '名称',
     LABEL_GenEnumItem_value: '值',
     LABEL_GenEnumItem_comment: '注释',

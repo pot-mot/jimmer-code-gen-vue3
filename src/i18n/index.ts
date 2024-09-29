@@ -159,6 +159,11 @@ export type MainLocale = {
     LABEL_GenTableIndex_uniqueIndex: string
     LABEL_GenTableIndex_columns: string
 
+    LABEL_EnumForm_name: string
+    LABEL_EnumForm_comment: string
+    LABEL_EnumForm_type: string
+    LABEL_EnumForm_typeUnset: string
+
     LABEL_GenEnumItem_name: string
     LABEL_GenEnumItem_value: string
     LABEL_GenEnumItem_comment: string
