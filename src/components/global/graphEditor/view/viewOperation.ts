@@ -2,7 +2,7 @@ import {Ref, ref} from "vue";
 import {getBottom, getLeft, getRight, getTop, layoutByLevel, LayoutDirection} from "../layout/layoutByLevel.ts";
 import {Graph} from "@antv/x6";
 import {getSelectedNodes} from "../selection/selectOperation.ts";
-import {CellProperty, getCell} from "../common/cellsInputProcess.ts";
+import {CellProperty, getCell} from "@/components/global/graphEditor/inputProcess/cellsInputProcess.ts";
 import {DEFAULT_ZOOM_RANGE} from "@/components/pages/ModelEditor/constant.ts";
 
 export interface ViewOperation {

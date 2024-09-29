@@ -5,7 +5,7 @@ import {
     GenTableModelInput,
     GenTableModelInput_TargetOf_columns,
 } from "@/api/__generated/model/static";
-import {erRouter, orthRouter} from "@/components/global/graphEditor/edgeRouter.ts";
+import {erRouter, orthRouter} from "@/components/global/graphEditor/edge/edgeRouter.ts";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {PortManager} from "@antv/x6/es/model/port";
 import {DeepReadonly} from "vue";

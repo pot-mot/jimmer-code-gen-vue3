@@ -1,5 +1,5 @@
 import {Graph} from "@antv/x6"
-import {initGraph} from "@/components/global/graphEditor/common/init.ts";
+import {initGraphEditor} from "@/components/global/graphEditor/initGraphEditor.ts";
 
 import {AssociationEdgeConnecting} from "@/components/pages/ModelEditor/graph/associationEdge/define.ts";
 import {DEFAULT_ZOOM_RANGE} from "@/components/pages/ModelEditor/constant.ts";
@@ -8,7 +8,7 @@ import {useAssociationType} from "@/components/pages/ModelEditor/graph/associati
 import {useAssociationFake} from "@/components/pages/ModelEditor/graph/associationEdge/associationFake.ts";
 
 export const initModelEditor = (container: HTMLElement, wrapper: HTMLElement): Graph => {
-    const graph = initGraph(
+    const graph = initGraphEditor(
         container,
         wrapper,
         {

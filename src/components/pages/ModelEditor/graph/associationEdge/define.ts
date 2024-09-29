@@ -1,4 +1,4 @@
-import {erRouter, orthRouter} from "@/components/global/graphEditor/edgeRouter.ts";
+import {erRouter, orthRouter} from "@/components/global/graphEditor/edge/edgeRouter.ts";
 import {sendMessage} from "@/message/message.ts";
 import {Options} from "@antv/x6/es/graph/options";
 import {

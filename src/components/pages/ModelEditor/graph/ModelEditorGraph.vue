@@ -171,7 +171,7 @@
 <script lang="ts" setup>
 import {onMounted, onUnmounted, ref, watch} from "vue"
 import {Graph, Node} from "@antv/x6"
-import {initModelEditor} from "./init.ts"
+import {initModelEditor} from "./initModelEditor.ts"
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import {api} from "@/api";
