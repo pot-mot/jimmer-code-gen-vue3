@@ -36,8 +36,21 @@ export const useI18nStore = defineStore(
             return languageOptions[language.value].element
         })
 
-        const translate = (key: keyof MainLocale) => {
-            return mainLocale.value[key]
+        const translate = <K extends keyof MainLocale, V extends MainLocale[K]>(
+            key: K,
+            ...args: V extends (...args: infer A) => string
+                ? A
+                : []
+        ): string => {
+            const translateItem = mainLocale.value[key]
+
+            if (typeof translateItem === "string") {
+                return translateItem
+            } else if (typeof translateItem === "function") {
+                return (translateItem as any)(...args)
+            }
+
+            throw new Error(`args ${args} is not valid.`)
         }
 
         return {

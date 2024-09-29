@@ -20,6 +20,12 @@ export const mainLocaleZhCn: MainLocale = {
     MESSAGE_delete_success: '删除成功',
     MESSAGE_delete_fail: '删除失败',
 
+    CONFIRM_delete: (target: string) => {
+        return `你确定要删除 ${target} 吗？`
+    },
+    CONFIRM_button_confirm: "确定",
+    CONFIRM_button_cancel: "取消",
+
     LABEL_OPERATION: "操作",
     LABEL_CREATE_AT: "创建于",
     LABEL_MODIFY_AT: "修改于",

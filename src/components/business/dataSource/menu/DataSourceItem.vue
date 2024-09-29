@@ -51,7 +51,7 @@ const getSchemas = async (schemaIds: number[] = []) => {
 }
 
 const handleDelete = () => {
-	deleteConfirm(`数据源【${props.dataSource.name}】`,
+	deleteConfirm(`【${props.dataSource.name}】`,
 		() => {
 			const id = props.dataSource.id
 

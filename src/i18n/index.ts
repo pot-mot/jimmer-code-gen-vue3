@@ -18,6 +18,10 @@ export type MainLocale = {
     MESSAGE_delete_success: string
     MESSAGE_delete_fail: string
 
+    CONFIRM_delete: (target: string) => string
+    CONFIRM_button_confirm: string
+    CONFIRM_button_cancel: string
+
     LABEL_OPERATION: string
     LABEL_CREATE_AT: string
     LABEL_MODIFY_AT: string

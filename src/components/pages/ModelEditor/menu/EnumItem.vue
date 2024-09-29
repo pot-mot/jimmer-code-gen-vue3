@@ -16,7 +16,7 @@ const handleEdit = () => {
 }
 
 const handleDelete = () => {
-	deleteConfirm(`枚举【${props.genEnum.name}】`, () => {
+	deleteConfirm(`【${props.genEnum.name}】`, () => {
 		ModelEditorEventBus.emit('removeEnum', {id: props.genEnum.name})
 	})
 }

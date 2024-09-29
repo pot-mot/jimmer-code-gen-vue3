@@ -47,7 +47,7 @@ const handleClickTarget = (e: MouseEvent) => {
 }
 
 const handleDelete = () => {
-	deleteConfirm(`关联【${props.association.name}】`, () => {
+	deleteConfirm(`【${props.association.name}】`, () => {
 		ModelEditorEventBus.emit('removeAssociation', {id: props.edge.id})
 	})
 }

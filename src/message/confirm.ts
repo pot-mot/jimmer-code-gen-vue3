@@ -2,6 +2,7 @@ import {ElMessageBoxOptions} from "element-plus/es/components/message-box/src/me
 import {ElMessageBox} from "element-plus";
 import {markRaw} from "vue";
 import {Delete, Warning} from "@element-plus/icons-vue";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
 export const deleteConfirm = (
     deleteTarget: string,
@@ -9,11 +10,13 @@ export const deleteConfirm = (
     message: string = "",
     opts?: ElMessageBoxOptions,
 ) => {
+    const i18nStore = useI18nStore()
+
     ElMessageBox.confirm(
-        `确定要删除 ${deleteTarget} 吗？\n${message}`,
+        i18nStore.translate("CONFIRM_delete", deleteTarget) + message,
         {
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No',
+            confirmButtonText: i18nStore.translate("CONFIRM_button_confirm"),
+            cancelButtonText: i18nStore.translate("CONFIRM_button_cancel"),
             icon: markRaw(Delete),
             type: "error",
             ...opts
@@ -29,11 +32,13 @@ export const confirm = (
     callback: () => void,
     opts?: ElMessageBoxOptions,
 ) => {
+    const i18nStore = useI18nStore()
+
     ElMessageBox.confirm(
         `${message}`,
         {
-            confirmButtonText: 'Yes',
-            cancelButtonText: 'No',
+            confirmButtonText: i18nStore.translate("CONFIRM_button_confirm"),
+            cancelButtonText: i18nStore.translate("CONFIRM_button_cancel"),
             icon: markRaw(Warning),
             type: "info",
             ...opts

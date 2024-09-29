@@ -20,6 +20,12 @@ export const mainLocaleEn: MainLocale = {
     MESSAGE_delete_success: 'Delete Successful',
     MESSAGE_delete_fail: 'Delete Failed',
 
+    CONFIRM_delete: (target: string) => {
+        return `Are you sure you want to delete ${target}?`
+    },
+    CONFIRM_button_confirm: "OK",
+    CONFIRM_button_cancel: "NO",
+
     LABEL_OPERATION: "Operation",
     LABEL_CREATE_AT: "Create at",
     LABEL_MODIFY_AT: "Modify at",

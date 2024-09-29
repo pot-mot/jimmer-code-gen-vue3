@@ -35,7 +35,7 @@ const getTables = async (schemaId: number = props.schema.id) => {
 }
 
 const handleDelete = () => {
-	deleteConfirm(`架构【${props.schema.name}】`,
+	deleteConfirm(`【${props.schema.name}】`,
 		async () => {
 			const id = props.schema.id
 			const count = await api.schemaService.delete({ids: [id]})
