@@ -40,41 +40,62 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
     },
 
     validateEdge({edge}) {
-        if (edge.shape !== ASSOCIATION_EDGE) return true
+        try {
+            if (edge.shape !== ASSOCIATION_EDGE) return true
 
-        const edgeConnect = getEdgeConnect(edge as any)
-        if (!edgeConnect) return false
+            const edgeConnect = getEdgeConnect(edge as any)
+            if (!edgeConnect) return false
 
-        const edgeConnectData = getEdgeConnectEntities(edgeConnect)
-        if (!edgeConnectData) return false
+            const edgeConnectData = getEdgeConnectEntities(edgeConnect)
+            if (!edgeConnectData) return false
 
-        const {
-            sourceColumn,
-            targetColumn
-        } = edgeConnectData
+            const {
+                sourceTable,
+                sourceColumn,
+                targetTable,
+                targetColumn
+            } = edgeConnectData
 
-        if (
-            (sourceColumn.typeCode !== targetColumn.typeCode) ||
-            (
-                (sourceColumn.overwriteByRaw || targetColumn.overwriteByRaw) &&
-                sourceColumn.rawType !== targetColumn.rawType
-            )
-        ) {
-            sendMessage('关联两端类型不一致', 'warning')
+            if (
+                (sourceColumn.typeCode !== targetColumn.typeCode) ||
+                (
+                    (sourceColumn.overwriteByRaw || targetColumn.overwriteByRaw) &&
+                    sourceColumn.rawType !== targetColumn.rawType
+                )
+            ) {
+                sendMessage('关联两端类型不一致', 'warning')
+                return false
+            }
+
+            if (targetTable.type === 'SUPER_TABLE') {
+                sendMessage('关联目标表不能是上级表', 'warning')
+                return false
+            }
+
+            if (sourceTable.type === 'SUPER_TABLE' && sourceColumn.partOfPk) {
+                sendMessage('上级表主键不可关联至其他表', 'warning')
+                return false
+            }
+
+            if (!(sourceColumn.partOfPk || targetColumn.partOfPk)) {
+                sendMessage('关联源与目标中至少一方需要是主键', 'warning')
+                return false
+            }
+
+            // 在连接建立后调整 router
+            if (edge.getTargetCellId() === edge.getSourceCellId()) {
+                edge.router = orthRouter
+            } else {
+                edge.router = erRouter
+            }
+
+            const association = createAssociation(edgeConnectData)
+            updateAssociationEdgeData(edge as any, association)
+
+            return true
+        } catch (e) {
             return false
         }
-
-        // 在连接建立后调整 router
-        if (edge.getTargetCellId() === edge.getSourceCellId()) {
-            edge.router = orthRouter
-        } else {
-            edge.router = erRouter
-        }
-
-        const association = createAssociation(edgeConnectData)
-        updateAssociationEdgeData(edge as any, association)
-
-        return true
     },
 
     allowMulti: 'withPort',
@@ -93,6 +114,16 @@ const createAssociation = (
         targetColumn,
     } = edgeConnectEntities
 
+    let associationType = DEFAULT_ASSOCIATION_TYPE
+
+    if (sourceColumn.partOfPk) {
+        if (targetColumn.partOfPk) {
+            associationType = "MANY_TO_MANY"
+        } else {
+            associationType = "ONE_TO_MANY"
+        }
+    }
+
     const newAssociation: GenAssociationModelInput = {
         name: "",
         sourceTableName: sourceTable.name,
@@ -101,7 +132,7 @@ const createAssociation = (
             sourceColumnName: sourceColumn.name,
             targetColumnName: targetColumn.name,
         }],
-        type: DEFAULT_ASSOCIATION_TYPE,
+        type: associationType,
         fake: !(useGenConfigContextStore().context.realFk),
         dissociateAction: undefined,
         updateAction: "",

@@ -469,7 +469,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         startBatchSync('editedTable', () => {
             const oldTable = cell.getData().table
 
-            // 当高级表被修改时，调整其他表中的 superTables
+            // 当上级表被修改时，调整其他表中的 superTables
             if (oldTable.type === "SUPER_TABLE") {
                 if (table.type === "SUPER_TABLE") {
                     syncSuperTableNameForTables(graph, oldTable.name, table.name)
@@ -494,7 +494,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         startBatchSync('removeTable', () => {
             if (cell.shape === TABLE_NODE && cell.getData().table) {
                 const table = cell.getData().table as GenTableModelInput
-                // 当高级表被删除时，调整其他表中的 superTables
+                // 当上级表被删除时，调整其他表中的 superTables
                 if (table.type === "SUPER_TABLE") {
                     syncSuperTableNameForTables(graph, table.name, undefined)
                 }

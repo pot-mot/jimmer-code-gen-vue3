@@ -1,4 +1,4 @@
-// 同步表中的高级表名
+// 同步表中的上级表名
 import {GenTableModelInput, GenTableModelInput_TargetOf_superTables} from "@/api/__generated/model/static";
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
@@ -26,14 +26,14 @@ const syncSuperTableNameInTable = (table: GenTableModelInput, oldSuperTableName:
     return tempTable
 }
 
-// 判断高级表是否在表中出现
+// 判断上级表是否在表中出现
 const judgeSuperTableInTable = (superTableName: string, table: GenTableModelInput): boolean => {
     return table.superTables
         .flatMap(it => it.name)
         .includes(superTableName)
 }
 
-// 在全部表中同步高级表
+// 在全部表中同步上级表
 export const syncSuperTableNameForTables = (graph: Graph, oldSuperTableName: string, newSuperTableName: string | undefined) => {
     const nodes = graph.getNodes().filter(it => it.shape === TABLE_NODE)
 

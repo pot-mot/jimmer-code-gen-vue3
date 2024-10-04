@@ -131,7 +131,7 @@ export const validateTable = (
             }
         } else {
             if (pkColumns.length > 0) {
-                messageList.push('高级表中已具有主键，当前表中不需要主键')
+                messageList.push('上级表中已具有主键，当前表中不需要主键')
             }
         }
     } else {
@@ -158,7 +158,7 @@ export const validateTable = (
     const superTableColumnNameSet = new Set(superTableColumns.map(it => it.name))
     for (let column of table.columns) {
         if (superTableColumnNameSet.has(column.name)) {
-            messageList.push(`列名【${column.name}】与高级表中的列名重复`)
+            messageList.push(`列名【${column.name}】与上级表中的列名重复`)
         }
     }
 
