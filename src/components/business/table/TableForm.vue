@@ -187,30 +187,23 @@ const createKeyIndexName = (): string => {
     )
 }
 
-const handleColumnToKey = () => {
-    keyIndex.value = {
-        name: createKeyIndexName(),
-        uniqueIndex: true,
-        columns: table.value.columns
-            .filter(it => it.businessKey)
-            .map(it => {
-                return {name: it.name}
-            }),
-        remark: "",
-    }
-}
+const resetKeyIndex = () => {
+	const businessKeyColumns = table.value.columns
+		.filter(it => it.businessKey)
 
-const handleColumnNotToKey = (columnIndex: number) => {
-    if (keyIndex.value && keyIndex.value.columns) {
-        const tempColumns = keyIndex.value.columns
-            .filter(it => it.name !== table.value.columns[columnIndex].name)
-
-        if (tempColumns.length > 0) {
-            keyIndex.value.columns = tempColumns
-        } else {
-            keyIndex.value = undefined
-        }
-    }
+	if (businessKeyColumns.length > 0) {
+		keyIndex.value = {
+			name: createKeyIndexName(),
+			uniqueIndex: true,
+			columns: businessKeyColumns
+				.map(it => {
+					return {name: it.name}
+				}),
+			remark: "",
+		}
+	} else {
+		keyIndex.value = undefined
+	}
 }
 
 const handleSyncIndexName = (index: number) => {
@@ -260,7 +253,7 @@ const handleCancel = () => {
     <el-form style="width: calc(100% - 0.5rem);">
         <el-row :gutter="12" style="line-height: 2em; padding-left: 1em; padding-bottom: 1em;">
             <el-col :span="8">
-                <el-input v-model="table.name" placeholder="name"/>
+                <el-input v-model="table.name" placeholder="name" @change="resetKeyIndex"/>
             </el-col>
 
             <el-col :span="8">
@@ -329,10 +322,7 @@ const handleCancel = () => {
                         @updatePrimaryKey="value => {
                             if (value) handleColumnToPk(index)
                         }"
-                        @updateBusinessKey="value => {
-                            if (value) handleColumnToKey()
-                            else handleColumnNotToKey(index)
-                        }"/>
+                        @updateBusinessKey="resetKeyIndex"/>
                 </template>
 
                 <template #name="{data, index}">
@@ -385,8 +375,8 @@ const handleCancel = () => {
                 style="width: calc(100% - 0.5rem);">
 
                 <template #name="{data, index}">
-                    <el-input v-model="data.name">
-                        <template #append>
+                    <el-input v-model="data.name" :disabled="keyIndex === data">
+                        <template #append v-if="keyIndex !== data">
                             <el-button
                                 :icon="RefreshRight"
                                 @click="handleSyncIndexName(index)"/>
@@ -396,13 +386,14 @@ const handleCancel = () => {
 
                 <template #uniqueIndex="{data}">
                     <div style="text-align: center;">
-                        <el-switch v-model="data.uniqueIndex"/>
+                        <el-switch v-model="data.uniqueIndex" :disabled="keyIndex === data"/>
                     </div>
                 </template>
 
                 <template #columns="{data}">
                     <el-select
                         :model-value="data.columns.map(it => it.name)"
+						:disabled="keyIndex === data"
                         @change="(value: string[]) => {
 								   data.columns = value.map(it => {return {name: it}})
 							   }"
