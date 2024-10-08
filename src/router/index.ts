@@ -1,6 +1,6 @@
 import {createRouter, createWebHashHistory, RouteRecordRaw} from 'vue-router'
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
-import {sendMessage} from "@/message/message.ts";
+import {sendI18nMessage} from "@/message/message.ts";
 
 const routes: RouteRecordRaw[] = [
     {
@@ -19,8 +19,7 @@ const routes: RouteRecordRaw[] = [
 export const router = createRouter({
     history: createWebHashHistory(),
     routes,
-    // @ts-ignore
-    scrollBehavior(to, from, savedPosition) {
+    scrollBehavior(_to, _from, savedPosition) {
         if (savedPosition) {
             return savedPosition
         } else {
@@ -29,7 +28,7 @@ export const router = createRouter({
     },
 });
 
-let routerChangeFlag: string
+let routerChangeFlag: string | undefined = undefined
 
 router.beforeEach((to, from, next) => {
     routerChangeFlag = useGlobalLoadingStore().start(`to: ${to.fullPath}, from: ${from.fullPath}`)
@@ -37,9 +36,9 @@ router.beforeEach((to, from, next) => {
 })
 
 router.afterEach((to, from) => {
-    if (routerChangeFlag) {
+    if (routerChangeFlag !== undefined) {
         useGlobalLoadingStore().stop(routerChangeFlag)
     } else {
-        sendMessage('出现未经 beforeEach 设置 loadingFlag 跳转的路由', 'warning', {to, from})
+        sendI18nMessage("MESSAGE_router_loading_closeFail", 'warning', {to, from})
     }
 })

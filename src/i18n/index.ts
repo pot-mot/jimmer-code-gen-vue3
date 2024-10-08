@@ -22,6 +22,8 @@ export type MainLocale = {
     CONFIRM_button_confirm: string
     CONFIRM_button_cancel: string
 
+    MESSAGE_router_loading_closeFail: string
+
     LABEL_OPERATION: string
     LABEL_CREATE_AT: string
     LABEL_MODIFY_AT: string

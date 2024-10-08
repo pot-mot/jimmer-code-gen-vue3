@@ -26,6 +26,8 @@ export const mainLocaleZhCn: MainLocale = {
     CONFIRM_button_confirm: "确定",
     CONFIRM_button_cancel: "取消",
 
+    MESSAGE_router_loading_closeFail: "路由加载动画无法正确关闭",
+
     LABEL_OPERATION: "操作",
     LABEL_CREATE_AT: "创建于",
     LABEL_MODIFY_AT: "修改于",

@@ -26,6 +26,8 @@ export const mainLocaleEn: MainLocale = {
     CONFIRM_button_confirm: "OK",
     CONFIRM_button_cancel: "NO",
 
+    MESSAGE_router_loading_closeFail: "Route loading animation cannot closed correctly",
+
     LABEL_OPERATION: "Operation",
     LABEL_CREATE_AT: "Create at",
     LABEL_MODIFY_AT: "Modify at",
