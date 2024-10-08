@@ -4,7 +4,7 @@ import {mainLocaleZhCn} from "@/i18n/zhCn.ts"
 import elementZhCn from 'element-plus/es/locale/lang/zh-cn.mjs'
 import {mainLocaleEn} from '@/i18n/en.ts'
 import elementEn from 'element-plus/es/locale/lang/en.mjs'
-import {type MainLocale} from "@/i18n";
+import {MainLocale, MainLocaleKeyParam} from "@/i18n";
 
 const languageOptions = {
     'zh-cn': {
@@ -36,21 +36,32 @@ export const useI18nStore = defineStore(
             return languageOptions[language.value].element
         })
 
-        const translate = <K extends keyof MainLocale, V extends MainLocale[K]>(
-            key: K,
-            ...args: V extends (...args: infer A) => string
-                ? A
-                : []
+        const translate = (
+            keyParam: MainLocaleKeyParam
         ): string => {
-            const translateItem = mainLocale.value[key]
+            if (typeof keyParam === "string" && keyParam in mainLocale.value) {
+                const translateItem = mainLocale.value[keyParam]
 
-            if (typeof translateItem === "string") {
-                return translateItem
-            } else if (typeof translateItem === "function") {
-                return (translateItem as any)(...args)
+                if (typeof translateItem === "string") {
+                    return translateItem
+                } else if (typeof translateItem === "function") {
+                    return (translateItem as any)()
+                }
+            } else if (typeof keyParam === "object") {
+                const {key, args} = keyParam
+
+                const translateItem = mainLocale.value[key]
+
+                if (typeof translateItem === "string") {
+                    return translateItem
+                } else if (typeof translateItem === "function") {
+                    return (translateItem as any)(...args)
+                }
+
+                throw new Error(`key ${key} args ${args} is not valid.`)
             }
 
-            throw new Error(`args ${args} is not valid.`)
+            throw new Error(`keyParam ${keyParam} cannot translate`)
         }
 
         return {

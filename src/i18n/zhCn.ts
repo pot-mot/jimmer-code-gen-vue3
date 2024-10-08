@@ -93,6 +93,10 @@ export const mainLocaleZhCn: MainLocale = {
     LABEL_ModelEditorGraph_fit: '适应画布',
     LABEL_ModelEditorGraph_center: '居中',
 
+    VALIDATE_GenEnum_cannotBeDuplicate: (enumName: string) => {
+        return `枚举【${enumName}】已存在`
+    },
+
     LABEL_ModelEditorGraph_previewSql: '预览 SQL',
     LABEL_ModelEditorGraph_previewEntity: '预览实体',
     LABEL_ModelEditorGraph_exportModelJson: '导出模型 (JSON)',
@@ -142,9 +146,9 @@ export const mainLocaleZhCn: MainLocale = {
     LABEL_GenTypeMapping_propertyType: '映射类型',
     LABEL_GenTypeMapping_remark: '备注',
 
-    VALIDATE_GenTypeMapping_cannot_be_duplicate: 'TypeMapping 不可重复',
-    VALIDATE_GenTypeMapping_typeExpression_cannot_be_empty: 'TypeMapping 数据库类型表达式不可为空',
-    VALIDATE_GenTypeMapping_propertyType_cannot_be_empty: 'TypeMapping 映射类型不可为空',
+    VALIDATE_GenTypeMapping_cannotBeDuplicate: 'TypeMapping 不可重复',
+    VALIDATE_GenTypeMapping_typeExpression_cannotBeEmpty: 'TypeMapping 数据库类型表达式不可为空',
+    VALIDATE_GenTypeMapping_propertyType_cannotBeEmpty: 'TypeMapping 映射类型不可为空',
 
     LABEL_GenColumnDefault_dataSourceType: '数据源类型',
     LABEL_GenColumnDefault_typeCode: 'Jdbc 类型',
@@ -155,10 +159,10 @@ export const mainLocaleZhCn: MainLocale = {
     LABEL_GenColumnDefault_defaultValue: '默认值',
     LABEL_GenColumnDefault_remark: '备注',
 
-    VALIDATE_GenColumnDefault_cannot_be_duplicate: 'ColumnDefault 的 dataSourceType 和 typeCode 不可重复',
-    VALIDATE_GenColumnDefault_rawType_cannot_be_empty: "ColumnDefault 的字面类型不可为空",
-    VALIDATE_GenColumnDefault_dataSize_cannot_be_empty: 'ColumnDefault 的长度不可为空',
-    VALIDATE_GenColumnDefault_numericPrecision_cannot_be_empty: 'ColumnDefault 的精度不可为空',
+    VALIDATE_GenColumnDefault_cannotBeDuplicate: 'ColumnDefault 数据源类型和Jdbc 类型组合不可重复',
+    VALIDATE_GenColumnDefault_rawType_cannotBeEmpty: "ColumnDefault 的字面类型不可为空",
+    VALIDATE_GenColumnDefault_dataSize_cannotBeEmpty: 'ColumnDefault 的长度不可为空',
+    VALIDATE_GenColumnDefault_numericPrecision_cannotBeEmpty: 'ColumnDefault 的精度不可为空',
 
     LABEL_GenTableColumn_category: '列类别',
     LABEL_GenTableColumn_name: '列名',

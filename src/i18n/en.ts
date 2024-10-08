@@ -93,6 +93,10 @@ export const mainLocaleEn: MainLocale = {
     LABEL_ModelEditorGraph_fit: 'Fit',
     LABEL_ModelEditorGraph_center: 'Center',
 
+    VALIDATE_GenEnum_cannotBeDuplicate: (enumName: string) => {
+        return `Enum【${enumName}】already exist`
+    },
+
     LABEL_ModelEditorGraph_previewSql: 'Preview SQL',
     LABEL_ModelEditorGraph_previewEntity: 'Preview Entity',
     LABEL_ModelEditorGraph_exportModelJson: 'Export Model (JSON)',
@@ -142,9 +146,9 @@ export const mainLocaleEn: MainLocale = {
     LABEL_GenTypeMapping_propertyType: 'MappingType',
     LABEL_GenTypeMapping_remark: 'Remark',
 
-    VALIDATE_GenTypeMapping_cannot_be_duplicate: 'TypeMapping cannot be duplicate',
-    VALIDATE_GenTypeMapping_typeExpression_cannot_be_empty: 'TypeMapping DatabaseType Match cannot be empty',
-    VALIDATE_GenTypeMapping_propertyType_cannot_be_empty: 'TypeMapping MappingType cannot be empty',
+    VALIDATE_GenTypeMapping_cannotBeDuplicate: 'TypeMapping cannot be duplicate',
+    VALIDATE_GenTypeMapping_typeExpression_cannotBeEmpty: 'TypeMapping DatabaseType Match cannot be empty',
+    VALIDATE_GenTypeMapping_propertyType_cannotBeEmpty: 'TypeMapping MappingType cannot be empty',
 
 
     LABEL_GenColumnDefault_dataSourceType: 'Data Source Type',
@@ -156,10 +160,10 @@ export const mainLocaleEn: MainLocale = {
     LABEL_GenColumnDefault_defaultValue: 'Default Value',
     LABEL_GenColumnDefault_remark: 'Remark',
 
-    VALIDATE_GenColumnDefault_cannot_be_duplicate: 'The dataSourceType and typeCode of ColumnDefault cannot be duplicate',
-    VALIDATE_GenColumnDefault_rawType_cannot_be_empty: 'The Raw Type of ColumnDefault cannot be empty',
-    VALIDATE_GenColumnDefault_dataSize_cannot_be_empty: 'The Length of ColumnDefault cannot be empty',
-    VALIDATE_GenColumnDefault_numericPrecision_cannot_be_empty: 'The Precision of ColumnDefault cannot be empty',
+    VALIDATE_GenColumnDefault_cannotBeDuplicate: 'The dataSourceType and typeCode of ColumnDefault cannot be duplicate',
+    VALIDATE_GenColumnDefault_rawType_cannotBeEmpty: 'The Raw Type of ColumnDefault cannot be empty',
+    VALIDATE_GenColumnDefault_dataSize_cannotBeEmpty: 'The Length of ColumnDefault cannot be empty',
+    VALIDATE_GenColumnDefault_numericPrecision_cannotBeEmpty: 'The Precision of ColumnDefault cannot be empty',
 
     LABEL_GenTableColumn_category: 'Category',
     LABEL_GenTableColumn_name: 'Name',

@@ -13,7 +13,7 @@ export const deleteConfirm = (
     const i18nStore = useI18nStore()
 
     ElMessageBox.confirm(
-        i18nStore.translate("CONFIRM_delete", deleteTarget) + message,
+        i18nStore.translate({key: "CONFIRM_delete", args:[deleteTarget]}) + message,
         {
             confirmButtonText: i18nStore.translate("CONFIRM_button_confirm"),
             cancelButtonText: i18nStore.translate("CONFIRM_button_cancel"),

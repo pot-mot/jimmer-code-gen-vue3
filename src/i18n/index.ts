@@ -138,9 +138,9 @@ export type MainLocale = {
     LABEL_GenTypeMapping_propertyType: string
     LABEL_GenTypeMapping_remark: string
 
-    VALIDATE_GenTypeMapping_cannot_be_duplicate: string
-    VALIDATE_GenTypeMapping_typeExpression_cannot_be_empty: string
-    VALIDATE_GenTypeMapping_propertyType_cannot_be_empty: string
+    VALIDATE_GenTypeMapping_cannotBeDuplicate: string
+    VALIDATE_GenTypeMapping_typeExpression_cannotBeEmpty: string
+    VALIDATE_GenTypeMapping_propertyType_cannotBeEmpty: string
 
     LABEL_GenColumnDefault_dataSourceType: string
     LABEL_GenColumnDefault_typeCode: string
@@ -151,10 +151,10 @@ export type MainLocale = {
     LABEL_GenColumnDefault_defaultValue: string
     LABEL_GenColumnDefault_remark: string
 
-    VALIDATE_GenColumnDefault_cannot_be_duplicate: string
-    VALIDATE_GenColumnDefault_rawType_cannot_be_empty: string
-    VALIDATE_GenColumnDefault_dataSize_cannot_be_empty: string
-    VALIDATE_GenColumnDefault_numericPrecision_cannot_be_empty: string
+    VALIDATE_GenColumnDefault_cannotBeDuplicate: string
+    VALIDATE_GenColumnDefault_rawType_cannotBeEmpty: string
+    VALIDATE_GenColumnDefault_dataSize_cannotBeEmpty: string
+    VALIDATE_GenColumnDefault_numericPrecision_cannotBeEmpty: string
 
     LABEL_GenTableColumn_category: string,
     LABEL_GenTableColumn_name: string,
@@ -172,10 +172,20 @@ export type MainLocale = {
     LABEL_EnumForm_type: string
     LABEL_EnumForm_typeUnset: string
 
+    VALIDATE_GenEnum_cannotBeDuplicate: (enumName: string) => string
+
     LABEL_GenEnumItem_name: string
     LABEL_GenEnumItem_value: string
     LABEL_GenEnumItem_comment: string
-
 }
 
-export type MainLocaleKey = keyof MainLocale
+type MainLocaleKey = keyof MainLocale
+
+type MainLocaleKeyWithArgs<
+    K extends MainLocaleKey = MainLocaleKey,
+    V extends MainLocale[K] = MainLocale[K]
+> =
+    { key: K, args: V extends (...args: infer A) => string ? A : [] }
+
+export type MainLocaleKeyParam =
+    MainLocaleKey | MainLocaleKeyWithArgs

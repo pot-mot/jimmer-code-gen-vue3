@@ -1,12 +1,12 @@
 import {uniqWith} from "lodash";
 import {GenTypeMappingInput, GenTypeMappingView} from "@/api/__generated/model/static";
 import {DeepReadonly} from "vue";
-import {MainLocaleKey} from "@/i18n";
+import {MainLocaleKeyParam} from "@/i18n";
 
 export const validateTypeMappingForm = (
     typeMappings: DeepReadonly<Array<GenTypeMappingView>>
-): MainLocaleKey[] => {
-    const messageList: MainLocaleKey[] = []
+): MainLocaleKeyParam[] => {
+    const messageList: MainLocaleKeyParam[] = []
 
     const uniqueTypeMappings = uniqWith(typeMappings, (mapping1, mapping2) => {
         const keys = <(keyof GenTypeMappingInput)[]>['dataSourceType', 'language', 'propertyType', 'typeExpression']
@@ -19,15 +19,15 @@ export const validateTypeMappingForm = (
     })
 
     if (uniqueTypeMappings.length !== typeMappings.length) {
-        messageList.push('VALIDATE_GenTypeMapping_cannot_be_duplicate');
+        messageList.push('VALIDATE_GenTypeMapping_cannotBeDuplicate');
     }
 
     typeMappings.forEach((typeMapping) => {
         if (!typeMapping.typeExpression) {
-            messageList.push('VALIDATE_GenTypeMapping_typeExpression_cannot_be_empty')
+            messageList.push('VALIDATE_GenTypeMapping_typeExpression_cannotBeEmpty')
         }
         if (!typeMapping.propertyType) {
-            messageList.push('VALIDATE_GenTypeMapping_propertyType_cannot_be_empty')
+            messageList.push('VALIDATE_GenTypeMapping_propertyType_cannotBeEmpty')
         }
     })
 

@@ -1,12 +1,12 @@
 import {uniqWith} from "lodash";
 import {GenColumnDefaultInput} from "@/api/__generated/model/static";
 import {DeepReadonly} from "vue";
-import {MainLocaleKey} from "@/i18n";
+import {MainLocaleKeyParam} from "@/i18n";
 
 export const validateColumnDefaultForm = (
     columnDefaults: DeepReadonly<Array<GenColumnDefaultInput>>
-): MainLocaleKey[] => {
-    const messageList: MainLocaleKey[] = []
+): MainLocaleKeyParam[] => {
+    const messageList: MainLocaleKeyParam[] = []
 
     const uniqueColumnDefaults = uniqWith(columnDefaults, (mapping1, mapping2) => {
         const keys = <(keyof GenColumnDefaultInput)[]>['dataSourceType', 'typeCode']
@@ -19,18 +19,18 @@ export const validateColumnDefaultForm = (
     })
 
     if (uniqueColumnDefaults.length !== columnDefaults.length) {
-        messageList.push('VALIDATE_GenTypeMapping_cannot_be_duplicate');
+        messageList.push('VALIDATE_GenTypeMapping_cannotBeDuplicate');
     }
 
     columnDefaults.forEach((columnDefault) => {
         if (!columnDefault.rawType) {
-            messageList.push('VALIDATE_GenColumnDefault_rawType_cannot_be_empty');
+            messageList.push('VALIDATE_GenColumnDefault_rawType_cannotBeEmpty');
         }
         if (columnDefault.dataSize as number | null === null) {
-            messageList.push('VALIDATE_GenColumnDefault_dataSize_cannot_be_empty');
+            messageList.push('VALIDATE_GenColumnDefault_dataSize_cannotBeEmpty');
         }
         if (columnDefault.numericPrecision as number | null === null) {
-            messageList.push('VALIDATE_GenColumnDefault_numericPrecision_cannot_be_empty');
+            messageList.push('VALIDATE_GenColumnDefault_numericPrecision_cannotBeEmpty');
         }
     })
 
