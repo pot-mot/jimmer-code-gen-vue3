@@ -14,16 +14,17 @@ jar 包启动使用。
 | 后端                                                                         | 前端                                                                       |
 |----------------------------------------------------------------------------|--------------------------------------------------------------------------|
 | [Github](https://github.com/pot-mot/jimmer-code-gen-kotlin)                | [Github](https://github.com/pot-mot/jimmer-code-gen-vue3)                |
-| [Gitee](https://gitee.com/run-around---whats-wrong/jimmer-code-gen-kotlin) | [Gitee](https://gitee.com/run-around---whats-wrong/jimmer-code-gen-vue3) |
 
 ## 基本命令
 
-| 命令             | 说明                      |
-|----------------|-------------------------|
-| `pnpm install` | 下载依赖                    |
-| `pnpm dev`     | 启动项目                    |
-| `pnpm build`   | 构建项目，执行前将先进行`vue-tsc`校验 |
-| `pnpm api`     | 应用前后端免对接生成的接口           |
+| 命令                | 说明                                  |
+|-------------------|-------------------------------------|
+| `pnpm install`    | 下载依赖                                |
+| `pnpm dev`        | 启动项目                                |
+| `pnpm build-only` | 构建项目                                |
+| `pnpm api`        | 应用前后端免对接生成的接口                       |
+| `pnpm type-check` | ts 类型校验，将对项目及依赖进行校验<br/>**目前部分依赖无法通过校验** |
+
 
 ## 项目结构
 
