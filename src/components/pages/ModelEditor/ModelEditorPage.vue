@@ -12,7 +12,7 @@ import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import ModelDialog from "@/components/business/model/dialog/ModelDialog.vue";
 import {cloneDeep} from "lodash";
 import {api} from "@/api";
-import {sendMessage} from "@/message/message.ts";
+import {sendI18nMessage} from "@/message/message.ts";
 import {useRoute, useRouter} from "vue-router";
 import ModelMenu from "@/components/business/model/menu/ModelMenu.vue";
 import {ModelMenuEvents} from "@/components/business/model/menu/ModelMenuEvents.ts";
@@ -20,8 +20,11 @@ import TableDialogs from "@/components/pages/ModelEditor/dialogs/table/TableDial
 import EnumDialogs from "@/components/pages/ModelEditor/dialogs/enum/EnumDialogs.vue";
 import AssociationDialogs from "@/components/pages/ModelEditor/dialogs/association/AssociationDialogs.vue";
 import {confirm} from "@/message/confirm.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
 const {MODEL, MODEL_LOAD, MODEL_DIALOG_STATE} = useModelEditorStore()
+
+const i18nStore = useI18nStore()
 
 const loadingStore = useGlobalLoadingStore()
 
@@ -37,14 +40,14 @@ onMounted(async () => {
 		const model = await api.modelService.get({id})
 
 		if (!model) {
-			sendMessage('当前模型不存在', 'error', {modelId: id})
+			sendI18nMessage("MESSAGE_ModelEditorPage_modelNotFound", 'error', {modelId: id})
 			await router.replace("/")
 			return
 		}
 
 		MODEL_LOAD.load(model)
 	} catch (e) {
-		sendMessage('模型解析出现问题', 'error', e)
+		sendI18nMessage("MESSAGE_ModelEditorPage_modelLoadFail", 'error', e)
 		await router.replace("/")
 	}
 })
@@ -67,7 +70,7 @@ watch(() => dataSourceLoadMenu.value, () => {
 		'clickSchema',
 		async ({id}) => {
 			confirm(
-				"是否导入整个 schema",
+				i18nStore.translate("CONFIRM_ModelEditorPage_modelLoad_entireSchema"),
 				loadingStore.withLoading('ModelEditorPage syncClickSchemaEvent', async () => {
 					await MODEL_LOAD.loadSchema(id)
 				})

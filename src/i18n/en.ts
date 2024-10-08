@@ -66,6 +66,10 @@ export const mainLocaleEn: MainLocale = {
     LABEL_DataSourceForm_password: "Password",
     LABEL_DataSourceForm_remark: "Remark",
 
+    MESSAGE_ModelEditorPage_modelNotFound: "Model Not Found",
+    MESSAGE_ModelEditorPage_modelLoadFail: "Model Load Fail",
+    CONFIRM_ModelEditorPage_modelLoad_entireSchema: "Are you sure you want to load the entire Schema",
+
     LABEL_ModelEditorMainMenu_loadFromDataSource: "Load from Data Source",
     LABEL_ModelEditorMainMenu_loadFromModel: "Load from Model",
     LABEL_ModelEditorMainMenu_tableTitle: "Tables",
