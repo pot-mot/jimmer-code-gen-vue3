@@ -28,6 +28,16 @@ export const mainLocaleZhCn: MainLocale = {
 
     MESSAGE_router_loading_closeFail: "路由加载动画无法正确关闭",
 
+    MESSAGE_api_fetch_unexpectedResponseStatus: (fetchUrl: string, status: number, result: any) => {
+        return `请求【${fetchUrl}】时出现预期之外的状态【${status}】，收到【${JSON.stringify(result)}】`
+    },
+    MESSAGE_api_fetch_unexpectedResponseType: (fetchUrl: string, contentType: string, result: any) => {
+        return `请求【${fetchUrl}】时出现预期之外的响应类型【${contentType}】，收到【${JSON.stringify(result)}】`
+    },
+    MESSAGE_api_fetch_unexpectedError: (fetchUrl: string, error: any) => {
+        return `请求【${fetchUrl}】时出现错误【${JSON.stringify(error)}】`
+    },
+
     LABEL_OPERATION: "操作",
     LABEL_CREATE_AT: "创建于",
     LABEL_MODIFY_AT: "修改于",

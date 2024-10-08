@@ -28,6 +28,16 @@ export const mainLocaleEn: MainLocale = {
 
     MESSAGE_router_loading_closeFail: "Route loading animation cannot closed correctly",
 
+    MESSAGE_api_fetch_unexpectedResponseStatus: (fetchUrl: string, status: number, result: any) => {
+        return `An unexpected status [${status}] occurred while fetching [${fetchUrl}], received [${JSON.stringify(result)}]`;
+    },
+    MESSAGE_api_fetch_unexpectedResponseType: (fetchUrl: string, contentType: string, result: any) => {
+        return `An unexpected response type [${contentType}] occurred while fetching [${fetchUrl}], received [${JSON.stringify(result)}]`;
+    },
+    MESSAGE_api_fetch_unexpectedError: (fetchUrl: string, error: any) => {
+        return `An error [${JSON.stringify(error)}] occurred while fetching [${fetchUrl}]`;
+    },
+
     LABEL_OPERATION: "Operation",
     LABEL_CREATE_AT: "Create at",
     LABEL_MODIFY_AT: "Modify at",

@@ -24,6 +24,10 @@ export type MainLocale = {
 
     MESSAGE_router_loading_closeFail: string
 
+    MESSAGE_api_fetch_unexpectedResponseStatus: (fetchUrl: string, status: number, result: any) => string
+    MESSAGE_api_fetch_unexpectedResponseType: (fetchUrl: string, contentType: string, result: any) => string
+    MESSAGE_api_fetch_unexpectedError: (fetchUrl: string, error: any) => string
+
     LABEL_OPERATION: string
     LABEL_CREATE_AT: string
     LABEL_MODIFY_AT: string
