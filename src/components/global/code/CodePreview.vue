@@ -49,7 +49,7 @@ watch(() => props.code, () => {
 const lineCounts = computed(() => {
 	const length = props.code.split("\n").length
 
-	let counts = []
+	const counts = []
 
 	for (let i = 1; i <= length - 1; i++) {
 		counts.push(i)
