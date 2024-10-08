@@ -116,7 +116,6 @@ export const validateAssociation = (
             }
 
             if (!(sourcePkFlag || targetPkFlag)) {
-                debugger
                 messageList.push(`源与目标中至少一方需要是主键`)
             }
 
