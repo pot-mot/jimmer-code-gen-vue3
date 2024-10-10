@@ -81,6 +81,10 @@ export const mainLocaleZhCn: MainLocale = {
     LABEL_DataSourceForm_password: "密码",
     LABEL_DataSourceForm_remark: "备注",
 
+    MESSAGE_DataSourceForm_testSuccess: "数据源测试成功",
+    MESSAGE_DataSourceForm_testFail: "数据源测试失败",
+    MESSAGE_DataSourceForm_saveFail: "数据源保存失败",
+
     MESSAGE_ModelListPage_modelNotFound: "模型未找到",
     MESSAGE_ModelListPage_fileNotFound: "文件未找到",
     MESSAGE_ModelListPage_modelLoadSuccess: "模型导入成功",

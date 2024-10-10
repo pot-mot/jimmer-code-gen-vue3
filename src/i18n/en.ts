@@ -81,6 +81,10 @@ export const mainLocaleEn: MainLocale = {
     LABEL_DataSourceForm_password: "Password",
     LABEL_DataSourceForm_remark: "Remark",
 
+    MESSAGE_DataSourceForm_testSuccess: "Data Source Test Success",
+    MESSAGE_DataSourceForm_testFail: "Data Source Test Fail",
+    MESSAGE_DataSourceForm_saveFail: "Data Source Save Fail",
+
     MESSAGE_ModelListPage_modelNotFound: "Model Not Found",
     MESSAGE_ModelListPage_fileNotFound: "File Not Found",
     MESSAGE_ModelListPage_modelLoadSuccess: "Model Load Success",

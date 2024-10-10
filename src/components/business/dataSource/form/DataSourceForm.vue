@@ -2,7 +2,7 @@
 import {ref, watch} from 'vue';
 import {api} from "@/api";
 import {GenDataSourceInput} from "@/api/__generated/model/static";
-import {sendMessage} from "@/message/message.ts";
+import {sendI18nMessage} from "@/message/message.ts";
 import {DataSourceFormEmits} from "./DataSourceFormEmits.ts";
 import {DataSourceFormProps} from "./DataSourceFormProps.ts";
 import {DataSourceType_CONSTANTS} from "@/api/__generated/model/enums";
@@ -54,10 +54,10 @@ const handleTest = loadingStore.withLoading('DataSourceForm handleTest', async (
 	})
 
 	if (res) {
-		sendMessage("数据源测试成功", "success")
+		sendI18nMessage("MESSAGE_DataSourceForm_testSuccess", "success")
 		return true
 	} else {
-		sendMessage("数据源测试失败", "error")
+		sendI18nMessage("MESSAGE_DataSourceForm_testFail", "error")
 		return false
 	}
 })
@@ -68,7 +68,7 @@ const handleSubmit = loadingStore.withLoading('DataSourceForm handleSubmit', asy
 	})
 
 	if (!res) {
-		sendMessage("数据源测试失败", "error")
+		sendI18nMessage("MESSAGE_DataSourceForm_testFail", "error")
 		return
 	}
 
@@ -84,7 +84,7 @@ const handleSubmit = loadingStore.withLoading('DataSourceForm handleSubmit', asy
 		if (savedDataSource) {
 			emits("added", savedDataSource)
 		} else {
-			sendMessage('数据源保存失败', 'error', savedDataSource)
+			sendI18nMessage('MESSAGE_DataSourceForm_saveFail', 'error', savedDataSource)
 		}
 	}
 })
