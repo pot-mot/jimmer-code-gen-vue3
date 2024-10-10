@@ -72,6 +72,8 @@ export type MainLocale = {
     MESSAGE_ModelEditorPage_modelLoadFail: string
     CONFIRM_ModelEditorPage_modelLoad_entireSchema: string
 
+    MESSAGE_modelFileOperations_importModel_validateFail: string
+
     LABEL_ModelEditorMainMenu_loadFromDataSource: string
     LABEL_ModelEditorMainMenu_loadFromModel: string
     LABEL_ModelEditorMainMenu_tableTitle: string

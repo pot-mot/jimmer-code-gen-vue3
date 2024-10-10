@@ -4,7 +4,7 @@ import {api} from "@/api";
 import {saveAs} from "file-saver";
 import {jsonPrettyFormat, jsonStrPrettyFormat} from "@/utils/json.ts";
 import {validateModelInputStr} from "@/shape/ModelInput.ts";
-import {sendMessage} from "@/message/message.ts";
+import {sendI18nMessage} from "@/message/message.ts";
 import {getModelAllCopyData} from "@/components/pages/ModelEditor/graph/clipBoard/clipBoard.ts";
 
 const createZip = async (files: Array<Pair<string, string>>): Promise<Blob> => {
@@ -58,7 +58,7 @@ export const importModel = async (modelInputJsonStr: string): Promise<number | u
         modelInput.id = undefined
         return await api.modelService.save({body: modelInput})
     } else {
-        sendMessage('模型导入出错', 'error', validateErrors)
+        sendI18nMessage('MESSAGE_modelFileOperations_importModel_validateFail', 'error', validateErrors)
     }
 }
 

@@ -82,6 +82,8 @@ export const mainLocaleZhCn: MainLocale = {
     MESSAGE_ModelEditorPage_modelLoadFail: "模型加载失败",
     CONFIRM_ModelEditorPage_modelLoad_entireSchema: "您确定要加载整个 Schema？",
 
+    MESSAGE_modelFileOperations_importModel_validateFail: "模型导入加载校验失败",
+
     LABEL_ModelEditorMainMenu_loadFromDataSource: "从数据源加载",
     LABEL_ModelEditorMainMenu_loadFromModel: "从模型加载",
     LABEL_ModelEditorMainMenu_tableTitle: "表",

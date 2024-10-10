@@ -82,6 +82,8 @@ export const mainLocaleEn: MainLocale = {
     MESSAGE_ModelEditorPage_modelLoadFail: "Model Load Fail",
     CONFIRM_ModelEditorPage_modelLoad_entireSchema: "Are you sure you want to load the entire Schema",
 
+    MESSAGE_modelFileOperations_importModel_validateFail: "Model import loading verification failed",
+
     LABEL_ModelEditorMainMenu_loadFromDataSource: "Load from Data Source",
     LABEL_ModelEditorMainMenu_loadFromModel: "Load from Model",
     LABEL_ModelEditorMainMenu_tableTitle: "Tables",
