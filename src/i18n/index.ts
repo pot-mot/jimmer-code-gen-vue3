@@ -32,6 +32,8 @@ export type MainLocale = {
     LABEL_CREATE_AT: string
     LABEL_MODIFY_AT: string
 
+    MESSAGE_clipBoard_cannotDirectLoad: string
+
     LABEL_ModelListPage_createNewModel: string
     LABEL_ModelListPage_manageDataSource: string
     LABEL_ModelListPage_loadModelJson: string

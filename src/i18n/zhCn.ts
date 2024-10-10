@@ -38,6 +38,8 @@ export const mainLocaleZhCn: MainLocale = {
         return `请求【${fetchUrl}】时出现错误【${JSON.stringify(error)}】`
     },
 
+    MESSAGE_clipBoard_cannotLoad: "剪切板中数据无法直接导入画布",
+
     LABEL_OPERATION: "操作",
     LABEL_CREATE_AT: "创建于",
     LABEL_MODIFY_AT: "修改于",

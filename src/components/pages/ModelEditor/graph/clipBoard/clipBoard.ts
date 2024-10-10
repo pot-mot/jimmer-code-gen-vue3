@@ -1,6 +1,6 @@
 import {Cell, Edge, Graph, Node} from "@antv/x6";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
-import {sendMessage} from "@/message/message.ts";
+import {sendI18nMessage} from "@/message/message.ts";
 import {loadModelInputs, TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadData.ts";
 import {CopyData, validateCopyData} from "@/shape/CopyData.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
@@ -154,7 +154,7 @@ const paste = useGlobalLoadingStore().withLoading(
                 }
                 importEnums(model.enums)
             } else {
-                sendMessage('剪切板中数据无法直接导入画布', 'error', validateErrors)
+                sendI18nMessage('MESSAGE_clipBoard_cannotDirectLoad', 'error', validateErrors)
             }
 
             if (res !== undefined) {
@@ -165,7 +165,7 @@ const paste = useGlobalLoadingStore().withLoading(
                 graph.resetSelection([...nodes.map(it => it.id), ...edges.map(it => it.id)])
             }
         } catch (e) {
-            sendMessage('剪切板中数据无法直接导入画布', 'error', e)
+            sendI18nMessage('MESSAGE_clipBoard_cannotDirectLoad', 'error', e)
         }
 
         graph.stopBatch("paste")

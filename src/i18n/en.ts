@@ -38,6 +38,8 @@ export const mainLocaleEn: MainLocale = {
         return `An error [${JSON.stringify(error)}] occurred while fetching [${fetchUrl}]`;
     },
 
+    MESSAGE_clipBoard_cannotDirectLoad: "Data in the Clipboard cannot be directly Loaded into Graph",
+
     LABEL_OPERATION: "Operation",
     LABEL_CREATE_AT: "Create at",
     LABEL_MODIFY_AT: "Modify at",
