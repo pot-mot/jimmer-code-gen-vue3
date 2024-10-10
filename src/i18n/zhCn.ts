@@ -78,6 +78,17 @@ export const mainLocaleZhCn: MainLocale = {
     LABEL_DataSourceForm_password: "密码",
     LABEL_DataSourceForm_remark: "备注",
 
+    MESSAGE_ModelListPage_modelNotFound: "模型未找到",
+    MESSAGE_ModelListPage_fileNotFound: "文件未找到",
+    MESSAGE_ModelListPage_modelLoadSuccess: "模型导入成功",
+    MESSAGE_ModelListPage_modelExportFail: "模型导出失败",
+    MESSAGE_ModelListPage_modelSaveSuccess: "模型保存成功",
+    MESSAGE_ModelListPage_modelSaveFail: "模型保存失败",
+    MESSAGE_ModelListPage_modelEditSuccess: "模型编辑成功",
+    MESSAGE_ModelListPage_modelEditFail: "模型编辑失败",
+    MESSAGE_ModelListPage_modelDeleteSuccess: "模型删除成功",
+    MESSAGE_ModelListPage_modelDeleteFail: "模型删除失败",
+
     MESSAGE_ModelEditorPage_modelNotFound: "模型未找到",
     MESSAGE_ModelEditorPage_modelLoadFail: "模型加载失败",
     CONFIRM_ModelEditorPage_modelLoad_entireSchema: "您确定要加载整个 Schema？",

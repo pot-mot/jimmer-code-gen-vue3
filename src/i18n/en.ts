@@ -78,6 +78,17 @@ export const mainLocaleEn: MainLocale = {
     LABEL_DataSourceForm_password: "Password",
     LABEL_DataSourceForm_remark: "Remark",
 
+    MESSAGE_ModelListPage_modelNotFound: "Model Not Found",
+    MESSAGE_ModelListPage_fileNotFound: "File Not Found",
+    MESSAGE_ModelListPage_modelLoadSuccess: "Model Load Success",
+    MESSAGE_ModelListPage_modelExportFail: "Model Export Fail",
+    MESSAGE_ModelListPage_modelSaveSuccess: "Model Save Success",
+    MESSAGE_ModelListPage_modelSaveFail: "Model Save Fail",
+    MESSAGE_ModelListPage_modelEditSuccess: "Model Edit Success",
+    MESSAGE_ModelListPage_modelEditFail: "Model Edit Fail",
+    MESSAGE_ModelListPage_modelDeleteSuccess: "Model Delete Success",
+    MESSAGE_ModelListPage_modelDeleteFail: "Model Delete Fail",
+
     MESSAGE_ModelEditorPage_modelNotFound: "Model Not Found",
     MESSAGE_ModelEditorPage_modelLoadFail: "Model Load Fail",
     CONFIRM_ModelEditorPage_modelLoad_entireSchema: "Are you sure you want to load the entire Schema",

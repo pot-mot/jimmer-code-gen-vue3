@@ -68,6 +68,17 @@ export type MainLocale = {
     LABEL_DataSourceForm_password: string
     LABEL_DataSourceForm_remark: string
 
+    MESSAGE_ModelListPage_modelNotFound: string
+    MESSAGE_ModelListPage_fileNotFound: string
+    MESSAGE_ModelListPage_modelLoadSuccess: string
+    MESSAGE_ModelListPage_modelExportFail: string
+    MESSAGE_ModelListPage_modelSaveSuccess: string
+    MESSAGE_ModelListPage_modelSaveFail: string
+    MESSAGE_ModelListPage_modelEditSuccess: string
+    MESSAGE_ModelListPage_modelEditFail: string
+    MESSAGE_ModelListPage_modelDeleteSuccess: string
+    MESSAGE_ModelListPage_modelDeleteFail: string
+
     MESSAGE_ModelEditorPage_modelNotFound: string
     MESSAGE_ModelEditorPage_modelLoadFail: string
     CONFIRM_ModelEditorPage_modelLoad_entireSchema: string

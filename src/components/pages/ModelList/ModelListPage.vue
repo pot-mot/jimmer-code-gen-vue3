@@ -5,7 +5,7 @@ import {useRouter} from "vue-router";
 import {GenModelInput, GenModelSimpleView} from "@/api/__generated/model/static";
 import {useLoading} from "@/utils/useLoading.ts";
 import {api} from "@/api";
-import {sendMessage} from "@/message/message.ts";
+import {sendI18nMessage} from "@/message/message.ts";
 import {datetimeFormat} from "@/utils/dateFormat.ts";
 import ModelDialog from "@/components/business/model/dialog/ModelDialog.vue";
 import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
@@ -41,7 +41,7 @@ const editModel = ref<GenModelInput>()
 const updateModelList = async (id: number, toEditor: boolean = false) => {
     const newModel = await api.modelService.get({id})
     if (!newModel) {
-        sendMessage('模型重新获取失败', 'error')
+        sendI18nMessage('MESSAGE_ModelListPage_modelNotFound', 'error')
         return
     }
 
@@ -69,19 +69,20 @@ const emitLoadModelJson = () => {
 const handleLoadModelJson = modelsLoading.withLoading('loadModelJson', async (e: Event) => {
     const input = e.target as HTMLInputElement
 
-    const file = input.files?.[0]
+    const file: File | undefined = input.files?.[0]
     if (file) {
         const modelJson = await file.text()
         const id = await importModel(modelJson)
 
         if (id !== undefined) {
-            sendMessage('模型导入成功', 'success')
+            sendI18nMessage('MESSAGE_ModelListPage_modelLoadSuccess', 'success')
             await updateModelList(id, true)
         }
     } else {
-        sendMessage('文件不存在', 'error')
+        sendI18nMessage('MESSAGE_ModelListPage_fileNotFound', 'error')
     }
 
+	// clear input content
     input.value = ''
 })
 
@@ -102,18 +103,18 @@ const handleEdit = async (id: number) => {
 }
 
 const handleSubmit = modelsLoading.withLoading('handleSubmit', async (model: GenModelInput) => {
-    try {
-        const isUpdate = (model.id !== undefined)
+	const isUpdate = (model.id !== undefined)
 
+	try {
         const newId = await api.modelService.save({body: model})
 
         editModel.value = undefined
 
         await updateModelList(newId, !isUpdate)
 
-        sendMessage(isUpdate ? '模型修改成功' : '模型保存成功', 'success')
+        sendI18nMessage(isUpdate ? 'MESSAGE_ModelListPage_modelEditSuccess' : 'MESSAGE_ModelListPage_modelSaveSuccess', 'success')
     } catch (e) {
-        sendMessage(`模型修改失败，原因：${e}`, 'error', e)
+        sendI18nMessage(isUpdate ? 'MESSAGE_ModelListPage_modelEditFail' : 'MESSAGE_ModelListPage_modelSaveFail', 'error', e)
     }
 })
 
@@ -123,7 +124,7 @@ const handleExport = modelsLoading.withLoading('handleExport', async (model: Gen
     if (modeView) {
         await exportModel(modeView)
     } else {
-        sendMessage('模型导出失败', 'error', model)
+        sendI18nMessage('MESSAGE_ModelListPage_modelExportFail', 'error', model)
     }
 })
 
@@ -132,11 +133,11 @@ const handleDelete = (model: GenModelSimpleView) => {
         `【${model.name}】`,
 		modelsLoading.withLoading('handleDelete', async () => {
             const count = await api.modelService.delete({ids: [model.id]})
-            if (count > 0) {
-                sendMessage('删除模型成功', 'success')
+            if (count === 1) {
+                sendI18nMessage('MESSAGE_ModelListPage_modelDeleteSuccess', 'success')
                 await getModels()
             } else {
-                sendMessage('删除模型失败', 'error')
+                sendI18nMessage('MESSAGE_ModelListPage_modelDeleteFail', 'error')
             }
 		})
     )
