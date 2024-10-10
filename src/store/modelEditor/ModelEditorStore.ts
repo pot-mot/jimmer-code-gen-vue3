@@ -1,6 +1,6 @@
 import {GraphLoadOperation, GraphState, useGraph} from "@/components/global/graphEditor/load/GraphLoadState.ts";
 import {ModelEditorEventBus} from "./ModelEditorEventBus.ts";
-import {sendMessage} from "@/message/message.ts";
+import {sendI18nMessage} from "@/message/message.ts";
 import {computed, ComputedRef, Ref, ref} from "vue";
 import {api} from "@/api";
 import {
@@ -160,7 +160,7 @@ const initModelEditorStore = (): ModelEditorStore => {
                 return {nodes: [], edges: []}
             }
         } catch (e) {
-            sendMessage(`图加载错误: ${e}`, "error", validateErrors ? validateErrors : {
+            sendI18nMessage("MESSAGE_ModelEditorStore_graphLoadFail", "error", validateErrors ? validateErrors : {
                 error: e,
                 jsonStr
             })
@@ -179,7 +179,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const _model = (): GenModelView => {
         if (!currentModel.value) {
-            sendMessage('当前模型不存在', 'error')
+            sendI18nMessage("MESSAGE_ModelEditorStore_modelNotLoad", 'error')
             throw currentModel
         }
         return currentModel.value
@@ -235,10 +235,10 @@ const initModelEditorStore = (): ModelEditorStore => {
 
                 isLoaded.value = false
 
-                const savedModel = (await api.modelService.get({id}))!
+                const savedModel = await api.modelService.get({id})
 
                 if (!savedModel) {
-                    sendMessage(`模型保存失败，保存返回模型不存在`, 'error')
+                    sendI18nMessage("MESSAGE_ModelEditorStore_modelSaveFail_ResultNotFound", 'error')
                     return
                 }
 
@@ -247,9 +247,9 @@ const initModelEditorStore = (): ModelEditorStore => {
                 // 同步数据
                 loadModelView(savedModel)
 
-                sendMessage("模型保存成功", "success")
+                sendI18nMessage("MESSAGE_ModelEditorStore_modelSaveSuccess", "success")
             } catch (e) {
-                sendMessage(`模型保存失败，原因：${e}`, 'error', e)
+                sendI18nMessage("MESSAGE_ModelEditorStore_modelSaveFail", 'error', e)
             }
         }
     )
@@ -460,7 +460,10 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         const cell = graph.getCellById(id)
         if (!cell || !cell.isNode()) {
-            sendMessage(`更改节点【${id}】失败，无法被找到`, 'error')
+            sendI18nMessage({
+                key: "MESSAGE_ModelEditorStore_tableEditFail_nodeNotFound",
+                args: [id]
+            }, 'error')
             return
         }
 
@@ -487,7 +490,10 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         const cell = graph.getCellById(id)
         if (!cell || !cell.isNode()) {
-            sendMessage(`删除节点【${id}】失败，节点不存在或目标不是节点`, 'error')
+            sendI18nMessage({
+                key: "MESSAGE_ModelEditorStore_tableDeleteFail_nodeNotFound",
+                args: [id]
+            }, 'error')
             return
         }
 
@@ -519,7 +525,10 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         const cell = graph.getCellById(id)
         if (!cell || !cell.isEdge()) {
-            sendMessage(`更改边【${id}】失败，无法被找到`, 'error')
+            sendI18nMessage({
+                key: "MESSAGE_ModelEditorStore_associationEditFail_edgeNotFound",
+                args: [id]
+            }, 'error')
         } else {
             graph.startBatch(`editAssociation [id=${id}]`)
 

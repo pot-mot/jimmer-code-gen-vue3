@@ -86,6 +86,15 @@ export type MainLocale = {
     MESSAGE_ModelListPage_modelDeleteSuccess: string
     MESSAGE_ModelListPage_modelDeleteFail: string
 
+    MESSAGE_ModelEditorStore_graphLoadFail: string
+    MESSAGE_ModelEditorStore_modelNotLoad: string
+    MESSAGE_ModelEditorStore_modelSaveFail_ResultNotFound: string
+    MESSAGE_ModelEditorStore_modelSaveSuccess: string
+    MESSAGE_ModelEditorStore_modelSaveFail: string
+    MESSAGE_ModelEditorStore_tableEditFail_nodeNotFound: (id: string) => string
+    MESSAGE_ModelEditorStore_tableDeleteFail_nodeNotFound: (id: string) => string
+    MESSAGE_ModelEditorStore_associationEditFail_edgeNotFound: (id: string) => string
+
     MESSAGE_ModelEditorPage_modelNotFound: string
     MESSAGE_ModelEditorPage_modelLoadFail: string
     CONFIRM_ModelEditorPage_modelLoad_entireSchema: string

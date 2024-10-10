@@ -96,6 +96,15 @@ export const mainLocaleEn: MainLocale = {
     MESSAGE_ModelListPage_modelDeleteSuccess: "Model Delete Success",
     MESSAGE_ModelListPage_modelDeleteFail: "Model Delete Fail",
 
+    MESSAGE_ModelEditorStore_graphLoadFail: "Graph Load Fail",
+    MESSAGE_ModelEditorStore_modelNotLoad: "Model Not Load",
+    MESSAGE_ModelEditorStore_modelSaveFail_ResultNotFound: "Model Failed to Save because Result was Not Found",
+    MESSAGE_ModelEditorStore_modelSaveSuccess: "Model Save Success",
+    MESSAGE_ModelEditorStore_modelSaveFail: "Model Save Fail",
+    MESSAGE_ModelEditorStore_tableEditFail_nodeNotFound: (id: string) => `Table Edit Fail, Node [${id}] Not Found`,
+    MESSAGE_ModelEditorStore_tableDeleteFail_nodeNotFound: (id: string) => `Table Delete Fail, Node [${id}] Not Found`,
+    MESSAGE_ModelEditorStore_associationEditFail_edgeNotFound: (id: string) => `Association Edit Fail, Edge [${id}] Not Found`,
+
     MESSAGE_ModelEditorPage_modelNotFound: "Model Not Found",
     MESSAGE_ModelEditorPage_modelLoadFail: "Model Load Fail",
     CONFIRM_ModelEditorPage_modelLoad_entireSchema: "Are you sure you want to load the entire Schema",

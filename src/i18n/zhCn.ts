@@ -96,6 +96,15 @@ export const mainLocaleZhCn: MainLocale = {
     MESSAGE_ModelListPage_modelDeleteSuccess: "模型删除成功",
     MESSAGE_ModelListPage_modelDeleteFail: "模型删除失败",
 
+    MESSAGE_ModelEditorStore_graphLoadFail: "图加载失败",
+    MESSAGE_ModelEditorStore_modelNotLoad: "模型未加载",
+    MESSAGE_ModelEditorStore_modelSaveFail_ResultNotFound: "模型保存失败，返回结果未找到",
+    MESSAGE_ModelEditorStore_modelSaveSuccess: "模型保存成功",
+    MESSAGE_ModelEditorStore_modelSaveFail: "模型保存失败",
+    MESSAGE_ModelEditorStore_tableEditFail_nodeNotFound: (id: string) => `表编辑失败，节点【${id}】找不到`,
+    MESSAGE_ModelEditorStore_tableDeleteFail_nodeNotFound: (id: string) => `表删除失败，节点【${id}】找不到`,
+    MESSAGE_ModelEditorStore_associationEditFail_edgeNotFound: (id: string) => `关联编辑失败，边【${id}】找不到`,
+
     MESSAGE_ModelEditorPage_modelNotFound: "模型未找到",
     MESSAGE_ModelEditorPage_modelLoadFail: "模型加载失败",
     CONFIRM_ModelEditorPage_modelLoad_entireSchema: "您确定要加载整个 Schema？",
