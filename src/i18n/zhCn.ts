@@ -60,6 +60,9 @@ export const mainLocaleZhCn: MainLocale = {
     LABEL_DEBUG_message: '消息内容',
     LABEL_DEBUG_timestamp: '时间戳',
 
+    MESSAGE_DragDialog_noMatchParent: "找不到父级元素",
+    MESSAGE_DragDialog_cannotBeFullScreen: "不可全屏（解决方法：将 props.canFullScreen 设置为 true）",
+
     LABEL_ModelForm_name: "名称",
     LABEL_ModelForm_author: "作者",
     LABEL_ModelForm_dataSourceType: "数据源类型",

@@ -50,6 +50,9 @@ export type MainLocale = {
     LABEL_DEBUG_message: string
     LABEL_DEBUG_timestamp: string
 
+    MESSAGE_DragDialog_noMatchParent: string
+    MESSAGE_DragDialog_cannotBeFullScreen: string
+
     LABEL_ModelForm_name: string
     LABEL_ModelForm_author: string
     LABEL_ModelForm_dataSourceType: string

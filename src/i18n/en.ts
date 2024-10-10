@@ -60,6 +60,9 @@ export const mainLocaleEn: MainLocale = {
     LABEL_DEBUG_message: 'Message',
     LABEL_DEBUG_timestamp: 'Timestamp',
 
+    MESSAGE_DragDialog_noMatchParent: "No Match Parent",
+    MESSAGE_DragDialog_cannotBeFullScreen: "Cannot be Full Screen (workaround: set props.canFullScreen to true)",
+
     LABEL_ModelForm_name: "Name",
     LABEL_ModelForm_author: "Author",
     LABEL_ModelForm_dataSourceType: "Data Source",

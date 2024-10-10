@@ -6,7 +6,7 @@ import {ElButton, useZIndex} from "element-plus";
 import {Close, FullScreen} from "@element-plus/icons-vue";
 import {DragDialogProps} from "./DragDialogProps.ts";
 import {DragDialogEmits} from "./DragDialogEmits.ts";
-import {sendMessage} from "@/message/message.ts";
+import {sendI18nMessage} from "@/message/message.ts";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 
 const openState = defineModel<boolean>({
@@ -61,9 +61,9 @@ const initXW = () => {
 	let maxWidth: number
 
 	if (props.limitByParent) {
-		let parent = getParent()
+		const parent = getParent()
 		if (!parent) {
-			sendMessage('DragDialog has no match parent', 'error')
+			sendI18nMessage('MESSAGE_DragDialog_noMatchParent', 'error')
 			return
 		}
 		maxWidth = parent.clientWidth
@@ -130,12 +130,12 @@ const handleClose = () => {
 }
 
 const handleToggleFullScreen = () => {
-	emits("fullScreenToggle")
-
 	if (!props.canFullScreen) {
-		sendMessage('DragDialog can not be full-screen when props.canFullScreen is false', 'error')
+		sendI18nMessage('MESSAGE_DragDialog_cannotBeFullScreen', 'error')
 		return
 	}
+
+	emits("fullScreenToggle")
 
 	toFront()
 
