@@ -1,3 +1,6 @@
+import {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static";
+import {DeepReadonly} from "vue";
+
 export type MainLocale = {
     BUTTON_edit: string
     BUTTON_submit: string
@@ -136,8 +139,8 @@ export type MainLocale = {
     LABEL_ModelEditorGraph_cleanAssociation: string
     LABEL_ModelEditorGraph_cleanSelectedAssociation: string
 
-    Message_ModelEditorGraph_history_cannotUndo: string
-    Message_ModelEditorGraph_history_cannotRedo: string
+    MESSAGE_ModelEditorGraph_history_cannotUndo: string
+    MESSAGE_ModelEditorGraph_history_cannotRedo: string
 
     LABEL_TableForm_asSuperTable: string
     LABEL_TableForm_extendTables: string
@@ -147,6 +150,22 @@ export type MainLocale = {
     LABEL_TableForm_columnType_autoIncrement: string
     LABEL_TableForm_columnType_businessKey: string
     LABEL_TableForm_columnType_logicalDelete: string
+
+    VALIDATE_GenAssociation_name_cannotBeEmpty: string
+    VALIDATE_GenAssociation_name_cannotBeDuplicate: string
+    VALIDATE_GenAssociation_joinMeta_cannotBeDuplicate: (otherAssociation: DeepReadonly<GenAssociationModelInput>) => string
+    VALIDATE_GenAssociation_joinMeta_cannotBeReverseDuplicate: (otherAssociation: DeepReadonly<GenAssociationModelInput>) => string
+    VALIDATE_GenAssociation_sourceTable_notFound: (sourceTableName: string) => string
+    VALIDATE_GenAssociation_targetTable_notFound: (targetTableName: string) => string
+    VALIDATE_GenAssociation_sourceTable_cannotBeSuper: (sourceTable: DeepReadonly<GenTableModelInput>) => string
+    VALIDATE_GenAssociation_targetTable_cannotBeSuper: (targetTable: DeepReadonly<GenTableModelInput>) => string
+    VALIDATE_GenAssociation_sourceColumn_notFoundInSourceTable: (sourceColumnName: string, sourceTable: DeepReadonly<GenTableModelInput>) => string
+    VALIDATE_GenAssociation_targetColumn_notFoundInTargetTable: (targetColumnName: string, targetTable: DeepReadonly<GenTableModelInput>) => string
+    VALIDATE_GenAssociation_typeNotMatch: string
+    VALIDATE_GenAssociation_columnCountNotMatch: string
+    VALIDATE_GenAssociation_sourceColumn_mustEntirePKOrNoneOfPK: (sourceTable: DeepReadonly<GenTableModelInput>) => string
+    VALIDATE_GenAssociation_targetColumn_mustEntirePKOrNoneOfPK: (targetTable: DeepReadonly<GenTableModelInput>) => string
+    VALIDATE_GenAssociation_sourceOrTargetAtLeastOneSizePk: string
 
     LABEL_GenConfigForm_dataSourceType: string
     LABEL_GenConfigForm_language: string

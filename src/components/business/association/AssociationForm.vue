@@ -6,15 +6,16 @@ import {DeepReadonly, ref, watch} from "vue";
 import {cloneDeep} from "lodash";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {createAssociationName} from "@/components/business/association/createAssociationName.ts";
-import {sendMessage} from "@/message/message.ts";
+import {sendI18nMessage} from "@/message/message.ts";
 import {type Edge} from "@antv/x6";
+import {MainLocaleKeyParam} from "@/i18n";
 
 interface AssociationFormProps {
     association: GenAssociationModelInput,
 
     edge: DeepReadonly<Edge> | undefined,
 
-    validate: (association: DeepReadonly<GenAssociationModelInput>) => string[],
+    validate: (association: DeepReadonly<GenAssociationModelInput>) => MainLocaleKeyParam[],
 
     createAssociationName: (
         association: DeepReadonly<GenAssociationModelInput>,
@@ -49,7 +50,7 @@ const handleSubmit = async () => {
     const messageList = props.validate(association.value)
 
     if (messageList.length > 0) {
-        messageList.forEach(it => sendMessage(it, 'warning'))
+        messageList.forEach(it => sendI18nMessage(it, 'warning'))
         return
     }
 

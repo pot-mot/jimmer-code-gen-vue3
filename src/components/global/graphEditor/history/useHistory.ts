@@ -54,7 +54,7 @@ export const useHistoryOperations = (_graph: () => Graph): HistoryOperation => {
                     isUndo.value = false
                 }, 0)
             } else {
-                sendI18nMessage("Message_ModelEditorGraph_history_cannotUndo")
+                sendI18nMessage("MESSAGE_ModelEditorGraph_history_cannotUndo")
             }
         },
         redo: () => {
@@ -66,7 +66,7 @@ export const useHistoryOperations = (_graph: () => Graph): HistoryOperation => {
                     isRedo.value = false
                 }, 0)
             } else {
-                sendI18nMessage("Message_ModelEditorGraph_history_cannotRedo")
+                sendI18nMessage("MESSAGE_ModelEditorGraph_history_cannotRedo")
             }
         },
     }

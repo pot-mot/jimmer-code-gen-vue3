@@ -7,6 +7,7 @@ import {createAssociationName} from "@/components/business/association/createAss
 import {validateAssociation} from "@/components/business/association/validateAssociation.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {DeepReadonly} from "vue";
+import {MainLocaleKeyParam} from "@/i18n";
 
 const {MODEL} = useModelEditorStore()
 
@@ -27,7 +28,7 @@ const handleSubmit = (association: GenAssociationModelInput) => {
 	ModelEditorEventBus.emit('editedAssociation', {id: props.id, association})
 }
 
-const validate = (association: DeepReadonly<GenAssociationModelInput>): string[] => {
+const validate = (association: DeepReadonly<GenAssociationModelInput>): MainLocaleKeyParam[] => {
 	return validateAssociation(
 		association,
         MODEL.associationEdges.filter(it => it.id !== props.id).map(it => it.getData().association),

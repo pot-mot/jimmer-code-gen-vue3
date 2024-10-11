@@ -1,4 +1,6 @@
 import {MainLocale} from "@/i18n/index.ts";
+import {DeepReadonly} from "vue";
+import {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static";
 
 export const mainLocaleEn: MainLocale = {
     BUTTON_edit: "Edit",
@@ -150,8 +152,8 @@ export const mainLocaleEn: MainLocale = {
     LABEL_ModelEditorGraph_cleanAssociation: 'Clean Associations',
     LABEL_ModelEditorGraph_cleanSelectedAssociation: 'Clean Selected Associations',
 
-    Message_ModelEditorGraph_history_cannotUndo: "Cannot Undo",
-    Message_ModelEditorGraph_history_cannotRedo: "Cannot Redo",
+    MESSAGE_ModelEditorGraph_history_cannotUndo: "Cannot Undo",
+    MESSAGE_ModelEditorGraph_history_cannotRedo: "Cannot Redo",
 
     LABEL_TableForm_asSuperTable: "SuperTable",
     LABEL_TableForm_extendTables: "extends",
@@ -161,6 +163,22 @@ export const mainLocaleEn: MainLocale = {
     LABEL_TableForm_columnType_autoIncrement: "Auto Increment",
     LABEL_TableForm_columnType_businessKey: "Business Key",
     LABEL_TableForm_columnType_logicalDelete: "Logical Delete",
+
+    VALIDATE_GenAssociation_name_cannotBeEmpty: "The association name cannot be empty.",
+    VALIDATE_GenAssociation_name_cannotBeDuplicate: "The association name cannot be duplicate.",
+    VALIDATE_GenAssociation_joinMeta_cannotBeDuplicate: (otherAssociation: DeepReadonly<GenAssociationModelInput>) => `The tables and columns used are the same as those in the association [${otherAssociation.name}].`,
+    VALIDATE_GenAssociation_joinMeta_cannotBeReverseDuplicate: (otherAssociation: DeepReadonly<GenAssociationModelInput>) => `The tables and columns used are the same as those in the association [${otherAssociation.name}], but in the opposite direction.`,
+    VALIDATE_GenAssociation_sourceTable_notFound: (sourceTableName: string) => `The source table [${sourceTableName}] does not exist.`,
+    VALIDATE_GenAssociation_targetTable_notFound: (targetTableName: string) => `The target table [${targetTableName}] does not exist.`,
+    VALIDATE_GenAssociation_sourceTable_cannotBeSuper: (sourceTable: DeepReadonly<GenTableModelInput>) => `The source table [${sourceTable.name}] cannot be a parent table.`,
+    VALIDATE_GenAssociation_targetTable_cannotBeSuper: (targetTable: DeepReadonly<GenTableModelInput>) => `The target table [${targetTable.name}] cannot be a parent table.`,
+    VALIDATE_GenAssociation_sourceColumn_notFoundInSourceTable: (sourceColumnName: string, sourceTable: DeepReadonly<GenTableModelInput>) => `The source column [${sourceColumnName}] is not in the table [${sourceTable.name}].`,
+    VALIDATE_GenAssociation_targetColumn_notFoundInTargetTable: (targetColumnName: string, targetTable: DeepReadonly<GenTableModelInput>) => `The target column [${targetColumnName}] is not in the table [${targetTable.name}].`,
+    VALIDATE_GenAssociation_typeNotMatch: "The types on both ends are inconsistent.",
+    VALIDATE_GenAssociation_columnCountNotMatch: "The number of columns on both ends is inconsistent.",
+    VALIDATE_GenAssociation_sourceColumn_mustEntirePKOrNoneOfPK: (sourceTable: DeepReadonly<GenTableModelInput>) => `The source column must be either the complete primary key of the table [${sourceTable.name}] or not part of the primary key at all.`,
+    VALIDATE_GenAssociation_targetColumn_mustEntirePKOrNoneOfPK: (targetTable: DeepReadonly<GenTableModelInput>) => `The target column must be either the complete primary key of the table [${targetTable.name}] or not part of the primary key at all.`,
+    VALIDATE_GenAssociation_sourceOrTargetAtLeastOneSizePk: "At least one of the source or target must be a primary key.",
 
     LABEL_GenConfigForm_dataSourceType: "Data Source Type",
     LABEL_GenConfigForm_language: "Language",

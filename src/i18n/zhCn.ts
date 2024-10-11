@@ -1,4 +1,6 @@
 import {MainLocale} from "@/i18n/index.ts";
+import {DeepReadonly} from "vue";
+import {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static";
 
 export const mainLocaleZhCn: MainLocale = {
     BUTTON_edit: "编辑",
@@ -150,8 +152,8 @@ export const mainLocaleZhCn: MainLocale = {
     LABEL_ModelEditorGraph_cleanAssociation: '清理关联',
     LABEL_ModelEditorGraph_cleanSelectedAssociation: '清理选中关联',
 
-    Message_ModelEditorGraph_history_cannotUndo: "不可撤回",
-    Message_ModelEditorGraph_history_cannotRedo: "不可重做",
+    MESSAGE_ModelEditorGraph_history_cannotUndo: "不可撤回",
+    MESSAGE_ModelEditorGraph_history_cannotRedo: "不可重做",
 
     LABEL_TableForm_asSuperTable: "作为上级表",
     LABEL_TableForm_extendTables: "继承的表",
@@ -161,6 +163,22 @@ export const mainLocaleZhCn: MainLocale = {
     LABEL_TableForm_columnType_autoIncrement: "自增",
     LABEL_TableForm_columnType_businessKey: "业务键",
     LABEL_TableForm_columnType_logicalDelete: "逻辑删除",
+
+    VALIDATE_GenAssociation_name_cannotBeEmpty: "关联名不可为空",
+    VALIDATE_GenAssociation_name_cannotBeDuplicate: "关联名不可重复",
+    VALIDATE_GenAssociation_joinMeta_cannotBeDuplicate: (otherAssociation: DeepReadonly<GenAssociationModelInput>) => `与关联【${otherAssociation.name}】使用的表与列相同`,
+    VALIDATE_GenAssociation_joinMeta_cannotBeReverseDuplicate: (otherAssociation: DeepReadonly<GenAssociationModelInput>) => `与关联【${otherAssociation.name}】方向相反但使用的表与列相同`,
+    VALIDATE_GenAssociation_sourceTable_notFound: (sourceTableName: string) => `源表【${sourceTableName}】不存在`,
+    VALIDATE_GenAssociation_targetTable_notFound: (targetTableName: string) => `目标表【${targetTableName}】不存在`,
+    VALIDATE_GenAssociation_sourceTable_cannotBeSuper: (sourceTable: DeepReadonly<GenTableModelInput>) => `源表【${sourceTable.name}】不可以是上级表`,
+    VALIDATE_GenAssociation_targetTable_cannotBeSuper: (targetTable: DeepReadonly<GenTableModelInput>) => `目标表【${targetTable.name}】不可以是上级表`,
+    VALIDATE_GenAssociation_sourceColumn_notFoundInSourceTable: (sourceColumnName: string, sourceTable: DeepReadonly<GenTableModelInput>) => `源列【${sourceColumnName}】不在表【${sourceTable.name}】中`,
+    VALIDATE_GenAssociation_targetColumn_notFoundInTargetTable: (targetColumnName: string, targetTable: DeepReadonly<GenTableModelInput>) => `目标列【${targetColumnName}】不在表【${targetTable.name}】中`,
+    VALIDATE_GenAssociation_typeNotMatch: "两端类型不一致",
+    VALIDATE_GenAssociation_columnCountNotMatch: "两端列数量不一致",
+    VALIDATE_GenAssociation_sourceColumn_mustEntirePKOrNoneOfPK: (sourceTable: DeepReadonly<GenTableModelInput>) => `源列必须是表【${sourceTable.name}】完整的主键或者都不在主键中`,
+    VALIDATE_GenAssociation_targetColumn_mustEntirePKOrNoneOfPK: (targetTable: DeepReadonly<GenTableModelInput>) => `目标列必须是表【${targetTable.name}】完整的主键或者都不在主键中`,
+    VALIDATE_GenAssociation_sourceOrTargetAtLeastOneSizePk: "源与目标中至少一方需要是主键",
 
     LABEL_GenConfigForm_dataSourceType: "数据源类型",
     LABEL_GenConfigForm_language: "语言",
