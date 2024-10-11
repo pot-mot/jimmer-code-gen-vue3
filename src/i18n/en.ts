@@ -150,6 +150,9 @@ export const mainLocaleEn: MainLocale = {
     LABEL_ModelEditorGraph_cleanAssociation: 'Clean Associations',
     LABEL_ModelEditorGraph_cleanSelectedAssociation: 'Clean Selected Associations',
 
+    Message_ModelEditorGraph_history_cannotUndo: "Cannot Undo",
+    Message_ModelEditorGraph_history_cannotRedo: "Cannot Redo",
+
     LABEL_TableForm_asSuperTable: "SuperTable",
     LABEL_TableForm_extendTables: "extends",
     LABEL_TableForm_columns: "Columns",

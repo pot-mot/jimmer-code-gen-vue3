@@ -136,6 +136,9 @@ export type MainLocale = {
     LABEL_ModelEditorGraph_cleanAssociation: string
     LABEL_ModelEditorGraph_cleanSelectedAssociation: string
 
+    Message_ModelEditorGraph_history_cannotUndo: string
+    Message_ModelEditorGraph_history_cannotRedo: string
+
     LABEL_TableForm_asSuperTable: string
     LABEL_TableForm_extendTables: string
     LABEL_TableForm_columns: string

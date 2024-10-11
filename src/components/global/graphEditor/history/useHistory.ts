@@ -1,6 +1,6 @@
 import {Graph} from "@antv/x6";
 import {History} from "@antv/x6-plugin-history";
-import {sendMessage} from "@/message/message.ts";
+import {sendI18nMessage} from "@/message/message.ts";
 import {Ref, ref} from "vue";
 
 export const useHistory = (graph: Graph) => {
@@ -45,18 +45,6 @@ export const useHistoryOperations = (_graph: () => Graph): HistoryOperation => {
     return {
         isRedo,
         isUndo,
-        redo: () => {
-            const graph = _graph()
-            if (graph.canRedo()) {
-                isRedo.value = true
-                graph.redo()
-                setTimeout(() => {
-                    isRedo.value = false
-                }, 0)
-            } else {
-                sendMessage('暂无可重做的操作')
-            }
-        },
         undo: () => {
             const graph = _graph()
             if (graph.canUndo()) {
@@ -66,8 +54,20 @@ export const useHistoryOperations = (_graph: () => Graph): HistoryOperation => {
                     isUndo.value = false
                 }, 0)
             } else {
-                sendMessage('暂无可撤回的操作')
+                sendI18nMessage("Message_ModelEditorGraph_history_cannotUndo")
             }
-        }
+        },
+        redo: () => {
+            const graph = _graph()
+            if (graph.canRedo()) {
+                isRedo.value = true
+                graph.redo()
+                setTimeout(() => {
+                    isRedo.value = false
+                }, 0)
+            } else {
+                sendI18nMessage("Message_ModelEditorGraph_history_cannotRedo")
+            }
+        },
     }
 }
