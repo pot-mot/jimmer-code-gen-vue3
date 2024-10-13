@@ -1,6 +1,6 @@
 .table-node {
     padding-bottom: 10px;
-    color: var(--el-color-info-dark-2);
+    color: var(--common-color);
     cursor: default;
 }
 
@@ -9,7 +9,7 @@
     border-collapse: separate;
     border-spacing: 0;
     border: 1px solid var(--common-color);
-    border-radius: var(--el-border-radius-base);
+    border-radius: 4px;
 }
 
 .table-node .head,

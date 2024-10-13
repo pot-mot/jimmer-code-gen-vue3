@@ -51,7 +51,7 @@ export const downloadModelSql = async (model: GenModelView) => {
 }
 
 
-export const importModel = async (modelInputJsonStr: string): Promise<number | undefined> => {
+export const importModelJSON = async (modelInputJsonStr: string): Promise<number | undefined> => {
     let validateErrors
     if (validateModelInputStr(modelInputJsonStr, e => validateErrors = e)) {
         const modelInput = JSON.parse(modelInputJsonStr)
@@ -62,7 +62,7 @@ export const importModel = async (modelInputJsonStr: string): Promise<number | u
     }
 }
 
-export const exportModel = async (model: GenModelView) => {
+export const exportModelJson = async (model: GenModelView) => {
     const {id, ...other} = model
     const modelJsonBlob = new Blob(
         [jsonPrettyFormat(other)],
@@ -71,7 +71,7 @@ export const exportModel = async (model: GenModelView) => {
     saveAs(modelJsonBlob, `model-[${model.name}].json`)
 }
 
-export const downloadModel = async (model: GenModelView) => {
+export const downloadModelZip = async (model: GenModelView) => {
     let entityCodes = await api.generateService.generateModelEntity({id: model.id, withPath: true})
     entityCodes = entityCodes.map(({first, second}) => {
         return {first: `${model.language.toLowerCase()}/${first}`, second}

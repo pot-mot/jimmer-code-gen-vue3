@@ -144,7 +144,7 @@ export const mainLocaleZhCn: MainLocale = {
 
     LABEL_ModelEditorGraph_previewSql: '预览 SQL',
     LABEL_ModelEditorGraph_previewEntity: '预览实体',
-    LABEL_ModelEditorGraph_exportModelJson: '导出模型 (JSON)',
+    LABEL_ModelEditorGraph_exportModel: '导出模型',
     LABEL_ModelEditorGraph_downloadAll: '下载全部 (ZIP)',
 
     LABEL_ModelEditorGraph_clean: '清理画布',

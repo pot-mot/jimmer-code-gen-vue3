@@ -35,9 +35,8 @@
 						}
 					}"/>
 				</el-tooltip>
-				<el-select v-model="VIEW.layoutDirection.value" class="cling-left" size="small"
-						   style="width: 4em"
-						   @change="VIEW.layout()">
+				<el-select v-model="VIEW.layoutDirection.value" @change="VIEW.layout()"
+                           class="cling-left" size="small" style="width: 4em">
 					<el-option label="→" value="LR">→ {{ i18nStore.translate('LABEL_ModelEditorGraph_layout_LR') }}
 					</el-option>
 					<el-option label="←" value="RL">← {{ i18nStore.translate('LABEL_ModelEditorGraph_layout_RL') }}
@@ -132,9 +131,13 @@
 			</li>
 
 			<li>
-				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_exportModelJson')">
-					<el-button :icon="ExportIcon" @click="handleModelExport"/>
+				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_exportModel')">
+                        <el-button class="cling-right" :icon="ExportIcon" @click="handleModelExport"/>
 				</el-tooltip>
+                <el-select v-model="exportType"
+                           class="cling-left" size="small" style="width: 6em">
+                    <el-option v-for="type in exportType_CONSTANT" :value="type"/>
+                </el-select>
 			</li>
 
 			<li>
@@ -198,10 +201,10 @@ import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
 import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
 import {
 	convertModel,
-	downloadModel,
+	downloadModelZip,
 	downloadModelEntity,
 	downloadModelSql,
-	exportModel,
+	exportModelJson,
 	previewModelEntity,
 	previewModelSql
 } from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
@@ -213,6 +216,9 @@ import {useDebugStore} from "@/store/debug/debugStore.ts";
 import {handleModelEditorKeyEvent} from "@/components/pages/ModelEditor/graph/keyEvent/keyEvent.ts";
 import {validateModelForm} from "@/components/business/model/form/validateModel.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+import {
+    exportGraphPNG, exportGraphSVG,
+} from "@/components/pages/ModelEditor/file/graphFileOperations.ts";
 
 const i18nStore = useI18nStore()
 
@@ -429,11 +435,29 @@ const handleSQLDownload = loadingStore.withLoading('ModelEditorGraph handleSQLDo
 	await downloadModelSql(model)
 })
 
+const exportType_CONSTANT = ["JSON", "PNG", "SVG"]
+
+type ExportType = typeof exportType_CONSTANT[number]
+
+const exportType = ref<ExportType>('JSON')
+
 const handleModelExport = loadingStore.withLoading('ModelEditorGraph handleModelExport', async () => {
 	if (!preJudge()) return
 
 	const model = MODEL._model()
-	await exportModel(model)
+
+    switch (exportType.value) {
+        case 'JSON':
+            await exportModelJson(model)
+            break
+        case 'PNG':
+            exportGraphPNG(model, graph)
+            break
+        case 'SVG':
+            exportGraphSVG(model, graph)
+            break
+    }
+
 })
 
 const handleModelDownload = loadingStore.withLoading('ModelEditorGraph handleModelDownload', async () => {
@@ -441,6 +465,6 @@ const handleModelDownload = loadingStore.withLoading('ModelEditorGraph handleMod
 
 	const model = MODEL._model()
 	await convertModel(model.id)
-	await downloadModel(model)
+	await downloadModelZip(model)
 })
 </script>

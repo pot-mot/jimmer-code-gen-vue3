@@ -9,7 +9,7 @@ import {sendI18nMessage} from "@/message/message.ts";
 import {datetimeFormat} from "@/utils/dateFormat.ts";
 import ModelDialog from "@/components/business/model/dialog/ModelDialog.vue";
 import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
-import {exportModel, importModel} from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
+import {exportModelJson, importModelJSON} from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
 import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
 import {deleteConfirm} from "@/message/confirm.ts";
 import DataSourceMenu from "@/components/business/dataSource/menu/DataSourceMenu.vue";
@@ -72,7 +72,7 @@ const handleLoadModelJson = modelsLoading.withLoading('loadModelJson', async (e:
     const file: File | undefined = input.files?.[0]
     if (file) {
         const modelJson = await file.text()
-        const id = await importModel(modelJson)
+        const id = await importModelJSON(modelJson)
 
         if (id !== undefined) {
             sendI18nMessage('MESSAGE_ModelListPage_modelLoadSuccess', 'success')
@@ -122,7 +122,7 @@ const handleExport = modelsLoading.withLoading('handleExport', async (model: Gen
     const modeView = await api.modelService.get({id: model.id})
 
     if (modeView) {
-        await exportModel(modeView)
+        await exportModelJson(modeView)
     } else {
         sendI18nMessage('MESSAGE_ModelListPage_modelExportFail', 'error', model)
     }

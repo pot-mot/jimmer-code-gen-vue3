@@ -4,6 +4,7 @@ import {useHistory} from "./history/useHistory.ts";
 import {useSelection} from "./selection/useSelection.ts";
 import {useKeyBoard} from "@/components/global/graphEditor/keyboard/useKeyBoard.ts";
 import {Options as GraphOptions} from "@antv/x6/src/graph/options.ts";
+import {useExport} from "@/components/global/graphEditor/export/export.ts";
 
 export const initGraphEditor = (
     container: HTMLElement,
@@ -28,6 +29,7 @@ export const initGraphEditor = (
     useKeyBoard(graph)
     useHistory(graph)
     useSelection(graph)
+    useExport(graph)
 
     return graph
 }

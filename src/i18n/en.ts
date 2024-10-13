@@ -144,7 +144,7 @@ export const mainLocaleEn: MainLocale = {
 
     LABEL_ModelEditorGraph_previewSql: 'Preview SQL',
     LABEL_ModelEditorGraph_previewEntity: 'Preview Entity',
-    LABEL_ModelEditorGraph_exportModelJson: 'Export Model (JSON)',
+    LABEL_ModelEditorGraph_exportModel: 'Export Model',
     LABEL_ModelEditorGraph_downloadAll: 'Download All (ZIP)',
 
     LABEL_ModelEditorGraph_clean: 'Clean Graph',
