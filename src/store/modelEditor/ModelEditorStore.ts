@@ -48,6 +48,7 @@ import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/as
 import {GraphReactiveState} from "@/components/global/graphEditor/data/reactiveState.ts";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {defineStore} from "pinia";
+import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
 
 interface ModelReactiveState {
     tableNodes: Readonly<Ref<UnwrapRefSimple<Node>[]>>,
@@ -231,9 +232,14 @@ const initModelEditorStore = (): ModelEditorStore => {
         'ModelEditorStore.handleSubmitModelEdit',
         async (model: GenModelInput) => {
             try {
-                const id = await api.modelService.save({body: model})
-
                 isLoaded.value = false
+
+                const id = await saveModel(model)
+
+                if (id === undefined) {
+                    sendI18nMessage("MESSAGE_ModelEditorStore_modelSaveFail_ResultNotFound", 'error')
+                    return
+                }
 
                 const savedModel = await api.modelService.get({id})
 

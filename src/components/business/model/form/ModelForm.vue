@@ -12,7 +12,7 @@ import {validateGraphData} from "@/shape/GraphData.ts";
 import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated/model/enums";
 import GenConfigForm from "@/components/business/genConfig/GenConfigForm.vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
-import {validateModelForm} from "@/components/business/model/form/validateModel.ts";
+import {validateModel} from "@/components/business/model/form/validateModel.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
 const i18nStore = useI18nStore()
@@ -57,7 +57,7 @@ const handleSubmit = () => {
 			}
 		)
 
-		const messageList = validateModelForm(model.value)
+		const messageList = validateModel(model.value)
 
 		if (messageList.length > 0) {
 			messageList.forEach(it => sendMessage(it, 'warning'))

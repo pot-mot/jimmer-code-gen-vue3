@@ -11,7 +11,7 @@
 
 			<li>
 				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_editModel')">
-					<el-button :icon="EditPen" @click="MODEL_DIALOG_STATE.handleEdit"/>
+					<el-button :icon="EditPen" @click="handleEditModel"/>
 				</el-tooltip>
 			</li>
 
@@ -177,7 +177,6 @@ import {Graph, Node} from "@antv/x6"
 import {initModelEditor} from "./initModelEditor.ts"
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
-import {api} from "@/api";
 import {sendMessage} from "@/message/message.ts";
 import {GenTableModelInput, Pair} from "@/api/__generated/model/static";
 import SaveIcon from "@/components/global/icons/toolbar/SaveIcon.vue";
@@ -214,11 +213,12 @@ import {useDocumentEvent} from "@/utils/useDocumentEvent.ts";
 import MiniMap from "@/components/pages/ModelEditor/minimap/MiniMap.vue";
 import {useDebugStore} from "@/store/debug/debugStore.ts";
 import {handleModelEditorKeyEvent} from "@/components/pages/ModelEditor/graph/keyEvent/keyEvent.ts";
-import {validateModelForm} from "@/components/business/model/form/validateModel.ts";
+import {validateModel} from "@/components/business/model/form/validateModel.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {
     exportGraphPNG, exportGraphSVG,
 } from "@/components/pages/ModelEditor/file/graphFileOperations.ts";
+import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
 
 const i18nStore = useI18nStore()
 
@@ -283,6 +283,7 @@ const handleNodeClick = (node: Node) => {
 	}
 }
 
+
 const handleSaveModel = loadingStore.withLoading('ModelEditorGraph handleSaveModel', async () => {
 	try {
 		let model = MODEL._model()
@@ -294,16 +295,14 @@ const handleSaveModel = loadingStore.withLoading('ModelEditorGraph handleSaveMod
 			model.graphData = GRAPH_DATA.getGraphData()
 		}
 
-		const messageList = validateModelForm(model)
+		const id = await saveModel(model)
 
-		if (messageList.length > 0) {
-			messageList.forEach(it => sendMessage(it, 'warning'))
-			return
-		}
+        MODEL.isLoaded = true
 
-		await api.modelService.save({body: model})
-
-		MODEL.isLoaded = true
+        if (id === undefined) {
+            sendMessage("模型保存失败，校验未通过", "success")
+            return
+        }
 
 		sendMessage("模型保存成功", "success")
 	} catch (e) {
@@ -321,6 +320,10 @@ const handleSaveEvent = (e: KeyboardEvent) => {
 }
 
 useDocumentEvent('keydown', handleSaveEvent)
+
+const handleEditModel = () => {
+    MODEL_DIALOG_STATE.handleEdit()
+}
 
 const isDragging = ref(false)
 
@@ -372,7 +375,7 @@ const preJudge = (): boolean => {
 		return false
 	} else {
 		const model = MODEL._model()
-		const messageList = validateModelForm(model)
+		const messageList = validateModel(model)
 
 		if (messageList.length === 0) {
 			return true
