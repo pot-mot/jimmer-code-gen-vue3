@@ -241,6 +241,7 @@ export const mainLocaleEn: MainLocale = {
     LABEL_GenTableIndex_columns: 'Reference Columns',
 
     LABEL_EnumForm_name: 'Name',
+    LABEL_EnumForm_packagePath: 'Package Path',
     LABEL_EnumForm_comment: 'Comment',
     LABEL_EnumForm_type: 'Type',
     LABEL_EnumForm_typeUnset: 'Default',

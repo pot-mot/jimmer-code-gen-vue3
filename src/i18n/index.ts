@@ -227,6 +227,7 @@ export type MainLocale = {
     LABEL_GenTableIndex_columns: string
 
     LABEL_EnumForm_name: string
+    LABEL_EnumForm_packagePath: string
     LABEL_EnumForm_comment: string
     LABEL_EnumForm_type: string
     LABEL_EnumForm_typeUnset: string
