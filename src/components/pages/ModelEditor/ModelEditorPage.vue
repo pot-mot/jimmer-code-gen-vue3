@@ -22,7 +22,7 @@ import AssociationDialogs from "@/components/pages/ModelEditor/dialogs/associati
 import {confirm} from "@/message/confirm.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
-const {MODEL, MODEL_LOAD, MODEL_DIALOG_STATE} = useModelEditorStore()
+const {MODEL, MODEL_LOAD, MODEL_EDIT_DIALOG, DATA_SOURCE_LOAD_DIALOG, MODEL_LOAD_DIALOG} = useModelEditorStore()
 
 const i18nStore = useI18nStore()
 
@@ -123,7 +123,7 @@ watch(() => modelLoadMenu.value, () => {
 		</template>
 	</LeftTopBottomLayout>
 
-	<DragDialog v-model="MODEL_DIALOG_STATE.dataSourceLoadMenuOpenState"
+	<DragDialog v-model="DATA_SOURCE_LOAD_DIALOG.openState"
 				:modal="false"
 				:init-x="100" :init-y="10"
 				:init-w="500" :init-h="600"
@@ -131,7 +131,7 @@ watch(() => modelLoadMenu.value, () => {
 		<DataSourceMenu ref="dataSourceLoadMenu"/>
 	</DragDialog>
 
-	<DragDialog v-model="MODEL_DIALOG_STATE.modelLoadMenuOpenState"
+	<DragDialog v-model="MODEL_LOAD_DIALOG.openState"
 				:modal="false"
 				:init-x="100" :init-y="10"
 				:init-w="500" :init-h="600"
@@ -140,10 +140,10 @@ watch(() => modelLoadMenu.value, () => {
 	</DragDialog>
 
 	<ModelDialog v-if="MODEL.isLoaded"
-				 v-model="MODEL_DIALOG_STATE.modelEditDialogOpenState"
+				 v-model="MODEL_EDIT_DIALOG.openState"
 				 :model="cloneDeep(MODEL._model())"
-				 @cancel="MODEL_DIALOG_STATE.handleCancel"
-				 @submit="MODEL_DIALOG_STATE.handleSubmit"/>
+				 @cancel="MODEL_EDIT_DIALOG.handleCancel"
+				 @submit="MODEL_EDIT_DIALOG.handleSubmit"/>
 
 	<TableDialogs/>
 

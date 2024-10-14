@@ -227,7 +227,7 @@ const wrapper = ref<HTMLElement>()
 
 let graph: Graph
 
-const {GRAPH, GRAPH_DATA, GRAPH_LOAD, MODEL, MODEL_DIALOG_STATE, HISTORY, VIEW, REMOVE} = useModelEditorStore()
+const {GRAPH, GRAPH_DATA, GRAPH_LOAD, MODEL, MODEL_EDIT_DIALOG, HISTORY, VIEW, REMOVE} = useModelEditorStore()
 
 const loadingStore = useGlobalLoadingStore()
 
@@ -322,7 +322,7 @@ const handleSaveEvent = (e: KeyboardEvent) => {
 useDocumentEvent('keydown', handleSaveEvent)
 
 const handleEditModel = () => {
-    MODEL_DIALOG_STATE.handleEdit()
+    MODEL_EDIT_DIALOG.handleEdit()
 }
 
 const isDragging = ref(false)

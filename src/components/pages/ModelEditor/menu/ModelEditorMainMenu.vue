@@ -14,7 +14,7 @@ import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
 const i18nStore = useI18nStore()
 
-const {MODEL, MODEL_DIALOG_STATE, VIEW} = useModelEditorStore()
+const {MODEL, DATA_SOURCE_LOAD_DIALOG, MODEL_LOAD_DIALOG, VIEW} = useModelEditorStore()
 
 const associationItemShowType = ref<AssociationItemShowType>('NAME')
 
@@ -37,10 +37,10 @@ const formattedEdgeShowType = computed(() => {
 
 <template>
     <div>
-        <el-button style="margin-bottom: 0.5em;" @click="() => MODEL_DIALOG_STATE.dataSourceLoadMenuOpenState = true">
+        <el-button style="margin-bottom: 0.5em;" @click="() => DATA_SOURCE_LOAD_DIALOG.openState = true">
 			{{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromDataSource') }}
         </el-button>
-        <el-button style="margin-bottom: 0.5em;" @click="() => MODEL_DIALOG_STATE.modelLoadMenuOpenState = true">
+        <el-button style="margin-bottom: 0.5em;" @click="() => MODEL_LOAD_DIALOG.openState = true">
 			{{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromModel') }}
         </el-button>
 

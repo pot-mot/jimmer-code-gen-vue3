@@ -75,18 +75,18 @@ interface ModelLoadOperation {
 }
 
 interface ModelEditDialogState {
-    modelEditDialogOpenState: Ref<boolean>
+    openState: Ref<boolean>
     handleEdit: () => void
     handleCancel: () => void
     handleSubmit: (model: GenModelInput) => void
 }
 
 interface DataSourceLoadDialogState {
-    dataSourceLoadMenuOpenState: Ref<boolean>,
+    openState: Ref<boolean>,
 }
 
 interface ModelLoadDialogState {
-    modelLoadMenuOpenState: Ref<boolean>,
+    openState: Ref<boolean>,
 }
 
 interface ModelEditorStore {
@@ -101,8 +101,11 @@ interface ModelEditorStore {
     REMOVE: RemoveOperation
 
     MODEL: UnwrapRefSimple<ModelState & ModelReactiveState>
-    MODEL_DIALOG_STATE: UnwrapRefSimple<ModelEditDialogState & DataSourceLoadDialogState & ModelLoadDialogState>
     MODEL_LOAD: ModelLoadOperation
+
+    MODEL_EDIT_DIALOG: UnwrapRefSimple<ModelEditDialogState>
+    DATA_SOURCE_LOAD_DIALOG: UnwrapRefSimple<DataSourceLoadDialogState>
+    MODEL_LOAD_DIALOG: UnwrapRefSimple<ModelLoadDialogState>
 }
 
 const initModelEditorStore = (): ModelEditorStore => {
@@ -259,22 +262,6 @@ const initModelEditorStore = (): ModelEditorStore => {
             }
         }
     )
-
-    const modelEditDialogState: ModelEditDialogState = {
-        modelEditDialogOpenState,
-        handleEdit,
-        handleCancel,
-        handleSubmit,
-    }
-
-
-    /**
-     * 外部数据导入相关
-     */
-
-    const dataSourceLoadMenuOpenState = ref(false)
-
-    const modelLoadMenuOpenState = ref(false)
 
     /**
      * 导入表的基本函数，接收 tableView 并查询获得 association
@@ -725,13 +712,36 @@ const initModelEditorStore = (): ModelEditorStore => {
         isLoaded.value = false
     }
 
-    const MODEL_DIALOG_STATE = defineStore(
-        'MODEL_DIALOG_STATE',
+    const MODEL_EDIT_DIALOG = defineStore(
+        'MODEL_EDIT_DIALOG',
         () => {
             return {
-                ...modelEditDialogState,
-                dataSourceLoadMenuOpenState,
-                modelLoadMenuOpenState,
+                openState: modelEditDialogOpenState,
+                handleEdit,
+                handleCancel,
+                handleSubmit,
+            }
+        }
+    )()
+
+    const MODEL_LOAD_DIALOG = defineStore(
+        'MODEL_LOAD_DIALOG',
+        () => {
+            const openState = ref(false)
+
+            return {
+                openState
+            }
+        }
+    )()
+
+    const DATA_SOURCE_LOAD_DIALOG = defineStore(
+        'DATA_SOURCE_LOAD_DIALOG',
+        () => {
+            const openState = ref(false)
+
+            return {
+                openState
             }
         }
     )()
@@ -755,8 +765,11 @@ const initModelEditorStore = (): ModelEditorStore => {
         GRAPH_DATA,
 
         MODEL,
-        MODEL_DIALOG_STATE,
         MODEL_LOAD,
+
+        MODEL_EDIT_DIALOG,
+        DATA_SOURCE_LOAD_DIALOG,
+        MODEL_LOAD_DIALOG,
 
         SELECT,
         VIEW,
