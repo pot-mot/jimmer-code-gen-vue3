@@ -95,8 +95,12 @@ export const validateAssociation = (
                 const targetColumn = targetColumns[i]
 
                 if (
+                    (association.type !== 'MANY_TO_MANY') &&
                     (sourceColumn.typeCode !== targetColumn.typeCode) ||
-                    ((sourceColumn.overwriteByRaw || targetColumn.overwriteByRaw) && sourceColumn.rawType !== targetColumn.rawType)
+                    (
+                        (sourceColumn.overwriteByRaw || targetColumn.overwriteByRaw) &&
+                        sourceColumn.rawType !== targetColumn.rawType
+                    )
                 ) {
                     messageList.push("VALIDATE_GenAssociation_typeNotMatch")
                 }

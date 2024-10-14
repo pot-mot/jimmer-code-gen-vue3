@@ -56,7 +56,9 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
                 targetColumn
             } = edgeConnectData
 
+            // 当两侧不都是主键（即映射为多对多的情况），进行类型判断
             if (
+                !(sourceColumn.partOfPk && targetColumn.partOfPk) &&
                 (sourceColumn.typeCode !== targetColumn.typeCode) ||
                 (
                     (sourceColumn.overwriteByRaw || targetColumn.overwriteByRaw) &&
