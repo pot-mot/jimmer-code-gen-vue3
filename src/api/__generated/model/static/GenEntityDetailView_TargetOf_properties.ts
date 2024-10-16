@@ -1,20 +1,10 @@
 import type {AssociationType} from '../enums/';
-import type {
-    GenEntityPropertiesView_TargetOf_properties_TargetOf_column, 
-    GenEntityPropertiesView_TargetOf_properties_TargetOf_enum, 
-    GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable, 
-    JoinColumnMeta, 
-    JoinTableMeta
-} from './';
+import type {JoinColumnMeta, JoinTableMeta} from './';
 
 /**
  * 生成属性
  */
-export interface GenEntityPropertiesView_TargetOf_properties {
-    /**
-     * ID
-     */
-    id: number;
+export interface GenEntityDetailView_TargetOf_properties {
     /**
      * 创建事件
      */
@@ -104,19 +94,15 @@ export interface GenEntityPropertiesView_TargetOf_properties {
      */
     remark: string;
     /**
-     * 归属实体
-     */
-    entityId: number;
-    /**
      * 对应列
      */
-    column?: GenEntityPropertiesView_TargetOf_properties_TargetOf_column | undefined;
+    columnId?: number | undefined;
     /**
      * 类型对应表
      */
-    typeTable?: GenEntityPropertiesView_TargetOf_properties_TargetOf_typeTable | undefined;
+    typeTableId?: number | undefined;
     /**
      * 生成枚举
      */
-    enum?: GenEntityPropertiesView_TargetOf_properties_TargetOf_enum | undefined;
+    enumId?: number | undefined;
 }

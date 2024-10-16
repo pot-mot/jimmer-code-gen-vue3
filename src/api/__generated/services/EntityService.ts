@@ -1,6 +1,6 @@
 import type {Executor} from '../';
 import type {GenLanguage} from '../model/enums/';
-import type {EntityQuery, GenEntityCommonView, GenEntityPropertiesView} from '../model/static/';
+import type {GenEntityDetailView} from '../model/static/';
 
 export class EntityService {
     
@@ -18,21 +18,11 @@ export class EntityService {
      * 获取单个数据源
      */
     readonly get: (options: EntityServiceOptions['get']) => Promise<
-        GenEntityPropertiesView | undefined
+        GenEntityDetailView | undefined
     > = async(options) => {
         let _uri = '/entity/';
         _uri += encodeURIComponent(options.id);
-        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<GenEntityPropertiesView | undefined>;
-    }
-    
-    /**
-     * 列出所有数据源
-     */
-    readonly list: () => Promise<
-        Array<GenEntityCommonView>
-    > = async() => {
-        let _uri = '/entity';
-        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenEntityCommonView>>;
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<GenEntityDetailView | undefined>;
     }
     
     readonly listLanguage: () => Promise<
@@ -41,24 +31,13 @@ export class EntityService {
         let _uri = '/entity/language';
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenLanguage>>;
     }
-    
-    readonly query: (options: EntityServiceOptions['query']) => Promise<
-        Array<GenEntityPropertiesView>
-    > = async(options) => {
-        let _uri = '/entity/query';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<GenEntityPropertiesView>>;
-    }
 }
 
 export type EntityServiceOptions = {
-    'list': {}, 
     'get': {
         id: number
     }, 
     'listLanguage': {}, 
-    'query': {
-        body: EntityQuery
-    }, 
     'delete': {
         ids: Array<number>
     }

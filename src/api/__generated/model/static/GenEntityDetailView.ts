@@ -1,9 +1,9 @@
-import type {GenEntityPropertiesView_TargetOf_properties, GenEntityPropertiesView_TargetOf_superEntities, GenEntityPropertiesView_TargetOf_table} from './';
+import type {GenEntityDetailView_TargetOf_properties} from './';
 
 /**
  * 生成实体
  */
-export interface GenEntityPropertiesView {
+export interface GenEntityDetailView {
     /**
      * ID
      */
@@ -37,15 +37,19 @@ export interface GenEntityPropertiesView {
      */
     remark: string;
     /**
+     * 模型
+     */
+    modelId?: number | undefined;
+    /**
      * 对应表
      */
-    table: GenEntityPropertiesView_TargetOf_table;
+    tableId: number;
     /**
      * 上级实体
      */
-    superEntities: Array<GenEntityPropertiesView_TargetOf_superEntities>;
+    superEntityIds: Array<number>;
     /**
      * 属性
      */
-    properties: Array<GenEntityPropertiesView_TargetOf_properties>;
+    properties: Array<GenEntityDetailView_TargetOf_properties>;
 }
