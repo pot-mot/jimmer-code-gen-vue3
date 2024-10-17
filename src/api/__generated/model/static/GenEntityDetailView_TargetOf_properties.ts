@@ -6,6 +6,10 @@ import type {JoinColumnMeta, JoinTableMeta} from './';
  */
 export interface GenEntityDetailView_TargetOf_properties {
     /**
+     * ID
+     */
+    id: number;
+    /**
      * 创建事件
      */
     createdTime: string;

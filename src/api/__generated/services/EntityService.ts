@@ -1,18 +1,10 @@
 import type {Executor} from '../';
 import type {GenLanguage} from '../model/enums/';
-import type {GenEntityDetailView} from '../model/static/';
+import type {EntityQuery, GenEntityDetailView} from '../model/static/';
 
 export class EntityService {
     
     constructor(private executor: Executor) {}
-    
-    readonly delete: (options: EntityServiceOptions['delete']) => Promise<
-        number
-    > = async(options) => {
-        let _uri = '/entity/';
-        _uri += encodeURIComponent(options.ids.join(','));
-        return (await this.executor({uri: _uri, method: 'DELETE'})) as Promise<number>;
-    }
     
     /**
      * 获取单个数据源
@@ -31,6 +23,13 @@ export class EntityService {
         let _uri = '/entity/language';
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenLanguage>>;
     }
+    
+    readonly query: (options: EntityServiceOptions['query']) => Promise<
+        Array<GenEntityDetailView>
+    > = async(options) => {
+        let _uri = '/entity/query';
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<GenEntityDetailView>>;
+    }
 }
 
 export type EntityServiceOptions = {
@@ -38,7 +37,7 @@ export type EntityServiceOptions = {
         id: number
     }, 
     'listLanguage': {}, 
-    'delete': {
-        ids: Array<number>
+    'query': {
+        body: EntityQuery
     }
 }

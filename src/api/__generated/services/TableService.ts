@@ -10,14 +10,6 @@ export class TableService {
     
     constructor(private executor: Executor) {}
     
-    readonly delete: (options: TableServiceOptions['delete']) => Promise<
-        number
-    > = async(options) => {
-        let _uri = '/table/';
-        _uri += encodeURIComponent(options.ids.join(','));
-        return (await this.executor({uri: _uri, method: 'DELETE'})) as Promise<number>;
-    }
-    
     readonly queryColumnsView: (options: TableServiceOptions['queryColumnsView']) => Promise<
         Array<GenTableColumnsView>
     > = async(options) => {
@@ -49,8 +41,5 @@ export type TableServiceOptions = {
     }, 
     'queryColumnsView': {
         body: TableQuery
-    }, 
-    'delete': {
-        ids: Array<number>
     }
 }
