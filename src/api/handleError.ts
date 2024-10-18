@@ -59,15 +59,6 @@ const parseFamilyAndCode = (error: AllErrors): string => {
         if (error.code === "MISS_REQUIRED_PARAM") {
             codeStr = "缺失必要条件"
         }
-    } else if (error.family === "GENERATE_TABLE_DEFINE") {
-        familyStr = "生成表定义"
-        if (error.code === "TABLE") {
-            codeStr = "表"
-        } else if (error.code === "COLUMN") {
-            codeStr = "列"
-        } else if (error.code === "INDEX") {
-            codeStr = "索引"
-        }
     } else if (error.family === "GENERATE_ENTITY") {
         familyStr = "生成实体"
         if (error.code === "TABLE") {

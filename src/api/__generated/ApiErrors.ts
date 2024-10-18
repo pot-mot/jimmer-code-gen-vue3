@@ -11,17 +11,14 @@ export type AllErrors = {
         family: 'COLUMN_TYPE', 
         code: 'MISS_REQUIRED_PARAM'
     } | {
+        family: 'CONVERT', 
+        code: 'MODEL_NOT_FOUND'
+    } | {
         family: 'DATA_SOURCE', 
         code: 'CONNECT_FAIL'
     } | {
-        family: 'GENERATE_TABLE_DEFINE', 
-        code: 'TABLE'
-    } | {
-        family: 'GENERATE_TABLE_DEFINE', 
-        code: 'COLUMN'
-    } | {
-        family: 'GENERATE_TABLE_DEFINE', 
-        code: 'INDEX'
+        family: 'GENERATE', 
+        code: 'MODEL_NOT_FOUND'
     } | {
         family: 'GENERATE_ENTITY', 
         code: 'TABLE'
@@ -90,6 +87,10 @@ export type ApiErrors = {
                 readonly [key:string]: any
             }), 
         'convertModel': AllErrors & ({
+                family: 'CONVERT', 
+                code: 'MODEL_NOT_FOUND', 
+                readonly [key:string]: any
+            } | {
                 family: 'CONVERT_ENTITY', 
                 code: 'ASSOCIATION', 
                 readonly [key:string]: any
@@ -124,72 +125,9 @@ export type ApiErrors = {
     'enumService': {
     }, 
     'generateService': {
-        'generateTableDefine': AllErrors & ({
-                family: 'GENERATE_TABLE_DEFINE', 
-                code: 'TABLE', 
-                readonly [key:string]: any
-            } | {
-                family: 'GENERATE_TABLE_DEFINE', 
-                code: 'COLUMN', 
-                readonly [key:string]: any
-            } | {
-                family: 'GENERATE_TABLE_DEFINE', 
-                code: 'INDEX', 
-                readonly [key:string]: any
-            } | {
-                family: 'COLUMN_TYPE', 
-                code: 'MISS_REQUIRED_PARAM', 
-                readonly [key:string]: any
-            }), 
-        'generateEntity': AllErrors & ({
-                family: 'GENERATE_ENTITY', 
-                code: 'TABLE', 
-                readonly [key:string]: any
-            } | {
-                family: 'GENERATE_ENTITY', 
-                code: 'COLUMN', 
-                readonly [key:string]: any
-            } | {
-                family: 'GENERATE_ENTITY', 
-                code: 'ASSOCIATION', 
-                readonly [key:string]: any
-            } | {
-                family: 'GENERATE_ENTITY', 
-                code: 'ENUM', 
-                readonly [key:string]: any
-            }), 
-        'generateModelSql': AllErrors & ({
-                family: 'GENERATE_TABLE_DEFINE', 
-                code: 'TABLE', 
-                readonly [key:string]: any
-            } | {
-                family: 'GENERATE_TABLE_DEFINE', 
-                code: 'COLUMN', 
-                readonly [key:string]: any
-            } | {
-                family: 'GENERATE_TABLE_DEFINE', 
-                code: 'INDEX', 
-                readonly [key:string]: any
-            } | {
-                family: 'COLUMN_TYPE', 
-                code: 'MISS_REQUIRED_PARAM', 
-                readonly [key:string]: any
-            }), 
-        'generateModelEntity': AllErrors & ({
-                family: 'CONVERT_ENTITY', 
-                code: 'ASSOCIATION', 
-                readonly [key:string]: any
-            } | {
-                family: 'CONVERT_ENTITY', 
-                code: 'SUPER_TABLE', 
-                readonly [key:string]: any
-            } | {
-                family: 'CONVERT_ENTITY', 
-                code: 'PROPERTY', 
-                readonly [key:string]: any
-            } | {
-                family: 'COLUMN_TYPE', 
-                code: 'MISS_REQUIRED_PARAM', 
+        'generateModel': AllErrors & ({
+                family: 'GENERATE', 
+                code: 'MODEL_NOT_FOUND', 
                 readonly [key:string]: any
             } | {
                 family: 'GENERATE_ENTITY', 
@@ -206,6 +144,10 @@ export type ApiErrors = {
             } | {
                 family: 'GENERATE_ENTITY', 
                 code: 'ENUM', 
+                readonly [key:string]: any
+            } | {
+                family: 'COLUMN_TYPE', 
+                code: 'MISS_REQUIRED_PARAM', 
                 readonly [key:string]: any
             })
     }, 
