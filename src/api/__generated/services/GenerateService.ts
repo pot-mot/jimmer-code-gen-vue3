@@ -1,13 +1,13 @@
 import type {Executor} from '../';
 import type {GenerateType} from '../model/enums/';
-import type {GenConfigProperties, Pair} from '../model/static/';
+import type {GenConfigProperties, GenerateFile} from '../model/static/';
 
 export class GenerateService {
     
     constructor(private executor: Executor) {}
     
     readonly generateModel: (options: GenerateServiceOptions['generateModel']) => Promise<
-        Array<Pair<string, string>>
+        Array<GenerateFile>
     > = async(options) => {
         let _uri = '/preview/model';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -22,7 +22,7 @@ export class GenerateService {
         _uri += 'types='
         _uri += encodeURIComponent(_value);
         _separator = '&';
-        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<Pair<string, string>>>;
+        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<GenerateFile>>;
     }
 }
 

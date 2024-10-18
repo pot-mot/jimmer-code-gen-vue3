@@ -48,6 +48,7 @@ export type {GenTableModelInput_TargetOf_indexes_TargetOf_columns} from './GenTa
 export type {GenTableModelInput_TargetOf_superTables} from './GenTableModelInput_TargetOf_superTables';
 export type {GenTypeMappingInput} from './GenTypeMappingInput';
 export type {GenTypeMappingView} from './GenTypeMappingView';
+export type {GenerateFile} from './GenerateFile';
 export type {JoinColumnMeta} from './JoinColumnMeta';
 export type {JoinTableMeta} from './JoinTableMeta';
 export type {ModelInputEntities} from './ModelInputEntities';

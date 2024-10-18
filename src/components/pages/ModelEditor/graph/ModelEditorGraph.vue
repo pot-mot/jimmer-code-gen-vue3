@@ -157,7 +157,7 @@ import {initModelEditor} from "./initModelEditor.ts"
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import {sendMessage} from "@/message/message.ts";
-import {GenTableModelInput, Pair} from "@/api/__generated/model/static";
+import {GenerateFile, GenTableModelInput} from "@/api/__generated/model/static";
 import SaveIcon from "@/components/global/icons/toolbar/SaveIcon.vue";
 import LayoutIcon from "@/components/global/icons/toolbar/LayoutIcon.vue";
 import MultiCodePreview from "@/components/global/code/MultiCodePreview.vue";
@@ -360,7 +360,7 @@ const preJudge = (): boolean => {
 
 const codePreviewOpenState = ref(false)
 
-const entityFiles = ref<Array<Pair<string, string>>>([])
+const entityFiles = ref<Array<GenerateFile>>([])
 
 watch(() => codePreviewOpenState.value, async (openState) => {
 	if (!openState) {

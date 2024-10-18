@@ -12,6 +12,8 @@ export type {ForeignKeyType} from './ForeignKeyType';
 export {ForeignKeyType_CONSTANTS} from './ForeignKeyType';
 export type {GenLanguage} from './GenLanguage';
 export {GenLanguage_CONSTANTS} from './GenLanguage';
+export type {GenerateTag} from './GenerateTag';
+export {GenerateTag_CONSTANTS} from './GenerateTag';
 export type {GenerateType} from './GenerateType';
 export {GenerateType_CONSTANTS} from './GenerateType';
 export type {SelectType} from './SelectType';
