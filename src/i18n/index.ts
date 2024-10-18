@@ -129,8 +129,7 @@ export type MainLocale = {
     LABEL_ModelEditorGraph_fit: string
     LABEL_ModelEditorGraph_center: string
 
-    LABEL_ModelEditorGraph_previewSql: string
-    LABEL_ModelEditorGraph_previewEntity: string
+    LABEL_ModelEditorGraph_previewCode: string
     LABEL_ModelEditorGraph_exportModel: string
     LABEL_ModelEditorGraph_downloadAll: string
 

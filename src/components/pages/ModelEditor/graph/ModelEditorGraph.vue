@@ -89,32 +89,11 @@
 
 		<ul v-if="GRAPH.isLoaded" class="toolbar right-top">
 			<li>
-				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_previewSql')">
-					<el-button :icon="SQLIcon" @click="handleSQLPreview"/>
+				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_previewCode')">
+					<el-button :icon="CodeIcon" @click="handleCodePreview"/>
 				</el-tooltip>
 
-				<DragDialog v-model="sqlPreviewDialogOpenState"
-							:init-w="700" :init-x="5000"
-							can-drag can-resize
-							disabled-h disabled-y
-							limit-by-parent :modal="false">
-					<MultiCodePreview :code-files="sqlFiles"
-									  height="calc(100vh - 5em - 30px)"
-									  width="100%"
-									  class="multi-code-preview"/>
-					<div class="code-download-button">
-						<el-button :icon="DownloadIcon" round size="large"
-								   @click="handleSQLDownload"/>
-					</div>
-				</DragDialog>
-			</li>
-
-			<li>
-				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_previewEntity')">
-					<el-button :icon="CodeIcon" @click="handleEntityPreview"/>
-				</el-tooltip>
-
-				<DragDialog v-model="entityPreviewDialogOpenState"
+				<DragDialog v-model="codePreviewOpenState"
 							:init-w="700" :init-x="5000"
 							can-drag can-resize
 							disabled-h disabled-y
@@ -125,7 +104,7 @@
 									  class="multi-code-preview"/>
 					<div class="code-download-button">
 						<el-button :icon="DownloadIcon" round size="large"
-								   @click="handleEntityDownload"/>
+								   @click="handleCodeDownload"/>
 					</div>
 				</DragDialog>
 			</li>
@@ -183,7 +162,6 @@ import SaveIcon from "@/components/global/icons/toolbar/SaveIcon.vue";
 import LayoutIcon from "@/components/global/icons/toolbar/LayoutIcon.vue";
 import MultiCodePreview from "@/components/global/code/MultiCodePreview.vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
-import SQLIcon from "@/components/global/icons/toolbar/SQLIcon.vue";
 import FitIcon from "@/components/global/icons/toolbar/FitIcon.vue";
 import CenterIcon from "@/components/global/icons/toolbar/CenterIcon.vue";
 import EraserIcon from "@/components/global/icons/toolbar/EraserIcon.vue";
@@ -201,11 +179,9 @@ import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
 import {
 	convertModel,
 	downloadModelZip,
-	downloadModelEntity,
-	downloadModelSql,
+	downloadModelCode,
 	exportModelJson,
-	previewModelEntity,
-	previewModelSql
+	previewModelCode,
 } from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
 import {cloneDeep} from "lodash";
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
@@ -341,12 +317,8 @@ useDocumentEvent('mouseup', (e) => {
 
 watch(() => MODEL.isLoaded, async (value) => {
 	if (value) {
-		if (sqlPreviewDialogOpenState.value) {
-			await handleSQLPreview()
-		}
-
-		if (entityPreviewDialogOpenState.value) {
-			await handleEntityPreview()
+		if (codePreviewOpenState.value) {
+			await handleCodePreview()
 		}
 	}
 })
@@ -386,56 +358,31 @@ const preJudge = (): boolean => {
 	}
 }
 
-const entityPreviewDialogOpenState = ref(false)
+const codePreviewOpenState = ref(false)
 
 const entityFiles = ref<Array<Pair<string, string>>>([])
 
-watch(() => entityPreviewDialogOpenState.value, async (openState) => {
+watch(() => codePreviewOpenState.value, async (openState) => {
 	if (!openState) {
 		entityFiles.value = []
 	}
 })
 
-const handleEntityPreview = loadingStore.withLoading('ModelEditorGraph handleEntityPreview', async () => {
+const handleCodePreview = loadingStore.withLoading('ModelEditorGraph handleCodePreview', async () => {
 	if (!preJudge()) return
 
 	const model = MODEL._model()
 	await convertModel(model.id)
-	entityFiles.value = await previewModelEntity(model.id)
-	entityPreviewDialogOpenState.value = true
+	entityFiles.value = await previewModelCode(model.id)
+	codePreviewOpenState.value = true
 })
 
-const sqlPreviewDialogOpenState = ref(false)
-
-const sqlFiles = ref<Array<Pair<string, string>>>([])
-
-watch(() => sqlPreviewDialogOpenState.value, async (openState) => {
-	if (!openState) {
-		sqlFiles.value = []
-	}
-})
-
-const handleSQLPreview = loadingStore.withLoading('ModelEditorGraph handleSQLPreview', async () => {
-	if (!preJudge()) return
-
-	const model = MODEL._model()
-	sqlPreviewDialogOpenState.value = true
-	sqlFiles.value = await previewModelSql(model.id)
-})
-
-const handleEntityDownload = loadingStore.withLoading('ModelEditorGraph handleEntityDownload', async () => {
+const handleCodeDownload = loadingStore.withLoading('ModelEditorGraph handleCodeDownload', async () => {
 	if (!preJudge()) return
 
 	const model = MODEL._model()
 	await convertModel(model.id)
-	await downloadModelEntity(model)
-})
-
-const handleSQLDownload = loadingStore.withLoading('ModelEditorGraph handleSQLDownload', async () => {
-	if (!preJudge()) return
-
-	const model = MODEL._model()
-	await downloadModelSql(model)
+	await downloadModelCode(model)
 })
 
 const exportType_CONSTANT = ["JSON", "PNG", "SVG"]

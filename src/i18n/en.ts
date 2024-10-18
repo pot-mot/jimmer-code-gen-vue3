@@ -142,8 +142,7 @@ export const mainLocaleEn: MainLocale = {
         return `Enum【${enumName}】already exist`
     },
 
-    LABEL_ModelEditorGraph_previewSql: 'Preview SQL',
-    LABEL_ModelEditorGraph_previewEntity: 'Preview Entity',
+    LABEL_ModelEditorGraph_previewCode: 'Preview Code',
     LABEL_ModelEditorGraph_exportModel: 'Export Model',
     LABEL_ModelEditorGraph_downloadAll: 'Download All (ZIP)',
 

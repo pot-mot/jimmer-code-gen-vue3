@@ -142,8 +142,7 @@ export const mainLocaleZhCn: MainLocale = {
         return `枚举【${enumName}】已存在`
     },
 
-    LABEL_ModelEditorGraph_previewSql: '预览 SQL',
-    LABEL_ModelEditorGraph_previewEntity: '预览实体',
+    LABEL_ModelEditorGraph_previewCode: '预览代码',
     LABEL_ModelEditorGraph_exportModel: '导出模型',
     LABEL_ModelEditorGraph_downloadAll: '下载全部 (ZIP)',
 

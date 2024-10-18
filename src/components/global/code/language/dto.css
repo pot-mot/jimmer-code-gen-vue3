@@ -1,0 +1,33 @@
+code.language-dto {
+    .token.comment {
+        color: gray;
+    }
+    .token.keyword {
+        color: #af4b1f;
+    }
+    .token.macro {
+        color: #3982e3;
+    }
+    .token.qualifier {
+        color: #3982e3;
+    }
+    .token.qbeFunction {
+        color: #3982e3;
+    }
+    .token.identifier {
+        color: #333;
+    }
+    .token.constant {
+        color: #ba8123;
+    }
+    .token.operator {
+        color: #666;
+    }
+    .token.propExplicit {
+        color: #000;
+        font-weight: 600;
+    }
+    .token.punctuation {
+        color: #333;
+    }
+}

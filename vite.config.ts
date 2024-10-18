@@ -36,8 +36,8 @@ export default defineConfig({
         }),
         prismjsPlugin({
             languages: [
-                'javascript', 'typescript',
-                'css', 'css-extras', 'html', 'less', 'sass', 'scss',
+                'javascript', 'js', 'typescript', 'ts', "tsx",
+                'css', 'html', 'less', 'sass', 'scss',
                 'svg', 'icon',
                 'markup', "markdown", "md",
                 'http', 'uri', 'url',

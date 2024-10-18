@@ -6,6 +6,7 @@ import {jsonPrettyFormat, jsonStrPrettyFormat} from "@/utils/json.ts";
 import {validateModelInputStr} from "@/shape/ModelInput.ts";
 import {sendI18nMessage} from "@/message/message.ts";
 import {getModelAllCopyData} from "@/components/pages/ModelEditor/graph/clipBoard/clipBoard.ts";
+import {GenerateType} from "@/api/__generated/model/enums";
 
 const createZip = async (files: Array<Pair<string, string>>): Promise<Blob> => {
     const zip = new JSZip()
@@ -30,22 +31,12 @@ export const convertModel = async (id: number) => {
     return await api.convertService.convertModel({id})
 }
 
-export const previewModelSql = async (id: number) => {
-    return await api.generateService.generateModel({id, types: ['DDL']})
+export const previewModelCode = async (id: number, types: Array<GenerateType> = ['ALL']) => {
+    return await api.generateService.generateModel({id, types})
 }
 
-export const previewModelEntity = async (id: number) => {
-    return await api.generateService.generateModel({id, types: ['Entity', 'Enum']})
-}
-
-export const downloadModelSql = async (model: GenModelView) => {
-    const res = await api.generateService.generateModel({id: model.id, types: ['DDL']})
-    const file = await createZip(res)
-    saveAs(file, `[${model.name}]-tables.zip`)
-}
-
-export const downloadModelEntity = async (model: GenModelView) => {
-    const res = await api.generateService.generateModel({id: model.id, types: ['Entity', 'Enum']})
+export const downloadModelCode = async (model: GenModelView, types: Array<GenerateType> = ['ALL']) => {
+    const res = await api.generateService.generateModel({id: model.id, types})
     const file = await createZip(res)
     saveAs(file, `[${model.name}]-entities.zip`)
 }

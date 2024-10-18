@@ -40,8 +40,8 @@ const currentCodeFile = computed(() => props.codeFiles?.[currentIndex.value])
 		<template #right v-if="currentCodeFile">
 			<CodePreview :code="currentCodeFile.second"
 						 :language="currentCodeFile.first.split('.')[currentCodeFile.first.split.length - 1]"
-						 :show-line-counts="showLineCounts"></CodePreview>
+						 :show-line-counts="showLineCounts"/>
 		</template>
 	</LeftRightLayout>
-	<el-empty v-else></el-empty>
+	<el-empty v-else/>
 </template>

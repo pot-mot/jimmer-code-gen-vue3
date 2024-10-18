@@ -1,18 +1,17 @@
 <template>
 	<div class="code-preview">
 		<div class="code-preview-wrapper">
-			<div v-if="showLineCounts" class="line-counts" v-text="lineCounts"></div>
-			<pre class="code"><code ref="container" :class="`language-${language}`" v-text="code"></code></pre>
+			<div v-if="showLineCounts" class="line-counts" v-text="lineCounts"/>
+			<pre class="code"><code ref="container" :class="`language-${language}`" v-text="code"/></pre>
 		</div>
 		<div class="toolbar">
 			<slot name="toolbar" v-bind="props">
 				<el-button style="padding: 0.3em 0.5em;">
-					<CopyIcon :finish="copyFinish" @click="handleCopy"></CopyIcon>
+					<CopyIcon :finish="copyFinish" @click="handleCopy"/>
 				</el-button>
 			</slot>
 		</div>
 	</div>
-
 </template>
 
 <script lang="ts" setup>
@@ -21,6 +20,12 @@ import "prismjs/themes/prism.css";
 import {computed, nextTick, onMounted, ref, watch} from "vue";
 import CopyIcon from "../icons/toolbar/CopyIcon.vue";
 import {sendMessage} from "@/message/message.ts";
+import {dtoLanguage} from "@/components/global/code/language/dto.ts";
+import "./language/dto.css";
+import {vueLanguage} from "@/components/global/code/language/vue.ts";
+
+Prism.languages.dto = dtoLanguage
+Prism.languages.vue = vueLanguage
 
 interface CodePreviewProps {
 	code: string,
