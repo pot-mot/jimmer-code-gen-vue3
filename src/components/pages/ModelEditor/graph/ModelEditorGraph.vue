@@ -88,16 +88,26 @@
 		</ul>
 
 		<ul v-if="GRAPH.isLoaded" class="toolbar right-top">
-			<li>
+            <li>
+                <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_exportModel')">
+                    <el-button class="cling-right" :icon="ExportIcon" @click="handleModelExport"/>
+                </el-tooltip>
+                <el-select v-model="exportType"
+                           class="cling-left" size="small" style="width: 6em">
+                    <el-option v-for="type in exportType_CONSTANT" :value="type"/>
+                </el-select>
+            </li>
+
+            <li>
 				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_previewCode')">
 					<el-button :icon="CodeIcon" @click="handleCodePreview"/>
 				</el-tooltip>
 
 				<DragDialog v-model="codePreviewOpenState"
-							:init-w="700" :init-x="5000"
+                            init-full-screen
 							can-drag can-resize
-							disabled-h disabled-y
-							limit-by-parent :modal="false">
+							limit-by-parent
+                            :modal="false">
 					<MultiCodePreview :code-files="entityFiles"
 									  height="calc(100vh - 5em - 30px)"
 									  width="100%"
@@ -107,16 +117,6 @@
 								   @click="handleCodeDownload"/>
 					</div>
 				</DragDialog>
-			</li>
-
-			<li>
-				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_exportModel')">
-                        <el-button class="cling-right" :icon="ExportIcon" @click="handleModelExport"/>
-				</el-tooltip>
-                <el-select v-model="exportType"
-                           class="cling-left" size="small" style="width: 6em">
-                    <el-option v-for="type in exportType_CONSTANT" :value="type"/>
-                </el-select>
 			</li>
 
 			<li>

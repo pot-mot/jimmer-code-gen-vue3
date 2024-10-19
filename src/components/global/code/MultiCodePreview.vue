@@ -84,7 +84,7 @@ const fileTree = computed<FilePathTreeItem[]>(() =>
 </script>
 
 <template>
-	<LeftRightLayout v-if="codeFiles && codeFiles.length > 0">
+	<LeftRightLayout v-if="codeFiles && codeFiles.length > 0" :left-size="20">
 		<template #left>
 			<div style="padding: 0.5em;height: 100%; overflow-y: auto;">
                 <el-input

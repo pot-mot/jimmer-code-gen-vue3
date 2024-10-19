@@ -1,15 +1,24 @@
 <script lang="ts" setup>
 import {Pane, Splitpanes} from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
+
+withDefaults(
+    defineProps<{
+        leftSize: number
+    }>(),
+    {
+        leftSize: 22.5
+    }
+)
 </script>
 
 <template>
-	<splitpanes>
-		<pane size="22.5">
-			<slot name="left"/>
-		</pane>
-		<pane>
-			<slot name="right"/>
-		</pane>
-	</splitpanes>
+    <splitpanes>
+        <pane :size="leftSize">
+            <slot name="left"/>
+        </pane>
+        <pane>
+            <slot name="right"/>
+        </pane>
+    </splitpanes>
 </template>

@@ -111,12 +111,20 @@ const fullScreenPositionAndSize = () => {
 	w.value = document.documentElement.offsetWidth
 }
 
+let firstOpenFlag = false
+
 const handleOpen = () => {
 	emits('open')
 	initXW()
 	initYH()
 	toFront()
-	nextTick(() => {
+
+    if (!firstOpenFlag && props.canFullScreen && props.initFullScreen) {
+        fullScreenPositionAndSize()
+        firstOpenFlag = true
+    }
+
+    nextTick(() => {
 		emits('opened')
 	})
 }
@@ -191,9 +199,6 @@ const wrapperResizeOb = new ResizeObserver(updateContentSizeByWrapper)
 onMounted(() => {
 	if (openState.value) {
 		handleOpen()
-	}
-	if (props.canFullScreen && props.initFullScreen) {
-		fullScreenPositionAndSize()
 	}
 	nextTick(() => {
 		if (content.value && wrapper.value) {
