@@ -4,7 +4,7 @@ import 'splitpanes/dist/splitpanes.css'
 
 withDefaults(
     defineProps<{
-        leftSize: number
+        leftSize?: number | undefined
     }>(),
     {
         leftSize: 22.5
