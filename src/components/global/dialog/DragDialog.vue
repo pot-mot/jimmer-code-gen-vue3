@@ -111,17 +111,14 @@ const fullScreenPositionAndSize = () => {
 	w.value = document.documentElement.offsetWidth
 }
 
-let firstOpenFlag = false
-
 const handleOpen = () => {
 	emits('open')
 	initXW()
 	initYH()
 	toFront()
 
-    if (!firstOpenFlag && props.canFullScreen && props.initFullScreen) {
+    if (props.canFullScreen && props.initFullScreen) {
         fullScreenPositionAndSize()
-        firstOpenFlag = true
     }
 
     nextTick(() => {

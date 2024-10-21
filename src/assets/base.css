@@ -25,11 +25,11 @@ body {
 
 /* splitpanes */
 .splitpanes__splitter {
-    background-color: #ddd;
+    background-color: #eee;
 }
 
 .splitpanes__splitter:hover {
-    background-color: #aaa;
+    background-color: #ccc;
 }
 
 .splitpanes--vertical > .splitpanes__splitter {
@@ -46,6 +46,10 @@ body {
     height: 8px;
 }
 
+::-webkit-scrollbar-track:hover {
+    background: #f1f1f1;
+}
+
 ::-webkit-scrollbar-thumb {
     background-color: #ddd;
     border-radius: 4px;
@@ -53,7 +57,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #aaa;
+    background-color: #bbb;
 }
 
 ::-webkit-scrollbar-corner {
