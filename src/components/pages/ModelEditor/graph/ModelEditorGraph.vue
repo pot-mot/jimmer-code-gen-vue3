@@ -104,7 +104,7 @@
 				</el-tooltip>
 
 				<DragDialog v-model="codePreviewOpenState"
-                            init-full-screen
+                            init-full-screen :can-exit-full-screen="false"
 							can-drag can-resize
 							limit-by-parent
                             :modal="false">

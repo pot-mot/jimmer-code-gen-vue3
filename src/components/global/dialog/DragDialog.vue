@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import DragResize from 'vue3-draggable-resizable'
 import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
-import {nextTick, onMounted, ref, toRaw, watch} from 'vue'
+import {computed, nextTick, onMounted, ref, toRaw, watch} from 'vue'
 import {ElButton, useZIndex} from "element-plus";
 import {Close, FullScreen} from "@element-plus/icons-vue";
 import {DragDialogProps} from "./DragDialogProps.ts";
@@ -10,18 +10,23 @@ import {sendI18nMessage} from "@/message/message.ts";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 
 const openState = defineModel<boolean>({
-    required: true
+	required: true
 })
 
-const props = withDefaults(defineProps<DragDialogProps>(), {
-	to: "body",
-	canResize: false,
-	canDrag: true,
-	canFullScreen: true,
-	initW: 800,
-	limitByParent: false,
-	modal: true
-})
+const props = withDefaults(
+	defineProps<DragDialogProps>(),
+	{
+		to: "body",
+		canResize: false,
+		canDrag: true,
+		canFullScreen: true,
+		canExitFullScreen: true,
+		initW: 800,
+		initH: 450,
+		limitByParent: false,
+		modal: true
+	}
+)
 
 const emits = defineEmits<DragDialogEmits>()
 
@@ -35,6 +40,18 @@ const x = ref(0)
 const y = ref(0)
 const w = ref(0)
 const h = ref(0)
+
+const resizeEnd = (payload: { x: number, y: number, w: number, h: number }) => {
+	x.value = payload.x
+	y.value = payload.y
+	w.value = payload.w
+	h.value = payload.h
+}
+
+const dragEnd = (payload: { x: number, y: number }) => {
+	x.value = payload.x
+	y.value = payload.y
+}
 
 const currentZIndex = ref<number>()
 
@@ -86,55 +103,92 @@ const initXW = () => {
 }
 
 const initYH = () => {
-	if (props.initY) {
-		y.value = props.initY
+	let tempY = y.value
+	let tempH = h.value
+
+	let maxHeight: number
+
+	if (props.limitByParent) {
+		const parent = getParent()
+		if (!parent) {
+			sendI18nMessage('MESSAGE_DragDialog_noMatchParent', 'error')
+			return
+		}
+		maxHeight = parent.clientHeight
+	} else {
+		maxHeight = document.documentElement.clientHeight
 	}
-	if (props.initH) {
-		h.value = props.initH
+	if (maxHeight < props.initH) {
+		tempY = 0
+		tempH = maxHeight
+	} else if (props.initY !== undefined) {
+		tempY = props.initY
+		tempH = props.initH
+	} else {
+		tempY = (maxHeight - props.initH) / 2
+		tempH = props.initH
 	}
+
+	y.value = tempY
+	h.value = tempH
 }
 
 const toFront = () => {
 	currentZIndex.value = zIndexManager.nextZIndex()
 }
 
-const isFullScreen = (): boolean =>
+const isFullScreen = computed<boolean>(() =>
 	x.value === 0 &&
 	y.value === 0 &&
 	h.value === document.documentElement.offsetHeight &&
 	w.value === document.documentElement.offsetWidth
+)
 
-const fullScreenPositionAndSize = () => {
+watch(() => isFullScreen.value, (value) => {
+	if (value) {
+		draggable.value = false
+	} else {
+		draggable.value = props.canDrag
+	}
+})
+
+const enterFullScreen = () => {
 	x.value = 0
 	y.value = 0
 	h.value = document.documentElement.offsetHeight
 	w.value = document.documentElement.offsetWidth
 }
 
-const handleOpen = () => {
-	emits('open')
+const exitFullScreen = () => {
 	initXW()
 	initYH()
+}
+
+const handleOpen = async () => {
+	emits('open')
+
 	toFront()
 
-    if (props.canFullScreen && props.initFullScreen) {
-        fullScreenPositionAndSize()
-    }
+	if (props.canFullScreen && props.initFullScreen) {
+		enterFullScreen()
+	} else {
+		exitFullScreen()
+	}
 
-    nextTick(() => {
-		emits('opened')
-	})
+	await nextTick()
+	emits('opened')
 }
 
-const handleClose = () => {
+const handleClose = async () => {
 	emits("close")
+
 	openState.value = false
-	nextTick(() => {
-		emits('closed')
-	})
+
+	await nextTick()
+	emits('closed')
 }
 
-const handleToggleFullScreen = () => {
+const toggleFullScreen = async () => {
 	if (!props.canFullScreen) {
 		sendI18nMessage('MESSAGE_DragDialog_cannotBeFullScreen', 'error')
 		return
@@ -144,33 +198,28 @@ const handleToggleFullScreen = () => {
 
 	toFront()
 
-	if (isFullScreen()) {
-		initXW()
-		initYH()
+	if (isFullScreen.value) {
+		exitFullScreen()
 	} else {
-		fullScreenPositionAndSize()
+		enterFullScreen()
 	}
 
 	if (props.limitByParent) {
 		// FIX 修复 limitByParent 时 x y 作用问题
-		nextTick(() => {
-			x.value = -x.value
-			y.value = -y.value
-			nextTick(() => {
-				x.value = -x.value
-				y.value = -y.value
-			})
-		})
-		emits("fullScreenToggled")
-	} else {
-		emits("fullScreenToggled")
+		await nextTick()
+		x.value = -x.value
+		y.value = -y.value
+
+		await nextTick()
+		x.value = -x.value
+		y.value = -y.value
 	}
+
+	emits("fullScreenToggled")
 }
 
-watch(() => openState.value, () => {
-	if (openState.value) {
-		handleOpen()
-	}
+watch(() => openState.value, (value) => {
+	if (value) handleOpen()
 })
 
 const syncDialogHeight = () => {
@@ -193,20 +242,21 @@ const updateContentSizeByWrapper = () => {
 
 const wrapperResizeOb = new ResizeObserver(updateContentSizeByWrapper)
 
-onMounted(() => {
-	if (openState.value) {
-		handleOpen()
-	}
-	nextTick(() => {
-		if (content.value && wrapper.value) {
-			wrapperResizeOb.observe(wrapper.value)
-		}
-	})
+onMounted(async () => {
+	if (openState.value)
+		await handleOpen()
+
+	if (content.value && wrapper.value)
+		wrapperResizeOb.observe(wrapper.value)
 })
 
 const handleContentMouseOver = (e: MouseEvent) => {
 	if (!props.canDrag) {
 		draggable.value = false
+		return
+	}
+
+	if (isFullScreen.value) {
 		return
 	}
 
@@ -216,6 +266,10 @@ const handleContentMouseOver = (e: MouseEvent) => {
 const handleContentMouseLeave = () => {
 	if (!props.canDrag) {
 		draggable.value = false
+		return
+	}
+
+	if (isFullScreen.value) {
 		return
 	}
 
@@ -229,29 +283,31 @@ defineExpose({
 
 <template>
 	<Teleport :to="to">
-		<div v-if="openState && modal" class="modal" :style="`z-index: ${currentZIndex};`"></div>
+		<div v-if="openState && modal" class="modal" :style="`z-index: ${currentZIndex};`"/>
 
 		<DragResize v-if="openState"
+					ref="dragResizeRef"
 					:active="true"
 					:draggable="draggable"
 					:resizable="resizable"
 					:parent="limitByParent"
 					:x="x" :disabledX="disabledX"
 					:y="y" :disabledY="disabledY"
-					:h="h" :maxH="maxH" :minH="minH" :disabledH="disabledH"
 					:w="w" :maxW="maxW" :minW="minW" :disabledW="disabledW"
+					:h="h" :maxH="maxH" :minH="minH" :disabledH="disabledH"
 					:style="`border: none; z-index: ${currentZIndex};`"
-					:class="{disabledW, disabledH, disabledX, disabledY}">
-			<div ref="wrapper" class="wrapper" style="cursor: all-scroll;" @mouseup="toFront">
+					:class="{disabledW, disabledH, disabledX, disabledY}"
+					@resize-end="resizeEnd" @drag-end="dragEnd">
+			<div ref="wrapper" class="wrapper" @mouseup="toFront">
 				<div class="right-top">
-					<el-button :icon="FullScreen" link size="large" @click="handleToggleFullScreen"
-							   v-if="canFullScreen"></el-button>
-					<el-button :icon="Close" link size="large" type="danger" @click="handleClose"></el-button>
+					<el-button :icon="FullScreen" link size="large" @click="toggleFullScreen"
+							   v-if="canFullScreen && canExitFullScreen"/>
+					<el-button :icon="Close" link size="large" type="danger" @click="handleClose"/>
 				</div>
 
 				<div ref="content" class="content"
 					 @mouseover="handleContentMouseOver" @mouseleave="handleContentMouseLeave">
-					<slot></slot>
+					<slot/>
 				</div>
 			</div>
 		</DragResize>
