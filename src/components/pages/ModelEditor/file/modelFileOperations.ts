@@ -2,7 +2,7 @@ import {GenerateFile, GenModelView} from "@/api/__generated/model/static";
 import JSZip from "jszip";
 import {api} from "@/api";
 import {saveAs} from "file-saver";
-import {jsonPrettyFormat, jsonStrPrettyFormat} from "@/utils/json.ts";
+import {jsonPrettyFormat} from "@/utils/json.ts";
 import {validateModelInputStr} from "@/shape/ModelInput.ts";
 import {sendI18nMessage} from "@/message/message.ts";
 import {getModelAllCopyData} from "@/components/pages/ModelEditor/graph/clipBoard/clipBoard.ts";
@@ -39,16 +39,6 @@ export const previewModelCode = async (
     return await api.generateService.generateModel({id, types, viewType})
 }
 
-export const downloadModelCode = async (
-    model: GenModelView,
-    types: Array<GenerateType> = ['ALL'],
-    viewType: ViewType = 'VUE3_ELEMENT_PLUS'
-) => {
-    const res = await api.generateService.generateModel({id: model.id, types, viewType})
-    const file = await createZip(res)
-    saveAs(file, `[${model.name}]-entities.zip`)
-}
-
 export const importModelJSON = async (modelInputJsonStr: string): Promise<number | undefined> => {
     let validateErrors
     if (validateModelInputStr(modelInputJsonStr, e => validateErrors = e)) {
@@ -60,7 +50,7 @@ export const importModelJSON = async (modelInputJsonStr: string): Promise<number
     }
 }
 
-export const exportModelJson = async (model: GenModelView) => {
+export const exportModelJson = (model: GenModelView) => {
     const {id, ...other} = model
     const modelJsonBlob = new Blob(
         [jsonPrettyFormat(other)],
@@ -71,17 +61,17 @@ export const exportModelJson = async (model: GenModelView) => {
 
 export const downloadModelZip = async (
     model: GenModelView,
+    types: Array<GenerateType> = ['ALL'],
     viewType: ViewType = 'VUE3_ELEMENT_PLUS'
 ) => {
-    const codes = await api.generateService.generateModel({id: model.id, types: ['ALL'], viewType})
+    const codes = await api.generateService.generateModel({id: model.id, types, viewType})
 
     const copyData = getModelAllCopyData(model)
 
     const {id, ...other} = model
     const modelFiles = [
-        {path: "model/model.json", content: jsonPrettyFormat(other)},
-        {path: "model/graph-data.json", content: jsonStrPrettyFormat(model.graphData)},
-        {path: "model/pure-data.json", content: jsonPrettyFormat(copyData)}
+        {path: "model.json", content: jsonPrettyFormat(other)},
+        {path: "data.json", content: jsonPrettyFormat(copyData)}
     ]
 
     const file = await createZip([...modelFiles, ...codes])

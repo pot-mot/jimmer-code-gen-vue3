@@ -114,7 +114,7 @@
 									  class="multi-code-preview"/>
 					<div class="code-download-button">
 						<el-button :icon="DownloadIcon" round size="large"
-								   @click="handleCodeDownload"/>
+								   @click="handleModelDownload"/>
 					</div>
 				</DragDialog>
 			</li>
@@ -179,7 +179,6 @@ import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
 import {
 	convertModel,
 	downloadModelZip,
-	downloadModelCode,
 	exportModelJson,
 	previewModelCode,
 } from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
@@ -377,28 +376,20 @@ const handleCodePreview = loadingStore.withLoading('ModelEditorGraph handleCodeP
 	codePreviewOpenState.value = true
 })
 
-const handleCodeDownload = loadingStore.withLoading('ModelEditorGraph handleCodeDownload', async () => {
-	if (!preJudge()) return
-
-	const model = MODEL._model()
-	await convertModel(model.id)
-	await downloadModelCode(model)
-})
-
 const exportType_CONSTANT = ["JSON", "PNG", "SVG"]
 
 type ExportType = typeof exportType_CONSTANT[number]
 
 const exportType = ref<ExportType>('JSON')
 
-const handleModelExport = loadingStore.withLoading('ModelEditorGraph handleModelExport', async () => {
+const handleModelExport = loadingStore.withLoading('ModelEditorGraph handleModelExport', () => {
 	if (!preJudge()) return
 
 	const model = MODEL._model()
 
     switch (exportType.value) {
         case 'JSON':
-            await exportModelJson(model)
+            exportModelJson(model)
             break
         case 'PNG':
             exportGraphPNG(model, graph)
