@@ -20,3 +20,5 @@ export type {SelectType} from './SelectType';
 export {SelectType_CONSTANTS} from './SelectType';
 export type {TableType} from './TableType';
 export {TableType_CONSTANTS} from './TableType';
+export type {ViewType} from './ViewType';
+export {ViewType_CONSTANTS} from './ViewType';

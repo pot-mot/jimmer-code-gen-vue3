@@ -6,7 +6,7 @@ import {jsonPrettyFormat, jsonStrPrettyFormat} from "@/utils/json.ts";
 import {validateModelInputStr} from "@/shape/ModelInput.ts";
 import {sendI18nMessage} from "@/message/message.ts";
 import {getModelAllCopyData} from "@/components/pages/ModelEditor/graph/clipBoard/clipBoard.ts";
-import {GenerateType} from "@/api/__generated/model/enums";
+import {GenerateType, ViewType} from "@/api/__generated/model/enums";
 
 const createZip = async (files: Array<Pick<GenerateFile, 'path' | 'content'>>): Promise<Blob> => {
     const zip = new JSZip()
@@ -31,12 +31,20 @@ export const convertModel = async (id: number) => {
     return await api.convertService.convertModel({id})
 }
 
-export const previewModelCode = async (id: number, types: Array<GenerateType> = ['ALL']) => {
-    return await api.generateService.generateModel({id, types})
+export const previewModelCode = async (
+    id: number,
+    types: Array<GenerateType> = ['ALL'],
+    viewType: ViewType = 'VUE3_ELEMENT_PLUS'
+) => {
+    return await api.generateService.generateModel({id, types, viewType})
 }
 
-export const downloadModelCode = async (model: GenModelView, types: Array<GenerateType> = ['ALL']) => {
-    const res = await api.generateService.generateModel({id: model.id, types})
+export const downloadModelCode = async (
+    model: GenModelView,
+    types: Array<GenerateType> = ['ALL'],
+    viewType: ViewType = 'VUE3_ELEMENT_PLUS'
+) => {
+    const res = await api.generateService.generateModel({id: model.id, types, viewType})
     const file = await createZip(res)
     saveAs(file, `[${model.name}]-entities.zip`)
 }
@@ -61,8 +69,11 @@ export const exportModelJson = async (model: GenModelView) => {
     saveAs(modelJsonBlob, `model-[${model.name}].json`)
 }
 
-export const downloadModelZip = async (model: GenModelView) => {
-    const codes = await api.generateService.generateModel({id: model.id, types: ['ALL']})
+export const downloadModelZip = async (
+    model: GenModelView,
+    viewType: ViewType = 'VUE3_ELEMENT_PLUS'
+) => {
+    const codes = await api.generateService.generateModel({id: model.id, types: ['ALL'], viewType})
 
     const copyData = getModelAllCopyData(model)
 
