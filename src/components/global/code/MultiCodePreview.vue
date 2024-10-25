@@ -7,16 +7,16 @@ import {ElTree} from "element-plus";
 import {GenerateTag, GenerateTag_CONSTANTS} from "@/api/__generated/model/enums";
 
 interface MultiCodePreviewProps {
-	codeFiles: Array<GenerateFile> | undefined,
-	width?: string
-	height?: string
-	showLineCounts?: boolean
+    codeFiles: Array<GenerateFile> | undefined,
+    width?: string
+    height?: string
+    showLineCounts?: boolean
 }
 
 const props = withDefaults(defineProps<MultiCodePreviewProps>(), {
-	width: "100%",
-	height: "100%",
-	showLineCounts: true
+    width: "100%",
+    height: "100%",
+    showLineCounts: true
 })
 
 const treeRef = ref<InstanceType<typeof ElTree>>()
@@ -56,7 +56,7 @@ const buildFilePathTree = (files: GenerateFile[]): FilePathTreeItem[] => {
 
             if (!existingNode) {
                 // 如果不存在，则创建一个新的节点
-                existingNode = { name: part, children: [], path: path.endsWith(part) ? path : undefined }
+                existingNode = {name: part, children: [], path: path.endsWith(part) ? path : undefined}
                 currentLevel.push(existingNode)
             }
             // 更新当前层级为新节点的子节点
@@ -94,45 +94,43 @@ defineExpose<{
 </script>
 
 <template>
-	<LeftRightLayout v-if="codeFiles && codeFiles.length > 0" :left-size="20">
-		<template #left>
-			<div style="padding: 0.5em;height: 100%; overflow-y: auto;">
+    <LeftRightLayout v-if="codeFiles && codeFiles.length > 0" :left-size="20">
+        <template #left>
+            <div style="padding: 0.5em; height: 4rem;">
                 <el-input
                     v-model="filterText" clearable
-                    style="width: calc(100% - 1rem);"
                     placeholder="Filter Keyword"
+                    style="width: calc(100% - 1rem); margin-bottom: 0.3rem;"
                 />
 
                 <el-select
-                    v-model="filterTags" multiple clearable
-                    style="width: calc(100% - 1rem);"
-                    placeholder="Select Tag">
+                    v-model="filterTags" multiple filterable clearable
+                    placeholder="Select Tag"
+                    style="width: calc(100% - 1rem);">
                     <el-option
                         v-for="tag in GenerateTag_CONSTANTS"
                         :value="tag"/>
                 </el-select>
-
+            </div>
+            <div style="padding: 0.5em; height: calc(100% - 4rem); overflow-y: auto;">
                 <el-tree
                     ref="treeRef"
                     :props="{children: 'children'}"
                     :data="fileTree"
-                    :indent="6">
+                    :indent="6"
+                    @node-click="(data: FilePathTreeItem) => {if (data.path) currentPath = data.path}">
                     <template #default="{data}">
-                        <div @click="currentPath = data.path">
-                            <el-button link>
-                                {{ data.name }}
-                            </el-button>
-                        </div>
+                        <el-text>{{ data.name }}</el-text>
                     </template>
                 </el-tree>
-			</div>
-		</template>
+            </div>
+        </template>
 
-		<template #right v-if="currentContent">
-			<CodePreview :code="currentContent"
-						 :language="currentLanguage"
-						 :show-line-counts="showLineCounts"/>
-		</template>
-	</LeftRightLayout>
-	<el-empty v-else/>
+        <template #right v-if="currentContent">
+            <CodePreview :code="currentContent"
+                         :language="currentLanguage"
+                         :show-line-counts="showLineCounts"/>
+        </template>
+    </LeftRightLayout>
+    <el-empty v-else/>
 </template>
