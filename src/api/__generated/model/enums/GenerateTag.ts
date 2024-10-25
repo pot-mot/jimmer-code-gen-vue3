@@ -7,6 +7,8 @@ export const GenerateTag_CONSTANTS = [
     'FrontEnd', 
     'DTO', 
     'View', 
-    'Component'
+    'Component', 
+    'Permission', 
+    'Route'
 ] as const;
 export type GenerateTag = typeof GenerateTag_CONSTANTS[number];

@@ -21,6 +21,12 @@ export type AllErrors = {
         code: 'MODEL_NOT_FOUND'
     } | {
         family: 'GENERATE', 
+        code: 'ENTITY_NOT_FOUND'
+    } | {
+        family: 'GENERATE', 
+        code: 'DEFAULT_ITEM_NOT_FOUND'
+    } | {
+        family: 'GENERATE', 
         code: 'ID_PROPERTY_NOT_FOUND'
     } | {
         family: 'GENERATE_ENTITY', 
@@ -131,6 +137,14 @@ export type ApiErrors = {
         'generateModel': AllErrors & ({
                 family: 'GENERATE', 
                 code: 'MODEL_NOT_FOUND', 
+                readonly [key:string]: any
+            } | {
+                family: 'GENERATE', 
+                code: 'ENTITY_NOT_FOUND', 
+                readonly [key:string]: any
+            } | {
+                family: 'GENERATE', 
+                code: 'DEFAULT_ITEM_NOT_FOUND', 
                 readonly [key:string]: any
             } | {
                 family: 'GENERATE', 
