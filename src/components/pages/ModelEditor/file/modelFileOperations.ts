@@ -7,6 +7,7 @@ import {validateModelInputStr} from "@/shape/ModelInput.ts";
 import {sendI18nMessage} from "@/message/message.ts";
 import {getModelAllCopyData} from "@/components/pages/ModelEditor/graph/clipBoard/clipBoard.ts";
 import {GenerateType, ViewType} from "@/api/__generated/model/enums";
+import {DeepReadonly} from "vue";
 
 const createZip = async (files: Array<Pick<GenerateFile, 'path' | 'content'>>): Promise<Blob> => {
     const zip = new JSZip()
@@ -57,6 +58,11 @@ export const exportModelJson = (model: GenModelView) => {
         {type: "application/json"}
     )
     saveAs(modelJsonBlob, `model-[${model.name}].json`)
+}
+
+export const downloadCodeZip = async (codes: DeepReadonly<GenerateFile[]>) => {
+    const file = await createZip([...codes])
+    saveAs(file, `codes.zip`)
 }
 
 export const downloadModelZip = async (

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {computed, ref} from 'vue'
+import {computed, type ComputedRef, ref} from 'vue'
 import CodePreview from "./CodePreview.vue";
 import {GenerateFile} from "@/api/__generated/model/static";
 import LeftRightLayout from "@/components/global/layout/LeftRightLayout.vue";
@@ -72,15 +72,25 @@ const filterText = ref("")
 
 const filterTags = ref<GenerateTag[]>([])
 
-const fileTree = computed<FilePathTreeItem[]>(() =>
-    buildFilePathTree(props.codeFiles?.filter(it =>
+const filteredFiles = computed(() =>
+    props.codeFiles?.filter(it =>
         it.path.includes(filterText.value) &&
         (
             filterTags.value.length == 0 ||
             it.tags.some(tag => filterTags.value.includes(tag))
         )
-    ) ?? [])
+    ) ?? []
 )
+
+const fileTree = computed<FilePathTreeItem[]>(() =>
+    buildFilePathTree(filteredFiles.value)
+)
+
+defineExpose<{
+    filteredFiles: ComputedRef<Array<GenerateFile>>
+}>({
+    filteredFiles
+})
 </script>
 
 <template>
