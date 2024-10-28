@@ -72,13 +72,16 @@ const filterText = ref("")
 
 const filterTags = ref<GenerateTag[]>([])
 
+const excludeTags = ref<GenerateTag[]>(['EntitySelect', 'EntityMultiSelect', 'EditTable', 'IdMultiSelect'])
+
 const filteredFiles = computed(() =>
     props.codeFiles?.filter(it =>
         it.path.includes(filterText.value) &&
         (
             filterTags.value.length == 0 ||
             it.tags.some(tag => filterTags.value.includes(tag))
-        )
+        ) &&
+		!it.tags.some(tag => excludeTags.value.includes(tag))
     ) ?? []
 )
 
@@ -96,21 +99,34 @@ defineExpose<{
 <template>
     <LeftRightLayout v-if="codeFiles && codeFiles.length > 0" :left-size="20">
         <template #left>
-            <div style="padding: 0.5em; height: 4rem;">
+            <div style="padding: 0.5em; height: 6rem;">
                 <el-input
                     v-model="filterText" clearable
                     placeholder="Filter Keyword"
-                    style="width: calc(100% - 1rem); margin-bottom: 0.3rem;"
+                    style="width: calc(100% - 1rem);"
                 />
 
                 <el-select
                     v-model="filterTags" multiple filterable clearable
                     placeholder="Select Tag"
-                    style="width: calc(100% - 1rem);">
+					collapse-tags
+					collapse-tags-tooltip
+                    style="width: calc(100% - 1rem); margin-top: 0.3rem;">
                     <el-option
                         v-for="tag in GenerateTag_CONSTANTS"
                         :value="tag"/>
                 </el-select>
+
+				<el-select
+					v-model="excludeTags" multiple filterable clearable
+					placeholder="Select Negative Tag"
+					collapse-tags
+					collapse-tags-tooltip
+					style="width: calc(100% - 1rem); margin-top: 0.3rem;">
+					<el-option
+						v-for="tag in GenerateTag_CONSTANTS"
+						:value="tag"/>
+				</el-select>
             </div>
             <div style="padding: 0.5em; height: calc(100% - 4rem); overflow-y: auto;">
                 <el-tree
