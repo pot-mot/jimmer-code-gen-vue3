@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {computed, type ComputedRef, ref} from 'vue'
+import {computed, ref} from 'vue'
 import CodePreview from "./CodePreview.vue";
 import {GenerateFile} from "@/api/__generated/model/static";
 import LeftRightLayout from "@/components/global/layout/LeftRightLayout.vue";
@@ -70,29 +70,57 @@ const buildFilePathTree = (files: GenerateFile[]): FilePathTreeItem[] => {
 // 将文件路径转换成树形结构
 const filterText = ref("")
 
-const filterTags = ref<GenerateTag[]>([])
+const positiveTags = ref<GenerateTag[]>([])
 
-const excludeTags = ref<GenerateTag[]>(['EntitySelect', 'EntityMultiSelect', 'EditTable', 'IdMultiSelect'])
+const negativeTags = ref<GenerateTag[]>(['EntitySelect', 'EntityMultiSelect', 'EditTable', 'IdMultiSelect'])
 
-const filteredFiles = computed(() =>
-    props.codeFiles?.filter(it =>
-        it.path.includes(filterText.value) &&
-        (
-            filterTags.value.length == 0 ||
-            it.tags.some(tag => filterTags.value.includes(tag))
-        ) &&
-		!it.tags.some(tag => excludeTags.value.includes(tag))
-    ) ?? []
-)
+const getFilteredFiles = (): Array<GenerateFile> => {
+    const filterWords = filterText.value.split(/\s+/).filter(it => it.length > 0)
 
-const fileTree = computed<FilePathTreeItem[]>(() =>
-    buildFilePathTree(filteredFiles.value)
-)
+    const {positiveWords, negativeWords} = filterWords.reduce(
+        (data: { positiveWords: string[], negativeWords: string[] }, word: string) => {
+            if (word.startsWith('!')) {
+                data.negativeWords.push(word.slice(1))
+            } else {
+                data.positiveWords.push(word)
+            }
+            return data
+        },
+        {positiveWords: [], negativeWords: []}
+    )
+
+    return props.codeFiles?.filter(it => {
+        if (positiveWords.length > 0) {
+            const inPositiveWords = positiveWords.every(word => it.path.includes(word))
+            if (!inPositiveWords) return false
+        }
+        if (negativeWords.length > 0) {
+            const inNegativeWords = negativeWords.some(word => it.path.includes(word))
+            if (inNegativeWords) return false
+        }
+        if (positiveTags.value.length > 0) {
+            const inPositiveTags = positiveTags.value.some(tag => it.tags.includes(tag))
+            if (!inPositiveTags) return false
+        }
+        if (negativeTags.value.length > 0) {
+            const inNegativeTags = negativeTags.value.some(tag => it.tags.includes(tag))
+            if (inNegativeTags) return false
+        }
+
+        return true
+    }) ?? []
+}
+
+const fileTree = ref<FilePathTreeItem[]>(buildFilePathTree(getFilteredFiles()))
+
+const handleFiltered = () => {
+    fileTree.value = buildFilePathTree(getFilteredFiles())
+}
 
 defineExpose<{
-    filteredFiles: ComputedRef<Array<GenerateFile>>
+    getFilteredFiles: () => Array<GenerateFile>
 }>({
-    filteredFiles
+    getFilteredFiles
 })
 </script>
 
@@ -104,29 +132,33 @@ defineExpose<{
                     v-model="filterText" clearable
                     placeholder="Filter Keyword"
                     style="width: calc(100% - 1rem);"
+                    @change="handleFiltered"
+                    :spellcheck="false"
                 />
 
                 <el-select
-                    v-model="filterTags" multiple filterable clearable
+                    v-model="positiveTags" multiple filterable clearable
                     placeholder="Select Tag"
-					collapse-tags
-					collapse-tags-tooltip
-                    style="width: calc(100% - 1rem); margin-top: 0.3rem;">
+                    collapse-tags
+                    collapse-tags-tooltip
+                    style="width: calc(100% - 1rem); margin-top: 0.3rem;"
+                    @change="handleFiltered">
                     <el-option
                         v-for="tag in GenerateTag_CONSTANTS"
                         :value="tag"/>
                 </el-select>
 
-				<el-select
-					v-model="excludeTags" multiple filterable clearable
-					placeholder="Select Negative Tag"
-					collapse-tags
-					collapse-tags-tooltip
-					style="width: calc(100% - 1rem); margin-top: 0.3rem;">
-					<el-option
-						v-for="tag in GenerateTag_CONSTANTS"
-						:value="tag"/>
-				</el-select>
+                <el-select
+                    v-model="negativeTags" multiple filterable clearable
+                    placeholder="Select Negative Tag"
+                    collapse-tags
+                    collapse-tags-tooltip
+                    style="width: calc(100% - 1rem); margin-top: 0.3rem;"
+                    @change="handleFiltered">
+                    <el-option
+                        v-for="tag in GenerateTag_CONSTANTS"
+                        :value="tag"/>
+                </el-select>
             </div>
             <div style="padding: 0.5em; height: calc(100% - 4rem); overflow-y: auto;">
                 <el-tree

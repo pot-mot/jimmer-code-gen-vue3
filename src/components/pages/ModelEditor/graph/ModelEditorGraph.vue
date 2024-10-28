@@ -377,10 +377,14 @@ const handleCodePreview = loadingStore.withLoading('ModelEditorGraph handleCodeP
     codePreviewOpenState.value = true
 })
 
-const multiCodePreview = ref()
+const multiCodePreview = ref<{
+    getFilteredFiles: () => Array<GenerateFile>
+} | undefined>()
 
 const handleCodeDownload = loadingStore.withLoading('ModelEditorGraph handleModelDownload', async () => {
-    await downloadCodeZip(multiCodePreview.value.filteredFiles)
+    if (multiCodePreview.value) {
+        await downloadCodeZip(multiCodePreview.value.getFilteredFiles())
+    }
 })
 
 const exportType_CONSTANT = ["JSON", "PNG", "SVG"]
