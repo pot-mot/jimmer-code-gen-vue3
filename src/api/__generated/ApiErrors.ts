@@ -29,6 +29,9 @@ export type AllErrors = {
         family: 'GENERATE', 
         code: 'ID_PROPERTY_NOT_FOUND'
     } | {
+        family: 'GENERATE', 
+        code: 'CAN_ONLY_HAVE_ONE_DEFAULT_IMPORT_FOR_ONE_PATH'
+    } | {
         family: 'GENERATE_ENTITY', 
         code: 'TABLE'
     } | {
@@ -149,6 +152,10 @@ export type ApiErrors = {
             } | {
                 family: 'GENERATE', 
                 code: 'ID_PROPERTY_NOT_FOUND', 
+                readonly [key:string]: any
+            } | {
+                family: 'GENERATE', 
+                code: 'CAN_ONLY_HAVE_ONE_DEFAULT_IMPORT_FOR_ONE_PATH', 
                 readonly [key:string]: any
             } | {
                 family: 'GENERATE_ENTITY', 
