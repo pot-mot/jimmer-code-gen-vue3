@@ -16,6 +16,18 @@ const i18nStore = useI18nStore()
 
 const {MODEL, DATA_SOURCE_LOAD_DIALOG, MODEL_LOAD_DIALOG, VIEW} = useModelEditorStore()
 
+const tableNodePairs = computed(() => {
+	return MODEL.tableNodePairs
+})
+
+const associationEdgePairs = computed(() => {
+	return MODEL.associationEdgePairs
+})
+
+const enums = computed(() => {
+	return MODEL.enums
+})
+
 const associationItemShowType = ref<AssociationItemShowType>('NAME')
 
 const toggleEdgeShow = () => {
@@ -63,7 +75,7 @@ const formattedEdgeShowType = computed(() => {
 
             <div style="padding-bottom: 1em;">
                 <TableItem
-                    v-for="{first: table, second: node} in MODEL.tableNodePairs"
+                    v-for="{first: table, second: node} in tableNodePairs"
                     :key="node.id"
                     :table="table"
                     :node="node"/>
@@ -84,7 +96,7 @@ const formattedEdgeShowType = computed(() => {
 
             <div style="padding-bottom: 1em;">
                 <AssociationItem
-                    v-for="{first: association, second: edge} in MODEL.associationEdgePairs"
+                    v-for="{first: association, second: edge} in associationEdgePairs"
                     :key="edge.id"
                     :association="association"
                     :edge="edge"
@@ -105,7 +117,7 @@ const formattedEdgeShowType = computed(() => {
             </template>
 
             <div style="padding-bottom: 1em;" v-if="MODEL.isLoaded">
-                <EnumItem v-for="genEnum in MODEL._model().enums"
+                <EnumItem v-for="genEnum in enums"
                           :key="genEnum.name + genEnum.comment"
                           :gen-enum="genEnum"/>
             </div>
