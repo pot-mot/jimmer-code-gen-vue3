@@ -6,10 +6,30 @@ import {handleLoadFromModelError} from "@/api/handleErrors/loadFromModel.ts";
 import {handleModelError} from "@/api/handleErrors/model.ts";
 import {handleGenerateError} from "@/api/handleErrors/generate.ts";
 import {handleColumnTypeError} from "@/api/handleErrors/columnType.ts";
+import {AllErrors} from "@/api/__generated";
+import {IdName, IdNullableName} from "@/api/__generated/model/static";
 
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
 
 export const EXPECT_ERROR = Symbol("EXPECT_ERROR")
+
+export type Errors = {
+    [E in AllErrors as E['family']]: {
+        [C in Extract<AllErrors, { family: E['family'] }> as C['code']]:
+            Extract<AllErrors, { family: E['family']; code: C['code'] }>
+    }
+}
+
+
+export const defaultPlaceholder
+
+export const formatIdName = (idName: IdName | IdNullableName | undefined, placeholder: string = defaultPlaceholder) => {
+    if (idName !== undefined) {
+        return `${idName.name === undefined ? placeholder : idName.name}(${idName.id})`
+    } else {
+        return placeholder
+    }
+}
 
 /**
  * 处理非预期的错误

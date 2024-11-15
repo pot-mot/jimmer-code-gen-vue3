@@ -1,6 +1,6 @@
-import {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static";
-import {DeepReadonly} from "vue";
-import {AllErrors} from "@/api/__generated";
+import type {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static";
+import type {DeepReadonly} from "vue";
+import type {Errors} from "@/api/handleError.ts";
 
 export type MainLocale = {
     BUTTON_edit: string
@@ -13,165 +13,69 @@ export type MainLocale = {
     BUTTON_export: string
     BUTTON_test: string
 
-    ErrorCode_CONVERT__MODEL_NOT_FOUND: (error: AllErrors & {
-        family: "CONVERT",
-        code: "MODEL_NOT_FOUND"
-    }) => string
+    ErrorCode_CONVERT__MODEL_NOT_FOUND: (error: Errors["CONVERT"]["MODEL_NOT_FOUND"]) => string
 
-    ErrorCode_CONVERT__OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN: (error: AllErrors & {
-        family: "CONVERT",
-        code: "OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN"
-    }) => string
+    ErrorCode_CONVERT__OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN: (error: Errors["CONVERT"]["OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN"]) => string
 
-    ErrorCode_CONVERT__IN_ASSOCIATION_CANNOT_FOUNT_TARGET_COLUMN: (error: AllErrors & {
-        family: "CONVERT",
-        code: "IN_ASSOCIATION_CANNOT_FOUNT_TARGET_COLUMN"
-    }) => string
+    ErrorCode_CONVERT__IN_ASSOCIATION_CANNOT_FOUNT_TARGET_COLUMN: (error: Errors["CONVERT"]["IN_ASSOCIATION_CANNOT_FOUNT_TARGET_COLUMN"]) => string
 
-    ErrorCode_CONVERT__ASSOCIATION_CANNOT_BE_ONE_TO_MANY: (error: AllErrors & {
-        family: "CONVERT",
-        code: "ASSOCIATION_CANNOT_BE_ONE_TO_MANY"
-    }) => string
+    ErrorCode_CONVERT__ASSOCIATION_CANNOT_BE_ONE_TO_MANY: (error: Errors["CONVERT"]["ASSOCIATION_CANNOT_BE_ONE_TO_MANY"]) => string
 
-    ErrorCode_CONVERT__MULTIPLE_COLUMNS_NOT_SUPPORTED: (error: AllErrors & {
-        family: "CONVERT",
-        code: "MULTIPLE_COLUMNS_NOT_SUPPORTED"
-    }) => string
+    ErrorCode_CONVERT__MULTIPLE_COLUMNS_NOT_SUPPORTED: (error: Errors["CONVERT"]["MULTIPLE_COLUMNS_NOT_SUPPORTED"]) => string
 
-    ErrorCode_CONVERT__ID_VIEW_MULTIPLE_PK_NOT_SUPPORTED: (error: AllErrors & {
-        family: "CONVERT",
-        code: "ID_VIEW_MULTIPLE_PK_NOT_SUPPORTED"
-    }) => string
+    ErrorCode_CONVERT__ID_VIEW_MULTIPLE_PK_NOT_SUPPORTED: (error: Errors["CONVERT"]["ID_VIEW_MULTIPLE_PK_NOT_SUPPORTED"]) => string
 
-    ErrorCode_CONVERT__OUT_ASSOCIATION_CANNOT_FOUND_SOURCE_BASE_PROPERTY: (error: AllErrors & {
-        family: "CONVERT",
-        code: "OUT_ASSOCIATION_CANNOT_FOUND_SOURCE_BASE_PROPERTY"
-    }) => string
+    ErrorCode_CONVERT__OUT_ASSOCIATION_CANNOT_FOUND_SOURCE_BASE_PROPERTY: (error: Errors["CONVERT"]["OUT_ASSOCIATION_CANNOT_FOUND_SOURCE_BASE_PROPERTY"]) => string
 
-    ErrorCode_CONVERT__IN_ASSOCIATION_CANNOT_FOUND_TARGET_BASE_PROPERTY: (error: AllErrors & {
-        family: "CONVERT",
-        code: "IN_ASSOCIATION_CANNOT_FOUND_TARGET_BASE_PROPERTY"
-    }) => string
+    ErrorCode_CONVERT__IN_ASSOCIATION_CANNOT_FOUND_TARGET_BASE_PROPERTY: (error: Errors["CONVERT"]["IN_ASSOCIATION_CANNOT_FOUND_TARGET_BASE_PROPERTY"]) => string
 
-    ErrorCode_CONVERT__PROPERTY_NAME_DUPLICATE: (error: AllErrors & {
-        family: "CONVERT",
-        code: "PROPERTY_NAME_DUPLICATE"
-    }) => string
+    ErrorCode_CONVERT__PROPERTY_NAME_DUPLICATE: (error: Errors["CONVERT"]["PROPERTY_NAME_DUPLICATE"]) => string
 
-    ErrorCode_CONVERT__SUPER_TABLE_SUPER_ENTITY_NOT_MATCH: (error: AllErrors & {
-        family: "CONVERT",
-        code: "SUPER_TABLE_SUPER_ENTITY_NOT_MATCH"
-    }) => string
+    ErrorCode_CONVERT__SUPER_TABLE_SUPER_ENTITY_NOT_MATCH: (error: Errors["CONVERT"]["SUPER_TABLE_SUPER_ENTITY_NOT_MATCH"]) => string
 
-    ErrorCode_COLUMN_TYPE_MISS_REQUIRED_PARAM: (error: AllErrors & {
-        family: "COLUMN_TYPE",
-        code: "MISS_REQUIRED_PARAM"
-    }) => string
+    ErrorCode_COLUMN_TYPE_MISS_REQUIRED_PARAM: (error: Errors["COLUMN_TYPE"]["MISS_REQUIRED_PARAM"]) => string
 
-    ErrorCode_DATA_SOURCE__CONNECT_FAIL: (error: AllErrors & {
-        family: "DATA_SOURCE",
-        code: "CONNECT_FAIL"
-    }) => string
+    ErrorCode_DATA_SOURCE__CONNECT_FAIL: (error: Errors["DATA_SOURCE"]["CONNECT_FAIL"]) => string
 
-    ErrorCode_MODEL__DEFAULT_ITEM_NOT_FOUND: (error: AllErrors & {
-        family: "MODEL",
-        code: "DEFAULT_ITEM_NOT_FOUND"
-    }) => string
+    ErrorCode_MODEL__DEFAULT_ITEM_NOT_FOUND: (error: Errors["MODEL"]["DEFAULT_ITEM_NOT_FOUND"]) => string
 
-    ErrorCode_MODEL__ID_PROPERTY_NOT_FOUND: (error: AllErrors & {
-        family: "MODEL",
-        code: "ID_PROPERTY_NOT_FOUND"
-    }) => string
+    ErrorCode_MODEL__ID_PROPERTY_NOT_FOUND: (error: Errors["MODEL"]["ID_PROPERTY_NOT_FOUND"]) => string
 
-    ErrorCode_GENERATE__MODEL_NOT_FOUND: (error: AllErrors & {
-        family: "GENERATE",
-        code: "MODEL_NOT_FOUND"
-    }) => string
+    ErrorCode_GENERATE__MODEL_NOT_FOUND: (error: Errors["GENERATE"]["MODEL_NOT_FOUND"]) => string
 
-    ErrorCode_GENERATE__ENTITY_NOT_FOUND: (error: AllErrors & {
-        family: "GENERATE",
-        code: "ENTITY_NOT_FOUND"
-    }) => string
+    ErrorCode_GENERATE__ENTITY_NOT_FOUND: (error: Errors["GENERATE"]["ENTITY_NOT_FOUND"]) => string
 
-    ErrorCode_GENERATE__INDEX_COLUMN_NOT_FOUND_IN_TABLE: (error: AllErrors & {
-        family: "GENERATE",
-        code: "INDEX_COLUMN_NOT_FOUND_IN_TABLE"
-    }) => string
+    ErrorCode_GENERATE__INDEX_COLUMN_NOT_FOUND_IN_TABLE: (error: Errors["GENERATE"]["INDEX_COLUMN_NOT_FOUND_IN_TABLE"]) => string
 
-    ErrorCode_GENERATE__DEFAULT_IMPORT_MORE_THAN_ONE: (error: AllErrors & {
-        family: "GENERATE",
-        code: "DEFAULT_IMPORT_MORE_THAN_ONE"
-    }) => string
+    ErrorCode_GENERATE__DEFAULT_IMPORT_MORE_THAN_ONE: (error: Errors["GENERATE"]["DEFAULT_IMPORT_MORE_THAN_ONE"]) => string
 
-    ErrorCode_LOAD_FROM_MODEL__INDEX_COLUMN_NOT_FOUND: (error: AllErrors & {
-        family: "LOAD_FROM_MODEL",
-        code: "INDEX_COLUMN_NOT_FOUND"
-    }) => string
+    ErrorCode_LOAD_FROM_MODEL__INDEX_COLUMN_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["INDEX_COLUMN_NOT_FOUND"]) => string
 
-    ErrorCode_LOAD_FROM_MODEL__ASSOCIATION_SOURCE_TABLE_NOT_FOUND: (error: AllErrors & {
-        family: "LOAD_FROM_MODEL",
-        code: "ASSOCIATION_SOURCE_TABLE_NOT_FOUND"
-    }) => string
+    ErrorCode_LOAD_FROM_MODEL__ASSOCIATION_SOURCE_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["ASSOCIATION_SOURCE_TABLE_NOT_FOUND"]) => string
 
-    ErrorCode_LOAD_FROM_MODEL__ASSOCIATION_TARGET_TABLE_NOT_FOUND: (error: AllErrors & {
-        family: "LOAD_FROM_MODEL",
-        code: "ASSOCIATION_TARGET_TABLE_NOT_FOUND"
-    }) => string
+    ErrorCode_LOAD_FROM_MODEL__ASSOCIATION_TARGET_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["ASSOCIATION_TARGET_TABLE_NOT_FOUND"]) => string
 
-    ErrorCode_LOAD_FROM_MODEL__ASSOCIATION_SOURCE_COLUMN_NOT_FOUND: (error: AllErrors & {
-        family: "LOAD_FROM_MODEL",
-        code: "ASSOCIATION_SOURCE_COLUMN_NOT_FOUND"
-    }) => string
+    ErrorCode_LOAD_FROM_MODEL__ASSOCIATION_SOURCE_COLUMN_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["ASSOCIATION_SOURCE_COLUMN_NOT_FOUND"]) => string
 
-    ErrorCode_LOAD_FROM_MODEL__ASSOCIATION_TARGET_COLUMN_NOT_FOUND: (error: AllErrors & {
-        family: "LOAD_FROM_MODEL",
-        code: "ASSOCIATION_TARGET_COLUMN_NOT_FOUND"
-    }) => string
+    ErrorCode_LOAD_FROM_MODEL__ASSOCIATION_TARGET_COLUMN_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["ASSOCIATION_TARGET_COLUMN_NOT_FOUND"]) => string
 
-    ErrorCode_LOAD_FROM_MODEL__TABLE_NOT_FOUND: (error: AllErrors & {
-        family: "LOAD_FROM_MODEL",
-        code: "TABLE_NOT_FOUND"
-    }) => string
+    ErrorCode_LOAD_FROM_MODEL__TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["TABLE_NOT_FOUND"]) => string
 
-    ErrorCode_LOAD_FROM_MODEL__TABLE_SUPER_TABLE_NOT_FOUND: (error: AllErrors & {
-        family: "LOAD_FROM_MODEL",
-        code: "TABLE_SUPER_TABLE_NOT_FOUND"
-    }) => string
+    ErrorCode_LOAD_FROM_MODEL__TABLE_SUPER_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["TABLE_SUPER_TABLE_NOT_FOUND"]) => string
 
-    ErrorCode_LOAD_FROM_MODEL__INDEXES_TABLE_NOT_FOUND: (error: AllErrors & {
-        family: "LOAD_FROM_MODEL",
-        code: "INDEXES_TABLE_NOT_FOUND"
-    }) => string
+    ErrorCode_LOAD_FROM_MODEL__INDEXES_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["INDEXES_TABLE_NOT_FOUND"]) => string
 
-    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_COLUMN_REFERENCES_CANNOT_BE_EMPTY: (error: AllErrors & {
-        family: "LOAD_FROM_DATA_SOURCE",
-        code: "ASSOCIATION_COLUMN_REFERENCES_CANNOT_BE_EMPTY"
-    }) => string
+    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_COLUMN_REFERENCES_CANNOT_BE_EMPTY: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_COLUMN_REFERENCES_CANNOT_BE_EMPTY"]) => string
 
-    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_SOURCE_TABLE_NOT_MATCH: (error: AllErrors & {
-        family: "LOAD_FROM_DATA_SOURCE",
-        code: "ASSOCIATION_SOURCE_TABLE_NOT_MATCH"
-    }) => string
+    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_SOURCE_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_SOURCE_TABLE_NOT_MATCH"]) => string
 
-    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_TARGET_TABLE_NOT_MATCH: (error: AllErrors & {
-        family: "LOAD_FROM_DATA_SOURCE",
-        code: "ASSOCIATION_TARGET_TABLE_NOT_MATCH"
-    }) => string
+    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_TARGET_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_TARGET_TABLE_NOT_MATCH"]) => string
 
-    ErrorCode_LOAD_FROM_DATA_SOURCE__INDEX_COLUMN_TABLE_NOT_MATCH: (error: AllErrors & {
-        family: "LOAD_FROM_DATA_SOURCE",
-        code: "INDEX_COLUMN_TABLE_NOT_MATCH"
-    }) => string
+    ErrorCode_LOAD_FROM_DATA_SOURCE__INDEX_COLUMN_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["INDEX_COLUMN_TABLE_NOT_MATCH"]) => string
 
-    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_COLUMN_REFERENCE_TABLE_NOT_FOUND: (error: AllErrors & {
-        family: "LOAD_FROM_DATA_SOURCE",
-        code: "ASSOCIATION_COLUMN_REFERENCE_TABLE_NOT_FOUND"
-    }) => string
+    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_COLUMN_REFERENCE_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_COLUMN_REFERENCE_TABLE_NOT_FOUND"]) => string
 
-    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_COLUMN_REFERENCE_COLUMN_NOT_FOUND: (error: AllErrors & {
-        family: "LOAD_FROM_DATA_SOURCE",
-        code: "ASSOCIATION_COLUMN_REFERENCE_COLUMN_NOT_FOUND"
-    }) => string
+    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_COLUMN_REFERENCE_COLUMN_NOT_FOUND: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_COLUMN_REFERENCE_COLUMN_NOT_FOUND"]) => string
 
     MESSAGE_save_success: string
     MESSAGE_save_fail: string

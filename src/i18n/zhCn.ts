@@ -1,6 +1,7 @@
-import {MainLocale} from "@/i18n/index.ts";
-import {DeepReadonly} from "vue";
-import {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static";
+import type {MainLocale} from "@/i18n/index.ts"
+import type {DeepReadonly} from "vue"
+import type {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static"
+import {defaultPlaceholder, Errors, formatIdName} from "@/api/handleError.ts"
 
 export const mainLocaleZhCn: MainLocale = {
     BUTTON_edit: "编辑",
@@ -12,6 +13,184 @@ export const mainLocaleZhCn: MainLocale = {
     BUTTON_load: "导入",
     BUTTON_export: "导出",
     BUTTON_test: "测试",
+
+    ErrorCode_CONVERT__MODEL_NOT_FOUND: (error: Errors["CONVERT"]["MODEL_NOT_FOUND"]) =>
+        `【表转换实体错误】模型【${error.modelId}】未找到`,
+
+    ErrorCode_CONVERT__OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN: (error: Errors["CONVERT"]["OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN"]) =>
+        `【表转换实体错误】
+  对外关联【${formatIdName(error.association)}】无法找到源列
+  源表【${formatIdName(error.sourceTable)}】 - 源列【${formatIdName(error.sourceColumn)} !未找到!】 -> 
+  目标表【${formatIdName(error.targetTable)}】 - 目标列【${formatIdName(error.targetColumn)}】`,
+
+    ErrorCode_CONVERT__IN_ASSOCIATION_CANNOT_FOUNT_TARGET_COLUMN: (error: Errors["CONVERT"]["IN_ASSOCIATION_CANNOT_FOUNT_TARGET_COLUMN"]) =>
+        `【表转换实体错误】
+  对内关联【${formatIdName(error.association)}】无法找到目标列
+  源表【${formatIdName(error.sourceTable)}】 - 源列【${formatIdName(error.sourceColumn)}】 -> 
+  目标表【${formatIdName(error.targetTable)}】 - 目标列【${formatIdName(error.targetColumn)} !未找到!】`,
+
+    ErrorCode_CONVERT__ASSOCIATION_CANNOT_BE_ONE_TO_MANY: (error: Errors["CONVERT"]["ASSOCIATION_CANNOT_BE_ONE_TO_MANY"]) =>
+        `【表转换实体错误】
+  关联【${formatIdName(error.association)}】不能为 !一对多!，请调整关联类型
+  源表【${formatIdName(error.sourceTable)}】 - 源列【${formatIdName(error.sourceColumn)}】 -> 
+  目标表【${formatIdName(error.targetTable)}】 - 目标列【${formatIdName(error.targetColumn)}】`,
+
+    ErrorCode_CONVERT__MULTIPLE_COLUMNS_NOT_SUPPORTED: (error: Errors["CONVERT"]["MULTIPLE_COLUMNS_NOT_SUPPORTED"]) =>
+        `【表转换实体错误】
+  关联【${formatIdName(error.association)}】不可为多列
+  源表【${formatIdName(error.sourceTable)}】 - 源列${error.sourceColumns.map(it => `【${formatIdName(it)}】`).join(", ")} -> 
+  目标表【${formatIdName(error.targetTable)}】 - 目标列${error.targetColumns.map(it => `【${formatIdName(it)}】`).join(", ")}`,
+
+    ErrorCode_CONVERT__ID_VIEW_MULTIPLE_PK_NOT_SUPPORTED: (error: Errors["CONVERT"]["ID_VIEW_MULTIPLE_PK_NOT_SUPPORTED"]) =>
+        `【表转换实体错误】
+  ID 视图暂时不支持多个主键
+  IdView【${error.idViewProperty}】
+  基础属性【${error.baseProperty}】
+  关联属性【${error.associationProperty}】
+  类型表【${formatIdName(error.typeTable)}】
+  类型表主键列ID【${error.typeTablePkColumnIds.join(', ')}】`,
+
+    ErrorCode_CONVERT__OUT_ASSOCIATION_CANNOT_FOUND_SOURCE_BASE_PROPERTY: (error: Errors["CONVERT"]["OUT_ASSOCIATION_CANNOT_FOUND_SOURCE_BASE_PROPERTY"]) =>
+        `【表转换实体错误】
+  对外关联【${formatIdName(error.association)}】无法找到源基础属性
+  源表【${formatIdName(error.sourceTable)}】 - 源列【${formatIdName(error.sourceColumn)}】 ->
+  目标表【${formatIdName(error.targetTable)}】 - 目标列【${formatIdName(error.targetColumn)}】`,
+
+    ErrorCode_CONVERT__IN_ASSOCIATION_CANNOT_FOUND_TARGET_BASE_PROPERTY: (error: Errors["CONVERT"]["IN_ASSOCIATION_CANNOT_FOUND_TARGET_BASE_PROPERTY"]) =>
+        `【表转换实体错误】
+  对内关联【${formatIdName(error.association)}】无法找到目标基础属性
+  源表【${formatIdName(error.sourceTable)}】 - 源列【${formatIdName(error.sourceColumn)}】 ->
+  目标表【${formatIdName(error.targetTable)}】 - 目标列【${formatIdName(error.targetColumn)}】`,
+
+    ErrorCode_CONVERT__PROPERTY_NAME_DUPLICATE: (error: Errors["CONVERT"]["PROPERTY_NAME_DUPLICATE"]) =>
+        `【表转换实体错误】
+  属性名称重复
+  表【${formatIdName(error.table)}】
+  重复名称【${error.duplicateName}】
+  属性【${error.properties.map(prop => `${prop}`).join(', ')}】`,
+
+    ErrorCode_CONVERT__SUPER_TABLE_SUPER_ENTITY_NOT_MATCH: (error: Errors["CONVERT"]["SUPER_TABLE_SUPER_ENTITY_NOT_MATCH"]) =>
+        `【表转换实体错误】
+  上级表与上级实体不匹配
+  表【${formatIdName(error.table)}】
+  上级表ID列表【${error.superTableIds.join(', ')}】
+  上级实体ID列表【${error.superEntityIds.join(', ')}】`,
+
+    ErrorCode_COLUMN_TYPE_MISS_REQUIRED_PARAM: (error: Errors["COLUMN_TYPE"]["MISS_REQUIRED_PARAM"]) =>
+        `【类类型设置错误】
+  缺少必需参数
+  列【${error.column != undefined ? formatIdName(error.column) : error.columnName != undefined ? error.columnName : defaultPlaceholder}】
+  JDBC Code【${error.typeCode}】
+  必需参数【${error.requiredParam}】`,
+
+    ErrorCode_DATA_SOURCE__CONNECT_FAIL: (error: Errors["DATA_SOURCE"]["CONNECT_FAIL"]) =>
+        `数据源连接失败
+  异常信息【${error.exceptionMessage}】`,
+
+    ErrorCode_MODEL__DEFAULT_ITEM_NOT_FOUND: (error: Errors["MODEL"]["DEFAULT_ITEM_NOT_FOUND"]) =>
+        `【枚举默认项不存在】
+  枚举【${formatIdName(error.enum)}】`,
+
+    ErrorCode_MODEL__ID_PROPERTY_NOT_FOUND: (error: Errors["MODEL"]["ID_PROPERTY_NOT_FOUND"]) =>
+        `【实体ID属性未找到】
+  实体【${formatIdName(error.entity)}】`,
+
+    ErrorCode_GENERATE__MODEL_NOT_FOUND: (error: Errors["GENERATE"]["MODEL_NOT_FOUND"]) =>
+        `【生成错误】
+  模型未找到
+  模型ID【${error.modelId}】`,
+
+    ErrorCode_GENERATE__ENTITY_NOT_FOUND: (error: Errors["GENERATE"]["ENTITY_NOT_FOUND"]) =>
+        `【生成错误】
+  实体未找到
+  实体ID【${error.entityId}】`,
+
+    ErrorCode_GENERATE__INDEX_COLUMN_NOT_FOUND_IN_TABLE: (error: Errors["GENERATE"]["INDEX_COLUMN_NOT_FOUND_IN_TABLE"]) =>
+        `【生成错误】
+  索引列在表中未找到
+  索引【${formatIdName(error.index)}】
+  索引列ID列表【${error.indexColumnIds.join(', ')}】
+  表【${formatIdName(error.table)}】
+  表列【${error.tableColumns.map(col => col.name).join(', ')}】`,
+
+    ErrorCode_GENERATE__DEFAULT_IMPORT_MORE_THAN_ONE: (error: Errors["GENERATE"]["DEFAULT_IMPORT_MORE_THAN_ONE"]) =>
+        `【生成错误】
+  vue default import 同路径存在多于一个导入
+  路径【${error.path}】
+  导入项【${error.importItems.join(', ')}】`,
+
+    ErrorCode_LOAD_FROM_MODEL__INDEX_COLUMN_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["INDEX_COLUMN_NOT_FOUND"]) =>
+        `【模型导入错误】
+  索引对应列未找到
+  索引【${error.indexName}】
+  索引使用列【${error.indexColumnNames.join(', ')}】
+  表【${formatIdName(error.table)}】
+  未找到列名称【${error.notFoundColumnName}】`,
+
+    ErrorCode_LOAD_FROM_MODEL__ASSOCIATION_SOURCE_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["ASSOCIATION_SOURCE_TABLE_NOT_FOUND"]) =>
+        `【模型导入错误】
+  关联【${error.associationName}】源表未找到
+  源表【${error.sourceTableName} !未找到!】 - 源列${error.sourceColumnNames.map(it => `【${it}】`).join(', ')} ->
+  目标表【${error.targetTableName}】 - 目标列${error.targetColumnNames.map(it => `【${it}】`).join(', ')}`,
+
+    ErrorCode_LOAD_FROM_MODEL__ASSOCIATION_TARGET_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["ASSOCIATION_TARGET_TABLE_NOT_FOUND"]) =>
+        `【模型导入错误】
+  关联【${error.associationName}】目标表未找到
+  源表【${error.sourceTableName}】 - 源列${error.sourceColumnNames.map(it => `【${it}】`).join(', ')} ->
+  目标表【${error.targetTableName} !未找到!】 - 目标列${error.targetColumnNames.map(it => `【${it}】`).join(', ')}`,
+
+    ErrorCode_LOAD_FROM_MODEL__ASSOCIATION_SOURCE_COLUMN_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["ASSOCIATION_SOURCE_COLUMN_NOT_FOUND"]) =>
+        `【模型导入错误】
+  关联【${error.associationName}】源列未找到
+  源表【${error.sourceTableName}】 - 源列${error.sourceColumnNames.map(it => `【${it}${it === error.notFoundSourceColumnName ? ' !未找到!' : ''}】`).join(', ')} ->
+  目标表【${error.targetTableName}】 - 目标列${error.targetColumnNames.map(it => `【${it}】`).join(', ')}`,
+
+    ErrorCode_LOAD_FROM_MODEL__ASSOCIATION_TARGET_COLUMN_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["ASSOCIATION_TARGET_COLUMN_NOT_FOUND"]) =>
+        `【模型导入错误】
+  关联【${error.associationName}】目标列未找到
+  源表【${error.sourceTableName}】 - 源列${error.sourceColumnNames.map(it => `【${it}】`).join(', ')} ->
+  目标表【${error.targetTableName}】 - 目标列${error.targetColumnNames.map(it => `【${it}${it === error.notFoundTargetColumnName ? ' !未找到!' : ''}】`).join(', ')}`,
+
+    ErrorCode_LOAD_FROM_MODEL__TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["TABLE_NOT_FOUND"]) =>
+        `【模型导入错误】
+  表【${error.tableName}】未找到`,
+
+    ErrorCode_LOAD_FROM_MODEL__TABLE_SUPER_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["TABLE_SUPER_TABLE_NOT_FOUND"]) =>
+        `【模型导入错误】
+  表【${formatIdName(error.table)}】的上级表【${error.notFoundSuperTableName}】未找到
+  表目前的上级表${error.superTableNames.map(it => `【${it}${it === error.notFoundSuperTableName ? ' !未找到!' : ''}】`).join(', ')}`,
+
+    ErrorCode_LOAD_FROM_MODEL__INDEXES_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["INDEXES_TABLE_NOT_FOUND"]) =>
+        `【模型导入错误】
+  索引【${error.indexNames.join(', ')}】原始表【${error.notFoundTableName}】未找到`,
+
+    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_COLUMN_REFERENCES_CANNOT_BE_EMPTY: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_COLUMN_REFERENCES_CANNOT_BE_EMPTY"]) =>
+        `【从数据源导入错误】
+  外键【${error.foreignKeyName}】关联列引用不能为空`,
+
+    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_SOURCE_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_SOURCE_TABLE_NOT_MATCH"]) =>
+        `【从数据源导入错误】
+  外键【${error.foreignKeyName}】引用的源表不一致
+${error.columnToSourceTables.map(item => `  列【${item.column}】 -> 表【${item.table}】`).join('\n')}`,
+
+    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_TARGET_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_TARGET_TABLE_NOT_MATCH"]) =>
+        `【从数据源导入错误】
+  外键【${error.foreignKeyName}】引用的目标表不一致
+${error.columnToTargetTables.map(item => `  列【${item.column}】 -> 表【${item.table}】`).join('\n')}`,
+
+    ErrorCode_LOAD_FROM_DATA_SOURCE__INDEX_COLUMN_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["INDEX_COLUMN_TABLE_NOT_MATCH"]) =>
+        `【从数据源导入错误】
+  索引【${error.indexName}】中的列引用的表不一致
+${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${item.table}】`).join('\n')}`,
+
+    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_COLUMN_REFERENCE_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_COLUMN_REFERENCE_TABLE_NOT_FOUND"]) =>
+        `【从数据源导入错误】
+  外键【${error.foreignKeyName}】引用表【${error.tableName}】未找到`,
+
+    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_COLUMN_REFERENCE_COLUMN_NOT_FOUND: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_COLUMN_REFERENCE_COLUMN_NOT_FOUND"]) =>
+        `【从数据源导入错误】
+  外键【${error.foreignKeyName}】引用列【${error.tableName}.${error.columnName}】未找到`,
+
 
     MESSAGE_save_success: '保存成功',
     MESSAGE_save_fail: '保存失败',
@@ -110,13 +289,13 @@ export const mainLocaleZhCn: MainLocale = {
     MESSAGE_ModelEditorStore_associationEditFail_edgeNotFound: (id: string) => `关联编辑失败，边【${id}】找不到`,
 
     MESSAGE_ModelEditorPage_modelNotFound: "模型未找到",
-    MESSAGE_ModelEditorPage_modelLoadFail: "模型加载失败",
+    MESSAGE_ModelEditorPage_modelLoadFail: "模型导入失败",
     CONFIRM_ModelEditorPage_modelLoad_entireSchema: "您确定要加载整个 Schema？",
 
     MESSAGE_modelFileOperations_importModel_validateFail: "模型导入加载校验失败",
 
     LABEL_ModelEditorMainMenu_loadFromDataSource: "从数据源加载",
-    LABEL_ModelEditorMainMenu_loadFromModel: "从模型加载",
+    LABEL_ModelEditorMainMenu_loadFromModel: "从模型导入",
     LABEL_ModelEditorMainMenu_tableTitle: "表",
     LABEL_ModelEditorMainMenu_associationTitle: "关联",
     LABEL_ModelEditorMainMenu_enumTitle: "枚举",

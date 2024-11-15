@@ -1,6 +1,8 @@
-import {MainLocale} from "@/i18n/index.ts";
-import {DeepReadonly} from "vue";
-import {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static";
+import type {MainLocale} from "@/i18n/index.ts"
+import type {DeepReadonly} from "vue"
+import type {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static"
+import type {Errors} from "@/api/handleError.ts";
+import {defaultPlaceholder, formatIdName} from "@/api/handleError.ts";
 
 export const mainLocaleEn: MainLocale = {
     BUTTON_edit: "Edit",
@@ -12,6 +14,183 @@ export const mainLocaleEn: MainLocale = {
     BUTTON_load: "Load",
     BUTTON_export: "Export",
     BUTTON_test: "Test",
+
+    ErrorCode_CONVERT__MODEL_NOT_FOUND: (error: Errors["CONVERT"]["MODEL_NOT_FOUND"]) =>
+        `【Model not found in table conversion】Model 【${error.modelId}】 not found`,
+
+    ErrorCode_CONVERT__OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN: (error: Errors["CONVERT"]["OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN"]) =>
+        `【Table conversion entity error】
+  Outgoing association 【${formatIdName(error.association)}】 cannot find source column
+  Source table 【${formatIdName(error.sourceTable)}】 - Source column 【${formatIdName(error.sourceColumn)} !not found!】 -> 
+  Target table 【${formatIdName(error.targetTable)}】 - Target column 【${formatIdName(error.targetColumn)}】`,
+
+    ErrorCode_CONVERT__IN_ASSOCIATION_CANNOT_FOUNT_TARGET_COLUMN: (error: Errors["CONVERT"]["IN_ASSOCIATION_CANNOT_FOUNT_TARGET_COLUMN"]) =>
+        `【Table conversion entity error】
+  Incoming association 【${formatIdName(error.association)}】 cannot find target column
+  Source table 【${formatIdName(error.sourceTable)}】 - Source column 【${formatIdName(error.sourceColumn)}】 -> 
+  Target table 【${formatIdName(error.targetTable)}】 - Target column 【${formatIdName(error.targetColumn)} !not found!】`,
+
+    ErrorCode_CONVERT__ASSOCIATION_CANNOT_BE_ONE_TO_MANY: (error: Errors["CONVERT"]["ASSOCIATION_CANNOT_BE_ONE_TO_MANY"]) =>
+        `【Table conversion entity error】
+  Association 【${formatIdName(error.association)}】 cannot be !one-to-many!, please adjust the association type
+  Source table 【${formatIdName(error.sourceTable)}】 - Source column 【${formatIdName(error.sourceColumn)}】 -> 
+  Target table 【${formatIdName(error.targetTable)}】 - Target column 【${formatIdName(error.targetColumn)}】`,
+
+    ErrorCode_CONVERT__MULTIPLE_COLUMNS_NOT_SUPPORTED: (error: Errors["CONVERT"]["MULTIPLE_COLUMNS_NOT_SUPPORTED"]) =>
+        `【Table conversion entity error】
+  Association 【${formatIdName(error.association)}】 does not support multiple columns
+  Source table 【${formatIdName(error.sourceTable)}】 - Source columns ${error.sourceColumns.map(it => `【${formatIdName(it)}】`).join(", ")} -> 
+  Target table 【${formatIdName(error.targetTable)}】 - Target columns ${error.targetColumns.map(it => `【${formatIdName(it)}】`).join(", ")}`,
+
+    ErrorCode_CONVERT__ID_VIEW_MULTIPLE_PK_NOT_SUPPORTED: (error: Errors["CONVERT"]["ID_VIEW_MULTIPLE_PK_NOT_SUPPORTED"]) =>
+        `【Table conversion entity error】
+  ID view does not support multiple primary keys
+  IdView 【${error.idViewProperty}】
+  Base property 【${error.baseProperty}】
+  Association property 【${error.associationProperty}】
+  Type table 【${formatIdName(error.typeTable)}】
+  Type table primary key column IDs 【${error.typeTablePkColumnIds.join(', ')}】`,
+
+    ErrorCode_CONVERT__OUT_ASSOCIATION_CANNOT_FOUND_SOURCE_BASE_PROPERTY: (error: Errors["CONVERT"]["OUT_ASSOCIATION_CANNOT_FOUND_SOURCE_BASE_PROPERTY"]) =>
+        `【Table conversion entity error】
+  Outgoing association 【${formatIdName(error.association)}】 cannot find source base property
+  Source table 【${formatIdName(error.sourceTable)}】 - Source column 【${formatIdName(error.sourceColumn)}】 ->
+  Target table 【${formatIdName(error.targetTable)}】 - Target column 【${formatIdName(error.targetColumn)}】`,
+
+    ErrorCode_CONVERT__IN_ASSOCIATION_CANNOT_FOUND_TARGET_BASE_PROPERTY: (error: Errors["CONVERT"]["IN_ASSOCIATION_CANNOT_FOUND_TARGET_BASE_PROPERTY"]) =>
+        `【Table conversion entity error】
+  Incoming association 【${formatIdName(error.association)}】 cannot find target base property
+  Source table 【${formatIdName(error.sourceTable)}】 - Source column 【${formatIdName(error.sourceColumn)}】 ->
+  Target table 【${formatIdName(error.targetTable)}】 - Target column 【${formatIdName(error.targetColumn)}】`,
+
+    ErrorCode_CONVERT__PROPERTY_NAME_DUPLICATE: (error: Errors["CONVERT"]["PROPERTY_NAME_DUPLICATE"]) =>
+        `【Table conversion entity error】
+  Property name duplicate
+  Table 【${formatIdName(error.table)}】
+  Duplicate name 【${error.duplicateName}】
+  Properties 【${error.properties.map(prop => `${prop}`).join(', ')}】`,
+
+    ErrorCode_CONVERT__SUPER_TABLE_SUPER_ENTITY_NOT_MATCH: (error: Errors["CONVERT"]["SUPER_TABLE_SUPER_ENTITY_NOT_MATCH"]) =>
+        `【Table conversion entity error】
+  Super table and super entity do not match
+  Table 【${formatIdName(error.table)}】
+  Super table ID list 【${error.superTableIds.join(', ')}】
+  Super entity ID list 【${error.superEntityIds.join(', ')}】`,
+
+    ErrorCode_COLUMN_TYPE_MISS_REQUIRED_PARAM: (error: Errors["COLUMN_TYPE"]["MISS_REQUIRED_PARAM"]) =>
+        `【Class type setting error】
+  Missing required parameter
+  Column 【${error.column != undefined ? formatIdName(error.column) : error.columnName != undefined ? error.columnName : defaultPlaceholder}】
+  JDBC Code 【${error.typeCode}】
+  Required parameter 【${error.requiredParam}】`,
+
+    ErrorCode_DATA_SOURCE__CONNECT_FAIL: (error: Errors["DATA_SOURCE"]["CONNECT_FAIL"]) =>
+        `Data source connection failed
+  Exception message 【${error.exceptionMessage}】`,
+
+    ErrorCode_MODEL__DEFAULT_ITEM_NOT_FOUND: (error: Errors["MODEL"]["DEFAULT_ITEM_NOT_FOUND"]) =>
+        `【Default item of enum not found】
+  Enum 【${formatIdName(error.enum)}】`,
+
+    ErrorCode_MODEL__ID_PROPERTY_NOT_FOUND: (error: Errors["MODEL"]["ID_PROPERTY_NOT_FOUND"]) =>
+        `【Entity ID property not found】
+  Entity 【${formatIdName(error.entity)}】`,
+
+    ErrorCode_GENERATE__MODEL_NOT_FOUND: (error: Errors["GENERATE"]["MODEL_NOT_FOUND"]) =>
+        `【Generation error】
+  Model not found
+  Model ID 【${error.modelId}】`,
+
+    ErrorCode_GENERATE__ENTITY_NOT_FOUND: (error: Errors["GENERATE"]["ENTITY_NOT_FOUND"]) =>
+        `【Generation error】
+  Entity not found
+  Entity ID 【${error.entityId}】`,
+
+    ErrorCode_GENERATE__INDEX_COLUMN_NOT_FOUND_IN_TABLE: (error: Errors["GENERATE"]["INDEX_COLUMN_NOT_FOUND_IN_TABLE"]) =>
+        `【Generation error】
+  Index column not found in table
+  Index 【${formatIdName(error.index)}】
+  Index column ID list 【${error.indexColumnIds.join(', ')}】
+  Table 【${formatIdName(error.table)}】
+  Table columns 【${error.tableColumns.map(col => col.name).join(', ')}】`,
+
+    ErrorCode_GENERATE__DEFAULT_IMPORT_MORE_THAN_ONE: (error: Errors["GENERATE"]["DEFAULT_IMPORT_MORE_THAN_ONE"]) =>
+        `【Generation error】
+  More than one default import in the same path for vue
+  Path 【${error.path}】
+  Import items 【${error.importItems.join(', ')}】`,
+
+    ErrorCode_LOAD_FROM_MODEL__INDEX_COLUMN_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["INDEX_COLUMN_NOT_FOUND"]) =>
+        `【Model import error】
+  Index corresponding column not found
+  Index 【${error.indexName}】
+  Index used columns 【${error.indexColumnNames.join(', ')}】
+  Table 【${formatIdName(error.table)}】
+  Not found column name 【${error.notFoundColumnName}】`,
+
+    ErrorCode_LOAD_FROM_MODEL__ASSOCIATION_SOURCE_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["ASSOCIATION_SOURCE_TABLE_NOT_FOUND"]) =>
+        `【Model import error】
+  Association 【${error.associationName}】 source table not found
+  Source table 【${error.sourceTableName} !not found!】 - Source columns ${error.sourceColumnNames.map(it => `【${it}】`).join(', ')} ->
+  Target table 【${error.targetTableName}】 - Target columns ${error.targetColumnNames.map(it => `【${it}】`).join(', ')}`,
+
+    ErrorCode_LOAD_FROM_MODEL__ASSOCIATION_TARGET_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["ASSOCIATION_TARGET_TABLE_NOT_FOUND"]) =>
+        `【Model import error】
+  Association 【${error.associationName}】 target table not found
+  Source table 【${error.sourceTableName}】 - Source columns ${error.sourceColumnNames.map(it => `【${it}】`).join(', ')} ->
+  Target table 【${error.targetTableName} !not found!】 - Target columns ${error.targetColumnNames.map(it => `【${it}】`).join(', ')}`,
+
+    ErrorCode_LOAD_FROM_MODEL__ASSOCIATION_SOURCE_COLUMN_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["ASSOCIATION_SOURCE_COLUMN_NOT_FOUND"]) =>
+        `【Model import error】
+  Association 【${error.associationName}】 source column not found
+  Source table 【${error.sourceTableName}】 - Source columns ${error.sourceColumnNames.map(it => `【${it}${it === error.notFoundSourceColumnName ? ' !not found!' : ''}】`).join(', ')} ->
+  Target table 【${error.targetTableName}】 - Target columns ${error.targetColumnNames.map(it => `【${it}】`).join(', ')}`,
+
+    ErrorCode_LOAD_FROM_MODEL__ASSOCIATION_TARGET_COLUMN_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["ASSOCIATION_TARGET_COLUMN_NOT_FOUND"]) =>
+        `【Model import error】
+  Association 【${error.associationName}】 target column not found
+  Source table 【${error.sourceTableName}】 - Source columns ${error.sourceColumnNames.map(it => `【${it}】`).join(', ')} ->
+  Target table 【${error.targetTableName}】 - Target columns ${error.targetColumnNames.map(it => `【${it}${it === error.notFoundTargetColumnName ? ' !not found!' : ''}】`).join(', ')}`,
+
+    ErrorCode_LOAD_FROM_MODEL__TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["TABLE_NOT_FOUND"]) =>
+        `【Model import error】
+  Table 【${error.tableName}】 not found`,
+
+    ErrorCode_LOAD_FROM_MODEL__TABLE_SUPER_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["TABLE_SUPER_TABLE_NOT_FOUND"]) =>
+        `【Model import error】
+  Super table 【${error.notFoundSuperTableName}】 of table 【${formatIdName(error.table)}】 not found
+  Current super tables of the table ${error.superTableNames.map(it => `【${it}${it === error.notFoundSuperTableName ? ' !not found!' : ''}】`).join(', ')}`,
+
+    ErrorCode_LOAD_FROM_MODEL__INDEXES_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["INDEXES_TABLE_NOT_FOUND"]) =>
+        `【Model import error】
+  Original table 【${error.notFoundTableName}】 of indexes 【${error.indexNames.join(', ')}】 not found`,
+
+    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_COLUMN_REFERENCES_CANNOT_BE_EMPTY: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_COLUMN_REFERENCES_CANNOT_BE_EMPTY"]) =>
+        `【Data source import error】
+  Foreign key 【${error.foreignKeyName}】 column references cannot be empty`,
+
+    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_SOURCE_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_SOURCE_TABLE_NOT_MATCH"]) =>
+        `【Data source import error】
+  Foreign key 【${error.foreignKeyName}】 referenced source table does not match
+${error.columnToSourceTables.map(item => `  Column 【${item.column}】 -> Table 【${item.table}】`).join('\n')}`,
+
+    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_TARGET_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_TARGET_TABLE_NOT_MATCH"]) =>
+        `【Data source import error】
+  Foreign key 【${error.foreignKeyName}】 referenced target table does not match
+${error.columnToTargetTables.map(item => `  Column 【${item.column}】 -> Table 【${item.table}】`).join('\n')}`,
+
+    ErrorCode_LOAD_FROM_DATA_SOURCE__INDEX_COLUMN_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["INDEX_COLUMN_TABLE_NOT_MATCH"]) =>
+        `【Data source import error】
+  Index 【${error.indexName}】 column references do not match
+${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 【${item.table}】`).join('\n')}`,
+
+    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_COLUMN_REFERENCE_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_COLUMN_REFERENCE_TABLE_NOT_FOUND"]) =>
+        `【Data source import error】
+  Foreign key 【${error.foreignKeyName}】 referenced table 【${error.tableName}】 not found`,
+
+    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_COLUMN_REFERENCE_COLUMN_NOT_FOUND: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_COLUMN_REFERENCE_COLUMN_NOT_FOUND"]) =>
+        `【Data source import error】
+  Foreign key 【${error.foreignKeyName}】 referenced column 【${error.tableName}.${error.columnName}】 not found`,
 
     MESSAGE_save_success: 'Save Successful',
     MESSAGE_save_fail: 'Save Failed',

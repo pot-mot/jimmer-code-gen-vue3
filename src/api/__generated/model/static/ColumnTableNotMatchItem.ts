@@ -1,7 +1,6 @@
 import type {IdName} from './';
 
-export interface IndexColumnTableNotMatchItem {
-    indexName: string;
+export interface ColumnTableNotMatchItem {
     column: IdName;
     table: IdName;
 }

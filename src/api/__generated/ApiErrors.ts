@@ -1,9 +1,8 @@
 import type {
+    ColumnTableNotMatchItem, 
     IdName, 
     IdNullableName, 
-    IndexColumnTableNotMatchItem, 
-    PropertyNameDuplicateData, 
-    PropertyTableNotMatchItem
+    PropertyNameDuplicateData
 } from './model/static/';
 
 export type AllErrors = {
@@ -69,11 +68,13 @@ export type AllErrors = {
     } | {
         family: 'CONVERT', 
         code: 'PROPERTY_NAME_DUPLICATE', 
+        table: IdName, 
         duplicateName: string, 
         properties: Array<PropertyNameDuplicateData>
     } | {
         family: 'CONVERT', 
         code: 'SUPER_TABLE_SUPER_ENTITY_NOT_MATCH', 
+        table: IdName, 
         superTableIds: Array<number>, 
         superEntityIds: Array<number>
     } | {
@@ -179,24 +180,26 @@ export type AllErrors = {
         family: 'LOAD_FROM_DATA_SOURCE', 
         code: 'ASSOCIATION_SOURCE_TABLE_NOT_MATCH', 
         foreignKeyName: string, 
-        propertyToSourceTables: Array<PropertyTableNotMatchItem>
+        columnToSourceTables: Array<ColumnTableNotMatchItem>
     } | {
         family: 'LOAD_FROM_DATA_SOURCE', 
         code: 'ASSOCIATION_TARGET_TABLE_NOT_MATCH', 
         foreignKeyName: string, 
-        propertyToTargetTables: Array<PropertyTableNotMatchItem>
+        columnToTargetTables: Array<ColumnTableNotMatchItem>
     } | {
         family: 'LOAD_FROM_DATA_SOURCE', 
         code: 'INDEX_COLUMN_TABLE_NOT_MATCH', 
-        foreignKeyName: string, 
-        indexColumnToTables: Array<IndexColumnTableNotMatchItem>
+        indexName: string, 
+        indexColumnToTables: Array<ColumnTableNotMatchItem>
     } | {
         family: 'LOAD_FROM_DATA_SOURCE', 
         code: 'ASSOCIATION_COLUMN_REFERENCE_TABLE_NOT_FOUND', 
+        foreignKeyName: string, 
         tableName: string
     } | {
         family: 'LOAD_FROM_DATA_SOURCE', 
         code: 'ASSOCIATION_COLUMN_REFERENCE_COLUMN_NOT_FOUND', 
+        foreignKeyName: string, 
         tableName: string, 
         columnName: string
     };

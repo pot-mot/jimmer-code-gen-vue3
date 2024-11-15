@@ -73,3 +73,8 @@
 .is-disabled svg {
     stroke: var(--el-text-color-placeholder);
 }
+
+.el-message__content {
+    white-space: pre;
+    line-height: 1.4rem;
+}
