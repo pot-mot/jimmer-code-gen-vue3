@@ -6,7 +6,7 @@ export const handleDataSourceError = (error: AllErrors & {family: "DATA_SOURCE"}
     switch (error.code) {
         case "CONNECT_FAIL":
             sendI18nMessage({
-                key: "ErrorCode_DATA_SOURCE_CONNECT_FAIL",
+                key: "ErrorCode_DATA_SOURCE__CONNECT_FAIL",
                 args: [error]
             }, "error", error)
             throw EXPECT_ERROR

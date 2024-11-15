@@ -112,7 +112,9 @@ export type AllErrors = {
         tableColumns: Array<IdName>
     } | {
         family: 'GENERATE', 
-        code: 'CAN_ONLY_HAVE_ONE_DEFAULT_IMPORT_FOR_ONE_PATH'
+        code: 'DEFAULT_IMPORT_MORE_THAN_ONE', 
+        path: string, 
+        importItems: Array<string>
     } | {
         family: 'LOAD_FROM_MODEL', 
         code: 'INDEX_COLUMN_NOT_FOUND', 
@@ -188,13 +190,6 @@ export type AllErrors = {
         code: 'INDEX_COLUMN_TABLE_NOT_MATCH', 
         foreignKeyName: string, 
         indexColumnToTables: Array<IndexColumnTableNotMatchItem>
-    } | {
-        family: 'LOAD_FROM_DATA_SOURCE', 
-        code: 'ASSOCIATION_COLUMN_REFERENCE_SCHEMA_NOT_MATCH', 
-        tableName: string, 
-        tableSchemaName: string, 
-        columnName: string, 
-        columnSchemaName: string
     } | {
         family: 'LOAD_FROM_DATA_SOURCE', 
         code: 'ASSOCIATION_COLUMN_REFERENCE_TABLE_NOT_FOUND', 
@@ -345,7 +340,7 @@ export type ApiErrors = {
                 readonly [key:string]: any
             } | {
                 family: 'GENERATE', 
-                code: 'CAN_ONLY_HAVE_ONE_DEFAULT_IMPORT_FOR_ONE_PATH', 
+                code: 'DEFAULT_IMPORT_MORE_THAN_ONE', 
                 readonly [key:string]: any
             } | {
                 family: 'COLUMN_TYPE', 
@@ -406,10 +401,6 @@ export type ApiErrors = {
             } | {
                 family: 'LOAD_FROM_DATA_SOURCE', 
                 code: 'INDEX_COLUMN_TABLE_NOT_MATCH', 
-                readonly [key:string]: any
-            } | {
-                family: 'LOAD_FROM_DATA_SOURCE', 
-                code: 'ASSOCIATION_COLUMN_REFERENCE_SCHEMA_NOT_MATCH', 
                 readonly [key:string]: any
             } | {
                 family: 'LOAD_FROM_DATA_SOURCE', 
