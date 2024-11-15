@@ -49,9 +49,14 @@ export type {GenTableModelInput_TargetOf_superTables} from './GenTableModelInput
 export type {GenTypeMappingInput} from './GenTypeMappingInput';
 export type {GenTypeMappingView} from './GenTypeMappingView';
 export type {GenerateFile} from './GenerateFile';
+export type {IdName} from './IdName';
+export type {IdNullableName} from './IdNullableName';
+export type {IndexColumnTableNotMatchItem} from './IndexColumnTableNotMatchItem';
 export type {JoinColumnMeta} from './JoinColumnMeta';
 export type {JoinTableMeta} from './JoinTableMeta';
 export type {ModelInputEntities} from './ModelInputEntities';
 export type {Pair} from './Pair';
+export type {PropertyNameDuplicateData} from './PropertyNameDuplicateData';
+export type {PropertyTableNotMatchItem} from './PropertyTableNotMatchItem';
 export type {TableQuery} from './TableQuery';
 export type {TimeRangeQueryParam} from './TimeRangeQueryParam';

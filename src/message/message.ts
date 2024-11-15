@@ -2,6 +2,7 @@ import {ElMessage} from 'element-plus'
 import {useDebugStore} from "@/store/debug/debugStore.ts";
 import {MainLocaleKeyParam} from "@/i18n";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+import {EXPECT_ERROR} from "@/api/handleError.ts";
 
 /**
  * 向用户发送消息
@@ -10,6 +11,10 @@ import {useI18nStore} from "@/store/i18n/i18nStore.ts";
  * @param data 额外数据，例如报错
  */
 export const sendMessage = (message: string, type: "info" | "success" | "warning" | "error" = "info", data?: any) => {
+    if (type === 'error' && data === EXPECT_ERROR) {
+        return
+    }
+
     ElMessage({
         type,
         message,

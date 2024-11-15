@@ -1,76 +1,64 @@
-import {AllErrors} from "@/api/__generated";
-import {sendMessage} from "@/message/message.ts";
+import {sendI18nMessage} from "@/message/message.ts"
+import {handleConvertError} from "@/api/handleErrors/convert.ts";
+import {handleDataSourceError} from "@/api/handleErrors/dataSource.ts";
+import {handleLoadFromDataSourceError} from "@/api/handleErrors/loadFromDataSource.ts";
+import {handleLoadFromModelError} from "@/api/handleErrors/loadFromModel.ts";
+import {handleModelError} from "@/api/handleErrors/model.ts";
+import {handleGenerateError} from "@/api/handleErrors/generate.ts";
+import {handleColumnTypeError} from "@/api/handleErrors/columnType.ts";
 
-export const handleError = (url: string, error: AllErrors) => {
-    sendMessage(
-        formatErrorMessage(error),
-        'warning',
-        {url, error}
-    )
+type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+
+export const EXPECT_ERROR = Symbol("EXPECT_ERROR")
+
+/**
+ * 处理非预期的错误
+ * 弹出非预期消息，并继续抛出错误
+ */
+export const handleUnexpectError = (uri: string, _method: Method, response: Response, error: any) => {
+    sendI18nMessage({
+        key: "MESSAGE_api_fetch_unexpectedError",
+        args: [uri, error]
+    }, "error", {response, error})
+    throw error
 }
 
-const formatErrorMessage = (error: AllErrors): string => {
-    return `${parseFamilyAndCode(error)}，请及时查看后台报错信息`
-}
+/**
+ * 处理预期的错误
+ * 验证输入的错误
+ *  若是预期的错误，则直接抛出 EXPECT_ERROR，中断后续行为
+ *  若不是预期的错误，则不进行任何操作
+ */
+export const handleExpectError = (_uri: string, _method: Method, _response: Response, error: any) => {
+    if (typeof error === "object" && "family" in error && typeof error.family === "string") {
+        switch (error.family) {
+            case "DATA_SOURCE":
+                handleDataSourceError(error)
+                return
 
-const parseFamilyAndCode = (error: AllErrors): string => {
-    let familyStr
+            case "LOAD_FROM_DATA_SOURCE":
+                handleLoadFromDataSourceError(error)
+                return
 
-    let codeStr
+            case "LOAD_FROM_MODEL":
+                handleLoadFromModelError(error)
+                return
 
-    if (error.family === "DATA_SOURCE") {
-        familyStr = "数据源"
-        if (error.code === "CONNECT_FAIL") {
-            codeStr = "连接失败"
-        }
-    } else if (error.family === "MODEL_LOAD") {
-        familyStr = "模型加载"
-        if (error.code === "TABLE") {
-            codeStr = "表"
-        } else if (error.code === "COLUMN") {
-            codeStr = "列"
-        } else if (error.code === "ASSOCIATION") {
-            codeStr = "关联"
-        } else if (error.code === "INDEX") {
-            codeStr = "索引"
-        } else if (error.code === "ENUM") {
-            codeStr = "枚举"
-        }
-    } else if (error.family === "DATA_SOURCE_LOAD") {
-        familyStr = "数据源加载"
-        if (error.code === "TABLE") {
-            codeStr = "表"
-        } else if (error.code === "COLUMN") {
-            codeStr = "列"
-        } else if (error.code === "ASSOCIATION") {
-            codeStr = "关联"
-        } else if (error.code === "INDEX") {
-            codeStr = "索引"
-        }
-    } else if (error.family === "CONVERT_ENTITY") {
-        familyStr = "转换实体"
-        if (error.code === "ASSOCIATION") {
-            codeStr = "关联"
-        } else if (error.code === "PROPERTY") {
-            codeStr = "属性"
-        }
-    } else if (error.family === "COLUMN_TYPE") {
-        familyStr = "列类型"
-        if (error.code === "MISS_REQUIRED_PARAM") {
-            codeStr = "缺失必要条件"
-        }
-    } else if (error.family === "GENERATE_ENTITY") {
-        familyStr = "生成实体"
-        if (error.code === "TABLE") {
-            codeStr = "表"
-        } else if (error.code === "COLUMN") {
-            codeStr = "列"
-        } else if (error.code === "ASSOCIATION") {
-            codeStr = "关联"
-        } else if (error.code === "ENUM") {
-            codeStr = "枚举"
+            case "MODEL":
+                handleModelError(error)
+                return
+
+            case "COLUMN_TYPE":
+                handleColumnTypeError(error)
+                return
+
+            case "CONVERT":
+                handleConvertError(error)
+                return
+
+            case "GENERATE":
+                handleGenerateError(error)
+                return
         }
     }
-
-    return `【${familyStr ? familyStr : error.family}-${codeStr ? codeStr : error.code}】部分出现问题`
 }
