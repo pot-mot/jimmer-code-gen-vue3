@@ -21,7 +21,7 @@ export type Errors = {
 }
 
 
-export const defaultPlaceholder
+export const defaultPlaceholder = " --- "
 
 export const formatIdName = (idName: IdName | IdNullableName | undefined, placeholder: string = defaultPlaceholder) => {
     if (idName !== undefined) {
