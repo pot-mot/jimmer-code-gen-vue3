@@ -50,6 +50,10 @@ export interface GenEntityDetailView_TargetOf_properties {
      */
     keyProperty: boolean;
     /**
+     * 业务键组
+     */
+    keyGroup?: string | undefined;
+    /**
      * 是否为逻辑删除属性
      */
     logicalDelete: boolean;
@@ -65,6 +69,10 @@ export interface GenEntityDetailView_TargetOf_properties {
      * 关联类型
      */
     associationType?: AssociationType | undefined;
+    /**
+     * 是否为长关联
+     */
+    longAssociation: boolean;
     /**
      * 映射镜像
      */

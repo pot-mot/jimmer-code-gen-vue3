@@ -72,7 +72,7 @@ const filterText = ref("")
 
 const positiveTags = ref<GenerateTag[]>([])
 
-const negativeTags = ref<GenerateTag[]>(['EntitySelect', 'EntityMultiSelect', 'EditTable', 'IdMultiSelect'])
+const negativeTags = ref<GenerateTag[]>(['EditTable', 'IdMultiSelect'])
 
 const getFilteredFiles = (): Array<GenerateFile> => {
     const filterWords = filterText.value.split(/\s+/).filter(it => it.length > 0)

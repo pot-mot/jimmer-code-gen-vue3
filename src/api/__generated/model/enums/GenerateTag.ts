@@ -14,8 +14,6 @@ export const GenerateTag_CONSTANTS = [
     'EnumNullableSelect', 
     'IdSelect', 
     'IdMultiSelect', 
-    'EntitySelect', 
-    'EntityMultiSelect', 
     'Page', 
     'AddForm', 
     'EditForm', 
