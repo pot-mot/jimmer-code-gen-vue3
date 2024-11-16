@@ -12,7 +12,7 @@ export const tableColumnColumns: ReadonlyArray<
     {
         name: 'category',
         label: 'LABEL_GenTableColumn_category',
-        span: '5em',
+        span: '7em',
     },
     {
         prop: 'name',

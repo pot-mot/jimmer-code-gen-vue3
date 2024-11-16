@@ -159,58 +159,58 @@ const handleColumnToPk = (columnIndex: number) => {
 
 const KEY_INDEX_PREFIX = 'key_of'
 
-const keyIndex = computed<GenTableModelInput_TargetOf_indexes | undefined>({
-    get: (): GenTableModelInput_TargetOf_indexes | undefined => {
-        return table.value.indexes.filter(it => it.name.toLowerCase().startsWith(KEY_INDEX_PREFIX))[0]
-    },
-    set: (value: GenTableModelInput_TargetOf_indexes | undefined) => {
-        const oldKeyIndex =
-            table.value.indexes.filter(it => it.name.toLowerCase().startsWith(KEY_INDEX_PREFIX))[0]
+const keyGroups = computed<Array<string>>(() =>
+    [...new Set(
+        table.value.columns.filter(it => it.businessKey && it.keyGroup !== undefined).map(it => it.keyGroup) as Array<string>
+    )]
+)
 
-        if (value) {
-            if (oldKeyIndex) {
-                table.value.indexes = table.value.indexes.filter(it => it !== oldKeyIndex)
-            }
-            table.value.indexes.unshift(value)
-        } else {
-            table.value.indexes = table.value.indexes.filter(it => it !== oldKeyIndex)
-        }
-    }
-})
-
-const createKeyIndexName = (): string => {
+const createKeyIndexName = (group: string | undefined): string => {
     const context = useGenConfigContextStore().context
 
     return processNamingStrategy(
-        `${KEY_INDEX_PREFIX}_${table.value.type === 'SUPER_TABLE' ? '{}' : table.value.name}`,
+        `${KEY_INDEX_PREFIX}_${table.value.type === 'SUPER_TABLE' ? '{}' : table.value.name}${group === undefined ? '' : `_${group}`}`,
         context.databaseNamingStrategy
     )
 }
 
-const resetKeyIndex = () => {
-	const businessKeyColumns = table.value.columns
-		.filter(it => it.businessKey)
+const keyIndexes = computed<Array<GenTableModelInput_TargetOf_indexes>>(() => {
+    const keyColumnMap = new Map<string | undefined, Array<GenTableModelInput_TargetOf_columns>>
 
-	if (businessKeyColumns.length > 0) {
-		keyIndex.value = {
-			name: createKeyIndexName(),
-			uniqueIndex: true,
-			columns: businessKeyColumns
-				.map(it => {
-					return {name: it.name}
-				}),
-			remark: "",
-		}
-	} else {
-		keyIndex.value = undefined
-	}
-}
+	for (const column of table.value.columns) {
+        if (column.businessKey) {
+            const columns = keyColumnMap.get(column.keyGroup)
+            if (columns === undefined) {
+                keyColumnMap.set(column.keyGroup, [column])
+            } else {
+                columns.push(column)
+            }
+        }
+    }
+
+    return [...keyColumnMap.entries()].map(([group, columns]) => {
+        return {
+            name: createKeyIndexName(group),
+            uniqueIndex: true,
+            columns: columns.map(it => {return {name: it.name}}),
+            remark: "",
+        }
+    })
+})
+
+const keyIndexNames = computed(() => keyIndexes.value.map(it => it.name))
+
+watch(() => keyIndexes.value, (value, oldValue) => {
+    table.value.indexes = [
+        ...value,
+        ...table.value.indexes.filter(index => !oldValue.map(it => it.name).includes(index.name))
+    ]
+})
 
 const handleSyncIndexName = (index: number) => {
     const oldIndex = table.value.indexes[index]
 
-    oldIndex.name = oldIndex.name.startsWith(KEY_INDEX_PREFIX) ?
-        createKeyIndexName() :
+    oldIndex.name =
         props.createIndexName(
             table.value.name,
             oldIndex,
@@ -253,7 +253,7 @@ const handleCancel = () => {
     <el-form style="width: calc(100% - 0.5rem);">
         <el-row :gutter="12" style="line-height: 2em; padding-left: 1em; padding-bottom: 1em;">
             <el-col :span="8">
-                <el-input v-model="table.name" placeholder="name" @change="resetKeyIndex"/>
+                <el-input v-model="table.name" placeholder="name"/>
             </el-col>
 
             <el-col :span="8">
@@ -318,11 +318,12 @@ const handleCancel = () => {
 
                 <template #category="{index}">
                     <ColumnCategorySelect
-                        v-model="table.columns[index]"
+                        v-model:column="table.columns[index]"
+                        v-model:key-groups="keyGroups"
                         @updatePrimaryKey="value => {
                             if (value) handleColumnToPk(index)
                         }"
-                        @updateBusinessKey="resetKeyIndex"/>
+                    />
                 </template>
 
                 <template #name="{data, index}">
@@ -375,30 +376,41 @@ const handleCancel = () => {
                 style="width: calc(100% - 0.5rem);">
 
                 <template #name="{data, index}">
-                    <el-input v-model="data.name" :disabled="keyIndex === data">
-                        <template #append v-if="keyIndex !== data">
+                    <el-input
+                        v-model="data.name"
+                        :disabled="keyIndexNames.includes(data.name)"
+                    >
+                        <template #append>
                             <el-button
                                 :icon="RefreshRight"
-                                @click="handleSyncIndexName(index)"/>
+                                @click="handleSyncIndexName(index)"
+                                :disabled="keyIndexNames.includes(data.name)"
+                            />
                         </template>
                     </el-input>
                 </template>
 
                 <template #uniqueIndex="{data}">
                     <div style="text-align: center;">
-                        <el-switch v-model="data.uniqueIndex" :disabled="keyIndex === data"/>
+                        <el-switch
+                            v-model="data.uniqueIndex"
+                            :disabled="keyIndexNames.includes(data.name)"
+                        />
                     </div>
                 </template>
 
                 <template #columns="{data}">
                     <el-select
                         :model-value="data.columns.map(it => it.name)"
-						:disabled="keyIndex === data"
+                        :disabled="keyIndexNames.includes(data.name)"
                         @change="(value: string[]) => {
-								   data.columns = value.map(it => {return {name: it}})
-							   }"
+                           data.columns = value.map(it => {return {name: it}})
+                        }"
                         @focus="syncColumnNames"
-                        multiple filterable style="width: 100%;">
+                        multiple
+                        filterable
+                        style="width: 100%;"
+                    >
                         <el-option v-for="name in columnNames" :value="name"/>
                     </el-select>
                 </template>

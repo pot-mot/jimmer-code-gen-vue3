@@ -26,7 +26,11 @@ const columnCategoryComponent: { [key in ColumnCategory]: Component } = {
 }
 
 
-const column = defineModel<GenTableModelInput_TargetOf_columns>({
+const column = defineModel<GenTableModelInput_TargetOf_columns>("column", {
+    required: true
+})
+
+const keyGroups = defineModel<Array<string>>("keyGroups", {
     required: true
 })
 
@@ -75,6 +79,8 @@ const columnCategories = computed<ColumnCategory[]>({
         if (column.value.businessKey !== newBusinessKey) {
             if (newBusinessKey) {
                 column.value.partOfPk = false
+            } else {
+                column.value.keyGroup = undefined
             }
             column.value.businessKey = newBusinessKey
             emits('updateBusinessKey', newBusinessKey)
@@ -101,10 +107,13 @@ const columnCategories = computed<ColumnCategory[]>({
 <template>
     <el-select multiple clearable placeholder="" v-model="columnCategories">
         <template #tag>
-            <span style="padding: 0 0.5rem;">
+            <span style="padding: 0 0.5rem; overflow: hidden;">
                 <component v-for="category in columnCategories"
                            :key="category"
                            :is="columnCategoryComponent[category]"/>
+                <el-text v-if="column.keyGroup" type="info">
+                    {{ column.keyGroup }}
+                </el-text>
             </span>
         </template>
 
@@ -124,9 +133,31 @@ const columnCategories = computed<ColumnCategory[]>({
 
         <el-option
             :disabled="column.partOfPk"
-            value="BUSINESS_KEY">
+            value="BUSINESS_KEY"
+            :style="column.businessKey ? 'height: 5rem;' : ''"
+        >
             <BusinessKeyIcon/>
             {{ i18nStore.translate('LABEL_TableForm_columnType_businessKey') }}
+            <br>
+            <el-select
+                v-if="column.businessKey"
+                v-model="column.keyGroup"
+                :placeholder="i18nStore.translate('LABEL_TableForm_columnType_keyGroup')"
+                clearable
+                filterable
+                allow-create
+                @click="(e: Event) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    e.stopImmediatePropagation()
+                }"
+            >
+                <el-option
+                    v-for="keyGroup in [...keyGroups]"
+                    :key="keyGroup"
+                    :value="keyGroup"
+                />
+            </el-select>
         </el-option>
 
         <el-option

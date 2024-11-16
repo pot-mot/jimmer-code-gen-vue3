@@ -340,6 +340,7 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     LABEL_TableForm_columnType_pk: "主键",
     LABEL_TableForm_columnType_autoIncrement: "自增",
     LABEL_TableForm_columnType_businessKey: "业务键",
+    LABEL_TableForm_columnType_keyGroup: "键组",
     LABEL_TableForm_columnType_logicalDelete: "逻辑删除",
 
     VALIDATE_GenAssociation_name_cannotBeEmpty: "关联名不可为空",

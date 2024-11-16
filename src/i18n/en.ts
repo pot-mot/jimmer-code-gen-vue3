@@ -340,6 +340,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     LABEL_TableForm_columnType_pk: "Primary Key",
     LABEL_TableForm_columnType_autoIncrement: "Auto Increment",
     LABEL_TableForm_columnType_businessKey: "Business Key",
+    LABEL_TableForm_columnType_keyGroup: "Key Group",
     LABEL_TableForm_columnType_logicalDelete: "Logical Delete",
 
     VALIDATE_GenAssociation_name_cannotBeEmpty: "The association name cannot be empty.",

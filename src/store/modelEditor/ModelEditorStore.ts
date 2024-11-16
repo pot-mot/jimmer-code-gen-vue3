@@ -603,7 +603,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         tableNodes.value = graphReactiveState.nodes.value
             .filter(it => it.shape === TABLE_NODE && it.data && it.data.table)
             .sort((a, b) => {
-                if (a.data.table.name > b.data.table.name) return -1
+                if (a.data.table.name < b.data.table.name) return -1
                 else return 1
             })
     }
@@ -645,7 +645,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         associationEdges.value = graphReactiveState.edges.value
             .filter(it => it.shape === ASSOCIATION_EDGE && it.data && it.data.association)
             .sort((a, b) => {
-                if (a.data.association.name > b.data.association.name) return -1
+                if (a.data.association.name < b.data.association.name) return -1
                 else return 1
             })
     }

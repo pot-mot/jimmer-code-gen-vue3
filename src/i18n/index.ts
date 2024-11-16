@@ -213,6 +213,7 @@ export type MainLocale = {
     LABEL_TableForm_columnType_pk: string
     LABEL_TableForm_columnType_autoIncrement: string
     LABEL_TableForm_columnType_businessKey: string
+    LABEL_TableForm_columnType_keyGroup: string
     LABEL_TableForm_columnType_logicalDelete: string
 
     VALIDATE_GenAssociation_name_cannotBeEmpty: string

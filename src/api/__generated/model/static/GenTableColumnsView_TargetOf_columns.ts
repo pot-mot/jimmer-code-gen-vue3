@@ -65,6 +65,10 @@ export interface GenTableColumnsView_TargetOf_columns {
      */
     businessKey: boolean;
     /**
+     * 业务键组
+     */
+    keyGroup?: string | undefined;
+    /**
      * 是否为逻辑删除
      */
     logicalDelete: boolean;
