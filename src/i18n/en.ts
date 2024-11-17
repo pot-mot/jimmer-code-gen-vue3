@@ -68,7 +68,7 @@ export const mainLocaleEn: MainLocale = {
   Property name duplicate
   Table 【${formatIdName(error.table)}】
   Duplicate name 【${error.duplicateName}】
-  Properties 【${error.properties.map(prop => `${prop}`).join(', ')}】`,
+  Properties 【${error.properties.map(prop => `${JSON.stringify(prop)}`).join(', ')}】`,
 
     ErrorCode_CONVERT__SUPER_TABLE_SUPER_ENTITY_NOT_MATCH: (error: Errors["CONVERT"]["SUPER_TABLE_SUPER_ENTITY_NOT_MATCH"]) =>
         `【Table conversion entity error】

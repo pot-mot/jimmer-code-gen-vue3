@@ -67,7 +67,7 @@ export const mainLocaleZhCn: MainLocale = {
   属性名称重复
   表【${formatIdName(error.table)}】
   重复名称【${error.duplicateName}】
-  属性【${error.properties.map(prop => `${prop}`).join(', ')}】`,
+  属性【${error.properties.map(prop => `${JSON.stringify(prop)}`).join(', ')}】`,
 
     ErrorCode_CONVERT__SUPER_TABLE_SUPER_ENTITY_NOT_MATCH: (error: Errors["CONVERT"]["SUPER_TABLE_SUPER_ENTITY_NOT_MATCH"]) =>
         `【表转换实体错误】
