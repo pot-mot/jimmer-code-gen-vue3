@@ -10,3 +10,5 @@ export const useAssociationDialogsStore = defineStore(
         }
     }
 )
+
+export const ASSOCIATION_CREATE_PREFIX = "[[ASSOCIATION_CREATE_PREFIX]]"

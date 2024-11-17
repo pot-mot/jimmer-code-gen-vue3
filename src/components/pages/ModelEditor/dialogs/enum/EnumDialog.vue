@@ -45,6 +45,6 @@ const validate = (genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
 			:enum="genEnum"
 			:validate="validate"
 			@cancel="emits('close')"
-			@submit="handleSubmit"></EnumForm>
+			@submit="handleSubmit"/>
 	</DragDialog>
 </template>

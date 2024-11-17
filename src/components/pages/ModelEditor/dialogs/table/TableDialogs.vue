@@ -7,6 +7,6 @@ const store = useTableDialogsStore()
 
 <template>
 	<template v-for="[key, value] in store.items" :key="key">
-		<TableDialog :id="key" :table="value" @close="store.close(key)"></TableDialog>
+		<TableDialog :id="key" :table="value" @close="store.close(key)"/>
 	</template>
 </template>

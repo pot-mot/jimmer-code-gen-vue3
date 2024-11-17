@@ -301,6 +301,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     LABEL_ModelEditorMainMenu_associationTitle: "Associations",
     LABEL_ModelEditorMainMenu_enumTitle: "Enums",
     LABEL_ModelEditorMainMenu_createTable: "Create Table",
+    LABEL_ModelEditorMainMenu_createAssociation: "Create Association",
     LABEL_ModelEditorMainMenu_createEnum: "Create Enum",
     LABEL_ModelEditorMainMenu_associationShow_nameOnly: "Show: Name",
     LABEL_ModelEditorMainMenu_associationShow_joinTable: "Show: Join Table",

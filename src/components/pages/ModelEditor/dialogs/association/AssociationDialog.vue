@@ -8,6 +8,7 @@ import {validateAssociation} from "@/components/business/association/validateAss
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {DeepReadonly} from "vue";
 import {MainLocaleKeyParam} from "@/i18n";
+import {ASSOCIATION_CREATE_PREFIX} from "@/store/modelEditor/AssociationDialogsStore.ts";
 
 const {MODEL} = useModelEditorStore()
 
@@ -25,7 +26,11 @@ interface TableEntityDialogEmits {
 const emits = defineEmits<TableEntityDialogEmits>()
 
 const handleSubmit = (association: GenAssociationModelInput) => {
-	ModelEditorEventBus.emit('editedAssociation', {id: props.id, association})
+    if (props.id.startsWith(ASSOCIATION_CREATE_PREFIX)) {
+        ModelEditorEventBus.emit('createdAssociation', {createKey: props.id, association})
+    } else {
+        ModelEditorEventBus.emit('editedAssociation', {id: props.id, association})
+    }
 }
 
 const validate = (association: DeepReadonly<GenAssociationModelInput>): MainLocaleKeyParam[] => {

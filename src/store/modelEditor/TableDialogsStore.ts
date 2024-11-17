@@ -11,4 +11,4 @@ export const useTableDialogsStore = defineStore(
     }
 )
 
-export const TABLE_CREATE_PREFIX = "TABLE_CREATE_PREFIX"
+export const TABLE_CREATE_PREFIX = "[[TABLE_CREATE_PREFIX]]"

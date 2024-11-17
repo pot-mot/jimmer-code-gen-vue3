@@ -88,6 +88,9 @@ const formattedEdgeShowType = computed(() => {
                     <el-text>
 						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_associationTitle') }}
 					</el-text>
+                    <el-button style="margin-left: 0.5em;" @click="ModelEditorEventBus.emit('createAssociation')">
+						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_createAssociation') }}
+                    </el-button>
                     <el-button style="margin-left: 0.5em;" @click="toggleEdgeShow">
 						{{formattedEdgeShowType}}
 					</el-button>

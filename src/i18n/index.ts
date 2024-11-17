@@ -177,6 +177,7 @@ export type MainLocale = {
     LABEL_ModelEditorMainMenu_associationTitle: string
     LABEL_ModelEditorMainMenu_enumTitle: string
     LABEL_ModelEditorMainMenu_createTable: string
+    LABEL_ModelEditorMainMenu_createAssociation: string
     LABEL_ModelEditorMainMenu_createEnum: string
     LABEL_ModelEditorMainMenu_associationShow_nameOnly: string
     LABEL_ModelEditorMainMenu_associationShow_joinTable: string
@@ -215,6 +216,18 @@ export type MainLocale = {
     LABEL_TableForm_columnType_businessKey: string
     LABEL_TableForm_columnType_keyGroup: string
     LABEL_TableForm_columnType_logicalDelete: string
+
+    LABEL_AssociationForm_name: string
+    LABEL_AssociationForm_mappingAssociation: string
+    LABEL_AssociationForm_sourceTableName_placeholder: string
+    LABEL_AssociationForm_targetTableName_placeholder: string
+    LABEL_AssociationForm_sourceColumnName_placeholder: string
+    LABEL_AssociationForm_targetColumnName_placeholder: string
+    LABEL_AssociationForm_type: string
+    LABEL_AssociationForm_fake: string
+    LABEL_AssociationForm_dissociateAction: string
+    LABEL_AssociationForm_updateAction: string
+    LABEL_AssociationForm_deleteAction: string
 
     VALIDATE_GenAssociation_name_cannotBeEmpty: string
     VALIDATE_GenAssociation_name_cannotBeDuplicate: string

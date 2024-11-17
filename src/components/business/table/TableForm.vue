@@ -25,6 +25,7 @@ import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {RefreshRight} from "@element-plus/icons-vue";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import ColumnCategorySelect from "@/components/business/table/ColumnCategorySelect.vue";
+import {cloneDeep} from "lodash";
 
 const i18nStore = useI18nStore()
 
@@ -33,7 +34,7 @@ const {MODEL} = useModelEditorStore()
 const jdbcTypeStore = useJdbcTypeStore()
 
 interface ModelFormProps {
-    table?: GenTableModelInput,
+    table?: GenTableModelInput | undefined,
 
     validate: (table: DeepReadonly<GenTableModelInput>) => string[],
 
@@ -54,12 +55,12 @@ interface ModelFormEmits {
 
 const emits = defineEmits<FormEmits<GenTableModelInput> & ModelFormEmits>()
 
-const table = ref<GenTableModelInput>(getDefaultTable())
+const table = ref<GenTableModelInput>(cloneDeep(props.table) ?? getDefaultTable())
 
 watch(() => props.table, (value) => {
     if (!value) return
-    table.value = value
-}, {immediate: true})
+    table.value = cloneDeep(value)
+})
 
 const columnNames = ref<string[]>(table.value.columns.map(it => it.name))
 const syncColumnNames = () => {
@@ -419,7 +420,7 @@ const handleCancel = () => {
 
         <div style="text-align: right; position: absolute; bottom: 0.5em; left: 1em; right: 1em;">
             <el-button type="info" @click="handleCancel">{{ i18nStore.translate('BUTTON_cancel') }}</el-button>
-            <el-button type="primary" @click="handleSubmit">{{ i18nStore.translate('BUTTON_submit') }}</el-button>
+            <el-button type="primary" @click="handleSubmit">{{ i18nStore.translate('BUTTON_save') }}</el-button>
         </div>
     </el-form>
 </template>

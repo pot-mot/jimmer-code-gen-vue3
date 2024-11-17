@@ -43,12 +43,14 @@ import {syncSuperTableNameForTables} from "@/components/pages/ModelEditor/sync/s
 import {SelectOperation, useSelectOperation} from "@/components/global/graphEditor/selection/selectOperation.ts";
 import {HistoryOperation, useHistoryOperations} from "@/components/global/graphEditor/history/useHistory.ts";
 import {RemoveOperation, useRemoveOperation} from "@/components/global/graphEditor/remove/removeOperation.ts";
-import {useAssociationDialogsStore} from "@/store/modelEditor/AssociationDialogsStore.ts";
+import {ASSOCIATION_CREATE_PREFIX, useAssociationDialogsStore} from "@/store/modelEditor/AssociationDialogsStore.ts";
 import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge/updateData.ts";
 import {GraphReactiveState} from "@/components/global/graphEditor/data/reactiveState.ts";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {defineStore} from "pinia";
 import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
+import {loadAssociationModelInputs} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
+import {getDefaultAssociation} from "@/components/business/association/defaultColumn.ts";
 
 interface ModelReactiveState {
     tableNodes: Readonly<Ref<UnwrapRefSimple<Node>[]>>,
@@ -422,20 +424,20 @@ const initModelEditorStore = (): ModelEditorStore => {
         tableCreateOptionsMap.value.set(id, options)
     })
 
-    ModelEditorEventBus.on('createdTable', ({id, table}) => {
+    ModelEditorEventBus.on('createdTable', ({createKey, table}) => {
         const graph = _graph()
         if (!graph) return
 
         const node = loadTableModelInputs(
             graph,
             [table],
-            tableCreateOptionsMap.value.get(id)
+            tableCreateOptionsMap.value.get(createKey)
         ).nodes[0]
 
-        tableCreateOptionsMap.value.delete(id)
+        tableCreateOptionsMap.value.delete(createKey)
 
         if (node) {
-            tableDialogsStore.close(id)
+            tableDialogsStore.close(createKey)
 
             setTimeout(() => {
                 SELECT.select(node)
@@ -507,6 +509,30 @@ const initModelEditorStore = (): ModelEditorStore => {
      * 关联编辑对话框相关
      */
     const associationDialogsStore = useAssociationDialogsStore()
+
+     ModelEditorEventBus.on('createAssociation', () => {
+        const id = ASSOCIATION_CREATE_PREFIX + Date.now()
+
+        associationDialogsStore.open(id, getDefaultAssociation())
+    })
+
+    ModelEditorEventBus.on('createdAssociation', ({createKey, association}) => {
+        const graph = _graph()
+        if (!graph) return
+
+        const edge = loadAssociationModelInputs(
+            graph,
+            [association],
+        ).edges[0]
+
+        if (edge) {
+            associationDialogsStore.close(createKey)
+
+            setTimeout(() => {
+                SELECT.select(edge)
+            }, 200)
+        }
+    })
 
     ModelEditorEventBus.on('editAssociation', ({id, association}) => {
         associationDialogsStore.open(id, cloneDeep(association))

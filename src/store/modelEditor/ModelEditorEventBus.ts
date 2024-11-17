@@ -12,11 +12,13 @@ type ModelEditorEvents = {
     syncedTable: { id: string },
 
     createTable: { options: TableLoadOptions },
-    createdTable: { id: string, table: DeepReadonly<GenTableModelInput> },
+    createdTable: { createKey: string, table: DeepReadonly<GenTableModelInput> },
     editTable: { id: string, table: GenTableModelInput },
     editedTable: { id: string, table: DeepReadonly<GenTableModelInput> },
     removeTable: { id: string },
 
+    createAssociation: undefined,
+    createdAssociation: { createKey: string, association: GenAssociationModelInput },
     editAssociation: { id: string, association: GenAssociationModelInput },
     editedAssociation: { id: string, association: DeepReadonly<GenAssociationModelInput> },
     modifyAssociation: { id: string },
