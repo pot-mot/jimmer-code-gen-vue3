@@ -2,6 +2,7 @@ import type {MainLocale} from "@/i18n/index.ts"
 import type {DeepReadonly} from "vue"
 import type {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static"
 import {defaultPlaceholder, Errors, formatIdName} from "@/api/handleError.ts"
+import {jsonPrettyFormat} from "@/utils/json.ts";
 
 export const mainLocaleZhCn: MainLocale = {
     BUTTON_edit: "编辑",
@@ -67,7 +68,7 @@ export const mainLocaleZhCn: MainLocale = {
   属性名称重复
   表【${formatIdName(error.table)}】
   重复名称【${error.duplicateName}】
-  属性【${error.properties.map(prop => `${JSON.stringify(prop)}`).join(', ')}】`,
+  属性【${error.properties.map(prop => `${jsonPrettyFormat(prop)}`).join(', ')}】`,
 
     ErrorCode_CONVERT__SUPER_TABLE_SUPER_ENTITY_NOT_MATCH: (error: Errors["CONVERT"]["SUPER_TABLE_SUPER_ENTITY_NOT_MATCH"]) =>
         `【表转换实体错误】

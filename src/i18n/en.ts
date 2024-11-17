@@ -3,6 +3,7 @@ import type {DeepReadonly} from "vue"
 import type {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static"
 import type {Errors} from "@/api/handleError.ts";
 import {defaultPlaceholder, formatIdName} from "@/api/handleError.ts";
+import {jsonPrettyFormat} from "@/utils/json.ts";
 
 export const mainLocaleEn: MainLocale = {
     BUTTON_edit: "Edit",
@@ -68,7 +69,7 @@ export const mainLocaleEn: MainLocale = {
   Property name duplicate
   Table 【${formatIdName(error.table)}】
   Duplicate name 【${error.duplicateName}】
-  Properties 【${error.properties.map(prop => `${JSON.stringify(prop)}`).join(', ')}】`,
+  Properties 【${error.properties.map(prop => `${jsonPrettyFormat(prop)}`).join(', ')}】`,
 
     ErrorCode_CONVERT__SUPER_TABLE_SUPER_ENTITY_NOT_MATCH: (error: Errors["CONVERT"]["SUPER_TABLE_SUPER_ENTITY_NOT_MATCH"]) =>
         `【Table conversion entity error】
