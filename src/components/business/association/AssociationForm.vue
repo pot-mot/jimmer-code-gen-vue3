@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static";
+import {
+    GenAssociationModelInput,
+    GenTableModelInput,
+} from "@/api/__generated/model/static";
 import {AssociationType_CONSTANTS, DissociateAction_CONSTANTS} from "@/api/__generated/model/enums";
 import {RefreshRight} from "@element-plus/icons-vue";
 import {computed, DeepReadonly, ref, watch} from "vue";
@@ -17,7 +20,7 @@ const i18nStore = useI18nStore()
 
 const {MODEL} = useModelEditorStore()
 
-interface AssociationFormProps {
+const props = defineProps<{
     association?: GenAssociationModelInput | undefined,
 
     edge: DeepReadonly<Edge> | undefined,
@@ -29,9 +32,7 @@ interface AssociationFormProps {
         sourceTableIsSuper: boolean,
         targetTableIsSuper: boolean,
     ) => string
-}
-
-const props = defineProps<AssociationFormProps>()
+}>()
 
 const association = ref<GenAssociationModelInput>(cloneDeep(props.association) ?? getDefaultAssociation())
 
@@ -42,66 +43,37 @@ watch(() => props.association, (value) => {
 
 const emits = defineEmits<FormEmits<GenAssociationModelInput>>()
 
-const sourceColumnNames = computed(() => {
-    return association.value.columnReferences.map(it => it.sourceColumnName).filter(it => !!it)
-})
+// 数据计算属性
 
-const targetColumnNames = computed(() => {
-    return association.value.columnReferences.map(it => it.targetColumnName).filter(it => !!it)
-})
+const sourceTable = computed<GenTableModelInput | undefined>(() =>
+    MODEL.tables.filter(table => table.name === association.value.sourceTableName)[0]
+)
 
-const sourceTable = computed<GenTableModelInput | undefined>(() => {
-    return MODEL.tables.filter(table => {
-        return table.name === association.value.sourceTableName
-    })[0]
-})
+const targetTable = computed<GenTableModelInput | undefined>(() =>
+    MODEL.tables.filter(table => table.name === association.value.targetTableName)[0]
+)
 
-const targetTable = computed<GenTableModelInput | undefined>(() => {
-    return MODEL.tables.filter(table => {
-        return table.name === association.value.targetTableName
-    })[0]
-})
+// 选项计算属性
 
-const sourceTableOptions = computed(() => {
-    return MODEL.tables.filter(table => {
-        if (sourceColumnNames.value.length === 0) return true
-        return table.columns.some(it => sourceColumnNames.value.includes(it.name))
-    })
-})
+const sourceTableOptions = computed(() => MODEL.tables)
 
-const sourceTableNameOptions = computed(() => sourceTableOptions.value.map(it => it.name))
+const targetTableOptions = computed(() => MODEL.tables)
 
-const sourceColumnOptions = computed(() => {
-    return sourceTable.value?.columns ?? []
-})
+const sourceColumnOptions = computed(() => sourceTable.value?.columns ?? [])
 
-const sourceColumnNameOptions = computed(() => sourceColumnOptions.value.map(it => it.name))
+const targetColumnOptions = computed(() => targetTable.value?.columns ?? [])
 
-const targetTableOptions = computed(() => {
-    return MODEL.tables.filter(table => {
-        if (targetColumnNames.value.length === 0) return true
-        return table.columns.some(it => targetColumnNames.value.includes(it.name))
-    })
-})
-
-const targetTableNameOptions = computed(() => targetTableOptions.value.map(it => it.name))
-
-const targetColumnOptions = computed(() => {
-    return targetTable.value?.columns ?? []
-})
-
-const targetColumnNameOptions = computed(() => targetColumnOptions.value.map(it => it.name))
-
+// 刷新关联名称
 const handleRefreshAssociationName = () => {
-	if (sourceTable.value === undefined) {
-		sendI18nMessage('VALIDATE_GenAssociation_sourceTable_notFound')
-		return
-	}
+    if (sourceTable.value === undefined) {
+        sendI18nMessage('VALIDATE_GenAssociation_sourceTable_notFound')
+        return
+    }
 
-	if (targetTable.value === undefined) {
-		sendI18nMessage('VALIDATE_GenAssociation_targetTable_notFound')
-		return
-	}
+    if (targetTable.value === undefined) {
+        sendI18nMessage('VALIDATE_GenAssociation_targetTable_notFound')
+        return
+    }
 
     association.value.name = createAssociationName(
         association.value,
@@ -132,6 +104,40 @@ const handleCancel = () => {
 
 <template>
     <el-form style="width: calc(100% - 0.5rem);">
+        <el-form-item :label="i18nStore.translate('LABEL_AssociationForm_mappingAssociation')">
+            <table style="width: 100%;">
+                <tr v-for="columnReference in association.columnReferences">
+                    <td style="display: grid; grid-template-columns: 1fr 1fr 2em 1fr 1fr;">
+                        <el-select v-model="association.sourceTableName" clearable filterable
+                                   :placeholder="i18nStore.translate('LABEL_AssociationForm_sourceTableName_placeholder')">
+                            <el-option v-for="table in sourceTableOptions" :key="table.name" :value="table.name"/>
+                        </el-select>
+                        <el-select v-model="columnReference.sourceColumnName" clearable filterable
+                                   :placeholder="i18nStore.translate('LABEL_AssociationForm_sourceColumnName_placeholder')">
+                            <el-option v-for="column in sourceColumnOptions" :key="column.name" :value="column.name"/>
+                            <template #empty v-if="!association.sourceTableName">
+                                {{ i18nStore.translate('LABEL_AssociationForm_placeSelectSourceTableFirst') }}
+                            </template>
+                        </el-select>
+                        <el-text style="text-align: center;">
+                            {{ " -> " }}
+                        </el-text>
+                        <el-select v-model="association.targetTableName" clearable filterable
+                                   :placeholder="i18nStore.translate('LABEL_AssociationForm_targetTableName_placeholder')">
+                            <el-option v-for="table in targetTableOptions" :key="table.name" :value="table.name"/>
+                        </el-select>
+                        <el-select v-model="columnReference.targetColumnName" clearable filterable
+                                   :placeholder="i18nStore.translate('LABEL_AssociationForm_targetColumnName_placeholder')">
+                            <el-option v-for="column in targetColumnOptions" :key="column.name" :value="column.name"/>
+                            <template #empty v-if="!association.targetTableName">
+                                {{ i18nStore.translate('LABEL_AssociationForm_placeSelectTargetTableFirst') }}
+                            </template>
+                        </el-select>
+                    </td>
+                </tr>
+            </table>
+        </el-form-item>
+
         <el-form-item :label="i18nStore.translate('LABEL_AssociationForm_name')">
             <el-input v-model="association.name">
                 <template #append>
@@ -140,38 +146,6 @@ const handleCancel = () => {
                         @click="handleRefreshAssociationName"/>
                 </template>
             </el-input>
-        </el-form-item>
-
-        <el-form-item :label="i18nStore.translate('LABEL_AssociationForm_mappingAssociation')">
-            <table style="width: 100%;">
-                <tr v-for="columnReference in association.columnReferences">
-                    <td style="display: grid; grid-template-columns: 1fr 1fr;">
-                        <el-select v-model="association.sourceTableName" clearable filterable
-                                   :placeholder="i18nStore.translate('LABEL_AssociationForm_sourceTableName_placeholder')">
-                            <el-option v-for="name in sourceTableNameOptions" :key="name" :value="name"/>
-                        </el-select>
-                        <el-select v-model="columnReference.sourceColumnName" clearable filterable
-                                   :placeholder="i18nStore.translate('LABEL_AssociationForm_sourceColumnName_placeholder')">
-                            <el-option v-for="name in sourceColumnNameOptions" :key="name" :value="name"/>
-                        </el-select>
-                    </td>
-                    <td>
-                        <el-text>
-                            {{ " -> " }}
-                        </el-text>
-                    </td>
-                    <td style="display: grid; grid-template-columns:  1fr 1fr;">
-                        <el-select v-model="association.targetTableName" clearable filterable
-                                   :placeholder="i18nStore.translate('LABEL_AssociationForm_targetTableName_placeholder')">
-                            <el-option v-for="name in targetTableNameOptions" :key="name" :value="name"/>
-                        </el-select>
-                        <el-select v-model="columnReference.targetColumnName" clearable filterable
-                                   :placeholder="i18nStore.translate('LABEL_AssociationForm_targetColumnName_placeholder')">
-                            <el-option v-for="name in targetColumnNameOptions" :key="name" :value="name"/>
-                        </el-select>
-                    </td>
-                </tr>
-            </table>
         </el-form-item>
 
         <el-form-item :label="i18nStore.translate('LABEL_AssociationForm_type')">

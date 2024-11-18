@@ -5,7 +5,7 @@ export const getDefaultAssociation = (): GenAssociationModelInput => {
         name: "",
         sourceTableName: "",
         targetTableName: "",
-        type: "MANY_TO_MANY",
+        type: "MANY_TO_ONE",
         columnReferences: [
             {
                 sourceColumnName: "",

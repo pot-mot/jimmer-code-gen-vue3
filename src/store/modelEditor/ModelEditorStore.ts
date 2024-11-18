@@ -545,12 +545,16 @@ const initModelEditorStore = (): ModelEditorStore => {
         const graph = _graph()
         if (!graph) return
 
+        graph.startBatch("batchCreatedAssociations")
+
         const edges = loadAssociationModelInputs(
             graph,
             associations,
         ).edges
 
         batchCreateAssociationsDialogStore.close()
+
+        graph.stopBatch("batchCreatedAssociations")
 
         setTimeout(() => {
             SELECT.select(edges)

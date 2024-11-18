@@ -221,9 +221,12 @@ export type MainLocale = {
     LABEL_AssociationForm_name: string
     LABEL_AssociationForm_mappingAssociation: string
     LABEL_AssociationForm_sourceTableName_placeholder: string
+    LABEL_AssociationForm_sourceTableName_selectAll: string
     LABEL_AssociationForm_targetTableName_placeholder: string
     LABEL_AssociationForm_sourceColumnName_placeholder: string
+    LABEL_AssociationForm_placeSelectSourceTableFirst: string
     LABEL_AssociationForm_targetColumnName_placeholder: string
+    LABEL_AssociationForm_placeSelectTargetTableFirst: string
     LABEL_AssociationForm_type: string
     LABEL_AssociationForm_fake: string
     LABEL_AssociationForm_dissociateAction: string
