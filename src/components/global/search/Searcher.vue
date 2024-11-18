@@ -1,11 +1,16 @@
-<script lang="ts" generic="T" setup>
+<script lang="ts" generic="T, S = string" setup>
 import {nextTick, onMounted, onUnmounted, Ref, ref} from "vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {DialogInitProps,} from "@/components/global/dialog/DragDialogProps.ts";
 
+const searchData = defineModel<S | undefined>({
+	required: false,
+	default: "",
+})
+
 interface SearcherProps extends DialogInitProps {
 	target: HTMLElement
-	search: (keyword: string) => T[] | Promise<T[]>
+	search: (keyword: S) => T[] | Promise<T[]>,
 	placeholder?: string
 
 	canDrag?: boolean
@@ -13,34 +18,23 @@ interface SearcherProps extends DialogInitProps {
 
 const props = withDefaults(defineProps<SearcherProps>(), {
 	canDrag: true,
-	to: "body"
+	to: "body",
 })
 
-interface SearcherSlots {
+defineSlots<{
+	input(props: { handleSearch: () => Promise<void> }): any
 	empty(props: {}): any
-
 	items(props: { items: T[] }): any
-
 	tools(props: { items: T[] }): any
-
 	item(props: { items: T[], item: T }): any
-
 	buttonContent(props: { items: T[], item: T }): any
-}
+}>()
 
-defineSlots<SearcherSlots>()
-
-interface SearcherEmits {
+const emits = defineEmits<{
 	(event: "open"): void
-
 	(event: "close"): void
-
 	(event: 'select', item: T): void
-}
-
-const emits = defineEmits<SearcherEmits>()
-
-const keyword = ref("")
+}>()
 
 const searchResult: Ref<T[]> = ref([])
 
@@ -92,8 +86,8 @@ const handleSearchKeyEvent = (e: KeyboardEvent) => {
 const searchResultContainer = ref()
 
 const handleSearch = async () => {
-	if (keyword.value.trim().length > 0) {
-		searchResult.value = await props.search(keyword.value)
+	if (searchData.value) {
+		searchResult.value = await props.search(searchData.value)
 	} else {
 		searchResult.value = []
 	}
@@ -132,7 +126,7 @@ const handleOpen = () => {
 }
 
 const handleClose = () => {
-	keyword.value = ''
+	searchData.value = undefined
 	searchResult.value = []
 	emits('close')
 }
@@ -149,14 +143,22 @@ const handleClose = () => {
 		:modal="false"
 		@open="handleOpen"
 		@close="handleClose">
-		<el-input ref="input" v-model="keyword" clearable @change="handleSearch" @input="handleSearch"
-				  :placeholder="placeholder">
-		</el-input>
+
+		<slot name="input" :handleSearch="handleSearch">
+			<el-input
+				ref="input"
+				v-model="searchData"
+				:placeholder="placeholder"
+				clearable
+				@input="handleSearch"
+				@change="handleSearch"
+			/>
+		</slot>
 
 		<div ref="searchResultContainer" style="max-height: 60vh; overflow: auto;">
-			<slot name="tools" :items="searchResult"></slot>
+			<slot name="tools" :items="searchResult"/>
 
-			<div v-if="keyword.length > 0 && searchResult.length === 0">
+			<div v-if="searchData && searchResult.length === 0">
 				<slot name="empty">
 					<el-text>无搜索结果</el-text>
 				</slot>

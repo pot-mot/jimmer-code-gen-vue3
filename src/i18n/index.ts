@@ -208,6 +208,12 @@ export type MainLocale = {
     MESSAGE_ModelEditorGraph_history_cannotUndo: string
     MESSAGE_ModelEditorGraph_history_cannotRedo: string
 
+    LABEL_GraphSearcher_tableKeywords: string
+    LABEL_GraphSearcher_columnKeywords: string
+    LABEL_GraphSearcher_enumKeywords: string
+    LABEL_GraphSearcher_superTableKeywords: string
+    LABEL_GraphSearcher_associationKeywords: string
+
     LABEL_TableForm_asSuperTable: string
     LABEL_TableForm_extendTables: string
     LABEL_TableForm_columns: string

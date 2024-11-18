@@ -233,7 +233,7 @@ export const GenTableModelInputJsonSchema = {
     }
 }
 
-export const {validate: validateTable} =
+export const {validate: validateTableModelInput} =
     useShapeValidate<GenTableModelInput>(
         "GenTableModelInput",
         GenTableModelInputJsonSchema

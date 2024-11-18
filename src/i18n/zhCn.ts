@@ -336,6 +336,12 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     MESSAGE_ModelEditorGraph_history_cannotUndo: "不可撤回",
     MESSAGE_ModelEditorGraph_history_cannotRedo: "不可重做",
 
+    LABEL_GraphSearcher_tableKeywords: "表关键字",
+    LABEL_GraphSearcher_columnKeywords: "列关键字",
+    LABEL_GraphSearcher_enumKeywords: "枚举关键字",
+    LABEL_GraphSearcher_superTableKeywords: "上级表关键字",
+    LABEL_GraphSearcher_associationKeywords: "关联关键字",
+
     LABEL_TableForm_asSuperTable: "作为上级表",
     LABEL_TableForm_extendTables: "继承的表",
     LABEL_TableForm_columns: "列",

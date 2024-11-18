@@ -3,18 +3,6 @@ import {SelectType} from "@/api/__generated/model/enums";
 import {matchByKeywords} from "@/components/global/match/matchByKeywords.ts";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 
-export const searchNodesByKeywords = (graph: Graph, keywords: string[]) => {
-    return graph.getNodes()
-        .filter(node => node.shape === TABLE_NODE)
-        .filter(node => {
-            const table = node.getData().table
-            if (table && Object.keys(table).includes('name') && Object.keys(table).includes('comment')) {
-                return matchByKeywords(node.getData().table, keywords)
-            }
-            return false
-        })
-}
-
 export const searchNodesByTableName = (graph: Graph, tableName: string) => {
     return graph.getNodes()
         .filter(node => node.shape === TABLE_NODE)

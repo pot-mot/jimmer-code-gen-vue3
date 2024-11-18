@@ -10,7 +10,7 @@ import {validateModelInput} from "@/shape/ModelInput.ts";
 import {importEnums} from "@/components/pages/ModelEditor/graph/clipBoard/importEnums.ts";
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
-import {validateTable} from "@/shape/GenTableModelInput.ts";
+import {validateTableModelInput} from "@/shape/GenTableModelInput.ts";
 
 export const useClipBoard = (graph: Graph) => {
     graph.bindKey(["ctrl+c", "command+c"], async () => {
@@ -128,7 +128,7 @@ const paste = useGlobalLoadingStore().withLoading(
                 y: GRAPH.mousePosition.y
             }
 
-            if (validateTable(value, (e) => validateErrors.push(e))) {
+            if (validateTableModelInput(value, (e) => validateErrors.push(e))) {
                 const table = value as GenTableModelInput
                 res = loadModelInputs(graph, [table], [], options)
             } else if (validateCopyData(value, (e) => validateErrors.push(e))) {

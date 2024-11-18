@@ -336,6 +336,12 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     MESSAGE_ModelEditorGraph_history_cannotUndo: "Cannot Undo",
     MESSAGE_ModelEditorGraph_history_cannotRedo: "Cannot Redo",
 
+    LABEL_GraphSearcher_tableKeywords: "Table Keywords",
+    LABEL_GraphSearcher_columnKeywords: "Column Keywords",
+    LABEL_GraphSearcher_enumKeywords: "Enum Keywords",
+    LABEL_GraphSearcher_superTableKeywords: "SuperTable Keywords",
+    LABEL_GraphSearcher_associationKeywords: "Association Keywords",
+
     LABEL_TableForm_asSuperTable: "SuperTable",
     LABEL_TableForm_extendTables: "extends",
     LABEL_TableForm_columns: "Columns",
