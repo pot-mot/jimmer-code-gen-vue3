@@ -6,6 +6,7 @@ import {
 import {DeepReadonly} from "vue";
 import {compareArraysIgnoreOrder} from "@/utils/array.ts";
 import {MainLocaleKeyParam} from "@/i18n";
+import {columnTypeNotEqual} from "@/components/business/association/columnEquals.ts";
 
 export const validateAssociation = (
     association: DeepReadonly<GenAssociationModelInput>,
@@ -96,11 +97,7 @@ export const validateAssociation = (
 
                 if (
                     (association.type !== 'MANY_TO_MANY') &&
-                    (sourceColumn.typeCode !== targetColumn.typeCode) ||
-                    (
-                        (sourceColumn.overwriteByRaw || targetColumn.overwriteByRaw) &&
-                        sourceColumn.rawType !== targetColumn.rawType
-                    )
+                    columnTypeNotEqual(sourceColumn, targetColumn)
                 ) {
                     messageList.push("VALIDATE_GenAssociation_typeNotMatch")
                 }

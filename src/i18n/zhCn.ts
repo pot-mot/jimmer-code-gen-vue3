@@ -302,6 +302,7 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     LABEL_ModelEditorMainMenu_enumTitle: "枚举",
     LABEL_ModelEditorMainMenu_createTable: "新建表",
     LABEL_ModelEditorMainMenu_createAssociation: "新建关联",
+    LABEL_ModelEditorMainMenu_batchCreateAssociation: "批量创建",
     LABEL_ModelEditorMainMenu_createEnum: "新建枚举",
     LABEL_ModelEditorMainMenu_associationShow_nameOnly: "显示：名称",
     LABEL_ModelEditorMainMenu_associationShow_joinTable: "显示：连接表",
@@ -345,7 +346,7 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     LABEL_TableForm_columnType_keyGroup: "键组",
     LABEL_TableForm_columnType_logicalDelete: "逻辑删除",
 
-        LABEL_AssociationForm_name: "关联名称",
+    LABEL_AssociationForm_name: "关联名称",
     LABEL_AssociationForm_mappingAssociation: "映射关联",
     LABEL_AssociationForm_sourceTableName_placeholder: "源表名",
     LABEL_AssociationForm_targetTableName_placeholder: "目标表名",

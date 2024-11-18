@@ -1,5 +1,5 @@
-export interface FormEmits<T> {
-    (event: "submit", data: T): void
+export interface FormEmits<SubmitType, CancelType = SubmitType> {
+    (event: "submit", data: SubmitType): void
 
-    (event: "cancel", data: T): void
+    (event: "cancel", data: CancelType): void
 }

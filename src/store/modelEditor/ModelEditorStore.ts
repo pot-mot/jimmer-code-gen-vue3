@@ -51,6 +51,7 @@ import {defineStore} from "pinia";
 import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
 import {loadAssociationModelInputs} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
 import {getDefaultAssociation} from "@/components/business/association/defaultColumn.ts";
+import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/BatchCreateAssociationsDialogStore.ts";
 
 interface ModelReactiveState {
     tableNodes: Readonly<Ref<UnwrapRefSimple<Node>[]>>,
@@ -506,11 +507,11 @@ const initModelEditorStore = (): ModelEditorStore => {
 
 
     /**
-     * 关联编辑对话框相关
+     * 关联对话框相关
      */
     const associationDialogsStore = useAssociationDialogsStore()
 
-     ModelEditorEventBus.on('createAssociation', () => {
+    ModelEditorEventBus.on('createAssociation', () => {
         const id = ASSOCIATION_CREATE_PREFIX + Date.now()
 
         associationDialogsStore.open(id, getDefaultAssociation())
@@ -533,6 +534,29 @@ const initModelEditorStore = (): ModelEditorStore => {
             }, 200)
         }
     })
+
+    const batchCreateAssociationsDialogStore = useBatchCreateAssociationsDialogStore()
+
+    ModelEditorEventBus.on('batchCreateAssociations', () => {
+        batchCreateAssociationsDialogStore.open()
+    })
+
+    ModelEditorEventBus.on('batchCreatedAssociations', ({associations}) => {
+        const graph = _graph()
+        if (!graph) return
+
+        const edges = loadAssociationModelInputs(
+            graph,
+            associations,
+        ).edges
+
+        batchCreateAssociationsDialogStore.close()
+
+        setTimeout(() => {
+            SELECT.select(edges)
+        }, 200)
+    })
+
 
     ModelEditorEventBus.on('editAssociation', ({id, association}) => {
         associationDialogsStore.open(id, cloneDeep(association))

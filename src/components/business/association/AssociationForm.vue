@@ -58,13 +58,13 @@ const sourceTable = computed<GenTableModelInput | undefined>(() => {
 
 const targetTable = computed<GenTableModelInput | undefined>(() => {
     return MODEL.tables.filter(table => {
-        return table.name === association.value.sourceTableName
+        return table.name === association.value.targetTableName
     })[0]
 })
 
 const sourceTableOptions = computed(() => {
     return MODEL.tables.filter(table => {
-        if (sourceColumnNames.value.length == 0) return true
+        if (sourceColumnNames.value.length === 0) return true
         return table.columns.some(it => sourceColumnNames.value.includes(it.name))
     })
 })
@@ -79,7 +79,7 @@ const sourceColumnNameOptions = computed(() => sourceColumnOptions.value.map(it 
 
 const targetTableOptions = computed(() => {
     return MODEL.tables.filter(table => {
-        if (targetColumnNames.value.length == 0) return true
+        if (targetColumnNames.value.length === 0) return true
         return table.columns.some(it => targetColumnNames.value.includes(it.name))
     })
 })
@@ -93,10 +93,20 @@ const targetColumnOptions = computed(() => {
 const targetColumnNameOptions = computed(() => targetColumnOptions.value.map(it => it.name))
 
 const handleRefreshAssociationName = () => {
+	if (sourceTable.value === undefined) {
+		sendI18nMessage('VALIDATE_GenAssociation_sourceTable_notFound')
+		return
+	}
+
+	if (targetTable.value === undefined) {
+		sendI18nMessage('VALIDATE_GenAssociation_targetTable_notFound')
+		return
+	}
+
     association.value.name = createAssociationName(
         association.value,
-        props.edge?.getSourceNode()?.getData()?.table.type === 'SUPER_TABLE',
-        props.edge?.getTargetNode()?.getData()?.table.type === 'SUPER_TABLE',
+        sourceTable.value.type === 'SUPER_TABLE',
+        targetTable.value.type === 'SUPER_TABLE',
     )
 }
 

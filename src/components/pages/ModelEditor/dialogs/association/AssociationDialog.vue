@@ -19,11 +19,9 @@ interface AssociationDialogProps {
 
 const props = defineProps<AssociationDialogProps>()
 
-interface TableEntityDialogEmits {
+const emits = defineEmits<{
 	(event: "close"): void
-}
-
-const emits = defineEmits<TableEntityDialogEmits>()
+}>()
 
 const handleSubmit = (association: GenAssociationModelInput) => {
     if (props.id.startsWith(ASSOCIATION_CREATE_PREFIX)) {

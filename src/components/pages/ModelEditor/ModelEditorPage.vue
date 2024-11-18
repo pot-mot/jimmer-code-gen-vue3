@@ -21,6 +21,8 @@ import EnumDialogs from "@/components/pages/ModelEditor/dialogs/enum/EnumDialogs
 import AssociationDialogs from "@/components/pages/ModelEditor/dialogs/association/AssociationDialogs.vue";
 import {confirm} from "@/message/confirm.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+import BatchCreateAssociationsDialog
+	from "@/components/pages/ModelEditor/dialogs/association/BatchCreateAssociationsDialog.vue";
 
 const {MODEL, MODEL_LOAD, MODEL_EDIT_DIALOG, DATA_SOURCE_LOAD_DIALOG, MODEL_LOAD_DIALOG} = useModelEditorStore()
 
@@ -148,6 +150,8 @@ watch(() => modelLoadMenu.value, () => {
 	<TableDialogs/>
 
 	<AssociationDialogs/>
+
+	<BatchCreateAssociationsDialog/>
 
 	<EnumDialogs/>
 </template>

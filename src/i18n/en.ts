@@ -302,6 +302,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     LABEL_ModelEditorMainMenu_enumTitle: "Enums",
     LABEL_ModelEditorMainMenu_createTable: "Create Table",
     LABEL_ModelEditorMainMenu_createAssociation: "Create Association",
+    LABEL_ModelEditorMainMenu_batchCreateAssociation: "Batch Create",
     LABEL_ModelEditorMainMenu_createEnum: "Create Enum",
     LABEL_ModelEditorMainMenu_associationShow_nameOnly: "Show: Name",
     LABEL_ModelEditorMainMenu_associationShow_joinTable: "Show: Join Table",
@@ -344,6 +345,18 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     LABEL_TableForm_columnType_businessKey: "Business Key",
     LABEL_TableForm_columnType_keyGroup: "Key Group",
     LABEL_TableForm_columnType_logicalDelete: "Logical Delete",
+
+    LABEL_AssociationForm_name: "Association Name",
+    LABEL_AssociationForm_mappingAssociation: "Mapping Association",
+    LABEL_AssociationForm_sourceTableName_placeholder: "Source Table Name",
+    LABEL_AssociationForm_targetTableName_placeholder: "Target Table Name",
+    LABEL_AssociationForm_sourceColumnName_placeholder: "Source Column Name",
+    LABEL_AssociationForm_targetColumnName_placeholder: "Target Column Name",
+    LABEL_AssociationForm_type: "Association Type",
+    LABEL_AssociationForm_fake: "Fake Foreign  Key",
+    LABEL_AssociationForm_dissociateAction: "Dissociation Action",
+    LABEL_AssociationForm_updateAction: "Update Action",
+    LABEL_AssociationForm_deleteAction: "Delete Action",
 
     VALIDATE_GenAssociation_name_cannotBeEmpty: "The association name cannot be empty.",
     VALIDATE_GenAssociation_name_cannotBeDuplicate: "The association name cannot be duplicate.",
@@ -429,5 +442,5 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
 
     LABEL_GenEnumItem_name: 'Name',
     LABEL_GenEnumItem_value: 'Value',
-    LABEL_GenEnumItem_comment: 'Comment',
+    LABEL_GenEnumItem_comment: 'Comment'
 }

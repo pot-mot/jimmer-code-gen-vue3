@@ -19,6 +19,8 @@ type ModelEditorEvents = {
 
     createAssociation: undefined,
     createdAssociation: { createKey: string, association: GenAssociationModelInput },
+    batchCreateAssociations: undefined,
+    batchCreatedAssociations: { associations: GenAssociationModelInput[] },
     editAssociation: { id: string, association: GenAssociationModelInput },
     editedAssociation: { id: string, association: DeepReadonly<GenAssociationModelInput> },
     modifyAssociation: { id: string },

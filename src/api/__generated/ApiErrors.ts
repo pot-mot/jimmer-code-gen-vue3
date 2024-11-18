@@ -97,6 +97,22 @@ export type AllErrors = {
         code: 'ID_PROPERTY_NOT_FOUND', 
         entity: IdName
     } | {
+        family: 'MODEL', 
+        code: 'INDEX_REF_PROPERTY_NOT_FOUND', 
+        entity: IdName, 
+        entityProperties: Array<IdName>, 
+        index: IdName, 
+        indexPropertyIds: Array<number>, 
+        notFoundPropertyId: number
+    } | {
+        family: 'MODEL', 
+        code: 'INDEX_REF_PROPERTY_CANNOT_BE_LIST', 
+        entity: IdName, 
+        entityProperties: Array<IdName>, 
+        index: IdName, 
+        indexPropertyIds: Array<number>, 
+        listProperty: IdName
+    } | {
         family: 'GENERATE', 
         code: 'MODEL_NOT_FOUND', 
         modelId: number
@@ -328,6 +344,14 @@ export type ApiErrors = {
             } | {
                 family: 'MODEL', 
                 code: 'ID_PROPERTY_NOT_FOUND', 
+                readonly [key:string]: any
+            } | {
+                family: 'MODEL', 
+                code: 'INDEX_REF_PROPERTY_NOT_FOUND', 
+                readonly [key:string]: any
+            } | {
+                family: 'MODEL', 
+                code: 'INDEX_REF_PROPERTY_CANNOT_BE_LIST', 
                 readonly [key:string]: any
             } | {
                 family: 'GENERATE', 

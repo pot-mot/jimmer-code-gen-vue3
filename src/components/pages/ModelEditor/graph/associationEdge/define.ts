@@ -19,6 +19,7 @@ import {
 import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts";
 import {createAssociationName} from "@/components/business/association/createAssociationName.ts";
 import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge/updateData.ts";
+import {columnTypeNotEqual} from "@/components/business/association/columnEquals.ts";
 
 export const associationEdgeBase = {
     inherit: 'edge',
@@ -59,11 +60,7 @@ export const AssociationEdgeConnecting: Partial<Connecting> = {
             // 当两侧不都是主键（即映射为多对多的情况），进行类型判断
             if (
                 !(sourceColumn.partOfPk && targetColumn.partOfPk) &&
-                (sourceColumn.typeCode !== targetColumn.typeCode) ||
-                (
-                    (sourceColumn.overwriteByRaw || targetColumn.overwriteByRaw) &&
-                    sourceColumn.rawType !== targetColumn.rawType
-                )
+                columnTypeNotEqual(sourceColumn, targetColumn)
             ) {
                 sendMessage('关联两端类型不一致', 'warning')
                 return false

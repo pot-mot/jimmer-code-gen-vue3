@@ -13,8 +13,8 @@ export const getDefaultAssociation = (): GenAssociationModelInput => {
             },
         ],
         fake: false,
-        dissociateAction: "DELETE",
-        updateAction: "CASCADE",
-        deleteAction: "CASCADE"
+        dissociateAction: undefined,
+        updateAction: "",
+        deleteAction: ""
     }
 }

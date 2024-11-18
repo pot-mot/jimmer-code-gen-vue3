@@ -178,6 +178,7 @@ export type MainLocale = {
     LABEL_ModelEditorMainMenu_enumTitle: string
     LABEL_ModelEditorMainMenu_createTable: string
     LABEL_ModelEditorMainMenu_createAssociation: string
+    LABEL_ModelEditorMainMenu_batchCreateAssociation: string
     LABEL_ModelEditorMainMenu_createEnum: string
     LABEL_ModelEditorMainMenu_associationShow_nameOnly: string
     LABEL_ModelEditorMainMenu_associationShow_joinTable: string
