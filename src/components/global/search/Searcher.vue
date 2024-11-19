@@ -130,6 +130,10 @@ const handleClose = () => {
 	searchResult.value = []
 	emits('close')
 }
+
+defineExpose(
+	searchResult
+)
 </script>
 
 <template>

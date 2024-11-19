@@ -341,6 +341,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     LABEL_GraphSearcher_enumKeywords: "Enum Keywords",
     LABEL_GraphSearcher_superTableKeywords: "SuperTable Keywords",
     LABEL_GraphSearcher_associationKeywords: "Association Keywords",
+    LABEL_GraphSearcher_selectAll: "Select All",
 
     LABEL_TableForm_asSuperTable: "SuperTable",
     LABEL_TableForm_extendTables: "extends",
