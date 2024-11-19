@@ -1,12 +1,11 @@
 import {
     GenAssociationModelInput,
     GenTableModelInput,
-    GenTableModelInput_TargetOf_columns
 } from "@/api/__generated/model/static";
 import {getDefaultAssociation} from "@/components/business/association/defaultColumn.ts";
 import {createAssociationName} from "@/components/business/association/createAssociationName.ts";
 import {DeepReadonly} from "vue";
-import {getDefaultColumn} from "@/components/business/table/defaultTable.ts";
+import {ColumnCombineKey} from "@/components/business/association/columnEquals.ts";
 
 export type AssociationMultiCreateInput =
     Omit<GenAssociationModelInput, "sourceTableName" | "targetTableName" | "name" | "columnReferences">
@@ -14,13 +13,17 @@ export type AssociationMultiCreateInput =
     sourceTables: GenTableModelInput[],
     targetTable: GenTableModelInput,
     columnReferences: {
-        sourceColumn: GenTableModelInput_TargetOf_columns,
-        targetColumn: GenTableModelInput_TargetOf_columns,
+        sourceColumn: ColumnCombineKey,
+        targetColumn: ColumnCombineKey,
     }[]
 }
 
-export type AssociationMultiCreateInputModelValue = Omit<AssociationMultiCreateInput, "targetTable"> & {
+export type AssociationMultiCreateInputModelValue = Omit<AssociationMultiCreateInput, "targetTable" | "columnReferences"> & {
     targetTable?: GenTableModelInput | undefined,
+    columnReferences: {
+        sourceColumn: ColumnCombineKey | undefined,
+        targetColumn: ColumnCombineKey | undefined,
+    }[]
 }
 
 export const getDefaultAssociationMultiCreateInput = (): AssociationMultiCreateInputModelValue => {
@@ -37,8 +40,8 @@ export const getDefaultAssociationMultiCreateInput = (): AssociationMultiCreateI
         sourceTables: [],
         targetTable: undefined,
         columnReferences: [{
-            sourceColumn: getDefaultColumn(),
-            targetColumn: getDefaultColumn(),
+            sourceColumn: undefined,
+            targetColumn: undefined,
         }],
     }
 }

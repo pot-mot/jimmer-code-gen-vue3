@@ -6,6 +6,7 @@ import {
 } from "@/api/__generated/model/static";
 import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadData.ts";
 import {DeepReadonly} from "vue";
+import {TableCombineData} from "@/components/business/table/TableCombineData.ts";
 
 type ModelEditorEvents = {
     syncTable: { id: string },
@@ -16,6 +17,9 @@ type ModelEditorEvents = {
     editTable: { id: string, table: GenTableModelInput },
     editedTable: { id: string, table: DeepReadonly<GenTableModelInput> },
     removeTable: { id: string },
+
+    combineTable: { options: TableLoadOptions },
+    combinedTable: TableCombineData,
 
     createAssociation: undefined,
     createdAssociation: { createKey: string, association: GenAssociationModelInput },

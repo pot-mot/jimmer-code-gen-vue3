@@ -302,6 +302,7 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     LABEL_ModelEditorMainMenu_associationTitle: "关联",
     LABEL_ModelEditorMainMenu_enumTitle: "枚举",
     LABEL_ModelEditorMainMenu_createTable: "新建表",
+    LABEL_ModelEditorMainMenu_combineTable: "组合表",
     LABEL_ModelEditorMainMenu_createAssociation: "新建关联",
     LABEL_ModelEditorMainMenu_batchCreateAssociation: "批量创建",
     LABEL_ModelEditorMainMenu_createEnum: "新建枚举",
@@ -353,6 +354,14 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     LABEL_TableForm_columnType_businessKey: "业务键",
     LABEL_TableForm_columnType_keyGroup: "键组",
     LABEL_TableForm_columnType_logicalDelete: "逻辑删除",
+
+    LABEL_TableCombineForm_superTableName: "上级表名称",
+    LABEL_TableCombineForm_tables: "表",
+    LABEL_TableCombineForm_tables_placeholder: "选择表",
+    LABEL_TableCombineForm_tables_selectAll: "选择全部",
+    LABEL_TableCombineForm_columns: "列",
+    LABEL_TableCombineForm_columns_placeholder: "选择列",
+    LABEL_TableCombineForm_columns_selectAll: "选择全部",
 
     LABEL_AssociationForm_name: "关联名称",
     LABEL_AssociationForm_mappingAssociation: "映射关联",

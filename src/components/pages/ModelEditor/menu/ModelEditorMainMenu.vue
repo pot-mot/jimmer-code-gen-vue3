@@ -17,16 +17,24 @@ const i18nStore = useI18nStore()
 const {MODEL, DATA_SOURCE_LOAD_DIALOG, MODEL_LOAD_DIALOG, VIEW} = useModelEditorStore()
 
 const tableNodePairs = computed(() => {
-	return MODEL.tableNodePairs
+    return MODEL.tableNodePairs
 })
 
 const associationEdgePairs = computed(() => {
-	return MODEL.associationEdgePairs
+    return MODEL.associationEdgePairs
 })
 
 const enums = computed(() => {
-	return MODEL.enums
+    return MODEL.enums
 })
+
+const openDataSourceLoadDialog = () => {
+    DATA_SOURCE_LOAD_DIALOG.openState = true
+}
+
+const openModelLoadDialog = () => {
+    MODEL_LOAD_DIALOG.openState = true
+}
 
 const associationItemShowType = ref<AssociationItemShowType>('NAME')
 
@@ -49,26 +57,34 @@ const formattedEdgeShowType = computed(() => {
 
 <template>
     <div>
-        <el-button style="margin-bottom: 0.5em;" @click="() => DATA_SOURCE_LOAD_DIALOG.openState = true">
-			{{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromDataSource') }}
+        <el-button style="margin-bottom: 0.5em;" @click="openDataSourceLoadDialog">
+            {{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromDataSource') }}
         </el-button>
-        <el-button style="margin-bottom: 0.5em;" @click="() => MODEL_LOAD_DIALOG.openState = true">
-			{{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromModel') }}
+        <el-button style="margin-bottom: 0.5em;" @click="openModelLoadDialog">
+            {{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromModel') }}
         </el-button>
 
         <Details open>
             <template #title>
                 <div style="height: 2em; line-height: 2em;">
                     <el-text>
-						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_tableTitle') }}
-					</el-text>
+                        {{ i18nStore.translate('LABEL_ModelEditorMainMenu_tableTitle') }}
+                    </el-text>
                     <el-button
                         style="margin-left: 0.5em;"
                         @click="ModelEditorEventBus.emit(
 							'createTable',
 							{options: {x: VIEW.getCenterPoint().x * 3/4, y: VIEW.getCenterPoint().y * 3/4}}
 						)">
-						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_createTable') }}
+                        {{ i18nStore.translate('LABEL_ModelEditorMainMenu_createTable') }}
+                    </el-button>
+                    <el-button
+                        style="margin-left: 0.5em;"
+                        @click="ModelEditorEventBus.emit(
+							'combineTable',
+							{options: {x: VIEW.getCenterPoint().x * 3/4, y: VIEW.getCenterPoint().y * 3/4}}
+						)">
+                        {{ i18nStore.translate('LABEL_ModelEditorMainMenu_combineTable') }}
                     </el-button>
                 </div>
             </template>
@@ -86,17 +102,17 @@ const formattedEdgeShowType = computed(() => {
             <template #title>
                 <div style="height: 2em; line-height: 2em;">
                     <el-text>
-						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_associationTitle') }}
-					</el-text>
+                        {{ i18nStore.translate('LABEL_ModelEditorMainMenu_associationTitle') }}
+                    </el-text>
                     <el-button style="margin-left: 0.5em;" @click="ModelEditorEventBus.emit('createAssociation')">
-						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_createAssociation') }}
+                        {{ i18nStore.translate('LABEL_ModelEditorMainMenu_createAssociation') }}
                     </el-button>
-					<el-button style="margin-left: 0.5em;" @click="ModelEditorEventBus.emit('batchCreateAssociations')">
-						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_batchCreateAssociation') }}
-					</el-button>
+                    <el-button style="margin-left: 0.5em;" @click="ModelEditorEventBus.emit('batchCreateAssociations')">
+                        {{ i18nStore.translate('LABEL_ModelEditorMainMenu_batchCreateAssociation') }}
+                    </el-button>
                     <el-button style="margin-left: 0.5em;" @click="toggleEdgeShow">
-						{{formattedEdgeShowType}}
-					</el-button>
+                        {{ formattedEdgeShowType }}
+                    </el-button>
                 </div>
             </template>
 
@@ -114,18 +130,19 @@ const formattedEdgeShowType = computed(() => {
             <template #title>
                 <div style="height: 2em; line-height: 2em;">
                     <el-text>
-						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_enumTitle') }}
-					</el-text>
+                        {{ i18nStore.translate('LABEL_ModelEditorMainMenu_enumTitle') }}
+                    </el-text>
                     <el-button style="margin-left: 0.5em;" @click="ModelEditorEventBus.emit('createEnum')">
-						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_createEnum') }}
+                        {{ i18nStore.translate('LABEL_ModelEditorMainMenu_createEnum') }}
                     </el-button>
                 </div>
             </template>
 
             <div style="padding-bottom: 1em;" v-if="MODEL.isLoaded">
-                <EnumItem v-for="genEnum in enums"
-                          :key="genEnum.name + genEnum.comment"
-                          :gen-enum="genEnum"/>
+                <EnumItem
+                    v-for="genEnum in enums"
+                    :key="genEnum.name + genEnum.comment"
+                    :gen-enum="genEnum"/>
             </div>
         </Details>
     </div>

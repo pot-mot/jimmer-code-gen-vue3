@@ -105,37 +105,35 @@ const handleCancel = () => {
 <template>
     <el-form style="width: calc(100% - 0.5rem);">
         <el-form-item :label="i18nStore.translate('LABEL_AssociationForm_mappingAssociation')">
-            <table style="width: 100%;">
-                <tr v-for="columnReference in association.columnReferences">
-                    <td style="display: grid; grid-template-columns: 1fr 1fr 2em 1fr 1fr;">
-                        <el-select v-model="association.sourceTableName" clearable filterable
-                                   :placeholder="i18nStore.translate('LABEL_AssociationForm_sourceTableName_placeholder')">
-                            <el-option v-for="table in sourceTableOptions" :key="table.name" :value="table.name"/>
-                        </el-select>
-                        <el-select v-model="columnReference.sourceColumnName" clearable filterable
-                                   :placeholder="i18nStore.translate('LABEL_AssociationForm_sourceColumnName_placeholder')">
-                            <el-option v-for="column in sourceColumnOptions" :key="column.name" :value="column.name"/>
-                            <template #empty v-if="!association.sourceTableName">
-                                {{ i18nStore.translate('LABEL_AssociationForm_placeSelectSourceTableFirst') }}
-                            </template>
-                        </el-select>
-                        <el-text style="text-align: center;">
-                            {{ " -> " }}
-                        </el-text>
-                        <el-select v-model="association.targetTableName" clearable filterable
-                                   :placeholder="i18nStore.translate('LABEL_AssociationForm_targetTableName_placeholder')">
-                            <el-option v-for="table in targetTableOptions" :key="table.name" :value="table.name"/>
-                        </el-select>
-                        <el-select v-model="columnReference.targetColumnName" clearable filterable
-                                   :placeholder="i18nStore.translate('LABEL_AssociationForm_targetColumnName_placeholder')">
-                            <el-option v-for="column in targetColumnOptions" :key="column.name" :value="column.name"/>
-                            <template #empty v-if="!association.targetTableName">
-                                {{ i18nStore.translate('LABEL_AssociationForm_placeSelectTargetTableFirst') }}
-                            </template>
-                        </el-select>
-                    </td>
-                </tr>
-            </table>
+            <template v-for="columnReference in association.columnReferences">
+                <div style="width: 100%; display: grid; grid-template-columns: 1fr 1fr 2em 1fr 1fr;">
+                    <el-select v-model="association.sourceTableName" clearable filterable
+                               :placeholder="i18nStore.translate('LABEL_AssociationForm_sourceTableName_placeholder')">
+                        <el-option v-for="table in sourceTableOptions" :key="table.name" :value="table.name"/>
+                    </el-select>
+                    <el-select v-model="columnReference.sourceColumnName" clearable filterable
+                               :placeholder="i18nStore.translate('LABEL_AssociationForm_sourceColumnName_placeholder')">
+                        <el-option v-for="column in sourceColumnOptions" :key="column.name" :value="column.name"/>
+                        <template #empty v-if="!association.sourceTableName">
+                            {{ i18nStore.translate('LABEL_AssociationForm_placeSelectSourceTableFirst') }}
+                        </template>
+                    </el-select>
+                    <el-text style="text-align: center;">
+                        {{ " -> " }}
+                    </el-text>
+                    <el-select v-model="association.targetTableName" clearable filterable
+                               :placeholder="i18nStore.translate('LABEL_AssociationForm_targetTableName_placeholder')">
+                        <el-option v-for="table in targetTableOptions" :key="table.name" :value="table.name"/>
+                    </el-select>
+                    <el-select v-model="columnReference.targetColumnName" clearable filterable
+                               :placeholder="i18nStore.translate('LABEL_AssociationForm_targetColumnName_placeholder')">
+                        <el-option v-for="column in targetColumnOptions" :key="column.name" :value="column.name"/>
+                        <template #empty v-if="!association.targetTableName">
+                            {{ i18nStore.translate('LABEL_AssociationForm_placeSelectTargetTableFirst') }}
+                        </template>
+                    </el-select>
+                </div>
+            </template>
         </el-form-item>
 
         <el-form-item :label="i18nStore.translate('LABEL_AssociationForm_name')">

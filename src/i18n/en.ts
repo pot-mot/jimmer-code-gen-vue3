@@ -302,6 +302,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     LABEL_ModelEditorMainMenu_associationTitle: "Associations",
     LABEL_ModelEditorMainMenu_enumTitle: "Enums",
     LABEL_ModelEditorMainMenu_createTable: "Create Table",
+    LABEL_ModelEditorMainMenu_combineTable: "Combine Table",
     LABEL_ModelEditorMainMenu_createAssociation: "Create Association",
     LABEL_ModelEditorMainMenu_batchCreateAssociation: "Batch Create",
     LABEL_ModelEditorMainMenu_createEnum: "Create Enum",
@@ -353,6 +354,14 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     LABEL_TableForm_columnType_businessKey: "Business Key",
     LABEL_TableForm_columnType_keyGroup: "Key Group",
     LABEL_TableForm_columnType_logicalDelete: "Logical Delete",
+
+    LABEL_TableCombineForm_superTableName: "Super Table Name",
+    LABEL_TableCombineForm_tables: "Tables",
+    LABEL_TableCombineForm_tables_placeholder: "Select Table",
+    LABEL_TableCombineForm_tables_selectAll: "Select All",
+    LABEL_TableCombineForm_columns: "Columns",
+    LABEL_TableCombineForm_columns_placeholder: "Select Column",
+    LABEL_TableCombineForm_columns_selectAll: "Select All",
 
     LABEL_AssociationForm_name: "Association Name",
     LABEL_AssociationForm_mappingAssociation: "Mapping Association",

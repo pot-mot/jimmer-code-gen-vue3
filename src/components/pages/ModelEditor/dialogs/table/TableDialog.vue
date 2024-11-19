@@ -6,11 +6,10 @@ import {GenTableModelInput} from "@/api/__generated/model/static";
 import {TABLE_CREATE_PREFIX} from "@/store/modelEditor/TableDialogsStore.ts";
 import {createIndexName} from "@/components/business/table/createIndexName.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {validateTable} from "@/components/business/table/validateTable.ts";
 import {DeepReadonly} from "vue";
 
-const {GRAPH, MODEL} = useModelEditorStore()
+const {MODEL} = useModelEditorStore()
 
 interface TableDialogProps {
 	id: string,
@@ -34,7 +33,7 @@ const handleSubmit = (table: GenTableModelInput) => {
 }
 
 const getOtherTables = () => {
-	return GRAPH.nodes.filter(it => it.shape === TABLE_NODE && it.id !== props.id).map(it => it.data.table)
+	return MODEL.tableNodePairs.filter(it => it.second.id !== props.id).map(it => it.first)
 }
 
 const validate = (table: DeepReadonly<GenTableModelInput>) => {

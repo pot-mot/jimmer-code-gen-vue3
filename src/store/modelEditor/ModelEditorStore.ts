@@ -52,6 +52,7 @@ import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
 import {loadAssociationModelInputs} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
 import {getDefaultAssociation} from "@/components/business/association/defaultColumn.ts";
 import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/BatchCreateAssociationsDialogStore.ts";
+import {useTableCombineDialogStore} from "@/store/modelEditor/TableCombineDialogStore.ts";
 
 interface ModelReactiveState {
     tableNodes: Readonly<Ref<Array<UnwrapRefSimple<Node>>>>,
@@ -59,10 +60,12 @@ interface ModelReactiveState {
     tables: ComputedRef<Array<GenTableModelInput>>,
     superTables: ComputedRef<Array<GenTableModelInput>>,
     selectedTables: ComputedRef<Array<GenTableModelInput>>,
+    selectedTableNodePairs: ComputedRef<Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>>,
     associationEdges: Readonly<Ref<Array<UnwrapRefSimple<Edge>>>>,
     associationEdgePairs: ComputedRef<Array<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>>,
     associations: ComputedRef<Array<GenAssociationModelInput>>,
     selectedAssociations: ComputedRef<Array<GenAssociationModelInput>>,
+    selectedAssociationEdgePairs: ComputedRef<Array<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>>,
     enums: ComputedRef<Array<GenModelInput_TargetOf_enums>>
 }
 
@@ -507,6 +510,32 @@ const initModelEditorStore = (): ModelEditorStore => {
         })
     })
 
+    /**
+     * 表组合对话框
+     */
+    const tableCombineDialogStore = useTableCombineDialogStore()
+
+    const tableCombineOptions = ref<TableLoadOptions>()
+
+    ModelEditorEventBus.on('combineTable', ({options}) => {
+        tableCombineOptions.value = options
+        tableCombineDialogStore.open()
+    })
+
+    ModelEditorEventBus.on('combinedTable', ({superTable, inheritTableNodePairs}) => {
+        const graph = _graph()
+        if (!graph) return
+
+        startBatchSync("combinedTable", () => {
+            loadTableModelInputs(graph, [superTable], tableCombineOptions.value, undefined)
+
+            for (const {first, second} of inheritTableNodePairs) {
+                updateTableNodeData(second, first)
+            }
+
+            tableCombineDialogStore.close()
+        })
+    })
 
     /**
      * 关联对话框相关
@@ -739,12 +768,20 @@ const initModelEditorStore = (): ModelEditorStore => {
         })
     })
 
+    const selectedTableNodePairs = computed(() => {
+        return tableNodePairs.value.filter(it => graphReactiveState.selectedNodeMap.value.has(it.second.id))
+    })
+
     const selectedTables = computed<GenTableModelInput[]>(() => {
-        return tableNodePairs.value.filter(it => graphReactiveState.selectedNodeMap.value.has(it.second.id)).map(it => it.first)
+        return selectedTableNodePairs.value.map(it => it.first)
+    })
+
+    const selectedAssociationEdgePairs = computed(() => {
+        return associationEdgePairs.value.filter(it => graphReactiveState.selectedEdgeMap.value.has(it.second.id))
     })
 
     const selectedAssociations = computed<GenAssociationModelInput[]>(() => {
-        return associationEdgePairs.value.filter(it => graphReactiveState.selectedEdgeMap.value.has(it.second.id)).map(it => it.first)
+        return selectedAssociationEdgePairs.value.map(it => it.first)
     })
 
     const modelReactiveState: ModelReactiveState = {
@@ -753,10 +790,12 @@ const initModelEditorStore = (): ModelEditorStore => {
         tables,
         superTables,
         selectedTables,
+        selectedTableNodePairs,
         associationEdges,
         associationEdgePairs,
         associations,
         selectedAssociations,
+        selectedAssociationEdgePairs,
         enums,
     }
 
