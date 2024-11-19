@@ -131,9 +131,11 @@ const handleClose = () => {
 	emits('close')
 }
 
-defineExpose(
+defineExpose<{
+	searchResult: Ref<T[]>
+}>({
 	searchResult
-)
+})
 </script>
 
 <template>

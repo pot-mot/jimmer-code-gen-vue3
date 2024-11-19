@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {
-	GenTableColumnsView_TargetOf_columns,
-	GenTableColumnsView_TargetOf_columns_TargetOf_enum,
-	GenTableColumnsView_TargetOf_indexes,
+	GenTableModelInput_TargetOf_columns,
+	GenTableModelInput_TargetOf_columns_TargetOf_enum,
+	GenTableModelInput_TargetOf_indexes,
 	GenTableModelInput,
 	GenTableModelInput_TargetOf_superTables
 } from "@/api/__generated/model/static";
@@ -22,18 +22,18 @@ defineProps<{
 }>()
 
 const emits = defineEmits<{
-	(event: "click-table", e: MouseEvent): void,
-	(event: "click-superTable", e: MouseEvent, superTable: GenTableModelInput_TargetOf_superTables): void,
-	(event: "click-column", e: MouseEvent, column: GenTableColumnsView_TargetOf_columns): void
-	(event: "click-enum", e: MouseEvent, clickedEnum: GenTableColumnsView_TargetOf_columns_TargetOf_enum): void
-	(event: "click-index", e: MouseEvent, index: GenTableColumnsView_TargetOf_indexes): void
+	(event: "clickTable", e: MouseEvent): void,
+	(event: "clickSuperTable", e: MouseEvent, superTable: GenTableModelInput_TargetOf_superTables): void,
+	(event: "clickColumn", e: MouseEvent, column: GenTableModelInput_TargetOf_columns): void
+	(event: "clickEnum", e: MouseEvent, clickedEnum: GenTableModelInput_TargetOf_columns_TargetOf_enum): void
+	(event: "clickIndex", e: MouseEvent, index: GenTableModelInput_TargetOf_indexes): void
 }>()
 </script>
 
 <template>
 	<div>
 		<div>
-			<el-button link @click="(e: MouseEvent) => emits('click-table', e)">
+			<el-button link @click="(e: MouseEvent) => emits('clickTable', e)">
 				{{ table.name }}
 				<Comment :comment="table.comment"/>
 			</el-button>
@@ -44,7 +44,7 @@ const emits = defineEmits<{
 				<el-text>{{ i18nStore.translate('LABEL_TableForm_extendTables') }}</el-text>
 			</div>
 			<div v-for="superTable in table.superTables" class="item">
-				<el-button link @click="(e: MouseEvent) => emits('click-superTable', e, superTable)">
+				<el-button link @click="(e: MouseEvent) => emits('clickSuperTable', e, superTable)">
 					{{ superTable.name }}
 				</el-button>
 			</div>
@@ -61,11 +61,11 @@ const emits = defineEmits<{
 						(it.enum === undefined ? false : matchByKeywords(it.enum, enumKeywords, ['name'], 'OR'))
 					)"
 				class="item">
-				<el-button link @click="(e: MouseEvent) => emits('click-column', e, column)">
+				<el-button link @click="(e: MouseEvent) => emits('clickColumn', e, column)">
 					{{ column.name }}
 					<Comment :comment="column.comment"/>
 				</el-button>
-				<el-button v-if="column.enum" link @click="(e: MouseEvent) => emits('click-enum', e, column.enum)">
+				<el-button v-if="column.enum" link @click="(e: MouseEvent) => emits('clickEnum', e, column.enum!!)">
 					{{ column.enum.name }}
 				</el-button>
 			</div>
@@ -76,7 +76,7 @@ const emits = defineEmits<{
 				<el-text>{{ i18nStore.translate('LABEL_TableForm_indexes') }}</el-text>
 			</div>
 			<div v-for="index in table.indexes" class="item">
-				<el-button link @click="(e: MouseEvent) => emits('click-index', e, index)">
+				<el-button link @click="(e: MouseEvent) => emits('clickIndex', e, index)">
 					{{ index.name }}
 				</el-button>
 			</div>

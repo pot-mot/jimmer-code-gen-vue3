@@ -5,7 +5,7 @@ import {
     type GenTableModelInput_TargetOf_columns
 } from "@/api/__generated/model/static";
 import {AssociationType_CONSTANTS, DissociateAction_CONSTANTS} from "@/api/__generated/model/enums";
-import {computed, DeepReadonly, ref} from "vue";
+import {computed, DeepReadonly, ref, watch} from "vue";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {sendI18nMessage} from "@/message/message.ts";
 import {MainLocaleKeyParam} from "@/i18n";
@@ -25,6 +25,8 @@ const i18nStore = useI18nStore()
 const {MODEL} = useModelEditorStore()
 
 const props = defineProps<{
+	sourceTables?: Array<GenTableModelInput> | undefined,
+
     validate: (association: DeepReadonly<Array<GenAssociationModelInput>>) => MainLocaleKeyParam[],
 
     createAssociationName: (
@@ -35,6 +37,12 @@ const props = defineProps<{
 }>()
 
 const association = ref<AssociationMultiCreateInputModelValue>(getDefaultAssociationMultiCreateInput())
+
+watch(() => props.sourceTables, (value) => {
+	if (value !== undefined) {
+		association.value.sourceTables = value
+	}
+}, {immediate: true, deep: true})
 
 const emits = defineEmits<FormEmits<GenAssociationModelInput[], AssociationMultiCreateInputModelValue>>()
 
@@ -80,6 +88,11 @@ const handleSelectAllSourceTable = () => {
     association.value.sourceTables = sourceTableOptions.value
 }
 
+/**
+ * 源列选项
+ * 如果当前 sourceTables 已存在，根据所有 sourceTable 的 columns 进行类型匹配组合
+ * 如果当前 sourceTables 不存在，则根据所有存在的 table 的 columns 进行类型匹配组合
+ */
 const sourceColumnOptions = computed<GenTableModelInput_TargetOf_columns[]>(() => {
     const tables = sourceTablesIsEmpty.value ? MODEL.tables : association.value.sourceTables
     const columns = tables.flatMap(it => it.columns)

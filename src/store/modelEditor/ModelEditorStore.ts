@@ -54,14 +54,16 @@ import {getDefaultAssociation} from "@/components/business/association/defaultCo
 import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/BatchCreateAssociationsDialogStore.ts";
 
 interface ModelReactiveState {
-    tableNodes: Readonly<Ref<UnwrapRefSimple<Node>[]>>,
-    tableNodePairs: ComputedRef<Pair<GenTableModelInput, UnwrapRefSimple<Node>>[]>,
-    tables: ComputedRef<GenTableModelInput[]>,
-    superTables: ComputedRef<GenTableModelInput[]>,
-    associationEdges: Readonly<Ref<UnwrapRefSimple<Edge>[]>>,
-    associationEdgePairs: ComputedRef<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>[]>,
-    associations: ComputedRef<GenAssociationModelInput[]>,
-    enums: ComputedRef<GenModelInput_TargetOf_enums[]>
+    tableNodes: Readonly<Ref<Array<UnwrapRefSimple<Node>>>>,
+    tableNodePairs: ComputedRef<Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>>,
+    tables: ComputedRef<Array<GenTableModelInput>>,
+    superTables: ComputedRef<Array<GenTableModelInput>>,
+    selectedTables: ComputedRef<Array<GenTableModelInput>>,
+    associationEdges: Readonly<Ref<Array<UnwrapRefSimple<Edge>>>>,
+    associationEdgePairs: ComputedRef<Array<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>>,
+    associations: ComputedRef<Array<GenAssociationModelInput>>,
+    selectedAssociations: ComputedRef<Array<GenAssociationModelInput>>,
+    enums: ComputedRef<Array<GenModelInput_TargetOf_enums>>
 }
 
 interface ModelState {
@@ -466,7 +468,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         tableDialogsStore.close(id)
 
         startBatchSync('editedTable', () => {
-            const oldTable = cell.getData().table
+            const oldTable = cell.data.table
 
             // 当上级表被修改时，调整其他表中的 superTables
             if (oldTable.type === "SUPER_TABLE") {
@@ -494,8 +496,8 @@ const initModelEditorStore = (): ModelEditorStore => {
         }
 
         startBatchSync('removeTable', () => {
-            if (cell.shape === TABLE_NODE && cell.getData().table) {
-                const table = cell.getData().table as GenTableModelInput
+            if (cell.shape === TABLE_NODE && cell.data.table) {
+                const table = cell.data.table as GenTableModelInput
                 // 当上级表被删除时，调整其他表中的 superTables
                 if (table.type === "SUPER_TABLE") {
                     syncSuperTableNameForTables(graph, table.name, undefined)
@@ -676,19 +678,19 @@ const initModelEditorStore = (): ModelEditorStore => {
         addNodeSync(graph)
     })
 
-    const tableNodePairs = computed(() =>
+    const tableNodePairs: ComputedRef<Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>> = computed(() =>
         tableNodes.value
             .map(it => {
-                return {first: it.data.table, second: it}
+                return {first: it.data.table as GenTableModelInput, second: it}
             })
     )
 
-    const tables = computed(() =>
+    const tables = computed<Array<GenTableModelInput>>(() =>
         tableNodes.value
             .map(it => it.data.table)
     )
 
-    const superTables = computed(() =>
+    const superTables = computed<Array<GenTableModelInput>>(() =>
         tables.value
             .filter(it => it.type === 'SUPER_TABLE')
     )
@@ -718,16 +720,16 @@ const initModelEditorStore = (): ModelEditorStore => {
         addEdgeSync(graph)
     })
 
-    const associationEdgePairs = computed(() =>
+    const associationEdgePairs: ComputedRef<Array<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>> = computed(() =>
         associationEdges.value
             .map(it => {
-                return {first: it.getData().association, second: it}
+                return {first: it.data.association as GenAssociationModelInput, second: it}
             })
     )
 
-    const associations = computed(() =>
+    const associations = computed<Array<GenAssociationModelInput>>(() =>
         associationEdges.value
-            .map(it => it.getData().association)
+            .map(it => it.data.association)
     )
 
     const enums = computed(() => {
@@ -737,14 +739,24 @@ const initModelEditorStore = (): ModelEditorStore => {
         })
     })
 
+    const selectedTables = computed<GenTableModelInput[]>(() => {
+        return tableNodePairs.value.filter(it => graphReactiveState.selectedNodeMap.value.has(it.second.id)).map(it => it.first)
+    })
+
+    const selectedAssociations = computed<GenAssociationModelInput[]>(() => {
+        return associationEdgePairs.value.filter(it => graphReactiveState.selectedEdgeMap.value.has(it.second.id)).map(it => it.first)
+    })
+
     const modelReactiveState: ModelReactiveState = {
         tableNodes,
         tableNodePairs,
         tables,
         superTables,
+        selectedTables,
         associationEdges,
         associationEdgePairs,
         associations,
+        selectedAssociations,
         enums,
     }
 

@@ -2,7 +2,8 @@
 import type {Cell, Graph} from "@antv/x6";
 import Searcher from "@/components/global/search/Searcher.vue";
 import {focus} from "@/components/global/graphEditor/view/viewOperation.ts"
-import {computed, ref} from "vue";
+import {computed, type Ref, ref} from "vue";
+import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {matchByKeywords, matchStrByKeywords} from "@/components/global/match/matchByKeywords.ts";
 import {
@@ -132,12 +133,17 @@ const handleClickSuperTable = (
 	}
 }
 
-const searcherRef = ref<{
-	searchResult: Cell[]
-} | undefined>()
+const searcherRef = ref<UnwrapRefSimple<{
+	searchResult: Ref<Cell[]>
+}> | undefined>()
 
 const handleSelectAll = () => {
-	props.graph.select(searcherRef.value?.searchResult)
+	console.log(searcherRef.value)
+
+	const cells = searcherRef.value?.searchResult
+
+	if (cells !== undefined)
+		props.graph.select(cells)
 }
 </script>
 

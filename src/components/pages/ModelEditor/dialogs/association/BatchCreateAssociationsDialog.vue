@@ -3,7 +3,7 @@ import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/BatchCr
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
-import {DeepReadonly} from "vue";
+import {type DeepReadonly} from "vue";
 import {MainLocaleKeyParam} from "@/i18n";
 import {validateAssociation} from "@/components/business/association/validateAssociation.ts";
 import AssociationMultiCreateForm from "@/components/business/association/AssociationMultiCreateForm.vue";
@@ -44,6 +44,7 @@ const validate = (associations: DeepReadonly<Array<GenAssociationModelInput>>): 
 		<AssociationMultiCreateForm
 			:validate="validate"
 			:create-association-name="createAssociationName"
+			:source-tables="MODEL.selectedTables"
 			@submit="handleSubmit"
 			@cancel="store.close"
 			style="padding-top: 0.5em; padding-left: 1em;"

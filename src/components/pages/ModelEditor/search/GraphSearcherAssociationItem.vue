@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 
-const props = defineProps<{
+defineProps<{
 	association: GenAssociationModelInput,
 	associationKeywords: string[],
 }>()
