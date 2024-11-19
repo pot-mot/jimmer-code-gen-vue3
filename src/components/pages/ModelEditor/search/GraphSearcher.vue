@@ -2,12 +2,13 @@
 import type {Cell, Graph} from "@antv/x6";
 import Searcher from "@/components/global/search/Searcher.vue";
 import {focus} from "@/components/global/graphEditor/view/viewOperation.ts"
-import Comment from "@/components/global/common/Comment.vue";
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
-import {matchByKeywords} from "@/components/global/match/matchByKeywords.ts";
+import {matchByKeywords, matchStrByKeywords} from "@/components/global/match/matchByKeywords.ts";
 import {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+import GraphSearcherTableItem from "@/components/pages/ModelEditor/search/GraphSearcherTableItem.vue";
+import GraphSearcherAssociationItem from "@/components/pages/ModelEditor/search/GraphSearcherAssociationItem.vue";
 
 const i18nStore = useI18nStore()
 
@@ -23,76 +24,80 @@ const searchData = ref({
 	tableKeywords: "",
 	columnKeywords: "",
 	enumKeywords: "",
+	indexKeywords: "",
 	superTableKeywords: "",
 	associationKeywords: "",
 })
 
-const search = (
-	searchData: {
-		tableKeywords: string,
-		columnKeywords: string,
-		enumKeywords: string,
-		superTableKeywords: string,
-		associationKeywords: string,
-	}
-): Cell[] => {
-	const {
-		tableKeywords,
-		columnKeywords,
-		enumKeywords,
-		superTableKeywords,
-		associationKeywords
-	} = searchData
+const tableKeywords = computed(() => searchData.value.tableKeywords.split(/\s+/).filter(it => it.length > 0))
+const columnKeywords = computed(() => searchData.value.columnKeywords.split(/\s+/).filter(it => it.length > 0))
+const enumKeywords = computed(() => searchData.value.enumKeywords.split(/\s+/).filter(it => it.length > 0))
+const indexKeywords = computed(() => searchData.value.indexKeywords.split(/\s+/).filter(it => it.length > 0))
+const superTableKeywords = computed(() => searchData.value.superTableKeywords.split(/\s+/).filter(it => it.length > 0))
+const associationKeywords = computed(() => searchData.value.associationKeywords.split(/\s+/).filter(it => it.length > 0))
 
-	const tableKeywordList = tableKeywords.split(/\s+/).filter(it => it.length > 0)
-	const columnKeywordList = columnKeywords.split(/\s+/).filter(it => it.length > 0)
-	const enumKeywordList = enumKeywords.split(/\s+/).filter(it => it.length > 0)
-	const superTableKeywordList = superTableKeywords.split(/\s+/).filter(it => it.length > 0)
-	const associationKeywordList = associationKeywords.split(/\s+/).filter(it => it.length > 0)
 
+const search = (): Cell[] => {
 	return props.graph.getCells()
 		.filter(cell => {
 			if (cell.shape === TABLE_NODE) {
 				if (
-					tableKeywordList.length === 0 &&
-					columnKeywordList.length === 0 &&
-					enumKeywordList.length === 0 &&
-					superTableKeywordList.length === 0
+					tableKeywords.value.length === 0 &&
+					columnKeywords.value.length === 0 &&
+					indexKeywords.value.length === 0 &&
+					enumKeywords.value.length === 0 &&
+					superTableKeywords.value.length === 0
 				) return false
 
 				const table = cell.getData().table as GenTableModelInput | undefined
 				if (table) {
-					const matchByTableKeywords = tableKeywordList.length > 0 ?
-						matchByKeywords(table, tableKeywordList, ['name', 'comment']) :
+					const matchByTableKeywords = tableKeywords.value.length > 0 ?
+						matchByKeywords(table, tableKeywords.value, ['name', 'comment']) :
 						true
 
 					if (!matchByTableKeywords) return false
 
-					const matchByColumnKeywords = columnKeywordList.length > 0 ?
-						table.columns.some(column => matchByKeywords(column, columnKeywordList, ['name', 'comment'])) :
+					const matchByColumnKeywords = columnKeywords.value.length > 0 ?
+						matchStrByKeywords(
+							table.columns.map(it => `${it.name} ${it.comment}`).join(' '),
+							columnKeywords.value
+						) :
 						true
 
 					if (!matchByColumnKeywords) return false
 
-					const matchByEnumKeywords = enumKeywordList.length > 0 ?
-						table.columns
-							.filter(it => it.enum !== undefined)
-							.some(column => matchByKeywords(column.enum!!, columnKeywordList, ['name'])) :
+					const matchByEnumKeywords = enumKeywords.value.length > 0 ?
+						matchStrByKeywords(
+							table.columns.filter(it => it.enum !== undefined).map(it => it.enum!.name).join(' '),
+							enumKeywords.value
+						) :
 						true
 
 					if (!matchByEnumKeywords) return false
 
-					return superTableKeywordList.length > 0 ?
-						table.superTables.some(superTable => matchByKeywords(superTable, tableKeywordList, ['name'])) :
+					const matchByIndexKeywords = indexKeywords.value.length > 0 ?
+						matchStrByKeywords(
+							table.indexes.map(it => it.name).join(' '),
+							indexKeywords.value
+						) :
+						true
+
+					if (!matchByIndexKeywords) return false
+
+					return superTableKeywords.value.length > 0 ?
+						matchStrByKeywords(
+							table.superTables.map(it => it.name).join(' '),
+							superTableKeywords.value
+						) :
 						true
 				}
 			} else if (cell.shape === ASSOCIATION_EDGE) {
-				if (associationKeywordList.length === 0)
+				if (associationKeywords.value.length === 0)
 					return false
 
 				const association = cell.getData().association as GenAssociationModelInput | undefined
 				if (association) {
-					return matchByKeywords(association, associationKeywordList, ['name'])
+					return matchByKeywords(association, associationKeywords.value, ['name'])
 				}
 			}
 
@@ -109,7 +114,6 @@ const search = (
 		:init-x="initX"
 		:init-w="initW"
 		:init-y="40"
-		@select="(item) => focus(props.graph, item)"
 	>
 		<template #input="{handleSearch}">
 			<el-input
@@ -153,16 +157,24 @@ const search = (
 			/>
 		</template>
 
-		<template #buttonContent="{item}">
-			<span style="height: 1.5em; line-height: 1.5em; font-size: 0.9em;">
-				<template v-if="item.shape === TABLE_NODE">
-					<span v-text="item.getData().table.name"/>
-					<Comment :comment="item.getData().table.comment"/>
-				</template>
-				<template v-else-if="item.shape === ASSOCIATION_EDGE">
-					<span v-text="item.getData().association.name"/>
-				</template>
-			</span>
+		<template #item="{item}">
+			<GraphSearcherTableItem
+				v-if="item.shape === TABLE_NODE"
+				:table="item.getData().table"
+				:table-keywords="tableKeywords"
+				:column-keywords="columnKeywords"
+				:enum-keywords="enumKeywords"
+				:index-keywords="indexKeywords"
+				:super-table-keywords="superTableKeywords"
+				@click="() => focus(props.graph, item)"
+			/>
+
+			<GraphSearcherAssociationItem
+				v-else-if="item.shape === ASSOCIATION_EDGE"
+				:association="item.getData().association"
+				:association-keywords="associationKeywords"
+				@click="() => focus(props.graph, item)"
+			/>
 		</template>
 	</Searcher>
 </template>
