@@ -81,9 +81,14 @@ watch(() => dataSourceLoadMenu.value, () => {
 
 	eventBus.on(
 		'clickTable',
-		loadingStore.withLoading('ModelEditorPage syncClickSchemaEvent', async ({id}) => {
-			await MODEL_LOAD.loadTable(id)
-		})
+		async ({id}) => {
+			confirm(
+				i18nStore.translate("CONFIRM_ModelEditorPage_modelLoad_singleTable"),
+				loadingStore.withLoading('ModelEditorPage syncClickSchemaEvent', async () => {
+					await MODEL_LOAD.loadTable(id)
+				})
+			)
+		}
 	)
 }, {immediate: true})
 

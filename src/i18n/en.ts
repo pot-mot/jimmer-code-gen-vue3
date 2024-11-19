@@ -292,6 +292,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     MESSAGE_ModelEditorPage_modelNotFound: "Model Not Found",
     MESSAGE_ModelEditorPage_modelLoadFail: "Model Load Fail",
     CONFIRM_ModelEditorPage_modelLoad_entireSchema: "Are you sure you want to load the entire Schema",
+    CONFIRM_ModelEditorPage_modelLoad_singleTable: "Are you sure you want to load the Table and its Associations",
 
     MESSAGE_modelFileOperations_importModel_validateFail: "Model import loading verification failed",
 

@@ -168,6 +168,7 @@ export type MainLocale = {
     MESSAGE_ModelEditorPage_modelNotFound: string
     MESSAGE_ModelEditorPage_modelLoadFail: string
     CONFIRM_ModelEditorPage_modelLoad_entireSchema: string
+    CONFIRM_ModelEditorPage_modelLoad_singleTable: string
 
     MESSAGE_modelFileOperations_importModel_validateFail: string
 

@@ -291,7 +291,8 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
 
     MESSAGE_ModelEditorPage_modelNotFound: "模型未找到",
     MESSAGE_ModelEditorPage_modelLoadFail: "模型导入失败",
-    CONFIRM_ModelEditorPage_modelLoad_entireSchema: "您确定要加载整个 Schema？",
+    CONFIRM_ModelEditorPage_modelLoad_entireSchema: "您确定要导入整个数据架构？",
+    CONFIRM_ModelEditorPage_modelLoad_singleTable: "您确定要导入该表和它的全部关联？",
 
     MESSAGE_modelFileOperations_importModel_validateFail: "模型导入加载校验失败",
 
