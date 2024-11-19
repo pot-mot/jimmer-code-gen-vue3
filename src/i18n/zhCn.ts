@@ -341,6 +341,7 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     LABEL_GraphSearcher_tableKeywords: "表关键字",
     LABEL_GraphSearcher_columnKeywords: "列关键字",
     LABEL_GraphSearcher_enumKeywords: "枚举关键字",
+    LABEL_GraphSearcher_indexKeywords: "索引关键字",
     LABEL_GraphSearcher_superTableKeywords: "上级表关键字",
     LABEL_GraphSearcher_associationKeywords: "关联关键字",
     LABEL_GraphSearcher_selectAll: "选择全部",

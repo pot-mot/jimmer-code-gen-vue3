@@ -213,6 +213,7 @@ export type MainLocale = {
     LABEL_GraphSearcher_tableKeywords: string
     LABEL_GraphSearcher_columnKeywords: string
     LABEL_GraphSearcher_enumKeywords: string
+    LABEL_GraphSearcher_indexKeywords: string
     LABEL_GraphSearcher_superTableKeywords: string
     LABEL_GraphSearcher_associationKeywords: string
     LABEL_GraphSearcher_selectAll: string

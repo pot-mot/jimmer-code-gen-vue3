@@ -183,6 +183,14 @@ const handleSelectAll = () => {
 				@change="handleSearch"
 			/>
 
+            <el-input
+				v-model="searchData.indexKeywords"
+				:placeholder="i18nStore.translate('LABEL_GraphSearcher_indexKeywords')"
+				clearable
+				@input="handleSearch"
+				@change="handleSearch"
+			/>
+
 			<el-input
 				v-model="searchData.superTableKeywords"
 				:placeholder="i18nStore.translate('LABEL_GraphSearcher_superTableKeywords')"

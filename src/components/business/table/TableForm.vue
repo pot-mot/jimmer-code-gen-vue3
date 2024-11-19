@@ -62,10 +62,16 @@ watch(() => props.table, (value) => {
     table.value = cloneDeep(value)
 })
 
-const columnNames = ref<string[]>(table.value.columns.map(it => it.name))
-const syncColumnNames = () => {
-    columnNames.value = table.value.columns.map(it => it.name)
-}
+const superTables = computed(() =>
+    MODEL.superTables.filter(superTable => table.value.superTables.map(it => it.name).includes(superTable.name))
+)
+
+const columnNames = computed<string[]>(() =>
+    [
+        ...superTables.value.flatMap(it => it.columns.map(it => it.name)),
+        ...table.value.columns.map(it => it.name)
+    ]
+)
 
 const handleColumnDelete = (deleteColumns: GenTableModelInput_TargetOf_columns[]) => {
     const messageList: string[] = []
@@ -135,8 +141,6 @@ const handleInputColumnName = (newName: string, index: number) => {
         })
         index.columns = newIndexColumns
     })
-
-    syncColumnNames()
 }
 
 const handleColumnToPk = (columnIndex: number) => {
@@ -178,7 +182,7 @@ const createKeyIndexName = (group: string | undefined): string => {
 const keyIndexes = computed<Array<GenTableModelInput_TargetOf_indexes>>(() => {
     const keyColumnMap = new Map<string | undefined, Array<GenTableModelInput_TargetOf_columns>>
 
-	for (const column of table.value.columns) {
+    for (const column of table.value.columns) {
         if (column.businessKey) {
             const columns = keyColumnMap.get(column.keyGroup)
             if (columns === undefined) {
@@ -193,7 +197,9 @@ const keyIndexes = computed<Array<GenTableModelInput_TargetOf_indexes>>(() => {
         return {
             name: createKeyIndexName(group),
             uniqueIndex: true,
-            columns: columns.map(it => {return {name: it.name}}),
+            columns: columns.map(it => {
+                return {name: it.name}
+            }),
             remark: "",
         }
     })
@@ -302,7 +308,6 @@ const handleCancel = () => {
             <EditList
                 :columns="tableColumnColumns"
                 v-model:lines="table.columns"
-                @update:lines="syncColumnNames"
                 @delete="handleColumnDelete"
                 :before-paste="columns => {
 					columns.forEach(it => {it.orderKey = -1})
@@ -407,7 +412,6 @@ const handleCancel = () => {
                         @change="(value: string[]) => {
                            data.columns = value.map(it => {return {name: it}})
                         }"
-                        @focus="syncColumnNames"
                         multiple
                         filterable
                         style="width: 100%;"
