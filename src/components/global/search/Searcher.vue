@@ -126,7 +126,6 @@ const handleOpen = () => {
 }
 
 const handleClose = () => {
-	searchData.value = undefined
 	searchResult.value = []
 	emits('close')
 }
