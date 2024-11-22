@@ -102,6 +102,13 @@ export const mainLocaleEn: MainLocale = {
         `【Entity ID property not found】
   Entity 【${formatIdName(error.entity)}】`,
 
+        ErrorCode_MODEL__INDEX_REF_PROPERTY_NOT_FOUND: (error: Errors["MODEL"]["INDEX_REF_PROPERTY_NOT_FOUND"]) =>
+        `【Index Referenced Property Not Found】
+  Entity【${formatIdName(error.entity)}】
+  Properties ${error.entityProperties.map(it => `【${formatIdName(it)}${it.id === error.notFoundPropertyId ? ' !Not Found!' : ''}】`).join(", ")}
+  Index【${formatIdName(error.index)}】
+  Index Referenced Properties ${error.indexPropertyIds.map(it => `【${it}${it === error.notFoundPropertyId ? ' !Not Found!' : ''}】`).join(", ")}`,
+
     ErrorCode_GENERATE__MODEL_NOT_FOUND: (error: Errors["GENERATE"]["MODEL_NOT_FOUND"]) =>
         `【Generation error】
   Model not found

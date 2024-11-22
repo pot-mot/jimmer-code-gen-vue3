@@ -101,6 +101,13 @@ export const mainLocaleZhCn: MainLocale = {
         `【实体ID属性未找到】
   实体【${formatIdName(error.entity)}】`,
 
+    ErrorCode_MODEL__INDEX_REF_PROPERTY_NOT_FOUND: (error: Errors["MODEL"]["INDEX_REF_PROPERTY_NOT_FOUND"]) =>
+        `【索引引用属性未找到】
+  实体【${formatIdName(error.entity)}】
+  属性${error.entityProperties.map(it => `【${formatIdName(it)}${it.id === error.notFoundPropertyId ? ' !未找到!' : ''}】`).join(", ")}
+  索引【${formatIdName(error.index)}】
+  索引引用的属性${error.indexPropertyIds.map(it => `【${it}${it === error.notFoundPropertyId ? ' !未找到!' : ''}】`).join(", ")}`,
+
     ErrorCode_GENERATE__MODEL_NOT_FOUND: (error: Errors["GENERATE"]["MODEL_NOT_FOUND"]) =>
         `【生成错误】
   模型未找到

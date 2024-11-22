@@ -17,5 +17,12 @@ export const handleModelError = (error: AllErrors & {family: "MODEL"}) => {
                 args: [error]
             }, "error", error)
             throw EXPECT_ERROR
+
+        case "INDEX_REF_PROPERTY_NOT_FOUND":
+            sendI18nMessage({
+                key: "ErrorCode_MODEL__INDEX_REF_PROPERTY_NOT_FOUND",
+                args: [error]
+            }, "error", error)
+            throw EXPECT_ERROR
     }
 }
