@@ -33,6 +33,26 @@ export interface GenEntityDetailView {
      */
     author: string;
     /**
+     * 是否可以创建
+     */
+    canAdd: boolean;
+    /**
+     * 是否可以修改
+     */
+    canEdit: boolean;
+    /**
+     * 是否可以删除
+     */
+    canDelete: boolean;
+    /**
+     * 是否可以查询
+     */
+    canQuery: boolean;
+    /**
+     * 是否具有页面
+     */
+    hasPage: boolean;
+    /**
      * 备注
      */
     remark: string;

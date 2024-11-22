@@ -11,6 +11,11 @@ export type AllErrors = {
         modelId: number
     } | {
         family: 'CONVERT', 
+        code: 'ENTITY_MATCH_TABLE_NOT_FOUND', 
+        entity: IdName, 
+        tableId: number
+    } | {
+        family: 'CONVERT', 
         code: 'OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN', 
         association: IdName, 
         sourceTable: IdName, 
@@ -189,6 +194,12 @@ export type AllErrors = {
         indexNames: Array<string>, 
         notFoundTableName: string
     } | {
+        family: 'LOAD_FROM_MODEL', 
+        code: 'INDEXES_TABLE_SUPER_TABLE_NOT_FOUND', 
+        indexNames: Array<string>, 
+        table: IdName, 
+        superTableIds: Array<number>
+    } | {
         family: 'LOAD_FROM_DATA_SOURCE', 
         code: 'ASSOCIATION_COLUMN_REFERENCES_CANNOT_BE_EMPTY', 
         foreignKeyName: string
@@ -235,6 +246,10 @@ export type ApiErrors = {
                 readonly [key:string]: any
             } | {
                 family: 'CONVERT', 
+                code: 'ENTITY_MATCH_TABLE_NOT_FOUND', 
+                readonly [key:string]: any
+            } | {
+                family: 'CONVERT', 
                 code: 'OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN', 
                 readonly [key:string]: any
             } | {
@@ -277,6 +292,10 @@ export type ApiErrors = {
         'convertModel': AllErrors & ({
                 family: 'CONVERT', 
                 code: 'MODEL_NOT_FOUND', 
+                readonly [key:string]: any
+            } | {
+                family: 'CONVERT', 
+                code: 'ENTITY_MATCH_TABLE_NOT_FOUND', 
                 readonly [key:string]: any
             } | {
                 family: 'CONVERT', 
@@ -409,6 +428,10 @@ export type ApiErrors = {
             } | {
                 family: 'LOAD_FROM_MODEL', 
                 code: 'INDEXES_TABLE_NOT_FOUND', 
+                readonly [key:string]: any
+            } | {
+                family: 'LOAD_FROM_MODEL', 
+                code: 'INDEXES_TABLE_SUPER_TABLE_NOT_FOUND', 
                 readonly [key:string]: any
             })
     }, 

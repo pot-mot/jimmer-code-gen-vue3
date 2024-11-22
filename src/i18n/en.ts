@@ -17,7 +17,12 @@ export const mainLocaleEn: MainLocale = {
     BUTTON_test: "Test",
 
     ErrorCode_CONVERT__MODEL_NOT_FOUND: (error: Errors["CONVERT"]["MODEL_NOT_FOUND"]) =>
-        `【Model not found in table conversion】Model 【${error.modelId}】 not found`,
+        `【Table conversion entity error】
+  Model 【${error.modelId}】 not found`,
+
+    ErrorCode_CONVERT__ENTITY_MATCH_TABLE_NOT_FOUND: (error: Errors["CONVERT"]["ENTITY_MATCH_TABLE_NOT_FOUND"]) =>
+        `【Table conversion entity error】
+  Entity 【${formatIdName(error.entity)}】 match table 【${error.tableId}】not found`,
 
     ErrorCode_CONVERT__OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN: (error: Errors["CONVERT"]["OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN"]) =>
         `【Table conversion entity error】
@@ -165,6 +170,10 @@ export const mainLocaleEn: MainLocale = {
     ErrorCode_LOAD_FROM_MODEL__INDEXES_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["INDEXES_TABLE_NOT_FOUND"]) =>
         `【Model import error】
   Original table 【${error.notFoundTableName}】 of indexes 【${error.indexNames.join(', ')}】 not found`,
+
+    ErrorCode_LOAD_FROM_MODEL__INDEXES_TABLE_SUPER_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["INDEXES_TABLE_SUPER_TABLE_NOT_FOUND"]) =>
+        `【Model import error】
+  Index 【${error.indexNames.join(', ')}】 match table 【${formatIdName(error.table)}】 superTables 【${error.superTableIds}】 not found`,
 
     ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_COLUMN_REFERENCES_CANNOT_BE_EMPTY: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_COLUMN_REFERENCES_CANNOT_BE_EMPTY"]) =>
         `【Data source import error】

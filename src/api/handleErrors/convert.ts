@@ -11,6 +11,13 @@ export const handleConvertError = (error: AllErrors & {family: "CONVERT"}) => {
             }, "error", error)
             throw EXPECT_ERROR
 
+        case "ENTITY_MATCH_TABLE_NOT_FOUND":
+            sendI18nMessage({
+                key: "ErrorCode_CONVERT__ENTITY_MATCH_TABLE_NOT_FOUND",
+                args: [error]
+            }, "error", error)
+            throw EXPECT_ERROR
+
         case "OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN":
             sendI18nMessage({
                 key: "ErrorCode_CONVERT__OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN",

@@ -16,7 +16,12 @@ export const mainLocaleZhCn: MainLocale = {
     BUTTON_test: "测试",
 
     ErrorCode_CONVERT__MODEL_NOT_FOUND: (error: Errors["CONVERT"]["MODEL_NOT_FOUND"]) =>
-        `【表转换实体错误】模型【${error.modelId}】未找到`,
+        `【表转换实体错误】
+  模型【${error.modelId}】未找到`,
+
+    ErrorCode_CONVERT__ENTITY_MATCH_TABLE_NOT_FOUND: (error: Errors["CONVERT"]["ENTITY_MATCH_TABLE_NOT_FOUND"]) =>
+        `【表转换实体错误】
+  实体【${formatIdName(error.entity)}】对应表【${error.tableId}】未找到`,
 
     ErrorCode_CONVERT__OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN: (error: Errors["CONVERT"]["OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN"]) =>
         `【表转换实体错误】
@@ -164,6 +169,10 @@ export const mainLocaleZhCn: MainLocale = {
     ErrorCode_LOAD_FROM_MODEL__INDEXES_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["INDEXES_TABLE_NOT_FOUND"]) =>
         `【模型导入错误】
   索引【${error.indexNames.join(', ')}】原始表【${error.notFoundTableName}】未找到`,
+
+    ErrorCode_LOAD_FROM_MODEL__INDEXES_TABLE_SUPER_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["INDEXES_TABLE_SUPER_TABLE_NOT_FOUND"]) =>
+        `【模型导入错误】
+  索引【${error.indexNames.join(', ')}】对应表【${formatIdName(error.table)}】的上级表【${error.superTableIds}】未找到`,
 
     ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_COLUMN_REFERENCES_CANNOT_BE_EMPTY: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_COLUMN_REFERENCES_CANNOT_BE_EMPTY"]) =>
         `【从数据源导入错误】

@@ -27,6 +27,10 @@ export interface GenEnumItemsView_TargetOf_items {
      */
     comment: string;
     /**
+     * 是否是默认值
+     */
+    defaultItem: boolean;
+    /**
      * 排序键
      */
     orderKey: number;

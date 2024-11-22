@@ -20,5 +20,6 @@ export const getDefaultEnumItem = (): GenModelInput_TargetOf_enums_TargetOf_item
         comment: "",
         remark: "",
         orderKey: 0,
+        defaultItem: false,
     }
 }

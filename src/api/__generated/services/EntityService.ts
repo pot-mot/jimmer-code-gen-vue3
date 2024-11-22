@@ -6,9 +6,6 @@ export class EntityService {
     
     constructor(private executor: Executor) {}
     
-    /**
-     * 获取单个数据源
-     */
     readonly get: (options: EntityServiceOptions['get']) => Promise<
         GenEntityDetailView | undefined
     > = async(options) => {
