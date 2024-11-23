@@ -7,7 +7,7 @@ import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
 import {jsonStrCompress, jsonStrPrettyFormat} from "@/utils/json.ts";
 import CodeEditor from "@/components/global/code/CodeEditor.vue";
 import {ModelFormProps} from "@/components/business/model/form/ModelFormProps.ts";
-import {sendMessage} from "@/message/message.ts";
+import {sendI18nMessage, sendMessage} from "@/message/message.ts";
 import {validateGraphData} from "@/shape/GraphData.ts";
 import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated/model/enums";
 import GenConfigForm from "@/components/business/genConfig/GenConfigForm.vue";
@@ -60,7 +60,7 @@ const handleSubmit = () => {
 		const messageList = validateModel(model.value)
 
 		if (messageList.length > 0) {
-			messageList.forEach(it => sendMessage(it, 'warning'))
+			messageList.forEach(it => sendI18nMessage(it, 'warning'))
 			return
 		}
 
