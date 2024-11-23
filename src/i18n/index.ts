@@ -1,8 +1,8 @@
-import type {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static";
-import type {DeepReadonly} from "vue";
-import type {Errors} from "@/api/handleError.ts";
+import type {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static"
+import type {DeepReadonly} from "vue"
+import type {Errors} from "@/api/handleError.ts"
 
-export type MainLocale = {
+type MainLocale = {
     BUTTON_edit: string
     BUTTON_submit: string
     BUTTON_delete: string
@@ -204,6 +204,12 @@ export type MainLocale = {
     LABEL_ModelEditorGraph_fit: string
     LABEL_ModelEditorGraph_center: string
 
+    MESSAGE_ModelEditorGraph_modelSaveSuccess: string
+    MESSAGE_ModelEditorGraph_modelSaveFail_idNotReturnFromBackend: string
+    MESSAGE_ModelEditorGraph_modelSaveError: (e: any) => string
+
+    MESSAGE_ModelEditorGraph_someChangeNotSave: string
+
     LABEL_ModelEditorGraph_previewCode: string
     LABEL_ModelEditorGraph_exportModel: string
     LABEL_ModelEditorGraph_downloadAll: string
@@ -224,6 +230,11 @@ export type MainLocale = {
     LABEL_GraphSearcher_associationKeywords: string
     LABEL_GraphSearcher_selectAll: string
 
+    VALIDATE_GenModel_nameCannotBeEmpty: string
+
+    VALIDATE_ModelForm_graphDataValidationFailed: string
+    VALIDATE_ModelForm_graphDataJsonConversionFailed: string
+
     LABEL_TableForm_asSuperTable: string
     LABEL_TableForm_extendTables: string
     LABEL_TableForm_columns: string
@@ -233,6 +244,29 @@ export type MainLocale = {
     LABEL_TableForm_columnType_businessKey: string
     LABEL_TableForm_columnType_keyGroup: string
     LABEL_TableForm_columnType_logicalDelete: string
+
+    VALIDATE_GenTable_nameCannotBeEmpty: string;
+    VALIDATE_GenTable_nameCannotBeDuplicate: (tableName: string) => string;
+    VALIDATE_GenTable_columnNameCannotBeEmpty: string;
+    VALIDATE_GenTable_columnNameCannotBeDuplicate: (columnName: string) => string;
+    VALIDATE_GenTable_columnDataSizeCannotBeNull: (columnName: string) => string;
+    VALIDATE_GenTable_columnNumericPrecisionCannotBeNull: (columnName: string) => string;
+    VALIDATE_GenTable_columnEnumNotFound: (columnName: string, enumName: string) => string;
+    VALIDATE_GenTable_indexNameCannotBeEmpty: string;
+    VALIDATE_GenTable_indexNameCannotBeDuplicate: (indexName: string) => string;
+    VALIDATE_GenTable_superTableNotFound: (superTableName: string) => string;
+    VALIDATE_GenTable_primaryKeyMustBeSingle: string;
+    VALIDATE_GenTable_mustHavePrimaryKey: string;
+    VALIDATE_GenTable_primaryKeyNotAllowed: string;
+    VALIDATE_GenTable_primaryKeyMustBeNotNull: (columnName: string) => string;
+    VALIDATE_GenTable_primaryKeyCannotBeEnum: (columnName: string) => string;
+    VALIDATE_GenTable_primaryKeyCannotBeBusinessKey: (columnName: string) => string;
+    VALIDATE_GenTable_primaryKeyCannotBeLogicalDelete: (columnName: string) => string;
+    VALIDATE_GenTable_columnNameConflictWithSuperTable: (columnName: string) => string;
+    VALIDATE_GenTable_columnNameConflictWithChildTable: (columnName: string) => string;
+    VALIDATE_GenTable_indexColumnNotFound: (indexName: string, columnName: string) => string;
+    VALIDATE_GenTable_indexColumnNameCannotBeEmpty: (indexName: string) => string;
+    VALIDATE_GenTable_indexColumnNameCannotBeDuplicate: (indexName: string, columnName: string) => string;
 
     LABEL_TableCombineForm_superTableName: string
     LABEL_TableCombineForm_tables: string
@@ -334,24 +368,51 @@ export type MainLocale = {
 
     LABEL_EnumForm_name: string
     LABEL_EnumForm_packagePath: string
+    LABEL_EnumForm_defaultItem: string
     LABEL_EnumForm_comment: string
     LABEL_EnumForm_type: string
     LABEL_EnumForm_typeUnset: string
 
     VALIDATE_GenEnum_cannotBeDuplicate: (enumName: string) => string
+    VALIDATE_GenEnum_nameCannotBeEmpty: string
+    VALIDATE_GenEnum_itemsCannotBeEmpty: string
+    VALIDATE_GenEnum_defaultItemRequired: string
+    VALIDATE_GenEnum_defaultItemUnique: string
+    VALIDATE_GenEnum_itemNameCannotBeEmpty: string
+    VALIDATE_GenEnum_itemNameCannotBeDuplicate: (itemName: string) => string
+    VALIDATE_GenEnum_ordinalValueMustBeInteger: string
+    VALIDATE_GenEnum_itemValueCannotBeEmpty: string
+    VALIDATE_GenEnum_itemValueCannotBeDuplicate: (itemValue: string) => string
+    VALIDATE_GenEnum_nameCannotBeDuplicate: (enumName: string) => string
 
     LABEL_GenEnumItem_name: string
     LABEL_GenEnumItem_value: string
     LABEL_GenEnumItem_comment: string
 }
 
-type MainLocaleKey = keyof MainLocale
+type LocaleKey<
+    Locale = MainLocale
+> =
+    keyof Locale
 
-type MainLocaleKeyWithArgs<
-    K extends MainLocaleKey = MainLocaleKey,
-    V extends MainLocale[K] = MainLocale[K]
+type LocaleKeyWithArgs<
+    Locale = MainLocale,
+    K extends keyof Locale = keyof Locale,
+    V extends Locale[K] = Locale[K]
 > =
     { key: K, args: V extends (...args: infer A) => string ? A : [] }
 
-export type MainLocaleKeyParam =
-    MainLocaleKey | MainLocaleKeyWithArgs
+type LocalKeyParam<
+    Locale extends MainLocale
+> =
+    LocaleKey<Locale> | LocaleKeyWithArgs<Locale>
+
+export type MainLocaleKeyParam = LocalKeyParam<MainLocale>
+
+export type ProjectLocale = MainLocale & {
+    VALIDATE_GenModel_tableValidError: (tableName: string, subMessage: MainLocaleKeyParam) => string
+    VALIDATE_GenModel_associationValidError: (associationName: string, subMessage: MainLocaleKeyParam) => string
+    VALIDATE_GenModel_enumValidError: (enumName: string, subMessage: MainLocaleKeyParam) => string
+}
+
+export type ProjectLocaleKeyParam = LocalKeyParam<ProjectLocale>

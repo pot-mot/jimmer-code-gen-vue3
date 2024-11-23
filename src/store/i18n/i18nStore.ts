@@ -1,18 +1,18 @@
 import {defineStore} from "pinia";
 import {computed, ref} from "vue";
-import {mainLocaleZhCn} from "@/i18n/zhCn.ts"
+import {localeZhCn} from "@/i18n/zhCn.ts"
 import elementZhCn from 'element-plus/es/locale/lang/zh-cn.mjs'
-import {mainLocaleEn} from '@/i18n/en.ts'
+import {localeEn} from '@/i18n/en.ts'
 import elementEn from 'element-plus/es/locale/lang/en.mjs'
-import {MainLocale, MainLocaleKeyParam} from "@/i18n";
+import {ProjectLocale, MainLocaleKeyParam, ProjectLocaleKeyParam} from "@/i18n";
 
 const languageOptions = {
     'zh-cn': {
-        main: mainLocaleZhCn,
+        main: localeZhCn,
         element: elementZhCn
     },
     'en': {
-        main: mainLocaleEn,
+        main: localeEn,
         element: elementEn
     },
 }
@@ -28,7 +28,7 @@ export const useI18nStore = defineStore(
     () => {
         const language = ref<LanguageType>('zh-cn')
 
-        const mainLocale = computed<MainLocale>(() => {
+        const mainLocale = computed<ProjectLocale>(() => {
             return languageOptions[language.value].main
         })
 
@@ -37,7 +37,7 @@ export const useI18nStore = defineStore(
         })
 
         const translate = (
-            keyParam: MainLocaleKeyParam
+            keyParam: MainLocaleKeyParam | ProjectLocaleKeyParam
         ): string => {
             if (typeof keyParam === "string" && keyParam in mainLocale.value) {
                 const translateItem = mainLocale.value[keyParam]

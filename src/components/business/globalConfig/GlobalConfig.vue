@@ -7,13 +7,13 @@ import ColumnDefaultForm from "@/components/business/columnDefault/ColumnDefault
 import DebugForm from "@/debug/DebugForm.vue";
 import GlobalGenConfigForm from "@/components/business/genConfig/GlobalGenConfigForm.vue";
 import {languageTypes, useI18nStore} from "@/store/i18n/i18nStore.ts";
-import {MainLocale} from "@/i18n";
+import {ProjectLocale} from "@/i18n";
 
 const i18nStore = useI18nStore()
 
 const globalConfigOptions = ref<{
 	name: string,
-	label: keyof MainLocale,
+	label: keyof ProjectLocale,
 	modal: boolean,
 	openState: boolean,
 }[]>([

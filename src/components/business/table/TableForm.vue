@@ -7,7 +7,7 @@ import {
     GenTableModelInput_TargetOf_indexes,
     GenTableModelInput_TargetOf_indexes_TargetOf_columns,
 } from "@/api/__generated/model/static";
-import {sendMessage} from "@/message/message.ts";
+import {sendI18nMessage, sendMessage} from "@/message/message.ts";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import EditList from "@/components/global/list/EditList.vue";
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
@@ -26,6 +26,7 @@ import {RefreshRight} from "@element-plus/icons-vue";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import ColumnCategorySelect from "@/components/business/table/ColumnCategorySelect.vue";
 import {cloneDeep} from "lodash";
+import {MainLocaleKeyParam} from "@/i18n";
 
 const i18nStore = useI18nStore()
 
@@ -36,7 +37,7 @@ const jdbcTypeStore = useJdbcTypeStore()
 interface ModelFormProps {
     table?: GenTableModelInput | undefined,
 
-    validate: (table: DeepReadonly<GenTableModelInput>) => string[],
+    validate: (table: DeepReadonly<GenTableModelInput>) => MainLocaleKeyParam[],
 
     createIndexName: (
         tableName: string,
@@ -244,7 +245,7 @@ const handleSubmit = () => {
     const messageList = props.validate(table.value)
 
     if (messageList.length > 0) {
-        messageList.forEach(it => sendMessage(it, 'warning'))
+        messageList.forEach(it => sendI18nMessage(it, 'warning'))
         return
     }
 

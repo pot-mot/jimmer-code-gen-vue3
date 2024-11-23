@@ -10,6 +10,7 @@ export const GenEnumModelInputJsonSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
         "GenModelInput_TargetOf_enums": {
+            "description": "生成枚举",
             "properties": {
                 "comment": {
                     "description": "枚举注释",
@@ -27,7 +28,7 @@ export const GenEnumModelInputJsonSchema = {
                 "items": {
                     "description": "生成枚举元素",
                     "items": {
-                        "$ref": "#/definitions/GenModelInput_TargetOf_enums_TargetOf_items_2"
+                        "$ref": "#/definitions/GenModelInput_TargetOf_enums_TargetOf_items"
                     },
                     "type": "array"
                 },
@@ -57,11 +58,16 @@ export const GenEnumModelInputJsonSchema = {
             ],
             "type": "object"
         },
-        "GenModelInput_TargetOf_enums_TargetOf_items_2": {
+        "GenModelInput_TargetOf_enums_TargetOf_items": {
+            "description": "生成枚举元素",
             "properties": {
                 "comment": {
                     "description": "元素注释",
                     "type": "string"
+                },
+                "defaultItem": {
+                    "description": "是否是默认值",
+                    "type": "boolean"
                 },
                 "mappedValue": {
                     "description": "映射值",
@@ -82,6 +88,7 @@ export const GenEnumModelInputJsonSchema = {
             },
             "required": [
                 "comment",
+                "defaultItem",
                 "mappedValue",
                 "name",
                 "orderKey",

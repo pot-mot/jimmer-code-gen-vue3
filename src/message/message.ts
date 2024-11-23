@@ -1,6 +1,6 @@
 import {ElMessage} from 'element-plus'
 import {useDebugStore} from "@/store/debug/debugStore.ts";
-import {MainLocaleKeyParam} from "@/i18n";
+import {MainLocaleKeyParam, ProjectLocaleKeyParam} from "@/i18n";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {EXPECT_ERROR} from "@/api/handleError.ts";
 
@@ -38,7 +38,7 @@ export const sendMessage = (message: string, type: "info" | "success" | "warning
 }
 
 export const sendI18nMessage = (
-    keyParam: MainLocaleKeyParam,
+    keyParam: MainLocaleKeyParam | ProjectLocaleKeyParam,
     type: "info" | "success" | "warning" | "error" = "info",
     data?: any,
 ) => {

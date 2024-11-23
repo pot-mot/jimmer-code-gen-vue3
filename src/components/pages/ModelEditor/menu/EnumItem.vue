@@ -26,6 +26,7 @@ const handleDelete = () => {
 	<div>
 		<el-text class="hover-show" :type="genEnum.items.length > 0 ? '' : 'warning'">
 			{{ genEnum.name }}
+            <Comment :comment="genEnum.comment"></Comment>
 			<template v-if="genEnum.items.length === 0">[无枚举项]</template>
 
 			<span class="hover-show-item" style="padding-left: 0.5em;">

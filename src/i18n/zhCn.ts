@@ -1,10 +1,11 @@
-import type {MainLocale} from "@/i18n/index.ts"
+import type {MainLocaleKeyParam, ProjectLocale} from "@/i18n/index.ts"
 import type {DeepReadonly} from "vue"
 import type {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static"
 import {defaultPlaceholder, Errors, formatIdName} from "@/api/handleError.ts"
 import {jsonPrettyFormat} from "@/utils/json.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
-export const mainLocaleZhCn: MainLocale = {
+export const localeZhCn: ProjectLocale = {
     BUTTON_edit: "编辑",
     BUTTON_submit: "提交",
     BUTTON_delete: "删除",
@@ -338,9 +339,11 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     LABEL_ModelEditorGraph_fit: '适应画布',
     LABEL_ModelEditorGraph_center: '居中',
 
-    VALIDATE_GenEnum_cannotBeDuplicate: (enumName: string) => {
-        return `枚举【${enumName}】已存在`
-    },
+    MESSAGE_ModelEditorGraph_modelSaveSuccess: "模型保存成功",
+    MESSAGE_ModelEditorGraph_modelSaveFail_idNotReturnFromBackend: "模型保存失败，后端没有返回保存成功后的id",
+    MESSAGE_ModelEditorGraph_modelSaveError: (e: any) => `模型保存失败，错误：${e}`,
+
+    MESSAGE_ModelEditorGraph_someChangeNotSave: "有变更尚未保存",
 
     LABEL_ModelEditorGraph_previewCode: '预览代码',
     LABEL_ModelEditorGraph_exportModel: '导出模型',
@@ -362,6 +365,20 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     LABEL_GraphSearcher_associationKeywords: "关联关键字",
     LABEL_GraphSearcher_selectAll: "选择全部",
 
+    VALIDATE_GenModel_nameCannotBeEmpty: "模型名不得为空",
+    VALIDATE_ModelForm_graphDataValidationFailed: "图数据校验失败，请参考控制台报错",
+    VALIDATE_ModelForm_graphDataJsonConversionFailed: "图数据 JSON 转换失败，请参考控制台报错",
+
+    VALIDATE_GenModel_tableValidError: (tableName: string, subMessage: MainLocaleKeyParam) => {
+        return `表【${tableName}】存在问题：${useI18nStore().translate(subMessage)}`;
+    },
+    VALIDATE_GenModel_associationValidError(associationName: string, subMessage: MainLocaleKeyParam): string {
+        return `关联【${associationName}】存在问题：${useI18nStore().translate(subMessage)}`;
+    },
+    VALIDATE_GenModel_enumValidError(enumName: string, subMessage: MainLocaleKeyParam): string {
+        return `枚举【${enumName}】存在问题：${useI18nStore().translate(subMessage)}`;
+    },
+
     LABEL_TableForm_asSuperTable: "作为上级表",
     LABEL_TableForm_extendTables: "继承的表",
     LABEL_TableForm_columns: "列",
@@ -371,6 +388,29 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     LABEL_TableForm_columnType_businessKey: "业务键",
     LABEL_TableForm_columnType_keyGroup: "键组",
     LABEL_TableForm_columnType_logicalDelete: "逻辑删除",
+
+    VALIDATE_GenTable_nameCannotBeEmpty: "表名不得为空",
+    VALIDATE_GenTable_nameCannotBeDuplicate: (tableName: string) => `表名【${tableName}】不可重复`,
+    VALIDATE_GenTable_columnNameCannotBeEmpty: "列名不得为空",
+    VALIDATE_GenTable_columnNameCannotBeDuplicate: (columnName: string) => `列名【${columnName}】不可重复`,
+    VALIDATE_GenTable_columnDataSizeCannotBeNull: (columnName: string) => `列【${columnName}】的长度不可为空`,
+    VALIDATE_GenTable_columnNumericPrecisionCannotBeNull: (columnName: string) => `列【${columnName}】的精度不可为空`,
+    VALIDATE_GenTable_columnEnumNotFound: (columnName: string, enumName: string) => `列【${columnName}】对应枚举【${enumName}】不存在`,
+    VALIDATE_GenTable_indexNameCannotBeEmpty: "索引名不得为空",
+    VALIDATE_GenTable_indexNameCannotBeDuplicate: (indexName: string) => `索引名【${indexName}】不可重复`,
+    VALIDATE_GenTable_superTableNotFound: (superTableName: string) => `【${superTableName}】不存在/不是上级表/存在循环依赖`,
+    VALIDATE_GenTable_primaryKeyMustBeSingle: "仅可有一个主键",
+    VALIDATE_GenTable_mustHavePrimaryKey: "必须要有一个主键，或作为上级表",
+    VALIDATE_GenTable_primaryKeyNotAllowed: "上级表中已具有主键，当前表中不需要主键",
+    VALIDATE_GenTable_primaryKeyMustBeNotNull: (columnName: string) => `主键列【${columnName}】必须非空`,
+    VALIDATE_GenTable_primaryKeyCannotBeEnum: (columnName: string) => `主键列【${columnName}】不可为枚举类型`,
+    VALIDATE_GenTable_primaryKeyCannotBeBusinessKey: (columnName: string) => `主键列【${columnName}】不可为 Key`,
+    VALIDATE_GenTable_primaryKeyCannotBeLogicalDelete: (columnName: string) => `主键列【${columnName}】不可为逻辑删除`,
+    VALIDATE_GenTable_columnNameConflictWithSuperTable: (columnName: string) => `列名【${columnName}】与上级表中的列名重复`,
+    VALIDATE_GenTable_columnNameConflictWithChildTable: (columnName: string) => `列名【${columnName}】与子表中的列名重复`,
+    VALIDATE_GenTable_indexColumnNotFound: (indexName: string, columnName: string) => `索引【${indexName}】引用列【${columnName}】不存在`,
+    VALIDATE_GenTable_indexColumnNameCannotBeEmpty: (indexName: string) => `索引【${indexName}】引用列名不得为空`,
+    VALIDATE_GenTable_indexColumnNameCannotBeDuplicate: (indexName: string, columnName: string) => `索引【${indexName}】引用列名【${columnName}】不可重复`,
 
     LABEL_TableCombineForm_superTableName: "上级表名称",
     LABEL_TableCombineForm_tables: "表",
@@ -472,9 +512,24 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
 
     LABEL_EnumForm_name: '名称',
     LABEL_EnumForm_packagePath: '包路径',
+    LABEL_EnumForm_defaultItem: "默认选项",
     LABEL_EnumForm_comment: '注释',
     LABEL_EnumForm_type: '类型',
     LABEL_EnumForm_typeUnset: '默认',
+
+    VALIDATE_GenEnum_cannotBeDuplicate: (enumName: string) => {
+        return `枚举【${enumName}】已存在`
+    },
+    VALIDATE_GenEnum_nameCannotBeEmpty: "枚举名不得为空",
+    VALIDATE_GenEnum_itemsCannotBeEmpty: "必须至少有一个枚举项",
+    VALIDATE_GenEnum_defaultItemRequired: "必须有默认值",
+    VALIDATE_GenEnum_defaultItemUnique: "默认值必须唯一",
+    VALIDATE_GenEnum_itemNameCannotBeEmpty: "枚举项名称不得为空",
+    VALIDATE_GenEnum_itemNameCannotBeDuplicate: (itemName: string) => `枚举项名称【${itemName}】不可重复`,
+    VALIDATE_GenEnum_ordinalValueMustBeInteger: "ordinal 枚举项的值必须为整数",
+    VALIDATE_GenEnum_itemValueCannotBeEmpty: "枚举项值不得为空",
+    VALIDATE_GenEnum_itemValueCannotBeDuplicate: (itemValue: string) => `枚举项值【${itemValue}】不可重复`,
+    VALIDATE_GenEnum_nameCannotBeDuplicate: (enumName: string) => `枚举【${enumName}】名称与其他枚举重复`,
 
     LABEL_GenEnumItem_name: '名称',
     LABEL_GenEnumItem_value: '值',

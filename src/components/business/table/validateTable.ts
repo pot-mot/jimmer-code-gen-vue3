@@ -1,32 +1,34 @@
+// src/components/business/table/validateTable.ts
 import type {GenModelInput_TargetOf_enums, GenTableModelInput_TargetOf_columns,} from "@/api/__generated/model/static";
 import {GenTableModelInput} from "@/api/__generated/model/static";
 import {getAllChildTables, getLegalSuperTables} from "@/components/business/table/tableInheritAnalyse.ts";
 import {DeepReadonly} from "vue";
+import {MainLocaleKeyParam} from "@/i18n";
 
 export const validateTable = (
     table: DeepReadonly<GenTableModelInput>,
     otherTables: DeepReadonly<Array<GenTableModelInput>>,
     enums: DeepReadonly<Array<GenModelInput_TargetOf_enums>>,
-): string[] => {
-    const messageList: string[] = []
+): MainLocaleKeyParam[] => {
+    const messageList: MainLocaleKeyParam[] = []
 
     const legalSuperTables = getLegalSuperTables(table, otherTables.filter(it => it.type === "SUPER_TABLE"))
     const childTables = getAllChildTables(table, otherTables)
 
     if (table.name.length === 0) {
-        messageList.push('表名不得为空')
+        messageList.push("VALIDATE_GenTable_nameCannotBeEmpty")
     }
 
     for (const otherTable of otherTables) {
         if (otherTable.name === table.name) {
-            messageList.push('表名不可重复')
+            messageList.push({key: "VALIDATE_GenTable_nameCannotBeDuplicate", args: [table.name]})
             break
         }
     }
 
     for (const column of table.columns) {
         if (!column.name || column.name.length === 0) {
-            messageList.push('列名不得为空')
+            messageList.push("VALIDATE_GenTable_columnNameCannotBeEmpty")
             break
         }
     }
@@ -34,33 +36,33 @@ export const validateTable = (
     const columnNameSet = new Set<string>
     for (const column of table.columns) {
         if (columnNameSet.has(column.name)) {
-            messageList.push(`列名【${column.name}】不可重复`)
+            messageList.push({key: "VALIDATE_GenTable_columnNameCannotBeDuplicate", args: [column.name]})
         } else {
             columnNameSet.add(column.name)
         }
 
         if (column.dataSize as number | null === null) {
-            messageList.push(`列【${column.name}】的长度不可为空`);
+            messageList.push({key: "VALIDATE_GenTable_columnDataSizeCannotBeNull", args: [column.name]});
         }
         if (column.numericPrecision as number | null === null) {
-            messageList.push(`列【${column.name}】的精度不可为空`);
+            messageList.push({key: "VALIDATE_GenTable_columnNumericPrecisionCannotBeNull", args: [column.name]});
         }
 
         if (column.enum !== undefined && !enums.map(it => it.name).includes(column.enum.name)) {
-            messageList.push(`列【${column.name}】对应枚举【${column.enum.name}】不存在`)
+            messageList.push({key: "VALIDATE_GenTable_columnEnumNotFound", args: [column.name, column.enum.name]})
         }
     }
 
     for (const index of table.indexes) {
         if (!index.name || index.name.length === 0) {
-            messageList.push('索引名不得为空')
+            messageList.push("VALIDATE_GenTable_indexNameCannotBeEmpty")
             break
         }
     }
     const indexNameSet = new Set<string>()
     for (const index of table.indexes) {
         if (indexNameSet.has(index.name)) {
-            messageList.push(`索引名【${index.name}】不可重复`)
+            messageList.push({key: "VALIDATE_GenTable_indexNameCannotBeDuplicate", args: [index.name]})
         } else {
             indexNameSet.add(index.name)
         }
@@ -73,7 +75,7 @@ export const validateTable = (
             .filter(it => it.name === superTable.name)[0]
 
         if (!currentSuperTable) {
-            messageList.push(`【${superTable.name}】不存在/不是上级表/存在循环依赖`)
+            messageList.push({key: "VALIDATE_GenTable_superTableNotFound", args: [superTable.name]})
         } else {
             superTableSet.add(currentSuperTable)
         }
@@ -90,47 +92,47 @@ export const validateTable = (
     if (table.type !== "SUPER_TABLE") {
         if (superTablePkColumns.length === 0) {
             if (pkColumns.length > 1) {
-                messageList.push('仅可有一个主键')
+                messageList.push("VALIDATE_GenTable_primaryKeyMustBeSingle")
             } else if (pkColumns.length === 0) {
-                messageList.push('必须要有一个主键，或作为上级表')
+                messageList.push("VALIDATE_GenTable_mustHavePrimaryKey")
             }
         } else {
             if (pkColumns.length > 0) {
-                messageList.push('上级表中已具有主键，当前表中不需要主键')
+                messageList.push("VALIDATE_GenTable_primaryKeyNotAllowed")
             }
         }
     } else {
         if (pkColumns.length > 1) {
-            messageList.push('仅可有一个主键')
+            messageList.push("VALIDATE_GenTable_primaryKeyMustBeSingle")
         }
     }
 
-    for (let pkColumn of pkColumns) {
+    for (const pkColumn of pkColumns) {
         if (!pkColumn.typeNotNull) {
-            messageList.push('主键列必须非空')
+            messageList.push({key: "VALIDATE_GenTable_primaryKeyMustBeNotNull", args: [pkColumn.name]})
         }
         if (pkColumn.enum) {
-            messageList.push('主键列不可为枚举类型')
+            messageList.push({key: "VALIDATE_GenTable_primaryKeyCannotBeEnum", args: [pkColumn.name]})
         }
         if (pkColumn.businessKey) {
-            messageList.push('主键列不可为 Key')
+            messageList.push({key: "VALIDATE_GenTable_primaryKeyCannotBeBusinessKey", args: [pkColumn.name]})
         }
         if (pkColumn.logicalDelete) {
-            messageList.push('主键列不可为逻辑删除')
+            messageList.push({key: "VALIDATE_GenTable_primaryKeyCannotBeLogicalDelete", args: [pkColumn.name]})
         }
     }
 
     const superTableColumnNameSet = new Set(superTableColumns.map(it => it.name))
     for (const column of table.columns) {
         if (superTableColumnNameSet.has(column.name)) {
-            messageList.push(`列名【${column.name}】与上级表中的列名重复`)
+            messageList.push({key: "VALIDATE_GenTable_columnNameConflictWithSuperTable", args: [column.name]})
         }
     }
 
     const childTableColumnNameSet = new Set(childTables.flatMap(it => it.columns.map(it => it.name)))
     for (const column of table.columns) {
         if (childTableColumnNameSet.has(column.name)) {
-            messageList.push(`列名【${column.name}】与子表中的列名重复`)
+            messageList.push({key: "VALIDATE_GenTable_columnNameConflictWithChildTable", args: [column.name]})
         }
     }
 
@@ -140,20 +142,20 @@ export const validateTable = (
         const columns = []
         for (const column of index.columns) {
             if (!allColumns.map(it => it.name).includes(column.name)) {
-                messageList.push(`索引【${index.name}】引用列【${column.name}】不存在`)
+                messageList.push({key: "VALIDATE_GenTable_indexColumnNotFound", args: [index.name, column.name]})
             } else {
                 columns.push(column)
             }
         }
 
         if (columns.length === 0) {
-            messageList.push(`索引【${index.name}】引用列长度不得为 0`)
+            messageList.push({key: "VALIDATE_GenTable_indexColumnNameCannotBeEmpty", args: [index.name]})
             break
         }
 
         for (const column of columns) {
             if (!column.name || column.name.length === 0) {
-                messageList.push(`索引【${index.name}】引用列名不得为空`)
+                messageList.push({key: "VALIDATE_GenTable_indexColumnNameCannotBeEmpty", args: [index.name]})
                 break
             }
         }
@@ -161,7 +163,7 @@ export const validateTable = (
         const indexColumnNameSet = new Set<string>()
         for (const column of columns) {
             if (indexColumnNameSet.has(column.name)) {
-                messageList.push(`列名【${column.name}】不可重复`)
+                messageList.push({key: "VALIDATE_GenTable_indexColumnNameCannotBeDuplicate", args: [index.name, column.name]})
             } else {
                 indexColumnNameSet.add(column.name)
             }

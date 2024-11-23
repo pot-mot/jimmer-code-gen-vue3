@@ -1,11 +1,12 @@
-import type {MainLocale} from "@/i18n/index.ts"
+import type {MainLocaleKeyParam, ProjectLocale} from "@/i18n/index.ts"
 import type {DeepReadonly} from "vue"
 import type {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static"
 import type {Errors} from "@/api/handleError.ts";
 import {defaultPlaceholder, formatIdName} from "@/api/handleError.ts";
 import {jsonPrettyFormat} from "@/utils/json.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
-export const mainLocaleEn: MainLocale = {
+export const localeEn: ProjectLocale = {
     BUTTON_edit: "Edit",
     BUTTON_submit: "Submit",
     BUTTON_delete: "Delete",
@@ -338,9 +339,11 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     LABEL_ModelEditorGraph_fit: 'Fit',
     LABEL_ModelEditorGraph_center: 'Center',
 
-    VALIDATE_GenEnum_cannotBeDuplicate: (enumName: string) => {
-        return `Enum【${enumName}】already exist`
-    },
+    MESSAGE_ModelEditorGraph_modelSaveSuccess: "Model Save Success",
+    MESSAGE_ModelEditorGraph_modelSaveFail_idNotReturnFromBackend: "Model Save Fail, Id not return from backend",
+    MESSAGE_ModelEditorGraph_modelSaveError: (e: any) => `Model Save Error, Error: ${e}`,
+
+    MESSAGE_ModelEditorGraph_someChangeNotSave: "Some Change Not Save",
 
     LABEL_ModelEditorGraph_previewCode: 'Preview Code',
     LABEL_ModelEditorGraph_exportModel: 'Export Model',
@@ -362,6 +365,20 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     LABEL_GraphSearcher_associationKeywords: "Association Keywords",
     LABEL_GraphSearcher_selectAll: "Select All",
 
+    VALIDATE_GenModel_nameCannotBeEmpty: "Model name cannot be empty",
+    VALIDATE_ModelForm_graphDataValidationFailed: "Graph data validation failed, please refer to the console error",
+    VALIDATE_ModelForm_graphDataJsonConversionFailed: "Graph data JSON conversion failed, please refer to the console error",
+
+    VALIDATE_GenModel_tableValidError: (tableName: string, subMessage: MainLocaleKeyParam) => {
+        return `Table [${tableName}] has problem: ${useI18nStore().translate(subMessage)}`;
+    },
+    VALIDATE_GenModel_associationValidError(associationName: string, subMessage: MainLocaleKeyParam): string {
+        return `Association [${associationName}] has problem: ${useI18nStore().translate(subMessage)}`;
+    },
+    VALIDATE_GenModel_enumValidError(enumName: string, subMessage: MainLocaleKeyParam): string {
+        return `Enum [${enumName}] has problem: ${useI18nStore().translate(subMessage)}`;
+    },
+
     LABEL_TableForm_asSuperTable: "SuperTable",
     LABEL_TableForm_extendTables: "extends",
     LABEL_TableForm_columns: "Columns",
@@ -371,6 +388,29 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     LABEL_TableForm_columnType_businessKey: "Business Key",
     LABEL_TableForm_columnType_keyGroup: "Key Group",
     LABEL_TableForm_columnType_logicalDelete: "Logical Delete",
+
+    VALIDATE_GenTable_nameCannotBeEmpty: "Table name cannot be empty",
+    VALIDATE_GenTable_nameCannotBeDuplicate: (tableName: string) => `Table name [${tableName}] cannot be duplicated`,
+    VALIDATE_GenTable_columnNameCannotBeEmpty: "Column name cannot be empty",
+    VALIDATE_GenTable_columnNameCannotBeDuplicate: (columnName: string) => `Column name [${columnName}] cannot be duplicated`,
+    VALIDATE_GenTable_columnDataSizeCannotBeNull: (columnName: string) => `Column [${columnName}] data size cannot be null`,
+    VALIDATE_GenTable_columnNumericPrecisionCannotBeNull: (columnName: string) => `Column [${columnName}] numeric precision cannot be null`,
+    VALIDATE_GenTable_columnEnumNotFound: (columnName: string, enumName: string) => `Column [${columnName}] corresponding enum [${enumName}] not found`,
+    VALIDATE_GenTable_indexNameCannotBeEmpty: "Index name cannot be empty",
+    VALIDATE_GenTable_indexNameCannotBeDuplicate: (indexName: string) => `Index name [${indexName}] cannot be duplicated`,
+    VALIDATE_GenTable_superTableNotFound: (superTableName: string) => `[${superTableName}] does not exist/is not a super table/has circular dependency`,
+    VALIDATE_GenTable_primaryKeyMustBeSingle: "Only one primary key is allowed",
+    VALIDATE_GenTable_mustHavePrimaryKey: "A primary key must be present, or the table should be a super table",
+    VALIDATE_GenTable_primaryKeyNotAllowed: "The super table already has a primary key, so the current table does not need a primary key",
+    VALIDATE_GenTable_primaryKeyMustBeNotNull: (columnName: string) => `Primary key column [${columnName}] must not be null`,
+    VALIDATE_GenTable_primaryKeyCannotBeEnum: (columnName: string) => `Primary key column [${columnName}] cannot be an enum type`,
+    VALIDATE_GenTable_primaryKeyCannotBeBusinessKey: (columnName: string) => `Primary key column [${columnName}] cannot be a business key`,
+    VALIDATE_GenTable_primaryKeyCannotBeLogicalDelete: (columnName: string) => `Primary key column [${columnName}] cannot be a logical delete`,
+    VALIDATE_GenTable_columnNameConflictWithSuperTable: (columnName: string) => `Column name [${columnName}] conflicts with a column in the super table`,
+    VALIDATE_GenTable_columnNameConflictWithChildTable: (columnName: string) => `Column name [${columnName}] conflicts with a column in the child table`,
+    VALIDATE_GenTable_indexColumnNotFound: (indexName: string, columnName: string) => `Index [${indexName}] references column [${columnName}] not found`,
+    VALIDATE_GenTable_indexColumnNameCannotBeEmpty: (indexName: string) => `Index [${indexName}] referenced column name cannot be empty`,
+    VALIDATE_GenTable_indexColumnNameCannotBeDuplicate: (indexName: string, columnName: string) => `Index [${indexName}] referenced column name [${columnName}] cannot be duplicated`,
 
     LABEL_TableCombineForm_superTableName: "Super Table Name",
     LABEL_TableCombineForm_tables: "Tables",
@@ -473,10 +513,25 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
 
     LABEL_EnumForm_name: 'Name',
     LABEL_EnumForm_packagePath: 'Package Path',
+    LABEL_EnumForm_defaultItem: 'Default Item',
     LABEL_EnumForm_comment: 'Comment',
     LABEL_EnumForm_type: 'Type',
     LABEL_EnumForm_typeUnset: 'Default',
 
+    VALIDATE_GenEnum_cannotBeDuplicate: (enumName: string) => {
+        return `Enum【${enumName}】already exist`
+    },
+    VALIDATE_GenEnum_nameCannotBeEmpty: "Enum name cannot be empty",
+    VALIDATE_GenEnum_itemsCannotBeEmpty: "There must be at least one enum item",
+    VALIDATE_GenEnum_defaultItemRequired: "There must be a default value",
+    VALIDATE_GenEnum_defaultItemUnique: "The default value must be unique",
+    VALIDATE_GenEnum_itemNameCannotBeEmpty: "Enum item name cannot be empty",
+    VALIDATE_GenEnum_itemNameCannotBeDuplicate: (itemName: string) => `Enum item name [${itemName}] cannot be duplicated`,
+    VALIDATE_GenEnum_ordinalValueMustBeInteger: "Ordinal enum item values must be integers",
+    VALIDATE_GenEnum_itemValueCannotBeEmpty: "Enum item value cannot be empty",
+    VALIDATE_GenEnum_itemValueCannotBeDuplicate: (itemValue: string) => `Enum item value [${itemValue}] cannot be duplicated`,
+    VALIDATE_GenEnum_nameCannotBeDuplicate: (enumName: string) => `Enum [${enumName}] name cannot be duplicated`,
+    
     LABEL_GenEnumItem_name: 'Name',
     LABEL_GenEnumItem_value: 'Value',
     LABEL_GenEnumItem_comment: 'Comment'

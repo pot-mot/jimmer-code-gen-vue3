@@ -158,7 +158,7 @@ import {Graph, Node} from "@antv/x6"
 import {initModelEditor} from "./initModelEditor.ts"
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
-import {sendMessage} from "@/message/message.ts";
+import {sendI18nMessage} from "@/message/message.ts";
 import {GenerateFile, GenTableModelInput} from "@/api/__generated/model/static";
 import SaveIcon from "@/components/global/icons/toolbar/SaveIcon.vue";
 import LayoutIcon from "@/components/global/icons/toolbar/LayoutIcon.vue";
@@ -276,13 +276,13 @@ const handleSaveModel = loadingStore.withLoading('ModelEditorGraph handleSaveMod
         MODEL.isLoaded = true
 
         if (id === undefined) {
-            sendMessage("模型保存失败，校验未通过", "success")
+            sendI18nMessage("MESSAGE_ModelEditorGraph_modelSaveFail_idNotReturnFromBackend", "success")
             return
         }
 
-        sendMessage("模型保存成功", "success")
+        sendI18nMessage("MESSAGE_ModelEditorGraph_modelSaveSuccess", "success")
     } catch (e) {
-        sendMessage(`模型保存失败，原因：${e}`, 'error', e)
+        sendI18nMessage({key: "MESSAGE_ModelEditorGraph_modelSaveError", args: [e]}, 'error', e)
     }
 })
 
@@ -343,7 +343,7 @@ const preJudge = (): boolean => {
     const judge = judgeGraphDataIsChange()
 
     if (judge) {
-        sendMessage('模型有变更尚未保存', 'warning')
+        sendI18nMessage("MESSAGE_ModelEditorGraph_someChangeNotSave", 'warning')
         return false
     } else {
         const model = MODEL._model()
@@ -352,7 +352,7 @@ const preJudge = (): boolean => {
         if (messageList.length === 0) {
             return true
         } else {
-            messageList.forEach(it => sendMessage(it, 'warning'))
+            messageList.forEach(it => sendI18nMessage(it, 'warning'))
             return false
         }
     }

@@ -6,9 +6,10 @@ import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {createTableCombineData, TableCombineData} from "@/components/business/table/TableCombineData.ts";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
-import {sendI18nMessage, sendMessage} from "@/message/message.ts";
+import {sendI18nMessage} from "@/message/message.ts";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {type Node} from "@antv/x6";
+import {MainLocaleKeyParam} from "@/i18n";
 
 const i18nStore = useI18nStore()
 
@@ -16,7 +17,7 @@ const {MODEL} = useModelEditorStore()
 
 const props = defineProps<{
     tableNodePairs?: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>> | undefined,
-    validate: (table: DeepReadonly<TableCombineData>) => string[],
+    validate: (table: DeepReadonly<TableCombineData>) => MainLocaleKeyParam[],
 }>()
 
 const emits = defineEmits<FormEmits<TableCombineData>>()
@@ -139,7 +140,7 @@ const handleSubmit = async () => {
     const messageList = props.validate(data)
 
     if (messageList.length > 0) {
-        messageList.forEach(it => sendMessage(it, 'warning'))
+        messageList.forEach(it => sendI18nMessage(it, 'warning'))
         return
     }
 

@@ -10,10 +10,11 @@ import {validateTable} from "@/components/business/table/validateTable.ts";
 import {validateEnum} from "@/components/business/enum/validateEnum.ts";
 import {validateAssociation} from "@/components/business/association/validateAssociation.ts";
 import {DeepReadonly} from "vue";
+import {ProjectLocaleKeyParam} from "@/i18n";
 
 export const validateModel = (
     model: DeepReadonly<GenModelInput>,
-): string[] => {
+): ProjectLocaleKeyParam[] => {
     const {
         messageList,
         errors
@@ -27,7 +28,7 @@ export const validateModel = (
     )
 
     if (model.name.length === 0) {
-        messageList.push('模型名不得为空')
+        messageList.push('VALIDATE_GenModel_nameCannotBeEmpty')
     }
 
     return messageList
@@ -37,10 +38,10 @@ const validateGraphDataStr = (
     graphDataStr: Readonly<string>,
     enums: DeepReadonly<Array<GenModelInput_TargetOf_enums>>
 ): {
-    messageList: string[],
+    messageList: ProjectLocaleKeyParam[],
     errors: any[]
 } => {
-    const messageList: string[] = []
+    const messageList: ProjectLocaleKeyParam[] = []
     const errors = []
 
     try {
@@ -62,10 +63,10 @@ const validateGraphDataStr = (
             const tables = nodes.map(it => it.data.table)
             const tableNameMap = new Map<string, GenTableModelInput>
 
-            for (let table of tables) {
+            for (const table of tables) {
                 const current = tableNameMap.get(table.name)
                 if (current) {
-                    messageList.push(`表名【${table.name}】重复`)
+                    messageList.push({key: "VALIDATE_GenTable_nameCannotBeDuplicate", args: [table.name]})
                 } else {
                     tableNameMap.set(table.name, table)
                 }
@@ -74,10 +75,10 @@ const validateGraphDataStr = (
             const edges = cells.filter(it => it.shape === ASSOCIATION_EDGE) as AssociationEdge[]
             const associations = edges.map(it => it.data.association)
             const associationNameMap = new Map<string, GenAssociationModelInput>
-            for (let association of associations) {
+            for (const association of associations) {
                 const current = associationNameMap.get(association.name)
                 if (current) {
-                    messageList.push(`关联名【${association.name}】重复`)
+                    messageList.push({key: "VALIDATE_GenAssociation_name_cannotBeDuplicate", args: [association.name]})
                 } else {
                     associationNameMap.set(association.name, association)
                 }
@@ -93,7 +94,7 @@ const validateGraphDataStr = (
                 enums
             }
 
-            for (let node of nodes) {
+            for (const node of nodes) {
                 const table = node.data.table
 
                 const nodeMessageList = validateTable(
@@ -101,10 +102,15 @@ const validateGraphDataStr = (
                     context.tables.filter(it => it !== table),
                     context.enums
                 )
-                messageList.push(...nodeMessageList.map(it => `表【${table.name}】存在问题：${it}`))
+
+                const withTableNameMessageList = nodeMessageList.map(it => {
+                    return {key: 'VALIDATE_GenModel_tableValidError', args: [table.name, it]} as ProjectLocaleKeyParam
+                })
+
+                messageList.push(...withTableNameMessageList)
             }
 
-            for (let edge of edges) {
+            for (const edge of edges) {
                 const association = edge.data.association
 
                 const edgeMessageList = validateAssociation(
@@ -112,19 +118,32 @@ const validateGraphDataStr = (
                     context.associations.filter(it => it !== association),
                     context.tables
                 )
-                messageList.push(...edgeMessageList.map(it => `关联【${association.name}】存在问题：${it}`))
+
+                const withAssociationNameMessageList = edgeMessageList.map(it => {
+                    return {key: 'VALIDATE_GenModel_tableValidError', args: [association.name, it]} as ProjectLocaleKeyParam
+                })
+
+                messageList.push(...withAssociationNameMessageList)
             }
 
-            for (let genEnum of enums) {
-                const enumMessageList: string[] = validateEnum(genEnum, enums.filter(it => it.name !== genEnum.name))
-                messageList.push(...enumMessageList.map(it => `枚举【${genEnum.name}】存在问题 ${it}`))
+            for (const genEnum of enums) {
+                const enumMessageList = validateEnum(
+                    genEnum,
+                    enums.filter(it => it.name !== genEnum.name)
+                )
+
+                const withEnumNameMessageList = enumMessageList.map(it => {
+                    return {key: 'VALIDATE_GenModel_tableValidError', args: [genEnum.name, it]} as ProjectLocaleKeyParam
+                })
+
+                messageList.push(...withEnumNameMessageList)
             }
         } catch (e) {
-            messageList.push('graphData 校验失败，请参考控制台报错')
+            messageList.push('VALIDATE_ModelForm_graphDataValidationFailed')
             errors.push(e)
         }
     } catch (e) {
-        messageList.push('graphData json 转换失败，请参考控制台报错')
+        messageList.push('VALIDATE_ModelForm_graphDataJsonConversionFailed')
         errors.push(e)
     }
 

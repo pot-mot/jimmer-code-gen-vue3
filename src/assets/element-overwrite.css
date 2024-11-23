@@ -75,6 +75,6 @@
 }
 
 .el-message__content {
-    white-space: pre;
+    white-space: pre-wrap;
     line-height: 1.4rem;
 }
