@@ -20,3 +20,27 @@ export const getColumnCombineKeyStr = (
 ) => {
     return `${column.name} ${column.typeCode} ${column.rawType} ${column.overwriteByRaw} ${column.dataSize} ${column.numericPrecision} ${column.enum?.name ?? ''}`
 }
+
+export const createColumnCombineMap = (
+    columns: GenTableModelInput_TargetOf_columns[]
+): Map<string, GenTableModelInput_TargetOf_columns[]> => {
+    const columnCountMap = new Map<string, GenTableModelInput_TargetOf_columns[]>
+
+    for (const column of columns) {
+        const key = getColumnCombineKeyStr(column)
+        const currentValue = columnCountMap.get(key)
+        if (currentValue !== undefined) {
+            currentValue.push(column)
+        } else {
+            columnCountMap.set(key, [column])
+        }
+    }
+
+    return columnCountMap
+}
+
+export const createColumnNameSet = (
+    columns: GenTableModelInput_TargetOf_columns[]
+): Set<string> => {
+    return new Set<string>(columns.map(it => it.name))
+}

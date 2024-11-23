@@ -17,7 +17,11 @@ import {
     extractMultiCreateInput,
     getDefaultAssociationMultiCreateInput
 } from "@/components/business/association/AssociationMultiCreateInput.ts";
-import {ColumnCombineKey, getColumnCombineKeyStr} from "@/components/business/association/columnEquals.ts";
+import {
+    ColumnCombineKey,
+    createColumnCombineMap,
+    getColumnCombineKeyStr
+} from "@/components/business/association/columnEquals.ts";
 
 const i18nStore = useI18nStore()
 
@@ -58,6 +62,10 @@ const sourceColumns = computed<ColumnCombineKey[]>(() =>
     association.value.columnReferences.map(it => it.sourceColumn).filter(it => !!it)
 )
 
+const targetColumnCombineKeys = computed<string[]>(() =>
+    association.value.columnReferences.map(it => it.targetColumn).filter(it => !!it).map(it => getColumnCombineKeyStr(it))
+)
+
 // 选项计算属性
 
 const sourceTableOptions = computed<GenTableModelInput[]>(() =>
@@ -85,26 +93,36 @@ const sourceColumnOptions = computed<ColumnCombineKey[]>(() => {
     const tables = sourceTablesIsEmpty.value ? MODEL.tables : association.value.sourceTables
     const columns = tables.flatMap(it => it.columns)
 
-    const columnCountMap = new Map<string, GenTableModelInput_TargetOf_columns[]>
+    const columnCombineMap = createColumnCombineMap(columns)
 
-    for (const column of columns) {
-        const key = getColumnCombineKeyStr(column)
-        const currentValue = columnCountMap.get(key)
-        if (currentValue !== undefined) {
-            currentValue.push(column)
-        } else {
-            columnCountMap.set(key, [column])
-        }
-    }
-
-    return [...columnCountMap.values()]
+    return [...columnCombineMap.values()]
         .filter(it => sourceTablesIsEmpty.value ? true : it.length === tables.length)
         .map(it => it[0])
 })
 
-const targetTableOptions = computed(() => MODEL.tables)
+const targetTableOptions = computed(() => {
+    if (targetColumnCombineKeys.value.length > 0) {
+        return MODEL.tables.filter(table => {
+            for (const column of table.columns) {
+                if (targetColumnCombineKeys.value.includes(getColumnCombineKeyStr(column)))
+                    return true
+            }
+            return false
+        })
+    } else {
+        return MODEL.tables
+    }
+})
 
-const targetColumnOptions = computed(() => association.value.targetTable?.columns ?? [])
+const targetColumnOptions = computed<ColumnCombineKey[]>(() => {
+    if (association.value.targetTable === undefined) {
+        const columns = MODEL.tables.flatMap(it => it.columns)
+        const columnCombineMap = createColumnCombineMap(columns)
+        return [...columnCombineMap.values()].map(it => it[0])
+    } else {
+        return association.value.targetTable.columns
+    }
+})
 
 // 索引双向计算属性
 

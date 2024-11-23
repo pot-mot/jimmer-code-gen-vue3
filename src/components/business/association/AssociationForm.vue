@@ -15,6 +15,9 @@ import {MainLocaleKeyParam} from "@/i18n";
 import {getDefaultAssociation} from "@/components/business/association/defaultColumn.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
+import {
+    createColumnNameSet
+} from "@/components/business/association/columnEquals.ts";
 
 const i18nStore = useI18nStore()
 
@@ -53,15 +56,61 @@ const targetTable = computed<GenTableModelInput | undefined>(() =>
     MODEL.tables.filter(table => table.name === association.value.targetTableName)[0]
 )
 
+const sourceColumnNames = computed<string[]>(() =>
+    association.value.columnReferences.map(it => it.sourceColumnName).filter(it => it.length > 0)
+)
+
+const targetColumnNames = computed<string[]>(() =>
+    association.value.columnReferences.map(it => it.targetColumnName).filter(it => it.length > 0)
+)
+
 // 选项计算属性
 
-const sourceTableOptions = computed(() => MODEL.tables)
+const sourceTableOptions = computed(() => {
+    if (sourceColumnNames.value.length > 0) {
+        return MODEL.tables.filter(table => {
+            for (const column of table.columns) {
+                if (sourceColumnNames.value.includes(column.name))
+                   return true
+            }
+            return false
+        })
+    } else {
+        return MODEL.tables
+    }
+})
 
-const targetTableOptions = computed(() => MODEL.tables)
+const targetTableOptions = computed(() => {
+    if (targetColumnNames.value.length > 0) {
+        return MODEL.tables.filter(table => {
+            for (const column of table.columns) {
+                if (targetColumnNames.value.includes(column.name))
+                    return true
+            }
+            return false
+        })
+    } else {
+        return MODEL.tables
+    }
+})
 
-const sourceColumnOptions = computed(() => sourceTable.value?.columns ?? [])
+const sourceColumnNameOptions = computed<string[]>(() => {
+    if (sourceTable.value === undefined) {
+        const columns = MODEL.tables.flatMap(it => it.columns)
+        return [...createColumnNameSet(columns)]
+    } else {
+        return sourceTable.value.columns.map(it => it.name)
+    }
+})
 
-const targetColumnOptions = computed(() => targetTable.value?.columns ?? [])
+const targetColumnNameOptions = computed<string[]>(() => {
+    if (targetTable.value === undefined) {
+        const columns = MODEL.tables.flatMap(it => it.columns)
+        return [...createColumnNameSet(columns)]
+    } else {
+        return targetTable.value.columns.map(it => it.name)
+    }
+})
 
 // 刷新关联名称
 const handleRefreshAssociationName = () => {
@@ -107,27 +156,35 @@ const handleCancel = () => {
         <el-form-item :label="i18nStore.translate('LABEL_AssociationForm_mappingAssociation')">
             <template v-for="columnReference in association.columnReferences">
                 <div style="width: 100%; display: grid; grid-template-columns: 1fr 1fr 2em 1fr 1fr;">
+                    <!-- 源表选择器-->
                     <el-select v-model="association.sourceTableName" clearable filterable
                                :placeholder="i18nStore.translate('LABEL_AssociationForm_sourceTableName_placeholder')">
                         <el-option v-for="table in sourceTableOptions" :key="table.name" :value="table.name"/>
                     </el-select>
+
+                    <!-- 源列选择器-->
                     <el-select v-model="columnReference.sourceColumnName" clearable filterable
                                :placeholder="i18nStore.translate('LABEL_AssociationForm_sourceColumnName_placeholder')">
-                        <el-option v-for="column in sourceColumnOptions" :key="column.name" :value="column.name"/>
+                        <el-option v-for="columnName in sourceColumnNameOptions" :key="columnName" :value="columnName"/>
                         <template #empty v-if="!association.sourceTableName">
                             {{ i18nStore.translate('LABEL_AssociationForm_placeSelectSourceTableFirst') }}
                         </template>
                     </el-select>
+
                     <el-text style="text-align: center;">
                         {{ " -> " }}
                     </el-text>
+
+                    <!-- 目标表选择器-->
                     <el-select v-model="association.targetTableName" clearable filterable
                                :placeholder="i18nStore.translate('LABEL_AssociationForm_targetTableName_placeholder')">
                         <el-option v-for="table in targetTableOptions" :key="table.name" :value="table.name"/>
                     </el-select>
+
+                    <!-- 目标列选择器-->
                     <el-select v-model="columnReference.targetColumnName" clearable filterable
                                :placeholder="i18nStore.translate('LABEL_AssociationForm_targetColumnName_placeholder')">
-                        <el-option v-for="column in targetColumnOptions" :key="column.name" :value="column.name"/>
+                        <el-option v-for="columnName in targetColumnNameOptions" :key="columnName" :value="columnName"/>
                         <template #empty v-if="!association.targetTableName">
                             {{ i18nStore.translate('LABEL_AssociationForm_placeSelectTargetTableFirst') }}
                         </template>

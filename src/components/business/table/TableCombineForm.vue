@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import {computed, DeepReadonly, ref, watch} from "vue";
-import {GenTableModelInput, GenTableModelInput_TargetOf_columns, Pair} from "@/api/__generated/model/static";
-import {ColumnCombineKey, getColumnCombineKeyStr} from "@/components/business/association/columnEquals.ts";
+import {GenTableModelInput, Pair} from "@/api/__generated/model/static";
+import {
+    ColumnCombineKey,
+    createColumnCombineMap,
+    getColumnCombineKeyStr
+} from "@/components/business/association/columnEquals.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {createTableCombineData, TableCombineData} from "@/components/business/table/TableCombineData.ts";
@@ -85,19 +89,9 @@ const columnOptions = computed<ColumnCombineKey[]>(() => {
     const tablePairs = tableNodePairsIsEmpty.value ? MODEL.tableNodePairs : tableNodePairs.value
     const columns = tablePairs.flatMap(it => it.first.columns)
 
-    const columnCountMap = new Map<string, GenTableModelInput_TargetOf_columns[]>
+    const columnCombineMap = createColumnCombineMap(columns)
 
-    for (const column of columns) {
-        const key = getColumnCombineKeyStr(column)
-        const currentValue = columnCountMap.get(key)
-        if (currentValue !== undefined) {
-            currentValue.push(column)
-        } else {
-            columnCountMap.set(key, [column])
-        }
-    }
-
-    return [...columnCountMap.values()]
+    return [...columnCombineMap.values()]
         .filter(it => tableNodePairsIsEmpty.value ? true : it.length === tableNodePairs.value.length)
         .map(it => it[0])
 })
