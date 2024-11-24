@@ -22,11 +22,12 @@ import {getLegalSuperTables} from "@/components/business/table/tableInheritAnaly
 import {processNamingStrategy} from "@/components/business/genConfig/namingStrategyProcess.ts";
 import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import {RefreshRight} from "@element-plus/icons-vue";
+import {Delete, Plus, RefreshRight} from "@element-plus/icons-vue";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import ColumnCategorySelect from "@/components/business/table/ColumnCategorySelect.vue";
 import {cloneDeep} from "lodash";
 import {MainLocaleKeyParam} from "@/i18n";
+import {getColumnKeyGroups} from "@/components/business/table/columnKeyGroups.ts";
 
 const i18nStore = useI18nStore()
 
@@ -163,33 +164,53 @@ const handleColumnToPk = (columnIndex: number) => {
     })
 }
 
+const defaultKeyGroup = ""
+
 const KEY_INDEX_PREFIX = 'key_of'
 
 const keyGroups = computed<Array<string>>(() =>
-    [...new Set(
-        table.value.columns.filter(it => it.businessKey && it.keyGroup !== undefined).map(it => it.keyGroup) as Array<string>
-    )]
+    [
+        ...new Set([
+            defaultKeyGroup,
+            ...table.value.columns
+                .filter(it => it.businessKey && it.keyGroup !== undefined)
+                .flatMap(it => getColumnKeyGroups(it))
+        ])
+    ].sort()
 )
 
-const createKeyIndexName = (group: string | undefined): string => {
+const createKeyIndexName = (group: string): string => {
     const context = useGenConfigContextStore().context
 
     return processNamingStrategy(
-        `${KEY_INDEX_PREFIX}_${table.value.type === 'SUPER_TABLE' ? '{}' : table.value.name}${group === undefined ? '' : `_${group}`}`,
+        `${KEY_INDEX_PREFIX}_${table.value.type === 'SUPER_TABLE' ? '{}' : table.value.name}${group === defaultKeyGroup ? '' : `_${group}`}`,
         context.databaseNamingStrategy
     )
 }
 
 const keyIndexes = computed<Array<GenTableModelInput_TargetOf_indexes>>(() => {
-    const keyColumnMap = new Map<string | undefined, Array<GenTableModelInput_TargetOf_columns>>
+    const keyColumnMap = new Map<string, Array<GenTableModelInput_TargetOf_columns>>
 
     for (const column of table.value.columns) {
         if (column.businessKey) {
-            const columns = keyColumnMap.get(column.keyGroup)
-            if (columns === undefined) {
-                keyColumnMap.set(column.keyGroup, [column])
-            } else {
-                columns.push(column)
+            const columnKeyGroups = getColumnKeyGroups(column)
+
+            if (columnKeyGroups.length === 0) {
+                const columns = keyColumnMap.get(defaultKeyGroup)
+                if (columns === undefined) {
+                    keyColumnMap.set(defaultKeyGroup, [column])
+                } else {
+                    columns.push(column)
+                }
+            }
+
+            for (const columnKeyGroup of columnKeyGroups) {
+                const columns = keyColumnMap.get(columnKeyGroup)
+                if (columns === undefined) {
+                    keyColumnMap.set(columnKeyGroup, [column])
+                } else {
+                    columns.push(column)
+                }
             }
         }
     }
@@ -326,7 +347,8 @@ const handleCancel = () => {
                 <template #category="{index}">
                     <ColumnCategorySelect
                         v-model:column="table.columns[index]"
-                        v-model:key-groups="keyGroups"
+                        :default-key-group="defaultKeyGroup"
+                        :key-groups="keyGroups"
                         @updatePrimaryKey="value => {
                             if (value) handleColumnToPk(index)
                         }"
@@ -420,10 +442,18 @@ const handleCancel = () => {
                         <el-option v-for="name in columnNames" :value="name"/>
                     </el-select>
                 </template>
+
+                <template #operation="{handleAddLine, handleRemoveLine, data, index}">
+                    <el-button @click.prevent.stop="handleAddLine(index)"
+                               :icon="Plus" link style="margin-left: 0.3em;"/>
+                    <el-button @click.prevent.stop="handleRemoveLine(index)"
+                               v-if="!keyIndexNames.includes(data.name)"
+                               :icon="Delete" link style="margin-left: 0.3em;" type="danger"/>
+                </template>
             </EditList>
         </Details>
 
-        <div style="text-align: right; position: absolute; bottom: 0.5em; left: 1em; right: 1em;">
+        <div style="text-align: right; position: absolute; bottom: 0.5em; right: 1em;">
             <el-button type="info" @click="handleCancel">{{ i18nStore.translate('BUTTON_cancel') }}</el-button>
             <el-button type="primary" @click="handleSubmit">{{ i18nStore.translate('BUTTON_save') }}</el-button>
         </div>

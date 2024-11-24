@@ -505,6 +505,7 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     LABEL_GenTableColumn_type: '类型',
     LABEL_GenTableColumn_typeNotNull: '非空',
     LABEL_GenTableColumn_defaultValue: '默认值',
+    LABEL_GenTableColumn_defaultKeyGroup: '[默认组]',
 
     LABEL_GenTableIndex_name: '名称',
     LABEL_GenTableIndex_uniqueIndex: '唯一',

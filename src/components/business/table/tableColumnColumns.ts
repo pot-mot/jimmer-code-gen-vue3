@@ -12,11 +12,12 @@ export const tableColumnColumns: ReadonlyArray<
     {
         name: 'category',
         label: 'LABEL_GenTableColumn_category',
-        span: '7em',
+        span: '1.5fr',
     },
     {
         prop: 'name',
         label: 'LABEL_GenTableColumn_name',
+        span: '1fr',
     },
     {
         prop: 'comment',
@@ -26,6 +27,7 @@ export const tableColumnColumns: ReadonlyArray<
     {
         name: 'type',
         label: 'LABEL_GenTableColumn_type',
+        span: '1fr',
     },
     {
         prop: "typeNotNull",
@@ -35,5 +37,6 @@ export const tableColumnColumns: ReadonlyArray<
     {
         prop: 'defaultValue',
         label: 'LABEL_GenTableColumn_defaultValue',
+        span: '1fr',
     },
 ]

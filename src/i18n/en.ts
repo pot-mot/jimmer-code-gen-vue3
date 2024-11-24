@@ -506,6 +506,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     LABEL_GenTableColumn_type: 'Type',
     LABEL_GenTableColumn_typeNotNull: 'NonNull',
     LABEL_GenTableColumn_defaultValue: 'Default Value',
+    LABEL_GenTableColumn_defaultKeyGroup: '[Default Group]',
 
     LABEL_GenTableIndex_name: 'Name',
     LABEL_GenTableIndex_uniqueIndex: 'Unique',

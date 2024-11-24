@@ -6,6 +6,7 @@ import PrimaryKeyIcon from "@/components/global/icons/database/PrimaryKeyIcon.vu
 import BusinessKeyIcon from "@/components/global/icons/database/BusinessKeyIcon.vue";
 import LogicalDeleteIcon from "@/components/global/icons/database/LogicalDeleteIcon.vue";
 import AutoIncrementIcon from "@/components/global/icons/database/AutoIncrementIcon.vue";
+import {getColumnKeyGroups} from "@/components/business/table/columnKeyGroups.ts";
 
 const i18nStore = useI18nStore()
 
@@ -30,8 +31,18 @@ const column = defineModel<GenTableModelInput_TargetOf_columns>("column", {
     required: true
 })
 
-const keyGroups = defineModel<Array<string>>("keyGroups", {
-    required: true
+const props = defineProps<{
+    defaultKeyGroup: string,
+    keyGroups: Array<string>
+}>()
+
+const currentKeyGroups = computed<Array<string>>({
+    get() {
+        return getColumnKeyGroups(column.value)
+    },
+    set(value: Array<string>) {
+        column.value.keyGroup = value.join(",")
+    }
 })
 
 const emits = defineEmits<{
@@ -79,6 +90,7 @@ const columnCategories = computed<ColumnCategory[]>({
         if (column.value.businessKey !== newBusinessKey) {
             if (newBusinessKey) {
                 column.value.partOfPk = false
+                column.value.keyGroup = props.defaultKeyGroup
             } else {
                 column.value.keyGroup = undefined
             }
@@ -111,8 +123,10 @@ const columnCategories = computed<ColumnCategory[]>({
                 <component v-for="category in columnCategories"
                            :key="category"
                            :is="columnCategoryComponent[category]"/>
-                <el-text v-if="column.keyGroup" type="info">
-                    {{ column.keyGroup }}
+                <el-text v-if="column.businessKey" type="info">
+                    <el-tag v-for="keyGroup in currentKeyGroups" type="info">
+                        {{ keyGroup === defaultKeyGroup ? i18nStore.translate('LABEL_GenTableColumn_defaultKeyGroup') : keyGroup }}
+                    </el-tag>
                 </el-text>
             </span>
         </template>
@@ -141,10 +155,11 @@ const columnCategories = computed<ColumnCategory[]>({
             <br>
             <el-select
                 v-if="column.businessKey"
-                v-model="column.keyGroup"
+                v-model="currentKeyGroups"
                 :placeholder="i18nStore.translate('LABEL_TableForm_columnType_keyGroup')"
                 clearable
                 filterable
+                multiple
                 allow-create
                 @click="(e: Event) => {
                     e.preventDefault()
@@ -153,9 +168,10 @@ const columnCategories = computed<ColumnCategory[]>({
                 }"
             >
                 <el-option
-                    v-for="keyGroup in [...keyGroups]"
+                    v-for="keyGroup in keyGroups"
                     :key="keyGroup"
                     :value="keyGroup"
+                    :label="keyGroup === defaultKeyGroup ? i18nStore.translate('LABEL_GenTableColumn_defaultKeyGroup') : keyGroup"
                 />
             </el-select>
         </el-option>

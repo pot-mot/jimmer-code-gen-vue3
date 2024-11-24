@@ -361,6 +361,7 @@ type MainLocale = {
     LABEL_GenTableColumn_type: string,
     LABEL_GenTableColumn_typeNotNull: string,
     LABEL_GenTableColumn_defaultValue: string,
+    LABEL_GenTableColumn_defaultKeyGroup: string,
 
     LABEL_GenTableIndex_name: string
     LABEL_GenTableIndex_uniqueIndex: string

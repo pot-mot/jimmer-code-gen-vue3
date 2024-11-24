@@ -5,7 +5,7 @@ export const tableIndexColumns = <ReadonlyArray<PropListColumn<GenTableModelInpu
     {
         prop: "name",
         label: 'LABEL_GenTableIndex_name',
-        span: '12em',
+        span: '1fr',
     },
     {
         prop: "uniqueIndex",
@@ -14,6 +14,7 @@ export const tableIndexColumns = <ReadonlyArray<PropListColumn<GenTableModelInpu
     },
     {
         prop: "columns",
-        label: "LABEL_GenTableIndex_columns"
+        label: "LABEL_GenTableIndex_columns",
+        span: '1.5fr',
     }
 ]
