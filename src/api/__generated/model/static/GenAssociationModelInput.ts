@@ -38,11 +38,11 @@ export interface GenAssociationModelInput {
      */
     columnReferences: Array<GenAssociationModelInput_TargetOf_columnReferences>;
     /**
-     * 主表
+     * 名称
      */
     sourceTableName: string;
     /**
-     * 从表
+     * 名称
      */
     targetTableName: string;
 }

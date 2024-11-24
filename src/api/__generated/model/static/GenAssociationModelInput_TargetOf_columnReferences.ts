@@ -3,11 +3,11 @@
  */
 export interface GenAssociationModelInput_TargetOf_columnReferences {
     /**
-     * 主列
+     * 名称
      */
     sourceColumnName: string;
     /**
-     * 从列
+     * 名称
      */
     targetColumnName: string;
 }
