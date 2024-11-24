@@ -5,6 +5,8 @@ import {GenerateFile} from "@/api/__generated/model/static";
 import LeftRightLayout from "@/components/global/layout/LeftRightLayout.vue";
 import {ElTree} from "element-plus";
 import {GenerateTag, GenerateTag_CONSTANTS} from "@/api/__generated/model/enums";
+import {Pane, Splitpanes} from 'splitpanes'
+import 'splitpanes/dist/splitpanes.css'
 
 interface MultiCodePreviewProps {
     codeFiles: Array<GenerateFile> | undefined,
@@ -127,51 +129,57 @@ defineExpose<{
 <template>
     <LeftRightLayout v-if="codeFiles && codeFiles.length > 0" :left-size="20">
         <template #left>
-            <div style="padding: 0.5em; height: 6rem;">
-                <el-input
-                    v-model="filterText" clearable
-                    placeholder="Filter Keyword"
-                    style="width: calc(100% - 1rem);"
-                    @change="handleFiltered"
-                    :spellcheck="false"
-                />
+            <Splitpanes horizontal>
+                <Pane style="padding: 0.5em; overflow-y: scroll;" size="11em">
+                    <el-input
+                        v-model="filterText" clearable
+                        placeholder="Filter Keyword"
+                        style="width: calc(100% - 1rem);"
+                        type="textarea"
+                        autosize
+                        @change="handleFiltered"
+                        :spellcheck="false"
+                    />
 
-                <el-select
-                    v-model="positiveTags" multiple filterable clearable
-                    placeholder="Select Tag"
-                    collapse-tags
-                    collapse-tags-tooltip
-                    style="width: calc(100% - 1rem); margin-top: 0.3rem;"
-                    @change="handleFiltered">
-                    <el-option
-                        v-for="tag in GenerateTag_CONSTANTS"
-                        :value="tag"/>
-                </el-select>
+                    <el-select
+                        v-model="positiveTags" multiple filterable clearable
+                        placeholder="Select Tag"
+                        collapse-tags
+                        collapse-tags-tooltip
+                        :max-collapse-tags="6"
+                        style="width: calc(100% - 1rem); margin-top: 0.3rem;"
+                        @change="handleFiltered">
+                        <el-option
+                            v-for="tag in GenerateTag_CONSTANTS"
+                            :value="tag"/>
+                    </el-select>
 
-                <el-select
-                    v-model="negativeTags" multiple filterable clearable
-                    placeholder="Select Negative Tag"
-                    collapse-tags
-                    collapse-tags-tooltip
-                    style="width: calc(100% - 1rem); margin-top: 0.3rem;"
-                    @change="handleFiltered">
-                    <el-option
-                        v-for="tag in GenerateTag_CONSTANTS"
-                        :value="tag"/>
-                </el-select>
-            </div>
-            <div style="padding: 0.5em; height: calc(100% - 4rem); overflow-y: auto;">
-                <el-tree
-                    ref="treeRef"
-                    :props="{children: 'children'}"
-                    :data="fileTree"
-                    :indent="6"
-                    @node-click="(data: FilePathTreeItem) => {if (data.path) currentPath = data.path}">
-                    <template #default="{data}">
-                        <el-text>{{ data.name }}</el-text>
-                    </template>
-                </el-tree>
-            </div>
+                    <el-select
+                        v-model="negativeTags" multiple filterable clearable
+                        placeholder="Select Negative Tag"
+                        collapse-tags
+                        collapse-tags-tooltip
+                        :max-collapse-tags="6"
+                        style="width: calc(100% - 1rem); margin-top: 0.3rem;"
+                        @change="handleFiltered">
+                        <el-option
+                            v-for="tag in GenerateTag_CONSTANTS"
+                            :value="tag"/>
+                    </el-select>
+                </Pane>
+                <Pane style="padding: 0.5em; overflow-y: scroll;">
+                    <el-tree
+                        ref="treeRef"
+                        :props="{children: 'children'}"
+                        :data="fileTree"
+                        :indent="6"
+                        @node-click="(data: FilePathTreeItem) => {if (data.path) currentPath = data.path}">
+                        <template #default="{data}">
+                            <el-text>{{ data.name }}</el-text>
+                        </template>
+                    </el-tree>
+                </Pane>
+            </Splitpanes>
         </template>
 
         <template #right v-if="currentContent">

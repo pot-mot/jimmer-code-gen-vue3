@@ -24,6 +24,10 @@ body {
 }
 
 /* splitpanes */
+.splitpanes__pane {
+    transition: none !important;
+}
+
 .splitpanes__splitter {
     background-color: #eee;
 }

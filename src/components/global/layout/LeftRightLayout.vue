@@ -13,12 +13,12 @@ withDefaults(
 </script>
 
 <template>
-    <splitpanes>
-        <pane :size="leftSize">
+    <Splitpanes>
+        <Pane :size="leftSize">
             <slot name="left"/>
-        </pane>
+        </Pane>
         <pane>
             <slot name="right"/>
         </pane>
-    </splitpanes>
+    </Splitpanes>
 </template>
