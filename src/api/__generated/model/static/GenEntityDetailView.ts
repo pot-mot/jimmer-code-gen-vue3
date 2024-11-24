@@ -25,9 +25,17 @@ export interface GenEntityDetailView {
      */
     name: string;
     /**
+     * 覆盖自动生成类名称
+     */
+    overwriteName: boolean;
+    /**
      * 类注释
      */
     comment: string;
+    /**
+     * 覆盖自动生成注释
+     */
+    overwriteComment: boolean;
     /**
      * 作者
      */

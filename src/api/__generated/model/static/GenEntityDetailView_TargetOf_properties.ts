@@ -22,9 +22,17 @@ export interface GenEntityDetailView_TargetOf_properties {
      */
     name: string;
     /**
+     * 覆盖自动生成属性名
+     */
+    overwriteName: boolean;
+    /**
      * 属性注释
      */
     comment: string;
+    /**
+     * 覆盖自动生成注释
+     */
+    overwriteComment: boolean;
     /**
      * 字面类型
      */
