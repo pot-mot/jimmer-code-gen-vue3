@@ -761,8 +761,12 @@ const initModelEditorStore = (): ModelEditorStore => {
             .map(it => it.data.association)
     )
 
+    // 枚举处理
     watch(() => currentModel.value, (value) => {
         if (currentModel.value !== undefined && value !== undefined) {
+            value.enums.forEach(genEnum => {
+                genEnum.packagePath = value.packagePath + ".enums"
+            })
             currentModel.value.enums = value.enums.sort((a, b) => {
                 if (a.name < b.name) return -1
                 else return 1

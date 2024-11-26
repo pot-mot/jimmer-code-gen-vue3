@@ -6,7 +6,7 @@ export const getDefaultEnum = (): GenModelInput_TargetOf_enums => {
 
     return {
         name: "",
-        packagePath: contextStore.context.packagePath,
+        packagePath: contextStore.context.packagePath + ".enums",
         comment: "",
         remark: "",
         items: [],

@@ -11,14 +11,10 @@ import {sendI18nMessage} from "@/message/message.ts";
 import {getDefaultEnum, getDefaultEnumItem} from "@/components/business/enum/defaultEnum.ts";
 import {validateEnumItem} from "@/shape/GenEnumModelInput.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
-import {RefreshRight} from "@element-plus/icons-vue";
-import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts";
 import {MainLocaleKeyParam} from "@/i18n";
 import Comment from "@/components/global/common/Comment.vue";
 
 const i18nStore = useI18nStore()
-
-const contextStore = useGenConfigContextStore()
 
 const props = defineProps<{
     enum?: Partial<GenModelInput_TargetOf_enums>,
@@ -69,10 +65,6 @@ const defaultItemIndex = computed<number | undefined>({
     }
 })
 
-const handleRefreshEnumPackagePath = () => {
-    genEnum.value.packagePath = contextStore.context.packagePath
-}
-
 const handleSubmit = () => {
     const messageList = props.validate(genEnum.value)
 
@@ -119,16 +111,6 @@ const handleCancel = () => {
                 </el-form-item>
             </LineItem>
         </Line>
-
-        <el-form-item :label="i18nStore.translate('LABEL_EnumForm_packagePath')">
-            <el-input v-model="genEnum.packagePath">
-                <template #append>
-                    <el-button
-                        :icon="RefreshRight"
-                        @click="handleRefreshEnumPackagePath"/>
-                </template>
-            </el-input>
-        </el-form-item>
 
         <el-form-item :label="i18nStore.translate('LABEL_EnumForm_defaultItem')">
             <el-select v-model="defaultItemIndex" filterable clearable>
