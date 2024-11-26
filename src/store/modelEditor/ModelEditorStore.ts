@@ -763,7 +763,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const enums = computed(() => {
         return (currentModel.value?.enums ?? []).sort((a, b) => {
-            if (a.name > b.name) return -1
+            if (a.name < b.name) return -1
             else return 1
         })
     })
