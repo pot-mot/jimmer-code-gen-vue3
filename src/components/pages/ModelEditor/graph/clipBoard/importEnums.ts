@@ -19,7 +19,7 @@ export const importEnums = (enums: Array<GenModelInput_TargetOf_enums>) => {
                     sendI18nMessage(
                         {key: "VALIDATE_GenEnum_cannotBeDuplicate", args: [genEnum.name]},
                         'warning',
-                        {existedEnum: sameNameEnums, newEnum: genEnum},
+                        {allSameNameEnums: sameNameEnums, newEnum: genEnum},
                     )
                 }
             }
