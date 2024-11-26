@@ -1,7 +1,7 @@
 import {GraphLoadOperation, GraphState, useGraph} from "@/components/global/graphEditor/load/GraphLoadState.ts";
 import {ModelEditorEventBus} from "./ModelEditorEventBus.ts";
 import {sendI18nMessage} from "@/message/message.ts";
-import {computed, ComputedRef, Ref, ref} from "vue";
+import {computed, ComputedRef, Ref, ref, watch} from "vue";
 import {api} from "@/api";
 import {
     loadModelInputs,
@@ -761,11 +761,17 @@ const initModelEditorStore = (): ModelEditorStore => {
             .map(it => it.data.association)
     )
 
+    watch(() => currentModel.value, (value) => {
+        if (currentModel.value !== undefined && value !== undefined) {
+            currentModel.value.enums = value.enums.sort((a, b) => {
+                if (a.name < b.name) return -1
+                else return 1
+            })
+        }
+    }, {immediate: true, deep: true})
+
     const enums = computed(() => {
-        return (currentModel.value?.enums ?? []).sort((a, b) => {
-            if (a.name < b.name) return -1
-            else return 1
-        })
+        return (currentModel.value?.enums ?? [])
     })
 
     const selectedTableNodePairs = computed(() => {
