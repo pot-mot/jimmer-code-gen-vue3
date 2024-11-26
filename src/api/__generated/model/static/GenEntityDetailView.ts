@@ -1,4 +1,4 @@
-import type {GenEntityDetailView_TargetOf_properties} from './';
+import type {GenEntityDetailView_TargetOf_properties, OtherAnnotation} from './';
 
 /**
  * 生成实体
@@ -40,6 +40,10 @@ export interface GenEntityDetailView {
      * 作者
      */
     author: string;
+    /**
+     * 其他注解
+     */
+    otherAnnotation?: OtherAnnotation | undefined;
     /**
      * 是否可以创建
      */

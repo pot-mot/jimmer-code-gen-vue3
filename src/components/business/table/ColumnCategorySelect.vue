@@ -10,14 +10,14 @@ import {getColumnKeyGroups} from "@/components/business/table/columnKeyGroups.ts
 
 const i18nStore = useI18nStore()
 
-const columnCategory_CONSTANT = [
+const columnCategory_CONSTANTS = [
     'PRIMARY_KEY',
     'BUSINESS_KEY',
     'LOGICAL_DELETE',
     'AUTO_INCREMENT'
 ] as const
 
-type ColumnCategory = typeof columnCategory_CONSTANT[number]
+type ColumnCategory = typeof columnCategory_CONSTANTS[number]
 
 const columnCategoryComponent: { [key in ColumnCategory]: Component } = {
     PRIMARY_KEY: PrimaryKeyIcon,

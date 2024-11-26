@@ -367,6 +367,30 @@ type MainLocale = {
     LABEL_GenTableIndex_uniqueIndex: string
     LABEL_GenTableIndex_columns: string
 
+    LABEL_EntityBusiness_add: string
+    LABEL_EntityBusiness_edit: string
+    LABEL_EntityBusiness_query: string
+    LABEL_EntityBusiness_delete: string
+    LABEL_EntityBusiness_hasPage: string
+
+    LABEL_GenEntityProperty_name: string
+    LABEL_GenEntityProperty_comment: string
+    LABEL_GenEntityProperty_type: string
+    LABEL_GenEntityProperty_typeNotNull: string
+    LABEL_GenEntityProperty_listType: string
+    LABEL_GenEntityProperty_annotation: string
+    LABEL_GenEntityProperty_business: string
+
+    LABEL_PropertyBusiness_listView: string,
+    LABEL_PropertyBusiness_detailView: string,
+    LABEL_PropertyBusiness_optionView: string,
+    LABEL_PropertyBusiness_insertInput: string,
+    LABEL_PropertyBusiness_updateInput: string,
+    LABEL_PropertyBusiness_specification: string,
+    LABEL_PropertyBusiness_shortAssociationView: string,
+    LABEL_PropertyBusiness_longAssociationInput: string,
+    LABEL_PropertyBusiness_longAssociationView: string
+
     LABEL_EnumForm_name: string
     LABEL_EnumForm_packagePath: string
     LABEL_EnumForm_defaultItem: string

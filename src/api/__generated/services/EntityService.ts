@@ -1,6 +1,6 @@
 import type {Executor} from '../';
 import type {GenLanguage} from '../model/enums/';
-import type {GenEntityConfigInput, GenEntityDetailView} from '../model/static/';
+import type {GenEntityConfigWithNewPropertiesInput, GenEntityDetailView} from '../model/static/';
 
 export class EntityService {
     
@@ -46,6 +46,6 @@ export type EntityServiceOptions = {
         tableId: number
     }, 
     'config': {
-        body: GenEntityConfigInput
+        body: GenEntityConfigWithNewPropertiesInput
     }
 }

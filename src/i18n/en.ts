@@ -512,6 +512,30 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     LABEL_GenTableIndex_uniqueIndex: 'Unique',
     LABEL_GenTableIndex_columns: 'Reference Columns',
 
+    LABEL_EntityBusiness_add: "Add",
+    LABEL_EntityBusiness_edit: "Edit",
+    LABEL_EntityBusiness_query: "Query",
+    LABEL_EntityBusiness_delete: "Delete",
+    LABEL_EntityBusiness_hasPage: "Has Page",
+
+    LABEL_GenEntityProperty_name: "Name",
+    LABEL_GenEntityProperty_comment: "Comment",
+    LABEL_GenEntityProperty_type: "Type",
+    LABEL_GenEntityProperty_typeNotNull: "Not Null",
+    LABEL_GenEntityProperty_listType: "List Type",
+    LABEL_GenEntityProperty_annotation: "Annotation",
+    LABEL_GenEntityProperty_business: "Business",
+
+    LABEL_PropertyBusiness_listView: "List View",
+    LABEL_PropertyBusiness_detailView: "Detail View",
+    LABEL_PropertyBusiness_optionView: "Option View",
+    LABEL_PropertyBusiness_insertInput: "Insert Input",
+    LABEL_PropertyBusiness_updateInput: "Update Input",
+    LABEL_PropertyBusiness_specification: "Specification",
+    LABEL_PropertyBusiness_shortAssociationView: "Short Association View",
+    LABEL_PropertyBusiness_longAssociationInput: "Long Association Input",
+    LABEL_PropertyBusiness_longAssociationView: "Long Association View",
+
     LABEL_EnumForm_name: 'Name',
     LABEL_EnumForm_packagePath: 'Package Path',
     LABEL_EnumForm_defaultItem: 'Default Item',
@@ -532,7 +556,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     VALIDATE_GenEnum_itemValueCannotBeEmpty: "Enum item value cannot be empty",
     VALIDATE_GenEnum_itemValueCannotBeDuplicate: (itemValue: string) => `Enum item value [${itemValue}] cannot be duplicated`,
     VALIDATE_GenEnum_nameCannotBeDuplicate: (enumName: string) => `Enum [${enumName}] name cannot be duplicated`,
-    
+
     LABEL_GenEnumItem_name: 'Name',
     LABEL_GenEnumItem_value: 'Value',
     LABEL_GenEnumItem_comment: 'Comment'

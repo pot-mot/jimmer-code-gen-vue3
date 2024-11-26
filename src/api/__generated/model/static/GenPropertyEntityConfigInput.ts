@@ -9,19 +9,7 @@ import type {
 /**
  * 生成属性
  */
-export interface GenEntityDetailView_TargetOf_properties {
-    /**
-     * ID
-     */
-    id: number;
-    /**
-     * 创建事件
-     */
-    createdTime: string;
-    /**
-     * 修改时间
-     */
-    modifiedTime: string;
+export interface GenPropertyEntityConfigInput {
     /**
      * 属性名
      */
@@ -158,16 +146,4 @@ export interface GenEntityDetailView_TargetOf_properties {
      * 备注
      */
     remark: string;
-    /**
-     * 对应列
-     */
-    columnId?: number | undefined;
-    /**
-     * 类型对应表
-     */
-    typeTableId?: number | undefined;
-    /**
-     * 生成枚举
-     */
-    enumId?: number | undefined;
 }
