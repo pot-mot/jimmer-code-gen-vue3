@@ -5,7 +5,6 @@ import {DialogInitProps,} from "@/components/global/dialog/DragDialogProps.ts";
 
 const searchData = defineModel<S | undefined>({
 	required: false,
-	default: "",
 })
 
 interface SearcherProps extends DialogInitProps {
@@ -14,10 +13,12 @@ interface SearcherProps extends DialogInitProps {
 	placeholder?: string
 
 	canDrag?: boolean
+    fitContent?: boolean
 }
 
 const props = withDefaults(defineProps<SearcherProps>(), {
 	canDrag: true,
+    fitContent: true,
 	to: "body",
 })
 
@@ -49,7 +50,7 @@ const dialog = ref()
 const x = ref(0)
 const y = ref(0)
 
-const handleSearchKeyEvent = (e: KeyboardEvent) => {
+const handleSearchKeyEvent = async (e: KeyboardEvent) => {
 	if (e.ctrlKey || e.metaKey) {
 		if (e.key === 'f') {
 			if (!mouseenterState.value) return
@@ -74,16 +75,20 @@ const handleSearchKeyEvent = (e: KeyboardEvent) => {
 
 			openState.value = true
 
-			nextTick(() => {
-				dialog.value?.syncDialogHeight()
+            if (searchData.value) {
+                await handleSearch()
+            }
 
-				input.value?.focus()
-			})
+			await nextTick()
+
+            if (props.fitContent) {
+                dialog.value?.syncDialogHeight()
+            }
+
+            input.value?.focus()
 		}
 	}
 }
-
-const searchResultContainer = ref()
 
 const handleSearch = async () => {
 	if (searchData.value) {
@@ -92,9 +97,11 @@ const handleSearch = async () => {
 		searchResult.value = []
 	}
 
-	await nextTick()
+    if (props.fitContent) {
+        await nextTick()
 
-	dialog.value?.syncDialogHeight()
+        dialog.value?.syncDialogHeight()
+    }
 }
 
 const handleMouseenter = () => {
@@ -144,7 +151,8 @@ defineExpose<{
 		:init-w="initW" :init-h="initH" :init-x="x" :init-y="y"
 		:can-drag="canDrag"
 		:can-full-screen="false"
-		fit-content
+		:fit-content="fitContent"
+        :can-resize="!fitContent"
 		:modal="false"
 		@open="handleOpen"
 		@close="handleClose">
@@ -160,14 +168,16 @@ defineExpose<{
 			/>
 		</slot>
 
-		<div ref="searchResultContainer" style="max-height: 60vh; overflow: auto;">
+		<div :style="fitContent ? 'max-height: 60vh; overflow: auto;' : ''">
 			<slot name="tools" :items="searchResult"/>
 
-			<div v-if="searchData && searchResult.length === 0">
+			<template v-if="searchResult.length === 0">
 				<slot name="empty">
-					<el-text>无搜索结果</el-text>
+					<div>
+                        <el-text>无搜索结果</el-text>
+                    </div>
 				</slot>
-			</div>
+			</template>
 
 			<slot name="items" :items="searchResult">
 				<div v-for="item in searchResult">

@@ -363,6 +363,7 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     LABEL_GraphSearcher_indexKeywords: "索引关键字",
     LABEL_GraphSearcher_superTableKeywords: "上级表关键字",
     LABEL_GraphSearcher_associationKeywords: "关联关键字",
+    LABEL_GraphSearcher_associationType: "关联类型",
     LABEL_GraphSearcher_selectAll: "选择全部",
 
     VALIDATE_GenModel_nameCannotBeEmpty: "模型名不得为空",

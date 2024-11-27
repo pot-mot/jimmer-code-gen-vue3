@@ -228,6 +228,7 @@ type MainLocale = {
     LABEL_GraphSearcher_indexKeywords: string
     LABEL_GraphSearcher_superTableKeywords: string
     LABEL_GraphSearcher_associationKeywords: string
+    LABEL_GraphSearcher_associationType: string
     LABEL_GraphSearcher_selectAll: string
 
     VALIDATE_GenModel_nameCannotBeEmpty: string

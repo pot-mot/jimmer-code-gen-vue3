@@ -363,6 +363,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     LABEL_GraphSearcher_indexKeywords: "Index Keywords",
     LABEL_GraphSearcher_superTableKeywords: "SuperTable Keywords",
     LABEL_GraphSearcher_associationKeywords: "Association Keywords",
+    LABEL_GraphSearcher_associationType: "Association Type",
     LABEL_GraphSearcher_selectAll: "Select All",
 
     VALIDATE_GenModel_nameCannotBeEmpty: "Model name cannot be empty",
