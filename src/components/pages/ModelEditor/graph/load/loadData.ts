@@ -7,7 +7,7 @@ import {
     loadAssociationModelInputs
 } from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
 import {DeepReadonly} from "vue";
-import {cloneDeep} from "lodash";
+import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 
 /**
  * 将 tables 导入画布
@@ -56,7 +56,7 @@ export const loadModelInputs = (
 
     // 根据同名表覆盖 association 的 source 和 target
     const newAssociations = associations.map(association => {
-        const tempAssociation = cloneDeep(association) as GenAssociationModelInput
+        const tempAssociation = cloneDeepReadonly<GenAssociationModelInput>(association)
 
         const sourceSameNameList = tableNameMap.get(association.sourceTableName)
         if (sourceSameNameList && sourceSameNameList.length > 1) {

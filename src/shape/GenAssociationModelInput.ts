@@ -1,5 +1,6 @@
 import {useShapeValidate} from "@/shape/shapeValidate.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
+import {DeepReadonly} from "vue";
 
 // typescript-json-schema src/api/__generated/model/static/GenAssociationModelInput.ts * --required
 export const GenAssociationModelInputJsonSchema = {
@@ -100,7 +101,7 @@ export const GenAssociationModelInputJsonSchema = {
 }
 
 export const {validate: validateAssociationModelInput} =
-    useShapeValidate<GenAssociationModelInput>(
+    useShapeValidate<DeepReadonly<GenAssociationModelInput>>(
         "GenAssociationModelInput",
         GenAssociationModelInputJsonSchema
     )

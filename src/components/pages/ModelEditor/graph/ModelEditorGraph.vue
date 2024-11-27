@@ -203,7 +203,7 @@ const wrapper = ref<HTMLElement>()
 
 let graph: Graph
 
-const {GRAPH, GRAPH_DATA, GRAPH_LOAD, MODEL, MODEL_EDIT_DIALOG, HISTORY, VIEW, REMOVE} = useModelEditorStore()
+const {GRAPH, MODEL_EDITOR_DATA, GRAPH_LOAD, MODEL, MODEL_EDIT_DIALOG, HISTORY, VIEW, REMOVE} = useModelEditorStore()
 
 const loadingStore = useGlobalLoadingStore()
 
@@ -266,9 +266,11 @@ const handleSaveModel = loadingStore.withLoading('ModelEditorGraph handleSaveMod
 
         MODEL.isLoaded = false
 
-        if (model.graphData !== GRAPH_DATA.getGraphData()) {
+        const currentGraphData = JSON.stringify(MODEL_EDITOR_DATA.getGraphData())
+
+        if (model.graphData !== currentGraphData) {
             graph.cleanSelection()
-            model.graphData = GRAPH_DATA.getGraphData()
+            model.graphData = currentGraphData
         }
 
         const id = await saveModel(model)
@@ -330,11 +332,13 @@ watch(() => MODEL.isLoaded, async (value) => {
 const judgeGraphDataIsChange = (): boolean => {
     if (GRAPH.isLoaded && MODEL.isLoaded) {
         if (
-            JSON.stringify(JSON.parse(GRAPH_DATA.getGraphData())["json"]) ===
+            JSON.stringify(MODEL_EDITOR_DATA.getGraphData().json) ===
             JSON.stringify(JSON.parse(MODEL._model().graphData)["json"])
         ) {
             return false
         }
+    } else {
+        return false
     }
     return true
 }

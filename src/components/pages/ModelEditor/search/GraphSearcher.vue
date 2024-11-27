@@ -269,7 +269,7 @@ const handleSelectAll = () => {
                 v-else-if="item.shape === ASSOCIATION_EDGE"
                 :association="item.getData().association"
                 :association-keywords="associationKeywords"
-                @click="(e) => handleClickCell(e, item)"
+                @click-association="(e) => handleClickCell(e, item)"
             />
         </template>
     </Searcher>

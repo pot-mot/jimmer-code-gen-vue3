@@ -1,7 +1,7 @@
 import {GraphLoadOperation, GraphState, useGraph} from "@/components/global/graphEditor/load/GraphLoadState.ts";
 import {ModelEditorEventBus} from "./ModelEditorEventBus.ts";
 import {sendI18nMessage} from "@/message/message.ts";
-import {computed, ComputedRef, Ref, ref, watch} from "vue";
+import {computed, ComputedRef, DeepReadonly, Ref, ref, watch} from "vue";
 import {api} from "@/api";
 import {
     loadModelInputs,
@@ -20,7 +20,7 @@ import {
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import {loadTableModelInputs} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
 import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts";
-import {validateGraphData} from "@/shape/GraphData.ts";
+import {ModelEditorData, validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
 import {ENUM_CREATE_PREFIX, useEnumDialogsStore} from "@/store/modelEditor/EnumDialogsStore.ts";
@@ -30,8 +30,7 @@ import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
 import {TABLE_CREATE_PREFIX, useTableDialogsStore} from "@/store/modelEditor/TableDialogsStore.ts";
 import {unStyleAll} from "@/components/pages/ModelEditor/graph/highlight.ts";
 import {
-    GraphDataOperation,
-    GraphEditorData,
+    GraphData,
     useGraphDataOperation
 } from "@/components/global/graphEditor/data/graphData.ts";
 import {useDebugStore} from "@/store/debug/debugStore.ts";
@@ -53,6 +52,7 @@ import {loadAssociationModelInputs} from "@/components/pages/ModelEditor/graph/l
 import {getDefaultAssociation} from "@/components/business/association/defaultColumn.ts";
 import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/BatchCreateAssociationsDialogStore.ts";
 import {useTableCombineDialogStore} from "@/store/modelEditor/TableCombineDialogStore.ts";
+import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 
 interface ModelReactiveState {
     tableNodes: Readonly<Ref<Array<UnwrapRefSimple<Node>>>>,
@@ -97,11 +97,16 @@ interface ModelLoadDialogState {
     openState: Ref<boolean>,
 }
 
+interface ModelEditorDataOperation {
+    getGraphData: () => DeepReadonly<GraphData>,
+    loadModelEditorData: (modelEditorData: DeepReadonly<ModelEditorData>, reset: boolean) => { nodes: Node[], edges: Edge[] },
+}
+
 interface ModelEditorStore {
     GRAPH: UnwrapRefSimple<GraphState & GraphReactiveState>
 
     GRAPH_LOAD: GraphLoadOperation
-    GRAPH_DATA: GraphDataOperation
+    MODEL_EDITOR_DATA: ModelEditorDataOperation
 
     SELECT: SelectOperation
     VIEW: ViewOperation
@@ -121,7 +126,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const {_graph} = graphState
 
-    const baseGraphData = useGraphDataOperation(_graph)
+    const graphDataOperation = useGraphDataOperation(_graph)
 
     const SELECT = useSelectOperation(_graph)
 
@@ -144,29 +149,13 @@ const initModelEditorStore = (): ModelEditorStore => {
         }
     )
 
-    // 在获取数据时调整
-    const getGraphData = () => {
-        const graphData =
-            JSON.parse(baseGraphData.getGraphData()) as GraphEditorData
-        graphData.json.cells.forEach(cell => {
-            if (cell.shape === TABLE_NODE) {
-                cell.data = {table: cell.data.table}
-            }
-            if (cell.shape === ASSOCIATION_EDGE) {
-                cell.tools = undefined
-                cell.data = {association: cell.data.association}
-            }
-        })
-        return JSON.stringify(graphData)
-    }
-
-    const loadGraphData = (jsonStr: string, reset: boolean = false) => {
+    const loadModelEditorData = (modelEditorData: DeepReadonly<ModelEditorData>, reset: boolean = false) => {
         let validateErrors
         try {
             const graph = _graph()
-            if (jsonStr && validateGraphData(JSON.parse(jsonStr), e => validateErrors = e)) {
+            if (modelEditorData && validateModelEditorData(modelEditorData, e => validateErrors = e)) {
                 unStyleAll(graph)
-                return baseGraphData.loadGraphData(jsonStr, reset)
+                return graphDataOperation.loadGraphData(modelEditorData, reset)
             } else {
                 graph.removeCells(graph.getCells())
                 return {nodes: [], edges: []}
@@ -174,31 +163,33 @@ const initModelEditorStore = (): ModelEditorStore => {
         } catch (e) {
             sendI18nMessage("MESSAGE_ModelEditorStore_graphLoadFail", "error", validateErrors ? validateErrors : {
                 error: e,
-                jsonStr
+                graphData: modelEditorData
             })
             return {nodes: [], edges: []}
         }
     }
 
-    const graphDataOperation: GraphDataOperation = {
-        getGraphData,
-        loadGraphData
+    const MODEL_EDITOR_DATA: ModelEditorDataOperation = {
+        getGraphData: graphDataOperation.getGraphData,
+        loadModelEditorData,
     }
 
     const currentModel = ref<GenModelView>()
 
     const isLoaded = ref(false)
-
-    const _model = (): GenModelView => {
-        if (!currentModel.value) {
+    
+    const assertModel = (): Ref<GenModelView> => {
+        if (currentModel.value === undefined) {
             sendI18nMessage("MESSAGE_ModelEditorStore_modelNotLoad", 'error')
-            throw currentModel
+            throw new Error("Model not load")
         }
-        return currentModel.value
+        return currentModel as Ref<GenModelView>
     }
-
+    
     const modelState: ModelState = {
-        _model,
+        _model: (): GenModelView => {
+            return assertModel().value
+        },
         isLoaded,
     }
 
@@ -216,10 +207,10 @@ const initModelEditorStore = (): ModelEditorStore => {
         isLoaded.value = true
 
         if (graphState.isLoaded.value) {
-            loadGraphData(model.graphData, true)
+            loadModelEditorData(JSON.parse(model.graphData), true)
         } else {
             graphLoadOperation.onLoaded(() => {
-                loadGraphData(model.graphData, true)
+                loadModelEditorData(JSON.parse(model.graphData), true)
             })
         }
     }
@@ -230,8 +221,25 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const modelEditDialogOpenState = ref(false)
 
+
+    // 在获取数据时调整
+    const getClearGraphData = (): DeepReadonly<GraphData> => {
+        const graphData = cloneDeepReadonly<GraphData>(graphDataOperation.getGraphData())
+
+        graphData.json.cells.forEach(cell => {
+            if (cell.shape === TABLE_NODE) {
+                cell.data = {table: cell.data.table}
+            }
+            if (cell.shape === ASSOCIATION_EDGE) {
+                cell.tools = undefined
+                cell.data = {association: cell.data.association}
+            }
+        })
+        return graphData
+    }
+
     const handleEdit = () => {
-        _model().graphData = getGraphData()
+        assertModel().value.graphData = JSON.stringify(getClearGraphData())
         modelEditDialogOpenState.value = true
     }
 
@@ -647,7 +655,7 @@ const initModelEditorStore = (): ModelEditorStore => {
     })
 
     ModelEditorEventBus.on('createdEnum', ({id, genEnum}) => {
-        _model().enums.push(genEnum)
+        assertModel().value.enums.push(genEnum)
         enumDialogsStore.close(id)
     })
 
@@ -656,12 +664,12 @@ const initModelEditorStore = (): ModelEditorStore => {
     })
 
     ModelEditorEventBus.on('editedEnum', ({id, genEnum}) => {
-        const currentModel = _model()
-
         const oldName = id
 
-        currentModel.enums = currentModel.enums.filter(it => it.name !== oldName)
-        currentModel.enums.push(genEnum)
+        assertModel().value.enums = [
+            ...assertModel().value.enums.filter(it => it.name !== oldName),
+            genEnum
+        ]
 
         enumDialogsStore.close(id)
 
@@ -671,11 +679,9 @@ const initModelEditorStore = (): ModelEditorStore => {
     })
 
     ModelEditorEventBus.on('removeEnum', ({id}) => {
-        const currentModel = _model()
-
         const oldName = id
 
-        currentModel.enums = currentModel.enums.filter(it => it.name !== oldName)
+        assertModel().value.enums = assertModel().value.enums.filter(it => it.name !== oldName)
 
         startBatchSync('removeEnum', () => {
             syncEnumNameForTables(_graph(), oldName, undefined)
@@ -818,8 +824,6 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const GRAPH_LOAD = graphLoadOperation
 
-    const GRAPH_DATA = graphDataOperation
-
     const MODEL = defineStore(
         'MODEL',
         () => {
@@ -890,7 +894,7 @@ const initModelEditorStore = (): ModelEditorStore => {
     return {
         GRAPH,
         GRAPH_LOAD,
-        GRAPH_DATA,
+        MODEL_EDITOR_DATA,
 
         MODEL,
         MODEL_LOAD,

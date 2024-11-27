@@ -4,7 +4,7 @@ import {
     GenModelInput_TargetOf_enums,
     GenTableModelInput
 } from "@/api/__generated/model/static";
-import {AssociationEdge, GraphData, TableNode, validateGraphData} from "@/shape/GraphData.ts";
+import {AssociationEdge, ModelEditorData, TableNode, validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {validateTable} from "@/components/business/table/validateTable.ts";
 import {validateEnum} from "@/components/business/enum/validateEnum.ts";
@@ -48,14 +48,14 @@ const validateGraphDataStr = (
         const _graphData = JSON.parse(graphDataStr)
 
         try {
-            validateGraphData(
+            validateModelEditorData(
                 _graphData,
                 e => {
                     throw e
                 }
             )
 
-            const graphData = _graphData as GraphData
+            const graphData = _graphData as ModelEditorData
 
             const cells = graphData.json.cells
 
@@ -133,7 +133,7 @@ const validateGraphDataStr = (
                 )
 
                 const withEnumNameMessageList = enumMessageList.map(it => {
-                    return {key: 'VALIDATE_GenModel_tableValidError', args: [genEnum.name, it]} as ProjectLocaleKeyParam
+                    return {key: 'VALIDATE_GenModel_enumValidError', args: [genEnum.name, it]} as ProjectLocaleKeyParam
                 })
 
                 messageList.push(...withEnumNameMessageList)

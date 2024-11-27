@@ -8,7 +8,7 @@ import {jsonStrCompress, jsonStrPrettyFormat} from "@/utils/json.ts";
 import CodeEditor from "@/components/global/code/CodeEditor.vue";
 import {ModelFormProps} from "@/components/business/model/form/ModelFormProps.ts";
 import {sendI18nMessage, sendMessage} from "@/message/message.ts";
-import {validateGraphData} from "@/shape/GraphData.ts";
+import {validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {DataSourceType_CONSTANTS, GenLanguage_CONSTANTS} from "@/api/__generated/model/enums";
 import GenConfigForm from "@/components/business/genConfig/GenConfigForm.vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
@@ -28,7 +28,7 @@ watch(() => props.model, (propsModel) => {
 		const tempModel = cloneDeep(propsModel)
 
 		try {
-			validateGraphData(
+			validateModelEditorData(
 				JSON.parse(tempModel.graphData),
 				e => {
 					throw e
@@ -50,7 +50,7 @@ const handleSubmit = () => {
 	try {
 		const graphData = JSON.parse(tempModel.graphData)
 
-		validateGraphData(
+		validateModelEditorData(
 			graphData,
 			e => {
 				throw e
@@ -81,6 +81,11 @@ const otherConfigOpenState = ref(false)
 
 const handleOpenOtherConfigDialog = () => {
 	otherConfigOpenState.value = true
+}
+
+const handleOtherConfigSubmit = (data: GenConfigProperties) => {
+    model.value = {...model.value, ...data}
+    otherConfigOpenState.value = false
 }
 </script>
 
@@ -160,10 +165,7 @@ const handleOpenOtherConfigDialog = () => {
 	<DragDialog v-model="otherConfigOpenState" :init-y="100" :init-h="620">
 		<GenConfigForm
 			v-model="model"
-			@submit="(data: GenConfigProperties) => {
-				model = {...model, ...data}
-				otherConfigOpenState = false
-		    }"
+			@submit="handleOtherConfigSubmit"
 			@cancel="otherConfigOpenState = false"
 			style="padding: 1em 0.5em;"/>
 	</DragDialog>

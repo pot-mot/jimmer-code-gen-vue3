@@ -1,5 +1,6 @@
 import {useShapeValidate} from "@/shape/shapeValidate.ts";
 import {GenTypeMappingInput} from "@/api/__generated/model/static";
+import {DeepReadonly} from "vue";
 
 // typescript-json-schema src/api/__generated/model/static/GenTypeMappingInput.ts * --required
 export const GenTypeMappingInputJsonSchema = {
@@ -65,7 +66,7 @@ export const GenTypeMappingInputJsonSchema = {
 }
 
 export const {validate: validateTypeMappingInput} =
-    useShapeValidate<GenTypeMappingInput>(
+    useShapeValidate<DeepReadonly<GenTypeMappingInput>>(
         "GenTypeMappingInput",
         GenTypeMappingInputJsonSchema
     )

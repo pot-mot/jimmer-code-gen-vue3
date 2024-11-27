@@ -3,7 +3,7 @@ import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/const
 import {sendI18nMessage} from "@/message/message.ts";
 import {loadModelInputs, TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadData.ts";
 import {CopyData, validateCopyData} from "@/shape/CopyData.ts";
-import {validateGraphData} from "@/shape/GraphData.ts";
+import {validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {GenAssociationModelInput, GenModelInput, GenTableModelInput} from "@/api/__generated/model/static";
 import {validateModelInput} from "@/shape/ModelInput.ts";
@@ -108,7 +108,7 @@ const cut = async () => {
 const paste = useGlobalLoadingStore().withLoading(
     'clipBoard paste',
     async () => {
-        const {GRAPH, GRAPH_DATA} = useModelEditorStore()
+        const {GRAPH, MODEL_EDITOR_DATA} = useModelEditorStore()
 
         const graph = GRAPH._graph()
 
@@ -142,15 +142,15 @@ const paste = useGlobalLoadingStore().withLoading(
                 res = loadModelInputs(graph, tables, associations, options, optionsList)
 
                 importEnums(enums)
-            } else if (validateGraphData(value, (e) => validateErrors.push(e))) {
+            } else if (validateModelEditorData(value, (e) => validateErrors.push(e))) {
                 const cells = value.json.cells as Cell[]
                 graph.parseJSON(cells)
-                res = GRAPH_DATA.loadGraphData(text, false)
+                res = MODEL_EDITOR_DATA.loadModelEditorData(JSON.parse(text), false)
             } else if (validateModelInput(value, (e) => validateErrors.push(e))) {
                 const model = value as GenModelInput
 
                 if (model.graphData) {
-                    res = GRAPH_DATA.loadGraphData(model.graphData, false)
+                    res = MODEL_EDITOR_DATA.loadModelEditorData(JSON.parse(model.graphData), false)
                 }
                 importEnums(model.enums)
             } else {

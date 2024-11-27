@@ -2,6 +2,7 @@ import {GenAssociationModelInputJsonSchema} from "@/shape/GenAssociationModelInp
 import {GenTableModelInputJsonSchema} from "@/shape/GenTableModelInput.ts";
 import {useShapeValidate} from "@/shape/shapeValidate.ts";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
+import {DeepReadonly} from "vue";
 import {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static";
 
 const GraphDataShapeJsonSchema = {
@@ -102,16 +103,16 @@ export interface AssociationEdge {
     shape: typeof ASSOCIATION_EDGE
 }
 
-export interface GraphData {
+export interface ModelEditorData {
     json: {
         cells: Array<TableNode | AssociationEdge>
     },
-    zoom: string,
-    transform: number | undefined,
+    zoom: number,
+    transform: string | undefined,
 }
 
-export const {validate: validateGraphData} =
-    useShapeValidate<GraphData>(
+export const {validate: validateModelEditorData} =
+    useShapeValidate<DeepReadonly<ModelEditorData>>(
         "GraphData",
         GraphDataShapeJsonSchema
     )

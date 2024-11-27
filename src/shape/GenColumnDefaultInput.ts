@@ -1,5 +1,6 @@
 import {useShapeValidate} from "@/shape/shapeValidate.ts";
 import {GenColumnDefaultInput} from "@/api/__generated/model/static";
+import {DeepReadonly} from "vue";
 
 // typescript-json-schema src/api/__generated/model/static/GenColumnDefaultInput.ts * --required
 // 调整 defaultValue type ["string", "null"]
@@ -68,7 +69,7 @@ export const GenColumnDefaultInputJsonSchema = {
 }
 
 export const {validate: validateColumnDefaultInput} =
-    useShapeValidate<GenColumnDefaultInput>(
+    useShapeValidate<DeepReadonly<GenColumnDefaultInput>>(
         "GenColumnDefaultInput",
         GenColumnDefaultInputJsonSchema
     )

@@ -3,6 +3,7 @@ import {
     GenModelInput_TargetOf_enums,
     GenModelInput_TargetOf_enums_TargetOf_items
 } from "@/api/__generated/model/static";
+import {DeepReadonly} from "vue";
 
 // typescript-json-schema src/api/__generated/model/static/GenModelInput_TargetOf_enums.ts * --required
 // 调整 enumType "type": ["string", "null"] "enum": ["NAME", "ORDINAL", null]
@@ -100,13 +101,13 @@ export const GenEnumModelInputJsonSchema = {
 }
 
 export const {validate: validateEnum} =
-    useShapeValidate<GenModelInput_TargetOf_enums>(
+    useShapeValidate<DeepReadonly<GenModelInput_TargetOf_enums>>(
         "GenModelInput_TargetOf_enums",
         GenEnumModelInputJsonSchema
     )
 
 export const {validate: validateEnumItem} =
-    useShapeValidate<GenModelInput_TargetOf_enums_TargetOf_items>(
+    useShapeValidate<DeepReadonly<GenModelInput_TargetOf_enums_TargetOf_items>>(
         "GenModelInput_TargetOf_enums_TargetOf_items_2",
         GenEnumModelInputJsonSchema
     )

@@ -10,7 +10,7 @@ import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/const
 import {PortManager} from "@antv/x6/es/model/port";
 import {DeepReadonly} from "vue";
 import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge/updateData.ts";
-import {cloneDeep} from "lodash";
+import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 
 export const associationViewToInput = (
     view: DeepReadonly<GenAssociationView>,
@@ -190,7 +190,7 @@ export const loadAssociationModelInputs = (
 
     associations.forEach(association => {
         const name = association.name
-        const tempAssociation = cloneDeep(association) as GenAssociationModelInput
+        const tempAssociation = cloneDeepReadonly<GenAssociationModelInput>(association)
 
         if (associationNameMap.has(name)) {
             let count = associationNameMap.get(name)!.length

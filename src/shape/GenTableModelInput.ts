@@ -4,6 +4,7 @@ import {
     GenTableModelInput_TargetOf_columns,
     GenTableModelInput_TargetOf_indexes
 } from "@/api/__generated/model/static";
+import {DeepReadonly} from "vue";
 
 
 // typescript-json-schema src/api/__generated/model/static/GenTableModelInput.ts * --required
@@ -234,19 +235,19 @@ export const GenTableModelInputJsonSchema = {
 }
 
 export const {validate: validateTableModelInput} =
-    useShapeValidate<GenTableModelInput>(
+    useShapeValidate<DeepReadonly<GenTableModelInput>>(
         "GenTableModelInput",
         GenTableModelInputJsonSchema
     )
 
 export const {validate: validateColumn} =
-    useShapeValidate<GenTableModelInput_TargetOf_columns>(
+    useShapeValidate<DeepReadonly<GenTableModelInput_TargetOf_columns>>(
         "GenTableModelInput_TargetOf_columns",
         GenTableModelInputJsonSchema
     )
 
 export const {validate: validateIndex} =
-    useShapeValidate<GenTableModelInput_TargetOf_indexes>(
+    useShapeValidate<DeepReadonly<GenTableModelInput_TargetOf_indexes>>(
         "GenTableModelInput_TargetOf_indexes",
         GenTableModelInputJsonSchema
     )

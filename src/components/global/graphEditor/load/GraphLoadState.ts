@@ -28,8 +28,8 @@ export const useGraph = (): {
      */
     const _graph = (): Graph => {
         if (!graph.value) {
-            sendMessage("Graph 未初始化", "error")
-            throw new Error("graph is not init")
+            sendMessage("Graph not load", "error")
+            throw new Error("Graph not load")
         }
         return graph.value
     }

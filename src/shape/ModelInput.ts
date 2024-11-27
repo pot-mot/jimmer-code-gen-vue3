@@ -1,7 +1,8 @@
 import {useShapeValidate} from "@/shape/shapeValidate.ts";
 import {GenModelInput} from "@/api/__generated/model/static";
-import {validateGraphData} from "@/shape/GraphData.ts";
+import {validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {GenEnumModelInputJsonSchema} from "@/shape/GenEnumModelInput.ts";
+import {DeepReadonly} from "vue";
 
 // typescript-json-schema src/api/__generated/model/static/GenModelInput.ts * --required
 // 添加 ...GenEnumModelInputJsonSchema.definitions,
@@ -176,7 +177,7 @@ export const GenModelInputJsonSchema = {
 }
 
 const {validate: validateModelInputJson} =
-    useShapeValidate<GenModelInput>(
+    useShapeValidate<DeepReadonly<GenModelInput>>(
         "GenModelInput",
         GenModelInputJsonSchema
     )
@@ -186,7 +187,7 @@ export const validateModelInput = (data: any, onErrors: (e: any) => void) => {
 
     if (result) {
         if ("graphData" in data) {
-            return validateGraphData(JSON.parse(data["graphData"]), onErrors)
+            return validateModelEditorData(JSON.parse(data["graphData"]), onErrors)
         } else {
             return result
         }
