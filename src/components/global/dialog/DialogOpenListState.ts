@@ -2,13 +2,13 @@ import {nextTick, ref} from 'vue'
 import mitt from "mitt";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple";
 
-type DialogManageEvents<K, V> = {
+type DialogOpenListEvents<K, V> = {
     open: { key: K, value: UnwrapRefSimple<V> },
     close: { key: K }
 }
 
-export const useDialogListState = <K, V>() => {
-    const eventBus = mitt<DialogManageEvents<K, V>>()
+export const useDialogOpenListState = <K, V>() => {
+    const eventBus = mitt<DialogOpenListEvents<K, V>>()
 
     const items = ref(new Map<K, V>)
 

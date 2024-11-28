@@ -1,4 +1,4 @@
-import {useDialogListState} from "@/components/global/dialog/DialogListState.ts";
+import {useDialogOpenListState} from "@/components/global/dialog/DialogOpenListState.ts";
 import {defineStore} from "pinia";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 
@@ -6,9 +6,9 @@ export const useEnumDialogsStore = defineStore(
     'EnumDialogs',
     () => {
         return {
-            ...useDialogListState<string, GenModelInput_TargetOf_enums>()
+            ...useDialogOpenListState<string, GenModelInput_TargetOf_enums>()
         }
     }
 )
 
-export const ENUM_CREATE_PREFIX = "ENUM_CREATE_PREFIX"
+export const ENUM_CREATE_PREFIX = "[[ENUM_CREATE_PREFIX]]"

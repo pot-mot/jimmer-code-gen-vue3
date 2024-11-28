@@ -24,12 +24,19 @@ import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import BatchCreateAssociationsDialog
 	from "@/components/pages/ModelEditor/dialogs/association/BatchCreateAssociationsDialog.vue";
 import TableCombineDialog from "@/components/pages/ModelEditor/dialogs/table/TableCombineDialog.vue";
+import {useDataSourceLoadDialogStore} from "@/store/modelEditor/DataSourceLoadDialogStore.ts";
+import {useModelLoadDialogStore} from "@/store/modelEditor/ModelLoadDialogStore.ts";
+import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.ts";
 
-const {MODEL, MODEL_LOAD, MODEL_EDIT_DIALOG, DATA_SOURCE_LOAD_DIALOG, MODEL_LOAD_DIALOG} = useModelEditorStore()
+const {MODEL, MODEL_LOAD} = useModelEditorStore()
 
 const i18nStore = useI18nStore()
 
 const loadingStore = useGlobalLoadingStore()
+
+const dataSourceLoadDialogStore = useDataSourceLoadDialogStore()
+const modelLoadDialogStore = useModelLoadDialogStore()
+const modelEditDialogStore = useModelEditDialogStore()
 
 const router = useRouter()
 const route = useRoute()
@@ -131,7 +138,7 @@ watch(() => modelLoadMenu.value, () => {
 		</template>
 	</LeftTopBottomLayout>
 
-	<DragDialog v-model="DATA_SOURCE_LOAD_DIALOG.openState"
+	<DragDialog v-model="dataSourceLoadDialogStore.openState"
 				:modal="false"
 				:init-x="100" :init-y="10"
 				:init-w="500" :init-h="600"
@@ -139,7 +146,7 @@ watch(() => modelLoadMenu.value, () => {
 		<DataSourceMenu ref="dataSourceLoadMenu"/>
 	</DragDialog>
 
-	<DragDialog v-model="MODEL_LOAD_DIALOG.openState"
+	<DragDialog v-model="modelLoadDialogStore.openState"
 				:modal="false"
 				:init-x="100" :init-y="10"
 				:init-w="500" :init-h="600"
@@ -148,10 +155,10 @@ watch(() => modelLoadMenu.value, () => {
 	</DragDialog>
 
 	<ModelDialog v-if="MODEL.isLoaded"
-				 v-model="MODEL_EDIT_DIALOG.openState"
+				 v-model="modelEditDialogStore.openState"
 				 :model="cloneDeep(MODEL._model())"
-				 @cancel="MODEL_EDIT_DIALOG.handleCancel"
-				 @submit="MODEL_EDIT_DIALOG.handleSubmit"/>
+				 @cancel="modelEditDialogStore.handleCancel"
+				 @submit="modelEditDialogStore.handleSubmit"/>
 
 	<TableDialogs/>
 

@@ -1,4 +1,4 @@
-import {useDialogListState} from "@/components/global/dialog/DialogListState.ts";
+import {useDialogOpenListState} from "@/components/global/dialog/DialogOpenListState.ts";
 import {defineStore} from "pinia";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 
@@ -6,7 +6,7 @@ export const useAssociationDialogsStore = defineStore(
     'AssociationDialogs',
     () => {
         return {
-            ...useDialogListState<string, GenAssociationModelInput>()
+            ...useDialogOpenListState<string, GenAssociationModelInput>()
         }
     }
 )

@@ -11,10 +11,16 @@ import {
     AssociationItemShowType_CONSTANTS
 } from "@/components/pages/ModelEditor/menu/AssociationItemShowType.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+import {useDataSourceLoadDialogStore} from "@/store/modelEditor/DataSourceLoadDialogStore.ts";
+import {useModelLoadDialogStore} from "@/store/modelEditor/ModelLoadDialogStore.ts";
 
 const i18nStore = useI18nStore()
 
-const {MODEL, DATA_SOURCE_LOAD_DIALOG, MODEL_LOAD_DIALOG, VIEW} = useModelEditorStore()
+const {MODEL, VIEW} = useModelEditorStore()
+
+const dataSourceLoadDialogStore = useDataSourceLoadDialogStore()
+
+const modelLoadDialogStore = useModelLoadDialogStore()
 
 const tableNodePairs = computed(() => {
     return MODEL.tableNodePairs
@@ -27,14 +33,6 @@ const associationEdgePairs = computed(() => {
 const enums = computed(() => {
     return MODEL.enums
 })
-
-const openDataSourceLoadDialog = () => {
-    DATA_SOURCE_LOAD_DIALOG.openState = true
-}
-
-const openModelLoadDialog = () => {
-    MODEL_LOAD_DIALOG.openState = true
-}
 
 const associationItemShowType = ref<AssociationItemShowType>('NAME')
 
@@ -57,10 +55,10 @@ const formattedEdgeShowType = computed(() => {
 
 <template>
     <div>
-        <el-button style="margin-bottom: 0.5em;" @click="openDataSourceLoadDialog">
+        <el-button style="margin-bottom: 0.5em;" @click="dataSourceLoadDialogStore.open()">
             {{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromDataSource') }}
         </el-button>
-        <el-button style="margin-bottom: 0.5em;" @click="openModelLoadDialog">
+        <el-button style="margin-bottom: 0.5em;" @click="modelLoadDialogStore.open()">
             {{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromModel') }}
         </el-button>
 

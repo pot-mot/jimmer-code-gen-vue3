@@ -10,7 +10,6 @@ import {
 } from "@/components/pages/ModelEditor/graph/load/loadData.ts";
 import {
     GenAssociationModelInput,
-    GenModelInput,
     GenModelInput_TargetOf_enums,
     GenModelView,
     GenTableColumnsView,
@@ -47,21 +46,19 @@ import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/as
 import {GraphReactiveState} from "@/components/global/graphEditor/data/reactiveState.ts";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {defineStore} from "pinia";
-import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
 import {loadAssociationModelInputs} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
 import {getDefaultAssociation} from "@/components/business/association/defaultColumn.ts";
 import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/BatchCreateAssociationsDialogStore.ts";
 import {useTableCombineDialogStore} from "@/store/modelEditor/TableCombineDialogStore.ts";
-import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 
 interface ModelReactiveState {
-    tableNodes: Readonly<Ref<Array<UnwrapRefSimple<Node>>>>,
+    tableNodes: DeepReadonly<Ref<Array<UnwrapRefSimple<Node>>>>,
     tableNodePairs: ComputedRef<Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>>,
     tables: ComputedRef<Array<GenTableModelInput>>,
     superTables: ComputedRef<Array<GenTableModelInput>>,
     selectedTables: ComputedRef<Array<GenTableModelInput>>,
     selectedTableNodePairs: ComputedRef<Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>>,
-    associationEdges: Readonly<Ref<Array<UnwrapRefSimple<Edge>>>>,
+    associationEdges: DeepReadonly<Ref<Array<UnwrapRefSimple<Edge>>>>,
     associationEdgePairs: ComputedRef<Array<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>>,
     associations: ComputedRef<Array<GenAssociationModelInput>>,
     selectedAssociations: ComputedRef<Array<GenAssociationModelInput>>,
@@ -71,7 +68,7 @@ interface ModelReactiveState {
 
 interface ModelState {
     _model: () => GenModelView
-    isLoaded: Readonly<Ref<boolean>>
+    isLoaded: Ref<boolean>
 }
 
 interface ModelLoadOperation {
@@ -80,21 +77,6 @@ interface ModelLoadOperation {
     loadModel: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
     loadSchema: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
     loadTable: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
-}
-
-interface ModelEditDialogState {
-    openState: Ref<boolean>
-    handleEdit: () => void
-    handleCancel: () => void
-    handleSubmit: (model: GenModelInput) => void
-}
-
-interface DataSourceLoadDialogState {
-    openState: Ref<boolean>,
-}
-
-interface ModelLoadDialogState {
-    openState: Ref<boolean>,
 }
 
 interface ModelEditorDataOperation {
@@ -115,10 +97,6 @@ interface ModelEditorStore {
 
     MODEL: UnwrapRefSimple<ModelState & ModelReactiveState>
     MODEL_LOAD: ModelLoadOperation
-
-    MODEL_EDIT_DIALOG: UnwrapRefSimple<ModelEditDialogState>
-    DATA_SOURCE_LOAD_DIALOG: UnwrapRefSimple<DataSourceLoadDialogState>
-    MODEL_LOAD_DIALOG: UnwrapRefSimple<ModelLoadDialogState>
 }
 
 const initModelEditorStore = (): ModelEditorStore => {
@@ -177,7 +155,7 @@ const initModelEditorStore = (): ModelEditorStore => {
     const currentModel = ref<GenModelView>()
 
     const isLoaded = ref(false)
-    
+
     const assertModel = (): Ref<GenModelView> => {
         if (currentModel.value === undefined) {
             sendI18nMessage("MESSAGE_ModelEditorStore_modelNotLoad", 'error')
@@ -185,7 +163,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         }
         return currentModel as Ref<GenModelView>
     }
-    
+
     const modelState: ModelState = {
         _model: (): GenModelView => {
             return assertModel().value
@@ -215,69 +193,6 @@ const initModelEditorStore = (): ModelEditorStore => {
         }
     }
 
-    /**
-     * 模型编辑对话框相关
-     */
-
-    const modelEditDialogOpenState = ref(false)
-
-
-    // 在获取数据时调整
-    const getClearGraphData = (): DeepReadonly<GraphData> => {
-        const graphData = cloneDeepReadonly<GraphData>(graphDataOperation.getGraphData())
-
-        graphData.json.cells.forEach(cell => {
-            if (cell.shape === TABLE_NODE) {
-                cell.data = {table: cell.data.table}
-            }
-            if (cell.shape === ASSOCIATION_EDGE) {
-                cell.tools = undefined
-                cell.data = {association: cell.data.association}
-            }
-        })
-        return graphData
-    }
-
-    const handleEdit = () => {
-        assertModel().value.graphData = JSON.stringify(getClearGraphData())
-        modelEditDialogOpenState.value = true
-    }
-
-    const handleCancel = () => {
-        modelEditDialogOpenState.value = false
-    }
-
-    const handleSubmit = loadingStore.withLoading(
-        'ModelEditorStore.handleSubmitModelEdit',
-        async (model: GenModelInput) => {
-            try {
-                isLoaded.value = false
-
-                const id = await saveModel(model)
-
-                if (id === undefined) {
-                    sendI18nMessage("MESSAGE_ModelEditorStore_modelSaveFail_ResultNotFound", 'error')
-                    return
-                }
-
-                const savedModel = await api.modelService.get({id})
-
-                if (!savedModel) {
-                    sendI18nMessage("MESSAGE_ModelEditorStore_modelSaveFail_ResultNotFound", 'error')
-                    return
-                }
-
-                handleCancel()
-
-                // 同步数据
-                loadModelView(savedModel)
-
-                sendI18nMessage("MESSAGE_ModelEditorStore_modelSaveSuccess", "success")
-            } catch (e) {
-                sendI18nMessage("MESSAGE_ModelEditorStore_modelSaveFail", 'error', e)
-            }
-        }
-    )
 
     /**
      * 导入表的基本函数，接收 tableView 并查询获得 association
@@ -844,40 +759,6 @@ const initModelEditorStore = (): ModelEditorStore => {
         isLoaded.value = false
     }
 
-    const MODEL_EDIT_DIALOG = defineStore(
-        'MODEL_EDIT_DIALOG',
-        () => {
-            return {
-                openState: modelEditDialogOpenState,
-                handleEdit,
-                handleCancel,
-                handleSubmit,
-            }
-        }
-    )()
-
-    const MODEL_LOAD_DIALOG = defineStore(
-        'MODEL_LOAD_DIALOG',
-        () => {
-            const openState = ref(false)
-
-            return {
-                openState
-            }
-        }
-    )()
-
-    const DATA_SOURCE_LOAD_DIALOG = defineStore(
-        'DATA_SOURCE_LOAD_DIALOG',
-        () => {
-            const openState = ref(false)
-
-            return {
-                openState
-            }
-        }
-    )()
-
     const modelLoadOperations: ModelLoadOperation = {
         load: loadModelView,
         unload,
@@ -898,10 +779,6 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         MODEL,
         MODEL_LOAD,
-
-        MODEL_EDIT_DIALOG,
-        DATA_SOURCE_LOAD_DIALOG,
-        MODEL_LOAD_DIALOG,
 
         SELECT,
         VIEW,

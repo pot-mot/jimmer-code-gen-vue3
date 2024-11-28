@@ -195,6 +195,7 @@ import {validateModel} from "@/components/business/model/form/validateModel.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {exportGraphPNG, exportGraphSVG,} from "@/components/pages/ModelEditor/file/graphFileOperations.ts";
 import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
+import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.ts";
 
 const i18nStore = useI18nStore()
 
@@ -203,7 +204,9 @@ const wrapper = ref<HTMLElement>()
 
 let graph: Graph
 
-const {GRAPH, MODEL_EDITOR_DATA, GRAPH_LOAD, MODEL, MODEL_EDIT_DIALOG, HISTORY, VIEW, REMOVE} = useModelEditorStore()
+const {GRAPH, MODEL_EDITOR_DATA, GRAPH_LOAD, MODEL, HISTORY, VIEW, REMOVE} = useModelEditorStore()
+
+const modelEditorDialog = useModelEditDialogStore()
 
 const loadingStore = useGlobalLoadingStore()
 
@@ -300,7 +303,7 @@ const handleSaveEvent = (e: KeyboardEvent) => {
 useDocumentEvent('keydown', handleSaveEvent)
 
 const handleEditModel = () => {
-    MODEL_EDIT_DIALOG.handleEdit()
+	modelEditorDialog.handleEdit()
 }
 
 const isDragging = ref(false)
