@@ -1,14 +1,18 @@
-import type {Graph, Node, Edge} from "@antv/x6"
+import type {Edge, Graph, Node} from "@antv/x6"
 import {DeepReadonly} from "vue";
+import {getSelectedEdges, getSelectedNodes} from "@/components/global/graphEditor/selection/selectOperation.ts";
 
-interface ForceNode {
-    id: string,
+interface Rect {
     left: number,
     top: number,
-    width: number,
-    height: number,
     right: number,
     bottom: number,
+}
+
+interface ForceNode extends Rect {
+    id: string,
+    width: number,
+    height: number,
     node: Node,
 }
 
@@ -16,13 +20,31 @@ interface ForceNode {
  * 两节点是否重叠
  */
 export const isOverlap = (
-    node1: DeepReadonly<ForceNode>,
-    node2: DeepReadonly<ForceNode>,
+    rect1: DeepReadonly<Rect>,
+    rect2: DeepReadonly<Rect>,
 ): boolean => {
-    return !(node1.right <= node2.left ||
-        node1.left >= node2.right ||
-        node1.bottom <= node2.top ||
-        node1.top >= node2.bottom)
+    return !(rect1.right <= rect2.left ||
+        rect1.left >= rect2.right ||
+        rect1.bottom <= rect2.top ||
+        rect1.top >= rect2.bottom)
+}
+
+const createForceNodes = (nodes: DeepReadonly<Array<Node>>): DeepReadonly<Array<ForceNode>> => {
+    return nodes.map(node => {
+        const {width, height} = node.getSize()
+        const {x, y} = node.getPosition()
+
+        return {
+            id: node.id,
+            left: x,
+            top: y,
+            width,
+            height,
+            right: x + width,
+            bottom: y + height,
+            node
+        }
+    })
 }
 
 /**
@@ -47,15 +69,21 @@ export const getForce = (
     const distance = Math.sqrt(dx * dx + dy * dy)
 
     // 检查节点是否重叠或间距小于gap
-    const isOverlappingOrTooClose = isOverlap(node1, node2) ||
-        Math.abs(dx) < gapX ||
-        Math.abs(dy) < gapY
+    const overlap = isOverlap(
+        {
+            left: node1.left - gapX,
+            right: node1.right + gapX,
+            top: node1.top - gapY,
+            bottom: node1.bottom + gapY,
+        },
+        node2
+    )
 
     // 计算斥力或拉力
     let xForce: number
     let yForce: number
 
-    if (isOverlappingOrTooClose) {
+    if (overlap) {
         // 斥力
         const repulsion = 11 * (edgeCount + 1) // 斥力常数
         xForce = dx / distance * repulsion
@@ -70,43 +98,28 @@ export const getForce = (
     return {xForce, yForce}
 }
 
-const createForceNodes = (nodes: DeepReadonly<Array<Node>>): DeepReadonly<Array<ForceNode>> => {
-    return nodes.map(node => {
-        const {width, height} = node.getSize()
-        const {x, y} = node.getPosition()
-
-        return {
-            id: node.id,
-            left: x,
-            top: y,
-            width,
-            height,
-            right: x + width,
-            bottom: y + height,
-            node
-        }
-    })
-}
-
 const getEdgeCountMap = (
     edges: DeepReadonly<Array<Edge>>,
 ): Map<string, number> => {
     const map = new Map<string, number>()
 
-    edges.forEach(edge => {
+    for (const edge of edges) {
         const sourceId = edge.getSourceNode()?.id
-        const targetId = edge.getTargetNode()?.id
-        const key = `${sourceId} ${targetId}`
+        if (!sourceId) continue
 
+        const targetId = edge.getTargetNode()?.id
+        if (!targetId) continue
+
+        const key = `${sourceId} ${targetId}`
         const value = map.get(key)
         if (value === undefined) {
             map.set(key, 1)
         } else {
             map.set(key, value + 1)
         }
-    })
+    }
 
-    return map;
+    return map
 }
 
 /**
@@ -133,20 +146,15 @@ const forceLayoutItem = (
             const edgeKey = `${node1.id} ${node2.id}`
             const edgeCount = edgeCountMap.get(edgeKey) ?? 0
 
-            const { xForce, yForce } = getForce(node1, node2, edgeCount, gapX, gapY)
+            const {xForce, yForce} = getForce(node1, node2, edgeCount, gapX, gapY)
 
-            // 更新节点1的位置
             updatedNodes[i].left += xForce
             updatedNodes[i].top += yForce
-
-            // 更新节点2的位置
-            updatedNodes[j].left -= xForce
-            updatedNodes[j].top -= yForce
-
-            // 更新节点的right和bottom属性
             updatedNodes[i].right = updatedNodes[i].left + node1.width
             updatedNodes[i].bottom = updatedNodes[i].top + node1.height
 
+            updatedNodes[j].left -= xForce
+            updatedNodes[j].top -= yForce
             updatedNodes[j].right = updatedNodes[j].left + node2.width
             updatedNodes[j].bottom = updatedNodes[j].top + node2.height
         }
@@ -161,17 +169,23 @@ export const layoutByForce = (
     gapX: number = 200,
     gapY: number = 100
 ) => {
-    const nodes = graph.getNodes()
-    const edges = graph.getEdges()
+    graph.startBatch('layout by force')
+
+    const hasMultiSelection = graph.getSelectedCellCount() > 1
+
+    const nodes = hasMultiSelection ? getSelectedNodes(graph) : graph.getNodes()
+    const edges = hasMultiSelection ? getSelectedEdges(graph) : graph.getEdges()
 
     let forceNodes = createForceNodes(nodes)
     const edgeCountMap = getEdgeCountMap(edges)
 
-    for (let i = 0; i < iterationCount; i ++) {
+    for (let i = 0; i < iterationCount; i++) {
         forceNodes = forceLayoutItem(forceNodes, edgeCountMap, gapX, gapY)
     }
 
     forceNodes.forEach(node => {
         node.node.setPosition(node.left, node.top)
     })
+
+    graph.stopBatch('layout by force')
 }

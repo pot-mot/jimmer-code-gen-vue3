@@ -323,7 +323,7 @@ export const layoutByLevel = (
     let nodes
     let edges
 
-    graph.startBatch('layout')
+    graph.startBatch('layout by level')
 
     if (graph.isSelectionEmpty() || graph.getSelectedCellCount() === 1) {
         nodes = toLayoutNodes(graph.getNodes())
@@ -367,5 +367,5 @@ export const layoutByLevel = (
             break
     }
 
-    graph.stopBatch('layout')
+    graph.stopBatch('layout by level')
 }
