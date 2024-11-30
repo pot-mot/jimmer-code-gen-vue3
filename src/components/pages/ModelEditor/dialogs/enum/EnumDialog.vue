@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
-import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 import EnumForm from "@/components/business/enum/EnumForm.vue";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 import {validateEnum} from "@/components/business/enum/validateEnum.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {DeepReadonly} from "vue";
+import {ENUM_CREATE_PREFIX} from "@/store/modelEditor/EnumDialogsStore.ts";
 
-const {MODEL} = useModelEditorStore()
+const {MODEL, MODEL_EDITOR} = useModelEditorStore()
 
 const props = defineProps<{
     id: string,
@@ -19,11 +19,11 @@ const emits = defineEmits<{
 }>()
 
 const handleSubmit = (genEnum: GenModelInput_TargetOf_enums) => {
-	if (props.id.length > 0) {
-		ModelEditorEventBus.emit('editedEnum', {id: props.id, genEnum})
-	} else {
-		ModelEditorEventBus.emit('createdEnum', {id: props.id, genEnum})
-	}
+	if (props.id.startsWith(ENUM_CREATE_PREFIX)) {
+        MODEL_EDITOR.createdEnum(props.id, genEnum)
+    } else {
+        MODEL_EDITOR.editedEnum(props.id, genEnum)
+    }
 }
 
 const validate = (genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {

@@ -108,7 +108,7 @@ const cut = async () => {
 const paste = useGlobalLoadingStore().withLoading(
     'clipBoard paste',
     async () => {
-        const {GRAPH, MODEL_EDITOR_DATA} = useModelEditorStore()
+        const {GRAPH, MODEL_EDITOR} = useModelEditorStore()
 
         const graph = GRAPH._graph()
 
@@ -145,12 +145,12 @@ const paste = useGlobalLoadingStore().withLoading(
             } else if (validateModelEditorData(value, (e) => validateErrors.push(e))) {
                 const cells = value.json.cells as Cell[]
                 graph.parseJSON(cells)
-                res = MODEL_EDITOR_DATA.loadModelEditorData(JSON.parse(text), false)
+                res = MODEL_EDITOR.loadModelEditorData(JSON.parse(text), false)
             } else if (validateModelInput(value, (e) => validateErrors.push(e))) {
                 const model = value as GenModelInput
 
                 if (model.graphData) {
-                    res = MODEL_EDITOR_DATA.loadModelEditorData(JSON.parse(model.graphData), false)
+                    res = MODEL_EDITOR.loadModelEditorData(JSON.parse(model.graphData), false)
                 }
                 importEnums(model.enums)
             } else {

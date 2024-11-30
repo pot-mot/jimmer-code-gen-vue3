@@ -4,16 +4,15 @@ import TableCombineForm from "@/components/business/table/TableCombineForm.vue";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {validateTable} from "@/components/business/table/validateTable.ts";
 import {DeepReadonly} from "vue";
-import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 import {TableCombineData} from "@/components/business/table/TableCombineData.ts";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 
-const {MODEL} = useModelEditorStore()
+const {MODEL, MODEL_EDITOR} = useModelEditorStore()
 
 const store = useTableCombineDialogStore()
 
 const handleSubmit = (tableCombineData: TableCombineData) => {
-    ModelEditorEventBus.emit('combinedTable', tableCombineData)
+    MODEL_EDITOR.combinedTable(tableCombineData)
 }
 
 const getOtherTables = (name: string) => {

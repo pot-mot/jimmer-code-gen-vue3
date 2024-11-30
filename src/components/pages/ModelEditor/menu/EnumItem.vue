@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import {Delete, EditPen} from "@element-plus/icons-vue";
-import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 
 import {deleteConfirm} from "@/message/confirm.ts";
+import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 
-interface EdgeItem {
-	genEnum: GenModelInput_TargetOf_enums
-}
+const props = defineProps<{
+    genEnum: GenModelInput_TargetOf_enums
+}>()
 
-const props = defineProps<EdgeItem>()
+const {MODEL_EDITOR} = useModelEditorStore()
 
 const handleEdit = () => {
-	ModelEditorEventBus.emit('editEnum', {id: props.genEnum.name, genEnum: props.genEnum})
+    MODEL_EDITOR.editEnum(props.genEnum.name, props.genEnum)
 }
 
 const handleDelete = () => {
 	deleteConfirm(`【${props.genEnum.name}】`, () => {
-		ModelEditorEventBus.emit('removeEnum', {id: props.genEnum.name})
+        MODEL_EDITOR.removeEnum(props.genEnum.name)
 	})
 }
 </script>

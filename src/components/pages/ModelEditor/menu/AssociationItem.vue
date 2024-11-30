@@ -2,7 +2,6 @@
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {computed} from "vue";
 import {Delete, EditPen} from "@element-plus/icons-vue";
-import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import AssociationIcon from "@/components/global/icons/database/AssociationIcon.vue";
 import {deleteConfirm} from "@/message/confirm.ts";
@@ -18,7 +17,7 @@ interface AssociationItemProps {
 
 const props = defineProps<AssociationItemProps>()
 
-const {GRAPH, VIEW, SELECT} = useModelEditorStore()
+const {GRAPH, MODEL_EDITOR, VIEW, SELECT} = useModelEditorStore()
 
 const handleClickAssociation = (e: MouseEvent) => {
 	if (e.ctrlKey) {
@@ -48,7 +47,7 @@ const handleClickTarget = (e: MouseEvent) => {
 
 const handleDelete = () => {
 	deleteConfirm(`【${props.association.name}】`, () => {
-		ModelEditorEventBus.emit('removeAssociation', {id: props.edge.id})
+        MODEL_EDITOR.removeAssociation(props.edge.id)
 	})
 }
 
@@ -91,7 +90,7 @@ const targetLabel = computed<string | undefined>(() => {
 })
 
 const handleEdit = (association: GenAssociationModelInput) => {
-	ModelEditorEventBus.emit('editAssociation', {id: props.edge.id, association})
+    MODEL_EDITOR.editAssociation(props.edge.id, association)
 }
 
 const isSelected = computed(() => {

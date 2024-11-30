@@ -174,7 +174,6 @@ import GraphSearcher from "@/components/pages/ModelEditor/search/GraphSearcher.v
 import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
 import {EditPen} from "@element-plus/icons-vue";
 import {useClipBoard} from "@/components/pages/ModelEditor/graph/clipBoard/clipBoard.ts";
-import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";
 import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
 import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
@@ -185,7 +184,6 @@ import {
     exportModelJson,
     previewModelCode,
 } from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
-import {cloneDeep} from "lodash";
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {useDocumentEvent} from "@/utils/useDocumentEvent.ts";
 import MiniMap from "@/components/pages/ModelEditor/minimap/MiniMap.vue";
@@ -204,7 +202,7 @@ const wrapper = ref<HTMLElement>()
 
 let graph: Graph
 
-const {GRAPH, MODEL_EDITOR_DATA, GRAPH_LOAD, MODEL, HISTORY, VIEW, REMOVE} = useModelEditorStore()
+const {GRAPH, MODEL_EDITOR, MODEL, HISTORY, VIEW, REMOVE} = useModelEditorStore()
 
 const modelEditorDialog = useModelEditDialogStore()
 
@@ -215,7 +213,7 @@ const debugStore = useDebugStore()
 onMounted(loadingStore.withLoading('ModelEditorGraph onMounted', () => {
     graph = initModelEditor(container.value!, wrapper.value!)
 
-    GRAPH_LOAD.load(graph)
+    GRAPH.load(graph)
 
     graph.on('history:change', (args) => {
         const message = args.options.name ?? 'history:change'
@@ -223,7 +221,7 @@ onMounted(loadingStore.withLoading('ModelEditorGraph onMounted', () => {
     })
 
     graph.on('blank:dblclick', () => {
-        ModelEditorEventBus.emit('createTable', {options: GRAPH.mousePosition})
+        MODEL_EDITOR.createTable(GRAPH.mousePosition)
     })
 
     graph.on('node:click', ({node}) => {
@@ -236,7 +234,7 @@ onMounted(loadingStore.withLoading('ModelEditorGraph onMounted', () => {
 }))
 
 onUnmounted(() => {
-    GRAPH_LOAD.unload()
+    GRAPH.unload()
 })
 
 // 表编辑事件
@@ -251,7 +249,7 @@ const handleNodeClick = (node: Node) => {
 
         if (doubleClickWaitNodes.has(id)) {
             doubleClickWaitNodes.delete(id)
-            ModelEditorEventBus.emit('editTable', {id, table: cloneDeep(table)})
+            MODEL_EDITOR.editTable(id, table)
         } else {
             graph.select(node)
             doubleClickWaitNodes.add(id)
@@ -269,7 +267,7 @@ const handleSaveModel = loadingStore.withLoading('ModelEditorGraph handleSaveMod
 
         MODEL.isLoaded = false
 
-        const currentGraphData = JSON.stringify(MODEL_EDITOR_DATA.getGraphData())
+        const currentGraphData = JSON.stringify(MODEL_EDITOR.getGraphData())
 
         if (model.graphData !== currentGraphData) {
             graph.cleanSelection()
@@ -335,7 +333,7 @@ watch(() => MODEL.isLoaded, async (value) => {
 const judgeGraphDataIsChange = (): boolean => {
     if (GRAPH.isLoaded && MODEL.isLoaded) {
         if (
-            JSON.stringify(MODEL_EDITOR_DATA.getGraphData().json) ===
+            JSON.stringify(MODEL_EDITOR.getGraphData().json) ===
             JSON.stringify(JSON.parse(MODEL._model().graphData)["json"])
         ) {
             return false

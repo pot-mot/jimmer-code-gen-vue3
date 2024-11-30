@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
-import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import AssociationForm from "@/components/business/association/AssociationForm.vue";
 import {createAssociationName} from "@/components/business/association/createAssociationName.ts";
@@ -10,7 +9,7 @@ import {DeepReadonly} from "vue";
 import {MainLocaleKeyParam} from "@/i18n";
 import {ASSOCIATION_CREATE_PREFIX} from "@/store/modelEditor/AssociationDialogsStore.ts";
 
-const {MODEL} = useModelEditorStore()
+const {MODEL, MODEL_EDITOR} = useModelEditorStore()
 
 const props = defineProps<{
     id: string,
@@ -23,9 +22,9 @@ const emits = defineEmits<{
 
 const handleSubmit = (association: GenAssociationModelInput) => {
     if (props.id.startsWith(ASSOCIATION_CREATE_PREFIX)) {
-        ModelEditorEventBus.emit('createdAssociation', {createKey: props.id, association})
+        MODEL_EDITOR.createdAssociation(props.id, association)
     } else {
-        ModelEditorEventBus.emit('editedAssociation', {id: props.id, association})
+        MODEL_EDITOR.editedAssociation(props.id, association)
     }
 }
 

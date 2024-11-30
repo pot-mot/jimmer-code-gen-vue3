@@ -56,9 +56,8 @@ import {
 import {
 	loadAssociationModelInputs
 } from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
-import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 
-const {GRAPH, VIEW, HISTORY} = useModelEditorStore()
+const {GRAPH, MODEL_EDITOR, VIEW, HISTORY} = useModelEditorStore()
 
 const wrapper = ref<HTMLElement>()
 
@@ -158,8 +157,8 @@ onMounted(() => {
 					column.orderKey = index + 1
 				})
 
-				ModelEditorEventBus.emit('syncedTable', {id: nodeId})
-			}, 100)
+                MODEL_EDITOR.syncedTable(nodeId)
+            }, 100)
 		})
 	}
 

@@ -538,7 +538,7 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
 
     LABEL_EnumForm_name: '名称',
     LABEL_EnumForm_packagePath: '包路径',
-    LABEL_EnumForm_defaultItem: "默认选项",
+    LABEL_EnumForm_notNullDefaultItem: "表单项非空时的默认选项",
     LABEL_EnumForm_comment: '注释',
     LABEL_EnumForm_type: '类型',
     LABEL_EnumForm_typeUnset: '默认',
@@ -548,7 +548,7 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     },
     VALIDATE_GenEnum_nameCannotBeEmpty: "枚举名不得为空",
     VALIDATE_GenEnum_itemsCannotBeEmpty: "必须至少有一个枚举项",
-    VALIDATE_GenEnum_defaultItemRequired: "必须有默认值",
+    VALIDATE_GenEnum_notNullDefaultItemRequired: "必须有表单项非空时的默认选项",
     VALIDATE_GenEnum_defaultItemUnique: "默认值必须唯一",
     VALIDATE_GenEnum_itemNameCannotBeEmpty: "枚举项名称不得为空",
     VALIDATE_GenEnum_itemNameCannotBeDuplicate: (itemName: string) => `枚举项名称【${itemName}】不可重复`,

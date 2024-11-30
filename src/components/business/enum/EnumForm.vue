@@ -112,7 +112,7 @@ const handleCancel = () => {
             </LineItem>
         </Line>
 
-        <el-form-item :label="i18nStore.translate('LABEL_EnumForm_defaultItem')">
+        <el-form-item :label="i18nStore.translate('LABEL_EnumForm_notNullDefaultItem')">
             <el-select v-model="defaultItemIndex" filterable clearable>
                 <el-option
                     v-for="(item, index) in genEnum.items"

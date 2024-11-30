@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {Delete, EditPen} from "@element-plus/icons-vue";
-import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {computed} from "vue";
@@ -17,7 +16,7 @@ interface TableItemProps {
 
 const props = defineProps<TableItemProps>()
 
-const {GRAPH, SELECT, VIEW} = useModelEditorStore()
+const {GRAPH, MODEL_EDITOR, SELECT, VIEW} = useModelEditorStore()
 
 const handleClickLabel = (e: MouseEvent) => {
 	if (e.ctrlKey) {
@@ -28,12 +27,12 @@ const handleClickLabel = (e: MouseEvent) => {
 }
 
 const handleEdit = () => {
-	ModelEditorEventBus.emit('editTable', {id: props.node.id, table: props.table})
+    MODEL_EDITOR.editTable(props.node.id, props.table)
 }
 
 const handleDelete = () => {
 	deleteConfirm(`【${props.table.name}】`, () => {
-		ModelEditorEventBus.emit('removeTable', {id: props.node.id})
+        MODEL_EDITOR.removeTable(props.node.id)
 	})
 }
 

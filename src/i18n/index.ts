@@ -394,7 +394,7 @@ type MainLocale = {
 
     LABEL_EnumForm_name: string
     LABEL_EnumForm_packagePath: string
-    LABEL_EnumForm_defaultItem: string
+    LABEL_EnumForm_notNullDefaultItem: string
     LABEL_EnumForm_comment: string
     LABEL_EnumForm_type: string
     LABEL_EnumForm_typeUnset: string
@@ -402,7 +402,7 @@ type MainLocale = {
     VALIDATE_GenEnum_cannotBeDuplicate: (enumName: string) => string
     VALIDATE_GenEnum_nameCannotBeEmpty: string
     VALIDATE_GenEnum_itemsCannotBeEmpty: string
-    VALIDATE_GenEnum_defaultItemRequired: string
+    VALIDATE_GenEnum_notNullDefaultItemRequired: string
     VALIDATE_GenEnum_defaultItemUnique: string
     VALIDATE_GenEnum_itemNameCannotBeEmpty: string
     VALIDATE_GenEnum_itemNameCannotBeDuplicate: (itemName: string) => string

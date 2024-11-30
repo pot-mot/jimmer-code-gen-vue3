@@ -35,7 +35,7 @@ const {MODEL} = useModelEditorStore()
 
 const jdbcTypeStore = useJdbcTypeStore()
 
-interface ModelFormProps {
+const props = defineProps<{
     table?: GenTableModelInput | undefined,
 
     validate: (table: DeepReadonly<GenTableModelInput>) => MainLocaleKeyParam[],
@@ -45,12 +45,10 @@ interface ModelFormProps {
         index: DeepReadonly<Omit<GenTableModelInput_TargetOf_indexes, 'name'>>,
         tableIsSuper: boolean
     ) => string
-}
-
-const props = defineProps<ModelFormProps>()
+}>()
 
 interface ModelFormEmits {
-    (event: "createEnum"): void
+    (event: "createEnum", options: { propertyName: string }): void
 
     (event: "editEnum", data: { genEnum: GenModelInput_TargetOf_enums }): void
 }
@@ -276,6 +274,21 @@ const handleSubmit = () => {
 const handleCancel = () => {
     emits('cancel', table.value)
 }
+
+const onEnumCreated = (
+    columnName: string,
+    enumName: string,
+) => {
+    table.value.columns.forEach(column => {
+        if (column.name === columnName) {
+            column.enum = {name: enumName}
+        }
+    })
+}
+
+defineExpose({
+    onEnumCreated
+})
 </script>
 
 <template>
@@ -370,10 +383,10 @@ const handleCancel = () => {
                     </el-text>
                 </template>
 
-                <template #type="{index}">
+                <template #type="{data, index}">
                     <ColumnTypeForm
                         v-model="table.columns[index]"
-                        @create-enum="emits('createEnum')"
+                        @create-enum="emits('createEnum', {propertyName: data.name})"
                         @edit-enum="handleEnumEdit"/>
                 </template>
 

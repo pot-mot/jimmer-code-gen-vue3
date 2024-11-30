@@ -539,7 +539,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
 
     LABEL_EnumForm_name: 'Name',
     LABEL_EnumForm_packagePath: 'Package Path',
-    LABEL_EnumForm_defaultItem: 'Default Item',
+    LABEL_EnumForm_notNullDefaultItem: 'Default Item For Not Null FormItem',
     LABEL_EnumForm_comment: 'Comment',
     LABEL_EnumForm_type: 'Type',
     LABEL_EnumForm_typeUnset: 'Default',
@@ -549,7 +549,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     },
     VALIDATE_GenEnum_nameCannotBeEmpty: "Enum name cannot be empty",
     VALIDATE_GenEnum_itemsCannotBeEmpty: "There must be at least one enum item",
-    VALIDATE_GenEnum_defaultItemRequired: "There must be a default value",
+    VALIDATE_GenEnum_notNullDefaultItemRequired: "There must have a Default Item for Not Null FormItem",
     VALIDATE_GenEnum_defaultItemUnique: "The default value must be unique",
     VALIDATE_GenEnum_itemNameCannotBeEmpty: "Enum item name cannot be empty",
     VALIDATE_GenEnum_itemNameCannotBeDuplicate: (itemName: string) => `Enum item name [${itemName}] cannot be duplicated`,

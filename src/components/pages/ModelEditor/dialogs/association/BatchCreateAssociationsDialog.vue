@@ -2,7 +2,6 @@
 import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/BatchCreateAssociationsDialogStore.ts";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
-import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
 import {type DeepReadonly} from "vue";
 import {MainLocaleKeyParam} from "@/i18n";
 import {validateAssociation} from "@/components/business/association/validateAssociation.ts";
@@ -10,12 +9,12 @@ import AssociationMultiCreateForm from "@/components/business/association/Associ
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {createAssociationName} from "@/components/business/association/createAssociationName.ts";
 
-const {MODEL} = useModelEditorStore()
+const {MODEL, MODEL_EDITOR} = useModelEditorStore()
 
 const store = useBatchCreateAssociationsDialogStore()
 
 const handleSubmit = (associations: Array<GenAssociationModelInput>) => {
-	ModelEditorEventBus.emit('batchCreatedAssociations', {associations})
+    MODEL_EDITOR.batchCreatedAssociations(associations)
 }
 
 const validate = (associations: DeepReadonly<Array<GenAssociationModelInput>>): MainLocaleKeyParam[] => {

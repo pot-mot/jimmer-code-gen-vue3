@@ -17,11 +17,11 @@ export const useModelEditDialogStore = defineStore(
 
         const loadingStore = useGlobalLoadingStore()
 
-        const {MODEL, MODEL_LOAD, MODEL_EDITOR_DATA} = useModelEditorStore()
+        const {MODEL, MODEL_LOAD, MODEL_EDITOR} = useModelEditorStore()
 
         // 在获取数据时调整
         const getClearGraphData = (): DeepReadonly<GraphData> => {
-            const graphData = cloneDeepReadonly<GraphData>(MODEL_EDITOR_DATA.getGraphData())
+            const graphData = cloneDeepReadonly<GraphData>(MODEL_EDITOR.getGraphData())
 
             graphData.json.cells.forEach(cell => {
                 if (cell.shape === TABLE_NODE) {

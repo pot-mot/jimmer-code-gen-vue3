@@ -18,7 +18,7 @@ export const validateEnum = (
 
     const defaultItem = genEnum.items.filter(it => it.defaultItem)
     if (defaultItem.length < 1) {
-        messageList.push('VALIDATE_GenEnum_defaultItemRequired')
+        messageList.push('VALIDATE_GenEnum_notNullDefaultItemRequired')
     }
     if (defaultItem.length > 1) {
         messageList.push('VALIDATE_GenEnum_defaultItemUnique')

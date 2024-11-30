@@ -13,7 +13,7 @@ import {
 import {syncAssociationName} from "@/components/pages/ModelEditor/graph/associationEdge/associationName.ts"
 import {setEdgeSelectFlag} from "@/components/pages/ModelEditor/graph/associationEdge/edgeSelectedState.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
-import {ModelEditorEventBus} from "@/store/modelEditor/ModelEditorEventBus.ts";
+import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 
 const getAssociationType = (edge: Edge, defaultAssociationType: AssociationType = DEFAULT_ASSOCIATION_TYPE): AssociationType => {
     let temp = edge.getData()?.association.type
@@ -40,25 +40,25 @@ const handleButtonClick = (args: any) => {
         return
     }
 
+    const {MODEL_EDITOR} = useModelEditorStore()
+
     const associationType = getAssociationType(edge)
 
     const box = (e.target as HTMLElement).getBoundingClientRect()
 
     const left = (e.clientX - box.x) < (box.width / 2)
 
-    ModelEditorEventBus.emit('modifyAssociation', {id: edge.id})
-
-    setAssociationType(
-        edge,
-        reverseSinglePartAssociationType(
-            associationType,
-            left ? "SOURCE" : "TARGET"
+    MODEL_EDITOR.modifyAssociation(edge.id, () => {
+        setAssociationType(
+            edge,
+            reverseSinglePartAssociationType(
+                associationType,
+                left ? "SOURCE" : "TARGET"
+            )
         )
-    )
 
-    syncAssociationName(edge)
-
-    ModelEditorEventBus.emit('modifiedAssociation', {id: edge.id})
+        syncAssociationName(edge)
+    })
 }
 
 const createAssociationTypeButtonAttrs = (

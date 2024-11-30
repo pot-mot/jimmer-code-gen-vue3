@@ -1,5 +1,4 @@
 import {GraphLoadOperation, GraphState, useGraph} from "@/components/global/graphEditor/load/GraphLoadState.ts";
-import {ModelEditorEventBus} from "./ModelEditorEventBus.ts";
 import {sendI18nMessage} from "@/message/message.ts";
 import {computed, ComputedRef, DeepReadonly, Ref, ref, watch} from "vue";
 import {api} from "@/api";
@@ -23,15 +22,11 @@ import {ModelEditorData, validateModelEditorData} from "@/shape/ModelEditorData.
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
 import {ENUM_CREATE_PREFIX, useEnumDialogsStore} from "@/store/modelEditor/EnumDialogsStore.ts";
-import {cloneDeep} from "lodash";
 import {getDefaultTable} from "@/components/business/table/defaultTable.ts";
 import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
 import {TABLE_CREATE_PREFIX, useTableDialogsStore} from "@/store/modelEditor/TableDialogsStore.ts";
 import {unStyleAll} from "@/components/pages/ModelEditor/graph/highlight.ts";
-import {
-    GraphData,
-    useGraphDataOperation
-} from "@/components/global/graphEditor/data/graphData.ts";
+import {GraphData, useGraphDataOperation} from "@/components/global/graphEditor/data/graphData.ts";
 import {useDebugStore} from "@/store/debug/debugStore.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {Edge, Graph, Node} from '@antv/x6';
@@ -50,8 +45,10 @@ import {loadAssociationModelInputs} from "@/components/pages/ModelEditor/graph/l
 import {getDefaultAssociation} from "@/components/business/association/defaultColumn.ts";
 import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/BatchCreateAssociationsDialogStore.ts";
 import {useTableCombineDialogStore} from "@/store/modelEditor/TableCombineDialogStore.ts";
+import {TableCombineData} from "@/components/business/table/TableCombineData.ts";
+import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 
-interface ModelReactiveState {
+type ModelReactiveState = {
     tableNodes: DeepReadonly<Ref<Array<UnwrapRefSimple<Node>>>>,
     tableNodePairs: ComputedRef<Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>>,
     tables: ComputedRef<Array<GenTableModelInput>>,
@@ -66,12 +63,12 @@ interface ModelReactiveState {
     enums: ComputedRef<Array<GenModelInput_TargetOf_enums>>
 }
 
-interface ModelState {
+type ModelState = {
     _model: () => GenModelView
     isLoaded: Ref<boolean>
 }
 
-interface ModelLoadOperation {
+type ModelLoadOperation = {
     load: (model: GenModelView) => void
     unload: () => void
     loadModel: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
@@ -79,16 +76,64 @@ interface ModelLoadOperation {
     loadTable: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
 }
 
-interface ModelEditorDataOperation {
+type ModelEditorDataOperation = {
     getGraphData: () => DeepReadonly<GraphData>,
-    loadModelEditorData: (modelEditorData: DeepReadonly<ModelEditorData>, reset: boolean) => { nodes: Node[], edges: Edge[] },
+    loadModelEditorData: (modelEditorData: DeepReadonly<ModelEditorData>, reset: boolean) => {
+        nodes: Node[],
+        edges: Edge[]
+    },
 }
 
-interface ModelEditorStore {
-    GRAPH: UnwrapRefSimple<GraphState & GraphReactiveState>
+type SyncTableOperation = {
+    syncTable: (id: string) => void,
+    syncedTable: (id: string) => void,
+}
 
-    GRAPH_LOAD: GraphLoadOperation
-    MODEL_EDITOR_DATA: ModelEditorDataOperation
+type TableEditOperation = {
+    createTable: (options: DeepReadonly<TableLoadOptions>) => void,
+    createdTable: (createKey: string, table: DeepReadonly<GenTableModelInput>) => void,
+
+    editTable: (id: string, table: DeepReadonly<GenTableModelInput>) => void,
+    editedTable: (id: string, table: DeepReadonly<GenTableModelInput>) => void,
+
+    removeTable: (id: string) => void,
+
+    combineTable: (options: TableLoadOptions) => void,
+    combinedTable: (tableCombineData: DeepReadonly<TableCombineData>) => void,
+}
+
+type AssociationEditOperation = {
+    createAssociation: () => void,
+    createdAssociation: (createKey: string, association: DeepReadonly<GenAssociationModelInput>) => void,
+
+    batchCreateAssociations: () => void,
+    batchCreatedAssociations: (associations: DeepReadonly<GenAssociationModelInput[]>) => void,
+
+    editAssociation: (id: string, association: DeepReadonly<GenAssociationModelInput>) => void,
+    editedAssociation: (id: string, association: DeepReadonly<GenAssociationModelInput>) => void,
+
+    modifyAssociation: (id: string, modifyAction: () => any) => void,
+
+    removeAssociation: (id: string) => void,
+}
+
+export type EnumCreateOptions = {
+    tableDialogId: string,
+    columnName: string,
+}
+
+type EnumEditOperation = {
+    createEnum: (options?: EnumCreateOptions | undefined) => void,
+    createdEnum: (createKey: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => void,
+
+    editEnum: (id: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => void,
+    editedEnum: (id: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => void,
+
+    removeEnum: (id: string) => void,
+}
+
+type ModelEditorStore = {
+    GRAPH: UnwrapRefSimple<GraphState & GraphReactiveState & GraphLoadOperation>
 
     SELECT: SelectOperation
     VIEW: ViewOperation
@@ -97,6 +142,12 @@ interface ModelEditorStore {
 
     MODEL: UnwrapRefSimple<ModelState & ModelReactiveState>
     MODEL_LOAD: ModelLoadOperation
+
+    MODEL_EDITOR: ModelEditorDataOperation
+        & SyncTableOperation
+        & TableEditOperation
+        & AssociationEditOperation
+        & EnumEditOperation
 }
 
 const initModelEditorStore = (): ModelEditorStore => {
@@ -118,9 +169,9 @@ const initModelEditorStore = (): ModelEditorStore => {
             startBatchSync(target, () => {
                 cells.forEach(cell => {
                     if (cell.isNode() && cell.shape === TABLE_NODE) {
-                        ModelEditorEventBus.emit('removeTable', {id: cell.id})
+                        removeTable(cell.id)
                     } else if (cell.isEdge() && cell.shape === ASSOCIATION_EDGE) {
-                        ModelEditorEventBus.emit('removeAssociation', {id: cell.id})
+                        removeAssociation(cell.id)
                     }
                 })
             })
@@ -147,7 +198,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         }
     }
 
-    const MODEL_EDITOR_DATA: ModelEditorDataOperation = {
+    const modelGraphDataOperation: ModelEditorDataOperation = {
         getGraphData: graphDataOperation.getGraphData,
         loadModelEditorData,
     }
@@ -277,13 +328,6 @@ const initModelEditorStore = (): ModelEditorStore => {
         }
     )
 
-    /**
-     * 在 ModelEditorEventBus 发生变更时，记录入 debugStore
-     */
-    ModelEditorEventBus.on('*', (type, event) => {
-        debugStore.log('EVENT', type, event)
-    })
-
 
     /**
      * 历史记录同步
@@ -318,13 +362,12 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     let syncTableIds: string[] = []
 
-    ModelEditorEventBus.on('syncTable', ({id}) => {
+    const syncTable = (id: string) => {
         syncTableIds.push(id)
-    })
+    }
 
-    ModelEditorEventBus.on('syncedTable', ({id}) => {
+    const syncedTable = (id: string) => {
         const graph = _graph()
-        if (!graph) return
 
         const index = syncTableIds.indexOf(id)
         syncTableIds.splice(index, 1)
@@ -335,7 +378,7 @@ const initModelEditorStore = (): ModelEditorStore => {
                 graph.stopBatch(name)
             }
         }
-    })
+    }
 
 
     /**
@@ -344,26 +387,26 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const tableDialogsStore = useTableDialogsStore()
 
-    const tableCreateOptionsMap = ref(new Map<string, TableLoadOptions>)
+    const tableCreateOptionsMap = new Map<string, TableLoadOptions>
 
-    ModelEditorEventBus.on('createTable', ({options}) => {
-        const id = TABLE_CREATE_PREFIX + Date.now()
+    const createTable = (options: TableLoadOptions) => {
+        const createKey = TABLE_CREATE_PREFIX + Date.now()
+        tableDialogsStore.open(createKey, getDefaultTable())
+        tableCreateOptionsMap.set(createKey, options)
+    }
 
-        tableDialogsStore.open(id, getDefaultTable())
-        tableCreateOptionsMap.value.set(id, options)
-    })
-
-    ModelEditorEventBus.on('createdTable', ({createKey, table}) => {
+    const createdTable = (createKey: string, table: DeepReadonly<GenTableModelInput>) => {
         const graph = _graph()
-        if (!graph) return
+
+        const options = tableCreateOptionsMap.get(createKey)
 
         const node = loadTableModelInputs(
             graph,
             [table],
-            tableCreateOptionsMap.value.get(createKey)
+            options
         ).nodes[0]
 
-        tableCreateOptionsMap.value.delete(createKey)
+        tableCreateOptionsMap.delete(createKey)
 
         if (node) {
             tableDialogsStore.close(createKey)
@@ -372,15 +415,14 @@ const initModelEditorStore = (): ModelEditorStore => {
                 SELECT.select(node)
             }, 200)
         }
-    })
+    }
 
-    ModelEditorEventBus.on('editTable', ({id, table}) => {
-        tableDialogsStore.open(id, cloneDeep(table))
-    })
+    const editTable = (id: string, table: DeepReadonly<GenTableModelInput>) => {
+        tableDialogsStore.open(id, cloneDeepReadonly<GenTableModelInput>(table))
+    }
 
-    ModelEditorEventBus.on('editedTable', ({id, table}) => {
+    const editedTable = (id: string, table: DeepReadonly<GenTableModelInput>) => {
         const graph = _graph()
-        if (!graph) return
 
         const cell = graph.getCellById(id)
         if (!cell || !cell.isNode()) {
@@ -407,9 +449,9 @@ const initModelEditorStore = (): ModelEditorStore => {
 
             updateTableNodeData(cell, table)
         })
-    })
+    }
 
-    ModelEditorEventBus.on('removeTable', ({id}) => {
+    const removeTable = (id: string) => {
         const graph = _graph()
 
         const cell = graph.getCellById(id)
@@ -431,7 +473,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             }
             graph.removeNode(id)
         })
-    })
+    }
 
     /**
      * 表组合对话框
@@ -440,14 +482,15 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const tableCombineOptions = ref<TableLoadOptions>()
 
-    ModelEditorEventBus.on('combineTable', ({options}) => {
+    const combineTable = (options: TableLoadOptions) => {
         tableCombineOptions.value = options
         tableCombineDialogStore.open()
-    })
+    }
 
-    ModelEditorEventBus.on('combinedTable', ({superTable, inheritTableNodePairs}) => {
+    const combinedTable = (tableCombineData: DeepReadonly<TableCombineData>) => {
         const graph = _graph()
-        if (!graph) return
+
+        const {superTable, inheritTableNodePairs} = tableCombineData
 
         startBatchSync("combinedTable", () => {
             loadTableModelInputs(graph, [superTable], tableCombineOptions.value, undefined)
@@ -458,22 +501,20 @@ const initModelEditorStore = (): ModelEditorStore => {
 
             tableCombineDialogStore.close()
         })
-    })
+    }
 
     /**
      * 关联对话框相关
      */
     const associationDialogsStore = useAssociationDialogsStore()
 
-    ModelEditorEventBus.on('createAssociation', () => {
-        const id = ASSOCIATION_CREATE_PREFIX + Date.now()
+    const createAssociation = () => {
+        const createKey = ASSOCIATION_CREATE_PREFIX + Date.now()
+        associationDialogsStore.open(createKey, getDefaultAssociation())
+    }
 
-        associationDialogsStore.open(id, getDefaultAssociation())
-    })
-
-    ModelEditorEventBus.on('createdAssociation', ({createKey, association}) => {
+    const createdAssociation = (createKey: string, association: DeepReadonly<GenAssociationModelInput>) => {
         const graph = _graph()
-        if (!graph) return
 
         const edge = loadAssociationModelInputs(
             graph,
@@ -487,17 +528,16 @@ const initModelEditorStore = (): ModelEditorStore => {
                 SELECT.select(edge)
             }, 200)
         }
-    })
+    }
 
     const batchCreateAssociationsDialogStore = useBatchCreateAssociationsDialogStore()
 
-    ModelEditorEventBus.on('batchCreateAssociations', () => {
+    const batchCreateAssociations = () => {
         batchCreateAssociationsDialogStore.open()
-    })
+    }
 
-    ModelEditorEventBus.on('batchCreatedAssociations', ({associations}) => {
+    const batchCreatedAssociations = (associations: DeepReadonly<GenAssociationModelInput[]>) => {
         const graph = _graph()
-        if (!graph) return
 
         graph.startBatch("batchCreatedAssociations")
 
@@ -513,16 +553,15 @@ const initModelEditorStore = (): ModelEditorStore => {
         setTimeout(() => {
             SELECT.select(edges)
         }, 200)
-    })
+    }
 
 
-    ModelEditorEventBus.on('editAssociation', ({id, association}) => {
-        associationDialogsStore.open(id, cloneDeep(association))
-    })
+    const editAssociation = (id: string, association: DeepReadonly<GenAssociationModelInput>) => {
+        associationDialogsStore.open(id, cloneDeepReadonly<GenAssociationModelInput>(association))
+    }
 
-    ModelEditorEventBus.on('editedAssociation', ({id, association}) => {
+    const editedAssociation = (id: string, association: DeepReadonly<GenAssociationModelInput>) => {
         const graph = _graph()
-        if (!graph) return
 
         const cell = graph.getCellById(id)
         if (!cell || !cell.isEdge()) {
@@ -539,23 +578,20 @@ const initModelEditorStore = (): ModelEditorStore => {
         }
 
         associationDialogsStore.close(id)
-    })
+    }
 
-    ModelEditorEventBus.on('modifyAssociation', ({id}) => {
+    const modifyAssociation = async (id: string, modifyAction: () => any) => {
         const graph = _graph()
-        if (!graph) return
-        graph.startBatch(`modifyAssociation [id=${id}]`)
-    })
 
-    ModelEditorEventBus.on('modifiedAssociation', ({id}) => {
-        const graph = _graph()
-        if (!graph) return
-        graph.stopBatch(`modifyAssociation [id=${id}]`)
-    })
+        const key = `modifyAssociation [id=${id}]`
+        graph.startBatch(key)
+        await modifyAction()
+        graph.stopBatch(key)
+    }
 
-    ModelEditorEventBus.on('removeAssociation', ({id}) => {
+    const removeAssociation = (id: string) => {
         _graph().removeEdge(id)
-    })
+    }
 
 
     /**
@@ -564,26 +600,39 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const enumDialogsStore = useEnumDialogsStore()
 
-    ModelEditorEventBus.on('createEnum', () => {
-        const id = ENUM_CREATE_PREFIX + Date.now()
-        enumDialogsStore.open(id, getDefaultEnum())
-    })
+    const enumCreateOptionsMap = new Map<string, EnumCreateOptions | undefined>
 
-    ModelEditorEventBus.on('createdEnum', ({id, genEnum}) => {
-        assertModel().value.enums.push(genEnum)
-        enumDialogsStore.close(id)
-    })
+    const createEnum = (options?: EnumCreateOptions | undefined) => {
+        const createKey = ENUM_CREATE_PREFIX + Date.now()
+        enumDialogsStore.open(createKey, getDefaultEnum())
+        enumCreateOptionsMap.set(createKey, options)
+    }
 
-    ModelEditorEventBus.on('editEnum', ({id, genEnum}) => {
-        enumDialogsStore.open(id, genEnum)
-    })
+    const createdEnum = (createKey: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
+        assertModel().value.enums.push(cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum))
 
-    ModelEditorEventBus.on('editedEnum', ({id, genEnum}) => {
+        const options = enumCreateOptionsMap.get(createKey)
+
+        if (options !== undefined) {
+            const {tableDialogId, columnName} = options
+            tableDialogsStore.emitEnumCreated(tableDialogId, columnName, genEnum.name)
+        }
+
+        enumCreateOptionsMap.delete(createKey)
+
+        enumDialogsStore.close(createKey)
+    }
+
+    const editEnum = (id: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
+        enumDialogsStore.open(id, cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum))
+    }
+
+    const editedEnum = (id: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
         const oldName = id
 
         assertModel().value.enums = [
             ...assertModel().value.enums.filter(it => it.name !== oldName),
-            genEnum
+            cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum)
         ]
 
         enumDialogsStore.close(id)
@@ -591,9 +640,9 @@ const initModelEditorStore = (): ModelEditorStore => {
         startBatchSync('editedEnum', () => {
             syncEnumNameForTables(_graph(), oldName, genEnum.name)
         })
-    })
+    }
 
-    ModelEditorEventBus.on('removeEnum', ({id}) => {
+    const removeEnum = (id: string) => {
         const oldName = id
 
         assertModel().value.enums = assertModel().value.enums.filter(it => it.name !== oldName)
@@ -601,7 +650,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         startBatchSync('removeEnum', () => {
             syncEnumNameForTables(_graph(), oldName, undefined)
         })
-    })
+    }
 
     const tableNodes = ref<Node[]>([])
 
@@ -733,11 +782,9 @@ const initModelEditorStore = (): ModelEditorStore => {
     const GRAPH = defineStore(
         'GRAPH',
         () => {
-            return {...graphState, ...graphReactiveState}
+            return {...graphState, ...graphReactiveState, ...graphLoadOperation}
         }
     )()
-
-    const GRAPH_LOAD = graphLoadOperation
 
     const MODEL = defineStore(
         'MODEL',
@@ -748,7 +795,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const unload = () => {
         if (GRAPH.isLoaded) {
-            GRAPH_LOAD.unload()
+            GRAPH.unload()
         }
 
         currentModel.value = undefined
@@ -774,16 +821,41 @@ const initModelEditorStore = (): ModelEditorStore => {
      */
     return {
         GRAPH,
-        GRAPH_LOAD,
-        MODEL_EDITOR_DATA,
-
-        MODEL,
-        MODEL_LOAD,
-
         SELECT,
         VIEW,
         HISTORY,
         REMOVE,
+        MODEL,
+        MODEL_LOAD,
+        MODEL_EDITOR: {
+            ...modelGraphDataOperation,
+
+            syncTable,
+            syncedTable,
+
+            createTable,
+            createdTable,
+            editTable,
+            editedTable,
+            removeTable,
+            combineTable,
+            combinedTable,
+
+            createAssociation,
+            createdAssociation,
+            batchCreateAssociations,
+            batchCreatedAssociations,
+            editAssociation,
+            editedAssociation,
+            modifyAssociation,
+            removeAssociation,
+
+            createEnum,
+            createdEnum,
+            editEnum,
+            editedEnum,
+            removeEnum,
+        },
     }
 }
 
