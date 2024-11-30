@@ -11,18 +11,14 @@ import {DeepReadonly} from "vue";
 
 const {MODEL} = useModelEditorStore()
 
-interface TableDialogProps {
-	id: string,
-	table: GenTableModelInput
-}
+const props = defineProps<{
+    id: string,
+    table: GenTableModelInput
+}>()
 
-const props = defineProps<TableDialogProps>()
-
-interface TableEntityDialogEmits {
-	(event: "close"): void
-}
-
-const emits = defineEmits<TableEntityDialogEmits>()
+const emits = defineEmits<{
+    (event: "close"): void
+}>()
 
 const handleSubmit = (table: GenTableModelInput) => {
 	if (props.id.startsWith(TABLE_CREATE_PREFIX)) {

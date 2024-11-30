@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import {
-	GenEntityConfigWithNewPropertiesInput,
-	GenEntityDetailView, type GenPropertyEntityConfigInput
+    GenEntityConfigWithNewPropertiesInput,
+    GenEntityDetailView, type GenPropertyEntityConfigInput
 } from "@/api/__generated/model/static";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {cloneDeep} from "lodash";
-import {watch, ref} from "vue";
+import {watch, ref, DeepReadonly} from "vue";
 import EntityBusinessSelect from "@/components/business/entity/EntityBusinessSelect.vue";
 import PropertyBusinessSelect from "@/components/business/entity/PropertyBusinessSelect.vue";
 import {getDefaultProperty} from "@/components/business/entity/defaultProperty.ts";
+import {MainLocaleKeyParam} from "@/i18n";
+import {sendI18nMessage} from "@/message/message.ts";
 
 const props = defineProps<{
-	entity: GenEntityDetailView
+	entity: GenEntityDetailView,
+
+    validate: (genEnum: DeepReadonly<GenEntityConfigWithNewPropertiesInput>) => MainLocaleKeyParam[],
 }>()
 
 const entity = ref<GenEntityDetailView>(
@@ -30,10 +34,19 @@ const emits = defineEmits<FormEmits<
 >>()
 
 const handleSubmit = () => {
-	emits('submit', {
-		entity: entity.value,
-		properties: properties.value
-	})
+    const entityWithProperties: GenEntityConfigWithNewPropertiesInput = {
+        entity: entity.value,
+        properties: properties.value
+    }
+
+    const messageList = props.validate(entityWithProperties)
+
+    if (messageList.length > 0) {
+        messageList.forEach(it => sendI18nMessage(it, 'warning'))
+        return
+    }
+
+	emits('submit', entityWithProperties)
 }
 
 const handleAddManalProperty = () => {

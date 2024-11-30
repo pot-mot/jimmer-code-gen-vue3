@@ -12,15 +12,13 @@ import {ASSOCIATION_CREATE_PREFIX} from "@/store/modelEditor/AssociationDialogsS
 
 const {MODEL} = useModelEditorStore()
 
-interface AssociationDialogProps {
-	id: string,
-	association: GenAssociationModelInput
-}
-
-const props = defineProps<AssociationDialogProps>()
+const props = defineProps<{
+    id: string,
+    association: GenAssociationModelInput
+}>()
 
 const emits = defineEmits<{
-	(event: "close"): void
+    (event: "close"): void
 }>()
 
 const handleSubmit = (association: GenAssociationModelInput) => {

@@ -9,18 +9,14 @@ import {DeepReadonly} from "vue";
 
 const {MODEL} = useModelEditorStore()
 
-interface EnumDialogProps {
-	id: string,
-	genEnum?: Partial<GenModelInput_TargetOf_enums>
-}
+const props = defineProps<{
+    id: string,
+    genEnum?: Partial<GenModelInput_TargetOf_enums>
+}>()
 
-const props = defineProps<EnumDialogProps>()
-
-interface EnumEntityDialogEmits {
-	(event: "close"): void
-}
-
-const emits = defineEmits<EnumEntityDialogEmits>()
+const emits = defineEmits<{
+    (event: "close"): void
+}>()
 
 const handleSubmit = (genEnum: GenModelInput_TargetOf_enums) => {
 	if (props.id.length > 0) {
