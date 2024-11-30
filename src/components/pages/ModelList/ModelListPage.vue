@@ -130,7 +130,7 @@ const handleExport = modelsLoading.withLoading('handleExport', async (model: Gen
 
 const handleDelete = (model: GenModelSimpleView) => {
     deleteConfirm(
-        `【${model.name}】`,
+        `${i18nStore.translate('LABEL_DeleteTarget_Model')}【${model.name}】`,
 		modelsLoading.withLoading('handleDelete', async () => {
             const count = await api.modelService.delete({ids: [model.id]})
             if (count === 1) {

@@ -536,6 +536,13 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     LABEL_PropertyBusiness_longAssociationInput: "长关联入参",
     LABEL_PropertyBusiness_longAssociationView: "长关联视图",
 
+    LABEL_DeleteTarget_Model: "模型",
+    LABEL_DeleteTarget_DataSource: "数据源",
+    LABEL_DeleteTarget_Schema: "架构",
+    LABEL_DeleteTarget_Table: "表",
+    LABEL_DeleteTarget_Association: "关联",
+    LABEL_DeleteTarget_Enum: "枚举",
+
     LABEL_EnumForm_name: '名称',
     LABEL_EnumForm_packagePath: '包路径',
     LABEL_EnumForm_notNullDefaultItem: "表单项非空时的默认选项",

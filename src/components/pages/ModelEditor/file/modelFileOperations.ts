@@ -51,7 +51,7 @@ export const importModelJSON = async (modelInputJsonStr: string): Promise<number
     }
 }
 
-export const exportModelJson = (model: GenModelView) => {
+export const exportModelJson = async (model: GenModelView) => {
     const {id, ...other} = model
     const modelJsonBlob = new Blob(
         [jsonPrettyFormat(other)],

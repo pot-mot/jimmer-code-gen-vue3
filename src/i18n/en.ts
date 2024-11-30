@@ -537,6 +537,13 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     LABEL_PropertyBusiness_longAssociationInput: "Long Association Input",
     LABEL_PropertyBusiness_longAssociationView: "Long Association View",
 
+    LABEL_DeleteTarget_Model: "Model",
+    LABEL_DeleteTarget_DataSource: "DataSource",
+    LABEL_DeleteTarget_Schema: "Schema",
+    LABEL_DeleteTarget_Table: "Table",
+    LABEL_DeleteTarget_Association: "Association",
+    LABEL_DeleteTarget_Enum: "Enum",
+
     LABEL_EnumForm_name: 'Name',
     LABEL_EnumForm_packagePath: 'Package Path',
     LABEL_EnumForm_notNullDefaultItem: 'Default Item For Not Null FormItem',

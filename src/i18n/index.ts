@@ -392,6 +392,15 @@ type MainLocale = {
     LABEL_PropertyBusiness_longAssociationInput: string,
     LABEL_PropertyBusiness_longAssociationView: string
 
+
+    LABEL_DeleteTarget_Model: string
+    LABEL_DeleteTarget_DataSource: string
+    LABEL_DeleteTarget_Schema: string
+    LABEL_DeleteTarget_Table: string
+    LABEL_DeleteTarget_Association: string
+    LABEL_DeleteTarget_Enum: string
+
+
     LABEL_EnumForm_name: string
     LABEL_EnumForm_packagePath: string
     LABEL_EnumForm_notNullDefaultItem: string

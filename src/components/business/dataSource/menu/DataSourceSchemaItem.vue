@@ -13,6 +13,9 @@ import {useLoading} from "@/utils/useLoading.ts";
 import {SchemaItemProps} from "@/components/business/dataSource/menu/DataSourceMenuProps.ts";
 import {deleteConfirm} from "@/message/confirm.ts";
 import {matchByKeywords} from "@/components/global/match/matchByKeywords.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+
+const i18nStore = useI18nStore()
 
 const props = defineProps<SchemaItemProps>()
 
@@ -33,7 +36,7 @@ const getTables = tablesLoading.withLoading('get',
 )
 
 const handleDelete = () => {
-	deleteConfirm(`【${props.schema.name}】`,
+	deleteConfirm(`${i18nStore.translate('LABEL_DeleteTarget_Schema')}【${props.schema.name}】`,
 		async () => {
 			const id = props.schema.id
 			const count = await api.schemaService.delete({ids: [id]})

@@ -13,6 +13,9 @@ import {DataSourceItemSlots} from "@/components/business/dataSource/menu/DataSou
 import {DataSourceItemProps} from "@/components/business/dataSource/menu/DataSourceMenuProps.ts";
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import {deleteConfirm} from "@/message/confirm.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+
+const i18nStore = useI18nStore()
 
 const loadingStore = useGlobalLoadingStore()
 
@@ -47,7 +50,7 @@ const getSchemas = loadedSchemaLoading.withLoading('get', async (schemaIds: numb
 })
 
 const handleDelete = () => {
-	deleteConfirm(`【${props.dataSource.name}】`,
+	deleteConfirm(`${i18nStore.translate('LABEL_DeleteTarget_DataSource')}【${props.dataSource.name}】`,
 		() => {
 			const id = props.dataSource.id
 

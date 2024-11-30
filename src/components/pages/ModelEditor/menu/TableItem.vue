@@ -8,6 +8,7 @@ import {GenTableModelInput} from "@/api/__generated/model/static";
 import {deleteConfirm} from "@/message/confirm.ts";
 import {Node} from "@antv/x6";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
 interface TableItemProps {
     node: UnwrapRefSimple<Node>,
@@ -17,6 +18,8 @@ interface TableItemProps {
 const props = defineProps<TableItemProps>()
 
 const {GRAPH, MODEL_EDITOR, SELECT, VIEW} = useModelEditorStore()
+
+const i18nStore = useI18nStore()
 
 const handleClickLabel = (e: MouseEvent) => {
 	if (e.ctrlKey) {
@@ -31,7 +34,7 @@ const handleEdit = () => {
 }
 
 const handleDelete = () => {
-	deleteConfirm(`【${props.table.name}】`, () => {
+	deleteConfirm(`${i18nStore.translate("LABEL_DeleteTarget_Enum")}【${props.table.name}】`, () => {
         MODEL_EDITOR.removeTable(props.node.id)
 	})
 }
