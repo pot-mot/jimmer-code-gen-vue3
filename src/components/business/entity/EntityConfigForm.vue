@@ -11,6 +11,10 @@ import PropertyBusinessSelect from "@/components/business/entity/PropertyBusines
 import {getDefaultProperty} from "@/components/business/entity/defaultProperty.ts";
 import {MainLocaleKeyParam} from "@/i18n";
 import {sendI18nMessage} from "@/message/message.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+import {Plus} from "@element-plus/icons-vue";
+
+const i18nStore = useI18nStore()
 
 const props = defineProps<{
 	entity: GenEntityDetailView,
@@ -63,7 +67,7 @@ const handleAddManalProperty = () => {
 		<el-input v-model="entity.remark"/>
 		<EntityBusinessSelect v-model="entity"/>
 
-		<div v-for="property in entity.properties">
+		<div v-for="(property, index) in entity.properties" :key="property.id">
 			<el-input v-model="property.name"/>
 			<el-switch v-model="property.overwriteName"/>
 			<el-input v-model="property.comment"/>
@@ -71,7 +75,7 @@ const handleAddManalProperty = () => {
 			<el-input v-model="property.remark"/>
 			<el-text>{{ property.type }}</el-text>
 			<el-checkbox disabled v-model="property.type"/>
-			<PropertyBusinessSelect v-model="property"/>
+			<PropertyBusinessSelect v-model="entity.properties[index]"/>
 		</div>
 
 		<div v-for="property in properties">
@@ -83,8 +87,10 @@ const handleAddManalProperty = () => {
 			<el-input v-model="property.type"/>
 			<el-checkbox v-model="property.typeNotNull"/>
 		</div>
-		<el-button @click="handleAddManalProperty"></el-button>
+		<el-button @click="handleAddManalProperty" :icon="Plus"/>
 
-		<el-button @click="handleSubmit"/>
+        <el-button @click="handleSubmit">
+            {{ i18nStore.translate('BUTTON_submit') }}
+        </el-button>
 	</el-form>
 </template>

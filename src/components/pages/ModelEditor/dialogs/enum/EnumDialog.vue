@@ -18,8 +18,8 @@ const emits = defineEmits<{
     (event: "close"): void
 }>()
 
-const handleSubmit = (genEnum: GenModelInput_TargetOf_enums) => {
-	if (props.id.startsWith(ENUM_CREATE_PREFIX)) {
+const handleSubmit = (genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
+    if (props.id.startsWith(ENUM_CREATE_PREFIX)) {
         MODEL_EDITOR.createdEnum(props.id, genEnum)
     } else {
         MODEL_EDITOR.editedEnum(props.id, genEnum)
@@ -27,20 +27,23 @@ const handleSubmit = (genEnum: GenModelInput_TargetOf_enums) => {
 }
 
 const validate = (genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
-	return validateEnum(
-		genEnum,
-		MODEL.enums.filter(it => it.name !== props.id)
-	)
+    return validateEnum(
+        genEnum,
+        MODEL.enums.filter(it => it.name !== props.id)
+    )
 }
 </script>
 
 <template>
-	<DragDialog :model-value="true" :can-resize="true" :init-w="800" :init-h="600" :init-y="100"
-				@close="emits('close')">
-		<EnumForm
-			:enum="genEnum"
-			:validate="validate"
-			@cancel="emits('close')"
-			@submit="handleSubmit"/>
-	</DragDialog>
+    <DragDialog
+        :model-value="true" :can-resize="true"
+        :init-w="800" :init-h="600" :init-y="100"
+        @close="emits('close')"
+    >
+        <EnumForm
+            :enum="genEnum"
+            :validate="validate"
+            @cancel="emits('close')"
+            @submit="handleSubmit"/>
+    </DragDialog>
 </template>

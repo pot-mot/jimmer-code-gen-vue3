@@ -41,7 +41,7 @@ onBeforeUnmount(() => {
 })
 
 
-const handleSubmit = (table: GenTableModelInput) => {
+const handleSubmit = (table: DeepReadonly<GenTableModelInput>) => {
     if (props.id.startsWith(TABLE_CREATE_PREFIX)) {
         MODEL_EDITOR.createdTable(props.id, table)
     } else {
@@ -63,8 +63,12 @@ const validate = (table: DeepReadonly<GenTableModelInput>) => {
 </script>
 
 <template>
-    <DragDialog :model-value="true" :can-resize="true" :init-w="1200" :init-h="600" :init-y="100"
-                @close="emits('close')" :modal="false">
+    <DragDialog
+        :model-value="true" :can-resize="true"
+        :init-w="1200" :init-h="600" :init-y="100"
+        @close="emits('close')"
+        :modal="false"
+    >
         <TableForm
             ref="tableFormRef"
             :table="table"

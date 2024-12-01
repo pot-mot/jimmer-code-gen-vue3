@@ -162,7 +162,7 @@ import {sendI18nMessage} from "@/message/message.ts";
 import {GenerateFile, GenTableModelInput} from "@/api/__generated/model/static";
 import SaveIcon from "@/components/global/icons/toolbar/SaveIcon.vue";
 import LayoutIcon from "@/components/global/icons/toolbar/LayoutIcon.vue";
-import MultiCodePreview from "@/components/global/code/MultiCodePreview.vue";
+import MultiCodePreview from "@/components/pages/ModelEditor/code/MultiCodePreview.vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import FitIcon from "@/components/global/icons/toolbar/FitIcon.vue";
 import CenterIcon from "@/components/global/icons/toolbar/CenterIcon.vue";

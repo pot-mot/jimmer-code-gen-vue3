@@ -20,7 +20,7 @@ const emits = defineEmits<{
     (event: "close"): void
 }>()
 
-const handleSubmit = (association: GenAssociationModelInput) => {
+const handleSubmit = (association: DeepReadonly<GenAssociationModelInput>) => {
     if (props.id.startsWith(ASSOCIATION_CREATE_PREFIX)) {
         MODEL_EDITOR.createdAssociation(props.id, association)
     } else {
@@ -29,24 +29,27 @@ const handleSubmit = (association: GenAssociationModelInput) => {
 }
 
 const validate = (association: DeepReadonly<GenAssociationModelInput>): MainLocaleKeyParam[] => {
-	return validateAssociation(
-		association,
+    return validateAssociation(
+        association,
         MODEL.associationEdges.filter(it => it.id !== props.id).map(it => it.getData().association),
         MODEL.tables,
-	)
+    )
 }
 </script>
 
 <template>
-	<DragDialog :model-value="true" :can-resize="true" :init-w="800" :init-h="380" :init-y="200"
-				@close="emits('close')">
-		<AssociationForm
-			:association="props.association"
+    <DragDialog
+        :model-value="true" :can-resize="true"
+        :init-w="800" :init-h="380" :init-y="200"
+        @close="emits('close')"
+    >
+        <AssociationForm
+            :association="props.association"
             :edge="MODEL.associationEdges.filter(it => it.id === props.id)[0]"
-			:validate="validate"
-			:create-association-name="createAssociationName"
-			@submit="handleSubmit"
-			@cancel="emits('close')"
-			style="padding-top: 0.5em; padding-left: 1em;"/>
-	</DragDialog>
+            :validate="validate"
+            :create-association-name="createAssociationName"
+            @submit="handleSubmit"
+            @cancel="emits('close')"
+            style="padding-top: 0.5em; padding-left: 1em;"/>
+    </DragDialog>
 </template>

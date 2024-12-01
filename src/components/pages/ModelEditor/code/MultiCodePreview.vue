@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import {computed, ref} from 'vue'
-import CodePreview from "./CodePreview.vue";
+import CodePreview from "../../../global/code/CodePreview.vue";
 import {GenerateFile} from "@/api/__generated/model/static";
 import LeftRightLayout from "@/components/global/layout/LeftRightLayout.vue";
 import {ElTree} from "element-plus";
 import {GenerateTag, GenerateTag_CONSTANTS} from "@/api/__generated/model/enums";
 import {Pane, Splitpanes} from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
+import GenerateFileAssociationMenu from "@/components/pages/ModelEditor/code/GenerateFileMenu.vue";
 
 interface MultiCodePreviewProps {
     codeFiles: Array<GenerateFile> | undefined,
@@ -34,7 +35,9 @@ const currentLanguage = computed<string>(() => {
     }
 })
 
-const currentContent = computed(() => props.codeFiles?.find(it => it.path === currentPath.value)?.content)
+const currentFile = computed(() =>
+    props.codeFiles?.find(it => it.path === currentPath.value)
+)
 
 type FilePathTreeItem = {
     path: string | undefined,
@@ -130,7 +133,7 @@ defineExpose<{
     <LeftRightLayout v-if="codeFiles && codeFiles.length > 0" :left-size="20">
         <template #left>
             <Splitpanes horizontal>
-                <Pane style="padding: 0.5em; overflow-y: scroll;" size="11em">
+                <Pane style="overflow-y: scroll;" size="11em">
                     <el-input
                         v-model="filterText" clearable
                         placeholder="Filter Keyword"
@@ -167,7 +170,7 @@ defineExpose<{
                             :value="tag"/>
                     </el-select>
                 </Pane>
-                <Pane style="padding: 0.5em; overflow-y: scroll;">
+                <Pane style="overflow-y: scroll;">
                     <el-tree
                         ref="treeRef"
                         :props="{children: 'children'}"
@@ -182,11 +185,23 @@ defineExpose<{
             </Splitpanes>
         </template>
 
-        <template #right v-if="currentContent">
-            <CodePreview :code="currentContent"
-                         :language="currentLanguage"
-                         :show-line-counts="showLineCounts"/>
+        <template #right v-if="currentFile">
+            <Splitpanes horizontal>
+                <Pane style="overflow-y: scroll;" size="3em">
+                    <GenerateFileAssociationMenu
+                        :file="currentFile"
+                    />
+                </Pane>
+                <Pane>
+                    <CodePreview
+                        :code="currentFile.content"
+                        :language="currentLanguage"
+                        :show-line-counts="showLineCounts"
+                    />
+                </Pane>
+            </Splitpanes>
         </template>
     </LeftRightLayout>
+
     <el-empty v-else/>
 </template>

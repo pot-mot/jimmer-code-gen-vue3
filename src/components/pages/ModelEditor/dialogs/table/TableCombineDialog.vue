@@ -11,7 +11,7 @@ const {MODEL, MODEL_EDITOR} = useModelEditorStore()
 
 const store = useTableCombineDialogStore()
 
-const handleSubmit = (tableCombineData: TableCombineData) => {
+const handleSubmit = (tableCombineData: DeepReadonly<TableCombineData>) => {
     MODEL_EDITOR.combinedTable(tableCombineData)
 }
 
