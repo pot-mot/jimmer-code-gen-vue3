@@ -37,7 +37,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-    store.removeOnEnumCreated(props.id)
+    store.offEnumCreated(props.id)
 })
 
 

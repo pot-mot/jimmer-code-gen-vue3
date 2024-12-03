@@ -5,6 +5,7 @@ import EntityConfigForm from "@/components/business/entity/EntityConfigForm.vue"
 import {DeepReadonly} from "vue";
 import {MainLocaleKeyParam} from "@/i18n";
 import {api} from "@/api";
+import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
 
 defineProps<{
     id: number,
@@ -15,8 +16,12 @@ const emits = defineEmits<{
     (event: "close"): void
 }>()
 
+const codePreviewStore = useMultiCodePreviewStore()
+
 const handleSubmit = async (entity: GenEntityConfigWithNewPropertiesInput) => {
     await api.entityService.config({body: entity})
+	codePreviewStore.codeRefresh()
+	emits("close")
 }
 
 const validate = (entity: DeepReadonly<GenEntityConfigWithNewPropertiesInput>): MainLocaleKeyParam[] => {

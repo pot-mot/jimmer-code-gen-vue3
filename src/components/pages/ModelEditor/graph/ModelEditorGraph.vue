@@ -103,14 +103,14 @@
                     <el-button :icon="CodeIcon" @click="handleCodePreview"/>
                 </el-tooltip>
 
-                <DragDialog v-model="codePreviewOpenState"
+                <DragDialog v-model="codePreviewStore.openState"
                             init-full-screen :can-exit-full-screen="false"
                             can-drag can-resize
                             limit-by-parent
                             :modal="false">
                     <MultiCodePreview
                         ref="multiCodePreview"
-                        :code-files="codeFiles"
+                        :code-files="codePreviewStore.codeFiles"
                         height="calc(100vh - 5em - 30px)"
                         width="100%"
                         class="multi-code-preview"/>
@@ -153,7 +153,7 @@
 </style>
 
 <script lang="ts" setup>
-import {onMounted, onUnmounted, ref, watch} from "vue"
+import {onMounted, onBeforeUnmount, ref, watch} from "vue"
 import {Graph, Node} from "@antv/x6"
 import {initModelEditor} from "./initModelEditor.ts"
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
@@ -194,6 +194,7 @@ import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {exportGraphPNG, exportGraphSVG,} from "@/components/pages/ModelEditor/file/graphFileOperations.ts";
 import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
 import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.ts";
+import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
 
 const i18nStore = useI18nStore()
 
@@ -233,7 +234,7 @@ onMounted(loadingStore.withLoading('ModelEditorGraph onMounted', () => {
     useClipBoard(graph)
 }))
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
     GRAPH.unload()
 })
 
@@ -318,14 +319,6 @@ useDocumentEvent('mouseup', (e) => {
     }
 })
 
-watch(() => MODEL.isLoaded, async (value) => {
-    if (value) {
-        if (codePreviewOpenState.value) {
-            await handleCodePreview()
-        }
-    }
-})
-
 /**
  * 代码预览与下载
  */
@@ -363,23 +356,30 @@ const preJudge = (): boolean => {
     }
 }
 
-const codePreviewOpenState = ref(false)
-
-const codeFiles = ref<Array<GenerateFile>>([])
-
-watch(() => codePreviewOpenState.value, async (openState) => {
-    if (!openState) {
-        codeFiles.value = []
-    }
-})
+const codePreviewStore = useMultiCodePreviewStore()
 
 const handleCodePreview = loadingStore.withLoading('ModelEditorGraph handleCodePreview', async () => {
     if (!preJudge()) return
 
     const model = MODEL._model()
     await convertModel(model.id)
-    codeFiles.value = await previewModelCode(model.id)
-    codePreviewOpenState.value = true
+	codePreviewStore.codeFiles = await previewModelCode(model.id)
+	codePreviewStore.open()
+})
+
+onMounted(() => {
+	codePreviewStore.onCodeRefresh(handleCodePreview)
+})
+onBeforeUnmount(() => {
+	codePreviewStore.offCodeRefresh(handleCodePreview)
+})
+
+watch(() => MODEL.isLoaded, async (value) => {
+	if (value) {
+		if (codePreviewStore.openState) {
+			await handleCodePreview()
+		}
+	}
 })
 
 const multiCodePreview = ref<{

@@ -615,7 +615,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         if (options !== undefined) {
             const {tableDialogId, columnName} = options
-            tableDialogsStore.emitEnumCreated(tableDialogId, columnName, genEnum.name)
+            tableDialogsStore.enumCreated(tableDialogId, columnName, genEnum.name)
         }
 
         enumCreateOptionsMap.delete(createKey)

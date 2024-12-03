@@ -1,18 +1,11 @@
 import {useDialogOpenListState} from "@/components/global/dialog/DialogOpenListState.ts";
 import {defineStore} from "pinia";
 import {GenTableModelInput} from "@/api/__generated/model/static";
-import mitt from "mitt";
 
 export const useTableDialogsStore = defineStore(
     'TableDialogs',
     () => {
-        const enumCreatedEvent = mitt<{
-            enumCreated: {
-                tableDialogId: string,
-                columnName: string,
-                enumName: string,
-            }
-        }>()
+        const dialogOpenListState = useDialogOpenListState<string, GenTableModelInput>()
 
         type enumCreatedAction = (
             columnName: string,
@@ -21,18 +14,15 @@ export const useTableDialogsStore = defineStore(
 
         const enumCreatedActionMap = new Map<string, enumCreatedAction>
 
-        enumCreatedEvent.on('enumCreated', ({tableDialogId, columnName, enumName}) => {
-            enumCreatedActionMap.get(tableDialogId)?.(columnName, enumName)
-        })
-
         return {
-            ...useDialogOpenListState<string, GenTableModelInput>(),
-            emitEnumCreated: (
+            ...dialogOpenListState,
+
+            enumCreated: (
                 tableDialogId: string,
                 columnName: string,
                 enumName: string,
             ) => {
-                enumCreatedEvent.emit('enumCreated', {tableDialogId, columnName, enumName})
+                enumCreatedActionMap.get(tableDialogId)?.(columnName, enumName)
             },
             onEnumCreated: (
                 tableDialogId: string,
@@ -40,7 +30,7 @@ export const useTableDialogsStore = defineStore(
             ) => {
                 enumCreatedActionMap.set(tableDialogId, action)
             },
-            removeOnEnumCreated: (
+            offEnumCreated: (
                 tableDialogId: string,
             ) => {
                 enumCreatedActionMap.delete(tableDialogId)

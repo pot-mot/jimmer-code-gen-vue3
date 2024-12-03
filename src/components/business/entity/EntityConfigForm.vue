@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import {
-    GenEntityConfigWithNewPropertiesInput,
-    GenEntityDetailView, type GenPropertyEntityConfigInput
+	GenEntityConfigWithNewPropertiesInput,
+	GenEntityDetailView,
+	type GenPropertyEntityConfigInput
 } from "@/api/__generated/model/static";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {cloneDeep} from "lodash";
-import {watch, ref, DeepReadonly} from "vue";
+import {DeepReadonly, ref, watch} from "vue";
 import EntityBusinessSelect from "@/components/business/entity/EntityBusinessSelect.vue";
 import PropertyBusinessSelect from "@/components/business/entity/PropertyBusinessSelect.vue";
 import {getDefaultProperty} from "@/components/business/entity/defaultProperty.ts";
@@ -19,7 +20,7 @@ const i18nStore = useI18nStore()
 const props = defineProps<{
 	entity: GenEntityDetailView,
 
-    validate: (genEnum: DeepReadonly<GenEntityConfigWithNewPropertiesInput>) => MainLocaleKeyParam[],
+	validate: (genEnum: DeepReadonly<GenEntityConfigWithNewPropertiesInput>) => MainLocaleKeyParam[],
 }>()
 
 const entity = ref<GenEntityDetailView>(
@@ -38,17 +39,17 @@ const emits = defineEmits<FormEmits<
 >>()
 
 const handleSubmit = () => {
-    const entityWithProperties: GenEntityConfigWithNewPropertiesInput = {
-        entity: entity.value,
-        properties: properties.value
-    }
+	const entityWithProperties: GenEntityConfigWithNewPropertiesInput = {
+		entity: entity.value,
+		properties: properties.value
+	}
 
-    const messageList = props.validate(entityWithProperties)
+	const messageList = props.validate(entityWithProperties)
 
-    if (messageList.length > 0) {
-        messageList.forEach(it => sendI18nMessage(it, 'warning'))
-        return
-    }
+	if (messageList.length > 0) {
+		messageList.forEach(it => sendI18nMessage(it, 'warning'))
+		return
+	}
 
 	emits('submit', entityWithProperties)
 }
@@ -60,37 +61,66 @@ const handleAddManalProperty = () => {
 
 <template>
 	<el-form style="width: calc(100% - 0.5rem);">
-		<el-input v-model="entity.name"/>
-		<el-switch v-model="entity.overwriteName"/>
-		<el-input v-model="entity.comment"/>
-		<el-switch v-model="entity.overwriteComment"/>
-		<el-input v-model="entity.remark"/>
-		<EntityBusinessSelect v-model="entity"/>
+		<el-form-item>
+			<el-input v-model="entity.name"/>
+			<el-switch v-model="entity.overwriteName"/>
+		</el-form-item>
+		<el-form-item>
+			<el-input v-model="entity.comment"/>
+			<el-switch v-model="entity.overwriteComment"/>
+		</el-form-item>
+		<el-form-item>
+			<el-input v-model="entity.remark"/>
+		</el-form-item>
+		<el-form-item>
+			<EntityBusinessSelect v-model="entity"/>
+		</el-form-item>
 
 		<div v-for="(property, index) in entity.properties" :key="property.id">
-			<el-input v-model="property.name"/>
-			<el-switch v-model="property.overwriteName"/>
-			<el-input v-model="property.comment"/>
-			<el-switch v-model="property.overwriteComment"/>
-			<el-input v-model="property.remark"/>
-			<el-text>{{ property.type }}</el-text>
-			<el-checkbox disabled v-model="property.type"/>
-			<PropertyBusinessSelect v-model="entity.properties[index]"/>
+			<el-form-item>
+				<el-input v-model="property.name"/>
+				<el-switch v-model="property.overwriteName"/>
+			</el-form-item>
+			<el-form-item>
+				<el-input v-model="property.comment"/>
+				<el-switch v-model="property.overwriteComment"/>
+			</el-form-item>
+			<el-form-item>
+				<el-input v-model="property.remark"/>
+			</el-form-item>
+			<el-form-item>
+				<el-text>{{ property.type }}</el-text>
+			</el-form-item>
+			<el-form-item>
+				<el-checkbox disabled v-model="property.type"/>
+			</el-form-item>
+			<el-form-item>
+				<PropertyBusinessSelect v-model="entity.properties[index]"/>
+			</el-form-item>
 		</div>
 
 		<div v-for="property in properties">
-			<el-input v-model="property.name"/>
-			<el-switch v-model="property.overwriteName"/>
-			<el-input v-model="property.comment"/>
-			<el-switch v-model="property.overwriteComment"/>
-			<el-input v-model="property.remark"/>
-			<el-input v-model="property.type"/>
-			<el-checkbox v-model="property.typeNotNull"/>
+			<el-form-item>
+				<el-input v-model="property.name"/>
+				<el-switch v-model="property.overwriteName"/>
+			</el-form-item>
+			<el-form-item>
+				<el-input v-model="property.comment"/>
+				<el-switch v-model="property.overwriteComment"/>
+			</el-form-item>
+			<el-form-item>
+				<el-input v-model="property.remark"/>
+			</el-form-item>
+			<el-form-item>
+				<el-input v-model="property.type"/>
+				<el-checkbox v-model="property.typeNotNull"/>
+			</el-form-item>
 		</div>
+
 		<el-button @click="handleAddManalProperty" :icon="Plus"/>
 
-        <el-button @click="handleSubmit">
-            {{ i18nStore.translate('BUTTON_submit') }}
-        </el-button>
+		<el-button @click="handleSubmit">
+			{{ i18nStore.translate('BUTTON_submit') }}
+		</el-button>
 	</el-form>
 </template>
