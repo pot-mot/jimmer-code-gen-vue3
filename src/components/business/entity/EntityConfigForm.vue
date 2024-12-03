@@ -8,7 +8,7 @@ import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {cloneDeep} from "lodash";
 import {DeepReadonly, ref, watch} from "vue";
 import EntityBusinessSelect from "@/components/business/entity/EntityBusinessSelect.vue";
-import PropertyBusinessSelect from "@/components/business/entity/PropertyBusinessSelect.vue";
+import EntityDtoPropertiesSelect from "@/components/business/entity/EntityDtoPropertiesSelect.vue";
 import {getDefaultProperty} from "@/components/business/entity/defaultProperty.ts";
 import {MainLocaleKeyParam} from "@/i18n";
 import {sendI18nMessage} from "@/message/message.ts";
@@ -76,7 +76,7 @@ const handleAddManalProperty = () => {
 			<EntityBusinessSelect v-model="entity"/>
 		</el-form-item>
 
-		<div v-for="(property, index) in entity.properties" :key="property.id">
+		<div v-for="property in entity.properties" :key="property.id">
 			<el-form-item>
 				<el-input v-model="property.name"/>
 				<el-switch v-model="property.overwriteName"/>
@@ -93,9 +93,6 @@ const handleAddManalProperty = () => {
 			</el-form-item>
 			<el-form-item>
 				<el-checkbox disabled v-model="property.type"/>
-			</el-form-item>
-			<el-form-item>
-				<PropertyBusinessSelect v-model="entity.properties[index]"/>
 			</el-form-item>
 		</div>
 
@@ -118,6 +115,8 @@ const handleAddManalProperty = () => {
 		</div>
 
 		<el-button @click="handleAddManalProperty" :icon="Plus"/>
+
+		<EntityDtoPropertiesSelect v-model="entity"/>
 
 		<el-button @click="handleSubmit">
 			{{ i18nStore.translate('BUTTON_submit') }}
