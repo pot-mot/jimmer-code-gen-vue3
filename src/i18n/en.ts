@@ -527,16 +527,6 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     LABEL_GenEntityProperty_annotation: "Annotation",
     LABEL_GenEntityProperty_business: "Business",
 
-    LABEL_PropertyBusiness_listView: "List View",
-    LABEL_PropertyBusiness_detailView: "Detail View",
-    LABEL_PropertyBusiness_optionView: "Option View",
-    LABEL_PropertyBusiness_insertInput: "Insert Input",
-    LABEL_PropertyBusiness_updateInput: "Update Input",
-    LABEL_PropertyBusiness_specification: "Specification",
-    LABEL_PropertyBusiness_shortAssociationView: "Short Association View",
-    LABEL_PropertyBusiness_longAssociationInput: "Long Association Input",
-    LABEL_PropertyBusiness_longAssociationView: "Long Association View",
-
     LABEL_DeleteTarget_Model: "Model",
     LABEL_DeleteTarget_DataSource: "DataSource",
     LABEL_DeleteTarget_Schema: "Schema",
@@ -567,5 +557,11 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
 
     LABEL_GenEnumItem_name: 'Name',
     LABEL_GenEnumItem_value: 'Value',
-    LABEL_GenEnumItem_comment: 'Comment'
+    LABEL_GenEnumItem_comment: 'Comment',
+
+    LABEL_ColumnTypeForm_jdbcType: "JDBC Type",
+    LABEL_ColumnTypeForm_overwriteByRaw: "Overwrite by Raw",
+    LABEL_ColumnTypeForm_rawType: "Raw Type",
+    LABEL_ColumnTypeForm_sizeAndPrecision: "Size and Precision",
+    LABEL_ColumnTypeForm_mappedEnum: "Mapped Enum",
 }

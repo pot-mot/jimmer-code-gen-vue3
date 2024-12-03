@@ -526,16 +526,6 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     LABEL_GenEntityProperty_annotation: "注解",
     LABEL_GenEntityProperty_business: "业务",
 
-    LABEL_PropertyBusiness_listView: "列表视图",
-    LABEL_PropertyBusiness_detailView: "详情视图",
-    LABEL_PropertyBusiness_optionView: "选项视图",
-    LABEL_PropertyBusiness_insertInput: "新增入参",
-    LABEL_PropertyBusiness_updateInput: "修改入参",
-    LABEL_PropertyBusiness_specification: "查询规格",
-    LABEL_PropertyBusiness_shortAssociationView: "短关联视图",
-    LABEL_PropertyBusiness_longAssociationInput: "长关联入参",
-    LABEL_PropertyBusiness_longAssociationView: "长关联视图",
-
     LABEL_DeleteTarget_Model: "模型",
     LABEL_DeleteTarget_DataSource: "数据源",
     LABEL_DeleteTarget_Schema: "架构",
@@ -567,4 +557,10 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     LABEL_GenEnumItem_name: '名称',
     LABEL_GenEnumItem_value: '值',
     LABEL_GenEnumItem_comment: '注释',
+
+    LABEL_ColumnTypeForm_jdbcType: "JDBC类型",
+    LABEL_ColumnTypeForm_overwriteByRaw: "生成DDL时以【字面类型】覆盖【JDBC类型】",
+    LABEL_ColumnTypeForm_rawType: "字面类型",
+    LABEL_ColumnTypeForm_sizeAndPrecision: "长度精度",
+    LABEL_ColumnTypeForm_mappedEnum: "映射枚举",
 }

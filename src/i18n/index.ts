@@ -382,16 +382,6 @@ type MainLocale = {
     LABEL_GenEntityProperty_annotation: string
     LABEL_GenEntityProperty_business: string
 
-    LABEL_PropertyBusiness_listView: string,
-    LABEL_PropertyBusiness_detailView: string,
-    LABEL_PropertyBusiness_optionView: string,
-    LABEL_PropertyBusiness_insertInput: string,
-    LABEL_PropertyBusiness_updateInput: string,
-    LABEL_PropertyBusiness_specification: string,
-    LABEL_PropertyBusiness_shortAssociationView: string,
-    LABEL_PropertyBusiness_longAssociationInput: string,
-    LABEL_PropertyBusiness_longAssociationView: string
-
 
     LABEL_DeleteTarget_Model: string
     LABEL_DeleteTarget_DataSource: string
@@ -423,6 +413,12 @@ type MainLocale = {
     LABEL_GenEnumItem_name: string
     LABEL_GenEnumItem_value: string
     LABEL_GenEnumItem_comment: string
+
+    LABEL_ColumnTypeForm_jdbcType: string
+    LABEL_ColumnTypeForm_overwriteByRaw: string
+    LABEL_ColumnTypeForm_rawType: string
+    LABEL_ColumnTypeForm_sizeAndPrecision: string
+    LABEL_ColumnTypeForm_mappedEnum: string
 }
 
 type LocaleKey<

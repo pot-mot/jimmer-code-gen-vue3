@@ -11,6 +11,9 @@ import LineItem from "@/components/global/list/LineItem.vue";
 import {useZIndex} from "element-plus";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import Comment from "@/components/global/common/Comment.vue";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+
+const i18nStore = useI18nStore()
 
 const {MODEL} = useModelEditorStore()
 
@@ -104,7 +107,7 @@ useClickOutside(() => wrapper.value, (e) => {
         <div ref="wrapper" class="column-type-form-wrapper" v-show="popoverOpenState"
              :style="`z-index: ${currentZIndex};`">
             <el-form v-if="jdbcTypeStore.isLoaded && columnDefaultStore.isLoaded">
-                <el-form-item label="jdbc 类型">
+                <el-form-item :label="i18nStore.translate('LABEL_ColumnTypeForm_jdbcType')">
                     <el-select
                         v-model="column.typeCode"
                         filterable
@@ -114,15 +117,15 @@ useClickOutside(() => wrapper.value, (e) => {
                     </el-select>
                 </el-form-item>
 
-                <el-form-item label="生成 DDL 时以字面类型覆盖 jdbc 类型">
+                <el-form-item :label="i18nStore.translate('LABEL_ColumnTypeForm_overwriteByRaw')">
                     <el-switch v-model="column.overwriteByRaw"/>
                 </el-form-item>
 
-                <el-form-item label="字面类型">
+                <el-form-item :label="i18nStore.translate('LABEL_ColumnTypeForm_rawType')">
                     <el-input v-model="column.rawType" :disabled="!column.overwriteByRaw"/>
                 </el-form-item>
 
-                <el-form-item label="长度精度">
+                <el-form-item :label="i18nStore.translate('LABEL_ColumnTypeForm_sizeAndPrecision')">
                     <el-text style="display: grid; grid-template-columns: 0.5em 1fr 1em 1fr 0.5em">
                         <span>(</span>
                         <span><el-input-number v-model="column.dataSize"
@@ -134,7 +137,7 @@ useClickOutside(() => wrapper.value, (e) => {
                     </el-text>
                 </el-form-item>
 
-                <el-form-item label="映射枚举">
+                <el-form-item :label="i18nStore.translate('LABEL_ColumnTypeForm_mappedEnum')">
                     <Line style="width: 100%;">
                         <LineItem span="3em">
                             <el-button v-if="column.enum" :icon="EditPen"
