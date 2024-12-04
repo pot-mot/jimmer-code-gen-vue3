@@ -81,20 +81,22 @@ const handleDtoPropertyChange = (dto: EntityDto, properties: Array<GenEntityConf
 			<el-text>{{ dto }}</el-text>
 		</template>
 
-		<el-select
-			:model-value="dtoProperties.get(dto)"
-			@change="(properties: Array<GenEntityConfigInput_TargetOf_properties>) => {
+        <div style="padding: 0.5em">
+            <el-select
+                :model-value="dtoProperties.get(dto)"
+                @change="(properties: Array<GenEntityConfigInput_TargetOf_properties>) => {
 				handleDtoPropertyChange(dto, properties)
 			}"
-			multiple filterable
-			value-key="name"
-		>
-			<el-option
-				v-for="property in entity.properties"
-				:key="property.name"
-				:value="property"
-				:label="property.name"
-			/>
-		</el-select>
+                multiple filterable
+                value-key="name"
+            >
+                <el-option
+                    v-for="property in entity.properties"
+                    :key="property.name"
+                    :value="property"
+                    :label="property.name"
+                />
+            </el-select>
+        </div>
 	</Details>
 </template>

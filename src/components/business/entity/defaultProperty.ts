@@ -31,10 +31,10 @@ export const getDefaultProperty = (): GenPropertyEntityConfigInput => {
         name: "",
         orderKey: 0,
         otherAnnotation: undefined,
-        overwriteComment: false,
-        overwriteName: false,
+        overwriteComment: true,
+        overwriteName: true,
         remark: "",
         type: "",
-        typeNotNull: false
+        typeNotNull: true,
     }
 }
