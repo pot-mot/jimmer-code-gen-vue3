@@ -290,7 +290,7 @@ onmessage = (e) => {
     const data = e.data
 
     if (typeof data === 'string') {
-        if (data === 'stop') {
+        if (data === 'close') {
             close()
         }
         return

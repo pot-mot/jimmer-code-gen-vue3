@@ -34,7 +34,7 @@ const codeRef = ref<Element>()
 const worker = new Worker(new URL("./worker/prism-worker.js", import.meta.url))
 
 onBeforeUnmount(() => {
-    worker.postMessage('stop')
+    worker.postMessage('close')
 })
 
 const highlightContainer = () => {
