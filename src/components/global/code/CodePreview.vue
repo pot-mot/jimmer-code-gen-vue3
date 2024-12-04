@@ -1,8 +1,8 @@
 <template>
 	<div class="code-preview">
-		<div class="code-preview-wrapper">
+		<div class="code-preview-wrapper" ref="wrapperRef">
 			<div v-if="showLineCounts" class="line-counts" v-text="lineCounts"/>
-			<pre class="code"><code ref="container" :class="`language-${language}`" v-text="code"/></pre>
+			<pre class="code"><code ref="codeRef" :class="`language-${language}`"/></pre>
 		</div>
 		<div class="toolbar">
 			<slot name="toolbar" v-bind="props">
@@ -15,41 +15,49 @@
 </template>
 
 <script lang="ts" setup>
-import * as Prism from 'prismjs';
-import "prismjs/themes/prism.css";
+import {prism} from "@/components/global/code/prismjs-index.ts"
 import {computed, nextTick, onMounted, ref, watch} from "vue";
 import CopyIcon from "../icons/toolbar/CopyIcon.vue";
 import {sendMessage} from "@/message/message.ts";
-import {dtoLanguage} from "@/components/global/code/language/dto.ts";
-import "./language/dto.css";
-import {vueLanguage} from "@/components/global/code/language/vue.ts";
 
-Prism.languages.dto = dtoLanguage
-Prism.languages.vue = vueLanguage
-
-interface CodePreviewProps {
+const props = withDefaults(defineProps<{
 	code: string,
 	language: string,
 	showLineCounts?: boolean
-}
-
-const props = withDefaults(defineProps<CodePreviewProps>(), {
+}>(), {
 	showLineCounts: true
 })
 
-const container = ref()
+const wrapperRef = ref<Element>()
+const codeRef = ref<Element>()
+
+const worker = new Worker(new URL("./worker/prism-worker.js", import.meta.url))
+
+const highlightContainer = () => {
+	if (wrapperRef.value !== undefined && codeRef.value !== undefined) {
+		const wrapper = wrapperRef.value
+		const element = codeRef.value
+		worker.postMessage({
+			code: props.code,
+			grammar: prism.languages[props.language],
+			language: props.language,
+		})
+		worker.onmessage = (e) => {
+			element.innerHTML = e.data
+			wrapper.scrollTop = 0
+		}
+		worker.onerror = () => {
+			element.textContent = props.code
+			wrapper.scrollTop = 0
+		}
+	}
+}
 
 onMounted(() => {
-	nextTick(() => {
-		Prism.highlightElement(container.value)
-	})
+	nextTick(highlightContainer)
 })
 
-watch(() => props.code, () => {
-	nextTick(() => {
-		Prism.highlightElement(container.value)
-	})
-})
+watch(() => props.code, highlightContainer)
 
 const lineCounts = computed(() => {
 	const length = props.code.split("\n").length
