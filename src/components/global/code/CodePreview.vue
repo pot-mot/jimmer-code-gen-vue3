@@ -34,7 +34,7 @@ const codeRef = ref<Element>()
 const worker = new Worker(new URL("./worker/prism-worker.js", import.meta.url))
 
 onBeforeUnmount(() => {
-    worker.terminate()
+    worker.postMessage('stop')
 })
 
 const highlightContainer = () => {
@@ -47,7 +47,7 @@ const highlightContainer = () => {
 			language: props.language,
 		})
 		worker.onmessage = (e) => {
-			element.innerHTML = e.data
+            element.innerHTML = e.data
 			wrapper.scrollTop = 0
 		}
 		worker.onerror = () => {

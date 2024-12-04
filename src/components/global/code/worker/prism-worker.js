@@ -285,6 +285,19 @@ function tokenize(text, grammar) {
 }
 
 onmessage = (e) => {
-    const {code, grammar, language} = e.data
-    postMessage(highlight(code, grammar, language))
+    if (e === undefined || e.data === undefined) return
+
+    const data = e.data
+
+    if (typeof data === 'string') {
+        if (data === 'stop') {
+            close()
+        }
+        return
+    }
+
+    if (typeof data === 'object' && 'code' in data && 'grammar' in data && 'language' in data) {
+        const {code, grammar, language} = e.data
+        postMessage(highlight(code, grammar, language))
+    }
 }
