@@ -1,5 +1,6 @@
 import type {Executor} from '../';
 import type {
+    EntityModelBusinessView, 
     GenModelInput, 
     GenModelSimpleView, 
     GenModelView, 
@@ -26,6 +27,14 @@ export class ModelService {
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<GenModelView | undefined>;
     }
     
+    readonly getEntityBusinessViews: (options: ModelServiceOptions['getEntityBusinessViews']) => Promise<
+        Array<EntityModelBusinessView>
+    > = async(options) => {
+        let _uri = '/model/entityBusinessViews/';
+        _uri += encodeURIComponent(options.id);
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<EntityModelBusinessView>>;
+    }
+    
     readonly getValueData: (options: ModelServiceOptions['getValueData']) => Promise<
         ModelInputEntities | undefined
     > = async(options) => {
@@ -47,6 +56,14 @@ export class ModelService {
         let _uri = '/model';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<number>;
     }
+    
+    readonly saveBusiness: (options: ModelServiceOptions['saveBusiness']) => Promise<
+        void
+    > = async(options) => {
+        let _uri = '/model/business/';
+        _uri += encodeURIComponent(options.id);
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<void>;
+    }
 }
 
 export type ModelServiceOptions = {
@@ -56,9 +73,16 @@ export type ModelServiceOptions = {
     'getValueData': {
         id: number
     }, 
+    'getEntityBusinessViews': {
+        id: number
+    }, 
     'list': {}, 
     'save': {
         body: GenModelInput
+    }, 
+    'saveBusiness': {
+        id: number, 
+        body: Array<EntityModelBusinessView>
     }, 
     'delete': {
         ids: Array<number>

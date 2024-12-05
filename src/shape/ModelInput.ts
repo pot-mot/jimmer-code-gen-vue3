@@ -4,6 +4,8 @@ import {validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {GenEnumModelInputJsonSchema} from "@/shape/GenEnumModelInput.ts";
 import {DeepReadonly} from "vue";
 
+// TODO 调整 GenModelInput 的类型申明（补充 EntityModelBusinessView 的部分）
+
 // typescript-json-schema src/api/__generated/model/static/GenModelInput.ts * --required
 // 添加 ...GenEnumModelInputJsonSchema.definitions,
 export const GenModelInputJsonSchema = {
@@ -155,6 +157,7 @@ export const GenModelInputJsonSchema = {
                 "dataSourceType",
                 "databaseNamingStrategy",
                 "enums",
+                "graphData",
                 "idViewProperty",
                 "joinColumnAnnotation",
                 "joinTableAnnotation",
@@ -186,17 +189,9 @@ export const validateModelInput = (data: any, onErrors: (e: any) => void) => {
     const result = validateModelInputJson(data, onErrors)
 
     if (result) {
-        if ("graphData" in data) {
-            return validateModelEditorData(JSON.parse(data["graphData"]), onErrors)
-        } else {
-            return result
-        }
+        // TODO 增加对 entities 的校验
+        return validateModelEditorData(JSON.parse(data["graphData"]), onErrors)
     }
 
     return result
-}
-
-export const validateModelInputStr = (jsonStr: string, onErrors: (e: any) => void) => {
-    const modelInput = JSON.parse(jsonStr)
-    return validateModelInput(modelInput, onErrors)
 }

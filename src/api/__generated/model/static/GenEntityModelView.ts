@@ -1,13 +1,9 @@
-import type {GenEntityConfigInput_TargetOf_properties, OtherAnnotation} from './';
+import type {GenEntityModelView_TargetOf_properties, OtherAnnotation} from './';
 
 /**
  * 生成实体
  */
-export interface GenEntityConfigInput {
-    /**
-     * ID
-     */
-    id: number;
+export interface GenEntityModelView {
     /**
      * 类名称
      */
@@ -55,5 +51,9 @@ export interface GenEntityConfigInput {
     /**
      * 属性
      */
-    properties: Array<GenEntityConfigInput_TargetOf_properties>;
+    properties: Array<GenEntityModelView_TargetOf_properties>;
+    /**
+     * 名称
+     */
+    tableName: string;
 }

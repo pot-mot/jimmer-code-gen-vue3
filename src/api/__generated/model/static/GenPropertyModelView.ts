@@ -1,5 +1,6 @@
 import type {AssociationType} from '../enums/';
 import type {
+    GenPropertyModelView_TargetOf_enum, 
     JoinColumnMeta, 
     JoinTableMeta, 
     OtherAnnotation, 
@@ -9,7 +10,7 @@ import type {
 /**
  * 生成属性
  */
-export interface GenPropertyEntityConfigInput {
+export interface GenPropertyModelView {
     /**
      * 属性名
      */
@@ -147,7 +148,7 @@ export interface GenPropertyEntityConfigInput {
      */
     remark: string;
     /**
-     * 生成枚举 ID 视图
+     * 生成枚举
      */
-    enumId?: number | undefined;
+    enum?: GenPropertyModelView_TargetOf_enum | undefined;
 }

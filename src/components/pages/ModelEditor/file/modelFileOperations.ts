@@ -3,7 +3,7 @@ import JSZip from "jszip";
 import {api} from "@/api";
 import {saveAs} from "file-saver";
 import {jsonPrettyFormat} from "@/utils/json.ts";
-import {validateModelInputStr} from "@/shape/ModelInput.ts";
+import {validateModelInput} from "@/shape/ModelInput.ts";
 import {sendI18nMessage} from "@/message/message.ts";
 import {getModelAllCopyData} from "@/components/pages/ModelEditor/graph/clipBoard/clipBoard.ts";
 import {GenerateType, ViewType} from "@/api/__generated/model/enums";
@@ -42,26 +42,47 @@ export const previewModelCode = async (
 
 export const importModelJSON = async (modelInputJsonStr: string): Promise<number | undefined> => {
     let validateErrors
-    if (validateModelInputStr(modelInputJsonStr, e => validateErrors = e)) {
-        const modelInput = JSON.parse(modelInputJsonStr)
+
+    const modelInput = JSON.parse(modelInputJsonStr)
+
+    if (validateModelInput(modelInput, e => validateErrors = e)) {
         modelInput.id = undefined
-        return await api.modelService.save({body: modelInput})
+
+        const savedModelId = await api.modelService.save({body: modelInput})
+        await convertModel(savedModelId)
+        if ("entities" in modelInput) {
+            await api.modelService.saveBusiness({id: savedModelId, body: modelInput["entities"]})
+        }
+
+        return savedModelId
     } else {
         sendI18nMessage('MESSAGE_modelFileOperations_importModel_validateFail', 'error', validateErrors)
     }
 }
 
-export const exportModelJson = async (model: GenModelView) => {
+const getModelJson = async (model: DeepReadonly<GenModelView>) => {
     const {id, ...other} = model
+
+    const entities = await api.modelService.getEntityBusinessViews({id})
+
+    return {
+        ...other,
+        entities,
+    }
+}
+
+export const exportModelJson = async (model: GenModelView) => {
+    const modelJson = await getModelJson(model)
+
     const modelJsonBlob = new Blob(
-        [jsonPrettyFormat(other)],
+        [jsonPrettyFormat(modelJson)],
         {type: "application/json"}
     )
     saveAs(modelJsonBlob, `model-[${model.name}].json`)
 }
 
-export const downloadCodeZip = async (codes: DeepReadonly<GenerateFile[]>) => {
-    const file = await createZip([...codes])
+export const downloadCodeZip = async (generateFiles: DeepReadonly<GenerateFile[]>) => {
+    const file = await createZip([...generateFiles])
     saveAs(file, `codes.zip`)
 }
 
@@ -70,16 +91,15 @@ export const downloadModelZip = async (
     types: Array<GenerateType> = ['ALL'],
     viewType: ViewType = 'VUE3_ELEMENT_PLUS'
 ) => {
-    const codes = await api.generateService.generateModel({id: model.id, types, viewType})
-
+    const generateFiles = await api.generateService.generateModel({id: model.id, types, viewType})
+    const modelJson = await getModelJson(model)
     const copyData = getModelAllCopyData(model)
 
-    const {id, ...other} = model
     const modelFiles = [
-        {path: "model.json", content: jsonPrettyFormat(other)},
+        {path: "model.json", content: jsonPrettyFormat(modelJson)},
         {path: "data.json", content: jsonPrettyFormat(copyData)}
     ]
 
-    const file = await createZip([...modelFiles, ...codes])
+    const file = await createZip([...modelFiles, ...generateFiles])
     saveAs(file, `model-[${model.name}].zip`)
 }
