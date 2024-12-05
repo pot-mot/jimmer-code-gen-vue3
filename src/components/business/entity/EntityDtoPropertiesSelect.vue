@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import {GenEntityConfigInput, GenEntityConfigInput_TargetOf_properties} from "@/api/__generated/model/static"
-import {ref, watch} from "vue"
+import {
+	GenEntityConfigInput,
+	GenEntityConfigInput_TargetOf_properties,
+	GenPropertyEntityConfigInput
+} from "@/api/__generated/model/static"
+import {computed, ref, watch} from "vue"
 import Details from "@/components/global/common/Details.vue";
+import Comment from "@/components/global/common/Comment.vue";
 
 const entityDto_CONSTANTS = [
 	'LIST_VIEW',
@@ -17,7 +22,9 @@ const entityDto_CONSTANTS = [
 
 type EntityDto = typeof entityDto_CONSTANTS[number]
 
-const entityDto_propertyDtoProperty: { [key in EntityDto]: keyof GenEntityConfigInput_TargetOf_properties } = {
+type PropertyOption = GenEntityConfigInput_TargetOf_properties | GenPropertyEntityConfigInput
+
+const entityDto_propertyDtoProperty: { [key in EntityDto]: keyof PropertyOption } = {
 	'LIST_VIEW': 'inListView',
 	'DETAIL_VIEW': 'inDetailView',
 	'OPTION_VIEW': 'inOptionView',
@@ -29,14 +36,26 @@ const entityDto_propertyDtoProperty: { [key in EntityDto]: keyof GenEntityConfig
 	'LONG_ASSOCIATION_VIEW': 'inLongAssociationView',
 }
 
-const entity = defineModel<GenEntityConfigInput>({
+const entity = defineModel<GenEntityConfigInput>('entity', {
 	required: true
 })
 
-const getDtoPropertyMap = (): Map<EntityDto, Array<GenEntityConfigInput_TargetOf_properties>> => {
-	const result = new Map<EntityDto, Array<GenEntityConfigInput_TargetOf_properties>>
+const properties = defineModel<Array<GenPropertyEntityConfigInput>>('properties', {
+	required: true
+})
 
-	const setOrPush = (dto: EntityDto, property: GenEntityConfigInput_TargetOf_properties) => {
+
+const allPropertyOptions = computed<Array<PropertyOption>>(() => {
+	return [
+		...entity.value.properties,
+		...properties.value
+	]
+})
+
+const getDtoPropertyMap = (): Map<EntityDto, Array<PropertyOption>> => {
+	const result = new Map<EntityDto, Array<PropertyOption>>
+
+	const setOrPush = (dto: EntityDto, property: PropertyOption) => {
 		const array = result.get(dto)
 		if (array === undefined) {
 			result.set(dto, [property])
@@ -45,8 +64,8 @@ const getDtoPropertyMap = (): Map<EntityDto, Array<GenEntityConfigInput_TargetOf
 		}
 	}
 
-	for (const property of entity.value.properties) {
-		for (const [key, propertyProperty] of Object.entries(entityDto_propertyDtoProperty) as Array<[EntityDto, keyof GenEntityConfigInput_TargetOf_properties]>) {
+	for (const property of allPropertyOptions.value) {
+		for (const [key, propertyProperty] of Object.entries(entityDto_propertyDtoProperty) as Array<[EntityDto, keyof PropertyOption]>) {
 			if (property[propertyProperty]) {
 				setOrPush(key, property)
 			}
@@ -56,22 +75,24 @@ const getDtoPropertyMap = (): Map<EntityDto, Array<GenEntityConfigInput_TargetOf
 	return result
 }
 
-const dtoProperties = ref<Map<EntityDto, Array<GenEntityConfigInput_TargetOf_properties>>>(getDtoPropertyMap())
+const dtoProperties = ref<Map<EntityDto, Array<PropertyOption>>>(getDtoPropertyMap())
 
 watch(() => entity.value, () => {
 	dtoProperties.value = getDtoPropertyMap()
 })
 
-const handleDtoPropertyChange = (dto: EntityDto, properties: Array<GenEntityConfigInput_TargetOf_properties>) => {
+const handleDtoPropertyChange = (dto: EntityDto, selectProperties: Array<PropertyOption>) => {
 	const dtoProperty = entityDto_propertyDtoProperty[dto]
 	entity.value.properties.forEach(property => {
-		if (properties.includes(property)) {
-			// @ts-ignore
-			property[dtoProperty] = true
-		}
+		// @ts-ignore
+		property[dtoProperty] = selectProperties.includes(property)
+	})
+	properties.value.forEach(property => {
+		// @ts-ignore
+		property[dtoProperty] = selectProperties.includes(property)
 	})
 
-	dtoProperties.value.set(dto, properties)
+	dtoProperties.value.set(dto, selectProperties)
 }
 </script>
 
@@ -84,18 +105,21 @@ const handleDtoPropertyChange = (dto: EntityDto, properties: Array<GenEntityConf
         <div style="padding: 0.5em">
             <el-select
                 :model-value="dtoProperties.get(dto)"
-                @change="(properties: Array<GenEntityConfigInput_TargetOf_properties>) => {
-				handleDtoPropertyChange(dto, properties)
-			}"
+                @change="(properties: Array<PropertyOption>) => {
+					handleDtoPropertyChange(dto, properties)
+				}"
                 multiple filterable
                 value-key="name"
             >
                 <el-option
-                    v-for="property in entity.properties"
+                    v-for="property in allPropertyOptions"
                     :key="property.name"
                     :value="property"
-                    :label="property.name"
-                />
+					:label="property.name"
+				>
+					{{ property.name }}
+					<Comment :comment="property.comment"/>
+				</el-option>
             </el-select>
         </div>
 	</Details>

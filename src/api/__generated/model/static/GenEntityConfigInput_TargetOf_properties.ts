@@ -1,3 +1,5 @@
+import type {OtherAnnotation} from './';
+
 /**
  * 生成属性
  */
@@ -26,6 +28,10 @@ export interface GenEntityConfigInput_TargetOf_properties {
      * 备注
      */
     remark: string;
+    /**
+     * 其他注解
+     */
+    otherAnnotation?: OtherAnnotation | undefined;
     /**
      * 排序键
      */
