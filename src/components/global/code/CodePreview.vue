@@ -16,7 +16,7 @@
 
 <script lang="ts" setup>
 import {prism} from "@/components/global/code/prismjs-index.ts"
-import {computed, nextTick, onMounted, ref, watch} from "vue";
+import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import CopyIcon from "../icons/toolbar/CopyIcon.vue";
 import {sendMessage} from "@/message/message.ts";
 
@@ -33,6 +33,10 @@ const codeRef = ref<Element>()
 
 const worker = new Worker(new URL("./worker/prism-worker.js", import.meta.url))
 
+onBeforeUnmount(() => {
+    worker.postMessage('close')
+})
+
 const highlightContainer = () => {
 	if (wrapperRef.value !== undefined && codeRef.value !== undefined) {
 		const wrapper = wrapperRef.value
@@ -43,7 +47,7 @@ const highlightContainer = () => {
 			language: props.language,
 		})
 		worker.onmessage = (e) => {
-			element.innerHTML = e.data
+            element.innerHTML = e.data
 			wrapper.scrollTop = 0
 		}
 		worker.onerror = () => {
@@ -54,7 +58,12 @@ const highlightContainer = () => {
 }
 
 onMounted(() => {
-	nextTick(highlightContainer)
+	nextTick(() => {
+        if (codeRef.value !== undefined) {
+            codeRef.value.textContent = props.code
+        }
+        highlightContainer()
+    })
 })
 
 watch(() => props.code, highlightContainer)
