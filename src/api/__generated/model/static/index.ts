@@ -43,7 +43,6 @@ export type {GenTableColumnsView_TargetOf_columns} from './GenTableColumnsView_T
 export type {GenTableColumnsView_TargetOf_columns_TargetOf_enum} from './GenTableColumnsView_TargetOf_columns_TargetOf_enum';
 export type {GenTableColumnsView_TargetOf_indexes} from './GenTableColumnsView_TargetOf_indexes';
 export type {GenTableCommonView} from './GenTableCommonView';
-export type {GenTableIdView} from './GenTableIdView';
 export type {GenTableModelInput} from './GenTableModelInput';
 export type {GenTableModelInput_TargetOf_columns} from './GenTableModelInput_TargetOf_columns';
 export type {GenTableModelInput_TargetOf_columns_TargetOf_enum} from './GenTableModelInput_TargetOf_columns_TargetOf_enum';
