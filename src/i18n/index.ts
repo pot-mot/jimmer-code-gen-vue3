@@ -420,11 +420,13 @@ type MainLocale = {
     LABEL_ColumnTypeForm_sizeAndPrecision: string
     LABEL_ColumnTypeForm_mappedEnum: string
 
+    LABEL_EntityConfigForm_otherAnnotation: string
     LABEL_EntityConfigForm_name: string
     LABEL_EntityConfigForm_comment: string
     LABEL_EntityConfigForm_remark: string
     LABEL_EntityConfigForm_business: string
 
+    LABEL_EntityConfigForm_property_otherAnnotation: string
     LABEL_EntityConfigForm_property_name: string
     LABEL_EntityConfigForm_property_comment: string
     LABEL_EntityConfigForm_property_remark: string

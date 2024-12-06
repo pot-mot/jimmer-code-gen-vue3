@@ -1,4 +1,4 @@
-<script setup generic="T extends { [key: string]: any }" lang="ts">
+<script setup generic="T" lang="ts">
 import {nextTick, Ref, ref, watch} from 'vue'
 import {cloneDeep} from 'lodash'
 import {EditListProps} from "@/components/global/list/ListProps.ts";
@@ -26,7 +26,7 @@ const props = withDefaults(
 			}
 		},
 		beforePaste: () => {
-		}
+		},
 	}
 )
 
@@ -131,12 +131,14 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 
 				if (
 					Array.isArray(value) &&
-					value.filter((item, index) => props.jsonSchemaValidate(item, (e) => validateErrorsMap.set(index, e))).length === value.length
+					value.filter((item, index) => {
+						return props.jsonSchemaValidate?.(item, (e) => validateErrorsMap.set(index, e)) ?? true
+					}).length === value.length
 				) {
 					props.beforePaste(value)
 					tempLines.splice(insertIndex, 0, ...value)
 					insertLength = value.length
-				} else if (props.jsonSchemaValidate(value, (e) => validateErrorsMap.set(0, e))) {
+				} else if (props.jsonSchemaValidate?.(value, (e) => validateErrorsMap.set(0, e)) ?? true) {
 					props.beforePaste([value])
 					tempLines.splice(insertIndex, 0, value)
 					insertLength = 1
@@ -383,7 +385,8 @@ defineExpose({
 									:index="index"
 									:getDefaultLine="getDefaultLine"
 									:handleAddLine="handleAddLine"
-									:handleRemoveLine="handleRemoveLine"/>
+									:handleRemoveLine="handleRemoveLine"
+								/>
 							</slot>
 						</LineItem>
 					</Line>

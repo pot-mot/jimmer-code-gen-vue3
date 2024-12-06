@@ -565,11 +565,13 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     LABEL_ColumnTypeForm_sizeAndPrecision: "Size and Precision",
     LABEL_ColumnTypeForm_mappedEnum: "Mapped Enum",
 
+    LABEL_EntityConfigForm_otherAnnotation: "Annotation",
     LABEL_EntityConfigForm_name: 'Name',
     LABEL_EntityConfigForm_comment: 'Comment',
     LABEL_EntityConfigForm_remark: 'Remark',
     LABEL_EntityConfigForm_business: 'Business',
 
+    LABEL_EntityConfigForm_property_otherAnnotation: "Annotation",
     LABEL_EntityConfigForm_property_name: 'Name',
     LABEL_EntityConfigForm_property_comment: 'Comment',
     LABEL_EntityConfigForm_property_remark: 'Remark',

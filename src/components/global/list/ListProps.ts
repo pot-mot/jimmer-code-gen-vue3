@@ -9,29 +9,29 @@ export interface LineProps extends LineStyleProps {
     items?: { name: string, span: string }[],
 }
 
-export interface ListColumn<T extends { [key: string]: any }> {
+export interface ListColumn<T> {
     name: keyof T | string
     prop?: keyof T
     label?: ProjectLocaleKeyParam
     span?: string
 }
 
-export interface PropListColumn<T extends { [key: string]: any }> {
+export interface PropListColumn<T> {
     prop: keyof T
     label?: ProjectLocaleKeyParam
     span?: string
 }
 
-export interface ListProps<T extends { [key: string]: any }> extends LineStyleProps {
-    columns: ReadonlyArray<PropListColumn<T> | ListColumn<T>>,
+export interface ListProps<T> extends LineStyleProps {
+    columns?: ReadonlyArray<PropListColumn<T> | ListColumn<T>>,
     lines: T[]
     labelLine?: boolean
 }
 
-export interface EditListProps<T extends { [key: string]: any }> extends ListProps<T> {
+export interface EditListProps<T> extends ListProps<T> {
     operation?: ListColumn<T>,
     defaultLine: T | (() => T | Promise<T>),
-    jsonSchemaValidate: (json: any, onError: (e: any) => void) => boolean | Promise<T>,
+    jsonSchemaValidate?: (json: any, onError: (e: any) => void) => boolean | Promise<T>,
     beforePaste?: (data: T[]) => void
 }
 

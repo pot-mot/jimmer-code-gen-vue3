@@ -564,11 +564,13 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     LABEL_ColumnTypeForm_sizeAndPrecision: "长度精度",
     LABEL_ColumnTypeForm_mappedEnum: "映射枚举",
 
+    LABEL_EntityConfigForm_otherAnnotation: "注解",
     LABEL_EntityConfigForm_name: '名称',
     LABEL_EntityConfigForm_comment: '注释',
     LABEL_EntityConfigForm_remark: '备注',
     LABEL_EntityConfigForm_business: '业务功能',
 
+    LABEL_EntityConfigForm_property_otherAnnotation: "注解",
     LABEL_EntityConfigForm_property_name: '名称',
     LABEL_EntityConfigForm_property_comment: '注释',
     LABEL_EntityConfigForm_property_remark: '备注',

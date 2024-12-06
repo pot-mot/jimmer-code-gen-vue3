@@ -5,7 +5,6 @@ import {
 	GenPropertyEntityConfigInput
 } from "@/api/__generated/model/static"
 import {computed, ref, watch} from "vue"
-import Details from "@/components/global/common/Details.vue";
 import Comment from "@/components/global/common/Comment.vue";
 
 const entityDto_CONSTANTS = [
@@ -97,30 +96,25 @@ const handleDtoPropertyChange = (dto: EntityDto, selectProperties: Array<Propert
 </script>
 
 <template>
-	<Details v-for="dto in entityDto_CONSTANTS" open>
-		<template #title>
-			<el-text>{{ dto }}</el-text>
-		</template>
-
-        <div style="padding: 0.5em">
-            <el-select
-                :model-value="dtoProperties.get(dto)"
-                @change="(properties: Array<PropertyOption>) => {
-					handleDtoPropertyChange(dto, properties)
-				}"
-                multiple filterable
-                value-key="name"
-            >
-                <el-option
-                    v-for="property in allPropertyOptions"
-                    :key="property.name"
-                    :value="property"
-					:label="property.name"
-				>
-					{{ property.name }}
-					<Comment :comment="property.comment"/>
-				</el-option>
-            </el-select>
-        </div>
-	</Details>
+	<div v-for="dto in entityDto_CONSTANTS">
+		<el-text>{{ dto }}</el-text>
+		<el-select
+			:model-value="dtoProperties.get(dto)"
+			@change="(properties: Array<PropertyOption>) => {
+				handleDtoPropertyChange(dto, properties)
+			}"
+			multiple filterable
+			value-key="name"
+		>
+			<el-option
+				v-for="property in allPropertyOptions"
+				:key="property.name"
+				:value="property"
+				:label="property.name"
+			>
+				{{ property.name }}
+				<Comment :comment="property.comment"/>
+			</el-option>
+		</el-select>
+	</div>
 </template>
