@@ -575,4 +575,11 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     LABEL_EntityConfigForm_property_remark: 'Remark',
     LABEL_EntityConfigForm_property_type: 'Type',
     LABEL_EntityConfigForm_property_body: 'Body',
+
+    VALIDATE_Entity_nameCannotBeEmpty: "Entity name cannot be empty",
+    VALIDATE_Entity_nameCannotBeDuplicate: (entityName: string) => `Entity name [${entityName}] cannot be duplicated`,
+    VALIDATE_Entity_propertyNameCannotBeEmpty: "Property name cannot be empty",
+    VALIDATE_Entity_propertyTypeCannotBeEmpty: (propertyName: string) => `Property [${propertyName}] type cannot be empty`,
+    VALIDATE_Entity_propertyNameCannotBeDuplicate: (propertyName: string) => `Property name [${propertyName}] cannot be duplicated`,
+
 }

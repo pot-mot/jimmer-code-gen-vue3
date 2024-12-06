@@ -1,5 +1,10 @@
 import type {AssociationType} from '../enums/';
-import type {JoinColumnMeta, JoinTableMeta, OtherAnnotation} from './';
+import type {
+    GenEntityModelView_TargetOf_properties_TargetOf_typeTable, 
+    JoinColumnMeta, 
+    JoinTableMeta, 
+    OtherAnnotation
+} from './';
 
 /**
  * 生成属性
@@ -13,6 +18,10 @@ export interface GenEntityModelView_TargetOf_properties {
      * 是否非空
      */
     typeNotNull: boolean;
+    /**
+     * 类型对应表
+     */
+    typeTable?: GenEntityModelView_TargetOf_properties_TargetOf_typeTable | undefined;
     /**
      * 关联类型
      */

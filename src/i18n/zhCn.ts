@@ -574,4 +574,10 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     LABEL_EntityConfigForm_property_remark: '备注',
     LABEL_EntityConfigForm_property_type: '类型',
     LABEL_EntityConfigForm_property_body: '属性体',
+
+    VALIDATE_Entity_nameCannotBeEmpty: "实体名称不得为空",
+    VALIDATE_Entity_nameCannotBeDuplicate: (entityName: string) => `实体名称【${entityName}】不可重复`,
+    VALIDATE_Entity_propertyNameCannotBeEmpty: "属性名称不得为空",
+    VALIDATE_Entity_propertyTypeCannotBeEmpty: (propertyName: string) => `属性【${propertyName}】类型不得为空`,
+    VALIDATE_Entity_propertyNameCannotBeDuplicate: (propertyName: string) => `属性名称【${propertyName}】不可重复`,
 }

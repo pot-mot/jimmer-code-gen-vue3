@@ -1,6 +1,6 @@
 import type {GenEntityConfigInput, GenPropertyEntityConfigInput} from './';
 
-export interface GenEntityConfigWithNewPropertiesInput {
+export interface EntityModelBusinessInput {
     entity: GenEntityConfigInput;
     properties: Array<GenPropertyEntityConfigInput>;
 }

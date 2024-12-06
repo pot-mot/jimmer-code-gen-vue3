@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {
-	GenEntityConfigWithNewPropertiesInput,
+	EntityModelBusinessInput,
 	GenEntityDetailView,
 	type GenEntityDetailView_TargetOf_properties,
 	type GenPropertyEntityConfigInput
@@ -15,13 +15,15 @@ import {sendI18nMessage} from "@/message/message.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {Plus} from "@element-plus/icons-vue";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
+import OtherAnnotationEditor from "@/components/business/entity/OtherAnnotationEditor.vue";
+import PropertyBodyEditor from "@/components/business/entity/PropertyBodyEditor.vue";
 
 const i18nStore = useI18nStore()
 
 const props = defineProps<{
 	entity: GenEntityDetailView,
 
-	validate: (genEnum: DeepReadonly<GenEntityConfigWithNewPropertiesInput>) => MainLocaleKeyParam[],
+	validate: (genEnum: DeepReadonly<EntityModelBusinessInput>) => Promise<MainLocaleKeyParam[]>,
 }>()
 
 const extractEntityData = (entity: DeepReadonly<GenEntityDetailView>) => {
@@ -65,17 +67,17 @@ watch(() => props.entity, (value) => {
 })
 
 const emits = defineEmits<FormEmits<
-	GenEntityConfigWithNewPropertiesInput,
+	EntityModelBusinessInput,
 	GenEntityDetailView
 >>()
 
-const handleSubmit = () => {
-	const entityWithProperties: GenEntityConfigWithNewPropertiesInput = {
+const handleSubmit = async () => {
+	const entityWithProperties: EntityModelBusinessInput = {
 		entity: entity.value,
 		properties: properties.value
 	}
 
-	const messageList = props.validate(entityWithProperties)
+	const messageList = await props.validate(entityWithProperties)
 
 	if (messageList.length > 0) {
 		messageList.forEach(it => sendI18nMessage(it, 'warning'))
@@ -93,6 +95,10 @@ const handleAddManalProperty = () => {
 <template>
 	<el-form style="width: calc(100% - 0.5rem);">
 		<el-row :gutter="12" style="line-height: 2em; padding-left: 1em; padding-bottom: 1em;">
+			<el-col :span="24">
+				<OtherAnnotationEditor v-model="entity.otherAnnotation"/>
+			</el-col>
+
 			<el-col :span="12">
 				<el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_name')">
 					<el-input v-model="entity.name" :disabled="!entity.overwriteName"/>
@@ -121,6 +127,10 @@ const handleAddManalProperty = () => {
 		</el-row>
 
 		<el-row v-for="property in entity.properties" :key="property.id" :gutter="12">
+			<el-col :span="24">
+				<OtherAnnotationEditor v-model="property.otherAnnotation"/>
+			</el-col>
+
 			<el-col :span="8">
 				<el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_name')">
 					<el-input v-model="property.name" :disabled="!property.overwriteName"/>
@@ -149,6 +159,10 @@ const handleAddManalProperty = () => {
 		</el-row>
 
 		<el-row v-for="property in properties" :gutter="12">
+			<el-col :span="24">
+				<OtherAnnotationEditor v-model="property.otherAnnotation"/>
+			</el-col>
+
 			<el-col :span="8">
 				<el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_name')">
 					<el-input v-model="property.name"/>
@@ -175,7 +189,7 @@ const handleAddManalProperty = () => {
 
 			<el-col :span="24">
 				<el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_body')">
-
+					<PropertyBodyEditor v-model="property.body"/>
 				</el-form-item>
 			</el-col>
 		</el-row>

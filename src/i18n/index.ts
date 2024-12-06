@@ -430,6 +430,13 @@ type MainLocale = {
     LABEL_EntityConfigForm_property_remark: string
     LABEL_EntityConfigForm_property_type: string
     LABEL_EntityConfigForm_property_body: string
+
+    VALIDATE_Entity_nameCannotBeEmpty: string
+    VALIDATE_Entity_nameCannotBeDuplicate: (entityName: string) => string
+    VALIDATE_Entity_propertyNameCannotBeEmpty: string
+    VALIDATE_Entity_propertyTypeCannotBeEmpty: (propertyName: string) => string
+    VALIDATE_Entity_propertyNameCannotBeDuplicate: (propertyName: string) => string
+
 }
 
 type LocaleKey<
