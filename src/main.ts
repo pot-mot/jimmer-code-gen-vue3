@@ -10,6 +10,7 @@ import 'element-plus/dist/index.css'
 import './assets/base.css'
 import './assets/util.css'
 import './assets/element-overwrite.css'
+import './assets/code-input.css'
 import './components/global/list/list.css'
 
 import './assets/model-editor-graph.css'

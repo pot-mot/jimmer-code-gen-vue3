@@ -1,0 +1,6 @@
+.code-input,
+.code-input input,
+.code-input textarea {
+    font-family: Consolas, "Courier New", monospace;
+    tab-size: 4;
+}
