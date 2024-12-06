@@ -7,8 +7,15 @@ import {
     GenTableModelInput
 } from "@/api/__generated/model/static";
 import {GenEnumModelInputJsonSchema} from "@/shape/GenEnumModelInput.ts";
-import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadData.ts";
-import {DeepReadonly} from "vue";
+import type {TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadData.ts";
+import type {DeepReadonly} from "vue";
+
+export interface CopyData {
+    tables: GenTableModelInput[],
+    optionsList?: TableLoadOptions[],
+    associations: GenAssociationModelInput[],
+    enums: GenModelInput_TargetOf_enums[]
+}
 
 const CopyDataShapeJsonSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -65,12 +72,6 @@ const CopyDataShapeJsonSchema = {
     }
 } as const
 
-export interface CopyData {
-    tables: GenTableModelInput[],
-    optionsList?: TableLoadOptions[],
-    associations: GenAssociationModelInput[],
-    enums: GenModelInput_TargetOf_enums[]
-}
 export const {validate: validateCopyData} =
     useShapeValidate<DeepReadonly<CopyData>>(
         "CopyData",

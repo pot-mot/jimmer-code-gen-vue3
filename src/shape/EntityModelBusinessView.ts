@@ -108,9 +108,10 @@ export const EntityModelBusinessViewSchema = {
                         "MANY_TO_MANY",
                         "MANY_TO_ONE",
                         "ONE_TO_MANY",
-                        "ONE_TO_ONE"
+                        "ONE_TO_ONE",
+                        null
                     ],
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "columnName": {
                     "description": "名称",
@@ -161,7 +162,7 @@ export const EntityModelBusinessViewSchema = {
                     "items": {
                         "$ref": "#/definitions/JoinColumnMeta"
                     },
-                    "type": "array"
+                    "type": ["array", "null"]
                 },
                 "joinTableMeta": {
                     "$ref": "#/definitions/JoinTableMeta",
@@ -235,9 +236,10 @@ export const EntityModelBusinessViewSchema = {
                         "MANY_TO_MANY",
                         "MANY_TO_ONE",
                         "ONE_TO_MANY",
-                        "ONE_TO_ONE"
+                        "ONE_TO_ONE",
+                        null
                     ],
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "body": {
                     "$ref": "#/definitions/PropertyBody",
@@ -249,7 +251,7 @@ export const EntityModelBusinessViewSchema = {
                 },
                 "dissociateAnnotation": {
                     "description": "脱钩注解",
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "enum": {
                     "$ref": "#/definitions/GenPropertyModelView_TargetOf_enum",
@@ -257,7 +259,7 @@ export const EntityModelBusinessViewSchema = {
                 },
                 "idGenerationAnnotation": {
                     "description": "ID 生成类型",
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "idProperty": {
                     "description": "是否 ID 属性",
@@ -269,7 +271,7 @@ export const EntityModelBusinessViewSchema = {
                 },
                 "idViewTarget": {
                     "description": "ID 视图注解",
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "inDetailView": {
                     "description": "是否在详情视图DTO中",
@@ -309,14 +311,14 @@ export const EntityModelBusinessViewSchema = {
                 },
                 "inputNotNull": {
                     "description": "输入非空",
-                    "type": "boolean"
+                    "type": ["boolean", "null"]
                 },
                 "joinColumnMetas": {
                     "description": "关联列注解",
                     "items": {
                         "$ref": "#/definitions/JoinColumnMeta"
                     },
-                    "type": "array"
+                    "type": ["array", "null"]
                 },
                 "joinTableMeta": {
                     "$ref": "#/definitions/JoinTableMeta",
@@ -324,7 +326,7 @@ export const EntityModelBusinessViewSchema = {
                 },
                 "keyGroup": {
                     "description": "业务键组",
-                    "type": "string"
+                    "type": ["object", "null"]
                 },
                 "keyProperty": {
                     "description": "是否为业务键属性",
@@ -344,7 +346,7 @@ export const EntityModelBusinessViewSchema = {
                 },
                 "mappedBy": {
                     "description": "映射镜像",
-                    "type": "string"
+                    "type": ["object", "null"]
                 },
                 "name": {
                     "description": "属性名",
@@ -417,7 +419,7 @@ export const EntityModelBusinessViewSchema = {
             "required": [
                 "name"
             ],
-            "type": "object"
+            "type": ["object", "null"]
         },
         "JoinColumnMeta": {
             "properties": {
@@ -427,19 +429,19 @@ export const EntityModelBusinessViewSchema = {
                         "FAKE",
                         "REAL"
                     ],
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "joinColumnName": {
                     "type": "string"
                 },
                 "referencedColumnName": {
-                    "type": "string"
+                    "type": ["string", "null"]
                 }
             },
             "required": [
                 "joinColumnName"
             ],
-            "type": "object"
+            "type": ["object", "null"]
         },
         "JoinTableMeta": {
             "properties": {
@@ -455,7 +457,7 @@ export const EntityModelBusinessViewSchema = {
                         "FAKE",
                         "REAL"
                     ],
-                    "type": "string"
+                    "type": ["string", "null"]
                 },
                 "tableName": {
                     "type": "string"
@@ -465,7 +467,7 @@ export const EntityModelBusinessViewSchema = {
                 "columnNamePairs",
                 "tableName"
             ],
-            "type": "object"
+            "type": ["object", "null"]
         },
         "OtherAnnotation": {
             "properties": {
@@ -486,7 +488,7 @@ export const EntityModelBusinessViewSchema = {
                 "annotations",
                 "importLines"
             ],
-            "type": "object"
+            "type": ["object", "null"]
         },
         "Pair<string,string>": {
             "properties": {
@@ -519,7 +521,7 @@ export const EntityModelBusinessViewSchema = {
                 "codeBlock",
                 "importLines"
             ],
-            "type": "object"
+            "type": ["object", "null"]
         }
     }
 }
