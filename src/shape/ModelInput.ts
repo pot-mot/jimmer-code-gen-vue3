@@ -1,10 +1,9 @@
 import {useShapeValidate} from "@/shape/shapeValidate.ts";
-import {GenModelInput} from "@/api/__generated/model/static";
+import {EntityModelBusinessView, GenModelInput} from "@/api/__generated/model/static";
 import {validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {GenEnumModelInputJsonSchema} from "@/shape/GenEnumModelInput.ts";
 import {DeepReadonly} from "vue";
-
-// TODO 调整 GenModelInput 的类型申明（补充 EntityModelBusinessView 的部分）
+import {validateEntityModelBusinessView} from "@/shape/EntityModelBusinessView.ts";
 
 // typescript-json-schema src/api/__generated/model/static/GenModelInput.ts * --required
 // 添加 ...GenEnumModelInputJsonSchema.definitions,
@@ -186,12 +185,31 @@ const {validate: validateModelInputJson} =
     )
 
 export const validateModelInput = (data: any, onErrors: (e: any) => void) => {
-    const result = validateModelInputJson(data, onErrors)
+    const modelInputValidResult = validateModelInputJson(data, onErrors)
+    if (!modelInputValidResult) return false
 
-    if (result) {
-        // TODO 增加对 entities 的校验
-        return validateModelEditorData(JSON.parse(data["graphData"]), onErrors)
+    const modelEditorDataValidResult = validateModelEditorData(JSON.parse(data["graphData"]), onErrors)
+    if (!modelEditorDataValidResult) return false
+
+    return true
+}
+
+export type ModelInputWithEntities = GenModelInput & {
+    entities?: Array<EntityModelBusinessView>
+}
+
+export const validateModelInputWithEntities = (data: any, onErrors: (e: any) => void) => {
+    const modelInputValid = validateModelInput(data, onErrors)
+    if (!modelInputValid) return false
+
+    if (!("entities" in data)) {
+        return true
     }
 
-    return result
+    for (const entity of data["entities"]) {
+        const entityValid = validateEntityModelBusinessView(entity, onErrors)
+        if (!entityValid) return false
+    }
+
+    return true
 }

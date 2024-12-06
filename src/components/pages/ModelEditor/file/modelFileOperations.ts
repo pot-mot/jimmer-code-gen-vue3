@@ -3,7 +3,7 @@ import JSZip from "jszip";
 import {api} from "@/api";
 import {saveAs} from "file-saver";
 import {jsonPrettyFormat} from "@/utils/json.ts";
-import {validateModelInput} from "@/shape/ModelInput.ts";
+import {ModelInputWithEntities, validateModelInputWithEntities} from "@/shape/ModelInput.ts";
 import {sendI18nMessage} from "@/message/message.ts";
 import {getModelAllCopyData} from "@/components/pages/ModelEditor/graph/clipBoard/clipBoard.ts";
 import {GenerateType, ViewType} from "@/api/__generated/model/enums";
@@ -45,7 +45,7 @@ export const importModelJSON = async (modelInputJsonStr: string): Promise<number
 
     const modelInput = JSON.parse(modelInputJsonStr)
 
-    if (validateModelInput(modelInput, e => validateErrors = e)) {
+    if (validateModelInputWithEntities(modelInput, e => validateErrors = e)) {
         modelInput.id = undefined
 
         const savedModelId = await api.modelService.save({body: modelInput})
@@ -60,7 +60,7 @@ export const importModelJSON = async (modelInputJsonStr: string): Promise<number
     }
 }
 
-const getModelJson = async (model: DeepReadonly<GenModelView>) => {
+const getModelJson = async (model: DeepReadonly<GenModelView>): Promise<DeepReadonly<ModelInputWithEntities>> => {
     const {id, ...other} = model
 
     const entities = await api.modelService.getEntityBusinessViews({id})
