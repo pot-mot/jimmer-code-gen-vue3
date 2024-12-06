@@ -19,43 +19,43 @@ const i18nStore = useI18nStore()
 
 const editState = ref(false)
 
-const columnDefaultProps = <Array<PropListColumn<GenColumnDefaultInput> | ListColumn<GenColumnDefaultInput>>>[
-	{
-		prop: 'dataSourceType',
-		label: 'LABEL_GenColumnDefault_dataSourceType',
-		span: '7em'
-	},
-	{
-		prop: 'typeCode',
-		label: 'LABEL_GenColumnDefault_typeCode',
-	},
+const columnDefaultProps = <Array<PropListColumn<GenColumnDefaultInput> | ListColumn>>[
+    {
+        prop: 'dataSourceType',
+        label: 'LABEL_GenColumnDefault_dataSourceType',
+        span: '7em'
+    },
+    {
+        prop: 'typeCode',
+        label: 'LABEL_GenColumnDefault_typeCode',
+    },
 
-	{
-		name: 'segment',
-		label: 'LABEL_GenColumnDefault_segment',
-		span: '2em'
-	},
+    {
+        name: 'segment',
+        label: 'LABEL_GenColumnDefault_segment',
+        span: '2em'
+    },
 
-	{
-		prop: 'rawType',
-		label: 'LABEL_GenColumnDefault_rawType',
-	},
-	{
-		prop: 'dataSize',
-		label: 'LABEL_GenColumnDefault_dataSize',
-	},
-	{
-		prop: 'numericPrecision',
-		label: 'LABEL_GenColumnDefault_numericPrecision',
-	},
-	{
-		prop: 'defaultValue',
-		label: 'LABEL_GenColumnDefault_defaultValue',
-	},
-	{
-		prop: 'remark',
-		label: 'LABEL_GenColumnDefault_remark',
-	},
+    {
+        prop: 'rawType',
+        label: 'LABEL_GenColumnDefault_rawType',
+    },
+    {
+        prop: 'dataSize',
+        label: 'LABEL_GenColumnDefault_dataSize',
+    },
+    {
+        prop: 'numericPrecision',
+        label: 'LABEL_GenColumnDefault_numericPrecision',
+    },
+    {
+        prop: 'defaultValue',
+        label: 'LABEL_GenColumnDefault_defaultValue',
+    },
+    {
+        prop: 'remark',
+        label: 'LABEL_GenColumnDefault_remark',
+    },
 ]
 
 const jdbcTypeStore = useJdbcTypeStore()
@@ -69,131 +69,137 @@ const columnDefaults = ref<GenColumnDefaultView[]>([])
 const tempColumnDefaults = ref<GenColumnDefaultView[]>([])
 
 const defaultColumnDefault = ref<GenColumnDefaultInput>({
-	rawType: 'VARCHAR',
-	typeCode: 12,
-	dataSize: 0,
-	numericPrecision: 0,
-	remark: "",
-	orderKey: 0,
+    rawType: 'VARCHAR',
+    typeCode: 12,
+    dataSize: 0,
+    numericPrecision: 0,
+    remark: "",
+    orderKey: 0,
 })
 
 genConfigStore.onLoaded(() => {
-	if (genConfigStore.genConfig) {
-		defaultColumnDefault.value.dataSourceType = genConfigStore.genConfig.dataSourceType
-	}
+    if (genConfigStore.genConfig) {
+        defaultColumnDefault.value.dataSourceType = genConfigStore.genConfig.dataSourceType
+    }
 })
 
 jdbcTypeStore.onLoaded(() => {
-	const first = jdbcTypeStore.jdbcTypeList[0]
+    const first = jdbcTypeStore.jdbcTypeList[0]
 
-	if (first) {
-		defaultColumnDefault.value.rawType = first.type
-		defaultColumnDefault.value.typeCode = first.typeCode
-	}
+    if (first) {
+        defaultColumnDefault.value.rawType = first.type
+        defaultColumnDefault.value.typeCode = first.typeCode
+    }
 })
 
 onMounted(async () => {
-	if (genConfigStore.isLoaded) {
-		columnDefaults.value = columnDefaultStore.columnDefaults
-	} else {
-		const temp = await columnDefaultStore.reset()
-		if (temp) {
-			columnDefaults.value = temp
-		}
-	}
+    if (genConfigStore.isLoaded) {
+        columnDefaults.value = columnDefaultStore.columnDefaults
+    } else {
+        const temp = await columnDefaultStore.reset()
+        if (temp) {
+            columnDefaults.value = temp
+        }
+    }
 })
 
 const handleEdit = async () => {
-	tempColumnDefaults.value = cloneDeep(columnDefaults.value)
-	editState.value = true
+    tempColumnDefaults.value = cloneDeep(columnDefaults.value)
+    editState.value = true
 }
 
 const handleSubmit = async () => {
-	const messageList = validateColumnDefaultForm(tempColumnDefaults.value)
+    const messageList = validateColumnDefaultForm(tempColumnDefaults.value)
 
-	if (messageList.length > 0) {
-		messageList.forEach(it => sendI18nMessage(it, 'warning'))
-		return
-	}
+    if (messageList.length > 0) {
+        messageList.forEach(it => sendI18nMessage(it, 'warning'))
+        return
+    }
 
-	tempColumnDefaults.value.forEach((columnDefault, index) => {
-		columnDefault.orderKey = index
-	})
-	const ids = await api.columnDefaultService.saveAll({body: tempColumnDefaults.value})
+    tempColumnDefaults.value.forEach((columnDefault, index) => {
+        columnDefault.orderKey = index
+    })
+    const ids = await api.columnDefaultService.saveAll({body: tempColumnDefaults.value})
 
-	await columnDefaultStore.reset()
+    await columnDefaultStore.reset()
 
-	if (ids.length === tempColumnDefaults.value.length) {
-		columnDefaults.value = tempColumnDefaults.value
-		sendI18nMessage('MESSAGE_edit_success', 'success')
-		editState.value = false
-	} else {
-		sendI18nMessage('MESSAGE_edit_fail', 'error', tempColumnDefaults)
-	}
+    if (ids.length === tempColumnDefaults.value.length) {
+        columnDefaults.value = tempColumnDefaults.value
+        sendI18nMessage('MESSAGE_edit_success', 'success')
+        editState.value = false
+    } else {
+        sendI18nMessage('MESSAGE_edit_fail', 'error', tempColumnDefaults)
+    }
 }
 
 const handleCancel = () => {
-	editState.value = false
+    editState.value = false
 }
 </script>
 
 <template>
-	<template v-if="columnDefaultStore.isLoaded">
-		<template v-if="editState">
-			<EditList
-				:columns="columnDefaultProps"
-				v-model:lines="tempColumnDefaults"
-				:defaultLine="defaultColumnDefault"
-				:json-schema-validate="validateColumnDefaultInput"
-				height="2em">
-				<template #dataSourceType="{data}">
-					<el-select v-model="data.dataSourceType" clearable placeholder="【ANY】">
-						<el-option v-for="dataSourceType in DataSourceType_CONSTANTS"
-								   :value="dataSourceType"></el-option>
-					</el-select>
-				</template>
+    <template v-if="columnDefaultStore.isLoaded">
+        <template v-if="editState">
+            <EditList
+                :columns="columnDefaultProps"
+                v-model:lines="tempColumnDefaults"
+                :defaultLine="defaultColumnDefault"
+                :json-schema-validate="validateColumnDefaultInput"
+                height="2em">
+                <template #dataSourceType="{data}">
+                    <el-select v-model="data.dataSourceType" clearable placeholder="【ANY】">
+                        <el-option
+                            v-for="dataSourceType in DataSourceType_CONSTANTS"
+                            :value="dataSourceType"
+                        />
+                    </el-select>
+                </template>
 
-				<template #typeCode="{data}">
-					<el-select
-						v-model="data.typeCode"
-						@change="(typeCode: number) => {
-								data.rawType = jdbcTypeStore.jdbcTypeMap.get(typeCode)!
-							}"
-						filterable
-						style="width: 100%">
-						<el-option v-for="type in jdbcTypeStore.jdbcTypeList"
-								   :label="type.type" :value="type.typeCode"></el-option>
-					</el-select>
-				</template>
+                <template #typeCode="{data}">
+                    <el-select
+                        v-model="data.typeCode"
+                        @change="(typeCode: number) => {
+                            data.rawType = jdbcTypeStore.jdbcTypeMap.get(typeCode)!
+                        }"
+                        filterable
+                        style="width: 100%"
+                    >
+                        <el-option
+                            v-for="type in jdbcTypeStore.jdbcTypeList"
+                            :label="type.type"
+                            :value="type.typeCode"
+                        />
+                    </el-select>
+                </template>
 
-				<template #dataSize="{data}">
-					<el-input-number v-model="data.dataSize" controls-position="right"></el-input-number>
-				</template>
+                <template #dataSize="{data}">
+                    <el-input-number v-model="data.dataSize" controls-position="right"/>
+                </template>
 
-				<template #numericPrecision="{data}">
-					<el-input-number v-model="data.numericPrecision" controls-position="right"></el-input-number>
-				</template>
-			</EditList>
+                <template #numericPrecision="{data}">
+                    <el-input-number v-model="data.numericPrecision" controls-position="right"/>
+                </template>
+            </EditList>
 
-			<div style="text-align: right">
-				<el-button type="info" @click="handleCancel">{{ i18nStore.translate('BUTTON_cancel') }}</el-button>
-				<el-button type="primary" @click="handleSubmit">{{ i18nStore.translate('BUTTON_submit') }}</el-button>
-			</div>
-		</template>
+            <div style="text-align: right">
+                <el-button type="info" @click="handleCancel">{{ i18nStore.translate('BUTTON_cancel') }}</el-button>
+                <el-button type="primary" @click="handleSubmit">{{ i18nStore.translate('BUTTON_submit') }}</el-button>
+            </div>
+        </template>
 
-		<template v-else>
-			<ViewList :columns="columnDefaultProps" :lines="columnDefaults" height="2em">
-				<template #dataSourceType="{propData}">
-					<el-text v-text="propData ?? '【ANY】'"></el-text>
-				</template>
-				<template #typeCode="{data}">
-					<el-text v-text="jdbcTypeStore.jdbcTypeMap.get(data.typeCode)"></el-text>
-				</template>
-			</ViewList>
+        <template v-else>
+            <ViewList :columns="columnDefaultProps" :lines="columnDefaults" height="2em">
+                <template #dataSourceType="{propData}">
+                    <el-text v-text="propData ?? '【ANY】'"/>
+                </template>
+                <template #typeCode="{data}">
+                    <el-text v-text="jdbcTypeStore.jdbcTypeMap.get(data.typeCode)"/>
+                </template>
+            </ViewList>
 
-			<div style="text-align: right">
-				<el-button type="warning" @click="handleEdit">{{ i18nStore.translate('BUTTON_edit') }}</el-button>
-			</div>
-		</template>
-	</template>
+            <div style="text-align: right">
+                <el-button type="warning" @click="handleEdit">{{ i18nStore.translate('BUTTON_edit') }}</el-button>
+            </div>
+        </template>
+    </template>
 </template>

@@ -3,6 +3,5 @@ export interface ListEmits<T> {
 }
 
 export interface EditListEmits<T> {
-    (event: "update:lines", lines: T[]): void
     (event: "delete", deletedLines: T[]): void
 }

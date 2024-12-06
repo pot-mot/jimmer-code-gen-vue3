@@ -11,7 +11,7 @@ defineExpose({
 </script>
 
 <template>
-	<div class="list-item">
+	<div class="line-item">
 		<slot></slot>
 	</div>
 </template>

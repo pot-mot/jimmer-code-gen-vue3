@@ -21,14 +21,16 @@ const clear = () => {
 
 <template>
 	<el-button v-if="!propertyBody" @click="init" :icon="Plus"/>
-	<template v-else>
+
+	<div v-else style="width: 100%; text-align: center;">
 		<EditList
 			v-model:lines="propertyBody.importLines"
 			:default-line="''"
+            :labelLine="false"
 		/>
 
 		<el-input type="textarea" v-model="propertyBody.codeBlock"/>
 
 		<el-button @click="clear" :icon="Delete"/>
-	</template>
+	</div>
 </template>

@@ -21,17 +21,20 @@ const clear = () => {
 
 <template>
 	<el-button v-if="!otherAnnotation" @click="init" :icon="Plus"/>
-	<template v-else>
+
+	<div v-else style="width: 100%; text-align: center;">
 		<EditList
 			v-model:lines="otherAnnotation.importLines"
 			:default-line="''"
-		/>
+		    :labelLine="false"
+        />
 
 		<EditList
 			v-model:lines="otherAnnotation.annotations"
 			:default-line="''"
+            :labelLine="false"
 		/>
 
 		<el-button @click="clear" :icon="Delete"/>
-	</template>
+	</div>
 </template>
