@@ -7,10 +7,10 @@ export class EntityService {
     constructor(private executor: Executor) {}
     
     readonly config: (options: EntityServiceOptions['config']) => Promise<
-        number
+        void
     > = async(options) => {
         let _uri = '/entity';
-        return (await this.executor({uri: _uri, method: 'PUT', body: options.body})) as Promise<number>;
+        return (await this.executor({uri: _uri, method: 'PUT', body: options.body})) as Promise<void>;
     }
     
     readonly get: (options: EntityServiceOptions['get']) => Promise<

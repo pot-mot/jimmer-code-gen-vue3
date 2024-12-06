@@ -7,7 +7,7 @@ withDefaults(defineProps<{
     items?: { name: string, span: string }[],
 }>(), {
     gap: '0.2em',
-    height: '2em'
+    height: 'unset'
 })
 
 const slots = defineSlots<{

@@ -22,8 +22,8 @@ export const vTapInput = {
 
         if (!input) return
 
-        input.addEventListener('keydown', (event: KeyboardEvent) => {
-            if (event.key === 'Tab') {
+        input.addEventListener('keydown', (event: Event) => {
+            if ('key' in event && event.key === 'Tab') {
                 event.preventDefault()
                 const start = input.selectionStart
                 const end = input.selectionEnd

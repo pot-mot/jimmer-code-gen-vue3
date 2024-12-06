@@ -1,14 +1,12 @@
 import type {GenerateTag} from '../enums/';
-import type {IdName} from './';
+import type {IdName, MainIdName, TableEntityPair} from './';
 
 export interface GenerateFile {
     path: string;
     content: string;
     tags: Array<GenerateTag>;
-    mainTable?: IdName | undefined;
-    tables: Array<IdName>;
-    mainEntity?: IdName | undefined;
-    entities: Array<IdName>;
+    main?: MainIdName | undefined;
+    tableEntities: Array<TableEntityPair>;
     enums: Array<IdName>;
     associations: Array<IdName>;
 }

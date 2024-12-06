@@ -134,7 +134,9 @@ const handleCancel = () => {
             :columns="enumItemColumns"
             :defaultLine="getDefaultEnumItem"
             :json-schema-validate="validateEnumItem"
-            style="padding-bottom: 2em;">
+            height="2em"
+            style="padding-bottom: 2em;"
+        >
             <template #mappedValue="{data}">
                 <el-input
                     v-if="genEnum.enumType === 'NAME'"

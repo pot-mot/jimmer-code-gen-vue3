@@ -349,6 +349,7 @@ defineExpose({
 				}"
                 :defaultLine="getDefaultColumn"
                 :json-schema-validate="validateColumn"
+                height="2em"
                 style="width: calc(100% - 0.5rem);">
 
                 <template #icon="{data}">
@@ -414,8 +415,9 @@ defineExpose({
                 :columns="tableIndexColumns"
                 v-model:lines="table.indexes"
                 :json-schema-validate="validateIndex"
-                height="auto"
-                style="width: calc(100% - 0.5rem);">
+                height="2em"
+                style="width: calc(100% - 0.5rem);"
+            >
 
                 <template #name="{data, index}">
                     <el-input

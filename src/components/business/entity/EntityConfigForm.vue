@@ -9,15 +9,16 @@ import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {DeepReadonly, ref, watch} from "vue";
 import EntityBusinessSelect from "@/components/business/entity/EntityBusinessSelect.vue";
 import EntityDtoPropertiesSelect from "@/components/business/entity/EntityDtoPropertiesSelect.vue";
-import {getDefaultProperty} from "@/components/business/entity/defaultProperty.ts";
 import {MainLocaleKeyParam} from "@/i18n";
 import {sendI18nMessage} from "@/message/message.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
-import {Delete, Plus} from "@element-plus/icons-vue";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 import OtherAnnotationEditor from "@/components/business/entity/OtherAnnotationEditor.vue";
 import PropertyBodyEditor from "@/components/business/entity/PropertyBodyEditor.vue";
 import Details from "@/components/global/common/Details.vue";
+import EditList from "@/components/global/list/EditList.vue";
+import {getDefaultProperty} from "@/components/business/entity/defaultProperty.ts";
+import ViewList from "@/components/global/list/ViewList.vue";
 
 const i18nStore = useI18nStore()
 
@@ -98,14 +99,6 @@ const handleSubmit = async () => {
 
 	emits('submit', entityWithProperties)
 }
-
-const handleAddManalProperty = () => {
-	properties.value.push(getDefaultProperty())
-}
-
-const handleDeleteManalProperty = (index: number) => {
-	properties.value.splice(index, 1)
-}
 </script>
 
 <template>
@@ -120,7 +113,7 @@ const handleDeleteManalProperty = (index: number) => {
 			<el-col :span="12">
 				<el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_name')">
 					<div class="input-with-checkbox">
-						<el-input v-model="entity.name" :disabled="!entity.overwriteName"/>
+						<el-input v-model="entity.name" :readonly="!entity.overwriteName"/>
 						<el-checkbox v-model="entity.overwriteName"/>
 					</div>
 				</el-form-item>
@@ -129,7 +122,7 @@ const handleDeleteManalProperty = (index: number) => {
 			<el-col :span="12">
 				<el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_comment')">
 					<div class="input-with-checkbox">
-						<el-input v-model="entity.comment" :disabled="!entity.overwriteComment"/>
+						<el-input v-model="entity.comment" :readonly="!entity.overwriteComment"/>
 						<el-checkbox v-model="entity.overwriteComment"/>
 					</div>
 				</el-form-item>
@@ -148,91 +141,108 @@ const handleDeleteManalProperty = (index: number) => {
 			</el-col>
 		</el-row>
 
-		<el-row v-for="property in entity.properties" :key="property.id" :gutter="12">
-			<el-col :span="24">
-				<el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_otherAnnotation')">
-					<OtherAnnotationEditor v-model="property.otherAnnotation"/>
-				</el-form-item>
-			</el-col>
+        <ViewList
+            :lines="entity.properties"
+            class="property-list"
+        >
+            <template #default="{data: property}">
+                <el-row :gutter="12">
+                    <el-col :span="24">
+                        <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_otherAnnotation')">
+                            <OtherAnnotationEditor v-model="property.otherAnnotation"/>
+                        </el-form-item>
+                    </el-col>
 
-			<el-col :span="8">
-				<el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_name')">
-					<div class="input-with-checkbox">
-						<el-input v-model="property.name" :disabled="!property.overwriteName"/>
-						<el-checkbox v-model="property.overwriteName"/>
-					</div>
-				</el-form-item>
-			</el-col>
-			<el-col :span="8">
-				<el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_comment')">
-					<div class="input-with-checkbox">
-						<el-input v-model="property.comment" :disabled="!property.overwriteComment"/>
-						<el-checkbox v-model="property.overwriteComment"/>
-					</div>
-				</el-form-item>
-			</el-col>
+                    <el-col :span="8">
+                        <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_name')">
+                            <div class="input-with-checkbox">
+                                <el-input v-model="property.name" :readonly="!property.overwriteName"/>
+                                <el-checkbox v-model="property.overwriteName"/>
+                            </div>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_comment')">
+                            <div class="input-with-checkbox">
+                                <el-input v-model="property.comment" :readonly="!property.overwriteComment"/>
+                                <el-checkbox v-model="property.overwriteComment"/>
+                            </div>
+                        </el-form-item>
+                    </el-col>
 
-			<el-col :span="8">
-				<el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_type')">
-					<div class="input-with-checkbox">
-						<el-text>{{ property.type }}</el-text>
-						<el-checkbox disabled v-model="property.typeNotNull"/>
-					</div>
-				</el-form-item>
-			</el-col>
+                    <el-col :span="8">
+                        <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_type')">
+                            <div class="input-with-checkbox">
+                                <el-text>{{ property.type }}</el-text>
+                                <el-checkbox disabled v-model="property.typeNotNull"/>
+                            </div>
+                        </el-form-item>
+                    </el-col>
 
-			<el-col :span="24">
-				<el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_remark')">
-					<el-input v-model="property.remark"/>
-				</el-form-item>
-			</el-col>
-		</el-row>
+                    <el-col :span="24">
+                        <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_remark')">
+                            <el-input v-model="property.remark"/>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </template>
+        </ViewList>
 
-		<el-row v-for="(property, index) in properties" :gutter="12">
-			<el-col :span="24">
-				<el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_otherAnnotation')">
-					<OtherAnnotationEditor v-model="property.otherAnnotation"/>
-				</el-form-item>
-			</el-col>
+        <EditList
+            v-model:lines="properties"
+            :default-line="getDefaultProperty"
+            :label-line="false"
+            class="property-list"
+            style="padding-top: 1em;"
+        >
+            <template #default="{data: property}">
+                <el-row :gutter="12">
+                    <el-col :span="24">
+                        <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_otherAnnotation')">
+                            <OtherAnnotationEditor v-model="property.otherAnnotation"/>
+                        </el-form-item>
+                    </el-col>
 
-			<el-col :span="8">
-				<el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_name')">
-					<el-input v-model="property.name"/>
-				</el-form-item>
-			</el-col>
-			<el-col :span="8">
-				<el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_comment')">
-					<el-input v-model="property.comment"/>
-				</el-form-item>
-			</el-col>
+                    <el-col :span="8">
+                        <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_name')">
+                            <el-input v-model="property.name"/>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_comment')">
+                            <el-input v-model="property.comment"/>
+                        </el-form-item>
+                    </el-col>
 
-			<el-col :span="8">
-				<el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_type')">
-					<div class="input-with-checkbox">
-						<el-input v-model="property.type"/>
-						<el-checkbox v-model="property.typeNotNull"/>
-					</div>
-				</el-form-item>
-			</el-col>
+                    <el-col :span="8">
+                        <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_type')">
+                            <div class="input-with-checkbox">
+                                <el-input v-model="property.type"/>
+                                <el-checkbox v-model="property.typeNotNull"/>
+                            </div>
+                        </el-form-item>
+                    </el-col>
 
-			<el-col :span="24">
-				<el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_remark')">
-					<el-input v-model="property.remark"/>
-				</el-form-item>
-			</el-col>
+                    <el-col :span="24">
+                        <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_remark')">
+                            <el-input v-model="property.remark"/>
+                        </el-form-item>
+                    </el-col>
 
-			<el-col :span="24">
-				<el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_body')">
-					<PropertyBodyEditor v-model="property.body"/>
-				</el-form-item>
-			</el-col>
+                    <el-col :span="24">
+                        <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_body')">
+                            <PropertyBodyEditor v-model="property.body"/>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+            </template>
+        </EditList>
 
-			<el-button @click="handleDeleteManalProperty(index)" :icon="Delete"/>
-		</el-row>
+		<Details style="padding: 1em 0;">
+            <template #title>
+                <el-text size="default">DTO</el-text>
+            </template>
 
-		<el-button @click="handleAddManalProperty" :icon="Plus"/>
-
-		<Details title="dto">
 			<EntityDtoPropertiesSelect
 				v-model:entity="entity"
 				v-model:properties="properties"
@@ -251,5 +261,16 @@ const handleDeleteManalProperty = (index: number) => {
 	display: grid;
 	grid-gap: 0.6em;
 	grid-template-columns: calc(100% - 1.6em) 1em;
+}
+
+.property-list .el-row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-top: 0.4em;
+}
+
+.property-list .el-col .el-form-item {
+    line-height: 2em;
+    margin-bottom: 0.4em;
 }
 </style>
