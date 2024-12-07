@@ -39,6 +39,12 @@ type MainLocale = {
 
     ErrorCode_DATA_SOURCE__CONNECT_FAIL: (error: Errors["DATA_SOURCE"]["CONNECT_FAIL"]) => string
 
+    ErrorCode_DATA_SOURCE__H2__INIT_FAIL: (error: Errors["DATA_SOURCE"]["H2__INIT_FAIL"]) => string
+
+    ErrorCode_DATA_SOURCE__SQL_EXECUTE_FAIL: (error: Errors["DATA_SOURCE"]["SQL_EXECUTE_FAIL"]) => string
+
+    ErrorCode_DATA_SOURCE__DATA_SOURCE_NOT_FOUND: (error: Errors["DATA_SOURCE"]["DATA_SOURCE_NOT_FOUND"]) => string
+
     ErrorCode_MODEL__DEFAULT_ITEM_NOT_FOUND: (error: Errors["MODEL"]["DEFAULT_ITEM_NOT_FOUND"]) => string
 
     ErrorCode_MODEL__ID_PROPERTY_NOT_FOUND: (error: Errors["MODEL"]["ID_PROPERTY_NOT_FOUND"]) => string

@@ -95,6 +95,19 @@ export const localeEn: ProjectLocale = {
         `Data source connection failed
   Exception message 【${error.exceptionMessage}】`,
 
+    ErrorCode_DATA_SOURCE__H2__INIT_FAIL: (error: Errors["DATA_SOURCE"]["H2__INIT_FAIL"]) =>
+        `【H2 Initialization Failed】
+  Exception Message: ${error.exceptionMessage}`,
+
+    ErrorCode_DATA_SOURCE__SQL_EXECUTE_FAIL: (error: Errors["DATA_SOURCE"]["SQL_EXECUTE_FAIL"]) =>
+        `【SQL Execution Failed】
+  SQL Statement: ${error.sql}
+  Exception Message: ${error.exceptionMessage}`,
+
+    ErrorCode_DATA_SOURCE__DATA_SOURCE_NOT_FOUND: (error: Errors["DATA_SOURCE"]["DATA_SOURCE_NOT_FOUND"]) =>
+        `【Data Source Not Found】
+  Data Source ID: ${error.id}`,
+
     ErrorCode_MODEL__DEFAULT_ITEM_NOT_FOUND: (error: Errors["MODEL"]["DEFAULT_ITEM_NOT_FOUND"]) =>
         `【Default item of enum not found】
   Enum 【${formatIdName(error.enum)}】`,
@@ -103,7 +116,7 @@ export const localeEn: ProjectLocale = {
         `【Entity ID property not found】
   Entity 【${formatIdName(error.entity)}】`,
 
-        ErrorCode_MODEL__INDEX_REF_PROPERTY_NOT_FOUND: (error: Errors["MODEL"]["INDEX_REF_PROPERTY_NOT_FOUND"]) =>
+    ErrorCode_MODEL__INDEX_REF_PROPERTY_NOT_FOUND: (error: Errors["MODEL"]["INDEX_REF_PROPERTY_NOT_FOUND"]) =>
         `【Index Referenced Property Not Found】
   Entity【${formatIdName(error.entity)}】
   Properties ${error.entityProperties.map(it => `【${formatIdName(it)}${it.id === error.notFoundPropertyId ? ' !Not Found!' : ''}】`).join(", ")}

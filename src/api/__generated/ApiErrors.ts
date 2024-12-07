@@ -228,6 +228,19 @@ export type AllErrors = {
         matchedColumn: IdName, 
         matchedProperties: Array<IdName>
     } | {
+        family: 'DATA_SOURCE', 
+        code: 'H2__INIT_FAIL', 
+        exceptionMessage: string
+    } | {
+        family: 'DATA_SOURCE', 
+        code: 'SQL_EXECUTE_FAIL', 
+        sql: string, 
+        exceptionMessage: string
+    } | {
+        family: 'DATA_SOURCE', 
+        code: 'DATA_SOURCE_NOT_FOUND', 
+        id: number
+    } | {
         family: 'LOAD_FROM_DATA_SOURCE', 
         code: 'ASSOCIATION_COLUMN_REFERENCES_CANNOT_BE_EMPTY', 
         foreignKeyName: string
@@ -485,7 +498,40 @@ export type ApiErrors = {
             })
     }, 
     'schemaService': {
+        'preview': AllErrors & ({
+                family: 'DATA_SOURCE', 
+                code: 'H2__INIT_FAIL', 
+                readonly [key:string]: any
+            } | {
+                family: 'DATA_SOURCE', 
+                code: 'CONNECT_FAIL', 
+                readonly [key:string]: any
+            } | {
+                family: 'DATA_SOURCE', 
+                code: 'SQL_EXECUTE_FAIL', 
+                readonly [key:string]: any
+            } | {
+                family: 'DATA_SOURCE', 
+                code: 'DATA_SOURCE_NOT_FOUND', 
+                readonly [key:string]: any
+            }), 
         'load': AllErrors & ({
+                family: 'DATA_SOURCE', 
+                code: 'H2__INIT_FAIL', 
+                readonly [key:string]: any
+            } | {
+                family: 'DATA_SOURCE', 
+                code: 'CONNECT_FAIL', 
+                readonly [key:string]: any
+            } | {
+                family: 'DATA_SOURCE', 
+                code: 'SQL_EXECUTE_FAIL', 
+                readonly [key:string]: any
+            } | {
+                family: 'DATA_SOURCE', 
+                code: 'DATA_SOURCE_NOT_FOUND', 
+                readonly [key:string]: any
+            } | {
                 family: 'LOAD_FROM_DATA_SOURCE', 
                 code: 'ASSOCIATION_COLUMN_REFERENCES_CANNOT_BE_EMPTY', 
                 readonly [key:string]: any

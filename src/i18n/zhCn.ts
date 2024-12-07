@@ -94,6 +94,19 @@ export const localeZhCn: ProjectLocale = {
         `数据源连接失败
   异常信息【${error.exceptionMessage}】`,
 
+    ErrorCode_DATA_SOURCE__H2__INIT_FAIL: (error: Errors["DATA_SOURCE"]["H2__INIT_FAIL"]) =>
+        `【H2 初始化失败】
+  异常信息：${error.exceptionMessage}`,
+
+    ErrorCode_DATA_SOURCE__SQL_EXECUTE_FAIL: (error: Errors["DATA_SOURCE"]["SQL_EXECUTE_FAIL"]) =>
+        `【SQL 执行失败】
+  SQL 语句：${error.sql}
+  异常信息：${error.exceptionMessage}`,
+
+    ErrorCode_DATA_SOURCE__DATA_SOURCE_NOT_FOUND: (error: Errors["DATA_SOURCE"]["DATA_SOURCE_NOT_FOUND"]) =>
+        `【数据源未找到】
+  数据源 ID：${error.id}`,
+
     ErrorCode_MODEL__DEFAULT_ITEM_NOT_FOUND: (error: Errors["MODEL"]["DEFAULT_ITEM_NOT_FOUND"]) =>
         `【枚举默认项不存在】
   枚举【${formatIdName(error.enum)}】`,
