@@ -1,6 +1,6 @@
 import type {MainLocaleKeyParam, ProjectLocale} from "@/i18n/index.ts"
 import type {DeepReadonly} from "vue"
-import type {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static"
+import type {GenAssociationModelInput, GenTableModelInput, IdName} from "@/api/__generated/model/static"
 import {defaultPlaceholder, Errors, formatIdName} from "@/api/handleError.ts"
 import {jsonPrettyFormat} from "@/utils/json.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
@@ -615,4 +615,9 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
     VALIDATE_Entity_propertyNameCannotBeEmpty: "属性名称不得为空",
     VALIDATE_Entity_propertyTypeCannotBeEmpty: (propertyName: string) => `属性【${propertyName}】类型不得为空`,
     VALIDATE_Entity_propertyNameCannotBeDuplicate: (propertyName: string) => `属性名称【${propertyName}】不可重复`,
+
+    MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel: (idName: IdName) => `表【${formatIdName(idName)}】在当前模型中未找到`,
+    MESSAGE_GenerateFileMenu_clickEntityNotFound: (idName: IdName) => `实体【${formatIdName(idName)}】未找到`,
+    MESSAGE_GenerateFileMenu_clickAssociationNotFoundInCurrentModel: (idName: IdName) => `关联【${formatIdName(idName)}】在当前模型中未找到`,
+    MESSAGE_GenerateFileMenu_clickEnumNotFoundInCurrentModel: (idName: IdName) => `枚举【${formatIdName(idName)}】在当前模型中未找到`,
 }

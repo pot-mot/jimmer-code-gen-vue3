@@ -1,6 +1,6 @@
 import type {MainLocaleKeyParam, ProjectLocale} from "@/i18n/index.ts"
 import type {DeepReadonly} from "vue"
-import type {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static"
+import type {GenAssociationModelInput, GenTableModelInput, IdName} from "@/api/__generated/model/static"
 import type {Errors} from "@/api/handleError.ts";
 import {defaultPlaceholder, formatIdName} from "@/api/handleError.ts";
 import {jsonPrettyFormat} from "@/utils/json.ts";
@@ -616,5 +616,10 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
     VALIDATE_Entity_propertyNameCannotBeEmpty: "Property name cannot be empty",
     VALIDATE_Entity_propertyTypeCannotBeEmpty: (propertyName: string) => `Property [${propertyName}] type cannot be empty`,
     VALIDATE_Entity_propertyNameCannotBeDuplicate: (propertyName: string) => `Property name [${propertyName}] cannot be duplicated`,
+
+    MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel: (idName: IdName) => `Table [${formatIdName(idName)}] not found in Current Model`,
+    MESSAGE_GenerateFileMenu_clickEntityNotFound: (idName: IdName) => `Entity [${formatIdName(idName)}] not found`,
+    MESSAGE_GenerateFileMenu_clickAssociationNotFoundInCurrentModel: (idName: IdName) => `Association [${formatIdName(idName)}] not found in Current Model`,
+    MESSAGE_GenerateFileMenu_clickEnumNotFoundInCurrentModel: (idName: IdName) => `Enum [${formatIdName(idName)}] not found in Current Model`,
 
 }

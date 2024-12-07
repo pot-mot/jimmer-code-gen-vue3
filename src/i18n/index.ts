@@ -1,4 +1,4 @@
-import type {GenAssociationModelInput, GenTableModelInput} from "@/api/__generated/model/static"
+import type {GenAssociationModelInput, GenTableModelInput, IdName} from "@/api/__generated/model/static"
 import type {DeepReadonly} from "vue"
 import type {Errors} from "@/api/handleError.ts"
 
@@ -455,6 +455,10 @@ type MainLocale = {
     VALIDATE_Entity_propertyTypeCannotBeEmpty: (propertyName: string) => string
     VALIDATE_Entity_propertyNameCannotBeDuplicate: (propertyName: string) => string
 
+    MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel: (idName: IdName) => string
+    MESSAGE_GenerateFileMenu_clickEntityNotFound: (idName: IdName) => string
+    MESSAGE_GenerateFileMenu_clickAssociationNotFoundInCurrentModel: (idName: IdName) => string
+    MESSAGE_GenerateFileMenu_clickEnumNotFoundInCurrentModel: (idName: IdName) => string
 }
 
 type LocaleKey<
