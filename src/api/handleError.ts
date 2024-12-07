@@ -8,6 +8,7 @@ import {handleGenerateError} from "@/api/handleErrors/generate.ts";
 import {handleColumnTypeError} from "@/api/handleErrors/columnType.ts";
 import {AllErrors} from "@/api/__generated";
 import {IdName, IdNullableName} from "@/api/__generated/model/static";
+import {handleModelBusinessInputError} from "@/api/handleErrors/modelBusinessInput.ts";
 
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
 
@@ -78,6 +79,10 @@ export const handleExpectError = (_uri: string, _method: Method, _response: Resp
 
             case "GENERATE":
                 handleGenerateError(error)
+                return
+
+            case "MODEL_BUSINESS_INPUT":
+                handleModelBusinessInputError(error)
                 return
         }
     }

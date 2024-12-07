@@ -209,6 +209,26 @@ ${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${it
         `【从数据源导入错误】
   外键【${error.foreignKeyName}】引用列【${error.tableName}.${error.columnName}】未找到`,
 
+    ErrorCode_MODEL_BUSINESS_INPUT__ENTITY_CANNOT_MATCH_TABLE: (error: Errors["MODEL_BUSINESS_INPUT"]["ENTITY_CANNOT_MATCH_TABLE"]) =>
+        `【实体无法匹配表】
+  实体【${error.entityName}】无法匹配表【${error.tableName}】`,
+
+    ErrorCode_MODEL_BUSINESS_INPUT__ENTITY_MATCHED_TABLE_CONVERTED_ENTITY_NOT_FOUND: (error: Errors["MODEL_BUSINESS_INPUT"]["ENTITY_MATCHED_TABLE_CONVERTED_ENTITY_NOT_FOUND"]) =>
+        `【匹配的表转换实体未找到】
+  实体【${error.entityName}】匹配表【${formatIdName(error.table)}】转换后的实体未找到`,
+
+    ErrorCode_MODEL_BUSINESS_INPUT__PROPERTY_CANNOT_MATCH_COLUMN: (error: Errors["MODEL_BUSINESS_INPUT"]["PROPERTY_CANNOT_MATCH_COLUMN"]) =>
+        `【属性无法匹配列】
+  实体【${formatIdName(error.entity)}】属性【${error.propertyName}】无法匹配列`,
+
+    ErrorCode_MODEL_BUSINESS_INPUT__PROPERTY_CANNOT_REMATCH_OLD_PROPERTY: (error: Errors["MODEL_BUSINESS_INPUT"]["PROPERTY_CANNOT_REMATCH_OLD_PROPERTY"]) =>
+        `【属性无法重新匹配旧属性】
+  实体【${formatIdName(error.entity)}】属性【${error.propertyName}】无法重新匹配旧属性【${formatIdName(error.matchedColumn)}】`,
+
+    ErrorCode_MODEL_BUSINESS_INPUT__PROPERTY_MATCHED_MORE_THAN_ONE_OLD_PROPERTY: (error: Errors["MODEL_BUSINESS_INPUT"]["PROPERTY_MATCHED_MORE_THAN_ONE_OLD_PROPERTY"]) =>
+        `【属性匹配了多个旧属性】
+  实体【${formatIdName(error.entity)}】属性【${error.propertyName}】匹配了多个旧属性【${error.matchedProperties.map(it => `【${formatIdName(it)}】`).join(", ")}】`,
+
 
     MESSAGE_save_success: '保存成功',
     MESSAGE_save_fail: '保存失败',

@@ -200,6 +200,34 @@ export type AllErrors = {
         table: IdName, 
         superTableIds: Array<number>
     } | {
+        family: 'MODEL_BUSINESS_INPUT', 
+        code: 'ENTITY_CANNOT_MATCH_TABLE', 
+        entityName: string, 
+        tableName: string
+    } | {
+        family: 'MODEL_BUSINESS_INPUT', 
+        code: 'ENTITY_MATCHED_TABLE_CONVERTED_ENTITY_NOT_FOUND', 
+        entityName: string, 
+        table: IdName
+    } | {
+        family: 'MODEL_BUSINESS_INPUT', 
+        code: 'PROPERTY_CANNOT_MATCH_COLUMN', 
+        entity: IdName, 
+        propertyName: string
+    } | {
+        family: 'MODEL_BUSINESS_INPUT', 
+        code: 'PROPERTY_CANNOT_REMATCH_OLD_PROPERTY', 
+        entity: IdName, 
+        propertyName: string, 
+        matchedColumn: IdName
+    } | {
+        family: 'MODEL_BUSINESS_INPUT', 
+        code: 'PROPERTY_MATCHED_MORE_THAN_ONE_OLD_PROPERTY', 
+        entity: IdName, 
+        propertyName: string, 
+        matchedColumn: IdName, 
+        matchedProperties: Array<IdName>
+    } | {
         family: 'LOAD_FROM_DATA_SOURCE', 
         code: 'ASSOCIATION_COLUMN_REFERENCES_CANNOT_BE_EMPTY', 
         foreignKeyName: string
@@ -432,6 +460,27 @@ export type ApiErrors = {
             } | {
                 family: 'LOAD_FROM_MODEL', 
                 code: 'INDEXES_TABLE_SUPER_TABLE_NOT_FOUND', 
+                readonly [key:string]: any
+            }), 
+        'saveBusiness': AllErrors & ({
+                family: 'MODEL_BUSINESS_INPUT', 
+                code: 'ENTITY_CANNOT_MATCH_TABLE', 
+                readonly [key:string]: any
+            } | {
+                family: 'MODEL_BUSINESS_INPUT', 
+                code: 'ENTITY_MATCHED_TABLE_CONVERTED_ENTITY_NOT_FOUND', 
+                readonly [key:string]: any
+            } | {
+                family: 'MODEL_BUSINESS_INPUT', 
+                code: 'PROPERTY_CANNOT_MATCH_COLUMN', 
+                readonly [key:string]: any
+            } | {
+                family: 'MODEL_BUSINESS_INPUT', 
+                code: 'PROPERTY_CANNOT_REMATCH_OLD_PROPERTY', 
+                readonly [key:string]: any
+            } | {
+                family: 'MODEL_BUSINESS_INPUT', 
+                code: 'PROPERTY_MATCHED_MORE_THAN_ONE_OLD_PROPERTY', 
                 readonly [key:string]: any
             })
     }, 

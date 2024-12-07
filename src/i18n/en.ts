@@ -210,6 +210,26 @@ ${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 
         `【Data source import error】
   Foreign key 【${error.foreignKeyName}】 referenced column 【${error.tableName}.${error.columnName}】 not found`,
 
+    ErrorCode_MODEL_BUSINESS_INPUT__ENTITY_CANNOT_MATCH_TABLE: (error: Errors["MODEL_BUSINESS_INPUT"]["ENTITY_CANNOT_MATCH_TABLE"]) =>
+        `【Entity Cannot Match Table】
+  Entity 【${error.entityName}】 cannot match table 【${error.tableName}】`,
+
+    ErrorCode_MODEL_BUSINESS_INPUT__ENTITY_MATCHED_TABLE_CONVERTED_ENTITY_NOT_FOUND: (error: Errors["MODEL_BUSINESS_INPUT"]["ENTITY_MATCHED_TABLE_CONVERTED_ENTITY_NOT_FOUND"]) =>
+        `【Converted Entity Not Found for Matched Table】
+  Entity 【${error.entityName}】 matched table 【${formatIdName(error.table)}】 converted entity not found`,
+
+    ErrorCode_MODEL_BUSINESS_INPUT__PROPERTY_CANNOT_MATCH_COLUMN: (error: Errors["MODEL_BUSINESS_INPUT"]["PROPERTY_CANNOT_MATCH_COLUMN"]) =>
+        `【Property Cannot Match Column】
+  Entity 【${formatIdName(error.entity)}】 property 【${error.propertyName}】 cannot match column`,
+
+    ErrorCode_MODEL_BUSINESS_INPUT__PROPERTY_CANNOT_REMATCH_OLD_PROPERTY: (error: Errors["MODEL_BUSINESS_INPUT"]["PROPERTY_CANNOT_REMATCH_OLD_PROPERTY"]) =>
+        `【Property Cannot Rematch Old Property】
+  Entity 【${formatIdName(error.entity)}】 property 【${error.propertyName}】 cannot rematch old property 【${formatIdName(error.matchedColumn)}】`,
+
+    ErrorCode_MODEL_BUSINESS_INPUT__PROPERTY_MATCHED_MORE_THAN_ONE_OLD_PROPERTY: (error: Errors["MODEL_BUSINESS_INPUT"]["PROPERTY_MATCHED_MORE_THAN_ONE_OLD_PROPERTY"]) =>
+        `【Property Matched More Than One Old Property】
+  Entity 【${formatIdName(error.entity)}】 property 【${error.propertyName}】 matched more than one old properties 【${error.matchedProperties.map(it => `【${formatIdName(it)}】`).join(", ")}】`,
+
     MESSAGE_save_success: 'Save Successful',
     MESSAGE_save_fail: 'Save Failed',
     MESSAGE_submit_success: 'Submit Successful',
