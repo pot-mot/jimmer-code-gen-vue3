@@ -451,9 +451,20 @@ type MainLocale = {
 
     VALIDATE_Entity_nameCannotBeEmpty: string
     VALIDATE_Entity_nameCannotBeDuplicate: (entityName: string) => string
+    VALIDATE_Entity_otherAnnotation_importLineCannotBeEmpty: (entityName: string) => string
+    VALIDATE_Entity_otherAnnotation_importLineCannotBeDuplicate: (entityName: string, importLine: string) => string
+    VALIDATE_Entity_otherAnnotation_annotationCannotBeEmpty: (entityName: string) => string
+    VALIDATE_Entity_otherAnnotation_annotationCannotBeDuplicate: (entityName: string, annotation: string) => string
     VALIDATE_Entity_propertyNameCannotBeEmpty: string
     VALIDATE_Entity_propertyTypeCannotBeEmpty: (propertyName: string) => string
     VALIDATE_Entity_propertyNameCannotBeDuplicate: (propertyName: string) => string
+    VALIDATE_Entity_propertyOtherAnnotation_importLineCannotBeEmpty: (propertyName: string) => string
+    VALIDATE_Entity_propertyOtherAnnotation_importLineCannotBeDuplicate: (propertyName: string, importLine: string) => string
+    VALIDATE_Entity_propertyOtherAnnotation_annotationCannotBeEmpty: (propertyName: string) => string
+    VALIDATE_Entity_propertyOtherAnnotation_annotationCannotBeDuplicate: (propertyName: string, annotation: string) => string
+    VALIDATE_Entity_propertyBody_importLineCannotBeEmpty: (propertyName: string) => string
+    VALIDATE_Entity_propertyBody_importLineCannotBeDuplicate: (propertyName: string, importLine: string) => string
+    VALIDATE_Entity_propertyBody_codeBlockCannotBeEmpty: (propertyName: string) => string
 
     MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel: (idName: IdName) => string
     MESSAGE_GenerateFileMenu_clickEntityNotFound: (idName: IdName) => string
