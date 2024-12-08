@@ -123,6 +123,16 @@ export const localeEn: ProjectLocale = {
   Index【${formatIdName(error.index)}】
   Index Referenced Properties ${error.indexPropertyIds.map(it => `【${it}${it === error.notFoundPropertyId ? ' !Not Found!' : ''}】`).join(", ")}`,
 
+    ErrorCode_MODEL__TREE_ENTITY_CANNOT_FOUND_PARENT_PROPERTY: (error: Errors["MODEL"]["TREE_ENTITY_CANNOT_FOUND_PARENT_PROPERTY"]) =>
+        `【Tree Entity Error】
+  Tree Entity 【${formatIdName(error.entity)}】 cannot find parent property
+  Self-association properties 【${error.selfAssociationProperties.map(it => `【${formatIdName(it)}】`).join(", ")}】`,
+
+    ErrorCode_MODEL__TREE_ENTITY_CANNOT_FOUND_CHILDREN_PROPERTY: (error: Errors["MODEL"]["TREE_ENTITY_CANNOT_FOUND_CHILDREN_PROPERTY"]) =>
+        `【Tree Entity Error】
+  Tree Entity 【${formatIdName(error.entity)}】 cannot find children property
+  Self-association properties 【${error.selfAssociationProperties.map(it => `【${formatIdName(it)}】`).join(", ")}】`,
+
     ErrorCode_GENERATE__MODEL_NOT_FOUND: (error: Errors["GENERATE"]["MODEL_NOT_FOUND"]) =>
         `【Generation error】
   Model not found

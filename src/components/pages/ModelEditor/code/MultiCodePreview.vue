@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {computed, ref} from 'vue'
 import CodePreview from "../../../global/code/CodePreview.vue";
-import {GenerateFile} from "@/api/__generated/model/static";
+import {GenerateFile, GenerateResult, TableEntityNotNullPair} from "@/api/__generated/model/static";
 import LeftRightLayout from "@/components/global/layout/LeftRightLayout.vue";
 import {ElTree} from "element-plus";
 import {GenerateTag, GenerateTag_CONSTANTS} from "@/api/__generated/model/enums";
@@ -10,7 +10,7 @@ import 'splitpanes/dist/splitpanes.css'
 import GenerateFileAssociationMenu from "@/components/pages/ModelEditor/code/GenerateFileMenu.vue";
 
 interface MultiCodePreviewProps {
-    codeFiles: Array<GenerateFile> | undefined,
+    codes: GenerateResult,
     width?: string
     height?: string
     showLineCounts?: boolean
@@ -24,7 +24,21 @@ const props = withDefaults(defineProps<MultiCodePreviewProps>(), {
 
 const treeRef = ref<InstanceType<typeof ElTree>>()
 
-const currentPath = ref<string | undefined>(props.codeFiles?.[0]?.path)
+const currentPath = ref<string | undefined>(props.codes.files[0]?.path)
+const tableIdMap = computed(() => {
+    const map = new Map<number, TableEntityNotNullPair>
+    for (const pair of props.codes.tableEntityPairs) {
+        map.set(pair.table.id, pair)
+    }
+    return map
+})
+const entityIdMap = computed(() => {
+    const map = new Map<number, TableEntityNotNullPair>
+    for (const pair of props.codes.tableEntityPairs) {
+        map.set(pair.entity.id, pair)
+    }
+    return map
+})
 
 const currentLanguage = computed<string>(() => {
     const splitParts = currentPath.value?.split(".")
@@ -36,7 +50,7 @@ const currentLanguage = computed<string>(() => {
 })
 
 const currentFile = computed(() =>
-    props.codeFiles?.find(it => it.path === currentPath.value)
+    props.codes.files.find(it => it.path === currentPath.value)
 )
 
 type FilePathTreeItem = {
@@ -94,7 +108,7 @@ const getFilteredFiles = (): Array<GenerateFile> => {
         {positiveWords: [], negativeWords: []}
     )
 
-    return props.codeFiles?.filter(it => {
+    return props.codes.files.filter(it => {
         if (positiveWords.length > 0) {
             const inPositiveWords = positiveWords.every(word => it.path.includes(word))
             if (!inPositiveWords) return false
@@ -130,7 +144,7 @@ defineExpose<{
 </script>
 
 <template>
-    <LeftRightLayout v-if="codeFiles && codeFiles.length > 0" :left-size="20">
+    <LeftRightLayout v-if="codes && codes.files.length > 0" :left-size="20">
         <template #left>
             <Splitpanes horizontal>
                 <Pane style="overflow-y: scroll;" size="11em">
@@ -189,6 +203,8 @@ defineExpose<{
                 <Pane style="overflow-y: scroll;" size="3em">
                     <GenerateFileAssociationMenu
                         :file="currentFile"
+                        :table-id-map="tableIdMap"
+                        :entity-id-map="entityIdMap"
                     />
                 </Pane>
                 <Pane>

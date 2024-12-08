@@ -118,6 +118,16 @@ export type AllErrors = {
         indexPropertyIds: Array<number>, 
         listProperty: IdName
     } | {
+        family: 'MODEL', 
+        code: 'TREE_ENTITY_CANNOT_FOUND_PARENT_PROPERTY', 
+        entity: IdName, 
+        selfAssociationProperties: Array<IdName>
+    } | {
+        family: 'MODEL', 
+        code: 'TREE_ENTITY_CANNOT_FOUND_CHILDREN_PROPERTY', 
+        entity: IdName, 
+        selfAssociationProperties: Array<IdName>
+    } | {
         family: 'GENERATE', 
         code: 'MODEL_NOT_FOUND', 
         modelId: number
@@ -412,6 +422,14 @@ export type ApiErrors = {
             } | {
                 family: 'MODEL', 
                 code: 'INDEX_REF_PROPERTY_CANNOT_BE_LIST', 
+                readonly [key:string]: any
+            } | {
+                family: 'MODEL', 
+                code: 'TREE_ENTITY_CANNOT_FOUND_PARENT_PROPERTY', 
+                readonly [key:string]: any
+            } | {
+                family: 'MODEL', 
+                code: 'TREE_ENTITY_CANNOT_FOUND_CHILDREN_PROPERTY', 
                 readonly [key:string]: any
             } | {
                 family: 'GENERATE', 

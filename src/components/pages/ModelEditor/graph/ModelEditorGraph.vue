@@ -109,8 +109,8 @@
                             limit-by-parent
                             :modal="false">
                     <MultiCodePreview
-                        ref="multiCodePreview"
-                        :code-files="codePreviewStore.codeFiles"
+                        ref="multiCodePreviewRef"
+                        :codes="codePreviewStore.codes"
                         height="calc(100vh - 5em - 30px)"
                         width="100%"
                         class="multi-code-preview"/>
@@ -182,7 +182,7 @@ import {
     downloadCodeZip,
     downloadModelZip,
     exportModelJson,
-    previewModelCode,
+    getModelCodes,
 } from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {useDocumentEvent} from "@/utils/useDocumentEvent.ts";
@@ -363,7 +363,7 @@ const handleCodePreview = loadingStore.withLoading('ModelEditorGraph handleCodeP
 
     const model = MODEL._model()
     await convertModel(model.id)
-	codePreviewStore.codeFiles = await previewModelCode(model.id)
+	codePreviewStore.codes = await getModelCodes(model.id)
 	codePreviewStore.open()
 })
 
@@ -382,13 +382,13 @@ watch(() => MODEL.isLoaded, async (value) => {
 	}
 })
 
-const multiCodePreview = ref<{
+const multiCodePreviewRef = ref<{
     getFilteredFiles: () => Array<GenerateFile>
 } | undefined>()
 
 const handleCodeDownload = loadingStore.withLoading('ModelEditorGraph handleModelDownload', async () => {
-    if (multiCodePreview.value) {
-        await downloadCodeZip(multiCodePreview.value.getFilteredFiles())
+    if (multiCodePreviewRef.value) {
+        await downloadCodeZip(multiCodePreviewRef.value.getFilteredFiles())
     }
 })
 

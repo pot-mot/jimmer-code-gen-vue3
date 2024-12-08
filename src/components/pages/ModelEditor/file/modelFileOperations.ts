@@ -32,7 +32,7 @@ export const convertModel = async (id: number) => {
     return await api.convertService.convertModel({id})
 }
 
-export const previewModelCode = async (
+export const getModelCodes = async (
     id: number,
     types: Array<GenerateType> = ['ALL'],
     viewType: ViewType = 'VUE3_ELEMENT_PLUS'
@@ -91,7 +91,7 @@ export const downloadModelZip = async (
     types: Array<GenerateType> = ['ALL'],
     viewType: ViewType = 'VUE3_ELEMENT_PLUS'
 ) => {
-    const generateFiles = await api.generateService.generateModel({id: model.id, types, viewType})
+    const {files: codeFiles} = await getModelCodes(model.id, types, viewType)
     const modelJson = await getModelJson(model)
     const copyData = getModelAllCopyData(model)
 
@@ -100,6 +100,6 @@ export const downloadModelZip = async (
         {path: "data.json", content: jsonPrettyFormat(copyData)}
     ]
 
-    const file = await createZip([...modelFiles, ...generateFiles])
+    const file = await createZip([...modelFiles, ...codeFiles])
     saveAs(file, `model-[${model.name}].zip`)
 }

@@ -122,6 +122,16 @@ export const localeZhCn: ProjectLocale = {
   索引【${formatIdName(error.index)}】
   索引引用的属性${error.indexPropertyIds.map(it => `【${it}${it === error.notFoundPropertyId ? ' !未找到!' : ''}】`).join(", ")}`,
 
+    ErrorCode_MODEL__TREE_ENTITY_CANNOT_FOUND_PARENT_PROPERTY: (error: Errors["MODEL"]["TREE_ENTITY_CANNOT_FOUND_PARENT_PROPERTY"]) =>
+        `【树形实体错误】
+  树形实体【${formatIdName(error.entity)}】无法找到父属性
+  自关联属性【${error.selfAssociationProperties.map(it => `【${formatIdName(it)}】`).join(", ")}】`,
+
+    ErrorCode_MODEL__TREE_ENTITY_CANNOT_FOUND_CHILDREN_PROPERTY: (error: Errors["MODEL"]["TREE_ENTITY_CANNOT_FOUND_CHILDREN_PROPERTY"]) =>
+        `【树形实体错误】
+  树形实体【${formatIdName(error.entity)}】无法找到子属性
+  自关联属性【${error.selfAssociationProperties.map(it => `【${formatIdName(it)}】`).join(", ")}】`,
+
     ErrorCode_GENERATE__MODEL_NOT_FOUND: (error: Errors["GENERATE"]["MODEL_NOT_FOUND"]) =>
         `【生成错误】
   模型未找到

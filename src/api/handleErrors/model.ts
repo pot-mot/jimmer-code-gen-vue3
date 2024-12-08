@@ -24,5 +24,19 @@ export const handleModelError = (error: AllErrors & {family: "MODEL"}) => {
                 args: [error]
             }, "error", error)
             throw EXPECT_ERROR
+
+        case "TREE_ENTITY_CANNOT_FOUND_PARENT_PROPERTY":
+            sendI18nMessage({
+                key: "ErrorCode_MODEL__TREE_ENTITY_CANNOT_FOUND_PARENT_PROPERTY",
+                args: [error]
+            }, "error", error)
+            throw EXPECT_ERROR
+
+        case "TREE_ENTITY_CANNOT_FOUND_CHILDREN_PROPERTY":
+            sendI18nMessage({
+                key: "ErrorCode_MODEL__TREE_ENTITY_CANNOT_FOUND_CHILDREN_PROPERTY",
+                args: [error]
+            }, "error", error)
+            throw EXPECT_ERROR
     }
 }

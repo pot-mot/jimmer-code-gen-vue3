@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {GenerateFile, IdName, TableEntityPair} from "@/api/__generated/model/static";
+import {GenerateFile, IdName, TableEntityNotNullPair, TableEntityPair} from "@/api/__generated/model/static";
 import {useTableDialogsStore} from "@/store/modelEditor/TableDialogsStore.ts";
 import {useEntityDialogsStore} from "@/store/modelEditor/EntityDialogsStore.ts";
 import {api} from "@/api";
@@ -20,25 +20,57 @@ const enumDialogsStore = useEnumDialogsStore()
 const associationDialogsStore = useAssociationDialogsStore()
 
 const props = defineProps<{
-    file: GenerateFile
+    file: GenerateFile,
+    tableIdMap: Map<number, TableEntityNotNullPair>,
+    entityIdMap: Map<number, TableEntityNotNullPair>,
 }>()
 
 const mainTableEntity = computed<TableEntityPair | undefined>(() => {
-    if (props.file.main?.mainType === 'Table') {
-        return props.file.tableEntities.filter(it => it.table?.name === props.file.main?.idName.name)[0]
-    } else if (props.file.main?.mainType === 'Entity') {
-        return props.file.tableEntities.filter(it => it.entity?.id === props.file.main?.idName.id)[0]
+    if (!props.file.main) return
+
+    const {mainType, idName} = props.file.main
+
+    if (mainType === 'Table') {
+        return props.tableIdMap.get(idName.id) ?? { table: idName }
+    } else if (mainType === 'Entity') {
+        return props.entityIdMap.get(idName.id) ?? { entity: idName }
     }
     return undefined
 })
 
-const otherTableEntities = computed(() => {
-    if (props.file.main?.mainType === 'Table') {
-        return props.file.tableEntities.filter(it => it.table?.name !== props.file.main?.idName.name)
-    } else if (props.file.main?.mainType === 'Entity') {
-        return props.file.tableEntities.filter(it => it.entity?.id !== props.file.main?.idName.id)
+const translateTableEntity = (tableEntity: TableEntityPair): TableEntityPair | undefined => {
+    const {table, entity} = tableEntity
+    if (table && entity) {
+        return tableEntity
+    } else if (table && !entity) {
+        return props.tableIdMap.get(table.id) ?? tableEntity
+    } else if (!table && entity) {
+        return props.entityIdMap.get(entity.id) ?? tableEntity
+    } else {
+        return undefined
     }
-    return props.file.tableEntities
+}
+
+const otherTableEntities = computed(() => {
+    const tableEntities = props.file.tableEntities
+    if (!props.file.main) return tableEntities
+
+    const {mainType, idName} = props.file.main
+
+    if (mainType === 'Table') {
+        return tableEntities
+            .filter(it => it.table?.name !== idName.name)
+            .map(translateTableEntity)
+            .filter(it => it !== undefined)
+    } else if (mainType === 'Entity') {
+        return tableEntities
+            .filter(it => it.entity?.id !== idName.id)
+            .map(translateTableEntity)
+            .filter(it => it !== undefined)
+    }
+    return tableEntities
+        .map(translateTableEntity)
+        .filter(it => it !== undefined)
 })
 
 const otherEnums = computed(() => {
@@ -85,7 +117,7 @@ const handleClickAssociation = (idName: IdName) => {
 </script>
 
 <template>
-    <div v-if="file.main" style="line-height: 2em;">
+    <div v-if="file.main">
         <template v-if="file.main.mainType === 'Entity' || file.main.mainType === 'Table'">
             <el-button
                 v-if="mainTableEntity?.table"
@@ -107,17 +139,19 @@ const handleClickAssociation = (idName: IdName) => {
         </template>
     </div>
 
-    <div v-for="{entity, table} in otherTableEntities">
-        <el-button v-if="table" @click="handleClickTable(table)">
-            {{ table.name }}
-        </el-button>
+    <div v-if="otherTableEntities.length > 0">
+        <div v-for="{entity, table} in otherTableEntities">
+            <el-button v-if="table" @click="handleClickTable(table)">
+                {{ table.name }}
+            </el-button>
 
-        <el-button v-if="entity" @click="handleClickEntity(entity)">
-            {{ entity.name }}
-        </el-button>
+            <el-button v-if="entity" @click="handleClickEntity(entity)">
+                {{ entity.name }}
+            </el-button>
+        </div>
     </div>
 
-    <div>
+    <div v-if="otherEnums.length > 0">
         <el-button
             v-for="genEnum in otherEnums"
             @click="handleClickEnum(genEnum)"
@@ -126,7 +160,7 @@ const handleClickAssociation = (idName: IdName) => {
         </el-button>
     </div>
 
-    <div>
+    <div v-if="file.associations.length > 0">
         <el-button
             v-for="association in file.associations"
             @click="handleClickAssociation(association)"

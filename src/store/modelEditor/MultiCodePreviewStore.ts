@@ -1,20 +1,23 @@
 import {defineStore} from "pinia";
 import {useDialogOpenState} from "@/components/global/dialog/DialogOpenState.ts";
 import {ref} from "vue";
-import {GenerateFile} from "@/api/__generated/model/static";
+import {GenerateResult} from "@/api/__generated/model/static";
 
 export const useMultiCodePreviewStore = defineStore(
     'MultiCodePreview', () => {
         const dialogOpenState = useDialogOpenState()
 
-        const codeFiles = ref<Array<GenerateFile>>([])
+        const codes = ref<GenerateResult>({
+            files: [],
+            tableEntityPairs: []
+        })
 
         type codeRefreshAction = () => void
 
         const codeRefreshActionSet = new Set<codeRefreshAction>
 
         return {
-            codeFiles,
+            codes,
             ...dialogOpenState,
 
             codeRefresh: () => {
