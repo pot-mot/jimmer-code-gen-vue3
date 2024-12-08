@@ -23,13 +23,15 @@ import {sendMessage} from "@/message/message.ts";
 const props = withDefaults(defineProps<{
 	code: string,
 	language: string,
-	showLineCounts?: boolean
+	showLineCounts?: boolean,
+    noHighlightLimit?: number,
 }>(), {
-	showLineCounts: true
+	showLineCounts: true,
+    noHighlightLimit: 10000,
 })
 
-const wrapperRef = ref<Element>()
-const codeRef = ref<Element>()
+const wrapperRef = ref<HTMLDivElement>()
+const codeRef = ref<HTMLDivElement>()
 
 const worker = new Worker(new URL("./worker/prism-worker.js", import.meta.url))
 
@@ -37,7 +39,16 @@ onBeforeUnmount(() => {
     worker.postMessage('close')
 })
 
-const highlightContainer = () => {
+const showCode = () => {
+    if (wrapperRef.value !== undefined && codeRef.value !== undefined) {
+        const wrapper = wrapperRef.value
+        const element = codeRef.value
+        element.innerText = props.code
+        wrapper.scrollTop = 0
+    }
+}
+
+const highlightCode = () => {
 	if (wrapperRef.value !== undefined && codeRef.value !== undefined) {
 		const wrapper = wrapperRef.value
 		const element = codeRef.value
@@ -50,23 +61,27 @@ const highlightContainer = () => {
             element.innerHTML = e.data
 			wrapper.scrollTop = 0
 		}
-		worker.onerror = () => {
-			element.textContent = props.code
-			wrapper.scrollTop = 0
-		}
+		worker.onerror = showCode
 	}
 }
 
 onMounted(() => {
 	nextTick(() => {
-        if (codeRef.value !== undefined) {
-            codeRef.value.textContent = props.code
+        if (props.code.length > props.noHighlightLimit) {
+            showCode()
+        } else {
+            highlightCode()
         }
-        highlightContainer()
     })
 })
 
-watch(() => props.code, highlightContainer)
+watch(() => props.code, () => {
+    if (props.code.length > props.noHighlightLimit) {
+        showCode()
+    } else {
+        highlightCode()
+    }
+})
 
 const lineCounts = computed(() => {
 	const length = props.code.split("\n").length

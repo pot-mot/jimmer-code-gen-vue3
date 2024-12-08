@@ -138,7 +138,6 @@ defineExpose<{
                         v-model="filterText" clearable
                         placeholder="Filter Keyword"
                         style="width: calc(100% - 1rem);"
-                        type="textarea"
                         autosize
                         @change="handleFiltered"
                         :spellcheck="false"
