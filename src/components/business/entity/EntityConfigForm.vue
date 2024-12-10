@@ -156,7 +156,7 @@ const handleSubmit = async () => {
                     <el-col :span="8">
                         <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_name')">
                             <div class="input-with-checkbox">
-                                <el-input v-model="property.name" :readonly="!property.overwriteName"/>
+                                <el-input v-model="property.name" :disabled="!property.overwriteName"/>
                                 <el-checkbox v-model="property.overwriteName"/>
                             </div>
                         </el-form-item>
@@ -164,7 +164,7 @@ const handleSubmit = async () => {
                     <el-col :span="8">
                         <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_comment')">
                             <div class="input-with-checkbox">
-                                <el-input v-model="property.comment" :readonly="!property.overwriteComment"/>
+                                <el-input v-model="property.comment" :disabled="!property.overwriteComment"/>
                                 <el-checkbox v-model="property.overwriteComment"/>
                             </div>
                         </el-form-item>
@@ -173,7 +173,7 @@ const handleSubmit = async () => {
                     <el-col :span="8">
                         <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_type')">
                             <div class="input-with-checkbox">
-                                <el-text>{{ property.type }}</el-text>
+                                <el-input disabled>{{ property.type }}</el-input>
                                 <el-checkbox disabled v-model="property.typeNotNull"/>
                             </div>
                         </el-form-item>
