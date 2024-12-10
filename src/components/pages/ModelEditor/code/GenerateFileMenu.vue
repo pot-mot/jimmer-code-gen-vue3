@@ -31,9 +31,9 @@ const mainTableEntity = computed<TableEntityPair | undefined>(() => {
     const {mainType, idName} = props.file.main
 
     if (mainType === 'Table') {
-        return props.tableIdMap.get(idName.id) ?? { table: idName }
+        return props.tableIdMap.get(idName.id) ?? {table: idName}
     } else if (mainType === 'Entity') {
-        return props.entityIdMap.get(idName.id) ?? { entity: idName }
+        return props.entityIdMap.get(idName.id) ?? {entity: idName}
     }
     return undefined
 })
@@ -54,6 +54,8 @@ const translateTableEntity = (tableEntity: TableEntityPair): TableEntityPair | u
 const otherTableEntities = computed(() => {
     const tableEntities = props.file.tableEntities
     if (!props.file.main) return tableEntities
+        .map(translateTableEntity)
+        .filter(it => it !== undefined)
 
     const {mainType, idName} = props.file.main
 
