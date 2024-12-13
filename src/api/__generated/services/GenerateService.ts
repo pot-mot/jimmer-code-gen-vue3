@@ -17,11 +17,13 @@ export class GenerateService {
         _uri += 'id='
         _uri += encodeURIComponent(_value);
         _separator = '&';
-        _value = options.types.join(',');
-        _uri += _separator
-        _uri += 'types='
-        _uri += encodeURIComponent(_value);
-        _separator = '&';
+        _value = options.types;
+        for (const _item of _value) {
+            _uri += _separator
+            _uri += 'types='
+            _uri += encodeURIComponent(_item);
+            _separator = '&';
+        }
         _value = options.viewType;
         _uri += _separator
         _uri += 'viewType='

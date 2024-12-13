@@ -17,7 +17,7 @@ export class DataSourceService {
         number
     > = async(options) => {
         let _uri = '/dataSource/';
-        _uri += encodeURIComponent(options.ids.join(','));
+        _uri += encodeURIComponent(options.ids);
         return (await this.executor({uri: _uri, method: 'DELETE'})) as Promise<number>;
     }
     
