@@ -173,7 +173,7 @@ const handleSubmit = async () => {
                     <el-col :span="8">
                         <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_type')">
                             <div class="input-with-checkbox">
-                                <el-input disabled>{{ property.type }}</el-input>
+                                <el-input disabled v-model="property.type"/>
                                 <el-checkbox disabled v-model="property.typeNotNull"/>
                             </div>
                         </el-form-item>
