@@ -256,14 +256,9 @@ export type AllErrors = {
         foreignKeyName: string
     } | {
         family: 'LOAD_FROM_DATA_SOURCE', 
-        code: 'ASSOCIATION_SOURCE_TABLE_NOT_MATCH', 
+        code: 'ASSOCIATION_CANNOT_SUPPORT_MULTI_COLUMNS', 
         foreignKeyName: string, 
-        columnToSourceTables: Array<ColumnTableNotMatchItem>
-    } | {
-        family: 'LOAD_FROM_DATA_SOURCE', 
-        code: 'ASSOCIATION_TARGET_TABLE_NOT_MATCH', 
-        foreignKeyName: string, 
-        columnToTargetTables: Array<ColumnTableNotMatchItem>
+        columnTablePairs: Array<ColumnTableNotMatchItem>
     } | {
         family: 'LOAD_FROM_DATA_SOURCE', 
         code: 'INDEX_COLUMN_TABLE_NOT_MATCH', 
@@ -555,11 +550,7 @@ export type ApiErrors = {
                 readonly [key:string]: any
             } | {
                 family: 'LOAD_FROM_DATA_SOURCE', 
-                code: 'ASSOCIATION_SOURCE_TABLE_NOT_MATCH', 
-                readonly [key:string]: any
-            } | {
-                family: 'LOAD_FROM_DATA_SOURCE', 
-                code: 'ASSOCIATION_TARGET_TABLE_NOT_MATCH', 
+                code: 'ASSOCIATION_CANNOT_SUPPORT_MULTI_COLUMNS', 
                 readonly [key:string]: any
             } | {
                 family: 'LOAD_FROM_DATA_SOURCE', 

@@ -11,16 +11,9 @@ export const handleLoadFromDataSourceError = (error: AllErrors & { family: "LOAD
             }, "error", error)
             throw EXPECT_ERROR
 
-        case "ASSOCIATION_SOURCE_TABLE_NOT_MATCH":
+        case "ASSOCIATION_CANNOT_SUPPORT_MULTI_COLUMNS":
             sendI18nMessage({
-                key: "ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_SOURCE_TABLE_NOT_MATCH",
-                args: [error]
-            }, "error", error)
-            throw EXPECT_ERROR
-
-        case "ASSOCIATION_TARGET_TABLE_NOT_MATCH":
-            sendI18nMessage({
-                key: "ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_TARGET_TABLE_NOT_MATCH",
+                key: "ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_CANNOT_SUPPORT_MULTI_COLUMNS",
                 args: [error]
             }, "error", error)
             throw EXPECT_ERROR

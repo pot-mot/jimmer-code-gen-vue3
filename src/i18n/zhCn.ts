@@ -209,15 +209,10 @@ export const localeZhCn: ProjectLocale = {
         `【从数据源导入错误】
   外键【${error.foreignKeyName}】关联列引用不能为空`,
 
-    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_SOURCE_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_SOURCE_TABLE_NOT_MATCH"]) =>
+    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_CANNOT_SUPPORT_MULTI_COLUMNS: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_CANNOT_SUPPORT_MULTI_COLUMNS"]) =>
         `【从数据源导入错误】
-  外键【${error.foreignKeyName}】引用的源表不一致
-${error.columnToSourceTables.map(item => `  列【${formatIdName(item.column)}】 -> 表【${formatIdName(item.table)}】`).join('\n')}`,
-
-    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_TARGET_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_TARGET_TABLE_NOT_MATCH"]) =>
-        `【从数据源导入错误】
-  外键【${error.foreignKeyName}】引用的目标表不一致
-${error.columnToTargetTables.map(item => `  列【${formatIdName(item.column)}】 -> 表【${formatIdName(item.table)}】`).join('\n')}`,
+  外键【${error.foreignKeyName}】引用了多个列，暂不支持
+${error.columnTablePairs.map(item => `  列【${formatIdName(item.column)}】 -> 表【${formatIdName(item.table)}】`).join('\n')}`,
 
     ErrorCode_LOAD_FROM_DATA_SOURCE__INDEX_COLUMN_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["INDEX_COLUMN_TABLE_NOT_MATCH"]) =>
         `【从数据源导入错误】

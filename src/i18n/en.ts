@@ -210,15 +210,10 @@ export const localeEn: ProjectLocale = {
         `【Data source import error】
   Foreign key 【${error.foreignKeyName}】 column references cannot be empty`,
 
-    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_SOURCE_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_SOURCE_TABLE_NOT_MATCH"]) =>
+    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_CANNOT_SUPPORT_MULTI_COLUMNS: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_CANNOT_SUPPORT_MULTI_COLUMNS"]) =>
         `【Data source import error】
-  Foreign key 【${error.foreignKeyName}】 referenced source table does not match
-${error.columnToSourceTables.map(item => `  Column 【${formatIdName(item.column)}】 -> Table 【${formatIdName(item.table)}】`).join('\n')}`,
-
-    ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_TARGET_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_TARGET_TABLE_NOT_MATCH"]) =>
-        `【Data source import error】
-  Foreign key 【${error.foreignKeyName}】 referenced target table does not match
-${error.columnToTargetTables.map(item => `  Column 【${formatIdName(item.column)}】 -> Table 【${formatIdName(item.table)}】`).join('\n')}`,
+  Foreign key 【${error.foreignKeyName}】 referenced more than one column, cannot support.
+${error.columnTablePairs.map(item => `  Column 【${formatIdName(item.column)}】 -> Table 【${formatIdName(item.table)}】`).join('\n')}`,
 
     ErrorCode_LOAD_FROM_DATA_SOURCE__INDEX_COLUMN_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["INDEX_COLUMN_TABLE_NOT_MATCH"]) =>
         `【Data source import error】
