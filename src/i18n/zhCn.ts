@@ -212,17 +212,17 @@ export const localeZhCn: ProjectLocale = {
     ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_SOURCE_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_SOURCE_TABLE_NOT_MATCH"]) =>
         `【从数据源导入错误】
   外键【${error.foreignKeyName}】引用的源表不一致
-${error.columnToSourceTables.map(item => `  列【${item.column}】 -> 表【${item.table}】`).join('\n')}`,
+${error.columnToSourceTables.map(item => `  列【${formatIdName(item.column)}】 -> 表【${formatIdName(item.table)}】`).join('\n')}`,
 
     ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_TARGET_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_TARGET_TABLE_NOT_MATCH"]) =>
         `【从数据源导入错误】
   外键【${error.foreignKeyName}】引用的目标表不一致
-${error.columnToTargetTables.map(item => `  列【${item.column}】 -> 表【${item.table}】`).join('\n')}`,
+${error.columnToTargetTables.map(item => `  列【${formatIdName(item.column)}】 -> 表【${formatIdName(item.table)}】`).join('\n')}`,
 
     ErrorCode_LOAD_FROM_DATA_SOURCE__INDEX_COLUMN_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["INDEX_COLUMN_TABLE_NOT_MATCH"]) =>
         `【从数据源导入错误】
   索引【${error.indexName}】中的列引用的表不一致
-${error.indexColumnToTables.map(item => `  列【${item.column}】 -> 表【${item.table}】`).join('\n')}`,
+${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】 -> 表【${formatIdName(item.table)}】`).join('\n')}`,
 
     ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_COLUMN_REFERENCE_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_COLUMN_REFERENCE_TABLE_NOT_FOUND"]) =>
         `【从数据源导入错误】

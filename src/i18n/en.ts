@@ -213,17 +213,17 @@ export const localeEn: ProjectLocale = {
     ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_SOURCE_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_SOURCE_TABLE_NOT_MATCH"]) =>
         `【Data source import error】
   Foreign key 【${error.foreignKeyName}】 referenced source table does not match
-${error.columnToSourceTables.map(item => `  Column 【${item.column}】 -> Table 【${item.table}】`).join('\n')}`,
+${error.columnToSourceTables.map(item => `  Column 【${formatIdName(item.column)}】 -> Table 【${formatIdName(item.table)}】`).join('\n')}`,
 
     ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_TARGET_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_TARGET_TABLE_NOT_MATCH"]) =>
         `【Data source import error】
   Foreign key 【${error.foreignKeyName}】 referenced target table does not match
-${error.columnToTargetTables.map(item => `  Column 【${item.column}】 -> Table 【${item.table}】`).join('\n')}`,
+${error.columnToTargetTables.map(item => `  Column 【${formatIdName(item.column)}】 -> Table 【${formatIdName(item.table)}】`).join('\n')}`,
 
     ErrorCode_LOAD_FROM_DATA_SOURCE__INDEX_COLUMN_TABLE_NOT_MATCH: (error: Errors["LOAD_FROM_DATA_SOURCE"]["INDEX_COLUMN_TABLE_NOT_MATCH"]) =>
         `【Data source import error】
   Index 【${error.indexName}】 column references do not match
-${error.indexColumnToTables.map(item => `  Column 【${item.column}】 -> Table 【${item.table}】`).join('\n')}`,
+${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)}】 -> Table 【${formatIdName(item.table)}】`).join('\n')}`,
 
     ErrorCode_LOAD_FROM_DATA_SOURCE__ASSOCIATION_COLUMN_REFERENCE_TABLE_NOT_FOUND: (error: Errors["LOAD_FROM_DATA_SOURCE"]["ASSOCIATION_COLUMN_REFERENCE_TABLE_NOT_FOUND"]) =>
         `【Data source import error】
