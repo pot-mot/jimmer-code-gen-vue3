@@ -70,10 +70,6 @@ const handleTypeCodeChange = () => {
     }
 }
 
-watch(() => column.value?.typeCode, () => {
-    handleTypeCodeChange()
-})
-
 const wrapper = ref()
 
 useClickOutside(() => wrapper.value, (e) => {
@@ -111,9 +107,14 @@ useClickOutside(() => wrapper.value, (e) => {
                     <el-select
                         v-model="column.typeCode"
                         filterable
-                        style="width: 100%">
-                        <el-option v-for="type in jdbcTypeStore.jdbcTypeList"
-                                   :label="type.type" :value="type.typeCode"/>
+                        style="width: 100%"
+                        @change="handleTypeCodeChange"
+                    >
+                        <el-option
+                            v-for="type in jdbcTypeStore.jdbcTypeList"
+                            :label="type.type"
+                            :value="type.typeCode"
+                        />
                     </el-select>
                 </el-form-item>
 
@@ -128,11 +129,9 @@ useClickOutside(() => wrapper.value, (e) => {
                 <el-form-item :label="i18nStore.translate('LABEL_ColumnTypeForm_sizeAndPrecision')">
                     <el-text style="display: grid; grid-template-columns: 0.5em 1fr 1em 1fr 0.5em">
                         <span>(</span>
-                        <span><el-input-number v-model="column.dataSize"
-                                               controls-position="right"/></span>
+                        <span><el-input-number v-model="column.dataSize" controls-position="right"/></span>
                         <span style="padding-left: 0.3em;">,</span>
-                        <span><el-input-number v-model="column.numericPrecision"
-                                               controls-position="right"/></span>
+                        <span><el-input-number v-model="column.numericPrecision" controls-position="right"/></span>
                         <span style="padding-left: 0.3em;">)</span>
                     </el-text>
                 </el-form-item>
