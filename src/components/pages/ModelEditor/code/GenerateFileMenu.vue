@@ -53,32 +53,48 @@ const translateTableEntity = (tableEntity: TableEntityPair): TableEntityPair | u
 
 const otherTableEntities = computed(() => {
     const tableEntities = props.file.tableEntities
-    if (!props.file.main) return tableEntities
-        .map(translateTableEntity)
-        .filter(it => it !== undefined)
 
-    const {mainType, idName} = props.file.main
+    let filterCondition: ((it: TableEntityPair) => boolean) | undefined
 
-    if (mainType === 'Table') {
-        return tableEntities
-            .filter(it => it.table?.name !== idName.name)
-            .map(translateTableEntity)
-            .filter(it => it !== undefined)
-    } else if (mainType === 'Entity') {
-        return tableEntities
-            .filter(it => it.entity?.id !== idName.id)
-            .map(translateTableEntity)
-            .filter(it => it !== undefined)
+    if (props.file.main) {
+        const {mainType, idName} = props.file.main
+
+        if (mainType === 'Table') {
+            filterCondition = (it: TableEntityPair) => it.table?.name !== idName.name
+        } else if (mainType === 'Entity') {
+            filterCondition = (it: TableEntityPair) => it.entity?.id !== idName.id
+        }
     }
-    return tableEntities
+
+    return (filterCondition ? tableEntities.filter(filterCondition) : tableEntities)
         .map(translateTableEntity)
         .filter(it => it !== undefined)
+        .sort((a, b) => {
+            if (a.table && b.table) {
+                return a.table.name.localeCompare(b.table.name)
+            } else if (a.entity && b.entity) {
+                return a.entity.name.localeCompare(b.entity.name)
+            } else {
+                return 0
+            }
+        })
 })
 
 const otherEnums = computed(() => {
-    return props.file.main?.mainType === 'Enum' ?
-        props.file.enums.filter(it => it.name !== props.file.main?.idName.name) :
-        props.file.enums
+    return (
+        props.file.main?.mainType === 'Enum' ?
+            props.file.enums.filter(it => it.name !== props.file.main?.idName.name) :
+            props.file.enums
+    ).sort((a, b) => {
+        return a.name.localeCompare(b.name)
+    })
+})
+
+const associations = computed(() => {
+    return props.file.associations
+        .sort((a, b) => {
+            return a.name.localeCompare(b.name)
+        })
 })
 
 const handleClickTable = (idName: IdName) => {
@@ -119,7 +135,7 @@ const handleClickAssociation = (idName: IdName) => {
 </script>
 
 <template>
-    <div v-if="file.main">
+    <div v-if="file.main" class="generate-file-menu-part">
         <template v-if="file.main.mainType === 'Entity' || file.main.mainType === 'Table'">
             <el-button
                 v-if="mainTableEntity?.table"
@@ -141,7 +157,7 @@ const handleClickAssociation = (idName: IdName) => {
         </template>
     </div>
 
-    <div v-if="otherTableEntities.length > 0">
+    <div v-if="otherTableEntities.length > 0" class="generate-file-menu-part">
         <div v-for="{entity, table} in otherTableEntities">
             <el-button v-if="table" @click="handleClickTable(table)">
                 {{ table.name }}
@@ -153,21 +169,32 @@ const handleClickAssociation = (idName: IdName) => {
         </div>
     </div>
 
-    <div v-if="otherEnums.length > 0">
-        <el-button
-            v-for="genEnum in otherEnums"
-            @click="handleClickEnum(genEnum)"
-        >
-            {{ genEnum.name }}
-        </el-button>
+    <div v-if="otherEnums.length > 0" class="generate-file-menu-part">
+        <div v-for="genEnum in otherEnums">
+            <el-button @click="handleClickEnum(genEnum)">
+                {{ genEnum.name }}
+            </el-button>
+        </div>
     </div>
 
-    <div v-if="file.associations.length > 0">
-        <el-button
-            v-for="association in file.associations"
-            @click="handleClickAssociation(association)"
-        >
-            {{ association.name }}
-        </el-button>
+    <div v-if="associations.length > 0" class="generate-file-menu-part">
+        <div v-for="association in associations">
+            <el-button @click="handleClickAssociation(association)">
+                {{ association.name }}
+            </el-button>
+        </div>
     </div>
 </template>
+
+<style scoped>
+.generate-file-menu-part + .generate-file-menu-part {
+    width: 100%;
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+    border-top: var(--el-border-color-darker) solid 2px;
+}
+
+.generate-file-menu-part > div {
+    padding-bottom: 0.2em;
+}
+</style>
