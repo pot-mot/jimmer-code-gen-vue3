@@ -103,11 +103,13 @@
                     <el-button :icon="CodeIcon" @click="handleCodePreview"/>
                 </el-tooltip>
 
-                <DragDialog v-model="codePreviewStore.openState"
-                            init-full-screen :can-exit-full-screen="false"
-                            can-drag can-resize
-                            limit-by-parent
-                            :modal="false">
+                <DragDialog
+                    v-model="codePreviewStore.openState"
+                    init-full-screen
+                    can-drag can-resize
+                    limit-by-parent
+                    :modal="true"
+                >
                     <MultiCodePreview
                         ref="multiCodePreviewRef"
                         :codes="codePreviewStore.codes"
@@ -153,7 +155,7 @@
 </style>
 
 <script lang="ts" setup>
-import {onMounted, onBeforeUnmount, ref, watch} from "vue"
+import {onBeforeUnmount, onMounted, ref, watch} from "vue"
 import {Graph, Node} from "@antv/x6"
 import {initModelEditor} from "./initModelEditor.ts"
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
@@ -299,7 +301,7 @@ const handleSaveEvent = (e: KeyboardEvent) => {
 useDocumentEvent('keydown', handleSaveEvent)
 
 const handleEditModel = () => {
-	modelEditorDialog.handleEdit()
+    modelEditorDialog.handleEdit()
 }
 
 const isDragging = ref(false)
@@ -360,23 +362,23 @@ const handleCodePreview = loadingStore.withLoading('ModelEditorGraph handleCodeP
 
     const model = MODEL._model()
     await convertModel(model.id)
-	codePreviewStore.codes = await getModelCodes(model.id)
-	codePreviewStore.open()
+    codePreviewStore.codes = await getModelCodes(model.id)
+    codePreviewStore.open()
 })
 
 onMounted(() => {
-	codePreviewStore.onCodeRefresh(handleCodePreview)
+    codePreviewStore.onCodeRefresh(handleCodePreview)
 })
 onBeforeUnmount(() => {
-	codePreviewStore.offCodeRefresh(handleCodePreview)
+    codePreviewStore.offCodeRefresh(handleCodePreview)
 })
 
 watch(() => MODEL.isLoaded, async (value) => {
-	if (value) {
-		if (codePreviewStore.openState) {
-			await handleCodePreview()
-		}
-	}
+    if (value) {
+        if (codePreviewStore.openState) {
+            await handleCodePreview()
+        }
+    }
 })
 
 const multiCodePreviewRef = ref<{
