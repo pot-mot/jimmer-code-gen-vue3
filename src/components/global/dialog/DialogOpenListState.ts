@@ -47,6 +47,12 @@ export const useDialogOpenListState = <K, V, O = DialogOpenOptions>() => {
         close: (key: K) => {
             eventBus.emit('close', {key})
         },
+        closeAll: () => {
+            for (const key of items.value.keys()) {
+                eventBus.emit('close', {key})
+            }
+            items.value.clear()
+        },
         ...eventBus
     }
 }

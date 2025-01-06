@@ -47,6 +47,11 @@ import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/BatchCr
 import {useTableCombineDialogStore} from "@/store/modelEditor/TableCombineDialogStore.ts";
 import {TableCombineData} from "@/components/business/table/TableCombineData.ts";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
+import {useEntityDialogsStore} from "@/store/modelEditor/EntityDialogsStore.ts";
+import {useDataSourceLoadDialogStore} from "@/store/modelEditor/DataSourceLoadDialogStore.ts";
+import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.ts";
+import {useModelLoadDialogStore} from "@/store/modelEditor/ModelLoadDialogStore.ts";
+import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
 
 type ModelReactiveState = {
     tableNodes: DeepReadonly<Ref<Array<UnwrapRefSimple<Node>>>>,
@@ -804,6 +809,17 @@ const initModelEditorStore = (): ModelEditorStore => {
         associationEdges.value = []
 
         isLoaded.value = false
+
+        associationDialogsStore.closeAll()
+        batchCreateAssociationsDialogStore.close()
+        useDataSourceLoadDialogStore().close()
+        useEntityDialogsStore().closeAll()
+        enumDialogsStore.closeAll()
+        useModelEditDialogStore().close()
+        useModelLoadDialogStore().close()
+        useMultiCodePreviewStore().close()
+        tableCombineDialogStore.close()
+        tableDialogsStore.closeAll()
     }
 
     const modelLoadOperations: ModelLoadOperation = {
