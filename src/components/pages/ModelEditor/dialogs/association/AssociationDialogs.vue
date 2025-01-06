@@ -8,7 +8,12 @@ const store = useAssociationDialogsStore()
 </script>
 
 <template>
-	<template v-for="[key, value] in store.items" :key="key">
-		<AssociationDialog :id="key" :association="value" @close="store.close(key)"/>
+	<template v-for="[key, {value, options}] in store.items" :key="key">
+		<AssociationDialog
+            :id="key"
+            :association="value"
+            :modal="options?.modal"
+            @close="store.close(key)"
+        />
 	</template>
 </template>

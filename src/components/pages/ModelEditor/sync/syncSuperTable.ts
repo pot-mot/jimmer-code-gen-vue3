@@ -40,7 +40,7 @@ export const syncSuperTableNameForTables = (graph: Graph, oldSuperTableName: str
     const tableDialogsStore = useTableDialogsStore()
 
     // 同步所有对话框中的表数据
-    tableDialogsStore.items.forEach((value, key) => {
+    tableDialogsStore.items.forEach(({value}, key) => {
         if (value && judgeSuperTableInTable(oldSuperTableName, value)) {
             const newTable = syncSuperTableNameInTable(value, oldSuperTableName, newSuperTableName)
             tableDialogsStore.set(key, newTable)

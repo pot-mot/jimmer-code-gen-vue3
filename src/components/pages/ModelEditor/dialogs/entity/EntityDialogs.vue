@@ -6,7 +6,12 @@ const store = useEntityDialogsStore()
 </script>
 
 <template>
-    <template v-for="[key, value] in store.items" :key="key">
-        <EntityDialog :id="key" :entity="value" @close="store.close(key)"/>
+    <template v-for="[key, {value, options}] in store.items" :key="key">
+        <EntityDialog
+            :id="key"
+            :entity="value"
+            :modal="options?.modal"
+            @close="store.close(key)"
+        />
     </template>
 </template>

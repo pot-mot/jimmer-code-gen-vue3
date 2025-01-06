@@ -36,7 +36,7 @@ export const syncEnumNameForTables = (graph: Graph, oldEnumName: string, newEnum
     const tableDialogsStore = useTableDialogsStore()
 
     // 同步所有对话框中的表数据
-    tableDialogsStore.items.forEach((value, key) => {
+    tableDialogsStore.items.forEach(({value}, key) => {
         if (value && judgeEnumInTable(oldEnumName, value)) {
             const newTable = syncEnumNameInTable(value, oldEnumName, newEnumName)
             tableDialogsStore.set(key, newTable)

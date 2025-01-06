@@ -6,7 +6,12 @@ const store = useEnumDialogsStore()
 </script>
 
 <template>
-	<template v-for="[id, value] in store.items" :key="id">
-		<EnumDialog :id="id" :gen-enum="value" @close="store.close(id)"/>
+	<template v-for="[id, {value, options}] in store.items" :key="id">
+		<EnumDialog
+            :id="id"
+            :gen-enum="value"
+            :modal="options?.modal"
+            @close="store.close(id)"
+        />
 	</template>
 </template>
