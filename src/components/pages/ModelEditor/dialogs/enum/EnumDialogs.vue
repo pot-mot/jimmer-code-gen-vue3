@@ -11,7 +11,7 @@ const store = useEnumDialogsStore()
             :id="id"
             :gen-enum="value"
             :modal="options?.modal"
-            @close="store.close(id)"
+            @close="(changed) => store.close(id, changed)"
         />
 	</template>
 </template>

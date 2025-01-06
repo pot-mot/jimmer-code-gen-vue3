@@ -8,7 +8,7 @@ type DialogOpenOptions = {
 
 type DialogOpenListEvents<K, V, O> = {
     open: { key: K, value: UnwrapRef<V>, options?: UnwrapRef<O> },
-    close: { key: K }
+    close: { key: K, changed: boolean }
 }
 
 export const useDialogOpenListState = <K, V, O = DialogOpenOptions>() => {
@@ -44,12 +44,12 @@ export const useDialogOpenListState = <K, V, O = DialogOpenOptions>() => {
         open: (key: K, value: UnwrapRef<V>, options?: UnwrapRef<O>) => {
             eventBus.emit('open', {key, value, options})
         },
-        close: (key: K) => {
-            eventBus.emit('close', {key})
+        close: (key: K, changed: boolean) => {
+            eventBus.emit('close', {key, changed})
         },
         closeAll: () => {
             for (const key of items.value.keys()) {
-                eventBus.emit('close', {key})
+                eventBus.emit('close', {key, changed: false})
             }
             items.value.clear()
         },

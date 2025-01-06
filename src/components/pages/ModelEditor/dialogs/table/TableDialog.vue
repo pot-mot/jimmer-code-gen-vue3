@@ -16,7 +16,7 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits<{
-    (event: "close"): void
+    (event: "close", changed: boolean): void
 }>()
 
 
@@ -66,7 +66,7 @@ const validate = (table: DeepReadonly<GenTableModelInput>) => {
     <DragDialog
         :model-value="true" :can-resize="true"
         :init-w="1200" :init-h="600" :init-y="100"
-        @close="emits('close')"
+        @close="emits('close', false)"
     >
         <TableForm
             ref="tableFormRef"
@@ -75,7 +75,7 @@ const validate = (table: DeepReadonly<GenTableModelInput>) => {
             :create-index-name="createIndexName"
             @create-enum="({propertyName}) => MODEL_EDITOR.createEnum({tableDialogId: id, columnName:propertyName})"
             @edit-enum="({genEnum}) => MODEL_EDITOR.editEnum(genEnum.name, genEnum)"
-            @cancel="emits('close')"
+            @cancel="emits('close', false)"
             @submit="handleSubmit"
         />
     </DragDialog>

@@ -104,11 +104,12 @@ const associationOptions = computed(() => {
         })
 })
 
-const openAndOnCloseRefresh = <K, V, O>(
+// open dialog, 并在对应 dialog close 时做一些操作
+const openAndOnSubmitRefresh = <K, V, O>(
     store: {
         open: (key: K, value: V, options?: O) => any,
-        on: (event: 'close', fn: (options: { key: K }) => any) => any,
-        off: (event: 'close', fn: (options: { key: K }) => any) => any
+        on: (event: 'close', fn: (options: { key: K, changed: boolean }) => any) => any,
+        off: (event: 'close', fn: (options: { key: K, changed: boolean }) => any) => any
     },
     key: K,
     value: V,
@@ -116,15 +117,20 @@ const openAndOnCloseRefresh = <K, V, O>(
     option?: O,
 ) => {
     store.open(key, value, option)
-    const onCloseSave = async (options: { key: K }) => {
+    const onSubmitSave = async (options: { key: K, changed: boolean }) => {
         if (options.key === key) {
+            if (!options.changed) {
+                store.off('close', onSubmitSave)
+                return
+            }
+
             if (withSaveModel) {
                 await nextTick()
 
                 let timer: number | undefined
 
-                const waitOrCloseSave = loadingStore.withLoading(
-                    'GenerateFileMenu.saveModelAndRefresh',
+                const waitRefresh = loadingStore.withLoading(
+                    'GenerateFileMenu saveModelAndRefreshCodes',
                     async () => {
                         if (
                             MODEL_EDITOR.waitSyncTableIds.value.length === 0 &&
@@ -137,27 +143,28 @@ const openAndOnCloseRefresh = <K, V, O>(
                             if (model.graphData !== currentGraphData) {
                                 graph.cleanSelection()
                                 model.graphData = currentGraphData
+
+                                await saveModel(model)
+
+                                codePreviewStore.codeRefresh()
                             }
 
-                            await saveModel(model)
-
-                            codePreviewStore.codeRefresh()
-                            store.off('close', onCloseSave)
+                            store.off('close', onSubmitSave)
                             clearTimeout(timer)
                         } else {
-                            timer = window.setTimeout(waitOrCloseSave, 100)
+                            timer = window.setTimeout(waitRefresh, 100)
                         }
                     }
                 )
 
-                await waitOrCloseSave()
+                await waitRefresh()
             } else {
                 codePreviewStore.codeRefresh()
-                store.off('close', onCloseSave)
+                store.off('close', onSubmitSave)
             }
         }
     }
-    store.on('close', onCloseSave)
+    store.on('close', onSubmitSave)
 }
 
 
@@ -167,7 +174,7 @@ const handleClickTable = (idName: IdName) => {
         sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel", args: [idName]})
         return
     }
-    openAndOnCloseRefresh(tableDialogsStore, tableNodePair.second.id, tableNodePair.first)
+    openAndOnSubmitRefresh(tableDialogsStore, tableNodePair.second.id, tableNodePair.first)
 }
 
 const handleClickEntity = async (idName: IdName) => {
@@ -176,7 +183,7 @@ const handleClickEntity = async (idName: IdName) => {
         sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickEntityNotFound", args: [idName]})
         return
     }
-    openAndOnCloseRefresh(entityDialogsStore, idName.id, entity, false)
+    openAndOnSubmitRefresh(entityDialogsStore, idName.id, entity, false)
 }
 
 const handleClickEnum = (idName: IdName) => {
@@ -185,7 +192,7 @@ const handleClickEnum = (idName: IdName) => {
         sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickEnumNotFoundInCurrentModel", args: [idName]})
         return
     }
-    openAndOnCloseRefresh(enumDialogsStore, idName.name, genEnum)
+    openAndOnSubmitRefresh(enumDialogsStore, idName.name, genEnum)
 }
 
 const handleClickAssociation = (idName: IdName) => {
@@ -194,7 +201,7 @@ const handleClickAssociation = (idName: IdName) => {
         sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickAssociationNotFoundInCurrentModel", args: [idName]})
         return
     }
-    openAndOnCloseRefresh(associationDialogsStore, associationEdgePair.second.id, associationEdgePair.first)
+    openAndOnSubmitRefresh(associationDialogsStore, associationEdgePair.second.id, associationEdgePair.first)
 }
 </script>
 

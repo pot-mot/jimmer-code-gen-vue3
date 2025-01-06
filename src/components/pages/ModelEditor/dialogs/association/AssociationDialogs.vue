@@ -13,7 +13,7 @@ const store = useAssociationDialogsStore()
             :id="key"
             :association="value"
             :modal="options?.modal"
-            @close="store.close(key)"
+            @close="(changed) => store.close(key, changed)"
         />
 	</template>
 </template>

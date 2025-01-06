@@ -425,7 +425,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         tableCreateOptionsMap.delete(createKey)
 
         if (node) {
-            tableDialogsStore.close(createKey)
+            tableDialogsStore.close(createKey, true)
 
             setTimeout(() => {
                 SELECT.select(node)
@@ -449,7 +449,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             return
         }
 
-        tableDialogsStore.close(id)
+        tableDialogsStore.close(id, true)
 
         startBatchSync('editedTable', () => {
             const oldTable = cell.data.table
@@ -538,7 +538,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         ).edges[0]
 
         if (edge) {
-            associationDialogsStore.close(createKey)
+            associationDialogsStore.close(createKey, true)
 
             setTimeout(() => {
                 SELECT.select(edge)
@@ -593,7 +593,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             graph.stopBatch(`editAssociation [id=${id}]`)
         }
 
-        associationDialogsStore.close(id)
+        associationDialogsStore.close(id, true)
     }
 
     const modifyAssociation = async (id: string, modifyAction: () => any) => {
@@ -636,7 +636,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         enumCreateOptionsMap.delete(createKey)
 
-        enumDialogsStore.close(createKey)
+        enumDialogsStore.close(createKey, true)
     }
 
     const editEnum = (id: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
@@ -651,7 +651,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum)
         ]
 
-        enumDialogsStore.close(id)
+        enumDialogsStore.close(id, true)
 
         startBatchSync('editedEnum', () => {
             syncEnumNameForTables(_graph(), oldName, genEnum.name)

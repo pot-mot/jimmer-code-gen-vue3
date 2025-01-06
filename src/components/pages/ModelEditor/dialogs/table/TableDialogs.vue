@@ -11,7 +11,7 @@ const store = useTableDialogsStore()
             :id="key"
             :table="value"
             :modal="options?.modal"
-            @close="store.close(key)"
+            @close="(changed) => store.close(key, changed)"
         />
 	</template>
 </template>

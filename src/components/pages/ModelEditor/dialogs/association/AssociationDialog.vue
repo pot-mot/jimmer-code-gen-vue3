@@ -17,7 +17,7 @@ const props = defineProps<{
 }>()
 
 const emits = defineEmits<{
-    (event: "close"): void
+    (event: "close", changed: boolean): void
 }>()
 
 const handleSubmit = (association: DeepReadonly<GenAssociationModelInput>) => {
@@ -41,7 +41,7 @@ const validate = (association: DeepReadonly<GenAssociationModelInput>): MainLoca
     <DragDialog
         :model-value="true" :can-resize="true"
         :init-w="800" :init-h="380" :init-y="200"
-        @close="emits('close')"
+        @close="emits('close', false)"
     >
         <AssociationForm
             :association="props.association"
@@ -49,7 +49,7 @@ const validate = (association: DeepReadonly<GenAssociationModelInput>): MainLoca
             :validate="validate"
             :create-association-name="createAssociationName"
             @submit="handleSubmit"
-            @cancel="emits('close')"
+            @cancel="emits('close', false)"
             style="padding-top: 0.5em; padding-left: 1em;"/>
     </DragDialog>
 </template>
