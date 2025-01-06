@@ -119,7 +119,7 @@ const handleSubmit = async () => {
             <el-col :span="12">
                 <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_name')">
                     <div class="input-with-checkbox">
-                        <el-input v-model="entity.name" :readonly="!entity.overwriteName"/>
+                        <el-input v-model="entity.name" :disabled="!entity.overwriteName"/>
                         <el-checkbox v-model="entity.overwriteName"/>
                     </div>
                 </el-form-item>
@@ -128,7 +128,7 @@ const handleSubmit = async () => {
             <el-col :span="12">
                 <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_comment')">
                     <div class="input-with-checkbox">
-                        <el-input v-model="entity.comment" :readonly="!entity.overwriteComment"/>
+                        <el-input v-model="entity.comment" :disabled="!entity.overwriteComment"/>
                         <el-checkbox v-model="entity.overwriteComment"/>
                     </div>
                 </el-form-item>
