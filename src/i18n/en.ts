@@ -378,7 +378,6 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     LABEL_ModelEditorGraph_center: 'Center',
 
     MESSAGE_ModelEditorGraph_modelSaveSuccess: "Model Save Success",
-    MESSAGE_ModelEditorGraph_modelSaveFail_idNotReturnFromBackend: "Model Save Fail, Id not return from backend",
     MESSAGE_ModelEditorGraph_modelSaveError: (e: any) => `Model Save Error, Error: ${e}`,
 
     MESSAGE_ModelEditorGraph_someChangeNotSave: "Some Change Not Save",

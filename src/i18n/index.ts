@@ -223,7 +223,6 @@ type MainLocale = {
     LABEL_ModelEditorGraph_center: string
 
     MESSAGE_ModelEditorGraph_modelSaveSuccess: string
-    MESSAGE_ModelEditorGraph_modelSaveFail_idNotReturnFromBackend: string
     MESSAGE_ModelEditorGraph_modelSaveError: (e: any) => string
 
     MESSAGE_ModelEditorGraph_someChangeNotSave: string

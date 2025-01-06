@@ -7,7 +7,7 @@ import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/const
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {sendI18nMessage} from "@/message/message.ts";
 import {api} from "@/api";
-import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
+import {MODEL_VALID_NOT_PASS, saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
 import {GenModelInput} from "@/api/__generated/model/static";
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 
@@ -52,11 +52,6 @@ export const useModelEditDialogStore = defineStore(
 
                     const id = await saveModel(model)
 
-                    if (id === undefined) {
-                        sendI18nMessage("MESSAGE_ModelEditorStore_modelSaveFail_ResultNotFound", 'error')
-                        return
-                    }
-
                     const savedModel = await api.modelService.get({id})
 
                     if (!savedModel) {
@@ -71,6 +66,8 @@ export const useModelEditDialogStore = defineStore(
 
                     sendI18nMessage("MESSAGE_ModelEditorStore_modelSaveSuccess", "success")
                 } catch (e) {
+                    if (e === MODEL_VALID_NOT_PASS) return
+
                     sendI18nMessage("MESSAGE_ModelEditorStore_modelSaveFail", 'error', e)
                 }
             }

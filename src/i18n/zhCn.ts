@@ -378,7 +378,6 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     LABEL_ModelEditorGraph_center: '居中',
 
     MESSAGE_ModelEditorGraph_modelSaveSuccess: "模型保存成功",
-    MESSAGE_ModelEditorGraph_modelSaveFail_idNotReturnFromBackend: "模型保存失败，后端没有返回保存成功后的id",
     MESSAGE_ModelEditorGraph_modelSaveError: (e: any) => `模型保存失败，错误：${e}`,
 
     MESSAGE_ModelEditorGraph_someChangeNotSave: "有变更尚未保存",

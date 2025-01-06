@@ -192,7 +192,7 @@ import {handleModelEditorKeyEvent} from "@/components/pages/ModelEditor/graph/ke
 import {validateModel} from "@/components/business/model/form/validateModel.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {exportGraphPNG, exportGraphSVG,} from "@/components/pages/ModelEditor/file/graphFileOperations.ts";
-import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
+import {MODEL_VALID_NOT_PASS, saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
 import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.ts";
 import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
 
@@ -275,17 +275,14 @@ const handleSaveModel = loadingStore.withLoading('ModelEditorGraph handleSaveMod
             model.graphData = currentGraphData
         }
 
-        const id = await saveModel(model)
+        await saveModel(model)
 
         MODEL.isLoaded = true
 
-        if (id === undefined) {
-            sendI18nMessage("MESSAGE_ModelEditorGraph_modelSaveFail_idNotReturnFromBackend", "success")
-            return
-        }
-
         sendI18nMessage("MESSAGE_ModelEditorGraph_modelSaveSuccess", "success")
     } catch (e) {
+        if (e === MODEL_VALID_NOT_PASS) return
+
         sendI18nMessage({key: "MESSAGE_ModelEditorGraph_modelSaveError", args: [e]}, 'error', e)
     }
 })
