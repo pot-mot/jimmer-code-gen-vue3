@@ -14,8 +14,16 @@ export class ModelService {
     readonly delete: (options: ModelServiceOptions['delete']) => Promise<
         number
     > = async(options) => {
-        let _uri = '/model/';
-        _uri += encodeURIComponent(options.ids);
+        let _uri = '/model';
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.ids;
+        for (const _item of _value) {
+            _uri += _separator
+            _uri += 'ids='
+            _uri += encodeURIComponent(_item);
+            _separator = '&';
+        }
         return (await this.executor({uri: _uri, method: 'DELETE'})) as Promise<number>;
     }
     
