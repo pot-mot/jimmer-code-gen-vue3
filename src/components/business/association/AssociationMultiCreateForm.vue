@@ -18,7 +18,7 @@ import {
     getDefaultAssociationMultiCreateInput
 } from "@/components/business/association/AssociationMultiCreateInput.ts";
 import {
-    ColumnCombineKey,
+    ColumnCombineKey, createColumnCombineLabel,
     createColumnCombineMap,
     getColumnCombineKeyStr
 } from "@/components/business/association/columnEquals.ts";
@@ -98,6 +98,7 @@ const sourceColumnOptions = computed<ColumnCombineKey[]>(() => {
     return [...columnCombineMap.values()]
         .filter(it => sourceTablesIsEmpty.value ? true : it.length === tables.length)
         .map(it => it[0])
+        .sort((a, b) => a.name.localeCompare(b.name))
 })
 
 const targetTableOptions = computed(() => {
@@ -118,7 +119,9 @@ const targetColumnOptions = computed<ColumnCombineKey[]>(() => {
     if (association.value.targetTable === undefined) {
         const columns = MODEL.tables.flatMap(it => it.columns)
         const columnCombineMap = createColumnCombineMap(columns)
-        return [...columnCombineMap.values()].map(it => it[0])
+        return [...columnCombineMap.values()]
+            .map(it => it[0])
+            .sort((a, b) => a.name.localeCompare(b.name))
     } else {
         return association.value.targetTable.columns
     }
@@ -246,9 +249,9 @@ const handleCancel = () => {
                         :placeholder="i18nStore.translate('LABEL_AssociationForm_sourceColumnName_placeholder')">
                         <el-option
                             v-for="column in sourceColumnOptions"
-                            :key="`${column.name} (${column.rawType})`"
+                            :key="createColumnCombineLabel(column)"
                             :value="JSON.stringify(column)"
-                            :label="`${column.name} (${column.rawType})`"
+                            :label="createColumnCombineLabel(column)"
                         />
                         <template #label>
                             <el-text v-if="columnReference.sourceColumn?.name">
@@ -282,9 +285,9 @@ const handleCancel = () => {
                         :placeholder="i18nStore.translate('LABEL_AssociationForm_targetColumnName_placeholder')">
                         <el-option
                             v-for="column in targetColumnOptions"
-                            :key="`${column.name} (${column.rawType})`"
+                            :key="createColumnCombineLabel(column)"
                             :value="JSON.stringify(column)"
-                            :label="`${column.name} (${column.rawType})`"
+                            :label="createColumnCombineLabel(column)"
                         />
                         <template #label>
                             <el-text v-if="columnReference.targetColumn?.name">

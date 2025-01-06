@@ -2,7 +2,7 @@
 import {computed, DeepReadonly, ref, watch} from "vue";
 import {GenTableModelInput, Pair} from "@/api/__generated/model/static";
 import {
-    ColumnCombineKey,
+    ColumnCombineKey, createColumnCombineLabel,
     createColumnCombineMap,
     getColumnCombineKeyStr
 } from "@/components/business/association/columnEquals.ts";
@@ -94,6 +94,7 @@ const columnOptions = computed<ColumnCombineKey[]>(() => {
     return [...columnCombineMap.values()]
         .filter(it => tableNodePairsIsEmpty.value ? true : it.length === tableNodePairs.value.length)
         .map(it => it[0])
+        .sort((a, b) => a.name.localeCompare(b.name))
 })
 
 const columnIndexes = computed<number[]>({
@@ -189,9 +190,9 @@ const handleCancel = () => {
                 :placeholder="i18nStore.translate('LABEL_TableCombineForm_columns_placeholder')">
                 <el-option
                     v-for="(column, index) in columnOptions"
-                    :key="`${column.name} (${column.rawType})`"
+                    :key="createColumnCombineLabel(column)"
                     :value="index"
-                    :label="`${column.name} (${column.rawType})`"
+                    :label="createColumnCombineLabel(column)"
                 />
                 <template #label="{ value }">
                     <el-text>{{ columnOptions[value].name }}</el-text>

@@ -12,13 +12,19 @@ export const columnTypeNotEqual = (
 }
 
 export type ColumnCombineKey = Pick<GenTableModelInput_TargetOf_columns,
-    'name' | 'typeCode' | 'rawType' | 'overwriteByRaw' | 'dataSize' | 'numericPrecision' | 'enum'
+    'name' | 'typeCode' | 'rawType' | 'overwriteByRaw' | 'dataSize' | 'numericPrecision' | 'enum' | 'typeNotNull'
 >
 
 export const getColumnCombineKeyStr = (
     column: ColumnCombineKey,
 ) => {
-    return `${column.name} ${column.typeCode} ${column.rawType} ${column.overwriteByRaw} ${column.dataSize} ${column.numericPrecision} ${column.enum?.name ?? ''}`
+    return `${column.name} ${column.typeCode} ${column.rawType} ${column.overwriteByRaw} ${column.dataSize} ${column.numericPrecision} ${column.enum?.name ?? ''} ${column.typeNotNull}`
+}
+
+export const createColumnCombineLabel = (
+    column: ColumnCombineKey
+) => {
+    return `${column.name} (${column.enum ? `【${column.enum.name}】` : column.rawType}${column.typeNotNull ? '' : '?'})`
 }
 
 export const createColumnCombineMap = (
