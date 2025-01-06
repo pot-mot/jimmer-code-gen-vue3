@@ -90,6 +90,10 @@ const filterText = ref("")
 
 const filterTableEntityPairs = ref<TableEntityPair[]>([])
 
+const tableEntityPairOptions = computed(() => {
+    return props.codes.tableEntityPairs.sort((a, b) => a.table.name.localeCompare(b.table.name))
+})
+
 const positiveTags = ref<GenerateTag[]>([])
 
 const negativeTags = ref<GenerateTag[]>(['EditTable', 'IdMultiSelect'])
@@ -179,7 +183,7 @@ defineExpose<{
                         value-key="table.name"
                     >
                         <el-option
-                            v-for="pair in props.codes.tableEntityPairs"
+                            v-for="pair in tableEntityPairOptions"
                             :value="pair"
                             :label="`${pair.table.name} - ${pair.entity.name}`"
                         />
