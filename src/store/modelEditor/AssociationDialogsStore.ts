@@ -5,9 +5,7 @@ import {GenAssociationModelInput} from "@/api/__generated/model/static";
 export const useAssociationDialogsStore = defineStore(
     'AssociationDialogs',
     () => {
-        return {
-            ...useDialogOpenListState<string, GenAssociationModelInput>()
-        }
+        return useDialogOpenListState<string, GenAssociationModelInput>()
     }
 )
 

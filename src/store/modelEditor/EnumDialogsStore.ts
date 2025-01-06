@@ -5,9 +5,7 @@ import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 export const useEnumDialogsStore = defineStore(
     'EnumDialogs',
     () => {
-        return {
-            ...useDialogOpenListState<string, GenModelInput_TargetOf_enums>()
-        }
+        return useDialogOpenListState<string, GenModelInput_TargetOf_enums>()
     }
 )
 

@@ -5,8 +5,6 @@ import {GenEntityDetailView} from "@/api/__generated/model/static";
 export const useEntityDialogsStore = defineStore(
     'EntityDialogs',
     () => {
-        return {
-            ...useDialogOpenListState<number, GenEntityDetailView>()
-        }
+        return useDialogOpenListState<number, GenEntityDetailView>()
     }
 )
