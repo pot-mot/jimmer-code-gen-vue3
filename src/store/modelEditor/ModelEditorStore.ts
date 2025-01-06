@@ -137,6 +137,11 @@ type EnumEditOperation = {
     removeEnum: (id: string) => void,
 }
 
+type ModelSyncState = {
+    waitSyncHistoryBatches: Ref<string[]>,
+    waitSyncTableIds: Ref<string[]>
+}
+
 type ModelEditorStore = {
     GRAPH: UnwrapRefSimple<GraphState & GraphReactiveState & GraphLoadOperation>
 
@@ -149,6 +154,7 @@ type ModelEditorStore = {
     MODEL_LOAD: ModelLoadOperation
 
     MODEL_EDITOR: ModelEditorDataOperation
+        & ModelSyncState
         & SyncTableOperation
         & TableEditOperation
         & AssociationEditOperation
@@ -336,21 +342,28 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     /**
      * 历史记录同步
+     * TODO syncTableEffect
+     * 由于 antV/X6 data 的变更到页面 cells 的实际更新异步，且无法通过 nextTick 等待，
+     * 所以涉及到“存在待同步节点并需要记录使历史栈完整”的情况需要与 TableNode.vue 组件的 syncTableEffect 配合，
+     * 通过 startBatchSync 将未同步完毕的 historyBatch 计入 waitSyncHistoryBatches，并在此后通过 syncTable 收集需要同步的 tableId 计入 waitSyncTableIds
+     * 此后当 syncedTable 触发时则将逐一释放 tableId，直到 waitSyncTableIds 完全清空时，释放 historyBatch
      */
-    const waitBatches: string[] = []
+    const waitSyncHistoryBatches = ref<string[]>([])
+
+    const waitSyncTableIds = ref<string[]>([])
 
     const startBatchSync = <T>(name: string, callback: () => T): T => {
         const graph = _graph()
 
         graph.startBatch(name)
-        waitBatches.push(name)
+        waitSyncHistoryBatches.value.push(name)
 
         const result = callback()
 
-        if (syncTableIds.length === 0) {
+        if (waitSyncTableIds.value.length === 0) {
             let index: number | undefined
-            for (let i = waitBatches.length - 1; i >= 0; i--) {
-                if (waitBatches[i] === name) {
+            for (let i = waitSyncHistoryBatches.value.length - 1; i >= 0; i--) {
+                if (waitSyncHistoryBatches.value[i] === name) {
                     index = i
                     break
                 }
@@ -358,28 +371,26 @@ const initModelEditorStore = (): ModelEditorStore => {
             if (index === undefined) {
                 throw Error("some waitBatch stopped before it callback end")
             }
-            waitBatches.splice(index!, 1)
+            waitSyncHistoryBatches.value.splice(index!, 1)
             graph.stopBatch(name)
         }
 
         return result
     }
 
-    let syncTableIds: string[] = []
-
     const syncTable = (id: string) => {
-        syncTableIds.push(id)
+        waitSyncTableIds.value.push(id)
     }
 
     const syncedTable = (id: string) => {
         const graph = _graph()
 
-        const index = syncTableIds.indexOf(id)
-        syncTableIds.splice(index, 1)
+        const index = waitSyncTableIds.value.indexOf(id)
+        waitSyncTableIds.value.splice(index, 1)
 
-        if (syncTableIds.length === 0) {
-            while (waitBatches.length !== 0) {
-                const name = waitBatches.pop()!
+        if (waitSyncTableIds.value.length === 0) {
+            while (waitSyncHistoryBatches.value.length !== 0) {
+                const name = waitSyncHistoryBatches.value.pop()!
                 graph.stopBatch(name)
             }
         }
@@ -846,6 +857,8 @@ const initModelEditorStore = (): ModelEditorStore => {
         MODEL_EDITOR: {
             ...modelGraphDataOperation,
 
+            waitSyncHistoryBatches,
+            waitSyncTableIds,
             syncTable,
             syncedTable,
 

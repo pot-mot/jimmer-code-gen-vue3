@@ -5,7 +5,6 @@ import EntityConfigForm from "@/components/business/entity/EntityConfigForm.vue"
 import {DeepReadonly} from "vue";
 import {MainLocaleKeyParam} from "@/i18n";
 import {api} from "@/api";
-import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
 import {validateEntityWithProperties} from "@/components/business/entity/validateEntityWithProperties.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 
@@ -20,11 +19,8 @@ const emits = defineEmits<{
 
 const {MODEL} = useModelEditorStore()
 
-const codePreviewStore = useMultiCodePreviewStore()
-
 const handleSubmit = async (entity: EntityModelBusinessInput) => {
     await api.entityService.config({body: entity})
-	codePreviewStore.codeRefresh()
 	emits("close")
 }
 

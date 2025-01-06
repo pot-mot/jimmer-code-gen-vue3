@@ -337,9 +337,9 @@ const judgeGraphDataIsChange = (): boolean => {
 }
 
 const preJudge = (): boolean => {
-    const judge = judgeGraphDataIsChange()
+    const isChange = judgeGraphDataIsChange()
 
-    if (judge) {
+    if (isChange) {
         sendI18nMessage("MESSAGE_ModelEditorGraph_someChangeNotSave", 'warning')
         return false
     } else {

@@ -6,10 +6,17 @@ import {api} from "@/api";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useEnumDialogsStore} from "@/store/modelEditor/EnumDialogsStore.ts";
 import {useAssociationDialogsStore} from "@/store/modelEditor/AssociationDialogsStore.ts";
-import {computed} from "vue";
+import {computed, nextTick} from "vue";
 import {sendI18nMessage} from "@/message/message.ts";
+import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
+import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
+import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 
-const {MODEL} = useModelEditorStore()
+const loadingStore = useGlobalLoadingStore()
+
+const {GRAPH, MODEL, MODEL_EDITOR} = useModelEditorStore()
+
+const codePreviewStore = useMultiCodePreviewStore()
 
 const tableDialogsStore = useTableDialogsStore()
 
@@ -51,7 +58,7 @@ const translateTableEntity = (tableEntity: TableEntityPair): TableEntityPair | u
     }
 }
 
-const otherTableEntities = computed(() => {
+const otherTableEntityOptions = computed(() => {
     const tableEntities = props.file.tableEntities
 
     let filterCondition: ((it: TableEntityPair) => boolean) | undefined
@@ -80,7 +87,7 @@ const otherTableEntities = computed(() => {
         })
 })
 
-const otherEnums = computed(() => {
+const otherEnumOptions = computed(() => {
     return (
         props.file.main?.mainType === 'Enum' ?
             props.file.enums.filter(it => it.name !== props.file.main?.idName.name) :
@@ -90,12 +97,69 @@ const otherEnums = computed(() => {
     })
 })
 
-const associations = computed(() => {
+const associationOptions = computed(() => {
     return props.file.associations
         .sort((a, b) => {
             return a.name.localeCompare(b.name)
         })
 })
+
+const openAndOnCloseRefresh = <K, V, O>(
+    store: {
+        open: (key: K, value: V, options?: O) => any,
+        on: (event: 'close', fn: (options: { key: K }) => any) => any,
+        off: (event: 'close', fn: (options: { key: K }) => any) => any
+    },
+    key: K,
+    value: V,
+    withSaveModel: boolean = true,
+    option?: O,
+) => {
+    store.open(key, value, option)
+    const onCloseSave = async (options: { key: K }) => {
+        if (options.key === key) {
+            if (withSaveModel) {
+                await nextTick()
+
+                let timer: number | undefined
+
+                const waitOrCloseSave = loadingStore.withLoading(
+                    'GenerateFileMenu.saveModelAndRefresh',
+                    async () => {
+                        if (
+                            MODEL_EDITOR.waitSyncTableIds.value.length === 0 &&
+                            MODEL_EDITOR.waitSyncHistoryBatches.value.length === 0
+                        ) {
+                            const graph = GRAPH._graph()
+                            const model = MODEL._model()
+                            const currentGraphData = JSON.stringify(MODEL_EDITOR.getGraphData())
+
+                            if (model.graphData !== currentGraphData) {
+                                graph.cleanSelection()
+                                model.graphData = currentGraphData
+                            }
+
+                            await saveModel(model)
+
+                            codePreviewStore.codeRefresh()
+                            store.off('close', onCloseSave)
+                            clearTimeout(timer)
+                        } else {
+                            timer = window.setTimeout(waitOrCloseSave, 100)
+                        }
+                    }
+                )
+
+                await waitOrCloseSave()
+            } else {
+                codePreviewStore.codeRefresh()
+                store.off('close', onCloseSave)
+            }
+        }
+    }
+    store.on('close', onCloseSave)
+}
+
 
 const handleClickTable = (idName: IdName) => {
     const tableNodePair = MODEL.tableNodePairs.filter(it => it.first.name === idName.name)[0]
@@ -103,7 +167,7 @@ const handleClickTable = (idName: IdName) => {
         sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel", args: [idName]})
         return
     }
-    tableDialogsStore.open(tableNodePair.second.id, tableNodePair.first)
+    openAndOnCloseRefresh(tableDialogsStore, tableNodePair.second.id, tableNodePair.first)
 }
 
 const handleClickEntity = async (idName: IdName) => {
@@ -112,7 +176,7 @@ const handleClickEntity = async (idName: IdName) => {
         sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickEntityNotFound", args: [idName]})
         return
     }
-    entityDialogsStore.open(idName.id, entity)
+    openAndOnCloseRefresh(entityDialogsStore, idName.id, entity, false)
 }
 
 const handleClickEnum = (idName: IdName) => {
@@ -121,7 +185,7 @@ const handleClickEnum = (idName: IdName) => {
         sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickEnumNotFoundInCurrentModel", args: [idName]})
         return
     }
-    enumDialogsStore.open(idName.name, genEnum)
+    openAndOnCloseRefresh(enumDialogsStore, idName.name, genEnum)
 }
 
 const handleClickAssociation = (idName: IdName) => {
@@ -130,7 +194,7 @@ const handleClickAssociation = (idName: IdName) => {
         sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickAssociationNotFoundInCurrentModel", args: [idName]})
         return
     }
-    associationDialogsStore.open(associationEdgePair.second.id, associationEdgePair.first)
+    openAndOnCloseRefresh(associationDialogsStore, associationEdgePair.second.id, associationEdgePair.first)
 }
 </script>
 
@@ -157,8 +221,8 @@ const handleClickAssociation = (idName: IdName) => {
         </template>
     </div>
 
-    <div v-if="otherTableEntities.length > 0" class="generate-file-menu-part">
-        <div v-for="{entity, table} in otherTableEntities">
+    <div v-if="otherTableEntityOptions.length > 0" class="generate-file-menu-part">
+        <div v-for="{entity, table} in otherTableEntityOptions">
             <el-button v-if="table" @click="handleClickTable(table)">
                 {{ table.name }}
             </el-button>
@@ -169,16 +233,16 @@ const handleClickAssociation = (idName: IdName) => {
         </div>
     </div>
 
-    <div v-if="otherEnums.length > 0" class="generate-file-menu-part">
-        <div v-for="genEnum in otherEnums">
+    <div v-if="otherEnumOptions.length > 0" class="generate-file-menu-part">
+        <div v-for="genEnum in otherEnumOptions">
             <el-button @click="handleClickEnum(genEnum)">
                 {{ genEnum.name }}
             </el-button>
         </div>
     </div>
 
-    <div v-if="associations.length > 0" class="generate-file-menu-part">
-        <div v-for="association in associations">
+    <div v-if="associationOptions.length > 0" class="generate-file-menu-part">
+        <div v-for="association in associationOptions">
             <el-button @click="handleClickAssociation(association)">
                 {{ association.name }}
             </el-button>

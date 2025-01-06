@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {computed, ref} from 'vue'
+import {computed, ref, watch} from 'vue'
 import CodePreview from "../../../global/code/CodePreview.vue";
 import {GenerateFile, GenerateResult, TableEntityNotNullPair, TableEntityPair} from "@/api/__generated/model/static";
 import LeftRightLayout from "@/components/global/layout/LeftRightLayout.vue";
@@ -155,6 +155,7 @@ const fileTree = ref<FilePathTreeItem[]>(buildFilePathTree(getFilteredFiles()))
 const handleFiltered = () => {
     fileTree.value = buildFilePathTree(getFilteredFiles())
 }
+watch(() => props.codes, handleFiltered)
 
 const handleFileClick = (data: FilePathTreeItem) => {
     if (data.path) currentPath.value = data.path
