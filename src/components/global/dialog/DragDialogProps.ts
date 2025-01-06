@@ -34,6 +34,6 @@ export interface DragDialogProps extends DialogInitProps,
     canFullScreen?: boolean
     canExitFullScreen?: boolean
     initFullScreen?: boolean
-    // 此配置项用于主动使用 syncDialogHeight 时自适应高度
+    // 此配置项将在调用 syncDialogHeight 时自适应高度
     fitContent?: boolean
 }
