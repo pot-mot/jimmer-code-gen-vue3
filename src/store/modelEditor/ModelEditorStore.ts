@@ -396,7 +396,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const createTable = (options: TableLoadOptions) => {
         const createKey = TABLE_CREATE_PREFIX + Date.now()
-        tableDialogsStore.open(createKey, getDefaultTable())
+        tableDialogsStore.open(createKey, getDefaultTable(), {modal: false})
         tableCreateOptionsMap.set(createKey, options)
     }
 
@@ -423,7 +423,7 @@ const initModelEditorStore = (): ModelEditorStore => {
     }
 
     const editTable = (id: string, table: DeepReadonly<GenTableModelInput>) => {
-        tableDialogsStore.open(id, cloneDeepReadonly<GenTableModelInput>(table))
+        tableDialogsStore.open(id, cloneDeepReadonly<GenTableModelInput>(table), {modal: false})
     }
 
     const editedTable = (id: string, table: DeepReadonly<GenTableModelInput>) => {
