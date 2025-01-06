@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {computed, ref} from 'vue'
 import CodePreview from "../../../global/code/CodePreview.vue";
-import {GenerateFile, GenerateResult, TableEntityNotNullPair} from "@/api/__generated/model/static";
+import {GenerateFile, GenerateResult, TableEntityNotNullPair, TableEntityPair} from "@/api/__generated/model/static";
 import LeftRightLayout from "@/components/global/layout/LeftRightLayout.vue";
 import {ElTree} from "element-plus";
 import {GenerateTag, GenerateTag_CONSTANTS} from "@/api/__generated/model/enums";
@@ -86,8 +86,9 @@ const buildFilePathTree = (files: GenerateFile[]): FilePathTreeItem[] => {
     return trees
 }
 
-// 将文件路径转换成树形结构
 const filterText = ref("")
+
+const filterTableEntityPairs = ref<TableEntityPair[]>([])
 
 const positiveTags = ref<GenerateTag[]>([])
 
@@ -108,7 +109,22 @@ const getFilteredFiles = (): Array<GenerateFile> => {
         {positiveWords: [], negativeWords: []}
     )
 
+    const filterTableIds = new Set(filterTableEntityPairs.value.map(it => it.table?.id).filter(it => it !== undefined))
+    const filterEntityIds = new Set(filterTableEntityPairs.value.map(it => it.entity?.id).filter(it => it !== undefined))
+
     return props.codes.files.filter(it => {
+        if (filterTableEntityPairs.value.length > 0) {
+            if (!it.main) return false
+
+            const {mainType, idName} = it.main
+            if (mainType === "Table") {
+                if (!filterTableIds.has(idName.id)) return false
+            } else if (mainType === "Entity") {
+                if (!filterEntityIds.has(idName.id)) return false
+            } else {
+                return false
+            }
+        }
         if (positiveWords.length > 0) {
             const inPositiveWords = positiveWords.every(word => it.path.includes(word))
             if (!inPositiveWords) return false
@@ -136,6 +152,10 @@ const handleFiltered = () => {
     fileTree.value = buildFilePathTree(getFilteredFiles())
 }
 
+const handleFileClick = (data: FilePathTreeItem) => {
+    if (data.path) currentPath.value = data.path
+}
+
 defineExpose<{
     getFilteredFiles: () => Array<GenerateFile>
 }>({
@@ -147,11 +167,28 @@ defineExpose<{
     <LeftRightLayout v-if="codes && codes.files.length > 0" :left-size="20">
         <template #left>
             <Splitpanes horizontal>
-                <Pane style="overflow-y: scroll;" size="11em">
+                <Pane style="overflow-y: scroll;" size="13em">
+                    <el-select
+                        v-model="filterTableEntityPairs" multiple filterable clearable
+                        placeholder="Select Main Table-Entity Pair"
+                        collapse-tags
+                        collapse-tags-tooltip
+                        :max-collapse-tags="6"
+                        class="multi-code-preview-select"
+                        @change="handleFiltered"
+                        value-key="table.name"
+                    >
+                        <el-option
+                            v-for="pair in props.codes.tableEntityPairs"
+                            :value="pair"
+                            :label="`${pair.table.name} - ${pair.entity.name}`"
+                        />
+                    </el-select>
+
                     <el-input
                         v-model="filterText" clearable
                         placeholder="Filter Keyword"
-                        style="width: calc(100% - 1rem);"
+                        class="multi-code-preview-select"
                         autosize
                         @change="handleFiltered"
                         :spellcheck="false"
@@ -163,11 +200,13 @@ defineExpose<{
                         collapse-tags
                         collapse-tags-tooltip
                         :max-collapse-tags="6"
-                        style="width: calc(100% - 1rem); margin-top: 0.3rem;"
-                        @change="handleFiltered">
+                        class="multi-code-preview-select"
+                        @change="handleFiltered"
+                    >
                         <el-option
                             v-for="tag in GenerateTag_CONSTANTS"
-                            :value="tag"/>
+                            :value="tag"
+                        />
                     </el-select>
 
                     <el-select
@@ -176,20 +215,23 @@ defineExpose<{
                         collapse-tags
                         collapse-tags-tooltip
                         :max-collapse-tags="6"
-                        style="width: calc(100% - 1rem); margin-top: 0.3rem;"
-                        @change="handleFiltered">
+                        class="multi-code-preview-select"
+                        @change="handleFiltered"
+                    >
                         <el-option
                             v-for="tag in GenerateTag_CONSTANTS"
-                            :value="tag"/>
+                            :value="tag"
+                        />
                     </el-select>
                 </Pane>
+
                 <Pane style="overflow-y: scroll;">
                     <el-tree
                         ref="treeRef"
                         :props="{children: 'children'}"
                         :data="fileTree"
                         :indent="6"
-                        @node-click="(data: FilePathTreeItem) => {if (data.path) currentPath = data.path}">
+                        @node-click="handleFileClick">
                         <template #default="{data}">
                             <el-text>{{ data.name }}</el-text>
                         </template>
@@ -220,3 +262,13 @@ defineExpose<{
 
     <el-empty v-else/>
 </template>
+
+<style scoped>
+.multi-code-preview-select {
+    width: calc(100% - 1rem);
+}
+
+.multi-code-preview-select + .multi-code-preview-select {
+    margin-top: 0.3rem;
+}
+</style>
