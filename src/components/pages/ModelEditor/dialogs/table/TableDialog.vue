@@ -67,7 +67,6 @@ const validate = (table: DeepReadonly<GenTableModelInput>) => {
         :model-value="true" :can-resize="true"
         :init-w="1200" :init-h="600" :init-y="100"
         @close="emits('close')"
-        :modal="false"
     >
         <TableForm
             ref="tableFormRef"
