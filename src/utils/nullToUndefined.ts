@@ -25,7 +25,7 @@ type ConvertNullToUndefined<T> = T extends null
             ? Array<ConvertNullToUndefined<U>>
             : T;
 
-const convertNullToUndefined = <T>(obj: T): ConvertNullToUndefined<T> => {
+export const convertNullToUndefined = <T>(obj: T): ConvertNullToUndefined<T> => {
     if (obj === null) {
         return undefined as ConvertNullToUndefined<T>;
     }

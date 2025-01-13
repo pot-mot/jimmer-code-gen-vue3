@@ -1,6 +1,7 @@
 import {Api} from "./__generated";
 import {sendI18nMessage} from "../message/message.ts";
 import {handleExpectError, handleUnexpectError} from "@/api/handleError.ts";
+import {convertNullToUndefined} from "@/utils/nullToUndefined.ts";
 
 const BASE_URL = "/api";
 
