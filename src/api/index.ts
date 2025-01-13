@@ -40,8 +40,8 @@ export const api = new Api(async ({uri, method, body}) => {
 
     const contentType = response.headers.get("content-type");
 
-    if (!contentType) {
-        return null
+    if (contentType === null) {
+        return undefined
     } else if (contentType.includes("application/json")) {
         const json = await response.json()
         return convertNullToUndefined(json)
