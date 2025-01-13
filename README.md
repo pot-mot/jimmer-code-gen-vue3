@@ -14,6 +14,7 @@ jar 包启动使用。
 | 后端                                                                         | 前端                                                                       |
 |----------------------------------------------------------------------------|--------------------------------------------------------------------------|
 | [Github](https://github.com/pot-mot/jimmer-code-gen-kotlin)                | [Github](https://github.com/pot-mot/jimmer-code-gen-vue3)                |
+| [Gitee](https://gitee.com/run-around---whats-wrong/jimmer-code-gen-kotlin) | [Gitee](https://gitee.com/run-around---whats-wrong/jimmer-code-gen-vue3) |
 
 ## 基本命令
 
