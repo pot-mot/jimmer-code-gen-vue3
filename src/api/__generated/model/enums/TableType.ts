@@ -6,7 +6,6 @@ export const TableType_CONSTANTS = [
     'GLOBAL_TEMPORARY', 
     'LOCAL_TEMPORARY', 
     'ALIAS', 
-    'UNKNOWN', 
-    'Companion'
+    'UNKNOWN'
 ] as const;
 export type TableType = typeof TableType_CONSTANTS[number];

@@ -148,6 +148,14 @@ export type AllErrors = {
         path: string, 
         importItems: Array<string>
     } | {
+        family: 'GENERATE', 
+        code: 'OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN', 
+        association: IdName, 
+        sourceTable: IdName, 
+        sourceColumn: IdNullableName, 
+        targetTable: IdName, 
+        targetColumn: IdName
+    } | {
         family: 'LOAD_FROM_MODEL', 
         code: 'INDEX_COLUMN_NOT_FOUND', 
         indexName: string, 
@@ -286,55 +294,6 @@ export type ApiErrors = {
     'configService': {
     }, 
     'convertService': {
-        'convertTable': AllErrors & ({
-                family: 'CONVERT', 
-                code: 'MODEL_NOT_FOUND', 
-                readonly [key:string]: any
-            } | {
-                family: 'CONVERT', 
-                code: 'ENTITY_MATCH_TABLE_NOT_FOUND', 
-                readonly [key:string]: any
-            } | {
-                family: 'CONVERT', 
-                code: 'OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN', 
-                readonly [key:string]: any
-            } | {
-                family: 'CONVERT', 
-                code: 'IN_ASSOCIATION_CANNOT_FOUNT_TARGET_COLUMN', 
-                readonly [key:string]: any
-            } | {
-                family: 'CONVERT', 
-                code: 'ASSOCIATION_CANNOT_BE_ONE_TO_MANY', 
-                readonly [key:string]: any
-            } | {
-                family: 'CONVERT', 
-                code: 'MULTIPLE_COLUMNS_NOT_SUPPORTED', 
-                readonly [key:string]: any
-            } | {
-                family: 'CONVERT', 
-                code: 'ID_VIEW_MULTIPLE_PK_NOT_SUPPORTED', 
-                readonly [key:string]: any
-            } | {
-                family: 'CONVERT', 
-                code: 'OUT_ASSOCIATION_CANNOT_FOUND_SOURCE_BASE_PROPERTY', 
-                readonly [key:string]: any
-            } | {
-                family: 'CONVERT', 
-                code: 'IN_ASSOCIATION_CANNOT_FOUND_TARGET_BASE_PROPERTY', 
-                readonly [key:string]: any
-            } | {
-                family: 'CONVERT', 
-                code: 'PROPERTY_NAME_DUPLICATE', 
-                readonly [key:string]: any
-            } | {
-                family: 'CONVERT', 
-                code: 'SUPER_TABLE_SUPER_ENTITY_NOT_MATCH', 
-                readonly [key:string]: any
-            } | {
-                family: 'COLUMN_TYPE', 
-                code: 'MISS_REQUIRED_PARAM', 
-                readonly [key:string]: any
-            }), 
         'convertModel': AllErrors & ({
                 family: 'CONVERT', 
                 code: 'MODEL_NOT_FOUND', 
@@ -441,6 +400,10 @@ export type ApiErrors = {
             } | {
                 family: 'GENERATE', 
                 code: 'DEFAULT_IMPORT_MORE_THAN_ONE', 
+                readonly [key:string]: any
+            } | {
+                family: 'GENERATE', 
+                code: 'OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN', 
                 readonly [key:string]: any
             } | {
                 family: 'COLUMN_TYPE', 

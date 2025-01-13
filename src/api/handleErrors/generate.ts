@@ -31,5 +31,12 @@ export const handleGenerateError = (error: AllErrors & {family: "GENERATE"}) => 
                 args: [error]
             }, "error", error)
             throw EXPECT_ERROR
+
+        case "OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN":
+            sendI18nMessage({
+                key: "ErrorCode_GENERATE__OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN",
+                args: [error]
+            }, "error", error)
+            throw EXPECT_ERROR
     }
 }

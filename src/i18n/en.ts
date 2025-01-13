@@ -157,6 +157,12 @@ export const localeEn: ProjectLocale = {
   Path 【${error.path}】
   Import items 【${error.importItems.join(', ')}】`,
 
+    ErrorCode_GENERATE__OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN: (error: Errors["GENERATE"]["OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN"]) =>
+        `【Table conversion entity error】
+  Outgoing association 【${formatIdName(error.association)}】 cannot find source column
+  Source table 【${formatIdName(error.sourceTable)}】 - Source column 【${formatIdName(error.sourceColumn)} !not found!】 -> 
+  Target table 【${formatIdName(error.targetTable)}】 - Target column 【${formatIdName(error.targetColumn)}】`,
+
     ErrorCode_LOAD_FROM_MODEL__INDEX_COLUMN_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["INDEX_COLUMN_NOT_FOUND"]) =>
         `【Model import error】
   Index corresponding column not found

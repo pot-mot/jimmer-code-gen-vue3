@@ -156,6 +156,12 @@ export const localeZhCn: ProjectLocale = {
   路径【${error.path}】
   导入项【${error.importItems.join(', ')}】`,
 
+    ErrorCode_GENERATE__OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN: (error: Errors["GENERATE"]["OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN"]) =>
+        `【生成错误】
+  对外关联【${formatIdName(error.association)}】无法找到源列
+  源表【${formatIdName(error.sourceTable)}】 - 源列【${formatIdName(error.sourceColumn)} !未找到!】 -> 
+  目标表【${formatIdName(error.targetTable)}】 - 目标列【${formatIdName(error.targetColumn)}】`,
+
     ErrorCode_LOAD_FROM_MODEL__INDEX_COLUMN_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["INDEX_COLUMN_NOT_FOUND"]) =>
         `【模型导入错误】
   索引对应列未找到
