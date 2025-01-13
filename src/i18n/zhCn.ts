@@ -612,6 +612,8 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     LABEL_EntityConfigForm_comment: '注释',
     LABEL_EntityConfigForm_remark: '备注',
     LABEL_EntityConfigForm_business: '业务功能',
+    LABEL_EntityConfigForm_overwriteName: '覆盖自动生成名称',
+    LABEL_EntityConfigForm_overwriteComment: '覆盖自动生成注释',
 
     LABEL_EntityConfigForm_property_otherAnnotation: "注解",
     LABEL_EntityConfigForm_property_name: '名称',
@@ -619,6 +621,9 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     LABEL_EntityConfigForm_property_remark: '备注',
     LABEL_EntityConfigForm_property_type: '类型',
     LABEL_EntityConfigForm_property_body: '属性体',
+    LABEL_EntityConfigForm_property_overwriteName: '覆盖自动生成名称',
+    LABEL_EntityConfigForm_property_overwriteComment: '覆盖自动生成注释',
+    LABEL_EntityConfigForm_property_typeNotNull: '非空',
 
     VALIDATE_Entity_nameCannotBeEmpty: "实体名称不得为空",
     VALIDATE_Entity_nameCannotBeDuplicate: (entityName: string) => `实体名称【${entityName}】不可重复`,

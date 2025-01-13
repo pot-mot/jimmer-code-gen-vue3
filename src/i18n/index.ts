@@ -444,6 +444,8 @@ type MainLocale = {
     LABEL_EntityConfigForm_comment: string
     LABEL_EntityConfigForm_remark: string
     LABEL_EntityConfigForm_business: string
+    LABEL_EntityConfigForm_overwriteName: string
+    LABEL_EntityConfigForm_overwriteComment: string
 
     LABEL_EntityConfigForm_property_otherAnnotation: string
     LABEL_EntityConfigForm_property_name: string
@@ -451,6 +453,9 @@ type MainLocale = {
     LABEL_EntityConfigForm_property_remark: string
     LABEL_EntityConfigForm_property_type: string
     LABEL_EntityConfigForm_property_body: string
+    LABEL_EntityConfigForm_property_overwriteName: string
+    LABEL_EntityConfigForm_property_overwriteComment: string
+    LABEL_EntityConfigForm_property_typeNotNull: string
 
     VALIDATE_Entity_nameCannotBeEmpty: string
     VALIDATE_Entity_nameCannotBeDuplicate: (entityName: string) => string

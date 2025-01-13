@@ -120,7 +120,9 @@ const handleSubmit = async () => {
                 <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_name')">
                     <div class="input-with-checkbox">
                         <el-input v-model="entity.name" :disabled="!entity.overwriteName"/>
-                        <el-checkbox v-model="entity.overwriteName"/>
+                        <el-tooltip :content="i18nStore.translate('LABEL_EntityConfigForm_overwriteName')">
+                            <el-checkbox v-model="entity.overwriteName"/>
+                        </el-tooltip>
                     </div>
                 </el-form-item>
             </el-col>
@@ -129,7 +131,9 @@ const handleSubmit = async () => {
                 <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_comment')">
                     <div class="input-with-checkbox">
                         <el-input v-model="entity.comment" :disabled="!entity.overwriteComment"/>
-                        <el-checkbox v-model="entity.overwriteComment"/>
+                        <el-tooltip :content="i18nStore.translate('LABEL_EntityConfigForm_overwriteComment')">
+                            <el-checkbox v-model="entity.overwriteComment"/>
+                        </el-tooltip>
                     </div>
                 </el-form-item>
             </el-col>
@@ -163,7 +167,9 @@ const handleSubmit = async () => {
                         <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_name')">
                             <div class="input-with-checkbox">
                                 <el-input v-model="property.name" :disabled="!property.overwriteName"/>
-                                <el-checkbox v-model="property.overwriteName"/>
+                                <el-tooltip :content="i18nStore.translate('LABEL_EntityConfigForm_property_overwriteName')">
+                                    <el-checkbox v-model="property.overwriteName"/>
+                                </el-tooltip>
                             </div>
                         </el-form-item>
                     </el-col>
@@ -171,7 +177,9 @@ const handleSubmit = async () => {
                         <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_comment')">
                             <div class="input-with-checkbox">
                                 <el-input v-model="property.comment" :disabled="!property.overwriteComment"/>
-                                <el-checkbox v-model="property.overwriteComment"/>
+                                <el-tooltip :content="i18nStore.translate('LABEL_EntityConfigForm_property_overwriteComment')">
+                                    <el-checkbox v-model="property.overwriteComment"/>
+                                </el-tooltip>
                             </div>
                         </el-form-item>
                     </el-col>
@@ -180,7 +188,9 @@ const handleSubmit = async () => {
                         <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_type')">
                             <div class="input-with-checkbox">
                                 <el-input disabled v-model="property.type"/>
-                                <el-checkbox disabled v-model="property.typeNotNull"/>
+                                <el-tooltip :content="i18nStore.translate('LABEL_EntityConfigForm_property_typeNotNull')">
+                                    <el-checkbox disabled v-model="property.typeNotNull"/>
+                                </el-tooltip>
                             </div>
                         </el-form-item>
                     </el-col>
@@ -224,7 +234,9 @@ const handleSubmit = async () => {
                         <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_type')">
                             <div class="input-with-checkbox">
                                 <el-input v-model="property.type"/>
-                                <el-checkbox v-model="property.typeNotNull"/>
+                                <el-tooltip :content="i18nStore.translate('LABEL_EntityConfigForm_property_typeNotNull')">
+                                    <el-checkbox v-model="property.typeNotNull"/>
+                                </el-tooltip>
                             </div>
                         </el-form-item>
                     </el-col>

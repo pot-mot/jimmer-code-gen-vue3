@@ -613,6 +613,8 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     LABEL_EntityConfigForm_comment: 'Comment',
     LABEL_EntityConfigForm_remark: 'Remark',
     LABEL_EntityConfigForm_business: 'Business',
+    LABEL_EntityConfigForm_overwriteName: 'Overwrite Name',
+    LABEL_EntityConfigForm_overwriteComment: 'Overwrite Comment',
 
     LABEL_EntityConfigForm_property_otherAnnotation: "Annotation",
     LABEL_EntityConfigForm_property_name: 'Name',
@@ -620,6 +622,9 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     LABEL_EntityConfigForm_property_remark: 'Remark',
     LABEL_EntityConfigForm_property_type: 'Type',
     LABEL_EntityConfigForm_property_body: 'Body',
+    LABEL_EntityConfigForm_property_overwriteName: 'Overwrite Name',
+    LABEL_EntityConfigForm_property_overwriteComment: 'Overwrite Comment',
+    LABEL_EntityConfigForm_property_typeNotNull: 'Not Null',
 
     VALIDATE_Entity_nameCannotBeEmpty: "Entity name cannot be empty",
     VALIDATE_Entity_nameCannotBeDuplicate: (entityName: string) => `Entity name [${entityName}] is duplicated`,
