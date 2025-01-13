@@ -42,11 +42,14 @@ export const api = new Api(async ({uri, method, body}) => {
     if (!contentType) {
         return null
     } else if (contentType.includes("application/json")) {
-        return await response.json()
+        const json = await response.json()
+        return convertNullToUndefined(json)
     } else if (contentType.includes("text/plain")) {
-        return await response.text()
+        const text = await response.text()
+        return convertNullToUndefined(text)
     } else if (contentType.includes("application/octet-stream")) {
-        return await response.blob()
+        const blob = await response.blob()
+        return convertNullToUndefined(blob)
     } else {
         // 其他类型的响应内容
         sendI18nMessage({
