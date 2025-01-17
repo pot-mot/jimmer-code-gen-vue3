@@ -355,7 +355,10 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     CONFIRM_ModelEditorPage_modelLoad_entireSchema: "您确定要导入整个数据架构？",
     CONFIRM_ModelEditorPage_modelLoad_singleTable: "您确定要导入该表和它的全部关联？",
 
-    MESSAGE_modelFileOperations_importModel_validateFail: "模型导入加载校验失败",
+    MESSAGE_modelFileOperations_importModelJson_validateFail: "模型JSON导入加载校验失败",
+    MESSAGE_modelFileOperations_importModelJson_convertModelFail: "模型JSON导入转换实体失败",
+    MESSAGE_modelFileOperations_importModelJson_convertModelFail_entities_businessWillNotBeSaved: "模型JSON导入转换实体失败, \n实体业务配置也将不会被保存",
+    MESSAGE_modelFileOperations_importModelJson_entities_saveBusinessFail: "模型JSON导入保存实体业务配置失败",
 
     LABEL_ModelEditorMainMenu_loadFromDataSource: "从数据源加载",
     LABEL_ModelEditorMainMenu_loadFromModel: "从模型导入",

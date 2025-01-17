@@ -355,7 +355,10 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     CONFIRM_ModelEditorPage_modelLoad_entireSchema: "Are you sure you want to load the entire Schema",
     CONFIRM_ModelEditorPage_modelLoad_singleTable: "Are you sure you want to load the Table and its Associations",
 
-    MESSAGE_modelFileOperations_importModel_validateFail: "Model import loading verification failed",
+    MESSAGE_modelFileOperations_importModelJson_validateFail: "Model JSON import verification failed",
+    MESSAGE_modelFileOperations_importModelJson_convertModelFail: "Model JSON import convert entity fail",
+    MESSAGE_modelFileOperations_importModelJson_convertModelFail_entities_businessWillNotBeSaved: "Model JSON import convert entity fail, \nentities-business-config will not be saved",
+    MESSAGE_modelFileOperations_importModelJson_entities_saveBusinessFail: "Model JSON import save entities-business-config fail",
 
     LABEL_ModelEditorMainMenu_loadFromDataSource: "Load from Data Source",
     LABEL_ModelEditorMainMenu_loadFromModel: "Load from Model",

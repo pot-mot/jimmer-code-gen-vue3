@@ -43,20 +43,36 @@ export const getModelCodes = async (
 export const importModelJSON = async (modelInputJsonStr: string): Promise<number | undefined> => {
     let validateErrors
 
-    const modelInput = JSON.parse(modelInputJsonStr)
+    const modelInputJson = JSON.parse(modelInputJsonStr)
 
-    if (validateModelInputWithEntities(modelInput, e => validateErrors = e)) {
+    if (validateModelInputWithEntities(modelInputJson, e => validateErrors = e)) {
+        const modelInput = modelInputJson as ModelInputWithEntities
+
         modelInput.id = undefined
 
         const savedModelId = await api.modelService.save({body: modelInput})
-        await convertModel(savedModelId)
-        if ("entities" in modelInput) {
-            await api.modelService.saveBusiness({id: savedModelId, body: modelInput["entities"]})
+
+        try {
+            await convertModel(savedModelId)
+
+            if (modelInput.entities) {
+                try {
+                    await api.modelService.saveBusiness({id: savedModelId, body: modelInput.entities})
+                } catch (e) {
+                    sendI18nMessage('MESSAGE_modelFileOperations_importModelJson_entities_saveBusinessFail', 'error')
+                }
+            }
+        } catch (e) {
+            if (modelInput.entities) {
+                sendI18nMessage('MESSAGE_modelFileOperations_importModelJson_convertModelFail_entities_businessWillNotBeSaved', 'error')
+            } else {
+                sendI18nMessage('MESSAGE_modelFileOperations_importModelJson_convertModelFail', 'error')
+            }
         }
 
         return savedModelId
     } else {
-        sendI18nMessage('MESSAGE_modelFileOperations_importModel_validateFail', 'error', validateErrors)
+        sendI18nMessage('MESSAGE_modelFileOperations_importModelJson_validateFail', 'error', validateErrors)
     }
 }
 

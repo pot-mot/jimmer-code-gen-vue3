@@ -196,7 +196,10 @@ type MainLocale = {
     CONFIRM_ModelEditorPage_modelLoad_entireSchema: string
     CONFIRM_ModelEditorPage_modelLoad_singleTable: string
 
-    MESSAGE_modelFileOperations_importModel_validateFail: string
+    MESSAGE_modelFileOperations_importModelJson_validateFail: string
+    MESSAGE_modelFileOperations_importModelJson_convertModelFail: string
+    MESSAGE_modelFileOperations_importModelJson_convertModelFail_entities_businessWillNotBeSaved: string
+    MESSAGE_modelFileOperations_importModelJson_entities_saveBusinessFail: string
 
     LABEL_ModelEditorMainMenu_loadFromDataSource: string
     LABEL_ModelEditorMainMenu_loadFromModel: string
