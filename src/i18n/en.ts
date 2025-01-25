@@ -116,6 +116,16 @@ export const localeEn: ProjectLocale = {
         `【Entity ID property not found】
   Entity 【${formatIdName(error.entity)}】`,
 
+    ErrorCode_MODEL__ID_PROPERTY_MORE_THAN_ONE: (error: Errors["MODEL"]["ID_PROPERTY_MORE_THAN_ONE"]) =>
+        `【Entity ID property more than one】
+  Entity 【${formatIdName(error.entity)}】, Id Properties ${error.idProperties.map(it => `【${formatIdName(it)}】`).join(", ")}`,
+
+    ErrorCode_MODEL__LONG_ASSOCIATION_CIRCULAR_DEPENDENCE: (error: Errors["MODEL"]["LONG_ASSOCIATION_CIRCULAR_DEPENDENCE"]) =>
+        `【Long Association Circular Dependence】
+  Entity【${formatIdName(error.entity)}】
+  Association Path:
+    ${error.associationPath.map(it => `【${it.type} - ${formatIdName(it.entity)}.${formatIdName(it.property)}】`).join("\n    ")}`,
+
     ErrorCode_MODEL__INDEX_REF_PROPERTY_NOT_FOUND: (error: Errors["MODEL"]["INDEX_REF_PROPERTY_NOT_FOUND"]) =>
         `【Index Referenced Property Not Found】
   Entity【${formatIdName(error.entity)}】
@@ -143,6 +153,11 @@ export const localeEn: ProjectLocale = {
   Entity not found
   Entity ID 【${error.entityId}】`,
 
+    ErrorCode_GENERATE__ENUM_NOT_FOUND: (error: Errors["GENERATE"]["ENUM_NOT_FOUND"]) =>
+        `【Generation error】
+  Enum not found
+  Enum ID 【${error.enumId}】`,
+
     ErrorCode_GENERATE__INDEX_COLUMN_NOT_FOUND_IN_TABLE: (error: Errors["GENERATE"]["INDEX_COLUMN_NOT_FOUND_IN_TABLE"]) =>
         `【Generation error】
   Index column not found in table
@@ -159,9 +174,15 @@ export const localeEn: ProjectLocale = {
 
     ErrorCode_GENERATE__OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN: (error: Errors["GENERATE"]["OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN"]) =>
         `【Table conversion entity error】
-  Outgoing association 【${formatIdName(error.association)}】 cannot find source column
+  Out association 【${formatIdName(error.association)}】 cannot find source column
   Source table 【${formatIdName(error.sourceTable)}】 - Source column 【${formatIdName(error.sourceColumn)} !not found!】 -> 
   Target table 【${formatIdName(error.targetTable)}】 - Target column 【${formatIdName(error.targetColumn)}】`,
+
+    ErrorCode_GENERATE__IN_ASSOCIATION_CANNOT_FOUNT_TARGET_COLUMN: (error: Errors["GENERATE"]["IN_ASSOCIATION_CANNOT_FOUNT_TARGET_COLUMN"]) =>
+        `【Table conversion entity error】
+  In association 【${formatIdName(error.association)}】 cannot find target column
+  Source table 【${formatIdName(error.sourceTable)}】 - Source column 【${formatIdName(error.sourceColumn)}】 -> 
+  Target table 【${formatIdName(error.targetTable)}】 - Target column 【${formatIdName(error.targetColumn)} !not found!】`,
 
     ErrorCode_LOAD_FROM_MODEL__INDEX_COLUMN_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["INDEX_COLUMN_NOT_FOUND"]) =>
         `【Model import error】

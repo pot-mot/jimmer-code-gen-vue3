@@ -115,6 +115,17 @@ export const localeZhCn: ProjectLocale = {
         `【实体ID属性未找到】
   实体【${formatIdName(error.entity)}】`,
 
+    ErrorCode_MODEL__ID_PROPERTY_MORE_THAN_ONE: (error: Errors["MODEL"]["ID_PROPERTY_MORE_THAN_ONE"]) =>
+        `【实体ID属性存在多个】
+  实体【${formatIdName(error.entity)}】
+  属性${error.idProperties.map(it => `【${formatIdName(it)}】`).join(", ")}`,
+
+    ErrorCode_MODEL__LONG_ASSOCIATION_CIRCULAR_DEPENDENCE: (error: Errors["MODEL"]["LONG_ASSOCIATION_CIRCULAR_DEPENDENCE"]) =>
+        `【实体关联存在循环依赖】
+  实体【${formatIdName(error.entity)}】
+  关联路径:
+    ${error.associationPath.map(it => `【${it.type} - ${formatIdName(it.entity)}.${formatIdName(it.property)}】`).join("\n    ")}`,
+
     ErrorCode_MODEL__INDEX_REF_PROPERTY_NOT_FOUND: (error: Errors["MODEL"]["INDEX_REF_PROPERTY_NOT_FOUND"]) =>
         `【索引引用属性未找到】
   实体【${formatIdName(error.entity)}】
@@ -142,6 +153,11 @@ export const localeZhCn: ProjectLocale = {
   实体未找到
   实体ID【${error.entityId}】`,
 
+    ErrorCode_GENERATE__ENUM_NOT_FOUND: (error: Errors["GENERATE"]["ENUM_NOT_FOUND"]) =>
+        `【生成错误】
+  枚举未找到
+  枚举ID【${error.enumId}】`,
+
     ErrorCode_GENERATE__INDEX_COLUMN_NOT_FOUND_IN_TABLE: (error: Errors["GENERATE"]["INDEX_COLUMN_NOT_FOUND_IN_TABLE"]) =>
         `【生成错误】
   索引列在表中未找到
@@ -161,6 +177,12 @@ export const localeZhCn: ProjectLocale = {
   对外关联【${formatIdName(error.association)}】无法找到源列
   源表【${formatIdName(error.sourceTable)}】 - 源列【${formatIdName(error.sourceColumn)} !未找到!】 -> 
   目标表【${formatIdName(error.targetTable)}】 - 目标列【${formatIdName(error.targetColumn)}】`,
+
+    ErrorCode_GENERATE__IN_ASSOCIATION_CANNOT_FOUNT_TARGET_COLUMN: (error: Errors["GENERATE"]["IN_ASSOCIATION_CANNOT_FOUNT_TARGET_COLUMN"]) =>
+        `【生成错误】
+  对内关联【${formatIdName(error.association)}】无法找到目标列
+  源表【${formatIdName(error.sourceTable)}】 - 源列【${formatIdName(error.sourceColumn)}】-> 
+  目标表【${formatIdName(error.targetTable)}】 - 目标列【${formatIdName(error.targetColumn)} !未找到!】`,
 
     ErrorCode_LOAD_FROM_MODEL__INDEX_COLUMN_NOT_FOUND: (error: Errors["LOAD_FROM_MODEL"]["INDEX_COLUMN_NOT_FOUND"]) =>
         `【模型导入错误】

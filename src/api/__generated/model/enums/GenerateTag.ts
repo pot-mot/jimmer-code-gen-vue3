@@ -1,6 +1,6 @@
 export const GenerateTag_CONSTANTS = [
     'BackEnd', 
-    'Table', 
+    'DDL', 
     'Enum', 
     'Entity', 
     'DTO', 
@@ -9,21 +9,22 @@ export const GenerateTag_CONSTANTS = [
     'Service', 
     'FrontEnd', 
     'Component', 
+    'Rules', 
     'EnumView', 
     'EnumSelect', 
     'EnumNullableSelect', 
     'IdSelect', 
     'IdMultiSelect', 
     'Page', 
+    'Form', 
+    'FormDefault', 
+    'FormRules', 
+    'FormType', 
     'AddForm', 
     'EditForm', 
+    'SubForm', 
     'EditTable', 
     'QueryForm', 
-    'AddFormDataType', 
-    'DefaultAddFormData', 
-    'Rules', 
-    'AddFormRules', 
-    'EditFormRules', 
-    'EditTableRules'
+    'Table'
 ] as const;
 export type GenerateTag = typeof GenerateTag_CONSTANTS[number];

@@ -96,7 +96,7 @@ const tableEntityPairOptions = computed(() => {
 
 const positiveTags = ref<GenerateTag[]>([])
 
-const negativeTags = ref<GenerateTag[]>(['EditTable', 'IdMultiSelect'])
+const negativeTags = ref<GenerateTag[]>([])
 
 const getFilteredFiles = (): Array<GenerateFile> => {
     const filterWords = filterText.value.split(/\s+/).filter(it => it.length > 0)

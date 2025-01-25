@@ -9,4 +9,5 @@ export interface GenerateFile {
     tableEntities: Array<TableEntityPair>;
     enums: Array<IdName>;
     associations: Array<IdName>;
+    name: string;
 }

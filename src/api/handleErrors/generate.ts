@@ -18,6 +18,13 @@ export const handleGenerateError = (error: AllErrors & {family: "GENERATE"}) => 
             }, "error", error)
             throw EXPECT_ERROR
 
+        case "ENUM_NOT_FOUND":
+            sendI18nMessage({
+                key: "ErrorCode_GENERATE__ENUM_NOT_FOUND",
+                args: [error]
+            }, "error", error)
+            throw EXPECT_ERROR
+
         case "INDEX_COLUMN_NOT_FOUND_IN_TABLE":
             sendI18nMessage({
                 key: "ErrorCode_GENERATE__INDEX_COLUMN_NOT_FOUND_IN_TABLE",
@@ -35,6 +42,13 @@ export const handleGenerateError = (error: AllErrors & {family: "GENERATE"}) => 
         case "OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN":
             sendI18nMessage({
                 key: "ErrorCode_GENERATE__OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN",
+                args: [error]
+            }, "error", error)
+            throw EXPECT_ERROR
+
+        case "IN_ASSOCIATION_CANNOT_FOUNT_TARGET_COLUMN":
+            sendI18nMessage({
+                key: "ErrorCode_GENERATE__IN_ASSOCIATION_CANNOT_FOUNT_TARGET_COLUMN",
                 args: [error]
             }, "error", error)
             throw EXPECT_ERROR

@@ -18,6 +18,20 @@ export const handleModelError = (error: AllErrors & {family: "MODEL"}) => {
             }, "error", error)
             throw EXPECT_ERROR
 
+        case "ID_PROPERTY_MORE_THAN_ONE":
+            sendI18nMessage({
+                key: "ErrorCode_MODEL__ID_PROPERTY_MORE_THAN_ONE",
+                args: [error]
+            }, "error", error)
+            throw EXPECT_ERROR
+
+        case "LONG_ASSOCIATION_CIRCULAR_DEPENDENCE":
+            sendI18nMessage({
+                key: "ErrorCode_MODEL__LONG_ASSOCIATION_CIRCULAR_DEPENDENCE",
+                args: [error]
+            }, "error", error)
+            throw EXPECT_ERROR
+
         case "INDEX_REF_PROPERTY_NOT_FOUND":
             sendI18nMessage({
                 key: "ErrorCode_MODEL__INDEX_REF_PROPERTY_NOT_FOUND",

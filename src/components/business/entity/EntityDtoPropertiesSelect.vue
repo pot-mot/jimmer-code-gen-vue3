@@ -11,10 +11,15 @@ const entityDto_CONSTANTS = [
 	'LIST_VIEW',
 	'DETAIL_VIEW',
 	'OPTION_VIEW',
+
+    'LONG_ASSOCIATION_PROPERTY',
 	'INSERT_INPUT',
 	'UPDATE_INPUT',
+
 	'SPECIFICATION',
+
 	'SHORT_ASSOCIATION_VIEW',
+
 	'LONG_ASSOCIATION_INPUT',
 	'LONG_ASSOCIATION_VIEW',
 ] as const
@@ -27,10 +32,15 @@ const entityDto_propertyDtoProperty: { [key in EntityDto]: keyof PropertyOption 
 	'LIST_VIEW': 'inListView',
 	'DETAIL_VIEW': 'inDetailView',
 	'OPTION_VIEW': 'inOptionView',
+
+    'LONG_ASSOCIATION_PROPERTY': 'longAssociation',
 	'INSERT_INPUT': 'inInsertInput',
 	'UPDATE_INPUT': 'inUpdateInput',
+
 	'SPECIFICATION': 'inSpecification',
+
 	'SHORT_ASSOCIATION_VIEW': 'inShortAssociationView',
+
 	'LONG_ASSOCIATION_INPUT': 'inLongAssociationInput',
 	'LONG_ASSOCIATION_VIEW': 'inLongAssociationView',
 }

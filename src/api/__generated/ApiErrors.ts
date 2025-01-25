@@ -1,4 +1,5 @@
 import type {
+    AssociationPathItem, 
     ColumnTableNotMatchItem, 
     IdName, 
     IdNullableName, 
@@ -103,6 +104,16 @@ export type AllErrors = {
         entity: IdName
     } | {
         family: 'MODEL', 
+        code: 'ID_PROPERTY_MORE_THAN_ONE', 
+        entity: IdName, 
+        idProperties: Array<IdName>
+    } | {
+        family: 'MODEL', 
+        code: 'LONG_ASSOCIATION_CIRCULAR_DEPENDENCE', 
+        entity: IdName, 
+        associationPath: Array<AssociationPathItem>
+    } | {
+        family: 'MODEL', 
         code: 'INDEX_REF_PROPERTY_NOT_FOUND', 
         entity: IdName, 
         entityProperties: Array<IdName>, 
@@ -134,7 +145,11 @@ export type AllErrors = {
     } | {
         family: 'GENERATE', 
         code: 'ENTITY_NOT_FOUND', 
-        entityId: number
+        entityId?: number | undefined
+    } | {
+        family: 'GENERATE', 
+        code: 'ENUM_NOT_FOUND', 
+        enumId?: number | undefined
     } | {
         family: 'GENERATE', 
         code: 'INDEX_COLUMN_NOT_FOUND_IN_TABLE', 
@@ -155,6 +170,14 @@ export type AllErrors = {
         sourceColumn: IdNullableName, 
         targetTable: IdName, 
         targetColumn: IdName
+    } | {
+        family: 'GENERATE', 
+        code: 'IN_ASSOCIATION_CANNOT_FOUNT_TARGET_COLUMN', 
+        association: IdName, 
+        sourceTable: IdName, 
+        sourceColumn: IdName, 
+        targetTable: IdName, 
+        targetColumn: IdNullableName
     } | {
         family: 'LOAD_FROM_MODEL', 
         code: 'INDEX_COLUMN_NOT_FOUND', 
@@ -371,6 +394,14 @@ export type ApiErrors = {
                 readonly [key:string]: any
             } | {
                 family: 'MODEL', 
+                code: 'ID_PROPERTY_MORE_THAN_ONE', 
+                readonly [key:string]: any
+            } | {
+                family: 'MODEL', 
+                code: 'LONG_ASSOCIATION_CIRCULAR_DEPENDENCE', 
+                readonly [key:string]: any
+            } | {
+                family: 'MODEL', 
                 code: 'INDEX_REF_PROPERTY_NOT_FOUND', 
                 readonly [key:string]: any
             } | {
@@ -395,6 +426,10 @@ export type ApiErrors = {
                 readonly [key:string]: any
             } | {
                 family: 'GENERATE', 
+                code: 'ENUM_NOT_FOUND', 
+                readonly [key:string]: any
+            } | {
+                family: 'GENERATE', 
                 code: 'INDEX_COLUMN_NOT_FOUND_IN_TABLE', 
                 readonly [key:string]: any
             } | {
@@ -404,6 +439,10 @@ export type ApiErrors = {
             } | {
                 family: 'GENERATE', 
                 code: 'OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN', 
+                readonly [key:string]: any
+            } | {
+                family: 'GENERATE', 
+                code: 'IN_ASSOCIATION_CANNOT_FOUNT_TARGET_COLUMN', 
                 readonly [key:string]: any
             } | {
                 family: 'COLUMN_TYPE', 
