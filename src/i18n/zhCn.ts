@@ -124,7 +124,7 @@ export const localeZhCn: ProjectLocale = {
         `【实体关联存在循环依赖】
   实体【${formatIdName(error.entity)}】
   关联路径:
-    ${error.associationPath.map(it => `【${it.type} - ${formatIdName(it.entity)}.${formatIdName(it.property)}】`).join("\n    ")}`,
+    ${error.properties.map(it => `【${formatIdName(it)}】`).join("\n    ")}`,
 
     ErrorCode_MODEL__INDEX_REF_PROPERTY_NOT_FOUND: (error: Errors["MODEL"]["INDEX_REF_PROPERTY_NOT_FOUND"]) =>
         `【索引引用属性未找到】

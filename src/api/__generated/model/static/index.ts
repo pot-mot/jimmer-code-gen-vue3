@@ -1,5 +1,4 @@
 export type {AssociationColumnQuery} from './AssociationColumnQuery';
-export type {AssociationPathItem} from './AssociationPathItem';
 export type {AssociationQuery} from './AssociationQuery';
 export type {AssociationTableQuery} from './AssociationTableQuery';
 export type {ColumnQuery} from './ColumnQuery';

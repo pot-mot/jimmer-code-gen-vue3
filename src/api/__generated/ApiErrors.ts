@@ -1,5 +1,4 @@
 import type {
-    AssociationPathItem, 
     ColumnTableNotMatchItem, 
     IdName, 
     IdNullableName, 
@@ -111,7 +110,7 @@ export type AllErrors = {
         family: 'MODEL', 
         code: 'LONG_ASSOCIATION_CIRCULAR_DEPENDENCE', 
         entity: IdName, 
-        associationPath: Array<AssociationPathItem>
+        properties: Array<IdName>
     } | {
         family: 'MODEL', 
         code: 'INDEX_REF_PROPERTY_NOT_FOUND', 

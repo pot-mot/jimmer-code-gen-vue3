@@ -124,7 +124,7 @@ export const localeEn: ProjectLocale = {
         `【Long Association Circular Dependence】
   Entity【${formatIdName(error.entity)}】
   Association Path:
-    ${error.associationPath.map(it => `【${it.type} - ${formatIdName(it.entity)}.${formatIdName(it.property)}】`).join("\n    ")}`,
+    ${error.properties.map(it => `【${formatIdName(it)}】`).join("\n    ")}`,
 
     ErrorCode_MODEL__INDEX_REF_PROPERTY_NOT_FOUND: (error: Errors["MODEL"]["INDEX_REF_PROPERTY_NOT_FOUND"]) =>
         `【Index Referenced Property Not Found】

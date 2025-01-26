@@ -1,5 +1,3 @@
-export type {AssociationPathItemType} from './AssociationPathItemType';
-export {AssociationPathItemType_CONSTANTS} from './AssociationPathItemType';
 export type {AssociationType} from './AssociationType';
 export {AssociationType_CONSTANTS} from './AssociationType';
 export type {DataSourceType} from './DataSourceType';
