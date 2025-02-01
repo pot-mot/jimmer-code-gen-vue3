@@ -88,8 +88,8 @@ const lineCounts = computed(() => {
 
 	const counts = []
 
-	for (let i = 1; i <= length - 1; i++) {
-		counts.push(i)
+	for (let i = 0; i < length; i++) {
+		counts.push(i + 1)
 	}
 
 	return counts.join("\n")
@@ -121,6 +121,7 @@ const handleCopy = () => {
 
 .code {
 	padding: 0.3em 0.5em 0.3em 4em;
+    margin: 0.5em 0;
 	font-size: var(--el-font-size-extra-small);
 	line-height: 1.7;
 	background-color: transparent;
@@ -133,8 +134,10 @@ const handleCopy = () => {
 	top: 0;
 	left: 0;
 
-	width: 3em;
 	padding: 0.3em 0.5em;
+    margin: 0.5em 0;
+
+    width: 3em;
 	line-height: 1.7;
 	user-select: none;
 	text-align: right;
@@ -142,7 +145,6 @@ const handleCopy = () => {
 	color: var(--el-text-color-placeholder);
 	white-space: pre;
 	font-size: var(--el-font-size-extra-small);
-	margin: 0.5em 0;
 }
 
 .toolbar {
