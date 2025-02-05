@@ -72,11 +72,11 @@ const handleFileClick = (data: FilePathTreeItem) => {
     if (data.children.length === 0) emit('file-click', data.path)
 }
 
-const expandKeySet = ref<Set<TreeKey>>(new Set<TreeKey>)
+const expandKeySet = new Set<TreeKey>
 
 const syncExpandKey = () => {
     treeRef.value?.store._getAllNodes().forEach(node => {
-        if (expandKeySet.value.has(node.key)) {
+        if (expandKeySet.has(node.key)) {
             if (!node.expanded) node.expand()
         } else {
             if (node.expanded) node.collapse()
@@ -84,17 +84,20 @@ const syncExpandKey = () => {
     })
 }
 
-const handleNodeExpand = (data: FilePathTreeItem) => {
-    expandKeySet.value.add(data.path)
-    if (data.children.length === 1) {
-        handleNodeExpand(data.children[0])
+const handleNodeExpand = (node: FilePathTreeItem) => {
+    expandKeySet.add(node.path)
+
+    let tempNode = node
+    while (tempNode.children.length === 1) {
+        tempNode = tempNode.children[0]
+        expandKeySet.add(tempNode.path)
     }
+
     syncExpandKey()
 }
 
-const handleNodeCollapse = (data: FilePathTreeItem) => {
-    expandKeySet.value.delete(data.path)
-    syncExpandKey()
+const handleNodeCollapse = (node: FilePathTreeItem) => {
+    expandKeySet.delete(node.path)
 }
 
 watch(() => props.paths, async () => {
