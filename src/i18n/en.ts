@@ -647,6 +647,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     LABEL_EntityConfigForm_property_comment: 'Comment',
     LABEL_EntityConfigForm_property_remark: 'Remark',
     LABEL_EntityConfigForm_property_type: 'Type',
+    LABEL_EntityConfigForm_property_longAssociation: 'Long Association',
     LABEL_EntityConfigForm_property_body: 'Body',
     LABEL_EntityConfigForm_property_overwriteName: 'Overwrite Name',
     LABEL_EntityConfigForm_property_overwriteComment: 'Overwrite Comment',

@@ -7,6 +7,7 @@ import {MainLocaleKeyParam} from "@/i18n";
 import {api} from "@/api";
 import {validateEntityWithProperties} from "@/components/business/entity/validateEntityWithProperties.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
+import {useEditSaveAndRefresh} from "@/components/pages/ModelEditor/save/editSaveAndRefresh.ts";
 
 defineProps<{
     id: number,
@@ -37,6 +38,11 @@ const validate = async (
 		otherEntities
 	)
 }
+
+const {
+    editEnum,
+    editEntity
+} = useEditSaveAndRefresh()
 </script>
 
 <template>
@@ -50,6 +56,8 @@ const validate = async (
             :validate="validate"
             @cancel="emits('close', false)"
             @submit="handleSubmit"
+            @click-entity="editEntity"
+            @click-enum="editEnum"
         />
     </DragDialog>
 </template>

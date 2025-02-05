@@ -12,7 +12,7 @@ export const useMultiCodePreviewStore = defineStore(
             tableEntityPairs: []
         })
 
-        type codeRefreshAction = () => void
+        type codeRefreshAction = () => any
 
         const codeRefreshActionSet = new Set<codeRefreshAction>
 
@@ -20,8 +20,11 @@ export const useMultiCodePreviewStore = defineStore(
             codes,
             ...dialogOpenState,
 
-            codeRefresh: () => {
-                codeRefreshActionSet.forEach(it => it())
+            codeRefresh: async () => {
+                const actionResult: Array<any> = []
+                codeRefreshActionSet.forEach(it => actionResult.push(it()))
+
+                await Promise.all(actionResult)
             },
             onCodeRefresh: (action: () => any) => {
                 codeRefreshActionSet.add(action)

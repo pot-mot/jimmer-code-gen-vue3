@@ -26,6 +26,8 @@ export type {GenEntityConfigInput} from './GenEntityConfigInput';
 export type {GenEntityConfigInput_TargetOf_properties} from './GenEntityConfigInput_TargetOf_properties';
 export type {GenEntityDetailView} from './GenEntityDetailView';
 export type {GenEntityDetailView_TargetOf_properties} from './GenEntityDetailView_TargetOf_properties';
+export type {GenEntityDetailView_TargetOf_properties_TargetOf_enum} from './GenEntityDetailView_TargetOf_properties_TargetOf_enum';
+export type {GenEntityDetailView_TargetOf_properties_TargetOf_typeEntity} from './GenEntityDetailView_TargetOf_properties_TargetOf_typeEntity';
 export type {GenEntityModelView} from './GenEntityModelView';
 export type {GenEntityModelView_TargetOf_properties} from './GenEntityModelView_TargetOf_properties';
 export type {GenEntityModelView_TargetOf_properties_TargetOf_typeTable} from './GenEntityModelView_TargetOf_properties_TargetOf_typeTable';

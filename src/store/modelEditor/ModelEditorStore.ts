@@ -891,7 +891,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 let modelEditorStore: ReturnType<typeof initModelEditorStore> | undefined = undefined
 
 export const useModelEditorStore = () => {
-    if (!modelEditorStore) {
+    if (modelEditorStore === undefined) {
         modelEditorStore = initModelEditorStore()
     }
     return modelEditorStore

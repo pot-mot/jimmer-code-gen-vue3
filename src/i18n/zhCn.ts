@@ -647,6 +647,7 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     LABEL_EntityConfigForm_property_comment: '注释',
     LABEL_EntityConfigForm_property_remark: '备注',
     LABEL_EntityConfigForm_property_type: '类型',
+    LABEL_EntityConfigForm_property_longAssociation: '长关联',
     LABEL_EntityConfigForm_property_body: '属性体',
     LABEL_EntityConfigForm_property_overwriteName: '覆盖自动生成名称',
     LABEL_EntityConfigForm_property_overwriteComment: '覆盖自动生成注释',

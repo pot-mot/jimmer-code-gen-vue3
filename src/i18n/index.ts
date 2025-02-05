@@ -465,6 +465,7 @@ type MainLocale = {
     LABEL_EntityConfigForm_property_comment: string
     LABEL_EntityConfigForm_property_remark: string
     LABEL_EntityConfigForm_property_type: string
+    LABEL_EntityConfigForm_property_longAssociation: string
     LABEL_EntityConfigForm_property_body: string
     LABEL_EntityConfigForm_property_overwriteName: string
     LABEL_EntityConfigForm_property_overwriteComment: string

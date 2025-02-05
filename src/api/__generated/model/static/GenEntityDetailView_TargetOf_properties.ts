@@ -1,5 +1,7 @@
 import type {AssociationType} from '../enums/';
 import type {
+    GenEntityDetailView_TargetOf_properties_TargetOf_enum, 
+    GenEntityDetailView_TargetOf_properties_TargetOf_typeEntity, 
     JoinColumnMeta, 
     JoinTableMeta, 
     OtherAnnotation, 
@@ -163,11 +165,15 @@ export interface GenEntityDetailView_TargetOf_properties {
      */
     columnId?: number | undefined;
     /**
-     * 类型对应表
+     * 生成枚举
+     */
+    enum?: GenEntityDetailView_TargetOf_properties_TargetOf_enum | undefined;
+    /**
+     * ID
      */
     typeTableId?: number | undefined;
     /**
-     * 生成枚举
+     * 对应实体
      */
-    enumId?: number | undefined;
+    typeEntity?: GenEntityDetailView_TargetOf_properties_TargetOf_typeEntity | undefined;
 }

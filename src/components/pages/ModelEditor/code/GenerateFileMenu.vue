@@ -1,30 +1,7 @@
 <script setup lang="ts">
-import {GenerateFile, IdName, TableEntityNotNullPair, TableEntityPair} from "@/api/__generated/model/static";
-import {useTableDialogsStore} from "@/store/modelEditor/TableDialogsStore.ts";
-import {useEntityDialogsStore} from "@/store/modelEditor/EntityDialogsStore.ts";
-import {api} from "@/api";
-import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import {useEnumDialogsStore} from "@/store/modelEditor/EnumDialogsStore.ts";
-import {useAssociationDialogsStore} from "@/store/modelEditor/AssociationDialogsStore.ts";
-import {computed, nextTick} from "vue";
-import {sendI18nMessage} from "@/message/message.ts";
-import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
-import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
-import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
-
-const loadingStore = useGlobalLoadingStore()
-
-const {GRAPH, MODEL, MODEL_EDITOR} = useModelEditorStore()
-
-const codePreviewStore = useMultiCodePreviewStore()
-
-const tableDialogsStore = useTableDialogsStore()
-
-const entityDialogsStore = useEntityDialogsStore()
-
-const enumDialogsStore = useEnumDialogsStore()
-
-const associationDialogsStore = useAssociationDialogsStore()
+import {GenerateFile, TableEntityNotNullPair, TableEntityPair} from "@/api/__generated/model/static";
+import {computed} from "vue";
+import {useEditSaveAndRefresh} from "@/components/pages/ModelEditor/save/editSaveAndRefresh.ts";
 
 const props = defineProps<{
     file: GenerateFile,
@@ -104,105 +81,12 @@ const associationOptions = computed(() => {
         })
 })
 
-// open dialog, 并在对应 dialog close 时做一些操作
-const openAndOnSubmitRefresh = <K, V, O>(
-    store: {
-        open: (key: K, value: V, options?: O) => any,
-        on: (event: 'close', fn: (options: { key: K, changed: boolean }) => any) => any,
-        off: (event: 'close', fn: (options: { key: K, changed: boolean }) => any) => any
-    },
-    key: K,
-    value: V,
-    withSaveModel: boolean = true,
-    option?: O,
-) => {
-    store.open(key, value, option)
-    const onSubmitSave = async (options: { key: K, changed: boolean }) => {
-        if (options.key === key) {
-            if (!options.changed) {
-                store.off('close', onSubmitSave)
-                return
-            }
-
-            if (withSaveModel) {
-                await nextTick()
-
-                let timer: number | undefined
-
-                const waitRefresh = loadingStore.withLoading(
-                    'GenerateFileMenu saveModelAndRefreshCodes',
-                    async () => {
-                        if (
-                            MODEL_EDITOR.waitSyncTableIds.value.length === 0 &&
-                            MODEL_EDITOR.waitSyncHistoryBatches.value.length === 0
-                        ) {
-                            const graph = GRAPH._graph()
-                            const model = MODEL._model()
-                            const currentGraphData = JSON.stringify(MODEL_EDITOR.getGraphData())
-
-                            if (model.graphData !== currentGraphData) {
-                                graph.cleanSelection()
-                                model.graphData = currentGraphData
-
-                                await saveModel(model)
-
-                                codePreviewStore.codeRefresh()
-                            }
-
-                            store.off('close', onSubmitSave)
-                            clearTimeout(timer)
-                        } else {
-                            timer = window.setTimeout(waitRefresh, 100)
-                        }
-                    }
-                )
-
-                await waitRefresh()
-            } else {
-                codePreviewStore.codeRefresh()
-                store.off('close', onSubmitSave)
-            }
-        }
-    }
-    store.on('close', onSubmitSave)
-}
-
-
-const handleClickTable = (idName: IdName) => {
-    const tableNodePair = MODEL.tableNodePairs.filter(it => it.first.name === idName.name)[0]
-    if (!tableNodePair) {
-        sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel", args: [idName]})
-        return
-    }
-    openAndOnSubmitRefresh(tableDialogsStore, tableNodePair.second.id, tableNodePair.first)
-}
-
-const handleClickEntity = async (idName: IdName) => {
-    const entity = await api.entityService.get({id: idName.id})
-    if (entity === undefined) {
-        sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickEntityNotFound", args: [idName]})
-        return
-    }
-    openAndOnSubmitRefresh(entityDialogsStore, idName.id, entity, false)
-}
-
-const handleClickEnum = (idName: IdName) => {
-    const genEnum = MODEL.enums.filter(it => it.name === idName.name)[0]
-    if (!genEnum) {
-        sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickEnumNotFoundInCurrentModel", args: [idName]})
-        return
-    }
-    openAndOnSubmitRefresh(enumDialogsStore, idName.name, genEnum)
-}
-
-const handleClickAssociation = (idName: IdName) => {
-    const associationEdgePair = MODEL.associationEdgePairs.filter(it => it.first.name === idName.name)[0]
-    if (!associationEdgePair) {
-        sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickAssociationNotFoundInCurrentModel", args: [idName]})
-        return
-    }
-    openAndOnSubmitRefresh(associationDialogsStore, associationEdgePair.second.id, associationEdgePair.first)
-}
+const {
+    editEnum,
+    editEntity,
+    editAssociation,
+    editTable
+} = useEditSaveAndRefresh()
 </script>
 
 <template>
@@ -210,19 +94,19 @@ const handleClickAssociation = (idName: IdName) => {
         <template v-if="file.main.mainType === 'Entity' || file.main.mainType === 'Table'">
             <el-button
                 v-if="mainTableEntity?.table"
-                @click="handleClickTable(mainTableEntity.table)">
+                @click="editTable(mainTableEntity.table)">
                 {{ mainTableEntity.table.name }}
             </el-button>
 
             <el-button
                 v-if="mainTableEntity?.entity"
-                @click="handleClickEntity(mainTableEntity.entity)">
+                @click="editEntity(mainTableEntity.entity)">
                 {{ mainTableEntity.entity.name }}
             </el-button>
         </template>
 
         <template v-else-if="file.main.mainType === 'Enum'">
-            <el-button @click="handleClickEnum(file.main.idName)">
+            <el-button @click="editEnum(file.main.idName)">
                 {{ file.main.idName.name }}
             </el-button>
         </template>
@@ -230,11 +114,11 @@ const handleClickAssociation = (idName: IdName) => {
 
     <div v-if="otherTableEntityOptions.length > 0" class="generate-file-menu-part">
         <div v-for="{entity, table} in otherTableEntityOptions">
-            <el-button v-if="table" @click="handleClickTable(table)">
+            <el-button v-if="table" @click="editTable(table)">
                 {{ table.name }}
             </el-button>
 
-            <el-button v-if="entity" @click="handleClickEntity(entity)">
+            <el-button v-if="entity" @click="editEntity(entity)">
                 {{ entity.name }}
             </el-button>
         </div>
@@ -242,7 +126,7 @@ const handleClickAssociation = (idName: IdName) => {
 
     <div v-if="otherEnumOptions.length > 0" class="generate-file-menu-part">
         <div v-for="genEnum in otherEnumOptions">
-            <el-button @click="handleClickEnum(genEnum)">
+            <el-button @click="editEnum(genEnum)">
                 {{ genEnum.name }}
             </el-button>
         </div>
@@ -250,7 +134,7 @@ const handleClickAssociation = (idName: IdName) => {
 
     <div v-if="associationOptions.length > 0" class="generate-file-menu-part">
         <div v-for="association in associationOptions">
-            <el-button @click="handleClickAssociation(association)">
+            <el-button @click="editAssociation(association)">
                 {{ association.name }}
             </el-button>
         </div>

@@ -3,7 +3,7 @@ import {
     EntityModelBusinessInput,
     GenEntityDetailView,
     type GenEntityDetailView_TargetOf_properties,
-    type GenPropertyEntityConfigInput
+    type GenPropertyEntityConfigInput, IdName
 } from "@/api/__generated/model/static";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {DeepReadonly, ref, watch} from "vue";
@@ -26,6 +26,11 @@ const props = defineProps<{
     entity: GenEntityDetailView,
 
     validate: (genEnum: DeepReadonly<EntityModelBusinessInput>) => Promise<MainLocaleKeyParam[]>,
+}>()
+
+const emits = defineEmits<FormEmits<EntityModelBusinessInput> & {
+    (event: "click-enum", genEnum: IdName): void
+    (event: "click-entity", entity: IdName): void
 }>()
 
 const extractEntityData = (entity: DeepReadonly<GenEntityDetailView>) => {
@@ -53,6 +58,24 @@ const extractEntityData = (entity: DeepReadonly<GenEntityDetailView>) => {
     }
 }
 
+const stringifyPropertyType = (property: GenEntityDetailView_TargetOf_properties): string => {
+    let rawType = property.type
+    if (property.enum !== undefined) {
+        rawType = property.enum.name
+    }
+    if (property.typeEntity !== undefined) {
+        rawType = property.typeEntity.name
+    }
+
+    if (property.listType) {
+        return `List<${rawType}>`
+    } else if (!property.typeNotNull) {
+        return `${rawType}?`
+    } else {
+        return rawType
+    }
+}
+
 const {
     entityData, propertiesData
 } = extractEntityData(props.entity)
@@ -69,8 +92,6 @@ watch(() => props.entity, (value) => {
     entity.value = entityData
     properties.value = propertiesData
 })
-
-const emits = defineEmits<FormEmits<EntityModelBusinessInput>>()
 
 const handleCancel = () => {
     const entityWithProperties: EntityModelBusinessInput = {
@@ -167,7 +188,8 @@ const handleSubmit = async () => {
                         <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_name')">
                             <div class="input-with-checkbox">
                                 <el-input v-model="property.name" :disabled="!property.overwriteName"/>
-                                <el-tooltip :content="i18nStore.translate('LABEL_EntityConfigForm_property_overwriteName')">
+                                <el-tooltip
+                                    :content="i18nStore.translate('LABEL_EntityConfigForm_property_overwriteName')">
                                     <el-checkbox v-model="property.overwriteName"/>
                                 </el-tooltip>
                             </div>
@@ -177,7 +199,8 @@ const handleSubmit = async () => {
                         <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_comment')">
                             <div class="input-with-checkbox">
                                 <el-input v-model="property.comment" :disabled="!property.overwriteComment"/>
-                                <el-tooltip :content="i18nStore.translate('LABEL_EntityConfigForm_property_overwriteComment')">
+                                <el-tooltip
+                                    :content="i18nStore.translate('LABEL_EntityConfigForm_property_overwriteComment')">
                                     <el-checkbox v-model="property.overwriteComment"/>
                                 </el-tooltip>
                             </div>
@@ -186,12 +209,28 @@ const handleSubmit = async () => {
 
                     <el-col :span="8">
                         <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_type')">
-                            <div class="input-with-checkbox">
-                                <el-input disabled v-model="property.type"/>
-                                <el-tooltip :content="i18nStore.translate('LABEL_EntityConfigForm_property_typeNotNull')">
-                                    <el-checkbox disabled v-model="property.typeNotNull"/>
+                            <el-button
+                                v-if="property.enum !== undefined"
+                                @click="emits('click-enum', property.enum)"
+                            >
+                                {{ stringifyPropertyType(property) }}
+                            </el-button>
+
+                            <template v-else-if="property.typeEntity !== undefined">
+                                <el-button @click="emits('click-entity', property.typeEntity)">
+                                    {{ stringifyPropertyType(property) }}
+                                </el-button>
+                                <el-tooltip :content="i18nStore.translate('LABEL_EntityConfigForm_property_longAssociation')">
+                                    <el-checkbox v-model="property.longAssociation" style="padding-left: 0.5em;"/>
                                 </el-tooltip>
-                            </div>
+                            </template>
+
+                            <el-input
+                                v-else
+                                disabled
+                                :model-value="stringifyPropertyType(property)"
+                                style="width: 100%;"
+                            />
                         </el-form-item>
                     </el-col>
 
@@ -234,7 +273,8 @@ const handleSubmit = async () => {
                         <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_type')">
                             <div class="input-with-checkbox">
                                 <el-input v-model="property.type"/>
-                                <el-tooltip :content="i18nStore.translate('LABEL_EntityConfigForm_property_typeNotNull')">
+                                <el-tooltip
+                                    :content="i18nStore.translate('LABEL_EntityConfigForm_property_typeNotNull')">
                                     <el-checkbox v-model="property.typeNotNull"/>
                                 </el-tooltip>
                             </div>
