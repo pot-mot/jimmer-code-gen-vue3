@@ -19,7 +19,7 @@ type FilePathTreeItem = {
 
 const treeData = ref<FilePathTreeItem[]>()
 
-// 递归函数构建树形结构
+// 构建树形结构
 const buildTree = (paths: string[]): FilePathTreeItem[] => {
     const trees: Array<FilePathTreeItem> = []
 
@@ -38,7 +38,7 @@ const buildTree = (paths: string[]): FilePathTreeItem[] => {
 
             if (findNode === undefined) {
                 // 如果不存在，则创建一个新的节点
-                const newNode = {name: part, children: [], path: currentPath}
+                const newNode: FilePathTreeItem = {name: part, children: [], path: currentPath}
                 currentLevel.push(newNode)
                 currentLevel = newNode.children
             } else {
@@ -48,11 +48,35 @@ const buildTree = (paths: string[]): FilePathTreeItem[] => {
         })
     })
 
-    return trees
+    return sortFilePathTree(trees)
+}
+
+const sortFilePathTree = (files: Array<FilePathTreeItem>): Array<FilePathTreeItem> => {
+    const withChildren: Array<FilePathTreeItem> = []
+    const noChildren: Array<FilePathTreeItem> = []
+    for (const file of files.sort((a, b) => a.name.localeCompare(b.name))) {
+        if (file.children.length > 0) {
+            const sortedChildren = sortFilePathTree(file.children)
+            withChildren.push({...file, children: sortedChildren})
+        } else {
+            noChildren.push(file)
+        }
+    }
+    return [...withChildren, ...noChildren]
 }
 
 const handleFileClick = (data: FilePathTreeItem) => {
-    if (data.path) emit('file-click', data.path)
+    if (data.children.length === 0) emit('file-click', data.path)
+}
+
+const expandKeySet = ref<Set<string>>(new Set<string>)
+
+const handleNodeExpand = (data: FilePathTreeItem) => {
+    expandKeySet.value.add(data.path)
+}
+
+const handleNodeCollapse = (data: FilePathTreeItem) => {
+    expandKeySet.value.delete(data.path)
 }
 
 watch(() => props.paths, () => {
@@ -65,7 +89,12 @@ watch(() => props.paths, () => {
         :props="{children: 'children'}"
         :data="treeData"
         :indent="16"
-        @node-click="handleFileClick">
+        node-key="path"
+        :default-expanded-keys="[...expandKeySet]"
+        @node-click="handleFileClick"
+        @node-expand="handleNodeExpand"
+        @node-collapse="handleNodeCollapse"
+    >
         <template #default="{data}">
             <el-text :class="{ current: data.path === currentPath }">
                 {{ data.name }}
