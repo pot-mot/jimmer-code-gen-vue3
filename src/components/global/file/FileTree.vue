@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import {ref, watch} from 'vue'
+import {nextTick, ref, watch} from 'vue'
 import {ElTree} from "element-plus";
+import {TreeKey} from "element-plus/es/components/tree/src/tree.type";
+
+const treeRef = ref<InstanceType<typeof ElTree>>()
 
 const props = defineProps<{
     paths: string[],
@@ -69,28 +72,45 @@ const handleFileClick = (data: FilePathTreeItem) => {
     if (data.children.length === 0) emit('file-click', data.path)
 }
 
-const expandKeySet = ref<Set<string>>(new Set<string>)
+const expandKeySet = ref<Set<TreeKey>>(new Set<TreeKey>)
+
+const syncExpandKey = () => {
+    treeRef.value?.store._getAllNodes().forEach(node => {
+        if (expandKeySet.value.has(node.key)) {
+            if (!node.expanded) node.expand()
+        } else {
+            if (node.expanded) node.collapse()
+        }
+    })
+}
 
 const handleNodeExpand = (data: FilePathTreeItem) => {
     expandKeySet.value.add(data.path)
+    if (data.children.length === 1) {
+        handleNodeExpand(data.children[0])
+    }
+    syncExpandKey()
 }
 
 const handleNodeCollapse = (data: FilePathTreeItem) => {
     expandKeySet.value.delete(data.path)
+    syncExpandKey()
 }
 
-watch(() => props.paths, () => {
+watch(() => props.paths, async () => {
     treeData.value = buildTree(props.paths)
+    await nextTick()
+    syncExpandKey()
 }, {immediate: true})
 </script>
 
 <template>
     <el-tree
+        ref="treeRef"
         :props="{children: 'children'}"
         :data="treeData"
         :indent="16"
         node-key="path"
-        :default-expanded-keys="[...expandKeySet]"
         @node-click="handleFileClick"
         @node-expand="handleNodeExpand"
         @node-collapse="handleNodeCollapse"
