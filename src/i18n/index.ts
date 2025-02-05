@@ -243,6 +243,8 @@ type MainLocale = {
     LABEL_ModelEditorGraph_previewCode: string
     LABEL_ModelEditorGraph_exportModel: string
     LABEL_ModelEditorGraph_downloadAll: string
+    LABEL_ModelEditorGraph_downloadCurrent: string
+    LABEL_ModelEditorGraph_downloadFiltered: string
 
     LABEL_ModelEditorGraph_clean: string
     LABEL_ModelEditorGraph_cleanSelected: string

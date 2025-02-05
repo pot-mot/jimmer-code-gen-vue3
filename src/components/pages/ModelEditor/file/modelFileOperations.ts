@@ -9,7 +9,7 @@ import {getModelAllCopyData} from "@/components/pages/ModelEditor/graph/clipBoar
 import {GenerateType, ViewType} from "@/api/__generated/model/enums";
 import {DeepReadonly} from "vue";
 
-const createZip = async (files: Array<Pick<GenerateFile, 'path' | 'content'>>): Promise<Blob> => {
+const createZip = async (files: DeepReadonly<Array<Pick<GenerateFile, 'path' | 'content'>>>): Promise<Blob> => {
     const zip = new JSZip()
 
     const nameCountMap = new Map<string, number>
@@ -97,9 +97,17 @@ export const exportModelJson = async (model: GenModelView) => {
     saveAs(modelJsonBlob, `model-[${model.name}].json`)
 }
 
-export const downloadCodeZip = async (generateFiles: DeepReadonly<GenerateFile[]>) => {
-    const file = await createZip([...generateFiles])
+export const downloadZip = async (generateFiles: DeepReadonly<GenerateFile[]>) => {
+    const file = await createZip(generateFiles)
     saveAs(file, `codes.zip`)
+}
+
+export const downloadFile = (file: GenerateFile) => {
+    const fileBlob = new Blob(
+        [file.content],
+        {type: "application/octet-stream"}
+    )
+    saveAs(fileBlob, file.name)
 }
 
 export const downloadModelZip = async (

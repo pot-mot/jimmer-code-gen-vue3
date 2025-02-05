@@ -415,6 +415,8 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     LABEL_ModelEditorGraph_previewCode: 'Preview Code',
     LABEL_ModelEditorGraph_exportModel: 'Export Model',
     LABEL_ModelEditorGraph_downloadAll: 'Download All (ZIP)',
+    LABEL_ModelEditorGraph_downloadCurrent: 'Download Current',
+    LABEL_ModelEditorGraph_downloadFiltered: 'Download Filtered (ZIP)',
 
     LABEL_ModelEditorGraph_clean: 'Clean Graph',
     LABEL_ModelEditorGraph_cleanSelected: 'Clean Selection',

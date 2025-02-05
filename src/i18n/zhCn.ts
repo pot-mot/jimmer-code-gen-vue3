@@ -416,6 +416,8 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     LABEL_ModelEditorGraph_previewCode: '预览代码',
     LABEL_ModelEditorGraph_exportModel: '导出模型',
     LABEL_ModelEditorGraph_downloadAll: '下载全部 (ZIP)',
+    LABEL_ModelEditorGraph_downloadCurrent: '下载当前',
+    LABEL_ModelEditorGraph_downloadFiltered: '下载过滤后 (ZIP)',
 
     LABEL_ModelEditorGraph_clean: '清理画布',
     LABEL_ModelEditorGraph_cleanSelected: '清理选中部分',

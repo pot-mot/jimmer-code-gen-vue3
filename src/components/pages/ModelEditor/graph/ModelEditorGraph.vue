@@ -113,10 +113,8 @@
                     <MultiCodePreview
                         ref="multiCodePreviewRef"
                         :codes="codePreviewStore.codes"
-                        @download="handleCodeDownload"
-                        height="calc(100vh - 5em - 30px)"
-                        width="100%"
-                        class="multi-code-preview"
+                        @download-file="handleDownloadFile"
+                        @download-files="handleDownloadFiles"
                     />
                 </DragDialog>
             </li>
@@ -155,7 +153,7 @@ import FitIcon from "@/components/global/icons/toolbar/FitIcon.vue";
 import CenterIcon from "@/components/global/icons/toolbar/CenterIcon.vue";
 import EraserIcon from "@/components/global/icons/toolbar/EraserIcon.vue";
 import AssociationOffIcon from "@/components/global/icons/toolbar/AssociationOffIcon.vue";
-import DownloadIcon from "@/components/global/icons/toolbar/DownloadIcon.vue";
+import DownloadIcon from "@/components/global/icons/download/DownloadIcon.vue";
 import ScaleBar from "@/components/global/graphEditor/scale/ScaleBar.vue";
 import GraphSearcher from "@/components/pages/ModelEditor/search/GraphSearcher.vue";
 import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
@@ -166,8 +164,9 @@ import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
 import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
 import {
     convertModel,
-    downloadCodeZip,
+    downloadFile,
     downloadModelZip,
+    downloadZip,
     exportModelJson,
     getModelCodes,
 } from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
@@ -366,8 +365,12 @@ watch(() => MODEL.isLoaded, async (value) => {
     }
 })
 
-const handleCodeDownload = loadingStore.withLoading('ModelEditorGraph handleCodeDownload', async (files: Array<GenerateFile>) => {
-    await downloadCodeZip(files)
+const handleDownloadFile = loadingStore.withLoading('ModelEditorGraph handleCodeDownload', (file: GenerateFile) => {
+    downloadFile(file)
+})
+
+const handleDownloadFiles = loadingStore.withLoading('ModelEditorGraph handleCodeDownload', async (files: Array<GenerateFile>) => {
+    await downloadZip(files)
 })
 
 const exportType_CONSTANT = ["JSON", "PNG", "SVG"]

@@ -8,23 +8,25 @@ import 'splitpanes/dist/splitpanes.css'
 import GenerateFileMenu from "@/components/pages/ModelEditor/code/GenerateFileMenu.vue";
 import GenerateFileFilter from "@/components/pages/ModelEditor/code/GenerateFileFilter.vue";
 import FileTree from "@/components/global/file/FileTree.vue";
-import DownloadIcon from "@/components/global/icons/toolbar/DownloadIcon.vue";
+import DownloadIcon from "@/components/global/icons/download/DownloadIcon.vue";
+import DownloadFileIcon from "@/components/global/icons/download/DownloadFileIcon.vue";
+import DownloadWithFilterIcon from "@/components/global/icons/download/DownloadWithFilterIcon.vue";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+
+const i18nStore = useI18nStore()
 
 interface MultiCodePreviewProps {
     codes: GenerateResult,
-    width?: string
-    height?: string
     showLineCounts?: boolean
 }
 
 const props = withDefaults(defineProps<MultiCodePreviewProps>(), {
-    width: "100%",
-    height: "100%",
     showLineCounts: true
 })
 
 const emits = defineEmits<{
-    (event: "download", files: Array<GenerateFile>): void
+    (event: "downloadFile", file: GenerateFile): void
+    (event: "downloadFiles", files: Array<GenerateFile>): void
 }>()
 
 const files = ref<Array<GenerateFile>>([])
@@ -70,8 +72,17 @@ const entityIdMap = computed(() => {
     return map
 })
 
-const handleDownload = () => {
-    emits("download", files.value)
+const handleDownloadCurrent = () => {
+    if (currentFile.value !== undefined)
+        emits("downloadFile", currentFile.value)
+}
+
+const handleDownloadFiltered = () => {
+    emits("downloadFiles", files.value)
+}
+
+const handleDownloadAll = () => {
+    emits("downloadFiles", props.codes.files)
 }
 </script>
 
@@ -79,7 +90,6 @@ const handleDownload = () => {
     <LeftRightLayout
         v-if="codes && codes.files.length > 0"
         :left-size="20"
-        class="multi-code-preview"
     >
         <template #left>
             <Splitpanes horizontal>
@@ -100,8 +110,8 @@ const handleDownload = () => {
             </Splitpanes>
         </template>
 
-        <template #right v-if="currentFile">
-            <Splitpanes horizontal>
+        <template #right>
+            <Splitpanes horizontal v-if="currentFile">
                 <Pane style="overflow-y: scroll;" size="3em">
                     <GenerateFileMenu
                         :file="currentFile"
@@ -116,17 +126,39 @@ const handleDownload = () => {
                         :language="currentLanguage"
                         :show-line-counts="showLineCounts"
                     />
-
-                    <div class="code-download-button">
-                        <el-button
-                            :icon="DownloadIcon"
-                            round
-                            size="large"
-                            @click="handleDownload"
-                        />
-                    </div>
                 </Pane>
             </Splitpanes>
+
+            <div class="code-download-button">
+                <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_downloadFiltered')">
+                    <el-button
+                        v-if="codes.files.length !== paths.length"
+                        :icon="DownloadWithFilterIcon"
+                        round
+                        size="large"
+                        @click="handleDownloadFiltered"
+                    />
+                </el-tooltip>
+
+                <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_downloadCurrent')">
+                    <el-button
+                        v-if="currentFile"
+                        :icon="DownloadFileIcon"
+                        round
+                        size="large"
+                        @click="handleDownloadCurrent"
+                    />
+                </el-tooltip>
+
+                <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_downloadAll')">
+                    <el-button
+                        :icon="DownloadIcon"
+                        round
+                        size="large"
+                        @click="handleDownloadAll"
+                    />
+                </el-tooltip>
+            </div>
         </template>
     </LeftRightLayout>
 
@@ -134,11 +166,6 @@ const handleDownload = () => {
 </template>
 
 <style scoped>
-.multi-code-preview {
-    height: calc(100vh - 30px);
-    width: 100%;
-}
-
 .code-download-button {
     position: absolute;
     bottom: 2em;
