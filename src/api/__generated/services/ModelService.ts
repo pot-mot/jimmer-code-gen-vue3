@@ -86,6 +86,7 @@ export class ModelService {
 }
 
 export type ModelServiceOptions = {
+    'list': {}, 
     'get': {
         id: number
     }, 
@@ -96,7 +97,6 @@ export type ModelServiceOptions = {
         id: number, 
         excludeEntityIds?: Array<number> | undefined
     }, 
-    'list': {}, 
     'save': {
         body: GenModelInput
     }, 
