@@ -1,6 +1,6 @@
 <template>
 	<div class="code-preview">
-		<div class="code-preview-wrapper" ref="wrapperRef">
+		<div class="code-preview-content-wrapper" ref="contentWrapperRef">
 			<div v-if="showLineCounts" class="line-counts" v-text="lineCounts"/>
 			<pre class="code"><code ref="codeRef" :class="`language-${language}`"/></pre>
 		</div>
@@ -30,7 +30,7 @@ const props = withDefaults(defineProps<{
     noHighlightLimit: 10000,
 })
 
-const wrapperRef = ref<HTMLDivElement>()
+const contentWrapperRef = ref<HTMLDivElement>()
 const codeRef = ref<HTMLDivElement>()
 
 const worker = new Worker(new URL("./worker/prism-worker.js", import.meta.url))
@@ -40,8 +40,8 @@ onBeforeUnmount(() => {
 })
 
 const showCode = () => {
-    if (wrapperRef.value !== undefined && codeRef.value !== undefined) {
-        const wrapper = wrapperRef.value
+    if (contentWrapperRef.value !== undefined && codeRef.value !== undefined) {
+        const wrapper = contentWrapperRef.value
         const element = codeRef.value
         element.innerText = props.code
         wrapper.scrollTop = 0
@@ -49,8 +49,8 @@ const showCode = () => {
 }
 
 const highlightCode = () => {
-	if (wrapperRef.value !== undefined && codeRef.value !== undefined) {
-		const wrapper = wrapperRef.value
+	if (contentWrapperRef.value !== undefined && codeRef.value !== undefined) {
+		const wrapper = contentWrapperRef.value
 		const element = codeRef.value
 		worker.postMessage({
 			code: props.code,
@@ -112,16 +112,18 @@ const handleCopy = () => {
 	overflow: hidden;
 }
 
-.code-preview-wrapper {
-	position: relative;
+.code-preview-content-wrapper {
 	width: 100%;
 	height: 100%;
 	overflow: scroll;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    padding: 0.5em 0;
 }
 
 .code {
-	padding: 0.3em 0.5em 0.3em 4em;
-    margin: 0.5em 0;
+    padding-left: 0.5em;
+
 	font-size: var(--el-font-size-extra-small);
 	line-height: 1.7;
 	background-color: transparent;
@@ -130,21 +132,18 @@ const handleCopy = () => {
 }
 
 .line-counts {
-	position: absolute;
-	top: 0;
-	left: 0;
+    padding-left: 0.5em;
+    padding-right: 1em;
 
-	padding: 0.3em 0.5em;
-    margin: 0.5em 0;
+    user-select: none;
+    text-align: right;
 
-    width: 3em;
+    font-size: var(--el-font-size-extra-small);
 	line-height: 1.7;
-	user-select: none;
-	text-align: right;
-	border-right: 1px solid var(--el-text-color-placeholder);
+
+	border-right: 1px solid var(--el-color-info-light-7);
 	color: var(--el-text-color-placeholder);
 	white-space: pre;
-	font-size: var(--el-font-size-extra-small);
 }
 
 .toolbar {

@@ -113,13 +113,11 @@
                     <MultiCodePreview
                         ref="multiCodePreviewRef"
                         :codes="codePreviewStore.codes"
+                        @download="handleCodeDownload"
                         height="calc(100vh - 5em - 30px)"
                         width="100%"
-                        class="multi-code-preview"/>
-                    <div class="code-download-button">
-                        <el-button :icon="DownloadIcon" round size="large"
-                                   @click="handleCodeDownload"/>
-                    </div>
+                        class="multi-code-preview"
+                    />
                 </DragDialog>
             </li>
 
@@ -140,19 +138,6 @@
         </template>
     </div>
 </template>
-
-<style scoped>
-.multi-code-preview {
-    height: calc(100vh - 30px);
-    width: 100%;
-}
-
-.code-download-button {
-    position: absolute;
-    bottom: 2em;
-    right: 2em;
-}
-</style>
 
 <script lang="ts" setup>
 import {onBeforeUnmount, onMounted, ref, watch} from "vue"
@@ -381,14 +366,8 @@ watch(() => MODEL.isLoaded, async (value) => {
     }
 })
 
-const multiCodePreviewRef = ref<{
-    getFilteredFiles: () => Array<GenerateFile>
-} | undefined>()
-
-const handleCodeDownload = loadingStore.withLoading('ModelEditorGraph handleModelDownload', async () => {
-    if (multiCodePreviewRef.value) {
-        await downloadCodeZip(multiCodePreviewRef.value.getFilteredFiles())
-    }
+const handleCodeDownload = loadingStore.withLoading('ModelEditorGraph handleCodeDownload', async (files: Array<GenerateFile>) => {
+    await downloadCodeZip(files)
 })
 
 const exportType_CONSTANT = ["JSON", "PNG", "SVG"]
