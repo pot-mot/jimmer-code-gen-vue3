@@ -3,7 +3,7 @@ import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/stati
 import {computed, ref, watch} from "vue";
 import {EditPen, Plus} from "@element-plus/icons-vue";
 import {useJdbcTypeStore} from "@/store/jdbcType/jdbcTypeStore.ts";
-import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
+import {useColumnDefaultStore} from "@/store/columnDefault/ColumnDefaultStore.ts";
 import {useClickOutside} from "@/components/global/list/useClickOutside.ts";
 import {containsClassList, interactionTagClassList, judgeTarget} from "@/utils/clickUtils.ts";
 import Line from "@/components/global/line/Line.vue";

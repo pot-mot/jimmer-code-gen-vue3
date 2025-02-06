@@ -3,7 +3,7 @@ import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import GlobalConfig from "@/components/business/globalConfig/GlobalConfig.vue";
 import {useJdbcTypeStore} from "@/store/jdbcType/jdbcTypeStore.ts";
 import {useGlobalGenConfigStore} from "@/store/config/GlobalGenConfigStore.ts";
-import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
+import {useColumnDefaultStore} from "@/store/columnDefault/ColumnDefaultStore.ts";
 import {useDataSourceDefaultStore} from "@/store/dataSource/dataSourceDefaultStore.ts";
 import {onBeforeMount} from "vue";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";

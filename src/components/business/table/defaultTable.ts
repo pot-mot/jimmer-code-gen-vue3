@@ -3,7 +3,7 @@ import {
     GenTableModelInput_TargetOf_columns,
     GenTableModelInput_TargetOf_indexes
 } from "@/api/__generated/model/static";
-import {useColumnDefaultStore} from "@/components/business/columnDefault/ColumnDefaultStore.ts";
+import {useColumnDefaultStore} from "@/store/columnDefault/ColumnDefaultStore.ts";
 
 export const getDefaultTable = (): GenTableModelInput => {
     return {
