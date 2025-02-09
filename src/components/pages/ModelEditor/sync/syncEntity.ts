@@ -8,21 +8,23 @@ import {sendI18nMessage} from "@/message/message.ts";
 import {GenEntityDetailView, GenEntityDetailView_TargetOf_properties} from "@/api/__generated/model/static";
 
 // 同步实体变更
-const syncEntityChanged = (entity: DeepReadonly<EntityFormType>, changedEntity: DeepReadonly<GenEntityDetailView>): EntityFormType => {
-    const changedPropertyIdMap = new Map<number, DeepReadonly<GenEntityDetailView_TargetOf_properties>>
-
+const syncEntityChanged = (entity: DeepReadonly<EntityFormType>, changedEntity: GenEntityDetailView): EntityFormType => {
+    const changedPropertyIdMap = new Map<number, GenEntityDetailView_TargetOf_properties>
     changedEntity.properties.forEach(it => {
         changedPropertyIdMap.set(it.id, it)
     })
 
     const tempEntity = cloneDeepReadonly<EntityFormType>(entity)
 
-    tempEntity.properties = tempEntity.properties
-        .map(it => {
+    const newHasColumnProperties: GenEntityDetailView_TargetOf_properties[] = []
+    const newNoColumnProperties: EntityFormType["properties"] = []
+
+    tempEntity.properties
+        .forEach(it => {
             if ("id" in it) {
                 const changedProperty = changedPropertyIdMap.get(it.id)
                 if (changedProperty !== undefined) {
-                    return {
+                    newHasColumnProperties.push({
                         ...changedProperty,
                         overwriteName: it.overwriteName,
                         name: it.overwriteName ? it.name : changedProperty.name,
@@ -30,16 +32,25 @@ const syncEntityChanged = (entity: DeepReadonly<EntityFormType>, changedEntity: 
                         comment: it.overwriteComment ? it.comment : changedProperty.comment,
                         remark: it.remark,
                         otherAnnotation: it.otherAnnotation,
-                    }
-                } else {
-                    return undefined
+                    })
                 }
             } else {
-                return it
+                newNoColumnProperties.push(it)
             }
         })
-        .filter(it => it !== undefined) as EntityFormType["properties"]
 
+    const newHasColumnPropertyIds = new Set(newHasColumnProperties.map(it => it.id))
+
+    changedEntity.properties.forEach(it => {
+        if (!newHasColumnPropertyIds.has(it.id)) {
+            newHasColumnProperties.push(it)
+        }
+    })
+
+    tempEntity.properties = [
+        ...newHasColumnProperties.sort((a, b) => a.orderKey - b.orderKey),
+        ...newNoColumnProperties
+    ]
     return tempEntity
 }
 
