@@ -1,30 +1,37 @@
 <script setup lang="ts">
 import {
     EntityModelBusinessInput,
-    GenEntityDetailView,
     type GenEntityDetailView_TargetOf_properties,
-    type GenPropertyEntityConfigInput, IdName
+    IdName
 } from "@/api/__generated/model/static";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
-import {DeepReadonly, ref, watch} from "vue";
+import {DeepReadonly} from "vue";
 import EntityBusinessSelect from "@/components/business/entity/EntityBusinessSelect.vue";
 import EntityDtoPropertiesSelect from "@/components/business/entity/EntityDtoPropertiesSelect.vue";
 import {MainLocaleKeyParam} from "@/i18n";
 import {sendI18nMessage} from "@/message/message.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
-import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 import OtherAnnotationEditor from "@/components/business/entity/OtherAnnotationEditor.vue";
 import PropertyBodyEditor from "@/components/business/entity/PropertyBodyEditor.vue";
 import Details from "@/components/global/common/Details.vue";
 import EditList from "@/components/global/list/EditList.vue";
 import {getDefaultProperty} from "@/components/business/entity/defaultProperty.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
+import {
+    EntityFormType,
+    entityFormTypeToBusinessInput,
+    useEntityPropertiesPartByHasColumn
+} from "@/components/business/entity/EntityFormType.ts";
 
 const i18nStore = useI18nStore()
 
-const props = defineProps<{
-    entity: GenEntityDetailView,
+const entity = defineModel<EntityFormType>({
+    required: true
+})
 
+const {hasColumnProperties, noColumnProperties} = useEntityPropertiesPartByHasColumn(entity)
+
+const props = defineProps<{
     validate: (genEnum: DeepReadonly<EntityModelBusinessInput>) => Promise<MainLocaleKeyParam[]>,
 }>()
 
@@ -32,31 +39,6 @@ const emits = defineEmits<FormEmits<EntityModelBusinessInput> & {
     (event: "click-enum", genEnum: IdName): void
     (event: "click-entity", entity: IdName): void
 }>()
-
-const extractEntityData = (entity: DeepReadonly<GenEntityDetailView>) => {
-    const value = cloneDeepReadonly<GenEntityDetailView>(entity)
-
-    const columnProperties: Array<GenEntityDetailView_TargetOf_properties> = []
-    const noColumnProperties: Array<GenEntityDetailView_TargetOf_properties> = []
-
-    value.properties.forEach((it) => {
-        if (!it.columnId) {
-            noColumnProperties.push(it)
-        } else {
-            columnProperties.push(it)
-        }
-    })
-
-    const {properties, ...entityOther} = value
-
-    return {
-        entityData: {
-            ...entityOther,
-            properties: columnProperties
-        },
-        propertiesData: noColumnProperties
-    }
-}
 
 const stringifyPropertyType = (property: GenEntityDetailView_TargetOf_properties): string => {
     let rawType = property.type
@@ -76,55 +58,28 @@ const stringifyPropertyType = (property: GenEntityDetailView_TargetOf_properties
     }
 }
 
-const {
-    entityData, propertiesData
-} = extractEntityData(props.entity)
-
-const entity = ref<GenEntityDetailView>(entityData)
-
-const properties = ref<GenPropertyEntityConfigInput[]>(propertiesData)
-
-watch(() => props.entity, (value) => {
-    const {
-        entityData, propertiesData
-    } = extractEntityData(value)
-
-    entity.value = entityData
-    properties.value = propertiesData
-})
-
 const handleCancel = () => {
-    const entityWithProperties: EntityModelBusinessInput = {
-        entity: entity.value,
-        properties: properties.value
-    }
+    const entityInput: EntityModelBusinessInput = entityFormTypeToBusinessInput(entity.value)
 
-    emits('cancel', entityWithProperties)
+    emits('cancel', entityInput)
 }
 
 const handleSubmit = async () => {
     let orderKey = 1
-
     for (const property of entity.value.properties) {
         property.orderKey = orderKey++
     }
-    for (const property of properties.value) {
-        property.orderKey = orderKey++
-    }
 
-    const entityWithProperties: EntityModelBusinessInput = {
-        entity: entity.value,
-        properties: properties.value
-    }
+    const entityInput: EntityModelBusinessInput = entityFormTypeToBusinessInput(entity.value)
 
-    const messageList = await props.validate(entityWithProperties)
+    const messageList = await props.validate(entityInput)
 
     if (messageList.length > 0) {
         messageList.forEach(it => sendI18nMessage(it, 'warning'))
         return
     }
 
-    emits('submit', entityWithProperties)
+    emits('submit', entityInput)
 }
 </script>
 
@@ -173,7 +128,7 @@ const handleSubmit = async () => {
         </el-row>
 
         <ViewList
-            :lines="entity.properties"
+            :lines="hasColumnProperties"
             class="property-list"
         >
             <template #default="{data: property}">
@@ -244,7 +199,7 @@ const handleSubmit = async () => {
         </ViewList>
 
         <EditList
-            v-model:lines="properties"
+            v-model:lines="noColumnProperties"
             :default-line="getDefaultProperty"
             :label-line="false"
             class="property-list"
@@ -302,8 +257,8 @@ const handleSubmit = async () => {
             </template>
 
             <EntityDtoPropertiesSelect
-                v-model:entity="entity"
-                v-model:properties="properties"
+                :entity="entity"
+                v-model:properties="entity.properties"
             />
         </Details>
 

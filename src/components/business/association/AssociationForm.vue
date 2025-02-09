@@ -5,14 +5,12 @@ import {
 } from "@/api/__generated/model/static";
 import {AssociationType_CONSTANTS, DissociateAction_CONSTANTS} from "@/api/__generated/model/enums";
 import {RefreshRight} from "@element-plus/icons-vue";
-import {computed, DeepReadonly, ref, watch} from "vue";
-import {cloneDeep} from "lodash";
+import {computed, DeepReadonly} from "vue";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {createAssociationName} from "@/components/business/association/createAssociationName.ts";
 import {sendI18nMessage} from "@/message/message.ts";
 import {type Edge} from "@antv/x6";
 import {MainLocaleKeyParam} from "@/i18n";
-import {getDefaultAssociation} from "@/components/business/association/defaultColumn.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {
@@ -23,9 +21,11 @@ const i18nStore = useI18nStore()
 
 const {MODEL} = useModelEditorStore()
 
-const props = defineProps<{
-    association?: GenAssociationModelInput | undefined,
+const association = defineModel<GenAssociationModelInput>({
+    required: true
+})
 
+const props = defineProps<{
     edge: DeepReadonly<Edge> | undefined,
 
     validate: (association: DeepReadonly<GenAssociationModelInput>) => MainLocaleKeyParam[],
@@ -36,13 +36,6 @@ const props = defineProps<{
         targetTableIsSuper: boolean,
     ) => string
 }>()
-
-const association = ref<GenAssociationModelInput>(cloneDeep(props.association) ?? getDefaultAssociation())
-
-watch(() => props.association, (value) => {
-    if (!value) return
-    association.value = cloneDeep(value)
-})
 
 const emits = defineEmits<FormEmits<GenAssociationModelInput>>()
 

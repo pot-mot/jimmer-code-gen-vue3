@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import EditList from "@/components/global/list/EditList.vue";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
-import {computed, DeepReadonly, ref, watch} from "vue";
+import {computed, DeepReadonly, watch} from "vue";
 import {enumItemColumns} from "@/components/business/enum/enumItemColumns.ts";
 import {EnumType_CONSTANTS} from "@/api/__generated/model/enums";
 import Line from "@/components/global/line/Line.vue";
 import LineItem from "@/components/global/line/LineItem.vue";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {sendI18nMessage} from "@/message/message.ts";
-import {getDefaultEnum, getDefaultEnumItem} from "@/components/business/enum/defaultEnum.ts";
+import {getDefaultEnumItem} from "@/components/business/enum/defaultEnum.ts";
 import {validateEnumItem} from "@/shape/GenEnumModelInput.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {MainLocaleKeyParam} from "@/i18n";
@@ -16,30 +16,15 @@ import Comment from "@/components/global/common/Comment.vue";
 
 const i18nStore = useI18nStore()
 
-const props = defineProps<{
-    enum?: Partial<GenModelInput_TargetOf_enums>,
+const genEnum = defineModel<GenModelInput_TargetOf_enums>({
+    required: true
+})
 
+const props = defineProps<{
     validate: (genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => MainLocaleKeyParam[],
 }>()
 
 const emits = defineEmits<FormEmits<GenModelInput_TargetOf_enums>>()
-
-const genEnum = ref<GenModelInput_TargetOf_enums>(getDefaultEnum())
-
-const getData = async () => {
-    if (props.enum) {
-        genEnum.value = {
-            ...getDefaultEnum(),
-            ...props.enum
-        }
-    } else {
-        genEnum.value = getDefaultEnum()
-    }
-}
-
-watch(() => props.enum, () => {
-    getData()
-}, {immediate: true})
 
 watch(() => genEnum.value.enumType, (value) => {
     if (value === 'NAME') {

@@ -16,7 +16,7 @@ import ColumnTypeForm from "@/components/business/table/ColumnTypeForm.vue";
 import {useJdbcTypeStore} from "@/store/jdbcType/jdbcTypeStore.ts";
 import {tableIndexColumns} from "@/components/business/table/tableIndexColumns.ts";
 import Details from "@/components/global/common/Details.vue";
-import {getDefaultColumn, getDefaultIndex, getDefaultTable} from "@/components/business/table/defaultTable.ts";
+import {getDefaultColumn, getDefaultIndex} from "@/components/business/table/defaultTable.ts";
 import {validateColumn, validateIndex} from "@/shape/GenTableModelInput.ts";
 import {getLegalSuperTables} from "@/components/business/table/tableInheritAnalyse.ts";
 import {processNamingStrategy} from "@/components/business/genConfig/namingStrategyProcess.ts";
@@ -25,7 +25,6 @@ import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {Delete, Plus, RefreshRight} from "@element-plus/icons-vue";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import ColumnCategorySelect from "@/components/business/table/ColumnCategorySelect.vue";
-import {cloneDeep} from "lodash";
 import {MainLocaleKeyParam} from "@/i18n";
 import {getColumnKeyGroups} from "@/components/business/table/columnKeyGroups.ts";
 
@@ -35,9 +34,11 @@ const {MODEL} = useModelEditorStore()
 
 const jdbcTypeStore = useJdbcTypeStore()
 
-const props = defineProps<{
-    table?: GenTableModelInput | undefined,
+const table = defineModel<GenTableModelInput>({
+    required: true
+})
 
+const props = defineProps<{
     validate: (table: DeepReadonly<GenTableModelInput>) => MainLocaleKeyParam[],
 
     createIndexName: (
@@ -54,13 +55,6 @@ interface ModelFormEmits {
 }
 
 const emits = defineEmits<FormEmits<GenTableModelInput> & ModelFormEmits>()
-
-const table = ref<GenTableModelInput>(cloneDeep(props.table) ?? getDefaultTable())
-
-watch(() => props.table, (value) => {
-    if (!value) return
-    table.value = cloneDeep(value)
-})
 
 const superTables = computed(() =>
     MODEL.superTables.filter(superTable => table.value.superTables.map(it => it.name).includes(superTable.name))
@@ -111,7 +105,7 @@ const syncSuperTableNames = () => {
 }
 
 // 记录原始表类型
-let baseTableType = (props.table?.type === "SUPER_TABLE" ? "TABLE" : props.table?.type) ?? "TABLE"
+let baseTableType = table.value.type
 
 // 是否是上级表
 const isSuperTable = computed<boolean>({
