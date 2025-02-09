@@ -19,19 +19,23 @@ const syncEntityChanged = (entity: DeepReadonly<EntityFormType>, changedEntity: 
     const newHasColumnProperties: GenEntityDetailView_TargetOf_properties[] = []
     const newNoColumnProperties: EntityFormType["properties"] = []
 
+    tempEntity.name = entity.overwriteName ? entity.name : changedEntity.name
+    tempEntity.comment = entity.overwriteComment ? entity.comment : changedEntity.comment
+
     tempEntity.properties
         .forEach(it => {
             if ("id" in it) {
                 const changedProperty = changedPropertyIdMap.get(it.id)
                 if (changedProperty !== undefined) {
                     newHasColumnProperties.push({
-                        ...changedProperty,
-                        overwriteName: it.overwriteName,
+                        ...it,
                         name: it.overwriteName ? it.name : changedProperty.name,
-                        overwriteComment: it.overwriteComment,
                         comment: it.overwriteComment ? it.comment : changedProperty.comment,
-                        remark: it.remark,
-                        otherAnnotation: it.otherAnnotation,
+                        columnId: changedProperty.columnId,
+                        type: changedProperty.type,
+                        listType: changedProperty.listType,
+                        typeEntity: changedProperty.typeEntity,
+                        enum: changedProperty.enum,
                     })
                 }
             } else {
