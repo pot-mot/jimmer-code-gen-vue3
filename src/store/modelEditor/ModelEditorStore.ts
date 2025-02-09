@@ -123,7 +123,7 @@ type AssociationEditOperation = {
 }
 
 export type EnumCreateOptions = {
-    tableDialogId: string,
+    tableKey: string,
     columnName: string,
 }
 
@@ -630,8 +630,15 @@ const initModelEditorStore = (): ModelEditorStore => {
         const options = enumCreateOptionsMap.get(createKey)
 
         if (options !== undefined) {
-            const {tableDialogId, columnName} = options
-            tableDialogsStore.enumCreated(tableDialogId, columnName, genEnum.name)
+            const {tableKey, columnName} = options
+            const table = tableDialogsStore.get(tableKey)
+            if (table !== undefined) {
+                table.columns.forEach(column => {
+                    if (column.name === columnName) {
+                        column.enum = {name: genEnum.name}
+                    }
+                })
+            }
         }
 
         enumCreateOptionsMap.delete(createKey)
@@ -639,27 +646,27 @@ const initModelEditorStore = (): ModelEditorStore => {
         enumDialogsStore.close(createKey, true)
     }
 
-    const editEnum = (id: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
-        enumDialogsStore.open(id, cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum))
+    const editEnum = (name: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
+        enumDialogsStore.open(name, cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum))
     }
 
-    const editedEnum = (id: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
-        const oldName = id
+    const editedEnum = (name: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
+        const oldName = name
 
         assertModel().value.enums = [
             ...assertModel().value.enums.filter(it => it.name !== oldName),
             cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum)
         ]
 
-        enumDialogsStore.close(id, true)
+        enumDialogsStore.close(name, true)
 
         startBatchSync('editedEnum', () => {
             syncEnumNameForTables(_graph(), oldName, genEnum.name)
         })
     }
 
-    const removeEnum = (id: string) => {
-        const oldName = id
+    const removeEnum = (name: string) => {
+        const oldName = name
 
         assertModel().value.enums = assertModel().value.enums.filter(it => it.name !== oldName)
 

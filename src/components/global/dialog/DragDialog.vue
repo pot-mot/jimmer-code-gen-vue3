@@ -8,6 +8,7 @@ import {DragDialogProps} from "./DragDialogProps.ts";
 import {DragDialogEmits} from "./DragDialogEmits.ts";
 import {sendI18nMessage} from "@/message/message.ts";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
+import {DragDialogExpose} from "@/components/global/dialog/DragDialogExpose.ts";
 
 const openState = defineModel<boolean>({
 	required: true
@@ -164,16 +165,19 @@ const exitFullScreen = () => {
 	initYH()
 }
 
+const initSizePosition = () => {
+    if (props.canFullScreen && props.initFullScreen) {
+        enterFullScreen()
+    } else {
+        exitFullScreen()
+    }
+}
+
 const handleOpen = async () => {
 	emits('open')
 
 	toFront()
-
-	if (props.canFullScreen && props.initFullScreen) {
-		enterFullScreen()
-	} else {
-		exitFullScreen()
-	}
+    initSizePosition()
 
 	await nextTick()
 	emits('opened')
@@ -276,8 +280,13 @@ const handleContentMouseLeave = () => {
 	draggable.value = true
 }
 
-defineExpose({
-	syncDialogHeight
+defineExpose<DragDialogExpose>({
+    toFront,
+    initSizePosition,
+    open: handleOpen,
+    close: handleClose,
+    toggleFullScreen: toggleFullScreen,
+    syncDialogHeight
 })
 </script>
 

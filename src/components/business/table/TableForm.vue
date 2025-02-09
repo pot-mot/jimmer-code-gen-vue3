@@ -268,21 +268,6 @@ const handleSubmit = () => {
 const handleCancel = () => {
     emits('cancel', table.value)
 }
-
-const onEnumCreated = (
-    columnName: string,
-    enumName: string,
-) => {
-    table.value.columns.forEach(column => {
-        if (column.name === columnName) {
-            column.enum = {name: enumName}
-        }
-    })
-}
-
-defineExpose({
-    onEnumCreated
-})
 </script>
 
 <template>

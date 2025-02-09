@@ -1,10 +1,10 @@
 import {defineStore} from "pinia";
 import {useDialogOpenListState} from "@/components/global/dialog/DialogOpenListState.ts";
-import {GenEntityDetailView} from "@/api/__generated/model/static";
+import {EntityFormType} from "@/components/business/entity/EntityFormType.ts";
 
 export const useEntityDialogsStore = defineStore(
     'EntityDialogs',
     () => {
-        return useDialogOpenListState<number, GenEntityDetailView>()
+        return useDialogOpenListState<number, EntityFormType>()
     }
 )
