@@ -12,7 +12,7 @@ import {useEditSaveAndRefresh} from "@/components/pages/ModelEditor/save/editSav
 
 const store = useEntityDialogsStore()
 
-const {MODEL} = useModelEditorStore()
+const {MODEL, MODEL_EDITOR} = useModelEditorStore()
 
 const {
     editEnum,
@@ -22,8 +22,7 @@ const {
 const handleSubmit = async (
     entity: EntityModelBusinessInput
 ) => {
-    await api.entityService.config({body: entity})
-    store.close(entity.entity.id, true)
+    await MODEL_EDITOR.editedEntity(entity)
 }
 
 const validate = async (

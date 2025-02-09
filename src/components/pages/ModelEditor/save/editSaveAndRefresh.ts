@@ -10,6 +10,7 @@ import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import {IdName} from "@/api/__generated/model/static";
 import {nextTick} from "vue";
 import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
+import {cloneDeep} from "lodash";
 
 let editSaveAndRefresh: {
     editEntity: (idName: IdName) => void
@@ -47,7 +48,7 @@ export const useEditSaveAndRefresh = () => {
         withSaveModel: boolean = true,
         option?: O,
     ) => {
-        store.open(key, value, option)
+        store.open(cloneDeep(key), cloneDeep(value), cloneDeep(option))
         const onSubmitSave = async (options: { key: K, changed: boolean }) => {
             if (options.key === key) {
                 if (!options.changed) {

@@ -28,7 +28,7 @@ const validate = (key: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enum
 </script>
 
 <template>
-	<template v-for="({key, options}, index) in store.items" :key="id">
+	<template v-for="({key, options}, index) in store.items" :key="key">
         <DragDialog
             :ref="(el: any) => store.setDialogRef(key, el)"
             :model-value="true" :can-resize="true"

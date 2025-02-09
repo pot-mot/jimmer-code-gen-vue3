@@ -130,9 +130,10 @@ const handleDownloadAll = () => {
             </Splitpanes>
 
             <div class="code-download-button">
-                <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_downloadFiltered')">
+                <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_downloadFiltered')"
+                            v-if="codes.files.length !== paths.length"
+                >
                     <el-button
-                        v-if="codes.files.length !== paths.length"
                         :icon="DownloadWithFilterIcon"
                         round
                         size="large"
@@ -140,9 +141,9 @@ const handleDownloadAll = () => {
                     />
                 </el-tooltip>
 
-                <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_downloadCurrent')">
+                <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_downloadCurrent')"
+                            v-if="currentFile">
                     <el-button
-                        v-if="currentFile"
                         :icon="DownloadFileIcon"
                         round
                         size="large"

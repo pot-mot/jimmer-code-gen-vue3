@@ -8,6 +8,7 @@ import {
     TableLoadOptions
 } from "@/components/pages/ModelEditor/graph/load/loadData.ts";
 import {
+    EntityModelBusinessInput,
     GenAssociationModelInput,
     GenModelInput_TargetOf_enums,
     GenModelView,
@@ -31,7 +32,11 @@ import {useDebugStore} from "@/store/debug/debugStore.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {Edge, Graph, Node} from '@antv/x6';
 import {getCenterPoint, useViewOperation, ViewOperation} from "@/components/global/graphEditor/view/viewOperation.ts";
-import {syncEnumNameForTables} from "@/components/pages/ModelEditor/sync/syncEnum.ts";
+import {
+    syncEnumNameForEntities,
+    syncEnumNameForTables,
+    syncNewEnumForTables
+} from "@/components/pages/ModelEditor/sync/syncEnum.ts";
 import {syncSuperTableNameForTables} from "@/components/pages/ModelEditor/sync/syncSuperTable.ts";
 import {SelectOperation, useSelectOperation} from "@/components/global/graphEditor/selection/selectOperation.ts";
 import {HistoryOperation, useHistoryOperations} from "@/components/global/graphEditor/history/useHistory.ts";
@@ -52,6 +57,7 @@ import {useDataSourceLoadDialogStore} from "@/store/modelEditor/DataSourceLoadDi
 import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.ts";
 import {useModelLoadDialogStore} from "@/store/modelEditor/ModelLoadDialogStore.ts";
 import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
+import {syncTypeEntityNameForEntities} from "@/components/pages/ModelEditor/sync/syncEntity.ts";
 
 type ModelReactiveState = {
     tableNodes: DeepReadonly<Ref<Array<UnwrapRefSimple<Node>>>>,
@@ -137,6 +143,10 @@ type EnumEditOperation = {
     removeEnum: (id: string) => void,
 }
 
+type EntityEditOperation = {
+    editedEntity: (entity: DeepReadonly<EntityModelBusinessInput>) => Promise<void>,
+}
+
 type ModelSyncState = {
     waitSyncHistoryBatches: Ref<string[]>,
     waitSyncTableIds: Ref<string[]>
@@ -159,6 +169,7 @@ type ModelEditorStore = {
         & TableEditOperation
         & AssociationEditOperation
         & EnumEditOperation
+        & EntityEditOperation
 }
 
 const initModelEditorStore = (): ModelEditorStore => {
@@ -631,14 +642,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         if (options !== undefined) {
             const {tableKey, columnName} = options
-            const table = tableDialogsStore.get(tableKey)
-            if (table !== undefined) {
-                table.columns.forEach(column => {
-                    if (column.name === columnName) {
-                        column.enum = {name: genEnum.name}
-                    }
-                })
-            }
+            syncNewEnumForTables(genEnum, tableKey, columnName)
         }
 
         enumCreateOptionsMap.delete(createKey)
@@ -661,6 +665,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         enumDialogsStore.close(name, true)
 
         startBatchSync('editedEnum', () => {
+            syncEnumNameForEntities(oldName, genEnum.name)
             syncEnumNameForTables(_graph(), oldName, genEnum.name)
         })
     }
@@ -675,7 +680,26 @@ const initModelEditorStore = (): ModelEditorStore => {
         })
     }
 
-    const tableNodes = ref<Node[]>([])
+
+
+    /**
+     * 实体编辑对话框相关
+     */
+
+    const entityDialogsStore = useEntityDialogsStore()
+
+    const editedEntity = async (entity: DeepReadonly<EntityModelBusinessInput>) => {
+        await api.entityService.config({body: cloneDeepReadonly<EntityModelBusinessInput>(entity)})
+        syncTypeEntityNameForEntities(entity.entity.id, entity.entity.name)
+        entityDialogsStore.close(entity.entity.id, true)
+    }
+
+
+    /**
+     * 响应式数据
+     */
+
+     const tableNodes = ref<Node[]>([])
 
     const setTableNodes = () => {
         tableNodes.value = graphReactiveState.nodes.value
@@ -891,6 +915,8 @@ const initModelEditorStore = (): ModelEditorStore => {
             editEnum,
             editedEnum,
             removeEnum,
+
+            editedEntity,
         },
     }
 }

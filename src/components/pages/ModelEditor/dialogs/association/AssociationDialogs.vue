@@ -19,7 +19,6 @@ const handleSubmit = (key: string, association: DeepReadonly<GenAssociationModel
     } else {
         MODEL_EDITOR.editedAssociation(key, association)
     }
-    store.close(key, true)
 }
 
 const validate = (key: string, association: DeepReadonly<GenAssociationModelInput>): MainLocaleKeyParam[] => {

@@ -4,10 +4,11 @@ import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
 import {Graph} from "@antv/x6";
 import {useTableDialogsStore} from "@/store/modelEditor/TableDialogsStore.ts";
-import {cloneDeep} from "lodash";
+import {DeepReadonly} from "vue";
+import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 
-const syncSuperTableNameInTable = (table: GenTableModelInput, oldSuperTableName: string, newSuperTableName: string | undefined): GenTableModelInput => {
-    const tempTable = cloneDeep(table)
+const syncSuperTableNameInTable = (table: DeepReadonly<GenTableModelInput>, oldSuperTableName: string, newSuperTableName: string | undefined): GenTableModelInput => {
+    const tempTable = cloneDeepReadonly<GenTableModelInput>(table)
 
     const newSuperTables: GenTableModelInput_TargetOf_superTables[] = []
 
