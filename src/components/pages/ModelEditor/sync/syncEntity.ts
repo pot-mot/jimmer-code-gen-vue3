@@ -3,16 +3,42 @@ import {DeepReadonly} from "vue";
 import {EntityFormType} from "@/components/business/entity/EntityFormType.ts";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 import {useEntityDialogsStore} from "@/store/modelEditor/EntityDialogsStore.ts";
+import {api} from "@/api";
+import {sendI18nMessage} from "@/message/message.ts";
+import {GenEntityDetailView, GenEntityDetailView_TargetOf_properties} from "@/api/__generated/model/static";
 
-// 同步实体中的类型实体名
-const syncTypeEntityNameInEntity = (entity: DeepReadonly<EntityFormType>, typeEntityId: number, newTypeEntityName: string): EntityFormType => {
+// 同步实体变更
+const syncEntityChanged = (entity: DeepReadonly<EntityFormType>, changedEntity: DeepReadonly<GenEntityDetailView>): EntityFormType => {
+    const changedPropertyIdMap = new Map<number, DeepReadonly<GenEntityDetailView_TargetOf_properties>>
+
+    changedEntity.properties.forEach(it => {
+        changedPropertyIdMap.set(it.id, it)
+    })
+
     const tempEntity = cloneDeepReadonly<EntityFormType>(entity)
 
-    tempEntity.properties.forEach(property => {
-        if ("typeEntity" in property && property.typeEntity && property.typeEntity.id === typeEntityId) {
-            property.typeEntity.name = newTypeEntityName
-        }
-    })
+    tempEntity.properties = tempEntity.properties
+        .map(it => {
+            if ("id" in it) {
+                const changedProperty = changedPropertyIdMap.get(it.id)
+                if (changedProperty !== undefined) {
+                    return {
+                        ...changedProperty,
+                        overwriteName: it.overwriteName,
+                        name: it.overwriteName ? it.name : changedProperty.name,
+                        overwriteComment: it.overwriteComment,
+                        comment: it.overwriteComment ? it.comment : changedProperty.comment,
+                        remark: it.remark,
+                        otherAnnotation: it.otherAnnotation,
+                    }
+                } else {
+                    return undefined
+                }
+            } else {
+                return it
+            }
+        })
+        .filter(it => it !== undefined) as EntityFormType["properties"]
 
     return tempEntity
 }
@@ -24,13 +50,18 @@ const judgeTypeEntityInEntity = (typeEntityId: number, entity: EntityFormType): 
         .includes(typeEntityId)
 }
 
-export const syncTypeEntityNameForEntities = (typeEntityId: number, newTypeEntityName: string) => {
+export const syncTypeEntityForEntities = async (typeEntityId: number) => {
     const entityDialogsStore = useEntityDialogsStore()
 
-    entityDialogsStore.items.forEach(({key, value, options}) => {
+    for (const {key, value, options} of entityDialogsStore.items) {
         if (value && judgeTypeEntityInEntity(typeEntityId, value)) {
-            const newTable = syncTypeEntityNameInEntity(value, typeEntityId, newTypeEntityName)
+            const changedEntity = await api.entityService.get({id: value.id})
+            if (changedEntity === undefined) {
+                sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickEntityNotFound", args: [value]}, "error")
+                throw new Error("entity not found")
+            }
+            const newTable = syncEntityChanged(value, changedEntity)
             entityDialogsStore.set(key, newTable, options)
         }
-    })
+    }
 }

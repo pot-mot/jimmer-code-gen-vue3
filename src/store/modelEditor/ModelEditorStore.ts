@@ -57,7 +57,6 @@ import {useDataSourceLoadDialogStore} from "@/store/modelEditor/DataSourceLoadDi
 import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.ts";
 import {useModelLoadDialogStore} from "@/store/modelEditor/ModelLoadDialogStore.ts";
 import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
-import {syncTypeEntityNameForEntities} from "@/components/pages/ModelEditor/sync/syncEntity.ts";
 
 type ModelReactiveState = {
     tableNodes: DeepReadonly<Ref<Array<UnwrapRefSimple<Node>>>>,
@@ -690,7 +689,6 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const editedEntity = async (entity: DeepReadonly<EntityModelBusinessInput>) => {
         await api.entityService.config({body: cloneDeepReadonly<EntityModelBusinessInput>(entity)})
-        syncTypeEntityNameForEntities(entity.entity.id, entity.entity.name)
         entityDialogsStore.close(entity.entity.id, true)
     }
 
