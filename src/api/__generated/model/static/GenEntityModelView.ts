@@ -5,6 +5,10 @@ import type {GenEntityModelView_TargetOf_properties, OtherAnnotation} from './';
  */
 export interface GenEntityModelView {
     /**
+     * ID
+     */
+    id: number;
+    /**
      * 类名称
      */
     name: string;
