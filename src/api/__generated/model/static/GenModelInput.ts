@@ -1,5 +1,10 @@
-import type {DataSourceType, DatabaseNamingStrategyType, GenLanguage} from '../enums/';
-import type {GenModelInput_TargetOf_enums} from './';
+import type {
+    DataSourceType, 
+    DatabaseNamingStrategyType, 
+    GenLanguage, 
+    ViewType
+} from '../enums/';
+import type {AnnotationWithImports, GenModelInput_TargetOf_enums} from './';
 
 /**
  * 生成模型
@@ -26,6 +31,10 @@ export interface GenModelInput {
      */
     dataSourceType: DataSourceType;
     /**
+     * 视图类型
+     */
+    viewType: ViewType;
+    /**
      * 作者
      */
     author: string;
@@ -50,9 +59,21 @@ export interface GenModelInput {
      */
     idViewProperty: boolean;
     /**
+     * 默认 ID 类型
+     */
+    defaultIdType: number;
+    /**
+     * 生成 ID 注解
+     */
+    generatedIdAnnotation: AnnotationWithImports;
+    /**
      * 逻辑删除注解
      */
-    logicalDeletedAnnotation: string;
+    logicalDeletedAnnotation: AnnotationWithImports;
+    /**
+     * 在前端视图中进行日期格式化
+     */
+    dateTimeFormatInView: boolean;
     /**
      * 生成 Table 注解
      */

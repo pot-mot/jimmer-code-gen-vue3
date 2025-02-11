@@ -6,7 +6,7 @@ import {jsonPrettyFormat} from "@/utils/json.ts";
 import {ModelInputWithEntities, validateModelInputWithEntities} from "@/shape/ModelInput.ts";
 import {sendI18nMessage} from "@/message/message.ts";
 import {getModelAllCopyData} from "@/components/pages/ModelEditor/graph/clipBoard/clipBoard.ts";
-import {GenerateType, ViewType} from "@/api/__generated/model/enums";
+import {GenerateType} from "@/api/__generated/model/enums";
 import {DeepReadonly} from "vue";
 
 const createZip = async (files: DeepReadonly<Array<Pick<GenerateFile, 'path' | 'content'>>>): Promise<Blob> => {
@@ -35,9 +35,8 @@ export const convertModel = async (id: number) => {
 export const getModelCodes = async (
     id: number,
     types: Array<GenerateType> = ['ALL'],
-    viewType: ViewType = 'VUE3_ELEMENT_PLUS'
 ) => {
-    return await api.generateService.generateModel({id, types, viewType})
+    return await api.generateService.generateModel({id, types})
 }
 
 export const importModelJSON = async (modelInputJsonStr: string): Promise<number | undefined> => {
@@ -113,9 +112,8 @@ export const downloadFile = (file: GenerateFile) => {
 export const downloadModelZip = async (
     model: GenModelView,
     types: Array<GenerateType> = ['ALL'],
-    viewType: ViewType = 'VUE3_ELEMENT_PLUS'
 ) => {
-    const {files: codeFiles} = await getModelCodes(model.id, types, viewType)
+    const {files: codeFiles} = await getModelCodes(model.id, types)
     const modelJson = await getModelJson(model)
     const copyData = getModelAllCopyData(model)
 

@@ -1,5 +1,5 @@
 import type {Executor} from '../';
-import type {GenerateType, ViewType} from '../model/enums/';
+import type {GenerateType} from '../model/enums/';
 import type {GenConfigProperties, GenerateResult} from '../model/static/';
 
 export class GenerateService {
@@ -24,11 +24,6 @@ export class GenerateService {
             _uri += encodeURIComponent(_item);
             _separator = '&';
         }
-        _value = options.viewType;
-        _uri += _separator
-        _uri += 'viewType='
-        _uri += encodeURIComponent(_value);
-        _separator = '&';
         return (await this.executor({uri: _uri, method: 'POST'})) as Promise<GenerateResult>;
     }
 }
@@ -37,7 +32,6 @@ export type GenerateServiceOptions = {
     'generateModel': {
         id: number, 
         types: Array<GenerateType>, 
-        viewType: ViewType, 
         properties?: GenConfigProperties | undefined
     }
 }

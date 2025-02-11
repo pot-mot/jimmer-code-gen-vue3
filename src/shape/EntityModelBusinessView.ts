@@ -477,7 +477,7 @@ export const EntityModelBusinessViewSchema = {
                     },
                     "type": "array"
                 },
-                "importLines": {
+                "imports": {
                     "items": {
                         "type": "string"
                     },
@@ -486,7 +486,7 @@ export const EntityModelBusinessViewSchema = {
             },
             "required": [
                 "annotations",
-                "importLines"
+                "imports"
             ],
             "type": ["object", "null"]
         },
@@ -510,7 +510,7 @@ export const EntityModelBusinessViewSchema = {
                 "codeBlock": {
                     "type": "string"
                 },
-                "importLines": {
+                "imports": {
                     "items": {
                         "type": "string"
                     },
@@ -519,7 +519,7 @@ export const EntityModelBusinessViewSchema = {
             },
             "required": [
                 "codeBlock",
-                "importLines"
+                "imports"
             ],
             "type": ["object", "null"]
         }

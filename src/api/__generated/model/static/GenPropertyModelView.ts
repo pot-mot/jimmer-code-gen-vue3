@@ -1,9 +1,9 @@
-import type {AssociationType} from '../enums/';
+import type {AssociationType, PropertySpecialFormType} from '../enums/';
 import type {
+    AnnotationWithImports, 
     GenPropertyModelView_TargetOf_enum, 
     JoinColumnMeta, 
     JoinTableMeta, 
-    OtherAnnotation, 
     PropertyBody
 } from './';
 
@@ -44,9 +44,13 @@ export interface GenPropertyModelView {
      */
     idProperty: boolean;
     /**
-     * ID 生成类型
+     * 是否是生成式 ID
      */
-    idGenerationAnnotation?: string | undefined;
+    generatedId: boolean;
+    /**
+     * 生成 ID 注解
+     */
+    generatedIdAnnotation?: AnnotationWithImports | undefined;
     /**
      * 是否为业务键属性
      */
@@ -60,11 +64,15 @@ export interface GenPropertyModelView {
      */
     logicalDelete: boolean;
     /**
+     * 逻辑删除注解
+     */
+    logicalDeletedAnnotation?: AnnotationWithImports | undefined;
+    /**
      * 是否为 ID 视图属性
      */
     idView: boolean;
     /**
-     * ID 视图注解
+     * ID 视图目标
      */
     idViewTarget?: string | undefined;
     /**
@@ -98,7 +106,7 @@ export interface GenPropertyModelView {
     /**
      * 其他注解
      */
-    otherAnnotation?: OtherAnnotation | undefined;
+    otherAnnotation?: AnnotationWithImports | undefined;
     /**
      * 属性方法体
      */
@@ -107,6 +115,10 @@ export interface GenPropertyModelView {
      * 排序键
      */
     orderKey: number;
+    /**
+     * 特殊表单类型
+     */
+    specialFormType?: PropertySpecialFormType | undefined;
     /**
      * 是否在列表视图DTO中
      */

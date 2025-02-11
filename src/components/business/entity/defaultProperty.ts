@@ -6,8 +6,10 @@ export const getDefaultProperty = (): GenPropertyEntityConfigInput => {
         body: undefined,
         comment: "",
         dissociateAnnotation: undefined,
-        idGenerationAnnotation: undefined,
         idProperty: false,
+        generatedId: false,
+        generatedIdAnnotation: undefined,
+        logicalDeletedAnnotation: undefined,
         idView: false,
         idViewTarget: undefined,
         inDetailView: false,
@@ -27,6 +29,7 @@ export const getDefaultProperty = (): GenPropertyEntityConfigInput => {
         listType: false,
         logicalDelete: false,
         longAssociation: false,
+        specialFormType: undefined,
         mappedBy: undefined,
         name: "",
         orderKey: 0,
@@ -36,5 +39,6 @@ export const getDefaultProperty = (): GenPropertyEntityConfigInput => {
         remark: "",
         type: "",
         typeNotNull: true,
+        enumId: undefined,
     }
 }

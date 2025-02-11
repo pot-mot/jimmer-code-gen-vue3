@@ -18,6 +18,8 @@ export type {GenerateType} from './GenerateType';
 export {GenerateType_CONSTANTS} from './GenerateType';
 export type {MainType} from './MainType';
 export {MainType_CONSTANTS} from './MainType';
+export type {PropertySpecialFormType} from './PropertySpecialFormType';
+export {PropertySpecialFormType_CONSTANTS} from './PropertySpecialFormType';
 export type {SelectType} from './SelectType';
 export {SelectType_CONSTANTS} from './SelectType';
 export type {TableType} from './TableType';

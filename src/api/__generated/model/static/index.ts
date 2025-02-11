@@ -1,3 +1,4 @@
+export type {AnnotationWithImports} from './AnnotationWithImports';
 export type {AssociationColumnQuery} from './AssociationColumnQuery';
 export type {AssociationQuery} from './AssociationQuery';
 export type {AssociationTableQuery} from './AssociationTableQuery';
@@ -67,7 +68,6 @@ export type {JoinColumnMeta} from './JoinColumnMeta';
 export type {JoinTableMeta} from './JoinTableMeta';
 export type {MainIdName} from './MainIdName';
 export type {ModelInputEntities} from './ModelInputEntities';
-export type {OtherAnnotation} from './OtherAnnotation';
 export type {Pair} from './Pair';
 export type {PropertyBody} from './PropertyBody';
 export type {PropertyNameDuplicateData} from './PropertyNameDuplicateData';

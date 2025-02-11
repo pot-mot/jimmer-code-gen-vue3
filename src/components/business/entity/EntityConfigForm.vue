@@ -11,7 +11,7 @@ import EntityDtoPropertiesSelect from "@/components/business/entity/EntityDtoPro
 import {MainLocaleKeyParam} from "@/i18n";
 import {sendI18nMessage} from "@/message/message.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
-import OtherAnnotationEditor from "@/components/business/entity/OtherAnnotationEditor.vue";
+import OtherAnnotationEditor from "@/components/business/entity/AnnotationWithImportsEditor.vue";
 import PropertyBodyEditor from "@/components/business/entity/PropertyBodyEditor.vue";
 import Details from "@/components/global/common/Details.vue";
 import EditList from "@/components/global/list/EditList.vue";

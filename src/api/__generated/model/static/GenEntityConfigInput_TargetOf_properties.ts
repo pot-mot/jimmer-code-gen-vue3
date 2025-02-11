@@ -1,4 +1,5 @@
-import type {OtherAnnotation} from './';
+import type {PropertySpecialFormType} from '../enums/';
+import type {AnnotationWithImports} from './';
 
 /**
  * 生成属性
@@ -29,9 +30,21 @@ export interface GenEntityConfigInput_TargetOf_properties {
      */
     remark: string;
     /**
+     * 是否是生成式 ID
+     */
+    generatedId: boolean;
+    /**
+     * 生成 ID 注解
+     */
+    generatedIdAnnotation?: AnnotationWithImports | undefined;
+    /**
+     * 逻辑删除注解
+     */
+    logicalDeletedAnnotation?: AnnotationWithImports | undefined;
+    /**
      * 其他注解
      */
-    otherAnnotation?: OtherAnnotation | undefined;
+    otherAnnotation?: AnnotationWithImports | undefined;
     /**
      * 排序键
      */
@@ -76,4 +89,8 @@ export interface GenEntityConfigInput_TargetOf_properties {
      * 是否在长关联视图DTO中
      */
     inLongAssociationView: boolean;
+    /**
+     * 特殊表单类型
+     */
+    specialFormType?: PropertySpecialFormType | undefined;
 }

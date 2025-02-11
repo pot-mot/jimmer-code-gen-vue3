@@ -1,4 +1,4 @@
-import type {GenEntityModelView_TargetOf_properties, OtherAnnotation} from './';
+import type {AnnotationWithImports, GenEntityModelView_TargetOf_properties} from './';
 
 /**
  * 生成实体
@@ -31,7 +31,7 @@ export interface GenEntityModelView {
     /**
      * 其他注解
      */
-    otherAnnotation?: OtherAnnotation | undefined;
+    otherAnnotation?: AnnotationWithImports | undefined;
     /**
      * 是否可以创建
      */
@@ -49,9 +49,33 @@ export interface GenEntityModelView {
      */
     canDelete: boolean;
     /**
-     * 是否具有页面
+     * 是否具有管理端页面
      */
     hasPage: boolean;
+    /**
+     * 管理端页面中可新增
+     */
+    pageCanAdd: boolean;
+    /**
+     * 管理端页面中可编辑
+     */
+    pageCanEdit: boolean;
+    /**
+     * 管理端页面中可查看详情
+     */
+    pageCanViewDetail: boolean;
+    /**
+     * 管理端页面中可查询
+     */
+    pageCanQuery: boolean;
+    /**
+     * 管理端页面中可删除
+     */
+    pageCanDelete: boolean;
+    /**
+     * 应用分页查询
+     */
+    queryByPage: boolean;
     /**
      * 属性
      */

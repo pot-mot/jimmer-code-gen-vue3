@@ -1,4 +1,10 @@
-import type {DataSourceType, DatabaseNamingStrategyType, GenLanguage} from '../enums/';
+import type {
+    DataSourceType, 
+    DatabaseNamingStrategyType, 
+    GenLanguage, 
+    ViewType
+} from '../enums/';
+import type {AnnotationWithImports} from './';
 
 /**
  * 生成模型
@@ -12,6 +18,10 @@ export interface GenConfigProperties {
      * 数据源类型
      */
     dataSourceType?: DataSourceType | undefined;
+    /**
+     * 视图类型
+     */
+    viewType?: ViewType | undefined;
     /**
      * 作者
      */
@@ -37,9 +47,21 @@ export interface GenConfigProperties {
      */
     idViewProperty?: boolean | undefined;
     /**
+     * 默认 ID 类型
+     */
+    defaultIdType?: number | undefined;
+    /**
+     * 生成 ID 注解
+     */
+    generatedIdAnnotation?: AnnotationWithImports | undefined;
+    /**
      * 逻辑删除注解
      */
-    logicalDeletedAnnotation?: string | undefined;
+    logicalDeletedAnnotation?: AnnotationWithImports | undefined;
+    /**
+     * 在前端视图中进行日期格式化
+     */
+    dateTimeFormatInView?: boolean | undefined;
     /**
      * 生成 Table 注解
      */

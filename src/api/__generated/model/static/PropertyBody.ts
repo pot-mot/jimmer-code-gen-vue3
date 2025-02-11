@@ -1,4 +1,4 @@
 export interface PropertyBody {
-    importLines: Array<string>;
+    imports: Array<string>;
     codeBlock: string;
 }

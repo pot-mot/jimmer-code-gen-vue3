@@ -11,6 +11,8 @@ export const validateEntityWithProperties = (
     input: DeepReadonly<EntityModelBusinessInput>,
     otherEntities: DeepReadonly<Array<EntityModelBusinessView>>,
 ): MainLocaleKeyParam[] => {
+    // TODO 补充业务配置的校验，例如 id 自增类型校验，例如 page 相关项和业务相关项
+
     const entity = input.entity
     
     const messageList: MainLocaleKeyParam[] = []
@@ -30,7 +32,7 @@ export const validateEntityWithProperties = (
         const otherAnnotation = entity.otherAnnotation
         
         const entityOtherAnnotationImportSet = new Set<string>()
-        for (const importLine of otherAnnotation.importLines) {
+        for (const importLine of otherAnnotation.imports) {
             if (importLine.length === 0) {
                 messageList.push({key: "VALIDATE_Entity_otherAnnotation_importLineCannotBeEmpty", args: [entity.name]})
                 continue
@@ -82,7 +84,7 @@ export const validateEntityWithProperties = (
             const otherAnnotation = property.otherAnnotation
 
             const propertyOtherAnnotationImportSet = new Set<string>()
-            for (const importLine of otherAnnotation.importLines) {
+            for (const importLine of otherAnnotation.imports) {
                 if (importLine.length === 0) {
                     messageList.push({key: "VALIDATE_Entity_propertyOtherAnnotation_importLineCannotBeEmpty", args: [property.name]})
                     continue
@@ -119,7 +121,7 @@ export const validateEntityWithProperties = (
         if (property.body) {
             const body = property.body
             const propertyOtherAnnotationImportSet = new Set<string>()
-            for (const importLine of body.importLines) {
+            for (const importLine of body.imports) {
                 if (importLine.length === 0) {
                     messageList.push({key: "VALIDATE_Entity_propertyBody_importLineCannotBeEmpty", args: [property.name]})
                     continue

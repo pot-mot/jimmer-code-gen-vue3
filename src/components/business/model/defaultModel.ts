@@ -6,6 +6,26 @@ export const getDefaultModel = (): GenModelInput => {
     const genConfigStore = useGlobalGenConfigStore()
 
     const defaultModel: GenModelInput = {
+        dateTimeFormatInView: false,
+        defaultIdType: 4,
+        generatedIdAnnotation: {
+            imports: [
+                "org.babyfish.jimmer.sql.GeneratedValue",
+                "org.babyfish.jimmer.sql.GenerationType",
+            ],
+            annotations: [
+                "@GeneratedValue(strategy = GenerationType.IDENTITY)"
+            ],
+        },
+        logicalDeletedAnnotation: {
+            imports: [
+                "org.babyfish.jimmer.sql.LogicalDeleted",
+            ],
+            annotations: [
+                "@LogicalDeleted"
+            ],
+        },
+        viewType: "VUE3_ELEMENT_PLUS",
         remark: "",
         name: "",
         graphData:
@@ -24,7 +44,6 @@ export const getDefaultModel = (): GenModelInput => {
         databaseNamingStrategy: "LOWER_CASE",
         realFk: true,
         idViewProperty: true,
-        logicalDeletedAnnotation: "",
         tableAnnotation: true,
         columnAnnotation: true,
         joinTableAnnotation: true,
@@ -37,7 +56,7 @@ export const getDefaultModel = (): GenModelInput => {
         columnNameSuffixes: "",
         columnCommentPrefixes: "",
         columnCommentSuffixes: "",
-        enums: [],
+        enums: []
     }
 
     if (genConfigStore.isLoaded) {

@@ -10,7 +10,7 @@ const propertyBody = defineModel<PropertyBody | undefined>({
 
 const init = () => {
 	propertyBody.value = {
-		importLines: [],
+		imports: [],
 		codeBlock: "",
 	}
 }
@@ -29,14 +29,14 @@ const clear = () => {
         <el-text>imports</el-text>
 
 		<EditList
-			v-model:lines="propertyBody.importLines"
+			v-model:lines="propertyBody.imports"
 			:default-line="''"
             :labelLine="false"
         >
             <template #default="{index}">
                 <el-input
                     v-tap-input
-                    v-model="propertyBody.importLines[index]"
+                    v-model="propertyBody.imports[index]"
                     class="code-input"
                 />
             </template>

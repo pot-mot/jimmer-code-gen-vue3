@@ -1,9 +1,9 @@
-import type {AssociationType} from '../enums/';
+import type {AssociationType, PropertySpecialFormType} from '../enums/';
 import type {
+    AnnotationWithImports, 
     GenEntityModelView_TargetOf_properties_TargetOf_typeTable, 
     JoinColumnMeta, 
-    JoinTableMeta, 
-    OtherAnnotation
+    JoinTableMeta
 } from './';
 
 /**
@@ -55,9 +55,29 @@ export interface GenEntityModelView_TargetOf_properties {
      */
     remark: string;
     /**
+     * 是否 ID 属性
+     */
+    idProperty: boolean;
+    /**
+     * 是否是生成式 ID
+     */
+    generatedId: boolean;
+    /**
+     * 生成 ID 注解
+     */
+    generatedIdAnnotation?: AnnotationWithImports | undefined;
+    /**
+     * 是否为逻辑删除属性
+     */
+    logicalDelete: boolean;
+    /**
+     * 逻辑删除注解
+     */
+    logicalDeletedAnnotation?: AnnotationWithImports | undefined;
+    /**
      * 其他注解
      */
-    otherAnnotation?: OtherAnnotation | undefined;
+    otherAnnotation?: AnnotationWithImports | undefined;
     /**
      * 排序键
      */
@@ -102,6 +122,10 @@ export interface GenEntityModelView_TargetOf_properties {
      * 是否在长关联视图DTO中
      */
     inLongAssociationView: boolean;
+    /**
+     * 特殊表单类型
+     */
+    specialFormType?: PropertySpecialFormType | undefined;
     /**
      * 名称
      */
