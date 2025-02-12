@@ -135,6 +135,7 @@ type MainLocale = {
     LABEL_MODIFY_AT: string
 
     MESSAGE_clipBoard_cannotDirectLoad: string
+    MESSAGE_clipBoard_cannotDirectLoad_validateError: (errors: any) => string
 
     LABEL_ModelListPage_createNewModel: string
     LABEL_ModelListPage_manageDataSource: string
@@ -402,11 +403,36 @@ type MainLocale = {
     LABEL_GenTableIndex_uniqueIndex: string
     LABEL_GenTableIndex_columns: string
 
+    LABEL_EntityBusiness_page: string
     LABEL_EntityBusiness_add: string
     LABEL_EntityBusiness_edit: string
+    LABEL_EntityBusiness_detail: string
     LABEL_EntityBusiness_query: string
     LABEL_EntityBusiness_delete: string
+    LABEL_EntityBusiness_shortAssociation: string
+    LABEL_EntityBusiness_longAssociation: string
+
     LABEL_EntityBusiness_hasPage: string
+    LABEL_EntityBusiness_canAdd: string
+    LABEL_EntityBusiness_canEdit: string
+    LABEL_EntityBusiness_canQuery: string
+    LABEL_EntityBusiness_canDelete: string
+    LABEL_EntityBusiness_pageCanAdd: string
+    LABEL_EntityBusiness_pageCanEdit: string
+    LABEL_EntityBusiness_pageCanViewDetail: string
+    LABEL_EntityBusiness_pageCanQuery: string
+    LABEL_EntityBusiness_pageCanDelete: string
+    LABEL_EntityBusiness_queryByPage: string
+
+    LABEL_EntityBusiness_DTO_ListView: string
+    LABEL_EntityBusiness_DTO_InsertInput: string
+    LABEL_EntityBusiness_DTO_UpdateInput: string
+    LABEL_EntityBusiness_DTO_DetailView: string
+    LABEL_EntityBusiness_DTO_Specification: string
+    LABEL_EntityBusiness_DTO_OptionView: string
+    LABEL_EntityBusiness_DTO_ShortView: string
+    LABEL_EntityBusiness_DTO_LongView: string
+    LABEL_EntityBusiness_DTO_LongInput: string
 
     LABEL_GenEntityProperty_name: string
     LABEL_GenEntityProperty_comment: string
@@ -458,9 +484,10 @@ type MainLocale = {
     LABEL_EntityConfigForm_name: string
     LABEL_EntityConfigForm_comment: string
     LABEL_EntityConfigForm_remark: string
-    LABEL_EntityConfigForm_business: string
     LABEL_EntityConfigForm_overwriteName: string
     LABEL_EntityConfigForm_overwriteComment: string
+    LABEL_EntityConfigForm_properties: string
+    LABEL_EntityConfigForm_businessConfig: string
 
     LABEL_EntityConfigForm_property_otherAnnotation: string
     LABEL_EntityConfigForm_property_name: string

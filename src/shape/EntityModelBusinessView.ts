@@ -3,19 +3,43 @@ import {DeepReadonly} from "vue";
 import {EntityModelBusinessView} from "@/api/__generated/model/static";
 
 // typescript-json-schema src/api/__generated/model/static/EntityModelBusinessView.ts * --required
-export const EntityModelBusinessViewSchema = {
+const EntityModelBusinessViewSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
+        "AnnotationWithImports": {
+            "properties": {
+                "annotations": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                },
+                "imports": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "required": [
+                "annotations",
+                "imports"
+            ],
+            "type": "object"
+        },
         "EntityModelBusinessView": {
+            "description": "实体 - 用于模型业务配置的输出\n同时也将在 JSON 保存时作为输入对象，此时将被被转换为 EntityModelBusinessInput",
             "properties": {
                 "otherProperties": {
+                    "description": "其余非转换属性",
                     "items": {
                         "$ref": "#/definitions/GenPropertyModelView"
                     },
                     "type": "array"
                 },
                 "tableConvertedEntity": {
-                    "$ref": "#/definitions/GenEntityModelView"
+                    "$ref": "#/definitions/GenEntityModelView",
+                    "description": "表直接转换得到的实体"
                 }
             },
             "required": [
@@ -48,15 +72,19 @@ export const EntityModelBusinessViewSchema = {
                     "type": "string"
                 },
                 "hasPage": {
-                    "description": "是否具有页面",
+                    "description": "是否具有管理端页面",
                     "type": "boolean"
+                },
+                "id": {
+                    "description": "ID",
+                    "type": "number"
                 },
                 "name": {
                     "description": "类名称",
                     "type": "string"
                 },
                 "otherAnnotation": {
-                    "$ref": "#/definitions/OtherAnnotation",
+                    "$ref": "#/definitions/AnnotationWithImports",
                     "description": "其他注解"
                 },
                 "overwriteComment": {
@@ -67,12 +95,36 @@ export const EntityModelBusinessViewSchema = {
                     "description": "覆盖自动生成类名称",
                     "type": "boolean"
                 },
+                "pageCanAdd": {
+                    "description": "管理端页面中可新增",
+                    "type": "boolean"
+                },
+                "pageCanDelete": {
+                    "description": "管理端页面中可删除",
+                    "type": "boolean"
+                },
+                "pageCanEdit": {
+                    "description": "管理端页面中可编辑",
+                    "type": "boolean"
+                },
+                "pageCanQuery": {
+                    "description": "管理端页面中可查询",
+                    "type": "boolean"
+                },
+                "pageCanViewDetail": {
+                    "description": "管理端页面中可查看详情",
+                    "type": "boolean"
+                },
                 "properties": {
                     "description": "属性",
                     "items": {
                         "$ref": "#/definitions/GenEntityModelView_TargetOf_properties"
                     },
                     "type": "array"
+                },
+                "queryByPage": {
+                    "description": "应用分页查询",
+                    "type": "boolean"
                 },
                 "remark": {
                     "description": "备注",
@@ -90,10 +142,17 @@ export const EntityModelBusinessViewSchema = {
                 "canQuery",
                 "comment",
                 "hasPage",
+                "id",
                 "name",
                 "overwriteComment",
                 "overwriteName",
+                "pageCanAdd",
+                "pageCanDelete",
+                "pageCanEdit",
+                "pageCanQuery",
+                "pageCanViewDetail",
                 "properties",
+                "queryByPage",
                 "remark",
                 "tableName"
             ],
@@ -108,10 +167,9 @@ export const EntityModelBusinessViewSchema = {
                         "MANY_TO_MANY",
                         "MANY_TO_ONE",
                         "ONE_TO_MANY",
-                        "ONE_TO_ONE",
-                        null
+                        "ONE_TO_ONE"
                     ],
-                    "type": ["string", "null"]
+                    "type": "string"
                 },
                 "columnName": {
                     "description": "名称",
@@ -120,6 +178,18 @@ export const EntityModelBusinessViewSchema = {
                 "comment": {
                     "description": "属性注释",
                     "type": "string"
+                },
+                "generatedId": {
+                    "description": "是否是生成式 ID",
+                    "type": "boolean"
+                },
+                "generatedIdAnnotation": {
+                    "$ref": "#/definitions/AnnotationWithImports",
+                    "description": "生成 ID 注解"
+                },
+                "idProperty": {
+                    "description": "是否 ID 属性",
+                    "type": "boolean"
                 },
                 "inDetailView": {
                     "description": "是否在详情视图DTO中",
@@ -162,11 +232,19 @@ export const EntityModelBusinessViewSchema = {
                     "items": {
                         "$ref": "#/definitions/JoinColumnMeta"
                     },
-                    "type": ["array", "null"]
+                    "type": "array"
                 },
                 "joinTableMeta": {
                     "$ref": "#/definitions/JoinTableMeta",
                     "description": "关联表注解"
+                },
+                "logicalDelete": {
+                    "description": "是否为逻辑删除属性",
+                    "type": "boolean"
+                },
+                "logicalDeletedAnnotation": {
+                    "$ref": "#/definitions/AnnotationWithImports",
+                    "description": "逻辑删除注解"
                 },
                 "longAssociation": {
                     "description": "是否为长关联",
@@ -181,7 +259,7 @@ export const EntityModelBusinessViewSchema = {
                     "type": "number"
                 },
                 "otherAnnotation": {
-                    "$ref": "#/definitions/OtherAnnotation",
+                    "$ref": "#/definitions/AnnotationWithImports",
                     "description": "其他注解"
                 },
                 "overwriteComment": {
@@ -196,6 +274,16 @@ export const EntityModelBusinessViewSchema = {
                     "description": "备注",
                     "type": "string"
                 },
+                "specialFormType": {
+                    "description": "特殊表单类型",
+                    "enum": [
+                        "FILE",
+                        "FILE_LIST",
+                        "IMAGE",
+                        "IMAGE_LIST"
+                    ],
+                    "type": "string"
+                },
                 "type": {
                     "description": "字面类型",
                     "type": "string"
@@ -203,10 +291,16 @@ export const EntityModelBusinessViewSchema = {
                 "typeNotNull": {
                     "description": "是否非空",
                     "type": "boolean"
+                },
+                "typeTable": {
+                    "$ref": "#/definitions/GenEntityModelView_TargetOf_properties_TargetOf_typeTable",
+                    "description": "类型对应表"
                 }
             },
             "required": [
                 "comment",
+                "generatedId",
+                "idProperty",
                 "inDetailView",
                 "inInsertInput",
                 "inListView",
@@ -216,6 +310,7 @@ export const EntityModelBusinessViewSchema = {
                 "inShortAssociationView",
                 "inSpecification",
                 "inUpdateInput",
+                "logicalDelete",
                 "longAssociation",
                 "name",
                 "orderKey",
@@ -224,6 +319,19 @@ export const EntityModelBusinessViewSchema = {
                 "remark",
                 "type",
                 "typeNotNull"
+            ],
+            "type": "object"
+        },
+        "GenEntityModelView_TargetOf_properties_TargetOf_typeTable": {
+            "description": "生成表",
+            "properties": {
+                "name": {
+                    "description": "名称",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
             ],
             "type": "object"
         },
@@ -236,10 +344,9 @@ export const EntityModelBusinessViewSchema = {
                         "MANY_TO_MANY",
                         "MANY_TO_ONE",
                         "ONE_TO_MANY",
-                        "ONE_TO_ONE",
-                        null
+                        "ONE_TO_ONE"
                     ],
-                    "type": ["string", "null"]
+                    "type": "string"
                 },
                 "body": {
                     "$ref": "#/definitions/PropertyBody",
@@ -251,15 +358,19 @@ export const EntityModelBusinessViewSchema = {
                 },
                 "dissociateAnnotation": {
                     "description": "脱钩注解",
-                    "type": ["string", "null"]
+                    "type": "string"
                 },
                 "enum": {
                     "$ref": "#/definitions/GenPropertyModelView_TargetOf_enum",
                     "description": "生成枚举"
                 },
-                "idGenerationAnnotation": {
-                    "description": "ID 生成类型",
-                    "type": ["string", "null"]
+                "generatedId": {
+                    "description": "是否是生成式 ID",
+                    "type": "boolean"
+                },
+                "generatedIdAnnotation": {
+                    "$ref": "#/definitions/AnnotationWithImports",
+                    "description": "生成 ID 注解"
                 },
                 "idProperty": {
                     "description": "是否 ID 属性",
@@ -270,8 +381,8 @@ export const EntityModelBusinessViewSchema = {
                     "type": "boolean"
                 },
                 "idViewTarget": {
-                    "description": "ID 视图注解",
-                    "type": ["string", "null"]
+                    "description": "ID 视图目标",
+                    "type": "string"
                 },
                 "inDetailView": {
                     "description": "是否在详情视图DTO中",
@@ -311,14 +422,14 @@ export const EntityModelBusinessViewSchema = {
                 },
                 "inputNotNull": {
                     "description": "输入非空",
-                    "type": ["boolean", "null"]
+                    "type": "boolean"
                 },
                 "joinColumnMetas": {
                     "description": "关联列注解",
                     "items": {
                         "$ref": "#/definitions/JoinColumnMeta"
                     },
-                    "type": ["array", "null"]
+                    "type": "array"
                 },
                 "joinTableMeta": {
                     "$ref": "#/definitions/JoinTableMeta",
@@ -326,7 +437,7 @@ export const EntityModelBusinessViewSchema = {
                 },
                 "keyGroup": {
                     "description": "业务键组",
-                    "type": ["object", "null"]
+                    "type": "string"
                 },
                 "keyProperty": {
                     "description": "是否为业务键属性",
@@ -340,13 +451,17 @@ export const EntityModelBusinessViewSchema = {
                     "description": "是否为逻辑删除属性",
                     "type": "boolean"
                 },
+                "logicalDeletedAnnotation": {
+                    "$ref": "#/definitions/AnnotationWithImports",
+                    "description": "逻辑删除注解"
+                },
                 "longAssociation": {
                     "description": "是否为长关联",
                     "type": "boolean"
                 },
                 "mappedBy": {
                     "description": "映射镜像",
-                    "type": ["object", "null"]
+                    "type": "string"
                 },
                 "name": {
                     "description": "属性名",
@@ -357,7 +472,7 @@ export const EntityModelBusinessViewSchema = {
                     "type": "number"
                 },
                 "otherAnnotation": {
-                    "$ref": "#/definitions/OtherAnnotation",
+                    "$ref": "#/definitions/AnnotationWithImports",
                     "description": "其他注解"
                 },
                 "overwriteComment": {
@@ -372,6 +487,16 @@ export const EntityModelBusinessViewSchema = {
                     "description": "备注",
                     "type": "string"
                 },
+                "specialFormType": {
+                    "description": "特殊表单类型",
+                    "enum": [
+                        "FILE",
+                        "FILE_LIST",
+                        "IMAGE",
+                        "IMAGE_LIST"
+                    ],
+                    "type": "string"
+                },
                 "type": {
                     "description": "字面类型",
                     "type": "string"
@@ -383,6 +508,7 @@ export const EntityModelBusinessViewSchema = {
             },
             "required": [
                 "comment",
+                "generatedId",
                 "idProperty",
                 "idView",
                 "inDetailView",
@@ -419,7 +545,7 @@ export const EntityModelBusinessViewSchema = {
             "required": [
                 "name"
             ],
-            "type": ["object", "null"]
+            "type": "object"
         },
         "JoinColumnMeta": {
             "properties": {
@@ -429,19 +555,19 @@ export const EntityModelBusinessViewSchema = {
                         "FAKE",
                         "REAL"
                     ],
-                    "type": ["string", "null"]
+                    "type": "string"
                 },
                 "joinColumnName": {
                     "type": "string"
                 },
                 "referencedColumnName": {
-                    "type": ["string", "null"]
+                    "type": "string"
                 }
             },
             "required": [
                 "joinColumnName"
             ],
-            "type": ["object", "null"]
+            "type": "object"
         },
         "JoinTableMeta": {
             "properties": {
@@ -457,7 +583,7 @@ export const EntityModelBusinessViewSchema = {
                         "FAKE",
                         "REAL"
                     ],
-                    "type": ["string", "null"]
+                    "type": "string"
                 },
                 "tableName": {
                     "type": "string"
@@ -467,28 +593,7 @@ export const EntityModelBusinessViewSchema = {
                 "columnNamePairs",
                 "tableName"
             ],
-            "type": ["object", "null"]
-        },
-        "OtherAnnotation": {
-            "properties": {
-                "annotations": {
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "imports": {
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
-                }
-            },
-            "required": [
-                "annotations",
-                "imports"
-            ],
-            "type": ["object", "null"]
+            "type": "object"
         },
         "Pair<string,string>": {
             "properties": {
@@ -521,13 +626,13 @@ export const EntityModelBusinessViewSchema = {
                 "codeBlock",
                 "imports"
             ],
-            "type": ["object", "null"]
+            "type": "object"
         }
     }
 }
 
 export const {validate: validateEntityModelBusinessView} =
     useShapeValidate<DeepReadonly<EntityModelBusinessView>>(
+        EntityModelBusinessViewSchema,
         "EntityModelBusinessView",
-        EntityModelBusinessViewSchema
     )

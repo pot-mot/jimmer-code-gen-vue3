@@ -7,10 +7,12 @@ import LineItem from "@/components/global/line/LineItem.vue";
 import {Delete, Plus} from "@element-plus/icons-vue";
 import {EditListEmits, ListEmits} from "@/components/global/list/ListEmits.ts";
 import {useClickOutside} from "@/components/global/list/useClickOutside.ts";
-import {sendMessage} from "@/message/message.ts";
+import {sendI18nMessage} from "@/message/message.ts";
 import {createSelectRange, useListSelection} from "@/components/global/list/listSelection.ts";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+import {ValidateError} from "@/shape/shapeValidate.ts";
+import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
 
 const i18nStore = useI18nStore()
 
@@ -128,14 +130,14 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
             e.preventDefault()
             const text = await navigator.clipboard.readText()
             try {
-                const value = JSON.parse(text)
+                const value = jsonParseThenConvertNullToUndefined(text)
                 const tempLines = getTempLines()
 
                 let insertIndex = selectedItemSet.value.size > 0 ? Math.max(...selectedItemSet.value.values()) + 1 : selectedItems.length
 
                 let insertLength = 0
 
-                const validateErrorsMap = new Map
+                const validateErrorsMap = new Map<number, ValidateError>
 
                 if (
                     Array.isArray(value) &&
@@ -151,7 +153,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
                     tempLines.splice(insertIndex, 0, value)
                     insertLength = 1
                 } else {
-                    sendMessage('剪切板中数据无法直接导入列表', 'error', validateErrorsMap)
+                    sendI18nMessage({key: 'MESSAGE_clipBoard_cannotDirectLoad_validateError', args: [validateErrorsMap]}, 'error', validateErrorsMap)
                     return
                 }
 
@@ -165,7 +167,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
                     select(i)
                 }
             } catch (e) {
-                sendMessage('剪切板中数据无法直接导入列表', 'error', {error: e, clipboardValue: text})
+                sendI18nMessage('MESSAGE_clipBoard_cannotDirectLoad', 'error', e)
             }
         }
     }

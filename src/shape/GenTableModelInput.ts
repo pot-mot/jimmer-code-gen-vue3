@@ -8,11 +8,11 @@ import {DeepReadonly} from "vue";
 
 
 // typescript-json-schema src/api/__generated/model/static/GenTableModelInput.ts * --required
-// 手动修正了 columns defaultValue ["string", "null"]
 export const GenTableModelInputJsonSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
         "GenTableModelInput": {
+            "description": "生成表",
             "properties": {
                 "columns": {
                     "description": "列",
@@ -26,7 +26,7 @@ export const GenTableModelInputJsonSchema = {
                     "type": "string"
                 },
                 "indexes": {
-                    "description": "唯一索引",
+                    "description": "索引",
                     "items": {
                         "$ref": "#/definitions/GenTableModelInput_TargetOf_indexes"
                     },
@@ -62,11 +62,13 @@ export const GenTableModelInputJsonSchema = {
                 "indexes",
                 "name",
                 "remark",
+                "superTables",
                 "type"
             ],
             "type": "object"
         },
         "GenTableModelInput_TargetOf_columns": {
+            "description": "生成列",
             "properties": {
                 "autoIncrement": {
                     "description": "是否自增",
@@ -86,11 +88,15 @@ export const GenTableModelInputJsonSchema = {
                 },
                 "defaultValue": {
                     "description": "默认值",
-                    "type": ["string", "null"]
+                    "type": "string"
                 },
                 "enum": {
                     "$ref": "#/definitions/GenTableModelInput_TargetOf_columns_TargetOf_enum",
                     "description": "生成枚举"
+                },
+                "keyGroup": {
+                    "description": "业务键组",
+                    "type": "string"
                 },
                 "logicalDelete": {
                     "description": "是否为逻辑删除",
@@ -152,6 +158,7 @@ export const GenTableModelInputJsonSchema = {
             "type": "object"
         },
         "GenTableModelInput_TargetOf_columns_TargetOf_enum": {
+            "description": "生成枚举",
             "properties": {
                 "name": {
                     "description": "枚举名",
@@ -164,6 +171,7 @@ export const GenTableModelInputJsonSchema = {
             "type": "object"
         },
         "GenTableModelInput_TargetOf_indexes": {
+            "description": "生成列",
             "properties": {
                 "columns": {
                     "description": "列",
@@ -181,7 +189,7 @@ export const GenTableModelInputJsonSchema = {
                     "type": "string"
                 },
                 "uniqueIndex": {
-                    "description": "唯一索引",
+                    "description": "索引",
                     "type": "boolean"
                 }
             },
@@ -194,6 +202,7 @@ export const GenTableModelInputJsonSchema = {
             "type": "object"
         },
         "GenTableModelInput_TargetOf_indexes_TargetOf_columns": {
+            "description": "生成列",
             "properties": {
                 "name": {
                     "description": "名称",
@@ -206,6 +215,7 @@ export const GenTableModelInputJsonSchema = {
             "type": "object"
         },
         "GenTableModelInput_TargetOf_superTables": {
+            "description": "生成表",
             "properties": {
                 "name": {
                     "description": "名称",
@@ -220,7 +230,6 @@ export const GenTableModelInputJsonSchema = {
         "TableType": {
             "enum": [
                 "ALIAS",
-                "Companion",
                 "GLOBAL_TEMPORARY",
                 "LOCAL_TEMPORARY",
                 "SUPER_TABLE",
@@ -236,18 +245,18 @@ export const GenTableModelInputJsonSchema = {
 
 export const {validate: validateTableModelInput} =
     useShapeValidate<DeepReadonly<GenTableModelInput>>(
+        GenTableModelInputJsonSchema,
         "GenTableModelInput",
-        GenTableModelInputJsonSchema
     )
 
 export const {validate: validateColumn} =
     useShapeValidate<DeepReadonly<GenTableModelInput_TargetOf_columns>>(
+        GenTableModelInputJsonSchema,
         "GenTableModelInput_TargetOf_columns",
-        GenTableModelInputJsonSchema
     )
 
 export const {validate: validateIndex} =
     useShapeValidate<DeepReadonly<GenTableModelInput_TargetOf_indexes>>(
+        GenTableModelInputJsonSchema,
         "GenTableModelInput_TargetOf_indexes",
-        GenTableModelInputJsonSchema
     )

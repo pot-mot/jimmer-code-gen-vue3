@@ -6,7 +6,6 @@ import {
 import {DeepReadonly} from "vue";
 
 // typescript-json-schema src/api/__generated/model/static/GenModelInput_TargetOf_enums.ts * --required
-// 调整 enumType "type": ["string", "null"] "enum": ["NAME", "ORDINAL", null]
 export const GenEnumModelInputJsonSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
@@ -21,10 +20,9 @@ export const GenEnumModelInputJsonSchema = {
                     "description": "枚举类型",
                     "enum": [
                         "NAME",
-                        "ORDINAL",
-                        null
+                        "ORDINAL"
                     ],
-                    "type": ["string", "null"]
+                    "type": "string"
                 },
                 "items": {
                     "description": "生成枚举元素",
@@ -102,12 +100,12 @@ export const GenEnumModelInputJsonSchema = {
 
 export const {validate: validateEnum} =
     useShapeValidate<DeepReadonly<GenModelInput_TargetOf_enums>>(
+        GenEnumModelInputJsonSchema,
         "GenModelInput_TargetOf_enums",
-        GenEnumModelInputJsonSchema
     )
 
 export const {validate: validateEnumItem} =
     useShapeValidate<DeepReadonly<GenModelInput_TargetOf_enums_TargetOf_items>>(
-        "GenModelInput_TargetOf_enums_TargetOf_items_2",
-        GenEnumModelInputJsonSchema
+        GenEnumModelInputJsonSchema,
+        "GenModelInput_TargetOf_enums_TargetOf_items",
     )

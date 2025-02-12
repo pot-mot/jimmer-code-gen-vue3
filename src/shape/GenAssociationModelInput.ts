@@ -16,6 +16,7 @@ export const GenAssociationModelInputJsonSchema = {
             "type": "string"
         },
         "GenAssociationModelInput": {
+            "description": "生成关联",
             "properties": {
                 "columnReferences": {
                     "description": "列引用",
@@ -52,11 +53,11 @@ export const GenAssociationModelInputJsonSchema = {
                     "type": "string"
                 },
                 "sourceTableName": {
-                    "description": "主表",
+                    "description": "名称",
                     "type": "string"
                 },
                 "targetTableName": {
-                    "description": "从表",
+                    "description": "名称",
                     "type": "string"
                 },
                 "type": {
@@ -81,13 +82,14 @@ export const GenAssociationModelInputJsonSchema = {
             "type": "object"
         },
         "GenAssociationModelInput_TargetOf_columnReferences": {
+            "description": "生成关联",
             "properties": {
                 "sourceColumnName": {
-                    "description": "主列",
+                    "description": "名称",
                     "type": "string"
                 },
                 "targetColumnName": {
-                    "description": "从列",
+                    "description": "名称",
                     "type": "string"
                 }
             },
@@ -102,6 +104,6 @@ export const GenAssociationModelInputJsonSchema = {
 
 export const {validate: validateAssociationModelInput} =
     useShapeValidate<DeepReadonly<GenAssociationModelInput>>(
+        GenAssociationModelInputJsonSchema,
         "GenAssociationModelInput",
-        GenAssociationModelInputJsonSchema
     )

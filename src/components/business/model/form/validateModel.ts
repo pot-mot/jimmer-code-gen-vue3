@@ -11,6 +11,7 @@ import {validateEnum} from "@/components/business/enum/validateEnum.ts";
 import {validateAssociation} from "@/components/business/association/validateAssociation.ts";
 import {DeepReadonly} from "vue";
 import {ProjectLocaleKeyParam} from "@/i18n";
+import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
 
 export const validateModel = (
     model: DeepReadonly<GenModelInput>,
@@ -45,7 +46,7 @@ const validateGraphDataStr = (
     const errors = []
 
     try {
-        const _graphData = JSON.parse(graphDataStr)
+        const _graphData = jsonParseThenConvertNullToUndefined(graphDataStr)
 
         try {
             validateModelEditorData(

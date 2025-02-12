@@ -1,16 +1,22 @@
+:root {
+    --list-line-bg-color: #fff;
+    --list-line-hover-bg-color: #f1f1f1;
+    --list-line-selected-bg-color: #d1ecff;
+}
+
 .edit-list > .edit-list-body > .line-container,
 .view-list > .view-list-body > .line-container {
-    background-color: #fff;
+    background-color: var(--list-line-bg-color);
 }
 
 .edit-list > .edit-list-body > .line-container:hover,
 .view-list > .view-list-body > .line-container:hover {
-    background-color: #f1f1f1;
+    background-color: var(--list-line-hover-bg-color);
 }
 
 .edit-list > .edit-list-body > .line-container.selected,
 .view-list > .view-list-body > .line-container.selected {
-    background-color: #d1ecff;
+    background-color: var(--list-line-selected-bg-color);
 }
 
 .edit-list:focus, .view-list:focus {

@@ -125,16 +125,20 @@ const handleCancel = () => {
             <template #mappedValue="{data}">
                 <el-input
                     v-if="genEnum.enumType === 'NAME'"
-                    v-model="data.mappedValue"/>
+                    v-model="data.mappedValue"
+                />
                 <el-input-number
                     v-else-if="genEnum.enumType === 'ORDINAL'"
-                    v-model="data.mappedValue"
+                    :model-value="parseInt(data.mappedValue)"
+                    @change="(value: number) => data.mappedValue = value.toString()"
                     :precision="0"
-                    style="width: 100%"/>
+                    style="width: 100%"
+                />
                 <el-input
                     v-else
                     disabled
-                    :model-value="data.mappedValue"/>
+                    :model-value="data.mappedValue"
+                />
             </template>
         </EditList>
 

@@ -11,6 +11,7 @@ import {importEnums} from "@/components/pages/ModelEditor/graph/clipBoard/import
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {validateTableModelInput} from "@/shape/GenTableModelInput.ts";
+import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
 
 export const useClipBoard = (graph: Graph) => {
     graph.bindKey(["ctrl+c", "command+c"], async () => {
@@ -27,7 +28,7 @@ export const useClipBoard = (graph: Graph) => {
 }
 
 export const getModelAllCopyData = (model: GenModelInput): CopyData => {
-    const cells = JSON.parse(model.graphData)?.json?.cells
+    const cells = jsonParseThenConvertNullToUndefined(model.graphData)?.json?.cells
     const nodes = cells.filter((it: any) => it.shape === TABLE_NODE)
     const edges = cells.filter((it: any) => it.shape === ASSOCIATION_EDGE)
 
@@ -119,7 +120,7 @@ const paste = useGlobalLoadingStore().withLoading(
 
             let res: { nodes: Node[], edges: Edge[] } | undefined
 
-            const value = JSON.parse(text)
+            const value = jsonParseThenConvertNullToUndefined(text)
 
             const validateErrors: any = []
 
@@ -145,12 +146,12 @@ const paste = useGlobalLoadingStore().withLoading(
             } else if (validateModelEditorData(value, (e) => validateErrors.push(e))) {
                 const cells = value.json.cells as Cell[]
                 graph.parseJSON(cells)
-                res = MODEL_EDITOR.loadModelEditorData(JSON.parse(text), false)
+                res = MODEL_EDITOR.loadModelEditorData(jsonParseThenConvertNullToUndefined(text), false)
             } else if (validateModelInput(value, (e) => validateErrors.push(e))) {
                 const model = value as GenModelInput
 
                 if (model.graphData) {
-                    res = MODEL_EDITOR.loadModelEditorData(JSON.parse(model.graphData), false)
+                    res = MODEL_EDITOR.loadModelEditorData(jsonParseThenConvertNullToUndefined(model.graphData), false)
                 }
                 importEnums(model.enums)
             } else {

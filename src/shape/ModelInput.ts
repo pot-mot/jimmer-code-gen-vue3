@@ -3,6 +3,7 @@ import {EntityModelBusinessView, GenModelInput} from "@/api/__generated/model/st
 import {validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {DeepReadonly} from "vue";
 import {validateEntityModelBusinessView} from "@/shape/EntityModelBusinessView.ts";
+import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
 
 // typescript-json-schema src/api/__generated/model/static/GenModelInput.ts * --required
 export const GenModelInputJsonSchema = {
@@ -305,15 +306,15 @@ export const GenModelInputJsonSchema = {
 
 const {validate: validateModelInputJson} =
     useShapeValidate<DeepReadonly<GenModelInput>>(
+        GenModelInputJsonSchema,
         "GenModelInput",
-        GenModelInputJsonSchema
     )
 
 export const validateModelInput = (data: any, onErrors: (e: any) => void) => {
     const modelInputValidResult = validateModelInputJson(data, onErrors)
     if (!modelInputValidResult) return false
 
-    const modelEditorDataValidResult = validateModelEditorData(JSON.parse(data["graphData"]), onErrors)
+    const modelEditorDataValidResult = validateModelEditorData(jsonParseThenConvertNullToUndefined(data["graphData"]), onErrors)
     if (!modelEditorDataValidResult) return false
 
     return true

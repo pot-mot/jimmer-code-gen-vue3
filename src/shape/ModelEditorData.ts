@@ -113,6 +113,6 @@ export interface ModelEditorData {
 
 export const {validate: validateModelEditorData} =
     useShapeValidate<DeepReadonly<ModelEditorData>>(
+        GraphDataShapeJsonSchema,
         "GraphData",
-        GraphDataShapeJsonSchema
     )

@@ -3,31 +3,28 @@ import {GenColumnDefaultInput} from "@/api/__generated/model/static";
 import {DeepReadonly} from "vue";
 
 // typescript-json-schema src/api/__generated/model/static/GenColumnDefaultInput.ts * --required
-// 调整 defaultValue type ["string", "null"]
 export const GenColumnDefaultInputJsonSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
-        "DataSourceType": {
-            "enum": [
-                "H2",
-                "MySQL",
-                "PostgreSQL"
-            ],
-            "type": "string"
-        },
         "GenColumnDefaultInput": {
+            "description": "数据源列类型",
             "properties": {
-                "dataSourceType": {
-                    "$ref": "#/definitions/DataSourceType",
-                    "description": "数据源类型"
-                },
-                "defaultValue": {
-                    "description": "默认值",
-                    "type": ["string", "null"]
-                },
                 "dataSize": {
                     "description": "长度",
                     "type": "number"
+                },
+                "dataSourceType": {
+                    "description": "数据源类型",
+                    "enum": [
+                        "H2",
+                        "MySQL",
+                        "PostgreSQL"
+                    ],
+                    "type": "string"
+                },
+                "defaultValue": {
+                    "description": "默认值",
+                    "type": "string"
                 },
                 "id": {
                     "description": "ID",
@@ -55,7 +52,6 @@ export const GenColumnDefaultInputJsonSchema = {
                 }
             },
             "required": [
-                "dataSourceType",
                 "dataSize",
                 "numericPrecision",
                 "orderKey",
@@ -70,6 +66,6 @@ export const GenColumnDefaultInputJsonSchema = {
 
 export const {validate: validateColumnDefaultInput} =
     useShapeValidate<DeepReadonly<GenColumnDefaultInput>>(
+        GenColumnDefaultInputJsonSchema,
         "GenColumnDefaultInput",
-        GenColumnDefaultInputJsonSchema
     )

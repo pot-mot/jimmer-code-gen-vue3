@@ -43,3 +43,8 @@ export const convertNullToUndefined = <T>(obj: T): ConvertNullToUndefined<T> => 
     }
     return obj as ConvertNullToUndefined<T>;
 }
+
+export const jsonParseThenConvertNullToUndefined = (jsonStr: string): any => {
+    const obj = JSON.parse(jsonStr);
+    return convertNullToUndefined(obj);
+}

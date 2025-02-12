@@ -23,6 +23,7 @@ export const GenTypeMappingInputJsonSchema = {
             "type": "string"
         },
         "GenTypeMappingInput": {
+            "description": "列到属性类型映射",
             "properties": {
                 "dataSourceType": {
                     "$ref": "#/definitions/DataSourceType",
@@ -67,6 +68,6 @@ export const GenTypeMappingInputJsonSchema = {
 
 export const {validate: validateTypeMappingInput} =
     useShapeValidate<DeepReadonly<GenTypeMappingInput>>(
+        GenTypeMappingInputJsonSchema,
         "GenTypeMappingInput",
-        GenTypeMappingInputJsonSchema
     )

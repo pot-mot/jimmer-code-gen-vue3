@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {useEntityDialogsStore} from "@/store/modelEditor/EntityDialogsStore.ts";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
-import EntityConfigForm from "@/components/business/entity/EntityConfigForm.vue";
+import EntityConfigForm from "@/components/business/entity/EntityForm.vue";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {EntityModelBusinessInput} from "@/api/__generated/model/static";
 import {api} from "@/api";
 import {DeepReadonly} from "vue";
 import {MainLocaleKeyParam} from "@/i18n";
-import {validateEntityWithProperties} from "@/components/business/entity/validateEntityWithProperties.ts";
+import {validateEntity} from "@/components/business/entity/validateEntity.ts";
 import {useEditSaveAndRefresh} from "@/components/pages/ModelEditor/save/editSaveAndRefresh.ts";
 
 const store = useEntityDialogsStore()
@@ -33,7 +33,7 @@ const validate = async (
         excludeEntityIds: [entity.entity.id],
     })
 
-    return validateEntityWithProperties(
+    return validateEntity(
         entity,
         otherEntities
     )

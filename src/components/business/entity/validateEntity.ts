@@ -7,12 +7,10 @@ import {
 import {MainLocaleKeyParam} from "@/i18n";
 import {DeepReadonly} from "vue";
 
-export const validateEntityWithProperties = (
+export const validateEntity = (
     input: DeepReadonly<EntityModelBusinessInput>,
     otherEntities: DeepReadonly<Array<EntityModelBusinessView>>,
 ): MainLocaleKeyParam[] => {
-    // TODO 补充业务配置的校验，例如 id 自增类型校验，例如 page 相关项和业务相关项
-
     const entity = input.entity
     
     const messageList: MainLocaleKeyParam[] = []

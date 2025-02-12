@@ -1,22 +1,33 @@
 import Ajv from 'ajv';
 import {ValidateFunction} from "ajv/dist/types";
+import {ErrorObject} from "ajv/lib/types";
+
+export type ValidateError = { errors: undefined | null | ErrorObject[], data: any }
+
+export type OnErrorsHandler = (e: ValidateError) => void
 
 // https://juejin.cn/post/7166061734803963917
-export const useShapeValidate = <T>(type: string, schema: any) => {
+export const useShapeValidate = <T>(
+    schema: {
+        "$schema": string,
+        "definitions": { [key: string]: any }
+    },
+    type: keyof (typeof schema)["definitions"]
+) => {
     const ajv = new Ajv({schemas: [schema]})
 
-    let validate: ValidateFunction<T> = ajv.getSchema(`#/definitions/${type}`)!
+    const validate: ValidateFunction<T> = ajv.getSchema(`#/definitions/${type}`)!
 
     return {
         ajv,
         validate: (
-            data: T,
-            onErrors: (e: any) => void
+            data: any,
+            onErrors: OnErrorsHandler
         ) => {
             const result = validate(data)
 
             if (!result) {
-                onErrors({type, errors: validate.errors, data})
+                onErrors({errors: validate.errors, data})
                 return false
             }
 

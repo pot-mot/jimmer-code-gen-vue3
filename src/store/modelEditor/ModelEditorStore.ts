@@ -57,6 +57,7 @@ import {useDataSourceLoadDialogStore} from "@/store/modelEditor/DataSourceLoadDi
 import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.ts";
 import {useModelLoadDialogStore} from "@/store/modelEditor/ModelLoadDialogStore.ts";
 import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
+import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
 
 type ModelReactiveState = {
     tableNodes: DeepReadonly<Ref<Array<UnwrapRefSimple<Node>>>>,
@@ -257,10 +258,10 @@ const initModelEditorStore = (): ModelEditorStore => {
         isLoaded.value = true
 
         if (graphState.isLoaded.value) {
-            loadModelEditorData(JSON.parse(model.graphData), true)
+            loadModelEditorData(jsonParseThenConvertNullToUndefined(model.graphData), true)
         } else {
             graphLoadOperation.onLoaded(() => {
-                loadModelEditorData(JSON.parse(model.graphData), true)
+                loadModelEditorData(jsonParseThenConvertNullToUndefined(model.graphData), true)
             })
         }
     }

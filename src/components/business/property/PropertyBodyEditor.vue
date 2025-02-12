@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {PropertyBody} from "@/api/__generated/model/static/index.js";
+import type {PropertyBody} from "@/api/__generated/model/static";
 import {Delete, Plus} from "@element-plus/icons-vue";
 import EditList from "@/components/global/list/EditList.vue";
 import {vTapInput} from "@/utils/vTabInput.ts";

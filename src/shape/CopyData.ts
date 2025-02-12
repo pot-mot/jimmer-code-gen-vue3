@@ -74,6 +74,6 @@ const CopyDataShapeJsonSchema = {
 
 export const {validate: validateCopyData} =
     useShapeValidate<DeepReadonly<CopyData>>(
+        CopyDataShapeJsonSchema,
         "CopyData",
-        CopyDataShapeJsonSchema
     )

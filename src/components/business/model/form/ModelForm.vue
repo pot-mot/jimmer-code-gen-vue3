@@ -14,6 +14,7 @@ import GenConfigForm from "@/components/business/genConfig/GenConfigForm.vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {validateModel} from "@/components/business/model/form/validateModel.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
 
 const i18nStore = useI18nStore()
 
@@ -29,7 +30,7 @@ watch(() => props.model, (propsModel) => {
 
 		try {
 			validateModelEditorData(
-				JSON.parse(tempModel.graphData),
+				 jsonParseThenConvertNullToUndefined(tempModel.graphData),
 				e => {
 					throw e
 				}
@@ -48,7 +49,7 @@ const handleSubmit = () => {
 	const tempModel = cloneDeep(model.value)
 
 	try {
-		const graphData = JSON.parse(tempModel.graphData)
+		const graphData =  jsonParseThenConvertNullToUndefined(tempModel.graphData)
 
 		validateModelEditorData(
 			graphData,

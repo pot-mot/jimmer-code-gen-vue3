@@ -8,6 +8,7 @@ import {sendI18nMessage} from "@/message/message.ts";
 import {getModelAllCopyData} from "@/components/pages/ModelEditor/graph/clipBoard/clipBoard.ts";
 import {GenerateType} from "@/api/__generated/model/enums";
 import {DeepReadonly} from "vue";
+import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
 
 const createZip = async (files: DeepReadonly<Array<Pick<GenerateFile, 'path' | 'content'>>>): Promise<Blob> => {
     const zip = new JSZip()
@@ -42,7 +43,7 @@ export const getModelCodes = async (
 export const importModelJSON = async (modelInputJsonStr: string): Promise<number | undefined> => {
     let validateErrors
 
-    const modelInputJson = JSON.parse(modelInputJsonStr)
+    const modelInputJson = jsonParseThenConvertNullToUndefined(modelInputJsonStr)
 
     if (validateModelInputWithEntities(modelInputJson, e => validateErrors = e)) {
         const modelInput = modelInputJson as ModelInputWithEntities
