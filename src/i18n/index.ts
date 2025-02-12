@@ -346,6 +346,8 @@ type MainLocale = {
     LABEL_GenConfigForm_databaseNamingStrategy: string
     LABEL_GenConfigForm_packagePath: string
     LABEL_GenConfigForm_tablePath: string
+    LABEL_GenConfigForm_defaultIdType: string
+    LABEL_GenConfigForm_generatedIdAnnotation: string
     LABEL_GenConfigForm_logicalDeletedAnnotation: string
     LABEL_GenConfigForm_tableAnnotation: string
     LABEL_GenConfigForm_columnAnnotation: string

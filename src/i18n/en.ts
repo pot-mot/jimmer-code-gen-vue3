@@ -527,6 +527,8 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     LABEL_GenConfigForm_databaseNamingStrategy: "Database Naming Strategy",
     LABEL_GenConfigForm_packagePath: "Package Path",
     LABEL_GenConfigForm_tablePath: "Mapping Table Path",
+    LABEL_GenConfigForm_defaultIdType: "Id Type",
+    LABEL_GenConfigForm_generatedIdAnnotation: "Generated Id Annotation",
     LABEL_GenConfigForm_logicalDeletedAnnotation: "Logical Deletion Annotation",
     LABEL_GenConfigForm_tableAnnotation: "Generate Table Annotation",
     LABEL_GenConfigForm_columnAnnotation: "Generate Column Annotation",

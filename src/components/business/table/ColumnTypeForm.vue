@@ -60,7 +60,7 @@ const handleTypeCodeChange = () => {
         column.value.numericPrecision = columnDefault.numericPrecision
         if (columnDefault.defaultValue) column.value.defaultValue = columnDefault.defaultValue
     } else {
-        const type = jdbcTypeStore.jdbcTypeMap.get(typeCode)
+        const type = jdbcTypeStore.codeTypeMap.get(typeCode)
         if (type) {
             column.value.rawType = type
         }
@@ -111,9 +111,9 @@ useClickOutside(() => wrapper.value, (e) => {
                         @change="handleTypeCodeChange"
                     >
                         <el-option
-                            v-for="type in jdbcTypeStore.jdbcTypeList"
+                            v-for="type in jdbcTypeStore.list"
                             :label="type.type"
-                            :value="type.typeCode"
+                            :value="type.code"
                         />
                     </el-select>
                 </el-form-item>

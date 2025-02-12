@@ -20,26 +20,27 @@ export const useJdbcTypeStore = defineStore(
             await getData()
         }
 
-        const jdbcTypes = computed<{ [key: string]: number }>(() => {
-            if (!data.value) {
-                throw "jdbcTypes Not Loaded"
-            }
-            return data.value
-        })
-
-        const jdbcTypeList = computed(() => {
-            return Object.entries(jdbcTypes.value).map(entry => {
+        const list = computed<{type: string, code: number}[]>(() => {
+            return Object.entries(data.value ?? {}).map(entry => {
                 return {
                     type: entry[0],
-                    typeCode: entry[1]
+                    code: entry[1]
                 }
             })
         })
 
-        const jdbcTypeMap = computed(() => {
+        const typeCodeMap = computed<Map<string, number>>(() => {
+            const map = new Map<string, number>()
+            list.value.forEach(({type, code}) => {
+                map.set(type, code)
+            })
+            return map
+        })
+
+        const codeTypeMap = computed<Map<number, string>>(() => {
             const map = new Map<number, string>()
-            jdbcTypeList.value.forEach(({type, typeCode}) => {
-                map.set(typeCode, type)
+            list.value.forEach(({type, code}) => {
+                map.set(code, type)
             })
             return map
         })
@@ -48,9 +49,9 @@ export const useJdbcTypeStore = defineStore(
             init,
 
             isLoaded,
-            jdbcTypes,
-            jdbcTypeList,
-            jdbcTypeMap,
+            list,
+            typeCodeMap,
+            codeTypeMap,
             resetData,
 
             ...loadHooks,

@@ -34,6 +34,8 @@ const {MODEL} = useModelEditorStore()
 
 const jdbcTypeStore = useJdbcTypeStore()
 
+const contextStore = useGenConfigContextStore()
+
 const table = defineModel<GenTableModelInput>({
     required: true
 })
@@ -143,9 +145,16 @@ const handleColumnToPk = (columnIndex: number) => {
         return
     }
 
-    const pkColumn = table.value.columns[columnIndex]
-    pkColumn.rawType = "INTEGER"
-    pkColumn.typeCode = jdbcTypeStore.jdbcTypes[pkColumn.rawType]!
+    const idTypeCode = contextStore.context.defaultIdType
+    if (idTypeCode !== undefined) {
+        const pkColumn = table.value.columns[columnIndex]
+        pkColumn.typeCode = idTypeCode
+        const rawType = jdbcTypeStore.codeTypeMap.get(idTypeCode)
+        if (rawType !== undefined) {
+            pkColumn.rawType = rawType
+        }
+        pkColumn.typeNotNull = true
+    }
 
     // 主键变更将排除其他主键
     table.value.columns.forEach((column, index) => {

@@ -21,5 +21,6 @@ const emits = defineEmits<FormEmits<GenConfigProperties>>()
 		v-if="globalGenConfigStore.isLoaded"
 		v-model="globalGenConfigStore.genConfig"
 		@submit="handleGlobalGenConfigSubmit"
-		@cancel="emits('cancel', globalGenConfigStore.genConfig)"></GenConfigForm>
+		@cancel="emits('cancel', globalGenConfigStore.genConfig)"
+    />
 </template>

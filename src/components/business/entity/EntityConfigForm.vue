@@ -11,7 +11,7 @@ import EntityDtoPropertiesSelect from "@/components/business/entity/EntityDtoPro
 import {MainLocaleKeyParam} from "@/i18n";
 import {sendI18nMessage} from "@/message/message.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
-import OtherAnnotationEditor from "@/components/business/entity/AnnotationWithImportsEditor.vue";
+import AnnotationNullableEditor from "@/components/business/annotation/AnnotationNullableEditor.vue";
 import PropertyBodyEditor from "@/components/business/entity/PropertyBodyEditor.vue";
 import Details from "@/components/global/common/Details.vue";
 import EditList from "@/components/global/list/EditList.vue";
@@ -88,7 +88,7 @@ const handleSubmit = async () => {
         <el-row :gutter="12" style="line-height: 2em; padding-left: 1em; padding-bottom: 1em;">
             <el-col :span="24">
                 <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_otherAnnotation')">
-                    <OtherAnnotationEditor v-model="entity.otherAnnotation"/>
+                    <AnnotationNullableEditor v-model="entity.otherAnnotation"/>
                 </el-form-item>
             </el-col>
 
@@ -135,7 +135,7 @@ const handleSubmit = async () => {
                 <el-row :gutter="12">
                     <el-col :span="24">
                         <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_otherAnnotation')">
-                            <OtherAnnotationEditor v-model="property.otherAnnotation"/>
+                            <AnnotationNullableEditor v-model="property.otherAnnotation"/>
                         </el-form-item>
                     </el-col>
 
@@ -209,7 +209,7 @@ const handleSubmit = async () => {
                 <el-row :gutter="12">
                     <el-col :span="24">
                         <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_otherAnnotation')">
-                            <OtherAnnotationEditor v-model="property.otherAnnotation"/>
+                            <AnnotationNullableEditor v-model="property.otherAnnotation"/>
                         </el-form-item>
                     </el-col>
 

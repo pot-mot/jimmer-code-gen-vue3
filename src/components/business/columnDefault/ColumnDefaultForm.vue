@@ -84,11 +84,11 @@ genConfigStore.onLoaded(() => {
 })
 
 jdbcTypeStore.onLoaded(() => {
-    const first = jdbcTypeStore.jdbcTypeList[0]
+    const first = jdbcTypeStore.list[0]
 
     if (first) {
         defaultColumnDefault.value.rawType = first.type
-        defaultColumnDefault.value.typeCode = first.typeCode
+        defaultColumnDefault.value.typeCode = first.code
     }
 })
 
@@ -159,15 +159,15 @@ const handleCancel = () => {
                     <el-select
                         v-model="data.typeCode"
                         @change="(typeCode: number) => {
-                            data.rawType = jdbcTypeStore.jdbcTypeMap.get(typeCode)!
+                            data.rawType = jdbcTypeStore.codeTypeMap.get(typeCode)!
                         }"
                         filterable
                         style="width: 100%"
                     >
                         <el-option
-                            v-for="type in jdbcTypeStore.jdbcTypeList"
+                            v-for="type in jdbcTypeStore.list"
                             :label="type.type"
-                            :value="type.typeCode"
+                            :value="type.code"
                         />
                     </el-select>
                 </template>
@@ -193,7 +193,7 @@ const handleCancel = () => {
                     <el-text v-text="propData ?? '【ANY】'"/>
                 </template>
                 <template #typeCode="{data}">
-                    <el-text v-text="jdbcTypeStore.jdbcTypeMap.get(data.typeCode)"/>
+                    <el-text v-text="jdbcTypeStore.codeTypeMap.get(data.typeCode)"/>
                 </template>
             </ViewList>
 

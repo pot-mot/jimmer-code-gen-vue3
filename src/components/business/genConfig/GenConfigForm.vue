@@ -12,8 +12,12 @@ import {
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+import AnnotationEditor from "@/components/business/annotation/AnnotationEditor.vue";
+import {useJdbcTypeStore} from "@/store/jdbcType/jdbcTypeStore.ts";
 
 const i18nStore = useI18nStore()
+
+const jdbcTypeStore = useJdbcTypeStore()
 
 const genConfigProperties = defineModel<GenConfigProperties>({
     required: true
@@ -118,9 +122,23 @@ const handleCancel = () => {
 						</el-form-item>
 					</el-col>
 
+                    <el-col :span="12">
+                        <el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_defaultIdType')">
+                            <el-select v-if="jdbcTypeStore.isLoaded" v-model="config.defaultIdType">
+                                <el-option v-for="jdbcType in jdbcTypeStore.list" :label="jdbcType.type" :value="jdbcType.code"/>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+
+                    <el-col :span="24">
+                        <el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_generatedIdAnnotation')">
+                            <AnnotationEditor v-model="config.generatedIdAnnotation"/>
+                        </el-form-item>
+                    </el-col>
+
 					<el-col :span="24">
 						<el-form-item :label="i18nStore.translate('LABEL_GenConfigForm_logicalDeletedAnnotation')">
-							<el-input v-model="config.logicalDeletedAnnotation"/>
+                            <AnnotationEditor v-model="config.logicalDeletedAnnotation"/>
 						</el-form-item>
 					</el-col>
 				</el-row>
