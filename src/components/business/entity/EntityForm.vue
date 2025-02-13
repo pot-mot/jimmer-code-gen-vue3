@@ -108,6 +108,7 @@ const handleSubmit = async () => {
             <ViewList :lines="hasColumnProperties">
                 <template #default="{index}">
                     <HasColumnPropertyConfig
+                        class="has-column-property-config"
                         v-model="hasColumnProperties[index]"
                         @click-entity="genEntity => emits('click-entity', genEntity)"
                         @click-enum="genEnum => emits('click-enum', genEnum)"
@@ -124,6 +125,7 @@ const handleSubmit = async () => {
             >
                 <template #default="{index}">
                     <NoColumnPropertyConfig
+                        class="no-column-property-config"
                         v-model="noColumnProperties[index]"
                     />
                 </template>
@@ -156,5 +158,10 @@ const handleSubmit = async () => {
     display: grid;
     grid-gap: 0.6em;
     grid-template-columns: calc(100% - 1.6em) 1em;
+}
+
+.has-column-property-config,
+.no-column-property-config {
+    margin-bottom: 1em;
 }
 </style>

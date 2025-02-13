@@ -3,47 +3,52 @@ import type {PropertyBody} from "@/api/__generated/model/static";
 import {Delete, Plus} from "@element-plus/icons-vue";
 import EditList from "@/components/global/list/EditList.vue";
 import {vTapInput} from "@/utils/vTabInput.ts";
+import Details from "@/components/global/common/Details.vue";
 
 const propertyBody = defineModel<PropertyBody | undefined>({
-	required: true
+    required: true
 })
 
 const init = () => {
-	propertyBody.value = {
-		imports: [],
-		codeBlock: "",
-	}
+    propertyBody.value = {
+        imports: [],
+        codeBlock: "",
+    }
 }
 
 const clear = () => {
-	propertyBody.value = undefined
+    propertyBody.value = undefined
 }
 </script>
 
 <template>
-	<el-button v-if="!propertyBody" @click="init" :icon="Plus"/>
+    <el-button v-if="!propertyBody" @click="init" :icon="Plus"/>
 
-	<div v-else style="width: 100%;">
-        <el-button @click="clear" :icon="Delete"/><br>
+    <div v-else style="width: 100%;">
+        <el-button @click="clear" :icon="Delete"/>
+        <br>
 
-        <el-text>imports</el-text>
-
-		<EditList
-			v-model:lines="propertyBody.imports"
-			:default-line="''"
-            :json-schema-validate="() => true"
-            :labelLine="false"
-        >
-            <template #default="{index}">
-                <el-input
-                    v-tap-input
-                    v-model="propertyBody.imports[index]"
-                    class="code-input"
-                />
+        <Details open>
+            <template #title>
+                <el-text>imports</el-text>
             </template>
-        </EditList>
 
-        <el-text>body</el-text>
+            <EditList
+                v-model:lines="propertyBody.imports"
+                :default-line="''"
+                :json-schema-validate="() => true"
+                :labelLine="false"
+            >
+                <template #default="{index}">
+                    import
+                    <el-input
+                        v-tap-input
+                        v-model="propertyBody.imports[index]"
+                        class="code-input"
+                    />
+                </template>
+            </EditList>
+        </Details>
 
         <div>
             <el-input
@@ -54,5 +59,5 @@ const clear = () => {
                 class="code-input"
             />
         </div>
-	</div>
+    </div>
 </template>

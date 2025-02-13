@@ -164,7 +164,10 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
                     tempLines.splice(insertIndex, 0, value)
                     insertLength = 1
                 } else {
-                    sendI18nMessage({key: 'MESSAGE_clipBoard_cannotDirectLoad_validateError', args: [validateErrorsMap]}, 'error', validateErrorsMap)
+                    sendI18nMessage({
+                        key: 'MESSAGE_clipBoard_cannotDirectLoad_validateError',
+                        args: [validateErrorsMap]
+                    }, 'error', validateErrorsMap)
                     return
                 }
 
@@ -422,7 +425,16 @@ defineExpose({
                 </slot>
             </template>
 
-            <slot name="tailLines" :columns="columns" :lines="lines" :gap="gap" :height="height">
+            <slot
+                name="tailLines"
+                :columns="columns"
+                :lines="lines"
+                :gap="gap"
+                :height="height"
+                :getDefaultLine="getDefaultLine"
+                :handleAddLine="handleAddLine"
+                :handleRemoveLine="handleRemoveLine"
+            >
                 <div style="margin: auto; width: min(40%, 6em);">
                     <el-button :icon="Plus" style="width: 100%" @click="handleAddLine()"/>
                 </div>
