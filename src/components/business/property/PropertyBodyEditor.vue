@@ -31,6 +31,7 @@ const clear = () => {
 		<EditList
 			v-model:lines="propertyBody.imports"
 			:default-line="''"
+            :json-schema-validate="() => true"
             :labelLine="false"
         >
             <template #default="{index}">
@@ -44,12 +45,14 @@ const clear = () => {
 
         <el-text>body</el-text>
 
-		<el-input
-            v-tap-input
-            v-model="propertyBody.codeBlock"
-            type="textarea"
-            autosize
-            class="code-input"
-        />
+        <div>
+            <el-input
+                v-tap-input
+                v-model="propertyBody.codeBlock"
+                type="textarea"
+                autosize
+                class="code-input"
+            />
+        </div>
 	</div>
 </template>

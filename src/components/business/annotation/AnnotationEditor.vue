@@ -15,6 +15,7 @@ const annotationWithImports = defineModel<AnnotationWithImports>({
         <EditList
             v-model:lines="annotationWithImports.imports"
             :default-line="''"
+            :json-schema-validate="() => true"
             :labelLine="false"
         >
             <template #default="{index}">
@@ -31,6 +32,7 @@ const annotationWithImports = defineModel<AnnotationWithImports>({
         <EditList
             v-model:lines="annotationWithImports.annotations"
             :default-line="''"
+            :json-schema-validate="() => true"
             :labelLine="false"
         >
             <template #default="{index}">

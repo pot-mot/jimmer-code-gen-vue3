@@ -111,6 +111,8 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 
     if (e.key === 'Delete') {
         e.preventDefault()
+        e.stopPropagation()
+        e.stopImmediatePropagation()
         cleanSelection()
         emits('delete', selectedItems)
         lines.value = unselectedItems
@@ -119,15 +121,24 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
     if (e.ctrlKey || e.metaKey) {
         if (e.key === 'c') {
             e.preventDefault()
+            e.stopPropagation()
+            e.stopImmediatePropagation()
             await navigator.clipboard.writeText(JSON.stringify(selectedItems))
         } else if (e.key === 'x') {
             e.preventDefault()
+            e.stopPropagation()
+            e.stopImmediatePropagation()
             await navigator.clipboard.writeText(JSON.stringify(selectedItems))
             cleanSelection()
             emits('delete', selectedItems)
             lines.value = unselectedItems
         } else if (e.key === 'v') {
+            if (props.jsonSchemaValidate === undefined) return
+            const jsonSchemaValidate = props.jsonSchemaValidate
+
             e.preventDefault()
+            e.stopPropagation()
+            e.stopImmediatePropagation()
             const text = await navigator.clipboard.readText()
             try {
                 const value = jsonParseThenConvertNullToUndefined(text)
@@ -142,13 +153,13 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
                 if (
                     Array.isArray(value) &&
                     value.filter((item, index) => {
-                        return props.jsonSchemaValidate?.(item, (e) => validateErrorsMap.set(index, e)) ?? true
+                        return jsonSchemaValidate(item, (e) => validateErrorsMap.set(index, e))
                     }).length === value.length
                 ) {
                     props.beforePaste(value)
                     tempLines.splice(insertIndex, 0, ...value)
                     insertLength = value.length
-                } else if (props.jsonSchemaValidate?.(value, (e) => validateErrorsMap.set(0, e)) ?? true) {
+                } else if (jsonSchemaValidate(value, (e) => validateErrorsMap.set(0, e))) {
                     props.beforePaste([value])
                     tempLines.splice(insertIndex, 0, value)
                     insertLength = 1
@@ -174,6 +185,8 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 
     if (e.key === 'ArrowUp') {
         e.preventDefault()
+        e.stopPropagation()
+        e.stopImmediatePropagation()
         let tempLines = getTempLines()
         const newSelectIndexes: Set<number> = new Set
 
@@ -199,6 +212,8 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
 
     if (e.key === 'ArrowDown') {
         e.preventDefault()
+        e.stopPropagation()
+        e.stopImmediatePropagation()
         let tempLines = getTempLines()
         const newSelectIndexes: Set<number> = new Set
 

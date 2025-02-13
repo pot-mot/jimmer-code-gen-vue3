@@ -302,8 +302,8 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
         return `An error [${JSON.stringify(error)}] occurred while fetching [${fetchUrl}]`;
     },
 
-    MESSAGE_clipBoard_cannotDirectLoad: "Data in the Clipboard cannot be directly Loaded into Graph",
-    MESSAGE_clipBoard_cannotDirectLoad_validateError: (errors: any) => `Data in the Clipboard cannot be directly Loaded into Graph\nReason: ${JSON.stringify(errors)}`,
+    MESSAGE_clipBoard_cannotDirectLoad: "Data in the Clipboard cannot be directly Loaded",
+    MESSAGE_clipBoard_cannotDirectLoad_validateError: (errors: any) => `Data in the Clipboard cannot be directly Loaded\nReason: ${JSON.stringify(errors)}`,
 
     LABEL_OPERATION: "Operation",
     LABEL_CREATE_AT: "Create at",
