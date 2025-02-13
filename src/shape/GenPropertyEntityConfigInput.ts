@@ -30,16 +30,6 @@ const GenPropertyEntityConfigInputSchema = {
         "GenPropertyEntityConfigInput": {
             "description": "生成属性",
             "properties": {
-                "associationType": {
-                    "description": "关联类型",
-                    "enum": [
-                        "MANY_TO_MANY",
-                        "MANY_TO_ONE",
-                        "ONE_TO_MANY",
-                        "ONE_TO_ONE"
-                    ],
-                    "type": "string"
-                },
                 "body": {
                     "$ref": "#/definitions/PropertyBody",
                     "description": "属性方法体"
@@ -48,33 +38,9 @@ const GenPropertyEntityConfigInputSchema = {
                     "description": "属性注释",
                     "type": "string"
                 },
-                "dissociateAnnotation": {
-                    "description": "脱钩注解",
-                    "type": "string"
-                },
                 "enumId": {
                     "description": "生成枚举 ID 视图",
                     "type": "number"
-                },
-                "generatedId": {
-                    "description": "是否是生成式 ID",
-                    "type": "boolean"
-                },
-                "generatedIdAnnotation": {
-                    "$ref": "#/definitions/AnnotationWithImports",
-                    "description": "生成 ID 注解"
-                },
-                "idProperty": {
-                    "description": "是否 ID 属性",
-                    "type": "boolean"
-                },
-                "idView": {
-                    "description": "是否为 ID 视图属性",
-                    "type": "boolean"
-                },
-                "idViewTarget": {
-                    "description": "ID 视图目标",
-                    "type": "string"
                 },
                 "inDetailView": {
                     "description": "是否在详情视图DTO中",
@@ -112,48 +78,13 @@ const GenPropertyEntityConfigInputSchema = {
                     "description": "是否在修改入参DTO中",
                     "type": "boolean"
                 },
-                "inputNotNull": {
-                    "description": "输入非空",
-                    "type": "boolean"
-                },
-                "joinColumnMetas": {
-                    "description": "关联列注解",
-                    "items": {
-                        "$ref": "#/definitions/JoinColumnMeta"
-                    },
-                    "type": "array"
-                },
-                "joinTableMeta": {
-                    "$ref": "#/definitions/JoinTableMeta",
-                    "description": "关联表注解"
-                },
-                "keyGroup": {
-                    "description": "业务键组",
-                    "type": "string"
-                },
-                "keyProperty": {
-                    "description": "是否为业务键属性",
-                    "type": "boolean"
-                },
                 "listType": {
                     "description": "是否列表",
                     "type": "boolean"
                 },
-                "logicalDelete": {
-                    "description": "是否为逻辑删除属性",
-                    "type": "boolean"
-                },
-                "logicalDeletedAnnotation": {
-                    "$ref": "#/definitions/AnnotationWithImports",
-                    "description": "逻辑删除注解"
-                },
                 "longAssociation": {
                     "description": "是否为长关联",
                     "type": "boolean"
-                },
-                "mappedBy": {
-                    "description": "映射镜像",
-                    "type": "string"
                 },
                 "name": {
                     "description": "属性名",
@@ -196,13 +127,14 @@ const GenPropertyEntityConfigInputSchema = {
                 "typeNotNull": {
                     "description": "是否非空",
                     "type": "boolean"
+                },
+                "typeTableId": {
+                    "description": "类型对应表 ID 视图",
+                    "type": "number"
                 }
             },
             "required": [
                 "comment",
-                "generatedId",
-                "idProperty",
-                "idView",
                 "inDetailView",
                 "inInsertInput",
                 "inListView",
@@ -212,9 +144,7 @@ const GenPropertyEntityConfigInputSchema = {
                 "inShortAssociationView",
                 "inSpecification",
                 "inUpdateInput",
-                "keyProperty",
                 "listType",
-                "logicalDelete",
                 "longAssociation",
                 "name",
                 "orderKey",
@@ -223,69 +153,6 @@ const GenPropertyEntityConfigInputSchema = {
                 "remark",
                 "type",
                 "typeNotNull"
-            ],
-            "type": "object"
-        },
-        "JoinColumnMeta": {
-            "properties": {
-                "foreignKeyType": {
-                    "enum": [
-                        "AUTO",
-                        "FAKE",
-                        "REAL"
-                    ],
-                    "type": "string"
-                },
-                "joinColumnName": {
-                    "type": "string"
-                },
-                "referencedColumnName": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "joinColumnName"
-            ],
-            "type": "object"
-        },
-        "JoinTableMeta": {
-            "properties": {
-                "columnNamePairs": {
-                    "items": {
-                        "$ref": "#/definitions/Pair<string,string>"
-                    },
-                    "type": "array"
-                },
-                "foreignKeyType": {
-                    "enum": [
-                        "AUTO",
-                        "FAKE",
-                        "REAL"
-                    ],
-                    "type": "string"
-                },
-                "tableName": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "columnNamePairs",
-                "tableName"
-            ],
-            "type": "object"
-        },
-        "Pair<string,string>": {
-            "properties": {
-                "first": {
-                    "type": "string"
-                },
-                "second": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "first",
-                "second"
             ],
             "type": "object"
         },

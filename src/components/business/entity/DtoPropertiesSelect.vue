@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import {GenEntityDetailView_TargetOf_properties,} from "@/api/__generated/model/static"
+import {GenEntityDetailView_TargetOf_properties} from "@/api/__generated/model/static"
 import {computed} from "vue"
 import Comment from "@/components/global/common/Comment.vue";
-import {useI18nStore} from "@/store/i18n/i18nStore.ts";
-
-const i18nStore = useI18nStore()
 
 type PropertyOption = Pick<GenEntityDetailView_TargetOf_properties,
     'name' |
     'comment' |
-    'longAssociation' |
     'inListView' |
     'inDetailView' |
     'inOptionView' |
@@ -40,9 +36,6 @@ const handlePropertiesChange = (selectProperties: Array<PropertyOption>) => {
         it[props.propName] = selectProperties.includes(it);
     })
 }
-
-const stringifyPropertyInfo = (property: PropertyOption): string =>
-    (property.longAssociation ? `[${i18nStore.translate('LABEL_EntityBusiness_DTO_LongInput')}]` : '')
 </script>
 
 <template>
@@ -54,7 +47,6 @@ const stringifyPropertyInfo = (property: PropertyOption): string =>
     >
         <template #label="{value}">
             {{ value.name }}
-            {{ stringifyPropertyInfo(value) }}
         </template>
 
         <el-option
@@ -64,7 +56,6 @@ const stringifyPropertyInfo = (property: PropertyOption): string =>
         >
             {{ property.name }}
             <Comment :comment="property.comment"/>
-            {{ stringifyPropertyInfo(property) }}
         </el-option>
     </el-select>
 </template>

@@ -45,6 +45,7 @@ export type {GenModelView_TargetOf_enums_TargetOf_items} from './GenModelView_Ta
 export type {GenPropertyEntityConfigInput} from './GenPropertyEntityConfigInput';
 export type {GenPropertyModelView} from './GenPropertyModelView';
 export type {GenPropertyModelView_TargetOf_enum} from './GenPropertyModelView_TargetOf_enum';
+export type {GenPropertyModelView_TargetOf_typeEntity} from './GenPropertyModelView_TargetOf_typeEntity';
 export type {GenSchemaPreview} from './GenSchemaPreview';
 export type {GenSchemaView} from './GenSchemaView';
 export type {GenTableColumnsView} from './GenTableColumnsView';

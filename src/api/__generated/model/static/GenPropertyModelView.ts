@@ -1,9 +1,8 @@
-import type {AssociationType, PropertySpecialFormType} from '../enums/';
+import type {PropertySpecialFormType} from '../enums/';
 import type {
     AnnotationWithImports, 
     GenPropertyModelView_TargetOf_enum, 
-    JoinColumnMeta, 
-    JoinTableMeta, 
+    GenPropertyModelView_TargetOf_typeEntity, 
     PropertyBody
 } from './';
 
@@ -40,69 +39,9 @@ export interface GenPropertyModelView {
      */
     typeNotNull: boolean;
     /**
-     * 是否 ID 属性
-     */
-    idProperty: boolean;
-    /**
-     * 是否是生成式 ID
-     */
-    generatedId: boolean;
-    /**
-     * 生成 ID 注解
-     */
-    generatedIdAnnotation?: AnnotationWithImports | undefined;
-    /**
-     * 是否为业务键属性
-     */
-    keyProperty: boolean;
-    /**
-     * 业务键组
-     */
-    keyGroup?: string | undefined;
-    /**
-     * 是否为逻辑删除属性
-     */
-    logicalDelete: boolean;
-    /**
-     * 逻辑删除注解
-     */
-    logicalDeletedAnnotation?: AnnotationWithImports | undefined;
-    /**
-     * 是否为 ID 视图属性
-     */
-    idView: boolean;
-    /**
-     * ID 视图目标
-     */
-    idViewTarget?: string | undefined;
-    /**
-     * 关联类型
-     */
-    associationType?: AssociationType | undefined;
-    /**
      * 是否为长关联
      */
     longAssociation: boolean;
-    /**
-     * 映射镜像
-     */
-    mappedBy?: string | undefined;
-    /**
-     * 输入非空
-     */
-    inputNotNull?: boolean | undefined;
-    /**
-     * 关联列注解
-     */
-    joinColumnMetas?: Array<JoinColumnMeta> | undefined;
-    /**
-     * 关联表注解
-     */
-    joinTableMeta?: JoinTableMeta | undefined;
-    /**
-     * 脱钩注解
-     */
-    dissociateAnnotation?: string | undefined;
     /**
      * 其他注解
      */
@@ -163,4 +102,8 @@ export interface GenPropertyModelView {
      * 生成枚举
      */
     enum?: GenPropertyModelView_TargetOf_enum | undefined;
+    /**
+     * 对应实体
+     */
+    typeEntity?: GenPropertyModelView_TargetOf_typeEntity | undefined;
 }
