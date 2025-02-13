@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import AnnotationNullableEditor from "@/components/business/annotation/AnnotationNullableEditor.vue";
-import {
-    GenEntityDetailView_TargetOf_properties,
-    IdName
-} from "@/api/__generated/model/static";
+import {GenEntityDetailView_TargetOf_properties, IdName} from "@/api/__generated/model/static";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {stringifyPropertyType} from "@/components/business/property/stringifyPropertyType.ts";
 import {computed} from "vue";
+import {AssociationType} from "@/api/__generated/model/enums";
 
 const i18nStore = useI18nStore()
 
@@ -19,12 +17,25 @@ const emits = defineEmits<{
     (event: "click-entity", entity: IdName): void
 }>()
 
+const associationTypeToAnnotation = (associationType: AssociationType): string => {
+    switch (associationType) {
+        case "MANY_TO_MANY":
+            return "@ManyToMany"
+        case "MANY_TO_ONE":
+            return "@ManyToOne"
+        case "ONE_TO_MANY":
+            return "@OneToMany"
+        case "ONE_TO_ONE":
+            return "@OneToOne"
+    }
+}
+
 const propertyTags = computed<string[]>(() => {
     const data: Pick<GenEntityDetailView_TargetOf_properties,
         'idProperty' | 'generatedId' | 'generatedIdAnnotation' |
         'logicalDelete' | 'logicalDeletedAnnotation' |
         'keyProperty' | 'keyGroup' |
-        'associationType' | 'idView'
+        'associationType' | 'mappedBy' | 'idView' | 'idViewTarget'
     > = property.value
 
     const tags: string[] = []
@@ -32,12 +43,12 @@ const propertyTags = computed<string[]>(() => {
     if (data.idProperty) {
         if (data.generatedId) {
             if (data.generatedIdAnnotation !== undefined) {
-                tags.push(`Id(${data.generatedIdAnnotation.annotations.join("\n")})`)
+                tags.push(`@Id\n${data.generatedIdAnnotation.annotations.join("\n")}`)
             } else {
-                tags.push("Id(generated)")
+                tags.push("@Id(generated)")
             }
         } else {
-            tags.push("Id")
+            tags.push("@Id")
         }
     }
 
@@ -45,24 +56,29 @@ const propertyTags = computed<string[]>(() => {
         if (data.logicalDeletedAnnotation !== undefined) {
             tags.push(data.logicalDeletedAnnotation.annotations.join("\n"))
         } else {
-            tags.push("LogicalDelete")
+            tags.push("@LogicalDeleted")
         }
     }
 
     if (data.keyProperty) {
         if (data.keyGroup !== undefined) {
-            tags.push(`Key(${data.keyGroup})`)
+            tags.push(`@Key(${data.keyGroup})`)
         } else {
-            tags.push("Key")
+            tags.push("@Key")
         }
     }
 
     if (data.associationType !== undefined) {
-        tags.push(data.associationType)
-    }
-
-    if (data.idView) {
-        tags.push("IdView")
+        if (data.idView) {
+            if (data.idViewTarget !== undefined) {
+                tags.push(`@IdView ${data.idViewTarget}`)
+            } else {
+                tags.push("@IdView")
+            }
+        } else {
+            tags.push(associationTypeToAnnotation(data.associationType) +
+                (data.mappedBy !== undefined ? `\n\tmappedBy ${data.mappedBy}` : ''))
+        }
     }
 
     return tags
@@ -155,6 +171,7 @@ const propertyTags = computed<string[]>(() => {
     border-radius: var(--el-border-radius-base);
     cursor: default;
     font-size: 0.5em;
+    white-space: pre;
     color: var(--el-color-info)
 }
 
