@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {computed, ref} from 'vue'
 import CodePreview from "../../../global/code/CodePreview.vue";
-import {GenerateFile, GenerateResult, TableEntityNotNullPair} from "@/api/__generated/model/static";
+import {GenerateFile} from "@/api/__generated/model/static";
 import LeftRightLayout from "@/components/global/layout/LeftRightLayout.vue";
 import {Pane, Splitpanes} from 'splitpanes'
 import 'splitpanes/dist/splitpanes.css'
@@ -12,15 +12,15 @@ import DownloadIcon from "@/components/global/icons/download/DownloadIcon.vue";
 import DownloadFileIcon from "@/components/global/icons/download/DownloadFileIcon.vue";
 import DownloadWithFilterIcon from "@/components/global/icons/download/DownloadWithFilterIcon.vue";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
 
 const i18nStore = useI18nStore()
 
-interface MultiCodePreviewProps {
-    codes: GenerateResult,
-    showLineCounts?: boolean
-}
+const store = useMultiCodePreviewStore()
 
-const props = withDefaults(defineProps<MultiCodePreviewProps>(), {
+withDefaults(defineProps<{
+    showLineCounts?: boolean
+}>(), {
     showLineCounts: true
 })
 
@@ -29,14 +29,6 @@ const emits = defineEmits<{
     (event: "downloadFiles", files: Array<GenerateFile>): void
 }>()
 
-const files = ref<Array<GenerateFile>>([])
-const paths = ref<Array<string>>([])
-
-const handleFiltered = (filteredFiles: Array<GenerateFile>) => {
-    files.value = filteredFiles
-    paths.value = filteredFiles.map(it => it.path)
-}
-
 const currentPath = ref<string>()
 
 const handleFileClick = (path: string) => {
@@ -44,7 +36,7 @@ const handleFileClick = (path: string) => {
 }
 
 const currentFile = computed(() =>
-    props.codes.files.find(it => it.path === currentPath.value)
+    store.filteredFiles.find(it => it.path === currentPath.value)
 )
 
 const currentLanguage = computed<string>(() => {
@@ -56,47 +48,30 @@ const currentLanguage = computed<string>(() => {
     }
 })
 
-const tableIdMap = computed(() => {
-    const map = new Map<number, TableEntityNotNullPair>
-    for (const pair of props.codes.tableEntityPairs) {
-        map.set(pair.table.id, pair)
-    }
-    return map
-})
-
-const entityIdMap = computed(() => {
-    const map = new Map<number, TableEntityNotNullPair>
-    for (const pair of props.codes.tableEntityPairs) {
-        map.set(pair.entity.id, pair)
-    }
-    return map
-})
-
 const handleDownloadCurrent = () => {
     if (currentFile.value !== undefined)
         emits("downloadFile", currentFile.value)
 }
 
 const handleDownloadFiltered = () => {
-    emits("downloadFiles", files.value)
+    emits("downloadFiles", store.filteredFiles)
 }
 
 const handleDownloadAll = () => {
-    emits("downloadFiles", props.codes.files)
+    emits("downloadFiles", store.allFiles)
 }
+
+const paths = computed(() => store.filteredFiles.map(it => it.path))
 </script>
 
 <template>
-    <LeftRightLayout
-        v-if="codes && codes.files.length > 0"
-        :left-size="20"
-    >
+    <LeftRightLayout :left-size="20">
         <template #left>
             <Splitpanes horizontal>
                 <Pane style="overflow-y: scroll;" size="13em">
                     <GenerateFileFilter
-                        :codes="codes"
-                        @filtered="handleFiltered"
+                        v-model="store.filterData"
+                        :table-entity-pair-options="store.codes.tableEntityPairs"
                     />
                 </Pane>
 
@@ -115,8 +90,8 @@ const handleDownloadAll = () => {
                 <Pane style="overflow-y: scroll;" size="3em">
                     <GenerateFileMenu
                         :file="currentFile"
-                        :table-id-map="tableIdMap"
-                        :entity-id-map="entityIdMap"
+                        :table-id-map="store.tableIdMap"
+                        :entity-id-map="store.entityIdMap"
                     />
                 </Pane>
 
@@ -131,7 +106,7 @@ const handleDownloadAll = () => {
 
             <div class="code-download-button">
                 <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_downloadFiltered')"
-                            v-if="codes.files.length !== paths.length"
+                            v-if="store.filteredFiles.length !== store.allFiles.length"
                 >
                     <el-button
                         :icon="DownloadWithFilterIcon"
@@ -162,8 +137,6 @@ const handleDownloadAll = () => {
             </div>
         </template>
     </LeftRightLayout>
-
-    <el-empty v-else/>
 </template>
 
 <style scoped>

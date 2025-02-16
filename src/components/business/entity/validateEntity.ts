@@ -1,34 +1,18 @@
 import {
     EntityModelBusinessInput,
-    EntityModelBusinessView,
+    EntityModelBusinessView, type GenEntityConfigInput,
     GenEntityConfigInput_TargetOf_properties,
     GenPropertyEntityConfigInput
 } from "@/api/__generated/model/static";
 import {MainLocaleKeyParam} from "@/i18n";
 import {DeepReadonly} from "vue";
 
-export const validateEntity = (
-    input: DeepReadonly<EntityModelBusinessInput>,
-    otherEntities: DeepReadonly<Array<EntityModelBusinessView>>,
-): MainLocaleKeyParam[] => {
-    const entity = input.entity
-    
+const validateEntityAnnotation = (entity: DeepReadonly<GenEntityConfigInput>) => {
     const messageList: MainLocaleKeyParam[] = []
-
-    if (entity.name.length === 0) {
-        messageList.push("VALIDATE_Entity_nameCannotBeEmpty")
-    }
-
-    for (const otherEntity of otherEntities) {
-        if (otherEntity.tableConvertedEntity.name === entity.name) {
-            messageList.push({key: "VALIDATE_Entity_nameCannotBeDuplicate", args: [entity.name]})
-            break
-        }
-    }
-
-    if (entity.otherAnnotation) {
-        const otherAnnotation = entity.otherAnnotation
-        
+    
+    const otherAnnotation = entity.otherAnnotation
+    
+    if (otherAnnotation !== undefined) {
         const entityOtherAnnotationImportSet = new Set<string>()
         for (const importLine of otherAnnotation.imports) {
             if (importLine.length === 0) {
@@ -55,8 +39,99 @@ export const validateEntity = (
             } else {
                 entityOtherAnnotationsSet.add(annotation)
             }
+        }   
+    }
+    
+    return messageList
+}
+
+const validatePropertyAnnotation = (property: DeepReadonly<GenEntityConfigInput_TargetOf_properties | GenPropertyEntityConfigInput>) => {
+    const messageList: MainLocaleKeyParam[] = []
+    
+
+    for (const it of [
+        "generatedIdAnnotation" in property ? property["generatedIdAnnotation"] : undefined,
+        "logicalDeletedAnnotation" in property ? property["logicalDeletedAnnotation"] : undefined,
+        property.otherAnnotation
+    ]) {
+        if (it === undefined) continue
+
+        const propertyOtherAnnotationImportSet = new Set<string>()
+        for (const importLine of it.imports) {
+            if (importLine.length === 0) {
+                messageList.push({key: "VALIDATE_Entity_propertyAnnotation_importLineCannotBeEmpty", args: [property.name]})
+                continue
+            }
+
+            if (propertyOtherAnnotationImportSet.has(importLine)) {
+                messageList.push({key: "VALIDATE_Entity_propertyAnnotation_importLineCannotBeDuplicate", args: [property.name, importLine]})
+            } else {
+                propertyOtherAnnotationImportSet.add(importLine)
+            }
+        }
+
+        const propertyOtherAnnotationsSet = new Set<string>()
+        for (const annotation of it.annotations) {
+            if (annotation.length === 0) {
+                messageList.push({key: "VALIDATE_Entity_propertyAnnotation_annotationCannotBeEmpty", args: [property.name]})
+                continue
+            }
+
+            if (propertyOtherAnnotationsSet.has(annotation)) {
+                messageList.push({key: "VALIDATE_Entity_propertyAnnotation_annotationCannotBeDuplicate", args: [property.name, annotation]})
+            } else {
+                propertyOtherAnnotationsSet.add(annotation)
+            }
+        }   
+    }
+    
+    return messageList
+}
+
+const validatePropertyBody = (property: DeepReadonly<GenPropertyEntityConfigInput>) => {
+    const messageList: MainLocaleKeyParam[] = []
+    
+    const body = property.body
+    
+    if (body !== undefined) {
+        const propertyOtherAnnotationImportSet = new Set<string>()
+        for (const importLine of body.imports) {
+            if (importLine.length === 0) {
+                messageList.push({key: "VALIDATE_Entity_propertyBody_importLineCannotBeEmpty", args: [property.name]})
+                continue
+            }
+
+            if (propertyOtherAnnotationImportSet.has(importLine)) {
+                messageList.push({key: "VALIDATE_Entity_propertyBody_importLineCannotBeDuplicate", args: [property.name, importLine]})
+            } else {
+                propertyOtherAnnotationImportSet.add(importLine)
+            }
+        }   
+    }
+    
+    return messageList
+}
+
+export const validateEntity = (
+    input: DeepReadonly<EntityModelBusinessInput>,
+    otherEntities: DeepReadonly<Array<EntityModelBusinessView>>,
+): MainLocaleKeyParam[] => {
+    const entity = input.entity
+    
+    const messageList: MainLocaleKeyParam[] = []
+
+    if (entity.name.length === 0) {
+        messageList.push("VALIDATE_Entity_nameCannotBeEmpty")
+    }
+
+    for (const otherEntity of otherEntities) {
+        if (otherEntity.tableConvertedEntity.name === entity.name) {
+            messageList.push({key: "VALIDATE_Entity_nameCannotBeDuplicate", args: [entity.name]})
+            break
         }
     }
+
+    messageList.push(...validateEntityAnnotation(entity))
 
     const propertyNameSet = new Set<string>()
     const allProperties: DeepReadonly<Array<GenEntityConfigInput_TargetOf_properties | GenPropertyEntityConfigInput>> = [
@@ -78,37 +153,7 @@ export const validateEntity = (
             propertyNameSet.add(property.name)
         }
 
-        if (property.otherAnnotation) {
-            const otherAnnotation = property.otherAnnotation
-
-            const propertyOtherAnnotationImportSet = new Set<string>()
-            for (const importLine of otherAnnotation.imports) {
-                if (importLine.length === 0) {
-                    messageList.push({key: "VALIDATE_Entity_propertyOtherAnnotation_importLineCannotBeEmpty", args: [property.name]})
-                    continue
-                }
-
-                if (propertyOtherAnnotationImportSet.has(importLine)) {
-                    messageList.push({key: "VALIDATE_Entity_propertyOtherAnnotation_importLineCannotBeDuplicate", args: [property.name, importLine]})
-                } else {
-                    propertyOtherAnnotationImportSet.add(importLine)
-                }
-            }
-
-            const propertyOtherAnnotationsSet = new Set<string>()
-            for (const annotation of otherAnnotation.annotations) {
-                if (annotation.length === 0) {
-                    messageList.push({key: "VALIDATE_Entity_propertyOtherAnnotation_annotationCannotBeEmpty", args: [property.name]})
-                    continue
-                }
-
-                if (propertyOtherAnnotationsSet.has(annotation)) {
-                    messageList.push({key: "VALIDATE_Entity_propertyOtherAnnotation_annotationCannotBeDuplicate", args: [property.name, annotation]})
-                } else {
-                    propertyOtherAnnotationsSet.add(annotation)
-                }
-            }
-        }
+        messageList.push(...validatePropertyAnnotation(property))
     }
 
     for (const property of input.properties) {
@@ -116,26 +161,7 @@ export const validateEntity = (
             messageList.push({key: "VALIDATE_Entity_propertyTypeCannotBeEmpty", args: [property.name]})
         }
 
-        if (property.body) {
-            const body = property.body
-            const propertyOtherAnnotationImportSet = new Set<string>()
-            for (const importLine of body.imports) {
-                if (importLine.length === 0) {
-                    messageList.push({key: "VALIDATE_Entity_propertyBody_importLineCannotBeEmpty", args: [property.name]})
-                    continue
-                }
-
-                if (propertyOtherAnnotationImportSet.has(importLine)) {
-                    messageList.push({key: "VALIDATE_Entity_propertyBody_importLineCannotBeDuplicate", args: [property.name, importLine]})
-                } else {
-                    propertyOtherAnnotationImportSet.add(importLine)
-                }
-            }
-
-            if (body.codeBlock.length === 0) {
-                messageList.push({key: "VALIDATE_Entity_propertyBody_codeBlockCannotBeEmpty", args: [property.name]})
-            }
-        }
+        messageList.push(...validatePropertyBody(property))
     }
 
     return messageList

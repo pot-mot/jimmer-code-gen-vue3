@@ -19,6 +19,7 @@ import {
 import NoColumnPropertyConfig from "@/components/business/property/NoColumnPropertyConfig.vue";
 import HasColumnPropertyConfig from "@/components/business/property/HasColumnPropertyConfig.vue";
 import {validateGenPropertyEntityConfigInput} from "@/shape/GenPropertyEntityConfigInput.ts";
+import Comment from "@/components/global/common/Comment.vue";
 
 const i18nStore = useI18nStore()
 
@@ -64,31 +65,33 @@ const handleSubmit = async () => {
 
 <template>
     <el-form class="entity-form">
-        <el-row :gutter="12" style="line-height: 2em; padding-left: 1em; padding-bottom: 1em;">
+        <el-row :gutter="12" style="line-height: 2em; padding-left: 1em;">
             <el-col :span="24">
-                <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_otherAnnotation')">
-                    <AnnotationNullableEditor v-model="entity.otherAnnotation"/>
-                </el-form-item>
+                <AnnotationNullableEditor v-model="entity.otherAnnotation"/>
             </el-col>
 
             <el-col :span="12">
                 <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_name')">
-                    <div class="input-with-checkbox">
-                        <el-input v-model="entity.name" :disabled="!entity.overwriteName"/>
+                    <div class="input-with-overwrite">
                         <el-tooltip :content="i18nStore.translate('LABEL_EntityConfigForm_overwriteName')">
                             <el-checkbox v-model="entity.overwriteName"/>
                         </el-tooltip>
+
+                        <el-input v-if="entity.overwriteName" v-model="entity.name"/>
+                        <el-text v-else style="font-size: 1.1em;">{{ entity.name }}</el-text>
                     </div>
                 </el-form-item>
             </el-col>
 
             <el-col :span="12">
                 <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_comment')">
-                    <div class="input-with-checkbox">
-                        <el-input v-model="entity.comment" :disabled="!entity.overwriteComment"/>
+                    <div class="input-with-overwrite">
                         <el-tooltip :content="i18nStore.translate('LABEL_EntityConfigForm_overwriteComment')">
                             <el-checkbox v-model="entity.overwriteComment"/>
                         </el-tooltip>
+
+                        <el-input v-if="entity.overwriteComment" v-model="entity.comment"/>
+                        <Comment v-else style="font-size: 1em;" :comment="entity.comment"/>
                     </div>
                 </el-form-item>
             </el-col>
@@ -153,11 +156,11 @@ const handleSubmit = async () => {
     width: calc(100% - 0.5em);
 }
 
-.input-with-checkbox {
+.input-with-overwrite {
     width: 100%;
     display: grid;
     grid-gap: 0.6em;
-    grid-template-columns: calc(100% - 1.6em) 1em;
+    grid-template-columns: 1em calc(100% - 1.6em);
 }
 
 .has-column-property-config,

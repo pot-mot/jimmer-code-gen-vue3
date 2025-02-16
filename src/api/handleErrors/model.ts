@@ -32,6 +32,13 @@ export const handleModelError = (error: AllErrors & {family: "MODEL"}) => {
             }, "error", error)
             throw EXPECT_ERROR
 
+        case "SUB_ENTITY_NO_CURRENT_PATH":
+            sendI18nMessage({
+                key: "ErrorCode_MODEL__SUB_ENTITY_NO_CURRENT_PATH",
+                args: [error]
+            }, "error", error)
+            throw EXPECT_ERROR
+
         case "INDEX_REF_PROPERTY_NOT_FOUND":
             sendI18nMessage({
                 key: "ErrorCode_MODEL__INDEX_REF_PROPERTY_NOT_FOUND",

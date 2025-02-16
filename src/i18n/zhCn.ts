@@ -126,6 +126,12 @@ export const localeZhCn: ProjectLocale = {
   关联路径:
     ${error.properties.map(it => `【${formatIdName(it)}】`).join("\n    ")}`,
 
+    ErrorCode_MODEL__SUB_ENTITY_NO_CURRENT_PATH: (error: Errors["MODEL"]["SUB_ENTITY_NO_CURRENT_PATH"]) =>
+        `【子实体缺失当前路径】
+  实体【${formatIdName(error.entity)}】
+  关联路径:
+    ${error.pathProperties.map(it => `【${formatIdName(it)}】`).join("\n    ")}`,
+
     ErrorCode_MODEL__INDEX_REF_PROPERTY_NOT_FOUND: (error: Errors["MODEL"]["INDEX_REF_PROPERTY_NOT_FOUND"]) =>
         `【索引引用属性未找到】
   实体【${formatIdName(error.entity)}】
@@ -662,7 +668,6 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     LABEL_ColumnTypeForm_sizeAndPrecision: "长度精度",
     LABEL_ColumnTypeForm_mappedEnum: "映射枚举",
 
-    LABEL_EntityConfigForm_otherAnnotation: "注解",
     LABEL_EntityConfigForm_name: '名称',
     LABEL_EntityConfigForm_comment: '注释',
     LABEL_EntityConfigForm_remark: '备注',
@@ -671,11 +676,15 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     LABEL_EntityConfigForm_properties: "属性",
     LABEL_EntityConfigForm_businessConfig: "业务配置",
 
-    LABEL_EntityConfigForm_property_otherAnnotation: "注解",
+    LABEL_EntityConfigForm_property_generatedId: "生成 Id",
+    LABEL_EntityConfigForm_property_generatedIdAnnotation: "生成 Id 注解",
+    LABEL_EntityConfigForm_property_logicalDeletedAnnotation: "逻辑删除注解",
+    LABEL_EntityConfigForm_property_otherAnnotation: "额外注解",
     LABEL_EntityConfigForm_property_name: '名称',
     LABEL_EntityConfigForm_property_comment: '注释',
     LABEL_EntityConfigForm_property_remark: '备注',
     LABEL_EntityConfigForm_property_type: '类型',
+    LABEL_EntityConfigForm_property_listType: '列表类型',
     LABEL_EntityConfigForm_property_longAssociation: '长关联',
     LABEL_EntityConfigForm_property_body: '属性体',
     LABEL_EntityConfigForm_property_overwriteName: '覆盖自动生成名称',
@@ -691,13 +700,12 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     VALIDATE_Entity_propertyNameCannotBeEmpty: "属性名称不得为空",
     VALIDATE_Entity_propertyNameCannotBeDuplicate: (propertyName: string) => `属性名称【${propertyName}】不可重复`,
     VALIDATE_Entity_propertyTypeCannotBeEmpty: (propertyName: string) => `属性【${propertyName}】的类型不得为空`,
-    VALIDATE_Entity_propertyOtherAnnotation_importLineCannotBeEmpty: (propertyName: string) => `属性【${propertyName}】附加注解中的导入行不得为空`,
-    VALIDATE_Entity_propertyOtherAnnotation_importLineCannotBeDuplicate: (propertyName: string, importLine: string) => `属性【${propertyName}】附加注解中的导入行【${importLine}】重复`,
-    VALIDATE_Entity_propertyOtherAnnotation_annotationCannotBeEmpty: (propertyName: string) => `属性【${propertyName}】附加注解不得为空`,
-    VALIDATE_Entity_propertyOtherAnnotation_annotationCannotBeDuplicate: (propertyName: string, annotation: string) => `属性【${propertyName}】附加注解【${annotation}】重复`,
+    VALIDATE_Entity_propertyAnnotation_importLineCannotBeEmpty: (propertyName: string) => `属性【${propertyName}】附加注解中的导入行不得为空`,
+    VALIDATE_Entity_propertyAnnotation_importLineCannotBeDuplicate: (propertyName: string, importLine: string) => `属性【${propertyName}】附加注解中的导入行【${importLine}】重复`,
+    VALIDATE_Entity_propertyAnnotation_annotationCannotBeEmpty: (propertyName: string) => `属性【${propertyName}】附加注解不得为空`,
+    VALIDATE_Entity_propertyAnnotation_annotationCannotBeDuplicate: (propertyName: string, annotation: string) => `属性【${propertyName}】附加注解【${annotation}】重复`,
     VALIDATE_Entity_propertyBody_importLineCannotBeEmpty: (propertyName: string) => `属性【${propertyName}】体中的导入行不得为空`,
     VALIDATE_Entity_propertyBody_importLineCannotBeDuplicate: (propertyName: string, importLine: string) => `属性【${propertyName}】体中的导入行【${importLine}】重复`,
-    VALIDATE_Entity_propertyBody_codeBlockCannotBeEmpty: (propertyName: string) => `属性【${propertyName}】体中的代码块不得为空`,
 
     MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel: (idName: IdName) => `表【${formatIdName(idName)}】在当前模型中未找到`,
     MESSAGE_GenerateFileMenu_clickEntityNotFound: (idName: IdName) => `实体【${formatIdName(idName)}】未找到`,

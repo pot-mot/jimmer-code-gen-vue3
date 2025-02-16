@@ -126,6 +126,12 @@ export const localeEn: ProjectLocale = {
   Association Path:
     ${error.properties.map(it => `【${formatIdName(it)}】`).join("\n    ")}`,
 
+    ErrorCode_MODEL__SUB_ENTITY_NO_CURRENT_PATH: (error: Errors["MODEL"]["SUB_ENTITY_NO_CURRENT_PATH"]) =>
+        `【Sub Entity No Current Path】
+  Entity【${formatIdName(error.entity)}】
+  Association Path:
+    ${error.pathProperties.map(it => `【${formatIdName(it)}】`).join("\n    ")}`,
+
     ErrorCode_MODEL__INDEX_REF_PROPERTY_NOT_FOUND: (error: Errors["MODEL"]["INDEX_REF_PROPERTY_NOT_FOUND"]) =>
         `【Index Referenced Property Not Found】
   Entity【${formatIdName(error.entity)}】
@@ -662,7 +668,6 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     LABEL_ColumnTypeForm_sizeAndPrecision: "Size and Precision",
     LABEL_ColumnTypeForm_mappedEnum: "Mapped Enum",
 
-    LABEL_EntityConfigForm_otherAnnotation: "Annotation",
     LABEL_EntityConfigForm_name: 'Name',
     LABEL_EntityConfigForm_comment: 'Comment',
     LABEL_EntityConfigForm_remark: 'Remark',
@@ -671,11 +676,15 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     LABEL_EntityConfigForm_properties: "Properties",
     LABEL_EntityConfigForm_businessConfig: "Business Config",
 
-    LABEL_EntityConfigForm_property_otherAnnotation: "Annotation",
+    LABEL_EntityConfigForm_property_generatedId: "Generated Id",
+    LABEL_EntityConfigForm_property_generatedIdAnnotation: "Generated Id Annotation",
+    LABEL_EntityConfigForm_property_logicalDeletedAnnotation: "Logical Deleted Annotation",
+    LABEL_EntityConfigForm_property_otherAnnotation: "Other Annotation",
     LABEL_EntityConfigForm_property_name: 'Name',
     LABEL_EntityConfigForm_property_comment: 'Comment',
     LABEL_EntityConfigForm_property_remark: 'Remark',
     LABEL_EntityConfigForm_property_type: 'Type',
+    LABEL_EntityConfigForm_property_listType: 'List Type',
     LABEL_EntityConfigForm_property_longAssociation: 'Long Association',
     LABEL_EntityConfigForm_property_body: 'Body',
     LABEL_EntityConfigForm_property_overwriteName: 'Overwrite Name',
@@ -691,13 +700,12 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     VALIDATE_Entity_propertyNameCannotBeEmpty: "Property name cannot be empty",
     VALIDATE_Entity_propertyNameCannotBeDuplicate: (propertyName: string) => `Property name [${propertyName}] is duplicated`,
     VALIDATE_Entity_propertyTypeCannotBeEmpty: (propertyName: string) => `Property type of [${propertyName}] cannot be empty`,
-    VALIDATE_Entity_propertyOtherAnnotation_importLineCannotBeEmpty: (propertyName: string) => `Import line in other annotation of property [${propertyName}] cannot be empty`,
-    VALIDATE_Entity_propertyOtherAnnotation_importLineCannotBeDuplicate: (propertyName: string, importLine: string) => `Import line [${importLine}] in other annotation of property [${propertyName}] is duplicated`,
-    VALIDATE_Entity_propertyOtherAnnotation_annotationCannotBeEmpty: (propertyName: string) => `Annotation of property [${propertyName}] cannot be empty`,
-    VALIDATE_Entity_propertyOtherAnnotation_annotationCannotBeDuplicate: (propertyName: string, annotation: string) => `Annotation [${annotation}] of property [${propertyName}] is duplicated`,
+    VALIDATE_Entity_propertyAnnotation_importLineCannotBeEmpty: (propertyName: string) => `Import line in other annotation of property [${propertyName}] cannot be empty`,
+    VALIDATE_Entity_propertyAnnotation_importLineCannotBeDuplicate: (propertyName: string, importLine: string) => `Import line [${importLine}] in other annotation of property [${propertyName}] is duplicated`,
+    VALIDATE_Entity_propertyAnnotation_annotationCannotBeEmpty: (propertyName: string) => `Annotation of property [${propertyName}] cannot be empty`,
+    VALIDATE_Entity_propertyAnnotation_annotationCannotBeDuplicate: (propertyName: string, annotation: string) => `Annotation [${annotation}] of property [${propertyName}] is duplicated`,
     VALIDATE_Entity_propertyBody_importLineCannotBeEmpty: (propertyName: string) => `Import line in body of property [${propertyName}] cannot be empty`,
     VALIDATE_Entity_propertyBody_importLineCannotBeDuplicate: (propertyName: string, importLine: string) => `Import line [${importLine}] in body of property [${propertyName}] is duplicated`,
-    VALIDATE_Entity_propertyBody_codeBlockCannotBeEmpty: (propertyName: string) => `Code block in body of property [${propertyName}] cannot be empty`,
 
 
     MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel: (idName: IdName) => `Table [${formatIdName(idName)}] not found in Current Model`,

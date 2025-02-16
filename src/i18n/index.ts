@@ -53,6 +53,8 @@ type MainLocale = {
 
     ErrorCode_MODEL__LONG_ASSOCIATION_CIRCULAR_DEPENDENCE: (error: Errors["MODEL"]["LONG_ASSOCIATION_CIRCULAR_DEPENDENCE"]) => string
 
+    ErrorCode_MODEL__SUB_ENTITY_NO_CURRENT_PATH: (error: Errors["MODEL"]["SUB_ENTITY_NO_CURRENT_PATH"]) => string
+
     ErrorCode_MODEL__INDEX_REF_PROPERTY_NOT_FOUND: (error: Errors["MODEL"]["INDEX_REF_PROPERTY_NOT_FOUND"]) => string
 
     ErrorCode_MODEL__TREE_ENTITY_CANNOT_FOUND_PARENT_PROPERTY: (error: Errors["MODEL"]["TREE_ENTITY_CANNOT_FOUND_PARENT_PROPERTY"]) => string
@@ -480,7 +482,6 @@ type MainLocale = {
     LABEL_ColumnTypeForm_sizeAndPrecision: string
     LABEL_ColumnTypeForm_mappedEnum: string
 
-    LABEL_EntityConfigForm_otherAnnotation: string
     LABEL_EntityConfigForm_name: string
     LABEL_EntityConfigForm_comment: string
     LABEL_EntityConfigForm_remark: string
@@ -489,16 +490,20 @@ type MainLocale = {
     LABEL_EntityConfigForm_properties: string
     LABEL_EntityConfigForm_businessConfig: string
 
+    LABEL_EntityConfigForm_property_generatedId: string
+    LABEL_EntityConfigForm_property_generatedIdAnnotation: string
+    LABEL_EntityConfigForm_property_logicalDeletedAnnotation: string
     LABEL_EntityConfigForm_property_otherAnnotation: string
     LABEL_EntityConfigForm_property_name: string
+    LABEL_EntityConfigForm_property_overwriteName: string
     LABEL_EntityConfigForm_property_comment: string
+    LABEL_EntityConfigForm_property_overwriteComment: string
     LABEL_EntityConfigForm_property_remark: string
     LABEL_EntityConfigForm_property_type: string
+    LABEL_EntityConfigForm_property_listType: string
+    LABEL_EntityConfigForm_property_typeNotNull: string
     LABEL_EntityConfigForm_property_longAssociation: string
     LABEL_EntityConfigForm_property_body: string
-    LABEL_EntityConfigForm_property_overwriteName: string
-    LABEL_EntityConfigForm_property_overwriteComment: string
-    LABEL_EntityConfigForm_property_typeNotNull: string
 
     VALIDATE_Entity_nameCannotBeEmpty: string
     VALIDATE_Entity_nameCannotBeDuplicate: (entityName: string) => string
@@ -509,13 +514,12 @@ type MainLocale = {
     VALIDATE_Entity_propertyNameCannotBeEmpty: string
     VALIDATE_Entity_propertyTypeCannotBeEmpty: (propertyName: string) => string
     VALIDATE_Entity_propertyNameCannotBeDuplicate: (propertyName: string) => string
-    VALIDATE_Entity_propertyOtherAnnotation_importLineCannotBeEmpty: (propertyName: string) => string
-    VALIDATE_Entity_propertyOtherAnnotation_importLineCannotBeDuplicate: (propertyName: string, importLine: string) => string
-    VALIDATE_Entity_propertyOtherAnnotation_annotationCannotBeEmpty: (propertyName: string) => string
-    VALIDATE_Entity_propertyOtherAnnotation_annotationCannotBeDuplicate: (propertyName: string, annotation: string) => string
+    VALIDATE_Entity_propertyAnnotation_importLineCannotBeEmpty: (propertyName: string) => string
+    VALIDATE_Entity_propertyAnnotation_importLineCannotBeDuplicate: (propertyName: string, importLine: string) => string
+    VALIDATE_Entity_propertyAnnotation_annotationCannotBeEmpty: (propertyName: string) => string
+    VALIDATE_Entity_propertyAnnotation_annotationCannotBeDuplicate: (propertyName: string, annotation: string) => string
     VALIDATE_Entity_propertyBody_importLineCannotBeEmpty: (propertyName: string) => string
     VALIDATE_Entity_propertyBody_importLineCannotBeDuplicate: (propertyName: string, importLine: string) => string
-    VALIDATE_Entity_propertyBody_codeBlockCannotBeEmpty: (propertyName: string) => string
 
     MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel: (idName: IdName) => string
     MESSAGE_GenerateFileMenu_clickEntityNotFound: (idName: IdName) => string

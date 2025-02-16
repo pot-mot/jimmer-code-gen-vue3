@@ -17,7 +17,7 @@ export const entityFormTypeToBusinessInput = (entity: EntityFormType): EntityMod
     const noColumnProperties: Array<GenPropertyEntityConfigInput> = []
 
     entity.properties.forEach((it) => {
-        if ("columnId" in it) {
+        if ("columnId" in it && it["columnId"] !== undefined) {
             columnProperties.push(it)
         } else {
             noColumnProperties.push(it)

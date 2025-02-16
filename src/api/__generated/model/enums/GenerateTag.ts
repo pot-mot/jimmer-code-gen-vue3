@@ -12,19 +12,18 @@ export const GenerateTag_CONSTANTS = [
     'Rules', 
     'EnumView', 
     'EnumSelect', 
-    'EnumNullableSelect', 
     'IdSelect', 
-    'IdMultiSelect', 
     'Page', 
     'Form', 
     'FormDefault', 
-    'FormRules', 
     'FormType', 
+    'ViewForm', 
+    'QueryForm', 
     'AddForm', 
     'EditForm', 
-    'SubForm', 
+    'ViewTable', 
     'EditTable', 
-    'QueryForm', 
-    'Table'
+    'SubEdit', 
+    'SubView'
 ] as const;
 export type GenerateTag = typeof GenerateTag_CONSTANTS[number];

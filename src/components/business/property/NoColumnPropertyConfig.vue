@@ -3,6 +3,8 @@ import PropertyBodyEditor from "@/components/business/property/PropertyBodyEdito
 import AnnotationNullableEditor from "@/components/business/annotation/AnnotationNullableEditor.vue";
 import {GenPropertyEntityConfigInput} from "@/api/__generated/model/static";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+import LineItem from "@/components/global/line/LineItem.vue";
+import Line from "@/components/global/line/Line.vue";
 
 const i18nStore = useI18nStore()
 
@@ -14,29 +16,58 @@ const property = defineModel<GenPropertyEntityConfigInput>({
 <template>
     <el-row :gutter="12">
         <el-col :span="24">
-            <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_otherAnnotation')">
-                <AnnotationNullableEditor v-model="property.otherAnnotation"/>
-            </el-form-item>
+            <AnnotationNullableEditor v-model="property.otherAnnotation"/>
         </el-col>
 
-        <el-col :span="8">
+        <el-col :span="12">
             <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_name')">
                 <el-input v-model="property.name"/>
             </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="12">
             <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_comment')">
                 <el-input v-model="property.comment"/>
             </el-form-item>
         </el-col>
 
-        <el-col :span="8">
+        <el-col :span="24">
             <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_type')">
-                <div class="input-with-checkbox">
-                    <el-input v-model="property.type"/>
-                    <el-tooltip
-                        :content="i18nStore.translate('LABEL_EntityConfigForm_property_typeNotNull')">
+                <div class="type-config">
+                    <Line>
+                        <LineItem v-if="property.listType" span="auto">
+                            <el-text>{{ "List<" }}</el-text>
+                        </LineItem>
+
+                        <LineItem>
+                            <el-input v-model="property.type" v-if="!property.typeTableId && !property.enumId"/>
+                        </LineItem>
+
+                        <LineItem>
+                            <el-select v-model="property.typeTableId" v-if="!property.enumId" clearable>
+
+                            </el-select>
+                        </LineItem>
+
+                        <LineItem>
+                            <el-select v-model="property.enumId" v-if="!property.typeTableId" clearable>
+
+                            </el-select>
+                        </LineItem>
+
+                        <LineItem v-if="!property.typeNotNull && !property.listType" span="auto">
+                            <el-text>{{ "?" }}</el-text>
+                        </LineItem>
+                        <LineItem v-if="property.listType" span="auto">
+                            <el-text>{{ ">" }}</el-text>
+                        </LineItem>
+                    </Line>
+
+                    <el-tooltip :content="i18nStore.translate('LABEL_EntityConfigForm_property_typeNotNull')">
                         <el-checkbox v-model="property.typeNotNull"/>
+                    </el-tooltip>
+
+                    <el-tooltip :content="i18nStore.translate('LABEL_EntityConfigForm_property_listType')">
+                        <el-checkbox v-model="property.listType"/>
                     </el-tooltip>
                 </div>
             </el-form-item>
@@ -66,5 +97,12 @@ const property = defineModel<GenPropertyEntityConfigInput>({
 .el-col .el-form-item {
     line-height: 2em;
     margin-bottom: 0.4em;
+}
+
+.type-config {
+    width: 100%;
+    display: grid;
+    grid-gap: 0.6em;
+    grid-template-columns: calc(100% - 3.2em) 1em 1em;
 }
 </style>

@@ -113,6 +113,11 @@ export type AllErrors = {
         properties: Array<IdName>
     } | {
         family: 'MODEL', 
+        code: 'SUB_ENTITY_NO_CURRENT_PATH', 
+        entity: IdName, 
+        pathProperties: Array<IdName>
+    } | {
+        family: 'MODEL', 
         code: 'INDEX_REF_PROPERTY_NOT_FOUND', 
         entity: IdName, 
         entityProperties: Array<IdName>, 
@@ -398,6 +403,10 @@ export type ApiErrors = {
             } | {
                 family: 'MODEL', 
                 code: 'LONG_ASSOCIATION_CIRCULAR_DEPENDENCE', 
+                readonly [key:string]: any
+            } | {
+                family: 'MODEL', 
+                code: 'SUB_ENTITY_NO_CURRENT_PATH', 
                 readonly [key:string]: any
             } | {
                 family: 'MODEL', 

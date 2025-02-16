@@ -5,6 +5,7 @@ import elementZhCn from 'element-plus/es/locale/lang/zh-cn.mjs'
 import {localeEn} from '@/i18n/en.ts'
 import elementEn from 'element-plus/es/locale/lang/en.mjs'
 import {ProjectLocale, MainLocaleKeyParam, ProjectLocaleKeyParam} from "@/i18n";
+import {sendMessage} from "@/message/message.ts";
 
 const languageOptions = {
     'zh-cn': {
@@ -58,10 +59,12 @@ export const useI18nStore = defineStore(
                     return (translateItem as any)(...args)
                 }
 
-                throw new Error(`key ${key} args ${args} is not valid.`)
+                sendMessage(`key ${key} args ${args} is not valid.`, 'warning')
+                return key
             }
 
-            throw new Error(`keyParam ${keyParam} cannot translate`)
+            sendMessage(`keyParam ${keyParam} cannot translate.`, 'warning')
+            return keyParam
         }
 
         return {

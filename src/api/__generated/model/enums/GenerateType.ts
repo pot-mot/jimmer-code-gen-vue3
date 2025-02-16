@@ -7,7 +7,6 @@ export const GenerateType_CONSTANTS = [
     'Service', 
     'DTO', 
     'FrontEnd', 
-    'EnumComponent', 
     'View', 
     'Permission', 
     'Route'

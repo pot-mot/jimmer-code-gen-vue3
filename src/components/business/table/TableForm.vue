@@ -27,6 +27,7 @@ import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import ColumnCategorySelect from "@/components/business/table/ColumnCategorySelect.vue";
 import {MainLocaleKeyParam} from "@/i18n";
 import {getColumnKeyGroups} from "@/components/business/table/columnKeyGroups.ts";
+import {TableType} from "@/api/__generated/model/enums";
 
 const i18nStore = useI18nStore()
 
@@ -107,12 +108,13 @@ const syncSuperTableNames = () => {
 }
 
 // 记录原始表类型
-let baseTableType = table.value.type
+let baseTableType: TableType = table.value.type === "SUPER_TABLE" ? "TABLE" : table.value.type
 
 // 是否是上级表
 const isSuperTable = computed<boolean>({
-    get: () =>
-        table.value.type === "SUPER_TABLE",
+    get: () => {
+        return table.value.type === "SUPER_TABLE"
+    },
     set: (value: boolean) => {
         if (value) table.value.type = "SUPER_TABLE"
         else table.value.type = baseTableType

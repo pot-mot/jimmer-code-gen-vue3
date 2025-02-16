@@ -112,7 +112,6 @@
                 >
                     <MultiCodePreview
                         ref="multiCodePreviewRef"
-                        :codes="codePreviewStore.codes"
                         @download-file="handleDownloadFile"
                         @download-files="handleDownloadFiles"
                     />
@@ -168,7 +167,6 @@ import {
     downloadModelZip,
     downloadZip,
     exportModelJson,
-    getModelCodes,
 } from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {useDocumentEvent} from "@/utils/useDocumentEvent.ts";
@@ -346,15 +344,8 @@ const handleCodePreview = loadingStore.withLoading('ModelEditorGraph handleCodeP
 
     const model = MODEL._model()
     await convertModel(model.id)
-    codePreviewStore.codes = await getModelCodes(model.id)
+    await codePreviewStore.codeRefresh()
     codePreviewStore.open()
-})
-
-onMounted(() => {
-    codePreviewStore.onCodeRefresh(handleCodePreview)
-})
-onBeforeUnmount(() => {
-    codePreviewStore.offCodeRefresh(handleCodePreview)
 })
 
 watch(() => MODEL.isLoaded, async (value) => {
