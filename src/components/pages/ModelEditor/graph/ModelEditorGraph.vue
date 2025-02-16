@@ -179,6 +179,7 @@ import {exportGraphPNG, exportGraphSVG,} from "@/components/pages/ModelEditor/fi
 import {MODEL_VALID_NOT_PASS, saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
 import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.ts";
 import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
+import {jsonSortPropStringify} from "@/utils/json.ts";
 
 const i18nStore = useI18nStore()
 
@@ -307,8 +308,8 @@ useDocumentEvent('mouseup', (e) => {
 const judgeGraphDataIsChange = (): boolean => {
     if (GRAPH.isLoaded && MODEL.isLoaded) {
         if (
-            JSON.stringify(MODEL_EDITOR.getGraphData().json) ===
-            JSON.stringify(JSON.parse(MODEL._model().graphData)["json"])
+            jsonSortPropStringify(MODEL_EDITOR.getGraphData().json) ===
+            jsonSortPropStringify(JSON.parse(MODEL._model().graphData)["json"])
         ) {
             return false
         }

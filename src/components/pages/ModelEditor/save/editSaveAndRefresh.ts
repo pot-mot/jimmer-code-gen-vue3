@@ -54,7 +54,9 @@ export const useEditSaveAndRefresh = () => {
         store.open(key, value, option)
         const onSubmitSave = async (options: { key: K, changed: boolean }) => {
             if (options.key === key) {
-                await fn(options.key, options.changed)
+                try {
+                    await fn(options.key, options.changed)
+                } catch (e) {}
                 store.off('close', onSubmitSave)
             }
         }

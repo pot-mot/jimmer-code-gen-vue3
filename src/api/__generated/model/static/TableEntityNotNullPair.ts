@@ -1,6 +1,6 @@
-import type {IdName} from './';
+import type {IdName, IdNamePackagePath} from './';
 
 export interface TableEntityNotNullPair {
     table: IdName;
-    entity: IdName;
+    entity: IdNamePackagePath;
 }

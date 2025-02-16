@@ -1,7 +1,6 @@
 import type {AssociationType, PropertySpecialFormType} from '../enums/';
 import type {
     AnnotationWithImports, 
-    GenEntityDetailView_TargetOf_properties_TargetOf_enum, 
     GenEntityDetailView_TargetOf_properties_TargetOf_typeEntity, 
     JoinColumnMeta, 
     JoinTableMeta, 
@@ -177,10 +176,6 @@ export interface GenEntityDetailView_TargetOf_properties {
      */
     columnId?: number | undefined;
     /**
-     * 生成枚举
-     */
-    enum?: GenEntityDetailView_TargetOf_properties_TargetOf_enum | undefined;
-    /**
      * ID
      */
     typeTableId?: number | undefined;
@@ -188,4 +183,12 @@ export interface GenEntityDetailView_TargetOf_properties {
      * 对应实体
      */
     typeEntity?: GenEntityDetailView_TargetOf_properties_TargetOf_typeEntity | undefined;
+    /**
+     * ID
+     */
+    enumId?: number | undefined;
+    /**
+     * 枚举名
+     */
+    enumName?: string | undefined;
 }

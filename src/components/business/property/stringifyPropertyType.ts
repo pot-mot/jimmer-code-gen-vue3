@@ -2,8 +2,8 @@ import type {GenEntityDetailView_TargetOf_properties} from "@/api/__generated/mo
 
 export const stringifyPropertyType = (property: GenEntityDetailView_TargetOf_properties): string => {
     let rawType = property.type
-    if (property.enum !== undefined) {
-        rawType = property.enum.name
+    if (property.enumName !== undefined) {
+        rawType = property.enumName
     }
     if (property.typeEntity !== undefined) {
         rawType = property.typeEntity.name

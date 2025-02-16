@@ -690,6 +690,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     LABEL_EntityConfigForm_property_overwriteName: 'Overwrite Name',
     LABEL_EntityConfigForm_property_overwriteComment: 'Overwrite Comment',
     LABEL_EntityConfigForm_property_typeNotNull: 'Not Null',
+    LABEL_EntityConfigForm_property_specialFormType: 'Special Form Type',
 
     VALIDATE_Entity_nameCannotBeEmpty: "Entity name cannot be empty",
     VALIDATE_Entity_nameCannotBeDuplicate: (entityName: string) => `Entity name [${entityName}] is duplicated`,

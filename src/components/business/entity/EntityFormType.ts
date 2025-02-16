@@ -33,7 +33,7 @@ export const entityFormTypeToBusinessInput = (entity: EntityFormType): EntityMod
     }
 }
 
-const checkPropNames: Array<keyof GenEntityDetailView_TargetOf_properties> = ["id", "columnId", "typeEntity", "typeTableId"]
+const checkPropNames: Array<keyof GenEntityDetailView_TargetOf_properties> = ["id", "columnId"]
 
 const clearProperty = (data: any): GenPropertyEntityConfigInput | undefined => {
     for (const propName of checkPropNames) {

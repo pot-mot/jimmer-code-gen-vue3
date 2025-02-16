@@ -690,6 +690,7 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     LABEL_EntityConfigForm_property_overwriteName: '覆盖自动生成名称',
     LABEL_EntityConfigForm_property_overwriteComment: '覆盖自动生成注释',
     LABEL_EntityConfigForm_property_typeNotNull: '非空',
+    LABEL_EntityConfigForm_property_specialFormType: '特殊表单类型',
 
     VALIDATE_Entity_nameCannotBeEmpty: "实体名称不得为空",
     VALIDATE_Entity_nameCannotBeDuplicate: (entityName: string) => `实体名称【${entityName}】不可重复`,

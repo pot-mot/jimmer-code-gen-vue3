@@ -5,12 +5,43 @@ import {GenPropertyEntityConfigInput} from "@/api/__generated/model/static";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import LineItem from "@/components/global/line/LineItem.vue";
 import Line from "@/components/global/line/Line.vue";
+import {PropertySpecialFormType_CONSTANTS} from "@/api/__generated/model/enums";
+import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
+import {watch} from "vue";
 
 const i18nStore = useI18nStore()
 
 const property = defineModel<GenPropertyEntityConfigInput>({
     required: true
 })
+
+const codeStore = useMultiCodePreviewStore()
+
+watch(() => property.value.typeTableId, (value: number | undefined) => {
+    if (value !== undefined) {
+        const pair = codeStore.tableIdMap.get(value)
+        if (pair !== undefined) {
+            property.value.type = `${pair.entity.packagePath}.${pair.entity.name}`
+            property.value.enumId = undefined
+        } else {
+            property.value.type = ""
+            property.value.typeTableId = undefined
+        }
+    }
+}, {immediate: true})
+
+watch(() => property.value.enumId, (value: number | undefined) => {
+    if (value !== undefined) {
+        const genEnum = codeStore.enumIdMap.get(value)
+        if (genEnum !== undefined) {
+            property.value.type = `${genEnum.packagePath}.${genEnum.name}`
+            property.value.typeTableId = undefined
+        } else {
+            property.value.type = ""
+            property.value.enumId = undefined
+        }
+    }
+}, {immediate: true})
 </script>
 
 <template>
@@ -38,19 +69,35 @@ const property = defineModel<GenPropertyEntityConfigInput>({
                             <el-text>{{ "List<" }}</el-text>
                         </LineItem>
 
-                        <LineItem>
-                            <el-input v-model="property.type" v-if="!property.typeTableId && !property.enumId"/>
+                        <LineItem v-if="!property.typeTableId && !property.enumId">
+                            <el-input v-model="property.type"/>
                         </LineItem>
 
-                        <LineItem>
-                            <el-select v-model="property.typeTableId" v-if="!property.enumId" clearable>
-
+                        <LineItem v-if="!property.enumId">
+                            <el-select
+                                v-model="property.typeTableId"
+                                clearable
+                                filterable
+                            >
+                                <el-option
+                                    v-for="pair in codeStore.codes.tableEntityPairs"
+                                    :value="pair.table.id"
+                                    :label="`${pair.table.name} - ${pair.entity.name}`"
+                                />
                             </el-select>
                         </LineItem>
 
-                        <LineItem>
-                            <el-select v-model="property.enumId" v-if="!property.typeTableId" clearable>
-
+                        <LineItem v-if="!property.typeTableId">
+                            <el-select
+                                v-model="property.enumId"
+                                clearable
+                                filterable
+                            >
+                                <el-option
+                                    v-for="genEnum in codeStore.codes.enums"
+                                    :value="genEnum.id"
+                                    :label="genEnum.name"
+                                />
                             </el-select>
                         </LineItem>
 
@@ -59,6 +106,13 @@ const property = defineModel<GenPropertyEntityConfigInput>({
                         </LineItem>
                         <LineItem v-if="property.listType" span="auto">
                             <el-text>{{ ">" }}</el-text>
+                        </LineItem>
+
+                        <LineItem v-if="property.typeTableId" span="auto">
+                            <el-tooltip
+                                :content="i18nStore.translate('LABEL_EntityConfigForm_property_longAssociation')">
+                                <el-checkbox v-model="property.longAssociation"/>
+                            </el-tooltip>
                         </LineItem>
                     </Line>
 
@@ -70,6 +124,18 @@ const property = defineModel<GenPropertyEntityConfigInput>({
                         <el-checkbox v-model="property.listType"/>
                     </el-tooltip>
                 </div>
+            </el-form-item>
+        </el-col>
+
+        <el-col :span="24" v-if="property.enumId === undefined && property.typeTableId === undefined">
+            <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_specialFormType')">
+                <el-select v-model="property.specialFormType" clearable>
+                    <el-option
+                        v-for="type in PropertySpecialFormType_CONSTANTS"
+                        :label="type"
+                        :value="type"
+                    />
+                </el-select>
             </el-form-item>
         </el-col>
 

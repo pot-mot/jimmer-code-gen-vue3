@@ -35,7 +35,9 @@ const syncEntityChanged = (entity: DeepReadonly<EntityFormType>, changedEntity: 
                         type: changedProperty.type,
                         listType: changedProperty.listType,
                         typeEntity: changedProperty.typeEntity,
-                        enum: changedProperty.enum,
+                        typeTableId: changedProperty.typeTableId,
+                        enumId: changedProperty.enumId,
+                        enumName: changedProperty.enumName,
                     })
                 }
             } else {

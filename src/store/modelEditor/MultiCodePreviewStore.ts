@@ -4,7 +4,7 @@ import {computed, ref} from "vue";
 import {
     GenerateFile,
     GenerateResult,
-    IdName,
+    IdName, IdNamePackagePath,
     TableEntityNotNullPair,
     TableEntityPair
 } from "@/api/__generated/model/static";
@@ -115,7 +115,7 @@ export const useMultiCodePreviewStore = defineStore(
         })
 
         const enumIdMap = computed(() => {
-            const map = new Map<number, IdName>
+            const map = new Map<number, IdNamePackagePath>
             for (const genEnum of codes.value.enums) {
                 map.set(genEnum.id, genEnum)
             }

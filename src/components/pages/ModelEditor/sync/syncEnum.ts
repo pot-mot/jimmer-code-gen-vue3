@@ -79,11 +79,12 @@ const syncEnumNameInEntity = (entity: DeepReadonly<EntityFormType>, oldEnumName:
     const tempEntity = cloneDeepReadonly<EntityFormType>(entity)
 
     tempEntity.properties.forEach(property => {
-        if ("enum" in property && property.enum && property.enum.name === oldEnumName) {
+        if ("enumName" in property && property.enumName && property.enumName === oldEnumName) {
             if (newEnumName === undefined) {
-                property.enum = undefined
+                property.enumId = undefined
+                property.enumName = undefined
             } else {
-                property.enum.name = newEnumName
+                property.enumName = newEnumName
             }
         }
     })
@@ -94,7 +95,7 @@ const syncEnumNameInEntity = (entity: DeepReadonly<EntityFormType>, oldEnumName:
 // 判断枚举是否在实体中出现
 const judgeEnumInEntity = (enumName: string, entity: EntityFormType): boolean => {
     return entity.properties
-        .flatMap(it => "enum" in it ? it.enum?.name : undefined).filter(it => it !== undefined)
+        .flatMap(it => "enumName" in it ? it.enumName : undefined).filter(it => it !== undefined)
         .includes(enumName)
 }
 

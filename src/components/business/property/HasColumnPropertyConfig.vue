@@ -6,6 +6,7 @@ import {stringifyPropertyType} from "@/components/business/property/stringifyPro
 import Comment from "@/components/global/common/Comment.vue";
 import PropertyTags from "@/components/business/property/PropertyTags.vue";
 import Details from "@/components/global/common/Details.vue";
+import {PropertySpecialFormType_CONSTANTS} from "@/api/__generated/model/enums";
 
 const i18nStore = useI18nStore()
 
@@ -53,8 +54,8 @@ const emits = defineEmits<{
 
                 <el-col :span="8">
                     <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_type')">
-                        <template v-if="property.enum !== undefined">
-                            <el-button @click="emits('click-enum', property.enum)">
+                        <template v-if="property.enumId !== undefined && property.enumName !== undefined">
+                            <el-button @click="emits('click-enum', {id: property.enumId, name: property.enumName})">
                                 {{ stringifyPropertyType(property) }}
                             </el-button>
                             <el-tooltip :content="i18nStore.translate('LABEL_EntityConfigForm_property_listType')">
@@ -62,7 +63,7 @@ const emits = defineEmits<{
                             </el-tooltip>
                         </template>
 
-                        <template v-else-if="property.typeEntity !== undefined">
+                        <template v-else-if="property.typeTableId !== undefined && property.typeEntity !== undefined">
                             <el-button @click="emits('click-entity', property.typeEntity)">
                                 {{ stringifyPropertyType(property) }}
                             </el-button>
@@ -88,9 +89,23 @@ const emits = defineEmits<{
             </el-row>
         </template>
 
-        <el-row :gutter="12" style="width: calc(100% - 1.5em); margin: 0.5em 0; padding-left: 1em; border-top: var(--el-border);">
+        <el-row :gutter="12"
+                style="width: calc(100% - 1.5em); margin: 0.5em 0; padding-left: 1em; border-top: var(--el-border);">
             <el-col :span="24">
                 <PropertyTags v-model="property"/>
+            </el-col>
+
+            <el-col :span="24"
+                    v-if="property.enumId === undefined && property.typeTableId === undefined && !property.idView && !property.logicalDelete && !property.idProperty">
+                <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_specialFormType')">
+                    <el-select v-model="property.specialFormType" clearable>
+                        <el-option
+                            v-for="type in PropertySpecialFormType_CONSTANTS"
+                            :label="type"
+                            :value="type"
+                        />
+                    </el-select>
+                </el-form-item>
             </el-col>
 
             <el-col :span="24" v-if="property.idProperty">

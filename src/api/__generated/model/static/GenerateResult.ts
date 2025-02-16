@@ -1,7 +1,7 @@
-import type {GenerateFile, IdName, TableEntityNotNullPair} from './';
+import type {GenerateFile, IdNamePackagePath, TableEntityNotNullPair} from './';
 
 export interface GenerateResult {
     files: Array<GenerateFile>;
     tableEntityPairs: Array<TableEntityNotNullPair>;
-    enums: Array<IdName>;
+    enums: Array<IdNamePackagePath>;
 }

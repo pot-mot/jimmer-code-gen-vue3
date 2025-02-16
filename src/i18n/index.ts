@@ -504,6 +504,7 @@ type MainLocale = {
     LABEL_EntityConfigForm_property_typeNotNull: string
     LABEL_EntityConfigForm_property_longAssociation: string
     LABEL_EntityConfigForm_property_body: string
+    LABEL_EntityConfigForm_property_specialFormType: string
 
     VALIDATE_Entity_nameCannotBeEmpty: string
     VALIDATE_Entity_nameCannotBeDuplicate: (entityName: string) => string
