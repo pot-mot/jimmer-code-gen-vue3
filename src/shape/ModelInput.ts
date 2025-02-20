@@ -1,8 +1,8 @@
 import {useShapeValidate} from "@/shape/shapeValidate.ts";
-import {EntityModelBusinessView, GenModelInput} from "@/api/__generated/model/static";
+import {EntityExportView, GenModelInput} from "@/api/__generated/model/static";
 import {validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {DeepReadonly} from "vue";
-import {validateEntityModelBusinessView} from "@/shape/EntityModelBusinessView.ts";
+import {validateEntityExportView} from "@/shape/EntityExportView.ts";
 import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
 
 // typescript-json-schema src/api/__generated/model/static/GenModelInput.ts * --required
@@ -321,7 +321,7 @@ export const validateModelInput = (data: any, onErrors: (e: any) => void) => {
 }
 
 export type ModelInputWithEntities = GenModelInput & {
-    entities?: Array<EntityModelBusinessView>
+    entities?: Array<EntityExportView>
 }
 
 export const validateModelInputWithEntities = (data: any, onErrors: (e: any) => void) => {
@@ -333,7 +333,7 @@ export const validateModelInputWithEntities = (data: any, onErrors: (e: any) => 
     }
 
     for (const entity of data["entities"]) {
-        const entityValid = validateEntityModelBusinessView(entity, onErrors)
+        const entityValid = validateEntityExportView(entity, onErrors)
         if (!entityValid) return false
     }
 

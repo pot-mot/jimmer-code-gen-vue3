@@ -1,25 +1,13 @@
-import type {AnnotationWithImports, GenEntityDetailView_TargetOf_properties} from './';
+import type {AnnotationWithImports, GenEntityExportView_TargetOf_properties} from './';
 
 /**
  * 生成实体
  */
-export interface GenEntityDetailView {
+export interface GenEntityExportView {
     /**
      * ID
      */
     id: number;
-    /**
-     * 创建事件
-     */
-    createdTime: string;
-    /**
-     * 修改时间
-     */
-    modifiedTime: string;
-    /**
-     * 包路径
-     */
-    packagePath: string;
     /**
      * 类名称
      */
@@ -37,9 +25,9 @@ export interface GenEntityDetailView {
      */
     overwriteComment: boolean;
     /**
-     * 作者
+     * 备注
      */
-    author: string;
+    remark: string;
     /**
      * 其他注解
      */
@@ -53,21 +41,17 @@ export interface GenEntityDetailView {
      */
     canEdit: boolean;
     /**
-     * 是否可以删除
-     */
-    canDelete: boolean;
-    /**
      * 是否可以查询
      */
     canQuery: boolean;
     /**
+     * 是否可以删除
+     */
+    canDelete: boolean;
+    /**
      * 是否具有管理端页面
      */
     hasPage: boolean;
-    /**
-     * 管理端页面中可查询
-     */
-    pageCanQuery: boolean;
     /**
      * 管理端页面中可新增
      */
@@ -81,6 +65,10 @@ export interface GenEntityDetailView {
      */
     pageCanViewDetail: boolean;
     /**
+     * 管理端页面中可查询
+     */
+    pageCanQuery: boolean;
+    /**
      * 管理端页面中可删除
      */
     pageCanDelete: boolean;
@@ -89,23 +77,11 @@ export interface GenEntityDetailView {
      */
     queryByPage: boolean;
     /**
-     * 备注
-     */
-    remark: string;
-    /**
-     * 模型
-     */
-    modelId?: number | undefined;
-    /**
-     * 对应表
-     */
-    tableId: number;
-    /**
-     * 上级实体
-     */
-    superEntityIds: Array<number>;
-    /**
      * 属性
      */
-    properties: Array<GenEntityDetailView_TargetOf_properties>;
+    properties: Array<GenEntityExportView_TargetOf_properties>;
+    /**
+     * 名称
+     */
+    tableName: string;
 }

@@ -3,7 +3,7 @@ import {useEntityDialogsStore} from "@/store/modelEditor/EntityDialogsStore.ts";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import EntityConfigForm from "@/components/business/entity/EntityForm.vue";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import {EntityModelBusinessInput} from "@/api/__generated/model/static";
+import {EntityConfigInput} from "@/api/__generated/model/static";
 import {api} from "@/api";
 import {DeepReadonly} from "vue";
 import {MainLocaleKeyParam} from "@/i18n";
@@ -20,17 +20,17 @@ const {
 } = useEditSaveAndRefresh()
 
 const handleSubmit = async (
-    entity: EntityModelBusinessInput
+    entity: EntityConfigInput
 ) => {
     await MODEL_EDITOR.editedEntity(entity)
 }
 
 const validate = async (
-    entity: DeepReadonly<EntityModelBusinessInput>
+    entity: DeepReadonly<EntityConfigInput>
 ): Promise<MainLocaleKeyParam[]> => {
-    const otherEntities = await api.modelService.getEntityBusinessViews({
+    const otherEntities = await api.modelService.exportEntities({
         id: MODEL._model().id,
-        excludeEntityIds: [entity.entity.id],
+        excludeEntityIds: [entity.tableConvertedEntity.id],
     })
 
     return validateEntity(

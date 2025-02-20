@@ -1,13 +1,17 @@
-import type {AnnotationWithImports, GenEntityModelView_TargetOf_properties} from './';
+import type {AnnotationWithImports, GenEntityConfigView_TargetOf_properties, GenEntityConfigView_TargetOf_table} from './';
 
 /**
  * 生成实体
  */
-export interface GenEntityModelView {
+export interface GenEntityConfigView {
     /**
      * ID
      */
     id: number;
+    /**
+     * 对应表
+     */
+    table: GenEntityConfigView_TargetOf_table;
     /**
      * 类名称
      */
@@ -79,9 +83,5 @@ export interface GenEntityModelView {
     /**
      * 属性
      */
-    properties: Array<GenEntityModelView_TargetOf_properties>;
-    /**
-     * 名称
-     */
-    tableName: string;
+    properties: Array<GenEntityConfigView_TargetOf_properties>;
 }

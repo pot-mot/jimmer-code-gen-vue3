@@ -1,9 +1,9 @@
 import {useShapeValidate} from "@/shape/shapeValidate.ts";
 import {DeepReadonly} from "vue";
-import {GenPropertyEntityConfigInput} from "@/api/__generated/model/static";
+import {GenPropertyConfigInput} from "@/api/__generated/model/static";
 
-// typescript-json-schema src/api/__generated/model/static/GenPropertyEntityConfigInput.ts * --required
-const GenPropertyEntityConfigInputSchema = {
+// typescript-json-schema src/api/__generated/model/static/GenPropertyConfigInput.ts * --required
+const GenPropertyConfigInputSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
         "AnnotationWithImports": {
@@ -27,7 +27,7 @@ const GenPropertyEntityConfigInputSchema = {
             ],
             "type": "object"
         },
-        "GenPropertyEntityConfigInput": {
+        "GenPropertyConfigInput": {
             "description": "生成属性",
             "properties": {
                 "body": {
@@ -177,8 +177,8 @@ const GenPropertyEntityConfigInputSchema = {
     }
 }
 
-export const {validate: validateGenPropertyEntityConfigInput} =
-    useShapeValidate<DeepReadonly<GenPropertyEntityConfigInput>>(
-        GenPropertyEntityConfigInputSchema,
-        "GenPropertyEntityConfigInput",
+export const {validate: validateGenPropertyConfigInput} =
+    useShapeValidate<DeepReadonly<GenPropertyConfigInput>>(
+        GenPropertyConfigInputSchema,
+        "GenPropertyConfigInput",
     )

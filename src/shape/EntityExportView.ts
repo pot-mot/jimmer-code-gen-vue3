@@ -1,9 +1,9 @@
 import {useShapeValidate} from "@/shape/shapeValidate.ts";
 import {DeepReadonly} from "vue";
-import {EntityModelBusinessView} from "@/api/__generated/model/static";
+import {EntityExportView} from "@/api/__generated/model/static";
 
-// typescript-json-schema src/api/__generated/model/static/EntityModelBusinessView.ts * --required
-const EntityModelBusinessViewSchema = {
+// typescript-json-schema src/api/__generated/model/static/EntityExportView.ts * --required
+const EntityExportViewSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
         "AnnotationWithImports": {
@@ -27,28 +27,27 @@ const EntityModelBusinessViewSchema = {
             ],
             "type": "object"
         },
-        "EntityModelBusinessView": {
-            "description": "实体 - 用于模型业务配置的输出\n同时也将在 JSON 保存时作为输入对象，此时将被被转换为 EntityModelBusinessInput",
+        "EntityExportView": {
             "properties": {
-                "otherProperties": {
+                "entity": {
+                    "$ref": "#/definitions/GenEntityExportView",
+                    "description": "表直接转换得到的实体"
+                },
+                "properties": {
                     "description": "其余非转换属性",
                     "items": {
-                        "$ref": "#/definitions/GenPropertyModelView"
+                        "$ref": "#/definitions/GenPropertyExportView"
                     },
                     "type": "array"
-                },
-                "tableConvertedEntity": {
-                    "$ref": "#/definitions/GenEntityModelView",
-                    "description": "表直接转换得到的实体"
                 }
             },
             "required": [
-                "otherProperties",
-                "tableConvertedEntity"
+                "entity",
+                "properties"
             ],
             "type": "object"
         },
-        "GenEntityModelView": {
+        "GenEntityExportView": {
             "description": "生成实体",
             "properties": {
                 "canAdd": {
@@ -118,7 +117,7 @@ const EntityModelBusinessViewSchema = {
                 "properties": {
                     "description": "属性",
                     "items": {
-                        "$ref": "#/definitions/GenEntityModelView_TargetOf_properties"
+                        "$ref": "#/definitions/GenEntityExportView_TargetOf_properties"
                     },
                     "type": "array"
                 },
@@ -158,7 +157,7 @@ const EntityModelBusinessViewSchema = {
             ],
             "type": "object"
         },
-        "GenEntityModelView_TargetOf_properties": {
+        "GenEntityExportView_TargetOf_properties": {
             "description": "生成属性",
             "properties": {
                 "associationType": {
@@ -293,7 +292,7 @@ const EntityModelBusinessViewSchema = {
                     "type": "boolean"
                 },
                 "typeTable": {
-                    "$ref": "#/definitions/GenEntityModelView_TargetOf_properties_TargetOf_typeTable",
+                    "$ref": "#/definitions/GenEntityExportView_TargetOf_properties_TargetOf_typeTable",
                     "description": "类型对应表"
                 }
             },
@@ -322,7 +321,7 @@ const EntityModelBusinessViewSchema = {
             ],
             "type": "object"
         },
-        "GenEntityModelView_TargetOf_properties_TargetOf_typeTable": {
+        "GenEntityExportView_TargetOf_properties_TargetOf_typeTable": {
             "description": "生成表",
             "properties": {
                 "name": {
@@ -335,7 +334,7 @@ const EntityModelBusinessViewSchema = {
             ],
             "type": "object"
         },
-        "GenPropertyModelView": {
+        "GenPropertyExportView": {
             "description": "生成属性",
             "properties": {
                 "body": {
@@ -347,7 +346,7 @@ const EntityModelBusinessViewSchema = {
                     "type": "string"
                 },
                 "enum": {
-                    "$ref": "#/definitions/GenPropertyModelView_TargetOf_enum",
+                    "$ref": "#/definitions/GenPropertyExportView_TargetOf_enum",
                     "description": "生成枚举"
                 },
                 "inDetailView": {
@@ -433,7 +432,7 @@ const EntityModelBusinessViewSchema = {
                     "type": "string"
                 },
                 "typeEntity": {
-                    "$ref": "#/definitions/GenPropertyModelView_TargetOf_typeEntity",
+                    "$ref": "#/definitions/GenPropertyExportView_TargetOf_typeEntity",
                     "description": "对应实体"
                 },
                 "typeNotNull": {
@@ -464,7 +463,7 @@ const EntityModelBusinessViewSchema = {
             ],
             "type": "object"
         },
-        "GenPropertyModelView_TargetOf_enum": {
+        "GenPropertyExportView_TargetOf_enum": {
             "description": "生成枚举",
             "properties": {
                 "name": {
@@ -477,7 +476,7 @@ const EntityModelBusinessViewSchema = {
             ],
             "type": "object"
         },
-        "GenPropertyModelView_TargetOf_typeEntity": {
+        "GenPropertyExportView_TargetOf_typeEntity": {
             "description": "生成实体",
             "properties": {
                 "name": {
@@ -574,8 +573,8 @@ const EntityModelBusinessViewSchema = {
     }
 }
 
-export const {validate: validateEntityModelBusinessView} =
-    useShapeValidate<DeepReadonly<EntityModelBusinessView>>(
-        EntityModelBusinessViewSchema,
-        "EntityModelBusinessView",
+export const {validate: validateEntityExportView} =
+    useShapeValidate<DeepReadonly<EntityExportView>>(
+        EntityExportViewSchema,
+        "EntityExportView",
     )

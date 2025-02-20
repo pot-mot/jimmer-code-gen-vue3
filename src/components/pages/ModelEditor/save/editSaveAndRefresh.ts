@@ -112,7 +112,7 @@ export const useEditSaveAndRefresh = () => {
             async (_, changed) => {
                 if (changed) {
                     await refreshCode()
-                    await syncTypeEntityForEntities(idName.id)
+                    syncTypeEntityForEntities(idName)
                 }
             },
             entityDialogsStore, idName.id, entity

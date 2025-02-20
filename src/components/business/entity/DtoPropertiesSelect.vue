@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import {GenEntityDetailView_TargetOf_properties} from "@/api/__generated/model/static"
+import {GenPropertyConfigInput} from "@/api/__generated/model/static"
 import {computed} from "vue"
 import Comment from "@/components/global/common/Comment.vue";
 
-type PropertyOption = Pick<GenEntityDetailView_TargetOf_properties,
+type PropertyOption = Pick<GenPropertyConfigInput,
     'name' |
     'comment' |
     'inListView' |

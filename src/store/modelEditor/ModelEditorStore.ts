@@ -8,7 +8,7 @@ import {
     TableLoadOptions
 } from "@/components/pages/ModelEditor/graph/load/loadData.ts";
 import {
-    EntityModelBusinessInput,
+    EntityConfigInput,
     GenAssociationModelInput,
     GenModelInput_TargetOf_enums,
     GenModelView,
@@ -144,7 +144,7 @@ type EnumEditOperation = {
 }
 
 type EntityEditOperation = {
-    editedEntity: (entity: DeepReadonly<EntityModelBusinessInput>) => Promise<void>,
+    editedEntity: (entity: DeepReadonly<EntityConfigInput>) => Promise<void>,
 }
 
 type ModelSyncState = {
@@ -688,9 +688,9 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const entityDialogsStore = useEntityDialogsStore()
 
-    const editedEntity = async (entity: DeepReadonly<EntityModelBusinessInput>) => {
-        await api.entityService.config({body: cloneDeepReadonly<EntityModelBusinessInput>(entity)})
-        entityDialogsStore.close(entity.entity.id, true)
+    const editedEntity = async (entity: DeepReadonly<EntityConfigInput>) => {
+        await api.entityService.config({body: cloneDeepReadonly<EntityConfigInput>(entity)})
+        entityDialogsStore.close(entity.tableConvertedEntity.id, true)
     }
 
 

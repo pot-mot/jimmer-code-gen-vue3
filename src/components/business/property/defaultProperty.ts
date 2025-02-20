@@ -1,6 +1,6 @@
-import type {GenPropertyEntityConfigInput} from "@/api/__generated/model/static";
+import type {GenPropertyConfigInput} from "@/api/__generated/model/static";
 
-export const getDefaultProperty = (): GenPropertyEntityConfigInput => {
+export const getDefaultProperty = (): GenPropertyConfigInput => {
     return {
         body: undefined,
         comment: "",

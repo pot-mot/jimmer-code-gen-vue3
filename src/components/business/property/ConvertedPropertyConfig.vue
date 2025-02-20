@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AnnotationNullableEditor from "@/components/business/annotation/AnnotationNullableEditor.vue";
-import {GenEntityDetailView_TargetOf_properties, IdName} from "@/api/__generated/model/static";
+import {GenEntityConfigView_TargetOf_properties, IdName} from "@/api/__generated/model/static";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {stringifyPropertyType} from "@/components/business/property/stringifyPropertyType.ts";
 import Comment from "@/components/global/common/Comment.vue";
@@ -10,7 +10,7 @@ import {PropertySpecialFormType_CONSTANTS} from "@/api/__generated/model/enums";
 
 const i18nStore = useI18nStore()
 
-const property = defineModel<GenEntityDetailView_TargetOf_properties>({
+const property = defineModel<GenEntityConfigView_TargetOf_properties>({
     required: true
 })
 
@@ -96,7 +96,7 @@ const emits = defineEmits<{
             </el-col>
 
             <el-col :span="24"
-                    v-if="property.enumId === undefined && property.typeTableId === undefined && !property.idView && !property.logicalDelete && !property.idProperty">
+                    v-if="property.enumId === undefined && property.typeTableId === undefined && property.associationType === undefined && !property.logicalDelete && !property.idProperty">
                 <el-form-item :label="i18nStore.translate('LABEL_EntityConfigForm_property_specialFormType')">
                     <el-select v-model="property.specialFormType" clearable>
                         <el-option

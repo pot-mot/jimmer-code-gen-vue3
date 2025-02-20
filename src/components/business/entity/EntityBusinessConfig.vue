@@ -1,27 +1,27 @@
 <script setup lang="ts">
 import {useI18nStore} from "@/store/i18n/i18nStore.ts"
 import DtoPropertiesSelect from "@/components/business/entity/DtoPropertiesSelect.vue";
-import {EntityFormType} from "@/components/business/entity/EntityFormType.ts";
+import {useConfigView} from "@/components/business/entity/useConfigView.ts";
+import {EntityConfigView} from "@/api/__generated/model/static";
+import {computed} from "vue";
 
 const i18nStore = useI18nStore()
 
-type EntityBusinessSelectType = Pick<EntityFormType,
-    'canAdd' |
-    'canEdit' |
-    'canQuery' |
-    'canDelete' |
-    'hasPage' |
-    'pageCanAdd' |
-    'pageCanEdit' |
-    'pageCanViewDetail' |
-    'pageCanQuery' |
-    'pageCanDelete' |
-    'queryByPage' |
-    'properties'
->
-
-const entity = defineModel<EntityBusinessSelectType>({
+const entityConfigView = defineModel<EntityConfigView>({
     required: true
+})
+
+const {
+    entity,
+    convertedProperties,
+    notConvertedProperties,
+} = useConfigView(entityConfigView)
+
+const allProperties = computed(() => {
+    return [
+        ...convertedProperties.value,
+        ...notConvertedProperties.value,
+    ]
 })
 </script>
 
@@ -38,7 +38,7 @@ const entity = defineModel<EntityBusinessSelectType>({
 
             <el-form-item :label="i18nStore.translate('LABEL_EntityBusiness_DTO_ListView')"
                           v-if="entity.hasPage">
-                <DtoPropertiesSelect prop-name="inListView" :properties="entity.properties"/>
+                <DtoPropertiesSelect prop-name="inListView" v-model:properties="allProperties"/>
             </el-form-item>
         </div>
 
@@ -60,7 +60,7 @@ const entity = defineModel<EntityBusinessSelectType>({
             </div>
 
             <el-form-item :label="i18nStore.translate('LABEL_EntityBusiness_DTO_Specification')">
-                <DtoPropertiesSelect prop-name="inSpecification" :properties="entity.properties"/>
+                <DtoPropertiesSelect prop-name="inSpecification" v-model:properties="allProperties"/>
             </el-form-item>
         </div>
 
@@ -79,7 +79,7 @@ const entity = defineModel<EntityBusinessSelectType>({
 
             <el-form-item :label="i18nStore.translate('LABEL_EntityBusiness_DTO_InsertInput')"
                           v-if="entity.canAdd">
-                <DtoPropertiesSelect prop-name="inInsertInput" :properties="entity.properties"/>
+                <DtoPropertiesSelect prop-name="inInsertInput" v-model:properties="allProperties"/>
             </el-form-item>
         </div>
 
@@ -98,7 +98,7 @@ const entity = defineModel<EntityBusinessSelectType>({
 
             <el-form-item :label="i18nStore.translate('LABEL_EntityBusiness_DTO_UpdateInput')"
                           v-if="entity.canEdit">
-                <DtoPropertiesSelect prop-name="inUpdateInput" :properties="entity.properties"/>
+                <DtoPropertiesSelect prop-name="inUpdateInput" v-model:properties="allProperties"/>
             </el-form-item>
         </div>
 
@@ -114,7 +114,7 @@ const entity = defineModel<EntityBusinessSelectType>({
             </div>
 
             <el-form-item :label="i18nStore.translate('LABEL_EntityBusiness_DTO_DetailView')">
-                <DtoPropertiesSelect prop-name="inDetailView" :properties="entity.properties"/>
+                <DtoPropertiesSelect prop-name="inDetailView" v-model:properties="allProperties"/>
             </el-form-item>
         </div>
 
@@ -136,11 +136,11 @@ const entity = defineModel<EntityBusinessSelectType>({
             <div class="title">{{ i18nStore.translate('LABEL_EntityBusiness_shortAssociation') }}</div>
 
             <el-form-item :label="i18nStore.translate('LABEL_EntityBusiness_DTO_OptionView')">
-                <DtoPropertiesSelect prop-name="inOptionView" :properties="entity.properties"/>
+                <DtoPropertiesSelect prop-name="inOptionView" v-model:properties="allProperties"/>
             </el-form-item>
 
             <el-form-item :label="i18nStore.translate('LABEL_EntityBusiness_DTO_ShortView')">
-                <DtoPropertiesSelect prop-name="inShortAssociationView" :properties="entity.properties"/>
+                <DtoPropertiesSelect prop-name="inShortAssociationView" v-model:properties="allProperties"/>
             </el-form-item>
         </div>
 
@@ -148,11 +148,11 @@ const entity = defineModel<EntityBusinessSelectType>({
             <div class="title">{{ i18nStore.translate('LABEL_EntityBusiness_longAssociation') }}</div>
 
             <el-form-item :label="i18nStore.translate('LABEL_EntityBusiness_DTO_LongInput')">
-                <DtoPropertiesSelect prop-name="inLongAssociationInput" :properties="entity.properties"/>
+                <DtoPropertiesSelect prop-name="inLongAssociationInput" v-model:properties="allProperties"/>
             </el-form-item>
 
             <el-form-item :label="i18nStore.translate('LABEL_EntityBusiness_DTO_LongView')">
-                <DtoPropertiesSelect prop-name="inLongAssociationView" :properties="entity.properties"/>
+                <DtoPropertiesSelect prop-name="inLongAssociationView" v-model:properties="allProperties"/>
             </el-form-item>
         </div>
     </el-form>

@@ -1,4 +1,4 @@
-import {GenModelInput_TargetOf_enums, GenTableModelInput} from "@/api/__generated/model/static";
+import {EntityConfigView, GenModelInput_TargetOf_enums, GenTableModelInput} from "@/api/__generated/model/static";
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {Graph} from "@antv/x6";
 import {useTableDialogsStore} from "@/store/modelEditor/TableDialogsStore.ts";
@@ -6,7 +6,6 @@ import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNod
 import {DeepReadonly} from "vue";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 import {useEntityDialogsStore} from "@/store/modelEditor/EntityDialogsStore.ts";
-import {EntityFormType} from "@/components/business/entity/EntityFormType.ts";
 
 // 同步表中的枚举名
 const syncEnumNameInTable = (table: DeepReadonly<GenTableModelInput>, oldEnumName: string, newEnumName: string | undefined): GenTableModelInput => {
@@ -57,7 +56,6 @@ export const syncEnumNameForTables = (graph: Graph, oldEnumName: string, newEnum
 }
 
 
-
 // 在表中同步新的枚举（新的枚举必然来源于唯一的表中唯一的列）
 export const syncNewEnumForTables = (genEnum: DeepReadonly<GenModelInput_TargetOf_enums>, tableKey: string, columnName: string) => {
     const tableDialogsStore = useTableDialogsStore()
@@ -73,13 +71,12 @@ export const syncNewEnumForTables = (genEnum: DeepReadonly<GenModelInput_TargetO
 }
 
 
-
 // 同步实体中的枚举名
-const syncEnumNameInEntity = (entity: DeepReadonly<EntityFormType>, oldEnumName: string, newEnumName: string | undefined): EntityFormType => {
-    const tempEntity = cloneDeepReadonly<EntityFormType>(entity)
+const syncEnumNameInEntity = (entity: DeepReadonly<EntityConfigView>, oldEnumName: string, newEnumName: string | undefined): EntityConfigView => {
+    const tempEntity = cloneDeepReadonly<EntityConfigView>(entity)
 
-    tempEntity.properties.forEach(property => {
-        if ("enumName" in property && property.enumName && property.enumName === oldEnumName) {
+    tempEntity.tableConvertedEntity.properties.forEach(property => {
+        if (property.enumName && property.enumName === oldEnumName) {
             if (newEnumName === undefined) {
                 property.enumId = undefined
                 property.enumName = undefined
@@ -93,9 +90,9 @@ const syncEnumNameInEntity = (entity: DeepReadonly<EntityFormType>, oldEnumName:
 }
 
 // 判断枚举是否在实体中出现
-const judgeEnumInEntity = (enumName: string, entity: EntityFormType): boolean => {
-    return entity.properties
-        .flatMap(it => "enumName" in it ? it.enumName : undefined).filter(it => it !== undefined)
+const judgeEnumInEntity = (enumName: string, entity: DeepReadonly<EntityConfigView>): boolean => {
+    return entity.tableConvertedEntity.properties
+        .flatMap(it => it.enumName).filter(it => it !== undefined)
         .includes(enumName)
 }
 

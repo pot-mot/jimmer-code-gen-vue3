@@ -1,10 +1,15 @@
 import type {PropertySpecialFormType} from '../enums/';
-import type {AnnotationWithImports, PropertyBody} from './';
+import type {
+    AnnotationWithImports, 
+    GenPropertyExportView_TargetOf_enum, 
+    GenPropertyExportView_TargetOf_typeEntity, 
+    PropertyBody
+} from './';
 
 /**
  * 生成属性
  */
-export interface GenPropertyEntityConfigInput {
+export interface GenPropertyExportView {
     /**
      * 属性名
      */
@@ -94,11 +99,11 @@ export interface GenPropertyEntityConfigInput {
      */
     remark: string;
     /**
-     * 类型对应表 ID 视图
+     * 生成枚举
      */
-    typeTableId?: number | undefined;
+    enum?: GenPropertyExportView_TargetOf_enum | undefined;
     /**
-     * 生成枚举 ID 视图
+     * 对应实体
      */
-    enumId?: number | undefined;
+    typeEntity?: GenPropertyExportView_TargetOf_typeEntity | undefined;
 }

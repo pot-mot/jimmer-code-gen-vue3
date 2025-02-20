@@ -57,7 +57,7 @@ export const importModelJSON = async (modelInputJsonStr: string): Promise<number
 
             if (modelInput.entities) {
                 try {
-                    await api.modelService.saveBusiness({id: savedModelId, body: modelInput.entities})
+                    await api.modelService.configEntities({id: savedModelId, body: modelInput.entities})
                 } catch (e) {
                     sendI18nMessage('MESSAGE_modelFileOperations_importModelJson_entities_saveBusinessFail', 'error')
                 }
@@ -79,7 +79,7 @@ export const importModelJSON = async (modelInputJsonStr: string): Promise<number
 const getModelJson = async (model: DeepReadonly<GenModelView>): Promise<DeepReadonly<ModelInputWithEntities>> => {
     const {id, ...other} = model
 
-    const entities = await api.modelService.getEntityBusinessViews({id})
+    const entities = await api.modelService.exportEntities({id})
 
     return {
         ...other,

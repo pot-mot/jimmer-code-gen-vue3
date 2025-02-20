@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {AssociationType} from "@/api/__generated/model/enums";
 import {computed} from "vue";
-import {GenEntityDetailView_TargetOf_properties} from "@/api/__generated/model/static";
+import {GenEntityConfigView_TargetOf_properties} from "@/api/__generated/model/static";
 
-const property = defineModel<GenEntityDetailView_TargetOf_properties>({
+const property = defineModel<GenEntityConfigView_TargetOf_properties>({
     required: true
 })
 
@@ -21,7 +21,7 @@ const associationTypeToAnnotation = (associationType: AssociationType): string =
 }
 
 const propertyTags = computed<string[]>(() => {
-    const data: Pick<GenEntityDetailView_TargetOf_properties,
+    const data: Pick<GenEntityConfigView_TargetOf_properties,
         'idProperty' |
         'logicalDelete' |
         'keyProperty' | 'keyGroup' |

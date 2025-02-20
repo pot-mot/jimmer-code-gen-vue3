@@ -1,6 +1,6 @@
-import type {GenEntityDetailView_TargetOf_properties} from "@/api/__generated/model/static";
+import type {GenEntityConfigView_TargetOf_properties} from "@/api/__generated/model/static";
 
-export const stringifyPropertyType = (property: GenEntityDetailView_TargetOf_properties): string => {
+export const stringifyPropertyType = (property: GenEntityConfigView_TargetOf_properties): string => {
     let rawType = property.type
     if (property.enumName !== undefined) {
         rawType = property.enumName

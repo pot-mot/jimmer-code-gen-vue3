@@ -1,10 +1,10 @@
 import type {PropertySpecialFormType} from '../enums/';
-import type {AnnotationWithImports} from './';
+import type {AnnotationWithImports, PropertyBody} from './';
 
 /**
  * 生成属性
  */
-export interface GenEntityConfigInput_TargetOf_properties {
+export interface GenPropertyConfigView {
     /**
      * ID
      */
@@ -26,33 +26,37 @@ export interface GenEntityConfigInput_TargetOf_properties {
      */
     overwriteComment: boolean;
     /**
-     * 备注
+     * 字面类型
      */
-    remark: string;
+    type: string;
     /**
-     * 是否是生成式 ID
+     * 是否列表
      */
-    generatedId: boolean;
+    listType: boolean;
     /**
-     * 生成 ID 注解
+     * 是否非空
      */
-    generatedIdAnnotation?: AnnotationWithImports | undefined;
+    typeNotNull: boolean;
     /**
-     * 逻辑删除注解
+     * 是否为长关联
      */
-    logicalDeletedAnnotation?: AnnotationWithImports | undefined;
+    longAssociation: boolean;
     /**
      * 其他注解
      */
     otherAnnotation?: AnnotationWithImports | undefined;
     /**
+     * 属性方法体
+     */
+    body?: PropertyBody | undefined;
+    /**
      * 排序键
      */
     orderKey: number;
     /**
-     * 是否为长关联
+     * 特殊表单类型
      */
-    longAssociation: boolean;
+    specialFormType?: PropertySpecialFormType | undefined;
     /**
      * 是否在列表视图DTO中
      */
@@ -61,10 +65,6 @@ export interface GenEntityConfigInput_TargetOf_properties {
      * 是否在详情视图DTO中
      */
     inDetailView: boolean;
-    /**
-     * 是否在选项视图DTO中
-     */
-    inOptionView: boolean;
     /**
      * 是否在新增入参DTO中
      */
@@ -78,23 +78,31 @@ export interface GenEntityConfigInput_TargetOf_properties {
      */
     inSpecification: boolean;
     /**
+     * 是否在选项视图DTO中
+     */
+    inOptionView: boolean;
+    /**
      * 是否在短关联视图DTO中
      */
     inShortAssociationView: boolean;
-    /**
-     * 是否在长关联入参DTO中
-     */
-    inLongAssociationInput: boolean;
     /**
      * 是否在长关联视图DTO中
      */
     inLongAssociationView: boolean;
     /**
-     * 特殊表单类型
+     * 是否在长关联入参DTO中
      */
-    specialFormType?: PropertySpecialFormType | undefined;
+    inLongAssociationInput: boolean;
     /**
-     * 是否列表
+     * 备注
      */
-    listType: boolean;
+    remark: string;
+    /**
+     * 类型对应表 ID 视图
+     */
+    typeTableId?: number | undefined;
+    /**
+     * 生成枚举 ID 视图
+     */
+    enumId?: number | undefined;
 }

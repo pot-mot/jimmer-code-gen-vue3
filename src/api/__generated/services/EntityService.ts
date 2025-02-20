@@ -1,6 +1,5 @@
 import type {Executor} from '../';
-import type {GenLanguage} from '../model/enums/';
-import type {EntityModelBusinessInput, GenEntityDetailView} from '../model/static/';
+import type {EntityConfigInput, EntityConfigView} from '../model/static/';
 
 export class EntityService {
     
@@ -9,43 +8,24 @@ export class EntityService {
     readonly config: (options: EntityServiceOptions['config']) => Promise<
         void
     > = async(options) => {
-        let _uri = '/entity';
+        let _uri = '/entity/config';
         return (await this.executor({uri: _uri, method: 'PUT', body: options.body})) as Promise<void>;
     }
     
     readonly get: (options: EntityServiceOptions['get']) => Promise<
-        GenEntityDetailView | undefined
+        EntityConfigView | undefined
     > = async(options) => {
         let _uri = '/entity/';
         _uri += encodeURIComponent(options.id);
-        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<GenEntityDetailView | undefined>;
-    }
-    
-    readonly getByTableId: (options: EntityServiceOptions['getByTableId']) => Promise<
-        GenEntityDetailView | undefined
-    > = async(options) => {
-        let _uri = '/entity/table/';
-        _uri += encodeURIComponent(options.tableId);
-        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<GenEntityDetailView | undefined>;
-    }
-    
-    readonly listLanguage: () => Promise<
-        Array<GenLanguage>
-    > = async() => {
-        let _uri = '/entity/language';
-        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenLanguage>>;
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<EntityConfigView | undefined>;
     }
 }
 
 export type EntityServiceOptions = {
-    'listLanguage': {}, 
     'get': {
         id: number
     }, 
-    'getByTableId': {
-        tableId: number
-    }, 
     'config': {
-        body: EntityModelBusinessInput
+        body: EntityConfigInput
     }
 }

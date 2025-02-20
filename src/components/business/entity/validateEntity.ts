@@ -1,8 +1,8 @@
 import {
-    EntityModelBusinessInput,
-    EntityModelBusinessView, type GenEntityConfigInput,
+    EntityConfigInput, EntityExportView,
+    GenEntityConfigInput,
     GenEntityConfigInput_TargetOf_properties,
-    GenPropertyEntityConfigInput
+    GenPropertyConfigInput
 } from "@/api/__generated/model/static";
 import {MainLocaleKeyParam} from "@/i18n";
 import {DeepReadonly} from "vue";
@@ -45,7 +45,7 @@ const validateEntityAnnotation = (entity: DeepReadonly<GenEntityConfigInput>) =>
     return messageList
 }
 
-const validatePropertyAnnotation = (property: DeepReadonly<GenEntityConfigInput_TargetOf_properties | GenPropertyEntityConfigInput>) => {
+const validatePropertyAnnotation = (property: DeepReadonly<GenEntityConfigInput_TargetOf_properties | GenPropertyConfigInput>) => {
     const messageList: MainLocaleKeyParam[] = []
     
 
@@ -88,7 +88,7 @@ const validatePropertyAnnotation = (property: DeepReadonly<GenEntityConfigInput_
     return messageList
 }
 
-const validatePropertyBody = (property: DeepReadonly<GenPropertyEntityConfigInput>) => {
+const validatePropertyBody = (property: DeepReadonly<GenPropertyConfigInput>) => {
     const messageList: MainLocaleKeyParam[] = []
     
     const body = property.body
@@ -113,10 +113,10 @@ const validatePropertyBody = (property: DeepReadonly<GenPropertyEntityConfigInpu
 }
 
 export const validateEntity = (
-    input: DeepReadonly<EntityModelBusinessInput>,
-    otherEntities: DeepReadonly<Array<EntityModelBusinessView>>,
+    input: DeepReadonly<EntityConfigInput>,
+    otherEntities: DeepReadonly<Array<EntityExportView>>,
 ): MainLocaleKeyParam[] => {
-    const entity = input.entity
+    const entity = input.tableConvertedEntity
     
     const messageList: MainLocaleKeyParam[] = []
 
@@ -125,7 +125,7 @@ export const validateEntity = (
     }
 
     for (const otherEntity of otherEntities) {
-        if (otherEntity.tableConvertedEntity.name === entity.name) {
+        if (otherEntity.entity.name === entity.name) {
             messageList.push({key: "VALIDATE_Entity_nameCannotBeDuplicate", args: [entity.name]})
             break
         }
@@ -134,9 +134,9 @@ export const validateEntity = (
     messageList.push(...validateEntityAnnotation(entity))
 
     const propertyNameSet = new Set<string>()
-    const allProperties: DeepReadonly<Array<GenEntityConfigInput_TargetOf_properties | GenPropertyEntityConfigInput>> = [
+    const allProperties: DeepReadonly<Array<GenEntityConfigInput_TargetOf_properties | GenPropertyConfigInput>> = [
         ...entity.properties,
-        ...input.properties,
+        ...input.notConvertedProperties,
     ]
 
     for (const property of allProperties) {
@@ -156,7 +156,7 @@ export const validateEntity = (
         messageList.push(...validatePropertyAnnotation(property))
     }
 
-    for (const property of input.properties) {
+    for (const property of input.notConvertedProperties) {
         if (!property.type || property.type.length === 0) {
             messageList.push({key: "VALIDATE_Entity_propertyTypeCannotBeEmpty", args: [property.name]})
         }

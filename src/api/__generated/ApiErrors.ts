@@ -498,7 +498,7 @@ export type ApiErrors = {
                 code: 'INDEXES_TABLE_SUPER_TABLE_NOT_FOUND', 
                 readonly [key:string]: any
             }), 
-        'saveBusiness': AllErrors & ({
+        'configEntities': AllErrors & ({
                 family: 'MODEL_BUSINESS_INPUT', 
                 code: 'ENTITY_CANNOT_MATCH_TABLE', 
                 readonly [key:string]: any

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {EntityModelBusinessInput, IdName} from "@/api/__generated/model/static";
+import {EntityConfigInput, EntityConfigView, IdName} from "@/api/__generated/model/static";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {DeepReadonly} from "vue";
 import EntityBusinessSelect from "@/components/business/entity/EntityBusinessConfig.vue";
@@ -11,55 +11,49 @@ import Details from "@/components/global/common/Details.vue";
 import EditList from "@/components/global/list/EditList.vue";
 import {getDefaultProperty} from "@/components/business/property/defaultProperty.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
-import {
-    EntityFormType,
-    entityFormTypeToBusinessInput,
-    useEntityPropertiesPartByHasColumn
-} from "@/components/business/entity/EntityFormType.ts";
-import NoColumnPropertyConfig from "@/components/business/property/NoColumnPropertyConfig.vue";
-import HasColumnPropertyConfig from "@/components/business/property/HasColumnPropertyConfig.vue";
-import {validateGenPropertyEntityConfigInput} from "@/shape/GenPropertyEntityConfigInput.ts";
+import NotConvertedPropertyConfig from "@/components/business/property/NotConvertedPropertyConfig.vue";
+import ConvertedPropertyConfig from "@/components/business/property/ConvertedPropertyConfig.vue";
+import {validateGenPropertyConfigInput} from "@/shape/GenPropertyConfigInput.ts";
 import Comment from "@/components/global/common/Comment.vue";
+import {useConfigView} from "@/components/business/entity/useConfigView.ts";
 
 const i18nStore = useI18nStore()
 
-const entity = defineModel<EntityFormType>({
+const entityConfigView = defineModel<EntityConfigView>({
     required: true
 })
 
-const {hasColumnProperties, noColumnProperties} = useEntityPropertiesPartByHasColumn(entity)
+const {
+    entity,
+    convertedProperties,
+    notConvertedProperties,
+    toInput,
+} = useConfigView(entityConfigView)
 
 const props = defineProps<{
-    validate: (genEnum: DeepReadonly<EntityModelBusinessInput>) => Promise<MainLocaleKeyParam[]>,
+    validate: (input: DeepReadonly<EntityConfigInput>) => Promise<MainLocaleKeyParam[]>,
 }>()
 
-const emits = defineEmits<FormEmits<EntityModelBusinessInput> & {
+const emits = defineEmits<FormEmits<EntityConfigInput, EntityConfigView> & {
     (event: "click-enum", genEnum: IdName): void
     (event: "click-entity", entity: IdName): void
 }>()
 
 const handleCancel = () => {
-    const entityInput: EntityModelBusinessInput = entityFormTypeToBusinessInput(entity.value)
-
-    emits('cancel', entityInput)
+    emits('cancel', entityConfigView.value)
 }
 
 const handleSubmit = async () => {
-    let orderKey = 1
-    for (const property of entity.value.properties) {
-        property.orderKey = orderKey++
-    }
+    const input = toInput()
 
-    const entityInput: EntityModelBusinessInput = entityFormTypeToBusinessInput(entity.value)
-
-    const messageList = await props.validate(entityInput)
+    const messageList = await props.validate(input)
 
     if (messageList.length > 0) {
         messageList.forEach(it => sendI18nMessage(it, 'warning'))
         return
     }
 
-    emits('submit', entityInput)
+    emits('submit', input)
 }
 </script>
 
@@ -108,11 +102,11 @@ const handleSubmit = async () => {
                 <el-text size="default">{{ i18nStore.translate('LABEL_EntityConfigForm_properties') }}</el-text>
             </template>
 
-            <ViewList :lines="hasColumnProperties">
+            <ViewList :lines="convertedProperties">
                 <template #default="{index}">
-                    <HasColumnPropertyConfig
-                        class="has-column-property-config"
-                        v-model="hasColumnProperties[index]"
+                    <ConvertedPropertyConfig
+                        class="converted-property-config"
+                        v-model="convertedProperties[index]"
                         @click-entity="genEntity => emits('click-entity', genEntity)"
                         @click-enum="genEnum => emits('click-enum', genEnum)"
                     />
@@ -120,16 +114,16 @@ const handleSubmit = async () => {
             </ViewList>
 
             <EditList
-                v-model:lines="noColumnProperties"
+                v-model:lines="notConvertedProperties"
                 :default-line="getDefaultProperty"
                 :label-line="false"
-                :json-schema-validate="validateGenPropertyEntityConfigInput"
+                :json-schema-validate="validateGenPropertyConfigInput"
                 style="padding-top: 1em;"
             >
                 <template #default="{index}">
-                    <NoColumnPropertyConfig
-                        class="no-column-property-config"
-                        v-model="noColumnProperties[index]"
+                    <NotConvertedPropertyConfig
+                        class="not-converted-property-config"
+                        v-model="notConvertedProperties[index]"
                     />
                 </template>
             </EditList>
@@ -140,7 +134,7 @@ const handleSubmit = async () => {
                 <el-text size="default">{{ i18nStore.translate('LABEL_EntityConfigForm_businessConfig') }}</el-text>
             </template>
 
-            <EntityBusinessSelect v-model="entity"/>
+            <EntityBusinessSelect v-model="entityConfigView"/>
         </Details>
 
         <div style="text-align: right; position: absolute; bottom: 0.5em; right: 1em;">
@@ -163,8 +157,8 @@ const handleSubmit = async () => {
     grid-template-columns: 1em calc(100% - 1.6em);
 }
 
-.has-column-property-config,
-.no-column-property-config {
+.converted-property-config,
+.not-converted-property-config {
     margin-bottom: 1em;
 }
 </style>

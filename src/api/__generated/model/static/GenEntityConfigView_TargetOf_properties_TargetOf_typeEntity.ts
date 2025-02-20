@@ -1,7 +1,7 @@
 /**
  * 生成实体
  */
-export interface GenEntityDetailView_TargetOf_properties_TargetOf_typeEntity {
+export interface GenEntityConfigView_TargetOf_properties_TargetOf_typeEntity {
     /**
      * ID
      */

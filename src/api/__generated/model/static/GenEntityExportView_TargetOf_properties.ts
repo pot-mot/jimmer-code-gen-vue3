@@ -1,14 +1,39 @@
-import type {PropertySpecialFormType} from '../enums/';
-import type {AnnotationWithImports} from './';
+import type {AssociationType, PropertySpecialFormType} from '../enums/';
+import type {
+    AnnotationWithImports, 
+    GenEntityExportView_TargetOf_properties_TargetOf_typeTable, 
+    JoinColumnMeta, 
+    JoinTableMeta
+} from './';
 
 /**
  * 生成属性
  */
-export interface GenEntityConfigInput_TargetOf_properties {
+export interface GenEntityExportView_TargetOf_properties {
     /**
-     * ID
+     * 字面类型
      */
-    id: number;
+    type: string;
+    /**
+     * 是否非空
+     */
+    typeNotNull: boolean;
+    /**
+     * 类型对应表
+     */
+    typeTable?: GenEntityExportView_TargetOf_properties_TargetOf_typeTable | undefined;
+    /**
+     * 关联类型
+     */
+    associationType?: AssociationType | undefined;
+    /**
+     * 关联列注解
+     */
+    joinColumnMetas?: Array<JoinColumnMeta> | undefined;
+    /**
+     * 关联表注解
+     */
+    joinTableMeta?: JoinTableMeta | undefined;
     /**
      * 属性名
      */
@@ -30,6 +55,10 @@ export interface GenEntityConfigInput_TargetOf_properties {
      */
     remark: string;
     /**
+     * 是否 ID 属性
+     */
+    idProperty: boolean;
+    /**
      * 是否是生成式 ID
      */
     generatedId: boolean;
@@ -37,6 +66,10 @@ export interface GenEntityConfigInput_TargetOf_properties {
      * 生成 ID 注解
      */
     generatedIdAnnotation?: AnnotationWithImports | undefined;
+    /**
+     * 是否为逻辑删除属性
+     */
+    logicalDelete: boolean;
     /**
      * 逻辑删除注解
      */
@@ -94,7 +127,7 @@ export interface GenEntityConfigInput_TargetOf_properties {
      */
     specialFormType?: PropertySpecialFormType | undefined;
     /**
-     * 是否列表
+     * 名称
      */
-    listType: boolean;
+    columnName?: string | undefined;
 }

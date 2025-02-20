@@ -1,7 +1,7 @@
 import type {AssociationType, PropertySpecialFormType} from '../enums/';
 import type {
     AnnotationWithImports, 
-    GenEntityModelView_TargetOf_properties_TargetOf_typeTable, 
+    GenEntityConfigView_TargetOf_properties_TargetOf_typeEntity, 
     JoinColumnMeta, 
     JoinTableMeta
 } from './';
@@ -9,31 +9,11 @@ import type {
 /**
  * 生成属性
  */
-export interface GenEntityModelView_TargetOf_properties {
+export interface GenEntityConfigView_TargetOf_properties {
     /**
-     * 字面类型
+     * ID
      */
-    type: string;
-    /**
-     * 是否非空
-     */
-    typeNotNull: boolean;
-    /**
-     * 类型对应表
-     */
-    typeTable?: GenEntityModelView_TargetOf_properties_TargetOf_typeTable | undefined;
-    /**
-     * 关联类型
-     */
-    associationType?: AssociationType | undefined;
-    /**
-     * 关联列注解
-     */
-    joinColumnMetas?: Array<JoinColumnMeta> | undefined;
-    /**
-     * 关联表注解
-     */
-    joinTableMeta?: JoinTableMeta | undefined;
+    id: number;
     /**
      * 属性名
      */
@@ -66,6 +46,14 @@ export interface GenEntityModelView_TargetOf_properties {
      * 生成 ID 注解
      */
     generatedIdAnnotation?: AnnotationWithImports | undefined;
+    /**
+     * 是否为业务键属性
+     */
+    keyProperty: boolean;
+    /**
+     * 业务键组
+     */
+    keyGroup?: string | undefined;
     /**
      * 是否为逻辑删除属性
      */
@@ -127,7 +115,55 @@ export interface GenEntityModelView_TargetOf_properties {
      */
     specialFormType?: PropertySpecialFormType | undefined;
     /**
-     * 名称
+     * 字面类型
      */
-    columnName?: string | undefined;
+    type: string;
+    /**
+     * 是否列表
+     */
+    listType: boolean;
+    /**
+     * 是否非空
+     */
+    typeNotNull: boolean;
+    /**
+     * 关联类型
+     */
+    associationType?: AssociationType | undefined;
+    /**
+     * 映射镜像
+     */
+    mappedBy?: string | undefined;
+    /**
+     * 是否为 ID 视图属性
+     */
+    idView: boolean;
+    /**
+     * ID 视图目标
+     */
+    idViewTarget?: string | undefined;
+    /**
+     * 关联列注解
+     */
+    joinColumnMetas?: Array<JoinColumnMeta> | undefined;
+    /**
+     * 关联表注解
+     */
+    joinTableMeta?: JoinTableMeta | undefined;
+    /**
+     * ID
+     */
+    typeTableId?: number | undefined;
+    /**
+     * 对应实体
+     */
+    typeEntity?: GenEntityConfigView_TargetOf_properties_TargetOf_typeEntity | undefined;
+    /**
+     * ID
+     */
+    enumId?: number | undefined;
+    /**
+     * 枚举名
+     */
+    enumName?: string | undefined;
 }

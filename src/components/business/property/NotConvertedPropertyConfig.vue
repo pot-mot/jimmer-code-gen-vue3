@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import PropertyBodyEditor from "@/components/business/property/PropertyBodyEditor.vue";
 import AnnotationNullableEditor from "@/components/business/annotation/AnnotationNullableEditor.vue";
-import {GenPropertyEntityConfigInput} from "@/api/__generated/model/static";
+import {GenPropertyConfigInput} from "@/api/__generated/model/static";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import LineItem from "@/components/global/line/LineItem.vue";
 import Line from "@/components/global/line/Line.vue";
@@ -11,7 +11,7 @@ import {watch} from "vue";
 
 const i18nStore = useI18nStore()
 
-const property = defineModel<GenPropertyEntityConfigInput>({
+const property = defineModel<GenPropertyConfigInput>({
     required: true
 })
 
