@@ -1,13 +1,10 @@
 export type {AnnotationWithImports} from './AnnotationWithImports';
-export type {AssociationColumnQuery} from './AssociationColumnQuery';
-export type {AssociationQuery} from './AssociationQuery';
 export type {AssociationTableQuery} from './AssociationTableQuery';
 export type {ColumnQuery} from './ColumnQuery';
 export type {ColumnTableNotMatchItem} from './ColumnTableNotMatchItem';
 export type {EntityConfigInput} from './EntityConfigInput';
 export type {EntityConfigView} from './EntityConfigView';
 export type {EntityExportView} from './EntityExportView';
-export type {EnumQuery} from './EnumQuery';
 export type {GenAssociationModelInput} from './GenAssociationModelInput';
 export type {GenAssociationModelInput_TargetOf_columnReferences} from './GenAssociationModelInput_TargetOf_columnReferences';
 export type {GenAssociationView} from './GenAssociationView';
@@ -35,7 +32,6 @@ export type {GenEntityExportView_TargetOf_properties} from './GenEntityExportVie
 export type {GenEntityExportView_TargetOf_properties_TargetOf_typeTable} from './GenEntityExportView_TargetOf_properties_TargetOf_typeTable';
 export type {GenEnumItemsView} from './GenEnumItemsView';
 export type {GenEnumItemsView_TargetOf_items} from './GenEnumItemsView_TargetOf_items';
-export type {GenEnumView} from './GenEnumView';
 export type {GenModelInput} from './GenModelInput';
 export type {GenModelInput_TargetOf_enums} from './GenModelInput_TargetOf_enums';
 export type {GenModelInput_TargetOf_enums_TargetOf_items} from './GenModelInput_TargetOf_enums_TargetOf_items';
