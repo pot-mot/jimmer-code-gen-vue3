@@ -9,7 +9,7 @@ export class GenerateService {
     readonly generateModel: (options: GenerateServiceOptions['generateModel']) => Promise<
         GenerateResult
     > = async(options) => {
-        let _uri = '/preview/model';
+        let _uri = '/generate/model';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
         _value = options.id;
