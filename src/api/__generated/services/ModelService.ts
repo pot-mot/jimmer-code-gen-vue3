@@ -40,17 +40,6 @@ export class ModelService {
     > = async(options) => {
         let _uri = '/model/exportEntities/';
         _uri += encodeURIComponent(options.id);
-        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
-        let _value: any = undefined;
-        _value = options.excludeEntityIds;
-        if (_value !== undefined && _value !== null) {
-            for (const _item of _value) {
-                _uri += _separator
-                _uri += 'excludeEntityIds='
-                _uri += encodeURIComponent(_item);
-                _separator = '&';
-            }
-        }
         return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<EntityExportView>>;
     }
     
@@ -97,8 +86,7 @@ export type ModelServiceOptions = {
         body: GenModelInput
     }, 
     'exportEntities': {
-        id: number, 
-        excludeEntityIds?: Array<number> | undefined
+        id: number
     }, 
     'configEntities': {
         id: number, 

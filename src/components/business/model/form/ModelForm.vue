@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {ref, watch} from "vue";
 import {cloneDeep} from 'lodash'
-import {GenConfigProperties, GenModelInput} from "@/api/__generated/model/static";
+import {EntityConfigInput, EntityConfigView, GenConfigProperties, GenModelInput} from "@/api/__generated/model/static";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
 import {jsonStrCompress, jsonStrPrettyFormat} from "@/utils/json.ts";
@@ -15,6 +15,8 @@ import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {validateModel} from "@/components/business/model/form/validateModel.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
+import {api} from "@/api";
+import ModelEntitiesEditor from "@/components/business/model/form/ModelEntitiesEditor.vue";
 
 const i18nStore = useI18nStore()
 
@@ -78,15 +80,37 @@ const handleCancel = () => {
 	emits('cancel', model.value)
 }
 
-const otherConfigOpenState = ref(false)
 
-const handleOpenOtherConfigDialog = () => {
-	otherConfigOpenState.value = true
+const advanceConfigOpenState = ref(false)
+
+const handleOpenAdvanceConfigDialog = () => {
+	advanceConfigOpenState.value = true
 }
 
-const handleOtherConfigSubmit = (data: GenConfigProperties) => {
+const handleSubmitAdvanceConfig = (data: GenConfigProperties) => {
     model.value = {...model.value, ...data}
-    otherConfigOpenState.value = false
+    advanceConfigOpenState.value = false
+}
+
+
+const entitiesEditorOpenState = ref(false)
+
+const entities = ref<EntityConfigView[]>()
+
+const handleOpenEntitiesEditor = async () => {
+	if (model.value.id === undefined) return
+	entities.value = await api.entityService.listByModelId({modelId: model.value.id})
+	entitiesEditorOpenState.value = true
+}
+
+const handleCancelEntitiesEditor = () => {
+	entities.value = undefined
+	entitiesEditorOpenState.value = false
+}
+
+const handleSubmitEntitiesEditor = async (entities: Array<EntityConfigInput>) => {
+	await api.entityService.configList({body: entities})
+	handleCancelEntitiesEditor()
 }
 </script>
 
@@ -140,9 +164,17 @@ const handleOtherConfigSubmit = (data: GenConfigProperties) => {
 					</el-form-item>
 				</el-col>
 
-				<el-col :span="4" :offset="20">
+				<el-col :span="4" :offset="16" v-if="model.id">
 					<el-form-item>
-						<el-button @click="handleOpenOtherConfigDialog">
+						<el-button @click="handleOpenEntitiesEditor">
+							{{ i18nStore.translate('LABEL_ModelForm_advanceOptions') }}
+						</el-button>
+					</el-form-item>
+				</el-col>
+
+				<el-col :span="4">
+					<el-form-item>
+						<el-button @click="handleOpenAdvanceConfigDialog">
 							{{ i18nStore.translate('LABEL_ModelForm_advanceOptions') }}
 						</el-button>
 					</el-form-item>
@@ -163,11 +195,20 @@ const handleOtherConfigSubmit = (data: GenConfigProperties) => {
 		</div>
 	</el-form>
 
-	<DragDialog v-model="otherConfigOpenState" :init-y="100" :init-h="620">
+	<DragDialog v-model="advanceConfigOpenState" :init-y="100" :init-h="620">
 		<GenConfigForm
 			v-model="model"
-			@submit="handleOtherConfigSubmit"
-			@cancel="otherConfigOpenState = false"
+			@submit="handleSubmitAdvanceConfig"
+			@cancel="advanceConfigOpenState = false"
+			style="padding: 1em 0.5em;"/>
+	</DragDialog>
+
+	<DragDialog v-model="entitiesEditorOpenState" :init-y="100" :init-h="620">
+		<ModelEntitiesEditor
+			v-if="entities"
+			v-model="entities"
+			@submit="handleSubmitEntitiesEditor"
+			@cancel="handleCancelEntitiesEditor"
 			style="padding: 1em 0.5em;"/>
 	</DragDialog>
 </template>

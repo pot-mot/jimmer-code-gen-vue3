@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {useEntityDialogsStore} from "@/store/modelEditor/EntityDialogsStore.ts";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
-import EntityConfigForm from "@/components/business/entity/EntityForm.vue";
+import EntityForm from "@/components/business/entity/EntityForm.vue";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {EntityConfigInput} from "@/api/__generated/model/static";
 import {api} from "@/api";
@@ -28,9 +28,9 @@ const handleSubmit = async (
 const validate = async (
     entity: DeepReadonly<EntityConfigInput>
 ): Promise<MainLocaleKeyParam[]> => {
-    const otherEntities = await api.modelService.exportEntities({
-        id: MODEL._model().id,
-        excludeEntityIds: [entity.tableConvertedEntity.id],
+    const otherEntities = await api.entityService.listByModelId({
+        modelId: MODEL._model().id,
+		excludeEntityIds: [entity.tableConvertedEntity.id]
     })
 
     return validateEntity(
@@ -49,7 +49,7 @@ const validate = async (
             :modal="options?.modal"
             @close="store.close(key, false)"
         >
-            <EntityConfigForm
+            <EntityForm
                 v-model="store.items[index].value"
                 :validate="validate"
                 @submit="handleSubmit"
