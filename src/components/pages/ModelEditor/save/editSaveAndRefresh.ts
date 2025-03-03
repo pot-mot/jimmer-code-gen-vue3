@@ -12,6 +12,7 @@ import {nextTick} from "vue";
 import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
 import {cloneDeep} from "lodash";
 import {syncTypeEntityForEntities} from "@/components/pages/ModelEditor/sync/syncEntity.ts";
+import {convertModel} from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
 
 let editSaveAndRefresh: {
     editEntity: (idName: IdName) => void
@@ -89,7 +90,7 @@ export const useEditSaveAndRefresh = () => {
                         model.graphData = currentGraphData
 
                         await saveModel(model)
-
+                        await convertModel(model.id)
                         await refreshCode()
                     }
                     clearTimeout(timer)
