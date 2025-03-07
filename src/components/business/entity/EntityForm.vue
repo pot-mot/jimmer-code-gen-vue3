@@ -31,12 +31,9 @@ const {
 	toInput,
 } = useConfigView(entityConfigView)
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
 	validate: (input: DeepReadonly<EntityConfigInput>) => Promise<MainLocaleKeyParam[]>,
-	withOperations?: boolean | undefined
-}>(), {
-	withOperations: true
-})
+}>()
 
 const emits = defineEmits<FormEmits<EntityConfigInput, EntityConfigView> & {
 	(event: "click-enum", genEnum: IdName): void
@@ -155,7 +152,7 @@ defineExpose<EntityFormExpose>({
 			<EntityBusinessSelect v-model="entityConfigView"/>
 		</Details>
 
-		<div style="text-align: right; position: absolute; bottom: 0.5em; right: 1em;" v-if="withOperations">
+		<div style="text-align: right; position: absolute; bottom: 0.5em; right: 1em;">
 			<el-button type="info" @click="handleCancel">{{ i18nStore.translate('BUTTON_cancel') }}</el-button>
 			<el-button type="primary" @click="handleSubmit">{{ i18nStore.translate('BUTTON_save') }}</el-button>
 		</div>

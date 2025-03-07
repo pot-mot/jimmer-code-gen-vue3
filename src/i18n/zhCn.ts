@@ -344,6 +344,7 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     LABEL_ModelForm_packagePath: "包路径",
     LABEL_ModelForm_tablePath: "表路径",
     LABEL_ModelForm_remark: "备注",
+    LABEL_ModelForm_entitiesConfig: "实体配置",
     LABEL_ModelForm_advanceOptions: "高级选项",
     LABEL_ModelForm_content: "内容",
 

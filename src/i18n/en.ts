@@ -343,6 +343,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     LABEL_ModelForm_packagePath: "Package Path",
     LABEL_ModelForm_tablePath: "Table Path",
     LABEL_ModelForm_remark: "Remark",
+    LABEL_ModelForm_entitiesConfig: "Entities Config",
     LABEL_ModelForm_advanceOptions: "Advance Options",
     LABEL_ModelForm_content: "Content",
 

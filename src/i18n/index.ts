@@ -167,6 +167,7 @@ type MainLocale = {
     LABEL_ModelForm_packagePath: string
     LABEL_ModelForm_tablePath: string
     LABEL_ModelForm_remark: string
+    LABEL_ModelForm_entitiesConfig: string
     LABEL_ModelForm_advanceOptions: string
     LABEL_ModelForm_content: string
 

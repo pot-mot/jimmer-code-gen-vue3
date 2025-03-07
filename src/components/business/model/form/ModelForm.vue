@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {ref, watch} from "vue";
 import {cloneDeep} from 'lodash'
-import {EntityConfigInput, EntityConfigView, GenConfigProperties, GenModelInput} from "@/api/__generated/model/static";
+import {GenConfigProperties, GenModelInput} from "@/api/__generated/model/static";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
 import {jsonStrCompress, jsonStrPrettyFormat} from "@/utils/json.ts";
@@ -15,7 +15,6 @@ import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {validateModel} from "@/components/business/model/form/validateModel.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
-import {api} from "@/api";
 import ModelEntitiesEditor from "@/components/business/model/form/ModelEntitiesEditor.vue";
 
 const i18nStore = useI18nStore()
@@ -92,25 +91,10 @@ const handleSubmitAdvanceConfig = (data: GenConfigProperties) => {
     advanceConfigOpenState.value = false
 }
 
-
 const entitiesEditorOpenState = ref(false)
 
-const entities = ref<EntityConfigView[]>()
-
-const handleOpenEntitiesEditor = async () => {
-	if (model.value.id === undefined) return
-	entities.value = await api.entityService.listByModelId({modelId: model.value.id})
+const handleOpenEntitiesEditor = () => {
 	entitiesEditorOpenState.value = true
-}
-
-const handleCancelEntitiesEditor = () => {
-	entities.value = undefined
-	entitiesEditorOpenState.value = false
-}
-
-const handleSubmitEntitiesEditor = async (entities: Array<EntityConfigInput>) => {
-	await api.entityService.configList({body: entities})
-	handleCancelEntitiesEditor()
 }
 </script>
 
@@ -167,7 +151,7 @@ const handleSubmitEntitiesEditor = async (entities: Array<EntityConfigInput>) =>
 				<el-col :span="4" :offset="16" v-if="model.id">
 					<el-form-item>
 						<el-button @click="handleOpenEntitiesEditor">
-							{{ i18nStore.translate('LABEL_ModelForm_advanceOptions') }}
+							{{ i18nStore.translate('LABEL_ModelForm_entitiesConfig') }}
 						</el-button>
 					</el-form-item>
 				</el-col>
@@ -205,10 +189,9 @@ const handleSubmitEntitiesEditor = async (entities: Array<EntityConfigInput>) =>
 
 	<DragDialog v-model="entitiesEditorOpenState" :init-y="100" :init-h="620">
 		<ModelEntitiesEditor
-			v-if="entities"
-			v-model="entities"
-			@submit="handleSubmitEntitiesEditor"
-			@cancel="handleCancelEntitiesEditor"
-			style="padding: 1em 0.5em;"/>
+			v-if="model?.id"
+			:model-id="model.id"
+			style="padding: 1em 0.5em;"
+		/>
 	</DragDialog>
 </template>
