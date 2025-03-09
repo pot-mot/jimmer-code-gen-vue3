@@ -2,6 +2,7 @@ import {
     GenAssociationModelInput,
     GenModelInput,
     GenModelInput_TargetOf_enums,
+    GenModelInput_TargetOf_subGroups,
     GenTableModelInput
 } from "@/api/__generated/model/static";
 import {AssociationEdge, ModelEditorData, TableNode, validateModelEditorData} from "@/shape/ModelEditorData.ts";
@@ -12,6 +13,7 @@ import {validateAssociation} from "@/components/business/association/validateAss
 import {DeepReadonly} from "vue";
 import {ProjectLocaleKeyParam} from "@/i18n";
 import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
+import {validateModelSubGroup} from "@/components/business/modelSubGroup/validateModelSubGroup.ts";
 
 export const validateModel = (
     model: DeepReadonly<GenModelInput>,
@@ -21,6 +23,7 @@ export const validateModel = (
         errors
     } = validateGraphDataStr(
         model.graphData,
+        model.subGroups,
         model.enums
     )
 
@@ -37,6 +40,7 @@ export const validateModel = (
 
 const validateGraphDataStr = (
     graphDataStr: Readonly<string>,
+    subGroups: DeepReadonly<Array<GenModelInput_TargetOf_subGroups>>,
     enums: DeepReadonly<Array<GenModelInput_TargetOf_enums>>
 ): {
     messageList: ProjectLocaleKeyParam[],
@@ -92,7 +96,21 @@ const validateGraphDataStr = (
                 edges,
                 associations,
                 associationNameMap,
+                subGroups,
                 enums
+            }
+
+            for (const subGroup of subGroups) {
+                const subGroupMessageList = validateModelSubGroup(
+                    subGroup,
+                    subGroups.filter(it => it !== subGroup),
+                )
+
+                const subGroupNameMessageList = subGroupMessageList.map(it => {
+                    return {key: 'VALIDATE_GenModel_subGroupValidError', args: [subGroup.name, it]} as ProjectLocaleKeyParam
+                })
+
+                messageList.push(...subGroupNameMessageList)
             }
 
             for (const node of nodes) {
@@ -101,7 +119,8 @@ const validateGraphDataStr = (
                 const nodeMessageList = validateTable(
                     table,
                     context.tables.filter(it => it !== table),
-                    context.enums
+                    context.subGroups,
+                    context.enums,
                 )
 
                 const withTableNameMessageList = nodeMessageList.map(it => {
@@ -121,7 +140,10 @@ const validateGraphDataStr = (
                 )
 
                 const withAssociationNameMessageList = edgeMessageList.map(it => {
-                    return {key: 'VALIDATE_GenModel_tableValidError', args: [association.name, it]} as ProjectLocaleKeyParam
+                    return {
+                        key: 'VALIDATE_GenModel_tableValidError',
+                        args: [association.name, it]
+                    } as ProjectLocaleKeyParam
                 })
 
                 messageList.push(...withAssociationNameMessageList)
@@ -130,7 +152,8 @@ const validateGraphDataStr = (
             for (const genEnum of enums) {
                 const enumMessageList = validateEnum(
                     genEnum,
-                    enums.filter(it => it.name !== genEnum.name)
+                    enums.filter(it => it.name !== genEnum.name),
+                    context.subGroups,
                 )
 
                 const withEnumNameMessageList = enumMessageList.map(it => {
@@ -149,7 +172,7 @@ const validateGraphDataStr = (
     }
 
     return {
-        messageList,
+        messageList: [...new Set(messageList)],
         errors
     }
 }
@@ -161,5 +184,6 @@ interface ModelFormValidateContext {
     edges: DeepReadonly<Array<AssociationEdge>>
     associations: DeepReadonly<Array<GenAssociationModelInput>>
     associationNameMap: DeepReadonly<Map<string, GenAssociationModelInput>>
+    subGroups: DeepReadonly<Array<GenModelInput_TargetOf_subGroups>>
     enums: DeepReadonly<Array<GenModelInput_TargetOf_enums>>
 }

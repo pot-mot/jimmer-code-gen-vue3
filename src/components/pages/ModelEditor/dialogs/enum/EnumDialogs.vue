@@ -22,7 +22,8 @@ const handleSubmit = (key: string, genEnum: DeepReadonly<GenModelInput_TargetOf_
 const validate = (key: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
     return validateEnum(
         genEnum,
-        MODEL.enums.filter(it => it.name !== key)
+        MODEL.enums.filter(it => it.name !== key),
+        MODEL.subGroups,
     )
 }
 </script>

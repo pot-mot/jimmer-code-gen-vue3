@@ -1,6 +1,10 @@
 // src/components/business/table/validateTable.ts
-import type {GenModelInput_TargetOf_enums, GenTableModelInput_TargetOf_columns,} from "@/api/__generated/model/static";
-import {GenTableModelInput} from "@/api/__generated/model/static";
+import {
+    GenModelInput_TargetOf_enums,
+    GenModelInput_TargetOf_subGroups,
+    GenTableModelInput,
+    GenTableModelInput_TargetOf_columns,
+} from "@/api/__generated/model/static";
 import {getAllChildTables, getLegalSuperTables} from "@/components/business/table/tableInheritAnalyse.ts";
 import {DeepReadonly} from "vue";
 import {MainLocaleKeyParam} from "@/i18n";
@@ -8,6 +12,7 @@ import {MainLocaleKeyParam} from "@/i18n";
 export const validateTable = (
     table: DeepReadonly<GenTableModelInput>,
     otherTables: DeepReadonly<Array<GenTableModelInput>>,
+    subGroups: DeepReadonly<Array<GenModelInput_TargetOf_subGroups>>,
     enums: DeepReadonly<Array<GenModelInput_TargetOf_enums>>,
 ): MainLocaleKeyParam[] => {
     const messageList: MainLocaleKeyParam[] = []
@@ -17,6 +22,12 @@ export const validateTable = (
 
     if (table.name.length === 0) {
         messageList.push("VALIDATE_GenTable_nameCannotBeEmpty")
+    }
+
+    if (table.subGroup) {
+        if (!subGroups.map(it => it.name).includes(table.subGroup.name)) {
+            messageList.push({key: "VALIDATE_GenTable_subGroupNotExist", args: [table.subGroup.name]})
+        }
     }
 
     for (const otherTable of otherTables) {
@@ -163,7 +174,10 @@ export const validateTable = (
         const indexColumnNameSet = new Set<string>()
         for (const column of columns) {
             if (indexColumnNameSet.has(column.name)) {
-                messageList.push({key: "VALIDATE_GenTable_indexColumnNameCannotBeDuplicate", args: [index.name, column.name]})
+                messageList.push({
+                    key: "VALIDATE_GenTable_indexColumnNameCannotBeDuplicate",
+                    args: [index.name, column.name]
+                })
             } else {
                 indexColumnNameSet.add(column.name)
             }

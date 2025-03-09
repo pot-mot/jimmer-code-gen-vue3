@@ -448,6 +448,9 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     VALIDATE_ModelForm_graphDataValidationFailed: "图数据校验失败，请参考控制台报错",
     VALIDATE_ModelForm_graphDataJsonConversionFailed: "图数据 JSON 转换失败，请参考控制台报错",
 
+    VALIDATE_GenModel_subGroupValidError: (subGroupName: string, subMessage: MainLocaleKeyParam) =>  {
+        return `子组【${subGroupName}】存在问题：${useI18nStore().translate(subMessage)}`;
+    },
     VALIDATE_GenModel_tableValidError: (tableName: string, subMessage: MainLocaleKeyParam) => {
         return `表【${tableName}】存在问题：${useI18nStore().translate(subMessage)}`;
     },
@@ -469,6 +472,7 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     LABEL_TableForm_columnType_logicalDelete: "逻辑删除",
 
     VALIDATE_GenTable_nameCannotBeEmpty: "表名不得为空",
+    VALIDATE_GenTable_subGroupNotExist: (subGroupName: string) => `子组【${subGroupName}】不存在`,
     VALIDATE_GenTable_nameCannotBeDuplicate: (tableName: string) => `表名【${tableName}】不可重复`,
     VALIDATE_GenTable_columnNameCannotBeEmpty: "列名不得为空",
     VALIDATE_GenTable_columnNameCannotBeDuplicate: (columnName: string) => `列名【${columnName}】不可重复`,
@@ -649,6 +653,7 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
         return `枚举【${enumName}】已存在`
     },
     VALIDATE_GenEnum_nameCannotBeEmpty: "枚举名不得为空",
+    VALIDATE_GenEnum_subGroupNotExist: (subGroupName: string) => `子组【${subGroupName}】不存在`,
     VALIDATE_GenEnum_itemsCannotBeEmpty: "必须至少有一个枚举项",
     VALIDATE_GenEnum_notNullDefaultItemRequired: "必须有表单项非空时的默认选项",
     VALIDATE_GenEnum_defaultItemUnique: "默认值必须唯一",
@@ -708,6 +713,10 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     VALIDATE_Entity_propertyAnnotation_annotationCannotBeDuplicate: (propertyName: string, annotation: string) => `属性【${propertyName}】附加注解【${annotation}】重复`,
     VALIDATE_Entity_propertyBody_importLineCannotBeEmpty: (propertyName: string) => `属性【${propertyName}】体中的导入行不得为空`,
     VALIDATE_Entity_propertyBody_importLineCannotBeDuplicate: (propertyName: string, importLine: string) => `属性【${propertyName}】体中的导入行【${importLine}】重复`,
+
+
+    VALIDATE_ModelSubGroup_nameCannotBeEmpty: "子组名称不得为空",
+    VALIDATE_ModelSubGroup_nameCannotBeDuplicate: (modelSubGroupName: string) => `子组名称【${modelSubGroupName}】不可重复`,
 
     MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel: (idName: IdName) => `表【${formatIdName(idName)}】在当前模型中未找到`,
     MESSAGE_GenerateFileMenu_clickEntityNotFound: (idName: IdName) => `实体【${formatIdName(idName)}】未找到`,

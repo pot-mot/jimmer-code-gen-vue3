@@ -283,6 +283,7 @@ type MainLocale = {
     LABEL_TableForm_columnType_logicalDelete: string
 
     VALIDATE_GenTable_nameCannotBeEmpty: string;
+    VALIDATE_GenTable_subGroupNotExist: (subGroupName: string) => string;
     VALIDATE_GenTable_nameCannotBeDuplicate: (tableName: string) => string;
     VALIDATE_GenTable_columnNameCannotBeEmpty: string;
     VALIDATE_GenTable_columnNameCannotBeDuplicate: (columnName: string) => string;
@@ -463,6 +464,7 @@ type MainLocale = {
 
     VALIDATE_GenEnum_cannotBeDuplicate: (enumName: string) => string
     VALIDATE_GenEnum_nameCannotBeEmpty: string
+    VALIDATE_GenEnum_subGroupNotExist: (subGroupName: string) => string;
     VALIDATE_GenEnum_itemsCannotBeEmpty: string
     VALIDATE_GenEnum_notNullDefaultItemRequired: string
     VALIDATE_GenEnum_defaultItemUnique: string
@@ -523,6 +525,9 @@ type MainLocale = {
     VALIDATE_Entity_propertyBody_importLineCannotBeEmpty: (propertyName: string) => string
     VALIDATE_Entity_propertyBody_importLineCannotBeDuplicate: (propertyName: string, importLine: string) => string
 
+    VALIDATE_ModelSubGroup_nameCannotBeEmpty: string
+    VALIDATE_ModelSubGroup_nameCannotBeDuplicate: (modelSubGroupName: string) => string
+
     MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel: (idName: IdName) => string
     MESSAGE_GenerateFileMenu_clickEntityNotFound: (idName: IdName) => string
     MESSAGE_GenerateFileMenu_clickAssociationNotFoundInCurrentModel: (idName: IdName) => string
@@ -549,6 +554,7 @@ type LocalKeyParam<
 export type MainLocaleKeyParam = LocalKeyParam<MainLocale>
 
 export type ProjectLocale = MainLocale & {
+    VALIDATE_GenModel_subGroupValidError: (subGroupName: string, subMessage: MainLocaleKeyParam) => string
     VALIDATE_GenModel_tableValidError: (tableName: string, subMessage: MainLocaleKeyParam) => string
     VALIDATE_GenModel_associationValidError: (associationName: string, subMessage: MainLocaleKeyParam) => string
     VALIDATE_GenModel_enumValidError: (enumName: string, subMessage: MainLocaleKeyParam) => string

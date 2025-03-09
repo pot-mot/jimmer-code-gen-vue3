@@ -1,10 +1,11 @@
-import { GenModelInput_TargetOf_enums } from "@/api/__generated/model/static"
+import {GenModelInput_TargetOf_enums, GenModelInput_TargetOf_subGroups} from "@/api/__generated/model/static"
 import { DeepReadonly } from "vue"
 import { MainLocaleKeyParam } from "@/i18n"
 
 export const validateEnum = (
     genEnum: DeepReadonly<GenModelInput_TargetOf_enums>,
     otherEnums: DeepReadonly<Array<GenModelInput_TargetOf_enums>>,
+    subGroups: DeepReadonly<Array<GenModelInput_TargetOf_subGroups>>,
 ): MainLocaleKeyParam[] => {
     const messageList: MainLocaleKeyParam[] = []
 
@@ -14,6 +15,12 @@ export const validateEnum = (
 
     if (genEnum.items.length === 0) {
         messageList.push('VALIDATE_GenEnum_itemsCannotBeEmpty')
+    }
+
+    if (genEnum.subGroup) {
+        if (!subGroups.map(it => it.name).includes(genEnum.subGroup.name)) {
+            messageList.push({key: "VALIDATE_GenEnum_subGroupNotExist", args: [genEnum.subGroup.name]})
+        }
     }
 
     const defaultItem = genEnum.items.filter(it => it.defaultItem)

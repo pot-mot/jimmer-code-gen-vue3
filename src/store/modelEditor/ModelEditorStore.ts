@@ -10,7 +10,7 @@ import {
 import {
     EntityConfigInput,
     GenAssociationModelInput,
-    GenModelInput_TargetOf_enums,
+    GenModelInput_TargetOf_enums, GenModelInput_TargetOf_subGroups,
     GenModelView,
     GenTableColumnsView,
     GenTableModelInput,
@@ -71,6 +71,7 @@ type ModelReactiveState = {
     associations: ComputedRef<Array<GenAssociationModelInput>>,
     selectedAssociations: ComputedRef<Array<GenAssociationModelInput>>,
     selectedAssociationEdgePairs: ComputedRef<Array<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>>,
+    subGroups: ComputedRef<Array<GenModelInput_TargetOf_subGroups>>,
     enums: ComputedRef<Array<GenModelInput_TargetOf_enums>>
 }
 
@@ -790,6 +791,10 @@ const initModelEditorStore = (): ModelEditorStore => {
         }
     }, {immediate: true, deep: true})
 
+    const subGroups = computed(() => {
+        return (currentModel.value?.subGroups ?? [])
+    })
+
     const enums = computed(() => {
         return (currentModel.value?.enums ?? [])
     })
@@ -822,6 +827,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         associations,
         selectedAssociations,
         selectedAssociationEdgePairs,
+        subGroups,
         enums,
     }
 

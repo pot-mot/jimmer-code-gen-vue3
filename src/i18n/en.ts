@@ -447,6 +447,9 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     VALIDATE_ModelForm_graphDataValidationFailed: "Graph data validation failed, please refer to the console error",
     VALIDATE_ModelForm_graphDataJsonConversionFailed: "Graph data JSON conversion failed, please refer to the console error",
 
+    VALIDATE_GenModel_subGroupValidError: (subGroupName: string, subMessage: MainLocaleKeyParam) =>  {
+        return `SubGroup [${subGroupName}] has problem: ${useI18nStore().translate(subMessage)}`;
+    },
     VALIDATE_GenModel_tableValidError: (tableName: string, subMessage: MainLocaleKeyParam) => {
         return `Table [${tableName}] has problem: ${useI18nStore().translate(subMessage)}`;
     },
@@ -468,6 +471,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     LABEL_TableForm_columnType_logicalDelete: "Logical Delete",
 
     VALIDATE_GenTable_nameCannotBeEmpty: "Table name cannot be empty",
+    VALIDATE_GenTable_subGroupNotExist: (subGroupName: string) => `SubGroup [${subGroupName}] not existed`,
     VALIDATE_GenTable_nameCannotBeDuplicate: (tableName: string) => `Table name [${tableName}] cannot be duplicated`,
     VALIDATE_GenTable_columnNameCannotBeEmpty: "Column name cannot be empty",
     VALIDATE_GenTable_columnNameCannotBeDuplicate: (columnName: string) => `Column name [${columnName}] cannot be duplicated`,
@@ -649,6 +653,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
         return `Enum【${enumName}】already exist`
     },
     VALIDATE_GenEnum_nameCannotBeEmpty: "Enum name cannot be empty",
+    VALIDATE_GenEnum_subGroupNotExist: (subGroupName: string) => `SubGroup [${subGroupName}] not existed`,
     VALIDATE_GenEnum_itemsCannotBeEmpty: "There must be at least one enum item",
     VALIDATE_GenEnum_notNullDefaultItemRequired: "There must have a Default Item for Not Null FormItem",
     VALIDATE_GenEnum_defaultItemUnique: "The default value must be unique",
@@ -708,6 +713,10 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     VALIDATE_Entity_propertyAnnotation_annotationCannotBeDuplicate: (propertyName: string, annotation: string) => `Annotation [${annotation}] of property [${propertyName}] is duplicated`,
     VALIDATE_Entity_propertyBody_importLineCannotBeEmpty: (propertyName: string) => `Import line in body of property [${propertyName}] cannot be empty`,
     VALIDATE_Entity_propertyBody_importLineCannotBeDuplicate: (propertyName: string, importLine: string) => `Import line [${importLine}] in body of property [${propertyName}] is duplicated`,
+
+
+    VALIDATE_ModelSubGroup_nameCannotBeEmpty: "SubGroup Name can not be empty",
+    VALIDATE_ModelSubGroup_nameCannotBeDuplicate: (modelSubGroupName: string) => `SubGroup Name [${modelSubGroupName}] is duplicated`,
 
 
     MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel: (idName: IdName) => `Table [${formatIdName(idName)}] not found in Current Model`,

@@ -1,5 +1,5 @@
 import type {EnumType} from '../enums/';
-import type {GenModelInput_TargetOf_enums_TargetOf_items} from './';
+import type {GenModelInput_TargetOf_enums_TargetOf_items, GenModelInput_TargetOf_enums_TargetOf_subGroup} from './';
 
 /**
  * 生成枚举
@@ -25,6 +25,10 @@ export interface GenModelInput_TargetOf_enums {
      * 备注
      */
     remark: string;
+    /**
+     * 子组
+     */
+    subGroup?: GenModelInput_TargetOf_enums_TargetOf_subGroup | undefined;
     /**
      * 生成枚举元素
      */

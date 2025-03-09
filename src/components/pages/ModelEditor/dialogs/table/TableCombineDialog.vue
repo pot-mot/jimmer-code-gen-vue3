@@ -23,6 +23,7 @@ const validate = (data: DeepReadonly<TableCombineData>) => {
     const messageList = validateTable(
         data.superTable,
         MODEL.tables,
+        MODEL.subGroups,
         MODEL.enums,
     )
 
@@ -30,6 +31,7 @@ const validate = (data: DeepReadonly<TableCombineData>) => {
         messageList.push(...validateTable(
             inheritTable,
             [...getOtherTables(inheritTable.name), data.superTable],
+            MODEL.subGroups,
             MODEL.enums,
         ))
     }

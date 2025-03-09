@@ -35,11 +35,13 @@ export type {GenEnumItemsView_TargetOf_items} from './GenEnumItemsView_TargetOf_
 export type {GenModelInput} from './GenModelInput';
 export type {GenModelInput_TargetOf_enums} from './GenModelInput_TargetOf_enums';
 export type {GenModelInput_TargetOf_enums_TargetOf_items} from './GenModelInput_TargetOf_enums_TargetOf_items';
+export type {GenModelInput_TargetOf_enums_TargetOf_subGroup} from './GenModelInput_TargetOf_enums_TargetOf_subGroup';
 export type {GenModelInput_TargetOf_subGroups} from './GenModelInput_TargetOf_subGroups';
 export type {GenModelSimpleView} from './GenModelSimpleView';
 export type {GenModelView} from './GenModelView';
 export type {GenModelView_TargetOf_enums} from './GenModelView_TargetOf_enums';
 export type {GenModelView_TargetOf_enums_TargetOf_items} from './GenModelView_TargetOf_enums_TargetOf_items';
+export type {GenModelView_TargetOf_enums_TargetOf_subGroup} from './GenModelView_TargetOf_enums_TargetOf_subGroup';
 export type {GenModelView_TargetOf_subGroups} from './GenModelView_TargetOf_subGroups';
 export type {GenPropertyConfigInput} from './GenPropertyConfigInput';
 export type {GenPropertyConfigView} from './GenPropertyConfigView';
