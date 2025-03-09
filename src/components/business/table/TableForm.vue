@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {computed, DeepReadonly, ref, watch} from 'vue'
 import {
-    GenModelInput_TargetOf_enums,
+    GenModelInput_TargetOf_enums, GenModelInput_TargetOf_subGroups,
     GenTableModelInput,
     GenTableModelInput_TargetOf_columns,
     GenTableModelInput_TargetOf_indexes,
@@ -28,6 +28,7 @@ import ColumnCategorySelect from "@/components/business/table/ColumnCategorySele
 import {MainLocaleKeyParam} from "@/i18n";
 import {getColumnKeyGroups} from "@/components/business/table/columnKeyGroups.ts";
 import {TableType} from "@/api/__generated/model/enums";
+import ModelSubGroupSelect from "@/components/business/modelSubGroup/ModelSubGroupSelect.vue";
 
 const i18nStore = useI18nStore()
 
@@ -44,6 +45,8 @@ const table = defineModel<GenTableModelInput>({
 const props = defineProps<{
     validate: (table: DeepReadonly<GenTableModelInput>) => MainLocaleKeyParam[],
 
+    subGroups: Array<GenModelInput_TargetOf_subGroups>,
+
     createIndexName: (
         tableName: string,
         index: DeepReadonly<Omit<GenTableModelInput_TargetOf_indexes, 'name'>>,
@@ -51,13 +54,13 @@ const props = defineProps<{
     ) => string
 }>()
 
-interface ModelFormEmits {
+const emits = defineEmits<FormEmits<GenTableModelInput> & {
+    (event: "createSubGroup"): void
+    (event: "editSubGroup", data: { subGroup: GenModelInput_TargetOf_subGroups }): void
+
     (event: "createEnum", options: { propertyName: string }): void
-
     (event: "editEnum", data: { genEnum: GenModelInput_TargetOf_enums }): void
-}
-
-const emits = defineEmits<FormEmits<GenTableModelInput> & ModelFormEmits>()
+}>()
 
 const superTables = computed(() =>
     MODEL.superTables.filter(superTable => table.value.superTables.map(it => it.name).includes(superTable.name))
@@ -284,6 +287,15 @@ const handleCancel = () => {
 <template>
     <el-form style="width: calc(100% - 0.5rem);">
         <el-row :gutter="12" style="line-height: 2em; padding-left: 1em; padding-bottom: 1em;">
+            <el-col :span="24">
+                <ModelSubGroupSelect
+                    v-model="table"
+                    :sub-groups="subGroups"
+                    @create="emits('createSubGroup')"
+                    @edit="(subGroup) => emits('editSubGroup', {subGroup})"
+                />
+            </el-col>
+
             <el-col :span="8">
                 <el-input v-model="table.name" placeholder="name"/>
             </el-col>

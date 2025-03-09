@@ -10,7 +10,8 @@ import {
 import {
     EntityConfigInput,
     GenAssociationModelInput,
-    GenModelInput_TargetOf_enums, GenModelInput_TargetOf_subGroups,
+    GenModelInput_TargetOf_enums,
+    GenModelInput_TargetOf_subGroups,
     GenModelView,
     GenTableColumnsView,
     GenTableModelInput,
@@ -58,6 +59,14 @@ import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.
 import {useModelLoadDialogStore} from "@/store/modelEditor/ModelLoadDialogStore.ts";
 import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
 import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
+import {SUB_GROUP_CREATE_PREFIX, useSubGroupDialogsStore} from "@/store/modelEditor/SubGroupDialogsStore.ts";
+import {getDefaultGenModelSubGroup} from "@/components/business/modelSubGroup/defaultModelSubGroupForm.ts";
+import {
+    syncNewSubGroupForEnums,
+    syncNewSubGroupForTables,
+    syncSubGroupNameForEnums,
+    syncSubGroupNameForTables
+} from "@/components/pages/ModelEditor/sync/syncSubGroup.ts";
 
 type ModelReactiveState = {
     tableNodes: DeepReadonly<Ref<Array<UnwrapRefSimple<Node>>>>,
@@ -99,6 +108,21 @@ type ModelEditorDataOperation = {
 type SyncTableOperation = {
     syncTable: (id: string) => void,
     syncedTable: (id: string) => void,
+}
+
+export type SubGroupCreateOptions = {
+    tableKey?: string | undefined,
+    enumKey?: string | undefined,
+}
+
+type SubGroupEditOperation = {
+    createSubGroup: (options?: SubGroupCreateOptions | undefined) => void,
+    createdSubGroup: (createKey: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => void,
+
+    editSubGroup: (id: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => void,
+    editedSubGroup: (id: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => void,
+
+    removeSubGroup: (id: string) => void,
 }
 
 type TableEditOperation = {
@@ -167,6 +191,7 @@ type ModelEditorStore = {
     MODEL_EDITOR: ModelEditorDataOperation
         & ModelSyncState
         & SyncTableOperation
+        & SubGroupEditOperation
         & TableEditOperation
         & AssociationEditOperation
         & EnumEditOperation
@@ -406,6 +431,72 @@ const initModelEditorStore = (): ModelEditorStore => {
                 graph.stopBatch(name)
             }
         }
+    }
+
+
+    /**
+     * 子组编辑对话框相关
+     */
+
+    const subGroupDialogsStore = useSubGroupDialogsStore()
+
+    const subGroupCreateOptionsMap = new Map<string, SubGroupCreateOptions | undefined>
+
+    const createSubGroup = (options?: SubGroupCreateOptions | undefined) => {
+        const createKey = SUB_GROUP_CREATE_PREFIX + Date.now()
+        subGroupDialogsStore.open(createKey, getDefaultGenModelSubGroup())
+        subGroupCreateOptionsMap.set(createKey, options)
+    }
+
+    const createdSubGroup = (createKey: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
+        assertModel().value.subGroups.push(cloneDeepReadonly<GenModelInput_TargetOf_subGroups>(subGroup))
+
+        const options = subGroupCreateOptionsMap.get(createKey)
+
+        if (options !== undefined) {
+            const {tableKey, enumKey} = options
+            if (tableKey) {
+                syncNewSubGroupForTables(subGroup, tableKey)
+            }
+            if (enumKey) {
+                syncNewSubGroupForEnums(subGroup, enumKey)
+            }
+        }
+
+        subGroupCreateOptionsMap.delete(createKey)
+
+        subGroupDialogsStore.close(createKey, true)
+    }
+
+    const editSubGroup = (name: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
+        subGroupDialogsStore.open(name, cloneDeepReadonly<GenModelInput_TargetOf_subGroups>(subGroup))
+    }
+
+    const editedSubGroup = (name: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
+        const oldName = name
+
+        assertModel().value.subGroups = [
+            ...assertModel().value.subGroups.filter(it => it.name !== oldName),
+            cloneDeepReadonly<GenModelInput_TargetOf_subGroups>(subGroup)
+        ]
+
+        subGroupDialogsStore.close(name, true)
+
+        startBatchSync('editedSubGroup', () => {
+            syncSubGroupNameForTables(_graph(), oldName, subGroup.name)
+            syncSubGroupNameForEnums(oldName, subGroup.name)
+        })
+    }
+
+    const removeSubGroup = (name: string) => {
+        const oldName = name
+
+        assertModel().value.subGroups = assertModel().value.subGroups.filter(it => it.name !== oldName)
+
+        startBatchSync('removeSubGroup', () => {
+            syncSubGroupNameForTables(_graph(), oldName, undefined)
+            syncSubGroupNameForEnums(oldName, undefined)
+        })
     }
 
 
@@ -682,7 +773,6 @@ const initModelEditorStore = (): ModelEditorStore => {
     }
 
 
-
     /**
      * 实体编辑对话框相关
      */
@@ -699,7 +789,7 @@ const initModelEditorStore = (): ModelEditorStore => {
      * 响应式数据
      */
 
-     const tableNodes = ref<Node[]>([])
+    const tableNodes = ref<Node[]>([])
 
     const setTableNodes = () => {
         tableNodes.value = graphReactiveState.nodes.value
@@ -778,13 +868,26 @@ const initModelEditorStore = (): ModelEditorStore => {
             .map(it => it.data.association)
     )
 
-    // 枚举处理
+    // 枚举和子组根据名称排序，并设置枚举 packagePath
     watch(() => currentModel.value, (value) => {
         if (currentModel.value !== undefined && value !== undefined) {
+            const subGroupPackageMap = new Map<string, string>
+            value.subGroups.forEach(subGroup => {
+                subGroupPackageMap.set(subGroup.name, subGroup.subPackagePath)
+            })
+
             value.enums.forEach(genEnum => {
-                genEnum.packagePath = value.packagePath + ".enums"
+                if (genEnum.subGroup) {
+                    genEnum.packagePath = `${value.packagePath}.${subGroupPackageMap.get(genEnum.subGroup.name)}.enums`
+                } else {
+                    genEnum.packagePath = value.packagePath + ".enums"
+                }
             })
             currentModel.value.enums = value.enums.sort((a, b) => {
+                if (a.name < b.name) return -1
+                else return 1
+            })
+            currentModel.value.subGroups = value.subGroups.sort((a, b) => {
                 if (a.name < b.name) return -1
                 else return 1
             })
@@ -897,6 +1000,12 @@ const initModelEditorStore = (): ModelEditorStore => {
             waitSyncTableIds,
             syncTable,
             syncedTable,
+
+            createSubGroup,
+            createdSubGroup,
+            editSubGroup,
+            editedSubGroup,
+            removeSubGroup,
 
             createTable,
             createdTable,

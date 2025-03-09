@@ -28,6 +28,7 @@ import {useDataSourceLoadDialogStore} from "@/store/modelEditor/DataSourceLoadDi
 import {useModelLoadDialogStore} from "@/store/modelEditor/ModelLoadDialogStore.ts";
 import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.ts";
 import EntityDialogs from "@/components/pages/ModelEditor/dialogs/entity/EntityDialogs.vue";
+import SubGroupDialogs from "@/components/pages/ModelEditor/dialogs/subGroup/SubGroupDialogs.vue";
 
 const {MODEL, MODEL_LOAD} = useModelEditorStore()
 
@@ -166,6 +167,8 @@ watch(() => modelLoadMenu.value, () => {
         @cancel="modelEditDialogStore.handleCancel"
         @submit="modelEditDialogStore.handleSubmit"
     />
+
+    <SubGroupDialogs/>
 
     <TableDialogs/>
     <TableCombineDialog/>

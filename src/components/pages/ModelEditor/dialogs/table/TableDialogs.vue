@@ -31,7 +31,7 @@ const validate = (key: string, table: DeepReadonly<GenTableModelInput>) => {
 </script>
 
 <template>
-	<template v-for="({key, options}, index) in store.items" :key="key">
+    <template v-for="({key, options}, index) in store.items" :key="key">
         <DragDialog
             :ref="(el: any) => store.setDialogRef(key, el)"
             :model-value="true" :can-resize="true"
@@ -43,12 +43,18 @@ const validate = (key: string, table: DeepReadonly<GenTableModelInput>) => {
                 ref="tableFormRef"
                 v-model="store.items[index].value"
                 :validate="(table) => validate(key, table)"
-                :create-index-name="createIndexName"
-                @create-enum="({propertyName}) => MODEL_EDITOR.createEnum({tableKey: key, columnName:propertyName})"
-                @edit-enum="({genEnum}) => MODEL_EDITOR.editEnum(genEnum.name, genEnum)"
                 @submit="(table) => handleSubmit(key, table)"
                 @cancel="store.close(key, false)"
+
+                :create-index-name="createIndexName"
+
+                @create-enum="({propertyName}) => MODEL_EDITOR.createEnum({tableKey: key, columnName: propertyName})"
+                @edit-enum="({genEnum}) => MODEL_EDITOR.editEnum(genEnum.name, genEnum)"
+
+                :sub-groups="MODEL.subGroups"
+                @create-sub-group="() => MODEL_EDITOR.createSubGroup({tableKey: key})"
+                @edit-sub-group="({subGroup}) => MODEL_EDITOR.editSubGroup(subGroup.name, subGroup)"
             />
         </DragDialog>
-	</template>
+    </template>
 </template>

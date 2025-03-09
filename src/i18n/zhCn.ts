@@ -718,6 +718,8 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     VALIDATE_ModelSubGroup_nameCannotBeEmpty: "子组名称不得为空",
     VALIDATE_ModelSubGroup_nameCannotBeDuplicate: (modelSubGroupName: string) => `子组名称【${modelSubGroupName}】不可重复`,
 
+
+    MESSAGE_GenerateFileMenu_clickSubGroupNotFoundInCurrentModel: (idName: IdName) => `子组【${formatIdName(idName)}】在当前模型中未找到`,
     MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel: (idName: IdName) => `表【${formatIdName(idName)}】在当前模型中未找到`,
     MESSAGE_GenerateFileMenu_clickEntityNotFound: (idName: IdName) => `实体【${formatIdName(idName)}】未找到`,
     MESSAGE_GenerateFileMenu_clickAssociationNotFoundInCurrentModel: (idName: IdName) => `关联【${formatIdName(idName)}】在当前模型中未找到`,

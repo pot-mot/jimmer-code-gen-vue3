@@ -6,6 +6,7 @@ import {DeepReadonly} from "vue";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 import {validateEnum} from "@/components/business/enum/validateEnum.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
+import TableForm from "@/components/business/table/TableForm.vue";
 
 const store = useEnumDialogsStore()
 
@@ -42,6 +43,10 @@ const validate = (key: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enum
                 :validate="(genEnum) => validate(key, genEnum)"
                 @submit="(genEnum) => handleSubmit(key, genEnum)"
                 @cancel="store.close(key, false)"
+
+                :sub-groups="MODEL.subGroups"
+                @create-sub-group="() => MODEL_EDITOR.createSubGroup({enumKey: key})"
+                @edit-sub-group="({subGroup}) => MODEL_EDITOR.editSubGroup(subGroup.name, subGroup)"
             />
         </DragDialog>
 	</template>

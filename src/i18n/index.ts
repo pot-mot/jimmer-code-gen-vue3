@@ -528,6 +528,7 @@ type MainLocale = {
     VALIDATE_ModelSubGroup_nameCannotBeEmpty: string
     VALIDATE_ModelSubGroup_nameCannotBeDuplicate: (modelSubGroupName: string) => string
 
+    MESSAGE_GenerateFileMenu_clickSubGroupNotFoundInCurrentModel: (idName: IdName) => string
     MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel: (idName: IdName) => string
     MESSAGE_GenerateFileMenu_clickEntityNotFound: (idName: IdName) => string
     MESSAGE_GenerateFileMenu_clickAssociationNotFoundInCurrentModel: (idName: IdName) => string

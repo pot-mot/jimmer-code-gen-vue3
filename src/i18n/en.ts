@@ -719,6 +719,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     VALIDATE_ModelSubGroup_nameCannotBeDuplicate: (modelSubGroupName: string) => `SubGroup Name [${modelSubGroupName}] is duplicated`,
 
 
+    MESSAGE_GenerateFileMenu_clickSubGroupNotFoundInCurrentModel: (idName: IdName) => `SubGroup [${formatIdName(idName)}] not found in Current Model`,
     MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel: (idName: IdName) => `Table [${formatIdName(idName)}] not found in Current Model`,
     MESSAGE_GenerateFileMenu_clickEntityNotFound: (idName: IdName) => `Entity [${formatIdName(idName)}] not found`,
     MESSAGE_GenerateFileMenu_clickAssociationNotFoundInCurrentModel: (idName: IdName) => `Association [${formatIdName(idName)}] not found in Current Model`,

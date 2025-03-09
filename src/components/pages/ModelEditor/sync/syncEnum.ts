@@ -46,7 +46,7 @@ export const syncEnumNameForTables = (graph: Graph, oldEnumName: string, newEnum
     })
 
     // 同步所有节点中的表数据
-    for (let node of nodes) {
+    for (const node of nodes) {
         const table = node.getData()?.table as GenTableModelInput | undefined
         if (table && judgeEnumInTable(oldEnumName, table)) {
             const newTable = syncEnumNameInTable(table, oldEnumName, newEnumName)

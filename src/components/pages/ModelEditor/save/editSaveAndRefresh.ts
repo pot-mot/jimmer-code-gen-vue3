@@ -13,8 +13,10 @@ import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
 import {cloneDeep} from "lodash";
 import {syncTypeEntityForEntities} from "@/components/pages/ModelEditor/sync/syncEntity.ts";
 import {convertModel} from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
+import {useSubGroupDialogsStore} from "@/store/modelEditor/SubGroupDialogsStore.ts";
 
 let editSaveAndRefresh: {
+    editSubGroup: (idName: IdName) => void
     editEntity: (idName: IdName) => void
     editEnum: (idName: IdName) => void
     editTable: (idName: IdName) => void
@@ -30,12 +32,10 @@ export const useEditSaveAndRefresh = () => {
 
     const codePreviewStore = useMultiCodePreviewStore()
 
+    const subGroupDialogsStore = useSubGroupDialogsStore()
     const tableDialogsStore = useTableDialogsStore()
-
     const entityDialogsStore = useEntityDialogsStore()
-
     const enumDialogsStore = useEnumDialogsStore()
-
     const associationDialogsStore = useAssociationDialogsStore()
 
     type DialogEventStore<K, V, O> = {
@@ -120,6 +120,20 @@ export const useEditSaveAndRefresh = () => {
         )
     }
 
+    const editSubGroup = (idName: IdName) => {
+        const subGroup = cloneDeep(MODEL.subGroups.filter(it => it.name === idName.name)[0])
+        if (!subGroup) {
+            sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickSubGroupNotFoundInCurrentModel", args: [idName]})
+            return
+        }
+        openAndOnClosed(
+            async (_, changed) => {
+                if (changed) await refreshModelAndCode()
+            },
+            subGroupDialogsStore, idName.name, subGroup
+        )
+    }
+
     const editTable = (idName: IdName) => {
         const tableNodePair = cloneDeep(MODEL.tableNodePairs.filter(it => it.first.name === idName.name)[0])
         if (!tableNodePair) {
@@ -163,6 +177,7 @@ export const useEditSaveAndRefresh = () => {
     }
 
     editSaveAndRefresh = {
+        editSubGroup,
         editEntity,
         editEnum,
         editTable,

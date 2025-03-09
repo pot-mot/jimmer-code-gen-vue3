@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import EditList from "@/components/global/list/EditList.vue";
-import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
+import {GenModelInput_TargetOf_enums, GenModelInput_TargetOf_subGroups} from "@/api/__generated/model/static";
 import {computed, DeepReadonly, watch} from "vue";
 import {enumItemColumns} from "@/components/business/enum/enumItemColumns.ts";
 import {EnumType_CONSTANTS} from "@/api/__generated/model/enums";
@@ -13,6 +13,7 @@ import {validateEnumItem} from "@/shape/GenEnumModelInput.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {MainLocaleKeyParam} from "@/i18n";
 import Comment from "@/components/global/common/Comment.vue";
+import ModelSubGroupSelect from "@/components/business/modelSubGroup/ModelSubGroupSelect.vue";
 
 const i18nStore = useI18nStore()
 
@@ -22,9 +23,14 @@ const genEnum = defineModel<GenModelInput_TargetOf_enums>({
 
 const props = defineProps<{
     validate: (genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => MainLocaleKeyParam[],
+
+    subGroups: Array<GenModelInput_TargetOf_subGroups>,
 }>()
 
-const emits = defineEmits<FormEmits<GenModelInput_TargetOf_enums>>()
+const emits = defineEmits<FormEmits<GenModelInput_TargetOf_enums> & {
+    (event: "createSubGroup"): void
+    (event: "editSubGroup", data: { subGroup: GenModelInput_TargetOf_subGroups }): void
+}>()
 
 watch(() => genEnum.value.enumType, (value) => {
     if (value === 'NAME') {
@@ -72,6 +78,13 @@ const handleCancel = () => {
 
 <template>
     <el-form style="width: calc(100% - 0.5rem);">
+        <ModelSubGroupSelect
+            v-model="genEnum"
+            :sub-groups="subGroups"
+            @create="emits('createSubGroup')"
+            @edit="(subGroup) => emits('editSubGroup', {subGroup})"
+        />
+
         <Line height="3em">
             <LineItem>
                 <el-form-item :label="i18nStore.translate('LABEL_EnumForm_name')">
