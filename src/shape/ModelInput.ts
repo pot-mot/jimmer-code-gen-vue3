@@ -152,6 +152,13 @@ export const GenModelInputJsonSchema = {
                     "description": "备注",
                     "type": "string"
                 },
+                "subGroups": {
+                    "description": "生成模型子组",
+                    "items": {
+                        "$ref": "#/definitions/GenModelInput_TargetOf_subGroups"
+                    },
+                    "type": "array"
+                },
                 "tableAnnotation": {
                     "description": "生成 Table 注解",
                     "type": "boolean"
@@ -205,6 +212,7 @@ export const GenModelInputJsonSchema = {
                 "packagePath",
                 "realFk",
                 "remark",
+                "subGroups",
                 "tableAnnotation",
                 "tableCommentPrefixes",
                 "tableCommentSuffixes",
@@ -236,10 +244,6 @@ export const GenModelInputJsonSchema = {
                         "$ref": "#/definitions/GenModelInput_TargetOf_enums_TargetOf_items"
                     },
                     "type": "array"
-                },
-                "modelId": {
-                    "description": "模型",
-                    "type": "number"
                 },
                 "name": {
                     "description": "枚举名",
@@ -298,6 +302,34 @@ export const GenModelInputJsonSchema = {
                 "name",
                 "orderKey",
                 "remark"
+            ],
+            "type": "object"
+        },
+        "GenModelInput_TargetOf_subGroups": {
+            "description": "生成模型子组",
+            "properties": {
+                "comment": {
+                    "description": "注释",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "名称",
+                    "type": "string"
+                },
+                "style": {
+                    "description": "样式",
+                    "type": "string"
+                },
+                "subPackagePath": {
+                    "description": "子包路径",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "comment",
+                "name",
+                "style",
+                "subPackagePath"
             ],
             "type": "object"
         }

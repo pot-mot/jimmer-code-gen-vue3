@@ -4,7 +4,7 @@ import type {
     GenLanguage, 
     ViewType
 } from '../enums/';
-import type {AnnotationWithImports, GenModelView_TargetOf_enums} from './';
+import type {AnnotationWithImports, GenModelView_TargetOf_enums, GenModelView_TargetOf_subGroups} from './';
 
 /**
  * 生成模型
@@ -134,6 +134,10 @@ export interface GenModelView {
      * 备注
      */
     remark: string;
+    /**
+     * 生成模型子组
+     */
+    subGroups: Array<GenModelView_TargetOf_subGroups>;
     /**
      * 枚举
      */

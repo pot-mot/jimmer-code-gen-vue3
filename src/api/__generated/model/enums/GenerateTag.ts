@@ -7,6 +7,7 @@ export const GenerateTag_CONSTANTS = [
     'Permission', 
     'Route', 
     'Service', 
+    'CrudTest', 
     'FrontEnd', 
     'Component', 
     'Rules', 

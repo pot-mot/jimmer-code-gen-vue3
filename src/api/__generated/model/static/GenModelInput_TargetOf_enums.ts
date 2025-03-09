@@ -26,10 +26,6 @@ export interface GenModelInput_TargetOf_enums {
      */
     remark: string;
     /**
-     * 模型
-     */
-    modelId?: number | undefined;
-    /**
      * 生成枚举元素
      */
     items: Array<GenModelInput_TargetOf_enums_TargetOf_items>;

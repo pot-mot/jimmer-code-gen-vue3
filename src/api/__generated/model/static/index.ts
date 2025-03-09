@@ -35,10 +35,12 @@ export type {GenEnumItemsView_TargetOf_items} from './GenEnumItemsView_TargetOf_
 export type {GenModelInput} from './GenModelInput';
 export type {GenModelInput_TargetOf_enums} from './GenModelInput_TargetOf_enums';
 export type {GenModelInput_TargetOf_enums_TargetOf_items} from './GenModelInput_TargetOf_enums_TargetOf_items';
+export type {GenModelInput_TargetOf_subGroups} from './GenModelInput_TargetOf_subGroups';
 export type {GenModelSimpleView} from './GenModelSimpleView';
 export type {GenModelView} from './GenModelView';
 export type {GenModelView_TargetOf_enums} from './GenModelView_TargetOf_enums';
 export type {GenModelView_TargetOf_enums_TargetOf_items} from './GenModelView_TargetOf_enums_TargetOf_items';
+export type {GenModelView_TargetOf_subGroups} from './GenModelView_TargetOf_subGroups';
 export type {GenPropertyConfigInput} from './GenPropertyConfigInput';
 export type {GenPropertyConfigView} from './GenPropertyConfigView';
 export type {GenPropertyExportView} from './GenPropertyExportView';
@@ -56,6 +58,7 @@ export type {GenTableModelInput_TargetOf_columns} from './GenTableModelInput_Tar
 export type {GenTableModelInput_TargetOf_columns_TargetOf_enum} from './GenTableModelInput_TargetOf_columns_TargetOf_enum';
 export type {GenTableModelInput_TargetOf_indexes} from './GenTableModelInput_TargetOf_indexes';
 export type {GenTableModelInput_TargetOf_indexes_TargetOf_columns} from './GenTableModelInput_TargetOf_indexes_TargetOf_columns';
+export type {GenTableModelInput_TargetOf_subGroup} from './GenTableModelInput_TargetOf_subGroup';
 export type {GenTableModelInput_TargetOf_superTables} from './GenTableModelInput_TargetOf_superTables';
 export type {GenTypeMappingInput} from './GenTypeMappingInput';
 export type {GenTypeMappingView} from './GenTypeMappingView';

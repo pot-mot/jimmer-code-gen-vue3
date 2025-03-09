@@ -5,6 +5,7 @@ export const GenerateType_CONSTANTS = [
     'Enum', 
     'Entity', 
     'Service', 
+    'Test', 
     'DTO', 
     'FrontEnd', 
     'View', 

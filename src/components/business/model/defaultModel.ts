@@ -56,6 +56,7 @@ export const getDefaultModel = (): GenModelInput => {
         columnNameSuffixes: "",
         columnCommentPrefixes: "",
         columnCommentSuffixes: "",
+        subGroups: [],
         enums: []
     }
 
