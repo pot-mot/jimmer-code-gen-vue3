@@ -171,7 +171,6 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
                     return
                 }
 
-                emits('delete', selectedItems)
                 lines.value = tempLines
 
                 await nextTick()
