@@ -8,6 +8,16 @@ body {
     overflow: hidden;
 }
 
+:root {
+    --text-color: var(--el-color-info-dark-2);
+    --comment-color: var(--el-text-color-placeholder);
+    --border-color: var(--el-color-info-dark-2);
+    --background-color: var(--el-color-white);
+    --highlight-color: var(--el-color-primary);
+    --border: var(--el-border);
+    --border-radius: var(--el-border-radius-base);
+}
+
 /* layout */
 .layout {
     height: 100vh;

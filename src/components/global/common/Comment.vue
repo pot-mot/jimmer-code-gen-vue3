@@ -14,7 +14,7 @@ defineProps<CommentProps>()
 .comment {
 	white-space: nowrap;
 	padding: 0 0.3em;
-	color: var(--el-text-color-placeholder);
+	color: var(--comment-color);
 	font-size: 0.9em;
 	font-weight: 400;
 }

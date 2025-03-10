@@ -90,7 +90,7 @@ const emits = defineEmits<{
         </template>
 
         <el-row :gutter="12"
-                style="width: calc(100% - 1.5em); margin: 0.5em 0; padding-left: 1em; border-top: var(--el-border);">
+                style="width: calc(100% - 1.5em); margin: 0.5em 0; padding-left: 1em; border-top: var(--border);">
             <el-col :span="24">
                 <PropertyTags v-model="property"/>
             </el-col>

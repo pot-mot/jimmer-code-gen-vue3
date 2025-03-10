@@ -169,7 +169,7 @@ const allProperties = computed(() => {
 
 .entity-business-config-part .title {
     padding-bottom: 0.5rem;
-    border-bottom: var(--el-border);
+    border-bottom: var(--border);
     margin-bottom: 0.5rem;
     font-size: var(--el-font-size-base);
     color: var(--el-color-info);

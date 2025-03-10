@@ -171,7 +171,7 @@ useClickOutside(() => wrapper.value, (e) => {
     top: 2em;
     padding: 20px 10px 10px;
     background-color: #fff;
-    border-radius: var(--el-border-radius-base);
+    border-radius: var(--border-radius);
     box-shadow: var(--el-box-shadow);
 }
 </style>

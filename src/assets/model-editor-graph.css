@@ -2,11 +2,6 @@
     position: relative;
     height: 100%;
     width: 100%;
-
-    --text-color: var(--el-color-info-dark-2);
-    --border-color: var(--el-color-info-dark-2);
-    --background-color: var(--el-color-white);
-    --highlight-color: var(--el-color-primary);
 }
 
 .model-editor-graph.non-drag .x6-graph-svg {
