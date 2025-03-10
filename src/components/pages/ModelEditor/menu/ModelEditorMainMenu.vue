@@ -37,7 +37,8 @@ const noGroupEnums = computed(() => {
 	return MODEL.enums.filter(it => it.subGroup === undefined)
 })
 
-const subGroups = computed<Array<GenModelInput_TargetOf_subGroups & {
+const subGroups = computed<Array<{
+	group: GenModelInput_TargetOf_subGroups
 	tableNodePairs: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
 	enums: Array<GenModelInput_TargetOf_enums>,
 }>>(() => {
@@ -46,7 +47,7 @@ const subGroups = computed<Array<GenModelInput_TargetOf_subGroups & {
 		const enums = MODEL.enums.filter(it => it.subGroup?.name === group.name)
 
 		return {
-			...group,
+			group,
 			tableNodePairs,
 			enums,
 		}
@@ -138,13 +139,13 @@ const formattedEdgeShowType = computed(() => {
 					v-if="(noGroupTableNodePairs.length > 0 || noGroupEnums.length > 0) && subGroups.length > 0"
 				/>
 
-				<Details v-for="subGroup of subGroups" open>
+				<Details v-for="{group, tableNodePairs, enums} of subGroups" :key="group.name" open>
 					<template #title>
-						<SubGroupItem :sub-group="subGroup"/>
+						<SubGroupItem :sub-group="group"/>
 					</template>
 
 					<TableItem
-						v-for="{first: table, second: node} in subGroup.tableNodePairs"
+						v-for="{first: table, second: node} in tableNodePairs"
 						:key="node.id"
 						:table="table"
 						:node="node"
@@ -152,11 +153,11 @@ const formattedEdgeShowType = computed(() => {
 
 					<div
 						class="splitter"
-						v-if="subGroup.tableNodePairs.length > 0 && subGroup.tableNodePairs.length > 0"
+						v-if="tableNodePairs.length > 0 && enums.length > 0"
 					/>
 
 					<EnumItem
-						v-for="genEnum in subGroup.enums"
+						v-for="genEnum in enums"
 						:key="genEnum.name + genEnum.comment"
 						:gen-enum="genEnum"
 					/>
