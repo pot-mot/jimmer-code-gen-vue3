@@ -1,14 +1,14 @@
 .table-node {
     padding-bottom: 10px;
-    color: var(--common-color);
+    color: var(--text-color);
     cursor: default;
 }
 
 .table-node table {
-    background-color: #fff;
+    background-color: var(--background-color);
     border-collapse: separate;
     border-spacing: 0;
-    border: 1px solid var(--common-color);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
 }
 
@@ -30,7 +30,7 @@
 
 .table-node .head th {
     text-align: center;
-    border-bottom: 1px solid var(--common-color);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .table-node .head .name {
@@ -58,7 +58,7 @@
 }
 
 .x6-node.hovered .table-node table {
-    border: 3px solid var(--common-color);
+    border-width: 3px;
     transform: translateX(-2px) translateY(-2px);
 }
 

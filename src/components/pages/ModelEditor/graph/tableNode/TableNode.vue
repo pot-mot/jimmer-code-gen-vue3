@@ -39,8 +39,8 @@
 </template>
 
 <script lang='ts' setup>
-import {inject, nextTick, onMounted, ref} from "vue";
-import {GenTableModelInput,} from "@/api/__generated/model/static";
+import {computed, inject, nextTick, onMounted, ref, watch} from "vue";
+import {GenModelInput_TargetOf_subGroups, GenTableModelInput,} from "@/api/__generated/model/static";
 import {Node} from '@antv/x6'
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
@@ -50,14 +50,10 @@ import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {columnToPort} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
 import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {searchNodesByTableName} from "@/components/pages/ModelEditor/search/graphSearch.ts";
-import {
-	refreshEdgeAssociation,
-} from "@/components/pages/ModelEditor/graph/load/refreshAssociationEdge.ts";
-import {
-	loadAssociationModelInputs
-} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
+import {refreshEdgeAssociation,} from "@/components/pages/ModelEditor/graph/load/refreshAssociationEdge.ts";
+import {loadAssociationModelInputs} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
 
-const {GRAPH, MODEL_EDITOR, VIEW, HISTORY} = useModelEditorStore()
+const {GRAPH, MODEL, MODEL_EDITOR, VIEW, HISTORY} = useModelEditorStore()
 
 const wrapper = ref<HTMLElement>()
 
@@ -68,6 +64,16 @@ const getNode = inject<() => Node>("getNode")!
 const node = ref<Node>()
 
 const table = ref<GenTableModelInput>()
+
+const subGroup = computed<GenModelInput_TargetOf_subGroups | undefined>(() => {
+	return MODEL.subGroups.find(it => it.name === table.value?.subGroup?.name)
+})
+
+watch(() => subGroup.value, (newVal) => {
+	if (wrapper.value && newVal && newVal.style.length > 0) {
+		wrapper.value.style.setProperty("--border-color", newVal.style)
+	}
+})
 
 /**
  * 在 data 变化后，
@@ -141,7 +147,8 @@ onMounted(() => {
 			setTimeout(() => {
 				if (!node.value) return
 
-				for (let edge of oldEdges) {
+				const refreshedAssociation = []
+				for (const edge of oldEdges) {
 					const association = refreshEdgeAssociation(
 						graph,
 						node.value,
@@ -149,16 +156,18 @@ onMounted(() => {
 						oldTable,
 						newTable
 					)
-					if (!association) continue
-					loadAssociationModelInputs(graph, [association])
+					if (association) {
+						refreshedAssociation.push(association)
+					}
 				}
+				loadAssociationModelInputs(graph, refreshedAssociation)
 
 				newTable.columns.forEach((column, index) => {
 					column.orderKey = index + 1
 				})
 
-                MODEL_EDITOR.syncedTable(nodeId)
-            }, 100)
+				MODEL_EDITOR.syncedTable(nodeId)
+			}, 100)
 		})
 	}
 

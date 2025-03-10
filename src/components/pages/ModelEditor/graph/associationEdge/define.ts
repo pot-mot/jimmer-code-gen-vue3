@@ -2,8 +2,7 @@ import {erRouter, orthRouter} from "@/components/global/graphEditor/edge/edgeRou
 import {sendMessage} from "@/message/message.ts";
 import {Options} from "@antv/x6/es/graph/options";
 import {
-    ASSOCIATION_EDGE,
-    COMMON_COLOR,
+    ASSOCIATION_EDGE, BORDER_COLOR,
     DEFAULT_ASSOCIATION_TYPE,
     LINE_WIDTH
 } from "@/components/pages/ModelEditor/constant.ts";
@@ -26,7 +25,7 @@ export const associationEdgeBase = {
     router: erRouter,
     attrs: {
         line: {
-            stroke: COMMON_COLOR,
+            stroke: BORDER_COLOR,
             strokeWidth: LINE_WIDTH,
         },
     }

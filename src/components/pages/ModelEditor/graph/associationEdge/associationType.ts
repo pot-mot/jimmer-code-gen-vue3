@@ -1,10 +1,9 @@
 import {Cell, Edge, Graph} from "@antv/x6";
 import {
     ASSOCIATION_EDGE,
-    ASSOCIATION_TYPE_BUTTON,
-    COMMON_COLOR,
+    ASSOCIATION_TYPE_BUTTON, BORDER_COLOR,
     DEFAULT_ASSOCIATION_TYPE,
-    LINE_WIDTH,
+    LINE_WIDTH, TEXT_COLOR,
 } from "@/components/pages/ModelEditor/constant.ts";
 import {AssociationType} from "@/api/__generated/model/enums";
 import {
@@ -78,7 +77,7 @@ const createAssociationTypeButtonAttrs = (
             {
                 tagName: 'rect',
                 attrs: {
-                    stroke: COMMON_COLOR,
+                    stroke: BORDER_COLOR,
                     strokeWidth: LINE_WIDTH,
                     height,
                     width,
@@ -94,7 +93,7 @@ const createAssociationTypeButtonAttrs = (
                 tagName: 'text',
                 textContent: associationType,
                 attrs: {
-                    fill: COMMON_COLOR,
+                    fill: TEXT_COLOR,
                     fontWeight: 400,
                     fontSize: 14,
                     y: 5,

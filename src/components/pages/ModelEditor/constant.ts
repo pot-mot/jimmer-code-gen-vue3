@@ -28,7 +28,11 @@ export const LINE_WIDTH = 1
 
 export const FAKE_ASSOCIATION_LINE_DASHARRAY = 10
 
-export const COMMON_COLOR = 'var(--common-color)'
+export const TEXT_COLOR = 'var(--text-color)'
+
+export const BORDER_COLOR = 'var(--border-color)'
+
+export const BACKGROUND_COLOR = 'var(--background-color)'
 
 // ASSOCIATION_TYPE 常量
 export const ASSOCIATION_TYPE_BUTTON = "ASSOCIATION_TYPE_BUTTON"

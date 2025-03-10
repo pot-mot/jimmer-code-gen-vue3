@@ -1,5 +1,5 @@
 import {NodeView} from '@antv/x6'
-import {COMMON_COLOR, LINE_WIDTH, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
+import {BACKGROUND_COLOR, BORDER_COLOR, LINE_WIDTH, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 
 export class SimpleNodeView extends NodeView {
     protected renderMarkup() {
@@ -11,8 +11,8 @@ export class SimpleNodeView extends NodeView {
                     tagName: 'rect',
                     selector: 'body',
                     attrs: {
-                        fill: 'rgba(0,0,0,0.02)',
-                        stroke: COMMON_COLOR,
+                        fill: BACKGROUND_COLOR,
+                        stroke: BORDER_COLOR,
                         strokeWidth: LINE_WIDTH,
                     }
                 }
