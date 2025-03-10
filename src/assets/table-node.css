@@ -33,6 +33,7 @@
 
 .table-node .head .name {
     font-weight: 600;
+    padding-left: 1em;
 }
 
 .table-node .head .super-table-separator {
@@ -45,8 +46,9 @@
     padding-right: 0.8em;
 }
 
-.selected .table-node .head .super-table:hover {
+.table-node .head .super-table.focus {
     color: var(--highlight-color);
+    cursor: pointer;
 }
 
 .table-node .column {

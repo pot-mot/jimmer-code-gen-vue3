@@ -2,34 +2,36 @@
 	<div ref="wrapper" class="table-node">
 		<table v-if="node && table" ref="container">
 			<thead>
-				<tr class="head">
-					<th colspan="2">
-						<span class="name">{{ table.name }}</span>
-						<Comment :comment="table.comment"></Comment>
-						<span class="super-table-separator"
-							  v-if="table.superTables.length > 0">:</span>
-						<span class="super-table"
-							  v-for="superTable in table.superTables"
-							  @mousedown="e => focusSuperTable(superTable.name, e)">
-							{{ superTable.name }}
-						</span>
-					</th>
-				</tr>
+			<tr class="head">
+				<th colspan="2">
+					<span class="name">{{ table.name }}</span>
+					<Comment :comment="table.comment"/>
+					<span class="super-table-separator"
+						  v-if="table.superTables.length > 0">:</span>
+					<span
+						class="super-table"
+						v-for="superTable in table.superTables"
+						@mouseover="overSuperTable"
+						@mouseleave="leaveSuperTable"
+						@mousedown="e => focusSuperTable(superTable.name, e)">
+						{{ superTable.name }}
+					</span>
+				</th>
+			</tr>
 			</thead>
+
 			<tbody>
-				<tr class="column" v-for="column in table.columns">
-					<td>
-						<span class="icon">
-							<ColumnIcon :column="column"></ColumnIcon>
-						</span>
-						<span>{{ column.name }}</span>
-						<Comment :comment="column.comment"></Comment>
-					</td>
-					<td style="text-align: right;">
-						<span v-if="column.enum">【{{ column.enum.name }}】</span>
-						<span class="type" v-else>{{ column.rawType }}</span>
-					</td>
-				</tr>
+			<tr class="column" v-for="column in table.columns">
+				<td>
+					<span class="icon"><ColumnIcon :column="column"/></span>
+					<span>{{ column.name }}</span>
+					<Comment :comment="column.comment"/>
+				</td>
+				<td style="text-align: right;">
+					<span v-if="column.enum">【{{ column.enum.name }}】</span>
+					<span class="type" v-else>{{ column.rawType }}</span>
+				</td>
+			</tr>
 			</tbody>
 		</table>
 	</div>
@@ -183,15 +185,36 @@ onMounted(() => {
 	})
 })
 
-const focusSuperTable = (name: string, e: MouseEvent) => {
-	const graph = GRAPH._graph()
+const overSuperTable = (e: MouseEvent) => {
+	if (!node.value) return
 
-	if (!graph.isSelected(node.value!!)) {
-		return
+	const graph = GRAPH._graph()
+	if (!graph.isSelected(node.value)) return
+
+	const target = e.target as HTMLElement
+
+	if (e.ctrlKey) {
+		target.classList.add("focus")
 	} else {
-		const nodes = searchNodesByTableName(graph, name)
-		VIEW.focus(nodes[0])
-		e.stopPropagation()
+		target.classList.remove("focus")
 	}
+}
+
+const leaveSuperTable = (e: MouseEvent) => {
+	(e.target as HTMLElement).classList.remove("focus")
+}
+
+const focusSuperTable = (name: string, e: MouseEvent) => {
+	if (!node.value) return
+
+	const graph = GRAPH._graph()
+	if (!graph.isSelected(node.value)) return
+
+	const target = e.target as HTMLElement
+	if (!target.classList.contains("focus")) return
+
+	const nodes = searchNodesByTableName(graph, name)
+	VIEW.focus(nodes[0])
+	e.stopPropagation()
 }
 </script>
