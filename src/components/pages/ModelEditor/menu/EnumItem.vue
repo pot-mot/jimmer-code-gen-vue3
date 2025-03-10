@@ -34,8 +34,8 @@ const handleDelete = () => {
 			</el-text>
 
 			<span class="hover-show-item" style="padding-left: 0.5em;">
-				<el-button :icon="EditPen" link type="warning" @click="handleEdit"></el-button>
-				<el-button :icon="Delete" link type="danger" @click="handleDelete"></el-button>
+				<el-button :icon="EditPen" link type="warning" @click="handleEdit"/>
+				<el-button :icon="Delete" link type="danger" @click="handleDelete"/>
 			</span>
 		</el-text>
 	</div>

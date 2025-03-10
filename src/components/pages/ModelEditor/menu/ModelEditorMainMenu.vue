@@ -6,8 +6,8 @@ import Details from "@/components/global/common/Details.vue";
 import EnumItem from "@/components/pages/ModelEditor/menu/EnumItem.vue";
 import {computed, ref} from 'vue'
 import {
-    AssociationItemShowType,
-    AssociationItemShowType_CONSTANTS
+	AssociationItemShowType,
+	AssociationItemShowType_CONSTANTS
 } from "@/components/pages/ModelEditor/menu/AssociationItemShowType.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {useDataSourceLoadDialogStore} from "@/store/modelEditor/DataSourceLoadDialogStore.ts";
@@ -15,7 +15,8 @@ import {useModelLoadDialogStore} from "@/store/modelEditor/ModelLoadDialogStore.
 import {
 	GenModelInput_TargetOf_enums,
 	GenModelInput_TargetOf_subGroups,
-	GenTableModelInput, Pair
+	GenTableModelInput,
+	Pair
 } from "@/api/__generated/model/static";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {Node} from "@antv/x6";
@@ -30,7 +31,7 @@ const dataSourceLoadDialogStore = useDataSourceLoadDialogStore()
 const modelLoadDialogStore = useModelLoadDialogStore()
 
 const noGroupTableNodePairs = computed(() => {
-    return MODEL.tableNodePairs.filter(it => it.first.subGroup === undefined)
+	return MODEL.tableNodePairs.filter(it => it.first.subGroup === undefined)
 })
 const noGroupEnums = computed(() => {
 	return MODEL.enums.filter(it => it.subGroup === undefined)
@@ -53,75 +54,88 @@ const subGroups = computed<Array<GenModelInput_TargetOf_subGroups & {
 })
 
 const associationEdgePairs = computed(() => {
-    return MODEL.associationEdgePairs
+	return MODEL.associationEdgePairs
 })
 
 const associationItemShowType = ref<AssociationItemShowType>('NAME')
 
 const toggleEdgeShow = () => {
-    const currentIndex = AssociationItemShowType_CONSTANTS.indexOf(associationItemShowType.value)
-    associationItemShowType.value = AssociationItemShowType_CONSTANTS[currentIndex + 1 < AssociationItemShowType_CONSTANTS.length ? currentIndex + 1 : 0]
+	const currentIndex = AssociationItemShowType_CONSTANTS.indexOf(associationItemShowType.value)
+	associationItemShowType.value = AssociationItemShowType_CONSTANTS[currentIndex + 1 < AssociationItemShowType_CONSTANTS.length ? currentIndex + 1 : 0]
 }
 
 const formattedEdgeShowType = computed(() => {
-    switch (associationItemShowType.value) {
-        case "NAME":
-            return i18nStore.translate('LABEL_ModelEditorMainMenu_associationShow_nameOnly')
-        case "TABLE":
-            return i18nStore.translate('LABEL_ModelEditorMainMenu_associationShow_joinTable')
-        case "COLUMN":
-            return i18nStore.translate('LABEL_ModelEditorMainMenu_associationShow_joinColumn')
-    }
+	switch (associationItemShowType.value) {
+		case "NAME":
+			return i18nStore.translate('LABEL_ModelEditorMainMenu_associationShow_nameOnly')
+		case "TABLE":
+			return i18nStore.translate('LABEL_ModelEditorMainMenu_associationShow_joinTable')
+		case "COLUMN":
+			return i18nStore.translate('LABEL_ModelEditorMainMenu_associationShow_joinColumn')
+	}
 })
 </script>
 
 <template>
-    <div>
-        <el-button @click="dataSourceLoadDialogStore.open()">
-            {{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromDataSource') }}
-        </el-button>
-        <el-button @click="modelLoadDialogStore.open()">
-            {{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromModel') }}
-        </el-button>
+	<div>
+		<el-button @click="dataSourceLoadDialogStore.open()">
+			{{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromDataSource') }}
+		</el-button>
+		<el-button @click="modelLoadDialogStore.open()">
+			{{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromModel') }}
+		</el-button>
 
-        <Details open>
-            <template #title>
-                <div style="height: 2em; line-height: 2em;">
-                    <el-text>
-                        {{ i18nStore.translate('LABEL_ModelEditorMainMenu_tableTitle') }}
-                    </el-text>
-                    <el-button
-                        style="margin-left: 0.5em;"
-                        @click="MODEL_EDITOR.createTable(
+		<Details open>
+			<template #title>
+				<div style="height: 2em; line-height: 2em;">
+					<el-text>
+						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_dataModelTitle') }}
+					</el-text>
+
+					<el-button
+						style="margin-left: 0.5em;"
+						@click="MODEL_EDITOR.createTable(
 							{x: VIEW.getCenterPoint().x * 3/4, y: VIEW.getCenterPoint().y * 3/4}
 						)">
-                        {{ i18nStore.translate('LABEL_ModelEditorMainMenu_createTable') }}
-                    </el-button>
-                    <el-button
-                        style="margin-left: 0.5em;"
-                        @click="MODEL_EDITOR.combineTable(
+						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_createTable') }}
+					</el-button>
+
+					<el-button
+						style="margin-left: 0.5em;"
+						@click="MODEL_EDITOR.combineTable(
 							{x: VIEW.getCenterPoint().x * 3/4, y: VIEW.getCenterPoint().y * 3/4}
 						)">
-                        {{ i18nStore.translate('LABEL_ModelEditorMainMenu_combineTable') }}
-                    </el-button>
+						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_combineTable') }}
+					</el-button>
 
 					<el-button @click="MODEL_EDITOR.createEnum()">
 						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_createEnum') }}
 					</el-button>
-                </div>
-            </template>
+				</div>
+			</template>
 
-            <div style="padding-bottom: 1em;">
-                <TableItem
-                    v-for="{first: table, second: node} in noGroupTableNodePairs"
-                    :key="node.id"
-                    :table="table"
-                    :node="node"
+			<div style="padding-bottom: 1em;">
+				<TableItem
+					v-for="{first: table, second: node} in noGroupTableNodePairs"
+					:key="node.id"
+					:table="table"
+					:node="node"
 				/>
+
+				<div
+					class="splitter"
+					v-if="noGroupTableNodePairs.length > 0 && noGroupEnums.length > 0"
+				/>
+
 				<EnumItem
 					v-for="genEnum in noGroupEnums"
 					:key="genEnum.name + genEnum.comment"
 					:gen-enum="genEnum"
+				/>
+
+				<div
+					class="splitter"
+					v-if="(noGroupTableNodePairs.length > 0 || noGroupEnums.length > 0) && subGroups.length > 0"
 				/>
 
 				<Details v-for="subGroup of subGroups" open>
@@ -135,41 +149,57 @@ const formattedEdgeShowType = computed(() => {
 						:table="table"
 						:node="node"
 					/>
+
+					<div
+						class="splitter"
+						v-if="subGroup.tableNodePairs.length > 0 && subGroup.tableNodePairs.length > 0"
+					/>
+
 					<EnumItem
 						v-for="genEnum in subGroup.enums"
 						:key="genEnum.name + genEnum.comment"
 						:gen-enum="genEnum"
 					/>
 				</Details>
-            </div>
-        </Details>
+			</div>
+		</Details>
 
-        <Details open>
-            <template #title>
-                <div style="height: 2em; line-height: 2em;">
-                    <el-text>
-                        {{ i18nStore.translate('LABEL_ModelEditorMainMenu_associationTitle') }}
-                    </el-text>
-                    <el-button style="margin-left: 0.5em;" @click="MODEL_EDITOR.createAssociation()">
-                        {{ i18nStore.translate('LABEL_ModelEditorMainMenu_createAssociation') }}
-                    </el-button>
-                    <el-button style="margin-left: 0.5em;" @click="MODEL_EDITOR.batchCreateAssociations()">
-                        {{ i18nStore.translate('LABEL_ModelEditorMainMenu_batchCreateAssociation') }}
-                    </el-button>
-                    <el-button style="margin-left: 0.5em;" @click="toggleEdgeShow">
-                        {{ formattedEdgeShowType }}
-                    </el-button>
-                </div>
-            </template>
+		<Details open>
+			<template #title>
+				<div style="height: 2em; line-height: 2em;">
+					<el-text>
+						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_associationTitle') }}
+					</el-text>
 
-            <div style="padding-bottom: 1em;">
-                <AssociationItem
-                    v-for="{first: association, second: edge} in associationEdgePairs"
-                    :key="edge.id"
-                    :association="association"
-                    :edge="edge"
-                    :show-type="associationItemShowType"/>
-            </div>
-        </Details>
-    </div>
+					<el-button style="margin-left: 0.5em;" @click="MODEL_EDITOR.createAssociation()">
+						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_createAssociation') }}
+					</el-button>
+					<el-button style="margin-left: 0.5em;" @click="MODEL_EDITOR.batchCreateAssociations()">
+						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_batchCreateAssociation') }}
+					</el-button>
+					<el-button style="margin-left: 0.5em;" @click="toggleEdgeShow">
+						{{ formattedEdgeShowType }}
+					</el-button>
+				</div>
+			</template>
+
+			<div style="padding-bottom: 1em;">
+				<AssociationItem
+					v-for="{first: association, second: edge} in associationEdgePairs"
+					:key="edge.id"
+					:association="association"
+					:edge="edge"
+					:show-type="associationItemShowType"/>
+			</div>
+		</Details>
+	</div>
 </template>
+
+<style scoped>
+.splitter {
+	width: 60%;
+	height: 1px;
+	background-color: var(--el-border-color);
+	margin-top: 0.5em;
+}
+</style>

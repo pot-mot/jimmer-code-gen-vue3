@@ -27,14 +27,14 @@ const handleDelete = () => {
 <template>
 	<div>
 		<el-text class="hover-show">
-			<el-text class="item">
+			<el-text class="item" :style="{color: subGroup.style}">
 				{{ subGroup.name }}
 				<Comment :comment="subGroup.comment"/>
 			</el-text>
 
 			<span class="hover-show-item" style="padding-left: 0.5em;">
-				<el-button :icon="EditPen" link type="warning" @click="handleEdit"></el-button>
-				<el-button :icon="Delete" link type="danger" @click="handleDelete"></el-button>
+				<el-button :icon="EditPen" link type="warning" @click="handleEdit"/>
+				<el-button :icon="Delete" link type="danger" @click="handleDelete"/>
 			</span>
 		</el-text>
 	</div>

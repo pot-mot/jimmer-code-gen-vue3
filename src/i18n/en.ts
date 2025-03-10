@@ -391,7 +391,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
 
     LABEL_ModelEditorMainMenu_loadFromDataSource: "Load from Data Source",
     LABEL_ModelEditorMainMenu_loadFromModel: "Load from Model",
-    LABEL_ModelEditorMainMenu_tableTitle: "Tables",
+    LABEL_ModelEditorMainMenu_dataModelTitle: "Data Model",
     LABEL_ModelEditorMainMenu_associationTitle: "Associations",
     LABEL_ModelEditorMainMenu_createTable: "Create Table",
     LABEL_ModelEditorMainMenu_combineTable: "Combine Table",

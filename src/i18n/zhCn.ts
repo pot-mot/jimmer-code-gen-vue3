@@ -392,7 +392,7 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
 
     LABEL_ModelEditorMainMenu_loadFromDataSource: "从数据源加载",
     LABEL_ModelEditorMainMenu_loadFromModel: "从模型导入",
-    LABEL_ModelEditorMainMenu_tableTitle: "表",
+    LABEL_ModelEditorMainMenu_dataModelTitle: "数据模型",
     LABEL_ModelEditorMainMenu_associationTitle: "关联",
     LABEL_ModelEditorMainMenu_createTable: "新建表",
     LABEL_ModelEditorMainMenu_combineTable: "组合表",

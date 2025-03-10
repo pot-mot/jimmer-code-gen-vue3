@@ -11,11 +11,9 @@ const minimap = ref<MiniMap | undefined>()
 
 const container = ref<HTMLElement>()
 
-interface MiniMapProps {
+const props = defineProps<{
 	graph: Graph
-}
-
-const props = defineProps<MiniMapProps>()
+}>()
 
 const setMiniMap = async () => {
 	await nextTick()

@@ -4,9 +4,6 @@
 			<thead>
 				<tr class="head">
 					<th colspan="2">
-						<span class="icon">
-							<TableIcon :type="table.type"></TableIcon>
-						</span>
 						<span class="name">{{ table.name }}</span>
 						<Comment :comment="table.comment"></Comment>
 						<span class="super-table-separator"
@@ -43,7 +40,6 @@ import {computed, inject, nextTick, onMounted, ref, watch} from "vue";
 import {GenModelInput_TargetOf_subGroups, GenTableModelInput,} from "@/api/__generated/model/static";
 import {Node} from '@antv/x6'
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
-import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {sendMessage} from "@/message/message.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";

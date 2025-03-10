@@ -11,6 +11,5 @@
 }
 
 .selected-menu-item {
-    outline: 1px solid var(--el-color-primary-light-3);
-    outline-offset: -2px;
+    background-color: var(--el-color-primary-light-7);
 }

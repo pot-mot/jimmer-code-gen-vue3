@@ -1,5 +1,5 @@
 import {NodeView} from '@antv/x6'
-import {BACKGROUND_COLOR, BORDER_COLOR, LINE_WIDTH, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
+import {BORDER_COLOR, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 
 export class SimpleNodeView extends NodeView {
     protected renderMarkup() {
@@ -10,12 +10,11 @@ export class SimpleNodeView extends NodeView {
                 {
                     tagName: 'rect',
                     selector: 'body',
-                    attrs: {
-                        fill: BACKGROUND_COLOR,
-                        stroke: BORDER_COLOR,
-                        strokeWidth: LINE_WIDTH,
-                    }
-                }
+                },
+                {
+                    tagName: 'text',
+                    selector: 'label',
+                },
             ]
         )
     }
@@ -23,10 +22,18 @@ export class SimpleNodeView extends NodeView {
     update() {
         if (this.cell.shape !== TABLE_NODE) return undefined
 
+        const style = this.cell.data.wrapper?.value?.style
+        let fillColor = style?.getPropertyValue("--border-color")
+        if (fillColor === undefined || fillColor === '') {
+            fillColor = BORDER_COLOR
+        }
+
         super.update({
             body: {
                 refWidth: '100%',
-            }
+                refHeight: '100%',
+                fill: fillColor,
+            },
         })
     }
 }
