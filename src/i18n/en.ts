@@ -460,6 +460,9 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
         return `Enum [${enumName}] has problem: ${useI18nStore().translate(subMessage)}`;
     },
 
+    LABEL_TableForm_name: "Name",
+    LABEL_TableForm_comment: "Comment",
+    LABEL_TableForm_remark: "Remark",
     LABEL_TableForm_asSuperTable: "SuperTable",
     LABEL_TableForm_extendTables: "extends",
     LABEL_TableForm_columns: "Columns",
@@ -583,6 +586,8 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     VALIDATE_GenColumnDefault_rawType_cannotBeEmpty: 'The Raw Type of ColumnDefault cannot be empty',
     VALIDATE_GenColumnDefault_dataSize_cannotBeEmpty: 'The Length of ColumnDefault cannot be empty',
     VALIDATE_GenColumnDefault_numericPrecision_cannotBeEmpty: 'The Precision of ColumnDefault cannot be empty',
+
+    LABEL_ModelSubGroupSelect_placeholder: 'Please Select SubGroup',
 
     LABEL_GenTableColumn_category: 'Category',
     LABEL_GenTableColumn_name: 'Name',

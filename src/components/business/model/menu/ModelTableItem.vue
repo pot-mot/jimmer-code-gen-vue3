@@ -56,7 +56,7 @@ const getAssociations = associationsLoading.withLoading('get', async () => {
 				<TableIcon :type="table.type"></TableIcon>
 				<el-button @click="eventBus.emit('clickTable', {id: table.id})" link>
 					{{ table.name }}
-					<Comment :comment="table.comment"></Comment>
+					<Comment :comment="table.comment"/>
 				</el-button>
 			</el-text>
 		</template>
@@ -69,7 +69,7 @@ const getAssociations = associationsLoading.withLoading('get', async () => {
 
 				<ul style="padding: 0 0 0.5em 0.5em;">
 					<li v-for="column in columns" :key="column.id">
-						<ColumnItem :column="column" :event-bus="eventBus"></ColumnItem>
+						<ColumnItem :column="column" :event-bus="eventBus"/>
 					</li>
 				</ul>
 			</Details>
@@ -81,8 +81,7 @@ const getAssociations = associationsLoading.withLoading('get', async () => {
 
 				<ul style="padding: 0 0 0.5em 0.5em;">
 					<li v-for="association in associations" :key="association.id">
-						<AssociationItem :association="association" :event-bus="eventBus"
-										 :show-config="showConfig"></AssociationItem>
+						<AssociationItem :association="association" :event-bus="eventBus" :show-config="showConfig"/>
 					</li>
 				</ul>
 			</Details>
@@ -91,7 +90,7 @@ const getAssociations = associationsLoading.withLoading('get', async () => {
 		<template v-else-if="showConfig.showColumns">
 			<ul style="padding: 0 0 0.5em 0.5em;">
 				<li v-for="column in columns" :key="column.id">
-					<ColumnItem :column="column" :event-bus="eventBus"></ColumnItem>
+					<ColumnItem :column="column" :event-bus="eventBus"/>
 				</li>
 			</ul>
 		</template>
@@ -99,8 +98,7 @@ const getAssociations = associationsLoading.withLoading('get', async () => {
 		<template v-else-if="showConfig.showAssociations">
 			<ul style="padding: 0 0 0.5em 0.5em;">
 				<li v-for="association in associations" :key="association.id">
-					<AssociationItem :association="association" :event-bus="eventBus"
-									 :show-config="showConfig"></AssociationItem>
+					<AssociationItem :association="association" :event-bus="eventBus" :show-config="showConfig"/>
 				</li>
 			</ul>
 		</template>

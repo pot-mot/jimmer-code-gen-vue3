@@ -3,60 +3,74 @@ import {useEntityDialogsStore} from "@/store/modelEditor/EntityDialogsStore.ts";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import EntityForm from "@/components/business/entity/EntityForm.vue";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import {EntityConfigInput} from "@/api/__generated/model/static";
+import {EntityConfigInput, IdName} from "@/api/__generated/model/static";
 import {api} from "@/api";
 import {DeepReadonly} from "vue";
 import {MainLocaleKeyParam} from "@/i18n";
 import {validateEntity} from "@/components/business/entity/validateEntity.ts";
-import {useEditSaveAndRefresh} from "@/components/pages/ModelEditor/save/editSaveAndRefresh.ts";
+import {cloneDeep} from "lodash";
+import {sendI18nMessage} from "@/message/message.ts";
 
 const store = useEntityDialogsStore()
 
 const {MODEL, MODEL_EDITOR} = useModelEditorStore()
 
-const {
-    editEnum,
-    editEntity
-} = useEditSaveAndRefresh()
-
 const handleSubmit = async (
-    entity: EntityConfigInput
+	entity: EntityConfigInput
 ) => {
-    await MODEL_EDITOR.editedEntity(entity)
+	await MODEL_EDITOR.editedEntity(entity)
 }
 
 const validate = async (
-    entity: DeepReadonly<EntityConfigInput>
+	entity: DeepReadonly<EntityConfigInput>
 ): Promise<MainLocaleKeyParam[]> => {
-    const otherEntities = await api.entityService.listByModelId({
-        modelId: MODEL._model().id,
+	const otherEntities = await api.entityService.listByModelId({
+		modelId: MODEL._model().id,
 		excludeEntityIds: [entity.tableConvertedEntity.id]
-    })
+	})
 
-    return validateEntity(
-        entity,
-        otherEntities
-    )
+	return validateEntity(
+		entity,
+		otherEntities
+	)
+}
+
+const handleClickEntity = async (idName: IdName) => {
+	const entity = await api.entityService.get({id: idName.id})
+	if (entity === undefined) {
+		sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickEntityNotFound", args: [idName]})
+		return
+	}
+	MODEL_EDITOR.editEntity(entity)
+}
+
+const handleClickEnum = (idName: IdName) => {
+	const genEnum = cloneDeep(MODEL.enums.filter(it => it.name === idName.name)[0])
+	if (!genEnum) {
+		sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickEnumNotFoundInCurrentModel", args: [idName]})
+		return
+	}
+	MODEL_EDITOR.editEnum(idName.name, genEnum)
 }
 </script>
 
 <template>
-    <template v-for="({key, options}, index) in store.items" :key="key">
-        <DragDialog
-            :ref="(el: any) => store.setDialogRef(key, el)"
-            :model-value="true" :can-resize="true"
-            :init-w="800" :init-h="600" :init-y="100"
-            :modal="options?.modal"
-            @close="store.close(key, false)"
-        >
-            <EntityForm
-                v-model="store.items[index].value"
-                :validate="validate"
-                @submit="handleSubmit"
-                @cancel="store.close(key, false)"
-                @click-entity="editEntity"
-                @click-enum="editEnum"
-            />
-        </DragDialog>
-    </template>
+	<template v-for="({key, options}, index) in store.items" :key="key">
+		<DragDialog
+			:ref="(el: any) => store.setDialogRef(key, el)"
+			:model-value="true" :can-resize="true"
+			:init-w="800" :init-h="600" :init-y="100"
+			:modal="options?.modal"
+			@close="store.close(key, false)"
+		>
+			<EntityForm
+				v-model="store.items[index].value"
+				:validate="validate"
+				@submit="handleSubmit"
+				@cancel="store.close(key, false)"
+				@click-entity="handleClickEntity"
+				@click-enum="handleClickEnum"
+			/>
+		</DragDialog>
+	</template>
 </template>

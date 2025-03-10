@@ -461,6 +461,9 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
         return `枚举【${enumName}】存在问题：${useI18nStore().translate(subMessage)}`;
     },
 
+    LABEL_TableForm_name: "名称",
+    LABEL_TableForm_comment: "注释",
+    LABEL_TableForm_remark: "备注",
     LABEL_TableForm_asSuperTable: "作为上级表",
     LABEL_TableForm_extendTables: "继承的表",
     LABEL_TableForm_columns: "列",
@@ -583,6 +586,8 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     VALIDATE_GenColumnDefault_rawType_cannotBeEmpty: "ColumnDefault 的字面类型不可为空",
     VALIDATE_GenColumnDefault_dataSize_cannotBeEmpty: 'ColumnDefault 的长度不可为空',
     VALIDATE_GenColumnDefault_numericPrecision_cannotBeEmpty: 'ColumnDefault 的精度不可为空',
+
+    LABEL_ModelSubGroupSelect_placeholder: "请选择子组",
 
     LABEL_GenTableColumn_category: '列类别',
     LABEL_GenTableColumn_name: '列名',

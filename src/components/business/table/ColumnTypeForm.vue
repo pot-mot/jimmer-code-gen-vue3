@@ -138,7 +138,7 @@ useClickOutside(() => wrapper.value, (e) => {
 
                 <el-form-item :label="i18nStore.translate('LABEL_ColumnTypeForm_mappedEnum')">
                     <Line style="width: 100%;">
-                        <LineItem span="3em">
+                        <LineItem span="auto">
                             <el-button v-if="column.enum" :icon="EditPen"
                                        @click="emits('editEnum', column.enum!.name)"/>
                             <el-button v-else :icon="Plus" @click="emits('createEnum')"/>

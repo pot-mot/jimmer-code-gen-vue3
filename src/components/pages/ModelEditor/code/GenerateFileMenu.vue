@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import {GenerateFile, TableEntityNotNullPair, TableEntityPair} from "@/api/__generated/model/static";
+import {GenerateFile, IdName, TableEntityNotNullPair, TableEntityPair} from "@/api/__generated/model/static";
 import {computed} from "vue";
-import {useEditSaveAndRefresh} from "@/components/pages/ModelEditor/save/editSaveAndRefresh.ts";
+import {cloneDeep} from "lodash";
+import {sendI18nMessage} from "@/message/message.ts";
+import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
+import {api} from "@/api";
 
 const props = defineProps<{
     file: GenerateFile,
@@ -81,12 +84,44 @@ const associationOptions = computed(() => {
         })
 })
 
-const {
-    editEnum,
-    editEntity,
-    editAssociation,
-    editTable
-} = useEditSaveAndRefresh()
+
+const {MODEL, MODEL_EDITOR} = useModelEditorStore()
+
+const editTable = (idName: IdName) => {
+	const tableNodePair = cloneDeep(MODEL.tableNodePairs.filter(it => it.first.name === idName.name)[0])
+	if (!tableNodePair) {
+		sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel", args: [idName]})
+		return
+	}
+	MODEL_EDITOR.editTable(tableNodePair.second.id, tableNodePair.first)
+}
+
+const editEnum = (idName: IdName) => {
+	const genEnum = cloneDeep(MODEL.enums.filter(it => it.name === idName.name)[0])
+	if (!genEnum) {
+		sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickEnumNotFoundInCurrentModel", args: [idName]})
+		return
+	}
+	MODEL_EDITOR.editEnum(idName.name, genEnum)
+}
+
+const editAssociation = (idName: IdName) => {
+	const associationEdgePair = cloneDeep(MODEL.associationEdgePairs.filter(it => it.first.name === idName.name)[0])
+	if (!associationEdgePair) {
+		sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickAssociationNotFoundInCurrentModel", args: [idName]})
+		return
+	}
+	MODEL_EDITOR.editAssociation(associationEdgePair.second.id, associationEdgePair.first)
+}
+
+const editEntity = async (idName: IdName): Promise<void> => {
+	const entity = await api.entityService.get({id: idName.id})
+	if (entity === undefined) {
+		sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickEntityNotFound", args: [idName]})
+		return
+	}
+	MODEL_EDITOR.editEntity(entity)
+}
 </script>
 
 <template>

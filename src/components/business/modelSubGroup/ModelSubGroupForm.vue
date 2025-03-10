@@ -5,6 +5,7 @@ import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {DeepReadonly} from "vue";
 import {MainLocaleKeyParam} from "@/i18n";
 import {sendI18nMessage} from "@/message/message.ts";
+import CodeEditor from "@/components/global/code/CodeEditor.vue";
 
 const i18nStore = useI18nStore()
 
@@ -60,11 +61,7 @@ const handleCancel = (): void => {
             />
         </el-form-item>
         <el-form-item prop="style" label="样式">
-            <el-input
-                v-model="subGroup.style"
-                placeholder="请输入样式"
-                clearable
-            />
+			<CodeEditor v-model="subGroup.style" language="css"/>
         </el-form-item>
 
         <div style="text-align: right; position: absolute; bottom: 0.5em; right: 1em; width: 10em;">

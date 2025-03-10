@@ -5,6 +5,9 @@ import Comment from "@/components/global/common/Comment.vue";
 import {EditPen, Plus} from "@element-plus/icons-vue";
 import Line from "@/components/global/line/Line.vue";
 import LineItem from "@/components/global/line/LineItem.vue";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+
+const i18nStore = useI18nStore()
 
 const data = defineModel<{
     subGroup?: { name: string } | undefined
@@ -47,7 +50,7 @@ const emits = defineEmits<{
 
 <template>
     <Line style="width: 100%;">
-        <LineItem span="3em">
+        <LineItem span="auto">
             <el-button v-if="modelValue" :icon="EditPen" @click="emits('edit', modelValue)"/>
             <el-button v-else :icon="Plus" @click="emits('create')"/>
         </LineItem>
@@ -58,6 +61,7 @@ const emits = defineEmits<{
                 value-key="name"
                 clearable
                 @clear="handleClear"
+				:placeholder="i18nStore.translate('LABEL_ModelSubGroupSelect_placeholder')"
             >
                 <template #label v-if="modelValue">
                     {{ modelValue.name }}

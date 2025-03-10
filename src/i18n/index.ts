@@ -272,6 +272,9 @@ type MainLocale = {
     VALIDATE_ModelForm_graphDataValidationFailed: string
     VALIDATE_ModelForm_graphDataJsonConversionFailed: string
 
+    LABEL_TableForm_name: string
+    LABEL_TableForm_comment: string
+    LABEL_TableForm_remark: string
     LABEL_TableForm_asSuperTable: string
     LABEL_TableForm_extendTables: string
     LABEL_TableForm_columns: string
@@ -395,6 +398,8 @@ type MainLocale = {
     VALIDATE_GenColumnDefault_dataSize_cannotBeEmpty: string
     VALIDATE_GenColumnDefault_numericPrecision_cannotBeEmpty: string
 
+    LABEL_ModelSubGroupSelect_placeholder: string
+
     LABEL_GenTableColumn_category: string,
     LABEL_GenTableColumn_name: string,
     LABEL_GenTableColumn_comment: string,
@@ -456,9 +461,9 @@ type MainLocale = {
 
 
     LABEL_EnumForm_name: string
+    LABEL_EnumForm_comment: string
     LABEL_EnumForm_packagePath: string
     LABEL_EnumForm_notNullDefaultItem: string
-    LABEL_EnumForm_comment: string
     LABEL_EnumForm_type: string
     LABEL_EnumForm_typeUnset: string
 

@@ -8,7 +8,6 @@ import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {GenAssociationModelInput, GenModelInput, GenTableModelInput} from "@/api/__generated/model/static";
 import {validateModelInput} from "@/shape/ModelInput.ts";
 import {importEnums} from "@/components/pages/ModelEditor/graph/clipBoard/importEnums.ts";
-import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {validateTableModelInput} from "@/shape/GenTableModelInput.ts";
 import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
@@ -106,70 +105,67 @@ const cut = async () => {
     return copyResult
 }
 
-const paste = useGlobalLoadingStore().withLoading(
-    'clipBoard paste',
-    async () => {
-        const {GRAPH, MODEL_EDITOR} = useModelEditorStore()
+const paste = async () => {
+    const {GRAPH, MODEL_EDITOR} = useModelEditorStore()
 
-        const graph = GRAPH._graph()
+    const graph = GRAPH._graph()
 
-        graph.startBatch("paste")
+    graph.startBatch("paste")
 
-        try {
-            const text = await navigator.clipboard.readText()
+    try {
+        const text = await navigator.clipboard.readText()
 
-            let res: { nodes: Node[], edges: Edge[] } | undefined
+        let res: { nodes: Node[], edges: Edge[] } | undefined
 
-            const value = jsonParseThenConvertNullToUndefined(text)
+        const value = jsonParseThenConvertNullToUndefined(text)
 
-            const validateErrors: any = []
+        const validateErrors: any = []
 
-            const options: TableLoadOptions = {
-                x: GRAPH.mousePosition.x,
-                y: GRAPH.mousePosition.y
-            }
-
-            if (validateTableModelInput(value, (e) => validateErrors.push(e))) {
-                const table = value as GenTableModelInput
-                res = loadModelInputs(graph, [table], [], options)
-            } else if (validateCopyData(value, (e) => validateErrors.push(e))) {
-                const {
-                    tables,
-                    associations,
-                    enums,
-                    optionsList
-                } = value as CopyData
-
-                res = loadModelInputs(graph, tables, associations, options, optionsList)
-
-                importEnums(enums)
-            } else if (validateModelEditorData(value, (e) => validateErrors.push(e))) {
-                const cells = value.json.cells as Cell[]
-                graph.parseJSON(cells)
-                res = MODEL_EDITOR.loadModelEditorData(jsonParseThenConvertNullToUndefined(text), false)
-            } else if (validateModelInput(value, (e) => validateErrors.push(e))) {
-                const model = value as GenModelInput
-
-                if (model.graphData) {
-                    res = MODEL_EDITOR.loadModelEditorData(jsonParseThenConvertNullToUndefined(model.graphData), false)
-                }
-                importEnums(model.enums)
-            } else {
-                sendI18nMessage('MESSAGE_clipBoard_cannotDirectLoad', 'error', validateErrors)
-            }
-
-            if (res !== undefined) {
-                const {nodes, edges} = res
-
-                await syncTimeout(100 + nodes.length * 30 + edges.length * 20)
-
-                graph.resetSelection([...nodes.map(it => it.id), ...edges.map(it => it.id)])
-            }
-        } catch (e) {
-            sendI18nMessage('MESSAGE_clipBoard_cannotDirectLoad', 'error', e)
+        const options: TableLoadOptions = {
+            x: GRAPH.mousePosition.x,
+            y: GRAPH.mousePosition.y
         }
 
-        graph.stopBatch("paste")
+        if (validateTableModelInput(value, (e) => validateErrors.push(e))) {
+            const table = value as GenTableModelInput
+            res = loadModelInputs(graph, [table], [], options)
+        } else if (validateCopyData(value, (e) => validateErrors.push(e))) {
+            const {
+                tables,
+                associations,
+                enums,
+                optionsList
+            } = value as CopyData
+
+            res = loadModelInputs(graph, tables, associations, options, optionsList)
+
+            importEnums(enums)
+        } else if (validateModelEditorData(value, (e) => validateErrors.push(e))) {
+            const cells = value.json.cells as Cell[]
+            graph.parseJSON(cells)
+            res = MODEL_EDITOR.loadModelEditorData(jsonParseThenConvertNullToUndefined(text), false)
+        } else if (validateModelInput(value, (e) => validateErrors.push(e))) {
+            const model = value as GenModelInput
+
+            if (model.graphData) {
+                res = MODEL_EDITOR.loadModelEditorData(jsonParseThenConvertNullToUndefined(model.graphData), false)
+            }
+            importEnums(model.enums)
+        } else {
+            sendI18nMessage('MESSAGE_clipBoard_cannotDirectLoad', 'error', validateErrors)
+        }
+
+        if (res !== undefined) {
+            const {nodes, edges} = res
+
+            await syncTimeout(100 + nodes.length * 30 + edges.length * 20)
+
+            graph.resetSelection([...nodes.map(it => it.id), ...edges.map(it => it.id)])
+        }
+    } catch (e) {
+        sendI18nMessage('MESSAGE_clipBoard_cannotDirectLoad', 'error', e)
     }
-)
+
+    graph.stopBatch("paste")
+}
 

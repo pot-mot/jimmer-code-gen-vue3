@@ -6,7 +6,6 @@ import {DeepReadonly} from "vue";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 import {validateEnum} from "@/components/business/enum/validateEnum.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import TableForm from "@/components/business/table/TableForm.vue";
 
 const store = useEnumDialogsStore()
 
