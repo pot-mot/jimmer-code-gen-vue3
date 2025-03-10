@@ -37,7 +37,7 @@ defineExpose({
 <template>
 	<ul v-loading="modelsLoading.isLoading.value">
 		<li v-for="model in models" :key="model.id">
-			<ModelItem :model="model" :event-bus="eventBus" :show-config="props"></ModelItem>
+			<ModelItem :model="model" :event-bus="eventBus" :show-config="props"/>
 		</li>
 	</ul>
 </template>

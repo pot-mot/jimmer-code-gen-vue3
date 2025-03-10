@@ -217,7 +217,6 @@ type MainLocale = {
     LABEL_ModelEditorMainMenu_loadFromModel: string
     LABEL_ModelEditorMainMenu_tableTitle: string
     LABEL_ModelEditorMainMenu_associationTitle: string
-    LABEL_ModelEditorMainMenu_enumTitle: string
     LABEL_ModelEditorMainMenu_createTable: string
     LABEL_ModelEditorMainMenu_combineTable: string
     LABEL_ModelEditorMainMenu_createAssociation: string
@@ -455,6 +454,7 @@ type MainLocale = {
     LABEL_DeleteTarget_Model: string
     LABEL_DeleteTarget_DataSource: string
     LABEL_DeleteTarget_Schema: string
+    LABEL_DeleteTarget_SubGroup: string
     LABEL_DeleteTarget_Table: string
     LABEL_DeleteTarget_Association: string
     LABEL_DeleteTarget_Enum: string

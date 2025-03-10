@@ -48,18 +48,15 @@ const isSelected = computed(() => {
 	<div v-if="table"
 		 class="hover-show" :class="isSelected ? 'selected-menu-item' : ''">
 
-		<el-text style="white-space: nowrap;">
-			<TableIcon :type="table.type"></TableIcon>
-
-			<el-button link @click="handleClickLabel">
-				{{ table.name }}
-				<Comment :comment="table.comment"></Comment>
-			</el-button>
+		<el-text class="item" @click="handleClickLabel">
+			<TableIcon :type="table.type"/>
+			{{ table.name }}
+			<Comment :comment="table.comment"/>
 		</el-text>
 
 		<span class="hover-show-item" style="padding-left: 0.5em;">
-			<el-button :icon="EditPen" link type="warning" @click="handleEdit"></el-button>
-			<el-button :icon="Delete" link type="danger" @click="handleDelete"></el-button>
+			<el-button :icon="EditPen" link type="warning" @click="handleEdit"/>
+			<el-button :icon="Delete" link type="danger" @click="handleDelete"/>
 		</span>
 	</div>
 
@@ -69,3 +66,12 @@ const isSelected = computed(() => {
 		</el-text>
 	</div>
 </template>
+
+<style scoped>
+.item {
+	cursor: pointer;
+	white-space: nowrap;
+	line-height: 1.4em;
+	padding: 0.2em 0.5em;
+}
+</style>

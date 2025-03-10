@@ -12,6 +12,14 @@ import {
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {useDataSourceLoadDialogStore} from "@/store/modelEditor/DataSourceLoadDialogStore.ts";
 import {useModelLoadDialogStore} from "@/store/modelEditor/ModelLoadDialogStore.ts";
+import {
+	GenModelInput_TargetOf_enums,
+	GenModelInput_TargetOf_subGroups,
+	GenTableModelInput, Pair
+} from "@/api/__generated/model/static";
+import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
+import {Node} from "@antv/x6";
+import SubGroupItem from "@/components/pages/ModelEditor/menu/SubGroupItem.vue";
 
 const i18nStore = useI18nStore()
 
@@ -21,16 +29,31 @@ const dataSourceLoadDialogStore = useDataSourceLoadDialogStore()
 
 const modelLoadDialogStore = useModelLoadDialogStore()
 
-const tableNodePairs = computed(() => {
-    return MODEL.tableNodePairs
+const noGroupTableNodePairs = computed(() => {
+    return MODEL.tableNodePairs.filter(it => it.first.subGroup === undefined)
+})
+const noGroupEnums = computed(() => {
+	return MODEL.enums.filter(it => it.subGroup === undefined)
+})
+
+const subGroups = computed<Array<GenModelInput_TargetOf_subGroups & {
+	tableNodePairs: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
+	enums: Array<GenModelInput_TargetOf_enums>,
+}>>(() => {
+	return MODEL.subGroups.map(group => {
+		const tableNodePairs = MODEL.tableNodePairs.filter(it => it.first.subGroup?.name === group.name)
+		const enums = MODEL.enums.filter(it => it.subGroup?.name === group.name)
+
+		return {
+			...group,
+			tableNodePairs,
+			enums,
+		}
+	})
 })
 
 const associationEdgePairs = computed(() => {
     return MODEL.associationEdgePairs
-})
-
-const enums = computed(() => {
-    return MODEL.enums
 })
 
 const associationItemShowType = ref<AssociationItemShowType>('NAME')
@@ -54,10 +77,10 @@ const formattedEdgeShowType = computed(() => {
 
 <template>
     <div>
-        <el-button style="margin-bottom: 0.5em;" @click="dataSourceLoadDialogStore.open()">
+        <el-button @click="dataSourceLoadDialogStore.open()">
             {{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromDataSource') }}
         </el-button>
-        <el-button style="margin-bottom: 0.5em;" @click="modelLoadDialogStore.open()">
+        <el-button @click="modelLoadDialogStore.open()">
             {{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromModel') }}
         </el-button>
 
@@ -81,15 +104,43 @@ const formattedEdgeShowType = computed(() => {
 						)">
                         {{ i18nStore.translate('LABEL_ModelEditorMainMenu_combineTable') }}
                     </el-button>
+
+					<el-button @click="MODEL_EDITOR.createEnum()">
+						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_createEnum') }}
+					</el-button>
                 </div>
             </template>
 
             <div style="padding-bottom: 1em;">
                 <TableItem
-                    v-for="{first: table, second: node} in tableNodePairs"
+                    v-for="{first: table, second: node} in noGroupTableNodePairs"
                     :key="node.id"
                     :table="table"
-                    :node="node"/>
+                    :node="node"
+				/>
+				<EnumItem
+					v-for="genEnum in noGroupEnums"
+					:key="genEnum.name + genEnum.comment"
+					:gen-enum="genEnum"
+				/>
+
+				<Details v-for="subGroup of subGroups" open>
+					<template #title>
+						<SubGroupItem :sub-group="subGroup"/>
+					</template>
+
+					<TableItem
+						v-for="{first: table, second: node} in subGroup.tableNodePairs"
+						:key="node.id"
+						:table="table"
+						:node="node"
+					/>
+					<EnumItem
+						v-for="genEnum in subGroup.enums"
+						:key="genEnum.name + genEnum.comment"
+						:gen-enum="genEnum"
+					/>
+				</Details>
             </div>
         </Details>
 
@@ -118,26 +169,6 @@ const formattedEdgeShowType = computed(() => {
                     :association="association"
                     :edge="edge"
                     :show-type="associationItemShowType"/>
-            </div>
-        </Details>
-
-        <Details open>
-            <template #title>
-                <div style="height: 2em; line-height: 2em;">
-                    <el-text>
-                        {{ i18nStore.translate('LABEL_ModelEditorMainMenu_enumTitle') }}
-                    </el-text>
-                    <el-button style="margin-left: 0.5em;" @click="MODEL_EDITOR.createEnum()">
-                        {{ i18nStore.translate('LABEL_ModelEditorMainMenu_createEnum') }}
-                    </el-button>
-                </div>
-            </template>
-
-            <div style="padding-bottom: 1em;" v-if="MODEL.isLoaded">
-                <EnumItem
-                    v-for="genEnum in enums"
-                    :key="genEnum.name + genEnum.comment"
-                    :gen-enum="genEnum"/>
             </div>
         </Details>
     </div>

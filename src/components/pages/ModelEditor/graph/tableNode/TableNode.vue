@@ -70,8 +70,12 @@ const subGroup = computed<GenModelInput_TargetOf_subGroups | undefined>(() => {
 })
 
 watch(() => subGroup.value, (newVal) => {
-	if (wrapper.value && newVal && newVal.style.length > 0) {
-		wrapper.value.style.setProperty("--border-color", newVal.style)
+	if (wrapper.value) {
+		if (newVal && newVal.style.length > 0) {
+			wrapper.value.style.setProperty("--border-color", newVal.style)
+		} else {
+			wrapper.value.style.removeProperty("--border-color")
+		}
 	}
 })
 

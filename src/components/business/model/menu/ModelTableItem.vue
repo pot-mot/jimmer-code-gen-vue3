@@ -52,12 +52,10 @@ const getAssociations = associationsLoading.withLoading('get', async () => {
 		getAssociations()
 	}" :disabled="!showConfig.showColumns && !showConfig.showAssociations">
 		<template #title>
-			<el-text>
+			<el-text @click="eventBus.emit('clickTable', {id: table.id})">
 				<TableIcon :type="table.type"></TableIcon>
-				<el-button @click="eventBus.emit('clickTable', {id: table.id})" link>
-					{{ table.name }}
-					<Comment :comment="table.comment"/>
-				</el-button>
+				{{ table.name }}
+				<Comment :comment="table.comment"/>
 			</el-text>
 		</template>
 

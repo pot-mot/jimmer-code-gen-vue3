@@ -103,9 +103,9 @@ const isSelected = computed(() => {
     <div v-if="association && sourceLabel && targetLabel"
          class="hover-show" :class="isSelected ? 'selected-menu-item' : ''">
 
-        <el-text style="white-space: nowrap;">
+        <el-text class="item">
             <template v-if="showType === 'NAME'">
-                <el-button link @click="handleClickAssociation">
+                <span @click="handleClickAssociation">
                     <template v-if="association.name">
                         {{ association.name }}
                     </template>
@@ -113,22 +113,21 @@ const isSelected = computed(() => {
                         {{ "暂无名称" }}
                     </template>
                     <span>{{ association.fake ? '【fake】' : '' }}</span>
-                </el-button>
+                </span>
             </template>
 
             <template v-if="showType === 'TABLE' || showType === 'COLUMN'">
-                <el-button link @click="handleClickSource">
+                <span @click="handleClickSource">
                     {{ showType === 'COLUMN' ? sourceLabel : association.sourceTableName }}
-                </el-button>
-                <span @click="handleClickAssociation">
-					<AssociationIcon
-                        :type="association.type"
-                        :fake="association.fake"
-                        style="transform: translateY(0.25em)"/>
-				</span>
-                <el-button link @click="handleClickTarget">
+                </span>
+				<AssociationIcon
+					@click="handleClickAssociation"
+					:type="association.type"
+					:fake="association.fake"
+					style="margin: 0 0.3em;"/>
+                <span @click="handleClickTarget">
                     {{ showType === 'COLUMN' ? targetLabel : association.targetTableName }}
-                </el-button>
+                </span>
             </template>
         </el-text>
 
@@ -144,3 +143,12 @@ const isSelected = computed(() => {
         </el-text>
     </div>
 </template>
+
+<style scoped>
+.item {
+	cursor: pointer;
+	white-space: nowrap;
+	line-height: 1.4em;
+	padding: 0.2em 0.5em;
+}
+</style>

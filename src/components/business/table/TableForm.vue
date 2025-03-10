@@ -288,7 +288,7 @@ const handleCancel = () => {
 <template>
 	<el-form style="width: calc(100% - 0.5rem);">
 		<el-row :gutter="12" style="line-height: 2em; padding-left: 1em; padding-bottom: 1em;">
-			<el-col :span="24">
+			<el-col :span="23">
 				<ModelSubGroupSelect
 					v-model="table"
 					:sub-groups="subGroups"
