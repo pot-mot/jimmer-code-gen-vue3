@@ -24,6 +24,7 @@
 
     color: var(--background-color);
     background-color: var(--border-color);
+    --comment-color: var(--background-color);
 }
 
 .table-node .head th {

@@ -1,5 +1,5 @@
 :root {
-    --list-line-bg-color: var(--el-bg-color);
+    --list-line-bg-color: var(--background-color);
     --list-line-hover-bg-color: var(--el-color-info-light-9);
     --list-line-selected-bg-color: var(--el-color-primary-light-7);
 }

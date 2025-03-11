@@ -1,7 +1,7 @@
 import {Cell, Edge, Graph} from "@antv/x6";
 import {
     ASSOCIATION_EDGE,
-    ASSOCIATION_TYPE_BUTTON, BORDER_COLOR,
+    ASSOCIATION_TYPE_BUTTON, BACKGROUND_COLOR, BORDER_COLOR,
     DEFAULT_ASSOCIATION_TYPE,
     LINE_WIDTH, TEXT_COLOR,
 } from "@/components/pages/ModelEditor/constant.ts";
@@ -85,7 +85,7 @@ const createAssociationTypeButtonAttrs = (
                     y,
                     rx: 5,
                     ry: 5,
-                    fill: 'white',
+                    fill: BACKGROUND_COLOR,
                     cursor: 'pointer',
                 },
             },

@@ -1,0 +1,35 @@
+:root {
+    --text-color: var(--el-color-info-dark-2);
+    --comment-color: var(--el-text-color-placeholder);
+    --border-color: var(--el-color-info-dark-2);
+    --background-color: var(--el-color-white);
+    --highlight-color: var(--el-color-primary);
+    --border: var(--el-border);
+    --border-radius: var(--el-border-radius-base);
+    --el-text-color: var(--text-color);
+
+    --scrollbar-track-color: #f1f1f1;
+    --scrollbar-thumb-color: #ddd;
+    --scrollbar-thumb-color-hover: #bbb;
+
+    --split-color: #eee;
+    --split-color-hover: #ccc;
+
+    background-color: var(--background-color);
+    transition: background-color 0.5s;
+}
+
+:root.dark {
+    --text-color: #eee;
+    --comment-color: #ccc;
+    --border-color: #ccc;
+    --background-color: #333;
+    --highlight-color: var(--el-color-primary);
+
+    --scrollbar-track-color: #444;
+    --scrollbar-thumb-color: #666;
+    --scrollbar-thumb-color-hover: #999;
+
+    --split-color: #555;
+    --split-color-hover: #888;
+}

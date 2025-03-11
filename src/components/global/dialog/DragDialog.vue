@@ -338,7 +338,7 @@ defineExpose<DragDialogExpose>({
 	width: 100%;
 	overflow: hidden;
 	padding: 20px 10px 10px;
-	background-color: #fff;
+	background-color: var(--background-color);
 	border-radius: var(--border-radius);
 	box-shadow: var(--el-box-shadow);
 	position: relative;

@@ -8,16 +8,6 @@ body {
     overflow: hidden;
 }
 
-:root {
-    --text-color: var(--el-color-info-dark-2);
-    --comment-color: var(--el-text-color-placeholder);
-    --border-color: var(--el-color-info-dark-2);
-    --background-color: var(--el-color-white);
-    --highlight-color: var(--el-color-primary);
-    --border: var(--el-border);
-    --border-radius: var(--el-border-radius-base);
-}
-
 /* layout */
 .layout {
     height: 100vh;
@@ -33,17 +23,47 @@ body {
     scrollbar-gutter: stable;
 }
 
+/* scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    transition: background-color 0.3s;
+}
+
+::-webkit-scrollbar-track:hover {
+    background-color: var(--scrollbar-track-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb-color);
+    transition: background-color 0.3s;
+    border-radius: 4px;
+    cursor: default;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-color-hover);
+}
+
+::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
+
 /* splitpanes */
 .splitpanes__pane {
     transition: none !important;
 }
 
 .splitpanes__splitter {
-    background-color: #eee;
+    background-color: var(--split-color);
+    transition: background-color 0.3s;
 }
 
 .splitpanes__splitter:hover {
-    background-color: #ccc;
+    background-color: var(--split-color-hover);
 }
 
 .splitpanes--vertical > .splitpanes__splitter {
@@ -52,30 +72,6 @@ body {
 
 .splitpanes--horizontal > .splitpanes__splitter {
     min-height: 6px !important;
-}
-
-/* scrollbar */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track:hover {
-    background: #f1f1f1;
-}
-
-::-webkit-scrollbar-thumb {
-    background-color: #ddd;
-    border-radius: 4px;
-    cursor: default;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background-color: #bbb;
-}
-
-::-webkit-scrollbar-corner {
-    background-color: transparent;
 }
 
 /* common */

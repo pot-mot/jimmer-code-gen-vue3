@@ -8,18 +8,16 @@ const exportStyleSheet = `
 }
 
 .table-node {
-    --common-color: #73767A;
-
     padding-bottom: 10px;
-    color: var(--common-color);
+    color: var(--text-color);
     cursor: default;
 }
 
 .table-node table {
-    background-color: #fff;
+    background-color: var(--background-color);
     border-collapse: separate;
     border-spacing: 0;
-    border: 1px solid var(--common-color);
+    border: 1px solid var(--border-color);
     border-radius: 4px;
 }
 
@@ -28,24 +26,24 @@ const exportStyleSheet = `
     white-space: nowrap;
 }
 
-.table-node .icon,
-.table-node .type {
-    padding: 0 0.5em;
-}
-
 .table-node .head {
     height: 35px;
     line-height: 35px;
     font-size: 16px;
+
+    color: var(--background-color);
+    background-color: var(--border-color);
+    --comment-color: var(--background-color);
 }
 
 .table-node .head th {
     text-align: center;
-    border-bottom: 1px solid var(--common-color);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .table-node .head .name {
     font-weight: 600;
+    padding-left: 1em;
 }
 
 .table-node .head .super-table-separator {
@@ -62,6 +60,11 @@ const exportStyleSheet = `
     height: 30px;
     line-height: 30px;
     font-size: 14px;
+}
+
+.table-node .column .icon,
+.table-node .column .type {
+    padding: 0 0.5em;
 }
 `
 

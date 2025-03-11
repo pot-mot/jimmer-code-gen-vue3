@@ -8,8 +8,11 @@ import DebugForm from "@/debug/DebugForm.vue";
 import GlobalGenConfigForm from "@/components/business/genConfig/GlobalGenConfigForm.vue";
 import {languageTypes, useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {ProjectLocale} from "@/i18n";
+import {useThemeStore} from "@/store/theme/ThemeStore.ts";
 
 const i18nStore = useI18nStore()
+
+const themeStore = useThemeStore()
 
 const globalConfigOptions = ref<{
 	name: string,
@@ -47,7 +50,7 @@ const popoverVisible = ref(false)
 </script>
 
 <template>
-	<div class="button">
+	<div class="global-config-button">
 		<el-popover placement="top-end" :visible="popoverVisible">
 			<template #reference>
 				<el-button link @click="popoverVisible = !popoverVisible">
@@ -62,13 +65,16 @@ const popoverVisible = ref(false)
 					<el-button link @click="option.openState = true"
 							   v-text="i18nStore.translate(option.label)"/>
 				</li>
-				<li style="border-top: 1px solid #ccc; margin-top: 0.5rem;">
+				<li class="global-config-menu-item-split">
 					<el-button
 						v-for="language in languageTypes"
 						v-text="language"
 						@click="i18nStore.language = language"
 						:type="i18nStore.language === language ? 'primary' : ''"
 						link/>
+				</li>
+				<li class="global-config-menu-item-split">
+					<el-button @click="themeStore.toggleTheme()"/>
 				</li>
 			</ul>
 		</el-popover>
@@ -95,9 +101,14 @@ const popoverVisible = ref(false)
 </template>
 
 <style scoped>
-.button {
+.global-config-button {
 	position: fixed;
 	left: 0.5em;
 	bottom: 0.5em;
+}
+
+.global-config-menu-item-split {
+	border-top: var(--border);
+	margin-top: 0.5rem;
 }
 </style>
