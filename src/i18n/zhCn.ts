@@ -460,6 +460,11 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
         return `枚举【${enumName}】存在问题：${useI18nStore().translate(subMessage)}`;
     },
 
+    LABEL_ModelSubGroup_name: "名称",
+    LABEL_ModelSubGroup_comment: "注释",
+    LABEL_ModelSubGroup_subPackagePath: "子包路径",
+    LABEL_ModelSubGroup_color: "颜色",
+
     LABEL_TableForm_name: "名称",
     LABEL_TableForm_comment: "注释",
     LABEL_TableForm_remark: "备注",

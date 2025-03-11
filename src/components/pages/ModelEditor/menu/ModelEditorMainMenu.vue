@@ -200,7 +200,8 @@ const formattedEdgeShowType = computed(() => {
 .splitter {
 	width: 60%;
 	height: 1px;
-	background-color: var(--border-color);
+	background-color: var(--text-color);
+	opacity: 0.3;
 	margin-top: 0.5em;
 }
 </style>

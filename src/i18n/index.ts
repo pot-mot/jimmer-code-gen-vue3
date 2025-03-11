@@ -271,6 +271,11 @@ type MainLocale = {
     VALIDATE_ModelForm_graphDataValidationFailed: string
     VALIDATE_ModelForm_graphDataJsonConversionFailed: string
 
+    LABEL_ModelSubGroup_name: string
+    LABEL_ModelSubGroup_comment: string
+    LABEL_ModelSubGroup_subPackagePath: string
+    LABEL_ModelSubGroup_color: string
+
     LABEL_TableForm_name: string
     LABEL_TableForm_comment: string
     LABEL_TableForm_remark: string

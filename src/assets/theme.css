@@ -26,7 +26,7 @@
 
 :root.dark {
     --text-color: #eee;
-    --comment-color: #ccc;
+    --comment-color: #777;
     --border-color: #ccc;
     --background-color: #333;
     --highlight-color: var(--el-color-primary);

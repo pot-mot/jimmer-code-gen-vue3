@@ -459,6 +459,11 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
         return `Enum [${enumName}] has problem: ${useI18nStore().translate(subMessage)}`;
     },
 
+    LABEL_ModelSubGroup_name: "Name",
+    LABEL_ModelSubGroup_comment: "Comment",
+    LABEL_ModelSubGroup_subPackagePath: "Sub Package Path",
+    LABEL_ModelSubGroup_color: "Color",
+
     LABEL_TableForm_name: "Name",
     LABEL_TableForm_comment: "Comment",
     LABEL_TableForm_remark: "Remark",
