@@ -979,7 +979,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     // 枚举和子组根据名称排序，并设置枚举 packagePath
     watch(() => currentModel.value, (value) => {
-        if (currentModel.value !== undefined && value !== undefined) {
+        if (value !== undefined) {
             const subGroupPackageMap = new Map<string, string>
             value.subGroups.forEach(subGroup => {
                 subGroupPackageMap.set(subGroup.name, subGroup.subPackagePath)
@@ -992,14 +992,15 @@ const initModelEditorStore = (): ModelEditorStore => {
                     genEnum.packagePath = value.packagePath + ".enums"
                 }
             })
-            currentModel.value.enums = value.enums.sort((a, b) => {
+            value.enums.sort((a, b) => {
                 if (a.name < b.name) return -1
                 else return 1
             })
-            currentModel.value.subGroups = value.subGroups.sort((a, b) => {
+            value.subGroups.sort((a, b) => {
                 if (a.name < b.name) return -1
                 else return 1
             })
+            currentModel.value = value
         }
     }, {immediate: true, deep: true})
 
