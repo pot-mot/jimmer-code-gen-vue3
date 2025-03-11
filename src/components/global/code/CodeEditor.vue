@@ -10,6 +10,9 @@ import {onMounted, ref} from "vue";
 import {CodeEditorLanguage} from "@/components/global/code/CodeEditorLanguages.ts";
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
 import IStandaloneEditorConstructionOptions = monaco.editor.IStandaloneEditorConstructionOptions;
+import {useThemeStore} from "@/store/theme/ThemeStore.ts";
+
+const themeStore = useThemeStore()
 
 const textValue = defineModel<string>({
     required: true
@@ -27,7 +30,7 @@ const editorContainer = ref<HTMLElement>()
 const options: IStandaloneEditorConstructionOptions = {
 	value: textValue.value, // 初始显示文字
 	language: props.language, // 语言支持
-	theme: 'vs', // 主题色官方自带： vs, hc-black , vs-dark
+	theme: themeStore.theme === "dark" ? "vs-dark" : "vs", // 主题色官方自带： vs, hc-black , vs-dark
 	automaticLayout: true, // 自适应布局 默认true
 	renderLineHighlight: 'all', // 行亮方式 默认all
 	selectOnLineNumbers: true, // 显示行号 默认true
@@ -53,5 +56,5 @@ onMounted(() => {
 </script>
 
 <template>
-	<div ref="editorContainer" style="width: 100%; position: absolute !important;"></div>
+	<div ref="editorContainer" style="width: 100%; height: 100%; position: absolute !important;"/>
 </template>

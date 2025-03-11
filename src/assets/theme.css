@@ -6,6 +6,8 @@
     --highlight-color: var(--el-color-primary);
     --border: var(--el-border);
     --border-radius: var(--el-border-radius-base);
+    --box-shadow: var(--el-box-shadow-light);
+
     --el-text-color: var(--text-color);
 
     --scrollbar-track-color: #f1f1f1;

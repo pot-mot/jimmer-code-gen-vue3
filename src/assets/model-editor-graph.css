@@ -13,7 +13,12 @@
     max-width: 50%;
     position: absolute;
     background-color: var(--background-color);
-    box-shadow: var(--el-box-shadow);
+    border: var(--border);
+    border-radius: var(--border-radius);
+}
+
+.model-editor-graph .toolbar:hover {
+    box-shadow: var(--box-shadow);
 }
 
 .model-editor-graph ul.toolbar > li {

@@ -168,7 +168,6 @@ const handleOpenEntitiesEditor = () => {
 
 		<el-form-item :label="i18nStore.translate('LABEL_ModelForm_content')">
 			<CodeEditor
-				style="height: 100%; border: 1px solid #ccc; border-radius: 8px;"
 				v-model="model.graphData"
 				language="json"/>
 		</el-form-item>

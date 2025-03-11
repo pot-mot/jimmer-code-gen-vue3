@@ -250,22 +250,19 @@ const handleDelete = (model: GenModelSimpleView) => {
     height: 10em;
     overflow-y: auto;
     padding: 1em;
-    box-shadow: var(--el-box-shadow);
     cursor: default;
+	border: var(--border);
+	border-radius: var(--border-radius);
+}
+
+.model-card:hover {
+	box-shadow: var(--box-shadow);
 }
 
 .model-card .title {
     font-family: var(--el-font-family) serif;
     font-size: var(--el-font-size-large);
     color: var(--el-color-info-dark-2);
-}
-
-.model-card:hover {
-    box-shadow: var(--el-box-shadow-dark);
-}
-
-.model-card:hover .title {
-    color: var(--el-text-color-primary);
 }
 
 .model-card .right-top {

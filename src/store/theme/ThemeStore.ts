@@ -1,5 +1,5 @@
 import {defineStore} from 'pinia';
-import {ref, watch} from 'vue';
+import {readonly, ref, watch} from 'vue';
 
 type Theme = 'light' | 'dark'
 
@@ -23,6 +23,7 @@ export const useThemeStore =
         }, {immediate: true})
 
         return {
+            theme: readonly(theme),
             toggleTheme,
         };
     });
