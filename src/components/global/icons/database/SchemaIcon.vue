@@ -4,7 +4,7 @@ import {ElIcon} from "element-plus";
 
 <template>
 	<el-icon size="1.5em" style="transform: translateY(0.1em)">
-		<svg fill="none" stroke="#2c3e50" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+		<svg fill="none" stroke="var(--icon-color)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
 			 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 			<path d="M12 12h8v4h-8z"/>
 			<path d="M12 19h8v4h-8z"/>

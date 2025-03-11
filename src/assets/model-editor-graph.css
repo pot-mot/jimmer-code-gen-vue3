@@ -15,9 +15,6 @@
     background-color: var(--background-color);
     border: var(--border);
     border-radius: var(--border-radius);
-}
-
-.model-editor-graph .toolbar:hover {
     box-shadow: var(--box-shadow);
 }
 

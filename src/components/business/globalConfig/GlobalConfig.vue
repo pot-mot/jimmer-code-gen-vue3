@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {ref} from "vue";
-import {Tools} from "@element-plus/icons-vue"
+import {Moon, Sunny, Tools} from "@element-plus/icons-vue"
 import TypeMappingForm from "@/components/business/typeMapping/TypeMappingForm.vue";
 import ColumnDefaultForm from "@/components/business/columnDefault/ColumnDefaultForm.vue";
 import DebugForm from "@/debug/DebugForm.vue";
@@ -71,10 +71,16 @@ const popoverVisible = ref(false)
 						v-text="language"
 						@click="i18nStore.language = language"
 						:type="i18nStore.language === language ? 'primary' : ''"
-						link/>
+						link
+					/>
 				</li>
 				<li class="global-config-menu-item-split">
-					<el-button @click="themeStore.toggleTheme()"/>
+					<el-button
+						@click="themeStore.toggleTheme()"
+						:icon="themeStore.theme === 'dark' ? Moon : Sunny"
+						link
+						size="default"
+					/>
 				</li>
 			</ul>
 		</el-popover>

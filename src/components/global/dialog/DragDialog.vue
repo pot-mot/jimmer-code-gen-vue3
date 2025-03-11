@@ -339,6 +339,7 @@ defineExpose<DragDialogExpose>({
 	overflow: hidden;
 	padding: 20px 10px 10px;
 	background-color: var(--background-color);
+	border: var(--border);
 	border-radius: var(--border-radius);
 	box-shadow: var(--box-shadow);
 	position: relative;
@@ -358,7 +359,7 @@ defineExpose<DragDialogExpose>({
 	left: 0;
 	right: 0;
 	opacity: var(--el-popup-modal-opacity);
-	backdrop-filter: brightness(0.6);
+	background-color: var(--background-color);
 }
 
 :deep(.handle) {

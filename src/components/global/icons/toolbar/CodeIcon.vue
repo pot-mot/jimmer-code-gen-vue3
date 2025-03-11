@@ -5,7 +5,7 @@ import {ElIcon} from "element-plus";
 <template>
 	<el-icon size="1.5em" style="transform: translateY(0.1em)">
 		<!-- https://tablericons.com/ sql -->
-		<svg fill="none" stroke="#666" stroke-linecap="round"
+		<svg fill="none" stroke="var(--icon-color)" stroke-linecap="round"
 			 stroke-linejoin="round" stroke-width="1.5" viewBox="2 6 22 18" xmlns="http://www.w3.org/2000/svg">
 			<path d="M7 8l-4 4l4 4"/>
 			<path d="M17 8l4 4l-4 4"/>

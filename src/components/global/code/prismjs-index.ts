@@ -1,5 +1,5 @@
 import Prism from 'prismjs';
-import "prismjs/themes/prism.css";
+import "./code-style.css";
 import "./language/dto.css";
 
 import {dtoLanguage} from "@/components/global/code/language/dto.ts";

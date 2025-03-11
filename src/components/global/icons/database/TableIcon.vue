@@ -13,7 +13,7 @@ defineProps<TableIconProps>()
 	<el-icon size="1.3em" style="transform: translateY(0.2em)">
 		<template v-if="!type || type === 'TABLE'">
 			<!-- https://tablericons.com/ table-->
-			<svg fill="none" stroke="#2c3e50" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+			<svg fill="none" stroke="var(--icon-color)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
 				 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 				<path d="M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14z"/>
 				<path d="M3 10h18"/>
@@ -22,7 +22,7 @@ defineProps<TableIconProps>()
 		</template>
 		<template v-if="type === 'SUPER_TABLE'">
 			<!-- https://tablericons.com/ table-->
-			<svg fill="none" stroke="#2c3e50" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+			<svg fill="none" stroke="var(--icon-color)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
 				 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 				<path
 					d="M3 5a2 2 0 012-2h5m4 0h5a2 2 0 012 2v5m0 4v5a2 2 0 01-2 2h-5m-4 0h-5a2 2 0 01-2-2v-5m0-4v-5zM3 10h14M10 3v13"/>
@@ -30,7 +30,7 @@ defineProps<TableIconProps>()
 		</template>
 		<template v-else-if="type === 'ALIAS'">
 			<!-- https://tablericons.com/ link-->
-			<svg fill="none" stroke="#2c3e50" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+			<svg fill="none" stroke="var(--icon-color)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
 				 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 				<path d="M9 15l6 -6"/>
 				<path d="M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464"/>
@@ -39,7 +39,7 @@ defineProps<TableIconProps>()
 		</template>
 		<template v-else-if="type === 'VIEW'">
 			<!-- https://tablericons.com/ eyeglass-->
-			<svg fill="none" stroke="#2c3e50" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+			<svg fill="none" stroke="var(--icon-color)" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
 				 viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 				<path d="M8 4h-2l-3 10v2.5"/>
 				<path d="M16 4h2l3 10v2.5"/>

@@ -1,7 +1,7 @@
 :root {
     --text-color: var(--el-color-info-dark-2);
     --comment-color: var(--el-text-color-placeholder);
-    --border-color: var(--el-color-info-dark-2);
+    --border-color: var(--text-color);
     --background-color: var(--el-color-white);
     --highlight-color: var(--el-color-primary);
     --border: var(--el-border);
@@ -16,6 +16,9 @@
 
     --split-color: #eee;
     --split-color-hover: #ccc;
+
+    --icon-color: #666;
+    --icon-color-light: #999;
 
     background-color: var(--background-color);
     transition: background-color 0.5s;
@@ -34,4 +37,7 @@
 
     --split-color: #555;
     --split-color-hover: #888;
+
+    --icon-color: #bbb;
+    --icon-color-light: #666;
 }

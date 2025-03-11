@@ -1,33 +1,30 @@
 code.language-dto {
     .token.comment {
-        color: gray;
+        color: var(--comment-color);
     }
     .token.keyword {
         color: #af4b1f;
     }
     .token.macro {
-        color: #3982e3;
+        color: var(--highlight-color);
     }
     .token.qualifier {
-        color: #3982e3;
+        color: var(--highlight-color);
     }
     .token.qbeFunction {
-        color: #3982e3;
-    }
-    .token.identifier {
-        color: #333;
+        color: var(--highlight-color);
     }
     .token.constant {
         color: #ba8123;
     }
     .token.operator {
-        color: #666;
+        color: var(--comment-color);
     }
     .token.propExplicit {
-        color: #000;
+        color: #b3d4fc;
         font-weight: 600;
     }
     .token.punctuation {
-        color: #333;
+        color: var(--comment-color);
     }
 }
