@@ -4,10 +4,11 @@ import {MiniMap} from "@antv/x6-plugin-minimap";
 import {ArrowDown, ArrowUp} from "@element-plus/icons-vue";
 import {Graph} from "@antv/x6";
 import {SimpleNodeView} from "@/components/pages/ModelEditor/minimap/SimpleNodeView.ts";
+import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
+
+let minimap: MiniMap | undefined
 
 const openState = ref(false)
-
-const minimap = ref<MiniMap | undefined>()
 
 const container = ref<HTMLElement>()
 
@@ -15,12 +16,13 @@ const props = defineProps<{
 	graph: Graph
 }>()
 
-const setMiniMap = async () => {
-	await nextTick()
+const {MODEL_EDITOR} = useModelEditorStore()
 
+const initMiniMap = () => {
 	if (!props.graph || !container.value) return
+	if (minimap) minimap.dispose()
 
-	minimap.value = new MiniMap({
+	minimap = new MiniMap({
 		container: container.value,
 		width: container.value.clientWidth,
 		height: container.value.clientHeight,
@@ -38,27 +40,28 @@ const setMiniMap = async () => {
 		}
 	})
 
-	props.graph.use(
-		minimap.value
-	);
+	props.graph.use(minimap)
 }
 
-const open = () => {
+MODEL_EDITOR.setInitMinimapAction(initMiniMap)
+
+const open = async () => {
 	openState.value = true
-	nextTick(() => {
-		setMiniMap()
-	})
+	await nextTick()
+	initMiniMap()
 }
 
 const close = () => {
 	openState.value = false
+	minimap?.dispose()
+	minimap = undefined
 }
 
-const toggle = () => {
+const toggle = async () => {
 	if (openState.value) {
 		close()
 	} else {
-		open()
+		await open()
 	}
 }
 </script>
@@ -80,5 +83,9 @@ const toggle = () => {
 .minimap {
 	width: max(15vw, 200px);
 	height: max(20vh, 200px);
+}
+
+:deep(.x6-widget-minimap) {
+	background-color: var(--background-color) !important;
 }
 </style>

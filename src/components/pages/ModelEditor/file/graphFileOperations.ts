@@ -2,7 +2,12 @@ import {Graph} from "@antv/x6";
 import {GenModelInput} from "@/api/__generated/model/static";
 import {DeepReadonly} from "vue";
 
-const exportStyleSheet = `
+const exportStyleSheet = () => `
+:root {
+    --background-color: ${(document.querySelector(":root") as HTMLElement | undefined)?.computedStyleMap().get("--background-color")};
+    background-color: var(--background-color); 
+}
+
 .x6-port-body {
     display: none;
 }
@@ -81,24 +86,26 @@ const produceSvgViewBoxPadding = (viewBox: string, padding: number): string => {
     return `${minX - padding} ${minY - padding} ${width + padding * 2} ${height + padding * 2}`
 }
 
+const produceSvg = (svg: SVGSVGElement) => {
+    for (let i = 0; i < svg.children.length; i++) {
+        const child = svg.children[i]
+        if (child.classList.contains("x6-graph-svg-viewport")) {
+            child.removeAttribute("transform")
+            break
+        }
+    }
+
+    const viewport = svg.getAttribute("viewBox")
+    if (viewport) {
+        svg.setAttribute("viewBox", produceSvgViewBoxPadding(viewport, 50))
+    }
+}
+
 export const exportGraphSVG = (model: DeepReadonly<GenModelInput>, graph: DeepReadonly<Graph>) => {
     graph.exportSVG(`model-[${model.name}].svg`, {
-        beforeSerialize(svg) {
-            for (let i = 0; i < svg.children.length; i++) {
-                const child = svg.children[i]
-                if (child.classList.contains("x6-graph-svg-viewport")) {
-                    child.removeAttribute("transform")
-                    break
-                }
-            }
-
-            const viewport = svg.getAttribute("viewBox")
-            if (viewport) {
-                svg.setAttribute("viewBox", produceSvgViewBoxPadding(viewport, 50))
-            }
-        },
+        beforeSerialize: produceSvg,
         preserveDimensions: true,
-        stylesheet: exportStyleSheet
+        stylesheet: exportStyleSheet()
     })
 }
 
@@ -106,6 +113,6 @@ export const exportGraphPNG = (model: DeepReadonly<GenModelInput>, graph: DeepRe
     graph.exportPNG(`model-[${model.name}].png`, {
         quality: 1,
         padding: 50,
-        stylesheet: exportStyleSheet
+        stylesheet: exportStyleSheet()
     })
 }

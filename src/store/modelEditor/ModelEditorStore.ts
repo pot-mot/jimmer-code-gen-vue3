@@ -117,6 +117,10 @@ export type SubGroupCreateOptions = {
     enumKey?: string | undefined,
 }
 
+type MinimapOperation = {
+    setInitMinimapAction: (action: () => void) => void
+}
+
 type SubGroupEditOperation = {
     createSubGroup: (options?: SubGroupCreateOptions | undefined) => void,
     createdSubGroup: (createKey: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => void,
@@ -192,6 +196,7 @@ type ModelEditorStore = {
     MODEL_LOAD: ModelLoadOperation
 
     MODEL_EDITOR: ModelEditorDataOperation
+        & MinimapOperation
         & ModelSyncState
         & SyncTableOperation
         & SubGroupEditOperation
@@ -296,6 +301,18 @@ const initModelEditorStore = (): ModelEditorStore => {
     }
 
 
+
+    let initMinimapAction: () => void | undefined
+
+    const setInitMinimapAction = (action: () => void) => {
+        initMinimapAction = action
+    }
+
+    const forceUpdateMinimap = () => {
+        initMinimapAction?.()
+    }
+
+
     /**
      * 导入表的基本函数，接收 tableView 并查询获得 association
      */
@@ -327,6 +344,8 @@ const initModelEditorStore = (): ModelEditorStore => {
             VIEW.layout()
             VIEW.fit()
         }
+
+        forceUpdateMinimap()
 
         return {nodes, edges}
     }
@@ -433,6 +452,7 @@ const initModelEditorStore = (): ModelEditorStore => {
                 const name = waitSyncHistoryBatches.value.pop()!
                 graph.stopBatch(name)
             }
+            forceUpdateMinimap()
         }
     }
 
@@ -1084,6 +1104,8 @@ const initModelEditorStore = (): ModelEditorStore => {
         MODEL_LOAD,
         MODEL_EDITOR: {
             ...modelGraphDataOperation,
+
+            setInitMinimapAction,
 
             waitSyncHistoryBatches,
             waitSyncTableIds,
