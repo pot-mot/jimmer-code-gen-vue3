@@ -256,6 +256,10 @@ export const GenModelInputJsonSchema = {
                 "remark": {
                     "description": "备注",
                     "type": "string"
+                },
+                "subGroup": {
+                    "$ref": "#/definitions/GenModelInput_TargetOf_enums_TargetOf_subGroup",
+                    "description": "子组"
                 }
             },
             "required": [
@@ -302,6 +306,19 @@ export const GenModelInputJsonSchema = {
                 "name",
                 "orderKey",
                 "remark"
+            ],
+            "type": "object"
+        },
+        "GenModelInput_TargetOf_enums_TargetOf_subGroup": {
+            "description": "生成模型子组",
+            "properties": {
+                "name": {
+                    "description": "名称",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
             ],
             "type": "object"
         },

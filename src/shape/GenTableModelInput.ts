@@ -44,6 +44,10 @@ export const GenTableModelInputJsonSchema = {
                     "description": "备注",
                     "type": "string"
                 },
+                "subGroup": {
+                    "$ref": "#/definitions/GenTableModelInput_TargetOf_subGroup",
+                    "description": "子组"
+                },
                 "superTables": {
                     "description": "上级表",
                     "items": {
@@ -203,6 +207,19 @@ export const GenTableModelInputJsonSchema = {
         },
         "GenTableModelInput_TargetOf_indexes_TargetOf_columns": {
             "description": "生成列",
+            "properties": {
+                "name": {
+                    "description": "名称",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "name"
+            ],
+            "type": "object"
+        },
+        "GenTableModelInput_TargetOf_subGroup": {
+            "description": "生成模型子组",
             "properties": {
                 "name": {
                     "description": "名称",
