@@ -39,7 +39,11 @@
 
 <script lang='ts' setup>
 import {computed, inject, nextTick, onMounted, ref, watch} from "vue";
-import {GenModelInput_TargetOf_subGroups, GenTableModelInput,} from "@/api/__generated/model/static";
+import {
+	GenAssociationModelInput,
+	GenModelInput_TargetOf_subGroups,
+	GenTableModelInput,
+} from "@/api/__generated/model/static";
 import {Node} from '@antv/x6'
 import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
@@ -149,7 +153,7 @@ onMounted(() => {
 			setTimeout(() => {
 				if (!node.value) return
 
-				const refreshedAssociation = []
+				const refreshedAssociations: GenAssociationModelInput[] = []
 				for (const edge of oldEdges) {
 					const association = refreshEdgeAssociation(
 						graph,
@@ -159,10 +163,10 @@ onMounted(() => {
 						newTable
 					)
 					if (association) {
-						refreshedAssociation.push(association)
+						refreshedAssociations.push(association)
 					}
 				}
-				loadAssociationModelInputs(graph, refreshedAssociation)
+				loadAssociationModelInputs(graph, refreshedAssociations)
 
 				newTable.columns.forEach((column, index) => {
 					column.orderKey = index + 1

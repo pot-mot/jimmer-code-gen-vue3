@@ -381,6 +381,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
 
     MESSAGE_ModelEditorPage_modelNotFound: "Model Not Found",
     MESSAGE_ModelEditorPage_modelLoadFail: "Model Load Fail",
+    CONFIRM_ModelEditorPage_modelLoad_model: "Are you sure you want to load the Model",
     CONFIRM_ModelEditorPage_modelLoad_entireSchema: "Are you sure you want to load the entire Schema",
     CONFIRM_ModelEditorPage_modelLoad_singleTable: "Are you sure you want to load the Table and its Associations",
 

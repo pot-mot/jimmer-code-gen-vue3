@@ -7,7 +7,7 @@ import {validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {GenAssociationModelInput, GenModelInput, GenTableModelInput} from "@/api/__generated/model/static";
 import {validateModelInput} from "@/shape/ModelInput.ts";
-import {importEnums} from "@/components/pages/ModelEditor/graph/clipBoard/importEnums.ts";
+import {loadEnums} from "@/components/pages/ModelEditor/graph/load/loadEnums.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {validateTableModelInput} from "@/shape/GenTableModelInput.ts";
 import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
@@ -106,9 +106,10 @@ const cut = async () => {
 }
 
 const paste = async () => {
-    const {GRAPH, MODEL_EDITOR} = useModelEditorStore()
+    const {GRAPH, MODEL, MODEL_EDITOR} = useModelEditorStore()
 
     const graph = GRAPH._graph()
+    const model = MODEL._model()
 
     graph.startBatch("paste")
 
@@ -128,7 +129,7 @@ const paste = async () => {
 
         if (validateTableModelInput(value, (e) => validateErrors.push(e))) {
             const table = value as GenTableModelInput
-            res = loadModelInputs(graph, [table], [], options)
+            res = loadModelInputs(model, graph, [table], [], options)
         } else if (validateCopyData(value, (e) => validateErrors.push(e))) {
             const {
                 tables,
@@ -137,20 +138,21 @@ const paste = async () => {
                 optionsList
             } = value as CopyData
 
-            res = loadModelInputs(graph, tables, associations, options, optionsList)
+            model.enums.push(...loadEnums(model, enums).enums)
 
-            importEnums(enums)
+            res = loadModelInputs(model, graph, tables, associations, options, optionsList)
         } else if (validateModelEditorData(value, (e) => validateErrors.push(e))) {
             const cells = value.json.cells as Cell[]
             graph.parseJSON(cells)
             res = MODEL_EDITOR.loadModelEditorData(jsonParseThenConvertNullToUndefined(text), false)
         } else if (validateModelInput(value, (e) => validateErrors.push(e))) {
-            const model = value as GenModelInput
+            const inputModel = value as GenModelInput
 
-            if (model.graphData) {
-                res = MODEL_EDITOR.loadModelEditorData(jsonParseThenConvertNullToUndefined(model.graphData), false)
+            if (inputModel.graphData) {
+                res = MODEL_EDITOR.loadModelEditorData(jsonParseThenConvertNullToUndefined(inputModel.graphData), false)
             }
-            importEnums(model.enums)
+
+            model.enums.push(...loadEnums(inputModel, inputModel.enums).enums)
         } else {
             sendI18nMessage('MESSAGE_clipBoard_cannotDirectLoad', 'error', validateErrors)
         }

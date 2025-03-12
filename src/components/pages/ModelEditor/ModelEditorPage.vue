@@ -22,7 +22,7 @@ import AssociationDialogs from "@/components/pages/ModelEditor/dialogs/associati
 import {confirm} from "@/message/confirm.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import BatchCreateAssociationsDialog
-    from "@/components/pages/ModelEditor/dialogs/association/BatchCreateAssociationsDialog.vue";
+	from "@/components/pages/ModelEditor/dialogs/association/BatchCreateAssociationsDialog.vue";
 import TableCombineDialog from "@/components/pages/ModelEditor/dialogs/table/TableCombineDialog.vue";
 import {useDataSourceLoadDialogStore} from "@/store/modelEditor/DataSourceLoadDialogStore.ts";
 import {useModelLoadDialogStore} from "@/store/modelEditor/ModelLoadDialogStore.ts";
@@ -44,28 +44,28 @@ const router = useRouter()
 const route = useRoute()
 
 onMounted(async () => {
-    try {
-        let paramId: string | string[] | undefined = route.params.id
-        if (paramId instanceof Array) paramId = paramId[0]
-        const id = parseInt(paramId)
+	try {
+		let paramId: string | string[] | undefined = route.params.id
+		if (paramId instanceof Array) paramId = paramId[0]
+		const id = parseInt(paramId)
 
-        const model = await api.modelService.get({id})
+		const model = await api.modelService.get({id})
 
-        if (!model) {
-            sendI18nMessage("MESSAGE_ModelEditorPage_modelNotFound", 'error', {modelId: id})
-            await router.replace("/")
-            return
-        }
+		if (!model) {
+			sendI18nMessage("MESSAGE_ModelEditorPage_modelNotFound", 'error', {modelId: id})
+			await router.replace("/")
+			return
+		}
 
-        MODEL_LOAD.load(model)
-    } catch (e) {
-        sendI18nMessage("MESSAGE_ModelEditorPage_modelLoadFail", 'error', e)
-        await router.replace("/")
-    }
+		MODEL_LOAD.load(model)
+	} catch (e) {
+		sendI18nMessage("MESSAGE_ModelEditorPage_modelLoadFail", 'error', e)
+		await router.replace("/")
+	}
 })
 
 onUnmounted(() => {
-    MODEL_LOAD.unload()
+	MODEL_LOAD.unload()
 })
 
 const dataSourceLoadMenu = ref()
@@ -74,32 +74,32 @@ const dataSourceLoadMenu = ref()
  * 基于数据源的导入，在组件初始化后绑定事件
  */
 watch(() => dataSourceLoadMenu.value, () => {
-    if (!dataSourceLoadMenu.value) return
+	if (!dataSourceLoadMenu.value) return
 
-    const eventBus: Emitter<DataSourceMenuEvents> = dataSourceLoadMenu.value.eventBus
+	const eventBus: Emitter<DataSourceMenuEvents> = dataSourceLoadMenu.value.eventBus
 
-    eventBus.on(
-        'clickSchema',
-        async ({id}) => {
-            confirm(
-                i18nStore.translate("CONFIRM_ModelEditorPage_modelLoad_entireSchema"),
-                loadingStore.withLoading('ModelEditorPage syncClickSchemaEvent', async () => {
-                    await MODEL_LOAD.loadSchema(id)
-                })
-            )
-        })
+	eventBus.on(
+		'clickSchema',
+		async ({id}) => {
+			confirm(
+				i18nStore.translate("CONFIRM_ModelEditorPage_modelLoad_entireSchema"),
+				loadingStore.withLoading('ModelEditorPage syncClickSchemaEvent', async () => {
+					await MODEL_LOAD.loadSchema(id)
+				})
+			)
+		})
 
-    eventBus.on(
-        'clickTable',
-        async ({id}) => {
-            confirm(
-                i18nStore.translate("CONFIRM_ModelEditorPage_modelLoad_singleTable"),
-                loadingStore.withLoading('ModelEditorPage syncClickSchemaEvent', async () => {
-                    await MODEL_LOAD.loadTable(id)
-                })
-            )
-        }
-    )
+	eventBus.on(
+		'clickTable',
+		async ({id}) => {
+			confirm(
+				i18nStore.translate("CONFIRM_ModelEditorPage_modelLoad_singleTable"),
+				loadingStore.withLoading('ModelEditorPage syncClickSchemaEvent', async () => {
+					await MODEL_LOAD.loadTable(id)
+				})
+			)
+		}
+	)
 }, {immediate: true})
 
 const modelLoadMenu = ref()
@@ -108,75 +108,85 @@ const modelLoadMenu = ref()
  * 基于模型的导入，在组件初始化后绑定事件
  */
 watch(() => modelLoadMenu.value, () => {
-    if (!modelLoadMenu.value) return
+	if (!modelLoadMenu.value) return
 
-    const eventBus: Emitter<ModelMenuEvents> = modelLoadMenu.value.eventBus
+	const eventBus: Emitter<ModelMenuEvents> = modelLoadMenu.value.eventBus
 
-    eventBus.on(
-        'clickModel',
-        loadingStore.withLoading('ModelEditorPage syncClickModelEvent', async ({id}) => {
-            await MODEL_LOAD.loadModel(id)
-        })
-    )
+	eventBus.on(
+		'clickModel',
+		async ({id}) => {
+			confirm(
+				i18nStore.translate("CONFIRM_ModelEditorPage_modelLoad_model"),
+				loadingStore.withLoading('ModelEditorPage syncClickModelEvent', async () => {
+					await MODEL_LOAD.loadModel(id)
+				})
+			)
+		}
+	)
 
-    eventBus.on(
-        'clickTable',
-        loadingStore.withLoading('ModelEditorPage syncClickTableEvent', async ({id}) => {
-            await MODEL_LOAD.loadTable(id)
-        })
-    )
+	eventBus.on(
+		'clickTable',
+		async ({id}) => {
+			confirm(
+				i18nStore.translate("CONFIRM_ModelEditorPage_modelLoad_singleTable"),
+				loadingStore.withLoading('ModelEditorPage syncClickTableEvent', async () => {
+					await MODEL_LOAD.loadTable(id)
+				})
+			)
+		}
+	)
 }, {immediate: true})
 </script>
 
 <template>
-    <LeftTopBottomLayout>
-        <template #left>
-            <div class="layout-menu-wrapper">
-                <ModelEditorMainMenu/>
-            </div>
-        </template>
-        <template #right>
-            <ModelEditorGraph/>
-        </template>
-    </LeftTopBottomLayout>
+	<LeftTopBottomLayout>
+		<template #left>
+			<div class="layout-menu-wrapper">
+				<ModelEditorMainMenu/>
+			</div>
+		</template>
+		<template #right>
+			<ModelEditorGraph/>
+		</template>
+	</LeftTopBottomLayout>
 
-    <DragDialog
-        v-model="dataSourceLoadDialogStore.openState"
-        :modal="false"
-        :init-x="100" :init-y="10"
-        :init-w="500" :init-h="600"
-        can-resize
-    >
-        <DataSourceMenu ref="dataSourceLoadMenu"/>
-    </DragDialog>
+	<DragDialog
+		v-model="dataSourceLoadDialogStore.openState"
+		:modal="false"
+		:init-x="100" :init-y="10"
+		:init-w="500" :init-h="600"
+		can-resize
+	>
+		<DataSourceMenu ref="dataSourceLoadMenu"/>
+	</DragDialog>
 
-    <DragDialog
-        v-model="modelLoadDialogStore.openState"
-        :modal="false"
-        :init-x="100" :init-y="10"
-        :init-w="500" :init-h="600"
-        can-resize
-    >
-        <ModelMenu ref="modelLoadMenu"/>
-    </DragDialog>
+	<DragDialog
+		v-model="modelLoadDialogStore.openState"
+		:modal="false"
+		:init-x="100" :init-y="10"
+		:init-w="500" :init-h="600"
+		can-resize
+	>
+		<ModelMenu ref="modelLoadMenu"/>
+	</DragDialog>
 
-    <ModelDialog
-        v-if="MODEL.isLoaded"
-        v-model="modelEditDialogStore.openState"
-        :model="cloneDeep(MODEL._model())"
-        @cancel="modelEditDialogStore.handleCancel"
-        @submit="modelEditDialogStore.handleSubmit"
-    />
+	<ModelDialog
+		v-if="MODEL.isLoaded"
+		v-model="modelEditDialogStore.openState"
+		:model="cloneDeep(MODEL._model())"
+		@cancel="modelEditDialogStore.handleCancel"
+		@submit="modelEditDialogStore.handleSubmit"
+	/>
 
-    <SubGroupDialogs/>
+	<SubGroupDialogs/>
 
-    <TableDialogs/>
-    <TableCombineDialog/>
+	<TableDialogs/>
+	<TableCombineDialog/>
 
-    <AssociationDialogs/>
-    <BatchCreateAssociationsDialog/>
+	<AssociationDialogs/>
+	<BatchCreateAssociationsDialog/>
 
-    <EntityDialogs/>
+	<EntityDialogs/>
 
-    <EnumDialogs/>
+	<EnumDialogs/>
 </template>

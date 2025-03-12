@@ -318,12 +318,14 @@ const initModelEditorStore = (): ModelEditorStore => {
      */
     const loadTableViews = async (tableViews: GenTableColumnsView[]) => {
         const graph = _graph()
+        const model = MODEL._model()
 
         const {tables, associations} =
             await produceTableViewsToInputs(tableViews)
 
         const {nodes, edges} =
             loadModelInputs(
+                model,
                 graph,
                 tables,
                 associations,
@@ -597,10 +599,12 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const createdTable = (createKey: string, table: DeepReadonly<GenTableModelInput>) => {
         const graph = _graph()
+        const model = MODEL._model()
 
         const options = tableCreateOptionsMap.get(createKey)
 
         const node = loadTableModelInputs(
+            model,
             graph,
             [table],
             options
@@ -695,11 +699,12 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const combinedTable = (tableCombineData: DeepReadonly<TableCombineData>) => {
         const graph = _graph()
+        const model = MODEL._model()
 
         const {superTable, inheritTableNodePairs} = tableCombineData
 
         startBatchSync("combinedTable", () => {
-            loadTableModelInputs(graph, [superTable], tableCombineOptions.value, undefined)
+            loadTableModelInputs(model, graph, [superTable], tableCombineOptions.value, undefined)
 
             for (const {first, second} of inheritTableNodePairs) {
                 updateTableNodeData(second, first)

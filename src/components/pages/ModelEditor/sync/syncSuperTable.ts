@@ -49,7 +49,7 @@ export const syncSuperTableNameForTables = (graph: Graph, oldSuperTableName: str
     })
 
     // 同步所有节点中的表数据
-    for (let node of nodes) {
+    for (const node of nodes) {
         const table = node.getData()?.table as GenTableModelInput | undefined
         if (table && judgeSuperTableInTable(oldSuperTableName, table)) {
             const newTable = syncSuperTableNameInTable(table, oldSuperTableName, newSuperTableName)

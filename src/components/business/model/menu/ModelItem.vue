@@ -32,9 +32,9 @@ const getData = tablesLoading.withLoading('get', async () => {
 	<Details v-loading="tablesLoading.isLoading.value" @open="getData" :disabled="!showConfig.showModelTables">
 		<template #title>
 			<div style="height: 2em; line-height: 2em;">
-				<el-text @click="eventBus.emit('clickModel', {id: model.id})">
+				<el-button @click="eventBus.emit('clickModel', {id: model.id})" link>
 					{{ model.name }}
-				</el-text>
+				</el-button>
 			</div>
 		</template>
 

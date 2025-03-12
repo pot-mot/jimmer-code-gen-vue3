@@ -1,4 +1,9 @@
-import {GenAssociationModelInput, GenTableColumnsView, GenTableModelInput} from "@/api/__generated/model/static";
+import {
+    GenAssociationModelInput,
+    GenModelInput,
+    GenTableColumnsView,
+    GenTableModelInput
+} from "@/api/__generated/model/static";
 import {api} from "@/api";
 import {loadTableModelInputs, tableViewToInput} from "./loadTableNode.ts";
 import {Graph} from '@antv/x6'
@@ -32,6 +37,7 @@ export interface TableLoadOptions {
 }
 
 export const loadModelInputs = (
+    model: DeepReadonly<GenModelInput>,
     graph: Graph,
     tables: DeepReadonly<GenTableModelInput[]>,
     associations: DeepReadonly<GenAssociationModelInput[]>,
@@ -44,6 +50,7 @@ export const loadModelInputs = (
         nodes,
         tableNameMap
     } = loadTableModelInputs(
+        model,
         graph,
         tables,
         baseOptions,

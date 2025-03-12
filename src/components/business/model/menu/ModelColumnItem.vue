@@ -8,10 +8,10 @@ defineProps<ColumnItemProps>()
 
 <template>
 	<div>
-		<el-text @click="eventBus.emit('clickColumn', {id: column.id})">
+		<el-button @click="eventBus.emit('clickColumn', {id: column.id})" link>
 			<ColumnIcon :column="column"></ColumnIcon>
 			{{ column.name }}
 			<Comment :comment="column.comment"></Comment>
-		</el-text>
+		</el-button>
 	</div>
 </template>

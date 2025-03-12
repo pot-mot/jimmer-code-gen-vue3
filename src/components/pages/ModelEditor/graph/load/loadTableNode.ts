@@ -1,4 +1,9 @@
-import {GenTableColumnsView, GenTableModelInput,} from "@/api/__generated/model/static";
+import {
+    GenModelInput,
+    GenTableColumnsView,
+    GenTableModelInput,
+    GenTableModelInput_TargetOf_superTables,
+} from "@/api/__generated/model/static";
 import {Graph, Node} from "@antv/x6";
 import {columnPortGroup} from "@/components/pages/ModelEditor/graph/tableNode/columnPort.ts";
 import {COLUMN_PORT_GROUP, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
@@ -40,10 +45,9 @@ export const tableViewToInput = (tableView: DeepReadonly<GenTableColumnsView>): 
         name: tableView.name,
         remark: tableView.remark,
         type: tableView.type,
-        superTables: tableView.superTables.map(superTable => {
-            return {
-                name: superTable.name
-            }
+        subGroup: tableView.subGroup ? {name: tableView.subGroup.name} : undefined,
+        superTables: tableView.superTables.map(it => {
+            return {name: it.name}
         }),
         indexes: tableView.indexes.map(indexView => {
             return {
@@ -52,9 +56,8 @@ export const tableViewToInput = (tableView: DeepReadonly<GenTableColumnsView>): 
                 remark: indexView.remark,
                 columns: tableView.columns
                     .filter(it => indexView.columnIds.includes(it.id))
-                    .map(it => it.name)
                     .map(it => {
-                        return {name: it}
+                        return {name: it.name}
                     })
             }
         }),
@@ -75,10 +78,7 @@ export const tableViewToInput = (tableView: DeepReadonly<GenTableColumnsView>): 
                 typeNotNull: column.typeNotNull,
                 logicalDelete: column.logicalDelete,
                 businessKey: column.businessKey,
-                enum:
-                    column.enum ?
-                        {name: column.enum.name} :
-                        undefined
+                enum: column.enum ? {name: column.enum.name} : undefined
             }
         }),
     }
@@ -105,6 +105,7 @@ const getTableNameMap = <T extends GenTableModelInput | GenTableColumnsView>(gra
 }
 
 export const loadTableModelInputs = (
+    model: DeepReadonly<GenModelInput>,
     graph: Graph,
     tables: DeepReadonly<GenTableModelInput[]>,
     baseOptions?: DeepReadonly<TableLoadOptions>,
@@ -115,21 +116,48 @@ export const loadTableModelInputs = (
 } => {
     const tableNameMap = getTableNameMap<GenTableModelInput>(graph)
 
-    const nodes: Node[] = tables.map((table, index) => {
+    const subGroupNameSet = new Set(model.subGroups.map(it => it.name))
+    const enumNameSet = new Set(model.enums.map(it => it.name))
+
+    const tempTables = tables.map(table => {
         const name = table.name
         const tempTable = cloneDeepReadonly<GenTableModelInput>(table)
 
-        if (tableNameMap.has(name)) {
-            let count = tableNameMap.get(name)!.length
+        if (tempTable.subGroup && !subGroupNameSet.has(tempTable.subGroup.name)) {
+            tempTable.subGroup = undefined
+        }
+        for (const column of tempTable.columns) {
+            if (column.enum && !enumNameSet.has(column.enum.name)) {
+                column.enum = undefined
+            }
+        }
+
+        const nameMatchedTables = tableNameMap.get(name)
+        if (nameMatchedTables !== undefined) {
+            let count = nameMatchedTables.length
             let tempName = `${name}(${count})`
             while (tableNameMap.has(tempName)) {
                 tempName = `${name}(${count++})`
             }
             tempTable.name = tempName
-            tableNameMap.get(name)!.push(tempTable)
+            nameMatchedTables.push(tempTable)
         } else {
             tableNameMap.set(name, [tempTable])
         }
+
+        return tempTable
+    })
+
+    const nodes = tempTables.map((tempTable, index) => {
+        const newSuperTables: GenTableModelInput_TargetOf_superTables[] = []
+        for (const superTable of tempTable.superTables) {
+            const matchedSuperTables = tableNameMap.get(superTable.name)
+            if (matchedSuperTables && matchedSuperTables.length > 0) {
+                const lastMatchedSuperTable = matchedSuperTables[matchedSuperTables.length - 1]
+                newSuperTables.push({name: lastMatchedSuperTable.name})
+            }
+        }
+        tempTable.superTables = newSuperTables
 
         const node = tableToNode(
             tempTable,

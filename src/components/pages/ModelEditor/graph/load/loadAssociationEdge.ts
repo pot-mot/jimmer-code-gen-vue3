@@ -119,7 +119,7 @@ export const associationToEdgeConnect = (
     }
 }
 
-export const associationEdgeConnectToEdgeMeta = (
+const associationEdgeConnectToEdgeMeta = (
     associationEdgeConnect: DeepReadonly<AssociationEdgeConnect>,
 ): Edge.Metadata => {
     const {
@@ -188,7 +188,7 @@ export const loadAssociationModelInputs = (
 
     const edges: Edge[] = []
 
-    associations.forEach(association => {
+    for (const association of associations) {
         const name = association.name
         const tempAssociation = cloneDeepReadonly<GenAssociationModelInput>(association)
 
@@ -205,11 +205,11 @@ export const loadAssociationModelInputs = (
         }
 
         const associationEdgeConnect = associationToEdgeConnect(graph, tempAssociation)
-        if (!associationEdgeConnect) return
+        if (!associationEdgeConnect) continue
         const edgeMeta = associationEdgeConnectToEdgeMeta(associationEdgeConnect)
-        if (!edgeMeta) return
+        if (!edgeMeta) continue
         edges.push(graph.addEdge(edgeMeta))
-    })
+    }
 
     return {
         edges,

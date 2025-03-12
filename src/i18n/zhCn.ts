@@ -382,6 +382,7 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
 
     MESSAGE_ModelEditorPage_modelNotFound: "模型未找到",
     MESSAGE_ModelEditorPage_modelLoadFail: "模型导入失败",
+    CONFIRM_ModelEditorPage_modelLoad_model: "您确定要导入整个模型？",
     CONFIRM_ModelEditorPage_modelLoad_entireSchema: "您确定要导入整个数据架构？",
     CONFIRM_ModelEditorPage_modelLoad_singleTable: "您确定要导入该表和它的全部关联？",
 
