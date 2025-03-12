@@ -81,10 +81,6 @@ export interface GenTableColumnsView_TargetOf_columns {
      */
     remark: string;
     /**
-     * 归属表
-     */
-    tableId: number;
-    /**
      * 生成枚举
      */
     enum?: GenTableColumnsView_TargetOf_columns_TargetOf_enum | undefined;

@@ -32,8 +32,4 @@ export interface GenTableCommonView {
      * 备注
      */
     remark: string;
-    /**
-     * 对应实体
-     */
-    entityId?: number | undefined;
 }

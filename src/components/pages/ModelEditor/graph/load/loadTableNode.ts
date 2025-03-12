@@ -1,14 +1,11 @@
-import {
-    GenTableColumnsView,
-    GenTableModelInput,
-} from "@/api/__generated/model/static";
+import {GenTableColumnsView, GenTableModelInput,} from "@/api/__generated/model/static";
 import {Graph, Node} from "@antv/x6";
 import {columnPortGroup} from "@/components/pages/ModelEditor/graph/tableNode/columnPort.ts";
 import {COLUMN_PORT_GROUP, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
 import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadData.ts";
 import {DeepReadonly} from "vue";
-import {cloneDeep} from "lodash";
+import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 
 export const columnToPort = () => {
     return {
@@ -43,7 +40,11 @@ export const tableViewToInput = (tableView: DeepReadonly<GenTableColumnsView>): 
         name: tableView.name,
         remark: tableView.remark,
         type: tableView.type,
-        superTables: [],
+        superTables: tableView.superTables.map(superTable => {
+            return {
+                name: superTable.name
+            }
+        }),
         indexes: tableView.indexes.map(indexView => {
             return {
                 name: indexView.name,
@@ -103,20 +104,20 @@ const getTableNameMap = <T extends GenTableModelInput | GenTableColumnsView>(gra
     return tableNameMap
 }
 
-export const loadTableModelInputs = <T extends GenTableModelInput | GenTableColumnsView>(
+export const loadTableModelInputs = (
     graph: Graph,
-    tables: DeepReadonly<T[]>,
+    tables: DeepReadonly<GenTableModelInput[]>,
     baseOptions?: DeepReadonly<TableLoadOptions>,
     eachTableOptions?: DeepReadonly<TableLoadOptions[]>
 ): {
     nodes: Node[],
-    tableNameMap: Map<string, T[]>// 表与名称重复的表的最终 map，除了已经存在的名称，后续的名称将自动向后追加 count
+    tableNameMap: Map<string, GenTableModelInput[]>// 表与名称重复的表的最终 map，除了已经存在的名称，后续的名称将自动向后追加 count
 } => {
-    const tableNameMap = getTableNameMap<T>(graph)
+    const tableNameMap = getTableNameMap<GenTableModelInput>(graph)
 
     const nodes: Node[] = tables.map((table, index) => {
         const name = table.name
-        const tempTable = cloneDeep(table) as T
+        const tempTable = cloneDeepReadonly<GenTableModelInput>(table)
 
         if (tableNameMap.has(name)) {
             let count = tableNameMap.get(name)!.length
@@ -130,11 +131,8 @@ export const loadTableModelInputs = <T extends GenTableModelInput | GenTableColu
             tableNameMap.set(name, [tempTable])
         }
 
-        const tableInput: GenTableModelInput = Object.keys(tempTable).includes('id') ?
-            tableViewToInput(tempTable as GenTableColumnsView) : tempTable as GenTableModelInput
-
         const node = tableToNode(
-            tableInput,
+            tempTable,
             {
                 x: (baseOptions?.x !== undefined && eachTableOptions && eachTableOptions[index] && eachTableOptions[index].x !== undefined) ?
                     baseOptions.x + eachTableOptions[index].x! : baseOptions?.x,

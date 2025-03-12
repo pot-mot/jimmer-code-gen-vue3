@@ -27,10 +27,6 @@ export interface GenTableColumnsView_TargetOf_indexes {
      */
     remark: string;
     /**
-     * 归属表
-     */
-    tableId: number;
-    /**
      * 列 ID 视图
      */
     columnIds: Array<number>;

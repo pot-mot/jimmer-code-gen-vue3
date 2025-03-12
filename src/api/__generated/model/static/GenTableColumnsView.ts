@@ -1,5 +1,10 @@
 import type {TableType} from '../enums/';
-import type {GenTableColumnsView_TargetOf_columns, GenTableColumnsView_TargetOf_indexes} from './';
+import type {
+    GenTableColumnsView_TargetOf_columns, 
+    GenTableColumnsView_TargetOf_indexes, 
+    GenTableColumnsView_TargetOf_subGroup, 
+    GenTableColumnsView_TargetOf_superTables
+} from './';
 
 /**
  * 生成表
@@ -34,9 +39,13 @@ export interface GenTableColumnsView {
      */
     remark: string;
     /**
-     * 对应实体
+     * 子组
      */
-    entityId?: number | undefined;
+    subGroup?: GenTableColumnsView_TargetOf_subGroup | undefined;
+    /**
+     * 上级表
+     */
+    superTables: Array<GenTableColumnsView_TargetOf_superTables>;
     /**
      * 列
      */

@@ -54,6 +54,8 @@ export type {GenTableColumnsView} from './GenTableColumnsView';
 export type {GenTableColumnsView_TargetOf_columns} from './GenTableColumnsView_TargetOf_columns';
 export type {GenTableColumnsView_TargetOf_columns_TargetOf_enum} from './GenTableColumnsView_TargetOf_columns_TargetOf_enum';
 export type {GenTableColumnsView_TargetOf_indexes} from './GenTableColumnsView_TargetOf_indexes';
+export type {GenTableColumnsView_TargetOf_subGroup} from './GenTableColumnsView_TargetOf_subGroup';
+export type {GenTableColumnsView_TargetOf_superTables} from './GenTableColumnsView_TargetOf_superTables';
 export type {GenTableCommonView} from './GenTableCommonView';
 export type {GenTableModelInput} from './GenTableModelInput';
 export type {GenTableModelInput_TargetOf_columns} from './GenTableModelInput_TargetOf_columns';
