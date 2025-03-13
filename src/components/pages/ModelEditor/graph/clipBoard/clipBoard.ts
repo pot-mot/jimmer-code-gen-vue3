@@ -11,6 +11,7 @@ import {loadEnums} from "@/components/pages/ModelEditor/graph/load/loadEnums.ts"
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {validateTableModelInput} from "@/shape/GenTableModelInput.ts";
 import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
+import {DeepReadonly} from "vue";
 
 export const useClipBoard = (graph: Graph) => {
     graph.bindKey(["ctrl+c", "command+c"], async () => {
@@ -26,8 +27,9 @@ export const useClipBoard = (graph: Graph) => {
     })
 }
 
-export const getModelAllCopyData = (model: GenModelInput): CopyData => {
-    const cells = jsonParseThenConvertNullToUndefined(model.graphData)?.json?.cells
+// TODO 添加 subGroups
+export const getModelAllCopyData = (model: DeepReadonly<GenModelInput>): DeepReadonly<CopyData> => {
+    const cells = jsonParseThenConvertNullToUndefined(model.graphData)?.json?.cells ?? []
     const nodes = cells.filter((it: any) => it.shape === TABLE_NODE)
     const edges = cells.filter((it: any) => it.shape === ASSOCIATION_EDGE)
 
@@ -87,7 +89,7 @@ const copy = async () => {
     const nodePositions = nodes.map(it => (it as Node).getPosition())
     const optionsList = getPositionOptionsList(nodePositions)
 
-    const copyData: CopyData = {tables, associations, enums, optionsList}
+    const copyData: DeepReadonly<CopyData> = {tables, associations, enums, optionsList}
 
     await navigator.clipboard.writeText(JSON.stringify(copyData))
 

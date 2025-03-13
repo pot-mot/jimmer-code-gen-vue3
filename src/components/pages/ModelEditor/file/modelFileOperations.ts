@@ -88,7 +88,7 @@ const getModelJson = async (model: DeepReadonly<GenModelView>): Promise<DeepRead
     }
 }
 
-export const exportModelJson = async (model: GenModelView) => {
+export const exportModelJson = async (model: DeepReadonly<GenModelView>) => {
     const modelJson = await getModelJson(model)
 
     const modelJsonBlob = new Blob(
@@ -112,7 +112,7 @@ export const downloadFile = (file: GenerateFile) => {
 }
 
 export const downloadModelZip = async (
-    model: GenModelView,
+    model: DeepReadonly<GenModelView>,
     types: Array<GenerateType> = ['ALL'],
 ) => {
     const {files: codeFiles} = await getModelCodes(model.id, types)

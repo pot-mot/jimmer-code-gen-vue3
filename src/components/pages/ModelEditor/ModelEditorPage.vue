@@ -10,7 +10,6 @@ import DataSourceMenu from "@/components/business/dataSource/menu/DataSourceMenu
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import ModelDialog from "@/components/business/model/dialog/ModelDialog.vue";
-import {cloneDeep} from "lodash";
 import {api} from "@/api";
 import {sendI18nMessage} from "@/message/message.ts";
 import {useRoute, useRouter} from "vue-router";
@@ -29,8 +28,10 @@ import {useModelLoadDialogStore} from "@/store/modelEditor/ModelLoadDialogStore.
 import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.ts";
 import EntityDialogs from "@/components/pages/ModelEditor/dialogs/entity/EntityDialogs.vue";
 import SubGroupDialogs from "@/components/pages/ModelEditor/dialogs/subGroup/SubGroupDialogs.vue";
+import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
+import {GenModelInput} from "@/api/__generated/model/static";
 
-const {MODEL, MODEL_LOAD} = useModelEditorStore()
+const {MODEL, MODEL_EDITOR} = useModelEditorStore()
 
 const i18nStore = useI18nStore()
 
@@ -57,7 +58,7 @@ onMounted(async () => {
 			return
 		}
 
-		MODEL_LOAD.load(model)
+		MODEL.load(model)
 	} catch (e) {
 		sendI18nMessage("MESSAGE_ModelEditorPage_modelLoadFail", 'error', e)
 		await router.replace("/")
@@ -65,7 +66,7 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-	MODEL_LOAD.unload()
+	MODEL.unload()
 })
 
 const dataSourceLoadMenu = ref()
@@ -84,7 +85,7 @@ watch(() => dataSourceLoadMenu.value, () => {
 			confirm(
 				i18nStore.translate("CONFIRM_ModelEditorPage_modelLoad_entireSchema"),
 				loadingStore.withLoading('ModelEditorPage syncClickSchemaEvent', async () => {
-					await MODEL_LOAD.loadSchema(id)
+					await MODEL_EDITOR.loadSchema(id)
 				})
 			)
 		})
@@ -95,7 +96,7 @@ watch(() => dataSourceLoadMenu.value, () => {
 			confirm(
 				i18nStore.translate("CONFIRM_ModelEditorPage_modelLoad_singleTable"),
 				loadingStore.withLoading('ModelEditorPage syncClickSchemaEvent', async () => {
-					await MODEL_LOAD.loadTable(id)
+					await MODEL_EDITOR.loadTable(id)
 				})
 			)
 		}
@@ -118,7 +119,7 @@ watch(() => modelLoadMenu.value, () => {
 			confirm(
 				i18nStore.translate("CONFIRM_ModelEditorPage_modelLoad_model"),
 				loadingStore.withLoading('ModelEditorPage syncClickModelEvent', async () => {
-					await MODEL_LOAD.loadModel(id)
+					await MODEL_EDITOR.loadModel(id)
 				})
 			)
 		}
@@ -130,7 +131,7 @@ watch(() => modelLoadMenu.value, () => {
 			confirm(
 				i18nStore.translate("CONFIRM_ModelEditorPage_modelLoad_singleTable"),
 				loadingStore.withLoading('ModelEditorPage syncClickTableEvent', async () => {
-					await MODEL_LOAD.loadTable(id)
+					await MODEL_EDITOR.loadTable(id)
 				})
 			)
 		}
@@ -173,7 +174,7 @@ watch(() => modelLoadMenu.value, () => {
 	<ModelDialog
 		v-if="MODEL.isLoaded"
 		v-model="modelEditDialogStore.openState"
-		:model="cloneDeep(MODEL._model())"
+		:model="cloneDeepReadonly<GenModelInput>(MODEL._model())"
 		@cancel="modelEditDialogStore.handleCancel"
 		@submit="modelEditDialogStore.handleSubmit"
 	/>

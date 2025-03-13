@@ -64,7 +64,7 @@ export const loadTableModelInputs = (
     graph: Graph,
     tables: DeepReadonly<GenTableModelInput[]>,
     baseOptions?: DeepReadonly<TableLoadOptions>,
-    eachTableOptions?: DeepReadonly<TableLoadOptions[]>
+    eachTableOptions?: DeepReadonly<(TableLoadOptions | undefined)[]>
 ): {
     nodes: Node[],
     tableNameMap: Map<string, GenTableModelInput[]>// 表与名称重复的表的最终 map，除了已经存在的名称，后续的名称将自动向后追加 count

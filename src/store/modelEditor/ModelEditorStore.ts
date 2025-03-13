@@ -1,13 +1,11 @@
 import {GraphLoadOperation, GraphState, useGraph} from "@/components/global/graphEditor/load/GraphLoadState.ts";
 import {sendI18nMessage} from "@/message/message.ts";
-import {computed, ComputedRef, DeepReadonly, nextTick, Ref, ref, watch} from "vue";
+import {computed, ComputedRef, DeepReadonly, nextTick, readonly, Ref, ref, watch} from "vue";
 import {api} from "@/api";
+import {loadIntoGraph, TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadIntoGraph.ts";
 import {
-    loadIntoGraph,
-    TableLoadOptions
-} from "@/components/pages/ModelEditor/graph/load/loadIntoGraph.ts";
-import {
-    EntityConfigInput, EntityConfigView,
+    EntityConfigInput,
+    EntityConfigView,
     GenAssociationModelInput,
     GenAssociationView,
     GenModelInput_TargetOf_enums,
@@ -18,7 +16,6 @@ import {
     Pair
 } from "@/api/__generated/model/static";
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
-import {loadTableModelInputs} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
 import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts";
 import {ModelEditorData, validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
@@ -47,9 +44,6 @@ import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/as
 import {GraphReactiveState} from "@/components/global/graphEditor/data/reactiveState.ts";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {defineStore} from "pinia";
-import {
-    loadAssociationModelInputs
-} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
 import {getDefaultAssociation} from "@/components/business/association/defaultColumn.ts";
 import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/BatchCreateAssociationsDialogStore.ts";
 import {useTableCombineDialogStore} from "@/store/modelEditor/TableCombineDialogStore.ts";
@@ -89,16 +83,10 @@ type ModelReactiveState = {
 }
 
 type ModelState = {
-    _model: () => GenModelView
+    _model: () => DeepReadonly<GenModelView>
     isLoaded: Ref<boolean>
-}
-
-type ModelLoadOperation = {
-    load: (model: GenModelView) => void
+    load: (model: DeepReadonly<GenModelView>) => void
     unload: () => void
-    loadModel: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
-    loadSchema: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
-    loadTable: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
 }
 
 type ModelEditorDataOperation = {
@@ -109,7 +97,14 @@ type ModelEditorDataOperation = {
     },
 }
 
-type SyncTableOperation = {
+type ExternalLoadOperation = {
+    // TODO 参数从 id 调整为直接的数据
+    loadModel: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
+    loadSchema: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
+    loadTable: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
+}
+
+type TableSyncOperation = {
     syncTable: (id: string) => void,
     syncedTable: (id: string) => void,
 }
@@ -195,12 +190,15 @@ type ModelEditorStore = {
     REMOVE: RemoveOperation
 
     MODEL: UnwrapRefSimple<ModelState & ModelReactiveState>
-    MODEL_LOAD: ModelLoadOperation
 
     MODEL_EDITOR: ModelEditorDataOperation
+        & ExternalLoadOperation
+
         & MinimapOperation
+
         & ModelSyncState
-        & SyncTableOperation
+        & TableSyncOperation
+
         & SubGroupEditOperation
         & TableEditOperation
         & AssociationEditOperation
@@ -240,7 +238,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         let validateErrors
         try {
             const graph = _graph()
-            if (modelEditorData && validateModelEditorData(modelEditorData, e => validateErrors = e)) {
+            if (validateModelEditorData(modelEditorData, e => validateErrors = e)) {
                 unStyleAll(graph)
                 return graphDataOperation.loadGraphData(modelEditorData, reset)
             } else {
@@ -261,6 +259,8 @@ const initModelEditorStore = (): ModelEditorStore => {
         loadModelEditorData,
     }
 
+
+
     const currentModel = ref<GenModelView>()
 
     const isLoaded = ref(false)
@@ -273,23 +273,16 @@ const initModelEditorStore = (): ModelEditorStore => {
         return currentModel as Ref<GenModelView>
     }
 
-    const modelState: ModelState = {
-        _model: (): GenModelView => {
-            return assertModel().value
-        },
-        isLoaded,
-    }
-
     const loadingStore = useGlobalLoadingStore()
 
     const debugStore = useDebugStore()
 
-    const loadModelView = (model: GenModelView) => {
+    const load = (model: DeepReadonly<GenModelView>) => {
         const contextStore = useGenConfigContextStore()
 
         contextStore.merge(model)
 
-        currentModel.value = model
+        currentModel.value = cloneDeepReadonly<GenModelView>(model)
 
         isLoaded.value = true
 
@@ -303,7 +296,6 @@ const initModelEditorStore = (): ModelEditorStore => {
     }
 
 
-
     let initMinimapAction: () => void | undefined
 
     const setInitMinimapAction = (action: () => void) => {
@@ -314,29 +306,31 @@ const initModelEditorStore = (): ModelEditorStore => {
         initMinimapAction?.()
     }
 
-    const tableViewToInput = (tableView: DeepReadonly<GenTableColumnsView>): GenTableModelInput => {
+    const tableViewToInput = (
+        view: DeepReadonly<GenTableColumnsView>
+    ): GenTableModelInput => {
         return {
-            comment: tableView.comment,
-            name: tableView.name,
-            remark: tableView.remark,
-            type: tableView.type,
-            subGroup: tableView.subGroup ? {name: tableView.subGroup.name} : undefined,
-            superTables: tableView.superTables.map(it => {
+            comment: view.comment,
+            name: view.name,
+            remark: view.remark,
+            type: view.type,
+            subGroup: view.subGroup ? {name: view.subGroup.name} : undefined,
+            superTables: view.superTables.map(it => {
                 return {name: it.name}
             }),
-            indexes: tableView.indexes.map(indexView => {
+            indexes: view.indexes.map(indexView => {
                 return {
                     name: indexView.name,
                     uniqueIndex: indexView.uniqueIndex,
                     remark: indexView.remark,
-                    columns: tableView.columns
+                    columns: view.columns
                         .filter(it => indexView.columnIds.includes(it.id))
                         .map(it => {
                             return {name: it.name}
                         })
                 }
             }),
-            columns: tableView.columns.map(column => {
+            columns: view.columns.map(column => {
                 return {
                     autoIncrement: column.autoIncrement,
                     comment: column.comment,
@@ -412,9 +406,11 @@ const initModelEditorStore = (): ModelEditorStore => {
             loadIntoGraph(
                 model,
                 graph,
-                tables,
-                associations,
-                getCenterPoint(graph)
+                {
+                    tables,
+                    associations,
+                    baseTableOptions: getCenterPoint(graph)
+                }
             )
 
         debugStore.log('LOADING', 'loadTableViews', {tables, associations, nodes, edges})
@@ -484,6 +480,12 @@ const initModelEditorStore = (): ModelEditorStore => {
             return await loadTableViews(tables)
         }
     )
+
+    const externalLoadOperation: ExternalLoadOperation = {
+        loadModel,
+        loadSchema,
+        loadTable,
+    }
 
 
     /**
@@ -573,7 +575,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
                         if (model.graphData !== currentGraphData) {
                             graph.cleanSelection()
-                            model.graphData =  JSON.stringify(graphDataOperation.getGraphData())
+                            model.graphData = JSON.stringify(graphDataOperation.getGraphData())
 
                             await saveModel(model)
                             await convertModel(model.id)
@@ -592,8 +594,6 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         await waitRefresh()
     }
-
-
 
 
     /**
@@ -688,11 +688,13 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         const options = tableCreateOptionsMap.get(createKey)
 
-        const node = loadTableModelInputs(
+        const node = loadIntoGraph(
             model,
             graph,
-            [table],
-            options
+            {
+                tables: [table],
+                eachTableOptions: [options]
+            }
         ).nodes[0]
 
         tableCreateOptionsMap.delete(createKey)
@@ -789,7 +791,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         const {superTable, inheritTableNodePairs} = tableCombineData
 
         startBatchSync("combinedTable", () => {
-            loadTableModelInputs(model, graph, [superTable], tableCombineOptions.value, undefined)
+            loadIntoGraph(model, graph, {tables: [superTable], baseTableOptions: tableCombineOptions.value})
 
             for (const {first, second} of inheritTableNodePairs) {
                 updateTableNodeData(second, first)
@@ -813,10 +815,14 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const createdAssociation = (createKey: string, association: DeepReadonly<GenAssociationModelInput>) => {
         const graph = _graph()
+        const model = MODEL._model()
 
-        const edge = loadAssociationModelInputs(
+        const edge = loadIntoGraph(
+            model,
             graph,
-            [association],
+            {
+                associations: [association]
+            }
         ).edges[0]
 
         if (edge) {
@@ -838,12 +844,14 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const batchCreatedAssociations = (associations: DeepReadonly<GenAssociationModelInput[]>) => {
         const graph = _graph()
+        const model = MODEL._model()
 
         graph.startBatch("batchCreatedAssociations")
 
-        const edges = loadAssociationModelInputs(
+        const edges = loadIntoGraph(
+            model,
             graph,
-            associations,
+            {associations}
         ).edges
 
         batchCreateAssociationsDialogStore.close()
@@ -1141,13 +1149,6 @@ const initModelEditorStore = (): ModelEditorStore => {
         }
     )()
 
-    const MODEL = defineStore(
-        'MODEL',
-        () => {
-            return {...modelState, ...modelReactiveState}
-        }
-    )()
-
     const unload = () => {
         if (GRAPH.isLoaded) {
             GRAPH.unload()
@@ -1172,15 +1173,21 @@ const initModelEditorStore = (): ModelEditorStore => {
         tableDialogsStore.closeAll()
     }
 
-    const modelLoadOperations: ModelLoadOperation = {
-        load: loadModelView,
-        unload,
-        loadModel,
-        loadSchema,
-        loadTable,
-    }
+    const MODEL = defineStore(
+        'MODEL',
+        () => {
+            return {
+                _model: (): DeepReadonly<GenModelView> => {
+                    return readonly(assertModel().value)
+                },
+                isLoaded,
+                load,
+                unload,
 
-    const MODEL_LOAD = modelLoadOperations
+                ...modelReactiveState
+            }
+        }
+    )()
 
     /**
      * 最终导出
@@ -1192,9 +1199,9 @@ const initModelEditorStore = (): ModelEditorStore => {
         HISTORY,
         REMOVE,
         MODEL,
-        MODEL_LOAD,
         MODEL_EDITOR: {
             ...modelGraphDataOperation,
+            ...externalLoadOperation,
 
             setInitMinimapAction,
 

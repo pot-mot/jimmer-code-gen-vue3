@@ -53,7 +53,7 @@ import {columnToPort} from "@/components/pages/ModelEditor/graph/load/loadTableN
 import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {searchNodesByTableName} from "@/components/pages/ModelEditor/search/graphSearch.ts";
 import {refreshEdgeAssociation,} from "@/components/pages/ModelEditor/graph/tableNode/refreshAssociationEdge.ts";
-import {loadAssociationModelInputs} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
+import {loadIntoGraph} from "@/components/pages/ModelEditor/graph/load/loadIntoGraph.ts";
 
 const {GRAPH, MODEL, MODEL_EDITOR, VIEW, HISTORY} = useModelEditorStore()
 
@@ -92,6 +92,7 @@ onMounted(() => {
 	if (!node.value || !GRAPH.isLoaded) return
 
 	const graph = GRAPH._graph()
+    const model = MODEL._model()
 
 	if (node.value.shape !== TABLE_NODE) {
 		sendMessage('Node 获取失败', 'error')
@@ -166,7 +167,7 @@ onMounted(() => {
 						refreshedAssociations.push(association)
 					}
 				}
-				loadAssociationModelInputs(graph, refreshedAssociations)
+				loadIntoGraph(model, graph, {associations: refreshedAssociations})
 
 				newTable.columns.forEach((column, index) => {
 					column.orderKey = index + 1

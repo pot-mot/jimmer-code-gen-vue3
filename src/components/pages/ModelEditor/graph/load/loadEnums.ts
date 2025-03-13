@@ -28,7 +28,7 @@ export const loadEnums = (
             if (sameNameEnums.length === 1 && jsonSortPropStringify(sameNameEnums[0]) === jsonSortPropStringify(genEnum)) {
             } else {
                 sendI18nMessage(
-                    {key: "VALIDATE_GenEnum_cannotBeDuplicate", args: [genEnum.name]},
+                    {key: "VALIDATE_GenEnum_nameCannotBeDuplicate", args: [genEnum.name]},
                     'warning',
                     {allSameNameEnums: sameNameEnums, newEnum: genEnum},
                 )

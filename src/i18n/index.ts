@@ -473,7 +473,7 @@ type MainLocale = {
     LABEL_EnumForm_type: string
     LABEL_EnumForm_typeUnset: string
 
-    VALIDATE_GenEnum_cannotBeDuplicate: (enumName: string) => string
+    VALIDATE_GenEnum_nameCannotBeDuplicate: (enumName: string) => string
     VALIDATE_GenEnum_nameCannotBeEmpty: string
     VALIDATE_GenEnum_subGroupNotExist: (subGroupName: string) => string;
     VALIDATE_GenEnum_itemsCannotBeEmpty: string
@@ -484,7 +484,6 @@ type MainLocale = {
     VALIDATE_GenEnum_ordinalValueMustBeInteger: string
     VALIDATE_GenEnum_itemValueCannotBeEmpty: string
     VALIDATE_GenEnum_itemValueCannotBeDuplicate: (itemValue: string) => string
-    VALIDATE_GenEnum_nameCannotBeDuplicate: (enumName: string) => string
 
     LABEL_GenEnumItem_name: string
     LABEL_GenEnumItem_value: string

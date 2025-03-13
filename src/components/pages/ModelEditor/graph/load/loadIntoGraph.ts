@@ -6,7 +6,7 @@ import {
     GenTableModelInput
 } from "@/api/__generated/model/static";
 import {loadTableModelInputs} from "./loadTableNode.ts";
-import {Graph} from '@antv/x6'
+import {Edge, Node, Graph} from '@antv/x6'
 import {loadAssociationModelInputs} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
 import {DeepReadonly} from "vue";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
@@ -22,14 +22,18 @@ type ModelGraphInput = {
     tables?: DeepReadonly<GenTableModelInput[]>,
     associations?: DeepReadonly<GenAssociationModelInput[]>,
     baseTableOptions?: DeepReadonly<TableLoadOptions>,
-    eachTableOptions?: DeepReadonly<TableLoadOptions[]>
+    eachTableOptions?: DeepReadonly<(TableLoadOptions | undefined)[]>
 }
 
+// TODO 至 MODEL_EDITOR 中完成全部导入
 export const loadIntoGraph = (
     model: DeepReadonly<GenModelInput>,
     graph: Graph,
     input: ModelGraphInput
-) => {
+): {
+    nodes: Node[],
+    edges: Edge[],
+} => {
     graph.startBatch('Load into graph')
 
     // TODO 完善 subGroups 和 enums 的导入，并调整返回值
@@ -41,6 +45,8 @@ export const loadIntoGraph = (
         baseTableOptions,
         eachTableOptions
     } = input
+
+    // const newEnums = loadEnums(model, enums)
 
     const {
         nodes,
