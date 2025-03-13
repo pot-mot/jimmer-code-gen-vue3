@@ -52,7 +52,7 @@ import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {columnToPort} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
 import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {searchNodesByTableName} from "@/components/pages/ModelEditor/search/graphSearch.ts";
-import {refreshEdgeAssociation,} from "@/components/pages/ModelEditor/graph/load/refreshAssociationEdge.ts";
+import {refreshEdgeAssociation,} from "@/components/pages/ModelEditor/graph/tableNode/refreshAssociationEdge.ts";
 import {loadAssociationModelInputs} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
 
 const {GRAPH, MODEL, MODEL_EDITOR, VIEW, HISTORY} = useModelEditorStore()
