@@ -7,7 +7,7 @@ import {
     GenTableModelInput
 } from "@/api/__generated/model/static";
 import {GenEnumModelInputJsonSchema} from "@/shape/GenEnumModelInput.ts";
-import type {TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadData.ts";
+import type {TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadIntoGraph.ts";
 import type {DeepReadonly} from "vue";
 
 export interface CopyData {

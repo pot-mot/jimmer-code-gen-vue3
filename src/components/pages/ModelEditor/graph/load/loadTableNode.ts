@@ -8,7 +8,7 @@ import {Graph, Node} from "@antv/x6";
 import {columnPortGroup} from "@/components/pages/ModelEditor/graph/tableNode/columnPort.ts";
 import {COLUMN_PORT_GROUP, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
-import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadData.ts";
+import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadIntoGraph.ts";
 import {DeepReadonly} from "vue";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 
@@ -20,7 +20,7 @@ export const columnToPort = () => {
 
 const tableToNode = (
     table: DeepReadonly<GenTableModelInput>,
-    options?: any
+    options?: TableLoadOptions
 ): Node => {
     return {
         shape: TABLE_NODE,
@@ -35,7 +35,7 @@ const tableToNode = (
                 ...table.columns.map(columnToPort)
             ]
         },
-        ...options,
+        ...options as any,
     }
 }
 

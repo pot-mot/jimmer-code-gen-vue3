@@ -3,9 +3,9 @@ import {sendI18nMessage} from "@/message/message.ts";
 import {computed, ComputedRef, DeepReadonly, nextTick, Ref, ref, watch} from "vue";
 import {api} from "@/api";
 import {
-    loadModelInputs,
+    loadIntoGraph,
     TableLoadOptions
-} from "@/components/pages/ModelEditor/graph/load/loadData.ts";
+} from "@/components/pages/ModelEditor/graph/load/loadIntoGraph.ts";
 import {
     EntityConfigInput, EntityConfigView,
     GenAssociationModelInput,
@@ -409,7 +409,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             await produceTableViewsToInputs(tableViews)
 
         const {nodes, edges} =
-            loadModelInputs(
+            loadIntoGraph(
                 model,
                 graph,
                 tables,

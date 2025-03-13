@@ -1,7 +1,7 @@
 import {Cell, Edge, Graph, Node} from "@antv/x6";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {sendI18nMessage} from "@/message/message.ts";
-import {loadModelInputs, TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadData.ts";
+import {loadIntoGraph, TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadIntoGraph.ts";
 import {CopyData, validateCopyData} from "@/shape/CopyData.ts";
 import {validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
@@ -122,14 +122,14 @@ const paste = async () => {
 
         const validateErrors: any = []
 
-        const options: TableLoadOptions = {
+        const baseTableOptions: TableLoadOptions = {
             x: GRAPH.mousePosition.x,
             y: GRAPH.mousePosition.y
         }
 
         if (validateTableModelInput(value, (e) => validateErrors.push(e))) {
             const table = value as GenTableModelInput
-            res = loadModelInputs(model, graph, [table], [], options)
+            res = loadIntoGraph(model, graph, {tables: [table], baseTableOptions})
         } else if (validateCopyData(value, (e) => validateErrors.push(e))) {
             const {
                 tables,
@@ -140,7 +140,7 @@ const paste = async () => {
 
             model.enums.push(...loadEnums(model, enums).enums)
 
-            res = loadModelInputs(model, graph, tables, associations, options, optionsList)
+            res = loadIntoGraph(model, graph, {tables, associations, baseTableOptions, eachTableOptions: optionsList})
         } else if (validateModelEditorData(value, (e) => validateErrors.push(e))) {
             const cells = value.json.cells as Cell[]
             graph.parseJSON(cells)

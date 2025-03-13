@@ -1,13 +1,13 @@
 import {
     GenAssociationModelInput,
     GenModelInput,
+    GenModelInput_TargetOf_enums,
+    GenModelInput_TargetOf_subGroups,
     GenTableModelInput
 } from "@/api/__generated/model/static";
 import {loadTableModelInputs} from "./loadTableNode.ts";
 import {Graph} from '@antv/x6'
-import {
-    loadAssociationModelInputs
-} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
+import {loadAssociationModelInputs} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
 import {DeepReadonly} from "vue";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 
@@ -16,15 +16,31 @@ export interface TableLoadOptions {
     y?: number
 }
 
-export const loadModelInputs = (
+type ModelGraphInput = {
+    subGroups?: DeepReadonly<Array<GenModelInput_TargetOf_subGroups>>
+    enums?: DeepReadonly<Array<GenModelInput_TargetOf_enums>>,
+    tables?: DeepReadonly<GenTableModelInput[]>,
+    associations?: DeepReadonly<GenAssociationModelInput[]>,
+    baseTableOptions?: DeepReadonly<TableLoadOptions>,
+    eachTableOptions?: DeepReadonly<TableLoadOptions[]>
+}
+
+export const loadIntoGraph = (
     model: DeepReadonly<GenModelInput>,
     graph: Graph,
-    tables: DeepReadonly<GenTableModelInput[]>,
-    associations: DeepReadonly<GenAssociationModelInput[]>,
-    baseOptions?: DeepReadonly<TableLoadOptions>,
-    eachTableOptions?: DeepReadonly<TableLoadOptions[]>
+    input: ModelGraphInput
 ) => {
-    graph.startBatch('Load from inputs')
+    graph.startBatch('Load into graph')
+
+    // TODO 完善 subGroups 和 enums 的导入，并调整返回值
+    const {
+        subGroups = [] as DeepReadonly<Array<GenModelInput_TargetOf_subGroups>>,
+        enums = [] as DeepReadonly<Array<GenModelInput_TargetOf_enums>>,
+        tables = [] as DeepReadonly<GenTableModelInput[]>,
+        associations = [] as DeepReadonly<GenAssociationModelInput[]>,
+        baseTableOptions,
+        eachTableOptions
+    } = input
 
     const {
         nodes,
@@ -33,16 +49,16 @@ export const loadModelInputs = (
         model,
         graph,
         tables,
-        baseOptions,
+        baseTableOptions,
         eachTableOptions
     )
 
-    associations = associations
+    const filteredAssociations = associations
         .filter(it => tableNameMap.has(it.targetTableName))
         .filter(it => tableNameMap.has(it.sourceTableName))
 
     // 根据同名表覆盖 association 的 source 和 target
-    const newAssociations = associations.map(association => {
+    const newAssociations = filteredAssociations.map(association => {
         const tempAssociation = cloneDeepReadonly<GenAssociationModelInput>(association)
 
         const sourceSameNameList = tableNameMap.get(association.sourceTableName)
