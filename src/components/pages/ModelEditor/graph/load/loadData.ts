@@ -1,35 +1,15 @@
 import {
     GenAssociationModelInput,
     GenModelInput,
-    GenTableColumnsView,
     GenTableModelInput
 } from "@/api/__generated/model/static";
-import {api} from "@/api";
-import {loadTableModelInputs, tableViewToInput} from "./loadTableNode.ts";
+import {loadTableModelInputs} from "./loadTableNode.ts";
 import {Graph} from '@antv/x6'
 import {
-    associationViewToInput,
     loadAssociationModelInputs
 } from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
 import {DeepReadonly} from "vue";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
-
-/**
- * 将 tables 导入画布
- */
-export const produceTableViewsToInputs = async (tables: DeepReadonly<GenTableColumnsView[]>) => {
-    let associations = await api.associationService.queryByTable({
-        body: {
-            tableIds: tables.map(it => it.id),
-            selectType: "OR"
-        }
-    })
-
-    return {
-        tables: tables.map(it => tableViewToInput(it)),
-        associations: associations.map(it => associationViewToInput(it))
-    }
-}
 
 export interface TableLoadOptions {
     x?: number,

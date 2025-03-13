@@ -1,7 +1,6 @@
 import {Node, Edge, Graph} from "@antv/x6";
 import {
     GenAssociationModelInput,
-    GenAssociationView,
     GenTableModelInput,
     GenTableModelInput_TargetOf_columns,
 } from "@/api/__generated/model/static";
@@ -11,28 +10,6 @@ import {PortManager} from "@antv/x6/es/model/port";
 import {DeepReadonly} from "vue";
 import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge/updateData.ts";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
-
-export const associationViewToInput = (
-    view: DeepReadonly<GenAssociationView>,
-): GenAssociationModelInput => {
-    return {
-        type: view.type,
-        name: view.name,
-        dissociateAction: view.dissociateAction,
-        updateAction: view.updateAction,
-        deleteAction: view.deleteAction,
-        fake: view.fake,
-        sourceTableName: view.sourceTable.name,
-        targetTableName: view.targetTable.name,
-
-        columnReferences: view.columnReferences.map(({sourceColumn, targetColumn}) => {
-            return {
-                sourceColumnName: sourceColumn.name,
-                targetColumnName: targetColumn.name,
-            }
-        })
-    }
-}
 
 export interface AssociationEdgeConnect {
     association: GenAssociationModelInput
@@ -49,7 +26,7 @@ export interface AssociationEdgeConnect {
     router: Edge.RouterData
 }
 
-export const associationToEdgeConnect = (
+const associationToEdgeConnect = (
     graph: Graph,
     association: DeepReadonly<GenAssociationModelInput>
 ): DeepReadonly<AssociationEdgeConnect> | undefined => {
@@ -78,7 +55,7 @@ export const associationToEdgeConnect = (
         targetPort: PortManager.PortMetadata,
     }[]>[]
 
-    for (let columnReference of association.columnReferences) {
+    for (const columnReference of association.columnReferences) {
         const sourceColumnIndex = sourceTable.columns.findIndex(column =>
             column.name === columnReference.sourceColumnName
         )

@@ -4,12 +4,12 @@ import {computed, ComputedRef, DeepReadonly, nextTick, Ref, ref, watch} from "vu
 import {api} from "@/api";
 import {
     loadModelInputs,
-    produceTableViewsToInputs,
     TableLoadOptions
 } from "@/components/pages/ModelEditor/graph/load/loadData.ts";
 import {
     EntityConfigInput, EntityConfigView,
     GenAssociationModelInput,
+    GenAssociationView,
     GenModelInput_TargetOf_enums,
     GenModelInput_TargetOf_subGroups,
     GenModelView,
@@ -47,7 +47,9 @@ import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/as
 import {GraphReactiveState} from "@/components/global/graphEditor/data/reactiveState.ts";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {defineStore} from "pinia";
-import {loadAssociationModelInputs} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
+import {
+    loadAssociationModelInputs
+} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
 import {getDefaultAssociation} from "@/components/business/association/defaultColumn.ts";
 import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/BatchCreateAssociationsDialogStore.ts";
 import {useTableCombineDialogStore} from "@/store/modelEditor/TableCombineDialogStore.ts";
@@ -312,6 +314,89 @@ const initModelEditorStore = (): ModelEditorStore => {
         initMinimapAction?.()
     }
 
+    const tableViewToInput = (tableView: DeepReadonly<GenTableColumnsView>): GenTableModelInput => {
+        return {
+            comment: tableView.comment,
+            name: tableView.name,
+            remark: tableView.remark,
+            type: tableView.type,
+            subGroup: tableView.subGroup ? {name: tableView.subGroup.name} : undefined,
+            superTables: tableView.superTables.map(it => {
+                return {name: it.name}
+            }),
+            indexes: tableView.indexes.map(indexView => {
+                return {
+                    name: indexView.name,
+                    uniqueIndex: indexView.uniqueIndex,
+                    remark: indexView.remark,
+                    columns: tableView.columns
+                        .filter(it => indexView.columnIds.includes(it.id))
+                        .map(it => {
+                            return {name: it.name}
+                        })
+                }
+            }),
+            columns: tableView.columns.map(column => {
+                return {
+                    autoIncrement: column.autoIncrement,
+                    comment: column.comment,
+                    defaultValue: column.defaultValue,
+                    dataSize: column.dataSize,
+                    name: column.name,
+                    numericPrecision: column.numericPrecision,
+                    orderKey: column.orderKey,
+                    partOfPk: column.partOfPk,
+                    remark: column.remark,
+                    typeCode: column.typeCode,
+                    overwriteByRaw: column.overwriteByRaw,
+                    rawType: column.rawType,
+                    typeNotNull: column.typeNotNull,
+                    logicalDelete: column.logicalDelete,
+                    businessKey: column.businessKey,
+                    enum: column.enum ? {name: column.enum.name} : undefined
+                }
+            }),
+        }
+    }
+
+    const associationViewToInput = (
+        view: DeepReadonly<GenAssociationView>,
+    ): GenAssociationModelInput => {
+        return {
+            type: view.type,
+            name: view.name,
+            dissociateAction: view.dissociateAction,
+            updateAction: view.updateAction,
+            deleteAction: view.deleteAction,
+            fake: view.fake,
+            sourceTableName: view.sourceTable.name,
+            targetTableName: view.targetTable.name,
+
+            columnReferences: view.columnReferences.map(({sourceColumn, targetColumn}) => {
+                return {
+                    sourceColumnName: sourceColumn.name,
+                    targetColumnName: targetColumn.name,
+                }
+            })
+        }
+    }
+
+    /**
+     * TODO 移除在此处进行查询
+     */
+    const produceTableViewsToInputs = async (tables: DeepReadonly<GenTableColumnsView[]>) => {
+        let associations = await api.associationService.queryByTable({
+            body: {
+                tableIds: tables.map(it => it.id),
+                selectType: "OR"
+            }
+        })
+
+        return {
+            tables: tables.map(it => tableViewToInput(it)),
+            associations: associations.map(it => associationViewToInput(it))
+        }
+    }
 
     /**
      * 导入表的基本函数，接收 tableView 并查询获得 association

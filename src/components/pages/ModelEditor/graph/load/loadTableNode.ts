@@ -39,51 +39,6 @@ const tableToNode = (
     }
 }
 
-export const tableViewToInput = (tableView: DeepReadonly<GenTableColumnsView>): GenTableModelInput => {
-    return {
-        comment: tableView.comment,
-        name: tableView.name,
-        remark: tableView.remark,
-        type: tableView.type,
-        subGroup: tableView.subGroup ? {name: tableView.subGroup.name} : undefined,
-        superTables: tableView.superTables.map(it => {
-            return {name: it.name}
-        }),
-        indexes: tableView.indexes.map(indexView => {
-            return {
-                name: indexView.name,
-                uniqueIndex: indexView.uniqueIndex,
-                remark: indexView.remark,
-                columns: tableView.columns
-                    .filter(it => indexView.columnIds.includes(it.id))
-                    .map(it => {
-                        return {name: it.name}
-                    })
-            }
-        }),
-        columns: tableView.columns.map(column => {
-            return {
-                autoIncrement: column.autoIncrement,
-                comment: column.comment,
-                defaultValue: column.defaultValue,
-                dataSize: column.dataSize,
-                name: column.name,
-                numericPrecision: column.numericPrecision,
-                orderKey: column.orderKey,
-                partOfPk: column.partOfPk,
-                remark: column.remark,
-                typeCode: column.typeCode,
-                overwriteByRaw: column.overwriteByRaw,
-                rawType: column.rawType,
-                typeNotNull: column.typeNotNull,
-                logicalDelete: column.logicalDelete,
-                businessKey: column.businessKey,
-                enum: column.enum ? {name: column.enum.name} : undefined
-            }
-        }),
-    }
-}
-
 const getTableNameMap = <T extends GenTableModelInput | GenTableColumnsView>(graph: Graph): Map<string, T[]> => {
     const tableNameMap = new Map<string, T[]>
 
