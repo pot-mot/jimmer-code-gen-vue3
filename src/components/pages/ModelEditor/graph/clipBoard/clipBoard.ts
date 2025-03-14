@@ -10,6 +10,7 @@ import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {validateTableModelInput} from "@/shape/GenTableModelInput.ts";
 import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
 import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
+import {DeepReadonly} from "vue";
 
 export const useClipBoard = (graph: Graph) => {
     graph.bindKey(["ctrl+c", "command+c"], async () => {
@@ -25,7 +26,7 @@ export const useClipBoard = (graph: Graph) => {
     })
 }
 
-export const getModelAllCopyData = (model: GenModelInput): CopyData => {
+export const getModelAllCopyData = (model: DeepReadonly<GenModelInput>): DeepReadonly<CopyData> => {
     const cells = jsonParseThenConvertNullToUndefined(model.graphData)?.json?.cells
     const nodes = cells.filter((it: any) => it.shape === TABLE_NODE)
     const edges = cells.filter((it: any) => it.shape === ASSOCIATION_EDGE)
