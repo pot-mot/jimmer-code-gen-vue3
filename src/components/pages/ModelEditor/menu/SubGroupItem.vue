@@ -27,7 +27,7 @@ const handleDelete = () => {
 <template>
 	<div>
 		<el-text class="hover-show">
-			<el-text class="item" :style="{color: subGroup.style}">
+			<el-text class="model-editor-main-menu-item" :style="{color: subGroup.style}">
 				{{ subGroup.name }}
 				<Comment :comment="subGroup.comment"/>
 			</el-text>
@@ -39,12 +39,3 @@ const handleDelete = () => {
 		</el-text>
 	</div>
 </template>
-
-<style scoped>
-.item {
-	cursor: pointer;
-	white-space: nowrap;
-	line-height: 1.4em;
-	padding: 0.2em 0.5em;
-}
-</style>

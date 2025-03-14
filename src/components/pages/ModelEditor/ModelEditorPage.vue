@@ -10,7 +10,6 @@ import DataSourceMenu from "@/components/business/dataSource/menu/DataSourceMenu
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import ModelDialog from "@/components/business/model/dialog/ModelDialog.vue";
-import {cloneDeep} from "lodash";
 import {api} from "@/api";
 import {sendI18nMessage} from "@/message/message.ts";
 import {useRoute, useRouter} from "vue-router";
@@ -29,6 +28,8 @@ import {useModelLoadDialogStore} from "@/store/modelEditor/ModelLoadDialogStore.
 import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.ts";
 import EntityDialogs from "@/components/pages/ModelEditor/dialogs/entity/EntityDialogs.vue";
 import SubGroupDialogs from "@/components/pages/ModelEditor/dialogs/subGroup/SubGroupDialogs.vue";
+import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
+import {GenModelInput} from "@/api/__generated/model/static";
 
 const {MODEL, MODEL_EDITOR} = useModelEditorStore()
 
@@ -173,7 +174,7 @@ watch(() => modelLoadMenu.value, () => {
 	<ModelDialog
 		v-if="MODEL.isLoaded"
 		v-model="modelEditDialogStore.openState"
-		:model="cloneDeep(MODEL._model())"
+		:model="cloneDeepReadonly<GenModelInput>(MODEL._model())"
 		@cancel="modelEditDialogStore.handleCancel"
 		@submit="modelEditDialogStore.handleSubmit"
 	/>

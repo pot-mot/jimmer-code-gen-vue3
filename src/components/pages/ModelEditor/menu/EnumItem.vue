@@ -27,7 +27,7 @@ const handleDelete = () => {
 <template>
 	<div>
 		<el-text class="hover-show" :type="genEnum.items.length > 0 ? '' : 'warning'">
-			<el-text class="item">
+			<el-text class="model-editor-main-menu-item">
 				{{ genEnum.name }}
 				<Comment :comment="genEnum.comment"/>
 				<template v-if="genEnum.items.length === 0">[无枚举项]</template>
@@ -40,12 +40,3 @@ const handleDelete = () => {
 		</el-text>
 	</div>
 </template>
-
-<style scoped>
-.item {
-	cursor: pointer;
-	white-space: nowrap;
-	line-height: 1.4em;
-	padding: 0.2em 0.5em;
-}
-</style>

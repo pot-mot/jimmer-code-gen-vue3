@@ -180,6 +180,7 @@ import {MODEL_VALID_NOT_PASS, saveModel} from "@/components/pages/ModelEditor/sa
 import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.ts";
 import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
 import {jsonSortPropStringify} from "@/utils/json.ts";
+import {api} from "@/api";
 
 const i18nStore = useI18nStore()
 
@@ -188,7 +189,7 @@ const wrapper = ref<HTMLElement>()
 
 let graph: Graph
 
-const {GRAPH, MODEL_EDITOR, MODEL, HISTORY, VIEW, REMOVE} = useModelEditorStore()
+const {GRAPH, MODEL, MODEL_EDITOR, HISTORY, VIEW, REMOVE} = useModelEditorStore()
 
 const modelEditorDialog = useModelEditDialogStore()
 
@@ -249,20 +250,13 @@ const handleNodeClick = (node: Node) => {
 
 const handleSaveModel = loadingStore.withLoading('ModelEditorGraph handleSaveModel', async () => {
     try {
-        let model = MODEL._model()
+        const model = MODEL._model()
 
-        MODEL.isLoaded = false
-
-        const currentGraphData = JSON.stringify(MODEL_EDITOR.getGraphData())
-
-        if (model.graphData !== currentGraphData) {
-            graph.cleanSelection()
-            model.graphData = currentGraphData
+        const id = await saveModel(model)
+        const newModel = await api.modelService.get({id})
+        if (newModel !== undefined) {
+            await MODEL.load(newModel)
         }
-
-        await saveModel(model)
-
-        MODEL.isLoaded = true
 
         sendI18nMessage("MESSAGE_ModelEditorGraph_modelSaveSuccess", "success")
     } catch (e) {
