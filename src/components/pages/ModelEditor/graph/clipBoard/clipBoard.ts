@@ -1,16 +1,15 @@
 import {Cell, Edge, Graph, Node} from "@antv/x6";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {sendI18nMessage} from "@/message/message.ts";
-import {loadIntoGraph, TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadIntoGraph.ts";
 import {CopyData, validateCopyData} from "@/shape/CopyData.ts";
 import {validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import {GenAssociationModelInput, GenModelInput, GenTableModelInput} from "@/api/__generated/model/static";
+import {GenModelInput, GenTableModelInput} from "@/api/__generated/model/static";
 import {validateModelInput} from "@/shape/ModelInput.ts";
-import {loadEnums} from "@/components/pages/ModelEditor/graph/load/loadEnums.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {validateTableModelInput} from "@/shape/GenTableModelInput.ts";
 import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
+import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
 
 export const useClipBoard = (graph: Graph) => {
     graph.bindKey(["ctrl+c", "command+c"], async () => {
@@ -39,6 +38,7 @@ export const getModelAllCopyData = (model: GenModelInput): CopyData => {
             .map((it: any) => it.data.association)
             .filter((it: any) => it != undefined) ?? [],
         enums: model.enums,
+        subGroups: model.subGroups,
         optionsList: getPositionOptionsList(nodes.map((it: any) => it.position)),
     }
 }
@@ -63,31 +63,43 @@ const getPositionOptionsList = (positions: { x: number, y: number }[]): TableLoa
 }
 
 const copy = async () => {
-    const {GRAPH, MODEL} = useModelEditorStore()
+    const {MODEL} = useModelEditorStore()
 
-    const graph = GRAPH._graph()
+    const model = MODEL._model()
 
-    const nodes = graph.getSelectedCells()
-        .filter(it => it.shape === TABLE_NODE && it.getData()?.table !== undefined)
+    const tableNodePairs = MODEL.selectedTableNodePairs
+    const associationEdgePairs = MODEL.selectedAssociationEdgePairs
 
-    const edges = graph.getSelectedCells()
-        .filter(it => it.shape === ASSOCIATION_EDGE && it.getData()?.association !== undefined)
+    const tables = tableNodePairs.map(it => it.first)
+    const nodes = tableNodePairs.map(it => it.second)
+    const associations = associationEdgePairs.map(it => it.first)
+    const edges = tableNodePairs.map(it => it.second)
 
-    const tables = nodes.map(it => it.getData().table as GenTableModelInput)
-    const associations = edges.map(it => it.getData().association as GenAssociationModelInput)
-
-    const tableEnumNames = tables
-        .flatMap(it => it.columns.map(it => it.enum?.name))
-        .filter(it => it !== undefined)
+    const enumNameSet = new Set(
+        tables
+            .flatMap(it => it.columns.map(it => it.enum?.name))
+            .filter(it => it !== undefined)
+    )
 
     const enums =
-        MODEL.isLoaded ?
-            MODEL._model().enums.filter(it => tableEnumNames.includes(it.name)) : []
+        model.enums.filter(it => enumNameSet.has(it.name))
 
-    const nodePositions = nodes.map(it => (it as Node).getPosition())
+    const subGroupNameSet = new Set([
+        ...tables
+            .map(it => it.subGroup?.name)
+            .filter(it => it !== undefined),
+        ...enums
+            .map(it => it.subGroup?.name)
+            .filter(it => it !== undefined),
+    ])
+
+    const subGroups =
+        model.subGroups.filter(it => subGroupNameSet.has(it.name))
+
+    const nodePositions = tableNodePairs.map(it => it.second.getPosition())
     const optionsList = getPositionOptionsList(nodePositions)
 
-    const copyData: CopyData = {tables, associations, enums, optionsList}
+    const copyData: CopyData = {subGroups, enums, tables, associations, optionsList}
 
     await navigator.clipboard.writeText(JSON.stringify(copyData))
 
@@ -101,15 +113,14 @@ const copy = async () => {
 const cut = async () => {
     const {REMOVE} = useModelEditorStore()
     const copyResult = await copy()
-    REMOVE.removeCells([...copyResult.nodes, ...copyResult.edges])
+    REMOVE.removeCells([...copyResult.nodes.map(it => it.id), ...copyResult.edges.map(it => it.id)])
     return copyResult
 }
 
 const paste = async () => {
-    const {GRAPH, MODEL, MODEL_EDITOR} = useModelEditorStore()
+    const {GRAPH, MODEL_EDITOR} = useModelEditorStore()
 
     const graph = GRAPH._graph()
-    const model = MODEL._model()
 
     graph.startBatch("paste")
 
@@ -129,18 +140,17 @@ const paste = async () => {
 
         if (validateTableModelInput(value, (e) => validateErrors.push(e))) {
             const table = value as GenTableModelInput
-            res = loadIntoGraph(model, graph, {tables: [table], baseTableOptions})
+            res = MODEL_EDITOR.loadInput({tables: [table], baseTableOptions})
         } else if (validateCopyData(value, (e) => validateErrors.push(e))) {
             const {
                 tables,
                 associations,
                 enums,
+                subGroups,
                 optionsList
             } = value as CopyData
 
-            model.enums.push(...loadEnums(model, enums).enums)
-
-            res = loadIntoGraph(model, graph, {tables, associations, baseTableOptions, eachTableOptions: optionsList})
+            res = MODEL_EDITOR.loadInput({subGroups, enums, tables, associations, baseTableOptions, eachTableOptions: optionsList})
         } else if (validateModelEditorData(value, (e) => validateErrors.push(e))) {
             const cells = value.json.cells as Cell[]
             graph.parseJSON(cells)
@@ -148,11 +158,10 @@ const paste = async () => {
         } else if (validateModelInput(value, (e) => validateErrors.push(e))) {
             const inputModel = value as GenModelInput
 
+            MODEL_EDITOR.loadInput({subGroups: inputModel.subGroups, enums: inputModel.enums})
             if (inputModel.graphData) {
                 res = MODEL_EDITOR.loadModelEditorData(jsonParseThenConvertNullToUndefined(inputModel.graphData), false)
             }
-
-            model.enums.push(...loadEnums(inputModel, inputModel.enums).enums)
         } else {
             sendI18nMessage('MESSAGE_clipBoard_cannotDirectLoad', 'error', validateErrors)
         }

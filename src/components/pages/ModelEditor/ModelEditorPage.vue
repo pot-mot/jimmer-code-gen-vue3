@@ -30,7 +30,7 @@ import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.
 import EntityDialogs from "@/components/pages/ModelEditor/dialogs/entity/EntityDialogs.vue";
 import SubGroupDialogs from "@/components/pages/ModelEditor/dialogs/subGroup/SubGroupDialogs.vue";
 
-const {MODEL, MODEL_LOAD} = useModelEditorStore()
+const {MODEL, MODEL_EDITOR} = useModelEditorStore()
 
 const i18nStore = useI18nStore()
 
@@ -57,7 +57,7 @@ onMounted(async () => {
 			return
 		}
 
-		MODEL_LOAD.load(model)
+		MODEL.load(model)
 	} catch (e) {
 		sendI18nMessage("MESSAGE_ModelEditorPage_modelLoadFail", 'error', e)
 		await router.replace("/")
@@ -65,7 +65,7 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
-	MODEL_LOAD.unload()
+	MODEL.unload()
 })
 
 const dataSourceLoadMenu = ref()
@@ -84,7 +84,7 @@ watch(() => dataSourceLoadMenu.value, () => {
 			confirm(
 				i18nStore.translate("CONFIRM_ModelEditorPage_modelLoad_entireSchema"),
 				loadingStore.withLoading('ModelEditorPage syncClickSchemaEvent', async () => {
-					await MODEL_LOAD.loadSchema(id)
+					await MODEL_EDITOR.loadSchema(id)
 				})
 			)
 		})
@@ -95,7 +95,7 @@ watch(() => dataSourceLoadMenu.value, () => {
 			confirm(
 				i18nStore.translate("CONFIRM_ModelEditorPage_modelLoad_singleTable"),
 				loadingStore.withLoading('ModelEditorPage syncClickSchemaEvent', async () => {
-					await MODEL_LOAD.loadTable(id)
+					await MODEL_EDITOR.loadTable(id)
 				})
 			)
 		}
@@ -118,7 +118,7 @@ watch(() => modelLoadMenu.value, () => {
 			confirm(
 				i18nStore.translate("CONFIRM_ModelEditorPage_modelLoad_model"),
 				loadingStore.withLoading('ModelEditorPage syncClickModelEvent', async () => {
-					await MODEL_LOAD.loadModel(id)
+					await MODEL_EDITOR.loadModel(id)
 				})
 			)
 		}
@@ -130,7 +130,7 @@ watch(() => modelLoadMenu.value, () => {
 			confirm(
 				i18nStore.translate("CONFIRM_ModelEditorPage_modelLoad_singleTable"),
 				loadingStore.withLoading('ModelEditorPage syncClickTableEvent', async () => {
-					await MODEL_LOAD.loadTable(id)
+					await MODEL_EDITOR.loadTable(id)
 				})
 			)
 		}

@@ -3,11 +3,8 @@ import {sendI18nMessage} from "@/message/message.ts";
 import {computed, ComputedRef, DeepReadonly, nextTick, Ref, ref, watch} from "vue";
 import {api} from "@/api";
 import {
-    loadIntoGraph,
-    TableLoadOptions
-} from "@/components/pages/ModelEditor/graph/load/loadIntoGraph.ts";
-import {
-    EntityConfigInput, EntityConfigView,
+    EntityConfigInput,
+    EntityConfigView,
     GenAssociationModelInput,
     GenAssociationView,
     GenModelInput_TargetOf_enums,
@@ -18,7 +15,8 @@ import {
     Pair
 } from "@/api/__generated/model/static";
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
-import {loadTableModelInputs} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
+import type {TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
+import {loadTableNode} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
 import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts";
 import {ModelEditorData, validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
@@ -29,7 +27,6 @@ import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
 import {TABLE_CREATE_PREFIX, useTableDialogsStore} from "@/store/modelEditor/TableDialogsStore.ts";
 import {unStyleAll} from "@/components/pages/ModelEditor/graph/highlight.ts";
 import {GraphData, useGraphDataOperation} from "@/components/global/graphEditor/data/graphData.ts";
-import {useDebugStore} from "@/store/debug/debugStore.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {Edge, Graph, Node} from '@antv/x6';
 import {getCenterPoint, useViewOperation, ViewOperation} from "@/components/global/graphEditor/view/viewOperation.ts";
@@ -47,9 +44,6 @@ import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/as
 import {GraphReactiveState} from "@/components/global/graphEditor/data/reactiveState.ts";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {defineStore} from "pinia";
-import {
-    loadAssociationModelInputs
-} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
 import {getDefaultAssociation} from "@/components/business/association/defaultColumn.ts";
 import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/BatchCreateAssociationsDialogStore.ts";
 import {useTableCombineDialogStore} from "@/store/modelEditor/TableCombineDialogStore.ts";
@@ -71,6 +65,9 @@ import {
 } from "@/components/pages/ModelEditor/sync/syncSubGroup.ts";
 import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
 import {convertModel} from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
+import {loadSupGroups} from "@/components/pages/ModelEditor/graph/load/loadSubGroups.ts";
+import {loadEnums} from "@/components/pages/ModelEditor/graph/load/loadEnums.ts";
+import {loadAssociationEdge} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
 
 type ModelReactiveState = {
     tableNodes: DeepReadonly<Ref<Array<UnwrapRefSimple<Node>>>>,
@@ -91,11 +88,21 @@ type ModelReactiveState = {
 type ModelState = {
     _model: () => GenModelView
     isLoaded: Ref<boolean>
+    load: (model: GenModelView) => void
+    unload: () => void
+}
+
+type ModelGraphInput = {
+    subGroups?: Array<GenModelInput_TargetOf_subGroups>,
+    enums?: Array<GenModelInput_TargetOf_enums>,
+    tables?: Array<GenTableModelInput>,
+    associations?: Array<GenAssociationModelInput>,
+    baseTableOptions?: TableLoadOptions,
+    eachTableOptions?: Array<TableLoadOptions | undefined>,
 }
 
 type ModelLoadOperation = {
-    load: (model: GenModelView) => void
-    unload: () => void
+    loadInput: (input: DeepReadonly<ModelGraphInput>) => { nodes: Node[], edges: Edge[] }
     loadModel: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
     loadSchema: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
     loadTable: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
@@ -195,9 +202,9 @@ type ModelEditorStore = {
     REMOVE: RemoveOperation
 
     MODEL: UnwrapRefSimple<ModelState & ModelReactiveState>
-    MODEL_LOAD: ModelLoadOperation
 
     MODEL_EDITOR: ModelEditorDataOperation
+        & ModelLoadOperation
         & MinimapOperation
         & ModelSyncState
         & SyncTableOperation
@@ -242,9 +249,27 @@ const initModelEditorStore = (): ModelEditorStore => {
             const graph = _graph()
             if (modelEditorData && validateModelEditorData(modelEditorData, e => validateErrors = e)) {
                 unStyleAll(graph)
-                return graphDataOperation.loadGraphData(modelEditorData, reset)
+                if (reset) {
+                    return graphDataOperation.loadGraphData(modelEditorData, true)
+                } else {
+                    const cells = (modelEditorData as ModelEditorData).json.cells
+                    const tables: GenTableModelInput[] = []
+                    const eachTableOptions: TableLoadOptions[] = []
+                    const associations: GenAssociationModelInput[] = []
+                    for (const cell of cells) {
+                        if (cell.shape === TABLE_NODE) {
+                            tables.push(cell.data.table)
+                            eachTableOptions.push((cell as any)["position"])
+                        } else if (cell.shape === ASSOCIATION_EDGE) {
+                            associations.push(cell.data.association)
+                        }
+                    }
+                    return loadInput({tables, associations, eachTableOptions, baseTableOptions: getCenterPoint(graph)})
+                }
             } else {
-                graph.removeCells(graph.getCells())
+                if (reset) {
+                    graph.removeCells(graph.getCells())
+                }
                 return {nodes: [], edges: []}
             }
         } catch (e) {
@@ -273,16 +298,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         return currentModel as Ref<GenModelView>
     }
 
-    const modelState: ModelState = {
-        _model: (): GenModelView => {
-            return assertModel().value
-        },
-        isLoaded,
-    }
-
     const loadingStore = useGlobalLoadingStore()
-
-    const debugStore = useDebugStore()
 
     const loadModelView = (model: GenModelView) => {
         const contextStore = useGenConfigContextStore()
@@ -303,6 +319,9 @@ const initModelEditorStore = (): ModelEditorStore => {
     }
 
 
+    /**
+     * 小地图同步
+     */
 
     let initMinimapAction: () => void | undefined
 
@@ -312,675 +331,6 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const forceUpdateMinimap = () => {
         initMinimapAction?.()
-    }
-
-    const tableViewToInput = (tableView: DeepReadonly<GenTableColumnsView>): GenTableModelInput => {
-        return {
-            comment: tableView.comment,
-            name: tableView.name,
-            remark: tableView.remark,
-            type: tableView.type,
-            subGroup: tableView.subGroup ? {name: tableView.subGroup.name} : undefined,
-            superTables: tableView.superTables.map(it => {
-                return {name: it.name}
-            }),
-            indexes: tableView.indexes.map(indexView => {
-                return {
-                    name: indexView.name,
-                    uniqueIndex: indexView.uniqueIndex,
-                    remark: indexView.remark,
-                    columns: tableView.columns
-                        .filter(it => indexView.columnIds.includes(it.id))
-                        .map(it => {
-                            return {name: it.name}
-                        })
-                }
-            }),
-            columns: tableView.columns.map(column => {
-                return {
-                    autoIncrement: column.autoIncrement,
-                    comment: column.comment,
-                    defaultValue: column.defaultValue,
-                    dataSize: column.dataSize,
-                    name: column.name,
-                    numericPrecision: column.numericPrecision,
-                    orderKey: column.orderKey,
-                    partOfPk: column.partOfPk,
-                    remark: column.remark,
-                    typeCode: column.typeCode,
-                    overwriteByRaw: column.overwriteByRaw,
-                    rawType: column.rawType,
-                    typeNotNull: column.typeNotNull,
-                    logicalDelete: column.logicalDelete,
-                    businessKey: column.businessKey,
-                    enum: column.enum ? {name: column.enum.name} : undefined
-                }
-            }),
-        }
-    }
-
-    const associationViewToInput = (
-        view: DeepReadonly<GenAssociationView>,
-    ): GenAssociationModelInput => {
-        return {
-            type: view.type,
-            name: view.name,
-            dissociateAction: view.dissociateAction,
-            updateAction: view.updateAction,
-            deleteAction: view.deleteAction,
-            fake: view.fake,
-            sourceTableName: view.sourceTable.name,
-            targetTableName: view.targetTable.name,
-
-            columnReferences: view.columnReferences.map(({sourceColumn, targetColumn}) => {
-                return {
-                    sourceColumnName: sourceColumn.name,
-                    targetColumnName: targetColumn.name,
-                }
-            })
-        }
-    }
-
-    /**
-     * TODO 移除在此处进行查询
-     */
-    const produceTableViewsToInputs = async (tables: DeepReadonly<GenTableColumnsView[]>) => {
-        let associations = await api.associationService.queryByTable({
-            body: {
-                tableIds: tables.map(it => it.id),
-                selectType: "OR"
-            }
-        })
-
-        return {
-            tables: tables.map(it => tableViewToInput(it)),
-            associations: associations.map(it => associationViewToInput(it))
-        }
-    }
-
-    /**
-     * 导入表的基本函数，接收 tableView 并查询获得 association
-     */
-    const loadTableViews = async (tableViews: GenTableColumnsView[]) => {
-        const graph = _graph()
-        const model = MODEL._model()
-
-        const {tables, associations} =
-            await produceTableViewsToInputs(tableViews)
-
-        const {nodes, edges} =
-            loadIntoGraph(
-                model,
-                graph,
-                tables,
-                associations,
-                getCenterPoint(graph)
-            )
-
-        debugStore.log('LOADING', 'loadTableViews', {tables, associations, nodes, edges})
-
-        await syncTimeout(100 + nodes.length * 30 + edges.length * 20)
-
-        if (nodes.length === 1) {
-            VIEW.focus(nodes[0])
-        } else {
-            graph.resetSelection([
-                ...nodes.map(it => it.id),
-                ...edges.map(it => it.id)
-            ])
-            VIEW.layout()
-            VIEW.fit()
-        }
-
-        forceUpdateMinimap()
-
-        return {nodes, edges}
-    }
-
-    /**
-     * 向画布导入 model
-     * @param id model id
-     */
-    const loadModel = loadingStore.withLoading(
-        'ModelEditorStore.loadModel',
-        async (id: number) => {
-            const tables = await api.tableService.queryColumnsView({
-                body: {
-                    modelIds: [id]
-                }
-            })
-            return await loadTableViews(tables)
-        }
-    )
-
-    /**
-     * 向画布导入 schema
-     * @param id schema id
-     */
-    const loadSchema = loadingStore.withLoading(
-        'ModelEditorStore.loadSchema',
-        async (id: number) => {
-            const tables = await api.tableService.queryColumnsView({
-                body: {
-                    schemaIds: [id]
-                }
-            })
-            return await loadTableViews(tables)
-        }
-    )
-
-    /**
-     * 向画布导入 table
-     * @param id tableId
-     */
-    const loadTable = loadingStore.withLoading(
-        'ModelEditorStore.loadTables',
-        async (id: number) => {
-            const tables = await api.tableService.queryColumnsView({
-                body: {
-                    ids: [id]
-                }
-            })
-            return await loadTableViews(tables)
-        }
-    )
-
-
-    /**
-     * 历史记录同步
-     * TODO syncTableEffect
-     * 由于 antV/X6 data 的变更到页面 cells 的实际更新异步，且无法通过 nextTick 等待，
-     * 所以涉及到“存在待同步节点并需要记录使历史栈完整”的情况需要与 TableNode.vue 组件的 syncTableEffect 配合，
-     * 通过 startBatchSync 将未同步完毕的 historyBatch 计入 waitSyncHistoryBatches，并在此后通过 syncTable 收集需要同步的 tableId 计入 waitSyncTableIds
-     * 此后当 syncedTable 触发时则将逐一释放 tableId，直到 waitSyncTableIds 完全清空时，释放 historyBatch
-     */
-    const waitSyncHistoryBatches = ref<string[]>([])
-
-    const waitSyncTableIds = ref<string[]>([])
-
-    const startBatchSync = <T>(name: string, callback: () => T): T => {
-        const graph = _graph()
-
-        graph.startBatch(name)
-        waitSyncHistoryBatches.value.push(name)
-
-        const result = callback()
-
-        if (waitSyncTableIds.value.length === 0) {
-            let index: number | undefined
-            for (let i = waitSyncHistoryBatches.value.length - 1; i >= 0; i--) {
-                if (waitSyncHistoryBatches.value[i] === name) {
-                    index = i
-                    break
-                }
-            }
-            if (index === undefined) {
-                throw Error("some waitBatch stopped before it callback end")
-            }
-            waitSyncHistoryBatches.value.splice(index!, 1)
-            graph.stopBatch(name)
-        }
-
-        return result
-    }
-
-    const syncTable = (id: string) => {
-        waitSyncTableIds.value.push(id)
-    }
-
-    const syncedTable = (id: string) => {
-        const graph = _graph()
-
-        const index = waitSyncTableIds.value.indexOf(id)
-        waitSyncTableIds.value.splice(index, 1)
-
-        if (waitSyncTableIds.value.length === 0) {
-            while (waitSyncHistoryBatches.value.length !== 0) {
-                const name = waitSyncHistoryBatches.value.pop()!
-                graph.stopBatch(name)
-            }
-            forceUpdateMinimap()
-        }
-    }
-
-
-    /**
-     * 代码预览与视图同步相关
-     */
-
-    const codePreviewStore = useMultiCodePreviewStore()
-
-    const waitRefreshModelAndCode = async () => {
-        if (!codePreviewStore.openState) return
-
-        await nextTick()
-
-        let timer: number | undefined
-
-        const waitRefresh = loadingStore.withLoading(
-            'ModelEditorStore saveModelAndRefreshCodes',
-            async () => {
-                // 若存在需要等待同步的表和历史记录，先行等待这些进行同步，此后再进行保存
-                if (
-                    waitSyncTableIds.value.length === 0 &&
-                    waitSyncHistoryBatches.value.length === 0
-                ) {
-                    const model = currentModel.value
-
-                    if (model) {
-                        const graph = _graph()
-                        const currentGraphData = JSON.stringify(graphDataOperation.getGraphData())
-
-                        if (model.graphData !== currentGraphData) {
-                            graph.cleanSelection()
-                            model.graphData =  JSON.stringify(graphDataOperation.getGraphData())
-
-                            await saveModel(model)
-                            await convertModel(model.id)
-                            if (codePreviewStore.openState) {
-                                await codePreviewStore.codeRefresh()
-                            }
-                        }
-                    }
-
-                    clearTimeout(timer)
-                } else {
-                    timer = window.setTimeout(waitRefresh, 100)
-                }
-            }
-        )
-
-        await waitRefresh()
-    }
-
-
-
-
-    /**
-     * 子组编辑对话框相关
-     */
-
-    const subGroupDialogsStore = useSubGroupDialogsStore()
-
-    const subGroupCreateOptionsMap = new Map<string, SubGroupCreateOptions | undefined>
-
-    const createSubGroup = (options?: SubGroupCreateOptions | undefined) => {
-        const createKey = SUB_GROUP_CREATE_PREFIX + Date.now()
-        subGroupDialogsStore.open(createKey, getDefaultGenModelSubGroup())
-        subGroupCreateOptionsMap.set(createKey, options)
-    }
-
-    const createdSubGroup = (createKey: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
-        assertModel().value.subGroups.push(cloneDeepReadonly<GenModelInput_TargetOf_subGroups>(subGroup))
-
-        const options = subGroupCreateOptionsMap.get(createKey)
-
-        if (options !== undefined) {
-            const {tableKey, enumKey} = options
-            if (tableKey) {
-                syncNewSubGroupForTables(subGroup, tableKey)
-            }
-            if (enumKey) {
-                syncNewSubGroupForEnums(subGroup, enumKey)
-            }
-        }
-
-        subGroupCreateOptionsMap.delete(createKey)
-
-        subGroupDialogsStore.close(createKey, true)
-
-        waitRefreshModelAndCode().then()
-    }
-
-    const editSubGroup = (name: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
-        subGroupDialogsStore.open(name, cloneDeepReadonly<GenModelInput_TargetOf_subGroups>(subGroup))
-    }
-
-    const editedSubGroup = (name: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
-        const oldName = name
-
-        assertModel().value.subGroups = [
-            ...assertModel().value.subGroups.filter(it => it.name !== oldName),
-            cloneDeepReadonly<GenModelInput_TargetOf_subGroups>(subGroup)
-        ]
-
-        subGroupDialogsStore.close(name, true)
-
-        startBatchSync('editedSubGroup', () => {
-            syncSubGroupNameForTables(_graph(), oldName, subGroup.name)
-            syncSubGroupNameForEnums(oldName, subGroup.name)
-        })
-
-        waitRefreshModelAndCode().then()
-    }
-
-    const removeSubGroup = (name: string) => {
-        const oldName = name
-
-        assertModel().value.subGroups = assertModel().value.subGroups.filter(it => it.name !== oldName)
-
-        startBatchSync('removeSubGroup', () => {
-            syncSubGroupNameForTables(_graph(), oldName, undefined)
-            syncSubGroupNameForEnums(oldName, undefined)
-        })
-
-        waitRefreshModelAndCode().then()
-    }
-
-
-    /**
-     * 表编辑对话框相关
-     */
-
-    const tableDialogsStore = useTableDialogsStore()
-
-    const tableCreateOptionsMap = new Map<string, TableLoadOptions>
-
-    const createTable = (options: TableLoadOptions) => {
-        const createKey = TABLE_CREATE_PREFIX + Date.now()
-        tableDialogsStore.open(createKey, getDefaultTable(), {modal: false})
-        tableCreateOptionsMap.set(createKey, options)
-    }
-
-    const createdTable = (createKey: string, table: DeepReadonly<GenTableModelInput>) => {
-        const graph = _graph()
-        const model = MODEL._model()
-
-        const options = tableCreateOptionsMap.get(createKey)
-
-        const node = loadTableModelInputs(
-            model,
-            graph,
-            [table],
-            options
-        ).nodes[0]
-
-        tableCreateOptionsMap.delete(createKey)
-
-        if (node) {
-            tableDialogsStore.close(createKey, true)
-
-            setTimeout(() => {
-                SELECT.select(node)
-            }, 200)
-        }
-
-        waitRefreshModelAndCode().then()
-    }
-
-    const editTable = (id: string, table: DeepReadonly<GenTableModelInput>) => {
-        tableDialogsStore.open(id, cloneDeepReadonly<GenTableModelInput>(table), {modal: false})
-    }
-
-    const editedTable = (id: string, table: DeepReadonly<GenTableModelInput>) => {
-        const graph = _graph()
-
-        const cell = graph.getCellById(id)
-        if (!cell || !cell.isNode()) {
-            sendI18nMessage({
-                key: "MESSAGE_ModelEditorStore_tableEditFail_nodeNotFound",
-                args: [id]
-            }, 'error')
-            return
-        }
-
-        tableDialogsStore.close(id, true)
-
-        startBatchSync('editedTable', () => {
-            const oldTable = cell.data.table
-
-            // 当上级表被修改时，调整其他表中的 superTables
-            if (oldTable.type === "SUPER_TABLE") {
-                if (table.type === "SUPER_TABLE") {
-                    syncSuperTableNameForTables(graph, oldTable.name, table.name)
-                } else {
-                    syncSuperTableNameForTables(graph, oldTable.name, undefined)
-                }
-            }
-
-            updateTableNodeData(cell, table)
-        })
-
-        waitRefreshModelAndCode().then()
-    }
-
-    const removeTable = (id: string) => {
-        const graph = _graph()
-
-        const cell = graph.getCellById(id)
-        if (!cell || !cell.isNode()) {
-            sendI18nMessage({
-                key: "MESSAGE_ModelEditorStore_tableDeleteFail_nodeNotFound",
-                args: [id]
-            }, 'error')
-            return
-        }
-
-        startBatchSync('removeTable', () => {
-            if (cell.shape === TABLE_NODE && cell.data.table) {
-                const table = cell.data.table as GenTableModelInput
-                // 当上级表被删除时，调整其他表中的 superTables
-                if (table.type === "SUPER_TABLE") {
-                    syncSuperTableNameForTables(graph, table.name, undefined)
-                }
-            }
-            graph.removeNode(id)
-        })
-
-        waitRefreshModelAndCode().then()
-    }
-
-    /**
-     * 表组合对话框
-     */
-    const tableCombineDialogStore = useTableCombineDialogStore()
-
-    const tableCombineOptions = ref<TableLoadOptions>()
-
-    const combineTable = (options: TableLoadOptions) => {
-        tableCombineOptions.value = options
-        tableCombineDialogStore.open()
-    }
-
-    const combinedTable = (tableCombineData: DeepReadonly<TableCombineData>) => {
-        const graph = _graph()
-        const model = MODEL._model()
-
-        const {superTable, inheritTableNodePairs} = tableCombineData
-
-        startBatchSync("combinedTable", () => {
-            loadTableModelInputs(model, graph, [superTable], tableCombineOptions.value, undefined)
-
-            for (const {first, second} of inheritTableNodePairs) {
-                updateTableNodeData(second, first)
-            }
-
-            tableCombineDialogStore.close()
-        })
-
-        waitRefreshModelAndCode().then()
-    }
-
-    /**
-     * 关联对话框相关
-     */
-    const associationDialogsStore = useAssociationDialogsStore()
-
-    const createAssociation = () => {
-        const createKey = ASSOCIATION_CREATE_PREFIX + Date.now()
-        associationDialogsStore.open(createKey, getDefaultAssociation())
-    }
-
-    const createdAssociation = (createKey: string, association: DeepReadonly<GenAssociationModelInput>) => {
-        const graph = _graph()
-
-        const edge = loadAssociationModelInputs(
-            graph,
-            [association],
-        ).edges[0]
-
-        if (edge) {
-            associationDialogsStore.close(createKey, true)
-
-            setTimeout(() => {
-                SELECT.select(edge)
-            }, 200)
-        }
-
-        waitRefreshModelAndCode().then()
-    }
-
-    const batchCreateAssociationsDialogStore = useBatchCreateAssociationsDialogStore()
-
-    const batchCreateAssociations = () => {
-        batchCreateAssociationsDialogStore.open()
-    }
-
-    const batchCreatedAssociations = (associations: DeepReadonly<GenAssociationModelInput[]>) => {
-        const graph = _graph()
-
-        graph.startBatch("batchCreatedAssociations")
-
-        const edges = loadAssociationModelInputs(
-            graph,
-            associations,
-        ).edges
-
-        batchCreateAssociationsDialogStore.close()
-
-        graph.stopBatch("batchCreatedAssociations")
-
-        setTimeout(() => {
-            SELECT.select(edges)
-        }, 200)
-
-        waitRefreshModelAndCode().then()
-    }
-
-
-    const editAssociation = (id: string, association: DeepReadonly<GenAssociationModelInput>) => {
-        associationDialogsStore.open(id, cloneDeepReadonly<GenAssociationModelInput>(association))
-    }
-
-    const editedAssociation = (id: string, association: DeepReadonly<GenAssociationModelInput>) => {
-        const graph = _graph()
-
-        const cell = graph.getCellById(id)
-        if (!cell || !cell.isEdge()) {
-            sendI18nMessage({
-                key: "MESSAGE_ModelEditorStore_associationEditFail_edgeNotFound",
-                args: [id]
-            }, 'error')
-        } else {
-            graph.startBatch(`editAssociation [id=${id}]`)
-
-            updateAssociationEdgeData(cell, association)
-
-            graph.stopBatch(`editAssociation [id=${id}]`)
-        }
-
-        associationDialogsStore.close(id, true)
-
-        waitRefreshModelAndCode().then()
-    }
-
-    const modifyAssociation = async (id: string, modifyAction: () => any) => {
-        const graph = _graph()
-
-        const key = `modifyAssociation [id=${id}]`
-        graph.startBatch(key)
-        await modifyAction()
-        graph.stopBatch(key)
-    }
-
-    const removeAssociation = (id: string) => {
-        _graph().removeEdge(id)
-
-        waitRefreshModelAndCode().then()
-    }
-
-
-    /**
-     * 枚举编辑对话框相关
-     */
-
-    const enumDialogsStore = useEnumDialogsStore()
-
-    const enumCreateOptionsMap = new Map<string, EnumCreateOptions | undefined>
-
-    const createEnum = (options?: EnumCreateOptions | undefined) => {
-        const createKey = ENUM_CREATE_PREFIX + Date.now()
-        enumDialogsStore.open(createKey, getDefaultEnum())
-        enumCreateOptionsMap.set(createKey, options)
-    }
-
-    const createdEnum = (createKey: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
-        assertModel().value.enums.push(cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum))
-
-        const options = enumCreateOptionsMap.get(createKey)
-
-        if (options !== undefined) {
-            const {tableKey, columnName} = options
-            syncNewEnumForTables(genEnum, tableKey, columnName)
-        }
-
-        enumCreateOptionsMap.delete(createKey)
-
-        enumDialogsStore.close(createKey, true)
-
-        waitRefreshModelAndCode().then()
-    }
-
-    const editEnum = (name: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
-        enumDialogsStore.open(name, cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum))
-    }
-
-    const editedEnum = (name: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
-        const oldName = name
-
-        assertModel().value.enums = [
-            ...assertModel().value.enums.filter(it => it.name !== oldName),
-            cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum)
-        ]
-
-        enumDialogsStore.close(name, true)
-
-        startBatchSync('editedEnum', () => {
-            syncEnumNameForEntities(oldName, genEnum.name)
-            syncEnumNameForTables(_graph(), oldName, genEnum.name)
-        })
-
-        waitRefreshModelAndCode().then()
-    }
-
-    const removeEnum = (name: string) => {
-        const oldName = name
-
-        assertModel().value.enums = assertModel().value.enums.filter(it => it.name !== oldName)
-
-        startBatchSync('removeEnum', () => {
-            syncEnumNameForTables(_graph(), oldName, undefined)
-        })
-
-        waitRefreshModelAndCode().then()
-    }
-
-
-    /**
-     * 实体编辑对话框相关
-     */
-
-    const entityDialogsStore = useEntityDialogsStore()
-
-    const editEntity = (entity: DeepReadonly<EntityConfigView>) => {
-        entityDialogsStore.open(entity.tableConvertedEntity.id, cloneDeepReadonly<EntityConfigView>(entity))
-    }
-
-    const editedEntity = async (entity: DeepReadonly<EntityConfigInput>) => {
-        await api.entityService.config({body: cloneDeepReadonly<EntityConfigInput>(entity)})
-        entityDialogsStore.close(entity.tableConvertedEntity.id, true)
-
-        waitRefreshModelAndCode().then()
     }
 
 
@@ -1134,17 +484,737 @@ const initModelEditorStore = (): ModelEditorStore => {
         enums,
     }
 
+
+    const loadInput = (
+        input: DeepReadonly<ModelGraphInput>
+    ) => {
+        const graph = _graph()
+        const model = assertModel()
+
+        graph.startBatch("ModelEditorStore loadInput")
+
+        const {
+            subGroups: inputSubGroups = [] as Array<GenModelInput_TargetOf_subGroups>,
+            enums: inputEnums = [] as Array<GenModelInput_TargetOf_enums>,
+            tables: inputTables = [] as GenTableModelInput[],
+            associations: inputAssociations = [] as GenAssociationModelInput[],
+            baseTableOptions,
+            eachTableOptions
+        } = cloneDeepReadonly<ModelGraphInput>(input)
+
+        const {
+            newSubGroups,
+            subGroupNameMap
+        } = loadSupGroups(
+            inputSubGroups,
+            model.value.subGroups
+        )
+        model.value.subGroups.push(...newSubGroups)
+
+        const {
+            newEnums,
+            enumNameMap
+        } = loadEnums(
+            inputEnums,
+            enums.value,
+            subGroupNameMap
+        )
+        model.value.enums.push(...newEnums)
+
+        const {
+            nodeMetas,
+            tableNameMap
+        } = loadTableNode(
+            inputTables,
+            tables.value,
+            subGroupNameMap,
+            enumNameMap,
+            baseTableOptions,
+            eachTableOptions
+        )
+        const nodes: Node[] = nodeMetas.map(it => graph.addNode(it))
+
+        const {
+            edgeMetas
+        } = loadAssociationEdge(
+            inputAssociations,
+            associations.value,
+            tableNameMap,
+            tableNodePairs.value
+        )
+        const edges: Edge[] = edgeMetas.map(it => graph.addEdge(it))
+
+        graph.stopBatch("ModelEditorStore loadInput")
+
+        return {
+            nodes,
+            edges,
+        }
+    }
+
+
+    const tableViewToInput = (tableView: DeepReadonly<GenTableColumnsView>): GenTableModelInput => {
+        return {
+            comment: tableView.comment,
+            name: tableView.name,
+            remark: tableView.remark,
+            type: tableView.type,
+            subGroup: tableView.subGroup ? {name: tableView.subGroup.name} : undefined,
+            superTables: tableView.superTables.map(it => {
+                return {name: it.name}
+            }),
+            indexes: tableView.indexes.map(indexView => {
+                return {
+                    name: indexView.name,
+                    uniqueIndex: indexView.uniqueIndex,
+                    remark: indexView.remark,
+                    columns: tableView.columns
+                        .filter(it => indexView.columnIds.includes(it.id))
+                        .map(it => {
+                            return {name: it.name}
+                        })
+                }
+            }),
+            columns: tableView.columns.map(column => {
+                return {
+                    autoIncrement: column.autoIncrement,
+                    comment: column.comment,
+                    defaultValue: column.defaultValue,
+                    dataSize: column.dataSize,
+                    name: column.name,
+                    numericPrecision: column.numericPrecision,
+                    orderKey: column.orderKey,
+                    partOfPk: column.partOfPk,
+                    remark: column.remark,
+                    typeCode: column.typeCode,
+                    overwriteByRaw: column.overwriteByRaw,
+                    rawType: column.rawType,
+                    typeNotNull: column.typeNotNull,
+                    logicalDelete: column.logicalDelete,
+                    businessKey: column.businessKey,
+                    enum: column.enum ? {name: column.enum.name} : undefined
+                }
+            }),
+        }
+    }
+
+    const associationViewToInput = (
+        view: DeepReadonly<GenAssociationView>,
+    ): GenAssociationModelInput => {
+        return {
+            type: view.type,
+            name: view.name,
+            dissociateAction: view.dissociateAction,
+            updateAction: view.updateAction,
+            deleteAction: view.deleteAction,
+            fake: view.fake,
+            sourceTableName: view.sourceTable.name,
+            targetTableName: view.targetTable.name,
+
+            columnReferences: view.columnReferences.map(({sourceColumn, targetColumn}) => {
+                return {
+                    sourceColumnName: sourceColumn.name,
+                    targetColumnName: targetColumn.name,
+                }
+            })
+        }
+    }
+
+    /**
+     * TODO 移除在此处进行查询
+     */
+    const produceTableViewsToInputs = async (tables: DeepReadonly<GenTableColumnsView[]>) => {
+        let associations = await api.associationService.queryByTable({
+            body: {
+                tableIds: tables.map(it => it.id),
+                selectType: "OR"
+            }
+        })
+
+        return {
+            tables: tables.map(it => tableViewToInput(it)),
+            associations: associations.map(it => associationViewToInput(it))
+        }
+    }
+
+    /**
+     * 导入表的基本函数，接收 tableView 并查询获得 association
+     */
+    const loadTableViews = async (tableViews: GenTableColumnsView[]) => {
+        const graph = _graph()
+
+        const {tables, associations} =
+            await produceTableViewsToInputs(tableViews)
+
+        const {nodes, edges} =
+            loadInput({
+                tables,
+                associations,
+                baseTableOptions: getCenterPoint(graph)
+            })
+
+        await syncTimeout(100 + nodes.length * 30 + edges.length * 20)
+
+        if (nodes.length === 1) {
+            VIEW.focus(nodes[0])
+        } else {
+            graph.resetSelection([
+                ...nodes.map(it => it.id),
+                ...edges.map(it => it.id)
+            ])
+            VIEW.layout()
+            VIEW.fit()
+        }
+        forceUpdateMinimap()
+
+        return {nodes, edges}
+    }
+
+    /**
+     * 向画布导入 model
+     * @param id model id
+     */
+    const loadModel = loadingStore.withLoading(
+        'ModelEditorStore.loadModel',
+        async (id: number) => {
+            const tables = await api.tableService.queryColumnsView({
+                body: {
+                    modelIds: [id]
+                }
+            })
+            return await loadTableViews(tables)
+        }
+    )
+
+    /**
+     * 向画布导入 schema
+     * @param id schema id
+     */
+    const loadSchema = loadingStore.withLoading(
+        'ModelEditorStore.loadSchema',
+        async (id: number) => {
+            const tables = await api.tableService.queryColumnsView({
+                body: {
+                    schemaIds: [id]
+                }
+            })
+            return await loadTableViews(tables)
+        }
+    )
+
+    /**
+     * 向画布导入 table
+     * @param id tableId
+     */
+    const loadTable = loadingStore.withLoading(
+        'ModelEditorStore.loadTables',
+        async (id: number) => {
+            const tables = await api.tableService.queryColumnsView({
+                body: {
+                    ids: [id]
+                }
+            })
+            return await loadTableViews(tables)
+        }
+    )
+
+
+    /**
+     * 历史记录同步
+     * TODO syncTableEffect
+     * 由于 antV/X6 data 的变更到页面 cells 的实际更新异步，且无法通过 nextTick 等待，
+     * 所以涉及到“存在待同步节点并需要记录使历史栈完整”的情况需要与 TableNode.vue 组件的 syncTableEffect 配合，
+     * 通过 startBatchSync 将未同步完毕的 historyBatch 计入 waitSyncHistoryBatches，并在此后通过 syncTable 收集需要同步的 tableId 计入 waitSyncTableIds
+     * 此后当 syncedTable 触发时则将逐一释放 tableId，直到 waitSyncTableIds 完全清空时，释放 historyBatch
+     */
+    const waitSyncHistoryBatches = ref<string[]>([])
+
+    const waitSyncTableIds = ref<string[]>([])
+
+    const startBatchSync = <T>(name: string, callback: () => T): T => {
+        const graph = _graph()
+
+        graph.startBatch(name)
+        waitSyncHistoryBatches.value.push(name)
+
+        const result = callback()
+
+        if (waitSyncTableIds.value.length === 0) {
+            let index: number | undefined
+            for (let i = waitSyncHistoryBatches.value.length - 1; i >= 0; i--) {
+                if (waitSyncHistoryBatches.value[i] === name) {
+                    index = i
+                    break
+                }
+            }
+            if (index === undefined) {
+                throw Error("some waitBatch stopped before it callback end")
+            }
+            waitSyncHistoryBatches.value.splice(index!, 1)
+            graph.stopBatch(name)
+        }
+
+        return result
+    }
+
+    const syncTable = (id: string) => {
+        waitSyncTableIds.value.push(id)
+    }
+
+    const syncedTable = (id: string) => {
+        const graph = _graph()
+
+        const index = waitSyncTableIds.value.indexOf(id)
+        waitSyncTableIds.value.splice(index, 1)
+
+        if (waitSyncTableIds.value.length === 0) {
+            while (waitSyncHistoryBatches.value.length !== 0) {
+                const name = waitSyncHistoryBatches.value.pop()!
+                graph.stopBatch(name)
+            }
+            forceUpdateMinimap()
+        }
+    }
+
+
+    /**
+     * 代码预览与视图同步相关
+     */
+
+    const codePreviewStore = useMultiCodePreviewStore()
+
+    const waitRefreshModelAndCode = async () => {
+        if (!codePreviewStore.openState) return
+
+        await nextTick()
+
+        let timer: number | undefined
+
+        const waitRefresh = loadingStore.withLoading(
+            'ModelEditorStore saveModelAndRefreshCodes',
+            async () => {
+                // 若存在需要等待同步的表和历史记录，先行等待这些进行同步，此后再进行保存
+                if (
+                    waitSyncTableIds.value.length === 0 &&
+                    waitSyncHistoryBatches.value.length === 0
+                ) {
+                    const model = currentModel.value
+
+                    if (model) {
+                        const graph = _graph()
+                        const currentGraphData = JSON.stringify(graphDataOperation.getGraphData())
+
+                        if (model.graphData !== currentGraphData) {
+                            graph.cleanSelection()
+                            model.graphData = JSON.stringify(graphDataOperation.getGraphData())
+
+                            await saveModel(model)
+                            await convertModel(model.id)
+                            if (codePreviewStore.openState) {
+                                await codePreviewStore.codeRefresh()
+                            }
+                        }
+                    }
+
+                    clearTimeout(timer)
+                } else {
+                    timer = window.setTimeout(waitRefresh, 100)
+                }
+            }
+        )
+
+        await waitRefresh()
+    }
+
+
+    /**
+     * 子组编辑对话框相关
+     */
+
+    const subGroupDialogsStore = useSubGroupDialogsStore()
+
+    const subGroupCreateOptionsMap = new Map<string, SubGroupCreateOptions | undefined>
+
+    const createSubGroup = (options?: SubGroupCreateOptions | undefined) => {
+        const createKey = SUB_GROUP_CREATE_PREFIX + Date.now()
+        subGroupDialogsStore.open(createKey, getDefaultGenModelSubGroup())
+        subGroupCreateOptionsMap.set(createKey, options)
+    }
+
+    const createdSubGroup = (createKey: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
+        assertModel().value.subGroups.push(cloneDeepReadonly<GenModelInput_TargetOf_subGroups>(subGroup))
+
+        const options = subGroupCreateOptionsMap.get(createKey)
+
+        if (options !== undefined) {
+            const {tableKey, enumKey} = options
+            if (tableKey) {
+                syncNewSubGroupForTables(subGroup, tableKey)
+            }
+            if (enumKey) {
+                syncNewSubGroupForEnums(subGroup, enumKey)
+            }
+        }
+
+        subGroupCreateOptionsMap.delete(createKey)
+
+        subGroupDialogsStore.close(createKey, true)
+
+        waitRefreshModelAndCode().then()
+    }
+
+    const editSubGroup = (name: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
+        subGroupDialogsStore.open(name, cloneDeepReadonly<GenModelInput_TargetOf_subGroups>(subGroup))
+    }
+
+    const editedSubGroup = (name: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
+        const oldName = name
+
+        assertModel().value.subGroups = [
+            ...assertModel().value.subGroups.filter(it => it.name !== oldName),
+            cloneDeepReadonly<GenModelInput_TargetOf_subGroups>(subGroup)
+        ]
+
+        subGroupDialogsStore.close(name, true)
+
+        startBatchSync('editedSubGroup', () => {
+            syncSubGroupNameForTables(_graph(), oldName, subGroup.name)
+            syncSubGroupNameForEnums(assertModel(), oldName, subGroup.name)
+        })
+
+        waitRefreshModelAndCode().then()
+    }
+
+    const removeSubGroup = (name: string) => {
+        const oldName = name
+
+        assertModel().value.subGroups = assertModel().value.subGroups.filter(it => it.name !== oldName)
+
+        startBatchSync('removeSubGroup', () => {
+            syncSubGroupNameForTables(_graph(), oldName, undefined)
+            syncSubGroupNameForEnums(assertModel(), oldName, undefined)
+        })
+
+        waitRefreshModelAndCode().then()
+    }
+
+
+    /**
+     * 表编辑对话框相关
+     */
+
+    const tableDialogsStore = useTableDialogsStore()
+
+    const tableCreateOptionsMap = new Map<string, TableLoadOptions>
+
+    const createTable = (options: TableLoadOptions) => {
+        const createKey = TABLE_CREATE_PREFIX + Date.now()
+        tableDialogsStore.open(createKey, getDefaultTable(), {modal: false})
+        tableCreateOptionsMap.set(createKey, options)
+    }
+
+    const createdTable = async (createKey: string, table: DeepReadonly<GenTableModelInput>) => {
+        const options = tableCreateOptionsMap.get(createKey)
+
+        const node = loadInput({
+            tables: [table],
+            eachTableOptions: [options]
+        }).nodes[0]
+
+        tableCreateOptionsMap.delete(createKey)
+
+        if (node) {
+            tableDialogsStore.close(createKey, true)
+
+            setTimeout(() => {
+                SELECT.select(node)
+            }, 200)
+        }
+
+        waitRefreshModelAndCode().then()
+    }
+
+    const editTable = (id: string, table: DeepReadonly<GenTableModelInput>) => {
+        tableDialogsStore.open(id, cloneDeepReadonly<GenTableModelInput>(table), {modal: false})
+    }
+
+    const editedTable = (id: string, table: DeepReadonly<GenTableModelInput>) => {
+        const graph = _graph()
+
+        const cell = graph.getCellById(id)
+        if (!cell || !cell.isNode()) {
+            sendI18nMessage({
+                key: "MESSAGE_ModelEditorStore_tableEditFail_nodeNotFound",
+                args: [id]
+            }, 'error')
+            return
+        }
+
+        tableDialogsStore.close(id, true)
+
+        startBatchSync('editedTable', () => {
+            const oldTable = cell.data.table
+
+            // 当上级表被修改时，调整其他表中的 superTables
+            if (oldTable.type === "SUPER_TABLE") {
+                if (table.type === "SUPER_TABLE") {
+                    syncSuperTableNameForTables(graph, oldTable.name, table.name)
+                } else {
+                    syncSuperTableNameForTables(graph, oldTable.name, undefined)
+                }
+            }
+
+            updateTableNodeData(cell, table)
+        })
+
+        waitRefreshModelAndCode().then()
+    }
+
+    const removeTable = (id: string) => {
+        const graph = _graph()
+
+        const cell = graph.getCellById(id)
+        if (!cell || !cell.isNode()) {
+            sendI18nMessage({
+                key: "MESSAGE_ModelEditorStore_tableDeleteFail_nodeNotFound",
+                args: [id]
+            }, 'error')
+            return
+        }
+
+        startBatchSync('removeTable', () => {
+            if (cell.shape === TABLE_NODE && cell.data.table) {
+                const table = cell.data.table as GenTableModelInput
+                // 当上级表被删除时，调整其他表中的 superTables
+                if (table.type === "SUPER_TABLE") {
+                    syncSuperTableNameForTables(graph, table.name, undefined)
+                }
+            }
+            graph.removeNode(id)
+        })
+
+        waitRefreshModelAndCode().then()
+    }
+
+    /**
+     * 表组合对话框
+     */
+    const tableCombineDialogStore = useTableCombineDialogStore()
+
+    const tableCombineOptions = ref<TableLoadOptions>()
+
+    const combineTable = (options: TableLoadOptions) => {
+        tableCombineOptions.value = options
+        tableCombineDialogStore.open()
+    }
+
+    const combinedTable = (tableCombineData: DeepReadonly<TableCombineData>) => {
+        const {superTable, inheritTableNodePairs} = tableCombineData
+
+        startBatchSync("combinedTable", async () => {
+            const node = loadInput({
+                tables: [superTable],
+                eachTableOptions: [tableCombineOptions.value]
+            }).nodes[0]
+
+            if (node) {
+                for (const {first, second} of inheritTableNodePairs) {
+                    updateTableNodeData(second, first)
+                }
+
+                tableCombineDialogStore.close()
+
+                setTimeout(() => {
+                    VIEW.focus(node)
+                }, 200)
+            }
+        }).then()
+
+        waitRefreshModelAndCode().then()
+    }
+
+    /**
+     * 关联对话框相关
+     */
+    const associationDialogsStore = useAssociationDialogsStore()
+
+    const createAssociation = () => {
+        const createKey = ASSOCIATION_CREATE_PREFIX + Date.now()
+        associationDialogsStore.open(createKey, getDefaultAssociation())
+    }
+
+    const createdAssociation = async (createKey: string, association: DeepReadonly<GenAssociationModelInput>) => {
+        const edge = loadInput({
+            associations: [association]
+        }).edges[0]
+
+        if (edge) {
+            associationDialogsStore.close(createKey, true)
+
+            setTimeout(() => {
+                SELECT.select(edge)
+            }, 200)
+        }
+
+        waitRefreshModelAndCode().then()
+    }
+
+    const batchCreateAssociationsDialogStore = useBatchCreateAssociationsDialogStore()
+
+    const batchCreateAssociations = () => {
+        batchCreateAssociationsDialogStore.open()
+    }
+
+    const batchCreatedAssociations = async (associations: DeepReadonly<GenAssociationModelInput[]>) => {
+        const graph = _graph()
+
+        graph.startBatch("batchCreatedAssociations")
+
+        const {edges} = loadInput({
+            associations
+        })
+
+        batchCreateAssociationsDialogStore.close()
+
+        graph.stopBatch("batchCreatedAssociations")
+
+        setTimeout(() => {
+            SELECT.select(edges)
+        }, 200)
+
+        waitRefreshModelAndCode().then()
+    }
+
+
+    const editAssociation = (id: string, association: DeepReadonly<GenAssociationModelInput>) => {
+        associationDialogsStore.open(id, cloneDeepReadonly<GenAssociationModelInput>(association))
+    }
+
+    const editedAssociation = (id: string, association: DeepReadonly<GenAssociationModelInput>) => {
+        const graph = _graph()
+
+        const cell = graph.getCellById(id)
+        if (!cell || !cell.isEdge()) {
+            sendI18nMessage({
+                key: "MESSAGE_ModelEditorStore_associationEditFail_edgeNotFound",
+                args: [id]
+            }, 'error')
+        } else {
+            graph.startBatch(`editAssociation [id=${id}]`)
+
+            updateAssociationEdgeData(cell, association)
+
+            graph.stopBatch(`editAssociation [id=${id}]`)
+        }
+
+        associationDialogsStore.close(id, true)
+
+        waitRefreshModelAndCode().then()
+    }
+
+    const modifyAssociation = async (id: string, modifyAction: () => any) => {
+        const graph = _graph()
+
+        const key = `modifyAssociation [id=${id}]`
+        graph.startBatch(key)
+        await modifyAction()
+        graph.stopBatch(key)
+    }
+
+    const removeAssociation = (id: string) => {
+        _graph().removeEdge(id)
+
+        waitRefreshModelAndCode().then()
+    }
+
+
+    /**
+     * 枚举编辑对话框相关
+     */
+
+    const enumDialogsStore = useEnumDialogsStore()
+
+    const enumCreateOptionsMap = new Map<string, EnumCreateOptions | undefined>
+
+    const createEnum = (options?: EnumCreateOptions | undefined) => {
+        const createKey = ENUM_CREATE_PREFIX + Date.now()
+        enumDialogsStore.open(createKey, getDefaultEnum())
+        enumCreateOptionsMap.set(createKey, options)
+    }
+
+    const createdEnum = (createKey: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
+        assertModel().value.enums.push(cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum))
+
+        const options = enumCreateOptionsMap.get(createKey)
+
+        if (options !== undefined) {
+            const {tableKey, columnName} = options
+            syncNewEnumForTables(genEnum, tableKey, columnName)
+        }
+
+        enumCreateOptionsMap.delete(createKey)
+
+        enumDialogsStore.close(createKey, true)
+
+        waitRefreshModelAndCode().then()
+    }
+
+    const editEnum = (name: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
+        enumDialogsStore.open(name, cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum))
+    }
+
+    const editedEnum = (name: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
+        const oldName = name
+
+        assertModel().value.enums = [
+            ...assertModel().value.enums.filter(it => it.name !== oldName),
+            cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum)
+        ]
+
+        enumDialogsStore.close(name, true)
+
+        startBatchSync('editedEnum', () => {
+            syncEnumNameForEntities(oldName, genEnum.name)
+            syncEnumNameForTables(_graph(), oldName, genEnum.name)
+        })
+
+        waitRefreshModelAndCode().then()
+    }
+
+    const removeEnum = (name: string) => {
+        const oldName = name
+
+        assertModel().value.enums = assertModel().value.enums.filter(it => it.name !== oldName)
+
+        startBatchSync('removeEnum', () => {
+            syncEnumNameForTables(_graph(), oldName, undefined)
+        })
+
+        waitRefreshModelAndCode().then()
+    }
+
+
+    /**
+     * 实体编辑对话框相关
+     */
+
+    const entityDialogsStore = useEntityDialogsStore()
+
+    const editEntity = (entity: DeepReadonly<EntityConfigView>) => {
+        entityDialogsStore.open(entity.tableConvertedEntity.id, cloneDeepReadonly<EntityConfigView>(entity))
+    }
+
+    const editedEntity = async (entity: DeepReadonly<EntityConfigInput>) => {
+        await api.entityService.config({body: cloneDeepReadonly<EntityConfigInput>(entity)})
+        entityDialogsStore.close(entity.tableConvertedEntity.id, true)
+
+        waitRefreshModelAndCode().then()
+    }
+
     const GRAPH = defineStore(
         'GRAPH',
         () => {
             return {...graphState, ...graphReactiveState, ...graphLoadOperation}
-        }
-    )()
-
-    const MODEL = defineStore(
-        'MODEL',
-        () => {
-            return {...modelState, ...modelReactiveState}
         }
     )()
 
@@ -1172,15 +1242,21 @@ const initModelEditorStore = (): ModelEditorStore => {
         tableDialogsStore.closeAll()
     }
 
-    const modelLoadOperations: ModelLoadOperation = {
-        load: loadModelView,
-        unload,
-        loadModel,
-        loadSchema,
-        loadTable,
-    }
+    const MODEL = defineStore(
+        'MODEL',
+        () => {
+            return {
+                _model: (): GenModelView => {
+                    return assertModel().value
+                },
+                isLoaded,
+                load: loadModelView,
+                unload,
 
-    const MODEL_LOAD = modelLoadOperations
+                ...modelReactiveState
+            }
+        }
+    )()
 
     /**
      * 最终导出
@@ -1192,9 +1268,13 @@ const initModelEditorStore = (): ModelEditorStore => {
         HISTORY,
         REMOVE,
         MODEL,
-        MODEL_LOAD,
         MODEL_EDITOR: {
             ...modelGraphDataOperation,
+
+            loadInput,
+            loadModel,
+            loadSchema,
+            loadTable,
 
             setInitMinimapAction,
 

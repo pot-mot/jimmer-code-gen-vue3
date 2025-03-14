@@ -87,15 +87,15 @@ const GraphDataShapeJsonSchema = {
     }
 } as const
 
-export interface TableNode {
+export type TableNode = {
     id: string,
     data: {
         table: GenTableModelInput
     },
-    shape: typeof TABLE_NODE
+    shape: typeof TABLE_NODE,
 }
 
-export interface AssociationEdge {
+export type AssociationEdge = {
     id: string,
     data: {
         association: GenAssociationModelInput

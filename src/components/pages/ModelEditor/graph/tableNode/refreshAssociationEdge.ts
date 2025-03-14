@@ -41,7 +41,7 @@ export const refreshEdgeAssociation = (
 
         association.sourceTableName = newTable.name
         const targetCell = graph.getCellById(edge.getTargetCellId())
-        if (targetCell === undefined || targetCell.getData().table === undefined) return
+        if (!targetCell || !targetCell?.getData()?.table) return
         const targetTable = targetCell.getData().table
         association.targetTableName = targetTable.name
 
@@ -75,7 +75,7 @@ export const refreshEdgeAssociation = (
 
         association.targetTableName = newTable.name
         const sourceCell = graph.getCellById(edge.getSourceCellId())
-        if (sourceCell === undefined || sourceCell.getData().table === undefined) return
+        if (!sourceCell || !sourceCell?.getData()?.table) return
         const sourceTable = sourceCell.getData().table
         association.sourceTableName = sourceTable.name
 

@@ -10,7 +10,7 @@ export const validateModelSubGroup = (
 ): MainLocaleKeyParam[] => {
     const messageList: MainLocaleKeyParam[] = []
 
-    if (subGroup.name.length === 0) {
+    if (subGroup.name.trim().length === 0) {
         messageList.push("VALIDATE_ModelSubGroup_nameCannotBeEmpty")
     }
 

@@ -17,7 +17,7 @@ export const useModelEditDialogStore = defineStore(
 
         const loadingStore = useGlobalLoadingStore()
 
-        const {MODEL, MODEL_LOAD, MODEL_EDITOR} = useModelEditorStore()
+        const {MODEL, MODEL_EDITOR} = useModelEditorStore()
 
         // 在获取数据时调整
         const getClearGraphData = (): DeepReadonly<GraphData> => {
@@ -62,7 +62,7 @@ export const useModelEditDialogStore = defineStore(
                     handleCancel()
 
                     // 同步数据
-                    MODEL_LOAD.load(savedModel)
+                    MODEL.load(savedModel)
 
                     sendI18nMessage("MESSAGE_ModelEditorStore_modelSaveSuccess", "success")
                 } catch (e) {

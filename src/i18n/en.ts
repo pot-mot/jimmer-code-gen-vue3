@@ -660,9 +660,6 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     LABEL_EnumForm_type: 'Type',
     LABEL_EnumForm_typeUnset: 'Default',
 
-    VALIDATE_GenEnum_cannotBeDuplicate: (enumName: string) => {
-        return `Enum【${enumName}】already exist`
-    },
     VALIDATE_GenEnum_nameCannotBeEmpty: "Enum name cannot be empty",
     VALIDATE_GenEnum_subGroupNotExist: (subGroupName: string) => `SubGroup [${subGroupName}] not existed`,
     VALIDATE_GenEnum_itemsCannotBeEmpty: "There must be at least one enum item",

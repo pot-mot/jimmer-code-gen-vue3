@@ -1,21 +1,21 @@
-import {Node, Edge, Graph} from "@antv/x6";
+import {Node, Edge} from "@antv/x6";
 import {
     GenAssociationModelInput,
     GenTableModelInput,
-    GenTableModelInput_TargetOf_columns,
+    GenTableModelInput_TargetOf_columns, Pair,
 } from "@/api/__generated/model/static";
 import {erRouter, orthRouter} from "@/components/global/graphEditor/edge/edgeRouter.ts";
-import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
+import {ASSOCIATION_EDGE} from "@/components/pages/ModelEditor/constant.ts";
 import {PortManager} from "@antv/x6/es/model/port";
 import {DeepReadonly} from "vue";
-import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge/updateData.ts";
-import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
+import {mergeWithExisted} from "@/components/pages/ModelEditor/graph/load/mergeWithExisted.ts";
+import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 
-export interface AssociationEdgeConnect {
+type AssociationEdgeConnect = {
     association: GenAssociationModelInput
-    sourceNode: Node,
+    sourceNode: UnwrapRefSimple<Node>,
     sourceTable: GenTableModelInput,
-    targetNode: Node,
+    targetNode: UnwrapRefSimple<Node>,
     targetTable: GenTableModelInput,
     columnReferences: {
         sourceColumn: GenTableModelInput_TargetOf_columns,
@@ -26,34 +26,26 @@ export interface AssociationEdgeConnect {
     router: Edge.RouterData
 }
 
+type ColumnReferenceConnect = AssociationEdgeConnect["columnReferences"][number]
+
 const associationToEdgeConnect = (
-    graph: Graph,
-    association: DeepReadonly<GenAssociationModelInput>
-): DeepReadonly<AssociationEdgeConnect> | undefined => {
+    association: GenAssociationModelInput,
+    tableNodes: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
+): AssociationEdgeConnect | undefined => {
     if (association.columnReferences.length === 0) return
 
-    const nodes = graph.getNodes().filter(it => it.shape === TABLE_NODE)
+    const sourcePair = tableNodes.find(it =>
+        it.first.name === association.sourceTableName
+    )
+    if (!sourcePair) return
+    const targetPair = tableNodes.find(it =>
+        it.first.name === association.targetTableName
+    )
+    if (!targetPair) return
 
-    const sourceNode = nodes.filter(it =>
-        it.getData()?.table.name === association.sourceTableName
-    )[0]
-    if (!sourceNode) return
-    const targetNode = nodes.filter(it =>
-        it.getData()?.table.name === association.targetTableName
-    )[0]
-    if (!targetNode) return
-
-    const sourceTable = sourceNode.getData()?.table as GenTableModelInput | undefined
-    if (!sourceTable) return
-    const targetTable = targetNode.getData()?.table as GenTableModelInput | undefined
-    if (!targetTable) return
-
-    const columnReferences = <{
-        sourceColumn: GenTableModelInput_TargetOf_columns,
-        sourcePort: PortManager.PortMetadata,
-        targetColumn: GenTableModelInput_TargetOf_columns,
-        targetPort: PortManager.PortMetadata,
-    }[]>[]
+    const {first: sourceTable, second: sourceNode} = sourcePair
+    const {first: targetTable, second: targetNode} = targetPair
+    const columnReferences = <ColumnReferenceConnect[]>[]
 
     for (const columnReference of association.columnReferences) {
         const sourceColumnIndex = sourceTable.columns.findIndex(column =>
@@ -134,62 +126,77 @@ const associationEdgeConnectToEdgeMeta = (
     }
 }
 
-const getAssociationNameMap = (graph: Graph): Map<string, GenAssociationModelInput[]> => {
-    const associationNameMap = new Map<string, GenAssociationModelInput[]>
+const filterAssociationByTable = (
+    associations: GenAssociationModelInput[],
+    tableNameMap: DeepReadonly<Map<string, GenTableModelInput[]>>
+): GenAssociationModelInput[] => {
+    const filteredAssociations = associations
+        .filter(it => tableNameMap.has(it.targetTableName))
+        .filter(it => tableNameMap.has(it.sourceTableName))
 
-    graph.getEdges()
-        .filter(it => it.shape === ASSOCIATION_EDGE && it.getData().association !== undefined)
-        .forEach(edge => {
-            const association = edge.getData().association
-            if (associationNameMap.has(association.name)) {
-                const count = associationNameMap.get(association.name)!.length
-                association.name = `${association.name}(${count})`
-                updateAssociationEdgeData(edge, association)
-                associationNameMap.get(association.name)!.push(association)
-            } else {
-                associationNameMap.set(association.name, [association])
-            }
-        })
-
-    return associationNameMap
-}
-
-export const loadAssociationModelInputs = (
-    graph: Graph,
-    associations: DeepReadonly<GenAssociationModelInput[]>
-): {
-    edges: Edge[],
-    associationNameMap: Map<string, GenAssociationModelInput[]>// 表与名称重复的表的最终 map，除了已经存在的名称，后续的名称将自动向后追加 count
-} => {
-    const associationNameMap = getAssociationNameMap(graph)
-
-    const edges: Edge[] = []
-
-    for (const association of associations) {
-        const name = association.name
-        const tempAssociation = cloneDeepReadonly<GenAssociationModelInput>(association)
-
-        if (associationNameMap.has(name)) {
-            let count = associationNameMap.get(name)!.length
-            let tempName = `${name}(${count})`
-            while (associationNameMap.has(tempName)) {
-                tempName = `${name}(${count++})`
-            }
-            tempAssociation.name = tempName
-            associationNameMap.get(name)!.push(tempAssociation)
-        } else {
-            associationNameMap.set(name, [tempAssociation])
+    // 根据同名表覆盖 association 的 source 和 target
+    for (const association of filteredAssociations) {
+        const sourceSameNameList = tableNameMap.get(association.sourceTableName)
+        if (sourceSameNameList && sourceSameNameList.length > 1) {
+            association.sourceTableName = sourceSameNameList[sourceSameNameList.length - 1].name
         }
 
-        const associationEdgeConnect = associationToEdgeConnect(graph, tempAssociation)
+        const targetSameNameList = tableNameMap.get(association.targetTableName)
+        if (targetSameNameList && targetSameNameList.length > 1) {
+            association.targetTableName = targetSameNameList[targetSameNameList.length - 1].name
+        }
+    }
+
+    return filteredAssociations
+}
+
+export const loadAssociationEdge = (
+    associations: DeepReadonly<GenAssociationModelInput[]>,
+    existedAssociations: DeepReadonly<GenAssociationModelInput[]>,
+    tableNameMap: DeepReadonly<Map<string, GenTableModelInput[]>>,
+    tableNodes: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
+): {
+    edgeMetas: Edge.Metadata[],
+    allAssociations: Array<GenAssociationModelInput>,
+    newAssociations: Array<GenAssociationModelInput>,
+    associationNameMap: Map<string, GenAssociationModelInput[]>
+} => {
+    const {
+        allItems: allAssociations,
+        newItems: newAssociations,
+        keyToItemsMap: associationNameMap,
+    } = mergeWithExisted<GenAssociationModelInput, string>(
+        associations,
+        existedAssociations,
+        it => it.name,
+        (name, item, keyDuplicateItems, newItems, existedItems) => {
+            let tempCount = keyDuplicateItems.length
+            let tempName = `${name}(${tempCount})`
+            while (existedItems.some(it => it.name === tempName)) {
+                tempName = `${name}(${tempCount++})`
+            }
+            item.name = tempName
+            keyDuplicateItems.push(item)
+            newItems.push(item)
+        }
+    )
+
+    const filteredAssociations = filterAssociationByTable(newAssociations, tableNameMap)
+
+    const edgeMetas: Edge.Metadata[] = []
+
+    for (const association of filteredAssociations) {
+        const associationEdgeConnect = associationToEdgeConnect(association, tableNodes)
         if (!associationEdgeConnect) continue
         const edgeMeta = associationEdgeConnectToEdgeMeta(associationEdgeConnect)
         if (!edgeMeta) continue
-        edges.push(graph.addEdge(edgeMeta))
+        edgeMetas.push(edgeMeta)
     }
 
     return {
-        edges,
+        edgeMetas,
+        allAssociations,
+        newAssociations,
         associationNameMap
     }
 }

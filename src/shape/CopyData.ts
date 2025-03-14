@@ -3,18 +3,20 @@ import {GenAssociationModelInputJsonSchema} from "@/shape/GenAssociationModelInp
 import {useShapeValidate} from "@/shape/shapeValidate.ts";
 import {
     GenAssociationModelInput,
-    GenModelInput_TargetOf_enums,
+    GenModelInput_TargetOf_enums, GenModelInput_TargetOf_subGroups,
     GenTableModelInput
 } from "@/api/__generated/model/static";
 import {GenEnumModelInputJsonSchema} from "@/shape/GenEnumModelInput.ts";
-import type {TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadIntoGraph.ts";
 import type {DeepReadonly} from "vue";
+import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
+import {GenModelInputJsonSchema} from "@/shape/ModelInput.ts";
 
 export interface CopyData {
     tables: GenTableModelInput[],
     optionsList?: TableLoadOptions[],
     associations: GenAssociationModelInput[],
-    enums: GenModelInput_TargetOf_enums[]
+    enums: GenModelInput_TargetOf_enums[],
+    subGroups: GenModelInput_TargetOf_subGroups[],
 }
 
 const CopyDataShapeJsonSchema = {
@@ -23,6 +25,7 @@ const CopyDataShapeJsonSchema = {
         ...GenTableModelInputJsonSchema.definitions,
         ...GenAssociationModelInputJsonSchema.definitions,
         ...GenEnumModelInputJsonSchema.definitions,
+        "GenModelInput_TargetOf_subGroups": GenModelInputJsonSchema.definitions.GenModelInput_TargetOf_subGroups,
 
         "TableLoadOptions": {
             "properties": {
@@ -65,6 +68,13 @@ const CopyDataShapeJsonSchema = {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/GenModelInput_TargetOf_enums"
+                    }
+                },
+
+                "subGroups": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/GenModelInput_TargetOf_subGroups"
                     }
                 }
             }

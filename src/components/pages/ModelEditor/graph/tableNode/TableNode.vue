@@ -52,8 +52,7 @@ import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {columnToPort} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
 import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {searchNodesByTableName} from "@/components/pages/ModelEditor/search/graphSearch.ts";
-import {refreshEdgeAssociation,} from "@/components/pages/ModelEditor/graph/tableNode/refreshAssociationEdge.ts";
-import {loadAssociationModelInputs} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
+import {refreshEdgeAssociation} from "@/components/pages/ModelEditor/graph/tableNode/refreshAssociationEdge.ts";
 
 const {GRAPH, MODEL, MODEL_EDITOR, VIEW, HISTORY} = useModelEditorStore()
 
@@ -155,18 +154,20 @@ onMounted(() => {
 
 				const refreshedAssociations: GenAssociationModelInput[] = []
 				for (const edge of oldEdges) {
-					const association = refreshEdgeAssociation(
-						graph,
-						node.value,
-						edge,
-						oldTable,
-						newTable
-					)
-					if (association) {
-						refreshedAssociations.push(association)
+					if (edge) {
+						const association = refreshEdgeAssociation(
+							graph,
+							node.value,
+							edge,
+							oldTable,
+							newTable
+						)
+						if (association) {
+							refreshedAssociations.push(association)
+						}
 					}
 				}
-				loadAssociationModelInputs(graph, refreshedAssociations)
+				MODEL_EDITOR.loadInput({associations: refreshedAssociations})
 
 				newTable.columns.forEach((column, index) => {
 					column.orderKey = index + 1

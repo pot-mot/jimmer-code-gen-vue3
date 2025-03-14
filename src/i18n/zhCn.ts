@@ -660,9 +660,6 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     LABEL_EnumForm_type: '类型',
     LABEL_EnumForm_typeUnset: '默认',
 
-    VALIDATE_GenEnum_cannotBeDuplicate: (enumName: string) => {
-        return `枚举【${enumName}】已存在`
-    },
     VALIDATE_GenEnum_nameCannotBeEmpty: "枚举名不得为空",
     VALIDATE_GenEnum_subGroupNotExist: (subGroupName: string) => `子组【${subGroupName}】不存在`,
     VALIDATE_GenEnum_itemsCannotBeEmpty: "必须至少有一个枚举项",
