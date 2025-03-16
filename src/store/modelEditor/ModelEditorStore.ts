@@ -428,7 +428,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
             value.enums.forEach(genEnum => {
                 if (genEnum.subGroup) {
-                    genEnum.packagePath = `${value.packagePath}.${subGroupPackageMap.get(genEnum.subGroup.name)}.enums`
+                    genEnum.packagePath = `${value.packagePath}.enums.${subGroupPackageMap.get(genEnum.subGroup.name)}`
                 } else {
                     genEnum.packagePath = value.packagePath + ".enums"
                 }
