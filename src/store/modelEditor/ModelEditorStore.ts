@@ -819,10 +819,11 @@ const initModelEditorStore = (): ModelEditorStore => {
                             model.graphData = JSON.stringify(graphDataOperation.getGraphData())
 
                             await saveModel(model)
-                            await convertModel(model.id)
-                            if (codePreviewStore.openState) {
-                                await codePreviewStore.codeRefresh()
-                            }
+                        }
+
+                        await convertModel(model.id)
+                        if (codePreviewStore.openState) {
+                            await codePreviewStore.codeRefresh()
                         }
                     }
 
