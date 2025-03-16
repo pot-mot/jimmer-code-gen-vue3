@@ -82,6 +82,7 @@ type ModelReactiveState = {
     selectedAssociations: ComputedRef<Array<GenAssociationModelInput>>,
     selectedAssociationEdgePairs: ComputedRef<Array<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>>,
     subGroups: ComputedRef<Array<GenModelInput_TargetOf_subGroups>>,
+    subGroupNameStyleMap: ComputedRef<Map<string, string>>,
     enums: ComputedRef<Array<GenModelInput_TargetOf_enums>>
 }
 
@@ -448,6 +449,14 @@ const initModelEditorStore = (): ModelEditorStore => {
         return (currentModel.value?.subGroups ?? [])
     })
 
+    const subGroupNameStyleMap = computed(() => {
+        const map = new Map<string, string>
+        for (const subGroup of subGroups.value) {
+            map.set(subGroup.name, subGroup.style)
+        }
+        return map
+    })
+
     const enums = computed(() => {
         return (currentModel.value?.enums ?? [])
     })
@@ -481,6 +490,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         selectedAssociations,
         selectedAssociationEdgePairs,
         subGroups,
+        subGroupNameStyleMap,
         enums,
     }
 
