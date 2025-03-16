@@ -419,7 +419,7 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     MESSAGE_ModelEditorGraph_modelSaveSuccess: "模型保存成功",
     MESSAGE_ModelEditorGraph_modelSaveError: (e: any) => `模型保存失败，错误：${e}`,
 
-    MESSAGE_ModelEditorGraph_someChangeNotSave: "有变更尚未保存",
+    MESSAGE_ModelEditorGraph_someChangeNotSave: () => "有变更尚未保存",
 
     LABEL_ModelEditorGraph_previewCode: '预览代码',
     LABEL_ModelEditorGraph_exportModel: '导出模型',

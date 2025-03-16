@@ -418,7 +418,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     MESSAGE_ModelEditorGraph_modelSaveSuccess: "Model Save Success",
     MESSAGE_ModelEditorGraph_modelSaveError: (e: any) => `Model Save Error, Error: ${e}`,
 
-    MESSAGE_ModelEditorGraph_someChangeNotSave: "Some Change Not Save",
+    MESSAGE_ModelEditorGraph_someChangeNotSave: () => "Some Change Not Save",
 
     LABEL_ModelEditorGraph_previewCode: 'Preview Code',
     LABEL_ModelEditorGraph_exportModel: 'Export Model',

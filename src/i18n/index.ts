@@ -242,7 +242,7 @@ type MainLocale = {
     MESSAGE_ModelEditorGraph_modelSaveSuccess: string
     MESSAGE_ModelEditorGraph_modelSaveError: (e: any) => string
 
-    MESSAGE_ModelEditorGraph_someChangeNotSave: string
+    MESSAGE_ModelEditorGraph_someChangeNotSave: (modelData: string, editorData: string) => string
 
     LABEL_ModelEditorGraph_previewCode: string
     LABEL_ModelEditorGraph_exportModel: string

@@ -307,8 +307,6 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         currentModel.value = model
 
-        isLoaded.value = true
-
         if (graphState.isLoaded.value) {
             loadModelEditorData(jsonParseThenConvertNullToUndefined(model.graphData), true)
         } else {
@@ -316,6 +314,8 @@ const initModelEditorStore = (): ModelEditorStore => {
                 loadModelEditorData(jsonParseThenConvertNullToUndefined(model.graphData), true)
             })
         }
+
+        isLoaded.value = true
     }
 
 

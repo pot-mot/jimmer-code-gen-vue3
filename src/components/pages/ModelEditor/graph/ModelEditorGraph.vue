@@ -252,14 +252,24 @@ const handleSaveModel = loadingStore.withLoading('ModelEditorGraph handleSaveMod
     try {
         const model = MODEL._model()
 
+		MODEL.isLoaded = false
+
+		const currentGraphData = JSON.stringify(MODEL_EDITOR.getGraphData())
+
+		if (model.graphData !== currentGraphData) {
+			graph.cleanSelection()
+			model.graphData = currentGraphData
+		}
+
         const id = await saveModel(model)
         const newModel = await api.modelService.get({id})
         if (newModel !== undefined) {
-            await MODEL.load(newModel)
-        }
-
-        sendI18nMessage("MESSAGE_ModelEditorGraph_modelSaveSuccess", "success")
-    } catch (e) {
+            MODEL.load(newModel)
+			sendI18nMessage("MESSAGE_ModelEditorGraph_modelSaveSuccess", "success")
+        } else {
+			sendI18nMessage({key: "MESSAGE_ModelEditorGraph_modelSaveError", args: [id]}, 'error', id)
+		}
+	} catch (e) {
         if (e === MODEL_VALID_NOT_PASS) return
 
         sendI18nMessage({key: "MESSAGE_ModelEditorGraph_modelSaveError", args: [e]}, 'error', e)
@@ -299,37 +309,27 @@ useDocumentEvent('mouseup', (e) => {
  * 代码预览与下载
  */
 
-const judgeGraphDataIsChange = (): boolean => {
-    if (GRAPH.isLoaded && MODEL.isLoaded) {
-        if (
-            jsonSortPropStringify(MODEL_EDITOR.getGraphData().json) ===
-            jsonSortPropStringify(JSON.parse(MODEL._model().graphData)["json"])
-        ) {
-            return false
-        }
-    } else {
-        return false
-    }
-    return true
-}
-
 const preJudge = (): boolean => {
-    const isChange = judgeGraphDataIsChange()
+	if (GRAPH.isLoaded && MODEL.isLoaded) {
+		const modelData = jsonSortPropStringify(MODEL_EDITOR.getGraphData().json)
+		const editorData = jsonSortPropStringify(JSON.parse(MODEL._model().graphData)["json"])
+		if (modelData !== editorData) {
+			sendI18nMessage({key: "MESSAGE_ModelEditorGraph_someChangeNotSave", args: [modelData, editorData]}, 'warning', [modelData, editorData])
+			return false
+		}
+	} else {
+		return false
+	}
 
-    if (isChange) {
-        sendI18nMessage("MESSAGE_ModelEditorGraph_someChangeNotSave", 'warning')
-        return false
-    } else {
-        const model = MODEL._model()
-        const messageList = validateModel(model)
+	const model = MODEL._model()
+	const messageList = validateModel(model)
 
-        if (messageList.length === 0) {
-            return true
-        } else {
-            messageList.forEach(it => sendI18nMessage(it, 'warning'))
-            return false
-        }
-    }
+	if (messageList.length === 0) {
+		return true
+	} else {
+		messageList.forEach(it => sendI18nMessage(it, 'warning'))
+		return false
+	}
 }
 
 const codePreviewStore = useMultiCodePreviewStore()
