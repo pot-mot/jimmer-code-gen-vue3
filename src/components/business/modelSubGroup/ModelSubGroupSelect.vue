@@ -59,7 +59,7 @@ const emits = defineEmits<{
 			<el-select
 				v-model="modelValue"
 				value-key="name"
-				clearable
+				clearable filterable
 				@clear="handleClear"
 				:placeholder="i18nStore.translate('LABEL_ModelSubGroupSelect_placeholder')"
 			>
