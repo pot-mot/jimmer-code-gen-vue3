@@ -130,13 +130,36 @@ export const loadTableNode = (
     keepTableSuperTableLegal(newTables, tableNameMap)
 
     const nodeMetas = newTables.map((table, index) => {
+        let x: number | undefined = undefined
+        let y: number | undefined = undefined
+
+        if (baseOptions !== undefined) {
+            x = baseOptions.x
+            y = baseOptions.y
+        }
+
+        if (eachTableOptions !== undefined && eachTableOptions[index] !== undefined) {
+            const currentOptions = eachTableOptions[index]
+            if (currentOptions.x !== undefined) {
+                if (x !== undefined) {
+                    x += currentOptions.x
+                } else {
+                    x = currentOptions.x
+                }
+            }
+            if (currentOptions.y !== undefined) {
+                if (y !== undefined) {
+                    y += currentOptions.y
+                } else {
+                    y = currentOptions.y
+                }
+            }
+        }
+
         return tableToNode(
             table,
             {
-                x: (baseOptions?.x !== undefined && eachTableOptions && eachTableOptions[index] && eachTableOptions[index].x !== undefined) ?
-                    baseOptions.x + eachTableOptions[index].x : baseOptions?.x,
-                y: (baseOptions?.y !== undefined && eachTableOptions && eachTableOptions[index] && eachTableOptions[index].y !== undefined) ?
-                    baseOptions.y + eachTableOptions[index].y : baseOptions?.y,
+                x, y
             }
         )
     })
