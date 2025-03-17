@@ -68,6 +68,7 @@ import {convertModel} from "@/components/pages/ModelEditor/file/modelFileOperati
 import {loadSupGroups} from "@/components/pages/ModelEditor/graph/load/loadSubGroups.ts";
 import {loadEnums} from "@/components/pages/ModelEditor/graph/load/loadEnums.ts";
 import {loadAssociationEdge} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
+import debounce from "lodash/debounce";
 
 type ModelReactiveState = {
     tableNodes: DeepReadonly<Ref<Array<UnwrapRefSimple<Node>>>>,
@@ -793,7 +794,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const codePreviewStore = useMultiCodePreviewStore()
 
-    const waitRefreshModelAndCode = async () => {
+    const waitRefreshModelAndCode = debounce(async () => {
         if (!codePreviewStore.openState) return
 
         await nextTick()
@@ -835,7 +836,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         )
 
         await waitRefresh()
-    }
+    }, 100)
 
 
     /**
@@ -871,7 +872,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         subGroupDialogsStore.close(createKey, true)
 
-        waitRefreshModelAndCode().then()
+        waitRefreshModelAndCode()
     }
 
     const editSubGroup = (name: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
@@ -893,7 +894,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             syncSubGroupNameForEnums(assertModel(), oldName, subGroup.name)
         })
 
-        waitRefreshModelAndCode().then()
+        waitRefreshModelAndCode()
     }
 
     const removeSubGroup = (name: string) => {
@@ -906,7 +907,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             syncSubGroupNameForEnums(assertModel(), oldName, undefined)
         })
 
-        waitRefreshModelAndCode().then()
+        waitRefreshModelAndCode()
     }
 
 
@@ -942,7 +943,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             }, 200)
         }
 
-        waitRefreshModelAndCode().then()
+        waitRefreshModelAndCode()
     }
 
     const editTable = (id: string, table: DeepReadonly<GenTableModelInput>) => {
@@ -978,7 +979,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             updateTableNodeData(cell, table)
         })
 
-        waitRefreshModelAndCode().then()
+        waitRefreshModelAndCode()
     }
 
     const removeTable = (id: string) => {
@@ -1004,7 +1005,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             graph.removeNode(id)
         })
 
-        waitRefreshModelAndCode().then()
+        waitRefreshModelAndCode()
     }
 
     /**
@@ -1041,7 +1042,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             }
         }).then()
 
-        waitRefreshModelAndCode().then()
+        waitRefreshModelAndCode()
     }
 
     /**
@@ -1067,7 +1068,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             }, 200)
         }
 
-        waitRefreshModelAndCode().then()
+        waitRefreshModelAndCode()
     }
 
     const batchCreateAssociationsDialogStore = useBatchCreateAssociationsDialogStore()
@@ -1093,7 +1094,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             SELECT.select(edges)
         }, 200)
 
-        waitRefreshModelAndCode().then()
+        waitRefreshModelAndCode()
     }
 
 
@@ -1120,7 +1121,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         associationDialogsStore.close(id, true)
 
-        waitRefreshModelAndCode().then()
+        waitRefreshModelAndCode()
     }
 
     const modifyAssociation = async (id: string, modifyAction: () => any) => {
@@ -1135,7 +1136,7 @@ const initModelEditorStore = (): ModelEditorStore => {
     const removeAssociation = (id: string) => {
         _graph().removeEdge(id)
 
-        waitRefreshModelAndCode().then()
+        waitRefreshModelAndCode()
     }
 
 
@@ -1167,7 +1168,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         enumDialogsStore.close(createKey, true)
 
-        waitRefreshModelAndCode().then()
+        waitRefreshModelAndCode()
     }
 
     const editEnum = (name: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
@@ -1189,7 +1190,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             syncEnumNameForTables(_graph(), oldName, genEnum.name)
         })
 
-        waitRefreshModelAndCode().then()
+        waitRefreshModelAndCode()
     }
 
     const removeEnum = (name: string) => {
@@ -1201,7 +1202,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             syncEnumNameForTables(_graph(), oldName, undefined)
         })
 
-        waitRefreshModelAndCode().then()
+        waitRefreshModelAndCode()
     }
 
 
@@ -1219,7 +1220,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         await api.entityService.config({body: cloneDeepReadonly<EntityConfigInput>(entity)})
         entityDialogsStore.close(entity.tableConvertedEntity.id, true)
 
-        waitRefreshModelAndCode().then()
+        waitRefreshModelAndCode()
     }
 
     const GRAPH = defineStore(
