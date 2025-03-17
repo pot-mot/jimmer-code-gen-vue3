@@ -74,7 +74,7 @@ const copy = async () => {
     const tables = tableNodePairs.map(it => it.first)
     const nodes = tableNodePairs.map(it => it.second)
     const associations = associationEdgePairs.map(it => it.first)
-    const edges = tableNodePairs.map(it => it.second)
+    const edges = associationEdgePairs.map(it => it.second)
 
     const enumNameSet = new Set(
         tables
