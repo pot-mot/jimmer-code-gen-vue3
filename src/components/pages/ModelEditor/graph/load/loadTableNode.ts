@@ -134,9 +134,9 @@ export const loadTableNode = (
             table,
             {
                 x: (baseOptions?.x !== undefined && eachTableOptions && eachTableOptions[index] && eachTableOptions[index].x !== undefined) ?
-                    baseOptions.x + eachTableOptions[index].x! : baseOptions?.x,
+                    baseOptions.x + eachTableOptions[index].x : baseOptions?.x,
                 y: (baseOptions?.y !== undefined && eachTableOptions && eachTableOptions[index] && eachTableOptions[index].y !== undefined) ?
-                    baseOptions.y + eachTableOptions[index].y! : baseOptions?.y,
+                    baseOptions.y + eachTableOptions[index].y : baseOptions?.y,
             }
         )
     })
