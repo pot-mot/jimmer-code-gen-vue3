@@ -331,9 +331,9 @@ const initModelEditorStore = (): ModelEditorStore => {
         initMinimapAction = action
     }
 
-    const forceUpdateMinimap = () => {
+    const forceUpdateMinimap = debounce(() => {
         initMinimapAction?.()
-    }
+    }, 100)
 
 
     /**
