@@ -4,7 +4,8 @@ import {computed, ref} from "vue";
 import {
     GenerateFile,
     GenerateResult,
-    IdName, IdNamePackagePath,
+    IdName,
+    IdNamePackagePath,
     TableEntityNotNullPair,
     TableEntityPair
 } from "@/api/__generated/model/static";
@@ -13,7 +14,8 @@ import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {GenerateTag} from "@/api/__generated/model/enums";
 
 export type CodeFilterData = {
-    text: string
+    path: string
+    content: string
     mainPairs: Array<TableEntityPair>
     negativeMainPairs: Array<TableEntityPair>
     mainEnum: Array<IdName>
@@ -25,7 +27,8 @@ export type CodeFilterData = {
 
 const getDefaultFilterData = (): CodeFilterData => {
     return {
-        text: '',
+        path: '',
+        content: '',
         mainPairs: [],
         negativeMainPairs: [],
         mainEnum: [],
@@ -36,20 +39,34 @@ const getDefaultFilterData = (): CodeFilterData => {
     }
 }
 
-const filterFiles = (files: Array<GenerateFile>, data: CodeFilterData): Array<GenerateFile> => {
-    const filterWords = data.text.split(/\s+/).filter(it => it.length > 0)
+type PositiveNegativeStringFilter = {
+    positive: string[]
+    negative: string[]
+}
 
-    const {positiveWords, negativeWords} = filterWords.reduce(
-        (data: { positiveWords: string[], negativeWords: string[] }, word: string) => {
-            if (word.startsWith('!')) {
-                data.negativeWords.push(word.slice(1))
-            } else {
-                data.positiveWords.push(word)
-            }
-            return data
-        },
-        {positiveWords: [], negativeWords: []}
-    )
+const textPositiveNegativeProducer = (text: string): PositiveNegativeStringFilter => {
+    const items = text.split(/\s+/).filter(it => it.length > 0)
+
+    const positive: string[] = []
+    const negative: string[] = []
+
+    for (const item of items) {
+        if (item.startsWith('-') || item.startsWith('!')) {
+            negative.push(item.slice(1))
+        } else {
+            positive.push(item)
+        }
+    }
+
+    return {
+        positive,
+        negative,
+    }
+}
+
+const filterFiles = (files: Array<GenerateFile>, data: CodeFilterData): Array<GenerateFile> => {
+    const pathFilter = textPositiveNegativeProducer(data.path)
+    const contentFilter = textPositiveNegativeProducer(data.content)
 
     const filterTableIds = new Set(data.mainPairs.map(it => it.table?.id).filter(it => it !== undefined))
     const filterEntityIds = new Set(data.mainPairs.map(it => it.entity?.id).filter(it => it !== undefined))
@@ -67,14 +84,7 @@ const filterFiles = (files: Array<GenerateFile>, data: CodeFilterData): Array<Ge
                 return false
             }
         }
-        if (positiveWords.length > 0) {
-            const inPositiveWords = positiveWords.every(word => it.path.includes(word))
-            if (!inPositiveWords) return false
-        }
-        if (negativeWords.length > 0) {
-            const inNegativeWords = negativeWords.some(word => it.path.includes(word))
-            if (inNegativeWords) return false
-        }
+
         if (data.positiveTags.length > 0) {
             const inPositiveTags = data.positiveTags.some(tag => it.tags.includes(tag))
             if (!inPositiveTags) return false
@@ -82,6 +92,24 @@ const filterFiles = (files: Array<GenerateFile>, data: CodeFilterData): Array<Ge
         if (data.negativeTags.length > 0) {
             const inNegativeTags = data.negativeTags.some(tag => it.tags.includes(tag))
             if (inNegativeTags) return false
+        }
+
+        if (pathFilter.positive.length > 0) {
+            const inPositiveWords = pathFilter.positive.every(item => it.path.includes(item))
+            if (!inPositiveWords) return false
+        }
+        if (pathFilter.negative.length > 0) {
+            const inNegativeWords = pathFilter.negative.some(item => it.path.includes(item))
+            if (inNegativeWords) return false
+        }
+
+        if (contentFilter.positive.length > 0) {
+            const inPositiveWords = contentFilter.positive.every(item => it.content.includes(item))
+            if (!inPositiveWords) return false
+        }
+        if (contentFilter.negative.length > 0) {
+            const inNegativeWords = contentFilter.negative.some(item => it.content.includes(item))
+            if (inNegativeWords) return false
         }
 
         return true

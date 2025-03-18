@@ -68,7 +68,7 @@ const paths = computed(() => store.filteredFiles.map(it => it.path))
     <LeftRightLayout :left-size="20">
         <template #left>
             <Splitpanes horizontal>
-                <Pane style="overflow-y: scroll;" size="14em">
+                <Pane style="overflow-y: scroll;" size="17em">
                     <GenerateFileFilter
                         v-model="store.filterData"
                         :table-entity-pair-options="store.codes.tableEntityPairs"

@@ -14,9 +14,18 @@ defineProps<{
 
 <template>
     <el-input
-        v-model="data.text"
+        v-model="data.path"
         clearable
-        placeholder="Filter Keyword"
+        placeholder="Filter File"
+        class="multi-code-preview-select"
+        autosize
+        :spellcheck="false"
+    />
+
+    <el-input
+        v-model="data.content"
+        clearable
+        placeholder="Filter Content"
         class="multi-code-preview-select"
         autosize
         :spellcheck="false"
