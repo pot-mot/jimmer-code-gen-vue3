@@ -31,7 +31,7 @@ const getData = tablesLoading.withLoading('get', async () => {
 <template>
 	<Details v-loading="tablesLoading.isLoading.value" @open="getData" :disabled="!showConfig.showModelTables">
 		<template #title>
-			<div class="menu-item" style="line-height: 1.8em;">
+			<div class="menu-item" style="height: 1.8em; line-height: 1.8em;">
 				<el-text @click="eventBus.emit('clickModel', {id: model.id})" link>
 					{{ model.name }}
 				</el-text>

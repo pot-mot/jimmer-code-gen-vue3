@@ -11,17 +11,21 @@
 }
 
 .menu-item {
+    display: flex;
+    flex-wrap: nowrap;
+
     cursor: pointer;
     white-space: nowrap;
     padding: 0 0.25em;
-    line-height: 1.25em;
+    height: 1.4em;
+    line-height: 1.4em;
 }
 
 .detail .menu-item {
     margin-left: -0.25em;
 }
 
-.menu-item:hover .el-text {
+.menu-item:hover span {
     color: var(--el-color-info);
 }
 
