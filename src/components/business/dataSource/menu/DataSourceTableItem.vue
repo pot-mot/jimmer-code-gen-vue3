@@ -8,16 +8,14 @@ defineProps<TableItemProps>()
 
 <template>
 	<el-text class="hover-show">
-		<TableIcon :type="table.type"></TableIcon>
-
 		<slot :eventBus="eventBus" :table="table">
+			<TableIcon :type="table.type"/>
 			<el-button link @click="eventBus.emit('clickTable', {id: table.id})">
 				{{ table.name }}
-				<Comment :comment="table.comment"></Comment>
+				<Comment :comment="table.comment"/>
 			</el-button>
 		</slot>
 
-		<slot :eventBus="eventBus" :table="table" name="operations">
-		</slot>
+		<slot :eventBus="eventBus" :table="table" name="operations"/>
 	</el-text>
 </template>
