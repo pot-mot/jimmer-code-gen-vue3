@@ -64,21 +64,19 @@ defineSlots<SchemaItemSlots>()
 	<div ref="container" style="position: relative;" v-loading="tablesLoading.isLoading.value">
 		<Details @open="getTables()">
 			<template #title>
-				<div style="height: 1.8em; line-height: 1.8em;">
-					<el-text class="hover-show">
-						<SchemaIcon/>
+				<div class="menu-item hover-show">
+					<slot :eventBus="eventBus" :schema="schema" :tables="tables">
+						<el-text @click="eventBus.emit('clickSchema', {id: schema.id})">
+							<SchemaIcon/>
+							{{ schema.name }}
+						</el-text>
+					</slot>
 
-						<slot :eventBus="eventBus" :schema="schema" :tables="tables">
-							<el-button link @click="eventBus.emit('clickSchema', {id: schema.id})">
-								{{ schema.name }}
-							</el-button>
-						</slot>
-
-						<slot :eventBus="eventBus" :schema="schema" :tables="tables" name="operations">
-							<el-button :icon="Delete" class="hover-show-item" link
-									   title="删除" type="danger" @click="handleDelete"/>
-						</slot>
-					</el-text>
+					<slot :eventBus="eventBus" :schema="schema" :tables="tables" name="operations">
+						<span class="hover-show-item" style="padding-left: 0.5em;">
+							<el-button :icon="Delete" link type="danger" @click="handleDelete"/>
+						</span>
+					</slot>
 				</div>
 			</template>
 

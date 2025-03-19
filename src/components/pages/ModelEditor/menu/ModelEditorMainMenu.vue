@@ -206,11 +206,4 @@ const formattedEdgeShowType = computed(() => {
 	opacity: 0.3;
 	margin-top: 0.5em;
 }
-
-:deep(.model-editor-main-menu-item) {
-    cursor: pointer;
-    white-space: nowrap;
-    line-height: 1.4em;
-    padding: 0.2em 0.5em;
-}
 </style>

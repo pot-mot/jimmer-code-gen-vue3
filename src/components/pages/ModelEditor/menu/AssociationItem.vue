@@ -101,8 +101,8 @@ const isSelected = computed(() => {
 
 <template>
     <div v-if="association && sourceLabel && targetLabel"
-         class="hover-show" :class="isSelected ? 'selected-menu-item' : ''">
-        <el-text class="model-editor-main-menu-item">
+         class="menu-item hover-show" :class="isSelected ? 'selected' : ''">
+        <el-text>
             <template v-if="showType === 'NAME'">
                 <span @click="handleClickAssociation">
                     <template v-if="association.name">
@@ -137,8 +137,6 @@ const isSelected = computed(() => {
     </div>
 
     <div v-else>
-        <el-text type="warning">
-            {{ edge.id }}
-        </el-text>
+        <el-text type="warning">{{ edge.id }}</el-text>
     </div>
 </template>

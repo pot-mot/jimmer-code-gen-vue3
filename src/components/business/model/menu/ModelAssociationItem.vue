@@ -37,15 +37,15 @@ const getData = tablesLoading.withLoading('get', async () => {
 <template>
 	<Details v-loading="tablesLoading.isLoading.value" @open="getData" :disabled="!showConfig.showAssociationTables">
 		<template #title>
-			<el-text>
-				<AssociationIcon
-					:type="association.type"
-					:fake="association.fake"
-				/>
-				<el-button @click="eventBus.emit('clickAssociation', {id: association.id})" link>
+			<div class="menu-item">
+				<el-text @click="eventBus.emit('clickAssociation', {id: association.id})">
+					<AssociationIcon
+						:type="association.type"
+						:fake="association.fake"
+					/>
 					{{ association.name }}
-				</el-button>
-			</el-text>
+				</el-text>
+			</div>
 		</template>
 
 		<ul style="padding: 0 0 0.5em 0.5em;">

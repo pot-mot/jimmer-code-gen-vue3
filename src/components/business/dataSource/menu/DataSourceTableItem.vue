@@ -7,15 +7,15 @@ defineProps<TableItemProps>()
 </script>
 
 <template>
-	<el-text class="hover-show">
+	<div class="hover-show menu-item">
 		<slot :eventBus="eventBus" :table="table">
-			<TableIcon :type="table.type"/>
-			<el-button link @click="eventBus.emit('clickTable', {id: table.id})">
+			<el-text @click="eventBus.emit('clickTable', {id: table.id})">
+				<TableIcon :type="table.type"/>
 				{{ table.name }}
 				<Comment :comment="table.comment"/>
-			</el-button>
+			</el-text>
 		</slot>
 
 		<slot :eventBus="eventBus" :table="table" name="operations"/>
-	</el-text>
+	</div>
 </template>

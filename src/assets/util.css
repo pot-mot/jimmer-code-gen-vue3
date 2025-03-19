@@ -10,6 +10,21 @@
     user-select: auto;
 }
 
-.selected-menu-item {
+.menu-item {
+    cursor: pointer;
+    white-space: nowrap;
+    padding: 0 0.25em;
+    line-height: 1.25em;
+}
+
+.detail .menu-item {
+    margin-left: -0.25em;
+}
+
+.menu-item:hover .el-text {
+    color: var(--el-color-info);
+}
+
+.menu-item.selected {
     background-color: var(--el-color-primary-light-7);
 }

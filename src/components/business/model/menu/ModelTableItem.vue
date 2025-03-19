@@ -52,13 +52,13 @@ const getAssociations = associationsLoading.withLoading('get', async () => {
 		getAssociations()
 	}" :disabled="!showConfig.showColumns && !showConfig.showAssociations">
 		<template #title>
-			<el-text>
-				<TableIcon :type="table.type"/>
-				<el-button @click="eventBus.emit('clickTable', {id: table.id})" link>
+			<div class="menu-item">
+				<el-text @click="eventBus.emit('clickTable', {id: table.id})">
+					<TableIcon :type="table.type"/>
 					{{ table.name }}
 					<Comment :comment="table.comment"/>
-				</el-button>
-			</el-text>
+				</el-text>
+			</div>
 		</template>
 
 		<template v-if="showConfig.showColumns && showConfig.showAssociations">

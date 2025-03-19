@@ -7,11 +7,11 @@ defineProps<ColumnItemProps>()
 </script>
 
 <template>
-	<div>
-		<el-button @click="eventBus.emit('clickColumn', {id: column.id})" link>
-			<ColumnIcon :column="column"></ColumnIcon>
+	<div class="menu-item">
+		<el-text @click="eventBus.emit('clickColumn', {id: column.id})" link>
+			<ColumnIcon :column="column"/>
 			{{ column.name }}
-			<Comment :comment="column.comment"></Comment>
-		</el-button>
+			<Comment :comment="column.comment"/>
+		</el-text>
 	</div>
 </template>

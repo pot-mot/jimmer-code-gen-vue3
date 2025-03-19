@@ -25,18 +25,15 @@ const handleDelete = () => {
 </script>
 
 <template>
-	<div>
-		<el-text class="hover-show" :type="genEnum.items.length > 0 ? '' : 'warning'">
-			<el-text class="model-editor-main-menu-item">
-				{{ genEnum.name }}
-				<Comment :comment="genEnum.comment"/>
-				<template v-if="genEnum.items.length === 0">[无枚举项]</template>
-			</el-text>
-
-			<span class="hover-show-item" style="padding-left: 0.5em;">
-				<el-button :icon="EditPen" link type="warning" @click="handleEdit"/>
-				<el-button :icon="Delete" link type="danger" @click="handleDelete"/>
-			</span>
+	<div class="menu-item hover-show">
+		<el-text>
+			{{ genEnum.name }}
+			<Comment :comment="genEnum.comment"/>
 		</el-text>
+
+		<span class="hover-show-item" style="padding-left: 0.5em;">
+			<el-button :icon="EditPen" link type="warning" @click="handleEdit"/>
+			<el-button :icon="Delete" link type="danger" @click="handleDelete"/>
+		</span>
 	</div>
 </template>

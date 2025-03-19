@@ -46,9 +46,9 @@ const isSelected = computed(() => {
 
 <template>
 	<div v-if="table"
-		 class="hover-show" :class="isSelected ? 'selected-menu-item' : ''">
+		 class="menu-item hover-show" :class="isSelected ? 'selected' : ''">
 
-		<el-text class="model-editor-main-menu-item" @click="handleClickLabel">
+		<el-text @click="handleClickLabel">
 			<TableIcon :type="table.type"/>
 			{{ table.name }}
 			<Comment :comment="table.comment"/>
@@ -61,8 +61,6 @@ const isSelected = computed(() => {
 	</div>
 
 	<div v-else>
-		<el-text type="warning">
-			{{ node.id }}
-		</el-text>
+		<el-text type="warning">{{ node.id }}</el-text>
 	</div>
 </template>

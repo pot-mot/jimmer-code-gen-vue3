@@ -25,17 +25,15 @@ const handleDelete = () => {
 </script>
 
 <template>
-	<div>
-		<el-text class="hover-show">
-			<el-text class="model-editor-main-menu-item" :style="{color: subGroup.style}">
-				{{ subGroup.name }}
-				<Comment :comment="subGroup.comment"/>
-			</el-text>
-
-			<span class="hover-show-item" style="padding-left: 0.5em;">
-				<el-button :icon="EditPen" link type="warning" @click="handleEdit"/>
-				<el-button :icon="Delete" link type="danger" @click="handleDelete"/>
-			</span>
+	<div class="hover-show menu-item">
+		<el-text :style="{color: subGroup.style}">
+			{{ subGroup.name }}
+			<Comment :comment="subGroup.comment"/>
 		</el-text>
+
+		<span class="hover-show-item" style="padding-left: 0.5em;">
+			<el-button :icon="EditPen" link type="warning" @click="handleEdit"/>
+			<el-button :icon="Delete" link type="danger" @click="handleDelete"/>
+		</span>
 	</div>
 </template>

@@ -113,8 +113,8 @@ defineSlots<DataSourceItemSlots>()
 	<Details v-loading="previewSchemaLoading.isLoading.value || loadedSchemaLoading.isLoading.value" open
 			 @open="getSchemas()">
 		<template #title>
-			<div style="height: 2em; line-height: 2em;">
-				<el-text class="hover-show">
+			<div class="menu-item hover-show">
+				<el-text>
 					<DataSourceIcon :type="dataSource.type"/>
 
 					<slot
@@ -143,7 +143,6 @@ defineSlots<DataSourceItemSlots>()
                                 </slot>
 							</div>
 						</template>
-
 					</el-tooltip>
 
 					<slot
@@ -182,5 +181,6 @@ defineSlots<DataSourceItemSlots>()
 		:id="dataSource.id"
 		:data-source="dataSource"
 		:init-x="x" :init-y="y"
-		@updated="handleEditFinish"/>
+		@updated="handleEditFinish"
+	/>
 </template>
