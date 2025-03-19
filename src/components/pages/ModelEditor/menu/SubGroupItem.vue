@@ -11,7 +11,17 @@ const props = defineProps<{
 	subGroup: GenModelInput_TargetOf_subGroups
 }>()
 
-const {MODEL_EDITOR} = useModelEditorStore()
+const {MODEL_EDITOR, MODEL, SELECT} = useModelEditorStore()
+
+const handleClickLabel = (e: MouseEvent) => {
+	const matchedNodeIds = MODEL.tableNodePairs
+		.filter(it => it.first.subGroup?.name === props.subGroup.name)
+		.map(it => it.second.id)
+
+	if (e.ctrlKey) {
+		SELECT.select(matchedNodeIds)
+	}
+}
 
 const handleEdit = () => {
 	MODEL_EDITOR.editSubGroup(props.subGroup.name, props.subGroup)
@@ -26,7 +36,7 @@ const handleDelete = () => {
 
 <template>
 	<div class="hover-show menu-item">
-		<el-text :style="{color: subGroup.style}">
+		<el-text :style="{color: subGroup.style}" @click="handleClickLabel">
 			{{ subGroup.name }}
 			<Comment :comment="subGroup.comment"/>
 		</el-text>

@@ -23,7 +23,7 @@ const i18nStore = useI18nStore()
 
 const handleClickLabel = (e: MouseEvent) => {
 	if (e.ctrlKey) {
-		SELECT.select(props.node.id)
+		SELECT.toggleSelect(props.node.id)
 	} else {
 		VIEW.focus(props.node.id)
 	}

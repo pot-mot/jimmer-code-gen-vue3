@@ -6,7 +6,9 @@ export interface SelectOperation {
     select: (cells: CellProperty | CellProperty[]) => void
     unselect: (cells: CellProperty | CellProperty[]) => void
     toggleSelect: (cells: CellProperty | CellProperty[]) => void
+    resetSelect: (cells: CellProperty | CellProperty[]) => void
     selectAll: () => void
+    unselectAll: () => void
     getSelectedNodes: () => Node[]
     getSelectedEdges: () => Edge[]
     getSelectedNodeConnectedEdges: () => Edge[]
@@ -17,7 +19,9 @@ export const useSelectOperation = (_graph: () => Graph): SelectOperation => {
         select: (cells: CellProperty | CellProperty[]) => select(_graph(), cells),
         unselect: (cells: CellProperty | CellProperty[]) => unselect(_graph(), cells),
         toggleSelect: (cells: CellProperty | CellProperty[]) => toggleSelect(_graph(), cells),
+        resetSelect: (cells: CellProperty | CellProperty[]) => resetSelect(_graph(), cells),
         selectAll: () => selectAll(_graph()),
+        unselectAll: () => unselectAll(_graph()),
         getSelectedNodes: () => getSelectedNodes(_graph()),
         getSelectedEdges: () => getSelectedEdges(_graph()),
         getSelectedNodeConnectedEdges: () => getSelectedNodeConnectedEdges(_graph()),
@@ -28,12 +32,20 @@ const selectAll = (graph: Graph) => {
     graph.resetSelection(graph.getCells())
 }
 
+const unselectAll = (graph: Graph) => {
+    graph.resetSelection()
+}
+
 const unselect = (graph: Graph, cells: CellProperty | CellProperty[]) => {
     graph.unselect(cells)
 }
 
 const select = (graph: Graph, cells: CellProperty | CellProperty[]) => {
     graph.select(cells)
+}
+
+const resetSelect = (graph: Graph, cells: CellProperty | CellProperty[]) => {
+    graph.resetSelection(cells)
 }
 
 /**

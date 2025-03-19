@@ -22,7 +22,7 @@ const {GRAPH, MODEL_EDITOR, VIEW, SELECT} = useModelEditorStore()
 
 const handleClickAssociation = (e: MouseEvent) => {
     if (e.ctrlKey) {
-        SELECT.select(props.edge.id)
+        SELECT.toggleSelect(props.edge.id)
     } else {
         VIEW.focus(props.edge.id)
     }

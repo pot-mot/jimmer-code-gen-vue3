@@ -11,7 +11,17 @@ const props = defineProps<{
 	genEnum: GenModelInput_TargetOf_enums
 }>()
 
-const {MODEL_EDITOR} = useModelEditorStore()
+const {MODEL_EDITOR, MODEL, SELECT} = useModelEditorStore()
+
+const handleClickLabel = (e: MouseEvent) => {
+	const matchedNodeIds = MODEL.tableNodePairs
+		.filter(it => it.first.columns.map(it => it.enum?.name).includes(props.genEnum.name))
+		.map(it => it.second.id)
+
+	if (e.ctrlKey) {
+		SELECT.select(matchedNodeIds)
+	}
+}
 
 const handleEdit = () => {
 	MODEL_EDITOR.editEnum(props.genEnum.name, props.genEnum)
@@ -26,7 +36,7 @@ const handleDelete = () => {
 
 <template>
 	<div class="menu-item hover-show">
-		<el-text>
+		<el-text @click="handleClickLabel">
 			{{ genEnum.name }}
 			<Comment :comment="genEnum.comment"/>
 		</el-text>
