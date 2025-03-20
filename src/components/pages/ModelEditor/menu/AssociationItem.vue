@@ -28,6 +28,7 @@ const handleClickAssociation = (e: MouseEvent) => {
 	if (e.ctrlKey) {
 		SELECT.toggleSelect(props.edge.id)
 	} else {
+		SELECT.unselectAll()
 		VIEW.focus(props.edge.id)
 	}
 }

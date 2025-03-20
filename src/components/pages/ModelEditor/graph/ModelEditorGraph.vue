@@ -189,7 +189,7 @@ const wrapper = ref<HTMLElement>()
 
 let graph: Graph
 
-const {GRAPH, MODEL, MODEL_EDITOR, HISTORY, VIEW, REMOVE} = useModelEditorStore()
+const {GRAPH, MODEL, MODEL_EDITOR, SELECT, HISTORY, VIEW, REMOVE} = useModelEditorStore()
 
 const modelEditorDialog = useModelEditDialogStore()
 
@@ -206,6 +206,10 @@ onMounted(loadingStore.withLoading('ModelEditorGraph onMounted', () => {
         const message = args.options.name ?? 'history:change'
         debugStore.log('HISTORY', message, args.cmds)
     })
+
+	graph.on('blank:click', () => {
+		SELECT.unselectAll()
+	})
 
     graph.on('blank:dblclick', () => {
         MODEL_EDITOR.createTable(GRAPH.mousePosition)

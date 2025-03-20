@@ -21,10 +21,11 @@ import {
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {Node} from "@antv/x6";
 import SubGroupItem from "@/components/pages/ModelEditor/menu/SubGroupItem.vue";
+import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 
 const i18nStore = useI18nStore()
 
-const {MODEL, MODEL_EDITOR, VIEW} = useModelEditorStore()
+const {MODEL, MODEL_EDITOR, SELECT, VIEW} = useModelEditorStore()
 
 const dataSourceLoadDialogStore = useDataSourceLoadDialogStore()
 
@@ -75,10 +76,16 @@ const formattedEdgeShowType = computed(() => {
 			return i18nStore.translate('LABEL_ModelEditorMainMenu_associationShow_joinColumn')
 	}
 })
+
+const handleClickUnselect = (e: MouseEvent) => {
+	if (!judgeTargetIsInteraction(e)) {
+		SELECT.unselectAll()
+	}
+}
 </script>
 
 <template>
-	<div>
+	<div class="model-editor-main-menu" @click="handleClickUnselect">
 		<el-button @click="dataSourceLoadDialogStore.open()">
 			{{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromDataSource') }}
 		</el-button>
@@ -197,6 +204,15 @@ const formattedEdgeShowType = computed(() => {
 </template>
 
 <style scoped>
+.model-editor-main-menu {
+	padding: 0.2em 0 3em 1em;
+	height: 100%;
+	width: 100%;
+	overflow: auto;
+	white-space: nowrap;
+	scrollbar-gutter: stable;
+}
+
 .splitter {
 	width: 60%;
     min-width: 4em;

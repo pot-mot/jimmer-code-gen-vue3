@@ -29,6 +29,7 @@ const handleClickLabel = (e: MouseEvent) => {
 	if (e.ctrlKey) {
 		SELECT.toggleSelect(props.node.id)
 	} else {
+		SELECT.unselectAll()
 		VIEW.focus(props.node.id)
 	}
 }
