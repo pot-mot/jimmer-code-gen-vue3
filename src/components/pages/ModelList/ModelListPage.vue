@@ -9,7 +9,7 @@ import {sendI18nMessage} from "@/message/message.ts";
 import {datetimeFormat} from "@/utils/dateFormat.ts";
 import ModelDialog from "@/components/business/model/dialog/ModelDialog.vue";
 import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
-import {exportModelJson, importModelJSON} from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
+import {exportModelJson, importModelJSON} from "@/components/pages/ModelEditor/export/modelExport.ts";
 import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
 import {deleteConfirm} from "@/message/confirm.ts";
 import DataSourceMenu from "@/components/business/dataSource/menu/DataSourceMenu.vue";

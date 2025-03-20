@@ -64,7 +64,7 @@ import {
     syncSubGroupNameForTables
 } from "@/components/pages/ModelEditor/sync/syncSubGroup.ts";
 import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
-import {convertModel} from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
+import {convertModel} from "@/components/pages/ModelEditor/export/modelExport.ts";
 import {loadSupGroups} from "@/components/pages/ModelEditor/load/loadSubGroups.ts";
 import {loadEnums} from "@/components/pages/ModelEditor/load/loadEnums.ts";
 import {loadAssociationEdge} from "@/components/pages/ModelEditor/load/loadAssociationEdge.ts";

@@ -167,7 +167,7 @@ import {
     downloadModelZip,
     downloadZip,
     exportModelJson,
-} from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
+} from "@/components/pages/ModelEditor/export/modelExport.ts";
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {useDocumentEvent} from "@/utils/useDocumentEvent.ts";
 import MiniMap from "@/components/pages/ModelEditor/minimap/MiniMap.vue";
@@ -175,7 +175,7 @@ import {useDebugStore} from "@/store/debug/debugStore.ts";
 import {handleModelEditorKeyEvent} from "@/components/pages/ModelEditor/keyEvent/keyEvent.ts";
 import {validateModel} from "@/components/business/model/form/validateModel.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
-import {exportGraphPNG, exportGraphSVG,} from "@/components/pages/ModelEditor/file/graphFileOperations.ts";
+import {exportGraphPNG, exportGraphSVG,} from "@/components/pages/ModelEditor/export/graphExport.ts";
 import {MODEL_VALID_NOT_PASS, saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
 import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.ts";
 import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
