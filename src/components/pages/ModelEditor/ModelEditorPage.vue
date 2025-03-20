@@ -30,8 +30,9 @@ import EntityDialogs from "@/components/pages/ModelEditor/dialogs/entity/EntityD
 import SubGroupDialogs from "@/components/pages/ModelEditor/dialogs/subGroup/SubGroupDialogs.vue";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 import {GenModelInput} from "@/api/__generated/model/static";
+import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 
-const {MODEL, MODEL_EDITOR} = useModelEditorStore()
+const {MODEL, MODEL_EDITOR, SELECT} = useModelEditorStore()
 
 const i18nStore = useI18nStore()
 
@@ -137,10 +138,17 @@ watch(() => modelLoadMenu.value, () => {
 		}
 	)
 }, {immediate: true})
+
+const handleClickUnselect = (e: MouseEvent) => {
+	if (!judgeTargetIsInteraction(e)) {
+		console.log(e.target)
+		SELECT.unselectAll()
+	}
+}
 </script>
 
 <template>
-	<LeftTopBottomLayout>
+	<LeftTopBottomLayout @click="handleClickUnselect">
 		<template #left>
 			<div class="layout-menu-wrapper">
 				<ModelEditorMainMenu/>

@@ -29,16 +29,16 @@ import {unStyleAll} from "@/components/pages/ModelEditor/graph/highlight.ts";
 import {GraphData, useGraphDataOperation} from "@/components/global/graphEditor/data/graphData.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {Edge, Graph, Node} from '@antv/x6';
-import {getCenterPoint, useViewOperation, ViewOperation} from "@/components/global/graphEditor/view/viewOperation.ts";
+import {getCenterPoint, useViewOperation, GraphViewOperation} from "@/components/global/graphEditor/view/viewOperation.ts";
 import {
     syncEnumNameForEntities,
     syncEnumNameForTables,
     syncNewEnumForTables
 } from "@/components/pages/ModelEditor/sync/syncEnum.ts";
 import {syncSuperTableNameForTables} from "@/components/pages/ModelEditor/sync/syncSuperTable.ts";
-import {SelectOperation, useSelectOperation} from "@/components/global/graphEditor/selection/selectOperation.ts";
-import {HistoryOperation, useHistoryOperations} from "@/components/global/graphEditor/history/useHistory.ts";
-import {RemoveOperation, useRemoveOperation} from "@/components/global/graphEditor/remove/removeOperation.ts";
+import {GraphSelectOperation, useSelectOperation} from "@/components/global/graphEditor/selection/selectOperation.ts";
+import {GraphHistoryOperation, useHistoryOperations} from "@/components/global/graphEditor/history/useHistory.ts";
+import {GraphRemoveOperation, useRemoveOperation} from "@/components/global/graphEditor/remove/removeOperation.ts";
 import {ASSOCIATION_CREATE_PREFIX, useAssociationDialogsStore} from "@/store/modelEditor/AssociationDialogsStore.ts";
 import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge/updateData.ts";
 import {GraphReactiveState} from "@/components/global/graphEditor/data/reactiveState.ts";
@@ -77,14 +77,19 @@ type ModelReactiveState = {
     superTables: ComputedRef<Array<GenTableModelInput>>,
     selectedTables: ComputedRef<Array<GenTableModelInput>>,
     selectedTableNodePairs: ComputedRef<Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>>,
+
     associationEdges: DeepReadonly<Ref<Array<UnwrapRefSimple<Edge>>>>,
     associationEdgePairs: ComputedRef<Array<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>>,
     associations: ComputedRef<Array<GenAssociationModelInput>>,
     selectedAssociations: ComputedRef<Array<GenAssociationModelInput>>,
     selectedAssociationEdgePairs: ComputedRef<Array<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>>,
+
     subGroups: ComputedRef<Array<GenModelInput_TargetOf_subGroups>>,
+    selectedSubGroupMap: ComputedRef<Map<string, GenModelInput_TargetOf_subGroups>>,
     subGroupNameStyleMap: ComputedRef<Map<string, string>>,
-    enums: ComputedRef<Array<GenModelInput_TargetOf_enums>>
+
+    enums: ComputedRef<Array<GenModelInput_TargetOf_enums>>,
+    selectedEnumMap: ComputedRef<Map<string, GenModelInput_TargetOf_enums>>,
 }
 
 type ModelState = {
@@ -195,13 +200,23 @@ type ModelSyncState = {
     waitSyncTableIds: Ref<string[]>
 }
 
+type ModelSelectOperation = {
+    selectSubGroup: (...name: string[]) => void
+    unselectSubGroup: (...name: string[]) => void
+    toggleSelectSubGroup: (...name: string[]) => void
+
+    selectEnum: (...name: string[]) => void
+    unselectEnum: (...name: string[]) => void
+    toggleSelectEnum: (...name: string[]) => void
+}
+
 type ModelEditorStore = {
     GRAPH: UnwrapRefSimple<GraphState & GraphReactiveState & GraphLoadOperation>
 
-    SELECT: SelectOperation
-    VIEW: ViewOperation
-    HISTORY: HistoryOperation
-    REMOVE: RemoveOperation
+    SELECT: GraphSelectOperation & ModelSelectOperation
+    VIEW: GraphViewOperation
+    HISTORY: GraphHistoryOperation
+    REMOVE: GraphRemoveOperation
 
     MODEL: UnwrapRefSimple<ModelState & ModelReactiveState>
 
@@ -224,7 +239,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const graphDataOperation = useGraphDataOperation(_graph)
 
-    const SELECT = useSelectOperation(_graph)
+    const graphSelectOperation = useSelectOperation(_graph)
 
     const VIEW = useViewOperation(_graph)
 
@@ -311,11 +326,9 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         if (graphState.isLoaded.value) {
             loadModelEditorData(jsonParseThenConvertNullToUndefined(model.graphData), true)
-        } else {
-            graphLoadOperation.onLoaded(() => {
-                loadModelEditorData(jsonParseThenConvertNullToUndefined(model.graphData), true)
-            })
-        }
+        } else graphLoadOperation.onLoaded(() => {
+            loadModelEditorData(jsonParseThenConvertNullToUndefined(model.graphData), true)
+        })
 
         isLoaded.value = true
     }
@@ -450,6 +463,47 @@ const initModelEditorStore = (): ModelEditorStore => {
         return (currentModel.value?.subGroups ?? [])
     })
 
+    const selectedSubGroupNames = ref<Set<string>>(new Set)
+
+    watch(() => subGroups.value, (newVal) => {
+        selectedSubGroupNames.value = new Set(newVal
+            .map(it => it.name)
+            .filter(it => selectedSubGroupNames.value.has(it))
+        )
+    })
+
+    const selectedSubGroupMap = computed(() => {
+        const map = new Map<string, GenModelInput_TargetOf_subGroups>
+        for (const subGroup of subGroups.value) {
+            if (selectedSubGroupNames.value.has(subGroup.name)) {
+                map.set(subGroup.name, subGroup)
+            }
+        }
+        return map
+    })
+
+    const selectSubGroup = (...name: string[]) => {
+        for (const it of name) {
+            selectedSubGroupNames.value.add(it)
+        }
+    }
+
+    const unselectSubGroup = (...name: string[]) => {
+        for (const it of name) {
+            selectedSubGroupNames.value.delete(it)
+        }
+    }
+
+    const toggleSelectSubGroup = (...name: string[]) => {
+        for (const it of name) {
+            if (selectedSubGroupNames.value.has(it)) {
+                selectedSubGroupNames.value.delete(it)
+            } else {
+                selectedSubGroupNames.value.add(it)
+            }
+        }
+    }
+
     const subGroupNameStyleMap = computed(() => {
         const map = new Map<string, string>
         for (const subGroup of subGroups.value) {
@@ -458,9 +512,52 @@ const initModelEditorStore = (): ModelEditorStore => {
         return map
     })
 
+
     const enums = computed(() => {
         return (currentModel.value?.enums ?? [])
     })
+
+    const selectedEnumNames = ref<Set<string>>(new Set)
+
+    watch(() => enums.value, (newVal) => {
+        selectedEnumNames.value = new Set(newVal
+            .map(it => it.name)
+            .filter(it => selectedEnumNames.value.has(it))
+        )
+    })
+
+    const selectedEnumMap = computed(() => {
+        const map = new Map<string, GenModelInput_TargetOf_enums>
+        for (const genEnum of enums.value) {
+            if (selectedEnumNames.value.has(genEnum.name)) {
+                map.set(genEnum.name, genEnum)
+            }
+        }
+        return map
+    })
+
+
+    const selectEnum = (...name: string[]) => {
+        for (const it of name) {
+            selectedEnumNames.value.add(it)
+        }
+    }
+
+    const unselectEnum = (...name: string[]) => {
+        for (const it of name) {
+            selectedEnumNames.value.delete(it)
+        }
+    }
+
+    const toggleSelectEnum = (...name: string[]) => {
+        for (const it of name) {
+            if (selectedEnumNames.value.has(it)) {
+                selectedEnumNames.value.delete(it)
+            } else {
+                selectedEnumNames.value.add(it)
+            }
+        }
+    }
 
     const selectedTableNodePairs = computed(() => {
         return tableNodePairs.value.filter(it => graphReactiveState.selectedNodeMap.value.has(it.second.id))
@@ -485,14 +582,37 @@ const initModelEditorStore = (): ModelEditorStore => {
         superTables,
         selectedTables,
         selectedTableNodePairs,
+
         associationEdges,
         associationEdgePairs,
         associations,
         selectedAssociations,
         selectedAssociationEdgePairs,
+
         subGroups,
         subGroupNameStyleMap,
+        selectedSubGroupMap,
+
         enums,
+        selectedEnumMap,
+    }
+
+
+    const SELECT: GraphSelectOperation & ModelSelectOperation = {
+        ...graphSelectOperation,
+        selectSubGroup,
+        unselectSubGroup,
+        toggleSelectSubGroup,
+
+        selectEnum,
+        unselectEnum,
+        toggleSelectEnum,
+
+        unselectAll() {
+            graphSelectOperation.unselectAll()
+            selectedSubGroupNames.value.clear()
+            selectedEnumNames.value.clear()
+        }
     }
 
 
@@ -939,7 +1059,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             tableDialogsStore.close(createKey, true)
 
             setTimeout(() => {
-                SELECT.select(node)
+                graphSelectOperation.select(node)
             }, 200)
         }
 
@@ -1064,7 +1184,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             associationDialogsStore.close(createKey, true)
 
             setTimeout(() => {
-                SELECT.select(edge)
+                graphSelectOperation.select(edge)
             }, 200)
         }
 
@@ -1091,7 +1211,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         graph.stopBatch("batchCreatedAssociations")
 
         setTimeout(() => {
-            SELECT.select(edges)
+            graphSelectOperation.select(edges)
         }, 200)
 
         waitRefreshModelAndCode()

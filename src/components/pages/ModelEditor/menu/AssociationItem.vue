@@ -20,6 +20,10 @@ const props = defineProps<{
 
 const {GRAPH, MODEL_EDITOR, VIEW, SELECT} = useModelEditorStore()
 
+const isSelected = computed(() => {
+	return GRAPH.selectedEdgeMap.has(props.edge.id)
+})
+
 const handleClickAssociation = (e: MouseEvent) => {
 	if (e.ctrlKey) {
 		SELECT.toggleSelect(props.edge.id)
@@ -93,10 +97,6 @@ const targetLabel = computed<string | undefined>(() => {
 const handleEdit = (association: GenAssociationModelInput) => {
 	MODEL_EDITOR.editAssociation(props.edge.id, association)
 }
-
-const isSelected = computed(() => {
-	return GRAPH.selectedEdgeMap.has(props.edge.id)
-})
 </script>
 
 <template>

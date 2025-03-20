@@ -4,6 +4,7 @@ import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 import {deleteConfirm} from "@/message/confirm.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+import {computed} from "vue";
 
 const i18nStore = useI18nStore()
 
@@ -13,13 +14,16 @@ const props = defineProps<{
 
 const {MODEL_EDITOR, MODEL, SELECT} = useModelEditorStore()
 
-const handleClickLabel = (e: MouseEvent) => {
-	const matchedNodeIds = MODEL.tableNodePairs
-		.filter(it => it.first.columns.map(it => it.enum?.name).includes(props.genEnum.name))
-		.map(it => it.second.id)
+const isSelected = computed(() => {
+	return MODEL.selectedEnumMap.has(props.genEnum.name)
+})
 
+const handleClickLabel = (e: MouseEvent) => {
 	if (e.ctrlKey) {
-		SELECT.select(matchedNodeIds)
+		SELECT.toggleSelectEnum(props.genEnum.name)
+	} else {
+		SELECT.unselectAll()
+		SELECT.selectEnum(props.genEnum.name)
 	}
 }
 
@@ -35,7 +39,7 @@ const handleDelete = () => {
 </script>
 
 <template>
-	<div class="menu-item hover-show">
+	<div class="menu-item hover-show" :class="isSelected ? 'selected' : ''">
 		<el-text @click="handleClickLabel">
 			{{ genEnum.name }}
 			<Comment :comment="genEnum.comment"/>

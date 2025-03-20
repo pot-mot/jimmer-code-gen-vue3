@@ -5,7 +5,7 @@ import {getSelectedNodes} from "../selection/selectOperation.ts";
 import {CellProperty, getCell} from "@/components/global/graphEditor/inputProcess/cellsInputProcess.ts";
 import {DEFAULT_ZOOM_RANGE} from "@/components/pages/ModelEditor/constant.ts";
 
-export interface ViewOperation {
+export interface GraphViewOperation {
     layoutDirection: Ref<LayoutDirection>,
     getCenterPoint: () => { x: number, y: number },
     layout: () => void,
@@ -14,7 +14,7 @@ export interface ViewOperation {
     center: () => void
 }
 
-export const useViewOperation = (_graph: () => Graph): ViewOperation => {
+export const useViewOperation = (_graph: () => Graph): GraphViewOperation => {
     const layoutDirection: Ref<LayoutDirection> = ref("LR")
 
     return {

@@ -2,7 +2,7 @@ import {Edge, Graph, Node} from "@antv/x6";
 import {searchEdgesByNode} from "@/components/pages/ModelEditor/search/graphSearch.ts";
 import {CellProperty, getFirst} from "@/components/global/graphEditor/inputProcess/cellsInputProcess.ts";
 
-export interface SelectOperation {
+export interface GraphSelectOperation {
     select: (cells: CellProperty | CellProperty[]) => void
     unselect: (cells: CellProperty | CellProperty[]) => void
     toggleSelect: (cells: CellProperty | CellProperty[]) => void
@@ -14,7 +14,7 @@ export interface SelectOperation {
     getSelectedNodeConnectedEdges: () => Edge[]
 }
 
-export const useSelectOperation = (_graph: () => Graph): SelectOperation => {
+export const useSelectOperation = (_graph: () => Graph): GraphSelectOperation => {
     return {
         select: (cells: CellProperty | CellProperty[]) => select(_graph(), cells),
         unselect: (cells: CellProperty | CellProperty[]) => unselect(_graph(), cells),

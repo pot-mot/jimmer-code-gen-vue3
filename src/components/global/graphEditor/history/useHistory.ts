@@ -30,14 +30,14 @@ export const useHistory = (graph: Graph) => {
     })
 }
 
-export interface HistoryOperation {
+export interface GraphHistoryOperation {
     isUndo: Ref<Boolean>,
     isRedo: Ref<Boolean>,
     undo: () => void
     redo: () => void
 }
 
-export const useHistoryOperations = (_graph: () => Graph): HistoryOperation => {
+export const useHistoryOperations = (_graph: () => Graph): GraphHistoryOperation => {
     const isRedo = ref(false)
 
     const isUndo = ref(false)

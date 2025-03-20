@@ -1,6 +1,6 @@
 const interactionTagNames = ["INPUT", "TEXTAREA", "BUTTON"]
 
-export const interactionTagClassList = ["el-input", "el-input-number", "el-checkbox", "el-switch", "el-select", "monaco-editor", "code-preview", "splitpanes__splitter"]
+export const interactionTagClassList = ["el-input", "el-input-number", "el-checkbox", "el-switch", "el-select", "monaco-editor", "code-preview", "splitpanes__splitter", "menu-item"]
 
 export const containsClassList = (e: HTMLElement, classNames: string[]) => {
     for (let className of classNames) {

@@ -10,6 +10,8 @@ import {Node} from "@antv/x6";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
+const i18nStore = useI18nStore()
+
 interface TableItemProps {
     node: UnwrapRefSimple<Node>,
 	table: GenTableModelInput
@@ -19,7 +21,9 @@ const props = defineProps<TableItemProps>()
 
 const {GRAPH, MODEL_EDITOR, SELECT, VIEW} = useModelEditorStore()
 
-const i18nStore = useI18nStore()
+const isSelected = computed(() => {
+	return GRAPH.selectedNodeMap.has(props.node.id)
+})
 
 const handleClickLabel = (e: MouseEvent) => {
 	if (e.ctrlKey) {
@@ -38,10 +42,6 @@ const handleDelete = () => {
         MODEL_EDITOR.removeTable(props.node.id)
 	})
 }
-
-const isSelected = computed(() => {
-	return GRAPH.selectedNodeMap.has(props.node.id)
-})
 </script>
 
 <template>

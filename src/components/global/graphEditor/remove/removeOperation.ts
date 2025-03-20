@@ -1,7 +1,7 @@
 import {Cell, Edge, Graph, Node} from "@antv/x6";
 import {getSelectedEdges, getSelectedNodes} from "@/components/global/graphEditor/selection/selectOperation.ts";
 
-export interface RemoveOperation {
+export interface GraphRemoveOperation {
     removeCells: (cellInputs: (string | Cell)[]) => Cell[]
     removeNodes: (nodeInputs: (string | Node)[]) => Node[]
     removeEdges: (edgeInputs: (string | Edge)[]) => Edge[]
@@ -19,7 +19,7 @@ export const useRemoveOperation = (
     },
     onDeleted: (graph: Graph, cells: Cell[], target: string) => void = () => {
     },
-): RemoveOperation => {
+): GraphRemoveOperation => {
     return {
         removeCells: (cellInputs) => {
             const graph = _graph()
