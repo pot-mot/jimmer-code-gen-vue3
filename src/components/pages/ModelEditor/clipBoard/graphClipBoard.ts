@@ -76,16 +76,18 @@ const copy = async () => {
     const associations = associationEdgePairs.map(it => it.first)
     const edges = associationEdgePairs.map(it => it.second)
 
-    const enumNameSet = new Set(
-        tables
+    const enumNameSet = new Set<string>([
+        ...MODEL.selectedEnumMap.keys(),
+        ...tables
             .flatMap(it => it.columns.map(it => it.enum?.name))
             .filter(it => it !== undefined)
-    )
+    ])
 
     const enums =
         model.enums.filter(it => enumNameSet.has(it.name))
 
-    const subGroupNameSet = new Set([
+    const subGroupNameSet = new Set<string>([
+        ...MODEL.selectedSubGroupMap.keys(),
         ...tables
             .map(it => it.subGroup?.name)
             .filter(it => it !== undefined),
@@ -119,7 +121,7 @@ const cut = async () => {
 }
 
 const paste = async () => {
-    const {GRAPH, MODEL_EDITOR} = useModelEditorStore()
+    const {GRAPH, MODEL_EDITOR, SELECT} = useModelEditorStore()
 
     const graph = GRAPH._graph()
 
@@ -151,7 +153,14 @@ const paste = async () => {
                 optionsList
             } = value as CopyData
 
-            res = MODEL_EDITOR.loadInput({subGroups, enums, tables, associations, baseTableOptions, eachTableOptions: optionsList})
+            res = MODEL_EDITOR.loadInput({
+                subGroups,
+                enums,
+                tables,
+                associations,
+                baseTableOptions,
+                eachTableOptions: optionsList
+            })
         } else if (validateModelEditorData(value, (e) => validateErrors.push(e))) {
             const cells = value.json.cells as Cell[]
             graph.parseJSON(cells)
@@ -172,7 +181,7 @@ const paste = async () => {
 
             await syncTimeout(100 + nodes.length * 30 + edges.length * 20)
 
-            graph.resetSelection([...nodes.map(it => it.id), ...edges.map(it => it.id)])
+            SELECT.select([...nodes.map(it => it.id), ...edges.map(it => it.id)])
         }
     } catch (e) {
         sendI18nMessage('MESSAGE_clipBoard_cannotDirectLoad', 'error', e)
