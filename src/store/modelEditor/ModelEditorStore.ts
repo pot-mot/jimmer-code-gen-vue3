@@ -1,6 +1,6 @@
 import {GraphLoadOperation, GraphState, useGraph} from "@/components/global/graphEditor/load/GraphLoadState.ts";
 import {sendI18nMessage} from "@/message/message.ts";
-import {computed, ComputedRef, DeepReadonly, nextTick, Ref, ref, watch} from "vue";
+import {computed, ComputedRef, DeepReadonly, nextTick, Ref, ref, toRaw, watch} from "vue";
 import {api} from "@/api";
 import {
     EntityConfigInput,
@@ -29,7 +29,11 @@ import {unStyleAll} from "@/components/pages/ModelEditor/graph/highlight.ts";
 import {GraphData, useGraphDataOperation} from "@/components/global/graphEditor/data/graphData.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {Edge, Graph, Node} from '@antv/x6';
-import {getCenterPoint, useViewOperation, GraphViewOperation} from "@/components/global/graphEditor/view/viewOperation.ts";
+import {
+    getCenterPoint,
+    GraphViewOperation,
+    useViewOperation
+} from "@/components/global/graphEditor/view/viewOperation.ts";
 import {
     syncEnumNameForEntities,
     syncEnumNameForTables,
@@ -69,6 +73,7 @@ import {loadSupGroups} from "@/components/pages/ModelEditor/load/loadSubGroups.t
 import {loadEnums} from "@/components/pages/ModelEditor/load/loadEnums.ts";
 import {loadAssociationEdge} from "@/components/pages/ModelEditor/load/loadAssociationEdge.ts";
 import debounce from "lodash/debounce";
+import {useDebugStore} from "@/store/debug/debugStore.ts";
 
 type ModelReactiveState = {
     tableNodes: DeepReadonly<Ref<Array<UnwrapRefSimple<Node>>>>,
@@ -316,22 +321,6 @@ const initModelEditorStore = (): ModelEditorStore => {
     }
 
     const loadingStore = useGlobalLoadingStore()
-
-    const loadModelView = (model: GenModelView) => {
-        const contextStore = useGenConfigContextStore()
-
-        contextStore.merge(model)
-
-        currentModel.value = model
-
-        if (graphState.isLoaded.value) {
-            loadModelEditorData(jsonParseThenConvertNullToUndefined(model.graphData), true)
-        } else graphLoadOperation.onLoaded(() => {
-            loadModelEditorData(jsonParseThenConvertNullToUndefined(model.graphData), true)
-        })
-
-        isLoaded.value = true
-    }
 
 
     /**
@@ -1355,7 +1344,40 @@ const initModelEditorStore = (): ModelEditorStore => {
         }
     )()
 
+
+    const debugStore = useDebugStore()
+
+    const load = (model: GenModelView) => {
+        debugStore.log("HISTORY", "ModelEditor load start", model)
+
+        isLoaded.value = false
+
+        _graph().disableHistory()
+
+        const contextStore = useGenConfigContextStore()
+
+        contextStore.merge(model)
+
+        currentModel.value = model
+
+        if (graphState.isLoaded.value) {
+            loadModelEditorData(jsonParseThenConvertNullToUndefined(model.graphData), true)
+        } else graphLoadOperation.onLoaded(() => {
+            loadModelEditorData(jsonParseThenConvertNullToUndefined(model.graphData), true)
+        })
+
+        _graph().enableHistory()
+
+        isLoaded.value = true
+
+        debugStore.log("HISTORY", "ModelEditor load success", toRaw(currentModel.value))
+    }
+
     const unload = () => {
+        debugStore.log("HISTORY", "ModelEditor unload start")
+
+        isLoaded.value = false
+
         if (GRAPH.isLoaded) {
             GRAPH.unload()
         }
@@ -1365,18 +1387,26 @@ const initModelEditorStore = (): ModelEditorStore => {
         tableNodes.value = []
         associationEdges.value = []
 
-        isLoaded.value = false
+        useModelEditDialogStore().close()
+
+        useDataSourceLoadDialogStore().close()
+        useModelLoadDialogStore().close()
+
+        subGroupDialogsStore.closeAll()
+
+        tableDialogsStore.closeAll()
+        tableCombineDialogStore.close()
+
+        enumDialogsStore.closeAll()
 
         associationDialogsStore.closeAll()
         batchCreateAssociationsDialogStore.close()
-        useDataSourceLoadDialogStore().close()
-        useEntityDialogsStore().closeAll()
-        enumDialogsStore.closeAll()
-        useModelEditDialogStore().close()
-        useModelLoadDialogStore().close()
-        useMultiCodePreviewStore().close()
-        tableCombineDialogStore.close()
-        tableDialogsStore.closeAll()
+
+        entityDialogsStore.closeAll()
+
+        codePreviewStore.close()
+
+        debugStore.log("HISTORY", "ModelEditor unload success")
     }
 
     const MODEL = defineStore(
@@ -1387,7 +1417,7 @@ const initModelEditorStore = (): ModelEditorStore => {
                     return assertModel().value
                 },
                 isLoaded,
-                load: loadModelView,
+                load,
                 unload,
 
                 ...modelReactiveState
