@@ -608,10 +608,15 @@ const initModelEditorStore = (): ModelEditorStore => {
         unselectEnum,
         toggleSelectEnum,
 
+        selectAll() {
+            selectedSubGroupNames.value = new Set(subGroups.value.map(it => it.name))
+            selectedEnumNames.value = new Set(enums.value.map(it => it.name))
+            graphSelectOperation.selectAll()
+        },
         unselectAll() {
-            graphSelectOperation.unselectAll()
             selectedSubGroupNames.value.clear()
             selectedEnumNames.value.clear()
+            graphSelectOperation.unselectAll()
         }
     }
 
