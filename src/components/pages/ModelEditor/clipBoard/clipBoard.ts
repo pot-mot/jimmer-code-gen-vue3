@@ -9,7 +9,7 @@ import {validateModelInput} from "@/shape/ModelInput.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {validateTableModelInput} from "@/shape/GenTableModelInput.ts";
 import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
-import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
+import {TableLoadOptions} from "@/components/pages/ModelEditor/load/loadTableNode.ts";
 import {DeepReadonly} from "vue";
 
 export const useClipBoard = (graph: Graph) => {

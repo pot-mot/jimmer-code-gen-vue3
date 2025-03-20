@@ -15,8 +15,8 @@ import {
     Pair
 } from "@/api/__generated/model/static";
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
-import type {TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
-import {loadTableNode} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
+import type {TableLoadOptions} from "@/components/pages/ModelEditor/load/loadTableNode.ts";
+import {loadTableNode} from "@/components/pages/ModelEditor/load/loadTableNode.ts";
 import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts";
 import {ModelEditorData, validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
@@ -65,9 +65,9 @@ import {
 } from "@/components/pages/ModelEditor/sync/syncSubGroup.ts";
 import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
 import {convertModel} from "@/components/pages/ModelEditor/file/modelFileOperations.ts";
-import {loadSupGroups} from "@/components/pages/ModelEditor/graph/load/loadSubGroups.ts";
-import {loadEnums} from "@/components/pages/ModelEditor/graph/load/loadEnums.ts";
-import {loadAssociationEdge} from "@/components/pages/ModelEditor/graph/load/loadAssociationEdge.ts";
+import {loadSupGroups} from "@/components/pages/ModelEditor/load/loadSubGroups.ts";
+import {loadEnums} from "@/components/pages/ModelEditor/load/loadEnums.ts";
+import {loadAssociationEdge} from "@/components/pages/ModelEditor/load/loadAssociationEdge.ts";
 import debounce from "lodash/debounce";
 
 type ModelReactiveState = {

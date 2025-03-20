@@ -1,6 +1,6 @@
 import {GenModelInput_TargetOf_enums, GenModelInput_TargetOf_subGroups} from "@/api/__generated/model/static";
 import {DeepReadonly} from "vue";
-import {mergeWithExisted} from "@/components/pages/ModelEditor/graph/load/mergeWithExisted.ts";
+import {mergeWithExisted} from "@/components/pages/ModelEditor/load/mergeWithExisted.ts";
 import {jsonSortPropStringify} from "@/utils/json.ts";
 
 const keepEnumSuperTableLegal = (

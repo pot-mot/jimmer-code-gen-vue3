@@ -7,7 +7,7 @@ import {Node} from "@antv/x6";
 import {columnPortGroup} from "@/components/pages/ModelEditor/graph/tableNode/columnPort.ts";
 import {COLUMN_PORT_GROUP, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {DeepReadonly} from "vue";
-import {mergeWithExisted} from "@/components/pages/ModelEditor/graph/load/mergeWithExisted.ts";
+import {mergeWithExisted} from "@/components/pages/ModelEditor/load/mergeWithExisted.ts";
 
 export interface TableLoadOptions {
     x?: number,

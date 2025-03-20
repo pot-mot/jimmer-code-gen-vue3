@@ -8,7 +8,7 @@ import {
 } from "@/api/__generated/model/static";
 import {GenEnumModelInputJsonSchema} from "@/shape/GenEnumModelInput.ts";
 import type {DeepReadonly} from "vue";
-import {TableLoadOptions} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
+import {TableLoadOptions} from "@/components/pages/ModelEditor/load/loadTableNode.ts";
 import {GenModelInputJsonSchema} from "@/shape/ModelInput.ts";
 
 export interface CopyData {

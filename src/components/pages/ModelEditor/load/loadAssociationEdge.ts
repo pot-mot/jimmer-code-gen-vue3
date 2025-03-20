@@ -8,7 +8,7 @@ import {erRouter, orthRouter} from "@/components/global/graphEditor/edge/edgeRou
 import {ASSOCIATION_EDGE} from "@/components/pages/ModelEditor/constant.ts";
 import {PortManager} from "@antv/x6/es/model/port";
 import {DeepReadonly} from "vue";
-import {mergeWithExisted} from "@/components/pages/ModelEditor/graph/load/mergeWithExisted.ts";
+import {mergeWithExisted} from "@/components/pages/ModelEditor/load/mergeWithExisted.ts";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 
 type AssociationEdgeConnect = {

@@ -49,7 +49,7 @@ import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {sendMessage} from "@/message/message.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import {columnToPort} from "@/components/pages/ModelEditor/graph/load/loadTableNode.ts";
+import {columnToPort} from "@/components/pages/ModelEditor/load/loadTableNode.ts";
 import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {searchNodesByTableName} from "@/components/pages/ModelEditor/search/graphSearch.ts";
 import {refreshEdgeAssociation} from "@/components/pages/ModelEditor/graph/tableNode/refreshAssociationEdge.ts";
