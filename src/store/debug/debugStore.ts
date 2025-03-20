@@ -1,4 +1,4 @@
-import {computed, Ref, ref} from "vue";
+import {computed, Ref, ref, toRaw} from "vue";
 import {defineStore} from "pinia";
 
 export const DEBUG_CONSTANTS = [
@@ -46,7 +46,11 @@ export const useDebugStore = defineStore(
             }
 
             if (outputTypes.value.includes(type)) {
-                console.log(message, data)
+                if (data !== undefined) {
+                    console.log(message, toRaw(data))
+                } else {
+                    console.log(message)
+                }
             }
         }
 

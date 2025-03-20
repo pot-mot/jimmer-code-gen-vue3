@@ -4,7 +4,7 @@ import {ref} from "vue";
 import {Moon, Sunny, Tools} from "@element-plus/icons-vue"
 import TypeMappingForm from "@/components/business/typeMapping/TypeMappingForm.vue";
 import ColumnDefaultForm from "@/components/business/columnDefault/ColumnDefaultForm.vue";
-import DebugForm from "@/debug/DebugForm.vue";
+import DebugForm from "@/components/global/debug/DebugForm.vue";
 import GlobalGenConfigForm from "@/components/business/genConfig/GlobalGenConfigForm.vue";
 import {languageTypes, useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {ProjectLocale} from "@/i18n";
