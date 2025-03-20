@@ -21,6 +21,7 @@
     "@antv/x6-vue-shape": "^2.1.2",
     "@element-plus/icons-vue": "^2.3.1",
     "ajv": "^8.17.1",
+    "default-passive-events": "^2.0.0",
     "element-plus": "^2.8.4",
     "file-saver": "^2.0.5",
     "jszip": "^3.10.1",

@@ -1,6 +1,8 @@
 import {createApp} from 'vue'
 import App from './App.vue'
 import {router} from './router'
+import 'default-passive-events'
+
 import {createPinia} from 'pinia'
 
 import ElementPlus from 'element-plus'
