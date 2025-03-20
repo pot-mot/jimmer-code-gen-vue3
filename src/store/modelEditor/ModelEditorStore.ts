@@ -200,7 +200,7 @@ type ModelSyncState = {
     waitSyncTableIds: Ref<string[]>
 }
 
-type ModelSelectOperation = {
+type ModelSelectOperation = GraphSelectOperation & {
     selectSubGroup: (...name: string[]) => void
     unselectSubGroup: (...name: string[]) => void
     toggleSelectSubGroup: (...name: string[]) => void
@@ -213,7 +213,7 @@ type ModelSelectOperation = {
 type ModelEditorStore = {
     GRAPH: UnwrapRefSimple<GraphState & GraphReactiveState & GraphLoadOperation>
 
-    SELECT: GraphSelectOperation & ModelSelectOperation
+    SELECT: ModelSelectOperation
     VIEW: GraphViewOperation
     HISTORY: GraphHistoryOperation
     REMOVE: GraphRemoveOperation
@@ -598,7 +598,7 @@ const initModelEditorStore = (): ModelEditorStore => {
     }
 
 
-    const SELECT: GraphSelectOperation & ModelSelectOperation = {
+    const SELECT: ModelSelectOperation = {
         ...graphSelectOperation,
         selectSubGroup,
         unselectSubGroup,
