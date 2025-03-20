@@ -38,10 +38,9 @@
 </template>
 
 <script lang='ts' setup>
-import {computed, inject, nextTick, onMounted, ref, watch} from "vue";
+import {inject, nextTick, onMounted, ref, watch} from "vue";
 import {
 	GenAssociationModelInput,
-	GenModelInput_TargetOf_subGroups,
 	GenTableModelInput,
 } from "@/api/__generated/model/static";
 import {Node} from '@antv/x6'
@@ -66,17 +65,17 @@ const node = ref<Node>()
 
 const table = ref<GenTableModelInput>()
 
-const subGroup = computed<GenModelInput_TargetOf_subGroups | undefined>(() => {
-	return MODEL.subGroups.find(it => it.name === table.value?.subGroup?.name)
-})
-
-watch(() => subGroup.value, (newVal) => {
+// 根据 subGroup 设置 tableNode 颜色
+watch(() => table.value, (newVal) => {
 	if (wrapper.value) {
-		if (newVal && newVal.style.length > 0) {
-			wrapper.value.style.setProperty("--border-color", newVal.style)
-		} else {
-			wrapper.value.style.removeProperty("--border-color")
-		}
+		if (newVal && newVal.subGroup?.name) {
+            const color = MODEL.subGroupNameStyleMap.get(newVal.subGroup.name)
+            if (color) {
+                wrapper.value.style.setProperty("--border-color", color)
+                return
+            }
+        }
+        wrapper.value.style.removeProperty("--border-color")
 	}
 })
 
