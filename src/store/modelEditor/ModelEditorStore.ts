@@ -438,36 +438,16 @@ const initModelEditorStore = (): ModelEditorStore => {
             .map(it => it.data.association)
     )
 
-    // 枚举和子组根据名称排序，并设置枚举 packagePath
-    watch(() => currentModel.value, (value) => {
-        if (value !== undefined) {
-            const subGroupPackageMap = new Map<string, string>
-            value.subGroups.forEach(subGroup => {
-                subGroupPackageMap.set(subGroup.name, subGroup.subPackagePath)
-            })
-
-            value.enums.forEach(genEnum => {
-                const subGroupPackagePath = genEnum.subGroup ? subGroupPackageMap.get(genEnum.subGroup.name) : undefined
-                if (subGroupPackagePath) {
-                    genEnum.packagePath = `${value.packagePath}.enums.${subGroupPackagePath}`
-                } else {
-                    genEnum.packagePath = value.packagePath + ".enums"
-                }
-            })
-            value.enums.sort((a, b) => {
-                if (a.name < b.name) return -1
-                else return 1
-            })
-            value.subGroups.sort((a, b) => {
-                if (a.name < b.name) return -1
-                else return 1
-            })
-            currentModel.value = value
-        }
-    }, {immediate: true, deep: true})
 
     const subGroups = computed(() => {
-        return (currentModel.value?.subGroups ?? [])
+        if (!currentModel.value) return []
+
+        const value = cloneDeepReadonly<GenModelView>(currentModel.value)
+
+        return value.subGroups.sort((a, b) => {
+            if (a.name < b.name) return -1
+            else return 1
+        })
     })
 
     const selectedSubGroupNames = ref<Set<string>>(new Set)
@@ -521,7 +501,28 @@ const initModelEditorStore = (): ModelEditorStore => {
 
 
     const enums = computed(() => {
-        return (currentModel.value?.enums ?? [])
+        if (!currentModel.value) return []
+
+        const value = cloneDeepReadonly<GenModelView>(currentModel.value)
+
+        const subGroupPackageMap = new Map<string, string>
+        value.subGroups.forEach(subGroup => {
+            subGroupPackageMap.set(subGroup.name, subGroup.subPackagePath)
+        })
+
+        value.enums.forEach(genEnum => {
+            const subGroupPackagePath = genEnum.subGroup ? subGroupPackageMap.get(genEnum.subGroup.name) : undefined
+            if (subGroupPackagePath) {
+                genEnum.packagePath = `${value.packagePath}.enums.${subGroupPackagePath}`
+            } else {
+                genEnum.packagePath = value.packagePath + ".enums"
+            }
+        })
+        value.enums.sort((a, b) => {
+            if (a.name < b.name) return -1
+            else return 1
+        })
+        return value.enums
     })
 
     const selectedEnumNames = ref<Set<string>>(new Set)
