@@ -339,6 +339,18 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const loadingStore = useGlobalLoadingStore()
 
+    const bindGraphHistoryChangeDebug = (graph: Graph) => {
+        graph.on('history:change', (args) => {
+            const message = args.options.name ?? 'history:change'
+            debugStore.log('HISTORY', message, args.cmds)
+        })
+    }
+    if (graphState.isLoaded.value) {
+        bindGraphHistoryChangeDebug(graphState._graph())
+    } else graphLoadOperation.onLoaded((graph) => {
+        if (!graph) return
+        bindGraphHistoryChangeDebug(graph)
+    })
 
     /**
      * 小地图同步

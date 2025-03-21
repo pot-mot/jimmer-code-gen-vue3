@@ -22,6 +22,7 @@ import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {Node} from "@antv/x6";
 import SubGroupItem from "@/components/pages/ModelEditor/menu/SubGroupItem.vue";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
+import {handleMenuKeyEvent} from "@/components/pages/ModelEditor/menu/menuKeyEvent.ts";
 
 const i18nStore = useI18nStore()
 
@@ -85,7 +86,7 @@ const handleClickUnselect = (e: MouseEvent) => {
 </script>
 
 <template>
-	<div class="model-editor-main-menu" @click="handleClickUnselect">
+	<div class="model-editor-main-menu" @click="handleClickUnselect" tabindex="-1" @keydown="handleMenuKeyEvent">
 		<el-button @click="dataSourceLoadDialogStore.open()">
 			{{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromDataSource') }}
 		</el-button>

@@ -157,7 +157,6 @@ import ScaleBar from "@/components/global/graphEditor/scale/ScaleBar.vue";
 import GraphSearcher from "@/components/pages/ModelEditor/search/GraphSearcher.vue";
 import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
 import {EditPen} from "@element-plus/icons-vue";
-import {useClipBoard} from "@/components/pages/ModelEditor/clipBoard/graphClipBoard.ts";
 import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";
 import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
 import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
@@ -171,8 +170,7 @@ import {
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {useDocumentEvent} from "@/utils/useDocumentEvent.ts";
 import MiniMap from "@/components/pages/ModelEditor/minimap/MiniMap.vue";
-import {useDebugStore} from "@/store/debug/debugStore.ts";
-import {handleModelEditorKeyEvent} from "@/components/pages/ModelEditor/keyEvent/keyEvent.ts";
+import {bindGraphKeyEvent} from "@/components/pages/ModelEditor/graph/graphKeyEvent.ts";
 import {validateModel} from "@/components/business/model/form/validateModel.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {exportGraphPNG, exportGraphSVG,} from "@/components/pages/ModelEditor/export/graphExport.ts";
@@ -195,17 +193,10 @@ const modelEditorDialog = useModelEditDialogStore()
 
 const loadingStore = useGlobalLoadingStore()
 
-const debugStore = useDebugStore()
-
 onMounted(loadingStore.withLoading('ModelEditorGraph onMounted', () => {
     graph = initModelEditor(container.value!, wrapper.value!)
 
     GRAPH.load(graph)
-
-    graph.on('history:change', (args) => {
-        const message = args.options.name ?? 'history:change'
-        debugStore.log('HISTORY', message, args.cmds)
-    })
 
 	graph.on('blank:click', () => {
 		SELECT.unselectAll()
@@ -219,9 +210,7 @@ onMounted(loadingStore.withLoading('ModelEditorGraph onMounted', () => {
         handleNodeClick(node)
     })
 
-    handleModelEditorKeyEvent(graph)
-
-    useClipBoard(graph)
+    bindGraphKeyEvent(graph)
 }))
 
 onBeforeUnmount(() => {
