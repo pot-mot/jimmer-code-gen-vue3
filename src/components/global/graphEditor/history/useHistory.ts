@@ -1,24 +1,24 @@
 import {Graph} from "@antv/x6";
-import {History} from "@antv/x6-plugin-history";
 import {sendI18nMessage} from "@/message/message.ts";
 import {Ref, ref} from "vue";
+import {CustomHistory} from "@/components/global/graphEditor/history/CustomHistory.ts";
 
-export const useHistory = (graph: Graph) => {
-    graph.use(
-        new History({
-            enabled: true,
-            beforeAddCommand: (event, args) => {
-                if (event === "cell:change:*" && args && 'key' in args) {
-                    // 取消记录所有变更 zIndex
-                    if (args.key === 'zIndex') {
-                        return false
-                    }
+export const useHistory = <CommandMap extends {execute: {value: string}}> (graph: Graph): CustomHistory<CommandMap> => {
+    const customHistory = new CustomHistory<CommandMap>({
+        enabled: true,
+        beforeAddCommand(event, args) {
+            if (event === "cell:change:*" && args && 'key' in args) {
+                // 取消记录所有变更 zIndex
+                if (args.key === 'zIndex') {
+                    return false
                 }
-
-                return true
             }
-        })
-    )
+
+            return true
+        }
+    })
+
+    graph.use(customHistory)
 
     // 默认合并移动事件
     graph.on('node:move', () => {
@@ -28,6 +28,21 @@ export const useHistory = (graph: Graph) => {
     graph.on('node:moved', () => {
         graph.stopBatch('node move')
     })
+
+    customHistory.registerCommand("execute", {
+        applyAction: (options) => {
+            console.log(options.value)
+        },
+        revertAction: (options) => {
+            console.log(options.value, "rollback")
+        }
+    })
+
+    setTimeout(() => {
+        customHistory.pushCommand("execute", {value: "world"})
+    }, 1000)
+
+    return customHistory
 }
 
 export interface GraphHistoryOperation {
