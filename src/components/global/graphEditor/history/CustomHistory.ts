@@ -38,7 +38,7 @@ export class CustomHistory<CommandMap extends CustomCommandMap> extends History 
         const cmd = this.createCommand()
         cmd.data = {customCommandKey, customCommandArgs} as any
 
-        if (this.batchCommands) {
+        if (this.batchCommands !== null && this.batchCommands !== undefined) {
             cmd.batch = true
             this.batchCommands.push(cmd)
         } else {

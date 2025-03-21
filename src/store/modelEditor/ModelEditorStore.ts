@@ -79,6 +79,7 @@ import {loadAssociationEdge} from "@/components/pages/ModelEditor/load/loadAssoc
 import debounce from "lodash/debounce";
 import {useDebugStore} from "@/store/debug/debugStore.ts";
 import {CustomHistory} from "@/components/global/graphEditor/history/CustomHistory.ts";
+import {jsonSortPropStringify} from "@/utils/json.ts";
 
 type ModelReactiveState = {
     tableNodes: DeepReadonly<Ref<Array<UnwrapRefSimple<Node>>>>,
@@ -635,20 +636,24 @@ const initModelEditorStore = (): ModelEditorStore => {
     let subGroupsHistoryChangeWatcher: WatchStopHandle | undefined
     const initSubGroupHistoryChangeWatcher = () => {
         subGroupsHistoryChangeWatcher = watch(() => subGroups.value, (newVal, oldVal) => {
-            modelCustomHistory?.pushCommand("modelSubGroupsChange", {
+            const data = {
                 newSubGroups: cloneDeepReadonly<GenModelInput_TargetOf_subGroups[]>(toRaw(newVal)),
                 oldSubGroups: cloneDeepReadonly<GenModelInput_TargetOf_subGroups[]>(toRaw(oldVal)),
-            })
+            }
+            if (jsonSortPropStringify(data.newSubGroups) === jsonSortPropStringify(data.oldSubGroups)) return
+            modelCustomHistory?.pushCommand("modelSubGroupsChange", data)
         }, {deep: true})
     }
 
     let enumsHistoryChangeWatcher: WatchStopHandle | undefined
     const initEnumsHistoryChangeWatcher = () => {
         enumsHistoryChangeWatcher = watch(() => enums.value, (newVal, oldVal) => {
-            modelCustomHistory?.pushCommand("modelEnumsChange", {
+            const data = {
                 newEnums: cloneDeepReadonly<GenModelInput_TargetOf_enums[]>(toRaw(newVal)),
                 oldEnums: cloneDeepReadonly<GenModelInput_TargetOf_enums[]>(toRaw(oldVal)),
-            })
+            }
+            if (jsonSortPropStringify(data.newEnums) === jsonSortPropStringify(data.oldEnums)) return
+            modelCustomHistory?.pushCommand("modelEnumsChange", data)
         }, {deep: true})
     }
 
