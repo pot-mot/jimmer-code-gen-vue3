@@ -35,9 +35,28 @@ export class CustomHistory<CommandMap extends CustomCommandMap> extends History 
         customCommandKey: Key,
         customCommandArgs: CommandMap[Key],
     ) {
-        const cmd = this.createCommand({batch: false});
-        cmd.data = {customCommandKey, customCommandArgs} as any;
-        this.push(cmd, {});
+        const cmd = this.createCommand()
+        cmd.data = {customCommandKey, customCommandArgs} as any
+
+        if (this.batchCommands) {
+            cmd.batch = true
+            this.batchCommands.push(cmd)
+        } else {
+            this.push(cmd, {})
+        }
+    }
+
+    protected filterBatchCommand(batchCommands: History.Command[]): History.Command[] {
+        const result: History.Command[] = []
+
+        for (const cmd of batchCommands) {
+            if (cmd.data && "customCommandKey" in cmd.data && "customCommandArgs" in cmd.data) {
+                result.push(cmd)
+            }
+        }
+        result.push(...super.filterBatchCommand(batchCommands))
+
+        return result
     }
 
     protected executeCommand(cmd: History.Command, revert: boolean, options: KeyValue) {

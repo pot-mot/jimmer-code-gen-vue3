@@ -1,9 +1,9 @@
 import {Graph} from "@antv/x6";
 import {sendI18nMessage} from "@/message/message.ts";
 import {Ref, ref} from "vue";
-import {CustomHistory} from "@/components/global/graphEditor/history/CustomHistory.ts";
+import {CustomCommandMap, CustomHistory} from "@/components/global/graphEditor/history/CustomHistory.ts";
 
-export const useHistory = <CommandMap extends {execute: {value: string}}> (graph: Graph): CustomHistory<CommandMap> => {
+export const useHistory = <CommandMap extends CustomCommandMap> (graph: Graph): CustomHistory<CommandMap> => {
     const customHistory = new CustomHistory<CommandMap>({
         enabled: true,
         beforeAddCommand(event, args) {
@@ -28,19 +28,6 @@ export const useHistory = <CommandMap extends {execute: {value: string}}> (graph
     graph.on('node:moved', () => {
         graph.stopBatch('node move')
     })
-
-    customHistory.registerCommand("execute", {
-        applyAction: (options) => {
-            console.log(options.value)
-        },
-        revertAction: (options) => {
-            console.log(options.value, "rollback")
-        }
-    })
-
-    setTimeout(() => {
-        customHistory.pushCommand("execute", {value: "world"})
-    }, 1000)
 
     return customHistory
 }

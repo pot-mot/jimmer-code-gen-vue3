@@ -280,21 +280,20 @@ const handleSaveModel = loadingStore.withLoading('ModelEditorGraph handleSaveMod
     }
 })
 
-const handleSaveEvent = (e: KeyboardEvent) => {
+useDocumentEvent('keydown', (e) => {
     if (e.ctrlKey || e.metaKey) {
         if (e.key === 's') {
             e.preventDefault()
             handleSaveModel()
         }
     }
-}
-
-useDocumentEvent('keydown', handleSaveEvent)
+})
 
 const handleEditModel = () => {
     modelEditorDialog.handleEdit()
 }
 
+// 拖曳状态标记
 const isDragging = ref(false)
 
 useDocumentEvent('mousedown', (e) => {

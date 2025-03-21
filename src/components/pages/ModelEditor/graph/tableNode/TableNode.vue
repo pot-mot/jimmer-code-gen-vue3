@@ -66,10 +66,10 @@ const node = ref<Node>()
 const table = ref<GenTableModelInput>()
 
 // 根据 subGroup 设置 tableNode 颜色
-watch(() => table.value, (newVal) => {
-	if (wrapper.value) {
-		if (newVal && newVal.subGroup?.name) {
-            const color = MODEL.subGroupNameStyleMap.get(newVal.subGroup.name)
+watch(() => [table.value, MODEL.subGroupNameStyleMap], () => {
+	if (wrapper.value && table.value) {
+		if (table.value.subGroup?.name) {
+            const color = MODEL.subGroupNameStyleMap.get(table.value.subGroup.name)
             if (color) {
                 wrapper.value.style.setProperty("--border-color", color)
                 return

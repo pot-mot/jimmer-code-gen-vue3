@@ -1,6 +1,5 @@
 import {Graph} from "@antv/x6";
 import debounce from "lodash/debounce";
-import {useHistory} from "./history/useHistory.ts";
 import {useSelection} from "./selection/useSelection.ts";
 import {useKeyBoard} from "@/components/global/graphEditor/keyboard/useKeyBoard.ts";
 import {Options as GraphOptions} from "@antv/x6/src/graph/options.ts";
@@ -27,7 +26,6 @@ export const initGraphEditor = (
     resizeOb.observe(wrapper)
 
     useKeyBoard(graph)
-    useHistory(graph)
     useSelection(graph)
     useExport(graph)
 

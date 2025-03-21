@@ -1,6 +1,6 @@
 import {GraphLoadOperation, GraphState, useGraph} from "@/components/global/graphEditor/load/GraphLoadState.ts";
 import {sendI18nMessage} from "@/message/message.ts";
-import {computed, ComputedRef, DeepReadonly, nextTick, Ref, ref, toRaw, watch} from "vue";
+import {computed, ComputedRef, DeepReadonly, nextTick, Ref, ref, toRaw, watch, WatchStopHandle} from "vue";
 import {api} from "@/api";
 import {
     EntityConfigInput,
@@ -41,7 +41,11 @@ import {
 } from "@/components/pages/ModelEditor/sync/syncEnum.ts";
 import {syncSuperTableNameForTables} from "@/components/pages/ModelEditor/sync/syncSuperTable.ts";
 import {GraphSelectOperation, useSelectOperation} from "@/components/global/graphEditor/selection/selectOperation.ts";
-import {GraphHistoryOperation, useHistoryOperations} from "@/components/global/graphEditor/history/useHistory.ts";
+import {
+    GraphHistoryOperation,
+    useHistory,
+    useHistoryOperations
+} from "@/components/global/graphEditor/history/useHistory.ts";
 import {GraphRemoveOperation, useRemoveOperation} from "@/components/global/graphEditor/remove/removeOperation.ts";
 import {ASSOCIATION_CREATE_PREFIX, useAssociationDialogsStore} from "@/store/modelEditor/AssociationDialogsStore.ts";
 import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge/updateData.ts";
@@ -74,6 +78,7 @@ import {loadEnums} from "@/components/pages/ModelEditor/load/loadEnums.ts";
 import {loadAssociationEdge} from "@/components/pages/ModelEditor/load/loadAssociationEdge.ts";
 import debounce from "lodash/debounce";
 import {useDebugStore} from "@/store/debug/debugStore.ts";
+import {CustomHistory} from "@/components/global/graphEditor/history/CustomHistory.ts";
 
 type ModelReactiveState = {
     tableNodes: DeepReadonly<Ref<Array<UnwrapRefSimple<Node>>>>,
@@ -213,6 +218,17 @@ type ModelSelectOperation = GraphSelectOperation & {
     selectEnum: (...name: string[]) => void
     unselectEnum: (...name: string[]) => void
     toggleSelectEnum: (...name: string[]) => void
+}
+
+type ModelHistoryCommandMap = {
+    modelSubGroupsChange: {
+        oldSubGroups: DeepReadonly<GenModelInput_TargetOf_subGroups[]>,
+        newSubGroups: DeepReadonly<GenModelInput_TargetOf_subGroups[]>
+    }
+    modelEnumsChange: {
+        oldEnums: DeepReadonly<GenModelInput_TargetOf_enums[]>,
+        newEnums: DeepReadonly<GenModelInput_TargetOf_enums[]>
+    }
 }
 
 type ModelEditorStore = {
@@ -430,8 +446,9 @@ const initModelEditorStore = (): ModelEditorStore => {
             })
 
             value.enums.forEach(genEnum => {
-                if (genEnum.subGroup) {
-                    genEnum.packagePath = `${value.packagePath}.enums.${subGroupPackageMap.get(genEnum.subGroup.name)}`
+                const subGroupPackagePath = genEnum.subGroup ? subGroupPackageMap.get(genEnum.subGroup.name) : undefined
+                if (subGroupPackagePath) {
+                    genEnum.packagePath = `${value.packagePath}.enums.${subGroupPackagePath}`
                 } else {
                     genEnum.packagePath = value.packagePath + ".enums"
                 }
@@ -459,7 +476,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             .map(it => it.name)
             .filter(it => selectedSubGroupNames.value.has(it))
         )
-    })
+    }, {immediate: true, deep: true})
 
     const selectedSubGroupMap = computed(() => {
         const map = new Map<string, GenModelInput_TargetOf_subGroups>
@@ -513,7 +530,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             .map(it => it.name)
             .filter(it => selectedEnumNames.value.has(it))
         )
-    })
+    }, {immediate: true, deep: true})
 
     const selectedEnumMap = computed(() => {
         const map = new Map<string, GenModelInput_TargetOf_enums>
@@ -608,6 +625,79 @@ const initModelEditorStore = (): ModelEditorStore => {
             graphSelectOperation.unselectAll()
         }
     }
+
+
+    /**
+     * 设置模型自定义历史记录
+     */
+    let modelCustomHistory: CustomHistory<ModelHistoryCommandMap> | undefined
+
+    let subGroupsHistoryChangeWatcher: WatchStopHandle | undefined
+    const initSubGroupHistoryChangeWatcher = () => {
+        subGroupsHistoryChangeWatcher = watch(() => subGroups.value, (newVal, oldVal) => {
+            modelCustomHistory?.pushCommand("modelSubGroupsChange", {
+                newSubGroups: cloneDeepReadonly<GenModelInput_TargetOf_subGroups[]>(toRaw(newVal)),
+                oldSubGroups: cloneDeepReadonly<GenModelInput_TargetOf_subGroups[]>(toRaw(oldVal)),
+            })
+        }, {deep: true})
+    }
+
+    let enumsHistoryChangeWatcher: WatchStopHandle | undefined
+    const initEnumsHistoryChangeWatcher = () => {
+        enumsHistoryChangeWatcher = watch(() => enums.value, (newVal, oldVal) => {
+            modelCustomHistory?.pushCommand("modelEnumsChange", {
+                newEnums: cloneDeepReadonly<GenModelInput_TargetOf_enums[]>(toRaw(newVal)),
+                oldEnums: cloneDeepReadonly<GenModelInput_TargetOf_enums[]>(toRaw(oldVal)),
+            })
+        }, {deep: true})
+    }
+
+    const registerModelHistory = (graph: Graph) => {
+        modelCustomHistory = useHistory<ModelHistoryCommandMap>(graph)
+        modelCustomHistory.registerCommand("modelSubGroupsChange", {
+            applyAction: ({newSubGroups}) => {
+                const model = assertModel().value
+                subGroupsHistoryChangeWatcher?.()
+                model.subGroups = cloneDeepReadonly<GenModelInput_TargetOf_subGroups[]>(newSubGroups)
+                initSubGroupHistoryChangeWatcher()
+            },
+            revertAction: ({oldSubGroups}) => {
+                const model = assertModel().value
+                subGroupsHistoryChangeWatcher?.()
+                model.subGroups = cloneDeepReadonly<GenModelInput_TargetOf_subGroups[]>(oldSubGroups)
+                initSubGroupHistoryChangeWatcher()
+            },
+        })
+        modelCustomHistory.registerCommand("modelEnumsChange", {
+            applyAction: ({newEnums}) => {
+                const model = assertModel().value
+                enumsHistoryChangeWatcher?.()
+                model.enums = cloneDeepReadonly<GenModelInput_TargetOf_enums[]>(newEnums)
+                initEnumsHistoryChangeWatcher()
+            },
+            revertAction: ({oldEnums}) => {
+                const model = assertModel().value
+                enumsHistoryChangeWatcher?.()
+                model.enums = cloneDeepReadonly<GenModelInput_TargetOf_enums[]>(oldEnums)
+                initEnumsHistoryChangeWatcher()
+            },
+        })
+
+        initSubGroupHistoryChangeWatcher()
+        initEnumsHistoryChangeWatcher()
+    }
+
+    if (graphState.isLoaded.value) {
+        registerModelHistory(_graph())
+    } else {
+        graphLoadOperation.onLoaded(graph => {
+            if (graph) registerModelHistory(graph)
+        })
+    }
+    graphLoadOperation.onUnloaded(() => {
+        subGroupsHistoryChangeWatcher?.()
+        enumsHistoryChangeWatcher?.()
+    })
 
 
     const loadInput = (
@@ -968,21 +1058,23 @@ const initModelEditorStore = (): ModelEditorStore => {
     }
 
     const createdSubGroup = (createKey: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
-        assertModel().value.subGroups.push(cloneDeepReadonly<GenModelInput_TargetOf_subGroups>(subGroup))
+        startBatchSync('createdSubGroup', () => {
+            assertModel().value.subGroups.push(cloneDeepReadonly<GenModelInput_TargetOf_subGroups>(subGroup))
 
-        const options = subGroupCreateOptionsMap.get(createKey)
+            const options = subGroupCreateOptionsMap.get(createKey)
 
-        if (options !== undefined) {
-            const {tableKey, enumKey} = options
-            if (tableKey) {
-                syncNewSubGroupForTables(subGroup, tableKey)
+            if (options !== undefined) {
+                const {tableKey, enumKey} = options
+                if (tableKey) {
+                    syncNewSubGroupForTables(subGroup, tableKey)
+                }
+                if (enumKey) {
+                    syncNewSubGroupForEnums(subGroup, enumKey)
+                }
             }
-            if (enumKey) {
-                syncNewSubGroupForEnums(subGroup, enumKey)
-            }
-        }
 
-        subGroupCreateOptionsMap.delete(createKey)
+            subGroupCreateOptionsMap.delete(createKey)
+        })
 
         subGroupDialogsStore.close(createKey, true)
 
@@ -996,17 +1088,16 @@ const initModelEditorStore = (): ModelEditorStore => {
     const editedSubGroup = (name: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
         const oldName = name
 
-        assertModel().value.subGroups = [
-            ...assertModel().value.subGroups.filter(it => it.name !== oldName),
-            cloneDeepReadonly<GenModelInput_TargetOf_subGroups>(subGroup)
-        ]
+        startBatchSync('editedSubGroup', () => {
+            assertModel().value.subGroups = [
+                ...assertModel().value.subGroups.filter(it => it.name !== oldName),
+                cloneDeepReadonly<GenModelInput_TargetOf_subGroups>(subGroup)
+            ]
+            syncSubGroupNameForEnums(assertModel(), oldName, subGroup.name)
+            syncSubGroupNameForTables(_graph(), oldName, subGroup.name)
+        })
 
         subGroupDialogsStore.close(name, true)
-
-        startBatchSync('editedSubGroup', () => {
-            syncSubGroupNameForTables(_graph(), oldName, subGroup.name)
-            syncSubGroupNameForEnums(assertModel(), oldName, subGroup.name)
-        })
 
         waitRefreshModelAndCode()
     }
@@ -1014,9 +1105,8 @@ const initModelEditorStore = (): ModelEditorStore => {
     const removeSubGroup = (name: string) => {
         const oldName = name
 
-        assertModel().value.subGroups = assertModel().value.subGroups.filter(it => it.name !== oldName)
-
         startBatchSync('removeSubGroup', () => {
+            assertModel().value.subGroups = assertModel().value.subGroups.filter(it => it.name !== oldName)
             syncSubGroupNameForTables(_graph(), oldName, undefined)
             syncSubGroupNameForEnums(assertModel(), oldName, undefined)
         })
@@ -1042,20 +1132,22 @@ const initModelEditorStore = (): ModelEditorStore => {
     const createdTable = async (createKey: string, table: DeepReadonly<GenTableModelInput>) => {
         const options = tableCreateOptionsMap.get(createKey)
 
-        const node = loadInput({
-            tables: [table],
-            eachTableOptions: [options]
-        }).nodes[0]
+        startBatchSync('createdTable', () => {
+            const node = loadInput({
+                tables: [table],
+                eachTableOptions: [options]
+            }).nodes[0]
 
-        tableCreateOptionsMap.delete(createKey)
+            tableCreateOptionsMap.delete(createKey)
 
-        if (node) {
-            tableDialogsStore.close(createKey, true)
+            if (node) {
+                tableDialogsStore.close(createKey, true)
 
-            setTimeout(() => {
-                graphSelectOperation.select(node)
-            }, 200)
-        }
+                setTimeout(() => {
+                    graphSelectOperation.select(node)
+                }, 200)
+            }
+        })
 
         waitRefreshModelAndCode()
     }
@@ -1076,8 +1168,6 @@ const initModelEditorStore = (): ModelEditorStore => {
             return
         }
 
-        tableDialogsStore.close(id, true)
-
         startBatchSync('editedTable', () => {
             const oldTable = cell.data.table
 
@@ -1092,6 +1182,8 @@ const initModelEditorStore = (): ModelEditorStore => {
 
             updateTableNodeData(cell, table)
         })
+
+        tableDialogsStore.close(id, true)
 
         waitRefreshModelAndCode()
     }
@@ -1269,16 +1361,18 @@ const initModelEditorStore = (): ModelEditorStore => {
     }
 
     const createdEnum = (createKey: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
-        assertModel().value.enums.push(cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum))
+        startBatchSync('createdEnum', () => {
+            assertModel().value.enums.push(cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum))
 
-        const options = enumCreateOptionsMap.get(createKey)
+            const options = enumCreateOptionsMap.get(createKey)
 
-        if (options !== undefined) {
-            const {tableKey, columnName} = options
-            syncNewEnumForTables(genEnum, tableKey, columnName)
-        }
+            if (options !== undefined) {
+                const {tableKey, columnName} = options
+                syncNewEnumForTables(genEnum, tableKey, columnName)
+            }
 
-        enumCreateOptionsMap.delete(createKey)
+            enumCreateOptionsMap.delete(createKey)
+        })
 
         enumDialogsStore.close(createKey, true)
 
@@ -1292,17 +1386,16 @@ const initModelEditorStore = (): ModelEditorStore => {
     const editedEnum = (name: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
         const oldName = name
 
-        assertModel().value.enums = [
-            ...assertModel().value.enums.filter(it => it.name !== oldName),
-            cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum)
-        ]
-
-        enumDialogsStore.close(name, true)
-
         startBatchSync('editedEnum', () => {
+            assertModel().value.enums = [
+                ...assertModel().value.enums.filter(it => it.name !== oldName),
+                cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum)
+            ]
             syncEnumNameForEntities(oldName, genEnum.name)
             syncEnumNameForTables(_graph(), oldName, genEnum.name)
         })
+
+        enumDialogsStore.close(name, true)
 
         waitRefreshModelAndCode()
     }
@@ -1310,9 +1403,8 @@ const initModelEditorStore = (): ModelEditorStore => {
     const removeEnum = (name: string) => {
         const oldName = name
 
-        assertModel().value.enums = assertModel().value.enums.filter(it => it.name !== oldName)
-
         startBatchSync('removeEnum', () => {
+            assertModel().value.enums = assertModel().value.enums.filter(it => it.name !== oldName)
             syncEnumNameForTables(_graph(), oldName, undefined)
         })
 
@@ -1350,6 +1442,9 @@ const initModelEditorStore = (): ModelEditorStore => {
     const load = (model: GenModelView) => {
         debugStore.log("HISTORY", "ModelEditor load start", model)
 
+        subGroupsHistoryChangeWatcher?.()
+        enumsHistoryChangeWatcher?.()
+
         isLoaded.value = false
 
         _graph().disableHistory()
@@ -1369,6 +1464,9 @@ const initModelEditorStore = (): ModelEditorStore => {
         _graph().enableHistory()
 
         isLoaded.value = true
+
+        initSubGroupHistoryChangeWatcher()
+        initEnumsHistoryChangeWatcher()
 
         debugStore.log("HISTORY", "ModelEditor load success", toRaw(currentModel.value))
     }
