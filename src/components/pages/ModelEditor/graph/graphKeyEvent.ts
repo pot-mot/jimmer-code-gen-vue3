@@ -1,6 +1,6 @@
 import {Graph} from "@antv/x6";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import {useModelGraphClipBoard} from "@/components/pages/ModelEditor/clipBoard/modelClipBoard.ts";
+import {useModelClipBoard} from "@/components/pages/ModelEditor/clipBoard/modelClipBoard.ts";
 
 const normalMoveStep = 40
 const smallMoveStep = 10
@@ -26,7 +26,7 @@ export const bindGraphKeyEvent = (graph: Graph) => {
         REMOVE.removeSelectedEdges()
     })
 
-    const {copy, cut, paste} = useModelGraphClipBoard()
+    const {copy, cut, paste} = useModelClipBoard()
     graph.bindKey(["ctrl+c", "command+c"], async () => {
         await copy()
     })

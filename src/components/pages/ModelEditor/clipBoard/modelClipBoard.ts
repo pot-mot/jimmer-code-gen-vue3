@@ -52,9 +52,9 @@ type ClipBoardOperation = {
     paste: () => Promise<PasteResult | undefined>
 }
 
-let modelGraphClipBoard: ClipBoardOperation | undefined
-export const useModelGraphClipBoard = (): ClipBoardOperation => {
-    if (modelGraphClipBoard) return modelGraphClipBoard
+let modelClipBoard: ClipBoardOperation | undefined
+export const useModelClipBoard = (): ClipBoardOperation => {
+    if (modelClipBoard) return modelClipBoard
 
     const {GRAPH, MODEL, MODEL_EDITOR, REMOVE, SELECT} = useModelEditorStore()
 
@@ -108,7 +108,36 @@ export const useModelGraphClipBoard = (): ClipBoardOperation => {
 
     const cut = async (): Promise<CutResult> => {
         const copyResult = await copy()
-        REMOVE.removeCells([...copyResult.nodes.map(it => it.id), ...copyResult.edges.map(it => it.id)])
+
+        const {nodes, edges, subGroups, enums} = copyResult
+        REMOVE.removeCells([...nodes.map(it => it.id), ...edges.map(it => it.id)])
+
+        const model = MODEL._model()
+        const modelTables = MODEL.tables
+        const modelEnums = MODEL.enums
+
+        const usedEnumNames = new Set(modelTables.flatMap(it => it.columns.map(it => it.enum?.name)))
+        const removedEnumNames = new Set<string>
+        for (const genEnum of enums) {
+            if (MODEL.selectedEnumMap.has(genEnum.name) && !usedEnumNames.has(genEnum.name)) {
+                removedEnumNames.add(genEnum.name)
+            }
+        }
+        const newEnums = modelEnums.filter(it => !removedEnumNames.has(it.name))
+        model.enums = newEnums
+
+        const usedSubGroupNames = new Set([
+            ...modelTables.map(it => it.subGroup?.name),
+            ...newEnums.map(it => it.subGroup?.name),
+        ])
+        const removedSubGroupNames = new Set<string>
+        for (const subGroup of subGroups) {
+            if (MODEL.selectedSubGroupMap.has(subGroup.name) && !usedSubGroupNames.has(subGroup.name)) {
+                removedSubGroupNames.add(subGroup.name)
+            }
+        }
+        model.subGroups = model.subGroups.filter(it => !removedSubGroupNames.has(it.name))
+
         return copyResult
     }
 
@@ -169,7 +198,7 @@ export const useModelGraphClipBoard = (): ClipBoardOperation => {
             if (res !== undefined) {
                 const {nodes, edges} = res
 
-                await syncTimeout(100 + nodes.length * 30 + edges.length * 20)
+                await syncTimeout(100 + (nodes.length + edges.length) * 5)
 
                 SELECT.select([...nodes.map(it => it.id), ...edges.map(it => it.id)])
             }
@@ -182,30 +211,13 @@ export const useModelGraphClipBoard = (): ClipBoardOperation => {
         return res
     }
 
-    modelGraphClipBoard = {
+    modelClipBoard = {
         copy,
         cut,
         paste,
     }
 
-    return modelGraphClipBoard
-}
-
-let modelMenuClipBoard: ClipBoardOperation | undefined
-export const useModelMenuClipBoard = (): ClipBoardOperation => {
-    if (modelMenuClipBoard) return modelMenuClipBoard
-
-    const {copy, cut, paste} = useModelGraphClipBoard()
-    const menuCut = async (): Promise<CutResult> => {
-        return await cut()
-    }
-
-    modelMenuClipBoard = {
-        copy,
-        cut: menuCut,
-        paste,
-    }
-    return modelMenuClipBoard
+    return modelClipBoard
 }
 
 const getPositionOptionsList = (positions: { x: number, y: number }[]): TableLoadOptions[] => {

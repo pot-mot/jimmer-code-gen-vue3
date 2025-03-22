@@ -1,9 +1,11 @@
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import {useModelMenuClipBoard} from "@/components/pages/ModelEditor/clipBoard/modelClipBoard.ts";
+import {useModelClipBoard} from "@/components/pages/ModelEditor/clipBoard/modelClipBoard.ts";
+
+const {REMOVE, HISTORY, SELECT} = useModelEditorStore()
+
+const {copy, cut, paste} = useModelClipBoard()
 
 export const handleMenuKeyEvent = async (e: KeyboardEvent) => {
-    const {REMOVE, HISTORY} = useModelEditorStore()
-
     if (e.ctrlKey || e.metaKey) {
         if (e.key === "z") {
             if (e.shiftKey) {
@@ -11,6 +13,15 @@ export const handleMenuKeyEvent = async (e: KeyboardEvent) => {
             } else {
                 HISTORY.undo()
             }
+        } else if (e.key === "c") {
+            await copy()
+        } else if (e.key === "x") {
+            await cut()
+        } else if (e.key === "v") {
+            await paste()
+        } else if (e.key === "a") {
+            e.preventDefault()
+            SELECT.selectAll()
         }
     }
 
@@ -20,17 +31,6 @@ export const handleMenuKeyEvent = async (e: KeyboardEvent) => {
             REMOVE.removeSelectedEdges()
         } else {
             REMOVE.removeSelectedCells()
-        }
-    }
-
-    const {copy, cut, paste} = useModelMenuClipBoard()
-    if (e.ctrlKey || e.metaKey) {
-        if (e.key === "c") {
-            await copy()
-        } else if (e.key === "x") {
-            await cut()
-        } else if (e.key === "v") {
-            await paste()
         }
     }
 }

@@ -676,13 +676,17 @@ const initModelEditorStore = (): ModelEditorStore => {
             applyAction: ({newSubGroups}) => {
                 const model = assertModel().value
                 subGroupsHistoryChangeWatcher?.()
+                enumsHistoryChangeWatcher?.()
                 model.subGroups = cloneDeepReadonly<GenModelInput_TargetOf_subGroups[]>(newSubGroups)
+                initEnumsHistoryChangeWatcher()
                 initSubGroupHistoryChangeWatcher()
             },
             revertAction: ({oldSubGroups}) => {
                 const model = assertModel().value
                 subGroupsHistoryChangeWatcher?.()
+                enumsHistoryChangeWatcher?.()
                 model.subGroups = cloneDeepReadonly<GenModelInput_TargetOf_subGroups[]>(oldSubGroups)
+                initEnumsHistoryChangeWatcher()
                 initSubGroupHistoryChangeWatcher()
             },
         })
