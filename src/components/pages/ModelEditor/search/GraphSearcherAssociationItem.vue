@@ -12,9 +12,9 @@ const emits = defineEmits<{
 </script>
 
 <template>
-    <div>
-        <el-button link @click="(e: MouseEvent) => emits('clickAssociation', e)">
+    <div class="menu-item">
+        <el-text @click="(e: MouseEvent) => emits('clickAssociation', e)">
             {{ association.name }}
-        </el-button>
+        </el-text>
     </div>
 </template>

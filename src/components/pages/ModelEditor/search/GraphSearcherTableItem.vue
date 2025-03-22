@@ -32,11 +32,11 @@ const emits = defineEmits<{
 
 <template>
 	<div>
-		<div>
-			<el-button link @click="(e: MouseEvent) => emits('clickTable', e)">
+		<div class="menu-item">
+			<el-text @click="(e: MouseEvent) => emits('clickTable', e)">
 				{{ table.name }}
 				<Comment :comment="table.comment"/>
-			</el-button>
+			</el-text>
 		</div>
 
 		<template v-if="superTableKeywords.length > 0">
