@@ -399,9 +399,6 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     LABEL_ModelEditorMainMenu_createAssociation: "Create Association",
     LABEL_ModelEditorMainMenu_batchCreateAssociation: "Batch Create",
     LABEL_ModelEditorMainMenu_createEnum: "Create Enum",
-    LABEL_ModelEditorMainMenu_associationShow_nameOnly: "Show: Name",
-    LABEL_ModelEditorMainMenu_associationShow_joinTable: "Show: Join Table",
-    LABEL_ModelEditorMainMenu_associationShow_joinColumn: "Show: Join Column",
 
     LABEL_ModelEditorGraph_saveModel: 'Save',
     LABEL_ModelEditorGraph_editModel: 'Edit',

@@ -223,9 +223,6 @@ type MainLocale = {
     LABEL_ModelEditorMainMenu_createAssociation: string
     LABEL_ModelEditorMainMenu_batchCreateAssociation: string
     LABEL_ModelEditorMainMenu_createEnum: string
-    LABEL_ModelEditorMainMenu_associationShow_nameOnly: string
-    LABEL_ModelEditorMainMenu_associationShow_joinTable: string
-    LABEL_ModelEditorMainMenu_associationShow_joinColumn: string
 
     LABEL_ModelEditorGraph_saveModel: string
     LABEL_ModelEditorGraph_editModel: string

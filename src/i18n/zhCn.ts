@@ -400,9 +400,6 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     LABEL_ModelEditorMainMenu_createAssociation: "新建关联",
     LABEL_ModelEditorMainMenu_batchCreateAssociation: "批量创建",
     LABEL_ModelEditorMainMenu_createEnum: "新建枚举",
-    LABEL_ModelEditorMainMenu_associationShow_nameOnly: "显示：名称",
-    LABEL_ModelEditorMainMenu_associationShow_joinTable: "显示：连接表",
-    LABEL_ModelEditorMainMenu_associationShow_joinColumn: "显示：连接列",
 
     LABEL_ModelEditorGraph_saveModel: '保存',
     LABEL_ModelEditorGraph_editModel: '编辑',

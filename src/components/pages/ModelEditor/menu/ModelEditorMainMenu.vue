@@ -4,11 +4,7 @@ import TableItem from "./TableItem.vue";
 import AssociationItem from "./AssociationItem.vue";
 import Details from "@/components/global/common/Details.vue";
 import EnumItem from "@/components/pages/ModelEditor/menu/EnumItem.vue";
-import {computed, ref} from 'vue'
-import {
-	AssociationItemShowType,
-	AssociationItemShowType_CONSTANTS
-} from "@/components/pages/ModelEditor/menu/AssociationItemShowType.ts";
+import {computed} from 'vue'
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {useDataSourceLoadDialogStore} from "@/store/modelEditor/DataSourceLoadDialogStore.ts";
 import {useModelLoadDialogStore} from "@/store/modelEditor/ModelLoadDialogStore.ts";
@@ -58,24 +54,6 @@ const subGroups = computed<Array<{
 
 const associationEdgePairs = computed(() => {
 	return MODEL.associationEdgePairs
-})
-
-const associationItemShowType = ref<AssociationItemShowType>('NAME')
-
-const toggleEdgeShow = () => {
-	const currentIndex = AssociationItemShowType_CONSTANTS.indexOf(associationItemShowType.value)
-	associationItemShowType.value = AssociationItemShowType_CONSTANTS[currentIndex + 1 < AssociationItemShowType_CONSTANTS.length ? currentIndex + 1 : 0]
-}
-
-const formattedEdgeShowType = computed(() => {
-	switch (associationItemShowType.value) {
-		case "NAME":
-			return i18nStore.translate('LABEL_ModelEditorMainMenu_associationShow_nameOnly')
-		case "TABLE":
-			return i18nStore.translate('LABEL_ModelEditorMainMenu_associationShow_joinTable')
-		case "COLUMN":
-			return i18nStore.translate('LABEL_ModelEditorMainMenu_associationShow_joinColumn')
-	}
 })
 
 const handleClickUnselect = (e: MouseEvent) => {
@@ -186,9 +164,6 @@ const handleClickUnselect = (e: MouseEvent) => {
 					<el-button style="margin-left: 0.5em;" @click="MODEL_EDITOR.batchCreateAssociations()">
 						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_batchCreateAssociation') }}
 					</el-button>
-					<el-button style="margin-left: 0.5em;" @click="toggleEdgeShow">
-						{{ formattedEdgeShowType }}
-					</el-button>
 				</div>
 			</template>
 
@@ -198,7 +173,7 @@ const handleClickUnselect = (e: MouseEvent) => {
 					:key="edge.id"
 					:association="association"
 					:edge="edge"
-					:show-type="associationItemShowType"/>
+				/>
 			</div>
 		</Details>
 	</div>
