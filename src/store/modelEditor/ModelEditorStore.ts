@@ -88,6 +88,7 @@ type ModelReactiveState = {
     superTables: ComputedRef<Array<GenTableModelInput>>,
     selectedTables: ComputedRef<Array<GenTableModelInput>>,
     selectedTableNodePairs: ComputedRef<Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>>,
+    tableNameGroupNameMap: ComputedRef<Map<string, string | undefined>>,
 
     associationEdges: DeepReadonly<Ref<Array<UnwrapRefSimple<Edge>>>>,
     associationEdgePairs: ComputedRef<Array<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>>,
@@ -101,6 +102,7 @@ type ModelReactiveState = {
 
     enums: ComputedRef<Array<GenModelInput_TargetOf_enums>>,
     selectedEnumMap: ComputedRef<Map<string, GenModelInput_TargetOf_enums>>,
+    enumNameGroupNameMap: ComputedRef<Map<string, string | undefined>>,
 }
 
 type ModelState = {
@@ -413,6 +415,14 @@ const initModelEditorStore = (): ModelEditorStore => {
             .filter(it => it.type === 'SUPER_TABLE')
     )
 
+    const tableNameGroupNameMap = computed(() => {
+        const map = new Map<string, string | undefined>
+        for (const table of tables.value) {
+            map.set(table.name, table.subGroup?.name)
+        }
+        return map
+    })
+
     const associationEdges = ref<Edge[]>([])
 
     const setAssociationEdges = () => {
@@ -511,6 +521,30 @@ const initModelEditorStore = (): ModelEditorStore => {
         return map
     })
 
+    let modelDynamicStyle: HTMLStyleElement | undefined
+    watch(() => subGroupNameStyleMap.value, (value) => {
+        if (!modelDynamicStyle) {
+            modelDynamicStyle = document.createElement('style')
+            modelDynamicStyle.id = 'model-dynamic-style'
+            document.head.appendChild(modelDynamicStyle)
+        }
+
+        let styleContent = ''
+        for (const [name, style] of value) {
+            styleContent += `
+.table-node table.model-sub-group-${name} { 
+    --border-color: ${style};
+}
+
+.table-node td .model-sub-group-${name} { 
+    color: ${style};
+}
+`
+        }
+
+        modelDynamicStyle.textContent = styleContent
+    }, {immediate: true})
+
 
     const enums = computed(() => {
         if (!currentModel.value) return []
@@ -552,6 +586,14 @@ const initModelEditorStore = (): ModelEditorStore => {
             if (selectedEnumNames.value.has(genEnum.name)) {
                 map.set(genEnum.name, genEnum)
             }
+        }
+        return map
+    })
+
+    const enumNameGroupNameMap = computed(() => {
+        const map = new Map<string, string | undefined>
+        for (const genEnum of enums.value) {
+            map.set(genEnum.name, genEnum.subGroup?.name)
         }
         return map
     })
@@ -602,6 +644,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         superTables,
         selectedTables,
         selectedTableNodePairs,
+        tableNameGroupNameMap,
 
         associationEdges,
         associationEdgePairs,
@@ -615,6 +658,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         enums,
         selectedEnumMap,
+        enumNameGroupNameMap,
     }
 
 

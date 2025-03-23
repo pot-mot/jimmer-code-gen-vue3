@@ -1,6 +1,6 @@
 <template>
 	<div ref="wrapper" class="table-node">
-		<table v-if="node && table" ref="container">
+		<table v-if="node && table" ref="container" :class="table?.subGroup?.name ? `model-sub-group-${table.subGroup.name}` : ''">
 			<thead>
 			<tr class="head">
 				<th colspan="2">
@@ -28,7 +28,10 @@
 					<Comment :comment="column.comment"/>
 				</td>
 				<td style="text-align: right;">
-					<span v-if="column.enum">【{{ column.enum.name }}】</span>
+					<span
+                        v-if="column.enum"
+                        :class="MODEL.enumNameGroupNameMap.get(column.enum.name) ? `model-sub-group-${MODEL.enumNameGroupNameMap.get(column.enum.name)}` : ''"
+                    >【{{ column.enum.name }}】</span>
 					<span class="type" v-else>{{ column.rawType }}</span>
 				</td>
 			</tr>
@@ -38,7 +41,7 @@
 </template>
 
 <script lang='ts' setup>
-import {inject, nextTick, onMounted, ref, watch} from "vue";
+import {inject, nextTick, onMounted, ref} from "vue";
 import {
 	GenAssociationModelInput,
 	GenTableModelInput,
@@ -64,20 +67,6 @@ const getNode = inject<() => Node>("getNode")!
 const node = ref<Node>()
 
 const table = ref<GenTableModelInput>()
-
-// 根据 subGroup 设置 tableNode 颜色
-watch(() => [table.value, MODEL.subGroupNameStyleMap], () => {
-	if (wrapper.value && table.value) {
-		if (table.value.subGroup?.name) {
-            const color = MODEL.subGroupNameStyleMap.get(table.value.subGroup.name)
-            if (color) {
-                wrapper.value.style.setProperty("--border-color", color)
-                return
-            }
-        }
-        wrapper.value.style.removeProperty("--border-color")
-	}
-})
 
 /**
  * 在 data 变化后，
