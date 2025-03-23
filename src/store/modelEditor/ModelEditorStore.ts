@@ -82,13 +82,14 @@ import {CustomHistory} from "@/components/global/graphEditor/history/CustomHisto
 import {jsonSortPropStringify} from "@/utils/json.ts";
 
 export type SubGroupData = {
+    group: GenModelInput_TargetOf_subGroups | undefined,
     tableNodePairs: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
     enums: Array<GenModelInput_TargetOf_enums>,
 }
 
 type ModelReactiveState = {
     subGroups: ComputedRef<Array<GenModelInput_TargetOf_subGroups>>,
-    selectedSubGroupMap: ComputedRef<Map<string, GenModelInput_TargetOf_subGroups>>,
+    selectedSubGroupMap: DeepReadonly<Ref<Map<string | undefined, GenModelInput_TargetOf_subGroups | undefined>>>,
     subGroupNameStyleMap: ComputedRef<Map<string, string>>,
 
     enums: ComputedRef<Array<GenModelInput_TargetOf_enums>>,
@@ -109,8 +110,7 @@ type ModelReactiveState = {
     selectedAssociations: ComputedRef<Array<GenAssociationModelInput>>,
     selectedAssociationEdgePairs: ComputedRef<Array<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>>,
 
-    noGroupData: ComputedRef<SubGroupData>,
-    subGroupWithChildren: ComputedRef<Array<{ group: GenModelInput_TargetOf_subGroups } & SubGroupData>>,
+    subGroupDataList: ComputedRef<Array<SubGroupData>>,
 }
 
 type ModelState = {
@@ -222,9 +222,9 @@ type ModelSyncState = {
 }
 
 type ModelSelectOperation = GraphSelectOperation & {
-    selectSubGroup: (...name: string[]) => void
-    unselectSubGroup: (...name: string[]) => void
-    toggleSelectSubGroup: (...name: string[]) => void
+    selectSubGroup: (...name: (string | undefined)[]) => void
+    unselectSubGroup: (...name: (string | undefined)[]) => void
+    toggleSelectSubGroup: (...name: (string | undefined)[]) => void
 
     selectEnum: (...name: string[]) => void
     unselectEnum: (...name: string[]) => void
@@ -480,38 +480,45 @@ const initModelEditorStore = (): ModelEditorStore => {
         })
     })
 
-    const selectedSubGroupNames = ref<Set<string>>(new Set)
-
-    watch(() => subGroups.value, (newVal) => {
-        selectedSubGroupNames.value = new Set(newVal
+    const selectedSubGroupNames = ref<Set<string | undefined>>(new Set)
+    watch(() => subGroups.value, () => {
+         const set = new Set<string | undefined>(subGroups.value
             .map(it => it.name)
             .filter(it => selectedSubGroupNames.value.has(it))
         )
+        if (selectedSubGroupNames.value.has(undefined)) {
+            set.add(undefined)
+        }
+        selectedSubGroupNames.value = set
     }, {immediate: true, deep: true})
 
-    const selectedSubGroupMap = computed(() => {
-        const map = new Map<string, GenModelInput_TargetOf_subGroups>
+    const selectedSubGroupMap = ref<Map<string | undefined, GenModelInput_TargetOf_subGroups | undefined>>(new Map)
+    watch(() => [subGroups.value, selectedSubGroupNames.value], () => {
+        const map = new Map<string | undefined, GenModelInput_TargetOf_subGroups | undefined>
+        if (selectedSubGroupNames.value.has(undefined)) {
+            map.set(undefined, undefined)
+        }
         for (const subGroup of subGroups.value) {
             if (selectedSubGroupNames.value.has(subGroup.name)) {
                 map.set(subGroup.name, subGroup)
             }
         }
-        return map
-    })
+        selectedSubGroupMap.value = map
+    }, {immediate: true, deep: true})
 
-    const selectSubGroup = (...name: string[]) => {
+    const selectSubGroup = (...name: (string | undefined)[]) => {
         for (const it of name) {
             selectedSubGroupNames.value.add(it)
         }
     }
 
-    const unselectSubGroup = (...name: string[]) => {
+    const unselectSubGroup = (...name: (string | undefined)[]) => {
         for (const it of name) {
             selectedSubGroupNames.value.delete(it)
         }
     }
 
-    const toggleSelectSubGroup = (...name: string[]) => {
+    const toggleSelectSubGroup = (...name: (string | undefined)[]) => {
         for (const it of name) {
             if (selectedSubGroupNames.value.has(it)) {
                 selectedSubGroupNames.value.delete(it)
@@ -654,20 +661,10 @@ const initModelEditorStore = (): ModelEditorStore => {
         return selectedAssociationEdgePairs.value.map(it => it.first)
     })
 
-    const noGroupData = computed<SubGroupData>(() => {
-        const matchedTableNodePairs = tableNodePairs.value.filter(it => it.first.subGroup === undefined)
-        const matchedEnums = enums.value.filter(it => it.subGroup === undefined)
-
-        return {
-            tableNodePairs: matchedTableNodePairs,
-            enums: matchedEnums,
-        }
-    })
-
-    const subGroupWithChildren = computed<Array<{group: GenModelInput_TargetOf_subGroups} & SubGroupData>>(() => {
-        return subGroups.value.map(group => {
-            const matchedTableNodePairs = tableNodePairs.value.filter(it => it.first.subGroup?.name === group.name)
-            const matchedEnums = enums.value.filter(it => it.subGroup?.name === group.name)
+    const subGroupDataList = computed<Array<SubGroupData>>(() => {
+        return [undefined, ...subGroups.value].map(group => {
+            const matchedTableNodePairs = tableNodePairs.value.filter(it => it.first.subGroup?.name === group?.name)
+            const matchedEnums = enums.value.filter(it => it.subGroup?.name === group?.name)
 
             return {
                 group,
@@ -700,8 +697,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         selectedEnumMap,
         enumNameGroupNameMap,
 
-        noGroupData,
-        subGroupWithChildren,
+        subGroupDataList,
     }
 
 

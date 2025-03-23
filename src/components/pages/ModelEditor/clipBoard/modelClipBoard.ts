@@ -79,7 +79,7 @@ export const useModelClipBoard = (): ClipBoardOperation => {
         const enums =
             model.enums.filter(it => enumNameSet.has(it.name))
 
-        const subGroupNameSet = new Set<string>([
+        const subGroupNameSet = new Set<string | undefined>([
             ...MODEL.selectedSubGroupMap.keys(),
             ...tables
                 .map(it => it.subGroup?.name)

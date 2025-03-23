@@ -70,33 +70,10 @@ const handleClickUnselect = (e: MouseEvent) => {
 			</template>
 
 			<div style="padding-bottom: 1em;">
-				<TableItem
-					v-for="{first: table, second: node} in MODEL.noGroupData.tableNodePairs"
-					:key="node.id"
-					:table="table"
-					:node="node"
-				/>
-
-				<div
-					class="splitter"
-					v-if="MODEL.noGroupData.tableNodePairs.length > 0 && MODEL.noGroupData.enums.length > 0"
-				/>
-
-				<EnumItem
-					v-for="genEnum in MODEL.noGroupData.enums"
-					:key="genEnum.name + genEnum.comment"
-					:gen-enum="genEnum"
-				/>
-
-				<div
-					class="splitter"
-					v-if="(MODEL.noGroupData.tableNodePairs.length > 0 || MODEL.noGroupData.enums.length > 0) && MODEL.subGroupWithChildren.length > 0"
-				/>
-
-				<Details v-for="{group, tableNodePairs, enums} of MODEL.subGroupWithChildren" :key="group.name" open>
+				<Details v-for="{group, tableNodePairs, enums} of MODEL.subGroupDataList" :key="group?.name" open>
 					<template #title>
 						<SubGroupItem :sub-group="group"/>
-					</template>
+                    </template>
 
 					<TableItem
 						v-for="{first: table, second: node} in tableNodePairs"

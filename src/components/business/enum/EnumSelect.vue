@@ -16,9 +16,13 @@ const data = defineModel<{
     required: true
 })
 
-const props = defineProps<{
-    subGroups: Array<GenModelInput_TargetOf_subGroups>,
+type SubGroupWithEnums = {
+    group: GenModelInput_TargetOf_subGroups | undefined,
     enums: Array<GenModelInput_TargetOf_enums>
+}
+
+const props = defineProps<{
+    options: Array<SubGroupWithEnums>,
 }>()
 
 const filterStr = ref('')
@@ -27,42 +31,14 @@ const handleFilter = (value: string) => {
     filterStr.value = value
 }
 
-const filteredEnums = computed<Array<GenModelInput_TargetOf_enums>>(() => {
-    if (!filterStr.value) return props.enums
-    return props.enums.filter(it =>
-        it.name.includes(filterStr.value) || it.comment.includes(filterStr.value)
-    )
-})
-
-const enumGroupedOption = computed<Array<{
-    subGroup?: GenModelInput_TargetOf_subGroups | undefined,
-    enums: Array<GenModelInput_TargetOf_enums>
-}>>(() => {
-    const result = []
-    for (const genEnum of filteredEnums.value) {
-        const subGroup = props.subGroups.find(it => it.name === genEnum.subGroup?.name)
-        const index = result.findIndex(it => it.subGroup === subGroup)
-        if (index === -1) {
-            result.push({
-                subGroup,
-                enums: [genEnum]
-            })
-        } else {
-            result[index].enums.push(genEnum)
-        }
-    }
-    result.sort((a, b) => {
-        if (!a.subGroup && !b.subGroup) {
-            return 0
-        } else if (!a.subGroup) {
-            return -1
-        } else if (!b.subGroup) {
-            return 1
-        } else {
-            return a.subGroup.name.localeCompare(b.subGroup.name)
+const filteredSubGroupWithEnums = computed<Array<SubGroupWithEnums>>(() => {
+    if (!filterStr.value) return props.options
+    return props.options.filter(it => {
+        return {
+            group: it.group,
+            enums: it.enums.filter(it => it.name.includes(filterStr.value) || it.comment.includes(filterStr.value))
         }
     })
-    return result
 })
 
 const modelValue = computed<GenModelInput_TargetOf_enums | undefined>({
@@ -74,7 +50,7 @@ const modelValue = computed<GenModelInput_TargetOf_enums | undefined>({
         }
     },
     get(): GenModelInput_TargetOf_enums | undefined {
-        for (const genEnum of props.enums) {
+        for (const genEnum of props.options.flatMap(it => it.enums)) {
             if (genEnum.name === data.value.enum?.name) {
                 return genEnum
             }
@@ -126,18 +102,18 @@ const stopGroupDetailClick = (e: Event) => {
 
                 <Details
                     class="enum-select-options"
-                    v-for="{subGroup, enums} in enumGroupedOption"
-                    :key="subGroup?.name"
+                    v-for="{group, enums} in filteredSubGroupWithEnums"
+                    :key="group?.name"
                     @click="stopGroupDetailClick" open>
                     <template #title="{handleToggle}">
                         <div
-                            v-if="subGroup"
+                            v-if="group"
                             @click="handleToggle"
-                            :class="`model-sub-group-${subGroup.name}`"
+                            :class="`model-sub-group-${group.name}`"
                         >
                             <el-text size="default">
-                                {{ subGroup.name }}
-                                <Comment :comment="subGroup?.comment"/>
+                                {{ group.name }}
+                                <Comment :comment="group?.comment"/>
                             </el-text>
                         </div>
                         <div v-else>

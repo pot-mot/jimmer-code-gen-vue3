@@ -136,8 +136,7 @@ useClickOutside(() => wrapper.value, (e) => {
                 <el-form-item :label="i18nStore.translate('LABEL_ColumnTypeForm_mappedEnum')">
                     <EnumSelect
                         :model-value="modelValue"
-                        :sub-groups="MODEL.subGroups"
-                        :enums="MODEL.enums"
+                        :options="MODEL.subGroupDataList"
                         @create="() => emits('createEnum')"
                         @edit="genEnum => emits('editEnum', genEnum.name)"
                     />
