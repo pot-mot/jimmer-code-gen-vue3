@@ -53,7 +53,6 @@ import {sendMessage} from "@/message/message.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {columnToPort} from "@/components/pages/ModelEditor/load/loadTableNode.ts";
 import {COLUMN_PORT_SELECTOR, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
-import {searchNodesByTableName} from "@/components/pages/ModelEditor/search/graphSearch.ts";
 import {refreshEdgeAssociation} from "@/components/pages/ModelEditor/graph/tableNode/refreshAssociationEdge.ts";
 
 const {GRAPH, MODEL, MODEL_EDITOR, VIEW, HISTORY} = useModelEditorStore()
@@ -206,8 +205,10 @@ const focusSuperTable = (name: string, e: MouseEvent) => {
 	const target = e.target as HTMLElement
 	if (!target.classList.contains("focus")) return
 
-	const nodes = searchNodesByTableName(graph, name)
-	VIEW.focus(nodes[0])
+    const matchedNodes = MODEL.tableNodePairs.filter(it => it.first.name === name && it.first.type === "SUPER_TABLE").map(it => it.second)
+	if (matchedNodes.length > 0) {
+        VIEW.focus(matchedNodes[0].id)
+    }
 	e.stopPropagation()
 }
 </script>

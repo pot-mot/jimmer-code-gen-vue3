@@ -154,7 +154,7 @@ import EraserIcon from "@/components/global/icons/toolbar/EraserIcon.vue";
 import AssociationOffIcon from "@/components/global/icons/toolbar/AssociationOffIcon.vue";
 import DownloadIcon from "@/components/global/icons/download/DownloadIcon.vue";
 import ScaleBar from "@/components/global/graphEditor/scale/ScaleBar.vue";
-import GraphSearcher from "@/components/pages/ModelEditor/search/GraphSearcher.vue";
+import GraphSearcher from "@/components/pages/ModelEditor/searcher/GraphSearcher.vue";
 import CodeIcon from "@/components/global/icons/toolbar/CodeIcon.vue";
 import {EditPen} from "@element-plus/icons-vue";
 import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";

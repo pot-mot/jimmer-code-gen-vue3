@@ -12,8 +12,8 @@ import {
     GenTableModelInput_TargetOf_superTables
 } from "@/api/__generated/model/static";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
-import GraphSearcherTableItem from "@/components/pages/ModelEditor/search/GraphSearcherTableItem.vue";
-import GraphSearcherAssociationItem from "@/components/pages/ModelEditor/search/GraphSearcherAssociationItem.vue";
+import GraphSearcherTableItem from "@/components/pages/ModelEditor/searcher/GraphSearcherTableItem.vue";
+import GraphSearcherAssociationItem from "@/components/pages/ModelEditor/searcher/GraphSearcherAssociationItem.vue";
 import {AssociationType, AssociationType_CONSTANTS} from "@/api/__generated/model/enums";
 
 const i18nStore = useI18nStore()
