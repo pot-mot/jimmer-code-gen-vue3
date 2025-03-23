@@ -81,7 +81,20 @@ import {useDebugStore} from "@/store/debug/debugStore.ts";
 import {CustomHistory} from "@/components/global/graphEditor/history/CustomHistory.ts";
 import {jsonSortPropStringify} from "@/utils/json.ts";
 
+export type SubGroupData = {
+    tableNodePairs: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
+    enums: Array<GenModelInput_TargetOf_enums>,
+}
+
 type ModelReactiveState = {
+    subGroups: ComputedRef<Array<GenModelInput_TargetOf_subGroups>>,
+    selectedSubGroupMap: ComputedRef<Map<string, GenModelInput_TargetOf_subGroups>>,
+    subGroupNameStyleMap: ComputedRef<Map<string, string>>,
+
+    enums: ComputedRef<Array<GenModelInput_TargetOf_enums>>,
+    selectedEnumMap: ComputedRef<Map<string, GenModelInput_TargetOf_enums>>,
+    enumNameGroupNameMap: ComputedRef<Map<string, string | undefined>>,
+
     tableNodes: DeepReadonly<Ref<Array<UnwrapRefSimple<Node>>>>,
     tableNodePairs: ComputedRef<Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>>,
     tables: ComputedRef<Array<GenTableModelInput>>,
@@ -96,13 +109,8 @@ type ModelReactiveState = {
     selectedAssociations: ComputedRef<Array<GenAssociationModelInput>>,
     selectedAssociationEdgePairs: ComputedRef<Array<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>>,
 
-    subGroups: ComputedRef<Array<GenModelInput_TargetOf_subGroups>>,
-    selectedSubGroupMap: ComputedRef<Map<string, GenModelInput_TargetOf_subGroups>>,
-    subGroupNameStyleMap: ComputedRef<Map<string, string>>,
-
-    enums: ComputedRef<Array<GenModelInput_TargetOf_enums>>,
-    selectedEnumMap: ComputedRef<Map<string, GenModelInput_TargetOf_enums>>,
-    enumNameGroupNameMap: ComputedRef<Map<string, string | undefined>>,
+    noGroupData: ComputedRef<SubGroupData>,
+    subGroupWithChildren: ComputedRef<Array<{ group: GenModelInput_TargetOf_subGroups } & SubGroupData>>,
 }
 
 type ModelState = {
@@ -643,7 +651,34 @@ const initModelEditorStore = (): ModelEditorStore => {
         return selectedAssociationEdgePairs.value.map(it => it.first)
     })
 
+    const noGroupData = computed<SubGroupData>(() => {
+        const matchedTableNodePairs = tableNodePairs.value.filter(it => it.first.subGroup === undefined)
+        const matchedEnums = enums.value.filter(it => it.subGroup === undefined)
+
+        return {
+            tableNodePairs: matchedTableNodePairs,
+            enums: matchedEnums,
+        }
+    })
+
+    const subGroupWithChildren = computed<Array<{group: GenModelInput_TargetOf_subGroups} & SubGroupData>>(() => {
+        return subGroups.value.map(group => {
+            const matchedTableNodePairs = tableNodePairs.value.filter(it => it.first.subGroup?.name === group.name)
+            const matchedEnums = enums.value.filter(it => it.subGroup?.name === group.name)
+
+            return {
+                group,
+                tableNodePairs: matchedTableNodePairs,
+                enums: matchedEnums,
+            }
+        })
+    })
+
     const modelReactiveState: ModelReactiveState = {
+        subGroups,
+        subGroupNameStyleMap,
+        selectedSubGroupMap,
+
         tableNodes,
         tableNodePairs,
         tables,
@@ -658,13 +693,12 @@ const initModelEditorStore = (): ModelEditorStore => {
         selectedAssociations,
         selectedAssociationEdgePairs,
 
-        subGroups,
-        subGroupNameStyleMap,
-        selectedSubGroupMap,
-
         enums,
         selectedEnumMap,
         enumNameGroupNameMap,
+
+        noGroupData,
+        subGroupWithChildren,
     }
 
 

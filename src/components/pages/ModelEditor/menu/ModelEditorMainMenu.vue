@@ -8,14 +8,6 @@ import {computed} from 'vue'
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {useDataSourceLoadDialogStore} from "@/store/modelEditor/dialogs/DataSourceLoadDialogStore.ts";
 import {useModelLoadDialogStore} from "@/store/modelEditor/dialogs/ModelLoadDialogStore.ts";
-import {
-	GenModelInput_TargetOf_enums,
-	GenModelInput_TargetOf_subGroups,
-	GenTableModelInput,
-	Pair
-} from "@/api/__generated/model/static";
-import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
-import {Node} from "@antv/x6";
 import SubGroupItem from "@/components/pages/ModelEditor/menu/SubGroupItem.vue";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 import {handleMenuKeyEvent} from "@/components/pages/ModelEditor/menu/menuKeyEvent.ts";
@@ -27,30 +19,6 @@ const {MODEL, MODEL_EDITOR, SELECT, VIEW} = useModelEditorStore()
 const dataSourceLoadDialogStore = useDataSourceLoadDialogStore()
 
 const modelLoadDialogStore = useModelLoadDialogStore()
-
-const noGroupTableNodePairs = computed(() => {
-	return MODEL.tableNodePairs.filter(it => it.first.subGroup === undefined)
-})
-const noGroupEnums = computed(() => {
-	return MODEL.enums.filter(it => it.subGroup === undefined)
-})
-
-const subGroups = computed<Array<{
-	group: GenModelInput_TargetOf_subGroups
-	tableNodePairs: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
-	enums: Array<GenModelInput_TargetOf_enums>,
-}>>(() => {
-	return MODEL.subGroups.map(group => {
-		const tableNodePairs = MODEL.tableNodePairs.filter(it => it.first.subGroup?.name === group.name)
-		const enums = MODEL.enums.filter(it => it.subGroup?.name === group.name)
-
-		return {
-			group,
-			tableNodePairs,
-			enums,
-		}
-	})
-})
 
 const associationEdgePairs = computed(() => {
 	return MODEL.associationEdgePairs
@@ -103,7 +71,7 @@ const handleClickUnselect = (e: MouseEvent) => {
 
 			<div style="padding-bottom: 1em;">
 				<TableItem
-					v-for="{first: table, second: node} in noGroupTableNodePairs"
+					v-for="{first: table, second: node} in MODEL.noGroupData.tableNodePairs"
 					:key="node.id"
 					:table="table"
 					:node="node"
@@ -111,21 +79,21 @@ const handleClickUnselect = (e: MouseEvent) => {
 
 				<div
 					class="splitter"
-					v-if="noGroupTableNodePairs.length > 0 && noGroupEnums.length > 0"
+					v-if="MODEL.noGroupData.tableNodePairs.length > 0 && MODEL.noGroupData.enums.length > 0"
 				/>
 
 				<EnumItem
-					v-for="genEnum in noGroupEnums"
+					v-for="genEnum in MODEL.noGroupData.enums"
 					:key="genEnum.name + genEnum.comment"
 					:gen-enum="genEnum"
 				/>
 
 				<div
 					class="splitter"
-					v-if="(noGroupTableNodePairs.length > 0 || noGroupEnums.length > 0) && subGroups.length > 0"
+					v-if="(MODEL.noGroupData.tableNodePairs.length > 0 || MODEL.noGroupData.enums.length > 0) && MODEL.subGroupWithChildren.length > 0"
 				/>
 
-				<Details v-for="{group, tableNodePairs, enums} of subGroups" :key="group.name" open>
+				<Details v-for="{group, tableNodePairs, enums} of MODEL.subGroupWithChildren" :key="group.name" open>
 					<template #title>
 						<SubGroupItem :sub-group="group"/>
 					</template>
