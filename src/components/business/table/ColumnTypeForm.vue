@@ -1,17 +1,14 @@
 <script setup lang="ts">
 import {GenTableModelInput_TargetOf_columns} from "@/api/__generated/model/static";
-import {computed, ref, watch} from "vue";
-import {EditPen, Plus} from "@element-plus/icons-vue";
+import {ref, watch} from "vue";
 import {useJdbcTypeStore} from "@/store/jdbcType/jdbcTypeStore.ts";
 import {useColumnDefaultStore} from "@/store/columnDefault/ColumnDefaultStore.ts";
 import {useClickOutside} from "@/components/global/list/useClickOutside.ts";
 import {containsClassList, interactionTagClassList, judgeTarget} from "@/utils/clickUtils.ts";
-import Line from "@/components/global/line/Line.vue";
-import LineItem from "@/components/global/line/LineItem.vue";
 import {useZIndex} from "element-plus";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import Comment from "@/components/global/common/Comment.vue";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+import EnumSelect from "@/components/business/enum/EnumSelect.vue";
 
 const i18nStore = useI18nStore()
 
@@ -41,8 +38,6 @@ watch(() => popoverOpenState.value, (value) => {
         }
     }
 })
-
-const enums = computed(() => MODEL.enums)
 
 const handleTypeCodeChange = () => {
     if (!column.value) return
@@ -95,7 +90,9 @@ useClickOutside(() => wrapper.value, (e) => {
         <div @click="popoverOpenState = !popoverOpenState" class="column-type-form-input">
             <el-input readonly :model-value="column.rawType">
                 <template v-if="column.enum !== undefined" #prefix>
-                    【{{ column.enum.name }}】
+                    <span :class="`model-sub-group-${MODEL.enumNameGroupNameMap.get(column.enum.name)}`" style="transform: translateY(-0.1em);">
+                        【{{ column.enum.name }}】
+                    </span>
                 </template>
             </el-input>
         </div>
@@ -137,24 +134,12 @@ useClickOutside(() => wrapper.value, (e) => {
                 </el-form-item>
 
                 <el-form-item :label="i18nStore.translate('LABEL_ColumnTypeForm_mappedEnum')">
-                    <Line style="width: 100%;">
-                        <LineItem span="auto">
-                            <el-button v-if="column.enum" :icon="EditPen"
-                                       @click="emits('editEnum', column.enum!.name)"/>
-                            <el-button v-else :icon="Plus" @click="emits('createEnum')"/>
-                        </LineItem>
-                        <LineItem>
-                            <el-select
-                                :model-value="column.enum?.name" clearable filterable
-                                @clear="() => {if (column) column.enum = undefined}"
-                                @change="(name: string) => {if (column) column.enum = { name: name }}">
-                                <el-option v-for="genEnum in enums" :value="genEnum.name">
-                                    {{ genEnum.name }}
-                                    <Comment :comment="genEnum.comment"/>
-                                </el-option>
-                            </el-select>
-                        </LineItem>
-                    </Line>
+                    <EnumSelect
+                        :model-value="modelValue"
+                        :enums="MODEL.enums"
+                        @create="() => emits('createEnum')"
+                        @edit="genEnum => emits('editEnum', genEnum.name)"
+                    />
                 </el-form-item>
             </el-form>
         </div>
@@ -173,5 +158,9 @@ useClickOutside(() => wrapper.value, (e) => {
     background-color: var(--background-color);
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
+}
+
+.column-type-form :deep(.el-input__prefix-inner>:last-child) {
+    margin-right: 0;
 }
 </style>

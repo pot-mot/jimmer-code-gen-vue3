@@ -28,10 +28,11 @@
 					<Comment :comment="column.comment"/>
 				</td>
 				<td style="text-align: right;">
-					<span
-                        v-if="column.enum"
-                        :class="MODEL.enumNameGroupNameMap.get(column.enum.name) ? `model-sub-group-${MODEL.enumNameGroupNameMap.get(column.enum.name)}` : ''"
-                    >【{{ column.enum.name }}】</span>
+                    <template v-if="column.enum">
+                        <span :class="MODEL.enumNameGroupNameMap.get(column.enum.name) ? `model-sub-group-${MODEL.enumNameGroupNameMap.get(column.enum.name)}` : ''">
+                            【{{ column.enum.name }}】
+                        </span>
+                    </template>
 					<span class="type" v-else>{{ column.rawType }}</span>
 				</td>
 			</tr>

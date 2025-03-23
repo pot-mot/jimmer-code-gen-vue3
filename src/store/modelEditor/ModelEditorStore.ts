@@ -539,6 +539,12 @@ const initModelEditorStore = (): ModelEditorStore => {
 .table-node td .model-sub-group-${name} { 
     color: ${style};
 }
+
+.column-type-form .model-sub-group-${name},
+.el-select .model-sub-group-${name},
+.el-select-dropdown__item .model-sub-group-${name} {
+    color: ${style};
+}
 `
         }
 

@@ -402,6 +402,8 @@ type MainLocale = {
 
     LABEL_ModelSubGroupSelect_placeholder: string
 
+    LABEL_EnumSelect_placeholder: string
+
     LABEL_GenTableColumn_category: string,
     LABEL_GenTableColumn_name: string,
     LABEL_GenTableColumn_comment: string,

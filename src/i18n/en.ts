@@ -589,7 +589,9 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     VALIDATE_GenColumnDefault_dataSize_cannotBeEmpty: 'The Length of ColumnDefault cannot be empty',
     VALIDATE_GenColumnDefault_numericPrecision_cannotBeEmpty: 'The Precision of ColumnDefault cannot be empty',
 
-    LABEL_ModelSubGroupSelect_placeholder: 'Please Select SubGroup',
+    LABEL_ModelSubGroupSelect_placeholder: 'Select SubGroup',
+
+    LABEL_EnumSelect_placeholder: 'Select Enum',
 
     LABEL_GenTableColumn_category: 'Category',
     LABEL_GenTableColumn_name: 'Name',

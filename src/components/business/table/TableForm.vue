@@ -63,13 +63,14 @@ const emits = defineEmits<FormEmits<GenTableModelInput> & {
 	(event: "editEnum", data: { genEnum: GenModelInput_TargetOf_enums }): void
 }>()
 
-const superTables = computed(() =>
-	MODEL.superTables.filter(superTable => table.value.superTables.map(it => it.name).includes(superTable.name))
-)
+const currentSuperTables = computed(() => {
+    const currentSuperTableNames = table.value.superTables.map(it => it.name)
+    return MODEL.superTables.filter(superTable => currentSuperTableNames.includes(superTable.name))
+})
 
 const columnNames = computed<string[]>(() =>
 	[
-		...superTables.value.flatMap(it => it.columns.map(it => it.name)),
+		...currentSuperTables.value.flatMap(it => it.columns.map(it => it.name)),
 		...table.value.columns.map(it => it.name)
 	]
 )

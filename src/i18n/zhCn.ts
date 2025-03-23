@@ -589,7 +589,9 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     VALIDATE_GenColumnDefault_dataSize_cannotBeEmpty: 'ColumnDefault 的长度不可为空',
     VALIDATE_GenColumnDefault_numericPrecision_cannotBeEmpty: 'ColumnDefault 的精度不可为空',
 
-    LABEL_ModelSubGroupSelect_placeholder: "请选择子组",
+    LABEL_ModelSubGroupSelect_placeholder: "选择子组",
+
+    LABEL_EnumSelect_placeholder: "选择枚举",
 
     LABEL_GenTableColumn_category: '列类别',
     LABEL_GenTableColumn_name: '列名',

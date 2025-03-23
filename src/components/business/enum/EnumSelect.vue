@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {GenModelInput_TargetOf_subGroups} from "@/api/__generated/model/static";
+import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 import {computed, DeepReadonly, defineEmits, ref} from "vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {EditPen, Plus} from "@element-plus/icons-vue";
@@ -10,13 +10,13 @@ import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 const i18nStore = useI18nStore()
 
 const data = defineModel<{
-    subGroup?: { name: string } | undefined
+    enum?: { name: string } | undefined
 }>({
     required: true
 })
 
 const props = defineProps<{
-    subGroups: Array<GenModelInput_TargetOf_subGroups>
+    enums: Array<GenModelInput_TargetOf_enums>
 }>()
 
 const filterStr = ref('')
@@ -25,39 +25,39 @@ const handleFilter = (value: string) => {
     filterStr.value = value
 }
 
-const filteredSubGroups = computed<Array<GenModelInput_TargetOf_subGroups>>(() => {
-    if (!filterStr.value) return props.subGroups
-    return props.subGroups.filter(it =>
+const filteredEnums = computed<Array<GenModelInput_TargetOf_enums>>(() => {
+    if (!filterStr.value) return props.enums
+    return props.enums.filter(it =>
         it.name.includes(filterStr.value) || it.comment.includes(filterStr.value)
     )
 })
 
-const modelValue = computed<GenModelInput_TargetOf_subGroups | undefined>({
-    set(value: GenModelInput_TargetOf_subGroups | undefined) {
+const modelValue = computed<GenModelInput_TargetOf_enums | undefined>({
+    set(value: GenModelInput_TargetOf_enums | undefined) {
         if (value) {
-            data.value.subGroup = {name: value.name}
+            data.value.enum = {name: value.name}
         } else {
-            data.value.subGroup = undefined
+            data.value.enum = undefined
         }
     },
-    get(): GenModelInput_TargetOf_subGroups | undefined {
-        for (const subGroup of props.subGroups) {
-            if (subGroup.name === data.value.subGroup?.name) {
-                return subGroup
+    get(): GenModelInput_TargetOf_enums | undefined {
+        for (const genEnum of props.enums) {
+            if (genEnum.name === data.value.enum?.name) {
+                return genEnum
             }
         }
-        data.value.subGroup = undefined
+        data.value.enum = undefined
         return undefined
     }
 })
 
 const handleClear = () => {
-    data.value.subGroup = undefined
+    data.value.enum = undefined
 }
 
 const emits = defineEmits<{
     (event: 'create'): any,
-    (event: 'edit', subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>): any,
+    (event: 'edit', genEnum: DeepReadonly<GenModelInput_TargetOf_enums>): any,
 }>()
 </script>
 
@@ -75,19 +75,19 @@ const emits = defineEmits<{
                 clearable filterable
                 :filter-method="handleFilter"
                 @clear="handleClear"
-                :placeholder="i18nStore.translate('LABEL_ModelSubGroupSelect_placeholder')"
+                :placeholder="i18nStore.translate('LABEL_EnumSelect_placeholder')"
             >
                 <template #label v-if="modelValue">
-                    <span :style="{color: modelValue.style}">{{ modelValue.name }}</span>
+                    <span :class="modelValue.subGroup ? `model-sub-group-${modelValue.subGroup.name}` : ''">{{ modelValue.name }}</span>
                     <Comment :comment="modelValue.comment"/>
                 </template>
                 <el-option
-                    v-for="subGroup in filteredSubGroups"
-                    :key="subGroup.name"
-                    :value="subGroup"
+                    v-for="genEnum in filteredEnums"
+                    :key="genEnum.name"
+                    :value="genEnum"
                 >
-                    <span :style="{color: subGroup.style}">{{ subGroup.name }}</span>
-                    <Comment :comment="subGroup.comment"/>
+                    <span :class="genEnum.subGroup ? `model-sub-group-${genEnum.subGroup.name}` : ''">{{ genEnum.name }}</span>
+                    <Comment :comment="genEnum.comment"/>
                 </el-option>
             </el-select>
         </LineItem>
