@@ -36,6 +36,16 @@ code[class*="language-"]::selection, code[class*="language-"] ::selection {
     background: #b3d4fc;
 }
 
+.dark pre[class*="language-"]::-moz-selection, pre[class*="language-"] ::-moz-selection,
+.dark code[class*="language-"]::-moz-selection, code[class*="language-"] ::-moz-selection {
+    background: #2c4b78;
+}
+
+.dark pre[class*="language-"]::selection, pre[class*="language-"] ::selection,
+.dark code[class*="language-"]::selection, code[class*="language-"] ::selection {
+    background: #2c4b78;
+}
+
 /* Code blocks */
 pre[class*="language-"] {
     padding: 1em;
