@@ -196,6 +196,7 @@ const handleClickUnselect = (e: MouseEvent) => {
 	height: 1px;
 	background-color: var(--text-color);
 	opacity: 0.3;
-	margin-top: 0.5em;
+	margin-top: 0.4em;
+    margin-bottom: 0.3em;
 }
 </style>
