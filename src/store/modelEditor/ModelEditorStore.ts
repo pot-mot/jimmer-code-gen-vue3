@@ -548,9 +548,12 @@ const initModelEditorStore = (): ModelEditorStore => {
     color: ${style};
 }
 
-.column-type-form .model-sub-group-${name},
-.el-select .model-sub-group-${name},
-.el-select-dropdown__item .model-sub-group-${name} {
+.column-type-form .model-sub-group-${name} {
+    color: ${style};
+}
+
+.enum-select .model-sub-group-${name},
+.enum-select-options .model-sub-group-${name} .el-text {
     color: ${style};
 }
 `

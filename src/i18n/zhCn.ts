@@ -592,6 +592,7 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     LABEL_ModelSubGroupSelect_placeholder: "选择子组",
 
     LABEL_EnumSelect_placeholder: "选择枚举",
+    LABEL_EnumSelect_noSubGroup: "无分组",
 
     LABEL_GenTableColumn_category: '列类别',
     LABEL_GenTableColumn_name: '列名',

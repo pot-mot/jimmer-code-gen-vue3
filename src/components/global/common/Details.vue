@@ -2,7 +2,7 @@
 	<div>
 		<div :class="position" :style="{paddingLeft: position === 'left' ? `calc(3px + ${buttonSize})` : 0}"
 			 class="title">
-			<slot name="title"/>
+			<slot name="title" :handleToggle="handleToggle"/>
 			<div v-if="!disabled" :style="{width: buttonSize}" class="button"
 				 @click="handleToggle">
 				<slot name="button">

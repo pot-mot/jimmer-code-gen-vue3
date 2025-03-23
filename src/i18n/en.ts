@@ -592,6 +592,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     LABEL_ModelSubGroupSelect_placeholder: 'Select SubGroup',
 
     LABEL_EnumSelect_placeholder: 'Select Enum',
+    LABEL_EnumSelect_noSubGroup: 'No Sub Group',
 
     LABEL_GenTableColumn_category: 'Category',
     LABEL_GenTableColumn_name: 'Name',

@@ -62,7 +62,7 @@ const emits = defineEmits<{
 </script>
 
 <template>
-    <Line style="width: 100%;">
+    <Line class="model-sub-group-select" style="width: 100%;">
         <LineItem span="auto">
             <el-button v-if="modelValue" :icon="EditPen" @click="emits('edit', modelValue)"/>
             <el-button v-else :icon="Plus" @click="emits('create')"/>

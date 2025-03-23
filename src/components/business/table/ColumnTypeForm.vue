@@ -86,11 +86,11 @@ useClickOutside(() => wrapper.value, (e) => {
 </script>
 
 <template>
-    <div class="column-type-form" v-if="column">
-        <div @click="popoverOpenState = !popoverOpenState" class="column-type-form-input">
+    <div class="column-type-form">
+        <div class="column-type-form-input" @click="popoverOpenState = !popoverOpenState">
             <el-input readonly :model-value="column.rawType">
                 <template v-if="column.enum !== undefined" #prefix>
-                    <span :class="`model-sub-group-${MODEL.enumNameGroupNameMap.get(column.enum.name)}`" style="transform: translateY(-0.1em);">
+                    <span :class="`model-sub-group-${MODEL.enumNameGroupNameMap.get(column.enum.name)}`">
                         【{{ column.enum.name }}】
                     </span>
                 </template>
@@ -136,6 +136,7 @@ useClickOutside(() => wrapper.value, (e) => {
                 <el-form-item :label="i18nStore.translate('LABEL_ColumnTypeForm_mappedEnum')">
                     <EnumSelect
                         :model-value="modelValue"
+                        :sub-groups="MODEL.subGroups"
                         :enums="MODEL.enums"
                         @create="() => emits('createEnum')"
                         @edit="genEnum => emits('editEnum', genEnum.name)"
@@ -149,6 +150,18 @@ useClickOutside(() => wrapper.value, (e) => {
 <style scoped>
 .column-type-form {
     position: relative;
+    width: 100%;
+}
+
+.column-type-form-input {
+    width: 100%;
+    overflow: hidden;
+}
+
+.column-type-form-input :deep(.el-input__prefix-inner>:last-child) {
+    margin-right: 0;
+    margin-left: -0.5em;
+    transform: translateY(-0.15em);
 }
 
 .column-type-form-wrapper {
@@ -158,9 +171,5 @@ useClickOutside(() => wrapper.value, (e) => {
     background-color: var(--background-color);
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
-}
-
-.column-type-form :deep(.el-input__prefix-inner>:last-child) {
-    margin-right: 0;
 }
 </style>

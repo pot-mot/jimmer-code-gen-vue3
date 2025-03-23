@@ -287,7 +287,7 @@ const handleCancel = () => {
 </script>
 
 <template>
-	<el-form style="width: calc(100% - 0.5rem);">
+	<el-form style="width: calc(100% - 0.5rem); min-width: 45em;">
 		<el-row :gutter="12" style="line-height: 2em; padding-left: 1em; padding-bottom: 1em;">
 			<el-col :span="23">
 				<ModelSubGroupSelect
@@ -368,9 +368,8 @@ const handleCancel = () => {
 				}"
 				:defaultLine="getDefaultColumn"
 				:json-schema-validate="validateColumn"
-				height="2em"
-				style="width: calc(100% - 0.5rem);">
-
+                style="line-height: 2em;"
+            >
 				<template #icon="{data}">
                     <span style="padding-left: 0.5rem;">
                         <ColumnIcon :column="data"/>
@@ -437,10 +436,8 @@ const handleCancel = () => {
 				:columns="tableIndexColumns"
 				v-model:lines="table.indexes"
 				:json-schema-validate="validateIndex"
-				height="2em"
-				style="width: calc(100% - 0.5rem);"
+                style="line-height: 2em;"
 			>
-
 				<template #name="{data, index}">
 					<el-input
 						v-model="data.name"
