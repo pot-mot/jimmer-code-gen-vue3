@@ -1,11 +1,11 @@
 import {GenModelInput, GenModelInput_TargetOf_subGroups, GenTableModelInput} from "@/api/__generated/model/static";
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {Graph} from "@antv/x6";
-import {useTableDialogsStore} from "@/store/modelEditor/TableDialogsStore.ts";
+import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
 import {DeepReadonly, Ref} from "vue";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
-import {useEnumDialogsStore} from "@/store/modelEditor/EnumDialogsStore.ts";
+import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
 
 type SubGroupItem = {subGroup?: {name: string} | undefined}
 

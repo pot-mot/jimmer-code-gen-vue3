@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useEntityDialogsStore} from "@/store/modelEditor/EntityDialogsStore.ts";
+import {useEntityDialogsStore} from "@/store/modelEditor/dialogs/EntityDialogsStore.ts";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import EntityForm from "@/components/business/entity/EntityForm.vue";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/BatchCreateAssociationsDialogStore.ts";
+import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/dialogs/BatchCreateAssociationsDialogStore.ts";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {type DeepReadonly} from "vue";

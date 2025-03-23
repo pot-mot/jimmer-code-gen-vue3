@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {ENUM_CREATE_PREFIX, useEnumDialogsStore} from "@/store/modelEditor/EnumDialogsStore.ts";
+import {ENUM_CREATE_PREFIX, useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
 import EnumForm from "@/components/business/enum/EnumForm.vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {DeepReadonly} from "vue";

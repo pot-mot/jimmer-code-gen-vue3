@@ -6,8 +6,8 @@ import Details from "@/components/global/common/Details.vue";
 import EnumItem from "@/components/pages/ModelEditor/menu/EnumItem.vue";
 import {computed} from 'vue'
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
-import {useDataSourceLoadDialogStore} from "@/store/modelEditor/DataSourceLoadDialogStore.ts";
-import {useModelLoadDialogStore} from "@/store/modelEditor/ModelLoadDialogStore.ts";
+import {useDataSourceLoadDialogStore} from "@/store/modelEditor/dialogs/DataSourceLoadDialogStore.ts";
+import {useModelLoadDialogStore} from "@/store/modelEditor/dialogs/ModelLoadDialogStore.ts";
 import {
 	GenModelInput_TargetOf_enums,
 	GenModelInput_TargetOf_subGroups,

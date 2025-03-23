@@ -23,9 +23,9 @@ import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import BatchCreateAssociationsDialog
 	from "@/components/pages/ModelEditor/dialogs/association/BatchCreateAssociationsDialog.vue";
 import TableCombineDialog from "@/components/pages/ModelEditor/dialogs/table/TableCombineDialog.vue";
-import {useDataSourceLoadDialogStore} from "@/store/modelEditor/DataSourceLoadDialogStore.ts";
-import {useModelLoadDialogStore} from "@/store/modelEditor/ModelLoadDialogStore.ts";
-import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.ts";
+import {useDataSourceLoadDialogStore} from "@/store/modelEditor/dialogs/DataSourceLoadDialogStore.ts";
+import {useModelLoadDialogStore} from "@/store/modelEditor/dialogs/ModelLoadDialogStore.ts";
+import {useModelEditDialogStore} from "@/store/modelEditor/dialogs/ModelEditDialogStore.ts";
 import EntityDialogs from "@/components/pages/ModelEditor/dialogs/entity/EntityDialogs.vue";
 import SubGroupDialogs from "@/components/pages/ModelEditor/dialogs/subGroup/SubGroupDialogs.vue";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";

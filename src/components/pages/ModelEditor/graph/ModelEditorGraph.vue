@@ -175,7 +175,7 @@ import {validateModel} from "@/components/business/model/form/validateModel.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {exportGraphPNG, exportGraphSVG,} from "@/components/pages/ModelEditor/export/graphExport.ts";
 import {MODEL_VALID_NOT_PASS, saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
-import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.ts";
+import {useModelEditDialogStore} from "@/store/modelEditor/dialogs/ModelEditDialogStore.ts";
 import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
 import {jsonSortPropStringify} from "@/utils/json.ts";
 import {api} from "@/api";

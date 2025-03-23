@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useTableCombineDialogStore} from "@/store/modelEditor/TableCombineDialogStore.ts";
+import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
 import TableCombineForm from "@/components/business/table/TableCombineForm.vue";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {validateTable} from "@/components/business/table/validateTable.ts";

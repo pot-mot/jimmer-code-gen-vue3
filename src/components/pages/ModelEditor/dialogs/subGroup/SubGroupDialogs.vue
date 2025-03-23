@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {SUB_GROUP_CREATE_PREFIX, useSubGroupDialogsStore} from "@/store/modelEditor/SubGroupDialogsStore.ts";
+import {SUB_GROUP_CREATE_PREFIX, useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
 import SubGroupForm from "@/components/business/modelSubGroup/ModelSubGroupForm.vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {DeepReadonly} from "vue";

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {ASSOCIATION_CREATE_PREFIX, useAssociationDialogsStore} from "@/store/modelEditor/AssociationDialogsStore.ts";
+import {ASSOCIATION_CREATE_PREFIX, useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
 import {createAssociationName} from "@/components/business/association/createAssociationName.ts";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import AssociationForm from "@/components/business/association/AssociationForm.vue";

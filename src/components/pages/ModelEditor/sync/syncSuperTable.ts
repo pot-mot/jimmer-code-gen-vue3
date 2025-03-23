@@ -3,7 +3,7 @@ import {GenTableModelInput, GenTableModelInput_TargetOf_superTables} from "@/api
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
 import {Graph} from "@antv/x6";
-import {useTableDialogsStore} from "@/store/modelEditor/TableDialogsStore.ts";
+import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
 import {DeepReadonly} from "vue";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 

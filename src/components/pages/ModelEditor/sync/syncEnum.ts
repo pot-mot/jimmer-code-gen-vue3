@@ -1,11 +1,11 @@
 import {EntityConfigView, GenModelInput_TargetOf_enums, GenTableModelInput} from "@/api/__generated/model/static";
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {Graph} from "@antv/x6";
-import {useTableDialogsStore} from "@/store/modelEditor/TableDialogsStore.ts";
+import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
 import {DeepReadonly} from "vue";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
-import {useEntityDialogsStore} from "@/store/modelEditor/EntityDialogsStore.ts";
+import {useEntityDialogsStore} from "@/store/modelEditor/dialogs/EntityDialogsStore.ts";
 
 // 同步表中的枚举名
 const syncEnumNameInTable = (table: DeepReadonly<GenTableModelInput>, oldEnumName: string, newEnumName: string | undefined): GenTableModelInput => {

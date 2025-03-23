@@ -1,5 +1,5 @@
 import {DeepReadonly} from "vue";
-import {useEntityDialogsStore} from "@/store/modelEditor/EntityDialogsStore.ts";
+import {useEntityDialogsStore} from "@/store/modelEditor/dialogs/EntityDialogsStore.ts";
 import {
     EntityConfigView,
     IdName

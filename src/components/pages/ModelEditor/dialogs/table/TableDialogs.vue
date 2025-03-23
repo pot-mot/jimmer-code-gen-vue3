@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {TABLE_CREATE_PREFIX, useTableDialogsStore} from "@/store/modelEditor/TableDialogsStore.ts"
+import {TABLE_CREATE_PREFIX, useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts"
 import {createIndexName} from "@/components/business/table/createIndexName.ts";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import TableForm from "@/components/business/table/TableForm.vue";

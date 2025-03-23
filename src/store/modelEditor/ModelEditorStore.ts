@@ -21,10 +21,10 @@ import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts"
 import {ModelEditorData, validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
-import {ENUM_CREATE_PREFIX, useEnumDialogsStore} from "@/store/modelEditor/EnumDialogsStore.ts";
+import {ENUM_CREATE_PREFIX, useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
 import {getDefaultTable} from "@/components/business/table/defaultTable.ts";
 import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
-import {TABLE_CREATE_PREFIX, useTableDialogsStore} from "@/store/modelEditor/TableDialogsStore.ts";
+import {TABLE_CREATE_PREFIX, useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
 import {unStyleAll} from "@/components/pages/ModelEditor/graph/highlight.ts";
 import {GraphData, useGraphDataOperation} from "@/components/global/graphEditor/data/graphData.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
@@ -47,23 +47,23 @@ import {
     useHistoryOperations
 } from "@/components/global/graphEditor/history/useHistory.ts";
 import {GraphRemoveOperation, useRemoveOperation} from "@/components/global/graphEditor/remove/removeOperation.ts";
-import {ASSOCIATION_CREATE_PREFIX, useAssociationDialogsStore} from "@/store/modelEditor/AssociationDialogsStore.ts";
+import {ASSOCIATION_CREATE_PREFIX, useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
 import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge/updateData.ts";
 import {GraphReactiveState} from "@/components/global/graphEditor/data/reactiveState.ts";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {defineStore} from "pinia";
 import {getDefaultAssociation} from "@/components/business/association/defaultColumn.ts";
-import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/BatchCreateAssociationsDialogStore.ts";
-import {useTableCombineDialogStore} from "@/store/modelEditor/TableCombineDialogStore.ts";
+import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/dialogs/BatchCreateAssociationsDialogStore.ts";
+import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
 import {TableCombineData} from "@/components/business/table/TableCombineData.ts";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
-import {useEntityDialogsStore} from "@/store/modelEditor/EntityDialogsStore.ts";
-import {useDataSourceLoadDialogStore} from "@/store/modelEditor/DataSourceLoadDialogStore.ts";
-import {useModelEditDialogStore} from "@/store/modelEditor/ModelEditDialogStore.ts";
-import {useModelLoadDialogStore} from "@/store/modelEditor/ModelLoadDialogStore.ts";
+import {useEntityDialogsStore} from "@/store/modelEditor/dialogs/EntityDialogsStore.ts";
+import {useDataSourceLoadDialogStore} from "@/store/modelEditor/dialogs/DataSourceLoadDialogStore.ts";
+import {useModelEditDialogStore} from "@/store/modelEditor/dialogs/ModelEditDialogStore.ts";
+import {useModelLoadDialogStore} from "@/store/modelEditor/dialogs/ModelLoadDialogStore.ts";
 import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
 import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
-import {SUB_GROUP_CREATE_PREFIX, useSubGroupDialogsStore} from "@/store/modelEditor/SubGroupDialogsStore.ts";
+import {SUB_GROUP_CREATE_PREFIX, useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
 import {getDefaultGenModelSubGroup} from "@/components/business/modelSubGroup/defaultModelSubGroupForm.ts";
 import {
     syncNewSubGroupForEnums,
