@@ -11,7 +11,7 @@ export interface GenEntityConfigView {
     /**
      * 对应表
      */
-    table: GenEntityConfigView_TargetOf_table;
+    table?: GenEntityConfigView_TargetOf_table | undefined;
     /**
      * 类名称
      */

@@ -20,7 +20,7 @@ const mainTableEntity = computed<TableEntityPair | undefined>(() => {
     if (mainType === 'Table') {
         return props.tableIdMap.get(idName.id) ?? {table: idName}
     } else if (mainType === 'Entity') {
-        return props.entityIdMap.get(idName.id) ?? {entity: idName}
+        return props.entityIdMap.get(idName.id) ?? {entity: {...idName, packagePath: ''}}
     }
     return undefined
 })

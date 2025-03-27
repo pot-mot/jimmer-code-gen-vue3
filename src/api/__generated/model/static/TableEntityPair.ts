@@ -1,6 +1,6 @@
-import type {IdName} from './';
+import type {IdName, IdNamePackagePath} from './';
 
 export interface TableEntityPair {
     table?: IdName | undefined;
-    entity?: IdName | undefined;
+    entity?: IdNamePackagePath | undefined;
 }

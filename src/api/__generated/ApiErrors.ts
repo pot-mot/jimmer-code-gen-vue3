@@ -13,7 +13,7 @@ export type AllErrors = {
         family: 'CONVERT', 
         code: 'ENTITY_MATCH_TABLE_NOT_FOUND', 
         entity: IdName, 
-        tableId: number
+        tableId?: number | undefined
     } | {
         family: 'CONVERT', 
         code: 'OUT_ASSOCIATION_CANNOT_FOUNT_SOURCE_COLUMN', 
@@ -248,7 +248,7 @@ export type AllErrors = {
         family: 'MODEL_BUSINESS_INPUT', 
         code: 'ENTITY_CANNOT_MATCH_TABLE', 
         entityName: string, 
-        tableName: string
+        tableName?: string | undefined
     } | {
         family: 'MODEL_BUSINESS_INPUT', 
         code: 'ENTITY_MATCHED_TABLE_CONVERTED_ENTITY_NOT_FOUND', 

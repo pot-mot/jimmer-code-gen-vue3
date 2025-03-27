@@ -83,5 +83,5 @@ export interface GenEntityExportView {
     /**
      * 名称
      */
-    tableName: string;
+    tableName?: string | undefined;
 }
