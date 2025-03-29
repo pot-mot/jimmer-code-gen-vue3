@@ -74,10 +74,6 @@ const EntityExportViewSchema = {
                     "description": "是否具有管理端页面",
                     "type": "boolean"
                 },
-                "id": {
-                    "description": "ID",
-                    "type": "number"
-                },
                 "name": {
                     "description": "类名称",
                     "type": "string"
@@ -141,7 +137,6 @@ const EntityExportViewSchema = {
                 "canQuery",
                 "comment",
                 "hasPage",
-                "id",
                 "name",
                 "overwriteComment",
                 "overwriteName",
@@ -152,8 +147,7 @@ const EntityExportViewSchema = {
                 "pageCanViewDetail",
                 "properties",
                 "queryByPage",
-                "remark",
-                "tableName"
+                "remark"
             ],
             "type": "object"
         },
