@@ -5,10 +5,6 @@ import type {AnnotationWithImports, GenEntityExportView_TargetOf_properties} fro
  */
 export interface GenEntityExportView {
     /**
-     * ID
-     */
-    id: number;
-    /**
      * 类名称
      */
     name: string;
