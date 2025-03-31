@@ -14,8 +14,6 @@ export type {GenLanguage} from './GenLanguage';
 export {GenLanguage_CONSTANTS} from './GenLanguage';
 export type {GenerateTag} from './GenerateTag';
 export {GenerateTag_CONSTANTS} from './GenerateTag';
-export type {GenerateType} from './GenerateType';
-export {GenerateType_CONSTANTS} from './GenerateType';
 export type {MainType} from './MainType';
 export {MainType_CONSTANTS} from './MainType';
 export type {PropertySpecialFormType} from './PropertySpecialFormType';

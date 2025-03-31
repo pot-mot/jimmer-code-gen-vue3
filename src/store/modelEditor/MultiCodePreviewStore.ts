@@ -175,7 +175,7 @@ export const useMultiCodePreviewStore = defineStore(
 
             codeRefresh: async () => {
                 const modelId = useModelEditorStore().MODEL._model().id
-                const result = await api.generateService.generateModel({id: modelId, types: ['ALL']})
+                const result = await api.generateService.generateModel({id: modelId, types: [{name: 'ALL'}]})
 
                 result.files.sort((a, b) => a.path.localeCompare(b.path))
                 result.tableEntityPairs.sort((a, b) => a.table.name.localeCompare(b.table.name))

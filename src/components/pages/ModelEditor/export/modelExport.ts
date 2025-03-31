@@ -6,7 +6,6 @@ import {jsonPrettyFormat} from "@/utils/json.ts";
 import {ModelInputWithEntities, validateModelInputWithEntities} from "@/shape/ModelInput.ts";
 import {sendI18nMessage} from "@/message/message.ts";
 import {getModelAllCopyData} from "@/components/pages/ModelEditor/clipBoard/modelClipBoard.ts";
-import {GenerateType} from "@/api/__generated/model/enums";
 import {DeepReadonly} from "vue";
 import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
 import {getDefaultModel} from "@/components/business/model/defaultModel.ts";

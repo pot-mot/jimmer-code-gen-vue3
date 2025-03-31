@@ -1,6 +1,5 @@
 import type {Executor} from '../';
-import type {GenerateType} from '../model/enums/';
-import type {GenConfigProperties, GenerateResult} from '../model/static/';
+import type {GenConfigProperties, GenerateResult, GenerateType} from '../model/static/';
 
 export class GenerateService {
     
@@ -26,9 +25,17 @@ export class GenerateService {
         }
         return (await this.executor({uri: _uri, method: 'POST'})) as Promise<GenerateResult>;
     }
+    
+    readonly listGenerateType: () => Promise<
+        Array<GenerateType>
+    > = async() => {
+        let _uri = '/generate/model';
+        return (await this.executor({uri: _uri, method: 'GET'})) as Promise<Array<GenerateType>>;
+    }
 }
 
 export type GenerateServiceOptions = {
+    'listGenerateType': {}, 
     'generateModel': {
         id: number, 
         types: Array<GenerateType>, 
