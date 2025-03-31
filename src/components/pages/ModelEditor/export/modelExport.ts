@@ -9,6 +9,7 @@ import {getModelAllCopyData} from "@/components/pages/ModelEditor/clipBoard/mode
 import {DeepReadonly} from "vue";
 import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
 import {getDefaultModel} from "@/components/business/model/defaultModel.ts";
+import {GenerateType} from "@/api/__generated/model/enums";
 
 const createZip = async (files: DeepReadonly<Array<Pick<GenerateFile, 'path' | 'content'>>>): Promise<Blob> => {
     const zip = new JSZip()
@@ -35,9 +36,10 @@ export const convertModel = async (id: number) => {
 
 export const getModelCodes = async (
     id: number,
-    types: Array<GenerateType> = ['ALL'],
+    types?: Array<GenerateType>,
+    customTypes?: Array<string>,
 ) => {
-    return await api.generateService.generateModel({id, types})
+    return await api.generateService.generateModel({id, types, customTypes})
 }
 
 export const importModelJSON = async (modelInputJsonStr: string): Promise<number | undefined> => {

@@ -9,9 +9,10 @@ import {
     TableEntityNotNullPair,
     TableEntityPair
 } from "@/api/__generated/model/static";
-import {api} from "@/api";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import {GenerateTag} from "@/api/__generated/model/enums";
+import {GenerateTag, GenerateType} from "@/api/__generated/model/enums";
+import {getModelCodes} from "@/components/pages/ModelEditor/export/modelExport.ts";
+import {api} from "@/api";
 
 export type CodeFilterData = {
     path: string
@@ -120,6 +121,14 @@ export const useMultiCodePreviewStore = defineStore(
     'MultiCodePreview', () => {
         const dialogOpenState = useDialogOpenState()
 
+        const types = ref<GenerateType[]>()
+        const customTypeOptions = ref<string[]>([])
+        const customTypes = ref<string[]>()
+
+        dialogOpenState.on('open', async () => {
+            customTypeOptions.value = await api.generateService.listCustomGenerateType()
+        })
+
         const codes = ref<GenerateResult>({
             files: [],
             tableEntityPairs: [],
@@ -161,6 +170,10 @@ export const useMultiCodePreviewStore = defineStore(
         })
 
         return {
+            customTypeOptions,
+            types,
+            customTypes,
+
             codes,
 
             tableIdMap,
@@ -175,7 +188,7 @@ export const useMultiCodePreviewStore = defineStore(
 
             codeRefresh: async () => {
                 const modelId = useModelEditorStore().MODEL._model().id
-                const result = await api.generateService.generateModel({id: modelId, types: [{name: 'ALL'}]})
+                const result = await getModelCodes(modelId, types.value, customTypes.value)
 
                 result.files.sort((a, b) => a.path.localeCompare(b.path))
                 result.tableEntityPairs.sort((a, b) => a.table.name.localeCompare(b.table.name))

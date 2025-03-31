@@ -68,7 +68,6 @@ export type {GenTypeMappingInput} from './GenTypeMappingInput';
 export type {GenTypeMappingView} from './GenTypeMappingView';
 export type {GenerateFile} from './GenerateFile';
 export type {GenerateResult} from './GenerateResult';
-export type {GenerateType} from './GenerateType';
 export type {IdName} from './IdName';
 export type {IdNamePackagePath} from './IdNamePackagePath';
 export type {IdNullableName} from './IdNullableName';
