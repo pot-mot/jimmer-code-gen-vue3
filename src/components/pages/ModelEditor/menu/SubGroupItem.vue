@@ -45,16 +45,19 @@ const handleClickLabel = async (e: MouseEvent) => {
     }
 }
 
-const handleEdit = (subGroup: GenModelInput_TargetOf_subGroups) => {
+const handleEdit = () => {
     if (props.subGroup) {
-        MODEL_EDITOR.editSubGroup(subGroup.name, subGroup)
+        MODEL_EDITOR.editSubGroup(props.subGroup.name, props.subGroup)
     }
 }
 
-const handleDelete = (subGroup: GenModelInput_TargetOf_subGroups) => {
-    deleteConfirm(`${i18nStore.translate("LABEL_DeleteTarget_SubGroup")}【${subGroup.name}】`, () => {
-        MODEL_EDITOR.removeSubGroup(subGroup.name)
-    })
+const handleDelete = () => {
+    if (props.subGroup) {
+        const subGroup = props.subGroup
+        deleteConfirm(`${i18nStore.translate("LABEL_DeleteTarget_SubGroup")}【${subGroup.name}】`, () => {
+            MODEL_EDITOR.removeSubGroup(subGroup.name)
+        })
+    }
 }
 </script>
 
