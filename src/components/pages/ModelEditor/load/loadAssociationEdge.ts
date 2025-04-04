@@ -8,10 +8,12 @@ import {erRouter, orthRouter} from "@/components/global/graphEditor/edge/edgeRou
 import {ASSOCIATION_EDGE} from "@/components/pages/ModelEditor/constant.ts";
 import {PortManager} from "@antv/x6/es/model/port";
 import {DeepReadonly} from "vue";
-import {mergeWithExisted} from "@/components/pages/ModelEditor/load/mergeWithExisted.ts";
+import {
+    jsonEqualOrRenameDuplicateHandler,
+    mergeWithExisted
+} from "@/components/pages/ModelEditor/load/mergeWithExisted.ts";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
-import {jsonSortPropStringify} from "@/utils/json.ts";
 
 type AssociationEdgeConnect = {
     association: GenAssociationModelInput
@@ -179,23 +181,7 @@ export const loadAssociationEdge = (
         resetTableNameAssociations,
         existedAssociations,
         it => it.name,
-        (name, item, keyDuplicateItems, newItems, existedItems) => {
-            const jsonStr = jsonSortPropStringify(item)
-
-            for (const keyDuplicateItem of keyDuplicateItems) {
-                if (jsonSortPropStringify(keyDuplicateItem) !== jsonStr) {
-                    let tempCount = keyDuplicateItems.length
-                    let tempName = `${name}(${tempCount})`
-                    while (existedItems.some(it => it.name === tempName)) {
-                        tempName = `${name}(${tempCount++})`
-                    }
-                    item.name = tempName
-                    keyDuplicateItems.push(item)
-                    newItems.push(item)
-                    break
-                }
-            }
-        }
+        jsonEqualOrRenameDuplicateHandler
     )
 
     const edgeMetas: Edge.Metadata[] = []

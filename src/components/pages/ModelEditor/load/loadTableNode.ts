@@ -7,8 +7,11 @@ import {Node} from "@antv/x6";
 import {columnPortGroup} from "@/components/pages/ModelEditor/graph/tableNode/columnPort.ts";
 import {COLUMN_PORT_GROUP, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {DeepReadonly} from "vue";
-import {mergeWithExisted} from "@/components/pages/ModelEditor/load/mergeWithExisted.ts";
-import {jsonSortPropStringify} from "@/utils/json.ts";
+import {
+    forceRenameDuplicateHandler,
+    jsonEqualOrRenameDuplicateHandler,
+    mergeWithExisted
+} from "@/components/pages/ModelEditor/load/mergeWithExisted.ts";
 
 export interface TableLoadOptions {
     x?: number,
@@ -119,30 +122,9 @@ export const loadTableNode = (
         (name, item, keyDuplicateItems, newItems, existedItems) => {
             if (item.type === "SUPER_TABLE" && tables.length > 1) {
                 const {index, ...table} = item
-                const jsonStr = jsonSortPropStringify(table)
-
-                for (const keyDuplicateItem of keyDuplicateItems) {
-                    if (jsonSortPropStringify(keyDuplicateItem) !== jsonStr) {
-                        let tempCount = keyDuplicateItems.length
-                        let tempName = `${name}(${tempCount})`
-                        while (existedItems.some(it => it.name === tempName)) {
-                            tempName = `${name}(${tempCount++})`
-                        }
-                        item.name = tempName
-                        keyDuplicateItems.push(item)
-                        newItems.push(item)
-                        break
-                    }
-                }
+                jsonEqualOrRenameDuplicateHandler(name, table, keyDuplicateItems, newItems, existedItems)
             } else {
-                let tempCount = keyDuplicateItems.length
-                let tempName = `${name}(${tempCount})`
-                while (existedItems.some(it => it.name === tempName)) {
-                    tempName = `${name}(${tempCount++})`
-                }
-                item.name = tempName
-                keyDuplicateItems.push(item)
-                newItems.push(item)
+                forceRenameDuplicateHandler(name, item, keyDuplicateItems, newItems, existedItems)
             }
         }
     )
