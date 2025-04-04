@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {useDialogOpenState} from "@/components/global/dialog/DialogOpenState.ts";
+import {useOpenState} from "@/components/global/dialog/OpenState.ts";
 import {computed, ref} from "vue";
 import {
     GenerateFile,
@@ -118,7 +118,7 @@ const filterFiles = (files: Array<GenerateFile>, data: CodeFilterData): Array<Ge
 
 export const useMultiCodePreviewStore = defineStore(
     'MultiCodePreview', () => {
-        const dialogOpenState = useDialogOpenState()
+        const dialogOpenState = useOpenState()
 
         const codes = ref<GenerateResult>({
             files: [],

@@ -1,13 +1,13 @@
 import {ref} from "vue";
 import mitt from "mitt";
 
-type DialogOpenEvents = {
+type OpenEvents = {
     open: undefined,
     close: undefined
 }
 
-export const useDialogOpenState = () => {
-    const eventBus = mitt<DialogOpenEvents>()
+export const useOpenState = () => {
+    const eventBus = mitt<OpenEvents>()
 
     const openState = ref<boolean>(false)
 
