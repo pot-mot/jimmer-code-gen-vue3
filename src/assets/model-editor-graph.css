@@ -50,3 +50,7 @@
 .model-editor-graph .x6-highlight-stroke {
     stroke: var(--highlight-color) !important;
 }
+
+.model-editor-graph .x6-cell-tools {
+    user-select: none;
+}
