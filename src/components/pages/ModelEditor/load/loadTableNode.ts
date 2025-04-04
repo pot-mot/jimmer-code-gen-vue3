@@ -8,6 +8,7 @@ import {columnPortGroup} from "@/components/pages/ModelEditor/graph/tableNode/co
 import {COLUMN_PORT_GROUP, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {DeepReadonly} from "vue";
 import {mergeWithExisted} from "@/components/pages/ModelEditor/load/mergeWithExisted.ts";
+import {jsonSortPropStringify} from "@/utils/json.ts";
 
 export interface TableLoadOptions {
     x?: number,
@@ -92,6 +93,8 @@ const keepTableSuperTableLegal = (
     }
 }
 
+type GenTableModelInput_withIndex = GenTableModelInput & { index?: number }
+
 export const loadTableNode = (
     tables: DeepReadonly<GenTableModelInput[]>,
     existedTables: DeepReadonly<GenTableModelInput[]>,
@@ -109,19 +112,38 @@ export const loadTableNode = (
         allItems: allTables,
         newItems: newTables,
         keyToItemsMap: tableNameMap,
-    } = mergeWithExisted<GenTableModelInput, string>(
-        tables,
+    } = mergeWithExisted<GenTableModelInput_withIndex, string>(
+        tables.map((table, index) => ({...table, index})),
         existedTables,
         it => it.name,
         (name, item, keyDuplicateItems, newItems, existedItems) => {
-            let tempCount = keyDuplicateItems.length
-            let tempName = `${name}(${tempCount})`
-            while (existedItems.some(it => it.name === tempName)) {
-                tempName = `${name}(${tempCount++})`
+            if (item.type === "SUPER_TABLE" && tables.length > 1) {
+                const {index, ...table} = item
+                const jsonStr = jsonSortPropStringify(table)
+
+                for (const keyDuplicateItem of keyDuplicateItems) {
+                    if (jsonSortPropStringify(keyDuplicateItem) !== jsonStr) {
+                        let tempCount = keyDuplicateItems.length
+                        let tempName = `${name}(${tempCount})`
+                        while (existedItems.some(it => it.name === tempName)) {
+                            tempName = `${name}(${tempCount++})`
+                        }
+                        item.name = tempName
+                        keyDuplicateItems.push(item)
+                        newItems.push(item)
+                        break
+                    }
+                }
+            } else {
+                let tempCount = keyDuplicateItems.length
+                let tempName = `${name}(${tempCount})`
+                while (existedItems.some(it => it.name === tempName)) {
+                    tempName = `${name}(${tempCount++})`
+                }
+                item.name = tempName
+                keyDuplicateItems.push(item)
+                newItems.push(item)
             }
-            item.name = tempName
-            keyDuplicateItems.push(item)
-            newItems.push(item)
         }
     )
 
@@ -129,7 +151,7 @@ export const loadTableNode = (
     keepTableEnumLegal(newTables, enumNameMap)
     keepTableSuperTableLegal(newTables, tableNameMap)
 
-    const nodeMetas = newTables.map((table, index) => {
+    const nodeMetas = newTables.map(({index, ...table}) => {
         let x: number | undefined = undefined
         let y: number | undefined = undefined
 
@@ -138,7 +160,7 @@ export const loadTableNode = (
             y = baseOptions.y
         }
 
-        if (eachTableOptions !== undefined && eachTableOptions[index] !== undefined) {
+        if (eachTableOptions !== undefined && index !== undefined && eachTableOptions[index] !== undefined) {
             const currentOptions = eachTableOptions[index]
             if (currentOptions.x !== undefined) {
                 if (x !== undefined) {
