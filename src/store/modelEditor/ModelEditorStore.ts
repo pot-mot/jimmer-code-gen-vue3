@@ -129,19 +129,23 @@ type ModelGraphInput = {
     eachTableOptions?: Array<TableLoadOptions | undefined>,
 }
 
+type LoadResult = {
+    nodes: Node[],
+    edges: Edge[],
+    enums: GenModelInput_TargetOf_enums[],
+    subGroups: GenModelInput_TargetOf_subGroups[],
+}
+
 type ModelLoadOperation = {
-    loadInput: (input: DeepReadonly<ModelGraphInput>) => { nodes: Node[], edges: Edge[] }
+    loadInput: (input: DeepReadonly<ModelGraphInput>) => LoadResult
     loadModel: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
     loadSchema: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
     loadTable: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
 }
 
 type ModelEditorDataOperation = {
-    getGraphData: () => DeepReadonly<GraphData>,
-    loadModelEditorData: (modelEditorData: DeepReadonly<ModelEditorData>, reset: boolean) => {
-        nodes: Node[],
-        edges: Edge[]
-    },
+    getGraphData: () => DeepReadonly<GraphData>
+    loadModelEditorData: (modelEditorData: DeepReadonly<ModelEditorData>, reset: boolean) => LoadResult
 }
 
 type SyncTableOperation = {
@@ -292,14 +296,18 @@ const initModelEditorStore = (): ModelEditorStore => {
         }
     )
 
-    const loadModelEditorData = (modelEditorData: DeepReadonly<ModelEditorData>, reset: boolean = false) => {
+    const loadModelEditorData = (modelEditorData: DeepReadonly<ModelEditorData>, reset: boolean = false): LoadResult => {
         let validateErrors
         try {
             const graph = _graph()
             if (modelEditorData && validateModelEditorData(modelEditorData, e => validateErrors = e)) {
                 unStyleAll(graph)
                 if (reset) {
-                    return graphDataOperation.loadGraphData(modelEditorData, true)
+                    return {
+                        ...graphDataOperation.loadGraphData(modelEditorData, true),
+                        subGroups: [],
+                        enums: [],
+                    }
                 } else {
                     const cells = (modelEditorData as ModelEditorData).json.cells
                     const tables: GenTableModelInput[] = []
@@ -319,14 +327,14 @@ const initModelEditorStore = (): ModelEditorStore => {
                 if (reset) {
                     graph.removeCells(graph.getCells())
                 }
-                return {nodes: [], edges: []}
+                return {nodes: [], edges: [], enums: [], subGroups: []}
             }
         } catch (e) {
             sendI18nMessage("MESSAGE_ModelEditorStore_graphLoadFail", "error", validateErrors ? validateErrors : {
                 error: e,
                 graphData: modelEditorData
             })
-            return {nodes: [], edges: []}
+            return {nodes: [], edges: [], enums: [], subGroups: []}
         }
     }
 
@@ -807,7 +815,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const loadInput = (
         input: DeepReadonly<ModelGraphInput>
-    ) => {
+    ): LoadResult => {
         const graph = _graph()
         const model = assertModel()
 
@@ -869,6 +877,8 @@ const initModelEditorStore = (): ModelEditorStore => {
         return {
             nodes,
             edges,
+            subGroups: newSubGroups,
+            enums: newEnums,
         }
     }
 
