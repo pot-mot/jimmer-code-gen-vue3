@@ -6,14 +6,17 @@ import {validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {
     GenModelInput,
-    GenTableModelInput, Pair
+    GenModelInput_TargetOf_enums,
+    GenModelInput_TargetOf_subGroups,
+    GenTableModelInput,
+    Pair
 } from "@/api/__generated/model/static";
 import {validateModelInput} from "@/shape/ModelInput.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {validateTableModelInput} from "@/shape/GenTableModelInput.ts";
 import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
 import {TableLoadOptions} from "@/components/pages/ModelEditor/load/loadTableNode.ts";
-import {DeepReadonly} from "vue";
+import {DeepReadonly, nextTick} from "vue";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 
 export const getModelAllCopyData = (model: DeepReadonly<GenModelInput>): DeepReadonly<CopyData> => {
@@ -42,52 +45,16 @@ type CopyResult = CopyData & {
 type CutResult = CopyResult
 
 type PasteResult = {
-    nodes: Node[]
-    edges: Edge[]
+    nodes: Node[],
+    edges: Edge[],
+    enums: GenModelInput_TargetOf_enums[],
+    subGroups: GenModelInput_TargetOf_subGroups[],
 }
 
 type ClipBoardOperation = {
     copy: () => Promise<CopyResult>,
     cut: () => Promise<CutResult>,
     paste: () => Promise<PasteResult | undefined>
-}
-
-/**
- * 根据当前 TableNodePair 与全部 TableNodePair 获取全部继承树种的 TableNodePair
- * @param currentTableNodePairs
- * @param allTableNodePairs
- */
-const getAllWithSuperTableNodePairs = (
-    currentTableNodePairs: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
-    allTableNodePairs: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
-): Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>> => {
-    const result: Set<Pair<GenTableModelInput, UnwrapRefSimple<Node>>> = new Set(currentTableNodePairs)
-    const superTableNodePairNameMap = new Map<string, Pair<GenTableModelInput, UnwrapRefSimple<Node>>>
-
-    for (const tableNodePair of allTableNodePairs) {
-        if (tableNodePair.first.type === "SUPER_TABLE") {
-            superTableNodePairNameMap.set(tableNodePair.first.name, tableNodePair)
-        }
-    }
-
-    for (const tableNodePair of result) {
-        const table = tableNodePair.first
-
-        const superTables = table.superTables
-        if (superTables === undefined || superTables.length === 0) {
-            result.add(tableNodePair)
-            continue
-        }
-
-        for (const superTable of superTables) {
-            const superTableNodePair = superTableNodePairNameMap.get(superTable.name)
-            if (superTableNodePair !== undefined) {
-                result.add(superTableNodePair)
-            }
-        }
-    }
-
-    return [...result]
 }
 
 let modelClipBoard: ClipBoardOperation | undefined
@@ -147,14 +114,42 @@ export const useModelClipBoard = (): ClipBoardOperation => {
     const cut = async (): Promise<CutResult> => {
         const copyResult = await copy()
 
-        const {nodes, edges, subGroups, enums} = copyResult
-        REMOVE.removeCells([...nodes.map(it => it.id), ...edges.map(it => it.id)])
-
+        const graph = GRAPH._graph()
         const model = MODEL._model()
+
+        graph.startBatch("cut")
+
+        const {nodes, edges, tables, subGroups, enums} = copyResult
+        REMOVE.removeCells(edges.map(it => it.id))
+
+        await nextTick()
+
+        const cutTableNames = new Set(tables.map(it => it.name))
+        const usedTableNames = new Set(
+            MODEL.tables.filter(it => !cutTableNames.has(it.name)).flatMap(it => it.superTables.map(it => it.name)),
+        )
+        const usedTableNodeIds = new Set(
+            MODEL.tableNodePairs.filter(it => usedTableNames.has(it.first.name)).map(it => it.second.id)
+        )
+        const selectedTableNodeIds = new Set(
+            MODEL.selectedTableNodePairs.map(it => it.second.id)
+        )
+        const removedTableNodeIds = new Set<string>
+        for (const node of nodes) {
+            if (selectedTableNodeIds.has(node.id) && !usedTableNodeIds.has(node.id)) {
+                removedTableNodeIds.add(node.id)
+            }
+        }
+        REMOVE.removeCells([...removedTableNodeIds])
+
+        await nextTick()
+
         const modelTables = MODEL.tables
         const modelEnums = MODEL.enums
 
-        const usedEnumNames = new Set(modelTables.flatMap(it => it.columns.map(it => it.enum?.name)))
+        const usedEnumNames = new Set(
+            modelTables.flatMap(it => it.columns.map(it => it.enum?.name))
+        )
         const removedEnumNames = new Set<string>
         for (const genEnum of enums) {
             if (MODEL.selectedEnumMap.has(genEnum.name) && !usedEnumNames.has(genEnum.name)) {
@@ -175,6 +170,10 @@ export const useModelClipBoard = (): ClipBoardOperation => {
             }
         }
         model.subGroups = model.subGroups.filter(it => !removedSubGroupNames.has(it.name))
+
+        await nextTick()
+
+        graph.stopBatch("cut")
 
         return copyResult
     }
@@ -234,11 +233,13 @@ export const useModelClipBoard = (): ClipBoardOperation => {
             }
 
             if (res !== undefined) {
-                const {nodes, edges} = res
+                const {nodes, edges, enums, subGroups} = res
 
                 await syncTimeout(100 + (nodes.length + edges.length) * 5)
 
                 SELECT.select([...nodes.map(it => it.id), ...edges.map(it => it.id)])
+                SELECT.selectEnum(...enums.map(it => it.name))
+                SELECT.selectSubGroup(...subGroups.map(it => it.name))
             }
         } catch (e) {
             sendI18nMessage('MESSAGE_clipBoard_cannotDirectLoad', 'error', e)
@@ -258,6 +259,9 @@ export const useModelClipBoard = (): ClipBoardOperation => {
     return modelClipBoard
 }
 
+/**
+ * 根据所有坐标以左上角为准计算出全部节点与左上角点的相对位置
+ */
 const getPositionOptionsList = (positions: { x: number, y: number }[]): TableLoadOptions[] => {
     let minX = Number.MAX_VALUE
     let minY = Number.MAX_VALUE
@@ -275,4 +279,40 @@ const getPositionOptionsList = (positions: { x: number, y: number }[]): TableLoa
     })
 
     return optionsList
+}
+
+/**
+ * 根据当前 TableNodePair 与全部 TableNodePair 获取全部继承树种的 TableNodePair
+ */
+const getAllWithSuperTableNodePairs = (
+    currentTableNodePairs: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
+    allTableNodePairs: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
+): Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>> => {
+    const result: Set<Pair<GenTableModelInput, UnwrapRefSimple<Node>>> = new Set(currentTableNodePairs)
+    const superTableNodePairNameMap = new Map<string, Pair<GenTableModelInput, UnwrapRefSimple<Node>>>
+
+    for (const tableNodePair of allTableNodePairs) {
+        if (tableNodePair.first.type === "SUPER_TABLE") {
+            superTableNodePairNameMap.set(tableNodePair.first.name, tableNodePair)
+        }
+    }
+
+    for (const tableNodePair of result) {
+        const table = tableNodePair.first
+
+        const superTables = table.superTables
+        if (superTables === undefined || superTables.length === 0) {
+            result.add(tableNodePair)
+            continue
+        }
+
+        for (const superTable of superTables) {
+            const superTableNodePair = superTableNodePairNameMap.get(superTable.name)
+            if (superTableNodePair !== undefined) {
+                result.add(superTableNodePair)
+            }
+        }
+    }
+
+    return [...result]
 }

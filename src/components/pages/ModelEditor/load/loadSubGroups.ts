@@ -1,7 +1,9 @@
 import {GenModelInput_TargetOf_subGroups} from "@/api/__generated/model/static";
 import {DeepReadonly} from "vue";
-import {mergeWithExisted} from "@/components/pages/ModelEditor/load/mergeWithExisted.ts";
-import {jsonSortPropStringify} from "@/utils/json.ts";
+import {
+    jsonEqualOrRenameDuplicateHandler,
+    mergeWithExisted
+} from "@/components/pages/ModelEditor/load/mergeWithExisted.ts";
 
 export const loadSupGroups = (
     subGroups:  DeepReadonly<Array<GenModelInput_TargetOf_subGroups>>,
@@ -19,23 +21,7 @@ export const loadSupGroups = (
         subGroups,
         existedSubGroups,
         it => it.name,
-        (name, item, keyDuplicateItems, newItems, existedItems) => {
-            const jsonStr = jsonSortPropStringify(item)
-
-            for (const keyDuplicateItem of keyDuplicateItems) {
-                if (jsonSortPropStringify(keyDuplicateItem) !== jsonStr) {
-                    let tempCount = keyDuplicateItems.length
-                    let tempName = `${name}(${tempCount})`
-                    while (existedItems.some(it => it.name === tempName)) {
-                        tempName = `${name}(${tempCount++})`
-                    }
-                    item.name = tempName
-                    keyDuplicateItems.push(item)
-                    newItems.push(item)
-                    break
-                }
-            }
-        }
+        jsonEqualOrRenameDuplicateHandler
     )
 
     return {

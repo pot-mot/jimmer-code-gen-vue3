@@ -8,8 +8,12 @@ import {erRouter, orthRouter} from "@/components/global/graphEditor/edge/edgeRou
 import {ASSOCIATION_EDGE} from "@/components/pages/ModelEditor/constant.ts";
 import {PortManager} from "@antv/x6/es/model/port";
 import {DeepReadonly} from "vue";
-import {mergeWithExisted} from "@/components/pages/ModelEditor/load/mergeWithExisted.ts";
+import {
+    jsonEqualOrRenameDuplicateHandler,
+    mergeWithExisted
+} from "@/components/pages/ModelEditor/load/mergeWithExisted.ts";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
+import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 
 type AssociationEdgeConnect = {
     association: GenAssociationModelInput
@@ -126,7 +130,10 @@ const associationEdgeConnectToEdgeMeta = (
     }
 }
 
-const filterAssociationByTable = (
+/**
+ * 根据 tableNameMap 处理重名的表，自动将 source 和 target 重名表重命名为同名表列表的最后一个
+ */
+const resetAssociationTableName = (
     associations: GenAssociationModelInput[],
     tableNameMap: DeepReadonly<Map<string, GenTableModelInput[]>>
 ): GenAssociationModelInput[] => {
@@ -161,31 +168,25 @@ export const loadAssociationEdge = (
     newAssociations: Array<GenAssociationModelInput>,
     associationNameMap: Map<string, GenAssociationModelInput[]>
 } => {
+    const resetTableNameAssociations = resetAssociationTableName(
+        cloneDeepReadonly<GenAssociationModelInput[]>(associations),
+        tableNameMap
+    )
+
     const {
         allItems: allAssociations,
         newItems: newAssociations,
         keyToItemsMap: associationNameMap,
     } = mergeWithExisted<GenAssociationModelInput, string>(
-        associations,
+        resetTableNameAssociations,
         existedAssociations,
         it => it.name,
-        (name, item, keyDuplicateItems, newItems, existedItems) => {
-            let tempCount = keyDuplicateItems.length
-            let tempName = `${name}(${tempCount})`
-            while (existedItems.some(it => it.name === tempName)) {
-                tempName = `${name}(${tempCount++})`
-            }
-            item.name = tempName
-            keyDuplicateItems.push(item)
-            newItems.push(item)
-        }
+        jsonEqualOrRenameDuplicateHandler
     )
-
-    const filteredAssociations = filterAssociationByTable(newAssociations, tableNameMap)
 
     const edgeMetas: Edge.Metadata[] = []
 
-    for (const association of filteredAssociations) {
+    for (const association of newAssociations) {
         const associationEdgeConnect = associationToEdgeConnect(association, tableNodes)
         if (!associationEdgeConnect) continue
         const edgeMeta = associationEdgeConnectToEdgeMeta(associationEdgeConnect)
