@@ -30,6 +30,7 @@ import EntityDialogs from "@/components/pages/ModelEditor/dialogs/entity/EntityD
 import SubGroupDialogs from "@/components/pages/ModelEditor/dialogs/subGroup/SubGroupDialogs.vue";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 import {GenModelInput} from "@/api/__generated/model/static";
+import ModelEditorContextMenu from "@/components/pages/ModelEditor/contextMenu/ModelEditorContextMenu.vue";
 
 const {MODEL, MODEL_EDITOR} = useModelEditorStore()
 
@@ -188,4 +189,6 @@ watch(() => modelLoadMenu.value, () => {
 	<EntityDialogs/>
 
 	<EnumDialogs/>
+
+    <ModelEditorContextMenu/>
 </template>

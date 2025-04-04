@@ -9,8 +9,8 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 
-import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 import ContextMenu from '@imengyu/vue3-context-menu'
+import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 
 import './assets/theme.css'
 import './assets/base.css'

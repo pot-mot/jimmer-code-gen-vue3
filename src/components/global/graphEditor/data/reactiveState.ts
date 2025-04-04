@@ -5,6 +5,7 @@ import {arrayToMap} from "@/utils/mapOperation.ts";
 import {sendMessage} from "@/message/message.ts";
 import {getCenterPoint} from "@/components/global/graphEditor/view/viewOperation.ts";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
+import debounce from "lodash/debounce";
 
 export interface GraphReactiveState {
     loadReactiveState: () => any
@@ -25,6 +26,7 @@ export interface GraphReactiveState {
     canRedo: Ref<boolean>
 
     mouseenterState: Ref<boolean>
+    mousePagePosition: Ref<{ x: number, y: number }>
     mousePosition: Ref<{ x: number, y: number }>
 }
 
@@ -60,15 +62,18 @@ export const useGraphReactiveState = (_graph: () => Graph): GraphReactiveState =
     const mouseenterState = ref(false)
 
     // 鼠标的 position
+    const mousePagePosition = ref({x: 0, y: 0})
     const mousePosition = ref({x: 0, y: 0})
-    const setMousePosition = (e: MouseEvent) => {
+    const setMousePosition = debounce((e: MouseEvent) => {
         const graph = _graph()
 
-        mousePosition.value = graph.pageToLocal({
+        const pagePosition = {
             x: e.pageX,
             y: e.pageY
-        })
-    }
+        }
+        mousePagePosition.value = pagePosition
+        mousePosition.value = graph.pageToLocal(pagePosition)
+    }, 50)
 
     const loadReactiveState = async () => {
         const graph = _graph()
@@ -161,6 +166,7 @@ export const useGraphReactiveState = (_graph: () => Graph): GraphReactiveState =
         clearReactiveState,
 
         mouseenterState,
+        mousePagePosition,
         mousePosition,
 
         nodeMap,

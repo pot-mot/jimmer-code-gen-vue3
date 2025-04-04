@@ -1,6 +1,6 @@
 <template>
     <div ref="wrapper" class="model-editor-graph" :class="isDragging ? '' : 'non-drag'">
-        <div ref="container"/>
+        <div ref="container" @mousedown="handleMouseDown" @mouseup="handleMouseUp"/>
 
         <ul v-if="GRAPH.isLoaded" class="toolbar left-top">
             <li>
@@ -179,6 +179,7 @@ import {useModelEditDialogStore} from "@/store/modelEditor/dialogs/ModelEditDial
 import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
 import {jsonSortPropStringify} from "@/utils/json.ts";
 import {api} from "@/api";
+import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
 
 const i18nStore = useI18nStore()
 
@@ -192,6 +193,8 @@ const {GRAPH, MODEL, MODEL_EDITOR, SELECT, HISTORY, VIEW, REMOVE} = useModelEdit
 const modelEditorDialog = useModelEditDialogStore()
 
 const loadingStore = useGlobalLoadingStore()
+
+const contextMenuStore = useModelEditorContextMenuStore()
 
 onMounted(loadingStore.withLoading('ModelEditorGraph onMounted', () => {
     graph = initModelEditor(container.value!, wrapper.value!)
@@ -284,18 +287,34 @@ const handleEditModel = () => {
 
 // 拖曳状态标记
 const isDragging = ref(false)
+// 右键菜单标记
+const contextMenuFlag = ref(false)
 
-useDocumentEvent('mousedown', (e) => {
-    if (e.button === 2) {
-        isDragging.value = true
-    }
-})
+const contextMenuWaitTime = 100
 
-useDocumentEvent('mouseup', (e) => {
+const handleMouseDown = (e: MouseEvent) => {
     if (e.button === 2) {
-        isDragging.value = false
+        contextMenuFlag.value = true
+        setTimeout(() => {
+            if (contextMenuFlag.value) {
+                isDragging.value = true
+                contextMenuFlag.value = false
+            }
+        }, contextMenuWaitTime)
     }
-})
+}
+
+const handleMouseUp = (e: MouseEvent) => {
+    if (e.button === 2) {
+        if (contextMenuFlag.value) {
+            contextMenuFlag.value = false
+            contextMenuStore.open()
+        }
+        if (isDragging.value) {
+            isDragging.value = false
+        }
+    }
+}
 
 /**
  * 代码预览与下载
