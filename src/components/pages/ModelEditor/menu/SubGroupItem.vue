@@ -4,7 +4,7 @@ import {GenModelInput_TargetOf_subGroups} from "@/api/__generated/model/static";
 import {deleteConfirm} from "@/message/confirm.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
-import {computed} from "vue";
+import {computed, nextTick} from "vue";
 
 const i18nStore = useI18nStore()
 
@@ -30,6 +30,7 @@ const handleClickLabel = async (e: MouseEvent) => {
 
     if (e.ctrlKey) {
         SELECT.toggleSelectSubGroup(props.subGroup?.name)
+        await nextTick()
         if (isSelected.value) {
             SELECT.select(matchedNodeIds)
             SELECT.selectEnum(...matchedEnumNames)

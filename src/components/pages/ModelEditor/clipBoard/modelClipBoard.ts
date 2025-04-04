@@ -6,7 +6,7 @@ import {validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {
     GenModelInput,
-    GenTableModelInput
+    GenTableModelInput, Pair
 } from "@/api/__generated/model/static";
 import {validateModelInput} from "@/shape/ModelInput.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
@@ -52,6 +52,44 @@ type ClipBoardOperation = {
     paste: () => Promise<PasteResult | undefined>
 }
 
+/**
+ * 根据当前 TableNodePair 与全部 TableNodePair 获取全部继承树种的 TableNodePair
+ * @param currentTableNodePairs
+ * @param allTableNodePairs
+ */
+const getAllWithSuperTableNodePairs = (
+    currentTableNodePairs: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
+    allTableNodePairs: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
+): Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>> => {
+    const result: Set<Pair<GenTableModelInput, UnwrapRefSimple<Node>>> = new Set(currentTableNodePairs)
+    const superTableNodePairNameMap = new Map<string, Pair<GenTableModelInput, UnwrapRefSimple<Node>>>
+
+    for (const tableNodePair of allTableNodePairs) {
+        if (tableNodePair.first.type === "SUPER_TABLE") {
+            superTableNodePairNameMap.set(tableNodePair.first.name, tableNodePair)
+        }
+    }
+
+    for (const tableNodePair of result) {
+        const table = tableNodePair.first
+
+        const superTables = table.superTables
+        if (superTables === undefined || superTables.length === 0) {
+            result.add(tableNodePair)
+            continue
+        }
+
+        for (const superTable of superTables) {
+            const superTableNodePair = superTableNodePairNameMap.get(superTable.name)
+            if (superTableNodePair !== undefined) {
+                result.add(superTableNodePair)
+            }
+        }
+    }
+
+    return [...result]
+}
+
 let modelClipBoard: ClipBoardOperation | undefined
 export const useModelClipBoard = (): ClipBoardOperation => {
     if (modelClipBoard) return modelClipBoard
@@ -61,7 +99,7 @@ export const useModelClipBoard = (): ClipBoardOperation => {
     const copy = async (): Promise<CopyResult> => {
         const model = MODEL._model()
 
-        const tableNodePairs = MODEL.selectedTableNodePairs
+        const tableNodePairs = getAllWithSuperTableNodePairs(MODEL.selectedTableNodePairs, MODEL.tableNodePairs)
         const associationEdgePairs = MODEL.selectedAssociationEdgePairs
 
         const tables = tableNodePairs.map(it => it.first)
