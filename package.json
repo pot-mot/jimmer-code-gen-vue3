@@ -20,6 +20,7 @@
     "@antv/x6-plugin-selection": "^2.2.2",
     "@antv/x6-vue-shape": "^2.1.2",
     "@element-plus/icons-vue": "^2.3.1",
+    "@imengyu/vue3-context-menu": "^1.4.6",
     "ajv": "^8.17.1",
     "element-plus": "^2.8.4",
     "file-saver": "^2.0.5",
