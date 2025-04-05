@@ -874,6 +874,8 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         graph.stopBatch("ModelEditorStore loadInput")
 
+        _graph().container.focus()
+
         return {
             nodes,
             edges,
@@ -1250,7 +1252,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         startBatchSync('createdTable', () => {
             const node = loadInput({
                 tables: [table],
-                eachTableOptions: [options]
+                baseTableOptions: options
             }).nodes[0]
 
             tableCreateOptionsMap.delete(createKey)
@@ -1347,7 +1349,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         startBatchSync("combinedTable", async () => {
             const node = loadInput({
                 tables: [superTable],
-                eachTableOptions: [tableCombineOptions.value]
+                baseTableOptions: tableCombineOptions.value
             }).nodes[0]
 
             if (node) {
@@ -1373,7 +1375,14 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const createAssociation = () => {
         const createKey = ASSOCIATION_CREATE_PREFIX + Date.now()
-        associationDialogsStore.open(createKey, getDefaultAssociation())
+        const assoication = getDefaultAssociation()
+        if (selectedTables.value.length > 0 && selectedTables.value.length < 3) {
+            assoication.sourceTableName = selectedTables.value[0].name
+            if (selectedTables.value.length === 2) {
+                assoication.targetTableName = selectedTables.value[1].name
+            }
+        }
+        associationDialogsStore.open(createKey, assoication)
     }
 
     const createdAssociation = async (createKey: string, association: DeepReadonly<GenAssociationModelInput>) => {
