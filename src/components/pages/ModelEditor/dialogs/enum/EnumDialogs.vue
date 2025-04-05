@@ -46,6 +46,8 @@ const validate = (key: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enum
                 :sub-groups="MODEL.subGroups"
                 @create-sub-group="() => MODEL_EDITOR.createSubGroup({enumKey: key})"
                 @edit-sub-group="({subGroup}) => MODEL_EDITOR.editSubGroup(subGroup.name, subGroup)"
+
+                style="padding-top: 1em;"
             />
         </DragDialog>
 	</template>
