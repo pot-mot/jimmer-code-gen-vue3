@@ -32,7 +32,7 @@ const validate = (key: string, subGroup: DeepReadonly<GenModelInput_TargetOf_sub
         <DragDialog
             :ref="(el: any) => store.setDialogRef(key, el)"
             :model-value="true" :can-resize="true"
-            :init-w="800" :init-h="600" :init-y="100"
+            :init-w="500" :init-h="250" :init-y="100"
             :modal="options?.modal"
             @close="store.close(key, false)"
         >
@@ -41,6 +41,8 @@ const validate = (key: string, subGroup: DeepReadonly<GenModelInput_TargetOf_sub
                 :validate="(subGroup) => validate(key, subGroup)"
                 @submit="(subGroup) => handleSubmit(key, subGroup)"
                 @cancel="store.close(key, false)"
+
+                style="padding-top: 1em;"
             />
         </DragDialog>
 	</template>
