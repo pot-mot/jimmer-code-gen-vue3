@@ -30,6 +30,10 @@
     --mx-menu-backgroud-radius: var(--border-radius);
 }
 
+.mx-context-menu-item.disabled {
+    --icon-color: var(--el-text-color-disabled);
+}
+
 .mx-context-menu-item,
 .mx-context-menu-item.open {
     padding: 0.25em 0.5em;

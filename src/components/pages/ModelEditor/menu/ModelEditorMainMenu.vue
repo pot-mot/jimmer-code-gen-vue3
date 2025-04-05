@@ -29,6 +29,14 @@ const handleClickUnselect = (e: MouseEvent) => {
 		SELECT.unselectAll()
 	}
 }
+
+const handleCreateTable = () => {
+	MODEL_EDITOR.createTable({x: VIEW.getCenterPoint().x * 3/4, y: VIEW.getCenterPoint().y * 3/4})
+}
+
+const handleCombineTable = () => {
+	MODEL_EDITOR.combineTable({x: VIEW.getCenterPoint().x * 3/4, y: VIEW.getCenterPoint().y * 3/4})
+}
 </script>
 
 <template>
@@ -49,17 +57,13 @@ const handleClickUnselect = (e: MouseEvent) => {
 
 					<el-button
 						style="margin-left: 0.5em;"
-						@click="MODEL_EDITOR.createTable(
-							{x: VIEW.getCenterPoint().x * 3/4, y: VIEW.getCenterPoint().y * 3/4}
-						)">
+						@click="handleCreateTable">
 						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_createTable') }}
 					</el-button>
 
 					<el-button
 						style="margin-left: 0.5em;"
-						@click="MODEL_EDITOR.combineTable(
-							{x: VIEW.getCenterPoint().x * 3/4, y: VIEW.getCenterPoint().y * 3/4}
-						)">
+						@click="handleCombineTable">
 						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_combineTable') }}
 					</el-button>
 

@@ -7,7 +7,7 @@
 		<div class="toolbar">
 			<slot name="toolbar" v-bind="props">
 				<el-button style="padding: 0.3em 0.5em;">
-					<CopyIcon :finish="copyFinish" @click="handleCopy"/>
+					<CopyIcon size="1.5em" :finish="copyFinish" @click="handleCopy"/>
 				</el-button>
 			</slot>
 		</div>

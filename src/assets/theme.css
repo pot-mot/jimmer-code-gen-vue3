@@ -2,7 +2,8 @@
     --text-color: var(--el-color-info-dark-2);
     --comment-color: var(--el-text-color-placeholder);
     --border-color: var(--text-color);
-    --background-color: var(--el-color-white);
+    --background-color: #fff;
+    --background-color-hover: #eee;
     --highlight-color: var(--el-color-primary);
     --border: var(--el-border);
     --border-radius: var(--el-border-radius-base);
@@ -29,6 +30,7 @@
     --comment-color: #777;
     --border-color: #ccc;
     --background-color: #333;
+    --background-color-hover: #444;
     --highlight-color: var(--el-color-primary);
 
     --scrollbar-track-color: #444;
