@@ -104,6 +104,7 @@ export const useGraphReactiveState = (_graph: () => Graph): GraphReactiveState =
             mouseenterState.value = false
         })
 
+        graph.container.addEventListener('mouseenter', setMousePosition, {passive: true})
         graph.container.addEventListener('mousemove', setMousePosition, {passive: true})
 
         graph.on('selection:changed', () => {
@@ -156,7 +157,12 @@ export const useGraphReactiveState = (_graph: () => Graph): GraphReactiveState =
         selectedNodeMap.value.clear()
         selectedEdgeMap.value.clear()
         mouseenterState.value = false
-        _graph().container.removeEventListener('mousemove', setMousePosition)
+
+        const container = _graph().container
+        if (container) {
+            container.removeEventListener('mouseenter', setMousePosition)
+            container.removeEventListener('mousemove', setMousePosition)
+        }
         canRedo.value = false
         canUndo.value = false
     }
