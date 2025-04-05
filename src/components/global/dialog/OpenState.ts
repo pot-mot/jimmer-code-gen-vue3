@@ -27,10 +27,19 @@ export const useOpenState = () => {
         eventBus.emit('close')
     }
 
+    const toggle = () => {
+        if (openState.value) {
+            eventBus.emit('close')
+        } else {
+            eventBus.emit('open')
+        }
+    }
+
     return {
         openState,
         open,
         close,
+        toggle,
         ...eventBus
     }
 }

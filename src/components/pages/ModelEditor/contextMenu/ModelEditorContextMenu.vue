@@ -3,7 +3,7 @@
         v-model:show="store.openState"
         :options="options"
     >
-        <context-menu-item label="Test item dynamic show and hide" :clickClose="false" @click="store.openState = !store.openState" />
+        <context-menu-item label="Test item dynamic show and hide" :clickClose="false" @click="store.toggle" />
     </context-menu>
 </template>
 
