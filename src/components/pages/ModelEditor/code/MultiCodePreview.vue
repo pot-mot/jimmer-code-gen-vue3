@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {computed, ref} from 'vue'
+import {computed, nextTick, onMounted, ref} from 'vue'
 import CodePreview from "../../../global/code/CodePreview.vue";
 import {GenerateFile} from "@/api/__generated/model/static";
 import LeftRightLayout from "@/components/global/layout/LeftRightLayout.vue";
@@ -62,81 +62,100 @@ const handleDownloadAll = () => {
 }
 
 const paths = computed(() => store.filteredFiles.map(it => it.path))
+
+const filterInitHeight = ref<number>(0)
+
+const fileMenuInitHeight = ref<number>(0)
+
+const wrapper = ref<HTMLDivElement>()
+
+onMounted(async () => {
+    await nextTick()
+    if (wrapper.value) {
+        const rect = wrapper.value.getBoundingClientRect()
+        filterInitHeight.value = 180 / rect.height * 100
+        console.log(filterInitHeight.value)
+        fileMenuInitHeight.value = 30 / rect.height * 100
+        console.log(fileMenuInitHeight.value)
+    }
+})
 </script>
 
 <template>
-    <LeftRightLayout :left-size="20">
-        <template #left>
-            <Splitpanes horizontal>
-                <Pane style="overflow-y: scroll;" size="17em">
-                    <GenerateFileFilter
-                        v-model="store.filterData"
-                        :table-entity-pair-options="store.codes.tableEntityPairs"
-                    />
-                </Pane>
+    <div style="height: 100%; width: 100%" ref="wrapper">
+        <LeftRightLayout :left-size="20">
+            <template #left>
+                <Splitpanes horizontal>
+                    <Pane style="overflow-y: scroll;" :size="filterInitHeight">
+                        <GenerateFileFilter
+                            v-model="store.filterData"
+                            :table-entity-pair-options="store.codes.tableEntityPairs"
+                        />
+                    </Pane>
 
-                <Pane style="overflow-y: scroll;">
-                    <FileTree
-                        :paths="paths"
-                        :current-path="currentPath"
-                        @file-click="handleFileClick"
-                    />
-                </Pane>
-            </Splitpanes>
-        </template>
+                    <Pane style="overflow-y: scroll;">
+                        <FileTree
+                            :paths="paths"
+                            :current-path="currentPath"
+                            @file-click="handleFileClick"
+                        />
+                    </Pane>
+                </Splitpanes>
+            </template>
 
-        <template #right>
-            <Splitpanes horizontal v-if="currentFile">
-                <Pane style="overflow-y: scroll;" size="3em">
-                    <GenerateFileMenu
-                        :file="currentFile"
-                        :table-id-map="store.tableIdMap"
-                        :entity-id-map="store.entityIdMap"
-                    />
-                </Pane>
+            <template #right>
+                <Splitpanes horizontal v-if="currentFile">
+                    <Pane style="overflow-y: scroll;" :size="fileMenuInitHeight">
+                        <GenerateFileMenu
+                            :file="currentFile"
+                            :table-id-map="store.tableIdMap"
+                            :entity-id-map="store.entityIdMap"
+                        />
+                    </Pane>
 
-                <Pane>
-                    <CodePreview
-                        :code="currentFile.content"
-                        :language="currentLanguage"
-                        :show-line-counts="showLineCounts"
-                    />
-                </Pane>
-            </Splitpanes>
+                    <Pane>
+                        <CodePreview
+                            :code="currentFile.content"
+                            :language="currentLanguage"
+                            :show-line-counts="showLineCounts"
+                        />
+                    </Pane>
+                </Splitpanes>
 
-            <div class="code-download-button">
-                <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_downloadFiltered')"
-                            v-if="store.filteredFiles.length !== store.allFiles.length"
-                >
-                    <el-button
-                        :icon="DownloadWithFilterIcon"
-                        round
-                        size="large"
-                        @click="handleDownloadFiltered"
-                    />
-                </el-tooltip>
+                <div class="code-download-button">
+                    <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_downloadFiltered')"
+                                v-if="store.filteredFiles.length !== store.allFiles.length"
+                    >
+                        <el-button
+                            :icon="DownloadWithFilterIcon"
+                            round
+                            size="large"
+                            @click="handleDownloadFiltered"
+                        />
+                    </el-tooltip>
 
-                <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_downloadCurrent')"
-                            v-if="currentFile">
-                    <el-button
-                        :icon="DownloadFileIcon"
-                        round
-                        size="large"
-                        @click="handleDownloadCurrent"
-                    />
-                </el-tooltip>
+                    <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_downloadCurrent')"
+                                v-if="currentFile">
+                        <el-button
+                            :icon="DownloadFileIcon"
+                            round
+                            size="large"
+                            @click="handleDownloadCurrent"
+                        />
+                    </el-tooltip>
 
-                <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_downloadAll')">
-                    <el-button
-                        :icon="DownloadIcon"
-                        round
-                        size="large"
-                        @click="handleDownloadAll"
-                    />
-                </el-tooltip>
-            </div>
-        </template>
-    </LeftRightLayout>
+                    <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_downloadAll')">
+                        <el-button
+                            :icon="DownloadIcon"
+                            round
+                            size="large"
+                            @click="handleDownloadAll"
+                        />
+                    </el-tooltip>
+                </div>
+            </template>
+        </LeftRightLayout>
+    </div>
 </template>
 
 <style scoped>
