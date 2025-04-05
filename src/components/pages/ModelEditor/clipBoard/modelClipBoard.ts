@@ -5,6 +5,7 @@ import {CopyData, validateCopyData} from "@/shape/CopyData.ts";
 import {validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {
+    GenAssociationModelInput,
     GenModelInput,
     GenModelInput_TargetOf_enums,
     GenModelInput_TargetOf_subGroups,
@@ -37,12 +38,17 @@ export const getModelAllCopyData = (model: DeepReadonly<GenModelInput>): DeepRea
     }
 }
 
+type CopyInput = DeepReadonly<{
+    tableNodePairs?: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
+    associationEdgePairs?: Array<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>,
+    enumNames?: Array<string>,
+    subGroupNames?: Array<string | undefined>,
+}>
+
 type CopyResult = CopyData & {
     nodes: UnwrapRefSimple<Node>[]
     edges: UnwrapRefSimple<Edge>[]
 }
-
-type CutResult = CopyResult
 
 type PasteResult = {
     nodes: Node[],
@@ -52,8 +58,8 @@ type PasteResult = {
 }
 
 type ClipBoardOperation = {
-    copy: () => Promise<CopyResult>,
-    cut: () => Promise<CutResult>,
+    copy: (input?: CopyInput | undefined) => Promise<DeepReadonly<CopyResult>>,
+    cut: (input?: CopyInput | undefined) => Promise<DeepReadonly<CopyResult>>,
     paste: () => Promise<PasteResult | undefined>
 }
 
@@ -63,11 +69,24 @@ export const useModelClipBoard = (): ClipBoardOperation => {
 
     const {GRAPH, MODEL, MODEL_EDITOR, REMOVE, SELECT} = useModelEditorStore()
 
-    const copy = async (): Promise<CopyResult> => {
+    const getDefaultInput = (): CopyInput => {
+        return {
+            tableNodePairs: MODEL.selectedTableNodePairs,
+            associationEdgePairs: MODEL.selectedAssociationEdgePairs,
+            enumNames: [...MODEL.selectedEnumMap.keys()],
+            subGroupNames: [...MODEL.selectedSubGroupMap.keys()],
+        }
+    }
+
+    const copy = async (
+        input?: CopyInput | undefined
+    ): Promise<DeepReadonly<CopyResult>> => {
+        input = input ?? getDefaultInput()
+
         const model = MODEL._model()
 
-        const tableNodePairs = getAllWithSuperTableNodePairs(MODEL.selectedTableNodePairs, MODEL.tableNodePairs)
-        const associationEdgePairs = MODEL.selectedAssociationEdgePairs
+        const tableNodePairs = getAllWithSuperTableNodePairs(input.tableNodePairs ?? [], MODEL.tableNodePairs)
+        const associationEdgePairs = input.associationEdgePairs ?? []
 
         const tables = tableNodePairs.map(it => it.first)
         const nodes = tableNodePairs.map(it => it.second)
@@ -75,7 +94,7 @@ export const useModelClipBoard = (): ClipBoardOperation => {
         const edges = associationEdgePairs.map(it => it.second)
 
         const enumNameSet = new Set<string>([
-            ...MODEL.selectedEnumMap.keys(),
+            ...input.enumNames ?? [],
             ...tables
                 .flatMap(it => it.columns.map(it => it.enum?.name))
                 .filter(it => it !== undefined)
@@ -85,7 +104,7 @@ export const useModelClipBoard = (): ClipBoardOperation => {
             model.enums.filter(it => enumNameSet.has(it.name))
 
         const subGroupNameSet = new Set<string | undefined>([
-            ...MODEL.selectedSubGroupMap.keys(),
+            ...input.subGroupNames ?? [],
             ...tables
                 .map(it => it.subGroup?.name)
                 .filter(it => it !== undefined),
@@ -100,7 +119,7 @@ export const useModelClipBoard = (): ClipBoardOperation => {
         const nodePositions = tableNodePairs.map(it => it.second.getPosition())
         const optionsList = getPositionOptionsList(nodePositions)
 
-        const copyData: CopyData = {subGroups, enums, tables, associations, optionsList}
+        const copyData = {subGroups, enums, tables, associations, optionsList}
 
         await navigator.clipboard.writeText(JSON.stringify(copyData))
 
@@ -111,19 +130,25 @@ export const useModelClipBoard = (): ClipBoardOperation => {
         }
     }
 
-    const cut = async (): Promise<CutResult> => {
-        const copyResult = await copy()
+    const cut = async (
+        input?: CopyInput | undefined
+    ): Promise<DeepReadonly<CopyResult>> => {
+        input = input ?? getDefaultInput()
+
+        const copyResult = await copy(input)
 
         const graph = GRAPH._graph()
         const model = MODEL._model()
 
         graph.startBatch("cut")
 
+        // 1. 移除关联
         const {nodes, edges, tables, subGroups, enums} = copyResult
         REMOVE.removeCells(edges.map(it => it.id))
 
         await nextTick()
 
+        // 2. 移除不被依赖的表
         const cutTableNames = new Set(tables.map(it => it.name))
         const usedTableNames = new Set(
             MODEL.tables.filter(it => !cutTableNames.has(it.name)).flatMap(it => it.superTables.map(it => it.name)),
@@ -131,12 +156,12 @@ export const useModelClipBoard = (): ClipBoardOperation => {
         const usedTableNodeIds = new Set(
             MODEL.tableNodePairs.filter(it => usedTableNames.has(it.first.name)).map(it => it.second.id)
         )
-        const selectedTableNodeIds = new Set(
-            MODEL.selectedTableNodePairs.map(it => it.second.id)
+        const inputTableNodeIds = new Set(
+            input.tableNodePairs?.map(it => it.second.id)
         )
         const removedTableNodeIds = new Set<string>
         for (const node of nodes) {
-            if (selectedTableNodeIds.has(node.id) && !usedTableNodeIds.has(node.id)) {
+            if (inputTableNodeIds.has(node.id) && !usedTableNodeIds.has(node.id)) {
                 removedTableNodeIds.add(node.id)
             }
         }
@@ -144,28 +169,36 @@ export const useModelClipBoard = (): ClipBoardOperation => {
 
         await nextTick()
 
+        // 3. 移除不被依赖的枚举
         const modelTables = MODEL.tables
         const modelEnums = MODEL.enums
 
         const usedEnumNames = new Set(
             modelTables.flatMap(it => it.columns.map(it => it.enum?.name))
         )
+        const inputEnumNames = new Set(
+            input.enumNames
+        )
         const removedEnumNames = new Set<string>
         for (const genEnum of enums) {
-            if (MODEL.selectedEnumMap.has(genEnum.name) && !usedEnumNames.has(genEnum.name)) {
+            if (inputEnumNames.has(genEnum.name) && !usedEnumNames.has(genEnum.name)) {
                 removedEnumNames.add(genEnum.name)
             }
         }
         const newEnums = modelEnums.filter(it => !removedEnumNames.has(it.name))
         model.enums = newEnums
 
+        // 4. 移除不被依赖的子组
         const usedSubGroupNames = new Set([
             ...modelTables.map(it => it.subGroup?.name),
             ...newEnums.map(it => it.subGroup?.name),
         ])
+        const inputSubGroupNames = new Set(
+            input.subGroupNames
+        )
         const removedSubGroupNames = new Set<string>
         for (const subGroup of subGroups) {
-            if (MODEL.selectedSubGroupMap.has(subGroup.name) && !usedSubGroupNames.has(subGroup.name)) {
+            if (inputSubGroupNames.has(subGroup.name) && !usedSubGroupNames.has(subGroup.name)) {
                 removedSubGroupNames.add(subGroup.name)
             }
         }
@@ -285,11 +318,11 @@ const getPositionOptionsList = (positions: { x: number, y: number }[]): TableLoa
  * 根据当前 TableNodePair 与全部 TableNodePair 获取全部继承树种的 TableNodePair
  */
 const getAllWithSuperTableNodePairs = (
-    currentTableNodePairs: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
-    allTableNodePairs: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
-): Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>> => {
-    const result: Set<Pair<GenTableModelInput, UnwrapRefSimple<Node>>> = new Set(currentTableNodePairs)
-    const superTableNodePairNameMap = new Map<string, Pair<GenTableModelInput, UnwrapRefSimple<Node>>>
+    currentTableNodePairs: DeepReadonly<Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>>,
+    allTableNodePairs: DeepReadonly<Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>>,
+): DeepReadonly<Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>> => {
+    const result: Set<DeepReadonly<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>> = new Set(currentTableNodePairs)
+    const superTableNodePairNameMap: Map<string, DeepReadonly<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>> = new Map
 
     for (const tableNodePair of allTableNodePairs) {
         if (tableNodePair.first.type === "SUPER_TABLE") {

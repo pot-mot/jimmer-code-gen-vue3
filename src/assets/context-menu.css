@@ -34,12 +34,21 @@
     --icon-color: var(--el-text-color-disabled);
 }
 
-.mx-context-menu-item,
-.mx-context-menu-item.open {
-    padding: 0.25em 0.5em;
+.mx-context-menu-item {
+    padding: 0.3em 0.5em;
 }
 
 .mx-context-menu-item .label,
-.mx-context-menu-item .shortcut {
+.mx-context-menu-item .mx-shortcut {
     font-size: var(--el-font-size-extra-small);
+    padding: 0;
+}
+
+.mx-context-menu-item .mx-shortcut {
+    text-align: right;
+    padding-left: 1em;
+}
+
+.mx-right-arrow {
+    height: 0.5em;
 }

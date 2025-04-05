@@ -6,9 +6,9 @@ import {CellProperty, getCell} from "@/components/global/graphEditor/inputProces
 import {DEFAULT_ZOOM_RANGE} from "@/components/pages/ModelEditor/constant.ts";
 
 export interface GraphViewOperation {
-    layoutDirection: Ref<LayoutDirection>,
     getCenterPoint: () => { x: number, y: number },
-    layout: () => void,
+    layoutDirection: Ref<LayoutDirection>,
+    layout: (layoutDirection?: LayoutDirection | undefined) => void,
     fit: () => void
     focus: (cell: CellProperty) => void
     center: () => void
@@ -20,7 +20,7 @@ export const useViewOperation = (_graph: () => Graph): GraphViewOperation => {
     return {
         layoutDirection,
         getCenterPoint: () => getCenterPoint(_graph()),
-        layout: () => layout(_graph(), layoutDirection.value),
+        layout: (input) => layout(_graph(), input ?? layoutDirection.value),
         fit: () => fit(_graph()),
         focus: (cell: CellProperty) => focus(_graph(), cell),
         center: () => center(_graph())
