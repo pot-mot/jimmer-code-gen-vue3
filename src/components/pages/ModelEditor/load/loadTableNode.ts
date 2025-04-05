@@ -133,6 +133,28 @@ export const loadTableNode = (
     keepTableEnumLegal(newTables, enumNameMap)
     keepTableSuperTableLegal(newTables, tableNameMap)
 
+    let minX: number | undefined = undefined
+    let minY: number | undefined = undefined
+
+    for (const {index} of newTables) {
+        if (index !== undefined && eachTableOptions && eachTableOptions[index]) {
+            if (eachTableOptions[index].x !== undefined) {
+                if (minX === undefined) {
+                    minX = eachTableOptions[index].x
+                } else if (eachTableOptions[index].x < minX) {
+                    minX = eachTableOptions[index].x
+                }
+            }
+            if (eachTableOptions[index].y !== undefined) {
+                if (minY === undefined) {
+                    minY = eachTableOptions[index].y
+                } else if (eachTableOptions[index].y < minY) {
+                    minY = eachTableOptions[index].y
+                }
+            }
+        }
+    }
+
     const nodeMetas = newTables.map(({index, ...table}) => {
         let x: number | undefined = undefined
         let y: number | undefined = undefined
@@ -150,12 +172,18 @@ export const loadTableNode = (
                 } else {
                     x = currentOptions.x
                 }
+                if (minX !== undefined) {
+                    x -= minX
+                }
             }
             if (currentOptions.y !== undefined) {
                 if (y !== undefined) {
                     y += currentOptions.y
                 } else {
                     y = currentOptions.y
+                }
+                if (minY !== undefined) {
+                    y -= minY
                 }
             }
         }
