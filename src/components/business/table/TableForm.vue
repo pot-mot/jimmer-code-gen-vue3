@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {computed, DeepReadonly, ref, watch} from 'vue'
+import {computed, DeepReadonly, ref, toRaw} from 'vue'
 import {
 	GenModelInput_TargetOf_enums,
 	GenModelInput_TargetOf_subGroups,
@@ -15,7 +15,7 @@ import ColumnIcon from "@/components/global/icons/database/ColumnIcon.vue";
 import {tableColumnColumns} from "@/components/business/table/tableColumnColumns.ts";
 import ColumnTypeForm from "@/components/business/table/ColumnTypeForm.vue";
 import {useJdbcTypeStore} from "@/store/jdbcType/jdbcTypeStore.ts";
-import {tableIndexColumns} from "@/components/business/table/tableIndexColumns.ts";
+import {tableIndexColumns, tableKeyIndexColumns} from "@/components/business/table/tableIndexColumns.ts";
 import Details from "@/components/global/common/Details.vue";
 import {getDefaultColumn, getDefaultIndex} from "@/components/business/table/defaultTable.ts";
 import {validateColumn, validateIndex} from "@/shape/GenTableModelInput.ts";
@@ -23,13 +23,14 @@ import {getLegalSuperTables} from "@/components/business/table/tableInheritAnaly
 import {processNamingStrategy} from "@/components/business/genConfig/namingStrategyProcess.ts";
 import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import {Delete, Plus, RefreshRight} from "@element-plus/icons-vue";
+import {RefreshRight} from "@element-plus/icons-vue";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import ColumnCategorySelect from "@/components/business/table/ColumnCategorySelect.vue";
 import {MainLocaleKeyParam} from "@/i18n";
 import {getColumnKeyGroups} from "@/components/business/table/columnKeyGroups.ts";
 import {TableType} from "@/api/__generated/model/enums";
 import ModelSubGroupSelect from "@/components/business/modelSubGroup/ModelSubGroupSelect.vue";
+import ViewList from "@/components/global/list/ViewList.vue";
 
 const i18nStore = useI18nStore()
 
@@ -64,8 +65,8 @@ const emits = defineEmits<FormEmits<GenTableModelInput> & {
 }>()
 
 const currentSuperTables = computed(() => {
-    const currentSuperTableNames = table.value.superTables.map(it => it.name)
-    return MODEL.superTables.filter(superTable => currentSuperTableNames.includes(superTable.name))
+	const currentSuperTableNames = table.value.superTables.map(it => it.name)
+	return MODEL.superTables.filter(superTable => currentSuperTableNames.includes(superTable.name))
 })
 
 const columnNames = computed<string[]>(() =>
@@ -74,27 +75,6 @@ const columnNames = computed<string[]>(() =>
 		...table.value.columns.map(it => it.name)
 	]
 )
-
-const handleColumnDelete = (deleteColumns: GenTableModelInput_TargetOf_columns[]) => {
-	const messageList: string[] = []
-
-	for (let index of table.value.indexes) {
-		const includeDeletedColumnNames: string[] = []
-		const tempColumns = index.columns.filter(it => {
-			const isIncludeDeletedColumn = deleteColumns.map(it => it.name).includes(it.name)
-			if (isIncludeDeletedColumn) {
-				includeDeletedColumnNames.push(it.name)
-			}
-			return !isIncludeDeletedColumn
-		})
-		if (includeDeletedColumnNames.length > 0) {
-			messageList.push(`索引【${index.name}】引用列【${includeDeletedColumnNames.join("、")}】被移除`)
-			index.columns = tempColumns
-		}
-	}
-
-	messageList.forEach(it => sendMessage(it, 'warning'))
-}
 
 const getSelectableSuperTables = () => {
 	return getLegalSuperTables(
@@ -126,26 +106,6 @@ const isSuperTable = computed<boolean>({
 	}
 })
 
-const handleInputColumnName = (newName: string, index: number) => {
-	const oldName = columnNames.value[index]
-
-	if (oldName !== newName && columnNames.value.filter(it => it === newName).length > 0) {
-		return
-	}
-
-	table.value.indexes.forEach(index => {
-		const newIndexColumns: GenTableModelInput_TargetOf_indexes_TargetOf_columns[] = []
-		index.columns.forEach(it => {
-			if (it.name === oldName) {
-				newIndexColumns.push({name: newName})
-			} else {
-				newIndexColumns.push(it)
-			}
-		})
-		index.columns = newIndexColumns
-	})
-}
-
 const handleColumnToPk = (columnIndex: number) => {
 	if (!jdbcTypeStore.isLoaded) {
 		sendMessage('数据库类型未成功获取')
@@ -176,16 +136,54 @@ const defaultKeyGroup = ""
 
 const KEY_INDEX_PREFIX = 'key_of'
 
-const keyGroups = computed<Array<string>>(() =>
-	[
-		...new Set([
-			defaultKeyGroup,
-			...table.value.columns
-				.filter(it => it.businessKey && it.keyGroup !== undefined)
-				.flatMap(it => getColumnKeyGroups(it))
-		])
-	].sort()
+const keyGroupSet = computed<Set<string>>(() =>
+	new Set([
+		defaultKeyGroup,
+		...table.value.columns
+			.filter(it => it.businessKey && it.keyGroup !== undefined)
+			.flatMap(it => getColumnKeyGroups(it))
+	])
 )
+
+const keyGroups = computed<Array<string>>(() =>
+	[...keyGroupSet.value].sort()
+)
+
+const syncIndexColumnNameChange = (oldName: string, newName: string) => {
+	notKeyIndexes.value = notKeyIndexes.value.map(index => {
+		const newIndexColumns: GenTableModelInput_TargetOf_indexes_TargetOf_columns[] = []
+		index.columns.forEach(it => {
+			if (it.name === oldName) {
+				newIndexColumns.push({name: newName})
+			} else {
+				newIndexColumns.push(it)
+			}
+		})
+		index.columns = newIndexColumns
+		return index
+	})
+}
+
+const syncIndexColumnDelete = (deleteColumns: GenTableModelInput_TargetOf_columns[]) => {
+	const messageList: string[] = []
+
+	for (const index of table.value.indexes) {
+		const includeDeletedColumnNames: string[] = []
+		const tempColumns = index.columns.filter(it => {
+			const isIncludeDeletedColumn = deleteColumns.map(it => it.name).includes(it.name)
+			if (isIncludeDeletedColumn) {
+				includeDeletedColumnNames.push(it.name)
+			}
+			return !isIncludeDeletedColumn
+		})
+		if (includeDeletedColumnNames.length > 0) {
+			messageList.push(`索引【${index.name}】引用列【${includeDeletedColumnNames.join("、")}】被移除`)
+			index.columns = tempColumns
+		}
+	}
+
+	messageList.forEach(it => sendMessage(it, 'warning'))
+}
 
 const createKeyIndexName = (group: string): string => {
 	const context = useGenConfigContextStore().context
@@ -223,36 +221,48 @@ const keyIndexes = computed<Array<GenTableModelInput_TargetOf_indexes>>(() => {
 		}
 	}
 
-	return [...keyColumnMap.entries()].map(([group, columns]) => {
-		return {
+	const result: GenTableModelInput_TargetOf_indexes[] = []
+
+	for (const [group, columns] of keyColumnMap.entries()) {
+		result.push({
 			name: createKeyIndexName(group),
 			uniqueIndex: true,
 			columns: columns.map(it => {
 				return {name: it.name}
 			}),
 			remark: "",
-		}
-	})
+		})
+	}
+
+	return result
 })
 
-const keyIndexNames = computed(() => keyIndexes.value.map(it => it.name))
-
-watch(() => keyIndexes.value, (value, oldValue) => {
-	table.value.indexes = [
-		...value,
-		...table.value.indexes.filter(index => !oldValue.map(it => it.name).includes(index.name))
-	]
+const keyIndexNames = computed<Set<string>>(() => {
+	return new Set([...keyIndexes.value.map(it => it.name)])
 })
 
-const handleSyncIndexName = (index: number) => {
-	const oldIndex = table.value.indexes[index]
+const notKeyIndexes = computed<Array<GenTableModelInput_TargetOf_indexes>>({
+	get(): Array<GenTableModelInput_TargetOf_indexes> {
+		return table.value.indexes.filter(it => {
+			return !keyIndexNames.value.has(it.name)
+		})
+	},
+	set(newVal: Array<GenTableModelInput_TargetOf_indexes>) {
+		table.value.indexes = [
+			...keyIndexes.value,
+			...newVal.filter(it => {
+				return !keyIndexNames.value.has(it.name)
+			})
+		]
+	}
+})
 
-	oldIndex.name =
-		props.createIndexName(
-			table.value.name,
-			oldIndex,
-			table.value.type === 'SUPER_TABLE'
-		)
+const handleSyncIndexName = (index: GenTableModelInput_TargetOf_indexes) => {
+	index.name = props.createIndexName(
+		table.value.name,
+		index,
+		table.value.type === 'SUPER_TABLE'
+	)
 }
 
 const handleSuperTablesChange = (value: string[]) => {
@@ -271,18 +281,34 @@ const handleEnumEdit = (name: string) => {
 }
 
 const handleSubmit = () => {
-	const messageList = props.validate(table.value)
+	const mergeKeyIndexData = toRaw({
+		...table.value,
+		indexes: [
+			...keyIndexes.value,
+			...notKeyIndexes.value,
+		]
+	})
+
+	const messageList = props.validate(mergeKeyIndexData)
 
 	if (messageList.length > 0) {
 		messageList.forEach(it => sendI18nMessage(it, 'warning'))
 		return
 	}
 
-	emits('submit', table.value)
+	emits('submit', mergeKeyIndexData)
 }
 
 const handleCancel = () => {
-	emits('cancel', table.value)
+	const mergeKeyIndexData = toRaw({
+		...table.value,
+		indexes: [
+			...keyIndexes.value,
+			...notKeyIndexes.value,
+		]
+	})
+
+	emits('cancel', mergeKeyIndexData)
 }
 </script>
 
@@ -362,14 +388,14 @@ const handleCancel = () => {
 			<EditList
 				:columns="tableColumnColumns"
 				v-model:lines="table.columns"
-				@delete="handleColumnDelete"
+				@delete="syncIndexColumnDelete"
 				:before-paste="columns => {
 					columns.forEach(it => {it.orderKey = -1})
 				}"
 				:defaultLine="getDefaultColumn"
 				:json-schema-validate="validateColumn"
-                style="line-height: 2em;"
-            >
+				style="line-height: 2em;"
+			>
 				<template #icon="{data}">
                     <span style="padding-left: 0.5rem;">
                         <ColumnIcon :column="data"/>
@@ -387,11 +413,12 @@ const handleCancel = () => {
 					/>
 				</template>
 
-				<template #name="{data, index}">
+				<template #name="{data}">
 					<el-input
-						v-model="data.name"
+						:model-value="data.name"
 						@input="(value: string) => {
-						    if (value) handleInputColumnName(value, index)
+						    syncIndexColumnNameChange(data.name, value);
+						    data.name = value;
 					    }"
 					/>
 				</template>
@@ -431,23 +458,32 @@ const handleCancel = () => {
 				</el-text>
 			</template>
 
+			<ViewList
+				v-if="keyGroups.length > 0"
+				:columns="tableKeyIndexColumns"
+				:lines="keyIndexes"
+				style="line-height: 2em;"
+			>
+				<template #columns="{data}">
+					<el-tag v-for="column in data.columns" type="info" style="padding: 0 0.5em; margin-left: 0.5em;">
+						{{ column.name }}
+					</el-tag>
+				</template>
+			</ViewList>
+
 			<EditList
 				:default-line="getDefaultIndex"
 				:columns="tableIndexColumns"
-				v-model:lines="table.indexes"
+				v-model:lines="notKeyIndexes"
 				:json-schema-validate="validateIndex"
-                style="line-height: 2em;"
+				style="line-height: 2em;"
 			>
-				<template #name="{data, index}">
-					<el-input
-						v-model="data.name"
-						:disabled="keyIndexNames.includes(data.name)"
-					>
+				<template #name="{data}">
+					<el-input v-model="data.name">
 						<template #append>
 							<el-button
 								:icon="RefreshRight"
-								@click="handleSyncIndexName(index)"
-								:disabled="keyIndexNames.includes(data.name)"
+								@click="handleSyncIndexName(data)"
 							/>
 						</template>
 					</el-input>
@@ -455,17 +491,13 @@ const handleCancel = () => {
 
 				<template #uniqueIndex="{data}">
 					<div style="text-align: center;">
-						<el-switch
-							v-model="data.uniqueIndex"
-							:disabled="keyIndexNames.includes(data.name)"
-						/>
+						<el-switch v-model="data.uniqueIndex"/>
 					</div>
 				</template>
 
 				<template #columns="{data}">
 					<el-select
 						:model-value="data.columns.map(it => it.name)"
-						:disabled="keyIndexNames.includes(data.name)"
 						@change="(value: string[]) => {
                            data.columns = value.map(it => {return {name: it}})
                         }"
@@ -475,14 +507,6 @@ const handleCancel = () => {
 					>
 						<el-option v-for="name in columnNames" :value="name"/>
 					</el-select>
-				</template>
-
-				<template #operation="{handleAddLine, handleRemoveLine, data, index}">
-					<el-button @click.prevent.stop="handleAddLine(index)"
-							   :icon="Plus" link style="margin-left: 0.3em;"/>
-					<el-button @click.prevent.stop="handleRemoveLine(index)"
-							   v-if="!keyIndexNames.includes(data.name)"
-							   :icon="Delete" link style="margin-left: 0.3em;" type="danger"/>
 				</template>
 			</EditList>
 		</Details>
