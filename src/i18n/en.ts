@@ -7,6 +7,10 @@ import {jsonPrettyFormat} from "@/utils/json.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
 export const localeEn: ProjectLocale = {
+    BUTTON_copy: "Copy",
+    BUTTON_cut: "Cut",
+    BUTTON_paste: "Paste",
+
     BUTTON_edit: "Edit",
     BUTTON_submit: "Submit",
     BUTTON_delete: "Delete",
@@ -423,10 +427,8 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     LABEL_ModelEditorGraph_downloadCurrent: 'Download Current',
     LABEL_ModelEditorGraph_downloadFiltered: 'Download Filtered (ZIP)',
 
-    LABEL_ModelEditorGraph_clean: 'Clean Graph',
-    LABEL_ModelEditorGraph_cleanSelected: 'Clean Selection',
-    LABEL_ModelEditorGraph_cleanAssociation: 'Clean Associations',
-    LABEL_ModelEditorGraph_cleanSelectedAssociation: 'Clean Selected Associations',
+    LABEL_ModelEditorGraph_removeSelected: 'Remove',
+    LABEL_ModelEditorGraph_removeSelectedAssociation: 'Remove Associations',
 
     MESSAGE_ModelEditorGraph_history_cannotUndo: "Cannot Undo",
     MESSAGE_ModelEditorGraph_history_cannotRedo: "Cannot Redo",

@@ -6,6 +6,10 @@ import {jsonPrettyFormat} from "@/utils/json.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
 export const localeZhCn: ProjectLocale = {
+    BUTTON_copy: "复制",
+    BUTTON_cut: "剪切",
+    BUTTON_paste: "粘贴",
+
     BUTTON_edit: "编辑",
     BUTTON_submit: "提交",
     BUTTON_delete: "删除",
@@ -424,10 +428,8 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     LABEL_ModelEditorGraph_downloadCurrent: '下载当前',
     LABEL_ModelEditorGraph_downloadFiltered: '下载过滤后 (ZIP)',
 
-    LABEL_ModelEditorGraph_clean: '清理画布',
-    LABEL_ModelEditorGraph_cleanSelected: '清理选中部分',
-    LABEL_ModelEditorGraph_cleanAssociation: '清理关联',
-    LABEL_ModelEditorGraph_cleanSelectedAssociation: '清理选中关联',
+    LABEL_ModelEditorGraph_removeSelected: '移除选中',
+    LABEL_ModelEditorGraph_removeSelectedAssociation: '移除关联',
 
     MESSAGE_ModelEditorGraph_history_cannotUndo: "不可撤回",
     MESSAGE_ModelEditorGraph_history_cannotRedo: "不可重做",

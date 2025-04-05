@@ -4,7 +4,7 @@
 
         <ul v-if="GRAPH.isLoaded" class="toolbar left-top">
             <li>
-                <el-tooltip :content="`${i18nStore.translate('LABEL_ModelEditorGraph_saveModel')} [Ctrl + s]`">
+                <el-tooltip :content="`${i18nStore.translate('LABEL_ModelEditorGraph_saveModel')} [Ctrl + S]`">
                     <el-button :icon="SaveIcon" @click="handleSaveModel"/>
                 </el-tooltip>
             </li>
@@ -17,11 +17,11 @@
 
             <li>
                 <el-tooltip :disabled="!GRAPH.canUndo"
-                            :content="`${i18nStore.translate('LABEL_ModelEditorGraph_undo')} [Ctrl + z]`">
+                            :content="`${i18nStore.translate('LABEL_ModelEditorGraph_undo')} [Ctrl + Z]`">
                     <el-button :disabled="!GRAPH.canUndo" :icon="UndoIcon" @click="HISTORY.undo()"/>
                 </el-tooltip>
                 <el-tooltip :disabled="!GRAPH.canRedo"
-                            :content="`${i18nStore.translate('LABEL_ModelEditorGraph_redo')} [Ctrl + Shift + z]`">
+                            :content="`${i18nStore.translate('LABEL_ModelEditorGraph_redo')} [Ctrl + Shift + Z]`">
                     <el-button :disabled="!GRAPH.canRedo" :icon="RedoIcon" @click="HISTORY.redo()"/>
                 </el-tooltip>
             </li>
@@ -53,38 +53,9 @@
                     <el-button :icon="FitIcon" @click="VIEW.fit()"/>
                 </el-tooltip>
             </li>
-            <li>
-                <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_center')">
-                    <el-button :icon="CenterIcon" @click="VIEW.center()"/>
-                </el-tooltip>
-            </li>
         </ul>
 
         <ul v-if="GRAPH.isLoaded" class="toolbar left-bottom">
-            <li>
-                <el-tooltip
-                    :content="i18nStore.translate(
-						GRAPH.isSelectionEmpty ?
-							'LABEL_ModelEditorGraph_clean' :
-							'LABEL_ModelEditorGraph_cleanSelected'
-						) +
-						' [Delete]'">
-                    <el-button :icon="EraserIcon"
-                               @click="GRAPH.isSelectionEmpty ? REMOVE.removeAllCells() : REMOVE.removeSelectedCells()"/>
-                </el-tooltip>
-            </li>
-            <li>
-                <el-tooltip
-                    :content="i18nStore.translate(
-						GRAPH.isSelectionEmpty ?
-							'LABEL_ModelEditorGraph_cleanAssociation' :
-							'LABEL_ModelEditorGraph_cleanSelectedAssociation'
-						) +
-						' [Shift + Delete]'">
-                    <el-button :icon="AssociationOffIcon"
-                               @click="GRAPH.isSelectionEmpty ? REMOVE.removeAllEdges() : REMOVE.removeSelectedEdges()"/>
-                </el-tooltip>
-            </li>
         </ul>
 
         <ul v-if="GRAPH.isLoaded" class="toolbar right-top">
@@ -149,9 +120,6 @@ import LayoutIcon from "@/components/global/icons/toolbar/LayoutIcon.vue";
 import MultiCodePreview from "@/components/pages/ModelEditor/code/MultiCodePreview.vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import FitIcon from "@/components/global/icons/toolbar/FitIcon.vue";
-import CenterIcon from "@/components/global/icons/toolbar/CenterIcon.vue";
-import EraserIcon from "@/components/global/icons/toolbar/EraserIcon.vue";
-import AssociationOffIcon from "@/components/global/icons/toolbar/AssociationOffIcon.vue";
 import DownloadIcon from "@/components/global/icons/download/DownloadIcon.vue";
 import ScaleBar from "@/components/global/graphEditor/scale/ScaleBar.vue";
 import GraphSearcher from "@/components/pages/ModelEditor/searcher/GraphSearcher.vue";
@@ -188,7 +156,7 @@ const wrapper = ref<HTMLElement>()
 
 let graph: Graph
 
-const {GRAPH, MODEL, MODEL_EDITOR, SELECT, HISTORY, VIEW, REMOVE} = useModelEditorStore()
+const {GRAPH, MODEL, MODEL_EDITOR, SELECT, HISTORY, VIEW} = useModelEditorStore()
 
 const modelEditorDialog = useModelEditDialogStore()
 
