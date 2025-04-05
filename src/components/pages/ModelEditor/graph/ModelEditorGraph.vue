@@ -290,10 +290,13 @@ const isDragging = ref(false)
 // 右键菜单标记
 const contextMenuFlag = ref(false)
 
-const contextMenuWaitTime = 100
+const contextMenuWaitTime = 150
 
 const handleMouseDown = (e: MouseEvent) => {
     if (e.button === 2) {
+        if (isDragging.value) {
+            isDragging.value = false
+        }
         contextMenuFlag.value = true
         setTimeout(() => {
             if (contextMenuFlag.value) {
