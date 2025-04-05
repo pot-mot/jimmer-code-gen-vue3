@@ -18,3 +18,16 @@ export const tableIndexColumns = <ReadonlyArray<PropListColumn<GenTableModelInpu
         span: '1.5fr',
     }
 ]
+
+export const tableKeyIndexColumns = <ReadonlyArray<PropListColumn<GenTableModelInput_TargetOf_indexes>>>[
+    {
+        prop: "name",
+        label: 'LABEL_GenTableIndex_name',
+        span: '1fr',
+    },
+    {
+        prop: "columns",
+        label: "LABEL_GenTableIndex_columns",
+        span: '1.7fr',
+    }
+]
