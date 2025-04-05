@@ -167,7 +167,7 @@ const syncIndexColumnNameChange = (oldName: string, newName: string) => {
 const syncIndexColumnDelete = (deleteColumns: GenTableModelInput_TargetOf_columns[]) => {
 	const messageList: string[] = []
 
-	for (const index of table.value.indexes) {
+	for (const index of notKeyIndexes.value) {
 		const includeDeletedColumnNames: string[] = []
 		const tempColumns = index.columns.filter(it => {
 			const isIncludeDeletedColumn = deleteColumns.map(it => it.name).includes(it.name)
