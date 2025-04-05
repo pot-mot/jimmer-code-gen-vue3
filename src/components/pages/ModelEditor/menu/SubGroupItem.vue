@@ -5,6 +5,7 @@ import {deleteConfirm} from "@/message/confirm.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {computed, nextTick} from "vue";
+import {getNodeConnectedEdges} from "@/components/global/graphEditor/selection/selectOperation.ts";
 
 const i18nStore = useI18nStore()
 
@@ -12,7 +13,7 @@ const props = defineProps<{
     subGroup: GenModelInput_TargetOf_subGroups | undefined
 }>()
 
-const {MODEL_EDITOR, MODEL, SELECT} = useModelEditorStore()
+const {MODEL_EDITOR, MODEL, SELECT, GRAPH} = useModelEditorStore()
 
 const isSelected = computed(() => {
     return MODEL.selectedSubGroupMap.has(props.subGroup?.name)
@@ -27,21 +28,23 @@ const handleClickLabel = async (e: MouseEvent) => {
         .filter(it => it.subGroup?.name === props.subGroup?.name)
         .map(it => it.name)
 
+	const connectedEdgeIds = getNodeConnectedEdges(GRAPH._graph(), matchedNodeIds)
+		.map(it => it.id)
 
     if (e.ctrlKey) {
         SELECT.toggleSelectSubGroup(props.subGroup?.name)
         await nextTick()
         if (isSelected.value) {
-            SELECT.select(matchedNodeIds)
+            SELECT.select([...matchedNodeIds, ...connectedEdgeIds])
             SELECT.selectEnum(...matchedEnumNames)
         } else {
-            SELECT.unselect(matchedNodeIds)
+            SELECT.unselect([...matchedNodeIds, ...connectedEdgeIds])
             SELECT.unselectEnum(...matchedEnumNames)
         }
     } else {
         SELECT.unselectAll()
         SELECT.selectSubGroup(props.subGroup?.name)
-        SELECT.select(matchedNodeIds)
+        SELECT.select([...matchedNodeIds, ...connectedEdgeIds])
         SELECT.selectEnum(...matchedEnumNames)
     }
 }

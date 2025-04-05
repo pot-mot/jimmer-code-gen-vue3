@@ -1,6 +1,6 @@
 import {Edge, Graph, Node} from "@antv/x6"
 import {
-    getSelectedNodeConnectedEdges,
+    getNodeConnectedEdges,
     getSelectedNodes
 } from "@/components/global/graphEditor/selection/selectOperation.ts";
 import {max, min} from "lodash";
@@ -329,8 +329,9 @@ export const layoutByLevel = (
         nodes = toLayoutNodes(graph.getNodes())
         edges = toLayoutEdges(graph.getEdges())
     } else {
-        nodes = toLayoutNodes(getSelectedNodes(graph))
-        edges = toLayoutEdges(getSelectedNodeConnectedEdges(graph))
+        const selectedNodes = getSelectedNodes(graph)
+        nodes = toLayoutNodes(selectedNodes)
+        edges = toLayoutEdges(getNodeConnectedEdges(graph, selectedNodes.map(it => it.id)))
     }
 
     edges = edges.filter(edge => edge.source !== edge.target)
