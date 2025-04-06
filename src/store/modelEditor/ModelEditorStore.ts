@@ -3,8 +3,6 @@ import {sendI18nMessage} from "@/message/message.ts";
 import {computed, ComputedRef, DeepReadonly, nextTick, Ref, ref, toRaw, watch, WatchStopHandle} from "vue";
 import {api} from "@/api";
 import {
-    EntityConfigInput,
-    EntityConfigView,
     GenAssociationModelInput,
     GenAssociationView,
     GenModelInput_TargetOf_enums,
@@ -40,7 +38,6 @@ import {GraphReactiveState} from "@/components/global/graphEditor/data/reactiveS
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {defineStore} from "pinia";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
-import {useEntityDialogsStore} from "@/store/modelEditor/dialogs/EntityDialogsStore.ts";
 import {useDataSourceLoadDialogStore} from "@/store/modelEditor/dialogs/DataSourceLoadDialogStore.ts";
 import {useModelEditDialogStore} from "@/store/modelEditor/dialogs/ModelEditDialogStore.ts";
 import {useModelLoadDialogStore} from "@/store/modelEditor/dialogs/ModelLoadDialogStore.ts";
@@ -61,6 +58,7 @@ import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/Associatio
 import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
 import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
 import {useAssociationBatchCreateDialogStore} from "@/store/modelEditor/dialogs/AssociationBatchCreateDialogStore.ts";
+import {useEntityDialogsStore} from "@/store/modelEditor/dialogs/EntityDialogsStore.ts";
 
 export type SubGroupData = {
     group: GenModelInput_TargetOf_subGroups | undefined,
@@ -133,11 +131,6 @@ type MinimapOperation = {
     setInitMinimapAction: (action: () => void) => void
 }
 
-type EntityEditOperation = {
-    editEntity: (entity: DeepReadonly<EntityConfigView>) => void,
-    editedEntity: (entity: DeepReadonly<EntityConfigInput>) => Promise<void>,
-}
-
 type ModelSyncState = {
     syncTable: (id: string) => void,
     syncedTable: (id: string) => void,
@@ -183,7 +176,6 @@ type ModelEditorStore = {
         & ModelLoadOperation
         & MinimapOperation
         & ModelSyncState
-        & EntityEditOperation
 }
 
 const initModelEditorStore = (): ModelEditorStore => {
@@ -415,7 +407,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const selectedSubGroupNames = ref<Set<string | undefined>>(new Set)
     watch(() => subGroups.value, () => {
-         const set = new Set<string | undefined>(subGroups.value
+        const set = new Set<string | undefined>(subGroups.value
             .map(it => it.name)
             .filter(it => selectedSubGroupNames.value.has(it))
         )
@@ -1085,22 +1077,8 @@ const initModelEditorStore = (): ModelEditorStore => {
     }, 100)
 
     /**
-     * 实体编辑对话框相关
+     * model 加载部分
      */
-
-    const entityDialogsStore = useEntityDialogsStore()
-
-    const editEntity = (entity: DeepReadonly<EntityConfigView>) => {
-        entityDialogsStore.open(entity.tableConvertedEntity.id, cloneDeepReadonly<EntityConfigView>(entity))
-    }
-
-    const editedEntity = async (entity: DeepReadonly<EntityConfigInput>) => {
-        await api.entityService.config({body: cloneDeepReadonly<EntityConfigInput>(entity)})
-        entityDialogsStore.close(entity.tableConvertedEntity.id, true)
-
-        waitRefreshModelAndCode()
-    }
-
 
     const debugStore = useDebugStore()
 
@@ -1165,7 +1143,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         useAssociationDialogsStore().closeAll()
         useAssociationBatchCreateDialogStore().close()
 
-        entityDialogsStore.closeAll()
+        useEntityDialogsStore().closeAll()
 
         codePreviewStore.close()
 
@@ -1213,11 +1191,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             syncTable,
             syncedTable,
             startBatchSync,
-
             waitRefreshModelAndCode,
-
-            editEntity,
-            editedEntity,
         },
     }
 }

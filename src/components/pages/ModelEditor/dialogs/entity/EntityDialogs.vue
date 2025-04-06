@@ -14,14 +14,14 @@ import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.
 
 const store = useEntityDialogsStore()
 
-const {MODEL, MODEL_EDITOR} = useModelEditorStore()
+const {MODEL} = useModelEditorStore()
 
 const enumDialogs = useEnumDialogsStore()
 
-const handleSubmit = async (
+const handleSubmit = (
 	entity: EntityConfigInput
 ) => {
-	await MODEL_EDITOR.editedEntity(entity)
+    store.edited(entity)
 }
 
 const validate = async (
@@ -44,7 +44,7 @@ const handleClickEntity = async (idName: IdName) => {
 		sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickEntityNotFound", args: [idName]})
 		return
 	}
-	MODEL_EDITOR.editEntity(entity)
+    store.edit(entity)
 }
 
 const handleClickEnum = (idName: IdName) => {

@@ -8,6 +8,7 @@ import {api} from "@/api";
 import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
 import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
 import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
+import {useEntityDialogsStore} from "@/store/modelEditor/dialogs/EntityDialogsStore.ts";
 
 const props = defineProps<{
     file: GenerateFile,
@@ -88,11 +89,12 @@ const associationOptions = computed(() => {
 })
 
 
-const {MODEL, MODEL_EDITOR} = useModelEditorStore()
+const {MODEL} = useModelEditorStore()
 
 const tableDialogs = useTableDialogsStore()
 const associationDialogs = useAssociationDialogsStore()
 const enumDialogs = useEnumDialogsStore()
+const entityDialogs = useEntityDialogsStore()
 
 const editTable = (idName: IdName) => {
 	const tableNodePair = cloneDeep(MODEL.tableNodePairs.filter(it => it.first.name === idName.name)[0])
@@ -127,7 +129,7 @@ const editEntity = async (idName: IdName): Promise<void> => {
 		sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickEntityNotFound", args: [idName]})
 		return
 	}
-	MODEL_EDITOR.editEntity(entity)
+    entityDialogs.edit(entity)
 }
 </script>
 
