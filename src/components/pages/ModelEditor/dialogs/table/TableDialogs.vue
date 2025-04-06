@@ -53,7 +53,7 @@ const validate = (key: string, table: DeepReadonly<GenTableModelInput>) => {
                 @edit-enum="({genEnum}) => enumDialogs.edit(genEnum.name, genEnum)"
 
                 :sub-groups="MODEL.subGroups"
-                @create-sub-group="() => subGroupDialogs.create({tableKey: key})"
+                @create-sub-group="() => subGroupDialogs.create({tableKeys: [key]})"
                 @edit-sub-group="({subGroup}) => subGroupDialogs.edit(subGroup.name, subGroup)"
             />
         </DragDialog>

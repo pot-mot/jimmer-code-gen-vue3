@@ -16,6 +16,12 @@
         </context-menu-item>
 
         <context-menu-item
+            v-if="store.target.type === 'Model'"
+            :label="i18nStore.translate('LABEL_ModelEditorMainMenu_createSubGroup')"
+            @click="handleCreateSubGroup"
+        />
+
+        <context-menu-item
             v-if="(store.target.type === 'Model' && GRAPH.isSelectionEmpty) || store.target.type === 'SubGroup'"
             :label="i18nStore.translate('LABEL_ModelEditorMainMenu_createTable')"
             @click="handleCreateTable"
@@ -28,7 +34,6 @@
         />
 
         <context-menu-item
-            v-if="store.target.type === 'SubGroup' || store.target.type === 'Table' || store.target.type === 'Enum'"
             :label="i18nStore.translate('LABEL_ModelEditorMainMenu_createEnum')"
             @click="handleCreateEnum"
         />
@@ -275,6 +280,10 @@ const layoutOptions = [
         }
     },
 ]
+
+const handleCreateSubGroup = () => {
+    subGroupDialogs.create()
+}
 
 const handleCreateTable = () => {
     let subGroupName: string | undefined = undefined

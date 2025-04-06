@@ -43,7 +43,7 @@ const validate = (key: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enum
                 @cancel="store.close(key, false)"
 
                 :sub-groups="MODEL.subGroups"
-                @create-sub-group="() => subGroupDialogs.create({enumKey: key})"
+                @create-sub-group="() => subGroupDialogs.create({enumKeys: [key]})"
                 @edit-sub-group="({subGroup}) => subGroupDialogs.edit(subGroup.name, subGroup)"
 
                 style="padding-top: 1em;"

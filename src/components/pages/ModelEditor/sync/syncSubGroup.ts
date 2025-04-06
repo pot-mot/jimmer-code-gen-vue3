@@ -1,4 +1,4 @@
-import {GenModelInput, GenModelInput_TargetOf_subGroups, GenTableModelInput} from "@/api/__generated/model/static";
+import {GenModelInput, GenTableModelInput} from "@/api/__generated/model/static";
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {Graph} from "@antv/x6";
 import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
@@ -10,15 +10,13 @@ import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.
 type SubGroupItem = {subGroup?: {name: string} | undefined}
 
 // 同步子组元素中的子组名
-const syncSubGroupNameInItem = <T extends SubGroupItem> (item: DeepReadonly<T>, oldSubGroupName: string, newSubGroupName: string | undefined): T => {
+const setSubGroupNameInItem = <T extends SubGroupItem> (item: DeepReadonly<T>, subGroupName: string | undefined): T => {
     const tempItem = cloneDeepReadonly<T>(item)
 
-    if (tempItem.subGroup && tempItem.subGroup.name === oldSubGroupName) {
-        if (newSubGroupName === undefined) {
-            tempItem.subGroup = undefined
-        } else {
-            tempItem.subGroup.name = newSubGroupName
-        }
+    if (subGroupName !== undefined) {
+        tempItem.subGroup = {name: subGroupName}
+    } else {
+        tempItem.subGroup = undefined
     }
 
     return tempItem
@@ -38,7 +36,7 @@ export const syncSubGroupNameForTables = (graph: Graph, oldSubGroupName: string,
     // 同步所有对话框中的表数据
     tableDialogsStore.items.forEach(({key, value, options}) => {
         if (value && judgeSubGroupInItem(oldSubGroupName, value)) {
-            const newTable = syncSubGroupNameInItem(value, oldSubGroupName, newSubGroupName)
+            const newTable = setSubGroupNameInItem(value, newSubGroupName)
             tableDialogsStore.set(key, newTable, options)
         }
     })
@@ -47,7 +45,7 @@ export const syncSubGroupNameForTables = (graph: Graph, oldSubGroupName: string,
     for (const node of nodes) {
         const table = node.getData()?.table as GenTableModelInput | undefined
         if (table && judgeSubGroupInItem(oldSubGroupName, table)) {
-            const newTable = syncSubGroupNameInItem(table, oldSubGroupName, newSubGroupName)
+            const newTable = setSubGroupNameInItem(table, newSubGroupName)
             updateTableNodeData(node, newTable)
         }
     }
@@ -60,7 +58,7 @@ export const syncSubGroupNameForEnums = (model: GenModelInput, oldSubGroupName: 
     // 同步所有对话框中的子组数据
     enumDialogsStore.items.forEach(({key, value, options}) => {
         if (value && judgeSubGroupInItem(oldSubGroupName, value)) {
-            const newEnum = syncSubGroupNameInItem(value, oldSubGroupName, newSubGroupName)
+            const newEnum = setSubGroupNameInItem(value, newSubGroupName)
             enumDialogsStore.set(key, newEnum, options)
         }
     })
@@ -68,7 +66,7 @@ export const syncSubGroupNameForEnums = (model: GenModelInput, oldSubGroupName: 
     // 同步模型中的子组数据
     model.enums = model.enums.map(it => {
         if (judgeSubGroupInItem(oldSubGroupName, it)) {
-            return syncSubGroupNameInItem(it, oldSubGroupName, newSubGroupName)
+            return setSubGroupNameInItem(it, newSubGroupName)
         } else {
             return it
         }
@@ -76,22 +74,48 @@ export const syncSubGroupNameForEnums = (model: GenModelInput, oldSubGroupName: 
 }
 
 
-// 在表中同步新的子组
-export const syncNewSubGroupForTables = (genSubGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>, tableKey: string) => {
+// 在表中设置子组名
+export const setSubGroupNameForTables = (graph: Graph, tableKeys: Set<string>, subGroupName: string) => {
+    const nodes = graph.getNodes().filter(it => it.shape === TABLE_NODE)
+
     const tableDialogsStore = useTableDialogsStore()
 
-    const table = tableDialogsStore.get(tableKey)
-    if (table !== undefined) {
-        table.subGroup = {name: genSubGroup.name}
+    // 同步所有对话框中的表数据
+    tableDialogsStore.items.forEach(({key, value, options}) => {
+        if (value && tableKeys.has(key)) {
+            const newTable = setSubGroupNameInItem(value, subGroupName)
+            tableDialogsStore.set(key, newTable, options)
+        }
+    })
+
+    // 同步所有节点中的表数据
+    for (const node of nodes) {
+        const table = node.getData()?.table as GenTableModelInput | undefined
+        if (table && tableKeys.has(node.id)) {
+            const newTable = setSubGroupNameInItem(table, subGroupName)
+            updateTableNodeData(node, newTable)
+        }
     }
 }
 
-// 在表中同步新的枚举（新的枚举必然来源于唯一的表中唯一的列）
-export const syncNewSubGroupForEnums = (genSubGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>, enumKey: string) => {
+// 在枚举中设置子组名
+export const setSubGroupNameForEnums = (model: GenModelInput, enumKeys: Set<string>, subGroupName: string) => {
     const enumDialogsStore = useEnumDialogsStore()
 
-    const genEnum = enumDialogsStore.get(enumKey)
-    if (genEnum !== undefined) {
-        genEnum.subGroup = {name: genSubGroup.name}
-    }
+    // 同步所有对话框中的子组数据
+    enumDialogsStore.items.forEach(({key, value, options}) => {
+        if (value && enumKeys.has(key)) {
+            const newEnum = setSubGroupNameInItem(value, subGroupName)
+            enumDialogsStore.set(key, newEnum, options)
+        }
+    })
+
+    // 同步模型中的子组数据
+    model.enums = model.enums.map(it => {
+        if (enumKeys.has(it.name)) {
+            return setSubGroupNameInItem(it, subGroupName)
+        } else {
+            return it
+        }
+    })
 }

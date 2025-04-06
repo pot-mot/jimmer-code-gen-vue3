@@ -5,18 +5,18 @@ import {DeepReadonly} from "vue";
 import {getDefaultGenModelSubGroup} from "@/components/business/modelSubGroup/defaultModelSubGroupForm.ts";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 import {
-    syncNewSubGroupForEnums,
-    syncNewSubGroupForTables,
+    setSubGroupNameForEnums,
+    setSubGroupNameForTables,
     syncSubGroupNameForEnums, syncSubGroupNameForTables
 } from "@/components/pages/ModelEditor/sync/syncSubGroup.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 
-export type SubGroupCreateOptions = {
-    tableKey?: string | undefined,
-    enumKey?: string | undefined,
-}
-
 const SUB_GROUP_CREATE_PREFIX = "[[SUB_GROUP_CREATE_PREFIX]]"
+
+export type SubGroupCreateOptions = {
+    tableKeys?: string[] | undefined,
+    enumKeys?: string[] | undefined,
+}
 
 export const useSubGroupDialogsStore = defineStore(
     'SubGroupDialogsStore',
@@ -36,17 +36,18 @@ export const useSubGroupDialogsStore = defineStore(
         const created = (createKey: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
             MODEL_EDITOR.startBatchSync('createdSubGroup', () => {
                 const model = MODEL._model()
+                const graph = GRAPH._graph()
                 model.subGroups.push(cloneDeepReadonly<GenModelInput_TargetOf_subGroups>(subGroup))
 
                 const options = createOptionsMap.get(createKey)
 
                 if (options !== undefined) {
-                    const {tableKey, enumKey} = options
-                    if (tableKey) {
-                        syncNewSubGroupForTables(subGroup, tableKey)
+                    const {tableKeys, enumKeys} = options
+                    if (tableKeys) {
+                        setSubGroupNameForTables(graph, new Set(tableKeys), subGroup.name)
                     }
-                    if (enumKey) {
-                        syncNewSubGroupForEnums(subGroup, enumKey)
+                    if (enumKeys) {
+                        setSubGroupNameForEnums(model, new Set(enumKeys), subGroup.name)
                     }
                 }
 
