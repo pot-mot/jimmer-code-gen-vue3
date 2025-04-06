@@ -399,8 +399,9 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     LABEL_ModelEditorMainMenu_loadFromModel: "从模型导入",
     LABEL_ModelEditorMainMenu_dataModelTitle: "数据模型",
     LABEL_ModelEditorMainMenu_associationTitle: "关联",
+    LABEL_ModelEditorMainMenu_createSubGroup: "新建分组",
     LABEL_ModelEditorMainMenu_createTable: "新建表",
-    LABEL_ModelEditorMainMenu_combineTable: "组合表",
+    LABEL_ModelEditorMainMenu_combineTable: "合并表",
     LABEL_ModelEditorMainMenu_createAssociation: "新建关联",
     LABEL_ModelEditorMainMenu_batchCreateAssociation: "批量创建",
     LABEL_ModelEditorMainMenu_createEnum: "新建枚举",
@@ -479,7 +480,7 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     LABEL_TableForm_columnType_logicalDelete: "逻辑删除",
 
     VALIDATE_GenTable_nameCannotBeEmpty: "表名不得为空",
-    VALIDATE_GenTable_subGroupNotExist: (subGroupName: string) => `子组【${subGroupName}】不存在`,
+    VALIDATE_GenTable_subGroupNotExist: (subGroupName: string) => `分组【${subGroupName}】不存在`,
     VALIDATE_GenTable_nameCannotBeDuplicate: (tableName: string) => `表名【${tableName}】不可重复`,
     VALIDATE_GenTable_columnNameCannotBeEmpty: "列名不得为空",
     VALIDATE_GenTable_columnNameCannotBeDuplicate: (columnName: string) => `列名【${columnName}】不可重复`,
@@ -591,7 +592,7 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     VALIDATE_GenColumnDefault_dataSize_cannotBeEmpty: 'ColumnDefault 的长度不可为空',
     VALIDATE_GenColumnDefault_numericPrecision_cannotBeEmpty: 'ColumnDefault 的精度不可为空',
 
-    LABEL_ModelSubGroupSelect_placeholder: "选择子组",
+    LABEL_ModelSubGroupSelect_placeholder: "选择分组",
 
     LABEL_EnumSelect_placeholder: "选择枚举",
     LABEL_EnumSelect_noSubGroup: "无分组",
@@ -652,7 +653,7 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     LABEL_DeleteTarget_Model: "模型",
     LABEL_DeleteTarget_DataSource: "数据源",
     LABEL_DeleteTarget_Schema: "架构",
-    LABEL_DeleteTarget_SubGroup: "子组",
+    LABEL_DeleteTarget_SubGroup: "分组",
     LABEL_DeleteTarget_Table: "表",
     LABEL_DeleteTarget_Association: "关联",
     LABEL_DeleteTarget_Enum: "枚举",
@@ -665,7 +666,7 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     LABEL_EnumForm_typeUnset: '默认',
 
     VALIDATE_GenEnum_nameCannotBeEmpty: "枚举名不得为空",
-    VALIDATE_GenEnum_subGroupNotExist: (subGroupName: string) => `子组【${subGroupName}】不存在`,
+    VALIDATE_GenEnum_subGroupNotExist: (subGroupName: string) => `分组【${subGroupName}】不存在`,
     VALIDATE_GenEnum_itemsCannotBeEmpty: "必须至少有一个枚举项",
     VALIDATE_GenEnum_notNullDefaultItemRequired: "必须有表单项非空时的默认选项",
     VALIDATE_GenEnum_defaultItemUnique: "默认值必须唯一",
@@ -727,11 +728,11 @@ ${error.indexColumnToTables.map(item => `  列【${formatIdName(item.column)}】
     VALIDATE_Entity_propertyBody_importLineCannotBeDuplicate: (propertyName: string, importLine: string) => `属性【${propertyName}】体中的导入行【${importLine}】重复`,
 
 
-    VALIDATE_ModelSubGroup_nameCannotBeEmpty: "子组名称不得为空",
-    VALIDATE_ModelSubGroup_nameCannotBeDuplicate: (modelSubGroupName: string) => `子组名称【${modelSubGroupName}】不可重复`,
+    VALIDATE_ModelSubGroup_nameCannotBeEmpty: "分组名称不得为空",
+    VALIDATE_ModelSubGroup_nameCannotBeDuplicate: (modelSubGroupName: string) => `分组名称【${modelSubGroupName}】不可重复`,
 
 
-    MESSAGE_GenerateFileMenu_clickSubGroupNotFoundInCurrentModel: (idName: IdName) => `子组【${formatIdName(idName)}】在当前模型中未找到`,
+    MESSAGE_GenerateFileMenu_clickSubGroupNotFoundInCurrentModel: (idName: IdName) => `分组【${formatIdName(idName)}】在当前模型中未找到`,
     MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel: (idName: IdName) => `表【${formatIdName(idName)}】在当前模型中未找到`,
     MESSAGE_GenerateFileMenu_clickEntityNotFound: (idName: IdName) => `实体【${formatIdName(idName)}】未找到`,
     MESSAGE_GenerateFileMenu_clickAssociationNotFoundInCurrentModel: (idName: IdName) => `关联【${formatIdName(idName)}】在当前模型中未找到`,

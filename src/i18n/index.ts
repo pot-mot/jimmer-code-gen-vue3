@@ -222,6 +222,7 @@ type MainLocale = {
     LABEL_ModelEditorMainMenu_loadFromModel: string
     LABEL_ModelEditorMainMenu_dataModelTitle: string
     LABEL_ModelEditorMainMenu_associationTitle: string
+    LABEL_ModelEditorMainMenu_createSubGroup: string
     LABEL_ModelEditorMainMenu_createTable: string
     LABEL_ModelEditorMainMenu_combineTable: string
     LABEL_ModelEditorMainMenu_createAssociation: string

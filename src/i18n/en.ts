@@ -398,6 +398,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     LABEL_ModelEditorMainMenu_loadFromModel: "Load from Model",
     LABEL_ModelEditorMainMenu_dataModelTitle: "Data Model",
     LABEL_ModelEditorMainMenu_associationTitle: "Associations",
+    LABEL_ModelEditorMainMenu_createSubGroup: "Create Group",
     LABEL_ModelEditorMainMenu_createTable: "Create Table",
     LABEL_ModelEditorMainMenu_combineTable: "Combine Table",
     LABEL_ModelEditorMainMenu_createAssociation: "Create Association",
