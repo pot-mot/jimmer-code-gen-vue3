@@ -12,7 +12,7 @@ import {
 import {syncAssociationName} from "@/components/pages/ModelEditor/graph/associationEdge/associationName.ts"
 import {setEdgeSelectFlag} from "@/components/pages/ModelEditor/graph/associationEdge/edgeSelectedState.ts";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
-import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
+import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
 
 const getAssociationType = (edge: Edge, defaultAssociationType: AssociationType = DEFAULT_ASSOCIATION_TYPE): AssociationType => {
     let temp = edge.getData()?.association.type
@@ -39,15 +39,13 @@ const handleButtonClick = (args: any) => {
         return
     }
 
-    const {MODEL_EDITOR} = useModelEditorStore()
-
     const associationType = getAssociationType(edge)
 
     const box = (e.target as HTMLElement).getBoundingClientRect()
 
     const left = (e.clientX - box.x) < (box.width / 2)
 
-    MODEL_EDITOR.modifyAssociation(edge.id, () => {
+    useAssociationDialogsStore().modify(edge.id, () => {
         setAssociationType(
             edge,
             reverseSinglePartAssociationType(

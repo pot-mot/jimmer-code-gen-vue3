@@ -12,11 +12,11 @@ import {MainLocaleKeyParam} from "@/i18n";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {
-    AssociationMultiCreateInput,
-    AssociationMultiCreateInputModelValue,
+    AssociationBatchCreateInput,
+    AssociationBatchCreateInputModelValue,
     extractMultiCreateInput,
-    getDefaultAssociationMultiCreateInput
-} from "@/components/business/association/AssociationMultiCreateInput.ts";
+    getDefaultAssociationBatchCreateInput
+} from "@/components/business/association/AssociationBatchCreateInput.ts";
 import {
     ColumnCombineKey, createColumnCombineLabel,
     createColumnCombineMap,
@@ -41,10 +41,10 @@ const props = defineProps<{
 
 const emits = defineEmits<FormEmits<
     GenAssociationModelInput[],
-    AssociationMultiCreateInputModelValue
+    AssociationBatchCreateInputModelValue
 >>()
 
-const association = ref<AssociationMultiCreateInputModelValue>(getDefaultAssociationMultiCreateInput())
+const association = ref<AssociationBatchCreateInputModelValue>(getDefaultAssociationBatchCreateInput())
 
 watch(() => props.sourceTables, (value) => {
     if (value !== undefined) {
@@ -198,7 +198,7 @@ const handleSubmit = async () => {
         return
     }
 
-    const associations = extractMultiCreateInput(association.value as AssociationMultiCreateInput)
+    const associations = extractMultiCreateInput(association.value as AssociationBatchCreateInput)
 
     const messageList = props.validate(associations)
 

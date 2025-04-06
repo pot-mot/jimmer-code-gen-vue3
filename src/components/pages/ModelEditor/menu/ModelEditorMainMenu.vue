@@ -11,14 +11,24 @@ import {useModelLoadDialogStore} from "@/store/modelEditor/dialogs/ModelLoadDial
 import SubGroupItem from "@/components/pages/ModelEditor/menu/SubGroupItem.vue";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 import {handleMenuKeyEvent} from "@/components/pages/ModelEditor/menu/menuKeyEvent.ts";
+import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
+import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
+import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
+import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
+import {useAssociationBatchCreateDialogStore} from "@/store/modelEditor/dialogs/AssociationBatchCreateDialogStore.ts";
 
 const i18nStore = useI18nStore()
 
-const {MODEL, MODEL_EDITOR, SELECT, VIEW} = useModelEditorStore()
+const {MODEL, SELECT, VIEW} = useModelEditorStore()
 
 const dataSourceLoadDialogStore = useDataSourceLoadDialogStore()
-
 const modelLoadDialogStore = useModelLoadDialogStore()
+
+const tableDialogs = useTableDialogsStore()
+const associationDialogs = useAssociationDialogsStore()
+const enumDialogs = useEnumDialogsStore()
+const tableConfineDialog = useTableCombineDialogStore()
+const associationBatchCreateDialog = useAssociationBatchCreateDialogStore()
 
 const associationEdgePairs = computed(() => {
 	return MODEL.associationEdgePairs
@@ -28,6 +38,38 @@ const handleClickUnselect = (e: MouseEvent) => {
 	if (!judgeTargetIsInteraction(e)) {
 		SELECT.unselectAll()
 	}
+}
+
+const handleCreateTable = () => {
+    const options = {
+        x: VIEW.getCenterPoint().x * 3/4,
+        y: VIEW.getCenterPoint().y * 3/4,
+    }
+    tableDialogs.create(options)
+}
+
+const handleCombineTable = () => {
+    const options = {
+        x: VIEW.getCenterPoint().x * 3/4,
+        y: VIEW.getCenterPoint().y * 3/4,
+    }
+    tableConfineDialog.open(options)
+}
+
+const handleCreateAssociation = () => {
+    const options = MODEL.selectedTables.length > 0 && MODEL.selectedTables.length <= 2 ? {
+        sourceTableName: MODEL.selectedTables[0]?.name,
+        targetTableName: MODEL.selectedTables[1]?.name,
+    } : undefined
+    associationDialogs.create(options)
+}
+
+const handleBatchCreateAssociations = () => {
+    associationBatchCreateDialog.open()
+}
+
+const handleCreateEnum = () => {
+    enumDialogs.create()
 }
 </script>
 
@@ -49,21 +91,17 @@ const handleClickUnselect = (e: MouseEvent) => {
 
 					<el-button
 						style="margin-left: 0.5em;"
-						@click="MODEL_EDITOR.createTable(
-							{x: VIEW.getCenterPoint().x * 3/4, y: VIEW.getCenterPoint().y * 3/4}
-						)">
+						@click="handleCreateTable">
 						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_createTable') }}
 					</el-button>
 
 					<el-button
 						style="margin-left: 0.5em;"
-						@click="MODEL_EDITOR.combineTable(
-							{x: VIEW.getCenterPoint().x * 3/4, y: VIEW.getCenterPoint().y * 3/4}
-						)">
+						@click="handleCombineTable">
 						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_combineTable') }}
 					</el-button>
 
-					<el-button @click="MODEL_EDITOR.createEnum()">
+					<el-button @click="handleCreateEnum">
 						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_createEnum') }}
 					</el-button>
 				</div>
@@ -103,10 +141,10 @@ const handleClickUnselect = (e: MouseEvent) => {
 						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_associationTitle') }}
 					</el-text>
 
-					<el-button style="margin-left: 0.5em;" @click="MODEL_EDITOR.createAssociation()">
+					<el-button style="margin-left: 0.5em;" @click="handleCreateAssociation">
 						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_createAssociation') }}
 					</el-button>
-					<el-button style="margin-left: 0.5em;" @click="MODEL_EDITOR.batchCreateAssociations()">
+					<el-button style="margin-left: 0.5em;" @click="handleBatchCreateAssociations">
 						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_batchCreateAssociation') }}
 					</el-button>
 				</div>

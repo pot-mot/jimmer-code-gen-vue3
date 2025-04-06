@@ -20,6 +20,10 @@ import './assets/model-editor-graph.css'
 import './assets/table-node.css'
 import './assets/association-edge.css'
 
+import ContextMenu from '@imengyu/vue3-context-menu'
+import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
+import './assets/context-menu.css'
+
 import {registerModelEditorShape} from "@/components/pages/ModelEditor/graph/register.ts";
 import {useCodeEditor} from "@/components/global/code/CodeEditorWorkers.ts";
 
@@ -34,6 +38,8 @@ app.use(ElementPlus, { size: 'small', zIndex: 2000 })
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }
+
+app.use(ContextMenu)
 
 registerModelEditorShape()
 

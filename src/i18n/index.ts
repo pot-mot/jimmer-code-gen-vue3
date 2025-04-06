@@ -3,6 +3,10 @@ import type {DeepReadonly} from "vue"
 import type {Errors} from "@/api/handleError.ts"
 
 type MainLocale = {
+    BUTTON_copy: string
+    BUTTON_cut: string
+    BUTTON_paste: string
+
     BUTTON_edit: string
     BUTTON_submit: string
     BUTTON_delete: string
@@ -247,10 +251,8 @@ type MainLocale = {
     LABEL_ModelEditorGraph_downloadCurrent: string
     LABEL_ModelEditorGraph_downloadFiltered: string
 
-    LABEL_ModelEditorGraph_clean: string
-    LABEL_ModelEditorGraph_cleanSelected: string
-    LABEL_ModelEditorGraph_cleanAssociation: string
-    LABEL_ModelEditorGraph_cleanSelectedAssociation: string
+    LABEL_ModelEditorGraph_removeSelected: string
+    LABEL_ModelEditorGraph_removeSelectedAssociation: string
 
     MESSAGE_ModelEditorGraph_history_cannotUndo: string
     MESSAGE_ModelEditorGraph_history_cannotRedo: string

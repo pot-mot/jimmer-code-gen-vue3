@@ -11,7 +11,6 @@ export interface GraphSelectOperation {
     unselectAll: () => void
     getSelectedNodes: () => Node[]
     getSelectedEdges: () => Edge[]
-    getSelectedNodeConnectedEdges: () => Edge[]
 }
 
 export const useSelectOperation = (_graph: () => Graph): GraphSelectOperation => {
@@ -24,7 +23,6 @@ export const useSelectOperation = (_graph: () => Graph): GraphSelectOperation =>
         unselectAll: () => unselectAll(_graph()),
         getSelectedNodes: () => getSelectedNodes(_graph()),
         getSelectedEdges: () => getSelectedEdges(_graph()),
-        getSelectedNodeConnectedEdges: () => getSelectedNodeConnectedEdges(_graph()),
     }
 }
 
@@ -68,22 +66,18 @@ export const getSelectedEdges = (graph: Graph): Edge[] => {
     return graph.getSelectedCells().filter(cell => cell.isEdge()).map(cell => cell as Edge)
 }
 
-export const getSelectedNodeConnectedEdges = (graph: Graph): Edge[] => {
-    const selectedNodes = getSelectedNodes(graph)
-
+export const getNodeConnectedEdges = (graph: Graph, nodeIds: string[]): Edge[] => {
     const connectedEdges: Edge[] = []
 
-    selectedNodes.forEach(node => {
+    for (const nodeId of nodeIds) {
         const selectEdges = searchEdgesByNode(graph, {
-            targetNodeId: node.id,
-            sourceNodeId: node.id,
+            targetNodeId: nodeId,
+            sourceNodeId: nodeId,
             selectType: 'OR'
         })
 
-        selectEdges.forEach(edge => {
-            connectedEdges.push(edge)
-        })
-    })
+        connectedEdges.push(...selectEdges)
+    }
 
     return connectedEdges
 }
