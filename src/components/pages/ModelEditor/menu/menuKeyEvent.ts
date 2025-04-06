@@ -25,12 +25,8 @@ export const handleMenuKeyEvent = async (e: KeyboardEvent) => {
         }
     }
 
-    if (e.key === "Delete" || e.key === "Backspace") {
+    if (e.key === "Delete") {
         e.preventDefault()
-        if (e.shiftKey) {
-            REMOVE.removeSelectedEdges()
-        } else {
-            REMOVE.removeSelectedCells()
-        }
+        REMOVE.removeSelectedCells()
     }
 }

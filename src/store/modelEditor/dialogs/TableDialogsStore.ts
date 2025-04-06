@@ -13,6 +13,10 @@ import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 
 const TABLE_CREATE_PREFIX = "[[TABLE_CREATE_PREFIX]]"
 
+export type TableCreateOptions = TableLoadOptions & {
+    subGroupName?: string | undefined,
+}
+
 export const useTableDialogsStore = defineStore(
     'TableDialogs',
     () => {
@@ -20,11 +24,15 @@ export const useTableDialogsStore = defineStore(
 
         const {MODEL_EDITOR, GRAPH, SELECT} = useModelEditorStore()
 
-        const createOptionsMap = new Map<string, TableLoadOptions>
+        const createOptionsMap = new Map<string, TableCreateOptions>
 
-        const create = (options: TableLoadOptions) => {
+        const create = (options: TableCreateOptions) => {
             const createKey = TABLE_CREATE_PREFIX + Date.now()
-            dialogs.open(createKey, getDefaultTable(), {modal: false})
+            const table = getDefaultTable()
+            if (options.subGroupName !== undefined) {
+                table.subGroup = {name: options.subGroupName}
+            }
+            dialogs.open(createKey, table, {modal: false})
             createOptionsMap.set(createKey, options)
         }
 

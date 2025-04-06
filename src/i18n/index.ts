@@ -252,7 +252,7 @@ type MainLocale = {
     LABEL_ModelEditorGraph_downloadFiltered: string
 
     LABEL_ModelEditorGraph_removeSelected: string
-    LABEL_ModelEditorGraph_removeSelectedAssociation: string
+    LABEL_ModelEditorGraph_removeAssociation: string
 
     MESSAGE_ModelEditorGraph_history_cannotUndo: string
     MESSAGE_ModelEditorGraph_history_cannotRedo: string

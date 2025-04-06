@@ -30,26 +30,30 @@ type ModelEditorContextMenuOpenTarget = {
     enum: DeepReadonly<GenModelInput_TargetOf_enums>
 }
 
+const getDefaultTarget = (): ModelEditorContextMenuOpenTarget => {
+    return {type: "Model"}
+}
+
 export const useModelEditorContextMenuStore = defineStore(
     'ModelEditorContextMenu',
     () => {
         const {open, close, ...otherOperations} = useOpenState()
 
-        const openTarget = ref<ModelEditorContextMenuOpenTarget>()
+        const target = ref<ModelEditorContextMenuOpenTarget>(getDefaultTarget())
 
         const options = ref<ModelEditorContextMenuOpenOptions>({x: 0, y: 0})
 
         return {
             ...otherOperations,
-            openTarget,
+            target,
             options,
-            open: (inputOptions: ModelEditorContextMenuOpenOptions, target?: ModelEditorContextMenuOpenTarget | undefined) => {
-                openTarget.value = target ?? {type: "Model"}
+            open: (inputOptions: ModelEditorContextMenuOpenOptions, inputTarget?: ModelEditorContextMenuOpenTarget | undefined) => {
+                target.value = inputTarget ?? getDefaultTarget()
                 options.value = inputOptions
                 open()
             },
             close: () => {
-                openTarget.value = undefined
+                target.value = getDefaultTarget()
                 close()
             }
         }

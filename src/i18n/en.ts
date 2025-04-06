@@ -428,7 +428,7 @@ ${error.indexColumnToTables.map(item => `  Column 【${formatIdName(item.column)
     LABEL_ModelEditorGraph_downloadFiltered: 'Download Filtered (ZIP)',
 
     LABEL_ModelEditorGraph_removeSelected: 'Remove',
-    LABEL_ModelEditorGraph_removeSelectedAssociation: 'Remove Associations',
+    LABEL_ModelEditorGraph_removeAssociation: 'Remove Associations',
 
     MESSAGE_ModelEditorGraph_history_cannotUndo: "Cannot Undo",
     MESSAGE_ModelEditorGraph_history_cannotRedo: "Cannot Redo",
