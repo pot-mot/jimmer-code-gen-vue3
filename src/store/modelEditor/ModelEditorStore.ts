@@ -203,6 +203,13 @@ type ModelEditorStore = {
 const initModelEditorStore = (): ModelEditorStore => {
     const {graphState, graphReactiveState, graphLoadOperation} = useGraph()
 
+    const GRAPH = defineStore(
+        'GRAPH',
+        () => {
+            return {...graphState, ...graphReactiveState, ...graphLoadOperation}
+        }
+    )()
+
     const {_graph} = graphState
 
     const graphDataOperation = useGraphDataOperation(_graph)
@@ -213,19 +220,15 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const HISTORY = useHistoryOperations(_graph)
 
-    const tableDialogsStore = useTableDialogsStore()
-
-    const associationDialogsStore = useAssociationDialogsStore()
-
     const REMOVE = useRemoveOperation(
         _graph,
         (_, cells, target) => {
             startBatchSync(target, () => {
                 cells.forEach(cell => {
                     if (cell.isNode() && cell.shape === TABLE_NODE) {
-                        tableDialogsStore.remove(cell.id)
+                        useTableDialogsStore().remove(cell.id)
                     } else if (cell.isEdge() && cell.shape === ASSOCIATION_EDGE) {
-                        associationDialogsStore.remove(cell.id)
+                        useAssociationDialogsStore().remove(cell.id)
                     }
                 })
             })
@@ -1178,13 +1181,6 @@ const initModelEditorStore = (): ModelEditorStore => {
         waitRefreshModelAndCode()
     }
 
-    const GRAPH = defineStore(
-        'GRAPH',
-        () => {
-            return {...graphState, ...graphReactiveState, ...graphLoadOperation}
-        }
-    )()
-
 
     const debugStore = useDebugStore()
 
@@ -1241,12 +1237,12 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         useSubGroupDialogsStore().closeAll()
 
-        tableDialogsStore.closeAll()
+        useTableDialogsStore().closeAll()
         tableCombineDialogStore.close()
 
         useEnumDialogsStore().closeAll()
 
-        associationDialogsStore.closeAll()
+        useAssociationDialogsStore().closeAll()
         batchCreateAssociationsDialogStore.close()
 
         entityDialogsStore.closeAll()
@@ -1312,9 +1308,9 @@ const initModelEditorStore = (): ModelEditorStore => {
     }
 }
 
-let modelEditorStore: ReturnType<typeof initModelEditorStore> | undefined = undefined
+let modelEditorStore: ModelEditorStore | undefined = undefined
 
-export const useModelEditorStore = () => {
+export const useModelEditorStore = (): ModelEditorStore => {
     if (modelEditorStore === undefined) {
         modelEditorStore = initModelEditorStore()
     }
