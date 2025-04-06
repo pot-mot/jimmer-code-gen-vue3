@@ -7,7 +7,7 @@ import {createAssociationName} from "@/components/business/association/createAss
 import {DeepReadonly} from "vue";
 import {ColumnCombineKey} from "@/components/business/association/columnEquals.ts";
 
-export type AssociationMultiCreateInput =
+export type AssociationBatchCreateInput =
     Omit<GenAssociationModelInput, "sourceTableName" | "targetTableName" | "name" | "columnReferences">
     & {
     sourceTables: GenTableModelInput[],
@@ -18,7 +18,7 @@ export type AssociationMultiCreateInput =
     }[]
 }
 
-export type AssociationMultiCreateInputModelValue = Omit<AssociationMultiCreateInput, "targetTable" | "columnReferences"> & {
+export type AssociationBatchCreateInputModelValue = Omit<AssociationBatchCreateInput, "targetTable" | "columnReferences"> & {
     targetTable?: GenTableModelInput | undefined,
     columnReferences: {
         sourceColumn: ColumnCombineKey | undefined,
@@ -26,7 +26,7 @@ export type AssociationMultiCreateInputModelValue = Omit<AssociationMultiCreateI
     }[]
 }
 
-export const getDefaultAssociationMultiCreateInput = (): AssociationMultiCreateInputModelValue => {
+export const getDefaultAssociationBatchCreateInput = (): AssociationBatchCreateInputModelValue => {
     const {
         sourceTableName,
         targetTableName,
@@ -47,7 +47,7 @@ export const getDefaultAssociationMultiCreateInput = (): AssociationMultiCreateI
 }
 
 export const extractMultiCreateInput = (
-    multiCreateInput: DeepReadonly<AssociationMultiCreateInput>
+    multiCreateInput: DeepReadonly<AssociationBatchCreateInput>
 ): Array<GenAssociationModelInput> => {
     const {
         sourceTables,
@@ -56,7 +56,7 @@ export const extractMultiCreateInput = (
         ...optionalMultiCreateInput
     } = multiCreateInput
 
-    const otherData: Omit<AssociationMultiCreateInput, "sourceTables" | "targetTable" | "columnReferences"> = optionalMultiCreateInput
+    const otherData: Omit<AssociationBatchCreateInput, "sourceTables" | "targetTable" | "columnReferences"> = optionalMultiCreateInput
 
     const result: Array<GenAssociationModelInput> = []
 

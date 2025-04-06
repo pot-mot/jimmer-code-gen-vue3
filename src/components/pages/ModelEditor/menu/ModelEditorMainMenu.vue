@@ -15,10 +15,11 @@ import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStor
 import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
 import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
 import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
+import {useAssociationBatchCreateDialogStore} from "@/store/modelEditor/dialogs/AssociationBatchCreateDialogStore.ts";
 
 const i18nStore = useI18nStore()
 
-const {MODEL, MODEL_EDITOR, SELECT, VIEW} = useModelEditorStore()
+const {MODEL, SELECT, VIEW} = useModelEditorStore()
 
 const dataSourceLoadDialogStore = useDataSourceLoadDialogStore()
 const modelLoadDialogStore = useModelLoadDialogStore()
@@ -27,6 +28,7 @@ const tableDialogs = useTableDialogsStore()
 const associationDialogs = useAssociationDialogsStore()
 const enumDialogs = useEnumDialogsStore()
 const tableConfineDialog = useTableCombineDialogStore()
+const associationBatchCreateDialog = useAssociationBatchCreateDialogStore()
 
 const associationEdgePairs = computed(() => {
 	return MODEL.associationEdgePairs
@@ -60,6 +62,10 @@ const handleCreateAssociation = () => {
         targetTableName: MODEL.selectedTables[1]?.name,
     } : undefined
     associationDialogs.create(options)
+}
+
+const handleBatchCreateAssociations = () => {
+    associationBatchCreateDialog.open()
 }
 
 const handleCreateEnum = () => {
@@ -138,7 +144,7 @@ const handleCreateEnum = () => {
 					<el-button style="margin-left: 0.5em;" @click="handleCreateAssociation">
 						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_createAssociation') }}
 					</el-button>
-					<el-button style="margin-left: 0.5em;" @click="MODEL_EDITOR.batchCreateAssociations()">
+					<el-button style="margin-left: 0.5em;" @click="handleBatchCreateAssociations">
 						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_batchCreateAssociation') }}
 					</el-button>
 				</div>

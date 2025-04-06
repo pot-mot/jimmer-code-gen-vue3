@@ -39,7 +39,6 @@ import {GraphRemoveOperation, useRemoveOperation} from "@/components/global/grap
 import {GraphReactiveState} from "@/components/global/graphEditor/data/reactiveState.ts";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {defineStore} from "pinia";
-import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/dialogs/BatchCreateAssociationsDialogStore.ts";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 import {useEntityDialogsStore} from "@/store/modelEditor/dialogs/EntityDialogsStore.ts";
 import {useDataSourceLoadDialogStore} from "@/store/modelEditor/dialogs/DataSourceLoadDialogStore.ts";
@@ -61,6 +60,7 @@ import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStor
 import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
 import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
 import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
+import {useAssociationBatchCreateDialogStore} from "@/store/modelEditor/dialogs/AssociationBatchCreateDialogStore.ts";
 
 export type SubGroupData = {
     group: GenModelInput_TargetOf_subGroups | undefined,
@@ -133,11 +133,6 @@ type MinimapOperation = {
     setInitMinimapAction: (action: () => void) => void
 }
 
-type AssociationEditOperation = {
-    batchCreateAssociations: () => void,
-    batchCreatedAssociations: (associations: DeepReadonly<GenAssociationModelInput[]>) => void,
-}
-
 type EntityEditOperation = {
     editEntity: (entity: DeepReadonly<EntityConfigView>) => void,
     editedEntity: (entity: DeepReadonly<EntityConfigInput>) => Promise<void>,
@@ -188,7 +183,6 @@ type ModelEditorStore = {
         & ModelLoadOperation
         & MinimapOperation
         & ModelSyncState
-        & AssociationEditOperation
         & EntityEditOperation
 }
 
@@ -1090,33 +1084,6 @@ const initModelEditorStore = (): ModelEditorStore => {
         await waitRefresh()
     }, 100)
 
-    const batchCreateAssociationsDialogStore = useBatchCreateAssociationsDialogStore()
-
-    const batchCreateAssociations = () => {
-        batchCreateAssociationsDialogStore.open()
-    }
-
-    const batchCreatedAssociations = async (associations: DeepReadonly<GenAssociationModelInput[]>) => {
-        const graph = _graph()
-
-        graph.startBatch("batchCreatedAssociations")
-
-        const {edges} = loadInput({
-            associations
-        })
-
-        batchCreateAssociationsDialogStore.close()
-
-        graph.stopBatch("batchCreatedAssociations")
-
-        setTimeout(() => {
-            graphSelectOperation.select(edges)
-        }, 200)
-
-        waitRefreshModelAndCode()
-    }
-
-
     /**
      * 实体编辑对话框相关
      */
@@ -1196,7 +1163,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         useEnumDialogsStore().closeAll()
 
         useAssociationDialogsStore().closeAll()
-        batchCreateAssociationsDialogStore.close()
+        useAssociationBatchCreateDialogStore().close()
 
         entityDialogsStore.closeAll()
 
@@ -1248,9 +1215,6 @@ const initModelEditorStore = (): ModelEditorStore => {
             startBatchSync,
 
             waitRefreshModelAndCode,
-
-            batchCreateAssociations,
-            batchCreatedAssociations,
 
             editEntity,
             editedEntity,

@@ -20,8 +20,8 @@ import EnumDialogs from "@/components/pages/ModelEditor/dialogs/enum/EnumDialogs
 import AssociationDialogs from "@/components/pages/ModelEditor/dialogs/association/AssociationDialogs.vue";
 import {confirm} from "@/message/confirm.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
-import BatchCreateAssociationsDialog
-	from "@/components/pages/ModelEditor/dialogs/association/BatchCreateAssociationsDialog.vue";
+import AssociationBatchCreateDialog
+	from "@/components/pages/ModelEditor/dialogs/association/AssociationBatchCreateDialog.vue";
 import TableCombineDialog from "@/components/pages/ModelEditor/dialogs/table/TableCombineDialog.vue";
 import {useDataSourceLoadDialogStore} from "@/store/modelEditor/dialogs/DataSourceLoadDialogStore.ts";
 import {useModelLoadDialogStore} from "@/store/modelEditor/dialogs/ModelLoadDialogStore.ts";
@@ -184,7 +184,7 @@ watch(() => modelLoadMenu.value, () => {
 	<TableCombineDialog/>
 
 	<AssociationDialogs/>
-	<BatchCreateAssociationsDialog/>
+	<AssociationBatchCreateDialog/>
 
 	<EntityDialogs/>
 
