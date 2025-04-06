@@ -13,6 +13,7 @@ import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 import {handleMenuKeyEvent} from "@/components/pages/ModelEditor/menu/menuKeyEvent.ts";
 import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
 import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
+import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
 
 const i18nStore = useI18nStore()
 
@@ -23,6 +24,7 @@ const modelLoadDialogStore = useModelLoadDialogStore()
 
 const tableDialogs = useTableDialogsStore()
 const associationDialogs = useAssociationDialogsStore()
+const enumDialogs = useEnumDialogsStore()
 
 const associationEdgePairs = computed(() => {
 	return MODEL.associationEdgePairs
@@ -57,6 +59,10 @@ const handleCreateAssociation = () => {
     } : undefined
     associationDialogs.create(options)
 }
+
+const handleCreateEnum = () => {
+    enumDialogs.create()
+}
 </script>
 
 <template>
@@ -87,7 +93,7 @@ const handleCreateAssociation = () => {
 						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_combineTable') }}
 					</el-button>
 
-					<el-button @click="MODEL_EDITOR.createEnum()">
+					<el-button @click="handleCreateEnum">
 						{{ i18nStore.translate('LABEL_ModelEditorMainMenu_createEnum') }}
 					</el-button>
 				</div>

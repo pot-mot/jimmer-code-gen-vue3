@@ -21,8 +21,6 @@ import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts"
 import {ModelEditorData, validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
-import {ENUM_CREATE_PREFIX, useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
-import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
 import {unStyleAll} from "@/components/pages/ModelEditor/graph/highlight.ts";
 import {GraphData, useGraphDataOperation} from "@/components/global/graphEditor/data/graphData.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
@@ -32,11 +30,6 @@ import {
     GraphViewOperation,
     useViewOperation
 } from "@/components/global/graphEditor/view/viewOperation.ts";
-import {
-    syncEnumNameForEntities,
-    syncEnumNameForTables,
-    syncNewEnumForTables
-} from "@/components/pages/ModelEditor/sync/syncEnum.ts";
 import {GraphSelectOperation, useSelectOperation} from "@/components/global/graphEditor/selection/selectOperation.ts";
 import {
     GraphHistoryOperation,
@@ -69,6 +62,7 @@ import {jsonSortPropStringify} from "@/utils/json.ts";
 import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
 import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
 import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
+import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
 
 export type SubGroupData = {
     group: GenModelInput_TargetOf_subGroups | undefined,
@@ -151,21 +145,6 @@ type AssociationEditOperation = {
     batchCreatedAssociations: (associations: DeepReadonly<GenAssociationModelInput[]>) => void,
 }
 
-export type EnumCreateOptions = {
-    tableKey: string,
-    columnName: string,
-}
-
-type EnumEditOperation = {
-    createEnum: (options?: EnumCreateOptions | undefined) => void,
-    createdEnum: (createKey: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => void,
-
-    editEnum: (name: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => void,
-    editedEnum: (name: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => void,
-
-    removeEnum: (name: string) => void,
-}
-
 type EntityEditOperation = {
     editEntity: (entity: DeepReadonly<EntityConfigView>) => void,
     editedEntity: (entity: DeepReadonly<EntityConfigInput>) => Promise<void>,
@@ -218,7 +197,6 @@ type ModelEditorStore = {
         & ModelSyncState
         & TableEditOperation
         & AssociationEditOperation
-        & EnumEditOperation
         & EntityEditOperation
 }
 
@@ -322,7 +300,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         })
     }
     if (graphState.isLoaded.value) {
-        bindGraphHistoryChangeDebug(graphState._graph())
+        bindGraphHistoryChangeDebug(_graph())
     } else graphLoadOperation.onLoaded((graph) => {
         if (!graph) return
         bindGraphHistoryChangeDebug(graph)
@@ -366,7 +344,7 @@ const initModelEditorStore = (): ModelEditorStore => {
     }
 
     if (graphState.isLoaded.value) {
-        addNodeSync(graphState._graph())
+        addNodeSync(_graph())
     } else graphLoadOperation.onLoaded((graph) => {
         if (!graph) return
         addNodeSync(graph)
@@ -416,7 +394,7 @@ const initModelEditorStore = (): ModelEditorStore => {
     }
 
     if (graphState.isLoaded.value) {
-        addEdgeSync(graphState._graph())
+        addEdgeSync(_graph())
     } else graphLoadOperation.onLoaded((graph) => {
         if (!graph) return
         addEdgeSync(graph)
@@ -1184,72 +1162,6 @@ const initModelEditorStore = (): ModelEditorStore => {
 
 
     /**
-     * 枚举编辑对话框相关
-     */
-
-    const enumDialogsStore = useEnumDialogsStore()
-
-    const enumCreateOptionsMap = new Map<string, EnumCreateOptions | undefined>
-
-    const createEnum = (options?: EnumCreateOptions | undefined) => {
-        const createKey = ENUM_CREATE_PREFIX + Date.now()
-        enumDialogsStore.open(createKey, getDefaultEnum())
-        enumCreateOptionsMap.set(createKey, options)
-    }
-
-    const createdEnum = (createKey: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
-        startBatchSync('createdEnum', () => {
-            assertModel().value.enums.push(cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum))
-
-            const options = enumCreateOptionsMap.get(createKey)
-
-            if (options !== undefined) {
-                const {tableKey, columnName} = options
-                syncNewEnumForTables(genEnum, tableKey, columnName)
-            }
-
-            enumCreateOptionsMap.delete(createKey)
-        })
-
-        enumDialogsStore.close(createKey, true)
-
-        waitRefreshModelAndCode()
-    }
-
-    const editEnum = (name: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
-        enumDialogsStore.open(name, cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum))
-    }
-
-    const editedEnum = (name: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
-        const oldName = name
-
-        startBatchSync('editedEnum', () => {
-            assertModel().value.enums = [
-                ...assertModel().value.enums.filter(it => it.name !== oldName),
-                cloneDeepReadonly<GenModelInput_TargetOf_enums>(genEnum)
-            ]
-            syncEnumNameForEntities(oldName, genEnum.name)
-            syncEnumNameForTables(_graph(), oldName, genEnum.name)
-        })
-
-        enumDialogsStore.close(name, true)
-
-        waitRefreshModelAndCode()
-    }
-
-    const removeEnum = (name: string) => {
-        const oldName = name
-
-        startBatchSync('removeEnum', () => {
-            assertModel().value.enums = assertModel().value.enums.filter(it => it.name !== oldName)
-            syncEnumNameForTables(_graph(), oldName, undefined)
-        })
-
-        waitRefreshModelAndCode()
-    }
-
-
-    /**
      * 实体编辑对话框相关
      */
 
@@ -1332,7 +1244,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         tableDialogsStore.closeAll()
         tableCombineDialogStore.close()
 
-        enumDialogsStore.closeAll()
+        useEnumDialogsStore().closeAll()
 
         associationDialogsStore.closeAll()
         batchCreateAssociationsDialogStore.close()
@@ -1393,12 +1305,6 @@ const initModelEditorStore = (): ModelEditorStore => {
 
             batchCreateAssociations,
             batchCreatedAssociations,
-
-            createEnum,
-            createdEnum,
-            editEnum,
-            editedEnum,
-            removeEnum,
 
             editEntity,
             editedEntity,

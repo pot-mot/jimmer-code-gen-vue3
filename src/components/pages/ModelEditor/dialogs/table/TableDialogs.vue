@@ -8,12 +8,14 @@ import {DeepReadonly} from "vue";
 import {GenTableModelInput} from "@/api/__generated/model/static";
 import {validateTable} from "@/components/business/table/validateTable.ts";
 import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
+import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
 
 const store = useTableDialogsStore()
 
-const {MODEL, MODEL_EDITOR} = useModelEditorStore()
+const {MODEL} = useModelEditorStore()
 
 const subGroupDialogs = useSubGroupDialogsStore()
+const enumDialogs = useEnumDialogsStore()
 
 const handleSubmit = (key: string, table: DeepReadonly<GenTableModelInput>) => {
     store.submit(key, table)
@@ -47,8 +49,8 @@ const validate = (key: string, table: DeepReadonly<GenTableModelInput>) => {
 
                 :create-index-name="createIndexName"
 
-                @create-enum="({propertyName}) => MODEL_EDITOR.createEnum({tableKey: key, columnName: propertyName})"
-                @edit-enum="({genEnum}) => MODEL_EDITOR.editEnum(genEnum.name, genEnum)"
+                @create-enum="({propertyName}) => enumDialogs.create({tableKey: key, columnName: propertyName})"
+                @edit-enum="({genEnum}) => enumDialogs.edit(genEnum.name, genEnum)"
 
                 :sub-groups="MODEL.subGroups"
                 @create-sub-group="() => subGroupDialogs.create({tableKey: key})"

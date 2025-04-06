@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {ENUM_CREATE_PREFIX, useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
+import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
 import EnumForm from "@/components/business/enum/EnumForm.vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {DeepReadonly} from "vue";
@@ -10,16 +10,12 @@ import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialo
 
 const store = useEnumDialogsStore()
 
-const {MODEL, MODEL_EDITOR} = useModelEditorStore()
+const {MODEL} = useModelEditorStore()
 
 const subGroupDialogs = useSubGroupDialogsStore()
 
 const handleSubmit = (key: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
-    if (key.startsWith(ENUM_CREATE_PREFIX)) {
-        MODEL_EDITOR.createdEnum(key, genEnum)
-    } else {
-        MODEL_EDITOR.editedEnum(key, genEnum)
-    }
+    store.submit(key, genEnum)
 }
 
 const validate = (key: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {

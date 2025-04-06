@@ -10,10 +10,13 @@ import {MainLocaleKeyParam} from "@/i18n";
 import {validateEntity} from "@/components/business/entity/validateEntity.ts";
 import {cloneDeep} from "lodash";
 import {sendI18nMessage} from "@/message/message.ts";
+import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
 
 const store = useEntityDialogsStore()
 
 const {MODEL, MODEL_EDITOR} = useModelEditorStore()
+
+const enumDialogs = useEnumDialogsStore()
 
 const handleSubmit = async (
 	entity: EntityConfigInput
@@ -50,7 +53,7 @@ const handleClickEnum = (idName: IdName) => {
 		sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickEnumNotFoundInCurrentModel", args: [idName]})
 		return
 	}
-	MODEL_EDITOR.editEnum(idName.name, genEnum)
+    enumDialogs.edit(idName.name, genEnum)
 }
 </script>
 

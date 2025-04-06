@@ -7,6 +7,7 @@ import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {api} from "@/api";
 import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
 import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
+import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
 
 const props = defineProps<{
     file: GenerateFile,
@@ -91,6 +92,7 @@ const {MODEL, MODEL_EDITOR} = useModelEditorStore()
 
 const tableDialogs = useTableDialogsStore()
 const associationDialogs = useAssociationDialogsStore()
+const enumDialogs = useEnumDialogsStore()
 
 const editTable = (idName: IdName) => {
 	const tableNodePair = cloneDeep(MODEL.tableNodePairs.filter(it => it.first.name === idName.name)[0])
@@ -107,7 +109,7 @@ const editEnum = (idName: IdName) => {
 		sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickEnumNotFoundInCurrentModel", args: [idName]})
 		return
 	}
-	MODEL_EDITOR.editEnum(idName.name, genEnum)
+    enumDialogs.edit(idName.name, genEnum)
 }
 
 const editAssociation = (idName: IdName) => {

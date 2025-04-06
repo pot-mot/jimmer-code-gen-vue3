@@ -22,9 +22,15 @@
         />
 
         <context-menu-item
-            v-if="(store.openTarget?.type === 'Model' && MODEL.selectedTables.length > 0 && MODEL.selectedTables.length < 3) || store.openTarget?.type === 'Table'"
+            v-if="(store.openTarget?.type === 'Model' && MODEL.selectedTables.length > 0 && MODEL.selectedTables.length <= 2) || store.openTarget?.type === 'Table'"
             :label="i18nStore.translate('LABEL_ModelEditorMainMenu_createAssociation')"
             @click="handleCreateAssociation"
+        />
+
+        <context-menu-item
+            v-if="store.openTarget?.type === 'Table' || store.openTarget?.type === 'Enum'"
+            :label="i18nStore.translate('LABEL_ModelEditorMainMenu_createEnum')"
+            @click="handleCreateEnum"
         />
 
         <template v-if="MODEL.selectedTables.length > 1">
@@ -135,6 +141,7 @@ import {
     AssociationCreateOptions,
     useAssociationDialogsStore
 } from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
+import {EnumCreateOptions, useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
 
 const store = useModelEditorContextMenuStore()
 
@@ -145,6 +152,7 @@ const modelEditDialogStore = useModelEditDialogStore()
 const subGroupDialogs = useSubGroupDialogsStore()
 const tableDialogs = useTableDialogsStore()
 const associationDialogs = useAssociationDialogsStore()
+const enumDialogs = useEnumDialogsStore()
 const {copy, cut, paste} = useModelClipBoard()
 
 const options = computed<MenuOptions>(() => {
@@ -167,7 +175,7 @@ const handleEdit = () => {
     } else if (store.openTarget.type === "Association") {
         associationDialogs.edit(store.openTarget.associationEdgePair.second.id, store.openTarget.associationEdgePair.first)
     } else if (store.openTarget.type === "Enum") {
-        MODEL_EDITOR.editEnum(store.openTarget.enum.name, store.openTarget.enum)
+        enumDialogs.edit(store.openTarget.enum.name, store.openTarget.enum)
     } else if (store.openTarget.type === "SubGroup") {
         subGroupDialogs.edit(store.openTarget.subGroup.name, store.openTarget.subGroup)
     }
@@ -268,6 +276,10 @@ const layoutOptions = [
     },
 ]
 
+const handleCreateTable = () => {
+    tableDialogs.create(GRAPH.mousePosition)
+}
+
 const handleCreateAssociation = () => {
     let options: AssociationCreateOptions | undefined = undefined
 
@@ -285,8 +297,20 @@ const handleCreateAssociation = () => {
     associationDialogs.create(options)
 }
 
-const handleCreateTable = () => {
-    tableDialogs.create(GRAPH.mousePosition)
+const handleCreateEnum = () => {
+    let options: EnumCreateOptions | undefined = undefined
+
+    if (store.openTarget?.type === "Table") {
+        options = {
+            subGroupName: store.openTarget.tableNodePair.first.subGroup?.name
+        }
+    } else if (store.openTarget?.type === "Enum") {
+        options = {
+            subGroupName: store.openTarget.enum.subGroup?.name
+        }
+    }
+
+    enumDialogs.create(options)
 }
 
 const handleCombineTable = () => {
