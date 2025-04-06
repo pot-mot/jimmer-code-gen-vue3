@@ -20,7 +20,6 @@ import {loadTableNode} from "@/components/pages/ModelEditor/load/loadTableNode.t
 import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts";
 import {ModelEditorData, validateModelEditorData} from "@/shape/ModelEditorData.ts";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
-import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
 import {unStyleAll} from "@/components/pages/ModelEditor/graph/highlight.ts";
 import {GraphData, useGraphDataOperation} from "@/components/global/graphEditor/data/graphData.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
@@ -41,8 +40,6 @@ import {GraphReactiveState} from "@/components/global/graphEditor/data/reactiveS
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {defineStore} from "pinia";
 import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/dialogs/BatchCreateAssociationsDialogStore.ts";
-import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
-import {TableCombineData} from "@/components/business/table/TableCombineData.ts";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 import {useEntityDialogsStore} from "@/store/modelEditor/dialogs/EntityDialogsStore.ts";
 import {useDataSourceLoadDialogStore} from "@/store/modelEditor/dialogs/DataSourceLoadDialogStore.ts";
@@ -63,6 +60,7 @@ import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialo
 import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
 import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
 import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
+import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
 
 export type SubGroupData = {
     group: GenModelInput_TargetOf_subGroups | undefined,
@@ -135,11 +133,6 @@ type MinimapOperation = {
     setInitMinimapAction: (action: () => void) => void
 }
 
-type TableEditOperation = {
-    combineTable: (options: TableLoadOptions) => void,
-    combinedTable: (tableCombineData: DeepReadonly<TableCombineData>) => void,
-}
-
 type AssociationEditOperation = {
     batchCreateAssociations: () => void,
     batchCreatedAssociations: (associations: DeepReadonly<GenAssociationModelInput[]>) => void,
@@ -195,7 +188,6 @@ type ModelEditorStore = {
         & ModelLoadOperation
         & MinimapOperation
         & ModelSyncState
-        & TableEditOperation
         & AssociationEditOperation
         & EntityEditOperation
 }
@@ -1098,45 +1090,6 @@ const initModelEditorStore = (): ModelEditorStore => {
         await waitRefresh()
     }, 100)
 
-    /**
-     * 表组合对话框
-     */
-    const tableCombineDialogStore = useTableCombineDialogStore()
-
-    const tableCombineOptions = ref<TableLoadOptions>()
-
-    const combineTable = (options: TableLoadOptions) => {
-        tableCombineOptions.value = options
-        tableCombineDialogStore.open()
-    }
-
-    const combinedTable = (tableCombineData: DeepReadonly<TableCombineData>) => {
-        const {superTable, inheritTableNodePairs} = tableCombineData
-
-        startBatchSync("combinedTable", async () => {
-            const node = loadInput({
-                tables: [superTable],
-                baseTableOptions: tableCombineOptions.value
-            }).nodes[0]
-
-            if (node) {
-                for (const {first, second} of inheritTableNodePairs) {
-                    updateTableNodeData(second, first)
-                }
-
-                tableCombineDialogStore.close()
-
-                setTimeout(() => {
-                    VIEW.focus(node)
-                }, 200)
-            }
-        }).then()
-
-        waitRefreshModelAndCode()
-    }
-
-
-
     const batchCreateAssociationsDialogStore = useBatchCreateAssociationsDialogStore()
 
     const batchCreateAssociations = () => {
@@ -1238,7 +1191,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         useSubGroupDialogsStore().closeAll()
 
         useTableDialogsStore().closeAll()
-        tableCombineDialogStore.close()
+        useTableCombineDialogStore().close()
 
         useEnumDialogsStore().closeAll()
 
@@ -1295,9 +1248,6 @@ const initModelEditorStore = (): ModelEditorStore => {
             startBatchSync,
 
             waitRefreshModelAndCode,
-
-            combineTable,
-            combinedTable,
 
             batchCreateAssociations,
             batchCreatedAssociations,

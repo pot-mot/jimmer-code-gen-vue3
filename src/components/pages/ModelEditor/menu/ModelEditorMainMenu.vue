@@ -14,6 +14,7 @@ import {handleMenuKeyEvent} from "@/components/pages/ModelEditor/menu/menuKeyEve
 import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
 import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
 import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
+import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
 
 const i18nStore = useI18nStore()
 
@@ -25,6 +26,7 @@ const modelLoadDialogStore = useModelLoadDialogStore()
 const tableDialogs = useTableDialogsStore()
 const associationDialogs = useAssociationDialogsStore()
 const enumDialogs = useEnumDialogsStore()
+const tableConfineDialog = useTableCombineDialogStore()
 
 const associationEdgePairs = computed(() => {
 	return MODEL.associationEdgePairs
@@ -49,7 +51,7 @@ const handleCombineTable = () => {
         x: VIEW.getCenterPoint().x * 3/4,
         y: VIEW.getCenterPoint().y * 3/4,
     }
-	MODEL_EDITOR.combineTable(options)
+    tableConfineDialog.open(options)
 }
 
 const handleCreateAssociation = () => {

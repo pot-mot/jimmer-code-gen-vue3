@@ -142,17 +142,19 @@ import {
     useAssociationDialogsStore
 } from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
 import {EnumCreateOptions, useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
+import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
 
 const store = useModelEditorContextMenuStore()
 
 const i18nStore = useI18nStore()
 
-const {GRAPH, REMOVE, MODEL_EDITOR, MODEL, VIEW} = useModelEditorStore()
+const {GRAPH, REMOVE, MODEL, VIEW} = useModelEditorStore()
 const modelEditDialogStore = useModelEditDialogStore()
 const subGroupDialogs = useSubGroupDialogsStore()
 const tableDialogs = useTableDialogsStore()
 const associationDialogs = useAssociationDialogsStore()
 const enumDialogs = useEnumDialogsStore()
+const tableCombineDialog = useTableCombineDialogStore()
 const {copy, cut, paste} = useModelClipBoard()
 
 const options = computed<MenuOptions>(() => {
@@ -314,6 +316,6 @@ const handleCreateEnum = () => {
 }
 
 const handleCombineTable = () => {
-    MODEL_EDITOR.combineTable(GRAPH.mousePosition)
+    tableCombineDialog.open(GRAPH.mousePosition)
 }
 </script>
