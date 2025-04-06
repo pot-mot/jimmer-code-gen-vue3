@@ -3,7 +3,7 @@ import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {Graph} from "@antv/x6";
 import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
-import {DeepReadonly, Ref} from "vue";
+import {DeepReadonly} from "vue";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
 
@@ -54,7 +54,7 @@ export const syncSubGroupNameForTables = (graph: Graph, oldSubGroupName: string,
 }
 
 // 在全部枚举中同步子组名
-export const syncSubGroupNameForEnums = (model: Ref<GenModelInput>, oldSubGroupName: string, newSubGroupName: string | undefined) => {
+export const syncSubGroupNameForEnums = (model: GenModelInput, oldSubGroupName: string, newSubGroupName: string | undefined) => {
     const enumDialogsStore = useEnumDialogsStore()
 
     // 同步所有对话框中的子组数据
@@ -66,7 +66,7 @@ export const syncSubGroupNameForEnums = (model: Ref<GenModelInput>, oldSubGroupN
     })
 
     // 同步模型中的子组数据
-    model.value.enums = model.value.enums.map(it => {
+    model.enums = model.enums.map(it => {
         if (judgeSubGroupInItem(oldSubGroupName, it)) {
             return syncSubGroupNameInItem(it, oldSubGroupName, newSubGroupName)
         } else {

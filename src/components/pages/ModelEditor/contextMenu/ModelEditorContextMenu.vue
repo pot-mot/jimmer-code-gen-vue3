@@ -129,6 +129,7 @@ import AssociationOffIcon from "@/components/global/icons/toolbar/AssociationOff
 import EraserIcon from "@/components/global/icons/toolbar/EraserIcon.vue";
 import {EditPen} from "@element-plus/icons-vue";
 import {useModelEditDialogStore} from "@/store/modelEditor/dialogs/ModelEditDialogStore.ts";
+import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
 
 const store = useModelEditorContextMenuStore()
 
@@ -136,6 +137,7 @@ const i18nStore = useI18nStore()
 
 const {GRAPH, REMOVE, MODEL_EDITOR, MODEL, VIEW} = useModelEditorStore()
 const modelEditDialogStore = useModelEditDialogStore()
+const subGroupDialogs = useSubGroupDialogsStore()
 const {copy, cut, paste} = useModelClipBoard()
 
 const options = computed<MenuOptions>(() => {
@@ -160,7 +162,7 @@ const handleEdit = () => {
 	} else if (store.openTarget.type === "Enum") {
 		MODEL_EDITOR.editEnum(store.openTarget.enum.name, store.openTarget.enum)
 	} else if (store.openTarget.type === "SubGroup") {
-		MODEL_EDITOR.editSubGroup(store.openTarget.subGroup.name, store.openTarget.subGroup)
+        subGroupDialogs.edit(store.openTarget.subGroup.name, store.openTarget.subGroup)
 	}
 }
 

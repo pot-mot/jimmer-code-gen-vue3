@@ -6,6 +6,7 @@ import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {computed, nextTick} from "vue";
 import {getNodeConnectedEdges} from "@/components/global/graphEditor/selection/selectOperation.ts";
+import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
 
 const i18nStore = useI18nStore()
 
@@ -13,7 +14,9 @@ const props = defineProps<{
     subGroup: GenModelInput_TargetOf_subGroups | undefined
 }>()
 
-const {MODEL_EDITOR, MODEL, SELECT, GRAPH} = useModelEditorStore()
+const subGroupDialogs = useSubGroupDialogsStore()
+
+const {MODEL, SELECT, GRAPH} = useModelEditorStore()
 
 const isSelected = computed(() => {
     return MODEL.selectedSubGroupMap.has(props.subGroup?.name)
@@ -51,7 +54,7 @@ const handleClickLabel = async (e: MouseEvent) => {
 
 const handleEdit = () => {
     if (props.subGroup) {
-        MODEL_EDITOR.editSubGroup(props.subGroup.name, props.subGroup)
+        subGroupDialogs.edit(props.subGroup.name, props.subGroup)
     }
 }
 
@@ -59,7 +62,7 @@ const handleDelete = () => {
     if (props.subGroup) {
         const subGroup = props.subGroup
         deleteConfirm(`${i18nStore.translate("LABEL_DeleteTarget_SubGroup")}【${subGroup.name}】`, () => {
-            MODEL_EDITOR.removeSubGroup(subGroup.name)
+            subGroupDialogs.remove(subGroup.name)
         })
     }
 }

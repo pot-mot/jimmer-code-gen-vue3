@@ -63,14 +63,6 @@ import {useModelEditDialogStore} from "@/store/modelEditor/dialogs/ModelEditDial
 import {useModelLoadDialogStore} from "@/store/modelEditor/dialogs/ModelLoadDialogStore.ts";
 import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
 import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
-import {SUB_GROUP_CREATE_PREFIX, useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
-import {getDefaultGenModelSubGroup} from "@/components/business/modelSubGroup/defaultModelSubGroupForm.ts";
-import {
-    syncNewSubGroupForEnums,
-    syncNewSubGroupForTables,
-    syncSubGroupNameForEnums,
-    syncSubGroupNameForTables
-} from "@/components/pages/ModelEditor/sync/syncSubGroup.ts";
 import {saveModel} from "@/components/pages/ModelEditor/save/saveModel.ts";
 import {convertModel} from "@/components/pages/ModelEditor/export/modelExport.ts";
 import {loadSupGroups} from "@/components/pages/ModelEditor/load/loadSubGroups.ts";
@@ -80,6 +72,7 @@ import debounce from "lodash/debounce";
 import {useDebugStore} from "@/store/debug/debugStore.ts";
 import {CustomHistory} from "@/components/global/graphEditor/history/CustomHistory.ts";
 import {jsonSortPropStringify} from "@/utils/json.ts";
+import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
 
 export type SubGroupData = {
     group: GenModelInput_TargetOf_subGroups | undefined,
@@ -148,28 +141,8 @@ type ModelEditorDataOperation = {
     loadModelEditorData: (modelEditorData: DeepReadonly<ModelEditorData>, reset: boolean) => LoadResult
 }
 
-type SyncTableOperation = {
-    syncTable: (id: string) => void,
-    syncedTable: (id: string) => void,
-}
-
-export type SubGroupCreateOptions = {
-    tableKey?: string | undefined,
-    enumKey?: string | undefined,
-}
-
 type MinimapOperation = {
     setInitMinimapAction: (action: () => void) => void
-}
-
-type SubGroupEditOperation = {
-    createSubGroup: (options?: SubGroupCreateOptions | undefined) => void,
-    createdSubGroup: (createKey: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => void,
-
-    editSubGroup: (name: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => void,
-    editedSubGroup: (name: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => void,
-
-    removeSubGroup: (name: string) => void,
 }
 
 type TableEditOperation = {
@@ -221,8 +194,13 @@ type EntityEditOperation = {
 }
 
 type ModelSyncState = {
+    syncTable: (id: string) => void,
+    syncedTable: (id: string) => void,
     waitSyncHistoryBatches: Ref<string[]>,
-    waitSyncTableIds: Ref<string[]>
+    waitSyncTableIds: Ref<string[]>,
+    startBatchSync: <T>(name: string, callback: () => T) => T
+
+    waitRefreshModelAndCode: () => void
 }
 
 type ModelSelectOperation = GraphSelectOperation & {
@@ -260,8 +238,6 @@ type ModelEditorStore = {
         & ModelLoadOperation
         & MinimapOperation
         & ModelSyncState
-        & SyncTableOperation
-        & SubGroupEditOperation
         & TableEditOperation
         & AssociationEditOperation
         & EnumEditOperation
@@ -1159,79 +1135,6 @@ const initModelEditorStore = (): ModelEditorStore => {
         await waitRefresh()
     }, 100)
 
-
-    /**
-     * 子组编辑对话框相关
-     */
-
-    const subGroupDialogsStore = useSubGroupDialogsStore()
-
-    const subGroupCreateOptionsMap = new Map<string, SubGroupCreateOptions | undefined>
-
-    const createSubGroup = (options?: SubGroupCreateOptions | undefined) => {
-        const createKey = SUB_GROUP_CREATE_PREFIX + Date.now()
-        subGroupDialogsStore.open(createKey, getDefaultGenModelSubGroup())
-        subGroupCreateOptionsMap.set(createKey, options)
-    }
-
-    const createdSubGroup = (createKey: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
-        startBatchSync('createdSubGroup', () => {
-            assertModel().value.subGroups.push(cloneDeepReadonly<GenModelInput_TargetOf_subGroups>(subGroup))
-
-            const options = subGroupCreateOptionsMap.get(createKey)
-
-            if (options !== undefined) {
-                const {tableKey, enumKey} = options
-                if (tableKey) {
-                    syncNewSubGroupForTables(subGroup, tableKey)
-                }
-                if (enumKey) {
-                    syncNewSubGroupForEnums(subGroup, enumKey)
-                }
-            }
-
-            subGroupCreateOptionsMap.delete(createKey)
-        })
-
-        subGroupDialogsStore.close(createKey, true)
-
-        waitRefreshModelAndCode()
-    }
-
-    const editSubGroup = (name: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
-        subGroupDialogsStore.open(name, cloneDeepReadonly<GenModelInput_TargetOf_subGroups>(subGroup))
-    }
-
-    const editedSubGroup = (name: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
-        const oldName = name
-
-        startBatchSync('editedSubGroup', () => {
-            assertModel().value.subGroups = [
-                ...assertModel().value.subGroups.filter(it => it.name !== oldName),
-                cloneDeepReadonly<GenModelInput_TargetOf_subGroups>(subGroup)
-            ]
-            syncSubGroupNameForEnums(assertModel(), oldName, subGroup.name)
-            syncSubGroupNameForTables(_graph(), oldName, subGroup.name)
-        })
-
-        subGroupDialogsStore.close(name, true)
-
-        waitRefreshModelAndCode()
-    }
-
-    const removeSubGroup = (name: string) => {
-        const oldName = name
-
-        startBatchSync('removeSubGroup', () => {
-            assertModel().value.subGroups = assertModel().value.subGroups.filter(it => it.name !== oldName)
-            syncSubGroupNameForTables(_graph(), oldName, undefined)
-            syncSubGroupNameForEnums(assertModel(), oldName, undefined)
-        })
-
-        waitRefreshModelAndCode()
-    }
-
-
     /**
      * 表编辑对话框相关
      */
@@ -1614,7 +1517,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         useDataSourceLoadDialogStore().close()
         useModelLoadDialogStore().close()
 
-        subGroupDialogsStore.closeAll()
+        useSubGroupDialogsStore().closeAll()
 
         tableDialogsStore.closeAll()
         tableCombineDialogStore.close()
@@ -1671,12 +1574,9 @@ const initModelEditorStore = (): ModelEditorStore => {
             waitSyncTableIds,
             syncTable,
             syncedTable,
+            startBatchSync,
 
-            createSubGroup,
-            createdSubGroup,
-            editSubGroup,
-            editedSubGroup,
-            removeSubGroup,
+            waitRefreshModelAndCode,
 
             createTable,
             createdTable,

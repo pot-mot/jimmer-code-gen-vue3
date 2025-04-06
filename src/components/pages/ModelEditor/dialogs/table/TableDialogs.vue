@@ -7,10 +7,13 @@ import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {DeepReadonly} from "vue";
 import {GenTableModelInput} from "@/api/__generated/model/static";
 import {validateTable} from "@/components/business/table/validateTable.ts";
+import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
 
 const store = useTableDialogsStore()
 
 const {MODEL, MODEL_EDITOR} = useModelEditorStore()
+
+const subGroupDialogs = useSubGroupDialogsStore()
 
 const handleSubmit = (key: string, table: DeepReadonly<GenTableModelInput>) => {
     if (key.startsWith(TABLE_CREATE_PREFIX)) {
@@ -52,8 +55,8 @@ const validate = (key: string, table: DeepReadonly<GenTableModelInput>) => {
                 @edit-enum="({genEnum}) => MODEL_EDITOR.editEnum(genEnum.name, genEnum)"
 
                 :sub-groups="MODEL.subGroups"
-                @create-sub-group="() => MODEL_EDITOR.createSubGroup({tableKey: key})"
-                @edit-sub-group="({subGroup}) => MODEL_EDITOR.editSubGroup(subGroup.name, subGroup)"
+                @create-sub-group="() => subGroupDialogs.create({tableKey: key})"
+                @edit-sub-group="({subGroup}) => subGroupDialogs.edit(subGroup.name, subGroup)"
             />
         </DragDialog>
     </template>

@@ -6,10 +6,13 @@ import {DeepReadonly} from "vue";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 import {validateEnum} from "@/components/business/enum/validateEnum.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
+import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
 
 const store = useEnumDialogsStore()
 
 const {MODEL, MODEL_EDITOR} = useModelEditorStore()
+
+const subGroupDialogs = useSubGroupDialogsStore()
 
 const handleSubmit = (key: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
     if (key.startsWith(ENUM_CREATE_PREFIX)) {
@@ -44,8 +47,8 @@ const validate = (key: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enum
                 @cancel="store.close(key, false)"
 
                 :sub-groups="MODEL.subGroups"
-                @create-sub-group="() => MODEL_EDITOR.createSubGroup({enumKey: key})"
-                @edit-sub-group="({subGroup}) => MODEL_EDITOR.editSubGroup(subGroup.name, subGroup)"
+                @create-sub-group="() => subGroupDialogs.create({enumKey: key})"
+                @edit-sub-group="({subGroup}) => subGroupDialogs.edit(subGroup.name, subGroup)"
 
                 style="padding-top: 1em;"
             />
