@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {ASSOCIATION_CREATE_PREFIX, useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
+import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
 import {createAssociationName} from "@/components/business/association/createAssociationName.ts";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import AssociationForm from "@/components/business/association/AssociationForm.vue";
@@ -11,14 +11,10 @@ import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 
 const store = useAssociationDialogsStore()
 
-const {MODEL, MODEL_EDITOR} = useModelEditorStore()
+const {MODEL} = useModelEditorStore()
 
 const handleSubmit = (key: string, association: DeepReadonly<GenAssociationModelInput>) => {
-    if (key.startsWith(ASSOCIATION_CREATE_PREFIX)) {
-        MODEL_EDITOR.createdAssociation(key, association)
-    } else {
-        MODEL_EDITOR.editedAssociation(key, association)
-    }
+    store.submit(key, association)
 }
 
 const validate = (key: string, association: DeepReadonly<GenAssociationModelInput>): MainLocaleKeyParam[] => {

@@ -6,6 +6,7 @@ import {sendI18nMessage} from "@/message/message.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {api} from "@/api";
 import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
+import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
 
 const props = defineProps<{
     file: GenerateFile,
@@ -89,6 +90,7 @@ const associationOptions = computed(() => {
 const {MODEL, MODEL_EDITOR} = useModelEditorStore()
 
 const tableDialogs = useTableDialogsStore()
+const associationDialogs = useAssociationDialogsStore()
 
 const editTable = (idName: IdName) => {
 	const tableNodePair = cloneDeep(MODEL.tableNodePairs.filter(it => it.first.name === idName.name)[0])
@@ -114,7 +116,7 @@ const editAssociation = (idName: IdName) => {
 		sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickAssociationNotFoundInCurrentModel", args: [idName]})
 		return
 	}
-	MODEL_EDITOR.editAssociation(associationEdgePair.second.id, associationEdgePair.first)
+    associationDialogs.edit(associationEdgePair.second.id, associationEdgePair.first)
 }
 
 const editEntity = async (idName: IdName): Promise<void> => {

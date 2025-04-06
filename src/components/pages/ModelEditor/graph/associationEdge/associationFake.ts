@@ -6,7 +6,7 @@ import {
     setEdgeSelectFlag
 } from "@/components/pages/ModelEditor/graph/associationEdge/edgeSelectedState.ts";
 import {useGenConfigContextStore} from "@/store/config/ContextGenConfigStore.ts";
-import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
+import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
 
 const getAssociationFake = (edge: Edge): boolean => {
     let temp = edge.getData()?.association.fake
@@ -68,11 +68,9 @@ export const useAssociationFake = (graph: Graph) => {
             return
         }
 
-        const {MODEL_EDITOR} = useModelEditorStore()
-
         const oldAssociationFake = getAssociationFake(edge)
 
-        MODEL_EDITOR.modifyAssociation(edge.id, () => {
+        useAssociationDialogsStore().modify(edge.id, () => {
             setAssociationFake(edge, !oldAssociationFake)
         })
     })

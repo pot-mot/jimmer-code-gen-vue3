@@ -44,12 +44,9 @@ import {
     useHistoryOperations
 } from "@/components/global/graphEditor/history/useHistory.ts";
 import {GraphRemoveOperation, useRemoveOperation} from "@/components/global/graphEditor/remove/removeOperation.ts";
-import {ASSOCIATION_CREATE_PREFIX, useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
-import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge/updateData.ts";
 import {GraphReactiveState} from "@/components/global/graphEditor/data/reactiveState.ts";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {defineStore} from "pinia";
-import {getDefaultAssociation} from "@/components/business/association/defaultColumn.ts";
 import {useBatchCreateAssociationsDialogStore} from "@/store/modelEditor/dialogs/BatchCreateAssociationsDialogStore.ts";
 import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
 import {TableCombineData} from "@/components/business/table/TableCombineData.ts";
@@ -71,6 +68,7 @@ import {CustomHistory} from "@/components/global/graphEditor/history/CustomHisto
 import {jsonSortPropStringify} from "@/utils/json.ts";
 import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
 import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
+import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
 
 export type SubGroupData = {
     group: GenModelInput_TargetOf_subGroups | undefined,
@@ -149,18 +147,8 @@ type TableEditOperation = {
 }
 
 type AssociationEditOperation = {
-    createAssociation: () => void,
-    createdAssociation: (createKey: string, association: DeepReadonly<GenAssociationModelInput>) => void,
-
     batchCreateAssociations: () => void,
     batchCreatedAssociations: (associations: DeepReadonly<GenAssociationModelInput[]>) => void,
-
-    editAssociation: (id: string, association: DeepReadonly<GenAssociationModelInput>) => void,
-    editedAssociation: (id: string, association: DeepReadonly<GenAssociationModelInput>) => void,
-
-    modifyAssociation: (id: string, modifyAction: () => any) => void,
-
-    removeAssociation: (id: string) => void,
 }
 
 export type EnumCreateOptions = {
@@ -249,6 +237,8 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const tableDialogsStore = useTableDialogsStore()
 
+    const associationDialogsStore = useAssociationDialogsStore()
+
     const REMOVE = useRemoveOperation(
         _graph,
         (_, cells, target) => {
@@ -257,7 +247,7 @@ const initModelEditorStore = (): ModelEditorStore => {
                     if (cell.isNode() && cell.shape === TABLE_NODE) {
                         tableDialogsStore.remove(cell.id)
                     } else if (cell.isEdge() && cell.shape === ASSOCIATION_EDGE) {
-                        removeAssociation(cell.id)
+                        associationDialogsStore.remove(cell.id)
                     }
                 })
             })
@@ -1164,38 +1154,7 @@ const initModelEditorStore = (): ModelEditorStore => {
         waitRefreshModelAndCode()
     }
 
-    /**
-     * 关联对话框相关
-     */
-    const associationDialogsStore = useAssociationDialogsStore()
 
-    const createAssociation = () => {
-        const createKey = ASSOCIATION_CREATE_PREFIX + Date.now()
-        const assoication = getDefaultAssociation()
-        if (selectedTables.value.length > 0 && selectedTables.value.length < 3) {
-            assoication.sourceTableName = selectedTables.value[0].name
-            if (selectedTables.value.length === 2) {
-                assoication.targetTableName = selectedTables.value[1].name
-            }
-        }
-        associationDialogsStore.open(createKey, assoication)
-    }
-
-    const createdAssociation = async (createKey: string, association: DeepReadonly<GenAssociationModelInput>) => {
-        const edge = loadInput({
-            associations: [association]
-        }).edges[0]
-
-        if (edge) {
-            associationDialogsStore.close(createKey, true)
-
-            setTimeout(() => {
-                graphSelectOperation.select(edge)
-            }, 200)
-        }
-
-        waitRefreshModelAndCode()
-    }
 
     const batchCreateAssociationsDialogStore = useBatchCreateAssociationsDialogStore()
 
@@ -1219,48 +1178,6 @@ const initModelEditorStore = (): ModelEditorStore => {
         setTimeout(() => {
             graphSelectOperation.select(edges)
         }, 200)
-
-        waitRefreshModelAndCode()
-    }
-
-
-    const editAssociation = (id: string, association: DeepReadonly<GenAssociationModelInput>) => {
-        associationDialogsStore.open(id, cloneDeepReadonly<GenAssociationModelInput>(association))
-    }
-
-    const editedAssociation = (id: string, association: DeepReadonly<GenAssociationModelInput>) => {
-        const graph = _graph()
-
-        const cell = graph.getCellById(id)
-        if (!cell || !cell.isEdge()) {
-            sendI18nMessage({
-                key: "MESSAGE_ModelEditorStore_associationEditFail_edgeNotFound",
-                args: [id]
-            }, 'error')
-        } else {
-            graph.startBatch(`editAssociation [id=${id}]`)
-
-            updateAssociationEdgeData(cell, association)
-
-            graph.stopBatch(`editAssociation [id=${id}]`)
-        }
-
-        associationDialogsStore.close(id, true)
-
-        waitRefreshModelAndCode()
-    }
-
-    const modifyAssociation = async (id: string, modifyAction: () => any) => {
-        const graph = _graph()
-
-        const key = `modifyAssociation [id=${id}]`
-        graph.startBatch(key)
-        await modifyAction()
-        graph.stopBatch(key)
-    }
-
-    const removeAssociation = (id: string) => {
-        _graph().removeEdge(id)
 
         waitRefreshModelAndCode()
     }
@@ -1474,14 +1391,8 @@ const initModelEditorStore = (): ModelEditorStore => {
             combineTable,
             combinedTable,
 
-            createAssociation,
-            createdAssociation,
             batchCreateAssociations,
             batchCreatedAssociations,
-            editAssociation,
-            editedAssociation,
-            modifyAssociation,
-            removeAssociation,
 
             createEnum,
             createdEnum,
