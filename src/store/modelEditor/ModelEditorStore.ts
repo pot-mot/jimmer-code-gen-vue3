@@ -22,9 +22,7 @@ import {ModelEditorData, validateModelEditorData} from "@/shape/ModelEditorData.
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
 import {ENUM_CREATE_PREFIX, useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
-import {getDefaultTable} from "@/components/business/table/defaultTable.ts";
 import {getDefaultEnum} from "@/components/business/enum/defaultEnum.ts";
-import {TABLE_CREATE_PREFIX, useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
 import {unStyleAll} from "@/components/pages/ModelEditor/graph/highlight.ts";
 import {GraphData, useGraphDataOperation} from "@/components/global/graphEditor/data/graphData.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
@@ -39,7 +37,6 @@ import {
     syncEnumNameForTables,
     syncNewEnumForTables
 } from "@/components/pages/ModelEditor/sync/syncEnum.ts";
-import {syncSuperTableNameForTables} from "@/components/pages/ModelEditor/sync/syncSuperTable.ts";
 import {GraphSelectOperation, useSelectOperation} from "@/components/global/graphEditor/selection/selectOperation.ts";
 import {
     GraphHistoryOperation,
@@ -73,6 +70,7 @@ import {useDebugStore} from "@/store/debug/debugStore.ts";
 import {CustomHistory} from "@/components/global/graphEditor/history/CustomHistory.ts";
 import {jsonSortPropStringify} from "@/utils/json.ts";
 import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
+import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
 
 export type SubGroupData = {
     group: GenModelInput_TargetOf_subGroups | undefined,
@@ -146,14 +144,6 @@ type MinimapOperation = {
 }
 
 type TableEditOperation = {
-    createTable: (options: DeepReadonly<TableLoadOptions>) => void,
-    createdTable: (createKey: string, table: DeepReadonly<GenTableModelInput>) => void,
-
-    editTable: (id: string, table: DeepReadonly<GenTableModelInput>) => void,
-    editedTable: (id: string, table: DeepReadonly<GenTableModelInput>) => void,
-
-    removeTable: (id: string) => void,
-
     combineTable: (options: TableLoadOptions) => void,
     combinedTable: (tableCombineData: DeepReadonly<TableCombineData>) => void,
 }
@@ -257,13 +247,15 @@ const initModelEditorStore = (): ModelEditorStore => {
 
     const HISTORY = useHistoryOperations(_graph)
 
+    const tableDialogsStore = useTableDialogsStore()
+
     const REMOVE = useRemoveOperation(
         _graph,
         (_, cells, target) => {
             startBatchSync(target, () => {
                 cells.forEach(cell => {
                     if (cell.isNode() && cell.shape === TABLE_NODE) {
-                        removeTable(cell.id)
+                        tableDialogsStore.remove(cell.id)
                     } else if (cell.isEdge() && cell.shape === ASSOCIATION_EDGE) {
                         removeAssociation(cell.id)
                     }
@@ -1136,105 +1128,6 @@ const initModelEditorStore = (): ModelEditorStore => {
     }, 100)
 
     /**
-     * 表编辑对话框相关
-     */
-
-    const tableDialogsStore = useTableDialogsStore()
-
-    const tableCreateOptionsMap = new Map<string, TableLoadOptions>
-
-    const createTable = (options: TableLoadOptions) => {
-        const createKey = TABLE_CREATE_PREFIX + Date.now()
-        tableDialogsStore.open(createKey, getDefaultTable(), {modal: false})
-        tableCreateOptionsMap.set(createKey, options)
-    }
-
-    const createdTable = async (createKey: string, table: DeepReadonly<GenTableModelInput>) => {
-        const options = tableCreateOptionsMap.get(createKey)
-
-        startBatchSync('createdTable', () => {
-            const node = loadInput({
-                tables: [table],
-                baseTableOptions: options
-            }).nodes[0]
-
-            tableCreateOptionsMap.delete(createKey)
-
-            if (node) {
-                tableDialogsStore.close(createKey, true)
-
-                setTimeout(() => {
-                    graphSelectOperation.select(node)
-                }, 200)
-            }
-        })
-
-        waitRefreshModelAndCode()
-    }
-
-    const editTable = (id: string, table: DeepReadonly<GenTableModelInput>) => {
-        tableDialogsStore.open(id, cloneDeepReadonly<GenTableModelInput>(table), {modal: false})
-    }
-
-    const editedTable = (id: string, table: DeepReadonly<GenTableModelInput>) => {
-        const graph = _graph()
-
-        const cell = graph.getCellById(id)
-        if (!cell || !cell.isNode()) {
-            sendI18nMessage({
-                key: "MESSAGE_ModelEditorStore_tableEditFail_nodeNotFound",
-                args: [id]
-            }, 'error')
-            return
-        }
-
-        startBatchSync('editedTable', () => {
-            const oldTable = cell.data.table
-
-            // 当上级表被修改时，调整其他表中的 superTables
-            if (oldTable.type === "SUPER_TABLE") {
-                if (table.type === "SUPER_TABLE") {
-                    syncSuperTableNameForTables(graph, oldTable.name, table.name)
-                } else {
-                    syncSuperTableNameForTables(graph, oldTable.name, undefined)
-                }
-            }
-
-            updateTableNodeData(cell, table)
-        })
-
-        tableDialogsStore.close(id, true)
-
-        waitRefreshModelAndCode()
-    }
-
-    const removeTable = (id: string) => {
-        const graph = _graph()
-
-        const cell = graph.getCellById(id)
-        if (!cell || !cell.isNode()) {
-            sendI18nMessage({
-                key: "MESSAGE_ModelEditorStore_tableDeleteFail_nodeNotFound",
-                args: [id]
-            }, 'error')
-            return
-        }
-
-        startBatchSync('removeTable', () => {
-            if (cell.shape === TABLE_NODE && cell.data.table) {
-                const table = cell.data.table as GenTableModelInput
-                // 当上级表被删除时，调整其他表中的 superTables
-                if (table.type === "SUPER_TABLE") {
-                    syncSuperTableNameForTables(graph, table.name, undefined)
-                }
-            }
-            graph.removeNode(id)
-        })
-
-        waitRefreshModelAndCode()
-    }
-
-    /**
      * 表组合对话框
      */
     const tableCombineDialogStore = useTableCombineDialogStore()
@@ -1578,11 +1471,6 @@ const initModelEditorStore = (): ModelEditorStore => {
 
             waitRefreshModelAndCode,
 
-            createTable,
-            createdTable,
-            editTable,
-            editedTable,
-            removeTable,
             combineTable,
             combinedTable,
 

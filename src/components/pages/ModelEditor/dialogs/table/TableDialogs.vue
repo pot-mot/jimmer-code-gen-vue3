@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {TABLE_CREATE_PREFIX, useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts"
+import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts"
 import {createIndexName} from "@/components/business/table/createIndexName.ts";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import TableForm from "@/components/business/table/TableForm.vue";
@@ -16,11 +16,7 @@ const {MODEL, MODEL_EDITOR} = useModelEditorStore()
 const subGroupDialogs = useSubGroupDialogsStore()
 
 const handleSubmit = (key: string, table: DeepReadonly<GenTableModelInput>) => {
-    if (key.startsWith(TABLE_CREATE_PREFIX)) {
-        MODEL_EDITOR.createdTable(key, table)
-    } else {
-        MODEL_EDITOR.editedTable(key, table)
-    }
+    store.submit(key, table)
 }
 
 const validate = (key: string, table: DeepReadonly<GenTableModelInput>) => {

@@ -5,6 +5,7 @@ import {cloneDeep} from "lodash";
 import {sendI18nMessage} from "@/message/message.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {api} from "@/api";
+import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
 
 const props = defineProps<{
     file: GenerateFile,
@@ -87,13 +88,15 @@ const associationOptions = computed(() => {
 
 const {MODEL, MODEL_EDITOR} = useModelEditorStore()
 
+const tableDialogs = useTableDialogsStore()
+
 const editTable = (idName: IdName) => {
 	const tableNodePair = cloneDeep(MODEL.tableNodePairs.filter(it => it.first.name === idName.name)[0])
 	if (!tableNodePair) {
 		sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel", args: [idName]})
 		return
 	}
-	MODEL_EDITOR.editTable(tableNodePair.second.id, tableNodePair.first)
+    tableDialogs.edit(tableNodePair.second.id, tableNodePair.first)
 }
 
 const editEnum = (idName: IdName) => {

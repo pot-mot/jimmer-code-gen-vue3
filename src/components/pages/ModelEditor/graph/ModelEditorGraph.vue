@@ -126,6 +126,7 @@ import {jsonSortPropStringify} from "@/utils/json.ts";
 import {api} from "@/api";
 import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
 import {judgeTarget} from "@/utils/clickUtils.ts";
+import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
 
 const i18nStore = useI18nStore()
 
@@ -137,6 +138,8 @@ let graph: Graph
 const {GRAPH, MODEL, MODEL_EDITOR, SELECT, HISTORY, VIEW} = useModelEditorStore()
 
 const modelEditorDialog = useModelEditDialogStore()
+
+const tableDialogs = useTableDialogsStore()
 
 const loadingStore = useGlobalLoadingStore()
 
@@ -152,7 +155,7 @@ onMounted(loadingStore.withLoading('ModelEditorGraph onMounted', () => {
 	})
 
 	graph.on('blank:dblclick', () => {
-		MODEL_EDITOR.createTable(GRAPH.mousePosition)
+        tableDialogs.create(GRAPH.mousePosition)
 	})
 
 	graph.on('node:click', ({node}) => {
@@ -178,7 +181,7 @@ const handleNodeClick = (node: Node) => {
 
 		if (doubleClickWaitNodes.has(id)) {
 			doubleClickWaitNodes.delete(id)
-			MODEL_EDITOR.editTable(id, table)
+			tableDialogs.edit(id, table)
 		} else {
 			graph.select(node)
 			doubleClickWaitNodes.add(id)

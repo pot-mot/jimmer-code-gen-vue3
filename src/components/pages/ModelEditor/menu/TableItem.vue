@@ -9,6 +9,7 @@ import {deleteConfirm} from "@/message/confirm.ts";
 import {Node} from "@antv/x6";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
+import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
 
 const i18nStore = useI18nStore()
 
@@ -19,7 +20,9 @@ interface TableItemProps {
 
 const props = defineProps<TableItemProps>()
 
-const {GRAPH, MODEL_EDITOR, SELECT, VIEW} = useModelEditorStore()
+const tableDialogs = useTableDialogsStore()
+
+const {GRAPH, SELECT, VIEW} = useModelEditorStore()
 
 const isSelected = computed(() => {
 	return GRAPH.selectedNodeMap.has(props.node.id)
@@ -35,12 +38,12 @@ const handleClickLabel = (e: MouseEvent) => {
 }
 
 const handleEdit = () => {
-    MODEL_EDITOR.editTable(props.node.id, props.table)
+    tableDialogs.edit(props.node.id, props.table)
 }
 
 const handleDelete = () => {
 	deleteConfirm(`${i18nStore.translate("LABEL_DeleteTarget_Enum")}【${props.table.name}】`, () => {
-        MODEL_EDITOR.removeTable(props.node.id)
+        tableDialogs.remove(props.node.id)
 	})
 }
 </script>

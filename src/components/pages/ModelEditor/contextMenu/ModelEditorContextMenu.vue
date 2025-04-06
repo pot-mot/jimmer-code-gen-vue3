@@ -130,6 +130,7 @@ import EraserIcon from "@/components/global/icons/toolbar/EraserIcon.vue";
 import {EditPen} from "@element-plus/icons-vue";
 import {useModelEditDialogStore} from "@/store/modelEditor/dialogs/ModelEditDialogStore.ts";
 import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
+import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
 
 const store = useModelEditorContextMenuStore()
 
@@ -138,6 +139,7 @@ const i18nStore = useI18nStore()
 const {GRAPH, REMOVE, MODEL_EDITOR, MODEL, VIEW} = useModelEditorStore()
 const modelEditDialogStore = useModelEditDialogStore()
 const subGroupDialogs = useSubGroupDialogsStore()
+const tableDialogs = useTableDialogsStore()
 const {copy, cut, paste} = useModelClipBoard()
 
 const options = computed<MenuOptions>(() => {
@@ -156,7 +158,7 @@ const handleEdit = () => {
 	if (store.openTarget === undefined || store.openTarget.type === "Model") {
 		modelEditDialogStore.open()
 	} else if (store.openTarget.type === "Table") {
-		MODEL_EDITOR.editTable(store.openTarget.tableNodePair.second.id, store.openTarget.tableNodePair.first)
+        tableDialogs.edit(store.openTarget.tableNodePair.second.id, store.openTarget.tableNodePair.first)
 	} else if (store.openTarget.type === "Association") {
 		MODEL_EDITOR.editAssociation(store.openTarget.associationEdgePair.second.id, store.openTarget.associationEdgePair.first)
 	} else if (store.openTarget.type === "Enum") {
@@ -266,7 +268,7 @@ const handleCreateAssociation = () => {
 }
 
 const handleCreateTable = () => {
-	MODEL_EDITOR.createTable(GRAPH.mousePosition)
+    tableDialogs.create(GRAPH.mousePosition)
 }
 
 const handleCombineTable = () => {

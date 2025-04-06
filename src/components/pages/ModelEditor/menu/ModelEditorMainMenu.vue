@@ -11,6 +11,7 @@ import {useModelLoadDialogStore} from "@/store/modelEditor/dialogs/ModelLoadDial
 import SubGroupItem from "@/components/pages/ModelEditor/menu/SubGroupItem.vue";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 import {handleMenuKeyEvent} from "@/components/pages/ModelEditor/menu/menuKeyEvent.ts";
+import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
 
 const i18nStore = useI18nStore()
 
@@ -19,6 +20,8 @@ const {MODEL, MODEL_EDITOR, SELECT, VIEW} = useModelEditorStore()
 const dataSourceLoadDialogStore = useDataSourceLoadDialogStore()
 
 const modelLoadDialogStore = useModelLoadDialogStore()
+
+const tableDialogs = useTableDialogsStore()
 
 const associationEdgePairs = computed(() => {
 	return MODEL.associationEdgePairs
@@ -31,7 +34,7 @@ const handleClickUnselect = (e: MouseEvent) => {
 }
 
 const handleCreateTable = () => {
-	MODEL_EDITOR.createTable({x: VIEW.getCenterPoint().x * 3/4, y: VIEW.getCenterPoint().y * 3/4})
+    tableDialogs.create({x: VIEW.getCenterPoint().x * 3/4, y: VIEW.getCenterPoint().y * 3/4})
 }
 
 const handleCombineTable = () => {
