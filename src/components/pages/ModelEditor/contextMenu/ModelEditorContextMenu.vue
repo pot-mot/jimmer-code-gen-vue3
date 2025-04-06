@@ -1,7 +1,7 @@
 <template>
     <context-menu
         v-model:show="store.openState"
-        :options="options"
+        :options="store.options"
         @close="handleClose"
     >
         <context-menu-item
@@ -121,11 +121,9 @@ import {
     ContextMenuGroup,
     ContextMenuItem,
     ContextMenuSeparator,
-    MenuOptions
 } from '@imengyu/vue3-context-menu';
 import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import {computed} from "vue";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {useModelClipBoard} from "@/components/pages/ModelEditor/clipBoard/modelClipBoard.ts";
 import CopyIcon from "@/components/global/icons/toolbar/CopyIcon.vue";
@@ -156,13 +154,6 @@ const associationDialogs = useAssociationDialogsStore()
 const enumDialogs = useEnumDialogsStore()
 const tableCombineDialog = useTableCombineDialogStore()
 const {copy, cut, paste} = useModelClipBoard()
-
-const options = computed<MenuOptions>(() => {
-    return {
-        x: GRAPH.mousePagePosition.x,
-        y: GRAPH.mousePagePosition.y,
-    }
-})
 
 const handleClose = () => {
     // 在关闭菜单时，聚焦到画布容器，以允许键盘导航

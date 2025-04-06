@@ -155,7 +155,7 @@ onMounted(loadingStore.withLoading('ModelEditorGraph onMounted', () => {
 	})
 
 	graph.on('blank:dblclick', () => {
-        tableDialogs.create(GRAPH.mousePosition)
+		tableDialogs.create(GRAPH.mousePosition)
 	})
 
 	graph.on('node:click', ({node}) => {
@@ -271,6 +271,8 @@ const handleMouseUp = (e: MouseEvent) => {
 const handleOpenContextMenu = (e: MouseEvent) => {
 	let matchedEl: HTMLElement | undefined = undefined
 
+	const options = {x: e.pageX, y: e.pageY}
+
 	if (judgeTarget(e, (el) => {
 		if (el.classList.contains("x6-node")) {
 			matchedEl = el
@@ -280,10 +282,7 @@ const handleOpenContextMenu = (e: MouseEvent) => {
 		if (matchedEl) {
 			const tableNodePair = MODEL.tableNodePairs.find(it => it.second.id === matchedEl?.getAttribute("data-cell-id"))
 			if (tableNodePair !== undefined) {
-				contextMenuStore.open({
-					type: "Table",
-					tableNodePair
-				})
+				contextMenuStore.open(options, {type: "Table", tableNodePair})
 				return
 			}
 		}
@@ -298,16 +297,13 @@ const handleOpenContextMenu = (e: MouseEvent) => {
 		if (matchedEl) {
 			const associationEdgePair = MODEL.associationEdgePairs.find(it => it.second.id === matchedEl?.getAttribute("data-cell-id"))
 			if (associationEdgePair !== undefined) {
-				contextMenuStore.open({
-					type: "Association",
-					associationEdgePair
-				})
+				contextMenuStore.open(options, {type: "Association", associationEdgePair})
 				return
 			}
 		}
 	}
 
-	contextMenuStore.open()
+	contextMenuStore.open(options)
 }
 
 /**

@@ -8,6 +8,11 @@ import {
 } from "@/api/__generated/model/static";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {Edge, Node} from "@antv/x6";
+import {MenuOptions} from "@imengyu/vue3-context-menu";
+
+type ModelEditorContextMenuOpenOptions = Pick<
+    MenuOptions, 'x' | 'y' | 'xOffset' | 'yOffset'
+>
 
 type ModelEditorContextMenuOpenTarget = {
     type: "Model",
@@ -32,11 +37,15 @@ export const useModelEditorContextMenuStore = defineStore(
 
         const openTarget = ref<ModelEditorContextMenuOpenTarget>()
 
+        const options = ref<ModelEditorContextMenuOpenOptions>({x: 0, y: 0})
+
         return {
             ...otherOperations,
             openTarget,
-            open: (target?: ModelEditorContextMenuOpenTarget | undefined) => {
+            options,
+            open: (inputOptions: ModelEditorContextMenuOpenOptions, target?: ModelEditorContextMenuOpenTarget | undefined) => {
                 openTarget.value = target ?? {type: "Model"}
+                options.value = inputOptions
                 open()
             },
             close: () => {
