@@ -470,10 +470,8 @@ const initModelEditorStore = (): ModelEditorStore => {
         }
 
         let styleContent = ''
-        for (let [name, style] of value) {
-            if (style === '') {
-                style = 'var(--text-color)'
-            }
+        for (const [name, style] of value) {
+            if (!style) continue
 
             styleContent += `
 .table-node table.model-sub-group-${name} { 
