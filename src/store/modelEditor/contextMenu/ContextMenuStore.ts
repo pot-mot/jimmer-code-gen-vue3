@@ -2,6 +2,7 @@ import {defineStore} from "pinia";
 import {useOpenState} from "@/components/global/dialog/OpenState.ts";
 import {ref} from "vue";
 import {MenuOptions} from "@imengyu/vue3-context-menu";
+
 type ModelEditorContextMenuOpenOptions = Pick<
     MenuOptions, 'x' | 'y' | 'xOffset' | 'yOffset'
 >

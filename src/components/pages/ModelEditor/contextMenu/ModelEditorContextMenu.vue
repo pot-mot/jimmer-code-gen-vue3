@@ -4,6 +4,8 @@
         :options="store.options"
         @close="handleClose"
     >
+        {{ eventTargetStore.target.type }}
+
         <context-menu-item
             v-if="eventTargetStore.target.type === 'SubGroup' ? !!eventTargetStore.target.subGroup : true"
             :label="i18nStore.translate('BUTTON_edit')"
@@ -53,7 +55,7 @@
         <context-menu-item
             :disabled="eventTargetStore.target.type === 'Model' ? GRAPH.isSelectionEmpty : false"
             :label="i18nStore.translate('BUTTON_copy')"
-            @click="handleCopy"
+            @click="copy()"
             shortcut="Ctrl + C"
         >
             <template #icon>
@@ -63,7 +65,7 @@
         <context-menu-item
             :disabled="eventTargetStore.target.type === 'Model' ? GRAPH.isSelectionEmpty : false"
             :label="i18nStore.translate('BUTTON_cut')"
-            @click="handleCut"
+            @click="cut()"
             shortcut="Ctrl + X"
         >
             <template #icon>
@@ -72,7 +74,7 @@
         </context-menu-item>
         <context-menu-item
             :label="i18nStore.translate('BUTTON_paste')"
-            @click="handlePaste"
+            @click="paste()"
             shortcut="Ctrl + V"
         >
             <template #icon>
@@ -191,101 +193,6 @@ const handleEdit = () => {
     }
 }
 
-const handleCopy = () => {
-    if (eventTargetStore.target.type === "Model") {
-        copy()
-    } else if (eventTargetStore.target.type === "Table") {
-        if (GRAPH.selectedNodeMap.has(eventTargetStore.target.tableNodePair.node.id)) {
-            copy()
-        } else {
-            copy({tableNodePairs: [eventTargetStore.target.tableNodePair]})
-        }
-    } else if (eventTargetStore.target.type === "Association") {
-        if (GRAPH.selectedEdgeMap.has(eventTargetStore.target.associationEdgePair.edge.id)) {
-            copy()
-        } else {
-            copy({associationEdgePairs: [eventTargetStore.target.associationEdgePair]})
-        }
-    } else if (eventTargetStore.target.type === "Enum") {
-        if (MODEL.selectedEnumMap.has(eventTargetStore.target.enum.name)) {
-            copy()
-        } else {
-            copy({enumNames: [eventTargetStore.target.enum.name]})
-        }
-    } else if (eventTargetStore.target.type === "SubGroup") {
-        if (MODEL.selectedSubGroupMap.has(eventTargetStore.target.subGroup?.name)) {
-            copy()
-        } else {
-            copy({subGroupNames: [eventTargetStore.target.subGroup?.name]})
-        }
-    }
-}
-
-const handleCut = () => {
-    if (eventTargetStore.target.type === "Model") {
-        cut()
-    } else if (eventTargetStore.target.type === "Table") {
-        if (GRAPH.selectedNodeMap.has(eventTargetStore.target.tableNodePair.node.id)) {
-            cut()
-        } else {
-            cut({tableNodePairs: [eventTargetStore.target.tableNodePair]})
-        }
-    } else if (eventTargetStore.target.type === "Association") {
-        if (GRAPH.selectedEdgeMap.has(eventTargetStore.target.associationEdgePair.edge.id)) {
-            cut()
-        } else {
-            cut({associationEdgePairs: [eventTargetStore.target.associationEdgePair]})
-        }
-    } else if (eventTargetStore.target.type === "Enum") {
-        if (MODEL.selectedEnumMap.has(eventTargetStore.target.enum.name)) {
-            cut()
-        } else {
-            cut({enumNames: [eventTargetStore.target.enum.name]})
-        }
-    } else if (eventTargetStore.target.type === "SubGroup") {
-        if (MODEL.selectedSubGroupMap.has(eventTargetStore.target.subGroup?.name)) {
-            cut()
-        } else {
-            cut({subGroupNames: [eventTargetStore.target.subGroup?.name]})
-        }
-    }
-}
-
-const getTargetSubGroupName = (): string | undefined => {
-    switch (eventTargetStore.target.type) {
-        case "SubGroup":
-            return eventTargetStore.target.subGroup?.name;
-        case "Table":
-            return eventTargetStore.target.tableNodePair.table.subGroup?.name;
-        case "Enum":
-            return eventTargetStore.target.enum.subGroup?.name;
-        default:
-            return undefined;
-    }
-}
-
-const handlePaste = () => {
-    const subGroupName = getTargetSubGroupName()
-
-    if (subGroupName !== undefined) {
-        paste(input => {
-            input.tables?.forEach(it => it.subGroup = {name: subGroupName})
-            input.enums?.forEach(it => it.subGroup = {name: subGroupName})
-            input.subGroups = []
-            return input
-        })
-    } else if (eventTargetStore.target.type === "Model") {
-        paste(input => {
-            input.tables?.forEach(it => it.subGroup = undefined)
-            input.enums?.forEach(it => it.subGroup = undefined)
-            input.subGroups = []
-            return input
-        })
-    } else {
-        paste()
-    }
-}
-
 const layoutOptions = [
     {
         label: i18nStore.translate('LABEL_ModelEditorGraph_layout_LR'),
@@ -326,7 +233,7 @@ const handleCreateSubGroup = () => {
 }
 
 const handleCreateTable = () => {
-    const subGroupName = getTargetSubGroupName()
+    const subGroupName = eventTargetStore.getTargetSubGroupName()
 
     tableDialogs.create({
         subGroupName,
@@ -352,7 +259,7 @@ const handleCreateAssociation = () => {
 }
 
 const handleCreateEnum = () => {
-    const subGroupName = getTargetSubGroupName()
+    const subGroupName = eventTargetStore.getTargetSubGroupName()
 
     enumDialogs.create({
         subGroupName

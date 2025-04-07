@@ -24,6 +24,7 @@ import {TableLoadOptions} from "@/components/pages/ModelEditor/load/loadTableNod
 import {DeepReadonly, nextTick} from "vue";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {validateEnumModelInput} from "@/shape/GenEnumModelInput.ts";
+import {useEventTargetStore} from "@/store/modelEditor/eventTarget/EventTargetStore.ts";
 
 export type CopyData = ModelLoadInput
 
@@ -77,8 +78,27 @@ export const useModelClipBoard = (): ClipBoardOperation => {
     if (modelClipBoard) return modelClipBoard
 
     const {GRAPH, MODEL, MODEL_EDITOR, REMOVE, SELECT} = useModelEditorStore()
+    const eventTargetStore = useEventTargetStore()
 
     const getDefaultInput = (): CopyInput => {
+        if (eventTargetStore.target.type === "Table") {
+            if (!GRAPH.selectedNodeMap.has(eventTargetStore.target.tableNodePair.node.id)) {
+                return {tableNodePairs: [eventTargetStore.target.tableNodePair]}
+            }
+        } else if (eventTargetStore.target.type === "Association") {
+            if (!GRAPH.selectedEdgeMap.has(eventTargetStore.target.associationEdgePair.edge.id)) {
+                return {associationEdgePairs: [eventTargetStore.target.associationEdgePair]}
+            }
+        } else if (eventTargetStore.target.type === "Enum") {
+            if (!MODEL.selectedEnumMap.has(eventTargetStore.target.enum.name)) {
+                return {enumNames: [eventTargetStore.target.enum.name]}
+            }
+        } else if (eventTargetStore.target.type === "SubGroup") {
+            if (!MODEL.selectedSubGroupMap.has(eventTargetStore.target.subGroup?.name)) {
+                return {subGroupNames: [eventTargetStore.target.subGroup?.name]}
+            }
+        }
+
         return {
             tableNodePairs: MODEL.selectedTableNodePairs,
             associationEdgePairs: MODEL.selectedAssociationEdgePairs,
@@ -241,7 +261,6 @@ export const useModelClipBoard = (): ClipBoardOperation => {
                 y: GRAPH.mousePosition.y
             }
 
-
             if (validateModelEditorData(value, (e) => validateErrors.push(e))) {
                 const cells = value.json.cells as Cell[]
                 graph.parseJSON(cells)
@@ -256,17 +275,50 @@ export const useModelClipBoard = (): ClipBoardOperation => {
             } else {
                 let copyData: CopyData | undefined = undefined
 
-                if (validateSubGroupModelInput(value, (e) => validateErrors.push(e))) {
-                    copyData = {subGroups: [value as GenModelInput_TargetOf_subGroups]}
+                if (validateCopyData(value, (e) => validateErrors.push(e))) {
+                    copyData = {...value, baseTableOptions} as CopyData
+                } else if (validateSubGroupModelInput(value, (e) => validateErrors.push(e))) {
+                    copyData = {subGroups: [value as GenModelInput_TargetOf_subGroups], baseTableOptions}
                 } else if (validateTableModelInput(value, (e) => validateErrors.push(e))) {
                     copyData = {tables: [value as GenTableModelInput], baseTableOptions}
                 } else if (validateEnumModelInput(value, (e) => validateErrors.push(e))) {
-                    copyData = {enums: [value as GenModelInput_TargetOf_enums]}
-                } else if (validateCopyData(value, (e) => validateErrors.push(e))) {
-                    copyData = value as CopyData
+                    copyData = {enums: [value as GenModelInput_TargetOf_enums], baseTableOptions}
                 }
 
                 if (copyData !== undefined) {
+                    if (eventTargetStore.target.type === "SubGroup" && eventTargetStore.target.subGroup === undefined) {
+                        copyData.tables?.forEach(it => {
+                            if (it.type !== "SUPER_TABLE") it.subGroup = undefined
+                        })
+                        if (copyData.tables && copyData.tables.length > 0) {
+                            const enumNameSet = new Set(MODEL.enums.map(it => it.name))
+                            copyData.enums?.forEach(it => {
+                                if (!enumNameSet.has(it.name)) it.subGroup = undefined
+                            })
+                        } else {
+                            copyData.enums?.forEach(it => {
+                                it.subGroup = undefined
+                            })
+                        }
+                    } else {
+                        const subGroupName = eventTargetStore.getTargetSubGroupName()
+                        if (subGroupName !== undefined) {
+                            copyData.tables?.forEach(it => {
+                                if (it.type !== "SUPER_TABLE") it.subGroup = {name: subGroupName}
+                            })
+                            if (copyData.tables && copyData.tables.length > 0) {
+                                const enumNameSet = new Set(MODEL.enums.map(it => it.name))
+                                copyData.enums?.forEach(it => {
+                                    if (!enumNameSet.has(it.name)) it.subGroup = {name: subGroupName}
+                                })
+                            } else {
+                                copyData.enums?.forEach(it => {
+                                    it.subGroup = {name: subGroupName}
+                                })
+                            }
+                        }
+                    }
+
                     res = MODEL_EDITOR.loadInput(inputProducer ? inputProducer(copyData) : copyData)
                 } else {
                     sendI18nMessage('MESSAGE_clipBoard_cannotDirectLoad', 'error', validateErrors)
