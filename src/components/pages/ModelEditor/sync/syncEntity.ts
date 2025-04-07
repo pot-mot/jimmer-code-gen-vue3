@@ -1,5 +1,5 @@
 import {DeepReadonly} from "vue";
-import {useEntityDialogsStore} from "@/store/modelEditor/dialogs/EntityDialogsStore.ts";
+import {useEntitiesStore} from "@/store/modelEditor/dialogs/EntitiesStore.ts";
 import {
     EntityConfigView,
     IdName
@@ -28,7 +28,7 @@ const judgeTypeEntityInEntity = (typeEntityId: number, entity: DeepReadonly<Enti
 }
 
 export const syncTypeEntityForEntities = (typeEntity: IdName) => {
-    const entityDialogsStore = useEntityDialogsStore()
+    const entityDialogsStore = useEntitiesStore()
 
     for (const {key, value, options} of entityDialogsStore.items) {
         if (value && judgeTypeEntityInEntity(typeEntity.id, value)) {

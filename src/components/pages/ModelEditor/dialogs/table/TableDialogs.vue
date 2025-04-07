@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts"
+import {useTablesStore} from "@/store/modelEditor/dialogs/TablesStore.ts"
 import {createIndexName} from "@/components/business/table/createIndexName.ts";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import TableForm from "@/components/business/table/TableForm.vue";
@@ -7,15 +7,15 @@ import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {DeepReadonly} from "vue";
 import {GenTableModelInput} from "@/api/__generated/model/static";
 import {validateTable} from "@/components/business/table/validateTable.ts";
-import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
-import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
+import {useSubGroupsStore} from "@/store/modelEditor/dialogs/SubGroupsStore.ts";
+import {useEnumsStore} from "@/store/modelEditor/dialogs/EnumsStore.ts";
 
-const store = useTableDialogsStore()
+const store = useTablesStore()
 
 const {MODEL} = useModelEditorStore()
 
-const subGroupDialogs = useSubGroupDialogsStore()
-const enumDialogs = useEnumDialogsStore()
+const subGroupDialogs = useSubGroupsStore()
+const enumDialogs = useEnumsStore()
 
 const handleSubmit = (key: string, table: DeepReadonly<GenTableModelInput>) => {
     store.submit(key, table)

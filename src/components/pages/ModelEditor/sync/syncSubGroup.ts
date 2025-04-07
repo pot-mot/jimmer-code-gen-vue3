@@ -1,11 +1,11 @@
 import {GenModelInput, GenTableModelInput} from "@/api/__generated/model/static";
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {Graph} from "@antv/x6";
-import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
+import {useTablesStore} from "@/store/modelEditor/dialogs/TablesStore.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
 import {DeepReadonly} from "vue";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
-import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
+import {useEnumsStore} from "@/store/modelEditor/dialogs/EnumsStore.ts";
 
 type SubGroupItem = {subGroup?: {name: string} | undefined}
 
@@ -31,7 +31,7 @@ const judgeSubGroupInItem = <T extends SubGroupItem> (subGroupName: string, tabl
 export const syncSubGroupNameForTables = (graph: Graph, oldSubGroupName: string, newSubGroupName: string | undefined) => {
     const nodes = graph.getNodes().filter(it => it.shape === TABLE_NODE)
 
-    const tableDialogsStore = useTableDialogsStore()
+    const tableDialogsStore = useTablesStore()
 
     // 同步所有对话框中的表数据
     tableDialogsStore.items.forEach(({key, value, options}) => {
@@ -53,7 +53,7 @@ export const syncSubGroupNameForTables = (graph: Graph, oldSubGroupName: string,
 
 // 在全部枚举中同步子组名
 export const syncSubGroupNameForEnums = (model: GenModelInput, oldSubGroupName: string, newSubGroupName: string | undefined) => {
-    const enumDialogsStore = useEnumDialogsStore()
+    const enumDialogsStore = useEnumsStore()
 
     // 同步所有对话框中的子组数据
     enumDialogsStore.items.forEach(({key, value, options}) => {
@@ -78,7 +78,7 @@ export const syncSubGroupNameForEnums = (model: GenModelInput, oldSubGroupName: 
 export const setSubGroupNameForTables = (graph: Graph, tableKeys: Set<string>, subGroupName: string) => {
     const nodes = graph.getNodes().filter(it => it.shape === TABLE_NODE)
 
-    const tableDialogsStore = useTableDialogsStore()
+    const tableDialogsStore = useTablesStore()
 
     // 同步所有对话框中的表数据
     tableDialogsStore.items.forEach(({key, value, options}) => {
@@ -100,7 +100,7 @@ export const setSubGroupNameForTables = (graph: Graph, tableKeys: Set<string>, s
 
 // 在枚举中设置子组名
 export const setSubGroupNameForEnums = (model: GenModelInput, enumKeys: Set<string>, subGroupName: string) => {
-    const enumDialogsStore = useEnumDialogsStore()
+    const enumDialogsStore = useEnumsStore()
 
     // 同步所有对话框中的子组数据
     enumDialogsStore.items.forEach(({key, value, options}) => {

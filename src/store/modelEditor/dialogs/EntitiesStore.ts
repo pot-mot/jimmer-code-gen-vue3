@@ -6,8 +6,8 @@ import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 import {api} from "@/api";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 
-export const useEntityDialogsStore = defineStore(
-    'EntityDialogs',
+export const useEntitiesStore = defineStore(
+    'ModelEditor_Entities',
     () => {
         const dialogs = useDialogOpenListState<number, EntityConfigView>()
 

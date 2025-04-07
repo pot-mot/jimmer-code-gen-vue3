@@ -20,8 +20,8 @@ export type EnumCreateOptions = {
     columnName: string,
 }
 
-export const useEnumDialogsStore = defineStore(
-    'EnumDialogs',
+export const useEnumsStore = defineStore(
+    'ModelEditor_Enums',
     () => {
         const dialogs = useDialogOpenListState<string, GenModelInput_TargetOf_enums>()
 

@@ -15,8 +15,8 @@ export type AssociationCreateOptions = {
     targetTableName?: string | undefined,
 }
 
-export const useAssociationDialogsStore = defineStore(
-    'AssociationDialogs',
+export const useAssociationsStore = defineStore(
+    'ModelEditor_Associations',
     () => {
         const dialogs = useDialogOpenListState<string, GenAssociationModelInput>()
 

@@ -6,7 +6,7 @@ import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {computed, nextTick} from "vue";
 import {getNodeConnectedEdges} from "@/components/global/graphEditor/selection/selectOperation.ts";
-import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
+import {useSubGroupsStore} from "@/store/modelEditor/dialogs/SubGroupsStore.ts";
 import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
 
 const i18nStore = useI18nStore()
@@ -15,7 +15,7 @@ const props = defineProps<{
 	subGroup: GenModelInput_TargetOf_subGroups | undefined
 }>()
 
-const subGroupDialogs = useSubGroupDialogsStore()
+const subGroupDialogs = useSubGroupsStore()
 
 const {MODEL, SELECT, GRAPH} = useModelEditorStore()
 

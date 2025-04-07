@@ -147,14 +147,14 @@ import AssociationOffIcon from "@/components/global/icons/toolbar/AssociationOff
 import EraserIcon from "@/components/global/icons/toolbar/EraserIcon.vue";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {useModelEditDialogStore} from "@/store/modelEditor/dialogs/ModelEditDialogStore.ts";
-import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
-import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
+import {useSubGroupsStore} from "@/store/modelEditor/dialogs/SubGroupsStore.ts";
+import {useTablesStore} from "@/store/modelEditor/dialogs/TablesStore.ts";
 import {
     AssociationCreateOptions,
-    useAssociationDialogsStore
-} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
-import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
-import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
+    useAssociationsStore
+} from "@/store/modelEditor/dialogs/AssociationsStore.ts";
+import {useEnumsStore} from "@/store/modelEditor/dialogs/EnumsStore.ts";
+import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineStore.ts";
 import {getNodeConnectedEdges} from "@/components/global/graphEditor/selection/selectOperation.ts";
 
 const store = useModelEditorContextMenuStore()
@@ -163,10 +163,10 @@ const i18nStore = useI18nStore()
 
 const {GRAPH, REMOVE, MODEL, VIEW} = useModelEditorStore()
 const modelEditDialogStore = useModelEditDialogStore()
-const subGroupDialogs = useSubGroupDialogsStore()
-const tableDialogs = useTableDialogsStore()
-const associationDialogs = useAssociationDialogsStore()
-const enumDialogs = useEnumDialogsStore()
+const subGroupDialogs = useSubGroupsStore()
+const tableDialogs = useTablesStore()
+const associationDialogs = useAssociationsStore()
+const enumDialogs = useEnumsStore()
 const tableCombineDialog = useTableCombineDialogStore()
 const {copy, cut, paste} = useModelClipBoard()
 

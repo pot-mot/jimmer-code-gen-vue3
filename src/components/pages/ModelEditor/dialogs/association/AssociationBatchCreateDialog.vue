@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useAssociationBatchCreateDialogStore} from "@/store/modelEditor/dialogs/AssociationBatchCreateDialogStore.ts";
+import {useAssociationBatchCreateStore} from "@/store/modelEditor/dialogs/AssociationBatchCreateStore.ts";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {type DeepReadonly} from "vue";
@@ -11,7 +11,7 @@ import {createAssociationName} from "@/components/business/association/createAss
 
 const {MODEL} = useModelEditorStore()
 
-const store = useAssociationBatchCreateDialogStore()
+const store = useAssociationBatchCreateStore()
 
 const handleSubmit = (associations: Array<GenAssociationModelInput>) => {
     store.submit(associations)

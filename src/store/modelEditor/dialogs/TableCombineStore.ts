@@ -7,7 +7,7 @@ import {TableCombineData} from "@/components/business/table/TableCombineData.ts"
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
 
 export const useTableCombineDialogStore = defineStore(
-    'TableCombineDialog',
+    'TableCombine',
     () => {
         const dialogState = useOpenState()
 

@@ -5,10 +5,10 @@ import {cloneDeep} from "lodash";
 import {sendI18nMessage} from "@/message/message.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {api} from "@/api";
-import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
-import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
-import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
-import {useEntityDialogsStore} from "@/store/modelEditor/dialogs/EntityDialogsStore.ts";
+import {useTablesStore} from "@/store/modelEditor/dialogs/TablesStore.ts";
+import {useAssociationsStore} from "@/store/modelEditor/dialogs/AssociationsStore.ts";
+import {useEnumsStore} from "@/store/modelEditor/dialogs/EnumsStore.ts";
+import {useEntitiesStore} from "@/store/modelEditor/dialogs/EntitiesStore.ts";
 
 const props = defineProps<{
     file: GenerateFile,
@@ -91,10 +91,10 @@ const associationOptions = computed(() => {
 
 const {MODEL} = useModelEditorStore()
 
-const tableDialogs = useTableDialogsStore()
-const associationDialogs = useAssociationDialogsStore()
-const enumDialogs = useEnumDialogsStore()
-const entityDialogs = useEntityDialogsStore()
+const tableDialogs = useTablesStore()
+const associationDialogs = useAssociationsStore()
+const enumDialogs = useEnumsStore()
+const entityDialogs = useEntitiesStore()
 
 const editTable = (idName: IdName) => {
 	const tableNodePair = cloneDeep(MODEL.tableNodePairs.filter(it => it.first.name === idName.name)[0])

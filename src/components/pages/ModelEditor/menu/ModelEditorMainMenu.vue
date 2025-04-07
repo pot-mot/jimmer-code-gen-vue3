@@ -11,11 +11,11 @@ import {useModelLoadDialogStore} from "@/store/modelEditor/dialogs/ModelLoadDial
 import SubGroupItem from "@/components/pages/ModelEditor/menu/SubGroupItem.vue";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 import {handleMenuKeyEvent} from "@/components/pages/ModelEditor/menu/menuKeyEvent.ts";
-import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
-import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
-import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
-import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
-import {useAssociationBatchCreateDialogStore} from "@/store/modelEditor/dialogs/AssociationBatchCreateDialogStore.ts";
+import {useTablesStore} from "@/store/modelEditor/dialogs/TablesStore.ts";
+import {useAssociationsStore} from "@/store/modelEditor/dialogs/AssociationsStore.ts";
+import {useEnumsStore} from "@/store/modelEditor/dialogs/EnumsStore.ts";
+import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineStore.ts";
+import {useAssociationBatchCreateStore} from "@/store/modelEditor/dialogs/AssociationBatchCreateStore.ts";
 import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
 
 const i18nStore = useI18nStore()
@@ -25,11 +25,11 @@ const {MODEL, SELECT, VIEW} = useModelEditorStore()
 const dataSourceLoadDialogStore = useDataSourceLoadDialogStore()
 const modelLoadDialogStore = useModelLoadDialogStore()
 
-const tableDialogs = useTableDialogsStore()
-const associationDialogs = useAssociationDialogsStore()
-const enumDialogs = useEnumDialogsStore()
+const tableDialogs = useTablesStore()
+const associationDialogs = useAssociationsStore()
+const enumDialogs = useEnumsStore()
 const tableConfineDialog = useTableCombineDialogStore()
-const associationBatchCreateDialog = useAssociationBatchCreateDialogStore()
+const associationBatchCreateDialog = useAssociationBatchCreateStore()
 
 const associationEdgePairs = computed(() => {
 	return MODEL.associationEdgePairs

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useEntityDialogsStore} from "@/store/modelEditor/dialogs/EntityDialogsStore.ts";
+import {useEntitiesStore} from "@/store/modelEditor/dialogs/EntitiesStore.ts";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import EntityForm from "@/components/business/entity/EntityForm.vue";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
@@ -10,13 +10,13 @@ import {MainLocaleKeyParam} from "@/i18n";
 import {validateEntity} from "@/components/business/entity/validateEntity.ts";
 import {cloneDeep} from "lodash";
 import {sendI18nMessage} from "@/message/message.ts";
-import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
+import {useEnumsStore} from "@/store/modelEditor/dialogs/EnumsStore.ts";
 
-const store = useEntityDialogsStore()
+const store = useEntitiesStore()
 
 const {MODEL} = useModelEditorStore()
 
-const enumDialogs = useEnumDialogsStore()
+const enumDialogs = useEnumsStore()
 
 const handleSubmit = (
 	entity: EntityConfigInput

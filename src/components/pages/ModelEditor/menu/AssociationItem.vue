@@ -8,7 +8,7 @@ import {Edge} from "@antv/x6";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import AssociationIcon from "@/components/global/icons/database/AssociationIcon.vue";
-import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
+import {useAssociationsStore} from "@/store/modelEditor/dialogs/AssociationsStore.ts";
 import AssociationDialogs from "@/components/pages/ModelEditor/dialogs/association/AssociationDialogs.vue";
 import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
 
@@ -19,7 +19,7 @@ const props = defineProps<{
 	association: GenAssociationModelInput,
 }>()
 
-const associationDialogs = useAssociationDialogsStore()
+const associationDialogs = useAssociationsStore()
 
 const {GRAPH, VIEW, SELECT} = useModelEditorStore()
 

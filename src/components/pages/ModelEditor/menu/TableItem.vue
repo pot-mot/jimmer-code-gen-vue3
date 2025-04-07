@@ -9,7 +9,7 @@ import {deleteConfirm} from "@/message/confirm.ts";
 import {Node} from "@antv/x6";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
-import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
+import {useTablesStore} from "@/store/modelEditor/dialogs/TablesStore.ts";
 import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
 
 const i18nStore = useI18nStore()
@@ -19,7 +19,7 @@ const props = defineProps<{
 	table: GenTableModelInput
 }>()
 
-const tableDialogs = useTableDialogsStore()
+const tableDialogs = useTablesStore()
 
 const {GRAPH, SELECT, VIEW} = useModelEditorStore()
 

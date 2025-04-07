@@ -52,13 +52,13 @@ import debounce from "lodash/debounce";
 import {useDebugStore} from "@/store/debug/debugStore.ts";
 import {CustomHistory} from "@/components/global/graphEditor/history/CustomHistory.ts";
 import {jsonSortPropStringify} from "@/utils/json.ts";
-import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
-import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
-import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
-import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
-import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
-import {useAssociationBatchCreateDialogStore} from "@/store/modelEditor/dialogs/AssociationBatchCreateDialogStore.ts";
-import {useEntityDialogsStore} from "@/store/modelEditor/dialogs/EntityDialogsStore.ts";
+import {useSubGroupsStore} from "@/store/modelEditor/dialogs/SubGroupsStore.ts";
+import {useTablesStore} from "@/store/modelEditor/dialogs/TablesStore.ts";
+import {useAssociationsStore} from "@/store/modelEditor/dialogs/AssociationsStore.ts";
+import {useEnumsStore} from "@/store/modelEditor/dialogs/EnumsStore.ts";
+import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineStore.ts";
+import {useAssociationBatchCreateStore} from "@/store/modelEditor/dialogs/AssociationBatchCreateStore.ts";
+import {useEntitiesStore} from "@/store/modelEditor/dialogs/EntitiesStore.ts";
 
 export type SubGroupData = {
     group: GenModelInput_TargetOf_subGroups | undefined,
@@ -204,9 +204,9 @@ const initModelEditorStore = (): ModelEditorStore => {
             startBatchSync(target, () => {
                 cells.forEach(cell => {
                     if (cell.isNode() && cell.shape === TABLE_NODE) {
-                        useTableDialogsStore().remove(cell.id)
+                        useTablesStore().remove(cell.id)
                     } else if (cell.isEdge() && cell.shape === ASSOCIATION_EDGE) {
-                        useAssociationDialogsStore().remove(cell.id)
+                        useAssociationsStore().remove(cell.id)
                     }
                 })
             })
@@ -1135,17 +1135,17 @@ const initModelEditorStore = (): ModelEditorStore => {
         useDataSourceLoadDialogStore().close()
         useModelLoadDialogStore().close()
 
-        useSubGroupDialogsStore().closeAll()
+        useSubGroupsStore().closeAll()
 
-        useTableDialogsStore().closeAll()
+        useTablesStore().closeAll()
         useTableCombineDialogStore().close()
 
-        useEnumDialogsStore().closeAll()
+        useEnumsStore().closeAll()
 
-        useAssociationDialogsStore().closeAll()
-        useAssociationBatchCreateDialogStore().close()
+        useAssociationsStore().closeAll()
+        useAssociationBatchCreateStore().close()
 
-        useEntityDialogsStore().closeAll()
+        useEntitiesStore().closeAll()
 
         codePreviewStore.close()
 

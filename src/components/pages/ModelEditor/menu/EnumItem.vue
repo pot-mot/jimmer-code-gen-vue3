@@ -5,7 +5,7 @@ import {deleteConfirm} from "@/message/confirm.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {computed} from "vue";
-import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
+import {useEnumsStore} from "@/store/modelEditor/dialogs/EnumsStore.ts";
 import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
 
 const i18nStore = useI18nStore()
@@ -14,7 +14,7 @@ const props = defineProps<{
 	genEnum: GenModelInput_TargetOf_enums
 }>()
 
-const enumDialogs = useEnumDialogsStore()
+const enumDialogs = useEnumsStore()
 
 const {MODEL, SELECT} = useModelEditorStore()
 

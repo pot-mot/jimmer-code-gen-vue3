@@ -18,8 +18,8 @@ export type SubGroupCreateOptions = {
     enumKeys?: string[] | undefined,
 }
 
-export const useSubGroupDialogsStore = defineStore(
-    'SubGroupDialogsStore',
+export const useSubGroupsStore = defineStore(
+    'ModelEditor_SubGroups',
     () => {
         const dialogs = useDialogOpenListState<string, GenModelInput_TargetOf_subGroups>()
 
@@ -103,7 +103,7 @@ export const useSubGroupDialogsStore = defineStore(
                 edited(key, subGroup)
             }
         }
-        
+
         return {
             ...dialogs,
 

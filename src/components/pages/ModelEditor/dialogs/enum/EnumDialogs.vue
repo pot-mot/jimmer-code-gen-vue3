@@ -1,18 +1,18 @@
 <script lang="ts" setup>
-import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
+import {useEnumsStore} from "@/store/modelEditor/dialogs/EnumsStore.ts";
 import EnumForm from "@/components/business/enum/EnumForm.vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {DeepReadonly} from "vue";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
 import {validateEnum} from "@/components/business/enum/validateEnum.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
+import {useSubGroupsStore} from "@/store/modelEditor/dialogs/SubGroupsStore.ts";
 
-const store = useEnumDialogsStore()
+const store = useEnumsStore()
 
 const {MODEL} = useModelEditorStore()
 
-const subGroupDialogs = useSubGroupDialogsStore()
+const subGroupDialogs = useSubGroupsStore()
 
 const handleSubmit = (key: string, genEnum: DeepReadonly<GenModelInput_TargetOf_enums>) => {
     store.submit(key, genEnum)

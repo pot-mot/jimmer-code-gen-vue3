@@ -4,8 +4,8 @@ import {DeepReadonly} from "vue";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 
-export const useAssociationBatchCreateDialogStore = defineStore(
-    'AssociationBatchCreateDialog',
+export const useAssociationBatchCreateStore = defineStore(
+    'AssociationBatchCreate',
     () => {
         const dialogState = useOpenState()
 

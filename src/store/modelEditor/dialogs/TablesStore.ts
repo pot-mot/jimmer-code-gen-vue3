@@ -17,8 +17,8 @@ export type TableCreateOptions = TableLoadOptions & {
     subGroupName?: string | undefined,
 }
 
-export const useTableDialogsStore = defineStore(
-    'TableDialogs',
+export const useTablesStore = defineStore(
+    'ModelEditor_Tables',
     () => {
         const dialogs = useDialogOpenListState<string, GenTableModelInput>()
 
@@ -128,7 +128,7 @@ export const useTableDialogsStore = defineStore(
                 edited(key, table)
             }
         }
-        
+
         return {
             ...dialogs,
 

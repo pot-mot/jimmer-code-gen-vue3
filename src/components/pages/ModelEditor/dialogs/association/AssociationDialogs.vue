@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
+import {useAssociationsStore} from "@/store/modelEditor/dialogs/AssociationsStore.ts";
 import {createAssociationName} from "@/components/business/association/createAssociationName.ts";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import AssociationForm from "@/components/business/association/AssociationForm.vue";
@@ -9,7 +9,7 @@ import {MainLocaleKeyParam} from "@/i18n";
 import {validateAssociation} from "@/components/business/association/validateAssociation.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 
-const store = useAssociationDialogsStore()
+const store = useAssociationsStore()
 
 const {MODEL} = useModelEditorStore()
 

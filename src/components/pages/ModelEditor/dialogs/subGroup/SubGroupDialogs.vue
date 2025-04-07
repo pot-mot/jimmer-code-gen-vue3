@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
+import {useSubGroupsStore} from "@/store/modelEditor/dialogs/SubGroupsStore.ts";
 import SubGroupForm from "@/components/business/modelSubGroup/ModelSubGroupForm.vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {DeepReadonly} from "vue";
@@ -7,7 +7,7 @@ import {GenModelInput_TargetOf_subGroups} from "@/api/__generated/model/static";
 import {validateModelSubGroup} from "@/components/business/modelSubGroup/validateModelSubGroup.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 
-const store = useSubGroupDialogsStore()
+const store = useSubGroupsStore()
 
 const {MODEL} = useModelEditorStore()
 

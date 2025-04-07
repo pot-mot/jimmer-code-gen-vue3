@@ -126,7 +126,7 @@ import {jsonSortPropStringify} from "@/utils/json.ts";
 import {api} from "@/api";
 import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
 import {judgeTarget} from "@/utils/clickUtils.ts";
-import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
+import {useTablesStore} from "@/store/modelEditor/dialogs/TablesStore.ts";
 
 const i18nStore = useI18nStore()
 
@@ -139,7 +139,7 @@ const {GRAPH, MODEL, MODEL_EDITOR, SELECT, HISTORY, VIEW} = useModelEditorStore(
 
 const modelEditorDialog = useModelEditDialogStore()
 
-const tableDialogs = useTableDialogsStore()
+const tableDialogs = useTablesStore()
 
 const loadingStore = useGlobalLoadingStore()
 
