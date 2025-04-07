@@ -459,7 +459,7 @@ const handleCancel = () => {
 			</template>
 
 			<ViewList
-				v-if="keyGroups.length > 0"
+				v-if="tableKeyIndexColumns.length > 0"
 				:columns="tableKeyIndexColumns"
 				:lines="keyIndexes"
 				style="line-height: 2em;"
