@@ -10,6 +10,7 @@ import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import AssociationIcon from "@/components/global/icons/database/AssociationIcon.vue";
 import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
 import AssociationDialogs from "@/components/pages/ModelEditor/dialogs/association/AssociationDialogs.vue";
+import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
 
 const i18nStore = useI18nStore()
 
@@ -37,7 +38,7 @@ const handleClickAssociation = (e: MouseEvent) => {
 
 const handleDelete = () => {
 	deleteConfirm(`${i18nStore.translate('LABEL_DeleteTarget_Association')}【${props.association.name}】`, () => {
-        associationDialogs.remove(props.edge.id)
+		associationDialogs.remove(props.edge.id)
 	})
 }
 
@@ -82,17 +83,30 @@ const targetLabel = computed<string | undefined>(() => {
 const handleEdit = (association: GenAssociationModelInput) => {
 	AssociationDialogs.edit(props.edge.id, association)
 }
+
+const handleContextMenu = (e: MouseEvent) => {
+	if (props.association && props.edge) {
+		e.preventDefault()
+		e.stopPropagation()
+		useModelEditorContextMenuStore().open(
+			{x: e.pageX, y: e.pageY},
+			{type: 'Association', associationEdgePair: {first: props.association, second: props.edge}}
+		)
+	}
+}
 </script>
 
 <template>
 	<div v-if="association && sourceLabel && targetLabel"
-		 class="menu-item hover-show" :class="isSelected ? 'selected' : ''">
-        <el-text @click="handleClickAssociation">
-            <AssociationIcon
-                :type="association.type"
-                :fake="association.fake"
-            />
-            {{ association.name }}
+		 class="menu-item hover-show" :class="isSelected ? 'selected' : ''"
+		 @contextmenu="handleContextMenu"
+	>
+		<el-text @click="handleClickAssociation">
+			<AssociationIcon
+				:type="association.type"
+				:fake="association.fake"
+			/>
+			{{ association.name }}
 
 			<span>{{ association.fake ? '【fake】' : '' }}</span>
 		</el-text>

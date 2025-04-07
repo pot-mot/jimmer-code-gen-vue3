@@ -10,15 +10,14 @@ import {Node} from "@antv/x6";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
+import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
 
 const i18nStore = useI18nStore()
 
-interface TableItemProps {
-    node: UnwrapRefSimple<Node>,
+const props = defineProps<{
+	node: UnwrapRefSimple<Node>,
 	table: GenTableModelInput
-}
-
-const props = defineProps<TableItemProps>()
+}>()
 
 const tableDialogs = useTableDialogsStore()
 
@@ -46,12 +45,24 @@ const handleDelete = () => {
         tableDialogs.remove(props.node.id)
 	})
 }
+
+const handleContextMenu = (e: MouseEvent) => {
+	if (props.table && props.node) {
+		e.preventDefault()
+		e.stopPropagation()
+		useModelEditorContextMenuStore().open(
+			{x: e.pageX, y: e.pageY},
+			{type: 'Table', tableNodePair: {first: props.table, second: props.node}}
+		)
+	}
+}
 </script>
 
 <template>
 	<div v-if="table"
-		 class="menu-item hover-show" :class="isSelected ? 'selected' : ''">
-
+		 class="menu-item hover-show" :class="isSelected ? 'selected' : ''"
+		 @contextmenu="handleContextMenu"
+	>
 		<el-text @click="handleClickLabel">
 			<TableIcon :type="table.type"/>
 			{{ table.name }}

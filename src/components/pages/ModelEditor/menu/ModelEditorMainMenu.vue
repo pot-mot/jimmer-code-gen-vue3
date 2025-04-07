@@ -16,6 +16,7 @@ import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/Associatio
 import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
 import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
 import {useAssociationBatchCreateDialogStore} from "@/store/modelEditor/dialogs/AssociationBatchCreateDialogStore.ts";
+import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
 
 const i18nStore = useI18nStore()
 
@@ -41,40 +42,55 @@ const handleClickUnselect = (e: MouseEvent) => {
 }
 
 const handleCreateTable = () => {
-    const options = {
-        x: VIEW.getCenterPoint().x * 3/4,
-        y: VIEW.getCenterPoint().y * 3/4,
-    }
-    tableDialogs.create(options)
+	const options = {
+		x: VIEW.getCenterPoint().x * 3 / 4,
+		y: VIEW.getCenterPoint().y * 3 / 4,
+	}
+	tableDialogs.create(options)
 }
 
 const handleCombineTable = () => {
-    const options = {
-        x: VIEW.getCenterPoint().x * 3/4,
-        y: VIEW.getCenterPoint().y * 3/4,
-    }
-    tableConfineDialog.open(options)
+	const options = {
+		x: VIEW.getCenterPoint().x * 3 / 4,
+		y: VIEW.getCenterPoint().y * 3 / 4,
+	}
+	tableConfineDialog.open(options)
 }
 
 const handleCreateAssociation = () => {
-    const options = MODEL.selectedTables.length > 0 && MODEL.selectedTables.length <= 2 ? {
-        sourceTableName: MODEL.selectedTables[0]?.name,
-        targetTableName: MODEL.selectedTables[1]?.name,
-    } : undefined
-    associationDialogs.create(options)
+	const options = MODEL.selectedTables.length > 0 && MODEL.selectedTables.length <= 2 ? {
+		sourceTableName: MODEL.selectedTables[0]?.name,
+		targetTableName: MODEL.selectedTables[1]?.name,
+	} : undefined
+	associationDialogs.create(options)
 }
 
 const handleBatchCreateAssociations = () => {
-    associationBatchCreateDialog.open()
+	associationBatchCreateDialog.open()
 }
 
 const handleCreateEnum = () => {
-    enumDialogs.create()
+	enumDialogs.create()
+}
+
+
+const handleContextMenu = (e: MouseEvent) => {
+	e.preventDefault()
+	e.stopPropagation()
+	useModelEditorContextMenuStore().open(
+		{x: e.pageX, y: e.pageY},
+	)
 }
 </script>
 
 <template>
-	<div class="model-editor-main-menu" @click="handleClickUnselect" tabindex="-1" @keydown="handleMenuKeyEvent">
+	<div
+		class="model-editor-main-menu"
+		tabindex="-1"
+		@click="handleClickUnselect"
+		@keydown="handleMenuKeyEvent"
+		@contextmenu="handleContextMenu"
+	>
 		<el-button @click="dataSourceLoadDialogStore.open()">
 			{{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromDataSource') }}
 		</el-button>
@@ -111,7 +127,7 @@ const handleCreateEnum = () => {
 				<Details v-for="{group, tableNodePairs, enums} of MODEL.subGroupDataList" :key="group?.name" open>
 					<template #title>
 						<SubGroupItem :sub-group="group"/>
-                    </template>
+					</template>
 
 					<TableItem
 						v-for="{first: table, second: node} in tableNodePairs"
@@ -174,12 +190,12 @@ const handleCreateEnum = () => {
 
 .splitter {
 	width: 60%;
-    min-width: 4em;
-    max-width: 20em;
+	min-width: 4em;
+	max-width: 20em;
 	height: 1px;
 	background-color: var(--text-color);
 	opacity: 0.3;
 	margin-top: 0.4em;
-    margin-bottom: 0.3em;
+	margin-bottom: 0.3em;
 }
 </style>
