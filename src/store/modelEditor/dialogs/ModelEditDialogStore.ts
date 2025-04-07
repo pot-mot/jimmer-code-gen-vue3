@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {useDialogOpenState} from "@/components/global/dialog/DialogOpenState.ts";
+import {useOpenState} from "@/components/global/dialog/OpenState.ts";
 import {DeepReadonly} from "vue";
 import {GraphData} from "@/components/global/graphEditor/data/graphData.ts";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
@@ -13,7 +13,7 @@ import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 
 export const useModelEditDialogStore = defineStore(
     'ModelEditDialog', () => {
-        const dialogState = useDialogOpenState()
+        const dialogState = useOpenState()
 
         const loadingStore = useGlobalLoadingStore()
 

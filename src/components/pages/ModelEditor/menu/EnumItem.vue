@@ -5,6 +5,7 @@ import {deleteConfirm} from "@/message/confirm.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {computed} from "vue";
+import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
 
 const i18nStore = useI18nStore()
 
@@ -12,7 +13,9 @@ const props = defineProps<{
 	genEnum: GenModelInput_TargetOf_enums
 }>()
 
-const {MODEL_EDITOR, MODEL, SELECT} = useModelEditorStore()
+const enumDialogs = useEnumDialogsStore()
+
+const {MODEL, SELECT} = useModelEditorStore()
 
 const isSelected = computed(() => {
 	return MODEL.selectedEnumMap.has(props.genEnum.name)
@@ -28,12 +31,12 @@ const handleClickLabel = (e: MouseEvent) => {
 }
 
 const handleEdit = () => {
-	MODEL_EDITOR.editEnum(props.genEnum.name, props.genEnum)
+    enumDialogs.edit(props.genEnum.name, props.genEnum)
 }
 
 const handleDelete = () => {
 	deleteConfirm(`${i18nStore.translate("LABEL_DeleteTarget_Enum")}【${props.genEnum.name}】`, () => {
-		MODEL_EDITOR.removeEnum(props.genEnum.name)
+        enumDialogs.remove(props.genEnum.name)
 	})
 }
 </script>

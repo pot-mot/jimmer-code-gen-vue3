@@ -5,6 +5,10 @@ import {cloneDeep} from "lodash";
 import {sendI18nMessage} from "@/message/message.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {api} from "@/api";
+import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
+import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
+import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
+import {useEntityDialogsStore} from "@/store/modelEditor/dialogs/EntityDialogsStore.ts";
 
 const props = defineProps<{
     file: GenerateFile,
@@ -85,7 +89,12 @@ const associationOptions = computed(() => {
 })
 
 
-const {MODEL, MODEL_EDITOR} = useModelEditorStore()
+const {MODEL} = useModelEditorStore()
+
+const tableDialogs = useTableDialogsStore()
+const associationDialogs = useAssociationDialogsStore()
+const enumDialogs = useEnumDialogsStore()
+const entityDialogs = useEntityDialogsStore()
 
 const editTable = (idName: IdName) => {
 	const tableNodePair = cloneDeep(MODEL.tableNodePairs.filter(it => it.first.name === idName.name)[0])
@@ -93,7 +102,7 @@ const editTable = (idName: IdName) => {
 		sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel", args: [idName]})
 		return
 	}
-	MODEL_EDITOR.editTable(tableNodePair.second.id, tableNodePair.first)
+    tableDialogs.edit(tableNodePair.second.id, tableNodePair.first)
 }
 
 const editEnum = (idName: IdName) => {
@@ -102,7 +111,7 @@ const editEnum = (idName: IdName) => {
 		sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickEnumNotFoundInCurrentModel", args: [idName]})
 		return
 	}
-	MODEL_EDITOR.editEnum(idName.name, genEnum)
+    enumDialogs.edit(idName.name, genEnum)
 }
 
 const editAssociation = (idName: IdName) => {
@@ -111,7 +120,7 @@ const editAssociation = (idName: IdName) => {
 		sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickAssociationNotFoundInCurrentModel", args: [idName]})
 		return
 	}
-	MODEL_EDITOR.editAssociation(associationEdgePair.second.id, associationEdgePair.first)
+    associationDialogs.edit(associationEdgePair.second.id, associationEdgePair.first)
 }
 
 const editEntity = async (idName: IdName): Promise<void> => {
@@ -120,7 +129,7 @@ const editEntity = async (idName: IdName): Promise<void> => {
 		sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickEntityNotFound", args: [idName]})
 		return
 	}
-	MODEL_EDITOR.editEntity(entity)
+    entityDialogs.edit(entity)
 }
 </script>
 

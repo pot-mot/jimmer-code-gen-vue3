@@ -8,6 +8,8 @@ import {Edge} from "@antv/x6";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import AssociationIcon from "@/components/global/icons/database/AssociationIcon.vue";
+import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
+import AssociationDialogs from "@/components/pages/ModelEditor/dialogs/association/AssociationDialogs.vue";
 
 const i18nStore = useI18nStore()
 
@@ -16,7 +18,9 @@ const props = defineProps<{
 	association: GenAssociationModelInput,
 }>()
 
-const {GRAPH, MODEL_EDITOR, VIEW, SELECT} = useModelEditorStore()
+const associationDialogs = useAssociationDialogsStore()
+
+const {GRAPH, VIEW, SELECT} = useModelEditorStore()
 
 const isSelected = computed(() => {
 	return GRAPH.selectedEdgeMap.has(props.edge.id)
@@ -33,7 +37,7 @@ const handleClickAssociation = (e: MouseEvent) => {
 
 const handleDelete = () => {
 	deleteConfirm(`${i18nStore.translate('LABEL_DeleteTarget_Association')}【${props.association.name}】`, () => {
-		MODEL_EDITOR.removeAssociation(props.edge.id)
+        associationDialogs.remove(props.edge.id)
 	})
 }
 
@@ -76,7 +80,7 @@ const targetLabel = computed<string | undefined>(() => {
 })
 
 const handleEdit = (association: GenAssociationModelInput) => {
-	MODEL_EDITOR.editAssociation(props.edge.id, association)
+	AssociationDialogs.edit(props.edge.id, association)
 }
 </script>
 

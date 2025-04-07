@@ -1,4 +1,4 @@
-import {ref, Ref} from "vue";
+import {ref, Ref, shallowRef} from "vue";
 import {Graph} from "@antv/x6";
 import {sendMessage} from "@/message/message.ts";
 import {GraphReactiveState, useGraphReactiveState} from "../data/reactiveState.ts";
@@ -19,7 +19,7 @@ export const useGraph = (): {
     graphReactiveState: GraphReactiveState,
     graphLoadOperation: GraphLoadOperation,
 } => {
-    const graph = ref<Graph>()
+    const graph = shallowRef<Graph>()
 
     const isLoaded = ref(false)
 

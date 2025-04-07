@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import {SUB_GROUP_CREATE_PREFIX, useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
+import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
 import SubGroupForm from "@/components/business/modelSubGroup/ModelSubGroupForm.vue";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 import {DeepReadonly} from "vue";
@@ -9,14 +9,10 @@ import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 
 const store = useSubGroupDialogsStore()
 
-const {MODEL, MODEL_EDITOR} = useModelEditorStore()
+const {MODEL} = useModelEditorStore()
 
 const handleSubmit = (key: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
-    if (key.startsWith(SUB_GROUP_CREATE_PREFIX)) {
-        MODEL_EDITOR.createdSubGroup(key, subGroup)
-    } else {
-        MODEL_EDITOR.editedSubGroup(key, subGroup)
-    }
+    store.submit(key, subGroup)
 }
 
 const validate = (key: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {

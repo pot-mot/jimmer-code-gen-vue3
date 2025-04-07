@@ -7,12 +7,12 @@ import {DeepReadonly} from "vue";
 import {TableCombineData} from "@/components/business/table/TableCombineData.ts";
 import DragDialog from "@/components/global/dialog/DragDialog.vue";
 
-const {MODEL, MODEL_EDITOR} = useModelEditorStore()
+const {MODEL} = useModelEditorStore()
 
 const store = useTableCombineDialogStore()
 
 const handleSubmit = (tableCombineData: DeepReadonly<TableCombineData>) => {
-    MODEL_EDITOR.combinedTable(tableCombineData)
+    store.submit(tableCombineData)
 }
 
 const getOtherTables = (name: string) => {
