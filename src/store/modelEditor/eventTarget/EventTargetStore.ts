@@ -1,4 +1,4 @@
-import {computed, DeepReadonly, ref} from "vue";
+import {computed, DeepReadonly, ref, watch} from "vue";
 import {GenModelInput_TargetOf_enums, GenModelInput_TargetOf_subGroups,} from "@/api/__generated/model/static";
 import {defineStore} from "pinia";
 import {AssociationEdgePair, TableNodePair} from "@/store/modelEditor/ModelEditorStore.ts";
@@ -29,9 +29,17 @@ export const useEventTargetStore = defineStore(
     () => {
         const target = ref<ModelEditorEventTarget>(getDefaultTarget())
 
+        const targetLock = ref(false)
+
+        const contextMenuStore = useContextMenuStore()
+
+        watch(() => contextMenuStore.openState, (value) => {
+            targetLock.value = value;
+        })
+
         const targetWrapper = computed({
             set(newTarget: ModelEditorEventTarget) {
-                if (!useContextMenuStore().openState) {
+                if (!targetLock.value) {
                     target.value = newTarget
                 }
             },
@@ -41,7 +49,7 @@ export const useEventTargetStore = defineStore(
         })
 
         const toDefault = () => {
-            target.value = getDefaultTarget()
+            targetWrapper.value = getDefaultTarget()
         }
 
         const getTargetSubGroupName = (): string | undefined => {

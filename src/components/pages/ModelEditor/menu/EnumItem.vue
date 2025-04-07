@@ -29,6 +29,7 @@ const handleClickLabel = (e: MouseEvent) => {
 		SELECT.unselectAll()
 		SELECT.selectEnum(props.genEnum.name)
 	}
+    useEventTargetStore().target = {type: 'Enum', enum: props.genEnum}
 }
 
 const handleEdit = () => {
@@ -40,17 +41,12 @@ const handleDelete = () => {
 		enumDialogs.remove(props.genEnum.name)
 	})
 }
-
-const handleMouseEnter = () => {
-	useEventTargetStore().target = {type: 'Enum', enum: props.genEnum}
-}
 </script>
 
 <template>
 	<div
 		class="menu-item hover-show"
 		:class="isSelected ? 'selected' : ''"
-		@mouseenter="handleMouseEnter"
 	>
 		<el-text @click="handleClickLabel">
 			{{ genEnum.name }}

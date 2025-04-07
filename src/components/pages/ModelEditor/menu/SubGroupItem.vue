@@ -51,6 +51,7 @@ const handleClickLabel = async (e: MouseEvent) => {
 		SELECT.select([...matchedNodeIds, ...connectedEdgeIds])
 		SELECT.selectEnum(...matchedEnumNames)
 	}
+    useEventTargetStore().target = {type: 'SubGroup', subGroup: props.subGroup}
 }
 
 const handleEdit = () => {
@@ -67,17 +68,12 @@ const handleDelete = () => {
 		})
 	}
 }
-
-const handleMouseEnter = () => {
-	useEventTargetStore().target = {type: 'SubGroup', subGroup: props.subGroup}
-}
 </script>
 
 <template>
 	<div
 		class="hover-show menu-item"
 		:class="isSelected ? 'selected' : ''"
-		@mouseenter="handleMouseEnter"
 	>
 		<template v-if="subGroup">
 			<el-text :style="{color: subGroup.style}" @click="handleClickLabel">

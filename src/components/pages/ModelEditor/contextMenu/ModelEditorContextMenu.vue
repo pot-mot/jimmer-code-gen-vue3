@@ -4,8 +4,6 @@
         :options="store.options"
         @close="handleClose"
     >
-        {{ eventTargetStore.target.type }}
-
         <context-menu-item
             v-if="eventTargetStore.target.type === 'SubGroup' ? !!eventTargetStore.target.subGroup : true"
             :label="i18nStore.translate('BUTTON_edit')"
@@ -37,6 +35,7 @@
         />
 
         <context-menu-item
+            v-if="(eventTargetStore.target.type !== 'Association')"
             :label="i18nStore.translate('LABEL_ModelEditorMainMenu_createEnum')"
             @click="handleCreateEnum"
         />
@@ -106,6 +105,7 @@
             v-if="eventTargetStore.target.type !== 'Model' && (eventTargetStore.target.type === 'SubGroup' ? !!eventTargetStore.target.subGroup : true)"
             :label="i18nStore.translate('BUTTON_delete')"
             @click="handleDelete"
+            shortcut="Delete"
         >
             <template #icon>
                 <el-icon size="1em" color="var(--icon-color)">

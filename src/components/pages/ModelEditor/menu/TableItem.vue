@@ -28,6 +28,7 @@ const handleClickLabel = (e: MouseEvent) => {
 		SELECT.unselectAll()
 		VIEW.focus(props.node.id)
 	}
+    useEventTargetStore().target = {type: 'Table', tableNodePair: props}
 }
 
 const handleEdit = () => {
@@ -39,17 +40,12 @@ const handleDelete = () => {
 		tableDialogs.remove(props.node.id)
 	})
 }
-
-const handleMouseEnter = () => {
-	useEventTargetStore().target = {type: 'Table', tableNodePair: props}
-}
 </script>
 
 <template>
 	<div
 		class="menu-item hover-show"
 		:class="isSelected ? 'selected' : ''"
-		@mouseenter="handleMouseEnter"
 	>
 		<el-text @click="handleClickLabel">
 			<TableIcon :type="table.type"/>

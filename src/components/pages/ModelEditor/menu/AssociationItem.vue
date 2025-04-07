@@ -28,7 +28,8 @@ const handleClickAssociation = (e: MouseEvent) => {
 	} else {
 		SELECT.unselectAll()
 		VIEW.focus(props.edge.id)
-	}
+    }
+    useEventTargetStore().target = {type: 'Association', associationEdgePair: props}
 }
 
 const handleDelete = () => {
@@ -40,17 +41,12 @@ const handleDelete = () => {
 const handleEdit = (association: GenAssociationModelInput) => {
 	AssociationDialogs.edit(props.edge.id, association)
 }
-
-const handleMouseEnter = () => {
-	useEventTargetStore().target = {type: 'Association', associationEdgePair: props}
-}
 </script>
 
 <template>
 	<div
 		class="menu-item hover-show"
 		:class="isSelected ? 'selected' : ''"
-		@mouseenter="handleMouseEnter"
 	>
 		<el-text @click="handleClickAssociation">
 			<AssociationIcon

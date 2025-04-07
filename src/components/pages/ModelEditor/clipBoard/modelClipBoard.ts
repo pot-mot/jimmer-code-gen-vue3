@@ -240,6 +240,27 @@ export const useModelClipBoard = (): ClipBoardOperation => {
         return copyResult
     }
 
+    /**
+     * 设置粘贴数据的分组
+     */
+    const setCopyDataSubGroup = (copyData: CopyData, subGroupName: string | undefined) => {
+        const subGroup = subGroupName ? {name: subGroupName} : undefined
+
+        copyData.tables?.forEach(it => {
+            if (it.type !== "SUPER_TABLE") it.subGroup = subGroup
+        })
+        if (copyData.tables && copyData.tables.length > 0) {
+            const enumNameSet = new Set(MODEL.enums.map(it => it.name))
+            copyData.enums?.forEach(it => {
+                if (!enumNameSet.has(it.name)) it.subGroup = subGroup
+            })
+        } else {
+            copyData.enums?.forEach(it => {
+                it.subGroup = subGroup
+            })
+        }
+    }
+
     const paste = async (
         inputProducer?: InputProducer | undefined
     ): Promise<PasteResult | undefined> => {
@@ -286,37 +307,10 @@ export const useModelClipBoard = (): ClipBoardOperation => {
                 }
 
                 if (copyData !== undefined) {
-                    if (eventTargetStore.target.type === "SubGroup" && eventTargetStore.target.subGroup === undefined) {
-                        copyData.tables?.forEach(it => {
-                            if (it.type !== "SUPER_TABLE") it.subGroup = undefined
-                        })
-                        if (copyData.tables && copyData.tables.length > 0) {
-                            const enumNameSet = new Set(MODEL.enums.map(it => it.name))
-                            copyData.enums?.forEach(it => {
-                                if (!enumNameSet.has(it.name)) it.subGroup = undefined
-                            })
-                        } else {
-                            copyData.enums?.forEach(it => {
-                                it.subGroup = undefined
-                            })
-                        }
-                    } else {
+                    if (eventTargetStore.target.type === "SubGroup" || eventTargetStore.target.type === "Table" || eventTargetStore.target.type === "Enum") {
                         const subGroupName = eventTargetStore.getTargetSubGroupName()
-                        if (subGroupName !== undefined) {
-                            copyData.tables?.forEach(it => {
-                                if (it.type !== "SUPER_TABLE") it.subGroup = {name: subGroupName}
-                            })
-                            if (copyData.tables && copyData.tables.length > 0) {
-                                const enumNameSet = new Set(MODEL.enums.map(it => it.name))
-                                copyData.enums?.forEach(it => {
-                                    if (!enumNameSet.has(it.name)) it.subGroup = {name: subGroupName}
-                                })
-                            } else {
-                                copyData.enums?.forEach(it => {
-                                    it.subGroup = {name: subGroupName}
-                                })
-                            }
-                        }
+                        copyData.subGroups = []
+                        setCopyDataSubGroup(copyData, subGroupName)
                     }
 
                     res = MODEL_EDITOR.loadInput(inputProducer ? inputProducer(copyData) : copyData)
