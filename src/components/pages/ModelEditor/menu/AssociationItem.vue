@@ -10,7 +10,7 @@ import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import AssociationIcon from "@/components/global/icons/database/AssociationIcon.vue";
 import {useAssociationsStore} from "@/store/modelEditor/dialogs/AssociationsStore.ts";
 import AssociationDialogs from "@/components/pages/ModelEditor/dialogs/association/AssociationDialogs.vue";
-import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
+import {useEventTargetStore} from "@/store/modelEditor/eventTarget/EventTargetStore.ts";
 
 const i18nStore = useI18nStore()
 
@@ -46,20 +46,16 @@ const handleEdit = (association: GenAssociationModelInput) => {
 	AssociationDialogs.edit(props.edge.id, association)
 }
 
-const handleContextMenu = (e: MouseEvent) => {
-	e.preventDefault()
-	e.stopPropagation()
-	useModelEditorContextMenuStore().open(
-		{x: e.pageX, y: e.pageY},
-		{type: 'Association', associationEdgePair: {first: props.association, second: props.edge}}
-	)
+const handleMouseEnter = () => {
+	useEventTargetStore().target = {type: 'Association', associationEdgePair: {first: props.association, second: props.edge}}
 }
 </script>
 
 <template>
 	<div
-		class="menu-item hover-show" :class="isSelected ? 'selected' : ''"
-		@contextmenu="handleContextMenu"
+		class="menu-item hover-show"
+		:class="isSelected ? 'selected' : ''"
+		@mouseenter="handleMouseEnter"
 	>
 		<el-text @click="handleClickAssociation">
 			<AssociationIcon

@@ -7,7 +7,7 @@ import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {computed, nextTick} from "vue";
 import {getNodeConnectedEdges} from "@/components/global/graphEditor/selection/selectOperation.ts";
 import {useSubGroupsStore} from "@/store/modelEditor/dialogs/SubGroupsStore.ts";
-import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
+import {useEventTargetStore} from "@/store/modelEditor/eventTarget/EventTargetStore.ts";
 
 const i18nStore = useI18nStore()
 
@@ -68,18 +68,17 @@ const handleDelete = () => {
 	}
 }
 
-const handleContextMenu = (e: MouseEvent) => {
-	e.preventDefault()
-	e.stopPropagation()
-	useModelEditorContextMenuStore().open(
-		{x: e.pageX, y: e.pageY},
-		{type: 'SubGroup', subGroup: props.subGroup}
-	)
+const handleMouseEnter = () => {
+	useEventTargetStore().target = {type: 'SubGroup', subGroup: props.subGroup}
 }
 </script>
 
 <template>
-	<div class="hover-show menu-item" :class="isSelected ? 'selected' : ''" @contextmenu="handleContextMenu">
+	<div
+		class="hover-show menu-item"
+		:class="isSelected ? 'selected' : ''"
+		@mouseenter="handleMouseEnter"
+	>
 		<template v-if="subGroup">
 			<el-text :style="{color: subGroup.style}" @click="handleClickLabel">
 				{{ subGroup.name }}

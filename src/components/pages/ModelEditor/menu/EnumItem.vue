@@ -6,7 +6,7 @@ import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {computed} from "vue";
 import {useEnumsStore} from "@/store/modelEditor/dialogs/EnumsStore.ts";
-import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
+import {useEventTargetStore} from "@/store/modelEditor/eventTarget/EventTargetStore.ts";
 
 const i18nStore = useI18nStore()
 
@@ -41,18 +41,17 @@ const handleDelete = () => {
 	})
 }
 
-const handleContextMenu = (e: MouseEvent) => {
-	e.preventDefault()
-	e.stopPropagation()
-	useModelEditorContextMenuStore().open(
-		{x: e.pageX, y: e.pageY},
-		{type: 'Enum', enum: props.genEnum}
-	)
+const handleMouseEnter = () => {
+	useEventTargetStore().target = {type: 'Enum', enum: props.genEnum}
 }
 </script>
 
 <template>
-	<div class="menu-item hover-show" :class="isSelected ? 'selected' : ''" @contextmenu="handleContextMenu">
+	<div
+		class="menu-item hover-show"
+		:class="isSelected ? 'selected' : ''"
+		@mouseenter="handleMouseEnter"
+	>
 		<el-text @click="handleClickLabel">
 			{{ genEnum.name }}
 			<Comment :comment="genEnum.comment"/>

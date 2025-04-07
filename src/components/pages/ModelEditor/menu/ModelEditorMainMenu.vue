@@ -16,7 +16,9 @@ import {useAssociationsStore} from "@/store/modelEditor/dialogs/AssociationsStor
 import {useEnumsStore} from "@/store/modelEditor/dialogs/EnumsStore.ts";
 import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineStore.ts";
 import {useAssociationBatchCreateStore} from "@/store/modelEditor/dialogs/AssociationBatchCreateStore.ts";
-import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
+import {useContextMenuStore} from "@/store/modelEditor/contextMenu/ContextMenuStore.ts";
+import {useEventTargetStore} from "@/store/modelEditor/eventTarget/EventTargetStore.ts";
+import {debounce} from "lodash";
 
 const i18nStore = useI18nStore()
 
@@ -74,10 +76,21 @@ const handleCreateEnum = () => {
 }
 
 
+/**
+ * 设置菜单 contextMenu 交互和 eventTarget
+ */
+const eventTargetStore = useEventTargetStore()
+
+const handleMouseMove = debounce((e: MouseEvent) => {
+	if (!judgeTargetIsInteraction(e)) {
+		eventTargetStore.toDefault()
+	}
+}, 50)
+
 const handleContextMenu = (e: MouseEvent) => {
 	e.preventDefault()
 	e.stopPropagation()
-	useModelEditorContextMenuStore().open(
+	useContextMenuStore().open(
 		{x: e.pageX, y: e.pageY},
 	)
 }
@@ -89,6 +102,7 @@ const handleContextMenu = (e: MouseEvent) => {
 		tabindex="-1"
 		@click="handleClickUnselect"
 		@keydown="handleMenuKeyEvent"
+		@mousemove="handleMouseMove"
 		@contextmenu="handleContextMenu"
 	>
 		<el-button @click="dataSourceLoadDialogStore.open()">

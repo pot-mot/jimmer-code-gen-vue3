@@ -5,7 +5,7 @@
         @close="handleClose"
     >
         <context-menu-item
-            v-if="store.target.type === 'SubGroup' ? !!store.target.subGroup : true"
+            v-if="eventTargetStore.target.type === 'SubGroup' ? !!eventTargetStore.target.subGroup : true"
             :label="i18nStore.translate('BUTTON_edit')"
             @click="handleEdit"
         >
@@ -17,19 +17,19 @@
         </context-menu-item>
 
         <context-menu-item
-            v-if="store.target.type === 'Model'"
+            v-if="eventTargetStore.target.type === 'Model'"
             :label="i18nStore.translate('LABEL_ModelEditorMainMenu_createSubGroup')"
             @click="handleCreateSubGroup"
         />
 
         <context-menu-item
-            v-if="(store.target.type === 'Model' && GRAPH.isSelectionEmpty) || store.target.type === 'SubGroup'"
+            v-if="(eventTargetStore.target.type === 'Model' && GRAPH.isSelectionEmpty) || eventTargetStore.target.type === 'SubGroup'"
             :label="i18nStore.translate('LABEL_ModelEditorMainMenu_createTable')"
             @click="handleCreateTable"
         />
 
         <context-menu-item
-            v-if="(store.target.type === 'Model' && MODEL.selectedTables.length > 0 && MODEL.selectedTables.length <= 2) || store.target.type === 'Table'"
+            v-if="(eventTargetStore.target.type === 'Model' && MODEL.selectedTables.length > 0 && MODEL.selectedTables.length <= 2) || eventTargetStore.target.type === 'Table'"
             :label="i18nStore.translate('LABEL_ModelEditorMainMenu_createAssociation')"
             @click="handleCreateAssociation"
         />
@@ -51,7 +51,7 @@
         <context-menu-separator/>
 
         <context-menu-item
-            :disabled="store.target.type === 'Model' ? GRAPH.isSelectionEmpty : false"
+            :disabled="eventTargetStore.target.type === 'Model' ? GRAPH.isSelectionEmpty : false"
             :label="i18nStore.translate('BUTTON_copy')"
             @click="handleCopy"
             shortcut="Ctrl + C"
@@ -61,7 +61,7 @@
             </template>
         </context-menu-item>
         <context-menu-item
-            :disabled="store.target.type === 'Model' ? GRAPH.isSelectionEmpty : false"
+            :disabled="eventTargetStore.target.type === 'Model' ? GRAPH.isSelectionEmpty : false"
             :label="i18nStore.translate('BUTTON_cut')"
             @click="handleCut"
             shortcut="Ctrl + X"
@@ -80,7 +80,7 @@
             </template>
         </context-menu-item>
 
-        <template v-if="store.target.type === 'Model'">
+        <template v-if="eventTargetStore.target.type === 'Model'">
             <context-menu-separator/>
 
             <context-menu-group
@@ -101,7 +101,7 @@
         <context-menu-separator/>
 
         <context-menu-item
-            v-if="store.target.type !== 'Model' && (store.target.type === 'SubGroup' ? !!store.target.subGroup : true)"
+            v-if="eventTargetStore.target.type !== 'Model' && (eventTargetStore.target.type === 'SubGroup' ? !!eventTargetStore.target.subGroup : true)"
             :label="i18nStore.translate('BUTTON_delete')"
             @click="handleDelete"
         >
@@ -112,7 +112,7 @@
             </template>
         </context-menu-item>
         <context-menu-item
-            v-if="store.target.type === 'Model'"
+            v-if="eventTargetStore.target.type === 'Model'"
             :disabled="GRAPH.isSelectionEmpty"
             :label="i18nStore.translate('LABEL_ModelEditorGraph_removeSelected')"
             shortcut="Delete"
@@ -123,7 +123,7 @@
             </template>
         </context-menu-item>
         <context-menu-item
-            v-if="store.target.type === 'Table'"
+            v-if="eventTargetStore.target.type === 'Table'"
             :label="i18nStore.translate('LABEL_ModelEditorGraph_removeAssociation')"
             @click="handleRemoveAssociation"
         >
@@ -136,7 +136,7 @@
 
 <script lang="ts" setup>
 import {ContextMenu, ContextMenuGroup, ContextMenuItem, ContextMenuSeparator,} from '@imengyu/vue3-context-menu';
-import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
+import {useContextMenuStore} from "@/store/modelEditor/contextMenu/ContextMenuStore.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {useModelClipBoard} from "@/components/pages/ModelEditor/clipBoard/modelClipBoard.ts";
@@ -149,25 +149,27 @@ import {Delete, EditPen} from "@element-plus/icons-vue";
 import {useModelEditDialogStore} from "@/store/modelEditor/dialogs/ModelEditDialogStore.ts";
 import {useSubGroupsStore} from "@/store/modelEditor/dialogs/SubGroupsStore.ts";
 import {useTablesStore} from "@/store/modelEditor/dialogs/TablesStore.ts";
-import {
-    AssociationCreateOptions,
-    useAssociationsStore
-} from "@/store/modelEditor/dialogs/AssociationsStore.ts";
+import {AssociationCreateOptions, useAssociationsStore} from "@/store/modelEditor/dialogs/AssociationsStore.ts";
 import {useEnumsStore} from "@/store/modelEditor/dialogs/EnumsStore.ts";
 import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineStore.ts";
 import {getNodeConnectedEdges} from "@/components/global/graphEditor/selection/selectOperation.ts";
+import {useEventTargetStore} from "@/store/modelEditor/eventTarget/EventTargetStore.ts";
 
-const store = useModelEditorContextMenuStore()
+const store = useContextMenuStore()
 
 const i18nStore = useI18nStore()
 
 const {GRAPH, REMOVE, MODEL, VIEW} = useModelEditorStore()
+
+const eventTargetStore = useEventTargetStore()
+
 const modelEditDialogStore = useModelEditDialogStore()
 const subGroupDialogs = useSubGroupsStore()
 const tableDialogs = useTablesStore()
 const associationDialogs = useAssociationsStore()
 const enumDialogs = useEnumsStore()
 const tableCombineDialog = useTableCombineDialogStore()
+
 const {copy, cut, paste} = useModelClipBoard()
 
 const handleClose = () => {
@@ -176,87 +178,87 @@ const handleClose = () => {
 }
 
 const handleEdit = () => {
-    if (store.target.type === "Model") {
+    if (eventTargetStore.target.type === "Model") {
         modelEditDialogStore.open()
-    } else if (store.target.type === "Table") {
-        tableDialogs.edit(store.target.tableNodePair.second.id, store.target.tableNodePair.first)
-    } else if (store.target.type === "Association") {
-        associationDialogs.edit(store.target.associationEdgePair.second.id, store.target.associationEdgePair.first)
-    } else if (store.target.type === "Enum") {
-        enumDialogs.edit(store.target.enum.name, store.target.enum)
-    } else if (store.target.type === "SubGroup" && store.target.subGroup) {
-        subGroupDialogs.edit(store.target.subGroup.name, store.target.subGroup)
+    } else if (eventTargetStore.target.type === "Table") {
+        tableDialogs.edit(eventTargetStore.target.tableNodePair.second.id, eventTargetStore.target.tableNodePair.first)
+    } else if (eventTargetStore.target.type === "Association") {
+        associationDialogs.edit(eventTargetStore.target.associationEdgePair.second.id, eventTargetStore.target.associationEdgePair.first)
+    } else if (eventTargetStore.target.type === "Enum") {
+        enumDialogs.edit(eventTargetStore.target.enum.name, eventTargetStore.target.enum)
+    } else if (eventTargetStore.target.type === "SubGroup" && eventTargetStore.target.subGroup) {
+        subGroupDialogs.edit(eventTargetStore.target.subGroup.name, eventTargetStore.target.subGroup)
     }
 }
 
 const handleCopy = () => {
-    if (store.target.type === "Model") {
+    if (eventTargetStore.target.type === "Model") {
         copy()
-    } else if (store.target.type === "Table") {
-        if (GRAPH.selectedNodeMap.has(store.target.tableNodePair.second.id)) {
+    } else if (eventTargetStore.target.type === "Table") {
+        if (GRAPH.selectedNodeMap.has(eventTargetStore.target.tableNodePair.second.id)) {
             copy()
         } else {
-            copy({tableNodePairs: [store.target.tableNodePair]})
+            copy({tableNodePairs: [eventTargetStore.target.tableNodePair]})
         }
-    } else if (store.target.type === "Association") {
-        if (GRAPH.selectedEdgeMap.has(store.target.associationEdgePair.second.id)) {
+    } else if (eventTargetStore.target.type === "Association") {
+        if (GRAPH.selectedEdgeMap.has(eventTargetStore.target.associationEdgePair.second.id)) {
             copy()
         } else {
-            copy({associationEdgePairs: [store.target.associationEdgePair]})
+            copy({associationEdgePairs: [eventTargetStore.target.associationEdgePair]})
         }
-    } else if (store.target.type === "Enum") {
-        if (MODEL.selectedEnumMap.has(store.target.enum.name)) {
+    } else if (eventTargetStore.target.type === "Enum") {
+        if (MODEL.selectedEnumMap.has(eventTargetStore.target.enum.name)) {
             copy()
         } else {
-            copy({enumNames: [store.target.enum.name]})
+            copy({enumNames: [eventTargetStore.target.enum.name]})
         }
-    } else if (store.target.type === "SubGroup") {
-        if (MODEL.selectedSubGroupMap.has(store.target.subGroup?.name)) {
+    } else if (eventTargetStore.target.type === "SubGroup") {
+        if (MODEL.selectedSubGroupMap.has(eventTargetStore.target.subGroup?.name)) {
             copy()
         } else {
-            copy({subGroupNames: [store.target.subGroup?.name]})
+            copy({subGroupNames: [eventTargetStore.target.subGroup?.name]})
         }
     }
 }
 
 const handleCut = () => {
-    if (store.target.type === "Model") {
+    if (eventTargetStore.target.type === "Model") {
         cut()
-    } else if (store.target.type === "Table") {
-        if (GRAPH.selectedNodeMap.has(store.target.tableNodePair.second.id)) {
+    } else if (eventTargetStore.target.type === "Table") {
+        if (GRAPH.selectedNodeMap.has(eventTargetStore.target.tableNodePair.second.id)) {
             cut()
         } else {
-            cut({tableNodePairs: [store.target.tableNodePair]})
+            cut({tableNodePairs: [eventTargetStore.target.tableNodePair]})
         }
-    } else if (store.target.type === "Association") {
-        if (GRAPH.selectedEdgeMap.has(store.target.associationEdgePair.second.id)) {
+    } else if (eventTargetStore.target.type === "Association") {
+        if (GRAPH.selectedEdgeMap.has(eventTargetStore.target.associationEdgePair.second.id)) {
             cut()
         } else {
-            cut({associationEdgePairs: [store.target.associationEdgePair]})
+            cut({associationEdgePairs: [eventTargetStore.target.associationEdgePair]})
         }
-    } else if (store.target.type === "Enum") {
-        if (MODEL.selectedEnumMap.has(store.target.enum.name)) {
+    } else if (eventTargetStore.target.type === "Enum") {
+        if (MODEL.selectedEnumMap.has(eventTargetStore.target.enum.name)) {
             cut()
         } else {
-            cut({enumNames: [store.target.enum.name]})
+            cut({enumNames: [eventTargetStore.target.enum.name]})
         }
-    } else if (store.target.type === "SubGroup") {
-        if (MODEL.selectedSubGroupMap.has(store.target.subGroup?.name)) {
+    } else if (eventTargetStore.target.type === "SubGroup") {
+        if (MODEL.selectedSubGroupMap.has(eventTargetStore.target.subGroup?.name)) {
             cut()
         } else {
-            cut({subGroupNames: [store.target.subGroup?.name]})
+            cut({subGroupNames: [eventTargetStore.target.subGroup?.name]})
         }
     }
 }
 
 const getTargetSubGroupName = (): string | undefined => {
-    switch (store.target.type) {
+    switch (eventTargetStore.target.type) {
         case "SubGroup":
-            return store.target.subGroup?.name;
+            return eventTargetStore.target.subGroup?.name;
         case "Table":
-            return store.target.tableNodePair.first.subGroup?.name;
+            return eventTargetStore.target.tableNodePair.first.subGroup?.name;
         case "Enum":
-            return store.target.enum.subGroup?.name;
+            return eventTargetStore.target.enum.subGroup?.name;
         default:
             return undefined;
     }
@@ -272,7 +274,7 @@ const handlePaste = () => {
             input.subGroups = []
             return input
         })
-    } else if (store.target.type === "Model") {
+    } else if (eventTargetStore.target.type === "Model") {
         paste(input => {
             input.tables?.forEach(it => it.subGroup = undefined)
             input.enums?.forEach(it => it.subGroup = undefined)
@@ -335,9 +337,9 @@ const handleCreateTable = () => {
 const handleCreateAssociation = () => {
     let options: AssociationCreateOptions | undefined = undefined
 
-    if (store.target.type === "Table") {
+    if (eventTargetStore.target.type === "Table") {
         options = {
-            sourceTableName: store.target.tableNodePair.first.name
+            sourceTableName: eventTargetStore.target.tableNodePair.first.name
         }
     } else if (MODEL.selectedTables.length > 0 && MODEL.selectedTables.length <= 2) {
         options = {
@@ -362,21 +364,21 @@ const handleCombineTable = () => {
 }
 
 const handleDelete = () => {
-    if (store.target.type === "Table") {
-        tableDialogs.remove(store.target.tableNodePair.second.id)
-    } else if (store.target.type === "Association") {
-        associationDialogs.remove(store.target.associationEdgePair.second.id)
-    } else if (store.target.type === "Enum") {
-        enumDialogs.remove(store.target.enum.name)
-    } else if (store.target.type === "SubGroup" && store.target.subGroup) {
-        subGroupDialogs.remove(store.target.subGroup.name)
+    if (eventTargetStore.target.type === "Table") {
+        tableDialogs.remove(eventTargetStore.target.tableNodePair.second.id)
+    } else if (eventTargetStore.target.type === "Association") {
+        associationDialogs.remove(eventTargetStore.target.associationEdgePair.second.id)
+    } else if (eventTargetStore.target.type === "Enum") {
+        enumDialogs.remove(eventTargetStore.target.enum.name)
+    } else if (eventTargetStore.target.type === "SubGroup" && eventTargetStore.target.subGroup) {
+        subGroupDialogs.remove(eventTargetStore.target.subGroup.name)
     }
 }
 
 const handleRemoveAssociation = () => {
-    if (store.target.type === "Table") {
+    if (eventTargetStore.target.type === "Table") {
         const graph = GRAPH._graph()
-        const edges = getNodeConnectedEdges(graph, [store.target.tableNodePair.second.id])
+        const edges = getNodeConnectedEdges(graph, [eventTargetStore.target.tableNodePair.second.id])
         for (const edge of edges) {
             associationDialogs.remove(edge.id)
         }

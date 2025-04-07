@@ -1,6 +1,6 @@
 <template>
 	<div ref="wrapper" class="model-editor-graph" :class="isDragging ? '' : 'non-drag'">
-		<div ref="container" @mousedown="handleMouseDown" @mouseup="handleMouseUp"/>
+		<div ref="container" @mousedown="handleMouseDown" @mouseup="handleMouseUp" @mousemove="handleMouseMove"/>
 
 		<ul v-if="GRAPH.isLoaded" class="toolbar left-top">
 			<li>
@@ -124,9 +124,11 @@ import {useModelEditDialogStore} from "@/store/modelEditor/dialogs/ModelEditDial
 import {useMultiCodePreviewStore} from "@/store/modelEditor/MultiCodePreviewStore.ts";
 import {jsonSortPropStringify} from "@/utils/json.ts";
 import {api} from "@/api";
-import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
+import {useContextMenuStore} from "@/store/modelEditor/contextMenu/ContextMenuStore.ts";
 import {judgeTarget} from "@/utils/clickUtils.ts";
 import {useTablesStore} from "@/store/modelEditor/dialogs/TablesStore.ts";
+import {useEventTargetStore} from "@/store/modelEditor/eventTarget/EventTargetStore.ts";
+import {debounce} from "lodash";
 
 const i18nStore = useI18nStore()
 
@@ -143,7 +145,8 @@ const tableDialogs = useTablesStore()
 
 const loadingStore = useGlobalLoadingStore()
 
-const contextMenuStore = useModelEditorContextMenuStore()
+const eventTargetStore = useEventTargetStore()
+const contextMenuStore = useContextMenuStore()
 
 onMounted(loadingStore.withLoading('ModelEditorGraph onMounted', () => {
 	graph = initModelEditor(container.value!, wrapper.value!)
@@ -260,7 +263,7 @@ const handleMouseUp = (e: MouseEvent) => {
 	if (e.button === 2) {
 		if (contextMenuFlag.value) {
 			contextMenuFlag.value = false
-			handleOpenContextMenu(e)
+			contextMenuStore.open({x: e.pageX, y: e.pageY})
 		}
 		if (isDragging.value) {
 			isDragging.value = false
@@ -268,10 +271,8 @@ const handleMouseUp = (e: MouseEvent) => {
 	}
 }
 
-const handleOpenContextMenu = (e: MouseEvent) => {
+const handleMouseMove = debounce((e: MouseEvent) => {
 	let matchedEl: HTMLElement | undefined = undefined
-
-	const options = {x: e.pageX, y: e.pageY}
 
 	if (judgeTarget(e, (el) => {
 		if (el.classList.contains("x6-node")) {
@@ -282,7 +283,7 @@ const handleOpenContextMenu = (e: MouseEvent) => {
 		if (matchedEl) {
 			const tableNodePair = MODEL.tableNodePairs.find(it => it.second.id === matchedEl?.getAttribute("data-cell-id"))
 			if (tableNodePair !== undefined) {
-				contextMenuStore.open(options, {type: "Table", tableNodePair})
+				eventTargetStore.target = {type: "Table", tableNodePair}
 				return
 			}
 		}
@@ -297,14 +298,14 @@ const handleOpenContextMenu = (e: MouseEvent) => {
 		if (matchedEl) {
 			const associationEdgePair = MODEL.associationEdgePairs.find(it => it.second.id === matchedEl?.getAttribute("data-cell-id"))
 			if (associationEdgePair !== undefined) {
-				contextMenuStore.open(options, {type: "Association", associationEdgePair})
+				eventTargetStore.target = {type: "Association", associationEdgePair}
 				return
 			}
 		}
 	}
 
-	contextMenuStore.open(options)
-}
+	eventTargetStore.toDefault()
+}, 50)
 
 /**
  * 代码预览与下载
