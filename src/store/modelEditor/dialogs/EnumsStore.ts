@@ -84,24 +84,17 @@ export const useEnumsStore = defineStore(
             MODEL_EDITOR.waitRefreshModelAndCode()
         }
 
-        const pureRemove = (name: string) => {
-            MODEL_EDITOR.startBatchSync('removeEnum', () => {
-                const model = MODEL._model()
-                const graph = GRAPH._graph()
-                model.enums = model.enums.filter(it => it.name !== name)
-                syncEnumNameForTables(graph, name, undefined)
-            })
-
-            MODEL_EDITOR.waitRefreshModelAndCode()
-        }
         const remove = (name: string, confirm: boolean = true) => {
-            if (confirm) {
-                deleteConfirm(`${useI18nStore().translate("LABEL_DeleteTarget_Enum")}【${name}】`, () => {
-                    pureRemove(name)
+            deleteConfirm(`${useI18nStore().translate("LABEL_DeleteTarget_Enum")}【${name}】`, () => {
+                MODEL_EDITOR.startBatchSync('removeEnum', () => {
+                    const model = MODEL._model()
+                    const graph = GRAPH._graph()
+                    model.enums = model.enums.filter(it => it.name !== name)
+                    syncEnumNameForTables(graph, name, undefined)
                 })
-            } else {
-                pureRemove(name)
-            }
+
+                MODEL_EDITOR.waitRefreshModelAndCode()
+            }, confirm)
         }
 
         const submit = (key: string, association: DeepReadonly<GenModelInput_TargetOf_enums>) => {

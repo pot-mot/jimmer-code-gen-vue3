@@ -96,28 +96,21 @@ export const useTablesStore = defineStore(
             MODEL_EDITOR.waitRefreshModelAndCode()
         }
 
-        const pureRemove = (tableNodePair: DeepReadonly<TableNodePair>) => {
-            const graph = GRAPH._graph()
-
-            MODEL_EDITOR.startBatchSync('removeTable', () => {
-                const {table, node} = tableNodePair
-                // 当上级表被删除时，调整其他表中的 superTables
-                if (table.type === "SUPER_TABLE") {
-                    syncSuperTableNameForTables(graph, table.name, undefined)
-                }
-                graph.removeNode(node.id)
-            })
-
-            MODEL_EDITOR.waitRefreshModelAndCode()
-        }
         const remove = (tableNodePair: DeepReadonly<TableNodePair>, confirm: boolean = true) => {
-            if (confirm) {
-                deleteConfirm(`${useI18nStore().translate("LABEL_DeleteTarget_Table")}【${tableNodePair.table.name}】`, () => {
-                    pureRemove(tableNodePair)
+            deleteConfirm(`${useI18nStore().translate("LABEL_DeleteTarget_Table")}【${tableNodePair.table.name}】`, () => {
+                const graph = GRAPH._graph()
+
+                MODEL_EDITOR.startBatchSync('removeTable', () => {
+                    const {table, node} = tableNodePair
+                    // 当上级表被删除时，调整其他表中的 superTables
+                    if (table.type === "SUPER_TABLE") {
+                        syncSuperTableNameForTables(graph, table.name, undefined)
+                    }
+                    graph.removeNode(node.id)
                 })
-            } else {
-                pureRemove(tableNodePair)
-            }
+
+                MODEL_EDITOR.waitRefreshModelAndCode()
+            }, confirm)
         }
 
         const submit = (key: string, table: DeepReadonly<GenTableModelInput>) => {

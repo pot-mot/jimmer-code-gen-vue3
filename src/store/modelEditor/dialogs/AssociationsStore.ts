@@ -85,18 +85,11 @@ export const useAssociationsStore = defineStore(
             MODEL_EDITOR.waitRefreshModelAndCode()
         }
 
-        const pureRemove = (associationEdgePair: DeepReadonly<AssociationEdgePair>) => {
-            GRAPH._graph().removeEdge(associationEdgePair.edge.id)
-            MODEL_EDITOR.waitRefreshModelAndCode()
-        }
         const remove = (associationEdgePair: DeepReadonly<AssociationEdgePair>, confirm: boolean = true) => {
-            if (confirm) {
-                deleteConfirm(`${useI18nStore().translate('LABEL_DeleteTarget_Association')}【${associationEdgePair.association.name}】`, () => {
-                    pureRemove(associationEdgePair)
-                })
-            } else {
-                pureRemove(associationEdgePair)
-            }
+            deleteConfirm(`${useI18nStore().translate('LABEL_DeleteTarget_Association')}【${associationEdgePair.association.name}】`, () => {
+                GRAPH._graph().removeEdge(associationEdgePair.edge.id)
+                MODEL_EDITOR.waitRefreshModelAndCode()
+            }, confirm)
         }
 
         const submit = (key: string, association: DeepReadonly<GenAssociationModelInput>) => {
