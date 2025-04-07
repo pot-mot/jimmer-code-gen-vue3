@@ -99,7 +99,7 @@ type ModelState = {
     unload: () => void
 }
 
-type ModelGraphInput = {
+export type ModelLoadInput = {
     subGroups?: Array<GenModelInput_TargetOf_subGroups>,
     enums?: Array<GenModelInput_TargetOf_enums>,
     tables?: Array<GenTableModelInput>,
@@ -116,7 +116,7 @@ type LoadResult = {
 }
 
 type ModelLoadOperation = {
-    loadInput: (input: DeepReadonly<ModelGraphInput>) => LoadResult
+    loadInput: (input: DeepReadonly<ModelLoadInput>) => LoadResult
     loadModel: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
     loadSchema: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
     loadTable: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
@@ -733,7 +733,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
 
     const loadInput = (
-        input: DeepReadonly<ModelGraphInput>
+        input: DeepReadonly<ModelLoadInput>
     ): LoadResult => {
         const graph = _graph()
         const model = assertModel()
@@ -747,7 +747,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             associations: inputAssociations = [] as GenAssociationModelInput[],
             baseTableOptions,
             eachTableOptions
-        } = cloneDeepReadonly<ModelGraphInput>(input)
+        } = cloneDeepReadonly<ModelLoadInput>(input)
 
         const {
             newSubGroups,

@@ -42,64 +42,24 @@ const handleDelete = () => {
 	})
 }
 
-const getAssociationSourceLabel = (association: GenAssociationModelInput) => {
-	const tempEdgeName: string[] = []
-
-	tempEdgeName.push(association.sourceTableName)
-	tempEdgeName.push('.')
-	tempEdgeName.push(association.columnReferences.map(it => it.sourceColumnName).join(","))
-
-	return tempEdgeName.join('')
-}
-
-const getAssociationTargetLabel = (association: GenAssociationModelInput) => {
-	const tempEdgeName: string[] = []
-
-	tempEdgeName.push(association.targetTableName)
-	tempEdgeName.push('.')
-	tempEdgeName.push(association.columnReferences.map(it => it.targetColumnName).join(","))
-
-	return tempEdgeName.join('')
-}
-
-const sourceLabel = computed<string | undefined>(() => {
-	if (!props.association) return
-	try {
-		return getAssociationSourceLabel(props.association)
-	} catch (e) {
-		return
-	}
-})
-
-const targetLabel = computed<string | undefined>(() => {
-	if (!props.association) return
-	try {
-		return getAssociationTargetLabel(props.association)
-	} catch (e) {
-		return
-	}
-})
-
 const handleEdit = (association: GenAssociationModelInput) => {
 	AssociationDialogs.edit(props.edge.id, association)
 }
 
 const handleContextMenu = (e: MouseEvent) => {
-	if (props.association && props.edge) {
-		e.preventDefault()
-		e.stopPropagation()
-		useModelEditorContextMenuStore().open(
-			{x: e.pageX, y: e.pageY},
-			{type: 'Association', associationEdgePair: {first: props.association, second: props.edge}}
-		)
-	}
+	e.preventDefault()
+	e.stopPropagation()
+	useModelEditorContextMenuStore().open(
+		{x: e.pageX, y: e.pageY},
+		{type: 'Association', associationEdgePair: {first: props.association, second: props.edge}}
+	)
 }
 </script>
 
 <template>
-	<div v-if="association && sourceLabel && targetLabel"
-		 class="menu-item hover-show" :class="isSelected ? 'selected' : ''"
-		 @contextmenu="handleContextMenu"
+	<div
+		class="menu-item hover-show" :class="isSelected ? 'selected' : ''"
+		@contextmenu="handleContextMenu"
 	>
 		<el-text @click="handleClickAssociation">
 			<AssociationIcon
@@ -115,9 +75,5 @@ const handleContextMenu = (e: MouseEvent) => {
 			<el-button :icon="EditPen" link type="warning" @click="handleEdit(association)"/>
 			<el-button :icon="Delete" link type="danger" @click="handleDelete"/>
 		</span>
-	</div>
-
-	<div v-else>
-		<el-text type="warning">{{ edge.id }}</el-text>
 	</div>
 </template>

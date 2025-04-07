@@ -42,14 +42,12 @@ const handleDelete = () => {
 }
 
 const handleContextMenu = (e: MouseEvent) => {
-	if (props.genEnum) {
-		e.preventDefault()
-		e.stopPropagation()
-		useModelEditorContextMenuStore().open(
-			{x: e.pageX, y: e.pageY},
-			{type: 'Enum', enum: props.genEnum}
-		)
-	}
+	e.preventDefault()
+	e.stopPropagation()
+	useModelEditorContextMenuStore().open(
+		{x: e.pageX, y: e.pageY},
+		{type: 'Enum', enum: props.genEnum}
+	)
 }
 </script>
 

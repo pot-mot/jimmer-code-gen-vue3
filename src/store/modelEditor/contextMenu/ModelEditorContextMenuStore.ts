@@ -24,7 +24,7 @@ type ModelEditorContextMenuOpenTarget = {
     associationEdgePair: DeepReadonly<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>
 } | {
     type: "SubGroup",
-    subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>
+    subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups> | undefined
 } | {
     type: "Enum",
     enum: DeepReadonly<GenModelInput_TargetOf_enums>

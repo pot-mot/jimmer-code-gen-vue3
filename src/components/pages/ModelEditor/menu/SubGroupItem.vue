@@ -69,14 +69,12 @@ const handleDelete = () => {
 }
 
 const handleContextMenu = (e: MouseEvent) => {
-	if (props.subGroup) {
-		e.preventDefault()
-		e.stopPropagation()
-		useModelEditorContextMenuStore().open(
-			{x: e.pageX, y: e.pageY},
-			{type: 'SubGroup', subGroup: props.subGroup}
-		)
-	}
+	e.preventDefault()
+	e.stopPropagation()
+	useModelEditorContextMenuStore().open(
+		{x: e.pageX, y: e.pageY},
+		{type: 'SubGroup', subGroup: props.subGroup}
+	)
 }
 </script>
 

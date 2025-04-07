@@ -5,6 +5,7 @@
         @close="handleClose"
     >
         <context-menu-item
+            v-if="store.target.type === 'SubGroup' ? !!store.target.subGroup : true"
             :label="i18nStore.translate('BUTTON_edit')"
             @click="handleEdit"
         >
@@ -71,7 +72,7 @@
         </context-menu-item>
         <context-menu-item
             :label="i18nStore.translate('BUTTON_paste')"
-            @click="paste"
+            @click="handlePaste"
             shortcut="Ctrl + V"
         >
             <template #icon>
@@ -79,26 +80,28 @@
             </template>
         </context-menu-item>
 
-        <context-menu-separator/>
+        <template v-if="store.target.type === 'Model'">
+            <context-menu-separator/>
 
-        <context-menu-group
-            :label="i18nStore.translate('LABEL_ModelEditorGraph_layoutAndFit')"
-        >
-            <context-menu-item
-                v-for="option in layoutOptions"
-                :label="option.label"
-                @click="option.click()"
+            <context-menu-group
+                :label="i18nStore.translate('LABEL_ModelEditorGraph_layoutAndFit')"
             >
-                <template #icon>
-                    {{ option.icon }}
-                </template>
-            </context-menu-item>
-        </context-menu-group>
+                <context-menu-item
+                    v-for="option in layoutOptions"
+                    :label="option.label"
+                    @click="option.click()"
+                >
+                    <template #icon>
+                        {{ option.icon }}
+                    </template>
+                </context-menu-item>
+            </context-menu-group>
+        </template>
 
         <context-menu-separator/>
 
         <context-menu-item
-            v-if="store.target.type !== 'Model'"
+            v-if="store.target.type !== 'Model' && (store.target.type === 'SubGroup' ? !!store.target.subGroup : true)"
             :label="i18nStore.translate('BUTTON_delete')"
             @click="handleDelete"
         >
@@ -181,7 +184,7 @@ const handleEdit = () => {
         associationDialogs.edit(store.target.associationEdgePair.second.id, store.target.associationEdgePair.first)
     } else if (store.target.type === "Enum") {
         enumDialogs.edit(store.target.enum.name, store.target.enum)
-    } else if (store.target.type === "SubGroup") {
+    } else if (store.target.type === "SubGroup" && store.target.subGroup) {
         subGroupDialogs.edit(store.target.subGroup.name, store.target.subGroup)
     }
 }
@@ -208,10 +211,10 @@ const handleCopy = () => {
             copy({enumNames: [store.target.enum.name]})
         }
     } else if (store.target.type === "SubGroup") {
-        if (MODEL.selectedEnumMap.has(store.target.subGroup.name)) {
+        if (MODEL.selectedSubGroupMap.has(store.target.subGroup?.name)) {
             copy()
         } else {
-            copy({subGroupNames: [store.target.subGroup.name]})
+            copy({subGroupNames: [store.target.subGroup?.name]})
         }
     }
 }
@@ -238,11 +241,46 @@ const handleCut = () => {
             cut({enumNames: [store.target.enum.name]})
         }
     } else if (store.target.type === "SubGroup") {
-        if (MODEL.selectedEnumMap.has(store.target.subGroup.name)) {
+        if (MODEL.selectedSubGroupMap.has(store.target.subGroup?.name)) {
             cut()
         } else {
-            cut({subGroupNames: [store.target.subGroup.name]})
+            cut({subGroupNames: [store.target.subGroup?.name]})
         }
+    }
+}
+
+const getTargetSubGroupName = (): string | undefined => {
+    switch (store.target.type) {
+        case "SubGroup":
+            return store.target.subGroup?.name;
+        case "Table":
+            return store.target.tableNodePair.first.subGroup?.name;
+        case "Enum":
+            return store.target.enum.subGroup?.name;
+        default:
+            return undefined;
+    }
+}
+
+const handlePaste = () => {
+    const subGroupName = getTargetSubGroupName()
+
+    if (subGroupName !== undefined) {
+        paste(input => {
+            input.tables?.forEach(it => it.subGroup = {name: subGroupName})
+            input.enums?.forEach(it => it.subGroup = {name: subGroupName})
+            input.subGroups = []
+            return input
+        })
+    } else if (store.target.type === "Model") {
+        paste(input => {
+            input.tables?.forEach(it => it.subGroup = undefined)
+            input.enums?.forEach(it => it.subGroup = undefined)
+            input.subGroups = []
+            return input
+        })
+    } else {
+        paste()
     }
 }
 
@@ -286,14 +324,7 @@ const handleCreateSubGroup = () => {
 }
 
 const handleCreateTable = () => {
-    let subGroupName: string | undefined = undefined
-    if (store.target.type === "SubGroup") {
-        subGroupName = store.target.subGroup.name
-    } else if (store.target.type === "Table") {
-        subGroupName = store.target.tableNodePair.first.subGroup?.name
-    } else if (store.target.type === "Enum") {
-        subGroupName = store.target.enum.subGroup?.name
-    }
+    const subGroupName = getTargetSubGroupName()
 
     tableDialogs.create({
         subGroupName,
@@ -319,14 +350,7 @@ const handleCreateAssociation = () => {
 }
 
 const handleCreateEnum = () => {
-    let subGroupName: string | undefined = undefined
-    if (store.target.type === "SubGroup") {
-        subGroupName = store.target.subGroup.name
-    } else if (store.target.type === "Table") {
-        subGroupName = store.target.tableNodePair.first.subGroup?.name
-    } else if (store.target.type === "Enum") {
-        subGroupName = store.target.enum.subGroup?.name
-    }
+    const subGroupName = getTargetSubGroupName()
 
     enumDialogs.create({
         subGroupName
@@ -344,7 +368,7 @@ const handleDelete = () => {
         associationDialogs.remove(store.target.associationEdgePair.second.id)
     } else if (store.target.type === "Enum") {
         enumDialogs.remove(store.target.enum.name)
-    } else if (store.target.type === "SubGroup") {
+    } else if (store.target.type === "SubGroup" && store.target.subGroup) {
         subGroupDialogs.remove(store.target.subGroup.name)
     }
 }

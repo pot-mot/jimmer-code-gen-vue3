@@ -37,31 +37,29 @@ const handleClickLabel = (e: MouseEvent) => {
 }
 
 const handleEdit = () => {
-    tableDialogs.edit(props.node.id, props.table)
+	tableDialogs.edit(props.node.id, props.table)
 }
 
 const handleDelete = () => {
 	deleteConfirm(`${i18nStore.translate("LABEL_DeleteTarget_Enum")}【${props.table.name}】`, () => {
-        tableDialogs.remove(props.node.id)
+		tableDialogs.remove(props.node.id)
 	})
 }
 
 const handleContextMenu = (e: MouseEvent) => {
-	if (props.table && props.node) {
-		e.preventDefault()
-		e.stopPropagation()
-		useModelEditorContextMenuStore().open(
-			{x: e.pageX, y: e.pageY},
-			{type: 'Table', tableNodePair: {first: props.table, second: props.node}}
-		)
-	}
+	e.preventDefault()
+	e.stopPropagation()
+	useModelEditorContextMenuStore().open(
+		{x: e.pageX, y: e.pageY},
+		{type: 'Table', tableNodePair: {first: props.table, second: props.node}}
+	)
 }
 </script>
 
 <template>
-	<div v-if="table"
-		 class="menu-item hover-show" :class="isSelected ? 'selected' : ''"
-		 @contextmenu="handleContextMenu"
+	<div
+		class="menu-item hover-show" :class="isSelected ? 'selected' : ''"
+		@contextmenu="handleContextMenu"
 	>
 		<el-text @click="handleClickLabel">
 			<TableIcon :type="table.type"/>
@@ -73,9 +71,5 @@ const handleContextMenu = (e: MouseEvent) => {
 			<el-button :icon="EditPen" link type="warning" @click="handleEdit"/>
 			<el-button :icon="Delete" link type="danger" @click="handleDelete"/>
 		</span>
-	</div>
-
-	<div v-else>
-		<el-text type="warning">{{ node.id }}</el-text>
 	</div>
 </template>
