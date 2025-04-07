@@ -272,9 +272,9 @@ const handleCombineTable = () => {
 
 const handleDelete = () => {
     if (eventTargetStore.target.type === "Table") {
-        tableDialogs.remove(eventTargetStore.target.tableNodePair.node.id)
+        tableDialogs.remove(eventTargetStore.target.tableNodePair)
     } else if (eventTargetStore.target.type === "Association") {
-        associationDialogs.remove(eventTargetStore.target.associationEdgePair.edge.id)
+        associationDialogs.remove(eventTargetStore.target.associationEdgePair)
     } else if (eventTargetStore.target.type === "Enum") {
         enumDialogs.remove(eventTargetStore.target.enum.name)
     } else if (eventTargetStore.target.type === "SubGroup" && eventTargetStore.target.subGroup) {
@@ -286,9 +286,7 @@ const handleRemoveAssociation = () => {
     if (eventTargetStore.target.type === "Table") {
         const graph = GRAPH._graph()
         const edges = getNodeConnectedEdges(graph, [eventTargetStore.target.tableNodePair.node.id])
-        for (const edge of edges) {
-            associationDialogs.remove(edge.id)
-        }
+        REMOVE.removeCells(edges)
     }
 }
 </script>

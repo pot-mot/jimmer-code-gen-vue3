@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
-import {deleteConfirm} from "@/message/confirm.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {computed} from "vue";
 import {useEnumsStore} from "@/store/modelEditor/dialogs/EnumsStore.ts";
 import {useEventTargetStore} from "@/store/modelEditor/eventTarget/EventTargetStore.ts";
-
-const i18nStore = useI18nStore()
 
 const props = defineProps<{
 	genEnum: GenModelInput_TargetOf_enums
@@ -37,9 +33,7 @@ const handleEdit = () => {
 }
 
 const handleDelete = () => {
-	deleteConfirm(`${i18nStore.translate("LABEL_DeleteTarget_Enum")}【${props.genEnum.name}】`, () => {
-		enumDialogs.remove(props.genEnum.name)
-	})
+    enumDialogs.remove(props.genEnum.name)
 }
 </script>
 

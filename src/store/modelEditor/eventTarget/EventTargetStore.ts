@@ -30,9 +30,11 @@ export const useEventTargetStore = defineStore(
         const target = ref<ModelEditorEventTarget>(getDefaultTarget())
 
         const targetLock = ref(false)
+        const isLock = () => {return targetLock.value}
+        const lock = () => {targetLock.value = true}
+        const unlock = () => {targetLock.value = false}
 
         const contextMenuStore = useContextMenuStore()
-
         watch(() => contextMenuStore.openState, (value) => {
             targetLock.value = value;
         })
@@ -67,6 +69,11 @@ export const useEventTargetStore = defineStore(
 
         return {
             target: targetWrapper,
+
+            isLock,
+            lock,
+            unlock,
+
             toDefault,
             getTargetSubGroupName,
         }

@@ -3,14 +3,10 @@ import {AssociationEdgePair, useModelEditorStore} from "@/store/modelEditor/Mode
 import {computed} from "vue";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
-import {deleteConfirm} from "@/message/confirm.ts";
-import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import AssociationIcon from "@/components/global/icons/database/AssociationIcon.vue";
 import {useAssociationsStore} from "@/store/modelEditor/dialogs/AssociationsStore.ts";
 import AssociationDialogs from "@/components/pages/ModelEditor/dialogs/association/AssociationDialogs.vue";
 import {useEventTargetStore} from "@/store/modelEditor/eventTarget/EventTargetStore.ts";
-
-const i18nStore = useI18nStore()
 
 const props = defineProps<AssociationEdgePair>()
 
@@ -33,9 +29,7 @@ const handleClickAssociation = (e: MouseEvent) => {
 }
 
 const handleDelete = () => {
-	deleteConfirm(`${i18nStore.translate('LABEL_DeleteTarget_Association')}【${props.association.name}】`, () => {
-		associationDialogs.remove(props.edge.id)
-	})
+    associationDialogs.remove(props)
 }
 
 const handleEdit = (association: GenAssociationModelInput) => {

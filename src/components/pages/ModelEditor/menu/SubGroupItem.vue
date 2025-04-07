@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {GenModelInput_TargetOf_subGroups} from "@/api/__generated/model/static";
-import {deleteConfirm} from "@/message/confirm.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {computed, nextTick} from "vue";
@@ -63,9 +62,7 @@ const handleEdit = () => {
 const handleDelete = () => {
 	if (props.subGroup) {
 		const subGroup = props.subGroup
-		deleteConfirm(`${i18nStore.translate("LABEL_DeleteTarget_SubGroup")}【${subGroup.name}】`, () => {
-			subGroupDialogs.remove(subGroup.name)
-		})
+        subGroupDialogs.remove(subGroup.name)
 	}
 }
 </script>

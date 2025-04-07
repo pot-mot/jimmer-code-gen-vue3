@@ -213,9 +213,9 @@ const initModelEditorStore = (): ModelEditorStore => {
             startBatchSync(target, () => {
                 cells.forEach(cell => {
                     if (cell.isNode() && cell.shape === TABLE_NODE) {
-                        useTablesStore().remove(cell.id)
+                        useTablesStore().remove({table: cell.data.table, node: cell}, false)
                     } else if (cell.isEdge() && cell.shape === ASSOCIATION_EDGE) {
-                        useAssociationsStore().remove(cell.id)
+                        useAssociationsStore().remove({association: cell.data.association, edge: cell}, false)
                     }
                 })
             })
