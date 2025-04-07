@@ -97,12 +97,12 @@ const enumDialogs = useEnumsStore()
 const entityDialogs = useEntitiesStore()
 
 const editTable = (idName: IdName) => {
-	const tableNodePair = cloneDeep(MODEL.tableNodePairs.filter(it => it.first.name === idName.name)[0])
+	const tableNodePair = cloneDeep(MODEL.tableNodePairs.filter(it => it.table.name === idName.name)[0])
 	if (!tableNodePair) {
 		sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickTableNotFoundInCurrentModel", args: [idName]})
 		return
 	}
-    tableDialogs.edit(tableNodePair.second.id, tableNodePair.first)
+    tableDialogs.edit(tableNodePair.node.id, tableNodePair.table)
 }
 
 const editEnum = (idName: IdName) => {
@@ -115,12 +115,12 @@ const editEnum = (idName: IdName) => {
 }
 
 const editAssociation = (idName: IdName) => {
-	const associationEdgePair = cloneDeep(MODEL.associationEdgePairs.filter(it => it.first.name === idName.name)[0])
+	const associationEdgePair = cloneDeep(MODEL.associationEdgePairs.filter(it => it.association.name === idName.name)[0])
 	if (!associationEdgePair) {
 		sendI18nMessage({key: "MESSAGE_GenerateFileMenu_clickAssociationNotFoundInCurrentModel", args: [idName]})
 		return
 	}
-    associationDialogs.edit(associationEdgePair.second.id, associationEdgePair.first)
+    associationDialogs.edit(associationEdgePair.edge.id, associationEdgePair.association)
 }
 
 const editEntity = async (idName: IdName): Promise<void> => {

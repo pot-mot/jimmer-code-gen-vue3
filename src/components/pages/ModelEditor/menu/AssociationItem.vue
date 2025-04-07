@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
+import {AssociationEdgePair, useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {computed} from "vue";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
 import {deleteConfirm} from "@/message/confirm.ts";
-import {Edge} from "@antv/x6";
-import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import AssociationIcon from "@/components/global/icons/database/AssociationIcon.vue";
 import {useAssociationsStore} from "@/store/modelEditor/dialogs/AssociationsStore.ts";
@@ -14,10 +12,7 @@ import {useEventTargetStore} from "@/store/modelEditor/eventTarget/EventTargetSt
 
 const i18nStore = useI18nStore()
 
-const props = defineProps<{
-	edge: UnwrapRefSimple<Edge>,
-	association: GenAssociationModelInput,
-}>()
+const props = defineProps<AssociationEdgePair>()
 
 const associationDialogs = useAssociationsStore()
 
@@ -47,7 +42,7 @@ const handleEdit = (association: GenAssociationModelInput) => {
 }
 
 const handleMouseEnter = () => {
-	useEventTargetStore().target = {type: 'Association', associationEdgePair: {first: props.association, second: props.edge}}
+	useEventTargetStore().target = {type: 'Association', associationEdgePair: props}
 }
 </script>
 

@@ -2,7 +2,7 @@ import {Node, Edge} from "@antv/x6";
 import {
     GenAssociationModelInput,
     GenTableModelInput,
-    GenTableModelInput_TargetOf_columns, Pair,
+    GenTableModelInput_TargetOf_columns,
 } from "@/api/__generated/model/static";
 import {erRouter, orthRouter} from "@/components/global/graphEditor/edge/edgeRouter.ts";
 import {ASSOCIATION_EDGE} from "@/components/pages/ModelEditor/constant.ts";
@@ -14,6 +14,7 @@ import {
 } from "@/components/pages/ModelEditor/load/mergeWithExisted.ts";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
+import {TableNodePair} from "@/store/modelEditor/ModelEditorStore.ts";
 
 type AssociationEdgeConnect = {
     association: GenAssociationModelInput
@@ -34,21 +35,21 @@ type ColumnReferenceConnect = AssociationEdgeConnect["columnReferences"][number]
 
 const associationToEdgeConnect = (
     association: GenAssociationModelInput,
-    tableNodes: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
+    tableNodes: Array<TableNodePair>,
 ): AssociationEdgeConnect | undefined => {
     if (association.columnReferences.length === 0) return
 
     const sourcePair = tableNodes.find(it =>
-        it.first.name === association.sourceTableName
+        it.table.name === association.sourceTableName
     )
     if (!sourcePair) return
     const targetPair = tableNodes.find(it =>
-        it.first.name === association.targetTableName
+        it.table.name === association.targetTableName
     )
     if (!targetPair) return
 
-    const {first: sourceTable, second: sourceNode} = sourcePair
-    const {first: targetTable, second: targetNode} = targetPair
+    const {table: sourceTable, node: sourceNode} = sourcePair
+    const {table: targetTable, node: targetNode} = targetPair
     const columnReferences = <ColumnReferenceConnect[]>[]
 
     for (const columnReference of association.columnReferences) {
@@ -161,7 +162,7 @@ export const loadAssociationEdge = (
     associations: DeepReadonly<GenAssociationModelInput[]>,
     existedAssociations: DeepReadonly<GenAssociationModelInput[]>,
     tableNameMap: DeepReadonly<Map<string, GenTableModelInput[]>>,
-    tableNodes: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
+    tableNodes: Array<TableNodePair>,
 ): {
     edgeMetas: Edge.Metadata[],
     allAssociations: Array<GenAssociationModelInput>,

@@ -27,7 +27,7 @@ const validate = (data: DeepReadonly<TableCombineData>) => {
         MODEL.enums,
     )
 
-    for (const inheritTable of data.inheritTableNodePairs.map(it => it.first)) {
+    for (const inheritTable of data.inheritTableNodePairs.map(it => it.table)) {
         messageList.push(...validateTable(
             inheritTable,
             [...getOtherTables(inheritTable.name), data.superTable],

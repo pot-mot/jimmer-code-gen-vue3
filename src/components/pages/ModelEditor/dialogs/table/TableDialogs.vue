@@ -24,7 +24,7 @@ const handleSubmit = (key: string, table: DeepReadonly<GenTableModelInput>) => {
 const validate = (key: string, table: DeepReadonly<GenTableModelInput>) => {
     return validateTable(
         table,
-        MODEL.tableNodePairs.filter(it => it.second.id !== key).map(it => it.first),
+        MODEL.tableNodePairs.filter(it => it.node.id !== key).map(it => it.table),
         MODEL.subGroups,
         MODEL.enums,
     )

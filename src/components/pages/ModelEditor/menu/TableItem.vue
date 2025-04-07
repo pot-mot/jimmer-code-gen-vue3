@@ -1,23 +1,17 @@
 <script lang="ts" setup>
-import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
+import {TableNodePair, useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {computed} from "vue";
-import {GenTableModelInput} from "@/api/__generated/model/static";
 import {deleteConfirm} from "@/message/confirm.ts";
-import {Node} from "@antv/x6";
-import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {useTablesStore} from "@/store/modelEditor/dialogs/TablesStore.ts";
 import {useEventTargetStore} from "@/store/modelEditor/eventTarget/EventTargetStore.ts";
 
 const i18nStore = useI18nStore()
 
-const props = defineProps<{
-	node: UnwrapRefSimple<Node>,
-	table: GenTableModelInput
-}>()
+const props = defineProps<TableNodePair>()
 
 const tableDialogs = useTablesStore()
 
@@ -47,7 +41,7 @@ const handleDelete = () => {
 }
 
 const handleMouseEnter = () => {
-	useEventTargetStore().target = {type: 'Table', tableNodePair: {first: props.table, second: props.node}}
+	useEventTargetStore().target = {type: 'Table', tableNodePair: props}
 }
 </script>
 

@@ -181,9 +181,9 @@ const handleEdit = () => {
     if (eventTargetStore.target.type === "Model") {
         modelEditDialogStore.open()
     } else if (eventTargetStore.target.type === "Table") {
-        tableDialogs.edit(eventTargetStore.target.tableNodePair.second.id, eventTargetStore.target.tableNodePair.first)
+        tableDialogs.edit(eventTargetStore.target.tableNodePair.node.id, eventTargetStore.target.tableNodePair.table)
     } else if (eventTargetStore.target.type === "Association") {
-        associationDialogs.edit(eventTargetStore.target.associationEdgePair.second.id, eventTargetStore.target.associationEdgePair.first)
+        associationDialogs.edit(eventTargetStore.target.associationEdgePair.edge.id, eventTargetStore.target.associationEdgePair.association)
     } else if (eventTargetStore.target.type === "Enum") {
         enumDialogs.edit(eventTargetStore.target.enum.name, eventTargetStore.target.enum)
     } else if (eventTargetStore.target.type === "SubGroup" && eventTargetStore.target.subGroup) {
@@ -195,13 +195,13 @@ const handleCopy = () => {
     if (eventTargetStore.target.type === "Model") {
         copy()
     } else if (eventTargetStore.target.type === "Table") {
-        if (GRAPH.selectedNodeMap.has(eventTargetStore.target.tableNodePair.second.id)) {
+        if (GRAPH.selectedNodeMap.has(eventTargetStore.target.tableNodePair.node.id)) {
             copy()
         } else {
             copy({tableNodePairs: [eventTargetStore.target.tableNodePair]})
         }
     } else if (eventTargetStore.target.type === "Association") {
-        if (GRAPH.selectedEdgeMap.has(eventTargetStore.target.associationEdgePair.second.id)) {
+        if (GRAPH.selectedEdgeMap.has(eventTargetStore.target.associationEdgePair.edge.id)) {
             copy()
         } else {
             copy({associationEdgePairs: [eventTargetStore.target.associationEdgePair]})
@@ -225,13 +225,13 @@ const handleCut = () => {
     if (eventTargetStore.target.type === "Model") {
         cut()
     } else if (eventTargetStore.target.type === "Table") {
-        if (GRAPH.selectedNodeMap.has(eventTargetStore.target.tableNodePair.second.id)) {
+        if (GRAPH.selectedNodeMap.has(eventTargetStore.target.tableNodePair.node.id)) {
             cut()
         } else {
             cut({tableNodePairs: [eventTargetStore.target.tableNodePair]})
         }
     } else if (eventTargetStore.target.type === "Association") {
-        if (GRAPH.selectedEdgeMap.has(eventTargetStore.target.associationEdgePair.second.id)) {
+        if (GRAPH.selectedEdgeMap.has(eventTargetStore.target.associationEdgePair.edge.id)) {
             cut()
         } else {
             cut({associationEdgePairs: [eventTargetStore.target.associationEdgePair]})
@@ -256,7 +256,7 @@ const getTargetSubGroupName = (): string | undefined => {
         case "SubGroup":
             return eventTargetStore.target.subGroup?.name;
         case "Table":
-            return eventTargetStore.target.tableNodePair.first.subGroup?.name;
+            return eventTargetStore.target.tableNodePair.table.subGroup?.name;
         case "Enum":
             return eventTargetStore.target.enum.subGroup?.name;
         default:
@@ -339,7 +339,7 @@ const handleCreateAssociation = () => {
 
     if (eventTargetStore.target.type === "Table") {
         options = {
-            sourceTableName: eventTargetStore.target.tableNodePair.first.name
+            sourceTableName: eventTargetStore.target.tableNodePair.table.name
         }
     } else if (MODEL.selectedTables.length > 0 && MODEL.selectedTables.length <= 2) {
         options = {
@@ -365,9 +365,9 @@ const handleCombineTable = () => {
 
 const handleDelete = () => {
     if (eventTargetStore.target.type === "Table") {
-        tableDialogs.remove(eventTargetStore.target.tableNodePair.second.id)
+        tableDialogs.remove(eventTargetStore.target.tableNodePair.node.id)
     } else if (eventTargetStore.target.type === "Association") {
-        associationDialogs.remove(eventTargetStore.target.associationEdgePair.second.id)
+        associationDialogs.remove(eventTargetStore.target.associationEdgePair.edge.id)
     } else if (eventTargetStore.target.type === "Enum") {
         enumDialogs.remove(eventTargetStore.target.enum.name)
     } else if (eventTargetStore.target.type === "SubGroup" && eventTargetStore.target.subGroup) {
@@ -378,7 +378,7 @@ const handleDelete = () => {
 const handleRemoveAssociation = () => {
     if (eventTargetStore.target.type === "Table") {
         const graph = GRAPH._graph()
-        const edges = getNodeConnectedEdges(graph, [eventTargetStore.target.tableNodePair.second.id])
+        const edges = getNodeConnectedEdges(graph, [eventTargetStore.target.tableNodePair.node.id])
         for (const edge of edges) {
             associationDialogs.remove(edge.id)
         }

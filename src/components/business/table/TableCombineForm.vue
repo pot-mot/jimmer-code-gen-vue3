@@ -1,18 +1,15 @@
 <script setup lang="ts">
 import {computed, DeepReadonly, ref, watch} from "vue";
-import {GenTableModelInput, Pair} from "@/api/__generated/model/static";
 import {
     ColumnCombineKey, createColumnCombineLabel,
     createColumnCombineMap,
     getColumnCombineKeyStr
 } from "@/components/business/association/columnEquals.ts";
-import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
+import {TableNodePair, useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {createTableCombineData, TableCombineData} from "@/components/business/table/TableCombineData.ts";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {sendI18nMessage} from "@/message/message.ts";
-import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
-import {type Node} from "@antv/x6";
 import {MainLocaleKeyParam} from "@/i18n";
 
 const i18nStore = useI18nStore()
@@ -20,7 +17,7 @@ const i18nStore = useI18nStore()
 const {MODEL} = useModelEditorStore()
 
 const props = defineProps<{
-    tableNodePairs?: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>> | undefined,
+    tableNodePairs?: Array<TableNodePair> | undefined,
     validate: (table: DeepReadonly<TableCombineData>) => MainLocaleKeyParam[],
 }>()
 
@@ -28,7 +25,7 @@ const emits = defineEmits<FormEmits<TableCombineData>>()
 
 const superTableName = ref<string>("")
 
-const tableNodePairs = ref<Pair<GenTableModelInput, UnwrapRefSimple<Node>>[]>([])
+const tableNodePairs = ref<TableNodePair[]>([])
 
 watch(() => props.tableNodePairs, (value) => {
     if (value !== undefined) {
@@ -46,7 +43,7 @@ const tableNodePairOptions = computed(() => {
     const combineKeyList = columns.value.map(it => getColumnCombineKeyStr(it))
 
     return MODEL.tableNodePairs.filter(pair => {
-        const table = pair.first
+        const {table} = pair
 
         if (columns.value.length === 0)
             return true
@@ -68,7 +65,7 @@ const tableIndexes = computed<number[]>({
         return result
     },
     set(indexes: number[]) {
-        const temp: Pair<GenTableModelInput, UnwrapRefSimple<Node>>[] = []
+        const temp: TableNodePair[] = []
         for (const index of indexes) {
             temp.push(tableNodePairOptions.value[index])
         }
@@ -87,7 +84,7 @@ const handleSelectAllTable = () => {
  */
 const columnOptions = computed<ColumnCombineKey[]>(() => {
     const tablePairs = tableNodePairsIsEmpty.value ? MODEL.tableNodePairs : tableNodePairs.value
-    const columns = tablePairs.flatMap(it => it.first.columns)
+    const columns = tablePairs.flatMap(it => it.table.columns)
 
     const columnCombineMap = createColumnCombineMap(columns)
 
@@ -166,11 +163,11 @@ const handleCancel = () => {
                 collapse-tags collapse-tags-tooltip :max-collapse-tags="8"
                 @clear="tableNodePairs = []">
                 <el-option
-                    v-for="(pair, index) in tableNodePairOptions"
-                    :key="pair.first.name" :value="index" :label="pair.first.name"
+                    v-for="({table, node}, index) in tableNodePairOptions"
+                    :key="node.id" :value="index" :label="table.name"
                 />
                 <template #label="{ value }">
-                    <el-text>{{ tableNodePairOptions[value].first.name }}</el-text>
+                    <el-text>{{ tableNodePairOptions[value].table.name }}</el-text>
                 </template>
                 <template #header>
                     <el-button @click="handleSelectAllTable">

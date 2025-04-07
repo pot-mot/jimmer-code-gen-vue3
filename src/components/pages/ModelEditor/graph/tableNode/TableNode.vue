@@ -206,7 +206,9 @@ const focusSuperTable = (name: string, e: MouseEvent) => {
 	const target = e.target as HTMLElement
 	if (!target.classList.contains("focus")) return
 
-    const matchedNodes = MODEL.tableNodePairs.filter(it => it.first.name === name && it.first.type === "SUPER_TABLE").map(it => it.second)
+    const matchedNodes = MODEL.tableNodePairs
+        .filter(it => it.table.name === name && it.table.type === "SUPER_TABLE")
+        .map(it => it.node)
 	if (matchedNodes.length > 0) {
         VIEW.focus(matchedNodes[0].id)
     }

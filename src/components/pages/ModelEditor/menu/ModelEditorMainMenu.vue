@@ -144,7 +144,7 @@ const handleContextMenu = (e: MouseEvent) => {
 					</template>
 
 					<TableItem
-						v-for="{first: table, second: node} in tableNodePairs"
+						v-for="{table, node} in tableNodePairs"
 						:key="node.id"
 						:table="table"
 						:node="node"
@@ -182,7 +182,7 @@ const handleContextMenu = (e: MouseEvent) => {
 
 			<div style="padding-bottom: 1em;">
 				<AssociationItem
-					v-for="{first: association, second: edge} in associationEdgePairs"
+					v-for="{association, edge} in associationEdgePairs"
 					:key="edge.id"
 					:association="association"
 					:edge="edge"

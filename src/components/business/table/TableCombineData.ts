@@ -1,18 +1,18 @@
-import {GenTableModelInput, Pair} from "@/api/__generated/model/static";
+import {GenTableModelInput} from "@/api/__generated/model/static";
 import {ColumnCombineKey} from "@/components/business/association/columnEquals.ts";
 import {DeepReadonly} from "vue";
 import {getDefaultColumn, getDefaultTable} from "@/components/business/table/defaultTable.ts";
 import {cloneDeep} from "lodash";
-import {type Node} from "@antv/x6";
+import {TableNodePair} from "@/store/modelEditor/ModelEditorStore.ts";
 
 export type TableCombineData = {
     superTable: GenTableModelInput,
-    inheritTableNodePairs: Array<Pair<GenTableModelInput, Node>>,
+    inheritTableNodePairs: Array<TableNodePair>,
 }
 
 export const createTableCombineData = (
     name: string,
-    tableNodePairs: DeepReadonly<Array<Pair<GenTableModelInput, Node>>>,
+    tableNodePairs: DeepReadonly<Array<TableNodePair>>,
     columns: DeepReadonly<Array<ColumnCombineKey>>,
 ): TableCombineData => {
     const superTable: GenTableModelInput = {
@@ -30,11 +30,11 @@ export const createTableCombineData = (
         })
     }
 
-    const inheritTableNodePairs: Array<Pair<GenTableModelInput, Node>> = tableNodePairs.map(({first, second}) => {
-        const temp = cloneDeep(first)
+    const inheritTableNodePairs: Array<TableNodePair> = tableNodePairs.map(({table, node}) => {
+        const temp = cloneDeep(table)
 
         return {
-            first: {
+            table: {
                 ...temp,
                 columns: temp.columns
                     .filter(column => {
@@ -42,8 +42,8 @@ export const createTableCombineData = (
                     }),
                 superTables: [...temp.superTables, {name}]
             },
-            second
-        } as Pair<GenTableModelInput, Node>
+            node
+        } as TableNodePair
     })
 
     return {

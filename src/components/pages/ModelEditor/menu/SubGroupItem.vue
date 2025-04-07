@@ -25,8 +25,8 @@ const isSelected = computed(() => {
 
 const handleClickLabel = async (e: MouseEvent) => {
 	const matchedNodeIds = MODEL.tableNodePairs
-		.filter(it => it.first.subGroup?.name === props.subGroup?.name)
-		.map(it => it.second.id)
+		.filter(it => it.table.subGroup?.name === props.subGroup?.name)
+		.map(it => it.node.id)
 
 	const matchedEnumNames = MODEL.enums
 		.filter(it => it.subGroup?.name === props.subGroup?.name)

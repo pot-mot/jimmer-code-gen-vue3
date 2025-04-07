@@ -1,22 +1,19 @@
 import {DeepReadonly, ref} from "vue";
 import {
-    GenAssociationModelInput, GenModelInput_TargetOf_enums,
+    GenModelInput_TargetOf_enums,
     GenModelInput_TargetOf_subGroups,
-    GenTableModelInput,
-    Pair
 } from "@/api/__generated/model/static";
-import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
-import {Edge, Node} from "@antv/x6";
 import {defineStore} from "pinia";
+import {AssociationEdgePair, TableNodePair} from "@/store/modelEditor/ModelEditorStore.ts";
 
 type ModelEditorEventTarget = {
     type: "Model",
 } | {
     type: "Table",
-    tableNodePair: DeepReadonly<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>
+    tableNodePair: DeepReadonly<TableNodePair>
 } | {
     type: "Association",
-    associationEdgePair: DeepReadonly<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>
+    associationEdgePair: DeepReadonly<AssociationEdgePair>
 } | {
     type: "SubGroup",
     subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups> | undefined

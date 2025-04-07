@@ -281,7 +281,7 @@ const handleMouseMove = debounce((e: MouseEvent) => {
 		}
 	})) {
 		if (matchedEl) {
-			const tableNodePair = MODEL.tableNodePairs.find(it => it.second.id === matchedEl?.getAttribute("data-cell-id"))
+			const tableNodePair = MODEL.tableNodePairs.find(it => it.node.id === matchedEl?.getAttribute("data-cell-id"))
 			if (tableNodePair !== undefined) {
 				eventTargetStore.target = {type: "Table", tableNodePair}
 				return
@@ -296,7 +296,7 @@ const handleMouseMove = debounce((e: MouseEvent) => {
 		}
 	})) {
 		if (matchedEl) {
-			const associationEdgePair = MODEL.associationEdgePairs.find(it => it.second.id === matchedEl?.getAttribute("data-cell-id"))
+			const associationEdgePair = MODEL.associationEdgePairs.find(it => it.edge.id === matchedEl?.getAttribute("data-cell-id"))
 			if (associationEdgePair !== undefined) {
 				eventTargetStore.target = {type: "Association", associationEdgePair}
 				return
