@@ -1,5 +1,5 @@
 import {ElMessage} from 'element-plus'
-import {useDebugStore} from "@/store/debug/debugStore.ts";
+import {useDebugStore} from "@/store/debug/DebugStore.ts";
 import {MainLocaleKeyParam, ProjectLocaleKeyParam} from "@/i18n";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {EXPECT_ERROR} from "@/api/handleError.ts";

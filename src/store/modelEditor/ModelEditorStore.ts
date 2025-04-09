@@ -48,7 +48,7 @@ import {loadSupGroups} from "@/components/pages/ModelEditor/load/loadSubGroups.t
 import {loadEnums} from "@/components/pages/ModelEditor/load/loadEnums.ts";
 import {loadAssociationEdge} from "@/components/pages/ModelEditor/load/loadAssociationEdge.ts";
 import debounce from "lodash/debounce";
-import {useDebugStore} from "@/store/debug/debugStore.ts";
+import {useDebugStore} from "@/store/debug/DebugStore.ts";
 import {CustomHistory} from "@/components/global/graphEditor/history/CustomHistory.ts";
 import {jsonSortPropStringify} from "@/utils/json.ts";
 import {useSubGroupsStore} from "@/store/modelEditor/dialogs/SubGroupsStore.ts";
