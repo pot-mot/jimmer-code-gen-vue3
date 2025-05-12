@@ -406,7 +406,7 @@ const initModelEditorStore = (): ModelEditorStore => {
     const subGroups = computed(() => {
         if (!currentModel.value) return []
 
-        const value = cloneDeepReadonly<GenModelView>(currentModel.value)
+        const value = currentModel.value
 
         return value.subGroups.sort((a, b) => {
             if (a.name < b.name) return -1
@@ -509,7 +509,7 @@ const initModelEditorStore = (): ModelEditorStore => {
     const enums = computed(() => {
         if (!currentModel.value) return []
 
-        const value = cloneDeepReadonly<GenModelView>(currentModel.value)
+        const value = currentModel.value
 
         const subGroupPackageMap = new Map<string, string>
         value.subGroups.forEach(subGroup => {
