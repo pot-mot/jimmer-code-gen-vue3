@@ -74,9 +74,7 @@ onMounted(async () => {
     if (wrapper.value) {
         const rect = wrapper.value.getBoundingClientRect()
         filterInitHeight.value = 180 / rect.height * 100
-        console.log(filterInitHeight.value)
         fileMenuInitHeight.value = 30 / rect.height * 100
-        console.log(fileMenuInitHeight.value)
     }
 })
 </script>

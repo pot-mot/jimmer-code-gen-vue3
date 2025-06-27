@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
+import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineStore.ts";
 import TableCombineForm from "@/components/business/table/TableCombineForm.vue";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {validateTable} from "@/components/business/table/validateTable.ts";
@@ -27,7 +27,7 @@ const validate = (data: DeepReadonly<TableCombineData>) => {
         MODEL.enums,
     )
 
-    for (const inheritTable of data.inheritTableNodePairs.map(it => it.first)) {
+    for (const inheritTable of data.inheritTableNodePairs.map(it => it.table)) {
         messageList.push(...validateTable(
             inheritTable,
             [...getOtherTables(inheritTable.name), data.superTable],

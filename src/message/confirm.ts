@@ -7,24 +7,28 @@ import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 export const deleteConfirm = (
     deleteTarget: string,
     callback: () => void,
-    message: string = "",
+    enable: boolean = true,
     opts?: ElMessageBoxOptions,
 ) => {
     const i18nStore = useI18nStore()
 
-    ElMessageBox.confirm(
-        i18nStore.translate({key: "CONFIRM_delete", args:[deleteTarget]}) + message,
-        {
-            confirmButtonText: i18nStore.translate("CONFIRM_button_confirm"),
-            cancelButtonText: i18nStore.translate("CONFIRM_button_cancel"),
-            icon: markRaw(Delete),
-            type: "error",
-            ...opts
-        }
-    ).then(() => {
+    if (enable) {
+        ElMessageBox.confirm(
+            i18nStore.translate({key: "CONFIRM_delete", args:[deleteTarget]}),
+            {
+                confirmButtonText: i18nStore.translate("CONFIRM_button_confirm"),
+                cancelButtonText: i18nStore.translate("CONFIRM_button_cancel"),
+                icon: markRaw(Delete),
+                type: "error",
+                ...opts
+            }
+        ).then(() => {
+            callback()
+        }).catch(() => {
+        })
+    } else {
         callback()
-    }).catch(() => {
-    })
+    }
 }
 
 export const confirm = (

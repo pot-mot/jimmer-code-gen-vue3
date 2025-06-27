@@ -1,24 +1,32 @@
 import {Cell, Edge, Node} from "@antv/x6";
 import {ASSOCIATION_EDGE, TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {sendI18nMessage} from "@/message/message.ts";
-import {CopyData, validateCopyData} from "@/shape/CopyData.ts";
+import {validateCopyData} from "@/shape/CopyData.ts";
 import {validateModelEditorData} from "@/shape/ModelEditorData.ts";
-import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {
-    GenAssociationModelInput,
+    AssociationEdgePair,
+    ModelLoadInput,
+    TableNodePair,
+    useModelEditorStore
+} from "@/store/modelEditor/ModelEditorStore.ts";
+import {
     GenModelInput,
     GenModelInput_TargetOf_enums,
     GenModelInput_TargetOf_subGroups,
     GenTableModelInput,
-    Pair
 } from "@/api/__generated/model/static";
 import {validateModelInput} from "@/shape/ModelInput.ts";
 import {syncTimeout} from "@/utils/syncTimeout.ts";
 import {validateTableModelInput} from "@/shape/GenTableModelInput.ts";
+import {validateSubGroupModelInput} from "@/shape/GenSubGroupModelInput.ts";
 import {jsonParseThenConvertNullToUndefined} from "@/utils/nullToUndefined.ts";
 import {TableLoadOptions} from "@/components/pages/ModelEditor/load/loadTableNode.ts";
 import {DeepReadonly, nextTick} from "vue";
 import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
+import {validateEnumModelInput} from "@/shape/GenEnumModelInput.ts";
+import {useEventTargetStore} from "@/store/modelEditor/eventTarget/EventTargetStore.ts";
+
+export type CopyData = ModelLoadInput
 
 export const getModelAllCopyData = (model: DeepReadonly<GenModelInput>): DeepReadonly<CopyData> => {
     const cells = jsonParseThenConvertNullToUndefined(model.graphData)?.json?.cells
@@ -34,13 +42,13 @@ export const getModelAllCopyData = (model: DeepReadonly<GenModelInput>): DeepRea
             .filter((it: any) => it != undefined) ?? [],
         enums: model.enums,
         subGroups: model.subGroups,
-        optionsList: getPositionOptionsList(nodes.map((it: any) => it.position)),
+        eachTableOptions: getPositionOptionsList(nodes.map((it: any) => it.position)),
     }
 }
 
 type CopyInput = DeepReadonly<{
-    tableNodePairs?: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
-    associationEdgePairs?: Array<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>,
+    tableNodePairs?: Array<TableNodePair>,
+    associationEdgePairs?: Array<AssociationEdgePair>,
     enumNames?: Array<string>,
     subGroupNames?: Array<string | undefined>,
 }>
@@ -57,10 +65,12 @@ type PasteResult = {
     subGroups: GenModelInput_TargetOf_subGroups[],
 }
 
+type InputProducer = (input: CopyData) => CopyData
+
 type ClipBoardOperation = {
     copy: (input?: CopyInput | undefined) => Promise<DeepReadonly<CopyResult>>,
     cut: (input?: CopyInput | undefined) => Promise<DeepReadonly<CopyResult>>,
-    paste: () => Promise<PasteResult | undefined>
+    paste: (inputProducer?: (InputProducer | undefined)) => Promise<PasteResult | undefined>
 }
 
 let modelClipBoard: ClipBoardOperation | undefined
@@ -68,8 +78,27 @@ export const useModelClipBoard = (): ClipBoardOperation => {
     if (modelClipBoard) return modelClipBoard
 
     const {GRAPH, MODEL, MODEL_EDITOR, REMOVE, SELECT} = useModelEditorStore()
+    const eventTargetStore = useEventTargetStore()
 
     const getDefaultInput = (): CopyInput => {
+        if (eventTargetStore.target.type === "Table") {
+            if (!GRAPH.selectedNodeMap.has(eventTargetStore.target.tableNodePair.node.id)) {
+                return {tableNodePairs: [eventTargetStore.target.tableNodePair]}
+            }
+        } else if (eventTargetStore.target.type === "Association") {
+            if (!GRAPH.selectedEdgeMap.has(eventTargetStore.target.associationEdgePair.edge.id)) {
+                return {associationEdgePairs: [eventTargetStore.target.associationEdgePair]}
+            }
+        } else if (eventTargetStore.target.type === "Enum") {
+            if (!MODEL.selectedEnumMap.has(eventTargetStore.target.enum.name)) {
+                return {enumNames: [eventTargetStore.target.enum.name]}
+            }
+        } else if (eventTargetStore.target.type === "SubGroup") {
+            if (!MODEL.selectedSubGroupMap.has(eventTargetStore.target.subGroup?.name)) {
+                return {subGroupNames: [eventTargetStore.target.subGroup?.name]}
+            }
+        }
+
         return {
             tableNodePairs: MODEL.selectedTableNodePairs,
             associationEdgePairs: MODEL.selectedAssociationEdgePairs,
@@ -88,10 +117,10 @@ export const useModelClipBoard = (): ClipBoardOperation => {
         const tableNodePairs = getAllWithSuperTableNodePairs(input.tableNodePairs ?? [], MODEL.tableNodePairs)
         const associationEdgePairs = input.associationEdgePairs ?? []
 
-        const tables = tableNodePairs.map(it => it.first)
-        const nodes = tableNodePairs.map(it => it.second)
-        const associations = associationEdgePairs.map(it => it.first)
-        const edges = associationEdgePairs.map(it => it.second)
+        const tables = tableNodePairs.map(it => it.table)
+        const nodes = tableNodePairs.map(it => it.node)
+        const associations = associationEdgePairs.map(it => it.association)
+        const edges = associationEdgePairs.map(it => it.edge)
 
         const enumNameSet = new Set<string>([
             ...input.enumNames ?? [],
@@ -116,10 +145,10 @@ export const useModelClipBoard = (): ClipBoardOperation => {
         const subGroups =
             model.subGroups.filter(it => subGroupNameSet.has(it.name))
 
-        const nodePositions = tableNodePairs.map(it => it.second.getPosition())
-        const optionsList = getPositionOptionsList(nodePositions)
+        const nodePositions = tableNodePairs.map(it => it.node.getPosition())
+        const eachTableOptions = getPositionOptionsList(nodePositions)
 
-        const copyData = {subGroups, enums, tables, associations, optionsList}
+        const copyData: DeepReadonly<CopyData> = {subGroups, enums, tables, associations, eachTableOptions}
 
         await navigator.clipboard.writeText(JSON.stringify(copyData))
 
@@ -149,15 +178,15 @@ export const useModelClipBoard = (): ClipBoardOperation => {
         await nextTick()
 
         // 2. 移除不被依赖的表
-        const cutTableNames = new Set(tables.map(it => it.name))
+        const cutTableNames = new Set(tables?.map(it => it.name))
         const usedTableNames = new Set(
             MODEL.tables.filter(it => !cutTableNames.has(it.name)).flatMap(it => it.superTables.map(it => it.name)),
         )
         const usedTableNodeIds = new Set(
-            MODEL.tableNodePairs.filter(it => usedTableNames.has(it.first.name)).map(it => it.second.id)
+            MODEL.tableNodePairs.filter(it => usedTableNames.has(it.table.name)).map(it => it.node.id)
         )
         const inputTableNodeIds = new Set(
-            input.tableNodePairs?.map(it => it.second.id)
+            input.tableNodePairs?.map(it => it.node.id)
         )
         const removedTableNodeIds = new Set<string>
         for (const node of nodes) {
@@ -180,7 +209,7 @@ export const useModelClipBoard = (): ClipBoardOperation => {
             input.enumNames
         )
         const removedEnumNames = new Set<string>
-        for (const genEnum of enums) {
+        for (const genEnum of enums ?? []) {
             if (inputEnumNames.has(genEnum.name) && !usedEnumNames.has(genEnum.name)) {
                 removedEnumNames.add(genEnum.name)
             }
@@ -197,7 +226,7 @@ export const useModelClipBoard = (): ClipBoardOperation => {
             input.subGroupNames
         )
         const removedSubGroupNames = new Set<string>
-        for (const subGroup of subGroups) {
+        for (const subGroup of subGroups ?? []) {
             if (inputSubGroupNames.has(subGroup.name) && !usedSubGroupNames.has(subGroup.name)) {
                 removedSubGroupNames.add(subGroup.name)
             }
@@ -211,7 +240,30 @@ export const useModelClipBoard = (): ClipBoardOperation => {
         return copyResult
     }
 
-    const paste = async (): Promise<PasteResult | undefined> => {
+    /**
+     * 设置粘贴数据的分组
+     */
+    const setCopyDataSubGroup = (copyData: CopyData, subGroupName: string | undefined) => {
+        const subGroup = subGroupName ? {name: subGroupName} : undefined
+
+        copyData.tables?.forEach(it => {
+            if (it.type !== "SUPER_TABLE") it.subGroup = subGroup
+        })
+        if (copyData.tables && copyData.tables.length > 0) {
+            const enumNameSet = new Set(MODEL.enums.map(it => it.name))
+            copyData.enums?.forEach(it => {
+                if (!enumNameSet.has(it.name)) it.subGroup = subGroup
+            })
+        } else {
+            copyData.enums?.forEach(it => {
+                it.subGroup = subGroup
+            })
+        }
+    }
+
+    const paste = async (
+        inputProducer?: InputProducer | undefined
+    ): Promise<PasteResult | undefined> => {
         const graph = GRAPH._graph()
 
         graph.startBatch("paste")
@@ -230,27 +282,7 @@ export const useModelClipBoard = (): ClipBoardOperation => {
                 y: GRAPH.mousePosition.y
             }
 
-            if (validateTableModelInput(value, (e) => validateErrors.push(e))) {
-                const table = value as GenTableModelInput
-                res = MODEL_EDITOR.loadInput({tables: [table], baseTableOptions})
-            } else if (validateCopyData(value, (e) => validateErrors.push(e))) {
-                const {
-                    tables,
-                    associations,
-                    enums,
-                    subGroups,
-                    optionsList
-                } = value as CopyData
-
-                res = MODEL_EDITOR.loadInput({
-                    subGroups,
-                    enums,
-                    tables,
-                    associations,
-                    baseTableOptions,
-                    eachTableOptions: optionsList
-                })
-            } else if (validateModelEditorData(value, (e) => validateErrors.push(e))) {
+            if (validateModelEditorData(value, (e) => validateErrors.push(e))) {
                 const cells = value.json.cells as Cell[]
                 graph.parseJSON(cells)
                 res = MODEL_EDITOR.loadModelEditorData(jsonParseThenConvertNullToUndefined(text), false)
@@ -262,7 +294,29 @@ export const useModelClipBoard = (): ClipBoardOperation => {
                     res = MODEL_EDITOR.loadModelEditorData(jsonParseThenConvertNullToUndefined(inputModel.graphData), false)
                 }
             } else {
-                sendI18nMessage('MESSAGE_clipBoard_cannotDirectLoad', 'error', validateErrors)
+                let copyData: CopyData | undefined = undefined
+
+                if (validateCopyData(value, (e) => validateErrors.push(e))) {
+                    copyData = {...value, baseTableOptions} as CopyData
+                } else if (validateSubGroupModelInput(value, (e) => validateErrors.push(e))) {
+                    copyData = {subGroups: [value as GenModelInput_TargetOf_subGroups], baseTableOptions}
+                } else if (validateTableModelInput(value, (e) => validateErrors.push(e))) {
+                    copyData = {tables: [value as GenTableModelInput], baseTableOptions}
+                } else if (validateEnumModelInput(value, (e) => validateErrors.push(e))) {
+                    copyData = {enums: [value as GenModelInput_TargetOf_enums], baseTableOptions}
+                }
+
+                if (copyData !== undefined) {
+                    if (eventTargetStore.target.type === "SubGroup" || eventTargetStore.target.type === "Table" || eventTargetStore.target.type === "Enum") {
+                        const subGroupName = eventTargetStore.getTargetSubGroupName()
+                        copyData.subGroups = []
+                        setCopyDataSubGroup(copyData, subGroupName)
+                    }
+
+                    res = MODEL_EDITOR.loadInput(inputProducer ? inputProducer(copyData) : copyData)
+                } else {
+                    sendI18nMessage('MESSAGE_clipBoard_cannotDirectLoad', 'error', validateErrors)
+                }
             }
 
             if (res !== undefined) {
@@ -318,20 +372,20 @@ const getPositionOptionsList = (positions: { x: number, y: number }[]): TableLoa
  * 根据当前 TableNodePair 与全部 TableNodePair 获取全部继承树种的 TableNodePair
  */
 const getAllWithSuperTableNodePairs = (
-    currentTableNodePairs: DeepReadonly<Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>>,
-    allTableNodePairs: DeepReadonly<Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>>,
-): DeepReadonly<Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>> => {
-    const result: Set<DeepReadonly<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>> = new Set(currentTableNodePairs)
-    const superTableNodePairNameMap: Map<string, DeepReadonly<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>> = new Map
+    currentTableNodePairs: DeepReadonly<Array<TableNodePair>>,
+    allTableNodePairs: DeepReadonly<Array<TableNodePair>>,
+): DeepReadonly<Array<TableNodePair>> => {
+    const result: Set<DeepReadonly<TableNodePair>> = new Set(currentTableNodePairs)
+    const superTableNodePairNameMap: Map<string, DeepReadonly<TableNodePair>> = new Map
 
     for (const tableNodePair of allTableNodePairs) {
-        if (tableNodePair.first.type === "SUPER_TABLE") {
-            superTableNodePairNameMap.set(tableNodePair.first.name, tableNodePair)
+        if (tableNodePair.table.type === "SUPER_TABLE") {
+            superTableNodePairNameMap.set(tableNodePair.table.name, tableNodePair)
         }
     }
 
     for (const tableNodePair of result) {
-        const table = tableNodePair.first
+        const {table} = tableNodePair
 
         const superTables = table.superTables
         if (superTables === undefined || superTables.length === 0) {

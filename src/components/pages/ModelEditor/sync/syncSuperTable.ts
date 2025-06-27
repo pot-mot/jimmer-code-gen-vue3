@@ -3,7 +3,7 @@ import {GenTableModelInput, GenTableModelInput_TargetOf_superTables} from "@/api
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
 import {Graph} from "@antv/x6";
-import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
+import {useTablesStore} from "@/store/modelEditor/dialogs/TablesStore.ts";
 import {DeepReadonly} from "vue";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 
@@ -38,7 +38,7 @@ const judgeSuperTableInTable = (superTableName: string, table: GenTableModelInpu
 export const syncSuperTableNameForTables = (graph: Graph, oldSuperTableName: string, newSuperTableName: string | undefined) => {
     const nodes = graph.getNodes().filter(it => it.shape === TABLE_NODE)
 
-    const tableDialogsStore = useTableDialogsStore()
+    const tableDialogsStore = useTablesStore()
 
     // 同步所有对话框中的表数据
     tableDialogsStore.items.forEach(({key, value, options}) => {

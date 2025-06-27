@@ -17,13 +17,9 @@ export const bindGraphKeyEvent = (graph: Graph) => {
         SELECT.selectAll()
     })
 
-    graph.bindKey(["delete", "backspace"], (e) => {
+    graph.bindKey(["delete"], (e) => {
         e.preventDefault()
         REMOVE.removeSelectedCells()
-    })
-    graph.bindKey(["shift+delete", "shift+backspace"], (e) => {
-        e.preventDefault()
-        REMOVE.removeSelectedEdges()
     })
 
     const {copy, cut, paste} = useModelClipBoard()

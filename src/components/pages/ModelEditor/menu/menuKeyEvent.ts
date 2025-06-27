@@ -7,7 +7,7 @@ const {copy, cut, paste} = useModelClipBoard()
 
 export const handleMenuKeyEvent = async (e: KeyboardEvent) => {
     if (e.ctrlKey || e.metaKey) {
-        if (e.key === "z") {
+        if (e.key === "z" || e.key === "Z") {
             if (e.shiftKey) {
                 HISTORY.redo()
             } else {
@@ -25,12 +25,8 @@ export const handleMenuKeyEvent = async (e: KeyboardEvent) => {
         }
     }
 
-    if (e.key === "Delete" || e.key === "Backspace") {
+    if (e.key === "Delete") {
         e.preventDefault()
-        if (e.shiftKey) {
-            REMOVE.removeSelectedEdges()
-        } else {
-            REMOVE.removeSelectedCells()
-        }
+        REMOVE.removeSelectedCells()
     }
 }

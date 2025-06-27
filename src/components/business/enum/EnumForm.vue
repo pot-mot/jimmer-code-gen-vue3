@@ -9,7 +9,7 @@ import LineItem from "@/components/global/line/LineItem.vue";
 import {FormEmits} from "@/components/global/form/FormEmits.ts";
 import {sendI18nMessage} from "@/message/message.ts";
 import {getDefaultEnumItem} from "@/components/business/enum/defaultEnum.ts";
-import {validateEnumItem} from "@/shape/GenEnumModelInput.ts";
+import {validateEnumItemModelInput} from "@/shape/GenEnumModelInput.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {MainLocaleKeyParam} from "@/i18n";
 import Comment from "@/components/global/common/Comment.vue";
@@ -140,7 +140,7 @@ const handleCancel = () => {
 			v-model:lines="genEnum.items"
 			:columns="enumItemColumns"
 			:defaultLine="getDefaultEnumItem"
-			:json-schema-validate="validateEnumItem"
+			:json-schema-validate="validateEnumItemModelInput"
 			height="2em"
 			style="padding-bottom: 2em;"
 		>

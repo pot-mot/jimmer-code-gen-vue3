@@ -64,6 +64,7 @@ const handleCancel = (): void => {
 				size="default"
 				v-model="subGroup.style"
 				show-alpha
+                @change="(value: string | null | undefined) => {if (!value) subGroup.style = ''}"
 				:predefine="[
 					'rgba(100, 100, 100, 1)',
 					'rgba(200, 100, 100, 1)',

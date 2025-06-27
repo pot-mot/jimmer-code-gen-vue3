@@ -1,24 +1,16 @@
 <script lang="ts" setup>
-import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
+import {AssociationEdgePair, useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {computed} from "vue";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {GenAssociationModelInput} from "@/api/__generated/model/static";
-import {deleteConfirm} from "@/message/confirm.ts";
-import {Edge} from "@antv/x6";
-import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
-import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import AssociationIcon from "@/components/global/icons/database/AssociationIcon.vue";
-import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
+import {useAssociationsStore} from "@/store/modelEditor/dialogs/AssociationsStore.ts";
 import AssociationDialogs from "@/components/pages/ModelEditor/dialogs/association/AssociationDialogs.vue";
+import {useEventTargetStore} from "@/store/modelEditor/eventTarget/EventTargetStore.ts";
 
-const i18nStore = useI18nStore()
+const props = defineProps<AssociationEdgePair>()
 
-const props = defineProps<{
-	edge: UnwrapRefSimple<Edge>,
-	association: GenAssociationModelInput,
-}>()
-
-const associationDialogs = useAssociationDialogsStore()
+const associationDialogs = useAssociationsStore()
 
 const {GRAPH, VIEW, SELECT} = useModelEditorStore()
 
@@ -32,52 +24,13 @@ const handleClickAssociation = (e: MouseEvent) => {
 	} else {
 		SELECT.unselectAll()
 		VIEW.focus(props.edge.id)
-	}
+    }
+    useEventTargetStore().target = {type: 'Association', associationEdgePair: props}
 }
 
 const handleDelete = () => {
-	deleteConfirm(`${i18nStore.translate('LABEL_DeleteTarget_Association')}【${props.association.name}】`, () => {
-        associationDialogs.remove(props.edge.id)
-	})
+    associationDialogs.remove(props)
 }
-
-const getAssociationSourceLabel = (association: GenAssociationModelInput) => {
-	const tempEdgeName: string[] = []
-
-	tempEdgeName.push(association.sourceTableName)
-	tempEdgeName.push('.')
-	tempEdgeName.push(association.columnReferences.map(it => it.sourceColumnName).join(","))
-
-	return tempEdgeName.join('')
-}
-
-const getAssociationTargetLabel = (association: GenAssociationModelInput) => {
-	const tempEdgeName: string[] = []
-
-	tempEdgeName.push(association.targetTableName)
-	tempEdgeName.push('.')
-	tempEdgeName.push(association.columnReferences.map(it => it.targetColumnName).join(","))
-
-	return tempEdgeName.join('')
-}
-
-const sourceLabel = computed<string | undefined>(() => {
-	if (!props.association) return
-	try {
-		return getAssociationSourceLabel(props.association)
-	} catch (e) {
-		return
-	}
-})
-
-const targetLabel = computed<string | undefined>(() => {
-	if (!props.association) return
-	try {
-		return getAssociationTargetLabel(props.association)
-	} catch (e) {
-		return
-	}
-})
 
 const handleEdit = (association: GenAssociationModelInput) => {
 	AssociationDialogs.edit(props.edge.id, association)
@@ -85,14 +38,16 @@ const handleEdit = (association: GenAssociationModelInput) => {
 </script>
 
 <template>
-	<div v-if="association && sourceLabel && targetLabel"
-		 class="menu-item hover-show" :class="isSelected ? 'selected' : ''">
-        <el-text @click="handleClickAssociation">
-            <AssociationIcon
-                :type="association.type"
-                :fake="association.fake"
-            />
-            {{ association.name }}
+	<div
+		class="menu-item hover-show"
+		:class="isSelected ? 'selected' : ''"
+	>
+		<el-text @click="handleClickAssociation">
+			<AssociationIcon
+				:type="association.type"
+				:fake="association.fake"
+			/>
+			{{ association.name }}
 
 			<span>{{ association.fake ? '【fake】' : '' }}</span>
 		</el-text>
@@ -101,9 +56,5 @@ const handleEdit = (association: GenAssociationModelInput) => {
 			<el-button :icon="EditPen" link type="warning" @click="handleEdit(association)"/>
 			<el-button :icon="Delete" link type="danger" @click="handleDelete"/>
 		</span>
-	</div>
-
-	<div v-else>
-		<el-text type="warning">{{ edge.id }}</el-text>
 	</div>
 </template>
