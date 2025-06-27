@@ -4,12 +4,8 @@ import {Delete, EditPen} from "@element-plus/icons-vue";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {computed} from "vue";
-import {deleteConfirm} from "@/message/confirm.ts";
-import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {useTablesStore} from "@/store/modelEditor/dialogs/TablesStore.ts";
 import {useEventTargetStore} from "@/store/modelEditor/eventTarget/EventTargetStore.ts";
-
-const i18nStore = useI18nStore()
 
 const props = defineProps<TableNodePair>()
 
@@ -28,6 +24,7 @@ const handleClickLabel = (e: MouseEvent) => {
 		SELECT.unselectAll()
 		VIEW.focus(props.node.id)
 	}
+    useEventTargetStore().target = {type: 'Table', tableNodePair: props}
 }
 
 const handleEdit = () => {
@@ -35,13 +32,7 @@ const handleEdit = () => {
 }
 
 const handleDelete = () => {
-	deleteConfirm(`${i18nStore.translate("LABEL_DeleteTarget_Enum")}【${props.table.name}】`, () => {
-		tableDialogs.remove(props.node.id)
-	})
-}
-
-const handleMouseEnter = () => {
-	useEventTargetStore().target = {type: 'Table', tableNodePair: props}
+    tableDialogs.remove(props)
 }
 </script>
 
@@ -49,7 +40,6 @@ const handleMouseEnter = () => {
 	<div
 		class="menu-item hover-show"
 		:class="isSelected ? 'selected' : ''"
-		@mouseenter="handleMouseEnter"
 	>
 		<el-text @click="handleClickLabel">
 			<TableIcon :type="table.type"/>

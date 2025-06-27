@@ -7,7 +7,7 @@ import {DataSourceFormEmits} from "./DataSourceFormEmits.ts";
 import {DataSourceFormProps} from "./DataSourceFormProps.ts";
 import {DataSourceType_CONSTANTS} from "@/api/__generated/model/enums";
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
-import {useDataSourceDefaultStore} from "@/store/dataSource/dataSourceDefaultStore.ts";
+import {useDataSourceDefaultStore} from "@/store/dataSource/DataSourceDefaultStore.ts";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
 const i18nStore = useI18nStore()

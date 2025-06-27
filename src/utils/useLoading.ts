@@ -1,5 +1,5 @@
 import {computed, ref} from "vue";
-import {useDebugStore} from "@/store/debug/debugStore.ts";
+import {useDebugStore} from "@/store/debug/DebugStore.ts";
 import {functionWrapper, type WrapperFunction} from "@/utils/functionWrapper.ts";
 
 export type WithLoading = <F extends (...args: any) => any> (name: string, fn: F) => WrapperFunction<F>

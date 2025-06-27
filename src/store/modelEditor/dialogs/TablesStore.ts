@@ -8,8 +8,9 @@ import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 import {sendI18nMessage} from "@/message/message.ts";
 import {syncSuperTableNameForTables} from "@/components/pages/ModelEditor/sync/syncSuperTable.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
-import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
-import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
+import {TableNodePair, useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
+import {deleteConfirm} from "@/message/confirm.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
 const TABLE_CREATE_PREFIX = "[[TABLE_CREATE_PREFIX]]"
 
@@ -95,30 +96,21 @@ export const useTablesStore = defineStore(
             MODEL_EDITOR.waitRefreshModelAndCode()
         }
 
-        const remove = (id: string) => {
-            const graph = GRAPH._graph()
+        const remove = (tableNodePair: DeepReadonly<TableNodePair>, confirm: boolean = true) => {
+            deleteConfirm(`${useI18nStore().translate("LABEL_DeleteTarget_Table")}【${tableNodePair.table.name}】`, () => {
+                const graph = GRAPH._graph()
 
-            const cell = graph.getCellById(id)
-            if (!cell || !cell.isNode()) {
-                sendI18nMessage({
-                    key: "MESSAGE_ModelEditorStore_tableDeleteFail_nodeNotFound",
-                    args: [id]
-                }, 'error')
-                return
-            }
-
-            MODEL_EDITOR.startBatchSync('removeTable', () => {
-                if (cell.shape === TABLE_NODE && cell.data.table) {
-                    const table = cell.data.table as GenTableModelInput
+                MODEL_EDITOR.startBatchSync('removeTable', () => {
+                    const {table, node} = tableNodePair
                     // 当上级表被删除时，调整其他表中的 superTables
                     if (table.type === "SUPER_TABLE") {
                         syncSuperTableNameForTables(graph, table.name, undefined)
                     }
-                }
-                graph.removeNode(id)
-            })
+                    graph.removeNode(node.id)
+                })
 
-            MODEL_EDITOR.waitRefreshModelAndCode()
+                MODEL_EDITOR.waitRefreshModelAndCode()
+            }, confirm)
         }
 
         const submit = (key: string, table: DeepReadonly<GenTableModelInput>) => {

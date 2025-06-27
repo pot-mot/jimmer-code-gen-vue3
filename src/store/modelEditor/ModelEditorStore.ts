@@ -48,7 +48,7 @@ import {loadSupGroups} from "@/components/pages/ModelEditor/load/loadSubGroups.t
 import {loadEnums} from "@/components/pages/ModelEditor/load/loadEnums.ts";
 import {loadAssociationEdge} from "@/components/pages/ModelEditor/load/loadAssociationEdge.ts";
 import debounce from "lodash/debounce";
-import {useDebugStore} from "@/store/debug/debugStore.ts";
+import {useDebugStore} from "@/store/debug/DebugStore.ts";
 import {CustomHistory} from "@/components/global/graphEditor/history/CustomHistory.ts";
 import {jsonSortPropStringify} from "@/utils/json.ts";
 import {useSubGroupsStore} from "@/store/modelEditor/dialogs/SubGroupsStore.ts";
@@ -213,9 +213,9 @@ const initModelEditorStore = (): ModelEditorStore => {
             startBatchSync(target, () => {
                 cells.forEach(cell => {
                     if (cell.isNode() && cell.shape === TABLE_NODE) {
-                        useTablesStore().remove(cell.id)
+                        useTablesStore().remove({table: cell.data.table, node: cell}, false)
                     } else if (cell.isEdge() && cell.shape === ASSOCIATION_EDGE) {
-                        useAssociationsStore().remove(cell.id)
+                        useAssociationsStore().remove({association: cell.data.association, edge: cell}, false)
                     }
                 })
             })
@@ -406,7 +406,7 @@ const initModelEditorStore = (): ModelEditorStore => {
     const subGroups = computed(() => {
         if (!currentModel.value) return []
 
-        const value = cloneDeepReadonly<GenModelView>(currentModel.value)
+        const value = currentModel.value
 
         return value.subGroups.sort((a, b) => {
             if (a.name < b.name) return -1
@@ -509,7 +509,7 @@ const initModelEditorStore = (): ModelEditorStore => {
     const enums = computed(() => {
         if (!currentModel.value) return []
 
-        const value = cloneDeepReadonly<GenModelView>(currentModel.value)
+        const value = currentModel.value
 
         const subGroupPackageMap = new Map<string, string>
         value.subGroups.forEach(subGroup => {

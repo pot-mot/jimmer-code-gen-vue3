@@ -5,8 +5,10 @@ import {DeepReadonly} from "vue";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 import {sendI18nMessage} from "@/message/message.ts";
 import {updateAssociationEdgeData} from "@/components/pages/ModelEditor/graph/associationEdge/updateData.ts";
-import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
+import {AssociationEdgePair, useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {getDefaultAssociation} from "@/components/business/association/defaultColumn.ts";
+import {deleteConfirm} from "@/message/confirm.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
 const ASSOCIATION_CREATE_PREFIX = "[[ASSOCIATION_CREATE_PREFIX]]"
 
@@ -83,10 +85,11 @@ export const useAssociationsStore = defineStore(
             MODEL_EDITOR.waitRefreshModelAndCode()
         }
 
-        const remove = (id: string) => {
-            GRAPH._graph().removeEdge(id)
-
-            MODEL_EDITOR.waitRefreshModelAndCode()
+        const remove = (associationEdgePair: DeepReadonly<AssociationEdgePair>, confirm: boolean = true) => {
+            deleteConfirm(`${useI18nStore().translate('LABEL_DeleteTarget_Association')}【${associationEdgePair.association.name}】`, () => {
+                GRAPH._graph().removeEdge(associationEdgePair.edge.id)
+                MODEL_EDITOR.waitRefreshModelAndCode()
+            }, confirm)
         }
 
         const submit = (key: string, association: DeepReadonly<GenAssociationModelInput>) => {

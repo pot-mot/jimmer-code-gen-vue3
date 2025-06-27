@@ -97,6 +97,8 @@ const handleContextMenu = (e: MouseEvent) => {
 </script>
 
 <template>
+    {{ eventTargetStore.target.type }}
+
 	<div
 		class="model-editor-main-menu"
 		tabindex="-1"

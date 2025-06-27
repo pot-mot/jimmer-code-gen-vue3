@@ -1,12 +1,10 @@
-import {DeepReadonly, ref} from "vue";
-import {
-    GenModelInput_TargetOf_enums,
-    GenModelInput_TargetOf_subGroups,
-} from "@/api/__generated/model/static";
+import {computed, DeepReadonly, ref, watch} from "vue";
+import {GenModelInput_TargetOf_enums, GenModelInput_TargetOf_subGroups,} from "@/api/__generated/model/static";
 import {defineStore} from "pinia";
 import {AssociationEdgePair, TableNodePair} from "@/store/modelEditor/ModelEditorStore.ts";
+import {useContextMenuStore} from "@/store/modelEditor/contextMenu/ContextMenuStore.ts";
 
-type ModelEditorEventTarget = {
+export type ModelEditorEventTarget = {
     type: "Model",
 } | {
     type: "Table",
@@ -31,13 +29,53 @@ export const useEventTargetStore = defineStore(
     () => {
         const target = ref<ModelEditorEventTarget>(getDefaultTarget())
 
+        const targetLock = ref(false)
+        const isLock = () => {return targetLock.value}
+        const lock = () => {targetLock.value = true}
+        const unlock = () => {targetLock.value = false}
+
+        const contextMenuStore = useContextMenuStore()
+        watch(() => contextMenuStore.openState, (value) => {
+            targetLock.value = value;
+        })
+
+        const targetWrapper = computed({
+            set(newTarget: ModelEditorEventTarget) {
+                if (!targetLock.value) {
+                    target.value = newTarget
+                }
+            },
+            get(): ModelEditorEventTarget {
+                return target.value
+            }
+        })
+
         const toDefault = () => {
-            target.value = getDefaultTarget()
+            targetWrapper.value = getDefaultTarget()
+        }
+
+        const getTargetSubGroupName = (): string | undefined => {
+            switch (target.value.type) {
+                case "SubGroup":
+                    return target.value.subGroup?.name;
+                case "Table":
+                    return target.value.tableNodePair.table.subGroup?.name;
+                case "Enum":
+                    return target.value.enum.subGroup?.name;
+                default:
+                    return undefined;
+            }
         }
 
         return {
-            target,
+            target: targetWrapper,
+
+            isLock,
+            lock,
+            unlock,
+
             toDefault,
+            getTargetSubGroupName,
         }
     }
 )

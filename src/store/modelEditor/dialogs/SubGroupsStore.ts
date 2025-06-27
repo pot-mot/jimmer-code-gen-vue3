@@ -7,9 +7,12 @@ import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 import {
     setSubGroupNameForEnums,
     setSubGroupNameForTables,
-    syncSubGroupNameForEnums, syncSubGroupNameForTables
+    syncSubGroupNameForEnums,
+    syncSubGroupNameForTables
 } from "@/components/pages/ModelEditor/sync/syncSubGroup.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
+import {deleteConfirm} from "@/message/confirm.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
 const SUB_GROUP_CREATE_PREFIX = "[[SUB_GROUP_CREATE_PREFIX]]"
 
@@ -82,18 +85,18 @@ export const useSubGroupsStore = defineStore(
             MODEL_EDITOR.waitRefreshModelAndCode()
         }
 
-        const remove = (name: string) => {
-            const oldName = name
+        const remove = (name: string, confirm: boolean = true) => {
+            deleteConfirm(`${useI18nStore().translate('LABEL_DeleteTarget_SubGroup')}【${name}】`, () => {
+                MODEL_EDITOR.startBatchSync('removeSubGroup', () => {
+                    const model = MODEL._model()
+                    const graph = GRAPH._graph()
+                    model.subGroups = model.subGroups.filter(it => it.name !== name)
+                    syncSubGroupNameForEnums(model, name, undefined)
+                    syncSubGroupNameForTables(graph, name, undefined)
+                })
 
-            MODEL_EDITOR.startBatchSync('removeSubGroup', () => {
-                const model = MODEL._model()
-                const graph = GRAPH._graph()
-                model.subGroups = model.subGroups.filter(it => it.name !== oldName)
-                syncSubGroupNameForEnums(model, oldName, undefined)
-                syncSubGroupNameForTables(graph, oldName, undefined)
-            })
-
-            MODEL_EDITOR.waitRefreshModelAndCode()
+                MODEL_EDITOR.waitRefreshModelAndCode()
+            }, confirm)
         }
 
         const submit = (key: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
