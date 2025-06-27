@@ -10,6 +10,8 @@ import {
     syncEnumNameForTables,
     syncNewEnumForTables
 } from "@/components/pages/ModelEditor/sync/syncEnum.ts";
+import {deleteConfirm} from "@/message/confirm.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
 const ENUM_CREATE_PREFIX = "[[ENUM_CREATE_PREFIX]]"
 
@@ -20,8 +22,8 @@ export type EnumCreateOptions = {
     columnName: string,
 }
 
-export const useEnumDialogsStore = defineStore(
-    'EnumDialogs',
+export const useEnumsStore = defineStore(
+    'ModelEditor_Enums',
     () => {
         const dialogs = useDialogOpenListState<string, GenModelInput_TargetOf_enums>()
 
@@ -82,17 +84,17 @@ export const useEnumDialogsStore = defineStore(
             MODEL_EDITOR.waitRefreshModelAndCode()
         }
 
-        const remove = (name: string) => {
-            const oldName = name
+        const remove = (name: string, confirm: boolean = true) => {
+            deleteConfirm(`${useI18nStore().translate("LABEL_DeleteTarget_Enum")}【${name}】`, () => {
+                MODEL_EDITOR.startBatchSync('removeEnum', () => {
+                    const model = MODEL._model()
+                    const graph = GRAPH._graph()
+                    model.enums = model.enums.filter(it => it.name !== name)
+                    syncEnumNameForTables(graph, name, undefined)
+                })
 
-            MODEL_EDITOR.startBatchSync('removeEnum', () => {
-                const model = MODEL._model()
-                const graph = GRAPH._graph()
-                model.enums = model.enums.filter(it => it.name !== oldName)
-                syncEnumNameForTables(graph, oldName, undefined)
-            })
-
-            MODEL_EDITOR.waitRefreshModelAndCode()
+                MODEL_EDITOR.waitRefreshModelAndCode()
+            }, confirm)
         }
 
         const submit = (key: string, association: DeepReadonly<GenModelInput_TargetOf_enums>) => {

@@ -7,7 +7,7 @@ import {TableCombineData} from "@/components/business/table/TableCombineData.ts"
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
 
 export const useTableCombineDialogStore = defineStore(
-    'TableCombineDialog',
+    'TableCombine',
     () => {
         const dialogState = useOpenState()
 
@@ -30,8 +30,8 @@ export const useTableCombineDialogStore = defineStore(
                 }).nodes[0]
 
                 if (node) {
-                    for (const {first, second} of inheritTableNodePairs) {
-                        updateTableNodeData(second, first)
+                    for (const {table, node} of inheritTableNodePairs) {
+                        updateTableNodeData(node, table)
                     }
 
                     dialogState.close()

@@ -1,26 +1,15 @@
 <script lang="ts" setup>
-import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
+import {TableNodePair, useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import TableIcon from "@/components/global/icons/database/TableIcon.vue";
 import Comment from "@/components/global/common/Comment.vue";
 import {computed} from "vue";
-import {GenTableModelInput} from "@/api/__generated/model/static";
-import {deleteConfirm} from "@/message/confirm.ts";
-import {Node} from "@antv/x6";
-import {UnwrapRefSimple} from "@/declare/UnwrapRefSimple.ts";
-import {useI18nStore} from "@/store/i18n/i18nStore.ts";
-import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
+import {useTablesStore} from "@/store/modelEditor/dialogs/TablesStore.ts";
+import {useEventTargetStore} from "@/store/modelEditor/eventTarget/EventTargetStore.ts";
 
-const i18nStore = useI18nStore()
+const props = defineProps<TableNodePair>()
 
-interface TableItemProps {
-    node: UnwrapRefSimple<Node>,
-	table: GenTableModelInput
-}
-
-const props = defineProps<TableItemProps>()
-
-const tableDialogs = useTableDialogsStore()
+const tableDialogs = useTablesStore()
 
 const {GRAPH, SELECT, VIEW} = useModelEditorStore()
 
@@ -35,23 +24,23 @@ const handleClickLabel = (e: MouseEvent) => {
 		SELECT.unselectAll()
 		VIEW.focus(props.node.id)
 	}
+    useEventTargetStore().target = {type: 'Table', tableNodePair: props}
 }
 
 const handleEdit = () => {
-    tableDialogs.edit(props.node.id, props.table)
+	tableDialogs.edit(props.node.id, props.table)
 }
 
 const handleDelete = () => {
-	deleteConfirm(`${i18nStore.translate("LABEL_DeleteTarget_Enum")}【${props.table.name}】`, () => {
-        tableDialogs.remove(props.node.id)
-	})
+    tableDialogs.remove(props)
 }
 </script>
 
 <template>
-	<div v-if="table"
-		 class="menu-item hover-show" :class="isSelected ? 'selected' : ''">
-
+	<div
+		class="menu-item hover-show"
+		:class="isSelected ? 'selected' : ''"
+	>
 		<el-text @click="handleClickLabel">
 			<TableIcon :type="table.type"/>
 			{{ table.name }}
@@ -62,9 +51,5 @@ const handleDelete = () => {
 			<el-button :icon="EditPen" link type="warning" @click="handleEdit"/>
 			<el-button :icon="Delete" link type="danger" @click="handleDelete"/>
 		</span>
-	</div>
-
-	<div v-else>
-		<el-text type="warning">{{ node.id }}</el-text>
 	</div>
 </template>

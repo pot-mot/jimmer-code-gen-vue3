@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {DEBUG_CONSTANTS, useDebugStore} from "@/store/debug/debugStore.ts";
+import {DEBUG_CONSTANTS, useDebugStore} from "@/store/debug/DebugStore.ts";
 import ViewList from "@/components/global/list/ViewList.vue";
 import Details from "@/components/global/common/Details.vue";
 import {DeleteFilled} from "@element-plus/icons-vue";

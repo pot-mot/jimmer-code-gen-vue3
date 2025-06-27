@@ -5,21 +5,24 @@ import {DeepReadonly} from "vue";
 import {getDefaultGenModelSubGroup} from "@/components/business/modelSubGroup/defaultModelSubGroupForm.ts";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
 import {
-    syncNewSubGroupForEnums,
-    syncNewSubGroupForTables,
-    syncSubGroupNameForEnums, syncSubGroupNameForTables
+    setSubGroupNameForEnums,
+    setSubGroupNameForTables,
+    syncSubGroupNameForEnums,
+    syncSubGroupNameForTables
 } from "@/components/pages/ModelEditor/sync/syncSubGroup.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-
-export type SubGroupCreateOptions = {
-    tableKey?: string | undefined,
-    enumKey?: string | undefined,
-}
+import {deleteConfirm} from "@/message/confirm.ts";
+import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 
 const SUB_GROUP_CREATE_PREFIX = "[[SUB_GROUP_CREATE_PREFIX]]"
 
-export const useSubGroupDialogsStore = defineStore(
-    'SubGroupDialogsStore',
+export type SubGroupCreateOptions = {
+    tableKeys?: string[] | undefined,
+    enumKeys?: string[] | undefined,
+}
+
+export const useSubGroupsStore = defineStore(
+    'ModelEditor_SubGroups',
     () => {
         const dialogs = useDialogOpenListState<string, GenModelInput_TargetOf_subGroups>()
 
@@ -36,17 +39,18 @@ export const useSubGroupDialogsStore = defineStore(
         const created = (createKey: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
             MODEL_EDITOR.startBatchSync('createdSubGroup', () => {
                 const model = MODEL._model()
+                const graph = GRAPH._graph()
                 model.subGroups.push(cloneDeepReadonly<GenModelInput_TargetOf_subGroups>(subGroup))
 
                 const options = createOptionsMap.get(createKey)
 
                 if (options !== undefined) {
-                    const {tableKey, enumKey} = options
-                    if (tableKey) {
-                        syncNewSubGroupForTables(subGroup, tableKey)
+                    const {tableKeys, enumKeys} = options
+                    if (tableKeys) {
+                        setSubGroupNameForTables(graph, new Set(tableKeys), subGroup.name)
                     }
-                    if (enumKey) {
-                        syncNewSubGroupForEnums(subGroup, enumKey)
+                    if (enumKeys) {
+                        setSubGroupNameForEnums(model, new Set(enumKeys), subGroup.name)
                     }
                 }
 
@@ -81,18 +85,18 @@ export const useSubGroupDialogsStore = defineStore(
             MODEL_EDITOR.waitRefreshModelAndCode()
         }
 
-        const remove = (name: string) => {
-            const oldName = name
+        const remove = (name: string, confirm: boolean = true) => {
+            deleteConfirm(`${useI18nStore().translate('LABEL_DeleteTarget_SubGroup')}【${name}】`, () => {
+                MODEL_EDITOR.startBatchSync('removeSubGroup', () => {
+                    const model = MODEL._model()
+                    const graph = GRAPH._graph()
+                    model.subGroups = model.subGroups.filter(it => it.name !== name)
+                    syncSubGroupNameForEnums(model, name, undefined)
+                    syncSubGroupNameForTables(graph, name, undefined)
+                })
 
-            MODEL_EDITOR.startBatchSync('removeSubGroup', () => {
-                const model = MODEL._model()
-                const graph = GRAPH._graph()
-                model.subGroups = model.subGroups.filter(it => it.name !== oldName)
-                syncSubGroupNameForEnums(model, oldName, undefined)
-                syncSubGroupNameForTables(graph, oldName, undefined)
-            })
-
-            MODEL_EDITOR.waitRefreshModelAndCode()
+                MODEL_EDITOR.waitRefreshModelAndCode()
+            }, confirm)
         }
 
         const submit = (key: string, subGroup: DeepReadonly<GenModelInput_TargetOf_subGroups>) => {
@@ -102,7 +106,7 @@ export const useSubGroupDialogsStore = defineStore(
                 edited(key, subGroup)
             }
         }
-        
+
         return {
             ...dialogs,
 

@@ -1,31 +1,16 @@
 import {GenTableModelInputJsonSchema} from "@/shape/GenTableModelInput.ts";
 import {GenAssociationModelInputJsonSchema} from "@/shape/GenAssociationModelInput.ts";
 import {useShapeValidate} from "@/shape/shapeValidate.ts";
-import {
-    GenAssociationModelInput,
-    GenModelInput_TargetOf_enums, GenModelInput_TargetOf_subGroups,
-    GenTableModelInput
-} from "@/api/__generated/model/static";
-import {GenEnumModelInputJsonSchema} from "@/shape/GenEnumModelInput.ts";
 import type {DeepReadonly} from "vue";
-import {TableLoadOptions} from "@/components/pages/ModelEditor/load/loadTableNode.ts";
 import {GenModelInputJsonSchema} from "@/shape/ModelInput.ts";
-
-export interface CopyData {
-    tables: GenTableModelInput[],
-    optionsList?: TableLoadOptions[],
-    associations: GenAssociationModelInput[],
-    enums: GenModelInput_TargetOf_enums[],
-    subGroups: GenModelInput_TargetOf_subGroups[],
-}
+import {CopyData} from "@/components/pages/ModelEditor/clipBoard/modelClipBoard.ts";
 
 const CopyDataShapeJsonSchema = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "definitions": {
         ...GenTableModelInputJsonSchema.definitions,
         ...GenAssociationModelInputJsonSchema.definitions,
-        ...GenEnumModelInputJsonSchema.definitions,
-        "GenModelInput_TargetOf_subGroups": GenModelInputJsonSchema.definitions.GenModelInput_TargetOf_subGroups,
+        ...GenModelInputJsonSchema.definitions,
 
         "TableLoadOptions": {
             "properties": {
@@ -41,7 +26,7 @@ const CopyDataShapeJsonSchema = {
 
         "CopyData": {
             "type": "object",
-            "required": ["tables", "associations", "enums"],
+            "required": [],
             "properties": {
                 "tables": {
                     "type": "array",
@@ -50,7 +35,11 @@ const CopyDataShapeJsonSchema = {
                     },
                 },
 
-                "optionsList": {
+                "baseTableOptions": {
+                    "$ref": "#/definitions/TableLoadOptions",
+                },
+
+                "eachTableOptions": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/TableLoadOptions",

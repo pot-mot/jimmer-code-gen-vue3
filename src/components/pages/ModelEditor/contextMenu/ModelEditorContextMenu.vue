@@ -1,34 +1,41 @@
 <template>
     <context-menu
         v-model:show="store.openState"
-        :options="options"
+        :options="store.options"
         @close="handleClose"
     >
         <context-menu-item
+            v-if="eventTargetStore.target.type === 'SubGroup' ? !!eventTargetStore.target.subGroup : true"
             :label="i18nStore.translate('BUTTON_edit')"
             @click="handleEdit"
         >
             <template #icon>
-                <el-icon size="1em">
+                <el-icon size="1em" color="var(--icon-color)">
                     <EditPen/>
                 </el-icon>
             </template>
         </context-menu-item>
 
         <context-menu-item
-            v-if="(store.openTarget?.type === 'Model' && GRAPH.isSelectionEmpty)"
+            v-if="eventTargetStore.target.type === 'Model'"
+            :label="i18nStore.translate('LABEL_ModelEditorMainMenu_createSubGroup')"
+            @click="handleCreateSubGroup"
+        />
+
+        <context-menu-item
+            v-if="(eventTargetStore.target.type === 'Model' && GRAPH.isSelectionEmpty) || eventTargetStore.target.type === 'SubGroup'"
             :label="i18nStore.translate('LABEL_ModelEditorMainMenu_createTable')"
             @click="handleCreateTable"
         />
 
         <context-menu-item
-            v-if="(store.openTarget?.type === 'Model' && MODEL.selectedTables.length > 0 && MODEL.selectedTables.length <= 2) || store.openTarget?.type === 'Table'"
+            v-if="(eventTargetStore.target.type === 'Model' && MODEL.selectedTables.length > 0 && MODEL.selectedTables.length <= 2) || eventTargetStore.target.type === 'Table'"
             :label="i18nStore.translate('LABEL_ModelEditorMainMenu_createAssociation')"
             @click="handleCreateAssociation"
         />
 
         <context-menu-item
-            v-if="store.openTarget?.type === 'Table' || store.openTarget?.type === 'Enum'"
+            v-if="(eventTargetStore.target.type !== 'Association')"
             :label="i18nStore.translate('LABEL_ModelEditorMainMenu_createEnum')"
             @click="handleCreateEnum"
         />
@@ -45,9 +52,9 @@
         <context-menu-separator/>
 
         <context-menu-item
-            :disabled="store.openTarget?.type === 'Model' ? GRAPH.isSelectionEmpty : false"
+            :disabled="eventTargetStore.target.type === 'Model' ? GRAPH.isSelectionEmpty : false"
             :label="i18nStore.translate('BUTTON_copy')"
-            @click="handleCopy"
+            @click="copy()"
             shortcut="Ctrl + C"
         >
             <template #icon>
@@ -55,9 +62,9 @@
             </template>
         </context-menu-item>
         <context-menu-item
-            :disabled="store.openTarget?.type === 'Model' ? GRAPH.isSelectionEmpty : false"
+            :disabled="eventTargetStore.target.type === 'Model' ? GRAPH.isSelectionEmpty : false"
             :label="i18nStore.translate('BUTTON_cut')"
-            @click="handleCut"
+            @click="cut()"
             shortcut="Ctrl + X"
         >
             <template #icon>
@@ -66,7 +73,7 @@
         </context-menu-item>
         <context-menu-item
             :label="i18nStore.translate('BUTTON_paste')"
-            @click="paste"
+            @click="paste()"
             shortcut="Ctrl + V"
         >
             <template #icon>
@@ -74,25 +81,40 @@
             </template>
         </context-menu-item>
 
-        <context-menu-separator/>
+        <template v-if="eventTargetStore.target.type === 'Model'">
+            <context-menu-separator/>
 
-        <context-menu-group
-            :label="i18nStore.translate('LABEL_ModelEditorGraph_layoutAndFit')"
-        >
-            <context-menu-item
-                v-for="option in layoutOptions"
-                :label="option.label"
-                @click="option.click()"
+            <context-menu-group
+                :label="i18nStore.translate('LABEL_ModelEditorGraph_layoutAndFit')"
             >
-                <template #icon>
-                    {{ option.icon }}
-                </template>
-            </context-menu-item>
-        </context-menu-group>
+                <context-menu-item
+                    v-for="option in layoutOptions"
+                    :label="option.label"
+                    @click="option.click()"
+                >
+                    <template #icon>
+                        {{ option.icon }}
+                    </template>
+                </context-menu-item>
+            </context-menu-group>
+        </template>
 
         <context-menu-separator/>
 
         <context-menu-item
+            v-if="eventTargetStore.target.type !== 'Model' && (eventTargetStore.target.type === 'SubGroup' ? !!eventTargetStore.target.subGroup : true)"
+            :label="i18nStore.translate('BUTTON_delete')"
+            @click="handleDelete"
+            shortcut="Delete"
+        >
+            <template #icon>
+                <el-icon size="1em" color="var(--icon-color)">
+                    <Delete/>
+                </el-icon>
+            </template>
+        </context-menu-item>
+        <context-menu-item
+            v-if="eventTargetStore.target.type === 'Model'"
             :disabled="GRAPH.isSelectionEmpty"
             :label="i18nStore.translate('LABEL_ModelEditorGraph_removeSelected')"
             shortcut="Delete"
@@ -103,10 +125,9 @@
             </template>
         </context-menu-item>
         <context-menu-item
-            :disabled="GRAPH.isSelectionEmpty"
-            :label="i18nStore.translate('LABEL_ModelEditorGraph_removeSelectedAssociation')"
-            shortcut="Shift + Delete"
-            @click="REMOVE.removeSelectedEdges"
+            v-if="eventTargetStore.target.type === 'Table'"
+            :label="i18nStore.translate('LABEL_ModelEditorGraph_removeAssociation')"
+            @click="handleRemoveAssociation"
         >
             <template #icon>
                 <AssociationOffIcon/>
@@ -116,16 +137,9 @@
 </template>
 
 <script lang="ts" setup>
-import {
-    ContextMenu,
-    ContextMenuGroup,
-    ContextMenuItem,
-    ContextMenuSeparator,
-    MenuOptions
-} from '@imengyu/vue3-context-menu';
-import {useModelEditorContextMenuStore} from "@/store/modelEditor/contextMenu/ModelEditorContextMenuStore.ts";
+import {ContextMenu, ContextMenuGroup, ContextMenuItem, ContextMenuSeparator,} from '@imengyu/vue3-context-menu';
+import {useContextMenuStore} from "@/store/modelEditor/contextMenu/ContextMenuStore.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import {computed} from "vue";
 import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {useModelClipBoard} from "@/components/pages/ModelEditor/clipBoard/modelClipBoard.ts";
 import CopyIcon from "@/components/global/icons/toolbar/CopyIcon.vue";
@@ -133,36 +147,32 @@ import CutIcon from "@/components/global/icons/toolbar/CutIcon.vue";
 import PasteIcon from "@/components/global/icons/toolbar/PasteIcon.vue";
 import AssociationOffIcon from "@/components/global/icons/toolbar/AssociationOffIcon.vue";
 import EraserIcon from "@/components/global/icons/toolbar/EraserIcon.vue";
-import {EditPen} from "@element-plus/icons-vue";
+import {Delete, EditPen} from "@element-plus/icons-vue";
 import {useModelEditDialogStore} from "@/store/modelEditor/dialogs/ModelEditDialogStore.ts";
-import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
-import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
-import {
-    AssociationCreateOptions,
-    useAssociationDialogsStore
-} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
-import {EnumCreateOptions, useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
-import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
+import {useSubGroupsStore} from "@/store/modelEditor/dialogs/SubGroupsStore.ts";
+import {useTablesStore} from "@/store/modelEditor/dialogs/TablesStore.ts";
+import {AssociationCreateOptions, useAssociationsStore} from "@/store/modelEditor/dialogs/AssociationsStore.ts";
+import {useEnumsStore} from "@/store/modelEditor/dialogs/EnumsStore.ts";
+import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineStore.ts";
+import {getNodeConnectedEdges} from "@/components/global/graphEditor/selection/selectOperation.ts";
+import {useEventTargetStore} from "@/store/modelEditor/eventTarget/EventTargetStore.ts";
 
-const store = useModelEditorContextMenuStore()
+const store = useContextMenuStore()
 
 const i18nStore = useI18nStore()
 
 const {GRAPH, REMOVE, MODEL, VIEW} = useModelEditorStore()
-const modelEditDialogStore = useModelEditDialogStore()
-const subGroupDialogs = useSubGroupDialogsStore()
-const tableDialogs = useTableDialogsStore()
-const associationDialogs = useAssociationDialogsStore()
-const enumDialogs = useEnumDialogsStore()
-const tableCombineDialog = useTableCombineDialogStore()
-const {copy, cut, paste} = useModelClipBoard()
 
-const options = computed<MenuOptions>(() => {
-    return {
-        x: GRAPH.mousePagePosition.x,
-        y: GRAPH.mousePagePosition.y,
-    }
-})
+const eventTargetStore = useEventTargetStore()
+
+const modelEditDialogStore = useModelEditDialogStore()
+const subGroupDialogs = useSubGroupsStore()
+const tableDialogs = useTablesStore()
+const associationDialogs = useAssociationsStore()
+const enumDialogs = useEnumsStore()
+const tableCombineDialog = useTableCombineDialogStore()
+
+const {copy, cut, paste} = useModelClipBoard()
 
 const handleClose = () => {
     // 在关闭菜单时，聚焦到画布容器，以允许键盘导航
@@ -170,76 +180,16 @@ const handleClose = () => {
 }
 
 const handleEdit = () => {
-    if (store.openTarget === undefined || store.openTarget.type === "Model") {
+    if (eventTargetStore.target.type === "Model") {
         modelEditDialogStore.open()
-    } else if (store.openTarget.type === "Table") {
-        tableDialogs.edit(store.openTarget.tableNodePair.second.id, store.openTarget.tableNodePair.first)
-    } else if (store.openTarget.type === "Association") {
-        associationDialogs.edit(store.openTarget.associationEdgePair.second.id, store.openTarget.associationEdgePair.first)
-    } else if (store.openTarget.type === "Enum") {
-        enumDialogs.edit(store.openTarget.enum.name, store.openTarget.enum)
-    } else if (store.openTarget.type === "SubGroup") {
-        subGroupDialogs.edit(store.openTarget.subGroup.name, store.openTarget.subGroup)
-    }
-}
-
-const handleCopy = () => {
-    if (store.openTarget === undefined || store.openTarget.type === "Model") {
-        copy()
-    } else if (store.openTarget.type === "Table") {
-        if (GRAPH.selectedNodeMap.has(store.openTarget.tableNodePair.second.id)) {
-            copy()
-        } else {
-            copy({tableNodePairs: [store.openTarget.tableNodePair]})
-        }
-    } else if (store.openTarget.type === "Association") {
-        if (GRAPH.selectedEdgeMap.has(store.openTarget.associationEdgePair.second.id)) {
-            copy()
-        } else {
-            copy({associationEdgePairs: [store.openTarget.associationEdgePair]})
-        }
-    } else if (store.openTarget.type === "Enum") {
-        if (MODEL.selectedEnumMap.has(store.openTarget.enum.name)) {
-            copy()
-        } else {
-            copy({enumNames: [store.openTarget.enum.name]})
-        }
-    } else if (store.openTarget.type === "SubGroup") {
-        if (MODEL.selectedEnumMap.has(store.openTarget.subGroup.name)) {
-            copy()
-        } else {
-            copy({subGroupNames: [store.openTarget.subGroup.name]})
-        }
-    }
-}
-
-const handleCut = () => {
-    if (store.openTarget === undefined || store.openTarget.type === "Model") {
-        cut()
-    } else if (store.openTarget.type === "Table") {
-        if (GRAPH.selectedNodeMap.has(store.openTarget.tableNodePair.second.id)) {
-            cut()
-        } else {
-            cut({tableNodePairs: [store.openTarget.tableNodePair]})
-        }
-    } else if (store.openTarget.type === "Association") {
-        if (GRAPH.selectedEdgeMap.has(store.openTarget.associationEdgePair.second.id)) {
-            cut()
-        } else {
-            cut({associationEdgePairs: [store.openTarget.associationEdgePair]})
-        }
-    } else if (store.openTarget.type === "Enum") {
-        if (MODEL.selectedEnumMap.has(store.openTarget.enum.name)) {
-            cut()
-        } else {
-            cut({enumNames: [store.openTarget.enum.name]})
-        }
-    } else if (store.openTarget.type === "SubGroup") {
-        if (MODEL.selectedEnumMap.has(store.openTarget.subGroup.name)) {
-            cut()
-        } else {
-            cut({subGroupNames: [store.openTarget.subGroup.name]})
-        }
+    } else if (eventTargetStore.target.type === "Table") {
+        tableDialogs.edit(eventTargetStore.target.tableNodePair.node.id, eventTargetStore.target.tableNodePair.table)
+    } else if (eventTargetStore.target.type === "Association") {
+        associationDialogs.edit(eventTargetStore.target.associationEdgePair.edge.id, eventTargetStore.target.associationEdgePair.association)
+    } else if (eventTargetStore.target.type === "Enum") {
+        enumDialogs.edit(eventTargetStore.target.enum.name, eventTargetStore.target.enum)
+    } else if (eventTargetStore.target.type === "SubGroup" && eventTargetStore.target.subGroup) {
+        subGroupDialogs.edit(eventTargetStore.target.subGroup.name, eventTargetStore.target.subGroup)
     }
 }
 
@@ -278,16 +228,25 @@ const layoutOptions = [
     },
 ]
 
+const handleCreateSubGroup = () => {
+    subGroupDialogs.create()
+}
+
 const handleCreateTable = () => {
-    tableDialogs.create(GRAPH.mousePosition)
+    const subGroupName = eventTargetStore.getTargetSubGroupName()
+
+    tableDialogs.create({
+        subGroupName,
+        ...GRAPH.mousePosition
+    })
 }
 
 const handleCreateAssociation = () => {
     let options: AssociationCreateOptions | undefined = undefined
 
-    if (store.openTarget?.type === "Table") {
+    if (eventTargetStore.target.type === "Table") {
         options = {
-            sourceTableName: store.openTarget.tableNodePair.first.name
+            sourceTableName: eventTargetStore.target.tableNodePair.table.name
         }
     } else if (MODEL.selectedTables.length > 0 && MODEL.selectedTables.length <= 2) {
         options = {
@@ -300,22 +259,34 @@ const handleCreateAssociation = () => {
 }
 
 const handleCreateEnum = () => {
-    let options: EnumCreateOptions | undefined = undefined
+    const subGroupName = eventTargetStore.getTargetSubGroupName()
 
-    if (store.openTarget?.type === "Table") {
-        options = {
-            subGroupName: store.openTarget.tableNodePair.first.subGroup?.name
-        }
-    } else if (store.openTarget?.type === "Enum") {
-        options = {
-            subGroupName: store.openTarget.enum.subGroup?.name
-        }
-    }
-
-    enumDialogs.create(options)
+    enumDialogs.create({
+        subGroupName
+    })
 }
 
 const handleCombineTable = () => {
     tableCombineDialog.open(GRAPH.mousePosition)
+}
+
+const handleDelete = () => {
+    if (eventTargetStore.target.type === "Table") {
+        tableDialogs.remove(eventTargetStore.target.tableNodePair)
+    } else if (eventTargetStore.target.type === "Association") {
+        associationDialogs.remove(eventTargetStore.target.associationEdgePair)
+    } else if (eventTargetStore.target.type === "Enum") {
+        enumDialogs.remove(eventTargetStore.target.enum.name)
+    } else if (eventTargetStore.target.type === "SubGroup" && eventTargetStore.target.subGroup) {
+        subGroupDialogs.remove(eventTargetStore.target.subGroup.name)
+    }
+}
+
+const handleRemoveAssociation = () => {
+    if (eventTargetStore.target.type === "Table") {
+        const graph = GRAPH._graph()
+        const edges = getNodeConnectedEdges(graph, [eventTargetStore.target.tableNodePair.node.id])
+        REMOVE.removeCells(edges)
+    }
 }
 </script>

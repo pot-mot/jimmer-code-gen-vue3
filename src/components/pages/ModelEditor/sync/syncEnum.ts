@@ -1,11 +1,11 @@
 import {EntityConfigView, GenModelInput_TargetOf_enums, GenTableModelInput} from "@/api/__generated/model/static";
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {Graph} from "@antv/x6";
-import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
+import {useTablesStore} from "@/store/modelEditor/dialogs/TablesStore.ts";
 import {updateTableNodeData} from "@/components/pages/ModelEditor/graph/tableNode/updateData.ts";
 import {DeepReadonly} from "vue";
 import {cloneDeepReadonly} from "@/utils/cloneDeepReadonly.ts";
-import {useEntityDialogsStore} from "@/store/modelEditor/dialogs/EntityDialogsStore.ts";
+import {useEntitiesStore} from "@/store/modelEditor/dialogs/EntitiesStore.ts";
 
 // 同步表中的枚举名
 const syncEnumNameInTable = (table: DeepReadonly<GenTableModelInput>, oldEnumName: string, newEnumName: string | undefined): GenTableModelInput => {
@@ -35,7 +35,7 @@ const judgeEnumInTable = (enumName: string, table: GenTableModelInput): boolean 
 export const syncEnumNameForTables = (graph: Graph, oldEnumName: string, newEnumName: string | undefined) => {
     const nodes = graph.getNodes().filter(it => it.shape === TABLE_NODE)
 
-    const tableDialogsStore = useTableDialogsStore()
+    const tableDialogsStore = useTablesStore()
 
     // 同步所有对话框中的表数据
     tableDialogsStore.items.forEach(({key, value, options}) => {
@@ -58,7 +58,7 @@ export const syncEnumNameForTables = (graph: Graph, oldEnumName: string, newEnum
 
 // 在表中同步新的枚举（新的枚举必然来源于唯一的表中唯一的列）
 export const syncNewEnumForTables = (genEnum: DeepReadonly<GenModelInput_TargetOf_enums>, tableKey: string, columnName: string) => {
-    const tableDialogsStore = useTableDialogsStore()
+    const tableDialogsStore = useTablesStore()
 
     const table = tableDialogsStore.get(tableKey)
     if (table !== undefined) {
@@ -97,7 +97,7 @@ const judgeEnumInEntity = (enumName: string, entity: DeepReadonly<EntityConfigVi
 }
 
 export const syncEnumNameForEntities = (oldEnumName: string, newEnumName: string | undefined) => {
-    const entityDialogsStore = useEntityDialogsStore()
+    const entityDialogsStore = useEntitiesStore()
 
     entityDialogsStore.items.forEach(({key, value, options}) => {
         if (value && judgeEnumInEntity(oldEnumName, value)) {

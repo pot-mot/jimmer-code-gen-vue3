@@ -1,19 +1,16 @@
 <script setup lang="ts">
 import {Delete, EditPen} from "@element-plus/icons-vue";
 import {GenModelInput_TargetOf_enums} from "@/api/__generated/model/static";
-import {deleteConfirm} from "@/message/confirm.ts";
 import {useModelEditorStore} from "@/store/modelEditor/ModelEditorStore.ts";
-import {useI18nStore} from "@/store/i18n/i18nStore.ts";
 import {computed} from "vue";
-import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
-
-const i18nStore = useI18nStore()
+import {useEnumsStore} from "@/store/modelEditor/dialogs/EnumsStore.ts";
+import {useEventTargetStore} from "@/store/modelEditor/eventTarget/EventTargetStore.ts";
 
 const props = defineProps<{
 	genEnum: GenModelInput_TargetOf_enums
 }>()
 
-const enumDialogs = useEnumDialogsStore()
+const enumDialogs = useEnumsStore()
 
 const {MODEL, SELECT} = useModelEditorStore()
 
@@ -28,21 +25,23 @@ const handleClickLabel = (e: MouseEvent) => {
 		SELECT.unselectAll()
 		SELECT.selectEnum(props.genEnum.name)
 	}
+    useEventTargetStore().target = {type: 'Enum', enum: props.genEnum}
 }
 
 const handleEdit = () => {
-    enumDialogs.edit(props.genEnum.name, props.genEnum)
+	enumDialogs.edit(props.genEnum.name, props.genEnum)
 }
 
 const handleDelete = () => {
-	deleteConfirm(`${i18nStore.translate("LABEL_DeleteTarget_Enum")}【${props.genEnum.name}】`, () => {
-        enumDialogs.remove(props.genEnum.name)
-	})
+    enumDialogs.remove(props.genEnum.name)
 }
 </script>
 
 <template>
-	<div class="menu-item hover-show" :class="isSelected ? 'selected' : ''">
+	<div
+		class="menu-item hover-show"
+		:class="isSelected ? 'selected' : ''"
+	>
 		<el-text @click="handleClickLabel">
 			{{ genEnum.name }}
 			<Comment :comment="genEnum.comment"/>

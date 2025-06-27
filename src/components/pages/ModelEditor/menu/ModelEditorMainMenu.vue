@@ -11,11 +11,14 @@ import {useModelLoadDialogStore} from "@/store/modelEditor/dialogs/ModelLoadDial
 import SubGroupItem from "@/components/pages/ModelEditor/menu/SubGroupItem.vue";
 import {judgeTargetIsInteraction} from "@/utils/clickUtils.ts";
 import {handleMenuKeyEvent} from "@/components/pages/ModelEditor/menu/menuKeyEvent.ts";
-import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
-import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
-import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
-import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
-import {useAssociationBatchCreateDialogStore} from "@/store/modelEditor/dialogs/AssociationBatchCreateDialogStore.ts";
+import {useTablesStore} from "@/store/modelEditor/dialogs/TablesStore.ts";
+import {useAssociationsStore} from "@/store/modelEditor/dialogs/AssociationsStore.ts";
+import {useEnumsStore} from "@/store/modelEditor/dialogs/EnumsStore.ts";
+import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineStore.ts";
+import {useAssociationBatchCreateStore} from "@/store/modelEditor/dialogs/AssociationBatchCreateStore.ts";
+import {useContextMenuStore} from "@/store/modelEditor/contextMenu/ContextMenuStore.ts";
+import {useEventTargetStore} from "@/store/modelEditor/eventTarget/EventTargetStore.ts";
+import {debounce} from "lodash";
 
 const i18nStore = useI18nStore()
 
@@ -24,11 +27,11 @@ const {MODEL, SELECT, VIEW} = useModelEditorStore()
 const dataSourceLoadDialogStore = useDataSourceLoadDialogStore()
 const modelLoadDialogStore = useModelLoadDialogStore()
 
-const tableDialogs = useTableDialogsStore()
-const associationDialogs = useAssociationDialogsStore()
-const enumDialogs = useEnumDialogsStore()
+const tableDialogs = useTablesStore()
+const associationDialogs = useAssociationsStore()
+const enumDialogs = useEnumsStore()
 const tableConfineDialog = useTableCombineDialogStore()
-const associationBatchCreateDialog = useAssociationBatchCreateDialogStore()
+const associationBatchCreateDialog = useAssociationBatchCreateStore()
 
 const associationEdgePairs = computed(() => {
 	return MODEL.associationEdgePairs
@@ -41,40 +44,67 @@ const handleClickUnselect = (e: MouseEvent) => {
 }
 
 const handleCreateTable = () => {
-    const options = {
-        x: VIEW.getCenterPoint().x * 3/4,
-        y: VIEW.getCenterPoint().y * 3/4,
-    }
-    tableDialogs.create(options)
+	const options = {
+		x: VIEW.getCenterPoint().x * 3 / 4,
+		y: VIEW.getCenterPoint().y * 3 / 4,
+	}
+	tableDialogs.create(options)
 }
 
 const handleCombineTable = () => {
-    const options = {
-        x: VIEW.getCenterPoint().x * 3/4,
-        y: VIEW.getCenterPoint().y * 3/4,
-    }
-    tableConfineDialog.open(options)
+	const options = {
+		x: VIEW.getCenterPoint().x * 3 / 4,
+		y: VIEW.getCenterPoint().y * 3 / 4,
+	}
+	tableConfineDialog.open(options)
 }
 
 const handleCreateAssociation = () => {
-    const options = MODEL.selectedTables.length > 0 && MODEL.selectedTables.length <= 2 ? {
-        sourceTableName: MODEL.selectedTables[0]?.name,
-        targetTableName: MODEL.selectedTables[1]?.name,
-    } : undefined
-    associationDialogs.create(options)
+	const options = MODEL.selectedTables.length > 0 && MODEL.selectedTables.length <= 2 ? {
+		sourceTableName: MODEL.selectedTables[0]?.name,
+		targetTableName: MODEL.selectedTables[1]?.name,
+	} : undefined
+	associationDialogs.create(options)
 }
 
 const handleBatchCreateAssociations = () => {
-    associationBatchCreateDialog.open()
+	associationBatchCreateDialog.open()
 }
 
 const handleCreateEnum = () => {
-    enumDialogs.create()
+	enumDialogs.create()
+}
+
+
+/**
+ * 设置菜单 contextMenu 交互和 eventTarget
+ */
+const eventTargetStore = useEventTargetStore()
+
+const handleMouseMove = debounce((e: MouseEvent) => {
+	if (!judgeTargetIsInteraction(e)) {
+		eventTargetStore.toDefault()
+	}
+}, 50)
+
+const handleContextMenu = (e: MouseEvent) => {
+	e.preventDefault()
+	e.stopPropagation()
+	useContextMenuStore().open(
+		{x: e.pageX, y: e.pageY},
+	)
 }
 </script>
 
 <template>
-	<div class="model-editor-main-menu" @click="handleClickUnselect" tabindex="-1" @keydown="handleMenuKeyEvent">
+	<div
+		class="model-editor-main-menu"
+		tabindex="-1"
+		@click="handleClickUnselect"
+		@keydown="handleMenuKeyEvent"
+		@mousemove="handleMouseMove"
+		@contextmenu="handleContextMenu"
+	>
 		<el-button @click="dataSourceLoadDialogStore.open()">
 			{{ i18nStore.translate('LABEL_ModelEditorMainMenu_loadFromDataSource') }}
 		</el-button>
@@ -111,10 +141,10 @@ const handleCreateEnum = () => {
 				<Details v-for="{group, tableNodePairs, enums} of MODEL.subGroupDataList" :key="group?.name" open>
 					<template #title>
 						<SubGroupItem :sub-group="group"/>
-                    </template>
+					</template>
 
 					<TableItem
-						v-for="{first: table, second: node} in tableNodePairs"
+						v-for="{table, node} in tableNodePairs"
 						:key="node.id"
 						:table="table"
 						:node="node"
@@ -152,7 +182,7 @@ const handleCreateEnum = () => {
 
 			<div style="padding-bottom: 1em;">
 				<AssociationItem
-					v-for="{first: association, second: edge} in associationEdgePairs"
+					v-for="{association, edge} in associationEdgePairs"
 					:key="edge.id"
 					:association="association"
 					:edge="edge"
@@ -174,12 +204,12 @@ const handleCreateEnum = () => {
 
 .splitter {
 	width: 60%;
-    min-width: 4em;
-    max-width: 20em;
+	min-width: 4em;
+	max-width: 20em;
 	height: 1px;
 	background-color: var(--text-color);
 	opacity: 0.3;
 	margin-top: 0.4em;
-    margin-bottom: 0.3em;
+	margin-bottom: 0.3em;
 }
 </style>

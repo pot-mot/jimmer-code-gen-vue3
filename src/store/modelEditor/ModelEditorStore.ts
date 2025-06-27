@@ -10,7 +10,6 @@ import {
     GenModelView,
     GenTableColumnsView,
     GenTableModelInput,
-    Pair
 } from "@/api/__generated/model/static";
 import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
 import type {TableLoadOptions} from "@/components/pages/ModelEditor/load/loadTableNode.ts";
@@ -49,21 +48,31 @@ import {loadSupGroups} from "@/components/pages/ModelEditor/load/loadSubGroups.t
 import {loadEnums} from "@/components/pages/ModelEditor/load/loadEnums.ts";
 import {loadAssociationEdge} from "@/components/pages/ModelEditor/load/loadAssociationEdge.ts";
 import debounce from "lodash/debounce";
-import {useDebugStore} from "@/store/debug/debugStore.ts";
+import {useDebugStore} from "@/store/debug/DebugStore.ts";
 import {CustomHistory} from "@/components/global/graphEditor/history/CustomHistory.ts";
 import {jsonSortPropStringify} from "@/utils/json.ts";
-import {useSubGroupDialogsStore} from "@/store/modelEditor/dialogs/SubGroupDialogsStore.ts";
-import {useTableDialogsStore} from "@/store/modelEditor/dialogs/TableDialogsStore.ts";
-import {useAssociationDialogsStore} from "@/store/modelEditor/dialogs/AssociationDialogsStore.ts";
-import {useEnumDialogsStore} from "@/store/modelEditor/dialogs/EnumDialogsStore.ts";
-import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineDialogStore.ts";
-import {useAssociationBatchCreateDialogStore} from "@/store/modelEditor/dialogs/AssociationBatchCreateDialogStore.ts";
-import {useEntityDialogsStore} from "@/store/modelEditor/dialogs/EntityDialogsStore.ts";
+import {useSubGroupsStore} from "@/store/modelEditor/dialogs/SubGroupsStore.ts";
+import {useTablesStore} from "@/store/modelEditor/dialogs/TablesStore.ts";
+import {useAssociationsStore} from "@/store/modelEditor/dialogs/AssociationsStore.ts";
+import {useEnumsStore} from "@/store/modelEditor/dialogs/EnumsStore.ts";
+import {useTableCombineDialogStore} from "@/store/modelEditor/dialogs/TableCombineStore.ts";
+import {useAssociationBatchCreateStore} from "@/store/modelEditor/dialogs/AssociationBatchCreateStore.ts";
+import {useEntitiesStore} from "@/store/modelEditor/dialogs/EntitiesStore.ts";
 
 export type SubGroupData = {
     group: GenModelInput_TargetOf_subGroups | undefined,
-    tableNodePairs: Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>,
+    tableNodePairs: Array<TableNodePair>,
     enums: Array<GenModelInput_TargetOf_enums>,
+}
+
+export type TableNodePair = {
+    table: GenTableModelInput,
+    node: UnwrapRefSimple<Node>,
+}
+
+export type AssociationEdgePair = {
+    association: GenAssociationModelInput,
+    edge: UnwrapRefSimple<Edge>,
 }
 
 type ModelReactiveState = {
@@ -76,18 +85,18 @@ type ModelReactiveState = {
     enumNameGroupNameMap: ComputedRef<Map<string, string | undefined>>,
 
     tableNodes: DeepReadonly<Ref<Array<UnwrapRefSimple<Node>>>>,
-    tableNodePairs: ComputedRef<Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>>,
+    tableNodePairs: ComputedRef<Array<TableNodePair>>,
     tables: ComputedRef<Array<GenTableModelInput>>,
     superTables: ComputedRef<Array<GenTableModelInput>>,
     selectedTables: ComputedRef<Array<GenTableModelInput>>,
-    selectedTableNodePairs: ComputedRef<Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>>,
+    selectedTableNodePairs: ComputedRef<Array<TableNodePair>>,
     tableNameGroupNameMap: ComputedRef<Map<string, string | undefined>>,
 
     associationEdges: DeepReadonly<Ref<Array<UnwrapRefSimple<Edge>>>>,
-    associationEdgePairs: ComputedRef<Array<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>>,
+    associationEdgePairs: ComputedRef<Array<AssociationEdgePair>>,
     associations: ComputedRef<Array<GenAssociationModelInput>>,
     selectedAssociations: ComputedRef<Array<GenAssociationModelInput>>,
-    selectedAssociationEdgePairs: ComputedRef<Array<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>>,
+    selectedAssociationEdgePairs: ComputedRef<Array<AssociationEdgePair>>,
 
     subGroupDataList: ComputedRef<Array<SubGroupData>>,
 }
@@ -99,7 +108,7 @@ type ModelState = {
     unload: () => void
 }
 
-type ModelGraphInput = {
+export type ModelLoadInput = {
     subGroups?: Array<GenModelInput_TargetOf_subGroups>,
     enums?: Array<GenModelInput_TargetOf_enums>,
     tables?: Array<GenTableModelInput>,
@@ -116,7 +125,7 @@ type LoadResult = {
 }
 
 type ModelLoadOperation = {
-    loadInput: (input: DeepReadonly<ModelGraphInput>) => LoadResult
+    loadInput: (input: DeepReadonly<ModelLoadInput>) => LoadResult
     loadModel: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
     loadSchema: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
     loadTable: (id: number) => Promise<{ nodes: Node[], edges: Edge[] }>
@@ -204,9 +213,9 @@ const initModelEditorStore = (): ModelEditorStore => {
             startBatchSync(target, () => {
                 cells.forEach(cell => {
                     if (cell.isNode() && cell.shape === TABLE_NODE) {
-                        useTableDialogsStore().remove(cell.id)
+                        useTablesStore().remove({table: cell.data.table, node: cell}, false)
                     } else if (cell.isEdge() && cell.shape === ASSOCIATION_EDGE) {
-                        useAssociationDialogsStore().remove(cell.id)
+                        useAssociationsStore().remove({association: cell.data.association, edge: cell}, false)
                     }
                 })
             })
@@ -331,10 +340,10 @@ const initModelEditorStore = (): ModelEditorStore => {
         addNodeSync(graph)
     })
 
-    const tableNodePairs: ComputedRef<Array<Pair<GenTableModelInput, UnwrapRefSimple<Node>>>> = computed(() =>
+    const tableNodePairs: ComputedRef<Array<TableNodePair>> = computed(() =>
         tableNodes.value
             .map(it => {
-                return {first: it.data.table as GenTableModelInput, second: it}
+                return {table: it.data.table as GenTableModelInput, node: it}
             })
     )
 
@@ -381,10 +390,10 @@ const initModelEditorStore = (): ModelEditorStore => {
         addEdgeSync(graph)
     })
 
-    const associationEdgePairs: ComputedRef<Array<Pair<GenAssociationModelInput, UnwrapRefSimple<Edge>>>> = computed(() =>
+    const associationEdgePairs: ComputedRef<Array<AssociationEdgePair>> = computed(() =>
         associationEdges.value
             .map(it => {
-                return {first: it.data.association as GenAssociationModelInput, second: it}
+                return {association: it.data.association as GenAssociationModelInput, edge: it}
             })
     )
 
@@ -397,7 +406,7 @@ const initModelEditorStore = (): ModelEditorStore => {
     const subGroups = computed(() => {
         if (!currentModel.value) return []
 
-        const value = cloneDeepReadonly<GenModelView>(currentModel.value)
+        const value = currentModel.value
 
         return value.subGroups.sort((a, b) => {
             if (a.name < b.name) return -1
@@ -471,6 +480,8 @@ const initModelEditorStore = (): ModelEditorStore => {
 
         let styleContent = ''
         for (const [name, style] of value) {
+            if (!style) continue
+
             styleContent += `
 .table-node table.model-sub-group-${name} { 
     --border-color: ${style};
@@ -498,7 +509,7 @@ const initModelEditorStore = (): ModelEditorStore => {
     const enums = computed(() => {
         if (!currentModel.value) return []
 
-        const value = cloneDeepReadonly<GenModelView>(currentModel.value)
+        const value = currentModel.value
 
         const subGroupPackageMap = new Map<string, string>
         value.subGroups.forEach(subGroup => {
@@ -571,24 +582,24 @@ const initModelEditorStore = (): ModelEditorStore => {
     }
 
     const selectedTableNodePairs = computed(() => {
-        return tableNodePairs.value.filter(it => graphReactiveState.selectedNodeMap.value.has(it.second.id))
+        return tableNodePairs.value.filter(it => graphReactiveState.selectedNodeMap.value.has(it.node.id))
     })
 
     const selectedTables = computed<GenTableModelInput[]>(() => {
-        return selectedTableNodePairs.value.map(it => it.first)
+        return selectedTableNodePairs.value.map(it => it.table)
     })
 
     const selectedAssociationEdgePairs = computed(() => {
-        return associationEdgePairs.value.filter(it => graphReactiveState.selectedEdgeMap.value.has(it.second.id))
+        return associationEdgePairs.value.filter(it => graphReactiveState.selectedEdgeMap.value.has(it.edge.id))
     })
 
     const selectedAssociations = computed<GenAssociationModelInput[]>(() => {
-        return selectedAssociationEdgePairs.value.map(it => it.first)
+        return selectedAssociationEdgePairs.value.map(it => it.association)
     })
 
     const subGroupDataList = computed<Array<SubGroupData>>(() => {
         return [undefined, ...subGroups.value].map(group => {
-            const matchedTableNodePairs = tableNodePairs.value.filter(it => it.first.subGroup?.name === group?.name)
+            const matchedTableNodePairs = tableNodePairs.value.filter(it => it.table.subGroup?.name === group?.name)
             const matchedEnums = enums.value.filter(it => it.subGroup?.name === group?.name)
 
             return {
@@ -731,7 +742,7 @@ const initModelEditorStore = (): ModelEditorStore => {
 
 
     const loadInput = (
-        input: DeepReadonly<ModelGraphInput>
+        input: DeepReadonly<ModelLoadInput>
     ): LoadResult => {
         const graph = _graph()
         const model = assertModel()
@@ -745,7 +756,7 @@ const initModelEditorStore = (): ModelEditorStore => {
             associations: inputAssociations = [] as GenAssociationModelInput[],
             baseTableOptions,
             eachTableOptions
-        } = cloneDeepReadonly<ModelGraphInput>(input)
+        } = cloneDeepReadonly<ModelLoadInput>(input)
 
         const {
             newSubGroups,
@@ -1133,17 +1144,17 @@ const initModelEditorStore = (): ModelEditorStore => {
         useDataSourceLoadDialogStore().close()
         useModelLoadDialogStore().close()
 
-        useSubGroupDialogsStore().closeAll()
+        useSubGroupsStore().closeAll()
 
-        useTableDialogsStore().closeAll()
+        useTablesStore().closeAll()
         useTableCombineDialogStore().close()
 
-        useEnumDialogsStore().closeAll()
+        useEnumsStore().closeAll()
 
-        useAssociationDialogsStore().closeAll()
-        useAssociationBatchCreateDialogStore().close()
+        useAssociationsStore().closeAll()
+        useAssociationBatchCreateStore().close()
 
-        useEntityDialogsStore().closeAll()
+        useEntitiesStore().closeAll()
 
         codePreviewStore.close()
 
