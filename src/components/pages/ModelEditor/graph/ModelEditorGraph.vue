@@ -1,88 +1,88 @@
 <template>
-	<div ref="wrapper" class="model-editor-graph" :class="isDragging ? '' : 'non-drag'">
-		<div ref="container" @mousedown="handleMouseDown" @mouseup="handleMouseUp" @mousemove="handleMouseMove"/>
+    <div ref="wrapper" class="model-editor-graph" :class="isDragging ? '' : 'non-drag'">
+        <div ref="container" @mousedown="handleMouseDown" @mouseup="handleMouseUp" @mousemove="handleMouseMove"/>
 
-		<ul v-if="GRAPH.isLoaded" class="toolbar left-top">
-			<li>
-				<el-tooltip :content="`${i18nStore.translate('LABEL_ModelEditorGraph_saveModel')} [Ctrl + S]`">
-					<el-button :icon="SaveIcon" @click="handleSaveModel"/>
-				</el-tooltip>
-			</li>
+        <ul v-if="GRAPH.isLoaded" class="toolbar left-top">
+            <li>
+                <el-tooltip :content="`${i18nStore.translate('LABEL_ModelEditorGraph_saveModel')} [Ctrl + S]`">
+                    <el-button :icon="SaveIcon" @click="handleSaveModel"/>
+                </el-tooltip>
+            </li>
 
-			<li>
-				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_editModel')">
-					<el-button :icon="EditPen" @click="handleEditModel"/>
-				</el-tooltip>
-			</li>
+            <li>
+                <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_editModel')">
+                    <el-button :icon="EditPen" @click="handleEditModel"/>
+                </el-tooltip>
+            </li>
 
-			<li>
-				<el-tooltip :disabled="!GRAPH.canUndo"
-							:content="`${i18nStore.translate('LABEL_ModelEditorGraph_undo')} [Ctrl + Z]`">
-					<el-button :disabled="!GRAPH.canUndo" :icon="UndoIcon" @click="HISTORY.undo()"/>
-				</el-tooltip>
-				<el-tooltip :disabled="!GRAPH.canRedo"
-							:content="`${i18nStore.translate('LABEL_ModelEditorGraph_redo')} [Ctrl + Shift + Z]`">
-					<el-button :disabled="!GRAPH.canRedo" :icon="RedoIcon" @click="HISTORY.redo()"/>
-				</el-tooltip>
-			</li>
+            <li>
+                <el-tooltip :disabled="!GRAPH.canUndo"
+                            :content="`${i18nStore.translate('LABEL_ModelEditorGraph_undo')} [Ctrl + Z]`">
+                    <el-button :disabled="!GRAPH.canUndo" :icon="UndoIcon" @click="HISTORY.undo()"/>
+                </el-tooltip>
+                <el-tooltip :disabled="!GRAPH.canRedo"
+                            :content="`${i18nStore.translate('LABEL_ModelEditorGraph_redo')} [Ctrl + Shift + Z]`">
+                    <el-button :disabled="!GRAPH.canRedo" :icon="RedoIcon" @click="HISTORY.redo()"/>
+                </el-tooltip>
+            </li>
 
-			<li>
-				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_fit')">
-					<el-button :icon="FitIcon" @click="VIEW.fit()"/>
-				</el-tooltip>
-			</li>
-		</ul>
+            <li>
+                <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_fit')">
+                    <el-button :icon="FitIcon" @click="VIEW.fit()"/>
+                </el-tooltip>
+            </li>
+        </ul>
 
-		<ul v-if="GRAPH.isLoaded" class="toolbar left-bottom">
-		</ul>
+        <ul v-if="GRAPH.isLoaded" class="toolbar left-bottom">
+        </ul>
 
-		<ul v-if="GRAPH.isLoaded" class="toolbar right-top">
-			<li>
-				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_exportModel')">
-					<el-button class="cling-right" :icon="ExportIcon" @click="handleModelExport"/>
-				</el-tooltip>
-				<el-select v-model="exportType"
-						   class="cling-left" size="small" style="width: 6em">
-					<el-option v-for="type in exportType_CONSTANT" :value="type"/>
-				</el-select>
-			</li>
+        <ul v-if="GRAPH.isLoaded" class="toolbar right-top">
+            <li>
+                <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_exportModel')">
+                    <el-button class="cling-right" :icon="ExportIcon" @click="handleModelExport"/>
+                </el-tooltip>
+                <el-select v-model="exportType"
+                           class="cling-left" size="small" style="width: 6em">
+                    <el-option v-for="type in exportType_CONSTANT" :value="type"/>
+                </el-select>
+            </li>
 
-			<li>
-				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_previewCode')">
-					<el-button :icon="CodeIcon" @click="handleCodePreview"/>
-				</el-tooltip>
+            <li>
+                <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_previewCode')">
+                    <el-button :icon="CodeIcon" @click="handleCodePreview"/>
+                </el-tooltip>
 
-				<DragDialog
-					v-model="codePreviewStore.openState"
-					init-full-screen
-					can-drag can-resize
-					limit-by-parent
-					:modal="true"
-				>
-					<MultiCodePreview
-						ref="multiCodePreviewRef"
-						@download-file="handleDownloadFile"
-						@download-files="handleDownloadFiles"
-					/>
-				</DragDialog>
-			</li>
+                <DragDialog
+                    v-model="codePreviewStore.openState"
+                    init-full-screen
+                    can-drag can-resize
+                    limit-by-parent
+                    :modal="true"
+                >
+                    <MultiCodePreview
+                        ref="multiCodePreviewRef"
+                        @download-file="handleDownloadFile"
+                        @download-files="handleDownloadFiles"
+                    />
+                </DragDialog>
+            </li>
 
-			<li>
-				<el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_downloadAll')">
-					<el-button :icon="DownloadIcon" @click="handleModelDownload"/>
-				</el-tooltip>
-			</li>
-		</ul>
+            <li>
+                <el-tooltip :content="i18nStore.translate('LABEL_ModelEditorGraph_downloadAll')">
+                    <el-button :icon="DownloadIcon" @click="handleModelDownload"/>
+                </el-tooltip>
+            </li>
+        </ul>
 
-		<div v-if="GRAPH.isLoaded" class="toolbar right-bottom" style="width: max(15vw, 200px)">
-			<MiniMap :graph="graph"/>
-			<ScaleBar :graph="graph"/>
-		</div>
+        <div v-if="GRAPH.isLoaded" class="toolbar right-bottom" style="width: max(15vw, 200px)">
+            <MiniMap :graph="graph"/>
+            <ScaleBar :graph="graph"/>
+        </div>
 
-		<template v-if="GRAPH.isLoaded">
-			<GraphSearcher :graph="graph"/>
-		</template>
-	</div>
+        <template v-if="GRAPH.isLoaded">
+            <GraphSearcher :graph="graph"/>
+        </template>
+    </div>
 </template>
 
 <script lang="ts" setup>
@@ -106,11 +106,11 @@ import RedoIcon from "@/components/global/icons/toolbar/RedoIcon.vue";
 import UndoIcon from "@/components/global/icons/toolbar/UndoIcon.vue";
 import ExportIcon from "@/components/global/icons/toolbar/ExportIcon.vue";
 import {
-	convertModel,
-	downloadFile,
-	downloadModelZip,
-	downloadZip,
-	exportModelJson,
+    convertModel,
+    downloadFile,
+    downloadModelZip,
+    downloadZip,
+    exportModelJson,
 } from "@/components/pages/ModelEditor/export/modelExport.ts";
 import {TABLE_NODE} from "@/components/pages/ModelEditor/constant.ts";
 import {useDocumentEvent} from "@/utils/useDocumentEvent.ts";
@@ -149,27 +149,27 @@ const eventTargetStore = useEventTargetStore()
 const contextMenuStore = useContextMenuStore()
 
 onMounted(loadingStore.withLoading('ModelEditorGraph onMounted', () => {
-	graph = initModelEditor(container.value!, wrapper.value!)
+    graph = initModelEditor(container.value!, wrapper.value!)
 
-	GRAPH.load(graph)
+    GRAPH.load(graph)
 
-	graph.on('blank:click', () => {
-		SELECT.unselectAll()
-	})
+    graph.on('blank:click', () => {
+        SELECT.unselectAll()
+    })
 
-	graph.on('blank:dblclick', () => {
-		tableDialogs.create(GRAPH.mousePosition)
-	})
+    graph.on('blank:dblclick', () => {
+        tableDialogs.create(GRAPH.mousePosition)
+    })
 
-	graph.on('node:click', ({node}) => {
-		handleNodeClick(node)
-	})
+    graph.on('node:click', ({node}) => {
+        handleNodeClick(node)
+    })
 
-	bindGraphKeyEvent(graph)
+    bindGraphKeyEvent(graph)
 }))
 
 onBeforeUnmount(() => {
-	GRAPH.unload()
+    GRAPH.unload()
 })
 
 // 表编辑事件
@@ -178,63 +178,63 @@ const doubleClickWaitNodes = new Set<string>
 const DOUBLE_CLICK_TIMEOUT = 300
 
 const handleNodeClick = (node: Node) => {
-	if (node.shape === TABLE_NODE && node.getData()?.table !== undefined) {
-		const id = node.id
-		const table = node.getData()?.table as GenTableModelInput
+    if (node.shape === TABLE_NODE && node.getData()?.table !== undefined) {
+        const id = node.id
+        const table = node.getData()?.table as GenTableModelInput
 
-		if (doubleClickWaitNodes.has(id)) {
-			doubleClickWaitNodes.delete(id)
-			tableDialogs.edit(id, table)
-		} else {
-			graph.select(node)
-			doubleClickWaitNodes.add(id)
-			setTimeout(() => {
-				doubleClickWaitNodes.delete(id)
-			}, DOUBLE_CLICK_TIMEOUT)
-		}
-	}
+        if (doubleClickWaitNodes.has(id)) {
+            doubleClickWaitNodes.delete(id)
+            tableDialogs.edit(id, table)
+        } else {
+            graph.select(node)
+            doubleClickWaitNodes.add(id)
+            setTimeout(() => {
+                doubleClickWaitNodes.delete(id)
+            }, DOUBLE_CLICK_TIMEOUT)
+        }
+    }
 }
 
 
 const handleSaveModel = loadingStore.withLoading('ModelEditorGraph handleSaveModel', async () => {
-	try {
-		const model = MODEL._model()
+    try {
+        const model = MODEL._model()
 
-		MODEL.isLoaded = false
+        MODEL.isLoaded = false
 
-		const currentGraphData = JSON.stringify(MODEL_EDITOR.getGraphData())
+        const currentGraphData = JSON.stringify(MODEL_EDITOR.getGraphData())
 
-		if (model.graphData !== currentGraphData) {
-			graph.cleanSelection()
-			model.graphData = currentGraphData
-		}
+        if (model.graphData !== currentGraphData) {
+            graph.cleanSelection()
+            model.graphData = currentGraphData
+        }
 
-		const id = await saveModel(model)
-		const newModel = await api.modelService.get({id})
-		if (newModel !== undefined) {
-			MODEL.load(newModel)
-			sendI18nMessage("MESSAGE_ModelEditorGraph_modelSaveSuccess", "success")
-		} else {
-			sendI18nMessage({key: "MESSAGE_ModelEditorGraph_modelSaveError", args: [id]}, 'error', id)
-		}
-	} catch (e) {
-		if (e === MODEL_VALID_NOT_PASS) return
+        const id = await saveModel(model)
+        const newModel = await api.modelService.get({id})
+        if (newModel !== undefined) {
+            MODEL.load(newModel)
+            sendI18nMessage("MESSAGE_ModelEditorGraph_modelSaveSuccess", "success")
+        } else {
+            sendI18nMessage({key: "MESSAGE_ModelEditorGraph_modelSaveError", args: [id]}, 'error', id)
+        }
+    } catch (e) {
+        if (e === MODEL_VALID_NOT_PASS) return
 
-		sendI18nMessage({key: "MESSAGE_ModelEditorGraph_modelSaveError", args: [e]}, 'error', e)
-	}
+        sendI18nMessage({key: "MESSAGE_ModelEditorGraph_modelSaveError", args: [e]}, 'error', e)
+    }
 })
 
 useDocumentEvent('keydown', (e) => {
-	if (e.ctrlKey || e.metaKey) {
-		if (e.key === 's') {
-			e.preventDefault()
-			handleSaveModel()
-		}
-	}
+    if (e.ctrlKey || e.metaKey) {
+        if (e.key === 's') {
+            e.preventDefault()
+            handleSaveModel()
+        }
+    }
 })
 
 const handleEditModel = () => {
-	modelEditorDialog.handleEdit()
+    modelEditorDialog.handleEdit()
 }
 
 // 拖曳状态标记
@@ -245,66 +245,68 @@ const contextMenuFlag = ref(false)
 const contextMenuWaitTime = 150
 
 const handleMouseDown = (e: MouseEvent) => {
-	if (e.button === 2) {
-		if (isDragging.value) {
-			isDragging.value = false
-		}
-		contextMenuFlag.value = true
-		setTimeout(() => {
-			if (contextMenuFlag.value) {
-				isDragging.value = true
-				contextMenuFlag.value = false
-			}
-		}, contextMenuWaitTime)
-	}
+    if (e.button === 2) {
+        if (isDragging.value) {
+            isDragging.value = false
+        }
+        contextMenuFlag.value = true
+        setTimeout(() => {
+            if (contextMenuFlag.value) {
+                isDragging.value = true
+                contextMenuFlag.value = false
+            }
+        }, contextMenuWaitTime)
+    }
 }
 
 const handleMouseUp = (e: MouseEvent) => {
-	if (e.button === 2) {
-		if (contextMenuFlag.value) {
-			contextMenuFlag.value = false
-			contextMenuStore.open({x: e.pageX, y: e.pageY})
-		}
-		if (isDragging.value) {
-			isDragging.value = false
-		}
-	}
+    if (e.button === 2) {
+        if (contextMenuFlag.value) {
+            contextMenuFlag.value = false
+            setTimeout(() => {
+                contextMenuStore.open({x: e.pageX, y: e.pageY})
+            }, 0)
+        }
+        if (isDragging.value) {
+            isDragging.value = false
+        }
+    }
 }
 
 const handleMouseMove = debounce((e: MouseEvent) => {
-	let matchedEl: HTMLElement | undefined = undefined
+    let matchedEl: HTMLElement | undefined = undefined
 
-	if (judgeTarget(e, (el) => {
-		if (el.classList.contains("x6-node")) {
-			matchedEl = el
-			return true
-		}
-	})) {
-		if (matchedEl) {
-			const tableNodePair = MODEL.tableNodePairs.find(it => it.node.id === matchedEl?.getAttribute("data-cell-id"))
-			if (tableNodePair !== undefined) {
-				eventTargetStore.target = {type: "Table", tableNodePair}
-				return
-			}
-		}
-	}
+    if (judgeTarget(e, (el) => {
+        if (el.classList.contains("x6-node")) {
+            matchedEl = el
+            return true
+        }
+    })) {
+        if (matchedEl) {
+            const tableNodePair = MODEL.tableNodePairs.find(it => it.node.id === matchedEl?.getAttribute("data-cell-id"))
+            if (tableNodePair !== undefined) {
+                eventTargetStore.target = {type: "Table", tableNodePair}
+                return
+            }
+        }
+    }
 
-	if (judgeTarget(e, (el) => {
-		if (el.classList.contains("x6-edge") || el.classList.contains("x6-edge-tools")) {
-			matchedEl = el
-			return true
-		}
-	})) {
-		if (matchedEl) {
-			const associationEdgePair = MODEL.associationEdgePairs.find(it => it.edge.id === matchedEl?.getAttribute("data-cell-id"))
-			if (associationEdgePair !== undefined) {
-				eventTargetStore.target = {type: "Association", associationEdgePair}
-				return
-			}
-		}
-	}
+    if (judgeTarget(e, (el) => {
+        if (el.classList.contains("x6-edge") || el.classList.contains("x6-edge-tools")) {
+            matchedEl = el
+            return true
+        }
+    })) {
+        if (matchedEl) {
+            const associationEdgePair = MODEL.associationEdgePairs.find(it => it.edge.id === matchedEl?.getAttribute("data-cell-id"))
+            if (associationEdgePair !== undefined) {
+                eventTargetStore.target = {type: "Association", associationEdgePair}
+                return
+            }
+        }
+    }
 
-	eventTargetStore.toDefault()
+    eventTargetStore.toDefault()
 }, 50)
 
 /**
@@ -312,56 +314,56 @@ const handleMouseMove = debounce((e: MouseEvent) => {
  */
 
 const preJudge = (): boolean => {
-	if (GRAPH.isLoaded && MODEL.isLoaded) {
-		const modelData = jsonSortPropStringify(MODEL_EDITOR.getGraphData().json)
-		const editorData = jsonSortPropStringify(JSON.parse(MODEL._model().graphData)["json"])
-		if (modelData !== editorData) {
-			sendI18nMessage({
-				key: "MESSAGE_ModelEditorGraph_someChangeNotSave",
-				args: [modelData, editorData]
-			}, 'warning', [modelData, editorData])
-			return false
-		}
-	} else {
-		return false
-	}
+    if (GRAPH.isLoaded && MODEL.isLoaded) {
+        const modelData = jsonSortPropStringify(MODEL_EDITOR.getGraphData().json)
+        const editorData = jsonSortPropStringify(JSON.parse(MODEL._model().graphData)["json"])
+        if (modelData !== editorData) {
+            sendI18nMessage({
+                key: "MESSAGE_ModelEditorGraph_someChangeNotSave",
+                args: [modelData, editorData]
+            }, 'warning', [modelData, editorData])
+            return false
+        }
+    } else {
+        return false
+    }
 
-	const model = MODEL._model()
-	const messageList = validateModel(model)
+    const model = MODEL._model()
+    const messageList = validateModel(model)
 
-	if (messageList.length === 0) {
-		return true
-	} else {
-		messageList.forEach(it => sendI18nMessage(it, 'warning'))
-		return false
-	}
+    if (messageList.length === 0) {
+        return true
+    } else {
+        messageList.forEach(it => sendI18nMessage(it, 'warning'))
+        return false
+    }
 }
 
 const codePreviewStore = useMultiCodePreviewStore()
 
 const handleCodePreview = loadingStore.withLoading('ModelEditorGraph handleCodePreview', async () => {
-	if (!preJudge()) return
+    if (!preJudge()) return
 
-	const model = MODEL._model()
-	await convertModel(model.id)
-	await codePreviewStore.codeRefresh()
-	codePreviewStore.open()
+    const model = MODEL._model()
+    await convertModel(model.id)
+    await codePreviewStore.codeRefresh()
+    codePreviewStore.open()
 })
 
 watch(() => MODEL.isLoaded, async (value) => {
-	if (value) {
-		if (codePreviewStore.openState) {
-			await handleCodePreview()
-		}
-	}
+    if (value) {
+        if (codePreviewStore.openState) {
+            await handleCodePreview()
+        }
+    }
 })
 
 const handleDownloadFile = loadingStore.withLoading('ModelEditorGraph handleCodeDownload', (file: GenerateFile) => {
-	downloadFile(file)
+    downloadFile(file)
 })
 
 const handleDownloadFiles = loadingStore.withLoading('ModelEditorGraph handleCodeDownload', async (files: Array<GenerateFile>) => {
-	await downloadZip(files)
+    await downloadZip(files)
 })
 
 const exportType_CONSTANT = ["JSON", "PNG", "SVG"]
@@ -371,28 +373,28 @@ type ExportType = typeof exportType_CONSTANT[number]
 const exportType = ref<ExportType>('JSON')
 
 const handleModelExport = loadingStore.withLoading('ModelEditorGraph handleModelExport', () => {
-	if (!preJudge()) return
+    if (!preJudge()) return
 
-	const model = MODEL._model()
+    const model = MODEL._model()
 
-	switch (exportType.value) {
-		case 'JSON':
-			exportModelJson(model)
-			break
-		case 'PNG':
-			exportGraphPNG(model, graph)
-			break
-		case 'SVG':
-			exportGraphSVG(model, graph)
-			break
-	}
+    switch (exportType.value) {
+        case 'JSON':
+            exportModelJson(model)
+            break
+        case 'PNG':
+            exportGraphPNG(model, graph)
+            break
+        case 'SVG':
+            exportGraphSVG(model, graph)
+            break
+    }
 })
 
 const handleModelDownload = loadingStore.withLoading('ModelEditorGraph handleModelDownload', async () => {
-	if (!preJudge()) return
+    if (!preJudge()) return
 
-	const model = MODEL._model()
-	await convertModel(model.id)
-	await downloadModelZip(model)
+    const model = MODEL._model()
+    await convertModel(model.id)
+    await downloadModelZip(model)
 })
 </script>
