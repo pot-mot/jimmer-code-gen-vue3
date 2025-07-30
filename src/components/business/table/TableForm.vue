@@ -120,6 +120,7 @@ const handleColumnToPk = (columnIndex: number) => {
 		if (rawType !== undefined) {
 			pkColumn.rawType = rawType
 		}
+        pkColumn.overwriteByRaw = false
 		pkColumn.typeNotNull = true
 	}
 
