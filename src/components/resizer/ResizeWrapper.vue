@@ -3,11 +3,10 @@ import {readonly, ref, watch} from 'vue'
 import {
     resizeBorderKeys,
     resizeHandleKeys,
-    type ResizeDirection,
-    type ResizeEventArgs,
-    type ResizeOrigin,
-    type ResizeStartEventArgs,
-    type ResizeStopEventArgs
+    ResizeDirection,
+    ResizeEventArgs,
+    ResizeOrigin,
+    ResizeStartEventArgs, ResizeStopEventArgs
 } from "@/components/resizer/ResizeWrapperType.ts";
 
 const size = defineModel<{

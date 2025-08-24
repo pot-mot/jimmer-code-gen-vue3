@@ -1,3 +1,38 @@
+<script setup lang="ts">
+import {onMounted, useTemplateRef, watch} from 'vue'
+import {CollapseDetailProps, defaultCollapseDetailProps} from "@/components/collapse/CollapseDetailProps.ts";
+import IconCaretDown from "@/components/icons/IconCaretDown.vue";
+
+const isOpen = defineModel<boolean>({required: false, default: false})
+
+const props = withDefaults(defineProps<CollapseDetailProps>(), defaultCollapseDetailProps)
+
+const bodyRef = useTemplateRef("bodyRef")
+
+onMounted(() => {
+    if (bodyRef.value) {
+        if (isOpen.value) {
+            bodyRef.value.style.maxHeight = `${bodyRef.value.scrollHeight}px`
+        } else {
+            bodyRef.value.style.maxHeight = '0'
+        }
+
+        bodyRef.value.style.transition = `max-height ${props.transitionDuration}ms ease-out`
+        bodyRef.value.style.overflow = 'hidden'
+    }
+})
+
+watch(() => isOpen.value, () => {
+    if (bodyRef.value) {
+        if (isOpen.value) {
+            bodyRef.value.style.maxHeight = `${bodyRef.value.scrollHeight}px`
+        } else {
+            bodyRef.value.style.maxHeight = '0'
+        }
+    }
+})
+</script>
+
 <template>
     <div class="collapse-detail-container">
         <div
@@ -44,41 +79,6 @@
         </div>
     </div>
 </template>
-
-<script setup lang="ts">
-import {onMounted, useTemplateRef, watch} from 'vue'
-import {type CollapseDetailProps, defaultCollapseDetailProps} from "@/components/collapse/CollapseDetailProps.ts";
-import IconCaretDown from "@/components/icons/IconCaretDown.vue";
-
-const isOpen = defineModel<boolean>({required: false, default: false})
-
-const props = withDefaults(defineProps<CollapseDetailProps>(), defaultCollapseDetailProps)
-
-const bodyRef = useTemplateRef("bodyRef")
-
-onMounted(() => {
-    if (bodyRef.value) {
-        if (isOpen.value) {
-            bodyRef.value.style.maxHeight = `${bodyRef.value.scrollHeight}px`
-        } else {
-            bodyRef.value.style.maxHeight = '0'
-        }
-
-        bodyRef.value.style.transition = `max-height ${props.transitionDuration}ms ease-out`
-        bodyRef.value.style.overflow = 'hidden'
-    }
-})
-
-watch(() => isOpen.value, () => {
-    if (bodyRef.value) {
-        if (isOpen.value) {
-            bodyRef.value.style.maxHeight = `${bodyRef.value.scrollHeight}px`
-        } else {
-            bodyRef.value.style.maxHeight = '0'
-        }
-    }
-})
-</script>
 
 <style scoped>
 .collapse-detail-head {

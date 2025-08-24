@@ -1,35 +1,3 @@
-<template>
-    <div class="collapse-item-container" :class="`caret-${triggerPosition}`">
-        <div
-            class="caret-wrapper"
-            v-if="triggerPosition === 'left'"
-            @click="isOpen = !isOpen"
-            @touchend.prevent="isOpen = !isOpen"
-        >
-            <IconCaretDown
-                class="caret left"
-                :class="{ open: isOpen }"
-            />
-        </div>
-
-        <div class="collapse-item-body" ref="bodyRef">
-            <slot/>
-        </div>
-
-        <div
-            class="caret-wrapper"
-            v-if="triggerPosition === 'right'"
-            @click="isOpen = !isOpen"
-            @touchend.prevent="isOpen = !isOpen"
-        >
-            <IconCaretDown
-                class="caret right"
-                :class="{ open: isOpen }"
-            />
-        </div>
-    </div>
-</template>
-
 <script setup lang="ts">
 import {onMounted, useTemplateRef, watch} from 'vue'
 import IconCaretDown from "@/components/icons/IconCaretDown.vue";
@@ -70,6 +38,38 @@ watch(() => isOpen.value, () => {
     }
 })
 </script>
+
+<template>
+    <div class="collapse-item-container" :class="`caret-${triggerPosition}`">
+        <div
+            class="caret-wrapper"
+            v-if="triggerPosition === 'left'"
+            @click="isOpen = !isOpen"
+            @touchend.prevent="isOpen = !isOpen"
+        >
+            <IconCaretDown
+                class="caret left"
+                :class="{ open: isOpen }"
+            />
+        </div>
+
+        <div class="collapse-item-body" ref="bodyRef">
+            <slot/>
+        </div>
+
+        <div
+            class="caret-wrapper"
+            v-if="triggerPosition === 'right'"
+            @click="isOpen = !isOpen"
+            @touchend.prevent="isOpen = !isOpen"
+        >
+            <IconCaretDown
+                class="caret right"
+                :class="{ open: isOpen }"
+            />
+        </div>
+    </div>
+</template>
 
 <style scoped>
 .collapse-item-body {

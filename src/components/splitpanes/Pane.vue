@@ -1,13 +1,3 @@
-<template>
-    <div
-        ref="paneEl"
-        class="splitpanes__pane"
-        @click="onPaneClick($event, uid)"
-        :style="styles">
-        <slot/>
-    </div>
-</template>
-
 <script setup lang="ts">
 import {inject, computed, onMounted, onBeforeUnmount, watch, getCurrentInstance, useTemplateRef} from 'vue'
 import {injectKey} from "@/components/splitpanes/splitPaneTypes.ts";
@@ -71,3 +61,13 @@ onBeforeUnmount(() => {
     onPaneRemove(uid)
 })
 </script>
+
+<template>
+    <div
+        ref="paneEl"
+        class="splitpanes__pane"
+        @click="onPaneClick($event, uid)"
+        :style="styles">
+        <slot/>
+    </div>
+</template>

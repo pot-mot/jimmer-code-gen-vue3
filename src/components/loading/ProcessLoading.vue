@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import IconClose from "@/components/icons/IconClose.vue";
-import type {LoadingTask} from "@/components/loading/LoadingTask.ts";
+import {LoadingTask} from "@/components/loading/LoadingTask.ts";
 
 const tasks = ref<LoadingTask[]>([])
 
