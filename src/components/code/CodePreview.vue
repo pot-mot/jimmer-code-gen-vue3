@@ -14,7 +14,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts">
 import {prism} from "@/components/code/prismjs-index.ts"
 import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {sendMessage} from "@/components/message/messageApi.ts";
