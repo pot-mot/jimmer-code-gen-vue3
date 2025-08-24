@@ -1,18 +1,18 @@
-import {createRouter, createWebHashHistory, RouteRecordRaw} from 'vue-router'
-import {useGlobalLoadingStore} from "@/store/loading/GlobalLoadingStore.ts";
-import {sendI18nMessage} from "@/message/message.ts";
+import {createRouter, createWebHashHistory, type RouteRecordRaw} from 'vue-router'
+import {sendMessage} from "@/components/message/messageApi.ts";
+import {startLoading} from "@/components/loading/loadingApi.ts";
 
 const routes: RouteRecordRaw[] = [
     {
         path: "",
         name: "ModelList",
-        component: () => import("../components/pages/ModelList/ModelListPage.vue")
+        component: () => import("../pages/ModelListPage.vue")
     },
     {
         path: "/model/:id",
         name: "ModelEditor",
 
-        component: () => import("../components/pages/ModelEditor/ModelEditorPage.vue")
+        component: () => import("../pages/ModelEditorPage.vue")
     }
 ]
 
@@ -28,17 +28,17 @@ export const router = createRouter({
     },
 });
 
-let routerChangeFlag: string | undefined = undefined
+let stopRouteLoading: () => void | undefined
 
 router.beforeEach((to, from, next) => {
-    routerChangeFlag = useGlobalLoadingStore().start(`to: ${to.fullPath}, from: ${from.fullPath}`)
+    stopRouteLoading = startLoading(`to: ${to.fullPath}, from: ${from.fullPath}`).stop
     next()
 })
 
-router.afterEach((to, from) => {
-    if (routerChangeFlag !== undefined) {
-        useGlobalLoadingStore().stop(routerChangeFlag)
+router.afterEach((_to, _from, _failure) => {
+    if (stopRouteLoading !== undefined) {
+        stopRouteLoading()
     } else {
-        sendI18nMessage("MESSAGE_router_loading_closeFail", 'warning', {to, from})
+        sendMessage("Router loading fail", {type: 'warning'})
     }
 })

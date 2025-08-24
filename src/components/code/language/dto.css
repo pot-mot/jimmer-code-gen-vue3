@@ -1,0 +1,28 @@
+code.language-dto .token.comment {
+    color: var(--comment-color);
+}
+code.language-dto .token.keyword {
+    color: #af4b1f;
+}
+code.language-dto .token.macro {
+    color: var(--highlight-color);
+}
+code.language-dto .token.qualifier {
+    color: var(--highlight-color);
+}
+code.language-dto .token.qbeFunction {
+    color: var(--highlight-color);
+}
+code.language-dto .token.constant {
+    color: #ba8123;
+}
+code.language-dto .token.operator {
+    color: var(--comment-color);
+}
+code.language-dto .token.propExplicit {
+    color: #b3d4fc;
+    font-weight: 600;
+}
+code.language-dto .token.punctuation {
+    color: var(--comment-color);
+}

@@ -1,15 +1,25 @@
 :root {
-    --text-color: var(--el-color-info-dark-2);
-    --comment-color: var(--el-text-color-placeholder);
-    --border-color: var(--text-color);
-    --background-color: #fff;
-    --background-color-hover: #eee;
-    --highlight-color: var(--el-color-primary);
-    --border: var(--el-border);
-    --border-radius: var(--el-border-radius-base);
-    --box-shadow: var(--el-box-shadow-light);
+    --primary-color: #1E90FF;
+    --primary-color-opacity-background: rgba(30, 144, 255, 0.1);
+    --danger-color: #ed4f4f;
+    --danger-color-opacity-background: rgba(243, 145, 145, 0.5);
+    --warning-color: #E6A23C;
+    --warning-color-opacity-background: rgba(241, 210, 152, 0.5);
+    --success-color: #67C23A;
+    --success-color-opacity-background: rgba(172, 230, 145, 0.5);
+    --info-color: #1f1f1f;
+    --info-color-opacity-background: rgba(210, 210, 210, 0.5);
 
-    --el-text-color: var(--text-color);
+    --text-color: #151515;
+    --comment-color: #aaa;
+    --border-color: #555;
+    --background-color: #f7f7f7;
+    --background-color-hover: #ddd;
+    --loading-background-color: rgba(0, 0, 0, 0.5);
+    --mask-color: rgba(0, 0, 0, 0.1);
+    --highlight-color: var(--primary-color);
+    --border: 1px solid var(--border-color);
+    --border-radius: 0.5em;
 
     --scrollbar-track-color: #f1f1f1;
     --scrollbar-thumb-color: #ddd;
@@ -20,18 +30,24 @@
 
     --icon-color: #666;
     --icon-color-light: #999;
+    --icon-size: 1rem;
 
+    color: var(--text-color);
     background-color: var(--background-color);
-    transition: background-color 0.5s;
 }
 
 :root.dark {
-    --text-color: #eee;
+    --danger-color-opacity-background: rgba(228, 48, 48, 0.5);
+    --warning-color-opacity-background: rgba(186, 145, 69, 0.5);
+    --success-color-opacity-background: rgba(74, 122, 51, 0.5);
+    --info-color: rgb(210, 210, 210);
+    --info-color-opacity-background: rgba(66, 66, 66, 0.5);
+
+    --text-color: #ccc;
     --comment-color: #777;
     --border-color: #ccc;
     --background-color: #333;
     --background-color-hover: #444;
-    --highlight-color: var(--el-color-primary);
 
     --scrollbar-track-color: #444;
     --scrollbar-thumb-color: #666;

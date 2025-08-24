@@ -1,17 +1,52 @@
+:root {
+    --message-z-index: 15000000;
+    --loading-z-index: 10000000;
+    --picker-z-index: 5000000;
+    --editor-full-screen-z-index: 3000000;
+    --toolbar-z-index: 2000000;
+    --drag-view-z-index: 1000000;
+    --edge-toolbar-z-index: 1000000;
+
+    --vh: 1vh;
+    --visual-height: calc(100 * var(--vh));
+    --visual-top: 0;
+    --visual-left: 0;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-body {
+html {
+    position: relative;
+    top: var(--visual-top);
+    left: var(--visual-left);
+
     overflow: hidden;
+    height: var(--visual-height);
+    width: 100vw;
 }
 
-/* layout */
-.layout {
-    height: 100vh;
-    width: 100vw;
+body {
+    height: 100%;
+    width: 100%;
+}
+
+#app {
+    height: 100%;
+    width: 100%;
+}
+
+.init-loading,
+.init-loading * {
+    transition: none !important;
+}
+
+/* 取消聚焦元素外层高亮 */
+div:focus {
+    outline: none;
 }
 
 /* scrollbar */
@@ -75,8 +110,46 @@ a {
     text-decoration: none;
 }
 
+pre,
+code,
+pre span {
+    cursor: text;
+}
 
-/* svg text */
-g.x6-edge-tool > text::selection {
-    background-color: transparent;
+input,
+textarea,
+select {
+    outline: none;
+    color: var(--text-color);
+    border: var(--border);
+    border-radius: 0;
+    border-color: var(--background-color-hover);
+    background-color: var(--background-color);
+    font-weight: inherit;
+    font-family: inherit;
+    tab-size: 4;
+}
+
+textarea {
+    resize: none;
+    white-space: pre;
+    word-wrap: normal;
+    word-break: keep-all;
+    overflow: hidden;
+    overflow-wrap: normal;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--border-color);
+}
+
+button {
+    outline: none;
+    border-radius: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: var(--border);
+    border-color: var(--background-color-hover);
 }
