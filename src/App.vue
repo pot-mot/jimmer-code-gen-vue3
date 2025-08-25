@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import {useDeviceStore} from "@/store/deviceStore.ts";
-import {useThemeStore} from "@/store/themeStore.ts";
-import {useFocusTargetStore} from "@/store/focusTargetStore.ts";
+import {initDeviceStore} from "@/store/deviceStore.ts";
+import {initThemeStore} from "@/store/themeStore.ts";
+import {initFocusTargetStore} from "@/store/focusTargetStore.ts";
 
-useDeviceStore()
-useThemeStore()
-useFocusTargetStore()
+initDeviceStore()
+initThemeStore()
+initFocusTargetStore()
 </script>
 
 <template>
