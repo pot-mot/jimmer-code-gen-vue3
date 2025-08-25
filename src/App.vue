@@ -9,7 +9,5 @@ useFocusTargetStore()
 </script>
 
 <template>
-    <div class="layout">
-        <RouterView/>
-    </div>
+    <RouterView/>
 </template>
