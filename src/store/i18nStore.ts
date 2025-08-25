@@ -3,7 +3,7 @@ import {localeZhCn} from "@/i18n/zhCn.ts"
 import {localeEn} from '@/i18n/en.ts'
 import type {LocalKeyParam, MainLocale} from "@/i18n";
 import {sendMessage} from "@/components/message/messageApi.ts";
-import {createStore} from "@/store/createStore.ts";
+import {createStore} from "@/utils/store/createStore.ts";
 import {isString, isFunction} from "@/utils/type/typeGuard.ts";
 
 const languageOptions = {

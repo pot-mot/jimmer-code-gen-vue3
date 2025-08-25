@@ -1,5 +1,5 @@
 import {onMounted, onUnmounted, readonly, ref, watch} from "vue";
-import {createStore} from "@/store/createStore.ts";
+import {createStore} from "@/utils/store/createStore.ts";
 import {throttle} from "lodash-es";
 
 export const useDeviceStore = createStore(() => {

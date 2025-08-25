@@ -1,8 +1,8 @@
-export const createStore = <T>(factory: () => T): () => T => {
-    let storeInstance: T | undefined
+export const createStore = <T extends Record<string, any>>(factory: () => T): () => Readonly<T> => {
+    let storeInstance: Readonly<T> | undefined
     let isCreating = false
 
-    return (): T => {
+    return (): Readonly<T> => {
         if (!storeInstance) {
             if (isCreating) {
                 throw new Error('Detected recursive call during store initialization')
@@ -10,7 +10,8 @@ export const createStore = <T>(factory: () => T): () => T => {
 
             try {
                 isCreating = true
-                storeInstance = factory()
+                const result = factory()
+                storeInstance = Object.freeze(result)
             } finally {
                 isCreating = false
             }

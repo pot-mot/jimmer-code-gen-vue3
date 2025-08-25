@@ -1,4 +1,4 @@
-import {createStore} from "@/store/createStore.ts";
+import {createStore} from "@/utils/store/createStore.ts";
 import {onBeforeUnmount, onMounted, shallowRef} from "vue";
 
 export const useFocusTargetStore = createStore(() => {
