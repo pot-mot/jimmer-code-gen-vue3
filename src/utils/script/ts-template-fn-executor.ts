@@ -1,4 +1,4 @@
-import ts, {transpileModule} from 'typescript';
+import ts from 'typescript';
 import {createDefaultMapFromCDN, createSystem, createVirtualCompilerHost} from "@typescript/vfs";
 
 export const forbiddenGlobal = Object.freeze([
@@ -130,7 +130,7 @@ export class TsTemplateFnExecutor {
                     .map(diagnostic => {
                         const message = ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n');
                         if (diagnostic.file && diagnostic.start) {
-                            const { line, character } = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
+                            const {line, character} = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
                             return `(${line + 1},${character + 1}): ${message}`;
                         }
                         return message;
@@ -144,38 +144,59 @@ export class TsTemplateFnExecutor {
                 }
             }
 
-            // 验证代码是否仅是一个箭头函数
+            // 验证代码是否仅包含一个箭头函数和可选的类型声明
             const statements = sourceFile.statements;
 
-            // 检查是否只有一个语句
-            if (statements.length !== 1) {
-                return {
-                    valid: false,
-                    error: '代码必须仅包含一个箭头函数表达式'
-                };
+
+            // 查找箭头函数表达式语句
+            let arrowFunctionStatement: ts.ExpressionStatement | null = null
+            const typeDeclarationStatements: ts.Statement[] = []
+
+            for (const statement of statements) {
+                // 检查是否为表达式语句（可能包含箭头函数）
+                if (ts.isExpressionStatement(statement)) {
+                    // 检查表达式是否为箭头函数
+                    if (ts.isArrowFunction(statement.expression)) {
+                        if (arrowFunctionStatement) {
+                            return {
+                                valid: false,
+                                error: '代码只能包含一个箭头函数表达式'
+                            };
+                        }
+                        arrowFunctionStatement = statement;
+                    } else {
+                        return {
+                            valid: false,
+                            error: '代码中的表达式语句必须是箭头函数'
+                        };
+                    }
+                }
+                // 检查是否为类型声明语句
+                else if (ts.isTypeAliasDeclaration(statement) ||
+                    ts.isInterfaceDeclaration(statement) ||
+                    ts.isEnumDeclaration(statement)) {
+                    typeDeclarationStatements.push(statement);
+                }
+
+                // 其他类型的语句不被允许
+                else {
+                    return {
+                        valid: false,
+                        error: '代码只能包含箭头函数表达式和类型声明语句（type、interface、enum）'
+                    };
+                }
             }
 
-            const firstStatement = statements[0];
-
-            // 检查是否为表达式语句
-            if (!ts.isExpressionStatement(firstStatement)) {
+            // 必须有且仅有一个箭头函数
+            if (!arrowFunctionStatement) {
                 return {
                     valid: false,
-                    error: '代码必须是一个箭头函数表达式'
-                };
-            }
-
-            // 检查表达式是否为箭头函数
-            const expression = firstStatement.expression;
-            if (!ts.isArrowFunction(expression)) {
-                return {
-                    valid: false,
-                    error: '代码必须是一个箭头函数'
+                    error: '代码必须包含一个箭头函数表达式'
                 };
             }
 
             // 检查箭头函数的返回类型是否为 string
-            const arrowFunction = expression as ts.ArrowFunction;
+            const arrowFunction = arrowFunctionStatement.expression as ts.ArrowFunction;
             if (arrowFunction.type) {
                 // 如果有显式类型注解，检查是否为 string 类型
                 if (arrowFunction.type.kind !== ts.SyntaxKind.StringKeyword) {
@@ -185,10 +206,23 @@ export class TsTemplateFnExecutor {
                     };
                 }
             } else {
-                return {
-                    valid: false,
-                    error: '箭头函数的返回类型必须显示标注为 string'
-                };
+                const typeChecker = program.getTypeChecker()
+                const signature = typeChecker.getSignatureFromDeclaration(arrowFunction)
+                if (!signature) {
+                    return {
+                        valid: false,
+                        error: '箭头函数的返回类型必须显示标注为 string'
+                    };
+                }
+
+                const returnType = typeChecker.getReturnTypeOfSignature(signature)
+                if (!typeChecker.isTypeAssignableTo(returnType, typeChecker.getStringType())) {
+                    const returnTypeString = typeChecker.typeToString(returnType)
+                    return {
+                        valid: false,
+                        error: `箭头函数的返回类型必须是 string, 目前返回类型: ${returnTypeString}`
+                    };
+                }
             }
 
             return {
