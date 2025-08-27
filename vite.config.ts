@@ -58,6 +58,7 @@ export default defineConfig({
                     'monaco-editor': ['monaco-editor'],
                     'prismjs': ['prismjs'],
                     'html-to-image': ['html-to-image'],
+                    'typescript': ['typescript'],
                 }
             }
         }

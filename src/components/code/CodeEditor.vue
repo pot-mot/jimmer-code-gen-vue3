@@ -5,7 +5,7 @@
  */
 
 import {editor, languages} from 'monaco-editor'
-import {onMounted, ref} from "vue";
+import {onMounted, onUnmounted, ref, shallowRef, watch} from "vue";
 import {type CodeEditorLanguage} from "@/components/code/CodeEditorLanguages.ts";
 import {useThemeStore} from "@/store/themeStore.ts";
 type IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
@@ -18,7 +18,7 @@ const textValue = defineModel<string>({
 })
 
 const props = defineProps<{
-	language?: CodeEditorLanguage,
+	language?: CodeEditorLanguage | string,
 	options?: Omit<Partial<IStandaloneEditorConstructionOptions>, 'language' | 'value'>
 }>()
 
@@ -40,20 +40,45 @@ const options: IStandaloneEditorConstructionOptions = {
 	fontSize: 16, // 字体大小
 	scrollBeyondLastLine: true, // 代码后面的空白
 	overviewRulerBorder: false, // 不要滚动条的边框
+    tabSize: 4,
 }
 
-// 参照该博客 https://blog.csdn.net/weixin_43977534/article/details/122365734，ref editor instance 可能造成性能问题
-let editorInstance: IStandaloneCodeEditor
+const editorInstance = shallowRef<IStandaloneCodeEditor>()
 
 onMounted(() => {
-	editorInstance = editor.create(editorContainer.value!, {...options, ...props.options})
+	editorInstance.value = editor.create(editorContainer.value!, {...options, ...props.options})
 
-	editorInstance.onDidChangeModelContent(() => {
-		textValue.value = editorInstance.getValue()
+	editorInstance.value.onDidChangeModelContent(() => {
+        if (editorInstance.value) {
+            textValue.value = editorInstance.value.getValue()
+        }
 	})
+})
+
+watch(() => textValue.value, (newValue) => {
+    if (editorInstance.value && editorInstance.value.getValue() !== newValue) {
+        editorInstance.value.setValue(newValue)
+    }
+})
+
+onUnmounted(() => {
+    if (editorInstance.value) {
+        editorInstance.value.dispose();
+    }
+})
+
+defineExpose({
+    editorInstance
 })
 </script>
 
 <template>
-	<div ref="editorContainer" style="width: 100%; height: 100%; position: absolute !important;"/>
+	<div ref="editorContainer" class="code-editor"/>
 </template>
+
+<style scoped>
+.code-editor {
+    height: 100%;
+    width: 100%;
+}
+</style>
