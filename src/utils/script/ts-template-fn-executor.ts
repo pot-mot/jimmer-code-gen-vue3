@@ -37,7 +37,11 @@ type ValidationResult = {
 }
 
 export class TsTemplateFnExecutor {
-    async validateThenCompile(code: string): Promise<ValidationResult> {
+    async validateThenCompile(
+        code: string,
+        functionParamTypes?: string[],
+        paramTypeFiles?: Map<string, string>,
+    ): Promise<ValidationResult> {
         try {
             // 添加参数验证
             if (!code) {
@@ -66,10 +70,11 @@ export class TsTemplateFnExecutor {
             // 创建编译器选项
             const compilerOptions: ts.CompilerOptions = {
                 target: ts.ScriptTarget.ES2020,
-                module: ts.ModuleKind.CommonJS,
+                module: ts.ModuleKind.ESNext,
                 strict: true,
                 esModuleInterop: true,
-                forceConsistentCasingInFileNames: true
+                forceConsistentCasingInFileNames: true,
+                baseUrl: "./",
             }
 
             const codeFileName = 'index.ts'
@@ -80,7 +85,15 @@ export class TsTemplateFnExecutor {
                 true,
                 ts,
             )
-            fsMap.set(codeFileName, trimmedCode)
+
+            const importStatements: string[] = []
+            for (const [fileName, content] of paramTypeFiles ?? []) {
+                fsMap.set(fileName, content)
+                const typeName = fileName.replace(/\.ts$/, '');
+                importStatements.push(`import type { ${typeName} } from '${fileName}';`);
+            }
+            const withImportTypeCode = `${importStatements.join("\n")}\n${trimmedCode}`
+            fsMap.set(codeFileName, withImportTypeCode)
 
             const system = createSystem(fsMap)
             const host = createVirtualCompilerHost(system, compilerOptions, ts)
@@ -97,6 +110,15 @@ export class TsTemplateFnExecutor {
                 return {
                     valid: false,
                     error: '找不到源文件'
+                }
+            }
+            for (const [fileName, _] of paramTypeFiles ?? []) {
+                const typeFile = program.getSourceFile(fileName)
+                if (!typeFile) {
+                    return {
+                        valid: false,
+                        error: '找不到参数类型文件'
+                    }
                 }
             }
 
@@ -120,6 +142,7 @@ export class TsTemplateFnExecutor {
             ]
 
             if (diagnostics && diagnostics.length > 0) {
+                console.error(diagnostics)
                 const errors = diagnostics
                     .filter(diagnostic => {
                         return (
@@ -150,7 +173,6 @@ export class TsTemplateFnExecutor {
 
             // 查找箭头函数表达式语句
             let arrowFunctionStatement: ts.ExpressionStatement | null = null
-            const typeDeclarationStatements: ts.Statement[] = []
 
             for (const statement of statements) {
                 // 检查是否为表达式语句（可能包含箭头函数）
@@ -167,22 +189,24 @@ export class TsTemplateFnExecutor {
                     } else {
                         return {
                             valid: false,
-                            error: '代码中的表达式语句必须是箭头函数'
+                            error: '代码只能包含一个箭头函数表达式'
                         };
                     }
                 }
-                // 检查是否为类型声明语句
-                else if (ts.isTypeAliasDeclaration(statement) ||
+                // 检查是否为类型声明语句或是仅类型import
+                else if (
+                    ts.isTypeAliasDeclaration(statement) ||
                     ts.isInterfaceDeclaration(statement) ||
-                    ts.isEnumDeclaration(statement)) {
-                    typeDeclarationStatements.push(statement);
+                    ts.isEnumDeclaration(statement) ||
+                    ts.isImportDeclaration(statement)
+                ) {
                 }
 
                 // 其他类型的语句不被允许
                 else {
                     return {
                         valid: false,
-                        error: '代码只能包含箭头函数表达式和类型声明语句（type、interface、enum）'
+                        error: '代码只能包含一个箭头函数表达式和类型声明语句（type、interface、enum）'
                     };
                 }
             }
@@ -197,6 +221,48 @@ export class TsTemplateFnExecutor {
 
             // 检查箭头函数的返回类型是否为 string
             const arrowFunction = arrowFunctionStatement.expression as ts.ArrowFunction;
+
+            // 如果提供了参数校验信息，则校验参数
+            if (paramTypeFiles && functionParamTypes) {
+                // 校验参数
+                const params = arrowFunction.parameters;
+
+                // 检查参数数量是否匹配
+                if (params.length !== functionParamTypes.length) {
+                    return {
+                        valid: false,
+                        error: `参数数量不匹配，期望 ${functionParamTypes.length} 个参数 (${functionParamTypes.join(", ")})，实际 ${params.length} 个`
+                    };
+                }
+
+                // 检查每个参数的名称和类型
+                for (let i = 0; i < params.length; i++) {
+                    const param = params[i]
+                    const paramName = param.name.getText();
+
+                    // 检查参数是否有类型注解
+                    if (!param.type) {
+                        return {
+                            valid: false,
+                            error: `参数 ${paramName} 必须显式声明类型`
+                        };
+                    }
+
+                    // 获取实际参数类型
+                    const actualParamType = param.type.getText();
+                    const expectedParamType = functionParamTypes[i]
+
+                    // 检查参数类型是否匹配
+                    if (actualParamType !== expectedParamType) {
+                        return {
+                            valid: false,
+                            error: `参数 ${paramName} 的类型不匹配，期望 ${expectedParamType}，实际 ${actualParamType}`
+                        };
+                    }
+                }
+            }
+
+            // 检查返回值是否为 string 类型
             if (arrowFunction.type) {
                 // 如果有显式类型注解，检查是否为 string 类型
                 if (arrowFunction.type.kind !== ts.SyntaxKind.StringKeyword) {
@@ -247,7 +313,9 @@ export class TsTemplateFnExecutor {
             trimCode = trimCode.slice(0, -1)
         }
 
-        const cleanCode = trimCode.replace(/\s*"use strict"\s*;\s*/g, '')
+        const cleanCode = trimCode
+            .replace(/\s*"use strict"\s*;?/g, '')
+            .replace(/\s*export\s*{\s*};?/, '');
 
         try {
             // 创建安全的全局环境
@@ -308,8 +376,16 @@ with(arguments[0]) {
         }
     }
 
-    async executeTemplateFunction(templateFn: string): Promise<string> {
-        const result = await this.validateThenCompile(templateFn);
+    async executeTemplateFunction(
+        templateFn: string,
+        functionParamTypes?: string[],
+        paramTypeFiles?: Map<string, string>,
+    ): Promise<string> {
+        const result = await this.validateThenCompile(
+            templateFn,
+            functionParamTypes,
+            paramTypeFiles
+        );
         if (!result.valid) {
             throw new Error(result.error)
         }

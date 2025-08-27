@@ -10,6 +10,9 @@ initFocusTargetStore()
 </script>
 
 <template>
-    <TypeScriptTemplateEditor/>
+    <TypeScriptTemplateEditor
+        :function-param-types="['string', 'MyType']"
+        :param-type-files="new Map([['MyType.ts', 'export type MyType = {name: string, type: string}']])"
+    />
 <!--    <RouterView/>-->
 </template>

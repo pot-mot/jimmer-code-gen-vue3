@@ -15,7 +15,15 @@ const result = ref<string>();
 const error = ref<string>();
 const isExecuting = ref<boolean>(false);
 
-const data = ref("")
+const data = defineModel<string>({
+    required: false,
+    default: ""
+})
+
+const props = defineProps<{
+    functionParamTypes?: string[],
+    paramTypeFiles?: Map<string, string>,
+}>()
 
 onMounted(() => {
     if (!editorRef.value) throw new Error('editorContainer is null')
@@ -36,7 +44,7 @@ const validateCode = async () => {
     if (!editor.value) return;
 
     const code = editor.value.getValue();
-    const validation = await executor.validateThenCompile(code);
+    const validation = await executor.validateThenCompile(code, props.functionParamTypes, props.paramTypeFiles);
 
     if (validation.valid) {
         error.value = undefined;
@@ -57,7 +65,7 @@ const executeCode = async () => {
 
     try {
         const code = editor.value.getValue()
-        result.value = await executor.executeTemplateFunction(code)
+        result.value = await executor.executeTemplateFunction(code, props.functionParamTypes, props.paramTypeFiles)
     } catch (err) {
         error.value = `${err}` || '执行失败'
     } finally {
