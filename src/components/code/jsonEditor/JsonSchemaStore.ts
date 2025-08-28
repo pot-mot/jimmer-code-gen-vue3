@@ -1,5 +1,5 @@
 import {languages} from "monaco-editor";
-import {jsonSchemas} from "@/type/__generated/jsonSchema";
+import jsonSchemas from "@/type/__generated/jsonSchema";
 import {typeObjectEntries} from "@/utils/type/typeObjectEntries.ts";
 type DiagnosticsOptions = languages.json.DiagnosticsOptions
 

@@ -1,5 +1,5 @@
 import MyTypeJsonSchema from "./MyType.ts"
 
-export const jsonSchemas = Object.freeze({
+export default Object.freeze({
     "MyType": MyTypeJsonSchema
 })

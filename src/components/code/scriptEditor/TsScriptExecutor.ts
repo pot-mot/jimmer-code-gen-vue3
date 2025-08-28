@@ -1,7 +1,7 @@
 import ts from 'typescript';
 import {createDefaultMapFromCDN, createSystem, createVirtualCompilerHost} from "@typescript/vfs";
 import {languages} from "monaco-editor";
-import {initTypeDeclare} from "@/type/__generated/tsScriptRegister";
+import registerTypeDeclare from "@/type/__generated/typeDeclare";
 
 const typeDeclareFiles = new Map<string, string>()
 
@@ -15,7 +15,7 @@ export const initMonacoTsScriptEditor = () => {
         target: languages.typescript.ScriptTarget.ES2020,
         allowNonTsExtensions: true,
     })
-    initTypeDeclare()
+    registerTypeDeclare()
 }
 
 export const forbiddenGlobal = Object.freeze([
