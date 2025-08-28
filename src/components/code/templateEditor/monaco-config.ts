@@ -1,25 +1,13 @@
-import {languages, editor} from 'monaco-editor';
+import {languages} from 'monaco-editor';
 
-languages.typescript.typescriptDefaults.setCompilerOptions({
-    target: languages.typescript.ScriptTarget.ES2020,
-    allowNonTsExtensions: true,
-})
+export const initTsTemplateEditor = () => {
+    languages.typescript.typescriptDefaults.setCompilerOptions({
+        target: languages.typescript.ScriptTarget.ES2020,
+        allowNonTsExtensions: true,
+    })
 
-// languages.typescript.typescriptDefaults.addExtraLib(`interface EntityArgs {
-//     name: string
-//     comment: string
-//     extendsNames: string[]
-//     properties: {
-//         name: string
-//         type: string
-//         columnName: string
-//         comment: string
-//         keyGroups: string[] | undefined
-//     }[]
-// }`, "entity-type.ts");
-
-export const configureSecureMonacoEditor = (
-    editor: editor.IStandaloneCodeEditor,
-) => {
-
+    for (const [fileName, content] of new Map([['MyType.d.ts', 'type MyType = {name: string, type: string}']])) {
+        languages.typescript.typescriptDefaults.addExtraLib(content, fileName)
+    }
 }
+

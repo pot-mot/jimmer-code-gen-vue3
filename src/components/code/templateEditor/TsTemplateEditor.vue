@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import {ref, onMounted, onUnmounted, useTemplateRef, computed} from 'vue';
+import {ref, onUnmounted, useTemplateRef, computed} from 'vue';
 import {TsTemplateFnExecutor} from "@/utils/script/ts-template-fn-executor.ts";
-import {
-    configureSecureMonacoEditor,
-} from "@/components/code/templateEditor/monaco-config.ts";
 import CodeEditor from "@/components/code/CodeEditor.vue";
 
 const editorRef = useTemplateRef<InstanceType<typeof CodeEditor>>("editorRef")
@@ -24,14 +21,6 @@ const props = defineProps<{
     functionParamTypes?: string[],
     paramTypeFiles?: Map<string, string>,
 }>()
-
-onMounted(() => {
-    if (!editorRef.value) throw new Error('editorContainer is null')
-    if (!editor.value) throw new Error('editor is null')
-
-    // 配置安全编辑器
-    configureSecureMonacoEditor(editor.value)
-});
 
 onUnmounted(() => {
     if (editor.value) {

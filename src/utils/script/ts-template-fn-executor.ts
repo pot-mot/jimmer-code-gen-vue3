@@ -77,8 +77,6 @@ export class TsTemplateFnExecutor {
                 baseUrl: "./",
             }
 
-            const codeFileName = 'index.ts'
-
             const fsMap = await createDefaultMapFromCDN(
                 compilerOptions,
                 ts.version,
@@ -86,14 +84,11 @@ export class TsTemplateFnExecutor {
                 ts,
             )
 
-            const importStatements: string[] = []
+            const codeFileName = 'index.ts'
+            fsMap.set(codeFileName, trimmedCode)
             for (const [fileName, content] of paramTypeFiles ?? []) {
                 fsMap.set(fileName, content)
-                const typeName = fileName.replace(/\.ts$/, '');
-                importStatements.push(`import type { ${typeName} } from '${fileName}';`);
             }
-            const withImportTypeCode = `${importStatements.join("\n")}\n${trimmedCode}`
-            fsMap.set(codeFileName, withImportTypeCode)
 
             const system = createSystem(fsMap)
             const host = createVirtualCompilerHost(system, compilerOptions, ts)
