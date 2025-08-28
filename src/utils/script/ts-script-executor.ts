@@ -28,6 +28,39 @@ export const forbiddenGlobal = Object.freeze([
 
 export const forbiddenWordMap = Object.freeze(new Set(forbiddenGlobal))
 
+// 创建安全的全局环境
+const safeGlobalEnv = Object.freeze({
+    Math,
+    Date,
+    String,
+    Number,
+    Boolean,
+    Array,
+    Object,
+    RegExp,
+    JSON,
+    encodeURIComponent,
+    decodeURIComponent,
+    parseInt,
+    parseFloat,
+    isNaN,
+    isFinite,
+    console,
+})
+
+// 使用 Proxy 拦截所有属性访问
+const proxiedEnv = Object.freeze(new Proxy({}, {
+    has: () => true, // 让 with 语句认为所有属性都存在
+    get: (_, prop) => {
+        // 如果是禁止的属性，返回 null
+        if (forbiddenWordMap.has(String(prop))) {
+            return null
+        }
+        // 否则从安全环境中获取
+        return (safeGlobalEnv as any)[prop];
+    }
+}))
+
 type ValidationResult = {
     valid: true
     compiledCode: string
@@ -36,11 +69,26 @@ type ValidationResult = {
     error?: string
 }
 
-export class TsTemplateFnExecutor {
+export type TsScriptFunction = {
+    (...args: any[]): any,
+    returnTypeLiteral: string,
+    paramTypesLiteral: string[],
+    typeDeclares: Record<string, string>
+}
+
+export class TsScriptExecutor<
+    Fn extends TsScriptFunction = {
+        (): string,
+        returnTypeLiteral: 'string',
+        paramTypesLiteral: [],
+        typeDeclares: {},
+    }
+> {
     async validateThenCompile(
         code: string,
-        functionParamTypes?: string[],
-        paramTypeFiles?: Map<string, string>,
+        returnTypeLiteral: Fn['returnTypeLiteral'],
+        paramTypesLiteral: Fn['paramTypesLiteral'],
+        typeDeclares: Fn['typeDeclares'],
     ): Promise<ValidationResult> {
         try {
             // 添加参数验证
@@ -86,8 +134,8 @@ export class TsTemplateFnExecutor {
 
             const codeFileName = 'index.ts'
             fsMap.set(codeFileName, trimmedCode)
-            for (const [fileName, content] of paramTypeFiles ?? []) {
-                fsMap.set(fileName, content)
+            for (const [typeName, content] of Object.entries(typeDeclares)) {
+                fsMap.set(`${typeName}.d.ts`, `type ${typeName} = ${content}`)
             }
 
             const system = createSystem(fsMap)
@@ -107,12 +155,12 @@ export class TsTemplateFnExecutor {
                     error: '找不到源文件'
                 }
             }
-            for (const [fileName, _] of paramTypeFiles ?? []) {
-                const typeFile = program.getSourceFile(fileName)
+            for (const [typeName, _] of Object.entries(typeDeclares)) {
+                const typeFile = program.getSourceFile(`${typeName}.d.ts`)
                 if (!typeFile) {
                     return {
                         valid: false,
-                        error: '找不到参数类型文件'
+                        error: `找不到${typeName}的类型文件`
                     }
                 }
             }
@@ -165,7 +213,6 @@ export class TsTemplateFnExecutor {
             // 验证代码是否仅包含一个箭头函数和可选的类型声明
             const statements = sourceFile.statements;
 
-
             // 查找箭头函数表达式语句
             let arrowFunctionStatement: ts.ExpressionStatement | null = null
 
@@ -214,77 +261,150 @@ export class TsTemplateFnExecutor {
                 };
             }
 
-            // 检查箭头函数的返回类型是否为 string
             const arrowFunction = arrowFunctionStatement.expression as ts.ArrowFunction;
 
-            // 如果提供了参数校验信息，则校验参数
-            if (paramTypeFiles && functionParamTypes) {
-                // 校验参数
-                const params = arrowFunction.parameters;
+            // 校验参数
+            const params = arrowFunction.parameters;
 
-                // 检查参数数量是否匹配
-                if (params.length !== functionParamTypes.length) {
+            // 检查参数数量是否匹配
+            if (params.length !== paramTypesLiteral.length) {
+                return {
+                    valid: false,
+                    error: `参数数量不匹配，期望 ${paramTypesLiteral.length} 个参数 (${paramTypesLiteral.join(", ")})，实际 ${params.length} 个`
+                };
+            }
+
+            // 检查每个参数的名称和类型
+            for (let i = 0; i < params.length; i++) {
+                const param = params[i]
+                const paramName = param.name.getText();
+
+                // 检查参数是否有类型注解
+                if (!param.type) {
                     return {
                         valid: false,
-                        error: `参数数量不匹配，期望 ${functionParamTypes.length} 个参数 (${functionParamTypes.join(", ")})，实际 ${params.length} 个`
+                        error: `参数 ${paramName} 必须显式声明类型`
                     };
                 }
 
-                // 检查每个参数的名称和类型
-                for (let i = 0; i < params.length; i++) {
-                    const param = params[i]
-                    const paramName = param.name.getText();
+                // 获取实际参数类型
+                const actualParamType = param.type.getText();
+                const expectedParamType = paramTypesLiteral[i]
 
-                    // 检查参数是否有类型注解
-                    if (!param.type) {
-                        return {
-                            valid: false,
-                            error: `参数 ${paramName} 必须显式声明类型`
-                        };
-                    }
-
-                    // 获取实际参数类型
-                    const actualParamType = param.type.getText();
-                    const expectedParamType = functionParamTypes[i]
-
-                    // 检查参数类型是否匹配
-                    if (actualParamType !== expectedParamType) {
-                        return {
-                            valid: false,
-                            error: `参数 ${paramName} 的类型不匹配，期望 ${expectedParamType}，实际 ${actualParamType}`
-                        };
-                    }
+                // 检查参数类型是否匹配
+                if (actualParamType !== expectedParamType) {
+                    return {
+                        valid: false,
+                        error: `参数 ${paramName} 的类型不匹配，期望 ${expectedParamType}，实际 ${actualParamType}`
+                    };
                 }
             }
 
-            // 检查返回值是否为 string 类型
-            if (arrowFunction.type) {
-                // 如果有显式类型注解，检查是否为 string 类型
-                if (arrowFunction.type.kind !== ts.SyntaxKind.StringKeyword) {
-                    return {
-                        valid: false,
-                        error: '箭头函数的返回类型必须是 string'
-                    };
+            if (returnTypeLiteral === 'string') {
+                // 检查返回值是否为 string 类型
+                if (arrowFunction.type) {
+                    // 如果有显式类型注解，检查是否为 string 类型
+                    if (arrowFunction.type.kind !== ts.SyntaxKind.StringKeyword) {
+                        return {
+                            valid: false,
+                            error: '箭头函数的返回类型必须是 string'
+                        }
+                    }
+                } else {
+                    const typeChecker = program.getTypeChecker()
+                    const signature = typeChecker.getSignatureFromDeclaration(arrowFunction)
+                    if (!signature) {
+                        return {
+                            valid: false,
+                            error: '箭头函数的返回类型必须显示标注为 string'
+                        }
+                    }
+
+                    const returnType = typeChecker.getReturnTypeOfSignature(signature)
+                    if (!typeChecker.isTypeAssignableTo(returnType, typeChecker.getStringType())) {
+                        const returnTypeString = typeChecker.typeToString(returnType)
+                        return {
+                            valid: false,
+                            error: `箭头函数的返回类型必须是 string, 目前返回类型: ${returnTypeString}`
+                        }
+                    }
                 }
-            } else {
+            } else if (returnTypeLiteral === 'number') {
+                if (arrowFunction.type) {
+                    // 如果有显式类型注解，检查是否为 number 类型
+                    if (arrowFunction.type.kind !== ts.SyntaxKind.NumberKeyword) {
+                        return {
+                            valid: false,
+                            error: '箭头函数的返回类型必须是 number'
+                        }
+                    }
+                } else {
+                    const typeChecker = program.getTypeChecker()
+                    const signature = typeChecker.getSignatureFromDeclaration(arrowFunction)
+                    if (!signature) {
+                        return {
+                            valid: false,
+                            error: '箭头函数的返回类型必须显示标注为 number'
+                        }
+                    }
+
+                    const returnType = typeChecker.getReturnTypeOfSignature(signature)
+                    if (!typeChecker.isTypeAssignableTo(returnType, typeChecker.getNumberType())) {
+                        const returnTypeString = typeChecker.typeToString(returnType)
+                        return {
+                            valid: false,
+                            error: `箭头函数的返回类型必须是 number, 目前返回类型: ${returnTypeString}`
+                        }
+                    }
+                }
+            } else if (returnTypeLiteral === 'boolean') {
+                if (arrowFunction.type) {
+                    // 如果有显式类型注解，检查是否为 boolean 类型
+                    if (arrowFunction.type.kind !== ts.SyntaxKind.BooleanKeyword) {
+                        return {
+                            valid: false,
+                            error: '箭头函数的返回类型必须是 boolean'
+                        }
+                    }
+                } else {
+                    const typeChecker = program.getTypeChecker()
+                    const signature = typeChecker.getSignatureFromDeclaration(arrowFunction)
+                    if (!signature) {
+                        return {
+                            valid: false,
+                            error: '箭头函数的返回类型必须显示标注为 boolean'
+                        }
+                    }
+
+                    const returnType = typeChecker.getReturnTypeOfSignature(signature)
+                    if (!typeChecker.isTypeAssignableTo(returnType, typeChecker.getBooleanType())) {
+                        const returnTypeString = typeChecker.typeToString(returnType)
+                        return {
+                            valid: false,
+                            error: `箭头函数的返回类型必须是 boolean, 目前返回类型: ${returnTypeString}`
+                        }
+                    }
+                }
+            } else if (returnTypeLiteral !== 'void') {
                 const typeChecker = program.getTypeChecker()
                 const signature = typeChecker.getSignatureFromDeclaration(arrowFunction)
                 if (!signature) {
                     return {
                         valid: false,
-                        error: '箭头函数的返回类型必须显示标注为 string'
-                    };
+                        error: `箭头函数的返回类型必须显示标注为 ${returnTypeLiteral}`
+                    }
                 }
 
                 const returnType = typeChecker.getReturnTypeOfSignature(signature)
-                if (!typeChecker.isTypeAssignableTo(returnType, typeChecker.getStringType())) {
-                    const returnTypeString = typeChecker.typeToString(returnType)
+                const returnTypeString = typeChecker.typeToString(returnType)
+                if (returnTypeString !== returnTypeLiteral) {
                     return {
                         valid: false,
-                        error: `箭头函数的返回类型必须是 string, 目前返回类型: ${returnTypeString}`
-                    };
+                        error: `箭头函数的返回类型必须是 ${returnTypeLiteral}, 目前返回类型: ${returnTypeString}`
+                    }
                 }
             }
+
 
             return {
                 valid: true,
@@ -299,7 +419,7 @@ export class TsTemplateFnExecutor {
         }
     }
 
-    executeJsFunction(code: string): any {
+    executeJsFunction(code: string, params: Parameters<Fn>): ReturnType<Fn> {
         let trimCode = code.trim()
         if (!trimCode) {
             throw new Error("code is empty");
@@ -313,39 +433,6 @@ export class TsTemplateFnExecutor {
             .replace(/\s*export\s*{\s*};?/, '');
 
         try {
-            // 创建安全的全局环境
-            const safeGlobalEnv = {
-                Math,
-                Date,
-                String,
-                Number,
-                Boolean,
-                Array,
-                Object,
-                RegExp,
-                JSON,
-                encodeURIComponent,
-                decodeURIComponent,
-                parseInt,
-                parseFloat,
-                isNaN,
-                isFinite,
-                console,
-            }
-
-            // 使用 Proxy 拦截所有属性访问
-            const proxiedEnv = new Proxy({}, {
-                has: () => true, // 让 with 语句认为所有属性都存在
-                get: (target, prop) => {
-                    // 如果是禁止的属性，返回 null
-                    if (forbiddenWordMap.has(String(prop))) {
-                        return null
-                    }
-                    // 否则从安全环境中获取
-                    return (safeGlobalEnv as any)[prop];
-                }
-            });
-
             // 构造函数体
             const functionBody = `
 with(arguments[0]) {
@@ -365,25 +452,28 @@ with(arguments[0]) {
             const userFunction = factoryFunction(proxiedEnv);
 
             // 执行用户函数
-            return userFunction.call(Object.create(null));
+            return userFunction.call(Object.create(null), ...params);
         } catch (error) {
             throw new Error(`JS 执行错误: ${error instanceof Error ? error.message : `${error}`}`)
         }
     }
 
-    async executeTemplateFunction(
+    async executeTsArrowFunctionScript(
         templateFn: string,
-        functionParamTypes?: string[],
-        paramTypeFiles?: Map<string, string>,
-    ): Promise<string> {
+        params: Parameters<Fn>,
+        returnTypeLiteral: Fn['returnTypeLiteral'],
+        paramTypesLiteral: Fn['paramTypesLiteral'],
+        typeDeclares: Fn['typeDeclares'],
+    ): Promise<ReturnType<Fn> | ValidationResult> {
         const result = await this.validateThenCompile(
             templateFn,
-            functionParamTypes,
-            paramTypeFiles
-        );
+            returnTypeLiteral,
+            paramTypesLiteral,
+            typeDeclares,
+        )
         if (!result.valid) {
-            throw new Error(result.error)
+            return result
         }
-        return this.executeJsFunction(result.compiledCode);
+        return this.executeJsFunction(result.compiledCode, params)
     }
 }
