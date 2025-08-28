@@ -1,6 +1,23 @@
 import ts from 'typescript';
 import {createDefaultMapFromCDN, createSystem, createVirtualCompilerHost} from "@typescript/vfs";
 import {languages} from "monaco-editor";
+import {initTypeDeclare} from "@/type/__generated/tsScript";
+
+const typeDeclareFiles = new Map<string, string>()
+
+export const registerTypeDeclareFile = (fileName: string, content: string) => {
+    typeDeclareFiles.set(fileName, content)
+    languages.typescript.typescriptDefaults.addExtraLib(content, fileName)
+    console.log(fileName)
+}
+
+export const initTsScriptEditor = () => {
+    languages.typescript.typescriptDefaults.setCompilerOptions({
+        target: languages.typescript.ScriptTarget.ES2020,
+        allowNonTsExtensions: true,
+    })
+    initTypeDeclare()
+}
 
 export const forbiddenGlobal = Object.freeze([
     'import',
@@ -84,7 +101,6 @@ export type TsScriptFunction = {
     (...args: any[]): any,
     returnTypeLiteral: string,
     paramTypesLiteral: string[],
-    typeDeclares: Record<string, string>
 }
 
 export class TsScriptExecutor<
@@ -92,29 +108,17 @@ export class TsScriptExecutor<
         (): string,
         returnTypeLiteral: 'string',
         paramTypesLiteral: [],
-        typeDeclares: {},
     }
 > {
     readonly returnTypeLiteral: Fn['returnTypeLiteral']
     readonly paramTypesLiteral: Fn['paramTypesLiteral']
-    readonly typeDeclares: Fn['typeDeclares']
-    readonly typeDeclareFiles: Map<string, string>
 
     constructor(
         returnTypeLiteral: Fn['returnTypeLiteral'],
         paramTypesLiteral: Fn['paramTypesLiteral'],
-        typeDeclares: Fn['typeDeclares']
     ) {
         this.returnTypeLiteral = returnTypeLiteral
         this.paramTypesLiteral = paramTypesLiteral
-        this.typeDeclares = typeDeclares
-        this.typeDeclareFiles = new Map<string, string>()
-        for (const [typeName, typeDeclare] of Object.entries(typeDeclares)) {
-            const fileName = `${typeName}.d.ts`
-            const content = `type ${typeName} = ${typeDeclare}`
-            this.typeDeclareFiles.set(fileName, content)
-            languages.typescript.typescriptDefaults.addExtraLib(content, fileName)
-        }
     }
 
     async validateThenCompile(
@@ -157,7 +161,7 @@ export class TsScriptExecutor<
 
             const codeFileName = 'index.ts'
             fsMap.set(codeFileName, trimmedCode)
-            for (const [fileName, content] of this.typeDeclareFiles) {
+            for (const [fileName, content] of typeDeclareFiles) {
                 fsMap.set(fileName, content)
             }
 
