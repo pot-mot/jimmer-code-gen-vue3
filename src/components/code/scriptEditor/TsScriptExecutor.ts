@@ -1,17 +1,16 @@
 import ts from 'typescript';
 import {createDefaultMapFromCDN, createSystem, createVirtualCompilerHost} from "@typescript/vfs";
 import {languages} from "monaco-editor";
-import {initTypeDeclare} from "@/type/__generated/tsScript";
+import {initTypeDeclare} from "@/type/__generated/tsScriptRegister";
 
 const typeDeclareFiles = new Map<string, string>()
 
 export const registerTypeDeclareFile = (fileName: string, content: string) => {
     typeDeclareFiles.set(fileName, content)
     languages.typescript.typescriptDefaults.addExtraLib(content, fileName)
-    console.log(fileName)
 }
 
-export const initTsScriptEditor = () => {
+export const initMonacoTsScriptEditor = () => {
     languages.typescript.typescriptDefaults.setCompilerOptions({
         target: languages.typescript.ScriptTarget.ES2020,
         allowNonTsExtensions: true,

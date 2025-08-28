@@ -1,4 +1,4 @@
-import {registerTypeDeclareFile} from "@/components/code/templateEditor/ts-script-executor.ts";
+import {registerTypeDeclareFile} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
 
 export default () => {
     registerTypeDeclareFile('MyType.d.ts', `type MyType = {

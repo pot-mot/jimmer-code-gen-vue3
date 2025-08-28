@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="Fn extends TsScriptFunction">
 import {useTemplateRef, computed} from 'vue';
-import {TsScriptExecutor, type TsScriptFunction} from "@/components/code/templateEditor/ts-script-executor.ts";
+import {TsScriptExecutor, type TsScriptFunction} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
 import CodeEditor from "@/components/code/CodeEditor.vue";
 
 const editorRef = useTemplateRef<InstanceType<typeof CodeEditor>>("editorRef")

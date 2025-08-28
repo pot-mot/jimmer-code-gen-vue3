@@ -6,13 +6,13 @@ import './assets/theme.css'
 import './assets/base.css'
 
 import {useCodeEditor} from "@/components/code/CodeEditorWorkers.ts";
-import {initTsScriptEditor} from "@/components/code/templateEditor/ts-script-executor.ts";
+import {initMonacoTsScriptEditor} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
 
 const app = createApp(App)
 
 app.use(router)
 
 useCodeEditor()
-initTsScriptEditor()
+initMonacoTsScriptEditor()
 
 app.mount('#app')
