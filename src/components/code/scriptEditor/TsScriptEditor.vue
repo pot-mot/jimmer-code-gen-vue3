@@ -8,14 +8,26 @@ const editorInstance = computed(() => {
     return editorRef.value?.editorInstance
 })
 
-const data = defineModel<string>({
-    required: false,
-    default: ""
-})
-
 const props = defineProps<{
     executor: TsScriptExecutor<Fn>,
 }>()
+
+const data = defineModel<string>({
+    required: false,
+    default(props: {
+        executor: TsScriptExecutor<Fn>,
+    }) {
+        let params = ''
+        if (props.executor.paramTypesLiteral.length > 0) {
+            params = props.executor.paramTypesLiteral.map((type, index) => {
+                return `\n\tparam${index}: ${type},`
+            }).join('') + '\n'
+        }
+        return `(${params}): ${props.executor.returnTypeLiteral} => {
+    // TODO
+}`;
+    }
+})
 
 // 验证代码
 const validateAndCompile = async () => {
