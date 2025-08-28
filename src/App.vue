@@ -10,18 +10,33 @@ initDeviceStore()
 initThemeStore()
 initFocusTargetStore()
 
+type MyType = {
+    type: string,
+    value: string,
+}
+
 const executor = new TsScriptExecutor<{
-    (params: string): string,
-    paramTypesLiteral: ['string'],
+    (params: MyType): string,
     returnTypeLiteral: 'string',
+    paramTypesLiteral: ['MyType'],
     typeDeclares: {},
-}>()
+}>(
+    'string',
+    ['MyType'],
+    {'MyType': `{
+        type: string,
+        value: string,
+    }`}
+)
 
 const scriptEditorRef = useTemplateRef('scriptEditorRef')
 
 const executeCode = async () => {
-    const result = await scriptEditorRef.value?.executeCode(['ok'])
-    console.log(result)
+    const result = await scriptEditorRef.value?.executeCode([{
+        type: "ok",
+        value: "the"
+    }])
+    alert(JSON.stringify(result))
 }
 </script>
 
@@ -29,9 +44,6 @@ const executeCode = async () => {
     <button @click="executeCode">execute</button>
     <TsScriptEditor
         :executor="executor"
-        :param-types-literal="['string']"
-        :return-type-literal="'string'"
-        :type-declares="{}"
         ref="scriptEditorRef"
     />
 <!--    <RouterView/>-->

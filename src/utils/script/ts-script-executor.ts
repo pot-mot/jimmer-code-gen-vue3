@@ -1,5 +1,6 @@
 import ts from 'typescript';
 import {createDefaultMapFromCDN, createSystem, createVirtualCompilerHost} from "@typescript/vfs";
+import {languages} from "monaco-editor";
 
 export const forbiddenGlobal = Object.freeze([
     'import',
@@ -61,6 +62,16 @@ const proxiedEnv = Object.freeze(new Proxy({}, {
     }
 }))
 
+// 创建编译器选项
+const compilerOptions: ts.CompilerOptions = Object.freeze({
+    target: ts.ScriptTarget.ES2020,
+    module: ts.ModuleKind.ESNext,
+    strict: true,
+    esModuleInterop: true,
+    forceConsistentCasingInFileNames: true,
+    baseUrl: "./",
+})
+
 type ValidationResult = {
     valid: true
     compiledCode: string
@@ -84,12 +95,34 @@ export class TsScriptExecutor<
         typeDeclares: {},
     }
 > {
-    async validateThenCompile(
-        code: string,
+    readonly returnTypeLiteral: Fn['returnTypeLiteral']
+    readonly paramTypesLiteral: Fn['paramTypesLiteral']
+    readonly typeDeclares: Fn['typeDeclares']
+    readonly typeDeclareFiles: Map<string, string>
+
+    constructor(
         returnTypeLiteral: Fn['returnTypeLiteral'],
         paramTypesLiteral: Fn['paramTypesLiteral'],
-        typeDeclares: Fn['typeDeclares'],
+        typeDeclares: Fn['typeDeclares']
+    ) {
+        this.returnTypeLiteral = returnTypeLiteral
+        this.paramTypesLiteral = paramTypesLiteral
+        this.typeDeclares = typeDeclares
+        this.typeDeclareFiles = new Map<string, string>()
+        for (const [typeName, typeDeclare] of Object.entries(typeDeclares)) {
+            const fileName = `${typeName}.d.ts`
+            const content = `type ${typeName} = ${typeDeclare}`
+            this.typeDeclareFiles.set(fileName, content)
+            languages.typescript.typescriptDefaults.addExtraLib(content, fileName)
+        }
+    }
+
+    async validateThenCompile(
+        code: string
     ): Promise<ValidationResult> {
+        const returnTypeLiteral = this.returnTypeLiteral
+        const paramTypesLiteral = this.paramTypesLiteral
+
         try {
             // 添加参数验证
             if (!code) {
@@ -115,16 +148,6 @@ export class TsScriptExecutor<
                 };
             }
 
-            // 创建编译器选项
-            const compilerOptions: ts.CompilerOptions = {
-                target: ts.ScriptTarget.ES2020,
-                module: ts.ModuleKind.ESNext,
-                strict: true,
-                esModuleInterop: true,
-                forceConsistentCasingInFileNames: true,
-                baseUrl: "./",
-            }
-
             const fsMap = await createDefaultMapFromCDN(
                 compilerOptions,
                 ts.version,
@@ -134,8 +157,8 @@ export class TsScriptExecutor<
 
             const codeFileName = 'index.ts'
             fsMap.set(codeFileName, trimmedCode)
-            for (const [typeName, content] of Object.entries(typeDeclares)) {
-                fsMap.set(`${typeName}.d.ts`, `type ${typeName} = ${content}`)
+            for (const [fileName, content] of this.typeDeclareFiles) {
+                fsMap.set(fileName, content)
             }
 
             const system = createSystem(fsMap)
@@ -153,15 +176,6 @@ export class TsScriptExecutor<
                 return {
                     valid: false,
                     error: '找不到源文件'
-                }
-            }
-            for (const [typeName, _] of Object.entries(typeDeclares)) {
-                const typeFile = program.getSourceFile(`${typeName}.d.ts`)
-                if (!typeFile) {
-                    return {
-                        valid: false,
-                        error: `找不到${typeName}的类型文件`
-                    }
                 }
             }
 
@@ -461,16 +475,8 @@ with(arguments[0]) {
     async executeTsArrowFunctionScript(
         templateFn: string,
         params: Parameters<Fn>,
-        returnTypeLiteral: Fn['returnTypeLiteral'],
-        paramTypesLiteral: Fn['paramTypesLiteral'],
-        typeDeclares: Fn['typeDeclares'],
     ): Promise<ReturnType<Fn> | ValidationResult> {
-        const result = await this.validateThenCompile(
-            templateFn,
-            returnTypeLiteral,
-            paramTypesLiteral,
-            typeDeclares,
-        )
+        const result = await this.validateThenCompile(templateFn)
         if (!result.valid) {
             return result
         }

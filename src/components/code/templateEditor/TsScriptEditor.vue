@@ -15,18 +15,12 @@ const data = defineModel<string>({
 
 const props = defineProps<{
     executor: TsScriptExecutor<Fn>,
-    returnTypeLiteral: Fn['returnTypeLiteral'],
-    paramTypesLiteral: Fn['paramTypesLiteral'],
-    typeDeclares: Fn['typeDeclares'],
 }>()
 
 // 验证代码
 const validateAndCompile = async () => {
     return await props.executor.validateThenCompile(
         data.value,
-        props.returnTypeLiteral,
-        props.paramTypesLiteral,
-        props.typeDeclares,
     );
 }
 
@@ -35,9 +29,6 @@ const executeCode = async (params: Parameters<Fn>) => {
     return await props.executor.executeTsArrowFunctionScript(
         data.value,
         params,
-        props.returnTypeLiteral,
-        props.paramTypesLiteral,
-        props.typeDeclares,
     )
 }
 
