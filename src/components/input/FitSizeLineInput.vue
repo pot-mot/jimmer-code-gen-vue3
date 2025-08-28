@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {computed, nextTick, onMounted, ref, useTemplateRef, watch} from "vue";
 import {getTextLineSize} from "@/components/input/textSize.ts";
-import {calculatePadding, PaddingData} from "@/components/input/paddingCalculate.ts";
+import {calculatePadding, type PaddingData} from "@/components/input/paddingCalculate.ts";
 
 const isFocus = ref(false)
 

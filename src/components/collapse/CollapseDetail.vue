@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {onMounted, useTemplateRef, watch} from 'vue'
-import {CollapseDetailProps, defaultCollapseDetailProps} from "@/components/collapse/CollapseDetailProps.ts";
+import {type CollapseDetailProps, defaultCollapseDetailProps} from "@/components/collapse/CollapseDetailProps.ts";
 import IconCaretDown from "@/components/icons/IconCaretDown.vue";
 
 const isOpen = defineModel<boolean>({required: false, default: false})

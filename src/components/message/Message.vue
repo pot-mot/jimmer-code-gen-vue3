@@ -2,10 +2,10 @@
 import {ref} from "vue";
 import IconClose from "@/components/icons/IconClose.vue";
 import {
-    MessageContent,
-    MessageItem,
+    type MessageContent,
+    type MessageItem,
     messageOpenDefaultOptions,
-    MessageOpenOptions,
+    type MessageOpenOptions,
 } from "@/components/message/MessageItem.ts";
 
 const props = withDefaults(defineProps<{

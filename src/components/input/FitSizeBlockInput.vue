@@ -2,7 +2,7 @@
 import {computed, nextTick, onMounted, ref, useTemplateRef, watch} from "vue";
 import {getTextBlockSize} from "@/components/input/textSize.ts";
 import {vTapInput} from "@/components/input/vTabInput.ts";
-import {calculatePadding, PaddingData} from "@/components/input/paddingCalculate.ts";
+import {calculatePadding, type PaddingData} from "@/components/input/paddingCalculate.ts";
 
 const isFocus = ref(false)
 
