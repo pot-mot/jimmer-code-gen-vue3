@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="Fn extends TsScriptFunction">
-import {useTemplateRef, computed} from 'vue';
+import {useTemplateRef, computed, watch} from 'vue';
 import {
     type TsScriptExecuteResult,
     TsScriptExecutor,
@@ -7,6 +7,10 @@ import {
     type TsScriptValidatedCompileResult
 } from "@/components/code/scriptEditor/TsScriptExecutor.ts";
 import CodeEditor from "@/components/code/CodeEditor.vue";
+import {debounce} from "lodash-es";
+import {editor} from "monaco-editor";
+import setModelMarkers = editor.setModelMarkers
+type IMarkerData = editor.IMarkerData
 
 const editorRef = useTemplateRef<InstanceType<typeof CodeEditor>>("editorRef")
 const editorInstance = computed(() => {
@@ -17,7 +21,7 @@ const props = defineProps<{
     executor: TsScriptExecutor<Fn>,
 }>()
 
-const data = defineModel<string>({
+const textValue = defineModel<string>({
     required: false,
     default(props: {
         executor: TsScriptExecutor<Fn>,
@@ -37,17 +41,34 @@ const data = defineModel<string>({
 // 验证代码
 const validateAndCompile = async (): Promise<TsScriptValidatedCompileResult> => {
     return await props.executor.validateThenCompile(
-        data.value,
+        textValue.value,
     );
 }
 
 // 执行代码
 const executeCode = async (params: Parameters<Fn>): Promise<TsScriptExecuteResult<Fn>> => {
     return await props.executor.executeTsArrowFunctionScript(
-        data.value,
+        textValue.value,
         params,
     )
 }
+
+watch(() => textValue.value, debounce(async () => {
+    const editor = editorInstance.value
+    if (!editor) return
+    const model = editor.getModel()
+    if (!model) return
+
+    const validatedCompileResult = await validateAndCompile()
+
+    const markers: IMarkerData[] = []
+    if (!validatedCompileResult.valid) {
+        if (validatedCompileResult.markers) {
+            markers.push(...validatedCompileResult.markers)
+        }
+    }
+    setModelMarkers(model, 'ts-script-executor', markers)
+}, 200), {immediate: true})
 
 defineExpose({
     editorInstance,
@@ -59,7 +80,7 @@ defineExpose({
 <template>
     <CodeEditor
         ref="editorRef"
-        v-model="data"
+        v-model="textValue"
         :language="'typescript'"
     />
 </template>

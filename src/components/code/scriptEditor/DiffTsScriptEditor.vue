@@ -1,11 +1,15 @@
 <script setup lang="ts" generic="Fn extends TsScriptFunction">
-import {useTemplateRef, computed} from 'vue';
+import {useTemplateRef, computed, watch} from 'vue';
 import {
     type TsScriptExecuteResult,
     TsScriptExecutor,
     type TsScriptFunction, type TsScriptValidatedCompileResult
 } from "@/components/code/scriptEditor/TsScriptExecutor.ts";
 import DiffEditor from "@/components/code/diffEditor/DiffEditor.vue";
+import {debounce} from "lodash-es";
+import {editor} from "monaco-editor";
+import setModelMarkers = editor.setModelMarkers
+type IMarkerData = editor.IMarkerData
 
 const diffEditorRef = useTemplateRef<InstanceType<typeof DiffEditor>>("diffEditorRef")
 const editorInstance = computed(() => {
@@ -54,6 +58,21 @@ const executeCode = async (params: Parameters<Fn>): Promise<TsScriptExecuteResul
         params,
     )
 }
+
+watch(() => modifiedValue.value, debounce(async () => {
+    const model = modifiedModel.value
+    if (!model) return
+
+    const validatedCompileResult = await validateAndCompile()
+
+    const markers: IMarkerData[] = []
+    if (!validatedCompileResult.valid) {
+        if (validatedCompileResult.markers) {
+            markers.push(...validatedCompileResult.markers)
+        }
+    }
+    setModelMarkers(model, 'ts-script-executor', markers)
+}, 200), {immediate: true})
 
 defineExpose({
     editorInstance,

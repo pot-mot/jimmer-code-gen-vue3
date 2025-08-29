@@ -1,7 +1,8 @@
 import ts, {type Diagnostic} from 'typescript';
 import {createDefaultMapFromCDN, createSystem, createVirtualCompilerHost} from "@typescript/vfs";
-import {languages} from "monaco-editor";
+import {editor, languages, MarkerSeverity} from "monaco-editor";
 import registerTypeDeclare from "@/type/__generated/typeDeclare";
+type IMarkerData = editor.IMarkerData
 
 const typeDeclareFiles = new Map<string, string>()
 
@@ -97,6 +98,7 @@ export type TsScriptValidatedCompileResult = {
         diagnostics: Diagnostic[],
         messages: string[]
     } | Error | any
+    markers?: IMarkerData[]
 }
 
 export type TsScriptExecuteResult<Fn extends TsScriptFunction> = {
@@ -234,14 +236,50 @@ export class TsScriptExecutor<
                         return message;
                     });
 
-                if (diagnostics.length > 0 || messages.length > 0) {
-                    return {
-                        valid: false,
-                        error: {
-                            diagnostics,
-                            messages
+                // 为 Monaco Editor 创建 markers
+                const markers = diagnostics
+                    .filter(diagnostic => {
+                        return (
+                            diagnostic.category === ts.DiagnosticCategory.Error ||
+                            diagnostic.category === ts.DiagnosticCategory.Warning
+                        );
+                    })
+                    .map(diagnostic => {
+                        if (diagnostic.file && diagnostic.start) {
+                            const {line, character} = diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start);
+                            const endPosition = diagnostic.start + (diagnostic.length || 0);
+                            const {line: endLine, character: endCharacter} = diagnostic.file.getLineAndCharacterOfPosition(endPosition);
+
+                            return {
+                                startLineNumber: line + 1,
+                                startColumn: character + 1,
+                                endLineNumber: endLine + 1,
+                                endColumn: endCharacter + 1,
+                                message: ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n'),
+                                severity: diagnostic.category === ts.DiagnosticCategory.Error ?
+                                   MarkerSeverity.Error : MarkerSeverity.Warning,
+                                source: 'typescript'
+                            };
                         }
-                    }
+                        return {
+                            startLineNumber: 1,
+                            startColumn: 1,
+                            endLineNumber: 1,
+                            endColumn: 1,
+                            message: ts.flattenDiagnosticMessageText(diagnostic.messageText, '\n'),
+                            severity: diagnostic.category === ts.DiagnosticCategory.Error ?
+                                MarkerSeverity.Error : MarkerSeverity.Warning,
+                            source: 'typescript'
+                        };
+                    });
+
+                return {
+                    valid: false,
+                    error: {
+                        diagnostics,
+                        messages
+                    },
+                    markers
                 }
             }
 
