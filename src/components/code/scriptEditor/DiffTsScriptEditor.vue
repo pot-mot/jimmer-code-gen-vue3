@@ -46,9 +46,22 @@ const props = defineProps<{
 
 // 验证代码
 const validateAndCompile = async (): Promise<TsScriptValidatedCompileResult> => {
-    return await props.executor.validateThenCompile(
+    const result = await props.executor.validateThenCompile(
         modifiedValue.value,
-    );
+    )
+
+    const model = modifiedModel.value
+    if (!model) return result
+
+    const markers: IMarkerData[] = []
+    if (!result.valid) {
+        if (result.markers) {
+            markers.push(...result.markers)
+        }
+    }
+    setModelMarkers(model, 'ts-script-executor', markers)
+
+    return result
 }
 
 // 执行代码
@@ -60,18 +73,7 @@ const executeCode = async (params: Parameters<Fn>): Promise<TsScriptExecuteResul
 }
 
 watch(() => modifiedValue.value, debounce(async () => {
-    const model = modifiedModel.value
-    if (!model) return
-
-    const validatedCompileResult = await validateAndCompile()
-
-    const markers: IMarkerData[] = []
-    if (!validatedCompileResult.valid) {
-        if (validatedCompileResult.markers) {
-            markers.push(...validatedCompileResult.markers)
-        }
-    }
-    setModelMarkers(model, 'ts-script-executor', markers)
+    await validateAndCompile()
 }, 200), {immediate: true})
 
 defineExpose({
