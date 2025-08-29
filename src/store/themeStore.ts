@@ -1,6 +1,7 @@
 import {readonly, ref, watch} from "vue";
 import {createStore} from "@/utils/store/createStore.ts";
 import {tinycolor} from "vue-color";
+import {editor} from "monaco-editor";
 
 type Theme = 'light' | 'dark'
 
@@ -9,8 +10,10 @@ const theme = ref<Theme>('light')
 watch(() => theme.value, (newTheme) => {
     if (newTheme === 'dark') {
         document.documentElement.classList.add('dark');
+        editor.setTheme('vs-dark')
     } else {
         document.documentElement.classList.remove('dark');
+        editor.setTheme('vs')
     }
 }, {immediate: true})
 
