@@ -5,6 +5,7 @@ import {initFocusTargetStore} from "@/store/focusTargetStore.ts";
 import {ref, useTemplateRef} from "vue";
 import DiffTsScriptEditor from "@/components/code/scriptEditor/DiffTsScriptEditor.vue";
 import {TsScriptExecutor} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
+import TsScriptEditor from "@/components/code/scriptEditor/TsScriptEditor.vue";
 
 initDeviceStore()
 initThemeStore()
@@ -40,6 +41,11 @@ const execute = () => {
             ref="editorRef"
             :executor="executor"
             :origin-value="''"
+        />
+    </div>
+    <div style="height: 200px">
+        <TsScriptEditor
+            :executor="executor"
         />
     </div>
 

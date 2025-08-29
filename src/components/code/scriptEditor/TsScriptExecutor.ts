@@ -312,18 +312,34 @@ export class TsScriptExecutor<
             // 检查每个参数的名称和类型
             for (let i = 0; i < params.length; i++) {
                 const param = params[i]
-                const paramName = param.name.getText();
+                const paramName = param.name.getText()
 
                 // 检查参数是否有类型注解
                 if (!param.type) {
                     return {
                         valid: false,
                         error: `参数 ${paramName} 必须显式声明类型`
-                    };
+                    }
+                }
+
+                const isOptional = param.questionToken !== undefined
+                if (isOptional) {
+                    return {
+                        valid: false,
+                        error: `参数 ${paramName} 必须不可选`
+                    }
+                }
+
+                const hasDefaultValue = param.initializer !== undefined
+                if (hasDefaultValue) {
+                    return {
+                        valid: false,
+                        error: `参数 ${paramName} 必须没有默认值`
+                    }
                 }
 
                 // 获取实际参数类型
-                const actualParamType = param.type.getText();
+                const actualParamType = param.type.getText()
                 const expectedParamType = paramTypesLiteral[i]
 
                 // 检查参数类型是否匹配
@@ -331,7 +347,7 @@ export class TsScriptExecutor<
                     return {
                         valid: false,
                         error: `参数 ${paramName} 的类型不匹配，期望 ${expectedParamType}，实际 ${actualParamType}`
-                    };
+                    }
                 }
             }
 
