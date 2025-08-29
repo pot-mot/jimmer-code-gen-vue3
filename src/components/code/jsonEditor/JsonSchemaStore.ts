@@ -1,6 +1,7 @@
 import {languages} from "monaco-editor";
 import jsonSchemas from "@/type/__generated/jsonSchema";
 import {typeObjectEntries} from "@/utils/type/typeObjectEntries.ts";
+import type {ErrorObject} from "ajv";
 type DiagnosticsOptions = languages.json.DiagnosticsOptions
 
 export type JsonSchemaKey = keyof typeof jsonSchemas
@@ -13,7 +14,8 @@ const createDiagnosticsOptions = (): DiagnosticsOptions => {
         schemas: typeObjectEntries(jsonSchemas).map(([key, value]) => {
             const fileMatchSet = fileMatchMap.get(key)
             return {
-                ...value,
+                uri: value.uri,
+                schema: value.schema,
                 fileMatch: fileMatchSet ? [...fileMatchSet] : []
             }
         }),
@@ -51,4 +53,42 @@ export const removeJsonSchemaFile = (key: JsonSchemaKey, fileName: string | Iter
         }
     }
     languages.json.jsonDefaults.setDiagnosticsOptions(createDiagnosticsOptions())
+}
+
+export type JsonSchemaValidationResult = {
+    valid: true
+} | {
+    valid: false
+    error?: ErrorObject[] | any
+}
+
+
+export const validateJsonSchema = (key: JsonSchemaKey, value: any): JsonSchemaValidationResult => {
+    try {
+        let error
+        const result = jsonSchemas[key].validate(value, (errorObject) => {
+            error = errorObject
+        })
+        return {
+            valid: result,
+            error
+        }
+    } catch (e) {
+        return {
+            valid: false,
+            error: e
+        }
+    }
+}
+
+export const validateJsonSchemaString = (key: JsonSchemaKey, value: string): JsonSchemaValidationResult => {
+    try {
+        const jsonValue = JSON.parse(value)
+        return validateJsonSchema(key, jsonValue)
+    } catch (e) {
+        return {
+            valid: false,
+            error: e
+        }
+    }
 }

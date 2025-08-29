@@ -7,12 +7,12 @@ type IDiffEditor = editor.IDiffEditor;
 type ITextModel = editor.ITextModel;
 type IStandaloneDiffEditorConstructionOptions = editor.IStandaloneDiffEditorConstructionOptions;
 
-const originValue = defineModel<string>('origin', {
+const originValue = defineModel<string>('originValue', {
     required: false,
     default: '',
 })
 
-const modifiedValue = defineModel<string>('modified', {
+const modifiedValue = defineModel<string>('modifiedValue', {
     required: false,
     default: '',
 })

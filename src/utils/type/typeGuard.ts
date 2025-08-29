@@ -1,4 +1,5 @@
 import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
+import Ajv, {type ErrorObject} from "ajv";
 
 export const isSymbol = (arg: any): arg is symbol => {
     return typeof arg === 'symbol';
@@ -16,7 +17,6 @@ export const getKeys = <T extends object>(data: T): (keyof T)[] => {
     return Object.keys(data) as (keyof T)[]
 }
 
-import Ajv, {type ErrorObject} from "ajv";
 const ajv = new Ajv({ allErrors: true }); // 启用所有错误信息
 
 export type SchemaValidatorErrorHandler = (errors: ErrorObject[] | null | undefined) => void

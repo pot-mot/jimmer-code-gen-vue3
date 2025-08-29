@@ -5,7 +5,7 @@ import {v7} from "uuid"
 import {
     addJsonSchemaFile,
     type JsonSchemaKey,
-    removeJsonSchemaFile
+    removeJsonSchemaFile, validateJsonSchemaString
 } from "@/components/code/jsonEditor/JsonSchemaStore.ts";
 import DiffEditor from "@/components/code/diffEditor/DiffEditor.vue";
 
@@ -20,18 +20,14 @@ const modifiedModel = computed(() => {
     return diffEditorRef.value?.modifiedModel
 })
 
-const originValue = defineModel<string>('origin', {
-    required: false,
-    default: '',
-})
-
-const modifiedValue = defineModel<string>('modified', {
+const modifiedValue = defineModel<string>({
     required: false,
     default: '',
 })
 
 const props = defineProps<{
     jsonType: JsonSchemaKey,
+    originValue: string,
 }>()
 
 const originFilePath = `${v7()}.json`
@@ -50,18 +46,24 @@ onUnmounted(() => {
     removeJsonSchemaFile(props.jsonType, [originFilePath, modifiedFilePath])
 })
 
+const validate = () => {
+    return validateJsonSchemaString(props.jsonType, modifiedValue.value)
+}
+
 defineExpose({
     editorInstance,
     originModel,
     modifiedModel,
+    validate,
 })
 </script>
 
 <template>
     <DiffEditor
         ref="diffEditorRef"
-        v-model:origin="originValue"
-        v-model:modified="modifiedValue"
+        :origin-value="originValue"
+        :original-editable="false"
+        v-model:modified-value="modifiedValue"
         :language="'json'"
         :origin-model-uri="originFileUri"
         :modified-model-uri="modifiedFileUri"

@@ -6,7 +6,7 @@ import {v7} from "uuid"
 import {
     addJsonSchemaFile,
     type JsonSchemaKey,
-    removeJsonSchemaFile
+    removeJsonSchemaFile, validateJsonSchemaString
 } from "@/components/code/jsonEditor/JsonSchemaStore.ts";
 
 const editorRef = useTemplateRef<InstanceType<typeof CodeEditor>>("editorRef")
@@ -14,7 +14,7 @@ const editorInstance = computed(() => {
     return editorRef.value?.editorInstance
 })
 
-const data = defineModel<string>({
+const textValue = defineModel<string>({
     required: false,
     default: ""
 })
@@ -33,21 +33,26 @@ watch(() => props.jsonType, (value, oldValue) => {
     addJsonSchemaFile(value, filePath)
 }, {immediate: true})
 
-const model = editor.createModel(data.value, 'json', fileUri)
+const model = editor.createModel(textValue.value, 'json', fileUri)
 
 onUnmounted(() => {
     removeJsonSchemaFile(props.jsonType, filePath)
 })
 
+const validate = () => {
+    return validateJsonSchemaString(props.jsonType, textValue.value)
+}
+
 defineExpose({
-    editorInstance
+    editorInstance,
+    validate,
 })
 </script>
 
 <template>
     <CodeEditor
         ref="editorRef"
-        v-model="data"
+        v-model="textValue"
         :language="'json'"
         :options="{model}"
     />

@@ -88,7 +88,7 @@ const compilerOptions: ts.CompilerOptions = Object.freeze({
     baseUrl: "./",
 })
 
-type ValidationResult = {
+export type TsScriptValidationCompileResult = {
     valid: true
     compiledCode: string
 } | {
@@ -122,7 +122,7 @@ export class TsScriptExecutor<
 
     async validateThenCompile(
         code: string
-    ): Promise<ValidationResult> {
+    ): Promise<TsScriptValidationCompileResult> {
         const returnTypeLiteral = this.returnTypeLiteral
         const paramTypesLiteral = this.paramTypesLiteral
 
@@ -478,7 +478,7 @@ with(arguments[0]) {
     async executeTsArrowFunctionScript(
         templateFn: string,
         params: Parameters<Fn>,
-    ): Promise<ReturnType<Fn> | ValidationResult> {
+    ): Promise<ReturnType<Fn> | TsScriptValidationCompileResult> {
         const result = await this.validateThenCompile(templateFn)
         if (!result.valid) {
             return result
