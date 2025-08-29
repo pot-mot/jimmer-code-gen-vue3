@@ -12,7 +12,8 @@ type IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
 type IStandaloneEditorConstructionOptions = editor.IStandaloneEditorConstructionOptions;
 
 const textValue = defineModel<string>({
-    required: true
+    required: false,
+    default: ''
 })
 
 const props = defineProps<{

@@ -20,20 +20,32 @@ const createDiagnosticsOptions = (): DiagnosticsOptions => {
     }
 }
 
-export const addJsonSchemaFile = (key: JsonSchemaKey, fileName: string) => {
+export const addJsonSchemaFile = (key: JsonSchemaKey, fileName: string | Iterable<string>) => {
     let fileMatchSet = fileMatchMap.get(key)
     if (!fileMatchSet) {
         fileMatchSet = new Set<string>()
         fileMatchMap.set(key, fileMatchSet)
     }
-    fileMatchSet.add(fileName)
+    if (typeof fileName === 'string') {
+        fileMatchSet.add(fileName)
+    } else {
+        for (const name of fileName) {
+            fileMatchSet.add(name)
+        }
+    }
     languages.json.jsonDefaults.setDiagnosticsOptions(createDiagnosticsOptions())
 }
 
-export const removeJsonSchemaFile = (key: JsonSchemaKey, fileName: string) => {
+export const removeJsonSchemaFile = (key: JsonSchemaKey, fileName: string | Iterable<string>) => {
     const fileMatchSet = fileMatchMap.get(key)
     if (fileMatchSet) {
-        fileMatchSet.delete(fileName)
+        if (typeof fileName === 'string') {
+            fileMatchSet.delete(fileName)
+        } else {
+            for (const name of fileName) {
+                fileMatchSet.delete(name)
+            }
+        }
         if (fileMatchSet.size === 0) {
             fileMatchMap.delete(key)
         }

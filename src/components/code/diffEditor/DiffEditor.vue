@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {editor, languages} from 'monaco-editor'
+import {editor, languages, type Uri} from 'monaco-editor'
 import {onMounted, onUnmounted, ref, shallowRef, watch} from "vue";
 import {type CodeEditorLanguage} from "@/components/code/CodeEditorLanguages.ts";
 import {defaultOptions} from "@/components/code/defaultOptions.ts";
@@ -21,6 +21,8 @@ const props = withDefaults(defineProps<{
     language?: CodeEditorLanguage | string,
     originalEditable?: boolean,
     options?: Omit<Partial<IStandaloneDiffEditorConstructionOptions>, 'language' | 'originalEditable'>,
+    originModelUri?: Uri,
+    modifiedModelUri?: Uri,
 }>(), {
     originalEditable: true
 })
@@ -52,8 +54,8 @@ onMounted(() => {
     editorInstance.value = editor.createDiffEditor(editorContainer.value, {...options, ...props.options})
 
     // 设置左右两侧的模型
-    const unwrapOriginModel = editor.createModel(originValue.value, props.language)
-    const unwrapModifiedModel = editor.createModel(modifiedValue.value, props.language)
+    const unwrapOriginModel = editor.createModel(originValue.value, props.language, props.originModelUri)
+    const unwrapModifiedModel = editor.createModel(modifiedValue.value, props.language, props.modifiedModelUri)
 
     editorInstance.value.setModel({
         original: unwrapOriginModel,
