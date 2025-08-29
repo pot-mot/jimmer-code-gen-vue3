@@ -1,6 +1,10 @@
 <script setup lang="ts" generic="Fn extends TsScriptFunction">
 import {useTemplateRef, computed} from 'vue';
-import {TsScriptExecutor, type TsScriptFunction} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
+import {
+    type TsScriptExecuteResult,
+    TsScriptExecutor,
+    type TsScriptFunction, type TsScriptValidatedCompileResult
+} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
 import DiffEditor from "@/components/code/diffEditor/DiffEditor.vue";
 
 const diffEditorRef = useTemplateRef<InstanceType<typeof DiffEditor>>("diffEditorRef")
@@ -37,14 +41,14 @@ const props = defineProps<{
 }>()
 
 // 验证代码
-const validateAndCompile = async () => {
+const validateAndCompile = async (): Promise<TsScriptValidatedCompileResult> => {
     return await props.executor.validateThenCompile(
         modifiedValue.value,
     );
 }
 
 // 执行代码
-const executeCode = async (params: Parameters<Fn>) => {
+const executeCode = async (params: Parameters<Fn>): Promise<TsScriptExecuteResult<Fn>> => {
     return await props.executor.executeTsArrowFunctionScript(
         modifiedValue.value,
         params,

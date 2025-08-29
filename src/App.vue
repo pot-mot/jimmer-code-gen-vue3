@@ -18,17 +18,17 @@ setTimeout(() => {
 const editorRef = useTemplateRef('editorRef')
 
 const executor = new TsScriptExecutor<{
-    (a: number, b?: MyType): number,
+    (a: number, b: MyType | undefined): number,
     returnTypeLiteral: 'number',
-    paramTypesLiteral: ['number', 'MyType'],
+    paramTypesLiteral: ['number', 'MyType | undefined'],
 }>(
     'number',
-    ['number', 'MyType']
+    ['number', 'MyType | undefined']
 )
 
 const execute = () => {
-    editorRef.value?.executeCode([1]).then(it => {
-        alert(JSON.stringify(it))
+    editorRef.value?.executeCode([1, undefined]).then(it => {
+        console.log(it)
     })
 }
 </script>

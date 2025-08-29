@@ -1,6 +1,11 @@
 <script setup lang="ts" generic="Fn extends TsScriptFunction">
 import {useTemplateRef, computed} from 'vue';
-import {TsScriptExecutor, type TsScriptFunction} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
+import {
+    type TsScriptExecuteResult,
+    TsScriptExecutor,
+    type TsScriptFunction,
+    type TsScriptValidatedCompileResult
+} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
 import CodeEditor from "@/components/code/CodeEditor.vue";
 
 const editorRef = useTemplateRef<InstanceType<typeof CodeEditor>>("editorRef")
@@ -30,14 +35,14 @@ const data = defineModel<string>({
 })
 
 // 验证代码
-const validateAndCompile = async () => {
+const validateAndCompile = async (): Promise<TsScriptValidatedCompileResult> => {
     return await props.executor.validateThenCompile(
         data.value,
     );
 }
 
 // 执行代码
-const executeCode = async (params: Parameters<Fn>) => {
+const executeCode = async (params: Parameters<Fn>): Promise<TsScriptExecuteResult<Fn>> => {
     return await props.executor.executeTsArrowFunctionScript(
         data.value,
         params,

@@ -1,4 +1,4 @@
-import ts from 'typescript';
+import ts, {type Diagnostic} from 'typescript';
 import {createDefaultMapFromCDN, createSystem, createVirtualCompilerHost} from "@typescript/vfs";
 import {languages} from "monaco-editor";
 import registerTypeDeclare from "@/type/__generated/typeDeclare";
@@ -88,12 +88,28 @@ const compilerOptions: ts.CompilerOptions = Object.freeze({
     baseUrl: "./",
 })
 
-export type TsScriptValidationCompileResult = {
+export type TsScriptValidatedCompileResult = {
     valid: true
     compiledCode: string
 } | {
     valid: false
-    error?: string
+    error: {
+        diagnostics: Diagnostic[],
+        messages: string[]
+    } | Error | any
+}
+
+export type TsScriptExecuteResult<Fn extends TsScriptFunction> = {
+    success: true
+    result: ReturnType<Fn>
+} | {
+    success: false
+    state: 'compileError'
+    error: (TsScriptValidatedCompileResult & {valid: false})['error']
+} | {
+    success: false
+    state: 'executeError'
+    error:  Error | any
 }
 
 export type TsScriptFunction = {
@@ -122,7 +138,7 @@ export class TsScriptExecutor<
 
     async validateThenCompile(
         code: string
-    ): Promise<TsScriptValidationCompileResult> {
+    ): Promise<TsScriptValidatedCompileResult> {
         const returnTypeLiteral = this.returnTypeLiteral
         const paramTypesLiteral = this.paramTypesLiteral
 
@@ -202,8 +218,7 @@ export class TsScriptExecutor<
             ]
 
             if (diagnostics && diagnostics.length > 0) {
-                console.error(diagnostics)
-                const errors = diagnostics
+                const messages = diagnostics
                     .filter(diagnostic => {
                         return (
                             diagnostic.category === ts.DiagnosticCategory.Error ||
@@ -219,11 +234,14 @@ export class TsScriptExecutor<
                         return message;
                     });
 
-                if (errors.length > 0) {
+                if (diagnostics.length > 0 || messages.length > 0) {
                     return {
                         valid: false,
-                        error: errors.join('\n')
-                    };
+                        error: {
+                            diagnostics,
+                            messages
+                        }
+                    }
                 }
             }
 
@@ -428,10 +446,9 @@ export class TsScriptExecutor<
                 compiledCode
             }
         } catch (error) {
-            console.error(error)
             return {
                 valid: false,
-                error: error instanceof Error ? error.message : `${error}`
+                error
             };
         }
     }
@@ -441,15 +458,15 @@ export class TsScriptExecutor<
         if (!trimCode) {
             throw new Error("code is empty");
         }
-        if (trimCode.endsWith(";")) {
-            trimCode = trimCode.slice(0, -1)
-        }
-
-        const cleanCode = trimCode
-            .replace(/\s*"use strict"\s*;?/g, '')
-            .replace(/\s*export\s*{\s*};?/, '');
-
         try {
+            if (trimCode.endsWith(";")) {
+                trimCode = trimCode.slice(0, -1)
+            }
+
+            const cleanCode = trimCode
+                .replace(/\s*"use strict"\s*;?/g, '')
+                .replace(/\s*export\s*{\s*};?/, '');
+
             // 构造函数体
             const functionBody = `
 with(arguments[0]) {
@@ -478,11 +495,27 @@ with(arguments[0]) {
     async executeTsArrowFunctionScript(
         templateFn: string,
         params: Parameters<Fn>,
-    ): Promise<ReturnType<Fn> | TsScriptValidationCompileResult> {
-        const result = await this.validateThenCompile(templateFn)
-        if (!result.valid) {
-            return result
+    ): Promise<TsScriptExecuteResult<Fn>> {
+        const compileResult = await this.validateThenCompile(templateFn)
+        if (!compileResult.valid) {
+            return {
+                success: false,
+                state: 'compileError',
+                error: compileResult.error
+            }
         }
-        return this.executeJsFunction(result.compiledCode, params)
+        try {
+            const result = this.executeJsFunction(compileResult.compiledCode, params)
+            return {
+                success: true,
+                result
+            }
+        } catch (e) {
+            return {
+                success: false,
+                state: 'executeError',
+                error: e
+            }
+        }
     }
 }
