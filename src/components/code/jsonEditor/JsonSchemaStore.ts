@@ -1,10 +1,8 @@
 import {languages} from "monaco-editor";
-import jsonSchemas from "@/type/__generated/jsonSchema";
+import {jsonSchemas, type JsonSchemaKey} from "@/type/__generated/jsonSchema";
 import {typeObjectEntries} from "@/utils/type/typeObjectEntries.ts";
 import type {ErrorObject} from "ajv";
 type DiagnosticsOptions = languages.json.DiagnosticsOptions
-
-export type JsonSchemaKey = keyof typeof jsonSchemas
 
 const fileMatchMap = new Map<JsonSchemaKey, Set<string>>
 

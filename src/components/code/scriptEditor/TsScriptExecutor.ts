@@ -1,8 +1,14 @@
-import ts from 'typescript';
+import ts, {SyntaxKind} from 'typescript';
 import {createDefaultMapFromCDN, createSystem, createVirtualCompilerHost} from "@typescript/vfs";
 import {editor, languages, MarkerSeverity} from "monaco-editor";
-import registerTypeDeclare from "@/type/__generated/typeDeclare";
+import {registerTypeDeclare} from "@/type/__generated/typeDeclare";
+import {
+    registerScriptTypeDeclare,
+    type RegisterScriptTypeName,
+    scriptTypeDeclares
+} from "@/type/__generated/scriptTypeDeclare";
 import message from "@/components/message/Message.vue";
+import {has} from "lodash-es";
 
 type IMarkerData = editor.IMarkerData
 
@@ -24,6 +30,7 @@ export const initMonacoTsScriptEditor = () => {
         noSuggestionDiagnostics: true,
     })
     registerTypeDeclare()
+    registerScriptTypeDeclare()
 }
 
 export const forbiddenGlobal = Object.freeze([
@@ -113,7 +120,7 @@ export type TsScriptExecuteResult<Fn extends TsScriptFunction> = {
 } | {
     success: false
     state: 'compileError'
-    error: (TsScriptValidatedCompileResult & { valid: false })['error']
+    compileResult: (TsScriptValidatedCompileResult & { valid: false })
 } | {
     success: false
     state: 'executeError'
@@ -122,33 +129,24 @@ export type TsScriptExecuteResult<Fn extends TsScriptFunction> = {
 
 export type TsScriptFunction = {
     (...args: any[]): any,
-    returnTypeLiteral: string,
-    paramTypesLiteral: string[],
+    scriptTypeName: RegisterScriptTypeName,
 }
 
 export class TsScriptExecutor<
-    Fn extends TsScriptFunction = {
-        (): string,
-        returnTypeLiteral: 'string',
-        paramTypesLiteral: [],
-    }
+    Fn extends TsScriptFunction
 > {
-    readonly returnTypeLiteral: Fn['returnTypeLiteral']
-    readonly paramTypesLiteral: Fn['paramTypesLiteral']
+    readonly scriptTypeName: Fn['scriptTypeName']
 
     constructor(
-        returnTypeLiteral: Fn['returnTypeLiteral'],
-        paramTypesLiteral: Fn['paramTypesLiteral'],
+        scriptTypeName: Fn['scriptTypeName']
     ) {
-        this.returnTypeLiteral = returnTypeLiteral
-        this.paramTypesLiteral = paramTypesLiteral
+        this.scriptTypeName = scriptTypeName
     }
 
     async validateThenCompile(
         code: string
     ): Promise<TsScriptValidatedCompileResult> {
-        const returnTypeLiteral = this.returnTypeLiteral
-        const paramTypesLiteral = this.paramTypesLiteral
+        const scriptTypeName = this.scriptTypeName
 
         try {
             // 添加参数验证
@@ -307,7 +305,54 @@ export class TsScriptExecutor<
 
             markers.push(...forbiddenGlobalMarkers)
 
-            // 验证代码是否仅包含一个箭头函数和可选的类型声明
+            // 验证脚本类型声明
+            const typeChecker = program.getTypeChecker()
+
+            const scriptTypeDeclareFile = program.getSourceFile(scriptTypeDeclares[scriptTypeName].fileName)
+            if (!scriptTypeDeclareFile) {
+                errorMessages.push('找不到脚本类型声明文件')
+                return {
+                    valid: false,
+                    errorMessages,
+                    markers,
+                }
+            }
+
+            if (scriptTypeDeclareFile.statements.length !== 1) {
+                errorMessages.push('脚本类型声明文件只能包含一个语句')
+                return {
+                    valid: false,
+                    errorMessages,
+                    markers,
+                }
+            }
+
+            if (!ts.isTypeAliasDeclaration(scriptTypeDeclareFile.statements[0])) {
+                errorMessages.push('脚本类型声明文件只能包含一个类型声明语句')
+                return {
+                    valid: false,
+                    errorMessages,
+                    markers,
+                }
+            }
+
+            const scriptTypeDeclare = scriptTypeDeclareFile.statements[0]
+            const scriptType = typeChecker.getTypeAtLocation(scriptTypeDeclare)
+            const scriptTypeSignatures = scriptType.getCallSignatures()
+
+            if (scriptTypeSignatures.length !== 1) {
+                errorMessages.push('类型声明必须包含唯一一个函数签名')
+                return {
+                    valid: false,
+                    errorMessages,
+                    markers,
+                }
+            }
+
+            const scriptTypeSignature = scriptTypeSignatures[0] // 获取第一个签名
+
+
+            // 解析执行脚本源文件
             const statements = sourceFile.statements;
 
             // 查找箭头函数表达式语句
@@ -368,114 +413,110 @@ export class TsScriptExecutor<
             }
 
             const arrowFunction = arrowFunctionStatement.expression as ts.ArrowFunction;
+            const arrowFunctionType = typeChecker.getTypeAtLocation(arrowFunction)
 
-            // 校验参数
-            const params = arrowFunction.parameters;
+            // 若是类型完全匹配，则无需再进行详细的类型提示
+            if (typeChecker.isTypeAssignableTo(arrowFunctionType, scriptType)) {
+                if (markers.length > 0 || message.length > 0) {
+                    return {
+                        valid: false,
+                        markers,
+                        errorMessages,
+                    }
+                }
+
+                return {
+                    valid: true,
+                    compiledCode,
+                }
+            }
+
+            // 获取声明参数信息
+            const declareParameters = scriptTypeSignature.getParameters().map(param => {
+                const paramName = param.getName()
+                const paramType = typeChecker.getTypeOfSymbolAtLocation(param, scriptTypeDeclare)
+                const paramTypeName = typeChecker.typeToString(paramType)
+
+                // 检查参数是否可选
+                const isOptional = paramType.getFlags() & ts.TypeFlags.Union ?
+                    (paramType as ts.UnionType).types.some(t => t.getFlags() & ts.TypeFlags.Undefined) :
+                    false
+
+                return {
+                    name: paramName,
+                    type: paramType,
+                    typeName: paramTypeName,
+                    isOptional: isOptional,
+                }
+            })
+
+            const actualParameters = arrowFunction.parameters
 
             // 检查参数数量是否匹配
-            if (params.length !== paramTypesLiteral.length) {
-                const message = `参数数量不匹配，期望 ${paramTypesLiteral.length} 个参数 (${paramTypesLiteral.join(", ")})，实际 ${params.length} 个`
-                markers.push(createMarker(arrowFunction, message))
+            if (actualParameters.length !== declareParameters.length) {
+                const paramTypesLiteral = declareParameters.map(param => param.typeName)
+                const message = `参数数量不匹配，期望 ${declareParameters.length} 个参数 (${paramTypesLiteral.join(", ")})，实际 ${actualParameters.length} 个`
+                markers.push(createMarker(arrowFunction.parameters[0] ?? arrowFunction, message))
                 errorMessages.push(message)
             }
 
-            // 检查每个参数的名称和类型
-            for (let i = 0; i < params.length; i++) {
-                const param = params[i]
-                const paramName = param.name.getText()
+            // 检查每个参数类型
+            for (let i = 0; i < actualParameters.length; i++) {
+                const declareParam = declareParameters[i]
+                const actualParam = actualParameters[i]
+                const paramName = actualParam.name.getText()
 
-                const isOptional = param.questionToken !== undefined
-                if (isOptional) {
-                    markers.push(createMarker(param, `参数 ${paramName} 必须不可选`))
-                }
+                // 显示可选
+                const isExplicitlyOptional = actualParam.questionToken !== undefined;
 
-                const hasDefaultValue = param.initializer !== undefined
-                if (hasDefaultValue) {
-                    markers.push(createMarker(param, `参数 ${paramName} 必须没有默认值`))
+                // 如果联合类型中包含 undefined, 则隐式可选
+                const actualParamType = actualParam.type ? typeChecker.getTypeAtLocation(actualParam.type) : undefined;
+                const isTypeOptional = actualParamType && actualParamType.getFlags() & ts.TypeFlags.Union
+                    ? (actualParamType as ts.UnionType).types.some(t => t.getFlags() & ts.TypeFlags.Undefined)
+                    : false;
+
+                const actualParamIsOptional = isExplicitlyOptional || isTypeOptional;
+
+                if (actualParamIsOptional !== declareParam.isOptional) {
+                    if (declareParam.isOptional) {
+                        const hasDefaultValue = actualParam.initializer !== undefined
+                        if (!hasDefaultValue) {
+                            markers.push(createMarker(actualParam, `参数 ${paramName} 应当可选或具有默认值`))
+                        }
+                    } else {
+                        markers.push(createMarker(actualParam, `参数 ${paramName} 不可选`))
+                    }
                 }
 
                 // 检查参数是否有类型注解
-                if (!param.type) {
-                    markers.push(createMarker(param, `参数 ${paramName} 必须显式声明类型`))
+                if (!actualParam.type) {
+                    markers.push(createMarker(actualParam, `参数 ${paramName} 必须显式声明类型`))
                 } else {
                     // 获取实际参数类型
-                    const actualParamType = param.type.getText()
-                    const expectedParamType = paramTypesLiteral[i]
+                    const actualParamType = typeChecker.getTypeAtLocation(actualParam.type)
 
                     // 检查参数类型是否匹配
-                    if (actualParamType !== expectedParamType) {
-                        markers.push(createMarker(param, `参数 ${paramName} 的类型不匹配，期望 ${expectedParamType}，实际 ${actualParamType}`))
+                    if (!typeChecker.isTypeAssignableTo(actualParamType, declareParam.type)) {
+                        markers.push(createMarker(actualParam, `参数 ${paramName} 的类型不匹配，期望 ${declareParam.typeName}，实际 ${actualParamType}`))
                     }
                 }
             }
 
-            if (returnTypeLiteral === 'string') {
-                if (arrowFunction.type) {
-                    if (arrowFunction.type.kind !== ts.SyntaxKind.StringKeyword) {
-                        markers.push(createMarker(arrowFunction.type, '箭头函数的返回类型必须是 string'))
-                    }
-                } else {
-                    const typeChecker = program.getTypeChecker()
-                    const signature = typeChecker.getSignatureFromDeclaration(arrowFunction)
-                    if (!signature) {
-                        markers.push(createMarker(arrowFunction, '箭头函数无法获取签名'))
-                    } else {
-                        const returnType = typeChecker.getReturnTypeOfSignature(signature)
-                        if (!typeChecker.isTypeAssignableTo(returnType, typeChecker.getStringType())) {
-                            const returnTypeString = typeChecker.typeToString(returnType)
-                            markers.push(createMarker(arrowFunction, `箭头函数的返回类型必须是 string, 目前返回类型: ${returnTypeString}`))
-                        }
-                    }
-                }
-            } else if (returnTypeLiteral === 'number') {
-                if (arrowFunction.type) {
-                    if (arrowFunction.type.kind !== ts.SyntaxKind.NumberKeyword) {
-                        markers.push(createMarker(arrowFunction.type, '箭头函数的返回类型必须是 number'))
-                    }
-                } else {
-                    const typeChecker = program.getTypeChecker()
-                    const signature = typeChecker.getSignatureFromDeclaration(arrowFunction)
-                    if (!signature) {
-                        markers.push(createMarker(arrowFunction, '箭头函数无法获取签名'))
-                    } else {
-                        const returnType = typeChecker.getReturnTypeOfSignature(signature)
-                        if (!typeChecker.isTypeAssignableTo(returnType, typeChecker.getNumberType())) {
-                            const returnTypeString = typeChecker.typeToString(returnType)
-                            markers.push(createMarker(arrowFunction, `箭头函数的返回类型必须是 number, 目前返回类型: ${returnTypeString}`))
-                        }
-                    }
-                }
-            } else if (returnTypeLiteral === 'boolean') {
-                if (arrowFunction.type) {
-                    if (arrowFunction.type.kind !== ts.SyntaxKind.BooleanKeyword) {
-                        markers.push(createMarker(arrowFunction.type, '箭头函数的返回类型必须是 boolean'))
-                    }
-                } else {
-                    const typeChecker = program.getTypeChecker()
-                    const signature = typeChecker.getSignatureFromDeclaration(arrowFunction)
-                    if (!signature) {
-                        markers.push(createMarker(arrowFunction, '箭头函数无法获取签名'))
-                    } else {
-                        const returnType = typeChecker.getReturnTypeOfSignature(signature)
-                        if (!typeChecker.isTypeAssignableTo(returnType, typeChecker.getBooleanType())) {
-                            const returnTypeString = typeChecker.typeToString(returnType)
-                            markers.push(createMarker(arrowFunction, `箭头函数的返回类型必须是 boolean, 目前返回类型: ${returnTypeString}`))
-                        }
-                    }
-                }
-            } else if (returnTypeLiteral !== 'void') {
-                const typeChecker = program.getTypeChecker()
-                const signature = typeChecker.getSignatureFromDeclaration(arrowFunction)
-                if (!signature) {
-                    markers.push(createMarker(arrowFunction, '箭头函数无法获取签名'))
-                } else {
-                    const returnType = typeChecker.getReturnTypeOfSignature(signature)
-                    const returnTypeString = typeChecker.typeToString(returnType)
-                    if (returnTypeString !== returnTypeLiteral) {
-                        markers.push(createMarker(arrowFunction, `箭头函数的返回类型必须是 ${returnTypeLiteral}, 目前返回类型: ${returnTypeString}`))
-                    }
+            // 获取声明返回值类型
+            const scriptReturnType = scriptTypeSignature.getReturnType()
+            const scriptReturnTypeName = typeChecker.typeToString(scriptReturnType)
+
+            const arrowTypeSignature = typeChecker.getSignatureFromDeclaration(arrowFunction)
+            if (!arrowTypeSignature) {
+                markers.push(createMarker(arrowFunction, '箭头函数无法获取签名'))
+            } else {
+                const actualReturnType = typeChecker.getReturnTypeOfSignature(arrowTypeSignature)
+                if (!typeChecker.isTypeAssignableTo(actualReturnType, scriptReturnType)) {
+                    const actualReturnTypeName = typeChecker.typeToString(actualReturnType)
+                    markers.push(createMarker(arrowFunction.type ?? arrowFunction, `箭头函数的返回类型必须是 ${scriptReturnTypeName}, 目前返回类型: ${actualReturnTypeName}`))
                 }
             }
+
 
             if (markers.length > 0 || message.length > 0) {
                 return {
@@ -546,7 +587,7 @@ with(arguments[0]) {
             return {
                 success: false,
                 state: 'compileError',
-                error: compileResult.error
+                compileResult
             }
         }
         try {

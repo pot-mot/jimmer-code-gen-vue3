@@ -18,17 +18,16 @@ setTimeout(() => {
 
 const editorRef = useTemplateRef('editorRef')
 
-const executor = new TsScriptExecutor<{
-    (a: number, b: MyType | undefined): number,
-    returnTypeLiteral: 'number',
-    paramTypesLiteral: ['number', 'MyType | undefined'],
-}>(
-    'number',
-    ['number', 'MyType | undefined']
+const executor = new TsScriptExecutor<MyTypeGenerator>(
+    'MyTypeGenerator'
 )
 
 const execute = () => {
-    editorRef.value?.executeCode([1, undefined]).then(it => {
+    editorRef.value?.executeCode([{
+        name: 'ok',
+        value: 1,
+        children: []
+    }]).then(it => {
         console.log(it)
     })
 }
@@ -48,7 +47,6 @@ const execute = () => {
             :executor="executor"
         />
     </div>
-
 
     <!--    <RouterView/>-->
 </template>

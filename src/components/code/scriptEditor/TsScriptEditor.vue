@@ -23,19 +23,7 @@ const props = defineProps<{
 
 const textValue = defineModel<string>({
     required: false,
-    default(props: {
-        executor: TsScriptExecutor<Fn>,
-    }) {
-        let params = ''
-        if (props.executor.paramTypesLiteral.length > 0) {
-            params = props.executor.paramTypesLiteral.map((type, index) => {
-                return `\n\tparam${index}: ${type},`
-            }).join('') + '\n'
-        }
-        return `(${params}): ${props.executor.returnTypeLiteral} => {
-    // TODO
-}`;
-    }
+    default: '',
 })
 
 // 验证代码
