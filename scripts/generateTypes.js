@@ -90,6 +90,10 @@ const isObjectType = (type) => {
     return !!(flags & ts.TypeFlags.Object)
 }
 
+
+const existedTypeSet = new Set()
+
+
 const typeDeclares = []
 for (const {fileName} of modelTypeFiles) {
     const sourceFile = program.getSourceFile(fileName)
@@ -104,6 +108,11 @@ for (const {fileName} of modelTypeFiles) {
             if (!isObjectType(type)) {
                 throw new Error(`[${fileName}] ${typeName} is not an object type`)
             }
+
+            if (existedTypeSet.has(typeName)) {
+                throw new Error(`[${fileName}] ${typeName} is already exists`)
+            }
+            existedTypeSet.add(typeName)
 
             const content = statement.getFullText(sourceFile)
             const schema = jsonSchemaGenerator.getSchemaForSymbol(typeName)
@@ -133,6 +142,11 @@ for (const {fileName} of scriptTypeFiles) {
         throw new Error(`[${fileName}] ${typeName} is not an object type`)
     }
 
+    if (existedTypeSet.has(typeName)) {
+        throw new Error(`[${fileName}] ${typeName} is already exists`)
+    }
+    existedTypeSet.add(typeName)
+
     const scriptTypeNameProperty = type.getProperty("scriptTypeName")
     if (!scriptTypeNameProperty) {
         throw new Error(`[${fileName}] ${typeName} does not have scriptTypeName property`)
@@ -154,7 +168,7 @@ for (const {fileName} of scriptTypeFiles) {
 // 转换文件
 
 const typeDeclareFiles = typeDeclares.map(it => ({
-    fileName: `${typeDeclarePath}/${it.typeName}.ts`,
+    fileName: `${typeDeclarePath}/items/${it.typeName}.ts`,
     content: `export default {
     fileName: '${it.typeName}.d.ts',
     content: \`${it.content.trim()}\`,
@@ -164,7 +178,7 @@ const typeDeclareFiles = typeDeclares.map(it => ({
 
 typeDeclareFiles.push({
     fileName: `${typeDeclarePath}/index.ts`,
-    content: `${typeDeclares.map(it => `import ${it.typeName}Declare from "./${it.typeName}.ts";`).join("\n")}
+    content: `${typeDeclares.map(it => `import ${it.typeName}Declare from "./items/${it.typeName}.ts";`).join("\n")}
 
 export const typeDeclares = Object.freeze({
 ${typeDeclares.map(it => `    ${it.typeName}: ${it.typeName}Declare,`).join("\n")}
@@ -173,7 +187,7 @@ ${typeDeclares.map(it => `    ${it.typeName}: ${it.typeName}Declare,`).join("\n"
 })
 
 const scriptTypeDeclareFiles = scriptTypeDeclares.map(it => ({
-    fileName: `${scriptTypeDeclarePath}/${it.typeName}.ts`,
+    fileName: `${scriptTypeDeclarePath}/items/${it.typeName}.ts`,
     content: `export default {
     fileName: '${it.typeName}.d.ts',
     content: \`${it.content.trim()}\`,
@@ -183,7 +197,7 @@ const scriptTypeDeclareFiles = scriptTypeDeclares.map(it => ({
 
 scriptTypeDeclareFiles.push({
     fileName: `${scriptTypeDeclarePath}/index.ts`,
-    content: `${scriptTypeDeclares.map(it => `import ${it.typeName}Declare from "./${it.typeName}.ts";`).join("\n")}
+    content: `${scriptTypeDeclares.map(it => `import ${it.typeName}Declare from "./items/${it.typeName}.ts";`).join("\n")}
 
 export const scriptTypeDeclares = Object.freeze({
 ${scriptTypeDeclares.map(it => `    ${it.typeName}: ${it.typeName}Declare,`).join("\n")}
@@ -194,7 +208,7 @@ export type ScriptTypeName = keyof typeof scriptTypeDeclares
 })
 
 const jsonSchemaFiles = typeDeclares.map(it => ({
-    fileName: `${jsonSchemaPath}/${it.typeName}.ts`,
+    fileName: `${jsonSchemaPath}/items/${it.typeName}.ts`,
     content: `import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
 import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
@@ -212,7 +226,7 @@ export default {
 
 jsonSchemaFiles.push({
     fileName: `${jsonSchemaPath}/index.ts`,
-    content: `${typeDeclares.map(it => `import ${it.typeName}JsonSchema from "./${it.typeName}.ts";`).join("\n")}
+    content: `${typeDeclares.map(it => `import ${it.typeName}JsonSchema from "./items/${it.typeName}.ts";`).join("\n")}
 
 export const jsonSchemas = Object.freeze({
 ${typeDeclares.map(it => `    ${it.typeName}: ${it.typeName}JsonSchema,`).join("\n")}
@@ -223,6 +237,17 @@ export type JsonSchemaKey = keyof typeof jsonSchemas
 })
 
 // 写入文件
+const cleanDir = (dirPath) => {
+    if (fs.existsSync(dirPath)) {
+        fs.rmSync(dirPath, {recursive: true})
+    }
+    fs.mkdirSync(dirPath, {recursive: true})
+}
+
+cleanDir(typeDeclarePath)
+cleanDir(scriptTypeDeclarePath)
+cleanDir(jsonSchemaPath)
+
 const writeFiles = (files) => {
     for (const file of files) {
         const dirPath = path.dirname(file.fileName)

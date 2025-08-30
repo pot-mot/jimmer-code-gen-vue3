@@ -1,7 +1,7 @@
-import MyTypeGeneratorDeclare from "./MyTypeGenerator.ts";
+import TableGeneratorDeclare from "./items/TableGenerator.ts";
 
 export const scriptTypeDeclares = Object.freeze({
-    MyTypeGenerator: MyTypeGeneratorDeclare,
+    TableGenerator: TableGeneratorDeclare,
 })
 
 export type ScriptTypeName = keyof typeof scriptTypeDeclares

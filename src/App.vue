@@ -18,16 +18,19 @@ setTimeout(() => {
 
 const editorRef = useTemplateRef('editorRef')
 
-const executor = new TsScriptExecutor<MyTypeGenerator>(
-    'MyTypeGenerator'
+const executor = new TsScriptExecutor<TableGenerator>(
+    'TableGenerator'
 )
 
 const execute = () => {
-    editorRef.value?.executeCode([{
-        name: 'ok',
-        value: 1,
-        children: []
-    }]).then(it => {
+    editorRef.value?.executeCode([
+        {
+            name: 'table_name',
+            comment: '注释',
+            columns: [],
+            indexes: [],
+        }
+    ]).then(it => {
         console.log(it)
     })
 }
