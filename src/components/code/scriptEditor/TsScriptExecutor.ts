@@ -1,12 +1,8 @@
 import ts from 'typescript';
 import {createDefaultMapFromCDN, createSystem, createVirtualCompilerHost} from "@typescript/vfs";
 import {editor, languages, MarkerSeverity} from "monaco-editor";
-import {registerTypeDeclare} from "@/type/__generated/typeDeclare";
-import {
-    registerScriptTypeDeclare,
-    type RegisterScriptTypeName,
-    scriptTypeDeclares
-} from "@/type/__generated/scriptTypeDeclare";
+import {typeDeclares} from "@/type/__generated/typeDeclare";
+import {scriptTypeDeclares, type ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
 import message from "@/components/message/Message.vue";
 
 type IMarkerData = editor.IMarkerData
@@ -28,8 +24,12 @@ export const initMonacoTsScriptEditor = () => {
         noSyntaxValidation: true,
         noSuggestionDiagnostics: true,
     })
-    registerTypeDeclare()
-    registerScriptTypeDeclare()
+    for (const {fileName, content} of Object.values(typeDeclares)) {
+        registerTypeDeclareFile(fileName, content)
+    }
+    for (const {fileName, content} of Object.values(scriptTypeDeclares)) {
+        registerTypeDeclareFile(fileName, content)
+    }
 }
 
 export const forbiddenGlobal = Object.freeze([
@@ -128,7 +128,7 @@ export type TsScriptExecuteResult<Fn extends TsScriptFunction> = {
 
 export type TsScriptFunction = {
     (...args: any[]): any,
-    scriptTypeName: RegisterScriptTypeName,
+    scriptTypeName: ScriptTypeName,
 }
 
 export class TsScriptExecutor<
