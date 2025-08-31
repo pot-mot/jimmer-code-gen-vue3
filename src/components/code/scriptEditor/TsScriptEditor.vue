@@ -10,7 +10,6 @@ import CodeEditor from "@/components/code/CodeEditor.vue";
 import {debounce} from "lodash-es";
 import {editor} from "monaco-editor";
 import setModelMarkers = editor.setModelMarkers
-type IMarkerData = editor.IMarkerData
 
 const editorRef = useTemplateRef<InstanceType<typeof CodeEditor>>("editorRef")
 const editorInstance = computed(() => {
@@ -37,13 +36,9 @@ const validateAndCompile = async (): Promise<TsScriptValidatedCompileResult> => 
     const model = editor.getModel()
     if (!model) return result
 
-    const markers: IMarkerData[] = []
-    if (!result.valid) {
-        if (result.markers) {
-            markers.push(...result.markers)
-        }
+    if (!result.valid && result.markers) {
+        setModelMarkers(model, 'ts-script-executor', result.markers)
     }
-    setModelMarkers(model, 'ts-script-executor', markers)
 
     return result
 }

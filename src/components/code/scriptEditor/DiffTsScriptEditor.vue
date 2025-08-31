@@ -9,7 +9,6 @@ import DiffEditor from "@/components/code/diffEditor/DiffEditor.vue";
 import {debounce} from "lodash-es";
 import {editor} from "monaco-editor";
 import setModelMarkers = editor.setModelMarkers
-type IMarkerData = editor.IMarkerData
 
 const diffEditorRef = useTemplateRef<InstanceType<typeof DiffEditor>>("diffEditorRef")
 const editorInstance = computed(() => {
@@ -41,13 +40,9 @@ const validateAndCompile = async (): Promise<TsScriptValidatedCompileResult> => 
     const model = modifiedModel.value
     if (!model) return result
 
-    const markers: IMarkerData[] = []
-    if (!result.valid) {
-        if (result.markers) {
-            markers.push(...result.markers)
-        }
+    if (!result.valid && result.markers) {
+        setModelMarkers(model, 'ts-script-executor', result.markers)
     }
-    setModelMarkers(model, 'ts-script-executor', markers)
 
     return result
 }
