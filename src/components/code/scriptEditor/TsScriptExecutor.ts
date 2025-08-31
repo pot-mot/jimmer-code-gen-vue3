@@ -200,6 +200,11 @@ export type TsScriptValidatedCompileResult = {
     markers?: IMarkerData[]
 }
 
+export type TsScript<Fn extends TsScriptFunction> = {
+    valid: true
+    execute: (...params: Parameters<Fn>) => ReturnType<Fn>
+} | (TsScriptValidatedCompileResult & { valid: false })
+
 export type TsScriptExecuteResult<Fn extends TsScriptFunction> = {
     success: true
     result: ReturnType<Fn>
@@ -650,6 +655,27 @@ with(arguments[0]) {
                 success: false,
                 state: 'executeError',
                 error: e
+            }
+        }
+    }
+}
+
+export const createTsScript = async <Fn extends TsScriptFunction>(
+    scriptTypeName: ScriptTypeName,
+    code: string,
+    executor?: TsScriptExecutor<Fn>
+): Promise<TsScript<Fn>> => {
+    if (!executor) {
+        executor = new TsScriptExecutor<Fn>(scriptTypeName)
+    }
+    const result = await executor.validateThenCompile(code)
+    if (!result.valid) {
+        return result
+    } else {
+        return {
+            valid: true,
+            execute: (...params: Parameters<Fn>) => {
+                return executor.executeJsFunction(result.compiledCode, params)
             }
         }
     }

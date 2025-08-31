@@ -4,8 +4,7 @@ import {initThemeStore} from "@/store/themeStore.ts";
 import {initFocusTargetStore} from "@/store/focusTargetStore.ts";
 import {ref, useTemplateRef} from "vue";
 import DiffTsScriptEditor from "@/components/code/scriptEditor/DiffTsScriptEditor.vue";
-import {TsScriptExecutor} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
-import TsScriptEditor from "@/components/code/scriptEditor/TsScriptEditor.vue";
+import {createTsScript, type TsScript, TsScriptExecutor} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
 
 initDeviceStore()
 initThemeStore()
@@ -22,18 +21,33 @@ const executor = new TsScriptExecutor<TableGenerator>(
     'TableGenerator'
 )
 
-const execute = () => {
-    editorRef.value?.executeCode([
-        {
-            name: 'table_name',
-            comment: '注释',
+let script: TsScript<TableGenerator>
+
+const execute = async () => {
+    if (script && script.valid) {
+        const result = script.execute({
+            name: 'table',
+            comment: 'comment',
             columns: [],
             indexes: [],
-        }
-    ]).then(it => {
-        console.log(it)
-    })
+        })
+        alert(result)
+    } else {
+        if (!editorRef) return
+        const value = editorRef?.value?.modifiedModel?.getValue()
+        if (!value) return
+        script = await createTsScript<TableGenerator>('TableGenerator', value, executor)
+        if (!script.valid) return
+        const result = script.execute({
+            name: 'table',
+            comment: 'comment',
+            columns: [],
+            indexes: [],
+        })
+        alert(result)
+    }
 }
+
 </script>
 
 <template>
@@ -43,11 +57,6 @@ const execute = () => {
             ref="editorRef"
             :executor="executor"
             :origin-value="''"
-        />
-    </div>
-    <div style="height: 200px">
-        <TsScriptEditor
-            :executor="executor"
         />
     </div>
 
