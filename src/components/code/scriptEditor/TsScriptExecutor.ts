@@ -10,6 +10,9 @@ type IMarkerData = editor.IMarkerData
 const typeDeclareFiles = new Map<string, string>()
 
 export const registerTypeDeclareFile = (fileName: string, content: string) => {
+    if (typeDeclareFiles.has(fileName)) {
+        throw new Error(`File [${fileName}] already registered`)
+    }
     typeDeclareFiles.set(fileName, content)
     languages.typescript.typescriptDefaults.addExtraLib(content, fileName)
 }
