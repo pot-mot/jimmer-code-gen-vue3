@@ -1,4 +1,4 @@
-import ts from 'typescript';
+import ts, {type SourceFile} from 'typescript';
 import {createDefaultMapFromCDN, createSystem, createVirtualCompilerHost} from "@typescript/vfs";
 import {editor, languages, MarkerSeverity} from "monaco-editor";
 import {typeDeclares} from "@/type/__generated/typeDeclare";
@@ -97,7 +97,7 @@ const proxiedEnv = Object.freeze(new Proxy({}, {
 }))
 
 // 创建编译器选项
-const compilerOptions: ts.CompilerOptions = Object.freeze({
+const compilerOptions = Object.freeze({
     target: ts.ScriptTarget.ES2020,
     module: ts.ModuleKind.ESNext,
     strict: true,
@@ -105,6 +105,89 @@ const compilerOptions: ts.CompilerOptions = Object.freeze({
     forceConsistentCasingInFileNames: true,
     baseUrl: "./",
 })
+
+type TsProgramCache = {
+    updateFile: (sourceFile: SourceFile) => boolean
+    deleteFile: (sourceFile: SourceFile) => boolean
+    compilerHost: ts.CompilerHost
+    program: ts.Program
+}
+let tsProgramCache: TsProgramCache | null = null
+
+let tsProgramInitPromise: Promise<TsProgramCache> | null = null
+
+const scriptCodeFileName = "[[__SCRIPT_CODE_FILE_NAME__]].ts"
+const getProgramCache = async () => {
+    if (tsProgramCache) {
+        return tsProgramCache
+    }
+
+    if (tsProgramInitPromise) {
+        return tsProgramInitPromise
+    }
+
+    tsProgramInitPromise = (async () => {
+        try {
+            const fsMap = await createDefaultMapFromCDN(
+                compilerOptions,
+                ts.version,
+                true,
+                ts,
+            );
+
+            for (const [fileName, content] of typeDeclareFiles) {
+                fsMap.set(fileName, content)
+            }
+            fsMap.set(scriptCodeFileName, "")
+
+            const system = createSystem(fsMap);
+            const {
+                compilerHost,
+                updateFile,
+                deleteFile,
+            } = createVirtualCompilerHost(system, compilerOptions, ts);
+
+            const program = ts.createProgram({
+                rootNames: [...fsMap.keys()],
+                options: compilerOptions,
+                host: compilerHost,
+            })
+
+            tsProgramCache = {
+                updateFile,
+                deleteFile,
+                compilerHost,
+                program,
+            }
+
+            return tsProgramCache
+        } finally {
+            tsProgramInitPromise = null
+        }
+    })()
+
+    return tsProgramInitPromise
+}
+
+export type TsScriptFunction = {
+    (...args: any[]): any,
+    scriptTypeName: ScriptTypeName,
+}
+
+const getNewProgramAndSourceFile = async (code: string) => {
+    const {program, compilerHost, updateFile} = await getProgramCache()
+    const sourceFile = ts.createSourceFile(scriptCodeFileName, code, compilerOptions.target)
+    updateFile(sourceFile)
+    return {
+        program: ts.createProgram({
+            rootNames: program.getRootFileNames(),
+            options: compilerOptions,
+            host: compilerHost,
+            oldProgram: program,
+        }),
+        sourceFile
+    }
+}
 
 export type TsScriptValidatedCompileResult = {
     valid: true
@@ -127,11 +210,6 @@ export type TsScriptExecuteResult<Fn extends TsScriptFunction> = {
     success: false
     state: 'executeError'
     error: Error | any
-}
-
-export type TsScriptFunction = {
-    (...args: any[]): any,
-    scriptTypeName: ScriptTypeName,
 }
 
 export class TsScriptExecutor<
@@ -175,36 +253,7 @@ export class TsScriptExecutor<
                 };
             }
 
-            const fsMap = await createDefaultMapFromCDN(
-                compilerOptions,
-                ts.version,
-                true,
-                ts,
-            )
-
-            const codeFileName = 'index.ts'
-            fsMap.set(codeFileName, trimmedCode)
-            for (const [fileName, content] of typeDeclareFiles) {
-                fsMap.set(fileName, content)
-            }
-
-            const system = createSystem(fsMap)
-            const host = createVirtualCompilerHost(system, compilerOptions, ts)
-
-            // 创建编译程序
-            const program = ts.createProgram({
-                rootNames: [...fsMap.keys()],
-                options: compilerOptions,
-                host: host.compilerHost,
-            })
-
-            const sourceFile = program.getSourceFile(codeFileName)
-            if (!sourceFile) {
-                return {
-                    valid: false,
-                    errorMessages: ['找不到源文件'],
-                }
-            }
+            const {program, sourceFile} = await getNewProgramAndSourceFile(code)
 
             let compiledCode: string | undefined
             const emitResult = program.emit(sourceFile, (_fileName, text) => {
