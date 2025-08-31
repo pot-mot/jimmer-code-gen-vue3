@@ -1,0 +1,96 @@
+import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
+import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
+
+const EnumerationJsonSchema: JSONSchemaType<Enumeration> = {
+    "type": "object",
+    "properties": {
+        "package": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "comment": {
+            "type": "string"
+        },
+        "extraImports": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "extraAnnotations": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "strategy": {
+            "$ref": "#/definitions/EnumerationStrategy"
+        },
+        "items": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "ordinal": {
+                        "type": "number"
+                    },
+                    "comment": {
+                        "type": "string"
+                    },
+                    "extraImports": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "extraAnnotations": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "comment",
+                    "extraAnnotations",
+                    "extraImports",
+                    "name",
+                    "ordinal"
+                ]
+            }
+        }
+    },
+    "required": [
+        "comment",
+        "extraAnnotations",
+        "extraImports",
+        "items",
+        "name",
+        "package",
+        "strategy"
+    ],
+    "definitions": {
+        "EnumerationStrategy": {
+            "enum": [
+                "DEFAULT",
+                "NAME",
+                "ORDINAL"
+            ],
+            "type": "string"
+        }
+    },
+    "$schema": "http://json-schema.org/draft-07/schema#"
+}
+
+export const validateEnumeration = createSchemaValidator<Enumeration>(EnumerationJsonSchema)
+
+export default {
+    uri: "$innerType/Enumeration",
+    schema: EnumerationJsonSchema,
+    validate: validateEnumeration,
+}

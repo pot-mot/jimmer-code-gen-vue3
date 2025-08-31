@@ -49,7 +49,13 @@ const DatabaseJsonSchema: JSONSchemaType<Database> = {
                                             "type": {
                                                 "type": "string"
                                             },
-                                            "isNullable": {
+                                            "dataSize": {
+                                                "type": "number"
+                                            },
+                                            "numericPrecision": {
+                                                "type": "number"
+                                            },
+                                            "nullable": {
                                                 "type": "boolean"
                                             },
                                             "defaultValue": {
@@ -57,13 +63,22 @@ const DatabaseJsonSchema: JSONSchemaType<Database> = {
                                             },
                                             "partOfPrimaryKey": {
                                                 "type": "boolean"
+                                            },
+                                            "autoIncrement": {
+                                                "type": "boolean"
+                                            },
+                                            "otherConstraints": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                }
                                             }
                                         },
                                         "required": [
                                             "comment",
                                             "defaultValue",
-                                            "isNullable",
                                             "name",
+                                            "nullable",
                                             "partOfPrimaryKey",
                                             "type"
                                         ]

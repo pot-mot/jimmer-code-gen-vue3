@@ -1,4 +1,5 @@
 type Database = {
+    id: string
     name: string,
     url: string,
     username: string,
@@ -7,11 +8,13 @@ type Database = {
 }
 
 type Schema = {
+    id: string
     name: string,
     tables: Table[]
 }
 
 type Table = {
+    id: string
     name: string,
     comment: string,
     columns: Column[]
@@ -19,28 +22,35 @@ type Table = {
 }
 
 type Column = {
+    id: string
     name: string,
     comment: string,
     type: string,
-    isNullable: boolean,
+    dataSize?: number,
+    numericPrecision?: number,
+    nullable: boolean,
     defaultValue: string,
     partOfPrimaryKey: boolean,
+    autoIncrement?: boolean,
+    otherConstraints?: string[],
 }
 
 type Index = {
+    id: string
     name: string,
-    columnNames: string[],
+    columnIds: string[],
     isUnique: boolean,
 }
 
 type ForeignKey = {
+    id: string
     name: string,
-    sourceTableName: string,
-    targetTableName: string,
+    sourceTableId: string,
+    targetTableId: string,
     columnReferences: [
         {
-            sourceColumnName: string,
-            targetColumnName: string,
+            sourceColumnId: string,
+            targetColumnId: string,
         }
     ]
 }

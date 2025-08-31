@@ -4,8 +4,12 @@ export default {
     name: string,
     comment: string,
     type: string,
-    isNullable: boolean,
+    dataSize?: number,
+    numericPrecision?: number,
+    nullable: boolean,
     defaultValue: string,
     partOfPrimaryKey: boolean,
+    autoIncrement?: boolean,
+    otherConstraints?: string[],
 }`,
 }

@@ -11,16 +11,16 @@ const ensureDirExists = (dirPath) => {
     }
 }
 
-const modelPath = "src/type/model";
+const modelPath = "../src/type/model";
 ensureDirExists(modelPath)
-const scriptPath = "src/type/script";
+const scriptPath = "../src/type/script";
 ensureDirExists(scriptPath)
 
-const typeDeclarePath = "src/type/__generated/typeDeclare";
+const typeDeclarePath = "../src/type/__generated/typeDeclare";
 ensureDirExists(typeDeclarePath)
-const scriptTypeDeclarePath = "src/type/__generated/scriptTypeDeclare";
+const scriptTypeDeclarePath = "../src/type/__generated/scriptTypeDeclare";
 ensureDirExists(scriptTypeDeclarePath)
-const jsonSchemaPath = "src/type/__generated/jsonSchema";
+const jsonSchemaPath = "../src/type/__generated/jsonSchema";
 ensureDirExists(jsonSchemaPath)
 
 const getDeclareTsFiles = (path) => {
@@ -106,10 +106,10 @@ for (const {fileName} of modelTypeFiles) {
         }
 
         const type = typeChecker.getTypeAtLocation(statement)
-        const typeName = typeChecker.typeToString(type)
-
-        if (!isObjectType(type)) {
-            throw new Error(`[${fileName}] ${typeName} is not an object type`)
+        const typeName = statement?.symbol?.escapedName
+        if (!type || !typeName) {
+            console.warn(`[${fileName}] ${statement} is not a valid type alias or interface`)
+            continue
         }
 
         if (existedTypeSet.has(typeName)) {
@@ -135,7 +135,11 @@ for (const {fileName} of scriptTypeFiles) {
         }
 
         const type = typeChecker.getTypeAtLocation(statement)
-        const typeName = typeChecker.typeToString(type)
+        const typeName = statement?.symbol?.escapedName
+        if (!type || !typeName) {
+            console.warn(`[${fileName}] ${statement} is not a valid type alias or interface`)
+            continue
+        }
 
         if (!isObjectType(type)) {
             throw new Error(`[${fileName}] ${typeName} is not an object type`)

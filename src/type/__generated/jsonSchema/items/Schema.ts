@@ -32,7 +32,13 @@ const SchemaJsonSchema: JSONSchemaType<Schema> = {
                                 "type": {
                                     "type": "string"
                                 },
-                                "isNullable": {
+                                "dataSize": {
+                                    "type": "number"
+                                },
+                                "numericPrecision": {
+                                    "type": "number"
+                                },
+                                "nullable": {
                                     "type": "boolean"
                                 },
                                 "defaultValue": {
@@ -40,13 +46,22 @@ const SchemaJsonSchema: JSONSchemaType<Schema> = {
                                 },
                                 "partOfPrimaryKey": {
                                     "type": "boolean"
+                                },
+                                "autoIncrement": {
+                                    "type": "boolean"
+                                },
+                                "otherConstraints": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
                                 }
                             },
                             "required": [
                                 "comment",
                                 "defaultValue",
-                                "isNullable",
                                 "name",
+                                "nullable",
                                 "partOfPrimaryKey",
                                 "type"
                             ]
