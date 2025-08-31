@@ -7,7 +7,7 @@ import path from "path";
 // 确保目录存在
 const ensureDirExists = (dirPath) => {
     if (!fs.existsSync(dirPath)) {
-        fs.mkdirSync(dirPath, { recursive: true })
+        fs.mkdirSync(dirPath, {recursive: true})
     }
 }
 
@@ -99,69 +99,69 @@ for (const {fileName} of modelTypeFiles) {
     const sourceFile = program.getSourceFile(fileName)
     for (const statement of sourceFile.statements) {
         if (
-            ts.isTypeAliasDeclaration(statement) ||
-            ts.isInterfaceDeclaration(statement)
+            !ts.isTypeAliasDeclaration(statement) &&
+            !ts.isInterfaceDeclaration(statement)
         ) {
-            const type = typeChecker.getTypeAtLocation(statement)
-            const typeName = typeChecker.typeToString(type)
-
-            if (!isObjectType(type)) {
-                throw new Error(`[${fileName}] ${typeName} is not an object type`)
-            }
-
-            if (existedTypeSet.has(typeName)) {
-                throw new Error(`[${fileName}] ${typeName} is already exists`)
-            }
-            existedTypeSet.add(typeName)
-
-            const content = statement.getFullText(sourceFile)
-            const schema = jsonSchemaGenerator.getSchemaForSymbol(typeName)
-            typeDeclares.push({type, typeName, content, schema})
+            throw new Error(`Script [${fileName}] is not a type alias or interface`)
         }
+
+        const type = typeChecker.getTypeAtLocation(statement)
+        const typeName = typeChecker.typeToString(type)
+
+        if (!isObjectType(type)) {
+            throw new Error(`[${fileName}] ${typeName} is not an object type`)
+        }
+
+        if (existedTypeSet.has(typeName)) {
+            throw new Error(`[${fileName}] ${typeName} is already exists`)
+        }
+        existedTypeSet.add(typeName)
+
+        const content = statement.getFullText(sourceFile)
+        const schema = jsonSchemaGenerator.getSchemaForSymbol(typeName)
+        typeDeclares.push({type, typeName, content, schema})
     }
 }
 
 const scriptTypeDeclares = []
 for (const {fileName} of scriptTypeFiles) {
     const sourceFile = program.getSourceFile(fileName)
-    if (sourceFile.statements.length !== 1) {
-        throw new Error(`Script [${fileName}] has more than one statement`)
-    }
-    const statement = sourceFile.statements[0]
-    if (
-        !ts.isTypeAliasDeclaration(statement) &&
-        !ts.isInterfaceDeclaration(statement)
-    ) {
-        throw new Error(`Script [${fileName}] is not a type alias or interface`)
-    }
+    for (const statement of sourceFile.statements) {
+        if (
+            !ts.isTypeAliasDeclaration(statement) &&
+            !ts.isInterfaceDeclaration(statement)
+        ) {
+            throw new Error(`Script [${fileName}] is not a type alias or interface`)
+        }
 
-    const type = typeChecker.getTypeAtLocation(statement)
-    const typeName = typeChecker.typeToString(type)
+        const type = typeChecker.getTypeAtLocation(statement)
+        const typeName = typeChecker.typeToString(type)
 
-    if (!isObjectType(type)) {
-        throw new Error(`[${fileName}] ${typeName} is not an object type`)
-    }
+        if (!isObjectType(type)) {
+            throw new Error(`[${fileName}] ${typeName} is not an object type`)
+        }
 
-    if (existedTypeSet.has(typeName)) {
-        throw new Error(`[${fileName}] ${typeName} is already exists`)
-    }
-    existedTypeSet.add(typeName)
+        if (existedTypeSet.has(typeName)) {
+            throw new Error(`[${fileName}] ${typeName} is already exists`)
+        }
+        existedTypeSet.add(typeName)
 
-    const scriptTypeNameProperty = type.getProperty("scriptTypeName")
-    if (!scriptTypeNameProperty) {
-        throw new Error(`[${fileName}] ${typeName} does not have scriptTypeName property`)
-    }
-    const scriptTypeNameType = typeChecker.getTypeOfSymbolAtLocation(scriptTypeNameProperty, statement)
-    if (!scriptTypeNameType.isStringLiteral()) {
-        throw new Error(`[${fileName}] ${typeName} scriptTypeName property is not a string literal`)
-    }
-    const scriptTypeNamePropertyValue = scriptTypeNameType.value
-    if (scriptTypeNamePropertyValue !== typeName) {
-        throw new Error(`[${fileName}] ${typeName} scriptTypeName property value is not equal to typeName`)
-    }
+        const scriptTypeNameProperty = type.getProperty("scriptTypeName")
+        if (!scriptTypeNameProperty) {
+            throw new Error(`[${fileName}] ${typeName} does not have scriptTypeName property`)
+        }
+        const scriptTypeNameType = typeChecker.getTypeOfSymbolAtLocation(scriptTypeNameProperty, statement)
+        if (!scriptTypeNameType.isStringLiteral()) {
+            throw new Error(`[${fileName}] ${typeName} scriptTypeName property is not a string literal`)
+        }
+        const scriptTypeNamePropertyValue = scriptTypeNameType.value
+        if (scriptTypeNamePropertyValue !== typeName) {
+            throw new Error(`[${fileName}] ${typeName} scriptTypeName property value is not equal to typeName`)
+        }
 
-    const content = statement.getFullText(sourceFile)
-    scriptTypeDeclares.push({type, typeName, content})
+        const content = statement.getFullText(sourceFile)
+        scriptTypeDeclares.push({type, typeName, content})
+    }
 }
 
 
