@@ -5,9 +5,10 @@ import {editor, Uri} from "monaco-editor";
 import {v7} from "uuid"
 import {
     addJsonSchemaFile,
-    type JsonSchemaKey,
-    removeJsonSchemaFile, validateJsonSchemaString
+    removeJsonSchemaFile,
+    validateJsonSchemaString
 } from "@/components/code/jsonEditor/JsonSchemaStore.ts";
+import type {JsonSchemaKey} from "@/type/__generated/jsonSchema";
 
 const editorRef = useTemplateRef<InstanceType<typeof CodeEditor>>("editorRef")
 const editorInstance = computed(() => {

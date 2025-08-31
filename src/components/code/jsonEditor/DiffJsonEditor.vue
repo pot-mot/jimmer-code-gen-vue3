@@ -4,10 +4,11 @@ import {Uri} from "monaco-editor";
 import {v7} from "uuid"
 import {
     addJsonSchemaFile,
-    type JsonSchemaKey,
-    removeJsonSchemaFile, validateJsonSchemaString
+    removeJsonSchemaFile,
+    validateJsonSchemaString
 } from "@/components/code/jsonEditor/JsonSchemaStore.ts";
 import DiffEditor from "@/components/code/diffEditor/DiffEditor.vue";
+import type {JsonSchemaKey} from "@/type/__generated/jsonSchema";
 
 const diffEditorRef = useTemplateRef<InstanceType<typeof DiffEditor>>("diffEditorRef")
 const editorInstance = computed(() => {
