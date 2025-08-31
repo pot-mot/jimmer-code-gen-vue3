@@ -74,6 +74,7 @@ const safeGlobalEnv = Object.freeze({
     Object,
     RegExp,
     JSON,
+    Error,
     encodeURIComponent,
     decodeURIComponent,
     parseInt,
@@ -595,17 +596,17 @@ export class TsScriptExecutor<
         if (!trimCode) {
             throw new Error("code is empty");
         }
-        try {
-            if (trimCode.endsWith(";")) {
-                trimCode = trimCode.slice(0, -1)
-            }
 
-            const cleanCode = trimCode
-                .replace(/\s*"use strict"\s*;?/g, '')
-                .replace(/\s*export\s*{\s*};?/, '');
+        if (trimCode.endsWith(";")) {
+            trimCode = trimCode.slice(0, -1)
+        }
 
-            // 构造函数体
-            const functionBody = `
+        const cleanCode = trimCode
+            .replace(/\s*"use strict"\s*;?/g, '')
+            .replace(/\s*export\s*{\s*};?/, '');
+
+        // 构造函数体
+        const functionBody = `
 with(arguments[0]) {
     const userFunction = ${cleanCode};
     const userFunctionType = typeof userFunction;
@@ -616,17 +617,14 @@ with(arguments[0]) {
     }
 }`;
 
-            // 创建非严格模式的函数
-            const factoryFunction = new Function(functionBody);
+        // 创建非严格模式的函数
+        const factoryFunction = new Function(functionBody);
 
-            // 获取用户函数
-            const userFunction = factoryFunction(proxiedEnv);
+        // 获取用户函数
+        const userFunction = factoryFunction(proxiedEnv);
 
-            // 执行用户函数
-            return userFunction.call(Object.create(null), ...params);
-        } catch (error) {
-            throw new Error(`JS 执行错误: ${error instanceof Error ? error.message : `${error}`}`)
-        }
+        // 执行用户函数
+        return userFunction.call(Object.create(null), ...params);
     }
 
     async executeTsArrowFunctionScript(
