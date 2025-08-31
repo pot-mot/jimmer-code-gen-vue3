@@ -42,6 +42,8 @@ const validateAndCompile = async (): Promise<TsScriptValidatedCompileResult> => 
 
     if (!result.valid && result.markers !== undefined) {
         setModelMarkers(model, 'ts-script-executor', result.markers)
+    } else {
+        setModelMarkers(model, 'ts-script-executor', [])
     }
 
     return result
