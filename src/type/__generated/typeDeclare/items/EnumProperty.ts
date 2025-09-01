@@ -1,7 +1,7 @@
 export default {
     fileName: 'EnumProperty.d.ts',
     content: `type EnumProperty = {
-    category: "enum"
+    category: "ENUM"
     enumId: string
 } & BaseProperty & (
     OptionalKeyProperty |

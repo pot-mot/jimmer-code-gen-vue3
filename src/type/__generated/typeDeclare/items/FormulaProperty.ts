@@ -1,12 +1,12 @@
 export default {
     fileName: 'FormulaProperty.d.ts',
     content: `type FormulaProperty = {
-    category: "Formula"
+    category: "FORMULA"
     dependencies: string[]
     body: string
     rawType: string
 } | {
-    category: "Formula"
+    category: "FORMULA"
     sql: string
     rawType: string
 } & BaseProperty`,

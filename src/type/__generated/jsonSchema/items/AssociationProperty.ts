@@ -10,7 +10,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "OneToOne_Source"
+                            "const": "ASSOCIATION_OneToOne_Source"
                         },
                         "associationId": {
                             "type": "string"
@@ -104,7 +104,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "OneToOne_Source"
+                            "const": "ASSOCIATION_OneToOne_Source"
                         },
                         "associationId": {
                             "type": "string"
@@ -223,7 +223,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ManyToOne"
+                            "const": "ASSOCIATION_ManyToOne"
                         },
                         "associationId": {
                             "type": "string"
@@ -329,7 +329,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ManyToOne"
+                            "const": "ASSOCIATION_ManyToOne"
                         },
                         "associationId": {
                             "type": "string"
@@ -457,7 +457,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ManyToMany_Source"
+                            "const": "ASSOCIATION_ManyToMany_Source"
                         },
                         "associationId": {
                             "type": "string"
@@ -543,7 +543,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ManyToMany_Source"
+                            "const": "ASSOCIATION_ManyToMany_Source"
                         },
                         "associationId": {
                             "type": "string"
@@ -720,7 +720,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "OneToOne_Target"
+                            "const": "ASSOCIATION_OneToOne_Target"
                         },
                         "associationId": {
                             "type": "string"
@@ -808,7 +808,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "OneToMany"
+                            "const": "ASSOCIATION_OneToMany"
                         },
                         "associationId": {
                             "type": "string"
@@ -868,7 +868,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ManyToMany_Target"
+                            "const": "ASSOCIATION_ManyToMany_Target"
                         },
                         "associationId": {
                             "type": "string"

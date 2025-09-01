@@ -8,7 +8,7 @@ const OneToManyPropertyJsonSchema: JSONSchemaType<OneToManyProperty> = {
             "properties": {
                 "category": {
                     "type": "string",
-                    "const": "OneToMany"
+                    "const": "ASSOCIATION_OneToMany"
                 },
                 "associationId": {
                     "type": "string"

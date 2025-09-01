@@ -34,7 +34,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
         "properties": {
             "type": "array",
             "items": {
-                "$ref": "#/definitions/({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"enum\";enumId:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty)|({category:\"enum\";enumId:string;}&BaseProperty&{key:false;}&ColumnProperty)|({category:\"enum\";enumId:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{logicalDelete:true;logicalDeleteType:\"enum\";}&ColumnProperty)|({category:\"enum\";enumId:string;}&BaseProperty&{logicalDelete:false;}&{logicalDelete:false;}&ColumnProperty)|({category:\"OneToOne_Source\";associationId:string;idView?:{name:string;}|undefined;onDissociateAction:OnDissociationAction;}&BaseProperty&EntityTypeProperty&ColumnProperty)|({category:\"OneToOne_Source\";associationId:string;idView?:{name:string;}|undefined;onDissociateAction:OnDissociationAction;}&BaseProperty&EntityTypeProperty&EmbeddableProperty)|OneToOneTargetProperty|OneToManyProperty|({category:\"ManyToOne\";associationId:string;idView:{name:string;};onDissociateAction:OnDissociationAction;}&BaseProperty&EntityTypeProperty&{joinColumnName:string;}&ColumnProperty)|({category:\"ManyToOne\";associationId:string;idView:{name:string;};onDissociateAction:OnDissociationAction;}&BaseProperty&EntityTypeProperty&{joinColumnNames:string[];}&EmbeddableProperty)|({category:\"ManyToMany_Source\";associationId:string;idView:{name:string;};nullable:false;typeIsList:true;}&Omit<BaseProperty,\"nullable\">&EntityTypeProperty&{joinTableName:string;joinColumnName:string;inverseJoinColumnName:string;}&ColumnProperty)|({category:\"ManyToMany_Source\";associationId:string;idView:{name:string;};nullable:false;typeIsList:true;}&Omit<BaseProperty,\"nullable\">&EntityTypeProperty&{joinTableName:string;joinColumns:{joinColumnName:string;inverseJoinColumnName:string;}[];}&EmbeddableProperty)|ManyToManyTargetProperty|ManyToManyViewProperty|{category:\"Formula\";dependencies:string[];body:string;rawType:string;}|({category:\"Formula\";sql:string;rawType:string;}&BaseProperty)|({category:\"Transient\";resolver?:string|undefined;}&BaseProperty&EntityTypeProperty)|({category:\"Transient\";resolver?:string|undefined;}&BaseProperty&{rawType:string;})"
+                "$ref": "#/definitions/({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty)|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:false;}&ColumnProperty)|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{logicalDelete:true;logicalDeleteType:\"enum\";}&ColumnProperty)|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:false;}&{logicalDelete:false;}&ColumnProperty)|({category:\"ASSOCIATION_OneToOne_Source\";associationId:string;idView?:{name:string;}|undefined;onDissociateAction:OnDissociationAction;}&BaseProperty&EntityTypeProperty&ColumnProperty)|({category:\"ASSOCIATION_OneToOne_Source\";associationId:string;idView?:{name:string;}|undefined;onDissociateAction:OnDissociationAction;}&BaseProperty&EntityTypeProperty&EmbeddableProperty)|OneToOneTargetProperty|OneToManyProperty|({category:\"ASSOCIATION_ManyToOne\";associationId:string;idView:{name:string;};onDissociateAction:OnDissociationAction;}&BaseProperty&EntityTypeProperty&{joinColumnName:string;}&ColumnProperty)|({category:\"ASSOCIATION_ManyToOne\";associationId:string;idView:{name:string;};onDissociateAction:OnDissociationAction;}&BaseProperty&EntityTypeProperty&{joinColumnNames:string[];}&EmbeddableProperty)|({category:\"ASSOCIATION_ManyToMany_Source\";associationId:string;idView:{name:string;};nullable:false;typeIsList:true;}&Omit<BaseProperty,\"nullable\">&EntityTypeProperty&{joinTableName:string;joinColumnName:string;inverseJoinColumnName:string;}&ColumnProperty)|({category:\"ASSOCIATION_ManyToMany_Source\";associationId:string;idView:{name:string;};nullable:false;typeIsList:true;}&Omit<BaseProperty,\"nullable\">&EntityTypeProperty&{joinTableName:string;joinColumns:{joinColumnName:string;inverseJoinColumnName:string;}[];}&EmbeddableProperty)|ManyToManyTargetProperty|ManyToManyViewProperty|{category:\"FORMULA\";dependencies:string[];body:string;rawType:string;}|({category:\"FORMULA\";sql:string;rawType:string;}&BaseProperty)|({category:\"TRANSIENT\";resolver?:string|undefined;}&BaseProperty&EntityTypeProperty)|({category:\"TRANSIENT\";resolver?:string|undefined;}&BaseProperty&{rawType:string;})"
             }
         }
     },
@@ -48,7 +48,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
         "properties"
     ],
     "definitions": {
-        "({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"enum\";enumId:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty)|({category:\"enum\";enumId:string;}&BaseProperty&{key:false;}&ColumnProperty)|({category:\"enum\";enumId:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{logicalDelete:true;logicalDeleteType:\"enum\";}&ColumnProperty)|({category:\"enum\";enumId:string;}&BaseProperty&{logicalDelete:false;}&{logicalDelete:false;}&ColumnProperty)|({category:\"OneToOne_Source\";associationId:string;idView?:{name:string;}|undefined;onDissociateAction:OnDissociationAction;}&BaseProperty&EntityTypeProperty&ColumnProperty)|({category:\"OneToOne_Source\";associationId:string;idView?:{name:string;}|undefined;onDissociateAction:OnDissociationAction;}&BaseProperty&EntityTypeProperty&EmbeddableProperty)|OneToOneTargetProperty|OneToManyProperty|({category:\"ManyToOne\";associationId:string;idView:{name:string;};onDissociateAction:OnDissociationAction;}&BaseProperty&EntityTypeProperty&{joinColumnName:string;}&ColumnProperty)|({category:\"ManyToOne\";associationId:string;idView:{name:string;};onDissociateAction:OnDissociationAction;}&BaseProperty&EntityTypeProperty&{joinColumnNames:string[];}&EmbeddableProperty)|({category:\"ManyToMany_Source\";associationId:string;idView:{name:string;};nullable:false;typeIsList:true;}&Omit<BaseProperty,\"nullable\">&EntityTypeProperty&{joinTableName:string;joinColumnName:string;inverseJoinColumnName:string;}&ColumnProperty)|({category:\"ManyToMany_Source\";associationId:string;idView:{name:string;};nullable:false;typeIsList:true;}&Omit<BaseProperty,\"nullable\">&EntityTypeProperty&{joinTableName:string;joinColumns:{joinColumnName:string;inverseJoinColumnName:string;}[];}&EmbeddableProperty)|ManyToManyTargetProperty|ManyToManyViewProperty|{category:\"Formula\";dependencies:string[];body:string;rawType:string;}|({category:\"Formula\";sql:string;rawType:string;}&BaseProperty)|({category:\"Transient\";resolver?:string|undefined;}&BaseProperty&EntityTypeProperty)|({category:\"Transient\";resolver?:string|undefined;}&BaseProperty&{rawType:string;})": {
+        "({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty)|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:false;}&ColumnProperty)|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{logicalDelete:true;logicalDeleteType:\"enum\";}&ColumnProperty)|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:false;}&{logicalDelete:false;}&ColumnProperty)|({category:\"ASSOCIATION_OneToOne_Source\";associationId:string;idView?:{name:string;}|undefined;onDissociateAction:OnDissociationAction;}&BaseProperty&EntityTypeProperty&ColumnProperty)|({category:\"ASSOCIATION_OneToOne_Source\";associationId:string;idView?:{name:string;}|undefined;onDissociateAction:OnDissociationAction;}&BaseProperty&EntityTypeProperty&EmbeddableProperty)|OneToOneTargetProperty|OneToManyProperty|({category:\"ASSOCIATION_ManyToOne\";associationId:string;idView:{name:string;};onDissociateAction:OnDissociationAction;}&BaseProperty&EntityTypeProperty&{joinColumnName:string;}&ColumnProperty)|({category:\"ASSOCIATION_ManyToOne\";associationId:string;idView:{name:string;};onDissociateAction:OnDissociationAction;}&BaseProperty&EntityTypeProperty&{joinColumnNames:string[];}&EmbeddableProperty)|({category:\"ASSOCIATION_ManyToMany_Source\";associationId:string;idView:{name:string;};nullable:false;typeIsList:true;}&Omit<BaseProperty,\"nullable\">&EntityTypeProperty&{joinTableName:string;joinColumnName:string;inverseJoinColumnName:string;}&ColumnProperty)|({category:\"ASSOCIATION_ManyToMany_Source\";associationId:string;idView:{name:string;};nullable:false;typeIsList:true;}&Omit<BaseProperty,\"nullable\">&EntityTypeProperty&{joinTableName:string;joinColumns:{joinColumnName:string;inverseJoinColumnName:string;}[];}&EmbeddableProperty)|ManyToManyTargetProperty|ManyToManyViewProperty|{category:\"FORMULA\";dependencies:string[];body:string;rawType:string;}|({category:\"FORMULA\";sql:string;rawType:string;}&BaseProperty)|({category:\"TRANSIENT\";resolver?:string|undefined;}&BaseProperty&EntityTypeProperty)|({category:\"TRANSIENT\";resolver?:string|undefined;}&BaseProperty&{rawType:string;})": {
             "anyOf": [
                 {
                     "allOf": [
@@ -57,7 +57,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -164,7 +164,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -274,133 +274,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
-                                },
-                                "rawType": {
-                                    "type": "string"
-                                },
-                                "serialized": {
-                                    "type": "boolean"
-                                },
-                                "defaultValue": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "category",
-                                "defaultValue",
-                                "rawType",
-                                "serialized"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "string"
-                                },
-                                "name": {
-                                    "type": "string"
-                                },
-                                "comment": {
-                                    "type": "string"
-                                },
-                                "extraImports": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                },
-                                "extraAnnotations": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                },
-                                "nullable": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "required": [
-                                "comment",
-                                "extraAnnotations",
-                                "extraImports",
-                                "id",
-                                "name",
-                                "nullable"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "key": {
-                                    "type": "boolean",
-                                    "const": true
-                                },
-                                "keyGroups": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "required": [
-                                "key",
-                                "keyGroups"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "embeddableTypeId": {
-                                    "type": "string"
-                                },
-                                "propOverrides": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "propertyId": {
-                                                "type": "string"
-                                            },
-                                            "overrideColumnName": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "required": [
-                                            "overrideColumnName",
-                                            "propertyId"
-                                        ]
-                                    }
-                                }
-                            },
-                            "required": [
-                                "embeddableTypeId",
-                                "propOverrides"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "arrayType": {
-                                    "type": "boolean",
-                                    "const": false
-                                }
-                            },
-                            "required": [
-                                "arrayType"
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "allOf": [
-                        {
-                            "type": "object",
-                            "properties": {
-                                "category": {
-                                    "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -510,6 +384,132 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "arrayType": {
                                     "type": "boolean",
+                                    "const": false
+                                }
+                            },
+                            "required": [
+                                "arrayType"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "allOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "category": {
+                                    "type": "string",
+                                    "const": "SCALAR"
+                                },
+                                "rawType": {
+                                    "type": "string"
+                                },
+                                "serialized": {
+                                    "type": "boolean"
+                                },
+                                "defaultValue": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "category",
+                                "defaultValue",
+                                "rawType",
+                                "serialized"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "comment": {
+                                    "type": "string"
+                                },
+                                "extraImports": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "extraAnnotations": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "nullable": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "comment",
+                                "extraAnnotations",
+                                "extraImports",
+                                "id",
+                                "name",
+                                "nullable"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "key": {
+                                    "type": "boolean",
+                                    "const": true
+                                },
+                                "keyGroups": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "required": [
+                                "key",
+                                "keyGroups"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "embeddableTypeId": {
+                                    "type": "string"
+                                },
+                                "propOverrides": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "propertyId": {
+                                                "type": "string"
+                                            },
+                                            "overrideColumnName": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "overrideColumnName",
+                                            "propertyId"
+                                        ]
+                                    }
+                                }
+                            },
+                            "required": [
+                                "embeddableTypeId",
+                                "propOverrides"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "arrayType": {
+                                    "type": "boolean",
                                     "const": true
                                 },
                                 "databaseType": {
@@ -529,7 +529,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -629,7 +629,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -732,7 +732,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -851,7 +851,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -973,7 +973,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -1086,7 +1086,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -1202,7 +1202,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -1334,7 +1334,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -1469,7 +1469,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -1574,7 +1574,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -1682,131 +1682,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
-                                },
-                                "rawType": {
-                                    "type": "string"
-                                },
-                                "serialized": {
-                                    "type": "boolean"
-                                },
-                                "defaultValue": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "category",
-                                "defaultValue",
-                                "rawType",
-                                "serialized"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "string"
-                                },
-                                "name": {
-                                    "type": "string"
-                                },
-                                "comment": {
-                                    "type": "string"
-                                },
-                                "extraImports": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                },
-                                "extraAnnotations": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                },
-                                "nullable": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "required": [
-                                "comment",
-                                "extraAnnotations",
-                                "extraImports",
-                                "id",
-                                "name",
-                                "nullable"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "logicalDelete": {
-                                    "type": "boolean",
-                                    "const": true
-                                },
-                                "logicalDeleteType": {
-                                    "type": "string",
-                                    "const": "int"
-                                }
-                            },
-                            "required": [
-                                "logicalDelete",
-                                "logicalDeleteType"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "embeddableTypeId": {
-                                    "type": "string"
-                                },
-                                "propOverrides": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "propertyId": {
-                                                "type": "string"
-                                            },
-                                            "overrideColumnName": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "required": [
-                                            "overrideColumnName",
-                                            "propertyId"
-                                        ]
-                                    }
-                                }
-                            },
-                            "required": [
-                                "embeddableTypeId",
-                                "propOverrides"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "arrayType": {
-                                    "type": "boolean",
-                                    "const": false
-                                }
-                            },
-                            "required": [
-                                "arrayType"
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "allOf": [
-                        {
-                            "type": "object",
-                            "properties": {
-                                "category": {
-                                    "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -1914,6 +1790,130 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "arrayType": {
                                     "type": "boolean",
+                                    "const": false
+                                }
+                            },
+                            "required": [
+                                "arrayType"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "allOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "category": {
+                                    "type": "string",
+                                    "const": "SCALAR"
+                                },
+                                "rawType": {
+                                    "type": "string"
+                                },
+                                "serialized": {
+                                    "type": "boolean"
+                                },
+                                "defaultValue": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "category",
+                                "defaultValue",
+                                "rawType",
+                                "serialized"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "comment": {
+                                    "type": "string"
+                                },
+                                "extraImports": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "extraAnnotations": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "nullable": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "comment",
+                                "extraAnnotations",
+                                "extraImports",
+                                "id",
+                                "name",
+                                "nullable"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "logicalDelete": {
+                                    "type": "boolean",
+                                    "const": true
+                                },
+                                "logicalDeleteType": {
+                                    "type": "string",
+                                    "const": "int"
+                                }
+                            },
+                            "required": [
+                                "logicalDelete",
+                                "logicalDeleteType"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "embeddableTypeId": {
+                                    "type": "string"
+                                },
+                                "propOverrides": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "propertyId": {
+                                                "type": "string"
+                                            },
+                                            "overrideColumnName": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "overrideColumnName",
+                                            "propertyId"
+                                        ]
+                                    }
+                                }
+                            },
+                            "required": [
+                                "embeddableTypeId",
+                                "propOverrides"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "arrayType": {
+                                    "type": "boolean",
                                     "const": true
                                 },
                                 "databaseType": {
@@ -1933,7 +1933,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -2038,7 +2038,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -2146,7 +2146,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -2270,7 +2270,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -2397,7 +2397,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -2502,7 +2502,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -2610,7 +2610,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -2734,7 +2734,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -2861,7 +2861,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -2979,7 +2979,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -3100,7 +3100,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -3237,7 +3237,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -3377,7 +3377,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -3490,7 +3490,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -3606,7 +3606,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -3738,7 +3738,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -3873,7 +3873,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -3973,7 +3973,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -4076,7 +4076,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -4195,7 +4195,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -4317,7 +4317,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -4404,7 +4404,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -4484,7 +4484,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -4589,7 +4589,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -4699,7 +4699,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -4796,7 +4796,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -4898,7 +4898,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -4995,7 +4995,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -5097,7 +5097,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -5194,7 +5194,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -5296,7 +5296,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -5406,7 +5406,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -5521,7 +5521,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -5626,7 +5626,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -5736,7 +5736,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -5828,7 +5828,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -5925,7 +5925,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "OneToOne_Source"
+                                    "const": "ASSOCIATION_OneToOne_Source"
                                 },
                                 "associationId": {
                                     "type": "string"
@@ -6019,7 +6019,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "OneToOne_Source"
+                                    "const": "ASSOCIATION_OneToOne_Source"
                                 },
                                 "associationId": {
                                     "type": "string"
@@ -6138,7 +6138,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "ManyToOne"
+                                    "const": "ASSOCIATION_ManyToOne"
                                 },
                                 "associationId": {
                                     "type": "string"
@@ -6244,7 +6244,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "ManyToOne"
+                                    "const": "ASSOCIATION_ManyToOne"
                                 },
                                 "associationId": {
                                     "type": "string"
@@ -6372,7 +6372,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "ManyToMany_Source"
+                                    "const": "ASSOCIATION_ManyToMany_Source"
                                 },
                                 "associationId": {
                                     "type": "string"
@@ -6458,7 +6458,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "ManyToMany_Source"
+                                    "const": "ASSOCIATION_ManyToMany_Source"
                                 },
                                 "associationId": {
                                     "type": "string"
@@ -6578,7 +6578,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "Formula"
+                            "const": "FORMULA"
                         },
                         "dependencies": {
                             "type": "array",
@@ -6607,7 +6607,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "Formula"
+                                    "const": "FORMULA"
                                 },
                                 "sql": {
                                     "type": "string"
@@ -6668,7 +6668,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "Transient"
+                                    "const": "TRANSIENT"
                                 },
                                 "resolver": {
                                     "type": "string"
@@ -6735,7 +6735,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "Transient"
+                                    "const": "TRANSIENT"
                                 },
                                 "resolver": {
                                     "type": "string"
@@ -6860,7 +6860,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "OneToOne_Target"
+                            "const": "ASSOCIATION_OneToOne_Target"
                         },
                         "associationId": {
                             "type": "string"
@@ -6948,7 +6948,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "OneToMany"
+                            "const": "ASSOCIATION_OneToMany"
                         },
                         "associationId": {
                             "type": "string"
@@ -7008,7 +7008,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ManyToMany_Target"
+                            "const": "ASSOCIATION_ManyToMany_Target"
                         },
                         "associationId": {
                             "type": "string"
@@ -7068,7 +7068,7 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ManyToMany_View"
+                            "const": "ASSOCIATION_ManyToMany_View"
                         },
                         "baseToManyPropertyId": {
                             "type": "string"

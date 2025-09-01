@@ -8,7 +8,7 @@ const OneToOneTargetPropertyJsonSchema: JSONSchemaType<OneToOneTargetProperty> =
             "properties": {
                 "category": {
                     "type": "string",
-                    "const": "OneToOne_Target"
+                    "const": "ASSOCIATION_OneToOne_Target"
                 },
                 "associationId": {
                     "type": "string"

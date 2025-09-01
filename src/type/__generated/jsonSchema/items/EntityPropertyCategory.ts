@@ -3,17 +3,17 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
 const EntityPropertyCategoryJsonSchema: JSONSchemaType<EntityPropertyCategory> = {
     "enum": [
-        "Formula",
-        "ManyToMany_Source",
-        "ManyToMany_Target",
-        "ManyToMany_View",
-        "ManyToOne",
-        "OneToMany",
-        "OneToOne_Source",
-        "OneToOne_Target",
-        "Transient",
-        "enum",
-        "scalar"
+        "ASSOCIATION_ManyToMany_Source",
+        "ASSOCIATION_ManyToMany_Target",
+        "ASSOCIATION_ManyToMany_View",
+        "ASSOCIATION_ManyToOne",
+        "ASSOCIATION_OneToMany",
+        "ASSOCIATION_OneToOne_Source",
+        "ASSOCIATION_OneToOne_Target",
+        "ENUM",
+        "FORMULA",
+        "SCALAR",
+        "TRANSIENT"
     ],
     "type": "string",
     "$schema": "http://json-schema.org/draft-07/schema#"

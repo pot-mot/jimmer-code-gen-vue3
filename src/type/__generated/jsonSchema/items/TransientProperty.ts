@@ -10,7 +10,7 @@ const TransientPropertyJsonSchema: JSONSchemaType<TransientProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "Transient"
+                            "const": "TRANSIENT"
                         },
                         "resolver": {
                             "type": "string"
@@ -77,7 +77,7 @@ const TransientPropertyJsonSchema: JSONSchemaType<TransientProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "Transient"
+                            "const": "TRANSIENT"
                         },
                         "resolver": {
                             "type": "string"

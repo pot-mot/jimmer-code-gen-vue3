@@ -10,7 +10,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ManyToOne"
+                            "const": "ASSOCIATION_ManyToOne"
                         },
                         "associationId": {
                             "type": "string"
@@ -116,7 +116,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ManyToOne"
+                            "const": "ASSOCIATION_ManyToOne"
                         },
                         "associationId": {
                             "type": "string"

@@ -28,7 +28,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
         "properties": {
             "type": "array",
             "items": {
-                "$ref": "#/definitions/({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"enum\";enumId:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty)|({category:\"enum\";enumId:string;}&BaseProperty&{key:false;}&ColumnProperty)|({category:\"enum\";enumId:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{logicalDelete:true;logicalDeleteType:\"enum\";}&ColumnProperty)|({category:\"enum\";enumId:string;}&BaseProperty&{logicalDelete:false;}&{logicalDelete:false;}&ColumnProperty)"
+                "$ref": "#/definitions/({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty)|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:false;}&ColumnProperty)|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{logicalDelete:true;logicalDeleteType:\"enum\";}&ColumnProperty)|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:false;}&{logicalDelete:false;}&ColumnProperty)"
             }
         }
     },
@@ -41,7 +41,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
         "properties"
     ],
     "definitions": {
-        "({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&ColumnProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"scalar\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"enum\";enumId:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty)|({category:\"enum\";enumId:string;}&BaseProperty&{key:false;}&ColumnProperty)|({category:\"enum\";enumId:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{logicalDelete:true;logicalDeleteType:\"enum\";}&ColumnProperty)|({category:\"enum\";enumId:string;}&BaseProperty&{logicalDelete:false;}&{logicalDelete:false;}&ColumnProperty)": {
+        "({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&ColumnProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&ColumnProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:true;keyGroups:string[];}&ColumnProperty)|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:false;}&ColumnProperty)|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{logicalDelete:true;logicalDeleteType:\"enum\";}&ColumnProperty)|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:false;}&{logicalDelete:false;}&ColumnProperty)": {
             "anyOf": [
                 {
                     "allOf": [
@@ -50,7 +50,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -157,7 +157,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -267,133 +267,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
-                                },
-                                "rawType": {
-                                    "type": "string"
-                                },
-                                "serialized": {
-                                    "type": "boolean"
-                                },
-                                "defaultValue": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "category",
-                                "defaultValue",
-                                "rawType",
-                                "serialized"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "string"
-                                },
-                                "name": {
-                                    "type": "string"
-                                },
-                                "comment": {
-                                    "type": "string"
-                                },
-                                "extraImports": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                },
-                                "extraAnnotations": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                },
-                                "nullable": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "required": [
-                                "comment",
-                                "extraAnnotations",
-                                "extraImports",
-                                "id",
-                                "name",
-                                "nullable"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "key": {
-                                    "type": "boolean",
-                                    "const": true
-                                },
-                                "keyGroups": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "required": [
-                                "key",
-                                "keyGroups"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "embeddableTypeId": {
-                                    "type": "string"
-                                },
-                                "propOverrides": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "propertyId": {
-                                                "type": "string"
-                                            },
-                                            "overrideColumnName": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "required": [
-                                            "overrideColumnName",
-                                            "propertyId"
-                                        ]
-                                    }
-                                }
-                            },
-                            "required": [
-                                "embeddableTypeId",
-                                "propOverrides"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "arrayType": {
-                                    "type": "boolean",
-                                    "const": false
-                                }
-                            },
-                            "required": [
-                                "arrayType"
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "allOf": [
-                        {
-                            "type": "object",
-                            "properties": {
-                                "category": {
-                                    "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -503,6 +377,132 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "arrayType": {
                                     "type": "boolean",
+                                    "const": false
+                                }
+                            },
+                            "required": [
+                                "arrayType"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "allOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "category": {
+                                    "type": "string",
+                                    "const": "SCALAR"
+                                },
+                                "rawType": {
+                                    "type": "string"
+                                },
+                                "serialized": {
+                                    "type": "boolean"
+                                },
+                                "defaultValue": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "category",
+                                "defaultValue",
+                                "rawType",
+                                "serialized"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "comment": {
+                                    "type": "string"
+                                },
+                                "extraImports": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "extraAnnotations": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "nullable": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "comment",
+                                "extraAnnotations",
+                                "extraImports",
+                                "id",
+                                "name",
+                                "nullable"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "key": {
+                                    "type": "boolean",
+                                    "const": true
+                                },
+                                "keyGroups": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "required": [
+                                "key",
+                                "keyGroups"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "embeddableTypeId": {
+                                    "type": "string"
+                                },
+                                "propOverrides": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "propertyId": {
+                                                "type": "string"
+                                            },
+                                            "overrideColumnName": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "overrideColumnName",
+                                            "propertyId"
+                                        ]
+                                    }
+                                }
+                            },
+                            "required": [
+                                "embeddableTypeId",
+                                "propOverrides"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "arrayType": {
+                                    "type": "boolean",
                                     "const": true
                                 },
                                 "databaseType": {
@@ -522,7 +522,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -622,7 +622,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -725,7 +725,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -844,7 +844,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -966,7 +966,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -1079,7 +1079,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -1195,7 +1195,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -1327,7 +1327,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -1462,7 +1462,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -1567,7 +1567,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -1675,131 +1675,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
-                                },
-                                "rawType": {
-                                    "type": "string"
-                                },
-                                "serialized": {
-                                    "type": "boolean"
-                                },
-                                "defaultValue": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "category",
-                                "defaultValue",
-                                "rawType",
-                                "serialized"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "string"
-                                },
-                                "name": {
-                                    "type": "string"
-                                },
-                                "comment": {
-                                    "type": "string"
-                                },
-                                "extraImports": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                },
-                                "extraAnnotations": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                },
-                                "nullable": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "required": [
-                                "comment",
-                                "extraAnnotations",
-                                "extraImports",
-                                "id",
-                                "name",
-                                "nullable"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "logicalDelete": {
-                                    "type": "boolean",
-                                    "const": true
-                                },
-                                "logicalDeleteType": {
-                                    "type": "string",
-                                    "const": "int"
-                                }
-                            },
-                            "required": [
-                                "logicalDelete",
-                                "logicalDeleteType"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "embeddableTypeId": {
-                                    "type": "string"
-                                },
-                                "propOverrides": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "propertyId": {
-                                                "type": "string"
-                                            },
-                                            "overrideColumnName": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "required": [
-                                            "overrideColumnName",
-                                            "propertyId"
-                                        ]
-                                    }
-                                }
-                            },
-                            "required": [
-                                "embeddableTypeId",
-                                "propOverrides"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "arrayType": {
-                                    "type": "boolean",
-                                    "const": false
-                                }
-                            },
-                            "required": [
-                                "arrayType"
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "allOf": [
-                        {
-                            "type": "object",
-                            "properties": {
-                                "category": {
-                                    "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -1907,6 +1783,130 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "arrayType": {
                                     "type": "boolean",
+                                    "const": false
+                                }
+                            },
+                            "required": [
+                                "arrayType"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "allOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "category": {
+                                    "type": "string",
+                                    "const": "SCALAR"
+                                },
+                                "rawType": {
+                                    "type": "string"
+                                },
+                                "serialized": {
+                                    "type": "boolean"
+                                },
+                                "defaultValue": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "category",
+                                "defaultValue",
+                                "rawType",
+                                "serialized"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "comment": {
+                                    "type": "string"
+                                },
+                                "extraImports": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "extraAnnotations": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "nullable": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "comment",
+                                "extraAnnotations",
+                                "extraImports",
+                                "id",
+                                "name",
+                                "nullable"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "logicalDelete": {
+                                    "type": "boolean",
+                                    "const": true
+                                },
+                                "logicalDeleteType": {
+                                    "type": "string",
+                                    "const": "int"
+                                }
+                            },
+                            "required": [
+                                "logicalDelete",
+                                "logicalDeleteType"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "embeddableTypeId": {
+                                    "type": "string"
+                                },
+                                "propOverrides": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "propertyId": {
+                                                "type": "string"
+                                            },
+                                            "overrideColumnName": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "overrideColumnName",
+                                            "propertyId"
+                                        ]
+                                    }
+                                }
+                            },
+                            "required": [
+                                "embeddableTypeId",
+                                "propOverrides"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "arrayType": {
+                                    "type": "boolean",
                                     "const": true
                                 },
                                 "databaseType": {
@@ -1926,7 +1926,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -2031,7 +2031,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -2139,7 +2139,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -2263,7 +2263,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -2390,7 +2390,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -2495,7 +2495,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -2603,7 +2603,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -2727,7 +2727,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -2854,7 +2854,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -2972,7 +2972,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -3093,7 +3093,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -3230,7 +3230,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -3370,7 +3370,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -3483,7 +3483,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -3599,7 +3599,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -3731,7 +3731,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -3866,7 +3866,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -3966,7 +3966,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -4069,7 +4069,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -4188,7 +4188,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "scalar"
+                                    "const": "SCALAR"
                                 },
                                 "rawType": {
                                     "type": "string"
@@ -4310,7 +4310,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -4397,7 +4397,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -4477,7 +4477,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -4582,7 +4582,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -4692,7 +4692,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -4789,7 +4789,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -4891,7 +4891,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -4988,7 +4988,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -5090,7 +5090,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -5187,7 +5187,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -5289,7 +5289,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -5399,7 +5399,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -5514,7 +5514,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -5619,7 +5619,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -5729,7 +5729,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"
@@ -5821,7 +5821,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "category": {
                                     "type": "string",
-                                    "const": "enum"
+                                    "const": "ENUM"
                                 },
                                 "enumId": {
                                     "type": "string"

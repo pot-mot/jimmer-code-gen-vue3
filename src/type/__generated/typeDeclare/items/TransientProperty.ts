@@ -1,7 +1,7 @@
 export default {
     fileName: 'TransientProperty.d.ts',
     content: `type TransientProperty = {
-    category: "Transient"
+    category: "TRANSIENT"
     resolver?: string
 } & BaseProperty & (
     { rawType: string } |

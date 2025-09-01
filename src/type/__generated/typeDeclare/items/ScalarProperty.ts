@@ -1,7 +1,7 @@
 export default {
     fileName: 'ScalarProperty.d.ts',
     content: `type ScalarProperty = {
-    category: "scalar"
+    category: "SCALAR"
     rawType: string
     serialized: boolean
     defaultValue: string

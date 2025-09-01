@@ -10,7 +10,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -97,7 +97,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -177,7 +177,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -282,7 +282,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -392,7 +392,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -489,7 +489,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -591,7 +591,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -688,7 +688,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -790,7 +790,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -887,7 +887,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -989,7 +989,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -1099,7 +1099,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -1214,7 +1214,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -1319,7 +1319,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -1429,7 +1429,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -1521,7 +1521,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"

@@ -10,7 +10,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -117,7 +117,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -227,7 +227,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -353,7 +353,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -482,7 +482,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -582,7 +582,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -685,7 +685,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -804,7 +804,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -926,7 +926,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -1039,7 +1039,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -1155,139 +1155,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
-                        },
-                        "rawType": {
-                            "type": "string"
-                        },
-                        "serialized": {
-                            "type": "boolean"
-                        },
-                        "defaultValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "defaultValue",
-                        "rawType",
-                        "serialized"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "boolean"
-                        },
-                        "logicalDeleteDefaultValue": {
-                            "enum": [
-                                "false",
-                                "true"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteDefaultValue",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "embeddableTypeId": {
-                            "type": "string"
-                        },
-                        "propOverrides": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "propertyId": {
-                                        "type": "string"
-                                    },
-                                    "overrideColumnName": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "overrideColumnName",
-                                    "propertyId"
-                                ]
-                            }
-                        }
-                    },
-                    "required": [
-                        "embeddableTypeId",
-                        "propOverrides"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "arrayType": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "arrayType"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -1403,6 +1271,138 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "arrayType": {
                             "type": "boolean",
+                            "const": false
+                        }
+                    },
+                    "required": [
+                        "arrayType"
+                    ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "SCALAR"
+                        },
+                        "rawType": {
+                            "type": "string"
+                        },
+                        "serialized": {
+                            "type": "boolean"
+                        },
+                        "defaultValue": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "category",
+                        "defaultValue",
+                        "rawType",
+                        "serialized"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "extraImports": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extraAnnotations": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "comment",
+                        "extraAnnotations",
+                        "extraImports",
+                        "id",
+                        "name",
+                        "nullable"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "logicalDelete": {
+                            "type": "boolean",
+                            "const": true
+                        },
+                        "logicalDeleteType": {
+                            "type": "string",
+                            "const": "boolean"
+                        },
+                        "logicalDeleteDefaultValue": {
+                            "enum": [
+                                "false",
+                                "true"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "logicalDelete",
+                        "logicalDeleteDefaultValue",
+                        "logicalDeleteType"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "embeddableTypeId": {
+                            "type": "string"
+                        },
+                        "propOverrides": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "propertyId": {
+                                        "type": "string"
+                                    },
+                                    "overrideColumnName": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "overrideColumnName",
+                                    "propertyId"
+                                ]
+                            }
+                        }
+                    },
+                    "required": [
+                        "embeddableTypeId",
+                        "propOverrides"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "arrayType": {
+                            "type": "boolean",
                             "const": true
                         },
                         "databaseType": {
@@ -1422,7 +1422,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -1527,7 +1527,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -1635,7 +1635,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -1759,7 +1759,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -1886,7 +1886,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -1991,7 +1991,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -2099,7 +2099,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -2223,7 +2223,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -2350,7 +2350,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -2455,7 +2455,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -2563,7 +2563,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -2687,7 +2687,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -2814,7 +2814,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -2932,7 +2932,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -3053,144 +3053,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
-                        },
-                        "rawType": {
-                            "type": "string"
-                        },
-                        "serialized": {
-                            "type": "boolean"
-                        },
-                        "defaultValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "defaultValue",
-                        "rawType",
-                        "serialized"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "time"
-                        },
-                        "logicalDeleteDeletedValue": {
-                            "enum": [
-                                "now",
-                                "null"
-                            ],
-                            "type": "string"
-                        },
-                        "nullable": {
-                            "type": "boolean",
-                            "const": true
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteDeletedValue",
-                        "logicalDeleteType",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "embeddableTypeId": {
-                            "type": "string"
-                        },
-                        "propOverrides": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "propertyId": {
-                                        "type": "string"
-                                    },
-                                    "overrideColumnName": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "overrideColumnName",
-                                    "propertyId"
-                                ]
-                            }
-                        }
-                    },
-                    "required": [
-                        "embeddableTypeId",
-                        "propOverrides"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "arrayType": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "arrayType"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -3311,6 +3174,143 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "arrayType": {
                             "type": "boolean",
+                            "const": false
+                        }
+                    },
+                    "required": [
+                        "arrayType"
+                    ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "SCALAR"
+                        },
+                        "rawType": {
+                            "type": "string"
+                        },
+                        "serialized": {
+                            "type": "boolean"
+                        },
+                        "defaultValue": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "category",
+                        "defaultValue",
+                        "rawType",
+                        "serialized"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "extraImports": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extraAnnotations": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "comment",
+                        "extraAnnotations",
+                        "extraImports",
+                        "id",
+                        "name",
+                        "nullable"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "logicalDelete": {
+                            "type": "boolean",
+                            "const": true
+                        },
+                        "logicalDeleteType": {
+                            "type": "string",
+                            "const": "time"
+                        },
+                        "logicalDeleteDeletedValue": {
+                            "enum": [
+                                "now",
+                                "null"
+                            ],
+                            "type": "string"
+                        },
+                        "nullable": {
+                            "type": "boolean",
+                            "const": true
+                        }
+                    },
+                    "required": [
+                        "logicalDelete",
+                        "logicalDeleteDeletedValue",
+                        "logicalDeleteType",
+                        "nullable"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "embeddableTypeId": {
+                            "type": "string"
+                        },
+                        "propOverrides": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "propertyId": {
+                                        "type": "string"
+                                    },
+                                    "overrideColumnName": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "overrideColumnName",
+                                    "propertyId"
+                                ]
+                            }
+                        }
+                    },
+                    "required": [
+                        "embeddableTypeId",
+                        "propOverrides"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "arrayType": {
+                            "type": "boolean",
                             "const": true
                         },
                         "databaseType": {
@@ -3330,7 +3330,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -3443,7 +3443,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -3559,7 +3559,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -3691,7 +3691,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -3826,7 +3826,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -3926,7 +3926,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -4029,7 +4029,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -4148,7 +4148,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"

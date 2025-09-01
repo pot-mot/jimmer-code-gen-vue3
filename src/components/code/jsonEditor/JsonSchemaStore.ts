@@ -17,6 +17,9 @@ const createDiagnosticsOptions = (): DiagnosticsOptions => {
                 fileMatch: fileMatchSet ? [...fileMatchSet] : []
             }
         }),
+        schemaValidation: "error",
+        enableSchemaRequest: false,
+        trailingCommas: "ignore",
     }
 }
 

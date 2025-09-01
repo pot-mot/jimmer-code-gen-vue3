@@ -1,7 +1,7 @@
 export default {
     fileName: 'ManyToManySourceProperty.d.ts',
     content: `type ManyToManySourceProperty = {
-    category: "ManyToMany_Source"
+    category: "ASSOCIATION_ManyToMany_Source"
     associationId: string
     idView: {
         name: string

@@ -8,7 +8,7 @@ const ManyToManyViewPropertyJsonSchema: JSONSchemaType<ManyToManyViewProperty> =
             "properties": {
                 "category": {
                     "type": "string",
-                    "const": "ManyToMany_View"
+                    "const": "ASSOCIATION_ManyToMany_View"
                 },
                 "baseToManyPropertyId": {
                     "type": "string"

@@ -71,7 +71,7 @@ type IdProperty = {
 } & Omit<BaseProperty, 'nullable'> & (ColumnProperty | EmbeddableProperty)
 
 type ScalarProperty = {
-    category: "scalar"
+    category: "SCALAR"
     rawType: string
     serialized: boolean
     defaultValue: string
@@ -83,7 +83,7 @@ type ScalarProperty = {
     )
 
 type EnumProperty = {
-    category: "enum"
+    category: "ENUM"
     enumId: string
 } & BaseProperty & (
     OptionalKeyProperty |
@@ -97,7 +97,7 @@ type EntityTypeProperty = {
 type OnDissociationAction = "NONE" | "LAX" | "CHECK" | "SET_NULL" | "DELETE"
 
 type OneToOneSourceProperty = {
-    category: "OneToOne_Source"
+    category: "ASSOCIATION_OneToOne_Source"
     associationId: string
     idView?: {
         name: string
@@ -106,7 +106,7 @@ type OneToOneSourceProperty = {
 } & BaseProperty & EntityTypeProperty & (ColumnProperty | EmbeddableProperty)
 
 type OneToOneTargetProperty = {
-    category: "OneToOne_Target"
+    category: "ASSOCIATION_OneToOne_Target"
     associationId: string
     idView: {
         name: string
@@ -116,7 +116,7 @@ type OneToOneTargetProperty = {
 } & Omit<BaseProperty, 'nullable'> & EntityTypeProperty
 
 type ManyToOneProperty = {
-    category: "ManyToOne"
+    category: "ASSOCIATION_ManyToOne"
     associationId: string
     idView: {
         name: string
@@ -132,7 +132,7 @@ type ManyToOneProperty = {
     )
 
 type OneToManyProperty = {
-    category: "OneToMany"
+    category: "ASSOCIATION_OneToMany"
     associationId: string
     idView: {
         name: string
@@ -143,7 +143,7 @@ type OneToManyProperty = {
 } & Omit<BaseProperty, 'nullable'> & EntityTypeProperty
 
 type ManyToManySourceProperty = {
-    category: "ManyToMany_Source"
+    category: "ASSOCIATION_ManyToMany_Source"
     associationId: string
     idView: {
         name: string
@@ -166,7 +166,7 @@ type ManyToManySourceProperty = {
     )
 
 type ManyToManyTargetProperty = {
-    category: "ManyToMany_Target"
+    category: "ASSOCIATION_ManyToMany_Target"
     associationId: string
     idView: {
         name: string
@@ -185,24 +185,24 @@ type AssociationProperty =
     ManyToManyTargetProperty
 
 type ManyToManyViewProperty = {
-    category: "ManyToMany_View"
+    category: "ASSOCIATION_ManyToMany_View"
     baseToManyPropertyId: string
     deeperAssociationPropertyId: string
 } & EntityTypeProperty
 
 type FormulaProperty = {
-    category: "Formula"
+    category: "FORMULA"
     dependencies: string[]
     body: string
     rawType: string
 } | {
-    category: "Formula"
+    category: "FORMULA"
     sql: string
     rawType: string
 } & BaseProperty
 
 type TransientProperty = {
-    category: "Transient"
+    category: "TRANSIENT"
     resolver?: string
 } & BaseProperty & (
     { rawType: string } |

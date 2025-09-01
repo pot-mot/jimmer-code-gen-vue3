@@ -3,8 +3,8 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
 const EmbeddableTypePropertyCategoryJsonSchema: JSONSchemaType<EmbeddableTypePropertyCategory> = {
     "enum": [
-        "enum",
-        "scalar"
+        "ENUM",
+        "SCALAR"
     ],
     "type": "string",
     "$schema": "http://json-schema.org/draft-07/schema#"

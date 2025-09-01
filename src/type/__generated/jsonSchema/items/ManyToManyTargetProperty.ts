@@ -8,7 +8,7 @@ const ManyToManyTargetPropertyJsonSchema: JSONSchemaType<ManyToManyTargetPropert
             "properties": {
                 "category": {
                     "type": "string",
-                    "const": "ManyToMany_Target"
+                    "const": "ASSOCIATION_ManyToMany_Target"
                 },
                 "associationId": {
                     "type": "string"

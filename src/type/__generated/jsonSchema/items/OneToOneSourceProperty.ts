@@ -10,7 +10,7 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "OneToOne_Source"
+                            "const": "ASSOCIATION_OneToOne_Source"
                         },
                         "associationId": {
                             "type": "string"
@@ -104,7 +104,7 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "OneToOne_Source"
+                            "const": "ASSOCIATION_OneToOne_Source"
                         },
                         "associationId": {
                             "type": "string"

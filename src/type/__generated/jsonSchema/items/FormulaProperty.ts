@@ -8,7 +8,7 @@ const FormulaPropertyJsonSchema: JSONSchemaType<FormulaProperty> = {
             "properties": {
                 "category": {
                     "type": "string",
-                    "const": "Formula"
+                    "const": "FORMULA"
                 },
                 "dependencies": {
                     "type": "array",
@@ -37,7 +37,7 @@ const FormulaPropertyJsonSchema: JSONSchemaType<FormulaProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "Formula"
+                            "const": "FORMULA"
                         },
                         "sql": {
                             "type": "string"

@@ -10,7 +10,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -117,7 +117,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -227,133 +227,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
-                        },
-                        "rawType": {
-                            "type": "string"
-                        },
-                        "serialized": {
-                            "type": "boolean"
-                        },
-                        "defaultValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "defaultValue",
-                        "rawType",
-                        "serialized"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "key": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "keyGroups": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "required": [
-                        "key",
-                        "keyGroups"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "embeddableTypeId": {
-                            "type": "string"
-                        },
-                        "propOverrides": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "propertyId": {
-                                        "type": "string"
-                                    },
-                                    "overrideColumnName": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "overrideColumnName",
-                                    "propertyId"
-                                ]
-                            }
-                        }
-                    },
-                    "required": [
-                        "embeddableTypeId",
-                        "propOverrides"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "arrayType": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "arrayType"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -463,6 +337,132 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "arrayType": {
                             "type": "boolean",
+                            "const": false
+                        }
+                    },
+                    "required": [
+                        "arrayType"
+                    ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "SCALAR"
+                        },
+                        "rawType": {
+                            "type": "string"
+                        },
+                        "serialized": {
+                            "type": "boolean"
+                        },
+                        "defaultValue": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "category",
+                        "defaultValue",
+                        "rawType",
+                        "serialized"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "extraImports": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extraAnnotations": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "comment",
+                        "extraAnnotations",
+                        "extraImports",
+                        "id",
+                        "name",
+                        "nullable"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "key": {
+                            "type": "boolean",
+                            "const": true
+                        },
+                        "keyGroups": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": [
+                        "key",
+                        "keyGroups"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "embeddableTypeId": {
+                            "type": "string"
+                        },
+                        "propOverrides": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "propertyId": {
+                                        "type": "string"
+                                    },
+                                    "overrideColumnName": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "overrideColumnName",
+                                    "propertyId"
+                                ]
+                            }
+                        }
+                    },
+                    "required": [
+                        "embeddableTypeId",
+                        "propOverrides"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "arrayType": {
+                            "type": "boolean",
                             "const": true
                         },
                         "databaseType": {
@@ -482,7 +482,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -582,7 +582,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -685,7 +685,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -804,7 +804,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -926,7 +926,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -1039,7 +1039,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -1155,7 +1155,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -1287,7 +1287,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -1422,7 +1422,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -1527,7 +1527,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -1635,131 +1635,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
-                        },
-                        "rawType": {
-                            "type": "string"
-                        },
-                        "serialized": {
-                            "type": "boolean"
-                        },
-                        "defaultValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "defaultValue",
-                        "rawType",
-                        "serialized"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "int"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "embeddableTypeId": {
-                            "type": "string"
-                        },
-                        "propOverrides": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "propertyId": {
-                                        "type": "string"
-                                    },
-                                    "overrideColumnName": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "overrideColumnName",
-                                    "propertyId"
-                                ]
-                            }
-                        }
-                    },
-                    "required": [
-                        "embeddableTypeId",
-                        "propOverrides"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "arrayType": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "arrayType"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -1867,6 +1743,130 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "arrayType": {
                             "type": "boolean",
+                            "const": false
+                        }
+                    },
+                    "required": [
+                        "arrayType"
+                    ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "SCALAR"
+                        },
+                        "rawType": {
+                            "type": "string"
+                        },
+                        "serialized": {
+                            "type": "boolean"
+                        },
+                        "defaultValue": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "category",
+                        "defaultValue",
+                        "rawType",
+                        "serialized"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "extraImports": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extraAnnotations": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "comment",
+                        "extraAnnotations",
+                        "extraImports",
+                        "id",
+                        "name",
+                        "nullable"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "logicalDelete": {
+                            "type": "boolean",
+                            "const": true
+                        },
+                        "logicalDeleteType": {
+                            "type": "string",
+                            "const": "int"
+                        }
+                    },
+                    "required": [
+                        "logicalDelete",
+                        "logicalDeleteType"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "embeddableTypeId": {
+                            "type": "string"
+                        },
+                        "propOverrides": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "propertyId": {
+                                        "type": "string"
+                                    },
+                                    "overrideColumnName": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "overrideColumnName",
+                                    "propertyId"
+                                ]
+                            }
+                        }
+                    },
+                    "required": [
+                        "embeddableTypeId",
+                        "propOverrides"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "arrayType": {
+                            "type": "boolean",
                             "const": true
                         },
                         "databaseType": {
@@ -1886,7 +1886,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -1991,7 +1991,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -2099,7 +2099,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -2223,7 +2223,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -2350,7 +2350,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -2455,7 +2455,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -2563,7 +2563,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -2687,7 +2687,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -2814,7 +2814,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -2932,7 +2932,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -3053,7 +3053,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -3190,7 +3190,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -3330,7 +3330,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -3443,7 +3443,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -3559,7 +3559,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -3691,7 +3691,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -3826,7 +3826,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -3926,7 +3926,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -4029,7 +4029,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -4148,7 +4148,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "scalar"
+                            "const": "SCALAR"
                         },
                         "rawType": {
                             "type": "string"
@@ -4270,7 +4270,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -4357,7 +4357,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -4437,7 +4437,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -4542,7 +4542,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -4652,7 +4652,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -4749,7 +4749,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -4851,7 +4851,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -4948,7 +4948,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -5050,7 +5050,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -5147,7 +5147,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -5249,7 +5249,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -5359,7 +5359,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -5474,7 +5474,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -5579,7 +5579,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -5689,7 +5689,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -5781,7 +5781,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "enum"
+                            "const": "ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -5878,7 +5878,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "OneToOne_Source"
+                            "const": "ASSOCIATION_OneToOne_Source"
                         },
                         "associationId": {
                             "type": "string"
@@ -5972,7 +5972,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "OneToOne_Source"
+                            "const": "ASSOCIATION_OneToOne_Source"
                         },
                         "associationId": {
                             "type": "string"
@@ -6091,7 +6091,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ManyToOne"
+                            "const": "ASSOCIATION_ManyToOne"
                         },
                         "associationId": {
                             "type": "string"
@@ -6197,7 +6197,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ManyToOne"
+                            "const": "ASSOCIATION_ManyToOne"
                         },
                         "associationId": {
                             "type": "string"
@@ -6325,7 +6325,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ManyToMany_Source"
+                            "const": "ASSOCIATION_ManyToMany_Source"
                         },
                         "associationId": {
                             "type": "string"
@@ -6411,7 +6411,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ManyToMany_Source"
+                            "const": "ASSOCIATION_ManyToMany_Source"
                         },
                         "associationId": {
                             "type": "string"
@@ -6531,7 +6531,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
             "properties": {
                 "category": {
                     "type": "string",
-                    "const": "Formula"
+                    "const": "FORMULA"
                 },
                 "dependencies": {
                     "type": "array",
@@ -6560,7 +6560,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "Formula"
+                            "const": "FORMULA"
                         },
                         "sql": {
                             "type": "string"
@@ -6621,7 +6621,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "Transient"
+                            "const": "TRANSIENT"
                         },
                         "resolver": {
                             "type": "string"
@@ -6688,7 +6688,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "Transient"
+                            "const": "TRANSIENT"
                         },
                         "resolver": {
                             "type": "string"
@@ -6813,7 +6813,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "OneToOne_Target"
+                            "const": "ASSOCIATION_OneToOne_Target"
                         },
                         "associationId": {
                             "type": "string"
@@ -6901,7 +6901,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "OneToMany"
+                            "const": "ASSOCIATION_OneToMany"
                         },
                         "associationId": {
                             "type": "string"
@@ -6961,7 +6961,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ManyToMany_Target"
+                            "const": "ASSOCIATION_ManyToMany_Target"
                         },
                         "associationId": {
                             "type": "string"
@@ -7021,7 +7021,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ManyToMany_View"
+                            "const": "ASSOCIATION_ManyToMany_View"
                         },
                         "baseToManyPropertyId": {
                             "type": "string"

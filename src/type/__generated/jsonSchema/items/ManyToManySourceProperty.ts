@@ -10,7 +10,7 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ManyToMany_Source"
+                            "const": "ASSOCIATION_ManyToMany_Source"
                         },
                         "associationId": {
                             "type": "string"
@@ -96,7 +96,7 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ManyToMany_Source"
+                            "const": "ASSOCIATION_ManyToMany_Source"
                         },
                         "associationId": {
                             "type": "string"
