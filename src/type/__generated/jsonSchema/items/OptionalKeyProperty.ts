@@ -36,7 +36,7 @@ const OptionalKeyPropertyJsonSchema: JSONSchemaType<OptionalKeyProperty> = {
         }
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<OptionalKeyProperty>
 
 export const validateOptionalKeyProperty = createSchemaValidator<OptionalKeyProperty>(OptionalKeyPropertyJsonSchema)
 

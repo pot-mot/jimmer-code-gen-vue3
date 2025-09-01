@@ -1,9 +1,9 @@
 export default {
     fileName: 'EmbeddableProperty.d.ts',
     content: `type EmbeddableProperty = {
-    embeddableTypeName: string
+    embeddableTypeId: string
     propOverrides: {
-        propertyName: string
+        propertyId: string
         overrideColumnName: string
     }[]
 }`,

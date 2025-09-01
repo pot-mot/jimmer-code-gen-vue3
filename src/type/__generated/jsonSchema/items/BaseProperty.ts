@@ -4,6 +4,9 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const BasePropertyJsonSchema: JSONSchemaType<BaseProperty> = {
     "type": "object",
     "properties": {
+        "id": {
+            "type": "string"
+        },
         "name": {
             "type": "string"
         },
@@ -30,11 +33,12 @@ const BasePropertyJsonSchema: JSONSchemaType<BaseProperty> = {
         "comment",
         "extraAnnotations",
         "extraImports",
+        "id",
         "name",
         "nullable"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<BaseProperty>
 
 export const validateBaseProperty = createSchemaValidator<BaseProperty>(BasePropertyJsonSchema)
 

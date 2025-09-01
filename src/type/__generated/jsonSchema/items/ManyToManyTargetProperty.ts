@@ -10,7 +10,7 @@ const ManyToManyTargetPropertyJsonSchema: JSONSchemaType<ManyToManyTargetPropert
                     "type": "string",
                     "const": "ManyToMany_Target"
                 },
-                "associationName": {
+                "associationId": {
                     "type": "string"
                 },
                 "idView": {
@@ -37,7 +37,7 @@ const ManyToManyTargetPropertyJsonSchema: JSONSchemaType<ManyToManyTargetPropert
                 }
             },
             "required": [
-                "associationName",
+                "associationId",
                 "category",
                 "idView",
                 "mappedBy",
@@ -51,12 +51,12 @@ const ManyToManyTargetPropertyJsonSchema: JSONSchemaType<ManyToManyTargetPropert
         {
             "type": "object",
             "properties": {
-                "entityName": {
+                "entityId": {
                     "type": "string"
                 }
             },
             "required": [
-                "entityName"
+                "entityId"
             ]
         }
     ],
@@ -64,6 +64,9 @@ const ManyToManyTargetPropertyJsonSchema: JSONSchemaType<ManyToManyTargetPropert
         "Omit<BaseProperty,\"nullable\">": {
             "type": "object",
             "properties": {
+                "id": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -87,12 +90,13 @@ const ManyToManyTargetPropertyJsonSchema: JSONSchemaType<ManyToManyTargetPropert
                 "comment",
                 "extraAnnotations",
                 "extraImports",
+                "id",
                 "name"
             ]
         }
     },
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<ManyToManyTargetProperty>
 
 export const validateManyToManyTargetProperty = createSchemaValidator<ManyToManyTargetProperty>(ManyToManyTargetPropertyJsonSchema)
 

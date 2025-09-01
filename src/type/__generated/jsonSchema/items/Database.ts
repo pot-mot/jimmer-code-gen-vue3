@@ -4,6 +4,9 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const DatabaseJsonSchema: JSONSchemaType<Database> = {
     "type": "object",
     "properties": {
+        "id": {
+            "type": "string"
+        },
         "name": {
             "type": "string"
         },
@@ -21,6 +24,9 @@ const DatabaseJsonSchema: JSONSchemaType<Database> = {
             "items": {
                 "type": "object",
                 "properties": {
+                    "id": {
+                        "type": "string"
+                    },
                     "name": {
                         "type": "string"
                     },
@@ -29,6 +35,9 @@ const DatabaseJsonSchema: JSONSchemaType<Database> = {
                         "items": {
                             "type": "object",
                             "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
                                 "name": {
                                     "type": "string"
                                 },
@@ -40,6 +49,9 @@ const DatabaseJsonSchema: JSONSchemaType<Database> = {
                                     "items": {
                                         "type": "object",
                                         "properties": {
+                                            "id": {
+                                                "type": "string"
+                                            },
                                             "name": {
                                                 "type": "string"
                                             },
@@ -50,10 +62,10 @@ const DatabaseJsonSchema: JSONSchemaType<Database> = {
                                                 "type": "string"
                                             },
                                             "dataSize": {
-                                                "type": "number"
+                                                "type": "integer"
                                             },
                                             "numericPrecision": {
-                                                "type": "number"
+                                                "type": "integer"
                                             },
                                             "nullable": {
                                                 "type": "boolean"
@@ -77,6 +89,7 @@ const DatabaseJsonSchema: JSONSchemaType<Database> = {
                                         "required": [
                                             "comment",
                                             "defaultValue",
+                                            "id",
                                             "name",
                                             "nullable",
                                             "partOfPrimaryKey",
@@ -89,10 +102,13 @@ const DatabaseJsonSchema: JSONSchemaType<Database> = {
                                     "items": {
                                         "type": "object",
                                         "properties": {
+                                            "id": {
+                                                "type": "string"
+                                            },
                                             "name": {
                                                 "type": "string"
                                             },
-                                            "columnNames": {
+                                            "columnIds": {
                                                 "type": "array",
                                                 "items": {
                                                     "type": "string"
@@ -103,7 +119,8 @@ const DatabaseJsonSchema: JSONSchemaType<Database> = {
                                             }
                                         },
                                         "required": [
-                                            "columnNames",
+                                            "columnIds",
+                                            "id",
                                             "isUnique",
                                             "name"
                                         ]
@@ -113,6 +130,7 @@ const DatabaseJsonSchema: JSONSchemaType<Database> = {
                             "required": [
                                 "columns",
                                 "comment",
+                                "id",
                                 "indexes",
                                 "name"
                             ]
@@ -120,6 +138,7 @@ const DatabaseJsonSchema: JSONSchemaType<Database> = {
                     }
                 },
                 "required": [
+                    "id",
                     "name",
                     "tables"
                 ]
@@ -127,6 +146,7 @@ const DatabaseJsonSchema: JSONSchemaType<Database> = {
         }
     },
     "required": [
+        "id",
         "name",
         "password",
         "schemas",
@@ -134,7 +154,7 @@ const DatabaseJsonSchema: JSONSchemaType<Database> = {
         "username"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<Database>
 
 export const validateDatabase = createSchemaValidator<Database>(DatabaseJsonSchema)
 

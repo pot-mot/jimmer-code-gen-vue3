@@ -12,7 +12,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                             "type": "string",
                             "const": "OneToOne_Source"
                         },
-                        "associationName": {
+                        "associationId": {
                             "type": "string"
                         },
                         "idView": {
@@ -31,7 +31,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                         }
                     },
                     "required": [
-                        "associationName",
+                        "associationId",
                         "category",
                         "onDissociateAction"
                     ]
@@ -39,6 +39,9 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                 {
                     "type": "object",
                     "properties": {
+                        "id": {
+                            "type": "string"
+                        },
                         "name": {
                             "type": "string"
                         },
@@ -65,6 +68,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                         "comment",
                         "extraAnnotations",
                         "extraImports",
+                        "id",
                         "name",
                         "nullable"
                     ]
@@ -72,62 +76,19 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                 {
                     "type": "object",
                     "properties": {
-                        "entityName": {
+                        "entityId": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "entityName"
+                        "entityId"
                     ]
                 },
                 {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string"
-                                },
-                                "comment": {
-                                    "type": "string"
-                                },
-                                "type": {
-                                    "type": "string"
-                                },
-                                "dataSize": {
-                                    "type": "number"
-                                },
-                                "numericPrecision": {
-                                    "type": "number"
-                                },
-                                "nullable": {
-                                    "type": "boolean"
-                                },
-                                "defaultValue": {
-                                    "type": "string"
-                                },
-                                "partOfPrimaryKey": {
-                                    "type": "boolean"
-                                },
-                                "autoIncrement": {
-                                    "type": "boolean"
-                                },
-                                "otherConstraints": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "required": [
-                                "comment",
-                                "defaultValue",
-                                "name",
-                                "nullable",
-                                "partOfPrimaryKey",
-                                "type"
-                            ]
+                            "$ref": "#/definitions/Omit<Column,\"id\">"
                         }
                     },
                     "required": [
@@ -145,7 +106,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                             "type": "string",
                             "const": "OneToOne_Source"
                         },
-                        "associationName": {
+                        "associationId": {
                             "type": "string"
                         },
                         "idView": {
@@ -164,7 +125,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                         }
                     },
                     "required": [
-                        "associationName",
+                        "associationId",
                         "category",
                         "onDissociateAction"
                     ]
@@ -172,6 +133,9 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                 {
                     "type": "object",
                     "properties": {
+                        "id": {
+                            "type": "string"
+                        },
                         "name": {
                             "type": "string"
                         },
@@ -198,6 +162,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                         "comment",
                         "extraAnnotations",
                         "extraImports",
+                        "id",
                         "name",
                         "nullable"
                     ]
@@ -205,18 +170,18 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                 {
                     "type": "object",
                     "properties": {
-                        "entityName": {
+                        "entityId": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "entityName"
+                        "entityId"
                     ]
                 },
                 {
                     "type": "object",
                     "properties": {
-                        "embeddableTypeName": {
+                        "embeddableTypeId": {
                             "type": "string"
                         },
                         "propOverrides": {
@@ -224,7 +189,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyName": {
+                                    "propertyId": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -233,13 +198,13 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyName"
+                                    "propertyId"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeName",
+                        "embeddableTypeId",
                         "propOverrides"
                     ]
                 }
@@ -260,7 +225,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                             "type": "string",
                             "const": "ManyToOne"
                         },
-                        "associationName": {
+                        "associationId": {
                             "type": "string"
                         },
                         "idView": {
@@ -279,7 +244,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                         }
                     },
                     "required": [
-                        "associationName",
+                        "associationId",
                         "category",
                         "idView",
                         "onDissociateAction"
@@ -288,6 +253,9 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                 {
                     "type": "object",
                     "properties": {
+                        "id": {
+                            "type": "string"
+                        },
                         "name": {
                             "type": "string"
                         },
@@ -314,6 +282,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                         "comment",
                         "extraAnnotations",
                         "extraImports",
+                        "id",
                         "name",
                         "nullable"
                     ]
@@ -321,12 +290,12 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                 {
                     "type": "object",
                     "properties": {
-                        "entityName": {
+                        "entityId": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "entityName"
+                        "entityId"
                     ]
                 },
                 {
@@ -344,50 +313,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string"
-                                },
-                                "comment": {
-                                    "type": "string"
-                                },
-                                "type": {
-                                    "type": "string"
-                                },
-                                "dataSize": {
-                                    "type": "number"
-                                },
-                                "numericPrecision": {
-                                    "type": "number"
-                                },
-                                "nullable": {
-                                    "type": "boolean"
-                                },
-                                "defaultValue": {
-                                    "type": "string"
-                                },
-                                "partOfPrimaryKey": {
-                                    "type": "boolean"
-                                },
-                                "autoIncrement": {
-                                    "type": "boolean"
-                                },
-                                "otherConstraints": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "required": [
-                                "comment",
-                                "defaultValue",
-                                "name",
-                                "nullable",
-                                "partOfPrimaryKey",
-                                "type"
-                            ]
+                            "$ref": "#/definitions/Omit<Column,\"id\">"
                         }
                     },
                     "required": [
@@ -405,7 +331,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                             "type": "string",
                             "const": "ManyToOne"
                         },
-                        "associationName": {
+                        "associationId": {
                             "type": "string"
                         },
                         "idView": {
@@ -424,7 +350,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                         }
                     },
                     "required": [
-                        "associationName",
+                        "associationId",
                         "category",
                         "idView",
                         "onDissociateAction"
@@ -433,6 +359,9 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                 {
                     "type": "object",
                     "properties": {
+                        "id": {
+                            "type": "string"
+                        },
                         "name": {
                             "type": "string"
                         },
@@ -459,6 +388,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                         "comment",
                         "extraAnnotations",
                         "extraImports",
+                        "id",
                         "name",
                         "nullable"
                     ]
@@ -466,12 +396,12 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                 {
                     "type": "object",
                     "properties": {
-                        "entityName": {
+                        "entityId": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "entityName"
+                        "entityId"
                     ]
                 },
                 {
@@ -491,7 +421,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                 {
                     "type": "object",
                     "properties": {
-                        "embeddableTypeName": {
+                        "embeddableTypeId": {
                             "type": "string"
                         },
                         "propOverrides": {
@@ -499,7 +429,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyName": {
+                                    "propertyId": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -508,13 +438,13 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyName"
+                                    "propertyId"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeName",
+                        "embeddableTypeId",
                         "propOverrides"
                     ]
                 }
@@ -529,7 +459,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                             "type": "string",
                             "const": "ManyToMany_Source"
                         },
-                        "associationName": {
+                        "associationId": {
                             "type": "string"
                         },
                         "idView": {
@@ -553,7 +483,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                         }
                     },
                     "required": [
-                        "associationName",
+                        "associationId",
                         "category",
                         "idView",
                         "nullable",
@@ -566,12 +496,12 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                 {
                     "type": "object",
                     "properties": {
-                        "entityName": {
+                        "entityId": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "entityName"
+                        "entityId"
                     ]
                 },
                 {
@@ -597,50 +527,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string"
-                                },
-                                "comment": {
-                                    "type": "string"
-                                },
-                                "type": {
-                                    "type": "string"
-                                },
-                                "dataSize": {
-                                    "type": "number"
-                                },
-                                "numericPrecision": {
-                                    "type": "number"
-                                },
-                                "nullable": {
-                                    "type": "boolean"
-                                },
-                                "defaultValue": {
-                                    "type": "string"
-                                },
-                                "partOfPrimaryKey": {
-                                    "type": "boolean"
-                                },
-                                "autoIncrement": {
-                                    "type": "boolean"
-                                },
-                                "otherConstraints": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "required": [
-                                "comment",
-                                "defaultValue",
-                                "name",
-                                "nullable",
-                                "partOfPrimaryKey",
-                                "type"
-                            ]
+                            "$ref": "#/definitions/Omit<Column,\"id\">"
                         }
                     },
                     "required": [
@@ -658,7 +545,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                             "type": "string",
                             "const": "ManyToMany_Source"
                         },
-                        "associationName": {
+                        "associationId": {
                             "type": "string"
                         },
                         "idView": {
@@ -682,7 +569,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                         }
                     },
                     "required": [
-                        "associationName",
+                        "associationId",
                         "category",
                         "idView",
                         "nullable",
@@ -695,12 +582,12 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                 {
                     "type": "object",
                     "properties": {
-                        "entityName": {
+                        "entityId": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "entityName"
+                        "entityId"
                     ]
                 },
                 {
@@ -736,7 +623,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                 {
                     "type": "object",
                     "properties": {
-                        "embeddableTypeName": {
+                        "embeddableTypeId": {
                             "type": "string"
                         },
                         "propOverrides": {
@@ -744,7 +631,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyName": {
+                                    "propertyId": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -753,13 +640,13 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyName"
+                                    "propertyId"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeName",
+                        "embeddableTypeId",
                         "propOverrides"
                     ]
                 }
@@ -780,6 +667,52 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
             ],
             "type": "string"
         },
+        "Omit<Column,\"id\">": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "nullable": {
+                    "type": "boolean"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "dataSize": {
+                    "type": "integer"
+                },
+                "numericPrecision": {
+                    "type": "integer"
+                },
+                "defaultValue": {
+                    "type": "string"
+                },
+                "partOfPrimaryKey": {
+                    "type": "boolean"
+                },
+                "autoIncrement": {
+                    "type": "boolean"
+                },
+                "otherConstraints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "comment",
+                "defaultValue",
+                "name",
+                "nullable",
+                "partOfPrimaryKey",
+                "type"
+            ]
+        },
         "OneToOneTargetProperty": {
             "allOf": [
                 {
@@ -789,7 +722,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                             "type": "string",
                             "const": "OneToOne_Target"
                         },
-                        "associationName": {
+                        "associationId": {
                             "type": "string"
                         },
                         "idView": {
@@ -812,7 +745,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                         }
                     },
                     "required": [
-                        "associationName",
+                        "associationId",
                         "category",
                         "idView",
                         "mappedBy",
@@ -825,12 +758,12 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                 {
                     "type": "object",
                     "properties": {
-                        "entityName": {
+                        "entityId": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "entityName"
+                        "entityId"
                     ]
                 }
             ]
@@ -838,6 +771,9 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
         "Omit<BaseProperty,\"nullable\">": {
             "type": "object",
             "properties": {
+                "id": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -861,6 +797,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                 "comment",
                 "extraAnnotations",
                 "extraImports",
+                "id",
                 "name"
             ]
         },
@@ -873,7 +810,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                             "type": "string",
                             "const": "OneToMany"
                         },
-                        "associationName": {
+                        "associationId": {
                             "type": "string"
                         },
                         "idView": {
@@ -900,7 +837,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                         }
                     },
                     "required": [
-                        "associationName",
+                        "associationId",
                         "category",
                         "idView",
                         "mappedBy",
@@ -914,12 +851,12 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                 {
                     "type": "object",
                     "properties": {
-                        "entityName": {
+                        "entityId": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "entityName"
+                        "entityId"
                     ]
                 }
             ]
@@ -933,7 +870,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                             "type": "string",
                             "const": "ManyToMany_Target"
                         },
-                        "associationName": {
+                        "associationId": {
                             "type": "string"
                         },
                         "idView": {
@@ -960,7 +897,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                         }
                     },
                     "required": [
-                        "associationName",
+                        "associationId",
                         "category",
                         "idView",
                         "mappedBy",
@@ -974,19 +911,19 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                 {
                     "type": "object",
                     "properties": {
-                        "entityName": {
+                        "entityId": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "entityName"
+                        "entityId"
                     ]
                 }
             ]
         }
     },
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<AssociationProperty>
 
 export const validateAssociationProperty = createSchemaValidator<AssociationProperty>(AssociationPropertyJsonSchema)
 

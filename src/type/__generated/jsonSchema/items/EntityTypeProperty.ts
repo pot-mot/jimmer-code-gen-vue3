@@ -4,15 +4,15 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const EntityTypePropertyJsonSchema: JSONSchemaType<EntityTypeProperty> = {
     "type": "object",
     "properties": {
-        "entityName": {
+        "entityId": {
             "type": "string"
         }
     },
     "required": [
-        "entityName"
+        "entityId"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<EntityTypeProperty>
 
 export const validateEntityTypeProperty = createSchemaValidator<EntityTypeProperty>(EntityTypePropertyJsonSchema)
 

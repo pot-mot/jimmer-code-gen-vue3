@@ -10,7 +10,7 @@ const OneToOneTargetPropertyJsonSchema: JSONSchemaType<OneToOneTargetProperty> =
                     "type": "string",
                     "const": "OneToOne_Target"
                 },
-                "associationName": {
+                "associationId": {
                     "type": "string"
                 },
                 "idView": {
@@ -33,7 +33,7 @@ const OneToOneTargetPropertyJsonSchema: JSONSchemaType<OneToOneTargetProperty> =
                 }
             },
             "required": [
-                "associationName",
+                "associationId",
                 "category",
                 "idView",
                 "mappedBy",
@@ -46,12 +46,12 @@ const OneToOneTargetPropertyJsonSchema: JSONSchemaType<OneToOneTargetProperty> =
         {
             "type": "object",
             "properties": {
-                "entityName": {
+                "entityId": {
                     "type": "string"
                 }
             },
             "required": [
-                "entityName"
+                "entityId"
             ]
         }
     ],
@@ -59,6 +59,9 @@ const OneToOneTargetPropertyJsonSchema: JSONSchemaType<OneToOneTargetProperty> =
         "Omit<BaseProperty,\"nullable\">": {
             "type": "object",
             "properties": {
+                "id": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -82,12 +85,13 @@ const OneToOneTargetPropertyJsonSchema: JSONSchemaType<OneToOneTargetProperty> =
                 "comment",
                 "extraAnnotations",
                 "extraImports",
+                "id",
                 "name"
             ]
         }
     },
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<OneToOneTargetProperty>
 
 export const validateOneToOneTargetProperty = createSchemaValidator<OneToOneTargetProperty>(OneToOneTargetPropertyJsonSchema)
 

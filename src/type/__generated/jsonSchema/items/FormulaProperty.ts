@@ -55,6 +55,9 @@ const FormulaPropertyJsonSchema: JSONSchemaType<FormulaProperty> = {
                 {
                     "type": "object",
                     "properties": {
+                        "id": {
+                            "type": "string"
+                        },
                         "name": {
                             "type": "string"
                         },
@@ -81,6 +84,7 @@ const FormulaPropertyJsonSchema: JSONSchemaType<FormulaProperty> = {
                         "comment",
                         "extraAnnotations",
                         "extraImports",
+                        "id",
                         "name",
                         "nullable"
                     ]
@@ -89,7 +93,7 @@ const FormulaPropertyJsonSchema: JSONSchemaType<FormulaProperty> = {
         }
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<FormulaProperty>
 
 export const validateFormulaProperty = createSchemaValidator<FormulaProperty>(FormulaPropertyJsonSchema)
 

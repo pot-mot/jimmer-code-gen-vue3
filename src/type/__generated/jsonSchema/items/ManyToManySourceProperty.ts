@@ -12,7 +12,7 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                             "type": "string",
                             "const": "ManyToMany_Source"
                         },
-                        "associationName": {
+                        "associationId": {
                             "type": "string"
                         },
                         "idView": {
@@ -36,7 +36,7 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                         }
                     },
                     "required": [
-                        "associationName",
+                        "associationId",
                         "category",
                         "idView",
                         "nullable",
@@ -49,12 +49,12 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                 {
                     "type": "object",
                     "properties": {
-                        "entityName": {
+                        "entityId": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "entityName"
+                        "entityId"
                     ]
                 },
                 {
@@ -80,50 +80,7 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string"
-                                },
-                                "comment": {
-                                    "type": "string"
-                                },
-                                "type": {
-                                    "type": "string"
-                                },
-                                "dataSize": {
-                                    "type": "number"
-                                },
-                                "numericPrecision": {
-                                    "type": "number"
-                                },
-                                "nullable": {
-                                    "type": "boolean"
-                                },
-                                "defaultValue": {
-                                    "type": "string"
-                                },
-                                "partOfPrimaryKey": {
-                                    "type": "boolean"
-                                },
-                                "autoIncrement": {
-                                    "type": "boolean"
-                                },
-                                "otherConstraints": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "required": [
-                                "comment",
-                                "defaultValue",
-                                "name",
-                                "nullable",
-                                "partOfPrimaryKey",
-                                "type"
-                            ]
+                            "$ref": "#/definitions/Omit<Column,\"id\">"
                         }
                     },
                     "required": [
@@ -141,7 +98,7 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                             "type": "string",
                             "const": "ManyToMany_Source"
                         },
-                        "associationName": {
+                        "associationId": {
                             "type": "string"
                         },
                         "idView": {
@@ -165,7 +122,7 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                         }
                     },
                     "required": [
-                        "associationName",
+                        "associationId",
                         "category",
                         "idView",
                         "nullable",
@@ -178,12 +135,12 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                 {
                     "type": "object",
                     "properties": {
-                        "entityName": {
+                        "entityId": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "entityName"
+                        "entityId"
                     ]
                 },
                 {
@@ -219,7 +176,7 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                 {
                     "type": "object",
                     "properties": {
-                        "embeddableTypeName": {
+                        "embeddableTypeId": {
                             "type": "string"
                         },
                         "propOverrides": {
@@ -227,7 +184,7 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyName": {
+                                    "propertyId": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -236,13 +193,13 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyName"
+                                    "propertyId"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeName",
+                        "embeddableTypeId",
                         "propOverrides"
                     ]
                 }
@@ -253,6 +210,9 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
         "Omit<BaseProperty,\"nullable\">": {
             "type": "object",
             "properties": {
+                "id": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -276,12 +236,59 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                 "comment",
                 "extraAnnotations",
                 "extraImports",
+                "id",
                 "name"
+            ]
+        },
+        "Omit<Column,\"id\">": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "nullable": {
+                    "type": "boolean"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "dataSize": {
+                    "type": "integer"
+                },
+                "numericPrecision": {
+                    "type": "integer"
+                },
+                "defaultValue": {
+                    "type": "string"
+                },
+                "partOfPrimaryKey": {
+                    "type": "boolean"
+                },
+                "autoIncrement": {
+                    "type": "boolean"
+                },
+                "otherConstraints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "comment",
+                "defaultValue",
+                "name",
+                "nullable",
+                "partOfPrimaryKey",
+                "type"
             ]
         }
     },
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<ManyToManySourceProperty>
 
 export const validateManyToManySourceProperty = createSchemaValidator<ManyToManySourceProperty>(ManyToManySourcePropertyJsonSchema)
 

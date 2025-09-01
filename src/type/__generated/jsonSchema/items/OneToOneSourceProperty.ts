@@ -12,7 +12,7 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                             "type": "string",
                             "const": "OneToOne_Source"
                         },
-                        "associationName": {
+                        "associationId": {
                             "type": "string"
                         },
                         "idView": {
@@ -31,7 +31,7 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                         }
                     },
                     "required": [
-                        "associationName",
+                        "associationId",
                         "category",
                         "onDissociateAction"
                     ]
@@ -39,6 +39,9 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                 {
                     "type": "object",
                     "properties": {
+                        "id": {
+                            "type": "string"
+                        },
                         "name": {
                             "type": "string"
                         },
@@ -65,6 +68,7 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                         "comment",
                         "extraAnnotations",
                         "extraImports",
+                        "id",
                         "name",
                         "nullable"
                     ]
@@ -72,62 +76,19 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                 {
                     "type": "object",
                     "properties": {
-                        "entityName": {
+                        "entityId": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "entityName"
+                        "entityId"
                     ]
                 },
                 {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string"
-                                },
-                                "comment": {
-                                    "type": "string"
-                                },
-                                "type": {
-                                    "type": "string"
-                                },
-                                "dataSize": {
-                                    "type": "number"
-                                },
-                                "numericPrecision": {
-                                    "type": "number"
-                                },
-                                "nullable": {
-                                    "type": "boolean"
-                                },
-                                "defaultValue": {
-                                    "type": "string"
-                                },
-                                "partOfPrimaryKey": {
-                                    "type": "boolean"
-                                },
-                                "autoIncrement": {
-                                    "type": "boolean"
-                                },
-                                "otherConstraints": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "required": [
-                                "comment",
-                                "defaultValue",
-                                "name",
-                                "nullable",
-                                "partOfPrimaryKey",
-                                "type"
-                            ]
+                            "$ref": "#/definitions/Omit<Column,\"id\">"
                         }
                     },
                     "required": [
@@ -145,7 +106,7 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                             "type": "string",
                             "const": "OneToOne_Source"
                         },
-                        "associationName": {
+                        "associationId": {
                             "type": "string"
                         },
                         "idView": {
@@ -164,7 +125,7 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                         }
                     },
                     "required": [
-                        "associationName",
+                        "associationId",
                         "category",
                         "onDissociateAction"
                     ]
@@ -172,6 +133,9 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                 {
                     "type": "object",
                     "properties": {
+                        "id": {
+                            "type": "string"
+                        },
                         "name": {
                             "type": "string"
                         },
@@ -198,6 +162,7 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                         "comment",
                         "extraAnnotations",
                         "extraImports",
+                        "id",
                         "name",
                         "nullable"
                     ]
@@ -205,18 +170,18 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                 {
                     "type": "object",
                     "properties": {
-                        "entityName": {
+                        "entityId": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "entityName"
+                        "entityId"
                     ]
                 },
                 {
                     "type": "object",
                     "properties": {
-                        "embeddableTypeName": {
+                        "embeddableTypeId": {
                             "type": "string"
                         },
                         "propOverrides": {
@@ -224,7 +189,7 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyName": {
+                                    "propertyId": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -233,13 +198,13 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyName"
+                                    "propertyId"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeName",
+                        "embeddableTypeId",
                         "propOverrides"
                     ]
                 }
@@ -256,10 +221,56 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                 "SET_NULL"
             ],
             "type": "string"
+        },
+        "Omit<Column,\"id\">": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "nullable": {
+                    "type": "boolean"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "dataSize": {
+                    "type": "integer"
+                },
+                "numericPrecision": {
+                    "type": "integer"
+                },
+                "defaultValue": {
+                    "type": "string"
+                },
+                "partOfPrimaryKey": {
+                    "type": "boolean"
+                },
+                "autoIncrement": {
+                    "type": "boolean"
+                },
+                "otherConstraints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "comment",
+                "defaultValue",
+                "name",
+                "nullable",
+                "partOfPrimaryKey",
+                "type"
+            ]
         }
     },
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<OneToOneSourceProperty>
 
 export const validateOneToOneSourceProperty = createSchemaValidator<OneToOneSourceProperty>(OneToOneSourcePropertyJsonSchema)
 

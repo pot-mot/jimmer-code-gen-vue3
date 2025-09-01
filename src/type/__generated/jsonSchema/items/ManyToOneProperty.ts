@@ -12,7 +12,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                             "type": "string",
                             "const": "ManyToOne"
                         },
-                        "associationName": {
+                        "associationId": {
                             "type": "string"
                         },
                         "idView": {
@@ -31,7 +31,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                         }
                     },
                     "required": [
-                        "associationName",
+                        "associationId",
                         "category",
                         "idView",
                         "onDissociateAction"
@@ -40,6 +40,9 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                 {
                     "type": "object",
                     "properties": {
+                        "id": {
+                            "type": "string"
+                        },
                         "name": {
                             "type": "string"
                         },
@@ -66,6 +69,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                         "comment",
                         "extraAnnotations",
                         "extraImports",
+                        "id",
                         "name",
                         "nullable"
                     ]
@@ -73,12 +77,12 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                 {
                     "type": "object",
                     "properties": {
-                        "entityName": {
+                        "entityId": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "entityName"
+                        "entityId"
                     ]
                 },
                 {
@@ -96,50 +100,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string"
-                                },
-                                "comment": {
-                                    "type": "string"
-                                },
-                                "type": {
-                                    "type": "string"
-                                },
-                                "dataSize": {
-                                    "type": "number"
-                                },
-                                "numericPrecision": {
-                                    "type": "number"
-                                },
-                                "nullable": {
-                                    "type": "boolean"
-                                },
-                                "defaultValue": {
-                                    "type": "string"
-                                },
-                                "partOfPrimaryKey": {
-                                    "type": "boolean"
-                                },
-                                "autoIncrement": {
-                                    "type": "boolean"
-                                },
-                                "otherConstraints": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "required": [
-                                "comment",
-                                "defaultValue",
-                                "name",
-                                "nullable",
-                                "partOfPrimaryKey",
-                                "type"
-                            ]
+                            "$ref": "#/definitions/Omit<Column,\"id\">"
                         }
                     },
                     "required": [
@@ -157,7 +118,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                             "type": "string",
                             "const": "ManyToOne"
                         },
-                        "associationName": {
+                        "associationId": {
                             "type": "string"
                         },
                         "idView": {
@@ -176,7 +137,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                         }
                     },
                     "required": [
-                        "associationName",
+                        "associationId",
                         "category",
                         "idView",
                         "onDissociateAction"
@@ -185,6 +146,9 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                 {
                     "type": "object",
                     "properties": {
+                        "id": {
+                            "type": "string"
+                        },
                         "name": {
                             "type": "string"
                         },
@@ -211,6 +175,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                         "comment",
                         "extraAnnotations",
                         "extraImports",
+                        "id",
                         "name",
                         "nullable"
                     ]
@@ -218,12 +183,12 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                 {
                     "type": "object",
                     "properties": {
-                        "entityName": {
+                        "entityId": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "entityName"
+                        "entityId"
                     ]
                 },
                 {
@@ -243,7 +208,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                 {
                     "type": "object",
                     "properties": {
-                        "embeddableTypeName": {
+                        "embeddableTypeId": {
                             "type": "string"
                         },
                         "propOverrides": {
@@ -251,7 +216,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyName": {
+                                    "propertyId": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -260,13 +225,13 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyName"
+                                    "propertyId"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeName",
+                        "embeddableTypeId",
                         "propOverrides"
                     ]
                 }
@@ -283,10 +248,56 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                 "SET_NULL"
             ],
             "type": "string"
+        },
+        "Omit<Column,\"id\">": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "nullable": {
+                    "type": "boolean"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "dataSize": {
+                    "type": "integer"
+                },
+                "numericPrecision": {
+                    "type": "integer"
+                },
+                "defaultValue": {
+                    "type": "string"
+                },
+                "partOfPrimaryKey": {
+                    "type": "boolean"
+                },
+                "autoIncrement": {
+                    "type": "boolean"
+                },
+                "otherConstraints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "comment",
+                "defaultValue",
+                "name",
+                "nullable",
+                "partOfPrimaryKey",
+                "type"
+            ]
         }
     },
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<ManyToOneProperty>
 
 export const validateManyToOneProperty = createSchemaValidator<ManyToOneProperty>(ManyToOnePropertyJsonSchema)
 

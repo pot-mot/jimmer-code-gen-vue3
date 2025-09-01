@@ -5,7 +5,7 @@ export default {
     rawType: string
     serialized: boolean
     defaultValue: string
-} & BaseProperty & OptionalKeyProperty & OptionalLogicalDeleteProperty
+} & BaseProperty & (OptionalKeyProperty | OptionalLogicalDeleteProperty)
     & (ColumnProperty | EmbeddableProperty)
     & (
     { arrayType: false } |

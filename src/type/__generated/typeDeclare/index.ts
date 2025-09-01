@@ -37,6 +37,49 @@ import ManyToManyViewPropertyDeclare from "./items/ManyToManyViewProperty.ts";
 import FormulaPropertyDeclare from "./items/FormulaProperty.ts";
 import TransientPropertyDeclare from "./items/TransientProperty.ts";
 
+export type TypeMap = {
+    AssociationType: AssociationType
+    Association: Association
+    Database: Database
+    Schema: Schema
+    Table: Table
+    Column: Column
+    Index: Index
+    ForeignKey: ForeignKey
+    EntityProperty: EntityProperty
+    EntityPropertyCategory: EntityPropertyCategory
+    Entity: Entity
+    MappedSuperClass: MappedSuperClass
+    EmbeddableTypeProperty: EmbeddableTypeProperty
+    EmbeddableTypePropertyCategory: EmbeddableTypePropertyCategory
+    EmbeddableType: EmbeddableType
+    EnumerationStrategy: EnumerationStrategy
+    EnumerationItem: EnumerationItem
+    Enumeration: Enumeration
+    BaseProperty: BaseProperty
+    ColumnProperty: ColumnProperty
+    OptionalKeyProperty: OptionalKeyProperty
+    OptionalLogicalDeleteProperty: OptionalLogicalDeleteProperty
+    EmbeddableProperty: EmbeddableProperty
+    IdProperty: IdProperty
+    ScalarProperty: ScalarProperty
+    EnumProperty: EnumProperty
+    EntityTypeProperty: EntityTypeProperty
+    OnDissociationAction: OnDissociationAction
+    OneToOneSourceProperty: OneToOneSourceProperty
+    OneToOneTargetProperty: OneToOneTargetProperty
+    ManyToOneProperty: ManyToOneProperty
+    OneToManyProperty: OneToManyProperty
+    ManyToManySourceProperty: ManyToManySourceProperty
+    ManyToManyTargetProperty: ManyToManyTargetProperty
+    AssociationProperty: AssociationProperty
+    ManyToManyViewProperty: ManyToManyViewProperty
+    FormulaProperty: FormulaProperty
+    TransientProperty: TransientProperty
+}
+
+export type TypeName = keyof TypeMap
+
 export const typeDeclares = Object.freeze({
     AssociationType: AssociationTypeDeclare,
     Association: AssociationDeclare,

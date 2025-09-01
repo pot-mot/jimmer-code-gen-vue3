@@ -17,7 +17,7 @@ const EntityPropertyCategoryJsonSchema: JSONSchemaType<EntityPropertyCategory> =
     ],
     "type": "string",
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<EntityPropertyCategory>
 
 export const validateEntityPropertyCategory = createSchemaValidator<EntityPropertyCategory>(EntityPropertyCategoryJsonSchema)
 

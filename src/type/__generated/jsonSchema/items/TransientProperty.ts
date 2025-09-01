@@ -23,6 +23,9 @@ const TransientPropertyJsonSchema: JSONSchemaType<TransientProperty> = {
                 {
                     "type": "object",
                     "properties": {
+                        "id": {
+                            "type": "string"
+                        },
                         "name": {
                             "type": "string"
                         },
@@ -49,6 +52,7 @@ const TransientPropertyJsonSchema: JSONSchemaType<TransientProperty> = {
                         "comment",
                         "extraAnnotations",
                         "extraImports",
+                        "id",
                         "name",
                         "nullable"
                     ]
@@ -56,12 +60,12 @@ const TransientPropertyJsonSchema: JSONSchemaType<TransientProperty> = {
                 {
                     "type": "object",
                     "properties": {
-                        "entityName": {
+                        "entityId": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "entityName"
+                        "entityId"
                     ]
                 }
             ]
@@ -86,6 +90,9 @@ const TransientPropertyJsonSchema: JSONSchemaType<TransientProperty> = {
                 {
                     "type": "object",
                     "properties": {
+                        "id": {
+                            "type": "string"
+                        },
                         "name": {
                             "type": "string"
                         },
@@ -112,6 +119,7 @@ const TransientPropertyJsonSchema: JSONSchemaType<TransientProperty> = {
                         "comment",
                         "extraAnnotations",
                         "extraImports",
+                        "id",
                         "name",
                         "nullable"
                     ]
@@ -131,7 +139,7 @@ const TransientPropertyJsonSchema: JSONSchemaType<TransientProperty> = {
         }
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<TransientProperty>
 
 export const validateTransientProperty = createSchemaValidator<TransientProperty>(TransientPropertyJsonSchema)
 

@@ -1,9 +1,10 @@
 export default {
     fileName: 'Entity.d.ts',
     content: `type Entity = {
+    id: string
     package: string
     name: string
-    extends: string[]
+    extendsIds: string[]
     extraImports: string[]
     extraAnnotations: string[]
     idProperty: IdProperty

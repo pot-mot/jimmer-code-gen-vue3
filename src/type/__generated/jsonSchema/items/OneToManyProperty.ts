@@ -10,7 +10,7 @@ const OneToManyPropertyJsonSchema: JSONSchemaType<OneToManyProperty> = {
                     "type": "string",
                     "const": "OneToMany"
                 },
-                "associationName": {
+                "associationId": {
                     "type": "string"
                 },
                 "idView": {
@@ -37,7 +37,7 @@ const OneToManyPropertyJsonSchema: JSONSchemaType<OneToManyProperty> = {
                 }
             },
             "required": [
-                "associationName",
+                "associationId",
                 "category",
                 "idView",
                 "mappedBy",
@@ -51,12 +51,12 @@ const OneToManyPropertyJsonSchema: JSONSchemaType<OneToManyProperty> = {
         {
             "type": "object",
             "properties": {
-                "entityName": {
+                "entityId": {
                     "type": "string"
                 }
             },
             "required": [
-                "entityName"
+                "entityId"
             ]
         }
     ],
@@ -64,6 +64,9 @@ const OneToManyPropertyJsonSchema: JSONSchemaType<OneToManyProperty> = {
         "Omit<BaseProperty,\"nullable\">": {
             "type": "object",
             "properties": {
+                "id": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -87,12 +90,13 @@ const OneToManyPropertyJsonSchema: JSONSchemaType<OneToManyProperty> = {
                 "comment",
                 "extraAnnotations",
                 "extraImports",
+                "id",
                 "name"
             ]
         }
     },
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<OneToManyProperty>
 
 export const validateOneToManyProperty = createSchemaValidator<OneToManyProperty>(OneToManyPropertyJsonSchema)
 

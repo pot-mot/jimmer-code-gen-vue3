@@ -21,7 +21,6 @@ export default {
 } | {
     logicalDelete: true
     logicalDeleteType: 'enum'
-    enumName: string
     logicalDeleteDefaultValue: string
     logicalDeleteDeletedValue: string
 } | {

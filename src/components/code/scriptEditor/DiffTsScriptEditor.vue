@@ -1,4 +1,4 @@
-<script setup lang="ts" generic="Fn extends TsScriptFunction">
+<script setup lang="ts" generic="Name extends ScriptTypeName">
 import {useTemplateRef, computed, watch} from 'vue';
 import {
     type TsScriptExecuteResult,
@@ -9,6 +9,7 @@ import DiffEditor from "@/components/code/diffEditor/DiffEditor.vue";
 import {debounce} from "lodash-es";
 import {editor} from "monaco-editor";
 import setModelMarkers = editor.setModelMarkers
+import type {ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
 
 const diffEditorRef = useTemplateRef<InstanceType<typeof DiffEditor>>("diffEditorRef")
 const editorInstance = computed(() => {
@@ -27,7 +28,7 @@ const modifiedValue = defineModel<string>({
 })
 
 const props = defineProps<{
-    executor: TsScriptExecutor<Fn>,
+    executor: TsScriptExecutor<Name>,
     originValue: string,
 }>()
 
@@ -50,7 +51,7 @@ const validateAndCompile = async (): Promise<TsScriptValidatedCompileResult> => 
 }
 
 // 执行代码
-const executeCode = async (params: Parameters<Fn>): Promise<TsScriptExecuteResult<Fn>> => {
+const executeCode = async (...params: Parameters<TsScriptFunction<Name>>): Promise<TsScriptExecuteResult<Name>> => {
     return await props.executor.executeTsArrowFunctionScript(
         modifiedValue.value,
         params,

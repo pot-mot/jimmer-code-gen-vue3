@@ -11,7 +11,7 @@ const OnDissociationActionJsonSchema: JSONSchemaType<OnDissociationAction> = {
     ],
     "type": "string",
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<OnDissociationAction>
 
 export const validateOnDissociationAction = createSchemaValidator<OnDissociationAction>(OnDissociationActionJsonSchema)
 

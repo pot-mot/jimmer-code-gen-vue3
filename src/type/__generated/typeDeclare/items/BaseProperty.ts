@@ -1,6 +1,7 @@
 export default {
     fileName: 'BaseProperty.d.ts',
     content: `type BaseProperty = {
+    id: string
     name: string
     comment: string
     extraImports: string[]

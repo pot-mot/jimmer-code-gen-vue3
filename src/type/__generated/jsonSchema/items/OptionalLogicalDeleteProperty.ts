@@ -120,9 +120,6 @@ const OptionalLogicalDeletePropertyJsonSchema: JSONSchemaType<OptionalLogicalDel
                     "type": "string",
                     "const": "enum"
                 },
-                "enumName": {
-                    "type": "string"
-                },
                 "logicalDeleteDefaultValue": {
                     "type": "string"
                 },
@@ -131,7 +128,6 @@ const OptionalLogicalDeletePropertyJsonSchema: JSONSchemaType<OptionalLogicalDel
                 }
             },
             "required": [
-                "enumName",
                 "logicalDelete",
                 "logicalDeleteDefaultValue",
                 "logicalDeleteDeletedValue",
@@ -152,7 +148,7 @@ const OptionalLogicalDeletePropertyJsonSchema: JSONSchemaType<OptionalLogicalDel
         }
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<OptionalLogicalDeleteProperty>
 
 export const validateOptionalLogicalDeleteProperty = createSchemaValidator<OptionalLogicalDeleteProperty>(OptionalLogicalDeletePropertyJsonSchema)
 

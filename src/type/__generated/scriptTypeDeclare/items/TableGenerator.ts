@@ -1,7 +1,4 @@
 export default {
     fileName: 'TableGenerator.d.ts',
-    content: `type TableGenerator = {
-    scriptTypeName: 'TableGenerator'
-    (table: Table): string
-}`,
+    content: `type TableGenerator = (table: Table) => string`,
 }

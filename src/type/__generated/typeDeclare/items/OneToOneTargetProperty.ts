@@ -2,7 +2,7 @@ export default {
     fileName: 'OneToOneTargetProperty.d.ts',
     content: `type OneToOneTargetProperty = {
     category: "OneToOne_Target"
-    associationName: string
+    associationId: string
     idView: {
         name: string
     }

@@ -3,14 +3,13 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
 const AssociationTypeJsonSchema: JSONSchemaType<AssociationType> = {
     "enum": [
-        "MANY TO MANY",
-        "MANY TO ONE",
-        "ONE TO MANY",
-        "ONE TO ONE"
+        "MANY_TO_MANY",
+        "MANY_TO_ONE",
+        "ONE_TO_ONE"
     ],
     "type": "string",
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<AssociationType>
 
 export const validateAssociationType = createSchemaValidator<AssociationType>(AssociationTypeJsonSchema)
 

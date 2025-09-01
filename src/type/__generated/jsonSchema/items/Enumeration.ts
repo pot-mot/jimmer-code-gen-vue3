@@ -4,6 +4,9 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const EnumerationJsonSchema: JSONSchemaType<Enumeration> = {
     "type": "object",
     "properties": {
+        "id": {
+            "type": "string"
+        },
         "package": {
             "type": "string"
         },
@@ -33,11 +36,14 @@ const EnumerationJsonSchema: JSONSchemaType<Enumeration> = {
             "items": {
                 "type": "object",
                 "properties": {
+                    "id": {
+                        "type": "string"
+                    },
                     "name": {
                         "type": "string"
                     },
                     "ordinal": {
-                        "type": "number"
+                        "type": "integer"
                     },
                     "comment": {
                         "type": "string"
@@ -59,6 +65,7 @@ const EnumerationJsonSchema: JSONSchemaType<Enumeration> = {
                     "comment",
                     "extraAnnotations",
                     "extraImports",
+                    "id",
                     "name",
                     "ordinal"
                 ]
@@ -69,6 +76,7 @@ const EnumerationJsonSchema: JSONSchemaType<Enumeration> = {
         "comment",
         "extraAnnotations",
         "extraImports",
+        "id",
         "items",
         "name",
         "package",
@@ -85,7 +93,7 @@ const EnumerationJsonSchema: JSONSchemaType<Enumeration> = {
         }
     },
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<Enumeration>
 
 export const validateEnumeration = createSchemaValidator<Enumeration>(EnumerationJsonSchema)
 

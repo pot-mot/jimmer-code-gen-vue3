@@ -4,6 +4,9 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const TableJsonSchema: JSONSchemaType<Table> = {
     "type": "object",
     "properties": {
+        "id": {
+            "type": "string"
+        },
         "name": {
             "type": "string"
         },
@@ -15,6 +18,9 @@ const TableJsonSchema: JSONSchemaType<Table> = {
             "items": {
                 "type": "object",
                 "properties": {
+                    "id": {
+                        "type": "string"
+                    },
                     "name": {
                         "type": "string"
                     },
@@ -25,10 +31,10 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                         "type": "string"
                     },
                     "dataSize": {
-                        "type": "number"
+                        "type": "integer"
                     },
                     "numericPrecision": {
-                        "type": "number"
+                        "type": "integer"
                     },
                     "nullable": {
                         "type": "boolean"
@@ -52,6 +58,7 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                 "required": [
                     "comment",
                     "defaultValue",
+                    "id",
                     "name",
                     "nullable",
                     "partOfPrimaryKey",
@@ -64,10 +71,13 @@ const TableJsonSchema: JSONSchemaType<Table> = {
             "items": {
                 "type": "object",
                 "properties": {
+                    "id": {
+                        "type": "string"
+                    },
                     "name": {
                         "type": "string"
                     },
-                    "columnNames": {
+                    "columnIds": {
                         "type": "array",
                         "items": {
                             "type": "string"
@@ -78,7 +88,8 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                     }
                 },
                 "required": [
-                    "columnNames",
+                    "columnIds",
+                    "id",
                     "isUnique",
                     "name"
                 ]
@@ -88,11 +99,12 @@ const TableJsonSchema: JSONSchemaType<Table> = {
     "required": [
         "columns",
         "comment",
+        "id",
         "indexes",
         "name"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<Table>
 
 export const validateTable = createSchemaValidator<Table>(TableJsonSchema)
 

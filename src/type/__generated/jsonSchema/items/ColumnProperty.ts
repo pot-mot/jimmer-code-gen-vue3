@@ -5,25 +5,33 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
     "type": "object",
     "properties": {
         "columnInfo": {
+            "$ref": "#/definitions/Omit<Column,\"id\">"
+        }
+    },
+    "required": [
+        "columnInfo"
+    ],
+    "definitions": {
+        "Omit<Column,\"id\">": {
             "type": "object",
             "properties": {
+                "type": {
+                    "type": "string"
+                },
                 "name": {
                     "type": "string"
+                },
+                "nullable": {
+                    "type": "boolean"
                 },
                 "comment": {
                     "type": "string"
                 },
-                "type": {
-                    "type": "string"
-                },
                 "dataSize": {
-                    "type": "number"
+                    "type": "integer"
                 },
                 "numericPrecision": {
-                    "type": "number"
-                },
-                "nullable": {
-                    "type": "boolean"
+                    "type": "integer"
                 },
                 "defaultValue": {
                     "type": "string"
@@ -51,11 +59,8 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
             ]
         }
     },
-    "required": [
-        "columnInfo"
-    ],
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<ColumnProperty>
 
 export const validateColumnProperty = createSchemaValidator<ColumnProperty>(ColumnPropertyJsonSchema)
 

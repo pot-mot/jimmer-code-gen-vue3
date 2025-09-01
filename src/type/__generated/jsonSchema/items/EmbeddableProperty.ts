@@ -4,7 +4,7 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const EmbeddablePropertyJsonSchema: JSONSchemaType<EmbeddableProperty> = {
     "type": "object",
     "properties": {
-        "embeddableTypeName": {
+        "embeddableTypeId": {
             "type": "string"
         },
         "propOverrides": {
@@ -12,7 +12,7 @@ const EmbeddablePropertyJsonSchema: JSONSchemaType<EmbeddableProperty> = {
             "items": {
                 "type": "object",
                 "properties": {
-                    "propertyName": {
+                    "propertyId": {
                         "type": "string"
                     },
                     "overrideColumnName": {
@@ -21,17 +21,17 @@ const EmbeddablePropertyJsonSchema: JSONSchemaType<EmbeddableProperty> = {
                 },
                 "required": [
                     "overrideColumnName",
-                    "propertyName"
+                    "propertyId"
                 ]
             }
         }
     },
     "required": [
-        "embeddableTypeName",
+        "embeddableTypeId",
         "propOverrides"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<EmbeddableProperty>
 
 export const validateEmbeddableProperty = createSchemaValidator<EmbeddableProperty>(EmbeddablePropertyJsonSchema)
 

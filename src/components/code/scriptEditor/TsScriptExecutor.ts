@@ -2,7 +2,7 @@ import ts, {type SourceFile} from 'typescript';
 import {createDefaultMapFromCDN, createSystem, createVirtualCompilerHost} from "@typescript/vfs";
 import {editor, languages, MarkerSeverity} from "monaco-editor";
 import {typeDeclares} from "@/type/__generated/typeDeclare";
-import {scriptTypeDeclares, type ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
+import {scriptTypeDeclares, type ScriptTypeMap, type ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
 import message from "@/components/message/Message.vue";
 
 type IMarkerData = editor.IMarkerData
@@ -170,10 +170,8 @@ const getProgramCache = async () => {
     return tsProgramInitPromise
 }
 
-export type TsScriptFunction = {
-    (...args: any[]): any,
-    scriptTypeName: ScriptTypeName,
-}
+export type TsScriptFunction<Name extends ScriptTypeName> =
+    (...args: Parameters<ScriptTypeMap[Name]>) => ReturnType<ScriptTypeMap[Name]>
 
 const getNewProgramAndSourceFile = async (code: string) => {
     const {program, compilerHost, updateFile} = await getProgramCache()
@@ -200,14 +198,14 @@ export type TsScriptValidatedCompileResult = {
     markers?: IMarkerData[]
 }
 
-export type TsScript<Fn extends TsScriptFunction> = {
+export type TsScript<Name extends ScriptTypeName> = {
     valid: true
-    execute: (...params: Parameters<Fn>) => ReturnType<Fn>
+    execute: (...params: Parameters<TsScriptFunction<Name>>) => ReturnType<TsScriptFunction<Name>>
 } | (TsScriptValidatedCompileResult & { valid: false })
 
-export type TsScriptExecuteResult<Fn extends TsScriptFunction> = {
+export type TsScriptExecuteResult<Name extends ScriptTypeName> = {
     success: true
-    result: ReturnType<Fn>
+    result: ReturnType<TsScriptFunction<Name>>
 } | {
     success: false
     state: 'compileError'
@@ -218,13 +216,11 @@ export type TsScriptExecuteResult<Fn extends TsScriptFunction> = {
     error: Error | any
 }
 
-export class TsScriptExecutor<
-    Fn extends TsScriptFunction
-> {
-    readonly scriptTypeName: Fn['scriptTypeName']
+export class TsScriptExecutor<Name extends ScriptTypeName> {
+    readonly scriptTypeName: Name
 
     constructor(
-        scriptTypeName: Fn['scriptTypeName']
+        scriptTypeName: Name
     ) {
         this.scriptTypeName = scriptTypeName
     }
@@ -596,7 +592,7 @@ export class TsScriptExecutor<
         }
     }
 
-    executeJsFunction(code: string, params: Parameters<Fn>): ReturnType<Fn> {
+    executeJsFunction(code: string, params: Parameters<TsScriptFunction<Name>>): ReturnType<TsScriptFunction<Name>> {
         let trimCode = code.trim()
         if (!trimCode) {
             throw new Error("code is empty");
@@ -634,8 +630,8 @@ with(arguments[0]) {
 
     async executeTsArrowFunctionScript(
         templateFn: string,
-        params: Parameters<Fn>,
-    ): Promise<TsScriptExecuteResult<Fn>> {
+        params: Parameters<TsScriptFunction<Name>>,
+    ): Promise<TsScriptExecuteResult<Name>> {
         const compileResult = await this.validateThenCompile(templateFn)
         if (!compileResult.valid) {
             return {
@@ -660,13 +656,13 @@ with(arguments[0]) {
     }
 }
 
-export const createTsScript = async <Fn extends TsScriptFunction>(
-    scriptTypeName: ScriptTypeName,
+export const createTsScript = async <Name extends ScriptTypeName>(
+    scriptTypeName: Name,
     code: string,
-    executor?: TsScriptExecutor<Fn>
-): Promise<TsScript<Fn>> => {
+    executor?: TsScriptExecutor<Name>
+): Promise<TsScript<Name>> => {
     if (!executor) {
-        executor = new TsScriptExecutor<Fn>(scriptTypeName)
+        executor = new TsScriptExecutor(scriptTypeName)
     }
     const result = await executor.validateThenCompile(code)
     if (!result.valid) {
@@ -674,7 +670,7 @@ export const createTsScript = async <Fn extends TsScriptFunction>(
     } else {
         return {
             valid: true,
-            execute: (...params: Parameters<Fn>) => {
+            execute: (...params: Parameters<TsScriptFunction<Name>>) => {
                 return executor.executeJsFunction(result.compiledCode, params)
             }
         }

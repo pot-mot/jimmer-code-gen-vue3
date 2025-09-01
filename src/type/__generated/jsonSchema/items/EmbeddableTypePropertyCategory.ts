@@ -8,7 +8,7 @@ const EmbeddableTypePropertyCategoryJsonSchema: JSONSchemaType<EmbeddableTypePro
     ],
     "type": "string",
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<EmbeddableTypePropertyCategory>
 
 export const validateEmbeddableTypePropertyCategory = createSchemaValidator<EmbeddableTypePropertyCategory>(EmbeddableTypePropertyCategoryJsonSchema)
 

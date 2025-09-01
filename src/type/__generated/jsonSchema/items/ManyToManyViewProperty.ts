@@ -10,33 +10,33 @@ const ManyToManyViewPropertyJsonSchema: JSONSchemaType<ManyToManyViewProperty> =
                     "type": "string",
                     "const": "ManyToMany_View"
                 },
-                "baseToManyPropertyName": {
+                "baseToManyPropertyId": {
                     "type": "string"
                 },
-                "deeperAssociationPropertyName": {
+                "deeperAssociationPropertyId": {
                     "type": "string"
                 }
             },
             "required": [
-                "baseToManyPropertyName",
+                "baseToManyPropertyId",
                 "category",
-                "deeperAssociationPropertyName"
+                "deeperAssociationPropertyId"
             ]
         },
         {
             "type": "object",
             "properties": {
-                "entityName": {
+                "entityId": {
                     "type": "string"
                 }
             },
             "required": [
-                "entityName"
+                "entityId"
             ]
         }
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<ManyToManyViewProperty>
 
 export const validateManyToManyViewProperty = createSchemaValidator<ManyToManyViewProperty>(ManyToManyViewPropertyJsonSchema)
 

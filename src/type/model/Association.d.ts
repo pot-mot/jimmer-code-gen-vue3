@@ -1,7 +1,8 @@
-type AssociationType = 'ONE TO ONE' | 'ONE TO MANY' | 'MANY TO ONE' | 'MANY TO MANY'
+type AssociationType = 'ONE_TO_ONE' | 'MANY_TO_ONE' | 'MANY_TO_MANY'
 
-type AssociationDeclare = {
+type Association = {
     id: string
+    name: string
     type: AssociationType
     sourceEntityId: string
     targetEntityId: string

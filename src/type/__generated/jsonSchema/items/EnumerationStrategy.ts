@@ -9,7 +9,7 @@ const EnumerationStrategyJsonSchema: JSONSchemaType<EnumerationStrategy> = {
     ],
     "type": "string",
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<EnumerationStrategy>
 
 export const validateEnumerationStrategy = createSchemaValidator<EnumerationStrategy>(EnumerationStrategyJsonSchema)
 

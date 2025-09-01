@@ -2,7 +2,7 @@ export default {
     fileName: 'ManyToOneProperty.d.ts',
     content: `type ManyToOneProperty = {
     category: "ManyToOne"
-    associationName: string
+    associationId: string
     idView: {
         name: string
     }

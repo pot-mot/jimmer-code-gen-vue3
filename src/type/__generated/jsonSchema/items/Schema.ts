@@ -4,6 +4,9 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const SchemaJsonSchema: JSONSchemaType<Schema> = {
     "type": "object",
     "properties": {
+        "id": {
+            "type": "string"
+        },
         "name": {
             "type": "string"
         },
@@ -12,6 +15,9 @@ const SchemaJsonSchema: JSONSchemaType<Schema> = {
             "items": {
                 "type": "object",
                 "properties": {
+                    "id": {
+                        "type": "string"
+                    },
                     "name": {
                         "type": "string"
                     },
@@ -23,6 +29,9 @@ const SchemaJsonSchema: JSONSchemaType<Schema> = {
                         "items": {
                             "type": "object",
                             "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
                                 "name": {
                                     "type": "string"
                                 },
@@ -33,10 +42,10 @@ const SchemaJsonSchema: JSONSchemaType<Schema> = {
                                     "type": "string"
                                 },
                                 "dataSize": {
-                                    "type": "number"
+                                    "type": "integer"
                                 },
                                 "numericPrecision": {
-                                    "type": "number"
+                                    "type": "integer"
                                 },
                                 "nullable": {
                                     "type": "boolean"
@@ -60,6 +69,7 @@ const SchemaJsonSchema: JSONSchemaType<Schema> = {
                             "required": [
                                 "comment",
                                 "defaultValue",
+                                "id",
                                 "name",
                                 "nullable",
                                 "partOfPrimaryKey",
@@ -72,10 +82,13 @@ const SchemaJsonSchema: JSONSchemaType<Schema> = {
                         "items": {
                             "type": "object",
                             "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
                                 "name": {
                                     "type": "string"
                                 },
-                                "columnNames": {
+                                "columnIds": {
                                     "type": "array",
                                     "items": {
                                         "type": "string"
@@ -86,7 +99,8 @@ const SchemaJsonSchema: JSONSchemaType<Schema> = {
                                 }
                             },
                             "required": [
-                                "columnNames",
+                                "columnIds",
+                                "id",
                                 "isUnique",
                                 "name"
                             ]
@@ -96,6 +110,7 @@ const SchemaJsonSchema: JSONSchemaType<Schema> = {
                 "required": [
                     "columns",
                     "comment",
+                    "id",
                     "indexes",
                     "name"
                 ]
@@ -103,11 +118,12 @@ const SchemaJsonSchema: JSONSchemaType<Schema> = {
         }
     },
     "required": [
+        "id",
         "name",
         "tables"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<Schema>
 
 export const validateSchema = createSchemaValidator<Schema>(SchemaJsonSchema)
 

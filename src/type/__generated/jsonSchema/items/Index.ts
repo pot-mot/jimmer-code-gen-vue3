@@ -4,10 +4,13 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const IndexJsonSchema: JSONSchemaType<Index> = {
     "type": "object",
     "properties": {
+        "id": {
+            "type": "string"
+        },
         "name": {
             "type": "string"
         },
-        "columnNames": {
+        "columnIds": {
             "type": "array",
             "items": {
                 "type": "string"
@@ -18,12 +21,13 @@ const IndexJsonSchema: JSONSchemaType<Index> = {
         }
     },
     "required": [
-        "columnNames",
+        "columnIds",
+        "id",
         "isUnique",
         "name"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
-}
+} as any as JSONSchemaType<Index>
 
 export const validateIndex = createSchemaValidator<Index>(IndexJsonSchema)
 

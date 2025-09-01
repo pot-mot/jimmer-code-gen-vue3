@@ -2,7 +2,7 @@ export default {
     fileName: 'OneToOneSourceProperty.d.ts',
     content: `type OneToOneSourceProperty = {
     category: "OneToOne_Source"
-    associationName: string
+    associationId: string
     idView?: {
         name: string
     }

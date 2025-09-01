@@ -11,16 +11,16 @@ const ensureDirExists = (dirPath) => {
     }
 }
 
-const modelPath = "../src/type/model";
+const modelPath = "src/type/model";
 ensureDirExists(modelPath)
-const scriptPath = "../src/type/script";
+const scriptPath = "src/type/script";
 ensureDirExists(scriptPath)
 
-const typeDeclarePath = "../src/type/__generated/typeDeclare";
+const typeDeclarePath = "src/type/__generated/typeDeclare";
 ensureDirExists(typeDeclarePath)
-const scriptTypeDeclarePath = "../src/type/__generated/scriptTypeDeclare";
+const scriptTypeDeclarePath = "src/type/__generated/scriptTypeDeclare";
 ensureDirExists(scriptTypeDeclarePath)
-const jsonSchemaPath = "../src/type/__generated/jsonSchema";
+const jsonSchemaPath = "src/type/__generated/jsonSchema";
 ensureDirExists(jsonSchemaPath)
 
 const getDeclareTsFiles = (path) => {
@@ -81,14 +81,10 @@ const jsonSchemaGenerator = tjs.buildGenerator(
     jsonSchemaProgram,
     {
         required: true,
+        strictNullChecks: true,
+        defaultNumberType: "integer",
     }
 )
-
-
-const isObjectType = (type) => {
-    const flags = type.getFlags()
-    return !!(flags & ts.TypeFlags.Object)
-}
 
 
 const existedTypeSet = new Set()
@@ -102,14 +98,13 @@ for (const {fileName} of modelTypeFiles) {
             !ts.isTypeAliasDeclaration(statement) &&
             !ts.isInterfaceDeclaration(statement)
         ) {
-            throw new Error(`Script [${fileName}] is not a type alias or interface`)
+            throw new Error(`[${fileName}] contains statement not a type alias or interface`)
         }
 
         const type = typeChecker.getTypeAtLocation(statement)
         const typeName = statement?.symbol?.escapedName
         if (!type || !typeName) {
-            console.warn(`[${fileName}] ${statement} is not a valid type alias or interface`)
-            continue
+            throw new Error(`[${fileName}] ${statement} is not a valid type alias or interface`)
         }
 
         if (existedTypeSet.has(typeName)) {
@@ -123,6 +118,13 @@ for (const {fileName} of modelTypeFiles) {
     }
 }
 
+
+const isFunctionType = (type) => {
+    if (!type) return false;
+    const signatures = type.getCallSignatures();
+    return signatures.length > 0;
+}
+
 const scriptTypeDeclares = []
 for (const {fileName} of scriptTypeFiles) {
     const sourceFile = program.getSourceFile(fileName)
@@ -131,37 +133,22 @@ for (const {fileName} of scriptTypeFiles) {
             !ts.isTypeAliasDeclaration(statement) &&
             !ts.isInterfaceDeclaration(statement)
         ) {
-            throw new Error(`Script [${fileName}] is not a type alias or interface`)
+            throw new Error(`[${fileName}] contains statement not a type alias or interface`)
         }
 
         const type = typeChecker.getTypeAtLocation(statement)
         const typeName = statement?.symbol?.escapedName
         if (!type || !typeName) {
-            console.warn(`[${fileName}] ${statement} is not a valid type alias or interface`)
-            continue
+            throw new Error(`[${fileName}] ${statement} is not a valid type alias or interface`)
         }
-
-        if (!isObjectType(type)) {
-            throw new Error(`[${fileName}] ${typeName} is not an object type`)
+        if (!isFunctionType(type)) {
+            throw new Error(`[${fileName}] ${typeName} is not a function type`);
         }
 
         if (existedTypeSet.has(typeName)) {
             throw new Error(`[${fileName}] ${typeName} is already exists`)
         }
         existedTypeSet.add(typeName)
-
-        const scriptTypeNameProperty = type.getProperty("scriptTypeName")
-        if (!scriptTypeNameProperty) {
-            throw new Error(`[${fileName}] ${typeName} does not have scriptTypeName property`)
-        }
-        const scriptTypeNameType = typeChecker.getTypeOfSymbolAtLocation(scriptTypeNameProperty, statement)
-        if (!scriptTypeNameType.isStringLiteral()) {
-            throw new Error(`[${fileName}] ${typeName} scriptTypeName property is not a string literal`)
-        }
-        const scriptTypeNamePropertyValue = scriptTypeNameType.value
-        if (scriptTypeNamePropertyValue !== typeName) {
-            throw new Error(`[${fileName}] ${typeName} scriptTypeName property value is not equal to typeName`)
-        }
 
         const content = statement.getFullText(sourceFile)
         scriptTypeDeclares.push({type, typeName, content})
@@ -184,6 +171,12 @@ typeDeclareFiles.push({
     fileName: `${typeDeclarePath}/index.ts`,
     content: `${typeDeclares.map(it => `import ${it.typeName}Declare from "./items/${it.typeName}.ts";`).join("\n")}
 
+export type TypeMap = {
+${typeDeclares.map(it => `    ${it.typeName}: ${it.typeName}`).join("\n")}
+}
+
+export type TypeName = keyof TypeMap
+
 export const typeDeclares = Object.freeze({
 ${typeDeclares.map(it => `    ${it.typeName}: ${it.typeName}Declare,`).join("\n")}
 })
@@ -203,11 +196,15 @@ scriptTypeDeclareFiles.push({
     fileName: `${scriptTypeDeclarePath}/index.ts`,
     content: `${scriptTypeDeclares.map(it => `import ${it.typeName}Declare from "./items/${it.typeName}.ts";`).join("\n")}
 
+export type ScriptTypeMap = {
+${scriptTypeDeclares.map(it => `    ${it.typeName}: ${it.typeName}`).join("\n")}
+}
+
+export type ScriptTypeName = keyof ScriptTypeMap
+
 export const scriptTypeDeclares = Object.freeze({
 ${scriptTypeDeclares.map(it => `    ${it.typeName}: ${it.typeName}Declare,`).join("\n")}
 })
-
-export type ScriptTypeName = keyof typeof scriptTypeDeclares
 `,
 })
 
@@ -216,7 +213,7 @@ const jsonSchemaFiles = typeDeclares.map(it => ({
     content: `import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
 import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
-const ${it.typeName}JsonSchema: JSONSchemaType<${it.typeName}> = ${JSON.stringify(it.schema, undefined, 4)}
+const ${it.typeName}JsonSchema: JSONSchemaType<${it.typeName}> = ${JSON.stringify(it.schema, undefined, 4)} as any as JSONSchemaType<${it.typeName}>
 
 export const validate${it.typeName} = createSchemaValidator<${it.typeName}>(${it.typeName}JsonSchema)
 

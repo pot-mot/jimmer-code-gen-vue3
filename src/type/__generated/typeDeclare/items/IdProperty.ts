@@ -15,5 +15,5 @@ export default {
         type: "CustomerIdGenerator",
         generatorName: string
     }
-} & Omit<BaseProperty, 'nullable'> & OptionalKeyProperty & (ColumnProperty | EmbeddableProperty)`,
+} & Omit<BaseProperty, 'nullable'> & (ColumnProperty | EmbeddableProperty)`,
 }

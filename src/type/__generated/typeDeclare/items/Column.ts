@@ -1,6 +1,7 @@
 export default {
     fileName: 'Column.d.ts',
     content: `type Column = {
+    id: string
     name: string,
     comment: string,
     type: string,
