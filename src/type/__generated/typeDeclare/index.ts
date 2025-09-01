@@ -1,122 +1,125 @@
-import AssociationTypeDeclare from "./items/AssociationType.ts";
 import AssociationDeclare from "./items/Association.ts";
-import DatabaseDeclare from "./items/Database.ts";
-import SchemaDeclare from "./items/Schema.ts";
-import TableDeclare from "./items/Table.ts";
+import AssociationPropertyDeclare from "./items/AssociationProperty.ts";
+import AssociationTypeDeclare from "./items/AssociationType.ts";
+import BasePropertyDeclare from "./items/BaseProperty.ts";
 import ColumnDeclare from "./items/Column.ts";
-import IndexDeclare from "./items/Index.ts";
-import ForeignKeyDeclare from "./items/ForeignKey.ts";
-import EntityPropertyDeclare from "./items/EntityProperty.ts";
-import EntityPropertyCategoryDeclare from "./items/EntityPropertyCategory.ts";
-import EntityDeclare from "./items/Entity.ts";
-import MappedSuperClassDeclare from "./items/MappedSuperClass.ts";
+import ColumnPropertyDeclare from "./items/ColumnProperty.ts";
+import DatabaseDeclare from "./items/Database.ts";
+import EmbeddablePropertyDeclare from "./items/EmbeddableProperty.ts";
+import EmbeddableTypeDeclare from "./items/EmbeddableType.ts";
 import EmbeddableTypePropertyDeclare from "./items/EmbeddableTypeProperty.ts";
 import EmbeddableTypePropertyCategoryDeclare from "./items/EmbeddableTypePropertyCategory.ts";
-import EmbeddableTypeDeclare from "./items/EmbeddableType.ts";
-import EnumerationStrategyDeclare from "./items/EnumerationStrategy.ts";
-import EnumerationItemDeclare from "./items/EnumerationItem.ts";
-import EnumerationDeclare from "./items/Enumeration.ts";
-import BasePropertyDeclare from "./items/BaseProperty.ts";
-import ColumnPropertyDeclare from "./items/ColumnProperty.ts";
-import OptionalKeyPropertyDeclare from "./items/OptionalKeyProperty.ts";
-import OptionalLogicalDeletePropertyDeclare from "./items/OptionalLogicalDeleteProperty.ts";
-import EmbeddablePropertyDeclare from "./items/EmbeddableProperty.ts";
-import IdPropertyDeclare from "./items/IdProperty.ts";
-import ScalarPropertyDeclare from "./items/ScalarProperty.ts";
-import EnumPropertyDeclare from "./items/EnumProperty.ts";
+import EntityDeclare from "./items/Entity.ts";
+import EntityPropertyDeclare from "./items/EntityProperty.ts";
+import EntityPropertyCategoryDeclare from "./items/EntityPropertyCategory.ts";
 import EntityTypePropertyDeclare from "./items/EntityTypeProperty.ts";
-import OnDissociationActionDeclare from "./items/OnDissociationAction.ts";
-import OneToOneSourcePropertyDeclare from "./items/OneToOneSourceProperty.ts";
-import OneToOneTargetPropertyDeclare from "./items/OneToOneTargetProperty.ts";
-import ManyToOnePropertyDeclare from "./items/ManyToOneProperty.ts";
-import OneToManyPropertyDeclare from "./items/OneToManyProperty.ts";
+import EnumerationDeclare from "./items/Enumeration.ts";
+import EnumerationItemDeclare from "./items/EnumerationItem.ts";
+import EnumerationStrategyDeclare from "./items/EnumerationStrategy.ts";
+import EnumPropertyDeclare from "./items/EnumProperty.ts";
+import ForeignKeyDeclare from "./items/ForeignKey.ts";
+import FormulaPropertyDeclare from "./items/FormulaProperty.ts";
+import IdPropertyDeclare from "./items/IdProperty.ts";
+import IndexDeclare from "./items/Index.ts";
 import ManyToManySourcePropertyDeclare from "./items/ManyToManySourceProperty.ts";
 import ManyToManyTargetPropertyDeclare from "./items/ManyToManyTargetProperty.ts";
-import AssociationPropertyDeclare from "./items/AssociationProperty.ts";
 import ManyToManyViewPropertyDeclare from "./items/ManyToManyViewProperty.ts";
-import FormulaPropertyDeclare from "./items/FormulaProperty.ts";
+import ManyToOnePropertyDeclare from "./items/ManyToOneProperty.ts";
+import MappedSuperClassDeclare from "./items/MappedSuperClass.ts";
+import OnDissociationActionDeclare from "./items/OnDissociationAction.ts";
+import OneToManyPropertyDeclare from "./items/OneToManyProperty.ts";
+import OneToOneSourcePropertyDeclare from "./items/OneToOneSourceProperty.ts";
+import OneToOneTargetPropertyDeclare from "./items/OneToOneTargetProperty.ts";
+import OptionalKeyPropertyDeclare from "./items/OptionalKeyProperty.ts";
+import OptionalLogicalDeletePropertyDeclare from "./items/OptionalLogicalDeleteProperty.ts";
+import OptionalOrderPropertyDeclare from "./items/OptionalOrderProperty.ts";
+import ScalarPropertyDeclare from "./items/ScalarProperty.ts";
+import SchemaDeclare from "./items/Schema.ts";
+import TableDeclare from "./items/Table.ts";
 import TransientPropertyDeclare from "./items/TransientProperty.ts";
 
 export type TypeMap = {
-    AssociationType: AssociationType
     Association: Association
-    Database: Database
-    Schema: Schema
-    Table: Table
+    AssociationProperty: AssociationProperty
+    AssociationType: AssociationType
+    BaseProperty: BaseProperty
     Column: Column
-    Index: Index
-    ForeignKey: ForeignKey
-    EntityProperty: EntityProperty
-    EntityPropertyCategory: EntityPropertyCategory
-    Entity: Entity
-    MappedSuperClass: MappedSuperClass
+    ColumnProperty: ColumnProperty
+    Database: Database
+    EmbeddableProperty: EmbeddableProperty
+    EmbeddableType: EmbeddableType
     EmbeddableTypeProperty: EmbeddableTypeProperty
     EmbeddableTypePropertyCategory: EmbeddableTypePropertyCategory
-    EmbeddableType: EmbeddableType
-    EnumerationStrategy: EnumerationStrategy
-    EnumerationItem: EnumerationItem
-    Enumeration: Enumeration
-    BaseProperty: BaseProperty
-    ColumnProperty: ColumnProperty
-    OptionalKeyProperty: OptionalKeyProperty
-    OptionalLogicalDeleteProperty: OptionalLogicalDeleteProperty
-    EmbeddableProperty: EmbeddableProperty
-    IdProperty: IdProperty
-    ScalarProperty: ScalarProperty
-    EnumProperty: EnumProperty
+    Entity: Entity
+    EntityProperty: EntityProperty
+    EntityPropertyCategory: EntityPropertyCategory
     EntityTypeProperty: EntityTypeProperty
-    OnDissociationAction: OnDissociationAction
-    OneToOneSourceProperty: OneToOneSourceProperty
-    OneToOneTargetProperty: OneToOneTargetProperty
-    ManyToOneProperty: ManyToOneProperty
-    OneToManyProperty: OneToManyProperty
+    Enumeration: Enumeration
+    EnumerationItem: EnumerationItem
+    EnumerationStrategy: EnumerationStrategy
+    EnumProperty: EnumProperty
+    ForeignKey: ForeignKey
+    FormulaProperty: FormulaProperty
+    IdProperty: IdProperty
+    Index: Index
     ManyToManySourceProperty: ManyToManySourceProperty
     ManyToManyTargetProperty: ManyToManyTargetProperty
-    AssociationProperty: AssociationProperty
     ManyToManyViewProperty: ManyToManyViewProperty
-    FormulaProperty: FormulaProperty
+    ManyToOneProperty: ManyToOneProperty
+    MappedSuperClass: MappedSuperClass
+    OnDissociationAction: OnDissociationAction
+    OneToManyProperty: OneToManyProperty
+    OneToOneSourceProperty: OneToOneSourceProperty
+    OneToOneTargetProperty: OneToOneTargetProperty
+    OptionalKeyProperty: OptionalKeyProperty
+    OptionalLogicalDeleteProperty: OptionalLogicalDeleteProperty
+    OptionalOrderProperty: OptionalOrderProperty
+    ScalarProperty: ScalarProperty
+    Schema: Schema
+    Table: Table
     TransientProperty: TransientProperty
 }
 
 export type TypeName = keyof TypeMap
 
 export const typeDeclares = Object.freeze({
-    AssociationType: AssociationTypeDeclare,
     Association: AssociationDeclare,
-    Database: DatabaseDeclare,
-    Schema: SchemaDeclare,
-    Table: TableDeclare,
+    AssociationProperty: AssociationPropertyDeclare,
+    AssociationType: AssociationTypeDeclare,
+    BaseProperty: BasePropertyDeclare,
     Column: ColumnDeclare,
-    Index: IndexDeclare,
-    ForeignKey: ForeignKeyDeclare,
-    EntityProperty: EntityPropertyDeclare,
-    EntityPropertyCategory: EntityPropertyCategoryDeclare,
-    Entity: EntityDeclare,
-    MappedSuperClass: MappedSuperClassDeclare,
+    ColumnProperty: ColumnPropertyDeclare,
+    Database: DatabaseDeclare,
+    EmbeddableProperty: EmbeddablePropertyDeclare,
+    EmbeddableType: EmbeddableTypeDeclare,
     EmbeddableTypeProperty: EmbeddableTypePropertyDeclare,
     EmbeddableTypePropertyCategory: EmbeddableTypePropertyCategoryDeclare,
-    EmbeddableType: EmbeddableTypeDeclare,
-    EnumerationStrategy: EnumerationStrategyDeclare,
-    EnumerationItem: EnumerationItemDeclare,
-    Enumeration: EnumerationDeclare,
-    BaseProperty: BasePropertyDeclare,
-    ColumnProperty: ColumnPropertyDeclare,
-    OptionalKeyProperty: OptionalKeyPropertyDeclare,
-    OptionalLogicalDeleteProperty: OptionalLogicalDeletePropertyDeclare,
-    EmbeddableProperty: EmbeddablePropertyDeclare,
-    IdProperty: IdPropertyDeclare,
-    ScalarProperty: ScalarPropertyDeclare,
-    EnumProperty: EnumPropertyDeclare,
+    Entity: EntityDeclare,
+    EntityProperty: EntityPropertyDeclare,
+    EntityPropertyCategory: EntityPropertyCategoryDeclare,
     EntityTypeProperty: EntityTypePropertyDeclare,
-    OnDissociationAction: OnDissociationActionDeclare,
-    OneToOneSourceProperty: OneToOneSourcePropertyDeclare,
-    OneToOneTargetProperty: OneToOneTargetPropertyDeclare,
-    ManyToOneProperty: ManyToOnePropertyDeclare,
-    OneToManyProperty: OneToManyPropertyDeclare,
+    Enumeration: EnumerationDeclare,
+    EnumerationItem: EnumerationItemDeclare,
+    EnumerationStrategy: EnumerationStrategyDeclare,
+    EnumProperty: EnumPropertyDeclare,
+    ForeignKey: ForeignKeyDeclare,
+    FormulaProperty: FormulaPropertyDeclare,
+    IdProperty: IdPropertyDeclare,
+    Index: IndexDeclare,
     ManyToManySourceProperty: ManyToManySourcePropertyDeclare,
     ManyToManyTargetProperty: ManyToManyTargetPropertyDeclare,
-    AssociationProperty: AssociationPropertyDeclare,
     ManyToManyViewProperty: ManyToManyViewPropertyDeclare,
-    FormulaProperty: FormulaPropertyDeclare,
+    ManyToOneProperty: ManyToOnePropertyDeclare,
+    MappedSuperClass: MappedSuperClassDeclare,
+    OnDissociationAction: OnDissociationActionDeclare,
+    OneToManyProperty: OneToManyPropertyDeclare,
+    OneToOneSourceProperty: OneToOneSourcePropertyDeclare,
+    OneToOneTargetProperty: OneToOneTargetPropertyDeclare,
+    OptionalKeyProperty: OptionalKeyPropertyDeclare,
+    OptionalLogicalDeleteProperty: OptionalLogicalDeletePropertyDeclare,
+    OptionalOrderProperty: OptionalOrderPropertyDeclare,
+    ScalarProperty: ScalarPropertyDeclare,
+    Schema: SchemaDeclare,
+    Table: TableDeclare,
     TransientProperty: TransientPropertyDeclare,
 })

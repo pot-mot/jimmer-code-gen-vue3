@@ -4,6 +4,7 @@ export default {
     id: string
     package: string
     name: string
+    comment: string
     extendsIds: string[]
     extraImports: string[]
     extraAnnotations: string[]

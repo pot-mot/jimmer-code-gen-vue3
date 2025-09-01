@@ -7,15 +7,18 @@ type BaseProperty = {
     nullable: boolean
 }
 
-type ColumnProperty = {
-    columnInfo: Omit<Column, 'id'>
-}
-
 type OptionalKeyProperty = {
     key: true
     keyGroups: string[]
 } | {
     key: false
+}
+
+type OptionalOrderProperty = {
+    orderedProperty: false
+} | {
+    orderedProperty: true,
+    orderDirection: "ASC" | "DESC"
 }
 
 type OptionalLogicalDeleteProperty = {
@@ -44,6 +47,10 @@ type OptionalLogicalDeleteProperty = {
 } | {
     logicalDelete: false
 }
+
+type ColumnProperty = {
+    columnInfo: Omit<Column, 'id'>
+} & OptionalOrderProperty
 
 type EmbeddableProperty = {
     embeddableTypeId: string
@@ -195,11 +202,12 @@ type FormulaProperty = {
     dependencies: string[]
     body: string
     rawType: string
-} | {
+} | ({
     category: "FORMULA"
     sql: string
     rawType: string
-} & BaseProperty
+} & OptionalOrderProperty)
+    & BaseProperty
 
 type TransientProperty = {
     category: "TRANSIENT"

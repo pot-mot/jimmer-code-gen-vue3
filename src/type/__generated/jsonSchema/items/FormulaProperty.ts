@@ -55,6 +55,99 @@ const FormulaPropertyJsonSchema: JSONSchemaType<FormulaProperty> = {
                 {
                     "type": "object",
                     "properties": {
+                        "orderedProperty": {
+                            "type": "boolean",
+                            "const": false
+                        }
+                    },
+                    "required": [
+                        "orderedProperty"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "extraImports": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extraAnnotations": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "comment",
+                        "extraAnnotations",
+                        "extraImports",
+                        "id",
+                        "name",
+                        "nullable"
+                    ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "FORMULA"
+                        },
+                        "sql": {
+                            "type": "string"
+                        },
+                        "rawType": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "category",
+                        "rawType",
+                        "sql"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "orderedProperty": {
+                            "type": "boolean",
+                            "const": true
+                        },
+                        "orderDirection": {
+                            "enum": [
+                                "ASC",
+                                "DESC"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "orderDirection",
+                        "orderedProperty"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
                         "id": {
                             "type": "string"
                         },

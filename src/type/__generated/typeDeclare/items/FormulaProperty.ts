@@ -5,9 +5,10 @@ export default {
     dependencies: string[]
     body: string
     rawType: string
-} | {
+} | ({
     category: "FORMULA"
     sql: string
     rawType: string
-} & BaseProperty`,
+} & OptionalOrderProperty)
+    & BaseProperty`,
 }

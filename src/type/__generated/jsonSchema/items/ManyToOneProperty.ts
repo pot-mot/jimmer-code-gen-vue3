@@ -106,6 +106,144 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                     "required": [
                         "columnInfo"
                     ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "orderedProperty": {
+                            "type": "boolean",
+                            "const": false
+                        }
+                    },
+                    "required": [
+                        "orderedProperty"
+                    ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "ASSOCIATION_ManyToOne"
+                        },
+                        "associationId": {
+                            "type": "string"
+                        },
+                        "idView": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "name"
+                            ]
+                        },
+                        "onDissociateAction": {
+                            "$ref": "#/definitions/OnDissociationAction"
+                        }
+                    },
+                    "required": [
+                        "associationId",
+                        "category",
+                        "idView",
+                        "onDissociateAction"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "extraImports": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extraAnnotations": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "comment",
+                        "extraAnnotations",
+                        "extraImports",
+                        "id",
+                        "name",
+                        "nullable"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "entityId": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "entityId"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "joinColumnName": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "joinColumnName"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "columnInfo": {
+                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                        }
+                    },
+                    "required": [
+                        "columnInfo"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "orderedProperty": {
+                            "type": "boolean",
+                            "const": true
+                        },
+                        "orderDirection": {
+                            "enum": [
+                                "ASC",
+                                "DESC"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "orderDirection",
+                        "orderedProperty"
+                    ]
                 }
             ]
         },

@@ -12,6 +12,7 @@ type Entity = {
     id: string
     package: string
     name: string
+    comment: string
     extendsIds: string[]
     extraImports: string[]
     extraAnnotations: string[]
@@ -23,6 +24,7 @@ type MappedSuperClass = {
     id: string
     package: string
     name: string
+    comment: string
     extendsIds: string[]
     extraImports: string[]
     extraAnnotations: string[]
@@ -39,6 +41,7 @@ type EmbeddableType = {
     id: string
     package: string
     name: string
+    comment: string
     extraImports: string[]
     extraAnnotations: string[]
     properties: EmbeddableTypeProperty[]

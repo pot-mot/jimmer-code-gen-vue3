@@ -89,7 +89,7 @@ const jsonSchemaGenerator = tjs.buildGenerator(
 
 const existedTypeSet = new Set()
 
-
+// 类型
 const typeDeclares = []
 for (const {fileName} of modelTypeFiles) {
     const sourceFile = program.getSourceFile(fileName)
@@ -118,6 +118,8 @@ for (const {fileName} of modelTypeFiles) {
     }
 }
 
+typeDeclares.sort((a, b) => a.typeName.localeCompare(b.typeName))
+
 
 const isFunctionType = (type) => {
     if (!type) return false;
@@ -125,6 +127,7 @@ const isFunctionType = (type) => {
     return signatures.length > 0;
 }
 
+// 脚本函数类型
 const scriptTypeDeclares = []
 for (const {fileName} of scriptTypeFiles) {
     const sourceFile = program.getSourceFile(fileName)
@@ -154,6 +157,8 @@ for (const {fileName} of scriptTypeFiles) {
         scriptTypeDeclares.push({type, typeName, content})
     }
 }
+
+scriptTypeDeclares.sort((a, b) => a.typeName.localeCompare(b.typeName))
 
 
 // 转换文件

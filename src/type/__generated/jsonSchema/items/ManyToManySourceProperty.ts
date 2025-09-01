@@ -86,6 +86,124 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                     "required": [
                         "columnInfo"
                     ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "orderedProperty": {
+                            "type": "boolean",
+                            "const": false
+                        }
+                    },
+                    "required": [
+                        "orderedProperty"
+                    ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "ASSOCIATION_ManyToMany_Source"
+                        },
+                        "associationId": {
+                            "type": "string"
+                        },
+                        "idView": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "name"
+                            ]
+                        },
+                        "nullable": {
+                            "type": "boolean",
+                            "const": false
+                        },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": true
+                        }
+                    },
+                    "required": [
+                        "associationId",
+                        "category",
+                        "idView",
+                        "nullable",
+                        "typeIsList"
+                    ]
+                },
+                {
+                    "$ref": "#/definitions/Omit<BaseProperty,\"nullable\">"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "entityId": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "entityId"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "joinTableName": {
+                            "type": "string"
+                        },
+                        "joinColumnName": {
+                            "type": "string"
+                        },
+                        "inverseJoinColumnName": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "inverseJoinColumnName",
+                        "joinColumnName",
+                        "joinTableName"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "columnInfo": {
+                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                        }
+                    },
+                    "required": [
+                        "columnInfo"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "orderedProperty": {
+                            "type": "boolean",
+                            "const": true
+                        },
+                        "orderDirection": {
+                            "enum": [
+                                "ASC",
+                                "DESC"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "orderDirection",
+                        "orderedProperty"
+                    ]
                 }
             ]
         },

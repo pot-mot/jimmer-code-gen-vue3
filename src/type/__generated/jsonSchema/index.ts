@@ -1,80 +1,82 @@
-import AssociationTypeJsonSchema from "./items/AssociationType.ts";
 import AssociationJsonSchema from "./items/Association.ts";
-import DatabaseJsonSchema from "./items/Database.ts";
-import SchemaJsonSchema from "./items/Schema.ts";
-import TableJsonSchema from "./items/Table.ts";
+import AssociationPropertyJsonSchema from "./items/AssociationProperty.ts";
+import AssociationTypeJsonSchema from "./items/AssociationType.ts";
+import BasePropertyJsonSchema from "./items/BaseProperty.ts";
 import ColumnJsonSchema from "./items/Column.ts";
-import IndexJsonSchema from "./items/Index.ts";
-import ForeignKeyJsonSchema from "./items/ForeignKey.ts";
-import EntityPropertyJsonSchema from "./items/EntityProperty.ts";
-import EntityPropertyCategoryJsonSchema from "./items/EntityPropertyCategory.ts";
-import EntityJsonSchema from "./items/Entity.ts";
-import MappedSuperClassJsonSchema from "./items/MappedSuperClass.ts";
+import ColumnPropertyJsonSchema from "./items/ColumnProperty.ts";
+import DatabaseJsonSchema from "./items/Database.ts";
+import EmbeddablePropertyJsonSchema from "./items/EmbeddableProperty.ts";
+import EmbeddableTypeJsonSchema from "./items/EmbeddableType.ts";
 import EmbeddableTypePropertyJsonSchema from "./items/EmbeddableTypeProperty.ts";
 import EmbeddableTypePropertyCategoryJsonSchema from "./items/EmbeddableTypePropertyCategory.ts";
-import EmbeddableTypeJsonSchema from "./items/EmbeddableType.ts";
-import EnumerationStrategyJsonSchema from "./items/EnumerationStrategy.ts";
-import EnumerationItemJsonSchema from "./items/EnumerationItem.ts";
-import EnumerationJsonSchema from "./items/Enumeration.ts";
-import BasePropertyJsonSchema from "./items/BaseProperty.ts";
-import ColumnPropertyJsonSchema from "./items/ColumnProperty.ts";
-import OptionalKeyPropertyJsonSchema from "./items/OptionalKeyProperty.ts";
-import OptionalLogicalDeletePropertyJsonSchema from "./items/OptionalLogicalDeleteProperty.ts";
-import EmbeddablePropertyJsonSchema from "./items/EmbeddableProperty.ts";
-import IdPropertyJsonSchema from "./items/IdProperty.ts";
-import ScalarPropertyJsonSchema from "./items/ScalarProperty.ts";
-import EnumPropertyJsonSchema from "./items/EnumProperty.ts";
+import EntityJsonSchema from "./items/Entity.ts";
+import EntityPropertyJsonSchema from "./items/EntityProperty.ts";
+import EntityPropertyCategoryJsonSchema from "./items/EntityPropertyCategory.ts";
 import EntityTypePropertyJsonSchema from "./items/EntityTypeProperty.ts";
-import OnDissociationActionJsonSchema from "./items/OnDissociationAction.ts";
-import OneToOneSourcePropertyJsonSchema from "./items/OneToOneSourceProperty.ts";
-import OneToOneTargetPropertyJsonSchema from "./items/OneToOneTargetProperty.ts";
-import ManyToOnePropertyJsonSchema from "./items/ManyToOneProperty.ts";
-import OneToManyPropertyJsonSchema from "./items/OneToManyProperty.ts";
+import EnumerationJsonSchema from "./items/Enumeration.ts";
+import EnumerationItemJsonSchema from "./items/EnumerationItem.ts";
+import EnumerationStrategyJsonSchema from "./items/EnumerationStrategy.ts";
+import EnumPropertyJsonSchema from "./items/EnumProperty.ts";
+import ForeignKeyJsonSchema from "./items/ForeignKey.ts";
+import FormulaPropertyJsonSchema from "./items/FormulaProperty.ts";
+import IdPropertyJsonSchema from "./items/IdProperty.ts";
+import IndexJsonSchema from "./items/Index.ts";
 import ManyToManySourcePropertyJsonSchema from "./items/ManyToManySourceProperty.ts";
 import ManyToManyTargetPropertyJsonSchema from "./items/ManyToManyTargetProperty.ts";
-import AssociationPropertyJsonSchema from "./items/AssociationProperty.ts";
 import ManyToManyViewPropertyJsonSchema from "./items/ManyToManyViewProperty.ts";
-import FormulaPropertyJsonSchema from "./items/FormulaProperty.ts";
+import ManyToOnePropertyJsonSchema from "./items/ManyToOneProperty.ts";
+import MappedSuperClassJsonSchema from "./items/MappedSuperClass.ts";
+import OnDissociationActionJsonSchema from "./items/OnDissociationAction.ts";
+import OneToManyPropertyJsonSchema from "./items/OneToManyProperty.ts";
+import OneToOneSourcePropertyJsonSchema from "./items/OneToOneSourceProperty.ts";
+import OneToOneTargetPropertyJsonSchema from "./items/OneToOneTargetProperty.ts";
+import OptionalKeyPropertyJsonSchema from "./items/OptionalKeyProperty.ts";
+import OptionalLogicalDeletePropertyJsonSchema from "./items/OptionalLogicalDeleteProperty.ts";
+import OptionalOrderPropertyJsonSchema from "./items/OptionalOrderProperty.ts";
+import ScalarPropertyJsonSchema from "./items/ScalarProperty.ts";
+import SchemaJsonSchema from "./items/Schema.ts";
+import TableJsonSchema from "./items/Table.ts";
 import TransientPropertyJsonSchema from "./items/TransientProperty.ts";
 
 export const jsonSchemas = Object.freeze({
-    AssociationType: AssociationTypeJsonSchema,
     Association: AssociationJsonSchema,
-    Database: DatabaseJsonSchema,
-    Schema: SchemaJsonSchema,
-    Table: TableJsonSchema,
+    AssociationProperty: AssociationPropertyJsonSchema,
+    AssociationType: AssociationTypeJsonSchema,
+    BaseProperty: BasePropertyJsonSchema,
     Column: ColumnJsonSchema,
-    Index: IndexJsonSchema,
-    ForeignKey: ForeignKeyJsonSchema,
-    EntityProperty: EntityPropertyJsonSchema,
-    EntityPropertyCategory: EntityPropertyCategoryJsonSchema,
-    Entity: EntityJsonSchema,
-    MappedSuperClass: MappedSuperClassJsonSchema,
+    ColumnProperty: ColumnPropertyJsonSchema,
+    Database: DatabaseJsonSchema,
+    EmbeddableProperty: EmbeddablePropertyJsonSchema,
+    EmbeddableType: EmbeddableTypeJsonSchema,
     EmbeddableTypeProperty: EmbeddableTypePropertyJsonSchema,
     EmbeddableTypePropertyCategory: EmbeddableTypePropertyCategoryJsonSchema,
-    EmbeddableType: EmbeddableTypeJsonSchema,
-    EnumerationStrategy: EnumerationStrategyJsonSchema,
-    EnumerationItem: EnumerationItemJsonSchema,
-    Enumeration: EnumerationJsonSchema,
-    BaseProperty: BasePropertyJsonSchema,
-    ColumnProperty: ColumnPropertyJsonSchema,
-    OptionalKeyProperty: OptionalKeyPropertyJsonSchema,
-    OptionalLogicalDeleteProperty: OptionalLogicalDeletePropertyJsonSchema,
-    EmbeddableProperty: EmbeddablePropertyJsonSchema,
-    IdProperty: IdPropertyJsonSchema,
-    ScalarProperty: ScalarPropertyJsonSchema,
-    EnumProperty: EnumPropertyJsonSchema,
+    Entity: EntityJsonSchema,
+    EntityProperty: EntityPropertyJsonSchema,
+    EntityPropertyCategory: EntityPropertyCategoryJsonSchema,
     EntityTypeProperty: EntityTypePropertyJsonSchema,
-    OnDissociationAction: OnDissociationActionJsonSchema,
-    OneToOneSourceProperty: OneToOneSourcePropertyJsonSchema,
-    OneToOneTargetProperty: OneToOneTargetPropertyJsonSchema,
-    ManyToOneProperty: ManyToOnePropertyJsonSchema,
-    OneToManyProperty: OneToManyPropertyJsonSchema,
+    Enumeration: EnumerationJsonSchema,
+    EnumerationItem: EnumerationItemJsonSchema,
+    EnumerationStrategy: EnumerationStrategyJsonSchema,
+    EnumProperty: EnumPropertyJsonSchema,
+    ForeignKey: ForeignKeyJsonSchema,
+    FormulaProperty: FormulaPropertyJsonSchema,
+    IdProperty: IdPropertyJsonSchema,
+    Index: IndexJsonSchema,
     ManyToManySourceProperty: ManyToManySourcePropertyJsonSchema,
     ManyToManyTargetProperty: ManyToManyTargetPropertyJsonSchema,
-    AssociationProperty: AssociationPropertyJsonSchema,
     ManyToManyViewProperty: ManyToManyViewPropertyJsonSchema,
-    FormulaProperty: FormulaPropertyJsonSchema,
+    ManyToOneProperty: ManyToOnePropertyJsonSchema,
+    MappedSuperClass: MappedSuperClassJsonSchema,
+    OnDissociationAction: OnDissociationActionJsonSchema,
+    OneToManyProperty: OneToManyPropertyJsonSchema,
+    OneToOneSourceProperty: OneToOneSourcePropertyJsonSchema,
+    OneToOneTargetProperty: OneToOneTargetPropertyJsonSchema,
+    OptionalKeyProperty: OptionalKeyPropertyJsonSchema,
+    OptionalLogicalDeleteProperty: OptionalLogicalDeletePropertyJsonSchema,
+    OptionalOrderProperty: OptionalOrderPropertyJsonSchema,
+    ScalarProperty: ScalarPropertyJsonSchema,
+    Schema: SchemaJsonSchema,
+    Table: TableJsonSchema,
     TransientProperty: TransientPropertyJsonSchema,
 })
 

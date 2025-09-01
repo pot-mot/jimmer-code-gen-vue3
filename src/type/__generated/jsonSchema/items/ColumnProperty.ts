@@ -2,14 +2,69 @@ import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
 import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
 const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
-    "type": "object",
-    "properties": {
-        "columnInfo": {
-            "$ref": "#/definitions/Omit<Column,\"id\">"
+    "anyOf": [
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "columnInfo": {
+                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                        }
+                    },
+                    "required": [
+                        "columnInfo"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "orderedProperty": {
+                            "type": "boolean",
+                            "const": false
+                        }
+                    },
+                    "required": [
+                        "orderedProperty"
+                    ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "columnInfo": {
+                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                        }
+                    },
+                    "required": [
+                        "columnInfo"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "orderedProperty": {
+                            "type": "boolean",
+                            "const": true
+                        },
+                        "orderDirection": {
+                            "enum": [
+                                "ASC",
+                                "DESC"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "orderDirection",
+                        "orderedProperty"
+                    ]
+                }
+            ]
         }
-    },
-    "required": [
-        "columnInfo"
     ],
     "definitions": {
         "Omit<Column,\"id\">": {
