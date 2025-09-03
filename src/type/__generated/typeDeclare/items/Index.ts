@@ -1,9 +1,9 @@
 export default {
     fileName: 'Index.d.ts',
     content: `type Index = {
-    id: string
-    name: string,
-    columnIds: string[],
-    isUnique: boolean,
+    name: string
+    columnNames: string[]
+    isUnique: boolean
+    wherePredicates?: string
 }`,
 }

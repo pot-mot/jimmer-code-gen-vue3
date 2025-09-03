@@ -7,7 +7,7 @@ const EnumerationJsonSchema: JSONSchemaType<Enumeration> = {
         "id": {
             "type": "string"
         },
-        "package": {
+        "subPackagePath": {
             "type": "string"
         },
         "name": {
@@ -79,8 +79,8 @@ const EnumerationJsonSchema: JSONSchemaType<Enumeration> = {
         "id",
         "items",
         "name",
-        "package",
-        "strategy"
+        "strategy",
+        "subPackagePath"
     ],
     "definitions": {
         "EnumerationStrategy": {

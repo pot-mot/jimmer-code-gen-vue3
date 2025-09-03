@@ -9,7 +9,7 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -36,7 +36,7 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -67,7 +67,7 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
         }
     ],
     "definitions": {
-        "Omit<Column,\"id\">": {
+        "Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">": {
             "type": "object",
             "properties": {
                 "type": {
@@ -91,12 +91,6 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
                 "defaultValue": {
                     "type": "string"
                 },
-                "partOfPrimaryKey": {
-                    "type": "boolean"
-                },
-                "autoIncrement": {
-                    "type": "boolean"
-                },
                 "otherConstraints": {
                     "type": "array",
                     "items": {
@@ -106,10 +100,8 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
             },
             "required": [
                 "comment",
-                "defaultValue",
                 "name",
                 "nullable",
-                "partOfPrimaryKey",
                 "type"
             ]
         }

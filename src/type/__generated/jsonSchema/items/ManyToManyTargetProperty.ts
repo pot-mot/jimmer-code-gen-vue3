@@ -10,20 +10,6 @@ const ManyToManyTargetPropertyJsonSchema: JSONSchemaType<ManyToManyTargetPropert
                     "type": "string",
                     "const": "ASSOCIATION_ManyToMany_Target"
                 },
-                "associationId": {
-                    "type": "string"
-                },
-                "idView": {
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ]
-                },
                 "mappedBy": {
                     "type": "string"
                 },
@@ -37,9 +23,7 @@ const ManyToManyTargetPropertyJsonSchema: JSONSchemaType<ManyToManyTargetPropert
                 }
             },
             "required": [
-                "associationId",
                 "category",
-                "idView",
                 "mappedBy",
                 "nullable",
                 "typeIsList"
@@ -51,12 +35,20 @@ const ManyToManyTargetPropertyJsonSchema: JSONSchemaType<ManyToManyTargetPropert
         {
             "type": "object",
             "properties": {
+                "associationId": {
+                    "type": "string"
+                },
                 "entityId": {
+                    "type": "string"
+                },
+                "idViewName": {
                     "type": "string"
                 }
             },
             "required": [
-                "entityId"
+                "associationId",
+                "entityId",
+                "idViewName"
             ]
         }
     ],

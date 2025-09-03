@@ -2,24 +2,7 @@ export default {
     fileName: 'ManyToManySourceProperty.d.ts',
     content: `type ManyToManySourceProperty = {
     category: "ASSOCIATION_ManyToMany_Source"
-    associationId: string
-    idView: {
-        name: string
-    }
     nullable: false
     typeIsList: true
-} & Omit<BaseProperty, 'nullable'> & EntityTypeProperty & (
-    ({
-        joinTableName: string
-        joinColumnName: string
-        inverseJoinColumnName: string
-    } & ColumnProperty) |
-    ({
-        joinTableName: string
-        joinColumns: {
-            joinColumnName: string
-            inverseJoinColumnName: string
-        }[]
-    } & EmbeddableProperty)
-    )`,
+} & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty`,
 }

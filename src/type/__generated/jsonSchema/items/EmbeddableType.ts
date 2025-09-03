@@ -7,7 +7,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
         "id": {
             "type": "string"
         },
-        "package": {
+        "subPackagePath": {
             "type": "string"
         },
         "name": {
@@ -31,7 +31,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
         "properties": {
             "type": "array",
             "items": {
-                "$ref": "#/definitions/({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";})|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{logicalDelete:true;logicalDeleteType:\"enum\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{logicalDelete:true;logicalDeleteType:\"enum\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";})|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:false;}&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:false;}&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";})"
+                "$ref": "#/definitions/({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";})|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{logicalDelete:true;logicalDeleteType:\"enum\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{logicalDelete:true;logicalDeleteType:\"enum\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";})|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:false;}&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:false;}&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";})"
             }
         }
     },
@@ -41,11 +41,11 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
         "extraImports",
         "id",
         "name",
-        "package",
-        "properties"
+        "properties",
+        "subPackagePath"
     ],
     "definitions": {
-        "({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";})|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{logicalDelete:true;logicalDeleteType:\"enum\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{logicalDelete:true;logicalDeleteType:\"enum\";}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";})|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:false;}&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:false;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:false;}&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";})": {
+        "({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:true;keyGroups:string[];}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{key:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"boolean\";logicalDeleteDefaultValue:\"false\"|\"true\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"int\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"long\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"uuid\";}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"time\";logicalDeleteDeletedValue:\"now\"|\"null\";nullable:true;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";}&{arrayType:true;databaseType?:string|undefined;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:false;})|({category:\"SCALAR\";rawType:string;serialized:boolean;defaultValue:string;}&BaseProperty&{logicalDelete:false;}&EmbeddableProperty&{arrayType:true;databaseType?:string|undefined;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:true;keyGroups:string[];}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{key:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";})|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{logicalDelete:true;logicalDeleteType:\"enum\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:true;logicalDeleteType:\"enum\";logicalDeleteDefaultValue:string;logicalDeleteDeletedValue:string;}&{logicalDelete:true;logicalDeleteType:\"enum\";}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";})|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:false;}&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:false;})|({category:\"ENUM\";enumId:string;}&BaseProperty&{logicalDelete:false;}&{logicalDelete:false;}&{columnInfo:Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">;}&{orderedProperty:true;orderDirection:\"ASC\"|\"DESC\";})": {
             "anyOf": [
                 {
                     "allOf": [
@@ -133,7 +133,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -252,7 +252,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -374,7 +374,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -501,7 +501,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -537,132 +537,6 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                                 },
                                 "databaseType": {
                                     "type": "string"
-                                }
-                            },
-                            "required": [
-                                "arrayType"
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "allOf": [
-                        {
-                            "type": "object",
-                            "properties": {
-                                "category": {
-                                    "type": "string",
-                                    "const": "SCALAR"
-                                },
-                                "rawType": {
-                                    "type": "string"
-                                },
-                                "serialized": {
-                                    "type": "boolean"
-                                },
-                                "defaultValue": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "category",
-                                "defaultValue",
-                                "rawType",
-                                "serialized"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "id": {
-                                    "type": "string"
-                                },
-                                "name": {
-                                    "type": "string"
-                                },
-                                "comment": {
-                                    "type": "string"
-                                },
-                                "extraImports": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                },
-                                "extraAnnotations": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                },
-                                "nullable": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "required": [
-                                "comment",
-                                "extraAnnotations",
-                                "extraImports",
-                                "id",
-                                "name",
-                                "nullable"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "key": {
-                                    "type": "boolean",
-                                    "const": true
-                                },
-                                "keyGroups": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "required": [
-                                "key",
-                                "keyGroups"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "embeddableTypeId": {
-                                    "type": "string"
-                                },
-                                "propOverrides": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "propertyId": {
-                                                "type": "string"
-                                            },
-                                            "overrideColumnName": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "required": [
-                                            "overrideColumnName",
-                                            "propertyId"
-                                        ]
-                                    }
-                                }
-                            },
-                            "required": [
-                                "embeddableTypeId",
-                                "propOverrides"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "arrayType": {
-                                    "type": "boolean",
-                                    "const": false
                                 }
                             },
                             "required": [
@@ -788,6 +662,132 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "properties": {
                                 "arrayType": {
                                     "type": "boolean",
+                                    "const": false
+                                }
+                            },
+                            "required": [
+                                "arrayType"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "allOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "category": {
+                                    "type": "string",
+                                    "const": "SCALAR"
+                                },
+                                "rawType": {
+                                    "type": "string"
+                                },
+                                "serialized": {
+                                    "type": "boolean"
+                                },
+                                "defaultValue": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "category",
+                                "defaultValue",
+                                "rawType",
+                                "serialized"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "comment": {
+                                    "type": "string"
+                                },
+                                "extraImports": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "extraAnnotations": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "nullable": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "required": [
+                                "comment",
+                                "extraAnnotations",
+                                "extraImports",
+                                "id",
+                                "name",
+                                "nullable"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "key": {
+                                    "type": "boolean",
+                                    "const": true
+                                },
+                                "keyGroups": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "required": [
+                                "key",
+                                "keyGroups"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "embeddableTypeId": {
+                                    "type": "string"
+                                },
+                                "propOverrides": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "propertyId": {
+                                                "type": "string"
+                                            },
+                                            "overrideColumnName": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "overrideColumnName",
+                                            "propertyId"
+                                        ]
+                                    }
+                                }
+                            },
+                            "required": [
+                                "embeddableTypeId",
+                                "propOverrides"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "arrayType": {
+                                    "type": "boolean",
                                     "const": true
                                 },
                                 "databaseType": {
@@ -879,7 +879,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -991,7 +991,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -1106,7 +1106,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -1226,7 +1226,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -1603,7 +1603,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -1728,7 +1728,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -1856,7 +1856,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -1989,7 +1989,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -2384,7 +2384,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -2501,7 +2501,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -2621,7 +2621,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -2746,7 +2746,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -3125,7 +3125,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -3242,7 +3242,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -3362,7 +3362,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -3487,7 +3487,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -3866,7 +3866,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -3983,7 +3983,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -4103,7 +4103,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -4228,7 +4228,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -4620,7 +4620,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -4750,7 +4750,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -4883,7 +4883,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -5021,7 +5021,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -5434,7 +5434,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -5559,7 +5559,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -5687,7 +5687,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -5820,7 +5820,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -6210,7 +6210,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -6322,7 +6322,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -6437,7 +6437,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -6557,7 +6557,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -6920,7 +6920,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -7019,7 +7019,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -7119,7 +7119,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -7211,7 +7211,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -7336,7 +7336,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -7453,7 +7453,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -7583,7 +7583,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -7705,7 +7705,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -7822,7 +7822,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -7931,7 +7931,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -8053,7 +8053,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -8167,7 +8167,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -8284,7 +8284,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -8393,7 +8393,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -8515,7 +8515,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -8629,7 +8629,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -8746,7 +8746,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -8855,7 +8855,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -8977,7 +8977,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -9091,7 +9091,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -9221,7 +9221,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -9343,7 +9343,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -9478,7 +9478,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -9605,7 +9605,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -9730,7 +9730,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -9847,7 +9847,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -9977,7 +9977,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -10099,7 +10099,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -10211,7 +10211,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -10315,7 +10315,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -10432,7 +10432,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -10541,7 +10541,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                             "type": "object",
                             "properties": {
                                 "columnInfo": {
-                                    "$ref": "#/definitions/Omit<Column,\"id\">"
+                                    "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                                 }
                             },
                             "required": [
@@ -10572,7 +10572,7 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                 }
             ]
         },
-        "Omit<Column,\"id\">": {
+        "Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">": {
             "type": "object",
             "properties": {
                 "type": {
@@ -10596,12 +10596,6 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
                 "defaultValue": {
                     "type": "string"
                 },
-                "partOfPrimaryKey": {
-                    "type": "boolean"
-                },
-                "autoIncrement": {
-                    "type": "boolean"
-                },
                 "otherConstraints": {
                     "type": "array",
                     "items": {
@@ -10611,10 +10605,8 @@ const EmbeddableTypeJsonSchema: JSONSchemaType<EmbeddableType> = {
             },
             "required": [
                 "comment",
-                "defaultValue",
                 "name",
                 "nullable",
-                "partOfPrimaryKey",
                 "type"
             ]
         }

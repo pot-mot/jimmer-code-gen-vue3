@@ -49,7 +49,7 @@ type OptionalLogicalDeleteProperty = {
 }
 
 type ColumnProperty = {
-    columnInfo: Omit<Column, 'id'>
+    columnInfo: Omit<Column, 'id' | 'partOfPrimaryKey' | 'autoIncrement'>
 } & OptionalOrderProperty
 
 type EmbeddableProperty = {
@@ -97,91 +97,50 @@ type EnumProperty = {
     (OptionalLogicalDeleteProperty & ({ logicalDelete: false } | { logicalDelete: true; logicalDeleteType: 'enum' }))
     ) & ColumnProperty
 
-type EntityTypeProperty = {
+
+type BaseAssociationProperty = {
+    associationId: string
     entityId: string
+    idViewName: string
 }
 
 type OnDissociationAction = "NONE" | "LAX" | "CHECK" | "SET_NULL" | "DELETE"
 
 type OneToOneSourceProperty = {
     category: "ASSOCIATION_OneToOne_Source"
-    associationId: string
-    idView?: {
-        name: string
-    }
     onDissociateAction: OnDissociationAction
-} & BaseProperty & EntityTypeProperty & (ColumnProperty | EmbeddableProperty)
+} & BaseProperty & BaseAssociationProperty
 
 type OneToOneTargetProperty = {
     category: "ASSOCIATION_OneToOne_Target"
-    associationId: string
-    idView: {
-        name: string
-    }
     mappedBy: string
     nullable: true
-} & Omit<BaseProperty, 'nullable'> & EntityTypeProperty
+} & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
 
 type ManyToOneProperty = {
     category: "ASSOCIATION_ManyToOne"
-    associationId: string
-    idView: {
-        name: string
-    }
     onDissociateAction: OnDissociationAction
-} & BaseProperty & EntityTypeProperty & (
-    ({
-        joinColumnName: string
-    } & ColumnProperty) |
-    ({
-        joinColumnNames: string[]
-    } & EmbeddableProperty)
-    )
+} & BaseProperty & BaseAssociationProperty
 
 type OneToManyProperty = {
     category: "ASSOCIATION_OneToMany"
-    associationId: string
-    idView: {
-        name: string
-    }
     mappedBy: string
     nullable: false
     typeIsList: true
-} & Omit<BaseProperty, 'nullable'> & EntityTypeProperty
+} & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
 
 type ManyToManySourceProperty = {
     category: "ASSOCIATION_ManyToMany_Source"
-    associationId: string
-    idView: {
-        name: string
-    }
     nullable: false
     typeIsList: true
-} & Omit<BaseProperty, 'nullable'> & EntityTypeProperty & (
-    ({
-        joinTableName: string
-        joinColumnName: string
-        inverseJoinColumnName: string
-    } & ColumnProperty) |
-    ({
-        joinTableName: string
-        joinColumns: {
-            joinColumnName: string
-            inverseJoinColumnName: string
-        }[]
-    } & EmbeddableProperty)
-    )
+} & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
 
 type ManyToManyTargetProperty = {
     category: "ASSOCIATION_ManyToMany_Target"
-    associationId: string
-    idView: {
-        name: string
-    }
     mappedBy: string
     nullable: false
     typeIsList: true
-} & Omit<BaseProperty, 'nullable'> & EntityTypeProperty
+} & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
 
 type AssociationProperty =
     OneToOneSourceProperty |
@@ -195,7 +154,7 @@ type ManyToManyViewProperty = {
     category: "ASSOCIATION_ManyToMany_View"
     baseToManyPropertyId: string
     deeperAssociationPropertyId: string
-} & EntityTypeProperty
+}
 
 type FormulaProperty = {
     category: "FORMULA"
@@ -203,16 +162,18 @@ type FormulaProperty = {
     body: string
     rawType: string
 } | ({
-    category: "FORMULA"
-    sql: string
-    rawType: string
-} & OptionalOrderProperty)
+        category: "FORMULA"
+        sql: string
+        rawType: string
+    } & OptionalOrderProperty)
     & BaseProperty
 
 type TransientProperty = {
     category: "TRANSIENT"
-    resolver?: string
-} & BaseProperty & (
-    { rawType: string } |
-    EntityTypeProperty
-    )
+} & BaseProperty & ({
+    rawType: string
+} | {
+    entityId: string
+    resolver: string
+    typeIsList: boolean
+})

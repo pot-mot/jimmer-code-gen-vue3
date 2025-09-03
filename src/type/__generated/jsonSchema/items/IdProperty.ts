@@ -94,7 +94,7 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -206,7 +206,7 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -389,7 +389,7 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                 "name"
             ]
         },
-        "Omit<Column,\"id\">": {
+        "Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">": {
             "type": "object",
             "properties": {
                 "type": {
@@ -413,12 +413,6 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                 "defaultValue": {
                     "type": "string"
                 },
-                "partOfPrimaryKey": {
-                    "type": "boolean"
-                },
-                "autoIncrement": {
-                    "type": "boolean"
-                },
                 "otherConstraints": {
                     "type": "array",
                     "items": {
@@ -428,10 +422,8 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
             },
             "required": [
                 "comment",
-                "defaultValue",
                 "name",
                 "nullable",
-                "partOfPrimaryKey",
                 "type"
             ]
         }

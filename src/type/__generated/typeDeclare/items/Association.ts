@@ -8,5 +8,11 @@ export default {
     targetEntityId: string
     sourcePropertyId: string
     targetPropertyId: string
-}`,
+} & ({
+    joinColumn: JoinColumn
+} | {
+    joinColumns: JoinColumn[]
+} | {
+    joinTable: JoinTable
+})`,
 }

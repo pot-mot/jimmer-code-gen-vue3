@@ -1,56 +1,51 @@
 type Database = {
     id: string
-    name: string,
-    url: string,
-    username: string,
-    password: string,
-    schemas: Schema[]
-}
-
-type Schema = {
-    id: string
-    name: string,
-    tables: Table[]
+    type: DatabaseType
+    name: string
+    url: string
+    username: string
+    password: string
 }
 
 type Table = {
     id: string
-    name: string,
-    comment: string,
+    schema: string
+    name: string
+    comment: string
     columns: Column[]
     indexes: Index[]
+    foreignKeys: ForeignKey[]
 }
 
 type Column = {
-    id: string
-    name: string,
-    comment: string,
-    type: string,
-    dataSize?: number,
-    numericPrecision?: number,
-    nullable: boolean,
-    defaultValue: string,
-    partOfPrimaryKey: boolean,
-    autoIncrement?: boolean,
-    otherConstraints?: string[],
+    name: string
+    comment: string
+    type: string
+    dataSize?: number
+    numericPrecision?: number
+    nullable: boolean
+    defaultValue?: string
+    partOfPrimaryKey?: boolean
+    autoIncrement?: boolean
+    otherConstraints?: string[]
 }
 
 type Index = {
-    id: string
-    name: string,
-    columnIds: string[],
-    isUnique: boolean,
+    name: string
+    columnNames: string[]
+    isUnique: boolean
+    wherePredicates?: string
 }
 
 type ForeignKey = {
-    id: string
-    name: string,
-    sourceTableId: string,
-    targetTableId: string,
+    name: string
+    targetTableName: string
     columnReferences: [
         {
-            sourceColumnId: string,
-            targetColumnId: string,
+            sourceColumnName: string
+            targetColumnName: string
         }
     ]
+    onUpdate?: string
+    onDelete?: string
 }

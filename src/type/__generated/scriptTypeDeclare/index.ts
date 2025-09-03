@@ -1,17 +1,23 @@
-import ForeignKeyGeneratorDeclare from "./items/ForeignKeyGenerator.ts";
-import IndexGeneratorDeclare from "./items/IndexGenerator.ts";
+import EntityGeneratorDeclare from "./items/EntityGenerator.ts";
+import EntityToTableDeclare from "./items/EntityToTable.ts";
+import TableDiffGeneratorDeclare from "./items/TableDiffGenerator.ts";
 import TableGeneratorDeclare from "./items/TableGenerator.ts";
+import TableToEntityDeclare from "./items/TableToEntity.ts";
 
 export type ScriptTypeMap = {
-    ForeignKeyGenerator: ForeignKeyGenerator
-    IndexGenerator: IndexGenerator
+    EntityGenerator: EntityGenerator
+    EntityToTable: EntityToTable
+    TableDiffGenerator: TableDiffGenerator
     TableGenerator: TableGenerator
+    TableToEntity: TableToEntity
 }
 
 export type ScriptTypeName = keyof ScriptTypeMap
 
 export const scriptTypeDeclares = Object.freeze({
-    ForeignKeyGenerator: ForeignKeyGeneratorDeclare,
-    IndexGenerator: IndexGeneratorDeclare,
+    EntityGenerator: EntityGeneratorDeclare,
+    EntityToTable: EntityToTableDeclare,
+    TableDiffGenerator: TableDiffGeneratorDeclare,
     TableGenerator: TableGeneratorDeclare,
+    TableToEntity: TableToEntityDeclare,
 })

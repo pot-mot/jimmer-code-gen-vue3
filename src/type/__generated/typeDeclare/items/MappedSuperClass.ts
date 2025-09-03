@@ -2,7 +2,7 @@ export default {
     fileName: 'MappedSuperClass.d.ts',
     content: `type MappedSuperClass = {
     id: string
-    package: string
+    subPackagePath: string
     name: string
     comment: string
     extendsIds: string[]

@@ -1,5 +1,8 @@
-type TableGenerator = (table: Table) => string
+type TableToEntity = (tables: Table[]) => {
+    entities: Entity[],
+    associations: Association[],
+}
 
-type IndexGenerator = (index: Index) => string
+type TableGenerator = (table: Table) => Record<string, string>
 
-type ForeignKeyGenerator = (foreignKey: ForeignKey) => string
+type TableDiffGenerator = (oldTable: Table, newTable: Table) => Record<string, string>

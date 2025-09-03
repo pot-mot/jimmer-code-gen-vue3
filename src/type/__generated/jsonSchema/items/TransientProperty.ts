@@ -11,76 +11,6 @@ const TransientPropertyJsonSchema: JSONSchemaType<TransientProperty> = {
                         "category": {
                             "type": "string",
                             "const": "TRANSIENT"
-                        },
-                        "resolver": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "entityId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "entityId"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "TRANSIENT"
-                        },
-                        "resolver": {
-                            "type": "string"
                         }
                     },
                     "required": [
@@ -133,6 +63,78 @@ const TransientPropertyJsonSchema: JSONSchemaType<TransientProperty> = {
                     },
                     "required": [
                         "rawType"
+                    ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "TRANSIENT"
+                        }
+                    },
+                    "required": [
+                        "category"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "extraImports": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extraAnnotations": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "comment",
+                        "extraAnnotations",
+                        "extraImports",
+                        "id",
+                        "name",
+                        "nullable"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "entityId": {
+                            "type": "string"
+                        },
+                        "resolver": {
+                            "type": "string"
+                        },
+                        "typeIsList": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "entityId",
+                        "resolver",
+                        "typeIsList"
                     ]
                 }
             ]

@@ -2,7 +2,7 @@ export default {
     fileName: 'Enumeration.d.ts',
     content: `type Enumeration = {
     id: string
-    package: string
+    subPackagePath: string
     name: string
     comment: string
     extraImports: string[]

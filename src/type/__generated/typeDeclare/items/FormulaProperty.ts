@@ -6,9 +6,9 @@ export default {
     body: string
     rawType: string
 } | ({
-    category: "FORMULA"
-    sql: string
-    rawType: string
-} & OptionalOrderProperty)
+        category: "FORMULA"
+        sql: string
+        rawType: string
+    } & OptionalOrderProperty)
     & BaseProperty`,
 }

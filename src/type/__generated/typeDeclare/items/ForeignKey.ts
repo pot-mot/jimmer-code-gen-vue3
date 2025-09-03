@@ -1,15 +1,15 @@
 export default {
     fileName: 'ForeignKey.d.ts',
     content: `type ForeignKey = {
-    id: string
-    name: string,
-    sourceTableId: string,
-    targetTableId: string,
+    name: string
+    targetTableName: string
     columnReferences: [
         {
-            sourceColumnId: string,
-            targetColumnId: string,
+            sourceColumnName: string
+            targetColumnName: string
         }
     ]
+    onUpdate?: string
+    onDelete?: string
 }`,
 }

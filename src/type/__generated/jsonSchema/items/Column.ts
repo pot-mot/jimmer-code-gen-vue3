@@ -4,9 +4,6 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const ColumnJsonSchema: JSONSchemaType<Column> = {
     "type": "object",
     "properties": {
-        "id": {
-            "type": "string"
-        },
         "name": {
             "type": "string"
         },
@@ -43,11 +40,8 @@ const ColumnJsonSchema: JSONSchemaType<Column> = {
     },
     "required": [
         "comment",
-        "defaultValue",
-        "id",
         "name",
         "nullable",
-        "partOfPrimaryKey",
         "type"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"

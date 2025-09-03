@@ -89,7 +89,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -208,7 +208,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -330,7 +330,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -457,7 +457,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -835,7 +835,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -947,7 +947,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -1062,7 +1062,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -1182,7 +1182,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -1559,7 +1559,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -1684,7 +1684,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -1812,7 +1812,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -1945,7 +1945,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -2340,7 +2340,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -2457,7 +2457,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -2577,7 +2577,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -2702,7 +2702,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -3081,7 +3081,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -3198,7 +3198,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -3318,7 +3318,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -3443,7 +3443,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -3822,7 +3822,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -3939,7 +3939,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -4059,7 +4059,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -4184,7 +4184,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -4576,7 +4576,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -4706,7 +4706,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -4839,7 +4839,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -4977,7 +4977,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -5390,7 +5390,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -5515,7 +5515,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -5643,7 +5643,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -5776,7 +5776,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -6166,7 +6166,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -6278,7 +6278,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -6393,7 +6393,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -6513,7 +6513,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -6800,7 +6800,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
         }
     ],
     "definitions": {
-        "Omit<Column,\"id\">": {
+        "Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">": {
             "type": "object",
             "properties": {
                 "type": {
@@ -6824,12 +6824,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                 "defaultValue": {
                     "type": "string"
                 },
-                "partOfPrimaryKey": {
-                    "type": "boolean"
-                },
-                "autoIncrement": {
-                    "type": "boolean"
-                },
                 "otherConstraints": {
                     "type": "array",
                     "items": {
@@ -6839,10 +6833,8 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
             },
             "required": [
                 "comment",
-                "defaultValue",
                 "name",
                 "nullable",
-                "partOfPrimaryKey",
                 "type"
             ]
         }

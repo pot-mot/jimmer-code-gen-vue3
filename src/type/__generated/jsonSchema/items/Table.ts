@@ -7,6 +7,9 @@ const TableJsonSchema: JSONSchemaType<Table> = {
         "id": {
             "type": "string"
         },
+        "schema": {
+            "type": "string"
+        },
         "name": {
             "type": "string"
         },
@@ -18,9 +21,6 @@ const TableJsonSchema: JSONSchemaType<Table> = {
             "items": {
                 "type": "object",
                 "properties": {
-                    "id": {
-                        "type": "string"
-                    },
                     "name": {
                         "type": "string"
                     },
@@ -57,11 +57,8 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                 },
                 "required": [
                     "comment",
-                    "defaultValue",
-                    "id",
                     "name",
                     "nullable",
-                    "partOfPrimaryKey",
                     "type"
                 ]
             }
@@ -71,13 +68,10 @@ const TableJsonSchema: JSONSchemaType<Table> = {
             "items": {
                 "type": "object",
                 "properties": {
-                    "id": {
-                        "type": "string"
-                    },
                     "name": {
                         "type": "string"
                     },
-                    "columnIds": {
+                    "columnNames": {
                         "type": "array",
                         "items": {
                             "type": "string"
@@ -85,13 +79,62 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                     },
                     "isUnique": {
                         "type": "boolean"
+                    },
+                    "wherePredicates": {
+                        "type": "string"
                     }
                 },
                 "required": [
-                    "columnIds",
-                    "id",
+                    "columnNames",
                     "isUnique",
                     "name"
+                ]
+            }
+        },
+        "foreignKeys": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "targetTableName": {
+                        "type": "string"
+                    },
+                    "columnReferences": {
+                        "type": "array",
+                        "items": [
+                            {
+                                "type": "object",
+                                "properties": {
+                                    "sourceColumnName": {
+                                        "type": "string"
+                                    },
+                                    "targetColumnName": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "sourceColumnName",
+                                    "targetColumnName"
+                                ]
+                            }
+                        ],
+                        "minItems": 1,
+                        "maxItems": 1
+                    },
+                    "onUpdate": {
+                        "type": "string"
+                    },
+                    "onDelete": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "columnReferences",
+                    "name",
+                    "targetTableName"
                 ]
             }
         }
@@ -99,9 +142,11 @@ const TableJsonSchema: JSONSchemaType<Table> = {
     "required": [
         "columns",
         "comment",
+        "foreignKeys",
         "id",
         "indexes",
-        "name"
+        "name",
+        "schema"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
 } as any as JSONSchemaType<Table>

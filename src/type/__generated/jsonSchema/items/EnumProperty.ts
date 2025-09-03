@@ -81,7 +81,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -180,7 +180,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -280,7 +280,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -372,7 +372,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -497,7 +497,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -614,7 +614,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -744,7 +744,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -866,7 +866,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -983,7 +983,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -1092,7 +1092,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -1214,7 +1214,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -1328,7 +1328,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -1445,7 +1445,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -1554,7 +1554,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -1676,7 +1676,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -1790,7 +1790,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -1907,7 +1907,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -2016,7 +2016,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -2138,7 +2138,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -2252,7 +2252,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -2382,7 +2382,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -2504,7 +2504,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -2639,7 +2639,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -2766,7 +2766,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -2891,7 +2891,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -3008,7 +3008,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -3138,7 +3138,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -3260,7 +3260,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -3372,7 +3372,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -3476,7 +3476,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -3593,7 +3593,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -3702,7 +3702,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\">"
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
                         }
                     },
                     "required": [
@@ -3733,7 +3733,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
         }
     ],
     "definitions": {
-        "Omit<Column,\"id\">": {
+        "Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">": {
             "type": "object",
             "properties": {
                 "type": {
@@ -3757,12 +3757,6 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                 "defaultValue": {
                     "type": "string"
                 },
-                "partOfPrimaryKey": {
-                    "type": "boolean"
-                },
-                "autoIncrement": {
-                    "type": "boolean"
-                },
                 "otherConstraints": {
                     "type": "array",
                     "items": {
@@ -3772,10 +3766,8 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
             },
             "required": [
                 "comment",
-                "defaultValue",
                 "name",
                 "nullable",
-                "partOfPrimaryKey",
                 "type"
             ]
         }

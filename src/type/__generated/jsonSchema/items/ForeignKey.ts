@@ -4,16 +4,10 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const ForeignKeyJsonSchema: JSONSchemaType<ForeignKey> = {
     "type": "object",
     "properties": {
-        "id": {
-            "type": "string"
-        },
         "name": {
             "type": "string"
         },
-        "sourceTableId": {
-            "type": "string"
-        },
-        "targetTableId": {
+        "targetTableName": {
             "type": "string"
         },
         "columnReferences": {
@@ -22,29 +16,33 @@ const ForeignKeyJsonSchema: JSONSchemaType<ForeignKey> = {
                 {
                     "type": "object",
                     "properties": {
-                        "sourceColumnId": {
+                        "sourceColumnName": {
                             "type": "string"
                         },
-                        "targetColumnId": {
+                        "targetColumnName": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "sourceColumnId",
-                        "targetColumnId"
+                        "sourceColumnName",
+                        "targetColumnName"
                     ]
                 }
             ],
             "minItems": 1,
             "maxItems": 1
+        },
+        "onUpdate": {
+            "type": "string"
+        },
+        "onDelete": {
+            "type": "string"
         }
     },
     "required": [
         "columnReferences",
-        "id",
         "name",
-        "sourceTableId",
-        "targetTableId"
+        "targetTableName"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
 } as any as JSONSchemaType<ForeignKey>

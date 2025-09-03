@@ -10,9 +10,10 @@ type EntityPropertyCategory = EntityProperty["category"]
 
 type Entity = {
     id: string
-    package: string
+    subPackagePath: string
     name: string
     comment: string
+    tableName: string
     extendsIds: string[]
     extraImports: string[]
     extraAnnotations: string[]
@@ -22,7 +23,7 @@ type Entity = {
 
 type MappedSuperClass = {
     id: string
-    package: string
+    subPackagePath: string
     name: string
     comment: string
     extendsIds: string[]
@@ -39,7 +40,7 @@ type EmbeddableTypePropertyCategory = EmbeddableTypeProperty["category"]
 
 type EmbeddableType = {
     id: string
-    package: string
+    subPackagePath: string
     name: string
     comment: string
     extraImports: string[]

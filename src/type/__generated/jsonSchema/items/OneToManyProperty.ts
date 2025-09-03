@@ -10,20 +10,6 @@ const OneToManyPropertyJsonSchema: JSONSchemaType<OneToManyProperty> = {
                     "type": "string",
                     "const": "ASSOCIATION_OneToMany"
                 },
-                "associationId": {
-                    "type": "string"
-                },
-                "idView": {
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "name"
-                    ]
-                },
                 "mappedBy": {
                     "type": "string"
                 },
@@ -37,9 +23,7 @@ const OneToManyPropertyJsonSchema: JSONSchemaType<OneToManyProperty> = {
                 }
             },
             "required": [
-                "associationId",
                 "category",
-                "idView",
                 "mappedBy",
                 "nullable",
                 "typeIsList"
@@ -51,12 +35,20 @@ const OneToManyPropertyJsonSchema: JSONSchemaType<OneToManyProperty> = {
         {
             "type": "object",
             "properties": {
+                "associationId": {
+                    "type": "string"
+                },
                 "entityId": {
+                    "type": "string"
+                },
+                "idViewName": {
                     "type": "string"
                 }
             },
             "required": [
-                "entityId"
+                "associationId",
+                "entityId",
+                "idViewName"
             ]
         }
     ],

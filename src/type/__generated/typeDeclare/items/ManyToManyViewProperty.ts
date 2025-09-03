@@ -4,5 +4,5 @@ export default {
     category: "ASSOCIATION_ManyToMany_View"
     baseToManyPropertyId: string
     deeperAssociationPropertyId: string
-} & EntityTypeProperty`,
+}`,
 }

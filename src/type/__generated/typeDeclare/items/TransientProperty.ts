@@ -2,9 +2,11 @@ export default {
     fileName: 'TransientProperty.d.ts',
     content: `type TransientProperty = {
     category: "TRANSIENT"
-    resolver?: string
-} & BaseProperty & (
-    { rawType: string } |
-    EntityTypeProperty
-    )`,
+} & BaseProperty & ({
+    rawType: string
+} | {
+    entityId: string
+    resolver: string
+    typeIsList: boolean
+})`,
 }

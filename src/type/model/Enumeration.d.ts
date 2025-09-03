@@ -11,7 +11,7 @@ type EnumerationItem = {
 
 type Enumeration = {
     id: string
-    package: string
+    subPackagePath: string
     name: string
     comment: string
     extraImports: string[]

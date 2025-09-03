@@ -1,6 +1,6 @@
 export default {
     fileName: 'ColumnProperty.d.ts',
     content: `type ColumnProperty = {
-    columnInfo: Omit<Column, 'id'>
+    columnInfo: Omit<Column, 'id' | 'partOfPrimaryKey' | 'autoIncrement'>
 } & OptionalOrderProperty`,
 }
