@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {computed} from 'vue'
-import {ViewportTransform} from "@vue-flow/core";
+import {type ViewportTransform} from "@vue-flow/core";
 
 const props = withDefaults(
     defineProps<{

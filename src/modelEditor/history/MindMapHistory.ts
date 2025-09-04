@@ -93,16 +93,25 @@ export type ModelEditorHistoryCommands = {
     }, {
         groupIds: string[]
         entityIds: string[]
+        embeddableTypeIds: string[]
+        mappedSuperClassIds: string[]
+        enumerationIds: string[]
         associationIds: string[]
     }>
     "remove": CommandDefinition<{
-        groupId: string
-        nodes?: (GraphNode | string)[]
-        edges?: (GraphEdge | string)[]
+        groups?: (Group | string)[]
+        entities?: (Entity | string)[]
+        embeddableTypes?: (EmbeddableType | string)[]
+        mappedSuperClasses?: (MappedSuperClass | string)[]
+        enumerations?: (Enumeration | string)[]
+        associations?: (Association | string)[]
     }, {
-        groupId: string
-        nodes: GraphNode[]
-        edges: GraphEdge[]
+        groups: Group[]
+        entities: Entity[]
+        embeddableTypes: EmbeddableType[]
+        mappedSuperClasses: MappedSuperClass[]
+        enumerations: Enumeration[]
+        associations: Association[]
     }>
 }
 
