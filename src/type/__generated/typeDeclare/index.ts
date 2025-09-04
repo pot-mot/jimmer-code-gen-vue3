@@ -10,11 +10,7 @@ import DatabaseDeclare from "./items/Database.ts";
 import DatabaseTypeDeclare from "./items/DatabaseType.ts";
 import EmbeddablePropertyDeclare from "./items/EmbeddableProperty.ts";
 import EmbeddableTypeDeclare from "./items/EmbeddableType.ts";
-import EmbeddableTypePropertyDeclare from "./items/EmbeddableTypeProperty.ts";
-import EmbeddableTypePropertyCategoryDeclare from "./items/EmbeddableTypePropertyCategory.ts";
 import EntityDeclare from "./items/Entity.ts";
-import EntityPropertyDeclare from "./items/EntityProperty.ts";
-import EntityPropertyCategoryDeclare from "./items/EntityPropertyCategory.ts";
 import EnumerationDeclare from "./items/Enumeration.ts";
 import EnumerationItemDeclare from "./items/EnumerationItem.ts";
 import EnumerationStrategyDeclare from "./items/EnumerationStrategy.ts";
@@ -57,11 +53,7 @@ export type TypeMap = {
     DatabaseType: DatabaseType
     EmbeddableProperty: EmbeddableProperty
     EmbeddableType: EmbeddableType
-    EmbeddableTypeProperty: EmbeddableTypeProperty
-    EmbeddableTypePropertyCategory: EmbeddableTypePropertyCategory
     Entity: Entity
-    EntityProperty: EntityProperty
-    EntityPropertyCategory: EntityPropertyCategory
     Enumeration: Enumeration
     EnumerationItem: EnumerationItem
     EnumerationStrategy: EnumerationStrategy
@@ -107,11 +99,7 @@ export const typeDeclares = Object.freeze({
     DatabaseType: DatabaseTypeDeclare,
     EmbeddableProperty: EmbeddablePropertyDeclare,
     EmbeddableType: EmbeddableTypeDeclare,
-    EmbeddableTypeProperty: EmbeddableTypePropertyDeclare,
-    EmbeddableTypePropertyCategory: EmbeddableTypePropertyCategoryDeclare,
     Entity: EntityDeclare,
-    EntityProperty: EntityPropertyDeclare,
-    EntityPropertyCategory: EntityPropertyCategoryDeclare,
     Enumeration: EnumerationDeclare,
     EnumerationItem: EnumerationItemDeclare,
     EnumerationStrategy: EnumerationStrategyDeclare,

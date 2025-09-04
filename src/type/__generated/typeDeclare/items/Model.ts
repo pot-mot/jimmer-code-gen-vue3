@@ -8,6 +8,5 @@ export default {
     modifiedTime: string
     database: DatabaseType
     language: BackEndLanguage
-    groups: Group[]
 }`,
 }

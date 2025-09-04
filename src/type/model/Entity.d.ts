@@ -1,15 +1,6 @@
-type EntityProperty = |
-    ScalarProperty |
-    EnumProperty |
-    AssociationProperty |
-    ManyToManyViewProperty |
-    FormulaProperty |
-    TransientProperty
-
-type EntityPropertyCategory = EntityProperty["category"]
-
 type Entity = {
     id: string
+    groupId: string
     subPackagePath: string
     name: string
     comment: string
@@ -18,32 +9,32 @@ type Entity = {
     extraImports: string[]
     extraAnnotations: string[]
     idProperty: IdProperty
-    properties: EntityProperty[]
+    scalarProperties: (
+        ScalarProperty |
+        EnumProperty
+        )[]
+    associationProperties: (
+        AssociationProperty |
+        ManyToManyViewProperty
+        )[]
+    computedProperties: (
+        FormulaProperty |
+        TransientProperty
+        )[]
 }
 
-type MappedSuperClass = {
-    id: string
-    subPackagePath: string
-    name: string
-    comment: string
-    extendsIds: string[]
-    extraImports: string[]
-    extraAnnotations: string[]
-    properties: EntityProperty[]
-}
-
-type EmbeddableTypeProperty = |
-    ScalarProperty |
-    EnumProperty
-
-type EmbeddableTypePropertyCategory = EmbeddableTypeProperty["category"]
+type MappedSuperClass = Omit<Entity, 'tableName' | 'idProperty'>
 
 type EmbeddableType = {
     id: string
+    groupId: string
     subPackagePath: string
     name: string
     comment: string
     extraImports: string[]
     extraAnnotations: string[]
-    properties: EmbeddableTypeProperty[]
+    properties: (
+        ScalarProperty |
+        EnumProperty
+        )[]
 }

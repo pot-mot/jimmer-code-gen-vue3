@@ -11,6 +11,7 @@ type EnumerationItem = {
 
 type Enumeration = {
     id: string
+    groupId: string
     subPackagePath: string
     name: string
     comment: string

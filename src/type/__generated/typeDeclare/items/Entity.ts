@@ -2,6 +2,7 @@ export default {
     fileName: 'Entity.d.ts',
     content: `type Entity = {
     id: string
+    groupId: string
     subPackagePath: string
     name: string
     comment: string
@@ -10,6 +11,17 @@ export default {
     extraImports: string[]
     extraAnnotations: string[]
     idProperty: IdProperty
-    properties: EntityProperty[]
+    scalarProperties: (
+        ScalarProperty |
+        EnumProperty
+        )[]
+    associationProperties: (
+        AssociationProperty |
+        ManyToManyViewProperty
+        )[]
+    computedProperties: (
+        FormulaProperty |
+        TransientProperty
+        )[]
 }`,
 }

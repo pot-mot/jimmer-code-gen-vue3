@@ -7,6 +7,9 @@ const EnumerationJsonSchema: JSONSchemaType<Enumeration> = {
         "id": {
             "type": "string"
         },
+        "groupId": {
+            "type": "string"
+        },
         "subPackagePath": {
             "type": "string"
         },
@@ -76,6 +79,7 @@ const EnumerationJsonSchema: JSONSchemaType<Enumeration> = {
         "comment",
         "extraAnnotations",
         "extraImports",
+        "groupId",
         "id",
         "items",
         "name",

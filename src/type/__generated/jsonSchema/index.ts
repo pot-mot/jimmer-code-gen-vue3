@@ -10,11 +10,7 @@ import DatabaseJsonSchema from "./items/Database.ts";
 import DatabaseTypeJsonSchema from "./items/DatabaseType.ts";
 import EmbeddablePropertyJsonSchema from "./items/EmbeddableProperty.ts";
 import EmbeddableTypeJsonSchema from "./items/EmbeddableType.ts";
-import EmbeddableTypePropertyJsonSchema from "./items/EmbeddableTypeProperty.ts";
-import EmbeddableTypePropertyCategoryJsonSchema from "./items/EmbeddableTypePropertyCategory.ts";
 import EntityJsonSchema from "./items/Entity.ts";
-import EntityPropertyJsonSchema from "./items/EntityProperty.ts";
-import EntityPropertyCategoryJsonSchema from "./items/EntityPropertyCategory.ts";
 import EnumerationJsonSchema from "./items/Enumeration.ts";
 import EnumerationItemJsonSchema from "./items/EnumerationItem.ts";
 import EnumerationStrategyJsonSchema from "./items/EnumerationStrategy.ts";
@@ -57,11 +53,7 @@ export const jsonSchemas = Object.freeze({
     DatabaseType: DatabaseTypeJsonSchema,
     EmbeddableProperty: EmbeddablePropertyJsonSchema,
     EmbeddableType: EmbeddableTypeJsonSchema,
-    EmbeddableTypeProperty: EmbeddableTypePropertyJsonSchema,
-    EmbeddableTypePropertyCategory: EmbeddableTypePropertyCategoryJsonSchema,
     Entity: EntityJsonSchema,
-    EntityProperty: EntityPropertyJsonSchema,
-    EntityPropertyCategory: EntityPropertyCategoryJsonSchema,
     Enumeration: EnumerationJsonSchema,
     EnumerationItem: EnumerationItemJsonSchema,
     EnumerationStrategy: EnumerationStrategyJsonSchema,
