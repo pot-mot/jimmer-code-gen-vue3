@@ -1,5 +1,3 @@
-type EntityToTable = (entity: Entity, context: ModelContext) => Table
-
 type EntityGenerator = (entity: Entity, context: ModelContext) => Record<string, string>
 
 type MappedSuperClassGenerator = (mappedSuperClass: MappedSuperClass, context: ModelContext) => Record<string, string>
