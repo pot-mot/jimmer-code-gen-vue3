@@ -13,6 +13,8 @@ const ensureDirExists = (dirPath) => {
 
 const modelPath = "src/type/model";
 ensureDirExists(modelPath)
+const contextPath = "src/type/context";
+ensureDirExists(contextPath)
 const scriptPath = "src/type/script";
 ensureDirExists(scriptPath)
 
@@ -34,6 +36,7 @@ const getDeclareTsFiles = (path) => {
 }
 
 const modelTypeFiles = getDeclareTsFiles(modelPath)
+const contextTypeFiles = getDeclareTsFiles(contextPath)
 const scriptTypeFiles = getDeclareTsFiles(scriptPath)
 
 // 创建编译器选项
@@ -53,6 +56,9 @@ const fsMap = createDefaultMapFromNodeModules(
 )
 
 for (const {fileName, content} of modelTypeFiles) {
+    fsMap.set(fileName, content)
+}
+for (const {fileName, content} of contextTypeFiles) {
     fsMap.set(fileName, content)
 }
 for (const {fileName, content} of scriptTypeFiles) {
@@ -91,6 +97,8 @@ const existedTypeSet = new Set()
 
 // 类型
 const typeDeclares = []
+const jsonSchemaDeclares = []
+
 for (const {fileName} of modelTypeFiles) {
     const sourceFile = program.getSourceFile(fileName)
     for (const statement of sourceFile.statements) {
@@ -110,11 +118,39 @@ for (const {fileName} of modelTypeFiles) {
         if (existedTypeSet.has(typeName)) {
             throw new Error(`[${fileName}] ${typeName} is already exists`)
         }
-        existedTypeSet.add(typeName)
 
         const content = statement.getFullText(sourceFile)
+        typeDeclares.push({type, typeName, content})
+        existedTypeSet.add(typeName)
+
         const schema = jsonSchemaGenerator.getSchemaForSymbol(typeName)
-        typeDeclares.push({type, typeName, content, schema})
+        jsonSchemaDeclares.push({typeName, schema})
+    }
+}
+
+for (const {fileName} of contextTypeFiles) {
+    const sourceFile = program.getSourceFile(fileName)
+    for (const statement of sourceFile.statements) {
+        if (
+            !ts.isTypeAliasDeclaration(statement) &&
+            !ts.isInterfaceDeclaration(statement)
+        ) {
+            throw new Error(`[${fileName}] contains statement not a type alias or interface`)
+        }
+
+        const type = typeChecker.getTypeAtLocation(statement)
+        const typeName = statement?.symbol?.escapedName
+        if (!type || !typeName) {
+            throw new Error(`[${fileName}] ${statement} is not a valid type alias or interface`)
+        }
+
+        if (existedTypeSet.has(typeName)) {
+            throw new Error(`[${fileName}] ${typeName} is already exists`)
+        }
+
+        const content = statement.getFullText(sourceFile)
+        typeDeclares.push({type, typeName, content})
+        existedTypeSet.add(typeName)
     }
 }
 
@@ -129,6 +165,7 @@ const isFunctionType = (type) => {
 
 // 脚本函数类型
 const scriptTypeDeclares = []
+
 for (const {fileName} of scriptTypeFiles) {
     const sourceFile = program.getSourceFile(fileName)
     for (const statement of sourceFile.statements) {
@@ -213,7 +250,7 @@ ${scriptTypeDeclares.map(it => `    ${it.typeName}: ${it.typeName}Declare,`).joi
 `,
 })
 
-const jsonSchemaFiles = typeDeclares.map(it => ({
+const jsonSchemaFiles = jsonSchemaDeclares.map(it => ({
     fileName: `${jsonSchemaPath}/items/${it.typeName}.ts`,
     content: `import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
 import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
@@ -232,10 +269,10 @@ export default {
 
 jsonSchemaFiles.push({
     fileName: `${jsonSchemaPath}/index.ts`,
-    content: `${typeDeclares.map(it => `import ${it.typeName}JsonSchema from "./items/${it.typeName}.ts";`).join("\n")}
+    content: `${jsonSchemaDeclares.map(it => `import ${it.typeName}JsonSchema from "./items/${it.typeName}.ts";`).join("\n")}
 
 export const jsonSchemas = Object.freeze({
-${typeDeclares.map(it => `    ${it.typeName}: ${it.typeName}JsonSchema,`).join("\n")}
+${jsonSchemaDeclares.map(it => `    ${it.typeName}: ${it.typeName}JsonSchema,`).join("\n")}
 })
 
 export type JsonSchemaKey = keyof typeof jsonSchemas

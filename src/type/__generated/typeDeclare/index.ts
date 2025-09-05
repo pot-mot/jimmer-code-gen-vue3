@@ -29,6 +29,7 @@ import ManyToManyViewPropertyDeclare from "./items/ManyToManyViewProperty.ts";
 import ManyToOnePropertyDeclare from "./items/ManyToOneProperty.ts";
 import MappedSuperClassDeclare from "./items/MappedSuperClass.ts";
 import ModelDeclare from "./items/Model.ts";
+import ModelContextDeclare from "./items/ModelContext.ts";
 import OnDissociationActionDeclare from "./items/OnDissociationAction.ts";
 import OneToManyPropertyDeclare from "./items/OneToManyProperty.ts";
 import OneToOneSourcePropertyDeclare from "./items/OneToOneSourceProperty.ts";
@@ -72,6 +73,7 @@ export type TypeMap = {
     ManyToOneProperty: ManyToOneProperty
     MappedSuperClass: MappedSuperClass
     Model: Model
+    ModelContext: ModelContext
     OnDissociationAction: OnDissociationAction
     OneToManyProperty: OneToManyProperty
     OneToOneSourceProperty: OneToOneSourceProperty
@@ -118,6 +120,7 @@ export const typeDeclares = Object.freeze({
     ManyToOneProperty: ManyToOnePropertyDeclare,
     MappedSuperClass: MappedSuperClassDeclare,
     Model: ModelDeclare,
+    ModelContext: ModelContextDeclare,
     OnDissociationAction: OnDissociationActionDeclare,
     OneToManyProperty: OneToManyPropertyDeclare,
     OneToOneSourceProperty: OneToOneSourcePropertyDeclare,

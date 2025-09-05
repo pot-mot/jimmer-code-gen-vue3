@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "type-check": "vue-tsc --build --force",
     "api": "node scripts/generateApi.js",
-    "type-gen": "node scripts/generateTypes.js"
+    "type-gen": "node scripts/generateTypes.js && vue-tsc --build --force"
   },
   "dependencies": {
     "@typescript/vfs": "^1.6.1",
