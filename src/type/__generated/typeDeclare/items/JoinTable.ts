@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'JoinTable.d.ts',
     content: `type JoinTable = {
     name: string
@@ -24,4 +24,4 @@ export default {
         initializedValue: string
     }
 }`,
-}
+})

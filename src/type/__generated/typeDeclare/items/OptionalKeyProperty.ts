@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'OptionalKeyProperty.d.ts',
     content: `type OptionalKeyProperty = {
     key: true
@@ -6,4 +6,4 @@ export default {
 } | {
     key: false
 }`,
-}
+})

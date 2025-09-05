@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'Entity.d.ts',
     content: `type Entity = {
     id: string
@@ -24,4 +24,4 @@ export default {
         TransientProperty
         )[]
 }`,
-}
+})

@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'Column.d.ts',
     content: `type Column = {
     name: string
@@ -12,4 +12,4 @@ export default {
     autoIncrement?: boolean
     otherConstraints?: string[]
 }`,
-}
+})

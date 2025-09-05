@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'EmbeddableType.d.ts',
     content: `type EmbeddableType = {
     id: string
@@ -13,4 +13,4 @@ export default {
         EnumProperty
         )[]
 }`,
-}
+})

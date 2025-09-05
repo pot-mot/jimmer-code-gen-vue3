@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'ForeignKey.d.ts',
     content: `type ForeignKey = {
     name: string
@@ -12,4 +12,4 @@ export default {
     onUpdate?: string
     onDelete?: string
 }`,
-}
+})

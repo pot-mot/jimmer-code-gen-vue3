@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'IdProperty.d.ts',
     content: `type IdProperty = {
     category: "id"
@@ -16,4 +16,4 @@ export default {
         generatorName: string
     }
 } & Omit<BaseProperty, 'nullable'> & (ColumnProperty | EmbeddableProperty)`,
-}
+})

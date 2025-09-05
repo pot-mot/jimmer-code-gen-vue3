@@ -1,4 +1,7 @@
-export default {
+export default Object.freeze({
     fileName: 'EntityGenerator.d.ts',
-    content: `type EntityGenerator = (entity: Entity, context: ModelContext) => Record<string, string>`,
-}
+    content: `type EntityGenerator = (
+    entity: DeepReadonly<Entity>,
+    context: DeepReadonly<ModelContext>
+) => Record<string, string>`,
+})

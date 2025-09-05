@@ -8,6 +8,7 @@ import ColumnDeclare from "./items/Column.ts";
 import ColumnPropertyDeclare from "./items/ColumnProperty.ts";
 import DatabaseDeclare from "./items/Database.ts";
 import DatabaseTypeDeclare from "./items/DatabaseType.ts";
+import DeepReadonlyDeclare from "./items/DeepReadonly.ts";
 import EmbeddablePropertyDeclare from "./items/EmbeddableProperty.ts";
 import EmbeddableTypeDeclare from "./items/EmbeddableType.ts";
 import EntityDeclare from "./items/Entity.ts";
@@ -99,6 +100,7 @@ export const typeDeclares = Object.freeze({
     ColumnProperty: ColumnPropertyDeclare,
     Database: DatabaseDeclare,
     DatabaseType: DatabaseTypeDeclare,
+    DeepReadonly: DeepReadonlyDeclare,
     EmbeddableProperty: EmbeddablePropertyDeclare,
     EmbeddableType: EmbeddableTypeDeclare,
     Entity: EntityDeclare,

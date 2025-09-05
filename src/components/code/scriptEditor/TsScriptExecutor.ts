@@ -199,9 +199,12 @@ export type TsScriptValidatedCompileResult = {
 }
 
 export type TsScript<Name extends ScriptTypeName> = {
-    valid: true
     execute: (...params: Parameters<TsScriptFunction<Name>>) => ReturnType<TsScriptFunction<Name>>
-} | (TsScriptValidatedCompileResult & { valid: false })
+}
+
+export type CreateTsScriptResult<Name extends ScriptTypeName> =
+    (TsScript<Name> & { valid: true }) |
+    (TsScriptValidatedCompileResult & { valid: false })
 
 export type TsScriptExecuteResult<Name extends ScriptTypeName> = {
     success: true
@@ -372,7 +375,7 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
             }
 
             if (scriptTypeDeclareFile.statements.length !== 1) {
-                errorMessages.push('脚本类型声明文件只能包含一个语句')
+                errorMessages.push('脚本类型声明文件只能包含一个箭头函数语句')
                 return {
                     valid: false,
                     errorMessages,
@@ -394,7 +397,7 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
             const scriptTypeSignatures = scriptType.getCallSignatures()
 
             if (scriptTypeSignatures.length !== 1) {
-                errorMessages.push('类型声明必须包含唯一一个函数签名')
+                errorMessages.push('类型声明必须包含唯一一个箭头函数声明')
                 return {
                     valid: false,
                     errorMessages,
@@ -466,29 +469,20 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
             }
 
             const arrowFunction = arrowFunctionStatement.expression as ts.ArrowFunction;
-            const arrowFunctionType = typeChecker.getTypeAtLocation(arrowFunction)
-
-            // 若是类型完全匹配，则无需再进行详细的类型提示
-            if (typeChecker.isTypeAssignableTo(arrowFunctionType, scriptType)) {
-                if (markers.length > 0 || message.length > 0) {
-                    return {
-                        valid: false,
-                        markers,
-                        errorMessages,
-                    }
-                }
-
-                return {
-                    valid: true,
-                    compiledCode,
-                }
-            }
 
             // 获取声明参数信息
             const declareParameters = scriptTypeSignature.getParameters().map(param => {
                 const paramName = param.getName()
                 const paramType = typeChecker.getTypeOfSymbolAtLocation(param, scriptTypeDeclare)
-                const paramTypeName = typeChecker.typeToString(paramType)
+                let paramTypeName = typeChecker.typeToString(paramType)
+
+                const paramDeclarations = param.getDeclarations()
+                if (paramDeclarations && paramDeclarations.length === 1) {
+                    const declaration = paramDeclarations[0]
+                    if ("type" in declaration && declaration.type && typeof declaration.type === "object" && "getFullText" in declaration.type && typeof declaration.type.getFullText === "function") {
+                        paramTypeName = declaration.type.getFullText()
+                    }
+                }
 
                 // 检查参数是否可选
                 const isOptional = paramType.getFlags() & ts.TypeFlags.Union ?
@@ -660,7 +654,7 @@ export const createTsScript = async <Name extends ScriptTypeName>(
     scriptTypeName: Name,
     code: string,
     executor?: TsScriptExecutor<Name>
-): Promise<TsScript<Name>> => {
+): Promise<CreateTsScriptResult<Name>> => {
     if (!executor) {
         executor = new TsScriptExecutor(scriptTypeName)
     }

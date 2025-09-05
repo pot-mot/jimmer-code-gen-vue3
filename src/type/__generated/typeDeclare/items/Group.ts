@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'Group.d.ts',
     content: `type Group = {
     id: string
@@ -8,4 +8,4 @@ export default {
     basePackagePath: string
     baseTableSchema: string
 }`,
-}
+})

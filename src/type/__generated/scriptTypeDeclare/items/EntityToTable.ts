@@ -1,4 +1,7 @@
-export default {
+export default Object.freeze({
     fileName: 'EntityToTable.d.ts',
-    content: `type EntityToTable = (entity: Entity, context: ModelContext) => Table`,
-}
+    content: `type EntityToTable = (
+    entity: DeepReadonly<Entity>,
+    context: DeepReadonly<ModelContext>
+) => Table`,
+})

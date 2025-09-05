@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'FormulaProperty.d.ts',
     content: `type FormulaProperty = {
     category: "FORMULA"
@@ -11,4 +11,4 @@ export default {
         rawType: string
     } & OptionalOrderProperty)
     & BaseProperty`,
-}
+})

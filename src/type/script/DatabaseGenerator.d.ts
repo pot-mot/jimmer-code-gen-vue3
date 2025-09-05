@@ -1,3 +1,10 @@
-type TableGenerator = (table: Table) => Record<string, string>
+type TableGenerator = (
+    table: DeepReadonly<Table>,
+    context: DeepReadonly<ModelContext>
+) => Record<string, string>
 
-type TableDiffGenerator = (oldTable: Table, newTable: Table) => Record<string, string>
+type TableDiffGenerator = (
+    oldTable: DeepReadonly<Table>,
+    newTable: DeepReadonly<Table>,
+    context: DeepReadonly<ModelContext>
+) => Record<string, string>

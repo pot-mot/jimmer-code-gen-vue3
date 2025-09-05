@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'Enumeration.d.ts',
     content: `type Enumeration = {
     id: string
@@ -11,4 +11,4 @@ export default {
     strategy: EnumerationStrategy
     items: EnumerationItem[]
 }`,
-}
+})

@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'Table.d.ts',
     content: `type Table = {
     id: string
@@ -9,4 +9,4 @@ export default {
     indexes: Index[]
     foreignKeys: ForeignKey[]
 }`,
-}
+})

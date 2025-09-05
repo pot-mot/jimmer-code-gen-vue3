@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'OptionalLogicalDeleteProperty.d.ts',
     content: `type OptionalLogicalDeleteProperty = {
     logicalDelete: true
@@ -26,4 +26,4 @@ export default {
 } | {
     logicalDelete: false
 }`,
-}
+})

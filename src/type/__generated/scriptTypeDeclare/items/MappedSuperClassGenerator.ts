@@ -1,4 +1,7 @@
-export default {
+export default Object.freeze({
     fileName: 'MappedSuperClassGenerator.d.ts',
-    content: `type MappedSuperClassGenerator = (mappedSuperClass: MappedSuperClass, context: ModelContext) => Record<string, string>`,
-}
+    content: `type MappedSuperClassGenerator = (
+    mappedSuperClass: DeepReadonly<MappedSuperClass>,
+    context: DeepReadonly<ModelContext>
+) => Record<string, string>`,
+})

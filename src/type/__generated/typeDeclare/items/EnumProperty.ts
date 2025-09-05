@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'EnumProperty.d.ts',
     content: `type EnumProperty = {
     category: "ENUM"
@@ -7,4 +7,4 @@ export default {
     OptionalKeyProperty |
     (OptionalLogicalDeleteProperty & ({ logicalDelete: false } | { logicalDelete: true; logicalDeleteType: 'enum' }))
     ) & ColumnProperty`,
-}
+})

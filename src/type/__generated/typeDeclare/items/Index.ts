@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'Index.d.ts',
     content: `type Index = {
     name: string
@@ -6,4 +6,4 @@ export default {
     isUnique: boolean
     wherePredicates?: string
 }`,
-}
+})

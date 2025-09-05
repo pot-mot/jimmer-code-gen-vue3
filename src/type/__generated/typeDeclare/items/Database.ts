@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'Database.d.ts',
     content: `type Database = {
     id: string
@@ -8,4 +8,4 @@ export default {
     username: string
     password: string
 }`,
-}
+})

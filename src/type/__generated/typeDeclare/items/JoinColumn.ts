@@ -1,8 +1,8 @@
-export default {
+export default Object.freeze({
     fileName: 'JoinColumn.d.ts',
     content: `type JoinColumn = {
     name: string
     referencedColumnName: string
     foreignKeyType: ForeignKeyType
 }`,
-}
+})

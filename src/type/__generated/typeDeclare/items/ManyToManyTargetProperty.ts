@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'ManyToManyTargetProperty.d.ts',
     content: `type ManyToManyTargetProperty = {
     category: "ASSOCIATION_ManyToMany_Target"
@@ -6,4 +6,4 @@ export default {
     nullable: false
     typeIsList: true
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty`,
-}
+})

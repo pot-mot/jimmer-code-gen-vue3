@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'TransientProperty.d.ts',
     content: `type TransientProperty = {
     category: "TRANSIENT"
@@ -9,4 +9,4 @@ export default {
     resolver: string
     typeIsList: boolean
 })`,
-}
+})

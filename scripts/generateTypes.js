@@ -75,6 +75,16 @@ const program = ts.createProgram({
     host: host.compilerHost,
 })
 
+const isFunctionType = (type) => {
+    if (!type) return false;
+    const signatures = type.getCallSignatures();
+    return signatures.length > 0;
+}
+
+const hasTypeParameters = (node) => {
+    return node.typeParameters && Array.isArray(node.typeParameters) && node.typeParameters.length > 0;
+}
+
 const jsonSchemaProgram = tjs.getProgramFromFiles(
     modelTypeFiles.map(it => `${modelPath}/${it.fileName}`),
     {
@@ -119,12 +129,17 @@ for (const {fileName} of modelTypeFiles) {
             throw new Error(`[${fileName}] ${typeName} is already exists`)
         }
 
+        const hasGenericType = hasTypeParameters(statement)
+
         const content = statement.getFullText(sourceFile)
-        typeDeclares.push({type, typeName, content})
+        typeDeclares.push({type, typeName, content, hasGenericType})
         existedTypeSet.add(typeName)
 
-        const schema = jsonSchemaGenerator.getSchemaForSymbol(typeName)
-        jsonSchemaDeclares.push({typeName, schema})
+        // 如果没有泛型参数则可以作为 json schema
+        if (!hasGenericType) {
+            const schema = jsonSchemaGenerator.getSchemaForSymbol(typeName)
+            jsonSchemaDeclares.push({typeName, schema})
+        }
     }
 }
 
@@ -148,20 +163,16 @@ for (const {fileName} of contextTypeFiles) {
             throw new Error(`[${fileName}] ${typeName} is already exists`)
         }
 
+        const hasGenericType = hasTypeParameters(statement)
+
         const content = statement.getFullText(sourceFile)
-        typeDeclares.push({type, typeName, content})
+        typeDeclares.push({type, typeName, content, hasGenericType})
         existedTypeSet.add(typeName)
     }
 }
 
 typeDeclares.sort((a, b) => a.typeName.localeCompare(b.typeName))
-
-
-const isFunctionType = (type) => {
-    if (!type) return false;
-    const signatures = type.getCallSignatures();
-    return signatures.length > 0;
-}
+jsonSchemaDeclares.sort((a, b) => a.typeName.localeCompare(b.typeName))
 
 // 脚本函数类型
 const scriptTypeDeclares = []
@@ -185,6 +196,10 @@ for (const {fileName} of scriptTypeFiles) {
             throw new Error(`[${fileName}] ${typeName} is not a function type`);
         }
 
+        if (hasTypeParameters(statement)) {
+            throw new Error(`[${fileName}] ${typeName} has type parameters`);
+        }
+
         if (existedTypeSet.has(typeName)) {
             throw new Error(`[${fileName}] ${typeName} is already exists`)
         }
@@ -202,10 +217,10 @@ scriptTypeDeclares.sort((a, b) => a.typeName.localeCompare(b.typeName))
 
 const typeDeclareFiles = typeDeclares.map(it => ({
     fileName: `${typeDeclarePath}/items/${it.typeName}.ts`,
-    content: `export default {
+    content: `export default Object.freeze({
     fileName: '${it.typeName}.d.ts',
     content: \`${it.content.trim()}\`,
-}
+})
 `,
 }))
 
@@ -214,7 +229,7 @@ typeDeclareFiles.push({
     content: `${typeDeclares.map(it => `import ${it.typeName}Declare from "./items/${it.typeName}.ts";`).join("\n")}
 
 export type TypeMap = {
-${typeDeclares.map(it => `    ${it.typeName}: ${it.typeName}`).join("\n")}
+${typeDeclares.filter(it => !it.hasGenericType).map(it => `    ${it.typeName}: ${it.typeName}`).join("\n")}
 }
 
 export type TypeName = keyof TypeMap
@@ -227,10 +242,10 @@ ${typeDeclares.map(it => `    ${it.typeName}: ${it.typeName}Declare,`).join("\n"
 
 const scriptTypeDeclareFiles = scriptTypeDeclares.map(it => ({
     fileName: `${scriptTypeDeclarePath}/items/${it.typeName}.ts`,
-    content: `export default {
+    content: `export default Object.freeze({
     fileName: '${it.typeName}.d.ts',
     content: \`${it.content.trim()}\`,
-}
+})
 `,
 }))
 

@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'ScalarProperty.d.ts',
     content: `type ScalarProperty = {
     category: "SCALAR"
@@ -11,4 +11,4 @@ export default {
     { arrayType: false } |
     { arrayType: true, databaseType?: string }
     )`,
-}
+})

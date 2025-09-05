@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'Model.d.ts',
     content: `type Model = {
     id: string
@@ -9,4 +9,4 @@ export default {
     database: DatabaseType
     language: BackEndLanguage
 }`,
-}
+})

@@ -1,4 +1,4 @@
-export default {
+export default Object.freeze({
     fileName: 'BaseProperty.d.ts',
     content: `type BaseProperty = {
     id: string
@@ -8,4 +8,4 @@ export default {
     extraAnnotations: string[]
     nullable: boolean
 }`,
-}
+})
