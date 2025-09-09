@@ -4,6 +4,6 @@ export default Object.freeze({
     category: "FORMULA_SQL"
     sql: string
     rawType: string
-    defaultOrderDirection: "ASC" | "DESC" | undefined
+    defaultOrderDirection?: OrderDirection
 } & BaseProperty`,
 })

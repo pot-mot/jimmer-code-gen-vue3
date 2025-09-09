@@ -12,9 +12,11 @@ type KeyProperty = {
     keyGroups: string[]
 }
 
+type OrderDirection = "ASC" | "DESC"
+
 type ColumnProperty = {
     columnInfo: Omit<Column, 'id' | 'partOfPrimaryKey' | 'autoIncrement'>,
-    defaultOrderDirection: "ASC" | "DESC" | undefined
+    defaultOrderDirection?: OrderDirection
 } & (
     | { typeIsArray: false }
     | { typeIsArray: true, databaseType?: string }
@@ -168,7 +170,7 @@ type SqlFormulaProperty = {
     category: "FORMULA_SQL"
     sql: string
     rawType: string
-    defaultOrderDirection: "ASC" | "DESC" | undefined
+    defaultOrderDirection?: OrderDirection
 } & BaseProperty
 
 type TransientProperty = {

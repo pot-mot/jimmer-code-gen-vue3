@@ -1,7 +1,7 @@
 export default Object.freeze({
     fileName: 'EmbeddableTypeGenerator.d.ts',
     content: `type EmbeddableTypeGenerator = (
-    embeddableType: DeepReadonly<EmbeddableTypeWithCategoryProperties>,
+    embeddableType: DeepReadonly<EmbeddableTypeWithCategorizedProperties>,
     context: DeepReadonly<ModelContext>
 ) => Record<string, string>`,
 })

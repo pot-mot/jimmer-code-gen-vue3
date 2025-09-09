@@ -1,15 +1,15 @@
 type EntityGenerator = (
-    entity: DeepReadonly<EntityWithCategoryProperties>,
+    entity: DeepReadonly<EntityWithCategorizedProperties>,
     context: DeepReadonly<ModelContext>
 ) => Record<string, string>
 
 type MappedSuperClassGenerator = (
-    mappedSuperClass: DeepReadonly<MappedSuperClassWithCategoryProperties>,
+    mappedSuperClass: DeepReadonly<MappedSuperClassWithCategorizedProperties>,
     context: DeepReadonly<ModelContext>
 ) => Record<string, string>
 
 type EmbeddableTypeGenerator = (
-    embeddableType: DeepReadonly<EmbeddableTypeWithCategoryProperties>,
+    embeddableType: DeepReadonly<EmbeddableTypeWithCategorizedProperties>,
     context: DeepReadonly<ModelContext>
 ) => Record<string, string>
 

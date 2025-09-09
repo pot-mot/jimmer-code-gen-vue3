@@ -2,16 +2,17 @@ export default Object.freeze({
     fileName: 'ModelContext.d.ts',
     content: `type ModelContext = {
     model: ModelWithSubData
-    groupIdMap: Map<string, GroupWithSubData>
-    entityIdMap: Map<string, EntityWithCategoryProperties>
-    mappedSuperClassIdMap: Map<string, MappedSuperClassWithCategoryProperties>
-    embeddableTypeIdMap: Map<string, EmbeddableTypeWithCategoryProperties>
-    enumerationIdMap: Map<string, Enumeration>
-    associationIdMap: Map<string, AssociationWithSubData>
+
+    groupMap: Map<string, GroupWithSubData>
+    entityMap: Map<string, EntityWithCategorizedProperties>
+    mappedSuperClassMap: Map<string, MappedSuperClassWithCategorizedProperties>
+    embeddableTypeMap: Map<string, EmbeddableTypeWithCategorizedProperties>
+    enumerationMap: Map<string, Enumeration>
+    associationMap: Map<string, AssociationWithSubData>
 
     mappedSuperClassAllExtendsMap: Map<string, Set<MappedSuperClass>>
-    mappedSuperClassAllPropertiesMap: Map<string, CategoryProperties>
+    mappedSuperClassAllPropertiesMap: Map<string, CategorizedProperties>
     entityAllExtendsMap: Map<string, Set<MappedSuperClass>>
-    entityAllPropertiesMap: Map<string, CategoryPropertiesRequiredId>
+    entityAllPropertiesMap: Map<string, CategorizedPropertiesRequiredId>
 }`,
 })

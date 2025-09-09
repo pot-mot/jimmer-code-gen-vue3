@@ -1,8 +1,8 @@
 type GroupSubData = {
-    entities?: EntityWithCategoryProperties[]
-    mappedSuperClasses?: MappedSuperClassWithCategoryProperties[]
-    embeddableTypes?: EmbeddableTypeWithCategoryProperties[]
-    enumerations?: Enumeration[]
+    entities: EntityWithProperties[]
+    mappedSuperClasses: MappedSuperClassWithProperties[]
+    embeddableTypes: EmbeddableTypeWithProperties[]
+    enumerations: Enumeration[]
 }
 
 type GroupWithSubData = Group & GroupSubData

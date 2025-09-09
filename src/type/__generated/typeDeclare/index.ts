@@ -6,8 +6,9 @@ import AssociationWithSubDataDeclare from "./items/AssociationWithSubData.ts";
 import BackEndLanguageDeclare from "./items/BackEndLanguage.ts";
 import BaseAssociationPropertyDeclare from "./items/BaseAssociationProperty.ts";
 import BasePropertyDeclare from "./items/BaseProperty.ts";
-import CategoryPropertiesDeclare from "./items/CategoryProperties.ts";
-import CategoryPropertiesRequiredIdDeclare from "./items/CategoryPropertiesRequiredId.ts";
+import CategorizedEmbeddableTypePropertiesDeclare from "./items/CategorizedEmbeddableTypeProperties.ts";
+import CategorizedPropertiesDeclare from "./items/CategorizedProperties.ts";
+import CategorizedPropertiesRequiredIdDeclare from "./items/CategorizedPropertiesRequiredId.ts";
 import ColumnDeclare from "./items/Column.ts";
 import ColumnPropertyDeclare from "./items/ColumnProperty.ts";
 import DatabaseDeclare from "./items/Database.ts";
@@ -15,11 +16,10 @@ import DatabaseTypeDeclare from "./items/DatabaseType.ts";
 import DeepReadonlyDeclare from "./items/DeepReadonly.ts";
 import EmbeddablePropertyDeclare from "./items/EmbeddableProperty.ts";
 import EmbeddableTypeDeclare from "./items/EmbeddableType.ts";
-import EmbeddableTypeCategoryPropertiesDeclare from "./items/EmbeddableTypeCategoryProperties.ts";
-import EmbeddableTypeWithCategoryPropertiesDeclare from "./items/EmbeddableTypeWithCategoryProperties.ts";
+import EmbeddableTypeWithCategorizedPropertiesDeclare from "./items/EmbeddableTypeWithCategorizedProperties.ts";
 import EmbeddableTypeWithPropertiesDeclare from "./items/EmbeddableTypeWithProperties.ts";
 import EntityDeclare from "./items/Entity.ts";
-import EntityWithCategoryPropertiesDeclare from "./items/EntityWithCategoryProperties.ts";
+import EntityWithCategorizedPropertiesDeclare from "./items/EntityWithCategorizedProperties.ts";
 import EntityWithPropertiesDeclare from "./items/EntityWithProperties.ts";
 import EnumerationDeclare from "./items/Enumeration.ts";
 import EnumerationItemDeclare from "./items/EnumerationItem.ts";
@@ -42,7 +42,7 @@ import ManyToManyTargetPropertyDeclare from "./items/ManyToManyTargetProperty.ts
 import ManyToManyViewPropertyDeclare from "./items/ManyToManyViewProperty.ts";
 import ManyToOnePropertyDeclare from "./items/ManyToOneProperty.ts";
 import MappedSuperClassDeclare from "./items/MappedSuperClass.ts";
-import MappedSuperClassWithCategoryPropertiesDeclare from "./items/MappedSuperClassWithCategoryProperties.ts";
+import MappedSuperClassWithCategorizedPropertiesDeclare from "./items/MappedSuperClassWithCategorizedProperties.ts";
 import MappedSuperClassWithPropertiesDeclare from "./items/MappedSuperClassWithProperties.ts";
 import ModelDeclare from "./items/Model.ts";
 import ModelContextDeclare from "./items/ModelContext.ts";
@@ -54,6 +54,7 @@ import OnDissociationActionDeclare from "./items/OnDissociationAction.ts";
 import OneToManyPropertyDeclare from "./items/OneToManyProperty.ts";
 import OneToOneSourcePropertyDeclare from "./items/OneToOneSourceProperty.ts";
 import OneToOneTargetPropertyDeclare from "./items/OneToOneTargetProperty.ts";
+import OrderDirectionDeclare from "./items/OrderDirection.ts";
 import PropertiesDeclare from "./items/Properties.ts";
 import PropertyDeclare from "./items/Property.ts";
 import ScalarLogicalDeletePropertyDeclare from "./items/ScalarLogicalDeleteProperty.ts";
@@ -72,19 +73,19 @@ export type TypeMap = {
     BackEndLanguage: BackEndLanguage
     BaseAssociationProperty: BaseAssociationProperty
     BaseProperty: BaseProperty
-    CategoryProperties: CategoryProperties
-    CategoryPropertiesRequiredId: CategoryPropertiesRequiredId
+    CategorizedEmbeddableTypeProperties: CategorizedEmbeddableTypeProperties
+    CategorizedProperties: CategorizedProperties
+    CategorizedPropertiesRequiredId: CategorizedPropertiesRequiredId
     Column: Column
     ColumnProperty: ColumnProperty
     Database: Database
     DatabaseType: DatabaseType
     EmbeddableProperty: EmbeddableProperty
     EmbeddableType: EmbeddableType
-    EmbeddableTypeCategoryProperties: EmbeddableTypeCategoryProperties
-    EmbeddableTypeWithCategoryProperties: EmbeddableTypeWithCategoryProperties
+    EmbeddableTypeWithCategorizedProperties: EmbeddableTypeWithCategorizedProperties
     EmbeddableTypeWithProperties: EmbeddableTypeWithProperties
     Entity: Entity
-    EntityWithCategoryProperties: EntityWithCategoryProperties
+    EntityWithCategorizedProperties: EntityWithCategorizedProperties
     EntityWithProperties: EntityWithProperties
     Enumeration: Enumeration
     EnumerationItem: EnumerationItem
@@ -107,7 +108,7 @@ export type TypeMap = {
     ManyToManyViewProperty: ManyToManyViewProperty
     ManyToOneProperty: ManyToOneProperty
     MappedSuperClass: MappedSuperClass
-    MappedSuperClassWithCategoryProperties: MappedSuperClassWithCategoryProperties
+    MappedSuperClassWithCategorizedProperties: MappedSuperClassWithCategorizedProperties
     MappedSuperClassWithProperties: MappedSuperClassWithProperties
     Model: Model
     ModelContext: ModelContext
@@ -119,6 +120,7 @@ export type TypeMap = {
     OneToManyProperty: OneToManyProperty
     OneToOneSourceProperty: OneToOneSourceProperty
     OneToOneTargetProperty: OneToOneTargetProperty
+    OrderDirection: OrderDirection
     Properties: Properties
     Property: Property
     ScalarLogicalDeleteProperty: ScalarLogicalDeleteProperty
@@ -140,8 +142,9 @@ export const typeDeclares = Object.freeze({
     BackEndLanguage: BackEndLanguageDeclare,
     BaseAssociationProperty: BaseAssociationPropertyDeclare,
     BaseProperty: BasePropertyDeclare,
-    CategoryProperties: CategoryPropertiesDeclare,
-    CategoryPropertiesRequiredId: CategoryPropertiesRequiredIdDeclare,
+    CategorizedEmbeddableTypeProperties: CategorizedEmbeddableTypePropertiesDeclare,
+    CategorizedProperties: CategorizedPropertiesDeclare,
+    CategorizedPropertiesRequiredId: CategorizedPropertiesRequiredIdDeclare,
     Column: ColumnDeclare,
     ColumnProperty: ColumnPropertyDeclare,
     Database: DatabaseDeclare,
@@ -149,11 +152,10 @@ export const typeDeclares = Object.freeze({
     DeepReadonly: DeepReadonlyDeclare,
     EmbeddableProperty: EmbeddablePropertyDeclare,
     EmbeddableType: EmbeddableTypeDeclare,
-    EmbeddableTypeCategoryProperties: EmbeddableTypeCategoryPropertiesDeclare,
-    EmbeddableTypeWithCategoryProperties: EmbeddableTypeWithCategoryPropertiesDeclare,
+    EmbeddableTypeWithCategorizedProperties: EmbeddableTypeWithCategorizedPropertiesDeclare,
     EmbeddableTypeWithProperties: EmbeddableTypeWithPropertiesDeclare,
     Entity: EntityDeclare,
-    EntityWithCategoryProperties: EntityWithCategoryPropertiesDeclare,
+    EntityWithCategorizedProperties: EntityWithCategorizedPropertiesDeclare,
     EntityWithProperties: EntityWithPropertiesDeclare,
     Enumeration: EnumerationDeclare,
     EnumerationItem: EnumerationItemDeclare,
@@ -176,7 +178,7 @@ export const typeDeclares = Object.freeze({
     ManyToManyViewProperty: ManyToManyViewPropertyDeclare,
     ManyToOneProperty: ManyToOnePropertyDeclare,
     MappedSuperClass: MappedSuperClassDeclare,
-    MappedSuperClassWithCategoryProperties: MappedSuperClassWithCategoryPropertiesDeclare,
+    MappedSuperClassWithCategorizedProperties: MappedSuperClassWithCategorizedPropertiesDeclare,
     MappedSuperClassWithProperties: MappedSuperClassWithPropertiesDeclare,
     Model: ModelDeclare,
     ModelContext: ModelContextDeclare,
@@ -188,6 +190,7 @@ export const typeDeclares = Object.freeze({
     OneToManyProperty: OneToManyPropertyDeclare,
     OneToOneSourceProperty: OneToOneSourcePropertyDeclare,
     OneToOneTargetProperty: OneToOneTargetPropertyDeclare,
+    OrderDirection: OrderDirectionDeclare,
     Properties: PropertiesDeclare,
     Property: PropertyDeclare,
     ScalarLogicalDeleteProperty: ScalarLogicalDeletePropertyDeclare,

@@ -1,6 +1,6 @@
 type AssociationSubData = {
-    sourceEntity: EntityWithCategoryProperties
-    targetEntity: EntityWithCategoryProperties
+    sourceEntity: EntityWithCategorizedProperties | MappedSuperClassWithCategorizedProperties
+    targetEntity: EntityWithCategorizedProperties | MappedSuperClassWithCategorizedProperties
     sourceProperty: AssociationProperty
     targetProperty: AssociationProperty
 }

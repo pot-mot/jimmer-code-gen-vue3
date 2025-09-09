@@ -81,8 +81,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -177,8 +176,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -292,8 +290,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -416,8 +413,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -536,8 +532,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -656,8 +651,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -776,8 +770,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -909,8 +902,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -1008,8 +1000,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -1126,8 +1117,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -1253,8 +1243,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -1376,8 +1365,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -1499,8 +1487,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -1622,8 +1609,7 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {

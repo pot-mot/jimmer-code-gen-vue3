@@ -73,8 +73,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -161,8 +160,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -268,8 +266,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -381,8 +378,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -472,8 +468,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -582,8 +577,7 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {

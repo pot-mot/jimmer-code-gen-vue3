@@ -20,8 +20,7 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -55,8 +54,7 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {

@@ -1,24 +1,25 @@
 type ModelContextData = {
     model: Model
-    groupIdMap: Map<string, Group>
-    entityIdMap: Map<string, EntityWithProperties>
-    mappedSuperClassIdMap: Map<string, MappedSuperClassWithProperties>
-    embeddableTypeIdMap: Map<string, EmbeddableTypeWithProperties>
-    enumerationIdMap: Map<string, Enumeration>
-    associationIdMap: Map<string, AssociationWithSubData>
+    groupMap: Map<string, Group>
+    entityMap: Map<string, EntityWithProperties>
+    mappedSuperClassMap: Map<string, MappedSuperClassWithProperties>
+    embeddableTypeMap: Map<string, EmbeddableTypeWithProperties>
+    enumerationMap: Map<string, Enumeration>
+    associationMap: Map<string, Association>
 }
 
 type ModelContext = {
     model: ModelWithSubData
-    groupIdMap: Map<string, GroupWithSubData>
-    entityIdMap: Map<string, EntityWithCategoryProperties>
-    mappedSuperClassIdMap: Map<string, MappedSuperClassWithCategoryProperties>
-    embeddableTypeIdMap: Map<string, EmbeddableTypeWithCategoryProperties>
-    enumerationIdMap: Map<string, Enumeration>
-    associationIdMap: Map<string, AssociationWithSubData>
+
+    groupMap: Map<string, GroupWithSubData>
+    entityMap: Map<string, EntityWithCategorizedProperties>
+    mappedSuperClassMap: Map<string, MappedSuperClassWithCategorizedProperties>
+    embeddableTypeMap: Map<string, EmbeddableTypeWithCategorizedProperties>
+    enumerationMap: Map<string, Enumeration>
+    associationMap: Map<string, AssociationWithSubData>
 
     mappedSuperClassAllExtendsMap: Map<string, Set<MappedSuperClass>>
-    mappedSuperClassAllPropertiesMap: Map<string, CategoryProperties>
+    mappedSuperClassAllPropertiesMap: Map<string, CategorizedProperties>
     entityAllExtendsMap: Map<string, Set<MappedSuperClass>>
-    entityAllPropertiesMap: Map<string, CategoryPropertiesRequiredId>
+    entityAllPropertiesMap: Map<string, CategorizedPropertiesRequiredId>
 }

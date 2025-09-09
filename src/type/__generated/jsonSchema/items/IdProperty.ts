@@ -105,8 +105,7 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -225,8 +224,7 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "defaultOrderDirection"
+                        "columnInfo"
                     ]
                 },
                 {

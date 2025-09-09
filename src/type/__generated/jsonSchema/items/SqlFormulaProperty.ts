@@ -26,7 +26,6 @@ const SqlFormulaPropertyJsonSchema: JSONSchemaType<SqlFormulaProperty> = {
             },
             "required": [
                 "category",
-                "defaultOrderDirection",
                 "rawType",
                 "sql"
             ]

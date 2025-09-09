@@ -1,10 +1,10 @@
 type ModelSubData = {
-    groups: GroupWithSubData[]
-    entities: EntityWithCategoryProperties[]
-    mappedSuperClasses: MappedSuperClassWithCategoryProperties[]
-    embeddableTypes: EmbeddableTypeWithCategoryProperties[]
+    groups: Group[]
+    entities: EntityWithProperties[]
+    mappedSuperClasses: MappedSuperClassWithProperties[]
+    embeddableTypes: EmbeddableTypeWithProperties[]
     enumerations: Enumeration[]
-    associations: AssociationWithSubData[]
+    associations: Association[]
 }
 
 type ModelWithSubData = Model & ModelSubData
