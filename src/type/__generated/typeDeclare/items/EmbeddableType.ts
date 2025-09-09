@@ -8,9 +8,5 @@ export default Object.freeze({
     comment: string
     extraImports: string[]
     extraAnnotations: string[]
-    properties: (
-        ScalarProperty |
-        EnumProperty
-        )[]
 }`,
 })

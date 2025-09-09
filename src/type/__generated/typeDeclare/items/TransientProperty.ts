@@ -5,7 +5,7 @@ export default Object.freeze({
 } & BaseProperty & ({
     rawType: string
 } | {
-    entityId: string
+    referenceEntityId: string
     resolver: string
     typeIsList: boolean
 })`,

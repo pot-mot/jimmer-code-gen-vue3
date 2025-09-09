@@ -3,6 +3,8 @@ export default Object.freeze({
     content: `type ManyToManyViewProperty = {
     category: "ASSOCIATION_ManyToMany_View"
     baseToManyPropertyId: string
-    deeperAssociationPropertyId: string
-}`,
+    deeperPropertyId: string
+    nullable: false
+    typeIsList: true
+} & Omit<BaseProperty, 'nullable'>`,
 })

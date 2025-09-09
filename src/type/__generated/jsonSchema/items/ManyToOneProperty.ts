@@ -62,7 +62,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                 "associationId": {
                     "type": "string"
                 },
-                "entityId": {
+                "referenceEntityId": {
                     "type": "string"
                 },
                 "idViewName": {
@@ -71,8 +71,8 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
             },
             "required": [
                 "associationId",
-                "entityId",
-                "idViewName"
+                "idViewName",
+                "referenceEntityId"
             ]
         }
     ],

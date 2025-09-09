@@ -8,11 +8,15 @@ export default Object.freeze({
     targetEntityId: string
     sourcePropertyId: string
     targetPropertyId: string
-} & ({
-    joinColumn: JoinColumn
-} | {
-    joinColumns: JoinColumn[]
-} | {
-    joinTable: JoinTable
-})`,
+    joinInfo: {
+        type: "joinColumn"
+        joinColumn: JoinColumn
+    } | {
+        type: "joinColumns"
+        joinColumns: JoinColumn[]
+    } | {
+        type: "joinTable"
+        joinTable: JoinTable
+    }
+}`,
 })

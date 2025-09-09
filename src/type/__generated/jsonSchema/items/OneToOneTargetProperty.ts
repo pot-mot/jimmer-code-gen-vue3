@@ -10,7 +10,7 @@ const OneToOneTargetPropertyJsonSchema: JSONSchemaType<OneToOneTargetProperty> =
                     "type": "string",
                     "const": "ASSOCIATION_OneToOne_Target"
                 },
-                "mappedBy": {
+                "mappedById": {
                     "type": "string"
                 },
                 "nullable": {
@@ -20,7 +20,7 @@ const OneToOneTargetPropertyJsonSchema: JSONSchemaType<OneToOneTargetProperty> =
             },
             "required": [
                 "category",
-                "mappedBy",
+                "mappedById",
                 "nullable"
             ]
         },
@@ -33,7 +33,7 @@ const OneToOneTargetPropertyJsonSchema: JSONSchemaType<OneToOneTargetProperty> =
                 "associationId": {
                     "type": "string"
                 },
-                "entityId": {
+                "referenceEntityId": {
                     "type": "string"
                 },
                 "idViewName": {
@@ -42,8 +42,8 @@ const OneToOneTargetPropertyJsonSchema: JSONSchemaType<OneToOneTargetProperty> =
             },
             "required": [
                 "associationId",
-                "entityId",
-                "idViewName"
+                "idViewName",
+                "referenceEntityId"
             ]
         }
     ],

@@ -1,8 +1,7 @@
 export default Object.freeze({
     fileName: 'TableDiffGenerator.d.ts',
     content: `type TableDiffGenerator = (
-    oldTable: DeepReadonly<Table>,
-    newTable: DeepReadonly<Table>,
+    tablePairs: DeepReadonly<{oldTable: Table, newTable: Table}[]>,
     context: DeepReadonly<ModelContext>
 ) => Record<string, string>`,
 })

@@ -14,15 +14,17 @@ import EntityJsonSchema from "./items/Entity.ts";
 import EnumerationJsonSchema from "./items/Enumeration.ts";
 import EnumerationItemJsonSchema from "./items/EnumerationItem.ts";
 import EnumerationStrategyJsonSchema from "./items/EnumerationStrategy.ts";
+import EnumLogicalDeletePropertyJsonSchema from "./items/EnumLogicalDeleteProperty.ts";
 import EnumPropertyJsonSchema from "./items/EnumProperty.ts";
 import ForeignKeyJsonSchema from "./items/ForeignKey.ts";
 import ForeignKeyTypeJsonSchema from "./items/ForeignKeyType.ts";
-import FormulaPropertyJsonSchema from "./items/FormulaProperty.ts";
+import GetterFormulaPropertyJsonSchema from "./items/GetterFormulaProperty.ts";
 import GroupJsonSchema from "./items/Group.ts";
 import IdPropertyJsonSchema from "./items/IdProperty.ts";
 import IndexJsonSchema from "./items/Index.ts";
 import JoinColumnJsonSchema from "./items/JoinColumn.ts";
 import JoinTableJsonSchema from "./items/JoinTable.ts";
+import KeyPropertyJsonSchema from "./items/KeyProperty.ts";
 import ManyToManySourcePropertyJsonSchema from "./items/ManyToManySourceProperty.ts";
 import ManyToManyTargetPropertyJsonSchema from "./items/ManyToManyTargetProperty.ts";
 import ManyToManyViewPropertyJsonSchema from "./items/ManyToManyViewProperty.ts";
@@ -33,12 +35,12 @@ import OnDissociationActionJsonSchema from "./items/OnDissociationAction.ts";
 import OneToManyPropertyJsonSchema from "./items/OneToManyProperty.ts";
 import OneToOneSourcePropertyJsonSchema from "./items/OneToOneSourceProperty.ts";
 import OneToOneTargetPropertyJsonSchema from "./items/OneToOneTargetProperty.ts";
-import OptionalKeyPropertyJsonSchema from "./items/OptionalKeyProperty.ts";
-import OptionalLogicalDeletePropertyJsonSchema from "./items/OptionalLogicalDeleteProperty.ts";
-import OptionalOrderPropertyJsonSchema from "./items/OptionalOrderProperty.ts";
+import ScalarLogicalDeletePropertyJsonSchema from "./items/ScalarLogicalDeleteProperty.ts";
 import ScalarPropertyJsonSchema from "./items/ScalarProperty.ts";
+import SqlFormulaPropertyJsonSchema from "./items/SqlFormulaProperty.ts";
 import TableJsonSchema from "./items/Table.ts";
 import TransientPropertyJsonSchema from "./items/TransientProperty.ts";
+import VersionPropertyJsonSchema from "./items/VersionProperty.ts";
 
 export const jsonSchemas = Object.freeze({
     Association: AssociationJsonSchema,
@@ -57,15 +59,17 @@ export const jsonSchemas = Object.freeze({
     Enumeration: EnumerationJsonSchema,
     EnumerationItem: EnumerationItemJsonSchema,
     EnumerationStrategy: EnumerationStrategyJsonSchema,
+    EnumLogicalDeleteProperty: EnumLogicalDeletePropertyJsonSchema,
     EnumProperty: EnumPropertyJsonSchema,
     ForeignKey: ForeignKeyJsonSchema,
     ForeignKeyType: ForeignKeyTypeJsonSchema,
-    FormulaProperty: FormulaPropertyJsonSchema,
+    GetterFormulaProperty: GetterFormulaPropertyJsonSchema,
     Group: GroupJsonSchema,
     IdProperty: IdPropertyJsonSchema,
     Index: IndexJsonSchema,
     JoinColumn: JoinColumnJsonSchema,
     JoinTable: JoinTableJsonSchema,
+    KeyProperty: KeyPropertyJsonSchema,
     ManyToManySourceProperty: ManyToManySourcePropertyJsonSchema,
     ManyToManyTargetProperty: ManyToManyTargetPropertyJsonSchema,
     ManyToManyViewProperty: ManyToManyViewPropertyJsonSchema,
@@ -76,12 +80,12 @@ export const jsonSchemas = Object.freeze({
     OneToManyProperty: OneToManyPropertyJsonSchema,
     OneToOneSourceProperty: OneToOneSourcePropertyJsonSchema,
     OneToOneTargetProperty: OneToOneTargetPropertyJsonSchema,
-    OptionalKeyProperty: OptionalKeyPropertyJsonSchema,
-    OptionalLogicalDeleteProperty: OptionalLogicalDeletePropertyJsonSchema,
-    OptionalOrderProperty: OptionalOrderPropertyJsonSchema,
+    ScalarLogicalDeleteProperty: ScalarLogicalDeletePropertyJsonSchema,
     ScalarProperty: ScalarPropertyJsonSchema,
+    SqlFormulaProperty: SqlFormulaPropertyJsonSchema,
     Table: TableJsonSchema,
     TransientProperty: TransientPropertyJsonSchema,
+    VersionProperty: VersionPropertyJsonSchema,
 })
 
 export type JsonSchemaKey = keyof typeof jsonSchemas

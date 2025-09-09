@@ -62,7 +62,7 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                 "associationId": {
                     "type": "string"
                 },
-                "entityId": {
+                "referenceEntityId": {
                     "type": "string"
                 },
                 "idViewName": {
@@ -71,8 +71,8 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
             },
             "required": [
                 "associationId",
-                "entityId",
-                "idViewName"
+                "idViewName",
+                "referenceEntityId"
             ]
         }
     ],

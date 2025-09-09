@@ -10,10 +10,10 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
             "$ref": "#/definitions/OneToOneTargetProperty"
         },
         {
-            "$ref": "#/definitions/OneToManyProperty"
+            "$ref": "#/definitions/ManyToOneProperty"
         },
         {
-            "$ref": "#/definitions/ManyToOneProperty"
+            "$ref": "#/definitions/OneToManyProperty"
         },
         {
             "$ref": "#/definitions/ManyToManySourceProperty"
@@ -84,7 +84,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                         "associationId": {
                             "type": "string"
                         },
-                        "entityId": {
+                        "referenceEntityId": {
                             "type": "string"
                         },
                         "idViewName": {
@@ -93,8 +93,8 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                     },
                     "required": [
                         "associationId",
-                        "entityId",
-                        "idViewName"
+                        "idViewName",
+                        "referenceEntityId"
                     ]
                 }
             ]
@@ -118,7 +118,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                             "type": "string",
                             "const": "ASSOCIATION_OneToOne_Target"
                         },
-                        "mappedBy": {
+                        "mappedById": {
                             "type": "string"
                         },
                         "nullable": {
@@ -128,7 +128,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                     },
                     "required": [
                         "category",
-                        "mappedBy",
+                        "mappedById",
                         "nullable"
                     ]
                 },
@@ -141,7 +141,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                         "associationId": {
                             "type": "string"
                         },
-                        "entityId": {
+                        "referenceEntityId": {
                             "type": "string"
                         },
                         "idViewName": {
@@ -150,8 +150,8 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                     },
                     "required": [
                         "associationId",
-                        "entityId",
-                        "idViewName"
+                        "idViewName",
+                        "referenceEntityId"
                     ]
                 }
             ]
@@ -187,58 +187,6 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                 "extraImports",
                 "id",
                 "name"
-            ]
-        },
-        "OneToManyProperty": {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ASSOCIATION_OneToMany"
-                        },
-                        "mappedBy": {
-                            "type": "string"
-                        },
-                        "nullable": {
-                            "type": "boolean",
-                            "const": false
-                        },
-                        "typeIsList": {
-                            "type": "boolean",
-                            "const": true
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "mappedBy",
-                        "nullable",
-                        "typeIsList"
-                    ]
-                },
-                {
-                    "$ref": "#/definitions/Omit<BaseProperty,\"nullable\">"
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "associationId": {
-                            "type": "string"
-                        },
-                        "entityId": {
-                            "type": "string"
-                        },
-                        "idViewName": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "associationId",
-                        "entityId",
-                        "idViewName"
-                    ]
-                }
             ]
         },
         "ManyToOneProperty": {
@@ -302,7 +250,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                         "associationId": {
                             "type": "string"
                         },
-                        "entityId": {
+                        "referenceEntityId": {
                             "type": "string"
                         },
                         "idViewName": {
@@ -311,8 +259,60 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                     },
                     "required": [
                         "associationId",
-                        "entityId",
-                        "idViewName"
+                        "idViewName",
+                        "referenceEntityId"
+                    ]
+                }
+            ]
+        },
+        "OneToManyProperty": {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "ASSOCIATION_OneToMany"
+                        },
+                        "mappedById": {
+                            "type": "string"
+                        },
+                        "nullable": {
+                            "type": "boolean",
+                            "const": false
+                        },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": true
+                        }
+                    },
+                    "required": [
+                        "category",
+                        "mappedById",
+                        "nullable",
+                        "typeIsList"
+                    ]
+                },
+                {
+                    "$ref": "#/definitions/Omit<BaseProperty,\"nullable\">"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "associationId": {
+                            "type": "string"
+                        },
+                        "referenceEntityId": {
+                            "type": "string"
+                        },
+                        "idViewName": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "associationId",
+                        "idViewName",
+                        "referenceEntityId"
                     ]
                 }
             ]
@@ -350,7 +350,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                         "associationId": {
                             "type": "string"
                         },
-                        "entityId": {
+                        "referenceEntityId": {
                             "type": "string"
                         },
                         "idViewName": {
@@ -359,8 +359,8 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                     },
                     "required": [
                         "associationId",
-                        "entityId",
-                        "idViewName"
+                        "idViewName",
+                        "referenceEntityId"
                     ]
                 }
             ]
@@ -374,7 +374,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                             "type": "string",
                             "const": "ASSOCIATION_ManyToMany_Target"
                         },
-                        "mappedBy": {
+                        "mappedById": {
                             "type": "string"
                         },
                         "nullable": {
@@ -388,7 +388,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                     },
                     "required": [
                         "category",
-                        "mappedBy",
+                        "mappedById",
                         "nullable",
                         "typeIsList"
                     ]
@@ -402,7 +402,7 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                         "associationId": {
                             "type": "string"
                         },
-                        "entityId": {
+                        "referenceEntityId": {
                             "type": "string"
                         },
                         "idViewName": {
@@ -411,8 +411,8 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
                     },
                     "required": [
                         "associationId",
-                        "entityId",
-                        "idViewName"
+                        "idViewName",
+                        "referenceEntityId"
                     ]
                 }
             ]

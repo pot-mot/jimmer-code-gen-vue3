@@ -2,47 +2,38 @@ import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
 import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
 const AssociationJsonSchema: JSONSchemaType<Association> = {
-    "anyOf": [
-        {
-            "allOf": [
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "type": {
+            "$ref": "#/definitions/AssociationType"
+        },
+        "sourceEntityId": {
+            "type": "string"
+        },
+        "targetEntityId": {
+            "type": "string"
+        },
+        "sourcePropertyId": {
+            "type": "string"
+        },
+        "targetPropertyId": {
+            "type": "string"
+        },
+        "joinInfo": {
+            "anyOf": [
                 {
                     "type": "object",
                     "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
                         "type": {
-                            "$ref": "#/definitions/AssociationType"
+                            "type": "string",
+                            "const": "joinColumn"
                         },
-                        "sourceEntityId": {
-                            "type": "string"
-                        },
-                        "targetEntityId": {
-                            "type": "string"
-                        },
-                        "sourcePropertyId": {
-                            "type": "string"
-                        },
-                        "targetPropertyId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "id",
-                        "name",
-                        "sourceEntityId",
-                        "sourcePropertyId",
-                        "targetEntityId",
-                        "targetPropertyId",
-                        "type"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
                         "joinColumn": {
                             "type": "object",
                             "properties": {
@@ -64,51 +55,17 @@ const AssociationJsonSchema: JSONSchemaType<Association> = {
                         }
                     },
                     "required": [
-                        "joinColumn"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "type": {
-                            "$ref": "#/definitions/AssociationType"
-                        },
-                        "sourceEntityId": {
-                            "type": "string"
-                        },
-                        "targetEntityId": {
-                            "type": "string"
-                        },
-                        "sourcePropertyId": {
-                            "type": "string"
-                        },
-                        "targetPropertyId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "id",
-                        "name",
-                        "sourceEntityId",
-                        "sourcePropertyId",
-                        "targetEntityId",
-                        "targetPropertyId",
+                        "joinColumn",
                         "type"
                     ]
                 },
                 {
                     "type": "object",
                     "properties": {
+                        "type": {
+                            "type": "string",
+                            "const": "joinColumns"
+                        },
                         "joinColumns": {
                             "type": "array",
                             "items": {
@@ -133,51 +90,17 @@ const AssociationJsonSchema: JSONSchemaType<Association> = {
                         }
                     },
                     "required": [
-                        "joinColumns"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "type": {
-                            "$ref": "#/definitions/AssociationType"
-                        },
-                        "sourceEntityId": {
-                            "type": "string"
-                        },
-                        "targetEntityId": {
-                            "type": "string"
-                        },
-                        "sourcePropertyId": {
-                            "type": "string"
-                        },
-                        "targetPropertyId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "id",
-                        "name",
-                        "sourceEntityId",
-                        "sourcePropertyId",
-                        "targetEntityId",
-                        "targetPropertyId",
+                        "joinColumns",
                         "type"
                     ]
                 },
                 {
                     "type": "object",
                     "properties": {
+                        "type": {
+                            "type": "string",
+                            "const": "joinTable"
+                        },
                         "joinTable": {
                             "type": "object",
                             "properties": {
@@ -289,11 +212,22 @@ const AssociationJsonSchema: JSONSchemaType<Association> = {
                         }
                     },
                     "required": [
-                        "joinTable"
+                        "joinTable",
+                        "type"
                     ]
                 }
             ]
         }
+    },
+    "required": [
+        "id",
+        "joinInfo",
+        "name",
+        "sourceEntityId",
+        "sourcePropertyId",
+        "targetEntityId",
+        "targetPropertyId",
+        "type"
     ],
     "definitions": {
         "AssociationType": {

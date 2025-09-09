@@ -61,6 +61,125 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                 {
                     "type": "object",
                     "properties": {
+                        "columnInfo": {
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                        },
+                        "defaultOrderDirection": {
+                            "enum": [
+                                "ASC",
+                                "DESC"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "columnInfo",
+                        "defaultOrderDirection"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "typeIsArray": {
+                            "type": "boolean",
+                            "const": false
+                        }
+                    },
+                    "required": [
+                        "typeIsArray"
+                    ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "ENUM"
+                        },
+                        "enumId": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "category",
+                        "enumId"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "extraImports": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extraAnnotations": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "comment",
+                        "extraAnnotations",
+                        "extraImports",
+                        "id",
+                        "name",
+                        "nullable"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "columnInfo": {
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                        },
+                        "defaultOrderDirection": {
+                            "enum": [
+                                "ASC",
+                                "DESC"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "columnInfo",
+                        "defaultOrderDirection"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "typeIsArray": {
+                            "type": "boolean",
+                            "const": false
+                        }
+                    },
+                    "required": [
+                        "typeIsArray"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
                         "key": {
                             "type": "boolean",
                             "const": true
@@ -76,28 +195,118 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                         "key",
                         "keyGroups"
                     ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "ENUM"
+                        },
+                        "enumId": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "category",
+                        "enumId"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "extraImports": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extraAnnotations": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "comment",
+                        "extraAnnotations",
+                        "extraImports",
+                        "id",
+                        "name",
+                        "nullable"
+                    ]
                 },
                 {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
                             "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                        },
+                        "defaultOrderDirection": {
+                            "enum": [
+                                "ASC",
+                                "DESC"
+                            ],
+                            "type": "string"
                         }
                     },
                     "required": [
-                        "columnInfo"
+                        "columnInfo",
+                        "defaultOrderDirection"
                     ]
                 },
                 {
                     "type": "object",
                     "properties": {
-                        "orderedProperty": {
+                        "typeIsArray": {
                             "type": "boolean",
                             "const": false
                         }
                     },
                     "required": [
-                        "orderedProperty"
+                        "typeIsArray"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "logicalDelete": {
+                            "type": "boolean",
+                            "const": true
+                        },
+                        "logicalDeleteType": {
+                            "type": "string",
+                            "const": "enum"
+                        },
+                        "logicalDeleteDefaultValue": {
+                            "type": "string"
+                        },
+                        "logicalDeleteDeletedValue": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "logicalDelete",
+                        "logicalDeleteDefaultValue",
+                        "logicalDeleteDeletedValue",
+                        "logicalDeleteType"
                     ]
                 }
             ]
@@ -155,6 +364,131 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                         "id",
                         "name",
                         "nullable"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "columnInfo": {
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                        },
+                        "defaultOrderDirection": {
+                            "enum": [
+                                "ASC",
+                                "DESC"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "columnInfo",
+                        "defaultOrderDirection"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "typeIsArray": {
+                            "type": "boolean",
+                            "const": true
+                        },
+                        "databaseType": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "typeIsArray"
+                    ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "ENUM"
+                        },
+                        "enumId": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "category",
+                        "enumId"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "extraImports": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extraAnnotations": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "comment",
+                        "extraAnnotations",
+                        "extraImports",
+                        "id",
+                        "name",
+                        "nullable"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "columnInfo": {
+                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                        },
+                        "defaultOrderDirection": {
+                            "enum": [
+                                "ASC",
+                                "DESC"
+                            ],
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "columnInfo",
+                        "defaultOrderDirection"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "typeIsArray": {
+                            "type": "boolean",
+                            "const": true
+                        },
+                        "databaseType": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "typeIsArray"
                     ]
                 },
                 {
@@ -175,26 +509,71 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                         "key",
                         "keyGroups"
                     ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "ENUM"
+                        },
+                        "enumId": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "category",
+                        "enumId"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "extraImports": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extraAnnotations": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "comment",
+                        "extraAnnotations",
+                        "extraImports",
+                        "id",
+                        "name",
+                        "nullable"
+                    ]
                 },
                 {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
                             "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": true
                         },
-                        "orderDirection": {
+                        "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
                                 "DESC"
@@ -203,2651 +582,23 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                         }
                     },
                     "required": [
-                        "orderDirection",
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
+                        "columnInfo",
+                        "defaultOrderDirection"
                     ]
                 },
                 {
                     "type": "object",
                     "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "key": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "key"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "key": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "key"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
+                        "typeIsArray": {
                             "type": "boolean",
                             "const": true
                         },
-                        "orderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
+                        "databaseType": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "orderDirection",
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "boolean"
-                        },
-                        "logicalDeleteDefaultValue": {
-                            "enum": [
-                                "false",
-                                "true"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteDefaultValue",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "boolean"
-                        },
-                        "logicalDeleteDefaultValue": {
-                            "enum": [
-                                "false",
-                                "true"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteDefaultValue",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "orderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "orderDirection",
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "boolean"
-                        },
-                        "logicalDeleteDefaultValue": {
-                            "enum": [
-                                "false",
-                                "true"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteDefaultValue",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "boolean"
-                        },
-                        "logicalDeleteDefaultValue": {
-                            "enum": [
-                                "false",
-                                "true"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteDefaultValue",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "orderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "orderDirection",
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "int"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "int"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "orderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "orderDirection",
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "int"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "int"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "orderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "orderDirection",
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "long"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "long"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "orderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "orderDirection",
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "long"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "long"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "orderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "orderDirection",
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "uuid"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "uuid"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "orderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "orderDirection",
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "uuid"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "uuid"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "orderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "orderDirection",
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "time"
-                        },
-                        "logicalDeleteDeletedValue": {
-                            "enum": [
-                                "now",
-                                "null"
-                            ],
-                            "type": "string"
-                        },
-                        "nullable": {
-                            "type": "boolean",
-                            "const": true
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteDeletedValue",
-                        "logicalDeleteType",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "time"
-                        },
-                        "logicalDeleteDeletedValue": {
-                            "enum": [
-                                "now",
-                                "null"
-                            ],
-                            "type": "string"
-                        },
-                        "nullable": {
-                            "type": "boolean",
-                            "const": true
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteDeletedValue",
-                        "logicalDeleteType",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "orderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "orderDirection",
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "time"
-                        },
-                        "logicalDeleteDeletedValue": {
-                            "enum": [
-                                "now",
-                                "null"
-                            ],
-                            "type": "string"
-                        },
-                        "nullable": {
-                            "type": "boolean",
-                            "const": true
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteDeletedValue",
-                        "logicalDeleteType",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "time"
-                        },
-                        "logicalDeleteDeletedValue": {
-                            "enum": [
-                                "now",
-                                "null"
-                            ],
-                            "type": "string"
-                        },
-                        "nullable": {
-                            "type": "boolean",
-                            "const": true
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteDeletedValue",
-                        "logicalDeleteType",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "orderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "orderDirection",
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
+                        "typeIsArray"
                     ]
                 },
                 {
@@ -2873,860 +624,6 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                         "logicalDeleteDefaultValue",
                         "logicalDeleteDeletedValue",
                         "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        },
-                        "logicalDeleteDefaultValue": {
-                            "type": "string"
-                        },
-                        "logicalDeleteDeletedValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteDefaultValue",
-                        "logicalDeleteDeletedValue",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "orderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "orderDirection",
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        },
-                        "logicalDeleteDefaultValue": {
-                            "type": "string"
-                        },
-                        "logicalDeleteDeletedValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteDefaultValue",
-                        "logicalDeleteDeletedValue",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        },
-                        "logicalDeleteDefaultValue": {
-                            "type": "string"
-                        },
-                        "logicalDeleteDeletedValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteDefaultValue",
-                        "logicalDeleteDeletedValue",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "orderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "orderDirection",
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "orderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "orderDirection",
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "orderedProperty"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteType"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "orderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "orderDirection",
-                        "orderedProperty"
                     ]
                 }
             ]
@@ -3742,9 +639,6 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                 "name": {
                     "type": "string"
                 },
-                "nullable": {
-                    "type": "boolean"
-                },
                 "comment": {
                     "type": "string"
                 },
@@ -3753,6 +647,9 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                 },
                 "numericPrecision": {
                     "type": "integer"
+                },
+                "nullable": {
+                    "type": "boolean"
                 },
                 "defaultValue": {
                     "type": "string"

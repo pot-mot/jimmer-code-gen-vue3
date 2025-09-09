@@ -10,18 +10,5 @@ export default Object.freeze({
     extendsIds: string[]
     extraImports: string[]
     extraAnnotations: string[]
-    idProperty: IdProperty
-    scalarProperties: (
-        ScalarProperty |
-        EnumProperty
-        )[]
-    associationProperties: (
-        AssociationProperty |
-        ManyToManyViewProperty
-        )[]
-    computedProperties: (
-        FormulaProperty |
-        TransientProperty
-        )[]
 }`,
 })

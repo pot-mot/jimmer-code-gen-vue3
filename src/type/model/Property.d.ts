@@ -7,50 +7,18 @@ type BaseProperty = {
     nullable: boolean
 }
 
-type OptionalKeyProperty = {
+type KeyProperty = {
     key: true
     keyGroups: string[]
-} | {
-    key: false
-}
-
-type OptionalOrderProperty = {
-    orderedProperty: false
-} | {
-    orderedProperty: true,
-    orderDirection: "ASC" | "DESC"
-}
-
-type OptionalLogicalDeleteProperty = {
-    logicalDelete: true
-    logicalDeleteType: 'boolean'
-    logicalDeleteDefaultValue: 'true' | 'false'
-} | {
-    logicalDelete: true
-    logicalDeleteType: 'int'
-} | {
-    logicalDelete: true
-    logicalDeleteType: 'long'
-} | {
-    logicalDelete: true
-    logicalDeleteType: 'uuid'
-} | {
-    logicalDelete: true
-    logicalDeleteType: 'time'
-    logicalDeleteDeletedValue: 'now' | 'null'
-    nullable: true
-} | {
-    logicalDelete: true
-    logicalDeleteType: 'enum'
-    logicalDeleteDefaultValue: string
-    logicalDeleteDeletedValue: string
-} | {
-    logicalDelete: false
 }
 
 type ColumnProperty = {
-    columnInfo: Omit<Column, 'id' | 'partOfPrimaryKey' | 'autoIncrement'>
-} & OptionalOrderProperty
+    columnInfo: Omit<Column, 'id' | 'partOfPrimaryKey' | 'autoIncrement'>,
+    defaultOrderDirection: "ASC" | "DESC" | undefined
+} & (
+    | { typeIsArray: false }
+    | { typeIsArray: true, databaseType?: string }
+    )
 
 type EmbeddableProperty = {
     embeddableTypeId: string
@@ -60,47 +28,78 @@ type EmbeddableProperty = {
     }[]
 }
 
+type ScalarLogicalDeleteProperty = {
+    logicalDelete: true
+} & ({
+    logicalDeleteType: 'boolean'
+    logicalDeleteDefaultValue: boolean
+} | {
+    logicalDeleteType: 'int'
+} | {
+    logicalDeleteType: 'long'
+} | {
+    logicalDeleteType: 'uuid'
+} | {
+    logicalDeleteType: 'time'
+    logicalDeleteDeletedValue: 'now' | 'null'
+    nullable: true
+})
+
+type EnumLogicalDeleteProperty = {
+    logicalDelete: true
+    logicalDeleteType: 'enum'
+    logicalDeleteDefaultValue: string
+    logicalDeleteDeletedValue: string
+}
+
 type IdProperty = {
-    category: "id"
-    rawType: string
-    nullable: false
-    GeneratedValue: {
-        type: "IDENTITY"
-    } | {
-        type: "SEQUENCE"
-        sequenceName: string
-    } | {
-        type: "UUID"
-    } | {
-        type: "CustomerIdGenerator",
-        generatorName: string
+        category: "ID"
+        rawType: string
+        nullable: false
+        GeneratedValue: {
+            type: "IDENTITY"
+        } | {
+            type: "SEQUENCE"
+            sequenceName: string
+        } | {
+            type: "UUID"
+        } | {
+            type: "CustomerIdGenerator",
+            generatorName: string
+        }
     }
-} & Omit<BaseProperty, 'nullable'> & (ColumnProperty | EmbeddableProperty)
+    & Omit<BaseProperty, 'nullable'>
+    & (ColumnProperty | EmbeddableProperty)
+
+type VersionProperty = {
+        category: "VERSION"
+        nullable: false
+    }
+    & Omit<BaseProperty, 'nullable'>
+    & { columnName: string }
 
 type ScalarProperty = {
-    category: "SCALAR"
-    rawType: string
-    serialized: boolean
-    defaultValue: string
-} & BaseProperty & (OptionalKeyProperty | OptionalLogicalDeleteProperty)
+        category: "SCALAR"
+        rawType: string
+        serialized: boolean
+        defaultValue: string
+    }
+    & BaseProperty
     & (ColumnProperty | EmbeddableProperty)
-    & (
-    { arrayType: false } |
-    { arrayType: true, databaseType?: string }
-    )
+    & ({} | KeyProperty | ScalarLogicalDeleteProperty)
+
 
 type EnumProperty = {
-    category: "ENUM"
-    enumId: string
-} & BaseProperty & (
-    OptionalKeyProperty |
-    (OptionalLogicalDeleteProperty & ({ logicalDelete: false } | { logicalDelete: true; logicalDeleteType: 'enum' }))
-    ) & ColumnProperty
-
+        category: "ENUM"
+        enumId: string
+    }
+    & BaseProperty
+    & ColumnProperty
+    & ({} | KeyProperty | EnumLogicalDeleteProperty)
 
 type BaseAssociationProperty = {
     associationId: string
-    entityId: string
+    referenceEntityId: string
     idViewName: string
 }
 
@@ -113,7 +112,7 @@ type OneToOneSourceProperty = {
 
 type OneToOneTargetProperty = {
     category: "ASSOCIATION_OneToOne_Target"
-    mappedBy: string
+    mappedById: string
     nullable: true
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
 
@@ -124,7 +123,7 @@ type ManyToOneProperty = {
 
 type OneToManyProperty = {
     category: "ASSOCIATION_OneToMany"
-    mappedBy: string
+    mappedById: string
     nullable: false
     typeIsList: true
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
@@ -137,7 +136,7 @@ type ManyToManySourceProperty = {
 
 type ManyToManyTargetProperty = {
     category: "ASSOCIATION_ManyToMany_Target"
-    mappedBy: string
+    mappedById: string
     nullable: false
     typeIsList: true
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
@@ -153,27 +152,31 @@ type AssociationProperty =
 type ManyToManyViewProperty = {
     category: "ASSOCIATION_ManyToMany_View"
     baseToManyPropertyId: string
-    deeperAssociationPropertyId: string
-}
+    deeperPropertyId: string
+    nullable: false
+    typeIsList: true
+} & Omit<BaseProperty, 'nullable'>
 
-type FormulaProperty = {
-    category: "FORMULA"
+type GetterFormulaProperty = {
+    category: "FORMULA_GETTER"
     dependencies: string[]
     body: string
     rawType: string
-} | ({
-        category: "FORMULA"
-        sql: string
-        rawType: string
-    } & OptionalOrderProperty)
-    & BaseProperty
+} & BaseProperty
+
+type SqlFormulaProperty = {
+    category: "FORMULA_SQL"
+    sql: string
+    rawType: string
+    defaultOrderDirection: "ASC" | "DESC" | undefined
+} & BaseProperty
 
 type TransientProperty = {
     category: "TRANSIENT"
 } & BaseProperty & ({
     rawType: string
 } | {
-    entityId: string
+    referenceEntityId: string
     resolver: string
     typeIsList: boolean
 })

@@ -34,7 +34,7 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                 "associationId": {
                     "type": "string"
                 },
-                "entityId": {
+                "referenceEntityId": {
                     "type": "string"
                 },
                 "idViewName": {
@@ -43,8 +43,8 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
             },
             "required": [
                 "associationId",
-                "entityId",
-                "idViewName"
+                "idViewName",
+                "referenceEntityId"
             ]
         }
     ],

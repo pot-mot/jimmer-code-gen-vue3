@@ -8,22 +8,9 @@ type Entity = {
     extendsIds: string[]
     extraImports: string[]
     extraAnnotations: string[]
-    idProperty: IdProperty
-    scalarProperties: (
-        ScalarProperty |
-        EnumProperty
-        )[]
-    associationProperties: (
-        AssociationProperty |
-        ManyToManyViewProperty
-        )[]
-    computedProperties: (
-        FormulaProperty |
-        TransientProperty
-        )[]
 }
 
-type MappedSuperClass = Omit<Entity, 'tableName' | 'idProperty'>
+type MappedSuperClass = Omit<Entity, 'tableName'>
 
 type EmbeddableType = {
     id: string
@@ -33,8 +20,4 @@ type EmbeddableType = {
     comment: string
     extraImports: string[]
     extraAnnotations: string[]
-    properties: (
-        ScalarProperty |
-        EnumProperty
-        )[]
 }

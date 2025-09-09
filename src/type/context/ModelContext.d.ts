@@ -1,9 +1,24 @@
+type ModelContextData = {
+    model: Model
+    groupIdMap: Map<string, Group>
+    entityIdMap: Map<string, EntityWithProperties>
+    mappedSuperClassIdMap: Map<string, MappedSuperClassWithProperties>
+    embeddableTypeIdMap: Map<string, EmbeddableTypeWithProperties>
+    enumerationIdMap: Map<string, Enumeration>
+    associationIdMap: Map<string, AssociationWithSubData>
+}
+
 type ModelContext = {
-    readonly model: Model
-    readonly groupIdMap: ReadonlyMap<string, Group>
-    readonly entityIdMap: ReadonlyMap<string, Entity>
-    readonly mappedSuperClassIdMap: ReadonlyMap<string, MappedSuperClass>
-    readonly embeddableTypeIdMap: ReadonlyMap<string, EmbeddableType>
-    readonly enumerationIdMap: ReadonlyMap<string, Enumeration>
-    readonly associationIdMap: ReadonlyMap<string, Association>
+    model: ModelWithSubData
+    groupIdMap: Map<string, GroupWithSubData>
+    entityIdMap: Map<string, EntityWithCategoryProperties>
+    mappedSuperClassIdMap: Map<string, MappedSuperClassWithCategoryProperties>
+    embeddableTypeIdMap: Map<string, EmbeddableTypeWithCategoryProperties>
+    enumerationIdMap: Map<string, Enumeration>
+    associationIdMap: Map<string, AssociationWithSubData>
+
+    mappedSuperClassAllExtendsMap: Map<string, Set<MappedSuperClass>>
+    mappedSuperClassAllPropertiesMap: Map<string, CategoryProperties>
+    entityAllExtendsMap: Map<string, Set<MappedSuperClass>>
+    entityAllPropertiesMap: Map<string, CategoryPropertiesRequiredId>
 }

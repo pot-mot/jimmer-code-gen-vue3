@@ -1,15 +1,15 @@
 type EntityGenerator = (
-    entity: DeepReadonly<Entity>,
+    entity: DeepReadonly<EntityWithCategoryProperties>,
     context: DeepReadonly<ModelContext>
 ) => Record<string, string>
 
 type MappedSuperClassGenerator = (
-    mappedSuperClass: DeepReadonly<MappedSuperClass>,
+    mappedSuperClass: DeepReadonly<MappedSuperClassWithCategoryProperties>,
     context: DeepReadonly<ModelContext>
 ) => Record<string, string>
 
 type EmbeddableTypeGenerator = (
-    embeddableType: DeepReadonly<EmbeddableType>,
+    embeddableType: DeepReadonly<EmbeddableTypeWithCategoryProperties>,
     context: DeepReadonly<ModelContext>
 ) => Record<string, string>
 
@@ -19,16 +19,16 @@ type EnumerationGenerator = (
 ) => Record<string, string>
 
 type AssociationGenerator = (
-    association: DeepReadonly<Association>,
+    association: DeepReadonly<AssociationWithSubData>,
     context: DeepReadonly<ModelContext>
 ) => Record<string, string>
 
 type GroupGenerator = (
-    group: DeepReadonly<Group>,
+    group: DeepReadonly<GroupWithSubData>,
     context: DeepReadonly<ModelContext>
 ) => Record<string, string>
 
 type ModelGenerator = (
-    model: DeepReadonly<Model>,
+    model: DeepReadonly<ModelWithSubData>,
     context: DeepReadonly<ModelContext>
 ) => Record<string, string>

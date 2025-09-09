@@ -10,22 +10,30 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
                     "properties": {
                         "columnInfo": {
                             "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                        },
+                        "defaultOrderDirection": {
+                            "enum": [
+                                "ASC",
+                                "DESC"
+                            ],
+                            "type": "string"
                         }
                     },
                     "required": [
-                        "columnInfo"
+                        "columnInfo",
+                        "defaultOrderDirection"
                     ]
                 },
                 {
                     "type": "object",
                     "properties": {
-                        "orderedProperty": {
+                        "typeIsArray": {
                             "type": "boolean",
                             "const": false
                         }
                     },
                     "required": [
-                        "orderedProperty"
+                        "typeIsArray"
                     ]
                 }
             ]
@@ -37,20 +45,8 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
                     "properties": {
                         "columnInfo": {
                             "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "orderedProperty": {
-                            "type": "boolean",
-                            "const": true
                         },
-                        "orderDirection": {
+                        "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
                                 "DESC"
@@ -59,8 +55,23 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
                         }
                     },
                     "required": [
-                        "orderDirection",
-                        "orderedProperty"
+                        "columnInfo",
+                        "defaultOrderDirection"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "typeIsArray": {
+                            "type": "boolean",
+                            "const": true
+                        },
+                        "databaseType": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "typeIsArray"
                     ]
                 }
             ]
@@ -76,9 +87,6 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
                 "name": {
                     "type": "string"
                 },
-                "nullable": {
-                    "type": "boolean"
-                },
                 "comment": {
                     "type": "string"
                 },
@@ -87,6 +95,9 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
                 },
                 "numericPrecision": {
                     "type": "integer"
+                },
+                "nullable": {
+                    "type": "boolean"
                 },
                 "defaultValue": {
                     "type": "string"
