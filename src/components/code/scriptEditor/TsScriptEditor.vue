@@ -3,14 +3,13 @@ import {useTemplateRef, computed, watch} from 'vue';
 import {
     type TsScriptExecuteResult,
     TsScriptExecutor,
-    type TsScriptFunction,
     type TsScriptValidatedCompileResult
 } from "@/components/code/scriptEditor/TsScriptExecutor.ts";
 import CodeEditor from "@/components/code/CodeEditor.vue";
 import {debounce} from "lodash-es";
 import {editor} from "monaco-editor";
 import setModelMarkers = editor.setModelMarkers
-import type {ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
+import type {ScriptTypeMap, ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
 
 const editorRef = useTemplateRef<InstanceType<typeof CodeEditor>>("editorRef")
 const editorInstance = computed(() => {
@@ -47,7 +46,7 @@ const validateAndCompile = async (): Promise<TsScriptValidatedCompileResult> => 
 }
 
 // 执行代码
-const executeCode = async (...params: Parameters<TsScriptFunction<Name>>): Promise<TsScriptExecuteResult<Name>> => {
+const executeCode = async (...params: Parameters<ScriptTypeMap[Name]>): Promise<TsScriptExecuteResult<Name>> => {
     return await props.executor.executeTsArrowFunctionScript(
         textValue.value,
         params,

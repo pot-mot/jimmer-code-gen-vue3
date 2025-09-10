@@ -170,9 +170,6 @@ const getProgramCache = async () => {
     return tsProgramInitPromise
 }
 
-export type TsScriptFunction<Name extends ScriptTypeName> =
-    (...args: Parameters<ScriptTypeMap[Name]>) => ReturnType<ScriptTypeMap[Name]>
-
 const getNewProgramAndSourceFile = async (code: string) => {
     const {program, compilerHost, updateFile} = await getProgramCache()
     const sourceFile = ts.createSourceFile(scriptCodeFileName, code, compilerOptions.target)
@@ -199,16 +196,20 @@ export type TsScriptValidatedCompileResult = {
 }
 
 export type TsScript<Name extends ScriptTypeName> = {
-    execute: (...params: Parameters<TsScriptFunction<Name>>) => ReturnType<TsScriptFunction<Name>>
+    readonly code: string,
+    readonly execute: (...args: Parameters<ScriptTypeMap[Name]>) => ReturnType<ScriptTypeMap[Name]>
 }
 
 export type CreateTsScriptResult<Name extends ScriptTypeName> =
-    (TsScript<Name> & { valid: true }) |
+    {
+        valid: true
+        script: TsScript<Name>
+    } |
     (TsScriptValidatedCompileResult & { valid: false })
 
 export type TsScriptExecuteResult<Name extends ScriptTypeName> = {
     success: true
-    result: ReturnType<TsScriptFunction<Name>>
+    result: ReturnType<ScriptTypeMap[Name]>
 } | {
     success: false
     state: 'compileError'
@@ -586,7 +587,7 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
         }
     }
 
-    executeJsFunction(code: string, params: Parameters<TsScriptFunction<Name>>): ReturnType<TsScriptFunction<Name>> {
+    executeJsFunction(code: string, params: Parameters<ScriptTypeMap[Name]>): ReturnType<ScriptTypeMap[Name]> {
         let trimCode = code.trim()
         if (!trimCode) {
             throw new Error("code is empty");
@@ -624,7 +625,7 @@ with(arguments[0]) {
 
     async executeTsArrowFunctionScript(
         templateFn: string,
-        params: Parameters<TsScriptFunction<Name>>,
+        params: Parameters<ScriptTypeMap[Name]>,
     ): Promise<TsScriptExecuteResult<Name>> {
         const compileResult = await this.validateThenCompile(templateFn)
         if (!compileResult.valid) {
@@ -653,19 +654,19 @@ with(arguments[0]) {
 export const createTsScript = async <Name extends ScriptTypeName>(
     scriptTypeName: Name,
     code: string,
-    executor?: TsScriptExecutor<Name>
+    executor: TsScriptExecutor<Name> = new TsScriptExecutor(scriptTypeName)
 ): Promise<CreateTsScriptResult<Name>> => {
-    if (!executor) {
-        executor = new TsScriptExecutor(scriptTypeName)
-    }
     const result = await executor.validateThenCompile(code)
     if (!result.valid) {
         return result
     } else {
         return {
             valid: true,
-            execute: (...params: Parameters<TsScriptFunction<Name>>) => {
-                return executor.executeJsFunction(result.compiledCode, params)
+            script: {
+                code,
+                execute: (...params: Parameters<ScriptTypeMap[Name]>) => {
+                    return executor.executeJsFunction(result.compiledCode, params)
+                }
             }
         }
     }
