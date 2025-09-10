@@ -159,10 +159,10 @@ const AssociationPropertyJsonSchema: JSONSchemaType<AssociationProperty> = {
         "Omit<BaseProperty,\"nullable\">": {
             "type": "object",
             "properties": {
-                "id": {
+                "name": {
                     "type": "string"
                 },
-                "name": {
+                "id": {
                     "type": "string"
                 },
                 "comment": {

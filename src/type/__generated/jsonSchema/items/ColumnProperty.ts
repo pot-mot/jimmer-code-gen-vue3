@@ -79,20 +79,20 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
         "Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">": {
             "type": "object",
             "properties": {
-                "type": {
+                "name": {
                     "type": "string"
                 },
-                "name": {
+                "type": {
                     "type": "string"
                 },
                 "comment": {
                     "type": "string"
                 },
                 "dataSize": {
-                    "type": "integer"
+                    "type": "number"
                 },
                 "numericPrecision": {
-                    "type": "integer"
+                    "type": "number"
                 },
                 "nullable": {
                     "type": "boolean"

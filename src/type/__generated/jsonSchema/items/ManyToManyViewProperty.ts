@@ -41,10 +41,10 @@ const ManyToManyViewPropertyJsonSchema: JSONSchemaType<ManyToManyViewProperty> =
         "Omit<BaseProperty,\"nullable\">": {
             "type": "object",
             "properties": {
-                "id": {
+                "name": {
                     "type": "string"
                 },
-                "name": {
+                "id": {
                     "type": "string"
                 },
                 "comment": {

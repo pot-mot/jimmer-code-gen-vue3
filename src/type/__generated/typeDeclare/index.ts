@@ -55,7 +55,6 @@ import OneToManyPropertyDeclare from "./items/OneToManyProperty.ts";
 import OneToOneSourcePropertyDeclare from "./items/OneToOneSourceProperty.ts";
 import OneToOneTargetPropertyDeclare from "./items/OneToOneTargetProperty.ts";
 import OrderDirectionDeclare from "./items/OrderDirection.ts";
-import PropertiesDeclare from "./items/Properties.ts";
 import PropertyDeclare from "./items/Property.ts";
 import ScalarLogicalDeletePropertyDeclare from "./items/ScalarLogicalDeleteProperty.ts";
 import ScalarPropertyDeclare from "./items/ScalarProperty.ts";
@@ -63,6 +62,7 @@ import SqlFormulaPropertyDeclare from "./items/SqlFormulaProperty.ts";
 import TableDeclare from "./items/Table.ts";
 import TransientPropertyDeclare from "./items/TransientProperty.ts";
 import VersionPropertyDeclare from "./items/VersionProperty.ts";
+import WithPropertiesDeclare from "./items/WithProperties.ts";
 
 export type TypeMap = {
     Association: Association
@@ -121,7 +121,6 @@ export type TypeMap = {
     OneToOneSourceProperty: OneToOneSourceProperty
     OneToOneTargetProperty: OneToOneTargetProperty
     OrderDirection: OrderDirection
-    Properties: Properties
     Property: Property
     ScalarLogicalDeleteProperty: ScalarLogicalDeleteProperty
     ScalarProperty: ScalarProperty
@@ -129,6 +128,7 @@ export type TypeMap = {
     Table: Table
     TransientProperty: TransientProperty
     VersionProperty: VersionProperty
+    WithProperties: WithProperties
 }
 
 export type TypeName = keyof TypeMap
@@ -191,7 +191,6 @@ export const typeDeclares = Object.freeze({
     OneToOneSourceProperty: OneToOneSourcePropertyDeclare,
     OneToOneTargetProperty: OneToOneTargetPropertyDeclare,
     OrderDirection: OrderDirectionDeclare,
-    Properties: PropertiesDeclare,
     Property: PropertyDeclare,
     ScalarLogicalDeleteProperty: ScalarLogicalDeletePropertyDeclare,
     ScalarProperty: ScalarPropertyDeclare,
@@ -199,4 +198,5 @@ export const typeDeclares = Object.freeze({
     Table: TableDeclare,
     TransientProperty: TransientPropertyDeclare,
     VersionProperty: VersionPropertyDeclare,
+    WithProperties: WithPropertiesDeclare,
 })

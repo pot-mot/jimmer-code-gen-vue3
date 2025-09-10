@@ -4,18 +4,12 @@ export default Object.freeze({
         category: "ID"
         rawType: string
         nullable: false
-        GeneratedValue: {
-            type: "IDENTITY"
-        } | {
-            type: "SEQUENCE"
-            sequenceName: string
-        } | {
-            type: "UUID"
-        } | {
-            type: "CustomerIdGenerator",
-            generatorName: string
-        }
+        generatedValue?:
+            | { type: "IDENTITY" }
+            | { type: "SEQUENCE", sequenceName: string }
+            | { type: "UUID" }
+            | { type: "CustomerIdGenerator", generatorName: string }
     }
     & Omit<BaseProperty, 'nullable'>
-    & (ColumnProperty | EmbeddableProperty)`,
+    & ((ColumnProperty & { typeIsArray: false }) | EmbeddableProperty)`,
 })

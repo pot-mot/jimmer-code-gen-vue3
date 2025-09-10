@@ -19,7 +19,7 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                             "type": "boolean",
                             "const": false
                         },
-                        "GeneratedValue": {
+                        "generatedValue": {
                             "anyOf": [
                                 {
                                     "type": "object",
@@ -81,7 +81,123 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                         }
                     },
                     "required": [
-                        "GeneratedValue",
+                        "category",
+                        "nullable",
+                        "rawType"
+                    ]
+                },
+                {
+                    "$ref": "#/definitions/Omit<BaseProperty,\"nullable\">"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "embeddableTypeId": {
+                            "type": "string"
+                        },
+                        "propOverrides": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "propertyId": {
+                                        "type": "string"
+                                    },
+                                    "overrideColumnName": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "overrideColumnName",
+                                    "propertyId"
+                                ]
+                            }
+                        }
+                    },
+                    "required": [
+                        "embeddableTypeId"
+                    ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "ID"
+                        },
+                        "rawType": {
+                            "type": "string"
+                        },
+                        "nullable": {
+                            "type": "boolean",
+                            "const": false
+                        },
+                        "generatedValue": {
+                            "anyOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "const": "IDENTITY"
+                                        }
+                                    },
+                                    "required": [
+                                        "type"
+                                    ]
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "const": "SEQUENCE"
+                                        },
+                                        "sequenceName": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "sequenceName",
+                                        "type"
+                                    ]
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "const": "UUID"
+                                        }
+                                    },
+                                    "required": [
+                                        "type"
+                                    ]
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "const": "CustomerIdGenerator"
+                                        },
+                                        "generatorName": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "generatorName",
+                                        "type"
+                                    ]
+                                }
+                            ]
+                        }
+                    },
+                    "required": [
                         "category",
                         "nullable",
                         "rawType"
@@ -119,6 +235,18 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                     "required": [
                         "typeIsArray"
                     ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "typeIsArray": {
+                            "type": "boolean",
+                            "const": false
+                        }
+                    },
+                    "required": [
+                        "typeIsArray"
+                    ]
                 }
             ]
         },
@@ -138,7 +266,7 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                             "type": "boolean",
                             "const": false
                         },
-                        "GeneratedValue": {
+                        "generatedValue": {
                             "anyOf": [
                                 {
                                     "type": "object",
@@ -200,7 +328,6 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                         }
                     },
                     "required": [
-                        "GeneratedValue",
                         "category",
                         "nullable",
                         "rawType"
@@ -241,124 +368,17 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                     "required": [
                         "typeIsArray"
                     ]
-                }
-            ]
-        },
-        {
-            "allOf": [
+                },
                 {
                     "type": "object",
                     "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ID"
-                        },
-                        "rawType": {
-                            "type": "string"
-                        },
-                        "nullable": {
+                        "typeIsArray": {
                             "type": "boolean",
                             "const": false
-                        },
-                        "GeneratedValue": {
-                            "anyOf": [
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "type": {
-                                            "type": "string",
-                                            "const": "IDENTITY"
-                                        }
-                                    },
-                                    "required": [
-                                        "type"
-                                    ]
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "type": {
-                                            "type": "string",
-                                            "const": "SEQUENCE"
-                                        },
-                                        "sequenceName": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "sequenceName",
-                                        "type"
-                                    ]
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "type": {
-                                            "type": "string",
-                                            "const": "UUID"
-                                        }
-                                    },
-                                    "required": [
-                                        "type"
-                                    ]
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "type": {
-                                            "type": "string",
-                                            "const": "CustomerIdGenerator"
-                                        },
-                                        "generatorName": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "generatorName",
-                                        "type"
-                                    ]
-                                }
-                            ]
                         }
                     },
                     "required": [
-                        "GeneratedValue",
-                        "category",
-                        "nullable",
-                        "rawType"
-                    ]
-                },
-                {
-                    "$ref": "#/definitions/Omit<BaseProperty,\"nullable\">"
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "embeddableTypeId": {
-                            "type": "string"
-                        },
-                        "propOverrides": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "propertyId": {
-                                        "type": "string"
-                                    },
-                                    "overrideColumnName": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "overrideColumnName",
-                                    "propertyId"
-                                ]
-                            }
-                        }
-                    },
-                    "required": [
-                        "embeddableTypeId",
-                        "propOverrides"
+                        "typeIsArray"
                     ]
                 }
             ]
@@ -368,10 +388,10 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
         "Omit<BaseProperty,\"nullable\">": {
             "type": "object",
             "properties": {
-                "id": {
+                "name": {
                     "type": "string"
                 },
-                "name": {
+                "id": {
                     "type": "string"
                 },
                 "comment": {
@@ -401,20 +421,20 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
         "Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">": {
             "type": "object",
             "properties": {
-                "type": {
+                "name": {
                     "type": "string"
                 },
-                "name": {
+                "type": {
                     "type": "string"
                 },
                 "comment": {
                     "type": "string"
                 },
                 "dataSize": {
-                    "type": "integer"
+                    "type": "number"
                 },
                 "numericPrecision": {
-                    "type": "integer"
+                    "type": "number"
                 },
                 "nullable": {
                     "type": "boolean"

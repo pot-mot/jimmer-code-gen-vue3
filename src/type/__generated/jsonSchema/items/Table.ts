@@ -31,10 +31,10 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                         "type": "string"
                     },
                     "dataSize": {
-                        "type": "integer"
+                        "type": "number"
                     },
                     "numericPrecision": {
-                        "type": "integer"
+                        "type": "number"
                     },
                     "nullable": {
                         "type": "boolean"

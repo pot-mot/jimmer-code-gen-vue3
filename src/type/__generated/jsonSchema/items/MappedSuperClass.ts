@@ -4,10 +4,10 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
     "type": "object",
     "properties": {
-        "id": {
+        "name": {
             "type": "string"
         },
-        "name": {
+        "id": {
             "type": "string"
         },
         "groupId": {

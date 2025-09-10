@@ -24,7 +24,7 @@ type ColumnProperty = {
 
 type EmbeddableProperty = {
     embeddableTypeId: string
-    propOverrides: {
+    propOverrides?: {
         propertyId: string
         overrideColumnName: string
     }[]
@@ -58,20 +58,14 @@ type IdProperty = {
         category: "ID"
         rawType: string
         nullable: false
-        GeneratedValue: {
-            type: "IDENTITY"
-        } | {
-            type: "SEQUENCE"
-            sequenceName: string
-        } | {
-            type: "UUID"
-        } | {
-            type: "CustomerIdGenerator",
-            generatorName: string
-        }
+        generatedValue?:
+            | { type: "IDENTITY" }
+            | { type: "SEQUENCE", sequenceName: string }
+            | { type: "UUID" }
+            | { type: "CustomerIdGenerator", generatorName: string }
     }
     & Omit<BaseProperty, 'nullable'>
-    & (ColumnProperty | EmbeddableProperty)
+    & ((ColumnProperty & { typeIsArray: false }) | EmbeddableProperty)
 
 type VersionProperty = {
         category: "VERSION"
@@ -182,3 +176,14 @@ type TransientProperty = {
     resolver: string
     typeIsList: boolean
 })
+
+type Property =
+    | IdProperty
+    | VersionProperty
+    | ScalarProperty
+    | EnumProperty
+    | AssociationProperty
+    | ManyToManyViewProperty
+    | GetterFormulaProperty
+    | SqlFormulaProperty
+    | TransientProperty

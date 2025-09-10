@@ -1,15 +1,4 @@
-type Property =
-    | IdProperty
-    | VersionProperty
-    | ScalarProperty
-    | EnumProperty
-    | AssociationProperty
-    | ManyToManyViewProperty
-    | GetterFormulaProperty
-    | SqlFormulaProperty
-    | TransientProperty
-
-type Properties = {
+type WithProperties = {
     properties: Property[]
 }
 
@@ -52,14 +41,14 @@ type CategorizedEmbeddableTypeProperties = Pick<CategorizedProperties,
     | "embeddablePropertyMap"
 >
 
-type EntityWithProperties = Entity & Properties
+type EntityWithProperties = Entity & WithProperties
 
 type EntityWithCategorizedProperties = EntityWithProperties & CategorizedPropertiesRequiredId
 
-type MappedSuperClassWithProperties = MappedSuperClass & Properties
+type MappedSuperClassWithProperties = MappedSuperClass & WithProperties
 
 type MappedSuperClassWithCategorizedProperties = MappedSuperClassWithProperties & CategorizedProperties
 
-type EmbeddableTypeWithProperties = EmbeddableType & Properties
+type EmbeddableTypeWithProperties = EmbeddableType & WithProperties
 
 type EmbeddableTypeWithCategorizedProperties = EmbeddableTypeWithProperties & CategorizedEmbeddableTypeProperties

@@ -27,8 +27,7 @@ const EmbeddablePropertyJsonSchema: JSONSchemaType<EmbeddableProperty> = {
         }
     },
     "required": [
-        "embeddableTypeId",
-        "propOverrides"
+        "embeddableTypeId"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
 } as any as JSONSchemaType<EmbeddableProperty>

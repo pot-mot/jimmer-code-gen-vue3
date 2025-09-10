@@ -11,7 +11,7 @@ const EnumerationItemJsonSchema: JSONSchemaType<EnumerationItem> = {
             "type": "string"
         },
         "ordinal": {
-            "type": "integer"
+            "type": "number"
         },
         "comment": {
             "type": "string"
