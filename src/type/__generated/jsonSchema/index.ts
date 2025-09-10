@@ -43,6 +43,8 @@ import SqlFormulaPropertyJsonSchema from "./items/SqlFormulaProperty.ts";
 import TableJsonSchema from "./items/Table.ts";
 import TransientPropertyJsonSchema from "./items/TransientProperty.ts";
 import VersionPropertyJsonSchema from "./items/VersionProperty.ts";
+import EntityWithPropertiesJsonSchema from "../../context/jsonSchema/EntityWithProperties.ts";
+import MappedSuperClassWithPropertiesJsonSchema from "../../context/jsonSchema/MappedSuperClassWithProperties.ts";
 
 export const jsonSchemas = Object.freeze({
     Association: AssociationJsonSchema,
@@ -90,6 +92,8 @@ export const jsonSchemas = Object.freeze({
     Table: TableJsonSchema,
     TransientProperty: TransientPropertyJsonSchema,
     VersionProperty: VersionPropertyJsonSchema,
+    EntityWithProperties: EntityWithPropertiesJsonSchema,
+    MappedSuperClassWithProperties: MappedSuperClassWithPropertiesJsonSchema,
 })
 
 export type JsonSchemaKey = keyof typeof jsonSchemas

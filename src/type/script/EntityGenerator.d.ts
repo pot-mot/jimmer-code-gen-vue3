@@ -1,10 +1,10 @@
 type EntityGenerator = (
-    entity: DeepReadonly<EntityWithCategorizedProperties>,
+    entity: DeepReadonly<EntityWithInheritInfo>,
     context: DeepReadonly<ModelContext>
 ) => Record<string, string>
 
 type MappedSuperClassGenerator = (
-    mappedSuperClass: DeepReadonly<MappedSuperClassWithCategorizedProperties>,
+    mappedSuperClass: DeepReadonly<MappedSuperClassWithInheritInfo>,
     context: DeepReadonly<ModelContext>
 ) => Record<string, string>
 

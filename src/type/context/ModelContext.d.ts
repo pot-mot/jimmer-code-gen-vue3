@@ -8,18 +8,22 @@ type ModelContextData = {
     associationMap: Map<string, Association>
 }
 
+type EntityWithInheritInfo = EntityWithCategorizedProperties & {
+    allExtends: Set<MappedSuperClassWithCategorizedProperties>,
+    allProperties: CategorizedPropertiesRequiredId,
+}
+
+type MappedSuperClassWithInheritInfo = MappedSuperClassWithCategorizedProperties & {
+    allExtends: Set<MappedSuperClassWithCategorizedProperties>,
+    allProperties: CategorizedProperties,
+}
+
 type ModelContext = {
     model: ModelWithSubData
-
     groupMap: Map<string, GroupWithSubData>
-    entityMap: Map<string, EntityWithCategorizedProperties>
-    mappedSuperClassMap: Map<string, MappedSuperClassWithCategorizedProperties>
+    entityMap: Map<string, EntityWithInheritInfo>
+    mappedSuperClassMap: Map<string, MappedSuperClassWithInheritInfo>
     embeddableTypeMap: Map<string, EmbeddableTypeWithCategorizedProperties>
     enumerationMap: Map<string, Enumeration>
     associationMap: Map<string, AssociationWithSubData>
-
-    mappedSuperClassAllExtendsMap: Map<string, Set<MappedSuperClass>>
-    mappedSuperClassAllPropertiesMap: Map<string, CategorizedProperties>
-    entityAllExtendsMap: Map<string, Set<MappedSuperClass>>
-    entityAllPropertiesMap: Map<string, CategorizedPropertiesRequiredId>
 }

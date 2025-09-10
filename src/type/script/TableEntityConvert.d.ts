@@ -3,14 +3,14 @@ type TableToEntity = (
     context: DeepReadonly<ModelContext>
 ) => {
     groups: Group[],
-    entities: Entity[],
-    mappedSuperClasses: MappedSuperClass[],
-    embeddableTypes: EmbeddableType[],
+    entities: EntityWithProperties[],
+    mappedSuperClasses: MappedSuperClassWithProperties[],
+    embeddableTypes: EmbeddableTypeWithProperties[],
     enumerations: Enumeration[],
     associations: Association[],
 }
 
 type EntityToTable = (
-    entity: DeepReadonly<Entity>,
+    entity: DeepReadonly<EntityWithInheritInfo>,
     context: DeepReadonly<ModelContext>
 ) => Table

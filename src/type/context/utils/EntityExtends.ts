@@ -1,16 +1,16 @@
-export type AllExtendsResult = {
-    extendsSet: Set<MappedSuperClassWithProperties>
+export type AllExtendsResult<MAPPED_SUPER_CLASS extends MappedSuperClass> = {
+    extendsSet: Set<MAPPED_SUPER_CLASS>
     unexistIdSet: Set<string>
 } | {
     cyclicDependenciesPath: MappedSuperClass[]
 }
 
-export const getEntityAllExtendsResult = (
+export const getEntityAllExtendsResult = <MAPPED_SUPER_CLASS extends MappedSuperClass>(
     entity: Entity | MappedSuperClass,
-    contextData: ModelContextData,
-    superClassAllExtendsResultMap: Map<string, AllExtendsResult> = new Map(),
+    mappedSuperClassMap: ReadonlyMap<string, MAPPED_SUPER_CLASS>,
+    superClassAllExtendsResultMap: Map<string, AllExtendsResult<MAPPED_SUPER_CLASS>> = new Map(),
     path: ReadonlyArray<MappedSuperClass> = [],
-): AllExtendsResult => {
+): AllExtendsResult<MAPPED_SUPER_CLASS> => {
     const currentPath = [...path, entity]
 
     // 如果存在循环依赖路径，直接返回
@@ -26,7 +26,7 @@ export const getEntityAllExtendsResult = (
     }
 
     const extendsIds = entity.extendsIds
-    const extendsSet = new Set<MappedSuperClassWithProperties>()
+    const extendsSet = new Set<MAPPED_SUPER_CLASS>()
     const unexistIdSet = new Set<string>()
 
     if (extendsIds.length === 0) {
@@ -38,12 +38,12 @@ export const getEntityAllExtendsResult = (
 
     // 遍历所有父类
     for (const extendId of extendsIds) {
-        const superClass = contextData.mappedSuperClassMap.get(extendId)
+        const superClass = mappedSuperClassMap.get(extendId)
         if (superClass) {
             // 添加直接父类
             extendsSet.add(superClass)
 
-            let parentExtends: AllExtendsResult | undefined
+            let parentExtends: AllExtendsResult<MAPPED_SUPER_CLASS> | undefined
             if (superClassAllExtendsResultMap) {
                 const result = superClassAllExtendsResultMap.get(superClass.id)
                 if (result) {
@@ -54,7 +54,7 @@ export const getEntityAllExtendsResult = (
                 // 递归获取父类的所有父类
                 parentExtends = getEntityAllExtendsResult(
                     superClass,
-                    contextData,
+                    mappedSuperClassMap,
                     superClassAllExtendsResultMap,
                     currentPath,
                 )
@@ -84,13 +84,13 @@ export const getEntityAllExtendsResult = (
     }
 }
 
-export const getEntityAllExtends = (
+export const getEntityAllExtends = <MAPPED_SUPER_CLASS extends MappedSuperClass>(
     entity: Entity | MappedSuperClass,
-    contextData: ModelContextData,
-    superClassAllExtendsResultMap: Map<string, AllExtendsResult> = new Map(),
+    mappedSuperClassMap: ReadonlyMap<string, MAPPED_SUPER_CLASS>,
+    superClassAllExtendsResultMap: Map<string, AllExtendsResult<MAPPED_SUPER_CLASS>> = new Map(),
     path: ReadonlyArray<MappedSuperClass> = [],
-): Set<MappedSuperClassWithProperties> => {
-    const result = getEntityAllExtendsResult(entity, contextData, superClassAllExtendsResultMap, path)
+): Set<MAPPED_SUPER_CLASS> => {
+    const result = getEntityAllExtendsResult(entity, mappedSuperClassMap, superClassAllExtendsResultMap, path)
     if ("cyclicDependenciesPath" in result) {
         throw new Error(`Entity ${entity.name}(${entity.id}) Cyclic Dependencies: ${result.cyclicDependenciesPath.map(mappedSuperClass => `${mappedSuperClass.name}(${mappedSuperClass.id})`).join(" -> ")}`)
     } else if (result.unexistIdSet.size > 0) {
@@ -102,8 +102,8 @@ export const getEntityAllExtends = (
 
 export const getEntityAllProperties = (
     entity: EntityWithProperties | MappedSuperClassWithProperties,
-    contextData: ModelContextData,
-    allExtends: Set<MappedSuperClassWithProperties> = getEntityAllExtends(entity, contextData),
+    mappedSuperClassMap: ReadonlyMap<string, MappedSuperClassWithProperties>,
+    allExtends: Set<MappedSuperClassWithProperties> = getEntityAllExtends(entity, mappedSuperClassMap),
 ): Property[] => {
     const result = [...entity.properties]
 

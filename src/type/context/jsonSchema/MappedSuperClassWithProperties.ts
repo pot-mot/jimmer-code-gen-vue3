@@ -21,3 +21,9 @@ export const MappedSuperClassWithProperties_JsonSchema = {
 } as JSONSchemaType<MappedSuperClassWithProperties>
 
 export const validateMappedSuperClassWithProperties = createSchemaValidator<MappedSuperClassWithProperties>(MappedSuperClassWithProperties_JsonSchema)
+
+export default {
+    uri: "$innerType/MappedSuperClassWithProperties",
+    schema: MappedSuperClassWithProperties_JsonSchema,
+    validate: validateMappedSuperClassWithProperties,
+}

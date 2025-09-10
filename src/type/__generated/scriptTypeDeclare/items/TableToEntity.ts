@@ -5,9 +5,9 @@ export default Object.freeze({
     context: DeepReadonly<ModelContext>
 ) => {
     groups: Group[],
-    entities: Entity[],
-    mappedSuperClasses: MappedSuperClass[],
-    embeddableTypes: EmbeddableType[],
+    entities: EntityWithProperties[],
+    mappedSuperClasses: MappedSuperClassWithProperties[],
+    embeddableTypes: EmbeddableTypeWithProperties[],
     enumerations: Enumeration[],
     associations: Association[],
 }`,

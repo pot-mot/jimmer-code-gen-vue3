@@ -15,6 +15,8 @@ const modelPath = "src/type/model";
 ensureDirExists(modelPath)
 const contextPath = "src/type/context";
 ensureDirExists(contextPath)
+const contextJsonSchemaPath = "src/type/context/jsonSchema";
+ensureDirExists(contextJsonSchemaPath)
 const scriptPath = "src/type/script";
 ensureDirExists(scriptPath)
 
@@ -25,19 +27,30 @@ ensureDirExists(scriptTypeDeclarePath)
 const jsonSchemaPath = "src/type/__generated/jsonSchema";
 ensureDirExists(jsonSchemaPath)
 
+const getTsFiles = (path) => {
+    const files = fs.readdirSync(path);
+    return files
+        .filter(it => it.endsWith(".ts"))
+        .map(it => ({
+            fileName: it,
+            content: String(fs.readFileSync(path + "/" + it, "utf-8")).replace("\r\n", "\n"),
+        }))
+}
+
 const getDeclareTsFiles = (path) => {
     const files = fs.readdirSync(path);
     return files
         .filter(it => it.endsWith(".d.ts"))
         .map(it => ({
             fileName: it,
-            content: fs.readFileSync(path + "/" + it, "utf-8").replace("\r\n", "\n"),
+            content: String(fs.readFileSync(path + "/" + it, "utf-8")).replace("\r\n", "\n"),
         }))
 }
 
 const modelTypeFiles = getDeclareTsFiles(modelPath)
 const contextTypeFiles = getDeclareTsFiles(contextPath)
 const scriptTypeFiles = getDeclareTsFiles(scriptPath)
+const contextJsonSchemaFiles = getTsFiles(contextJsonSchemaPath)
 
 // 创建编译器选项
 const compilerOptions = Object.freeze({
@@ -170,8 +183,16 @@ for (const {fileName} of contextTypeFiles) {
     }
 }
 
+const contextExtraJsonSchema = []
+
+for (const {fileName} of contextJsonSchemaFiles) {
+    const typeName = fileName.replace(".ts", "")
+    contextExtraJsonSchema.push({typeName})
+}
+
 typeDeclares.sort((a, b) => a.typeName.localeCompare(b.typeName))
 jsonSchemaDeclares.sort((a, b) => a.typeName.localeCompare(b.typeName))
+contextExtraJsonSchema.sort((a, b) => a.typeName.localeCompare(b.typeName))
 
 // 脚本函数类型
 const scriptTypeDeclares = []
@@ -284,9 +305,11 @@ export default {
 jsonSchemaFiles.push({
     fileName: `${jsonSchemaPath}/index.ts`,
     content: `${jsonSchemaDeclares.map(it => `import ${it.typeName}JsonSchema from "./items/${it.typeName}.ts";`).join("\n")}
+${contextExtraJsonSchema.map(it => `import ${it.typeName}JsonSchema from "../../context/jsonSchema/${it.typeName}.ts";`).join("\n")}
 
 export const jsonSchemas = Object.freeze({
 ${jsonSchemaDeclares.map(it => `    ${it.typeName}: ${it.typeName}JsonSchema,`).join("\n")}
+${contextExtraJsonSchema.map(it => `    ${it.typeName}: ${it.typeName}JsonSchema,`).join("\n")}
 })
 
 export type JsonSchemaKey = keyof typeof jsonSchemas

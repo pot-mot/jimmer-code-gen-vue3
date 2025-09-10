@@ -21,3 +21,9 @@ export const EntityWithProperties_JsonSchema = {
 } as JSONSchemaType<EntityWithProperties>
 
 export const validateEntityWithProperties = createSchemaValidator<EntityWithProperties>(EntityWithProperties_JsonSchema)
+
+export default {
+    uri: "$innerType/EntityWithProperties",
+    schema: EntityWithProperties_JsonSchema,
+    validate: validateEntityWithProperties,
+}

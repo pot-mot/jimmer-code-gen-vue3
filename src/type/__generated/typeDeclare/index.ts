@@ -20,6 +20,7 @@ import EmbeddableTypeWithCategorizedPropertiesDeclare from "./items/EmbeddableTy
 import EmbeddableTypeWithPropertiesDeclare from "./items/EmbeddableTypeWithProperties.ts";
 import EntityDeclare from "./items/Entity.ts";
 import EntityWithCategorizedPropertiesDeclare from "./items/EntityWithCategorizedProperties.ts";
+import EntityWithInheritInfoDeclare from "./items/EntityWithInheritInfo.ts";
 import EntityWithPropertiesDeclare from "./items/EntityWithProperties.ts";
 import EnumerationDeclare from "./items/Enumeration.ts";
 import EnumerationItemDeclare from "./items/EnumerationItem.ts";
@@ -43,6 +44,7 @@ import ManyToManyViewPropertyDeclare from "./items/ManyToManyViewProperty.ts";
 import ManyToOnePropertyDeclare from "./items/ManyToOneProperty.ts";
 import MappedSuperClassDeclare from "./items/MappedSuperClass.ts";
 import MappedSuperClassWithCategorizedPropertiesDeclare from "./items/MappedSuperClassWithCategorizedProperties.ts";
+import MappedSuperClassWithInheritInfoDeclare from "./items/MappedSuperClassWithInheritInfo.ts";
 import MappedSuperClassWithPropertiesDeclare from "./items/MappedSuperClassWithProperties.ts";
 import ModelDeclare from "./items/Model.ts";
 import ModelContextDeclare from "./items/ModelContext.ts";
@@ -86,6 +88,7 @@ export type TypeMap = {
     EmbeddableTypeWithProperties: EmbeddableTypeWithProperties
     Entity: Entity
     EntityWithCategorizedProperties: EntityWithCategorizedProperties
+    EntityWithInheritInfo: EntityWithInheritInfo
     EntityWithProperties: EntityWithProperties
     Enumeration: Enumeration
     EnumerationItem: EnumerationItem
@@ -109,6 +112,7 @@ export type TypeMap = {
     ManyToOneProperty: ManyToOneProperty
     MappedSuperClass: MappedSuperClass
     MappedSuperClassWithCategorizedProperties: MappedSuperClassWithCategorizedProperties
+    MappedSuperClassWithInheritInfo: MappedSuperClassWithInheritInfo
     MappedSuperClassWithProperties: MappedSuperClassWithProperties
     Model: Model
     ModelContext: ModelContext
@@ -156,6 +160,7 @@ export const typeDeclares = Object.freeze({
     EmbeddableTypeWithProperties: EmbeddableTypeWithPropertiesDeclare,
     Entity: EntityDeclare,
     EntityWithCategorizedProperties: EntityWithCategorizedPropertiesDeclare,
+    EntityWithInheritInfo: EntityWithInheritInfoDeclare,
     EntityWithProperties: EntityWithPropertiesDeclare,
     Enumeration: EnumerationDeclare,
     EnumerationItem: EnumerationItemDeclare,
@@ -179,6 +184,7 @@ export const typeDeclares = Object.freeze({
     ManyToOneProperty: ManyToOnePropertyDeclare,
     MappedSuperClass: MappedSuperClassDeclare,
     MappedSuperClassWithCategorizedProperties: MappedSuperClassWithCategorizedPropertiesDeclare,
+    MappedSuperClassWithInheritInfo: MappedSuperClassWithInheritInfoDeclare,
     MappedSuperClassWithProperties: MappedSuperClassWithPropertiesDeclare,
     Model: ModelDeclare,
     ModelContext: ModelContextDeclare,
