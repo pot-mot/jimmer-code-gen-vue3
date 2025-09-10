@@ -19,8 +19,8 @@ type MappedSuperClassWithInheritInfo = MappedSuperClassWithCategorizedProperties
 }
 
 type ModelContext = {
-    model: ModelWithSubData
-    groupMap: Map<string, GroupWithSubData>
+    model: Model
+    groupMap: Map<string, GroupWithSubMaps>
     entityMap: Map<string, EntityWithInheritInfo>
     mappedSuperClassMap: Map<string, MappedSuperClassWithInheritInfo>
     embeddableTypeMap: Map<string, EmbeddableTypeWithCategorizedProperties>

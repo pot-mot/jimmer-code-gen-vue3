@@ -1,5 +1,3 @@
-import {getModelSubData} from "@/type/context/utils/ModelSubData.ts";
-import {getGroupSubData} from "@/type/context/utils/GroupSubData.ts";
 import {
     categorizeEmbeddableTypeProperties,
     categorizeProperties,
@@ -11,25 +9,12 @@ import {
     getEntityAllExtends,
     getEntityAllProperties
 } from "@/type/context/utils/EntityExtends.ts";
+import {getGroupSubMaps} from "@/type/context/utils/GroupSubDataMap.ts";
 
 export const contextDataToContext = (
     contextData: ModelContextData,
 ): ModelContext => {
-    const model: ModelWithSubData = {
-        ...contextData.model,
-        ...getModelSubData(contextData),
-    }
-
-    // 解析基本拓展数据
-    const groupMap = new Map<string, GroupWithSubData>()
-
-    for (const [id, group] of contextData.groupMap) {
-        const subData: GroupWithSubData = {
-            ...group,
-            ...getGroupSubData(id, contextData),
-        }
-        groupMap.set(id, subData)
-    }
+    const model = contextData.model
 
     const entityBaseInfoMap = new Map<string, EntityWithCategorizedProperties>()
     for (const [id, entity] of contextData.entityMap) {
@@ -105,6 +90,16 @@ export const contextDataToContext = (
             allExtends,
             allProperties: allCategorizedProperties,
         })
+    }
+
+    const groupMap = new Map<string, GroupWithSubMaps>()
+
+    for (const [id, group] of contextData.groupMap) {
+        const subData: GroupWithSubMaps = {
+            ...group,
+            ...getGroupSubMaps(id, {entityMap, enumerationMap, mappedSuperClassMap, embeddableTypeMap}),
+        }
+        groupMap.set(id, subData)
     }
 
     return {

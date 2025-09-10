@@ -1,8 +1,8 @@
 export default Object.freeze({
     fileName: 'ModelContext.d.ts',
     content: `type ModelContext = {
-    model: ModelWithSubData
-    groupMap: Map<string, GroupWithSubData>
+    model: Model
+    groupMap: Map<string, GroupWithSubMaps>
     entityMap: Map<string, EntityWithInheritInfo>
     mappedSuperClassMap: Map<string, MappedSuperClassWithInheritInfo>
     embeddableTypeMap: Map<string, EmbeddableTypeWithCategorizedProperties>

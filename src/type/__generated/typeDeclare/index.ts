@@ -31,8 +31,8 @@ import ForeignKeyDeclare from "./items/ForeignKey.ts";
 import ForeignKeyTypeDeclare from "./items/ForeignKeyType.ts";
 import GetterFormulaPropertyDeclare from "./items/GetterFormulaProperty.ts";
 import GroupDeclare from "./items/Group.ts";
-import GroupSubDataDeclare from "./items/GroupSubData.ts";
-import GroupWithSubDataDeclare from "./items/GroupWithSubData.ts";
+import GroupSubMapsDeclare from "./items/GroupSubMaps.ts";
+import GroupWithSubMapsDeclare from "./items/GroupWithSubMaps.ts";
 import IdPropertyDeclare from "./items/IdProperty.ts";
 import IndexDeclare from "./items/Index.ts";
 import JoinColumnDeclare from "./items/JoinColumn.ts";
@@ -51,7 +51,6 @@ import ModelContextDeclare from "./items/ModelContext.ts";
 import ModelContextDataDeclare from "./items/ModelContextData.ts";
 import ModelSubDataDeclare from "./items/ModelSubData.ts";
 import ModelSubIdsDeclare from "./items/ModelSubIds.ts";
-import ModelWithSubDataDeclare from "./items/ModelWithSubData.ts";
 import OnDissociationActionDeclare from "./items/OnDissociationAction.ts";
 import OneToManyPropertyDeclare from "./items/OneToManyProperty.ts";
 import OneToOneSourcePropertyDeclare from "./items/OneToOneSourceProperty.ts";
@@ -99,8 +98,8 @@ export type TypeMap = {
     ForeignKeyType: ForeignKeyType
     GetterFormulaProperty: GetterFormulaProperty
     Group: Group
-    GroupSubData: GroupSubData
-    GroupWithSubData: GroupWithSubData
+    GroupSubMaps: GroupSubMaps
+    GroupWithSubMaps: GroupWithSubMaps
     IdProperty: IdProperty
     Index: Index
     JoinColumn: JoinColumn
@@ -119,7 +118,6 @@ export type TypeMap = {
     ModelContextData: ModelContextData
     ModelSubData: ModelSubData
     ModelSubIds: ModelSubIds
-    ModelWithSubData: ModelWithSubData
     OnDissociationAction: OnDissociationAction
     OneToManyProperty: OneToManyProperty
     OneToOneSourceProperty: OneToOneSourceProperty
@@ -171,8 +169,8 @@ export const typeDeclares = Object.freeze({
     ForeignKeyType: ForeignKeyTypeDeclare,
     GetterFormulaProperty: GetterFormulaPropertyDeclare,
     Group: GroupDeclare,
-    GroupSubData: GroupSubDataDeclare,
-    GroupWithSubData: GroupWithSubDataDeclare,
+    GroupSubMaps: GroupSubMapsDeclare,
+    GroupWithSubMaps: GroupWithSubMapsDeclare,
     IdProperty: IdPropertyDeclare,
     Index: IndexDeclare,
     JoinColumn: JoinColumnDeclare,
@@ -191,7 +189,6 @@ export const typeDeclares = Object.freeze({
     ModelContextData: ModelContextDataDeclare,
     ModelSubData: ModelSubDataDeclare,
     ModelSubIds: ModelSubIdsDeclare,
-    ModelWithSubData: ModelWithSubDataDeclare,
     OnDissociationAction: OnDissociationActionDeclare,
     OneToManyProperty: OneToManyPropertyDeclare,
     OneToOneSourceProperty: OneToOneSourcePropertyDeclare,

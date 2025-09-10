@@ -6,5 +6,3 @@ type ModelSubData = {
     enumerations: Enumeration[]
     associations: Association[]
 }
-
-type ModelWithSubData = Model & ModelSubData
