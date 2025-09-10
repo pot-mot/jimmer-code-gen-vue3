@@ -1,9 +1,9 @@
 export default Object.freeze({
     fileName: 'GroupSubMaps.d.ts',
-    content: `type GroupSubMaps = Pick<ModelContext,
-    | 'entityMap'
-    | 'enumerationMap'
-    | 'mappedSuperClassMap'
-    | 'embeddableTypeMap'
->`,
+    content: `type GroupSubMaps = {
+    entityMap: Map<string, EntityWithProperties>
+    mappedSuperClassMap: Map<string, MappedSuperClassWithProperties>
+    embeddableTypeMap: Map<string, EmbeddableTypeWithProperties>
+    enumerationMap: Map<string, Enumeration>
+}`,
 })
