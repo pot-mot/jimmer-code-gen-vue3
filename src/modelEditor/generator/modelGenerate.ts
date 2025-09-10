@@ -1,13 +1,12 @@
 import type {TableEntityConvertor} from "@/modelEditor/generator/TableEntityConvertor.ts";
 import type {ModelGenerateStore} from "@/modelEditor/generator/ModelGenerateStore.ts";
-import {contextDataToContext} from "@/type/context/utils/ModelContext.ts";
 import {getArrayFromMap} from "@/utils/map/getArrayFromMap.ts";
 
 export const modelGenerate = (
-    contextData: ModelContextData,
-    selectedIds: Partial<ModelSubIds>,
-    generator: ModelGenerateStore,
-    convertor: TableEntityConvertor,
+    context: DeepReadonly<ModelContext>,
+    selectedIds: DeepReadonly<Partial<ModelSubIds>>,
+    generator: DeepReadonly<ModelGenerateStore>,
+    convertor: DeepReadonly<TableEntityConvertor>,
 ) => {
     const files: Record<string, string> = {}
     const mergeIntoFiles = (newFiles: Record<string, string>) => {
@@ -20,7 +19,6 @@ export const modelGenerate = (
         }
     }
 
-    const context = contextDataToContext(contextData)
     const model = context.model
 
     if (selectedIds.entityIds) {
