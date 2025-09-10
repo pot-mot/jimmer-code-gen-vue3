@@ -98,7 +98,6 @@ const jsonSchemaGenerator = tjs.buildGenerator(
     {
         required: true,
         strictNullChecks: true,
-        defaultNumberType: "integer",
     }
 )
 
