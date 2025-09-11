@@ -63,6 +63,15 @@ export const useModelEditor = createStore(() => {
         // TODO
     }
 
+    const selectedIdSets = ref<ModelSubIdSets>({
+        groupIdSet: new Set<string>(),
+        entityIdSet: new Set<string>(),
+        mappedSuperClassIdSet: new Set<string>(),
+        embeddableTypeIdSet: new Set<string>(),
+        enumerationIdSet: new Set<string>(),
+        associationIdSet: new Set<string>(),
+    })
+
     const getSelection = () => {
         const vueFlow = getCurrentVueFlow()
         return {
@@ -705,6 +714,7 @@ export const useModelEditor = createStore(() => {
         getContext,
 
         menuMap,
+        selectedIdSets,
 
         // 模型生成
 

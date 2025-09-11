@@ -51,6 +51,7 @@ import ModelContextDeclare from "./items/ModelContext.ts";
 import ModelContextDataDeclare from "./items/ModelContextData.ts";
 import ModelSubDataDeclare from "./items/ModelSubData.ts";
 import ModelSubIdsDeclare from "./items/ModelSubIds.ts";
+import ModelSubIdSetsDeclare from "./items/ModelSubIdSets.ts";
 import OnDissociationActionDeclare from "./items/OnDissociationAction.ts";
 import OneToManyPropertyDeclare from "./items/OneToManyProperty.ts";
 import OneToOneSourcePropertyDeclare from "./items/OneToOneSourceProperty.ts";
@@ -118,6 +119,7 @@ export type TypeMap = {
     ModelContextData: ModelContextData
     ModelSubData: ModelSubData
     ModelSubIds: ModelSubIds
+    ModelSubIdSets: ModelSubIdSets
     OnDissociationAction: OnDissociationAction
     OneToManyProperty: OneToManyProperty
     OneToOneSourceProperty: OneToOneSourceProperty
@@ -189,6 +191,7 @@ export const typeDeclares = Object.freeze({
     ModelContextData: ModelContextDataDeclare,
     ModelSubData: ModelSubDataDeclare,
     ModelSubIds: ModelSubIdsDeclare,
+    ModelSubIdSets: ModelSubIdSetsDeclare,
     OnDissociationAction: OnDissociationActionDeclare,
     OneToManyProperty: OneToManyPropertyDeclare,
     OneToOneSourceProperty: OneToOneSourcePropertyDeclare,
