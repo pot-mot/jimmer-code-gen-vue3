@@ -1,9 +1,10 @@
-import {jsonSchemas} from "@/type/__generated/jsonSchema";
 import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
 import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
+import EntityJsonSchema from "@/type/__generated/jsonSchema/items/Entity.ts"
+import PropertyJsonSchema from "@/type/__generated/jsonSchema/items/Property.ts"
 
-const {definitions: entityDefinitions, properties: entityProperties, ...entityOther} = jsonSchemas.Entity.schema
-const {definitions: propertyDefinitions, ...propertyOther} = jsonSchemas.Property.schema
+const {definitions: entityDefinitions, properties: entityProperties, ...entityOther} = EntityJsonSchema.schema
+const {definitions: propertyDefinitions, ...propertyOther} = PropertyJsonSchema.schema
 
 export const EntityWithProperties_JsonSchema = {
     ...entityOther,

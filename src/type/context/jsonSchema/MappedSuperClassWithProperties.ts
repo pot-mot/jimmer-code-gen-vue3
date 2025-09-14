@@ -1,9 +1,10 @@
-import {jsonSchemas} from "@/type/__generated/jsonSchema";
 import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
 import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
+import MappedSuperClassJsonSchema from "@/type/__generated/jsonSchema/items/MappedSuperClass.ts"
+import PropertyJsonSchema from "@/type/__generated/jsonSchema/items/Property.ts"
 
-const {definitions: mappedSuperClassDefinitions, properties: mappedSuperClassProperties, ...mappedSuperClassOther} = jsonSchemas.MappedSuperClass.schema
-const {definitions: propertyDefinitions, propertyOther} = jsonSchemas.Property.schema
+const {definitions: mappedSuperClassDefinitions, properties: mappedSuperClassProperties, ...mappedSuperClassOther} = MappedSuperClassJsonSchema.schema
+const {definitions: propertyDefinitions, propertyOther} = PropertyJsonSchema.schema
 
 export const MappedSuperClassWithProperties_JsonSchema = {
     ...mappedSuperClassOther,
