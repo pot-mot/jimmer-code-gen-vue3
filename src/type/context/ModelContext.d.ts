@@ -10,12 +10,14 @@ type ModelContextData = {
 
 type EntityWithInheritInfo = EntityWithCategorizedProperties & {
     allExtends: Set<MappedSuperClassWithCategorizedProperties>,
-    allProperties: CategorizedPropertiesRequiredId,
+    allProperties: Property[],
+    allCategorizedProperties: CategorizedPropertiesRequiredId,
 }
 
 type MappedSuperClassWithInheritInfo = MappedSuperClassWithCategorizedProperties & {
     allExtends: Set<MappedSuperClassWithCategorizedProperties>,
-    allProperties: CategorizedProperties,
+    allProperties: Property[],
+    allCategorizedProperties: CategorizedProperties,
 }
 
 type ModelContext = {

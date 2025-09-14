@@ -73,7 +73,8 @@ export const contextDataToContext = (
         mappedSuperClassMap.set(id, {
             ...mappedSuperClass,
             allExtends,
-            allProperties: allCategorizedProperties,
+            allProperties,
+            allCategorizedProperties,
         })
     }
 
@@ -88,7 +89,8 @@ export const contextDataToContext = (
         entityMap.set(id, {
             ...entity,
             allExtends,
-            allProperties: allCategorizedProperties,
+            allProperties,
+            allCategorizedProperties,
         })
     }
 
