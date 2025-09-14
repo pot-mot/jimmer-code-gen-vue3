@@ -93,8 +93,6 @@ export const useModelEditorHistory = (
         vueFlow: ShallowRef<VueFlowStore>,
     }
 ) => {
-    const {contextData, vueFlow} = modelEditorState
-
     const history = useCommandHistory<ModelEditorHistoryCommands>()
 
     const canUndo = ref(history.canUndo())
@@ -112,34 +110,35 @@ export const useModelEditorHistory = (
         canRedo.value = history.canRedo()
     })
 
-    const getContext = () => {
-        const context = contextData.value
-        if (!context) {
+    const getContextData = () => {
+        const contextData = modelEditorState.contextData.value
+        if (!contextData) {
             throw new Error("Context is not available")
         }
-        return context
+        return contextData
     }
 
     const getVueFlow = () => {
-        if (!vueFlow.value) {
+        const vueFlow = modelEditorState.vueFlow.value
+        if (!vueFlow) {
             throw new Error("VueFlow is not available")
         }
-        return vueFlow.value
+        return vueFlow
     }
 
     const menuMap = ref(new Map<string, MenuItem>())
 
     // 分组
     const addGroup = ({group}: { group: Omit<Group, 'id'> }) => {
-        const context = getContext()
+        const contextData = getContextData()
 
         const id = createId("group")
 
-        if (context.groupMap.has(id)) throw new Error(`Group [${id}] is already existed`)
+        if (contextData.groupMap.has(id)) throw new Error(`Group [${id}] is already existed`)
         if (menuMap.value.has(id)) throw new Error(`Menu item [${id}] is already existed in menuMap`)
 
         const groupWithId = {...group, id}
-        context.groupMap.set(id, groupWithId)
+        contextData.groupMap.set(id, groupWithId)
         menuMap.value.set(id, {
             group: groupWithId,
             entityMap: new Map(),
@@ -150,9 +149,9 @@ export const useModelEditorHistory = (
         return {id}
     }
     const revertAddGroup = ({id}: { id: string }) => {
-        const context = getContext()
+        const contextData = getContextData()
 
-        const group = context.groupMap.get(id)
+        const group = contextData.groupMap.get(id)
         if (!group) throw new Error(`Group [${id}] is not existed`)
         const menuItem = menuMap.value.get(id)
         if (!menuItem) throw new Error(`Group [${id}] is not existed in menuMap`)
@@ -162,19 +161,19 @@ export const useModelEditorHistory = (
         if (menuItem.embeddableTypeMap.size > 0) throw new Error(`Group [${id}] has embeddable types, can't remove`)
         if (menuItem.enumerationMap.size > 0) throw new Error(`Group [${id}] has enumerations, can't remove`)
 
-        context.groupMap.delete(id)
+        contextData.groupMap.delete(id)
         menuMap.value.delete(id)
         return {group}
     }
     const updateGroup = ({group}: { group: Group }) => {
-        const context = getContext()
+        const contextData = getContextData()
 
-        const existedGroup = context.groupMap.get(group.id)
+        const existedGroup = contextData.groupMap.get(group.id)
         if (!existedGroup) throw new Error(`Group [${group.id}] is not existed`)
         const menuItem = menuMap.value.get(group.id)
         if (!menuItem) throw new Error(`Group [${group.id}] is not existed in menuMap`)
 
-        context.groupMap.set(group.id, group)
+        contextData.groupMap.set(group.id, group)
         menuItem.group = group
         return {group: existedGroup}
     }
@@ -189,13 +188,13 @@ export const useModelEditorHistory = (
 
     // 实体
     const addEntity = ({entity, position}: { entity: Omit<Entity, 'id'>; position: XYPosition }) => {
-        const context = getContext()
+        const contextData = getContextData()
         const vueFlow = getVueFlow()
 
         const id = createId("entity")
 
-        if (context.entityMap.has(id)) throw new Error(`Entity [${id}] is already existed`)
-        if (!context.groupMap.has(entity.groupId)) throw new Error(`Group [${entity.groupId}] is not existed`)
+        if (contextData.entityMap.has(id)) throw new Error(`Entity [${id}] is already existed`)
+        if (!contextData.groupMap.has(entity.groupId)) throw new Error(`Group [${entity.groupId}] is not existed`)
         const menuItem = menuMap.value.get(entity.groupId)
         if (!menuItem) throw new Error(`Group [${entity.groupId}] is not existed in menuMap`)
         if (menuItem.entityMap.has(id)) throw new Error(`Entity [${id}] is already existed in group [${entity.groupId}]`)
@@ -207,17 +206,17 @@ export const useModelEditorHistory = (
             position,
             data: {entity: entityWithId},
         }
-        context.entityMap.set(id, entityWithId)
+        contextData.entityMap.set(id, entityWithId)
         menuItem.entityMap.set(id, entityWithId)
         vueFlow.addNodes(entityNode)
         return {id}
     }
 
     const revertAddEntity = ({id}: { id: string }) => {
-        const context = getContext()
+        const contextData = getContextData()
         const vueFlow = getVueFlow()
 
-        const entity = context.entityMap.get(id)
+        const entity = contextData.entityMap.get(id)
         if (!entity) throw new Error(`Entity [${id}] is not existed`)
         const entityNode = vueFlow.findNode(id)
         if (!entityNode) throw new Error(`Entity [${id}] is not existed`)
@@ -225,26 +224,26 @@ export const useModelEditorHistory = (
         if (!menuItem) throw new Error(`Group [${entity.groupId}] is not existed in menuMap`)
         if (!menuItem.entityMap.has(id)) throw new Error(`Entity [${id}] is not existed in group [${entity.groupId}]`)
 
-        context.entityMap.delete(id)
+        contextData.entityMap.delete(id)
         menuItem.entityMap.delete(id)
         vueFlow.removeNodes([entityNode])
         return {entity, position: entityNode.position}
     }
 
     const updateEntity = ({entity}: { entity: EntityWithProperties }) => {
-        const context = getContext()
+        const contextData = getContextData()
         const vueFlow = getVueFlow()
 
-        const existedEntity = context.entityMap.get(entity.id)
+        const existedEntity = contextData.entityMap.get(entity.id)
         if (!existedEntity) throw new Error(`Entity [${entity.id}] is not existed`)
         const existingEntityNode = vueFlow.findNode(entity.id)
         if (!existingEntityNode) throw new Error(`Entity [${entity.id}] is not existed`)
-        if (!context.groupMap.has(entity.groupId)) throw new Error(`Group [${entity.groupId}] is not existed`)
+        if (!contextData.groupMap.has(entity.groupId)) throw new Error(`Group [${entity.groupId}] is not existed`)
         const menuItem = menuMap.value.get(entity.groupId)
         if (!menuItem) throw new Error(`Group [${entity.groupId}] is not existed in menuMap`)
         if (!menuItem.entityMap.has(entity.id)) throw new Error(`Entity [${entity.id}] is not existed in group [${entity.groupId}]`)
 
-        context.entityMap.set(entity.id, entity)
+        contextData.entityMap.set(entity.id, entity)
         menuItem.entityMap.set(entity.id, entity)
         existingEntityNode.data.entity = entity
         return {entity: existedEntity}
@@ -277,13 +276,13 @@ export const useModelEditorHistory = (
         mappedSuperClass: Omit<MappedSuperClass, 'id'>;
         position: XYPosition
     }) => {
-        const context = getContext()
+        const contextData = getContextData()
         const vueFlow = getVueFlow()
 
         const id = createId("mapped-super-class")
 
-        if (context.mappedSuperClassMap.has(id)) throw new Error(`MappedSuperClass [${id}] is already existed`)
-        if (!context.groupMap.has(mappedSuperClass.groupId)) throw new Error(`Group [${mappedSuperClass.groupId}] is not existed`)
+        if (contextData.mappedSuperClassMap.has(id)) throw new Error(`MappedSuperClass [${id}] is already existed`)
+        if (!contextData.groupMap.has(mappedSuperClass.groupId)) throw new Error(`Group [${mappedSuperClass.groupId}] is not existed`)
         const menuItem = menuMap.value.get(mappedSuperClass.groupId)
         if (!menuItem) throw new Error(`Group [${mappedSuperClass.groupId}] is not existed in menuMap`)
         if (menuItem.entityMap.has(id)) throw new Error(`MappedSuperClass [${id}] is already existed in group [${mappedSuperClass.groupId}]`)
@@ -295,17 +294,17 @@ export const useModelEditorHistory = (
             position,
             data: {mappedSuperClass: mappedSuperClassWithId},
         }
-        context.mappedSuperClassMap.set(id, mappedSuperClassWithId)
+        contextData.mappedSuperClassMap.set(id, mappedSuperClassWithId)
         menuItem.mappedSuperClassMap.set(id, mappedSuperClassWithId)
         vueFlow.addNodes(mappedSuperClassNode)
         return {id}
     }
 
     const revertAddMappedSuperClass = ({id}: { id: string }) => {
-        const context = getContext()
+        const contextData = getContextData()
         const vueFlow = getVueFlow()
 
-        const mappedSuperClass = context.mappedSuperClassMap.get(id)
+        const mappedSuperClass = contextData.mappedSuperClassMap.get(id)
         if (!mappedSuperClass) throw new Error(`MappedSuperClass [${id}] is not existed`)
         const mappedSuperClassNode = vueFlow.findNode(id)
         if (!mappedSuperClassNode) throw new Error(`MappedSuperClass [${id}] is not existed`)
@@ -313,26 +312,26 @@ export const useModelEditorHistory = (
         if (!menuItem) throw new Error(`Group [${mappedSuperClass.groupId}] is not existed in menuMap`)
         if (!menuItem.entityMap.has(id)) throw new Error(`MappedSuperClass [${id}] is not existed in group [${mappedSuperClass.groupId}]`)
 
-        context.mappedSuperClassMap.delete(id)
+        contextData.mappedSuperClassMap.delete(id)
         menuItem.mappedSuperClassMap.delete(id)
         vueFlow.removeNodes([mappedSuperClassNode])
         return {mappedSuperClass, position: mappedSuperClassNode.position}
     }
 
     const updateMappedSuperClass = ({mappedSuperClass}: { mappedSuperClass: MappedSuperClassWithProperties }) => {
-        const context = getContext()
+        const contextData = getContextData()
         const vueFlow = getVueFlow()
 
-        const existedMappedSuperClass = context.mappedSuperClassMap.get(mappedSuperClass.id)
+        const existedMappedSuperClass = contextData.mappedSuperClassMap.get(mappedSuperClass.id)
         if (!existedMappedSuperClass) throw new Error(`MappedSuperClass [${mappedSuperClass.id}] is not existed`)
         const existingMappedSuperClassNode = vueFlow.findNode(mappedSuperClass.id)
         if (!existingMappedSuperClassNode) throw new Error(`MappedSuperClass [${mappedSuperClass.id}] is not existed`)
-        if (!context.groupMap.has(mappedSuperClass.groupId)) throw new Error(`Group [${mappedSuperClass.groupId}] is not existed`)
+        if (!contextData.groupMap.has(mappedSuperClass.groupId)) throw new Error(`Group [${mappedSuperClass.groupId}] is not existed`)
         const menuItem = menuMap.value.get(mappedSuperClass.groupId)
         if (!menuItem) throw new Error(`Group [${mappedSuperClass.groupId}] is not existed in menuMap`)
         if (!menuItem.entityMap.has(mappedSuperClass.id)) throw new Error(`MappedSuperClass [${mappedSuperClass.id}] is not existed in group [${mappedSuperClass.groupId}]`)
 
-        context.mappedSuperClassMap.set(mappedSuperClass.id, mappedSuperClass)
+        contextData.mappedSuperClassMap.set(mappedSuperClass.id, mappedSuperClass)
         menuItem.mappedSuperClassMap.set(mappedSuperClass.id, mappedSuperClass)
         existingMappedSuperClassNode.data.mappedSuperClass = mappedSuperClass
         return {mappedSuperClass: existedMappedSuperClass}
@@ -362,46 +361,46 @@ export const useModelEditorHistory = (
 
     // 内嵌类型
     const addEmbeddableType = ({embeddableType}: { embeddableType: Omit<EmbeddableType, 'id'> }) => {
-        const context = getContext()
+        const contextData = getContextData()
 
         const id = createId("embeddable-type")
 
-        if (context.embeddableTypeMap.has(id)) throw new Error(`EmbeddableType [${id}] is already existed`)
-        if (!context.groupMap.has(embeddableType.groupId)) throw new Error(`Group [${embeddableType.groupId}] is not existed`)
+        if (contextData.embeddableTypeMap.has(id)) throw new Error(`EmbeddableType [${id}] is already existed`)
+        if (!contextData.groupMap.has(embeddableType.groupId)) throw new Error(`Group [${embeddableType.groupId}] is not existed`)
         const menuItem = menuMap.value.get(embeddableType.groupId)
         if (!menuItem) throw new Error(`Group [${embeddableType.groupId}] is not existed in menuMap`)
         if (menuItem.entityMap.has(id)) throw new Error(`EmbeddableType [${id}] is already existed in group [${embeddableType.groupId}]`)
 
         const embeddableTypeWithId: EmbeddableTypeWithProperties = {...embeddableType, id, properties: []}
-        context.embeddableTypeMap.set(id, embeddableTypeWithId)
+        contextData.embeddableTypeMap.set(id, embeddableTypeWithId)
         return {id}
     }
 
     const revertAddEmbeddableType = ({id}: { id: string }) => {
-        const context = getContext()
+        const contextData = getContextData()
 
-        const embeddableType = context.embeddableTypeMap.get(id)
+        const embeddableType = contextData.embeddableTypeMap.get(id)
         if (!embeddableType) throw new Error(`EmbeddableType [${id}] is not existed`)
         const menuItem = menuMap.value.get(embeddableType.groupId)
         if (!menuItem) throw new Error(`Group [${embeddableType.groupId}] is not existed in menuMap`)
         if (!menuItem.entityMap.has(id)) throw new Error(`EmbeddableType [${id}] is not existed in group [${embeddableType.groupId}]`)
 
-        context.embeddableTypeMap.delete(id)
+        contextData.embeddableTypeMap.delete(id)
         menuItem.entityMap.delete(id)
         return {embeddableType}
     }
 
     const updateEmbeddableType = ({embeddableType}: { embeddableType: EmbeddableTypeWithProperties }) => {
-        const context = getContext()
+        const contextData = getContextData()
 
-        const existedEmbeddableType = context.embeddableTypeMap.get(embeddableType.id)
+        const existedEmbeddableType = contextData.embeddableTypeMap.get(embeddableType.id)
         if (!existedEmbeddableType) throw new Error(`EmbeddableType [${embeddableType.id}] is not existed`)
-        if (!context.groupMap.has(embeddableType.groupId)) throw new Error(`Group [${embeddableType.groupId}] is not existed`)
+        if (!contextData.groupMap.has(embeddableType.groupId)) throw new Error(`Group [${embeddableType.groupId}] is not existed`)
         const menuItem = menuMap.value.get(existedEmbeddableType.groupId)
         if (!menuItem) throw new Error(`Group [${existedEmbeddableType.groupId}] is not existed in menuMap`)
         if (!menuItem.entityMap.has(existedEmbeddableType.id)) throw new Error(`EmbeddableType [${existedEmbeddableType.id}] is not existed in group [${existedEmbeddableType.groupId}]`)
 
-        context.embeddableTypeMap.set(embeddableType.id, embeddableType)
+        contextData.embeddableTypeMap.set(embeddableType.id, embeddableType)
         menuItem.embeddableTypeMap.set(embeddableType.id, embeddableType)
         return {embeddableType: existedEmbeddableType}
     }
@@ -418,47 +417,47 @@ export const useModelEditorHistory = (
 
     // 枚举
     const addEnumeration = ({enumeration}: { enumeration: Omit<Enumeration, 'id'> }) => {
-        const context = getContext()
+        const contextData = getContextData()
 
         const id = createId("enumeration")
 
-        if (context.enumerationMap.has(id)) throw new Error(`Enumeration [${id}] is already existed`)
-        if (!context.groupMap.has(enumeration.groupId)) throw new Error(`Group [${enumeration.groupId}] is not existed`)
+        if (contextData.enumerationMap.has(id)) throw new Error(`Enumeration [${id}] is already existed`)
+        if (!contextData.groupMap.has(enumeration.groupId)) throw new Error(`Group [${enumeration.groupId}] is not existed`)
         const menuItem = menuMap.value.get(enumeration.groupId)
         if (!menuItem) throw new Error(`Group [${enumeration.groupId}] is not existed in menuMap`)
         if (menuItem.entityMap.has(id)) throw new Error(`Enumeration [${id}] is already existed in group [${enumeration.groupId}]`)
 
         const enumerationWithId = {...enumeration, id}
-        context.enumerationMap.set(id, enumerationWithId)
+        contextData.enumerationMap.set(id, enumerationWithId)
         menuItem.enumerationMap.set(id, enumerationWithId)
         return {id}
     }
 
     const revertAddEnumeration = ({id}: { id: string }) => {
-        const context = getContext()
+        const contextData = getContextData()
 
-        const enumeration = context.enumerationMap.get(id)
+        const enumeration = contextData.enumerationMap.get(id)
         if (!enumeration) throw new Error(`Enumeration [${id}] is not existed`)
         const menuItem = menuMap.value.get(enumeration.groupId)
         if (!menuItem) throw new Error(`Group [${enumeration.groupId}] is not existed in menuMap`)
         if (!menuItem.entityMap.has(id)) throw new Error(`Enumeration [${id}] is not existed in group [${enumeration.groupId}]`)
 
-        context.enumerationMap.delete(id)
+        contextData.enumerationMap.delete(id)
         menuItem.enumerationMap.delete(id)
         return {enumeration}
     }
 
     const updateEnumeration = ({enumeration}: { enumeration: Enumeration }) => {
-        const context = getContext()
+        const contextData = getContextData()
 
-        const existedEnumeration = context.enumerationMap.get(enumeration.id)
+        const existedEnumeration = contextData.enumerationMap.get(enumeration.id)
         if (!existedEnumeration) throw new Error(`Enumeration [${enumeration.id}] is not existed`)
-        if (!context.groupMap.has(enumeration.groupId)) throw new Error(`Group [${enumeration.groupId}] is not existed`)
+        if (!contextData.groupMap.has(enumeration.groupId)) throw new Error(`Group [${enumeration.groupId}] is not existed`)
         const menuItem = menuMap.value.get(enumeration.groupId)
         if (!menuItem) throw new Error(`Group [${enumeration.groupId}] is not existed in menuMap`)
         if (!menuItem.entityMap.has(enumeration.id)) throw new Error(`Enumeration [${enumeration.id}] is not existed in group [${enumeration.groupId}]`)
 
-        context.enumerationMap.set(enumeration.id, enumeration)
+        contextData.enumerationMap.set(enumeration.id, enumeration)
         menuItem.enumerationMap.set(enumeration.id, enumeration)
         return {enumeration: existedEnumeration}
     }
@@ -475,33 +474,33 @@ export const useModelEditorHistory = (
 
     // 关联
     const addAssociation = ({association}: { association: Omit<Association, 'id'> }) => {
-        const context = getContext()
+        const contextData = getContextData()
         const id = createId("association")
 
-        if (context.associationMap.has(id)) throw new Error(`Association [${id}] is already existed`)
+        if (contextData.associationMap.has(id)) throw new Error(`Association [${id}] is already existed`)
 
         const associationWithId = {...association, id}
-        context.associationMap.set(id, associationWithId)
+        contextData.associationMap.set(id, associationWithId)
         return {id}
     }
 
     const revertAddAssociation = ({id}: { id: string }) => {
-        const context = getContext()
-        const association = context.associationMap.get(id)
+        const contextData = getContextData()
+        const association = contextData.associationMap.get(id)
 
         if (!association) throw new Error(`Association [${id}] is not existed`)
 
-        context.associationMap.delete(id)
+        contextData.associationMap.delete(id)
         return {association}
     }
 
     const updateAssociation = ({association}: { association: Association }) => {
-        const context = getContext()
-        const existedAssociation = context.associationMap.get(association.id)
+        const contextData = getContextData()
+        const existedAssociation = contextData.associationMap.get(association.id)
 
         if (!existedAssociation) throw new Error(`Association [${association.id}] is not existed`)
 
-        context.associationMap.set(association.id, association)
+        contextData.associationMap.set(association.id, association)
         return {association: existedAssociation}
     }
 
