@@ -10,6 +10,7 @@ import DatabaseJsonSchema from "./items/Database.ts";
 import DatabaseTypeJsonSchema from "./items/DatabaseType.ts";
 import EmbeddablePropertyJsonSchema from "./items/EmbeddableProperty.ts";
 import EmbeddableTypeJsonSchema from "./items/EmbeddableType.ts";
+import EmbeddableTypePropertyJsonSchema from "./items/EmbeddableTypeProperty.ts";
 import EntityJsonSchema from "./items/Entity.ts";
 import EnumerationJsonSchema from "./items/Enumeration.ts";
 import EnumerationItemJsonSchema from "./items/EnumerationItem.ts";
@@ -43,6 +44,7 @@ import SqlFormulaPropertyJsonSchema from "./items/SqlFormulaProperty.ts";
 import TableJsonSchema from "./items/Table.ts";
 import TransientPropertyJsonSchema from "./items/TransientProperty.ts";
 import VersionPropertyJsonSchema from "./items/VersionProperty.ts";
+import EmbeddableTypeWithPropertiesJsonSchema from "../../context/jsonSchema/EmbeddableTypeWithProperties.ts";
 import EntityWithPropertiesJsonSchema from "../../context/jsonSchema/EntityWithProperties.ts";
 import MappedSuperClassWithPropertiesJsonSchema from "../../context/jsonSchema/MappedSuperClassWithProperties.ts";
 
@@ -59,6 +61,7 @@ export const jsonSchemas = Object.freeze({
     DatabaseType: DatabaseTypeJsonSchema,
     EmbeddableProperty: EmbeddablePropertyJsonSchema,
     EmbeddableType: EmbeddableTypeJsonSchema,
+    EmbeddableTypeProperty: EmbeddableTypePropertyJsonSchema,
     Entity: EntityJsonSchema,
     Enumeration: EnumerationJsonSchema,
     EnumerationItem: EnumerationItemJsonSchema,
@@ -92,6 +95,7 @@ export const jsonSchemas = Object.freeze({
     Table: TableJsonSchema,
     TransientProperty: TransientPropertyJsonSchema,
     VersionProperty: VersionPropertyJsonSchema,
+    EmbeddableTypeWithProperties: EmbeddableTypeWithPropertiesJsonSchema,
     EntityWithProperties: EntityWithPropertiesJsonSchema,
     MappedSuperClassWithProperties: MappedSuperClassWithPropertiesJsonSchema,
 })

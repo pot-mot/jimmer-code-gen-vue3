@@ -187,3 +187,7 @@ type Property =
     | GetterFormulaProperty
     | SqlFormulaProperty
     | TransientProperty
+
+type EmbeddableTypeProperty =
+    | ScalarProperty
+    | EnumProperty

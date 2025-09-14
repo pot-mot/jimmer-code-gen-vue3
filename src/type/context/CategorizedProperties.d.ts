@@ -34,13 +34,6 @@ type CategorizedPropertiesRequiredId = Omit<CategorizedProperties, "idProperty">
     idProperty: IdProperty
 }
 
-type CategorizedEmbeddableTypeProperties = Pick<CategorizedProperties,
-    | "scalarPropertyMap"
-    | "enumPropertyMap"
-    | "columnPropertyMap"
-    | "embeddablePropertyMap"
->
-
 type EntityWithProperties = Entity & WithProperties
 
 type EntityWithCategorizedProperties = EntityWithProperties & CategorizedPropertiesRequiredId
@@ -49,6 +42,17 @@ type MappedSuperClassWithProperties = MappedSuperClass & WithProperties
 
 type MappedSuperClassWithCategorizedProperties = MappedSuperClassWithProperties & CategorizedProperties
 
-type EmbeddableTypeWithProperties = EmbeddableType & WithProperties
+type WithEmbeddableTypeProperties = {
+    properties: EmbeddableTypeProperty[]
+}
+
+type CategorizedEmbeddableTypeProperties = Pick<CategorizedProperties,
+    | "scalarPropertyMap"
+    | "enumPropertyMap"
+    | "columnPropertyMap"
+    | "embeddablePropertyMap"
+>
+
+type EmbeddableTypeWithProperties = EmbeddableType & WithEmbeddableTypeProperties
 
 type EmbeddableTypeWithCategorizedProperties = EmbeddableTypeWithProperties & CategorizedEmbeddableTypeProperties

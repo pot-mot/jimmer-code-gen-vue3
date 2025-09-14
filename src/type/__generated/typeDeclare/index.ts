@@ -16,6 +16,7 @@ import DatabaseTypeDeclare from "./items/DatabaseType.ts";
 import DeepReadonlyDeclare from "./items/DeepReadonly.ts";
 import EmbeddablePropertyDeclare from "./items/EmbeddableProperty.ts";
 import EmbeddableTypeDeclare from "./items/EmbeddableType.ts";
+import EmbeddableTypePropertyDeclare from "./items/EmbeddableTypeProperty.ts";
 import EmbeddableTypeWithCategorizedPropertiesDeclare from "./items/EmbeddableTypeWithCategorizedProperties.ts";
 import EmbeddableTypeWithPropertiesDeclare from "./items/EmbeddableTypeWithProperties.ts";
 import EntityDeclare from "./items/Entity.ts";
@@ -64,6 +65,7 @@ import SqlFormulaPropertyDeclare from "./items/SqlFormulaProperty.ts";
 import TableDeclare from "./items/Table.ts";
 import TransientPropertyDeclare from "./items/TransientProperty.ts";
 import VersionPropertyDeclare from "./items/VersionProperty.ts";
+import WithEmbeddableTypePropertiesDeclare from "./items/WithEmbeddableTypeProperties.ts";
 import WithPropertiesDeclare from "./items/WithProperties.ts";
 
 export type TypeMap = {
@@ -84,6 +86,7 @@ export type TypeMap = {
     DatabaseType: DatabaseType
     EmbeddableProperty: EmbeddableProperty
     EmbeddableType: EmbeddableType
+    EmbeddableTypeProperty: EmbeddableTypeProperty
     EmbeddableTypeWithCategorizedProperties: EmbeddableTypeWithCategorizedProperties
     EmbeddableTypeWithProperties: EmbeddableTypeWithProperties
     Entity: Entity
@@ -132,6 +135,7 @@ export type TypeMap = {
     Table: Table
     TransientProperty: TransientProperty
     VersionProperty: VersionProperty
+    WithEmbeddableTypeProperties: WithEmbeddableTypeProperties
     WithProperties: WithProperties
 }
 
@@ -156,6 +160,7 @@ export const typeDeclares = Object.freeze({
     DeepReadonly: DeepReadonlyDeclare,
     EmbeddableProperty: EmbeddablePropertyDeclare,
     EmbeddableType: EmbeddableTypeDeclare,
+    EmbeddableTypeProperty: EmbeddableTypePropertyDeclare,
     EmbeddableTypeWithCategorizedProperties: EmbeddableTypeWithCategorizedPropertiesDeclare,
     EmbeddableTypeWithProperties: EmbeddableTypeWithPropertiesDeclare,
     Entity: EntityDeclare,
@@ -204,5 +209,6 @@ export const typeDeclares = Object.freeze({
     Table: TableDeclare,
     TransientProperty: TransientPropertyDeclare,
     VersionProperty: VersionPropertyDeclare,
+    WithEmbeddableTypeProperties: WithEmbeddableTypePropertiesDeclare,
     WithProperties: WithPropertiesDeclare,
 })
