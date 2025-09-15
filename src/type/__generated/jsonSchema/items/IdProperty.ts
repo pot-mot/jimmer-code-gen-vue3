@@ -100,7 +100,7 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyId": {
+                                    "propertyPath": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -109,13 +109,14 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyId"
+                                    "propertyPath"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeId"
+                        "embeddableTypeId",
+                        "propOverrides"
                     ]
                 }
             ]

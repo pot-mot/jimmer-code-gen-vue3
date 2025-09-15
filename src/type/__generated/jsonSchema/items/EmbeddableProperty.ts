@@ -12,7 +12,7 @@ const EmbeddablePropertyJsonSchema: JSONSchemaType<EmbeddableProperty> = {
             "items": {
                 "type": "object",
                 "properties": {
-                    "propertyId": {
+                    "propertyPath": {
                         "type": "string"
                     },
                     "overrideColumnName": {
@@ -21,13 +21,14 @@ const EmbeddablePropertyJsonSchema: JSONSchemaType<EmbeddableProperty> = {
                 },
                 "required": [
                     "overrideColumnName",
-                    "propertyId"
+                    "propertyPath"
                 ]
             }
         }
     },
     "required": [
-        "embeddableTypeId"
+        "embeddableTypeId",
+        "propOverrides"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
 } as any as JSONSchemaType<EmbeddableProperty>

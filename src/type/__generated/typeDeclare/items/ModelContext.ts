@@ -5,7 +5,7 @@ export default Object.freeze({
     groupMap: Map<string, GroupWithSubMaps>
     entityMap: Map<string, EntityWithInheritInfo>
     mappedSuperClassMap: Map<string, MappedSuperClassWithInheritInfo>
-    embeddableTypeMap: Map<string, EmbeddableTypeWithCategorizedProperties>
+    embeddableTypeMap: Map<string, EmbeddableTypeWithFlatProperties>
     enumerationMap: Map<string, Enumeration>
     associationMap: Map<string, AssociationWithSubData>
 }`,

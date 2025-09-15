@@ -10,6 +10,7 @@ import {
     getEntityAllProperties
 } from "@/type/context/utils/EntityExtends.ts";
 import {getGroupSubMaps} from "@/type/context/utils/GroupSubDataMap.ts";
+import {flatEmbeddableTypeProperties} from "@/type/context/utils/EmbeddableTypeFlat.ts";
 
 export const contextDataToContext = (
     contextData: ModelContextData,
@@ -39,14 +40,14 @@ export const contextDataToContext = (
         mappedSuperClassBaseInfoMap.set(id, mappedSuperClassWithCategorizedProperties)
     }
 
-    const embeddableTypeMap = new Map<string, EmbeddableTypeWithCategorizedProperties>()
+    const embeddableTypeBaseInfoMap = new Map<string, EmbeddableTypeWithCategorizedProperties>()
     for (const [id, embeddableType] of contextData.embeddableTypeMap) {
         const categorizedProperties = categorizeEmbeddableTypeProperties(embeddableType.properties)
         const embeddableTypeWithCategorizedProperties: EmbeddableTypeWithCategorizedProperties = {
             ...embeddableType,
             ...categorizedProperties,
         }
-        embeddableTypeMap.set(id, embeddableTypeWithCategorizedProperties)
+        embeddableTypeBaseInfoMap.set(id, embeddableTypeWithCategorizedProperties)
     }
 
     const enumerationMap = new Map<string, Enumeration>()
@@ -92,6 +93,12 @@ export const contextDataToContext = (
             allProperties,
             allCategorizedProperties,
         })
+    }
+
+    // 解析内嵌类展平属性
+    const embeddableTypeMap = new Map<string, EmbeddableTypeWithFlatProperties>()
+    for (const [id, embeddableType] of embeddableTypeBaseInfoMap) {
+        embeddableTypeMap.set(id, flatEmbeddableTypeProperties(embeddableType, embeddableTypeBaseInfoMap))
     }
 
     const groupMap = new Map<string, GroupWithSubMaps>()

@@ -100,7 +100,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyId": {
+                                    "propertyPath": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -109,13 +109,14 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyId"
+                                    "propertyPath"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeId"
+                        "embeddableTypeId",
+                        "propOverrides"
                     ]
                 }
             ]
@@ -653,7 +654,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyId": {
+                                    "propertyPath": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -662,13 +663,14 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyId"
+                                    "propertyPath"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeId"
+                        "embeddableTypeId",
+                        "propOverrides"
                     ]
                 }
             ]
@@ -2217,7 +2219,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyId": {
+                                    "propertyPath": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -2226,13 +2228,14 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyId"
+                                    "propertyPath"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeId"
+                        "embeddableTypeId",
+                        "propOverrides"
                     ]
                 },
                 {
@@ -2330,7 +2333,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyId": {
+                                    "propertyPath": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -2339,13 +2342,14 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyId"
+                                    "propertyPath"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeId"
+                        "embeddableTypeId",
+                        "propOverrides"
                     ]
                 },
                 {
@@ -2452,7 +2456,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyId": {
+                                    "propertyPath": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -2461,13 +2465,14 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyId"
+                                    "propertyPath"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeId"
+                        "embeddableTypeId",
+                        "propOverrides"
                     ]
                 },
                 {
@@ -2570,7 +2575,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyId": {
+                                    "propertyPath": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -2579,13 +2584,14 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyId"
+                                    "propertyPath"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeId"
+                        "embeddableTypeId",
+                        "propOverrides"
                     ]
                 },
                 {
@@ -2688,7 +2694,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyId": {
+                                    "propertyPath": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -2697,13 +2703,14 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyId"
+                                    "propertyPath"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeId"
+                        "embeddableTypeId",
+                        "propOverrides"
                     ]
                 },
                 {
@@ -2806,7 +2813,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyId": {
+                                    "propertyPath": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -2815,13 +2822,14 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyId"
+                                    "propertyPath"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeId"
+                        "embeddableTypeId",
+                        "propOverrides"
                     ]
                 },
                 {

@@ -270,7 +270,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyId": {
+                                    "propertyPath": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -279,13 +279,14 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyId"
+                                    "propertyPath"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeId"
+                        "embeddableTypeId",
+                        "propOverrides"
                     ]
                 }
             ]
@@ -1834,7 +1835,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyId": {
+                                    "propertyPath": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -1843,13 +1844,14 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyId"
+                                    "propertyPath"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeId"
+                        "embeddableTypeId",
+                        "propOverrides"
                     ]
                 },
                 {
@@ -1947,7 +1949,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyId": {
+                                    "propertyPath": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -1956,13 +1958,14 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyId"
+                                    "propertyPath"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeId"
+                        "embeddableTypeId",
+                        "propOverrides"
                     ]
                 },
                 {
@@ -2069,7 +2072,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyId": {
+                                    "propertyPath": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -2078,13 +2081,14 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyId"
+                                    "propertyPath"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeId"
+                        "embeddableTypeId",
+                        "propOverrides"
                     ]
                 },
                 {
@@ -2187,7 +2191,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyId": {
+                                    "propertyPath": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -2196,13 +2200,14 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyId"
+                                    "propertyPath"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeId"
+                        "embeddableTypeId",
+                        "propOverrides"
                     ]
                 },
                 {
@@ -2305,7 +2310,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyId": {
+                                    "propertyPath": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -2314,13 +2319,14 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyId"
+                                    "propertyPath"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeId"
+                        "embeddableTypeId",
+                        "propOverrides"
                     ]
                 },
                 {
@@ -2423,7 +2429,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyId": {
+                                    "propertyPath": {
                                         "type": "string"
                                     },
                                     "overrideColumnName": {
@@ -2432,13 +2438,14 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                                 },
                                 "required": [
                                     "overrideColumnName",
-                                    "propertyId"
+                                    "propertyPath"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "embeddableTypeId"
+                        "embeddableTypeId",
+                        "propOverrides"
                     ]
                 },
                 {

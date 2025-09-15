@@ -18,6 +18,7 @@ import EmbeddablePropertyDeclare from "./items/EmbeddableProperty.ts";
 import EmbeddableTypeDeclare from "./items/EmbeddableType.ts";
 import EmbeddableTypePropertyDeclare from "./items/EmbeddableTypeProperty.ts";
 import EmbeddableTypeWithCategorizedPropertiesDeclare from "./items/EmbeddableTypeWithCategorizedProperties.ts";
+import EmbeddableTypeWithFlatPropertiesDeclare from "./items/EmbeddableTypeWithFlatProperties.ts";
 import EmbeddableTypeWithPropertiesDeclare from "./items/EmbeddableTypeWithProperties.ts";
 import EntityDeclare from "./items/Entity.ts";
 import EntityWithCategorizedPropertiesDeclare from "./items/EntityWithCategorizedProperties.ts";
@@ -88,6 +89,7 @@ export type TypeMap = {
     EmbeddableType: EmbeddableType
     EmbeddableTypeProperty: EmbeddableTypeProperty
     EmbeddableTypeWithCategorizedProperties: EmbeddableTypeWithCategorizedProperties
+    EmbeddableTypeWithFlatProperties: EmbeddableTypeWithFlatProperties
     EmbeddableTypeWithProperties: EmbeddableTypeWithProperties
     Entity: Entity
     EntityWithCategorizedProperties: EntityWithCategorizedProperties
@@ -162,6 +164,7 @@ export const typeDeclares = Object.freeze({
     EmbeddableType: EmbeddableTypeDeclare,
     EmbeddableTypeProperty: EmbeddableTypePropertyDeclare,
     EmbeddableTypeWithCategorizedProperties: EmbeddableTypeWithCategorizedPropertiesDeclare,
+    EmbeddableTypeWithFlatProperties: EmbeddableTypeWithFlatPropertiesDeclare,
     EmbeddableTypeWithProperties: EmbeddableTypeWithPropertiesDeclare,
     Entity: EntityDeclare,
     EntityWithCategorizedProperties: EntityWithCategorizedPropertiesDeclare,

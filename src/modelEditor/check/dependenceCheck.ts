@@ -1,7 +1,7 @@
-import {parsePropertyPath} from "@/type/context/utils/parsePropertyPath.ts";
+import {parseEmbeddablePropertyPath, parsePropertyPath} from "@/type/context/utils/parsePropertyPath.ts";
 
 type DependenceIds = ModelSubIds & {
-    propertyIds: { entityId: string, id: string }[]
+    propertyIds: ({ entityId: string, id: string } | { embeddableTypeId: string, id: string })[]
 }
 
 export type DependenceForPath = {
@@ -17,7 +17,7 @@ export type DependenceResult = {
 const unshiftPath = (frontPath: string[], dependenceForPath: DependenceForPath) => {
     dependenceForPath.path.unshift(...frontPath)
     return dependenceForPath
- }
+}
 
 export const getEmbeddableTypePropertyDependencies = (
     property: DeepReadonly<EmbeddableTypeProperty> | DeepReadonly<Property>,
@@ -41,16 +41,48 @@ export const getEmbeddableTypePropertyDependencies = (
     }
 
     if ("embeddableTypeId" in property) {
-        if (context.embeddableTypeMap.has(property.embeddableTypeId)) {
+        const embeddableType = context.embeddableTypeMap.get(property.embeddableTypeId)
+        if (embeddableType === undefined) {
             missingDependencies.push({
                 path: ['embeddableTypeId'],
                 dependenceIds: {embeddableTypeIds: [property.embeddableTypeId]}
             })
         } else {
-            missingDependencies.push({
+            existedDependencies.push({
                 path: ['embeddableTypeId'],
                 dependenceIds: {embeddableTypeIds: [property.embeddableTypeId]}
             })
+
+            if ("propOverrides" in property) {
+                for (const propOverride of property.propOverrides ?? []) {
+                    const propertyPath = parseEmbeddablePropertyPath(propOverride.propertyPath.split("."), embeddableType, context)
+                    for (const pathItem of propertyPath) {
+                        if (pathItem.type === 'EmbeddableType') {
+                            existedDependencies.push({
+                                path: ['dependencies'],
+                                dependenceIds: {
+                                    embeddableTypeIds: [pathItem.embeddableType.id],
+                                    propertyIds: [{
+                                        embeddableTypeId: pathItem.embeddableType.id,
+                                        id: pathItem.property.id
+                                    }]
+                                }
+                            })
+                        } else if (pathItem.type === 'COMMON') {
+                            existedDependencies.push({
+                                path: ['dependencies'],
+                                dependenceIds: {
+                                    propertyIds: [{
+                                        embeddableTypeId: embeddableType.id,
+                                        id: pathItem.property.id
+                                    }]
+                                }
+                            })
+                        }
+                    }
+                }
+            }
+
         }
     }
 
@@ -120,16 +152,38 @@ export const getPropertyDependencies = (
     if ("dependencies" in property) {
         for (const dependency of property.dependencies) {
             const propertyPath = parsePropertyPath(dependency.split("."), entity, context)
-            for (const pathItem  of propertyPath) {
+            for (const pathItem of propertyPath) {
                 if (pathItem.type === 'Entity') {
                     existedDependencies.push({
                         path: ['dependencies'],
-                        dependenceIds: {entityIds: [pathItem.entity.id]}
+                        dependenceIds: {
+                            entityIds: [pathItem.entity.id],
+                            propertyIds: [{
+                                entityId: pathItem.entity.id,
+                                id: pathItem.property.id
+                            }]
+                        }
                     })
                 } else if (pathItem.type === 'EmbeddableType') {
                     existedDependencies.push({
                         path: ['dependencies'],
-                        dependenceIds: {embeddableTypeIds: [pathItem.embeddableType.id]}
+                        dependenceIds: {
+                            embeddableTypeIds: [pathItem.embeddableType.id],
+                            propertyIds: [{
+                                embeddableTypeId: pathItem.embeddableType.id,
+                                id: pathItem.property.id
+                            }]
+                        }
+                    })
+                } else if (pathItem.type === 'COMMON') {
+                    existedDependencies.push({
+                        path: ['dependencies'],
+                        dependenceIds: {
+                            propertyIds: [{
+                                entityId: entity.id,
+                                id: pathItem.property.id
+                            }]
+                        }
                     })
                 }
             }
@@ -188,7 +242,7 @@ export const getPropertyDependencies = (
                                 }]
                             }
                         })
-                    }   
+                    }
                 }
             }
         }
