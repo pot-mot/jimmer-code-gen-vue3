@@ -14,6 +14,7 @@ import {blurActiveElement, judgeTargetIsInteraction} from "@/utils/event/judgeEv
 import {jsonSortPropStringify} from "@/utils/json/jsonStringify.ts";
 import type {LazyData} from "@/utils/type/lazyDataParse.ts";
 import {contextDataToContext} from "@/type/context/utils/ModelContext.ts";
+import {v7 as uuid} from "uuid";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -22,6 +23,10 @@ type MouseAction = "panDrag" | "selectionRect"
 export type MenuItem = {
     group: Group
 } & GroupSubMaps
+
+const createId = (type: "Entity" | "MappedSuperClass" | "EmbeddableType" | "Enumeration" | "Association" | "Group") => {
+    return `${type}_${uuid()}`
+}
 
 export const useModelEditor = createStore(() => {
     const vueFlow = shallowRef<VueFlowStore>(useVueFlow(VUE_FLOW_ID))
@@ -39,7 +44,25 @@ export const useModelEditor = createStore(() => {
         return vueFlow.value
     }
 
-    const contextData = ref<ModelContextData | undefined>()
+    // TODO to getDefault or fetch
+    const contextData = ref<ModelContextData | undefined>({
+        model: {
+            id: "",
+            name: "Model",
+            description: "",
+            createdTime: "",
+            modifiedTime: "",
+            database: "POSTGRESQL",
+            language: "KOTLIN"
+        },
+        entityMap: new Map(),
+        mappedSuperClassMap: new Map(),
+        embeddableTypeMap: new Map(),
+        enumerationMap: new Map(),
+        groupMap: new Map(),
+        associationMap: new Map(),
+        types: [],
+    })
     const getContext = (): DeepReadonly<ModelContext> => {
         if (!contextData.value) {
             throw new Error("ContextData is not available")
@@ -54,7 +77,22 @@ export const useModelEditor = createStore(() => {
         canUndo,
         canRedo,
         menuMap,
+        currentGroupId,
+        toggleCurrentGroup,
     } = useModelEditorHistory({vueFlow, contextData})
+
+    // TODO to getDefault or fetch
+    const result = history.executeCommand("group:add", {
+        group: {
+            id: createId("Group"),
+            name: "Default",
+            comment: "",
+            color: "",
+            basePackagePath: "",
+            baseTableSchema: ""
+        }
+    })
+    history.executeCommand("group:toggle", {id: result.id})
 
     const setModel = (data: ModelContextData) => {
         contextData.value = data
@@ -346,17 +384,14 @@ export const useModelEditor = createStore(() => {
                 history.executeBatch(Symbol("node:move"), () => {
                     for (const change of changes) {
                         if (change.type === 'position') {
-                            // TODO
-                            // history.pushCommand('node:move', {
-                            //     layerId: currentLayerId.value,
-                            //     id: change.id,
-                            //     oldPosition: change.from,
-                            //     newPosition: change.position
-                            // }, {
-                            //     layerId: currentLayerId.value,
-                            //     id: change.id,
-                            //     oldPosition: change.from,
-                            // })
+                            history.pushCommand('node:move', {
+                                id: change.id,
+                                oldPosition: change.from,
+                                newPosition: change.position
+                            }, {
+                                id: change.id,
+                                oldPosition: change.from,
+                            })
                         }
                     }
                 })
@@ -377,13 +412,11 @@ export const useModelEditor = createStore(() => {
                         if (oldPosition !== undefined) {
                             const newPosition = node.position
                             if (jsonSortPropStringify(oldPosition) !== jsonSortPropStringify(newPosition)) {
-                                // TODO
-                                // history.executeCommand('node:move', {
-                                //     layerId: currentLayerId.value,
-                                //     id: node.id,
-                                //     newPosition,
-                                //     oldPosition
-                                // })
+                                history.executeCommand('node:move', {
+                                    id: node.id,
+                                    newPosition,
+                                    oldPosition
+                                })
                             }
                         }
                     }
@@ -520,20 +553,25 @@ export const useModelEditor = createStore(() => {
                             Math.abs(currentMousePosition.x - lastMousePosition.x) < 10 &&
                             Math.abs(currentMousePosition.y - lastMousePosition.y) < 10
                         ) {
-                            // TODO
-                            vueFlow.addNodes({
-                                id: "sadsdasda",
+                            const groupId = currentGroupId.value
+                            if (groupId === undefined) {
+                                sendMessage("请选择一个组", {type: "info"})
+                                return
+                            }
+                            history.executeCommand("entity:add", {
                                 position: screenToFlowCoordinate(currentMousePosition),
-                                type: "ENTITY_NODE",
-                                data: {
-                                    entity: {
-                                        id: "sadsdasda",
-                                        name: "sdasad",
-                                        comment: "sdasdadsaasd",
-                                    }
+                                entity: {
+                                    groupId,
+                                    id: createId("Entity"),
+                                    name: "Entity",
+                                    comment: "",
+                                    subPackagePath: "",
+                                    tableName: "",
+                                    extendsIds: [],
+                                    extraImports: [],
+                                    extraAnnotations: [],
                                 }
                             })
-                            // addNode(screenToFlowCoordinate(currentMousePosition))
                         }
                     }
 
@@ -711,16 +749,18 @@ export const useModelEditor = createStore(() => {
         // 模型
         setModel,
         saveModel,
+        contextData: readonly(contextData),
         getContext,
 
         menuMap,
         selectedIdSets,
+        currentGroupId,
+        toggleCurrentGroup,
 
         // 模型生成
 
 
         // 模型数据变更
-
 
 
         copy: async (

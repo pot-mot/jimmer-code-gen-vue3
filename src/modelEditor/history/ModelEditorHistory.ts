@@ -5,86 +5,81 @@ import {v7 as uuid} from "uuid"
 import {type EntityNode, NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";
 import type {MenuItem} from "@/modelEditor/useModelEditor.ts";
 import {type MappedSuperClassNode, NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode.ts";
+import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 
 export type ModelEditorHistoryCommands = {
-    "group:add": CommandDefinition<{
-        group: Omit<Group, "id">
-    }, {
-        id: string
+    "group:toggle": CommandDefinition<{
+        id: string | undefined
     }>
-    "group:change": CommandDefinition<{
+
+    "group:add": CommandDefinition<DeepReadonly<{
         group: Group
-    }>
-
-    "entity:add": CommandDefinition<{
-        entity: Omit<Entity, "id">
-        position: XYPosition
-    }, {
+    }>, DeepReadonly<{
         id: string
-    }>
-    "entity:change": CommandDefinition<{
+    }>>
+    "group:change": CommandDefinition<DeepReadonly<{
+        group: Group
+    }>>
+
+    "entity:add": CommandDefinition<DeepReadonly<{
+        entity: Entity
+        position: XYPosition
+    }>, DeepReadonly<{
+        id: string
+    }>>
+    "entity:change": CommandDefinition<DeepReadonly<{
         entity: EntityWithProperties
-    }>
-    "entity:node:move": CommandDefinition<{
-        id: string
-        newPosition: XYPosition
-        oldPosition: XYPosition
-    }, {
-        id: string
-        oldPosition: XYPosition
-    }>
+    }>>
 
-    "mapped-super-class:add": CommandDefinition<{
-        mappedSuperClass: Omit<MappedSuperClass, "id">
+    "mapped-super-class:add": CommandDefinition<DeepReadonly<{
+        mappedSuperClass: MappedSuperClass
         position: XYPosition
-    }, {
+    }>, DeepReadonly<{
         id: string
-    }>
-    "mapped-super-class:change": CommandDefinition<{
+    }>>
+    "mapped-super-class:change": CommandDefinition<DeepReadonly<{
         mappedSuperClass: MappedSuperClassWithProperties
-    }>
-    "mapped-super-class:node:move": CommandDefinition<{
+    }>>
+
+    "embeddable-type:add": CommandDefinition<DeepReadonly<{
+        embeddableType: EmbeddableType
+    }>, DeepReadonly<{
+        id: string
+    }>>
+    "embeddable-type:change": CommandDefinition<DeepReadonly<{
+        embeddableType: EmbeddableTypeWithProperties
+    }>>
+
+    "enumeration:add": CommandDefinition<DeepReadonly<{
+        enumeration: Enumeration
+    }>, DeepReadonly<{
+        id: string
+    }>>
+    "enumeration:change": CommandDefinition<DeepReadonly<{
+        enumeration: Enumeration
+    }>>
+
+    "association:add": CommandDefinition<DeepReadonly<{
+        association: Association
+    }>, DeepReadonly<{
+        id: string
+    }>>
+    "association:change": CommandDefinition<DeepReadonly<{
+        association: Association
+    }>>
+
+    // TODO register commands
+    "import": CommandDefinition<DeepReadonly<ModelSubData>, DeepReadonly<ModelSubIds>>
+    "remove": CommandDefinition<DeepReadonly<ModelSubIds>, DeepReadonly<ModelSubData>>
+
+    "node:move": CommandDefinition<DeepReadonly<{
         id: string
         newPosition: XYPosition
         oldPosition: XYPosition
-    }, {
+    }>, DeepReadonly<{
         id: string
         oldPosition: XYPosition
-    }>
-
-    "embeddable-type:add": CommandDefinition<{
-        embeddableType: Omit<EmbeddableType, "id">
-    }, {
-        id: string
-    }>
-    "embeddable-type:change": CommandDefinition<{
-        embeddableType: EmbeddableTypeWithProperties
-    }>
-
-    "enumeration:add": CommandDefinition<{
-        enumeration: Omit<Enumeration, "id">
-    }, {
-        id: string
-    }>
-    "enumeration:change": CommandDefinition<{
-        enumeration: Enumeration
-    }>
-
-    "association:add": CommandDefinition<{
-        association: Omit<Association, "id">
-    }, {
-        id: string
-    }>
-    "association:change": CommandDefinition<{
-        association: Association
-    }>
-
-    "import": CommandDefinition<ModelSubData, ModelSubIds>
-    "remove": CommandDefinition<ModelSubIds, ModelSubData>
-}
-
-const createId = (type: string) => {
-    return `${type}_${uuid()}`
+    }>>
 }
 
 export const useModelEditorHistory = (
@@ -127,20 +122,36 @@ export const useModelEditorHistory = (
     }
 
     const menuMap = ref(new Map<string, MenuItem>())
+    const currentGroupId = ref<string>()
+
+    const toggleCurrentGroup = ({id}: { id: string | undefined }) => {
+        const contextData = getContextData()
+        if (id !== undefined) {
+            if (!contextData.groupMap.has(id)) throw new Error(`Group [${id}] is not existed`)
+            if (!menuMap.value.has(id)) throw new Error(`Menu item [${id}] is not existed`)
+        }
+        const oldCurrentGroupId = currentGroupId.value
+        currentGroupId.value = id
+        return {id: oldCurrentGroupId}
+    }
+
+    history.registerCommand("group:toggle", {
+        applyAction: toggleCurrentGroup,
+        revertAction: toggleCurrentGroup,
+    })
 
     // 分组
-    const addGroup = ({group}: { group: Omit<Group, 'id'> }) => {
+    const addGroup = (options: { group: Group }) => {
+        const id = options.group.id
         const contextData = getContextData()
-
-        const id = createId("group")
 
         if (contextData.groupMap.has(id)) throw new Error(`Group [${id}] is already existed`)
         if (menuMap.value.has(id)) throw new Error(`Menu item [${id}] is already existed in menuMap`)
 
-        const groupWithId = {...group, id}
-        contextData.groupMap.set(id, groupWithId)
+        const group = cloneDeepReadonlyRaw(options.group)
+        contextData.groupMap.set(id, group)
         menuMap.value.set(id, {
-            group: groupWithId,
+            group,
             entityMap: new Map(),
             mappedSuperClassMap: new Map(),
             embeddableTypeMap: new Map(),
@@ -148,11 +159,11 @@ export const useModelEditorHistory = (
         })
         return {id}
     }
-    const revertAddGroup = ({id}: { id: string }) => {
+    const revertAddGroup = ({id}: DeepReadonly<{ id: string }>) => {
         const contextData = getContextData()
 
-        const group = contextData.groupMap.get(id)
-        if (!group) throw new Error(`Group [${id}] is not existed`)
+        const existedGroup = cloneDeepReadonlyRaw(contextData.groupMap.get(id))
+        if (!existedGroup) throw new Error(`Group [${id}] is not existed`)
         const menuItem = menuMap.value.get(id)
         if (!menuItem) throw new Error(`Group [${id}] is not existed in menuMap`)
 
@@ -163,17 +174,20 @@ export const useModelEditorHistory = (
 
         contextData.groupMap.delete(id)
         menuMap.value.delete(id)
-        return {group}
+        return {group: existedGroup}
     }
-    const updateGroup = ({group}: { group: Group }) => {
+    const updateGroup = (options: DeepReadonly<{ group: Group }>) => {
+        const id = options.group.id
         const contextData = getContextData()
 
-        const existedGroup = contextData.groupMap.get(group.id)
-        if (!existedGroup) throw new Error(`Group [${group.id}] is not existed`)
-        const menuItem = menuMap.value.get(group.id)
-        if (!menuItem) throw new Error(`Group [${group.id}] is not existed in menuMap`)
+        const existedGroup = cloneDeepReadonlyRaw(contextData.groupMap.get(id))
+        if (!existedGroup) throw new Error(`Group [${id}] is not existed`)
+        const menuItem = menuMap.value.get(id)
+        if (!menuItem) throw new Error(`Group [${id}] is not existed in menuMap`)
 
-        contextData.groupMap.set(group.id, group)
+        const group = cloneDeepReadonlyRaw(options.group)
+
+        contextData.groupMap.set(id, group)
         menuItem.group = group
         return {group: existedGroup}
     }
@@ -187,64 +201,68 @@ export const useModelEditorHistory = (
     })
 
     // 实体
-    const addEntity = ({entity, position}: { entity: Omit<Entity, 'id'>; position: XYPosition }) => {
+    const addEntity = (options: DeepReadonly<{ entity: Entity; position: XYPosition }>) => {
+        const groupId = options.entity.groupId
+        const id = options.entity.id
         const contextData = getContextData()
         const vueFlow = getVueFlow()
 
-        const id = createId("entity")
-
         if (contextData.entityMap.has(id)) throw new Error(`Entity [${id}] is already existed`)
-        if (!contextData.groupMap.has(entity.groupId)) throw new Error(`Group [${entity.groupId}] is not existed`)
-        const menuItem = menuMap.value.get(entity.groupId)
-        if (!menuItem) throw new Error(`Group [${entity.groupId}] is not existed in menuMap`)
-        if (menuItem.entityMap.has(id)) throw new Error(`Entity [${id}] is already existed in group [${entity.groupId}]`)
+        if (!contextData.groupMap.has(groupId)) throw new Error(`Group [${groupId}] is not existed`)
+        const menuItem = menuMap.value.get(groupId)
+        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
+        if (menuItem.entityMap.has(id)) throw new Error(`Entity [${id}] is already existed in group [${groupId}]`)
 
-        const entityWithId: EntityWithProperties = {...entity, id, properties: []}
+        const entity = cloneDeepReadonlyRaw<EntityWithProperties>({...options.entity, properties: []})
         const entityNode: EntityNode = {
             id,
             type: NodeType_Entity,
-            position,
-            data: {entity: entityWithId},
+            position: options.position,
+            data: {entity},
         }
-        contextData.entityMap.set(id, entityWithId)
-        menuItem.entityMap.set(id, entityWithId)
+        contextData.entityMap.set(id, entity)
+        menuItem.entityMap.set(id, entity)
         vueFlow.addNodes(entityNode)
         return {id}
     }
-
-    const revertAddEntity = ({id}: { id: string }) => {
+    const revertAddEntity = ({id}: DeepReadonly<{ id: string }>) => {
         const contextData = getContextData()
         const vueFlow = getVueFlow()
 
-        const entity = contextData.entityMap.get(id)
+        const entity = cloneDeepReadonlyRaw(contextData.entityMap.get(id))
         if (!entity) throw new Error(`Entity [${id}] is not existed`)
         const entityNode = vueFlow.findNode(id)
         if (!entityNode) throw new Error(`Entity [${id}] is not existed`)
-        const menuItem = menuMap.value.get(entity.groupId)
-        if (!menuItem) throw new Error(`Group [${entity.groupId}] is not existed in menuMap`)
-        if (!menuItem.entityMap.has(id)) throw new Error(`Entity [${id}] is not existed in group [${entity.groupId}]`)
+
+        const groupId = entity.groupId
+        const menuItem = menuMap.value.get(groupId)
+        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
+        if (!menuItem.entityMap.has(id)) throw new Error(`Entity [${id}] is not existed in group [${groupId}]`)
 
         contextData.entityMap.delete(id)
         menuItem.entityMap.delete(id)
         vueFlow.removeNodes([entityNode])
         return {entity, position: entityNode.position}
     }
-
-    const updateEntity = ({entity}: { entity: EntityWithProperties }) => {
+    const updateEntity = (options: DeepReadonly<{ entity: EntityWithProperties }>) => {
+        const id = options.entity.id
+        const groupId = options.entity.groupId
         const contextData = getContextData()
         const vueFlow = getVueFlow()
 
-        const existedEntity = contextData.entityMap.get(entity.id)
-        if (!existedEntity) throw new Error(`Entity [${entity.id}] is not existed`)
-        const existingEntityNode = vueFlow.findNode(entity.id)
-        if (!existingEntityNode) throw new Error(`Entity [${entity.id}] is not existed`)
-        if (!contextData.groupMap.has(entity.groupId)) throw new Error(`Group [${entity.groupId}] is not existed`)
-        const menuItem = menuMap.value.get(entity.groupId)
-        if (!menuItem) throw new Error(`Group [${entity.groupId}] is not existed in menuMap`)
-        if (!menuItem.entityMap.has(entity.id)) throw new Error(`Entity [${entity.id}] is not existed in group [${entity.groupId}]`)
+        const existedEntity = cloneDeepReadonlyRaw(contextData.entityMap.get(id))
+        if (!existedEntity) throw new Error(`Entity [${id}] is not existed`)
+        const existingEntityNode = vueFlow.findNode(id)
+        if (!existingEntityNode) throw new Error(`Entity [${id}] is not existed`)
+        if (!contextData.groupMap.has(groupId)) throw new Error(`Group [${groupId}] is not existed`)
+        const menuItem = menuMap.value.get(groupId)
+        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
+        if (!menuItem.entityMap.has(id)) throw new Error(`Entity [${id}] is not existed in group [${groupId}]`)
 
-        contextData.entityMap.set(entity.id, entity)
-        menuItem.entityMap.set(entity.id, entity)
+        const entity = cloneDeepReadonlyRaw<EntityWithProperties>(options.entity)
+
+        contextData.entityMap.set(id, entity)
+        menuItem.entityMap.set(id, entity)
         existingEntityNode.data.entity = entity
         return {entity: existedEntity}
     }
@@ -259,58 +277,50 @@ export const useModelEditorHistory = (
         revertAction: updateEntity,
     })
 
-    history.registerCommand("entity:node:move", {
-        applyAction: ({id, newPosition, oldPosition}) => {
-            const vueFlow = getVueFlow()
-            vueFlow.updateNode(id, {position: newPosition})
-            return {id, oldPosition}
-        },
-        revertAction: ({id, oldPosition}) => {
-            const vueFlow = getVueFlow()
-            vueFlow.updateNode(id, {position: oldPosition})
-        }
-    })
-
     // 映射抽象实体
-    const addMappedSuperClass = ({mappedSuperClass, position}: {
-        mappedSuperClass: Omit<MappedSuperClass, 'id'>;
+    const addMappedSuperClass = (options: DeepReadonly<{
+        mappedSuperClass: MappedSuperClass;
         position: XYPosition
-    }) => {
+    }>) => {
+        const id = options.mappedSuperClass.id
+        const groupId = options.mappedSuperClass.groupId
         const contextData = getContextData()
         const vueFlow = getVueFlow()
 
-        const id = createId("mapped-super-class")
-
         if (contextData.mappedSuperClassMap.has(id)) throw new Error(`MappedSuperClass [${id}] is already existed`)
-        if (!contextData.groupMap.has(mappedSuperClass.groupId)) throw new Error(`Group [${mappedSuperClass.groupId}] is not existed`)
-        const menuItem = menuMap.value.get(mappedSuperClass.groupId)
-        if (!menuItem) throw new Error(`Group [${mappedSuperClass.groupId}] is not existed in menuMap`)
-        if (menuItem.entityMap.has(id)) throw new Error(`MappedSuperClass [${id}] is already existed in group [${mappedSuperClass.groupId}]`)
+        if (!contextData.groupMap.has(groupId)) throw new Error(`Group [${groupId}] is not existed`)
+        const menuItem = menuMap.value.get(groupId)
+        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
+        if (menuItem.entityMap.has(id)) throw new Error(`MappedSuperClass [${id}] is already existed in group [${groupId}]`)
 
-        const mappedSuperClassWithId: MappedSuperClassWithProperties = {...mappedSuperClass, id, properties: []}
+        const mappedSuperClass = cloneDeepReadonlyRaw<MappedSuperClassWithProperties>({
+            ...options.mappedSuperClass,
+            properties: []
+        })
         const mappedSuperClassNode: MappedSuperClassNode = {
             id,
             type: NodeType_MappedSuperClass,
-            position,
-            data: {mappedSuperClass: mappedSuperClassWithId},
+            position: options.position,
+            data: {mappedSuperClass},
         }
-        contextData.mappedSuperClassMap.set(id, mappedSuperClassWithId)
-        menuItem.mappedSuperClassMap.set(id, mappedSuperClassWithId)
+        contextData.mappedSuperClassMap.set(id, mappedSuperClass)
+        menuItem.mappedSuperClassMap.set(id, mappedSuperClass)
         vueFlow.addNodes(mappedSuperClassNode)
         return {id}
     }
-
-    const revertAddMappedSuperClass = ({id}: { id: string }) => {
+    const revertAddMappedSuperClass = ({id}: DeepReadonly<{ id: string }>) => {
         const contextData = getContextData()
         const vueFlow = getVueFlow()
 
-        const mappedSuperClass = contextData.mappedSuperClassMap.get(id)
+        const mappedSuperClass = cloneDeepReadonlyRaw(contextData.mappedSuperClassMap.get(id))
         if (!mappedSuperClass) throw new Error(`MappedSuperClass [${id}] is not existed`)
         const mappedSuperClassNode = vueFlow.findNode(id)
         if (!mappedSuperClassNode) throw new Error(`MappedSuperClass [${id}] is not existed`)
-        const menuItem = menuMap.value.get(mappedSuperClass.groupId)
-        if (!menuItem) throw new Error(`Group [${mappedSuperClass.groupId}] is not existed in menuMap`)
-        if (!menuItem.entityMap.has(id)) throw new Error(`MappedSuperClass [${id}] is not existed in group [${mappedSuperClass.groupId}]`)
+
+        const groupId = mappedSuperClass.groupId
+        const menuItem = menuMap.value.get(groupId)
+        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
+        if (!menuItem.entityMap.has(id)) throw new Error(`MappedSuperClass [${id}] is not existed in group [${groupId}]`)
 
         contextData.mappedSuperClassMap.delete(id)
         menuItem.mappedSuperClassMap.delete(id)
@@ -318,21 +328,25 @@ export const useModelEditorHistory = (
         return {mappedSuperClass, position: mappedSuperClassNode.position}
     }
 
-    const updateMappedSuperClass = ({mappedSuperClass}: { mappedSuperClass: MappedSuperClassWithProperties }) => {
+    const updateMappedSuperClass = (options: DeepReadonly<{ mappedSuperClass: MappedSuperClassWithProperties }>) => {
+        const id = options.mappedSuperClass.id
+        const groupId = options.mappedSuperClass.groupId
         const contextData = getContextData()
         const vueFlow = getVueFlow()
 
-        const existedMappedSuperClass = contextData.mappedSuperClassMap.get(mappedSuperClass.id)
-        if (!existedMappedSuperClass) throw new Error(`MappedSuperClass [${mappedSuperClass.id}] is not existed`)
-        const existingMappedSuperClassNode = vueFlow.findNode(mappedSuperClass.id)
-        if (!existingMappedSuperClassNode) throw new Error(`MappedSuperClass [${mappedSuperClass.id}] is not existed`)
-        if (!contextData.groupMap.has(mappedSuperClass.groupId)) throw new Error(`Group [${mappedSuperClass.groupId}] is not existed`)
-        const menuItem = menuMap.value.get(mappedSuperClass.groupId)
-        if (!menuItem) throw new Error(`Group [${mappedSuperClass.groupId}] is not existed in menuMap`)
-        if (!menuItem.entityMap.has(mappedSuperClass.id)) throw new Error(`MappedSuperClass [${mappedSuperClass.id}] is not existed in group [${mappedSuperClass.groupId}]`)
+        const existedMappedSuperClass = contextData.mappedSuperClassMap.get(id)
+        if (!existedMappedSuperClass) throw new Error(`MappedSuperClass [${id}] is not existed`)
+        const existingMappedSuperClassNode = vueFlow.findNode(id)
+        if (!existingMappedSuperClassNode) throw new Error(`MappedSuperClass [${id}] is not existed`)
+        if (!contextData.groupMap.has(groupId)) throw new Error(`Group [${groupId}] is not existed`)
+        const menuItem = menuMap.value.get(groupId)
+        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
+        if (!menuItem.entityMap.has(id)) throw new Error(`MappedSuperClass [${id}] is not existed in group [${groupId}]`)
 
-        contextData.mappedSuperClassMap.set(mappedSuperClass.id, mappedSuperClass)
-        menuItem.mappedSuperClassMap.set(mappedSuperClass.id, mappedSuperClass)
+        const mappedSuperClass = cloneDeepReadonlyRaw<MappedSuperClassWithProperties>(options.mappedSuperClass)
+
+        contextData.mappedSuperClassMap.set(id, mappedSuperClass)
+        menuItem.mappedSuperClassMap.set(id, mappedSuperClass)
         existingMappedSuperClassNode.data.mappedSuperClass = mappedSuperClass
         return {mappedSuperClass: existedMappedSuperClass}
     }
@@ -347,61 +361,58 @@ export const useModelEditorHistory = (
         revertAction: updateMappedSuperClass,
     })
 
-    history.registerCommand("mapped-super-class:node:move", {
-        applyAction: ({id, newPosition, oldPosition}) => {
-            const vueFlow = getVueFlow()
-            vueFlow.updateNode(id, {position: newPosition})
-            return {id, oldPosition}
-        },
-        revertAction: ({id, oldPosition}) => {
-            const vueFlow = getVueFlow()
-            vueFlow.updateNode(id, {position: oldPosition})
-        }
-    })
-
     // 内嵌类型
-    const addEmbeddableType = ({embeddableType}: { embeddableType: Omit<EmbeddableType, 'id'> }) => {
+    const addEmbeddableType = (options: DeepReadonly<{ embeddableType: EmbeddableType }>) => {
+        const id = options.embeddableType.id
+        const groupId = options.embeddableType.groupId
         const contextData = getContextData()
 
-        const id = createId("embeddable-type")
-
         if (contextData.embeddableTypeMap.has(id)) throw new Error(`EmbeddableType [${id}] is already existed`)
-        if (!contextData.groupMap.has(embeddableType.groupId)) throw new Error(`Group [${embeddableType.groupId}] is not existed`)
-        const menuItem = menuMap.value.get(embeddableType.groupId)
-        if (!menuItem) throw new Error(`Group [${embeddableType.groupId}] is not existed in menuMap`)
-        if (menuItem.entityMap.has(id)) throw new Error(`EmbeddableType [${id}] is already existed in group [${embeddableType.groupId}]`)
+        if (!contextData.groupMap.has(groupId)) throw new Error(`Group [${groupId}] is not existed`)
+        const menuItem = menuMap.value.get(groupId)
+        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
+        if (menuItem.entityMap.has(id)) throw new Error(`EmbeddableType [${id}] is already existed in group [${groupId}]`)
 
-        const embeddableTypeWithId: EmbeddableTypeWithProperties = {...embeddableType, id, properties: []}
+        const embeddableTypeWithId = cloneDeepReadonlyRaw<EmbeddableTypeWithProperties>({
+            ...options.embeddableType,
+            properties: []
+        })
         contextData.embeddableTypeMap.set(id, embeddableTypeWithId)
         return {id}
     }
 
-    const revertAddEmbeddableType = ({id}: { id: string }) => {
+    const revertAddEmbeddableType = ({id}: DeepReadonly<{ id: string }>) => {
         const contextData = getContextData()
 
-        const embeddableType = contextData.embeddableTypeMap.get(id)
+        const embeddableType = cloneDeepReadonlyRaw(contextData.embeddableTypeMap.get(id))
         if (!embeddableType) throw new Error(`EmbeddableType [${id}] is not existed`)
-        const menuItem = menuMap.value.get(embeddableType.groupId)
-        if (!menuItem) throw new Error(`Group [${embeddableType.groupId}] is not existed in menuMap`)
-        if (!menuItem.entityMap.has(id)) throw new Error(`EmbeddableType [${id}] is not existed in group [${embeddableType.groupId}]`)
+
+        const groupId = embeddableType.groupId
+        const menuItem = menuMap.value.get(groupId)
+        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
+        if (!menuItem.entityMap.has(id)) throw new Error(`EmbeddableType [${id}] is not existed in group [${groupId}]`)
 
         contextData.embeddableTypeMap.delete(id)
         menuItem.entityMap.delete(id)
         return {embeddableType}
     }
 
-    const updateEmbeddableType = ({embeddableType}: { embeddableType: EmbeddableTypeWithProperties }) => {
+    const updateEmbeddableType = (options: DeepReadonly<{ embeddableType: EmbeddableTypeWithProperties }>) => {
+        const id = options.embeddableType.id
+        const groupId = options.embeddableType.groupId
         const contextData = getContextData()
 
-        const existedEmbeddableType = contextData.embeddableTypeMap.get(embeddableType.id)
-        if (!existedEmbeddableType) throw new Error(`EmbeddableType [${embeddableType.id}] is not existed`)
-        if (!contextData.groupMap.has(embeddableType.groupId)) throw new Error(`Group [${embeddableType.groupId}] is not existed`)
+        const existedEmbeddableType = cloneDeepReadonlyRaw(contextData.embeddableTypeMap.get(id))
+        if (!existedEmbeddableType) throw new Error(`EmbeddableType [${id}] is not existed`)
+        if (!contextData.groupMap.has(groupId)) throw new Error(`Group [${groupId}] is not existed`)
         const menuItem = menuMap.value.get(existedEmbeddableType.groupId)
         if (!menuItem) throw new Error(`Group [${existedEmbeddableType.groupId}] is not existed in menuMap`)
         if (!menuItem.entityMap.has(existedEmbeddableType.id)) throw new Error(`EmbeddableType [${existedEmbeddableType.id}] is not existed in group [${existedEmbeddableType.groupId}]`)
 
-        contextData.embeddableTypeMap.set(embeddableType.id, embeddableType)
-        menuItem.embeddableTypeMap.set(embeddableType.id, embeddableType)
+        const embeddableType = cloneDeepReadonlyRaw<EmbeddableTypeWithProperties>(options.embeddableType)
+
+        contextData.embeddableTypeMap.set(id, embeddableType)
+        menuItem.embeddableTypeMap.set(id, embeddableType)
         return {embeddableType: existedEmbeddableType}
     }
 
@@ -416,49 +427,55 @@ export const useModelEditorHistory = (
     })
 
     // 枚举
-    const addEnumeration = ({enumeration}: { enumeration: Omit<Enumeration, 'id'> }) => {
+    const addEnumeration = (options: DeepReadonly<{ enumeration: Enumeration }>) => {
+        const id = options.enumeration.id
+        const groupId = options.enumeration.groupId
         const contextData = getContextData()
 
-        const id = createId("enumeration")
-
         if (contextData.enumerationMap.has(id)) throw new Error(`Enumeration [${id}] is already existed`)
-        if (!contextData.groupMap.has(enumeration.groupId)) throw new Error(`Group [${enumeration.groupId}] is not existed`)
-        const menuItem = menuMap.value.get(enumeration.groupId)
-        if (!menuItem) throw new Error(`Group [${enumeration.groupId}] is not existed in menuMap`)
-        if (menuItem.entityMap.has(id)) throw new Error(`Enumeration [${id}] is already existed in group [${enumeration.groupId}]`)
+        if (!contextData.groupMap.has(groupId)) throw new Error(`Group [${groupId}] is not existed`)
+        const menuItem = menuMap.value.get(groupId)
+        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
+        if (menuItem.entityMap.has(id)) throw new Error(`Enumeration [${id}] is already existed in group [${groupId}]`)
 
-        const enumerationWithId = {...enumeration, id}
-        contextData.enumerationMap.set(id, enumerationWithId)
-        menuItem.enumerationMap.set(id, enumerationWithId)
+        const enumeration = cloneDeepReadonlyRaw<Enumeration>(options.enumeration)
+        contextData.enumerationMap.set(id, enumeration)
+        menuItem.enumerationMap.set(id, enumeration)
         return {id}
     }
 
-    const revertAddEnumeration = ({id}: { id: string }) => {
+    const revertAddEnumeration = ({id}: DeepReadonly<{ id: string }>) => {
         const contextData = getContextData()
 
-        const enumeration = contextData.enumerationMap.get(id)
+        const enumeration = cloneDeepReadonlyRaw(contextData.enumerationMap.get(id))
         if (!enumeration) throw new Error(`Enumeration [${id}] is not existed`)
-        const menuItem = menuMap.value.get(enumeration.groupId)
-        if (!menuItem) throw new Error(`Group [${enumeration.groupId}] is not existed in menuMap`)
-        if (!menuItem.entityMap.has(id)) throw new Error(`Enumeration [${id}] is not existed in group [${enumeration.groupId}]`)
+
+        const groupId = enumeration.groupId
+        const menuItem = menuMap.value.get(groupId)
+        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
+        if (!menuItem.entityMap.has(id)) throw new Error(`Enumeration [${id}] is not existed in group [${groupId}]`)
 
         contextData.enumerationMap.delete(id)
         menuItem.enumerationMap.delete(id)
         return {enumeration}
     }
 
-    const updateEnumeration = ({enumeration}: { enumeration: Enumeration }) => {
+    const updateEnumeration = (options: DeepReadonly<{ enumeration: Enumeration }>) => {
+        const id = options.enumeration.id
+        const groupId = options.enumeration.groupId
         const contextData = getContextData()
 
-        const existedEnumeration = contextData.enumerationMap.get(enumeration.id)
-        if (!existedEnumeration) throw new Error(`Enumeration [${enumeration.id}] is not existed`)
-        if (!contextData.groupMap.has(enumeration.groupId)) throw new Error(`Group [${enumeration.groupId}] is not existed`)
-        const menuItem = menuMap.value.get(enumeration.groupId)
-        if (!menuItem) throw new Error(`Group [${enumeration.groupId}] is not existed in menuMap`)
-        if (!menuItem.entityMap.has(enumeration.id)) throw new Error(`Enumeration [${enumeration.id}] is not existed in group [${enumeration.groupId}]`)
+        const existedEnumeration = cloneDeepReadonlyRaw(contextData.enumerationMap.get(id))
+        if (!existedEnumeration) throw new Error(`Enumeration [${id}] is not existed`)
+        if (!contextData.groupMap.has(groupId)) throw new Error(`Group [${groupId}] is not existed`)
+        const menuItem = menuMap.value.get(groupId)
+        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
+        if (!menuItem.entityMap.has(id)) throw new Error(`Enumeration [${id}] is not existed in group [${groupId}]`)
 
-        contextData.enumerationMap.set(enumeration.id, enumeration)
-        menuItem.enumerationMap.set(enumeration.id, enumeration)
+        const enumeration = cloneDeepReadonlyRaw<Enumeration>(options.enumeration)
+
+        contextData.enumerationMap.set(id, enumeration)
+        menuItem.enumerationMap.set(id, enumeration)
         return {enumeration: existedEnumeration}
     }
 
@@ -473,34 +490,37 @@ export const useModelEditorHistory = (
     })
 
     // 关联
-    const addAssociation = ({association}: { association: Omit<Association, 'id'> }) => {
+    const addAssociation = (options: DeepReadonly<{ association: Association }>) => {
+        const id = options.association.id
         const contextData = getContextData()
-        const id = createId("association")
 
         if (contextData.associationMap.has(id)) throw new Error(`Association [${id}] is already existed`)
 
-        const associationWithId = {...association, id}
-        contextData.associationMap.set(id, associationWithId)
+        const association = cloneDeepReadonlyRaw<Association>(options.association)
+        contextData.associationMap.set(id, association)
         return {id}
     }
 
-    const revertAddAssociation = ({id}: { id: string }) => {
+    const revertAddAssociation = ({id}: DeepReadonly<{ id: string }>) => {
         const contextData = getContextData()
-        const association = contextData.associationMap.get(id)
 
+        const association = cloneDeepReadonlyRaw(contextData.associationMap.get(id))
         if (!association) throw new Error(`Association [${id}] is not existed`)
 
         contextData.associationMap.delete(id)
         return {association}
     }
 
-    const updateAssociation = ({association}: { association: Association }) => {
+    const updateAssociation = (options: DeepReadonly<{ association: Association }>) => {
+        const id = options.association.id
         const contextData = getContextData()
-        const existedAssociation = contextData.associationMap.get(association.id)
 
-        if (!existedAssociation) throw new Error(`Association [${association.id}] is not existed`)
+        const existedAssociation = cloneDeepReadonlyRaw(contextData.associationMap.get(id))
+        if (!existedAssociation) throw new Error(`Association [${id}] is not existed`)
 
-        contextData.associationMap.set(association.id, association)
+        const association = cloneDeepReadonlyRaw<Association>(options.association)
+
+        contextData.associationMap.set(id, association)
         return {association: existedAssociation}
     }
 
@@ -514,11 +534,32 @@ export const useModelEditorHistory = (
         revertAction: updateAssociation,
     })
 
+    history.registerCommand("node:move", {
+        applyAction: ({id, newPosition, oldPosition}) => {
+            const vueFlow = getVueFlow()
+            vueFlow.updateNode(id, {
+                position: newPosition
+            })
+            return {
+                id,
+                oldPosition
+            }
+        },
+        revertAction: ({id, oldPosition}) => {
+            const vueFlow = getVueFlow()
+            vueFlow.updateNode(id, {
+                position: oldPosition
+            })
+        }
+    })
+
     return {
         history,
         canUndo,
         canRedo,
-        menuMap: readonly(menuMap)
+        menuMap: readonly(menuMap),
+        currentGroupId: readonly(currentGroupId),
+        toggleCurrentGroup,
     }
 }
 
