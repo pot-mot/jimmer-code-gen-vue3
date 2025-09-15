@@ -8,5 +8,7 @@ export default Object.freeze({
     embeddableTypeMap: Map<string, EmbeddableTypeWithProperties>
     enumerationMap: Map<string, Enumeration>
     associationMap: Map<string, Association>
+
+    types: TypeSelectPair[]
 }`,
 })

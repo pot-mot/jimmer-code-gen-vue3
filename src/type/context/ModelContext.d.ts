@@ -6,6 +6,8 @@ type ModelContextData = {
     embeddableTypeMap: Map<string, EmbeddableTypeWithProperties>
     enumerationMap: Map<string, Enumeration>
     associationMap: Map<string, Association>
+
+    types: TypeSelectPair[]
 }
 
 type EntityWithInheritInfo = EntityWithCategorizedProperties & {

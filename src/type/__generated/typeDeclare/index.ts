@@ -4,6 +4,9 @@ import AssociationSubDataDeclare from "./items/AssociationSubData.ts";
 import AssociationTypeDeclare from "./items/AssociationType.ts";
 import AssociationWithSubDataDeclare from "./items/AssociationWithSubData.ts";
 import BackEndLanguageDeclare from "./items/BackEndLanguage.ts";
+import BackEndMappingSourceDeclare from "./items/BackEndMappingSource.ts";
+import BackEndToSqlTypeMappingDeclare from "./items/BackEndToSqlTypeMapping.ts";
+import BackEndToTypeScriptTypeMappingDeclare from "./items/BackEndToTypeScriptTypeMapping.ts";
 import BaseAssociationPropertyDeclare from "./items/BaseAssociationProperty.ts";
 import BasePropertyDeclare from "./items/BaseProperty.ts";
 import CategorizedEmbeddableTypePropertiesDeclare from "./items/CategorizedEmbeddableTypeProperties.ts";
@@ -63,8 +66,10 @@ import PropertyDeclare from "./items/Property.ts";
 import ScalarLogicalDeletePropertyDeclare from "./items/ScalarLogicalDeleteProperty.ts";
 import ScalarPropertyDeclare from "./items/ScalarProperty.ts";
 import SqlFormulaPropertyDeclare from "./items/SqlFormulaProperty.ts";
+import SqlToBackEndTypeMappingDeclare from "./items/SqlToBackEndTypeMapping.ts";
 import TableDeclare from "./items/Table.ts";
 import TransientPropertyDeclare from "./items/TransientProperty.ts";
+import TypeSelectPairDeclare from "./items/TypeSelectPair.ts";
 import VersionPropertyDeclare from "./items/VersionProperty.ts";
 import WithEmbeddableTypePropertiesDeclare from "./items/WithEmbeddableTypeProperties.ts";
 import WithPropertiesDeclare from "./items/WithProperties.ts";
@@ -76,6 +81,9 @@ export type TypeMap = {
     AssociationType: AssociationType
     AssociationWithSubData: AssociationWithSubData
     BackEndLanguage: BackEndLanguage
+    BackEndMappingSource: BackEndMappingSource
+    BackEndToSqlTypeMapping: BackEndToSqlTypeMapping
+    BackEndToTypeScriptTypeMapping: BackEndToTypeScriptTypeMapping
     BaseAssociationProperty: BaseAssociationProperty
     BaseProperty: BaseProperty
     CategorizedEmbeddableTypeProperties: CategorizedEmbeddableTypeProperties
@@ -134,8 +142,10 @@ export type TypeMap = {
     ScalarLogicalDeleteProperty: ScalarLogicalDeleteProperty
     ScalarProperty: ScalarProperty
     SqlFormulaProperty: SqlFormulaProperty
+    SqlToBackEndTypeMapping: SqlToBackEndTypeMapping
     Table: Table
     TransientProperty: TransientProperty
+    TypeSelectPair: TypeSelectPair
     VersionProperty: VersionProperty
     WithEmbeddableTypeProperties: WithEmbeddableTypeProperties
     WithProperties: WithProperties
@@ -150,6 +160,9 @@ export const typeDeclares = Object.freeze({
     AssociationType: AssociationTypeDeclare,
     AssociationWithSubData: AssociationWithSubDataDeclare,
     BackEndLanguage: BackEndLanguageDeclare,
+    BackEndMappingSource: BackEndMappingSourceDeclare,
+    BackEndToSqlTypeMapping: BackEndToSqlTypeMappingDeclare,
+    BackEndToTypeScriptTypeMapping: BackEndToTypeScriptTypeMappingDeclare,
     BaseAssociationProperty: BaseAssociationPropertyDeclare,
     BaseProperty: BasePropertyDeclare,
     CategorizedEmbeddableTypeProperties: CategorizedEmbeddableTypePropertiesDeclare,
@@ -209,8 +222,10 @@ export const typeDeclares = Object.freeze({
     ScalarLogicalDeleteProperty: ScalarLogicalDeletePropertyDeclare,
     ScalarProperty: ScalarPropertyDeclare,
     SqlFormulaProperty: SqlFormulaPropertyDeclare,
+    SqlToBackEndTypeMapping: SqlToBackEndTypeMappingDeclare,
     Table: TableDeclare,
     TransientProperty: TransientPropertyDeclare,
+    TypeSelectPair: TypeSelectPairDeclare,
     VersionProperty: VersionPropertyDeclare,
     WithEmbeddableTypeProperties: WithEmbeddableTypePropertiesDeclare,
     WithProperties: WithPropertiesDeclare,

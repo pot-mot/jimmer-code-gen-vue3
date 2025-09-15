@@ -1,7 +1,7 @@
 type BackEndMappingSource = "JAVA" | "KOTLIN" | "BOTH"
 
 type BackEndToSqlTypeMapping = {
-    backEndType: BackEndMappingSource
+    source: BackEndMappingSource
     typeRegExp: string
     sqlTypeResult: {
         type: string
@@ -13,7 +13,7 @@ type BackEndToSqlTypeMapping = {
 }
 
 type SqlToBackEndTypeMapping = {
-    backEndType: BackEndMappingSource
+    source: BackEndMappingSource
     typeRegExp: string
     javaTypeResult: {
         rawType: string
@@ -21,8 +21,8 @@ type SqlToBackEndTypeMapping = {
     }
 }
 
-type JavaToTypeScriptTypeMapping = {
-    backEndType: BackEndMappingSource
+type BackEndToTypeScriptTypeMapping = {
+    source: BackEndMappingSource
     typeRegExp: string
     tsTypeResult: {
         rawType: string
@@ -34,6 +34,7 @@ type JavaToTypeScriptTypeMapping = {
 }
 
 type TypeSelectPair = {
+    source: BackEndMappingSource
     sqlType: {
         type: string
         dataSize?: number
@@ -41,7 +42,7 @@ type TypeSelectPair = {
         nullable: boolean
         defaultValue?: string
     }
-    javaType: {
+    backEndType: {
         rawType: string
         extraImports: string[]
     }
