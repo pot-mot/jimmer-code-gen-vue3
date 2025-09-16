@@ -18,13 +18,15 @@ const bodyRef = useTemplateRef("bodyRef")
 
 onMounted(() => {
     if (bodyRef.value) {
+        bodyRef.value.style.transition = `max-height ${props.transitionDuration}ms ease-out`
         if (isOpen.value) {
             bodyRef.value.style.maxHeight = `min(${bodyRef.value.scrollHeight}px, ${props.maxHeight})`
+            setTimeout(() => {
+                if (bodyRef.value) bodyRef.value.style.maxHeight = ''
+            }, props.transitionDuration)
         } else {
             bodyRef.value.style.maxHeight = props.minHeight
         }
-
-        bodyRef.value.style.transition = `max-height ${props.transitionDuration}ms ease-out`
     }
 })
 
@@ -32,8 +34,14 @@ watch(() => isOpen.value, () => {
     if (bodyRef.value) {
         if (isOpen.value) {
             bodyRef.value.style.maxHeight = `min(${bodyRef.value.scrollHeight}px, ${props.maxHeight})`
+            setTimeout(() => {
+                if (bodyRef.value) bodyRef.value.style.maxHeight = ''
+            }, props.transitionDuration)
         } else {
-            bodyRef.value.style.maxHeight = props.minHeight
+            bodyRef.value.style.maxHeight = `${bodyRef.value.scrollHeight}px`
+            setTimeout(() => {
+                if (bodyRef.value) bodyRef.value.style.maxHeight = props.minHeight
+            })
         }
     }
 })
