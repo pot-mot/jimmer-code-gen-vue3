@@ -1,6 +1,6 @@
 import {type CommandDefinition, useCommandHistory} from "@/history/commandHistory.ts";
 import {type VueFlowStore, type XYPosition} from "@vue-flow/core";
-import {readonly, type Ref, ref, type ShallowRef, watch} from "vue";
+import {type Ref, ref, shallowReadonly, type ShallowRef, watch} from "vue";
 import {NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";
 import type {MenuItem} from "@/modelEditor/useModelEditor.ts";
 import {NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode.ts";
@@ -770,7 +770,7 @@ export const useModelEditorHistory = (
         history,
         canUndo,
         canRedo,
-        menuMap: readonly(menuMap),
+        menuMap: shallowReadonly(menuMap),
         noEffect: {
             group: {
                 add: addGroup,
