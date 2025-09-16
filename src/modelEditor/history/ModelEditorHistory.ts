@@ -1,16 +1,23 @@
 import {type CommandDefinition, useCommandHistory} from "@/history/commandHistory.ts";
 import {type VueFlowStore, type XYPosition} from "@vue-flow/core";
-import {readonly, type Ref, ref, type ShallowRef} from "vue";
-import {v7 as uuid} from "uuid"
-import {type EntityNode, NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";
+import {readonly, type Ref, ref, type ShallowRef, watch} from "vue";
+import {NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";
 import type {MenuItem} from "@/modelEditor/useModelEditor.ts";
-import {type MappedSuperClassNode, NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode.ts";
+import {NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode.ts";
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
+import {debounce} from "lodash-es";
+
+const SYNC_DEBOUNCE_TIMEOUT = 500
 
 export type ModelEditorHistoryCommands = {
-    "group:toggle": CommandDefinition<{
-        id: string | undefined
-    }>
+    "node:move": CommandDefinition<DeepReadonly<{
+        id: string
+        newPosition: XYPosition
+        oldPosition: XYPosition
+    }>, DeepReadonly<{
+        id: string
+        oldPosition: XYPosition
+    }>>
 
     "group:add": CommandDefinition<DeepReadonly<{
         group: Group
@@ -71,15 +78,6 @@ export type ModelEditorHistoryCommands = {
     // TODO register commands
     "import": CommandDefinition<DeepReadonly<ModelSubData>, DeepReadonly<ModelSubIds>>
     "remove": CommandDefinition<DeepReadonly<ModelSubIds>, DeepReadonly<ModelSubData>>
-
-    "node:move": CommandDefinition<DeepReadonly<{
-        id: string
-        newPosition: XYPosition
-        oldPosition: XYPosition
-    }>, DeepReadonly<{
-        id: string
-        oldPosition: XYPosition
-    }>>
 }
 
 export const useModelEditorHistory = (
@@ -104,6 +102,28 @@ export const useModelEditorHistory = (
         canUndo.value = history.canUndo()
         canRedo.value = history.canRedo()
     })
+    history.eventBus.on("change", (options) => {
+        console.log("change", options)
+    })
+
+    history.registerCommand("node:move", {
+        applyAction: ({id, newPosition, oldPosition}) => {
+            const vueFlow = getVueFlow()
+            vueFlow.updateNode(id, {
+                position: newPosition
+            })
+            return {
+                id,
+                oldPosition
+            }
+        },
+        revertAction: ({id, oldPosition}) => {
+            const vueFlow = getVueFlow()
+            vueFlow.updateNode(id, {
+                position: oldPosition
+            })
+        }
+    })
 
     const getContextData = () => {
         const contextData = modelEditorState.contextData.value
@@ -122,34 +142,52 @@ export const useModelEditorHistory = (
     }
 
     const menuMap = ref(new Map<string, MenuItem>())
-    const currentGroupId = ref<string>()
-
-    const toggleCurrentGroup = ({id}: { id: string | undefined }) => {
-        const contextData = getContextData()
-        if (id !== undefined) {
-            if (!contextData.groupMap.has(id)) throw new Error(`Group [${id}] is not existed`)
-            if (!menuMap.value.has(id)) throw new Error(`Menu item [${id}] is not existed`)
-        }
-        const oldCurrentGroupId = currentGroupId.value
-        currentGroupId.value = id
-        return {id: oldCurrentGroupId}
-    }
-
-    history.registerCommand("group:toggle", {
-        applyAction: toggleCurrentGroup,
-        revertAction: toggleCurrentGroup,
-    })
 
     // 分组
+    const groupWatchStopMap = new Map<string, () => void>()
+    const addGroupWatcher = (id: string) => {
+        const contextData = getContextData()
+
+        if (groupWatchStopMap.has(id)) throw new Error(`Group [${id}] is already watched`)
+
+        let oldGroup = cloneDeepReadonlyRaw(contextData.groupMap.get(id))
+        const debounceSyncGroupUpdate = debounce((newGroup: Group | undefined) => {
+            if (newGroup && oldGroup) {
+                history.pushCommand("group:change", {
+                    group: newGroup
+                }, {
+                    group: oldGroup
+                })
+            }
+            oldGroup = cloneDeepReadonlyRaw(newGroup)
+        }, SYNC_DEBOUNCE_TIMEOUT)
+        const stopWatch = watch(() => contextData.groupMap.get(id),
+            (value) => {
+                debounceSyncGroupUpdate(value)
+            },
+            {deep: true}
+        )
+        groupWatchStopMap.set(id, stopWatch)
+    }
+    const removeGroupWatcher = (id: string) => {
+        const watchStop = groupWatchStopMap.get(id)
+        if (!watchStop) throw new Error(`Group [${id}] is not watched`)
+
+        watchStop()
+        groupWatchStopMap.delete(id)
+    }
+
     const addGroup = (options: { group: Group }) => {
         const id = options.group.id
         const contextData = getContextData()
 
         if (contextData.groupMap.has(id)) throw new Error(`Group [${id}] is already existed`)
+        if (groupWatchStopMap.has(id)) throw new Error(`Group [${id}] is already watched`)
         if (menuMap.value.has(id)) throw new Error(`Menu item [${id}] is already existed in menuMap`)
 
         const group = cloneDeepReadonlyRaw(options.group)
         contextData.groupMap.set(id, group)
+        addGroupWatcher(id)
         menuMap.value.set(id, {
             group,
             entityMap: new Map(),
@@ -172,6 +210,7 @@ export const useModelEditorHistory = (
         if (menuItem.embeddableTypeMap.size > 0) throw new Error(`Group [${id}] has embeddable types, can't remove`)
         if (menuItem.enumerationMap.size > 0) throw new Error(`Group [${id}] has enumerations, can't remove`)
 
+        removeGroupWatcher(id)
         contextData.groupMap.delete(id)
         menuMap.value.delete(id)
         return {group: existedGroup}
@@ -184,10 +223,14 @@ export const useModelEditorHistory = (
         if (!existedGroup) throw new Error(`Group [${id}] is not existed`)
         const menuItem = menuMap.value.get(id)
         if (!menuItem) throw new Error(`Group [${id}] is not existed in menuMap`)
+        const watchStop = groupWatchStopMap.get(id)
+        if (!watchStop) throw new Error(`Group [${id}] is not watched`)
 
         const group = cloneDeepReadonlyRaw(options.group)
 
+        removeGroupWatcher(id)
         contextData.groupMap.set(id, group)
+        addGroupWatcher(id)
         menuItem.group = group
         return {group: existedGroup}
     }
@@ -201,6 +244,39 @@ export const useModelEditorHistory = (
     })
 
     // 实体
+    const entityWatchStopMap = new Map<string, () => void>()
+    const addEntityWatcher = (id: string) => {
+        const contextData = getContextData()
+
+        if (entityWatchStopMap.has(id)) throw new Error(`Entity [${id}] is already watched`)
+
+        let oldEntity = cloneDeepReadonlyRaw(contextData.entityMap.get(id))
+        const debounceSyncEntityUpdate = debounce((newEntity: EntityWithProperties | undefined) => {
+            if (newEntity && oldEntity) {
+                history.pushCommand("entity:change", {
+                    entity: newEntity
+                }, {
+                    entity: oldEntity
+                })
+            }
+            oldEntity = cloneDeepReadonlyRaw(newEntity)
+        }, SYNC_DEBOUNCE_TIMEOUT)
+        const stopWatch = watch(() => contextData.entityMap.get(id),
+            (value) => {
+                debounceSyncEntityUpdate(value)
+            },
+            {deep: true}
+        )
+        entityWatchStopMap.set(id, stopWatch)
+    }
+    const removeEntityWatcher = (id: string) => {
+        const watchStop = entityWatchStopMap.get(id)
+        if (!watchStop) throw new Error(`Entity [${id}] is not watched`)
+
+        watchStop()
+        entityWatchStopMap.delete(id)
+    }
+
     const addEntity = (options: DeepReadonly<{ entity: Entity; position: XYPosition }>) => {
         const groupId = options.entity.groupId
         const id = options.entity.id
@@ -208,21 +284,26 @@ export const useModelEditorHistory = (
         const vueFlow = getVueFlow()
 
         if (contextData.entityMap.has(id)) throw new Error(`Entity [${id}] is already existed`)
+        if (entityWatchStopMap.has(id)) throw new Error(`Entity [${id}] is already watched`)
+
         if (!contextData.groupMap.has(groupId)) throw new Error(`Group [${groupId}] is not existed`)
         const menuItem = menuMap.value.get(groupId)
         if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
         if (menuItem.entityMap.has(id)) throw new Error(`Entity [${id}] is already existed in group [${groupId}]`)
 
-        const entity = cloneDeepReadonlyRaw<EntityWithProperties>({...options.entity, properties: []})
-        const entityNode: EntityNode = {
+        const entity = cloneDeepReadonlyRaw<EntityWithProperties>({
+            ...options.entity,
+            properties: []
+        })
+        contextData.entityMap.set(id, entity)
+        addEntityWatcher(id)
+        menuItem.entityMap.set(id, entity)
+        vueFlow.addNodes({
             id,
             type: NodeType_Entity,
             position: options.position,
             data: {entity},
-        }
-        contextData.entityMap.set(id, entity)
-        menuItem.entityMap.set(id, entity)
-        vueFlow.addNodes(entityNode)
+        })
         return {id}
     }
     const revertAddEntity = ({id}: DeepReadonly<{ id: string }>) => {
@@ -239,6 +320,7 @@ export const useModelEditorHistory = (
         if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
         if (!menuItem.entityMap.has(id)) throw new Error(`Entity [${id}] is not existed in group [${groupId}]`)
 
+        removeEntityWatcher(id)
         contextData.entityMap.delete(id)
         menuItem.entityMap.delete(id)
         vueFlow.removeNodes([entityNode])
@@ -261,7 +343,9 @@ export const useModelEditorHistory = (
 
         const entity = cloneDeepReadonlyRaw<EntityWithProperties>(options.entity)
 
+        removeEntityWatcher(id)
         contextData.entityMap.set(id, entity)
+        addEntityWatcher(id)
         menuItem.entityMap.set(id, entity)
         existingEntityNode.data.entity = entity
         return {entity: existedEntity}
@@ -278,6 +362,39 @@ export const useModelEditorHistory = (
     })
 
     // 映射抽象实体
+    const mappedSuperClassWatchStopMap = new Map<string, () => void>()
+    const addMappedSuperClassWatcher = (id: string) => {
+        const contextData = getContextData()
+
+        if (mappedSuperClassWatchStopMap.has(id)) throw new Error(`MappedSuperClass [${id}] is already watched`)
+
+        let oldMappedSuperClass = cloneDeepReadonlyRaw(contextData.mappedSuperClassMap.get(id))
+        const debounceSyncMappedSuperClassUpdate = debounce((newMappedSuperClass: MappedSuperClassWithProperties | undefined) => {
+            if (newMappedSuperClass && oldMappedSuperClass) {
+                history.pushCommand("mapped-super-class:change", {
+                    mappedSuperClass: newMappedSuperClass
+                }, {
+                    mappedSuperClass: oldMappedSuperClass
+                })
+            }
+            oldMappedSuperClass = cloneDeepReadonlyRaw(newMappedSuperClass)
+        }, SYNC_DEBOUNCE_TIMEOUT)
+        const stopWatch = watch(() => contextData.mappedSuperClassMap.get(id),
+            (value) => {
+                debounceSyncMappedSuperClassUpdate(value)
+            },
+            {deep: true}
+        )
+        mappedSuperClassWatchStopMap.set(id, stopWatch)
+    }
+    const removeMappedSuperClassWatcher = (id: string) => {
+        const watchStop = mappedSuperClassWatchStopMap.get(id)
+        if (!watchStop) throw new Error(`MappedSuperClass [${id}] is not watched`)
+
+        watchStop()
+        mappedSuperClassWatchStopMap.delete(id)
+    }
+
     const addMappedSuperClass = (options: DeepReadonly<{
         mappedSuperClass: MappedSuperClass;
         position: XYPosition
@@ -297,15 +414,15 @@ export const useModelEditorHistory = (
             ...options.mappedSuperClass,
             properties: []
         })
-        const mappedSuperClassNode: MappedSuperClassNode = {
+        contextData.mappedSuperClassMap.set(id, mappedSuperClass)
+        addMappedSuperClassWatcher(id)
+        menuItem.mappedSuperClassMap.set(id, mappedSuperClass)
+        vueFlow.addNodes({
             id,
             type: NodeType_MappedSuperClass,
             position: options.position,
             data: {mappedSuperClass},
-        }
-        contextData.mappedSuperClassMap.set(id, mappedSuperClass)
-        menuItem.mappedSuperClassMap.set(id, mappedSuperClass)
-        vueFlow.addNodes(mappedSuperClassNode)
+        })
         return {id}
     }
     const revertAddMappedSuperClass = ({id}: DeepReadonly<{ id: string }>) => {
@@ -322,6 +439,7 @@ export const useModelEditorHistory = (
         if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
         if (!menuItem.entityMap.has(id)) throw new Error(`MappedSuperClass [${id}] is not existed in group [${groupId}]`)
 
+        removeMappedSuperClassWatcher(id)
         contextData.mappedSuperClassMap.delete(id)
         menuItem.mappedSuperClassMap.delete(id)
         vueFlow.removeNodes([mappedSuperClassNode])
@@ -345,7 +463,9 @@ export const useModelEditorHistory = (
 
         const mappedSuperClass = cloneDeepReadonlyRaw<MappedSuperClassWithProperties>(options.mappedSuperClass)
 
+        removeMappedSuperClassWatcher(id)
         contextData.mappedSuperClassMap.set(id, mappedSuperClass)
+        addMappedSuperClassWatcher(id)
         menuItem.mappedSuperClassMap.set(id, mappedSuperClass)
         existingMappedSuperClassNode.data.mappedSuperClass = mappedSuperClass
         return {mappedSuperClass: existedMappedSuperClass}
@@ -362,6 +482,40 @@ export const useModelEditorHistory = (
     })
 
     // 内嵌类型
+    const embeddableTypeWatchStopMap = new Map<string, () => void>()
+    const addEmbeddableTypeWatcher = (id: string) => {
+        const contextData = getContextData()
+
+        if (embeddableTypeWatchStopMap.has(id)) throw new Error(`EmbeddableType [${id}] is already watched`)
+
+        let oldEmbeddableType = cloneDeepReadonlyRaw(contextData.embeddableTypeMap.get(id))
+        const debounceSyncEmbeddableTypeUpdate = debounce((newEmbeddableType: EmbeddableTypeWithProperties | undefined) => {
+            if (newEmbeddableType && oldEmbeddableType) {
+                history.pushCommand("embeddable-type:change", {
+                    embeddableType: newEmbeddableType
+                }, {
+                    embeddableType: oldEmbeddableType
+                })
+            }
+        }, SYNC_DEBOUNCE_TIMEOUT)
+        const stopWatch = watch(
+            () => contextData.embeddableTypeMap.get(id),
+            (newEmbeddableType) => {
+                debounceSyncEmbeddableTypeUpdate(newEmbeddableType)
+                oldEmbeddableType = cloneDeepReadonlyRaw(newEmbeddableType)
+            },
+            {deep: true}
+        )
+        embeddableTypeWatchStopMap.set(id, stopWatch)
+    }
+    const removeEmbeddableTypeWatcher = (id: string) => {
+        const stopWatch = embeddableTypeWatchStopMap.get(id)
+        if (!stopWatch) throw new Error(`EmbeddableType [${id}] is not watched`)
+
+        stopWatch()
+        embeddableTypeWatchStopMap.delete(id)
+    }
+
     const addEmbeddableType = (options: DeepReadonly<{ embeddableType: EmbeddableType }>) => {
         const id = options.embeddableType.id
         const groupId = options.embeddableType.groupId
@@ -378,6 +532,7 @@ export const useModelEditorHistory = (
             properties: []
         })
         contextData.embeddableTypeMap.set(id, embeddableTypeWithId)
+        addEmbeddableTypeWatcher(id)
         return {id}
     }
 
@@ -392,6 +547,7 @@ export const useModelEditorHistory = (
         if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
         if (!menuItem.entityMap.has(id)) throw new Error(`EmbeddableType [${id}] is not existed in group [${groupId}]`)
 
+        removeEmbeddableTypeWatcher(id)
         contextData.embeddableTypeMap.delete(id)
         menuItem.entityMap.delete(id)
         return {embeddableType}
@@ -411,7 +567,9 @@ export const useModelEditorHistory = (
 
         const embeddableType = cloneDeepReadonlyRaw<EmbeddableTypeWithProperties>(options.embeddableType)
 
+        removeEmbeddableTypeWatcher(id)
         contextData.embeddableTypeMap.set(id, embeddableType)
+        addEmbeddableTypeWatcher(id)
         menuItem.embeddableTypeMap.set(id, embeddableType)
         return {embeddableType: existedEmbeddableType}
     }
@@ -427,6 +585,39 @@ export const useModelEditorHistory = (
     })
 
     // 枚举
+    const enumerationWatchStopMap = new Map<string, () => void>()
+    const addEnumerationWatcher = (id: string) => {
+        const contextData = getContextData()
+
+        if (enumerationWatchStopMap.has(id)) throw new Error(`Enumeration [${id}] is already watched`)
+
+        let oldEnumeration = cloneDeepReadonlyRaw(contextData.enumerationMap.get(id))
+        const debounceSyncEnumerationUpdate = debounce((newEnumeration: Enumeration | undefined) => {
+            if (newEnumeration && oldEnumeration) {
+                history.pushCommand("enumeration:change", {
+                    enumeration: newEnumeration
+                }, {
+                    enumeration: oldEnumeration
+                })
+            }
+            oldEnumeration = cloneDeepReadonlyRaw(newEnumeration)
+        }, SYNC_DEBOUNCE_TIMEOUT)
+        const stopWatch = watch(() => contextData.enumerationMap.get(id),
+            (value) => {
+                debounceSyncEnumerationUpdate(value)
+            },
+            {deep: true}
+        )
+        enumerationWatchStopMap.set(id, stopWatch)
+    }
+    const removeEnumerationWatcher = (id: string) => {
+        const watchStop = enumerationWatchStopMap.get(id)
+        if (!watchStop) throw new Error(`Enumeration [${id}] is not watched`)
+
+        watchStop()
+        enumerationWatchStopMap.delete(id)
+    }
+
     const addEnumeration = (options: DeepReadonly<{ enumeration: Enumeration }>) => {
         const id = options.enumeration.id
         const groupId = options.enumeration.groupId
@@ -440,6 +631,7 @@ export const useModelEditorHistory = (
 
         const enumeration = cloneDeepReadonlyRaw<Enumeration>(options.enumeration)
         contextData.enumerationMap.set(id, enumeration)
+        addEnumerationWatcher(id)
         menuItem.enumerationMap.set(id, enumeration)
         return {id}
     }
@@ -455,6 +647,7 @@ export const useModelEditorHistory = (
         if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
         if (!menuItem.entityMap.has(id)) throw new Error(`Enumeration [${id}] is not existed in group [${groupId}]`)
 
+        removeEnumerationWatcher(id)
         contextData.enumerationMap.delete(id)
         menuItem.enumerationMap.delete(id)
         return {enumeration}
@@ -474,7 +667,9 @@ export const useModelEditorHistory = (
 
         const enumeration = cloneDeepReadonlyRaw<Enumeration>(options.enumeration)
 
+        removeEnumerationWatcher(id)
         contextData.enumerationMap.set(id, enumeration)
+        addEnumerationWatcher(id)
         menuItem.enumerationMap.set(id, enumeration)
         return {enumeration: existedEnumeration}
     }
@@ -490,6 +685,39 @@ export const useModelEditorHistory = (
     })
 
     // 关联
+    const associationWatchStopMap = new Map<string, () => void>()
+    const addAssociationWatcher = (id: string) => {
+        const contextData = getContextData()
+
+        if (associationWatchStopMap.has(id)) throw new Error(`Association [${id}] is already watched`)
+
+        let oldAssociation = cloneDeepReadonlyRaw(contextData.associationMap.get(id))
+        const debounceSyncAssociationUpdate = debounce((newAssociation: Association | undefined) => {
+            if (newAssociation && oldAssociation) {
+                history.pushCommand("association:change", {
+                    association: newAssociation
+                }, {
+                    association: oldAssociation
+                })
+            }
+            oldAssociation = cloneDeepReadonlyRaw(newAssociation)
+        }, SYNC_DEBOUNCE_TIMEOUT)
+        const stopWatch = watch(() => contextData.associationMap.get(id),
+            (value) => {
+                debounceSyncAssociationUpdate(value)
+            },
+            {deep: true}
+        )
+        associationWatchStopMap.set(id, stopWatch)
+    }
+    const removeAssociationWatcher = (id: string) => {
+        const watchStop = associationWatchStopMap.get(id)
+        if (!watchStop) throw new Error(`Association [${id}] is not watched`)
+
+        watchStop()
+        associationWatchStopMap.delete(id)
+    }
+
     const addAssociation = (options: DeepReadonly<{ association: Association }>) => {
         const id = options.association.id
         const contextData = getContextData()
@@ -498,6 +726,7 @@ export const useModelEditorHistory = (
 
         const association = cloneDeepReadonlyRaw<Association>(options.association)
         contextData.associationMap.set(id, association)
+        addAssociationWatcher(id)
         return {id}
     }
 
@@ -507,6 +736,7 @@ export const useModelEditorHistory = (
         const association = cloneDeepReadonlyRaw(contextData.associationMap.get(id))
         if (!association) throw new Error(`Association [${id}] is not existed`)
 
+        removeAssociationWatcher(id)
         contextData.associationMap.delete(id)
         return {association}
     }
@@ -520,7 +750,9 @@ export const useModelEditorHistory = (
 
         const association = cloneDeepReadonlyRaw<Association>(options.association)
 
+        removeAssociationWatcher(id)
         contextData.associationMap.set(id, association)
+        addAssociationWatcher(id)
         return {association: existedAssociation}
     }
 
@@ -534,32 +766,42 @@ export const useModelEditorHistory = (
         revertAction: updateAssociation,
     })
 
-    history.registerCommand("node:move", {
-        applyAction: ({id, newPosition, oldPosition}) => {
-            const vueFlow = getVueFlow()
-            vueFlow.updateNode(id, {
-                position: newPosition
-            })
-            return {
-                id,
-                oldPosition
-            }
-        },
-        revertAction: ({id, oldPosition}) => {
-            const vueFlow = getVueFlow()
-            vueFlow.updateNode(id, {
-                position: oldPosition
-            })
-        }
-    })
-
     return {
         history,
         canUndo,
         canRedo,
         menuMap: readonly(menuMap),
-        currentGroupId: readonly(currentGroupId),
-        toggleCurrentGroup,
+        noEffect: {
+            group: {
+                add: addGroup,
+                delete: revertAddGroup,
+                update: updateGroup,
+            },
+            entity: {
+                add: addEntity,
+                delete: revertAddEntity,
+                update: updateEntity,
+            },
+            mappedSuperClass: {
+                add: addMappedSuperClass,
+                delete: revertAddMappedSuperClass,
+                update: updateMappedSuperClass,
+            },
+            embeddableType: {
+                add: addEmbeddableType,
+                delete: revertAddEmbeddableType,
+                update: updateEmbeddableType,
+            },
+            enumeration: {
+                add: addEnumeration,
+                delete: revertAddEnumeration,
+                update: updateEnumeration,
+            },
+            association: {
+                add: addAssociation,
+                delete: revertAddAssociation,
+                update: updateAssociation,
+            },
+        }
     }
 }
-
