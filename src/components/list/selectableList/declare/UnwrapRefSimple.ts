@@ -1,10 +1,10 @@
 import {
-    Builtin,
+    type Builtin,
     RawSymbol,
-    Ref,
-    RefUnwrapBailTypes,
+    type Ref,
+    type RefUnwrapBailTypes,
     ShallowReactiveMarker,
-    UnwrapRef,
+    type UnwrapRef,
 } from "@vue/reactivity";
 
 export type UnwrapRefSimple<T> = T extends Builtin | Ref | RefUnwrapBailTypes[keyof RefUnwrapBailTypes] | {

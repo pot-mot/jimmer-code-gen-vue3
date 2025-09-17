@@ -15,6 +15,11 @@ const emit = defineEmits<{
     (e: 'remove', item: T): void
 }>()
 
+defineSlots<{
+    default(props: {item: T, index: number}): any,
+    dragView(props: {data: {item: T, index: number}}): any,
+}>()
+
 const handleSwap = (oldIndex: number, newIndex: number) => {
     if (
         oldIndex < 0 || oldIndex > data.value.length ||
@@ -55,8 +60,8 @@ const handleRemove = (item: T) => {
         @swap="handleSwap"
         @drag="handleDrag"
     >
-        <template #default="{ item }">
-            <slot :item="item"/>
+        <template #default="{ item, index }">
+            <slot :item="item" :index="index"/>
         </template>
         <template #dragView="{ data }">
             <slot name="dragView" :data="data"/>

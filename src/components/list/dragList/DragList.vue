@@ -18,7 +18,7 @@ const emits = defineEmits<{
 }>()
 
 defineSlots<{
-    default(props: {item: T}): any,
+    default(props: {item: T, index: number}): any,
     dragView(props: {data: {item: T, index: number}}): any,
 }>()
 
@@ -342,7 +342,7 @@ const stopDragDown = () => {
                         @touchstart.passive="handleDragStartByTouch(index, item, $event)"
                         @touchenter="handleItemDragEnter(index, item)"
                     >
-                        <slot :item="item"/>
+                        <slot :item="item" :index="index"/>
                     </div>
                 </template>
             </TransitionGroup>
