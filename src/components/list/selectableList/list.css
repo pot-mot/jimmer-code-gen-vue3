@@ -1,0 +1,24 @@
+:root {
+    --list-line-bg-color: var(--background-color);
+    --list-line-hover-bg-color: var(--background-color-hover);
+    --list-line-selected-bg-color: var(--primary-color);
+}
+
+.edit-list > .edit-list-body > .line-container,
+.view-list > .view-list-body > .line-container {
+    background-color: var(--list-line-bg-color);
+}
+
+.edit-list > .edit-list-body > .line-container:hover,
+.view-list > .view-list-body > .line-container:hover {
+    background-color: var(--list-line-hover-bg-color);
+}
+
+.edit-list > .edit-list-body > .line-container.selected,
+.view-list > .view-list-body > .line-container.selected {
+    background-color: var(--list-line-selected-bg-color);
+}
+
+.edit-list:focus, .view-list:focus {
+    outline: 0;
+}
