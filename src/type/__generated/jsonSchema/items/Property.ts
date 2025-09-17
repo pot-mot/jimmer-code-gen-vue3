@@ -408,7 +408,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -503,7 +502,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -601,7 +599,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -696,7 +693,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -810,7 +806,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -933,7 +928,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -1052,7 +1046,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -1171,7 +1164,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -1290,7 +1282,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -1422,7 +1413,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -1539,7 +1529,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -1665,7 +1654,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -1787,7 +1775,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -1909,7 +1896,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -2031,7 +2017,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -2166,7 +2151,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -2280,7 +2264,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -2403,7 +2386,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -2522,7 +2504,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -2641,7 +2622,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -2760,7 +2740,6 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]

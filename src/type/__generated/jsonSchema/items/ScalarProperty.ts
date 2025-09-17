@@ -24,7 +24,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -119,7 +118,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -217,7 +215,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -312,7 +309,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -426,7 +422,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -549,7 +544,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -668,7 +662,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -787,7 +780,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -906,7 +898,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -1038,7 +1029,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -1155,7 +1145,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -1281,7 +1270,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -1403,7 +1391,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -1525,7 +1512,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -1647,7 +1633,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -1782,7 +1767,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -1896,7 +1880,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -2019,7 +2002,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -2138,7 +2120,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -2257,7 +2238,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]
@@ -2376,7 +2356,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                     },
                     "required": [
                         "category",
-                        "defaultValue",
                         "rawType",
                         "serialized"
                     ]

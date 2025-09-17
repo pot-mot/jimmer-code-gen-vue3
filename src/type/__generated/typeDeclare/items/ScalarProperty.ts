@@ -4,7 +4,7 @@ export default Object.freeze({
         category: "SCALAR"
         rawType: string
         serialized: boolean
-        defaultValue: string
+        defaultValue?: string
     }
     & BaseProperty
     & (ColumnProperty | EmbeddableProperty)
