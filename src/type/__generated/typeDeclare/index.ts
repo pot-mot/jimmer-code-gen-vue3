@@ -36,6 +36,7 @@ import ForeignKeyDeclare from "./items/ForeignKey.ts";
 import ForeignKeyTypeDeclare from "./items/ForeignKeyType.ts";
 import GetterFormulaPropertyDeclare from "./items/GetterFormulaProperty.ts";
 import GroupDeclare from "./items/Group.ts";
+import GroupSubDataDeclare from "./items/GroupSubData.ts";
 import GroupSubMapsDeclare from "./items/GroupSubMaps.ts";
 import GroupWithSubMapsDeclare from "./items/GroupWithSubMaps.ts";
 import IdPropertyDeclare from "./items/IdProperty.ts";
@@ -112,6 +113,7 @@ export type TypeMap = {
     ForeignKeyType: ForeignKeyType
     GetterFormulaProperty: GetterFormulaProperty
     Group: Group
+    GroupSubData: GroupSubData
     GroupSubMaps: GroupSubMaps
     GroupWithSubMaps: GroupWithSubMaps
     IdProperty: IdProperty
@@ -192,6 +194,7 @@ export const typeDeclares = Object.freeze({
     ForeignKeyType: ForeignKeyTypeDeclare,
     GetterFormulaProperty: GetterFormulaPropertyDeclare,
     Group: GroupDeclare,
+    GroupSubData: GroupSubDataDeclare,
     GroupSubMaps: GroupSubMapsDeclare,
     GroupWithSubMaps: GroupWithSubMapsDeclare,
     IdProperty: IdPropertyDeclare,
