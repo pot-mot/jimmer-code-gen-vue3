@@ -364,10 +364,18 @@ export const useModelEditorHistory = (
 
         const entity = cloneDeepReadonlyRaw<EntityWithProperties>(options.entity)
 
+        const oldGroupId = existedEntity.groupId
+        if (oldGroupId !== groupId) {
+            const oldMenuItem = menuMap.value.get(oldGroupId)
+            if (!oldMenuItem) throw new Error(`Group [${oldGroupId}] is not existed in menuMap`)
+            if (!oldMenuItem.entityMap.has(id)) throw new Error(`Entity [${id}] is not existed in group [${oldGroupId}]`)
+            oldMenuItem.entityMap.delete(id)
+            menuItem.entityMap.set(id, entity)
+        }
+
         removeEntityWatcher(id)
         contextData.entityMap.set(id, entity)
         addEntityWatcher(id)
-        menuItem.entityMap.set(id, entity)
         existingEntityNode.data.entity = entity
         return {entity: existedEntity}
     }
@@ -480,14 +488,22 @@ export const useModelEditorHistory = (
         if (!contextData.groupMap.has(groupId)) throw new Error(`Group [${groupId}] is not existed`)
         const menuItem = menuMap.value.get(groupId)
         if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
-        if (!menuItem.entityMap.has(id)) throw new Error(`MappedSuperClass [${id}] is not existed in group [${groupId}]`)
+        if (!menuItem.mappedSuperClassMap.has(id)) throw new Error(`MappedSuperClass [${id}] is not existed in group [${groupId}]`)
 
         const mappedSuperClass = cloneDeepReadonlyRaw<MappedSuperClassWithProperties>(options.mappedSuperClass)
+
+        const oldGroupId = existedMappedSuperClass.groupId
+        if (oldGroupId !== groupId) {
+            const oldMenuItem = menuMap.value.get(oldGroupId)
+            if (!oldMenuItem) throw new Error(`Group [${oldGroupId}] is not existed in menuMap`)
+            if (!oldMenuItem.mappedSuperClassMap.has(id)) throw new Error(`MappedSuperClass [${id}] is not existed in group [${oldGroupId}]`)
+            oldMenuItem.mappedSuperClassMap.delete(id)
+            menuItem.mappedSuperClassMap.set(id, mappedSuperClass)
+        }
 
         removeMappedSuperClassWatcher(id)
         contextData.mappedSuperClassMap.set(id, mappedSuperClass)
         addMappedSuperClassWatcher(id)
-        menuItem.mappedSuperClassMap.set(id, mappedSuperClass)
         existingMappedSuperClassNode.data.mappedSuperClass = mappedSuperClass
         return {mappedSuperClass: existedMappedSuperClass}
     }
@@ -588,10 +604,18 @@ export const useModelEditorHistory = (
 
         const embeddableType = cloneDeepReadonlyRaw<EmbeddableTypeWithProperties>(options.embeddableType)
 
+        const oldGroupId = existedEmbeddableType.groupId
+        if (oldGroupId !== groupId) {
+            const oldMenuItem = menuMap.value.get(oldGroupId)
+            if (!oldMenuItem) throw new Error(`Group [${oldGroupId}] is not existed in menuMap`)
+            if (!oldMenuItem.embeddableTypeMap.has(id)) throw new Error(`EmbeddableType [${id}] is not existed in group [${oldGroupId}]`)
+            oldMenuItem.embeddableTypeMap.delete(id)
+            menuItem.embeddableTypeMap.set(id, embeddableType)
+        }
+
         removeEmbeddableTypeWatcher(id)
         contextData.embeddableTypeMap.set(id, embeddableType)
         addEmbeddableTypeWatcher(id)
-        menuItem.embeddableTypeMap.set(id, embeddableType)
         return {embeddableType: existedEmbeddableType}
     }
 
@@ -688,10 +712,18 @@ export const useModelEditorHistory = (
 
         const enumeration = cloneDeepReadonlyRaw<Enumeration>(options.enumeration)
 
+        const oldGroupId = existedEnumeration.groupId
+        if (oldGroupId !== groupId) {
+            const oldMenuItem = menuMap.value.get(oldGroupId)
+            if (!oldMenuItem) throw new Error(`Group [${oldGroupId}] is not existed in menuMap`)
+            if (!oldMenuItem.enumerationMap.has(id)) throw new Error(`Enumeration [${id}] is not existed in group [${oldGroupId}]`)
+            oldMenuItem.enumerationMap.delete(id)
+            menuItem.enumerationMap.set(id, enumeration)
+        }
+
         removeEnumerationWatcher(id)
         contextData.enumerationMap.set(id, enumeration)
         addEnumerationWatcher(id)
-        menuItem.enumerationMap.set(id, enumeration)
         return {enumeration: existedEnumeration}
     }
 
