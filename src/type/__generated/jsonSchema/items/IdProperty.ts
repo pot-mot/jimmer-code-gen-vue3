@@ -211,7 +211,7 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -341,7 +341,7 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -419,7 +419,7 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                 "name"
             ]
         },
-        "Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">": {
+        "Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">": {
             "type": "object",
             "properties": {
                 "name": {

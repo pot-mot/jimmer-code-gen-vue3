@@ -211,7 +211,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -341,7 +341,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -453,7 +453,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -547,7 +547,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -738,7 +738,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -851,7 +851,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -973,7 +973,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -1091,7 +1091,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -1209,7 +1209,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -1327,7 +1327,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -1458,7 +1458,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -1574,7 +1574,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -1699,7 +1699,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -1820,7 +1820,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -1941,7 +1941,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -2062,7 +2062,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -2909,7 +2909,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -2996,7 +2996,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -3086,7 +3086,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -3192,7 +3192,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -3301,7 +3301,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -3413,7 +3413,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -3667,7 +3667,7 @@ const PropertyJsonSchema: JSONSchemaType<Property> = {
                 "name"
             ]
         },
-        "Omit<Column,\"id\"|\"partOfPrimaryKey\"|\"autoIncrement\">": {
+        "Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">": {
             "type": "object",
             "properties": {
                 "name": {

@@ -15,7 +15,7 @@ type KeyProperty = {
 type OrderDirection = "ASC" | "DESC"
 
 type ColumnProperty = {
-    columnInfo: Omit<Column, 'id' | 'partOfPrimaryKey' | 'autoIncrement'>,
+    columnInfo: Omit<Column, 'partOfPrimaryKey' | 'autoIncrement'>,
     defaultOrderDirection?: OrderDirection
 } & (
     | { typeIsArray: false }
