@@ -6,35 +6,10 @@ import CollapseDetail from "@/components/collapse/CollapseDetail.vue";
 import EnumerationItem from "@/modelEditor/menu/item/EnumerationItem.vue";
 import MappedSuperClassItem from "@/modelEditor/menu/item/MappedSuperClassItem.vue";
 import type {MenuItem} from "@/modelEditor/useModelEditor.ts";
-import {computed} from "vue";
 
-const props = defineProps<{
+defineProps<{
     menuItem: MenuItem
 }>()
-
-const orderedEntities = computed(() => {
-    return Array.from(props.menuItem.entityMap.values()).sort((o1, o2) => {
-        return o1.name.localeCompare(o2.name)
-    })
-})
-
-const orderedMappedSuperClasses = computed(() => {
-    return Array.from(props.menuItem.mappedSuperClassMap.values()).sort((o1, o2) => {
-        return o1.name.localeCompare(o2.name)
-    })
-})
-
-const orderedEmbeddableTypes = computed(() => {
-    return Array.from(props.menuItem.embeddableTypeMap.values()).sort((o1, o2) => {
-        return o1.name.localeCompare(o2.name)
-    })
-})
-
- const orderedEnumerations = computed(() => {
-    return Array.from(props.menuItem.enumerationMap.values()).sort((o1, o2) => {
-        return o1.name.localeCompare(o2.name)
-    })
-})
 </script>
 
 <template>
@@ -46,28 +21,28 @@ const orderedEmbeddableTypes = computed(() => {
         <template #body>
             <div>AbstractEntity</div>
             <MappedSuperClassItem
-                v-for="mappedSuperClass in orderedMappedSuperClasses"
+                v-for="mappedSuperClass in menuItem.orderedMappedSuperClasses"
                 :key="mappedSuperClass.id"
                 :mapped-super-class="mappedSuperClass"
             />
 
             <div>Entity</div>
             <EntityItem
-                v-for="entity in orderedEntities"
+                v-for="entity in menuItem.orderedEntities"
                 :key="entity.id"
                 :entity="entity"
             />
 
             <div>Enumeration</div>
             <EnumerationItem
-                v-for="enumeration in orderedEnumerations"
+                v-for="enumeration in menuItem.orderedEnumerations"
                 :key="enumeration.id"
                 :enumeration="enumeration"
             />
 
             <div>EmbeddableType</div>
             <EmbeddableTypeItem
-                v-for="embeddableType in orderedEmbeddableTypes"
+                v-for="embeddableType in menuItem.orderedEmbeddableTypes"
                 :key="embeddableType.id"
                 :embeddable-type="embeddableType"
             />
