@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import NameCommentViewer from "@/modelEditor/viewer/NameCommentViewer.vue";
+
 defineProps<{
     enumeration: DeepReadonly<Enumeration>
 }>()
 </script>
 
 <template>
-    <span>{{ enumeration.name }}</span>
-    <span style="color: var(--comment-color)">/* {{ enumeration.comment }} */</span>
+    <NameCommentViewer :data="enumeration"/>
 </template>

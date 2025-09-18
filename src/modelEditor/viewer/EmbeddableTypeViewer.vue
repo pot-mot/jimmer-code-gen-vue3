@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import NameCommentViewer from "@/modelEditor/viewer/NameCommentViewer.vue";
+
 defineProps<{
     embeddableType: DeepReadonly<EmbeddableType>
 }>()
 </script>
 
 <template>
-    <span>{{ embeddableType.name }}</span>
-    <span style="color: var(--comment-color)">/* {{ embeddableType.comment }} */</span>
+    <NameCommentViewer :data="embeddableType"/>
 </template>

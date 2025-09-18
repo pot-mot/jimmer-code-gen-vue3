@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import NameCommentViewer from "@/modelEditor/viewer/NameCommentViewer.vue";
+
 defineProps<{
     group: DeepReadonly<Group>
 }>()
 </script>
 
 <template>
-    <span>{{ group.name }}</span>
-    <span style="color: var(--comment-color)">/* {{ group.comment }} */</span>
+    <NameCommentViewer :data="group"/>
 </template>

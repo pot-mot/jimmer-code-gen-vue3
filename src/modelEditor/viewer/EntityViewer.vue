@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import NameCommentViewer from "@/modelEditor/viewer/NameCommentViewer.vue";
+
 defineProps<{
     entity: DeepReadonly<Entity>
 }>()
 </script>
 
 <template>
-    <span>{{ entity.name }}</span>
-    <span style="color: var(--comment-color)">/* {{ entity.comment }} */</span>
+    <NameCommentViewer :data="entity"/>
 </template>

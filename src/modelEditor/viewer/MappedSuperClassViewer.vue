@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import NameCommentViewer from "@/modelEditor/viewer/NameCommentViewer.vue";
+
 defineProps<{
     mappedSuperClass: DeepReadonly<MappedSuperClass>
 }>()
 </script>
 
 <template>
-    <span>{{ mappedSuperClass.name }}</span>
-    <span style="color: var(--comment-color)">/* {{ mappedSuperClass.comment }} */</span>
+    <NameCommentViewer :data="mappedSuperClass"/>
 </template>
