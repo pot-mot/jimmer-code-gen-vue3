@@ -193,7 +193,6 @@ export const useModelEditorHistory = (
             group,
             entityMap: new Map(),
             orderedEntities: computed(() => {
-                console.log("sorted")
                 return Array.from(menuMap.value.get(id)?.entityMap.values() ?? []).sort((o1, o2) => {
                     return o1.name.localeCompare(o2.name)
                 })
