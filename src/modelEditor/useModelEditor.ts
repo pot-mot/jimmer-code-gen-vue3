@@ -22,9 +22,14 @@ type MouseAction = "panDrag" | "selectionRect"
 
 export type MenuItem = {
     group: Group
-} & GroupSubMaps
+} & GroupSubMaps & {
+    orderedEntities: ReadonlyArray<EntityWithProperties>,
+    orderedMappedSuperClasses: ReadonlyArray<MappedSuperClassWithProperties>,
+    orderedEmbeddableTypes: ReadonlyArray<EmbeddableTypeWithProperties>,
+    orderedEnumerations: ReadonlyArray<Enumeration>,
+}
 
-const createId = (type: "Entity" | "MappedSuperClass" | "EmbeddableType" | "Enumeration" | "Association" | "Group") => {
+export const createId = (type: "Entity" | "Property" | "MappedSuperClass" | "EmbeddableType" | "Enumeration" | "Association" | "Group") => {
     return `${type}_${uuid()}`
 }
 
@@ -63,11 +68,26 @@ export const useModelEditor = createStore(() => {
         associationMap: new Map(),
         types: [],
     })
+    const getContextData = () => {
+        if (!contextData.value) {
+            throw new Error("ContextData is not available")
+        }
+        return contextData.value
+    }
     const getContext = (): DeepReadonly<ModelContext> => {
         if (!contextData.value) {
             throw new Error("ContextData is not available")
         }
         return contextDataToContext(contextData.value)
+    }
+    const currentGroupId = ref<string>()
+    const toggleCurrentGroup = ({id}: { id: string | undefined }) => {
+        const contextData = getContextData()
+        if (id !== undefined) {
+            if (!contextData.groupMap.has(id)) throw new Error(`Group [${id}] is not existed`)
+            if (!menuMap.value.has(id)) throw new Error(`Menu item [${id}] is not existed`)
+        }
+        currentGroupId.value = id
     }
 
     const screenPosition = ref<XYPosition>({x: 0, y: 0})
@@ -77,8 +97,6 @@ export const useModelEditor = createStore(() => {
         canUndo,
         canRedo,
         menuMap,
-        currentGroupId,
-        toggleCurrentGroup,
     } = useModelEditorHistory({vueFlow, contextData})
 
     // TODO to getDefault or fetch
@@ -92,7 +110,7 @@ export const useModelEditor = createStore(() => {
             baseTableSchema: ""
         }
     })
-    history.executeCommand("group:toggle", {id: result.id})
+    toggleCurrentGroup({id: result.id})
 
     const setModel = (data: ModelContextData) => {
         contextData.value = data
@@ -101,6 +119,9 @@ export const useModelEditor = createStore(() => {
         // TODO
     }
 
+    let globalZIndex: number = 0
+
+    // 选中的 Id
     const selectedIdSets = ref<ModelSubIdSets>({
         groupIdSet: new Set<string>(),
         entityIdSet: new Set<string>(),
@@ -109,8 +130,75 @@ export const useModelEditor = createStore(() => {
         enumerationIdSet: new Set<string>(),
         associationIdSet: new Set<string>(),
     })
+    const selectGroup = (id: string) => {
+        const contextData = getContextData()
+        if (!contextData.groupMap.has(id)) throw new Error(`Group [${id}] is not existed`)
+        selectedIdSets.value.groupIdSet.add(id)
+    }
+    const unselectGroup = (id: string) => {
+        selectedIdSets.value.groupIdSet.delete(id)
+    }
+    const selectEntity = (id: string) => {
+        const contextData = getContextData()
+        const vueFlow = getCurrentVueFlow()
+        if (!contextData.entityMap.has(id)) throw new Error(`Entity [${id}] is not existed`)
+        const node = vueFlow.findNode(id)
+        if (!node) throw new Error(`Node [${id}] is not existed`)
+        selectedIdSets.value.entityIdSet.add(id)
+        vueFlow.addSelectedNodes([node])
+    }
+    const unselectEntity = (id: string) => {
+        const vueFlow = getCurrentVueFlow()
+        const node = vueFlow.findNode(id)
+        if (!node) throw new Error(`Node [${id}] is not existed`)
+        selectedIdSets.value.entityIdSet.delete(id)
+        vueFlow.removeSelectedNodes([node])
+    }
+    const selectMappedSuperClass = (id: string) => {
+        const contextData = getContextData()
+        const vueFlow = getCurrentVueFlow()
+        if (!contextData.mappedSuperClassMap.has(id)) throw new Error(`MappedSuperClass [${id}] is not existed`)
+        const node = vueFlow.findNode(id)
+        if (!node) throw new Error(`Node [${id}] is not existed`)
+        selectedIdSets.value.mappedSuperClassIdSet.add(id)
+        vueFlow.addSelectedNodes([node])
+    }
+    const unselectMappedSuperClass = (id: string) => {
+        const vueFlow = getCurrentVueFlow()
+        const node = vueFlow.findNode(id)
+        if (!node) throw new Error(`Node [${id}] is not existed`)
+        selectedIdSets.value.mappedSuperClassIdSet.delete(id)
+        vueFlow.removeSelectedNodes([node])
+    }
+    const selectEmbeddableType = (id: string) => {
+        const contextData = getContextData()
+        if (!contextData.embeddableTypeMap.has(id)) throw new Error(`EmbeddableType [${id}] is not existed`)
+        selectedIdSets.value.embeddableTypeIdSet.add(id)
+    }
+    const unselectEmbeddableType = (id: string) => {
+        selectedIdSets.value.embeddableTypeIdSet.delete(id)
+    }
+    const selectEnumeration = (id: string) => {
+        const contextData = getContextData()
+        if (!contextData.enumerationMap.has(id)) throw new Error(`Enumeration [${id}] is not existed`)
+        selectedIdSets.value.enumerationIdSet.add(id)
+    }
+    const unselectEnumeration = (id: string) => {
+        selectedIdSets.value.enumerationIdSet.delete(id)
+    }
+    const selectAssociation = (id: string) => {
+        const contextData = getContextData()
+        if (!contextData.associationMap.has(id)) throw new Error(`Association [${id}] is not existed`)
+        selectedIdSets.value.associationIdSet.add(id)
+        // TODO sync Edge
+    }
+    const unselectAssociation = (id: string) => {
+        selectedIdSets.value.associationIdSet.delete(id)
+        // TODO sync Edge
+    }
 
-    const getSelection = () => {
+    // Selection 选中部分的图数据
+    const getGraphSelection = () => {
         const vueFlow = getCurrentVueFlow()
         return {
             nodes: vueFlow.getSelectedNodes.value,
@@ -118,7 +206,7 @@ export const useModelEditor = createStore(() => {
         }
     }
 
-    const cleanSelection = () => {
+    const cleanGraphSelection = () => {
         const vueFlow = getCurrentVueFlow()
         vueFlow.removeSelectedNodes(vueFlow.getSelectedNodes.value)
         vueFlow.removeSelectedEdges(vueFlow.getSelectedEdges.value)
@@ -131,8 +219,8 @@ export const useModelEditor = createStore(() => {
         // TODO
     }
 
-    const removeSelection = () => {
-        remove(getSelection())
+    const removeSelected = () => {
+        remove(getGraphSelection())
     }
 
     const focus = () => {
@@ -170,7 +258,7 @@ export const useModelEditor = createStore(() => {
         }
     }
 
-    const selectAll = (vueFlow: VueFlowStore = getCurrentVueFlow()) => {
+    const selectGraphAll = (vueFlow: VueFlowStore = getCurrentVueFlow()) => {
         const isCurrentMultiSelect = vueFlow.multiSelectionActive.value
 
         if (!isCurrentMultiSelect) enableMultiSelect(vueFlow)
@@ -183,7 +271,7 @@ export const useModelEditor = createStore(() => {
         if (!isCurrentMultiSelect) disableMultiSelect(vueFlow)
     }
 
-    const toggleSelectAll = (vueFlow: VueFlowStore = getCurrentVueFlow()) => {
+    const toggleSelectGraphAll = (vueFlow: VueFlowStore = getCurrentVueFlow()) => {
         const isCurrentMultiSelect = vueFlow.multiSelectionActive.value
 
         if (!isCurrentMultiSelect) enableMultiSelect(vueFlow)
@@ -374,7 +462,7 @@ export const useModelEditor = createStore(() => {
             //
 
             /**
-             * 节点移动
+             * 节点移动和选择同步
              */
             const nodeMoveMap = new Map<string, XYPosition>
 
@@ -395,6 +483,33 @@ export const useModelEditor = createStore(() => {
                         }
                     }
                 })
+
+                for (const change of changes) {
+                    if (change.type === "select") {
+                        if (change.selected) {
+                            const node = vueFlow.findNode(change.id)
+                            if (node) node.zIndex = globalZIndex++
+
+                            if (change.id.startsWith("Entity")) {
+                                selectedIdSets.value.entityIdSet.add(change.id)
+                            } else if (change.id.startsWith("MappedSuperClass")) {
+                                selectedIdSets.value.mappedSuperClassIdSet.add(change.id)
+                            }
+                        } else {
+                            if (change.id.startsWith("Entity")) {
+                                selectedIdSets.value.entityIdSet.delete(change.id)
+                            } else if (change.id.startsWith("MappedSuperClass")) {
+                                selectedIdSets.value.mappedSuperClassIdSet.delete(change.id)
+                            }
+                        }
+                    } else if (change.type === "remove") {
+                        if (change.id.startsWith("Entity")) {
+                            selectedIdSets.value.entityIdSet.delete(change.id)
+                        } else if (change.id.startsWith("MappedSuperClass")) {
+                            selectedIdSets.value.mappedSuperClassIdSet.delete(change.id)
+                        }
+                    }
+                }
             })
 
             onNodeDragStart(({nodes}) => {
@@ -477,6 +592,7 @@ export const useModelEditor = createStore(() => {
             //             }
             //         }
             //     })
+            //     TODO edge select sync
             //     vueFlowRef.value?.removeEventListener('selectstart', stopSelectStart)
             // })
 
@@ -517,7 +633,7 @@ export const useModelEditor = createStore(() => {
 
                         e.preventDefault()
 
-                        selectAll()
+                        selectGraphAll()
                     }
                 }
             })
@@ -613,7 +729,7 @@ export const useModelEditor = createStore(() => {
 
                 vueFlow.multiSelectionActive.value = true
                 vueFlow.userSelectionActive.value = true
-                cleanSelection()
+                cleanGraphSelection()
 
                 const start = {x: e.clientX, y: e.clientY}
 
@@ -643,7 +759,7 @@ export const useModelEditor = createStore(() => {
                         y,
                     })
 
-                    cleanSelection()
+                    cleanGraphSelection()
                     vueFlow.addSelectedNodes(nodes)
                     vueFlow.addSelectedEdges(edges)
                 }
@@ -658,7 +774,7 @@ export const useModelEditor = createStore(() => {
                     const newSelectedNodes = vueFlow.getSelectedNodes.value
                     const newSelectedEdges = vueFlow.getSelectedEdges.value
                     setTimeout(() => {
-                        cleanSelection()
+                        cleanGraphSelection()
                         vueFlow.addSelectedNodes(newSelectedNodes)
                         vueFlow.addSelectedEdges(newSelectedEdges)
                         vueFlow.multiSelectionActive.value = false
@@ -719,9 +835,27 @@ export const useModelEditor = createStore(() => {
         executeAsyncBatch: history.executeAsyncBatch,
 
         // 选择
-        getSelection,
-        removeSelection,
+        selectedIdSets: readonly(selectedIdSets),
+        selectGroup,
+        unselectGroup,
+        selectEntity,
+        unselectEntity,
+        selectMappedSuperClass,
+        unselectMappedSuperClass,
+        selectEmbeddableType,
+        unselectEmbeddableType,
+        selectEnumeration,
+        unselectEnumeration,
+        selectAssociation,
+        unselectAssociation,
+
+        getGraphSelection,
+        cleanGraphSelection,
+        selectGraphAll,
+        toggleSelectGraphAll,
+
         remove,
+        removeSelected,
 
         isSelectionNotEmpty,
         isSelectionPlural,
@@ -729,9 +863,6 @@ export const useModelEditor = createStore(() => {
         disableMultiSelect,
         enableMultiSelect,
         toggleMultiSelect,
-
-        selectAll,
-        toggleSelectAll,
 
         // 鼠标行为
         defaultMouseAction: readonly(defaultMouseAction),
@@ -753,7 +884,6 @@ export const useModelEditor = createStore(() => {
         getContext,
 
         menuMap,
-        selectedIdSets,
         currentGroupId,
         toggleCurrentGroup,
 

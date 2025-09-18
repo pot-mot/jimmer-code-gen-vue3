@@ -1,6 +1,6 @@
 import {type CommandDefinition, useCommandHistory} from "@/history/commandHistory.ts";
 import {type VueFlowStore, type XYPosition} from "@vue-flow/core";
-import {type Ref, ref, shallowReadonly, type ShallowRef, watch} from "vue";
+import {computed, reactive, type Ref, ref, shallowReadonly, type ShallowRef, watch} from "vue";
 import {NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";
 import type {MenuItem} from "@/modelEditor/useModelEditor.ts";
 import {NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode.ts";
@@ -188,13 +188,35 @@ export const useModelEditorHistory = (
         const group = cloneDeepReadonlyRaw(options.group)
         contextData.groupMap.set(id, group)
         addGroupWatcher(id)
-        menuMap.value.set(id, {
+
+        menuMap.value.set(id, reactive({
             group,
             entityMap: new Map(),
+            orderedEntities: computed(() => {
+                console.log("sorted")
+                return Array.from(menuMap.value.get(id)?.entityMap.values() ?? []).sort((o1, o2) => {
+                    return o1.name.localeCompare(o2.name)
+                })
+            }),
             mappedSuperClassMap: new Map(),
+            orderedMappedSuperClasses: computed(() => {
+                return Array.from(menuMap.value.get(id)?.mappedSuperClassMap.values() ?? []).sort((o1, o2) => {
+                    return o1.name.localeCompare(o2.name)
+                })
+            }),
             embeddableTypeMap: new Map(),
-            enumerationMap: new Map()
-        })
+            orderedEmbeddableTypes: computed(() => {
+                return Array.from(menuMap.value.get(id)?.embeddableTypeMap.values() ?? []).sort((o1, o2) => {
+                    return o1.name.localeCompare(o2.name)
+                })
+            }),
+            enumerationMap: new Map(),
+            orderedEnumerations: computed(() => {
+                return Array.from(menuMap.value.get(id)?.enumerationMap.values() ?? []).sort((o1, o2) => {
+                    return o1.name.localeCompare(o2.name)
+                })
+            }),
+        }))
         return {id}
     }
     const revertAddGroup = ({id}: DeepReadonly<{ id: string }>) => {
