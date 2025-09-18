@@ -89,6 +89,7 @@ watch(() => isOpen.value, () => {
 }
 
 .caret-left {
+    position: relative;
     display: grid;
     grid-template-columns: 1rem calc(100% - 1rem);
 }
