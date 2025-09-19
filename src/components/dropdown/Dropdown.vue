@@ -38,7 +38,7 @@ onUnmounted(() => {
     <div
         ref="dropdownRef"
         class="dropdown"
-        :class="{ 'disabled': disabled, 'open': isOpen }"
+        :class="{ disabled, open: isOpen }"
     >
         <div class="dropdown-trigger" @click="toggleDropdown">
             <slot name="head"/>
@@ -58,8 +58,6 @@ onUnmounted(() => {
 <style scoped>
 .dropdown {
     position: relative;
-    width: 100%;
-    min-width: 120px;
     font-family: Arial, sans-serif;
 }
 
@@ -67,33 +65,26 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 12px;
-    border: 1px solid #dcdfe6;
-    border-radius: 4px;
-    background-color: #fff;
+    padding: 0.5rem;
+    border: var(--border);
+    border-color: var(--background-color-hover);
+    border-radius: var(--border-radius);
+    background-color: var(--background-color);
     cursor: pointer;
-    transition: border-color 0.2s;
 }
 
-.dropdown-trigger:hover {
-    border-color: #409eff;
-}
-
-.dropdown.disabled .dropdown-trigger {
-    background-color: #f5f7fa;
+.disabled .dropdown-trigger {
     cursor: not-allowed;
-    color: #c0c4cc;
+    pointer-events: none;
 }
 
-.dropdown.disabled .dropdown-trigger:hover {
-    border-color: #dcdfe6;
+.open .dropdown-trigger {
+    border-color: var(--border-color);
 }
 
 .dropdown-arrow {
     margin-left: 8px;
-    transition: transform 0.2s;
-    font-size: 12px;
-    color: #909399;
+    transition: transform 0.3s;
 }
 
 .dropdown-arrow.rotated {
@@ -106,11 +97,11 @@ onUnmounted(() => {
     left: 0;
     right: 0;
     margin-top: 4px;
-    border: 1px solid #dcdfe6;
-    border-radius: 4px;
-    background-color: #fff;
+    border: var(--border);
+    border-radius: var(--border-radius);
+    background-color: var(--background-color);
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+    z-index: var(--picker-z-index);
     max-height: 200px;
     overflow-y: auto;
 }
