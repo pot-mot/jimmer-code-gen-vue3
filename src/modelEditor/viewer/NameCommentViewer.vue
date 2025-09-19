@@ -1,12 +1,14 @@
 <script setup lang="ts">
 defineProps<{
-    data: DeepReadonly<{name: string, comment: string}>
+    data: DeepReadonly<{ name: string, comment: string }>
 }>()
 </script>
 
 <template>
-    <span class="name" v-if="data.name">{{ data.name }}</span>
-    <span class="comment" v-if="data.comment">/* {{ data.comment }} */</span>
+    <span>
+        <span class="name" v-if="data.name">{{ data.name }}</span>
+        <span class="comment" v-if="data.comment">/* {{ data.comment }} */</span>
+    </span>
 </template>
 
 <style scoped>
