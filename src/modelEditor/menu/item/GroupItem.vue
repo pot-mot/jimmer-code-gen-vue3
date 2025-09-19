@@ -1,15 +1,34 @@
 <script setup lang="ts">
-import ColorInput from "@/components/color/ColorInput.vue";
+import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
+import GroupViewer from "@/modelEditor/viewer/GroupViewer.vue";
+import {computed} from "vue";
 
-defineProps<{
+const props = defineProps<{
     group: Group
 }>()
+
+const {selectedIdSets, selectGroup, unselectGroup} = useModelEditor()
+
+const isSelected = computed(() => {
+    return selectedIdSets.value.groupIdSet.has(props.group.id)
+})
+
+const handleClick = (event: MouseEvent) => {
+    const id = props.group.id
+    if (event.ctrlKey) {
+        selectGroup(id)
+    } else {
+        if (isSelected.value) {
+            unselectGroup(id)
+        } else {
+            selectGroup(id)
+        }
+    }
+}
 </script>
 
 <template>
-    <div>
-        <input v-model="group.name"/>
-        <input v-model="group.comment"/>
-        <ColorInput v-model="group.color"/>
+    <div class="menu-item group-item" :class="{selected: isSelected}" @click="handleClick($event)">
+        <GroupViewer :group="group"/>
     </div>
 </template>

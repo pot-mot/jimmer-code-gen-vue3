@@ -15,6 +15,7 @@ import {jsonSortPropStringify} from "@/utils/json/jsonStringify.ts";
 import type {LazyData} from "@/utils/type/lazyDataParse.ts";
 import {contextDataToContext} from "@/type/context/utils/ModelContext.ts";
 import {v7 as uuid} from "uuid";
+import {defaultEntity, defaultGroup, defaultModel} from "@/type/context/default/modelDefaults.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -29,7 +30,7 @@ export type MenuItem = {
     orderedEnumerations: ReadonlyArray<Enumeration>,
 }
 
-export const createId = (type: "Entity" | "Property" | "MappedSuperClass" | "EmbeddableType" | "Enumeration" | "Association" | "Group") => {
+export const createId = (type: "Model" | "Entity" | "Property" | "MappedSuperClass" | "EmbeddableType" | "Enumeration" | "Association" | "Group") => {
     return `${type}_${uuid()}`
 }
 
@@ -49,25 +50,8 @@ export const useModelEditor = createStore(() => {
         return vueFlow.value
     }
 
-    // TODO to getDefault or fetch
-    const contextData = ref<ModelContextData | undefined>({
-        model: {
-            id: "",
-            name: "Model",
-            description: "",
-            createdTime: "",
-            modifiedTime: "",
-            database: "POSTGRESQL",
-            language: "KOTLIN"
-        },
-        entityMap: new Map(),
-        mappedSuperClassMap: new Map(),
-        embeddableTypeMap: new Map(),
-        enumerationMap: new Map(),
-        groupMap: new Map(),
-        associationMap: new Map(),
-        types: [],
-    })
+    // TODO to fetch
+    const contextData = ref<ModelContextData | undefined>(defaultModel())
     const getContextData = () => {
         if (!contextData.value) {
             throw new Error("ContextData is not available")
@@ -97,18 +81,12 @@ export const useModelEditor = createStore(() => {
         canUndo,
         canRedo,
         menuMap,
+        noEffect,
     } = useModelEditorHistory({vueFlow, contextData})
 
-    // TODO to getDefault or fetch
-    const result = history.executeCommand("group:add", {
-        group: {
-            id: createId("Group"),
-            name: "Default",
-            comment: "",
-            color: "",
-            basePackagePath: "",
-            baseTableSchema: ""
-        }
+    // TODO to fetch
+    const result = noEffect.group.add({
+        group: defaultGroup()
     })
     toggleCurrentGroup({id: result.id})
 
@@ -130,9 +108,20 @@ export const useModelEditor = createStore(() => {
         enumerationIdSet: new Set<string>(),
         associationIdSet: new Set<string>(),
     })
+    const clearSelectedIdSets = () => {
+        if (selectedIdSets.value.groupIdSet.size > 0) selectedIdSets.value.groupIdSet.clear()
+        if (selectedIdSets.value.entityIdSet.size > 0) selectedIdSets.value.entityIdSet.clear()
+        if (selectedIdSets.value.mappedSuperClassIdSet.size > 0) selectedIdSets.value.mappedSuperClassIdSet.clear()
+        if (selectedIdSets.value.embeddableTypeIdSet.size > 0) selectedIdSets.value.embeddableTypeIdSet.clear()
+        if (selectedIdSets.value.enumerationIdSet.size > 0) selectedIdSets.value.enumerationIdSet.clear()
+        if (selectedIdSets.value.associationIdSet.size > 0) selectedIdSets.value.associationIdSet.clear()
+        clearGraphSelection()
+    }
     const selectGroup = (id: string) => {
         const contextData = getContextData()
         if (!contextData.groupMap.has(id)) throw new Error(`Group [${id}] is not existed`)
+
+        if (!canMultiSelect.value) clearSelectedIdSets()
         selectedIdSets.value.groupIdSet.add(id)
     }
     const unselectGroup = (id: string) => {
@@ -144,6 +133,8 @@ export const useModelEditor = createStore(() => {
         if (!contextData.entityMap.has(id)) throw new Error(`Entity [${id}] is not existed`)
         const node = vueFlow.findNode(id)
         if (!node) throw new Error(`Node [${id}] is not existed`)
+
+        if (!canMultiSelect.value) clearSelectedIdSets()
         selectedIdSets.value.entityIdSet.add(id)
         vueFlow.addSelectedNodes([node])
     }
@@ -160,6 +151,8 @@ export const useModelEditor = createStore(() => {
         if (!contextData.mappedSuperClassMap.has(id)) throw new Error(`MappedSuperClass [${id}] is not existed`)
         const node = vueFlow.findNode(id)
         if (!node) throw new Error(`Node [${id}] is not existed`)
+
+        if (!canMultiSelect.value) clearSelectedIdSets()
         selectedIdSets.value.mappedSuperClassIdSet.add(id)
         vueFlow.addSelectedNodes([node])
     }
@@ -173,6 +166,8 @@ export const useModelEditor = createStore(() => {
     const selectEmbeddableType = (id: string) => {
         const contextData = getContextData()
         if (!contextData.embeddableTypeMap.has(id)) throw new Error(`EmbeddableType [${id}] is not existed`)
+
+        if (!canMultiSelect.value) clearSelectedIdSets()
         selectedIdSets.value.embeddableTypeIdSet.add(id)
     }
     const unselectEmbeddableType = (id: string) => {
@@ -181,6 +176,8 @@ export const useModelEditor = createStore(() => {
     const selectEnumeration = (id: string) => {
         const contextData = getContextData()
         if (!contextData.enumerationMap.has(id)) throw new Error(`Enumeration [${id}] is not existed`)
+
+        if (!canMultiSelect.value) clearSelectedIdSets()
         selectedIdSets.value.enumerationIdSet.add(id)
     }
     const unselectEnumeration = (id: string) => {
@@ -189,6 +186,8 @@ export const useModelEditor = createStore(() => {
     const selectAssociation = (id: string) => {
         const contextData = getContextData()
         if (!contextData.associationMap.has(id)) throw new Error(`Association [${id}] is not existed`)
+
+        if (!canMultiSelect.value) clearSelectedIdSets()
         selectedIdSets.value.associationIdSet.add(id)
         // TODO sync Edge
     }
@@ -206,7 +205,7 @@ export const useModelEditor = createStore(() => {
         }
     }
 
-    const cleanGraphSelection = () => {
+    const clearGraphSelection = () => {
         const vueFlow = getCurrentVueFlow()
         vueFlow.removeSelectedNodes(vueFlow.getSelectedNodes.value)
         vueFlow.removeSelectedEdges(vueFlow.getSelectedEdges.value)
@@ -232,11 +231,11 @@ export const useModelEditor = createStore(() => {
     /**
      * 点击多选相关配置
      */
-    const isSelectionNotEmpty = computed(() => {
+    const isGraphSelectionNotEmpty = computed(() => {
         const vueFlow = getCurrentVueFlow()
         return (vueFlow.getSelectedNodes.value.length + vueFlow.getSelectedEdges.value.length) > 0
     })
-    const isSelectionPlural = computed(() => {
+    const isGraphSelectionPlural = computed(() => {
         const vueFlow = getCurrentVueFlow()
         return (vueFlow.getSelectedNodes.value.length + vueFlow.getSelectedEdges.value.length) > 1
     })
@@ -602,13 +601,11 @@ export const useModelEditor = createStore(() => {
             el.addEventListener('keydown', (e) => {
                 // 按下 Delete 键删除选中的节点和边
                 if (e.key === "Delete") {
-                    if (getSelectedNodes.value.length === 0 && getSelectedEdges.value.length === 0) return
-
                     e.preventDefault()
 
+                    // TODO
                     remove({nodes: getSelectedNodes.value, edges: getSelectedEdges.value})
                 }
-
                 // 按下 Ctrl 键进入多选模式，直到松开 Ctrl 键
                 else if (e.key === "Control") {
                     enableMultiSelect(vueFlow)
@@ -671,22 +668,12 @@ export const useModelEditor = createStore(() => {
                         ) {
                             const groupId = currentGroupId.value
                             if (groupId === undefined) {
-                                sendMessage("请选择一个组", {type: "info"})
+                                sendMessage("Please select an Group", {type: "info"})
                                 return
                             }
                             history.executeCommand("entity:add", {
                                 position: screenToFlowCoordinate(currentMousePosition),
-                                entity: {
-                                    groupId,
-                                    id: createId("Entity"),
-                                    name: "Entity",
-                                    comment: "",
-                                    subPackagePath: "",
-                                    tableName: "",
-                                    extendsIds: [],
-                                    extraImports: [],
-                                    extraAnnotations: [],
-                                }
+                                entity: defaultEntity(groupId),
                             })
                         }
                     }
@@ -729,7 +716,7 @@ export const useModelEditor = createStore(() => {
 
                 vueFlow.multiSelectionActive.value = true
                 vueFlow.userSelectionActive.value = true
-                cleanGraphSelection()
+                clearGraphSelection()
 
                 const start = {x: e.clientX, y: e.clientY}
 
@@ -759,7 +746,7 @@ export const useModelEditor = createStore(() => {
                         y,
                     })
 
-                    cleanGraphSelection()
+                    clearGraphSelection()
                     vueFlow.addSelectedNodes(nodes)
                     vueFlow.addSelectedEdges(edges)
                 }
@@ -774,7 +761,7 @@ export const useModelEditor = createStore(() => {
                     const newSelectedNodes = vueFlow.getSelectedNodes.value
                     const newSelectedEdges = vueFlow.getSelectedEdges.value
                     setTimeout(() => {
-                        cleanGraphSelection()
+                        clearGraphSelection()
                         vueFlow.addSelectedNodes(newSelectedNodes)
                         vueFlow.addSelectedEdges(newSelectedEdges)
                         vueFlow.multiSelectionActive.value = false
@@ -836,6 +823,7 @@ export const useModelEditor = createStore(() => {
 
         // 选择
         selectedIdSets: readonly(selectedIdSets),
+        clearSelectedIdSets,
         selectGroup,
         unselectGroup,
         selectEntity,
@@ -850,15 +838,15 @@ export const useModelEditor = createStore(() => {
         unselectAssociation,
 
         getGraphSelection,
-        cleanGraphSelection,
+        clearGraphSelection,
         selectGraphAll,
         toggleSelectGraphAll,
 
         remove,
         removeSelected,
 
-        isSelectionNotEmpty,
-        isSelectionPlural,
+        isGraphSelectionNotEmpty,
+        isGraphSelectionPlural,
         canMultiSelect,
         disableMultiSelect,
         enableMultiSelect,

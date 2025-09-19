@@ -29,7 +29,7 @@ export type ModelEditorHistoryCommands = {
     }>>
 
     "entity:add": CommandDefinition<DeepReadonly<{
-        entity: Entity
+        entity: EntityWithProperties
         position: XYPosition
     }>, DeepReadonly<{
         id: string
@@ -39,7 +39,7 @@ export type ModelEditorHistoryCommands = {
     }>>
 
     "mapped-super-class:add": CommandDefinition<DeepReadonly<{
-        mappedSuperClass: MappedSuperClass
+        mappedSuperClass: MappedSuperClassWithProperties
         position: XYPosition
     }>, DeepReadonly<{
         id: string
@@ -298,7 +298,7 @@ export const useModelEditorHistory = (
         entityWatchStopMap.delete(id)
     }
 
-    const addEntity = (options: DeepReadonly<{ entity: Entity; position: XYPosition }>) => {
+    const addEntity = (options: DeepReadonly<{ entity: EntityWithProperties; position: XYPosition }>) => {
         const groupId = options.entity.groupId
         const id = options.entity.id
         const contextData = getContextData()
@@ -312,10 +312,7 @@ export const useModelEditorHistory = (
         if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
         if (menuItem.entityMap.has(id)) throw new Error(`Entity [${id}] is already existed in group [${groupId}]`)
 
-        const entity = cloneDeepReadonlyRaw<EntityWithProperties>({
-            ...options.entity,
-            properties: []
-        })
+        const entity = cloneDeepReadonlyRaw<EntityWithProperties>(options.entity)
         contextData.entityMap.set(id, entity)
         addEntityWatcher(id)
         menuItem.entityMap.set(id, entity)
@@ -425,7 +422,7 @@ export const useModelEditorHistory = (
     }
 
     const addMappedSuperClass = (options: DeepReadonly<{
-        mappedSuperClass: MappedSuperClass;
+        mappedSuperClass: MappedSuperClassWithProperties
         position: XYPosition
     }>) => {
         const id = options.mappedSuperClass.id
@@ -439,10 +436,7 @@ export const useModelEditorHistory = (
         if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
         if (menuItem.entityMap.has(id)) throw new Error(`MappedSuperClass [${id}] is already existed in group [${groupId}]`)
 
-        const mappedSuperClass = cloneDeepReadonlyRaw<MappedSuperClassWithProperties>({
-            ...options.mappedSuperClass,
-            properties: []
-        })
+        const mappedSuperClass = cloneDeepReadonlyRaw<MappedSuperClassWithProperties>(options.mappedSuperClass)
         contextData.mappedSuperClassMap.set(id, mappedSuperClass)
         addMappedSuperClassWatcher(id)
         menuItem.mappedSuperClassMap.set(id, mappedSuperClass)

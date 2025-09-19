@@ -15,7 +15,7 @@ const {
     undo,
     redo,
     saveModel,
-    isSelectionNotEmpty,
+    isGraphSelectionNotEmpty,
     copy,
     cut,
     paste,
@@ -48,13 +48,13 @@ const handleKeyDown = async (e: KeyboardEvent) => {
             await saveModel()
         } else if (e.key === "c" || e.key === "C") {
             if (judgeTargetIsInteraction(e)) return
-            if (!isSelectionNotEmpty.value) return
+            if (!isGraphSelectionNotEmpty.value) return
 
             e.preventDefault()
             await copy()
         } else if (e.key === "x" || e.key === "X") {
             if (judgeTargetIsInteraction(e)) return
-            if (!isSelectionNotEmpty.value) return
+            if (!isGraphSelectionNotEmpty.value) return
 
             e.preventDefault()
             await cut()
