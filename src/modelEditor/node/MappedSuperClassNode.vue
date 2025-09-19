@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {type NodeProps} from "@vue-flow/core";
+import {Handle, type NodeProps} from "@vue-flow/core";
 import type {MappedSuperClassNode} from "@/modelEditor/node/MappedSuperClassNode.ts";
 import PropertyTypeSelect from "@/modelEditor/form/property/PropertyTypeSelect.vue";
 import FitSizeLineInput from "@/components/input/FitSizeLineInput.vue";
@@ -21,9 +21,9 @@ const beforePaste = (properties: Property[]) => {
 <template>
     <div class="mapped-super-class-node" :class="{selected}">
         <div class="mapped-super-class-header">
-            <FitSizeLineInput class="noDrag" v-model="data.mappedSuperClass.name"/>
-            <FitSizeLineInput class="noDrag" v-model="data.mappedSuperClass.comment"/>
-            <MappedSuperClassIdMultiSelect v-model="data.mappedSuperClass.extendsIds"/>
+            <FitSizeLineInput class="noDrag" :line-height="16" :font-size="16" v-model="data.mappedSuperClass.name"/>
+            <FitSizeLineInput class="noDrag" :line-height="16" :font-size="16" v-model="data.mappedSuperClass.comment"/>
+            <MappedSuperClassIdMultiSelect style="font-size: 16px; line-height: 32px;" v-model="data.mappedSuperClass.extendsIds"/>
         </div>
 
         <EditList
@@ -34,10 +34,15 @@ const beforePaste = (properties: Property[]) => {
         >
             <template #line="{item, index}">
                 <div class="mapped-super-class-property">
-                    <FitSizeLineInput class="noDrag" v-model="item.name"/>
-                    <FitSizeLineInput class="noDrag" v-model="item.comment"/>
-                    <PropertyTypeSelect class="noDrag" v-model="data.mappedSuperClass.properties[index]"/>
-                    <input type="checkbox" class="noDrag" v-model="item.nullable">
+                    <Handle :id="item.id" :style="{transform: 'translateY(-50%)', top: '50%', left: '50%'}"/>
+
+                    <div class="mapped-super-class-property-view">
+                        <span>
+                            <FitSizeLineInput class="noDrag" :line-height="14" :font-size="14" v-model="item.name"/>
+                            <FitSizeLineInput class="noDrag" :line-height="14" :font-size="14" v-model="item.comment"/>
+                        </span>
+                        <PropertyTypeSelect style="font-size: 14px; line-height: 30px;" v-model="data.mappedSuperClass.properties[index]"/>
+                    </div>
                 </div>
             </template>
         </EditList>
@@ -49,7 +54,6 @@ const beforePaste = (properties: Property[]) => {
     background-color: var(--background-color);
     border: var(--border);
     border-radius: var(--border-radius);
-    padding: 0.5rem;
     border-style: dashed;
 }
 
@@ -60,12 +64,18 @@ const beforePaste = (properties: Property[]) => {
 
 .mapped-super-class-header {
     display: flex;
-    gap: 0.2rem;
+    gap: 0.4em;
+    padding: 0.75em 0.5em 0.25em;
 }
 
 .mapped-super-class-property {
-    padding: 0.2rem 0;
+    position: relative;
+    padding: 0.25em 0.75em;
+}
+
+.mapped-super-class-property-view {
     display: flex;
-    gap: 0.2rem;
+    justify-content: space-between;
+    gap: 0.5em;
 }
 </style>
