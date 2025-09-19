@@ -131,7 +131,7 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
                 const value = JSON.parse(text)
                 const tempLines = getTempLines()
 
-                let insertIndex = selectedItemSet.value.size > 0 ? Math.max(...selectedItemSet.value.values()) + 1 : selectedItems.length
+                let insertIndex = selectedItemSet.value.size > 0 ? Math.max(...selectedItemSet.value.values()) + 1 : tempLines.length
 
                 let insertLength = 0
 
