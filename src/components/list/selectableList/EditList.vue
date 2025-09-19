@@ -286,6 +286,14 @@ defineExpose({
 
 <template>
     <div class="edit-list" tabindex="-1" @keydown="handleListClipBoardEvent">
+        <slot
+            name="head"
+            :lines="lines"
+            :getDefaultLine="getDefaultLine"
+            :handleAddLine="handleAddLine"
+            :handleRemoveLine="handleRemoveLine"
+        />
+
         <div class="edit-list-body" ref="editListBody">
             <div
                 v-for="(item, index) in lines"
@@ -295,20 +303,20 @@ defineExpose({
             >
                 <slot name="line" :item="item" :index="index"/>
             </div>
-
-            <slot
-                name="tail"
-                :lines="lines"
-                :getDefaultLine="getDefaultLine"
-                :handleAddLine="handleAddLine"
-                :handleRemoveLine="handleRemoveLine"
-            >
-                <div style="margin: auto; width: min(40%, 6em);">
-                    <button style="width: 100%" @click="handleAddLine()">
-                        <IconAdd/>
-                    </button>
-                </div>
-            </slot>
         </div>
+
+        <slot
+            name="tail"
+            :lines="lines"
+            :getDefaultLine="getDefaultLine"
+            :handleAddLine="handleAddLine"
+            :handleRemoveLine="handleRemoveLine"
+        >
+            <div style="margin: auto; width: min(40%, 6em);">
+                <button style="width: 100%" @click="handleAddLine()">
+                    <IconAdd/>
+                </button>
+            </div>
+        </slot>
     </div>
 </template>
