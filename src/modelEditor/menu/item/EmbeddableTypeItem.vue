@@ -7,28 +7,15 @@ const props = defineProps<{
     embeddableType: EmbeddableTypeWithProperties
 }>()
 
-const {selectedIdSets, selectEmbeddableType, unselectEmbeddableType} = useModelEditor()
+const {selectedIdSets} = useModelEditor()
 
 const isSelected = computed(() => {
     return selectedIdSets.value.embeddableTypeIdSet.has(props.embeddableType.id)
 })
-
-const handleClick = (event: MouseEvent) => {
-    const id = props.embeddableType.id
-    if (event.ctrlKey) {
-        selectEmbeddableType(id)
-    } else {
-        if (isSelected.value) {
-            unselectEmbeddableType(id)
-        } else {
-            selectEmbeddableType(id)
-        }
-    }
-}
 </script>
 
 <template>
-    <div class="menu-item embeddable-type-item" :class="{selected: isSelected}" @click="handleClick($event)">
+    <div class="menu-item embeddable-type-item" :class="{selected: isSelected}">
         <EmbeddableTypeViewer :embeddable-type="embeddableType"/>
     </div>
 </template>

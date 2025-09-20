@@ -41,7 +41,7 @@ const beforePaste = (properties: Property[]) => {
                             <FitSizeLineInput class="noDrag" :line-height="14" :font-size="14" v-model="item.name"/>
                             <FitSizeLineInput class="noDrag" :line-height="14" :font-size="14" v-model="item.comment"/>
                         </span>
-                        <PropertyTypeSelect style="font-size: 14px; line-height: 30px;" v-model="data.entity.properties[index]"/>
+                        <PropertyTypeSelect class="noDrag noWheel" style="font-size: 14px; line-height: 30px;" v-model="data.entity.properties[index]"/>
                     </div>
                 </div>
             </template>

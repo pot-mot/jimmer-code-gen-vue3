@@ -16,6 +16,7 @@ import type {LazyData} from "@/utils/type/lazyDataParse.ts";
 import {contextDataToContext} from "@/type/context/utils/ModelContext.ts";
 import {v7 as uuid} from "uuid";
 import {defaultEntity, defaultGroup, defaultModel} from "@/type/context/default/modelDefaults.ts";
+import mitt from "mitt";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -30,7 +31,7 @@ export type MenuItem = {
     orderedEnumerations: ReadonlyArray<Enumeration>,
 }
 
-export const createId = (type: "Model" | "Entity" | "Property" | "MappedSuperClass" | "EmbeddableType" | "Enumeration" | "Association" | "Group") => {
+export const createId = (type: "Model" | "Entity" | "Property" | "MappedSuperClass" | "EmbeddableType" | "Enumeration" | "EnumerationItem" | "Association" | "Group") => {
     return `${type}_${uuid()}`
 }
 
@@ -117,15 +118,26 @@ export const useModelEditor = createStore(() => {
         if (selectedIdSets.value.associationIdSet.size > 0) selectedIdSets.value.associationIdSet.clear()
         clearGraphSelection()
     }
+    const modelSelectionEventBus = mitt<{
+        "group": {id: string, selected: boolean},
+        "entity": {id: string, selected: boolean},
+        "mappedSuperClass": {id: string, selected: boolean},
+        "embeddableType": {id: string, selected: boolean},
+        "enumeration": {id: string, selected: boolean},
+        "association": {id: string, selected: boolean},
+    }>()
+
     const selectGroup = (id: string) => {
         const contextData = getContextData()
         if (!contextData.groupMap.has(id)) throw new Error(`Group [${id}] is not existed`)
 
         if (!canMultiSelect.value) clearSelectedIdSets()
         selectedIdSets.value.groupIdSet.add(id)
+        modelSelectionEventBus.emit('group', {id, selected: true})
     }
     const unselectGroup = (id: string) => {
         selectedIdSets.value.groupIdSet.delete(id)
+        modelSelectionEventBus.emit('group', {id, selected: false})
     }
     const selectEntity = (id: string) => {
         const contextData = getContextData()
@@ -137,6 +149,7 @@ export const useModelEditor = createStore(() => {
         if (!canMultiSelect.value) clearSelectedIdSets()
         selectedIdSets.value.entityIdSet.add(id)
         vueFlow.addSelectedNodes([node])
+        modelSelectionEventBus.emit('entity', {id, selected: true})
     }
     const unselectEntity = (id: string) => {
         const vueFlow = getCurrentVueFlow()
@@ -144,6 +157,7 @@ export const useModelEditor = createStore(() => {
         if (!node) throw new Error(`Node [${id}] is not existed`)
         selectedIdSets.value.entityIdSet.delete(id)
         vueFlow.removeSelectedNodes([node])
+        modelSelectionEventBus.emit('entity', {id, selected: false})
     }
     const selectMappedSuperClass = (id: string) => {
         const contextData = getContextData()
@@ -155,6 +169,7 @@ export const useModelEditor = createStore(() => {
         if (!canMultiSelect.value) clearSelectedIdSets()
         selectedIdSets.value.mappedSuperClassIdSet.add(id)
         vueFlow.addSelectedNodes([node])
+        modelSelectionEventBus.emit('mappedSuperClass', {id, selected: true})
     }
     const unselectMappedSuperClass = (id: string) => {
         const vueFlow = getCurrentVueFlow()
@@ -162,6 +177,7 @@ export const useModelEditor = createStore(() => {
         if (!node) throw new Error(`Node [${id}] is not existed`)
         selectedIdSets.value.mappedSuperClassIdSet.delete(id)
         vueFlow.removeSelectedNodes([node])
+        modelSelectionEventBus.emit('mappedSuperClass', {id, selected: false})
     }
     const selectEmbeddableType = (id: string) => {
         const contextData = getContextData()
@@ -169,9 +185,11 @@ export const useModelEditor = createStore(() => {
 
         if (!canMultiSelect.value) clearSelectedIdSets()
         selectedIdSets.value.embeddableTypeIdSet.add(id)
+        modelSelectionEventBus.emit('embeddableType', {id, selected: true})
     }
     const unselectEmbeddableType = (id: string) => {
         selectedIdSets.value.embeddableTypeIdSet.delete(id)
+        modelSelectionEventBus.emit('embeddableType', {id, selected: false})
     }
     const selectEnumeration = (id: string) => {
         const contextData = getContextData()
@@ -179,9 +197,11 @@ export const useModelEditor = createStore(() => {
 
         if (!canMultiSelect.value) clearSelectedIdSets()
         selectedIdSets.value.enumerationIdSet.add(id)
+        modelSelectionEventBus.emit('enumeration', {id, selected: true})
     }
     const unselectEnumeration = (id: string) => {
         selectedIdSets.value.enumerationIdSet.delete(id)
+        modelSelectionEventBus.emit('enumeration', {id, selected: false})
     }
     const selectAssociation = (id: string) => {
         const contextData = getContextData()
@@ -189,10 +209,12 @@ export const useModelEditor = createStore(() => {
 
         if (!canMultiSelect.value) clearSelectedIdSets()
         selectedIdSets.value.associationIdSet.add(id)
+        modelSelectionEventBus.emit('association', {id, selected: true})
         // TODO sync Edge
     }
     const unselectAssociation = (id: string) => {
         selectedIdSets.value.associationIdSet.delete(id)
+        modelSelectionEventBus.emit('association', {id, selected: false})
         // TODO sync Edge
     }
 
@@ -216,10 +238,6 @@ export const useModelEditor = createStore(() => {
         withMessage: boolean = true,
     ) => {
         // TODO
-    }
-
-    const removeSelected = () => {
-        remove(getGraphSelection())
     }
 
     const focus = () => {
@@ -491,21 +509,31 @@ export const useModelEditor = createStore(() => {
 
                             if (change.id.startsWith("Entity")) {
                                 selectedIdSets.value.entityIdSet.add(change.id)
+                                modelSelectionEventBus.emit('entity', {id: change.id, selected: true})
                             } else if (change.id.startsWith("MappedSuperClass")) {
                                 selectedIdSets.value.mappedSuperClassIdSet.add(change.id)
+                                modelSelectionEventBus.emit('mappedSuperClass', {id: change.id, selected: true})
                             }
                         } else {
                             if (change.id.startsWith("Entity")) {
                                 selectedIdSets.value.entityIdSet.delete(change.id)
+                                modelSelectionEventBus.emit('entity', {id: change.id, selected: false})
                             } else if (change.id.startsWith("MappedSuperClass")) {
                                 selectedIdSets.value.mappedSuperClassIdSet.delete(change.id)
+                                modelSelectionEventBus.emit('mappedSuperClass', {id: change.id, selected: false})
                             }
                         }
                     } else if (change.type === "remove") {
                         if (change.id.startsWith("Entity")) {
-                            selectedIdSets.value.entityIdSet.delete(change.id)
+                            if (selectedIdSets.value.entityIdSet.has(change.id)) {
+                                selectedIdSets.value.entityIdSet.delete(change.id)
+                                modelSelectionEventBus.emit('entity', {id: change.id, selected: false})
+                            }
                         } else if (change.id.startsWith("MappedSuperClass")) {
-                            selectedIdSets.value.mappedSuperClassIdSet.delete(change.id)
+                            if (selectedIdSets.value.mappedSuperClassIdSet.has(change.id)) {
+                                selectedIdSets.value.mappedSuperClassIdSet.delete(change.id)
+                                modelSelectionEventBus.emit('mappedSuperClass', {id: change.id, selected: false})
+                            }
                         }
                     }
                 }
@@ -824,26 +852,31 @@ export const useModelEditor = createStore(() => {
         // 选择
         selectedIdSets: readonly(selectedIdSets),
         clearSelectedIdSets,
-        selectGroup,
-        unselectGroup,
-        selectEntity,
-        unselectEntity,
-        selectMappedSuperClass,
-        unselectMappedSuperClass,
-        selectEmbeddableType,
-        unselectEmbeddableType,
-        selectEnumeration,
-        unselectEnumeration,
-        selectAssociation,
-        unselectAssociation,
+        modelSelection: {
+            eventBus: modelSelectionEventBus,
+            selectGroup,
+            unselectGroup,
+            selectEntity,
+            unselectEntity,
+            selectMappedSuperClass,
+            unselectMappedSuperClass,
+            selectEmbeddableType,
+            unselectEmbeddableType,
+            selectEnumeration,
+            unselectEnumeration,
+            selectAssociation,
+            unselectAssociation,
+        },
 
         getGraphSelection,
         clearGraphSelection,
-        selectGraphAll,
-        toggleSelectGraphAll,
+        graphSelection: {
+            selectAll: selectGraphAll,
+            unselectAll: clearGraphSelection,
+            toggleSelectAll: toggleSelectGraphAll,
+        },
 
         remove,
-        removeSelected,
 
         isGraphSelectionNotEmpty,
         isGraphSelectionPlural,

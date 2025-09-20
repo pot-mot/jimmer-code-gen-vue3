@@ -7,28 +7,15 @@ const props = defineProps<{
     group: Group
 }>()
 
-const {selectedIdSets, selectGroup, unselectGroup} = useModelEditor()
+const {selectedIdSets} = useModelEditor()
 
 const isSelected = computed(() => {
     return selectedIdSets.value.groupIdSet.has(props.group.id)
 })
-
-const handleClick = (event: MouseEvent) => {
-    const id = props.group.id
-    if (event.ctrlKey) {
-        selectGroup(id)
-    } else {
-        if (isSelected.value) {
-            unselectGroup(id)
-        } else {
-            selectGroup(id)
-        }
-    }
-}
 </script>
 
 <template>
-    <div class="menu-item group-item" :class="{selected: isSelected}" @click="handleClick($event)">
+    <div class="menu-item group-item" :class="{selected: isSelected}">
         <GroupViewer :group="group"/>
     </div>
 </template>
