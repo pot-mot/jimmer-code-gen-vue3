@@ -4,7 +4,7 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 import {MappedSuperClassWithProperties_JsonSchema} from "@/type/context/jsonSchema/MappedSuperClassWithProperties.ts";
 import {EntityWithProperties_JsonSchema} from "@/type/context/jsonSchema/EntityWithProperties.ts";
 
-export const NodeType_MappedSuperClass = "MAPPED_SUPER_CLASS_NODE" as const
+export const NodeType_MappedSuperClass = "MAPPED_SUPER_CLASS" as const
 
 export type MappedSuperClassNode = Pick<GraphNode, 'id' | 'position'> & {
     type: typeof NodeType_MappedSuperClass
@@ -18,7 +18,7 @@ export const MappedSuperClassNode_JsonSchema: JSONSchemaType<MappedSuperClassNod
     required: ["id", "type", "position", "data"],
     properties: {
         id: {type: "string"},
-        type: {type: "string", enum: ["MAPPED_SUPER_CLASS_NODE"]},
+        type: {type: "string", enum: [NodeType_MappedSuperClass]},
         position: {
             type: "object",
             required: ["x", "y"],

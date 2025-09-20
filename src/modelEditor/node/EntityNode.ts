@@ -3,7 +3,7 @@ import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
 import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 import {EntityWithProperties_JsonSchema} from "@/type/context/jsonSchema/EntityWithProperties.ts";
 
-export const NodeType_Entity = "ENTITY_NODE" as const
+export const NodeType_Entity = "ENTITY" as const
 
 export type EntityNode = Pick<GraphNode, 'id' | 'position'> & {
     type: typeof NodeType_Entity
@@ -17,7 +17,7 @@ export const EntityNode_JsonSchema: JSONSchemaType<EntityNode> = {
     required: ["id", "type", "position", "data"],
     properties: {
         id: {type: "string"},
-        type: {type: "string", enum: ["ENTITY_NODE"]},
+        type: {type: "string", enum: [NodeType_Entity]},
         position: {
             type: "object",
             required: ["x", "y"],

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
+import {CreateType_CONSTANTS, useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {computed, onBeforeMount, onUnmounted, useTemplateRef} from "vue";
 import {judgeTarget} from "@/utils/event/judgeEventTarget.ts";
 import SelectableTree from "@/components/tree/SelectableTree.vue";
@@ -11,6 +11,8 @@ import EmbeddableTypeItem from "@/modelEditor/menu/item/EmbeddableTypeItem.vue";
 import EnumerationItem from "@/modelEditor/menu/item/EnumerationItem.vue";
 
 const {
+    createType,
+
     menuMap,
     canMultiSelect,
     enableMultiSelect,
@@ -126,6 +128,17 @@ onUnmounted(() => {
         @click="handleClick($event)"
         class="model-editor-menu"
     >
+        <div class="create-type-select">
+            <button
+                v-for="item in CreateType_CONSTANTS"
+                class="create-type-item"
+                :class="{selected: item === createType}"
+                @click="createType = item"
+            >
+                {{ item }}
+            </button>
+        </div>
+
         <SelectableTree
             ref="treeRef"
             :data="menuItemTrees"
@@ -161,5 +174,13 @@ onUnmounted(() => {
 
 :deep(.menu-item) {
     display: flex;
+}
+
+.create-type-item {
+    padding-left: 0.5rem;
+}
+
+.create-type-item.selected {
+    color: var(--primary-color);
 }
 </style>

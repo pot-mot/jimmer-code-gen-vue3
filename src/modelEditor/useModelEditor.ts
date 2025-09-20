@@ -15,7 +15,13 @@ import {jsonSortPropStringify} from "@/utils/json/jsonStringify.ts";
 import type {LazyData} from "@/utils/type/lazyDataParse.ts";
 import {contextDataToContext} from "@/type/context/utils/ModelContext.ts";
 import {v7 as uuid} from "uuid";
-import {defaultEntity, defaultGroup, defaultModel} from "@/type/context/default/modelDefaults.ts";
+import {
+    defaultEmbeddableType,
+    defaultEntity, defaultEnumeration,
+    defaultGroup,
+    defaultMappedSuperClass,
+    defaultModel
+} from "@/type/context/default/modelDefaults.ts";
 import mitt from "mitt";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
@@ -34,6 +40,9 @@ export type MenuItem = {
 export const createId = (type: "Model" | "Entity" | "Property" | "MappedSuperClass" | "EmbeddableType" | "Enumeration" | "EnumerationItem" | "Association" | "Group") => {
     return `${type}_${uuid()}`
 }
+
+export const CreateType_CONSTANTS = ["Entity", "MappedSuperClass", "EmbeddableType", "Enumeration"] as const
+export type CreateType = (typeof CreateType_CONSTANTS)[number]
 
 export const useModelEditor = createStore(() => {
     const vueFlow = shallowRef<VueFlowStore>(useVueFlow(VUE_FLOW_ID))
@@ -75,6 +84,7 @@ export const useModelEditor = createStore(() => {
         currentGroupId.value = id
     }
 
+    const createType = ref<CreateType>("Entity")
     const screenPosition = ref<XYPosition>({x: 0, y: 0})
 
     const {
@@ -82,14 +92,7 @@ export const useModelEditor = createStore(() => {
         canUndo,
         canRedo,
         menuMap,
-        noEffect,
     } = useModelEditorHistory({vueFlow, contextData})
-
-    // TODO to fetch
-    const result = noEffect.group.add({
-        group: defaultGroup()
-    })
-    toggleCurrentGroup({id: result.id})
 
     const setModel = (data: ModelContextData) => {
         contextData.value = data
@@ -181,26 +184,42 @@ export const useModelEditor = createStore(() => {
     }
     const selectEmbeddableType = (id: string) => {
         const contextData = getContextData()
+        const vueFlow = getCurrentVueFlow()
         if (!contextData.embeddableTypeMap.has(id)) throw new Error(`EmbeddableType [${id}] is not existed`)
+        const node = vueFlow.findNode(id)
+        if (!node) throw new Error(`Node [${id}] is not existed`)
 
         if (!canMultiSelect.value) clearSelectedIdSets()
         selectedIdSets.value.embeddableTypeIdSet.add(id)
+        vueFlow.addSelectedNodes([node])
         modelSelectionEventBus.emit('embeddableType', {id, selected: true})
     }
     const unselectEmbeddableType = (id: string) => {
+        const vueFlow = getCurrentVueFlow()
+        const node = vueFlow.findNode(id)
+        if (!node) throw new Error(`Node [${id}] is not existed`)
         selectedIdSets.value.embeddableTypeIdSet.delete(id)
+        vueFlow.removeSelectedNodes([node])
         modelSelectionEventBus.emit('embeddableType', {id, selected: false})
     }
     const selectEnumeration = (id: string) => {
         const contextData = getContextData()
+        const vueFlow = getCurrentVueFlow()
         if (!contextData.enumerationMap.has(id)) throw new Error(`Enumeration [${id}] is not existed`)
+        const node = vueFlow.findNode(id)
+        if (!node) throw new Error(`Node [${id}] is not existed`)
 
         if (!canMultiSelect.value) clearSelectedIdSets()
         selectedIdSets.value.enumerationIdSet.add(id)
+        vueFlow.addSelectedNodes([node])
         modelSelectionEventBus.emit('enumeration', {id, selected: true})
     }
     const unselectEnumeration = (id: string) => {
+        const vueFlow = getCurrentVueFlow()
+        const node = vueFlow.findNode(id)
+        if (!node) throw new Error(`Node [${id}] is not existed`)
         selectedIdSets.value.enumerationIdSet.delete(id)
+        vueFlow.removeSelectedNodes([node])
         modelSelectionEventBus.emit('enumeration', {id, selected: false})
     }
     const selectAssociation = (id: string) => {
@@ -694,14 +713,42 @@ export const useModelEditor = createStore(() => {
                             Math.abs(currentMousePosition.x - lastMousePosition.x) < 10 &&
                             Math.abs(currentMousePosition.y - lastMousePosition.y) < 10
                         ) {
-                            const groupId = currentGroupId.value
-                            if (groupId === undefined) {
-                                sendMessage("Please select an Group", {type: "info"})
-                                return
-                            }
-                            history.executeCommand("entity:add", {
-                                position: screenToFlowCoordinate(currentMousePosition),
-                                entity: defaultEntity(groupId),
+                            history.executeBatch(Symbol('click:add'), () => {
+                                let groupId = currentGroupId.value
+                                if (groupId === undefined) {
+                                    const newGroup = defaultGroup()
+                                    newGroup.name = "Default"
+                                    history.executeCommand('group:add', {group: newGroup})
+                                    toggleCurrentGroup({id: newGroup.id})
+                                    groupId = newGroup.id
+                                }
+                                const position = screenToFlowCoordinate(currentMousePosition)
+                                switch (createType.value) {
+                                    case "Entity":
+                                        history.executeCommand("entity:add", {
+                                            position,
+                                            entity: defaultEntity(groupId),
+                                        })
+                                        break;
+                                    case "MappedSuperClass":
+                                        history.executeCommand("mapped-super-class:add", {
+                                            position,
+                                            mappedSuperClass: defaultMappedSuperClass(groupId),
+                                        })
+                                        break;
+                                    case "EmbeddableType":
+                                        history.executeCommand("embeddable-type:add", {
+                                            position,
+                                            embeddableType: defaultEmbeddableType(groupId),
+                                        })
+                                        break;
+                                    case "Enumeration":
+                                        history.executeCommand("enumeration:add", {
+                                            position,
+                                            enumeration: defaultEnumeration(groupId),
+                                        })
+                                        break;
+                                }
                             })
                         }
                     }
@@ -907,6 +954,8 @@ export const useModelEditor = createStore(() => {
         menuMap,
         currentGroupId,
         toggleCurrentGroup,
+
+        createType,
 
         // 模型生成
 

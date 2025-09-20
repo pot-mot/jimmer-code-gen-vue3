@@ -1,11 +1,13 @@
 import {type CommandDefinition, useCommandHistory} from "@/history/commandHistory.ts";
 import {type VueFlowStore, type XYPosition} from "@vue-flow/core";
 import {computed, reactive, type Ref, ref, shallowReadonly, type ShallowRef, watch} from "vue";
-import {NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";
 import type {MenuItem} from "@/modelEditor/useModelEditor.ts";
-import {NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode.ts";
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 import {debounce} from "lodash-es";
+import {NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";
+import {NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode.ts";
+import {NodeType_EmbeddableType} from "@/modelEditor/node/EmbeddableTypeNode.ts";
+import {NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
 
 const SYNC_DEBOUNCE_TIMEOUT = 500
 
@@ -49,7 +51,8 @@ export type ModelEditorHistoryCommands = {
     }>>
 
     "embeddable-type:add": CommandDefinition<DeepReadonly<{
-        embeddableType: EmbeddableType
+        embeddableType: EmbeddableTypeWithProperties
+        position: XYPosition
     }>, DeepReadonly<{
         id: string
     }>>
@@ -59,6 +62,7 @@ export type ModelEditorHistoryCommands = {
 
     "enumeration:add": CommandDefinition<DeepReadonly<{
         enumeration: Enumeration
+        position: XYPosition
     }>, DeepReadonly<{
         id: string
     }>>
@@ -547,31 +551,40 @@ export const useModelEditorHistory = (
         embeddableTypeWatchStopMap.delete(id)
     }
 
-    const addEmbeddableType = (options: DeepReadonly<{ embeddableType: EmbeddableType }>) => {
+    const addEmbeddableType = (options: DeepReadonly<{ embeddableType: EmbeddableTypeWithProperties; position: XYPosition }>) => {
         const id = options.embeddableType.id
         const groupId = options.embeddableType.groupId
         const contextData = getContextData()
+        const vueFlow = getVueFlow()
 
         if (contextData.embeddableTypeMap.has(id)) throw new Error(`EmbeddableType [${id}] is already existed`)
+        if (embeddableTypeWatchStopMap.has(id)) throw new Error(`EmbeddableType [${id}] is already watched`)
         if (!contextData.groupMap.has(groupId)) throw new Error(`Group [${groupId}] is not existed`)
         const menuItem = menuMap.value.get(groupId)
         if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
         if (menuItem.entityMap.has(id)) throw new Error(`EmbeddableType [${id}] is already existed in group [${groupId}]`)
 
-        const embeddableTypeWithId = cloneDeepReadonlyRaw<EmbeddableTypeWithProperties>({
-            ...options.embeddableType,
-            properties: []
-        })
+        const embeddableTypeWithId = cloneDeepReadonlyRaw<EmbeddableTypeWithProperties>(options.embeddableType)
         contextData.embeddableTypeMap.set(id, embeddableTypeWithId)
         addEmbeddableTypeWatcher(id)
+        menuItem.embeddableTypeMap.set(id, embeddableTypeWithId)
+        vueFlow.addNodes({
+            id,
+            type: NodeType_EmbeddableType,
+            position: options.position,
+            data: { embeddableType: embeddableTypeWithId },
+        })
         return {id}
     }
 
     const revertAddEmbeddableType = ({id}: DeepReadonly<{ id: string }>) => {
         const contextData = getContextData()
+        const vueFlow = getVueFlow()
 
         const embeddableType = cloneDeepReadonlyRaw(contextData.embeddableTypeMap.get(id))
         if (!embeddableType) throw new Error(`EmbeddableType [${id}] is not existed`)
+        const embeddableTypeNode = vueFlow.findNode(id)
+        if (!embeddableTypeNode) throw new Error(`EmbeddableType [${id}] is not existed`)
 
         const groupId = embeddableType.groupId
         const menuItem = menuMap.value.get(groupId)
@@ -581,16 +594,20 @@ export const useModelEditorHistory = (
         removeEmbeddableTypeWatcher(id)
         contextData.embeddableTypeMap.delete(id)
         menuItem.entityMap.delete(id)
-        return {embeddableType}
+        vueFlow.removeNodes([embeddableTypeNode])
+        return {embeddableType,  position: embeddableTypeNode.position}
     }
 
     const updateEmbeddableType = (options: DeepReadonly<{ embeddableType: EmbeddableTypeWithProperties }>) => {
         const id = options.embeddableType.id
         const groupId = options.embeddableType.groupId
         const contextData = getContextData()
+        const vueFlow = getVueFlow()
 
         const existedEmbeddableType = cloneDeepReadonlyRaw(contextData.embeddableTypeMap.get(id))
         if (!existedEmbeddableType) throw new Error(`EmbeddableType [${id}] is not existed`)
+        const existingEmbeddableTypeNode = vueFlow.findNode(id)
+        if (!existingEmbeddableTypeNode) throw new Error(`EmbeddableType [${id}] is not existed`)
         if (!contextData.groupMap.has(groupId)) throw new Error(`Group [${groupId}] is not existed`)
         const menuItem = menuMap.value.get(existedEmbeddableType.groupId)
         if (!menuItem) throw new Error(`Group [${existedEmbeddableType.groupId}] is not existed in menuMap`)
@@ -610,6 +627,7 @@ export const useModelEditorHistory = (
         removeEmbeddableTypeWatcher(id)
         contextData.embeddableTypeMap.set(id, embeddableType)
         addEmbeddableTypeWatcher(id)
+        existingEmbeddableTypeNode.data.embeddableType = embeddableType
         return {embeddableType: existedEmbeddableType}
     }
 
@@ -657,12 +675,14 @@ export const useModelEditorHistory = (
         enumerationWatchStopMap.delete(id)
     }
 
-    const addEnumeration = (options: DeepReadonly<{ enumeration: Enumeration }>) => {
+    const addEnumeration = (options: DeepReadonly<{ enumeration: Enumeration; position: XYPosition }>) => {
         const id = options.enumeration.id
         const groupId = options.enumeration.groupId
         const contextData = getContextData()
+        const vueFlow = getVueFlow()
 
         if (contextData.enumerationMap.has(id)) throw new Error(`Enumeration [${id}] is already existed`)
+        if (enumerationWatchStopMap.has(id)) throw new Error(`Enumeration [${id}] is already watched`)
         if (!contextData.groupMap.has(groupId)) throw new Error(`Group [${groupId}] is not existed`)
         const menuItem = menuMap.value.get(groupId)
         if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
@@ -672,14 +692,23 @@ export const useModelEditorHistory = (
         contextData.enumerationMap.set(id, enumeration)
         addEnumerationWatcher(id)
         menuItem.enumerationMap.set(id, enumeration)
+        vueFlow.addNodes({
+            id,
+            type: NodeType_Enumeration,
+            position: options.position,
+            data: { enumeration },
+        })
         return {id}
     }
 
     const revertAddEnumeration = ({id}: DeepReadonly<{ id: string }>) => {
         const contextData = getContextData()
+        const vueFlow = getVueFlow()
 
         const enumeration = cloneDeepReadonlyRaw(contextData.enumerationMap.get(id))
         if (!enumeration) throw new Error(`Enumeration [${id}] is not existed`)
+        const enumerationNode = vueFlow.findNode(id)
+        if (!enumerationNode) throw new Error(`Enumeration [${id}] is not existed`)
 
         const groupId = enumeration.groupId
         const menuItem = menuMap.value.get(groupId)
@@ -689,16 +718,20 @@ export const useModelEditorHistory = (
         removeEnumerationWatcher(id)
         contextData.enumerationMap.delete(id)
         menuItem.enumerationMap.delete(id)
-        return {enumeration}
+        vueFlow.removeNodes([enumerationNode])
+        return {enumeration, position: enumerationNode.position}
     }
 
     const updateEnumeration = (options: DeepReadonly<{ enumeration: Enumeration }>) => {
         const id = options.enumeration.id
         const groupId = options.enumeration.groupId
         const contextData = getContextData()
+        const vueFlow = getVueFlow()
 
         const existedEnumeration = cloneDeepReadonlyRaw(contextData.enumerationMap.get(id))
         if (!existedEnumeration) throw new Error(`Enumeration [${id}] is not existed`)
+        const existingEnumerationNode = vueFlow.findNode(id)
+        if (!existingEnumerationNode) throw new Error(`Enumeration [${id}] is not existed`)
         if (!contextData.groupMap.has(groupId)) throw new Error(`Group [${groupId}] is not existed`)
         const menuItem = menuMap.value.get(groupId)
         if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
@@ -718,6 +751,7 @@ export const useModelEditorHistory = (
         removeEnumerationWatcher(id)
         contextData.enumerationMap.set(id, enumeration)
         addEnumerationWatcher(id)
+        existingEnumerationNode.data.enumeration = enumeration
         return {enumeration: existedEnumeration}
     }
 

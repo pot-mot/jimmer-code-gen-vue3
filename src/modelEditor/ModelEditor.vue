@@ -4,6 +4,8 @@ import {useModelEditor, VUE_FLOW_ID} from "@/modelEditor/useModelEditor.ts";
 import {VueFlow} from "@vue-flow/core";
 import EntityNode from "@/modelEditor/node/EntityNode.vue";
 import MappedSuperClassNode from "@/modelEditor/node/MappedSuperClassNode.vue";
+import EnumerationNode from "@/modelEditor/node/EnumerationNode.vue";
+import EmbeddableTypeNode from "@/modelEditor/node/EmbeddableTypeNode.vue";
 import {onMounted} from "vue";
 import ModelEditorToolbar from "@/modelEditor/toolbar/ModelEditorToolbar.vue";
 import {judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
@@ -94,11 +96,17 @@ const handleKeyDown = async (e: KeyboardEvent) => {
             no-drag-class-name="noDrag"
             no-wheel-class-name="noWheel"
         >
-            <template #node-ENTITY_NODE="nodeProps">
+            <template #node-ENTITY="nodeProps">
                 <EntityNode v-bind="nodeProps"/>
             </template>
-            <template #node-MAPPED_SUPER_CLASS_NODE="nodeProps">
+            <template #node-MAPPED_SUPER_CLASS="nodeProps">
                 <MappedSuperClassNode v-bind="nodeProps"/>
+            </template>
+            <template #node-ENUMERATION="nodeProps">
+                <EnumerationNode v-bind="nodeProps"/>
+            </template>
+            <template #node-EMBEDDABLE_TYPE="nodeProps">
+                <EmbeddableTypeNode v-bind="nodeProps"/>
             </template>
         </VueFlow>
 
