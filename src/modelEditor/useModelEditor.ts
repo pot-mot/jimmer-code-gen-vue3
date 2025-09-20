@@ -133,12 +133,12 @@ export const useModelEditor = createStore(() => {
         clearGraphSelection()
     }
     const modelSelectionEventBus = mitt<{
-        "group": {id: string, selected: boolean},
-        "entity": {id: string, selected: boolean},
-        "mappedSuperClass": {id: string, selected: boolean},
-        "embeddableType": {id: string, selected: boolean},
-        "enumeration": {id: string, selected: boolean},
-        "association": {id: string, selected: boolean},
+        "group": { id: string, selected: boolean },
+        "entity": { id: string, selected: boolean },
+        "mappedSuperClass": { id: string, selected: boolean },
+        "embeddableType": { id: string, selected: boolean },
+        "enumeration": { id: string, selected: boolean },
+        "association": { id: string, selected: boolean },
     }>()
 
     const selectGroup = (id: string) => {
@@ -875,6 +875,7 @@ export const useModelEditor = createStore(() => {
             } else {
                 _node = node
             }
+            _node.zIndex = globalZIndex++
             return vueFlow.value.fitBounds({
                 x: _node.computedPosition.x,
                 y: _node.computedPosition.y,

@@ -9,6 +9,7 @@ import EntityItem from "@/modelEditor/menu/item/EntityItem.vue";
 import MappedSuperClassItem from "@/modelEditor/menu/item/MappedSuperClassItem.vue";
 import EmbeddableTypeItem from "@/modelEditor/menu/item/EmbeddableTypeItem.vue";
 import EnumerationItem from "@/modelEditor/menu/item/EnumerationItem.vue";
+import IconAdd from "@/components/icons/IconAdd.vue";
 
 const {
     createType,
@@ -20,6 +21,7 @@ const {
     clearSelectedIdSets,
 
     addGroup,
+    toggleCurrentGroup,
     remove,
 
     modelSelection,
@@ -123,7 +125,8 @@ onUnmounted(() => {
 })
 
 const handleAddGroup = () => {
-    addGroup()
+    const id = addGroup()
+    toggleCurrentGroup({id})
 }
 </script>
 
@@ -134,20 +137,26 @@ const handleAddGroup = () => {
         @click="handleClick($event)"
         class="model-editor-menu"
     >
-        <button @click="handleAddGroup">
-            createGroup
-        </button>
 
         <div class="create-type-select">
-            <button
+            <div>Create Type</div>
+            <div
                 v-for="item in CreateType_CONSTANTS"
-                class="create-type-item"
-                :class="{selected: item === createType}"
-                @click="createType = item"
             >
-                {{ item }}
-            </button>
+                <button
+                    class="create-type-item"
+                    :class="{selected: item === createType}"
+                    @click="createType = item"
+                >
+                    {{ item }}
+                </button>
+            </div>
         </div>
+
+        <button class="group-create-button" @click="handleAddGroup">
+            <IconAdd/>
+            <span>Group</span>
+        </button>
 
         <SelectableTree
             ref="treeRef"
@@ -182,24 +191,36 @@ const handleAddGroup = () => {
     padding-bottom: 5rem;
 }
 
-.menu-item {
-    display: flex;
-    width: 100%;
+.group-create-button {
+    margin-left: 0.5rem;
+    padding: 0.2rem;
 }
 
-.group-item.current {
-    color: var(--primary-color);
-}
-
-.group-item.selected.current {
-    color: var(--text-color);
+.create-type-select {
+    margin: 0.5rem 0;
+    padding: 0.5rem 0;
+    border-top:  1px dashed var(--comment-color);
+    border-bottom: 1px dashed var(--comment-color);
 }
 
 .create-type-item {
+    border: none;
+    background-color: transparent;
     padding-left: 0.5rem;
 }
 
 .create-type-item.selected {
     color: var(--primary-color);
+}
+
+.menu-item {
+    display: flex;
+    width: 100%;
+}
+
+.menu-item :deep(button) {
+    border: none;
+    background-color: transparent;
+    --icon-color: var(--comment-color);
 }
 </style>

@@ -34,3 +34,13 @@ const setToCurrentGroup = () => {
         <GroupViewer :group="group"/>
     </div>
 </template>
+
+<style scoped>
+.group-item.current {
+    color: var(--primary-color);
+}
+
+.group-item.selected.current {
+    color: var(--text-color);
+}
+</style>
