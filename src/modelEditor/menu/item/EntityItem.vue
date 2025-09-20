@@ -24,7 +24,7 @@ const handleFocus = () => {
 
 <template>
     <div
-        class="menu-item entity-item"
+        class="entity-item"
         :class="{selected: isSelected}"
     >
         <EntityViewer :entity="entity"/>

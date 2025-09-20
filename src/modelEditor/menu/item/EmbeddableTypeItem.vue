@@ -24,7 +24,7 @@ const handleFocus = () => {
 
 <template>
     <div
-        class="menu-item embeddable-type-item"
+        class="embeddable-type-item"
         :class="{selected: isSelected}"
     >
         <EmbeddableTypeViewer :embeddable-type="embeddableType"/>

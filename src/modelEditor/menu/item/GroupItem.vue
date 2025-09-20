@@ -24,7 +24,7 @@ const setToCurrentGroup = () => {
 
 <template>
     <div
-        class="menu-item group-item"
+        class="group-item"
         :class="{
             selected: isSelected,
             current: currentGroupId === group.id

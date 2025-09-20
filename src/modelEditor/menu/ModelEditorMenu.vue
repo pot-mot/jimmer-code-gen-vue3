@@ -165,19 +165,19 @@ const handleAddGroup = () => {
         >
             <template #default="{data}">
                 <template v-if="data.type === 'Group'">
-                    <GroupItem :group="data.group"/>
+                    <GroupItem class="menu-item" :group="data.group"/>
                 </template>
                 <template v-else-if="data.type === 'Entity'">
-                    <EntityItem :entity="data.entity"/>
+                    <EntityItem class="menu-item" :entity="data.entity"/>
                 </template>
                 <template v-else-if="data.type === 'MappedSuperClass'">
-                    <MappedSuperClassItem :mappedSuperClass="data.mappedSuperClass"/>
+                    <MappedSuperClassItem class="menu-item" :mappedSuperClass="data.mappedSuperClass"/>
                 </template>
                 <template v-else-if="data.type === 'EmbeddableType'">
-                    <EmbeddableTypeItem :embeddableType="data.embeddableType"/>
+                    <EmbeddableTypeItem class="menu-item" :embeddableType="data.embeddableType"/>
                 </template>
                 <template v-else-if="data.type === 'Enumeration'">
-                    <EnumerationItem :enumeration="data.enumeration"/>
+                    <EnumerationItem class="menu-item" :enumeration="data.enumeration"/>
                 </template>
             </template>
         </SelectableTree>
@@ -191,22 +191,22 @@ const handleAddGroup = () => {
     padding-bottom: 5rem;
 }
 
-.group-create-button {
-    margin-left: 0.5rem;
-    padding: 0.2rem;
+.create-type-select {
+    padding-bottom: 0.5rem;
+    border-bottom: 1px dashed var(--comment-color);
 }
 
-.create-type-select {
-    margin: 0.5rem 0;
-    padding: 0.5rem 0;
-    border-top:  1px dashed var(--comment-color);
-    border-bottom: 1px dashed var(--comment-color);
+.group-create-button {
+    margin: 0.5rem 0 0.2rem 0.5rem;
+    padding: 0.2rem;
+    cursor: pointer;
 }
 
 .create-type-item {
     border: none;
     background-color: transparent;
     padding-left: 0.5rem;
+    cursor: pointer;
 }
 
 .create-type-item.selected {
@@ -216,6 +216,8 @@ const handleAddGroup = () => {
 .menu-item {
     display: flex;
     width: 100%;
+    height: 1.5rem;
+    font-size: 0.9rem;
 }
 
 .menu-item :deep(button) {

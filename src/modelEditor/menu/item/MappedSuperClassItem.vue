@@ -24,7 +24,7 @@ const handleFocus = () => {
 
 <template>
     <div
-        class="menu-item mapped-super-class-item"
+        class="mapped-super-class-item"
         :class="{selected: isSelected}"
     >
         <MappedSuperClassViewer :mappedSuperClass="mappedSuperClass"/>

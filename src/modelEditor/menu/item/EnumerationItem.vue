@@ -24,7 +24,7 @@ const handleFocus = () => {
 
 <template>
     <div
-        class="menu-item enumeration-item"
+        class="enumeration-item"
         :class="{selected: isSelected}"
     >
         <EnumerationViewer :enumeration="enumeration"/>
