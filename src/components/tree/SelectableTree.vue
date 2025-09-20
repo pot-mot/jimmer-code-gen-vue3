@@ -60,7 +60,7 @@ const getNodeById = (id: string) => {
 }
 
 // 切换选中状态
-const toggleSelection = (id: string, event: KeyboardEvent | MouseEvent) => {
+const toggleSelection = (id: string, event: MouseEvent) => {
     if (props.disabled) return
 
     const ctrlKey = event.ctrlKey ?? event.metaKey
@@ -110,6 +110,10 @@ const toggleSelection = (id: string, event: KeyboardEvent | MouseEvent) => {
             emits('select', {selected: [getNodeById(id)], unselected: unselectedNodes})
         }
     }
+}
+
+const handleShiftMouseDown = (event: MouseEvent) => {
+    event.preventDefault()
 }
 
 // 处理shift选择
@@ -164,7 +168,11 @@ defineExpose({
 </script>
 
 <template>
-    <div class="tree-select" :class="{ disabled }">
+    <div
+        class="tree-select"
+        :class="{ disabled }"
+        @mousedown.shift="handleShiftMouseDown"
+    >
         <SelectableTreeItem
             v-for="node in data"
             :key="node.id"

@@ -41,16 +41,6 @@ const handleClick = (event: MouseEvent) => {
     treeSelect.toggleSelection(props.node.id, event)
 }
 
-// 键盘事件处理
-const handleKeydown = (event: KeyboardEvent) => {
-    if (isDisabled.value) return
-
-    if (event.key === ' ' || event.key === 'Enter') {
-        event.preventDefault()
-        treeSelect.toggleSelection(props.node.id, event)
-    }
-}
-
 defineSlots<{
     default(props: { data: T, node: TreeNode<T>, selected: boolean, disabled: boolean }): any
 }>()
@@ -66,8 +56,6 @@ defineSlots<{
                 <div
                     class="tree-node"
                     @click="handleClick"
-                    @keydown="handleKeydown"
-                    tabindex="0"
                 >
                     <slot :data="node.data" :node="node" :selected="isSelected" :disabled="isDisabled"/>
                 </div>
