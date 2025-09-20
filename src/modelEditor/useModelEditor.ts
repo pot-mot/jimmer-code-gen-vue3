@@ -866,12 +866,20 @@ export const useModelEditor = createStore(() => {
         fitRect: (rect: Rect) => {
             return vueFlow.value.fitBounds(rect, {duration: 800, padding: 0.4})
         },
-        focusNode: (node: GraphNode) => {
+        focusNode: (node: GraphNode | string) => {
+            let _node: GraphNode
+            if (typeof node === 'string') {
+                const foundNode = vueFlow.value.findNode(node)
+                if (!foundNode) throw new Error(`node [${node}] is not existed`)
+                _node = foundNode
+            } else {
+                _node = node
+            }
             return vueFlow.value.fitBounds({
-                x: node.computedPosition.x,
-                y: node.computedPosition.y,
-                width: node.dimensions.width,
-                height: node.dimensions.height,
+                x: _node.computedPosition.x,
+                y: _node.computedPosition.y,
+                width: _node.dimensions.width,
+                height: _node.dimensions.height,
             }, {duration: 800, padding: 0.4})
         },
 
