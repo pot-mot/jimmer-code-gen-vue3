@@ -31,6 +31,7 @@ const beforePaste = (properties: Property[]) => {
             :default-line="defaultScalarProperty"
             :json-schema-validate="validateProperty"
             :before-paste="beforePaste"
+            @keydown.stop
         >
             <template #line="{item, index}">
                 <div class="entity-property">
