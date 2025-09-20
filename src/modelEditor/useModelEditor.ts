@@ -83,6 +83,17 @@ export const useModelEditor = createStore(() => {
         }
         currentGroupId.value = id
     }
+    const getCurrentGroupIdOrCreate = () => {
+        let groupId = currentGroupId.value
+        if (groupId === undefined) {
+            const newGroup = defaultGroup()
+            newGroup.name = "Default"
+            history.executeCommand('group:add', {group: newGroup})
+            toggleCurrentGroup({id: newGroup.id})
+            groupId = newGroup.id
+        }
+        return groupId
+    }
 
     const createType = ref<CreateType>("Entity")
     const screenPosition = ref<XYPosition>({x: 0, y: 0})
@@ -714,14 +725,7 @@ export const useModelEditor = createStore(() => {
                             Math.abs(currentMousePosition.y - lastMousePosition.y) < 10
                         ) {
                             history.executeBatch(Symbol('click:add'), () => {
-                                let groupId = currentGroupId.value
-                                if (groupId === undefined) {
-                                    const newGroup = defaultGroup()
-                                    newGroup.name = "Default"
-                                    history.executeCommand('group:add', {group: newGroup})
-                                    toggleCurrentGroup({id: newGroup.id})
-                                    groupId = newGroup.id
-                                }
+                                const groupId = getCurrentGroupIdOrCreate()
                                 const position = screenToFlowCoordinate(currentMousePosition)
                                 switch (createType.value) {
                                     case "Entity":
@@ -956,6 +960,31 @@ export const useModelEditor = createStore(() => {
         toggleCurrentGroup,
 
         createType,
+        addGroup: () => {
+            const group = defaultGroup()
+            history.executeCommand('group:add', {group})
+            return group.id
+        },
+        addEntity: (groupId: string = getCurrentGroupIdOrCreate(), position: XYPosition = screenPosition.value) => {
+            const entity = defaultEntity(groupId)
+            history.executeCommand('entity:add', {entity, position})
+            return entity.id
+        },
+        addMappedSuperClass: (groupId: string = getCurrentGroupIdOrCreate(), position: XYPosition = screenPosition.value) => {
+            const mappedSuperClass = defaultMappedSuperClass(groupId)
+            history.executeCommand('mapped-super-class:add', {mappedSuperClass, position})
+            return mappedSuperClass.id
+        },
+        addEmbeddableType: (groupId: string = getCurrentGroupIdOrCreate(), position: XYPosition = screenPosition.value) => {
+            const embeddableType = defaultEmbeddableType(groupId)
+            history.executeCommand('embeddable-type:add', {embeddableType, position})
+            return embeddableType.id
+        },
+        addEnumeration: (groupId: string = getCurrentGroupIdOrCreate(), position: XYPosition = screenPosition.value) => {
+            const enumeration = defaultEnumeration(groupId)
+            history.executeCommand('enumeration:add', {enumeration, position})
+            return enumeration.id
+        },
 
         // 模型生成
 

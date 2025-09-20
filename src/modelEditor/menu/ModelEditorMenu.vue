@@ -19,6 +19,7 @@ const {
     disableMultiSelect,
     clearSelectedIdSets,
 
+    addGroup,
     remove,
 
     modelSelection,
@@ -102,6 +103,7 @@ const handleSelectChange = ({id, selected}: { id: string, selected: boolean }) =
         selectedIdSet.value?.delete(id)
     }
 }
+
 onBeforeMount(() => {
     modelSelection.eventBus.on("group", handleSelectChange)
     modelSelection.eventBus.on("entity", handleSelectChange)
@@ -119,6 +121,10 @@ onUnmounted(() => {
     modelSelection.eventBus.off("enumeration", handleSelectChange)
     modelSelection.eventBus.off("association", handleSelectChange)
 })
+
+const handleAddGroup = () => {
+    addGroup()
+}
 </script>
 
 <template>
@@ -128,6 +134,10 @@ onUnmounted(() => {
         @click="handleClick($event)"
         class="model-editor-menu"
     >
+        <button @click="handleAddGroup">
+            createGroup
+        </button>
+
         <div class="create-type-select">
             <button
                 v-for="item in CreateType_CONSTANTS"
@@ -172,8 +182,17 @@ onUnmounted(() => {
     padding-bottom: 5rem;
 }
 
-:deep(.menu-item) {
+.menu-item {
     display: flex;
+    width: 100%;
+}
+
+.group-item.current {
+    color: var(--primary-color);
+}
+
+.group-item.selected.current {
+    color: var(--text-color);
 }
 
 .create-type-item {
