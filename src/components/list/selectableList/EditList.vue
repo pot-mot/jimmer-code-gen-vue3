@@ -254,6 +254,16 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
             lastSelect.value = Math.max(...newSelectIndexes)
         }
     }
+
+    if (e.key === 'Enter') {
+        e.preventDefault()
+        e.stopPropagation()
+        e.stopImmediatePropagation()
+
+        const newIndex = await handleAddLine(lastSelect.value)
+        resetSelection([newIndex])
+        lastSelect.value = newIndex
+    }
 }
 
 const getDefaultLine = async (): Promise<T> => {
@@ -277,7 +287,8 @@ const handleAddLine = async (index: number = lines.value.length - 1) => {
     const defaultLine = await getDefaultLine()
 
     const tempLines = getTempLines()
-    tempLines.splice(index + 1, 0, defaultLine)
+    const newIndex = index + 1
+    tempLines.splice(newIndex, 0, defaultLine)
     lines.value = tempLines
 
     await nextTick()
@@ -291,6 +302,8 @@ const handleAddLine = async (index: number = lines.value.length - 1) => {
         }
     })
     resetSelection(newSelectedIndex)
+
+    return newIndex
 }
 
 const handleRemoveLine = async (index: number) => {
