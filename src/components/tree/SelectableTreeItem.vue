@@ -4,14 +4,22 @@ import type {TreeNode} from "@/components/tree/TreeNode.ts";
 import CollapseDetail from "@/components/collapse/CollapseDetail.vue";
 import {SelectableTreeInjectKey} from "@/components/tree/SelectableTreeInjectKey.ts";
 
-const props = withDefaults(defineProps<{
+const props = defineProps<{
     node: TreeNode<T>
-    level?: number
-}>(), {
-    level: 0
-})
+    level: number
+    defaultOpen: boolean
+}>()
 
 const treeSelect = inject(SelectableTreeInjectKey)!
+
+const isOpen = computed({
+    get: (): boolean => {
+        return props.node.open ?? props.defaultOpen
+    },
+    set: (value: boolean) => {
+        props.node.open = value
+    }
+})
 
 const levelPadding = computed(() => {
     return `calc(${props.level} * ${treeSelect.levelPadding})`
@@ -49,7 +57,7 @@ defineSlots<{
 <template>
     <div class="tree-select-item" :class="{ selected: isSelected, disabled: isDisabled }">
         <CollapseDetail
-            :model-value="true"
+            v-model="isOpen"
             trigger-position="left"
         >
             <template #head>
@@ -66,6 +74,7 @@ defineSlots<{
                         v-for="child in node.children"
                         :key="child.id"
                         :node="child"
+                        :default-open="defaultOpen"
                         :level="level + 1"
                     >
                         <template #default="{data, node, selected, disabled}">

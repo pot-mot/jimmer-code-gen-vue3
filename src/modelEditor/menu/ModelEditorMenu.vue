@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {CreateType_CONSTANTS, useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {computed, onBeforeMount, onUnmounted, useTemplateRef} from "vue";
+import {computed, onBeforeMount, onUnmounted, reactive, useTemplateRef} from "vue";
 import {judgeTarget} from "@/utils/event/judgeEventTarget.ts";
 import SelectableTree from "@/components/tree/SelectableTree.vue";
 import {menuItemToTree, type MenuItemTreeNode} from "@/modelEditor/menu/tree/MenuItemToTree.ts";
@@ -33,9 +33,9 @@ const selectedIdSet = computed(() => {
 })
 
 const menuItemTrees = computed(() => {
-    return Array.from(menuMap.value.values()).sort((o1, o2) => {
+    return reactive(Array.from(menuMap.value.values()).sort((o1, o2) => {
         return o1.group.name.localeCompare(o2.group.name)
-    }).map(menuItemToTree)
+    }).map(menuItemToTree))
 })
 
 const handleKeyDown = (e: KeyboardEvent) => {

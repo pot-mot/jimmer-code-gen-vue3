@@ -7,11 +7,13 @@ import {SelectableTreeInjectKey} from "@/components/tree/SelectableTreeInjectKey
 const props = withDefaults(defineProps<{
     multiple?: boolean
     disabled?: boolean
+    defaultOpen?: boolean,
     levelPadding?: string
     data: TreeNode<T>[]
 }>(), {
     multiple: true,
     disabled: false,
+    defaultOpen: true,
     levelPadding: '0.5em',
 })
 
@@ -229,6 +231,7 @@ defineExpose({
             :key="node.id"
             :node="node"
             :level="0"
+            :default-open="defaultOpen"
         >
             <template #default="{data, node, selected, disabled}">
                 <slot :data="data" :node="node" :selected="selected" :disabled="disabled"/>
