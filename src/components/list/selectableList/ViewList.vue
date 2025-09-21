@@ -54,7 +54,7 @@ useClickOutside(() => viewListBody.value, () => {
     cleanSelection()
 })
 
-const handleListClipBoardEvent = async (e: KeyboardEvent) => {
+const handleKeyboardEvent = async (e: KeyboardEvent) => {
     if ((e.target as HTMLElement).tagName !== 'DIV') {
         return
     }
@@ -83,11 +83,51 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
             await navigator.clipboard.writeText(data)
         }
     }
+
+    if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        e.stopPropagation()
+        e.stopImmediatePropagation()
+
+        if (e.shiftKey) {
+            if (selectedItemSet.value.size > 0 && lastSelect.value !== undefined) {
+                const minIndex = Math.min(...selectedItemSet.value)
+                const maxIndex = Math.max(...selectedItemSet.value)
+                if (minIndex === lastSelect.value) {
+                    if (maxIndex - 1 >= 0)
+                        resetSelection(createSelectRange(minIndex, maxIndex - 1))
+                } else if (maxIndex === lastSelect.value) {
+                    if (minIndex - 1 >= 0)
+                        resetSelection(createSelectRange(minIndex - 1, maxIndex))
+                }
+            }
+        }
+    }
+
+    if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        e.stopPropagation()
+        e.stopImmediatePropagation()
+
+        if (e.shiftKey) {
+            if (selectedItemSet.value.size > 0 && lastSelect.value !== undefined) {
+                const minIndex = Math.min(...selectedItemSet.value)
+                const maxIndex = Math.max(...selectedItemSet.value)
+                if (minIndex === lastSelect.value) {
+                    if (maxIndex + 1 < props.lines.length)
+                        resetSelection(createSelectRange(minIndex, maxIndex + 1))
+                } else if (maxIndex === lastSelect.value) {
+                    if (minIndex + 1 < props.lines.length)
+                        resetSelection(createSelectRange(minIndex + 1, maxIndex))
+                }
+            }
+        }
+    }
 }
 </script>
 
 <template>
-    <div class="view-list" tabindex="-1" @keydown="handleListClipBoardEvent">
+    <div class="view-list" tabindex="-1" @keydown="handleKeyboardEvent">
         <div class="view-list-body" ref="viewListBody">
             <div
                 v-for="(item, index) in lines"

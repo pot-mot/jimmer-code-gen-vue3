@@ -72,7 +72,7 @@ useClickOutside(() => editListBody.value, () => {
     cleanSelection()
 })
 
-const handleListClipBoardEvent = async (e: KeyboardEvent) => {
+const handleKeyboardEvent = async (e: KeyboardEvent) => {
     if (judgeTargetIsInteraction(e)) {
         return
     }
@@ -173,54 +173,86 @@ const handleListClipBoardEvent = async (e: KeyboardEvent) => {
         e.preventDefault()
         e.stopPropagation()
         e.stopImmediatePropagation()
-        let tempLines = getTempLines()
-        const newSelectIndexes: Set<number> = new Set
 
-        for (let i = 0; i < tempLines.length; i++) {
-            const value = tempLines[i]
-            if (selectedItemSet.value.has(i)) {
-                if (i === 0 || newSelectIndexes.has(i - 1)) {
-                    newSelectIndexes.add(i)
-                } else {
-                    tempLines[i] = tempLines[i - 1]
-                    tempLines[i - 1] = value
-                    newSelectIndexes.add(i - 1)
+        if (e.shiftKey) {
+            if (selectedItemSet.value.size > 0 && lastSelect.value !== undefined) {
+                const minIndex = Math.min(...selectedItemSet.value)
+                const maxIndex = Math.max(...selectedItemSet.value)
+                if (minIndex === lastSelect.value) {
+                    if (maxIndex - 1 >= 0)
+                        resetSelection(createSelectRange(minIndex, maxIndex - 1))
+                } else if (maxIndex === lastSelect.value) {
+                    if (minIndex - 1 >= 0)
+                        resetSelection(createSelectRange(minIndex - 1, maxIndex))
                 }
             }
+        } else {
+            let tempLines = getTempLines()
+            const newSelectIndexes: Set<number> = new Set
+
+            for (let i = 0; i < tempLines.length; i++) {
+                const value = tempLines[i]
+                if (selectedItemSet.value.has(i)) {
+                    if (i === 0 || newSelectIndexes.has(i - 1)) {
+                        newSelectIndexes.add(i)
+                    } else {
+                        tempLines[i] = tempLines[i - 1]
+                        tempLines[i - 1] = value
+                        newSelectIndexes.add(i - 1)
+                    }
+                }
+            }
+
+            lines.value = tempLines
+
+            await nextTick()
+
+            resetSelection([...newSelectIndexes])
+            lastSelect.value = Math.min(...newSelectIndexes)
         }
-
-        lines.value = tempLines
-
-        await nextTick()
-
-        resetSelection([...newSelectIndexes])
     }
 
     if (e.key === 'ArrowDown') {
         e.preventDefault()
         e.stopPropagation()
         e.stopImmediatePropagation()
-        let tempLines = getTempLines()
-        const newSelectIndexes: Set<number> = new Set
 
-        for (let i = tempLines.length - 1; i >= 0; i--) {
-            const value = tempLines[i]
-            if (selectedItemSet.value.has(i)) {
-                if (i === tempLines.length - 1 || newSelectIndexes.has(i + 1)) {
-                    newSelectIndexes.add(i)
-                } else {
-                    tempLines[i] = tempLines[i + 1]
-                    tempLines[i + 1] = value
-                    newSelectIndexes.add(i + 1)
+        if (e.shiftKey) {
+            if (selectedItemSet.value.size > 0 && lastSelect.value !== undefined) {
+                const minIndex = Math.min(...selectedItemSet.value)
+                const maxIndex = Math.max(...selectedItemSet.value)
+                if (minIndex === lastSelect.value) {
+                    if (maxIndex + 1 < lines.value.length)
+                        resetSelection(createSelectRange(minIndex, maxIndex + 1))
+                } else if (maxIndex === lastSelect.value) {
+                    if (minIndex + 1 < lines.value.length)
+                        resetSelection(createSelectRange(minIndex + 1, maxIndex))
                 }
             }
+        } else {
+            let tempLines = getTempLines()
+            const newSelectIndexes: Set<number> = new Set
+
+            for (let i = tempLines.length - 1; i >= 0; i--) {
+                const value = tempLines[i]
+                if (selectedItemSet.value.has(i)) {
+                    if (i === tempLines.length - 1 || newSelectIndexes.has(i + 1)) {
+                        newSelectIndexes.add(i)
+                    } else {
+                        tempLines[i] = tempLines[i + 1]
+                        tempLines[i + 1] = value
+                        newSelectIndexes.add(i + 1)
+                    }
+                }
+            }
+
+            lines.value = tempLines
+
+            await nextTick()
+
+            resetSelection([...newSelectIndexes])
+            lastSelect.value = Math.max(...newSelectIndexes)
         }
-
-        lines.value = tempLines
-
-        await nextTick()
-
-        resetSelection([...newSelectIndexes])
     }
 }
 
@@ -285,7 +317,7 @@ defineExpose({
 </script>
 
 <template>
-    <div class="edit-list" tabindex="-1" @keydown="handleListClipBoardEvent">
+    <div class="edit-list" tabindex="-1" @keydown="handleKeyboardEvent">
         <slot
             name="head"
             :lines="lines"
