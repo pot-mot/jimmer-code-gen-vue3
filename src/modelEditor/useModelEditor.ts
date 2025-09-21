@@ -97,6 +97,10 @@ export const useModelEditor = createStore(() => {
 
     const createType = ref<CreateType>("Entity")
     const screenPosition = ref<XYPosition>({x: 0, y: 0})
+    const globalZIndex = ref(0)
+    const getNextZIndex = () => {
+        return globalZIndex.value++
+    }
 
     const {
         history,
@@ -119,10 +123,8 @@ export const useModelEditor = createStore(() => {
         // TODO
     }
 
-    const globalZIndex = ref(0)
-
     // Selection 选中部分的图数据
-    const modelSelection = useModelEditorSelectIds({contextData, vueFlow, globalZIndex})
+    const modelSelection = useModelEditorSelectIds({contextData, vueFlow, getNextZIndex})
 
     const getGraphSelection = () => {
         const vueFlow = getCurrentVueFlow()
@@ -713,7 +715,7 @@ export const useModelEditor = createStore(() => {
             } else {
                 _node = node
             }
-            _node.zIndex = globalZIndex.value++
+            _node.zIndex = getNextZIndex()
             return vueFlow.value.fitBounds({
                 x: _node.computedPosition.x,
                 y: _node.computedPosition.y,

@@ -7,7 +7,7 @@ export const useModelEditorSelectIds = (
     modelEditorState: {
         contextData: Ref<ModelContextData | undefined>
         vueFlow: ShallowRef<VueFlowStore>,
-        globalZIndex: Ref<number>,
+        getNextZIndex: () => number,
     }
 ) => {
     const getContextData = () => {
@@ -178,7 +178,7 @@ export const useModelEditorSelectIds = (
             if (change.type === "select") {
                 if (change.selected) {
                     const node = vueFlow.findNode(change.id)
-                    if (node) node.zIndex = modelEditorState.globalZIndex.value++
+                    if (node) node.zIndex = modelEditorState.getNextZIndex()
 
                     if (change.id.startsWith("Entity")) {
                         selectedIdSets.value.entityIdSet.add(change.id)
@@ -219,7 +219,7 @@ export const useModelEditorSelectIds = (
             if (change.type === "select") {
                 if (change.selected) {
                     const edge = vueFlow.findEdge(change.id)
-                    if (edge) edge.zIndex = modelEditorState.globalZIndex.value++
+                    if (edge) edge.zIndex = modelEditorState.getNextZIndex()
 
                     selectedIdSets.value.associationIdSet.add(change.id)
                     modelSelectionEventBus.emit('association', {id: change.id, selected: true})
