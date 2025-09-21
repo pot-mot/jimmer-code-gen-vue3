@@ -187,12 +187,6 @@ defineExpose({
 </template>
 
 <style scoped>
-.tree-select {
-    min-height: 40px;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
 .tree-select.disabled {
     cursor: not-allowed;
 }
