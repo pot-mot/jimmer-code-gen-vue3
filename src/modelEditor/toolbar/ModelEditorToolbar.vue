@@ -74,7 +74,7 @@ const {
 .toolbar button.enable {
     color: var(--background-color);
     --icon-color: var(--background-color);
-    background-color: var(--primary-color);
+    background-color: var(--primary-color-background);
 }
 
 .toolbar.top-left,

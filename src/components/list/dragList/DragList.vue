@@ -413,7 +413,7 @@ const stopDragDown = () => {
 }
 
 .drag-list-item.current {
-    background-color: var(--primary-color);
+    background-color: var(--primary-color-background);
 }
 
 .drag-list-item.dragged {
@@ -453,7 +453,7 @@ const stopDragDown = () => {
 
 .drag-gap.over {
     height: 3rem;
-    background-color: var(--primary-color);
+    background-color: var(--primary-color-background);
     opacity: 0.6;
     cursor: default;
 }

@@ -2,6 +2,8 @@
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import GroupViewer from "@/modelEditor/viewer/GroupViewer.vue";
 import {computed} from "vue";
+import ColorInput from "@/components/color/ColorInput.vue";
+import {presetColor} from "@/type/context/default/modelDefaults.ts";
 
 const props = defineProps<{
     group: Group
@@ -32,6 +34,8 @@ const setToCurrentGroup = () => {
         @click="setToCurrentGroup"
     >
         <GroupViewer :group="group"/>
+
+        <ColorInput v-model="group.color" :preset-colors="presetColor"/>
     </div>
 </template>
 

@@ -1,7 +1,7 @@
 :root {
     --list-line-bg-color: var(--background-color);
     --list-line-hover-bg-color: var(--background-color-hover);
-    --list-line-selected-bg-color: var(--primary-color);
+    --list-line-selected-bg-color: var(--primary-color-background);
 }
 
 .edit-list > .edit-list-body > .line-container,

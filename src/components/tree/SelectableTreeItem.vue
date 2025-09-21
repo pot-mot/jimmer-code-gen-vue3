@@ -96,7 +96,7 @@ defineSlots<{
 }
 
 .tree-select-item.selected > :deep(.collapse-detail-container > .collapse-detail-head) {
-    background-color: var(--primary-color);
+    background-color: var(--primary-color-background);
 }
 
 .tree-select-item.disabled > :deep(.collapse-detail-container > .collapse-detail-head) {
