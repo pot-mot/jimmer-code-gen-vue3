@@ -25,6 +25,9 @@ const emits = defineEmits<{
 const selectedIdSet = ref(new Set<string>())
 const selectedIds = computed(() => Array.from(selectedIdSet.value))
 
+// 存储打开项
+const openedIdSet = ref(new Set<string>())
+
 // 上次选中的节点（用于shift多选）
 const lastSelectedId = ref<string>()
 watch(() => selectedIdSet.value.size, (value) => {
@@ -205,8 +208,10 @@ const handleKeyDown = (e: KeyboardEvent) => {
 provide(SelectableTreeInjectKey, {
     selectedIdSet,
     toggleSelection,
+    openedIdSet,
     isDisabled: props.disabled,
     levelPadding: props.levelPadding,
+    defaultOpen: props.defaultOpen,
 })
 
 defineSlots<{
@@ -215,6 +220,8 @@ defineSlots<{
 
 defineExpose({
     selectedIdSet,
+    openedIdSet,
+    flatNodes,
 })
 </script>
 
@@ -231,7 +238,6 @@ defineExpose({
             :key="node.id"
             :node="node"
             :level="0"
-            :default-open="defaultOpen"
         >
             <template #default="{data, node, selected, disabled}">
                 <slot :data="data" :node="node" :selected="selected" :disabled="disabled"/>

@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T">
-import {computed, inject} from 'vue'
+import {computed, inject, onBeforeMount, onUnmounted} from 'vue'
 import type {TreeNode} from "@/components/tree/TreeNode.ts";
 import CollapseDetail from "@/components/collapse/CollapseDetail.vue";
 import {SelectableTreeInjectKey} from "@/components/tree/SelectableTreeInjectKey.ts";
@@ -7,17 +7,30 @@ import {SelectableTreeInjectKey} from "@/components/tree/SelectableTreeInjectKey
 const props = defineProps<{
     node: TreeNode<T>
     level: number
-    defaultOpen: boolean
 }>()
 
 const treeSelect = inject(SelectableTreeInjectKey)!
 
+onBeforeMount(() => {
+    if (treeSelect.defaultOpen) {
+        treeSelect.openedIdSet.value.add(props.node.id)
+    }
+})
+
+onUnmounted(() => {
+    treeSelect.openedIdSet.value.delete(props.node.id)
+})
+
 const isOpen = computed({
     get: (): boolean => {
-        return props.node.open ?? props.defaultOpen
+        return treeSelect.openedIdSet.value.has(props.node.id)
     },
     set: (value: boolean) => {
-        props.node.open = value
+        if (value) {
+            treeSelect.openedIdSet.value.add(props.node.id)
+        } else {
+            treeSelect.openedIdSet.value.delete(props.node.id)
+        }
     }
 })
 
@@ -74,7 +87,6 @@ defineSlots<{
                         v-for="child in node.children"
                         :key="child.id"
                         :node="child"
-                        :default-open="defaultOpen"
                         :level="level + 1"
                     >
                         <template #default="{data, node, selected, disabled}">
