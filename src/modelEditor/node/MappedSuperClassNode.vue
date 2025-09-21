@@ -5,17 +5,23 @@ import PropertyTypeSelect from "@/modelEditor/form/property/PropertyTypeSelect.v
 import FitSizeLineInput from "@/components/input/FitSizeLineInput.vue";
 import {validateProperty} from "@/type/__generated/jsonSchema/items/Property.ts";
 import EditList from "@/components/list/selectableList/EditList.vue";
-import {createId} from "@/modelEditor/useModelEditor.ts";
+import {createId, getColorVar} from "@/modelEditor/useModelEditor.ts";
 import MappedSuperClassIdMultiSelect from "@/modelEditor/form/entity/MappedSuperClassIdMultiSelect.vue";
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
+import {computed} from "vue";
 
-defineProps<NodeProps<MappedSuperClassNode["data"]>>()
+const props = defineProps<NodeProps<MappedSuperClassNode["data"]>>()
 
 const beforePaste = (properties: Property[]) => {
     for (const property of properties) {
         property.id = createId("Property")
     }
 }
+
+
+const groupColor = computed(() => {
+    return getColorVar(props.data.mappedSuperClass.groupId)
+})
 </script>
 
 <template>
@@ -52,8 +58,10 @@ const beforePaste = (properties: Property[]) => {
 
 <style scoped>
 .mapped-super-class-node {
+    overflow: hidden;
     background-color: var(--background-color);
     border: var(--border);
+    border-color: v-bind(groupColor);
     border-radius: var(--border-radius);
     border-style: dashed;
 }
@@ -67,6 +75,7 @@ const beforePaste = (properties: Property[]) => {
     display: flex;
     gap: 0.4em;
     padding: 0.75em 0.5em 0.25em;
+    background-color: v-bind(groupColor);
 }
 
 .mapped-super-class-property {

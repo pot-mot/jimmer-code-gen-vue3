@@ -1,7 +1,7 @@
 import {type CommandDefinition, useCommandHistory} from "@/history/commandHistory.ts";
 import {type VueFlowStore, type XYPosition} from "@vue-flow/core";
 import {computed, reactive, type Ref, ref, shallowReadonly, type ShallowRef, watch} from "vue";
-import type {MenuItem} from "@/modelEditor/useModelEditor.ts";
+import {deleteColorVar, type MenuItem, setColorVar} from "@/modelEditor/useModelEditor.ts";
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 import {debounce} from "lodash-es";
 import {NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";
@@ -164,6 +164,9 @@ export const useModelEditorHistory = (
                 })
             }
             oldGroup = cloneDeepReadonlyRaw(newGroup)
+            if (newGroup) {
+                setColorVar(id, newGroup.color)
+            }
         }, SYNC_DEBOUNCE_TIMEOUT)
         const stopWatch = watch(() => contextData.groupMap.get(id),
             (value) => {
@@ -192,6 +195,7 @@ export const useModelEditorHistory = (
         const group = cloneDeepReadonlyRaw(options.group)
         contextData.groupMap.set(id, group)
         addGroupWatcher(id)
+        setColorVar(id, group.color)
 
         menuMap.value.set(id, reactive({
             group,
@@ -235,6 +239,7 @@ export const useModelEditorHistory = (
         if (menuItem.embeddableTypeMap.size > 0) throw new Error(`Group [${id}] has embeddable types, can't remove`)
         if (menuItem.enumerationMap.size > 0) throw new Error(`Group [${id}] has enumerations, can't remove`)
 
+        deleteColorVar(id)
         removeGroupWatcher(id)
         contextData.groupMap.delete(id)
         menuMap.value.delete(id)

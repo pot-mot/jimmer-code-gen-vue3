@@ -3,18 +3,23 @@ import {type NodeProps} from "@vue-flow/core";
 import type {EmbeddableTypeNode} from "@/modelEditor/node/EmbeddableTypeNode.ts";
 import FitSizeLineInput from "@/components/input/FitSizeLineInput.vue";
 import EditList from "@/components/list/selectableList/EditList.vue";
-import {createId} from "@/modelEditor/useModelEditor.ts";
+import {createId, getColorVar} from "@/modelEditor/useModelEditor.ts";
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
 import EmbeddableTypePropertySelect from "@/modelEditor/form/property/EmbeddableTypePropertySelect.vue";
 import {validateEmbeddableTypeProperty} from "@/type/__generated/jsonSchema/items/EmbeddableTypeProperty.ts";
+import {computed} from "vue";
 
-defineProps<NodeProps<EmbeddableTypeNode["data"]>>()
+const props = defineProps<NodeProps<EmbeddableTypeNode["data"]>>()
 
 const beforePaste = (properties: Property[]) => {
     for (const property of properties) {
         property.id = createId("Property")
     }
 }
+
+const groupColor = computed(() => {
+    return getColorVar(props.data.embeddableType.groupId)
+})
 </script>
 
 <template>
@@ -48,8 +53,10 @@ const beforePaste = (properties: Property[]) => {
 
 <style scoped>
 .embeddable-type-node {
+    overflow: hidden;
     background-color: var(--background-color);
     border: var(--border);
+    border-color: v-bind(groupColor);
     border-radius: var(--border-radius);
     border-style: dotted;
 }
@@ -63,6 +70,7 @@ const beforePaste = (properties: Property[]) => {
     display: flex;
     gap: 0.4em;
     padding: 0.75em 0.5em 0.25em;
+    background-color: v-bind(groupColor);
 }
 
 .embeddable-type-property {

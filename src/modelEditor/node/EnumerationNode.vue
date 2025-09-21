@@ -3,17 +3,23 @@ import {type NodeProps} from "@vue-flow/core";
 import type {EnumerationNode} from "@/modelEditor/node/EnumerationNode.ts";
 import FitSizeLineInput from "@/components/input/FitSizeLineInput.vue";
 import EditList from "@/components/list/selectableList/EditList.vue";
-import {createId} from "@/modelEditor/useModelEditor.ts";
+import {createId, getColorVar} from "@/modelEditor/useModelEditor.ts";
 import {defaultEnumerationItem} from "@/type/context/default/modelDefaults.ts";
 import {validateEnumerationItem} from "@/type/__generated/jsonSchema/items/EnumerationItem.ts";
+import {computed} from "vue";
 
-defineProps<NodeProps<EnumerationNode["data"]>>()
+const props = defineProps<NodeProps<EnumerationNode["data"]>>()
 
 const beforePaste = (items: EnumerationItem[]) => {
     for (const item of items) {
         item.id = createId("EnumerationItem")
     }
 }
+
+
+const groupColor = computed(() => {
+    return getColorVar(props.data.enumeration.groupId)
+})
 </script>
 
 <template>
@@ -46,8 +52,10 @@ const beforePaste = (items: EnumerationItem[]) => {
 
 <style scoped>
 .enumeration-node {
+    overflow: hidden;
     background-color: var(--background-color);
     border: var(--border);
+    border-color: v-bind(groupColor);
     border-radius: var(--border-radius);
 }
 
@@ -60,6 +68,7 @@ const beforePaste = (items: EnumerationItem[]) => {
     display: flex;
     gap: 0.4em;
     padding: 0.75em 0.5em 0.25em;
+    background-color: v-bind(groupColor);
 }
 
 .enumeration-item {

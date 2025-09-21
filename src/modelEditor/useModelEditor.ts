@@ -41,6 +41,19 @@ export const createId = (type: "Model" | "Entity" | "Property" | "MappedSuperCla
     return `${type}_${uuid()}`
 }
 
+const getColorVarName = (id: string) => {
+    return `--model-color_${id}`
+}
+export const setColorVar = (id: string, color: string) => {
+    document.documentElement.style.setProperty(getColorVarName(id), color)
+}
+export const deleteColorVar = (id: string) => {
+    document.documentElement.style.removeProperty(getColorVarName(id))
+}
+export const getColorVar = (id: string) => {
+    return `var(${getColorVarName(id)})`
+}
+
 export const CreateType_CONSTANTS = ["Entity", "MappedSuperClass", "EmbeddableType", "Enumeration"] as const
 export type CreateType = (typeof CreateType_CONSTANTS)[number]
 
