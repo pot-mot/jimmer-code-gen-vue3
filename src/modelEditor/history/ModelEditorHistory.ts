@@ -164,12 +164,10 @@ export const useModelEditorHistory = (
                 })
             }
             oldGroup = cloneDeepReadonlyRaw(newGroup)
-            if (newGroup) {
-                setColorVar(id, newGroup.color)
-            }
         }, SYNC_DEBOUNCE_TIMEOUT)
         const stopWatch = watch(() => contextData.groupMap.get(id),
             (value) => {
+                if (value) setColorVar(id, value.color)
                 debounceSyncGroupUpdate(value)
             },
             {deep: true}
@@ -260,6 +258,7 @@ export const useModelEditorHistory = (
 
         removeGroupWatcher(id)
         contextData.groupMap.set(id, group)
+        setColorVar(id, group.color)
         addGroupWatcher(id)
         menuItem.group = group
         return {group: existedGroup}
