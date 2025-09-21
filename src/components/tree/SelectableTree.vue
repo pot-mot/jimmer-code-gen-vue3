@@ -60,7 +60,7 @@ const getNodeById = (id: string) => {
 }
 
 // 切换选中状态
-const toggleSelection = (id: string, event: MouseEvent) => {
+const toggleSelection = (id: string, event: MouseEvent | KeyboardEvent) => {
     if (props.disabled) return
 
     const ctrlKey = event.ctrlKey ?? event.metaKey
@@ -112,7 +112,7 @@ const toggleSelection = (id: string, event: MouseEvent) => {
     }
 }
 
-const handleShiftMouseDown = (event: MouseEvent) => {
+const preventShiftSelect = (event: MouseEvent) => {
     event.preventDefault()
 }
 
@@ -144,10 +144,59 @@ const handleShiftSelection = (currentId: string) => {
     const rangeIds = nodeIdsInOrder.value.slice(start, end + 1)
 
     // 合并现有选中项和范围选中项，去重
-    const newSelectSet = new Set([...selectedIdSet.value, ...rangeIds])
+    const newSelectSet = new Set(rangeIds)
 
     selectedIdSet.value = newSelectSet
     emits('select', {selected: selectedIds.value.map(getNodeById), unselected: selectedIds.value.filter(id => !newSelectSet.has(id)).map(getNodeById)})
+}
+
+const handleKeyDown = (e: KeyboardEvent) => {
+    if (props.disabled || nodeIdsInOrder.value.length === 0) return
+    if (lastSelectedId.value === undefined) return
+
+    const lastIndex = nodeIdsInOrder.value.indexOf(lastSelectedId.value)
+    if (lastIndex === -1) return
+
+    const selectIndexes = selectedIds.value.map(id => nodeIdsInOrder.value.indexOf(id)).filter(index => index !== -1)
+    const minIndex = Math.min(...selectIndexes)
+    const maxIndex = Math.max(...selectIndexes)
+
+    if (e.key === 'ArrowUp') {
+        e.preventDefault()
+        e.stopPropagation()
+        e.stopImmediatePropagation()
+
+        if (e.shiftKey) {
+            if (minIndex === lastIndex) {
+                if (maxIndex - 1 >= 0)
+                    handleShiftSelection(nodeIdsInOrder.value[maxIndex - 1])
+            } else if (maxIndex === lastIndex) {
+                if (minIndex - 1 >= 0)
+                    handleShiftSelection(nodeIdsInOrder.value[minIndex - 1])
+            }
+        } else {
+            if (lastIndex - 1 >= 0)
+                toggleSelection(nodeIdsInOrder.value[lastIndex - 1], e)
+        }
+    }
+    if (e.key === 'ArrowDown') {
+        e.preventDefault()
+        e.stopPropagation()
+        e.stopImmediatePropagation()
+
+        if (e.shiftKey) {
+            if (minIndex === lastIndex) {
+                if (maxIndex + 1 < nodeIdsInOrder.value.length)
+                    handleShiftSelection(nodeIdsInOrder.value[maxIndex + 1])
+            } else if (maxIndex === lastIndex) {
+                if (minIndex + 1 < nodeIdsInOrder.value.length)
+                    handleShiftSelection(nodeIdsInOrder.value[minIndex + 1])
+            }
+        } else {
+            if (lastIndex + 1 < nodeIdsInOrder.value.length)
+                toggleSelection(nodeIdsInOrder.value[lastIndex + 1], e)
+        }
+    }
 }
 
 // 提供给子组件的方法
@@ -171,7 +220,9 @@ defineExpose({
     <div
         class="tree-select"
         :class="{ disabled }"
-        @mousedown.shift="handleShiftMouseDown"
+        tabindex="-1"
+        @mousedown.shift="preventShiftSelect"
+        @keydown="handleKeyDown"
     >
         <SelectableTreeItem
             v-for="node in data"
