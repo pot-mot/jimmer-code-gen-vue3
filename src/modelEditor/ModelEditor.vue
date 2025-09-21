@@ -95,6 +95,7 @@ const handleKeyDown = async (e: KeyboardEvent) => {
 
             no-drag-class-name="noDrag"
             no-wheel-class-name="noWheel"
+            :disable-keyboard-a11y="true"
         >
             <template #node-ENTITY="nodeProps">
                 <EntityNode v-bind="nodeProps"/>
