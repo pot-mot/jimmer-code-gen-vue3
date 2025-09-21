@@ -1,6 +1,7 @@
 import {createStore} from "@/utils/store/createStore.ts";
 import {computed, readonly, ref, shallowRef} from "vue";
 import {useModelEditorHistory} from "@/modelEditor/history/ModelEditorHistory.ts";
+import {useModelEditorSelectIds} from "@/modelEditor/selectIds/ModelEditorSelectIds.ts";
 import {
     type GraphEdge,
     type GraphNode,
@@ -22,7 +23,6 @@ import {
     defaultMappedSuperClass,
     defaultModel
 } from "@/type/context/default/modelDefaults.ts";
-import mitt from "mitt";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -112,143 +112,18 @@ export const useModelEditor = createStore(() => {
         // TODO
     }
 
-    let globalZIndex: number = 0
+    const remove = (
+        data: { nodes?: (GraphNode | string)[], edges?: (GraphEdge | string)[] },
+        withMessage: boolean = true,
+    ) => {
+        // TODO
+    }
 
-    // 选中的 Id
-    const selectedIdSets = ref<ModelSubIdSets>({
-        groupIdSet: new Set<string>(),
-        entityIdSet: new Set<string>(),
-        mappedSuperClassIdSet: new Set<string>(),
-        embeddableTypeIdSet: new Set<string>(),
-        enumerationIdSet: new Set<string>(),
-        associationIdSet: new Set<string>(),
-    })
-    const clearSelectedIdSets = () => {
-        if (selectedIdSets.value.groupIdSet.size > 0) selectedIdSets.value.groupIdSet.clear()
-        if (selectedIdSets.value.entityIdSet.size > 0) selectedIdSets.value.entityIdSet.clear()
-        if (selectedIdSets.value.mappedSuperClassIdSet.size > 0) selectedIdSets.value.mappedSuperClassIdSet.clear()
-        if (selectedIdSets.value.embeddableTypeIdSet.size > 0) selectedIdSets.value.embeddableTypeIdSet.clear()
-        if (selectedIdSets.value.enumerationIdSet.size > 0) selectedIdSets.value.enumerationIdSet.clear()
-        if (selectedIdSets.value.associationIdSet.size > 0) selectedIdSets.value.associationIdSet.clear()
-        clearGraphSelection()
-    }
-    const modelSelectionEventBus = mitt<{
-        "group": { id: string, selected: boolean },
-        "entity": { id: string, selected: boolean },
-        "mappedSuperClass": { id: string, selected: boolean },
-        "embeddableType": { id: string, selected: boolean },
-        "enumeration": { id: string, selected: boolean },
-        "association": { id: string, selected: boolean },
-    }>()
-
-    const selectGroup = (id: string) => {
-        const contextData = getContextData()
-        if (!contextData.groupMap.has(id)) throw new Error(`Group [${id}] is not existed`)
-
-        if (!canMultiSelect.value) clearSelectedIdSets()
-        selectedIdSets.value.groupIdSet.add(id)
-        modelSelectionEventBus.emit('group', {id, selected: true})
-    }
-    const unselectGroup = (id: string) => {
-        selectedIdSets.value.groupIdSet.delete(id)
-        modelSelectionEventBus.emit('group', {id, selected: false})
-    }
-    const selectEntity = (id: string) => {
-        const contextData = getContextData()
-        const vueFlow = getCurrentVueFlow()
-        if (!contextData.entityMap.has(id)) throw new Error(`Entity [${id}] is not existed`)
-        const node = vueFlow.findNode(id)
-        if (!node) throw new Error(`Node [${id}] is not existed`)
-
-        if (!canMultiSelect.value) clearSelectedIdSets()
-        selectedIdSets.value.entityIdSet.add(id)
-        vueFlow.addSelectedNodes([node])
-        modelSelectionEventBus.emit('entity', {id, selected: true})
-    }
-    const unselectEntity = (id: string) => {
-        const vueFlow = getCurrentVueFlow()
-        const node = vueFlow.findNode(id)
-        if (!node) throw new Error(`Node [${id}] is not existed`)
-        selectedIdSets.value.entityIdSet.delete(id)
-        vueFlow.removeSelectedNodes([node])
-        modelSelectionEventBus.emit('entity', {id, selected: false})
-    }
-    const selectMappedSuperClass = (id: string) => {
-        const contextData = getContextData()
-        const vueFlow = getCurrentVueFlow()
-        if (!contextData.mappedSuperClassMap.has(id)) throw new Error(`MappedSuperClass [${id}] is not existed`)
-        const node = vueFlow.findNode(id)
-        if (!node) throw new Error(`Node [${id}] is not existed`)
-
-        if (!canMultiSelect.value) clearSelectedIdSets()
-        selectedIdSets.value.mappedSuperClassIdSet.add(id)
-        vueFlow.addSelectedNodes([node])
-        modelSelectionEventBus.emit('mappedSuperClass', {id, selected: true})
-    }
-    const unselectMappedSuperClass = (id: string) => {
-        const vueFlow = getCurrentVueFlow()
-        const node = vueFlow.findNode(id)
-        if (!node) throw new Error(`Node [${id}] is not existed`)
-        selectedIdSets.value.mappedSuperClassIdSet.delete(id)
-        vueFlow.removeSelectedNodes([node])
-        modelSelectionEventBus.emit('mappedSuperClass', {id, selected: false})
-    }
-    const selectEmbeddableType = (id: string) => {
-        const contextData = getContextData()
-        const vueFlow = getCurrentVueFlow()
-        if (!contextData.embeddableTypeMap.has(id)) throw new Error(`EmbeddableType [${id}] is not existed`)
-        const node = vueFlow.findNode(id)
-        if (!node) throw new Error(`Node [${id}] is not existed`)
-
-        if (!canMultiSelect.value) clearSelectedIdSets()
-        selectedIdSets.value.embeddableTypeIdSet.add(id)
-        vueFlow.addSelectedNodes([node])
-        modelSelectionEventBus.emit('embeddableType', {id, selected: true})
-    }
-    const unselectEmbeddableType = (id: string) => {
-        const vueFlow = getCurrentVueFlow()
-        const node = vueFlow.findNode(id)
-        if (!node) throw new Error(`Node [${id}] is not existed`)
-        selectedIdSets.value.embeddableTypeIdSet.delete(id)
-        vueFlow.removeSelectedNodes([node])
-        modelSelectionEventBus.emit('embeddableType', {id, selected: false})
-    }
-    const selectEnumeration = (id: string) => {
-        const contextData = getContextData()
-        const vueFlow = getCurrentVueFlow()
-        if (!contextData.enumerationMap.has(id)) throw new Error(`Enumeration [${id}] is not existed`)
-        const node = vueFlow.findNode(id)
-        if (!node) throw new Error(`Node [${id}] is not existed`)
-
-        if (!canMultiSelect.value) clearSelectedIdSets()
-        selectedIdSets.value.enumerationIdSet.add(id)
-        vueFlow.addSelectedNodes([node])
-        modelSelectionEventBus.emit('enumeration', {id, selected: true})
-    }
-    const unselectEnumeration = (id: string) => {
-        const vueFlow = getCurrentVueFlow()
-        const node = vueFlow.findNode(id)
-        if (!node) throw new Error(`Node [${id}] is not existed`)
-        selectedIdSets.value.enumerationIdSet.delete(id)
-        vueFlow.removeSelectedNodes([node])
-        modelSelectionEventBus.emit('enumeration', {id, selected: false})
-    }
-    const selectAssociation = (id: string) => {
-        const contextData = getContextData()
-        if (!contextData.associationMap.has(id)) throw new Error(`Association [${id}] is not existed`)
-
-        if (!canMultiSelect.value) clearSelectedIdSets()
-        selectedIdSets.value.associationIdSet.add(id)
-        modelSelectionEventBus.emit('association', {id, selected: true})
-        // TODO sync Edge
-    }
-    const unselectAssociation = (id: string) => {
-        selectedIdSets.value.associationIdSet.delete(id)
-        modelSelectionEventBus.emit('association', {id, selected: false})
-        // TODO sync Edge
-    }
+    const globalZIndex = ref(0)
 
     // Selection 选中部分的图数据
+    const modelSelection = useModelEditorSelectIds({contextData, vueFlow, globalZIndex})
+
     const getGraphSelection = () => {
         const vueFlow = getCurrentVueFlow()
         return {
@@ -261,13 +136,6 @@ export const useModelEditor = createStore(() => {
         const vueFlow = getCurrentVueFlow()
         vueFlow.removeSelectedNodes(vueFlow.getSelectedNodes.value)
         vueFlow.removeSelectedEdges(vueFlow.getSelectedEdges.value)
-    }
-
-    const remove = (
-        data: { nodes?: (GraphNode | string)[], edges?: (GraphEdge | string)[] },
-        withMessage: boolean = true,
-    ) => {
-        // TODO
     }
 
     const focus = () => {
@@ -473,6 +341,7 @@ export const useModelEditor = createStore(() => {
             onConnectEnd,
             onEdgeUpdateStart,
             onEdgeUpdate,
+            onEdgesChange,
 
             getSelectedNodes,
             getSelectedEdges,
@@ -488,28 +357,13 @@ export const useModelEditor = createStore(() => {
             }
 
             /**
-             * 剪切板
+             * 选择同步
              */
-            // TODO
-            // const clipBoard = useClipBoard<MindMapImportData, MindMapExportData>({
-            //     exportData: (): MindMapExportData => {
-            //         return exportMindMapSelectionData(vueFlow)
-            //     },
-            //     importData: (data: MindMapImportData) => {
-            //         importData(data, {point: screenToFlowCoordinate(screenPosition.value), type: "topNode"})
-            //     },
-            //     removeData: (data: MindMapExportData) => {
-            //         remove({nodes: data.nodes?.map(it => it.id), edges: data.edges?.map(it => it.id)}, false)
-            //     },
-            //     stringifyData: (data: MindMapExportData): string => {
-            //         return jsonSortPropStringify(data)
-            //     },
-            //     validateInput: validateMindMapImportData
-            // })
-            //
+            onNodesChange(modelSelection.syncNodeSelectChange)
+            onEdgesChange(modelSelection.syncEdgeSelectChange)
 
             /**
-             * 节点移动和选择同步
+             * 节点移动
              */
             const nodeMoveMap = new Map<string, XYPosition>
 
@@ -530,43 +384,6 @@ export const useModelEditor = createStore(() => {
                         }
                     }
                 })
-
-                for (const change of changes) {
-                    if (change.type === "select") {
-                        if (change.selected) {
-                            const node = vueFlow.findNode(change.id)
-                            if (node) node.zIndex = globalZIndex++
-
-                            if (change.id.startsWith("Entity")) {
-                                selectedIdSets.value.entityIdSet.add(change.id)
-                                modelSelectionEventBus.emit('entity', {id: change.id, selected: true})
-                            } else if (change.id.startsWith("MappedSuperClass")) {
-                                selectedIdSets.value.mappedSuperClassIdSet.add(change.id)
-                                modelSelectionEventBus.emit('mappedSuperClass', {id: change.id, selected: true})
-                            }
-                        } else {
-                            if (change.id.startsWith("Entity")) {
-                                selectedIdSets.value.entityIdSet.delete(change.id)
-                                modelSelectionEventBus.emit('entity', {id: change.id, selected: false})
-                            } else if (change.id.startsWith("MappedSuperClass")) {
-                                selectedIdSets.value.mappedSuperClassIdSet.delete(change.id)
-                                modelSelectionEventBus.emit('mappedSuperClass', {id: change.id, selected: false})
-                            }
-                        }
-                    } else if (change.type === "remove") {
-                        if (change.id.startsWith("Entity")) {
-                            if (selectedIdSets.value.entityIdSet.has(change.id)) {
-                                selectedIdSets.value.entityIdSet.delete(change.id)
-                                modelSelectionEventBus.emit('entity', {id: change.id, selected: false})
-                            }
-                        } else if (change.id.startsWith("MappedSuperClass")) {
-                            if (selectedIdSets.value.mappedSuperClassIdSet.has(change.id)) {
-                                selectedIdSets.value.mappedSuperClassIdSet.delete(change.id)
-                                modelSelectionEventBus.emit('mappedSuperClass', {id: change.id, selected: false})
-                            }
-                        }
-                    }
-                }
             })
 
             onNodeDragStart(({nodes}) => {
@@ -652,6 +469,27 @@ export const useModelEditor = createStore(() => {
             //     TODO edge select sync
             //     vueFlowRef.value?.removeEventListener('selectstart', stopSelectStart)
             // })
+
+            /**
+             * 剪切板
+             */
+            // TODO
+            // const clipBoard = useClipBoard<MindMapImportData, MindMapExportData>({
+            //     exportData: (): MindMapExportData => {
+            //         return exportMindMapSelectionData(vueFlow)
+            //     },
+            //     importData: (data: MindMapImportData) => {
+            //         importData(data, {point: screenToFlowCoordinate(screenPosition.value), type: "topNode"})
+            //     },
+            //     removeData: (data: MindMapExportData) => {
+            //         remove({nodes: data.nodes?.map(it => it.id), edges: data.edges?.map(it => it.id)}, false)
+            //     },
+            //     stringifyData: (data: MindMapExportData): string => {
+            //         return jsonSortPropStringify(data)
+            //     },
+            //     validateInput: validateMindMapImportData
+            // })
+            //
 
             /**
              * 键盘事件监听
@@ -875,7 +713,7 @@ export const useModelEditor = createStore(() => {
             } else {
                 _node = node
             }
-            _node.zIndex = globalZIndex++
+            _node.zIndex = globalZIndex.value++
             return vueFlow.value.fitBounds({
                 x: _node.computedPosition.x,
                 y: _node.computedPosition.y,
@@ -910,23 +748,9 @@ export const useModelEditor = createStore(() => {
         executeAsyncBatch: history.executeAsyncBatch,
 
         // 选择
-        selectedIdSets: readonly(selectedIdSets),
-        clearSelectedIdSets,
-        modelSelection: {
-            eventBus: modelSelectionEventBus,
-            selectGroup,
-            unselectGroup,
-            selectEntity,
-            unselectEntity,
-            selectMappedSuperClass,
-            unselectMappedSuperClass,
-            selectEmbeddableType,
-            unselectEmbeddableType,
-            selectEnumeration,
-            unselectEnumeration,
-            selectAssociation,
-            unselectAssociation,
-        },
+        modelSelection,
+        selectedIdSets: modelSelection.selectedIdSets,
+        clearSelectedIdSets: modelSelection.clearSelectedIdSets,
 
         getGraphSelection,
         clearGraphSelection,

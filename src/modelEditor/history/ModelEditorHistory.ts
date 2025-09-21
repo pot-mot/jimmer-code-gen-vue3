@@ -90,6 +90,22 @@ export const useModelEditorHistory = (
         vueFlow: ShallowRef<VueFlowStore>,
     }
 ) => {
+    const getContextData = () => {
+        const contextData = modelEditorState.contextData.value
+        if (!contextData) {
+            throw new Error("Context is not available")
+        }
+        return contextData
+    }
+
+    const getVueFlow = () => {
+        const vueFlow = modelEditorState.vueFlow.value
+        if (!vueFlow) {
+            throw new Error("VueFlow is not available")
+        }
+        return vueFlow
+    }
+
     const history = useCommandHistory<ModelEditorHistoryCommands>()
 
     const canUndo = ref(history.canUndo())
@@ -128,22 +144,6 @@ export const useModelEditorHistory = (
             })
         }
     })
-
-    const getContextData = () => {
-        const contextData = modelEditorState.contextData.value
-        if (!contextData) {
-            throw new Error("Context is not available")
-        }
-        return contextData
-    }
-
-    const getVueFlow = () => {
-        const vueFlow = modelEditorState.vueFlow.value
-        if (!vueFlow) {
-            throw new Error("VueFlow is not available")
-        }
-        return vueFlow
-    }
 
     const menuMap = ref(new Map<string, MenuItem>())
 
