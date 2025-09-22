@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import {type NodeProps} from "@vue-flow/core";
 import type {EmbeddableTypeNode} from "@/modelEditor/node/EmbeddableTypeNode.ts";
-import FitSizeLineInput from "@/components/input/FitSizeLineInput.vue";
 import EditList from "@/components/list/selectableList/EditList.vue";
 import {createId, getColorVar} from "@/modelEditor/useModelEditor.ts";
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
 import EmbeddableTypePropertySelect from "@/modelEditor/form/property/EmbeddableTypePropertySelect.vue";
 import {validateEmbeddableTypeProperty} from "@/type/__generated/jsonSchema/items/EmbeddableTypeProperty.ts";
 import {computed} from "vue";
+import NameCommentEditor from "@/modelEditor/nameEditor/NameCommentEditor.vue";
 
 const props = defineProps<NodeProps<EmbeddableTypeNode["data"]>>()
 
@@ -25,8 +25,7 @@ const groupColor = computed(() => {
 <template>
     <div class="embeddable-type-node" :class="{selected}">
         <div class="embeddable-type-header">
-            <FitSizeLineInput class="noDrag" :line-height="16" :font-size="16" v-model="data.embeddableType.name"/>
-            <FitSizeLineInput class="noDrag" :line-height="16" :font-size="16" v-model="data.embeddableType.comment"/>
+            <NameCommentEditor v-model="data.embeddableType" style="padding: 2px;"/>
         </div>
 
         <EditList
@@ -37,13 +36,10 @@ const groupColor = computed(() => {
             :before-paste="beforePaste"
             @keydown.stop
         >
-            <template #line="{item, index}">
+            <template #line="{index}">
                 <div class="embeddable-type-property">
                     <div class="embeddable-type-property-view">
-                        <span>
-                            <FitSizeLineInput class="noDrag" :line-height="14" :font-size="14" v-model="item.name"/>
-                            <FitSizeLineInput class="noDrag" :line-height="14" :font-size="14" v-model="item.comment"/>
-                        </span>
+                        <NameCommentEditor :font-size="14" v-model="data.embeddableType.properties[index]"/>
                         <EmbeddableTypePropertySelect class="noDrag noWheel" style="font-size: 14px; line-height: 30px;" v-model="data.embeddableType.properties[index]"/>
                     </div>
                 </div>

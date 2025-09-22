@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {type NodeProps} from "@vue-flow/core";
 import type {EnumerationNode} from "@/modelEditor/node/EnumerationNode.ts";
-import FitSizeLineInput from "@/components/input/FitSizeLineInput.vue";
 import EditList from "@/components/list/selectableList/EditList.vue";
 import {createId, getColorVar} from "@/modelEditor/useModelEditor.ts";
 import {defaultEnumerationItem} from "@/type/context/default/modelDefaults.ts";
 import {validateEnumerationItem} from "@/type/__generated/jsonSchema/items/EnumerationItem.ts";
 import {computed} from "vue";
+import NameCommentEditor from "@/modelEditor/nameEditor/NameCommentEditor.vue";
 
 const props = defineProps<NodeProps<EnumerationNode["data"]>>()
 
@@ -25,8 +25,7 @@ const groupColor = computed(() => {
 <template>
     <div class="enumeration-node" :class="{selected}">
         <div class="enumeration-header">
-            <FitSizeLineInput class="noDrag" :line-height="16" :font-size="16" v-model="data.enumeration.name"/>
-            <FitSizeLineInput class="noDrag" :line-height="16" :font-size="16" v-model="data.enumeration.comment"/>
+            <NameCommentEditor v-model="data.enumeration" style="padding: 2px;"/>
         </div>
 
         <EditList
@@ -37,13 +36,10 @@ const groupColor = computed(() => {
             :before-paste="beforePaste"
             @keydown.stop
         >
-            <template #line="{item}">
+            <template #line="{index}">
                 <div class="enumeration-item">
                     <div class="enumeration-item-view">
-                        <span>
-                            <FitSizeLineInput class="noDrag" :line-height="14" :font-size="14" v-model="item.name"/>
-                            <FitSizeLineInput class="noDrag" :line-height="14" :font-size="14" v-model="item.comment"/>
-                        </span>
+                        <NameCommentEditor :font-size="14" v-model="data.enumeration.items[index]"/>
                     </div>
                 </div>
             </template>

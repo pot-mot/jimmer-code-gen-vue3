@@ -2,13 +2,13 @@
 import {Handle, type NodeProps} from "@vue-flow/core";
 import type {MappedSuperClassNode} from "@/modelEditor/node/MappedSuperClassNode.ts";
 import PropertyTypeSelect from "@/modelEditor/form/property/PropertyTypeSelect.vue";
-import FitSizeLineInput from "@/components/input/FitSizeLineInput.vue";
 import {validateProperty} from "@/type/__generated/jsonSchema/items/Property.ts";
 import EditList from "@/components/list/selectableList/EditList.vue";
 import {createId, getColorVar} from "@/modelEditor/useModelEditor.ts";
 import MappedSuperClassIdMultiSelect from "@/modelEditor/form/entity/MappedSuperClassIdMultiSelect.vue";
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
 import {computed} from "vue";
+import NameCommentEditor from "@/modelEditor/nameEditor/NameCommentEditor.vue";
 
 const props = defineProps<NodeProps<MappedSuperClassNode["data"]>>()
 
@@ -27,8 +27,8 @@ const groupColor = computed(() => {
 <template>
     <div class="mapped-super-class-node" :class="{selected}">
         <div class="mapped-super-class-header">
-            <FitSizeLineInput class="noDrag" :line-height="16" :font-size="16" v-model="data.mappedSuperClass.name"/>
-            <FitSizeLineInput class="noDrag" :line-height="16" :font-size="16" v-model="data.mappedSuperClass.comment"/>
+            <NameCommentEditor v-model="data.mappedSuperClass" style="padding: 2px;"/>
+            <span>:</span>
             <MappedSuperClassIdMultiSelect style="font-size: 16px; line-height: 32px;" v-model="data.mappedSuperClass.extendsIds"/>
         </div>
 
@@ -45,10 +45,7 @@ const groupColor = computed(() => {
                     <Handle :id="item.id" :style="{transform: 'translateY(-50%)', top: '50%', left: '50%'}"/>
 
                     <div class="mapped-super-class-property-view">
-                        <span>
-                            <FitSizeLineInput class="noDrag" :line-height="14" :font-size="14" v-model="item.name"/>
-                            <FitSizeLineInput class="noDrag" :line-height="14" :font-size="14" v-model="item.comment"/>
-                        </span>
+                        <NameCommentEditor :font-size="14" v-model="data.mappedSuperClass.properties[index]"/>
                         <PropertyTypeSelect class="noDrag noWheel" style="font-size: 14px; line-height: 30px;" v-model="data.mappedSuperClass.properties[index]"/>
                     </div>
                 </div>

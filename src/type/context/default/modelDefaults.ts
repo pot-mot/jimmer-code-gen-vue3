@@ -1,7 +1,7 @@
 import {createId} from "@/modelEditor/useModelEditor.ts";
 
 export const presetColor = [
-    'rgba(100, 100, 100, 1)',
+    'rgb(96,96,96)',
     'rgba(150, 60, 60, 1)',
     'rgba(200, 100, 100, 1)',
     'rgba(150, 100, 100, 1)',

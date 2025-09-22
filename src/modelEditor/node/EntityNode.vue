@@ -2,13 +2,13 @@
 import {Handle, type NodeProps} from "@vue-flow/core";
 import type {EntityNode} from "@/modelEditor/node/EntityNode.ts";
 import PropertyTypeSelect from "@/modelEditor/form/property/PropertyTypeSelect.vue";
-import FitSizeLineInput from "@/components/input/FitSizeLineInput.vue";
 import EditList from "@/components/list/selectableList/EditList.vue";
 import {validateProperty} from "@/type/__generated/jsonSchema/items/Property.ts";
 import {createId, getColorVar} from "@/modelEditor/useModelEditor.ts";
 import MappedSuperClassIdMultiSelect from "@/modelEditor/form/entity/MappedSuperClassIdMultiSelect.vue";
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
 import {computed} from "vue";
+import NameCommentEditor from "@/modelEditor/nameEditor/NameCommentEditor.vue";
 
 const props = defineProps<NodeProps<EntityNode["data"]>>()
 
@@ -26,8 +26,8 @@ const groupColor = computed(() => {
 <template>
     <div class="entity-node" :class="{selected}">
         <div class="entity-header">
-            <FitSizeLineInput class="noDrag" :line-height="16" :font-size="16" v-model="data.entity.name"/>
-            <FitSizeLineInput class="noDrag" :line-height="16" :font-size="16" v-model="data.entity.comment"/>
+            <NameCommentEditor v-model="data.entity" style="padding: 2px;"/>
+            <span>:</span>
             <MappedSuperClassIdMultiSelect style="font-size: 16px; line-height: 32px;" v-model="data.entity.extendsIds"/>
         </div>
 
@@ -44,10 +44,7 @@ const groupColor = computed(() => {
                     <Handle :id="item.id" :style="{transform: 'translateY(-50%)', top: '50%', left: '50%'}"/>
 
                     <div class="entity-property-view">
-                        <span>
-                            <FitSizeLineInput class="noDrag" :line-height="14" :font-size="14" v-model="item.name"/>
-                            <FitSizeLineInput class="noDrag" :line-height="14" :font-size="14" v-model="item.comment"/>
-                        </span>
+                        <NameCommentEditor :font-size="14" v-model="data.entity.properties[index]"/>
                         <PropertyTypeSelect class="noDrag noWheel" style="font-size: 14px; line-height: 30px;" v-model="data.entity.properties[index]"/>
                     </div>
                 </div>
