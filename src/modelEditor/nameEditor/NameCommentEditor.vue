@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import FitSizeLineInput from "@/components/input/FitSizeLineInput.vue";
 import {computed, ref, useTemplateRef} from "vue";
+import {useClickOutside} from "@/components/list/selectableList/useClickOutside.ts";
 
 const model = defineModel<{
     name: string
@@ -16,6 +17,13 @@ withDefaults(defineProps<{
 })
 
 const commentInput = useTemplateRef("commentInput")
+const nameCommentEditorRef = useTemplateRef("nameCommentEditorRef")
+
+useClickOutside(() => nameCommentEditorRef.value, () => {
+    wrapperFocused.value = false
+    nameFocused.value = false
+    commentFocused.value = false
+})
 
 const focusCommentInput = () => {
     commentInput.value?.$el.focus()
@@ -43,6 +51,7 @@ const showComment = computed(() => model.value.comment.length > 0 || commentFocu
     <span
         class="name-comment-editor"
         @click="wrapperFocused = true"
+        ref="nameCommentEditorRef"
     >
         <span
             class="name"
