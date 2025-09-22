@@ -58,7 +58,13 @@ const embeddableToTreeNode = (embeddableType: EmbeddableTypeWithProperties): Men
     }
 }
 
-export const menuItemToTree = (menuItem: MenuItem): MenuItemTreeNode => {
+export const menuItemToTree = (
+    menuItem: MenuItem,
+    filter: (item: {
+        name: string,
+        comment: string,
+    }) => boolean
+): MenuItemTreeNode => {
     return {
         id: menuItem.group.id,
         data: {
@@ -66,10 +72,10 @@ export const menuItemToTree = (menuItem: MenuItem): MenuItemTreeNode => {
             group: menuItem.group,
         },
         children: [
-            ...menuItem.orderedMappedSuperClasses.map(mappedSuperClassToTreeNode),
-            ...menuItem.orderedEntities.map(entityToTreeNode),
-            ...menuItem.orderedEnumerations.map(enumerationToTreeNode),
-            ...menuItem.orderedEmbeddableTypes.map(embeddableToTreeNode),
+            ...menuItem.orderedMappedSuperClasses.filter(filter).map(mappedSuperClassToTreeNode),
+            ...menuItem.orderedEntities.filter(filter).map(entityToTreeNode),
+            ...menuItem.orderedEnumerations.filter(filter).map(enumerationToTreeNode),
+            ...menuItem.orderedEmbeddableTypes.filter(filter).map(embeddableToTreeNode),
         ]
     }
 }

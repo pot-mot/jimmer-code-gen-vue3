@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {CreateType_CONSTANTS, useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {computed, onBeforeMount, onUnmounted, useTemplateRef} from "vue";
+import {computed, onBeforeMount, onUnmounted, ref, useTemplateRef} from "vue";
 import {judgeTarget} from "@/utils/event/judgeEventTarget.ts";
 import SelectableTree from "@/components/tree/SelectableTree.vue";
 import {menuItemToTree, type MenuItemTreeNode} from "@/modelEditor/menu/tree/MenuItemToTree.ts";
@@ -32,10 +32,14 @@ const selectedIdSet = computed(() => {
     return treeRef.value?.selectedIdSet
 })
 
+const filterKeyword = ref("")
+
 const menuItemTrees = computed(() => {
     return Array.from(menuMap.value.values()).sort((o1, o2) => {
         return o1.group.name.localeCompare(o2.group.name)
-    }).map(menuItemToTree)
+    }).map(it => menuItemToTree(it, ({name, comment}) => {
+        return name.includes(filterKeyword.value) || comment.includes(filterKeyword.value)
+    }))
 })
 
 const handleKeyDown = (e: KeyboardEvent) => {
@@ -157,6 +161,10 @@ const handleAddGroup = () => {
             <IconAdd/>
             <span>Group</span>
         </button>
+
+        <div>
+            <input v-model="filterKeyword">
+        </div>
 
         <SelectableTree
             ref="treeRef"
