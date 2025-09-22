@@ -173,19 +173,19 @@ const handleAddGroup = () => {
         >
             <template #default="{data}">
                 <template v-if="data.type === 'Group'">
-                    <GroupItem class="menu-item" :group="data.group"/>
+                    <GroupItem class="menu-item" v-model="data.group"/>
                 </template>
                 <template v-else-if="data.type === 'Entity'">
-                    <EntityItem class="menu-item" :entity="data.entity"/>
+                    <EntityItem class="menu-item" v-model="data.entity"/>
                 </template>
                 <template v-else-if="data.type === 'MappedSuperClass'">
-                    <MappedSuperClassItem class="menu-item" :mappedSuperClass="data.mappedSuperClass"/>
+                    <MappedSuperClassItem class="menu-item" v-model="data.mappedSuperClass"/>
                 </template>
                 <template v-else-if="data.type === 'EmbeddableType'">
-                    <EmbeddableTypeItem class="menu-item" :embeddableType="data.embeddableType"/>
+                    <EmbeddableTypeItem class="menu-item" v-model="data.embeddableType"/>
                 </template>
                 <template v-else-if="data.type === 'Enumeration'">
-                    <EnumerationItem class="menu-item" :enumeration="data.enumeration"/>
+                    <EnumerationItem class="menu-item" v-model="data.enumeration"/>
                 </template>
             </template>
         </SelectableTree>

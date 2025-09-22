@@ -21,19 +21,34 @@ const focusCommentInput = () => {
     commentInput.value?.$el.focus()
 }
 
+const wrapperFocused = ref(false)
 const nameFocused = ref(false)
 const commentFocused = ref(false)
-const handleInputBlur = () => {
+const handleNameBlur = () => {
     setTimeout(() => {
         nameFocused.value = false
-    }, 500)
+        wrapperFocused.value = false
+    }, 200)
+}
+const handleCommentBlur = () => {
+    setTimeout(() => {
+        commentFocused.value = false
+        wrapperFocused.value = false
+    }, 200)
 }
 const showComment = computed(() => model.value.comment.length > 0 || commentFocused.value || nameFocused.value)
 </script>
 
 <template>
-    <span>
-        <span class="name">
+    <span
+        class="name-comment-editor"
+        @click="wrapperFocused = true"
+    >
+        <span
+            class="name"
+            :class="{untouchable: !wrapperFocused}"
+            @click.stop
+        >
             <FitSizeLineInput
                 class="noDrag"
                 :padding="{top: 4, bottom: 4, left: 0, right: 0}"
@@ -41,10 +56,15 @@ const showComment = computed(() => model.value.comment.length > 0 || commentFocu
                 :font-size="fontSize"
                 v-model="model.name"
                 @focus="nameFocused = true"
-                @blur="handleInputBlur"
+                @blur="handleNameBlur"
             />
         </span>
-        <span class="comment" v-if="showComment" @click="focusCommentInput">
+        <span
+            v-if="showComment"
+            class="comment"
+            :class="{untouchable: !wrapperFocused}"
+            @click.stop="focusCommentInput"
+        >
             /*
             <FitSizeLineInput
                 ref="commentInput"
@@ -54,7 +74,7 @@ const showComment = computed(() => model.value.comment.length > 0 || commentFocu
                 :font-size="fontSize"
                 v-model="model.comment"
                 @focus="commentFocused = true"
-                @blur="commentFocused = false"
+                @blur="handleCommentBlur"
             />
             */
         </span>
@@ -62,20 +82,25 @@ const showComment = computed(() => model.value.comment.length > 0 || commentFocu
 </template>
 
 <style scoped>
-input {
+.name-comment-editor {
+    white-space: nowrap;
+}
+
+.name-comment-editor > .untouchable {
+    pointer-events: none;
+}
+
+.name-comment-editor > .comment,
+.name-comment-editor > .comment > input {
+    color: var(--comment-color);
+}
+
+.name-comment-editor input {
     border: none;
     background-color: transparent;
 }
 
-.comment {
-    color: var(--comment-color)
-}
-
-.comment > input {
-    color: var(--comment-color);
-}
-
-input:focus {
+.name-comment-editor input:focus {
     background-color: var(--background-color);
 }
 </style>

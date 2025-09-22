@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import EnumerationViewer from "@/modelEditor/viewer/EnumerationViewer.vue";
 import {computed} from "vue";
 import IconAim from "@/components/icons/IconAim.vue";
+import NameCommentEditor from "@/modelEditor/nameEditor/NameCommentEditor.vue";
 
-const props = defineProps<{
-    enumeration: Enumeration
-}>()
+const enumeration = defineModel<Enumeration>({required: true})
 
 const {
     selectedIdSets,
@@ -14,11 +12,11 @@ const {
 } = useModelEditor()
 
 const isSelected = computed(() => {
-    return selectedIdSets.value.enumerationIdSet.has(props.enumeration.id)
+    return selectedIdSets.value.enumerationIdSet.has(enumeration.value.id)
 })
 
 const handleFocus = () => {
-    focusNode(props.enumeration.id)
+    focusNode(enumeration.value.id)
 }
 </script>
 
@@ -27,7 +25,7 @@ const handleFocus = () => {
         class="enumeration-item"
         :class="{selected: isSelected}"
     >
-        <EnumerationViewer :enumeration="enumeration"/>
+        <NameCommentEditor v-model="enumeration"/>
         <button @click.stop="handleFocus">
             <IconAim/>
         </button>

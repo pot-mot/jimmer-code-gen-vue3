@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import EmbeddableTypeViewer from "@/modelEditor/viewer/EmbeddableTypeViewer.vue";
 import {computed} from "vue";
 import IconAim from "@/components/icons/IconAim.vue";
+import NameCommentEditor from "@/modelEditor/nameEditor/NameCommentEditor.vue";
 
-const props = defineProps<{
-    embeddableType: EmbeddableTypeWithProperties
-}>()
+const embeddableType = defineModel<EmbeddableTypeWithProperties>({
+    required: true
+})
 
 const {
     selectedIdSets,
@@ -14,11 +14,11 @@ const {
 } = useModelEditor()
 
 const isSelected = computed(() => {
-    return selectedIdSets.value.embeddableTypeIdSet.has(props.embeddableType.id)
+    return selectedIdSets.value.embeddableTypeIdSet.has(embeddableType.value.id)
 })
 
 const handleFocus = () => {
-    focusNode(props.embeddableType.id)
+    focusNode(embeddableType.value.id)
 }
 </script>
 
@@ -27,7 +27,7 @@ const handleFocus = () => {
         class="embeddable-type-item"
         :class="{selected: isSelected}"
     >
-        <EmbeddableTypeViewer :embeddable-type="embeddableType"/>
+        <NameCommentEditor v-model="embeddableType"/>
         <button @click.stop="handleFocus">
             <IconAim/>
         </button>

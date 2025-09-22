@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import MappedSuperClassViewer from "@/modelEditor/viewer/MappedSuperClassViewer.vue";
 import {computed} from "vue";
 import IconAim from "@/components/icons/IconAim.vue";
+import NameCommentEditor from "@/modelEditor/nameEditor/NameCommentEditor.vue";
 
-const props = defineProps<{
-    mappedSuperClass: MappedSuperClassWithProperties
-}>()
+const mappedSuperClass = defineModel<MappedSuperClassWithProperties>({required: true})
 
 const {
     selectedIdSets,
@@ -14,11 +12,11 @@ const {
 } = useModelEditor()
 
 const isSelected = computed(() => {
-    return selectedIdSets.value.mappedSuperClassIdSet.has(props.mappedSuperClass.id)
+    return selectedIdSets.value.mappedSuperClassIdSet.has(mappedSuperClass.value.id)
 })
 
 const handleFocus = () => {
-    focusNode(props.mappedSuperClass.id)
+    focusNode(mappedSuperClass.value.id)
 }
 </script>
 
@@ -27,7 +25,7 @@ const handleFocus = () => {
         class="mapped-super-class-item"
         :class="{selected: isSelected}"
     >
-        <MappedSuperClassViewer :mappedSuperClass="mappedSuperClass"/>
+        <NameCommentEditor v-model="mappedSuperClass"/>
         <button @click.stop="handleFocus">
             <IconAim/>
         </button>

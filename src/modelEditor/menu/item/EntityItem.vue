@@ -1,12 +1,10 @@
 <script setup lang="ts">
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import EntityViewer from "@/modelEditor/viewer/EntityViewer.vue";
 import {computed} from "vue";
 import IconAim from "@/components/icons/IconAim.vue";
+import NameCommentEditor from "@/modelEditor/nameEditor/NameCommentEditor.vue";
 
-const props = defineProps<{
-    entity: EntityWithProperties
-}>()
+const entity = defineModel<EntityWithProperties>({required: true})
 
 const {
     selectedIdSets,
@@ -14,11 +12,11 @@ const {
 } = useModelEditor()
 
 const isSelected = computed(() => {
-    return selectedIdSets.value.entityIdSet.has(props.entity.id)
+    return selectedIdSets.value.entityIdSet.has(entity.value.id)
 })
 
 const handleFocus = () => {
-    focusNode(props.entity.id)
+    focusNode(entity.value.id)
 }
 </script>
 
@@ -27,7 +25,7 @@ const handleFocus = () => {
         class="entity-item"
         :class="{selected: isSelected}"
     >
-        <EntityViewer :entity="entity"/>
+        <NameCommentEditor v-model="entity"/>
         <button @click.stop="handleFocus">
             <IconAim/>
         </button>
