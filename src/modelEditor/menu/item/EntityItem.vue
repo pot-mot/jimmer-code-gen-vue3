@@ -25,7 +25,7 @@ const handleFocus = () => {
         class="entity-item"
         :class="{selected: isSelected}"
     >
-        <NameCommentEditor v-model="entity"/>
+        <NameCommentEditor v-model="entity" :font-size="14"/>
 
         <div class="tool">
             <button @click.stop="handleFocus">

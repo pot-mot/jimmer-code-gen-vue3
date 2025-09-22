@@ -32,7 +32,7 @@ const setToCurrentGroup = () => {
         @click="setToCurrentGroup"
     >
         <ColorInput v-model="group.color" :preset-colors="presetColor" style="margin-top: 0.3rem; margin-right: 0.25rem;"/>
-        <NameCommentEditor v-model="group"/>
+        <NameCommentEditor v-model="group" :font-size="14"/>
     </div>
 </template>
 

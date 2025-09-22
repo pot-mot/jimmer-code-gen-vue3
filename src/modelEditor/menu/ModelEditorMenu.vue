@@ -224,8 +224,7 @@ const handleAddGroup = () => {
 .menu-item {
     display: flex;
     width: 100%;
-    height: 1.5rem;
-    font-size: 0.9rem;
+    height: 1.75rem;
 }
 
 .menu-item :deep(.tool) {

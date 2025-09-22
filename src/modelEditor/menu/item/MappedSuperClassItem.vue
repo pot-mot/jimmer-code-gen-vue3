@@ -25,7 +25,7 @@ const handleFocus = () => {
         class="mapped-super-class-item"
         :class="{selected: isSelected}"
     >
-        <NameCommentEditor v-model="mappedSuperClass"/>
+        <NameCommentEditor v-model="mappedSuperClass" :font-size="14"/>
 
         <div class="tool">
             <button @click.stop="handleFocus">

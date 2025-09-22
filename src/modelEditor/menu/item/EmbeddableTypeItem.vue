@@ -27,7 +27,7 @@ const handleFocus = () => {
         class="embeddable-type-item"
         :class="{selected: isSelected}"
     >
-        <NameCommentEditor v-model="embeddableType"/>
+        <NameCommentEditor v-model="embeddableType" :font-size="14"/>
 
         <div class="tool">
             <button @click.stop="handleFocus">
