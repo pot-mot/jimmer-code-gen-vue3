@@ -7,7 +7,7 @@ import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
 import EmbeddableTypePropertySelect from "@/modelEditor/form/property/EmbeddableTypePropertySelect.vue";
 import {validateEmbeddableTypeProperty} from "@/type/__generated/jsonSchema/items/EmbeddableTypeProperty.ts";
 import {computed} from "vue";
-import NameCommentEditor from "@/modelEditor/nameEditor/NameCommentEditor.vue";
+import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 
 const props = defineProps<NodeProps<EmbeddableTypeNode["data"]>>()
 

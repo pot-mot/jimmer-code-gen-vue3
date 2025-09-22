@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import NameCommentViewer from "@/modelEditor/viewer/NameCommentViewer.vue";
+import NameCommentViewer from "@/modelEditor/nameComment/NameCommentViewer.vue";
 
 defineProps<{
     enumeration: DeepReadonly<Enumeration>

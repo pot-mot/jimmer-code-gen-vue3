@@ -8,7 +8,7 @@ import {createId, getColorVar} from "@/modelEditor/useModelEditor.ts";
 import MappedSuperClassIdMultiSelect from "@/modelEditor/form/entity/MappedSuperClassIdMultiSelect.vue";
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
 import {computed} from "vue";
-import NameCommentEditor from "@/modelEditor/nameEditor/NameCommentEditor.vue";
+import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 
 const props = defineProps<NodeProps<MappedSuperClassNode["data"]>>()
 

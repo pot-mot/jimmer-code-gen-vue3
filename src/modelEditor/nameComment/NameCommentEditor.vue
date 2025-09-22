@@ -104,6 +104,11 @@ const showComment = computed(() => model.value.comment.length > 0 || commentFocu
     color: var(--comment-color);
 }
 
+.selected .name-comment-editor > .comment,
+.selected .name-comment-editor > .comment > input {
+    color: inherit;
+}
+
 .name-comment-editor input {
     border: none;
     background-color: transparent;

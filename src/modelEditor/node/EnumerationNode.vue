@@ -6,7 +6,7 @@ import {createId, getColorVar} from "@/modelEditor/useModelEditor.ts";
 import {defaultEnumerationItem} from "@/type/context/default/modelDefaults.ts";
 import {validateEnumerationItem} from "@/type/__generated/jsonSchema/items/EnumerationItem.ts";
 import {computed} from "vue";
-import NameCommentEditor from "@/modelEditor/nameEditor/NameCommentEditor.vue";
+import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 
 const props = defineProps<NodeProps<EnumerationNode["data"]>>()
 

@@ -2,7 +2,7 @@
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {computed} from "vue";
 import IconAim from "@/components/icons/IconAim.vue";
-import NameCommentEditor from "@/modelEditor/nameEditor/NameCommentEditor.vue";
+import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 
 const embeddableType = defineModel<EmbeddableTypeWithProperties>({
     required: true

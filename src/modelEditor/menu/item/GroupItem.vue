@@ -3,7 +3,7 @@ import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {computed} from "vue";
 import ColorInput from "@/components/color/ColorInput.vue";
 import {presetColor} from "@/type/context/default/modelDefaults.ts";
-import NameCommentEditor from "@/modelEditor/nameEditor/NameCommentEditor.vue";
+import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 
 const group = defineModel<Group>({required: true})
 
