@@ -26,8 +26,11 @@ const handleFocus = () => {
         :class="{selected: isSelected}"
     >
         <NameCommentEditor v-model="enumeration"/>
-        <button @click.stop="handleFocus">
-            <IconAim/>
-        </button>
+
+        <div class="tool">
+            <button @click.stop="handleFocus">
+                <IconAim/>
+            </button>
+        </div>
     </div>
 </template>

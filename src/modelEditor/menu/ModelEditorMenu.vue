@@ -228,7 +228,16 @@ const handleAddGroup = () => {
     font-size: 0.9rem;
 }
 
-.menu-item :deep(button) {
+.menu-item :deep(.tool) {
+    display: none;
+    margin-left: 0.5rem;
+}
+
+.menu-item:hover :deep(.tool) {
+    display: flex;
+}
+
+.menu-item :deep(.tool > button) {
     border: none;
     background-color: transparent;
     --icon-color: var(--comment-color);
