@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import FitSizeLineInput from "@/components/input/FitSizeLineInput.vue";
-import {useTemplateRef} from "vue";
+import {computed, ref, useTemplateRef} from "vue";
 
 const model = defineModel<{
     name: string
@@ -20,6 +20,15 @@ const commentInput = useTemplateRef("commentInput")
 const focusCommentInput = () => {
     commentInput.value?.$el.focus()
 }
+
+const nameFocused = ref(false)
+const commentFocused = ref(false)
+const handleInputBlur = () => {
+    setTimeout(() => {
+        nameFocused.value = false
+    }, 500)
+}
+const showComment = computed(() => model.value.comment.length > 0 || commentFocused.value || nameFocused.value)
 </script>
 
 <template>
@@ -31,9 +40,11 @@ const focusCommentInput = () => {
                 :line-height="fontSize"
                 :font-size="fontSize"
                 v-model="model.name"
+                @focus="nameFocused = true"
+                @blur="handleInputBlur"
             />
         </span>
-        <span class="comment" @click="focusCommentInput">
+        <span class="comment" v-if="showComment" @click="focusCommentInput">
             /*
             <FitSizeLineInput
                 ref="commentInput"
@@ -42,6 +53,8 @@ const focusCommentInput = () => {
                 :line-height="fontSize"
                 :font-size="fontSize"
                 v-model="model.comment"
+                @focus="commentFocused = true"
+                @blur="commentFocused = false"
             />
             */
         </span>
