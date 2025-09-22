@@ -30,6 +30,7 @@ const groupColor = computed(() => {
         </div>
 
         <EditList
+            class="embeddable-type-property-list"
             v-model:lines="data.embeddableType.properties"
             :default-line="defaultScalarProperty"
             :json-schema-validate="validateEmbeddableTypeProperty"
@@ -68,19 +69,27 @@ const groupColor = computed(() => {
 
 .embeddable-type-header {
     display: flex;
-    gap: 0.4em;
-    padding: 0.75em 0.5em 0.25em;
+    gap: 0.4rem;
+    padding: 0.5rem;
     background-color: v-bind(groupColor);
+}
+
+.embeddable-type-property-list {
+    padding-bottom: 0.5rem;
 }
 
 .embeddable-type-property {
     position: relative;
-    padding: 0.25em 0.75em;
+    padding: 0.25rem 0.75rem;
+}
+
+.embeddable-type-property-list > .edit-list-body > .line-container:first-child > .embeddable-type-property {
+    padding-top: 0.5rem;
 }
 
 .embeddable-type-property-view {
     display: flex;
     justify-content: space-between;
-    gap: 0.5em;
+    gap: 0.5rem;
 }
 </style>

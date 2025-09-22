@@ -30,6 +30,7 @@ const groupColor = computed(() => {
         </div>
 
         <EditList
+            class="enumeration-item-list"
             v-model:lines="data.enumeration.items"
             :default-line="defaultEnumerationItem"
             :json-schema-validate="validateEnumerationItem"
@@ -66,19 +67,27 @@ const groupColor = computed(() => {
 
 .enumeration-header {
     display: flex;
-    gap: 0.4em;
-    padding: 0.75em 0.5em 0.25em;
+    gap: 0.4rem;
+    padding: 0.5rem;
     background-color: v-bind(groupColor);
+}
+
+.enumeration-item-list {
+    padding-bottom: 0.5rem;
 }
 
 .enumeration-item {
     position: relative;
-    padding: 0.25em 0.75em;
+    padding: 0.25rem 0.75rem;
+}
+
+.enumeration-item-list > .edit-list-body > .line-container:first-child > .enumeration-item {
+    padding-top: 0.5rem;
 }
 
 .enumeration-item-view {
     display: flex;
     justify-content: space-between;
-    gap: 0.5em;
+    gap: 0.5rem;
 }
 </style>

@@ -32,6 +32,7 @@ const groupColor = computed(() => {
         </div>
 
         <EditList
+            class="entity-property-list"
             v-model:lines="data.entity.properties"
             :default-line="defaultScalarProperty"
             :json-schema-validate="validateProperty"
@@ -71,19 +72,28 @@ const groupColor = computed(() => {
 
 .entity-header {
     display: flex;
-    gap: 0.4em;
-    padding: 0.75em 0.5em 0.25em;
+    gap: 0.4rem;
+    padding: 0.5rem;
     background-color: v-bind(groupColor);
+}
+
+.entity-property-list {
+    padding-bottom: 0.5rem;
 }
 
 .entity-property {
     position: relative;
-    padding: 0.25em 0.75em;
+    padding: 0.25rem 0.75rem;
+}
+
+.entity-property-list > .edit-list-body > .line-container:first-child > .entity-property {
+    padding-top: 0.5rem;
 }
 
 .entity-property-view {
     display: flex;
     justify-content: space-between;
-    gap: 0.5em;
+    gap: 0.5rem;
 }
 </style>
+

@@ -33,6 +33,7 @@ const groupColor = computed(() => {
         </div>
 
         <EditList
+            class="mapped-super-class-property-list"
             v-model:lines="data.mappedSuperClass.properties"
             :default-line="defaultScalarProperty"
             :json-schema-validate="validateProperty"
@@ -73,19 +74,27 @@ const groupColor = computed(() => {
 
 .mapped-super-class-header {
     display: flex;
-    gap: 0.4em;
-    padding: 0.75em 0.5em 0.25em;
+    gap: 0.4rem;
+    padding: 0.5rem;
     background-color: v-bind(groupColor);
+}
+
+.mapped-super-class-property-list {
+    padding-bottom: 0.5rem;
 }
 
 .mapped-super-class-property {
     position: relative;
-    padding: 0.25em 0.75em;
+    padding: 0.25rem 0.75rem;
+}
+
+.mapped-super-class-property-list > .edit-list-body > .line-container:first-child > .mapped-super-class-property {
+    padding-top: 0.5rem;
 }
 
 .mapped-super-class-property-view {
     display: flex;
     justify-content: space-between;
-    gap: 0.5em;
+    gap: 0.5rem;
 }
 </style>
