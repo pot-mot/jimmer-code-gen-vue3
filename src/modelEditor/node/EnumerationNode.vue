@@ -2,7 +2,7 @@
 import {type NodeProps} from "@vue-flow/core";
 import type {EnumerationNode} from "@/modelEditor/node/EnumerationNode.ts";
 import EditList from "@/components/list/selectableList/EditList.vue";
-import {createId, getColorVar} from "@/modelEditor/useModelEditor.ts";
+import {createId, getColorVar, getColorIsDark} from "@/modelEditor/useModelEditor.ts";
 import {defaultEnumerationItem} from "@/type/context/default/modelDefaults.ts";
 import {validateEnumerationItem} from "@/type/__generated/jsonSchema/items/EnumerationItem.ts";
 import {computed} from "vue";
@@ -16,15 +16,17 @@ const beforePaste = (items: EnumerationItem[]) => {
     }
 }
 
-
 const groupColor = computed(() => {
     return getColorVar(props.data.enumeration.groupId)
+})
+const groupTheme = computed(() => {
+    return getColorIsDark(props.data.enumeration.groupId) ? 'dark' : 'light'
 })
 </script>
 
 <template>
     <div class="enumeration-node" :class="{selected}">
-        <div class="enumeration-header">
+        <div class="enumeration-header" :class="{groupTheme}">
             <NameCommentEditor v-model="data.enumeration" style="padding: 2px;"/>
         </div>
 
@@ -77,8 +79,14 @@ const groupColor = computed(() => {
     padding: 0.25rem 0.75rem;
 }
 
-.enumeration-item-list > .edit-list-body > .line-container:first-child > .enumeration-item {
+.enumeration-item-list .line-container:first-child > .enumeration-item {
     padding-top: 0.5rem;
+}
+
+.enumeration-item-list :deep(.line-container.selected) .name-comment-editor input,
+.enumeration-item-list :deep(.line-container.selected) .name-comment-editor .name,
+.enumeration-item-list :deep(.line-container.selected) .name-comment-editor .comment {
+    color: var(--text-color);
 }
 
 .enumeration-item-view {

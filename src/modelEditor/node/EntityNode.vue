@@ -4,7 +4,7 @@ import type {EntityNode} from "@/modelEditor/node/EntityNode.ts";
 import PropertyTypeSelect from "@/modelEditor/form/property/PropertyTypeSelect.vue";
 import EditList from "@/components/list/selectableList/EditList.vue";
 import {validateProperty} from "@/type/__generated/jsonSchema/items/Property.ts";
-import {createId, getColorVar} from "@/modelEditor/useModelEditor.ts";
+import {createId, getColorVar, getColorIsDark} from "@/modelEditor/useModelEditor.ts";
 import MappedSuperClassIdMultiSelect from "@/modelEditor/form/entity/MappedSuperClassIdMultiSelect.vue";
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
 import {computed} from "vue";
@@ -21,11 +21,14 @@ const beforePaste = (properties: Property[]) => {
 const groupColor = computed(() => {
     return getColorVar(props.data.entity.groupId)
 })
+const groupTheme = computed(() => {
+    return getColorIsDark(props.data.entity.groupId) ? 'dark' : 'light'
+})
 </script>
 
 <template>
     <div class="entity-node" :class="{selected}">
-        <div class="entity-header">
+        <div class="entity-header" :class="{groupTheme}">
             <NameCommentEditor v-model="data.entity" style="padding: 2px;"/>
             <span>:</span>
             <MappedSuperClassIdMultiSelect style="font-size: 16px; line-height: 32px;" v-model="data.entity.extendsIds"/>
@@ -83,8 +86,14 @@ const groupColor = computed(() => {
     padding: 0.25rem 0.75rem;
 }
 
-.entity-property-list > .edit-list-body > .line-container:first-child > .entity-property {
+.entity-property-list .line-container:first-child > .entity-property {
     padding-top: 0.5rem;
+}
+
+.entity-property-list :deep(.line-container.selected) .name-comment-editor input,
+.entity-property-list :deep(.line-container.selected) .name-comment-editor .name,
+.entity-property-list :deep(.line-container.selected) .name-comment-editor .comment {
+    color: var(--text-color);
 }
 
 .entity-property-view {

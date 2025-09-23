@@ -23,6 +23,7 @@ import {
     defaultMappedSuperClass,
     defaultModel
 } from "@/type/context/default/modelDefaults.ts";
+import {tinycolor} from "vue-color";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -41,17 +42,23 @@ export const createId = (type: "Model" | "Entity" | "Property" | "MappedSuperCla
     return `${type}_${uuid()}`
 }
 
-const getColorVarName = (id: string) => {
+const colorVarName = (id: string) => {
     return `--model-color_${id}`
 }
+const colorIsDarkMap = new Map<string, boolean>()
 export const setColorVar = (id: string, color: string) => {
-    document.documentElement.style.setProperty(getColorVarName(id), color)
+    document.documentElement.style.setProperty(colorVarName(id), color)
+    colorIsDarkMap.set(id, tinycolor(color).isDark())
 }
 export const deleteColorVar = (id: string) => {
-    document.documentElement.style.removeProperty(getColorVarName(id))
+    document.documentElement.style.removeProperty(colorVarName(id))
+    colorIsDarkMap.delete(id)
 }
 export const getColorVar = (id: string) => {
-    return `var(${getColorVarName(id)})`
+    return `var(${colorVarName(id)})`
+}
+export const getColorIsDark = (id: string): boolean => {
+    return colorIsDarkMap.get(id) ?? false
 }
 
 export const CreateType_CONSTANTS = ["Entity", "MappedSuperClass", "EmbeddableType", "Enumeration"] as const

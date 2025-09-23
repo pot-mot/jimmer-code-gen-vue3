@@ -4,7 +4,7 @@ import type {MappedSuperClassNode} from "@/modelEditor/node/MappedSuperClassNode
 import PropertyTypeSelect from "@/modelEditor/form/property/PropertyTypeSelect.vue";
 import {validateProperty} from "@/type/__generated/jsonSchema/items/Property.ts";
 import EditList from "@/components/list/selectableList/EditList.vue";
-import {createId, getColorVar} from "@/modelEditor/useModelEditor.ts";
+import {createId, getColorVar, getColorIsDark} from "@/modelEditor/useModelEditor.ts";
 import MappedSuperClassIdMultiSelect from "@/modelEditor/form/entity/MappedSuperClassIdMultiSelect.vue";
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
 import {computed} from "vue";
@@ -18,15 +18,17 @@ const beforePaste = (properties: Property[]) => {
     }
 }
 
-
 const groupColor = computed(() => {
     return getColorVar(props.data.mappedSuperClass.groupId)
+})
+const groupTheme = computed(() => {
+    return getColorIsDark(props.data.mappedSuperClass.groupId) ? 'dark' : 'light'
 })
 </script>
 
 <template>
     <div class="mapped-super-class-node" :class="{selected}">
-        <div class="mapped-super-class-header">
+        <div class="mapped-super-class-header" :class="{groupTheme}">
             <NameCommentEditor v-model="data.mappedSuperClass" style="padding: 2px;"/>
             <span>:</span>
             <MappedSuperClassIdMultiSelect style="font-size: 16px; line-height: 32px;" v-model="data.mappedSuperClass.extendsIds"/>
@@ -85,8 +87,14 @@ const groupColor = computed(() => {
     padding: 0.25rem 0.75rem;
 }
 
-.mapped-super-class-property-list > .edit-list-body > .line-container:first-child > .mapped-super-class-property {
+.mapped-super-class-property-list .line-container:first-child > .mapped-super-class-property {
     padding-top: 0.5rem;
+}
+
+.mapped-super-class-property-list :deep(.line-container.selected) .name-comment-editor input,
+.mapped-super-class-property-list :deep(.line-container.selected) .name-comment-editor .name,
+.mapped-super-class-property-list :deep(.line-container.selected) .name-comment-editor .comment {
+    color: var(--text-color);
 }
 
 .mapped-super-class-property-view {

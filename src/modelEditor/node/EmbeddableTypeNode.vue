@@ -2,7 +2,7 @@
 import {type NodeProps} from "@vue-flow/core";
 import type {EmbeddableTypeNode} from "@/modelEditor/node/EmbeddableTypeNode.ts";
 import EditList from "@/components/list/selectableList/EditList.vue";
-import {createId, getColorVar} from "@/modelEditor/useModelEditor.ts";
+import {createId, getColorVar, getColorIsDark} from "@/modelEditor/useModelEditor.ts";
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
 import EmbeddableTypePropertySelect from "@/modelEditor/form/property/EmbeddableTypePropertySelect.vue";
 import {validateEmbeddableTypeProperty} from "@/type/__generated/jsonSchema/items/EmbeddableTypeProperty.ts";
@@ -20,11 +20,14 @@ const beforePaste = (properties: Property[]) => {
 const groupColor = computed(() => {
     return getColorVar(props.data.embeddableType.groupId)
 })
+const groupTheme = computed(() => {
+    return getColorIsDark(props.data.embeddableType.groupId) ? 'dark' : 'light'
+})
 </script>
 
 <template>
     <div class="embeddable-type-node" :class="{selected}">
-        <div class="embeddable-type-header">
+        <div class="embeddable-type-header" :class="{groupTheme}">
             <NameCommentEditor v-model="data.embeddableType" style="padding: 2px;"/>
         </div>
 
@@ -79,8 +82,14 @@ const groupColor = computed(() => {
     padding: 0.25rem 0.75rem;
 }
 
-.embeddable-type-property-list > .edit-list-body > .line-container:first-child > .embeddable-type-property {
+.embeddable-type-property-list .line-container:first-child > .embeddable-type-property {
     padding-top: 0.5rem;
+}
+
+.embeddable-type-property-list :deep(.line-container.selected) .name-comment-editor input,
+.embeddable-type-property-list :deep(.line-container.selected) .name-comment-editor .name,
+.embeddable-type-property-list :deep(.line-container.selected) .name-comment-editor .comment {
+    color: var(--text-color);
 }
 
 .embeddable-type-property-view {
