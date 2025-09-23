@@ -11,6 +11,9 @@
     --visual-height: calc(100 * var(--vh));
     --visual-top: 0;
     --visual-left: 0;
+
+    color: var(--text-color);
+    background-color: var(--background-color);
 }
 
 * {

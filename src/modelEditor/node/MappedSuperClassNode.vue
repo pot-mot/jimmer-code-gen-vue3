@@ -28,9 +28,9 @@ const groupTheme = computed(() => {
 
 <template>
     <div class="mapped-super-class-node" :class="{selected}">
-        <div class="mapped-super-class-header" :class="{groupTheme}">
-            <NameCommentEditor v-model="data.mappedSuperClass" style="padding: 2px;"/>
-            <span>:</span>
+        <div class="mapped-super-class-header">
+            <NameCommentEditor v-model="data.mappedSuperClass" :class="groupTheme" style="padding: 2px;"/>
+            <span :class="groupTheme" style="color: var(--text-color);">:</span>
             <MappedSuperClassIdMultiSelect style="font-size: 16px; line-height: 32px;" v-model="data.mappedSuperClass.extendsIds"/>
         </div>
 

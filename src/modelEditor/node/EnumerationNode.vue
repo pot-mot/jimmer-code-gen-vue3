@@ -26,8 +26,8 @@ const groupTheme = computed(() => {
 
 <template>
     <div class="enumeration-node" :class="{selected}">
-        <div class="enumeration-header" :class="{groupTheme}">
-            <NameCommentEditor v-model="data.enumeration" style="padding: 2px;"/>
+        <div class="enumeration-header">
+            <NameCommentEditor v-model="data.enumeration" :class="groupTheme" style="padding: 2px;"/>
         </div>
 
         <EditList

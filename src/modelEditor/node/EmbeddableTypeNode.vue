@@ -27,8 +27,8 @@ const groupTheme = computed(() => {
 
 <template>
     <div class="embeddable-type-node" :class="{selected}">
-        <div class="embeddable-type-header" :class="{groupTheme}">
-            <NameCommentEditor v-model="data.embeddableType" style="padding: 2px;"/>
+        <div class="embeddable-type-header">
+            <NameCommentEditor v-model="data.embeddableType" :class="groupTheme" style="padding: 2px;"/>
         </div>
 
         <EditList

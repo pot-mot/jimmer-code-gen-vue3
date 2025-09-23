@@ -28,9 +28,9 @@ const groupTheme = computed(() => {
 
 <template>
     <div class="entity-node" :class="{selected}">
-        <div class="entity-header" :class="{groupTheme}">
-            <NameCommentEditor v-model="data.entity" style="padding: 2px;"/>
-            <span>:</span>
+        <div class="entity-header">
+            <NameCommentEditor v-model="data.entity" :class="groupTheme" style="padding: 2px;"/>
+            <span :class="groupTheme" style="color: var(--text-color);">:</span>
             <MappedSuperClassIdMultiSelect style="font-size: 16px; line-height: 32px;" v-model="data.entity.extendsIds"/>
         </div>
 

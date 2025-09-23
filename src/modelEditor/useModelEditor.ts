@@ -45,20 +45,20 @@ export const createId = (type: "Model" | "Entity" | "Property" | "MappedSuperCla
 const colorVarName = (id: string) => {
     return `--model-color_${id}`
 }
-const colorIsDarkMap = new Map<string, boolean>()
+const colorIsDarkMap = ref(new Map<string, boolean>())
 export const setColorVar = (id: string, color: string) => {
     document.documentElement.style.setProperty(colorVarName(id), color)
-    colorIsDarkMap.set(id, tinycolor(color).isDark())
+    colorIsDarkMap.value.set(id, tinycolor(color).isDark())
 }
 export const deleteColorVar = (id: string) => {
     document.documentElement.style.removeProperty(colorVarName(id))
-    colorIsDarkMap.delete(id)
+    colorIsDarkMap.value.delete(id)
 }
 export const getColorVar = (id: string) => {
     return `var(${colorVarName(id)})`
 }
 export const getColorIsDark = (id: string): boolean => {
-    return colorIsDarkMap.get(id) ?? false
+    return colorIsDarkMap.value.get(id) ?? false
 }
 
 export const CreateType_CONSTANTS = ["Entity", "MappedSuperClass", "EmbeddableType", "Enumeration"] as const
