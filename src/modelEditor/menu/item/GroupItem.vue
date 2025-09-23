@@ -37,13 +37,11 @@ const setToCurrentGroup = () => {
 </template>
 
 <style scoped>
-.group-item.current,
-.group-item.current > .name-comment-editor :deep(input) {
+.group-item.current > .name-comment-editor :deep(.name) > input {
     color: var(--primary-color);
 }
 
-.group-item.selected.current,
-.group-item.selected.current > .name-comment-editor :deep(input){
-    color: var(--text-color);
+.group-item.current.selected > .name-comment-editor :deep(.name) > input {
+    color: inherit;
 }
 </style>
