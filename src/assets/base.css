@@ -1,7 +1,7 @@
 :root {
     --message-z-index: 15000000;
     --loading-z-index: 10000000;
-    --picker-z-index: 5000000;
+    --mask-z-index: 5000000;
     --editor-full-screen-z-index: 3000000;
     --toolbar-z-index: 2000000;
     --drag-view-z-index: 1000000;

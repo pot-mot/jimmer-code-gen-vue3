@@ -1,15 +1,23 @@
 <script setup lang="ts">
-import {ref, onMounted, onUnmounted, useTemplateRef} from 'vue'
+import {ref, useTemplateRef, nextTick, watch} from 'vue'
 import IconCaretDown from "@/components/icons/IconCaretDown.vue";
 
 const props = withDefaults(defineProps<{
-    disabled?: boolean
+    disabled?: boolean,
+    paddingY?: number,
 }>(), {
-    disabled: false
+    disabled: false,
+    paddingY: 8,
 })
 
 const isOpen = ref(false)
 const dropdownRef = useTemplateRef("dropdownRef")
+const dropdownBodyRef = useTemplateRef("dropdownBodyRef")
+
+const menuPosition = ref({
+    top: 0,
+    left: 0
+})
 
 // 切换下拉菜单
 const toggleDropdown = () => {
@@ -18,19 +26,30 @@ const toggleDropdown = () => {
     }
 }
 
-// 点击外部关闭下拉菜单
-const handleClickOutside = (event: MouseEvent) => {
-    if (dropdownRef.value && !dropdownRef.value.contains(event.target as Node)) {
-        isOpen.value = false
+watch(() => isOpen.value, async (value) => {
+    await nextTick()
+    if (value && dropdownRef.value && dropdownBodyRef.value) {
+        const triggerRect = dropdownRef.value.getBoundingClientRect()
+        const menuRect = dropdownBodyRef.value.getBoundingClientRect()
+
+        // 计算水平位置（优先左对齐，但确保不会超出右边界）
+        let left = triggerRect.left
+        // 确保菜单不会超出右边界
+        if (left + menuRect.width > window.innerWidth) {
+            left = Math.max(0, window.innerWidth - menuRect.width)
+        }
+
+        // 计算垂直位置（优先下方，空间不足则上方）
+        let top = triggerRect.bottom + props.paddingY
+        if (top + menuRect.height > window.innerHeight) {
+            top = triggerRect.top - menuRect.height - props.paddingY
+        }
+
+        menuPosition.value = {
+            top,
+            left
+        }
     }
-}
-
-onMounted(() => {
-    document.addEventListener('click', handleClickOutside)
-})
-
-onUnmounted(() => {
-    document.removeEventListener('click', handleClickOutside)
 })
 </script>
 
@@ -47,11 +66,24 @@ onUnmounted(() => {
             </div>
         </div>
 
-        <transition name="slide">
-            <div v-show="isOpen" class="dropdown-menu">
-                <slot name="body"/>
+        <Teleport to="body">
+            <div
+                v-if="isOpen"
+                class="dropdown-mask"
+                @click.self="isOpen = false"
+            >
+                <div
+                    ref="dropdownBodyRef"
+                    class="dropdown-body"
+                    :style="{
+                        top: `${menuPosition.top}px`,
+                        left: `${menuPosition.left}px`,
+                    }"
+                >
+                    <slot name="body"/>
+                </div>
             </div>
-        </transition>
+        </Teleport>
     </div>
 </template>
 
@@ -65,7 +97,6 @@ onUnmounted(() => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.5rem;
     border: var(--border);
     border-color: var(--background-color-hover);
     border-radius: var(--border-radius);
@@ -83,7 +114,7 @@ onUnmounted(() => {
 }
 
 .dropdown-arrow {
-    margin-left: 8px;
+    margin-left: 0.5em;
     transition: transform 0.3s;
 }
 
@@ -91,29 +122,23 @@ onUnmounted(() => {
     transform: rotate(180deg);
 }
 
-.dropdown-menu {
+.dropdown-mask {
     position: absolute;
-    top: 100%;
+    z-index: var(--mask-z-index);
+    top: 0;
     left: 0;
-    right: 0;
-    margin-top: 4px;
+    width: 100vw;
+    height: calc(100 * var(--vh));
+}
+
+.dropdown-body {
+    position: absolute;
     border: var(--border);
+    border-color: var(--background-color-hover);
     border-radius: var(--border-radius);
     background-color: var(--background-color);
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    z-index: var(--picker-z-index);
     max-height: 200px;
     overflow-y: auto;
-}
-
-.slide-enter-active,
-.slide-leave-active {
-    transition: transform 0.2s, opacity 0.2s;
-}
-
-.slide-enter-from,
-.slide-leave-to {
-    transform: translateY(-10px);
-    opacity: 0;
+    min-width: 100px;
 }
 </style>

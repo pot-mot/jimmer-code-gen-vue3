@@ -100,6 +100,6 @@ provide(DragContainerKey, {
     position: fixed;
     left: v-bind(dragViewX);
     top: v-bind(dragViewY);
-    z-index: var(--message-z-index);
+    z-index: var(--drag-view-z-index);
 }
 </style>
