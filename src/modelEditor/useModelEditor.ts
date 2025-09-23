@@ -120,6 +120,7 @@ export const useModelEditor = createStore(() => {
         canUndo,
         canRedo,
         menuMap,
+        waitChangeSync,
     } = useModelEditorHistory({vueFlow, contextData})
 
     const setModel = (data: ModelContextData) => {
@@ -758,6 +759,7 @@ export const useModelEditor = createStore(() => {
             }
             focus()
         },
+        waitChangeSync,
 
         executeBatch: history.executeBatch,
         executeAsyncBatch: history.executeAsyncBatch,

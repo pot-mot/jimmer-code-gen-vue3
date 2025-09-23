@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {CreateType_CONSTANTS, useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {computed, onBeforeMount, onUnmounted, ref, useTemplateRef} from "vue";
+import {computed, nextTick, onBeforeMount, onUnmounted, ref, useTemplateRef} from "vue";
 import {judgeTarget} from "@/utils/event/judgeEventTarget.ts";
 import SelectableTree from "@/components/tree/SelectableTree.vue";
 import {menuItemToTree, type MenuItemTreeNode} from "@/modelEditor/menu/tree/MenuItemToTree.ts";
@@ -10,9 +10,13 @@ import MappedSuperClassItem from "@/modelEditor/menu/item/MappedSuperClassItem.v
 import EmbeddableTypeItem from "@/modelEditor/menu/item/EmbeddableTypeItem.vue";
 import EnumerationItem from "@/modelEditor/menu/item/EnumerationItem.vue";
 import IconAdd from "@/components/icons/IconAdd.vue";
+import DragContainer from "@/components/draggable/DragContainer.vue";
+import DragTarget from "@/components/draggable/DragTarget.vue";
+import DragSource from "@/components/draggable/DragSource.vue";
 
 const {
     createType,
+    waitChangeSync,
 
     menuMap,
     canMultiSelect,
@@ -22,6 +26,8 @@ const {
 
     addGroup,
     toggleCurrentGroup,
+    executeAsyncBatch,
+
     remove,
 
     modelSelection,
@@ -132,6 +138,47 @@ const handleAddGroup = () => {
     const id = addGroup()
     toggleCurrentGroup({id})
 }
+
+const changeNodeGroup = (node: MenuItemTreeNode, groupId: string) => {
+    if (node.data.type === "Entity") {
+        node.data.entity.groupId = groupId
+    } else if (node.data.type === "MappedSuperClass") {
+        node.data.mappedSuperClass.groupId = groupId
+    } else if (node.data.type === "EmbeddableType") {
+        node.data.embeddableType.groupId = groupId
+    } else if (node.data.type === "Enumeration") {
+        node.data.enumeration.groupId = groupId
+    }
+}
+
+const handleDragEnd = (sourceId: string, targetId: string | null | undefined) => {
+    if (!targetId) return
+    if (!treeRef.value) return
+    const tree = treeRef.value
+    const nodes = tree.flatNodes
+
+    const targetNode = nodes.find(it => it.id === targetId)
+    if (!targetNode) return
+    if (targetNode.data.type !== "Group") return
+    const groupId = targetNode.data.group.id
+    const selectedIdSet = tree.selectedIdSet
+
+    executeAsyncBatch(Symbol("group:move"), async () => {
+        if (selectedIdSet.has(sourceId)) {
+            for (const node of nodes) {
+                if (selectedIdSet.has(node.id)) {
+                    changeNodeGroup(node, groupId)
+                }
+            }
+        } else {
+            const sourceNode = nodes.find(it => it.id === sourceId)
+            if (!sourceNode) return
+            changeNodeGroup(sourceNode, groupId)
+        }
+        await nextTick()
+        await waitChangeSync()
+    })
+}
 </script>
 
 <template>
@@ -166,29 +213,47 @@ const handleAddGroup = () => {
             <input v-model="filterKeyword">
         </div>
 
-        <SelectableTree
-            ref="treeRef"
-            :data="menuItemTrees"
-            @select="handleSelect"
+        <DragContainer
+            @drag-end="handleDragEnd"
         >
-            <template #default="{data}">
-                <template v-if="data.type === 'Group'">
-                    <GroupItem class="menu-item" v-model="data.group"/>
+            <SelectableTree
+                ref="treeRef"
+                :data="menuItemTrees"
+                @select="handleSelect"
+            >
+                <template #default="{data}">
+                    <template v-if="data.type === 'Group'">
+                        <DragTarget :id="data.group.id">
+                            <GroupItem class="menu-item" v-model="data.group"/>
+                        </DragTarget>
+                    </template>
+                    <template v-else-if="data.type === 'Entity'">
+                        <DragSource :id="data.entity.id">
+                            <EntityItem class="menu-item" v-model="data.entity"/>
+                        </DragSource>
+                    </template>
+                    <template v-else-if="data.type === 'MappedSuperClass'">
+                        <DragSource :id="data.mappedSuperClass.id">
+                            <MappedSuperClassItem class="menu-item" v-model="data.mappedSuperClass"/>
+                        </DragSource>
+                    </template>
+                    <template v-else-if="data.type === 'EmbeddableType'">
+                        <DragSource :id="data.embeddableType.id">
+                            <EmbeddableTypeItem class="menu-item" v-model="data.embeddableType"/>
+                        </DragSource>
+                    </template>
+                    <template v-else-if="data.type === 'Enumeration'">
+                        <DragSource :id="data.enumeration.id">
+                            <EnumerationItem class="menu-item" v-model="data.enumeration"/>
+                        </DragSource>
+                    </template>
                 </template>
-                <template v-else-if="data.type === 'Entity'">
-                    <EntityItem class="menu-item" v-model="data.entity"/>
-                </template>
-                <template v-else-if="data.type === 'MappedSuperClass'">
-                    <MappedSuperClassItem class="menu-item" v-model="data.mappedSuperClass"/>
-                </template>
-                <template v-else-if="data.type === 'EmbeddableType'">
-                    <EmbeddableTypeItem class="menu-item" v-model="data.embeddableType"/>
-                </template>
-                <template v-else-if="data.type === 'Enumeration'">
-                    <EnumerationItem class="menu-item" v-model="data.enumeration"/>
-                </template>
+            </SelectableTree>
+
+            <template #dragView>
+                <div class="drag-view-box"/>
             </template>
-        </SelectableTree>
+        </DragContainer>
     </div>
 </template>
 
@@ -227,6 +292,12 @@ const handleAddGroup = () => {
     height: 1.75rem;
 }
 
+.menu-item.selected > :deep(.name-comment-editor) input,
+.menu-item.selected > :deep(.name-comment-editor) .name,
+.menu-item.selected > :deep(.name-comment-editor) .comment {
+    color: var(--text-color);
+}
+
 .menu-item :deep(.tool) {
     display: none;
     margin-left: 0.5rem;
@@ -240,5 +311,12 @@ const handleAddGroup = () => {
     border: none;
     background-color: transparent;
     --icon-color: var(--comment-color);
+}
+
+.drag-view-box {
+    width: 1rem;
+    height: 1rem;
+    border: var(--border);
+    border-color: var(--primary-color);
 }
 </style>
