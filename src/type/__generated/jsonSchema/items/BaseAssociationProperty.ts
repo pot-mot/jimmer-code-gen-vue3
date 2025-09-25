@@ -7,7 +7,7 @@ const BaseAssociationPropertyJsonSchema: JSONSchemaType<BaseAssociationProperty>
         "associationId": {
             "type": "string"
         },
-        "referenceEntityId": {
+        "referencedEntityId": {
             "type": "string"
         },
         "idViewName": {
@@ -17,7 +17,7 @@ const BaseAssociationPropertyJsonSchema: JSONSchemaType<BaseAssociationProperty>
     "required": [
         "associationId",
         "idViewName",
-        "referenceEntityId"
+        "referencedEntityId"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
 } as any as JSONSchemaType<BaseAssociationProperty>

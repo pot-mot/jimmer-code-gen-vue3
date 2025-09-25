@@ -93,18 +93,18 @@ export const parsePropertyPath = (
 
         // 检查是否是ToOne关联属性
         if (
-            currentProperty.category === "ASSOCIATION_OneToOne_Source" ||
-            currentProperty.category === "ASSOCIATION_OneToOne_Target" ||
-            currentProperty.category === "ASSOCIATION_ManyToOne"
+            currentProperty.category === "OneToOne_Source" ||
+            currentProperty.category === "OneToOne_Mapped" ||
+            currentProperty.category === "ManyToOne"
         ) {
             // 获取下一个实体的属性信息
-            const nextEntity = context.entityMap.get(currentProperty.referenceEntityId);
+            const nextEntity = context.entityMap.get(currentProperty.referencedEntityId);
             if (!nextEntity) {
-                throw new Error(`Entity [${currentProperty.referenceEntityId}] is not found`)
+                throw new Error(`Entity [${currentProperty.referencedEntityId}] is not found`)
             }
             const nextProperty = nextEntity.allProperties.find(it => it.name === nextPropertyName)
             if (!nextProperty) {
-                throw new Error(`Property [${nextPropertyName}] is not found in Entity [${currentProperty.referenceEntityId}]`)
+                throw new Error(`Property [${nextPropertyName}] is not found in Entity [${currentProperty.referencedEntityId}]`)
             }
             path.push({
                 type: "Entity",

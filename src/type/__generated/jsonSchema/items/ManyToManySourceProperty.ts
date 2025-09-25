@@ -8,7 +8,7 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
             "properties": {
                 "category": {
                     "type": "string",
-                    "const": "ASSOCIATION_ManyToMany_Source"
+                    "const": "ManyToMany_Source"
                 },
                 "nullable": {
                     "type": "boolean",
@@ -34,7 +34,7 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                 "associationId": {
                     "type": "string"
                 },
-                "referenceEntityId": {
+                "referencedEntityId": {
                     "type": "string"
                 },
                 "idViewName": {
@@ -44,7 +44,7 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
             "required": [
                 "associationId",
                 "idViewName",
-                "referenceEntityId"
+                "referencedEntityId"
             ]
         }
     ],

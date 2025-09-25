@@ -8,7 +8,7 @@ const OneToManyPropertyJsonSchema: JSONSchemaType<OneToManyProperty> = {
             "properties": {
                 "category": {
                     "type": "string",
-                    "const": "ASSOCIATION_OneToMany"
+                    "const": "OneToMany"
                 },
                 "mappedById": {
                     "type": "string"
@@ -38,7 +38,7 @@ const OneToManyPropertyJsonSchema: JSONSchemaType<OneToManyProperty> = {
                 "associationId": {
                     "type": "string"
                 },
-                "referenceEntityId": {
+                "referencedEntityId": {
                     "type": "string"
                 },
                 "idViewName": {
@@ -48,7 +48,7 @@ const OneToManyPropertyJsonSchema: JSONSchemaType<OneToManyProperty> = {
             "required": [
                 "associationId",
                 "idViewName",
-                "referenceEntityId"
+                "referencedEntityId"
             ]
         }
     ],

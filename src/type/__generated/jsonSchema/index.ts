@@ -1,6 +1,3 @@
-import AssociationJsonSchema from "./items/Association.ts";
-import AssociationPropertyJsonSchema from "./items/AssociationProperty.ts";
-import AssociationTypeJsonSchema from "./items/AssociationType.ts";
 import BackEndLanguageJsonSchema from "./items/BackEndLanguage.ts";
 import BackEndMappingSourceJsonSchema from "./items/BackEndMappingSource.ts";
 import BackEndToSqlTypeMappingJsonSchema from "./items/BackEndToSqlTypeMapping.ts";
@@ -15,6 +12,7 @@ import EmbeddablePropertyJsonSchema from "./items/EmbeddableProperty.ts";
 import EmbeddableTypeJsonSchema from "./items/EmbeddableType.ts";
 import EmbeddableTypePropertyJsonSchema from "./items/EmbeddableTypeProperty.ts";
 import EntityJsonSchema from "./items/Entity.ts";
+import EntityPropertyJsonSchema from "./items/EntityProperty.ts";
 import EnumerationJsonSchema from "./items/Enumeration.ts";
 import EnumerationItemJsonSchema from "./items/EnumerationItem.ts";
 import EnumerationStrategyJsonSchema from "./items/EnumerationStrategy.ts";
@@ -29,18 +27,20 @@ import IndexJsonSchema from "./items/Index.ts";
 import JoinColumnJsonSchema from "./items/JoinColumn.ts";
 import JoinTableJsonSchema from "./items/JoinTable.ts";
 import KeyPropertyJsonSchema from "./items/KeyProperty.ts";
+import ManyToManyMappedPropertyJsonSchema from "./items/ManyToManyMappedProperty.ts";
 import ManyToManySourcePropertyJsonSchema from "./items/ManyToManySourceProperty.ts";
-import ManyToManyTargetPropertyJsonSchema from "./items/ManyToManyTargetProperty.ts";
 import ManyToManyViewPropertyJsonSchema from "./items/ManyToManyViewProperty.ts";
 import ManyToOnePropertyJsonSchema from "./items/ManyToOneProperty.ts";
 import MappedSuperClassJsonSchema from "./items/MappedSuperClass.ts";
+import MappedSuperClassPropertyJsonSchema from "./items/MappedSuperClassProperty.ts";
 import ModelJsonSchema from "./items/Model.ts";
 import OnDissociationActionJsonSchema from "./items/OnDissociationAction.ts";
+import OneToManyAbstractPropertyJsonSchema from "./items/OneToManyAbstractProperty.ts";
 import OneToManyPropertyJsonSchema from "./items/OneToManyProperty.ts";
+import OneToOneMappedAbstractPropertyJsonSchema from "./items/OneToOneMappedAbstractProperty.ts";
+import OneToOneMappedPropertyJsonSchema from "./items/OneToOneMappedProperty.ts";
 import OneToOneSourcePropertyJsonSchema from "./items/OneToOneSourceProperty.ts";
-import OneToOneTargetPropertyJsonSchema from "./items/OneToOneTargetProperty.ts";
 import OrderDirectionJsonSchema from "./items/OrderDirection.ts";
-import PropertyJsonSchema from "./items/Property.ts";
 import ScalarLogicalDeletePropertyJsonSchema from "./items/ScalarLogicalDeleteProperty.ts";
 import ScalarPropertyJsonSchema from "./items/ScalarProperty.ts";
 import SqlFormulaPropertyJsonSchema from "./items/SqlFormulaProperty.ts";
@@ -54,9 +54,6 @@ import EntityWithPropertiesJsonSchema from "../../context/jsonSchema/EntityWithP
 import MappedSuperClassWithPropertiesJsonSchema from "../../context/jsonSchema/MappedSuperClassWithProperties.ts";
 
 export const jsonSchemas = Object.freeze({
-    Association: AssociationJsonSchema,
-    AssociationProperty: AssociationPropertyJsonSchema,
-    AssociationType: AssociationTypeJsonSchema,
     BackEndLanguage: BackEndLanguageJsonSchema,
     BackEndMappingSource: BackEndMappingSourceJsonSchema,
     BackEndToSqlTypeMapping: BackEndToSqlTypeMappingJsonSchema,
@@ -71,6 +68,7 @@ export const jsonSchemas = Object.freeze({
     EmbeddableType: EmbeddableTypeJsonSchema,
     EmbeddableTypeProperty: EmbeddableTypePropertyJsonSchema,
     Entity: EntityJsonSchema,
+    EntityProperty: EntityPropertyJsonSchema,
     Enumeration: EnumerationJsonSchema,
     EnumerationItem: EnumerationItemJsonSchema,
     EnumerationStrategy: EnumerationStrategyJsonSchema,
@@ -85,18 +83,20 @@ export const jsonSchemas = Object.freeze({
     JoinColumn: JoinColumnJsonSchema,
     JoinTable: JoinTableJsonSchema,
     KeyProperty: KeyPropertyJsonSchema,
+    ManyToManyMappedProperty: ManyToManyMappedPropertyJsonSchema,
     ManyToManySourceProperty: ManyToManySourcePropertyJsonSchema,
-    ManyToManyTargetProperty: ManyToManyTargetPropertyJsonSchema,
     ManyToManyViewProperty: ManyToManyViewPropertyJsonSchema,
     ManyToOneProperty: ManyToOnePropertyJsonSchema,
     MappedSuperClass: MappedSuperClassJsonSchema,
+    MappedSuperClassProperty: MappedSuperClassPropertyJsonSchema,
     Model: ModelJsonSchema,
     OnDissociationAction: OnDissociationActionJsonSchema,
+    OneToManyAbstractProperty: OneToManyAbstractPropertyJsonSchema,
     OneToManyProperty: OneToManyPropertyJsonSchema,
+    OneToOneMappedAbstractProperty: OneToOneMappedAbstractPropertyJsonSchema,
+    OneToOneMappedProperty: OneToOneMappedPropertyJsonSchema,
     OneToOneSourceProperty: OneToOneSourcePropertyJsonSchema,
-    OneToOneTargetProperty: OneToOneTargetPropertyJsonSchema,
     OrderDirection: OrderDirectionJsonSchema,
-    Property: PropertyJsonSchema,
     ScalarLogicalDeleteProperty: ScalarLogicalDeletePropertyJsonSchema,
     ScalarProperty: ScalarPropertyJsonSchema,
     SqlFormulaProperty: SqlFormulaPropertyJsonSchema,

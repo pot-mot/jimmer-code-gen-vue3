@@ -95,58 +95,60 @@ type EnumProperty = {
 
 type BaseAssociationProperty = {
     associationId: string
-    referenceEntityId: string
+    referencedEntityId: string
     idViewName: string
 }
 
 type OnDissociationAction = "NONE" | "LAX" | "CHECK" | "SET_NULL" | "DELETE"
 
 type OneToOneSourceProperty = {
-    category: "ASSOCIATION_OneToOne_Source"
+    category: "OneToOne_Source"
     onDissociateAction: OnDissociationAction
 } & BaseProperty & BaseAssociationProperty
 
-type OneToOneTargetProperty = {
-    category: "ASSOCIATION_OneToOne_Target"
+type OneToOneMappedProperty = {
+    category: "OneToOne_Mapped"
     mappedById: string
     nullable: true
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
 
+type OneToOneMappedAbstractProperty = Omit<OneToOneMappedProperty, 'category' | 'referencedEntityId'> & {
+    category: "OneToOne_Mapped_Abstract"
+    referencedAbstractEntityId: string
+}
+
 type ManyToOneProperty = {
-    category: "ASSOCIATION_ManyToOne"
+    category: "ManyToOne"
     onDissociateAction: OnDissociationAction
 } & BaseProperty & BaseAssociationProperty
 
 type OneToManyProperty = {
-    category: "ASSOCIATION_OneToMany"
+    category: "OneToMany"
     mappedById: string
     nullable: false
     typeIsList: true
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
+
+type OneToManyAbstractProperty = Omit<OneToManyProperty, 'category' | 'referencedEntityId'> & {
+    category: "OneToMany_Abstract"
+    referencedAbstractEntityId: string
+}
 
 type ManyToManySourceProperty = {
-    category: "ASSOCIATION_ManyToMany_Source"
+    category: "ManyToMany_Source"
     nullable: false
     typeIsList: true
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
 
-type ManyToManyTargetProperty = {
-    category: "ASSOCIATION_ManyToMany_Target"
+type ManyToManyMappedProperty = {
+    category: "ManyToMany_Mapped"
     mappedById: string
     nullable: false
     typeIsList: true
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
 
-type AssociationProperty =
-    OneToOneSourceProperty |
-    OneToOneTargetProperty |
-    OneToManyProperty |
-    ManyToOneProperty |
-    ManyToManySourceProperty |
-    ManyToManyTargetProperty
-
 type ManyToManyViewProperty = {
-    category: "ASSOCIATION_ManyToMany_View"
+    category: "ManyToMany_View"
     baseToManyPropertyId: string
     deeperPropertyId: string
     nullable: false
@@ -172,18 +174,34 @@ type TransientProperty = {
 } & BaseProperty & ({
     rawType: string
 } | {
-    referenceEntityId: string
+    referencedEntityId: string
     resolver: string
     typeIsList: boolean
 })
 
-type Property =
+type EntityProperty =
     | IdProperty
     | VersionProperty
     | ScalarProperty
     | EnumProperty
-    | AssociationProperty
+    | OneToOneSourceProperty
+    | OneToOneMappedProperty
+    | ManyToOneProperty
+    | OneToManyProperty
+    | ManyToManySourceProperty
+    | ManyToManyMappedProperty
     | ManyToManyViewProperty
+    | GetterFormulaProperty
+    | SqlFormulaProperty
+    | TransientProperty
+
+type MappedSuperClassProperty =
+    | IdProperty
+    | VersionProperty
+    | ScalarProperty
+    | EnumProperty
+    | OneToOneSourceProperty
+    | ManyToOneProperty
     | GetterFormulaProperty
     | SqlFormulaProperty
     | TransientProperty

@@ -1,4 +1,6 @@
 export default Object.freeze({
     fileName: 'MappedSuperClassWithProperties.d.ts',
-    content: `type MappedSuperClassWithProperties = MappedSuperClass & WithProperties`,
+    content: `type MappedSuperClassWithProperties = MappedSuperClass & {
+    properties: MappedSuperClassProperty[]
+}`,
 })

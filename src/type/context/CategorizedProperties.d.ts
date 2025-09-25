@@ -1,9 +1,27 @@
-type WithProperties = {
-    properties: Property[]
+type Property =
+    | IdProperty
+    | VersionProperty
+    | ScalarProperty
+    | EnumProperty
+    | OneToOneSourceProperty
+    | OneToOneMappedProperty
+    | OneToOneMappedAbstractProperty
+    | ManyToOneProperty
+    | OneToManyProperty
+    | OneToManyAbstractProperty
+    | ManyToManySourceProperty
+    | ManyToManyMappedProperty
+    | ManyToManyViewProperty
+    | GetterFormulaProperty
+    | SqlFormulaProperty
+    | TransientProperty
+
+type EntityWithProperties = Entity & {
+    properties: EntityProperty[]
 }
 
-type CategorizedProperties = {
-    idProperty?: IdProperty
+type EntityCategorizedProperties = {
+    idProperty: IdProperty
     keyPropertyMap: Map<string, Property & KeyProperty>
     logicalDeletedProperty?: (Property & (ScalarLogicalDeleteProperty | EnumLogicalDeleteProperty))
     versionProperty?: VersionProperty
@@ -15,13 +33,12 @@ type CategorizedProperties = {
     columnPropertyMap: Map<string, Property & ColumnProperty>
     embeddablePropertyMap: Map<string, Property & EmbeddableProperty>
 
-    associationPropertyMap: Map<string, AssociationProperty>
-    oneToOneSourcePropertyMap: Map<string, OneToOneSourceProperty>
-    oneToOneTargetPropertyMap: Map<string, OneToOneTargetProperty>
-    oneToManyPropertyMap: Map<string, OneToManyProperty>
-    manyToOnePropertyMap: Map<string, ManyToOneProperty>
-    manyToManySourcePropertyMap: Map<string, ManyToManySourceProperty>
-    manyToManyTargetPropertyMap: Map<string, ManyToManyTargetProperty>
+    oneToOneSourcePropertyMap: Map<string, OneToOneSourceProperty & {association: OneToOneAssociation}>
+    oneToOneMappedPropertyMap: Map<string, OneToOneMappedProperty & {association: OneToOneAssociation}>
+    manyToOnePropertyMap: Map<string, ManyToOneProperty & {association: ManyToOneAssociation}>
+    oneToManyPropertyMap: Map<string, OneToManyProperty & {association: ManyToOneAssociation}>
+    manyToManySourcePropertyMap: Map<string, ManyToManySourceProperty & {association: ManyToManyAssociation}>
+    manyToManyMappedPropertyMap: Map<string, ManyToManyMappedProperty & {association: ManyToManyAssociation}>
 
     manyToManyViewPropertyMap: Map<string, ManyToManyViewProperty>
 
@@ -30,29 +47,37 @@ type CategorizedProperties = {
     transientPropertyMap: Map<string, TransientProperty>
 }
 
-type CategorizedPropertiesRequiredId = Omit<CategorizedProperties, "idProperty"> & {
-    idProperty: IdProperty
+type EntityWithCategorizedProperties = EntityWithProperties & EntityCategorizedProperties
+
+type MappedSuperClassWithProperties = MappedSuperClass & {
+    properties: MappedSuperClassProperty[]
 }
 
-type EntityWithProperties = Entity & WithProperties
+type AbstractCategorizedProperties = Omit<EntityCategorizedProperties,
+    | "idProperty"
+    | "oneToOneSourcePropertyMap"
+    | "oneToOneMappedPropertyMap"
+    | "manyToOnePropertyMap"
+    | "oneToManyPropertyMap"
+    | "manyToManySourcePropertyMap"
+    | "manyToManyMappedPropertyMap"
+> & {
+    idProperty?: IdProperty
+    oneToOneSourcePropertyMap: Map<string, OneToOneSourceProperty & {association: OneToOneAbstractAssociation}>
+    manyToOnePropertyMap: Map<string, ManyToOneProperty & {association: ManyToOneAbstractAssociation}>
+}
 
-type EntityWithCategorizedProperties = EntityWithProperties & CategorizedPropertiesRequiredId
+type MappedSuperClassWithCategorizedProperties = MappedSuperClassWithProperties & AbstractCategorizedProperties
 
-type MappedSuperClassWithProperties = MappedSuperClass & WithProperties
-
-type MappedSuperClassWithCategorizedProperties = MappedSuperClassWithProperties & CategorizedProperties
-
-type WithEmbeddableTypeProperties = {
+type EmbeddableTypeWithProperties = EmbeddableType & {
     properties: EmbeddableTypeProperty[]
 }
 
-type CategorizedEmbeddableTypeProperties = Pick<CategorizedProperties,
+type CategorizedEmbeddableTypeProperties = Pick<EntityCategorizedProperties,
     | "scalarPropertyMap"
     | "enumPropertyMap"
     | "columnPropertyMap"
     | "embeddablePropertyMap"
 >
-
-type EmbeddableTypeWithProperties = EmbeddableType & WithEmbeddableTypeProperties
 
 type EmbeddableTypeWithCategorizedProperties = EmbeddableTypeWithProperties & CategorizedEmbeddableTypeProperties

@@ -1,9 +1,7 @@
 import {
-    categorizeEmbeddableTypeProperties,
-    categorizeProperties,
-    validCategorizedPropertiesRequiredId
+    categorizeAbstractCategorizedProperties,
+    categorizeEmbeddableTypeProperties, categorizeEntityProperties,
 } from "@/type/context/utils/CategorizedProperties.ts";
-import {getAssociationSubData} from "@/type/context/utils/AssociationSubData.ts";
 import {
     type AllExtendsResult,
     getEntityAllExtends,
@@ -11,6 +9,7 @@ import {
 } from "@/type/context/utils/EntityExtends.ts";
 import {getGroupSubMaps} from "@/type/context/utils/GroupSubDataMap.ts";
 import {flatEmbeddableTypeProperties} from "@/type/context/utils/EmbeddableTypeFlat.ts";
+import {getAssociationWithInheritInfo} from "@/type/context/utils/AssociationWithInheritInfo.ts";
 
 export const contextDataToContext = (
     contextData: ModelContextData,
@@ -19,10 +18,7 @@ export const contextDataToContext = (
 
     const entityBaseInfoMap = new Map<string, EntityWithCategorizedProperties>()
     for (const [id, entity] of contextData.entityMap) {
-        const categorizedProperties = categorizeProperties(entity.properties)
-        if (!validCategorizedPropertiesRequiredId(categorizedProperties)) {
-            throw new Error(`Entity ${entity.name}(${entity.id}) has no idProperty`)
-        }
+        const categorizedProperties = categorizeEntityProperties(entity.properties, contextData.associationMap)
         const entityWithCategorizedProperties: EntityWithCategorizedProperties = {
             ...entity,
             ...categorizedProperties,
@@ -32,7 +28,7 @@ export const contextDataToContext = (
 
     const mappedSuperClassBaseInfoMap = new Map<string, MappedSuperClassWithCategorizedProperties>()
     for (const [id, mappedSuperClass] of contextData.mappedSuperClassMap) {
-        const categorizedProperties = categorizeProperties(mappedSuperClass.properties)
+        const categorizedProperties = categorizeAbstractCategorizedProperties(mappedSuperClass.properties, contextData.associationMap)
         const mappedSuperClassWithCategorizedProperties: MappedSuperClassWithCategorizedProperties = {
             ...mappedSuperClass,
             ...categorizedProperties,
@@ -54,13 +50,10 @@ export const contextDataToContext = (
     for (const [id, enumeration] of contextData.enumerationMap) {
         enumerationMap.set(id, enumeration)
     }
-    const associationMap = new Map<string, AssociationWithSubData>()
+    const associationMap = new Map<string, AssociationWithInheritInfo>()
     for (const [id, association] of contextData.associationMap) {
-        const associationWithSubData: AssociationWithSubData = {
-            ...association,
-            ...getAssociationSubData(association, entityBaseInfoMap, mappedSuperClassBaseInfoMap),
-        }
-        associationMap.set(id, associationWithSubData)
+        const associationWithInheritInfo: AssociationWithInheritInfo = getAssociationWithInheritInfo(association, entityBaseInfoMap, mappedSuperClassBaseInfoMap)
+        associationMap.set(id, associationWithInheritInfo)
     }
 
     // 解析继承关系
@@ -70,7 +63,7 @@ export const contextDataToContext = (
     for (const [id, mappedSuperClass] of mappedSuperClassBaseInfoMap) {
         const allExtends = getEntityAllExtends(mappedSuperClass, mappedSuperClassBaseInfoMap, superClassAllExtendsResultMap)
         const allProperties = getEntityAllProperties(mappedSuperClass, mappedSuperClassBaseInfoMap, allExtends)
-        const allCategorizedProperties = categorizeProperties(allProperties)
+        const allCategorizedProperties = categorizeAbstractCategorizedProperties(allProperties, contextData.associationMap)
         mappedSuperClassMap.set(id, {
             ...mappedSuperClass,
             allExtends,
@@ -83,10 +76,7 @@ export const contextDataToContext = (
     for (const [id, entity] of entityBaseInfoMap) {
         const allExtends = getEntityAllExtends(entity, mappedSuperClassBaseInfoMap, superClassAllExtendsResultMap)
         const allProperties = getEntityAllProperties(entity, mappedSuperClassBaseInfoMap, allExtends)
-        const allCategorizedProperties = categorizeProperties(allProperties)
-        if (!validCategorizedPropertiesRequiredId(allCategorizedProperties)) {
-            throw new Error(`Entity ${entity.name}(${entity.id}) has no idProperty`)
-        }
+        const allCategorizedProperties = categorizeEntityProperties(allProperties, contextData.associationMap)
         entityMap.set(id, {
             ...entity,
             allExtends,

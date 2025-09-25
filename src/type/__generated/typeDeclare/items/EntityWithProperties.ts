@@ -1,4 +1,6 @@
 export default Object.freeze({
     fileName: 'EntityWithProperties.d.ts',
-    content: `type EntityWithProperties = Entity & WithProperties`,
+    content: `type EntityWithProperties = Entity & {
+    properties: EntityProperty[]
+}`,
 })

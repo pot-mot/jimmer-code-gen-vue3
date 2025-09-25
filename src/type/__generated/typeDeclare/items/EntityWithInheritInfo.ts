@@ -3,6 +3,6 @@ export default Object.freeze({
     content: `type EntityWithInheritInfo = EntityWithCategorizedProperties & {
     allExtends: Set<MappedSuperClassWithCategorizedProperties>,
     allProperties: Property[],
-    allCategorizedProperties: CategorizedPropertiesRequiredId,
+    allCategorizedProperties: EntityCategorizedProperties,
 }`,
 })

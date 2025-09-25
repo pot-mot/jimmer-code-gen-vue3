@@ -1,4 +1,6 @@
 export default Object.freeze({
     fileName: 'EmbeddableTypeWithProperties.d.ts',
-    content: `type EmbeddableTypeWithProperties = EmbeddableType & WithEmbeddableTypeProperties`,
+    content: `type EmbeddableTypeWithProperties = EmbeddableType & {
+    properties: EmbeddableTypeProperty[]
+}`,
 })

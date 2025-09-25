@@ -1,5 +1,3 @@
-type AssociationType = 'ONE_TO_ONE' | 'MANY_TO_ONE' | 'MANY_TO_MANY'
-
 type ForeignKeyType = 'AUTO' | 'REAL' | 'FAKE'
 
 type JoinColumn = {
@@ -30,25 +28,5 @@ type JoinTable = {
         generatorType: string
         generatorRef: string
         initializedValue: string
-    }
-}
-
-type Association = {
-    id: string
-    name: string
-    type: AssociationType
-    sourceEntityId: string
-    targetEntityId: string
-    sourcePropertyId: string
-    targetPropertyId: string
-    joinInfo: {
-        type: "joinColumn"
-        joinColumn: JoinColumn
-    } | {
-        type: "joinColumns"
-        joinColumns: JoinColumn[]
-    } | {
-        type: "joinTable"
-        joinTable: JoinTable
     }
 }

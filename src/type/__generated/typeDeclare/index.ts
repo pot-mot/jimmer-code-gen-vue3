@@ -1,8 +1,8 @@
+import AbstractAssociationDeclare from "./items/AbstractAssociation.ts";
+import AbstractAssociationWithInheritInfoDeclare from "./items/AbstractAssociationWithInheritInfo.ts";
+import AbstractCategorizedPropertiesDeclare from "./items/AbstractCategorizedProperties.ts";
 import AssociationDeclare from "./items/Association.ts";
-import AssociationPropertyDeclare from "./items/AssociationProperty.ts";
-import AssociationSubDataDeclare from "./items/AssociationSubData.ts";
-import AssociationTypeDeclare from "./items/AssociationType.ts";
-import AssociationWithSubDataDeclare from "./items/AssociationWithSubData.ts";
+import AssociationWithInheritInfoDeclare from "./items/AssociationWithInheritInfo.ts";
 import BackEndLanguageDeclare from "./items/BackEndLanguage.ts";
 import BackEndMappingSourceDeclare from "./items/BackEndMappingSource.ts";
 import BackEndToSqlTypeMappingDeclare from "./items/BackEndToSqlTypeMapping.ts";
@@ -10,10 +10,10 @@ import BackEndToTypeScriptTypeMappingDeclare from "./items/BackEndToTypeScriptTy
 import BaseAssociationPropertyDeclare from "./items/BaseAssociationProperty.ts";
 import BasePropertyDeclare from "./items/BaseProperty.ts";
 import CategorizedEmbeddableTypePropertiesDeclare from "./items/CategorizedEmbeddableTypeProperties.ts";
-import CategorizedPropertiesDeclare from "./items/CategorizedProperties.ts";
-import CategorizedPropertiesRequiredIdDeclare from "./items/CategorizedPropertiesRequiredId.ts";
 import ColumnDeclare from "./items/Column.ts";
 import ColumnPropertyDeclare from "./items/ColumnProperty.ts";
+import ConcreteAssociationDeclare from "./items/ConcreteAssociation.ts";
+import ConcreteAssociationWithInheritInfoDeclare from "./items/ConcreteAssociationWithInheritInfo.ts";
 import DatabaseDeclare from "./items/Database.ts";
 import DatabaseTypeDeclare from "./items/DatabaseType.ts";
 import DeepReadonlyDeclare from "./items/DeepReadonly.ts";
@@ -24,6 +24,8 @@ import EmbeddableTypeWithCategorizedPropertiesDeclare from "./items/EmbeddableTy
 import EmbeddableTypeWithFlatPropertiesDeclare from "./items/EmbeddableTypeWithFlatProperties.ts";
 import EmbeddableTypeWithPropertiesDeclare from "./items/EmbeddableTypeWithProperties.ts";
 import EntityDeclare from "./items/Entity.ts";
+import EntityCategorizedPropertiesDeclare from "./items/EntityCategorizedProperties.ts";
+import EntityPropertyDeclare from "./items/EntityProperty.ts";
 import EntityWithCategorizedPropertiesDeclare from "./items/EntityWithCategorizedProperties.ts";
 import EntityWithInheritInfoDeclare from "./items/EntityWithInheritInfo.ts";
 import EntityWithPropertiesDeclare from "./items/EntityWithProperties.ts";
@@ -44,11 +46,15 @@ import IndexDeclare from "./items/Index.ts";
 import JoinColumnDeclare from "./items/JoinColumn.ts";
 import JoinTableDeclare from "./items/JoinTable.ts";
 import KeyPropertyDeclare from "./items/KeyProperty.ts";
+import ManyToManyAssociationDeclare from "./items/ManyToManyAssociation.ts";
+import ManyToManyMappedPropertyDeclare from "./items/ManyToManyMappedProperty.ts";
 import ManyToManySourcePropertyDeclare from "./items/ManyToManySourceProperty.ts";
-import ManyToManyTargetPropertyDeclare from "./items/ManyToManyTargetProperty.ts";
 import ManyToManyViewPropertyDeclare from "./items/ManyToManyViewProperty.ts";
+import ManyToOneAbstractAssociationDeclare from "./items/ManyToOneAbstractAssociation.ts";
+import ManyToOneAssociationDeclare from "./items/ManyToOneAssociation.ts";
 import ManyToOnePropertyDeclare from "./items/ManyToOneProperty.ts";
 import MappedSuperClassDeclare from "./items/MappedSuperClass.ts";
+import MappedSuperClassPropertyDeclare from "./items/MappedSuperClassProperty.ts";
 import MappedSuperClassWithCategorizedPropertiesDeclare from "./items/MappedSuperClassWithCategorizedProperties.ts";
 import MappedSuperClassWithInheritInfoDeclare from "./items/MappedSuperClassWithInheritInfo.ts";
 import MappedSuperClassWithPropertiesDeclare from "./items/MappedSuperClassWithProperties.ts";
@@ -59,9 +65,13 @@ import ModelSubDataDeclare from "./items/ModelSubData.ts";
 import ModelSubIdsDeclare from "./items/ModelSubIds.ts";
 import ModelSubIdSetsDeclare from "./items/ModelSubIdSets.ts";
 import OnDissociationActionDeclare from "./items/OnDissociationAction.ts";
+import OneToManyAbstractPropertyDeclare from "./items/OneToManyAbstractProperty.ts";
 import OneToManyPropertyDeclare from "./items/OneToManyProperty.ts";
+import OneToOneAbstractAssociationDeclare from "./items/OneToOneAbstractAssociation.ts";
+import OneToOneAssociationDeclare from "./items/OneToOneAssociation.ts";
+import OneToOneMappedAbstractPropertyDeclare from "./items/OneToOneMappedAbstractProperty.ts";
+import OneToOneMappedPropertyDeclare from "./items/OneToOneMappedProperty.ts";
 import OneToOneSourcePropertyDeclare from "./items/OneToOneSourceProperty.ts";
-import OneToOneTargetPropertyDeclare from "./items/OneToOneTargetProperty.ts";
 import OrderDirectionDeclare from "./items/OrderDirection.ts";
 import PropertyDeclare from "./items/Property.ts";
 import ScalarLogicalDeletePropertyDeclare from "./items/ScalarLogicalDeleteProperty.ts";
@@ -72,15 +82,13 @@ import TableDeclare from "./items/Table.ts";
 import TransientPropertyDeclare from "./items/TransientProperty.ts";
 import TypeSelectPairDeclare from "./items/TypeSelectPair.ts";
 import VersionPropertyDeclare from "./items/VersionProperty.ts";
-import WithEmbeddableTypePropertiesDeclare from "./items/WithEmbeddableTypeProperties.ts";
-import WithPropertiesDeclare from "./items/WithProperties.ts";
 
 export type TypeMap = {
+    AbstractAssociation: AbstractAssociation
+    AbstractAssociationWithInheritInfo: AbstractAssociationWithInheritInfo
+    AbstractCategorizedProperties: AbstractCategorizedProperties
     Association: Association
-    AssociationProperty: AssociationProperty
-    AssociationSubData: AssociationSubData
-    AssociationType: AssociationType
-    AssociationWithSubData: AssociationWithSubData
+    AssociationWithInheritInfo: AssociationWithInheritInfo
     BackEndLanguage: BackEndLanguage
     BackEndMappingSource: BackEndMappingSource
     BackEndToSqlTypeMapping: BackEndToSqlTypeMapping
@@ -88,10 +96,10 @@ export type TypeMap = {
     BaseAssociationProperty: BaseAssociationProperty
     BaseProperty: BaseProperty
     CategorizedEmbeddableTypeProperties: CategorizedEmbeddableTypeProperties
-    CategorizedProperties: CategorizedProperties
-    CategorizedPropertiesRequiredId: CategorizedPropertiesRequiredId
     Column: Column
     ColumnProperty: ColumnProperty
+    ConcreteAssociation: ConcreteAssociation
+    ConcreteAssociationWithInheritInfo: ConcreteAssociationWithInheritInfo
     Database: Database
     DatabaseType: DatabaseType
     EmbeddableProperty: EmbeddableProperty
@@ -101,6 +109,8 @@ export type TypeMap = {
     EmbeddableTypeWithFlatProperties: EmbeddableTypeWithFlatProperties
     EmbeddableTypeWithProperties: EmbeddableTypeWithProperties
     Entity: Entity
+    EntityCategorizedProperties: EntityCategorizedProperties
+    EntityProperty: EntityProperty
     EntityWithCategorizedProperties: EntityWithCategorizedProperties
     EntityWithInheritInfo: EntityWithInheritInfo
     EntityWithProperties: EntityWithProperties
@@ -121,11 +131,15 @@ export type TypeMap = {
     JoinColumn: JoinColumn
     JoinTable: JoinTable
     KeyProperty: KeyProperty
+    ManyToManyAssociation: ManyToManyAssociation
+    ManyToManyMappedProperty: ManyToManyMappedProperty
     ManyToManySourceProperty: ManyToManySourceProperty
-    ManyToManyTargetProperty: ManyToManyTargetProperty
     ManyToManyViewProperty: ManyToManyViewProperty
+    ManyToOneAbstractAssociation: ManyToOneAbstractAssociation
+    ManyToOneAssociation: ManyToOneAssociation
     ManyToOneProperty: ManyToOneProperty
     MappedSuperClass: MappedSuperClass
+    MappedSuperClassProperty: MappedSuperClassProperty
     MappedSuperClassWithCategorizedProperties: MappedSuperClassWithCategorizedProperties
     MappedSuperClassWithInheritInfo: MappedSuperClassWithInheritInfo
     MappedSuperClassWithProperties: MappedSuperClassWithProperties
@@ -136,9 +150,13 @@ export type TypeMap = {
     ModelSubIds: ModelSubIds
     ModelSubIdSets: ModelSubIdSets
     OnDissociationAction: OnDissociationAction
+    OneToManyAbstractProperty: OneToManyAbstractProperty
     OneToManyProperty: OneToManyProperty
+    OneToOneAbstractAssociation: OneToOneAbstractAssociation
+    OneToOneAssociation: OneToOneAssociation
+    OneToOneMappedAbstractProperty: OneToOneMappedAbstractProperty
+    OneToOneMappedProperty: OneToOneMappedProperty
     OneToOneSourceProperty: OneToOneSourceProperty
-    OneToOneTargetProperty: OneToOneTargetProperty
     OrderDirection: OrderDirection
     Property: Property
     ScalarLogicalDeleteProperty: ScalarLogicalDeleteProperty
@@ -149,18 +167,16 @@ export type TypeMap = {
     TransientProperty: TransientProperty
     TypeSelectPair: TypeSelectPair
     VersionProperty: VersionProperty
-    WithEmbeddableTypeProperties: WithEmbeddableTypeProperties
-    WithProperties: WithProperties
 }
 
 export type TypeName = keyof TypeMap
 
 export const typeDeclares = Object.freeze({
+    AbstractAssociation: AbstractAssociationDeclare,
+    AbstractAssociationWithInheritInfo: AbstractAssociationWithInheritInfoDeclare,
+    AbstractCategorizedProperties: AbstractCategorizedPropertiesDeclare,
     Association: AssociationDeclare,
-    AssociationProperty: AssociationPropertyDeclare,
-    AssociationSubData: AssociationSubDataDeclare,
-    AssociationType: AssociationTypeDeclare,
-    AssociationWithSubData: AssociationWithSubDataDeclare,
+    AssociationWithInheritInfo: AssociationWithInheritInfoDeclare,
     BackEndLanguage: BackEndLanguageDeclare,
     BackEndMappingSource: BackEndMappingSourceDeclare,
     BackEndToSqlTypeMapping: BackEndToSqlTypeMappingDeclare,
@@ -168,10 +184,10 @@ export const typeDeclares = Object.freeze({
     BaseAssociationProperty: BaseAssociationPropertyDeclare,
     BaseProperty: BasePropertyDeclare,
     CategorizedEmbeddableTypeProperties: CategorizedEmbeddableTypePropertiesDeclare,
-    CategorizedProperties: CategorizedPropertiesDeclare,
-    CategorizedPropertiesRequiredId: CategorizedPropertiesRequiredIdDeclare,
     Column: ColumnDeclare,
     ColumnProperty: ColumnPropertyDeclare,
+    ConcreteAssociation: ConcreteAssociationDeclare,
+    ConcreteAssociationWithInheritInfo: ConcreteAssociationWithInheritInfoDeclare,
     Database: DatabaseDeclare,
     DatabaseType: DatabaseTypeDeclare,
     DeepReadonly: DeepReadonlyDeclare,
@@ -182,6 +198,8 @@ export const typeDeclares = Object.freeze({
     EmbeddableTypeWithFlatProperties: EmbeddableTypeWithFlatPropertiesDeclare,
     EmbeddableTypeWithProperties: EmbeddableTypeWithPropertiesDeclare,
     Entity: EntityDeclare,
+    EntityCategorizedProperties: EntityCategorizedPropertiesDeclare,
+    EntityProperty: EntityPropertyDeclare,
     EntityWithCategorizedProperties: EntityWithCategorizedPropertiesDeclare,
     EntityWithInheritInfo: EntityWithInheritInfoDeclare,
     EntityWithProperties: EntityWithPropertiesDeclare,
@@ -202,11 +220,15 @@ export const typeDeclares = Object.freeze({
     JoinColumn: JoinColumnDeclare,
     JoinTable: JoinTableDeclare,
     KeyProperty: KeyPropertyDeclare,
+    ManyToManyAssociation: ManyToManyAssociationDeclare,
+    ManyToManyMappedProperty: ManyToManyMappedPropertyDeclare,
     ManyToManySourceProperty: ManyToManySourcePropertyDeclare,
-    ManyToManyTargetProperty: ManyToManyTargetPropertyDeclare,
     ManyToManyViewProperty: ManyToManyViewPropertyDeclare,
+    ManyToOneAbstractAssociation: ManyToOneAbstractAssociationDeclare,
+    ManyToOneAssociation: ManyToOneAssociationDeclare,
     ManyToOneProperty: ManyToOnePropertyDeclare,
     MappedSuperClass: MappedSuperClassDeclare,
+    MappedSuperClassProperty: MappedSuperClassPropertyDeclare,
     MappedSuperClassWithCategorizedProperties: MappedSuperClassWithCategorizedPropertiesDeclare,
     MappedSuperClassWithInheritInfo: MappedSuperClassWithInheritInfoDeclare,
     MappedSuperClassWithProperties: MappedSuperClassWithPropertiesDeclare,
@@ -217,9 +239,13 @@ export const typeDeclares = Object.freeze({
     ModelSubIds: ModelSubIdsDeclare,
     ModelSubIdSets: ModelSubIdSetsDeclare,
     OnDissociationAction: OnDissociationActionDeclare,
+    OneToManyAbstractProperty: OneToManyAbstractPropertyDeclare,
     OneToManyProperty: OneToManyPropertyDeclare,
+    OneToOneAbstractAssociation: OneToOneAbstractAssociationDeclare,
+    OneToOneAssociation: OneToOneAssociationDeclare,
+    OneToOneMappedAbstractProperty: OneToOneMappedAbstractPropertyDeclare,
+    OneToOneMappedProperty: OneToOneMappedPropertyDeclare,
     OneToOneSourceProperty: OneToOneSourcePropertyDeclare,
-    OneToOneTargetProperty: OneToOneTargetPropertyDeclare,
     OrderDirection: OrderDirectionDeclare,
     Property: PropertyDeclare,
     ScalarLogicalDeleteProperty: ScalarLogicalDeletePropertyDeclare,
@@ -230,6 +256,4 @@ export const typeDeclares = Object.freeze({
     TransientProperty: TransientPropertyDeclare,
     TypeSelectPair: TypeSelectPairDeclare,
     VersionProperty: VersionPropertyDeclare,
-    WithEmbeddableTypeProperties: WithEmbeddableTypePropertiesDeclare,
-    WithProperties: WithPropertiesDeclare,
 })

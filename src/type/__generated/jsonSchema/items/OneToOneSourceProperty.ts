@@ -8,7 +8,7 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
             "properties": {
                 "category": {
                     "type": "string",
-                    "const": "ASSOCIATION_OneToOne_Source"
+                    "const": "OneToOne_Source"
                 },
                 "onDissociateAction": {
                     "$ref": "#/definitions/OnDissociationAction"
@@ -62,7 +62,7 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                 "associationId": {
                     "type": "string"
                 },
-                "referenceEntityId": {
+                "referencedEntityId": {
                     "type": "string"
                 },
                 "idViewName": {
@@ -72,7 +72,7 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
             "required": [
                 "associationId",
                 "idViewName",
-                "referenceEntityId"
+                "referencedEntityId"
             ]
         }
     ],

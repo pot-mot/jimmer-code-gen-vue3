@@ -8,7 +8,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
             "properties": {
                 "category": {
                     "type": "string",
-                    "const": "ASSOCIATION_ManyToOne"
+                    "const": "ManyToOne"
                 },
                 "onDissociateAction": {
                     "$ref": "#/definitions/OnDissociationAction"
@@ -62,7 +62,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                 "associationId": {
                     "type": "string"
                 },
-                "referenceEntityId": {
+                "referencedEntityId": {
                     "type": "string"
                 },
                 "idViewName": {
@@ -72,7 +72,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
             "required": [
                 "associationId",
                 "idViewName",
-                "referenceEntityId"
+                "referencedEntityId"
             ]
         }
     ],

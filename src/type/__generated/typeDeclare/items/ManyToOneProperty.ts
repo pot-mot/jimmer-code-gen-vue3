@@ -1,7 +1,7 @@
 export default Object.freeze({
     fileName: 'ManyToOneProperty.d.ts',
     content: `type ManyToOneProperty = {
-    category: "ASSOCIATION_ManyToOne"
+    category: "ManyToOne"
     onDissociateAction: OnDissociationAction
 } & BaseProperty & BaseAssociationProperty`,
 })

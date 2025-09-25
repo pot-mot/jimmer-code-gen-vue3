@@ -104,6 +104,7 @@ export const getEntityAllProperties = (
     entity: EntityWithProperties | MappedSuperClassWithProperties,
     mappedSuperClassMap: ReadonlyMap<string, MappedSuperClassWithProperties>,
     allExtends: Set<MappedSuperClassWithProperties> = getEntityAllExtends(entity, mappedSuperClassMap),
+    // 需要通过关联属性获取关联属性的属性
 ): Property[] => {
     const result = [...entity.properties]
 

@@ -5,7 +5,14 @@ export default Object.freeze({
     | VersionProperty
     | ScalarProperty
     | EnumProperty
-    | AssociationProperty
+    | OneToOneSourceProperty
+    | OneToOneMappedProperty
+    | OneToOneMappedAbstractProperty
+    | ManyToOneProperty
+    | OneToManyProperty
+    | OneToManyAbstractProperty
+    | ManyToManySourceProperty
+    | ManyToManyMappedProperty
     | ManyToManyViewProperty
     | GetterFormulaProperty
     | SqlFormulaProperty

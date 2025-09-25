@@ -121,7 +121,7 @@ const TransientPropertyJsonSchema: JSONSchemaType<TransientProperty> = {
                 {
                     "type": "object",
                     "properties": {
-                        "referenceEntityId": {
+                        "referencedEntityId": {
                             "type": "string"
                         },
                         "resolver": {
@@ -132,7 +132,7 @@ const TransientPropertyJsonSchema: JSONSchemaType<TransientProperty> = {
                         }
                     },
                     "required": [
-                        "referenceEntityId",
+                        "referencedEntityId",
                         "resolver",
                         "typeIsList"
                     ]
