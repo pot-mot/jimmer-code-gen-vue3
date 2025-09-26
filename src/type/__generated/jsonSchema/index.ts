@@ -27,9 +27,12 @@ import IndexJsonSchema from "./items/Index.ts";
 import JoinColumnJsonSchema from "./items/JoinColumn.ts";
 import JoinTableJsonSchema from "./items/JoinTable.ts";
 import KeyPropertyJsonSchema from "./items/KeyProperty.ts";
+import ManyToManyAssociationIdOnlyJsonSchema from "./items/ManyToManyAssociationIdOnly.ts";
 import ManyToManyMappedPropertyJsonSchema from "./items/ManyToManyMappedProperty.ts";
 import ManyToManySourcePropertyJsonSchema from "./items/ManyToManySourceProperty.ts";
 import ManyToManyViewPropertyJsonSchema from "./items/ManyToManyViewProperty.ts";
+import ManyToOneAbstractAssociationIdOnlyJsonSchema from "./items/ManyToOneAbstractAssociationIdOnly.ts";
+import ManyToOneAssociationIdOnlyJsonSchema from "./items/ManyToOneAssociationIdOnly.ts";
 import ManyToOnePropertyJsonSchema from "./items/ManyToOneProperty.ts";
 import MappedSuperClassJsonSchema from "./items/MappedSuperClass.ts";
 import MappedSuperClassPropertyJsonSchema from "./items/MappedSuperClassProperty.ts";
@@ -37,6 +40,8 @@ import ModelJsonSchema from "./items/Model.ts";
 import OnDissociationActionJsonSchema from "./items/OnDissociationAction.ts";
 import OneToManyAbstractPropertyJsonSchema from "./items/OneToManyAbstractProperty.ts";
 import OneToManyPropertyJsonSchema from "./items/OneToManyProperty.ts";
+import OneToOneAbstractAssociationIdOnlyJsonSchema from "./items/OneToOneAbstractAssociationIdOnly.ts";
+import OneToOneAssociationIdOnlyJsonSchema from "./items/OneToOneAssociationIdOnly.ts";
 import OneToOneMappedAbstractPropertyJsonSchema from "./items/OneToOneMappedAbstractProperty.ts";
 import OneToOneMappedPropertyJsonSchema from "./items/OneToOneMappedProperty.ts";
 import OneToOneSourcePropertyJsonSchema from "./items/OneToOneSourceProperty.ts";
@@ -83,9 +88,12 @@ export const jsonSchemas = Object.freeze({
     JoinColumn: JoinColumnJsonSchema,
     JoinTable: JoinTableJsonSchema,
     KeyProperty: KeyPropertyJsonSchema,
+    ManyToManyAssociationIdOnly: ManyToManyAssociationIdOnlyJsonSchema,
     ManyToManyMappedProperty: ManyToManyMappedPropertyJsonSchema,
     ManyToManySourceProperty: ManyToManySourcePropertyJsonSchema,
     ManyToManyViewProperty: ManyToManyViewPropertyJsonSchema,
+    ManyToOneAbstractAssociationIdOnly: ManyToOneAbstractAssociationIdOnlyJsonSchema,
+    ManyToOneAssociationIdOnly: ManyToOneAssociationIdOnlyJsonSchema,
     ManyToOneProperty: ManyToOnePropertyJsonSchema,
     MappedSuperClass: MappedSuperClassJsonSchema,
     MappedSuperClassProperty: MappedSuperClassPropertyJsonSchema,
@@ -93,6 +101,8 @@ export const jsonSchemas = Object.freeze({
     OnDissociationAction: OnDissociationActionJsonSchema,
     OneToManyAbstractProperty: OneToManyAbstractPropertyJsonSchema,
     OneToManyProperty: OneToManyPropertyJsonSchema,
+    OneToOneAbstractAssociationIdOnly: OneToOneAbstractAssociationIdOnlyJsonSchema,
+    OneToOneAssociationIdOnly: OneToOneAssociationIdOnlyJsonSchema,
     OneToOneMappedAbstractProperty: OneToOneMappedAbstractPropertyJsonSchema,
     OneToOneMappedProperty: OneToOneMappedPropertyJsonSchema,
     OneToOneSourceProperty: OneToOneSourcePropertyJsonSchema,

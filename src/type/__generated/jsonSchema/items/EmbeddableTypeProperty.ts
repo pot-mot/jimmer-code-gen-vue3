@@ -3096,6 +3096,9 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                 "type": {
                     "type": "string"
                 },
+                "nullable": {
+                    "type": "boolean"
+                },
                 "comment": {
                     "type": "string"
                 },
@@ -3104,9 +3107,6 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                 },
                 "numericPrecision": {
                     "type": "number"
-                },
-                "nullable": {
-                    "type": "boolean"
                 },
                 "defaultValue": {
                     "type": "string"

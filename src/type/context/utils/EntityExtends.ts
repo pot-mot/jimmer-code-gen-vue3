@@ -104,7 +104,6 @@ export const getEntityAllProperties = (
     entity: EntityWithProperties | MappedSuperClassWithProperties,
     mappedSuperClassMap: ReadonlyMap<string, MappedSuperClassWithProperties>,
     allExtends: Set<MappedSuperClassWithProperties> = getEntityAllExtends(entity, mappedSuperClassMap),
-    // 需要通过关联属性获取关联属性的属性
 ): Property[] => {
     const result = [...entity.properties]
 
@@ -113,4 +112,92 @@ export const getEntityAllProperties = (
     }
 
     return result
+}
+
+/**
+ * 反向映射结果，包含每个MappedSuperClass的直接和间接子类
+ */
+type InheritorsResult<
+    ENTITY extends Entity,
+    MAPPED_SUPER_CLASS extends MappedSuperClass,
+> = {
+    entities: Set<ENTITY>
+    mappedSuperClasses: Set<MAPPED_SUPER_CLASS>
+}
+
+type InheritorsMap<
+    ENTITY extends Entity,
+    MAPPED_SUPER_CLASS extends MappedSuperClass,
+> = Map<string, InheritorsResult<ENTITY, MAPPED_SUPER_CLASS>>
+
+/**
+ * 构建MappedSuperClass的反向继承关系映射
+ */
+export const buildInheritorsMap = <
+    ENTITY extends Entity,
+    MAPPED_SUPER_CLASS extends MappedSuperClass,
+>(
+    entityMap: ReadonlyMap<string, ENTITY>,
+    mappedSuperClassMap: ReadonlyMap<string, MAPPED_SUPER_CLASS>
+): InheritorsMap<ENTITY, MAPPED_SUPER_CLASS> => {
+    const inheritorsMap: InheritorsMap<ENTITY, MAPPED_SUPER_CLASS> = new Map()
+
+    // 初始化反向映射，为每个MappedSuperClass创建空的子类集合
+    for (const mappedSuperClass of mappedSuperClassMap.values()) {
+        if (!inheritorsMap.has(mappedSuperClass.id)) {
+            inheritorsMap.set(mappedSuperClass.id, {entities: new Set(), mappedSuperClasses: new Set()})
+        }
+    }
+
+    // 建立反向继承关系
+    for (const mappedSuperClass of mappedSuperClassMap.values()) {
+        for (const extendId of mappedSuperClass.extendsIds) {
+            const inheritors = inheritorsMap.get(extendId)
+            if (!inheritors) throw new Error(`MappedSuperClass ${extendId}) Not Found`)
+            inheritors.mappedSuperClasses.add(mappedSuperClass)
+        }
+    }
+    for (const entity of entityMap.values()) {
+        for (const extendId of entity.extendsIds) {
+            const inheritors = inheritorsMap.get(extendId)
+            if (!inheritors) throw new Error(`MappedSuperClass ${extendId}) Not Found`)
+            inheritors.entities.add(entity)
+        }
+    }
+
+    return inheritorsMap
+}
+
+export const getMappedSuperClassAllInheritors = <
+    ENTITY extends Entity,
+    MAPPED_SUPER_CLASS extends MappedSuperClass,
+>(
+    mappedSuperClass: MAPPED_SUPER_CLASS,
+    inheritorsMap: InheritorsMap<ENTITY, MAPPED_SUPER_CLASS>
+): InheritorsResult<ENTITY, MAPPED_SUPER_CLASS> => {
+    const allEntities = new Set<ENTITY>()
+    const allMappedSuperClass = new Set<MAPPED_SUPER_CLASS>()
+
+    const directInheritors = inheritorsMap.get(mappedSuperClass.id)
+    if (directInheritors === undefined) throw new Error(`MappedSuperClass ${mappedSuperClass.name}(${mappedSuperClass.id}) not exists`)
+
+    for (const item of directInheritors.mappedSuperClasses) {
+        allMappedSuperClass.add(item)
+
+        const indirectInheritors = getMappedSuperClassAllInheritors(item, inheritorsMap)
+        for (const item of indirectInheritors.mappedSuperClasses) {
+            allMappedSuperClass.add(item)
+        }
+        for (const item of indirectInheritors.entities) {
+            allEntities.add(item)
+        }
+    }
+    for (const item of directInheritors.entities) {
+        allEntities.add(item)
+    }
+
+    return {
+        entities: allEntities,
+        mappedSuperClasses: allMappedSuperClass,
+    }
 }

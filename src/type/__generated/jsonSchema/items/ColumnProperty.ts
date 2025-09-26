@@ -85,6 +85,9 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
                 "type": {
                     "type": "string"
                 },
+                "nullable": {
+                    "type": "boolean"
+                },
                 "comment": {
                     "type": "string"
                 },
@@ -93,9 +96,6 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
                 },
                 "numericPrecision": {
                     "type": "number"
-                },
-                "nullable": {
-                    "type": "boolean"
                 },
                 "defaultValue": {
                     "type": "string"

@@ -43,7 +43,11 @@ const groupTheme = computed(() => {
                 <div class="embeddable-type-property">
                     <div class="embeddable-type-property-view">
                         <NameCommentEditor :font-size="14" v-model="data.embeddableType.properties[index]"/>
-                        <EmbeddableTypePropertySelect class="noDrag noWheel" style="font-size: 14px; line-height: 30px;" v-model="data.embeddableType.properties[index]"/>
+                        <EmbeddableTypePropertySelect
+                            class="noDrag noWheel"
+                            style="font-size: 14px; line-height: 30px;"
+                            v-model="data.embeddableType.properties[index]"
+                        />
                     </div>
                 </div>
             </template>

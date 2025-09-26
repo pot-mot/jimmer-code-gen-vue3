@@ -428,6 +428,9 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                 "type": {
                     "type": "string"
                 },
+                "nullable": {
+                    "type": "boolean"
+                },
                 "comment": {
                     "type": "string"
                 },
@@ -436,9 +439,6 @@ const IdPropertyJsonSchema: JSONSchemaType<IdProperty> = {
                 },
                 "numericPrecision": {
                     "type": "number"
-                },
-                "nullable": {
-                    "type": "boolean"
                 },
                 "defaultValue": {
                     "type": "string"

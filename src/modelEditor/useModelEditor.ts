@@ -14,7 +14,6 @@ import {sendMessage} from "@/components/message/messageApi.ts";
 import {blurActiveElement, judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
 import {jsonSortPropStringify} from "@/utils/json/jsonStringify.ts";
 import type {LazyData} from "@/utils/type/lazyDataParse.ts";
-import {contextDataToContext} from "@/type/context/utils/ModelContext.ts";
 import {v7 as uuid} from "uuid";
 import {
     defaultEmbeddableType,
@@ -24,6 +23,12 @@ import {
     defaultModel
 } from "@/type/context/default/modelDefaults.ts";
 import {tinycolor} from "vue-color";
+import {defaultModelSubIds, fillModelSubIds} from "@/type/context/utils/ModelSubIds.ts";
+import {NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";
+import {NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode.ts";
+import {NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
+import {NodeType_EmbeddableType} from "@/modelEditor/node/EmbeddableTypeNode.ts";
+import {EdgeType_Association} from "@/modelEditor/edge/AssociationEdge.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -88,12 +93,7 @@ export const useModelEditor = createStore(() => {
         }
         return contextData.value
     }
-    const getContext = (): DeepReadonly<ModelContext> => {
-        if (!contextData.value) {
-            throw new Error("ContextData is not available")
-        }
-        return contextDataToContext(contextData.value)
-    }
+
     const currentGroupId = ref<string>()
     const toggleCurrentGroup = ({id}: { id: string | undefined }) => {
         const contextData = getContextData()
@@ -105,7 +105,7 @@ export const useModelEditor = createStore(() => {
     }
     const getCurrentGroupIdOrCreate = () => {
         let groupId = currentGroupId.value
-        if (groupId === undefined) {
+        if (groupId === undefined || !menuMap.value.has(groupId)) {
             const newGroup = defaultGroup()
             newGroup.name = "Default"
             history.executeCommand('group:add', {group: newGroup})
@@ -138,10 +138,9 @@ export const useModelEditor = createStore(() => {
     }
 
     const remove = (
-        data: { nodes?: (GraphNode | string)[], edges?: (GraphEdge | string)[] },
-        withMessage: boolean = true,
+        ids: Partial<ModelSubIds>
     ) => {
-        // TODO
+        history.executeCommand("remove", fillModelSubIds(ids))
     }
 
     // Selection 选中部分的图数据
@@ -521,9 +520,24 @@ export const useModelEditor = createStore(() => {
                 // 按下 Delete 键删除选中的节点和边
                 if (e.key === "Delete") {
                     e.preventDefault()
-
-                    // TODO
-                    remove({nodes: getSelectedNodes.value, edges: getSelectedEdges.value})
+                    const ids = defaultModelSubIds()
+                    for (const node of getSelectedNodes.value) {
+                        if (node.type === NodeType_Entity) {
+                            ids.entityIds.push(node.id)
+                        } else if (node.type === NodeType_MappedSuperClass) {
+                            ids.mappedSuperClassIds.push(node.id)
+                        } else if (node.type === NodeType_EmbeddableType) {
+                            ids.embeddableTypeIds.push(node.id)
+                        } else if (node.type === NodeType_Enumeration) {
+                            ids.enumerationIds.push(node.id)
+                        }
+                    }
+                    for (const edge of getSelectedEdges.value) {
+                        if (edge.type === EdgeType_Association) {
+                            ids.associationIds.push(edge.id)
+                        }
+                    }
+                    remove(ids)
                 }
                 // 按下 Ctrl 键进入多选模式，直到松开 Ctrl 键
                 else if (e.key === "Control") {
@@ -810,7 +824,6 @@ export const useModelEditor = createStore(() => {
         setModel,
         saveModel,
         contextData: readonly(contextData),
-        getContext,
 
         menuMap,
         currentGroupId,
@@ -842,6 +855,9 @@ export const useModelEditor = createStore(() => {
             history.executeCommand('enumeration:add', {enumeration, position})
             return enumeration.id
         },
+        addAssociation: (association: Association) => {
+            history.executeCommand('association:add', {association})
+        },
 
         // 模型生成
 
@@ -850,7 +866,7 @@ export const useModelEditor = createStore(() => {
 
 
         copy: async (
-            data: LazyData<ModelSubData> | undefined = undefined,
+            data: LazyData<ModelGraphSubData> | undefined = undefined,
         ) => {
             try {
                 // TODO

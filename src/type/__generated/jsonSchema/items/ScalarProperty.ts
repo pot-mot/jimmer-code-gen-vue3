@@ -2477,6 +2477,9 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                 "type": {
                     "type": "string"
                 },
+                "nullable": {
+                    "type": "boolean"
+                },
                 "comment": {
                     "type": "string"
                 },
@@ -2485,9 +2488,6 @@ const ScalarPropertyJsonSchema: JSONSchemaType<ScalarProperty> = {
                 },
                 "numericPrecision": {
                     "type": "number"
-                },
-                "nullable": {
-                    "type": "boolean"
                 },
                 "defaultValue": {
                     "type": "string"

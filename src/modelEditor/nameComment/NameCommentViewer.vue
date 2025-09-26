@@ -16,12 +16,9 @@ defineProps<{
     white-space: nowrap;
 }
 
-.name-comment-viewer > .name {
-    padding-right: 0.5rem;
-}
-
 .name-comment-viewer > .comment {
-    color: var(--comment-color)
+    color: var(--comment-color);
+    padding-left: 0.5em;
 }
 
 .selected .name-comment-viewer > .comment {

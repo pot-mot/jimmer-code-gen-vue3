@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
+import {createId, useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import Dropdown from "@/components/dropdown/Dropdown.vue";
 import CollapseDetail from "@/components/collapse/CollapseDetail.vue";
 import GroupViewer from "@/modelEditor/viewer/GroupViewer.vue";
@@ -14,46 +14,120 @@ import {
     toEmbeddableScalarProperty,
     toEnumProperty, toIdProperty, toManyToOneProperty, toScalarProperty
 } from "@/modelEditor/form/property/PropertyConvert.ts";
-import {ref} from "vue";
+import {nextTick, ref} from "vue";
 import TypePairViewer from "@/modelEditor/viewer/TypePairViewer.vue";
+import {firstCaseToLower} from "@/utils/name/firstCase.ts";
 
-const property = defineModel<Property>({
+const props = defineProps<{
+    entity: EntityWithProperties
+}>()
+
+const property = defineModel<EntityProperty>({
     required: true
 })
 
 const {
     contextData,
     menuMap,
+    executeAsyncBatch,
+    waitChangeSync,
+    addAssociation,
+    remove,
 } = useModelEditor()
 
 const filterKeywords = ref<string>("")
+// TODO
 const filterTypes = () => {
 
 }
 
-const selectBaseType = (typePair: DeepReadonly<TypeSelectPair>) => {
-    if (property.value.category === "ID") {
-        property.value = toIdProperty(property.value, typePair)
-    } else {
-        property.value = toScalarProperty(property.value, typePair)
+const cleanPropertyReference = () => {
+    if ("associationId" in property.value) {
+        remove({associationIds: [property.value.associationId]})
     }
+}
+
+const selectBaseType = (typePair: DeepReadonly<TypeSelectPair>) => {
+    executeAsyncBatch(Symbol("property type to embeddableType"), async () => {
+        cleanPropertyReference()
+
+        if (property.value.category === "ID") {
+            property.value = toIdProperty(property.value, typePair)
+        } else {
+            property.value = toScalarProperty(property.value, typePair)
+        }
+
+        await nextTick()
+        await waitChangeSync()
+    })
 }
 
 const selectEnumeration = (enumeration: DeepReadonly<Enumeration>) => {
-    property.value = toEnumProperty(property.value, enumeration)
+    executeAsyncBatch(Symbol("property type to embeddableType"), async () => {
+        cleanPropertyReference()
+
+        property.value = toEnumProperty(property.value, enumeration)
+
+        await nextTick()
+        await waitChangeSync()
+    })
 }
 
 const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
-    if (property.value.category === "ID") {
-        property.value = toEmbeddableIdProperty(property.value, embeddableType)
-    } else {
-        property.value = toEmbeddableScalarProperty(property.value, embeddableType)
-    }
+    executeAsyncBatch(Symbol("property type to embeddableType"), async () => {
+        cleanPropertyReference()
+
+        if (property.value.category === "ID") {
+            property.value = toEmbeddableIdProperty(property.value, embeddableType)
+        } else {
+            property.value = toEmbeddableScalarProperty(property.value, embeddableType)
+        }
+
+        await nextTick()
+        await waitChangeSync()
+    })
 }
 
-const selectEntity = (entity: DeepReadonly<Entity>) => {
-    // FIXME
-    property.value = toManyToOneProperty(property.value, entity, {id: ""} as Association)
+const selectEntity = (entity: EntityWithProperties) => {
+    executeAsyncBatch(Symbol("property type to entity"), async () => {
+        cleanPropertyReference()
+
+        const associationId = createId("Association")
+        const mappedPropertyId = createId("Property")
+
+        const sourceProperty = toManyToOneProperty(property.value, entity, associationId)
+        const lowerName = firstCaseToLower(entity.name)
+        const mappedProperty: OneToManyProperty = {
+            mappedById: property.value.id,
+            id: mappedPropertyId,
+            name: lowerName + "List",
+            comment: props.entity.comment + "列表",
+            category: "OneToMany",
+            associationId,
+            referencedEntityId: props.entity.id,
+            idViewName: lowerName + "Ids",
+            nullable: false,
+            typeIsList: true,
+            extraAnnotations: [],
+            extraImports: [],
+        }
+        const association: ManyToOneAssociation = {
+            id: associationId,
+            name: "", // TODO
+            type: "ManyToOne",
+            sourceEntity: props.entity,
+            sourceProperty,
+            referencedEntity: entity,
+            mappedProperty,
+            foreignKeyType: "AUTO",
+        }
+
+        addAssociation(association)
+        property.value = sourceProperty
+
+        await nextTick()
+        await waitChangeSync()
+    })
 }
 </script>
 
@@ -64,8 +138,8 @@ const selectEntity = (entity: DeepReadonly<Entity>) => {
                 <div v-if="'embeddableTypeId' in property">
                     <EmbeddableTypeIdViewer :id="property.embeddableTypeId"/>
                 </div>
-                <div v-else-if="'referenceEntityId' in property">
-                    <EntityIdViewer :id="property.referenceEntityId"/>
+                <div v-else-if="'referencedEntityId' in property">
+                    <EntityIdViewer :id="property.referencedEntityId"/>
                 </div>
                 <div v-else-if="'enumId' in property">
                     <EnumerationIdViewer :id="property.enumId"/>

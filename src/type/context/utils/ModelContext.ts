@@ -3,18 +3,48 @@ import {
     categorizeEmbeddableTypeProperties, categorizeEntityProperties,
 } from "@/type/context/utils/CategorizedProperties.ts";
 import {
-    type AllExtendsResult,
+    type AllExtendsResult, buildInheritorsMap,
     getEntityAllExtends,
-    getEntityAllProperties
+    getEntityAllProperties, getMappedSuperClassAllInheritors
 } from "@/type/context/utils/EntityExtends.ts";
 import {getGroupSubMaps} from "@/type/context/utils/GroupSubDataMap.ts";
 import {flatEmbeddableTypeProperties} from "@/type/context/utils/EmbeddableTypeFlat.ts";
 import {getAssociationWithInheritInfo} from "@/type/context/utils/AssociationWithInheritInfo.ts";
+import {
+    getAbstractMappedProperties,
+    getEntityMappedProperties, oneToManyAbstractPropertyToReal,
+    oneToOneMappedAbstractPropertyToReal
+} from "@/type/context/utils/MappedProperty.ts";
+import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 
 export const contextDataToContext = (
-    contextData: ModelContextData,
+    readonlyContextData: DeepReadonly<ModelContextData>,
 ): ModelContext => {
+    const contextData = cloneDeepReadonlyRaw<ModelContextData>(readonlyContextData)
     const model = contextData.model
+
+    const inheritorsMap = buildInheritorsMap(contextData.entityMap, contextData.mappedSuperClassMap)
+    for (const entity of contextData.entityMap.values()) {
+        const mappedProperties = getEntityMappedProperties(entity.properties, contextData.associationMap)
+        for (const {mappedProperty, referencedEntity} of mappedProperties) {
+            referencedEntity.properties.push(mappedProperty)
+        }
+    }
+    for (const mappedSuperClass of contextData.mappedSuperClassMap.values()) {
+        const inheritors = getMappedSuperClassAllInheritors(mappedSuperClass, inheritorsMap)
+        const mappedProperties = getAbstractMappedProperties(mappedSuperClass.properties, contextData.associationMap)
+        for (const {mappedProperty, referencedEntity} of mappedProperties) {
+            if (mappedProperty.category === "OneToOne_Mapped_Abstract") {
+                for (const inheritEntity of inheritors.entities) {
+                    referencedEntity.properties.push(oneToOneMappedAbstractPropertyToReal(mappedProperty, inheritEntity))
+                }
+            } else if (mappedProperty.category === "OneToMany_Abstract") {
+                for (const inheritEntity of inheritors.entities) {
+                    referencedEntity.properties.push(oneToManyAbstractPropertyToReal(mappedProperty, inheritEntity))
+                }
+            }
+        }
+    }
 
     const entityBaseInfoMap = new Map<string, EntityWithCategorizedProperties>()
     for (const [id, entity] of contextData.entityMap) {

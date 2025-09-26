@@ -10,20 +10,8 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
         "id": {
             "type": "string"
         },
-        "groupId": {
-            "type": "string"
-        },
-        "subPackagePath": {
-            "type": "string"
-        },
         "comment": {
             "type": "string"
-        },
-        "extendsIds": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
         },
         "extraImports": {
             "type": "array",
@@ -32,6 +20,18 @@ const MappedSuperClassJsonSchema: JSONSchemaType<MappedSuperClass> = {
             }
         },
         "extraAnnotations": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "groupId": {
+            "type": "string"
+        },
+        "subPackagePath": {
+            "type": "string"
+        },
+        "extendsIds": {
             "type": "array",
             "items": {
                 "type": "string"

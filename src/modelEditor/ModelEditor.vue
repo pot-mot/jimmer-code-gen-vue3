@@ -9,6 +9,7 @@ import EmbeddableTypeNode from "@/modelEditor/node/EmbeddableTypeNode.vue";
 import {onMounted} from "vue";
 import ModelEditorToolbar from "@/modelEditor/toolbar/ModelEditorToolbar.vue";
 import {judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
+import AssociationEdge from "@/modelEditor/edge/AssociationEdge.vue";
 
 const {
     initModelEditor,
@@ -108,6 +109,9 @@ const handleKeyDown = async (e: KeyboardEvent) => {
             </template>
             <template #node-EMBEDDABLE_TYPE="nodeProps">
                 <EmbeddableTypeNode v-bind="nodeProps"/>
+            </template>
+            <template #edge-ASSOCIATION="edgeProps">
+                <AssociationEdge v-bind="edgeProps"/>
             </template>
         </VueFlow>
 

@@ -1,4 +1,4 @@
-const defaultModelSubData: () => ModelSubData = () => ({
+export const defaultModelSubData: () => ModelSubData = () => ({
     groups: [],
     entities: [],
     mappedSuperClasses: [],
@@ -7,7 +7,7 @@ const defaultModelSubData: () => ModelSubData = () => ({
     associations: [],
 })
 
-export const fillModelSubData = (data: ModelSubData): ModelSubData => {
+export const fillModelSubData = (data: Partial<ModelGraphSubData>): ModelGraphSubData => {
     return Object.assign(defaultModelSubData(), data)
 }
 

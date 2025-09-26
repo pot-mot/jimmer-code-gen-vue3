@@ -68,8 +68,8 @@ const defaultCategorizedEmbeddableTypeProperties = (): CategorizedEmbeddableType
 }
 
 export const categorizeEntityProperties = (
-    properties: Property[],
-    associationMap: Map<string, Association>,
+    properties: ReadonlyArray<Property>,
+    associationMap: ReadonlyMap<string, Readonly<Association>>,
 ): EntityCategorizedProperties => {
     const result = defaultEntityCategorizedProperties()
     let idProperty: IdProperty | undefined
@@ -209,8 +209,8 @@ export const categorizeEntityProperties = (
 }
 
 export const categorizeAbstractCategorizedProperties = (
-    properties: Property[],
-    associationMap: Map<string, Association>,
+    properties: ReadonlyArray<Property>,
+    associationMap: ReadonlyMap<string, Readonly<Association>>,
 ): AbstractCategorizedProperties => {
     const result = defaultAbstractCategorizedProperties()
 
@@ -311,7 +311,7 @@ export const categorizeAbstractCategorizedProperties = (
 }
 
 export const categorizeEmbeddableTypeProperties = (
-    properties: Property[],
+    properties: ReadonlyArray<Property>,
 ): CategorizedEmbeddableTypeProperties => {
     const result = defaultCategorizedEmbeddableTypeProperties()
 

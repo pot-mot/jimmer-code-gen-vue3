@@ -9,6 +9,10 @@ export const defaultModelSubIds: () => ModelSubIds = () => ({
     associationIds: [],
 })
 
+export const fillModelSubIds = (ids: Partial<ModelSubIds>): ModelSubIds => {
+    return Object.assign(defaultModelSubIds(), ids)
+}
+
 /**
  * 合并任意多个 ModelSubIds 对象
  * @param subIds - 需要合并的 ModelSubIds 对象数组

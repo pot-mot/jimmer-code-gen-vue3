@@ -99,26 +99,27 @@ export const getPropertyDependencies = (
 ): DependenceResult => {
     const {existedDependencies, missingDependencies} = getEmbeddableTypePropertyDependencies(property, context)
 
-    if ("referenceEntityId" in property) {
-        const referencedEntity = context.entityMap.get(property.referenceEntityId)
+    if ("referencedEntityId" in property) {
+        const referencedEntity = context.entityMap.get(property.referencedEntityId)
 
         if (referencedEntity === undefined) {
             missingDependencies.push({
-                path: ['referenceEntityId'],
-                dependenceIds: {entityIds: [property.referenceEntityId]}
+                path: ['referencedEntityId'],
+                dependenceIds: {entityIds: [property.referencedEntityId]}
             })
         } else {
             existedDependencies.push({
-                path: ['referenceEntityId'],
-                dependenceIds: {entityIds: [property.referenceEntityId]}
+                path: ['referencedEntityId'],
+                dependenceIds: {entityIds: [property.referencedEntityId]}
             })
 
             if ("mappedById" in property) {
-                const associationPropertyIds = []
-                for (const {id} of referencedEntity.allCategorizedProperties.associationPropertyMap.values()) {
-                    associationPropertyIds.push(id)
-                }
-                if (!associationPropertyIds.includes(property.mappedById)) {
+                const sourcePropertyIds = []
+                for (const {id} of referencedEntity.allCategorizedProperties.oneToOneSourcePropertyMap.values()) sourcePropertyIds.push(id)
+                for (const {id} of referencedEntity.allCategorizedProperties.oneToOneMappedPropertyMap.values()) sourcePropertyIds.push(id)
+                for (const {id} of referencedEntity.allCategorizedProperties.manyToOnePropertyMap.values()) sourcePropertyIds.push(id)
+
+                if (!sourcePropertyIds.includes(property.mappedById)) {
                     missingDependencies.push({
                         path: ['mappedById'],
                         dependenceIds: {propertyIds: [{entityId: referencedEntity.id, id: property.mappedById}]}
@@ -203,31 +204,37 @@ export const getPropertyDependencies = (
                 dependenceIds: {propertyIds: [{entityId: entity.id, id: property.baseToManyPropertyId}]}
             })
 
-            if (!context.entityMap.has(baseToManyProperty.referenceEntityId)) {
+            if (!context.entityMap.has(baseToManyProperty.referencedEntityId)) {
                 missingDependencies.push({
                     path: ['entityId'],
-                    dependenceIds: {entityIds: [baseToManyProperty.referenceEntityId]}
+                    dependenceIds: {entityIds: [baseToManyProperty.referencedEntityId]}
                 })
             } else {
-                const referencedEntity = context.entityMap.get(baseToManyProperty.referenceEntityId)
+                const referencedEntity = context.entityMap.get(baseToManyProperty.referencedEntityId)
                 if (!referencedEntity) {
                     missingDependencies.push({
                         path: ['entityId'],
-                        dependenceIds: {entityIds: [baseToManyProperty.referenceEntityId]}
+                        dependenceIds: {entityIds: [baseToManyProperty.referencedEntityId]}
                     })
                 } else {
                     existedDependencies.push({
                         path: ['entityId'],
-                        dependenceIds: {entityIds: [baseToManyProperty.referenceEntityId]}
+                        dependenceIds: {entityIds: [baseToManyProperty.referencedEntityId]}
                     })
 
-                    const deeperProperty = referencedEntity.associationPropertyMap.get(property.deeperPropertyId)
+                    const deeperProperty =
+                        referencedEntity.oneToOneSourcePropertyMap.get(property.deeperPropertyId) ??
+                        referencedEntity.oneToOneMappedPropertyMap.get(property.deeperPropertyId) ??
+                        referencedEntity.manyToOnePropertyMap.get(property.deeperPropertyId) ??
+                        referencedEntity.oneToManyPropertyMap.get(property.deeperPropertyId) ??
+                        referencedEntity.manyToManySourcePropertyMap.get(property.deeperPropertyId) ??
+                        referencedEntity.manyToManyMappedPropertyMap.get(property.deeperPropertyId)
                     if (!deeperProperty) {
                         missingDependencies.push({
                             path: ['deeperPropertyId'],
                             dependenceIds: {
                                 propertyIds: [{
-                                    entityId: baseToManyProperty.referenceEntityId,
+                                    entityId: baseToManyProperty.referencedEntityId,
                                     id: property.deeperPropertyId
                                 }]
                             }
@@ -237,7 +244,7 @@ export const getPropertyDependencies = (
                             path: ['deeperPropertyId'],
                             dependenceIds: {
                                 propertyIds: [{
-                                    entityId: baseToManyProperty.referenceEntityId,
+                                    entityId: baseToManyProperty.referencedEntityId,
                                     id: property.deeperPropertyId
                                 }]
                             }

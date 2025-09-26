@@ -1,13 +1,18 @@
 import {type CommandDefinition, useCommandHistory} from "@/history/commandHistory.ts";
-import {type VueFlowStore, type XYPosition} from "@vue-flow/core";
+import {type GraphNode, type VueFlowStore, type XYPosition} from "@vue-flow/core";
 import {computed, reactive, type Ref, ref, shallowReadonly, type ShallowRef, watch} from "vue";
 import {deleteColorVar, type MenuItem, setColorVar} from "@/modelEditor/useModelEditor.ts";
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 import {debounce} from "lodash-es";
-import {NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";
-import {NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode.ts";
-import {NodeType_EmbeddableType} from "@/modelEditor/node/EmbeddableTypeNode.ts";
-import {NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
+import {type EntityNode, NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";
+import {type MappedSuperClassNode, NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode.ts";
+import {type EmbeddableTypeNode, NodeType_EmbeddableType} from "@/modelEditor/node/EmbeddableTypeNode.ts";
+import {type EnumerationNode, NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
+import {type AssociationEdge, EdgeType_Association} from "@/modelEditor/edge/AssociationEdge.ts";
+import {defaultModelSubIds} from "@/type/context/utils/ModelSubIds.ts";
+import {defaultModelGraphSubData, graphDataToModelData} from "@/type/context/utils/ModelGraphSubData.ts";
+import {protectRepeatIds} from "@/modelEditor/import/protectRepeatIds.ts";
+import {associationToIdOnly} from "@/type/context/utils/AssociationIdOnly.ts";
 
 const SYNC_DEBOUNCE_TIMEOUT = 500
 
@@ -71,7 +76,7 @@ export type ModelEditorHistoryCommands = {
     }>>
 
     "association:add": CommandDefinition<DeepReadonly<{
-        association: Association
+        association: Association,
     }>, DeepReadonly<{
         id: string
     }>>
@@ -79,9 +84,8 @@ export type ModelEditorHistoryCommands = {
         association: Association
     }>>
 
-    // TODO register commands
-    "import": CommandDefinition<DeepReadonly<ModelSubData>, DeepReadonly<ModelSubIds>>
-    "remove": CommandDefinition<DeepReadonly<ModelSubIds>, DeepReadonly<ModelSubData>>
+    "import": CommandDefinition<DeepReadonly<ModelGraphSubData>, DeepReadonly<ModelSubIds>>
+    "remove": CommandDefinition<DeepReadonly<ModelSubIds>, DeepReadonly<ModelGraphSubData>>
 }
 
 export const useModelEditorHistory = (
@@ -345,12 +349,13 @@ export const useModelEditorHistory = (
         contextData.entityMap.set(id, entity)
         addEntityWatcher(id)
         menuItem.entityMap.set(id, entity)
-        vueFlow.addNodes({
+        const newNode: EntityNode = {
             id,
             type: NodeType_Entity,
             position: options.position,
             data: {entity},
-        })
+        }
+        vueFlow.addNodes(newNode)
         return {id}
     }
     const revertAddEntity = ({id}: DeepReadonly<{ id: string }>) => {
@@ -475,12 +480,13 @@ export const useModelEditorHistory = (
         contextData.mappedSuperClassMap.set(id, mappedSuperClass)
         addMappedSuperClassWatcher(id)
         menuItem.mappedSuperClassMap.set(id, mappedSuperClass)
-        vueFlow.addNodes({
+        const newNode: MappedSuperClassNode = {
             id,
             type: NodeType_MappedSuperClass,
             position: options.position,
             data: {mappedSuperClass},
-        })
+        }
+        vueFlow.addNodes(newNode)
         return {id}
     }
     const revertAddMappedSuperClass = ({id}: DeepReadonly<{ id: string }>) => {
@@ -606,12 +612,13 @@ export const useModelEditorHistory = (
         contextData.embeddableTypeMap.set(id, embeddableTypeWithId)
         addEmbeddableTypeWatcher(id)
         menuItem.embeddableTypeMap.set(id, embeddableTypeWithId)
-        vueFlow.addNodes({
+        const newNode: EmbeddableTypeNode = {
             id,
             type: NodeType_EmbeddableType,
             position: options.position,
             data: {embeddableType: embeddableTypeWithId},
-        })
+        }
+        vueFlow.addNodes(newNode)
         return {id}
     }
     const revertAddEmbeddableType = ({id}: DeepReadonly<{ id: string }>) => {
@@ -733,12 +740,13 @@ export const useModelEditorHistory = (
         contextData.enumerationMap.set(id, enumeration)
         addEnumerationWatcher(id)
         menuItem.enumerationMap.set(id, enumeration)
-        vueFlow.addNodes({
+        const newNode: EnumerationNode = {
             id,
             type: NodeType_Enumeration,
             position: options.position,
             data: {enumeration},
-        })
+        }
+        vueFlow.addNodes(newNode)
         return {id}
     }
     const revertAddEnumeration = ({id}: DeepReadonly<{ id: string }>) => {
@@ -845,36 +853,104 @@ export const useModelEditorHistory = (
     const addAssociation = (options: DeepReadonly<{ association: Association }>) => {
         const id = options.association.id
         const contextData = getContextData()
+        const vueFlow = getVueFlow()
 
         if (contextData.associationMap.has(id)) throw new Error(`Association [${id}] is already existed`)
+
+        let sourceNode: GraphNode | undefined
+        let sourceHandleId: string | undefined
+        if ("sourceEntity" in options.association) {
+            sourceNode = vueFlow.findNode(options.association.sourceEntity.id)
+            if (!sourceNode) throw new Error(`Entity [${options.association.sourceEntity.id}] is not existed`)
+            const sourceHandleSet = new Set(sourceNode.handleBounds.source?.map(handle => handle.id))
+            sourceHandleId = options.association.sourceProperty.id
+            if (!sourceHandleSet.has(sourceHandleId)) throw new Error(`Entity [${sourceNode.id}] source handle [${sourceHandleId}] is not existed`)
+        } else {
+            sourceNode = vueFlow.findNode(options.association.sourceAbstractEntity.id)
+            if (!sourceNode) throw new Error(`AbstractEntity [${options.association.sourceAbstractEntity.id}] is not existed`)
+            const sourceHandleSet = new Set(sourceNode.handleBounds.source?.map(handle => handle.id))
+            sourceHandleId = options.association.sourceProperty.id
+            if (!sourceHandleSet.has(sourceHandleId)) throw new Error(`AbstractEntity [${sourceNode.id}] source handle [${sourceHandleId}] is not existed`)
+        }
+
+        const targetNode = vueFlow.findNode(options.association.referencedEntity.id)
+        const targetHandleId = options.association.referencedEntity.id
+        if (!targetNode) throw new Error(`Entity [${options.association.referencedEntity.id}] is not existed`)
+        const targetHandleSet = new Set(targetNode.handleBounds.target?.map(handle => handle.id))
+        if (!targetHandleSet.has(targetHandleId)) throw new Error(`Entity [${targetNode.id}] target handle [${targetHandleId}] is not existed`)
 
         const association = cloneDeepReadonlyRaw<Association>(options.association)
         contextData.associationMap.set(id, association)
         addAssociationWatcher(id)
+        const newEdge: AssociationEdge = {
+            id,
+            source: sourceNode.id,
+            target: targetNode.id,
+            sourceHandle: sourceHandleId,
+            targetHandle: targetHandleId,
+            type: EdgeType_Association,
+            data: {
+                association
+            }
+        }
+        vueFlow.addEdges(newEdge)
         return {id}
     }
     const revertAddAssociation = ({id}: DeepReadonly<{ id: string }>) => {
         const contextData = getContextData()
+        const vueFlow = getVueFlow()
 
         const association = cloneDeepReadonlyRaw(contextData.associationMap.get(id))
         if (!association) throw new Error(`Association [${id}] is not existed`)
 
         removeAssociationWatcher(id)
         contextData.associationMap.delete(id)
+        vueFlow.removeEdges([id])
         return {association}
     }
     const updateAssociation = (options: DeepReadonly<{ association: Association }>) => {
         const id = options.association.id
         const contextData = getContextData()
+        const vueFlow = getVueFlow()
 
         const oldAssociation = associationOldMap.get(id)
         if (!oldAssociation) throw new Error(`Association [${id}] is not existed`)
+        const existedAssociationEdge = vueFlow.findEdge(id)
+        if (!existedAssociationEdge) throw new Error(`Edge [${id}] is not existed`)
+
+        let sourceNode: GraphNode | undefined
+        let sourceHandleId: string | undefined
+        if ("sourceEntity" in options.association) {
+            sourceNode = vueFlow.findNode(options.association.sourceEntity.id)
+            if (!sourceNode) throw new Error(`Entity [${options.association.sourceEntity.id}] is not existed`)
+            const sourceHandleSet = new Set(sourceNode.handleBounds.source?.map(handle => handle.id))
+            if (!sourceHandleSet.has(sourceNode.id)) throw new Error(`Entity [${sourceNode.id}] source handle [${sourceNode.id}] is not existed`)
+            sourceHandleId = sourceNode.id
+        } else {
+            sourceNode = vueFlow.findNode(options.association.sourceAbstractEntity.id)
+            if (!sourceNode) throw new Error(`AbstractEntity [${options.association.sourceAbstractEntity.id}] is not existed`)
+            const sourceHandleSet = new Set(sourceNode.handleBounds.source?.map(handle => handle.id))
+            if (!sourceHandleSet.has(sourceNode.id)) throw new Error(`AbstractEntity [${sourceNode.id}] source handle [${sourceNode.id}] is not existed`)
+            sourceHandleId = sourceNode.id
+        }
+
+        const targetNode = vueFlow.findNode(options.association.referencedEntity.id)
+        const targetHandleId = options.association.sourceProperty.id
+        if (!targetNode) throw new Error(`Entity [${options.association.referencedEntity.id}] is not existed`)
+        const targetHandleSet = new Set(targetNode.handleBounds.target?.map(handle => handle.id))
+        if (!targetHandleSet.has(targetHandleId)) throw new Error(`Entity [${targetNode.id}] target handle [${targetHandleId}] is not existed`)
 
         const association = cloneDeepReadonlyRaw<Association>(options.association)
-
         removeAssociationWatcher(id)
         contextData.associationMap.set(id, association)
         addAssociationWatcher(id)
+        existedAssociationEdge.data.association = association
+        vueFlow.updateEdge(existedAssociationEdge, {
+            source: sourceNode.id,
+            target: targetNode.id,
+            sourceHandle: sourceHandleId,
+            targetHandle: targetHandleId,
+        })
         return {association: oldAssociation}
     }
 
@@ -886,6 +962,130 @@ export const useModelEditorHistory = (
     history.registerCommand("association:change", {
         applyAction: updateAssociation,
         revertAction: updateAssociation,
+    })
+
+    const importIntoContext = (
+        graphData: ModelGraphSubData,
+    ): ModelSubIds => {
+        const contextData = getContextData()
+        const result = defaultModelSubIds()
+
+        protectRepeatIds(graphData, contextData)
+        // TODO re layout for position
+        const newContextData = graphDataToModelData(graphData, contextData)
+
+        for (const group of graphData.groups) {
+            addGroup({group})
+        }
+        for (const {data: enumeration, position} of graphData.enumerations) {
+            addEnumeration({enumeration, position})
+        }
+        for (const {data: embeddableType, position} of graphData.embeddableTypes) {
+            addEmbeddableType({embeddableType, position})
+        }
+        for (const {data: mappedSuperClass, position} of graphData.mappedSuperClasses) {
+            addMappedSuperClass({mappedSuperClass, position})
+        }
+        for (const {data: entity, position} of graphData.entities) {
+            addEntity({entity, position})
+        }
+        for (const association of newContextData.associations) {
+            addAssociation({association})
+        }
+
+        return result
+    }
+
+    const removeFromContext = (
+        modelSubIds: ModelSubIds,
+    ): ModelGraphSubData => {
+        const contextData = getContextData()
+        const vueFlow = getVueFlow()
+        const result = defaultModelGraphSubData()
+
+        for (const groupId of modelSubIds.groupIds) {
+            const group = contextData.groupMap.get(groupId)
+            if (group) {
+                result.groups.push(group)
+                contextData.groupMap.delete(groupId)
+            }
+
+            for (const item of contextData.entityMap.values()) {
+                if (item.groupId === groupId) modelSubIds.entityIds.push(item.id)
+            }
+            for (const item of contextData.mappedSuperClassMap.values()) {
+                if (item.groupId === groupId) modelSubIds.mappedSuperClassIds.push(item.id)
+            }
+            for (const item of contextData.embeddableTypeMap.values()) {
+                if (item.groupId === groupId) modelSubIds.embeddableTypeIds.push(item.id)
+            }
+            for (const item of contextData.enumerationMap.values()) {
+                if (item.groupId === groupId) modelSubIds.enumerationIds.push(item.id)
+            }
+        }
+
+        for (const entityId of modelSubIds.entityIds) {
+            const entity = contextData.entityMap.get(entityId)
+            const node = vueFlow.findNode(entityId)
+            if (entity && node) {
+                result.entities.push({data: entity, position: node.position})
+                revertAddEntity({id: entity.id})
+            }
+        }
+
+        for (const mappedSuperClassId of modelSubIds.mappedSuperClassIds) {
+            const mappedSuperClass = contextData.mappedSuperClassMap.get(mappedSuperClassId)
+            const node = vueFlow.findNode(mappedSuperClassId)
+            if (mappedSuperClass && node) {
+                result.mappedSuperClasses.push({data: mappedSuperClass, position: node.position})
+                revertAddMappedSuperClass({id: mappedSuperClass.id})
+            }
+        }
+
+        for (const embeddableTypeId of modelSubIds.embeddableTypeIds) {
+            const embeddableType = contextData.embeddableTypeMap.get(embeddableTypeId)
+            const node = vueFlow.findNode(embeddableTypeId)
+            if (embeddableType && node) {
+                result.embeddableTypes.push({data: embeddableType, position: node.position})
+                revertAddEmbeddableType({id: embeddableType.id})
+            }
+        }
+
+        for (const enumerationId of modelSubIds.enumerationIds) {
+            const enumeration = contextData.enumerationMap.get(enumerationId)
+            const node = vueFlow.findNode(enumerationId)
+            if (enumeration && node) {
+                result.enumerations.push({data: enumeration, position: node.position})
+                revertAddEnumeration({id: enumeration.id})
+            }
+        }
+
+        for (const associationId of modelSubIds.associationIds) {
+            const association = contextData.associationMap.get(associationId)
+            if (association) {
+                result.associations.push(associationToIdOnly(association))
+                revertAddAssociation({id: association.id})
+            }
+        }
+
+        return result
+    }
+
+    history.registerCommand("import", {
+        applyAction: (graphData) => {
+            return importIntoContext(cloneDeepReadonlyRaw<ModelGraphSubData>(graphData))
+        },
+        revertAction: (modelSubIds) => {
+            return removeFromContext(cloneDeepReadonlyRaw<ModelSubIds>(modelSubIds))
+        }
+    })
+    history.registerCommand("remove", {
+        applyAction: (modelSubIds) => {
+            return removeFromContext(cloneDeepReadonlyRaw<ModelSubIds>(modelSubIds))
+        },
+        revertAction: (graphData) => {
+            return importIntoContext(cloneDeepReadonlyRaw<ModelGraphSubData>(graphData))
+        }
     })
 
     return {

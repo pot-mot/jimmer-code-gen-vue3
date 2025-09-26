@@ -633,6 +633,9 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                 "type": {
                     "type": "string"
                 },
+                "nullable": {
+                    "type": "boolean"
+                },
                 "comment": {
                     "type": "string"
                 },
@@ -641,9 +644,6 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                 },
                 "numericPrecision": {
                     "type": "number"
-                },
-                "nullable": {
-                    "type": "boolean"
                 },
                 "defaultValue": {
                     "type": "string"
