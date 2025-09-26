@@ -32,10 +32,17 @@ export const protectRepeatIds = (
         }
     }
 
-    const newPropertyIdMap = new Map<string, { entityId: string, property: Property } | {
+    const newPropertyIdMap = new Map<string, {
+        entityId: string,
+        property: EntityProperty
+    } | {
+        mappedSuperClassId: string,
+        property: MappedSuperClassProperty
+    } | {
         embeddableTypeId: string,
         property: EmbeddableTypeProperty
-    } | { mappedSuperClassId: string, property: Property }>()
+    }>()
+
     for (const {data: entity} of entities) {
         if (contextData.entityMap.has(entity.id)) {
             const newEntityId = createId("Entity")
@@ -53,13 +60,23 @@ export const protectRepeatIds = (
                     }
                 }
             }
+            for (const association of associations) {
+                if ("sourceEntityId" in association) {
+                    if (association.sourceEntityId === entity.id) association.sourceEntityId = newEntityId
+                }
+                if (association.referencedEntityId === entity.id) association.referencedEntityId = newEntityId
+            }
             entity.id = newEntityId
         }
 
         for (const property of entity.properties) {
             if (newPropertyIdMap.has(property.id)) throw new Error(`Property [${property.name}-${property.id}] is already existed`)
             newPropertyIdMap.set(property.id, {entityId: entity.id, property})
-            property.id = createId("Property")
+            const newPropertyId = createId("Property")
+            for (const association of associations) {
+                if (association.sourcePropertyId === property.id) association.sourcePropertyId = newPropertyId
+            }
+            property.id = newPropertyId
         }
     }
 
@@ -71,8 +88,8 @@ export const protectRepeatIds = (
                     if (extendsIds[i] === mappedSuperClass.id) extendsIds[i] = newMappedSuperClassId
                 }
                 for (const property of properties) {
-                    if ("referencedEntityId" in property) {
-                        if (property.referencedEntityId === mappedSuperClass.id) property.referencedEntityId = newMappedSuperClassId
+                    if ("referencedAbstractEntityId" in property) {
+                        if (property.referencedAbstractEntityId === mappedSuperClass.id) property.referencedAbstractEntityId = newMappedSuperClassId
                     }
                 }
             }
@@ -81,10 +98,16 @@ export const protectRepeatIds = (
                     if (extendsIds[i] === mappedSuperClass.id) extendsIds[i] = newMappedSuperClassId
                 }
                 for (const property of properties) {
-                    if ("referencedEntityId" in property) {
-                        if (property.referencedEntityId === mappedSuperClass.id) property.referencedEntityId = newMappedSuperClassId
+                    if ("referencedAbstractEntityId" in property) {
+                        if (property.referencedAbstractEntityId === mappedSuperClass.id) property.referencedAbstractEntityId = newMappedSuperClassId
                     }
                 }
+            }
+            for (const association of associations) {
+                if ("sourceAbstractEntityId" in association) {
+                    if (association.sourceAbstractEntityId === mappedSuperClass.id) association.sourceAbstractEntityId = newMappedSuperClassId
+                }
+                if (association.referencedEntityId === mappedSuperClass.id) association.referencedEntityId = newMappedSuperClassId
             }
             mappedSuperClass.id = newMappedSuperClassId
         }
@@ -92,7 +115,11 @@ export const protectRepeatIds = (
         for (const property of mappedSuperClass.properties) {
             if (newPropertyIdMap.has(property.id)) throw new Error(`Property [${property.name}-${property.id}] is already existed`)
             newPropertyIdMap.set(property.id, {mappedSuperClassId: mappedSuperClass.id, property})
-            property.id = createId("Property")
+            const newPropertyId = createId("Property")
+            for (const association of associations) {
+                if (association.sourcePropertyId === property.id) association.sourcePropertyId = newPropertyId
+            }
+            property.id = newPropertyId
         }
     }
 
@@ -148,7 +175,9 @@ export const protectRepeatIds = (
     }
 
     for (const association of associations) {
-        association.id = createId("Association")
-        association.mappedProperty.id = createId("Property")
+        if (contextData.associationMap.has(association.id)) {
+            association.id = createId("Association")
+            association.mappedProperty.id = createId("Property")
+        }
     }
 }

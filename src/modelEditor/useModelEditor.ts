@@ -13,7 +13,7 @@ import {
 import {sendMessage} from "@/components/message/messageApi.ts";
 import {blurActiveElement, judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
 import {jsonSortPropStringify} from "@/utils/json/jsonStringify.ts";
-import type {LazyData} from "@/utils/type/lazyDataParse.ts";
+import type {LazyData} from "@/utils/type/lazyData.ts";
 import {v7 as uuid} from "uuid";
 import {
     defaultEmbeddableType,

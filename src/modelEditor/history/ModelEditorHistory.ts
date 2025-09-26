@@ -862,22 +862,16 @@ export const useModelEditorHistory = (
         if ("sourceEntity" in options.association) {
             sourceNode = vueFlow.findNode(options.association.sourceEntity.id)
             if (!sourceNode) throw new Error(`Entity [${options.association.sourceEntity.id}] is not existed`)
-            const sourceHandleSet = new Set(sourceNode.handleBounds.source?.map(handle => handle.id))
             sourceHandleId = options.association.sourceProperty.id
-            if (!sourceHandleSet.has(sourceHandleId)) throw new Error(`Entity [${sourceNode.id}] source handle [${sourceHandleId}] is not existed`)
         } else {
             sourceNode = vueFlow.findNode(options.association.sourceAbstractEntity.id)
             if (!sourceNode) throw new Error(`AbstractEntity [${options.association.sourceAbstractEntity.id}] is not existed`)
-            const sourceHandleSet = new Set(sourceNode.handleBounds.source?.map(handle => handle.id))
             sourceHandleId = options.association.sourceProperty.id
-            if (!sourceHandleSet.has(sourceHandleId)) throw new Error(`AbstractEntity [${sourceNode.id}] source handle [${sourceHandleId}] is not existed`)
         }
 
         const targetNode = vueFlow.findNode(options.association.referencedEntity.id)
-        const targetHandleId = options.association.referencedEntity.id
         if (!targetNode) throw new Error(`Entity [${options.association.referencedEntity.id}] is not existed`)
-        const targetHandleSet = new Set(targetNode.handleBounds.target?.map(handle => handle.id))
-        if (!targetHandleSet.has(targetHandleId)) throw new Error(`Entity [${targetNode.id}] target handle [${targetHandleId}] is not existed`)
+        const targetHandleId = options.association.referencedEntity.id
 
         const association = cloneDeepReadonlyRaw<Association>(options.association)
         contextData.associationMap.set(id, association)
@@ -923,22 +917,16 @@ export const useModelEditorHistory = (
         if ("sourceEntity" in options.association) {
             sourceNode = vueFlow.findNode(options.association.sourceEntity.id)
             if (!sourceNode) throw new Error(`Entity [${options.association.sourceEntity.id}] is not existed`)
-            const sourceHandleSet = new Set(sourceNode.handleBounds.source?.map(handle => handle.id))
-            if (!sourceHandleSet.has(sourceNode.id)) throw new Error(`Entity [${sourceNode.id}] source handle [${sourceNode.id}] is not existed`)
-            sourceHandleId = sourceNode.id
+            sourceHandleId = options.association.sourceProperty.id
         } else {
             sourceNode = vueFlow.findNode(options.association.sourceAbstractEntity.id)
             if (!sourceNode) throw new Error(`AbstractEntity [${options.association.sourceAbstractEntity.id}] is not existed`)
-            const sourceHandleSet = new Set(sourceNode.handleBounds.source?.map(handle => handle.id))
-            if (!sourceHandleSet.has(sourceNode.id)) throw new Error(`AbstractEntity [${sourceNode.id}] source handle [${sourceNode.id}] is not existed`)
-            sourceHandleId = sourceNode.id
+            sourceHandleId = options.association.sourceProperty.id
         }
 
         const targetNode = vueFlow.findNode(options.association.referencedEntity.id)
-        const targetHandleId = options.association.sourceProperty.id
         if (!targetNode) throw new Error(`Entity [${options.association.referencedEntity.id}] is not existed`)
-        const targetHandleSet = new Set(targetNode.handleBounds.target?.map(handle => handle.id))
-        if (!targetHandleSet.has(targetHandleId)) throw new Error(`Entity [${targetNode.id}] target handle [${targetHandleId}] is not existed`)
+        const targetHandleId = options.association.referencedEntity.id
 
         const association = cloneDeepReadonlyRaw<Association>(options.association)
         removeAssociationWatcher(id)
@@ -975,22 +963,22 @@ export const useModelEditorHistory = (
         const newContextData = graphDataToModelData(graphData, contextData)
 
         for (const group of graphData.groups) {
-            addGroup({group})
+            result.groupIds.push(addGroup({group}).id)
         }
         for (const {data: enumeration, position} of graphData.enumerations) {
-            addEnumeration({enumeration, position})
+            result.enumerationIds.push(addEnumeration({enumeration, position}).id)
         }
         for (const {data: embeddableType, position} of graphData.embeddableTypes) {
-            addEmbeddableType({embeddableType, position})
+            result.embeddableTypeIds.push(addEmbeddableType({embeddableType, position}).id)
         }
         for (const {data: mappedSuperClass, position} of graphData.mappedSuperClasses) {
-            addMappedSuperClass({mappedSuperClass, position})
+            result.mappedSuperClassIds.push(addMappedSuperClass({mappedSuperClass, position}).id)
         }
         for (const {data: entity, position} of graphData.entities) {
-            addEntity({entity, position})
+            result.entityIds.push(addEntity({entity, position}).id)
         }
         for (const association of newContextData.associations) {
-            addAssociation({association})
+            result.associationIds.push(addAssociation({association}).id)
         }
 
         return result
@@ -1021,6 +1009,29 @@ export const useModelEditorHistory = (
             }
             for (const item of contextData.enumerationMap.values()) {
                 if (item.groupId === groupId) modelSubIds.enumerationIds.push(item.id)
+            }
+        }
+
+        // 收集和移除关联
+        for (const entityId of modelSubIds.entityIds) {
+            for (const association of contextData.associationMap.values()) {
+                if ("sourceEntity" in association && association.sourceEntity.id === entityId) {
+                    modelSubIds.associationIds.push(association.id)
+                }
+            }
+        }
+        for (const mappedSuperClassId of modelSubIds.mappedSuperClassIds) {
+            for (const association of contextData.associationMap.values()) {
+                if ("sourceAbstractEntity" in association && association.sourceAbstractEntity.id === mappedSuperClassId) {
+                    modelSubIds.associationIds.push(association.id)
+                }
+            }
+        }
+        for (const associationId of modelSubIds.associationIds) {
+            const association = contextData.associationMap.get(associationId)
+            if (association) {
+                result.associations.push(associationToIdOnly(association))
+                revertAddAssociation({id: association.id})
             }
         }
 
@@ -1057,14 +1068,6 @@ export const useModelEditorHistory = (
             if (enumeration && node) {
                 result.enumerations.push({data: enumeration, position: node.position})
                 revertAddEnumeration({id: enumeration.id})
-            }
-        }
-
-        for (const associationId of modelSubIds.associationIds) {
-            const association = contextData.associationMap.get(associationId)
-            if (association) {
-                result.associations.push(associationToIdOnly(association))
-                revertAddAssociation({id: association.id})
             }
         }
 
