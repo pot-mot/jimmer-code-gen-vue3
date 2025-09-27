@@ -1018,6 +1018,9 @@ export const useModelEditorHistory = (
                 if ("sourceEntity" in association && association.sourceEntity.id === entityId) {
                     modelSubIds.associationIds.push(association.id)
                 }
+                if ("referencedEntity" in association && association.referencedEntity.id === entityId) {
+                    modelSubIds.associationIds.push(association.id)
+                }
             }
         }
         for (const mappedSuperClassId of modelSubIds.mappedSuperClassIds) {
