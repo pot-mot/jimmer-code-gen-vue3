@@ -1004,7 +1004,6 @@ export const useModelEditorHistory = (
             const group = contextData.groupMap.get(groupId)
             if (group) {
                 result.groups.push(group)
-                contextData.groupMap.delete(groupId)
             }
 
             for (const item of contextData.entityMap.values()) {
@@ -1083,7 +1082,11 @@ export const useModelEditorHistory = (
             }
         }
 
-        return result
+        for (const groupId of modelSubIds.groupIds) {
+            revertAddGroup({id: groupId})
+        }
+
+        return cloneDeepReadonlyRaw(result)
     }
 
     history.registerCommand("import", {

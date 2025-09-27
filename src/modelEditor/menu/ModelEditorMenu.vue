@@ -55,13 +55,13 @@ const menuItemTrees = computed(() => {
 })
 
 const handleKeyDown = async (e: KeyboardEvent) => {
-    if (e.ctrlKey) {
-        if (e.key === "Delete") {
-            if (judgeTargetIsInteraction(e)) return
+    if (e.key === "Delete") {
+        if (judgeTargetIsInteraction(e)) return
 
-            e.preventDefault()
-            remove(subIdSetToSubIds(modelSelection.selectedIdSets.value))
-        }else if ((e.key === "z" || e.key === "Z")) {
+        e.preventDefault()
+        remove(subIdSetToSubIds(modelSelection.selectedIdSets.value))
+    } else if (e.ctrlKey) {
+        if ((e.key === "z" || e.key === "Z")) {
             if (judgeTargetIsInteraction(e)) return
 
             if (e.shiftKey) {

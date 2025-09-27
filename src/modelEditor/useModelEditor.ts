@@ -1,5 +1,5 @@
 import {createStore} from "@/utils/store/createStore.ts";
-import {computed, readonly, ref, shallowRef} from "vue";
+import {computed, nextTick, readonly, ref, shallowRef} from "vue";
 import {useModelEditorHistory} from "@/modelEditor/history/ModelEditorHistory.ts";
 import {useModelEditorSelectIds} from "@/modelEditor/selectIds/ModelEditorSelectIds.ts";
 import {
@@ -144,7 +144,7 @@ export const useModelEditor = createStore(() => {
     const remove = (
         ids: Partial<ModelSubIds>
     ) => {
-        history.executeCommand("remove", fillModelSubIds(ids))
+        return history.executeCommand("remove", fillModelSubIds(ids))
     }
 
     // Selection 选中部分的图数据
@@ -355,11 +355,12 @@ export const useModelEditor = createStore(() => {
             const vueFlow = getCurrentVueFlow()
             return modelDataToGraphData(contextDataGetSelectSubData(contextData, modelSelection.selectedIdSets.value), vueFlow)
         },
-        importData: (data: Partial<ModelGraphSubData>) => {
+        importData: async (data: Partial<ModelGraphSubData>) => {
             const vueFlow = getCurrentVueFlow()
+            modelSelection.unselectAll()
             const startPosition = vueFlow.screenToFlowCoordinate(screenPosition.value)
             const {ids} = history.executeCommand("import", {data: fillModelSubData(data), startPosition})
-            modelSelection.unselectAll()
+            await nextTick()
             modelSelection.select(ids)
         },
         removeData: (data: ModelGraphSubData) => {
@@ -741,8 +742,6 @@ export const useModelEditor = createStore(() => {
             toggleSelectAll: toggleSelectGraphAll,
         },
 
-        remove,
-
         isGraphSelectionNotEmpty,
         isGraphSelectionPlural,
         canMultiSelect,
@@ -806,7 +805,7 @@ export const useModelEditor = createStore(() => {
 
 
         // 模型数据变更
-
+        remove,
 
         copy: async (
             data: LazyData<ModelGraphSubData> | undefined = undefined,
