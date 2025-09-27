@@ -46,6 +46,7 @@ import OneToOneMappedAbstractPropertyJsonSchema from "./items/OneToOneMappedAbst
 import OneToOneMappedPropertyJsonSchema from "./items/OneToOneMappedProperty.ts";
 import OneToOneSourcePropertyJsonSchema from "./items/OneToOneSourceProperty.ts";
 import OrderDirectionJsonSchema from "./items/OrderDirection.ts";
+import PositionJsonSchema from "./items/Position.ts";
 import ScalarLogicalDeletePropertyJsonSchema from "./items/ScalarLogicalDeleteProperty.ts";
 import ScalarPropertyJsonSchema from "./items/ScalarProperty.ts";
 import SqlFormulaPropertyJsonSchema from "./items/SqlFormulaProperty.ts";
@@ -107,6 +108,7 @@ export const jsonSchemas = Object.freeze({
     OneToOneMappedProperty: OneToOneMappedPropertyJsonSchema,
     OneToOneSourceProperty: OneToOneSourcePropertyJsonSchema,
     OrderDirection: OrderDirectionJsonSchema,
+    Position: PositionJsonSchema,
     ScalarLogicalDeleteProperty: ScalarLogicalDeletePropertyJsonSchema,
     ScalarProperty: ScalarPropertyJsonSchema,
     SqlFormulaProperty: SqlFormulaPropertyJsonSchema,

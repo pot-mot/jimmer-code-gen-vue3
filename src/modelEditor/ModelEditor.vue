@@ -88,7 +88,7 @@ const handleKeyDown = async (e: KeyboardEvent) => {
             :edge-updater-radius="5"
             :zoom-on-pinch="false"
             :zoom-on-double-click="false"
-            :edges-updatable="true"
+            :edges-updatable="false"
             :multi-selection-key-code="null"
             :connect-on-click="false"
             :select-nodes-on-drag="false"

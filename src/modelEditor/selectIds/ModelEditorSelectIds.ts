@@ -2,6 +2,7 @@ import type {Ref} from "@vue/reactivity";
 import {readonly, ref, type ShallowRef} from "vue";
 import type {EdgeChange, NodeChange, VueFlowStore} from "@vue-flow/core";
 import mitt from "mitt";
+import {fillModelSubIds} from "@/type/context/utils/ModelSubIds.ts";
 
 export const useModelEditorSelectIds = (
     modelEditorState: {
@@ -171,6 +172,26 @@ export const useModelEditorSelectIds = (
         modelSelectionEventBus.emit('association', {id, selected: false})
     }
 
+    const select = (ids: DeepReadonly<Partial<ModelSubIds>>) => {
+        const fullIds = fillModelSubIds(ids)
+        for (const id of fullIds.groupIds) selectGroup(id)
+        for (const id of fullIds.entityIds) selectEntity(id)
+        for (const id of fullIds.mappedSuperClassIds) selectMappedSuperClass(id)
+        for (const id of fullIds.embeddableTypeIds) selectEmbeddableType(id)
+        for (const id of fullIds.enumerationIds) selectEnumeration(id)
+        for (const id of fullIds.associationIds) selectAssociation(id)
+    }
+
+    const unselect = (ids: DeepReadonly<Partial<ModelSubIds>>) => {
+        const fullIds = fillModelSubIds(ids)
+        for (const id of fullIds.groupIds) unselectGroup(id)
+        for (const id of fullIds.entityIds) unselectEntity(id)
+        for (const id of fullIds.mappedSuperClassIds) unselectMappedSuperClass(id)
+        for (const id of fullIds.embeddableTypeIds) unselectEmbeddableType(id)
+        for (const id of fullIds.enumerationIds) unselectEnumeration(id)
+        for (const id of fullIds.associationIds) unselectAssociation(id)
+    }
+
     const syncNodeSelectChange = (changes: NodeChange[]) => {
         const vueFlow = getVueFlow()
 
@@ -233,7 +254,9 @@ export const useModelEditorSelectIds = (
     
     return {
         selectedIdSets: readonly(selectedIdSets),
-        clearSelectedIdSets,
+        select,
+        unselect,
+        unselectAll: clearSelectedIdSets,
         eventBus: modelSelectionEventBus,
         selectGroup,
         unselectGroup,

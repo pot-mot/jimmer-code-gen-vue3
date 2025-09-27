@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import Splitpanes from "@/components/splitpanes/Splitpanes.vue";
 import Pane from "@/components/splitpanes/Pane.vue";
 import ModelEditorMenu from "@/modelEditor/menu/ModelEditorMenu.vue";

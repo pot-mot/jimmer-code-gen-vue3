@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {CreateType_CONSTANTS, useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {computed, nextTick, onBeforeMount, onUnmounted, ref, useTemplateRef} from "vue";
-import {judgeTarget} from "@/utils/event/judgeEventTarget.ts";
+import {judgeTarget, judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
 import SelectableTree from "@/components/tree/SelectableTree.vue";
 import {menuItemToTree, type MenuItemTreeNode} from "@/modelEditor/menu/tree/MenuItemToTree.ts";
 import GroupItem from "@/modelEditor/menu/item/GroupItem.vue";
@@ -13,6 +13,7 @@ import IconAdd from "@/components/icons/IconAdd.vue";
 import DragContainer from "@/components/draggable/DragContainer.vue";
 import DragTarget from "@/components/draggable/DragTarget.vue";
 import DragSource from "@/components/draggable/DragSource.vue";
+import {subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
 
 const {
     createType,
@@ -22,13 +23,18 @@ const {
     canMultiSelect,
     enableMultiSelect,
     disableMultiSelect,
-    clearSelectedIdSets,
 
     addGroup,
     toggleCurrentGroup,
     executeAsyncBatch,
 
     remove,
+    undo,
+    redo,
+    saveModel,
+    isGraphSelectionNotEmpty,
+    copy,
+    cut,
 
     modelSelection,
 } = useModelEditor()
@@ -48,17 +54,51 @@ const menuItemTrees = computed(() => {
     }))
 })
 
-const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "Delete") {
-        e.preventDefault()
-        remove({})
+const handleKeyDown = async (e: KeyboardEvent) => {
+    if (e.ctrlKey) {
+        if (e.key === "Delete") {
+            if (judgeTargetIsInteraction(e)) return
+
+            e.preventDefault()
+            remove(subIdSetToSubIds(modelSelection.selectedIdSets.value))
+        }else if ((e.key === "z" || e.key === "Z")) {
+            if (judgeTargetIsInteraction(e)) return
+
+            if (e.shiftKey) {
+                e.preventDefault()
+                redo()
+            } else {
+                e.preventDefault()
+                undo()
+            }
+        } else if (e.key === 'y' || e.key === "Y") {
+            if (judgeTargetIsInteraction(e)) return
+
+            e.preventDefault()
+            redo()
+        } else if (e.key === "s" || e.key === "S") {
+            e.preventDefault()
+            await saveModel()
+        } else if (e.key === "c" || e.key === "C") {
+            if (judgeTargetIsInteraction(e)) return
+            if (!isGraphSelectionNotEmpty.value) return
+
+            e.preventDefault()
+            await copy()
+        } else if (e.key === "x" || e.key === "X") {
+            if (judgeTargetIsInteraction(e)) return
+            if (!isGraphSelectionNotEmpty.value) return
+
+            e.preventDefault()
+            await cut()
+        }
     }
 }
 
 const handleClick = (e: MouseEvent) => {
     if (!judgeTarget(e, (el) => el.classList.contains("tree-select"))) {
         if (!canMultiSelect.value) {
-            clearSelectedIdSets()
+            modelSelection.unselectAll()
             selectedIdSet.value?.clear()
         }
     }

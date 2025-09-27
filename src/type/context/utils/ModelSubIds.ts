@@ -9,8 +9,69 @@ export const defaultModelSubIds: () => ModelSubIds = () => ({
     associationIds: [],
 })
 
-export const fillModelSubIds = (ids: Partial<ModelSubIds>): ModelSubIds => {
-    return Object.assign(defaultModelSubIds(), ids)
+export const fillModelSubIds = (ids: DeepReadonly<Partial<ModelSubIds>>): ModelSubIds => {
+    const result = defaultModelSubIds()
+    for (const id of ids.groupIds ?? []) result.groupIds.push(id)
+    for (const id of ids.entityIds ?? []) result.entityIds.push(id)
+    for (const id of ids.mappedSuperClassIds ?? []) result.mappedSuperClassIds.push(id)
+    for (const id of ids.embeddableTypeIds ?? []) result.embeddableTypeIds.push(id)
+    for (const id of ids.enumerationIds ?? []) result.enumerationIds.push(id)
+    for (const id of ids.associationIds ?? []) result.associationIds.push(id)
+    return result
+}
+
+export const subDataToSubIds = (
+    subData: DeepReadonly<ModelGraphSubData>
+): ModelSubIds => {
+    const result = defaultModelSubIds()
+
+    for (const group of subData.groups) {
+        result.groupIds.push(group.id)
+    }
+    for (const {data} of subData.entities) {
+        result.entityIds.push(data.id)
+    }
+    for (const {data} of subData.mappedSuperClasses) {
+        result.mappedSuperClassIds.push(data.id)
+    }
+    for (const {data} of subData.embeddableTypes) {
+        result.embeddableTypeIds.push(data.id)
+    }
+    for (const {data} of subData.enumerations) {
+        result.enumerationIds.push(data.id)
+    }
+    for (const association of subData.associations) {
+        result.associationIds.push(association.id)
+    }
+
+    return result
+}
+
+export const subIdSetToSubIds = (
+    subIdSets: DeepReadonly<ModelSubIdSets>
+): ModelSubIds => {
+    const result = defaultModelSubIds()
+
+    for (const id of subIdSets.groupIdSet) {
+        result.groupIds.push(id)
+    }
+    for (const id of subIdSets.entityIdSet) {
+        result.entityIds.push(id)
+    }
+    for (const id of subIdSets.mappedSuperClassIdSet) {
+        result.mappedSuperClassIds.push(id)
+    }
+    for (const id of subIdSets.embeddableTypeIdSet) {
+        result.embeddableTypeIds.push(id)
+    }
+    for (const id of subIdSets.enumerationIdSet) {
+        result.enumerationIds.push(id)
+    }
+    for (const id of subIdSets.associationIdSet) {
+        result.associationIds.push(id)
+    }
+
+    return result
 }
 
 /**

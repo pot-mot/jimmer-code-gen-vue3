@@ -13,6 +13,7 @@ import {defaultModelSubIds} from "@/type/context/utils/ModelSubIds.ts";
 import {defaultModelGraphSubData, graphDataToModelData} from "@/type/context/utils/ModelGraphSubData.ts";
 import {protectRepeatIds} from "@/modelEditor/import/protectRepeatIds.ts";
 import {associationToIdOnly} from "@/type/context/utils/AssociationIdOnly.ts";
+import {layoutPosition} from "@/modelEditor/import/layoutPosition.ts";
 
 const SYNC_DEBOUNCE_TIMEOUT = 500
 
@@ -84,7 +85,7 @@ export type ModelEditorHistoryCommands = {
         association: Association
     }>>
 
-    "import": CommandDefinition<DeepReadonly<ModelGraphSubData>, DeepReadonly<ModelSubIds>>
+    "import": CommandDefinition<DeepReadonly<{data: ModelGraphSubData, startPosition: XYPosition}>, DeepReadonly<{ids: ModelSubIds, startPosition: XYPosition}>>
     "remove": CommandDefinition<DeepReadonly<ModelSubIds>, DeepReadonly<ModelGraphSubData>>
 }
 
@@ -954,12 +955,20 @@ export const useModelEditorHistory = (
 
     const importIntoContext = (
         graphData: ModelGraphSubData,
+        startPosition?: XYPosition,
     ): ModelSubIds => {
         const contextData = getContextData()
         const result = defaultModelSubIds()
 
         protectRepeatIds(graphData, contextData)
-        // TODO re layout for position
+        if (startPosition) {
+            layoutPosition(startPosition, [
+                ...graphData.mappedSuperClasses,
+                ...graphData.entities,
+                ...graphData.embeddableTypes,
+                ...graphData.enumerations,
+            ])
+        }
         const newContextData = graphDataToModelData(graphData, contextData)
 
         for (const group of graphData.groups) {
@@ -1078,11 +1087,13 @@ export const useModelEditorHistory = (
     }
 
     history.registerCommand("import", {
-        applyAction: (graphData) => {
-            return importIntoContext(cloneDeepReadonlyRaw<ModelGraphSubData>(graphData))
+        applyAction: ({data, startPosition}) => {
+            const ids = importIntoContext(cloneDeepReadonlyRaw<ModelGraphSubData>(data), startPosition)
+            return {ids, startPosition}
         },
-        revertAction: (modelSubIds) => {
-            return removeFromContext(cloneDeepReadonlyRaw<ModelSubIds>(modelSubIds))
+        revertAction: ({ids, startPosition}) => {
+            const data = removeFromContext(cloneDeepReadonlyRaw<ModelSubIds>(ids))
+            return {data, startPosition}
         }
     })
     history.registerCommand("remove", {

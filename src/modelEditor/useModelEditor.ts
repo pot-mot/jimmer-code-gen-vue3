@@ -13,7 +13,6 @@ import {
 import {sendMessage} from "@/components/message/messageApi.ts";
 import {blurActiveElement, judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
 import {jsonSortPropStringify} from "@/utils/json/jsonStringify.ts";
-import type {LazyData} from "@/utils/type/lazyData.ts";
 import {v7 as uuid} from "uuid";
 import {
     defaultEmbeddableType,
@@ -23,12 +22,17 @@ import {
     defaultModel
 } from "@/type/context/default/modelDefaults.ts";
 import {tinycolor} from "vue-color";
-import {defaultModelSubIds, fillModelSubIds} from "@/type/context/utils/ModelSubIds.ts";
+import {defaultModelSubIds, fillModelSubIds, subDataToSubIds} from "@/type/context/utils/ModelSubIds.ts";
 import {NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";
 import {NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode.ts";
 import {NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
 import {NodeType_EmbeddableType} from "@/modelEditor/node/EmbeddableTypeNode.ts";
 import {EdgeType_Association} from "@/modelEditor/edge/AssociationEdge.ts";
+import type {LazyData} from "@/utils/type/lazyDataParse.ts";
+import {useClipBoard} from "@/utils/clipBoard/useClipBoard.ts";
+import {modelDataToGraphData} from "@/type/context/utils/ModelGraphSubData.ts";
+import {fillModelSubData, contextDataGetSelectSubData} from "@/type/context/utils/ModelSubData.ts";
+import {validatePartialModelGraphSubData} from "@/modelEditor/graphData/ModelGraphSubData.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -342,6 +346,31 @@ export const useModelEditor = createStore(() => {
         enableDrag(vueFlow)
     }
 
+    /**
+     * 剪切板
+     */
+    const clipBoard = useClipBoard<Partial<ModelGraphSubData>, ModelGraphSubData>({
+        exportData: (): ModelGraphSubData => {
+            const contextData = getContextData()
+            const vueFlow = getCurrentVueFlow()
+            return modelDataToGraphData(contextDataGetSelectSubData(contextData, modelSelection.selectedIdSets.value), vueFlow)
+        },
+        importData: (data: Partial<ModelGraphSubData>) => {
+            const vueFlow = getCurrentVueFlow()
+            const startPosition = vueFlow.screenToFlowCoordinate(screenPosition.value)
+            const {ids} = history.executeCommand("import", {data: fillModelSubData(data), startPosition})
+            modelSelection.unselectAll()
+            modelSelection.select(ids)
+        },
+        removeData: (data: ModelGraphSubData) => {
+            remove(subDataToSubIds(data))
+        },
+        stringifyData: (data: ModelGraphSubData): string => {
+            return jsonSortPropStringify(data)
+        },
+        validateInput: validatePartialModelGraphSubData
+    })
+
     const initModelEditor = () => {
         const vueFlow: VueFlowStore = getCurrentVueFlow()
 
@@ -353,16 +382,9 @@ export const useModelEditor = createStore(() => {
 
             screenToFlowCoordinate,
 
-            onViewportChange,
-
             onNodesChange,
             onNodeDragStart,
             onNodeDragStop,
-            onConnect,
-            onConnectStart,
-            onConnectEnd,
-            onEdgeUpdateStart,
-            onEdgeUpdate,
             onEdgesChange,
 
             getSelectedNodes,
@@ -434,84 +456,6 @@ export const useModelEditor = createStore(() => {
                 })
                 nodeMoveMap.clear()
             })
-
-            // /**
-            //  * 边连接
-            //  */
-            // onConnect((connectData) => {
-            //     addEdge(connectData)
-            // })
-            //
-            // onConnectStart((data) => {
-            //     isConnecting.value = true
-            //     connectSourceNodeId.value = data.nodeId
-            // })
-            //
-            // onConnectEnd(() => {
-            //     isConnecting.value = false
-            //     connectSourceNodeId.value = undefined
-            // })
-            //
-            // /**
-            //  * 边重连接
-            //  */
-            // const edgeReconnectMap = new Map<string, FullConnection>
-            // const stopSelectStart = (e: Event) => {
-            //     e.preventDefault()
-            // }
-            //
-            // onEdgeUpdateStart(({edge}) => {
-            //     vueFlowRef.value?.addEventListener('selectstart', stopSelectStart)
-            //     const connection: Connection = {
-            //         source: edge.source,
-            //         sourceHandle: edge.sourceHandle,
-            //         target: edge.target,
-            //         targetHandle: edge.targetHandle,
-            //     }
-            //     if (checkFullConnection(connection)) {
-            //         edgeReconnectMap.set(edge.id, connection)
-            //     }
-            // })
-            //
-            // onEdgeUpdate(({edge, connection}) => {
-            //     history.executeBatch(Symbol("edge:reconnect"), () => {
-            //         const oldConnection = edgeReconnectMap.get(edge.id)
-            //         edgeReconnectMap.delete(edge.id)
-            //         if (oldConnection !== undefined && checkFullConnection(connection)) {
-            //             if (jsonSortPropStringify(oldConnection) !== jsonSortPropStringify(connection) && !checkConnectionExist(connection)) {
-            //                 history.executeCommand('edge:reconnect', {
-            //                     layerId: currentLayerId.value,
-            //                     id: edge.id,
-            //                     newConnection: connection,
-            //                     oldConnection
-            //                 })
-            //             }
-            //         }
-            //     })
-            //     TODO edge select sync
-            //     vueFlowRef.value?.removeEventListener('selectstart', stopSelectStart)
-            // })
-
-            /**
-             * 剪切板
-             */
-            // TODO
-            // const clipBoard = useClipBoard<MindMapImportData, MindMapExportData>({
-            //     exportData: (): MindMapExportData => {
-            //         return exportMindMapSelectionData(vueFlow)
-            //     },
-            //     importData: (data: MindMapImportData) => {
-            //         importData(data, {point: screenToFlowCoordinate(screenPosition.value), type: "topNode"})
-            //     },
-            //     removeData: (data: MindMapExportData) => {
-            //         remove({nodes: data.nodes?.map(it => it.id), edges: data.edges?.map(it => it.id)}, false)
-            //     },
-            //     stringifyData: (data: MindMapExportData): string => {
-            //         return jsonSortPropStringify(data)
-            //     },
-            //     validateInput: validateMindMapImportData
-            // })
-            //
 
             /**
              * 键盘事件监听
@@ -788,7 +732,6 @@ export const useModelEditor = createStore(() => {
         // 选择
         modelSelection,
         selectedIdSets: modelSelection.selectedIdSets,
-        clearSelectedIdSets: modelSelection.clearSelectedIdSets,
 
         getGraphSelection,
         clearGraphSelection,
@@ -869,11 +812,10 @@ export const useModelEditor = createStore(() => {
             data: LazyData<ModelGraphSubData> | undefined = undefined,
         ) => {
             try {
-                // TODO
-                // const result = await layer.copy(data)
+                const result = await clipBoard.copy(data)
                 sendMessage("copy", {type: "success"})
                 focus()
-                // return result
+                return result
             } catch (e) {
                 sendMessage(`copy fail: ${e}`, {type: "warning"})
                 throw e
@@ -881,11 +823,10 @@ export const useModelEditor = createStore(() => {
         },
         paste: async () => {
             try {
-                // TODO
-                // const result = await layer.paste()
+                const result = await clipBoard.paste()
                 sendMessage("paste", {type: "success"})
                 focus()
-                // return result
+                return result
             } catch (e) {
                 sendMessage(`paste fail: ${e}`, {type: "warning"})
                 throw e
@@ -893,11 +834,10 @@ export const useModelEditor = createStore(() => {
         },
         cut: async () => {
             try {
-                // TODO
-                // const result = await layer.cut()
+                const result = await clipBoard.cut()
                 sendMessage("cut", {type: "success"})
                 focus()
-                // return result
+                return result
             } catch (e) {
                 sendMessage(`cut fail: ${e}`, {type: "warning"})
                 throw e
