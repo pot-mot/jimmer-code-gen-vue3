@@ -173,6 +173,9 @@ export const useModelEditorSelectIds = (
     }
 
     const select = (ids: DeepReadonly<Partial<ModelSubIds>>) => {
+        const vueFlow = getVueFlow()
+        const oldMultiSelectionActive = vueFlow.multiSelectionActive.value
+        if (!oldMultiSelectionActive) vueFlow.multiSelectionActive.value = true
         const fullIds = fillModelSubIds(ids)
         for (const id of fullIds.groupIds) selectGroup(id)
         for (const id of fullIds.entityIds) selectEntity(id)
@@ -180,6 +183,7 @@ export const useModelEditorSelectIds = (
         for (const id of fullIds.embeddableTypeIds) selectEmbeddableType(id)
         for (const id of fullIds.enumerationIds) selectEnumeration(id)
         for (const id of fullIds.associationIds) selectAssociation(id)
+        if (!oldMultiSelectionActive) vueFlow.multiSelectionActive.value = false
     }
 
     const unselect = (ids: DeepReadonly<Partial<ModelSubIds>>) => {
@@ -190,6 +194,15 @@ export const useModelEditorSelectIds = (
         for (const id of fullIds.embeddableTypeIds) unselectEmbeddableType(id)
         for (const id of fullIds.enumerationIds) unselectEnumeration(id)
         for (const id of fullIds.associationIds) unselectAssociation(id)
+    }
+
+    const unselectAll = () => {
+        for (const id of selectedIdSets.value.groupIdSet) unselectGroup(id)
+        for (const id of selectedIdSets.value.entityIdSet) unselectEntity(id)
+        for (const id of selectedIdSets.value.mappedSuperClassIdSet) unselectMappedSuperClass(id)
+        for (const id of selectedIdSets.value.embeddableTypeIdSet) unselectEmbeddableType(id)
+        for (const id of selectedIdSets.value.enumerationIdSet) unselectEnumeration(id)
+        for (const id of selectedIdSets.value.associationIdSet) unselectAssociation(id)
     }
 
     const syncNodeSelectChange = (changes: NodeChange[]) => {
@@ -256,7 +269,7 @@ export const useModelEditorSelectIds = (
         selectedIdSets: readonly(selectedIdSets),
         select,
         unselect,
-        unselectAll: clearSelectedIdSets,
+        unselectAll,
         eventBus: modelSelectionEventBus,
         selectGroup,
         unselectGroup,

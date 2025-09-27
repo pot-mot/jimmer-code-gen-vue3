@@ -150,6 +150,15 @@ export const useModelEditor = createStore(() => {
     // Selection 选中部分的图数据
     const modelSelection = useModelEditorSelectIds({contextData, vueFlow, getNextZIndex})
 
+    const isModelSelectionNotEmpty = computed(() => {
+        const idSets = modelSelection.selectedIdSets.value
+        return idSets.groupIdSet.size > 0
+            || idSets.entityIdSet.size > 0
+            || idSets.mappedSuperClassIdSet.size > 0
+            || idSets.embeddableTypeIdSet.size > 0
+            || idSets.enumerationIdSet.size > 0
+    })
+
     const getGraphSelection = () => {
         const vueFlow = getCurrentVueFlow()
         return {
@@ -357,10 +366,19 @@ export const useModelEditor = createStore(() => {
         },
         importData: async (data: Partial<ModelGraphSubData>) => {
             const vueFlow = getCurrentVueFlow()
+
+            const fullData = fillModelSubData(data)
+            const importGroupId = getCurrentGroupIdOrCreate()
+            for (const {data} of fullData.entities) data.groupId = importGroupId
+            for (const {data} of fullData.mappedSuperClasses) data.groupId = importGroupId
+            for (const {data} of fullData.embeddableTypes) data.groupId = importGroupId
+            for (const {data} of fullData.enumerations) data.groupId = importGroupId
+
             modelSelection.unselectAll()
             const startPosition = vueFlow.screenToFlowCoordinate(screenPosition.value)
-            const {ids} = history.executeCommand("import", {data: fillModelSubData(data), startPosition})
+            const {ids} = history.executeCommand("import", {data: fullData, startPosition})
             await nextTick()
+            await waitChangeSync()
             modelSelection.select(ids)
         },
         removeData: (data: ModelGraphSubData) => {
@@ -733,6 +751,7 @@ export const useModelEditor = createStore(() => {
         // 选择
         modelSelection,
         selectedIdSets: modelSelection.selectedIdSets,
+        isModelSelectionNotEmpty,
 
         getGraphSelection,
         clearGraphSelection,

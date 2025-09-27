@@ -32,9 +32,10 @@ const {
     undo,
     redo,
     saveModel,
-    isGraphSelectionNotEmpty,
+    isModelSelectionNotEmpty,
     copy,
     cut,
+    paste,
 
     modelSelection,
 } = useModelEditor()
@@ -81,16 +82,21 @@ const handleKeyDown = async (e: KeyboardEvent) => {
             await saveModel()
         } else if (e.key === "c" || e.key === "C") {
             if (judgeTargetIsInteraction(e)) return
-            if (!isGraphSelectionNotEmpty.value) return
+            if (!isModelSelectionNotEmpty.value) return
 
             e.preventDefault()
             await copy()
         } else if (e.key === "x" || e.key === "X") {
             if (judgeTargetIsInteraction(e)) return
-            if (!isGraphSelectionNotEmpty.value) return
+            if (!isModelSelectionNotEmpty.value) return
 
             e.preventDefault()
             await cut()
+        } else if (e.key === "v" || e.key === "V") {
+            if (judgeTargetIsInteraction(e)) return
+
+            e.preventDefault()
+            await paste()
         }
     }
 }

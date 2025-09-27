@@ -60,7 +60,7 @@ const nodeIdsInOrder = computed(() => {
 
 const getNodeById = (id: string) => {
     const node = flatNodes.value.find(node => node.id === id)
-    if (!node) throw new Error(`Node with id ${id} not found`)
+    if (!node) throw new Error(`TreeNode ${id} not found`)
     return node
 }
 
