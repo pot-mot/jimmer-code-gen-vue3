@@ -33,7 +33,7 @@ const onHandleUpdate = (id: string, index: number) => {
 const forceResize = (element: HTMLElement) => {
     const oldStyleWidth = element.style.width
     const currentWidth = element.offsetWidth
-    element.style.width = (currentWidth + 1) + 'px'
+    element.style.width = currentWidth + 'px'
     setTimeout(() => {
         element.style.width = oldStyleWidth
     })
