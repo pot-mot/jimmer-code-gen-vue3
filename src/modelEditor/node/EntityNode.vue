@@ -6,7 +6,7 @@ import EditList from "@/components/list/selectableList/EditList.vue";
 import {createId, getColorIsDark, getColorVar} from "@/modelEditor/useModelEditor.ts";
 import MappedSuperClassIdMultiSelect from "@/modelEditor/form/entity/MappedSuperClassIdMultiSelect.vue";
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
-import {computed} from "vue";
+import {computed, ref, useTemplateRef, watch} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import {validateEntityProperty} from "@/type/__generated/jsonSchema/items/EntityProperty.ts";
 
@@ -24,10 +24,30 @@ const groupColor = computed(() => {
 const groupTheme = computed(() => {
     return getColorIsDark(props.data.entity.groupId) ? 'dark' : 'light'
 })
+
+const nodeElRef = useTemplateRef("nodeElRef")
+const handleIndexMap = ref(new Map<string, number>())
+const onHandleUpdate = (id: string, index: number) => {
+    handleIndexMap.value.set(id, index)
+}
+const forceResize = (element: HTMLElement) => {
+    const oldStyleWidth = element.style.width
+    const currentWidth = element.offsetWidth
+    element.style.width = (currentWidth + 1) + 'px'
+    setTimeout(() => {
+        element.style.width = oldStyleWidth
+    })
+}
+watch(() => handleIndexMap.value, () => {
+    if (nodeElRef.value && nodeElRef.value.parentElement) {
+        const parent = nodeElRef.value.parentElement
+        forceResize(parent)
+    }
+}, {deep: true})
 </script>
 
 <template>
-    <div class="entity-node" :class="{selected}">
+    <div class="entity-node" ref="nodeElRef" :class="{selected}">
         <Handle :id="data.entity.id" type="target" :position="Position.Bottom"/>
 
         <div class="entity-header">
@@ -46,7 +66,7 @@ const groupTheme = computed(() => {
         >
             <template #line="{item, index}">
                 <div class="entity-property">
-                    <Handle :id="item.id" type="source" :position="Position.Left"/>
+                    <Handle :ref="() => onHandleUpdate(item.id, index)" :id="item.id" type="source" :position="Position.Left"/>
 
                     <div class="entity-property-view">
                         <NameCommentEditor :font-size="14" v-model="data.entity.properties[index]"/>
