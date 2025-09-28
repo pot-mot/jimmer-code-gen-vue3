@@ -6,6 +6,6 @@ export default Object.freeze({
     mappedSuperClasses: MappedSuperClassWithProperties[]
     embeddableTypes: EmbeddableTypeWithProperties[]
     enumerations: Enumeration[]
-    associations: Association[]
+    associations: AssociationIdOnly[]
 }`,
 })

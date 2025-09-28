@@ -4,5 +4,5 @@ type ModelSubData = {
     mappedSuperClasses: MappedSuperClassWithProperties[]
     embeddableTypes: EmbeddableTypeWithProperties[]
     enumerations: Enumeration[]
-    associations: Association[]
+    associations: AssociationIdOnly[]
 }

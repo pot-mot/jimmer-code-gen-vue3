@@ -111,13 +111,13 @@ const selectEntity = (entity: EntityWithProperties) => {
             extraAnnotations: [],
             extraImports: [],
         }
-        const association: ManyToOneAssociation = {
+        const association: ManyToOneAssociationIdOnly = {
             id: associationId,
             name: "", // TODO
             type: "ManyToOne",
-            sourceEntity: props.entity,
-            sourceProperty,
-            referencedEntity: entity,
+            sourceEntityId: props.entity.id,
+            sourcePropertyId: sourceProperty.id,
+            referencedEntityId: entity.id,
             mappedProperty,
             foreignKeyType: "AUTO",
         }

@@ -16,6 +16,7 @@ import {
     oneToOneMappedAbstractPropertyToReal
 } from "@/type/context/utils/MappedProperty.ts";
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
+import {idOnlyToAssociation} from "@/type/context/utils/AssociationIdOnly.ts";
 
 export const contextDataToContext = (
     readonlyContextData: DeepReadonly<ModelContextData>,
@@ -23,16 +24,21 @@ export const contextDataToContext = (
     const contextData = cloneDeepReadonlyRaw<ModelContextData>(readonlyContextData)
     const model = contextData.model
 
+    const associationMap = new Map<string, Association>()
+    for (const [id, associationIdOnly] of contextData.associationMap) {
+        associationMap.set(id, idOnlyToAssociation(associationIdOnly, contextData.entityMap, contextData.mappedSuperClassMap))
+    }
+
     const inheritorsMap = buildInheritorsMap(contextData.entityMap, contextData.mappedSuperClassMap)
     for (const entity of contextData.entityMap.values()) {
-        const mappedProperties = getEntityMappedProperties(entity.properties, contextData.associationMap)
+        const mappedProperties = getEntityMappedProperties(entity.properties, associationMap)
         for (const {mappedProperty, referencedEntity} of mappedProperties) {
             referencedEntity.properties.push(mappedProperty)
         }
     }
     for (const mappedSuperClass of contextData.mappedSuperClassMap.values()) {
         const inheritors = getMappedSuperClassAllInheritors(mappedSuperClass, inheritorsMap)
-        const mappedProperties = getAbstractMappedProperties(mappedSuperClass.properties, contextData.associationMap)
+        const mappedProperties = getAbstractMappedProperties(mappedSuperClass.properties, associationMap)
         for (const {mappedProperty, referencedEntity} of mappedProperties) {
             if (mappedProperty.category === "OneToOne_Mapped_Abstract") {
                 for (const inheritEntity of inheritors.entities) {
@@ -48,7 +54,7 @@ export const contextDataToContext = (
 
     const entityBaseInfoMap = new Map<string, EntityWithCategorizedProperties>()
     for (const [id, entity] of contextData.entityMap) {
-        const categorizedProperties = categorizeEntityProperties(entity.properties, contextData.associationMap)
+        const categorizedProperties = categorizeEntityProperties(entity.properties, associationMap)
         const entityWithCategorizedProperties: EntityWithCategorizedProperties = {
             ...entity,
             ...categorizedProperties,
@@ -58,7 +64,7 @@ export const contextDataToContext = (
 
     const mappedSuperClassBaseInfoMap = new Map<string, MappedSuperClassWithCategorizedProperties>()
     for (const [id, mappedSuperClass] of contextData.mappedSuperClassMap) {
-        const categorizedProperties = categorizeAbstractCategorizedProperties(mappedSuperClass.properties, contextData.associationMap)
+        const categorizedProperties = categorizeAbstractCategorizedProperties(mappedSuperClass.properties, associationMap)
         const mappedSuperClassWithCategorizedProperties: MappedSuperClassWithCategorizedProperties = {
             ...mappedSuperClass,
             ...categorizedProperties,
@@ -80,10 +86,10 @@ export const contextDataToContext = (
     for (const [id, enumeration] of contextData.enumerationMap) {
         enumerationMap.set(id, enumeration)
     }
-    const associationMap = new Map<string, AssociationWithInheritInfo>()
-    for (const [id, association] of contextData.associationMap) {
+    const associationWithInheritMap = new Map<string, AssociationWithInheritInfo>()
+    for (const [id, association] of associationMap) {
         const associationWithInheritInfo: AssociationWithInheritInfo = getAssociationWithInheritInfo(association, entityBaseInfoMap, mappedSuperClassBaseInfoMap)
-        associationMap.set(id, associationWithInheritInfo)
+        associationWithInheritMap.set(id, associationWithInheritInfo)
     }
 
     // 解析继承关系
@@ -93,7 +99,7 @@ export const contextDataToContext = (
     for (const [id, mappedSuperClass] of mappedSuperClassBaseInfoMap) {
         const allExtends = getEntityAllExtends(mappedSuperClass, mappedSuperClassBaseInfoMap, superClassAllExtendsResultMap)
         const allProperties = getEntityAllProperties(mappedSuperClass, mappedSuperClassBaseInfoMap, allExtends)
-        const allCategorizedProperties = categorizeAbstractCategorizedProperties(allProperties, contextData.associationMap)
+        const allCategorizedProperties = categorizeAbstractCategorizedProperties(allProperties, associationMap)
         mappedSuperClassMap.set(id, {
             ...mappedSuperClass,
             allExtends,
@@ -106,7 +112,7 @@ export const contextDataToContext = (
     for (const [id, entity] of entityBaseInfoMap) {
         const allExtends = getEntityAllExtends(entity, mappedSuperClassBaseInfoMap, superClassAllExtendsResultMap)
         const allProperties = getEntityAllProperties(entity, mappedSuperClassBaseInfoMap, allExtends)
-        const allCategorizedProperties = categorizeEntityProperties(allProperties, contextData.associationMap)
+        const allCategorizedProperties = categorizeEntityProperties(allProperties, associationMap)
         entityMap.set(id, {
             ...entity,
             allExtends,

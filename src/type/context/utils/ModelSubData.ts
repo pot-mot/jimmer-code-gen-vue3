@@ -7,10 +7,6 @@ export const defaultModelSubData: () => ModelSubData = () => ({
     associations: [],
 })
 
-export const fillModelSubData = (data: Partial<ModelGraphSubData>): ModelGraphSubData => {
-    return Object.assign(defaultModelSubData(), data)
-}
-
 export const contextDataGetSubData = (
     contextData: ModelContextData,
 ): ModelSubData => {
@@ -54,11 +50,29 @@ export const contextDataGetSelectSubData = (
             result.entities.push(entity)
         }
     }
+    for (const {id: entityId} of result.entities) {
+        for (const association of contextData.associationMap.values()) {
+            if ("sourceEntityId" in association && association.sourceEntityId === entityId) {
+                result.associations.push(association)
+            } else if (association.referencedEntityId === entityId) {
+                result.associations.push(association)
+            }
+        }
+    }
+
     for (const mappedSuperClass of contextData.mappedSuperClassMap.values()) {
         if (selectIds.mappedSuperClassIdSet.has(mappedSuperClass.id)) {
             result.mappedSuperClasses.push(mappedSuperClass)
         }
     }
+    for (const {id: mappedSuperClassId} of result.mappedSuperClasses) {
+        for (const association of contextData.associationMap.values()) {
+            if ("sourceAbstractEntityId" in association && association.sourceAbstractEntityId === mappedSuperClassId) {
+                result.associations.push(association)
+            }
+        }
+    }
+
     for (const embeddableType of contextData.embeddableTypeMap.values()) {
         if (selectIds.embeddableTypeIdSet.has(embeddableType.id)) {
             result.embeddableTypes.push(embeddableType)

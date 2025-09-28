@@ -1,5 +1,4 @@
 import type {VueFlowStore} from "@vue-flow/core";
-import {associationToIdOnly, idOnlyToAssociation} from "@/type/context/utils/AssociationIdOnly.ts";
 
 export const defaultModelGraphSubData: () => ModelGraphSubData = () => ({
     groups: [],
@@ -9,6 +8,18 @@ export const defaultModelGraphSubData: () => ModelGraphSubData = () => ({
     enumerations: [],
     associations: [],
 })
+
+export const fillModelGraphSubData = (data: Partial<ModelGraphSubData>): ModelGraphSubData => {
+    const result = defaultModelGraphSubData()
+    for (const group of data.groups ?? []) result.groups.push(group)
+    for (const entity of data.entities ?? []) result.entities.push(entity)
+    for (const mappedSuperClass of data.mappedSuperClasses ?? []) result.mappedSuperClasses.push(mappedSuperClass)
+    for (const embeddableType of data.embeddableTypes ?? []) result.embeddableTypes.push(embeddableType)
+    for (const enumeration of data.enumerations ?? []) result.enumerations.push(enumeration)
+    for (const association of data.associations ?? []) result.associations.push(association)
+    return result
+}
+
 
 export const graphDataToModelData = (
     graphData: ModelGraphSubData,
@@ -40,7 +51,7 @@ export const graphDataToModelData = (
         mappedSuperClasses: graphData.mappedSuperClasses.map(it => it.data),
         embeddableTypes: graphData.embeddableTypes.map(it => it.data),
         enumerations: graphData.enumerations.map(it => it.data),
-        associations: graphData.associations.map(it => idOnlyToAssociation(it, entityMap, mappedSuperClassMap)),
+        associations: graphData.associations,
     }
 }
 
@@ -78,6 +89,6 @@ export const modelDataToGraphData = (
         mappedSuperClasses: mappedSuperClassWithPosition,
         embeddableTypes: embeddableTypeWithPosition,
         enumerations: enumerationWithPosition,
-        associations: data.associations.map(it => associationToIdOnly(it)),
+        associations: data.associations,
     }
 }

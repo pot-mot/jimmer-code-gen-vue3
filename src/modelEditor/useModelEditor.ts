@@ -27,11 +27,11 @@ import {NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";
 import {NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode.ts";
 import {NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
 import {NodeType_EmbeddableType} from "@/modelEditor/node/EmbeddableTypeNode.ts";
-import {EdgeType_Association} from "@/modelEditor/edge/AssociationEdge.ts";
+import {EdgeType_ConcreteAssociation} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
 import type {LazyData} from "@/utils/type/lazyDataParse.ts";
 import {useClipBoard} from "@/utils/clipBoard/useClipBoard.ts";
-import {modelDataToGraphData} from "@/type/context/utils/ModelGraphSubData.ts";
-import {fillModelSubData, contextDataGetSelectSubData} from "@/type/context/utils/ModelSubData.ts";
+import {fillModelGraphSubData, modelDataToGraphData} from "@/type/context/utils/ModelGraphSubData.ts";
+import {contextDataGetSelectSubData} from "@/type/context/utils/ModelSubData.ts";
 import {validatePartialModelGraphSubData} from "@/modelEditor/graphData/ModelGraphSubData.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
@@ -367,7 +367,7 @@ export const useModelEditor = createStore(() => {
         importData: async (data: Partial<ModelGraphSubData>) => {
             const vueFlow = getCurrentVueFlow()
 
-            const fullData = fillModelSubData(data)
+            const fullData = fillModelGraphSubData(data)
             const importGroupId = getCurrentGroupIdOrCreate()
             for (const {data} of fullData.entities) data.groupId = importGroupId
             for (const {data} of fullData.mappedSuperClasses) data.groupId = importGroupId
@@ -496,7 +496,7 @@ export const useModelEditor = createStore(() => {
                         }
                     }
                     for (const edge of getSelectedEdges.value) {
-                        if (edge.type === EdgeType_Association) {
+                        if (edge.type === EdgeType_ConcreteAssociation) {
                             ids.associationIds.push(edge.id)
                         }
                     }
@@ -816,7 +816,7 @@ export const useModelEditor = createStore(() => {
             history.executeCommand('enumeration:add', {enumeration, position})
             return enumeration.id
         },
-        addAssociation: (association: Association) => {
+        addAssociation: (association: AssociationIdOnly) => {
             history.executeCommand('association:add', {association})
         },
 

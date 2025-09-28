@@ -7,6 +7,6 @@ export default Object.freeze({
     mappedSuperClassMap: Map<string, MappedSuperClassWithInheritInfo>
     embeddableTypeMap: Map<string, EmbeddableTypeWithFlatProperties>
     enumerationMap: Map<string, Enumeration>
-    associationMap: Map<string, AssociationWithSubData>
+    associationMap: Map<string, Association>
 }`,
 })

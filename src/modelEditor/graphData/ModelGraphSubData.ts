@@ -7,7 +7,8 @@ export const PartialModelGraphSubData: JSONSchemaType<Partial<ModelGraphSubData>
     properties: {
         groups: {
             type: "array",
-            items: jsonSchemas.Group.schema
+            items: jsonSchemas.Group.schema,
+            nullable: true,
         },
         entities: {
             type: "array",
@@ -18,7 +19,8 @@ export const PartialModelGraphSubData: JSONSchemaType<Partial<ModelGraphSubData>
                     position: jsonSchemas.Position.schema
                 },
                 required: ["data", "position"],
-            }
+            },
+            nullable: true,
         },
         mappedSuperClasses: {
             type: "array",
@@ -29,7 +31,8 @@ export const PartialModelGraphSubData: JSONSchemaType<Partial<ModelGraphSubData>
                     position: jsonSchemas.Position.schema
                 },
                 required: ["data", "position"],
-            }
+            },
+            nullable: true,
         },
         embeddableTypes: {
             type: "array",
@@ -40,7 +43,8 @@ export const PartialModelGraphSubData: JSONSchemaType<Partial<ModelGraphSubData>
                     position: jsonSchemas.Position.schema
                 },
                 required: ["data", "position"],
-            }
+            },
+            nullable: true,
         },
         enumerations: {
             type: "array",
@@ -51,7 +55,8 @@ export const PartialModelGraphSubData: JSONSchemaType<Partial<ModelGraphSubData>
                     position: jsonSchemas.Position.schema
                 },
                 required: ["data", "position"],
-            }
+            },
+            nullable: true,
         },
         associations: {
             type: "array",
@@ -63,7 +68,8 @@ export const PartialModelGraphSubData: JSONSchemaType<Partial<ModelGraphSubData>
                     jsonSchemas.ManyToOneAbstractAssociationIdOnly.schema,
                     jsonSchemas.ManyToManyAssociationIdOnly.schema,
                 ]
-            }
+            },
+            nullable: true,
         }
     },
     definitions: {

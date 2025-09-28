@@ -16,7 +16,6 @@ import {
 } from "@/modelEditor/form/property/PropertyConvert.ts";
 import {nextTick, ref} from "vue";
 import TypePairViewer from "@/modelEditor/viewer/TypePairViewer.vue";
-import ManyToOneAbstractAssociation from "@/type/__generated/typeDeclare/items/ManyToOneAbstractAssociation.ts";
 import {
     ABSTRACT_COMMENT_PLACEHOLDER,
     ABSTRACT_ID_VIEW_PLACEHOLDER,
@@ -86,13 +85,13 @@ const selectEntity = (entity: EntityWithProperties) => {
             extraAnnotations: [],
             extraImports: [],
         }
-        const association: ManyToOneAbstractAssociation = {
+        const association: ManyToOneAbstractAssociationIdOnly = {
             id: associationId,
             name: "", // TODO
             type: "ManyToOne_Abstract",
-            sourceAbstractEntity: props.mappedSuperClass,
-            sourceProperty,
-            referencedEntity: entity,
+            sourceAbstractEntityId: props.mappedSuperClass.id,
+            sourcePropertyId: sourceProperty.id,
+            referencedEntityId: entity.id,
             mappedProperty,
             foreignKeyType: "AUTO",
         }
