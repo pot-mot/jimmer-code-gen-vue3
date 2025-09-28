@@ -74,7 +74,7 @@ const showComment = computed(() => model.value.comment.length > 0 || commentFocu
             :class="{untouchable: !wrapperFocused}"
             @click.stop="focusCommentInput"
         >
-            /*
+            [
             <FitSizeLineInput
                 ref="commentInput"
                 class="noDrag"
@@ -85,7 +85,7 @@ const showComment = computed(() => model.value.comment.length > 0 || commentFocu
                 @focus="commentFocused = true"
                 @blur="handleCommentBlur"
             />
-            */
+            ]
         </span>
     </span>
 </template>

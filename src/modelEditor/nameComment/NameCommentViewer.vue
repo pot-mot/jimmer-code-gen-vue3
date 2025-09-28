@@ -7,7 +7,7 @@ defineProps<{
 <template>
     <span class="name-comment-viewer">
         <span class="name" v-if="data.name">{{ data.name }}</span>
-        <span class="comment" v-if="data.comment">/* {{ data.comment }} */</span>
+        <span class="comment" v-if="data.comment">[{{ data.comment }}]</span>
     </span>
 </template>
 
