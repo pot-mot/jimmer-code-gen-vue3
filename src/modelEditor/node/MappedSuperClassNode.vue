@@ -53,7 +53,7 @@ watch(() => handleIndexMap.value, () => {
         <div class="mapped-super-class-header">
             <NameCommentEditor v-model="data.mappedSuperClass" :class="groupTheme" style="padding: 2px;"/>
             <span :class="groupTheme" style="color: var(--text-color);">:</span>
-            <MappedSuperClassIdMultiSelect style="font-size: 16px; line-height: 32px;" v-model="data.mappedSuperClass.extendsIds"/>
+            <MappedSuperClassIdMultiSelect style="font-size: 16px; line-height: 32px;" v-model="data.mappedSuperClass.extendsIds" :ignore-ids="[data.mappedSuperClass.id]"/>
         </div>
 
         <EditList

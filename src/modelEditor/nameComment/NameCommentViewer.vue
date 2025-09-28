@@ -20,8 +20,4 @@ defineProps<{
     color: var(--comment-color);
     padding-left: 0.5em;
 }
-
-.selected .name-comment-viewer > .comment {
-    color: inherit;
-}
 </style>
