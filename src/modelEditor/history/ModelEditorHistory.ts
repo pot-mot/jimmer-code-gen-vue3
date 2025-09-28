@@ -9,7 +9,7 @@ import {type MappedSuperClassNode, NodeType_MappedSuperClass} from "@/modelEdito
 import {type EmbeddableTypeNode, NodeType_EmbeddableType} from "@/modelEditor/node/EmbeddableTypeNode.ts";
 import {type EnumerationNode, NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
 import {type ConcreteAssociationEdge, EdgeType_ConcreteAssociation} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
-import {defaultModelSubIds, subIdsToSubIdSets} from "@/type/context/utils/ModelSubIds.ts";
+import {defaultModelSubIds, fillModelSubIds, subIdsToSubIdSets} from "@/type/context/utils/ModelSubIds.ts";
 import {defaultModelGraphSubData, graphDataToModelData} from "@/type/context/utils/ModelGraphSubData.ts";
 import {protectRepeatIds} from "@/modelEditor/import/protectRepeatIds.ts";
 import {layoutPosition} from "@/modelEditor/import/layoutPosition.ts";
@@ -19,6 +19,9 @@ import {
     EdgeType_AbstractAssociation
 } from "@/modelEditor/edge/AbstractAssociationEdge.ts";
 import {sendMessage} from "@/components/message/messageApi.ts";
+import {
+    getPropertiesAssociationChange,
+} from "@/modelEditor/property/PropertyAssociationSync.ts";
 
 const SYNC_DEBOUNCE_TIMEOUT = 500
 
@@ -313,8 +316,19 @@ export const useModelEditorHistory = (
         const debounceSyncEntityUpdate = debounce((newEntity: EntityWithProperties | undefined) => {
             const oldEntity = entityOldMap.get(id)
             if (newEntity && oldEntity) {
-                history.executeCommand("entity:change", {
-                    entity: newEntity
+                history.executeBatch(Symbol("entity change with association sync"), () => {
+                    const {needRemoveIds} = getPropertiesAssociationChange(
+                        oldEntity.properties,
+                        newEntity.properties
+                    )
+                    if (needRemoveIds.length > 0) {
+                        history.executeCommand("remove", fillModelSubIds({
+                            associationIds: needRemoveIds
+                        }))
+                    }
+                    history.executeCommand("entity:change", {
+                        entity: newEntity
+                    })
                 })
             }
             entityOldMap.set(id, cloneDeepReadonlyRaw(newEntity))
@@ -441,8 +455,19 @@ export const useModelEditorHistory = (
         const debounceSyncMappedSuperClassUpdate = debounce((newMappedSuperClass: MappedSuperClassWithProperties | undefined) => {
             const oldMappedSuperClass = mappedSuperClassOldMap.get(id)
             if (newMappedSuperClass && oldMappedSuperClass) {
-                history.executeCommand("mapped-super-class:change", {
-                    mappedSuperClass: newMappedSuperClass
+                history.executeBatch(Symbol("mapped-super-class change with association sync"), () => {
+                    const {needRemoveIds} = getPropertiesAssociationChange(
+                        oldMappedSuperClass.properties,
+                        newMappedSuperClass.properties
+                    )
+                    if (needRemoveIds.length > 0) {
+                        history.executeCommand("remove", fillModelSubIds({
+                            associationIds: needRemoveIds
+                        }))
+                    }
+                    history.executeCommand("mapped-super-class:change", {
+                        mappedSuperClass: newMappedSuperClass
+                    })
                 })
             }
             mappedSuperClassOldMap.set(id, cloneDeepReadonlyRaw(newMappedSuperClass))
