@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps<{
-    data: DeepReadonly<{ name: string, comment: string }>
+    data: DeepReadonly<{ name: string, comment?: string }>
 }>()
 </script>
 

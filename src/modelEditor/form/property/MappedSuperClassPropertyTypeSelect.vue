@@ -13,8 +13,8 @@ import {
     toEmbeddableIdProperty,
     toEmbeddableScalarProperty,
     toEnumProperty, toIdProperty, toManyToOneProperty, toScalarProperty
-} from "@/modelEditor/form/property/PropertyConvert.ts";
-import {nextTick, ref} from "vue";
+} from "@/modelEditor/property/PropertyConvert.ts";
+import {computed, nextTick, ref} from "vue";
 import TypePairViewer from "@/modelEditor/viewer/TypePairViewer.vue";
 import {
     ABSTRACT_COMMENT_PLACEHOLDER,
@@ -87,7 +87,7 @@ const selectEntity = (entity: EntityWithProperties) => {
         }
         const association: ManyToOneAbstractAssociationIdOnly = {
             id: associationId,
-            name: "", // TODO
+            name: `fk_${props.mappedSuperClass.name}_${sourceProperty.name}`, // TODO
             type: "ManyToOne_Abstract",
             sourceAbstractEntityId: props.mappedSuperClass.id,
             sourcePropertyId: sourceProperty.id,
@@ -102,22 +102,33 @@ const selectEntity = (entity: EntityWithProperties) => {
         await waitChangeSync()
     })
 }
+
+const association = computed(() => {
+    if ("associationId" in property.value) {
+        return contextData.value?.associationMap.get(property.value.associationId)
+    }
+})
 </script>
 
 <template>
     <Dropdown>
         <template #head>
             <div class="current-item">
+                <div v-if="'enumId' in property">
+                    <EnumerationIdViewer :id="property.enumId"/>
+                </div>
                 <div v-if="'embeddableTypeId' in property">
                     <EmbeddableTypeIdViewer :id="property.embeddableTypeId"/>
                 </div>
-                <div v-else-if="'referencedEntityId' in property">
+                <div v-if="'referencedEntityId' in property">
                     <EntityIdViewer :id="property.referencedEntityId"/>
+                    <span
+                        v-if="'associationId' in property && !association"
+                        style="color: var(--danger-color);">
+                        [Association not existed]
+                    </span>
                 </div>
-                <div v-else-if="'enumId' in property">
-                    <EnumerationIdViewer :id="property.enumId"/>
-                </div>
-                <div v-else-if="'rawType' in property">
+                <div v-if="'rawType' in property">
                     {{ property.rawType }}
                 </div>
             </div>
