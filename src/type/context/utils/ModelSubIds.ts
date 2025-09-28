@@ -74,6 +74,28 @@ export const subIdSetToSubIds = (
     return result
 }
 
+export const defaultModelSubIdSets: () => ModelSubIdSets = () => ({
+    groupIdSet: new Set(),
+    entityIdSet: new Set(),
+    mappedSuperClassIdSet: new Set(),
+    embeddableTypeIdSet: new Set(),
+    enumerationIdSet: new Set(),
+    associationIdSet: new Set(),
+})
+
+export const subIdsToSubIdSets = (
+    subIds: DeepReadonly<ModelSubIds>
+): ModelSubIdSets => {
+    const result = defaultModelSubIdSets()
+    for (const id of subIds.groupIds) result.groupIdSet.add(id)
+    for (const id of subIds.entityIds) result.entityIdSet.add(id)
+    for (const id of subIds.mappedSuperClassIds) result.mappedSuperClassIdSet.add(id)
+    for (const id of subIds.embeddableTypeIds) result.embeddableTypeIdSet.add(id)
+    for (const id of subIds.enumerationIds) result.enumerationIdSet.add(id)
+    for (const id of subIds.associationIds) result.associationIdSet.add(id)
+    return result
+}
+
 /**
  * 合并任意多个 ModelSubIds 对象
  * @param subIds - 需要合并的 ModelSubIds 对象数组

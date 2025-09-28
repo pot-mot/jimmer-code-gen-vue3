@@ -9,7 +9,7 @@ import {type MappedSuperClassNode, NodeType_MappedSuperClass} from "@/modelEdito
 import {type EmbeddableTypeNode, NodeType_EmbeddableType} from "@/modelEditor/node/EmbeddableTypeNode.ts";
 import {type EnumerationNode, NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
 import {type ConcreteAssociationEdge, EdgeType_ConcreteAssociation} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
-import {defaultModelSubIds} from "@/type/context/utils/ModelSubIds.ts";
+import {defaultModelSubIds, subIdsToSubIdSets} from "@/type/context/utils/ModelSubIds.ts";
 import {defaultModelGraphSubData, graphDataToModelData} from "@/type/context/utils/ModelGraphSubData.ts";
 import {protectRepeatIds} from "@/modelEditor/import/protectRepeatIds.ts";
 import {layoutPosition} from "@/modelEditor/import/layoutPosition.ts";
@@ -18,6 +18,7 @@ import {
     type AbstractAssociationEdge,
     EdgeType_AbstractAssociation
 } from "@/modelEditor/edge/AbstractAssociationEdge.ts";
+import {sendMessage} from "@/components/message/messageApi.ts";
 
 const SYNC_DEBOUNCE_TIMEOUT = 500
 
@@ -977,137 +978,153 @@ export const useModelEditorHistory = (
         graphData: ModelGraphSubData,
         startPosition?: XYPosition,
     ): ModelSubIds => {
-        const contextData = getContextData()
         const result = defaultModelSubIds()
 
-        protectRepeatIds(graphData, contextData)
-        protectRepeatNames(graphData, contextData)
-        if (startPosition) {
-            layoutPosition(startPosition, [
-                ...graphData.mappedSuperClasses,
-                ...graphData.entities,
-                ...graphData.embeddableTypes,
-                ...graphData.enumerations,
-            ])
-        }
-        const newContextData = graphDataToModelData(graphData, contextData)
+        try {
+            const contextData = getContextData()
 
-        for (const group of graphData.groups) {
-            result.groupIds.push(addGroup({group}).id)
-        }
-        for (const {data: enumeration, position} of graphData.enumerations) {
-            result.enumerationIds.push(addEnumeration({enumeration, position}).id)
-        }
-        for (const {data: embeddableType, position} of graphData.embeddableTypes) {
-            result.embeddableTypeIds.push(addEmbeddableType({embeddableType, position}).id)
-        }
-        for (const {data: mappedSuperClass, position} of graphData.mappedSuperClasses) {
-            result.mappedSuperClassIds.push(addMappedSuperClass({mappedSuperClass, position}).id)
-        }
-        for (const {data: entity, position} of graphData.entities) {
-            result.entityIds.push(addEntity({entity, position}).id)
-        }
-        for (const association of newContextData.associations) {
-            result.associationIds.push(addAssociation({association}).id)
+            protectRepeatIds(graphData, contextData)
+            protectRepeatNames(graphData, contextData)
+            if (startPosition) {
+                layoutPosition(startPosition, [
+                    ...graphData.mappedSuperClasses,
+                    ...graphData.entities,
+                    ...graphData.embeddableTypes,
+                    ...graphData.enumerations,
+                ])
+            }
+            const newContextData = graphDataToModelData(graphData, contextData)
+
+            for (const group of graphData.groups) {
+                result.groupIds.push(addGroup({group}).id)
+            }
+            for (const {data: enumeration, position} of graphData.enumerations) {
+                result.enumerationIds.push(addEnumeration({enumeration, position}).id)
+            }
+            for (const {data: embeddableType, position} of graphData.embeddableTypes) {
+                result.embeddableTypeIds.push(addEmbeddableType({embeddableType, position}).id)
+            }
+            for (const {data: mappedSuperClass, position} of graphData.mappedSuperClasses) {
+                result.mappedSuperClassIds.push(addMappedSuperClass({mappedSuperClass, position}).id)
+            }
+            for (const {data: entity, position} of graphData.entities) {
+                result.entityIds.push(addEntity({entity, position}).id)
+            }
+            for (const association of newContextData.associations) {
+                result.associationIds.push(addAssociation({association}).id)
+            }
+        } catch (e) {
+            sendMessage(`Import Info Context Fail: ${e}`, {type: "error"})
+            removeFromContext(result)
+            throw e
         }
 
         return result
     }
 
     const removeFromContext = (
-        modelSubIds: ModelSubIds,
+        modelSubIds: DeepReadonly<ModelSubIds>,
     ): ModelGraphSubData => {
-        const contextData = getContextData()
-        const vueFlow = getVueFlow()
         const result = defaultModelGraphSubData()
 
-        for (const groupId of modelSubIds.groupIds) {
-            const group = contextData.groupMap.get(groupId)
-            if (group) {
-                result.groups.push(group)
-            }
+        try {
+            const contextData = getContextData()
+            const vueFlow = getVueFlow()
+            const idSets = subIdsToSubIdSets(modelSubIds)
 
-            for (const item of contextData.entityMap.values()) {
-                if (item.groupId === groupId) modelSubIds.entityIds.push(item.id)
-            }
-            for (const item of contextData.mappedSuperClassMap.values()) {
-                if (item.groupId === groupId) modelSubIds.mappedSuperClassIds.push(item.id)
-            }
-            for (const item of contextData.embeddableTypeMap.values()) {
-                if (item.groupId === groupId) modelSubIds.embeddableTypeIds.push(item.id)
-            }
-            for (const item of contextData.enumerationMap.values()) {
-                if (item.groupId === groupId) modelSubIds.enumerationIds.push(item.id)
-            }
-        }
-
-        // 收集和移除关联
-        for (const entityId of modelSubIds.entityIds) {
-            for (const association of contextData.associationMap.values()) {
-                if ("sourceEntityId" in association && association.sourceEntityId === entityId) {
-                    modelSubIds.associationIds.push(association.id)
+            // 收集额外的待删除的元素
+            for (const groupId of idSets.groupIdSet) {
+                for (const item of contextData.entityMap.values()) {
+                    if (item.groupId === groupId) idSets.entityIdSet.add(item.id)
                 }
-                if ("referencedEntity" in association && association.referencedEntityId === entityId) {
-                    modelSubIds.associationIds.push(association.id)
+                for (const item of contextData.mappedSuperClassMap.values()) {
+                    if (item.groupId === groupId) idSets.mappedSuperClassIdSet.add(item.id)
+                }
+                for (const item of contextData.embeddableTypeMap.values()) {
+                    if (item.groupId === groupId) idSets.embeddableTypeIdSet.add(item.id)
+                }
+                for (const item of contextData.enumerationMap.values()) {
+                    if (item.groupId === groupId) idSets.enumerationIdSet.add(item.id)
                 }
             }
-        }
-        for (const mappedSuperClassId of modelSubIds.mappedSuperClassIds) {
-            for (const association of contextData.associationMap.values()) {
-                if ("sourceAbstractEntityId" in association && association.sourceAbstractEntityId === mappedSuperClassId) {
-                    modelSubIds.associationIds.push(association.id)
+
+            for (const entityId of idSets.entityIdSet) {
+                for (const association of contextData.associationMap.values()) {
+                    if ("sourceEntityId" in association && association.sourceEntityId === entityId) {
+                        idSets.associationIdSet.add(association.id)
+                    }
+                    if ("referencedEntity" in association && association.referencedEntityId === entityId) {
+                        idSets.associationIdSet.add(association.id)
+                    }
                 }
             }
-        }
-        for (const associationId of modelSubIds.associationIds) {
-            const association = contextData.associationMap.get(associationId)
-            if (association) {
-                result.associations.push(association)
-                revertAddAssociation({id: association.id})
+            for (const mappedSuperClassId of idSets.mappedSuperClassIdSet) {
+                for (const association of contextData.associationMap.values()) {
+                    if ("sourceAbstractEntityId" in association && association.sourceAbstractEntityId === mappedSuperClassId) {
+                        idSets.associationIdSet.add(association.id)
+                    }
+                }
             }
-        }
 
-        for (const entityId of modelSubIds.entityIds) {
-            const entity = contextData.entityMap.get(entityId)
-            const node = vueFlow.findNode(entityId)
-            if (entity && node) {
-                result.entities.push({data: entity, position: node.position})
-                revertAddEntity({id: entity.id})
+            // 真正执行删除
+            for (const associationId of idSets.associationIdSet) {
+                const association = contextData.associationMap.get(associationId)
+                if (association) {
+                    result.associations.push(association)
+                    revertAddAssociation({id: association.id})
+                }
             }
-        }
 
-        for (const mappedSuperClassId of modelSubIds.mappedSuperClassIds) {
-            const mappedSuperClass = contextData.mappedSuperClassMap.get(mappedSuperClassId)
-            const node = vueFlow.findNode(mappedSuperClassId)
-            if (mappedSuperClass && node) {
-                result.mappedSuperClasses.push({data: mappedSuperClass, position: node.position})
-                revertAddMappedSuperClass({id: mappedSuperClass.id})
+            for (const entityId of idSets.entityIdSet) {
+                const entity = contextData.entityMap.get(entityId)
+                const node = vueFlow.findNode(entityId)
+                if (entity && node) {
+                    result.entities.push({data: entity, position: node.position})
+                    revertAddEntity({id: entity.id})
+                }
             }
-        }
 
-        for (const embeddableTypeId of modelSubIds.embeddableTypeIds) {
-            const embeddableType = contextData.embeddableTypeMap.get(embeddableTypeId)
-            const node = vueFlow.findNode(embeddableTypeId)
-            if (embeddableType && node) {
-                result.embeddableTypes.push({data: embeddableType, position: node.position})
-                revertAddEmbeddableType({id: embeddableType.id})
+            for (const mappedSuperClassId of idSets.mappedSuperClassIdSet) {
+                const mappedSuperClass = contextData.mappedSuperClassMap.get(mappedSuperClassId)
+                const node = vueFlow.findNode(mappedSuperClassId)
+                if (mappedSuperClass && node) {
+                    result.mappedSuperClasses.push({data: mappedSuperClass, position: node.position})
+                    revertAddMappedSuperClass({id: mappedSuperClass.id})
+                }
             }
-        }
 
-        for (const enumerationId of modelSubIds.enumerationIds) {
-            const enumeration = contextData.enumerationMap.get(enumerationId)
-            const node = vueFlow.findNode(enumerationId)
-            if (enumeration && node) {
-                result.enumerations.push({data: enumeration, position: node.position})
-                revertAddEnumeration({id: enumeration.id})
+            for (const embeddableTypeId of idSets.embeddableTypeIdSet) {
+                const embeddableType = contextData.embeddableTypeMap.get(embeddableTypeId)
+                const node = vueFlow.findNode(embeddableTypeId)
+                if (embeddableType && node) {
+                    result.embeddableTypes.push({data: embeddableType, position: node.position})
+                    revertAddEmbeddableType({id: embeddableType.id})
+                }
             }
-        }
 
-        for (const groupId of modelSubIds.groupIds) {
-            revertAddGroup({id: groupId})
-        }
+            for (const enumerationId of idSets.enumerationIdSet) {
+                const enumeration = contextData.enumerationMap.get(enumerationId)
+                const node = vueFlow.findNode(enumerationId)
+                if (enumeration && node) {
+                    result.enumerations.push({data: enumeration, position: node.position})
+                    revertAddEnumeration({id: enumeration.id})
+                }
+            }
 
-        return cloneDeepReadonlyRaw(result)
+            for (const groupId of idSets.groupIdSet) {
+                const group = contextData.groupMap.get(groupId)
+                if (group) {
+                    result.groups.push(group)
+                    revertAddGroup({id: groupId})
+                }
+            }
+
+            return cloneDeepReadonlyRaw(result)
+        } catch (e) {
+            sendMessage(`Remove from Context Fail: ${e}`, {type: "error"})
+            importIntoContext(result)
+            throw e
+        }
     }
 
     history.registerCommand("import", {
