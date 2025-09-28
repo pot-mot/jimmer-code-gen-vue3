@@ -33,6 +33,7 @@ import {useClipBoard} from "@/utils/clipBoard/useClipBoard.ts";
 import {fillModelGraphSubData, modelDataToGraphData} from "@/type/context/utils/ModelGraphSubData.ts";
 import {contextDataGetSelectSubData} from "@/type/context/utils/ModelSubData.ts";
 import {validatePartialModelGraphSubData} from "@/modelEditor/graphData/ModelGraphSubData.ts";
+import {buildNameSets} from "@/modelEditor/import/protectRepeatNames.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -139,6 +140,67 @@ export const useModelEditor = createStore(() => {
     }
     const saveModel = async () => {
         // TODO
+    }
+
+    const addGroup = (group: Group = defaultGroup()) => {
+        const contextData = getContextData()
+        const groupNameSet = buildNameSets(contextData.groupMap.values())
+        group.name = groupNameSet.next(group.name)
+        history.executeCommand('group:add', {group})
+        return group.id
+    }
+    const addEntity = (
+        groupId: string = getCurrentGroupIdOrCreate(),
+        entity: EntityWithProperties = defaultEntity(groupId),
+        position: XYPosition = screenPosition.value
+    ) => {
+        const contextData = getContextData()
+        const entityNameSet = buildNameSets(contextData.entityMap.values())
+        entity.name = entityNameSet.next(entity.name)
+        history.executeCommand('entity:add', {entity, position})
+        return entity.id
+    }
+    const addMappedSuperClass = (
+        groupId: string = getCurrentGroupIdOrCreate(),
+        mappedSuperClass: MappedSuperClassWithProperties = defaultMappedSuperClass(groupId),
+        position: XYPosition = screenPosition.value
+    ) => {
+        const contextData = getContextData()
+        const mappedSuperClassNameSet = buildNameSets(contextData.mappedSuperClassMap.values())
+        mappedSuperClass.name = mappedSuperClassNameSet.next(mappedSuperClass.name)
+        history.executeCommand('mapped-super-class:add', {mappedSuperClass, position})
+        return mappedSuperClass.id
+    }
+    const addEmbeddableType = (
+        groupId: string = getCurrentGroupIdOrCreate(),
+        embeddableType: EmbeddableTypeWithProperties = defaultEmbeddableType(groupId),
+        position: XYPosition = screenPosition.value
+    ) => {
+        const contextData = getContextData()
+        const embeddableTypeNameSet = buildNameSets(contextData.embeddableTypeMap.values())
+        embeddableType.name = embeddableTypeNameSet.next(embeddableType.name)
+        history.executeCommand('embeddable-type:add', {embeddableType, position})
+        return embeddableType.id
+    }
+    const addEnumeration = (
+        groupId: string = getCurrentGroupIdOrCreate(),
+        enumeration: Enumeration = defaultEnumeration(groupId),
+        position: XYPosition = screenPosition.value
+    ) => {
+        const contextData = getContextData()
+        const enumerationNameSet = buildNameSets(contextData.enumerationMap.values())
+        enumeration.name = enumerationNameSet.next(enumeration.name)
+        history.executeCommand('enumeration:add', {enumeration, position})
+        return enumeration.id
+    }
+    const addAssociation = (
+        association: AssociationIdOnly
+    ) => {
+        const contextData = getContextData()
+        const associationNameSet = buildNameSets(contextData.associationMap.values())
+        association.name = associationNameSet.next(association.name)
+        history.executeCommand('association:add', {association})
+        return association.id
     }
 
     const remove = (
@@ -563,32 +625,19 @@ export const useModelEditor = createStore(() => {
                             Math.abs(currentMousePosition.y - lastMousePosition.y) < 10
                         ) {
                             history.executeBatch(Symbol('click:add'), () => {
-                                const groupId = getCurrentGroupIdOrCreate()
                                 const position = screenToFlowCoordinate(currentMousePosition)
                                 switch (createType.value) {
                                     case "Entity":
-                                        history.executeCommand("entity:add", {
-                                            position,
-                                            entity: defaultEntity(groupId),
-                                        })
+                                        addEntity(undefined, undefined, position)
                                         break;
                                     case "MappedSuperClass":
-                                        history.executeCommand("mapped-super-class:add", {
-                                            position,
-                                            mappedSuperClass: defaultMappedSuperClass(groupId),
-                                        })
+                                        addMappedSuperClass(undefined, undefined, position)
                                         break;
                                     case "EmbeddableType":
-                                        history.executeCommand("embeddable-type:add", {
-                                            position,
-                                            embeddableType: defaultEmbeddableType(groupId),
-                                        })
+                                        addEmbeddableType(undefined, undefined, position)
                                         break;
                                     case "Enumeration":
-                                        history.executeCommand("enumeration:add", {
-                                            position,
-                                            enumeration: defaultEnumeration(groupId),
-                                        })
+                                        addEnumeration(undefined, undefined, position)
                                         break;
                                 }
                             })
@@ -791,39 +840,17 @@ export const useModelEditor = createStore(() => {
         toggleCurrentGroup,
 
         createType,
-        addGroup: () => {
-            const group = defaultGroup()
-            history.executeCommand('group:add', {group})
-            return group.id
-        },
-        addEntity: (groupId: string = getCurrentGroupIdOrCreate(), position: XYPosition = screenPosition.value) => {
-            const entity = defaultEntity(groupId)
-            history.executeCommand('entity:add', {entity, position})
-            return entity.id
-        },
-        addMappedSuperClass: (groupId: string = getCurrentGroupIdOrCreate(), position: XYPosition = screenPosition.value) => {
-            const mappedSuperClass = defaultMappedSuperClass(groupId)
-            history.executeCommand('mapped-super-class:add', {mappedSuperClass, position})
-            return mappedSuperClass.id
-        },
-        addEmbeddableType: (groupId: string = getCurrentGroupIdOrCreate(), position: XYPosition = screenPosition.value) => {
-            const embeddableType = defaultEmbeddableType(groupId)
-            history.executeCommand('embeddable-type:add', {embeddableType, position})
-            return embeddableType.id
-        },
-        addEnumeration: (groupId: string = getCurrentGroupIdOrCreate(), position: XYPosition = screenPosition.value) => {
-            const enumeration = defaultEnumeration(groupId)
-            history.executeCommand('enumeration:add', {enumeration, position})
-            return enumeration.id
-        },
-        addAssociation: (association: AssociationIdOnly) => {
-            history.executeCommand('association:add', {association})
-        },
 
         // 模型生成
 
 
         // 模型数据变更
+        addGroup,
+        addEntity,
+        addEmbeddableType,
+        addMappedSuperClass,
+        addEnumeration,
+        addAssociation,
         remove,
 
         copy: async (

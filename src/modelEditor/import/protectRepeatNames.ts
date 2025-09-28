@@ -24,7 +24,7 @@ const createNameSet = (): NameSet => ({
         const cleanName = clearName(name)
         const count = this.countMap.get(cleanName) ?? 0
         this.countMap.set(cleanName, count + 1)
-        return count + 1
+        return count
     },
     next(name: string): string {
         const cleanName = clearName(name)
