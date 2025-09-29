@@ -44,7 +44,7 @@ const toggleSelect = (id: string) => {
         <template #head>
             <ul>
                 <li v-for="id in mappedSuperClassIds" class="selected-item">
-                    <MappedSuperClassIdViewer :id="id"/>
+                    <MappedSuperClassIdViewer :id="id" ctrl-focus/>
                     <IconClose class="remove-button" @click.stop="toggleSelect(id)"/>
                 </li>
             </ul>
@@ -99,6 +99,7 @@ const toggleSelect = (id: string) => {
     background-color: var(--primary-color);
 }
 
+.mapped-super-class-select-option.selected :deep(.name-comment-viewer),
 .mapped-super-class-select-option.selected :deep(.name-comment-viewer) > .comment {
     color: var(--text-color);
 }

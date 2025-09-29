@@ -4,7 +4,7 @@ import type {EmbeddableTypeNode} from "@/modelEditor/node/EmbeddableTypeNode.ts"
 import EditList from "@/components/list/selectableList/EditList.vue";
 import {createId, getColorVar, getColorIsDark} from "@/modelEditor/useModelEditor.ts";
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
-import EmbeddableTypePropertySelect from "@/modelEditor/form/property/EmbeddableTypePropertySelect.vue";
+import EmbeddableTypePropertyTypeSelect from "@/modelEditor/form/property/EmbeddableTypePropertyTypeSelect.vue";
 import {validateEmbeddableTypeProperty} from "@/type/__generated/jsonSchema/items/EmbeddableTypeProperty.ts";
 import {computed} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
@@ -43,7 +43,7 @@ const groupTheme = computed(() => {
                 <div class="embeddable-type-property">
                     <div class="embeddable-type-property-view">
                         <NameCommentEditor :font-size="14" v-model="data.embeddableType.properties[index]"/>
-                        <EmbeddableTypePropertySelect
+                        <EmbeddableTypePropertyTypeSelect
                             class="noDrag noWheel"
                             style="font-size: 14px; line-height: 30px;"
                             v-model="data.embeddableType.properties[index]"

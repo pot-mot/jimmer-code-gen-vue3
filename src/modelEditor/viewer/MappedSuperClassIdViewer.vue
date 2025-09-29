@@ -5,9 +5,12 @@ import MappedSuperClassViewer from "@/modelEditor/viewer/MappedSuperClassViewer.
 
 const {contextData} = useModelEditor()
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     id: string
-}>()
+    ctrlFocus?: boolean
+}>(), {
+    ctrlFocus: false
+})
 
 const mappedSuperClass = computed(() => {
     return contextData.value?.mappedSuperClassMap.get(props.id)

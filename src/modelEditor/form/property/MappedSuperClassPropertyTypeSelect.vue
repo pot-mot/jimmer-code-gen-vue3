@@ -36,6 +36,7 @@ const {
     executeAsyncBatch,
     waitChangeSync,
     addAssociation,
+    remove,
 } = useModelEditor()
 
 const filterKeywords = ref<string>("")
@@ -44,28 +45,64 @@ const filterTypes = () => {
 
 }
 
-const selectBaseType = (typePair: DeepReadonly<TypeSelectPair>) => {
-    if (property.value.category === "ID") {
-        property.value = toIdProperty(property.value, typePair)
-    } else {
-        property.value = toScalarProperty(property.value, typePair)
+const cleanPropertyReference = () => {
+    if ("associationId" in property.value) {
+        remove({associationIds: [property.value.associationId]})
     }
+}
+
+const selectBaseType = (typePair: DeepReadonly<TypeSelectPair>) => {
+    executeAsyncBatch(Symbol("property type to embeddableType"), async () => {
+        cleanPropertyReference()
+
+        if (property.value.category === "ID") {
+            property.value = toIdProperty(property.value, typePair)
+        } else {
+            property.value = toScalarProperty(property.value, typePair)
+        }
+
+        await nextTick()
+        await waitChangeSync()
+    })
 }
 
 const selectEnumeration = (enumeration: DeepReadonly<Enumeration>) => {
-    property.value = toEnumProperty(property.value, enumeration)
+    if ("enumId" in property.value && property.value.enumId === enumeration.id) return
+
+    executeAsyncBatch(Symbol("property type to enumeration"), async () => {
+        cleanPropertyReference()
+
+        property.value = toEnumProperty(property.value, enumeration)
+
+        await nextTick()
+        await waitChangeSync()
+    })
 }
 
 const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
-    if (property.value.category === "ID") {
-        property.value = toEmbeddableIdProperty(property.value, embeddableType)
-    } else {
-        property.value = toEmbeddableScalarProperty(property.value, embeddableType)
-    }
+    if ("embeddableTypeId" in property.value && property.value.embeddableTypeId === embeddableType.id) return
+
+    executeAsyncBatch(Symbol("property type to embeddableType"), async () => {
+        cleanPropertyReference()
+
+        if (property.value.category === "ID") {
+            property.value = toEmbeddableIdProperty(property.value, embeddableType)
+        } else {
+            property.value = toEmbeddableScalarProperty(property.value, embeddableType)
+        }
+
+        await nextTick()
+        await waitChangeSync()
+    })
 }
 
 
 const selectEntity = (entity: EntityWithProperties) => {
+    if (
+        "associationId" in property.value && contextData.value?.associationMap.has(property.value.associationId) &&
+        "referencedEntityId" in property.value && property.value.referencedEntityId === entity.id
+    ) return
+
     executeAsyncBatch(Symbol("property type to entity"), async () => {
         const associationId = createId("Association")
         const mappedPropertyId = createId("Property")
@@ -115,13 +152,13 @@ const association = computed(() => {
         <template #head>
             <div class="current-item">
                 <div v-if="'enumId' in property">
-                    <EnumerationIdViewer :id="property.enumId"/>
+                    <EnumerationIdViewer :id="property.enumId" ctrl-focus/>
                 </div>
                 <div v-if="'embeddableTypeId' in property">
-                    <EmbeddableTypeIdViewer :id="property.embeddableTypeId"/>
+                    <EmbeddableTypeIdViewer :id="property.embeddableTypeId" ctrl-focus/>
                 </div>
                 <div v-if="'referencedEntityId' in property">
-                    <EntityIdViewer :id="property.referencedEntityId"/>
+                    <EntityIdViewer :id="property.referencedEntityId" ctrl-focus/>
                     <span
                         v-if="'associationId' in property && !association"
                         style="color: var(--danger-color);">

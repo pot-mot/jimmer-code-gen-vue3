@@ -47,10 +47,10 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
         <template #head>
             <div class="current-item">
                 <div v-if="'embeddableTypeId' in property">
-                    <EmbeddableTypeIdViewer :id="property.embeddableTypeId"/>
+                    <EmbeddableTypeIdViewer :id="property.embeddableTypeId" ctrl-focus/>
                 </div>
                 <div v-else-if="'enumId' in property">
-                    <EnumerationIdViewer :id="property.enumId"/>
+                    <EnumerationIdViewer :id="property.enumId" ctrl-focus/>
                 </div>
                 <div v-else-if="'rawType' in property">
                     {{ property.rawType }}

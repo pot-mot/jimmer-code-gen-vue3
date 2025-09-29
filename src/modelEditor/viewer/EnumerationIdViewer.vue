@@ -5,9 +5,12 @@ import EnumerationViewer from "@/modelEditor/viewer/EnumerationViewer.vue";
 
 const {contextData} = useModelEditor()
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     id: string
-}>()
+    ctrlFocus?: boolean
+}>(), {
+    ctrlFocus: false
+})
 
 const enumeration = computed(() => {
     return contextData.value?.enumerationMap.get(props.id)
@@ -15,6 +18,6 @@ const enumeration = computed(() => {
 </script>
 
 <template>
-    <EnumerationViewer v-if="enumeration" :enumeration="enumeration"/>
+    <EnumerationViewer v-if="enumeration" :enumeration="enumeration" :ctrl-focus="ctrlFocus"/>
     <span v-else style="color: var(--danger-color);">[Enumeration not existed]</span>
 </template>

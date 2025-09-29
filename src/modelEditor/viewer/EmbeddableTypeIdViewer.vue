@@ -5,9 +5,12 @@ import EmbeddableTypeViewer from "@/modelEditor/viewer/EmbeddableTypeViewer.vue"
 
 const {contextData} = useModelEditor()
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     id: string
-}>()
+    ctrlFocus?: boolean
+}>(), {
+    ctrlFocus: false
+})
 
 const embeddableType = computed(() => {
     return contextData.value?.embeddableTypeMap.get(props.id)
@@ -15,6 +18,6 @@ const embeddableType = computed(() => {
 </script>
 
 <template>
-    <EmbeddableTypeViewer v-if="embeddableType" :embeddable-type="embeddableType"/>
+    <EmbeddableTypeViewer v-if="embeddableType" :embeddable-type="embeddableType" :ctrl-focus="ctrlFocus"/>
     <span v-else style="color: var(--danger-color);">[EmbeddableType not existed]</span>
 </template>

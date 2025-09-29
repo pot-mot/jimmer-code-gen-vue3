@@ -48,7 +48,7 @@ const cleanPropertyReference = () => {
 }
 
 const selectBaseType = (typePair: DeepReadonly<TypeSelectPair>) => {
-    executeAsyncBatch(Symbol("property type to embeddableType"), async () => {
+    executeAsyncBatch(Symbol("property type to baseType"), async () => {
         cleanPropertyReference()
 
         if (property.value.category === "ID") {
@@ -63,7 +63,9 @@ const selectBaseType = (typePair: DeepReadonly<TypeSelectPair>) => {
 }
 
 const selectEnumeration = (enumeration: DeepReadonly<Enumeration>) => {
-    executeAsyncBatch(Symbol("property type to embeddableType"), async () => {
+    if ("enumId" in property.value && property.value.enumId === enumeration.id) return
+
+    executeAsyncBatch(Symbol("property type to enumeration"), async () => {
         cleanPropertyReference()
 
         property.value = toEnumProperty(property.value, enumeration)
@@ -74,6 +76,8 @@ const selectEnumeration = (enumeration: DeepReadonly<Enumeration>) => {
 }
 
 const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
+    if ("embeddableTypeId" in property.value && property.value.embeddableTypeId === embeddableType.id) return
+
     executeAsyncBatch(Symbol("property type to embeddableType"), async () => {
         cleanPropertyReference()
 
@@ -89,6 +93,11 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
 }
 
 const selectEntity = (entity: EntityWithProperties) => {
+    if (
+        "associationId" in property.value && contextData.value?.associationMap.has(property.value.associationId) &&
+        "referencedEntityId" in property.value && property.value.referencedEntityId === entity.id
+    ) return
+
     executeAsyncBatch(Symbol("property type to entity"), async () => {
         cleanPropertyReference()
 
@@ -142,13 +151,13 @@ const association = computed(() => {
         <template #head>
             <div class="current-item">
                 <div v-if="'enumId' in property">
-                    <EnumerationIdViewer :id="property.enumId"/>
+                    <EnumerationIdViewer :id="property.enumId" ctrl-focus/>
                 </div>
                 <div v-if="'embeddableTypeId' in property">
-                    <EmbeddableTypeIdViewer :id="property.embeddableTypeId"/>
+                    <EmbeddableTypeIdViewer :id="property.embeddableTypeId" ctrl-focus/>
                 </div>
                 <div v-if="'referencedEntityId' in property">
-                    <EntityIdViewer :id="property.referencedEntityId"/>
+                    <EntityIdViewer :id="property.referencedEntityId" ctrl-focus/>
                     <span
                         v-if="'associationId' in property && !association"
                         style="color: var(--danger-color);">
