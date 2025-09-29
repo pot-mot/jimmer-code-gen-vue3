@@ -11,5 +11,5 @@ export default Object.freeze({
             | { type: "CustomerIdGenerator", generatorName: string }
     }
     & Omit<BaseProperty, 'nullable'>
-    & ((ColumnProperty & { typeIsArray: false }) | EmbeddableProperty)`,
+    & (ColumnProperty | EmbeddableProperty)`,
 })

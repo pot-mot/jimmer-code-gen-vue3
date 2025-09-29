@@ -2,78 +2,25 @@ import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
 import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
 const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
-    "anyOf": [
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        },
-                        "defaultOrderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "typeIsArray": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "typeIsArray"
-                    ]
-                }
-            ]
+    "type": "object",
+    "properties": {
+        "columnInfo": {
+            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
         },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        },
-                        "defaultOrderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "typeIsArray": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "databaseType": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "typeIsArray"
-                    ]
-                }
-            ]
+        "defaultOrderDirection": {
+            "enum": [
+                "ASC",
+                "DESC"
+            ],
+            "type": "string"
+        },
+        "typeIsArray": {
+            "type": "boolean"
         }
+    },
+    "required": [
+        "columnInfo",
+        "typeIsArray"
     ],
     "definitions": {
         "Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">": {

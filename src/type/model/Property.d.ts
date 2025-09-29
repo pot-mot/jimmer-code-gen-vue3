@@ -16,11 +16,9 @@ type OrderDirection = "ASC" | "DESC"
 
 type ColumnProperty = {
     columnInfo: Omit<Column, 'partOfPrimaryKey' | 'autoIncrement'>,
-    defaultOrderDirection?: OrderDirection
-} & (
-    | { typeIsArray: false }
-    | { typeIsArray: true, databaseType?: string }
-    )
+    defaultOrderDirection?: OrderDirection,
+    typeIsArray: boolean
+}
 
 type EmbeddableProperty = {
     embeddableTypeId: string
@@ -65,7 +63,7 @@ type IdProperty = {
             | { type: "CustomerIdGenerator", generatorName: string }
     }
     & Omit<BaseProperty, 'nullable'>
-    & ((ColumnProperty & { typeIsArray: false }) | EmbeddableProperty)
+    & (ColumnProperty | EmbeddableProperty)
 
 type VersionProperty = {
         category: "VERSION"

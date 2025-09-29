@@ -70,21 +70,13 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                                 "DESC"
                             ],
                             "type": "string"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
+                        },
                         "typeIsArray": {
-                            "type": "boolean",
-                            "const": false
+                            "type": "boolean"
                         }
                     },
                     "required": [
+                        "columnInfo",
                         "typeIsArray"
                     ]
                 }
@@ -157,111 +149,13 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                                 "DESC"
                             ],
                             "type": "string"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
+                        },
                         "typeIsArray": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "databaseType": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "typeIsArray"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
                             "type": "boolean"
                         }
                     },
                     "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        },
-                        "defaultOrderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "typeIsArray": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
+                        "columnInfo",
                         "typeIsArray"
                     ]
                 },
@@ -353,245 +247,13 @@ const EnumPropertyJsonSchema: JSONSchemaType<EnumProperty> = {
                                 "DESC"
                             ],
                             "type": "string"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
+                        },
                         "typeIsArray": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "databaseType": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "typeIsArray"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "key": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "keyGroups": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "required": [
-                        "key",
-                        "keyGroups"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
                             "type": "boolean"
                         }
                     },
                     "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        },
-                        "defaultOrderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "typeIsArray": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "typeIsArray"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        },
-                        "logicalDeleteDefaultValue": {
-                            "type": "string"
-                        },
-                        "logicalDeleteDeletedValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "logicalDelete",
-                        "logicalDeleteDefaultValue",
-                        "logicalDeleteDeletedValue",
-                        "logicalDeleteType"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
-                        },
-                        "enumId": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "enumId"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        },
-                        "defaultOrderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "columnInfo"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "typeIsArray": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "databaseType": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
+                        "columnInfo",
                         "typeIsArray"
                     ]
                 },
