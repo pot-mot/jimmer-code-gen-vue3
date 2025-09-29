@@ -220,6 +220,12 @@ export const useModelEditorSelectIds = (
                     } else if (change.id.startsWith("MappedSuperClass")) {
                         selectedIdSets.value.mappedSuperClassIdSet.add(change.id)
                         modelSelectionEventBus.emit('mappedSuperClass', {id: change.id, selected: true})
+                    } else if (change.id.startsWith("EmbeddableType")) {
+                        selectedIdSets.value.embeddableTypeIdSet.add(change.id)
+                        modelSelectionEventBus.emit('embeddableType', {id: change.id, selected: true})
+                    } else if (change.id.startsWith("Enumeration")) {
+                        selectedIdSets.value.enumerationIdSet.add(change.id)
+                        modelSelectionEventBus.emit('enumeration', {id: change.id, selected: true})
                     }
                 } else {
                     if (change.id.startsWith("Entity")) {
@@ -228,6 +234,12 @@ export const useModelEditorSelectIds = (
                     } else if (change.id.startsWith("MappedSuperClass")) {
                         selectedIdSets.value.mappedSuperClassIdSet.delete(change.id)
                         modelSelectionEventBus.emit('mappedSuperClass', {id: change.id, selected: false})
+                    } else if (change.id.startsWith("EmbeddableType")) {
+                        selectedIdSets.value.embeddableTypeIdSet.delete(change.id)
+                        modelSelectionEventBus.emit('embeddableType', {id: change.id, selected: false})
+                    } else if (change.id.startsWith("Enumeration")) {
+                        selectedIdSets.value.enumerationIdSet.delete(change.id)
+                        modelSelectionEventBus.emit('enumeration', {id: change.id, selected: false})
                     }
                 }
             } else if (change.type === "remove") {
@@ -240,6 +252,16 @@ export const useModelEditorSelectIds = (
                     if (selectedIdSets.value.mappedSuperClassIdSet.has(change.id)) {
                         selectedIdSets.value.mappedSuperClassIdSet.delete(change.id)
                         modelSelectionEventBus.emit('mappedSuperClass', {id: change.id, selected: false})
+                    }
+                } else if (change.id.startsWith("EmbeddableType")) {
+                    if (selectedIdSets.value.embeddableTypeIdSet.has(change.id)) {
+                        selectedIdSets.value.embeddableTypeIdSet.delete(change.id)
+                        modelSelectionEventBus.emit('embeddableType', {id: change.id, selected: false})
+                    }
+                } else if (change.id.startsWith("Enumeration")) {
+                    if (selectedIdSets.value.enumerationIdSet.has(change.id)) {
+                        selectedIdSets.value.enumerationIdSet.delete(change.id)
+                        modelSelectionEventBus.emit('enumeration', {id: change.id, selected: false})
                     }
                 }
             }
