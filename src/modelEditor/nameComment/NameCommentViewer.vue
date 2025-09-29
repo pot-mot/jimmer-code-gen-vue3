@@ -18,6 +18,6 @@ defineProps<{
 
 .name-comment-viewer > .comment {
     color: var(--comment-color);
-    padding-left: 0.5em;
+    padding-left: 0.25em;
 }
 </style>

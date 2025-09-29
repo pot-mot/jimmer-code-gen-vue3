@@ -74,8 +74,7 @@ const showComment = computed(() => model.value.comment.length > 0 || commentFocu
             :class="{untouchable: !wrapperFocused}"
             @click.stop="focusCommentInput"
         >
-            [
-            <FitSizeLineInput
+            [<FitSizeLineInput
                 ref="commentInput"
                 class="noDrag"
                 :padding="{top: 4, bottom: 4, left: 0, right: 0}"
@@ -84,8 +83,7 @@ const showComment = computed(() => model.value.comment.length > 0 || commentFocu
                 v-model="model.comment"
                 @focus="commentFocused = true"
                 @blur="handleCommentBlur"
-            />
-            ]
+            />]
         </span>
     </span>
 </template>
