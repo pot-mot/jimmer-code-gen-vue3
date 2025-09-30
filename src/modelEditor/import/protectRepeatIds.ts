@@ -176,7 +176,22 @@ export const protectRepeatIds = (
 
     for (const association of associations) {
         if (contextData.associationMap.has(association.id)) {
-            association.id = createId("Association")
+            const newAssociationId = createId("Association")
+            for (const {data: {properties}} of entities) {
+                for (const property of properties) {
+                    if ("associationId" in  property) {
+                        if (property.associationId === association.id) property.associationId = newAssociationId
+                    }
+                }
+            }
+            for (const {data: {properties}} of mappedSuperClasses) {
+                for (const property of properties) {
+                    if ("associationId" in  property) {
+                        if (property.associationId === association.id) property.associationId = newAssociationId
+                    }
+                }
+            }
+            association.id = newAssociationId
             association.mappedProperty.id = createId("Property")
         }
     }
