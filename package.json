@@ -27,7 +27,7 @@
     "typescript": "~5.8.0",
     "uuid": "^11.1.0",
     "vite-plugin-prismjs": "^0.0.8",
-    "vue": "^3.5.17",
+    "vue": "^3.5.22",
     "vue-color": "^3.3.1",
     "vue-router": "^4.5.1"
   },
