@@ -2,6 +2,11 @@
 import {ref, useTemplateRef, nextTick, watch} from 'vue'
 import IconCaretDown from "@/components/icons/IconCaretDown.vue";
 
+const isOpen = defineModel<boolean>({
+    required: false,
+    default: false
+})
+
 const props = withDefaults(defineProps<{
     disabled?: boolean,
     paddingY?: number,
@@ -10,7 +15,6 @@ const props = withDefaults(defineProps<{
     paddingY: 8,
 })
 
-const isOpen = ref(false)
 const dropdownRef = useTemplateRef("dropdownRef")
 const dropdownBodyRef = useTemplateRef("dropdownBodyRef")
 
