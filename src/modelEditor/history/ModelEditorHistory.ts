@@ -1078,7 +1078,7 @@ export const useModelEditorHistory = (
                     if ("sourceEntityId" in association && association.sourceEntityId === entityId) {
                         idSets.associationIdSet.add(association.id)
                     }
-                    if ("referencedEntity" in association && association.referencedEntityId === entityId) {
+                    if (association.referencedEntityId === entityId) {
                         idSets.associationIdSet.add(association.id)
                     }
                 }
