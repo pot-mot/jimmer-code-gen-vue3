@@ -7,7 +7,6 @@ import EnumerationViewer from "@/modelEditor/viewer/EnumerationViewer.vue";
 import EntityViewer from "@/modelEditor/viewer/EntityViewer.vue";
 import EmbeddableTypeViewer from "@/modelEditor/viewer/EmbeddableTypeViewer.vue";
 import EmbeddableTypeIdViewer from "@/modelEditor/viewer/EmbeddableTypeIdViewer.vue";
-import EntityIdViewer from "@/modelEditor/viewer/EntityIdViewer.vue";
 import EnumerationIdViewer from "@/modelEditor/viewer/EnumerationIdViewer.vue";
 import {
     toScalarEmbeddableProperty,
@@ -139,6 +138,12 @@ const selectEntity = (entity: EntityWithProperties) => {
     })
 }
 
+const referencedEntity = computed(() => {
+    if ("referencedEntityId" in property.value) {
+        return contextData.value?.entityMap.get(property.value.referencedEntityId)
+    }
+})
+
 const association = computed(() => {
     if ("associationId" in property.value) {
         return contextData.value?.associationMap.get(property.value.associationId)
@@ -157,12 +162,16 @@ const association = computed(() => {
                     <EmbeddableTypeIdViewer :id="property.embeddableTypeId" ctrl-focus/>
                 </div>
                 <div v-if="'referencedEntityId' in property">
-                    <EntityIdViewer :id="property.referencedEntityId" ctrl-focus/>
-                    <span
-                        v-if="'associationId' in property && !association"
-                        style="color: var(--danger-color);">
+                    <EntityViewer
+                        :entity="referencedEntity"
+                        ctrl-focus
+                    />
+                    <div
+                        v-if="referencedEntity && 'associationId' in property && !association"
+                        style="color: var(--danger-color);"
+                    >
                         [Association not existed]
-                    </span>
+                    </div>
                 </div>
                 <div v-if="'rawType' in property">
                     {{ property.rawType }}
