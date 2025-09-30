@@ -129,4 +129,13 @@ watch(() => handleIndexMap.value, () => {
     justify-content: space-between;
     gap: 0.5rem;
 }
+
+:deep(.vue-flow__handle) {
+    min-width: 0;
+    min-height: 0;
+    width: 0;
+    height: 0;
+    border: none;
+    overflow: visible;
+}
 </style>
