@@ -1,10 +1,12 @@
 export default Object.freeze({
     fileName: 'MappedSuperClassProperty.d.ts',
     content: `type MappedSuperClassProperty =
-    | IdProperty
+    | IdCommonProperty
+    | IdEmbeddableProperty
     | VersionProperty
-    | ScalarProperty
-    | EnumProperty
+    | ScalarCommonProperty
+    | ScalarEnumProperty
+    | ScalarEmbeddableProperty
     | OneToOneSourceProperty
     | ManyToOneProperty
     | GetterFormulaProperty

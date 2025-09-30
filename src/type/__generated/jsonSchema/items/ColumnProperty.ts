@@ -13,14 +13,10 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
                 "DESC"
             ],
             "type": "string"
-        },
-        "typeIsArray": {
-            "type": "boolean"
         }
     },
     "required": [
-        "columnInfo",
-        "typeIsArray"
+        "columnInfo"
     ],
     "definitions": {
         "Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">": {

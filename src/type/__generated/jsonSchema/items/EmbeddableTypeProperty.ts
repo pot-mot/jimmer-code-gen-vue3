@@ -10,7 +10,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "SCALAR"
+                            "const": "SCALAR_COMMON"
                         },
                         "rawType": {
                             "type": "string"
@@ -20,6 +20,9 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                         },
                         "defaultValue": {
                             "type": "string"
+                        },
+                        "typeIsArray": {
+                            "type": "boolean"
                         }
                     },
                     "required": [
@@ -77,129 +80,34 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                                 "DESC"
                             ],
                             "type": "string"
+                        }
+                    },
+                    "required": [
+                        "columnInfo"
+                    ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "SCALAR_COMMON"
+                        },
+                        "rawType": {
+                            "type": "string"
+                        },
+                        "serialized": {
+                            "type": "boolean"
+                        },
+                        "defaultValue": {
+                            "type": "string"
                         },
                         "typeIsArray": {
                             "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "columnInfo",
-                        "typeIsArray"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "SCALAR"
-                        },
-                        "rawType": {
-                            "type": "string"
-                        },
-                        "serialized": {
-                            "type": "boolean"
-                        },
-                        "defaultValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "rawType",
-                        "serialized"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "embeddableTypeId": {
-                            "type": "string"
-                        },
-                        "propOverrides": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "propertyPath": {
-                                        "type": "string"
-                                    },
-                                    "overrideColumnName": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "overrideColumnName",
-                                    "propertyPath"
-                                ]
-                            }
-                        }
-                    },
-                    "required": [
-                        "embeddableTypeId",
-                        "propOverrides"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "SCALAR"
-                        },
-                        "rawType": {
-                            "type": "string"
-                        },
-                        "serialized": {
-                            "type": "boolean"
-                        },
-                        "defaultValue": {
-                            "type": "string"
                         }
                     },
                     "required": [
@@ -257,14 +165,10 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                                 "DESC"
                             ],
                             "type": "string"
-                        },
-                        "typeIsArray": {
-                            "type": "boolean"
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "typeIsArray"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -295,7 +199,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "SCALAR"
+                            "const": "SCALAR_COMMON"
                         },
                         "rawType": {
                             "type": "string"
@@ -305,6 +209,9 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                         },
                         "defaultValue": {
                             "type": "string"
+                        },
+                        "typeIsArray": {
+                            "type": "boolean"
                         }
                     },
                     "required": [
@@ -362,14 +269,10 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                                 "DESC"
                             ],
                             "type": "string"
-                        },
-                        "typeIsArray": {
-                            "type": "boolean"
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "typeIsArray"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -383,22 +286,6 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                     "required": [
                         "logicalDelete"
                     ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "boolean"
-                        },
-                        "logicalDeleteDefaultValue": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "logicalDeleteDefaultValue",
-                        "logicalDeleteType"
-                    ]
                 }
             ]
         },
@@ -409,1180 +296,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "SCALAR"
-                        },
-                        "rawType": {
-                            "type": "string"
-                        },
-                        "serialized": {
-                            "type": "boolean"
-                        },
-                        "defaultValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "rawType",
-                        "serialized"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        },
-                        "defaultOrderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        },
-                        "typeIsArray": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "columnInfo",
-                        "typeIsArray"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "int"
-                        }
-                    },
-                    "required": [
-                        "logicalDeleteType"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "SCALAR"
-                        },
-                        "rawType": {
-                            "type": "string"
-                        },
-                        "serialized": {
-                            "type": "boolean"
-                        },
-                        "defaultValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "rawType",
-                        "serialized"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        },
-                        "defaultOrderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        },
-                        "typeIsArray": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "columnInfo",
-                        "typeIsArray"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "long"
-                        }
-                    },
-                    "required": [
-                        "logicalDeleteType"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "SCALAR"
-                        },
-                        "rawType": {
-                            "type": "string"
-                        },
-                        "serialized": {
-                            "type": "boolean"
-                        },
-                        "defaultValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "rawType",
-                        "serialized"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        },
-                        "defaultOrderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        },
-                        "typeIsArray": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "columnInfo",
-                        "typeIsArray"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "uuid"
-                        }
-                    },
-                    "required": [
-                        "logicalDeleteType"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "SCALAR"
-                        },
-                        "rawType": {
-                            "type": "string"
-                        },
-                        "serialized": {
-                            "type": "boolean"
-                        },
-                        "defaultValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "rawType",
-                        "serialized"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
-                        },
-                        "defaultOrderDirection": {
-                            "enum": [
-                                "ASC",
-                                "DESC"
-                            ],
-                            "type": "string"
-                        },
-                        "typeIsArray": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "columnInfo",
-                        "typeIsArray"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "time"
-                        },
-                        "logicalDeleteDeletedValue": {
-                            "enum": [
-                                "now",
-                                "null"
-                            ],
-                            "type": "string"
-                        },
-                        "nullable": {
-                            "type": "boolean",
-                            "const": true
-                        }
-                    },
-                    "required": [
-                        "logicalDeleteDeletedValue",
-                        "logicalDeleteType",
-                        "nullable"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "SCALAR"
-                        },
-                        "rawType": {
-                            "type": "string"
-                        },
-                        "serialized": {
-                            "type": "boolean"
-                        },
-                        "defaultValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "rawType",
-                        "serialized"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "embeddableTypeId": {
-                            "type": "string"
-                        },
-                        "propOverrides": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "propertyPath": {
-                                        "type": "string"
-                                    },
-                                    "overrideColumnName": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "overrideColumnName",
-                                    "propertyPath"
-                                ]
-                            }
-                        }
-                    },
-                    "required": [
-                        "embeddableTypeId",
-                        "propOverrides"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "key": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "keyGroups": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "required": [
-                        "key",
-                        "keyGroups"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "SCALAR"
-                        },
-                        "rawType": {
-                            "type": "string"
-                        },
-                        "serialized": {
-                            "type": "boolean"
-                        },
-                        "defaultValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "rawType",
-                        "serialized"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "embeddableTypeId": {
-                            "type": "string"
-                        },
-                        "propOverrides": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "propertyPath": {
-                                        "type": "string"
-                                    },
-                                    "overrideColumnName": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "overrideColumnName",
-                                    "propertyPath"
-                                ]
-                            }
-                        }
-                    },
-                    "required": [
-                        "embeddableTypeId",
-                        "propOverrides"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "boolean"
-                        },
-                        "logicalDeleteDefaultValue": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "logicalDeleteDefaultValue",
-                        "logicalDeleteType"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "SCALAR"
-                        },
-                        "rawType": {
-                            "type": "string"
-                        },
-                        "serialized": {
-                            "type": "boolean"
-                        },
-                        "defaultValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "rawType",
-                        "serialized"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "embeddableTypeId": {
-                            "type": "string"
-                        },
-                        "propOverrides": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "propertyPath": {
-                                        "type": "string"
-                                    },
-                                    "overrideColumnName": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "overrideColumnName",
-                                    "propertyPath"
-                                ]
-                            }
-                        }
-                    },
-                    "required": [
-                        "embeddableTypeId",
-                        "propOverrides"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "int"
-                        }
-                    },
-                    "required": [
-                        "logicalDeleteType"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "SCALAR"
-                        },
-                        "rawType": {
-                            "type": "string"
-                        },
-                        "serialized": {
-                            "type": "boolean"
-                        },
-                        "defaultValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "rawType",
-                        "serialized"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "embeddableTypeId": {
-                            "type": "string"
-                        },
-                        "propOverrides": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "propertyPath": {
-                                        "type": "string"
-                                    },
-                                    "overrideColumnName": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "overrideColumnName",
-                                    "propertyPath"
-                                ]
-                            }
-                        }
-                    },
-                    "required": [
-                        "embeddableTypeId",
-                        "propOverrides"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "long"
-                        }
-                    },
-                    "required": [
-                        "logicalDeleteType"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "SCALAR"
-                        },
-                        "rawType": {
-                            "type": "string"
-                        },
-                        "serialized": {
-                            "type": "boolean"
-                        },
-                        "defaultValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "rawType",
-                        "serialized"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "embeddableTypeId": {
-                            "type": "string"
-                        },
-                        "propOverrides": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "propertyPath": {
-                                        "type": "string"
-                                    },
-                                    "overrideColumnName": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "overrideColumnName",
-                                    "propertyPath"
-                                ]
-                            }
-                        }
-                    },
-                    "required": [
-                        "embeddableTypeId",
-                        "propOverrides"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "uuid"
-                        }
-                    },
-                    "required": [
-                        "logicalDeleteType"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "SCALAR"
-                        },
-                        "rawType": {
-                            "type": "string"
-                        },
-                        "serialized": {
-                            "type": "boolean"
-                        },
-                        "defaultValue": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "rawType",
-                        "serialized"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "embeddableTypeId": {
-                            "type": "string"
-                        },
-                        "propOverrides": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "propertyPath": {
-                                        "type": "string"
-                                    },
-                                    "overrideColumnName": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "overrideColumnName",
-                                    "propertyPath"
-                                ]
-                            }
-                        }
-                    },
-                    "required": [
-                        "embeddableTypeId",
-                        "propOverrides"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDelete": {
-                            "type": "boolean",
-                            "const": true
-                        }
-                    },
-                    "required": [
-                        "logicalDelete"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "time"
-                        },
-                        "logicalDeleteDeletedValue": {
-                            "enum": [
-                                "now",
-                                "null"
-                            ],
-                            "type": "string"
-                        },
-                        "nullable": {
-                            "type": "boolean",
-                            "const": true
-                        }
-                    },
-                    "required": [
-                        "logicalDeleteDeletedValue",
-                        "logicalDeleteType",
-                        "nullable"
-                    ]
-                }
-            ]
-        },
-        {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ENUM"
+                            "const": "SCALAR_ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -1642,14 +356,10 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                                 "DESC"
                             ],
                             "type": "string"
-                        },
-                        "typeIsArray": {
-                            "type": "boolean"
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "typeIsArray"
+                        "columnInfo"
                     ]
                 }
             ]
@@ -1661,7 +371,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ENUM"
+                            "const": "SCALAR_ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -1721,14 +431,10 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                                 "DESC"
                             ],
                             "type": "string"
-                        },
-                        "typeIsArray": {
-                            "type": "boolean"
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "typeIsArray"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -1759,7 +465,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                     "properties": {
                         "category": {
                             "type": "string",
-                            "const": "ENUM"
+                            "const": "SCALAR_ENUM"
                         },
                         "enumId": {
                             "type": "string"
@@ -1819,14 +525,10 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                                 "DESC"
                             ],
                             "type": "string"
-                        },
-                        "typeIsArray": {
-                            "type": "boolean"
                         }
                     },
                     "required": [
-                        "columnInfo",
-                        "typeIsArray"
+                        "columnInfo"
                     ]
                 },
                 {
@@ -1835,26 +537,16 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                         "logicalDelete": {
                             "type": "boolean",
                             "const": true
-                        },
-                        "logicalDeleteType": {
-                            "type": "string",
-                            "const": "enum"
-                        },
-                        "logicalDeleteDefaultValue": {
-                            "type": "string"
-                        },
-                        "logicalDeleteDeletedValue": {
-                            "type": "string"
                         }
                     },
                     "required": [
-                        "logicalDelete",
-                        "logicalDeleteDefaultValue",
-                        "logicalDeleteDeletedValue",
-                        "logicalDeleteType"
+                        "logicalDelete"
                     ]
                 }
             ]
+        },
+        {
+            "$ref": "#/definitions/ScalarEmbeddableProperty"
         }
     ],
     "definitions": {
@@ -1894,6 +586,89 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                 "name",
                 "nullable",
                 "type"
+            ]
+        },
+        "ScalarEmbeddableProperty": {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "SCALAR_EMBEDDABLE"
+                        }
+                    },
+                    "required": [
+                        "category"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "extraImports": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extraAnnotations": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "comment",
+                        "extraAnnotations",
+                        "extraImports",
+                        "id",
+                        "name",
+                        "nullable"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "embeddableTypeId": {
+                            "type": "string"
+                        },
+                        "propOverrides": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "propertyPath": {
+                                        "type": "string"
+                                    },
+                                    "overrideColumnName": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "overrideColumnName",
+                                    "propertyPath"
+                                ]
+                            }
+                        }
+                    },
+                    "required": [
+                        "embeddableTypeId",
+                        "propOverrides"
+                    ]
+                }
             ]
         }
     },

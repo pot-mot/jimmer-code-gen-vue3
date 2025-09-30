@@ -9,7 +9,7 @@ export default Object.freeze({
     | "manyToManySourcePropertyMap"
     | "manyToManyMappedPropertyMap"
 > & {
-    idProperty?: IdProperty
+    idProperty?: IdCommonProperty | IdEmbeddableProperty
     oneToOneSourcePropertyMap: Map<string, OneToOneSourceProperty & {association: OneToOneAbstractAssociation}>
     manyToOnePropertyMap: Map<string, ManyToOneProperty & {association: ManyToOneAbstractAssociation}>
 }`,

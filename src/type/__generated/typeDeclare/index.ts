@@ -35,8 +35,6 @@ import EntityWithPropertiesDeclare from "./items/EntityWithProperties.ts";
 import EnumerationDeclare from "./items/Enumeration.ts";
 import EnumerationItemDeclare from "./items/EnumerationItem.ts";
 import EnumerationStrategyDeclare from "./items/EnumerationStrategy.ts";
-import EnumLogicalDeletePropertyDeclare from "./items/EnumLogicalDeleteProperty.ts";
-import EnumPropertyDeclare from "./items/EnumProperty.ts";
 import ForeignKeyDeclare from "./items/ForeignKey.ts";
 import ForeignKeyTypeDeclare from "./items/ForeignKeyType.ts";
 import GetterFormulaPropertyDeclare from "./items/GetterFormulaProperty.ts";
@@ -44,11 +42,13 @@ import GroupDeclare from "./items/Group.ts";
 import GroupSubDataDeclare from "./items/GroupSubData.ts";
 import GroupSubMapsDeclare from "./items/GroupSubMaps.ts";
 import GroupWithSubMapsDeclare from "./items/GroupWithSubMaps.ts";
-import IdPropertyDeclare from "./items/IdProperty.ts";
+import IdCommonPropertyDeclare from "./items/IdCommonProperty.ts";
+import IdEmbeddablePropertyDeclare from "./items/IdEmbeddableProperty.ts";
 import IndexDeclare from "./items/Index.ts";
 import JoinColumnDeclare from "./items/JoinColumn.ts";
 import JoinTableDeclare from "./items/JoinTable.ts";
 import KeyPropertyDeclare from "./items/KeyProperty.ts";
+import LogicalDeletePropertyDeclare from "./items/LogicalDeleteProperty.ts";
 import ManyToManyAssociationDeclare from "./items/ManyToManyAssociation.ts";
 import ManyToManyAssociationIdOnlyDeclare from "./items/ManyToManyAssociationIdOnly.ts";
 import ManyToManyMappedPropertyDeclare from "./items/ManyToManyMappedProperty.ts";
@@ -84,8 +84,9 @@ import OneToOneSourcePropertyDeclare from "./items/OneToOneSourceProperty.ts";
 import OrderDirectionDeclare from "./items/OrderDirection.ts";
 import PositionDeclare from "./items/Position.ts";
 import PropertyDeclare from "./items/Property.ts";
-import ScalarLogicalDeletePropertyDeclare from "./items/ScalarLogicalDeleteProperty.ts";
-import ScalarPropertyDeclare from "./items/ScalarProperty.ts";
+import ScalarCommonPropertyDeclare from "./items/ScalarCommonProperty.ts";
+import ScalarEmbeddablePropertyDeclare from "./items/ScalarEmbeddableProperty.ts";
+import ScalarEnumPropertyDeclare from "./items/ScalarEnumProperty.ts";
 import SqlFormulaPropertyDeclare from "./items/SqlFormulaProperty.ts";
 import SqlToBackEndTypeMappingDeclare from "./items/SqlToBackEndTypeMapping.ts";
 import TableDeclare from "./items/Table.ts";
@@ -130,8 +131,6 @@ export type TypeMap = {
     Enumeration: Enumeration
     EnumerationItem: EnumerationItem
     EnumerationStrategy: EnumerationStrategy
-    EnumLogicalDeleteProperty: EnumLogicalDeleteProperty
-    EnumProperty: EnumProperty
     ForeignKey: ForeignKey
     ForeignKeyType: ForeignKeyType
     GetterFormulaProperty: GetterFormulaProperty
@@ -139,11 +138,13 @@ export type TypeMap = {
     GroupSubData: GroupSubData
     GroupSubMaps: GroupSubMaps
     GroupWithSubMaps: GroupWithSubMaps
-    IdProperty: IdProperty
+    IdCommonProperty: IdCommonProperty
+    IdEmbeddableProperty: IdEmbeddableProperty
     Index: Index
     JoinColumn: JoinColumn
     JoinTable: JoinTable
     KeyProperty: KeyProperty
+    LogicalDeleteProperty: LogicalDeleteProperty
     ManyToManyAssociation: ManyToManyAssociation
     ManyToManyAssociationIdOnly: ManyToManyAssociationIdOnly
     ManyToManyMappedProperty: ManyToManyMappedProperty
@@ -179,8 +180,9 @@ export type TypeMap = {
     OrderDirection: OrderDirection
     Position: Position
     Property: Property
-    ScalarLogicalDeleteProperty: ScalarLogicalDeleteProperty
-    ScalarProperty: ScalarProperty
+    ScalarCommonProperty: ScalarCommonProperty
+    ScalarEmbeddableProperty: ScalarEmbeddableProperty
+    ScalarEnumProperty: ScalarEnumProperty
     SqlFormulaProperty: SqlFormulaProperty
     SqlToBackEndTypeMapping: SqlToBackEndTypeMapping
     Table: Table
@@ -229,8 +231,6 @@ export const typeDeclares = Object.freeze({
     Enumeration: EnumerationDeclare,
     EnumerationItem: EnumerationItemDeclare,
     EnumerationStrategy: EnumerationStrategyDeclare,
-    EnumLogicalDeleteProperty: EnumLogicalDeletePropertyDeclare,
-    EnumProperty: EnumPropertyDeclare,
     ForeignKey: ForeignKeyDeclare,
     ForeignKeyType: ForeignKeyTypeDeclare,
     GetterFormulaProperty: GetterFormulaPropertyDeclare,
@@ -238,11 +238,13 @@ export const typeDeclares = Object.freeze({
     GroupSubData: GroupSubDataDeclare,
     GroupSubMaps: GroupSubMapsDeclare,
     GroupWithSubMaps: GroupWithSubMapsDeclare,
-    IdProperty: IdPropertyDeclare,
+    IdCommonProperty: IdCommonPropertyDeclare,
+    IdEmbeddableProperty: IdEmbeddablePropertyDeclare,
     Index: IndexDeclare,
     JoinColumn: JoinColumnDeclare,
     JoinTable: JoinTableDeclare,
     KeyProperty: KeyPropertyDeclare,
+    LogicalDeleteProperty: LogicalDeletePropertyDeclare,
     ManyToManyAssociation: ManyToManyAssociationDeclare,
     ManyToManyAssociationIdOnly: ManyToManyAssociationIdOnlyDeclare,
     ManyToManyMappedProperty: ManyToManyMappedPropertyDeclare,
@@ -278,8 +280,9 @@ export const typeDeclares = Object.freeze({
     OrderDirection: OrderDirectionDeclare,
     Position: PositionDeclare,
     Property: PropertyDeclare,
-    ScalarLogicalDeleteProperty: ScalarLogicalDeletePropertyDeclare,
-    ScalarProperty: ScalarPropertyDeclare,
+    ScalarCommonProperty: ScalarCommonPropertyDeclare,
+    ScalarEmbeddableProperty: ScalarEmbeddablePropertyDeclare,
+    ScalarEnumProperty: ScalarEnumPropertyDeclare,
     SqlFormulaProperty: SqlFormulaPropertyDeclare,
     SqlToBackEndTypeMapping: SqlToBackEndTypeMappingDeclare,
     Table: TableDeclare,

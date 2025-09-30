@@ -19,16 +19,15 @@ export const presetColor = [
     'rgb(70, 140, 110)',
 ]
 
-export const defaultIdProperty = (): IdProperty => ({
+export const defaultIdProperty = (): IdCommonProperty => ({
     id: createId("Property"),
     name: "id",
     comment: "",
-    category: "ID",
+    category: "ID_COMMON",
     rawType: "String",
     nullable: false,
     extraImports: [],
     extraAnnotations: [],
-    typeIsArray: false,
     columnInfo: {
         name: "id",
         comment: 'id',
@@ -38,11 +37,11 @@ export const defaultIdProperty = (): IdProperty => ({
     }
 })
 
-export const defaultScalarProperty = (): ScalarProperty => ({
+export const defaultScalarProperty = (): ScalarCommonProperty => ({
     id: createId("Property"),
     name: "property",
     comment: "",
-    category: "SCALAR",
+    category: "SCALAR_COMMON",
     rawType: "String",
     nullable: false,
     serialized: false,

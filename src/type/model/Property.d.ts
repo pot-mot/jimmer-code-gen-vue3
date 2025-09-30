@@ -12,12 +12,15 @@ type KeyProperty = {
     keyGroups: string[]
 }
 
+type LogicalDeleteProperty = {
+    logicalDelete: true
+}
+
 type OrderDirection = "ASC" | "DESC"
 
 type ColumnProperty = {
-    columnInfo: Omit<Column, 'partOfPrimaryKey' | 'autoIncrement'>,
-    defaultOrderDirection?: OrderDirection,
-    typeIsArray: boolean
+    columnInfo: Omit<Column, 'partOfPrimaryKey' | 'autoIncrement'>
+    defaultOrderDirection?: OrderDirection
 }
 
 type EmbeddableProperty = {
@@ -28,34 +31,10 @@ type EmbeddableProperty = {
     }[]
 }
 
-type ScalarLogicalDeleteProperty = {
-    logicalDelete: true
-} & ({
-    logicalDeleteType: 'boolean'
-    logicalDeleteDefaultValue: boolean
-} | {
-    logicalDeleteType: 'int'
-} | {
-    logicalDeleteType: 'long'
-} | {
-    logicalDeleteType: 'uuid'
-} | {
-    logicalDeleteType: 'time'
-    logicalDeleteDeletedValue: 'now' | 'null'
-    nullable: true
-})
-
-type EnumLogicalDeleteProperty = {
-    logicalDelete: true
-    logicalDeleteType: 'enum'
-    logicalDeleteDefaultValue: string
-    logicalDeleteDeletedValue: string
-}
-
-type IdProperty = {
-        category: "ID"
-        rawType: string
+type IdCommonProperty = {
+        category: "ID_COMMON"
         nullable: false
+        rawType: string
         generatedValue?:
             | { type: "IDENTITY" }
             | { type: "SEQUENCE", sequenceName: string }
@@ -63,33 +42,47 @@ type IdProperty = {
             | { type: "CustomerIdGenerator", generatorName: string }
     }
     & Omit<BaseProperty, 'nullable'>
-    & (ColumnProperty | EmbeddableProperty)
+    & ColumnProperty
+
+type IdEmbeddableProperty = {
+        category: "ID_EMBEDDABLE"
+        nullable: false
+        generatedValue?: { type: "CustomerIdGenerator", generatorName: string }
+    }
+    & Omit<BaseProperty, 'nullable'>
+    & EmbeddableProperty
 
 type VersionProperty = {
         category: "VERSION"
         nullable: false
     }
     & Omit<BaseProperty, 'nullable'>
-    & { columnName: string }
+    & ColumnProperty
 
-type ScalarProperty = {
-        category: "SCALAR"
+type ScalarCommonProperty = {
+        category: "SCALAR_COMMON"
         rawType: string
         serialized: boolean
         defaultValue?: string
+        typeIsArray?: boolean
     }
     & BaseProperty
-    & (ColumnProperty | EmbeddableProperty)
-    & ({} | KeyProperty | ScalarLogicalDeleteProperty)
+    & ColumnProperty
+    & ({} | KeyProperty | LogicalDeleteProperty)
 
-
-type EnumProperty = {
-        category: "ENUM"
+type ScalarEnumProperty = {
+        category: "SCALAR_ENUM"
         enumId: string
     }
     & BaseProperty
     & ColumnProperty
-    & ({} | KeyProperty | EnumLogicalDeleteProperty)
+    & ({} | KeyProperty | LogicalDeleteProperty)
+
+type ScalarEmbeddableProperty = {
+        category: "SCALAR_EMBEDDABLE"
+    }
+    & BaseProperty
+    & EmbeddableProperty
 
 type BaseAssociationProperty = {
     associationId: string
@@ -178,10 +171,12 @@ type TransientProperty = {
 })
 
 type EntityProperty =
-    | IdProperty
+    | IdCommonProperty
+    | IdEmbeddableProperty
     | VersionProperty
-    | ScalarProperty
-    | EnumProperty
+    | ScalarCommonProperty
+    | ScalarEnumProperty
+    | ScalarEmbeddableProperty
     | OneToOneSourceProperty
     | OneToOneMappedProperty
     | ManyToOneProperty
@@ -194,10 +189,12 @@ type EntityProperty =
     | TransientProperty
 
 type MappedSuperClassProperty =
-    | IdProperty
+    | IdCommonProperty
+    | IdEmbeddableProperty
     | VersionProperty
-    | ScalarProperty
-    | EnumProperty
+    | ScalarCommonProperty
+    | ScalarEnumProperty
+    | ScalarEmbeddableProperty
     | OneToOneSourceProperty
     | ManyToOneProperty
     | GetterFormulaProperty
@@ -205,5 +202,6 @@ type MappedSuperClassProperty =
     | TransientProperty
 
 type EmbeddableTypeProperty =
-    | ScalarProperty
-    | EnumProperty
+    | ScalarCommonProperty
+    | ScalarEnumProperty
+    | ScalarEmbeddableProperty

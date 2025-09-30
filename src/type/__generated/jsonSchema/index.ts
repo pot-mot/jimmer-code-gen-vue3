@@ -16,17 +16,17 @@ import EntityPropertyJsonSchema from "./items/EntityProperty.ts";
 import EnumerationJsonSchema from "./items/Enumeration.ts";
 import EnumerationItemJsonSchema from "./items/EnumerationItem.ts";
 import EnumerationStrategyJsonSchema from "./items/EnumerationStrategy.ts";
-import EnumLogicalDeletePropertyJsonSchema from "./items/EnumLogicalDeleteProperty.ts";
-import EnumPropertyJsonSchema from "./items/EnumProperty.ts";
 import ForeignKeyJsonSchema from "./items/ForeignKey.ts";
 import ForeignKeyTypeJsonSchema from "./items/ForeignKeyType.ts";
 import GetterFormulaPropertyJsonSchema from "./items/GetterFormulaProperty.ts";
 import GroupJsonSchema from "./items/Group.ts";
-import IdPropertyJsonSchema from "./items/IdProperty.ts";
+import IdCommonPropertyJsonSchema from "./items/IdCommonProperty.ts";
+import IdEmbeddablePropertyJsonSchema from "./items/IdEmbeddableProperty.ts";
 import IndexJsonSchema from "./items/Index.ts";
 import JoinColumnJsonSchema from "./items/JoinColumn.ts";
 import JoinTableJsonSchema from "./items/JoinTable.ts";
 import KeyPropertyJsonSchema from "./items/KeyProperty.ts";
+import LogicalDeletePropertyJsonSchema from "./items/LogicalDeleteProperty.ts";
 import ManyToManyAssociationIdOnlyJsonSchema from "./items/ManyToManyAssociationIdOnly.ts";
 import ManyToManyMappedPropertyJsonSchema from "./items/ManyToManyMappedProperty.ts";
 import ManyToManySourcePropertyJsonSchema from "./items/ManyToManySourceProperty.ts";
@@ -47,8 +47,9 @@ import OneToOneMappedPropertyJsonSchema from "./items/OneToOneMappedProperty.ts"
 import OneToOneSourcePropertyJsonSchema from "./items/OneToOneSourceProperty.ts";
 import OrderDirectionJsonSchema from "./items/OrderDirection.ts";
 import PositionJsonSchema from "./items/Position.ts";
-import ScalarLogicalDeletePropertyJsonSchema from "./items/ScalarLogicalDeleteProperty.ts";
-import ScalarPropertyJsonSchema from "./items/ScalarProperty.ts";
+import ScalarCommonPropertyJsonSchema from "./items/ScalarCommonProperty.ts";
+import ScalarEmbeddablePropertyJsonSchema from "./items/ScalarEmbeddableProperty.ts";
+import ScalarEnumPropertyJsonSchema from "./items/ScalarEnumProperty.ts";
 import SqlFormulaPropertyJsonSchema from "./items/SqlFormulaProperty.ts";
 import SqlToBackEndTypeMappingJsonSchema from "./items/SqlToBackEndTypeMapping.ts";
 import TableJsonSchema from "./items/Table.ts";
@@ -78,17 +79,17 @@ export const jsonSchemas = Object.freeze({
     Enumeration: EnumerationJsonSchema,
     EnumerationItem: EnumerationItemJsonSchema,
     EnumerationStrategy: EnumerationStrategyJsonSchema,
-    EnumLogicalDeleteProperty: EnumLogicalDeletePropertyJsonSchema,
-    EnumProperty: EnumPropertyJsonSchema,
     ForeignKey: ForeignKeyJsonSchema,
     ForeignKeyType: ForeignKeyTypeJsonSchema,
     GetterFormulaProperty: GetterFormulaPropertyJsonSchema,
     Group: GroupJsonSchema,
-    IdProperty: IdPropertyJsonSchema,
+    IdCommonProperty: IdCommonPropertyJsonSchema,
+    IdEmbeddableProperty: IdEmbeddablePropertyJsonSchema,
     Index: IndexJsonSchema,
     JoinColumn: JoinColumnJsonSchema,
     JoinTable: JoinTableJsonSchema,
     KeyProperty: KeyPropertyJsonSchema,
+    LogicalDeleteProperty: LogicalDeletePropertyJsonSchema,
     ManyToManyAssociationIdOnly: ManyToManyAssociationIdOnlyJsonSchema,
     ManyToManyMappedProperty: ManyToManyMappedPropertyJsonSchema,
     ManyToManySourceProperty: ManyToManySourcePropertyJsonSchema,
@@ -109,8 +110,9 @@ export const jsonSchemas = Object.freeze({
     OneToOneSourceProperty: OneToOneSourcePropertyJsonSchema,
     OrderDirection: OrderDirectionJsonSchema,
     Position: PositionJsonSchema,
-    ScalarLogicalDeleteProperty: ScalarLogicalDeletePropertyJsonSchema,
-    ScalarProperty: ScalarPropertyJsonSchema,
+    ScalarCommonProperty: ScalarCommonPropertyJsonSchema,
+    ScalarEmbeddableProperty: ScalarEmbeddablePropertyJsonSchema,
+    ScalarEnumProperty: ScalarEnumPropertyJsonSchema,
     SqlFormulaProperty: SqlFormulaPropertyJsonSchema,
     SqlToBackEndTypeMapping: SqlToBackEndTypeMappingJsonSchema,
     Table: TableJsonSchema,

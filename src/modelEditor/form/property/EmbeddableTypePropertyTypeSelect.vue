@@ -8,9 +8,9 @@ import EmbeddableTypeViewer from "@/modelEditor/viewer/EmbeddableTypeViewer.vue"
 import EmbeddableTypeIdViewer from "@/modelEditor/viewer/EmbeddableTypeIdViewer.vue";
 import EnumerationIdViewer from "@/modelEditor/viewer/EnumerationIdViewer.vue";
 import {
-    toEmbeddableScalarProperty,
-    toEnumProperty,
-    toScalarProperty
+    toScalarEmbeddableProperty,
+    toScalarEnumProperty,
+    toScalarCommonProperty
 } from "@/modelEditor/property/PropertyConvert.ts";
 import {ref} from "vue";
 import TypePairViewer from "@/modelEditor/viewer/TypePairViewer.vue";
@@ -30,15 +30,15 @@ const filterTypes = () => {
 }
 
 const selectBaseType = (typePair: DeepReadonly<TypeSelectPair>) => {
-    property.value = toScalarProperty(property.value, typePair)
+    property.value = toScalarCommonProperty(property.value, typePair)
 }
 
 const selectEnumeration = (enumeration: DeepReadonly<Enumeration>) => {
-    property.value = toEnumProperty(property.value, enumeration)
+    property.value = toScalarEnumProperty(property.value, enumeration)
 }
 
 const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
-    property.value = toEmbeddableScalarProperty(property.value, embeddableType)
+    property.value = toScalarEmbeddableProperty(property.value, embeddableType)
 }
 </script>
 

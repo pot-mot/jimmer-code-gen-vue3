@@ -1,10 +1,12 @@
 export default Object.freeze({
     fileName: 'Property.d.ts',
     content: `type Property =
-    | IdProperty
+    | IdCommonProperty
+    | IdEmbeddableProperty
     | VersionProperty
-    | ScalarProperty
-    | EnumProperty
+    | ScalarCommonProperty
+    | ScalarEnumProperty
+    | ScalarEmbeddableProperty
     | OneToOneSourceProperty
     | OneToOneMappedProperty
     | OneToOneMappedAbstractProperty

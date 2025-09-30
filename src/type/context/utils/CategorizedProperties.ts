@@ -1,15 +1,13 @@
 const defaultEntityCategorizedProperties = (): Omit<EntityCategorizedProperties, 'idProperty'> => {
     return {
         keyPropertyMap: new Map<string, Property & KeyProperty>(),
-        logicalDeletedProperty: undefined,
+        logicalDeleteProperty: undefined,
         versionProperty: undefined,
         defaultOrderPropertyMap: new Map<string, Property & { defaultOrderDirection?: OrderDirection }>(),
 
-        scalarPropertyMap: new Map<string, ScalarProperty>(),
-        enumPropertyMap: new Map<string, EnumProperty>(),
-
-        columnPropertyMap: new Map<string, Property & ColumnProperty>(),
-        embeddablePropertyMap: new Map<string, Property & EmbeddableProperty>(),
+        scalarCommonPropertyMap: new Map<string, ScalarCommonProperty>(),
+        scalarEnumPropertyMap: new Map<string, ScalarEnumProperty>(),
+        scalarEmbeddablePropertyMap: new Map<string, ScalarEmbeddableProperty>(),
 
         oneToOneSourcePropertyMap: new Map<string, OneToOneSourceProperty & { association: OneToOneAssociation }>(),
         oneToOneMappedPropertyMap: new Map<string, OneToOneMappedProperty & { association: OneToOneAssociation }>(),
@@ -33,16 +31,14 @@ const defaultEntityCategorizedProperties = (): Omit<EntityCategorizedProperties,
 const defaultAbstractCategorizedProperties = (): AbstractCategorizedProperties => {
     return {
         idProperty: undefined,
-        keyPropertyMap: new Map<string, Property & KeyProperty>(),
-        logicalDeletedProperty: undefined,
+        keyPropertyMap: new Map<string, (ScalarCommonProperty | ScalarEnumProperty) & KeyProperty>(),
+        logicalDeleteProperty: undefined,
         versionProperty: undefined,
         defaultOrderPropertyMap: new Map<string, Property & { defaultOrderDirection?: OrderDirection }>(),
 
-        scalarPropertyMap: new Map<string, ScalarProperty>(),
-        enumPropertyMap: new Map<string, EnumProperty>(),
-
-        columnPropertyMap: new Map<string, Property & ColumnProperty>(),
-        embeddablePropertyMap: new Map<string, Property & EmbeddableProperty>(),
+        scalarCommonPropertyMap: new Map<string, ScalarCommonProperty>(),
+        scalarEnumPropertyMap: new Map<string, ScalarEnumProperty>(),
+        scalarEmbeddablePropertyMap: new Map<string, ScalarEmbeddableProperty>(),
 
         oneToOneSourcePropertyMap: new Map<string, OneToOneSourceProperty & {
             association: OneToOneAbstractAssociation
@@ -59,11 +55,9 @@ const defaultAbstractCategorizedProperties = (): AbstractCategorizedProperties =
 
 const defaultCategorizedEmbeddableTypeProperties = (): CategorizedEmbeddableTypeProperties => {
     return {
-        scalarPropertyMap: new Map<string, ScalarProperty>(),
-        enumPropertyMap: new Map<string, EnumProperty>(),
-
-        columnPropertyMap: new Map<string, Property & ColumnProperty>(),
-        embeddablePropertyMap: new Map<string, Property & EmbeddableProperty>(),
+        scalarCommonPropertyMap: new Map<string, ScalarCommonProperty>(),
+        scalarEnumPropertyMap: new Map<string, ScalarEnumProperty>(),
+        scalarEmbeddablePropertyMap: new Map<string, ScalarEmbeddableProperty>(),
     }
 }
 
@@ -72,10 +66,10 @@ export const categorizeEntityProperties = (
     associationMap: ReadonlyMap<string, Readonly<Association>>,
 ): EntityCategorizedProperties => {
     const result = defaultEntityCategorizedProperties()
-    let idProperty: IdProperty | undefined
+    let idProperty: IdCommonProperty | IdEmbeddableProperty | undefined
 
     for (const property of properties) {
-        if (property.category === "ID") {
+        if (property.category === "ID_COMMON" || property.category === "ID_EMBEDDABLE") {
             if (idProperty !== undefined) {
                 throw new Error(`Multiple idProperties: ${property.name}(${property.id}), ${idProperty.name}(${idProperty.id})`)
             }
@@ -85,6 +79,21 @@ export const categorizeEntityProperties = (
                 throw new Error(`Multiple versionProperty: ${property.name}(${property.id}), ${result.versionProperty.name}(${result.versionProperty.id})`)
             }
             result.versionProperty = property
+        } else if (property.category === "SCALAR_COMMON") {
+            if (result.scalarCommonPropertyMap.has(property.id)) {
+                throw new Error(`Duplicate scalarCommonProperty id (${property.id}): ${property.name}, ${result.scalarCommonPropertyMap.get(property.id)?.name}`)
+            }
+            result.scalarCommonPropertyMap.set(property.id, property)
+        } else if (property.category === "SCALAR_ENUM") {
+            if (result.scalarEnumPropertyMap.has(property.id)) {
+                throw new Error(`Duplicate scalarEnumProperty id (${property.id}): ${property.name}, ${result.scalarEnumPropertyMap.get(property.id)?.name}`)
+            }
+            result.scalarEnumPropertyMap.set(property.id, property)
+        } else if (property.category === "SCALAR_EMBEDDABLE") {
+            if (result.scalarEmbeddablePropertyMap.has(property.id)) {
+                throw new Error(`Duplicate scalarEmbeddableProperty id (${property.id}): ${property.name}, ${result.scalarEmbeddablePropertyMap.get(property.id)?.name}`)
+            }
+            result.scalarEmbeddablePropertyMap.set(property.id, property)
         } else if (property.category === "ManyToMany_View") {
             if (result.manyToManyViewPropertyMap.has(property.id)) {
                 throw new Error(`Duplicate manyToManyViewProperty id (${property.id}): ${property.name}, ${result.manyToManyViewPropertyMap.get(property.id)?.name}`)
@@ -105,19 +114,7 @@ export const categorizeEntityProperties = (
                 throw new Error(`Duplicate transientProperty id (${property.id}): ${property.name}, ${result.transientPropertyMap.get(property.id)?.name}`)
             }
             result.transientPropertyMap.set(property.id, property)
-        } else if (property.category === "SCALAR") {
-            if (result.scalarPropertyMap.has(property.id)) {
-                throw new Error(`Duplicate scalarProperty id (${property.id}): ${property.name}, ${result.scalarPropertyMap.get(property.id)?.name}`)
-            }
-            result.scalarPropertyMap.set(property.id, property)
-        } else if (property.category === "ENUM") {
-            if (result.enumPropertyMap.has(property.id)) {
-                throw new Error(`Duplicate enumProperty id (${property.id}): ${property.name}, ${result.enumPropertyMap.get(property.id)?.name}`)
-            }
-            result.enumPropertyMap.set(property.id, property)
-        }
-
-        else if (property.category === "OneToOne_Source") {
+        } else if (property.category === "OneToOne_Source") {
             if (result.oneToOneSourcePropertyMap.has(property.id)) {
                 throw new Error(`Duplicate oneToOneSourceProperty id (${property.id}): ${property.name}, ${result.oneToOneSourcePropertyMap.get(property.id)?.name}`)
             }
@@ -173,22 +170,10 @@ export const categorizeEntityProperties = (
             }
             result.keyPropertyMap.set(property.id, property)
         } else if ("logicalDelete" in property && property.logicalDelete) {
-            if (result.logicalDeletedProperty !== undefined) {
-                throw new Error(`Multiple logicalDeletedProperty: ${property.name}(${property.id}), ${result.logicalDeletedProperty.name}(${result.logicalDeletedProperty.id})`)
+            if (result.logicalDeleteProperty !== undefined) {
+                throw new Error(`Multiple logicalDeleteProperty: ${property.name}(${property.id}), ${result.logicalDeleteProperty.name}(${result.logicalDeleteProperty.id})`)
             }
-            result.logicalDeletedProperty = property
-        }
-
-        if ("columnInfo" in property) {
-            if (result.columnPropertyMap.has(property.id)) {
-                throw new Error(`Duplicate columnProperty id (${property.id}): ${property.name}, ${result.columnPropertyMap.get(property.id)?.name}`)
-            }
-            result.columnPropertyMap.set(property.id, property)
-        } else if ("embeddableTypeId" in property) {
-            if (result.embeddablePropertyMap.has(property.id)) {
-                throw new Error(`Duplicate embeddableProperty id (${property.id}): ${property.name}, ${result.embeddablePropertyMap.get(property.id)?.name}`)
-            }
-            result.embeddablePropertyMap.set(property.id, property)
+            result.logicalDeleteProperty = property
         }
 
         if ("defaultOrderDirection" in property) {
@@ -215,7 +200,7 @@ export const categorizeAbstractCategorizedProperties = (
     const result = defaultAbstractCategorizedProperties()
 
     for (const property of properties) {
-        if (property.category === "ID") {
+        if (property.category === "ID_COMMON" || property.category === "ID_EMBEDDABLE") {
             if (result.idProperty !== undefined) {
                 throw new Error(`Multiple idProperties: ${property.name}(${property.id}), ${result.idProperty.name}(${result.idProperty.id})`)
             }
@@ -225,6 +210,21 @@ export const categorizeAbstractCategorizedProperties = (
                 throw new Error(`Multiple versionProperty: ${property.name}(${property.id}), ${result.versionProperty.name}(${result.versionProperty.id})`)
             }
             result.versionProperty = property
+        } else if (property.category === "SCALAR_COMMON") {
+            if (result.scalarCommonPropertyMap.has(property.id)) {
+                throw new Error(`Duplicate scalarCommonProperty id (${property.id}): ${property.name}, ${result.scalarCommonPropertyMap.get(property.id)?.name}`)
+            }
+            result.scalarCommonPropertyMap.set(property.id, property)
+        } else if (property.category === "SCALAR_ENUM") {
+            if (result.scalarEnumPropertyMap.has(property.id)) {
+                throw new Error(`Duplicate scalarEnumProperty id (${property.id}): ${property.name}, ${result.scalarEnumPropertyMap.get(property.id)?.name}`)
+            }
+            result.scalarEnumPropertyMap.set(property.id, property)
+        } else if (property.category === "SCALAR_EMBEDDABLE") {
+            if (result.scalarEmbeddablePropertyMap.has(property.id)) {
+                throw new Error(`Duplicate scalarEmbeddableProperty id (${property.id}): ${property.name}, ${result.scalarEmbeddablePropertyMap.get(property.id)?.name}`)
+            }
+            result.scalarEmbeddablePropertyMap.set(property.id, property)
         } else if (property.category === "ManyToMany_View") {
             if (result.manyToManyViewPropertyMap.has(property.id)) {
                 throw new Error(`Duplicate manyToManyViewProperty id (${property.id}): ${property.name}, ${result.manyToManyViewPropertyMap.get(property.id)?.name}`)
@@ -245,19 +245,7 @@ export const categorizeAbstractCategorizedProperties = (
                 throw new Error(`Duplicate transientProperty id (${property.id}): ${property.name}, ${result.transientPropertyMap.get(property.id)?.name}`)
             }
             result.transientPropertyMap.set(property.id, property)
-        } else if (property.category === "SCALAR") {
-            if (result.scalarPropertyMap.has(property.id)) {
-                throw new Error(`Duplicate scalarProperty id (${property.id}): ${property.name}, ${result.scalarPropertyMap.get(property.id)?.name}`)
-            }
-            result.scalarPropertyMap.set(property.id, property)
-        } else if (property.category === "ENUM") {
-            if (result.enumPropertyMap.has(property.id)) {
-                throw new Error(`Duplicate enumProperty id (${property.id}): ${property.name}, ${result.enumPropertyMap.get(property.id)?.name}`)
-            }
-            result.enumPropertyMap.set(property.id, property)
-        }
-
-        else if (property.category === "OneToOne_Source") {
+        } else if (property.category === "OneToOne_Source") {
             if (result.oneToOneSourcePropertyMap.has(property.id)) {
                 throw new Error(`Duplicate oneToOneSourceProperty id (${property.id}): ${property.name}, ${result.oneToOneSourcePropertyMap.get(property.id)?.name}`)
             }
@@ -281,22 +269,10 @@ export const categorizeAbstractCategorizedProperties = (
             }
             result.keyPropertyMap.set(property.id, property)
         } else if ("logicalDelete" in property && property.logicalDelete) {
-            if (result.logicalDeletedProperty !== undefined) {
-                throw new Error(`Multiple logicalDeletedProperty: ${property.name}(${property.id}), ${result.logicalDeletedProperty.name}(${result.logicalDeletedProperty.id})`)
+            if (result.logicalDeleteProperty !== undefined) {
+                throw new Error(`Multiple logicalDeleteProperty: ${property.name}(${property.id}), ${result.logicalDeleteProperty.name}(${result.logicalDeleteProperty.id})`)
             }
-            result.logicalDeletedProperty = property
-        }
-
-        if ("columnInfo" in property) {
-            if (result.columnPropertyMap.has(property.id)) {
-                throw new Error(`Duplicate columnProperty id (${property.id}): ${property.name}, ${result.columnPropertyMap.get(property.id)?.name}`)
-            }
-            result.columnPropertyMap.set(property.id, property)
-        } else if ("embeddableTypeId" in property) {
-            if (result.embeddablePropertyMap.has(property.id)) {
-                throw new Error(`Duplicate embeddableProperty id (${property.id}): ${property.name}, ${result.embeddablePropertyMap.get(property.id)?.name}`)
-            }
-            result.embeddablePropertyMap.set(property.id, property)
+            result.logicalDeleteProperty = property
         }
 
         if ("defaultOrderDirection" in property) {
@@ -316,28 +292,21 @@ export const categorizeEmbeddableTypeProperties = (
     const result = defaultCategorizedEmbeddableTypeProperties()
 
     for (const property of properties) {
-        if (property.category === "SCALAR") {
-            if (result.scalarPropertyMap.has(property.id)) {
-                throw new Error(`Duplicate scalarProperty id (${property.id}): ${property.name}, ${result.scalarPropertyMap.get(property.id)?.name}`)
+        if (property.category === "SCALAR_COMMON") {
+            if (result.scalarCommonPropertyMap.has(property.id)) {
+                throw new Error(`Duplicate scalarCommonProperty id (${property.id}): ${property.name}, ${result.scalarCommonPropertyMap.get(property.id)?.name}`)
             }
-            result.scalarPropertyMap.set(property.id, property)
-        } else if (property.category === "ENUM") {
-            if (result.enumPropertyMap.has(property.id)) {
-                throw new Error(`Duplicate enumProperty id (${property.id}): ${property.name}, ${result.enumPropertyMap.get(property.id)?.name}`)
+            result.scalarCommonPropertyMap.set(property.id, property)
+        } else if (property.category === "SCALAR_ENUM") {
+            if (result.scalarEnumPropertyMap.has(property.id)) {
+                throw new Error(`Duplicate scalarEnumProperty id (${property.id}): ${property.name}, ${result.scalarEnumPropertyMap.get(property.id)?.name}`)
             }
-            result.enumPropertyMap.set(property.id, property)
-        }
-
-        if ("columnInfo" in property) {
-            if (result.columnPropertyMap.has(property.id)) {
-                throw new Error(`Duplicate columnProperty id (${property.id}): ${property.name}, ${result.columnPropertyMap.get(property.id)?.name}`)
+            result.scalarEnumPropertyMap.set(property.id, property)
+        } else if (property.category === "SCALAR_EMBEDDABLE") {
+            if (result.scalarEmbeddablePropertyMap.has(property.id)) {
+                throw new Error(`Duplicate scalarEmbeddableProperty id (${property.id}): ${property.name}, ${result.scalarEmbeddablePropertyMap.get(property.id)?.name}`)
             }
-            result.columnPropertyMap.set(property.id, property)
-        } else if ("embeddableTypeId" in property) {
-            if (result.embeddablePropertyMap.has(property.id)) {
-                throw new Error(`Duplicate embeddableProperty id (${property.id}): ${property.name}, ${result.embeddablePropertyMap.get(property.id)?.name}`)
-            }
-            result.embeddablePropertyMap.set(property.id, property)
+            result.scalarEmbeddablePropertyMap.set(property.id, property)
         }
     }
 

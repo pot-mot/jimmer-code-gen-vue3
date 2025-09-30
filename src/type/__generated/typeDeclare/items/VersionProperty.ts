@@ -5,5 +5,5 @@ export default Object.freeze({
         nullable: false
     }
     & Omit<BaseProperty, 'nullable'>
-    & { columnName: string }`,
+    & ColumnProperty`,
 })

@@ -10,9 +10,8 @@ import EmbeddableTypeIdViewer from "@/modelEditor/viewer/EmbeddableTypeIdViewer.
 import EntityIdViewer from "@/modelEditor/viewer/EntityIdViewer.vue";
 import EnumerationIdViewer from "@/modelEditor/viewer/EnumerationIdViewer.vue";
 import {
-    toEmbeddableIdProperty,
-    toEmbeddableScalarProperty,
-    toEnumProperty, toIdProperty, toManyToOneProperty, toScalarProperty
+    toScalarEmbeddableProperty,
+    toScalarEnumProperty, idToggleType, toManyToOneProperty, toScalarCommonProperty, idToEmbeddableProperty
 } from "@/modelEditor/property/PropertyConvert.ts";
 import {computed, nextTick, ref} from "vue";
 import TypePairViewer from "@/modelEditor/viewer/TypePairViewer.vue";
@@ -55,10 +54,10 @@ const selectBaseType = (typePair: DeepReadonly<TypeSelectPair>) => {
     executeAsyncBatch(Symbol("property type to embeddableType"), async () => {
         cleanPropertyReference()
 
-        if (property.value.category === "ID") {
-            property.value = toIdProperty(property.value, typePair)
+        if (property.value.category === "ID_COMMON") {
+            property.value = idToggleType(property.value, typePair)
         } else {
-            property.value = toScalarProperty(property.value, typePair)
+            property.value = toScalarCommonProperty(property.value, typePair)
         }
 
         await nextTick()
@@ -72,7 +71,7 @@ const selectEnumeration = (enumeration: DeepReadonly<Enumeration>) => {
     executeAsyncBatch(Symbol("property type to enumeration"), async () => {
         cleanPropertyReference()
 
-        property.value = toEnumProperty(property.value, enumeration)
+        property.value = toScalarEnumProperty(property.value, enumeration)
 
         await nextTick()
         await waitChangeSync()
@@ -85,10 +84,10 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
     executeAsyncBatch(Symbol("property type to embeddableType"), async () => {
         cleanPropertyReference()
 
-        if (property.value.category === "ID") {
-            property.value = toEmbeddableIdProperty(property.value, embeddableType)
+        if (property.value.category === "ID_COMMON") {
+            property.value = idToEmbeddableProperty(property.value, embeddableType)
         } else {
-            property.value = toEmbeddableScalarProperty(property.value, embeddableType)
+            property.value = toScalarEmbeddableProperty(property.value, embeddableType)
         }
 
         await nextTick()

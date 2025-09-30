@@ -12,7 +12,7 @@ type EmbeddablePropertyItem = {
 
 type CommonPropertyItem = {
     type: "COMMON"
-    property: DeepReadonly<IdProperty | ScalarProperty | EnumProperty | VersionProperty>
+    property: DeepReadonly<IdCommonProperty | ScalarCommonProperty | ScalarEnumProperty | VersionProperty>
 }
 
 export const parseEmbeddablePropertyPath = (
@@ -57,8 +57,8 @@ export const parseEmbeddablePropertyPath = (
     }
 
     if (
-        currentProperty.category !== "ENUM" &&
-        currentProperty.category !== "SCALAR"
+        currentProperty.category !== "SCALAR_COMMON" &&
+        currentProperty.category !== "SCALAR_ENUM"
     ) {
         throw new Error(`PropertyPath [${propertyPathNames}] is not a valid association path because Property [${propertyPathNames[propertyPathNames.length - 1]}] is not a Scalar`)
     } else if (path.length === 0) {
@@ -135,9 +135,9 @@ export const parsePropertyPath = (
     }
 
     if (
-        currentProperty.category !== "ID" &&
-        currentProperty.category !== "ENUM" &&
-        currentProperty.category !== "SCALAR" &&
+        currentProperty.category !== "ID_COMMON" &&
+        currentProperty.category !== "SCALAR_COMMON" &&
+        currentProperty.category !== "SCALAR_ENUM" &&
         currentProperty.category !== "VERSION"
     ) {
         throw new Error(`PropertyPath [${propertyPathNames}] is not a valid association path because Property [${propertyPathNames[propertyPathNames.length - 1]}] is not a Scalar or IdProperty`)

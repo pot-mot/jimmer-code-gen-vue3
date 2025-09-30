@@ -1,17 +1,15 @@
 export default Object.freeze({
     fileName: 'EntityCategorizedProperties.d.ts',
     content: `type EntityCategorizedProperties = {
-    idProperty: IdProperty
+    idProperty: IdCommonProperty | IdEmbeddableProperty
     keyPropertyMap: Map<string, Property & KeyProperty>
-    logicalDeletedProperty?: (Property & (ScalarLogicalDeleteProperty | EnumLogicalDeleteProperty))
+    logicalDeleteProperty?: Property & LogicalDeleteProperty
     versionProperty?: VersionProperty
     defaultOrderPropertyMap: Map<string, Property & { defaultOrderDirection?: OrderDirection }>
 
-    scalarPropertyMap: Map<string, ScalarProperty>
-    enumPropertyMap: Map<string, EnumProperty>
-
-    columnPropertyMap: Map<string, Property & ColumnProperty>
-    embeddablePropertyMap: Map<string, Property & EmbeddableProperty>
+    scalarCommonPropertyMap: Map<string, ScalarCommonProperty>
+    scalarEnumPropertyMap: Map<string, ScalarEnumProperty>
+    scalarEmbeddablePropertyMap: Map<string, ScalarEmbeddableProperty>
 
     oneToOneSourcePropertyMap: Map<string, OneToOneSourceProperty & {association: OneToOneAssociation}>
     oneToOneMappedPropertyMap: Map<string, OneToOneMappedProperty & {association: OneToOneAssociation}>

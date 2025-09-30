@@ -26,12 +26,19 @@ const VersionPropertyJsonSchema: JSONSchemaType<VersionProperty> = {
         {
             "type": "object",
             "properties": {
-                "columnName": {
+                "columnInfo": {
+                    "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
+                },
+                "defaultOrderDirection": {
+                    "enum": [
+                        "ASC",
+                        "DESC"
+                    ],
                     "type": "string"
                 }
             },
             "required": [
-                "columnName"
+                "columnInfo"
             ]
         }
     ],
@@ -67,6 +74,44 @@ const VersionPropertyJsonSchema: JSONSchemaType<VersionProperty> = {
                 "extraImports",
                 "id",
                 "name"
+            ]
+        },
+        "Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "nullable": {
+                    "type": "boolean"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "dataSize": {
+                    "type": "number"
+                },
+                "numericPrecision": {
+                    "type": "number"
+                },
+                "defaultValue": {
+                    "type": "string"
+                },
+                "otherConstraints": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "comment",
+                "name",
+                "nullable",
+                "type"
             ]
         }
     },

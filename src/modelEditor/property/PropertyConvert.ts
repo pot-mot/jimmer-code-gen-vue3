@@ -23,28 +23,40 @@ const createColumnInfo = (
     }
 }
 
-export const toIdProperty = (
-    property: DeepReadonly<Property>,
+export const idToggleType = (
+    property: DeepReadonly<IdCommonProperty>,
     typePair: DeepReadonly<TypeSelectPair>
-): IdProperty => {
+): IdCommonProperty => {
     return {
         ...toBaseProperty(property),
-        category: "ID",
-        rawType: typePair.backEndType.rawType,
-        extraImports: Array.from(typePair.backEndType.extraImports),
-        columnInfo: createColumnInfo(property, typePair.sqlType),
-        typeIsArray: false,
+        category: "ID_COMMON",
         nullable: false,
+        rawType: typePair.backEndType.rawType,
+        extraImports: [...typePair.backEndType.extraImports, ...property.extraImports],
+        columnInfo: createColumnInfo(property, typePair.sqlType),
     }
 }
 
-export const toScalarProperty = (
-    property: DeepReadonly<Property>,
-    typePair: DeepReadonly<TypeSelectPair>
-): ScalarProperty => {
+export const idToEmbeddableProperty = (
+    property: DeepReadonly<IdCommonProperty>,
+    embeddableType: DeepReadonly<EmbeddableType>
+): IdEmbeddableProperty => {
     return {
         ...toBaseProperty(property),
-        category: "SCALAR",
+        category: "ID_EMBEDDABLE",
+        nullable: false,
+        embeddableTypeId: embeddableType.id,
+        propOverrides: [],
+    }
+}
+
+export const toScalarCommonProperty = (
+    property: DeepReadonly<Property>,
+    typePair: DeepReadonly<TypeSelectPair>
+): ScalarCommonProperty => {
+    return {
+        ...toBaseProperty(property),
+        category: "SCALAR_COMMON",
         rawType: typePair.backEndType.rawType,
         extraImports: Array.from(typePair.backEndType.extraImports),
         serialized: false,
@@ -53,56 +65,33 @@ export const toScalarProperty = (
     }
 }
 
-export const toEnumProperty = (
+export const toScalarEnumProperty = (
     property: DeepReadonly<Property>,
     enumeration: DeepReadonly<Enumeration>
-): EnumProperty => {
+): ScalarEnumProperty => {
     return {
         ...toBaseProperty(property),
-        category: "ENUM",
-        columnInfo: createColumnInfo(property),
+        category: "SCALAR_ENUM",
         enumId: enumeration.id,
+        defaultOrderDirection: undefined,
+        columnInfo: createColumnInfo(property, {
+            type: "VARCHAR",
+            nullable: false,
+            dataSize: 255,
+            numericPrecision: undefined,
+        }), // TODO
     }
 }
 
-export const toEmbeddableIdProperty = (
+export const toScalarEmbeddableProperty = (
     property: DeepReadonly<Property>,
     embeddableType: DeepReadonly<EmbeddableType>
-): IdProperty => {
+): ScalarEmbeddableProperty => {
     return {
         ...toBaseProperty(property),
-        category: "ID",
+        category: "SCALAR_EMBEDDABLE",
         embeddableTypeId: embeddableType.id,
         propOverrides: [],
-    }
-}
-
-export const toEmbeddableScalarProperty = (
-    property: DeepReadonly<Property>,
-    embeddableType: DeepReadonly<EmbeddableType>
-): ScalarProperty => {
-    return {
-        ...toBaseProperty(property),
-        category: "SCALAR",
-        serialized: false,
-        embeddableTypeId: embeddableType.id,
-        propOverrides: [],
-    }
-}
-
-export const toScalarLogicalDeleteProperty = (
-    property: DeepReadonly<Property>,
-): ScalarLogicalDeleteProperty => {
-    return {
-        ...toBaseProperty(property)
-    }
-}
-
-export const toEnumLogicalDeleteProperty = (
-    property: DeepReadonly<Property>,
-): EnumLogicalDeleteProperty => {
-    return {
-        ...toBaseProperty(property)
     }
 }
 
@@ -120,4 +109,3 @@ export const toManyToOneProperty = (
         idViewName: entity.name + "Id",
     }
 }
-
