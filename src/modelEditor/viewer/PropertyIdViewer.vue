@@ -16,6 +16,5 @@ const property = computed(() => {
 </script>
 
 <template>
-    <PropertyViewer v-if="property" :property="property"/>
-    <span v-else style="color: var(--danger-color);">[Property not existed]</span>
+    <PropertyViewer :property="property"/>
 </template>

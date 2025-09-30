@@ -5,9 +5,12 @@ import AssociationViewer from "@/modelEditor/viewer/AssociationViewer.vue";
 
 const {contextData} = useModelEditor()
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
     id: string
-}>()
+    ctrlFocus?: boolean
+}>(), {
+    ctrlFocus: false
+})
 
 const association = computed(() => {
     return contextData.value?.associationMap.get(props.id)
@@ -15,6 +18,8 @@ const association = computed(() => {
 </script>
 
 <template>
-    <AssociationViewer v-if="association" :association="association"/>
-    <span v-else style="color: var(--danger-color);">[Association not existed]</span>
+    <AssociationViewer
+        :association="association"
+        :ctrl-focus="ctrlFocus"
+    />
 </template>

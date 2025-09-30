@@ -237,15 +237,34 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
 
         <div class="create-type-select">
             <div>Create Type</div>
-            <div
-                v-for="item in CreateType_CONSTANTS"
-            >
+            <div>
                 <button
                     class="create-type-item"
-                    :class="{selected: item === createType}"
-                    @click="createType = item"
+                    :class="{selected: createType === 'MappedSuperClass'}"
+                    @click="createType = 'MappedSuperClass'"
                 >
-                    {{ item }}
+                    AbstractEntity
+                </button>
+                <button
+                    class="create-type-item"
+                    :class="{selected: createType === 'Entity'}"
+                    @click="createType = 'Entity'"
+                >
+                    Entity
+                </button>
+                <button
+                    class="create-type-item"
+                    :class="{selected: createType === 'Enumeration'}"
+                    @click="createType = 'Enumeration'"
+                >
+                    Enum
+                </button>
+                <button
+                    class="create-type-item"
+                    :class="{selected: createType === 'EmbeddableType'}"
+                    @click="createType = 'EmbeddableType'"
+                >
+                    Embeddable
                 </button>
             </div>
         </div>

@@ -18,6 +18,5 @@ const enumeration = computed(() => {
 </script>
 
 <template>
-    <EnumerationViewer v-if="enumeration" :enumeration="enumeration" :ctrl-focus="ctrlFocus"/>
-    <span v-else style="color: var(--danger-color);">[Enumeration not existed]</span>
+    <EnumerationViewer :enumeration="enumeration" :ctrl-focus="ctrlFocus"/>
 </template>

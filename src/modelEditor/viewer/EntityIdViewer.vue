@@ -18,6 +18,5 @@ const entity = computed(() => {
 </script>
 
 <template>
-    <EntityViewer v-if="entity" :entity="entity" :ctrl-focus="ctrlFocus"/>
-    <span v-else style="color: var(--danger-color);">[Entity not existed]</span>
+    <EntityViewer :entity="entity" :ctrl-focus="ctrlFocus"/>
 </template>

@@ -18,6 +18,8 @@ const embeddableType = computed(() => {
 </script>
 
 <template>
-    <EmbeddableTypeViewer v-if="embeddableType" :embeddable-type="embeddableType" :ctrl-focus="ctrlFocus"/>
-    <span v-else style="color: var(--danger-color);">[EmbeddableType not existed]</span>
+    <EmbeddableTypeViewer
+        :embeddable-type="embeddableType"
+        :ctrl-focus="ctrlFocus"
+    />
 </template>

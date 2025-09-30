@@ -18,6 +18,5 @@ const mappedSuperClass = computed(() => {
 </script>
 
 <template>
-    <MappedSuperClassViewer v-if="mappedSuperClass" :mapped-super-class="mappedSuperClass"/>
-    <span v-else style="color: var(--danger-color);">[MappedSuperClass not existed]</span>
+    <MappedSuperClassViewer :mapped-super-class="mappedSuperClass"/>
 </template>

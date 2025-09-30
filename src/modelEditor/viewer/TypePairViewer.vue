@@ -5,10 +5,13 @@ defineProps<{
 </script>
 
 <template>
-    <span>
-        {{ typePair.backEndType.rawType }}
-    </span>
-    <span>
-         {{ typePair.sqlType.type }}
+    <span class="type-pair-viewer">
+        <span class="back-end-type">
+            {{ typePair.backEndType.rawType }}
+        </span>
+        -
+        <span class="sql-type">
+             {{ typePair.sqlType.type }}
+        </span>
     </span>
 </template>
