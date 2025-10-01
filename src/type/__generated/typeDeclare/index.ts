@@ -9,6 +9,7 @@ import BackEndLanguageDeclare from "./items/BackEndLanguage.ts";
 import BackEndMappingSourceDeclare from "./items/BackEndMappingSource.ts";
 import BackEndToSqlTypeMappingDeclare from "./items/BackEndToSqlTypeMapping.ts";
 import BackEndToTypeScriptTypeMappingDeclare from "./items/BackEndToTypeScriptTypeMapping.ts";
+import BackEndTypeDeclare from "./items/BackEndType.ts";
 import BaseAssociationPropertyDeclare from "./items/BaseAssociationProperty.ts";
 import BasePropertyDeclare from "./items/BaseProperty.ts";
 import CategorizedEmbeddableTypePropertiesDeclare from "./items/CategorizedEmbeddableTypeProperties.ts";
@@ -17,6 +18,7 @@ import ColumnPropertyDeclare from "./items/ColumnProperty.ts";
 import ConcreteAssociationDeclare from "./items/ConcreteAssociation.ts";
 import ConcreteAssociationIdOnlyDeclare from "./items/ConcreteAssociationIdOnly.ts";
 import ConcreteAssociationWithInheritInfoDeclare from "./items/ConcreteAssociationWithInheritInfo.ts";
+import CrossTypeDeclare from "./items/CrossType.ts";
 import DatabaseDeclare from "./items/Database.ts";
 import DatabaseTypeDeclare from "./items/DatabaseType.ts";
 import DeepReadonlyDeclare from "./items/DeepReadonly.ts";
@@ -90,9 +92,10 @@ import ScalarEmbeddablePropertyDeclare from "./items/ScalarEmbeddableProperty.ts
 import ScalarEnumPropertyDeclare from "./items/ScalarEnumProperty.ts";
 import SqlFormulaPropertyDeclare from "./items/SqlFormulaProperty.ts";
 import SqlToBackEndTypeMappingDeclare from "./items/SqlToBackEndTypeMapping.ts";
+import SqlTypeDeclare from "./items/SqlType.ts";
 import TableDeclare from "./items/Table.ts";
 import TransientPropertyDeclare from "./items/TransientProperty.ts";
-import TypeSelectPairDeclare from "./items/TypeSelectPair.ts";
+import TypeScriptTypeDeclare from "./items/TypeScriptType.ts";
 import VersionPropertyDeclare from "./items/VersionProperty.ts";
 
 export type TypeMap = {
@@ -107,6 +110,7 @@ export type TypeMap = {
     BackEndMappingSource: BackEndMappingSource
     BackEndToSqlTypeMapping: BackEndToSqlTypeMapping
     BackEndToTypeScriptTypeMapping: BackEndToTypeScriptTypeMapping
+    BackEndType: BackEndType
     BaseAssociationProperty: BaseAssociationProperty
     BaseProperty: BaseProperty
     CategorizedEmbeddableTypeProperties: CategorizedEmbeddableTypeProperties
@@ -115,6 +119,7 @@ export type TypeMap = {
     ConcreteAssociation: ConcreteAssociation
     ConcreteAssociationIdOnly: ConcreteAssociationIdOnly
     ConcreteAssociationWithInheritInfo: ConcreteAssociationWithInheritInfo
+    CrossType: CrossType
     Database: Database
     DatabaseType: DatabaseType
     EmbeddableProperty: EmbeddableProperty
@@ -187,9 +192,10 @@ export type TypeMap = {
     ScalarEnumProperty: ScalarEnumProperty
     SqlFormulaProperty: SqlFormulaProperty
     SqlToBackEndTypeMapping: SqlToBackEndTypeMapping
+    SqlType: SqlType
     Table: Table
     TransientProperty: TransientProperty
-    TypeSelectPair: TypeSelectPair
+    TypeScriptType: TypeScriptType
     VersionProperty: VersionProperty
 }
 
@@ -207,6 +213,7 @@ export const typeDeclares = Object.freeze({
     BackEndMappingSource: BackEndMappingSourceDeclare,
     BackEndToSqlTypeMapping: BackEndToSqlTypeMappingDeclare,
     BackEndToTypeScriptTypeMapping: BackEndToTypeScriptTypeMappingDeclare,
+    BackEndType: BackEndTypeDeclare,
     BaseAssociationProperty: BaseAssociationPropertyDeclare,
     BaseProperty: BasePropertyDeclare,
     CategorizedEmbeddableTypeProperties: CategorizedEmbeddableTypePropertiesDeclare,
@@ -215,6 +222,7 @@ export const typeDeclares = Object.freeze({
     ConcreteAssociation: ConcreteAssociationDeclare,
     ConcreteAssociationIdOnly: ConcreteAssociationIdOnlyDeclare,
     ConcreteAssociationWithInheritInfo: ConcreteAssociationWithInheritInfoDeclare,
+    CrossType: CrossTypeDeclare,
     Database: DatabaseDeclare,
     DatabaseType: DatabaseTypeDeclare,
     DeepReadonly: DeepReadonlyDeclare,
@@ -288,8 +296,9 @@ export const typeDeclares = Object.freeze({
     ScalarEnumProperty: ScalarEnumPropertyDeclare,
     SqlFormulaProperty: SqlFormulaPropertyDeclare,
     SqlToBackEndTypeMapping: SqlToBackEndTypeMappingDeclare,
+    SqlType: SqlTypeDeclare,
     Table: TableDeclare,
     TransientProperty: TransientPropertyDeclare,
-    TypeSelectPair: TypeSelectPairDeclare,
+    TypeScriptType: TypeScriptTypeDeclare,
     VersionProperty: VersionPropertyDeclare,
 })

@@ -148,5 +148,4 @@ export const defaultModel = (): ModelContextData => ({
     enumerationMap: new Map(),
     groupMap: new Map(),
     associationMap: new Map(),
-    types: [],
 })

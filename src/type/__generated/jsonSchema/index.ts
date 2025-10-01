@@ -2,10 +2,12 @@ import BackEndLanguageJsonSchema from "./items/BackEndLanguage.ts";
 import BackEndMappingSourceJsonSchema from "./items/BackEndMappingSource.ts";
 import BackEndToSqlTypeMappingJsonSchema from "./items/BackEndToSqlTypeMapping.ts";
 import BackEndToTypeScriptTypeMappingJsonSchema from "./items/BackEndToTypeScriptTypeMapping.ts";
+import BackEndTypeJsonSchema from "./items/BackEndType.ts";
 import BaseAssociationPropertyJsonSchema from "./items/BaseAssociationProperty.ts";
 import BasePropertyJsonSchema from "./items/BaseProperty.ts";
 import ColumnJsonSchema from "./items/Column.ts";
 import ColumnPropertyJsonSchema from "./items/ColumnProperty.ts";
+import CrossTypeJsonSchema from "./items/CrossType.ts";
 import DatabaseJsonSchema from "./items/Database.ts";
 import DatabaseTypeJsonSchema from "./items/DatabaseType.ts";
 import EmbeddablePropertyJsonSchema from "./items/EmbeddableProperty.ts";
@@ -53,9 +55,10 @@ import ScalarEmbeddablePropertyJsonSchema from "./items/ScalarEmbeddableProperty
 import ScalarEnumPropertyJsonSchema from "./items/ScalarEnumProperty.ts";
 import SqlFormulaPropertyJsonSchema from "./items/SqlFormulaProperty.ts";
 import SqlToBackEndTypeMappingJsonSchema from "./items/SqlToBackEndTypeMapping.ts";
+import SqlTypeJsonSchema from "./items/SqlType.ts";
 import TableJsonSchema from "./items/Table.ts";
 import TransientPropertyJsonSchema from "./items/TransientProperty.ts";
-import TypeSelectPairJsonSchema from "./items/TypeSelectPair.ts";
+import TypeScriptTypeJsonSchema from "./items/TypeScriptType.ts";
 import VersionPropertyJsonSchema from "./items/VersionProperty.ts";
 import EmbeddableTypeWithPropertiesJsonSchema from "../../context/jsonSchema/EmbeddableTypeWithProperties.ts";
 import EntityWithPropertiesJsonSchema from "../../context/jsonSchema/EntityWithProperties.ts";
@@ -66,10 +69,12 @@ export const jsonSchemas = Object.freeze({
     BackEndMappingSource: BackEndMappingSourceJsonSchema,
     BackEndToSqlTypeMapping: BackEndToSqlTypeMappingJsonSchema,
     BackEndToTypeScriptTypeMapping: BackEndToTypeScriptTypeMappingJsonSchema,
+    BackEndType: BackEndTypeJsonSchema,
     BaseAssociationProperty: BaseAssociationPropertyJsonSchema,
     BaseProperty: BasePropertyJsonSchema,
     Column: ColumnJsonSchema,
     ColumnProperty: ColumnPropertyJsonSchema,
+    CrossType: CrossTypeJsonSchema,
     Database: DatabaseJsonSchema,
     DatabaseType: DatabaseTypeJsonSchema,
     EmbeddableProperty: EmbeddablePropertyJsonSchema,
@@ -117,9 +122,10 @@ export const jsonSchemas = Object.freeze({
     ScalarEnumProperty: ScalarEnumPropertyJsonSchema,
     SqlFormulaProperty: SqlFormulaPropertyJsonSchema,
     SqlToBackEndTypeMapping: SqlToBackEndTypeMappingJsonSchema,
+    SqlType: SqlTypeJsonSchema,
     Table: TableJsonSchema,
     TransientProperty: TransientPropertyJsonSchema,
-    TypeSelectPair: TypeSelectPairJsonSchema,
+    TypeScriptType: TypeScriptTypeJsonSchema,
     VersionProperty: VersionPropertyJsonSchema,
     EmbeddableTypeWithProperties: EmbeddableTypeWithPropertiesJsonSchema,
     EntityWithProperties: EntityWithPropertiesJsonSchema,

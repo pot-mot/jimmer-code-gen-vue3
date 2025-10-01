@@ -1,9 +1,12 @@
 import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
 import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
-const TypeSelectPairJsonSchema: JSONSchemaType<TypeSelectPair> = {
+const CrossTypeJsonSchema: JSONSchemaType<CrossType> = {
     "type": "object",
     "properties": {
+        "id": {
+            "type": "string"
+        },
         "source": {
             "$ref": "#/definitions/BackEndMappingSource"
         },
@@ -34,7 +37,7 @@ const TypeSelectPairJsonSchema: JSONSchemaType<TypeSelectPair> = {
         "backEndType": {
             "type": "object",
             "properties": {
-                "rawType": {
+                "fullTypeExpression": {
                     "type": "string"
                 },
                 "extraImports": {
@@ -46,14 +49,46 @@ const TypeSelectPairJsonSchema: JSONSchemaType<TypeSelectPair> = {
             },
             "required": [
                 "extraImports",
-                "rawType"
+                "fullTypeExpression"
+            ]
+        },
+        "typeScriptType": {
+            "type": "object",
+            "properties": {
+                "fullTypeExpression": {
+                    "type": "string"
+                },
+                "extraImports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "fromPath": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "fromPath",
+                            "name"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "extraImports",
+                "fullTypeExpression"
             ]
         }
     },
     "required": [
         "backEndType",
+        "id",
         "source",
-        "sqlType"
+        "sqlType",
+        "typeScriptType"
     ],
     "definitions": {
         "BackEndMappingSource": {
@@ -66,12 +101,12 @@ const TypeSelectPairJsonSchema: JSONSchemaType<TypeSelectPair> = {
         }
     },
     "$schema": "http://json-schema.org/draft-07/schema#"
-} as any as JSONSchemaType<TypeSelectPair>
+} as any as JSONSchemaType<CrossType>
 
-export const validateTypeSelectPair = createSchemaValidator<TypeSelectPair>(TypeSelectPairJsonSchema)
+export const validateCrossType = createSchemaValidator<CrossType>(CrossTypeJsonSchema)
 
 export default {
-    uri: "$innerType/TypeSelectPair",
-    schema: TypeSelectPairJsonSchema,
-    validate: validateTypeSelectPair,
+    uri: "$innerType/CrossType",
+    schema: CrossTypeJsonSchema,
+    validate: validateCrossType,
 }

@@ -7,13 +7,13 @@ const SqlToBackEndTypeMappingJsonSchema: JSONSchemaType<SqlToBackEndTypeMapping>
         "source": {
             "$ref": "#/definitions/BackEndMappingSource"
         },
-        "typeRegExp": {
+        "matchRegExp": {
             "type": "string"
         },
-        "javaTypeResult": {
+        "result": {
             "type": "object",
             "properties": {
-                "rawType": {
+                "fullTypeExpression": {
                     "type": "string"
                 },
                 "extraImports": {
@@ -25,14 +25,14 @@ const SqlToBackEndTypeMappingJsonSchema: JSONSchemaType<SqlToBackEndTypeMapping>
             },
             "required": [
                 "extraImports",
-                "rawType"
+                "fullTypeExpression"
             ]
         }
     },
     "required": [
-        "javaTypeResult",
-        "source",
-        "typeRegExp"
+        "matchRegExp",
+        "result",
+        "source"
     ],
     "definitions": {
         "BackEndMappingSource": {

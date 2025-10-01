@@ -7,13 +7,13 @@ const BackEndToTypeScriptTypeMappingJsonSchema: JSONSchemaType<BackEndToTypeScri
         "source": {
             "$ref": "#/definitions/BackEndMappingSource"
         },
-        "typeRegExp": {
+        "matchRegExp": {
             "type": "string"
         },
-        "tsTypeResult": {
+        "result": {
             "type": "object",
             "properties": {
-                "rawType": {
+                "fullTypeExpression": {
                     "type": "string"
                 },
                 "extraImports": {
@@ -37,14 +37,14 @@ const BackEndToTypeScriptTypeMappingJsonSchema: JSONSchemaType<BackEndToTypeScri
             },
             "required": [
                 "extraImports",
-                "rawType"
+                "fullTypeExpression"
             ]
         }
     },
     "required": [
-        "source",
-        "tsTypeResult",
-        "typeRegExp"
+        "matchRegExp",
+        "result",
+        "source"
     ],
     "definitions": {
         "BackEndMappingSource": {
