@@ -60,7 +60,7 @@ export const protectRepeatIds = (
                     }
                 }
             }
-            for (const association of associations) {
+            for (const {data: association} of associations) {
                 if ("sourceEntityId" in association) {
                     if (association.sourceEntityId === entity.id) association.sourceEntityId = newEntityId
                 }
@@ -73,7 +73,7 @@ export const protectRepeatIds = (
             if (newPropertyIdMap.has(property.id)) throw new Error(`Property [${property.name}-${property.id}] is already existed`)
             newPropertyIdMap.set(property.id, {entityId: entity.id, property})
             const newPropertyId = createId("Property")
-            for (const association of associations) {
+            for (const {data: association} of associations) {
                 if (association.sourcePropertyId === property.id) association.sourcePropertyId = newPropertyId
             }
             property.id = newPropertyId
@@ -103,7 +103,7 @@ export const protectRepeatIds = (
                     }
                 }
             }
-            for (const association of associations) {
+            for (const {data: association} of associations) {
                 if ("sourceAbstractEntityId" in association) {
                     if (association.sourceAbstractEntityId === mappedSuperClass.id) association.sourceAbstractEntityId = newMappedSuperClassId
                 }
@@ -116,7 +116,7 @@ export const protectRepeatIds = (
             if (newPropertyIdMap.has(property.id)) throw new Error(`Property [${property.name}-${property.id}] is already existed`)
             newPropertyIdMap.set(property.id, {mappedSuperClassId: mappedSuperClass.id, property})
             const newPropertyId = createId("Property")
-            for (const association of associations) {
+            for (const {data: association} of associations) {
                 if (association.sourcePropertyId === property.id) association.sourcePropertyId = newPropertyId
             }
             property.id = newPropertyId
@@ -174,7 +174,7 @@ export const protectRepeatIds = (
         }
     }
 
-    for (const association of associations) {
+    for (const {data: association} of associations) {
         if (contextData.associationMap.has(association.id)) {
             const newAssociationId = createId("Association")
             for (const {data: {properties}} of entities) {

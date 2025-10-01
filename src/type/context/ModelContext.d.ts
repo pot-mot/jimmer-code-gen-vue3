@@ -5,7 +5,7 @@ type ModelContextData = {
     mappedSuperClassMap: Map<string, MappedSuperClassWithProperties>
     embeddableTypeMap: Map<string, EmbeddableTypeWithProperties>
     enumerationMap: Map<string, Enumeration>
-    associationMap: Map<string, AssociationIdOnly>
+    associationMap: Map<string, {association: AssociationIdOnly, labelPosition: LabelPosition}>
 
     types: TypeSelectPair[]
 }

@@ -197,9 +197,12 @@ export const useModelEditor = createStore(() => {
         association: AssociationIdOnly
     ) => {
         const contextData = getContextData()
-        const associationNameSet = buildNameSets(contextData.associationMap.values())
+        const associationNameSet = buildNameSets(Array.from(contextData.associationMap.values()).map(it => it.association))
         association.name = associationNameSet.next(association.name)
-        history.executeCommand('association:add', {association})
+        history.executeCommand('association:add', {association, labelPosition: {
+            from: 'source',
+            percentage: 0.5
+        }})
         return association.id
     }
 

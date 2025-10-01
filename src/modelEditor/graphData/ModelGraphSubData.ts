@@ -61,13 +61,20 @@ export const PartialModelGraphSubData: JSONSchemaType<Partial<ModelGraphSubData>
         associations: {
             type: "array",
             items: {
-                oneOf: [
-                    jsonSchemas.OneToOneAssociationIdOnly.schema,
-                    jsonSchemas.OneToOneAbstractAssociationIdOnly.schema,
-                    jsonSchemas.ManyToOneAssociationIdOnly.schema,
-                    jsonSchemas.ManyToOneAbstractAssociationIdOnly.schema,
-                    jsonSchemas.ManyToManyAssociationIdOnly.schema,
-                ]
+                type: "object",
+                properties: {
+                    data: {
+                        oneOf: [
+                            jsonSchemas.OneToOneAssociationIdOnly.schema,
+                            jsonSchemas.OneToOneAbstractAssociationIdOnly.schema,
+                            jsonSchemas.ManyToOneAssociationIdOnly.schema,
+                            jsonSchemas.ManyToOneAbstractAssociationIdOnly.schema,
+                            jsonSchemas.ManyToManyAssociationIdOnly.schema,
+                        ]
+                    },
+                    labelPosition: jsonSchemas.LabelPosition.schema
+                },
+                required: ["data", "labelPosition"],
             },
             nullable: true,
         }

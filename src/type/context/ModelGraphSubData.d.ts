@@ -17,5 +17,5 @@ type ModelGraphSubData = {
     mappedSuperClasses: {data: MappedSuperClassWithProperties, position: Position}[]
     embeddableTypes: {data: EmbeddableTypeWithProperties, position: Position}[]
     enumerations: {data: Enumeration, position: Position}[]
-    associations: AssociationIdOnly[]
+    associations: {data: AssociationIdOnly, labelPosition: LabelPosition}[]
 }

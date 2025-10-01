@@ -54,28 +54,28 @@ export const protectRepeatNames = (
     } = graphData
 
     if (groups.length > 0) {
-        const groupNameSet = buildNameSets(contextData.groupMap.values())
-        for (const group of groups) group.name = groupNameSet.next(group.name)
+        const nameSet = buildNameSets(contextData.groupMap.values())
+        for (const group of groups) group.name = nameSet.next(group.name)
     }
     if (entities.length > 0) {
-        const entityNameSet = buildNameSets(contextData.entityMap.values())
-        for (const {data} of entities) data.name = entityNameSet.next(data.name)
+        const nameSet = buildNameSets(contextData.entityMap.values())
+        for (const {data} of entities) data.name = nameSet.next(data.name)
     }
     if (mappedSuperClasses.length > 0) {
-        const mappedSuperClassNameSet = buildNameSets(contextData.mappedSuperClassMap.values())
-        for (const {data} of mappedSuperClasses) data.name = mappedSuperClassNameSet.next(data.name)
+        const nameSet = buildNameSets(contextData.mappedSuperClassMap.values())
+        for (const {data} of mappedSuperClasses) data.name = nameSet.next(data.name)
     }
     if (embeddableTypes.length > 0) {
-        const embeddableTypeNameSet = buildNameSets(contextData.embeddableTypeMap.values())
-        for (const {data} of embeddableTypes) data.name = embeddableTypeNameSet.next(data.name)
+        const nameSet = buildNameSets(contextData.embeddableTypeMap.values())
+        for (const {data} of embeddableTypes) data.name = nameSet.next(data.name)
     }
     if (enumerations.length > 0) {
-        const enumerationNameSet = buildNameSets(contextData.enumerationMap.values())
-        for (const {data} of enumerations) data.name = enumerationNameSet.next(data.name)
+        const nameSet = buildNameSets(contextData.enumerationMap.values())
+        for (const {data} of enumerations) data.name = nameSet.next(data.name)
     }
     if (associations.length > 0) {
-        const associationNameSet = buildNameSets(contextData.associationMap.values())
-        for (const association of associations) association.name = associationNameSet.next(association.name)
+        const nameSet = buildNameSets(Array.from(contextData.associationMap.values()).map(it => it.association))
+        for (const {data} of associations) data.name = nameSet.next(data.name)
 
     }
 }

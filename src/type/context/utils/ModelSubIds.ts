@@ -40,8 +40,8 @@ export const subDataToSubIds = (
     for (const {data} of subData.enumerations) {
         result.enumerationIds.push(data.id)
     }
-    for (const association of subData.associations) {
-        result.associationIds.push(association.id)
+    for (const {data} of subData.associations) {
+        result.associationIds.push(data.id)
     }
 
     return result

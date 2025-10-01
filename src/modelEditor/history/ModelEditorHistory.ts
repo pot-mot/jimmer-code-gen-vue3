@@ -10,7 +10,7 @@ import {type EmbeddableTypeNode, NodeType_EmbeddableType} from "@/modelEditor/no
 import {type EnumerationNode, NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
 import {type ConcreteAssociationEdge, EdgeType_ConcreteAssociation} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
 import {defaultModelSubIds, fillModelSubIds, subIdsToSubIdSets} from "@/type/context/utils/ModelSubIds.ts";
-import {defaultModelGraphSubData, graphDataToModelData} from "@/type/context/utils/ModelGraphSubData.ts";
+import {defaultModelGraphSubData} from "@/type/context/utils/ModelGraphSubData.ts";
 import {protectRepeatIds} from "@/modelEditor/import/protectRepeatIds.ts";
 import {layoutPosition} from "@/modelEditor/import/layoutPosition.ts";
 import {protectRepeatNames} from "@/modelEditor/import/protectRepeatNames.ts";
@@ -85,12 +85,14 @@ export type ModelEditorHistoryCommands = {
     }>>
 
     "association:add": CommandDefinition<DeepReadonly<{
-        association: AssociationIdOnly,
+        association: AssociationIdOnly
+        labelPosition: LabelPosition
     }>, DeepReadonly<{
         id: string
     }>>
     "association:change": CommandDefinition<DeepReadonly<{
         association: AssociationIdOnly
+        labelPosition: LabelPosition
     }>>
 
     "import": CommandDefinition<DeepReadonly<{data: ModelGraphSubData, startPosition: XYPosition}>, DeepReadonly<{ids: ModelSubIds, startPosition: XYPosition}>>
@@ -847,18 +849,19 @@ export const useModelEditorHistory = (
 
     // 关联
     const associationWatchStopMap = new Map<string, () => void>()
-    const associationOldMap = new Map<string, AssociationIdOnly | undefined>()
+    const associationOldMap = new Map<string, {association: AssociationIdOnly, labelPosition: LabelPosition} | undefined>()
     const addAssociationWatcher = (id: string) => {
         const contextData = getContextData()
 
         if (associationWatchStopMap.has(id)) throw new Error(`Association [${id}] is already watched`)
 
         associationOldMap.set(id, cloneDeepReadonlyRaw(contextData.associationMap.get(id)))
-        const debounceSyncAssociationUpdate = debounce((newAssociation: AssociationIdOnly | undefined) => {
+        const debounceSyncAssociationUpdate = debounce((newAssociation: {association: AssociationIdOnly, labelPosition: LabelPosition} | undefined) => {
             const oldAssociation = associationOldMap.get(id)
             if (newAssociation && oldAssociation) {
                 history.executeCommand("association:change", {
-                    association: newAssociation
+                    association: newAssociation.association,
+                    labelPosition: newAssociation.labelPosition,
                 })
             }
             associationOldMap.set(id, cloneDeepReadonlyRaw(newAssociation))
@@ -881,7 +884,7 @@ export const useModelEditorHistory = (
         associationWatchStopMap.delete(id)
     }
 
-    const addAssociation = (options: DeepReadonly<{ association: AssociationIdOnly }>) => {
+    const addAssociation = (options: DeepReadonly<{ association: AssociationIdOnly, labelPosition: LabelPosition }>) => {
         const id = options.association.id
         const contextData = getContextData()
         const vueFlow = getVueFlow()
@@ -905,7 +908,11 @@ export const useModelEditorHistory = (
         const targetHandleId = options.association.referencedEntityId
 
         const association = cloneDeepReadonlyRaw<AssociationIdOnly>(options.association)
-        contextData.associationMap.set(id, association)
+        const labelPosition = cloneDeepReadonlyRaw<LabelPosition>(options.labelPosition)
+        contextData.associationMap.set(id, {
+            association,
+            labelPosition,
+        })
         addAssociationWatcher(id)
         if ("sourceEntityId" in association) {
             const newEdge: ConcreteAssociationEdge = {
@@ -916,7 +923,8 @@ export const useModelEditorHistory = (
                 targetHandle: targetHandleId,
                 type: EdgeType_ConcreteAssociation,
                 data: {
-                    association
+                    association,
+                    labelPosition,
                 }
             }
             vueFlow.addEdges(newEdge)
@@ -929,7 +937,8 @@ export const useModelEditorHistory = (
                 targetHandle: targetHandleId,
                 type: EdgeType_AbstractAssociation,
                 data: {
-                    association
+                    association,
+                    labelPosition: options.labelPosition,
                 }
             }
             vueFlow.addEdges(newEdge)
@@ -947,9 +956,9 @@ export const useModelEditorHistory = (
         removeAssociationWatcher(id)
         contextData.associationMap.delete(id)
         vueFlow.removeEdges([id])
-        return {association}
+        return association
     }
-    const updateAssociation = (options: DeepReadonly<{ association: AssociationIdOnly }>) => {
+    const updateAssociation = (options: DeepReadonly<{ association: AssociationIdOnly, labelPosition: LabelPosition }>) => {
         const id = options.association.id
         const contextData = getContextData()
         const vueFlow = getVueFlow()
@@ -976,8 +985,9 @@ export const useModelEditorHistory = (
         const targetHandleId = options.association.referencedEntityId
 
         const association = cloneDeepReadonlyRaw<AssociationIdOnly>(options.association)
+        const labelPosition = cloneDeepReadonlyRaw<LabelPosition>(options.labelPosition)
         removeAssociationWatcher(id)
-        contextData.associationMap.set(id, association)
+        contextData.associationMap.set(id, {association, labelPosition})
         addAssociationWatcher(id)
         existedAssociationEdge.data.association = association
         vueFlow.updateEdge(existedAssociationEdge, {
@@ -986,7 +996,7 @@ export const useModelEditorHistory = (
             sourceHandle: sourceHandleId,
             targetHandle: targetHandleId,
         })
-        return {association: oldAssociation}
+        return oldAssociation
     }
 
     history.registerCommand("association:add", {
@@ -1018,7 +1028,6 @@ export const useModelEditorHistory = (
                     ...graphData.enumerations,
                 ])
             }
-            const newContextData = graphDataToModelData(graphData, contextData)
 
             for (const group of graphData.groups) {
                 result.groupIds.push(addGroup({group}).id)
@@ -1035,8 +1044,8 @@ export const useModelEditorHistory = (
             for (const {data: entity, position} of graphData.entities) {
                 result.entityIds.push(addEntity({entity, position}).id)
             }
-            for (const association of newContextData.associations) {
-                result.associationIds.push(addAssociation({association}).id)
+            for (const {data: association, labelPosition} of graphData.associations) {
+                result.associationIds.push(addAssociation({association, labelPosition}).id)
             }
         } catch (e) {
             sendMessage(`Import Info Context Fail: ${e}`, {type: "error"})
@@ -1074,7 +1083,7 @@ export const useModelEditorHistory = (
             }
 
             for (const entityId of idSets.entityIdSet) {
-                for (const association of contextData.associationMap.values()) {
+                for (const {association} of contextData.associationMap.values()) {
                     if ("sourceEntityId" in association && association.sourceEntityId === entityId) {
                         idSets.associationIdSet.add(association.id)
                     }
@@ -1084,7 +1093,7 @@ export const useModelEditorHistory = (
                 }
             }
             for (const mappedSuperClassId of idSets.mappedSuperClassIdSet) {
-                for (const association of contextData.associationMap.values()) {
+                for (const {association} of contextData.associationMap.values()) {
                     if ("sourceAbstractEntityId" in association && association.sourceAbstractEntityId === mappedSuperClassId) {
                         idSets.associationIdSet.add(association.id)
                     }
@@ -1093,9 +1102,10 @@ export const useModelEditorHistory = (
 
             // 真正执行删除
             for (const associationId of idSets.associationIdSet) {
-                const association = contextData.associationMap.get(associationId)
-                if (association) {
-                    result.associations.push(association)
+                const associationWithLabelPosition = contextData.associationMap.get(associationId)
+                if (associationWithLabelPosition) {
+                    const {association, labelPosition} = associationWithLabelPosition
+                    result.associations.push({data: association, labelPosition})
                     revertAddAssociation({id: association.id})
                 }
             }

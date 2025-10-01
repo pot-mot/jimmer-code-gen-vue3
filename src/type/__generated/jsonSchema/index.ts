@@ -26,6 +26,7 @@ import IndexJsonSchema from "./items/Index.ts";
 import JoinColumnJsonSchema from "./items/JoinColumn.ts";
 import JoinTableJsonSchema from "./items/JoinTable.ts";
 import KeyPropertyJsonSchema from "./items/KeyProperty.ts";
+import LabelPositionJsonSchema from "./items/LabelPosition.ts";
 import LogicalDeletePropertyJsonSchema from "./items/LogicalDeleteProperty.ts";
 import ManyToManyAssociationIdOnlyJsonSchema from "./items/ManyToManyAssociationIdOnly.ts";
 import ManyToManyMappedPropertyJsonSchema from "./items/ManyToManyMappedProperty.ts";
@@ -89,6 +90,7 @@ export const jsonSchemas = Object.freeze({
     JoinColumn: JoinColumnJsonSchema,
     JoinTable: JoinTableJsonSchema,
     KeyProperty: KeyPropertyJsonSchema,
+    LabelPosition: LabelPositionJsonSchema,
     LogicalDeleteProperty: LogicalDeletePropertyJsonSchema,
     ManyToManyAssociationIdOnly: ManyToManyAssociationIdOnlyJsonSchema,
     ManyToManyMappedProperty: ManyToManyMappedPropertyJsonSchema,

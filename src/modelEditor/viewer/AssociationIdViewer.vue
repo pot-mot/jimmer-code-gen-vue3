@@ -13,7 +13,7 @@ const props = withDefaults(defineProps<{
 })
 
 const association = computed(() => {
-    return contextData.value?.associationMap.get(props.id)
+    return contextData.value?.associationMap.get(props.id)?.association
 })
 </script>
 

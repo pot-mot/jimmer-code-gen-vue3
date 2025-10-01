@@ -27,7 +27,7 @@ export const contextDataGetSubData = (
     for (const enumeration of contextData.enumerationMap.values()) {
         result.enumerations.push(enumeration)
     }
-    for (const association of contextData.associationMap.values()) {
+    for (const {association} of contextData.associationMap.values()) {
         result.associations.push(association)
     }
 
@@ -51,7 +51,7 @@ export const contextDataGetSelectSubData = (
         }
     }
     for (const {id: entityId} of result.entities) {
-        for (const association of contextData.associationMap.values()) {
+        for (const {association} of contextData.associationMap.values()) {
             if ("sourceEntityId" in association && association.sourceEntityId === entityId) {
                 result.associations.push(association)
             } else if (association.referencedEntityId === entityId) {
@@ -66,7 +66,7 @@ export const contextDataGetSelectSubData = (
         }
     }
     for (const {id: mappedSuperClassId} of result.mappedSuperClasses) {
-        for (const association of contextData.associationMap.values()) {
+        for (const {association} of contextData.associationMap.values()) {
             if ("sourceAbstractEntityId" in association && association.sourceAbstractEntityId === mappedSuperClassId) {
                 result.associations.push(association)
             }
@@ -83,7 +83,7 @@ export const contextDataGetSelectSubData = (
             result.enumerations.push(enumeration)
         }
     }
-    for (const association of contextData.associationMap.values()) {
+    for (const {association} of contextData.associationMap.values()) {
         if (selectIds.associationIdSet.has(association.id)) {
             result.associations.push(association)
         }

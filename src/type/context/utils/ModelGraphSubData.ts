@@ -51,7 +51,7 @@ export const graphDataToModelData = (
         mappedSuperClasses: graphData.mappedSuperClasses.map(it => it.data),
         embeddableTypes: graphData.embeddableTypes.map(it => it.data),
         enumerations: graphData.enumerations.map(it => it.data),
-        associations: graphData.associations,
+        associations: graphData.associations.map(it => it.data),
     }
 }
 
@@ -83,12 +83,18 @@ export const modelDataToGraphData = (
         if (!node) throw new Error(`Enumeration ${enumeration.id} Node not found`)
         enumerationWithPosition.push({data: enumeration, position: node.position})
     }
+    const associationWithLabelPosition = []
+    for (const association of data.associations) {
+        const edge = vueFlow.findEdge(association.id)
+        if (!edge) throw new Error(`Association ${association.id} Edge not found`)
+        associationWithLabelPosition.push({data: association, labelPosition: edge.data.labelPosition})
+    }
     return{
         groups: data.groups,
         entities: entityWithPosition,
         mappedSuperClasses: mappedSuperClassWithPosition,
         embeddableTypes: embeddableTypeWithPosition,
         enumerations: enumerationWithPosition,
-        associations: data.associations,
+        associations: associationWithLabelPosition,
     }
 }

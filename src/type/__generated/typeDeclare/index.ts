@@ -48,6 +48,7 @@ import IndexDeclare from "./items/Index.ts";
 import JoinColumnDeclare from "./items/JoinColumn.ts";
 import JoinTableDeclare from "./items/JoinTable.ts";
 import KeyPropertyDeclare from "./items/KeyProperty.ts";
+import LabelPositionDeclare from "./items/LabelPosition.ts";
 import LogicalDeletePropertyDeclare from "./items/LogicalDeleteProperty.ts";
 import ManyToManyAssociationDeclare from "./items/ManyToManyAssociation.ts";
 import ManyToManyAssociationIdOnlyDeclare from "./items/ManyToManyAssociationIdOnly.ts";
@@ -144,6 +145,7 @@ export type TypeMap = {
     JoinColumn: JoinColumn
     JoinTable: JoinTable
     KeyProperty: KeyProperty
+    LabelPosition: LabelPosition
     LogicalDeleteProperty: LogicalDeleteProperty
     ManyToManyAssociation: ManyToManyAssociation
     ManyToManyAssociationIdOnly: ManyToManyAssociationIdOnly
@@ -244,6 +246,7 @@ export const typeDeclares = Object.freeze({
     JoinColumn: JoinColumnDeclare,
     JoinTable: JoinTableDeclare,
     KeyProperty: KeyPropertyDeclare,
+    LabelPosition: LabelPositionDeclare,
     LogicalDeleteProperty: LogicalDeletePropertyDeclare,
     ManyToManyAssociation: ManyToManyAssociationDeclare,
     ManyToManyAssociationIdOnly: ManyToManyAssociationIdOnlyDeclare,

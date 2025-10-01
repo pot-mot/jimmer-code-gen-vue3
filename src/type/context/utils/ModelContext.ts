@@ -25,8 +25,8 @@ export const contextDataToContext = (
     const model = contextData.model
 
     const associationMap = new Map<string, Association>()
-    for (const [id, associationIdOnly] of contextData.associationMap) {
-        associationMap.set(id, idOnlyToAssociation(associationIdOnly, contextData.entityMap, contextData.mappedSuperClassMap))
+    for (const [id, {association}] of contextData.associationMap) {
+        associationMap.set(id, idOnlyToAssociation(association, contextData.entityMap, contextData.mappedSuperClassMap))
     }
 
     const inheritorsMap = buildInheritorsMap(contextData.entityMap, contextData.mappedSuperClassMap)
