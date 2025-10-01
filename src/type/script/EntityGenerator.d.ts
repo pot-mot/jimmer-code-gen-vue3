@@ -29,6 +29,6 @@ type GroupGenerator = (
 ) => Record<string, string>
 
 type ModelGenerator = (
-    model: DeepReadonly<ModelWithSubData>,
+    model: DeepReadonly<Model>,
     context: DeepReadonly<ModelContext>
 ) => Record<string, string>

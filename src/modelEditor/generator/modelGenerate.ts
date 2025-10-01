@@ -19,8 +19,6 @@ export const modelGenerate = (
         }
     }
 
-    const model = context.model
-
     if (selectedIds.entityIds) {
         const entities = getArrayFromMap(context.entityMap, selectedIds.entityIds)
         const tables = entities.map(it => convertor.entityToTable(it, context))
@@ -81,7 +79,7 @@ export const modelGenerate = (
     }
 
     for (const script of generator.model.scripts()) {
-        mergeIntoFiles(script.execute(model, context))
+        mergeIntoFiles(script.execute(context.model, context))
     }
 
     return files
