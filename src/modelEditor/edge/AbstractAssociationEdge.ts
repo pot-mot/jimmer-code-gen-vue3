@@ -6,6 +6,7 @@ export type AbstractAssociationEdge = Pick<GraphEdge, 'id' | 'source' | 'target'
     type: typeof EdgeType_AbstractAssociation
     data: {
         association: AbstractAssociationIdOnly
+        labelPosition: LabelPosition
     },
     sourceHandle: string,
     targetHandle: string,

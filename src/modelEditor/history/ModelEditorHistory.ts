@@ -22,6 +22,7 @@ import {sendMessage} from "@/components/message/messageApi.ts";
 import {
     getPropertiesAssociationChange,
 } from "@/modelEditor/property/PropertyAssociationSync.ts";
+import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
 
 const SYNC_DEBOUNCE_TIMEOUT = 500
 
@@ -965,7 +966,7 @@ export const useModelEditorHistory = (
 
         const oldAssociation = associationOldMap.get(id)
         if (!oldAssociation) throw new Error(`Association [${id}] is not existed`)
-        const existedAssociationEdge = vueFlow.findEdge(id)
+        const existedAssociationEdge = findAssociationEdge(id, vueFlow)
         if (!existedAssociationEdge) throw new Error(`Edge [${id}] is not existed`)
 
         let sourceNode: GraphNode | undefined
@@ -990,12 +991,20 @@ export const useModelEditorHistory = (
         contextData.associationMap.set(id, {association, labelPosition})
         addAssociationWatcher(id)
         existedAssociationEdge.data.association = association
-        vueFlow.updateEdge(existedAssociationEdge, {
-            source: sourceNode.id,
-            target: targetNode.id,
-            sourceHandle: sourceHandleId,
-            targetHandle: targetHandleId,
-        })
+        existedAssociationEdge.data.labelPosition = labelPosition
+        if (
+            existedAssociationEdge.source !== sourceNode.id ||
+            existedAssociationEdge.target !== targetNode.id ||
+            existedAssociationEdge.sourceHandle !== sourceHandleId ||
+            existedAssociationEdge.targetHandle !== targetHandleId
+        ) {
+            vueFlow.updateEdge(existedAssociationEdge, {
+                source: sourceNode.id,
+                target: targetNode.id,
+                sourceHandle: sourceHandleId,
+                targetHandle: targetHandleId,
+            })
+        }
         return oldAssociation
     }
 

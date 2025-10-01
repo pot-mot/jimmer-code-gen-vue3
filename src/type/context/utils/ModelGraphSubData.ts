@@ -51,7 +51,7 @@ export const graphDataToModelData = (
         mappedSuperClasses: graphData.mappedSuperClasses.map(it => it.data),
         embeddableTypes: graphData.embeddableTypes.map(it => it.data),
         enumerations: graphData.enumerations.map(it => it.data),
-        associations: graphData.associations.map(it => it.data),
+        associations: graphData.associations.map(it => ({association: it.data, labelPosition: it.labelPosition})),
     }
 }
 
@@ -65,36 +65,37 @@ export const modelDataToGraphData = (
         if (!node) throw new Error(`Entity ${entity.id} Node not found`)
         entityWithPosition.push({data: entity, position: node.position})
     }
-    const mappedSuperClassWithPosition = []
+    const mappedSuperClassWithPositions = []
     for (const mappedSuperClass of data.mappedSuperClasses) {
         const node = vueFlow.findNode(mappedSuperClass.id)
         if (!node) throw new Error(`MappedSuperClass ${mappedSuperClass.id} Node not found`)
-        mappedSuperClassWithPosition.push({data: mappedSuperClass, position: node.position})
+        mappedSuperClassWithPositions.push({data: mappedSuperClass, position: node.position})
     }
-    const embeddableTypeWithPosition = []
+    const embeddableTypeWithPositions = []
     for (const embeddableType of data.embeddableTypes) {
         const node = vueFlow.findNode(embeddableType.id)
         if (!node) throw new Error(`EmbeddableType ${embeddableType.id} Node not found`)
-        embeddableTypeWithPosition.push({data: embeddableType, position: node.position})
+        embeddableTypeWithPositions.push({data: embeddableType, position: node.position})
     }
-    const enumerationWithPosition = []
+    const enumerationWithPositions = []
     for (const enumeration of data.enumerations) {
         const node = vueFlow.findNode(enumeration.id)
         if (!node) throw new Error(`Enumeration ${enumeration.id} Node not found`)
-        enumerationWithPosition.push({data: enumeration, position: node.position})
+        enumerationWithPositions.push({data: enumeration, position: node.position})
     }
-    const associationWithLabelPosition = []
-    for (const association of data.associations) {
+    const associationWithLabelPositions = []
+    for (const associationWithLabelPosition of data.associations) {
+        const association = associationWithLabelPosition.association
         const edge = vueFlow.findEdge(association.id)
         if (!edge) throw new Error(`Association ${association.id} Edge not found`)
-        associationWithLabelPosition.push({data: association, labelPosition: edge.data.labelPosition})
+        associationWithLabelPositions.push({data: association, labelPosition: edge.data.labelPosition})
     }
     return{
         groups: data.groups,
         entities: entityWithPosition,
-        mappedSuperClasses: mappedSuperClassWithPosition,
-        embeddableTypes: embeddableTypeWithPosition,
-        enumerations: enumerationWithPosition,
-        associations: associationWithLabelPosition,
+        mappedSuperClasses: mappedSuperClassWithPositions,
+        embeddableTypes: embeddableTypeWithPositions,
+        enumerations: enumerationWithPositions,
+        associations: associationWithLabelPositions,
     }
 }

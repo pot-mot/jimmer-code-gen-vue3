@@ -3,6 +3,7 @@ import {readonly, ref, type ShallowRef} from "vue";
 import type {EdgeChange, NodeChange, VueFlowStore} from "@vue-flow/core";
 import mitt from "mitt";
 import {fillModelSubIds} from "@/type/context/utils/ModelSubIds.ts";
+import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
 
 export const useModelEditorSelectIds = (
     modelEditorState: {
@@ -154,7 +155,7 @@ export const useModelEditorSelectIds = (
         const contextData = getContextData()
         const vueFlow = getVueFlow()
         if (!contextData.associationMap.has(id)) throw new Error(`Association [${id}] is not existed`)
-        const edge = vueFlow.findEdge(id)
+        const edge = findAssociationEdge(id, vueFlow)
         if (!edge) throw new Error(`Edge [${id}] is not existed`)
 
         if (!vueFlow.multiSelectionActive.value) clearSelectedIdSets()
@@ -164,7 +165,7 @@ export const useModelEditorSelectIds = (
     }
     const unselectAssociation = (id: string) => {
         const vueFlow = getVueFlow()
-        const edge = vueFlow.findEdge(id)
+        const edge = findAssociationEdge(id, vueFlow)
         if (!edge) throw new Error(`Edge [${id}] is not existed`)
 
         selectedIdSets.value.associationIdSet.delete(id)

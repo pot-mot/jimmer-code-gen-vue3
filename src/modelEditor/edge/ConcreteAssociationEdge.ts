@@ -6,6 +6,7 @@ export type ConcreteAssociationEdge = Pick<GraphEdge, 'id' | 'source' | 'target'
     type: typeof EdgeType_ConcreteAssociation
     data: {
         association: ConcreteAssociationIdOnly
+        labelPosition: LabelPosition
     },
     sourceHandle: string,
     targetHandle: string,

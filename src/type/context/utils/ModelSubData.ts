@@ -27,7 +27,7 @@ export const contextDataGetSubData = (
     for (const enumeration of contextData.enumerationMap.values()) {
         result.enumerations.push(enumeration)
     }
-    for (const {association} of contextData.associationMap.values()) {
+    for (const association of contextData.associationMap.values()) {
         result.associations.push(association)
     }
 
@@ -51,11 +51,12 @@ export const contextDataGetSelectSubData = (
         }
     }
     for (const {id: entityId} of result.entities) {
-        for (const {association} of contextData.associationMap.values()) {
+        for (const associationWithLabelPosition of contextData.associationMap.values()) {
+            const association = associationWithLabelPosition.association
             if ("sourceEntityId" in association && association.sourceEntityId === entityId) {
-                result.associations.push(association)
+                result.associations.push(associationWithLabelPosition)
             } else if (association.referencedEntityId === entityId) {
-                result.associations.push(association)
+                result.associations.push(associationWithLabelPosition)
             }
         }
     }
@@ -66,9 +67,10 @@ export const contextDataGetSelectSubData = (
         }
     }
     for (const {id: mappedSuperClassId} of result.mappedSuperClasses) {
-        for (const {association} of contextData.associationMap.values()) {
+        for (const associationWithLabelPosition of contextData.associationMap.values()) {
+            const association = associationWithLabelPosition.association
             if ("sourceAbstractEntityId" in association && association.sourceAbstractEntityId === mappedSuperClassId) {
-                result.associations.push(association)
+                result.associations.push(associationWithLabelPosition)
             }
         }
     }
@@ -83,9 +85,10 @@ export const contextDataGetSelectSubData = (
             result.enumerations.push(enumeration)
         }
     }
-    for (const {association} of contextData.associationMap.values()) {
+    for (const associationWithLabelPosition of contextData.associationMap.values()) {
+        const association = associationWithLabelPosition.association
         if (selectIds.associationIdSet.has(association.id)) {
-            result.associations.push(association)
+            result.associations.push(associationWithLabelPosition)
         }
     }
 
