@@ -14,7 +14,7 @@ const smoothStepPath = computed(() => {
     return getSmoothStepPath(props)
 })
 
-// 贝塞尔曲线中点控制 input 位置
+// 曲线中点控制 label 位置
 const edgeRef = useTemplateRef<InstanceType<typeof BaseEdge>>("edgeRef")
 const labelPoint = ref<{ x: number; y: number }>({x: 0, y: 0});
 
