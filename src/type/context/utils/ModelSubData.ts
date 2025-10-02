@@ -55,8 +55,6 @@ export const contextDataGetSelectSubData = (
             const association = associationWithLabelPosition.association
             if ("sourceEntityId" in association && association.sourceEntityId === entityId) {
                 result.associations.push(associationWithLabelPosition)
-            } else if (association.referencedEntityId === entityId) {
-                result.associations.push(associationWithLabelPosition)
             }
         }
     }
