@@ -39,12 +39,14 @@ export const contextDataGetSelectSubData = (
     selectIds: DeepReadonly<ModelSubIdSets>,
 ): ModelSubData => {
     const result = defaultModelSubData()
+    const resultAssociationIdSet = new Set<string>()
 
     for (const group of contextData.groupMap.values()) {
         if (selectIds.groupIdSet.has(group.id)) {
             result.groups.push(group)
         }
     }
+
     for (const entity of contextData.entityMap.values()) {
         if (selectIds.entityIdSet.has(entity.id)) {
             result.entities.push(entity)
@@ -54,7 +56,10 @@ export const contextDataGetSelectSubData = (
         for (const associationWithLabelPosition of contextData.associationMap.values()) {
             const association = associationWithLabelPosition.association
             if ("sourceEntityId" in association && association.sourceEntityId === entityId) {
-                result.associations.push(associationWithLabelPosition)
+                if (!resultAssociationIdSet.has(association.id)) {
+                    result.associations.push(associationWithLabelPosition)
+                    resultAssociationIdSet.add(association.id)
+                }
             }
         }
     }
@@ -68,7 +73,10 @@ export const contextDataGetSelectSubData = (
         for (const associationWithLabelPosition of contextData.associationMap.values()) {
             const association = associationWithLabelPosition.association
             if ("sourceAbstractEntityId" in association && association.sourceAbstractEntityId === mappedSuperClassId) {
-                result.associations.push(associationWithLabelPosition)
+                if (!resultAssociationIdSet.has(association.id)) {
+                    result.associations.push(associationWithLabelPosition)
+                    resultAssociationIdSet.add(association.id)
+                }
             }
         }
     }
@@ -78,15 +86,20 @@ export const contextDataGetSelectSubData = (
             result.embeddableTypes.push(embeddableType)
         }
     }
+
     for (const enumeration of contextData.enumerationMap.values()) {
         if (selectIds.enumerationIdSet.has(enumeration.id)) {
             result.enumerations.push(enumeration)
         }
     }
+
     for (const associationWithLabelPosition of contextData.associationMap.values()) {
         const association = associationWithLabelPosition.association
         if (selectIds.associationIdSet.has(association.id)) {
-            result.associations.push(associationWithLabelPosition)
+            if (!resultAssociationIdSet.has(association.id)) {
+                result.associations.push(associationWithLabelPosition)
+                resultAssociationIdSet.add(association.id)
+            }
         }
     }
 
