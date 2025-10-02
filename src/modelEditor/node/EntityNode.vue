@@ -26,9 +26,9 @@ const groupTheme = computed(() => {
 })
 
 const nodeElRef = useTemplateRef("nodeElRef")
-const handleIndexMap = ref(new Map<string, number>())
+const handleIndexMap = ref(new Map<number, string>())
 const onHandleUpdate = (id: string, index: number) => {
-    handleIndexMap.value.set(id, index)
+    handleIndexMap.value.set(index, id)
 }
 const forceResize = (element: HTMLElement) => {
     const oldStyleWidth = element.style.width
