@@ -31,4 +31,5 @@ const referencedEntity = computed(() => {
         <template #label>
             <AssociationViewer :association="data.association"/>
         </template>
+    </AssociationEdge>
 </template>
