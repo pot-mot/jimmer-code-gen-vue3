@@ -865,7 +865,7 @@ export const useModelEditor = createStore(() => {
                 focus()
                 return result
             } catch (e) {
-                sendMessage(`copy fail: ${e}`, {type: "warning"})
+                sendMessage(`copy fail`, {type: "warning"})
                 throw e
             }
         },
@@ -876,7 +876,7 @@ export const useModelEditor = createStore(() => {
                 focus()
                 return result
             } catch (e) {
-                sendMessage(`paste fail: ${e}`, {type: "warning"})
+                sendMessage(`paste fail`, {type: "warning"})
                 throw e
             }
         },
@@ -887,7 +887,7 @@ export const useModelEditor = createStore(() => {
                 focus()
                 return result
             } catch (e) {
-                sendMessage(`cut fail: ${e}`, {type: "warning"})
+                sendMessage(`cut fail`, {type: "warning"})
                 throw e
             }
         },
