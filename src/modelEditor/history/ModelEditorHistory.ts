@@ -280,6 +280,7 @@ export const useModelEditorHistory = (
 
         deleteColorVar(id)
         removeGroupWatcher(id)
+        groupOldMap.delete(id)
         contextData.groupMap.delete(id)
         menuMap.value.delete(id)
         return {group: oldGroup}
@@ -402,6 +403,7 @@ export const useModelEditorHistory = (
         if (!menuItem.entityMap.has(id)) throw new Error(`Entity [${id}] is not existed in group [${groupId}]`)
 
         removeEntityWatcher(id)
+        entityOldMap.delete(id)
         contextData.entityMap.delete(id)
         menuItem.entityMap.delete(id)
         vueFlow.removeNodes([entityNode])
@@ -544,6 +546,7 @@ export const useModelEditorHistory = (
         if (!menuItem.mappedSuperClassMap.has(id)) throw new Error(`MappedSuperClass [${id}] is not existed in group [${groupId}]`)
 
         removeMappedSuperClassWatcher(id)
+        mappedSuperClassOldMap.delete(id)
         contextData.mappedSuperClassMap.delete(id)
         menuItem.mappedSuperClassMap.delete(id)
         vueFlow.removeNodes([mappedSuperClassNode])
@@ -676,6 +679,7 @@ export const useModelEditorHistory = (
         if (!menuItem.embeddableTypeMap.has(id)) throw new Error(`EmbeddableType [${id}] is not existed in group [${groupId}]`)
 
         removeEmbeddableTypeWatcher(id)
+        embeddableTypeOldMap.delete(id)
         contextData.embeddableTypeMap.delete(id)
         menuItem.embeddableTypeMap.delete(id)
         vueFlow.removeNodes([embeddableTypeNode])
@@ -804,6 +808,7 @@ export const useModelEditorHistory = (
         if (!menuItem.enumerationMap.has(id)) throw new Error(`Enumeration [${id}] is not existed in group [${groupId}]`)
 
         removeEnumerationWatcher(id)
+        enumerationOldMap.delete(id)
         contextData.enumerationMap.delete(id)
         menuItem.enumerationMap.delete(id)
         vueFlow.removeNodes([enumerationNode])
@@ -903,7 +908,7 @@ export const useModelEditorHistory = (
     ): boolean => {
         if ("sourceEntityId" in association) {
             const sourceEntity = contextData.entityMap.get(association.sourceEntityId)
-            if (!sourceEntity) return false
+            if (!sourceEntity) throw new Error(`[${association.sourceEntityId}] is not existed`)
             const sourceProperty = sourceEntity.properties.find(property => property.id === association.sourcePropertyId)
             if (!sourceProperty) throw new Error(`[${association.sourcePropertyId}] is not existed in [${sourceEntity.name}]`)
             for (const {association} of contextData.associationMap.values()) {
@@ -913,7 +918,7 @@ export const useModelEditorHistory = (
             }
         } else {
             const sourceAbstractEntity = contextData.mappedSuperClassMap.get(association.sourceAbstractEntityId)
-            if (!sourceAbstractEntity) return false
+            if (!sourceAbstractEntity) throw new Error(`[${association.sourceAbstractEntityId}] is not existed`)
             const sourceProperty = sourceAbstractEntity.properties.find(property => property.id === association.sourcePropertyId)
             if (!sourceProperty) throw new Error(`[${association.sourcePropertyId}] is not existed in [${sourceAbstractEntity.name}]`)
             for (const {association} of contextData.associationMap.values()) {
@@ -935,7 +940,7 @@ export const useModelEditorHistory = (
 
         if ("sourceEntityId" in association) {
             sourceNode = vueFlow.findNode(association.sourceEntityId)
-            if (!sourceNode) throw new Error(`Entity [${association.sourceEntityId}] is not existed`)
+            if (!sourceNode) throw new Error(`[${association.sourceEntityId}] is not existed`)
             sourceHandleId = association.sourcePropertyId
             for (const {association} of contextData.associationMap.values()) {
                 if (association.sourcePropertyId === sourceHandleId) {
@@ -947,7 +952,7 @@ export const useModelEditorHistory = (
             }
         } else {
             sourceNode = vueFlow.findNode(association.sourceAbstractEntityId)
-            if (!sourceNode) throw new Error(`AbstractEntity [${association.sourceAbstractEntityId}] is not existed`)
+            if (!sourceNode) throw new Error(`[${association.sourceAbstractEntityId}] is not existed`)
             sourceHandleId = association.sourcePropertyId
             for (const {association} of contextData.associationMap.values()) {
                 if (association.sourcePropertyId === sourceHandleId) {
@@ -1041,6 +1046,7 @@ export const useModelEditorHistory = (
         if (!association) throw new Error(`Association [${id}] is not existed`)
 
         removeAssociationWatcher(id)
+        associationOldMap.delete(id)
         contextData.associationMap.delete(id)
         vueFlow.removeEdges([id])
         return association

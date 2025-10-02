@@ -67,16 +67,16 @@ export const protectRepeatIds = (
                 if (association.referencedEntityId === entity.id) association.referencedEntityId = newEntityId
             }
             entity.id = newEntityId
-        }
 
-        for (const property of entity.properties) {
-            if (newPropertyIdMap.has(property.id)) throw new Error(`Property [${property.name}-${property.id}] is already existed`)
-            newPropertyIdMap.set(property.id, {entityId: entity.id, property})
-            const newPropertyId = createId("Property")
-            for (const {data: association} of associations) {
-                if (association.sourcePropertyId === property.id) association.sourcePropertyId = newPropertyId
+            for (const property of entity.properties) {
+                if (newPropertyIdMap.has(property.id)) throw new Error(`Property [${property.name}-${property.id}] is already existed`)
+                newPropertyIdMap.set(property.id, {entityId: entity.id, property})
+                const newPropertyId = createId("Property")
+                for (const {data: association} of associations) {
+                    if (association.sourcePropertyId === property.id) association.sourcePropertyId = newPropertyId
+                }
+                property.id = newPropertyId
             }
-            property.id = newPropertyId
         }
     }
 
@@ -107,19 +107,18 @@ export const protectRepeatIds = (
                 if ("sourceAbstractEntityId" in association) {
                     if (association.sourceAbstractEntityId === mappedSuperClass.id) association.sourceAbstractEntityId = newMappedSuperClassId
                 }
-                if (association.referencedEntityId === mappedSuperClass.id) association.referencedEntityId = newMappedSuperClassId
             }
             mappedSuperClass.id = newMappedSuperClassId
-        }
 
-        for (const property of mappedSuperClass.properties) {
-            if (newPropertyIdMap.has(property.id)) throw new Error(`Property [${property.name}-${property.id}] is already existed`)
-            newPropertyIdMap.set(property.id, {mappedSuperClassId: mappedSuperClass.id, property})
-            const newPropertyId = createId("Property")
-            for (const {data: association} of associations) {
-                if (association.sourcePropertyId === property.id) association.sourcePropertyId = newPropertyId
+            for (const property of mappedSuperClass.properties) {
+                if (newPropertyIdMap.has(property.id)) throw new Error(`Property [${property.name}-${property.id}] is already existed`)
+                newPropertyIdMap.set(property.id, {mappedSuperClassId: mappedSuperClass.id, property})
+                const newPropertyId = createId("Property")
+                for (const {data: association} of associations) {
+                    if (association.sourcePropertyId === property.id) association.sourcePropertyId = newPropertyId
+                }
+                property.id = newPropertyId
             }
-            property.id = newPropertyId
         }
     }
 
@@ -141,12 +140,12 @@ export const protectRepeatIds = (
                 }
             }
             embeddableType.id = newEmbeddableTypeId
-        }
 
-        for (const property of embeddableType.properties) {
-            if (newPropertyIdMap.has(property.id)) throw new Error(`Property [${property.name}-${property.id}] is already existed`)
-            newPropertyIdMap.set(property.id, {embeddableTypeId: embeddableType.id, property})
-            property.id = createId("Property")
+            for (const property of embeddableType.properties) {
+                if (newPropertyIdMap.has(property.id)) throw new Error(`Property [${property.name}-${property.id}] is already existed`)
+                newPropertyIdMap.set(property.id, {embeddableTypeId: embeddableType.id, property})
+                property.id = createId("Property")
+            }
         }
     }
 
@@ -167,10 +166,11 @@ export const protectRepeatIds = (
                     }
                 }
             }
-        }
+            enumeration.id = newEnumerationId
 
-        for (const enumerationItem of enumeration.items) {
-            enumerationItem.id = createId("EnumerationItem")
+            for (const enumerationItem of enumeration.items) {
+                enumerationItem.id = createId("EnumerationItem")
+            }
         }
     }
 
@@ -192,6 +192,7 @@ export const protectRepeatIds = (
                 }
             }
             association.id = newAssociationId
+
             association.mappedProperty.id = createId("Property")
         }
     }
