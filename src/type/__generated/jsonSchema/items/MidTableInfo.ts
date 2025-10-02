@@ -1,33 +1,11 @@
 import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
 import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
-const JoinTableJsonSchema: JSONSchemaType<JoinTable> = {
+const MidTableInfoJsonSchema: JSONSchemaType<MidTableInfo> = {
     "type": "object",
     "properties": {
-        "name": {
+        "tableName": {
             "type": "string"
-        },
-        "joinColumns": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string"
-                    },
-                    "referencedColumnName": {
-                        "type": "string"
-                    },
-                    "foreignKeyType": {
-                        "$ref": "#/definitions/ForeignKeyType"
-                    }
-                },
-                "required": [
-                    "foreignKeyType",
-                    "name",
-                    "referencedColumnName"
-                ]
-            }
         },
         "readonly": {
             "type": "boolean"
@@ -106,26 +84,15 @@ const JoinTableJsonSchema: JSONSchemaType<JoinTable> = {
         }
     },
     "required": [
-        "joinColumns",
-        "name"
+        "tableName"
     ],
-    "definitions": {
-        "ForeignKeyType": {
-            "enum": [
-                "AUTO",
-                "FAKE",
-                "REAL"
-            ],
-            "type": "string"
-        }
-    },
     "$schema": "http://json-schema.org/draft-07/schema#"
-} as any as JSONSchemaType<JoinTable>
+} as any as JSONSchemaType<MidTableInfo>
 
-export const validateJoinTable = createSchemaValidator<JoinTable>(JoinTableJsonSchema)
+export const validateMidTableInfo = createSchemaValidator<MidTableInfo>(MidTableInfoJsonSchema)
 
 export default {
-    uri: "$innerType/JoinTable",
-    schema: JoinTableJsonSchema,
-    validate: validateJoinTable,
+    uri: "$innerType/MidTableInfo",
+    schema: MidTableInfoJsonSchema,
+    validate: validateMidTableInfo,
 }

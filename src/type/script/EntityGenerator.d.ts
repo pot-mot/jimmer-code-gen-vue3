@@ -9,7 +9,7 @@ type MappedSuperClassGenerator = (
 ) => Record<string, string>
 
 type EmbeddableTypeGenerator = (
-    embeddableType: DeepReadonly<EmbeddableTypeWithCategorizedProperties>,
+    embeddableType: DeepReadonly<EmbeddableTypeWithOverrideProperties>,
     context: DeepReadonly<ModelContext>
 ) => Record<string, string>
 

@@ -1,6 +1,6 @@
 export default Object.freeze({
-    fileName: 'TypeScriptType.d.ts',
-    content: `type TypeScriptType = {
+    fileName: 'TsType.d.ts',
+    content: `type TsType = {
     fullTypeExpression: string
     extraImports: {
         name: string

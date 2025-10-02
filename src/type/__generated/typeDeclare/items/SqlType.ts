@@ -4,7 +4,6 @@ export default Object.freeze({
     type: string
     dataSize?: number
     numericPrecision?: number
-    nullable: boolean
     defaultValue?: string
 }`,
 })

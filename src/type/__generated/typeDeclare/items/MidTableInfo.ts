@@ -1,8 +1,7 @@
 export default Object.freeze({
-    fileName: 'JoinTable.d.ts',
-    content: `type JoinTable = {
-    name: string
-    joinColumns: JoinColumn[]
+    fileName: 'MidTableInfo.d.ts',
+    content: `type MidTableInfo = {
+    tableName: string
     readonly?: boolean
     preventDeletionBySource?: boolean
     preventDeletionByTarget?: boolean

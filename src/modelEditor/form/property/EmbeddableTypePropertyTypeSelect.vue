@@ -29,7 +29,7 @@ const filterTypes = () => {
 
 }
 
-const selectBaseType = (typePair: DeepReadonly<TypeSelectPair>) => {
+const selectBaseType = (typePair: DeepReadonly<CrossType>) => {
     property.value = toScalarCommonProperty(property.value, typePair)
 }
 

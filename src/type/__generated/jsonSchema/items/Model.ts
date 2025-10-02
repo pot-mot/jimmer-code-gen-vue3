@@ -22,13 +22,17 @@ const ModelJsonSchema: JSONSchemaType<Model> = {
         "database": {
             "$ref": "#/definitions/DatabaseType"
         },
+        "databaseNameStrategy": {
+            "$ref": "#/definitions/NameStrategy"
+        },
         "language": {
-            "$ref": "#/definitions/BackEndLanguage"
+            "$ref": "#/definitions/JvmLanguage"
         }
     },
     "required": [
         "createdTime",
         "database",
+        "databaseNameStrategy",
         "description",
         "id",
         "language",
@@ -47,7 +51,16 @@ const ModelJsonSchema: JSONSchemaType<Model> = {
             ],
             "type": "string"
         },
-        "BackEndLanguage": {
+        "NameStrategy": {
+            "enum": [
+                "KEBAB",
+                "LOWER_CAMEL",
+                "SNAKE",
+                "UPPER_CAMEL"
+            ],
+            "type": "string"
+        },
+        "JvmLanguage": {
             "enum": [
                 "JAVA",
                 "KOTLIN"

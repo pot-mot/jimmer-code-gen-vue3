@@ -99,7 +99,7 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                     "name": {
                         "type": "string"
                     },
-                    "targetTableName": {
+                    "referencedTableName": {
                         "type": "string"
                     },
                     "columnReferences": {
@@ -111,13 +111,13 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                                     "sourceColumnName": {
                                         "type": "string"
                                     },
-                                    "targetColumnName": {
+                                    "referencedColumnName": {
                                         "type": "string"
                                     }
                                 },
                                 "required": [
-                                    "sourceColumnName",
-                                    "targetColumnName"
+                                    "referencedColumnName",
+                                    "sourceColumnName"
                                 ]
                             }
                         ],
@@ -134,7 +134,7 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                 "required": [
                     "columnReferences",
                     "name",
-                    "targetTableName"
+                    "referencedTableName"
                 ]
             }
         }

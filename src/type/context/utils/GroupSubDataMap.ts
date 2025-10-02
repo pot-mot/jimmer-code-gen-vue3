@@ -1,7 +1,7 @@
 const defaultGroupSubMaps: () => GroupSubMaps = () => ({
-    entityMap: new Map<string, EntityWithInheritInfo>(),
-    mappedSuperClassMap: new Map<string, MappedSuperClassWithInheritInfo>(),
-    embeddableTypeMap: new Map<string, EmbeddableTypeWithFlatProperties>(),
+    entityMap: new Map<string, EntityWithProperties>(),
+    mappedSuperClassMap: new Map<string, MappedSuperClassWithProperties>(),
+    embeddableTypeMap: new Map<string, EmbeddableTypeWithProperties>(),
     enumerationMap: new Map<string, Enumeration>(),
 })
 

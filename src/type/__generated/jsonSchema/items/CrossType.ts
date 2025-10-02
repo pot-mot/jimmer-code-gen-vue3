@@ -8,7 +8,7 @@ const CrossTypeJsonSchema: JSONSchemaType<CrossType> = {
             "type": "string"
         },
         "source": {
-            "$ref": "#/definitions/BackEndMappingSource"
+            "$ref": "#/definitions/JvmTypeSource"
         },
         "sqlType": {
             "type": "object",
@@ -22,25 +22,30 @@ const CrossTypeJsonSchema: JSONSchemaType<CrossType> = {
                 "numericPrecision": {
                     "type": "number"
                 },
-                "nullable": {
-                    "type": "boolean"
-                },
                 "defaultValue": {
                     "type": "string"
                 }
             },
             "required": [
-                "nullable",
                 "type"
             ]
         },
-        "backEndType": {
+        "jvmType": {
             "type": "object",
             "properties": {
                 "fullTypeExpression": {
                     "type": "string"
                 },
+                "serialized": {
+                    "type": "boolean"
+                },
                 "extraImports": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "extraAnnotations": {
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -48,11 +53,13 @@ const CrossTypeJsonSchema: JSONSchemaType<CrossType> = {
                 }
             },
             "required": [
+                "extraAnnotations",
                 "extraImports",
-                "fullTypeExpression"
+                "fullTypeExpression",
+                "serialized"
             ]
         },
-        "typeScriptType": {
+        "tsType": {
             "type": "object",
             "properties": {
                 "fullTypeExpression": {
@@ -84,14 +91,14 @@ const CrossTypeJsonSchema: JSONSchemaType<CrossType> = {
         }
     },
     "required": [
-        "backEndType",
         "id",
+        "jvmType",
         "source",
         "sqlType",
-        "typeScriptType"
+        "tsType"
     ],
     "definitions": {
-        "BackEndMappingSource": {
+        "JvmTypeSource": {
             "enum": [
                 "BOTH",
                 "JAVA",

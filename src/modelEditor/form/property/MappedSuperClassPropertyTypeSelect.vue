@@ -49,7 +49,7 @@ const cleanPropertyReference = () => {
     }
 }
 
-const selectBaseType = (typePair: DeepReadonly<TypeSelectPair>) => {
+const selectBaseType = (typePair: DeepReadonly<CrossType>) => {
     executeAsyncBatch(Symbol("property type to embeddableType"), async () => {
         cleanPropertyReference()
 
@@ -85,6 +85,7 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
 
         if (property.value.category === "ID_COMMON") {
             property.value = idToEmbeddableProperty(property.value, embeddableType)
+            // TODO sync AssociationProperty
         } else {
             property.value = toScalarEmbeddableProperty(property.value, embeddableType)
         }

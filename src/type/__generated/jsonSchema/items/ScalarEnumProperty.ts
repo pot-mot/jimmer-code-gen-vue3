@@ -62,7 +62,7 @@ const ScalarEnumPropertyJsonSchema: JSONSchemaType<ScalarEnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/ColumnInfo"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -137,7 +137,7 @@ const ScalarEnumPropertyJsonSchema: JSONSchemaType<ScalarEnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/ColumnInfo"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -231,7 +231,7 @@ const ScalarEnumPropertyJsonSchema: JSONSchemaType<ScalarEnumProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/ColumnInfo"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -261,7 +261,7 @@ const ScalarEnumPropertyJsonSchema: JSONSchemaType<ScalarEnumProperty> = {
         }
     ],
     "definitions": {
-        "Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">": {
+        "ColumnInfo": {
             "type": "object",
             "properties": {
                 "name": {

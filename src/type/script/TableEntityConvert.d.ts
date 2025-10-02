@@ -1,9 +1,11 @@
 type TableToEntity = (
+    groupId: string,
     tables: DeepReadonly<Table[]>,
     context: DeepReadonly<ModelContext>
 ) => {
     entities: EntityWithProperties[],
-    associations: Association[],
+    embeddableTypes: EmbeddableTypeWithProperties[],
+    associations: AssociationIdOnly[],
 }
 
 type EntityToTable = (

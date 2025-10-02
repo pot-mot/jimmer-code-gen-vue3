@@ -7,7 +7,7 @@ const EmbeddablePropertyJsonSchema: JSONSchemaType<EmbeddableProperty> = {
         "embeddableTypeId": {
             "type": "string"
         },
-        "propOverrides": {
+        "columnNameOverrides": {
             "type": "array",
             "items": {
                 "type": "object",
@@ -27,8 +27,8 @@ const EmbeddablePropertyJsonSchema: JSONSchemaType<EmbeddableProperty> = {
         }
     },
     "required": [
-        "embeddableTypeId",
-        "propOverrides"
+        "columnNameOverrides",
+        "embeddableTypeId"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
 } as any as JSONSchemaType<EmbeddableProperty>

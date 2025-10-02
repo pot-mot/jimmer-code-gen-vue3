@@ -18,17 +18,21 @@ type LogicalDeleteProperty = {
 
 type OrderDirection = "ASC" | "DESC"
 
+type ColumnInfo = Omit<Column, 'partOfPrimaryKey' | 'autoIncrement'>
+
 type ColumnProperty = {
-    columnInfo: Omit<Column, 'partOfPrimaryKey' | 'autoIncrement'>
+    columnInfo: ColumnInfo
     defaultOrderDirection?: OrderDirection
+}
+
+type ColumnNameOverride = {
+    propertyPath: string
+    overrideColumnName: string
 }
 
 type EmbeddableProperty = {
     embeddableTypeId: string
-    propOverrides: {
-        propertyPath: string
-        overrideColumnName: string
-    }[]
+    columnNameOverrides: ColumnNameOverride[]
 }
 
 type IdCommonProperty = {
@@ -94,6 +98,7 @@ type OnDissociationAction = "NONE" | "LAX" | "CHECK" | "SET_NULL" | "DELETE"
 
 type OneToOneSourceProperty = {
     category: "OneToOne_Source"
+    joinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo | SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
     onDissociateAction: OnDissociationAction
 } & BaseProperty & BaseAssociationProperty
 
@@ -110,6 +115,7 @@ type OneToOneMappedAbstractProperty = Omit<OneToOneMappedProperty, 'category' | 
 
 type ManyToOneProperty = {
     category: "ManyToOne"
+    joinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo | SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
     onDissociateAction: OnDissociationAction
 } & BaseProperty & BaseAssociationProperty
 
@@ -127,6 +133,7 @@ type OneToManyAbstractProperty = Omit<OneToManyProperty, 'category' | 'reference
 
 type ManyToManySourceProperty = {
     category: "ManyToMany_Source"
+    joinInfo: SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
     nullable: false
     typeIsList: true
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty

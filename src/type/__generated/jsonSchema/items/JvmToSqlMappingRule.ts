@@ -1,11 +1,11 @@
 import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
 import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
-const BackEndToSqlTypeMappingJsonSchema: JSONSchemaType<BackEndToSqlTypeMapping> = {
+const JvmToSqlMappingRuleJsonSchema: JSONSchemaType<JvmToSqlMappingRule> = {
     "type": "object",
     "properties": {
         "source": {
-            "$ref": "#/definitions/BackEndMappingSource"
+            "$ref": "#/definitions/JvmTypeSource"
         },
         "matchRegExp": {
             "type": "string"
@@ -22,15 +22,11 @@ const BackEndToSqlTypeMappingJsonSchema: JSONSchemaType<BackEndToSqlTypeMapping>
                 "numericPrecision": {
                     "type": "number"
                 },
-                "nullable": {
-                    "type": "boolean"
-                },
                 "defaultValue": {
                     "type": "string"
                 }
             },
             "required": [
-                "nullable",
                 "type"
             ]
         }
@@ -41,7 +37,7 @@ const BackEndToSqlTypeMappingJsonSchema: JSONSchemaType<BackEndToSqlTypeMapping>
         "source"
     ],
     "definitions": {
-        "BackEndMappingSource": {
+        "JvmTypeSource": {
             "enum": [
                 "BOTH",
                 "JAVA",
@@ -51,12 +47,12 @@ const BackEndToSqlTypeMappingJsonSchema: JSONSchemaType<BackEndToSqlTypeMapping>
         }
     },
     "$schema": "http://json-schema.org/draft-07/schema#"
-} as any as JSONSchemaType<BackEndToSqlTypeMapping>
+} as any as JSONSchemaType<JvmToSqlMappingRule>
 
-export const validateBackEndToSqlTypeMapping = createSchemaValidator<BackEndToSqlTypeMapping>(BackEndToSqlTypeMappingJsonSchema)
+export const validateJvmToSqlMappingRule = createSchemaValidator<JvmToSqlMappingRule>(JvmToSqlMappingRuleJsonSchema)
 
 export default {
-    uri: "$innerType/BackEndToSqlTypeMapping",
-    schema: BackEndToSqlTypeMappingJsonSchema,
-    validate: validateBackEndToSqlTypeMapping,
+    uri: "$innerType/JvmToSqlMappingRule",
+    schema: JvmToSqlMappingRuleJsonSchema,
+    validate: validateJvmToSqlMappingRule,
 }

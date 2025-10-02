@@ -2,9 +2,9 @@ export default Object.freeze({
     fileName: 'CrossType.d.ts',
     content: `type CrossType = {
     id: string
-    source: BackEndMappingSource
+    source: JvmTypeSource
     sqlType: SqlType
-    backEndType: BackEndType
-    typeScriptType: TypeScriptType
+    jvmType: JvmType
+    tsType: TsType
 }`,
 })

@@ -72,7 +72,7 @@ const ScalarCommonPropertyJsonSchema: JSONSchemaType<ScalarCommonProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/ColumnInfo"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -157,7 +157,7 @@ const ScalarCommonPropertyJsonSchema: JSONSchemaType<ScalarCommonProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/ColumnInfo"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -261,7 +261,7 @@ const ScalarCommonPropertyJsonSchema: JSONSchemaType<ScalarCommonProperty> = {
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/ColumnInfo"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -291,7 +291,7 @@ const ScalarCommonPropertyJsonSchema: JSONSchemaType<ScalarCommonProperty> = {
         }
     ],
     "definitions": {
-        "Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">": {
+        "ColumnInfo": {
             "type": "object",
             "properties": {
                 "name": {

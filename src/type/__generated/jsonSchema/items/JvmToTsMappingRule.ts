@@ -1,11 +1,11 @@
 import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
 import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
-const SqlToBackEndTypeMappingJsonSchema: JSONSchemaType<SqlToBackEndTypeMapping> = {
+const JvmToTsMappingRuleJsonSchema: JSONSchemaType<JvmToTsMappingRule> = {
     "type": "object",
     "properties": {
         "source": {
-            "$ref": "#/definitions/BackEndMappingSource"
+            "$ref": "#/definitions/JvmTypeSource"
         },
         "matchRegExp": {
             "type": "string"
@@ -19,7 +19,19 @@ const SqlToBackEndTypeMappingJsonSchema: JSONSchemaType<SqlToBackEndTypeMapping>
                 "extraImports": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "fromPath": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "fromPath",
+                            "name"
+                        ]
                     }
                 }
             },
@@ -35,7 +47,7 @@ const SqlToBackEndTypeMappingJsonSchema: JSONSchemaType<SqlToBackEndTypeMapping>
         "source"
     ],
     "definitions": {
-        "BackEndMappingSource": {
+        "JvmTypeSource": {
             "enum": [
                 "BOTH",
                 "JAVA",
@@ -45,12 +57,12 @@ const SqlToBackEndTypeMappingJsonSchema: JSONSchemaType<SqlToBackEndTypeMapping>
         }
     },
     "$schema": "http://json-schema.org/draft-07/schema#"
-} as any as JSONSchemaType<SqlToBackEndTypeMapping>
+} as any as JSONSchemaType<JvmToTsMappingRule>
 
-export const validateSqlToBackEndTypeMapping = createSchemaValidator<SqlToBackEndTypeMapping>(SqlToBackEndTypeMappingJsonSchema)
+export const validateJvmToTsMappingRule = createSchemaValidator<JvmToTsMappingRule>(JvmToTsMappingRuleJsonSchema)
 
 export default {
-    uri: "$innerType/SqlToBackEndTypeMapping",
-    schema: SqlToBackEndTypeMappingJsonSchema,
-    validate: validateSqlToBackEndTypeMapping,
+    uri: "$innerType/JvmToTsMappingRule",
+    schema: JvmToTsMappingRuleJsonSchema,
+    validate: validateJvmToTsMappingRule,
 }

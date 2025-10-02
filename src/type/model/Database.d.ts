@@ -39,11 +39,11 @@ type Index = {
 
 type ForeignKey = {
     name: string
-    targetTableName: string
+    referencedTableName: string
     columnReferences: [
         {
             sourceColumnName: string
-            targetColumnName: string
+            referencedColumnName: string
         }
     ]
     onUpdate?: string

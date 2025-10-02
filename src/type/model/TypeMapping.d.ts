@@ -1,19 +1,20 @@
-type BackEndMappingSource = "JAVA" | "KOTLIN" | "BOTH"
+type JvmTypeSource = "JAVA" | "KOTLIN" | "BOTH"
 
 type SqlType = {
     type: string
     dataSize?: number
     numericPrecision?: number
-    nullable: boolean
     defaultValue?: string
 }
 
-type BackEndType = {
+type JvmType = {
     fullTypeExpression: string
+    serialized: boolean
     extraImports: string[]
+    extraAnnotations: string[]
 }
 
-type TypeScriptType = {
+type TsType = {
     fullTypeExpression: string
     extraImports: {
         name: string
@@ -23,26 +24,26 @@ type TypeScriptType = {
 
 type CrossType = {
     id: string
-    source: BackEndMappingSource
+    source: JvmTypeSource
     sqlType: SqlType
-    backEndType: BackEndType
-    typeScriptType: TypeScriptType
+    jvmType: JvmType
+    tsType: TsType
 }
 
-type BackEndToSqlTypeMapping = {
-    source: BackEndMappingSource
+type JvmToSqlMappingRule = {
+    source: JvmTypeSource
     matchRegExp: string
     result: SqlType
 }
 
-type SqlToBackEndTypeMapping = {
-    source: BackEndMappingSource
+type SqlToJvmMappingRule = {
+    source: JvmTypeSource
     matchRegExp: string
-    result: BackEndType
+    result: JvmType
 }
 
-type BackEndToTypeScriptTypeMapping = {
-    source: BackEndMappingSource
+type JvmToTsMappingRule = {
+    source: JvmTypeSource
     matchRegExp: string
-    result: TypeScriptType
+    result: TsType
 }

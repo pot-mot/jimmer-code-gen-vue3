@@ -1,7 +1,7 @@
 export default Object.freeze({
     fileName: 'ColumnProperty.d.ts',
     content: `type ColumnProperty = {
-    columnInfo: Omit<Column, 'partOfPrimaryKey' | 'autoIncrement'>
+    columnInfo: ColumnInfo
     defaultOrderDirection?: OrderDirection
 }`,
 })

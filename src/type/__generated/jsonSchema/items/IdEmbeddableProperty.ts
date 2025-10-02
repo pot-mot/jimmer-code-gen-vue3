@@ -45,7 +45,7 @@ const IdEmbeddablePropertyJsonSchema: JSONSchemaType<IdEmbeddableProperty> = {
                 "embeddableTypeId": {
                     "type": "string"
                 },
-                "propOverrides": {
+                "columnNameOverrides": {
                     "type": "array",
                     "items": {
                         "type": "object",
@@ -65,8 +65,8 @@ const IdEmbeddablePropertyJsonSchema: JSONSchemaType<IdEmbeddableProperty> = {
                 }
             },
             "required": [
-                "embeddableTypeId",
-                "propOverrides"
+                "columnNameOverrides",
+                "embeddableTypeId"
             ]
         }
     ],

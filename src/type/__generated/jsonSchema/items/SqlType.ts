@@ -13,15 +13,11 @@ const SqlTypeJsonSchema: JSONSchemaType<SqlType> = {
         "numericPrecision": {
             "type": "number"
         },
-        "nullable": {
-            "type": "boolean"
-        },
         "defaultValue": {
             "type": "string"
         }
     },
     "required": [
-        "nullable",
         "type"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"

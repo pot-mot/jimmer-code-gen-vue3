@@ -7,7 +7,7 @@ const ForeignKeyJsonSchema: JSONSchemaType<ForeignKey> = {
         "name": {
             "type": "string"
         },
-        "targetTableName": {
+        "referencedTableName": {
             "type": "string"
         },
         "columnReferences": {
@@ -19,13 +19,13 @@ const ForeignKeyJsonSchema: JSONSchemaType<ForeignKey> = {
                         "sourceColumnName": {
                             "type": "string"
                         },
-                        "targetColumnName": {
+                        "referencedColumnName": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "sourceColumnName",
-                        "targetColumnName"
+                        "referencedColumnName",
+                        "sourceColumnName"
                     ]
                 }
             ],
@@ -42,7 +42,7 @@ const ForeignKeyJsonSchema: JSONSchemaType<ForeignKey> = {
     "required": [
         "columnReferences",
         "name",
-        "targetTableName"
+        "referencedTableName"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
 } as any as JSONSchemaType<ForeignKey>

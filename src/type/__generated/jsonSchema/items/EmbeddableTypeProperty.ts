@@ -72,7 +72,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/ColumnInfo"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -157,7 +157,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/ColumnInfo"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -261,7 +261,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/ColumnInfo"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -348,7 +348,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/ColumnInfo"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -423,7 +423,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/ColumnInfo"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -517,7 +517,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                     "type": "object",
                     "properties": {
                         "columnInfo": {
-                            "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
+                            "$ref": "#/definitions/ColumnInfo"
                         },
                         "defaultOrderDirection": {
                             "enum": [
@@ -550,7 +550,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
         }
     ],
     "definitions": {
-        "Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">": {
+        "ColumnInfo": {
             "type": "object",
             "properties": {
                 "name": {
@@ -645,7 +645,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                         "embeddableTypeId": {
                             "type": "string"
                         },
-                        "propOverrides": {
+                        "columnNameOverrides": {
                             "type": "array",
                             "items": {
                                 "type": "object",
@@ -665,8 +665,8 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                         }
                     },
                     "required": [
-                        "embeddableTypeId",
-                        "propOverrides"
+                        "columnNameOverrides",
+                        "embeddableTypeId"
                     ]
                 }
             ]

@@ -1,11 +1,8 @@
-import BackEndLanguageJsonSchema from "./items/BackEndLanguage.ts";
-import BackEndMappingSourceJsonSchema from "./items/BackEndMappingSource.ts";
-import BackEndToSqlTypeMappingJsonSchema from "./items/BackEndToSqlTypeMapping.ts";
-import BackEndToTypeScriptTypeMappingJsonSchema from "./items/BackEndToTypeScriptTypeMapping.ts";
-import BackEndTypeJsonSchema from "./items/BackEndType.ts";
 import BaseAssociationPropertyJsonSchema from "./items/BaseAssociationProperty.ts";
 import BasePropertyJsonSchema from "./items/BaseProperty.ts";
 import ColumnJsonSchema from "./items/Column.ts";
+import ColumnInfoJsonSchema from "./items/ColumnInfo.ts";
+import ColumnNameOverrideJsonSchema from "./items/ColumnNameOverride.ts";
 import ColumnPropertyJsonSchema from "./items/ColumnProperty.ts";
 import CrossTypeJsonSchema from "./items/CrossType.ts";
 import DatabaseJsonSchema from "./items/Database.ts";
@@ -25,8 +22,11 @@ import GroupJsonSchema from "./items/Group.ts";
 import IdCommonPropertyJsonSchema from "./items/IdCommonProperty.ts";
 import IdEmbeddablePropertyJsonSchema from "./items/IdEmbeddableProperty.ts";
 import IndexJsonSchema from "./items/Index.ts";
-import JoinColumnJsonSchema from "./items/JoinColumn.ts";
-import JoinTableJsonSchema from "./items/JoinTable.ts";
+import JvmLanguageJsonSchema from "./items/JvmLanguage.ts";
+import JvmToSqlMappingRuleJsonSchema from "./items/JvmToSqlMappingRule.ts";
+import JvmToTsMappingRuleJsonSchema from "./items/JvmToTsMappingRule.ts";
+import JvmTypeJsonSchema from "./items/JvmType.ts";
+import JvmTypeSourceJsonSchema from "./items/JvmTypeSource.ts";
 import KeyPropertyJsonSchema from "./items/KeyProperty.ts";
 import LabelPositionJsonSchema from "./items/LabelPosition.ts";
 import LogicalDeletePropertyJsonSchema from "./items/LogicalDeleteProperty.ts";
@@ -39,7 +39,11 @@ import ManyToOneAssociationIdOnlyJsonSchema from "./items/ManyToOneAssociationId
 import ManyToOnePropertyJsonSchema from "./items/ManyToOneProperty.ts";
 import MappedSuperClassJsonSchema from "./items/MappedSuperClass.ts";
 import MappedSuperClassPropertyJsonSchema from "./items/MappedSuperClassProperty.ts";
+import MidTableInfoJsonSchema from "./items/MidTableInfo.ts";
 import ModelJsonSchema from "./items/Model.ts";
+import MultiColumnJoinInfoJsonSchema from "./items/MultiColumnJoinInfo.ts";
+import MultiColumnMidTableJoinInfoJsonSchema from "./items/MultiColumnMidTableJoinInfo.ts";
+import NameStrategyJsonSchema from "./items/NameStrategy.ts";
 import OnDissociationActionJsonSchema from "./items/OnDissociationAction.ts";
 import OneToManyAbstractPropertyJsonSchema from "./items/OneToManyAbstractProperty.ts";
 import OneToManyPropertyJsonSchema from "./items/OneToManyProperty.ts";
@@ -53,26 +57,25 @@ import PositionJsonSchema from "./items/Position.ts";
 import ScalarCommonPropertyJsonSchema from "./items/ScalarCommonProperty.ts";
 import ScalarEmbeddablePropertyJsonSchema from "./items/ScalarEmbeddableProperty.ts";
 import ScalarEnumPropertyJsonSchema from "./items/ScalarEnumProperty.ts";
+import SingleColumnJoinInfoJsonSchema from "./items/SingleColumnJoinInfo.ts";
+import SingleColumnMidTableJoinInfoJsonSchema from "./items/SingleColumnMidTableJoinInfo.ts";
 import SqlFormulaPropertyJsonSchema from "./items/SqlFormulaProperty.ts";
-import SqlToBackEndTypeMappingJsonSchema from "./items/SqlToBackEndTypeMapping.ts";
+import SqlToJvmMappingRuleJsonSchema from "./items/SqlToJvmMappingRule.ts";
 import SqlTypeJsonSchema from "./items/SqlType.ts";
 import TableJsonSchema from "./items/Table.ts";
 import TransientPropertyJsonSchema from "./items/TransientProperty.ts";
-import TypeScriptTypeJsonSchema from "./items/TypeScriptType.ts";
+import TsTypeJsonSchema from "./items/TsType.ts";
 import VersionPropertyJsonSchema from "./items/VersionProperty.ts";
 import EmbeddableTypeWithPropertiesJsonSchema from "../../context/jsonSchema/EmbeddableTypeWithProperties.ts";
 import EntityWithPropertiesJsonSchema from "../../context/jsonSchema/EntityWithProperties.ts";
 import MappedSuperClassWithPropertiesJsonSchema from "../../context/jsonSchema/MappedSuperClassWithProperties.ts";
 
 export const jsonSchemas = Object.freeze({
-    BackEndLanguage: BackEndLanguageJsonSchema,
-    BackEndMappingSource: BackEndMappingSourceJsonSchema,
-    BackEndToSqlTypeMapping: BackEndToSqlTypeMappingJsonSchema,
-    BackEndToTypeScriptTypeMapping: BackEndToTypeScriptTypeMappingJsonSchema,
-    BackEndType: BackEndTypeJsonSchema,
     BaseAssociationProperty: BaseAssociationPropertyJsonSchema,
     BaseProperty: BasePropertyJsonSchema,
     Column: ColumnJsonSchema,
+    ColumnInfo: ColumnInfoJsonSchema,
+    ColumnNameOverride: ColumnNameOverrideJsonSchema,
     ColumnProperty: ColumnPropertyJsonSchema,
     CrossType: CrossTypeJsonSchema,
     Database: DatabaseJsonSchema,
@@ -92,8 +95,11 @@ export const jsonSchemas = Object.freeze({
     IdCommonProperty: IdCommonPropertyJsonSchema,
     IdEmbeddableProperty: IdEmbeddablePropertyJsonSchema,
     Index: IndexJsonSchema,
-    JoinColumn: JoinColumnJsonSchema,
-    JoinTable: JoinTableJsonSchema,
+    JvmLanguage: JvmLanguageJsonSchema,
+    JvmToSqlMappingRule: JvmToSqlMappingRuleJsonSchema,
+    JvmToTsMappingRule: JvmToTsMappingRuleJsonSchema,
+    JvmType: JvmTypeJsonSchema,
+    JvmTypeSource: JvmTypeSourceJsonSchema,
     KeyProperty: KeyPropertyJsonSchema,
     LabelPosition: LabelPositionJsonSchema,
     LogicalDeleteProperty: LogicalDeletePropertyJsonSchema,
@@ -106,7 +112,11 @@ export const jsonSchemas = Object.freeze({
     ManyToOneProperty: ManyToOnePropertyJsonSchema,
     MappedSuperClass: MappedSuperClassJsonSchema,
     MappedSuperClassProperty: MappedSuperClassPropertyJsonSchema,
+    MidTableInfo: MidTableInfoJsonSchema,
     Model: ModelJsonSchema,
+    MultiColumnJoinInfo: MultiColumnJoinInfoJsonSchema,
+    MultiColumnMidTableJoinInfo: MultiColumnMidTableJoinInfoJsonSchema,
+    NameStrategy: NameStrategyJsonSchema,
     OnDissociationAction: OnDissociationActionJsonSchema,
     OneToManyAbstractProperty: OneToManyAbstractPropertyJsonSchema,
     OneToManyProperty: OneToManyPropertyJsonSchema,
@@ -120,12 +130,14 @@ export const jsonSchemas = Object.freeze({
     ScalarCommonProperty: ScalarCommonPropertyJsonSchema,
     ScalarEmbeddableProperty: ScalarEmbeddablePropertyJsonSchema,
     ScalarEnumProperty: ScalarEnumPropertyJsonSchema,
+    SingleColumnJoinInfo: SingleColumnJoinInfoJsonSchema,
+    SingleColumnMidTableJoinInfo: SingleColumnMidTableJoinInfoJsonSchema,
     SqlFormulaProperty: SqlFormulaPropertyJsonSchema,
-    SqlToBackEndTypeMapping: SqlToBackEndTypeMappingJsonSchema,
+    SqlToJvmMappingRule: SqlToJvmMappingRuleJsonSchema,
     SqlType: SqlTypeJsonSchema,
     Table: TableJsonSchema,
     TransientProperty: TransientPropertyJsonSchema,
-    TypeScriptType: TypeScriptTypeJsonSchema,
+    TsType: TsTypeJsonSchema,
     VersionProperty: VersionPropertyJsonSchema,
     EmbeddableTypeWithProperties: EmbeddableTypeWithPropertiesJsonSchema,
     EntityWithProperties: EntityWithPropertiesJsonSchema,

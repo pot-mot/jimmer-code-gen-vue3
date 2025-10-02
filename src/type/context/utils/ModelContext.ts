@@ -8,7 +8,7 @@ import {
     getEntityAllProperties, getMappedSuperClassAllInheritors
 } from "@/type/context/utils/EntityExtends.ts";
 import {getGroupSubMaps} from "@/type/context/utils/GroupSubDataMap.ts";
-import {flatEmbeddableTypeProperties} from "@/type/context/utils/EmbeddableTypeFlat.ts";
+import {overrideEmbeddableTypePropertiesColumnNames} from "@/type/context/utils/EmbeddableTypeOverride.ts";
 import {getAssociationWithInheritInfo} from "@/type/context/utils/AssociationWithInheritInfo.ts";
 import {
     getAbstractMappedProperties,
@@ -17,6 +17,9 @@ import {
 } from "@/type/context/utils/MappedProperty.ts";
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 import {idOnlyToAssociation} from "@/type/context/utils/AssociationIdOnly.ts";
+import {nameTool} from "@/type/context/utils/NameTool.ts";
+import {buildTypeTool} from "@/type/context/utils/TypeTool.ts";
+import {createId} from "@/modelEditor/useModelEditor.ts";
 
 export const contextDataToContext = (
     readonlyContextData: DeepReadonly<ModelContextData>,
@@ -122,9 +125,14 @@ export const contextDataToContext = (
     }
 
     // 解析内嵌类展平属性
-    const embeddableTypeMap = new Map<string, EmbeddableTypeWithFlatProperties>()
+    const embeddableTypeMap = new Map<string, EmbeddableTypeWithOverrideProperties>()
     for (const [id, embeddableType] of embeddableTypeBaseInfoMap) {
-        embeddableTypeMap.set(id, flatEmbeddableTypeProperties(embeddableType, embeddableTypeBaseInfoMap))
+        const overrideColumnNameProperties = overrideEmbeddableTypePropertiesColumnNames(embeddableType, embeddableTypeBaseInfoMap)
+        embeddableTypeMap.set(id, {
+            ...embeddableType,
+            overrideColumnNameProperties,
+            categorizedOverrideColumnNameProperties: categorizeEmbeddableTypeProperties(overrideColumnNameProperties)
+        })
     }
 
     const groupMap = new Map<string, GroupWithSubMaps>()
@@ -145,5 +153,9 @@ export const contextDataToContext = (
         embeddableTypeMap,
         enumerationMap,
         associationMap,
+
+        createId,
+        nameTool,
+        typeTool: buildTypeTool(model.language, [], [], [])
     }
 }

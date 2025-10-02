@@ -1,14 +1,18 @@
 type ForeignKeyType = 'AUTO' | 'REAL' | 'FAKE'
 
-type JoinColumn = {
-    name: string
-    referencedColumnName: string
-    foreignKeyType: ForeignKeyType
+type SingleColumnJoinInfo = {
+    type: "SingleColumn",
+    columnName: string
 }
 
-type JoinTable = {
-    name: string
-    joinColumns: JoinColumn[]
+type MultiColumnJoinInfo = {
+    type: "MultiColumn",
+    embeddableTypeId: string,
+    columnNameOverrides: ColumnNameOverride[]
+}
+
+type MidTableInfo = {
+    tableName: string
     readonly?: boolean
     preventDeletionBySource?: boolean
     preventDeletionByTarget?: boolean
@@ -30,3 +34,18 @@ type JoinTable = {
         initializedValue: string
     }
 }
+
+type SingleColumnMidTableJoinInfo = {
+    type: "SingleColumnMidTable"
+    columnName: string
+    midTableSourceColumnName: string
+    midTableTargetColumnName: string
+} & MidTableInfo
+
+type MultiColumnMidTableJoinInfo = {
+    type: "MultiColumnMidTable"
+    embeddableTypeId: string
+    columnNameOverrides: ColumnNameOverride[]
+    midTableSourceColumnNameOverrides: ColumnNameOverride[]
+    midTableTargetColumnNameOverrides: ColumnNameOverride[]
+} & MidTableInfo

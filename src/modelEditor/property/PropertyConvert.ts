@@ -1,3 +1,7 @@
+import {nameTool} from "@/type/context/utils/NameTool.ts";
+import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
+import {firstCaseToLower} from "@/utils/name/firstCase.ts";
+
 const toBaseProperty = (property: DeepReadonly<BaseProperty>): BaseProperty => {
     return {
         id: property.id,
@@ -11,12 +15,13 @@ const toBaseProperty = (property: DeepReadonly<BaseProperty>): BaseProperty => {
 
 const createColumnInfo = (
     property: DeepReadonly<Property>,
-    sqlType: DeepReadonly<TypeSelectPair["sqlType"]>
+    sqlType: DeepReadonly<CrossType["sqlType"]>,
+    databaseNameStrategy = useModelEditor().contextData.value?.model.databaseNameStrategy ?? 'SNAKE'
 ): ColumnProperty["columnInfo"] => {
     return {
-        name: property.name,
+        name: nameTool.convert(property.name, 'LOWER_CAMEL', databaseNameStrategy),
         comment: property.comment,
-        nullable: sqlType.nullable,
+        nullable: property.nullable,
         type: sqlType.type,
         dataSize: sqlType.dataSize,
         numericPrecision: sqlType.numericPrecision,
@@ -25,14 +30,14 @@ const createColumnInfo = (
 
 export const idToggleType = (
     property: DeepReadonly<IdCommonProperty>,
-    typePair: DeepReadonly<TypeSelectPair>
+    typePair: DeepReadonly<CrossType>
 ): IdCommonProperty => {
     return {
         ...toBaseProperty(property),
         category: "ID_COMMON",
         nullable: false,
-        rawType: typePair.backEndType.rawType,
-        extraImports: [...typePair.backEndType.extraImports, ...property.extraImports],
+        rawType: typePair.jvmType.fullTypeExpression,
+        extraImports: [...typePair.jvmType.extraImports, ...property.extraImports],
         columnInfo: createColumnInfo(property, typePair.sqlType),
     }
 }
@@ -46,19 +51,19 @@ export const idToEmbeddableProperty = (
         category: "ID_EMBEDDABLE",
         nullable: false,
         embeddableTypeId: embeddableType.id,
-        propOverrides: [],
+        columnNameOverrides: [],
     }
 }
 
 export const toScalarCommonProperty = (
     property: DeepReadonly<Property>,
-    typePair: DeepReadonly<TypeSelectPair>
+    typePair: DeepReadonly<CrossType>
 ): ScalarCommonProperty => {
     return {
         ...toBaseProperty(property),
         category: "SCALAR_COMMON",
-        rawType: typePair.backEndType.rawType,
-        extraImports: Array.from(typePair.backEndType.extraImports),
+        rawType: typePair.jvmType.fullTypeExpression,
+        extraImports: Array.from(typePair.jvmType.extraImports),
         serialized: false,
         columnInfo: createColumnInfo(property, typePair.sqlType),
         typeIsArray: false,
@@ -75,11 +80,10 @@ export const toScalarEnumProperty = (
         enumId: enumeration.id,
         defaultOrderDirection: undefined,
         columnInfo: createColumnInfo(property, {
-            type: "VARCHAR",
-            nullable: false,
+            type: "VARCHAR(255)",
             dataSize: 255,
             numericPrecision: undefined,
-        }), // TODO
+        }), // TODO enumeration type
     }
 }
 
@@ -91,14 +95,15 @@ export const toScalarEmbeddableProperty = (
         ...toBaseProperty(property),
         category: "SCALAR_EMBEDDABLE",
         embeddableTypeId: embeddableType.id,
-        propOverrides: [],
+        columnNameOverrides: [],
     }
 }
 
 export const toManyToOneProperty = (
     property: DeepReadonly<Property>,
     entity: DeepReadonly<Entity>,
-    associationId: string
+    associationId: string,
+    databaseNameStrategy = useModelEditor().contextData.value?.model.databaseNameStrategy ?? 'SNAKE'
 ): ManyToOneProperty => {
     return {
         ...toBaseProperty(property),
@@ -106,6 +111,10 @@ export const toManyToOneProperty = (
         associationId,
         referencedEntityId: entity.id,
         onDissociateAction: "NONE",
-        idViewName: entity.name + "Id",
+        idViewName: firstCaseToLower(entity.name) + "Id",
+        joinInfo: {
+            type: "SingleColumn",
+            columnName: nameTool.convert(entity.name, 'UPPER_CAMEL', databaseNameStrategy) + "Id",
+        }
     }
 }

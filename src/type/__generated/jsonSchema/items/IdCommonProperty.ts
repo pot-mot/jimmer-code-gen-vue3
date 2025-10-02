@@ -91,7 +91,7 @@ const IdCommonPropertyJsonSchema: JSONSchemaType<IdCommonProperty> = {
             "type": "object",
             "properties": {
                 "columnInfo": {
-                    "$ref": "#/definitions/Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">"
+                    "$ref": "#/definitions/ColumnInfo"
                 },
                 "defaultOrderDirection": {
                     "enum": [
@@ -140,7 +140,7 @@ const IdCommonPropertyJsonSchema: JSONSchemaType<IdCommonProperty> = {
                 "name"
             ]
         },
-        "Omit<Column,\"partOfPrimaryKey\"|\"autoIncrement\">": {
+        "ColumnInfo": {
             "type": "object",
             "properties": {
                 "name": {

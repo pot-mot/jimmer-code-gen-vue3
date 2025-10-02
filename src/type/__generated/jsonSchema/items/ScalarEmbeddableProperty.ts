@@ -58,7 +58,7 @@ const ScalarEmbeddablePropertyJsonSchema: JSONSchemaType<ScalarEmbeddablePropert
                 "embeddableTypeId": {
                     "type": "string"
                 },
-                "propOverrides": {
+                "columnNameOverrides": {
                     "type": "array",
                     "items": {
                         "type": "object",
@@ -78,8 +78,8 @@ const ScalarEmbeddablePropertyJsonSchema: JSONSchemaType<ScalarEmbeddablePropert
                 }
             },
             "required": [
-                "embeddableTypeId",
-                "propOverrides"
+                "columnNameOverrides",
+                "embeddableTypeId"
             ]
         }
     ],

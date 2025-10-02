@@ -7,6 +7,7 @@ export default Object.freeze({
     createdTime: string
     modifiedTime: string
     database: DatabaseType
-    language: BackEndLanguage
+    databaseNameStrategy: NameStrategy
+    language: JvmLanguage
 }`,
 })
