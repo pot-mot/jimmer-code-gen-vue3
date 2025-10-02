@@ -8,7 +8,10 @@ import {type EntityNode, NodeType_Entity} from "@/modelEditor/node/EntityNode.ts
 import {type MappedSuperClassNode, NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode.ts";
 import {type EmbeddableTypeNode, NodeType_EmbeddableType} from "@/modelEditor/node/EmbeddableTypeNode.ts";
 import {type EnumerationNode, NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
-import {type ConcreteAssociationEdge, EdgeType_ConcreteAssociation} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
+import {
+    type ConcreteAssociationEdge,
+    EdgeType_ConcreteAssociation
+} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
 import {defaultModelSubIds, fillModelSubIds, subIdsToSubIdSets} from "@/type/context/utils/ModelSubIds.ts";
 import {defaultModelGraphSubData} from "@/type/context/utils/ModelGraphSubData.ts";
 import {protectRepeatIds} from "@/modelEditor/import/protectRepeatIds.ts";
@@ -96,7 +99,10 @@ export type ModelEditorHistoryCommands = {
         labelPosition: LabelPosition
     }>>
 
-    "import": CommandDefinition<DeepReadonly<{data: ModelGraphSubData, startPosition: XYPosition}>, DeepReadonly<{ids: ModelSubIds, startPosition: XYPosition}>>
+    "import": CommandDefinition<DeepReadonly<{ data: ModelGraphSubData, startPosition: XYPosition }>, DeepReadonly<{
+        ids: ModelSubIds,
+        startPosition: XYPosition
+    }>>
     "remove": CommandDefinition<DeepReadonly<ModelSubIds>, DeepReadonly<ModelGraphSubData>>
 }
 
@@ -850,14 +856,20 @@ export const useModelEditorHistory = (
 
     // 关联
     const associationWatchStopMap = new Map<string, () => void>()
-    const associationOldMap = new Map<string, {association: AssociationIdOnly, labelPosition: LabelPosition} | undefined>()
+    const associationOldMap = new Map<string, {
+        association: AssociationIdOnly,
+        labelPosition: LabelPosition
+    } | undefined>()
     const addAssociationWatcher = (id: string) => {
         const contextData = getContextData()
 
         if (associationWatchStopMap.has(id)) throw new Error(`Association [${id}] is already watched`)
 
         associationOldMap.set(id, cloneDeepReadonlyRaw(contextData.associationMap.get(id)))
-        const debounceSyncAssociationUpdate = debounce((newAssociation: {association: AssociationIdOnly, labelPosition: LabelPosition} | undefined) => {
+        const debounceSyncAssociationUpdate = debounce((newAssociation: {
+            association: AssociationIdOnly,
+            labelPosition: LabelPosition
+        } | undefined) => {
             const oldAssociation = associationOldMap.get(id)
             if (newAssociation && oldAssociation) {
                 history.executeCommand("association:change", {
@@ -885,28 +897,102 @@ export const useModelEditorHistory = (
         associationWatchStopMap.delete(id)
     }
 
-    const addAssociation = (options: DeepReadonly<{ association: AssociationIdOnly, labelPosition: LabelPosition }>) => {
+    const checkAssociationSourceUsed = (
+        association: DeepReadonly<AssociationIdOnly>,
+        contextData: DeepReadonly<ModelContextData>,
+    ): boolean => {
+        if ("sourceEntityId" in association) {
+            const sourceEntity = contextData.entityMap.get(association.sourceEntityId)
+            if (!sourceEntity) return false
+            const sourceProperty = sourceEntity.properties.find(property => property.id === association.sourcePropertyId)
+            if (!sourceProperty) throw new Error(`Property [${association.sourcePropertyId}] is not existed in entity [${association.sourceEntityId}]`)
+            for (const {association} of contextData.associationMap.values()) {
+                if (association.sourcePropertyId === sourceProperty.id) {
+                    return true
+                }
+            }
+        } else {
+            const sourceAbstractEntity = contextData.mappedSuperClassMap.get(association.sourceAbstractEntityId)
+            if (!sourceAbstractEntity) return false
+            const sourceProperty = sourceAbstractEntity.properties.find(property => property.id === association.sourcePropertyId)
+            if (!sourceProperty) throw new Error(`Property [${association.sourcePropertyId}] is not existed in abstract entity [${association.sourceAbstractEntityId}]`)
+            for (const {association} of contextData.associationMap.values()) {
+                if (association.sourcePropertyId === sourceProperty.id) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    const getAssociationSource_CheckSourceUsed = (
+        association: DeepReadonly<AssociationIdOnly>,
+        contextData: DeepReadonly<ModelContextData>,
+        vueFlow: VueFlowStore,
+    ) => {
+        let sourceNode: GraphNode | undefined
+        let sourceHandleId: string | undefined
+
+        if ("sourceEntityId" in association) {
+            sourceNode = vueFlow.findNode(association.sourceEntityId)
+            if (!sourceNode) throw new Error(`Entity [${association.sourceEntityId}] is not existed`)
+            sourceHandleId = association.sourcePropertyId
+            for (const {association} of contextData.associationMap.values()) {
+                if (association.sourcePropertyId === sourceHandleId) {
+                    const sourceProperty =
+                        (sourceNode as EntityNode).data.entity.properties.find(property => property.id === association.sourcePropertyId)
+                    if (!sourceProperty) throw new Error(`Property [${association.sourcePropertyId}] is not existed`)
+                    throw new Error(`Property [${sourceProperty.name}] cannot used as source in two association`)
+                }
+            }
+        } else {
+            sourceNode = vueFlow.findNode(association.sourceAbstractEntityId)
+            if (!sourceNode) throw new Error(`AbstractEntity [${association.sourceAbstractEntityId}] is not existed`)
+            sourceHandleId = association.sourcePropertyId
+            for (const {association} of contextData.associationMap.values()) {
+                if (association.sourcePropertyId === sourceHandleId) {
+                    const sourceProperty =
+                        (sourceNode as MappedSuperClassNode).data.mappedSuperClass.properties.find(property => property.id === association.sourcePropertyId)
+                    if (!sourceProperty) throw new Error(`Property [${association.sourcePropertyId}] is not existed`)
+                    throw new Error(`Property [${sourceProperty.name}] cannot used as source in two association`)
+                }
+            }
+        }
+
+        return {
+            sourceNode,
+            sourceHandleId,
+        }
+    }
+    const getAssociationTarget = (
+        association: DeepReadonly<AssociationIdOnly>,
+        vueFlow: VueFlowStore,
+    ) => {
+        const targetNode = vueFlow.findNode(association.referencedEntityId)
+        if (!targetNode) throw new Error(`Entity [${association.referencedEntityId}] is not existed`)
+        const targetHandleId = association.referencedEntityId
+
+        return {
+            targetNode,
+            targetHandleId,
+        }
+    }
+
+    const addAssociation = (options: DeepReadonly<{
+        association: AssociationIdOnly,
+        labelPosition: LabelPosition
+    }>) => {
         const id = options.association.id
         const contextData = getContextData()
         const vueFlow = getVueFlow()
 
         if (contextData.associationMap.has(id)) throw new Error(`Association [${id}] is already existed`)
 
-        let sourceNode: GraphNode | undefined
-        let sourceHandleId: string | undefined
-        if ("sourceEntityId" in options.association) {
-            sourceNode = vueFlow.findNode(options.association.sourceEntityId)
-            if (!sourceNode) throw new Error(`Entity [${options.association.sourceEntityId}] is not existed`)
-            sourceHandleId = options.association.sourcePropertyId
-        } else {
-            sourceNode = vueFlow.findNode(options.association.sourceAbstractEntityId)
-            if (!sourceNode) throw new Error(`AbstractEntity [${options.association.sourceAbstractEntityId}] is not existed`)
-            sourceHandleId = options.association.sourcePropertyId
-        }
-
-        const targetNode = vueFlow.findNode(options.association.referencedEntityId)
-        if (!targetNode) throw new Error(`Entity [${options.association.referencedEntityId}] is not existed`)
-        const targetHandleId = options.association.referencedEntityId
+        const {
+            sourceNode,
+            sourceHandleId
+        } = getAssociationSource_CheckSourceUsed(options.association, contextData, vueFlow)
+        const {targetNode, targetHandleId} = getAssociationTarget(options.association, vueFlow)
 
         const association = cloneDeepReadonlyRaw<AssociationIdOnly>(options.association)
         const labelPosition = cloneDeepReadonlyRaw<LabelPosition>(options.labelPosition)
@@ -959,7 +1045,10 @@ export const useModelEditorHistory = (
         vueFlow.removeEdges([id])
         return association
     }
-    const updateAssociation = (options: DeepReadonly<{ association: AssociationIdOnly, labelPosition: LabelPosition }>) => {
+    const updateAssociation = (options: DeepReadonly<{
+        association: AssociationIdOnly,
+        labelPosition: LabelPosition
+    }>) => {
         const id = options.association.id
         const contextData = getContextData()
         const vueFlow = getVueFlow()
@@ -969,21 +1058,11 @@ export const useModelEditorHistory = (
         const existedAssociationEdge = findAssociationEdge(id, vueFlow)
         if (!existedAssociationEdge) throw new Error(`Edge [${id}] is not existed`)
 
-        let sourceNode: GraphNode | undefined
-        let sourceHandleId: string | undefined
-        if ("sourceEntityId" in options.association) {
-            sourceNode = vueFlow.findNode(options.association.sourceEntityId)
-            if (!sourceNode) throw new Error(`Entity [${options.association.sourceEntityId}] is not existed`)
-            sourceHandleId = options.association.sourcePropertyId
-        } else {
-            sourceNode = vueFlow.findNode(options.association.sourceAbstractEntityId)
-            if (!sourceNode) throw new Error(`AbstractEntity [${options.association.sourceAbstractEntityId}] is not existed`)
-            sourceHandleId = options.association.sourcePropertyId
-        }
-
-        const targetNode = vueFlow.findNode(options.association.referencedEntityId)
-        if (!targetNode) throw new Error(`Entity [${options.association.referencedEntityId}] is not existed`)
-        const targetHandleId = options.association.referencedEntityId
+        const {
+            sourceNode,
+            sourceHandleId
+        } = getAssociationSource_CheckSourceUsed(options.association, contextData, vueFlow)
+        const {targetNode, targetHandleId} = getAssociationTarget(options.association, vueFlow)
 
         const association = cloneDeepReadonlyRaw<AssociationIdOnly>(options.association)
         const labelPosition = cloneDeepReadonlyRaw<LabelPosition>(options.labelPosition)
@@ -1054,7 +1133,9 @@ export const useModelEditorHistory = (
                 result.entityIds.push(addEntity({entity, position}).id)
             }
             for (const {data: association, labelPosition} of graphData.associations) {
-                result.associationIds.push(addAssociation({association, labelPosition}).id)
+                // 保证关联源没有被其他关联占有
+                const sourceUsed = checkAssociationSourceUsed(association, contextData)
+                if (!sourceUsed) result.associationIds.push(addAssociation({association, labelPosition}).id)
             }
         } catch (e) {
             sendMessage(`Import Info Context Fail: ${e}`, {type: "error"})
