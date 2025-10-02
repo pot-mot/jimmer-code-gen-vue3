@@ -905,7 +905,7 @@ export const useModelEditorHistory = (
             const sourceEntity = contextData.entityMap.get(association.sourceEntityId)
             if (!sourceEntity) return false
             const sourceProperty = sourceEntity.properties.find(property => property.id === association.sourcePropertyId)
-            if (!sourceProperty) throw new Error(`Property [${association.sourcePropertyId}] is not existed in entity [${association.sourceEntityId}]`)
+            if (!sourceProperty) throw new Error(`[${association.sourcePropertyId}] is not existed in [${sourceEntity.name}]`)
             for (const {association} of contextData.associationMap.values()) {
                 if (association.sourcePropertyId === sourceProperty.id) {
                     return true
@@ -915,7 +915,7 @@ export const useModelEditorHistory = (
             const sourceAbstractEntity = contextData.mappedSuperClassMap.get(association.sourceAbstractEntityId)
             if (!sourceAbstractEntity) return false
             const sourceProperty = sourceAbstractEntity.properties.find(property => property.id === association.sourcePropertyId)
-            if (!sourceProperty) throw new Error(`Property [${association.sourcePropertyId}] is not existed in abstract entity [${association.sourceAbstractEntityId}]`)
+            if (!sourceProperty) throw new Error(`[${association.sourcePropertyId}] is not existed in [${sourceAbstractEntity.name}]`)
             for (const {association} of contextData.associationMap.values()) {
                 if (association.sourcePropertyId === sourceProperty.id) {
                     return true
@@ -941,8 +941,8 @@ export const useModelEditorHistory = (
                 if (association.sourcePropertyId === sourceHandleId) {
                     const sourceProperty =
                         (sourceNode as EntityNode).data.entity.properties.find(property => property.id === association.sourcePropertyId)
-                    if (!sourceProperty) throw new Error(`Property [${association.sourcePropertyId}] is not existed`)
-                    throw new Error(`Property [${sourceProperty.name}] cannot used as source in two association`)
+                    if (!sourceProperty) throw new Error(`[${association.sourcePropertyId}] is not existed`)
+                    throw new Error(`[${sourceProperty.name}] cannot used as source in two association`)
                 }
             }
         } else {
@@ -953,8 +953,8 @@ export const useModelEditorHistory = (
                 if (association.sourcePropertyId === sourceHandleId) {
                     const sourceProperty =
                         (sourceNode as MappedSuperClassNode).data.mappedSuperClass.properties.find(property => property.id === association.sourcePropertyId)
-                    if (!sourceProperty) throw new Error(`Property [${association.sourcePropertyId}] is not existed`)
-                    throw new Error(`Property [${sourceProperty.name}] cannot used as source in two association`)
+                    if (!sourceProperty) throw new Error(`[${association.sourcePropertyId}] is not existed`)
+                    throw new Error(`[${sourceProperty.name}] cannot used as source in two association`)
                 }
             }
         }
