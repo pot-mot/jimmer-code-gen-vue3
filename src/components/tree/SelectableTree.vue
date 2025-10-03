@@ -53,6 +53,19 @@ const flatNodes = computed(() => {
     return result
 })
 
+// 同步清除可能已经被移除的节点
+watch(() => flatNodes.value.map(it => it.id), (ids) => {
+    if (ids.length === 0) {
+        selectedIdSet.value.clear()
+    } else {
+        for (const selectedId of selectedIdSet.value) {
+            if (!ids.includes(selectedId)) {
+                selectedIdSet.value.delete(selectedId)
+            }
+        }
+    }
+})
+
 // 计算所有节点ID的顺序列表
 const nodeIdsInOrder = computed(() => {
     return flatNodes.value.map(node => node.id)
