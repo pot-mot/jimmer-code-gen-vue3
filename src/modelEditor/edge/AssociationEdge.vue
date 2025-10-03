@@ -120,6 +120,11 @@ const handleToolBarResize = (size: { width: number, height: number }) => {
 <style scoped>
 .association-edge {
     --edge-color: var(--border-color);
+    --edge-width: 1px;
+}
+
+.association-edge:hover {
+    --edge-width: 3px;
 }
 
 .association-edge.selected {
@@ -128,6 +133,7 @@ const handleToolBarResize = (size: { width: number, height: number }) => {
 
 :deep(.edge-line) {
     stroke: var(--edge-color) !important;
-    transition: stroke 0.3s ease;
+    stroke-width: var(--edge-width) !important;
+    transition: stroke 0.2s ease, stroke-width 0.2s ease;
 }
 </style>

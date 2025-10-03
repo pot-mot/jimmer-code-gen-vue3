@@ -51,11 +51,20 @@ const groupTheme = computed(() => {
 
 <style scoped>
 .enumeration-node {
+    position: relative;
     overflow: hidden;
     background-color: var(--background-color);
     border: var(--border);
     border-color: v-bind(groupColor);
     border-radius: var(--border-radius);
+    transition: border-color 0.2s ease;
+}
+
+.enumeration-node:hover {
+    border-width: 2px;
+    top: -1px;
+    left: -1px;
+    border-color: var(--border-color);
 }
 
 .enumeration-node.selected {
