@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {Handle, type NodeProps, Position} from "@vue-flow/core";
-import type {EntityNode} from "@/modelEditor/node/EntityNode.ts";
+import {type EntityNode, NOT_EXIST_ASSOCIATION_ID} from "@/modelEditor/node/EntityNode.ts";
 import EntityPropertyTypeSelect from "@/modelEditor/form/property/EntityPropertyTypeSelect.vue";
 import EditList from "@/components/list/selectableList/EditList.vue";
 import {createId, getColorIsDark, getColorVar} from "@/modelEditor/useModelEditor.ts";
@@ -12,7 +12,15 @@ import {validateEntityProperty} from "@/type/__generated/jsonSchema/items/Entity
 
 const props = defineProps<NodeProps<EntityNode["data"]>>()
 
-const beforePaste = (properties: Property[]) => {
+const beforeCopy = (properties: EntityProperty[]) => {
+    for (const property of properties) {
+        if ("associationId" in property) {
+            property.associationId = NOT_EXIST_ASSOCIATION_ID
+        }
+    }
+}
+
+const beforePaste = (properties: EntityProperty[]) => {
     for (const property of properties) {
         property.id = createId("Property")
     }
@@ -53,7 +61,10 @@ watch(() => handleIndexMap.value, () => {
         <div class="entity-header">
             <NameCommentEditor v-model="data.entity" :class="groupTheme" style="padding: 2px;"/>
             <span :class="groupTheme" style="color: var(--text-color);">:</span>
-            <MappedSuperClassIdMultiSelect style="font-size: 16px; line-height: 32px;" v-model="data.entity.extendsIds"/>
+            <MappedSuperClassIdMultiSelect
+                style="font-size: 16px; line-height: 32px;"
+                v-model="data.entity.extendsIds"
+            />
         </div>
 
         <EditList
@@ -61,15 +72,23 @@ watch(() => handleIndexMap.value, () => {
             v-model:lines="data.entity.properties"
             :default-line="defaultScalarProperty"
             :json-schema-validate="validateEntityProperty"
+            :before-copy="beforeCopy"
             :before-paste="beforePaste"
             @keydown.stop
         >
             <template #line="{item, index}">
                 <div class="entity-property">
-                    <Handle :ref="() => onHandleUpdate(item.id, index)" :id="item.id" type="source" :position="Position.Left"/>
+                    <Handle
+                        :ref="() => onHandleUpdate(item.id, index)"
+                        :id="item.id" type="source"
+                        :position="Position.Left"
+                    />
 
                     <div class="entity-property-view">
-                        <NameCommentEditor :font-size="14" v-model="data.entity.properties[index]"/>
+                        <NameCommentEditor
+                            :font-size="14"
+                            v-model="data.entity.properties[index]"
+                        />
                         <EntityPropertyTypeSelect
                             class="noDrag noWheel"
                             style="font-size: 14px; line-height: 30px;"

@@ -9,10 +9,19 @@ import {computed, ref, useTemplateRef, watch} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import MappedSuperClassPropertyTypeSelect from "@/modelEditor/form/property/MappedSuperClassPropertyTypeSelect.vue";
 import {validateMappedSuperClassProperty} from "@/type/__generated/jsonSchema/items/MappedSuperClassProperty.ts";
+import {NOT_EXIST_ASSOCIATION_ID} from "@/modelEditor/node/EntityNode.ts";
 
 const props = defineProps<NodeProps<MappedSuperClassNode["data"]>>()
 
-const beforePaste = (properties: Property[]) => {
+const beforeCopy = (properties: MappedSuperClassProperty[]) => {
+    for (const property of properties) {
+        if ("associationId" in property) {
+            property.associationId = NOT_EXIST_ASSOCIATION_ID
+        }
+    }
+}
+
+const beforePaste = (properties: MappedSuperClassProperty[]) => {
     for (const property of properties) {
         property.id = createId("Property")
     }
@@ -53,7 +62,11 @@ watch(() => handleIndexMap.value, () => {
         <div class="mapped-super-class-header">
             <NameCommentEditor v-model="data.mappedSuperClass" :class="groupTheme" style="padding: 2px;"/>
             <span :class="groupTheme" style="color: var(--text-color);">:</span>
-            <MappedSuperClassIdMultiSelect style="font-size: 16px; line-height: 32px;" v-model="data.mappedSuperClass.extendsIds" :ignore-ids="[data.mappedSuperClass.id]"/>
+            <MappedSuperClassIdMultiSelect
+                style="font-size: 16px; line-height: 32px;"
+                v-model="data.mappedSuperClass.extendsIds"
+                :ignore-ids="[data.mappedSuperClass.id]"
+            />
         </div>
 
         <EditList
@@ -61,15 +74,23 @@ watch(() => handleIndexMap.value, () => {
             v-model:lines="data.mappedSuperClass.properties"
             :default-line="defaultScalarProperty"
             :json-schema-validate="validateMappedSuperClassProperty"
+            :before-copy="beforeCopy"
             :before-paste="beforePaste"
             @keydown.stop
         >
             <template #line="{item, index}">
                 <div class="mapped-super-class-property">
-                    <Handle :ref="() => onHandleUpdate(item.id, index)" :id="item.id" type="source" :position="Position.Left"/>
+                    <Handle
+                        :ref="() => onHandleUpdate(item.id, index)"
+                        :id="item.id" type="source"
+                        :position="Position.Left"
+                    />
 
                     <div class="mapped-super-class-property-view">
-                        <NameCommentEditor :font-size="14" v-model="data.mappedSuperClass.properties[index]"/>
+                        <NameCommentEditor
+                            :font-size="14"
+                            v-model="data.mappedSuperClass.properties[index]"
+                        />
                         <MappedSuperClassPropertyTypeSelect
                             class="noDrag noWheel"
                             style="font-size: 14px; line-height: 30px;"

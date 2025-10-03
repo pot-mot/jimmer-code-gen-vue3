@@ -5,6 +5,8 @@ import {EntityWithProperties_JsonSchema} from "@/type/context/jsonSchema/EntityW
 
 export const NodeType_Entity = "ENTITY" as const
 
+export const NOT_EXIST_ASSOCIATION_ID = "[[NOT_EXIST_ASSOCIATION_ID]]"
+
 export type EntityNode = Pick<GraphNode, 'id' | 'position'> & {
     type: typeof NodeType_Entity
     data: {
