@@ -18,5 +18,8 @@ const entity = computed(() => {
 </script>
 
 <template>
-    <EntityViewer :entity="entity" :ctrl-focus="ctrlFocus"/>
+    <EntityViewer
+        :entity="entity"
+        :ctrl-focus="ctrlFocus"
+    />
 </template>

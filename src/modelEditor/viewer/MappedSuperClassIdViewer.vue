@@ -18,5 +18,8 @@ const mappedSuperClass = computed(() => {
 </script>
 
 <template>
-    <MappedSuperClassViewer :mapped-super-class="mappedSuperClass"/>
+    <MappedSuperClassViewer
+        :mapped-super-class="mappedSuperClass"
+        :ctrl-focus="ctrlFocus"
+    />
 </template>

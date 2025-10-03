@@ -19,5 +19,8 @@ const group = computed(() => {
 </script>
 
 <template>
-    <GroupViewer :group="group" :ctrl-focus="ctrlFocus"/>
+    <GroupViewer
+        :group="group"
+        :ctrl-focus="ctrlFocus"
+    />
 </template>

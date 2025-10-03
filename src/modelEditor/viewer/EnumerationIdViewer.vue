@@ -18,5 +18,8 @@ const enumeration = computed(() => {
 </script>
 
 <template>
-    <EnumerationViewer :enumeration="enumeration" :ctrl-focus="ctrlFocus"/>
+    <EnumerationViewer
+        :enumeration="enumeration"
+        :ctrl-focus="ctrlFocus"
+    />
 </template>
