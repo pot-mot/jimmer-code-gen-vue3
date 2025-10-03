@@ -785,8 +785,13 @@ export const useModelEditor = createStore(() => {
         canRedo: readonly(canRedo),
         undo: () => {
             if (canUndo.value) {
-                history.undo()
-                sendMessage("undo", {type: "success"})
+                try {
+                    history.undo()
+                    sendMessage("undo", {type: "success"})
+                }catch (e) {
+                    console.warn(e)
+                    sendMessage("undo fail", {type: "warning"})
+                }
             } else {
                 sendMessage("cannot undo", {type: "warning"})
             }
@@ -794,8 +799,13 @@ export const useModelEditor = createStore(() => {
         },
         redo: () => {
             if (canRedo.value) {
-                history.redo()
-                sendMessage("redo", {type: "success"})
+                try {
+                    history.redo()
+                    sendMessage("redo", {type: "success"})
+                } catch (e) {
+                    console.warn(e)
+                    sendMessage("redo fail", {type: "warning"})
+                }
             } else {
                 sendMessage("cannot redo", {type: "warning"})
             }
