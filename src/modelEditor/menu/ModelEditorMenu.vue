@@ -244,13 +244,6 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
             <div>
                 <button
                     class="create-type-item"
-                    :class="{selected: createType === 'MappedSuperClass'}"
-                    @click="createType = 'MappedSuperClass'"
-                >
-                    AbstractEntity
-                </button>
-                <button
-                    class="create-type-item"
                     :class="{selected: createType === 'Entity'}"
                     @click="createType = 'Entity'"
                 >
@@ -262,6 +255,13 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
                     @click="createType = 'Enumeration'"
                 >
                     Enum
+                </button>
+                <button
+                    class="create-type-item"
+                    :class="{selected: createType === 'MappedSuperClass'}"
+                    @click="createType = 'MappedSuperClass'"
+                >
+                    AbstractEntity
                 </button>
                 <button
                     class="create-type-item"
@@ -352,7 +352,7 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
 }
 
 .filter-input {
-    padding: 0 1rem;
+    padding: 0 1rem 0 0.5rem;
     margin-bottom: 0.5rem;
 }
 
