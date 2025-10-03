@@ -16,6 +16,7 @@ withDefaults(defineProps<{
     fontSize: 16
 })
 
+const nameInput = useTemplateRef("nameInput")
 const commentInput = useTemplateRef("commentInput")
 const nameCommentEditorRef = useTemplateRef("nameCommentEditorRef")
 
@@ -25,6 +26,9 @@ useClickOutside(() => nameCommentEditorRef.value, () => {
     commentFocused.value = false
 })
 
+const focusNameInput = () => {
+    nameInput.value?.$el.focus()
+}
 const focusCommentInput = () => {
     commentInput.value?.$el.focus()
 }
@@ -56,9 +60,16 @@ const showComment = computed(() => model.value.comment.length > 0 || commentFocu
         <span
             class="name"
             :class="{untouchable: !wrapperFocused}"
-            @click.stop
+            @click.stop="focusNameInput"
         >
+            <span
+                v-if="!model.name && !nameFocused"
+                class="no-name-warning"
+            >
+                [Empty Name]
+            </span>
             <FitSizeLineInput
+                ref="nameInput"
                 class="noDrag"
                 :padding="{top: 4, bottom: 4, left: 0, right: 0}"
                 :line-height="fontSize"
@@ -95,6 +106,10 @@ const showComment = computed(() => model.value.comment.length > 0 || commentFocu
 
 .name-comment-editor > .untouchable {
     pointer-events: none;
+}
+
+.name-comment-editor > .name > .no-name-warning {
+    color: var(--warning-color);
 }
 
 .name-comment-editor > .comment,
