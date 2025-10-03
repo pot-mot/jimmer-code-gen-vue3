@@ -357,11 +357,28 @@ defineExpose({
             :handleAddLine="handleAddLine"
             :handleRemoveLine="handleRemoveLine"
         >
-            <div style="margin: auto; width: min(40%, 6em);">
-                <button style="width: 100%" @click="handleAddLine()">
+            <div class="tail-add-button">
+                <button @click="handleAddLine()">
                     <IconAdd/>
                 </button>
             </div>
         </slot>
     </div>
 </template>
+
+<style scoped>
+.edit-list .tail-add-button {
+    margin: auto;
+    width: min(40%, 6em);
+}
+
+.edit-list .tail-add-button > button {
+    cursor: pointer;
+    width: 100%;
+    transition: border-color 0.2s ease;
+}
+
+.edit-list .tail-add-button > button:hover {
+    border-color: var(--border-color);
+}
+</style>
