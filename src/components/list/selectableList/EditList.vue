@@ -10,6 +10,7 @@ import {sendMessage} from "@/components/message/messageApi.ts";
 import IconAdd from "@/components/icons/IconAdd.vue";
 import type {ErrorObject} from "ajv";
 import "./list.css"
+import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 
 const lines = defineModel<T[]>('lines', {
     required: true
@@ -22,7 +23,11 @@ const getTempLines = () => {
 const props = withDefaults(
     defineProps<EditListProps<T>>(),
     {
+        beforeCopy: () => {
+        },
         beforePaste: () => {
+        },
+        afterPaste: () => {
         },
     }
 )
@@ -77,24 +82,16 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
         return
     }
 
-    const {
-        selectedItems,
-        unselectedItems
-    } = lines.value.reduce(
-        (result, _, index) => {
-            const {selectedItems, unselectedItems} = result
-            const item = lines.value[index]
+    const selectedItems: T[] = []
+    const unselectedItems: T[] = []
 
-            if (selectedItemSet.value.has(index)) {
-                selectedItems.push(item)
-            } else {
-                unselectedItems.push(item)
-            }
-
-            return result
-        },
-        {selectedItems: <T[]>[], unselectedItems: <T[]>[]}
-    )
+    for (const [index, item] of lines.value.entries()) {
+        if (selectedItemSet.value.has(index)) {
+            selectedItems.push(item)
+        } else {
+            unselectedItems.push(item)
+        }
+    }
 
     if (e.key === 'Delete') {
         e.preventDefault()
@@ -110,7 +107,10 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
             e.preventDefault()
             e.stopPropagation()
             e.stopImmediatePropagation()
-            await navigator.clipboard.writeText(JSON.stringify(selectedItems))
+
+            const copyData = cloneDeepReadonlyRaw<T[]>(selectedItems)
+            props.beforeCopy(copyData)
+            await navigator.clipboard.writeText(JSON.stringify(copyData))
         } else if (e.key === 'x') {
             e.preventDefault()
             e.stopPropagation()
@@ -163,6 +163,7 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
                 for (let i = insertIndex; i < insertIndex + insertLength; i++) {
                     select(i)
                 }
+                props.afterPaste()
             } catch (e) {
                 sendMessage("Paste Fail", {type: "error"})
             }
