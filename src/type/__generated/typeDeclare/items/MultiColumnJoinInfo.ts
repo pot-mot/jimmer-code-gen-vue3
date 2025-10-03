@@ -3,6 +3,6 @@ export default Object.freeze({
     content: `type MultiColumnJoinInfo = {
     type: "MultiColumn",
     embeddableTypeId: string,
-    columnNameOverrides: ColumnNameOverride[]
+    columnRefs: ColumnRef[]
 }`,
 })

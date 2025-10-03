@@ -21,11 +21,12 @@ export const modelGenerate = (
 
     if (selectedIds.entityIds) {
         const entities = getArrayFromMap(context.entityMap, selectedIds.entityIds)
-        const tables = entities.map(it => convertor.entityToTable(it, context))
+        const {tables, midTables} = convertor.entityToTable(entities, context)
 
         for (const script of generator.table.scripts()) {
-            mergeIntoFiles(script.execute(tables, context))
+            mergeIntoFiles(script.execute([...tables, ...midTables], context))
         }
+
         for (const script of generator.entity.scripts()) {
             for (const entity of entities) {
                 mergeIntoFiles(script.execute(entity, context))

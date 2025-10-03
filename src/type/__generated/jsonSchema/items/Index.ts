@@ -13,7 +13,7 @@ const IndexJsonSchema: JSONSchemaType<Index> = {
                 "type": "string"
             }
         },
-        "isUnique": {
+        "unique": {
             "type": "boolean"
         },
         "wherePredicates": {
@@ -22,8 +22,8 @@ const IndexJsonSchema: JSONSchemaType<Index> = {
     },
     "required": [
         "columnNames",
-        "isUnique",
-        "name"
+        "name",
+        "unique"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
 } as any as JSONSchemaType<Index>

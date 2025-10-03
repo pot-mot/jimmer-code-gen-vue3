@@ -1,6 +1,3 @@
-import {getEmbeddableTypeDefaultFullPathColumnNames} from "@/type/context/utils/EmbeddableTypeOverride.ts";
-import modelContext from "@/type/__generated/typeDeclare/items/ModelContext.ts";
-
 export const defaultTableToEntity: TableToEntity = (
     groupId: string,
     tables: DeepReadonly<Table[]>,
@@ -151,8 +148,8 @@ export const defaultTableToEntity: TableToEntity = (
         const hasEmbeddableId = idEmbeddableTypeMap.has(entity.id)
         const fkColumnNameSet = new Set<string>()
         for (const fk of table.foreignKeys) {
-            for (const fkColumn of fk.columnReferences) {
-                fkColumnNameSet.add(fkColumn.sourceColumnName)
+            for (const fkColumn of fk.columnRefs) {
+                fkColumnNameSet.add(fkColumn.columnName)
             }
         }
 
@@ -200,29 +197,21 @@ export const defaultTableToEntity: TableToEntity = (
             const lowerReferencedEntityName = nameTool.firstCaseToLower(referencedEntity.name)
 
             let joinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
-            if (foreignKey.columnReferences.length === 1) {
+            if (foreignKey.columnRefs.length === 1) {
                 joinInfo = {
                     type: "SingleColumn",
-                    columnName: foreignKey.columnReferences[0].sourceColumnName,
+                    columnName: foreignKey.columnRefs[0].columnName,
                 }
             } else {
                 if (idEmbeddableType === undefined)
                     throw new Error(`Table ${table.name} has no corresponding embeddable type`)
-                // TODO
-                const defaultColumnNames = getEmbeddableTypeDefaultFullPathColumnNames(idEmbeddableType, context.embeddableTypeMap)
-                const referencedColumnNames = defaultColumnNames.map(it => {
-                    const matchedColumnName = foreignKey.columnReferences.find(columnRef => columnRef.referencedColumnName === it.overrideColumnName)
-                    if (matchedColumnName === undefined) throw new Error(`Column ${it.overrideColumnName} not found in table ${table.name}`)
-                    return {
-                        propertyPath: it.propertyPath,
-                        overrideColumnName:  matchedColumnName.referencedColumnName,
-                    }
-                })
-
                 joinInfo = {
                     type: "MultiColumn",
                     embeddableTypeId: idEmbeddableType.id,
-                    columnNameOverrides: referencedColumnNames,
+                    columnRefs: foreignKey.columnRefs.map(columnRef => ({
+                        columnName: columnRef.columnName,
+                        referencedColumnName: columnRef.referencedColumnName,
+                    }))
                 }
             }
 

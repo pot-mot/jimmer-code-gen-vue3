@@ -1,5 +1,4 @@
 type Database = {
-    id: string
     type: DatabaseType
     name: string
     url: string
@@ -8,7 +7,6 @@ type Database = {
 }
 
 type Table = {
-    id: string
     schema: string
     name: string
     comment: string
@@ -33,19 +31,20 @@ type Column = {
 type Index = {
     name: string
     columnNames: string[]
-    isUnique: boolean
+    unique: boolean
     wherePredicates?: string
+}
+
+type ColumnRef = {
+    columnName: string
+    referencedColumnName: string
 }
 
 type ForeignKey = {
     name: string
     referencedTableName: string
-    columnReferences: [
-        {
-            sourceColumnName: string
-            referencedColumnName: string
-        }
-    ]
+    referencedTableSchema: string
+    columnRefs: ColumnRef[]
     onUpdate?: string
     onDelete?: string
 }

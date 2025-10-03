@@ -10,27 +10,26 @@ const ForeignKeyJsonSchema: JSONSchemaType<ForeignKey> = {
         "referencedTableName": {
             "type": "string"
         },
-        "columnReferences": {
+        "referencedTableSchema": {
+            "type": "string"
+        },
+        "columnRefs": {
             "type": "array",
-            "items": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "sourceColumnName": {
-                            "type": "string"
-                        },
-                        "referencedColumnName": {
-                            "type": "string"
-                        }
+            "items": {
+                "type": "object",
+                "properties": {
+                    "columnName": {
+                        "type": "string"
                     },
-                    "required": [
-                        "referencedColumnName",
-                        "sourceColumnName"
-                    ]
-                }
-            ],
-            "minItems": 1,
-            "maxItems": 1
+                    "referencedColumnName": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "columnName",
+                    "referencedColumnName"
+                ]
+            }
         },
         "onUpdate": {
             "type": "string"
@@ -40,9 +39,10 @@ const ForeignKeyJsonSchema: JSONSchemaType<ForeignKey> = {
         }
     },
     "required": [
-        "columnReferences",
+        "columnRefs",
         "name",
-        "referencedTableName"
+        "referencedTableName",
+        "referencedTableSchema"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
 } as any as JSONSchemaType<ForeignKey>

@@ -3,8 +3,9 @@ export default Object.freeze({
     content: `type MultiColumnMidTableJoinInfo = {
     type: "MultiColumnMidTable"
     embeddableTypeId: string
-    columnNameOverrides: ColumnNameOverride[]
-    midTableSourceColumnNameOverrides: ColumnNameOverride[]
-    midTableTargetColumnNameOverrides: ColumnNameOverride[]
+    columnRefs: {
+        source: ColumnRef,
+        target: ColumnRef
+    }[]
 } & MidTableInfo`,
 })

@@ -9,6 +9,9 @@ type TableToEntity = (
 }
 
 type EntityToTable = (
-    entity: DeepReadonly<EntityWithInheritInfo>,
+    entities: DeepReadonly<EntityWithInheritInfo[]>,
     context: DeepReadonly<ModelContext>
-) => Table
+) => {
+    tables: Table[],
+    midTables: Table[]
+}

@@ -3,7 +3,7 @@ export default Object.freeze({
     content: `type Index = {
     name: string
     columnNames: string[]
-    isUnique: boolean
+    unique: boolean
     wherePredicates?: string
 }`,
 })

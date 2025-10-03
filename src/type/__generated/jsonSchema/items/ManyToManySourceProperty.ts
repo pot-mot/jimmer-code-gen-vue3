@@ -69,20 +69,16 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                             "type": "string",
                             "const": "SingleColumnMidTable"
                         },
-                        "columnName": {
+                        "sourceColumnName": {
                             "type": "string"
                         },
-                        "midTableSourceColumnName": {
-                            "type": "string"
-                        },
-                        "midTableTargetColumnName": {
+                        "targetColumnName": {
                             "type": "string"
                         }
                     },
                     "required": [
-                        "columnName",
-                        "midTableSourceColumnName",
-                        "midTableTargetColumnName",
+                        "sourceColumnName",
+                        "targetColumnName",
                         "type"
                     ]
                 },
@@ -186,66 +182,52 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                         "embeddableTypeId": {
                             "type": "string"
                         },
-                        "columnNameOverrides": {
+                        "columnRefs": {
                             "type": "array",
                             "items": {
                                 "type": "object",
                                 "properties": {
-                                    "propertyPath": {
-                                        "type": "string"
+                                    "source": {
+                                        "type": "object",
+                                        "properties": {
+                                            "columnName": {
+                                                "type": "string"
+                                            },
+                                            "referencedColumnName": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "columnName",
+                                            "referencedColumnName"
+                                        ]
                                     },
-                                    "overrideColumnName": {
-                                        "type": "string"
+                                    "target": {
+                                        "type": "object",
+                                        "properties": {
+                                            "columnName": {
+                                                "type": "string"
+                                            },
+                                            "referencedColumnName": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "columnName",
+                                            "referencedColumnName"
+                                        ]
                                     }
                                 },
                                 "required": [
-                                    "overrideColumnName",
-                                    "propertyPath"
-                                ]
-                            }
-                        },
-                        "midTableSourceColumnNameOverrides": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "propertyPath": {
-                                        "type": "string"
-                                    },
-                                    "overrideColumnName": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "overrideColumnName",
-                                    "propertyPath"
-                                ]
-                            }
-                        },
-                        "midTableTargetColumnNameOverrides": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "propertyPath": {
-                                        "type": "string"
-                                    },
-                                    "overrideColumnName": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "overrideColumnName",
-                                    "propertyPath"
+                                    "source",
+                                    "target"
                                 ]
                             }
                         }
                     },
                     "required": [
-                        "columnNameOverrides",
+                        "columnRefs",
                         "embeddableTypeId",
-                        "midTableSourceColumnNameOverrides",
-                        "midTableTargetColumnNameOverrides",
                         "type"
                     ]
                 },

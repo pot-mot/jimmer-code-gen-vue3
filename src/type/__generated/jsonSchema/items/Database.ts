@@ -4,9 +4,6 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const DatabaseJsonSchema: JSONSchemaType<Database> = {
     "type": "object",
     "properties": {
-        "id": {
-            "type": "string"
-        },
         "type": {
             "$ref": "#/definitions/DatabaseType"
         },
@@ -24,7 +21,6 @@ const DatabaseJsonSchema: JSONSchemaType<Database> = {
         }
     },
     "required": [
-        "id",
         "name",
         "password",
         "type",

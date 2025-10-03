@@ -11,27 +11,27 @@ const MultiColumnJoinInfoJsonSchema: JSONSchemaType<MultiColumnJoinInfo> = {
         "embeddableTypeId": {
             "type": "string"
         },
-        "columnNameOverrides": {
+        "columnRefs": {
             "type": "array",
             "items": {
                 "type": "object",
                 "properties": {
-                    "propertyPath": {
+                    "columnName": {
                         "type": "string"
                     },
-                    "overrideColumnName": {
+                    "referencedColumnName": {
                         "type": "string"
                     }
                 },
                 "required": [
-                    "overrideColumnName",
-                    "propertyPath"
+                    "columnName",
+                    "referencedColumnName"
                 ]
             }
         }
     },
     "required": [
-        "columnNameOverrides",
+        "columnRefs",
         "embeddableTypeId",
         "type"
     ],

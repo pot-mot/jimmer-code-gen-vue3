@@ -10,20 +10,16 @@ const SingleColumnMidTableJoinInfoJsonSchema: JSONSchemaType<SingleColumnMidTabl
                     "type": "string",
                     "const": "SingleColumnMidTable"
                 },
-                "columnName": {
+                "sourceColumnName": {
                     "type": "string"
                 },
-                "midTableSourceColumnName": {
-                    "type": "string"
-                },
-                "midTableTargetColumnName": {
+                "targetColumnName": {
                     "type": "string"
                 }
             },
             "required": [
-                "columnName",
-                "midTableSourceColumnName",
-                "midTableTargetColumnName",
+                "sourceColumnName",
+                "targetColumnName",
                 "type"
             ]
         },

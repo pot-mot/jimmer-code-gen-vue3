@@ -4,9 +4,6 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const TableJsonSchema: JSONSchemaType<Table> = {
     "type": "object",
     "properties": {
-        "id": {
-            "type": "string"
-        },
         "schema": {
             "type": "string"
         },
@@ -77,7 +74,7 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                             "type": "string"
                         }
                     },
-                    "isUnique": {
+                    "unique": {
                         "type": "boolean"
                     },
                     "wherePredicates": {
@@ -86,8 +83,8 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                 },
                 "required": [
                     "columnNames",
-                    "isUnique",
-                    "name"
+                    "name",
+                    "unique"
                 ]
             }
         },
@@ -102,27 +99,26 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                     "referencedTableName": {
                         "type": "string"
                     },
-                    "columnReferences": {
+                    "referencedTableSchema": {
+                        "type": "string"
+                    },
+                    "columnRefs": {
                         "type": "array",
-                        "items": [
-                            {
-                                "type": "object",
-                                "properties": {
-                                    "sourceColumnName": {
-                                        "type": "string"
-                                    },
-                                    "referencedColumnName": {
-                                        "type": "string"
-                                    }
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "columnName": {
+                                    "type": "string"
                                 },
-                                "required": [
-                                    "referencedColumnName",
-                                    "sourceColumnName"
-                                ]
-                            }
-                        ],
-                        "minItems": 1,
-                        "maxItems": 1
+                                "referencedColumnName": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "columnName",
+                                "referencedColumnName"
+                            ]
+                        }
                     },
                     "onUpdate": {
                         "type": "string"
@@ -132,9 +128,10 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                     }
                 },
                 "required": [
-                    "columnReferences",
+                    "columnRefs",
                     "name",
-                    "referencedTableName"
+                    "referencedTableName",
+                    "referencedTableSchema"
                 ]
             }
         }
@@ -143,7 +140,6 @@ const TableJsonSchema: JSONSchemaType<Table> = {
         "columns",
         "comment",
         "foreignKeys",
-        "id",
         "indexes",
         "name",
         "schema"

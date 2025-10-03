@@ -8,7 +8,7 @@ type SingleColumnJoinInfo = {
 type MultiColumnJoinInfo = {
     type: "MultiColumn",
     embeddableTypeId: string,
-    columnNameOverrides: ColumnNameOverride[]
+    columnRefs: ColumnRef[]
 }
 
 type MidTableInfo = {
@@ -37,15 +37,15 @@ type MidTableInfo = {
 
 type SingleColumnMidTableJoinInfo = {
     type: "SingleColumnMidTable"
-    columnName: string
-    midTableSourceColumnName: string
-    midTableTargetColumnName: string
+    sourceColumnName: string
+    targetColumnName: string
 } & MidTableInfo
 
 type MultiColumnMidTableJoinInfo = {
     type: "MultiColumnMidTable"
     embeddableTypeId: string
-    columnNameOverrides: ColumnNameOverride[]
-    midTableSourceColumnNameOverrides: ColumnNameOverride[]
-    midTableTargetColumnNameOverrides: ColumnNameOverride[]
+    columnRefs: {
+        source: ColumnRef,
+        target: ColumnRef
+    }[]
 } & MidTableInfo

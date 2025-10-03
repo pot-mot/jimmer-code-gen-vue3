@@ -4,6 +4,7 @@ import ColumnJsonSchema from "./items/Column.ts";
 import ColumnInfoJsonSchema from "./items/ColumnInfo.ts";
 import ColumnNameOverrideJsonSchema from "./items/ColumnNameOverride.ts";
 import ColumnPropertyJsonSchema from "./items/ColumnProperty.ts";
+import ColumnRefJsonSchema from "./items/ColumnRef.ts";
 import CrossTypeJsonSchema from "./items/CrossType.ts";
 import DatabaseJsonSchema from "./items/Database.ts";
 import DatabaseTypeJsonSchema from "./items/DatabaseType.ts";
@@ -77,6 +78,7 @@ export const jsonSchemas = Object.freeze({
     ColumnInfo: ColumnInfoJsonSchema,
     ColumnNameOverride: ColumnNameOverrideJsonSchema,
     ColumnProperty: ColumnPropertyJsonSchema,
+    ColumnRef: ColumnRefJsonSchema,
     CrossType: CrossTypeJsonSchema,
     Database: DatabaseJsonSchema,
     DatabaseType: DatabaseTypeJsonSchema,

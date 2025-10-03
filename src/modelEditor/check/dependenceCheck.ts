@@ -53,9 +53,9 @@ export const getEmbeddableTypePropertyDependencies = (
                 dependenceIds: {embeddableTypeIds: [property.embeddableTypeId]}
             })
 
-            if ("propOverrides" in property) {
-                for (const propOverride of property.propOverrides ?? []) {
-                    const propertyPath = parseEmbeddablePropertyPath(propOverride.propertyPath.split("."), embeddableType, context)
+            if ("columnNameOverrides" in property) {
+                for (const columnNameOverride of property.columnNameOverrides ?? []) {
+                    const propertyPath = parseEmbeddablePropertyPath(columnNameOverride.propertyPath.split("."), embeddableType, context)
                     for (const pathItem of propertyPath) {
                         if (pathItem.type === 'EmbeddableType') {
                             existedDependencies.push({

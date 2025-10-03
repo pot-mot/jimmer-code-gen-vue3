@@ -12,6 +12,7 @@ import ColumnDeclare from "./items/Column.ts";
 import ColumnInfoDeclare from "./items/ColumnInfo.ts";
 import ColumnNameOverrideDeclare from "./items/ColumnNameOverride.ts";
 import ColumnPropertyDeclare from "./items/ColumnProperty.ts";
+import ColumnRefDeclare from "./items/ColumnRef.ts";
 import ConcreteAssociationDeclare from "./items/ConcreteAssociation.ts";
 import ConcreteAssociationIdOnlyDeclare from "./items/ConcreteAssociationIdOnly.ts";
 import ConcreteAssociationWithInheritInfoDeclare from "./items/ConcreteAssociationWithInheritInfo.ts";
@@ -124,6 +125,7 @@ export type TypeMap = {
     ColumnInfo: ColumnInfo
     ColumnNameOverride: ColumnNameOverride
     ColumnProperty: ColumnProperty
+    ColumnRef: ColumnRef
     ConcreteAssociation: ConcreteAssociation
     ConcreteAssociationIdOnly: ConcreteAssociationIdOnly
     ConcreteAssociationWithInheritInfo: ConcreteAssociationWithInheritInfo
@@ -238,6 +240,7 @@ export const typeDeclares = Object.freeze({
     ColumnInfo: ColumnInfoDeclare,
     ColumnNameOverride: ColumnNameOverrideDeclare,
     ColumnProperty: ColumnPropertyDeclare,
+    ColumnRef: ColumnRefDeclare,
     ConcreteAssociation: ConcreteAssociationDeclare,
     ConcreteAssociationIdOnly: ConcreteAssociationIdOnlyDeclare,
     ConcreteAssociationWithInheritInfo: ConcreteAssociationWithInheritInfoDeclare,

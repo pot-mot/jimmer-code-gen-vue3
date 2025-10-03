@@ -3,12 +3,8 @@ export default Object.freeze({
     content: `type ForeignKey = {
     name: string
     referencedTableName: string
-    columnReferences: [
-        {
-            sourceColumnName: string
-            referencedColumnName: string
-        }
-    ]
+    referencedTableSchema: string
+    columnRefs: ColumnRef[]
     onUpdate?: string
     onDelete?: string
 }`,
