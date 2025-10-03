@@ -236,7 +236,11 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
     >
 
         <div class="create-type-select">
-            <div>Create Type</div>
+            <button class="group-create-button" @click="handleAddGroup">
+                <IconAdd/>
+                <span>Group</span>
+            </button>
+
             <div>
                 <button
                     class="create-type-item"
@@ -269,12 +273,7 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
             </div>
         </div>
 
-        <button class="group-create-button" @click="handleAddGroup">
-            <IconAdd/>
-            <span>Group</span>
-        </button>
-
-        <div>
+        <div class="filter-input">
             <input v-model="filterKeyword">
         </div>
 
@@ -329,15 +328,16 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
     padding-bottom: 5rem;
 }
 
-.create-type-select {
-    padding-bottom: 0.5rem;
-    border-bottom: 1px dashed var(--comment-color);
-}
-
 .group-create-button {
     margin: 0.5rem 0 0.2rem 0.5rem;
     padding: 0.2rem;
     cursor: pointer;
+}
+
+.create-type-select {
+    padding-bottom: 0.5rem;
+    border-bottom: 1px dashed var(--background-color-hover);
+    margin-bottom: 0.5rem;
 }
 
 .create-type-item {
@@ -349,6 +349,17 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
 
 .create-type-item.selected {
     color: var(--primary-color);
+}
+
+.filter-input {
+    padding: 0 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.filter-input > input {
+    width: 100%;
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
 }
 
 .menu-item {
