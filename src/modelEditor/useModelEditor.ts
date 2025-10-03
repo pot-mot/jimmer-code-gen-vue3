@@ -74,6 +74,9 @@ export const getColorIsDark = (id: string): boolean => {
 export const CreateType_CONSTANTS = ["Entity", "MappedSuperClass", "EmbeddableType", "Enumeration"] as const
 export type CreateType = (typeof CreateType_CONSTANTS)[number]
 
+const CLICK_ADD_NODE_OFFSET_X = 24
+const CLICK_ADD_NODE_OFFSET_Y = 16
+
 export const useModelEditor = createStore(() => {
     const vueFlow = shallowRef<VueFlowStore>(useVueFlow(VUE_FLOW_ID))
     const viewport = computed<ViewportTransform>(() => {
@@ -629,6 +632,8 @@ export const useModelEditor = createStore(() => {
                         ) {
                             history.executeBatch(Symbol('click:add'), () => {
                                 const position = screenToFlowCoordinate(currentMousePosition)
+                                position.x -= CLICK_ADD_NODE_OFFSET_X
+                                position.y -= CLICK_ADD_NODE_OFFSET_Y
                                 switch (createType.value) {
                                     case "Entity":
                                         addEntity(undefined, undefined, position)
