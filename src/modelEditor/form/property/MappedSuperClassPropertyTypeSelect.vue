@@ -124,7 +124,7 @@ const selectEntity = (entity: EntityWithProperties) => {
         const association: ManyToOneAbstractAssociationIdOnly = {
             id: associationId,
             name: `fk_${ABSTRACT_ASSOCIATION_SOURCE_NAME_PLACEHOLDER}_${sourceProperty.name}`,
-            comment: `${ABSTRACT_ASSOCIATION_SOURCE_COMMENT_PLACEHOLDER}${sourceProperty.comment}关联`,
+            comment: `${ABSTRACT_ASSOCIATION_SOURCE_COMMENT_PLACEHOLDER}${sourceProperty.comment}`,
             type: "ManyToOne_Abstract",
             sourceAbstractEntityId: props.mappedSuperClass.id,
             sourcePropertyId: sourceProperty.id,
