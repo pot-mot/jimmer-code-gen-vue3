@@ -256,7 +256,7 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
         }
     }
 
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && selectedItems.length === 1) {
         e.preventDefault()
         e.stopPropagation()
         e.stopImmediatePropagation()
