@@ -10,6 +10,9 @@ const ManyToManyAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToManyAssociatio
         "name": {
             "type": "string"
         },
+        "comment": {
+            "type": "string"
+        },
         "type": {
             "type": "string",
             "const": "ManyToMany"
@@ -31,6 +34,7 @@ const ManyToManyAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToManyAssociatio
         }
     },
     "required": [
+        "comment",
         "foreignKeyType",
         "id",
         "mappedProperty",

@@ -3,6 +3,7 @@ export default Object.freeze({
     content: `type ManyToOneAbstractAssociation = {
     id: string
     name: string
+    comment: string
     type: 'ManyToOne_Abstract'
     sourceAbstractEntity: MappedSuperClassWithProperties
     referencedEntity: EntityWithProperties

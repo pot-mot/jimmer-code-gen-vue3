@@ -12,14 +12,17 @@ import {overrideEmbeddableTypePropertiesColumnNames} from "@/type/context/utils/
 import {getAssociationWithInheritInfo} from "@/type/context/utils/AssociationWithInheritInfo.ts";
 import {
     getAbstractMappedProperties,
-    getEntityMappedProperties, oneToManyAbstractPropertyToReal,
-    oneToOneMappedAbstractPropertyToReal
-} from "@/type/context/utils/MappedProperty.ts";
+    getEntityMappedPropertyInfo
+} from "@/type/context/utils/MappedPropertyInfo.ts";
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 import {idOnlyToAssociation} from "@/type/context/utils/AssociationIdOnly.ts";
 import {nameTool} from "@/type/context/utils/NameTool.ts";
 import {buildTypeTool} from "@/type/context/utils/TypeTool.ts";
 import {createId} from "@/modelEditor/useModelEditor.ts";
+import {
+    oneToManyAbstractToReal,
+    oneToOneAbstractToReal
+} from "@/type/context/utils/AbstractAssociationToReal.ts";
 
 export const contextDataToContext = (
     readonlyContextData: DeepReadonly<ModelContextData>,
@@ -34,7 +37,7 @@ export const contextDataToContext = (
 
     const inheritorsMap = buildInheritorsMap(contextData.entityMap, contextData.mappedSuperClassMap)
     for (const entity of contextData.entityMap.values()) {
-        const mappedProperties = getEntityMappedProperties(entity.properties, associationMap)
+        const mappedProperties = getEntityMappedPropertyInfo(entity.properties, associationMap)
         for (const {mappedProperty, referencedEntity} of mappedProperties) {
             referencedEntity.properties.push(mappedProperty)
         }
@@ -42,14 +45,24 @@ export const contextDataToContext = (
     for (const mappedSuperClass of contextData.mappedSuperClassMap.values()) {
         const inheritors = getMappedSuperClassAllInheritors(mappedSuperClass, inheritorsMap)
         const mappedProperties = getAbstractMappedProperties(mappedSuperClass.properties, associationMap)
-        for (const {mappedProperty, referencedEntity} of mappedProperties) {
-            if (mappedProperty.category === "OneToOne_Mapped_Abstract") {
+        for (const {association: abstractAssociation, mappedProperty, referencedEntity} of mappedProperties) {
+            if (abstractAssociation.type === "OneToOne_Abstract" && mappedProperty.category === "OneToOne_Mapped_Abstract") {
                 for (const inheritEntity of inheritors.entities) {
-                    referencedEntity.properties.push(oneToOneMappedAbstractPropertyToReal(mappedProperty, inheritEntity))
+                    const {
+                        association: realAssociation,
+                        property: realProperty,
+                    } = oneToOneAbstractToReal(abstractAssociation, mappedProperty, inheritEntity)
+                    inheritEntity.properties.push(realProperty)
+                    associationMap.set(realAssociation.id, realAssociation)
                 }
-            } else if (mappedProperty.category === "OneToMany_Abstract") {
+            } else if (abstractAssociation.type === "ManyToOne_Abstract" && mappedProperty.category === "OneToMany_Abstract") {
                 for (const inheritEntity of inheritors.entities) {
-                    referencedEntity.properties.push(oneToManyAbstractPropertyToReal(mappedProperty, inheritEntity))
+                    const {
+                        association: realAssociation,
+                        property: realProperty,
+                    } = oneToManyAbstractToReal(abstractAssociation, mappedProperty, inheritEntity)
+                    inheritEntity.properties.push(realProperty)
+                    associationMap.set(realAssociation.id, realAssociation)
                 }
             }
         }

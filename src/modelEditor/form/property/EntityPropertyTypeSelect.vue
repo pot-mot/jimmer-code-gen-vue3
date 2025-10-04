@@ -15,6 +15,10 @@ import {
 import {computed, nextTick, ref} from "vue";
 import TypePairViewer from "@/modelEditor/viewer/TypePairViewer.vue";
 import {firstCaseToLower} from "@/utils/name/firstCase.ts";
+import {
+    ABSTRACT_ASSOCIATION_SOURCE_COMMENT_PLACEHOLDER,
+    ABSTRACT_ASSOCIATION_SOURCE_NAME_PLACEHOLDER
+} from "@/type/context/utils/AbstractAssociationToReal.ts";
 
 const props = defineProps<{
     entity: EntityWithProperties
@@ -121,7 +125,8 @@ const selectEntity = (entity: EntityWithProperties) => {
         }
         const association: ManyToOneAssociationIdOnly = {
             id: associationId,
-            name: `fk_${props.entity.name}_${sourceProperty.name}`, // TODO
+            name: `fk_${ABSTRACT_ASSOCIATION_SOURCE_NAME_PLACEHOLDER}_${sourceProperty.name}`,
+            comment: `${ABSTRACT_ASSOCIATION_SOURCE_COMMENT_PLACEHOLDER}${sourceProperty.comment}关联`,
             type: "ManyToOne",
             sourceEntityId: props.entity.id,
             sourcePropertyId: sourceProperty.id,

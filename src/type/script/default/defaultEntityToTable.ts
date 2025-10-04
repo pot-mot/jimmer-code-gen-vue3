@@ -130,13 +130,13 @@ export const defaultEntityToTable: EntityToTable = (
     }
 
     const buildMidTable = (
-        options: {
-            midTable: {name: string, schema: string},
+        options: DeepReadonly<{
+            midTable: {schema: string, name: string, comment: string},
             sourceTable: {name: string, schema: string},
             targetTable: {name: string, schema: string},
             joinColumnInfos: MidTableJoinColumnInfo[],
             associationType: "OneToOne_Source" | "ManyToOne" | "ManyToMany_Source"
-        }
+        }>
     ): Table => {
         const {
             sourceTable,
@@ -148,7 +148,7 @@ export const defaultEntityToTable: EntityToTable = (
         const midTable: Table = {
             schema: options.midTable.name,
             name: options.midTable.schema,
-            comment: "",
+            comment: options.midTable.comment,
             columns: [],
             indexes: [],
             foreignKeys: []
@@ -177,6 +177,7 @@ export const defaultEntityToTable: EntityToTable = (
         }
         midTable.foreignKeys.push({
             name: midTable.name + "_S",
+            comment: midTable.comment + " Source Foreign Key",
             referencedTableSchema: sourceTable.schema,
             referencedTableName: sourceTable.name,
             columnRefs: joinColumnInfos.map(it => it.columnRefs.source),
@@ -185,6 +186,7 @@ export const defaultEntityToTable: EntityToTable = (
         })
         midTable.foreignKeys.push({
             name: midTable.name + "_T",
+            comment: midTable.comment + " Target Foreign Key",
             referencedTableSchema: targetTable.schema,
             referencedTableName: targetTable.name,
             columnRefs: joinColumnInfos.map(it => it.columnRefs.target),
@@ -282,6 +284,7 @@ export const defaultEntityToTable: EntityToTable = (
                     }
                     table.foreignKeys.push({
                         name: association.name,
+                        comment: association.comment,
                         referencedTableSchema: refTable.schema,
                         referencedTableName: refTable.name,
                         columnRefs: [columnRef],
@@ -303,6 +306,7 @@ export const defaultEntityToTable: EntityToTable = (
                     }
                     table.foreignKeys.push({
                         name: association.name,
+                        comment: association.comment,
                         referencedTableSchema: refTable.schema,
                         referencedTableName: refTable.name,
                         columnRefs: joinColumnInfos.map(it => it.columnRef),
@@ -317,7 +321,7 @@ export const defaultEntityToTable: EntityToTable = (
                         throw new Error(`[${entity.name}.${property.name}] refColumns [${refColumns.map(it => it.name).join(", ")}] length is not 1`)
                     }
                     midTables.push(buildMidTable({
-                        midTable: {name: association.name, schema: table.schema},
+                        midTable: {name: association.name, comment: association.comment, schema: table.schema},
                         sourceTable: {name: table.name, schema: table.schema},
                         targetTable: {name: refTable.name, schema: refTable.schema},
                         joinColumnInfos: bindMidTableJoinColumnInfo([{
@@ -331,7 +335,7 @@ export const defaultEntityToTable: EntityToTable = (
                         throw new Error(`[${entity.name}.${property.name}] refColumns [${refColumns.map(it => it.name).join(", ")}] length is not ${property.joinInfo.columnRefs.length}`)
                     }
                     midTables.push(buildMidTable({
-                        midTable: {name: association.name, schema: table.schema},
+                        midTable: {name: association.name, comment: association.comment, schema: table.schema},
                         sourceTable: {name: table.name, schema: table.schema},
                         targetTable: {name: refTable.name, schema: refTable.schema},
                         joinColumnInfos: bindMidTableJoinColumnInfo(property.joinInfo.columnRefs, refColumns),

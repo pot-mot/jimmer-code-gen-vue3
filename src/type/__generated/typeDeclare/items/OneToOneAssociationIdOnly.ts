@@ -3,6 +3,7 @@ export default Object.freeze({
     content: `type OneToOneAssociationIdOnly = {
     id: string
     name: string
+    comment: string
     type: 'OneToOne'
     sourceEntityId: string
     referencedEntityId: string

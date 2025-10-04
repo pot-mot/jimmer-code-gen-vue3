@@ -10,6 +10,9 @@ const ManyToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToOneAbst
         "name": {
             "type": "string"
         },
+        "comment": {
+            "type": "string"
+        },
         "type": {
             "type": "string",
             "const": "ManyToOne_Abstract"
@@ -31,6 +34,7 @@ const ManyToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToOneAbst
         }
     },
     "required": [
+        "comment",
         "foreignKeyType",
         "id",
         "mappedProperty",

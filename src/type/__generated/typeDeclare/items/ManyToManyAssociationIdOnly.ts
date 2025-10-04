@@ -3,6 +3,7 @@ export default Object.freeze({
     content: `type ManyToManyAssociationIdOnly = {
     id: string
     name: string
+    comment: string
     type: 'ManyToMany'
     sourceEntityId: string
     referencedEntityId: string

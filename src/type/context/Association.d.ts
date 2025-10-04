@@ -1,6 +1,7 @@
 type OneToOneAssociation = {
     id: string
     name: string
+    comment: string
     type: 'OneToOne'
     sourceEntity: EntityWithProperties
     referencedEntity: EntityWithProperties
@@ -12,6 +13,7 @@ type OneToOneAssociation = {
 type OneToOneAbstractAssociation = {
     id: string
     name: string
+    comment: string
     type: 'OneToOne_Abstract'
     sourceAbstractEntity: MappedSuperClassWithProperties
     referencedEntity: EntityWithProperties
@@ -23,6 +25,7 @@ type OneToOneAbstractAssociation = {
 type ManyToOneAssociation = {
     id: string
     name: string
+    comment: string
     type: 'ManyToOne'
     sourceEntity: EntityWithProperties
     referencedEntity: EntityWithProperties
@@ -34,6 +37,7 @@ type ManyToOneAssociation = {
 type ManyToOneAbstractAssociation = {
     id: string
     name: string
+    comment: string
     type: 'ManyToOne_Abstract'
     sourceAbstractEntity: MappedSuperClassWithProperties
     referencedEntity: EntityWithProperties
@@ -45,6 +49,7 @@ type ManyToOneAbstractAssociation = {
 type ManyToManyAssociation = {
     id: string
     name: string
+    comment: string
     type: 'ManyToMany'
     sourceEntity: EntityWithProperties
     referencedEntity: EntityWithProperties

@@ -10,6 +10,9 @@ const OneToOneAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAssociationIdO
         "name": {
             "type": "string"
         },
+        "comment": {
+            "type": "string"
+        },
         "type": {
             "type": "string",
             "const": "OneToOne"
@@ -31,6 +34,7 @@ const OneToOneAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAssociationIdO
         }
     },
     "required": [
+        "comment",
         "foreignKeyType",
         "id",
         "mappedProperty",

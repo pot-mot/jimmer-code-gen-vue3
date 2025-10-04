@@ -96,6 +96,9 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                     "name": {
                         "type": "string"
                     },
+                    "comment": {
+                        "type": "string"
+                    },
                     "referencedTableName": {
                         "type": "string"
                     },
@@ -129,6 +132,7 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                 },
                 "required": [
                     "columnRefs",
+                    "comment",
                     "name",
                     "referencedTableName",
                     "referencedTableSchema"

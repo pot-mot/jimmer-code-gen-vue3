@@ -248,6 +248,7 @@ export const defaultTableToEntity: TableToEntity = (
             const association: ManyToOneAssociationIdOnly = {
                 id: associationId,
                 name: foreignKey.name,
+                comment: foreignKey.comment,
                 type: "ManyToOne",
                 foreignKeyType: "REAL",
                 sourceEntityId: sourceEntity.id,

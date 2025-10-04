@@ -7,6 +7,9 @@ const ForeignKeyJsonSchema: JSONSchemaType<ForeignKey> = {
         "name": {
             "type": "string"
         },
+        "comment": {
+            "type": "string"
+        },
         "referencedTableName": {
             "type": "string"
         },
@@ -40,6 +43,7 @@ const ForeignKeyJsonSchema: JSONSchemaType<ForeignKey> = {
     },
     "required": [
         "columnRefs",
+        "comment",
         "name",
         "referencedTableName",
         "referencedTableSchema"

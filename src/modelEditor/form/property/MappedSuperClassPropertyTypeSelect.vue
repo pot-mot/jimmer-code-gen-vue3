@@ -15,10 +15,10 @@ import {
 import {computed, nextTick, ref} from "vue";
 import TypePairViewer from "@/modelEditor/viewer/TypePairViewer.vue";
 import {
-    ABSTRACT_COMMENT_PLACEHOLDER,
-    ABSTRACT_ID_VIEW_PLACEHOLDER,
-    ABSTRACT_NAME_PLACEHOLDER
-} from "@/type/context/utils/MappedProperty.ts";
+    ABSTRACT_ASSOCIATION_SOURCE_COMMENT_PLACEHOLDER, ABSTRACT_ASSOCIATION_SOURCE_NAME_PLACEHOLDER,
+    ABSTRACT_PROPERTY_COMMENT_PLACEHOLDER,
+    ABSTRACT_PROPERTY_ID_VIEW_NAME_PLACEHOLDER, ABSTRACT_PROPERTY_NAME_PLACEHOLDER
+} from "@/type/context/utils/AbstractAssociationToReal.ts";
 
 const props = defineProps<{
     mappedSuperClass: MappedSuperClassWithProperties
@@ -110,9 +110,9 @@ const selectEntity = (entity: EntityWithProperties) => {
         const mappedProperty: OneToManyAbstractProperty = {
             mappedById: property.value.id,
             id: mappedPropertyId,
-            name: `${ABSTRACT_NAME_PLACEHOLDER}List`,
-            comment: `${ABSTRACT_COMMENT_PLACEHOLDER}列表`,
-            idViewName: `${ABSTRACT_ID_VIEW_PLACEHOLDER}Id`,
+            name: `${ABSTRACT_PROPERTY_NAME_PLACEHOLDER}List`,
+            comment: `${ABSTRACT_PROPERTY_COMMENT_PLACEHOLDER}列表`,
+            idViewName: `${ABSTRACT_PROPERTY_ID_VIEW_NAME_PLACEHOLDER}Id`,
             category: "OneToMany_Abstract",
             associationId,
             referencedAbstractEntityId: props.mappedSuperClass.id,
@@ -123,7 +123,8 @@ const selectEntity = (entity: EntityWithProperties) => {
         }
         const association: ManyToOneAbstractAssociationIdOnly = {
             id: associationId,
-            name: `fk_${props.mappedSuperClass.name}_${sourceProperty.name}`, // TODO
+            name: `fk_${ABSTRACT_ASSOCIATION_SOURCE_NAME_PLACEHOLDER}_${sourceProperty.name}`,
+            comment: `${ABSTRACT_ASSOCIATION_SOURCE_COMMENT_PLACEHOLDER}${sourceProperty.comment}关联`,
             type: "ManyToOne_Abstract",
             sourceAbstractEntityId: props.mappedSuperClass.id,
             sourcePropertyId: sourceProperty.id,

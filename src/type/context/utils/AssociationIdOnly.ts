@@ -4,6 +4,7 @@ export const oneToOneToIdOnly = (
     return {
         id: association.id,
         name: association.name,
+        comment: association.comment,
         type: association.type,
         sourceEntityId: association.sourceEntity.id,
         referencedEntityId: association.referencedEntity.id,
@@ -19,6 +20,7 @@ export const abstractOneToOneToIdOnly = (
     return {
         id: association.id,
         name: association.name,
+        comment: association.comment,
         type: association.type,
         sourceAbstractEntityId: association.sourceAbstractEntity.id,
         referencedEntityId: association.referencedEntity.id,
@@ -34,6 +36,7 @@ export const manyToOneToIdOnly = (
     return {
         id: association.id,
         name: association.name,
+        comment: association.comment,
         type: association.type,
         sourceEntityId: association.sourceEntity.id,
         referencedEntityId: association.referencedEntity.id,
@@ -49,6 +52,7 @@ export const abstractManyToOneToIdOnly = (
     return {
         id: association.id,
         name: association.name,
+        comment: association.comment,
         type: association.type,
         sourceAbstractEntityId: association.sourceAbstractEntity.id,
         referencedEntityId: association.referencedEntity.id,
@@ -64,6 +68,7 @@ export const manyToManyToIdOnly = (
     return {
         id: association.id,
         name: association.name,
+        comment: association.comment,
         type: association.type,
         sourceEntityId: association.sourceEntity.id,
         referencedEntityId: association.referencedEntity.id,
@@ -106,6 +111,7 @@ export const oneToOneIdOnlyToAssociation = (
     return {
         id: idOnly.id,
         name: idOnly.name,
+        comment: idOnly.comment,
         type: idOnly.type,
         sourceEntity,
         referencedEntity,
@@ -131,6 +137,7 @@ export const manyToOneIdOnlyToAssociation = (
     return {
         id: idOnly.id,
         name: idOnly.name,
+        comment: idOnly.comment,
         type: idOnly.type,
         sourceEntity,
         referencedEntity,
@@ -156,6 +163,7 @@ export const manyToManyIdOnlyToAssociation = (
     return {
         id: idOnly.id,
         name: idOnly.name,
+        comment: idOnly.comment,
         type: idOnly.type,
         sourceEntity,
         referencedEntity,
@@ -182,6 +190,7 @@ export const abstractOneToOneIdOnlyToAssociation = (
     return {
         id: idOnly.id,
         name: idOnly.name,
+        comment: idOnly.comment,
         type: idOnly.type,
         sourceAbstractEntity,
         referencedEntity,
@@ -208,6 +217,7 @@ export const abstractManyToOneIdOnlyToAssociation = (
     return {
         id: idOnly.id,
         name: idOnly.name,
+        comment: idOnly.comment,
         type: idOnly.type,
         sourceAbstractEntity,
         referencedEntity,

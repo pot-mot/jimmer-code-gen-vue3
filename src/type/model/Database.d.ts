@@ -42,6 +42,7 @@ type ColumnRef = {
 
 type ForeignKey = {
     name: string
+    comment: string
     referencedTableName: string
     referencedTableSchema: string
     columnRefs: ColumnRef[]
