@@ -1,4 +1,4 @@
-export const getArrayFromMap = <K, T>(map: ReadonlyMap<K, T>, keys: ReadonlyArray<K>) => {
+export const getArrayFromMap = <K, T>(map: ReadonlyMap<K, T>, keys: Readonly<Iterable<K>>) => {
     const result: T[] = []
 
     for (const key of keys) {
