@@ -1,6 +1,6 @@
 const interactionTagNames = ["INPUT", "TEXTAREA", "BUTTON"]
 
-export const interactionTagClassList = ["markdown-editor", "markdown-preview"]
+export const interactionTagClassList = ["monaco-editor", "code-preview", "splitpanes__splitter"]
 
 export const checkIsElement = (e: any): e is Element => {
     return (e instanceof Element)

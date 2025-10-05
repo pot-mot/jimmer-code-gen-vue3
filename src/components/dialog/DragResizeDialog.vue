@@ -225,7 +225,7 @@ const handleResize = ({currentPositionDiff}: ResizeEventArgs) => {
     position.y += currentPositionDiff.y
 }
 
-const handleContentMouseOver = (e: MouseEvent) => {
+const handleContentOver = (e: PointerEvent) => {
     if (!props.canDrag) {
         draggable.value = false
         return
@@ -238,7 +238,7 @@ const handleContentMouseOver = (e: MouseEvent) => {
     draggable.value = !judgeTargetIsInteraction(e);
 }
 
-const handleContentMouseLeave = () => {
+const handleContentLeave = () => {
     if (!props.canDrag) {
         draggable.value = false
         return
@@ -294,13 +294,14 @@ const onDragEnd = () => {
             <ResizeWrapper
                 v-model="size"
                 class="dialog"
+                handle-size="8px"
+                border-width="8px"
                 @resize="handleResize"
                 :disabled="!resizable"
                 :min-width="minWidth"
                 :max-width="maxWidth"
                 :min-height="minHeight"
                 :max-height="maxHeight"
-                @pointerdown="onDragStart"
             >
                 <div class="right-top-toolbar">
                     <button @click="toggleFullScreen" v-if="canFullScreen && canExitFullScreen">
@@ -314,8 +315,9 @@ const onDragEnd = () => {
                 <div
                     ref="contentRef"
                     class="content"
-                    @mouseover="handleContentMouseOver"
-                    @mouseleave="handleContentMouseLeave"
+                    @pointerdown="onDragStart"
+                    @pointerover="handleContentOver"
+                    @pointerleave="handleContentLeave"
                 >
                     <slot/>
                 </div>
@@ -354,5 +356,10 @@ const onDragEnd = () => {
     right: 0;
     cursor: pointer;
     padding: 0 0.25rem;
+}
+
+:deep(.resize-border),
+:deep(.resize-handle) {
+    background-color: transparent;
 }
 </style>
