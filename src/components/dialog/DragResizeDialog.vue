@@ -1,0 +1,358 @@
+<script lang="ts" setup>
+import {computed, nextTick, reactive, ref, toRaw, watch} from 'vue'
+import IconFullScreen from "@/components/icons/IconFullScreen.vue";
+import IconClose from "@/components/icons/IconClose.vue";
+import ResizeWrapper from "@/components/resizer/ResizeWrapper.vue";
+import {judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
+import {useDialogZIndex} from "@/components/dialog/DialogZIndex.ts";
+import type {ResizeEventArgs} from "@/components/resizer/ResizeWrapperType.ts";
+
+const openState = defineModel<boolean>({
+    required: true
+})
+
+const props = withDefaults(defineProps<{
+    to?: HTMLElement | string
+    initX?: number
+    initY?: number
+    initW: number
+    initH: number
+    minWidth?: number
+    maxWidth?: number
+    minHeight?: number
+    maxHeight?: number
+    limitByParent?: boolean
+    modal?: boolean
+    canResize?: boolean
+    canDrag?: boolean
+    canFullScreen?: boolean
+    canExitFullScreen?: boolean
+    initFullScreen?: boolean
+}>(), {
+    to: "body",
+    canResize: false,
+    canDrag: true,
+    canFullScreen: true,
+    canExitFullScreen: true,
+    limitByParent: false,
+    modal: true
+})
+
+const emits = defineEmits<{
+    (event: "open"): void
+    (event: "opened"): void
+    (event: "close"): void
+    (event: "closed"): void
+    (event: "fullScreenToggle"): void
+    (event: "fullScreenToggled"): void
+}>()
+
+const draggable = ref(props.canDrag)
+const resizable = ref(props.canResize)
+
+const position = reactive({
+    x: 0,
+    y: 0
+})
+const positionX = computed(() => position.x + 'px')
+const positionY = computed(() => position.y + 'px')
+const size = reactive({
+    width: 0,
+    height: 0
+})
+
+const {zIndex, toFront} = useDialogZIndex()
+
+const getParent = (): HTMLElement | null => {
+    let parent: HTMLElement | null
+
+    const to: string | HTMLElement = toRaw(props.to)
+
+    if (typeof to === "string") {
+        parent = document.querySelector(to)
+    } else {
+        parent = to
+    }
+
+    return parent
+}
+
+const initXW = () => {
+    let tempX = position.x
+    let tempW = size.width
+
+    let maxWidth: number
+
+    if (props.limitByParent) {
+        const parent = getParent()
+        if (!parent) {
+            return
+        }
+        maxWidth = parent.clientWidth
+    } else {
+        maxWidth = document.documentElement.clientWidth
+    }
+    if (maxWidth < props.initW) {
+        tempX = 0
+        tempW = maxWidth
+    } else if (props.initX !== undefined) {
+        tempX = props.initW + props.initX > maxWidth ? maxWidth - props.initW : props.initX
+        tempW = props.initW
+    } else {
+        tempX = (maxWidth - props.initW) / 2
+        tempW = props.initW
+    }
+
+    position.x = tempX
+    size.width = tempW
+}
+
+const initYH = () => {
+    let tempY = position.y
+    let tempH = size.height
+
+    let maxHeight: number
+
+    if (props.limitByParent) {
+        const parent = getParent()
+        if (!parent) return
+
+        maxHeight = parent.clientHeight
+    } else {
+        maxHeight = document.documentElement.clientHeight
+    }
+    if (maxHeight < props.initH) {
+        tempY = 0
+        tempH = maxHeight
+    } else if (props.initY !== undefined) {
+        tempY = props.initY
+        tempH = props.initH
+    } else {
+        tempY = (maxHeight - props.initH) / 2
+        tempH = props.initH
+    }
+
+    position.y = tempY
+    size.height = tempH
+}
+
+const isFullScreen = computed<boolean>(() =>
+    position.x === 0 &&
+    position.y === 0 &&
+    size.height === document.documentElement.offsetHeight &&
+    size.width === document.documentElement.offsetWidth
+)
+
+watch(() => isFullScreen.value, (value) => {
+    if (value) {
+        draggable.value = false
+    } else {
+        draggable.value = props.canDrag
+    }
+})
+
+const enterFullScreen = () => {
+    position.x = 0
+    position.y = 0
+    size.height = document.documentElement.offsetHeight
+    size.width = document.documentElement.offsetWidth
+}
+
+const exitFullScreen = () => {
+    initXW()
+    initYH()
+}
+
+const initSizePosition = () => {
+    if (props.canFullScreen && props.initFullScreen) {
+        enterFullScreen()
+    } else {
+        exitFullScreen()
+    }
+}
+
+const handleOpen = async () => {
+    emits('open')
+
+    toFront()
+    initSizePosition()
+
+    await nextTick()
+    emits('opened')
+}
+
+const handleClose = async () => {
+    emits("close")
+
+    openState.value = false
+
+    await nextTick()
+    emits('closed')
+}
+
+const toggleFullScreen = async () => {
+    if (!props.canFullScreen) return
+
+    emits("fullScreenToggle")
+
+    toFront()
+
+    if (isFullScreen.value) {
+        exitFullScreen()
+    } else {
+        enterFullScreen()
+    }
+
+    if (props.limitByParent) {
+        await nextTick()
+        position.x = -position.x
+        position.y = -position.y
+
+        await nextTick()
+        position.x = -position.x
+        position.y = -position.y
+    }
+
+    emits("fullScreenToggled")
+}
+
+watch(() => openState.value, (value) => {
+    if (value) handleOpen()
+}, {immediate: true})
+
+const handleResize = ({currentPositionDiff}: ResizeEventArgs) => {
+    position.x += currentPositionDiff.x
+    position.y += currentPositionDiff.y
+}
+
+const handleContentMouseOver = (e: MouseEvent) => {
+    if (!props.canDrag) {
+        draggable.value = false
+        return
+    }
+
+    if (isFullScreen.value) {
+        return
+    }
+
+    draggable.value = !judgeTargetIsInteraction(e);
+}
+
+const handleContentMouseLeave = () => {
+    if (!props.canDrag) {
+        draggable.value = false
+        return
+    }
+
+    if (isFullScreen.value) {
+        return
+    }
+
+    draggable.value = true
+}
+
+const isDragging = ref(false)
+let initX = 0
+let initY = 0
+
+const onDragStart = (event: PointerEvent) => {
+    if (!draggable.value) return
+
+    isDragging.value = true
+    initX = position.x - event.clientX
+    initY = position.y - event.clientY
+    document.documentElement.addEventListener('pointermove', onDragMove)
+    document.documentElement.addEventListener('pointerup', onDragEnd)
+}
+
+const onDragMove = (event: PointerEvent) => {
+    if (!draggable.value) {
+        onDragEnd()
+        return
+    }
+
+    if (isDragging.value) {
+        position.x = initX + event.clientX
+        position.y = initY + event.clientY
+    }
+}
+
+const onDragEnd = () => {
+    isDragging.value = false
+    initX = 0
+    initY = 0
+    document.documentElement.removeEventListener('pointermove', onDragMove)
+    document.documentElement.removeEventListener('pointerup', onDragEnd)
+}
+</script>
+
+<template>
+    <Teleport to="body">
+        <template v-if="openState">
+            <div v-if="modal" class="model"/>
+
+            <ResizeWrapper
+                v-model="size"
+                class="dialog"
+                @resize="handleResize"
+                :disabled="!resizable"
+                :min-width="minWidth"
+                :max-width="maxWidth"
+                :min-height="minHeight"
+                :max-height="maxHeight"
+                @pointerdown="onDragStart"
+            >
+                <div class="right-top-toolbar">
+                    <button @click="toggleFullScreen" v-if="canFullScreen && canExitFullScreen">
+                        <IconFullScreen/>
+                    </button>
+                    <button @click="handleClose">
+                        <IconClose/>
+                    </button>
+                </div>
+
+                <div
+                    ref="contentRef"
+                    class="content"
+                    @mouseover="handleContentMouseOver"
+                    @mouseleave="handleContentMouseLeave"
+                >
+                    <slot/>
+                </div>
+            </ResizeWrapper>
+        </template>
+    </Teleport>
+</template>
+
+<style scoped>
+.content {
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+}
+
+.dialog {
+    position: absolute;
+    left: v-bind(positionX);
+    top: v-bind(positionY);
+    z-index: v-bind(zIndex);
+}
+
+.model {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--mask-color);
+    z-index: v-bind(zIndex);
+}
+
+.right-top-toolbar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    cursor: pointer;
+    padding: 0 0.25rem;
+}
+</style>
