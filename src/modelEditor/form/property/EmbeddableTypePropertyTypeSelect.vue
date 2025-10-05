@@ -20,7 +20,7 @@ const property = defineModel<EmbeddableTypeProperty>({
 })
 
 const {
-    contextData,
+    typeOptions,
     menuMap,
 } = useModelEditor()
 
@@ -66,7 +66,7 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
             <ul>
                 <li
                     class="select-item"
-                    v-for="type in contextData?.types ?? []"
+                    v-for="type in typeOptions"
                     @click="selectBaseType(type)"
                 >
                     <TypePairViewer :type-pair="type"/>

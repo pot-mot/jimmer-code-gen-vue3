@@ -24,7 +24,7 @@ watch(() => primaryColor.value, (newPrimaryColor) => {
     document.documentElement.style.setProperty("--primary-color-opacity-background", tinycolor(newPrimaryColor).setAlpha(0.1).toRgbString())
 })
 
-export const initThemeStore = async () => {
+export const initThemeStore = () => {
     try {
         theme.value = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 

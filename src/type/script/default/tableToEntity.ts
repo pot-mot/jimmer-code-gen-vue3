@@ -1,4 +1,4 @@
-export const defaultTableToEntity: TableToEntity = (
+export const tableToEntity: TableToEntity = (
     groupId: string,
     tables: DeepReadonly<Table[]>,
     context: DeepReadonly<ModelContext>

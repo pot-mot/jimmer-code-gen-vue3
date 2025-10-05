@@ -34,6 +34,9 @@ import {fillModelGraphSubData, modelDataToGraphData} from "@/type/context/utils/
 import {contextDataGetSelectSubData} from "@/type/context/utils/ModelSubData.ts";
 import {validatePartialModelGraphSubData} from "@/modelEditor/graphData/ModelGraphSubData.ts";
 import {buildNameSets} from "@/modelEditor/import/protectRepeatNames.ts";
+import {withLoading} from "@/components/loading/loadingApi.ts";
+import {tableToEntity} from "@/type/script/default/tableToEntity.ts";
+import {contextDataToContext} from "@/type/context/utils/ModelContext.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -79,6 +82,9 @@ const CLICK_ADD_NODE_OFFSET_Y = 16
 
 export const useModelEditor = createStore(() => {
     const vueFlow = shallowRef<VueFlowStore>(useVueFlow(VUE_FLOW_ID))
+    const getVueFlow = () => {
+        return vueFlow.value
+    }
     const viewport = computed<ViewportTransform>(() => {
         return vueFlow.value.viewport.value
     })
@@ -86,21 +92,15 @@ export const useModelEditor = createStore(() => {
         return viewport.value.zoom
     })
 
-    const getCurrentVueFlow = () => {
-        if (!vueFlow.value) {
-            throw new Error("VueFlow is not set")
-        }
-        return vueFlow.value
-    }
-
-    // TODO to fetch
-    const contextData = ref<ModelContextData | undefined>(defaultModel())
+    const contextData = ref<ModelContextData>(defaultModel())
     const getContextData = () => {
-        if (!contextData.value) {
-            throw new Error("ContextData is not available")
-        }
         return contextData.value
     }
+    const getContext = () => {
+        return contextDataToContext(getContextData())
+    }
+
+    const typeOptions = ref<CrossType[]>([])
 
     const currentGroupId = ref<string>()
     const toggleCurrentGroup = ({id}: { id: string | undefined }) => {
@@ -138,11 +138,64 @@ export const useModelEditor = createStore(() => {
         waitChangeSync,
     } = useModelEditorHistory({vueFlow, contextData})
 
-    const setModel = (data: ModelContextData) => {
-        contextData.value = data
+    const getModelGraphData = (): ModelGraphSubData => {
+        const contextData = getContextData()
+        const vueFlow = getVueFlow()
+        return modelDataToGraphData(contextDataGetSelectSubData(contextData, modelSelection.selectedIdSets.value), vueFlow)
     }
+
+    const importModelGraphData = async (data: Partial<ModelGraphSubData>) => {
+        const vueFlow = getVueFlow()
+
+        const fullData = fillModelGraphSubData(data)
+        const importGroupId = getCurrentGroupIdOrCreate()
+        for (const {data} of fullData.entities) data.groupId = importGroupId
+        for (const {data} of fullData.mappedSuperClasses) data.groupId = importGroupId
+        for (const {data} of fullData.embeddableTypes) data.groupId = importGroupId
+        for (const {data} of fullData.enumerations) data.groupId = importGroupId
+
+        modelSelection.unselectAll()
+        const startPosition = vueFlow.screenToFlowCoordinate(screenPosition.value)
+        const {ids} = history.executeCommand("import", {data: fullData, startPosition})
+        await nextTick()
+        await waitChangeSync()
+        modelSelection.select(ids)
+    }
+
+    const loadModel = async (data: ModelGraphSubData) => {
+        await withLoading("Model Loading...", async () => {
+            contextData.value = defaultModel()
+            await importModelGraphData(data)
+            history.clean()
+        })
+    }
+    const loadTables = async (tables: DeepReadonly<Table[]>) => {
+        await withLoading("Table Loading...", async () => {
+            const context = getContext()
+            const {
+                entities,
+                embeddableTypes,
+                associations,
+            } = tableToEntity(getCurrentGroupIdOrCreate(), tables, context)
+            history.executeBatch(Symbol("load tables"), () => {
+                for (const entity of entities) {
+                    addEntity(entity.groupId, entity)
+                }
+                for (const embeddableType of embeddableTypes) {
+                    addEmbeddableType(embeddableType.groupId, embeddableType)
+                }
+                for (const association of associations) {
+                    addAssociation(association)
+                }
+            })
+        })
+    }
+
     const saveModel = async () => {
-        // TODO
+        await withLoading("Model Saving...", async () => {
+            const graphData = getModelGraphData()
+            // TODO save model requests
+        })
     }
 
     const addGroup = (group: Group = defaultGroup()) => {
@@ -229,7 +282,7 @@ export const useModelEditor = createStore(() => {
     })
 
     const getGraphSelection = () => {
-        const vueFlow = getCurrentVueFlow()
+        const vueFlow = getVueFlow()
         return {
             nodes: vueFlow.getSelectedNodes.value,
             edges: vueFlow.getSelectedEdges.value,
@@ -237,13 +290,13 @@ export const useModelEditor = createStore(() => {
     }
 
     const clearGraphSelection = () => {
-        const vueFlow = getCurrentVueFlow()
+        const vueFlow = getVueFlow()
         vueFlow.removeSelectedNodes(vueFlow.getSelectedNodes.value)
         vueFlow.removeSelectedEdges(vueFlow.getSelectedEdges.value)
     }
 
     const focus = () => {
-        const vueFlow = getCurrentVueFlow()
+        const vueFlow = getVueFlow()
         vueFlow.vueFlowRef.value?.focus()
     }
 
@@ -252,24 +305,24 @@ export const useModelEditor = createStore(() => {
      * 点击多选相关配置
      */
     const isGraphSelectionNotEmpty = computed(() => {
-        const vueFlow = getCurrentVueFlow()
+        const vueFlow = getVueFlow()
         return (vueFlow.getSelectedNodes.value.length + vueFlow.getSelectedEdges.value.length) > 0
     })
     const isGraphSelectionPlural = computed(() => {
-        const vueFlow = getCurrentVueFlow()
+        const vueFlow = getVueFlow()
         return (vueFlow.getSelectedNodes.value.length + vueFlow.getSelectedEdges.value.length) > 1
     })
     const canMultiSelect = computed(() => {
-        const vueFlow = getCurrentVueFlow()
+        const vueFlow = getVueFlow()
         return vueFlow.multiSelectionActive.value
     })
-    const enableMultiSelect = (vueFlow: VueFlowStore = getCurrentVueFlow()) => {
+    const enableMultiSelect = (vueFlow: VueFlowStore = getVueFlow()) => {
         vueFlow.multiSelectionActive.value = true
     }
-    const disableMultiSelect = (vueFlow: VueFlowStore = getCurrentVueFlow()) => {
+    const disableMultiSelect = (vueFlow: VueFlowStore = getVueFlow()) => {
         vueFlow.multiSelectionActive.value = false
     }
-    const toggleMultiSelect = (vueFlow: VueFlowStore = getCurrentVueFlow()) => {
+    const toggleMultiSelect = (vueFlow: VueFlowStore = getVueFlow()) => {
         if (vueFlow.multiSelectionActive.value) {
             disableMultiSelect(vueFlow)
         } else {
@@ -277,7 +330,7 @@ export const useModelEditor = createStore(() => {
         }
     }
 
-    const selectGraphAll = (vueFlow: VueFlowStore = getCurrentVueFlow()) => {
+    const selectGraphAll = (vueFlow: VueFlowStore = getVueFlow()) => {
         const isCurrentMultiSelect = vueFlow.multiSelectionActive.value
 
         if (!isCurrentMultiSelect) enableMultiSelect(vueFlow)
@@ -290,7 +343,7 @@ export const useModelEditor = createStore(() => {
         if (!isCurrentMultiSelect) disableMultiSelect(vueFlow)
     }
 
-    const toggleSelectGraphAll = (vueFlow: VueFlowStore = getCurrentVueFlow()) => {
+    const toggleSelectGraphAll = (vueFlow: VueFlowStore = getVueFlow()) => {
         const isCurrentMultiSelect = vueFlow.multiSelectionActive.value
 
         if (!isCurrentMultiSelect) enableMultiSelect(vueFlow)
@@ -317,7 +370,7 @@ export const useModelEditor = createStore(() => {
             readonly width: number,
             readonly height: number
         },
-        vueFlow: VueFlowStore = getCurrentVueFlow()
+        vueFlow: VueFlowStore = getVueFlow()
     ) => {
         const innerNodes: GraphNode[] = []
         const innerEdges: GraphEdge[] = []
@@ -373,7 +426,7 @@ export const useModelEditor = createStore(() => {
 
     // 默认操作为拖拽
     const setDefaultPanDrag = (
-        vueFlow: VueFlowStore = getCurrentVueFlow()
+        vueFlow: VueFlowStore = getVueFlow()
     ) => {
         defaultMouseAction.value = 'panDrag'
         vueFlow.panOnDrag.value = [0, 2]
@@ -383,7 +436,7 @@ export const useModelEditor = createStore(() => {
     }
     // 默认操作为框选，通过鼠标右键拖拽
     const setDefaultSelectionRect = (
-        vueFlow: VueFlowStore = getCurrentVueFlow()
+        vueFlow: VueFlowStore = getVueFlow()
     ) => {
         defaultMouseAction.value = 'selectionRect'
         vueFlow.panOnDrag.value = [2]
@@ -392,7 +445,7 @@ export const useModelEditor = createStore(() => {
         focus()
     }
     const toggleDefaultMouseAction = (
-        vueFlow: VueFlowStore = getCurrentVueFlow()
+        vueFlow: VueFlowStore = getVueFlow()
     ) => {
         if (defaultMouseAction.value === 'panDrag') {
             setDefaultSelectionRect(vueFlow)
@@ -402,22 +455,22 @@ export const useModelEditor = createStore(() => {
     }
 
     const canDrag = computed(() => {
-        const vueFlow = getCurrentVueFlow()
+        const vueFlow = getVueFlow()
         return vueFlow.nodesDraggable.value
     })
     const disableDrag = (
-        vueFlow: VueFlowStore = getCurrentVueFlow()
+        vueFlow: VueFlowStore = getVueFlow()
     ) => {
         vueFlow.nodesDraggable.value = false
     }
     const enableDrag = (
-        vueFlow: VueFlowStore = getCurrentVueFlow()
+        vueFlow: VueFlowStore = getVueFlow()
     ) => {
         vueFlow.nodesDraggable.value = true
     }
 
     const setLayerConfigDefault = (
-        vueFlow: VueFlowStore = getCurrentVueFlow()
+        vueFlow: VueFlowStore = getVueFlow()
     ) => {
         disableMultiSelect(vueFlow)
         setDefaultPanDrag(vueFlow)
@@ -429,26 +482,10 @@ export const useModelEditor = createStore(() => {
      */
     const clipBoard = useClipBoard<Partial<ModelGraphSubData>, ModelGraphSubData>({
         exportData: (): ModelGraphSubData => {
-            const contextData = getContextData()
-            const vueFlow = getCurrentVueFlow()
-            return modelDataToGraphData(contextDataGetSelectSubData(contextData, modelSelection.selectedIdSets.value), vueFlow)
+           return getModelGraphData()
         },
         importData: async (data: Partial<ModelGraphSubData>) => {
-            const vueFlow = getCurrentVueFlow()
-
-            const fullData = fillModelGraphSubData(data)
-            const importGroupId = getCurrentGroupIdOrCreate()
-            for (const {data} of fullData.entities) data.groupId = importGroupId
-            for (const {data} of fullData.mappedSuperClasses) data.groupId = importGroupId
-            for (const {data} of fullData.embeddableTypes) data.groupId = importGroupId
-            for (const {data} of fullData.enumerations) data.groupId = importGroupId
-
-            modelSelection.unselectAll()
-            const startPosition = vueFlow.screenToFlowCoordinate(screenPosition.value)
-            const {ids} = history.executeCommand("import", {data: fullData, startPosition})
-            await nextTick()
-            await waitChangeSync()
-            modelSelection.select(ids)
+            await importModelGraphData(data)
         },
         removeData: (data: ModelGraphSubData) => {
             remove(subDataToSubIds(data))
@@ -460,7 +497,7 @@ export const useModelEditor = createStore(() => {
     })
 
     const initModelEditor = () => {
-        const vueFlow: VueFlowStore = getCurrentVueFlow()
+        const vueFlow: VueFlowStore = getVueFlow()
 
         setLayerConfigDefault(vueFlow)
 
@@ -850,18 +887,19 @@ export const useModelEditor = createStore(() => {
 
 
         // 模型
-        setModel,
-        saveModel,
         contextData: readonly(contextData),
+        typeOptions: readonly(typeOptions),
+        getContext,
+
+        loadModel,
+        loadTables,
+        saveModel,
 
         menuMap,
         currentGroupId,
         toggleCurrentGroup,
 
         createType,
-
-        // 模型生成
-
 
         // 模型数据变更
         addGroup,

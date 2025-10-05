@@ -30,6 +30,7 @@ const property = defineModel<EntityProperty>({
 
 const {
     contextData,
+    typeOptions,
     menuMap,
     executeAsyncBatch,
     waitChangeSync,
@@ -189,7 +190,7 @@ const association = computed(() => {
             <ul>
                 <li
                     class="select-item"
-                    v-for="type in contextData?.types ?? []"
+                    v-for="type in typeOptions"
                     @click="selectBaseType(type)"
                 >
                     <TypePairViewer :type-pair="type"/>

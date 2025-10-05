@@ -1,4 +1,4 @@
-export const defaultEntityToTable: EntityToTable = (
+export const entityToTable: EntityToTable = (
     entities: DeepReadonly<EntityWithInheritInfo[]>,
     context: DeepReadonly<ModelContext>
 ): ReturnType<EntityToTable> => {

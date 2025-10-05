@@ -26,7 +26,7 @@ import {
 
 export const contextDataToContext = (
     readonlyContextData: DeepReadonly<ModelContextData>,
-): ModelContext => {
+): DeepReadonly<ModelContext> => {
     const contextData = cloneDeepReadonlyRaw<ModelContextData>(readonlyContextData)
     const model = contextData.model
 
@@ -52,7 +52,7 @@ export const contextDataToContext = (
                         association: realAssociation,
                         property: realProperty,
                     } = oneToOneAbstractToReal(abstractAssociation, mappedProperty, inheritEntity)
-                    inheritEntity.properties.push(realProperty)
+                    referencedEntity.properties.push(realProperty)
                     associationMap.set(realAssociation.id, realAssociation)
                 }
             } else if (abstractAssociation.type === "ManyToOne_Abstract" && mappedProperty.category === "OneToMany_Abstract") {
@@ -61,7 +61,7 @@ export const contextDataToContext = (
                         association: realAssociation,
                         property: realProperty,
                     } = oneToManyAbstractToReal(abstractAssociation, mappedProperty, inheritEntity)
-                    inheritEntity.properties.push(realProperty)
+                    referencedEntity.properties.push(realProperty)
                     associationMap.set(realAssociation.id, realAssociation)
                 }
             }
