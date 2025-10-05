@@ -13,7 +13,7 @@ import {
 import {sendMessage} from "@/components/message/messageApi.ts";
 import {blurActiveElement, judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
 import {jsonSortPropStringify} from "@/utils/json/jsonStringify.ts";
-import {v7 as uuid} from "uuid";
+import {v7} from "uuid";
 import {
     defaultEmbeddableType,
     defaultEntity, defaultEnumeration,
@@ -49,7 +49,7 @@ export type MenuItem = {
 }
 
 export const createId = (type: "Model" | "Entity" | "Property" | "MappedSuperClass" | "EmbeddableType" | "Enumeration" | "EnumerationItem" | "Association" | "Group") => {
-    return `${type}_${uuid()}`
+    return `${type}_${v7()}`
 }
 
 const colorVarName = (id: string) => {
