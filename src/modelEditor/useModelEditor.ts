@@ -755,22 +755,24 @@ export const useModelEditor = createStore(() => {
                         x: x - rectX,
                         y: y - rectY,
                     }
-
-                    const {nodes, edges} = getByClientRect({
-                        width,
-                        height,
-                        x,
-                        y,
-                    })
-
-                    clearGraphSelection()
-                    vueFlow.addSelectedNodes(nodes)
-                    vueFlow.addSelectedEdges(edges)
                 }
 
                 const onRectSelectEnd = () => {
                     document.documentElement.removeEventListener('mousemove', onRectSelect)
                     document.documentElement.removeEventListener('mouseup', onRectSelectEnd)
+
+                    if (selectionRect.value) {
+                        const {nodes, edges} = getByClientRect({
+                            width: selectionRect.value.width,
+                            height: selectionRect.value.height,
+                            x: selectionRect.value.x + rectX,
+                            y: selectionRect.value.y + rectY,
+                        })
+
+                        clearGraphSelection()
+                        vueFlow.addSelectedNodes(nodes)
+                        vueFlow.addSelectedEdges(edges)
+                    }
 
                     vueFlow.userSelectionActive.value = false
                     selectionRect.value = null
