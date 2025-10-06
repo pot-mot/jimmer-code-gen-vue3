@@ -187,6 +187,20 @@ export const useModelEditorSelectIds = (
         if (!oldMultiSelectionActive) vueFlow.multiSelectionActive.value = false
     }
 
+    const selectAll = () => {
+        const contextData = getContextData()
+        const vueFlow = getVueFlow()
+        const oldMultiSelectionActive = vueFlow.multiSelectionActive.value
+        if (!oldMultiSelectionActive) vueFlow.multiSelectionActive.value = true
+        for (const id of contextData.groupMap.keys()) selectGroup(id)
+        for (const id of contextData.entityMap.keys()) selectEntity(id)
+        for (const id of contextData.mappedSuperClassMap.keys()) selectMappedSuperClass(id)
+        for (const id of contextData.embeddableTypeMap.keys()) selectEmbeddableType(id)
+        for (const id of contextData.enumerationMap.keys()) selectEnumeration(id)
+        for (const id of contextData.associationMap.keys()) selectAssociation(id)
+        if (!oldMultiSelectionActive) vueFlow.multiSelectionActive.value = false
+    }
+
     const unselect = (ids: DeepReadonly<Partial<ModelSubIds>>) => {
         const fullIds = fillModelSubIds(ids)
         for (const id of fullIds.groupIds) unselectGroup(id)
@@ -291,6 +305,7 @@ export const useModelEditorSelectIds = (
     return {
         selectedIdSets: readonly(selectedIdSets),
         select,
+        selectAll,
         unselect,
         unselectAll,
         eventBus: modelSelectionEventBus,

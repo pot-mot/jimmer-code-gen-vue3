@@ -97,6 +97,11 @@ const handleKeyDown = async (e: KeyboardEvent) => {
 
             e.preventDefault()
             await paste()
+        } else if (e.key === "a" || e.key === "A") {
+            if (judgeTargetIsInteraction(e)) return
+
+            e.preventDefault()
+            modelSelection.selectAll()
         }
     }
 }
