@@ -362,6 +362,12 @@ export const useModelEditor = createStore(() => {
      */
     let selectionRectEnable: boolean = false
     let selectionRectMouseButton: number = 0
+    const selectionRect = ref<{
+        x: number,
+        y: number,
+        width: number,
+        height: number
+    } | null>(null)
 
     const getByClientRect = (
         rect: {
@@ -722,33 +728,32 @@ export const useModelEditor = createStore(() => {
                 if (e.button !== selectionRectMouseButton) return
 
                 const clientRect = vueFlowRef.value.getBoundingClientRect()
+                const rectX = clientRect.x
+                const rectY = clientRect.y
 
                 e.preventDefault()
                 blurActiveElement()
 
                 vueFlow.multiSelectionActive.value = true
-                vueFlow.userSelectionActive.value = true
                 clearGraphSelection()
 
-                const start = {x: e.clientX, y: e.clientY}
+                const startX = e.clientX
+                const startY = e.clientY
 
                 const onRectSelect = (e: MouseEvent) => {
                     e.preventDefault()
-                    const current = {x: e.clientX, y: e.clientY}
-                    let width = current.x - start.x
-                    let height = current.y - start.y
-                    const x = width > 0 ? start.x : current.x
-                    const y = height > 0 ? start.y : current.y
-                    width = width > 0 ? width : -width
-                    height = height > 0 ? height : -height
+                    const currentX = e.clientX
+                    const currentY = e.clientY
+                    const width = Math.abs(currentX - startX)
+                    const height = Math.abs(currentY - startY)
+                    const x = Math.min(startX, currentX)
+                    const y = Math.min(startY, currentY)
 
-                    vueFlow.userSelectionRect.value = {
+                    selectionRect.value = {
                         width,
                         height,
-                        x: x - clientRect.x,
-                        y: y - clientRect.y,
-                        startX: x - clientRect.x,
-                        startY: y - clientRect.y,
+                        x: x - rectX,
+                        y: y - rectY,
                     }
 
                     const {nodes, edges} = getByClientRect({
@@ -768,7 +773,7 @@ export const useModelEditor = createStore(() => {
                     document.documentElement.removeEventListener('mouseup', onRectSelectEnd)
 
                     vueFlow.userSelectionActive.value = false
-                    vueFlow.userSelectionRect.value = null
+                    selectionRect.value = null
 
                     const newSelectedNodes = vueFlow.getSelectedNodes.value
                     const newSelectedEdges = vueFlow.getSelectedEdges.value
@@ -866,6 +871,7 @@ export const useModelEditor = createStore(() => {
             toggleSelectAll: toggleSelectGraphAll,
         },
 
+        selectionRect:  readonly(selectionRect),
         isGraphSelectionNotEmpty,
         isGraphSelectionPlural,
         canMultiSelect,

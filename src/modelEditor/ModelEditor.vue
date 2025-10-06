@@ -11,6 +11,7 @@ import ModelEditorToolbar from "@/modelEditor/toolbar/ModelEditorToolbar.vue";
 import {judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
 import ConcreteAssociationEdge from "@/modelEditor/edge/ConcreteAssociationEdge.vue";
 import AbstractAssociationEdge from "@/modelEditor/edge/AbstractAssociationEdge.vue";
+import ModelEditorSelectionRect from "@/modelEditor/selectionRect/ModelEditorSelectionRect.vue";
 
 const {
     initModelEditor,
@@ -19,6 +20,7 @@ const {
     undo,
     redo,
     saveModel,
+    selectionRect,
     isGraphSelectionNotEmpty,
     copy,
     cut,
@@ -119,6 +121,8 @@ const handleKeyDown = async (e: KeyboardEvent) => {
             </template>
         </VueFlow>
 
+        <ModelEditorSelectionRect :rect="selectionRect"/>
+
         <ModelEditorToolbar/>
     </div>
 </template>
@@ -138,15 +142,6 @@ const handleKeyDown = async (e: KeyboardEvent) => {
     top: 0;
     left: 0;
     overflow: hidden;
-}
-
-:deep(.vue-flow__nodesselection-rect) {
-    box-sizing: content-box;
-    border-radius: var(--border-radius);
-    border-style: solid;
-    border-color: var(--primary-color);
-    padding: 1rem;
-    transform: translateX(-1rem) translateY(-1rem);
 }
 
 :deep(.vue-flow__pane.draggable) {
