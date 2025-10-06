@@ -298,6 +298,11 @@ export const useModelEditorSelectIds = (
                     selectedIdSets.value.associationIdSet.delete(change.id)
                     modelSelectionEventBus.emit('association', {id: change.id, selected: false})
                 }
+            } else if (change.type === "remove") {
+                if (selectedIdSets.value.associationIdSet.has(change.id)) {
+                    selectedIdSets.value.associationIdSet.delete(change.id)
+                    modelSelectionEventBus.emit('association', {id: change.id, selected: false})
+                }
             }
         }
     }
