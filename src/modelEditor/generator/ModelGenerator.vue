@@ -6,18 +6,26 @@ import Splitpanes from "@/components/splitpanes/Splitpanes.vue";
 import Pane from "@/components/splitpanes/Pane.vue";
 import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
+import FileTreeViewer from "@/components/file/FileTreeViewer.vue";
+import {contextDataToSubIds, subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
+import {withLoading} from "@/components/loading/loadingApi.ts";
 
 const {
-    contextData
+    contextData,
+    getContext,
+    isModelSelectionNotEmpty,
+    selectedIdSets,
 } = useModelEditor()
 
 const {
     openState,
     scriptsStore,
+    generate,
 } = useModelGenerator()
 
+const isScriptOpen = ref(false)
 const currentScriptInfo = ref<ScriptInfo<any>>()
 
 const handleScriptInfoSelect = (scriptInfo: ScriptInfo<any>) => {
@@ -27,16 +35,41 @@ const handleScriptInfoSelect = (scriptInfo: ScriptInfo<any>) => {
 const handleScriptInfoSubmit = (scriptInfo: ScriptInfo<any>) => {
     scriptsStore.value.update(scriptInfo.key, scriptInfo)
 }
+
+const generateResult = ref<Record<string, string>>({})
+
+const handleGenerate = async () => {
+    await withLoading("Generating...", async () => {
+        generateResult.value = generate(
+            getContext(),
+            isModelSelectionNotEmpty.value ? subIdSetToSubIds(selectedIdSets.value) : contextDataToSubIds(contextData.value)
+        )
+    })
+}
+
+watch(() => openState.value, async () => {
+    if (openState.value) {
+        await handleGenerate()
+    }
+}, {immediate: true})
 </script>
 
 <template>
     <DragResizeDialog
         v-model="openState"
-        :init-w="800"
-        :init-h="650"
         can-resize
     >
-        <div class="wrapper">
+        <div>
+            <button @click="handleGenerate">Generate</button>
+            <button @click="isScriptOpen = true">Edit Scripts</button>
+        </div>
+        <FileTreeViewer style="height: calc(100% - 2rem)" :files="generateResult"/>
+
+        <DragResizeDialog
+            v-model="isScriptOpen"
+            @close="currentScriptInfo = undefined"
+            can-resize
+        >
             <Splitpanes>
                 <Pane :size="20" class="left-pane">
                     <ScriptsMenu
@@ -46,26 +79,14 @@ const handleScriptInfoSubmit = (scriptInfo: ScriptInfo<any>) => {
                         @select="handleScriptInfoSelect"
                     />
                 </Pane>
-                <Pane class="result-pane">
-
+                <Pane>
+                    <GeneratorScriptEditor
+                        v-if="currentScriptInfo"
+                        :script-info="currentScriptInfo"
+                        @submit="handleScriptInfoSubmit"
+                    />
                 </Pane>
             </Splitpanes>
-        </div>
-
-        <DragResizeDialog
-            :model-value="!!currentScriptInfo"
-            :init-w="800"
-            :init-h="650"
-            @close="currentScriptInfo = undefined"
-            can-resize
-        >
-            <div class="wrapper">
-                <GeneratorScriptEditor
-                    v-if="currentScriptInfo"
-                    :script-info="currentScriptInfo"
-                    @submit="handleScriptInfoSubmit"
-                />
-            </div>
         </DragResizeDialog>
     </DragResizeDialog>
 </template>
@@ -75,14 +96,7 @@ const handleScriptInfoSubmit = (scriptInfo: ScriptInfo<any>) => {
     overflow: auto;
 }
 
-.result-pane {
-    overflow: auto;
-}
-
-.wrapper {
-    padding: 0 1rem 1rem;
-    width: 100%;
-    height: 100%;
+.script-pane {
     overflow: auto;
 }
 </style>

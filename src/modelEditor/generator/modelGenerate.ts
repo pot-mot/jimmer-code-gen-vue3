@@ -6,7 +6,7 @@ export const modelGenerate = (
     context: DeepReadonly<ModelContext>,
     selectedIds: DeepReadonly<Partial<ModelSubIds>>,
     scriptsStore: DeepReadonly<ScriptsStore<any>>,
-) => {
+): Record<string, string> => {
     const files: Record<string, string> = {}
     const mergeIntoFiles = (newFiles: Record<string, string>) => {
         for (const fileName in newFiles) {

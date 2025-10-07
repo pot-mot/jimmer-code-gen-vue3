@@ -6,12 +6,16 @@ import {createTsScript, TsScriptExecutor} from "@/components/code/scriptEditor/T
 import {computed, ref} from "vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {modelGenerate} from "@/modelEditor/generator/modelGenerate.ts";
-import {contextDataToSubIds} from "@/type/context/utils/ModelSubIds.ts";
+import {contextDataToSubIds, subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
 import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
+import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
+import FileTreeViewer from "@/components/file/FileTreeViewer.vue";
 
 const {
     contextData,
-    getContext
+    getContext,
+    isModelSelectionNotEmpty,
+    selectedIdSets,
 } = useModelEditor()
 
 const props = defineProps<{
@@ -24,7 +28,7 @@ const emits = defineEmits<{
 
 const value = ref(props.scriptInfo.script.code)
 const generateResult = ref<Record<string, string>>()
-const errorMessage = ref("")
+const errorMessage = ref()
 
 const executor = computed(() => new TsScriptExecutor(props.scriptInfo.type))
 
@@ -44,7 +48,7 @@ const handleReset = () => {
     value.value = props.scriptInfo.script.code
 }
 
-const handleGenerate = async () => {
+const handleGenerateTest = async () => {
     try {
         const scriptResult = await createTsScript(props.scriptInfo.type, value.value, executor.value)
         if (scriptResult.valid) {
@@ -55,7 +59,7 @@ const handleGenerate = async () => {
             const scriptStore: ScriptsStore<any> = createScriptsStore([scriptInfo])
             generateResult.value = modelGenerate(
                 getContext(),
-                contextDataToSubIds(contextData.value),
+                isModelSelectionNotEmpty.value ? subIdSetToSubIds(selectedIdSets.value) : contextDataToSubIds(contextData.value),
                 scriptStore
             )
         } else {
@@ -97,12 +101,31 @@ const handleSubmit = async () => {
         />
 
         <div class="tail-toolbar">
-            <button @click="handleGenerate">Generate</button>
+            <button @click="handleGenerateTest">Test</button>
             <button @click="handleSubmit">Submit</button>
         </div>
 
-        {{ generateResult }}
-        {{ errorMessage }}
+        <DragResizeDialog
+            v-if="generateResult !== undefined"
+            :model-value="true"
+            :init-w="600"
+            @close="generateResult = undefined"
+        >
+            <template #title>Test Result</template>
+            <FileTreeViewer :files="generateResult"/>
+        </DragResizeDialog>
+
+        <DragResizeDialog
+            v-if="errorMessage !== undefined"
+            :model-value="true"
+            :init-w="600"
+            @close="errorMessage = undefined"
+        >
+            <template #title>Error</template>
+            <div class="error-message">
+                {{ errorMessage }}
+            </div>
+        </DragResizeDialog>
     </div>
 </template>
 
@@ -122,5 +145,9 @@ const handleSubmit = async () => {
 
 .tail-toolbar {
     height: 1.5rem;
+}
+
+.error-message {
+    color: var(--danger-color);
 }
 </style>

@@ -11,7 +11,6 @@ const scriptsStore = ref<ScriptsStore<any>>(emptyScriptsStore())
 
 export const initModelGenerator = async () => {
     scriptsStore.value = await fetchScripts()
-    console.log(scriptsStore.value)
 }
 
 export const useModelGenerator = createStore(() => {
@@ -21,8 +20,8 @@ export const useModelGenerator = createStore(() => {
         generate: (
             context: DeepReadonly<ModelContext>,
             selectedIds: DeepReadonly<Partial<ModelSubIds>>,
-        ) => {
-            modelGenerate(
+        ): Record<string, string> => {
+            return modelGenerate(
                 context,
                 selectedIds,
                 scriptsStore.value,
