@@ -54,16 +54,16 @@ const ManyToManyAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToManyAssociatio
                             "type": "string",
                             "const": "ManyToMany_Mapped"
                         },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": true
+                        },
                         "mappedById": {
                             "type": "string"
                         },
                         "nullable": {
                             "type": "boolean",
                             "const": false
-                        },
-                        "typeIsList": {
-                            "type": "boolean",
-                            "const": true
                         }
                     },
                     "required": [
@@ -87,10 +87,14 @@ const ManyToManyAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToManyAssociatio
                         },
                         "idViewName": {
                             "type": "string"
+                        },
+                        "autoSyncIdViewName": {
+                            "type": "boolean"
                         }
                     },
                     "required": [
                         "associationId",
+                        "autoSyncIdViewName",
                         "idViewName",
                         "referencedEntityId"
                     ]

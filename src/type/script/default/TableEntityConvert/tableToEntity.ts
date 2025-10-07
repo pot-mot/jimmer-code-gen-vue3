@@ -19,6 +19,7 @@ export const tableToEntity: TableToEntity = (
             name: nameTool.convert(table.name, databaseNameStrategy, 'UPPER_CAMEL'),
             subPackagePath: "",
             tableName: table.name,
+            autoSyncTableName: true,
             comment: table.comment,
             extraImports: [],
             extraAnnotations: [],
@@ -47,7 +48,8 @@ export const tableToEntity: TableToEntity = (
                 nullable: false,
                 defaultValue: column.defaultValue,
                 otherConstraints: column.otherConstraints === undefined ? undefined : [...column.otherConstraints],
-            }
+            },
+            autoSyncColumnName: true,
         }
     }
 
@@ -72,7 +74,8 @@ export const tableToEntity: TableToEntity = (
                 nullable: column.nullable,
                 defaultValue: column.defaultValue,
                 otherConstraints: column.otherConstraints === undefined ? undefined : [...column.otherConstraints],
-            }
+            },
+            autoSyncColumnName: true,
         }
     }
 
@@ -219,10 +222,12 @@ export const tableToEntity: TableToEntity = (
                 id: sourcePropertyId,
                 name: lowerSourceEntityName,
                 category: "ManyToOne",
+                typeIsList: false,
                 associationId,
                 joinInfo,
                 referencedEntityId: referencedEntity.id,
                 idViewName: lowerSourceEntityName + "Id",
+                autoSyncIdViewName: true,
                 onDissociateAction: "NONE",
                 extraImports: [],
                 extraAnnotations: [],
@@ -239,6 +244,7 @@ export const tableToEntity: TableToEntity = (
                 associationId,
                 referencedEntityId: sourceEntity.id,
                 idViewName: lowerReferencedEntityName + "Ids",
+                autoSyncIdViewName: true,
                 nullable: false,
                 typeIsList: true,
                 extraAnnotations: [],

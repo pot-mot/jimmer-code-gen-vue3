@@ -52,6 +52,10 @@ const OneToManyAbstractPropertyJsonSchema: JSONSchemaType<OneToManyAbstractPrope
                         "type": "string"
                     }
                 },
+                "typeIsList": {
+                    "type": "boolean",
+                    "const": true
+                },
                 "mappedById": {
                     "type": "string"
                 },
@@ -61,13 +65,13 @@ const OneToManyAbstractPropertyJsonSchema: JSONSchemaType<OneToManyAbstractPrope
                 "idViewName": {
                     "type": "string"
                 },
-                "typeIsList": {
-                    "type": "boolean",
-                    "const": true
+                "autoSyncIdViewName": {
+                    "type": "boolean"
                 }
             },
             "required": [
                 "associationId",
+                "autoSyncIdViewName",
                 "comment",
                 "extraAnnotations",
                 "extraImports",

@@ -64,6 +64,9 @@ const ScalarEnumPropertyJsonSchema: JSONSchemaType<ScalarEnumProperty> = {
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -73,6 +76,7 @@ const ScalarEnumPropertyJsonSchema: JSONSchemaType<ScalarEnumProperty> = {
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 }
@@ -139,6 +143,9 @@ const ScalarEnumPropertyJsonSchema: JSONSchemaType<ScalarEnumProperty> = {
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -148,6 +155,7 @@ const ScalarEnumPropertyJsonSchema: JSONSchemaType<ScalarEnumProperty> = {
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 },
@@ -233,6 +241,9 @@ const ScalarEnumPropertyJsonSchema: JSONSchemaType<ScalarEnumProperty> = {
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -242,6 +253,7 @@ const ScalarEnumPropertyJsonSchema: JSONSchemaType<ScalarEnumProperty> = {
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 },

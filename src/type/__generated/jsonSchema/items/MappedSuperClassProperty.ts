@@ -83,6 +83,9 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -92,6 +95,7 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 }
@@ -168,6 +172,9 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -177,6 +184,7 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 },
@@ -272,6 +280,9 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -281,6 +292,7 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 },
@@ -359,6 +371,9 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -368,6 +383,7 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 }
@@ -434,6 +450,9 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -443,6 +462,7 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 },
@@ -528,6 +548,9 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -537,6 +560,7 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 },
@@ -799,6 +823,9 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -808,6 +835,7 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 }
@@ -982,6 +1010,9 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -991,6 +1022,7 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 }
@@ -1088,6 +1120,10 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                             "type": "string",
                             "const": "OneToOne_Source"
                         },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": false
+                        },
                         "joinInfo": {
                             "anyOf": [
                                 {
@@ -1156,7 +1192,8 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                     "required": [
                         "category",
                         "joinInfo",
-                        "onDissociateAction"
+                        "onDissociateAction",
+                        "typeIsList"
                     ]
                 },
                 {
@@ -1207,10 +1244,14 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         },
                         "idViewName": {
                             "type": "string"
+                        },
+                        "autoSyncIdViewName": {
+                            "type": "boolean"
                         }
                     },
                     "required": [
                         "associationId",
+                        "autoSyncIdViewName",
                         "idViewName",
                         "referencedEntityId"
                     ]
@@ -1495,6 +1536,10 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                             "type": "string",
                             "const": "ManyToOne"
                         },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": false
+                        },
                         "joinInfo": {
                             "anyOf": [
                                 {
@@ -1563,7 +1608,8 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                     "required": [
                         "category",
                         "joinInfo",
-                        "onDissociateAction"
+                        "onDissociateAction",
+                        "typeIsList"
                     ]
                 },
                 {
@@ -1614,10 +1660,14 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         },
                         "idViewName": {
                             "type": "string"
+                        },
+                        "autoSyncIdViewName": {
+                            "type": "boolean"
                         }
                     },
                     "required": [
                         "associationId",
+                        "autoSyncIdViewName",
                         "idViewName",
                         "referencedEntityId"
                     ]

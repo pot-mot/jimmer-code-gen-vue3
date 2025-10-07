@@ -10,6 +10,10 @@ const OneToOneMappedPropertyJsonSchema: JSONSchemaType<OneToOneMappedProperty> =
                     "type": "string",
                     "const": "OneToOne_Mapped"
                 },
+                "typeIsList": {
+                    "type": "boolean",
+                    "const": false
+                },
                 "mappedById": {
                     "type": "string"
                 },
@@ -21,7 +25,8 @@ const OneToOneMappedPropertyJsonSchema: JSONSchemaType<OneToOneMappedProperty> =
             "required": [
                 "category",
                 "mappedById",
-                "nullable"
+                "nullable",
+                "typeIsList"
             ]
         },
         {
@@ -38,10 +43,14 @@ const OneToOneMappedPropertyJsonSchema: JSONSchemaType<OneToOneMappedProperty> =
                 },
                 "idViewName": {
                     "type": "string"
+                },
+                "autoSyncIdViewName": {
+                    "type": "boolean"
                 }
             },
             "required": [
                 "associationId",
+                "autoSyncIdViewName",
                 "idViewName",
                 "referencedEntityId"
             ]

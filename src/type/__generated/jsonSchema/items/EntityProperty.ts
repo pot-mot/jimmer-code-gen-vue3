@@ -92,6 +92,9 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -101,6 +104,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 }
@@ -177,6 +181,9 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -186,6 +193,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 },
@@ -281,6 +289,9 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -290,6 +301,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 },
@@ -368,6 +380,9 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -377,6 +392,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 }
@@ -443,6 +459,9 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -452,6 +471,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 },
@@ -537,6 +557,9 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -546,6 +569,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 },
@@ -731,6 +755,10 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                             "type": "string",
                             "const": "OneToOne_Mapped"
                         },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": false
+                        },
                         "mappedById": {
                             "type": "string"
                         },
@@ -742,7 +770,8 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "required": [
                         "category",
                         "mappedById",
-                        "nullable"
+                        "nullable",
+                        "typeIsList"
                     ]
                 },
                 {
@@ -759,10 +788,14 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         },
                         "idViewName": {
                             "type": "string"
+                        },
+                        "autoSyncIdViewName": {
+                            "type": "boolean"
                         }
                     },
                     "required": [
                         "associationId",
+                        "autoSyncIdViewName",
                         "idViewName",
                         "referencedEntityId"
                     ]
@@ -811,16 +844,16 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                             "type": "string",
                             "const": "OneToMany"
                         },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": true
+                        },
                         "mappedById": {
                             "type": "string"
                         },
                         "nullable": {
                             "type": "boolean",
                             "const": false
-                        },
-                        "typeIsList": {
-                            "type": "boolean",
-                            "const": true
                         }
                     },
                     "required": [
@@ -844,10 +877,14 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         },
                         "idViewName": {
                             "type": "string"
+                        },
+                        "autoSyncIdViewName": {
+                            "type": "boolean"
                         }
                     },
                     "required": [
                         "associationId",
+                        "autoSyncIdViewName",
                         "idViewName",
                         "referencedEntityId"
                     ]
@@ -863,16 +900,16 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                             "type": "string",
                             "const": "ManyToMany_Mapped"
                         },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": true
+                        },
                         "mappedById": {
                             "type": "string"
                         },
                         "nullable": {
                             "type": "boolean",
                             "const": false
-                        },
-                        "typeIsList": {
-                            "type": "boolean",
-                            "const": true
                         }
                     },
                     "required": [
@@ -896,10 +933,14 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         },
                         "idViewName": {
                             "type": "string"
+                        },
+                        "autoSyncIdViewName": {
+                            "type": "boolean"
                         }
                     },
                     "required": [
                         "associationId",
+                        "autoSyncIdViewName",
                         "idViewName",
                         "referencedEntityId"
                     ]
@@ -998,6 +1039,9 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -1007,6 +1051,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 }
@@ -1148,6 +1193,9 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -1157,6 +1205,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 }
@@ -1254,6 +1303,10 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                             "type": "string",
                             "const": "OneToOne_Source"
                         },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": false
+                        },
                         "joinInfo": {
                             "anyOf": [
                                 {
@@ -1322,7 +1375,8 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "required": [
                         "category",
                         "joinInfo",
-                        "onDissociateAction"
+                        "onDissociateAction",
+                        "typeIsList"
                     ]
                 },
                 {
@@ -1373,10 +1427,14 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         },
                         "idViewName": {
                             "type": "string"
+                        },
+                        "autoSyncIdViewName": {
+                            "type": "boolean"
                         }
                     },
                     "required": [
                         "associationId",
+                        "autoSyncIdViewName",
                         "idViewName",
                         "referencedEntityId"
                     ]
@@ -1661,6 +1719,10 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                             "type": "string",
                             "const": "ManyToOne"
                         },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": false
+                        },
                         "joinInfo": {
                             "anyOf": [
                                 {
@@ -1729,7 +1791,8 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     "required": [
                         "category",
                         "joinInfo",
-                        "onDissociateAction"
+                        "onDissociateAction",
+                        "typeIsList"
                     ]
                 },
                 {
@@ -1780,10 +1843,14 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         },
                         "idViewName": {
                             "type": "string"
+                        },
+                        "autoSyncIdViewName": {
+                            "type": "boolean"
                         }
                     },
                     "required": [
                         "associationId",
+                        "autoSyncIdViewName",
                         "idViewName",
                         "referencedEntityId"
                     ]
@@ -1799,6 +1866,10 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                             "type": "string",
                             "const": "ManyToMany_Source"
                         },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": true
+                        },
                         "joinInfo": {
                             "anyOf": [
                                 {
@@ -1812,10 +1883,6 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         "nullable": {
                             "type": "boolean",
                             "const": false
-                        },
-                        "typeIsList": {
-                            "type": "boolean",
-                            "const": true
                         }
                     },
                     "required": [
@@ -1839,10 +1906,14 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         },
                         "idViewName": {
                             "type": "string"
+                        },
+                        "autoSyncIdViewName": {
+                            "type": "boolean"
                         }
                     },
                     "required": [
                         "associationId",
+                        "autoSyncIdViewName",
                         "idViewName",
                         "referencedEntityId"
                     ]
@@ -1858,6 +1929,10 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                             "type": "string",
                             "const": "ManyToMany_View"
                         },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": true
+                        },
                         "baseToManyPropertyId": {
                             "type": "string"
                         },
@@ -1867,10 +1942,6 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         "nullable": {
                             "type": "boolean",
                             "const": false
-                        },
-                        "typeIsList": {
-                            "type": "boolean",
-                            "const": true
                         }
                     },
                     "required": [

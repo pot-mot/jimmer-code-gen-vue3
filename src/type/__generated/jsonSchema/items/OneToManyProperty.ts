@@ -10,16 +10,16 @@ const OneToManyPropertyJsonSchema: JSONSchemaType<OneToManyProperty> = {
                     "type": "string",
                     "const": "OneToMany"
                 },
+                "typeIsList": {
+                    "type": "boolean",
+                    "const": true
+                },
                 "mappedById": {
                     "type": "string"
                 },
                 "nullable": {
                     "type": "boolean",
                     "const": false
-                },
-                "typeIsList": {
-                    "type": "boolean",
-                    "const": true
                 }
             },
             "required": [
@@ -43,10 +43,14 @@ const OneToManyPropertyJsonSchema: JSONSchemaType<OneToManyProperty> = {
                 },
                 "idViewName": {
                     "type": "string"
+                },
+                "autoSyncIdViewName": {
+                    "type": "boolean"
                 }
             },
             "required": [
                 "associationId",
+                "autoSyncIdViewName",
                 "idViewName",
                 "referencedEntityId"
             ]

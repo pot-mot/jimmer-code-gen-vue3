@@ -7,6 +7,7 @@ export default Object.freeze({
     name: string
     comment: string
     tableName: string
+    autoSyncTableName: boolean
     extendsIds: string[]
     extraImports: string[]
     extraAnnotations: string[]

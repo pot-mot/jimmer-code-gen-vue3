@@ -22,6 +22,9 @@ const EntityJsonSchema: JSONSchemaType<Entity> = {
         "tableName": {
             "type": "string"
         },
+        "autoSyncTableName": {
+            "type": "boolean"
+        },
         "extendsIds": {
             "type": "array",
             "items": {
@@ -42,6 +45,7 @@ const EntityJsonSchema: JSONSchemaType<Entity> = {
         }
     },
     "required": [
+        "autoSyncTableName",
         "comment",
         "extendsIds",
         "extraAnnotations",

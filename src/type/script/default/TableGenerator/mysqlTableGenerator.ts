@@ -19,7 +19,7 @@ ${table.columns.map(column => `    ${column.name} ${column.type} ${
     column.autoIncrement ? 'AUTO INCREMENT' : ''
 } ${
     column.otherConstraints ? column.otherConstraints.join(' ') : ''
-}`).join("\n")}
+}`.trimEnd()).join(",\n")}
 )
 `
         )

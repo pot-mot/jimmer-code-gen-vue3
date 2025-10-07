@@ -54,6 +54,10 @@ const OneToOneAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAssociationIdO
                             "type": "string",
                             "const": "OneToOne_Mapped"
                         },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": false
+                        },
                         "mappedById": {
                             "type": "string"
                         },
@@ -65,7 +69,8 @@ const OneToOneAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAssociationIdO
                     "required": [
                         "category",
                         "mappedById",
-                        "nullable"
+                        "nullable",
+                        "typeIsList"
                     ]
                 },
                 {
@@ -82,10 +87,14 @@ const OneToOneAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAssociationIdO
                         },
                         "idViewName": {
                             "type": "string"
+                        },
+                        "autoSyncIdViewName": {
+                            "type": "boolean"
                         }
                     },
                     "required": [
                         "associationId",
+                        "autoSyncIdViewName",
                         "idViewName",
                         "referencedEntityId"
                     ]

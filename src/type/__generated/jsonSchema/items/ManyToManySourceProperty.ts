@@ -10,6 +10,10 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                     "type": "string",
                     "const": "ManyToMany_Source"
                 },
+                "typeIsList": {
+                    "type": "boolean",
+                    "const": true
+                },
                 "joinInfo": {
                     "anyOf": [
                         {
@@ -23,10 +27,6 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                 "nullable": {
                     "type": "boolean",
                     "const": false
-                },
-                "typeIsList": {
-                    "type": "boolean",
-                    "const": true
                 }
             },
             "required": [
@@ -50,10 +50,14 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                 },
                 "idViewName": {
                     "type": "string"
+                },
+                "autoSyncIdViewName": {
+                    "type": "boolean"
                 }
             },
             "required": [
                 "associationId",
+                "autoSyncIdViewName",
                 "idViewName",
                 "referencedEntityId"
             ]

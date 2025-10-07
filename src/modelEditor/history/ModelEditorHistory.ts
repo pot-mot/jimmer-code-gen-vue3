@@ -26,6 +26,7 @@ import {
     getPropertiesAssociationChange,
 } from "@/modelEditor/property/PropertyAssociationSync.ts";
 import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
+import {nameTool} from "@/type/context/utils/NameTool.ts";
 
 const SYNC_DEBOUNCE_TIMEOUT = 500
 
@@ -428,6 +429,19 @@ export const useModelEditorHistory = (
         const entity = cloneDeepReadonlyRaw<EntityWithProperties>(options.entity)
 
         removeEntityWatcher(id)
+        if (entity.name !== oldEntity.name) {
+            if (entity.autoSyncTableName) {
+                entity.tableName = nameTool.convert(entity.name, "UPPER_CAMEL", contextData.model.databaseNameStrategy)
+            }
+        }
+        for (const property of entity.properties) {
+            if ("autoSyncColumnName" in property && property.autoSyncColumnName) {
+                property.columnInfo.name = nameTool.convert(property.name, "UPPER_CAMEL", contextData.model.databaseNameStrategy)
+            }
+            if ("autoSyncIdViewName" in property && property.autoSyncIdViewName) {
+                property.idViewName = property.name + (property.typeIsList ? "Ids" : "Id")
+            }
+        }
         contextData.entityMap.set(id, entity)
         const newGroupId = entity.groupId
         if (oldGroupId !== newGroupId) {
@@ -571,6 +585,14 @@ export const useModelEditorHistory = (
         const mappedSuperClass = cloneDeepReadonlyRaw<MappedSuperClassWithProperties>(options.mappedSuperClass)
 
         removeMappedSuperClassWatcher(id)
+        for (const property of mappedSuperClass.properties) {
+            if ("autoSyncColumnName" in property && property.autoSyncColumnName) {
+                property.columnInfo.name = nameTool.convert(property.name, "UPPER_CAMEL", contextData.model.databaseNameStrategy)
+            }
+            if ("autoSyncIdViewName" in property && property.autoSyncIdViewName) {
+                property.idViewName = property.name + (property.typeIsList ? "Ids" : "Id")
+            }
+        }
         contextData.mappedSuperClassMap.set(id, mappedSuperClass)
         const newGroupId = mappedSuperClass.groupId
         if (oldGroupId !== newGroupId) {
@@ -704,6 +726,11 @@ export const useModelEditorHistory = (
         const embeddableType = cloneDeepReadonlyRaw<EmbeddableTypeWithProperties>(options.embeddableType)
 
         removeEmbeddableTypeWatcher(id)
+        for (const property of embeddableType.properties) {
+            if ("autoSyncColumnName" in property && property.autoSyncColumnName) {
+                property.columnInfo.name = nameTool.convert(property.name, "UPPER_CAMEL", contextData.model.databaseNameStrategy)
+            }
+        }
         contextData.embeddableTypeMap.set(id, embeddableType)
         const newGroupId = embeddableType.groupId
         if (oldGroupId !== newGroupId) {

@@ -96,6 +96,10 @@ const OneToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAbstra
                         "type": "string"
                     }
                 },
+                "typeIsList": {
+                    "type": "boolean",
+                    "const": false
+                },
                 "mappedById": {
                     "type": "string"
                 },
@@ -104,10 +108,14 @@ const OneToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAbstra
                 },
                 "idViewName": {
                     "type": "string"
+                },
+                "autoSyncIdViewName": {
+                    "type": "boolean"
                 }
             },
             "required": [
                 "associationId",
+                "autoSyncIdViewName",
                 "comment",
                 "extraAnnotations",
                 "extraImports",
@@ -115,7 +123,8 @@ const OneToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAbstra
                 "idViewName",
                 "mappedById",
                 "name",
-                "nullable"
+                "nullable",
+                "typeIsList"
             ]
         },
         "ForeignKeyType": {

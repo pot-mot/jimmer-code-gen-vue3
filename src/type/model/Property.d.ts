@@ -22,6 +22,7 @@ type ColumnInfo = Omit<Column, 'partOfPrimaryKey' | 'autoIncrement'>
 
 type ColumnProperty = {
     columnInfo: ColumnInfo
+    autoSyncColumnName: boolean
     defaultOrderDirection?: OrderDirection
 }
 
@@ -92,18 +93,21 @@ type BaseAssociationProperty = {
     associationId: string
     referencedEntityId: string
     idViewName: string
+    autoSyncIdViewName: boolean
 }
 
 type OnDissociationAction = "NONE" | "LAX" | "CHECK" | "SET_NULL" | "DELETE"
 
 type OneToOneSourceProperty = {
     category: "OneToOne_Source"
+    typeIsList: false
     joinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo | SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
     onDissociateAction: OnDissociationAction
 } & BaseProperty & BaseAssociationProperty
 
 type OneToOneMappedProperty = {
     category: "OneToOne_Mapped"
+    typeIsList: false
     mappedById: string
     nullable: true
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
@@ -115,15 +119,16 @@ type OneToOneMappedAbstractProperty = Omit<OneToOneMappedProperty, 'category' | 
 
 type ManyToOneProperty = {
     category: "ManyToOne"
+    typeIsList: false
     joinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo | SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
     onDissociateAction: OnDissociationAction
 } & BaseProperty & BaseAssociationProperty
 
 type OneToManyProperty = {
     category: "OneToMany"
+    typeIsList: true
     mappedById: string
     nullable: false
-    typeIsList: true
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
 
 type OneToManyAbstractProperty = Omit<OneToManyProperty, 'category' | 'referencedEntityId'> & {
@@ -133,24 +138,24 @@ type OneToManyAbstractProperty = Omit<OneToManyProperty, 'category' | 'reference
 
 type ManyToManySourceProperty = {
     category: "ManyToMany_Source"
+    typeIsList: true
     joinInfo: SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
     nullable: false
-    typeIsList: true
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
 
 type ManyToManyMappedProperty = {
     category: "ManyToMany_Mapped"
+    typeIsList: true
     mappedById: string
     nullable: false
-    typeIsList: true
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
 
 type ManyToManyViewProperty = {
     category: "ManyToMany_View"
+    typeIsList: true
     baseToManyPropertyId: string
     deeperPropertyId: string
     nullable: false
-    typeIsList: true
 } & Omit<BaseProperty, 'nullable'>
 
 type GetterFormulaProperty = {

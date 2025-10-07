@@ -12,10 +12,14 @@ const BaseAssociationPropertyJsonSchema: JSONSchemaType<BaseAssociationProperty>
         },
         "idViewName": {
             "type": "string"
+        },
+        "autoSyncIdViewName": {
+            "type": "boolean"
         }
     },
     "required": [
         "associationId",
+        "autoSyncIdViewName",
         "idViewName",
         "referencedEntityId"
     ],

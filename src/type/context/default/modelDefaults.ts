@@ -34,7 +34,8 @@ export const defaultIdProperty = (): IdCommonProperty => ({
         nullable: false,
         type: "varchar(255)",
         dataSize: 255,
-    }
+    },
+    autoSyncColumnName: true,
 })
 
 export const defaultScalarProperty = (): ScalarCommonProperty => ({
@@ -49,12 +50,13 @@ export const defaultScalarProperty = (): ScalarCommonProperty => ({
     extraAnnotations: [],
     typeIsArray: false,
     columnInfo: {
-        name: "column",
+        name: "property",
         comment: '',
         nullable: false,
         type: "varchar(255)",
         dataSize: 255,
-    }
+    },
+    autoSyncColumnName: true,
 })
 
 export const defaultEntity = (groupId: string): EntityWithProperties => ({
@@ -63,7 +65,8 @@ export const defaultEntity = (groupId: string): EntityWithProperties => ({
     name: "Entity",
     comment: "",
     subPackagePath: "",
-    tableName: "",
+    tableName: "entity",
+    autoSyncTableName: true,
     extendsIds: [],
     extraImports: [],
     extraAnnotations: [],

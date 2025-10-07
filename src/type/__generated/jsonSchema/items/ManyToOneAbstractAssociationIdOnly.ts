@@ -96,6 +96,10 @@ const ManyToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToOneAbst
                         "type": "string"
                     }
                 },
+                "typeIsList": {
+                    "type": "boolean",
+                    "const": true
+                },
                 "mappedById": {
                     "type": "string"
                 },
@@ -105,13 +109,13 @@ const ManyToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToOneAbst
                 "idViewName": {
                     "type": "string"
                 },
-                "typeIsList": {
-                    "type": "boolean",
-                    "const": true
+                "autoSyncIdViewName": {
+                    "type": "boolean"
                 }
             },
             "required": [
                 "associationId",
+                "autoSyncIdViewName",
                 "comment",
                 "extraAnnotations",
                 "extraImports",

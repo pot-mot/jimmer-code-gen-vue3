@@ -39,6 +39,7 @@ export const idToggleType = (
         rawType: typePair.jvmType.fullTypeExpression,
         extraImports: [...typePair.jvmType.extraImports, ...property.extraImports],
         columnInfo: createColumnInfo(property, typePair.sqlType),
+        autoSyncColumnName: true,
     }
 }
 
@@ -66,6 +67,7 @@ export const toScalarCommonProperty = (
         extraImports: Array.from(typePair.jvmType.extraImports),
         serialized: false,
         columnInfo: createColumnInfo(property, typePair.sqlType),
+        autoSyncColumnName: true,
         typeIsArray: false,
     }
 }
@@ -84,6 +86,7 @@ export const toScalarEnumProperty = (
             dataSize: 255,
             numericPrecision: undefined,
         }), // TODO enumeration type
+        autoSyncColumnName: true,
     }
 }
 
@@ -108,13 +111,15 @@ export const toManyToOneProperty = (
     return {
         ...toBaseProperty(property),
         category: "ManyToOne",
+        typeIsList: false,
         associationId,
         referencedEntityId: entity.id,
         onDissociateAction: "NONE",
         idViewName: firstCaseToLower(entity.name) + "Id",
+        autoSyncIdViewName: true,
         joinInfo: {
             type: "SingleColumn",
-            columnName: nameTool.convert(entity.name, 'UPPER_CAMEL', databaseNameStrategy) + "Id",
+            columnName: nameTool.convert(entity.name + "Id", 'UPPER_CAMEL', databaseNameStrategy),
         }
     }
 }

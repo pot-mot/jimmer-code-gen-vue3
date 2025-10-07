@@ -93,6 +93,9 @@ const IdCommonPropertyJsonSchema: JSONSchemaType<IdCommonProperty> = {
                 "columnInfo": {
                     "$ref": "#/definitions/ColumnInfo"
                 },
+                "autoSyncColumnName": {
+                    "type": "boolean"
+                },
                 "defaultOrderDirection": {
                     "enum": [
                         "ASC",
@@ -102,6 +105,7 @@ const IdCommonPropertyJsonSchema: JSONSchemaType<IdCommonProperty> = {
                 }
             },
             "required": [
+                "autoSyncColumnName",
                 "columnInfo"
             ]
         }

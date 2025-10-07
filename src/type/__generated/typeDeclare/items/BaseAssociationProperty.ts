@@ -4,5 +4,6 @@ export default Object.freeze({
     associationId: string
     referencedEntityId: string
     idViewName: string
+    autoSyncIdViewName: boolean
 }`,
 })

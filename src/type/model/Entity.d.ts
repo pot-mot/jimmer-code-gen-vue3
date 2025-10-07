@@ -5,12 +5,13 @@ type Entity = {
     name: string
     comment: string
     tableName: string
+    autoSyncTableName: boolean
     extendsIds: string[]
     extraImports: string[]
     extraAnnotations: string[]
 }
 
-type MappedSuperClass = Omit<Entity, 'tableName'>
+type MappedSuperClass = Omit<Entity, 'tableName' | 'autoSyncTableName'>
 
 type EmbeddableType = {
     id: string

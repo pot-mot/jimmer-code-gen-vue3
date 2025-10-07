@@ -52,6 +52,10 @@ const OneToOneMappedAbstractPropertyJsonSchema: JSONSchemaType<OneToOneMappedAbs
                         "type": "string"
                     }
                 },
+                "typeIsList": {
+                    "type": "boolean",
+                    "const": false
+                },
                 "mappedById": {
                     "type": "string"
                 },
@@ -60,10 +64,14 @@ const OneToOneMappedAbstractPropertyJsonSchema: JSONSchemaType<OneToOneMappedAbs
                 },
                 "idViewName": {
                     "type": "string"
+                },
+                "autoSyncIdViewName": {
+                    "type": "boolean"
                 }
             },
             "required": [
                 "associationId",
+                "autoSyncIdViewName",
                 "comment",
                 "extraAnnotations",
                 "extraImports",
@@ -71,7 +79,8 @@ const OneToOneMappedAbstractPropertyJsonSchema: JSONSchemaType<OneToOneMappedAbs
                 "idViewName",
                 "mappedById",
                 "name",
-                "nullable"
+                "nullable",
+                "typeIsList"
             ]
         }
     },

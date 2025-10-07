@@ -74,6 +74,9 @@ const ScalarCommonPropertyJsonSchema: JSONSchemaType<ScalarCommonProperty> = {
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -83,6 +86,7 @@ const ScalarCommonPropertyJsonSchema: JSONSchemaType<ScalarCommonProperty> = {
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 }
@@ -159,6 +163,9 @@ const ScalarCommonPropertyJsonSchema: JSONSchemaType<ScalarCommonProperty> = {
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -168,6 +175,7 @@ const ScalarCommonPropertyJsonSchema: JSONSchemaType<ScalarCommonProperty> = {
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 },
@@ -263,6 +271,9 @@ const ScalarCommonPropertyJsonSchema: JSONSchemaType<ScalarCommonProperty> = {
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -272,6 +283,7 @@ const ScalarCommonPropertyJsonSchema: JSONSchemaType<ScalarCommonProperty> = {
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 },

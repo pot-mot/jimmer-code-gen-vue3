@@ -115,6 +115,7 @@ const selectEntity = (entity: EntityWithProperties) => {
             associationId,
             referencedEntityId: props.entity.id,
             idViewName: lowerName + "Ids",
+            autoSyncIdViewName: true,
             nullable: false,
             typeIsList: true,
             extraAnnotations: [],

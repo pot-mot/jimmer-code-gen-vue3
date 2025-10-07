@@ -10,6 +10,10 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                     "type": "string",
                     "const": "OneToOne_Source"
                 },
+                "typeIsList": {
+                    "type": "boolean",
+                    "const": false
+                },
                 "joinInfo": {
                     "anyOf": [
                         {
@@ -78,7 +82,8 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
             "required": [
                 "category",
                 "joinInfo",
-                "onDissociateAction"
+                "onDissociateAction",
+                "typeIsList"
             ]
         },
         {
@@ -129,10 +134,14 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                 },
                 "idViewName": {
                     "type": "string"
+                },
+                "autoSyncIdViewName": {
+                    "type": "boolean"
                 }
             },
             "required": [
                 "associationId",
+                "autoSyncIdViewName",
                 "idViewName",
                 "referencedEntityId"
             ]

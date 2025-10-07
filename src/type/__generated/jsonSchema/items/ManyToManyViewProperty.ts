@@ -10,6 +10,10 @@ const ManyToManyViewPropertyJsonSchema: JSONSchemaType<ManyToManyViewProperty> =
                     "type": "string",
                     "const": "ManyToMany_View"
                 },
+                "typeIsList": {
+                    "type": "boolean",
+                    "const": true
+                },
                 "baseToManyPropertyId": {
                     "type": "string"
                 },
@@ -19,10 +23,6 @@ const ManyToManyViewPropertyJsonSchema: JSONSchemaType<ManyToManyViewProperty> =
                 "nullable": {
                     "type": "boolean",
                     "const": false
-                },
-                "typeIsList": {
-                    "type": "boolean",
-                    "const": true
                 }
             },
             "required": [

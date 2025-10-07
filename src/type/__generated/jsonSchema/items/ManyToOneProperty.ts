@@ -10,6 +10,10 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                     "type": "string",
                     "const": "ManyToOne"
                 },
+                "typeIsList": {
+                    "type": "boolean",
+                    "const": false
+                },
                 "joinInfo": {
                     "anyOf": [
                         {
@@ -78,7 +82,8 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
             "required": [
                 "category",
                 "joinInfo",
-                "onDissociateAction"
+                "onDissociateAction",
+                "typeIsList"
             ]
         },
         {
@@ -129,10 +134,14 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                 },
                 "idViewName": {
                     "type": "string"
+                },
+                "autoSyncIdViewName": {
+                    "type": "boolean"
                 }
             },
             "required": [
                 "associationId",
+                "autoSyncIdViewName",
                 "idViewName",
                 "referencedEntityId"
             ]

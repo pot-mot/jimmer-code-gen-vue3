@@ -74,6 +74,9 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -83,6 +86,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 }
@@ -159,6 +163,9 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -168,6 +175,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 },
@@ -263,6 +271,9 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -272,6 +283,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 },
@@ -350,6 +362,9 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -359,6 +374,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 }
@@ -425,6 +441,9 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -434,6 +453,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 },
@@ -519,6 +539,9 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                         "columnInfo": {
                             "$ref": "#/definitions/ColumnInfo"
                         },
+                        "autoSyncColumnName": {
+                            "type": "boolean"
+                        },
                         "defaultOrderDirection": {
                             "enum": [
                                 "ASC",
@@ -528,6 +551,7 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                         }
                     },
                     "required": [
+                        "autoSyncColumnName",
                         "columnInfo"
                     ]
                 },

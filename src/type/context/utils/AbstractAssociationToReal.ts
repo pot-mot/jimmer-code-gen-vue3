@@ -5,7 +5,6 @@ export const ABSTRACT_ASSOCIATION_SOURCE_NAME_PLACEHOLDER = "[[ABSTRACT_ASSOCIAT
 export const ABSTRACT_ASSOCIATION_SOURCE_COMMENT_PLACEHOLDER = "[[ABSTRACT_ASSOCIATION_SOURCE_COMMENT_PLACEHOLDER]]"
 export const ABSTRACT_PROPERTY_NAME_PLACEHOLDER = "[[ABSTRACT_PROPERTY_NAME_PLACEHOLDER]]"
 export const ABSTRACT_PROPERTY_COMMENT_PLACEHOLDER = "[[ABSTRACT_PROPERTY_COMMENT_PLACEHOLDER]]"
-export const ABSTRACT_PROPERTY_ID_VIEW_NAME_PLACEHOLDER = "[[ABSTRACT_PROPERTY_ID_VIEW_NAME_PLACEHOLDER]]"
 
 export const oneToOneAbstractToReal = (
     abstractAssociation: OneToOneAbstractAssociation,
@@ -23,9 +22,11 @@ export const oneToOneAbstractToReal = (
         id: newPropertyId,
         associationId: newAssociationId,
         category: "OneToOne_Mapped",
+        typeIsList: false,
         name: abstractProperty.name.replace(ABSTRACT_PROPERTY_NAME_PLACEHOLDER, sourceEntityFirstLowerName),
         comment: abstractProperty.comment.replace(ABSTRACT_PROPERTY_COMMENT_PLACEHOLDER, inheritSourceEntity.comment),
-        idViewName: abstractProperty.idViewName.replace(ABSTRACT_PROPERTY_ID_VIEW_NAME_PLACEHOLDER, sourceEntityFirstLowerName),
+        idViewName: abstractProperty.idViewName.replace(ABSTRACT_PROPERTY_NAME_PLACEHOLDER, sourceEntityFirstLowerName),
+        autoSyncIdViewName: true,
         extraAnnotations: [...abstractProperty.extraAnnotations],
         extraImports: [...abstractProperty.extraImports],
         mappedById: abstractProperty.mappedById,
@@ -67,7 +68,8 @@ export const oneToManyAbstractToReal = (
         category: "OneToMany",
         name: abstractProperty.name.replace(ABSTRACT_PROPERTY_NAME_PLACEHOLDER, sourceEntityFirstLowerName),
         comment: abstractProperty.comment.replace(ABSTRACT_PROPERTY_COMMENT_PLACEHOLDER, inheritSourceEntity.comment),
-        idViewName: abstractProperty.idViewName.replace(ABSTRACT_PROPERTY_ID_VIEW_NAME_PLACEHOLDER, sourceEntityFirstLowerName),
+        idViewName: abstractProperty.idViewName.replace(ABSTRACT_PROPERTY_NAME_PLACEHOLDER, sourceEntityFirstLowerName),
+        autoSyncIdViewName: true,
         extraAnnotations: [...abstractProperty.extraAnnotations],
         extraImports: [...abstractProperty.extraImports],
         mappedById: abstractProperty.mappedById,

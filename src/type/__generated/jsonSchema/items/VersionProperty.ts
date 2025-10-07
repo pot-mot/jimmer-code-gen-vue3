@@ -29,6 +29,9 @@ const VersionPropertyJsonSchema: JSONSchemaType<VersionProperty> = {
                 "columnInfo": {
                     "$ref": "#/definitions/ColumnInfo"
                 },
+                "autoSyncColumnName": {
+                    "type": "boolean"
+                },
                 "defaultOrderDirection": {
                     "enum": [
                         "ASC",
@@ -38,6 +41,7 @@ const VersionPropertyJsonSchema: JSONSchemaType<VersionProperty> = {
                 }
             },
             "required": [
+                "autoSyncColumnName",
                 "columnInfo"
             ]
         }

@@ -7,6 +7,9 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
         "columnInfo": {
             "$ref": "#/definitions/ColumnInfo"
         },
+        "autoSyncColumnName": {
+            "type": "boolean"
+        },
         "defaultOrderDirection": {
             "enum": [
                 "ASC",
@@ -16,6 +19,7 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
         }
     },
     "required": [
+        "autoSyncColumnName",
         "columnInfo"
     ],
     "definitions": {
