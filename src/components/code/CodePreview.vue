@@ -50,12 +50,19 @@ const showCode = () => {
 
 const highlightCode = () => {
 	if (contentWrapperRef.value !== undefined && codeRef.value !== undefined) {
+        const {code, language} = props
+
 		const wrapper = contentWrapperRef.value
 		const element = codeRef.value
+        const grammar = prism.languages[language]
+        if (grammar === undefined) {
+            showCode()
+            return
+        }
 		worker.postMessage({
-			code: props.code,
-			grammar: prism.languages[props.language],
-			language: props.language,
+			code,
+			grammar,
+			language,
 		})
 		worker.onmessage = (e) => {
             element.innerHTML = e.data
@@ -99,7 +106,7 @@ const copyFinish = ref(false)
 
 const handleCopy = () => {
 	navigator.clipboard.writeText(props.code)
-	sendMessage('复制成功', {type: 'success'})
+	sendMessage('Copied', {type: 'success'})
 	copyFinish.value = true
 }
 </script>
