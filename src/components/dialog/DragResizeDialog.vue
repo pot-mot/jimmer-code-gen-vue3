@@ -15,8 +15,8 @@ const props = withDefaults(defineProps<{
     to?: HTMLElement | string
     initX?: number
     initY?: number
-    initW: number
-    initH: number
+    initW?: number
+    initH?: number
     minWidth?: number
     maxWidth?: number
     minHeight?: number
@@ -29,6 +29,8 @@ const props = withDefaults(defineProps<{
     canExitFullScreen?: boolean
     initFullScreen?: boolean
 }>(), {
+    initW: window.innerWidth * 0.8,
+    initH: window.innerHeight * 0.8,
     to: "body",
     canResize: false,
     canDrag: true,
