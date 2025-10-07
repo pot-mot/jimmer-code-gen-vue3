@@ -23,9 +23,11 @@ import IconCopy from "@/components/icons/IconCopy.vue";
 const props = withDefaults(defineProps<{
 	code: string,
 	language: string,
+    fontSize?: string,
 	showLineCounts?: boolean,
     noHighlightLimit?: number,
 }>(), {
+    fontSize: '0.8rem',
 	showLineCounts: true,
     noHighlightLimit: 10000,
 })
@@ -117,6 +119,7 @@ const handleCopy = () => {
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
+    font-size: v-bind(fontSize);
 }
 
 .code-preview-content-wrapper {
