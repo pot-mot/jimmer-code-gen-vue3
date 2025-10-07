@@ -35,7 +35,7 @@ const props = withDefaults(defineProps<{
     canFullScreen: true,
     canExitFullScreen: true,
     limitByParent: false,
-    modal: true
+    modal: false
 })
 
 const emits = defineEmits<{
@@ -225,7 +225,7 @@ const handleResize = ({currentPositionDiff}: ResizeEventArgs) => {
     position.y += currentPositionDiff.y
 }
 
-const handleContentOver = (e: PointerEvent) => {
+const handleInnerOver = (e: PointerEvent) => {
     if (!props.canDrag) {
         draggable.value = false
         return
@@ -238,7 +238,7 @@ const handleContentOver = (e: PointerEvent) => {
     draggable.value = !judgeTargetIsInteraction(e);
 }
 
-const handleContentLeave = () => {
+const handleInnerLeave = () => {
     if (!props.canDrag) {
         draggable.value = false
         return
@@ -294,6 +294,7 @@ const onDragEnd = () => {
             <ResizeWrapper
                 v-model="size"
                 class="dialog"
+                :class="{'full-screen': isFullScreen}"
                 handle-size="8px"
                 border-width="8px"
                 @resize="handleResize"
@@ -302,22 +303,28 @@ const onDragEnd = () => {
                 :max-width="maxWidth"
                 :min-height="minHeight"
                 :max-height="maxHeight"
+
+                @pointerdown="onDragStart"
+                @pointerover="handleInnerOver"
+                @pointerleave="handleInnerLeave"
             >
-                <div class="right-top-toolbar">
-                    <button @click="toggleFullScreen" v-if="canFullScreen && canExitFullScreen">
-                        <IconFullScreen/>
-                    </button>
-                    <button @click="handleClose">
-                        <IconClose/>
-                    </button>
+                <div class="dialog-header">
+                    <div>
+                        <slot name="title"/>
+                    </div>
+                    <div>
+                        <button class="toggle-full-screen" @click="toggleFullScreen" v-if="canFullScreen && canExitFullScreen">
+                            <IconFullScreen/>
+                        </button>
+                        <button class="close" @click="handleClose">
+                            <IconClose/>
+                        </button>
+                    </div>
                 </div>
 
                 <div
                     ref="contentRef"
                     class="content"
-                    @pointerdown="onDragStart"
-                    @pointerover="handleContentOver"
-                    @pointerleave="handleContentLeave"
                 >
                     <slot/>
                 </div>
@@ -327,17 +334,45 @@ const onDragEnd = () => {
 </template>
 
 <style scoped>
-.content {
-    height: 100%;
-    width: 100%;
-    overflow: auto;
-}
-
 .dialog {
     position: absolute;
     left: v-bind(positionX);
     top: v-bind(positionY);
     z-index: v-bind(zIndex);
+    border: var(--border);
+    border-color: var(--background-color-hover);
+    border-radius: var(--border-radius);
+    background-color: var(--background-color);
+}
+
+.dialog.full-screen {
+    border: none;
+}
+
+.content {
+    height: calc(100% - 1.5rem);
+    width: 100%;
+    overflow: auto;
+}
+
+.dialog-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.dialog-header button {
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    height: 1.5rem;
+}
+
+.dialog-header button.toggle-full-screen:hover {
+    background-color: var(--background-color-hover);
+}
+
+.dialog-header button.close:hover {
+    background-color: var(--danger-color);
 }
 
 .model {
@@ -348,14 +383,6 @@ const onDragEnd = () => {
     right: 0;
     background-color: var(--mask-color);
     z-index: v-bind(zIndex);
-}
-
-.right-top-toolbar {
-    position: absolute;
-    top: 0;
-    right: 0;
-    cursor: pointer;
-    padding: 0 0.25rem;
 }
 
 :deep(.resize-border),
