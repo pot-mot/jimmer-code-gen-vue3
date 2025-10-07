@@ -3,12 +3,14 @@ import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {computed} from "vue";
 import IconAim from "@/components/icons/IconAim.vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
+import IconDelete from "@/components/icons/IconDelete.vue";
 
 const entity = defineModel<EntityWithProperties>({required: true})
 
 const {
     selectedIdSets,
     focusNode,
+    remove,
 } = useModelEditor()
 
 const isSelected = computed(() => {
@@ -17,6 +19,10 @@ const isSelected = computed(() => {
 
 const handleFocus = () => {
     focusNode(entity.value.id)
+}
+
+const handleRemove = () => {
+    remove({entityIds: [entity.value.id]})
 }
 </script>
 
@@ -30,6 +36,9 @@ const handleFocus = () => {
         <div class="tool">
             <button @click.stop="handleFocus">
                 <IconAim/>
+            </button>
+            <button @click.stop="handleRemove">
+                <IconDelete/>
             </button>
         </div>
     </div>
