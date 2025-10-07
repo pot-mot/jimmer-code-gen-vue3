@@ -169,6 +169,6 @@ export const contextDataToContext = (
 
         createId,
         nameTool,
-        typeTool: buildTypeTool(model.language, [], [], [])
+        typeTool: buildTypeTool(model.jvmLanguage, [], [], [])
     }
 }

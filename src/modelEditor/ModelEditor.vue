@@ -12,6 +12,7 @@ import {judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
 import ConcreteAssociationEdge from "@/modelEditor/edge/ConcreteAssociationEdge.vue";
 import AbstractAssociationEdge from "@/modelEditor/edge/AbstractAssociationEdge.vue";
 import ModelEditorSelectionRect from "@/modelEditor/selectionRect/ModelEditorSelectionRect.vue";
+import ModelGenerator from "@/modelEditor/generator/ModelGenerator.vue";
 
 const {
     initModelEditor,
@@ -124,6 +125,8 @@ const handleKeyDown = async (e: KeyboardEvent) => {
         <ModelEditorSelectionRect :rect="selectionRect"/>
 
         <ModelEditorToolbar/>
+
+        <ModelGenerator/>
     </div>
 </template>
 

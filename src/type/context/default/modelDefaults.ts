@@ -132,16 +132,16 @@ export const defaultGroup = (): Group => ({
     baseTableSchema: ""
 })
 
-export const defaultModel = (): ModelContextData => ({
+export const defaultModelContextData = (): ModelContextData => ({
     model: {
         id: createId("Model"),
         name: "Model",
         description: "",
         createdTime: "",
         modifiedTime: "",
-        database: "POSTGRESQL",
+        databaseType: "POSTGRESQL",
         databaseNameStrategy: "SNAKE",
-        language: "KOTLIN",
+        jvmLanguage: "KOTLIN",
     },
     entityMap: new Map(),
     mappedSuperClassMap: new Map(),

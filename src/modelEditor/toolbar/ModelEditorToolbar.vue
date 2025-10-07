@@ -6,6 +6,8 @@ import IconFit from "@/components/icons/IconFit.vue";
 import IconDrag from "@/components/icons/IconDrag.vue";
 import IconSelectRect from "@/components/icons/IconSelectRect.vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
+import IconDownload from "@/components/icons/IconDownload.vue";
+import {useModelGenerator} from "@/modelEditor/generator/useModelGenerator.ts";
 
 const {
     saveModel,
@@ -17,11 +19,15 @@ const {
     defaultMouseAction,
     toggleDefaultMouseAction,
 } = useModelEditor()
+
+const {
+    open: openGenerator
+} = useModelGenerator()
 </script>
 
 <template>
     <div class="toolbar top-left">
-        <button @click="saveModel">
+        <button @click="saveModel()">
             <IconSave/>
         </button>
 
@@ -41,7 +47,8 @@ const {
     </div>
 
     <div class="toolbar top-right">
-        <button>
+        <button @click="openGenerator()">
+            <IconDownload/>
         </button>
     </div>
 </template>

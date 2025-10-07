@@ -19,23 +19,23 @@ const ModelJsonSchema: JSONSchemaType<Model> = {
         "modifiedTime": {
             "type": "string"
         },
-        "database": {
+        "databaseType": {
             "$ref": "#/definitions/DatabaseType"
         },
         "databaseNameStrategy": {
             "$ref": "#/definitions/NameStrategy"
         },
-        "language": {
+        "jvmLanguage": {
             "$ref": "#/definitions/JvmLanguage"
         }
     },
     "required": [
         "createdTime",
-        "database",
         "databaseNameStrategy",
+        "databaseType",
         "description",
         "id",
-        "language",
+        "jvmLanguage",
         "modifiedTime",
         "name"
     ],

@@ -10,7 +10,7 @@ type Model = {
     description: string
     createdTime: string
     modifiedTime: string
-    database: DatabaseType
+    databaseType: DatabaseType
     databaseNameStrategy: NameStrategy
-    language: JvmLanguage
+    jvmLanguage: JvmLanguage
 }

@@ -1,11 +1,11 @@
 import type {ScriptsStore} from "@/modelEditor/generator/ScriptsStore.ts";
 import {getArrayFromMap} from "@/utils/map/getArrayFromMap.ts";
-import {entityToTable} from "@/type/script/default/entityToTable.ts";
+import {entityToTable} from "@/type/script/default/TableEntityConvert/entityToTable.ts";
 
 export const modelGenerate = (
     context: DeepReadonly<ModelContext>,
     selectedIds: DeepReadonly<Partial<ModelSubIds>>,
-    scriptsStore: DeepReadonly<ScriptsStore>,
+    scriptsStore: DeepReadonly<ScriptsStore<any>>,
 ) => {
     const files: Record<string, string> = {}
     const mergeIntoFiles = (newFiles: Record<string, string>) => {
@@ -18,16 +18,24 @@ export const modelGenerate = (
         }
     }
 
+    const databaseType = context.model.databaseType
+    const jvmLanguage = context.model.jvmLanguage
+    const scriptInfos = scriptsStore.getScriptInfos({
+        enabled: true,
+        databaseType,
+        jvmLanguage,
+    })
+
     if (selectedIds.entityIds) {
         const entities = getArrayFromMap(context.entityMap, selectedIds.entityIds)
         const {tables, midTables} = entityToTable(entities, context)
         const allTables = [...tables, ...midTables]
 
-        for (const script of scriptsStore.table.enabledScripts()) {
+        for (const {script} of scriptInfos.filter(it => it.type === "TableGenerator")) {
             mergeIntoFiles(script.execute(allTables, context))
         }
 
-        for (const script of scriptsStore.entity.enabledScripts()) {
+        for (const {script} of scriptInfos.filter(it => it.type === "EntityGenerator")) {
             for (const entity of entities) {
                 mergeIntoFiles(script.execute(entity, context))
             }
@@ -36,7 +44,7 @@ export const modelGenerate = (
 
     if (selectedIds.mappedSuperClassIds) {
         const mappedSuperClasses = getArrayFromMap(context.mappedSuperClassMap, selectedIds.mappedSuperClassIds)
-        for (const script of scriptsStore.mappedSuperClass.enabledScripts()) {
+        for (const {script} of scriptInfos.filter(it => it.type === "MappedSuperClassGenerator")) {
             for (const mappedSuperClass of mappedSuperClasses) {
                 mergeIntoFiles(script.execute(mappedSuperClass, context))
             }
@@ -45,7 +53,7 @@ export const modelGenerate = (
 
     if (selectedIds.embeddableTypeIds) {
         const embeddableTypes = getArrayFromMap(context.embeddableTypeMap, selectedIds.embeddableTypeIds)
-        for (const script of scriptsStore.embeddableType.enabledScripts()) {
+        for (const {script} of scriptInfos.filter(it => it.type === "EmbeddableTypeGenerator")) {
             for (const embeddableType of embeddableTypes) {
                 mergeIntoFiles(script.execute(embeddableType, context))
             }
@@ -54,7 +62,7 @@ export const modelGenerate = (
 
     if (selectedIds.enumerationIds) {
         const enumerations = getArrayFromMap(context.enumerationMap, selectedIds.enumerationIds)
-        for (const script of scriptsStore.enumeration.enabledScripts()) {
+        for (const {script} of scriptInfos.filter(it => it.type === "EnumerationGenerator")) {
             for (const enumeration of enumerations) {
                 mergeIntoFiles(script.execute(enumeration, context))
             }
@@ -63,7 +71,7 @@ export const modelGenerate = (
 
     if (selectedIds.associationIds) {
         const associations = getArrayFromMap(context.associationMap, selectedIds.associationIds)
-        for (const script of scriptsStore.association.enabledScripts()) {
+        for (const {script} of scriptInfos.filter(it => it.type === "AssociationGenerator")) {
             for (const association of associations) {
                 mergeIntoFiles(script.execute(association, context))
             }
@@ -72,14 +80,14 @@ export const modelGenerate = (
 
     if (selectedIds.groupIds) {
         const groups = getArrayFromMap(context.groupMap, selectedIds.groupIds)
-        for (const script of scriptsStore.group.enabledScripts()) {
+        for (const {script} of scriptInfos.filter(it => it.type === "GroupGenerator")) {
             for (const group of groups) {
                 mergeIntoFiles(script.execute(group, context))
             }
         }
     }
 
-    for (const script of scriptsStore.model.enabledScripts()) {
+    for (const {script} of scriptInfos.filter(it => it.type === "ModelGenerator")) {
         mergeIntoFiles(script.execute(context.model, context))
     }
 

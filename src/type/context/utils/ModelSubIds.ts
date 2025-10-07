@@ -20,6 +20,32 @@ export const fillModelSubIds = (ids: DeepReadonly<Partial<ModelSubIds>>): ModelS
     return result
 }
 
+export const contextDataToSubIds = (
+    contextData: DeepReadonly<ModelContextData>
+): ModelSubIds => {
+    const result = defaultModelSubIds()
+
+    for (const id of contextData.groupMap.keys()) {
+        result.groupIds.push(id)
+    }
+    for (const id of contextData.entityMap.keys()) {
+        result.entityIds.push(id)
+    }
+    for (const id of contextData.mappedSuperClassMap.keys()) {
+        result.mappedSuperClassIds.push(id)
+    }
+    for (const id of contextData.embeddableTypeMap.keys()) {
+        result.embeddableTypeIds.push(id)
+    }
+    for (const id of contextData.enumerationMap.keys()) {
+        result.enumerationIds.push(id)
+    }
+    for (const id of contextData.associationMap.keys()) {
+        result.associationIds.push(id)
+    }
+    return result
+}
+
 export const subDataToSubIds = (
     subData: DeepReadonly<ModelGraphSubData>
 ): ModelSubIds => {

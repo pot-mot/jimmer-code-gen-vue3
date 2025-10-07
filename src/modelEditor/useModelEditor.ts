@@ -19,7 +19,7 @@ import {
     defaultEntity, defaultEnumeration,
     defaultGroup,
     defaultMappedSuperClass,
-    defaultModel
+    defaultModelContextData
 } from "@/type/context/default/modelDefaults.ts";
 import {tinycolor} from "vue-color";
 import {defaultModelSubIds, fillModelSubIds, subDataToSubIds} from "@/type/context/utils/ModelSubIds.ts";
@@ -35,7 +35,7 @@ import {contextDataGetSelectSubData} from "@/type/context/utils/ModelSubData.ts"
 import {validatePartialModelGraphSubData} from "@/modelEditor/graphData/ModelGraphSubData.ts";
 import {buildNameSets} from "@/modelEditor/import/protectRepeatNames.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
-import {tableToEntity} from "@/type/script/default/tableToEntity.ts";
+import {tableToEntity} from "@/type/script/default/TableEntityConvert/tableToEntity.ts";
 import {contextDataToContext} from "@/type/context/utils/ModelContext.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
@@ -92,7 +92,7 @@ export const useModelEditor = createStore(() => {
         return viewport.value.zoom
     })
 
-    const contextData = ref<ModelContextData>(defaultModel())
+    const contextData = ref<ModelContextData>(defaultModelContextData())
     const getContextData = () => {
         return contextData.value
     }
@@ -164,7 +164,7 @@ export const useModelEditor = createStore(() => {
 
     const loadModel = async (data: ModelGraphSubData) => {
         await withLoading("Model Loading...", async () => {
-            contextData.value = defaultModel()
+            contextData.value = defaultModelContextData()
             await importModelGraphData(data)
             history.clean()
         })
