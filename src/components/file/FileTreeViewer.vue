@@ -15,7 +15,6 @@ const currentPath = ref<string>()
 
 const currentFileContent = computed(() => {
     if (currentPath.value !== undefined) {
-        console.log(currentPath.value, props.files, props.files[currentPath.value])
         return props.files[currentPath.value]
     }
 })
