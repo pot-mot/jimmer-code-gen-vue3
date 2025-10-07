@@ -59,11 +59,13 @@ const handleScriptInfoSubmit = (scriptInfo: ScriptInfo<any>) => {
             @close="currentScriptInfo = undefined"
             can-resize
         >
-            <GeneratorScriptEditor
-                v-if="currentScriptInfo"
-                :script-info="currentScriptInfo"
-                @submit="handleScriptInfoSubmit"
-            />
+            <div class="wrapper">
+                <GeneratorScriptEditor
+                    v-if="currentScriptInfo"
+                    :script-info="currentScriptInfo"
+                    @submit="handleScriptInfoSubmit"
+                />
+            </div>
         </DragResizeDialog>
     </DragResizeDialog>
 </template>
@@ -78,7 +80,7 @@ const handleScriptInfoSubmit = (scriptInfo: ScriptInfo<any>) => {
 }
 
 .wrapper {
-    padding: 0 1rem 1.5rem;
+    padding: 0 1rem 1rem;
     width: 100%;
     height: 100%;
     overflow: auto;
