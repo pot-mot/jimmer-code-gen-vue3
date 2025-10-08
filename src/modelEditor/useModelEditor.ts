@@ -602,6 +602,8 @@ export const useModelEditor = createStore(() => {
             el.addEventListener('keydown', (e) => {
                 // 按下 Delete 键删除选中的节点和边
                 if (e.key === "Delete" || e.key === "Backspace") {
+                    if (judgeTargetIsInteraction(e)) return
+
                     e.preventDefault()
                     const ids = defaultModelSubIds()
                     for (const node of getSelectedNodes.value) {
@@ -625,6 +627,8 @@ export const useModelEditor = createStore(() => {
                 }
                 // 按下 Ctrl 键进入多选模式，直到松开 Ctrl 键
                 else if (e.key === "Control") {
+                    if (judgeTargetIsInteraction(e)) return
+
                     enableMultiSelect(vueFlow)
                     focus()
                     document.documentElement.addEventListener('keyup', (e) => {
