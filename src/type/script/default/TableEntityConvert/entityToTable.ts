@@ -87,62 +87,21 @@ export const entityToTable: EntityToTable = (
         return joinColumnInfos
     }
 
-    type MidTableJoinColumnInfo = {
-        columnRefs: {
-            source: ColumnRef,
-            target: ColumnRef,
-        }
-        columnInfo: Omit<ColumnInfo, 'name' | 'nullable' | 'otherConstraints'>
-    }
-
-    const bindMidTableJoinColumnInfo = (
-        columnRefs: DeepReadonly<{source: ColumnRef, target: ColumnRef}[]>,
-        refColumns: DeepReadonly<Column[]>,
-    ): MidTableJoinColumnInfo[] => {
-        if (refColumns.length !== columnRefs.length) {
-            throw new Error(`columns [${refColumns.map(it => it.name).join(", ")}] is not match [${columnRefs}]`)
-        }
-
-        const joinColumnInfos: MidTableJoinColumnInfo[] = []
-        for (const columnRef of columnRefs) {
-            const nameMatchedColumn = refColumns.find(column => column.name === columnRef.target.referencedColumnName)
-            if (nameMatchedColumn === undefined) throw new Error(`columnRef [${columnRef.target.referencedColumnName}] not found in columns [${refColumns.map(it => it.name).join(", ")}]`)
-            joinColumnInfos.push({
-                columnRefs: {
-                    source: {
-                        columnName: columnRef.source.columnName,
-                        referencedColumnName: columnRef.source.referencedColumnName
-                    },
-                    target: {
-                        columnName: columnRef.target.columnName,
-                        referencedColumnName: columnRef.target.referencedColumnName
-                    }
-                },
-                columnInfo: {
-                    comment: nameMatchedColumn.comment,
-                    type: nameMatchedColumn.type,
-                    dataSize: nameMatchedColumn.dataSize,
-                    numericPrecision: nameMatchedColumn.numericPrecision,
-                    defaultValue: nameMatchedColumn.defaultValue,
-                }
-            })
-        }
-        return joinColumnInfos
-    }
-
     const buildMidTable = (
         options: DeepReadonly<{
             midTable: {schema: string, name: string, comment: string},
             sourceTable: {name: string, schema: string},
             targetTable: {name: string, schema: string},
-            joinColumnInfos: MidTableJoinColumnInfo[],
+            sourceJoinColumnInfos: JoinColumnInfo[],
+            targetJoinColumnInfos: JoinColumnInfo[],
             associationType: "OneToOne_Source" | "ManyToOne" | "ManyToMany_Source"
         }>
     ): Table => {
         const {
             sourceTable,
             targetTable,
-            joinColumnInfos,
+            sourceJoinColumnInfos,
+            targetJoinColumnInfos,
             associationType
         } = options
 
@@ -154,10 +113,10 @@ export const entityToTable: EntityToTable = (
             indexes: [],
             foreignKeys: []
         }
-        for (const {columnRefs: {source}, columnInfo} of joinColumnInfos) {
+        for (const {columnRef, columnInfo} of sourceJoinColumnInfos) {
             midTable.columns.push({
                 ...columnInfo,
-                name: source.columnName,
+                name: columnRef.columnName,
                 comment: "",
                 nullable: false,
                 partOfPrimaryKey: true,
@@ -165,10 +124,10 @@ export const entityToTable: EntityToTable = (
                 otherConstraints: []
             })
         }
-        for (const {columnRefs: {target}, columnInfo} of joinColumnInfos) {
+        for (const {columnRef, columnInfo} of targetJoinColumnInfos) {
             midTable.columns.push({
                 ...columnInfo,
-                name: target.columnName,
+                name: columnRef.columnName,
                 comment: "",
                 nullable: false,
                 partOfPrimaryKey: true,
@@ -181,7 +140,7 @@ export const entityToTable: EntityToTable = (
             comment: midTable.comment + " Source Foreign Key",
             referencedTableSchema: sourceTable.schema,
             referencedTableName: sourceTable.name,
-            columnRefs: joinColumnInfos.map(it => it.columnRefs.source),
+            columnRefs: sourceJoinColumnInfos.map(it => it.columnRef),
             onDelete: "",
             onUpdate: "",
         })
@@ -190,7 +149,7 @@ export const entityToTable: EntityToTable = (
             comment: midTable.comment + " Target Foreign Key",
             referencedTableSchema: targetTable.schema,
             referencedTableName: targetTable.name,
-            columnRefs: joinColumnInfos.map(it => it.columnRefs.target),
+            columnRefs: targetJoinColumnInfos.map(it => it.columnRef),
             onDelete: "",
             onUpdate: "",
         })
@@ -198,18 +157,18 @@ export const entityToTable: EntityToTable = (
         if (associationType === "OneToOne_Source") {
             midTable.indexes.push({
                 name: midTable.name + "_S_U",
-                columnNames: joinColumnInfos.map(it => it.columnRefs.source.columnName),
+                columnNames: sourceJoinColumnInfos.map(it => it.columnRef.columnName),
                 unique: true,
             })
             midTable.indexes.push({
                 name: midTable.name + "_T_U",
-                columnNames: joinColumnInfos.map(it => it.columnRefs.target.columnName),
+                columnNames: targetJoinColumnInfos.map(it => it.columnRef.columnName),
                 unique: true,
             })
         } else if (associationType === "ManyToOne") {
             midTable.indexes.push({
                 name: midTable.name + "_T_U",
-                columnNames: joinColumnInfos.map(it => it.columnRefs.target.columnName),
+                columnNames:  targetJoinColumnInfos.map(it => it.columnRef.columnName),
                 unique: true,
             })
         }
@@ -328,21 +287,49 @@ export const entityToTable: EntityToTable = (
                         midTable: {name: association.name, comment: association.comment, schema: table.schema},
                         sourceTable: {name: table.name, schema: table.schema},
                         targetTable: {name: refTable.name, schema: refTable.schema},
-                        joinColumnInfos: bindMidTableJoinColumnInfo([{
-                            source: {columnName: property.joinInfo.sourceColumnName, referencedColumnName: idColumns[0].name},
-                            target: {columnName: property.joinInfo.targetColumnName, referencedColumnName: refColumns[0].name}
-                        }], refColumns),
+                        sourceJoinColumnInfos: bindJoinColumnInfo([{columnName: property.joinInfo.sourceColumnName, referencedColumnName: idColumns[0].name}], refColumns),
+                        targetJoinColumnInfos: bindJoinColumnInfo([{columnName: property.joinInfo.targetColumnName, referencedColumnName: refColumns[0].name}], refColumns),
                         associationType: property.category,
                     }))
                 } else if (property.joinInfo.type === "MultiColumnMidTable") {
-                    if (refColumns.length !== property.joinInfo.columnRefs.length) {
-                        throw new Error(`[${entity.name}.${property.name}] refColumns [${refColumns.map(it => it.name).join(", ")}] length is not ${property.joinInfo.columnRefs.length}`)
+                    const sourceColumnRef: ColumnRef[] = []
+                    if (property.joinInfo.sourceJoinInfo.type === "SingleColumn") {
+                        if (idColumns.length !== 1) {
+                            throw new Error(`[${entity.name}.${property.name}] idColumns [${idColumns.map(it => it.name).join(", ")}] length is not 1`)
+                        }
+                        sourceColumnRef.push({
+                            columnName: property.joinInfo.sourceJoinInfo.columnName,
+                            referencedColumnName: idColumns[0].name
+                        })
+                    } else if (property.joinInfo.sourceJoinInfo.type === "MultiColumn") {
+                        if (idColumns.length !== property.joinInfo.sourceJoinInfo.columnRefs.length) {
+                            throw new Error(`[${entity.name}.${property.name}] idColumns [${idColumns.map(it => it.name).join(", ")}] length is not ${property.joinInfo.sourceJoinInfo.columnRefs.length}`)
+                        }
+                        sourceColumnRef.push(...property.joinInfo.sourceJoinInfo.columnRefs)
                     }
+
+                    const targetColumnRef: ColumnRef[] = []
+                    if (property.joinInfo.targetJoinInfo.type === "SingleColumn") {
+                        if (refColumns.length !== 1) {
+                            throw new Error(`[${entity.name}.${property.name}] refColumns [${refColumns.map(it => it.name).join(", ")}] length is not 1`)
+                        }
+                        targetColumnRef.push({
+                            columnName: property.joinInfo.targetJoinInfo.columnName,
+                            referencedColumnName: refColumns[0].name
+                        })
+                    } else if (property.joinInfo.targetJoinInfo.type === "MultiColumn") {
+                        if (refColumns.length !== property.joinInfo.targetJoinInfo.columnRefs.length) {
+                            throw new Error(`[${entity.name}.${property.name}] refColumns [${refColumns.map(it => it.name).join(", ")}] length is not ${property.joinInfo.targetJoinInfo.columnRefs.length}`)
+                        }
+                        targetColumnRef.push(...property.joinInfo.targetJoinInfo.columnRefs)
+                    }
+
                     midTables.push(buildMidTable({
                         midTable: {name: association.name, comment: association.comment, schema: table.schema},
                         sourceTable: {name: table.name, schema: table.schema},
                         targetTable: {name: refTable.name, schema: refTable.schema},
-                        joinColumnInfos: bindMidTableJoinColumnInfo(property.joinInfo.columnRefs, refColumns),
+                        sourceJoinColumnInfos: bindJoinColumnInfo(sourceColumnRef, idColumns),
+                        targetJoinColumnInfos: bindJoinColumnInfo(targetColumnRef, refColumns),
                         associationType: property.category,
                     }))
                 }

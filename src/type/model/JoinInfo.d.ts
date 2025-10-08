@@ -43,9 +43,6 @@ type SingleColumnMidTableJoinInfo = {
 
 type MultiColumnMidTableJoinInfo = {
     type: "MultiColumnMidTable"
-    embeddableTypeId: string
-    columnRefs: {
-        source: ColumnRef,
-        target: ColumnRef
-    }[]
+    sourceJoinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
+    targetJoinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
 } & MidTableInfo
