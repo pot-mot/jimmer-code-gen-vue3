@@ -9,7 +9,7 @@ export const getEmbeddableTypeDefaultFullPathColumnNames = (
     const processEmbeddableProperties = (
         properties: DeepReadonly<EmbeddableTypeProperty[]>,
         prefix: string = "",
-        columnNameOverrides: DeepReadonly<ColumnNameOverride[]> = []
+        columnNameOverrides: DeepReadonly<ColumnNameOverride[]> = [],
     ) => {
         for (const property of properties) {
             // 处理嵌入类型属性
@@ -29,7 +29,7 @@ export const getEmbeddableTypeDefaultFullPathColumnNames = (
                 const propertyPath = prefix ? `${prefix}.${property.name}` : property.name
 
                 const matchedOverride = columnNameOverrides.find(override =>
-                    override.propertyPath === propertyPath
+                    override.propertyPath === propertyPath // FIXME 内嵌属性的列名覆盖应该如何与 propertyPath 匹配
                 )
                 result.push({
                     propertyPath,
@@ -46,7 +46,8 @@ export const getEmbeddableTypeDefaultFullPathColumnNames = (
 
 export const overrideEmbeddableTypePropertiesColumnNames = (
     embeddableType: DeepReadonly<EmbeddableTypeWithProperties>,
-    embeddableTypeMap: DeepReadonly<Map<string, EmbeddableTypeWithProperties>>
+    embeddableTypeMap: DeepReadonly<Map<string, EmbeddableTypeWithProperties>>,
+    columnNameOverrides: DeepReadonly<ColumnNameOverride[]> = []
 ): EmbeddableTypeProperty[] => {
     const result: EmbeddableTypeProperty[] = []
 
@@ -54,7 +55,7 @@ export const overrideEmbeddableTypePropertiesColumnNames = (
     const processEmbeddableProperties = (
         properties: DeepReadonly<EmbeddableTypeProperty[]>,
         prefix: string = "",
-        columnNameOverrides: DeepReadonly<ColumnNameOverride[]> = []
+        columnNameOverrides: DeepReadonly<ColumnNameOverride[]> = [],
     ) => {
         for (const property of properties) {
             // 处理嵌入类型属性
@@ -75,7 +76,7 @@ export const overrideEmbeddableTypePropertiesColumnNames = (
                 const newProperty = cloneDeepReadonlyRaw<EmbeddableTypeProperty>(property)
 
                 const matchedOverride = columnNameOverrides.find(override =>
-                    propertyPath.endsWith(override.propertyPath)
+                    propertyPath.endsWith(override.propertyPath) // FIXME 内嵌属性的列名覆盖应该如何与 propertyPath 匹配
                 )
                 if (matchedOverride && "columnInfo" in newProperty) {
                     newProperty.columnInfo.name = matchedOverride.overrideColumnName
@@ -86,7 +87,7 @@ export const overrideEmbeddableTypePropertiesColumnNames = (
         }
     }
 
-    processEmbeddableProperties(embeddableType.properties)
+    processEmbeddableProperties(embeddableType.properties, "", columnNameOverrides)
 
     return result
 }
