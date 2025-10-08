@@ -13,6 +13,7 @@ type MultiColumnJoinInfo = {
 
 type MidTableInfo = {
     tableName: string
+    tableComment: string
     readonly?: boolean
     preventDeletionBySource?: boolean
     preventDeletionByTarget?: boolean

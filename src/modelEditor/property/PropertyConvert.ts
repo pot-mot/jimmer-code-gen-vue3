@@ -1,6 +1,8 @@
 import {nameTool} from "@/type/context/utils/NameTool.ts";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {firstCaseToLower} from "@/utils/name/firstCase.ts";
+import {firstCaseToLower, firstCaseToUpper} from "@/utils/name/firstCase.ts";
+import {flatEmbeddableTypeColumnNames} from "@/type/context/utils/EmbeddableTypeFlat.ts";
+import {getEntityIdProperty} from "@/type/context/utils/EntityId.ts";
 
 const toBaseProperty = (property: DeepReadonly<BaseProperty>): BaseProperty => {
     return {
@@ -104,23 +106,54 @@ export const toScalarEmbeddableProperty = (
 
 export const toManyToOneProperty = (
     property: DeepReadonly<Property>,
-    entity: DeepReadonly<Entity>,
+    referencedEntity: DeepReadonly<EntityWithProperties>,
     associationId: string,
-    databaseNameStrategy = useModelEditor().contextData.value?.model.databaseNameStrategy ?? 'SNAKE'
 ): ManyToOneProperty => {
-    return {
-        ...toBaseProperty(property),
-        category: "ManyToOne",
-        typeIsList: false,
-        associationId,
-        referencedEntityId: entity.id,
-        onDissociateAction: "NONE",
-        idViewName: firstCaseToLower(entity.name) + "Id",
-        autoSyncIdViewName: true,
-        joinInfo: {
-            type: "SingleColumn",
-            columnName: nameTool.convert(entity.name + "Id", 'UPPER_CAMEL', databaseNameStrategy),
-        },
-        autoSyncJoinInfoName: true,
+    const {
+        contextData
+    } = useModelEditor()
+
+    const referencedIdProperty = getEntityIdProperty(referencedEntity, contextData.value.mappedSuperClassMap)
+    if (!referencedIdProperty) throw new Error(`[${referencedEntity.id}] has no id property`)
+
+    const databaseNameStrategy = contextData.value.model.databaseNameStrategy
+
+    if ("embeddableTypeId" in referencedIdProperty) {
+        const columnNames = flatEmbeddableTypeColumnNames(referencedIdProperty.embeddableTypeId, contextData.value.embeddableTypeMap, referencedIdProperty.columnNameOverrides)
+        return {
+            ...toBaseProperty(property),
+            category: "ManyToOne",
+            typeIsList: false,
+            associationId,
+            referencedEntityId: referencedEntity.id,
+            onDissociateAction: "NONE",
+            idViewName: firstCaseToLower(referencedEntity.name) + "Id",
+            autoSyncIdViewName: true,
+            joinInfo: {
+                type: "MultiColumn",
+                embeddableTypeId: referencedIdProperty.embeddableTypeId,
+                columnRefs: columnNames.map(columnName => ({
+                    columnName: nameTool.convert(referencedEntity.name + firstCaseToUpper(columnName), 'UPPER_CAMEL', databaseNameStrategy),
+                    referencedColumnName: columnName,
+                }))
+            },
+            autoSyncJoinInfoName: true,
+        }
+    } else {
+        return {
+            ...toBaseProperty(property),
+            category: "ManyToOne",
+            typeIsList: false,
+            associationId,
+            referencedEntityId: referencedEntity.id,
+            onDissociateAction: "NONE",
+            idViewName: firstCaseToLower(referencedEntity.name) + "Id",
+            autoSyncIdViewName: true,
+            joinInfo: {
+                type: "SingleColumn",
+                columnName: nameTool.convert(referencedEntity.name + "Id", 'UPPER_CAMEL', databaseNameStrategy),
+            },
+            autoSyncJoinInfoName: true,
+        }
     }
 }

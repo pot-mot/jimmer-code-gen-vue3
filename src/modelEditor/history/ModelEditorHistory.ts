@@ -27,6 +27,7 @@ import {
 } from "@/modelEditor/property/PropertyAssociationSync.ts";
 import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
 import {nameTool} from "@/type/context/utils/NameTool.ts";
+import {syncPropertyFkJoinInfo, syncPropertyJoinInfo} from "@/modelEditor/property/PropertyJoinInfoSync.ts";
 
 const SYNC_DEBOUNCE_TIMEOUT = 500
 
@@ -381,15 +382,7 @@ export const useModelEditorHistory = (
                 }
             }
             if ("autoSyncJoinInfoName" in property && property.autoSyncJoinInfoName) {
-                if (property.joinInfo.type === "SingleColumn") {
-                    property.joinInfo.columnName = nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy)
-                } else if (property.joinInfo.type === "MultiColumn") {
-                    // TODO
-                } else if (property.joinInfo.type === "SingleColumnMidTable") {
-                    property.joinInfo.sourceColumnName = nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy)
-                } else if (property.joinInfo.type === "MultiColumnMidTable") {
-                    // TODO
-                }
+                syncPropertyJoinInfo(property, entity)
             }
         }
     }
@@ -548,15 +541,7 @@ export const useModelEditorHistory = (
                 property.idViewName = property.name + "Id"
             }
             if ("autoSyncJoinInfoName" in property && property.autoSyncJoinInfoName) {
-                if (property.joinInfo.type === "SingleColumn") {
-                    property.joinInfo.columnName = nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy)
-                } else if (property.joinInfo.type === "MultiColumn") {
-                    // TODO
-                } else if (property.joinInfo.type === "SingleColumnMidTable") {
-                    property.joinInfo.sourceColumnName = nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy)
-                } else if (property.joinInfo.type === "MultiColumnMidTable") {
-                    // TODO
-                }
+                syncPropertyFkJoinInfo(property)
             }
         }
     }
