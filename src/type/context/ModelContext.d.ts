@@ -9,18 +9,20 @@ type ModelContextData = {
 }
 
 type EntityInheritInfo = {
-    allExtends: Set<MappedSuperClassWithCategorizedProperties>,
-    allProperties: Property[],
-    allCategorizedProperties: EntityCategorizedProperties,
+    allExtends: Set<MappedSuperClassWithProperties>
+    allProperties: Property[]
 }
-type EntityWithInheritInfo = EntityWithCategorizedProperties & EntityInheritInfo
+type EntityWithInheritInfo = Omit<EntityWithCategorizedProperties, 'properties'> & {
+    properties: Property[]
+} & EntityInheritInfo
 
 type MappedSuperClassInheritInfo = {
-    allExtends: Set<MappedSuperClassWithCategorizedProperties>,
+    allExtends: Set<MappedSuperClassWithProperties>,
     allProperties: Property[],
-    allCategorizedProperties: CategorizedProperties,
 }
-type MappedSuperClassWithInheritInfo = MappedSuperClassWithCategorizedProperties & MappedSuperClassInheritInfo
+type MappedSuperClassWithInheritInfo = Omit<MappedSuperClassWithCategorizedProperties, 'properties'> & {
+    properties: Property[]
+} & MappedSuperClassInheritInfo
 
 type EmbeddableTypeOverrideProperties = {
     overrideColumnNameProperties: EmbeddableTypeProperty[],
@@ -28,14 +30,22 @@ type EmbeddableTypeOverrideProperties = {
 }
 type EmbeddableTypeWithOverrideProperties = EmbeddableTypeWithCategorizedProperties & EmbeddableTypeOverrideProperties
 
+type GroupInheritInfoMap = {
+    entityMap: Map<string, EntityWithInheritInfo>
+    mappedSuperClassMap: Map<string, MappedSuperClassWithInheritInfo>
+    embeddableTypeMap: Map<string, EmbeddableTypeWithProperties>
+    enumerationMap: Map<string, Enumeration>
+}
+type GroupWithInheritInfoMap = Group & GroupInheritInfoMap
+
 type ModelContext = {
     model: Model
-    groupMap: Map<string, GroupWithSubMaps>
+    groupMap: Map<string, GroupWithInheritInfoMap>
     entityMap: Map<string, EntityWithInheritInfo>
     mappedSuperClassMap: Map<string, MappedSuperClassWithInheritInfo>
     embeddableTypeMap: Map<string, EmbeddableTypeWithOverrideProperties>
     enumerationMap: Map<string, Enumeration>
-    associationMap: Map<string, Association>
+    associationMap: Map<string, AssociationWithInheritInfo>
 
     createId: (type: "Model" | "Entity" | "Property" | "MappedSuperClass" | "EmbeddableType" | "Enumeration" | "EnumerationItem" | "Association" | "Group") => string
     nameTool: NameTool

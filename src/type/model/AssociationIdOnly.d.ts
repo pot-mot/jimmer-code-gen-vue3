@@ -1,7 +1,9 @@
 type OneToOneAssociationIdOnly = {
     id: string
     name: string
+    useNameTemplate: boolean
     comment: string
+    useCommentTemplate: boolean
     type: 'OneToOne'
     sourceEntityId: string
     referencedEntityId: string
@@ -12,8 +14,8 @@ type OneToOneAssociationIdOnly = {
 
 type OneToOneAbstractAssociationIdOnly = {
     id: string
-    name: string
-    comment: string
+    nameTemplate: string
+    commentTemplate: string
     type: 'OneToOne_Abstract'
     sourceAbstractEntityId: string
     referencedEntityId: string
@@ -25,7 +27,9 @@ type OneToOneAbstractAssociationIdOnly = {
 type ManyToOneAssociationIdOnly = {
     id: string
     name: string
+    useNameTemplate: boolean
     comment: string
+    useCommentTemplate: boolean
     type: 'ManyToOne'
     sourceEntityId: string
     referencedEntityId: string
@@ -36,8 +40,8 @@ type ManyToOneAssociationIdOnly = {
 
 type ManyToOneAbstractAssociationIdOnly = {
     id: string
-    name: string
-    comment: string
+    nameTemplate: string
+    commentTemplate: string
     type: 'ManyToOne_Abstract'
     sourceAbstractEntityId: string
     referencedEntityId: string
@@ -49,7 +53,9 @@ type ManyToOneAbstractAssociationIdOnly = {
 type ManyToManyAssociationIdOnly = {
     id: string
     name: string
+    useNameTemplate: boolean
     comment: string
+    useCommentTemplate: boolean
     type: 'ManyToMany'
     sourceEntityId: string
     referencedEntityId: string

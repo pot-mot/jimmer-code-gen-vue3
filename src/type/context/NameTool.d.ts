@@ -2,14 +2,15 @@ type NameTool = {
     firstCaseToLower(name: string): string
     firstCaseToUpper(name: string): string
 
-    splitUpperCamel(name: string): string[]
-    splitLowerCamel(name: string): string[]
+    splitCamel(name: string): string[]
     splitSnake(name: string): string[]
     splitKebab(name: string): string[]
-    toCamel(parts: string[]): string
-    toPascal(parts: string[]): string
-    toSnake(parts: string[]): string
-    toKebab(parts: string[]): string
+    toUpperCamel(parts: string[]): string
+    toLowerCamel(parts: string[]): string
+    toUpperSnake(parts: string[]): string
+    toLowerSnake(parts: string[]): string
+    toUpperKebab(parts: string[]): string
+    toLowerKebab(parts: string[]): string
 
     convert(
         name: string,

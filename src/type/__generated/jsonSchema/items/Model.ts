@@ -53,10 +53,12 @@ const ModelJsonSchema: JSONSchemaType<Model> = {
         },
         "NameStrategy": {
             "enum": [
-                "KEBAB",
                 "LOWER_CAMEL",
-                "SNAKE",
-                "UPPER_CAMEL"
+                "LOWER_KEBAB",
+                "LOWER_SNAKE",
+                "UPPER_CAMEL",
+                "UPPER_KEBAB",
+                "UPPER_SNAKE"
             ],
             "type": "string"
         },

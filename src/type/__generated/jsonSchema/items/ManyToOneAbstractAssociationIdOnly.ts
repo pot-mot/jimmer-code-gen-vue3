@@ -7,10 +7,10 @@ const ManyToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToOneAbst
         "id": {
             "type": "string"
         },
-        "name": {
+        "nameTemplate": {
             "type": "string"
         },
-        "comment": {
+        "commentTemplate": {
             "type": "string"
         },
         "type": {
@@ -34,11 +34,11 @@ const ManyToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToOneAbst
         }
     },
     "required": [
-        "comment",
+        "commentTemplate",
         "foreignKeyType",
         "id",
         "mappedProperty",
-        "name",
+        "nameTemplate",
         "referencedEntityId",
         "sourceAbstractEntityId",
         "sourcePropertyId",

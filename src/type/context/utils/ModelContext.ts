@@ -3,19 +3,20 @@ import {
     categorizeEmbeddableTypeProperties, categorizeEntityProperties,
 } from "@/type/context/utils/CategorizedProperties.ts";
 import {
-    type AllExtendsResult, buildInheritorsMap,
-    getEntityAllExtends,
-    getEntityAllProperties, getMappedSuperClassAllInheritors
+    type AllExtendsInfo,
+    buildInheritorsMap,
+    getAllExtends,
+    getAllInheritors, getAllProperties
 } from "@/type/context/utils/EntityExtends.ts";
 import {getGroupSubMaps} from "@/type/context/utils/GroupSubDataMap.ts";
 import {overrideEmbeddableTypePropertiesColumnNames} from "@/type/context/utils/EmbeddableTypeOverride.ts";
 import {getAssociationWithInheritInfo} from "@/type/context/utils/AssociationWithInheritInfo.ts";
 import {
-    getAbstractMappedProperties,
-    getEntityMappedPropertyInfo
+    getAbstractMappedPropertyInfo,
+    getMappedPropertyInfo
 } from "@/type/context/utils/MappedPropertyInfo.ts";
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
-import {idOnlyToAssociation} from "@/type/context/utils/AssociationIdOnly.ts";
+import {idOnlyToAssociation} from "@/type/context/utils/AssociationIdOnlyToAssociation.ts";
 import {nameTool} from "@/type/context/utils/NameTool.ts";
 import {buildTypeTool} from "@/type/context/utils/TypeTool.ts";
 import {createId} from "@/modelEditor/useModelEditor.ts";
@@ -30,62 +31,29 @@ export const contextDataToContext = (
     const contextData = cloneDeepReadonlyRaw<ModelContextData>(readonlyContextData)
     const model = contextData.model
 
-    const associationMap = new Map<string, Association>()
+    const associationIdOnlyMap = new Map<string, AssociationIdOnly>()
     for (const [id, {association}] of contextData.associationMap) {
-        associationMap.set(id, idOnlyToAssociation(association, contextData.entityMap, contextData.mappedSuperClassMap))
+        associationIdOnlyMap.set(id, association)
     }
 
-    const inheritorsMap = buildInheritorsMap(contextData.entityMap, contextData.mappedSuperClassMap)
-    for (const entity of contextData.entityMap.values()) {
-        const mappedProperties = getEntityMappedPropertyInfo(entity.properties, associationMap)
-        for (const {mappedProperty, referencedEntity} of mappedProperties) {
-            referencedEntity.properties.push(mappedProperty)
-        }
-    }
-    for (const mappedSuperClass of contextData.mappedSuperClassMap.values()) {
-        const inheritors = getMappedSuperClassAllInheritors(mappedSuperClass, inheritorsMap)
-        const mappedProperties = getAbstractMappedProperties(mappedSuperClass.properties, associationMap)
-        for (const {association: abstractAssociation, mappedProperty, referencedEntity} of mappedProperties) {
-            if (abstractAssociation.type === "OneToOne_Abstract" && mappedProperty.category === "OneToOne_Mapped_Abstract") {
-                for (const inheritEntity of inheritors.entities) {
-                    const {
-                        association: realAssociation,
-                        property: realProperty,
-                    } = oneToOneAbstractToReal(abstractAssociation, mappedProperty, inheritEntity)
-                    referencedEntity.properties.push(realProperty)
-                    associationMap.set(realAssociation.id, realAssociation)
-                }
-            } else if (abstractAssociation.type === "ManyToOne_Abstract" && mappedProperty.category === "OneToMany_Abstract") {
-                for (const inheritEntity of inheritors.entities) {
-                    const {
-                        association: realAssociation,
-                        property: realProperty,
-                    } = oneToManyAbstractToReal(abstractAssociation, mappedProperty, inheritEntity)
-                    referencedEntity.properties.push(realProperty)
-                    associationMap.set(realAssociation.id, realAssociation)
-                }
-            }
-        }
-    }
-
-    const entityBaseInfoMap = new Map<string, EntityWithCategorizedProperties>()
+    const entityWithCategorizedPropertiesMap = new Map<string, EntityWithCategorizedProperties>()
     for (const [id, entity] of contextData.entityMap) {
-        const categorizedProperties = categorizeEntityProperties(entity.properties, associationMap)
+        const categorizedProperties = categorizeEntityProperties(entity.properties, associationIdOnlyMap)
         const entityWithCategorizedProperties: EntityWithCategorizedProperties = {
             ...entity,
             ...categorizedProperties,
         }
-        entityBaseInfoMap.set(id, entityWithCategorizedProperties)
+        entityWithCategorizedPropertiesMap.set(id, entityWithCategorizedProperties)
     }
 
-    const mappedSuperClassBaseInfoMap = new Map<string, MappedSuperClassWithCategorizedProperties>()
+    const mappedSuperClassWithCategorizedPropertiesMap = new Map<string, MappedSuperClassWithCategorizedProperties>()
     for (const [id, mappedSuperClass] of contextData.mappedSuperClassMap) {
-        const categorizedProperties = categorizeAbstractCategorizedProperties(mappedSuperClass.properties, associationMap)
+        const categorizedProperties = categorizeAbstractCategorizedProperties(mappedSuperClass.properties, associationIdOnlyMap)
         const mappedSuperClassWithCategorizedProperties: MappedSuperClassWithCategorizedProperties = {
             ...mappedSuperClass,
             ...categorizedProperties,
         }
-        mappedSuperClassBaseInfoMap.set(id, mappedSuperClassWithCategorizedProperties)
+        mappedSuperClassWithCategorizedPropertiesMap.set(id, mappedSuperClassWithCategorizedProperties)
     }
 
     const embeddableTypeBaseInfoMap = new Map<string, EmbeddableTypeWithCategorizedProperties>()
@@ -102,39 +70,117 @@ export const contextDataToContext = (
     for (const [id, enumeration] of contextData.enumerationMap) {
         enumerationMap.set(id, enumeration)
     }
-    const associationWithInheritMap = new Map<string, AssociationWithInheritInfo>()
-    for (const [id, association] of associationMap) {
-        const associationWithInheritInfo: AssociationWithInheritInfo = getAssociationWithInheritInfo(association, entityBaseInfoMap, mappedSuperClassBaseInfoMap)
-        associationWithInheritMap.set(id, associationWithInheritInfo)
-    }
 
-    // 解析继承关系
-    const superClassAllExtendsResultMap = new Map<string, AllExtendsResult<MappedSuperClassWithCategorizedProperties>>()
+    // 解析实体继承关系
+    const allExtendsCacheMap = new Map<string, AllExtendsInfo<MappedSuperClassWithCategorizedProperties>>()
 
-    const mappedSuperClassMap = new Map<string, MappedSuperClassWithInheritInfo>()
-    for (const [id, mappedSuperClass] of mappedSuperClassBaseInfoMap) {
-        const allExtends = getEntityAllExtends(mappedSuperClass, mappedSuperClassBaseInfoMap, superClassAllExtendsResultMap)
-        const allProperties = getEntityAllProperties(mappedSuperClass, mappedSuperClassBaseInfoMap, allExtends)
-        const allCategorizedProperties = categorizeAbstractCategorizedProperties(allProperties, associationMap)
-        mappedSuperClassMap.set(id, {
+    const mappedSuperClassWithInheritInfoMap = new Map<string, MappedSuperClassWithInheritInfo>()
+    for (const [id, mappedSuperClass] of mappedSuperClassWithCategorizedPropertiesMap) {
+        const allExtends = getAllExtends(mappedSuperClass, mappedSuperClassWithCategorizedPropertiesMap, allExtendsCacheMap)
+        const allProperties = getAllProperties(mappedSuperClass, mappedSuperClassWithCategorizedPropertiesMap, allExtends)
+        mappedSuperClassWithInheritInfoMap.set(id, {
             ...mappedSuperClass,
             allExtends,
             allProperties,
-            allCategorizedProperties,
         })
     }
 
-    const entityMap = new Map<string, EntityWithInheritInfo>()
-    for (const [id, entity] of entityBaseInfoMap) {
-        const allExtends = getEntityAllExtends(entity, mappedSuperClassBaseInfoMap, superClassAllExtendsResultMap)
-        const allProperties = getEntityAllProperties(entity, mappedSuperClassBaseInfoMap, allExtends)
-        const allCategorizedProperties = categorizeEntityProperties(allProperties, associationMap)
-        entityMap.set(id, {
+    const entityWithInheritInfoMap = new Map<string, EntityWithInheritInfo>()
+    for (const [id, entity] of entityWithCategorizedPropertiesMap) {
+        const allExtends = getAllExtends(entity, mappedSuperClassWithCategorizedPropertiesMap, allExtendsCacheMap)
+        const allProperties = getAllProperties(entity, mappedSuperClassWithCategorizedPropertiesMap, allExtends)
+        entityWithInheritInfoMap.set(id, {
             ...entity,
             allExtends,
             allProperties,
-            allCategorizedProperties,
         })
+    }
+
+    // 将 MappedProperty 移动回实体中
+    const inheritorsMap = buildInheritorsMap(entityWithInheritInfoMap, mappedSuperClassWithInheritInfoMap)
+
+    for (const entity of entityWithInheritInfoMap.values()) {
+        const mappedInfos = getMappedPropertyInfo(entity.properties, associationIdOnlyMap)
+        for (const {association, mappedProperty} of mappedInfos) {
+            const referencedEntity = entityWithInheritInfoMap.get(association.referencedEntityId)
+            if (!referencedEntity) throw new Error(`[${mappedProperty.referencedEntityId}] not existed`)
+            referencedEntity.properties.push(mappedProperty)
+            referencedEntity.allProperties.push(mappedProperty)
+            if (mappedProperty.category === "OneToOne_Mapped" && association.type === "OneToOne") {
+                referencedEntity.oneToOneMappedPropertyMap.set(mappedProperty.id, {...mappedProperty, association})
+            } else if (mappedProperty.category === "OneToMany" && association.type === "ManyToOne") {
+                referencedEntity.oneToManyPropertyMap.set(mappedProperty.id, {...mappedProperty, association})
+            } else if (mappedProperty.category === "ManyToMany_Mapped" && association.type === "ManyToMany") {
+                referencedEntity.manyToManyMappedPropertyMap.set(mappedProperty.id, {...mappedProperty, association})
+            }
+        }
+    }
+
+    for (const mappedSuperClass of mappedSuperClassWithInheritInfoMap.values()) {
+        const inheritors = getAllInheritors(mappedSuperClass.id, inheritorsMap)
+        const mappedProperties = getAbstractMappedPropertyInfo(mappedSuperClass.properties, associationIdOnlyMap)
+        for (const {
+            association: abstractAssociation,
+            sourceProperty: abstractSourceProperty,
+            mappedProperty: abstractMappedProperty,
+        } of mappedProperties) {
+            const referencedEntity = entityWithInheritInfoMap.get(abstractAssociation.referencedEntityId)
+            if (!referencedEntity) throw new Error(`[${abstractAssociation.referencedEntityId}] not existed`)
+
+            if (
+                abstractAssociation.type === "OneToOne_Abstract" &&
+                abstractSourceProperty.category === "OneToOne_Source" &&
+                abstractMappedProperty.category === "OneToOne_Mapped_Abstract"
+            ) {
+                for (const inheritEntity of inheritors.entities) {
+                    const {
+                        association: realAssociation,
+                        sourceProperty: realSourceProperty,
+                        mappedProperty: realMappedProperty,
+                    } = oneToOneAbstractToReal({
+                        association: abstractAssociation,
+                        sourceProperty: abstractSourceProperty,
+                        mappedProperty: abstractMappedProperty,
+                    }, inheritEntity)
+                    associationIdOnlyMap.set(realAssociation.id, realAssociation)
+                    for (let i = 0; i < inheritEntity.allProperties.length; i++) {
+                        if (inheritEntity.allProperties[i].id === abstractSourceProperty.id) {
+                            inheritEntity.allProperties[i] = realSourceProperty
+                            break
+                        }
+                    }
+                    referencedEntity.properties.push(realMappedProperty)
+                    referencedEntity.allProperties.push(realMappedProperty)
+                    referencedEntity.oneToOneMappedPropertyMap.set(realMappedProperty.id, {...realMappedProperty, association: realAssociation})
+                }
+            } else if (
+                abstractAssociation.type === "ManyToOne_Abstract" &&
+                abstractSourceProperty.category === "ManyToOne" &&
+                abstractMappedProperty.category === "OneToMany_Abstract"
+            ) {
+                for (const inheritEntity of inheritors.entities) {
+                    const {
+                        association: realAssociation,
+                        sourceProperty: realSourceProperty,
+                        mappedProperty: realMappedProperty,
+                    } = oneToManyAbstractToReal({
+                        association: abstractAssociation,
+                        sourceProperty: abstractSourceProperty,
+                        mappedProperty: abstractMappedProperty,
+                    }, inheritEntity)
+                    associationIdOnlyMap.set(realAssociation.id, realAssociation)
+                    for (let i = 0; i < inheritEntity.allProperties.length; i++) {
+                        if (inheritEntity.allProperties[i].id === abstractSourceProperty.id) {
+                            inheritEntity.allProperties[i] = realSourceProperty
+                            break
+                        }
+                    }
+                    referencedEntity.properties.push(realMappedProperty)
+                    referencedEntity.allProperties.push(realMappedProperty)
+                    referencedEntity.oneToManyPropertyMap.set(realMappedProperty.id, {...realMappedProperty, association: realAssociation})
+                }
+            }
+        }
     }
 
     // 解析内嵌类展平属性
@@ -148,24 +194,41 @@ export const contextDataToContext = (
         })
     }
 
-    const groupMap = new Map<string, GroupWithSubMaps>()
+    // 填充关联对应实体的继承信息
+    const associationMap = new Map<string, Association>()
+    for (const [id, association] of associationIdOnlyMap) {
+        const realAssociation = idOnlyToAssociation(association, entityWithInheritInfoMap, mappedSuperClassWithInheritInfoMap)
+        associationMap.set(id, realAssociation)
+    }
+
+    const associationWithInheritMap = new Map<string, AssociationWithInheritInfo>()
+    for (const [id, association] of associationMap) {
+        const associationWithInheritInfo: AssociationWithInheritInfo = getAssociationWithInheritInfo(
+            association,
+            entityWithInheritInfoMap,
+            mappedSuperClassWithInheritInfoMap
+        )
+        associationWithInheritMap.set(id, associationWithInheritInfo)
+    }
+
+    // 设置属性的子节点信息
+    const groupWithInheritInfoMap = new Map<string, GroupWithInheritInfoMap>()
 
     for (const [id, group] of contextData.groupMap) {
-        const subData: GroupWithSubMaps = {
+        groupWithInheritInfoMap.set(id, {
             ...group,
-            ...getGroupSubMaps(id, {entityMap, enumerationMap, mappedSuperClassMap, embeddableTypeMap}),
-        }
-        groupMap.set(id, subData)
+            ...getGroupSubMaps(id, {entityMap: entityWithInheritInfoMap, enumerationMap, mappedSuperClassMap: mappedSuperClassWithInheritInfoMap, embeddableTypeMap}),
+        })
     }
 
     return {
         model,
-        groupMap,
-        entityMap,
-        mappedSuperClassMap,
+        groupMap: groupWithInheritInfoMap,
+        entityMap: entityWithInheritInfoMap,
+        mappedSuperClassMap: mappedSuperClassWithInheritInfoMap,
         embeddableTypeMap,
         enumerationMap,
-        associationMap,
+        associationMap: associationWithInheritMap,
 
         createId,
         nameTool,

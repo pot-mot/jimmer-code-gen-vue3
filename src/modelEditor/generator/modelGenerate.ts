@@ -9,11 +9,17 @@ export const modelGenerate = (
 ): Record<string, string> => {
     const files: Record<string, string> = {}
     const mergeIntoFiles = (newFiles: Record<string, string>) => {
-        for (const fileName in newFiles) {
-            if (files[fileName]) {
-                throw new Error(`File ${fileName} already exists`)
+        for (const filePath in newFiles) {
+            if (files[filePath]) {
+                let index = 1
+                let newName = `${filePath}(${index})`
+                while (files[newName]) {
+                    index++
+                    newName = `${filePath}(${index})`
+                }
+                files[newName] = newFiles[filePath]
             } else {
-                files[fileName] = newFiles[fileName]
+                files[filePath] = newFiles[filePath]
             }
         }
     }
@@ -28,7 +34,7 @@ export const modelGenerate = (
 
     if (selectedIds.entityIds) {
         const entities = getArrayFromMap(context.entityMap, selectedIds.entityIds)
-        const {tables, midTables} = entityToTable(entities, context)
+        const {tables, midTables} = entityToTable(entities, Array.from(context.entityMap.values()), context)
         const allTables = [...tables, ...midTables]
 
         for (const {script} of scriptInfos.filter(it => it.type === "TableGenerator")) {

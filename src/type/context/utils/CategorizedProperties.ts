@@ -9,15 +9,15 @@ const defaultEntityCategorizedProperties = (): Omit<EntityCategorizedProperties,
         scalarEnumPropertyMap: new Map<string, ScalarEnumProperty>(),
         scalarEmbeddablePropertyMap: new Map<string, ScalarEmbeddableProperty>(),
 
-        oneToOneSourcePropertyMap: new Map<string, OneToOneSourceProperty & { association: OneToOneAssociation }>(),
-        oneToOneMappedPropertyMap: new Map<string, OneToOneMappedProperty & { association: OneToOneAssociation }>(),
-        manyToOnePropertyMap: new Map<string, ManyToOneProperty & { association: ManyToOneAssociation }>(),
-        oneToManyPropertyMap: new Map<string, OneToManyProperty & { association: ManyToOneAssociation }>(),
+        oneToOneSourcePropertyMap: new Map<string, OneToOneSourceProperty & { association: OneToOneAssociationIdOnly }>(),
+        oneToOneMappedPropertyMap: new Map<string, OneToOneMappedProperty & { association: OneToOneAssociationIdOnly }>(),
+        manyToOnePropertyMap: new Map<string, ManyToOneProperty & { association: ManyToOneAssociationIdOnly }>(),
+        oneToManyPropertyMap: new Map<string, OneToManyProperty & { association: ManyToOneAssociationIdOnly }>(),
         manyToManySourcePropertyMap: new Map<string, ManyToManySourceProperty & {
-            association: ManyToManyAssociation
+            association: ManyToManyAssociationIdOnly
         }>(),
         manyToManyMappedPropertyMap: new Map<string, ManyToManyMappedProperty & {
-            association: ManyToManyAssociation
+            association: ManyToManyAssociationIdOnly
         }>(),
 
         manyToManyViewPropertyMap: new Map<string, ManyToManyViewProperty>(),
@@ -41,9 +41,9 @@ const defaultAbstractCategorizedProperties = (): AbstractCategorizedProperties =
         scalarEmbeddablePropertyMap: new Map<string, ScalarEmbeddableProperty>(),
 
         oneToOneSourcePropertyMap: new Map<string, OneToOneSourceProperty & {
-            association: OneToOneAbstractAssociation
+            association: OneToOneAbstractAssociationIdOnly
         }>(),
-        manyToOnePropertyMap: new Map<string, ManyToOneProperty & { association: ManyToOneAbstractAssociation }>(),
+        manyToOnePropertyMap: new Map<string, ManyToOneProperty & { association: ManyToOneAbstractAssociationIdOnly }>(),
 
         manyToManyViewPropertyMap: new Map<string, ManyToManyViewProperty>(),
 
@@ -63,7 +63,7 @@ const defaultCategorizedEmbeddableTypeProperties = (): CategorizedEmbeddableType
 
 export const categorizeEntityProperties = (
     properties: ReadonlyArray<Property>,
-    associationMap: ReadonlyMap<string, Readonly<Association>>,
+    associationMap: ReadonlyMap<string, Readonly<AssociationIdOnly>>,
 ): EntityCategorizedProperties => {
     const result = defaultEntityCategorizedProperties()
     let idProperty: IdCommonProperty | IdEmbeddableProperty | undefined
@@ -119,48 +119,48 @@ export const categorizeEntityProperties = (
                 throw new Error(`Duplicate oneToOneSourceProperty id (${property.id}): ${property.name}, ${result.oneToOneSourcePropertyMap.get(property.id)?.name}`)
             }
             const association = associationMap.get(property.associationId)
-            if (association === undefined) throw new Error(`association (${property.associationId}) not found`)
-            if (association.type !== "OneToOne") throw new Error(`association ${association.name}(${association.id}) is not OneToOne`)
+            if (association === undefined) throw new Error(`[${property.associationId}] not found`)
+            if (association.type !== "OneToOne") throw new Error(`[${association.id}] is not OneToOne`)
             result.oneToOneSourcePropertyMap.set(property.id, {...property, association})
         } else if (property.category === "OneToOne_Mapped") {
             if (result.oneToOneMappedPropertyMap.has(property.id)) {
                 throw new Error(`Duplicate oneToOneTargetProperty id (${property.id}): ${property.name}, ${result.oneToOneMappedPropertyMap.get(property.id)?.name}`)
             }
             const association = associationMap.get(property.associationId)
-            if (association === undefined) throw new Error(`association (${property.associationId}) not found`)
-            if (association.type !== "OneToOne") throw new Error(`association ${association.name}(${association.id}) is not OneToOne`)
+            if (association === undefined) throw new Error(`[${property.associationId}] not found`)
+            if (association.type !== "OneToOne") throw new Error(`[${association.id}] is not OneToOne`)
             result.oneToOneMappedPropertyMap.set(property.id, {...property, association})
         } else if (property.category === "ManyToOne") {
             if (result.manyToOnePropertyMap.has(property.id)) {
                 throw new Error(`Duplicate manyToOneProperty id (${property.id}): ${property.name}, ${result.manyToOnePropertyMap.get(property.id)?.name}`)
             }
             const association = associationMap.get(property.associationId)
-            if (association === undefined) throw new Error(`association (${property.associationId}) not found`)
-            if (association.type !== "ManyToOne") throw new Error(`association ${association.name}(${association.id}) is not ManyToOne`)
+            if (association === undefined) throw new Error(`[${property.associationId}] not found`)
+            if (association.type !== "ManyToOne") throw new Error(`[${association.id}] is not ManyToOne`)
             result.manyToOnePropertyMap.set(property.id, {...property, association})
         } else if (property.category === "OneToMany") {
             if (result.oneToManyPropertyMap.has(property.id)) {
                 throw new Error(`Duplicate oneToManyProperty id (${property.id}): ${property.name}, ${result.oneToManyPropertyMap.get(property.id)?.name}`)
             }
             const association = associationMap.get(property.associationId)
-            if (association === undefined) throw new Error(`association (${property.associationId}) not found`)
-            if (association.type !== "ManyToOne") throw new Error(`association ${association.name}(${association.id}) is not ManyToOne`)
+            if (association === undefined) throw new Error(`[${property.associationId}] not found`)
+            if (association.type !== "ManyToOne") throw new Error(`[${association.id}] is not ManyToOne`)
             result.oneToManyPropertyMap.set(property.id, {...property, association})
         } else if (property.category === "ManyToMany_Source") {
             if (result.manyToManySourcePropertyMap.has(property.id)) {
                 throw new Error(`Duplicate manyToManySourceProperty id (${property.id}): ${property.name}, ${result.manyToManySourcePropertyMap.get(property.id)?.name}`)
             }
             const association = associationMap.get(property.associationId)
-            if (association === undefined) throw new Error(`association (${property.associationId}) not found`)
-            if (association.type !== "ManyToMany") throw new Error(`association ${association.name}(${association.id}) is not ManyToMany`)
+            if (association === undefined) throw new Error(`[${property.associationId}] not found`)
+            if (association.type !== "ManyToMany") throw new Error(`[${association.id}] is not ManyToMany`)
             result.manyToManySourcePropertyMap.set(property.id, {...property, association})
         } else if (property.category === "ManyToMany_Mapped") {
             if (result.manyToManyMappedPropertyMap.has(property.id)) {
                 throw new Error(`Duplicate manyToManyTargetProperty id (${property.id}): ${property.name}, ${result.manyToManyMappedPropertyMap.get(property.id)?.name}`)
             }
             const association = associationMap.get(property.associationId)
-            if (association === undefined) throw new Error(`association (${property.associationId}) not found`)
-            if (association.type !== "ManyToMany") throw new Error(`association ${association.name}(${association.id}) is not ManyToMany`)
+            if (association === undefined) throw new Error(`[${property.associationId}] not found`)
+            if (association.type !== "ManyToMany") throw new Error(`[${association.id}] is not ManyToMany`)
             result.manyToManyMappedPropertyMap.set(property.id, {...property, association})
         }
 
@@ -195,7 +195,7 @@ export const categorizeEntityProperties = (
 
 export const categorizeAbstractCategorizedProperties = (
     properties: ReadonlyArray<Property>,
-    associationMap: ReadonlyMap<string, Readonly<Association>>,
+    associationMap: ReadonlyMap<string, AssociationIdOnly>,
 ): AbstractCategorizedProperties => {
     const result = defaultAbstractCategorizedProperties()
 
@@ -250,16 +250,16 @@ export const categorizeAbstractCategorizedProperties = (
                 throw new Error(`Duplicate oneToOneSourceProperty id (${property.id}): ${property.name}, ${result.oneToOneSourcePropertyMap.get(property.id)?.name}`)
             }
             const association = associationMap.get(property.associationId)
-            if (association === undefined) throw new Error(`association (${property.associationId}) not found`)
-            if (association.type !== "OneToOne_Abstract") throw new Error(`association ${association.name}(${association.id}) is not OneToOne`)
+            if (association === undefined) throw new Error(`[${property.associationId}] not found`)
+            if (association.type !== "OneToOne_Abstract") throw new Error(`[${association.id}] is not OneToOne`)
             result.oneToOneSourcePropertyMap.set(property.id, {...property, association})
         } else if (property.category === "ManyToOne") {
             if (result.manyToOnePropertyMap.has(property.id)) {
                 throw new Error(`Duplicate manyToOneProperty id (${property.id}): ${property.name}, ${result.manyToOnePropertyMap.get(property.id)?.name}`)
             }
             const association = associationMap.get(property.associationId)
-            if (association === undefined) throw new Error(`association (${property.associationId}) not found`)
-            if (association.type !== "ManyToOne_Abstract") throw new Error(`association ${association.name}(${association.id}) is not ManyToOne`)
+            if (association === undefined) throw new Error(`[${property.associationId}] not found`)
+            if (association.type !== "ManyToOne_Abstract") throw new Error(`[${association.id}] is not ManyToOne`)
             result.manyToOnePropertyMap.set(property.id, {...property, association})
         }
 

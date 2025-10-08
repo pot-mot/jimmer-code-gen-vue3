@@ -3,10 +3,12 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
 const NameStrategyJsonSchema: JSONSchemaType<NameStrategy> = {
     "enum": [
-        "KEBAB",
         "LOWER_CAMEL",
-        "SNAKE",
-        "UPPER_CAMEL"
+        "LOWER_KEBAB",
+        "LOWER_SNAKE",
+        "UPPER_CAMEL",
+        "UPPER_KEBAB",
+        "UPPER_SNAKE"
     ],
     "type": "string",
     "$schema": "http://json-schema.org/draft-07/schema#"

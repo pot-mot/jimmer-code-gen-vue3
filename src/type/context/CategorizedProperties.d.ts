@@ -33,12 +33,12 @@ type EntityCategorizedProperties = {
     scalarEnumPropertyMap: Map<string, ScalarEnumProperty>
     scalarEmbeddablePropertyMap: Map<string, ScalarEmbeddableProperty>
 
-    oneToOneSourcePropertyMap: Map<string, OneToOneSourceProperty & {association: OneToOneAssociation}>
-    oneToOneMappedPropertyMap: Map<string, OneToOneMappedProperty & {association: OneToOneAssociation}>
-    manyToOnePropertyMap: Map<string, ManyToOneProperty & {association: ManyToOneAssociation}>
-    oneToManyPropertyMap: Map<string, OneToManyProperty & {association: ManyToOneAssociation}>
-    manyToManySourcePropertyMap: Map<string, ManyToManySourceProperty & {association: ManyToManyAssociation}>
-    manyToManyMappedPropertyMap: Map<string, ManyToManyMappedProperty & {association: ManyToManyAssociation}>
+    oneToOneSourcePropertyMap: Map<string, OneToOneSourceProperty & {association: OneToOneAssociationIdOnly}>
+    oneToOneMappedPropertyMap: Map<string, OneToOneMappedProperty & {association: OneToOneAssociationIdOnly}>
+    manyToOnePropertyMap: Map<string, ManyToOneProperty & {association: ManyToOneAssociationIdOnly}>
+    oneToManyPropertyMap: Map<string, OneToManyProperty & {association: ManyToOneAssociationIdOnly}>
+    manyToManySourcePropertyMap: Map<string, ManyToManySourceProperty & {association: ManyToManyAssociationIdOnly}>
+    manyToManyMappedPropertyMap: Map<string, ManyToManyMappedProperty & {association: ManyToManyAssociationIdOnly}>
 
     manyToManyViewPropertyMap: Map<string, ManyToManyViewProperty>
 
@@ -63,8 +63,8 @@ type AbstractCategorizedProperties = Omit<EntityCategorizedProperties,
     | "manyToManyMappedPropertyMap"
 > & {
     idProperty?: IdCommonProperty | IdEmbeddableProperty
-    oneToOneSourcePropertyMap: Map<string, OneToOneSourceProperty & {association: OneToOneAbstractAssociation}>
-    manyToOnePropertyMap: Map<string, ManyToOneProperty & {association: ManyToOneAbstractAssociation}>
+    oneToOneSourcePropertyMap: Map<string, OneToOneSourceProperty & {association: OneToOneAbstractAssociationIdOnly}>
+    manyToOnePropertyMap: Map<string, ManyToOneProperty & {association: ManyToOneAbstractAssociationIdOnly}>
 }
 
 type MappedSuperClassWithCategorizedProperties = MappedSuperClassWithProperties & AbstractCategorizedProperties

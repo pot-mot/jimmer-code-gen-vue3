@@ -9,8 +9,7 @@ const scriptInfo: ScriptInfo<"TableGenerator"> = {
     databaseType: "POSTGRESQL",
     jvmLanguage: "ANY",
     script: {
-        code: `
-(
+        code: `(
     tables: DeepReadonly<Table[]>,
     context: DeepReadonly<ModelContext>,
 ) => {

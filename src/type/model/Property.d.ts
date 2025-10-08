@@ -102,6 +102,7 @@ type OneToOneSourceProperty = {
     category: "OneToOne_Source"
     typeIsList: false
     joinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo | SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
+    autoSyncJoinInfoName: boolean
     onDissociateAction: OnDissociationAction
 } & BaseProperty & BaseAssociationProperty
 
@@ -121,6 +122,7 @@ type ManyToOneProperty = {
     category: "ManyToOne"
     typeIsList: false
     joinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo | SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
+    autoSyncJoinInfoName: boolean
     onDissociateAction: OnDissociationAction
 } & BaseProperty & BaseAssociationProperty
 
@@ -140,6 +142,7 @@ type ManyToManySourceProperty = {
     category: "ManyToMany_Source"
     typeIsList: true
     joinInfo: SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
+    autoSyncJoinInfoName: boolean
     nullable: false
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
 
@@ -190,11 +193,8 @@ type EntityProperty =
     | ScalarEnumProperty
     | ScalarEmbeddableProperty
     | OneToOneSourceProperty
-    | OneToOneMappedProperty
     | ManyToOneProperty
-    | OneToManyProperty
     | ManyToManySourceProperty
-    | ManyToManyMappedProperty
     | ManyToManyViewProperty
     | GetterFormulaProperty
     | SqlFormulaProperty

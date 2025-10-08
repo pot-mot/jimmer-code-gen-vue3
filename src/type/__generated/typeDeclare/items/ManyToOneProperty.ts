@@ -4,6 +4,7 @@ export default Object.freeze({
     category: "ManyToOne"
     typeIsList: false
     joinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo | SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
+    autoSyncJoinInfoName: boolean
     onDissociateAction: OnDissociationAction
 } & BaseProperty & BaseAssociationProperty`,
 })

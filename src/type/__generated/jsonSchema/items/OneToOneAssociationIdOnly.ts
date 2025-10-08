@@ -10,8 +10,14 @@ const OneToOneAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAssociationIdO
         "name": {
             "type": "string"
         },
+        "useNameTemplate": {
+            "type": "boolean"
+        },
         "comment": {
             "type": "string"
+        },
+        "useCommentTemplate": {
+            "type": "boolean"
         },
         "type": {
             "type": "string",
@@ -42,7 +48,9 @@ const OneToOneAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAssociationIdO
         "referencedEntityId",
         "sourceEntityId",
         "sourcePropertyId",
-        "type"
+        "type",
+        "useCommentTemplate",
+        "useNameTemplate"
     ],
     "definitions": {
         "OneToOneMappedProperty": {

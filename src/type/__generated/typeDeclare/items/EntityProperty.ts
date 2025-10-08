@@ -8,11 +8,8 @@ export default Object.freeze({
     | ScalarEnumProperty
     | ScalarEmbeddableProperty
     | OneToOneSourceProperty
-    | OneToOneMappedProperty
     | ManyToOneProperty
-    | OneToManyProperty
     | ManyToManySourceProperty
-    | ManyToManyMappedProperty
     | ManyToManyViewProperty
     | GetterFormulaProperty
     | SqlFormulaProperty

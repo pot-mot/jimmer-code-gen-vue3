@@ -41,8 +41,10 @@ import ForeignKeyDeclare from "./items/ForeignKey.ts";
 import ForeignKeyTypeDeclare from "./items/ForeignKeyType.ts";
 import GetterFormulaPropertyDeclare from "./items/GetterFormulaProperty.ts";
 import GroupDeclare from "./items/Group.ts";
+import GroupInheritInfoMapDeclare from "./items/GroupInheritInfoMap.ts";
 import GroupSubDataDeclare from "./items/GroupSubData.ts";
 import GroupSubMapsDeclare from "./items/GroupSubMaps.ts";
+import GroupWithInheritInfoMapDeclare from "./items/GroupWithInheritInfoMap.ts";
 import GroupWithSubMapsDeclare from "./items/GroupWithSubMaps.ts";
 import IdCommonPropertyDeclare from "./items/IdCommonProperty.ts";
 import IdEmbeddablePropertyDeclare from "./items/IdEmbeddableProperty.ts";
@@ -153,8 +155,10 @@ export type TypeMap = {
     ForeignKeyType: ForeignKeyType
     GetterFormulaProperty: GetterFormulaProperty
     Group: Group
+    GroupInheritInfoMap: GroupInheritInfoMap
     GroupSubData: GroupSubData
     GroupSubMaps: GroupSubMaps
+    GroupWithInheritInfoMap: GroupWithInheritInfoMap
     GroupWithSubMaps: GroupWithSubMaps
     IdCommonProperty: IdCommonProperty
     IdEmbeddableProperty: IdEmbeddableProperty
@@ -269,8 +273,10 @@ export const typeDeclares = Object.freeze({
     ForeignKeyType: ForeignKeyTypeDeclare,
     GetterFormulaProperty: GetterFormulaPropertyDeclare,
     Group: GroupDeclare,
+    GroupInheritInfoMap: GroupInheritInfoMapDeclare,
     GroupSubData: GroupSubDataDeclare,
     GroupSubMaps: GroupSubMapsDeclare,
+    GroupWithInheritInfoMap: GroupWithInheritInfoMapDeclare,
     GroupWithSubMaps: GroupWithSubMapsDeclare,
     IdCommonProperty: IdCommonPropertyDeclare,
     IdEmbeddableProperty: IdEmbeddablePropertyDeclare,

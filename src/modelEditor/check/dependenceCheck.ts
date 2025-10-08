@@ -115,9 +115,9 @@ export const getPropertyDependencies = (
 
             if ("mappedById" in property) {
                 const sourcePropertyIds = []
-                for (const {id} of referencedEntity.allCategorizedProperties.oneToOneSourcePropertyMap.values()) sourcePropertyIds.push(id)
-                for (const {id} of referencedEntity.allCategorizedProperties.oneToOneMappedPropertyMap.values()) sourcePropertyIds.push(id)
-                for (const {id} of referencedEntity.allCategorizedProperties.manyToOnePropertyMap.values()) sourcePropertyIds.push(id)
+                for (const {id} of referencedEntity.allProperties.filter(it => it.category === 'OneToOne_Source')) sourcePropertyIds.push(id)
+                for (const {id} of referencedEntity.allProperties.filter(it => it.category === 'OneToOne_Mapped')) sourcePropertyIds.push(id)
+                for (const {id} of referencedEntity.allProperties.filter(it => it.category === 'ManyToOne')) sourcePropertyIds.push(id)
 
                 if (!sourcePropertyIds.includes(property.mappedById)) {
                     missingDependencies.push({
@@ -192,8 +192,8 @@ export const getPropertyDependencies = (
     }
 
     if ("baseToManyPropertyId" in property) {
-        const baseToManyProperty = entity.allCategorizedProperties.associationPropertyMap.get(property.baseToManyPropertyId)
-        if (!baseToManyProperty) {
+        const baseToManyProperty = entity.allProperties.find(it => it.id === property.baseToManyPropertyId)
+        if (!baseToManyProperty || !("referencedEntityId" in baseToManyProperty)) {
             missingDependencies.push({
                 path: ['baseToManyPropertyId'],
                 dependenceIds: {propertyIds: [{entityId: entity.id, id: property.baseToManyPropertyId}]}
@@ -203,7 +203,6 @@ export const getPropertyDependencies = (
                 path: ['baseToManyPropertyId'],
                 dependenceIds: {propertyIds: [{entityId: entity.id, id: property.baseToManyPropertyId}]}
             })
-
             if (!context.entityMap.has(baseToManyProperty.referencedEntityId)) {
                 missingDependencies.push({
                     path: ['entityId'],
@@ -270,7 +269,7 @@ export const getMappedSuperClassDependencies = (
 
     const mappedSuperClassWithInheritInfo = context.mappedSuperClassMap.get(mappedSuperClass.id)
     if (!mappedSuperClassWithInheritInfo) {
-        throw new Error(`MappedSuperClass [${mappedSuperClass.id}] not existed`)
+        throw new Error(`[${mappedSuperClass.id}] not existed`)
     }
 
     if (context.groupMap.has(mappedSuperClass.groupId)) {
@@ -309,7 +308,7 @@ export const getEntityDependencies = (
 
     const entityWithInheritInfo = context.entityMap.get(entity.id)
     if (!entityWithInheritInfo) {
-        throw new Error(`Entity [${entity.id}] not existed`)
+        throw new Error(`[${entity.id}] not existed`)
     }
 
     if (context.groupMap.has(entity.groupId)) {

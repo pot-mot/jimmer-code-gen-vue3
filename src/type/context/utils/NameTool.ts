@@ -4,12 +4,34 @@ export const nameTool: NameTool = {
     firstCaseToLower,
     firstCaseToUpper,
 
-    splitUpperCamel: (name: string): string[] => {
-        return name.match(/[A-Z]?[a-z]+|[A-Z]+(?=[A-Z][a-z]|$)/g) ?? []
-    },
+    splitCamel: (name: string): string[] => {
+        const parts: string[] = []
+        let currentPart: string[] = []
 
-    splitLowerCamel: (name: string): string[] => {
-        return name.match(/[A-Z][a-z]+|[A-Z]+(?=[A-Z][a-z]|$)/g) ?? []
+
+        for (let i = 0; i < name.length; i++) {
+            const char = name[i]
+            // 检查是否为大写字母
+            if (char >= 'A' && char <= 'Z') {
+                // 如果当前部分不为空且最后一个字符是小写字母，或者当前部分末尾是大写但下一个字符是小写
+                if (currentPart.length > 0 &&
+                    ((currentPart[currentPart.length - 1] >= 'a' && currentPart[currentPart.length - 1] <= 'z') ||
+                        (i + 1 < name.length && name[i + 1] >= 'a' && name[i + 1] <= 'z'))) {
+                    parts.push(currentPart.join(''))
+                    currentPart = [char]
+                } else {
+                    currentPart.push(char)
+                }
+            } else {
+                currentPart.push(char)
+            }
+        }
+
+        if (currentPart.length > 0) {
+            parts.push(currentPart.join(''))
+        }
+
+        return parts;
     },
 
     splitSnake: (name: string): string[] => {
@@ -20,24 +42,29 @@ export const nameTool: NameTool = {
         return name.split('-')
     },
 
-    toCamel(parts: string[]): string {
+    toUpperCamel(parts: string[]): string {
+        return parts.map(part =>
+            part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+        ).join('')
+    },
+    toLowerCamel(parts: string[]): string {
         if (parts.length === 0) return ''
         return parts[0].toLowerCase() + parts.slice(1).map(part =>
             part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
         ).join('')
     },
 
-    toPascal(parts: string[]): string {
-        return parts.map(part =>
-            part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
-        ).join('')
+    toUpperSnake(parts: string[]): string {
+        return parts.map(part => part.toUpperCase()).join('_')
     },
-
-    toSnake(parts: string[]): string {
+    toLowerSnake(parts: string[]): string {
         return parts.map(part => part.toLowerCase()).join('_')
     },
 
-    toKebab(parts: string[]): string {
+    toUpperKebab(parts: string[]): string {
+        return parts.map(part => part.toUpperCase()).join('-')
+    },
+    toLowerKebab(parts: string[]): string {
         return parts.map(part => part.toLowerCase()).join('-')
     },
 
@@ -45,28 +72,32 @@ export const nameTool: NameTool = {
         let parts: string[]
         switch (currentStrategy) {
             case 'UPPER_CAMEL':
-                parts = nameTool.splitUpperCamel(name)
-                break
             case 'LOWER_CAMEL':
-                parts = nameTool.splitLowerCamel(name)
+                parts = nameTool.splitCamel(name)
                 break
-            case 'SNAKE':
+            case 'UPPER_SNAKE':
+            case 'LOWER_SNAKE':
                 parts = nameTool.splitSnake(name)
                 break
-            case 'KEBAB':
+            case 'UPPER_KEBAB':
+            case 'LOWER_KEBAB':
                 parts = nameTool.splitKebab(name)
                 break
         }
 
         switch (resultStrategy) {
             case 'UPPER_CAMEL':
-                return nameTool.toCamel(parts)
+                return nameTool.toUpperCamel(parts)
             case 'LOWER_CAMEL':
-                return nameTool.toPascal(parts)
-            case 'SNAKE':
-                return nameTool.toSnake(parts)
-            case 'KEBAB':
-                return nameTool.toKebab(parts)
+                return nameTool.toLowerCamel(parts)
+            case 'UPPER_SNAKE':
+                return nameTool.toUpperSnake(parts)
+            case 'LOWER_SNAKE':
+                return nameTool.toLowerSnake(parts)
+            case 'UPPER_KEBAB':
+                return nameTool.toUpperKebab(parts)
+            case 'LOWER_KEBAB':
+                return nameTool.toLowerKebab(parts)
         }
     }
 }

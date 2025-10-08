@@ -75,11 +75,15 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                         }
                     ]
                 },
+                "autoSyncJoinInfoName": {
+                    "type": "boolean"
+                },
                 "onDissociateAction": {
                     "$ref": "#/definitions/OnDissociationAction"
                 }
             },
             "required": [
+                "autoSyncJoinInfoName",
                 "category",
                 "joinInfo",
                 "onDissociateAction",

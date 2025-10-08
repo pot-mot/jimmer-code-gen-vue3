@@ -193,7 +193,7 @@ export const useModelEditorHistory = (
     const addGroupWatcher = (id: string) => {
         const contextData = getContextData()
 
-        if (groupWatchStopMap.has(id)) throw new Error(`Group [${id}] is already watched`)
+        if (groupWatchStopMap.has(id)) throw new Error(`[${id}] is already watched`)
 
         groupOldMap.set(id, cloneDeepReadonlyRaw(contextData.groupMap.get(id)))
         const debounceSyncGroupUpdate = debounce((newGroup: Group | undefined) => {
@@ -218,7 +218,7 @@ export const useModelEditorHistory = (
     }
     const removeGroupWatcher = (id: string) => {
         const watchStop = groupWatchStopMap.get(id)
-        if (!watchStop) throw new Error(`Group [${id}] is not watched`)
+        if (!watchStop) throw new Error(`[${id}] is not watched`)
 
         watchStop()
         groupWatchStopMap.delete(id)
@@ -228,8 +228,8 @@ export const useModelEditorHistory = (
         const id = options.group.id
         const contextData = getContextData()
 
-        if (contextData.groupMap.has(id)) throw new Error(`Group [${id}] is already existed`)
-        if (groupWatchStopMap.has(id)) throw new Error(`Group [${id}] is already watched`)
+        if (contextData.groupMap.has(id)) throw new Error(`[${id}] is already existed`)
+        if (groupWatchStopMap.has(id)) throw new Error(`[${id}] is already watched`)
         if (menuMap.value.has(id)) throw new Error(`Menu item [${id}] is already existed in menuMap`)
 
         const group = cloneDeepReadonlyRaw(options.group)
@@ -270,14 +270,14 @@ export const useModelEditorHistory = (
         const contextData = getContextData()
 
         const oldGroup = cloneDeepReadonlyRaw(contextData.groupMap.get(id))
-        if (!oldGroup) throw new Error(`Group [${id}] is not existed`)
+        if (!oldGroup) throw new Error(`[${id}] is not existed`)
         const menuItem = menuMap.value.get(id)
-        if (!menuItem) throw new Error(`Group [${id}] is not existed in menuMap`)
+        if (!menuItem) throw new Error(`[${id}] is not existed in menuMap`)
 
-        if (menuItem.entityMap.size > 0) throw new Error(`Group [${id}] has entities, can't remove`)
-        if (menuItem.mappedSuperClassMap.size > 0) throw new Error(`Group [${id}] has mapped super classes, can't remove`)
-        if (menuItem.embeddableTypeMap.size > 0) throw new Error(`Group [${id}] has embeddable types, can't remove`)
-        if (menuItem.enumerationMap.size > 0) throw new Error(`Group [${id}] has enumerations, can't remove`)
+        if (menuItem.entityMap.size > 0) throw new Error(`[${id}] has entities, can't remove`)
+        if (menuItem.mappedSuperClassMap.size > 0) throw new Error(`[${id}] has mapped super classes, can't remove`)
+        if (menuItem.embeddableTypeMap.size > 0) throw new Error(`[${id}] has embeddable types, can't remove`)
+        if (menuItem.enumerationMap.size > 0) throw new Error(`[${id}] has enumerations, can't remove`)
 
         deleteColorVar(id)
         removeGroupWatcher(id)
@@ -291,11 +291,11 @@ export const useModelEditorHistory = (
         const contextData = getContextData()
 
         const oldGroup = groupOldMap.get(id)
-        if (!oldGroup) throw new Error(`Group [${id}] is not existed`)
+        if (!oldGroup) throw new Error(`[${id}] is not existed`)
         const menuItem = menuMap.value.get(id)
-        if (!menuItem) throw new Error(`Group [${id}] is not existed in menuMap`)
+        if (!menuItem) throw new Error(`[${id}] is not existed in menuMap`)
         const watchStop = groupWatchStopMap.get(id)
-        if (!watchStop) throw new Error(`Group [${id}] is not watched`)
+        if (!watchStop) throw new Error(`[${id}] is not watched`)
 
         const group = cloneDeepReadonlyRaw(options.group)
 
@@ -321,7 +321,7 @@ export const useModelEditorHistory = (
     const addEntityWatcher = (id: string) => {
         const contextData = getContextData()
 
-        if (entityWatchStopMap.has(id)) throw new Error(`Entity [${id}] is already watched`)
+        if (entityWatchStopMap.has(id)) throw new Error(`[${id}] is already watched`)
 
         entityOldMap.set(id, cloneDeepReadonlyRaw(contextData.entityMap.get(id)))
         const debounceSyncEntityUpdate = debounce((newEntity: EntityWithProperties | undefined) => {
@@ -356,10 +356,42 @@ export const useModelEditorHistory = (
     }
     const removeEntityWatcher = (id: string) => {
         const watchStop = entityWatchStopMap.get(id)
-        if (!watchStop) throw new Error(`Entity [${id}] is not watched`)
+        if (!watchStop) throw new Error(`[${id}] is not watched`)
 
         watchStop()
         entityWatchStopMap.delete(id)
+    }
+
+    const syncEntityName = (
+        entity: EntityWithProperties,
+        databaseNameStrategy: NameStrategy
+    ) => {
+        if (entity.autoSyncTableName) {
+            entity.tableName = nameTool.convert(entity.name, "UPPER_CAMEL", databaseNameStrategy)
+        }
+        for (const property of entity.properties) {
+            if ("autoSyncColumnName" in property && property.autoSyncColumnName) {
+                property.columnInfo.name = nameTool.convert(property.name, "UPPER_CAMEL", databaseNameStrategy)
+            }
+            if ("autoSyncIdViewName" in property && property.autoSyncIdViewName) {
+                if (property.typeIsList) {
+                    property.idViewName = property.name.endsWith("List") ? property.name.substring(0, property.name.length - 4) + "Ids" : property.name + "Ids"
+                } else {
+                    property.idViewName = property.name + "Id"
+                }
+            }
+            if ("autoSyncJoinInfoName" in property && property.autoSyncJoinInfoName) {
+                if (property.joinInfo.type === "SingleColumn") {
+                    property.joinInfo.columnName = nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy)
+                } else if (property.joinInfo.type === "MultiColumn") {
+                    // TODO
+                } else if (property.joinInfo.type === "SingleColumnMidTable") {
+                    property.joinInfo.sourceColumnName = nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy)
+                } else if (property.joinInfo.type === "MultiColumnMidTable") {
+                    // TODO
+                }
+            }
+        }
     }
 
     const addEntity = (options: DeepReadonly<{ entity: EntityWithProperties; position: XYPosition }>) => {
@@ -368,15 +400,16 @@ export const useModelEditorHistory = (
         const contextData = getContextData()
         const vueFlow = getVueFlow()
 
-        if (contextData.entityMap.has(id)) throw new Error(`Entity [${id}] is already existed`)
-        if (entityWatchStopMap.has(id)) throw new Error(`Entity [${id}] is already watched`)
+        if (contextData.entityMap.has(id)) throw new Error(`[${id}] is already existed`)
+        if (entityWatchStopMap.has(id)) throw new Error(`[${id}] is already watched`)
 
-        if (!contextData.groupMap.has(groupId)) throw new Error(`Group [${groupId}] is not existed`)
+        if (!contextData.groupMap.has(groupId)) throw new Error(`[${groupId}] is not existed`)
         const menuItem = menuMap.value.get(groupId)
-        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
-        if (menuItem.entityMap.has(id)) throw new Error(`Entity [${id}] is already existed in group [${groupId}]`)
+        if (!menuItem) throw new Error(`[${groupId}] is not existed in menuMap`)
+        if (menuItem.entityMap.has(id)) throw new Error(`[${id}] is already existed in [${groupId}]`)
 
         const entity = cloneDeepReadonlyRaw<EntityWithProperties>(options.entity)
+        syncEntityName(entity, contextData.model.databaseNameStrategy)
         contextData.entityMap.set(id, entity)
         addEntityWatcher(id)
         menuItem.entityMap.set(id, entity)
@@ -394,14 +427,14 @@ export const useModelEditorHistory = (
         const vueFlow = getVueFlow()
 
         const entity = cloneDeepReadonlyRaw(contextData.entityMap.get(id))
-        if (!entity) throw new Error(`Entity [${id}] is not existed`)
+        if (!entity) throw new Error(`[${id}] is not existed`)
         const entityNode = vueFlow.findNode(id)
-        if (!entityNode) throw new Error(`Entity [${id}] is not existed`)
+        if (!entityNode) throw new Error(`[${id}] is not existed`)
 
         const groupId = entity.groupId
         const menuItem = menuMap.value.get(groupId)
-        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
-        if (!menuItem.entityMap.has(id)) throw new Error(`Entity [${id}] is not existed in group [${groupId}]`)
+        if (!menuItem) throw new Error(`[${groupId}] is not existed in menuMap`)
+        if (!menuItem.entityMap.has(id)) throw new Error(`[${id}] is not existed in [${groupId}]`)
 
         removeEntityWatcher(id)
         entityOldMap.delete(id)
@@ -416,38 +449,26 @@ export const useModelEditorHistory = (
         const vueFlow = getVueFlow()
 
         const oldEntity = entityOldMap.get(id)
-        if (!oldEntity) throw new Error(`Entity [${id}] is not existed`)
+        if (!oldEntity) throw new Error(`[${id}] is not existed`)
 
         const oldGroupId = oldEntity.groupId
         const node = vueFlow.findNode(id)
-        if (!node) throw new Error(`Entity [${id}] is not existed`)
-        if (!contextData.groupMap.has(oldGroupId)) throw new Error(`Group [${oldGroupId}] is not existed`)
+        if (!node) throw new Error(`[${id}] is not existed`)
+        if (!contextData.groupMap.has(oldGroupId)) throw new Error(`[${oldGroupId}] is not existed`)
         const menuItem = menuMap.value.get(oldGroupId)
-        if (!menuItem) throw new Error(`Group [${oldGroupId}] is not existed in menuMap`)
-        if (!menuItem.entityMap.has(id)) throw new Error(`Entity [${id}] is not existed in group [${oldGroupId}]`)
+        if (!menuItem) throw new Error(`[${oldGroupId}] is not existed in menuMap`)
+        if (!menuItem.entityMap.has(id)) throw new Error(`[${id}] is not existed in [${oldGroupId}]`)
 
         const entity = cloneDeepReadonlyRaw<EntityWithProperties>(options.entity)
 
         removeEntityWatcher(id)
-        if (entity.name !== oldEntity.name) {
-            if (entity.autoSyncTableName) {
-                entity.tableName = nameTool.convert(entity.name, "UPPER_CAMEL", contextData.model.databaseNameStrategy)
-            }
-        }
-        for (const property of entity.properties) {
-            if ("autoSyncColumnName" in property && property.autoSyncColumnName) {
-                property.columnInfo.name = nameTool.convert(property.name, "UPPER_CAMEL", contextData.model.databaseNameStrategy)
-            }
-            if ("autoSyncIdViewName" in property && property.autoSyncIdViewName) {
-                property.idViewName = property.name + (property.typeIsList ? "Ids" : "Id")
-            }
-        }
+        syncEntityName(entity, contextData.model.databaseNameStrategy)
         contextData.entityMap.set(id, entity)
         const newGroupId = entity.groupId
         if (oldGroupId !== newGroupId) {
             const newMenuItem = menuMap.value.get(newGroupId)
-            if (!newMenuItem) throw new Error(`Group [${newGroupId}] is not existed in menuMap`)
-            if (newMenuItem.entityMap.has(id)) throw new Error(`Entity [${id}] is existed in group [${newGroupId}]`)
+            if (!newMenuItem) throw new Error(`[${newGroupId}] is not existed in menuMap`)
+            if (newMenuItem.entityMap.has(id)) throw new Error(`[${id}] is existed in [${newGroupId}]`)
             menuItem.entityMap.delete(id)
             newMenuItem.entityMap.set(id, entity)
         } else {
@@ -474,7 +495,7 @@ export const useModelEditorHistory = (
     const addMappedSuperClassWatcher = (id: string) => {
         const contextData = getContextData()
 
-        if (mappedSuperClassWatchStopMap.has(id)) throw new Error(`MappedSuperClass [${id}] is already watched`)
+        if (mappedSuperClassWatchStopMap.has(id)) throw new Error(`[${id}] is already watched`)
 
         mappedSuperClassOldMap.set(id, cloneDeepReadonlyRaw(contextData.mappedSuperClassMap.get(id)))
         const debounceSyncMappedSuperClassUpdate = debounce((newMappedSuperClass: MappedSuperClassWithProperties | undefined) => {
@@ -509,10 +530,35 @@ export const useModelEditorHistory = (
     }
     const removeMappedSuperClassWatcher = (id: string) => {
         const watchStop = mappedSuperClassWatchStopMap.get(id)
-        if (!watchStop) throw new Error(`MappedSuperClass [${id}] is not watched`)
+        if (!watchStop) throw new Error(`[${id}] is not watched`)
 
         watchStop()
         mappedSuperClassWatchStopMap.delete(id)
+    }
+
+    const syncMappedSuperClassName = (
+        mappedSuperClass: MappedSuperClassWithProperties,
+        databaseNameStrategy: NameStrategy
+    ) => {
+        for (const property of mappedSuperClass.properties) {
+            if ("autoSyncColumnName" in property && property.autoSyncColumnName) {
+                property.columnInfo.name = nameTool.convert(property.name, "UPPER_CAMEL", databaseNameStrategy)
+            }
+            if ("autoSyncIdViewName" in property && property.autoSyncIdViewName) {
+                property.idViewName = property.name + "Id"
+            }
+            if ("autoSyncJoinInfoName" in property && property.autoSyncJoinInfoName) {
+                if (property.joinInfo.type === "SingleColumn") {
+                    property.joinInfo.columnName = nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy)
+                } else if (property.joinInfo.type === "MultiColumn") {
+                    // TODO
+                } else if (property.joinInfo.type === "SingleColumnMidTable") {
+                    property.joinInfo.sourceColumnName = nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy)
+                } else if (property.joinInfo.type === "MultiColumnMidTable") {
+                    // TODO
+                }
+            }
+        }
     }
 
     const addMappedSuperClass = (options: DeepReadonly<{
@@ -524,15 +570,16 @@ export const useModelEditorHistory = (
         const contextData = getContextData()
         const vueFlow = getVueFlow()
 
-        if (contextData.mappedSuperClassMap.has(id)) throw new Error(`MappedSuperClass [${id}] is already existed`)
-        if (mappedSuperClassWatchStopMap.has(id)) throw new Error(`MappedSuperClass [${id}] is already watched`)
+        if (contextData.mappedSuperClassMap.has(id)) throw new Error(`[${id}] is already existed`)
+        if (mappedSuperClassWatchStopMap.has(id)) throw new Error(`[${id}] is already watched`)
 
-        if (!contextData.groupMap.has(groupId)) throw new Error(`Group [${groupId}] is not existed`)
+        if (!contextData.groupMap.has(groupId)) throw new Error(`[${groupId}] is not existed`)
         const menuItem = menuMap.value.get(groupId)
-        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
-        if (menuItem.mappedSuperClassMap.has(id)) throw new Error(`MappedSuperClass [${id}] is already existed in group [${groupId}]`)
+        if (!menuItem) throw new Error(`[${groupId}] is not existed in menuMap`)
+        if (menuItem.mappedSuperClassMap.has(id)) throw new Error(`[${id}] is already existed in [${groupId}]`)
 
         const mappedSuperClass = cloneDeepReadonlyRaw<MappedSuperClassWithProperties>(options.mappedSuperClass)
+        syncMappedSuperClassName(mappedSuperClass, contextData.model.databaseNameStrategy)
         contextData.mappedSuperClassMap.set(id, mappedSuperClass)
         addMappedSuperClassWatcher(id)
         menuItem.mappedSuperClassMap.set(id, mappedSuperClass)
@@ -550,14 +597,14 @@ export const useModelEditorHistory = (
         const vueFlow = getVueFlow()
 
         const mappedSuperClass = cloneDeepReadonlyRaw(contextData.mappedSuperClassMap.get(id))
-        if (!mappedSuperClass) throw new Error(`MappedSuperClass [${id}] is not existed`)
+        if (!mappedSuperClass) throw new Error(`[${id}] is not existed`)
         const mappedSuperClassNode = vueFlow.findNode(id)
-        if (!mappedSuperClassNode) throw new Error(`MappedSuperClass [${id}] is not existed`)
+        if (!mappedSuperClassNode) throw new Error(`[${id}] is not existed`)
 
         const groupId = mappedSuperClass.groupId
         const menuItem = menuMap.value.get(groupId)
-        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
-        if (!menuItem.mappedSuperClassMap.has(id)) throw new Error(`MappedSuperClass [${id}] is not existed in group [${groupId}]`)
+        if (!menuItem) throw new Error(`[${groupId}] is not existed in menuMap`)
+        if (!menuItem.mappedSuperClassMap.has(id)) throw new Error(`[${id}] is not existed in [${groupId}]`)
 
         removeMappedSuperClassWatcher(id)
         mappedSuperClassOldMap.delete(id)
@@ -572,33 +619,26 @@ export const useModelEditorHistory = (
         const vueFlow = getVueFlow()
 
         const oldMappedSuperClass = mappedSuperClassOldMap.get(id)
-        if (!oldMappedSuperClass) throw new Error(`MappedSuperClass [${id}] is not existed`)
+        if (!oldMappedSuperClass) throw new Error(`[${id}] is not existed`)
 
         const oldGroupId = oldMappedSuperClass.groupId
         const existingMappedSuperClassNode = vueFlow.findNode(id)
-        if (!existingMappedSuperClassNode) throw new Error(`MappedSuperClass [${id}] is not existed`)
-        if (!contextData.groupMap.has(oldGroupId)) throw new Error(`Group [${oldGroupId}] is not existed`)
+        if (!existingMappedSuperClassNode) throw new Error(`[${id}] is not existed`)
+        if (!contextData.groupMap.has(oldGroupId)) throw new Error(`[${oldGroupId}] is not existed`)
         const menuItem = menuMap.value.get(oldGroupId)
-        if (!menuItem) throw new Error(`Group [${oldGroupId}] is not existed in menuMap`)
-        if (!menuItem.mappedSuperClassMap.has(id)) throw new Error(`MappedSuperClass [${id}] is not existed in group [${oldGroupId}]`)
+        if (!menuItem) throw new Error(`[${oldGroupId}] is not existed in menuMap`)
+        if (!menuItem.mappedSuperClassMap.has(id)) throw new Error(`[${id}] is not existed in [${oldGroupId}]`)
 
         const mappedSuperClass = cloneDeepReadonlyRaw<MappedSuperClassWithProperties>(options.mappedSuperClass)
 
         removeMappedSuperClassWatcher(id)
-        for (const property of mappedSuperClass.properties) {
-            if ("autoSyncColumnName" in property && property.autoSyncColumnName) {
-                property.columnInfo.name = nameTool.convert(property.name, "UPPER_CAMEL", contextData.model.databaseNameStrategy)
-            }
-            if ("autoSyncIdViewName" in property && property.autoSyncIdViewName) {
-                property.idViewName = property.name + (property.typeIsList ? "Ids" : "Id")
-            }
-        }
+        syncMappedSuperClassName(mappedSuperClass, contextData.model.databaseNameStrategy)
         contextData.mappedSuperClassMap.set(id, mappedSuperClass)
         const newGroupId = mappedSuperClass.groupId
         if (oldGroupId !== newGroupId) {
             const newMenuItem = menuMap.value.get(newGroupId)
-            if (!newMenuItem) throw new Error(`Group [${newGroupId}] is not existed in menuMap`)
-            if (newMenuItem.mappedSuperClassMap.has(id)) throw new Error(`MappedSuperClass [${id}] is existed in group [${newGroupId}]`)
+            if (!newMenuItem) throw new Error(`[${newGroupId}] is not existed in menuMap`)
+            if (newMenuItem.mappedSuperClassMap.has(id)) throw new Error(`[${id}] is existed in [${newGroupId}]`)
             menuItem.mappedSuperClassMap.delete(id)
             newMenuItem.mappedSuperClassMap.set(id, mappedSuperClass)
         } else {
@@ -625,7 +665,7 @@ export const useModelEditorHistory = (
     const addEmbeddableTypeWatcher = (id: string) => {
         const contextData = getContextData()
 
-        if (embeddableTypeWatchStopMap.has(id)) throw new Error(`EmbeddableType [${id}] is already watched`)
+        if (embeddableTypeWatchStopMap.has(id)) throw new Error(`[${id}] is already watched`)
 
         embeddableTypeOldMap.set(id, cloneDeepReadonlyRaw(contextData.embeddableTypeMap.get(id)))
         const debounceSyncEmbeddableTypeUpdate = debounce((newEmbeddableType: EmbeddableTypeWithProperties | undefined) => {
@@ -650,7 +690,7 @@ export const useModelEditorHistory = (
     }
     const removeEmbeddableTypeWatcher = (id: string) => {
         const stopWatch = embeddableTypeWatchStopMap.get(id)
-        if (!stopWatch) throw new Error(`EmbeddableType [${id}] is not watched`)
+        if (!stopWatch) throw new Error(`[${id}] is not watched`)
 
         stopWatch()
         embeddableTypeWatchStopMap.delete(id)
@@ -665,13 +705,13 @@ export const useModelEditorHistory = (
         const contextData = getContextData()
         const vueFlow = getVueFlow()
 
-        if (contextData.embeddableTypeMap.has(id)) throw new Error(`EmbeddableType [${id}] is already existed`)
-        if (embeddableTypeWatchStopMap.has(id)) throw new Error(`EmbeddableType [${id}] is already watched`)
+        if (contextData.embeddableTypeMap.has(id)) throw new Error(`[${id}] is already existed`)
+        if (embeddableTypeWatchStopMap.has(id)) throw new Error(`[${id}] is already watched`)
 
-        if (!contextData.groupMap.has(groupId)) throw new Error(`Group [${groupId}] is not existed`)
+        if (!contextData.groupMap.has(groupId)) throw new Error(`[${groupId}] is not existed`)
         const menuItem = menuMap.value.get(groupId)
-        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
-        if (menuItem.embeddableTypeMap.has(id)) throw new Error(`EmbeddableType [${id}] is already existed in group [${groupId}]`)
+        if (!menuItem) throw new Error(`[${groupId}] is not existed in menuMap`)
+        if (menuItem.embeddableTypeMap.has(id)) throw new Error(`[${id}] is already existed in [${groupId}]`)
 
         const embeddableTypeWithId = cloneDeepReadonlyRaw<EmbeddableTypeWithProperties>(options.embeddableType)
         contextData.embeddableTypeMap.set(id, embeddableTypeWithId)
@@ -691,14 +731,14 @@ export const useModelEditorHistory = (
         const vueFlow = getVueFlow()
 
         const embeddableType = cloneDeepReadonlyRaw(contextData.embeddableTypeMap.get(id))
-        if (!embeddableType) throw new Error(`EmbeddableType [${id}] is not existed`)
+        if (!embeddableType) throw new Error(`[${id}] is not existed`)
         const embeddableTypeNode = vueFlow.findNode(id)
-        if (!embeddableTypeNode) throw new Error(`EmbeddableType [${id}] is not existed`)
+        if (!embeddableTypeNode) throw new Error(`[${id}] is not existed`)
 
         const groupId = embeddableType.groupId
         const menuItem = menuMap.value.get(groupId)
-        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
-        if (!menuItem.embeddableTypeMap.has(id)) throw new Error(`EmbeddableType [${id}] is not existed in group [${groupId}]`)
+        if (!menuItem) throw new Error(`[${groupId}] is not existed in menuMap`)
+        if (!menuItem.embeddableTypeMap.has(id)) throw new Error(`[${id}] is not existed in [${groupId}]`)
 
         removeEmbeddableTypeWatcher(id)
         embeddableTypeOldMap.delete(id)
@@ -713,15 +753,15 @@ export const useModelEditorHistory = (
         const vueFlow = getVueFlow()
 
         const oldEmbeddableType = embeddableTypeOldMap.get(id)
-        if (!oldEmbeddableType) throw new Error(`EmbeddableType [${id}] is not existed`)
+        if (!oldEmbeddableType) throw new Error(`[${id}] is not existed`)
 
         const oldGroupId = oldEmbeddableType.groupId
         const existingEmbeddableTypeNode = vueFlow.findNode(id)
-        if (!existingEmbeddableTypeNode) throw new Error(`EmbeddableType [${id}] is not existed`)
-        if (!contextData.groupMap.has(oldGroupId)) throw new Error(`Group [${oldGroupId}] is not existed`)
+        if (!existingEmbeddableTypeNode) throw new Error(`[${id}] is not existed`)
+        if (!contextData.groupMap.has(oldGroupId)) throw new Error(`[${oldGroupId}] is not existed`)
         const menuItem = menuMap.value.get(oldGroupId)
-        if (!menuItem) throw new Error(`Group [${oldGroupId}] is not existed in menuMap`)
-        if (!menuItem.embeddableTypeMap.has(id)) throw new Error(`EmbeddableType [${id}] is not existed in group [${oldGroupId}]`)
+        if (!menuItem) throw new Error(`[${oldGroupId}] is not existed in menuMap`)
+        if (!menuItem.embeddableTypeMap.has(id)) throw new Error(`[${id}] is not existed in [${oldGroupId}]`)
 
         const embeddableType = cloneDeepReadonlyRaw<EmbeddableTypeWithProperties>(options.embeddableType)
 
@@ -735,8 +775,8 @@ export const useModelEditorHistory = (
         const newGroupId = embeddableType.groupId
         if (oldGroupId !== newGroupId) {
             const newMenuItem = menuMap.value.get(newGroupId)
-            if (!newMenuItem) throw new Error(`Group [${newGroupId}] is not existed in menuMap`)
-            if (newMenuItem.embeddableTypeMap.has(id)) throw new Error(`EmbeddableType [${id}] is existed in group [${newGroupId}]`)
+            if (!newMenuItem) throw new Error(`[${newGroupId}] is not existed in menuMap`)
+            if (newMenuItem.embeddableTypeMap.has(id)) throw new Error(`[${id}] is existed in [${newGroupId}]`)
             menuItem.embeddableTypeMap.delete(id)
             newMenuItem.embeddableTypeMap.set(id, embeddableType)
         } else {
@@ -763,7 +803,7 @@ export const useModelEditorHistory = (
     const addEnumerationWatcher = (id: string) => {
         const contextData = getContextData()
 
-        if (enumerationWatchStopMap.has(id)) throw new Error(`Enumeration [${id}] is already watched`)
+        if (enumerationWatchStopMap.has(id)) throw new Error(`[${id}] is already watched`)
 
         enumerationOldMap.set(id, cloneDeepReadonlyRaw(contextData.enumerationMap.get(id)))
         const debounceSyncEnumerationUpdate = debounce((newEnumeration: Enumeration | undefined) => {
@@ -787,7 +827,7 @@ export const useModelEditorHistory = (
     }
     const removeEnumerationWatcher = (id: string) => {
         const watchStop = enumerationWatchStopMap.get(id)
-        if (!watchStop) throw new Error(`Enumeration [${id}] is not watched`)
+        if (!watchStop) throw new Error(`[${id}] is not watched`)
 
         watchStop()
         enumerationWatchStopMap.delete(id)
@@ -799,13 +839,13 @@ export const useModelEditorHistory = (
         const contextData = getContextData()
         const vueFlow = getVueFlow()
 
-        if (contextData.enumerationMap.has(id)) throw new Error(`Enumeration [${id}] is already existed`)
-        if (enumerationWatchStopMap.has(id)) throw new Error(`Enumeration [${id}] is already watched`)
+        if (contextData.enumerationMap.has(id)) throw new Error(`[${id}] is already existed`)
+        if (enumerationWatchStopMap.has(id)) throw new Error(`[${id}] is already watched`)
 
-        if (!contextData.groupMap.has(groupId)) throw new Error(`Group [${groupId}] is not existed`)
+        if (!contextData.groupMap.has(groupId)) throw new Error(`[${groupId}] is not existed`)
         const menuItem = menuMap.value.get(groupId)
-        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
-        if (menuItem.enumerationMap.has(id)) throw new Error(`Enumeration [${id}] is already existed in group [${groupId}]`)
+        if (!menuItem) throw new Error(`[${groupId}] is not existed in menuMap`)
+        if (menuItem.enumerationMap.has(id)) throw new Error(`[${id}] is already existed in [${groupId}]`)
 
         const enumeration = cloneDeepReadonlyRaw<Enumeration>(options.enumeration)
         contextData.enumerationMap.set(id, enumeration)
@@ -825,14 +865,14 @@ export const useModelEditorHistory = (
         const vueFlow = getVueFlow()
 
         const enumeration = cloneDeepReadonlyRaw(contextData.enumerationMap.get(id))
-        if (!enumeration) throw new Error(`Enumeration [${id}] is not existed`)
+        if (!enumeration) throw new Error(`[${id}] is not existed`)
         const enumerationNode = vueFlow.findNode(id)
-        if (!enumerationNode) throw new Error(`Enumeration [${id}] is not existed`)
+        if (!enumerationNode) throw new Error(`[${id}] is not existed`)
 
         const groupId = enumeration.groupId
         const menuItem = menuMap.value.get(groupId)
-        if (!menuItem) throw new Error(`Group [${groupId}] is not existed in menuMap`)
-        if (!menuItem.enumerationMap.has(id)) throw new Error(`Enumeration [${id}] is not existed in group [${groupId}]`)
+        if (!menuItem) throw new Error(`[${groupId}] is not existed in menuMap`)
+        if (!menuItem.enumerationMap.has(id)) throw new Error(`[${id}] is not existed in [${groupId}]`)
 
         removeEnumerationWatcher(id)
         enumerationOldMap.delete(id)
@@ -847,15 +887,15 @@ export const useModelEditorHistory = (
         const vueFlow = getVueFlow()
 
         const oldEnumeration = enumerationOldMap.get(id)
-        if (!oldEnumeration) throw new Error(`Enumeration [${id}] is not existed`)
+        if (!oldEnumeration) throw new Error(`[${id}] is not existed`)
 
         const oldGroupId = oldEnumeration.groupId
         const existingEnumerationNode = vueFlow.findNode(id)
-        if (!existingEnumerationNode) throw new Error(`Enumeration [${id}] is not existed`)
-        if (!contextData.groupMap.has(oldGroupId)) throw new Error(`Group [${oldGroupId}] is not existed`)
+        if (!existingEnumerationNode) throw new Error(`[${id}] is not existed`)
+        if (!contextData.groupMap.has(oldGroupId)) throw new Error(`[${oldGroupId}] is not existed`)
         const menuItem = menuMap.value.get(oldGroupId)
-        if (!menuItem) throw new Error(`Group [${oldGroupId}] is not existed in menuMap`)
-        if (!menuItem.enumerationMap.has(id)) throw new Error(`Enumeration [${id}] is not existed in group [${oldGroupId}]`)
+        if (!menuItem) throw new Error(`[${oldGroupId}] is not existed in menuMap`)
+        if (!menuItem.enumerationMap.has(id)) throw new Error(`[${id}] is not existed in [${oldGroupId}]`)
 
         const enumeration = cloneDeepReadonlyRaw<Enumeration>(options.enumeration)
 
@@ -864,8 +904,8 @@ export const useModelEditorHistory = (
         const newGroupId = enumeration.groupId
         if (oldGroupId !== newGroupId) {
             const newMenuItem = menuMap.value.get(newGroupId)
-            if (!newMenuItem) throw new Error(`Group [${newGroupId}] is not existed in menuMap`)
-            if (newMenuItem.enumerationMap.has(id)) throw new Error(`Enumeration [${id}] is existed in group [${newGroupId}]`)
+            if (!newMenuItem) throw new Error(`[${newGroupId}] is not existed in menuMap`)
+            if (newMenuItem.enumerationMap.has(id)) throw new Error(`[${id}] is existed in [${newGroupId}]`)
             menuItem.enumerationMap.delete(id)
             newMenuItem.enumerationMap.set(id, enumeration)
         } else {
@@ -966,25 +1006,27 @@ export const useModelEditorHistory = (
         let sourceHandleId: string | undefined
 
         if ("sourceEntityId" in association) {
+            const sourceEntity = contextData.entityMap.get(association.sourceEntityId)
+            if (!sourceEntity) throw new Error(`[${association.sourceEntityId}] is not existed`)
             sourceNode = vueFlow.findNode(association.sourceEntityId)
             if (!sourceNode) throw new Error(`[${association.sourceEntityId}] is not existed`)
             sourceHandleId = association.sourcePropertyId
             for (const {association} of contextData.associationMap.values()) {
                 if (association.sourcePropertyId === sourceHandleId) {
-                    const sourceProperty =
-                        (sourceNode as EntityNode).data.entity.properties.find(property => property.id === association.sourcePropertyId)
+                    const sourceProperty = sourceEntity.properties.find(property => property.id === association.sourcePropertyId)
                     if (!sourceProperty) throw new Error(`[${association.sourcePropertyId}] is not existed`)
                     throw new Error(`[${sourceProperty.name}] cannot used as source in two association`)
                 }
             }
         } else {
+            const sourceAbstractEntity = contextData.mappedSuperClassMap.get(association.sourceAbstractEntityId)
+            if (!sourceAbstractEntity) throw new Error(`[${association.sourceAbstractEntityId}] is not existed`)
             sourceNode = vueFlow.findNode(association.sourceAbstractEntityId)
             if (!sourceNode) throw new Error(`[${association.sourceAbstractEntityId}] is not existed`)
             sourceHandleId = association.sourcePropertyId
             for (const {association} of contextData.associationMap.values()) {
                 if (association.sourcePropertyId === sourceHandleId) {
-                    const sourceProperty =
-                        (sourceNode as MappedSuperClassNode).data.mappedSuperClass.properties.find(property => property.id === association.sourcePropertyId)
+                    const sourceProperty = sourceAbstractEntity.properties.find(property => property.id === association.sourcePropertyId)
                     if (!sourceProperty) throw new Error(`[${association.sourcePropertyId}] is not existed`)
                     throw new Error(`[${sourceProperty.name}] cannot used as source in two association`)
                 }
@@ -1001,12 +1043,25 @@ export const useModelEditorHistory = (
         vueFlow: VueFlowStore,
     ) => {
         const targetNode = vueFlow.findNode(association.referencedEntityId)
-        if (!targetNode) throw new Error(`Entity [${association.referencedEntityId}] is not existed`)
+        if (!targetNode) throw new Error(`[${association.referencedEntityId}] is not existed`)
         const targetHandleId = association.referencedEntityId
 
         return {
             targetNode,
             targetHandleId,
+        }
+    }
+
+    const syncAssociationName = (
+        association: AssociationIdOnly,
+    ) => {
+        const mappedProperty = association.mappedProperty
+        if ("autoSyncIdViewName" in mappedProperty && mappedProperty.autoSyncIdViewName) {
+            if (mappedProperty.typeIsList) {
+                mappedProperty.idViewName = mappedProperty.name.endsWith("List") ? mappedProperty.name.substring(0, mappedProperty.name.length - 4) + "Ids" : mappedProperty.name + "Ids"
+            } else {
+                mappedProperty.idViewName = mappedProperty.name + "Id"
+            }
         }
     }
 
@@ -1028,6 +1083,7 @@ export const useModelEditorHistory = (
 
         const association = cloneDeepReadonlyRaw<AssociationIdOnly>(options.association)
         const labelPosition = cloneDeepReadonlyRaw<LabelPosition>(options.labelPosition)
+        syncAssociationName(association)
         contextData.associationMap.set(id, {
             association,
             labelPosition,
@@ -1100,6 +1156,7 @@ export const useModelEditorHistory = (
         const association = cloneDeepReadonlyRaw<AssociationIdOnly>(options.association)
         const labelPosition = cloneDeepReadonlyRaw<LabelPosition>(options.labelPosition)
         removeAssociationWatcher(id)
+        syncAssociationName(association)
         contextData.associationMap.set(id, {association, labelPosition})
         addAssociationWatcher(id)
         existedAssociationEdge.data.association = association

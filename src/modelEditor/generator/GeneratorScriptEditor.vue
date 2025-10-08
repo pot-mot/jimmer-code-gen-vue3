@@ -3,7 +3,7 @@ import {createScriptsStore, type ScriptInfo, type ScriptsStore} from "@/modelEdi
 import type {ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
 import TsScriptEditor from "@/components/code/scriptEditor/TsScriptEditor.vue";
 import {createTsScript, TsScriptExecutor} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
-import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {modelGenerate} from "@/modelEditor/generator/modelGenerate.ts";
 import {contextDataToSubIds, subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
@@ -26,7 +26,10 @@ const emits = defineEmits<{
     (e: 'submit', result: ScriptInfo<Name>): void
 }>()
 
-const value = ref(props.scriptInfo.script.code)
+const code = ref(props.scriptInfo.script.code)
+watch(() => props.scriptInfo.script.code, () => {
+    code.value = props.scriptInfo.script.code
+})
 const generateResult = ref<Record<string, string>>()
 const errorMessage = ref()
 
@@ -45,12 +48,12 @@ const receiveError = (error: any) => {
 }
 
 const handleReset = () => {
-    value.value = props.scriptInfo.script.code
+    code.value = props.scriptInfo.script.code
 }
 
 const handleGenerateTest = async () => {
     try {
-        const scriptResult = await createTsScript(props.scriptInfo.type, value.value, executor.value)
+        const scriptResult = await createTsScript(props.scriptInfo.type, code.value, executor.value)
         if (scriptResult.valid) {
             const scriptInfo: ScriptInfo<Name> = {
                 ...props.scriptInfo,
@@ -72,7 +75,7 @@ const handleGenerateTest = async () => {
 
 const handleSubmit = async () => {
     try {
-        const scriptResult = await createTsScript(props.scriptInfo.type, value.value, executor.value)
+        const scriptResult = await createTsScript(props.scriptInfo.type, code.value, executor.value)
         if (scriptResult.valid) {
             const scriptInfo: ScriptInfo<Name> = {
                 ...props.scriptInfo,
@@ -96,7 +99,7 @@ const handleSubmit = async () => {
 
         <TsScriptEditor
             class="script"
-            v-model="value"
+            v-model="code"
             :executor="executor"
         />
 

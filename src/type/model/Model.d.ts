@@ -1,4 +1,4 @@
-type NameStrategy = "UPPER_CAMEL" | "LOWER_CAMEL" | "SNAKE" |  "KEBAB"
+type NameStrategy = "UPPER_CAMEL" | "LOWER_CAMEL" | "UPPER_SNAKE" | "LOWER_SNAKE" | "UPPER_KEBAB" | "LOWER_KEBAB"
 
 type DatabaseType = "MYSQL" | "POSTGRESQL" | "ORACLE" | "SQLSERVER" | "H2" | "SQLITE"
 

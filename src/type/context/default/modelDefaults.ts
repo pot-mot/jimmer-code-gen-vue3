@@ -143,7 +143,7 @@ export const defaultModelContextData = (): ModelContextData => ({
         createdTime: "",
         modifiedTime: "",
         databaseType: "POSTGRESQL",
-        databaseNameStrategy: "SNAKE",
+        databaseNameStrategy: "LOWER_SNAKE",
         jvmLanguage: "KOTLIN",
     },
     entityMap: new Map(),

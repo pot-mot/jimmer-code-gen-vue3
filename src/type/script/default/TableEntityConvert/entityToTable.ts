@@ -1,5 +1,6 @@
 export const entityToTable: EntityToTable = (
     entities: DeepReadonly<EntityWithInheritInfo[]>,
+    allEntities: DeepReadonly<EntityWithInheritInfo[]>,
     context: DeepReadonly<ModelContext>
 ): ReturnType<EntityToTable> => {
 
@@ -222,7 +223,7 @@ export const entityToTable: EntityToTable = (
     const tables: Table[] = []
     const midTables: Table[] = []
 
-    for (const entity of entities) {
+    for (const entity of allEntities) {
         const group = context.groupMap.get(entity.groupId)
         if (!group) throw new Error(`[${entity.groupId}] not found`)
 
@@ -236,10 +237,8 @@ export const entityToTable: EntityToTable = (
         }
         const idColumns = getEntityIdColumns(entity.id)
         table.columns.push(...idColumns)
-        tables.push(table)
-        entityIdTableIdColumnsMap.set(entity.id, idColumns)
-
         entityIdTableMap.set(entity.id, table)
+        entityIdTableIdColumnsMap.set(entity.id, idColumns)
     }
 
     for (const entity of entities) {
@@ -247,6 +246,8 @@ export const entityToTable: EntityToTable = (
         if (!table) throw new Error(`[${entity.id}] not found`)
         const idColumns = entityIdTableIdColumnsMap.get(entity.id)
         if (!idColumns) throw new Error(`[${entity.id}] not found idColumns`)
+
+        tables.push(table)
 
         for (const property of entity.allProperties) {
             // 标量属性
@@ -260,6 +261,9 @@ export const entityToTable: EntityToTable = (
             else if (property.category === "OneToOne_Source" || property.category === "ManyToOne" || property.category === "ManyToMany_Source") {
                 const association = context.associationMap.get(property.associationId)
                 if (!association) throw new Error(`[${property.associationId}] not found`)
+                if (association.type === "OneToOne_Abstract" || association.type === "ManyToOne_Abstract")
+                    throw new Error(`[${property.associationId}] cannot be abstract`)
+
                 const refTable = entityIdTableMap.get(property.referencedEntityId)
                 if (!refTable) throw new Error(`[${property.referencedEntityId}] not found`)
                 const refColumns = entityIdTableIdColumnsMap.get(property.referencedEntityId)

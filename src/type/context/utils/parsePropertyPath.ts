@@ -28,7 +28,7 @@ export const parseEmbeddablePropertyPath = (
 
     let currentProperty = embeddableType.properties.find(it => it.name === propertyPathNames[0])
     if (!currentProperty) {
-        throw new Error(`PropertyPath [${propertyPathNames}] is not a valid association path because Property [${propertyPathNames[0]}] not existed`)
+        throw new Error(`PropertyPath [${propertyPathNames}] is not a valid association path because [${propertyPathNames[0]}] not existed`)
     }
 
     // 遍历除最后一个元素外的所有元素，它们总是 ToOne 关联属性或者 Embeddable 内嵌属性
@@ -39,11 +39,11 @@ export const parseEmbeddablePropertyPath = (
         if ("embeddableTypeId" in currentProperty) {
             const embeddableType = context.embeddableTypeMap.get(currentProperty.embeddableTypeId)
             if (!embeddableType) {
-                throw new Error(`EmbeddableType [${currentProperty.embeddableTypeId}] is not found`)
+                throw new Error(`[${currentProperty.embeddableTypeId}] is not found`)
             }
             const nextProperty = embeddableType.properties.find(it => it.name === nextPropertyName)
             if (!nextProperty) {
-                throw new Error(`Property [${nextPropertyName}] is not found in EmbeddableType [${currentProperty.embeddableTypeId}]`)
+                throw new Error(`[${nextPropertyName}] is not found in [${currentProperty.embeddableTypeId}]`)
             }
             path.push({
                 type: "EmbeddableType",
@@ -52,7 +52,7 @@ export const parseEmbeddablePropertyPath = (
             })
             currentProperty = nextProperty
         } else {
-            throw new Error(`PropertyPath [${propertyPathNames}] is not a valid association path because Property [${propertyPathNames[i]}] is not a EmbeddableProperty`)
+            throw new Error(`PropertyPath [${propertyPathNames}] is not a valid association path because [${propertyPathNames[i]}] is not a EmbeddableProperty`)
         }
     }
 
@@ -60,7 +60,7 @@ export const parseEmbeddablePropertyPath = (
         currentProperty.category !== "SCALAR_COMMON" &&
         currentProperty.category !== "SCALAR_ENUM"
     ) {
-        throw new Error(`PropertyPath [${propertyPathNames}] is not a valid association path because Property [${propertyPathNames[propertyPathNames.length - 1]}] is not a Scalar`)
+        throw new Error(`PropertyPath [${propertyPathNames}] is not a valid association path because [${propertyPathNames[propertyPathNames.length - 1]}] is not a Scalar`)
     } else if (path.length === 0) {
         path.push({
             type: "COMMON",
@@ -84,7 +84,7 @@ export const parsePropertyPath = (
 
     let currentProperty = entity.allProperties.find(it => it.name === propertyPathNames[0])
     if (!currentProperty) {
-        throw new Error(`PropertyPath [${propertyPathNames}] is not a valid association path because Property [${propertyPathNames[0]}] not existed`)
+        throw new Error(`PropertyPath [${propertyPathNames}] is not a valid association path because [${propertyPathNames[0]}] not existed`)
     }
 
     // 遍历除最后一个元素外的所有元素，它们总是 ToOne 关联属性或者 Embeddable 内嵌属性
@@ -100,11 +100,11 @@ export const parsePropertyPath = (
             // 获取下一个实体的属性信息
             const nextEntity = context.entityMap.get(currentProperty.referencedEntityId);
             if (!nextEntity) {
-                throw new Error(`Entity [${currentProperty.referencedEntityId}] is not found`)
+                throw new Error(`[${currentProperty.referencedEntityId}] is not found`)
             }
             const nextProperty = nextEntity.allProperties.find(it => it.name === nextPropertyName)
             if (!nextProperty) {
-                throw new Error(`Property [${nextPropertyName}] is not found in Entity [${currentProperty.referencedEntityId}]`)
+                throw new Error(`[${nextPropertyName}] is not found in [${currentProperty.referencedEntityId}]`)
             }
             path.push({
                 type: "Entity",
@@ -117,11 +117,11 @@ export const parsePropertyPath = (
         else if ("embeddableTypeId" in currentProperty) {
             const embeddableType = context.embeddableTypeMap.get(currentProperty.embeddableTypeId)
             if (!embeddableType) {
-                throw new Error(`EmbeddableType [${currentProperty.embeddableTypeId}] is not found`)
+                throw new Error(`[${currentProperty.embeddableTypeId}] is not found`)
             }
             const nextProperty = embeddableType.properties.find(it => it.name === nextPropertyName)
             if (!nextProperty) {
-                throw new Error(`Property [${nextPropertyName}] is not found in EmbeddableType [${currentProperty.embeddableTypeId}]`)
+                throw new Error(`[${nextPropertyName}] is not found in [${currentProperty.embeddableTypeId}]`)
             }
             path.push({
                 type: "EmbeddableType",
@@ -130,7 +130,7 @@ export const parsePropertyPath = (
             })
             currentProperty = nextProperty
         } else {
-            throw new Error(`PropertyPath [${propertyPathNames}] is not a valid association path because Property [${propertyPathNames[i]}] is not a ToOne ReferenceProperty or EmbeddableProperty`)
+            throw new Error(`PropertyPath [${propertyPathNames}] is not a valid association path because [${propertyPathNames[i]}] is not a ToOne ReferenceProperty or EmbeddableProperty`)
         }
     }
 
@@ -140,7 +140,7 @@ export const parsePropertyPath = (
         currentProperty.category !== "SCALAR_ENUM" &&
         currentProperty.category !== "VERSION"
     ) {
-        throw new Error(`PropertyPath [${propertyPathNames}] is not a valid association path because Property [${propertyPathNames[propertyPathNames.length - 1]}] is not a Scalar or IdProperty`)
+        throw new Error(`PropertyPath [${propertyPathNames}] is not a valid association path because [${propertyPathNames[propertyPathNames.length - 1]}] is not a Scalar or IdProperty`)
     } else if (path.length === 0) {
         path.push({
             type: "COMMON",

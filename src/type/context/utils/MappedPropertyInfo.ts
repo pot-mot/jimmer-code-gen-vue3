@@ -1,85 +1,101 @@
-type OneToOneMappedPropertyInfo = {
-    association: OneToOneAssociation
+export type OneToOneMappedPropertyInfo = {
     mappedProperty: OneToOneMappedProperty
-    referencedEntity: EntityWithProperties
+    association: OneToOneAssociationIdOnly
+    sourceProperty: OneToOneSourceProperty
 }
 
-type OneToManyMappedPropertyInfo = {
-    association: ManyToOneAssociation
+export type OneToManyMappedPropertyInfo = {
     mappedProperty: OneToManyProperty
-    referencedEntity: EntityWithProperties
+    association: ManyToOneAssociationIdOnly
+    sourceProperty: ManyToOneProperty
 }
 
-type ManyToManyMappedPropertyInfo = {
-    association: ManyToManyAssociation
+export type ManyToManyMappedPropertyInfo = {
     mappedProperty: ManyToManyMappedProperty
-    referencedEntity: EntityWithProperties
+    association: ManyToManyAssociationIdOnly
+    sourceProperty: ManyToManySourceProperty
 }
 
-export const getEntityMappedPropertyInfo = (
-    properties: DeepReadonly<EntityProperty[]>,
-    associationMap: ReadonlyMap<string, Readonly<Association>>,
-): (OneToOneMappedPropertyInfo | OneToManyMappedPropertyInfo | ManyToManyMappedPropertyInfo)[] => {
-    const result: (OneToOneMappedPropertyInfo | OneToManyMappedPropertyInfo | ManyToManyMappedPropertyInfo)[] = []
+export type MappedPropertyInfo = OneToOneMappedPropertyInfo | OneToManyMappedPropertyInfo | ManyToManyMappedPropertyInfo
+
+export const getMappedPropertyInfo = (
+    properties: Property[],
+    associationMap: Map<string, Readonly<AssociationIdOnly>>,
+): MappedPropertyInfo[] => {
+    const result: MappedPropertyInfo[] = []
 
     for (const property of properties) {
         if (property.category === "OneToOne_Source") {
             const association = associationMap.get(property.associationId)
-            if (!association) throw new Error(`association (${property.associationId}) not found`)
-            if (association.type !== "OneToOne") throw new Error(`association (${property.associationId}) is not OneToOne`)
-            result.push({association, mappedProperty: association.mappedProperty, referencedEntity: association.referencedEntity})
+            if (!association) throw new Error(`[${property.associationId}] not found`)
+            if (association.type !== "OneToOne") throw new Error(`[${property.associationId}] is not OneToOne`)
+            result.push({
+                association,
+                sourceProperty: property,
+                mappedProperty: association.mappedProperty,
+            })
         } else if (property.category === "ManyToOne") {
             const association = associationMap.get(property.associationId)
-            if (!association) throw new Error(`association (${property.associationId}) not found`)
-            if (association.type !== "ManyToOne") throw new Error(`association (${property.associationId}) is not ManyToOne`)
-            result.push({association, mappedProperty: association.mappedProperty, referencedEntity: association.referencedEntity})
+            if (!association) throw new Error(`[${property.associationId}] not found`)
+            if (association.type !== "ManyToOne") throw new Error(`[${property.associationId}] is not ManyToOne`)
+            result.push({
+                association,
+                sourceProperty: property,
+                mappedProperty: association.mappedProperty,
+            })
         } else if (property.category === "ManyToMany_Source") {
             const association = associationMap.get(property.associationId)
-            if (!association) throw new Error(`association (${property.associationId}) not found`)
-            if (association.type !== "ManyToMany") throw new Error(`association (${property.associationId}) is not ManyToMany`)
-            result.push({association, mappedProperty: association.mappedProperty, referencedEntity: association.referencedEntity})
+            if (!association) throw new Error(`[${property.associationId}] not found`)
+            if (association.type !== "ManyToMany") throw new Error(`[${property.associationId}] is not ManyToMany`)
+            result.push({
+                association,
+                sourceProperty: property,
+                mappedProperty: association.mappedProperty,
+            })
         }
     }
 
     return result
 }
 
-type OneToOneAbstractMappedPropertyInfo = {
-    association: OneToOneAbstractAssociation,
-    mappedProperty: OneToOneMappedAbstractProperty,
-    referencedEntity: EntityWithProperties
+export type OneToOneAbstractMappedPropertyInfo = {
+    mappedProperty: OneToOneMappedAbstractProperty
+    association: OneToOneAbstractAssociationIdOnly
+    sourceProperty: OneToOneSourceProperty
 }
 
-type OneToManyAbstractAssociation = {
-    association: ManyToOneAbstractAssociation,
-    mappedProperty: OneToManyAbstractProperty,
-    referencedEntity: EntityWithProperties
+export type OneToManyAbstractMappedPropertyInfo = {
+    mappedProperty: OneToManyAbstractProperty
+    association: ManyToOneAbstractAssociationIdOnly
+    sourceProperty: ManyToOneProperty
 }
 
-export const getAbstractMappedProperties = (
-    properties: DeepReadonly<MappedSuperClassProperty[]>,
-    associationMap: ReadonlyMap<string, Readonly<Association>>,
-): (OneToOneAbstractMappedPropertyInfo | OneToManyAbstractAssociation)[] => {
-    const result: (OneToOneAbstractMappedPropertyInfo | OneToManyAbstractAssociation)[] = []
+export type AbstractMappedPropertyInfo = OneToOneAbstractMappedPropertyInfo | OneToManyAbstractMappedPropertyInfo
+
+export const getAbstractMappedPropertyInfo = (
+    properties: Property[],
+    associationMap: Map<string, Readonly<AssociationIdOnly>>,
+): AbstractMappedPropertyInfo[] => {
+    const result: AbstractMappedPropertyInfo[] = []
 
     for (const property of properties) {
         if (property.category === "OneToOne_Source") {
             const association = associationMap.get(property.associationId)
-            if (!association) throw new Error(`association (${property.associationId}) not found`)
-            if (association.type !== "OneToOne_Abstract") throw new Error(`association (${property.associationId}) is not OneToOne_Abstract`)
+            if (!association) throw new Error(`[${property.associationId}] not found`)
+            if (association.type !== "OneToOne_Abstract") throw new Error(`[${property.associationId}] is not OneToOne_Abstract`)
             result.push({
                 association,
+                sourceProperty: property,
                 mappedProperty: association.mappedProperty,
-                referencedEntity: association.referencedEntity
             })
         } else if (property.category === "ManyToOne") {
             const association = associationMap.get(property.associationId)
-            if (!association) throw new Error(`association (${property.associationId}) not found`)
-            if (association.type !== "ManyToOne_Abstract") throw new Error(`association (${property.associationId}) is not ManyToOne_Abstract`)
+            if (!association) throw new Error(`[${property.associationId}] not found`)
+            if (association.type !== "ManyToOne_Abstract") throw new Error(`[${property.associationId}] is not ManyToOne_Abstract`)
             result.push({
                 association,
+                sourceProperty: property,
                 mappedProperty: association.mappedProperty,
-                referencedEntity: association.referencedEntity
             })
         }
     }

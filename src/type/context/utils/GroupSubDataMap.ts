@@ -1,6 +1,6 @@
-const defaultGroupSubMaps: () => GroupSubMaps = () => ({
-    entityMap: new Map<string, EntityWithProperties>(),
-    mappedSuperClassMap: new Map<string, MappedSuperClassWithProperties>(),
+const defaultGroupSubMaps: () => GroupInheritInfoMap = () => ({
+    entityMap: new Map<string, EntityWithInheritInfo>(),
+    mappedSuperClassMap: new Map<string, MappedSuperClassWithInheritInfo>(),
     embeddableTypeMap: new Map<string, EmbeddableTypeWithProperties>(),
     enumerationMap: new Map<string, Enumeration>(),
 })
@@ -8,7 +8,7 @@ const defaultGroupSubMaps: () => GroupSubMaps = () => ({
 export const getGroupSubMaps = (
     groupId: string,
     contextData: Pick<ModelContext, 'entityMap' | 'enumerationMap' | 'mappedSuperClassMap' | 'embeddableTypeMap'>,
-): GroupSubMaps => {
+): GroupInheritInfoMap => {
     const result = defaultGroupSubMaps()
 
     for (const [id, entity] of contextData.entityMap) {

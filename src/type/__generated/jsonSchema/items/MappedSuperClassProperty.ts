@@ -1185,11 +1185,15 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                                 }
                             ]
                         },
+                        "autoSyncJoinInfoName": {
+                            "type": "boolean"
+                        },
                         "onDissociateAction": {
                             "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
+                        "autoSyncJoinInfoName",
                         "category",
                         "joinInfo",
                         "onDissociateAction",
@@ -1601,11 +1605,15 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                                 }
                             ]
                         },
+                        "autoSyncJoinInfoName": {
+                            "type": "boolean"
+                        },
                         "onDissociateAction": {
                             "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
+                        "autoSyncJoinInfoName",
                         "category",
                         "joinInfo",
                         "onDissociateAction",

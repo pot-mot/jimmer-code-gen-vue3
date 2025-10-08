@@ -15,11 +15,10 @@ import {
 import {computed, nextTick, ref} from "vue";
 import TypePairViewer from "@/modelEditor/viewer/TypePairViewer.vue";
 import {
-    ABSTRACT_ASSOCIATION_SOURCE_COMMENT_PLACEHOLDER,
-    ABSTRACT_ASSOCIATION_SOURCE_NAME_PLACEHOLDER,
-    ABSTRACT_PROPERTY_COMMENT_PLACEHOLDER,
-    ABSTRACT_PROPERTY_NAME_PLACEHOLDER
-} from "@/type/context/utils/AbstractAssociationToReal.ts";
+    ABSTRACT_ASSOCIATION_FK_COMMENT_TEMPLATE,
+    ABSTRACT_ASSOCIATION_FK_NAME_TEMPLATE
+} from "@/type/context/utils/AssociationTemplate.ts";
+import {INHERIT_ENTITY} from "@/type/context/utils/AbstractAssociationToReal.ts";
 
 const props = defineProps<{
     mappedSuperClass: MappedSuperClassWithProperties
@@ -105,6 +104,8 @@ const selectEntity = (entity: EntityWithProperties) => {
     ) return
 
     executeAsyncBatch(Symbol("property type to entity"), async () => {
+        cleanPropertyReference()
+
         const associationId = createId("Association")
         const mappedPropertyId = createId("Property")
 
@@ -112,9 +113,9 @@ const selectEntity = (entity: EntityWithProperties) => {
         const mappedProperty: OneToManyAbstractProperty = {
             mappedById: property.value.id,
             id: mappedPropertyId,
-            name: `${ABSTRACT_PROPERTY_NAME_PLACEHOLDER}List`,
-            comment: `${ABSTRACT_PROPERTY_COMMENT_PLACEHOLDER}列表`,
-            idViewName: `${ABSTRACT_PROPERTY_NAME_PLACEHOLDER}Id`,
+            name: `${INHERIT_ENTITY}List`,
+            comment: `${INHERIT_ENTITY}列表`,
+            idViewName: `${INHERIT_ENTITY}Ids`,
             autoSyncIdViewName: true,
             category: "OneToMany_Abstract",
             associationId,
@@ -126,8 +127,8 @@ const selectEntity = (entity: EntityWithProperties) => {
         }
         const association: ManyToOneAbstractAssociationIdOnly = {
             id: associationId,
-            name: `fk_${ABSTRACT_ASSOCIATION_SOURCE_NAME_PLACEHOLDER}_${sourceProperty.name}`,
-            comment: `${ABSTRACT_ASSOCIATION_SOURCE_COMMENT_PLACEHOLDER}${sourceProperty.comment}`,
+            nameTemplate: ABSTRACT_ASSOCIATION_FK_NAME_TEMPLATE,
+            commentTemplate: ABSTRACT_ASSOCIATION_FK_COMMENT_TEMPLATE,
             type: "ManyToOne_Abstract",
             sourceAbstractEntityId: props.mappedSuperClass.id,
             sourcePropertyId: sourceProperty.id,

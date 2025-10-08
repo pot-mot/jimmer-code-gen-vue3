@@ -16,7 +16,7 @@ export const getEmbeddableTypeDefaultFullPathColumnNames = (
             if ("embeddableTypeId" in property) {
                 const embeddedType = embeddableTypeMap.get(property.embeddableTypeId)
                 if (embeddedType === undefined) {
-                    throw new Error(`EmbeddableType [${property.embeddableTypeId}] not existed`)
+                    throw new Error(`[${property.embeddableTypeId}] not existed`)
                 }
 
                 // 递归处理嵌入类型的属性
@@ -61,7 +61,7 @@ export const overrideEmbeddableTypePropertiesColumnNames = (
             if ("embeddableTypeId" in property) {
                 const embeddedType = embeddableTypeMap.get(property.embeddableTypeId)
                 if (embeddedType === undefined) {
-                    throw new Error(`EmbeddableType [${property.embeddableTypeId}] not existed`)
+                    throw new Error(`[${property.embeddableTypeId}] not existed`)
                 }
 
                 // 递归处理嵌入类型的属性

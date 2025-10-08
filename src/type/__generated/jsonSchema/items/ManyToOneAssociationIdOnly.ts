@@ -10,8 +10,14 @@ const ManyToOneAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToOneAssociationI
         "name": {
             "type": "string"
         },
+        "useNameTemplate": {
+            "type": "boolean"
+        },
         "comment": {
             "type": "string"
+        },
+        "useCommentTemplate": {
+            "type": "boolean"
         },
         "type": {
             "type": "string",
@@ -42,7 +48,9 @@ const ManyToOneAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToOneAssociationI
         "referencedEntityId",
         "sourceEntityId",
         "sourcePropertyId",
-        "type"
+        "type",
+        "useCommentTemplate",
+        "useNameTemplate"
     ],
     "definitions": {
         "OneToManyProperty": {

@@ -225,6 +225,7 @@ export const tableToEntity: TableToEntity = (
                 typeIsList: false,
                 associationId,
                 joinInfo,
+                autoSyncJoinInfoName: true,
                 referencedEntityId: referencedEntity.id,
                 idViewName: lowerSourceEntityName + "Id",
                 autoSyncIdViewName: true,
@@ -254,7 +255,9 @@ export const tableToEntity: TableToEntity = (
             const association: ManyToOneAssociationIdOnly = {
                 id: associationId,
                 name: foreignKey.name,
+                useNameTemplate: false,
                 comment: foreignKey.comment,
+                useCommentTemplate: false,
                 type: "ManyToOne",
                 foreignKeyType: "REAL",
                 sourceEntityId: sourceEntity.id,

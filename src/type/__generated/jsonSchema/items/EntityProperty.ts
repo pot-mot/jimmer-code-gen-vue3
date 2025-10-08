@@ -4,15 +4,6 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
     "anyOf": [
         {
-            "$ref": "#/definitions/OneToOneMappedProperty"
-        },
-        {
-            "$ref": "#/definitions/OneToManyProperty"
-        },
-        {
-            "$ref": "#/definitions/ManyToManyMappedProperty"
-        },
-        {
             "$ref": "#/definitions/IdCommonProperty"
         },
         {
@@ -746,207 +737,6 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
         }
     ],
     "definitions": {
-        "OneToOneMappedProperty": {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "OneToOne_Mapped"
-                        },
-                        "typeIsList": {
-                            "type": "boolean",
-                            "const": false
-                        },
-                        "mappedById": {
-                            "type": "string"
-                        },
-                        "nullable": {
-                            "type": "boolean",
-                            "const": true
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "mappedById",
-                        "nullable",
-                        "typeIsList"
-                    ]
-                },
-                {
-                    "$ref": "#/definitions/Omit<BaseProperty,\"nullable\">"
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "associationId": {
-                            "type": "string"
-                        },
-                        "referencedEntityId": {
-                            "type": "string"
-                        },
-                        "idViewName": {
-                            "type": "string"
-                        },
-                        "autoSyncIdViewName": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "associationId",
-                        "autoSyncIdViewName",
-                        "idViewName",
-                        "referencedEntityId"
-                    ]
-                }
-            ]
-        },
-        "Omit<BaseProperty,\"nullable\">": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "comment": {
-                    "type": "string"
-                },
-                "extraImports": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "extraAnnotations": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                }
-            },
-            "required": [
-                "comment",
-                "extraAnnotations",
-                "extraImports",
-                "id",
-                "name"
-            ]
-        },
-        "OneToManyProperty": {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "OneToMany"
-                        },
-                        "typeIsList": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "mappedById": {
-                            "type": "string"
-                        },
-                        "nullable": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "mappedById",
-                        "nullable",
-                        "typeIsList"
-                    ]
-                },
-                {
-                    "$ref": "#/definitions/Omit<BaseProperty,\"nullable\">"
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "associationId": {
-                            "type": "string"
-                        },
-                        "referencedEntityId": {
-                            "type": "string"
-                        },
-                        "idViewName": {
-                            "type": "string"
-                        },
-                        "autoSyncIdViewName": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "associationId",
-                        "autoSyncIdViewName",
-                        "idViewName",
-                        "referencedEntityId"
-                    ]
-                }
-            ]
-        },
-        "ManyToManyMappedProperty": {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ManyToMany_Mapped"
-                        },
-                        "typeIsList": {
-                            "type": "boolean",
-                            "const": true
-                        },
-                        "mappedById": {
-                            "type": "string"
-                        },
-                        "nullable": {
-                            "type": "boolean",
-                            "const": false
-                        }
-                    },
-                    "required": [
-                        "category",
-                        "mappedById",
-                        "nullable",
-                        "typeIsList"
-                    ]
-                },
-                {
-                    "$ref": "#/definitions/Omit<BaseProperty,\"nullable\">"
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "associationId": {
-                            "type": "string"
-                        },
-                        "referencedEntityId": {
-                            "type": "string"
-                        },
-                        "idViewName": {
-                            "type": "string"
-                        },
-                        "autoSyncIdViewName": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "associationId",
-                        "autoSyncIdViewName",
-                        "idViewName",
-                        "referencedEntityId"
-                    ]
-                }
-            ]
-        },
         "IdCommonProperty": {
             "allOf": [
                 {
@@ -1055,6 +845,39 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         "columnInfo"
                     ]
                 }
+            ]
+        },
+        "Omit<BaseProperty,\"nullable\">": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "extraImports": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "extraAnnotations": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "comment",
+                "extraAnnotations",
+                "extraImports",
+                "id",
+                "name"
             ]
         },
         "ColumnInfo": {
@@ -1368,11 +1191,15 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                                 }
                             ]
                         },
+                        "autoSyncJoinInfoName": {
+                            "type": "boolean"
+                        },
                         "onDissociateAction": {
                             "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
+                        "autoSyncJoinInfoName",
                         "category",
                         "joinInfo",
                         "onDissociateAction",
@@ -1784,11 +1611,15 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                                 }
                             ]
                         },
+                        "autoSyncJoinInfoName": {
+                            "type": "boolean"
+                        },
                         "onDissociateAction": {
                             "$ref": "#/definitions/OnDissociationAction"
                         }
                     },
                     "required": [
+                        "autoSyncJoinInfoName",
                         "category",
                         "joinInfo",
                         "onDissociateAction",
@@ -1880,12 +1711,16 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                                 }
                             ]
                         },
+                        "autoSyncJoinInfoName": {
+                            "type": "boolean"
+                        },
                         "nullable": {
                             "type": "boolean",
                             "const": false
                         }
                     },
                     "required": [
+                        "autoSyncJoinInfoName",
                         "category",
                         "joinInfo",
                         "nullable",
