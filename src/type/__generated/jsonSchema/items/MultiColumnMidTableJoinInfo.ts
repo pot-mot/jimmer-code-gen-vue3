@@ -10,55 +10,120 @@ const MultiColumnMidTableJoinInfoJsonSchema: JSONSchemaType<MultiColumnMidTableJ
                     "type": "string",
                     "const": "MultiColumnMidTable"
                 },
-                "embeddableTypeId": {
-                    "type": "string"
-                },
-                "columnRefs": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "source": {
-                                "type": "object",
-                                "properties": {
-                                    "columnName": {
-                                        "type": "string"
-                                    },
-                                    "referencedColumnName": {
-                                        "type": "string"
-                                    }
+                "sourceJoinInfo": {
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "const": "SingleColumn"
                                 },
-                                "required": [
-                                    "columnName",
-                                    "referencedColumnName"
-                                ]
+                                "columnName": {
+                                    "type": "string"
+                                }
                             },
-                            "target": {
-                                "type": "object",
-                                "properties": {
-                                    "columnName": {
-                                        "type": "string"
-                                    },
-                                    "referencedColumnName": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "columnName",
-                                    "referencedColumnName"
-                                ]
-                            }
+                            "required": [
+                                "columnName",
+                                "type"
+                            ]
                         },
-                        "required": [
-                            "source",
-                            "target"
-                        ]
-                    }
+                        {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "const": "MultiColumn"
+                                },
+                                "embeddableTypeId": {
+                                    "type": "string"
+                                },
+                                "columnRefs": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "columnName": {
+                                                "type": "string"
+                                            },
+                                            "referencedColumnName": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "columnName",
+                                            "referencedColumnName"
+                                        ]
+                                    }
+                                }
+                            },
+                            "required": [
+                                "columnRefs",
+                                "embeddableTypeId",
+                                "type"
+                            ]
+                        }
+                    ]
+                },
+                "targetJoinInfo": {
+                    "anyOf": [
+                        {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "const": "SingleColumn"
+                                },
+                                "columnName": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "columnName",
+                                "type"
+                            ]
+                        },
+                        {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "const": "MultiColumn"
+                                },
+                                "embeddableTypeId": {
+                                    "type": "string"
+                                },
+                                "columnRefs": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "columnName": {
+                                                "type": "string"
+                                            },
+                                            "referencedColumnName": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "columnName",
+                                            "referencedColumnName"
+                                        ]
+                                    }
+                                }
+                            },
+                            "required": [
+                                "columnRefs",
+                                "embeddableTypeId",
+                                "type"
+                            ]
+                        }
+                    ]
                 }
             },
             "required": [
-                "columnRefs",
-                "embeddableTypeId",
+                "sourceJoinInfo",
+                "targetJoinInfo",
                 "type"
             ]
         },
