@@ -5,8 +5,8 @@ export default Object.freeze({
     nameTemplate: string
     commentTemplate: string
     type: 'OneToOne_Abstract'
-    sourceAbstractEntity: MappedSuperClassWithProperties
-    referencedEntity: EntityWithProperties
+    sourceAbstractEntity: MappedSuperClassWithInheritInfo
+    referencedEntity: EntityWithInheritInfo
     sourceProperty: OneToOneSourceProperty
     mappedProperty: OneToOneMappedAbstractProperty
     foreignKeyType: ForeignKeyType

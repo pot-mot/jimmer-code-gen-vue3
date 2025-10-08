@@ -19,7 +19,7 @@ type EnumerationGenerator = (
 ) => Record<string, string>
 
 type AssociationGenerator = (
-    association: DeepReadonly<AssociationWithInheritInfo>,
+    association: DeepReadonly<Association>,
     context: DeepReadonly<ModelContext>
 ) => Record<string, string>
 

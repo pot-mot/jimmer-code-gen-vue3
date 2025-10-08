@@ -7,7 +7,7 @@ export default Object.freeze({
     mappedSuperClassMap: Map<string, MappedSuperClassWithInheritInfo>
     embeddableTypeMap: Map<string, EmbeddableTypeWithOverrideProperties>
     enumerationMap: Map<string, Enumeration>
-    associationMap: Map<string, AssociationWithInheritInfo>
+    associationMap: Map<string, Association>
 
     createId: (type: "Model" | "Entity" | "Property" | "MappedSuperClass" | "EmbeddableType" | "Enumeration" | "EnumerationItem" | "Association" | "Group") => string
     nameTool: NameTool

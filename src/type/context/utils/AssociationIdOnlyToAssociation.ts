@@ -14,10 +14,10 @@ export const oneToOneIdOnlyToAssociation = (
     const sourceEntity = entityMap.get(idOnly.sourceEntityId)
     const referencedEntity = entityMap.get(idOnly.referencedEntityId)
 
-    if (!sourceEntity) throw new Error(`Source entity ${idOnly.sourceEntityId} not found`)
-    if (!referencedEntity) throw new Error(`Referenced entity ${idOnly.referencedEntityId} not found`)
+    if (!sourceEntity) throw new Error(`[${idOnly.sourceEntityId}] not found`)
+    if (!referencedEntity) throw new Error(`[${idOnly.referencedEntityId}] not found`)
     const sourceProperty = sourceEntity.allProperties.find(it => it.id === idOnly.sourcePropertyId)
-    if (!sourceProperty) throw new Error(`Source property ${idOnly.sourcePropertyId} not found`)
+    if (!sourceProperty) throw new Error(`[${idOnly.sourcePropertyId}] not found`)
     if (sourceProperty.category !== 'OneToOne_Source') throw new Error(`[${sourceProperty.name}] is not a OneToOne_Source`)
 
     const association: OneToOneAssociation = {
@@ -49,10 +49,10 @@ export const manyToOneIdOnlyToAssociation = (
     const sourceEntity = entityMap.get(idOnly.sourceEntityId)
     const referencedEntity = entityMap.get(idOnly.referencedEntityId)
 
-    if (!sourceEntity) throw new Error(`Source entity ${idOnly.sourceEntityId} not found`)
-    if (!referencedEntity) throw new Error(`Referenced entity ${idOnly.referencedEntityId} not found`)
+    if (!sourceEntity) throw new Error(`[${idOnly.sourceEntityId}] not found`)
+    if (!referencedEntity) throw new Error(`[${idOnly.referencedEntityId}] not found`)
     const sourceProperty = sourceEntity.allProperties.find(it => it.id === idOnly.sourcePropertyId)
-    if (!sourceProperty) throw new Error(`Source property ${idOnly.sourcePropertyId} not found`)
+    if (!sourceProperty) throw new Error(`[${idOnly.sourcePropertyId}] not found`)
     if (sourceProperty.category !== 'ManyToOne') throw new Error(`[${sourceProperty.name}] is not a ManyToOne`)
 
     const association: ManyToOneAssociation = {
@@ -84,10 +84,10 @@ export const manyToManyIdOnlyToAssociation = (
     const sourceEntity = entityMap.get(idOnly.sourceEntityId)
     const referencedEntity = entityMap.get(idOnly.referencedEntityId)
 
-    if (!sourceEntity) throw new Error(`Source entity ${idOnly.sourceEntityId} not found`)
-    if (!referencedEntity) throw new Error(`Referenced entity ${idOnly.referencedEntityId} not found`)
+    if (!sourceEntity) throw new Error(`[${idOnly.sourceEntityId}] not found`)
+    if (!referencedEntity) throw new Error(`[${idOnly.referencedEntityId}] not found`)
     const sourceProperty = sourceEntity.allProperties.find(it => it.id === idOnly.sourcePropertyId)
-    if (!sourceProperty) throw new Error(`Source property ${idOnly.sourcePropertyId} not found`)
+    if (!sourceProperty) throw new Error(`[${idOnly.sourcePropertyId}] not found`)
     if (sourceProperty.category !== 'ManyToMany_Source') throw new Error(`[${sourceProperty.name}] is not a ManyToMany_Source`)
 
     const association: ManyToManyAssociation = {
@@ -115,10 +115,10 @@ export const abstractOneToOneIdOnlyToAssociation = (
     const sourceAbstractEntity = mappedSuperClassMap.get(idOnly.sourceAbstractEntityId)
     const referencedEntity = entityMap.get(idOnly.referencedEntityId)
 
-    if (!sourceAbstractEntity) throw new Error(`Source abstract entity ${idOnly.sourceAbstractEntityId} not found`)
-    if (!referencedEntity) throw new Error(`Referenced entity ${idOnly.referencedEntityId} not found`)
+    if (!sourceAbstractEntity) throw new Error(`[${idOnly.sourceAbstractEntityId}] not found`)
+    if (!referencedEntity) throw new Error(`[${idOnly.referencedEntityId}] not found`)
     const sourceProperty = sourceAbstractEntity.allProperties.find(it => it.id === idOnly.sourcePropertyId)
-    if (!sourceProperty) throw new Error(`Source property ${idOnly.sourcePropertyId} not found`)
+    if (!sourceProperty) throw new Error(`[${idOnly.sourcePropertyId}] not found`)
     if (sourceProperty.category !== 'OneToOne_Source') throw new Error(`[${sourceProperty.name}] is not a OneToOne_Source`)
 
     const association: OneToOneAbstractAssociation = {
@@ -146,10 +146,10 @@ export const abstractManyToOneIdOnlyToAssociation = (
     const sourceAbstractEntity = mappedSuperClassMap.get(idOnly.sourceAbstractEntityId)
     const referencedEntity = entityMap.get(idOnly.referencedEntityId)
 
-    if (!sourceAbstractEntity) throw new Error(`Source abstract entity ${idOnly.sourceAbstractEntityId} not found`)
-    if (!referencedEntity) throw new Error(`Referenced entity ${idOnly.referencedEntityId} not found`)
+    if (!sourceAbstractEntity) throw new Error(`[${idOnly.sourceAbstractEntityId}] not found`)
+    if (!referencedEntity) throw new Error(`[${idOnly.referencedEntityId}] not found`)
     const sourceProperty = sourceAbstractEntity.allProperties.find(it => it.id === idOnly.sourcePropertyId)
-    if (!sourceProperty) throw new Error(`Source property ${idOnly.sourcePropertyId} not found`)
+    if (!sourceProperty) throw new Error(`[${idOnly.sourcePropertyId}] not found`)
     if (sourceProperty.category !== 'ManyToOne') throw new Error(`[${sourceProperty.name}] is not a ManyToOne`)
 
     const association: ManyToOneAbstractAssociation = {

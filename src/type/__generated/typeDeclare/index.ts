@@ -1,10 +1,8 @@
 import AbstractAssociationDeclare from "./items/AbstractAssociation.ts";
 import AbstractAssociationIdOnlyDeclare from "./items/AbstractAssociationIdOnly.ts";
-import AbstractAssociationWithInheritInfoDeclare from "./items/AbstractAssociationWithInheritInfo.ts";
 import AbstractCategorizedPropertiesDeclare from "./items/AbstractCategorizedProperties.ts";
 import AssociationDeclare from "./items/Association.ts";
 import AssociationIdOnlyDeclare from "./items/AssociationIdOnly.ts";
-import AssociationWithInheritInfoDeclare from "./items/AssociationWithInheritInfo.ts";
 import BaseAssociationPropertyDeclare from "./items/BaseAssociationProperty.ts";
 import BasePropertyDeclare from "./items/BaseProperty.ts";
 import CategorizedEmbeddableTypePropertiesDeclare from "./items/CategorizedEmbeddableTypeProperties.ts";
@@ -15,7 +13,6 @@ import ColumnPropertyDeclare from "./items/ColumnProperty.ts";
 import ColumnRefDeclare from "./items/ColumnRef.ts";
 import ConcreteAssociationDeclare from "./items/ConcreteAssociation.ts";
 import ConcreteAssociationIdOnlyDeclare from "./items/ConcreteAssociationIdOnly.ts";
-import ConcreteAssociationWithInheritInfoDeclare from "./items/ConcreteAssociationWithInheritInfo.ts";
 import CrossTypeDeclare from "./items/CrossType.ts";
 import DatabaseDeclare from "./items/Database.ts";
 import DatabaseTypeDeclare from "./items/DatabaseType.ts";
@@ -115,11 +112,9 @@ import VersionPropertyDeclare from "./items/VersionProperty.ts";
 export type TypeMap = {
     AbstractAssociation: AbstractAssociation
     AbstractAssociationIdOnly: AbstractAssociationIdOnly
-    AbstractAssociationWithInheritInfo: AbstractAssociationWithInheritInfo
     AbstractCategorizedProperties: AbstractCategorizedProperties
     Association: Association
     AssociationIdOnly: AssociationIdOnly
-    AssociationWithInheritInfo: AssociationWithInheritInfo
     BaseAssociationProperty: BaseAssociationProperty
     BaseProperty: BaseProperty
     CategorizedEmbeddableTypeProperties: CategorizedEmbeddableTypeProperties
@@ -130,7 +125,6 @@ export type TypeMap = {
     ColumnRef: ColumnRef
     ConcreteAssociation: ConcreteAssociation
     ConcreteAssociationIdOnly: ConcreteAssociationIdOnly
-    ConcreteAssociationWithInheritInfo: ConcreteAssociationWithInheritInfo
     CrossType: CrossType
     Database: Database
     DatabaseType: DatabaseType
@@ -232,11 +226,9 @@ export type TypeName = keyof TypeMap
 export const typeDeclares = Object.freeze({
     AbstractAssociation: AbstractAssociationDeclare,
     AbstractAssociationIdOnly: AbstractAssociationIdOnlyDeclare,
-    AbstractAssociationWithInheritInfo: AbstractAssociationWithInheritInfoDeclare,
     AbstractCategorizedProperties: AbstractCategorizedPropertiesDeclare,
     Association: AssociationDeclare,
     AssociationIdOnly: AssociationIdOnlyDeclare,
-    AssociationWithInheritInfo: AssociationWithInheritInfoDeclare,
     BaseAssociationProperty: BaseAssociationPropertyDeclare,
     BaseProperty: BasePropertyDeclare,
     CategorizedEmbeddableTypeProperties: CategorizedEmbeddableTypePropertiesDeclare,
@@ -247,7 +239,6 @@ export const typeDeclares = Object.freeze({
     ColumnRef: ColumnRefDeclare,
     ConcreteAssociation: ConcreteAssociationDeclare,
     ConcreteAssociationIdOnly: ConcreteAssociationIdOnlyDeclare,
-    ConcreteAssociationWithInheritInfo: ConcreteAssociationWithInheritInfoDeclare,
     CrossType: CrossTypeDeclare,
     Database: DatabaseDeclare,
     DatabaseType: DatabaseTypeDeclare,

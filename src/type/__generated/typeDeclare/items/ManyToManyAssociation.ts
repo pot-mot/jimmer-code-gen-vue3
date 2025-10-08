@@ -5,8 +5,8 @@ export default Object.freeze({
     name: string
     comment: string
     type: 'ManyToMany'
-    sourceEntity: EntityWithProperties
-    referencedEntity: EntityWithProperties
+    sourceEntity: EntityWithInheritInfo
+    referencedEntity: EntityWithInheritInfo
     sourceProperty: ManyToManySourceProperty
     mappedProperty: ManyToManyMappedProperty
     foreignKeyType: ForeignKeyType

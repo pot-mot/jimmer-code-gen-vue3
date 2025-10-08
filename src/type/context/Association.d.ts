@@ -3,8 +3,8 @@ type OneToOneAssociation = {
     name: string
     comment: string
     type: 'OneToOne'
-    sourceEntity: EntityWithProperties
-    referencedEntity: EntityWithProperties
+    sourceEntity: EntityWithInheritInfo
+    referencedEntity: EntityWithInheritInfo
     sourceProperty: OneToOneSourceProperty
     mappedProperty: OneToOneMappedProperty
     foreignKeyType: ForeignKeyType
@@ -15,8 +15,8 @@ type OneToOneAbstractAssociation = {
     nameTemplate: string
     commentTemplate: string
     type: 'OneToOne_Abstract'
-    sourceAbstractEntity: MappedSuperClassWithProperties
-    referencedEntity: EntityWithProperties
+    sourceAbstractEntity: MappedSuperClassWithInheritInfo
+    referencedEntity: EntityWithInheritInfo
     sourceProperty: OneToOneSourceProperty
     mappedProperty: OneToOneMappedAbstractProperty
     foreignKeyType: ForeignKeyType
@@ -27,8 +27,8 @@ type ManyToOneAssociation = {
     name: string
     comment: string
     type: 'ManyToOne'
-    sourceEntity: EntityWithProperties
-    referencedEntity: EntityWithProperties
+    sourceEntity: EntityWithInheritInfo
+    referencedEntity: EntityWithInheritInfo
     sourceProperty: ManyToOneProperty
     mappedProperty: OneToManyProperty
     foreignKeyType: ForeignKeyType
@@ -39,8 +39,8 @@ type ManyToOneAbstractAssociation = {
     nameTemplate: string
     commentTemplate: string
     type: 'ManyToOne_Abstract'
-    sourceAbstractEntity: MappedSuperClassWithProperties
-    referencedEntity: EntityWithProperties
+    sourceAbstractEntity: MappedSuperClassWithInheritInfo
+    referencedEntity: EntityWithInheritInfo
     sourceProperty: ManyToOneProperty
     mappedProperty: OneToManyAbstractProperty
     foreignKeyType: ForeignKeyType
@@ -51,8 +51,8 @@ type ManyToManyAssociation = {
     name: string
     comment: string
     type: 'ManyToMany'
-    sourceEntity: EntityWithProperties
-    referencedEntity: EntityWithProperties
+    sourceEntity: EntityWithInheritInfo
+    referencedEntity: EntityWithInheritInfo
     sourceProperty: ManyToManySourceProperty
     mappedProperty: ManyToManyMappedProperty
     foreignKeyType: ForeignKeyType
@@ -63,15 +63,3 @@ type ConcreteAssociation = OneToOneAssociation | ManyToOneAssociation | ManyToMa
 type AbstractAssociation = OneToOneAbstractAssociation | ManyToOneAbstractAssociation
 
 type Association = ConcreteAssociation | AbstractAssociation
-
-type ConcreteAssociationWithInheritInfo = Omit<Association, 'sourceEntity' | 'referencedEntity'> & {
-    sourceEntity: EntityWithInheritInfo
-    referencedEntity: EntityWithInheritInfo
-}
-
-type AbstractAssociationWithInheritInfo = Omit<Association, 'sourceAbstractEntity' | 'referencedEntity'> & {
-    sourceAbstractEntity: MappedSuperClassWithInheritInfo
-    referencedEntity: EntityWithInheritInfo
-}
-
-type AssociationWithInheritInfo = ConcreteAssociation | AbstractAssociation

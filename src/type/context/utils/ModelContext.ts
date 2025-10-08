@@ -10,7 +10,6 @@ import {
 } from "@/type/context/utils/EntityExtends.ts";
 import {getGroupSubMaps} from "@/type/context/utils/GroupSubDataMap.ts";
 import {overrideEmbeddableTypePropertiesColumnNames} from "@/type/context/utils/EmbeddableTypeOverride.ts";
-import {getAssociationWithInheritInfo} from "@/type/context/utils/AssociationWithInheritInfo.ts";
 import {
     getAbstractMappedPropertyInfo,
     getMappedPropertyInfo
@@ -201,16 +200,6 @@ export const contextDataToContext = (
         associationMap.set(id, realAssociation)
     }
 
-    const associationWithInheritMap = new Map<string, AssociationWithInheritInfo>()
-    for (const [id, association] of associationMap) {
-        const associationWithInheritInfo: AssociationWithInheritInfo = getAssociationWithInheritInfo(
-            association,
-            entityWithInheritInfoMap,
-            mappedSuperClassWithInheritInfoMap
-        )
-        associationWithInheritMap.set(id, associationWithInheritInfo)
-    }
-
     // 设置属性的子节点信息
     const groupWithInheritInfoMap = new Map<string, GroupWithInheritInfoMap>()
 
@@ -228,7 +217,7 @@ export const contextDataToContext = (
         mappedSuperClassMap: mappedSuperClassWithInheritInfoMap,
         embeddableTypeMap,
         enumerationMap,
-        associationMap: associationWithInheritMap,
+        associationMap,
 
         createId,
         nameTool,
