@@ -26,6 +26,7 @@ const {
     copy,
     cut,
     paste,
+    focus,
 } = useModelEditor()
 
 onMounted(() => {
@@ -45,11 +46,13 @@ const handleKeyDown = async (e: KeyboardEvent) => {
                 e.preventDefault()
                 undo()
             }
+            focus()
         } else if (e.key === 'y' || e.key === "Y") {
             if (judgeTargetIsInteraction(e)) return
 
             e.preventDefault()
             redo()
+            focus()
         } else if (e.key === "s" || e.key === "S") {
             e.preventDefault()
             await saveModel()
@@ -59,17 +62,20 @@ const handleKeyDown = async (e: KeyboardEvent) => {
 
             e.preventDefault()
             await copy()
+            focus()
         } else if (e.key === "x" || e.key === "X") {
             if (judgeTargetIsInteraction(e)) return
             if (!isGraphSelectionNotEmpty.value) return
 
             e.preventDefault()
             await cut()
+            focus()
         } else if (e.key === "v" || e.key === "V") {
             if (judgeTargetIsInteraction(e)) return
 
             e.preventDefault()
             await paste()
+            focus()
         }
     }
 }

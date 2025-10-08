@@ -56,7 +56,7 @@ const menuItemTrees = computed(() => {
 })
 
 const handleKeyDown = async (e: KeyboardEvent) => {
-    if (e.key === "Delete") {
+    if (e.key === "Delete" || e.key === "Backspace") {
         if (judgeTargetIsInteraction(e)) return
 
         e.preventDefault()

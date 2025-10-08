@@ -106,7 +106,7 @@ export const useModelEditor = createStore(() => {
     const toggleCurrentGroup = ({id}: { id: string | undefined }) => {
         const contextData = getContextData()
         if (id !== undefined) {
-            if (!contextData.groupMap.has(id)) throw new Error(`Group [${id}] is not existed`)
+            if (!contextData.groupMap.has(id)) throw new Error(`[${id}] is not existed`)
             if (!menuMap.value.has(id)) throw new Error(`Menu item [${id}] is not existed`)
         }
         currentGroupId.value = id
@@ -257,8 +257,16 @@ export const useModelEditor = createStore(() => {
         }
     ) => {
         const contextData = getContextData()
-        const associationNameSet = buildNameSets(Array.from(contextData.associationMap.values()).map(it => it.association))
-        association.name = associationNameSet.next(association.name)
+        const notNameTemplateAssociation = Array.from(contextData.associationMap.values())
+            .filter(it => {
+                return "name" in it.association && !it.association.useNameTemplate
+            })
+            .map(it => it.association) as DeepReadonly<AssociationIdOnly & {name: string}[]>
+
+        const associationNameSet = buildNameSets(notNameTemplateAssociation)
+        if ("name" in association && !association.useNameTemplate) {
+            association.name = associationNameSet.next(association.name)
+        }
         history.executeCommand('association:add', {association, labelPosition})
         return association.id
     }
@@ -593,7 +601,7 @@ export const useModelEditor = createStore(() => {
              */
             el.addEventListener('keydown', (e) => {
                 // 按下 Delete 键删除选中的节点和边
-                if (e.key === "Delete") {
+                if (e.key === "Delete" || e.key === "Backspace") {
                     e.preventDefault()
                     const ids = defaultModelSubIds()
                     for (const node of getSelectedNodes.value) {
@@ -613,10 +621,12 @@ export const useModelEditor = createStore(() => {
                         }
                     }
                     remove(ids)
+                    focus()
                 }
                 // 按下 Ctrl 键进入多选模式，直到松开 Ctrl 键
                 else if (e.key === "Control") {
                     enableMultiSelect(vueFlow)
+                    focus()
                     document.documentElement.addEventListener('keyup', (e) => {
                         if (e.key === "Control" || e.ctrlKey) {
                             disableMultiSelect(vueFlow)
@@ -626,6 +636,7 @@ export const useModelEditor = createStore(() => {
                     if (judgeTargetIsInteraction(e)) return
 
                     toggleDefaultMouseAction(vueFlow)
+                    focus()
                     document.documentElement.addEventListener('keyup', (e) => {
                         if (e.key === "Shift" || e.shiftKey) {
                             toggleDefaultMouseAction(vueFlow)
@@ -639,6 +650,7 @@ export const useModelEditor = createStore(() => {
                         e.preventDefault()
 
                         selectGraphAll()
+                        focus()
                     }
                 }
             })
