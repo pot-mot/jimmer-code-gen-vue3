@@ -26,19 +26,21 @@ ${table.columns.map(column => `    ${column.name} ${column.type} ${
     column.otherConstraints ? column.otherConstraints.join(' ') : ''
 } ${
     column.comment ? `COMMENT '${column.comment}'` : ''
-}`.trimEnd()).join(",\n")}
+}`.trimEnd()).join(",\n")},
+    PRIMARY KEY (${table.columns.filter(it => it.partOfPrimaryKey).map(it => it.name).join(", ")})
 );
 `,
                 createForeignKeys: table.foreignKeys.map(foreignKey => `ALTER TABLE ${table.name}
-ADD FOREIGN KEY ${foreignKey.name} (${foreignKey.columnRefs.map(it => it.columnName).join(", ")}) 
-REFERENCES ${foreignKey.referencedTableName} (${foreignKey.columnRefs.map(it => it.referencedColumnName).join(", ")});
+    ADD CONSTRAINT ${foreignKey.name}
+        FOREIGN KEY (${foreignKey.columnRefs.map(it => it.columnName).join(", ")}) 
+            REFERENCES ${foreignKey.referencedTableName} (${foreignKey.columnRefs.map(it => it.referencedColumnName).join(", ")});
 `)
             }
         )
     }
 
     for (const [tableName, {createTable, createForeignKeys}] of statementMap) {
-        result[`${baseDir}/${tableName}.sql`] = `${createTable}\n${createForeignKeys.join("\n")}`
+        result[`${baseDir}/tables/${tableName}.sql`] = `${createTable}\n${createForeignKeys.join("\n")}`
     }
 
     const allTableStatements: string[] = []
