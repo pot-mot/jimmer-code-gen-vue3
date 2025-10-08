@@ -61,7 +61,7 @@ export const useModelEditorSelectIds = (
     const selectGroup = (id: string) => {
         const contextData = getContextData()
         const vueFlow = getVueFlow()
-        if (!contextData.groupMap.has(id)) throw new Error(`Group [${id}] is not existed`)
+        if (!contextData.groupMap.has(id)) throw new Error(`[${id}] is not existed`)
 
         if (!vueFlow.multiSelectionActive.value) clearSelectedIdSets()
         selectedIdSets.value.groupIdSet.add(id)
@@ -74,7 +74,7 @@ export const useModelEditorSelectIds = (
     const selectEntity = (id: string) => {
         const contextData = getContextData()
         const vueFlow = getVueFlow()
-        if (!contextData.entityMap.has(id)) throw new Error(`Entity [${id}] is not existed`)
+        if (!contextData.entityMap.has(id)) throw new Error(`[${id}] is not existed`)
         const node = vueFlow.findNode(id)
         if (!node) throw new Error(`Node [${id}] is not existed`)
 
@@ -94,7 +94,7 @@ export const useModelEditorSelectIds = (
     const selectMappedSuperClass = (id: string) => {
         const contextData = getContextData()
         const vueFlow = getVueFlow()
-        if (!contextData.mappedSuperClassMap.has(id)) throw new Error(`MappedSuperClass [${id}] is not existed`)
+        if (!contextData.mappedSuperClassMap.has(id)) throw new Error(`[${id}] is not existed`)
         const node = vueFlow.findNode(id)
         if (!node) throw new Error(`Node [${id}] is not existed`)
 
@@ -114,7 +114,7 @@ export const useModelEditorSelectIds = (
     const selectEmbeddableType = (id: string) => {
         const contextData = getContextData()
         const vueFlow = getVueFlow()
-        if (!contextData.embeddableTypeMap.has(id)) throw new Error(`EmbeddableType [${id}] is not existed`)
+        if (!contextData.embeddableTypeMap.has(id)) throw new Error(`[${id}] is not existed`)
         const node = vueFlow.findNode(id)
         if (!node) throw new Error(`Node [${id}] is not existed`)
 
@@ -134,7 +134,7 @@ export const useModelEditorSelectIds = (
     const selectEnumeration = (id: string) => {
         const contextData = getContextData()
         const vueFlow = getVueFlow()
-        if (!contextData.enumerationMap.has(id)) throw new Error(`Enumeration [${id}] is not existed`)
+        if (!contextData.enumerationMap.has(id)) throw new Error(`[${id}] is not existed`)
         const node = vueFlow.findNode(id)
         if (!node) throw new Error(`Node [${id}] is not existed`)
 

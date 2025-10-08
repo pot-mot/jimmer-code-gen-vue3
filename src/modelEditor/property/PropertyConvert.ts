@@ -120,6 +120,7 @@ export const toManyToOneProperty = (
         joinInfo: {
             type: "SingleColumn",
             columnName: nameTool.convert(entity.name + "Id", 'UPPER_CAMEL', databaseNameStrategy),
-        }
+        },
+        autoSyncJoinInfoName: true,
     }
 }

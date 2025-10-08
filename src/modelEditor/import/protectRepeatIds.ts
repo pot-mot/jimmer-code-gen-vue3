@@ -69,7 +69,7 @@ export const protectRepeatIds = (
             entity.id = newEntityId
 
             for (const property of entity.properties) {
-                if (newPropertyIdMap.has(property.id)) throw new Error(`Property [${property.name}-${property.id}] is already existed`)
+                if (newPropertyIdMap.has(property.id)) throw new Error(`[${property.name}-${property.id}] is already existed`)
                 newPropertyIdMap.set(property.id, {entityId: entity.id, property})
                 const newPropertyId = createId("Property")
                 for (const {data: association} of associations) {
@@ -111,7 +111,7 @@ export const protectRepeatIds = (
             mappedSuperClass.id = newMappedSuperClassId
 
             for (const property of mappedSuperClass.properties) {
-                if (newPropertyIdMap.has(property.id)) throw new Error(`Property [${property.name}-${property.id}] is already existed`)
+                if (newPropertyIdMap.has(property.id)) throw new Error(`[${property.name}-${property.id}] is already existed`)
                 newPropertyIdMap.set(property.id, {mappedSuperClassId: mappedSuperClass.id, property})
                 const newPropertyId = createId("Property")
                 for (const {data: association} of associations) {
@@ -142,7 +142,7 @@ export const protectRepeatIds = (
             embeddableType.id = newEmbeddableTypeId
 
             for (const property of embeddableType.properties) {
-                if (newPropertyIdMap.has(property.id)) throw new Error(`Property [${property.name}-${property.id}] is already existed`)
+                if (newPropertyIdMap.has(property.id)) throw new Error(`[${property.name}-${property.id}] is already existed`)
                 newPropertyIdMap.set(property.id, {embeddableTypeId: embeddableType.id, property})
                 property.id = createId("Property")
             }

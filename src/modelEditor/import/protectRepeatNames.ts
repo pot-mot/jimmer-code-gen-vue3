@@ -1,3 +1,5 @@
+import AssociationIdOnly from "@/type/__generated/typeDeclare/items/AssociationIdOnly.ts";
+
 export type NameSet = {
     countMap: Map<string, number>,
     has(this: NameSet, name: string): boolean,
@@ -21,7 +23,7 @@ const createNameSet = (): NameSet => ({
         } else {
             let currentName = `${name}(${count})`
             while (this.has(currentName)) {
-                count ++
+                count++
                 currentName = `${name}(${count})`
             }
             this.add(currentName)
@@ -31,7 +33,7 @@ const createNameSet = (): NameSet => ({
 })
 
 export const buildNameSets = (
-    nameOwners: DeepReadonly<Iterable<{name: string}>>
+    nameOwners: DeepReadonly<Iterable<{ name: string }>>
 ): NameSet => {
     const nameSet = createNameSet()
     for (const {name} of nameOwners) {
@@ -74,8 +76,17 @@ export const protectRepeatNames = (
         for (const {data} of enumerations) data.name = nameSet.next(data.name)
     }
     if (associations.length > 0) {
-        const nameSet = buildNameSets(Array.from(contextData.associationMap.values()).map(it => it.association))
-        for (const {data} of associations) data.name = nameSet.next(data.name)
+        const notNameTemplateAssociation = Array.from(contextData.associationMap.values())
+            .filter(it => {
+                return "name" in it.association && !it.association.useNameTemplate
+            })
+            .map(it => it.association) as DeepReadonly<AssociationIdOnly & {name: string}[]>
 
+        const nameSet = buildNameSets(notNameTemplateAssociation)
+        for (const {data} of associations) {
+            if ("name" in data && !data.useNameTemplate) {
+                data.name = nameSet.next(data.name)
+            }
+        }
     }
 }
