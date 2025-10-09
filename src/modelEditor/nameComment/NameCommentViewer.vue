@@ -18,7 +18,7 @@ defineProps<{
     white-space: nowrap;
 }
 
-.name-comment-viewer .no-name-warning {
+.name-comment-viewer > .no-name-warning {
     color: var(--warning-color);
 }
 

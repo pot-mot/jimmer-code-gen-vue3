@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import FitSizeLineInput from "@/components/input/FitSizeLineInput.vue";
-import {computed, ref, useTemplateRef} from "vue";
+import {computed, nextTick, onMounted, ref, useTemplateRef} from "vue";
 import {useClickOutside} from "@/components/list/selectableList/useClickOutside.ts";
 
 const model = defineModel<{
@@ -10,45 +10,75 @@ const model = defineModel<{
     required: true
 })
 
-withDefaults(defineProps<{
+const props = withDefaults(defineProps<{
+    autoFocus?: boolean
     fontSize?: number
 }>(), {
     fontSize: 16
 })
 
+const emits = defineEmits<{
+    (event: "change"): void
+    (event: "blur"): void
+}>()
+
 const nameInput = useTemplateRef("nameInput")
 const commentInput = useTemplateRef("commentInput")
 const nameCommentEditorRef = useTemplateRef("nameCommentEditorRef")
 
-useClickOutside(() => nameCommentEditorRef.value, () => {
-    wrapperFocused.value = false
-    nameFocused.value = false
-    commentFocused.value = false
-})
-
-const focusNameInput = () => {
-    nameInput.value?.$el.focus()
-}
-const focusCommentInput = () => {
-    commentInput.value?.$el.focus()
-}
-
 const wrapperFocused = ref(false)
 const nameFocused = ref(false)
 const commentFocused = ref(false)
+
+useClickOutside(() => nameCommentEditorRef.value, (e) => {
+    if (props.autoFocus) console.log("click outside", e.target)
+    wrapperFocused.value = false
+    nameFocused.value = false
+    commentFocused.value = false
+}, {capture: true})
+
+const focusNameInput = () => {
+    wrapperFocused.value = true
+    nameInput.value?.$el.focus()
+}
+const focusCommentInput = () => {
+    wrapperFocused.value = true
+    commentInput.value?.$el.focus()
+}
+
+const handleNameFocus = () => {
+    nameFocused.value = true
+}
 const handleNameBlur = () => {
     setTimeout(() => {
         nameFocused.value = false
-        wrapperFocused.value = false
+        if (!nameFocused.value && !commentFocused.value) {
+            wrapperFocused.value = false
+            emits("blur")
+        }
     }, 200)
+}
+const handleCommentFocus = () => {
+    commentFocused.value = true
 }
 const handleCommentBlur = () => {
     setTimeout(() => {
         commentFocused.value = false
-        wrapperFocused.value = false
+        if (!nameFocused.value && !commentFocused.value) {
+            wrapperFocused.value = false
+            emits("blur")
+        }
     }, 200)
 }
-const showComment = computed(() => model.value.comment.length > 0 || commentFocused.value || nameFocused.value)
+
+onMounted(async () => {
+    if (props.autoFocus) {
+        await nextTick()
+        focusNameInput()
+    }
+})
+
+const showComment = computed(() => model.value.comment.length > 0 || wrapperFocused.value)
 </script>
 
 <template>
@@ -59,7 +89,7 @@ const showComment = computed(() => model.value.comment.length > 0 || commentFocu
     >
         <span
             class="name"
-            :class="{untouchable: !wrapperFocused}"
+            :class="{untouchable: !wrapperFocused && !nameFocused}"
             @click.stop="focusNameInput"
         >
             <span
@@ -75,14 +105,15 @@ const showComment = computed(() => model.value.comment.length > 0 || commentFocu
                 :line-height="fontSize"
                 :font-size="fontSize"
                 v-model="model.name"
-                @focus="nameFocused = true"
+                @change="emits('change')"
+                @focus="handleNameFocus"
                 @blur="handleNameBlur"
             />
         </span>
         <span
             v-if="showComment"
             class="comment"
-            :class="{untouchable: !wrapperFocused}"
+            :class="{untouchable: !wrapperFocused && !commentFocused}"
             @click.stop="focusCommentInput"
         >
             [<FitSizeLineInput
@@ -92,7 +123,8 @@ const showComment = computed(() => model.value.comment.length > 0 || commentFocu
                 :line-height="fontSize"
                 :font-size="fontSize"
                 v-model="model.comment"
-                @focus="commentFocused = true"
+                @change="emits('change')"
+                @focus="handleCommentFocus"
                 @blur="handleCommentBlur"
             />]
         </span>
@@ -101,6 +133,7 @@ const showComment = computed(() => model.value.comment.length > 0 || commentFocu
 
 <style scoped>
 .name-comment-editor {
+    cursor: default;
     white-space: nowrap;
 }
 
@@ -109,6 +142,7 @@ const showComment = computed(() => model.value.comment.length > 0 || commentFocu
 }
 
 .name-comment-editor > .name > .no-name-warning {
+    cursor: text;
     color: var(--warning-color);
 }
 
@@ -118,6 +152,7 @@ const showComment = computed(() => model.value.comment.length > 0 || commentFocu
 }
 
 .name-comment-editor input {
+    cursor: text;
     border: none;
     background-color: transparent;
 }
