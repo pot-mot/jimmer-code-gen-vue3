@@ -133,6 +133,9 @@ const MultiColumnMidTableJoinInfoJsonSchema: JSONSchemaType<MultiColumnMidTableJ
                 "tableName": {
                     "type": "string"
                 },
+                "tableComment": {
+                    "type": "string"
+                },
                 "readonly": {
                     "type": "boolean"
                 },
@@ -210,6 +213,7 @@ const MultiColumnMidTableJoinInfoJsonSchema: JSONSchemaType<MultiColumnMidTableJ
                 }
             },
             "required": [
+                "tableComment",
                 "tableName"
             ]
         }

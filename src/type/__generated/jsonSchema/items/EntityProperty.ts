@@ -1296,6 +1296,9 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         "tableName": {
                             "type": "string"
                         },
+                        "tableComment": {
+                            "type": "string"
+                        },
                         "readonly": {
                             "type": "boolean"
                         },
@@ -1373,6 +1376,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         }
                     },
                     "required": [
+                        "tableComment",
                         "tableName"
                     ]
                 }
@@ -1510,6 +1514,9 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         "tableName": {
                             "type": "string"
                         },
+                        "tableComment": {
+                            "type": "string"
+                        },
                         "readonly": {
                             "type": "boolean"
                         },
@@ -1587,6 +1594,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         }
                     },
                     "required": [
+                        "tableComment",
                         "tableName"
                     ]
                 }

@@ -3,7 +3,6 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
 const EnumerationStrategyJsonSchema: JSONSchemaType<EnumerationStrategy> = {
     "enum": [
-        "DEFAULT",
         "NAME",
         "ORDINAL"
     ],

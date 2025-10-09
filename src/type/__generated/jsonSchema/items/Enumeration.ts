@@ -89,7 +89,6 @@ const EnumerationJsonSchema: JSONSchemaType<Enumeration> = {
     "definitions": {
         "EnumerationStrategy": {
             "enum": [
-                "DEFAULT",
                 "NAME",
                 "ORDINAL"
             ],

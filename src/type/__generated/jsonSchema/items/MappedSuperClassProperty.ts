@@ -1290,6 +1290,9 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         "tableName": {
                             "type": "string"
                         },
+                        "tableComment": {
+                            "type": "string"
+                        },
                         "readonly": {
                             "type": "boolean"
                         },
@@ -1367,6 +1370,7 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         }
                     },
                     "required": [
+                        "tableComment",
                         "tableName"
                     ]
                 }
@@ -1504,6 +1508,9 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         "tableName": {
                             "type": "string"
                         },
+                        "tableComment": {
+                            "type": "string"
+                        },
                         "readonly": {
                             "type": "boolean"
                         },
@@ -1581,6 +1588,7 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         }
                     },
                     "required": [
+                        "tableComment",
                         "tableName"
                     ]
                 }

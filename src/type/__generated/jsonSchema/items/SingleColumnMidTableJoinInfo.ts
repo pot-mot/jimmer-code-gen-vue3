@@ -29,6 +29,9 @@ const SingleColumnMidTableJoinInfoJsonSchema: JSONSchemaType<SingleColumnMidTabl
                 "tableName": {
                     "type": "string"
                 },
+                "tableComment": {
+                    "type": "string"
+                },
                 "readonly": {
                     "type": "boolean"
                 },
@@ -106,6 +109,7 @@ const SingleColumnMidTableJoinInfoJsonSchema: JSONSchemaType<SingleColumnMidTabl
                 }
             },
             "required": [
+                "tableComment",
                 "tableName"
             ]
         }

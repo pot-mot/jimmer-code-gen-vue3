@@ -107,7 +107,7 @@ export const defaultEnumeration = (groupId: string): Enumeration => ({
     subPackagePath: "",
     extraImports: [],
     extraAnnotations: [],
-    strategy: "DEFAULT",
+    strategy: "NAME",
     items: [
         defaultEnumerationItem()
     ]

@@ -144,7 +144,6 @@ const ManyToOneAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToOneAssociationI
         },
         "ForeignKeyType": {
             "enum": [
-                "AUTO",
                 "FAKE",
                 "REAL"
             ],

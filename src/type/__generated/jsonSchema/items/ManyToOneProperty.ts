@@ -180,6 +180,9 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                         "tableName": {
                             "type": "string"
                         },
+                        "tableComment": {
+                            "type": "string"
+                        },
                         "readonly": {
                             "type": "boolean"
                         },
@@ -257,6 +260,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                         }
                     },
                     "required": [
+                        "tableComment",
                         "tableName"
                     ]
                 }
@@ -394,6 +398,9 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                         "tableName": {
                             "type": "string"
                         },
+                        "tableComment": {
+                            "type": "string"
+                        },
                         "readonly": {
                             "type": "boolean"
                         },
@@ -471,6 +478,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                         }
                     },
                     "required": [
+                        "tableComment",
                         "tableName"
                     ]
                 }

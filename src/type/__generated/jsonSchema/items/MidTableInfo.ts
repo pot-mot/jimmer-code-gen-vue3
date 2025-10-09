@@ -7,6 +7,9 @@ const MidTableInfoJsonSchema: JSONSchemaType<MidTableInfo> = {
         "tableName": {
             "type": "string"
         },
+        "tableComment": {
+            "type": "string"
+        },
         "readonly": {
             "type": "boolean"
         },
@@ -84,6 +87,7 @@ const MidTableInfoJsonSchema: JSONSchemaType<MidTableInfo> = {
         }
     },
     "required": [
+        "tableComment",
         "tableName"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"

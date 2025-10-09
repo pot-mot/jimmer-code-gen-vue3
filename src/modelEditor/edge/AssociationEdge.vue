@@ -14,6 +14,14 @@ const smoothStepPath = computed(() => {
     return getSmoothStepPath(props)
 })
 
+const strokeDasharray = computed(() => {
+    if (props.data.association.foreignKeyType === "FAKE") {
+        return "5"
+    } else {
+        return "0"
+    }
+})
+
 // 曲线中点控制 label 位置
 const edgeRef = useTemplateRef<InstanceType<typeof BaseEdge>>("edgeRef")
 const labelPoint = ref<{ x: number; y: number }>({x: 0, y: 0});
@@ -134,6 +142,7 @@ const handleToolBarResize = (size: { width: number, height: number }) => {
 :deep(.edge-line) {
     stroke: var(--edge-color) !important;
     stroke-width: var(--edge-width) !important;
+    stroke-dasharray: v-bind(strokeDasharray);
     transition: stroke 0.2s ease, stroke-width 0.2s ease;
 }
 </style>

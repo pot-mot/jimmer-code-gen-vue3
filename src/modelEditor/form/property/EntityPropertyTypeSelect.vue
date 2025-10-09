@@ -136,7 +136,7 @@ const selectEntity = (entity: EntityWithProperties) => {
             sourcePropertyId: sourceProperty.id,
             referencedEntityId: entity.id,
             mappedProperty,
-            foreignKeyType: "AUTO",
+            foreignKeyType: "REAL",
         }
 
         addAssociation(association)

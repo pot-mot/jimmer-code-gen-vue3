@@ -1,4 +1,4 @@
-type ForeignKeyType = 'AUTO' | 'REAL' | 'FAKE'
+type ForeignKeyType = 'REAL' | 'FAKE'
 
 type SingleColumnJoinInfo = {
     type: "SingleColumn",

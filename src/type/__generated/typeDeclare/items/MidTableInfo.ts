@@ -2,6 +2,7 @@ export default Object.freeze({
     fileName: 'MidTableInfo.d.ts',
     content: `type MidTableInfo = {
     tableName: string
+    tableComment: string
     readonly?: boolean
     preventDeletionBySource?: boolean
     preventDeletionByTarget?: boolean

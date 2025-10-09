@@ -129,7 +129,6 @@ const ManyToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToOneAbst
         },
         "ForeignKeyType": {
             "enum": [
-                "AUTO",
                 "FAKE",
                 "REAL"
             ],

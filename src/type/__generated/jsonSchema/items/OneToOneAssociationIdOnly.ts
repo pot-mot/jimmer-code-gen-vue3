@@ -144,7 +144,6 @@ const OneToOneAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAssociationIdO
         },
         "ForeignKeyType": {
             "enum": [
-                "AUTO",
                 "FAKE",
                 "REAL"
             ],

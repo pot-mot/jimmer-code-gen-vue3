@@ -96,6 +96,9 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                         "tableName": {
                             "type": "string"
                         },
+                        "tableComment": {
+                            "type": "string"
+                        },
                         "readonly": {
                             "type": "boolean"
                         },
@@ -173,6 +176,7 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                         }
                     },
                     "required": [
+                        "tableComment",
                         "tableName"
                     ]
                 }
@@ -310,6 +314,9 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                         "tableName": {
                             "type": "string"
                         },
+                        "tableComment": {
+                            "type": "string"
+                        },
                         "readonly": {
                             "type": "boolean"
                         },
@@ -387,6 +394,7 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                         }
                     },
                     "required": [
+                        "tableComment",
                         "tableName"
                     ]
                 }

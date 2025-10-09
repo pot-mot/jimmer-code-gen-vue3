@@ -3,7 +3,6 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
 const ForeignKeyTypeJsonSchema: JSONSchemaType<ForeignKeyType> = {
     "enum": [
-        "AUTO",
         "FAKE",
         "REAL"
     ],

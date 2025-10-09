@@ -180,6 +180,9 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                         "tableName": {
                             "type": "string"
                         },
+                        "tableComment": {
+                            "type": "string"
+                        },
                         "readonly": {
                             "type": "boolean"
                         },
@@ -257,6 +260,7 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                         }
                     },
                     "required": [
+                        "tableComment",
                         "tableName"
                     ]
                 }
@@ -394,6 +398,9 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                         "tableName": {
                             "type": "string"
                         },
+                        "tableComment": {
+                            "type": "string"
+                        },
                         "readonly": {
                             "type": "boolean"
                         },
@@ -471,6 +478,7 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                         }
                     },
                     "required": [
+                        "tableComment",
                         "tableName"
                     ]
                 }
