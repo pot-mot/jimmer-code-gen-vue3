@@ -31,7 +31,7 @@ watch(() => props.scriptInfo.script.code, () => {
     code.value = props.scriptInfo.script.code
 })
 const generateResult = ref<Record<string, string>>()
-const errorMessage = ref()
+const errorMessage = ref<string>()
 
 const executor = computed(() => new TsScriptExecutor(props.scriptInfo.type))
 

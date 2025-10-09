@@ -11,6 +11,7 @@ import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
 import FileTreeViewer from "@/components/file/FileTreeViewer.vue";
 import {contextDataToSubIds, subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
+import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
 
 const {
     contextData,
@@ -36,14 +37,33 @@ const handleScriptInfoSubmit = (scriptInfo: ScriptInfo<any>) => {
     scriptsStore.value.update(scriptInfo.key, scriptInfo)
 }
 
-const generateResult = ref<Record<string, string>>({})
+const generateResult = ref<Record<string, string>>()
+const errorMessage = ref<string>()
+
+const receiveError = (error: any) => {
+    if (typeof error === 'string') {
+        errorMessage.value = error
+    } else if (error instanceof Error) {
+        errorMessage.value = error.message
+    } else if (typeof error === 'object') {
+        errorMessage.value = jsonPrettyFormat(error)
+    } else {
+        errorMessage.value = String(error)
+    }
+}
+
 
 const handleGenerate = async () => {
     await withLoading("Generating...", async () => {
-        generateResult.value = generate(
-            getContext(),
-            isModelSelectionNotEmpty.value ? subIdSetToSubIds(selectedIdSets.value) : contextDataToSubIds(contextData.value)
-        )
+        try {
+            generateResult.value = generate(
+                getContext(),
+                isModelSelectionNotEmpty.value ? subIdSetToSubIds(selectedIdSets.value) : contextDataToSubIds(contextData.value)
+            )
+        } catch (e) {
+            receiveError(e)
+            generateResult.value = undefined
+        }
     })
 }
 
@@ -59,11 +79,24 @@ watch(() => openState.value, async () => {
         v-model="openState"
         can-resize
     >
-        <div>
-            <button @click="handleGenerate">Generate</button>
-            <button @click="isScriptOpen = true">Edit Scripts</button>
+        <div
+            class="error-message-content"
+            v-if="errorMessage"
+        >
+            {{ errorMessage }}
         </div>
-        <FileTreeViewer style="height: calc(100% - 2rem)" :files="generateResult"/>
+
+        <FileTreeViewer
+            v-if="generateResult"
+            :files="generateResult"
+        >
+            <template #left-top>
+                <div>
+                    <button @click="handleGenerate">Generate</button>
+                    <button @click="isScriptOpen = true">Edit Scripts</button>
+                </div>
+            </template>
+        </FileTreeViewer>
 
         <DragResizeDialog
             v-model="isScriptOpen"
@@ -96,7 +129,7 @@ watch(() => openState.value, async () => {
     overflow: auto;
 }
 
-.script-pane {
-    overflow: auto;
+.error-message-content {
+    color: var(--danger-color);
 }
 </style>
