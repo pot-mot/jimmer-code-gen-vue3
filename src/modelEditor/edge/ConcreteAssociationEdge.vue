@@ -16,13 +16,14 @@ const associationEdit = ref(false)
     <AssociationEdge
         v-bind.prop="props"
         class="concrete-association-edge"
+        :class="{selected}"
     >
         <template #label>
             <div style="display: flex; justify-content: center;">
                 <AssociationViewer
                     v-if="!associationEdit"
                     :association="data.association"
-                    @click="associationEdit = true"
+                    @click.stop="associationEdit = true"
                 />
                 <NameCommentEditor
                     v-else
@@ -31,12 +32,18 @@ const associationEdit = ref(false)
                     auto-focus
                     @change="associationEdit = false"
                     @blur="associationEdit = false"
+                    @click.stop
                 />
             </div>
-            <div style="display: flex; justify-content: center; line-height: 2.25rem;">
+
+            <div style="display: flex; justify-content: center; line-height: 2rem;">
                 <EntityIdViewer :id="data.association.referencedEntityId" hide-comment ctrl-focus/>
                 <span>.</span>
-                <NameCommentEditor v-model="data.association.mappedProperty"/>
+                <NameCommentEditor
+                    v-model="data.association.mappedProperty"
+                    class="with-border-bg"
+                    @click.stop
+                />
                 <span style="padding-right: 0.5rem;">:</span>
                 <span v-if="data.association.mappedProperty.typeIsList">List<</span>
                 <EntityIdViewer :id="data.association.mappedProperty.referencedEntityId" hide-comment ctrl-focus/>

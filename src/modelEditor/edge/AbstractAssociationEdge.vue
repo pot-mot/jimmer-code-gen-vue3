@@ -19,20 +19,6 @@ const referencedAbstractEntity = computed(() => {
     return contextData.value.mappedSuperClassMap.get(props.data.association.mappedProperty.referencedAbstractEntityId)
 })
 
-const mappedPropertyInfo = computed(() => {
-    if (!referencedAbstractEntity.value) {
-        return {
-            name: props.data.association.mappedProperty.name.replace(INHERIT_ENTITY, "[NOT EXISTED]"),
-            comment: props.data.association.mappedProperty.comment.replace(INHERIT_ENTITY, "[NOT EXISTED]"),
-        }
-    } else {
-        return {
-            name: props.data.association.mappedProperty.name.replace(INHERIT_ENTITY, `$${referencedAbstractEntity.value.name}$`),
-            comment: props.data.association.mappedProperty.comment.replace(INHERIT_ENTITY, `$${referencedAbstractEntity.value.comment}$`),
-        }
-    }
-})
-
 const associationEdit = ref(false)
 
 const associationNameComment = computed({
@@ -47,19 +33,35 @@ const associationNameComment = computed({
         props.data.association.commentTemplate = value.comment
     }
 })
+
+const mappedPropertyEdit = ref(false)
+
+const mappedPropertyInfo = computed(() => {
+    if (!referencedAbstractEntity.value) {
+        return {
+            name: props.data.association.mappedProperty.name.replace(INHERIT_ENTITY, "[NOT EXISTED]"),
+            comment: props.data.association.mappedProperty.comment.replace(INHERIT_ENTITY, "[NOT EXISTED]"),
+        }
+    } else {
+        return {
+            name: props.data.association.mappedProperty.name.replace(INHERIT_ENTITY, `$${referencedAbstractEntity.value.name}$`),
+            comment: props.data.association.mappedProperty.comment.replace(INHERIT_ENTITY, `$${referencedAbstractEntity.value.comment}$`),
+        }
+    }
+})
 </script>
 
 <template>
     <AssociationEdge
         v-bind.prop="props"
-        class="concrete-association-edge"
+        class="association-association-edge"
     >
         <template #label>
             <div style="display: flex; justify-content: center;">
                 <AssociationViewer
                     v-if="!associationEdit"
                     :association="data.association"
-                    @click="associationEdit = true"
+                    @click.stop="associationEdit = true"
                 />
                 <NameCommentEditor
                     v-else
@@ -68,12 +70,27 @@ const associationNameComment = computed({
                     auto-focus
                     @change="associationEdit = false"
                     @blur="associationEdit = false"
+                    @click.stop
                 />
             </div>
-            <div style="display: flex; justify-content: center; line-height: 2.25rem;">
+
+            <div style="display: flex; justify-content: center; line-height: 2rem;">
                 <EntityIdViewer :id="data.association.referencedEntityId" hide-comment ctrl-focus/>
                 <span>.</span>
-                <NameCommentViewer :data="mappedPropertyInfo"/>
+                <NameCommentViewer
+                    v-if="!mappedPropertyEdit"
+                    :data="mappedPropertyInfo"
+                    @click.stop="mappedPropertyEdit = true"
+                />
+                <NameCommentEditor
+                    v-else
+                    v-model="data.association.mappedProperty"
+                    class="with-border-bg"
+                    auto-focus
+                    @change="mappedPropertyEdit = false"
+                    @blur="mappedPropertyEdit = false"
+                    @click.stop
+                />
                 <span style="padding-right: 0.5rem;">:</span>
                 <span v-if="data.association.mappedProperty.typeIsList">List<</span>
                 <span style="color: var(--comment-color);">$</span>

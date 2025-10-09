@@ -253,7 +253,7 @@ export const useModelEditor = createStore(() => {
         association: AssociationIdOnly,
         labelPosition: LabelPosition = {
             from: 'source',
-            percentage: 0.5
+            percentage: 50
         }
     ) => {
         const contextData = getContextData()

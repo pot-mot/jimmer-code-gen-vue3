@@ -79,7 +79,7 @@ onMounted(async () => {
     }
 })
 
-const showComment = computed(() => model.value.comment.length > 0 || wrapperFocused.value)
+const showComment = computed(() => model.value.comment.length > 0 || nameFocused.value || commentFocused.value)
 </script>
 
 <template>
