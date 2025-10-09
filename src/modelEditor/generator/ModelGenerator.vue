@@ -54,6 +54,8 @@ const receiveError = (error: any) => {
 
 
 const handleGenerate = async () => {
+    generateResult.value = undefined
+    errorMessage.value = undefined
     await withLoading("Generating...", async () => {
         try {
             generateResult.value = generate(
