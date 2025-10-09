@@ -13,8 +13,10 @@ const model = defineModel<{
 const props = withDefaults(defineProps<{
     autoFocus?: boolean
     fontSize?: number
+    blurDelay?: number
 }>(), {
-    fontSize: 16
+    fontSize: 16,
+    blurDelay: 200
 })
 
 const emits = defineEmits<{
@@ -31,7 +33,6 @@ const nameFocused = ref(false)
 const commentFocused = ref(false)
 
 useClickOutside(() => nameCommentEditorRef.value, (e) => {
-    if (props.autoFocus) console.log("click outside", e.target)
     wrapperFocused.value = false
     nameFocused.value = false
     commentFocused.value = false
@@ -56,7 +57,7 @@ const handleNameBlur = () => {
             wrapperFocused.value = false
             emits("blur")
         }
-    }, 200)
+    }, props.blurDelay)
 }
 const handleCommentFocus = () => {
     commentFocused.value = true
@@ -68,7 +69,7 @@ const handleCommentBlur = () => {
             wrapperFocused.value = false
             emits("blur")
         }
-    }, 200)
+    }, props.blurDelay)
 }
 
 onMounted(async () => {
