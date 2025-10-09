@@ -952,22 +952,14 @@ export const useModelEditorHistory = (
         contextData: DeepReadonly<ModelContextData>,
     ): boolean => {
         if ("sourceEntityId" in association) {
-            const sourceEntity = contextData.entityMap.get(association.sourceEntityId)
-            if (!sourceEntity) throw new Error(`[${association.sourceEntityId}] is not existed`)
-            const sourceProperty = sourceEntity.properties.find(property => property.id === association.sourcePropertyId)
-            if (!sourceProperty) throw new Error(`[${association.sourcePropertyId}] is not existed in [${sourceEntity.name}]`)
-            for (const {association} of contextData.associationMap.values()) {
-                if (association.sourcePropertyId === sourceProperty.id) {
+            for (const {association: existedAssociation} of contextData.associationMap.values()) {
+                if (association.id !== existedAssociation.id && association.sourcePropertyId === existedAssociation.sourcePropertyId) {
                     return true
                 }
             }
         } else {
-            const sourceAbstractEntity = contextData.mappedSuperClassMap.get(association.sourceAbstractEntityId)
-            if (!sourceAbstractEntity) throw new Error(`[${association.sourceAbstractEntityId}] is not existed`)
-            const sourceProperty = sourceAbstractEntity.properties.find(property => property.id === association.sourcePropertyId)
-            if (!sourceProperty) throw new Error(`[${association.sourcePropertyId}] is not existed in [${sourceAbstractEntity.name}]`)
-            for (const {association} of contextData.associationMap.values()) {
-                if (association.sourcePropertyId === sourceProperty.id) {
+            for (const {association: existedAssociation} of contextData.associationMap.values()) {
+                if (association.id !== existedAssociation.id && association.sourcePropertyId === existedAssociation.sourcePropertyId) {
                     return true
                 }
             }
@@ -989,10 +981,10 @@ export const useModelEditorHistory = (
             sourceNode = vueFlow.findNode(association.sourceEntityId)
             if (!sourceNode) throw new Error(`[${association.sourceEntityId}] is not existed`)
             sourceHandleId = association.sourcePropertyId
-            for (const {association} of contextData.associationMap.values()) {
-                if (association.sourcePropertyId === sourceHandleId) {
-                    const sourceProperty = sourceEntity.properties.find(property => property.id === association.sourcePropertyId)
-                    if (!sourceProperty) throw new Error(`[${association.sourcePropertyId}] is not existed`)
+            for (const {association: existedAssociation} of contextData.associationMap.values()) {
+                if (existedAssociation.id !== association.id && existedAssociation.sourcePropertyId === sourceHandleId) {
+                    const sourceProperty = sourceEntity.properties.find(property => property.id === sourceHandleId)
+                    if (!sourceProperty) throw new Error(`[${existedAssociation.sourcePropertyId}] is not existed`)
                     throw new Error(`[${sourceProperty.name}] cannot used as source in two association`)
                 }
             }
@@ -1002,10 +994,10 @@ export const useModelEditorHistory = (
             sourceNode = vueFlow.findNode(association.sourceAbstractEntityId)
             if (!sourceNode) throw new Error(`[${association.sourceAbstractEntityId}] is not existed`)
             sourceHandleId = association.sourcePropertyId
-            for (const {association} of contextData.associationMap.values()) {
-                if (association.sourcePropertyId === sourceHandleId) {
-                    const sourceProperty = sourceAbstractEntity.properties.find(property => property.id === association.sourcePropertyId)
-                    if (!sourceProperty) throw new Error(`[${association.sourcePropertyId}] is not existed`)
+            for (const {association: existedAssociation} of contextData.associationMap.values()) {
+                if (existedAssociation.id !== association.id && existedAssociation.sourcePropertyId === sourceHandleId) {
+                    const sourceProperty = sourceAbstractEntity.properties.find(property => property.id === sourceHandleId)
+                    if (!sourceProperty) throw new Error(`[${existedAssociation.sourcePropertyId}] is not existed`)
                     throw new Error(`[${sourceProperty.name}] cannot used as source in two association`)
                 }
             }
