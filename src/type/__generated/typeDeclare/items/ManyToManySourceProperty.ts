@@ -4,7 +4,7 @@ export default Object.freeze({
     category: "ManyToMany_Source"
     typeIsList: true
     joinInfo: SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
-    autoSyncJoinInfoName: boolean
+    autoGenerateJoinInfo: boolean
     nullable: false
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty`,
 })

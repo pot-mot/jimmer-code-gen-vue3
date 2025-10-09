@@ -8,22 +8,24 @@ import {
     ASSOCIATION_MID_TABLE_NAME_TEMPLATE,
 } from "@/type/context/utils/AssociationTemplate.ts";
 
-export const syncPropertyFkJoinInfo = (
-    property: MappedSuperClassProperty
+export const GENERATED_JOIN_INFO = "[[GENERATED_JOIN_INFO]]"
+
+export const generatePropertyFkJoinInfo = (
+    property: MappedSuperClassProperty,
+    entityMap: DeepReadonly<Map<string, EntityWithProperties>>,
+    mappedSuperClassMap: DeepReadonly<Map<string, MappedSuperClassWithProperties>>,
+    embeddableTypeMap: DeepReadonly<Map<string, EmbeddableTypeWithProperties>>,
+    databaseNameStrategy: NameStrategy,
 ) => {
-    const {contextData} = useModelEditor()
-
-    const databaseNameStrategy = contextData.value.model.databaseNameStrategy
-
-    if ("joinInfo" in property) {
-        const referencedEntity = contextData.value.entityMap.get(property.referencedEntityId)
+    if ("joinInfo" in property && property.autoGenerateJoinInfo) {
+        const referencedEntity = entityMap.get(property.referencedEntityId)
         if (!referencedEntity) throw new Error(`[${property.referencedEntityId}] not found`)
-        const referencedIdProperty = getEntityIdProperty(referencedEntity, contextData.value.mappedSuperClassMap)
+        const referencedIdProperty = getEntityIdProperty(referencedEntity, mappedSuperClassMap)
         if (!referencedIdProperty) throw new Error(`[${referencedEntity.id}] has no id property`)
 
         if (property.joinInfo.type === "SingleColumn" || property.joinInfo.type === "MultiColumn") {
             if ("embeddableTypeId" in referencedIdProperty) {
-                const columnNames = flatEmbeddableTypeColumnNames(referencedIdProperty.embeddableTypeId, contextData.value.embeddableTypeMap, referencedIdProperty.columnNameOverrides)
+                const columnNames = flatEmbeddableTypeColumnNames(referencedIdProperty.embeddableTypeId, embeddableTypeMap, referencedIdProperty.columnNameOverrides)
                 property.joinInfo = {
                     type: "MultiColumn",
                     embeddableTypeId: referencedIdProperty.embeddableTypeId,
@@ -43,23 +45,23 @@ export const syncPropertyFkJoinInfo = (
 }
 
 
-export const syncPropertyJoinInfo = (
+export const generatePropertyJoinInfo = (
     property: Property,
     entity: EntityWithProperties,
+    entityMap: DeepReadonly<Map<string, EntityWithProperties>>,
+    mappedSuperClassMap: DeepReadonly<Map<string, MappedSuperClassWithProperties>>,
+    embeddableTypeMap: DeepReadonly<Map<string, EmbeddableTypeWithProperties>>,
+    databaseNameStrategy: NameStrategy,
 ) => {
-    const {contextData} = useModelEditor()
-
-    const databaseNameStrategy = contextData.value.model.databaseNameStrategy
-
-    if ("joinInfo" in property) {
-        const referencedEntity = contextData.value.entityMap.get(property.referencedEntityId)
+    if ("joinInfo" in property && property.autoGenerateJoinInfo) {
+        const referencedEntity = entityMap.get(property.referencedEntityId)
         if (!referencedEntity) throw new Error(`[${property.referencedEntityId}] not found`)
-        const referencedIdProperty = getEntityIdProperty(referencedEntity, contextData.value.mappedSuperClassMap)
+        const referencedIdProperty = getEntityIdProperty(referencedEntity, mappedSuperClassMap)
         if (!referencedIdProperty) throw new Error(`[${referencedEntity.id}] has no id property`)
 
         if (property.joinInfo.type === "SingleColumn" || property.joinInfo.type === "MultiColumn") {
             if ("embeddableTypeId" in referencedIdProperty) {
-                const columnNames = flatEmbeddableTypeColumnNames(referencedIdProperty.embeddableTypeId, contextData.value.embeddableTypeMap, referencedIdProperty.columnNameOverrides)
+                const columnNames = flatEmbeddableTypeColumnNames(referencedIdProperty.embeddableTypeId, embeddableTypeMap, referencedIdProperty.columnNameOverrides)
                 property.joinInfo = {
                     type: "MultiColumn",
                     embeddableTypeId: referencedIdProperty.embeddableTypeId,
@@ -75,7 +77,7 @@ export const syncPropertyJoinInfo = (
                 }
             }
         } else if (property.joinInfo.type === "SingleColumnMidTable" || property.joinInfo.type === "MultiColumnMidTable") {
-            const sourceIdProperty = getEntityIdProperty(entity, contextData.value.mappedSuperClassMap)
+            const sourceIdProperty = getEntityIdProperty(entity, mappedSuperClassMap)
             if (!sourceIdProperty) throw new Error(`[${entity.id}] has no id property`)
 
             if (!("embeddableTypeId" in sourceIdProperty) && !("embeddableTypeId" in referencedIdProperty)) {
@@ -91,7 +93,7 @@ export const syncPropertyJoinInfo = (
                 let targetJoinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
 
                 if ("embeddableTypeId" in sourceIdProperty) {
-                    const sourceColumnNames = flatEmbeddableTypeColumnNames(sourceIdProperty.embeddableTypeId, contextData.value.embeddableTypeMap, sourceIdProperty.columnNameOverrides)
+                    const sourceColumnNames = flatEmbeddableTypeColumnNames(sourceIdProperty.embeddableTypeId, embeddableTypeMap, sourceIdProperty.columnNameOverrides)
                     sourceJoinInfo = {
                         type: "MultiColumn",
                         embeddableTypeId: sourceIdProperty.embeddableTypeId,
@@ -108,7 +110,7 @@ export const syncPropertyJoinInfo = (
                 }
 
                 if ("embeddableTypeId" in referencedIdProperty) {
-                    const targetColumnNames = flatEmbeddableTypeColumnNames(referencedIdProperty.embeddableTypeId, contextData.value.embeddableTypeMap, referencedIdProperty.columnNameOverrides)
+                    const targetColumnNames = flatEmbeddableTypeColumnNames(referencedIdProperty.embeddableTypeId, embeddableTypeMap, referencedIdProperty.columnNameOverrides)
                     targetJoinInfo = {
                         type: "MultiColumn",
                         embeddableTypeId: referencedIdProperty.embeddableTypeId,

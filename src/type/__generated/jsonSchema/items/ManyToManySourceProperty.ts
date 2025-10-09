@@ -24,7 +24,7 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                         }
                     ]
                 },
-                "autoSyncJoinInfoName": {
+                "autoGenerateJoinInfo": {
                     "type": "boolean"
                 },
                 "nullable": {
@@ -33,7 +33,7 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                 }
             },
             "required": [
-                "autoSyncJoinInfoName",
+                "autoGenerateJoinInfo",
                 "category",
                 "joinInfo",
                 "nullable",

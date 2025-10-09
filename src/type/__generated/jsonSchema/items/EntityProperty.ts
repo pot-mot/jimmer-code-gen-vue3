@@ -1191,7 +1191,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                                 }
                             ]
                         },
-                        "autoSyncJoinInfoName": {
+                        "autoGenerateJoinInfo": {
                             "type": "boolean"
                         },
                         "onDissociateAction": {
@@ -1199,7 +1199,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         }
                     },
                     "required": [
-                        "autoSyncJoinInfoName",
+                        "autoGenerateJoinInfo",
                         "category",
                         "joinInfo",
                         "onDissociateAction",
@@ -1676,7 +1676,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                                 }
                             ]
                         },
-                        "autoSyncJoinInfoName": {
+                        "autoGenerateJoinInfo": {
                             "type": "boolean"
                         },
                         "onDissociateAction": {
@@ -1684,7 +1684,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         }
                     },
                     "required": [
-                        "autoSyncJoinInfoName",
+                        "autoGenerateJoinInfo",
                         "category",
                         "joinInfo",
                         "onDissociateAction",
@@ -1776,7 +1776,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                                 }
                             ]
                         },
-                        "autoSyncJoinInfoName": {
+                        "autoGenerateJoinInfo": {
                             "type": "boolean"
                         },
                         "nullable": {
@@ -1785,7 +1785,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         }
                     },
                     "required": [
-                        "autoSyncJoinInfoName",
+                        "autoGenerateJoinInfo",
                         "category",
                         "joinInfo",
                         "nullable",

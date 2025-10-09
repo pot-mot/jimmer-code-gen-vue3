@@ -225,7 +225,7 @@ export const tableToEntity: TableToEntity = (
                 typeIsList: false,
                 associationId,
                 joinInfo,
-                autoSyncJoinInfoName: true,
+                autoGenerateJoinInfo: true,
                 referencedEntityId: referencedEntity.id,
                 idViewName: lowerSourceEntityName + "Id",
                 autoSyncIdViewName: true,

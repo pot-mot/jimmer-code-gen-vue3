@@ -75,7 +75,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                         }
                     ]
                 },
-                "autoSyncJoinInfoName": {
+                "autoGenerateJoinInfo": {
                     "type": "boolean"
                 },
                 "onDissociateAction": {
@@ -83,7 +83,7 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                 }
             },
             "required": [
-                "autoSyncJoinInfoName",
+                "autoGenerateJoinInfo",
                 "category",
                 "joinInfo",
                 "onDissociateAction",

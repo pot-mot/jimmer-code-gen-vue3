@@ -1,8 +1,7 @@
 import {nameTool} from "@/type/context/utils/NameTool.ts";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {firstCaseToLower, firstCaseToUpper} from "@/utils/name/firstCase.ts";
-import {flatEmbeddableTypeColumnNames} from "@/type/context/utils/EmbeddableTypeFlat.ts";
-import {getEntityIdProperty} from "@/type/context/utils/EntityId.ts";
+import {firstCaseToLower} from "@/utils/name/firstCase.ts";
+import {GENERATED_JOIN_INFO} from "@/modelEditor/property/PropertyJoinInfoGenerate.ts";
 
 const toBaseProperty = (property: DeepReadonly<BaseProperty>): BaseProperty => {
     return {
@@ -83,11 +82,17 @@ export const toScalarEnumProperty = (
         category: "SCALAR_ENUM",
         enumId: enumeration.id,
         defaultOrderDirection: undefined,
-        columnInfo: createColumnInfo(property, {
-            type: "VARCHAR(255)",
-            dataSize: 255,
-            numericPrecision: undefined,
-        }), // TODO enumeration type
+        columnInfo:
+            enumeration.strategy === "NAME" ?
+                createColumnInfo(property, {
+                    type: "VARCHAR(255)",
+                    dataSize: 255,
+                    numericPrecision: undefined,
+                }) : createColumnInfo(property, {
+                    type: "INT",
+                    dataSize: 11,
+                    numericPrecision: undefined,
+                }),
         autoSyncColumnName: true,
     }
 }
@@ -109,51 +114,19 @@ export const toManyToOneProperty = (
     referencedEntity: DeepReadonly<EntityWithProperties>,
     associationId: string,
 ): ManyToOneProperty => {
-    const {
-        contextData
-    } = useModelEditor()
-
-    const referencedIdProperty = getEntityIdProperty(referencedEntity, contextData.value.mappedSuperClassMap)
-    if (!referencedIdProperty) throw new Error(`[${referencedEntity.id}] has no id property`)
-
-    const databaseNameStrategy = contextData.value.model.databaseNameStrategy
-
-    if ("embeddableTypeId" in referencedIdProperty) {
-        const columnNames = flatEmbeddableTypeColumnNames(referencedIdProperty.embeddableTypeId, contextData.value.embeddableTypeMap, referencedIdProperty.columnNameOverrides)
-        return {
-            ...toBaseProperty(property),
-            category: "ManyToOne",
-            typeIsList: false,
-            associationId,
-            referencedEntityId: referencedEntity.id,
-            onDissociateAction: "NONE",
-            idViewName: firstCaseToLower(referencedEntity.name) + "Id",
-            autoSyncIdViewName: true,
-            joinInfo: {
-                type: "MultiColumn",
-                embeddableTypeId: referencedIdProperty.embeddableTypeId,
-                columnRefs: columnNames.map(columnName => ({
-                    columnName: nameTool.convert(referencedEntity.name + firstCaseToUpper(columnName), 'UPPER_CAMEL', databaseNameStrategy),
-                    referencedColumnName: columnName,
-                }))
-            },
-            autoSyncJoinInfoName: true,
-        }
-    } else {
-        return {
-            ...toBaseProperty(property),
-            category: "ManyToOne",
-            typeIsList: false,
-            associationId,
-            referencedEntityId: referencedEntity.id,
-            onDissociateAction: "NONE",
-            idViewName: firstCaseToLower(referencedEntity.name) + "Id",
-            autoSyncIdViewName: true,
-            joinInfo: {
-                type: "SingleColumn",
-                columnName: nameTool.convert(referencedEntity.name + "Id", 'UPPER_CAMEL', databaseNameStrategy),
-            },
-            autoSyncJoinInfoName: true,
-        }
+    return {
+        ...toBaseProperty(property),
+        category: "ManyToOne",
+        typeIsList: false,
+        associationId,
+        referencedEntityId: referencedEntity.id,
+        onDissociateAction: "NONE",
+        idViewName: firstCaseToLower(referencedEntity.name) + "Id",
+        autoSyncIdViewName: true,
+        joinInfo: {
+            type: "SingleColumn",
+            columnName: GENERATED_JOIN_INFO,
+        },
+        autoGenerateJoinInfo: true,
     }
 }

@@ -23,6 +23,7 @@ import {
     oneToManyAbstractToReal,
     oneToOneAbstractToReal
 } from "@/type/context/utils/AbstractAssociationToReal.ts";
+import {generatePropertyFkJoinInfo, generatePropertyJoinInfo} from "@/modelEditor/property/PropertyJoinInfoGenerate.ts";
 
 export const contextDataToContext = (
     readonlyContextData: DeepReadonly<ModelContextData>,
@@ -37,6 +38,11 @@ export const contextDataToContext = (
 
     const entityWithCategorizedPropertiesMap = new Map<string, EntityWithCategorizedProperties>()
     for (const [id, entity] of contextData.entityMap) {
+        for (const property of entity.properties) {
+            if ("joinInfo" in property && property.autoGenerateJoinInfo) {
+                generatePropertyJoinInfo(property, entity, contextData.entityMap, contextData.mappedSuperClassMap, contextData.embeddableTypeMap, model.databaseNameStrategy)
+            }
+        }
         const categorizedProperties = categorizeEntityProperties(entity.properties, associationIdOnlyMap)
         const entityWithCategorizedProperties: EntityWithCategorizedProperties = {
             ...entity,
@@ -47,6 +53,11 @@ export const contextDataToContext = (
 
     const mappedSuperClassWithCategorizedPropertiesMap = new Map<string, MappedSuperClassWithCategorizedProperties>()
     for (const [id, mappedSuperClass] of contextData.mappedSuperClassMap) {
+        for (const property of mappedSuperClass.properties) {
+            if ("joinInfo" in property && property.autoGenerateJoinInfo) {
+                generatePropertyFkJoinInfo(property, contextData.entityMap, contextData.mappedSuperClassMap, contextData.embeddableTypeMap, model.databaseNameStrategy)
+            }
+        }
         const categorizedProperties = categorizeAbstractCategorizedProperties(mappedSuperClass.properties, associationIdOnlyMap)
         const mappedSuperClassWithCategorizedProperties: MappedSuperClassWithCategorizedProperties = {
             ...mappedSuperClass,

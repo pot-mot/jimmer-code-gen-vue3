@@ -102,7 +102,7 @@ type OneToOneSourceProperty = {
     category: "OneToOne_Source"
     typeIsList: false
     joinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo | SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
-    autoSyncJoinInfoName: boolean
+    autoGenerateJoinInfo: boolean
     onDissociateAction: OnDissociationAction
 } & BaseProperty & BaseAssociationProperty
 
@@ -122,7 +122,7 @@ type ManyToOneProperty = {
     category: "ManyToOne"
     typeIsList: false
     joinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo | SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
-    autoSyncJoinInfoName: boolean
+    autoGenerateJoinInfo: boolean
     onDissociateAction: OnDissociationAction
 } & BaseProperty & BaseAssociationProperty
 
@@ -142,7 +142,7 @@ type ManyToManySourceProperty = {
     category: "ManyToMany_Source"
     typeIsList: true
     joinInfo: SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
-    autoSyncJoinInfoName: boolean
+    autoGenerateJoinInfo: boolean
     nullable: false
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
 

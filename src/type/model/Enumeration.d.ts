@@ -1,4 +1,4 @@
-type EnumerationStrategy = "DEFAULT" | "NAME" | "ORDINAL"
+type EnumerationStrategy = "NAME" | "ORDINAL"
 
 type EnumerationItem = {
     id: string
