@@ -44,7 +44,7 @@ const toggleSelect = (id: string) => {
         <template #head>
             <ul>
                 <li v-for="id in mappedSuperClassIds" class="selected-item">
-                    <MappedSuperClassIdViewer :id="id" ctrl-focus/>
+                    <MappedSuperClassIdViewer :id="id" hide-comment ctrl-focus/>
                     <IconClose class="remove-button" @click.stop="toggleSelect(id)"/>
                 </li>
             </ul>
