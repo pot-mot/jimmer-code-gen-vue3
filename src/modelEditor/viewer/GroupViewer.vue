@@ -5,6 +5,7 @@ import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 const props = withDefaults(defineProps<{
     group: DeepReadonly<Group> | undefined
     ctrlFocus?: boolean
+    hideComment?: boolean
 }>(), {
     ctrlFocus: false
 })
@@ -26,6 +27,7 @@ const handleFocus = () => {
         class="group-viewer"
         v-if="group"
         :data="group"
+        :hide-comment="hideComment"
         :class="{'ctrl-focus': ctrlFocus}"
         @click.ctrl.stop="handleFocus"
     />

@@ -12,6 +12,7 @@ import {
 const props = withDefaults(defineProps<{
     association: DeepReadonly<AssociationIdOnly> | undefined
     ctrlFocus?: boolean
+    hideComment?: boolean
 }>(), {
     ctrlFocus: false
 })
@@ -84,6 +85,7 @@ const associationNameComment = computed(() => {
         class="association-viewer"
         v-if="associationNameComment"
         :data="associationNameComment"
+        :hide-comment="hideComment"
         :class="{'ctrl-focus': ctrlFocus}"
         @click.ctrl.stop="handleFocus"
     />

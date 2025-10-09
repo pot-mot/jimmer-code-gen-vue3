@@ -5,6 +5,7 @@ import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 const props = withDefaults(defineProps<{
     enumeration: DeepReadonly<Enumeration> | undefined
     ctrlFocus?: boolean
+    hideComment?: boolean
 }>(), {
     ctrlFocus: false
 })
@@ -28,6 +29,7 @@ const handleFocus = () => {
         class="enumeration-viewer"
         v-if="enumeration"
         :data="enumeration"
+        :hide-comment="hideComment"
         :class="{'ctrl-focus': ctrlFocus}"
         @click.ctrl.stop="handleFocus"
     />

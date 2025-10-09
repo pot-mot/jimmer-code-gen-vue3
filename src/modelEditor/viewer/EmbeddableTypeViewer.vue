@@ -5,6 +5,7 @@ import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 const props = withDefaults(defineProps<{
     embeddableType: DeepReadonly<EmbeddableType> | undefined,
     ctrlFocus?: boolean
+    hideComment?: boolean
 }>(), {
     ctrlFocus: false
 })
@@ -28,6 +29,7 @@ const handleFocus = () => {
         class="embeddable-type-viewer"
         v-if="embeddableType"
         :data="embeddableType"
+        :hide-comment="hideComment"
         :class="{'ctrl-focus': ctrlFocus}"
         @click.ctrl.stop="handleFocus"
     />

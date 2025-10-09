@@ -5,6 +5,7 @@ import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 const props = withDefaults(defineProps<{
     mappedSuperClass: DeepReadonly<MappedSuperClass> | undefined
     ctrlFocus?: boolean
+    hideComment?: boolean
 }>(), {
     ctrlFocus: false
 })
@@ -28,6 +29,7 @@ const handleFocus = () => {
         class="mapped-super-class-viewer"
         v-if="mappedSuperClass"
         :data="mappedSuperClass"
+        :hide-comment="hideComment"
         :class="{'ctrl-focus': ctrlFocus}"
         @click.ctrl.stop="handleFocus"
     />

@@ -8,6 +8,7 @@ const {contextData} = useModelEditor()
 const props = withDefaults(defineProps<{
     id: string
     ctrlFocus?: boolean
+    hideComment?: boolean
 }>(), {
     ctrlFocus: false
 })
@@ -20,6 +21,7 @@ const entity = computed(() => {
 <template>
     <EntityViewer
         :entity="entity"
+        :hide-comment="hideComment"
         :ctrl-focus="ctrlFocus"
     />
 </template>

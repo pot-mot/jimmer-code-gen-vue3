@@ -165,16 +165,13 @@ const association = computed(() => {
         <template #head>
             <div class="current-item">
                 <div v-if="'enumId' in property">
-                    <EnumerationIdViewer :id="property.enumId" ctrl-focus/>
+                    <EnumerationIdViewer :id="property.enumId" hide-comment ctrl-focus/>
                 </div>
                 <div v-if="'embeddableTypeId' in property">
-                    <EmbeddableTypeIdViewer :id="property.embeddableTypeId" ctrl-focus/>
+                    <EmbeddableTypeIdViewer :id="property.embeddableTypeId" hide-comment ctrl-focus/>
                 </div>
                 <div v-if="'referencedEntityId' in property">
-                    <EntityViewer
-                        :entity="referencedEntity"
-                        ctrl-focus
-                    />
+                    <EntityViewer :entity="referencedEntity" hide-comment ctrl-focus/>
                     <div
                         v-if="referencedEntity && 'associationId' in property && !association"
                         style="color: var(--danger-color);"
