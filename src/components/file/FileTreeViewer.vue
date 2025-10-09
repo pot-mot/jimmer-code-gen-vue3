@@ -35,6 +35,7 @@ const handleFileClick = (path: string) => {
     <Splitpanes>
         <Pane size="20">
             <div class="pane-content">
+                <slot name="left-top"/>
                 <FileTree
                     :paths="paths"
                     :current-path="currentPath"
