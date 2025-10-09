@@ -78,73 +78,56 @@ export const syncPropertyJoinInfo = (
             const sourceIdProperty = getEntityIdProperty(entity, contextData.value.mappedSuperClassMap)
             if (!sourceIdProperty) throw new Error(`[${entity.id}] has no id property`)
 
-            if ("embeddableTypeId" in sourceIdProperty && "embeddableTypeId" in referencedIdProperty) {
-                const sourceColumnNames = flatEmbeddableTypeColumnNames(sourceIdProperty.embeddableTypeId, contextData.value.embeddableTypeMap, sourceIdProperty.columnNameOverrides)
-                const targetColumnNames = flatEmbeddableTypeColumnNames(referencedIdProperty.embeddableTypeId, contextData.value.embeddableTypeMap, referencedIdProperty.columnNameOverrides)
-                property.joinInfo = {
-                    type: "MultiColumnMidTable",
-                    sourceJoinInfo: {
-                        type: "MultiColumn",
-                        embeddableTypeId: sourceIdProperty.embeddableTypeId,
-                        columnRefs: sourceColumnNames.map(columnName => ({
-                            columnName: nameTool.convert(entity.name + firstCaseToUpper(columnName), 'UPPER_CAMEL', databaseNameStrategy),
-                            referencedColumnName: columnName,
-                        }))
-                    },
-                    targetJoinInfo: {
-                        type: "MultiColumn",
-                        embeddableTypeId: referencedIdProperty.embeddableTypeId,
-                        columnRefs: targetColumnNames.map(columnName => ({
-                            columnName: nameTool.convert(referencedEntity.name + firstCaseToUpper(columnName), 'UPPER_CAMEL', databaseNameStrategy),
-                            referencedColumnName: columnName,
-                        }))
-                    },
-                    tableName: ASSOCIATION_MID_TABLE_NAME_TEMPLATE,
-                    tableComment: ASSOCIATION_MID_TABLE_COMMENT_TEMPLATE,
-                }
-            } else if ("embeddableTypeId" in sourceIdProperty) {
-                const sourceColumnNames = flatEmbeddableTypeColumnNames(sourceIdProperty.embeddableTypeId, contextData.value.embeddableTypeMap, sourceIdProperty.columnNameOverrides)
-                property.joinInfo = {
-                    type: "MultiColumnMidTable",
-                    sourceJoinInfo: {
-                        type: "MultiColumn",
-                        embeddableTypeId: sourceIdProperty.embeddableTypeId,
-                        columnRefs: sourceColumnNames.map(columnName => ({
-                            columnName: nameTool.convert(entity.name + firstCaseToUpper(columnName), 'UPPER_CAMEL', databaseNameStrategy),
-                            referencedColumnName: columnName,
-                        }))
-                    },
-                    targetJoinInfo: {
-                        type: "SingleColumn",
-                        columnName: nameTool.convert(referencedEntity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
-                    },
-                    tableName: ASSOCIATION_MID_TABLE_NAME_TEMPLATE,
-                    tableComment: ASSOCIATION_MID_TABLE_COMMENT_TEMPLATE,
-                }
-            } else if ("embeddableTypeId" in referencedIdProperty) {
-                const targetColumnNames = flatEmbeddableTypeColumnNames(referencedIdProperty.embeddableTypeId, contextData.value.embeddableTypeMap, referencedIdProperty.columnNameOverrides)
-                property.joinInfo = {
-                    type: "MultiColumnMidTable",
-                    sourceJoinInfo: {
-                        type: "SingleColumn",
-                        columnName: nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy),
-                    },
-                    targetJoinInfo: {
-                        type: "MultiColumn",
-                        embeddableTypeId: referencedIdProperty.embeddableTypeId,
-                        columnRefs: targetColumnNames.map(columnName => ({
-                            columnName: nameTool.convert(referencedEntity.name + firstCaseToUpper(columnName), 'UPPER_CAMEL', databaseNameStrategy),
-                            referencedColumnName: columnName,
-                        }))
-                    },
-                    tableName: ASSOCIATION_MID_TABLE_NAME_TEMPLATE,
-                    tableComment: ASSOCIATION_MID_TABLE_COMMENT_TEMPLATE,
-                }
-            } else {
+            if (!("embeddableTypeId" in sourceIdProperty) && !("embeddableTypeId" in referencedIdProperty)) {
                 property.joinInfo = {
                     type: "SingleColumnMidTable",
                     sourceColumnName: nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy),
                     targetColumnName: nameTool.convert(referencedEntity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
+                    tableName: ASSOCIATION_MID_TABLE_NAME_TEMPLATE,
+                    tableComment: ASSOCIATION_MID_TABLE_COMMENT_TEMPLATE,
+                }
+            } else {
+                let sourceJoinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
+                let targetJoinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
+
+                if ("embeddableTypeId" in sourceIdProperty) {
+                    const sourceColumnNames = flatEmbeddableTypeColumnNames(sourceIdProperty.embeddableTypeId, contextData.value.embeddableTypeMap, sourceIdProperty.columnNameOverrides)
+                    sourceJoinInfo = {
+                        type: "MultiColumn",
+                        embeddableTypeId: sourceIdProperty.embeddableTypeId,
+                        columnRefs: sourceColumnNames.map(columnName => ({
+                            columnName: nameTool.convert(entity.name + firstCaseToUpper(columnName), 'UPPER_CAMEL', databaseNameStrategy),
+                            referencedColumnName: columnName,
+                        }))
+                    }
+                } else {
+                    sourceJoinInfo = {
+                        type: "SingleColumn",
+                        columnName: nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy),
+                    }
+                }
+
+                if ("embeddableTypeId" in referencedIdProperty) {
+                    const targetColumnNames = flatEmbeddableTypeColumnNames(referencedIdProperty.embeddableTypeId, contextData.value.embeddableTypeMap, referencedIdProperty.columnNameOverrides)
+                    targetJoinInfo = {
+                        type: "MultiColumn",
+                        embeddableTypeId: referencedIdProperty.embeddableTypeId,
+                        columnRefs: targetColumnNames.map(columnName => ({
+                            columnName: nameTool.convert(referencedEntity.name + firstCaseToUpper(columnName), 'UPPER_CAMEL', databaseNameStrategy),
+                            referencedColumnName: columnName,
+                        }))
+                    }
+                } else {
+                    targetJoinInfo =  {
+                        type: "SingleColumn",
+                        columnName: nameTool.convert(referencedEntity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
+                    }
+                }
+
+                property.joinInfo = {
+                    type: "MultiColumnMidTable",
+                    sourceJoinInfo,
+                    targetJoinInfo,
                     tableName: ASSOCIATION_MID_TABLE_NAME_TEMPLATE,
                     tableComment: ASSOCIATION_MID_TABLE_COMMENT_TEMPLATE,
                 }
