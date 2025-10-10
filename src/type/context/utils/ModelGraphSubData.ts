@@ -83,12 +83,12 @@ export const modelDataToGraphData = (
         if (!node) throw new Error(`Enumeration ${enumeration.id} Node not found`)
         enumerationWithPositions.push({data: enumeration, position: node.position})
     }
-    const associationWithLabelPositions = []
-    for (const associationWithLabelPosition of data.associations) {
-        const association = associationWithLabelPosition.association
+    const edgedAssociations = []
+    for (const edgedAssociation of data.associations) {
+        const association = edgedAssociation.association
         const edge = vueFlow.findEdge(association.id)
         if (!edge) throw new Error(`Association ${association.id} Edge not found`)
-        associationWithLabelPositions.push({data: association, labelPosition: edge.data.labelPosition})
+        edgedAssociations.push({data: association, labelPosition: edge.data.labelPosition})
     }
     return{
         groups: data.groups,
@@ -96,6 +96,6 @@ export const modelDataToGraphData = (
         mappedSuperClasses: mappedSuperClassWithPositions,
         embeddableTypes: embeddableTypeWithPositions,
         enumerations: enumerationWithPositions,
-        associations: associationWithLabelPositions,
+        associations: edgedAssociations,
     }
 }

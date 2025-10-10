@@ -53,11 +53,11 @@ export const contextDataGetSelectSubData = (
         }
     }
     for (const {id: entityId} of result.entities) {
-        for (const associationWithLabelPosition of contextData.associationMap.values()) {
-            const association = associationWithLabelPosition.association
+        for (const edgedAssociation of contextData.associationMap.values()) {
+            const association = edgedAssociation.association
             if ("sourceEntityId" in association && association.sourceEntityId === entityId) {
                 if (!resultAssociationIdSet.has(association.id)) {
-                    result.associations.push(associationWithLabelPosition)
+                    result.associations.push(edgedAssociation)
                     resultAssociationIdSet.add(association.id)
                 }
             }
@@ -70,11 +70,11 @@ export const contextDataGetSelectSubData = (
         }
     }
     for (const {id: mappedSuperClassId} of result.mappedSuperClasses) {
-        for (const associationWithLabelPosition of contextData.associationMap.values()) {
-            const association = associationWithLabelPosition.association
+        for (const edgedAssociation of contextData.associationMap.values()) {
+            const association = edgedAssociation.association
             if ("sourceAbstractEntityId" in association && association.sourceAbstractEntityId === mappedSuperClassId) {
                 if (!resultAssociationIdSet.has(association.id)) {
-                    result.associations.push(associationWithLabelPosition)
+                    result.associations.push(edgedAssociation)
                     resultAssociationIdSet.add(association.id)
                 }
             }
@@ -93,11 +93,11 @@ export const contextDataGetSelectSubData = (
         }
     }
 
-    for (const associationWithLabelPosition of contextData.associationMap.values()) {
-        const association = associationWithLabelPosition.association
+    for (const edgedAssociation of contextData.associationMap.values()) {
+        const association = edgedAssociation.association
         if (selectIds.associationIdSet.has(association.id)) {
             if (!resultAssociationIdSet.has(association.id)) {
-                result.associations.push(associationWithLabelPosition)
+                result.associations.push(edgedAssociation)
                 resultAssociationIdSet.add(association.id)
             }
         }

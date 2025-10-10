@@ -89,16 +89,10 @@ export type ModelEditorHistoryCommands = {
         enumeration: Enumeration
     }>>
 
-    "association:add": CommandDefinition<DeepReadonly<{
-        association: AssociationIdOnly
-        labelPosition: LabelPosition
-    }>, DeepReadonly<{
+    "association:add": CommandDefinition<DeepReadonly<EdgedAssociation>, DeepReadonly<{
         id: string
     }>>
-    "association:change": CommandDefinition<DeepReadonly<{
-        association: AssociationIdOnly
-        labelPosition: LabelPosition
-    }>>
+    "association:change": CommandDefinition<DeepReadonly<EdgedAssociation>>
 
     "import": CommandDefinition<DeepReadonly<{ data: ModelGraphSubData, startPosition: XYPosition }>, DeepReadonly<{
         ids: ModelSubIds,
@@ -906,28 +900,19 @@ export const useModelEditorHistory = (
 
     // 关联
     const associationWatchStopMap = new Map<string, () => void>()
-    const associationOldMap = new Map<string, {
-        association: AssociationIdOnly,
-        labelPosition: LabelPosition
-    } | undefined>()
+    const associationOldMap = new Map<string, EdgedAssociation | undefined>()
     const addAssociationWatcher = (id: string) => {
         const contextData = getContextData()
 
         if (associationWatchStopMap.has(id)) throw new Error(`Association [${id}] is already watched`)
 
-        associationOldMap.set(id, cloneDeepReadonlyRaw(contextData.associationMap.get(id)))
-        const debounceSyncAssociationUpdate = debounce((newAssociation: {
-            association: AssociationIdOnly,
-            labelPosition: LabelPosition
-        } | undefined) => {
+        associationOldMap.set(id, cloneDeepReadonlyRaw<EdgedAssociation | undefined>(contextData.associationMap.get(id)))
+        const debounceSyncAssociationUpdate = debounce((newAssociation: EdgedAssociation | undefined) => {
             const oldAssociation = associationOldMap.get(id)
             if (newAssociation && oldAssociation) {
-                history.executeCommand("association:change", {
-                    association: newAssociation.association,
-                    labelPosition: newAssociation.labelPosition,
-                })
+                history.executeCommand("association:change", newAssociation)
             }
-            associationOldMap.set(id, cloneDeepReadonlyRaw(newAssociation))
+            associationOldMap.set(id, cloneDeepReadonlyRaw<EdgedAssociation | undefined>(newAssociation))
             waitSyncIds.value.delete(id)
         }, SYNC_DEBOUNCE_TIMEOUT)
         const stopWatch = watch(() => contextData.associationMap.get(id),
@@ -1035,10 +1020,7 @@ export const useModelEditorHistory = (
         }
     }
 
-    const addAssociation = (options: DeepReadonly<{
-        association: AssociationIdOnly,
-        labelPosition: LabelPosition
-    }>) => {
+    const addAssociation = (options: DeepReadonly<EdgedAssociation>) => {
         const id = options.association.id
         const contextData = getContextData()
         const vueFlow = getVueFlow()
@@ -1051,15 +1033,14 @@ export const useModelEditorHistory = (
         } = getAssociationSource_CheckSourceUsed(options.association, contextData, vueFlow)
         const {targetNode, targetHandleId} = getAssociationTarget(options.association, vueFlow)
 
-        const association = cloneDeepReadonlyRaw<AssociationIdOnly>(options.association)
-        const labelPosition = cloneDeepReadonlyRaw<LabelPosition>(options.labelPosition)
-        syncAssociationName(association)
-        contextData.associationMap.set(id, {
-            association,
-            labelPosition,
-        })
-        addAssociationWatcher(id)
-        if ("sourceEntityId" in association) {
+        if ("sourceEntityId" in options.association) {
+            const edgedAssociation = cloneDeepReadonlyRaw<ConcreteEdgedAssociation>({
+                association: options.association,
+                labelPosition: options.labelPosition
+            })
+            syncAssociationName(edgedAssociation.association)
+            contextData.associationMap.set(id, edgedAssociation)
+            addAssociationWatcher(id)
             const newEdge: ConcreteAssociationEdge = {
                 id,
                 source: sourceNode.id,
@@ -1067,13 +1048,17 @@ export const useModelEditorHistory = (
                 sourceHandle: sourceHandleId,
                 targetHandle: targetHandleId,
                 type: EdgeType_ConcreteAssociation,
-                data: {
-                    association,
-                    labelPosition,
-                }
+                data: {edgedAssociation}
             }
             vueFlow.addEdges(newEdge)
         } else {
+            const edgedAssociation = cloneDeepReadonlyRaw<AbstractEdgedAssociation>({
+                association: options.association,
+                labelPosition: options.labelPosition
+            })
+            syncAssociationName(edgedAssociation.association)
+            contextData.associationMap.set(id, edgedAssociation)
+            addAssociationWatcher(id)
             const newEdge: AbstractAssociationEdge = {
                 id,
                 source: sourceNode.id,
@@ -1081,10 +1066,7 @@ export const useModelEditorHistory = (
                 sourceHandle: sourceHandleId,
                 targetHandle: targetHandleId,
                 type: EdgeType_AbstractAssociation,
-                data: {
-                    association,
-                    labelPosition: options.labelPosition,
-                }
+                data: {edgedAssociation}
             }
             vueFlow.addEdges(newEdge)
         }
@@ -1095,7 +1077,7 @@ export const useModelEditorHistory = (
         const contextData = getContextData()
         const vueFlow = getVueFlow()
 
-        const association = cloneDeepReadonlyRaw(contextData.associationMap.get(id))
+        const association = cloneDeepReadonlyRaw<EdgedAssociation | undefined>(contextData.associationMap.get(id))
         if (!association) throw new Error(`Association [${id}] is not existed`)
 
         removeAssociationWatcher(id)
@@ -1104,10 +1086,7 @@ export const useModelEditorHistory = (
         vueFlow.removeEdges([id])
         return association
     }
-    const updateAssociation = (options: DeepReadonly<{
-        association: AssociationIdOnly,
-        labelPosition: LabelPosition
-    }>) => {
+    const updateAssociation = (options: DeepReadonly<EdgedAssociation>) => {
         const id = options.association.id
         const contextData = getContextData()
         const vueFlow = getVueFlow()
@@ -1123,14 +1102,12 @@ export const useModelEditorHistory = (
         } = getAssociationSource_CheckSourceUsed(options.association, contextData, vueFlow)
         const {targetNode, targetHandleId} = getAssociationTarget(options.association, vueFlow)
 
-        const association = cloneDeepReadonlyRaw<AssociationIdOnly>(options.association)
-        const labelPosition = cloneDeepReadonlyRaw<LabelPosition>(options.labelPosition)
+        const edgedAssociation = cloneDeepReadonlyRaw<EdgedAssociation>(options)
         removeAssociationWatcher(id)
-        syncAssociationName(association)
-        contextData.associationMap.set(id, {association, labelPosition})
+        syncAssociationName(edgedAssociation.association)
+        contextData.associationMap.set(id, edgedAssociation)
         addAssociationWatcher(id)
-        existedAssociationEdge.data.association = association
-        existedAssociationEdge.data.labelPosition = labelPosition
+        existedAssociationEdge.data.edgedAssociation = edgedAssociation
         if (
             existedAssociationEdge.source !== sourceNode.id ||
             existedAssociationEdge.target !== targetNode.id ||
@@ -1252,9 +1229,9 @@ export const useModelEditorHistory = (
 
             // 真正执行删除
             for (const associationId of idSets.associationIdSet) {
-                const associationWithLabelPosition = contextData.associationMap.get(associationId)
-                if (associationWithLabelPosition) {
-                    const {association, labelPosition} = associationWithLabelPosition
+                const edgedAssociation = contextData.associationMap.get(associationId)
+                if (edgedAssociation) {
+                    const {association, labelPosition} = edgedAssociation
                     result.associations.push({data: association, labelPosition})
                     revertAddAssociation({id: association.id})
                 }

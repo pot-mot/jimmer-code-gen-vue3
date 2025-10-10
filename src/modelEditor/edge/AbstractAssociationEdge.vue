@@ -4,19 +4,28 @@ import {type EdgeProps} from "@vue-flow/core";
 import type {AbstractAssociationEdge} from "@/modelEditor/edge/AbstractAssociationEdge.ts";
 import AssociationViewer from "@/modelEditor/viewer/AssociationViewer.vue";
 import NameCommentViewer from "@/modelEditor/nameComment/NameCommentViewer.vue";
-import {computed, ref} from "vue";
+import {computed, ref, useTemplateRef} from "vue";
 import {INHERIT_ENTITY} from "@/type/context/utils/AbstractAssociationToReal.ts";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import MappedSuperClassViewer from "@/modelEditor/viewer/MappedSuperClassViewer.vue";
 import EntityIdViewer from "@/modelEditor/viewer/EntityIdViewer.vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
+import ForeignKeyTypeButton from "@/modelEditor/edge/labelPosition/ForeignKeyTypeButton.vue";
+import LabelPositionEditor from "@/modelEditor/edge/labelPosition/LabelPositionEditor.vue";
 
 const props = defineProps<EdgeProps<AbstractAssociationEdge["data"]>>()
 
 const {contextData} = useModelEditor()
 
 const referencedAbstractEntity = computed(() => {
-    return contextData.value.mappedSuperClassMap.get(props.data.association.mappedProperty.referencedAbstractEntityId)
+    return contextData.value.mappedSuperClassMap.get(props.data.edgedAssociation.association.mappedProperty.referencedAbstractEntityId)
+})
+
+const associationEdgeRef = useTemplateRef("associationEdgeRef")
+const getPath = computed(() => {
+    return associationEdgeRef.value?.getPath ?? (() => {
+        return undefined
+    })
 })
 
 const associationEdit = ref(false)
@@ -24,13 +33,13 @@ const associationEdit = ref(false)
 const associationNameComment = computed({
     get: () => {
         return {
-            name: props.data.association.nameTemplate,
-            comment: props.data.association.commentTemplate,
+            name: props.data.edgedAssociation.association.nameTemplate,
+            comment: props.data.edgedAssociation.association.commentTemplate,
         }
     },
     set: (value) => {
-        props.data.association.nameTemplate = value.name
-        props.data.association.commentTemplate = value.comment
+        props.data.edgedAssociation.association.nameTemplate = value.name
+        props.data.edgedAssociation.association.commentTemplate = value.comment
     }
 })
 
@@ -39,13 +48,13 @@ const mappedPropertyEdit = ref(false)
 const mappedPropertyInfo = computed(() => {
     if (!referencedAbstractEntity.value) {
         return {
-            name: props.data.association.mappedProperty.name.replace(INHERIT_ENTITY, "[NOT EXISTED]"),
-            comment: props.data.association.mappedProperty.comment.replace(INHERIT_ENTITY, "[NOT EXISTED]"),
+            name: props.data.edgedAssociation.association.mappedProperty.name.replace(INHERIT_ENTITY, "[NOT EXISTED]"),
+            comment: props.data.edgedAssociation.association.mappedProperty.comment.replace(INHERIT_ENTITY, "[NOT EXISTED]"),
         }
     } else {
         return {
-            name: props.data.association.mappedProperty.name.replace(INHERIT_ENTITY, `$${referencedAbstractEntity.value.name}$`),
-            comment: props.data.association.mappedProperty.comment.replace(INHERIT_ENTITY, `$${referencedAbstractEntity.value.comment}$`),
+            name: props.data.edgedAssociation.association.mappedProperty.name.replace(INHERIT_ENTITY, `$${referencedAbstractEntity.value.name}$`),
+            comment: props.data.edgedAssociation.association.mappedProperty.comment.replace(INHERIT_ENTITY, `$${referencedAbstractEntity.value.comment}$`),
         }
     }
 })
@@ -54,13 +63,14 @@ const mappedPropertyInfo = computed(() => {
 <template>
     <AssociationEdge
         v-bind.prop="props"
+        ref="associationEdgeRef"
         class="association-association-edge"
     >
         <template #label>
             <div style="display: flex; justify-content: center;">
                 <AssociationViewer
                     v-if="!associationEdit"
-                    :association="data.association"
+                    :association="data.edgedAssociation.association"
                     @click.stop="associationEdit = true"
                 />
                 <NameCommentEditor
@@ -74,8 +84,9 @@ const mappedPropertyInfo = computed(() => {
                 />
             </div>
 
-            <div v-if="data.association.withMappedProperty" style="display: flex; justify-content: center; line-height: 2rem;">
-                <EntityIdViewer :id="data.association.referencedEntityId" hide-comment ctrl-focus/>
+            <div v-if="data.edgedAssociation.association.withMappedProperty"
+                 style="display: flex; justify-content: center; line-height: 2rem;">
+                <EntityIdViewer :id="data.edgedAssociation.association.referencedEntityId" hide-comment ctrl-focus/>
                 <span>.</span>
                 <NameCommentViewer
                     v-if="!mappedPropertyEdit"
@@ -84,7 +95,7 @@ const mappedPropertyInfo = computed(() => {
                 />
                 <NameCommentEditor
                     v-else
-                    v-model="data.association.mappedProperty"
+                    v-model="data.edgedAssociation.association.mappedProperty"
                     class="with-border-bg"
                     auto-focus
                     @change="mappedPropertyEdit = false"
@@ -92,12 +103,17 @@ const mappedPropertyInfo = computed(() => {
                     @click.stop
                 />
                 <span style="padding-right: 0.5rem;">:</span>
-                <span v-if="data.association.mappedProperty.typeIsList">List<</span>
+                <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">List<</span>
                 <span style="color: var(--comment-color);">$</span>
                 <MappedSuperClassViewer :mapped-super-class="referencedAbstractEntity" hide-comment ctrl-focus/>
                 <span style="color: var(--comment-color);">$</span>
-                <span v-if="data.association.mappedProperty.typeIsList">></span>
+                <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">></span>
             </div>
+        </template>
+
+        <template #toolbar>
+            <ForeignKeyTypeButton v-model="data.edgedAssociation.association"/>
+            <LabelPositionEditor v-model="data.edgedAssociation.labelPosition" :get-path="getPath"/>
         </template>
     </AssociationEdge>
 </template>

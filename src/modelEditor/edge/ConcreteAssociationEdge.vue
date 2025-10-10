@@ -5,9 +5,16 @@ import type {ConcreteAssociationEdge} from "@/modelEditor/edge/ConcreteAssociati
 import AssociationViewer from "@/modelEditor/viewer/AssociationViewer.vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import EntityIdViewer from "@/modelEditor/viewer/EntityIdViewer.vue";
-import {ref} from "vue";
+import {computed, ref, useTemplateRef} from "vue";
+import ForeignKeyTypeButton from "@/modelEditor/edge/labelPosition/ForeignKeyTypeButton.vue";
+import LabelPositionEditor from "@/modelEditor/edge/labelPosition/LabelPositionEditor.vue";
 
 const props = defineProps<EdgeProps<ConcreteAssociationEdge["data"]>>()
+
+const associationEdgeRef = useTemplateRef("associationEdgeRef")
+const getPath = computed(() => {
+    return associationEdgeRef.value?.getPath ?? (() => { return undefined })
+})
 
 const associationEdit = ref(false)
 </script>
@@ -15,19 +22,19 @@ const associationEdit = ref(false)
 <template>
     <AssociationEdge
         v-bind.prop="props"
+        ref="associationEdgeRef"
         class="concrete-association-edge"
-        :class="{selected}"
     >
         <template #label>
             <div style="display: flex; justify-content: center;">
                 <AssociationViewer
                     v-if="!associationEdit"
-                    :association="data.association"
+                    :association="data.edgedAssociation.association"
                     @click.stop="associationEdit = true"
                 />
                 <NameCommentEditor
                     v-else
-                    v-model="data.association"
+                    v-model="data.edgedAssociation.association"
                     class="with-border-bg"
                     auto-focus
                     @change="associationEdit = false"
@@ -36,19 +43,24 @@ const associationEdit = ref(false)
                 />
             </div>
 
-            <div v-if="data.association.withMappedProperty" style="display: flex; justify-content: center; line-height: 2rem;">
-                <EntityIdViewer :id="data.association.referencedEntityId" hide-comment ctrl-focus/>
+            <div v-if="data.edgedAssociation.association.withMappedProperty" style="display: flex; justify-content: center; line-height: 2rem;">
+                <EntityIdViewer :id="data.edgedAssociation.association.referencedEntityId" hide-comment ctrl-focus/>
                 <span>.</span>
                 <NameCommentEditor
-                    v-model="data.association.mappedProperty"
+                    v-model="data.edgedAssociation.association.mappedProperty"
                     class="with-border-bg"
                     @click.stop
                 />
                 <span style="padding-right: 0.5rem;">:</span>
-                <span v-if="data.association.mappedProperty.typeIsList">List<</span>
-                <EntityIdViewer :id="data.association.mappedProperty.referencedEntityId" hide-comment ctrl-focus/>
-                <span v-if="data.association.mappedProperty.typeIsList">></span>
+                <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">List<</span>
+                <EntityIdViewer :id="data.edgedAssociation.association.mappedProperty.referencedEntityId" hide-comment ctrl-focus/>
+                <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">></span>
             </div>
+        </template>
+
+        <template #toolbar>
+            <ForeignKeyTypeButton v-model="data.edgedAssociation.association"/>
+            <LabelPositionEditor v-model="data.edgedAssociation.labelPosition" :get-path="getPath"/>
         </template>
     </AssociationEdge>
 </template>

@@ -1,21 +1,23 @@
 <script setup lang="ts">
-import {computed, onMounted, ref, useTemplateRef, watch} from "vue";
+import {computed, onMounted, readonly, ref, useTemplateRef, watch} from "vue";
 import {BaseEdge, type EdgeProps, getSmoothStepPath} from "@vue-flow/core";
 import type {ConcreteAssociationEdge} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
 import type {AbstractAssociationEdge} from "@/modelEditor/edge/AbstractAssociationEdge.ts";
 import AutoResizeForeignObject from "@/modelEditor/svg/AutoResizeForeignObject.vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 
-const {zoom, isGraphSelectionPlural, modelSelection, executeCommand} = useModelEditor()
+const {zoom, isGraphSelectionPlural} = useModelEditor()
 
 const props = defineProps<EdgeProps<ConcreteAssociationEdge["data"] | AbstractAssociationEdge["data"]>>()
+const association = computed(() => props.data.edgedAssociation.association)
+const labelPosition = computed(() => props.data.edgedAssociation.labelPosition)
 
 const smoothStepPath = computed(() => {
     return getSmoothStepPath(props)
 })
 
 const strokeDasharray = computed(() => {
-    if (props.data.association.foreignKeyType === "FAKE") {
+    if (association.value.foreignKeyType === "FAKE") {
         return "5"
     } else {
         return "0"
@@ -36,22 +38,22 @@ let pathObserver: MutationObserver | undefined = undefined
 // 计算贝塞尔曲线上的点
 const calculateLabelPoint = (path: SVGPathElement) => {
     const totalLength = path.getTotalLength()
-    if ("percentage" in props.data.labelPosition) {
-        if (props.data.labelPosition.from === "source") {
-            labelPoint.value = path.getPointAtLength(totalLength * props.data.labelPosition.percentage / 100)
+    if ("percentage" in labelPosition.value) {
+        if (labelPosition.value.from === "source") {
+            labelPoint.value = path.getPointAtLength(totalLength * labelPosition.value.percentage / 100)
         } else {
-            labelPoint.value = path.getPointAtLength(totalLength - totalLength * props.data.labelPosition.percentage / 100)
+            labelPoint.value = path.getPointAtLength(totalLength - totalLength * labelPosition.value.percentage / 100)
         }
-    } else if ("fixedLength" in props.data.labelPosition) {
-        if (props.data.labelPosition.from === "source") {
-            labelPoint.value = path.getPointAtLength(props.data.labelPosition.fixedLength)
+    } else if ("fixedLength" in labelPosition.value) {
+        if (labelPosition.value.from === "source") {
+            labelPoint.value = path.getPointAtLength(labelPosition.value.fixedLength)
         } else {
-            labelPoint.value = path.getPointAtLength(totalLength - props.data.labelPosition.fixedLength)
+            labelPoint.value = path.getPointAtLength(totalLength - labelPosition.value.fixedLength)
         }
     }
 }
 
-watch(() => props.data.labelPosition, () => {
+watch(() => labelPosition.value, () => {
     const path = getPath()
     if (path === undefined) return
     calculateLabelPoint(path)
@@ -98,92 +100,9 @@ const handleToolBarResize = (size: { width: number, height: number }) => {
     toolBarHeight.value = size.height
 }
 
-// 切换 ForeignKeyType
-const toggleForeignKeyType = () => {
-    if (props.data.association.foreignKeyType === "REAL") {
-        props.data.association.foreignKeyType = "FAKE"
-    } else {
-        props.data.association.foreignKeyType = "REAL"
-    }
-}
-
-const formatNumber = (value: number, decimals: number = 2): number => {
-    return Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals)
-}
-
-// 切换 labelPosition 类型
-const percentageToFixedLength = () => {
-    const path = getPath()
-    if ('percentage' in props.data.labelPosition && path) {
-        executeCommand('association:change', {
-            association: props.data.association,
-            labelPosition: {
-                from: props.data.labelPosition.from,
-                fixedLength: formatNumber(props.data.labelPosition.percentage / 100 * path.getTotalLength())
-            }
-        })
-    }
-}
-
-const fixedLengthToPercentage = () => {
-    const path = getPath()
-    if ('fixedLength' in props.data.labelPosition && path) {
-        executeCommand('association:change', {
-            association: props.data.association,
-            labelPosition: {
-                from: props.data.labelPosition.from,
-                percentage: formatNumber(props.data.labelPosition.fixedLength * 100 / path.getTotalLength())
-            }
-        })
-    }
-}
-
-// 切换 labelPosition 源
-const toggleLabelPositionFrom = () => {
-    if (props.data.labelPosition.from === "source") {
-        if ('fixedLength' in props.data.labelPosition) {
-            const path = getPath()
-            if (path) {
-                executeCommand('association:change', {
-                    association: props.data.association,
-                    labelPosition: {
-                        from: "target",
-                        fixedLength: path.getTotalLength() - props.data.labelPosition.fixedLength
-                    }
-                })
-            }
-        } else {
-            executeCommand('association:change', {
-                association: props.data.association,
-                labelPosition: {
-                    from: "target",
-                    percentage: props.data.labelPosition.percentage
-                }
-            })
-        }
-    } else {
-        if ('fixedLength' in props.data.labelPosition) {
-            const path = getPath()
-            if (path) {
-                executeCommand('association:change', {
-                    association: props.data.association,
-                    labelPosition: {
-                        from: "source",
-                        fixedLength: path.getTotalLength() - props.data.labelPosition.fixedLength
-                    }
-                })
-            }
-        } else {
-            executeCommand('association:change', {
-                association: props.data.association,
-                labelPosition: {
-                    from: "source",
-                    percentage: props.data.labelPosition.percentage
-                }
-            })
-        }
-    }
-}
+defineExpose({
+    getPath
+})
 </script>
 
 <template>
@@ -211,42 +130,6 @@ const toggleLabelPositionFrom = () => {
             style="z-index: var(--edge-toolbar-z-index);"
             :transform="`translate(${labelPoint.x - toolBarWidth / (zoom * 2)} ${labelPoint.y - labelHeight / 2 - (toolBarHeight + 10) / zoom}) scale(${1 / zoom})`"
         >
-            <div style="display: flex; justify-content: center;">
-                <button @click="toggleForeignKeyType">
-                    {{ data.association.foreignKeyType === 'REAL' ? "[REAL]" : "[FAKE]" }}
-                </button>
-            </div>
-
-            <div style="display: flex; justify-content: center; height: 1.5rem;">
-                <button
-                    @click="toggleLabelPositionFrom"
-                    style="width: 4rem; text-align: center; margin-right: 0.25rem; border-radius: 0.25rem;"
-                >
-                    {{ data.labelPosition.from === "source" ? "[source]" : "[target]" }}
-                </button>
-
-                <template v-if="'percentage' in data.labelPosition">
-                    <input
-                        v-model.lazy.number="data.labelPosition.percentage"
-                        @change="data.labelPosition.percentage = Math.min(100, Math.max(0, data.labelPosition.percentage)); modelSelection.selectAssociation(data.association.id);"
-                        style="text-align: center; width: 3rem;"
-                    >
-                    <button @click="percentageToFixedLength"
-                            style="width: 1rem; text-align: center; border-radius: 0 0.25rem 0.25rem 0;">%
-                    </button>
-                </template>
-                <template v-else>
-                    <input
-                        v-model.lazy.number="data.labelPosition.fixedLength"
-                        @change="data.labelPosition.fixedLength = Math.max(0, data.labelPosition.fixedLength); modelSelection.selectAssociation(data.association.id);"
-                        style="text-align: center; width: 3rem;"
-                    >
-                    <button @click="fixedLengthToPercentage"
-                            style="width: 1rem; text-align: center; border-radius: 0 0.25rem 0.25rem 0;">px
-                    </button>
-                </template>
-            </div>
-
             <slot name="toolbar"/>
         </AutoResizeForeignObject>
     </g>

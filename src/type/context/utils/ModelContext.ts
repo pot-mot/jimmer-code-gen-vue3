@@ -40,9 +40,9 @@ export const contextDataToContext = (
     for (const [id, entity] of contextData.entityMap) {
         for (const property of entity.properties) {
             if ("joinInfo" in property && property.autoGenerateJoinInfo) {
-                const associationWithLabelPosition = contextData.associationMap.get(property.associationId)
-                if (associationWithLabelPosition === undefined) throw new Error(`[${id}] is not existed`)
-                const association = associationWithLabelPosition.association
+                const edgedAssociation = contextData.associationMap.get(property.associationId)
+                if (edgedAssociation === undefined) throw new Error(`[${id}] is not existed`)
+                const association = edgedAssociation.association
                 generatePropertyJoinInfo(property, association.foreignKeyType, entity, contextData.entityMap, contextData.mappedSuperClassMap, contextData.embeddableTypeMap, model.databaseNameStrategy)
             }
         }
@@ -58,9 +58,9 @@ export const contextDataToContext = (
     for (const [id, mappedSuperClass] of contextData.mappedSuperClassMap) {
         for (const property of mappedSuperClass.properties) {
             if ("joinInfo" in property && property.autoGenerateJoinInfo) {
-                const associationWithLabelPosition = contextData.associationMap.get(property.associationId)
-                if (associationWithLabelPosition === undefined) throw new Error(`[${id}] is not existed`)
-                const association = associationWithLabelPosition.association
+                const edgedAssociation = contextData.associationMap.get(property.associationId)
+                if (edgedAssociation === undefined) throw new Error(`[${id}] is not existed`)
+                const association = edgedAssociation.association
                 generatePropertyFkJoinInfo(property, association.foreignKeyType, contextData.entityMap, contextData.mappedSuperClassMap, contextData.embeddableTypeMap, model.databaseNameStrategy)
             }
         }

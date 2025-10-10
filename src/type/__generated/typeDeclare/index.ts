@@ -1,6 +1,7 @@
 import AbstractAssociationDeclare from "./items/AbstractAssociation.ts";
 import AbstractAssociationIdOnlyDeclare from "./items/AbstractAssociationIdOnly.ts";
 import AbstractCategorizedPropertiesDeclare from "./items/AbstractCategorizedProperties.ts";
+import AbstractEdgedAssociationDeclare from "./items/AbstractEdgedAssociation.ts";
 import AssociationDeclare from "./items/Association.ts";
 import AssociationIdOnlyDeclare from "./items/AssociationIdOnly.ts";
 import BaseAssociationPropertyDeclare from "./items/BaseAssociationProperty.ts";
@@ -13,10 +14,12 @@ import ColumnPropertyDeclare from "./items/ColumnProperty.ts";
 import ColumnRefDeclare from "./items/ColumnRef.ts";
 import ConcreteAssociationDeclare from "./items/ConcreteAssociation.ts";
 import ConcreteAssociationIdOnlyDeclare from "./items/ConcreteAssociationIdOnly.ts";
+import ConcreteEdgedAssociationDeclare from "./items/ConcreteEdgedAssociation.ts";
 import CrossTypeDeclare from "./items/CrossType.ts";
 import DatabaseDeclare from "./items/Database.ts";
 import DatabaseTypeDeclare from "./items/DatabaseType.ts";
 import DeepReadonlyDeclare from "./items/DeepReadonly.ts";
+import EdgedAssociationDeclare from "./items/EdgedAssociation.ts";
 import EmbeddablePropertyDeclare from "./items/EmbeddableProperty.ts";
 import EmbeddableTypeDeclare from "./items/EmbeddableType.ts";
 import EmbeddableTypeOverridePropertiesDeclare from "./items/EmbeddableTypeOverrideProperties.ts";
@@ -113,6 +116,7 @@ export type TypeMap = {
     AbstractAssociation: AbstractAssociation
     AbstractAssociationIdOnly: AbstractAssociationIdOnly
     AbstractCategorizedProperties: AbstractCategorizedProperties
+    AbstractEdgedAssociation: AbstractEdgedAssociation
     Association: Association
     AssociationIdOnly: AssociationIdOnly
     BaseAssociationProperty: BaseAssociationProperty
@@ -125,9 +129,11 @@ export type TypeMap = {
     ColumnRef: ColumnRef
     ConcreteAssociation: ConcreteAssociation
     ConcreteAssociationIdOnly: ConcreteAssociationIdOnly
+    ConcreteEdgedAssociation: ConcreteEdgedAssociation
     CrossType: CrossType
     Database: Database
     DatabaseType: DatabaseType
+    EdgedAssociation: EdgedAssociation
     EmbeddableProperty: EmbeddableProperty
     EmbeddableType: EmbeddableType
     EmbeddableTypeOverrideProperties: EmbeddableTypeOverrideProperties
@@ -227,6 +233,7 @@ export const typeDeclares = Object.freeze({
     AbstractAssociation: AbstractAssociationDeclare,
     AbstractAssociationIdOnly: AbstractAssociationIdOnlyDeclare,
     AbstractCategorizedProperties: AbstractCategorizedPropertiesDeclare,
+    AbstractEdgedAssociation: AbstractEdgedAssociationDeclare,
     Association: AssociationDeclare,
     AssociationIdOnly: AssociationIdOnlyDeclare,
     BaseAssociationProperty: BaseAssociationPropertyDeclare,
@@ -239,10 +246,12 @@ export const typeDeclares = Object.freeze({
     ColumnRef: ColumnRefDeclare,
     ConcreteAssociation: ConcreteAssociationDeclare,
     ConcreteAssociationIdOnly: ConcreteAssociationIdOnlyDeclare,
+    ConcreteEdgedAssociation: ConcreteEdgedAssociationDeclare,
     CrossType: CrossTypeDeclare,
     Database: DatabaseDeclare,
     DatabaseType: DatabaseTypeDeclare,
     DeepReadonly: DeepReadonlyDeclare,
+    EdgedAssociation: EdgedAssociationDeclare,
     EmbeddableProperty: EmbeddablePropertyDeclare,
     EmbeddableType: EmbeddableTypeDeclare,
     EmbeddableTypeOverrideProperties: EmbeddableTypeOverridePropertiesDeclare,
