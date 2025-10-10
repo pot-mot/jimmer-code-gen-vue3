@@ -11,7 +11,7 @@ import {
     toScalarEmbeddableProperty,
     toScalarEnumProperty,
     toScalarCommonProperty
-} from "@/modelEditor/property/PropertyConvert.ts";
+} from "@/modelEditor/node/property/PropertyConvert.ts";
 import {ref} from "vue";
 import TypePairViewer from "@/modelEditor/viewer/TypePairViewer.vue";
 

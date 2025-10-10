@@ -28,13 +28,26 @@ const MultiColumnJoinInfoJsonSchema: JSONSchemaType<MultiColumnJoinInfo> = {
                     "referencedColumnName"
                 ]
             }
+        },
+        "foreignKeyType": {
+            "$ref": "#/definitions/ForeignKeyType"
         }
     },
     "required": [
         "columnRefs",
         "embeddableTypeId",
+        "foreignKeyType",
         "type"
     ],
+    "definitions": {
+        "ForeignKeyType": {
+            "enum": [
+                "FAKE",
+                "REAL"
+            ],
+            "type": "string"
+        }
+    },
     "$schema": "http://json-schema.org/draft-07/schema#"
 } as any as JSONSchemaType<MultiColumnJoinInfo>
 

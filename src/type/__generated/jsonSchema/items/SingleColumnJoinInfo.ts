@@ -10,12 +10,25 @@ const SingleColumnJoinInfoJsonSchema: JSONSchemaType<SingleColumnJoinInfo> = {
         },
         "columnName": {
             "type": "string"
+        },
+        "foreignKeyType": {
+            "$ref": "#/definitions/ForeignKeyType"
         }
     },
     "required": [
         "columnName",
+        "foreignKeyType",
         "type"
     ],
+    "definitions": {
+        "ForeignKeyType": {
+            "enum": [
+                "FAKE",
+                "REAL"
+            ],
+            "type": "string"
+        }
+    },
     "$schema": "http://json-schema.org/draft-07/schema#"
 } as any as JSONSchemaType<SingleColumnJoinInfo>
 

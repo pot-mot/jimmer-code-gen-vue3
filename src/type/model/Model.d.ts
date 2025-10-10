@@ -12,5 +12,7 @@ type Model = {
     modifiedTime: string
     databaseType: DatabaseType
     databaseNameStrategy: NameStrategy
+    defaultForeignKeyType: ForeignKeyType
     jvmLanguage: JvmLanguage
+    defaultEnumerationStrategy: EnumerationStrategy
 }

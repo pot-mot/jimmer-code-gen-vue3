@@ -99,7 +99,7 @@ export const defaultEnumerationItem = (): EnumerationItem => ({
     extraAnnotations: [],
 })
 
-export const defaultEnumeration = (groupId: string): Enumeration => ({
+export const defaultEnumeration = (groupId: string, strategy: EnumerationStrategy): Enumeration => ({
     groupId,
     id: createId("Enumeration"),
     name: "Enumeration",
@@ -107,7 +107,7 @@ export const defaultEnumeration = (groupId: string): Enumeration => ({
     subPackagePath: "",
     extraImports: [],
     extraAnnotations: [],
-    strategy: "NAME",
+    strategy,
     items: [
         defaultEnumerationItem()
     ]
@@ -144,7 +144,9 @@ export const defaultModelContextData = (): ModelContextData => ({
         modifiedTime: "",
         databaseType: "POSTGRESQL",
         databaseNameStrategy: "LOWER_SNAKE",
+        defaultForeignKeyType: "REAL",
         jvmLanguage: "KOTLIN",
+        defaultEnumerationStrategy: "NAME",
     },
     entityMap: new Map(),
     mappedSuperClassMap: new Map(),

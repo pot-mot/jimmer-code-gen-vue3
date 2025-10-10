@@ -8,6 +8,7 @@ type OneToOneAssociationIdOnly = {
     sourceEntityId: string
     referencedEntityId: string
     sourcePropertyId: string
+    withMappedProperty: boolean
     mappedProperty: OneToOneMappedProperty
     foreignKeyType: ForeignKeyType
 }
@@ -20,6 +21,7 @@ type OneToOneAbstractAssociationIdOnly = {
     sourceAbstractEntityId: string
     referencedEntityId: string
     sourcePropertyId: string
+    withMappedProperty: boolean
     mappedProperty: OneToOneMappedAbstractProperty
     foreignKeyType: ForeignKeyType
 }
@@ -34,6 +36,7 @@ type ManyToOneAssociationIdOnly = {
     sourceEntityId: string
     referencedEntityId: string
     sourcePropertyId: string
+    withMappedProperty: boolean
     mappedProperty: OneToManyProperty
     foreignKeyType: ForeignKeyType
 }
@@ -46,6 +49,7 @@ type ManyToOneAbstractAssociationIdOnly = {
     sourceAbstractEntityId: string
     referencedEntityId: string
     sourcePropertyId: string
+    withMappedProperty: boolean
     mappedProperty: OneToManyAbstractProperty
     foreignKeyType: ForeignKeyType
 }
@@ -60,6 +64,7 @@ type ManyToManyAssociationIdOnly = {
     sourceEntityId: string
     referencedEntityId: string
     sourcePropertyId: string
+    withMappedProperty: boolean
     mappedProperty: ManyToManyMappedProperty
     foreignKeyType: ForeignKeyType
 }

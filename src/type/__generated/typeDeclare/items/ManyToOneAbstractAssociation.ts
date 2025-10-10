@@ -8,6 +8,7 @@ export default Object.freeze({
     sourceAbstractEntity: MappedSuperClassWithInheritInfo
     referencedEntity: EntityWithInheritInfo
     sourceProperty: ManyToOneProperty
+    withMappedProperty: boolean
     mappedProperty: OneToManyAbstractProperty
     foreignKeyType: ForeignKeyType
 }`,

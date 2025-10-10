@@ -6,6 +6,7 @@ type OneToOneAssociation = {
     sourceEntity: EntityWithInheritInfo
     referencedEntity: EntityWithInheritInfo
     sourceProperty: OneToOneSourceProperty
+    withMappedProperty: boolean
     mappedProperty: OneToOneMappedProperty
     foreignKeyType: ForeignKeyType
 }
@@ -18,6 +19,7 @@ type OneToOneAbstractAssociation = {
     sourceAbstractEntity: MappedSuperClassWithInheritInfo
     referencedEntity: EntityWithInheritInfo
     sourceProperty: OneToOneSourceProperty
+    withMappedProperty: boolean
     mappedProperty: OneToOneMappedAbstractProperty
     foreignKeyType: ForeignKeyType
 }
@@ -30,6 +32,7 @@ type ManyToOneAssociation = {
     sourceEntity: EntityWithInheritInfo
     referencedEntity: EntityWithInheritInfo
     sourceProperty: ManyToOneProperty
+    withMappedProperty: boolean
     mappedProperty: OneToManyProperty
     foreignKeyType: ForeignKeyType
 }
@@ -42,6 +45,7 @@ type ManyToOneAbstractAssociation = {
     sourceAbstractEntity: MappedSuperClassWithInheritInfo
     referencedEntity: EntityWithInheritInfo
     sourceProperty: ManyToOneProperty
+    withMappedProperty: boolean
     mappedProperty: OneToManyAbstractProperty
     foreignKeyType: ForeignKeyType
 }
@@ -54,6 +58,7 @@ type ManyToManyAssociation = {
     sourceEntity: EntityWithInheritInfo
     referencedEntity: EntityWithInheritInfo
     sourceProperty: ManyToManySourceProperty
+    withMappedProperty: boolean
     mappedProperty: ManyToManyMappedProperty
     foreignKeyType: ForeignKeyType
 }

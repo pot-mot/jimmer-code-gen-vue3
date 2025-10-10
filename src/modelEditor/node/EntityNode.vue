@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import {Handle, type NodeProps, Position} from "@vue-flow/core";
 import {type EntityNode, NOT_EXIST_ASSOCIATION_ID} from "@/modelEditor/node/EntityNode.ts";
-import EntityPropertyTypeSelect from "@/modelEditor/form/property/EntityPropertyTypeSelect.vue";
+import EntityPropertyTypeSelect from "@/modelEditor/node/property/EntityPropertyTypeSelect.vue";
 import EditList from "@/components/list/selectableList/EditList.vue";
 import {createId, getColorIsDark, getColorVar} from "@/modelEditor/useModelEditor.ts";
-import MappedSuperClassIdMultiSelect from "@/modelEditor/form/entity/MappedSuperClassIdMultiSelect.vue";
+import ExtendsIdMultiSelect from "@/modelEditor/node/extendsId/ExtendsIdMultiSelect.vue";
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
 import {computed, ref, useTemplateRef, watch} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
@@ -61,7 +61,7 @@ watch(() => handleIndexMap.value, () => {
         <div class="entity-header">
             <NameCommentEditor v-model="data.entity" :class="groupTheme" style="padding: 2px;"/>
             <span :class="groupTheme" style="color: var(--text-color);">:</span>
-            <MappedSuperClassIdMultiSelect
+            <ExtendsIdMultiSelect
                 style="font-size: 16px; line-height: 32px;"
                 v-model="data.entity.extendsIds"
             />

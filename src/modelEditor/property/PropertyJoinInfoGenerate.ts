@@ -11,6 +11,7 @@ export const GENERATED_JOIN_INFO = "[[GENERATED_JOIN_INFO]]"
 
 export const generatePropertyFkJoinInfo = (
     property: MappedSuperClassProperty,
+    foreignKeyType: ForeignKeyType,
     entityMap: DeepReadonly<Map<string, EntityWithProperties>>,
     mappedSuperClassMap: DeepReadonly<Map<string, MappedSuperClassWithProperties>>,
     embeddableTypeMap: DeepReadonly<Map<string, EmbeddableTypeWithProperties>>,
@@ -31,12 +32,14 @@ export const generatePropertyFkJoinInfo = (
                     columnRefs: columnNames.map(columnName => ({
                         columnName: nameTool.convert(referencedEntity.name + firstCaseToUpper(columnName), 'UPPER_CAMEL', databaseNameStrategy),
                         referencedColumnName: columnName,
-                    }))
+                    })),
+                    foreignKeyType,
                 }
             } else {
                 property.joinInfo = {
                     type: "SingleColumn",
-                    columnName: nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy)
+                    columnName: nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy),
+                    foreignKeyType,
                 }
             }
         }
@@ -46,6 +49,7 @@ export const generatePropertyFkJoinInfo = (
 
 export const generatePropertyJoinInfo = (
     property: Property,
+    foreignKeyType: ForeignKeyType,
     entity: EntityWithProperties,
     entityMap: DeepReadonly<Map<string, EntityWithProperties>>,
     mappedSuperClassMap: DeepReadonly<Map<string, MappedSuperClassWithProperties>>,
@@ -67,12 +71,14 @@ export const generatePropertyJoinInfo = (
                     columnRefs: columnNames.map(columnName => ({
                         columnName: nameTool.convert(referencedEntity.name + firstCaseToUpper(columnName), 'UPPER_CAMEL', databaseNameStrategy),
                         referencedColumnName: columnName,
-                    }))
+                    })),
+                    foreignKeyType,
                 }
             } else {
                 property.joinInfo = {
                     type: "SingleColumn",
-                    columnName: nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy)
+                    columnName: nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy),
+                    foreignKeyType,
                 }
             }
         } else if (property.joinInfo.type === "SingleColumnMidTable" || property.joinInfo.type === "MultiColumnMidTable") {
@@ -99,12 +105,14 @@ export const generatePropertyJoinInfo = (
                         columnRefs: sourceColumnNames.map(columnName => ({
                             columnName: nameTool.convert(entity.name + firstCaseToUpper(columnName), 'UPPER_CAMEL', databaseNameStrategy),
                             referencedColumnName: columnName,
-                        }))
+                        })),
+                        foreignKeyType,
                     }
                 } else {
                     sourceJoinInfo = {
                         type: "SingleColumn",
                         columnName: nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy),
+                        foreignKeyType,
                     }
                 }
 
@@ -116,12 +124,14 @@ export const generatePropertyJoinInfo = (
                         columnRefs: targetColumnNames.map(columnName => ({
                             columnName: nameTool.convert(referencedEntity.name + firstCaseToUpper(columnName), 'UPPER_CAMEL', databaseNameStrategy),
                             referencedColumnName: columnName,
-                        }))
+                        })),
+                        foreignKeyType,
                     }
                 } else {
                     targetJoinInfo =  {
                         type: "SingleColumn",
                         columnName: nameTool.convert(referencedEntity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
+                        foreignKeyType,
                     }
                 }
 

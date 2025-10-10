@@ -240,7 +240,7 @@ export const useModelEditor = createStore(() => {
     }
     const addEnumeration = (
         groupId: string = getCurrentGroupIdOrCreate(),
-        enumeration: Enumeration = defaultEnumeration(groupId),
+        enumeration: Enumeration = defaultEnumeration(groupId, contextData.value.model.defaultEnumerationStrategy),
         position: XYPosition = screenPosition.value
     ) => {
         const contextData = getContextData()

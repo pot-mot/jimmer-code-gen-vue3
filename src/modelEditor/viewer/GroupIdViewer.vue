@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<{
 })
 
 const group = computed(() => {
-    return contextData.value?.groupMap.get(props.id)
+    return contextData.value.groupMap.get(props.id)
 })
 </script>
 

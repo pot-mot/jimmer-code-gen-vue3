@@ -1135,10 +1135,14 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                                         },
                                         "columnName": {
                                             "type": "string"
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnName",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 },
@@ -1169,11 +1173,15 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                                                     "referencedColumnName"
                                                 ]
                                             }
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnRefs",
                                         "embeddableTypeId",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 },
@@ -1261,6 +1269,13 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                     ]
                 }
             ]
+        },
+        "ForeignKeyType": {
+            "enum": [
+                "FAKE",
+                "REAL"
+            ],
+            "type": "string"
         },
         "SingleColumnMidTableJoinInfo": {
             "allOf": [
@@ -1396,10 +1411,14 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                                         },
                                         "columnName": {
                                             "type": "string"
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnName",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 },
@@ -1430,11 +1449,15 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                                                     "referencedColumnName"
                                                 ]
                                             }
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnRefs",
                                         "embeddableTypeId",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 }
@@ -1451,10 +1474,14 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                                         },
                                         "columnName": {
                                             "type": "string"
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnName",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 },
@@ -1485,11 +1512,15 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                                                     "referencedColumnName"
                                                 ]
                                             }
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnRefs",
                                         "embeddableTypeId",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 }
@@ -1628,10 +1659,14 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                                         },
                                         "columnName": {
                                             "type": "string"
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnName",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 },
@@ -1662,11 +1697,15 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                                                     "referencedColumnName"
                                                 ]
                                             }
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnRefs",
                                         "embeddableTypeId",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 },

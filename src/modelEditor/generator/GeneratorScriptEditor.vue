@@ -39,8 +39,10 @@ const receiveError = (error: any) => {
     if (typeof error === 'string') {
         errorMessage.value = error
     } else if (error instanceof Error) {
+        console.error(error)
         errorMessage.value = error.message
     } else if (typeof error === 'object') {
+        console.error(error)
         errorMessage.value = jsonPrettyFormat(error)
     } else {
         errorMessage.value = String(error)

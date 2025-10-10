@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<{
 
 const mappedSuperClassOptions = computed(() => {
     const result = []
-    for (const mappedSuperClass of contextData.value?.mappedSuperClassMap.values() ?? []) {
+    for (const mappedSuperClass of contextData.value.mappedSuperClassMap.values() ?? []) {
         if (!props.ignoreIds.includes(mappedSuperClass.id)) {
             result.push(mappedSuperClass)
         }

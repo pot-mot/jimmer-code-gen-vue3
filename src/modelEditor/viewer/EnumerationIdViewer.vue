@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{
 })
 
 const enumeration = computed(() => {
-    return contextData.value?.enumerationMap.get(props.id)
+    return contextData.value.enumerationMap.get(props.id)
 })
 </script>
 

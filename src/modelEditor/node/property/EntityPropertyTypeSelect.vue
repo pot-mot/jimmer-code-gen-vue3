@@ -11,17 +11,17 @@ import EnumerationIdViewer from "@/modelEditor/viewer/EnumerationIdViewer.vue";
 import {
     toScalarEmbeddableProperty,
     toScalarEnumProperty, idToggleType, toManyToOneProperty, toScalarCommonProperty, idToEmbeddableProperty
-} from "@/modelEditor/property/PropertyConvert.ts";
+} from "@/modelEditor/node/property/PropertyConvert.ts";
 import {computed, nextTick, ref} from "vue";
 import TypePairViewer from "@/modelEditor/viewer/TypePairViewer.vue";
+import {firstCaseToLower} from "@/utils/name/firstCase.ts";
 import {
-    ABSTRACT_ASSOCIATION_FK_COMMENT_TEMPLATE,
-    ABSTRACT_ASSOCIATION_FK_NAME_TEMPLATE
+    ASSOCIATION_FK_COMMENT_TEMPLATE,
+    ASSOCIATION_FK_NAME_TEMPLATE
 } from "@/type/context/utils/AssociationTemplate.ts";
-import {INHERIT_ENTITY} from "@/type/context/utils/AbstractAssociationToReal.ts";
 
 const props = defineProps<{
-    mappedSuperClass: MappedSuperClassWithProperties
+    entity: EntityWithProperties
 }>()
 
 const property = defineModel<EntityProperty>({
@@ -51,7 +51,7 @@ const cleanPropertyReference = () => {
 }
 
 const selectBaseType = (typePair: DeepReadonly<CrossType>) => {
-    executeAsyncBatch(Symbol("property type to embeddableType"), async () => {
+    executeAsyncBatch(Symbol("property type to baseType"), async () => {
         cleanPropertyReference()
 
         if (property.value.category === "ID_COMMON") {
@@ -96,10 +96,9 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
     })
 }
 
-
 const selectEntity = (entity: EntityWithProperties) => {
     if (
-        "associationId" in property.value && contextData.value?.associationMap.has(property.value.associationId) &&
+        "associationId" in property.value && contextData.value.associationMap.has(property.value.associationId) &&
         "referencedEntityId" in property.value && property.value.referencedEntityId === entity.id
     ) return
 
@@ -109,36 +108,46 @@ const selectEntity = (entity: EntityWithProperties) => {
         const associationId = createId("Association")
         const mappedPropertyId = createId("Property")
 
-        const sourceProperty = toManyToOneProperty(property.value, entity, associationId)
-        const mappedProperty: OneToManyAbstractProperty = {
+        const sourceProperty = toManyToOneProperty(
+            property.value,
+            entity,
+            associationId,
+            contextData.value.model.defaultForeignKeyType,
+        )
+        const lowerName = firstCaseToLower(entity.name)
+        const mappedProperty: OneToManyProperty = {
             mappedById: property.value.id,
             id: mappedPropertyId,
-            name: `${INHERIT_ENTITY}List`,
-            comment: `${INHERIT_ENTITY}列表`,
-            idViewName: `${INHERIT_ENTITY}Ids`,
-            autoSyncIdViewName: true,
-            category: "OneToMany_Abstract",
+            name: lowerName + "List",
+            comment: props.entity.comment + "列表",
+            category: "OneToMany",
             associationId,
-            referencedAbstractEntityId: props.mappedSuperClass.id,
+            referencedEntityId: props.entity.id,
+            idViewName: lowerName + "Ids",
+            autoSyncIdViewName: true,
             nullable: false,
             typeIsList: true,
             extraAnnotations: [],
             extraImports: [],
         }
-        const association: ManyToOneAbstractAssociationIdOnly = {
+        const association: ManyToOneAssociationIdOnly = {
             id: associationId,
-            nameTemplate: ABSTRACT_ASSOCIATION_FK_NAME_TEMPLATE,
-            commentTemplate: ABSTRACT_ASSOCIATION_FK_COMMENT_TEMPLATE,
-            type: "ManyToOne_Abstract",
-            sourceAbstractEntityId: props.mappedSuperClass.id,
+            name: ASSOCIATION_FK_NAME_TEMPLATE,
+            useNameTemplate: true,
+            comment: ASSOCIATION_FK_COMMENT_TEMPLATE,
+            useCommentTemplate: true,
+            type: "ManyToOne",
+            sourceEntityId: props.entity.id,
             sourcePropertyId: sourceProperty.id,
             referencedEntityId: entity.id,
+            withMappedProperty: true,
             mappedProperty,
             foreignKeyType: "REAL",
         }
 
         addAssociation(association)
         property.value = sourceProperty
+
         await nextTick()
         await waitChangeSync()
     })
@@ -146,13 +155,13 @@ const selectEntity = (entity: EntityWithProperties) => {
 
 const referencedEntity = computed(() => {
     if ("referencedEntityId" in property.value) {
-        return contextData.value?.entityMap.get(property.value.referencedEntityId)
+        return contextData.value.entityMap.get(property.value.referencedEntityId)
     }
 })
 
 const association = computed(() => {
     if ("associationId" in property.value) {
-        return contextData.value?.associationMap.get(property.value.associationId)
+        return contextData.value.associationMap.get(property.value.associationId)
     }
 })
 </script>

@@ -32,6 +32,9 @@ const OneToOneAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAssociationIdO
         "sourcePropertyId": {
             "type": "string"
         },
+        "withMappedProperty": {
+            "type": "boolean"
+        },
         "mappedProperty": {
             "$ref": "#/definitions/OneToOneMappedProperty"
         },
@@ -50,7 +53,8 @@ const OneToOneAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAssociationIdO
         "sourcePropertyId",
         "type",
         "useCommentTemplate",
-        "useNameTemplate"
+        "useNameTemplate",
+        "withMappedProperty"
     ],
     "definitions": {
         "OneToOneMappedProperty": {

@@ -26,6 +26,9 @@ const ManyToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToOneAbst
         "sourcePropertyId": {
             "type": "string"
         },
+        "withMappedProperty": {
+            "type": "boolean"
+        },
         "mappedProperty": {
             "$ref": "#/definitions/OneToManyAbstractProperty"
         },
@@ -42,7 +45,8 @@ const ManyToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToOneAbst
         "referencedEntityId",
         "sourceAbstractEntityId",
         "sourcePropertyId",
-        "type"
+        "type",
+        "withMappedProperty"
     ],
     "definitions": {
         "OneToManyAbstractProperty": {

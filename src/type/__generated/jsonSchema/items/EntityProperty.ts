@@ -1141,10 +1141,14 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                                         },
                                         "columnName": {
                                             "type": "string"
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnName",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 },
@@ -1175,11 +1179,15 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                                                     "referencedColumnName"
                                                 ]
                                             }
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnRefs",
                                         "embeddableTypeId",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 },
@@ -1267,6 +1275,13 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                     ]
                 }
             ]
+        },
+        "ForeignKeyType": {
+            "enum": [
+                "FAKE",
+                "REAL"
+            ],
+            "type": "string"
         },
         "SingleColumnMidTableJoinInfo": {
             "allOf": [
@@ -1402,10 +1417,14 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                                         },
                                         "columnName": {
                                             "type": "string"
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnName",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 },
@@ -1436,11 +1455,15 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                                                     "referencedColumnName"
                                                 ]
                                             }
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnRefs",
                                         "embeddableTypeId",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 }
@@ -1457,10 +1480,14 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                                         },
                                         "columnName": {
                                             "type": "string"
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnName",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 },
@@ -1491,11 +1518,15 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                                                     "referencedColumnName"
                                                 ]
                                             }
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnRefs",
                                         "embeddableTypeId",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 }
@@ -1634,10 +1665,14 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                                         },
                                         "columnName": {
                                             "type": "string"
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnName",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 },
@@ -1668,11 +1703,15 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                                                     "referencedColumnName"
                                                 ]
                                             }
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnRefs",
                                         "embeddableTypeId",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 },

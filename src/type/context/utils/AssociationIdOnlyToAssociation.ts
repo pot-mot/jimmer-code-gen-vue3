@@ -28,6 +28,7 @@ export const oneToOneIdOnlyToAssociation = (
         sourceEntity,
         referencedEntity,
         sourceProperty,
+        withMappedProperty: idOnly.withMappedProperty,
         mappedProperty: idOnly.mappedProperty,
         foreignKeyType: idOnly.foreignKeyType,
     }
@@ -63,6 +64,7 @@ export const manyToOneIdOnlyToAssociation = (
         sourceEntity,
         referencedEntity,
         sourceProperty,
+        withMappedProperty: idOnly.withMappedProperty,
         mappedProperty: idOnly.mappedProperty,
         foreignKeyType: idOnly.foreignKeyType,
     }
@@ -98,6 +100,7 @@ export const manyToManyIdOnlyToAssociation = (
         sourceEntity,
         referencedEntity,
         sourceProperty,
+        withMappedProperty: idOnly.withMappedProperty,
         mappedProperty: idOnly.mappedProperty,
         foreignKeyType: idOnly.foreignKeyType,
     }
@@ -129,6 +132,7 @@ export const abstractOneToOneIdOnlyToAssociation = (
         sourceAbstractEntity,
         referencedEntity,
         sourceProperty,
+        withMappedProperty: idOnly.withMappedProperty,
         mappedProperty: idOnly.mappedProperty,
         foreignKeyType: idOnly.foreignKeyType,
     }
@@ -160,6 +164,7 @@ export const abstractManyToOneIdOnlyToAssociation = (
         sourceAbstractEntity,
         referencedEntity,
         sourceProperty,
+        withMappedProperty: idOnly.withMappedProperty,
         mappedProperty: idOnly.mappedProperty,
         foreignKeyType: idOnly.foreignKeyType,
     }

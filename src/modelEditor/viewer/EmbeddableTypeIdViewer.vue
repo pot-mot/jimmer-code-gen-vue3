@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{
 })
 
 const embeddableType = computed(() => {
-    return contextData.value?.embeddableTypeMap.get(props.id)
+    return contextData.value.embeddableTypeMap.get(props.id)
 })
 </script>
 

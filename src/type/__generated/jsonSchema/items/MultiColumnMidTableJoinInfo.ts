@@ -21,10 +21,14 @@ const MultiColumnMidTableJoinInfoJsonSchema: JSONSchemaType<MultiColumnMidTableJ
                                 },
                                 "columnName": {
                                     "type": "string"
+                                },
+                                "foreignKeyType": {
+                                    "$ref": "#/definitions/ForeignKeyType"
                                 }
                             },
                             "required": [
                                 "columnName",
+                                "foreignKeyType",
                                 "type"
                             ]
                         },
@@ -55,11 +59,15 @@ const MultiColumnMidTableJoinInfoJsonSchema: JSONSchemaType<MultiColumnMidTableJ
                                             "referencedColumnName"
                                         ]
                                     }
+                                },
+                                "foreignKeyType": {
+                                    "$ref": "#/definitions/ForeignKeyType"
                                 }
                             },
                             "required": [
                                 "columnRefs",
                                 "embeddableTypeId",
+                                "foreignKeyType",
                                 "type"
                             ]
                         }
@@ -76,10 +84,14 @@ const MultiColumnMidTableJoinInfoJsonSchema: JSONSchemaType<MultiColumnMidTableJ
                                 },
                                 "columnName": {
                                     "type": "string"
+                                },
+                                "foreignKeyType": {
+                                    "$ref": "#/definitions/ForeignKeyType"
                                 }
                             },
                             "required": [
                                 "columnName",
+                                "foreignKeyType",
                                 "type"
                             ]
                         },
@@ -110,11 +122,15 @@ const MultiColumnMidTableJoinInfoJsonSchema: JSONSchemaType<MultiColumnMidTableJ
                                             "referencedColumnName"
                                         ]
                                     }
+                                },
+                                "foreignKeyType": {
+                                    "$ref": "#/definitions/ForeignKeyType"
                                 }
                             },
                             "required": [
                                 "columnRefs",
                                 "embeddableTypeId",
+                                "foreignKeyType",
                                 "type"
                             ]
                         }
@@ -218,6 +234,15 @@ const MultiColumnMidTableJoinInfoJsonSchema: JSONSchemaType<MultiColumnMidTableJ
             ]
         }
     ],
+    "definitions": {
+        "ForeignKeyType": {
+            "enum": [
+                "FAKE",
+                "REAL"
+            ],
+            "type": "string"
+        }
+    },
     "$schema": "http://json-schema.org/draft-07/schema#"
 } as any as JSONSchemaType<MultiColumnMidTableJoinInfo>
 

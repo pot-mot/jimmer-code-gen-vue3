@@ -40,7 +40,10 @@ export const contextDataToContext = (
     for (const [id, entity] of contextData.entityMap) {
         for (const property of entity.properties) {
             if ("joinInfo" in property && property.autoGenerateJoinInfo) {
-                generatePropertyJoinInfo(property, entity, contextData.entityMap, contextData.mappedSuperClassMap, contextData.embeddableTypeMap, model.databaseNameStrategy)
+                const associationWithLabelPosition = contextData.associationMap.get(property.associationId)
+                if (associationWithLabelPosition === undefined) throw new Error(`[${id}] is not existed`)
+                const association = associationWithLabelPosition.association
+                generatePropertyJoinInfo(property, association.foreignKeyType, entity, contextData.entityMap, contextData.mappedSuperClassMap, contextData.embeddableTypeMap, model.databaseNameStrategy)
             }
         }
         const categorizedProperties = categorizeEntityProperties(entity.properties, associationIdOnlyMap)
@@ -55,7 +58,10 @@ export const contextDataToContext = (
     for (const [id, mappedSuperClass] of contextData.mappedSuperClassMap) {
         for (const property of mappedSuperClass.properties) {
             if ("joinInfo" in property && property.autoGenerateJoinInfo) {
-                generatePropertyFkJoinInfo(property, contextData.entityMap, contextData.mappedSuperClassMap, contextData.embeddableTypeMap, model.databaseNameStrategy)
+                const associationWithLabelPosition = contextData.associationMap.get(property.associationId)
+                if (associationWithLabelPosition === undefined) throw new Error(`[${id}] is not existed`)
+                const association = associationWithLabelPosition.association
+                generatePropertyFkJoinInfo(property, association.foreignKeyType, contextData.entityMap, contextData.mappedSuperClassMap, contextData.embeddableTypeMap, model.databaseNameStrategy)
             }
         }
         const categorizedProperties = categorizeAbstractCategorizedProperties(mappedSuperClass.properties, associationIdOnlyMap)
@@ -86,10 +92,14 @@ export const contextDataToContext = (
 
     const mappedSuperClassWithInheritInfoMap = new Map<string, MappedSuperClassWithInheritInfo>()
     for (const [id, mappedSuperClass] of mappedSuperClassWithCategorizedPropertiesMap) {
-        const allExtends = getAllExtends(mappedSuperClass, mappedSuperClassWithCategorizedPropertiesMap, allExtendsCacheMap)
+        const {
+            directExtendSet: directExtends,
+            extendsSet: allExtends,
+        } = getAllExtends(mappedSuperClass, mappedSuperClassWithCategorizedPropertiesMap, allExtendsCacheMap)
         const allProperties = getAllProperties(mappedSuperClass, mappedSuperClassWithCategorizedPropertiesMap, allExtends)
         mappedSuperClassWithInheritInfoMap.set(id, {
             ...mappedSuperClass,
+            directExtends,
             allExtends,
             allProperties,
         })
@@ -97,10 +107,14 @@ export const contextDataToContext = (
 
     const entityWithInheritInfoMap = new Map<string, EntityWithInheritInfo>()
     for (const [id, entity] of entityWithCategorizedPropertiesMap) {
-        const allExtends = getAllExtends(entity, mappedSuperClassWithCategorizedPropertiesMap, allExtendsCacheMap)
+        const {
+            directExtendSet: directExtends,
+            extendsSet: allExtends,
+        } = getAllExtends(entity, mappedSuperClassWithCategorizedPropertiesMap, allExtendsCacheMap)
         const allProperties = getAllProperties(entity, mappedSuperClassWithCategorizedPropertiesMap, allExtends)
         entityWithInheritInfoMap.set(id, {
             ...entity,
+            directExtends,
             allExtends,
             allProperties,
         })
@@ -116,12 +130,14 @@ export const contextDataToContext = (
             if (!referencedEntity) throw new Error(`[${mappedProperty.referencedEntityId}] not existed`)
             referencedEntity.properties.push(mappedProperty)
             referencedEntity.allProperties.push(mappedProperty)
-            if (mappedProperty.category === "OneToOne_Mapped" && association.type === "OneToOne") {
-                referencedEntity.oneToOneMappedPropertyMap.set(mappedProperty.id, {...mappedProperty, association})
-            } else if (mappedProperty.category === "OneToMany" && association.type === "ManyToOne") {
-                referencedEntity.oneToManyPropertyMap.set(mappedProperty.id, {...mappedProperty, association})
-            } else if (mappedProperty.category === "ManyToMany_Mapped" && association.type === "ManyToMany") {
-                referencedEntity.manyToManyMappedPropertyMap.set(mappedProperty.id, {...mappedProperty, association})
+            if (association.withMappedProperty) {
+                if (mappedProperty.category === "OneToOne_Mapped" && association.type === "OneToOne") {
+                    referencedEntity.oneToOneMappedPropertyMap.set(mappedProperty.id, {...mappedProperty, association})
+                } else if (mappedProperty.category === "OneToMany" && association.type === "ManyToOne") {
+                    referencedEntity.oneToManyPropertyMap.set(mappedProperty.id, {...mappedProperty, association})
+                } else if (mappedProperty.category === "ManyToMany_Mapped" && association.type === "ManyToMany") {
+                    referencedEntity.manyToManyMappedPropertyMap.set(mappedProperty.id, {...mappedProperty, association})
+                }
             }
         }
     }
@@ -159,9 +175,14 @@ export const contextDataToContext = (
                             break
                         }
                     }
-                    referencedEntity.properties.push(realMappedProperty)
-                    referencedEntity.allProperties.push(realMappedProperty)
-                    referencedEntity.oneToOneMappedPropertyMap.set(realMappedProperty.id, {...realMappedProperty, association: realAssociation})
+                    if (realAssociation.withMappedProperty) {
+                        referencedEntity.properties.push(realMappedProperty)
+                        referencedEntity.allProperties.push(realMappedProperty)
+                        referencedEntity.oneToOneMappedPropertyMap.set(realMappedProperty.id, {
+                            ...realMappedProperty,
+                            association: realAssociation
+                        })
+                    }
                 }
             } else if (
                 abstractAssociation.type === "ManyToOne_Abstract" &&
@@ -185,9 +206,14 @@ export const contextDataToContext = (
                             break
                         }
                     }
-                    referencedEntity.properties.push(realMappedProperty)
-                    referencedEntity.allProperties.push(realMappedProperty)
-                    referencedEntity.oneToManyPropertyMap.set(realMappedProperty.id, {...realMappedProperty, association: realAssociation})
+                    if (realAssociation.withMappedProperty) {
+                        referencedEntity.properties.push(realMappedProperty)
+                        referencedEntity.allProperties.push(realMappedProperty)
+                        referencedEntity.oneToManyPropertyMap.set(realMappedProperty.id, {
+                            ...realMappedProperty,
+                            association: realAssociation
+                        })
+                    }
                 }
             }
         }

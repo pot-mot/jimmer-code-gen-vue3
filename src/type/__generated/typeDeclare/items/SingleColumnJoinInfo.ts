@@ -3,5 +3,6 @@ export default Object.freeze({
     content: `type SingleColumnJoinInfo = {
     type: "SingleColumn",
     columnName: string
+    foreignKeyType: ForeignKeyType
 }`,
 })

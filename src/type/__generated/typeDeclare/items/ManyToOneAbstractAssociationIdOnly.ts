@@ -8,6 +8,7 @@ export default Object.freeze({
     sourceAbstractEntityId: string
     referencedEntityId: string
     sourcePropertyId: string
+    withMappedProperty: boolean
     mappedProperty: OneToManyAbstractProperty
     foreignKeyType: ForeignKeyType
 }`,

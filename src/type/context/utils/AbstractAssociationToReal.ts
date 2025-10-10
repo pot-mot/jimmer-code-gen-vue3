@@ -69,6 +69,7 @@ export const oneToOneAbstractToReal = (
         sourceEntityId: inheritSourceEntity.id,
         sourcePropertyId: newSourcePropertyId,
         referencedEntityId: abstractSourceProperty.referencedEntityId,
+        withMappedProperty: abstractAssociation.withMappedProperty,
         mappedProperty,
         foreignKeyType: abstractAssociation.foreignKeyType,
     }
@@ -140,6 +141,7 @@ export const oneToManyAbstractToReal = (
         sourceEntityId: inheritSourceEntity.id,
         sourcePropertyId: newSourcePropertyId,
         referencedEntityId: abstractSourceProperty.referencedEntityId,
+        withMappedProperty:  abstractAssociation.withMappedProperty,
         mappedProperty,
         foreignKeyType: abstractAssociation.foreignKeyType,
     }

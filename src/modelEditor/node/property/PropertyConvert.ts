@@ -17,7 +17,7 @@ const toBaseProperty = (property: DeepReadonly<BaseProperty>): BaseProperty => {
 const createColumnInfo = (
     property: DeepReadonly<Property>,
     sqlType: DeepReadonly<CrossType["sqlType"]>,
-    databaseNameStrategy = useModelEditor().contextData.value?.model.databaseNameStrategy ?? 'SNAKE'
+    databaseNameStrategy = useModelEditor().contextData.value.model.databaseNameStrategy ?? 'SNAKE'
 ): ColumnProperty["columnInfo"] => {
     return {
         name: nameTool.convert(property.name, 'LOWER_CAMEL', databaseNameStrategy),
@@ -113,6 +113,7 @@ export const toManyToOneProperty = (
     property: DeepReadonly<Property>,
     referencedEntity: DeepReadonly<EntityWithProperties>,
     associationId: string,
+    foreignKeyType: ForeignKeyType,
 ): ManyToOneProperty => {
     return {
         ...toBaseProperty(property),
@@ -126,6 +127,7 @@ export const toManyToOneProperty = (
         joinInfo: {
             type: "SingleColumn",
             columnName: GENERATED_JOIN_INFO,
+            foreignKeyType
         },
         autoGenerateJoinInfo: true,
     }

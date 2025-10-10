@@ -11,7 +11,7 @@ const props = defineProps<{
 }>()
 
 const property = computed(() => {
-    return contextData.value?.entityMap.get(props.entityId)?.properties.find(p => p.id === props.id)
+    return contextData.value.entityMap.get(props.entityId)?.properties.find(p => p.id === props.id)
 })
 </script>
 

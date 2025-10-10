@@ -3,12 +3,14 @@ type ForeignKeyType = 'REAL' | 'FAKE'
 type SingleColumnJoinInfo = {
     type: "SingleColumn",
     columnName: string
+    foreignKeyType: ForeignKeyType
 }
 
 type MultiColumnJoinInfo = {
     type: "MultiColumn",
     embeddableTypeId: string,
     columnRefs: ColumnRef[]
+    foreignKeyType: ForeignKeyType
 }
 
 type MidTableInfo = {

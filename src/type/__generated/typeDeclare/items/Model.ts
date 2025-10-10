@@ -8,6 +8,8 @@ export default Object.freeze({
     modifiedTime: string
     databaseType: DatabaseType
     databaseNameStrategy: NameStrategy
+    defaultForeignKeyType: ForeignKeyType
     jvmLanguage: JvmLanguage
+    defaultEnumerationStrategy: EnumerationStrategy
 }`,
 })

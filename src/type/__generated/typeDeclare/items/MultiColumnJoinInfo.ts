@@ -4,5 +4,6 @@ export default Object.freeze({
     type: "MultiColumn",
     embeddableTypeId: string,
     columnRefs: ColumnRef[]
+    foreignKeyType: ForeignKeyType
 }`,
 })

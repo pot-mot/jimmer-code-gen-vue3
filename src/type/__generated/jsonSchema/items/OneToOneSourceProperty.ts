@@ -25,10 +25,14 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                                 },
                                 "columnName": {
                                     "type": "string"
+                                },
+                                "foreignKeyType": {
+                                    "$ref": "#/definitions/ForeignKeyType"
                                 }
                             },
                             "required": [
                                 "columnName",
+                                "foreignKeyType",
                                 "type"
                             ]
                         },
@@ -59,11 +63,15 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                                             "referencedColumnName"
                                         ]
                                     }
+                                },
+                                "foreignKeyType": {
+                                    "$ref": "#/definitions/ForeignKeyType"
                                 }
                             },
                             "required": [
                                 "columnRefs",
                                 "embeddableTypeId",
+                                "foreignKeyType",
                                 "type"
                             ]
                         },
@@ -152,6 +160,13 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
         }
     ],
     "definitions": {
+        "ForeignKeyType": {
+            "enum": [
+                "FAKE",
+                "REAL"
+            ],
+            "type": "string"
+        },
         "SingleColumnMidTableJoinInfo": {
             "allOf": [
                 {
@@ -286,10 +301,14 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                                         },
                                         "columnName": {
                                             "type": "string"
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnName",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 },
@@ -320,11 +339,15 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                                                     "referencedColumnName"
                                                 ]
                                             }
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnRefs",
                                         "embeddableTypeId",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 }
@@ -341,10 +364,14 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                                         },
                                         "columnName": {
                                             "type": "string"
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnName",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 },
@@ -375,11 +402,15 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                                                     "referencedColumnName"
                                                 ]
                                             }
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnRefs",
                                         "embeddableTypeId",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 }

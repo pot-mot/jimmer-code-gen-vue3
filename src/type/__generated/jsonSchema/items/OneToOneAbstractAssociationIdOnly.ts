@@ -26,6 +26,9 @@ const OneToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAbstra
         "sourcePropertyId": {
             "type": "string"
         },
+        "withMappedProperty": {
+            "type": "boolean"
+        },
         "mappedProperty": {
             "$ref": "#/definitions/OneToOneMappedAbstractProperty"
         },
@@ -42,7 +45,8 @@ const OneToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAbstra
         "referencedEntityId",
         "sourceAbstractEntityId",
         "sourcePropertyId",
-        "type"
+        "type",
+        "withMappedProperty"
     ],
     "definitions": {
         "OneToOneMappedAbstractProperty": {

@@ -204,6 +204,7 @@ export const tableToEntity: TableToEntity = (
                 joinInfo = {
                     type: "SingleColumn",
                     columnName: foreignKey.columnRefs[0].columnName,
+                    foreignKeyType: "REAL",
                 }
             } else {
                 if (idEmbeddableType === undefined)
@@ -214,7 +215,8 @@ export const tableToEntity: TableToEntity = (
                     columnRefs: foreignKey.columnRefs.map(columnRef => ({
                         columnName: columnRef.columnName,
                         referencedColumnName: columnRef.referencedColumnName,
-                    }))
+                    })),
+                    foreignKeyType: "REAL",
                 }
             }
 
@@ -263,6 +265,7 @@ export const tableToEntity: TableToEntity = (
                 sourceEntityId: sourceEntity.id,
                 referencedEntityId: referencedEntity.id,
                 sourcePropertyId: sourcePropertyId,
+                withMappedProperty: true,
                 mappedProperty,
             }
 

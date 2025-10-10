@@ -25,10 +25,14 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                                 },
                                 "columnName": {
                                     "type": "string"
+                                },
+                                "foreignKeyType": {
+                                    "$ref": "#/definitions/ForeignKeyType"
                                 }
                             },
                             "required": [
                                 "columnName",
+                                "foreignKeyType",
                                 "type"
                             ]
                         },
@@ -59,11 +63,15 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                                             "referencedColumnName"
                                         ]
                                     }
+                                },
+                                "foreignKeyType": {
+                                    "$ref": "#/definitions/ForeignKeyType"
                                 }
                             },
                             "required": [
                                 "columnRefs",
                                 "embeddableTypeId",
+                                "foreignKeyType",
                                 "type"
                             ]
                         },
@@ -152,6 +160,13 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
         }
     ],
     "definitions": {
+        "ForeignKeyType": {
+            "enum": [
+                "FAKE",
+                "REAL"
+            ],
+            "type": "string"
+        },
         "SingleColumnMidTableJoinInfo": {
             "allOf": [
                 {
@@ -286,10 +301,14 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                                         },
                                         "columnName": {
                                             "type": "string"
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnName",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 },
@@ -320,11 +339,15 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                                                     "referencedColumnName"
                                                 ]
                                             }
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnRefs",
                                         "embeddableTypeId",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 }
@@ -341,10 +364,14 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                                         },
                                         "columnName": {
                                             "type": "string"
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnName",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 },
@@ -375,11 +402,15 @@ const ManyToOnePropertyJsonSchema: JSONSchemaType<ManyToOneProperty> = {
                                                     "referencedColumnName"
                                                 ]
                                             }
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnRefs",
                                         "embeddableTypeId",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 }

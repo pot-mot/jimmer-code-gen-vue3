@@ -58,7 +58,7 @@ export const entityToTable: EntityToTable = (
 
     type JoinColumnInfo = {
         columnRef: ColumnRef,
-        columnInfo: Omit<ColumnInfo, 'name' | 'nullable' | 'otherConstraints'>
+        columnInfo: Omit<ColumnInfo, 'name' | 'nullable' | 'otherConstraints'>,
     }
 
     const bindJoinColumnInfo = (
@@ -81,7 +81,7 @@ export const entityToTable: EntityToTable = (
                     dataSize: nameMatchedColumn.dataSize,
                     numericPrecision: nameMatchedColumn.numericPrecision,
                     defaultValue: nameMatchedColumn.defaultValue,
-                }
+                },
             })
         }
         return joinColumnInfos
@@ -93,7 +93,9 @@ export const entityToTable: EntityToTable = (
             sourceTable: {name: string, schema: string},
             targetTable: {name: string, schema: string},
             sourceJoinColumnInfos: JoinColumnInfo[],
+            sourceForeignKeyType: ForeignKeyType,
             targetJoinColumnInfos: JoinColumnInfo[],
+            targetForeignKeyType: ForeignKeyType,
             associationType: "OneToOne_Source" | "ManyToOne" | "ManyToMany_Source"
         }>
     ): Table => {
@@ -101,7 +103,9 @@ export const entityToTable: EntityToTable = (
             sourceTable,
             targetTable,
             sourceJoinColumnInfos,
+            sourceForeignKeyType,
             targetJoinColumnInfos,
+            targetForeignKeyType,
             associationType
         } = options
 
@@ -135,24 +139,28 @@ export const entityToTable: EntityToTable = (
                 otherConstraints: []
             })
         }
-        midTable.foreignKeys.push({
-            name: midTable.name + "_S",
-            comment: midTable.comment + " Source Foreign Key",
-            referencedTableSchema: sourceTable.schema,
-            referencedTableName: sourceTable.name,
-            columnRefs: sourceJoinColumnInfos.map(it => it.columnRef),
-            onDelete: "",
-            onUpdate: "",
-        })
-        midTable.foreignKeys.push({
-            name: midTable.name + "_T",
-            comment: midTable.comment + " Target Foreign Key",
-            referencedTableSchema: targetTable.schema,
-            referencedTableName: targetTable.name,
-            columnRefs: targetJoinColumnInfos.map(it => it.columnRef),
-            onDelete: "",
-            onUpdate: "",
-        })
+        if (sourceForeignKeyType === "REAL") {
+            midTable.foreignKeys.push({
+                name: midTable.name + "_S",
+                comment: midTable.comment + " Source Foreign Key",
+                referencedTableSchema: sourceTable.schema,
+                referencedTableName: sourceTable.name,
+                columnRefs: sourceJoinColumnInfos.map(it => it.columnRef),
+                onDelete: "",
+                onUpdate: "",
+            })
+        }
+        if (targetForeignKeyType === "REAL") {
+            midTable.foreignKeys.push({
+                name: midTable.name + "_T",
+                comment: midTable.comment + " Target Foreign Key",
+                referencedTableSchema: targetTable.schema,
+                referencedTableName: targetTable.name,
+                columnRefs: targetJoinColumnInfos.map(it => it.columnRef),
+                onDelete: "",
+                onUpdate: "",
+            })
+        }
 
         if (associationType === "OneToOne_Source") {
             midTable.indexes.push({
@@ -178,6 +186,7 @@ export const entityToTable: EntityToTable = (
 
     const entityIdTableMap = new Map<string, Table>()
     const entityIdTableIdColumnsMap = new Map<string, Column[]>()
+    const defaultForeignKeyType = context.model.defaultForeignKeyType
 
     const tables: Table[] = []
     const midTables: Table[] = []
@@ -232,28 +241,32 @@ export const entityToTable: EntityToTable = (
                     if (refColumns.length !== 1) {
                         throw new Error(`[${entity.name}.${property.name}] refColumns [${refColumns.map(it => it.name).join(", ")}] length is not 1`)
                     }
-                    const columnRef = {
-                        columnName: property.joinInfo.columnName,
-                        referencedColumnName: refColumns[0].name
-                    }
-                    const joinColumnInfos = bindJoinColumnInfo([columnRef], refColumns)
-                    for (const {columnRef, columnInfo} of joinColumnInfos) {
-                        table.columns.push({
-                            ...columnInfo,
-                            name: columnRef.columnName,
-                            comment: property.comment + columnInfo.comment,
-                            nullable: property.nullable,
+
+                    if (property.joinInfo.foreignKeyType === "REAL") {
+                        const columnRef = {
+                            columnName: property.joinInfo.columnName,
+                            referencedColumnName: refColumns[0].name
+                        }
+                        const joinColumnInfos = bindJoinColumnInfo([columnRef], refColumns)
+                        for (const {columnRef, columnInfo} of joinColumnInfos) {
+                            table.columns.push({
+                                ...columnInfo,
+                                name: columnRef.columnName,
+                                comment: property.comment + columnInfo.comment,
+                                nullable: property.nullable,
+                            })
+                        }
+
+                        table.foreignKeys.push({
+                            name: association.name,
+                            comment: association.comment,
+                            referencedTableSchema: refTable.schema,
+                            referencedTableName: refTable.name,
+                            columnRefs: [columnRef],
+                            onDelete: "",
+                            onUpdate: "",
                         })
                     }
-                    table.foreignKeys.push({
-                        name: association.name,
-                        comment: association.comment,
-                        referencedTableSchema: refTable.schema,
-                        referencedTableName: refTable.name,
-                        columnRefs: [columnRef],
-                        onDelete: "",
-                        onUpdate: "",
-                    })
                 } else if (property.joinInfo.type === "MultiColumn") {
                     if (refColumns.length !== property.joinInfo.columnRefs.length) {
                         throw new Error(`[${entity.name}.${property.name}] refColumns [${refColumns.map(it => it.name).join(", ")}] length is not ${property.joinInfo.columnRefs.length}`)
@@ -267,15 +280,17 @@ export const entityToTable: EntityToTable = (
                             nullable: property.nullable,
                         })
                     }
-                    table.foreignKeys.push({
-                        name: association.name,
-                        comment: association.comment,
-                        referencedTableSchema: refTable.schema,
-                        referencedTableName: refTable.name,
-                        columnRefs: joinColumnInfos.map(it => it.columnRef),
-                        onDelete: "",
-                        onUpdate: "",
-                    })
+                    if (property.joinInfo.foreignKeyType === "REAL") {
+                        table.foreignKeys.push({
+                            name: association.name,
+                            comment: association.comment,
+                            referencedTableSchema: refTable.schema,
+                            referencedTableName: refTable.name,
+                            columnRefs: joinColumnInfos.map(it => it.columnRef),
+                            onDelete: "",
+                            onUpdate: "",
+                        })
+                    }
                 } else if (property.joinInfo.type === "SingleColumnMidTable") {
                     if (idColumns.length !== 1) {
                         throw new Error(`[${entity.name}.${property.name}] idColumns [${idColumns.map(it => it.name).join(", ")}] length is not 1`)
@@ -288,7 +303,9 @@ export const entityToTable: EntityToTable = (
                         sourceTable: {name: table.name, schema: table.schema},
                         targetTable: {name: refTable.name, schema: refTable.schema},
                         sourceJoinColumnInfos: bindJoinColumnInfo([{columnName: property.joinInfo.sourceColumnName, referencedColumnName: idColumns[0].name}], refColumns),
+                        sourceForeignKeyType: defaultForeignKeyType,
                         targetJoinColumnInfos: bindJoinColumnInfo([{columnName: property.joinInfo.targetColumnName, referencedColumnName: refColumns[0].name}], refColumns),
+                        targetForeignKeyType: defaultForeignKeyType,
                         associationType: property.category,
                     }))
                 } else if (property.joinInfo.type === "MultiColumnMidTable") {
@@ -329,7 +346,9 @@ export const entityToTable: EntityToTable = (
                         sourceTable: {name: table.name, schema: table.schema},
                         targetTable: {name: refTable.name, schema: refTable.schema},
                         sourceJoinColumnInfos: bindJoinColumnInfo(sourceColumnRef, idColumns),
+                        sourceForeignKeyType: property.joinInfo.sourceJoinInfo.foreignKeyType,
                         targetJoinColumnInfos: bindJoinColumnInfo(targetColumnRef, refColumns),
+                        targetForeignKeyType: property.joinInfo.targetJoinInfo.foreignKeyType,
                         associationType: property.category,
                     }))
                 }

@@ -3,11 +3,11 @@ import {Handle, type NodeProps, Position} from "@vue-flow/core";
 import type {MappedSuperClassNode} from "@/modelEditor/node/MappedSuperClassNode.ts";
 import EditList from "@/components/list/selectableList/EditList.vue";
 import {createId, getColorVar, getColorIsDark} from "@/modelEditor/useModelEditor.ts";
-import MappedSuperClassIdMultiSelect from "@/modelEditor/form/entity/MappedSuperClassIdMultiSelect.vue";
+import ExtendsIdMultiSelect from "@/modelEditor/node/extendsId/ExtendsIdMultiSelect.vue";
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
 import {computed, ref, useTemplateRef, watch} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
-import MappedSuperClassPropertyTypeSelect from "@/modelEditor/form/property/MappedSuperClassPropertyTypeSelect.vue";
+import MappedSuperClassPropertyTypeSelect from "@/modelEditor/node/property/MappedSuperClassPropertyTypeSelect.vue";
 import {validateMappedSuperClassProperty} from "@/type/__generated/jsonSchema/items/MappedSuperClassProperty.ts";
 import {NOT_EXIST_ASSOCIATION_ID} from "@/modelEditor/node/EntityNode.ts";
 
@@ -62,7 +62,7 @@ watch(() => handleIndexMap.value, () => {
         <div class="mapped-super-class-header">
             <NameCommentEditor v-model="data.mappedSuperClass" :class="groupTheme" style="padding: 2px;"/>
             <span :class="groupTheme" style="color: var(--text-color);">:</span>
-            <MappedSuperClassIdMultiSelect
+            <ExtendsIdMultiSelect
                 style="font-size: 16px; line-height: 32px;"
                 v-model="data.mappedSuperClass.extendsIds"
                 :ignore-ids="[data.mappedSuperClass.id]"

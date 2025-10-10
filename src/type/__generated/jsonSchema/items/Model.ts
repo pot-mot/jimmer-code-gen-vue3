@@ -25,14 +25,22 @@ const ModelJsonSchema: JSONSchemaType<Model> = {
         "databaseNameStrategy": {
             "$ref": "#/definitions/NameStrategy"
         },
+        "defaultForeignKeyType": {
+            "$ref": "#/definitions/ForeignKeyType"
+        },
         "jvmLanguage": {
             "$ref": "#/definitions/JvmLanguage"
+        },
+        "defaultEnumerationStrategy": {
+            "$ref": "#/definitions/EnumerationStrategy"
         }
     },
     "required": [
         "createdTime",
         "databaseNameStrategy",
         "databaseType",
+        "defaultEnumerationStrategy",
+        "defaultForeignKeyType",
         "description",
         "id",
         "jvmLanguage",
@@ -62,10 +70,24 @@ const ModelJsonSchema: JSONSchemaType<Model> = {
             ],
             "type": "string"
         },
+        "ForeignKeyType": {
+            "enum": [
+                "FAKE",
+                "REAL"
+            ],
+            "type": "string"
+        },
         "JvmLanguage": {
             "enum": [
                 "JAVA",
                 "KOTLIN"
+            ],
+            "type": "string"
+        },
+        "EnumerationStrategy": {
+            "enum": [
+                "NAME",
+                "ORDINAL"
             ],
             "type": "string"
         }

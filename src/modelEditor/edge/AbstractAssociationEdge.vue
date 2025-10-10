@@ -74,7 +74,7 @@ const mappedPropertyInfo = computed(() => {
                 />
             </div>
 
-            <div style="display: flex; justify-content: center; line-height: 2rem;">
+            <div v-if="data.association.withMappedProperty" style="display: flex; justify-content: center; line-height: 2rem;">
                 <EntityIdViewer :id="data.association.referencedEntityId" hide-comment ctrl-focus/>
                 <span>.</span>
                 <NameCommentViewer

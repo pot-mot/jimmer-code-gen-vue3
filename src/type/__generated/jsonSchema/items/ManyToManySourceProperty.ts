@@ -202,10 +202,14 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                                         },
                                         "columnName": {
                                             "type": "string"
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnName",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 },
@@ -236,11 +240,15 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                                                     "referencedColumnName"
                                                 ]
                                             }
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnRefs",
                                         "embeddableTypeId",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 }
@@ -257,10 +265,14 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                                         },
                                         "columnName": {
                                             "type": "string"
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnName",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 },
@@ -291,11 +303,15 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                                                     "referencedColumnName"
                                                 ]
                                             }
+                                        },
+                                        "foreignKeyType": {
+                                            "$ref": "#/definitions/ForeignKeyType"
                                         }
                                     },
                                     "required": [
                                         "columnRefs",
                                         "embeddableTypeId",
+                                        "foreignKeyType",
                                         "type"
                                     ]
                                 }
@@ -399,6 +415,13 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                     ]
                 }
             ]
+        },
+        "ForeignKeyType": {
+            "enum": [
+                "FAKE",
+                "REAL"
+            ],
+            "type": "string"
         },
         "Omit<BaseProperty,\"nullable\">": {
             "type": "object",
