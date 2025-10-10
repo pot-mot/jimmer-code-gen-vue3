@@ -6,7 +6,7 @@ import type {AbstractAssociationEdge} from "@/modelEditor/edge/AbstractAssociati
 import AutoResizeForeignObject from "@/modelEditor/svg/AutoResizeForeignObject.vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 
-const {zoom, isGraphSelectionPlural, modelSelection} = useModelEditor()
+const {zoom, isGraphSelectionPlural, modelSelection, executeCommand} = useModelEditor()
 
 const props = defineProps<EdgeProps<ConcreteAssociationEdge["data"] | AbstractAssociationEdge["data"]>>()
 
@@ -115,20 +115,26 @@ const formatNumber = (value: number, decimals: number = 2): number => {
 const percentageToFixedLength = () => {
     const path = getPath()
     if ('percentage' in props.data.labelPosition && path) {
-        props.data.labelPosition = {
-            from: props.data.labelPosition.from,
-            fixedLength: formatNumber(props.data.labelPosition.percentage / 100 * path.getTotalLength())
-        }
+        executeCommand('association:change', {
+            association: props.data.association,
+            labelPosition: {
+                from: props.data.labelPosition.from,
+                fixedLength: formatNumber(props.data.labelPosition.percentage / 100 * path.getTotalLength())
+            }
+        })
     }
 }
 
 const fixedLengthToPercentage = () => {
     const path = getPath()
     if ('fixedLength' in props.data.labelPosition && path) {
-        props.data.labelPosition = {
-            from: props.data.labelPosition.from,
-            percentage: formatNumber(props.data.labelPosition.fixedLength * 100 / path.getTotalLength())
-        }
+        executeCommand('association:change', {
+            association: props.data.association,
+            labelPosition: {
+                from: props.data.labelPosition.from,
+                percentage: formatNumber(props.data.labelPosition.fixedLength * 100 / path.getTotalLength())
+            }
+        })
     }
 }
 
@@ -138,31 +144,43 @@ const toggleLabelPositionFrom = () => {
         if ('fixedLength' in props.data.labelPosition) {
             const path = getPath()
             if (path) {
-                props.data.labelPosition = {
-                    from: "target",
-                    fixedLength: path.getTotalLength() - props.data.labelPosition.fixedLength
-                }
+                executeCommand('association:change', {
+                    association: props.data.association,
+                    labelPosition: {
+                        from: "target",
+                        fixedLength: path.getTotalLength() - props.data.labelPosition.fixedLength
+                    }
+                })
             }
         } else {
-            props.data.labelPosition = {
-                from: "target",
-                percentage: 100 - props.data.labelPosition.percentage
-            }
+            executeCommand('association:change', {
+                association: props.data.association,
+                labelPosition: {
+                    from: "target",
+                    percentage: props.data.labelPosition.percentage
+                }
+            })
         }
     } else {
         if ('fixedLength' in props.data.labelPosition) {
             const path = getPath()
             if (path) {
-                props.data.labelPosition = {
-                    from: "source",
-                    fixedLength: path.getTotalLength() - props.data.labelPosition.fixedLength
-                }
+                executeCommand('association:change', {
+                    association: props.data.association,
+                    labelPosition: {
+                        from: "source",
+                        fixedLength: path.getTotalLength() - props.data.labelPosition.fixedLength
+                    }
+                })
             }
         } else {
-            props.data.labelPosition = {
-                from: "source",
-                percentage: 100 - props.data.labelPosition.percentage
-            }
+            executeCommand('association:change', {
+                association: props.data.association,
+                labelPosition: {
+                    from: "source",
+                    percentage: props.data.labelPosition.percentage
+                }
+            })
         }
     }
 }

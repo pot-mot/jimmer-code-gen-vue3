@@ -874,6 +874,7 @@ export const useModelEditor = createStore(() => {
         },
         waitChangeSync,
 
+        executeCommand: history.executeCommand,
         executeBatch: history.executeBatch,
         executeAsyncBatch: history.executeAsyncBatch,
 
