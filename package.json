@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "test": "vitest",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "type-check": "vue-tsc --build --force",
@@ -46,6 +47,7 @@
     "typescript-json-schema": "^0.65.1",
     "vite": "^7.1.7",
     "vite-plugin-vue-devtools": "^8.0.0",
+    "vitest": "^3.2.4",
     "vue-tsc": "^3.0.4"
   }
 }
