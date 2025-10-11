@@ -193,11 +193,14 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
 
             for (let i = 0; i < tempLines.length; i++) {
                 const value = tempLines[i]
+                if (value === undefined) continue
                 if (selectedItemSet.value.has(i)) {
                     if (i === 0 || newSelectIndexes.has(i - 1)) {
                         newSelectIndexes.add(i)
                     } else {
-                        tempLines[i] = tempLines[i - 1]
+                        const tempLine = tempLines[i + 1]
+                        if (tempLine === undefined) continue
+                        tempLines[i] = tempLine
                         tempLines[i - 1] = value
                         newSelectIndexes.add(i - 1)
                     }
@@ -236,11 +239,14 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
 
             for (let i = tempLines.length - 1; i >= 0; i--) {
                 const value = tempLines[i]
+                if (value === undefined) continue
                 if (selectedItemSet.value.has(i)) {
                     if (i === tempLines.length - 1 || newSelectIndexes.has(i + 1)) {
                         newSelectIndexes.add(i)
                     } else {
-                        tempLines[i] = tempLines[i + 1]
+                        const tempLine = tempLines[i + 1]
+                        if (tempLine === undefined) continue
+                        tempLines[i] = tempLine
                         tempLines[i + 1] = value
                         newSelectIndexes.add(i + 1)
                     }
@@ -308,7 +314,9 @@ const handleAddLine = async (index: number = lines.value.length - 1) => {
 }
 
 const handleRemoveLine = async (index: number) => {
-    emits('delete', [lines.value[index]])
+    const line = lines.value[index]
+    if (line === undefined) return
+    emits('delete', [line])
     lines.value = lines.value.filter((_, i) => i !== index)
     await nextTick()
     const newSelectedIndex: number[] = []

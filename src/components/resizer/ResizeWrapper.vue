@@ -214,7 +214,9 @@ const handleResizing = (position: { clientX: number, clientY: number }) => {
 }
 
 const handleResizingByTouch = (e: TouchEvent) => {
-    handleResizing(e.changedTouches[0] ?? e.touches[0])
+    const touch = e.changedTouches[0] ?? e.touches[0]
+    if (!touch) return
+    handleResizing(touch)
 }
 
 const stopResize = (position: { clientX: number, clientY: number }) => {
@@ -244,7 +246,9 @@ const stopResize = (position: { clientX: number, clientY: number }) => {
 }
 
 const stopResizeByTouch = (e: TouchEvent) => {
-    stopResize(e.changedTouches[0] ?? e.touches[0])
+    const touch = e.changedTouches[0] ?? e.touches[0]
+    if (!touch) return
+    stopResize(touch)
 }
 
 defineExpose({

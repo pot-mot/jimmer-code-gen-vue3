@@ -186,15 +186,21 @@ const handleKeyDown = (e: KeyboardEvent) => {
 
         if (e.shiftKey) {
             if (minIndex === lastIndex) {
-                if (maxIndex - 1 >= 0)
-                    handleShiftSelection(nodeIdsInOrder.value[maxIndex - 1])
+                if (maxIndex - 1 >= 0) {
+                    const id = nodeIdsInOrder.value[maxIndex - 1]
+                    if (id !== undefined) handleShiftSelection(id)
+                }
             } else if (maxIndex === lastIndex) {
-                if (minIndex - 1 >= 0)
-                    handleShiftSelection(nodeIdsInOrder.value[minIndex - 1])
+                if (minIndex - 1 >= 0) {
+                    const id = nodeIdsInOrder.value[minIndex - 1]
+                    if (id !== undefined) handleShiftSelection(id)
+                }
             }
         } else {
-            if (lastIndex - 1 >= 0)
-                toggleSelection(nodeIdsInOrder.value[lastIndex - 1], e)
+            if (lastIndex - 1 >= 0) {
+                const id = nodeIdsInOrder.value[lastIndex - 1]
+                if (id !== undefined) toggleSelection(id, e)
+            }
         }
     }
     if (e.key === 'ArrowDown') {
@@ -204,15 +210,21 @@ const handleKeyDown = (e: KeyboardEvent) => {
 
         if (e.shiftKey) {
             if (minIndex === lastIndex) {
-                if (maxIndex + 1 < nodeIdsInOrder.value.length)
-                    handleShiftSelection(nodeIdsInOrder.value[maxIndex + 1])
+                if (maxIndex + 1 < nodeIdsInOrder.value.length) {
+                    const id = nodeIdsInOrder.value[maxIndex + 1]
+                    if (id !== undefined) handleShiftSelection(id)
+                }
             } else if (maxIndex === lastIndex) {
-                if (minIndex + 1 < nodeIdsInOrder.value.length)
-                    handleShiftSelection(nodeIdsInOrder.value[minIndex + 1])
+                if (minIndex + 1 < nodeIdsInOrder.value.length) {
+                    const id = nodeIdsInOrder.value[minIndex + 1]
+                    if (id !== undefined) handleShiftSelection(id)
+                }
             }
         } else {
-            if (lastIndex + 1 < nodeIdsInOrder.value.length)
-                toggleSelection(nodeIdsInOrder.value[lastIndex + 1], e)
+            if (lastIndex + 1 < nodeIdsInOrder.value.length) {
+                const id = nodeIdsInOrder.value[lastIndex + 1]
+                if (id !== undefined) toggleSelection(id, e)
+            }
         }
     }
 }

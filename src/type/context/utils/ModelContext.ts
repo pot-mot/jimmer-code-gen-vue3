@@ -170,7 +170,7 @@ export const contextDataToContext = (
                     }, inheritEntity)
                     associationIdOnlyMap.set(realAssociation.id, realAssociation)
                     for (let i = 0; i < inheritEntity.allProperties.length; i++) {
-                        if (inheritEntity.allProperties[i].id === abstractSourceProperty.id) {
+                        if (inheritEntity.allProperties[i]?.id === abstractSourceProperty.id) {
                             inheritEntity.allProperties[i] = realSourceProperty
                             break
                         }
@@ -201,7 +201,7 @@ export const contextDataToContext = (
                     }, inheritEntity)
                     associationIdOnlyMap.set(realAssociation.id, realAssociation)
                     for (let i = 0; i < inheritEntity.allProperties.length; i++) {
-                        if (inheritEntity.allProperties[i].id === abstractSourceProperty.id) {
+                        if (inheritEntity.allProperties[i]?.id === abstractSourceProperty.id) {
                             inheritEntity.allProperties[i] = realSourceProperty
                             break
                         }

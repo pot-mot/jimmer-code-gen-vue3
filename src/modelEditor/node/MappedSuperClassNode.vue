@@ -99,7 +99,10 @@ watch(() => handleIndexMap.value, () => {
                         :position="Position.Left"
                     />
 
-                    <div class="mapped-super-class-property-view">
+                    <div
+                        class="mapped-super-class-property-view"
+                        v-if="data.mappedSuperClass.properties[index]"
+                    >
                         <NameCommentEditor
                             :font-size="14"
                             v-model="data.mappedSuperClass.properties[index]"

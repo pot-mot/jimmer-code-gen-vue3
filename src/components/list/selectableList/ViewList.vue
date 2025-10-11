@@ -70,7 +70,7 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
                     const {selectedItems} = result
                     const item = props.lines[index]
 
-                    if (selectedItemSet.value.has(index)) {
+                    if (selectedItemSet.value.has(index) && item !== undefined) {
                         selectedItems.push(item)
                     }
 

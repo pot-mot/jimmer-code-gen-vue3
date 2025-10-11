@@ -10,7 +10,7 @@ export const mapTouchToMouseEvents = (
     Object.entries(eventMapping).forEach(([touchEvent, mouseEvent]) => {
         element.addEventListener(touchEvent as any, (e: TouchEvent) => {
             const touches = e.touches.length > 0 ? e.touches : e.changedTouches
-            if (touches.length === 0) return
+            if (!touches[0]) return
 
             const touch = touches[0]
             const simulatedMouseEvent = new MouseEvent(mouseEvent, {

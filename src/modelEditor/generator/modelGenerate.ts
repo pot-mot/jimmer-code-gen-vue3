@@ -10,6 +10,9 @@ export const modelGenerate = (
     const files: Record<string, string> = {}
     const mergeIntoFiles = (newFiles: Record<string, string>) => {
         for (const filePath in newFiles) {
+            const newFile = newFiles[filePath]
+            if (!newFile) continue
+
             if (files[filePath]) {
                 let index = 1
                 let newName = `${filePath}(${index})`
@@ -17,9 +20,9 @@ export const modelGenerate = (
                     index++
                     newName = `${filePath}(${index})`
                 }
-                files[newName] = newFiles[filePath]
+                files[newName] = newFile
             } else {
-                files[filePath] = newFiles[filePath]
+                files[filePath] = newFile
             }
         }
     }

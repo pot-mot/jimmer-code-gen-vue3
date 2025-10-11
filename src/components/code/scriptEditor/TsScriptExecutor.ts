@@ -271,13 +271,6 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
                 }
             }
 
-            if (typeof code !== 'string') {
-                return {
-                    valid: false,
-                    errorMessages: ['代码必须是字符串类型'],
-                };
-            }
-
             // 确保代码是字符串且有内容
             const trimmedCode = code.trim()
             if (!trimmedCode) {
@@ -403,7 +396,7 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
                 }
             }
 
-            if (scriptTypeDeclareFile.statements.length !== 1) {
+            if (scriptTypeDeclareFile.statements.length !== 1 || !scriptTypeDeclareFile.statements[0]) {
                 errorMessages.push('脚本类型声明文件只能包含一个箭头函数语句')
                 return {
                     valid: false,
@@ -425,7 +418,7 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
             const scriptType = typeChecker.getTypeAtLocation(scriptTypeDeclare)
             const scriptTypeSignatures = scriptType.getCallSignatures()
 
-            if (scriptTypeSignatures.length !== 1) {
+            if (scriptTypeSignatures.length !== 1 || scriptTypeSignatures[0] === undefined) {
                 errorMessages.push('类型声明必须包含唯一一个箭头函数声明')
                 return {
                     valid: false,
@@ -508,7 +501,7 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
                 const paramDeclarations = param.getDeclarations()
                 if (paramDeclarations && paramDeclarations.length === 1) {
                     const declaration = paramDeclarations[0]
-                    if ("type" in declaration && declaration.type && typeof declaration.type === "object" && "getFullText" in declaration.type && typeof declaration.type.getFullText === "function") {
+                    if (declaration && "type" in declaration && declaration.type && typeof declaration.type === "object" && "getFullText" in declaration.type && typeof declaration.type.getFullText === "function") {
                         paramTypeName = declaration.type.getFullText()
                     }
                 }
@@ -540,6 +533,11 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
             for (let i = 0; i < actualParameters.length; i++) {
                 const declareParam = declareParameters[i]
                 const actualParam = actualParameters[i]
+                if (!declareParam || !actualParam) {
+                    markers.push(createMarker(arrowFunction.parameters[i] ?? arrowFunction, '参数类型不匹配'))
+                    continue
+                }
+
                 const paramName = actualParam.name.getText()
 
                 // 显示可选

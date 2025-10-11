@@ -100,6 +100,15 @@ export const useModelEditor = createStore(() => {
         return contextDataToContext(getContextData())
     }
 
+    const {
+        history,
+        canUndo,
+        canRedo,
+        menuMap,
+        inheritInfo,
+        waitChangeSync,
+    } = useModelEditorHistory({vueFlow, contextData})
+
     // TODO
     const typeOptions = ref<CrossType[]>([])
 
@@ -128,7 +137,6 @@ export const useModelEditor = createStore(() => {
         return buildNameSet(associationNames)
     })
 
-
     const currentGroupId = ref<string>()
     const toggleCurrentGroup = ({id}: { id: string | undefined }) => {
         const contextData = getContextData()
@@ -156,14 +164,6 @@ export const useModelEditor = createStore(() => {
     const getNextZIndex = () => {
         return globalZIndex.value++
     }
-
-    const {
-        history,
-        canUndo,
-        canRedo,
-        menuMap,
-        waitChangeSync,
-    } = useModelEditorHistory({vueFlow, contextData})
 
     const getModelGraphData = (): ModelGraphSubData => {
         const contextData = getContextData()
@@ -936,6 +936,8 @@ export const useModelEditor = createStore(() => {
         saveModel,
 
         menuMap,
+        inheritInfo,
+
         currentGroupId,
         toggleCurrentGroup,
 

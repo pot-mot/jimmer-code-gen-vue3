@@ -11,7 +11,7 @@ const height = ref()
 const contentRef = useTemplateRef<HTMLDivElement>("contentRef")
 
 const resizeOb = new ResizeObserver((entries) => {
-    if (entries.length === 0) return
+    if (!entries[0]) return
 
     width.value = entries[0].contentRect.width
     height.value = entries[0].contentRect.height

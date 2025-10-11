@@ -53,7 +53,10 @@ const propertyNameSet = computed(() => {
         >
             <template #line="{index}">
                 <div class="embeddable-type-property">
-                    <div class="embeddable-type-property-view">
+                    <div
+                        class="embeddable-type-property-view"
+                        v-if="data.embeddableType.properties[index]"
+                    >
                         <NameCommentEditor
                             :font-size="14"
                             v-model="data.embeddableType.properties[index]"

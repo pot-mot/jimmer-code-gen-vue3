@@ -52,7 +52,10 @@ const itemNameSet = computed(() => {
         >
             <template #line="{index}">
                 <div class="enumeration-item">
-                    <div class="enumeration-item-view">
+                    <div
+                        class="enumeration-item-view"
+                        v-if="data.enumeration.items[index]"
+                    >
                         <NameCommentEditor
                             :font-size="14"
                             v-model="data.enumeration.items[index]"

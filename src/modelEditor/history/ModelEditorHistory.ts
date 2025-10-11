@@ -1,6 +1,6 @@
 import {type CommandDefinition, useCommandHistory} from "@/history/commandHistory.ts";
 import {type GraphNode, type VueFlowStore, type XYPosition} from "@vue-flow/core";
-import {computed, reactive, type Ref, ref, shallowReadonly, type ShallowRef, watch} from "vue";
+import {computed, reactive, readonly, type Ref, ref, shallowReadonly, type ShallowRef, watch} from "vue";
 import {deleteColorVar, type MenuItem, setColorVar} from "@/modelEditor/useModelEditor.ts";
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 import {debounce} from "lodash-es";
@@ -27,6 +27,7 @@ import {
 } from "@/modelEditor/property/PropertyAssociationSync.ts";
 import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
 import {nameTool} from "@/type/context/utils/NameTool.ts";
+import {buildInheritInfo} from "@/type/context/utils/EntityInheritInfo.ts";
 
 const SYNC_DEBOUNCE_TIMEOUT = 500
 
@@ -103,24 +104,16 @@ export type ModelEditorHistoryCommands = {
 
 export const useModelEditorHistory = (
     modelEditorState: {
-        contextData: Ref<ModelContextData | undefined>
+        contextData: Ref<ModelContextData>
         vueFlow: ShallowRef<VueFlowStore>,
     }
 ) => {
     const getContextData = () => {
-        const contextData = modelEditorState.contextData.value
-        if (!contextData) {
-            throw new Error("Context is not available")
-        }
-        return contextData
+        return modelEditorState.contextData.value
     }
 
     const getVueFlow = () => {
-        const vueFlow = modelEditorState.vueFlow.value
-        if (!vueFlow) {
-            throw new Error("VueFlow is not available")
-        }
-        return vueFlow
+        return modelEditorState.vueFlow.value
     }
 
     const history = useCommandHistory<ModelEditorHistoryCommands>()
@@ -180,6 +173,7 @@ export const useModelEditorHistory = (
     }
 
     const menuMap = ref(new Map<string, MenuItem>())
+    const inheritInfo = ref(buildInheritInfo(getContextData().entityMap, getContextData().mappedSuperClassMap))
 
     // 分组
     const groupWatchStopMap = new Map<string, () => void>()
@@ -396,6 +390,7 @@ export const useModelEditorHistory = (
         contextData.entityMap.set(id, entity)
         addEntityWatcher(id)
         menuItem.entityMap.set(id, entity)
+        inheritInfo.value.syncConcrete(entity)
         const newNode: EntityNode = {
             id,
             type: NodeType_Entity,
@@ -424,6 +419,7 @@ export const useModelEditorHistory = (
         contextData.entityMap.delete(id)
         menuItem.entityMap.delete(id)
         vueFlow.removeNodes([entityNode])
+        inheritInfo.value.removeConcrete(id)
         return {entity, position: entityNode.position}
     }
     const updateEntity = (options: DeepReadonly<{ entity: EntityWithProperties }>) => {
@@ -458,6 +454,7 @@ export const useModelEditorHistory = (
             menuItem.entityMap.set(id, entity)
         }
         addEntityWatcher(id)
+        inheritInfo.value.syncConcrete(entity)
         node.data.entity = entity
         return {entity: oldEntity}
     }
@@ -555,6 +552,7 @@ export const useModelEditorHistory = (
         contextData.mappedSuperClassMap.set(id, mappedSuperClass)
         addMappedSuperClassWatcher(id)
         menuItem.mappedSuperClassMap.set(id, mappedSuperClass)
+        inheritInfo.value.syncAbstract(mappedSuperClass)
         const newNode: MappedSuperClassNode = {
             id,
             type: NodeType_MappedSuperClass,
@@ -583,6 +581,7 @@ export const useModelEditorHistory = (
         contextData.mappedSuperClassMap.delete(id)
         menuItem.mappedSuperClassMap.delete(id)
         vueFlow.removeNodes([mappedSuperClassNode])
+        inheritInfo.value.removeAbstract(id)
         return {mappedSuperClass, position: mappedSuperClassNode.position}
     }
     const updateMappedSuperClass = (options: DeepReadonly<{ mappedSuperClass: MappedSuperClassWithProperties }>) => {
@@ -617,6 +616,7 @@ export const useModelEditorHistory = (
             menuItem.mappedSuperClassMap.set(id, mappedSuperClass)
         }
         addMappedSuperClassWatcher(id)
+        inheritInfo.value.syncAbstract(mappedSuperClass)
         existingMappedSuperClassNode.data.mappedSuperClass = mappedSuperClass
         return {mappedSuperClass: oldMappedSuperClass}
     }
@@ -1313,6 +1313,7 @@ export const useModelEditorHistory = (
         canUndo,
         canRedo,
         menuMap: shallowReadonly(menuMap),
+        inheritInfo: readonly(inheritInfo),
         waitChangeSync,
         noEffect: {
             group: {

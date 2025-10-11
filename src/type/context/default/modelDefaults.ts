@@ -1,7 +1,9 @@
 import {createId} from "@/modelEditor/useModelEditor.ts";
 
+export const defaultColor = "rgb(80, 80, 80)"
+
 export const presetColor = [
-    'rgb(80, 80, 80)',
+    defaultColor,
     'rgb(150, 60, 60)',
     'rgb(200, 100, 100)',
     'rgb(150, 100, 100)',
@@ -130,7 +132,7 @@ export const defaultGroup = (): Group => ({
     id: createId("Group"),
     name: "Group",
     comment: "",
-    color: presetColor[0],
+    color: defaultColor,
     basePackagePath: "",
     baseTableSchema: ""
 })

@@ -14,6 +14,8 @@ export const getTouchRect = (e: TouchEvent, start: { x: number, y: number }): {
 
     for (let i = 0; i < e.touches.length; i++) {
         const touch = e.touches[i]
+        if (!touch) continue
+
         const touchX = touch.clientX
         const touchY = touch.clientY
 

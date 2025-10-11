@@ -10,10 +10,11 @@ import {computed, ref, useTemplateRef, watch} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import {validateEntityProperty} from "@/type/__generated/jsonSchema/items/EntityProperty.ts";
 import {buildReadonlyNameSet} from "@/utils/name/nameSet.ts";
+import {getAllProperties} from "@/type/context/utils/EntityExtends.ts";
 
 const props = defineProps<NodeProps<EntityNode["data"]>>()
 
-const {entityNameSet} = useModelEditor()
+const {entityNameSet, contextData} = useModelEditor()
 
 const beforeCopy = (properties: EntityProperty[]) => {
     for (const property of properties) {
@@ -97,7 +98,10 @@ watch(() => handleIndexMap.value, () => {
                         :position="Position.Left"
                     />
 
-                    <div class="entity-property-view">
+                    <div
+                        class="entity-property-view"
+                        v-if="data.entity.properties[index]"
+                    >
                         <NameCommentEditor
                             :font-size="14"
                             v-model="data.entity.properties[index]"

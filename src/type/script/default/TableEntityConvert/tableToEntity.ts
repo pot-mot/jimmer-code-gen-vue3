@@ -200,7 +200,7 @@ export const tableToEntity: TableToEntity = (
             const lowerReferencedEntityName = nameTool.firstCaseToLower(referencedEntity.name)
 
             let joinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
-            if (foreignKey.columnRefs.length === 1) {
+            if (foreignKey.columnRefs[0]) {
                 joinInfo = {
                     type: "SingleColumn",
                     columnName: foreignKey.columnRefs[0].columnName,

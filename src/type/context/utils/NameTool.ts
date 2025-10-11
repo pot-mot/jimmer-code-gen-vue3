@@ -11,12 +11,25 @@ export const nameTool: NameTool = {
 
         for (let i = 0; i < name.length; i++) {
             const char = name[i]
+            if (!char) continue
+
             // 检查是否为大写字母
             if (char >= 'A' && char <= 'Z') {
-                // 如果当前部分不为空且最后一个字符是小写字母，或者当前部分末尾是大写但下一个字符是小写
-                if (currentPart.length > 0 &&
-                    ((currentPart[currentPart.length - 1] >= 'a' && currentPart[currentPart.length - 1] <= 'z') ||
-                        (i + 1 < name.length && name[i + 1] >= 'a' && name[i + 1] <= 'z'))) {
+                const currentPartNotEmpty = currentPart.length > 0
+
+                let lastCharIsLowercase = false
+                const lastChar = currentPart[currentPart.length - 1]
+                if (lastChar !== undefined) {
+                    lastCharIsLowercase = lastChar >= 'a' && lastChar <= 'z'
+                }
+                let nextCharIsLowercase = false
+                const nextChar = name[i + 1]
+                if (nextChar !== undefined) {
+                    nextCharIsLowercase = nextChar >= 'a' && nextChar <= 'z'
+                }
+
+                // 如果当前部分最后一个字符是小写字母，或者当前部分末尾是大写但下一个字符是小写
+                if (currentPartNotEmpty && (lastCharIsLowercase || nextCharIsLowercase)) {
                     parts.push(currentPart.join(''))
                     currentPart = [char]
                 } else {
@@ -48,7 +61,7 @@ export const nameTool: NameTool = {
         ).join('')
     },
     toLowerCamel(parts: string[]): string {
-        if (parts.length === 0) return ''
+        if (parts.length === 0 || !parts[0]) return ''
         return parts[0].toLowerCase() + parts.slice(1).map(part =>
             part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
         ).join('')

@@ -238,7 +238,7 @@ export const entityToTable: EntityToTable = (
                 if (!refColumns) throw new Error(`[${property.referencedEntityId}] not found idColumns`)
 
                 if (property.joinInfo.type === "SingleColumn") {
-                    if (refColumns.length !== 1) {
+                    if (refColumns.length !== 1 || !refColumns[0]) {
                         throw new Error(`[${entity.name}.${property.name}] refColumns [${refColumns.map(it => it.name).join(", ")}] length is not 1`)
                     }
 
@@ -292,10 +292,10 @@ export const entityToTable: EntityToTable = (
                         })
                     }
                 } else if (property.joinInfo.type === "SingleColumnMidTable") {
-                    if (idColumns.length !== 1) {
+                    if (idColumns.length !== 1 || !idColumns[0]) {
                         throw new Error(`[${entity.name}.${property.name}] idColumns [${idColumns.map(it => it.name).join(", ")}] length is not 1`)
                     }
-                    if (refColumns.length !== 1) {
+                    if (refColumns.length !== 1 || !refColumns[0]) {
                         throw new Error(`[${entity.name}.${property.name}] refColumns [${refColumns.map(it => it.name).join(", ")}] length is not 1`)
                     }
                     midTables.push(buildMidTable({
@@ -311,7 +311,7 @@ export const entityToTable: EntityToTable = (
                 } else if (property.joinInfo.type === "MultiColumnMidTable") {
                     const sourceColumnRef: ColumnRef[] = []
                     if (property.joinInfo.sourceJoinInfo.type === "SingleColumn") {
-                        if (idColumns.length !== 1) {
+                        if (idColumns.length !== 1 || !idColumns[0]) {
                             throw new Error(`[${entity.name}.${property.name}] idColumns [${idColumns.map(it => it.name).join(", ")}] length is not 1`)
                         }
                         sourceColumnRef.push({
@@ -327,7 +327,7 @@ export const entityToTable: EntityToTable = (
 
                     const targetColumnRef: ColumnRef[] = []
                     if (property.joinInfo.targetJoinInfo.type === "SingleColumn") {
-                        if (refColumns.length !== 1) {
+                        if (refColumns.length !== 1 || !refColumns[0]) {
                             throw new Error(`[${entity.name}.${property.name}] refColumns [${refColumns.map(it => it.name).join(", ")}] length is not 1`)
                         }
                         targetColumnRef.push({
