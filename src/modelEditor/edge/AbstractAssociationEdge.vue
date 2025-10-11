@@ -10,7 +10,6 @@ import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import MappedSuperClassViewer from "@/modelEditor/viewer/MappedSuperClassViewer.vue";
 import EntityIdViewer from "@/modelEditor/viewer/EntityIdViewer.vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
-import ForeignKeyTypeButton from "@/modelEditor/edge/labelPosition/ForeignKeyTypeButton.vue";
 import LabelPositionEditor from "@/modelEditor/edge/labelPosition/LabelPositionEditor.vue";
 
 const props = defineProps<EdgeProps<AbstractAssociationEdge["data"]>>()
@@ -112,7 +111,6 @@ const mappedPropertyInfo = computed(() => {
         </template>
 
         <template #toolbar>
-            <ForeignKeyTypeButton v-model="data.edgedAssociation.association"/>
             <LabelPositionEditor v-model="data.edgedAssociation.labelPosition" :get-path="getPath"/>
         </template>
     </AssociationEdge>

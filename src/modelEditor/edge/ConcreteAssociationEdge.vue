@@ -6,7 +6,6 @@ import AssociationViewer from "@/modelEditor/viewer/AssociationViewer.vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import EntityIdViewer from "@/modelEditor/viewer/EntityIdViewer.vue";
 import {computed, ref, useTemplateRef} from "vue";
-import ForeignKeyTypeButton from "@/modelEditor/edge/labelPosition/ForeignKeyTypeButton.vue";
 import LabelPositionEditor from "@/modelEditor/edge/labelPosition/LabelPositionEditor.vue";
 
 const props = defineProps<EdgeProps<ConcreteAssociationEdge["data"]>>()
@@ -59,7 +58,6 @@ const associationEdit = ref(false)
         </template>
 
         <template #toolbar>
-            <ForeignKeyTypeButton v-model="data.edgedAssociation.association"/>
             <LabelPositionEditor v-model="data.edgedAssociation.labelPosition" :get-path="getPath"/>
         </template>
     </AssociationEdge>
