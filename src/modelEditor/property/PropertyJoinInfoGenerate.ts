@@ -1,5 +1,5 @@
 import {nameTool} from "@/type/context/utils/NameTool.ts";
-import {getEntityIdProperty} from "@/type/context/utils/EntityId.ts";
+import {getEntityIdProperty} from "@/type/context/utils/EntityIdProperty.ts";
 import {flatEmbeddableTypeColumnNames} from "@/type/context/utils/EmbeddableTypeFlat.ts";
 import {firstCaseToUpper} from "@/utils/name/firstCase.ts";
 import {
