@@ -12,7 +12,7 @@ import {buildReadonlyNameSet} from "@/utils/name/nameSet.ts";
 
 const props = defineProps<NodeProps<EmbeddableTypeNode["data"]>>()
 
-const {embeddableTypeNameSet} = useModelEditor()
+const {groupItemNameSet} = useModelEditor()
 
 const beforePaste = (properties: Property[]) => {
     for (const property of properties) {
@@ -37,7 +37,7 @@ const propertyNameSet = computed(() => {
         <div class="embeddable-type-header">
             <NameCommentEditor
                 v-model="data.embeddableType"
-                :name-set="embeddableTypeNameSet"
+                :name-set="groupItemNameSet"
                 :class="groupTheme"
                 style="padding: 2px;"
             />

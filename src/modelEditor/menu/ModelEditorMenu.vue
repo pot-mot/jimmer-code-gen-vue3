@@ -370,7 +370,8 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
 .menu-item {
     display: flex;
     width: 100%;
-    height: 1.75rem;
+    min-height: 1.75rem;
+    padding-bottom: 0.25rem;
 }
 
 .menu-item.selected > :deep(.name-comment-editor) input,

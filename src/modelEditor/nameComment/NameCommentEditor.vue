@@ -85,7 +85,7 @@ onMounted(async () => {
 const showComment = computed(() => model.value.comment.length > 0 || nameFocused.value || commentFocused.value)
 
 const isNameDuplicate = computed(() => {
-    return  props.nameSet && props.nameSet?.count(model.value.name) > 1
+    return props.nameSet && props.nameSet?.count(model.value.name) > 1
 })
 
 const nameValidateInfo = computed(() => {
@@ -110,7 +110,7 @@ const commentValidateInfo = computed(() => {
         >
             <span
                 v-if="!model.name && !nameFocused"
-                class="warning-info"
+                class="empty-name"
             >
                 [Empty Name]
             </span>
@@ -125,18 +125,6 @@ const commentValidateInfo = computed(() => {
                 @focus="handleNameFocus"
                 @blur="handleNameBlur"
             />
-            <span
-                v-if="isNameDuplicate"
-                class="warning-info"
-            >
-                [Duplicate Name]
-            </span>
-            <span
-                v-if="nameValidateInfo"
-                class="warning-info"
-            >
-                [{{ nameValidateInfo }}]
-            </span>
         </span>
         <span
             v-if="showComment"
@@ -145,22 +133,37 @@ const commentValidateInfo = computed(() => {
             @click.stop="focusCommentInput"
         >
             [<FitSizeLineInput
-                ref="commentInput"
-                class="noDrag"
-                :padding="{top: 4, bottom: 4, left: 0, right: 0}"
-                :line-height="fontSize"
-                :font-size="fontSize"
-                v-model="model.comment"
-                @change="emits('change')"
-                @focus="handleCommentFocus"
-                @blur="handleCommentBlur"
-            />]
+            ref="commentInput"
+            class="noDrag"
+            :padding="{top: 4, bottom: 4, left: 0, right: 0}"
+            :line-height="fontSize"
+            :font-size="fontSize"
+            v-model="model.comment"
+            @change="emits('change')"
+            @focus="handleCommentFocus"
+            @blur="handleCommentBlur"
+        />]
             <span
                 v-if="commentValidateInfo"
                 class="warning-info"
             >
                 [{{ commentValidator }}]
             </span>
+        </span>
+
+        <br>
+
+        <span
+            v-if="isNameDuplicate"
+            class="warning-info"
+        >
+            [Duplicate Name]
+        </span>
+        <span
+            v-if="nameValidateInfo"
+            class="warning-info"
+        >
+            [{{ nameValidateInfo }}]
         </span>
     </span>
 </template>
@@ -175,8 +178,16 @@ const commentValidateInfo = computed(() => {
     pointer-events: none;
 }
 
-.name-comment-editor > .name > .warning-info {
+.name-comment-editor .warning-info {
     cursor: text;
+    font-size: 0.8em;
+    padding: 0 0.2em;
+    color: var(--warning-color);
+}
+
+.name-comment-editor > .name > .empty-name {
+    cursor: text;
+    font-size: 0.8em;
     color: var(--warning-color);
 }
 

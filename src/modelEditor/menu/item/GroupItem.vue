@@ -38,8 +38,16 @@ const handleRemove = () => {
         }"
         @click="setToCurrentGroup"
     >
-        <ColorInput v-model="group.color" :preset-colors="presetColor" style="margin-top: 0.3rem; margin-right: 0.25rem;"/>
-        <NameCommentEditor v-model="group" :name-set="groupNameSet" :font-size="14"/>
+        <ColorInput
+            v-model="group.color"
+            :preset-colors="presetColor"
+            style="margin-top: 0.3rem; margin-right: 0.25rem;"
+        />
+        <NameCommentEditor
+            v-model="group"
+            :name-set="groupNameSet"
+            :font-size="14"
+        />
 
         <div class="tool">
             <button @click.stop="handleRemove">

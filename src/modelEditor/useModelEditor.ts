@@ -36,7 +36,7 @@ import {validatePartialModelGraphSubData} from "@/modelEditor/graphData/ModelGra
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import {tableToEntity} from "@/type/script/default/TableEntityConvert/tableToEntity.ts";
 import {contextDataToContext} from "@/type/context/utils/ModelContext.ts";
-import {buildNameSet, buildReadonlyNameSet} from "@/utils/name/nameSet.ts";
+import {buildReadonlyNameSet} from "@/utils/name/nameSet.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -112,29 +112,47 @@ export const useModelEditor = createStore(() => {
     // TODO
     const typeOptions = ref<CrossType[]>([])
 
-    const groupNameSet = computed(() =>
-        buildReadonlyNameSet([...contextData.value.groupMap.values()].map(it => it.name))
-    )
-    const entityNameSet = computed(() =>
-        buildReadonlyNameSet([...contextData.value.entityMap.values()].map(it => it.name))
-    )
-    const mappedSuperClassNameSet = computed(() =>
-        buildReadonlyNameSet([...contextData.value.mappedSuperClassMap.values()].map(it => it.name))
-    )
-    const embeddableTypeNameSet = computed(() =>
-        buildReadonlyNameSet([...contextData.value.embeddableTypeMap.values()].map(it => it.name))
-    )
-    const enumerationNameSet = computed(() =>
-        buildReadonlyNameSet([...contextData.value.enumerationMap.values()].map(it => it.name))
-    )
+    const groupNameSet = computed(() => {
+        const names: string[] = []
+        for (const it of contextData.value.groupMap.values()) names.push(it.name)
+        return buildReadonlyNameSet(names)
+    })
+    const groupItemNameSet = computed(() => {
+        const names: string[] = []
+        for (const it of contextData.value.entityMap.values()) names.push(it.name)
+        for (const it of contextData.value.mappedSuperClassMap.values()) names.push(it.name)
+        for (const it of contextData.value.embeddableTypeMap.values()) names.push(it.name)
+        for (const it of contextData.value.enumerationMap.values()) names.push(it.name)
+        return buildReadonlyNameSet(names)
+    })
+    const entityNameSet = computed(() => {
+        const names: string[] = []
+        for (const it of contextData.value.entityMap.values()) names.push(it.name)
+        return buildReadonlyNameSet(names)
+    })
+    const mappedSuperClassNameSet = computed(() => {
+        const names: string[] = []
+        for (const it of contextData.value.mappedSuperClassMap.values()) names.push(it.name)
+        return buildReadonlyNameSet(names)
+    })
+    const embeddableTypeNameSet = computed(() => {
+        const names: string[] = []
+        for (const it of contextData.value.embeddableTypeMap.values()) names.push(it.name)
+        return buildReadonlyNameSet(names)
+    })
+    const enumerationNameSet = computed(() => {
+        const names: string[] = []
+        for (const it of contextData.value.enumerationMap.values()) names.push(it.name)
+        return buildReadonlyNameSet(names)
+    })
     const associationNameSet = computed(() => {
-        const associationNames: string[] = []
+        const names: string[] = []
         for (const {association} of contextData.value.associationMap.values()) {
             if ("name" in association && !association.useNameTemplate) {
-                associationNames.push(association.name)
+                names.push(association.name)
             }
         }
-        return buildNameSet(associationNames)
+        return buildReadonlyNameSet(names)
     })
 
     const currentGroupId = ref<string>()
@@ -925,6 +943,7 @@ export const useModelEditor = createStore(() => {
         typeOptions: readonly(typeOptions),
         getContext,
         groupNameSet,
+        groupItemNameSet,
         entityNameSet,
         mappedSuperClassNameSet,
         enumerationNameSet,

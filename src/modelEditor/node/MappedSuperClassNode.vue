@@ -14,7 +14,7 @@ import {buildReadonlyNameSet} from "@/utils/name/nameSet.ts";
 
 const props = defineProps<NodeProps<MappedSuperClassNode["data"]>>()
 
-const {mappedSuperClassNameSet} = useModelEditor()
+const {groupItemNameSet, contextData, inheritInfo} = useModelEditor()
 
 const beforeCopy = (properties: MappedSuperClassProperty[]) => {
     for (const property of properties) {
@@ -70,7 +70,7 @@ watch(() => handleIndexMap.value, () => {
         <div class="mapped-super-class-header">
             <NameCommentEditor
                 v-model="data.mappedSuperClass"
-                :name-set="mappedSuperClassNameSet"
+                :name-set="groupItemNameSet"
                 :class="groupTheme"
                 style="padding: 2px;"
             />

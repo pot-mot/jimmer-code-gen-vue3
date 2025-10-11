@@ -10,7 +10,7 @@ const embeddableType = defineModel<EmbeddableTypeWithProperties>({
 })
 
 const {
-    embeddableTypeNameSet,
+    groupItemNameSet,
     selectedIdSets,
     focusNode,
     remove,
@@ -34,7 +34,11 @@ const handleRemove = () => {
         class="embeddable-type-item"
         :class="{selected: isSelected}"
     >
-        <NameCommentEditor v-model="embeddableType" :name-set="embeddableTypeNameSet" :font-size="14"/>
+        <NameCommentEditor
+            v-model="embeddableType"
+            :name-set="groupItemNameSet"
+            :font-size="14"
+        />
 
         <div class="tool">
             <button @click.stop="handleFocus">

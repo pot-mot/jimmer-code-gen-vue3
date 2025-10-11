@@ -8,7 +8,7 @@ import IconDelete from "@/components/icons/IconDelete.vue";
 const mappedSuperClass = defineModel<MappedSuperClassWithProperties>({required: true})
 
 const {
-    mappedSuperClassNameSet,
+    groupItemNameSet,
     selectedIdSets,
     focusNode,
     remove,
@@ -32,7 +32,11 @@ const handleRemove = () => {
         class="mapped-super-class-item"
         :class="{selected: isSelected}"
     >
-        <NameCommentEditor v-model="mappedSuperClass" :name-set="mappedSuperClassNameSet" :font-size="14"/>
+        <NameCommentEditor
+            v-model="mappedSuperClass"
+            :name-set="groupItemNameSet"
+            :font-size="14"
+        />
 
         <div class="tool">
             <button @click.stop="handleFocus">

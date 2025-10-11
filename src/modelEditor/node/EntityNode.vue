@@ -14,7 +14,7 @@ import {getAllProperties} from "@/type/context/utils/EntityExtends.ts";
 
 const props = defineProps<NodeProps<EntityNode["data"]>>()
 
-const {entityNameSet, contextData} = useModelEditor()
+const {groupItemNameSet, contextData, inheritInfo} = useModelEditor()
 
 const beforeCopy = (properties: EntityProperty[]) => {
     for (const property of properties) {
@@ -70,7 +70,7 @@ watch(() => handleIndexMap.value, () => {
         <div class="entity-header">
             <NameCommentEditor
                 v-model="data.entity"
-                :name-set="entityNameSet"
+                :name-set="groupItemNameSet"
                 :class="groupTheme"
                 style="padding: 2px;"
             />

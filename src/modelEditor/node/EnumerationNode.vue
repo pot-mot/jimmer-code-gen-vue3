@@ -11,7 +11,7 @@ import {buildReadonlyNameSet} from "@/utils/name/nameSet.ts";
 
 const props = defineProps<NodeProps<EnumerationNode["data"]>>()
 
-const {enumerationNameSet} = useModelEditor()
+const {groupItemNameSet} = useModelEditor()
 
 const beforePaste = (items: EnumerationItem[]) => {
     for (const item of items) {
@@ -36,7 +36,7 @@ const itemNameSet = computed(() => {
         <div class="enumeration-header">
             <NameCommentEditor
                 v-model="data.enumeration"
-                :name-set="enumerationNameSet"
+                :name-set="groupItemNameSet"
                 :class="groupTheme"
                 style="padding: 2px;"
             />
