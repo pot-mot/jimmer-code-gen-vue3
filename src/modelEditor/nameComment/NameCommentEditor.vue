@@ -14,6 +14,9 @@ const props = withDefaults(defineProps<{
     autoFocus?: boolean
     fontSize?: number
     blurDelay?: number
+    nameSet?: { count(name: string): number }
+    nameValidator?: (name: string) => string | undefined
+    commentValidator?: (comment: string) => string | undefined
 }>(), {
     fontSize: 16,
     blurDelay: 200
@@ -80,6 +83,18 @@ onMounted(async () => {
 })
 
 const showComment = computed(() => model.value.comment.length > 0 || nameFocused.value || commentFocused.value)
+
+const isNameDuplicate = computed(() => {
+    return  props.nameSet && props.nameSet?.count(model.value.name) > 1
+})
+
+const nameValidateInfo = computed(() => {
+    return props.nameValidator?.(model.value.name)
+})
+
+const commentValidateInfo = computed(() => {
+    return props.commentValidator?.(model.value.comment)
+})
 </script>
 
 <template>
@@ -95,7 +110,7 @@ const showComment = computed(() => model.value.comment.length > 0 || nameFocused
         >
             <span
                 v-if="!model.name && !nameFocused"
-                class="no-name-warning"
+                class="warning-info"
             >
                 [Empty Name]
             </span>
@@ -110,6 +125,18 @@ const showComment = computed(() => model.value.comment.length > 0 || nameFocused
                 @focus="handleNameFocus"
                 @blur="handleNameBlur"
             />
+            <span
+                v-if="isNameDuplicate"
+                class="warning-info"
+            >
+                [Duplicate Name]
+            </span>
+            <span
+                v-if="nameValidateInfo"
+                class="warning-info"
+            >
+                [{{ nameValidateInfo }}]
+            </span>
         </span>
         <span
             v-if="showComment"
@@ -128,6 +155,12 @@ const showComment = computed(() => model.value.comment.length > 0 || nameFocused
                 @focus="handleCommentFocus"
                 @blur="handleCommentBlur"
             />]
+            <span
+                v-if="commentValidateInfo"
+                class="warning-info"
+            >
+                [{{ commentValidator }}]
+            </span>
         </span>
     </span>
 </template>
@@ -142,7 +175,7 @@ const showComment = computed(() => model.value.comment.length > 0 || nameFocused
     pointer-events: none;
 }
 
-.name-comment-editor > .name > .no-name-warning {
+.name-comment-editor > .name > .warning-info {
     cursor: text;
     color: var(--warning-color);
 }

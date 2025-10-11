@@ -3,14 +3,17 @@ import {Handle, type NodeProps, Position} from "@vue-flow/core";
 import {type EntityNode, NOT_EXIST_ASSOCIATION_ID} from "@/modelEditor/node/EntityNode.ts";
 import EntityPropertyTypeSelect from "@/modelEditor/node/property/EntityPropertyTypeSelect.vue";
 import EditList from "@/components/list/selectableList/EditList.vue";
-import {createId, getColorIsDark, getColorVar} from "@/modelEditor/useModelEditor.ts";
+import {createId, getColorIsDark, getColorVar, useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import ExtendsIdMultiSelect from "@/modelEditor/node/extendsId/ExtendsIdMultiSelect.vue";
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
 import {computed, ref, useTemplateRef, watch} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import {validateEntityProperty} from "@/type/__generated/jsonSchema/items/EntityProperty.ts";
+import {buildReadonlyNameSet} from "@/utils/name/nameSet.ts";
 
 const props = defineProps<NodeProps<EntityNode["data"]>>()
+
+const {entityNameSet} = useModelEditor()
 
 const beforeCopy = (properties: EntityProperty[]) => {
     for (const property of properties) {
@@ -31,6 +34,11 @@ const groupColor = computed(() => {
 })
 const groupTheme = computed(() => {
     return getColorIsDark(props.data.entity.groupId) ? 'dark' : 'light'
+})
+
+// TODO with existed info
+const propertyNameSet = computed(() => {
+    return buildReadonlyNameSet(props.data.entity.properties.map(property => property.name))
 })
 
 const nodeElRef = useTemplateRef("nodeElRef")
@@ -59,7 +67,12 @@ watch(() => handleIndexMap.value, () => {
         <Handle :id="data.entity.id" type="target" :position="Position.Bottom"/>
 
         <div class="entity-header">
-            <NameCommentEditor v-model="data.entity" :class="groupTheme" style="padding: 2px;"/>
+            <NameCommentEditor
+                v-model="data.entity"
+                :name-set="entityNameSet"
+                :class="groupTheme"
+                style="padding: 2px;"
+            />
             <span :class="groupTheme" style="color: var(--text-color);">:</span>
             <ExtendsIdMultiSelect
                 style="font-size: 16px; line-height: 32px;"
@@ -88,6 +101,7 @@ watch(() => handleIndexMap.value, () => {
                         <NameCommentEditor
                             :font-size="14"
                             v-model="data.entity.properties[index]"
+                            :name-set="propertyNameSet"
                         />
                         <EntityPropertyTypeSelect
                             class="noDrag noWheel"

@@ -8,6 +8,7 @@ import IconDelete from "@/components/icons/IconDelete.vue";
 const enumeration = defineModel<Enumeration>({required: true})
 
 const {
+    enumerationNameSet,
     selectedIdSets,
     focusNode,
     remove,
@@ -31,7 +32,7 @@ const handleRemove = () => {
         class="enumeration-item"
         :class="{selected: isSelected}"
     >
-        <NameCommentEditor v-model="enumeration" :font-size="14"/>
+        <NameCommentEditor v-model="enumeration" :name-set="enumerationNameSet" :font-size="14"/>
 
         <div class="tool">
             <button @click.stop="handleFocus">

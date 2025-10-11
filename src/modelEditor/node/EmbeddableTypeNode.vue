@@ -2,14 +2,17 @@
 import {type NodeProps} from "@vue-flow/core";
 import type {EmbeddableTypeNode} from "@/modelEditor/node/EmbeddableTypeNode.ts";
 import EditList from "@/components/list/selectableList/EditList.vue";
-import {createId, getColorVar, getColorIsDark} from "@/modelEditor/useModelEditor.ts";
+import {createId, getColorVar, getColorIsDark, useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
 import EmbeddableTypePropertyTypeSelect from "@/modelEditor/node/property/EmbeddableTypePropertyTypeSelect.vue";
 import {validateEmbeddableTypeProperty} from "@/type/__generated/jsonSchema/items/EmbeddableTypeProperty.ts";
 import {computed} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
+import {buildReadonlyNameSet} from "@/utils/name/nameSet.ts";
 
 const props = defineProps<NodeProps<EmbeddableTypeNode["data"]>>()
+
+const {embeddableTypeNameSet} = useModelEditor()
 
 const beforePaste = (properties: Property[]) => {
     for (const property of properties) {
@@ -23,12 +26,21 @@ const groupColor = computed(() => {
 const groupTheme = computed(() => {
     return getColorIsDark(props.data.embeddableType.groupId) ? 'dark' : 'light'
 })
+
+const propertyNameSet = computed(() => {
+    return buildReadonlyNameSet(props.data.embeddableType.properties.map(property => property.name))
+})
 </script>
 
 <template>
     <div class="embeddable-type-node" :class="{selected}">
         <div class="embeddable-type-header">
-            <NameCommentEditor v-model="data.embeddableType" :class="groupTheme" style="padding: 2px;"/>
+            <NameCommentEditor
+                v-model="data.embeddableType"
+                :name-set="embeddableTypeNameSet"
+                :class="groupTheme"
+                style="padding: 2px;"
+            />
         </div>
 
         <EditList
@@ -42,7 +54,11 @@ const groupTheme = computed(() => {
             <template #line="{index}">
                 <div class="embeddable-type-property">
                     <div class="embeddable-type-property-view">
-                        <NameCommentEditor :font-size="14" v-model="data.embeddableType.properties[index]"/>
+                        <NameCommentEditor
+                            :font-size="14"
+                            v-model="data.embeddableType.properties[index]"
+                            :name-set="propertyNameSet"
+                        />
                         <EmbeddableTypePropertyTypeSelect
                             class="noDrag noWheel"
                             style="font-size: 14px; line-height: 30px;"

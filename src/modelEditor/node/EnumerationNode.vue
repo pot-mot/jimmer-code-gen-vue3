@@ -2,13 +2,16 @@
 import {type NodeProps} from "@vue-flow/core";
 import type {EnumerationNode} from "@/modelEditor/node/EnumerationNode.ts";
 import EditList from "@/components/list/selectableList/EditList.vue";
-import {createId, getColorVar, getColorIsDark} from "@/modelEditor/useModelEditor.ts";
+import {createId, getColorVar, getColorIsDark, useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {defaultEnumerationItem} from "@/type/context/default/modelDefaults.ts";
 import {validateEnumerationItem} from "@/type/__generated/jsonSchema/items/EnumerationItem.ts";
 import {computed} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
+import {buildReadonlyNameSet} from "@/utils/name/nameSet.ts";
 
 const props = defineProps<NodeProps<EnumerationNode["data"]>>()
+
+const {enumerationNameSet} = useModelEditor()
 
 const beforePaste = (items: EnumerationItem[]) => {
     for (const item of items) {
@@ -22,12 +25,21 @@ const groupColor = computed(() => {
 const groupTheme = computed(() => {
     return getColorIsDark(props.data.enumeration.groupId) ? 'dark' : 'light'
 })
+
+const itemNameSet = computed(() => {
+    return buildReadonlyNameSet(props.data.enumeration.items.map(item => item.name))
+})
 </script>
 
 <template>
     <div class="enumeration-node" :class="{selected}">
         <div class="enumeration-header">
-            <NameCommentEditor v-model="data.enumeration" :class="groupTheme" style="padding: 2px;"/>
+            <NameCommentEditor
+                v-model="data.enumeration"
+                :name-set="enumerationNameSet"
+                :class="groupTheme"
+                style="padding: 2px;"
+            />
         </div>
 
         <EditList
@@ -41,7 +53,11 @@ const groupTheme = computed(() => {
             <template #line="{index}">
                 <div class="enumeration-item">
                     <div class="enumeration-item-view">
-                        <NameCommentEditor :font-size="14" v-model="data.enumeration.items[index]"/>
+                        <NameCommentEditor
+                            :font-size="14"
+                            v-model="data.enumeration.items[index]"
+                            :name-set="itemNameSet"
+                        />
                     </div>
                 </div>
             </template>

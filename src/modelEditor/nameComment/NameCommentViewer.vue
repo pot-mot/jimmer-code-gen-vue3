@@ -8,7 +8,7 @@ defineProps<{
 <template>
     <span class="name-comment-viewer">
         <span class="name" v-if="data.name">{{ data.name }}</span>
-        <span class="no-name-warning" v-else>[Empty Name]</span>
+        <span class="warning-info" v-else>[Empty Name]</span>
         <span class="comment" v-if="data.comment && !hideComment">[{{ data.comment }}]</span>
     </span>
 </template>
@@ -18,7 +18,7 @@ defineProps<{
     white-space: nowrap;
 }
 
-.name-comment-viewer > .no-name-warning {
+.name-comment-viewer > .warning-info {
     color: var(--warning-color);
 }
 

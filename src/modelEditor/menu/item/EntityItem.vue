@@ -8,6 +8,7 @@ import IconDelete from "@/components/icons/IconDelete.vue";
 const entity = defineModel<EntityWithProperties>({required: true})
 
 const {
+    entityNameSet,
     selectedIdSets,
     focusNode,
     remove,
@@ -31,7 +32,7 @@ const handleRemove = () => {
         class="entity-item"
         :class="{selected: isSelected}"
     >
-        <NameCommentEditor v-model="entity" :font-size="14"/>
+        <NameCommentEditor v-model="entity" :name-set="entityNameSet" :font-size="14"/>
 
         <div class="tool">
             <button @click.stop="handleFocus">

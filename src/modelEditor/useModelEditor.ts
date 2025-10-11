@@ -33,10 +33,10 @@ import {useClipBoard} from "@/utils/clipBoard/useClipBoard.ts";
 import {fillModelGraphSubData, modelDataToGraphData} from "@/type/context/utils/ModelGraphSubData.ts";
 import {contextDataGetSelectSubData} from "@/type/context/utils/ModelSubData.ts";
 import {validatePartialModelGraphSubData} from "@/modelEditor/graphData/ModelGraphSubData.ts";
-import {buildNameSets} from "@/modelEditor/import/protectRepeatNames.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import {tableToEntity} from "@/type/script/default/TableEntityConvert/tableToEntity.ts";
 import {contextDataToContext} from "@/type/context/utils/ModelContext.ts";
+import {buildNameSet, buildReadonlyNameSet} from "@/utils/name/nameSet.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -100,7 +100,34 @@ export const useModelEditor = createStore(() => {
         return contextDataToContext(getContextData())
     }
 
+    // TODO
     const typeOptions = ref<CrossType[]>([])
+
+    const groupNameSet = computed(() =>
+        buildReadonlyNameSet([...contextData.value.groupMap.values()].map(it => it.name))
+    )
+    const entityNameSet = computed(() =>
+        buildReadonlyNameSet([...contextData.value.entityMap.values()].map(it => it.name))
+    )
+    const mappedSuperClassNameSet = computed(() =>
+        buildReadonlyNameSet([...contextData.value.mappedSuperClassMap.values()].map(it => it.name))
+    )
+    const embeddableTypeNameSet = computed(() =>
+        buildReadonlyNameSet([...contextData.value.embeddableTypeMap.values()].map(it => it.name))
+    )
+    const enumerationNameSet = computed(() =>
+        buildReadonlyNameSet([...contextData.value.enumerationMap.values()].map(it => it.name))
+    )
+    const associationNameSet = computed(() => {
+        const associationNames: string[] = []
+        for (const {association} of contextData.value.associationMap.values()) {
+            if ("name" in association && !association.useNameTemplate) {
+                associationNames.push(association.name)
+            }
+        }
+        return buildNameSet(associationNames)
+    })
+
 
     const currentGroupId = ref<string>()
     const toggleCurrentGroup = ({id}: { id: string | undefined }) => {
@@ -199,9 +226,7 @@ export const useModelEditor = createStore(() => {
     }
 
     const addGroup = (group: Group = defaultGroup()) => {
-        const contextData = getContextData()
-        const groupNameSet = buildNameSets(contextData.groupMap.values())
-        group.name = groupNameSet.next(group.name)
+        group.name = groupNameSet.value.next(group.name)
         history.executeCommand('group:add', {group})
         return group.id
     }
@@ -210,9 +235,7 @@ export const useModelEditor = createStore(() => {
         entity: EntityWithProperties = defaultEntity(groupId),
         position: XYPosition = screenPosition.value
     ) => {
-        const contextData = getContextData()
-        const entityNameSet = buildNameSets(contextData.entityMap.values())
-        entity.name = entityNameSet.next(entity.name)
+        entity.name = entityNameSet.value.next(entity.name)
         history.executeCommand('entity:add', {entity, position})
         return entity.id
     }
@@ -221,9 +244,7 @@ export const useModelEditor = createStore(() => {
         mappedSuperClass: MappedSuperClassWithProperties = defaultMappedSuperClass(groupId),
         position: XYPosition = screenPosition.value
     ) => {
-        const contextData = getContextData()
-        const mappedSuperClassNameSet = buildNameSets(contextData.mappedSuperClassMap.values())
-        mappedSuperClass.name = mappedSuperClassNameSet.next(mappedSuperClass.name)
+        mappedSuperClass.name = mappedSuperClassNameSet.value.next(mappedSuperClass.name)
         history.executeCommand('mapped-super-class:add', {mappedSuperClass, position})
         return mappedSuperClass.id
     }
@@ -232,9 +253,7 @@ export const useModelEditor = createStore(() => {
         embeddableType: EmbeddableTypeWithProperties = defaultEmbeddableType(groupId),
         position: XYPosition = screenPosition.value
     ) => {
-        const contextData = getContextData()
-        const embeddableTypeNameSet = buildNameSets(contextData.embeddableTypeMap.values())
-        embeddableType.name = embeddableTypeNameSet.next(embeddableType.name)
+        embeddableType.name = embeddableTypeNameSet.value.next(embeddableType.name)
         history.executeCommand('embeddable-type:add', {embeddableType, position})
         return embeddableType.id
     }
@@ -243,9 +262,7 @@ export const useModelEditor = createStore(() => {
         enumeration: Enumeration = defaultEnumeration(groupId, contextData.value.model.defaultEnumerationStrategy),
         position: XYPosition = screenPosition.value
     ) => {
-        const contextData = getContextData()
-        const enumerationNameSet = buildNameSets(contextData.enumerationMap.values())
-        enumeration.name = enumerationNameSet.next(enumeration.name)
+        enumeration.name = enumerationNameSet.value.next(enumeration.name)
         history.executeCommand('enumeration:add', {enumeration, position})
         return enumeration.id
     }
@@ -256,16 +273,8 @@ export const useModelEditor = createStore(() => {
             percentage: 50
         }
     ) => {
-        const contextData = getContextData()
-        const notNameTemplateAssociation = Array.from(contextData.associationMap.values())
-            .filter(it => {
-                return "name" in it.association && !it.association.useNameTemplate
-            })
-            .map(it => it.association) as DeepReadonly<AssociationIdOnly & {name: string}[]>
-
-        const associationNameSet = buildNameSets(notNameTemplateAssociation)
         if ("name" in association && !association.useNameTemplate) {
-            association.name = associationNameSet.next(association.name)
+            association.name = associationNameSet.value.next(association.name)
         }
         history.executeCommand('association:add', {association, labelPosition})
         return association.id
@@ -496,7 +505,7 @@ export const useModelEditor = createStore(() => {
      */
     const clipBoard = useClipBoard<Partial<ModelGraphSubData>, ModelGraphSubData>({
         exportData: (): ModelGraphSubData => {
-           return getModelGraphData()
+            return getModelGraphData()
         },
         importData: async (data: Partial<ModelGraphSubData>) => {
             await importModelGraphData(data)
@@ -849,7 +858,7 @@ export const useModelEditor = createStore(() => {
                 try {
                     history.undo()
                     sendMessage("undo", {type: "success"})
-                }catch (e) {
+                } catch (e) {
                     console.warn(e)
                     sendMessage("undo fail", {type: "warning"})
                 }
@@ -890,7 +899,7 @@ export const useModelEditor = createStore(() => {
             toggleSelectAll: toggleSelectGraphAll,
         },
 
-        selectionRect:  readonly(selectionRect),
+        selectionRect: readonly(selectionRect),
         isGraphSelectionNotEmpty,
         isGraphSelectionPlural,
         canMultiSelect,
@@ -915,6 +924,12 @@ export const useModelEditor = createStore(() => {
         contextData: readonly(contextData),
         typeOptions: readonly(typeOptions),
         getContext,
+        groupNameSet,
+        entityNameSet,
+        mappedSuperClassNameSet,
+        enumerationNameSet,
+        embeddableTypeNameSet,
+        associationNameSet,
 
         loadModel,
         loadTables,

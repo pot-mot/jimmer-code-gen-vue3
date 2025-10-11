@@ -16,7 +16,7 @@ import {defaultModelSubIds, fillModelSubIds, subIdsToSubIdSets} from "@/type/con
 import {defaultModelGraphSubData} from "@/type/context/utils/ModelGraphSubData.ts";
 import {protectRepeatIds} from "@/modelEditor/import/protectRepeatIds.ts";
 import {layoutPosition} from "@/modelEditor/import/layoutPosition.ts";
-import {protectRepeatNames} from "@/modelEditor/import/protectRepeatNames.ts";
+import {protectDuplicateNames} from "@/modelEditor/import/protectDuplicateNames.ts";
 import {
     type AbstractAssociationEdge,
     EdgeType_AbstractAssociation
@@ -1144,7 +1144,7 @@ export const useModelEditorHistory = (
             const contextData = getContextData()
 
             protectRepeatIds(graphData, contextData)
-            protectRepeatNames(graphData, contextData)
+            protectDuplicateNames(graphData, contextData)
             if (startPosition) {
                 layoutPosition(startPosition, [
                     ...graphData.mappedSuperClasses,
