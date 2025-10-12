@@ -25,23 +25,25 @@ pre[class*="language-"] {
     color: #ddd;
 }
 
-pre[class*="language-"]::-moz-selection, pre[class*="language-"] ::-moz-selection,
-code[class*="language-"]::-moz-selection, code[class*="language-"] ::-moz-selection {
+pre[class*="language-"]::-moz-selection,
+pre[class*="language-"]::-moz-selection,
+code[class*="language-"]::-moz-selection,
+code[class*="language-"]::-moz-selection,
+pre[class*="language-"]::selection,
+pre[class*="language-"]::selection,
+code[class*="language-"]::selection,
+code[class*="language-"]::selection {
     background: #b3d4fc;
 }
 
-pre[class*="language-"]::selection, pre[class*="language-"] ::selection,
-code[class*="language-"]::selection, code[class*="language-"] ::selection {
-    background: #b3d4fc;
-}
-
-.dark pre[class*="language-"]::-moz-selection, pre[class*="language-"] ::-moz-selection,
-.dark code[class*="language-"]::-moz-selection, code[class*="language-"] ::-moz-selection {
-    background: #2c4b78;
-}
-
-.dark pre[class*="language-"]::selection, pre[class*="language-"] ::selection,
-.dark code[class*="language-"]::selection, code[class*="language-"] ::selection {
+.dark pre[class*="language-"]::-moz-selection,
+.dark pre[class*="language-"]::-moz-selection,
+.dark code[class*="language-"]::-moz-selection,
+.dark code[class*="language-"]::-moz-selection,
+.dark pre[class*="language-"]::selection,
+.dark pre[class*="language-"]::selection,
+.dark code[class*="language-"]::selection,
+.dark code[class*="language-"]::selection {
     background: #2c4b78;
 }
 
@@ -114,6 +116,7 @@ pre[class*="language-"] {
 .token.attr-name {
     color: #333;
 }
+
 .dark .token.attr-name {
     color: #ddd;
 }
@@ -133,6 +136,7 @@ pre[class*="language-"] {
 .token.bold {
     font-weight: bold;
 }
+
 .token.italic {
     font-style: italic;
 }
