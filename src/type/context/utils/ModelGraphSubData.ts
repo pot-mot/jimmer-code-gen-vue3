@@ -84,11 +84,8 @@ export const modelDataToGraphData = (
         enumerationWithPositions.push({data: enumeration, position: node.position})
     }
     const edgedAssociations = []
-    for (const edgedAssociation of data.associations) {
-        const association = edgedAssociation.association
-        const edge = vueFlow.findEdge(association.id)
-        if (!edge) throw new Error(`Association ${association.id} Edge not found`)
-        edgedAssociations.push({data: association, labelPosition: edge.data.labelPosition})
+    for (const {association, labelPosition} of data.associations) {
+            edgedAssociations.push({data: association, labelPosition})
     }
     return{
         groups: data.groups,
