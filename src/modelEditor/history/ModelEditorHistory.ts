@@ -1,4 +1,4 @@
-import {type CommandDefinition, useCommandHistory} from "@/history/commandHistory.ts";
+import {type CommandChangeInput, type CommandDefinition, useCommandHistory} from "@/history/commandHistory.ts";
 import {type GraphNode, type VueFlowStore, type XYPosition} from "@vue-flow/core";
 import {computed, reactive, readonly, type Ref, ref, shallowReadonly, type ShallowRef, watch} from "vue";
 import {deleteColorVar, type MenuItem, setColorVar} from "@/modelEditor/useModelEditor.ts";
@@ -1315,6 +1315,12 @@ export const useModelEditorHistory = (
         menuMap: shallowReadonly(menuMap),
         inheritInfo: readonly(inheritInfo),
         waitChangeSync,
+        inferCommandInput: <Key extends keyof ModelEditorHistoryCommands>(
+            data: CommandChangeInput<ModelEditorHistoryCommands>,
+            key: Key
+        ): data is CommandChangeInput<ModelEditorHistoryCommands, Key> => {
+            return data.command.key === key
+        },
         noEffect: {
             group: {
                 add: addGroup,

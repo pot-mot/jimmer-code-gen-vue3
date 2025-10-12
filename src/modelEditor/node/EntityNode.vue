@@ -9,12 +9,10 @@ import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
 import {computed, ref, useTemplateRef, watch} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import {validateEntityProperty} from "@/type/__generated/jsonSchema/items/EntityProperty.ts";
-import {buildReadonlyNameSet} from "@/utils/name/nameSet.ts";
-import {getAllProperties} from "@/type/context/utils/EntityExtends.ts";
 
 const props = defineProps<NodeProps<EntityNode["data"]>>()
 
-const {groupItemNameSet, contextData, inheritInfo} = useModelEditor()
+const {groupItemNameSet, propertyNameSetMap} = useModelEditor()
 
 const beforeCopy = (properties: EntityProperty[]) => {
     for (const property of properties) {
@@ -39,7 +37,7 @@ const groupTheme = computed(() => {
 
 // TODO with existed info
 const propertyNameSet = computed(() => {
-    return buildReadonlyNameSet(props.data.entity.properties.map(property => property.name))
+    return propertyNameSetMap.value.get(props.data.entity.id)
 })
 
 const nodeElRef = useTemplateRef("nodeElRef")

@@ -14,7 +14,7 @@ import {buildReadonlyNameSet} from "@/utils/name/nameSet.ts";
 
 const props = defineProps<NodeProps<MappedSuperClassNode["data"]>>()
 
-const {groupItemNameSet, contextData, inheritInfo} = useModelEditor()
+const {groupItemNameSet, propertyNameSetMap} = useModelEditor()
 
 const beforeCopy = (properties: MappedSuperClassProperty[]) => {
     for (const property of properties) {
@@ -39,7 +39,7 @@ const groupTheme = computed(() => {
 
 // TODO with existed info
 const propertyNameSet = computed(() => {
-    return buildReadonlyNameSet(props.data.mappedSuperClass.properties.map(property => property.name))
+    return propertyNameSetMap.get(props.data.mappedSuperClass.id)
 })
 
 const nodeElRef = useTemplateRef("nodeElRef")

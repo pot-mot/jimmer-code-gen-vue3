@@ -7,11 +7,10 @@ import {defaultEnumerationItem} from "@/type/context/default/modelDefaults.ts";
 import {validateEnumerationItem} from "@/type/__generated/jsonSchema/items/EnumerationItem.ts";
 import {computed} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
-import {buildReadonlyNameSet} from "@/utils/name/nameSet.ts";
 
 const props = defineProps<NodeProps<EnumerationNode["data"]>>()
 
-const {groupItemNameSet} = useModelEditor()
+const {groupItemNameSet, enumerationItemNameSetMap} = useModelEditor()
 
 const beforePaste = (items: EnumerationItem[]) => {
     for (const item of items) {
@@ -27,7 +26,7 @@ const groupTheme = computed(() => {
 })
 
 const itemNameSet = computed(() => {
-    return buildReadonlyNameSet(props.data.enumeration.items.map(item => item.name))
+    return enumerationItemNameSetMap.value.get(props.data.enumeration.id)
 })
 </script>
 

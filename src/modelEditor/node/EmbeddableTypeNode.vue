@@ -8,11 +8,10 @@ import EmbeddableTypePropertyTypeSelect from "@/modelEditor/node/property/Embedd
 import {validateEmbeddableTypeProperty} from "@/type/__generated/jsonSchema/items/EmbeddableTypeProperty.ts";
 import {computed} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
-import {buildReadonlyNameSet} from "@/utils/name/nameSet.ts";
 
 const props = defineProps<NodeProps<EmbeddableTypeNode["data"]>>()
 
-const {groupItemNameSet} = useModelEditor()
+const {groupItemNameSet, propertyNameSetMap} = useModelEditor()
 
 const beforePaste = (properties: Property[]) => {
     for (const property of properties) {
@@ -28,7 +27,7 @@ const groupTheme = computed(() => {
 })
 
 const propertyNameSet = computed(() => {
-    return buildReadonlyNameSet(props.data.embeddableType.properties.map(property => property.name))
+    return propertyNameSetMap.value.get(props.data.embeddableType.id)
 })
 </script>
 

@@ -1,6 +1,8 @@
 import {createStore} from "@/utils/store/createStore.ts";
 import {computed, nextTick, readonly, ref, shallowRef} from "vue";
-import {useModelEditorHistory} from "@/modelEditor/history/ModelEditorHistory.ts";
+import {
+    useModelEditorHistory,
+} from "@/modelEditor/history/ModelEditorHistory.ts";
 import {useModelEditorSelectIds} from "@/modelEditor/selectIds/ModelEditorSelectIds.ts";
 import {
     type GraphEdge,
@@ -36,7 +38,7 @@ import {validatePartialModelGraphSubData} from "@/modelEditor/graphData/ModelGra
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import {tableToEntity} from "@/type/script/default/TableEntityConvert/tableToEntity.ts";
 import {contextDataToContext} from "@/type/context/utils/ModelContext.ts";
-import {buildReadonlyNameSet} from "@/utils/name/nameSet.ts";
+import {buildReadonlyNameSet, type ReadonlyNameSet} from "@/utils/name/nameSet.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -107,6 +109,7 @@ export const useModelEditor = createStore(() => {
         menuMap,
         inheritInfo,
         waitChangeSync,
+        inferCommandInput,
     } = useModelEditorHistory({vueFlow, contextData})
 
     // TODO
@@ -153,6 +156,63 @@ export const useModelEditor = createStore(() => {
             }
         }
         return buildReadonlyNameSet(names)
+    })
+
+    const propertyNameSetMap = ref(new Map<string, ReadonlyNameSet>())
+    const syncPropertyNameSetMap = (id: string, properties: DeepReadonly<{ name: string }[]>) => {
+        const names = []
+        for (const property of properties) {
+            names.push(property.name)
+        }
+        propertyNameSetMap.value.set(id, buildReadonlyNameSet(names))
+    }
+    const removeFromPropertyNameSetMap = (id: string) => {
+        propertyNameSetMap.value.delete(id)
+    }
+    for (const [id, entity] of contextData.value.entityMap) syncPropertyNameSetMap(id, entity.properties)
+    for (const [id, mappedSuperClass] of contextData.value.mappedSuperClassMap) syncPropertyNameSetMap(id, mappedSuperClass.properties)
+    for (const [id, embeddableType] of contextData.value.embeddableTypeMap) syncPropertyNameSetMap(id, embeddableType.properties)
+    history.eventBus.on("change", (data) => {
+        if (inferCommandInput(data, "entity:add")) {
+            if (data.type === "apply") syncPropertyNameSetMap(data.options.entity.id, data.options.entity.properties)
+            else if (data.type === "revert") removeFromPropertyNameSetMap(data.revertOptions.id)
+        } else if (inferCommandInput(data, "mapped-super-class:add")) {
+            if (data.type === "apply") syncPropertyNameSetMap(data.options.mappedSuperClass.id, data.options.mappedSuperClass.properties)
+            else if (data.type === "revert") removeFromPropertyNameSetMap(data.revertOptions.id)
+        } else if (inferCommandInput(data, "embeddable-type:add")) {
+            if (data.type === "apply") syncPropertyNameSetMap(data.options.embeddableType.id, data.options.embeddableType.properties)
+            else if (data.type === "revert") removeFromPropertyNameSetMap(data.revertOptions.id)
+        } else if (inferCommandInput(data, "entity:change")) {
+            if (data.type === "apply") syncPropertyNameSetMap(data.options.entity.id, data.options.entity.properties)
+            else if (data.type === "revert") syncPropertyNameSetMap(data.revertOptions.entity.id, data.revertOptions.entity.properties)
+        } else if (inferCommandInput(data, "mapped-super-class:change")) {
+            if (data.type === "apply") syncPropertyNameSetMap(data.options.mappedSuperClass.id, data.options.mappedSuperClass.properties)
+            else if (data.type === "revert") syncPropertyNameSetMap(data.revertOptions.mappedSuperClass.id, data.revertOptions.mappedSuperClass.properties)
+        } else if (inferCommandInput(data, "embeddable-type:change")) {
+            if (data.type === "apply") syncPropertyNameSetMap(data.options.embeddableType.id, data.options.embeddableType.properties)
+            else if (data.type === "revert") syncPropertyNameSetMap(data.revertOptions.embeddableType.id, data.revertOptions.embeddableType.properties)
+        }
+    })
+
+    const enumerationItemNameSetMap = ref(new Map<string, ReadonlyNameSet>)
+    const syncEnumerationItemNameSetMap = (id: string, items: DeepReadonly<{ name: string }[]>) => {
+        const names = []
+        for (const property of items) {
+            names.push(property.name)
+        }
+        propertyNameSetMap.value.set(id, buildReadonlyNameSet(names))
+    }
+    const removeFromEnumerationItemNameSetMap = (id: string) => {
+        enumerationItemNameSetMap.value.delete(id)
+    }
+    history.eventBus.on("change", (data) => {
+        if (inferCommandInput(data, "enumeration:add")) {
+            if (data.type === "apply") syncEnumerationItemNameSetMap(data.options.enumeration.id, data.options.enumeration.items)
+            else if (data.type === "revert") removeFromEnumerationItemNameSetMap(data.revertOptions.id)
+        } else if (inferCommandInput(data, "enumeration:change")) {
+            if (data.type === "apply") syncEnumerationItemNameSetMap(data.options.enumeration.id, data.options.enumeration.items)
+            else if (data.type === "revert") syncEnumerationItemNameSetMap(data.revertOptions.enumeration.id, data.revertOptions.enumeration.items)
+        }
     })
 
     const currentGroupId = ref<string>()
@@ -949,6 +1009,8 @@ export const useModelEditor = createStore(() => {
         enumerationNameSet,
         embeddableTypeNameSet,
         associationNameSet,
+        propertyNameSetMap: readonly(propertyNameSetMap),
+        enumerationItemNameSetMap: readonly(enumerationItemNameSetMap),
 
         loadModel,
         loadTables,
