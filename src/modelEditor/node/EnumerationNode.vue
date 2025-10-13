@@ -5,13 +5,35 @@ import EditList from "@/components/list/selectableList/EditList.vue";
 import {createId, getColorVar, getColorIsDark, useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {defaultEnumerationItem} from "@/type/context/default/modelDefaults.ts";
 import {validateEnumerationItem} from "@/type/__generated/jsonSchema/items/EnumerationItem.ts";
-import {computed} from "vue";
+import {computed, onBeforeUnmount, onMounted, useTemplateRef} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import IconAim from "@/components/icons/IconAim.vue";
 import {NodeToolbar} from "@vue-flow/node-toolbar";
 import IconDelete from "@/components/icons/IconDelete.vue";
+import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/ModelSubFocus.ts";
 
 const props = defineProps<NodeProps<EnumerationNode["data"]>>()
+
+const groupColor = computed(() => {
+    return getColorVar(props.data.enumeration.groupId)
+})
+const groupTheme = computed(() => {
+    return getColorIsDark(props.data.enumeration.groupId) ? 'dark' : 'light'
+})
+
+const itemEditListRef = useTemplateRef("itemEditListRef")
+const focusProperty = ({enumerationId, itemId}: {enumerationId: string, itemId: string}) => {
+    if (enumerationId === props.data.enumeration.id && itemEditListRef.value) {
+        const index = props.data.enumeration.items.findIndex(item => item.id === itemId)
+        if (index !== -1) itemEditListRef.value?.selection.resetSelection([index])
+    }
+}
+onMounted(() => {
+    modelSubFocusEventBus.on("focusEnumerationItem", focusProperty)
+})
+onBeforeUnmount(() => {
+    modelSubFocusEventBus.off("focusEnumerationItem", focusProperty)
+})
 
 const {focusNode, remove, groupItemNameSet, enumerationItemNameSetMap} = useModelEditor()
 
@@ -20,13 +42,6 @@ const beforePaste = (items: EnumerationItem[]) => {
         item.id = createId("EnumerationItem")
     }
 }
-
-const groupColor = computed(() => {
-    return getColorVar(props.data.enumeration.groupId)
-})
-const groupTheme = computed(() => {
-    return getColorIsDark(props.data.enumeration.groupId) ? 'dark' : 'light'
-})
 
 const itemNameSet = computed(() => {
     return enumerationItemNameSetMap.value.get(props.data.enumeration.id)
@@ -45,6 +60,7 @@ const itemNameSet = computed(() => {
         </div>
 
         <EditList
+            ref="itemEditListRef"
             class="enumeration-item-list"
             v-model:lines="data.enumeration.items"
             :default-line="defaultEnumerationItem"

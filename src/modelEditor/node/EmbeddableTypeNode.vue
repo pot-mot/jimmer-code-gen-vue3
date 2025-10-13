@@ -6,13 +6,35 @@ import {createId, getColorVar, getColorIsDark, useModelEditor} from "@/modelEdit
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
 import EmbeddableTypePropertyTypeSelect from "@/modelEditor/node/property/EmbeddableTypePropertyTypeSelect.vue";
 import {validateEmbeddableTypeProperty} from "@/type/__generated/jsonSchema/items/EmbeddableTypeProperty.ts";
-import {computed} from "vue";
+import {computed, onBeforeUnmount, onMounted, useTemplateRef} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import {NodeToolbar} from "@vue-flow/node-toolbar";
 import IconAim from "@/components/icons/IconAim.vue";
 import IconDelete from "@/components/icons/IconDelete.vue";
+import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/ModelSubFocus.ts";
 
 const props = defineProps<NodeProps<EmbeddableTypeNode["data"]>>()
+
+const groupColor = computed(() => {
+    return getColorVar(props.data.embeddableType.groupId)
+})
+const groupTheme = computed(() => {
+    return getColorIsDark(props.data.embeddableType.groupId) ? 'dark' : 'light'
+})
+
+const propertyEditListRef = useTemplateRef("propertyEditListRef")
+const focusProperty = ({embeddableTypeId, propertyId}: {embeddableTypeId: string, propertyId: string}) => {
+    if (embeddableTypeId === props.data.embeddableType.id && propertyEditListRef.value) {
+        const index = props.data.embeddableType.properties.findIndex(property => property.id === propertyId)
+        if (index !== -1) propertyEditListRef.value?.selection.resetSelection([index])
+    }
+}
+onMounted(() => {
+    modelSubFocusEventBus.on("focusEmbeddableTypeProperty", focusProperty)
+})
+onBeforeUnmount(() => {
+    modelSubFocusEventBus.off("focusEmbeddableTypeProperty", focusProperty)
+})
 
 const {focusNode, remove, groupItemNameSet, propertyNameSetMap} = useModelEditor()
 
@@ -21,13 +43,6 @@ const beforePaste = (properties: Property[]) => {
         property.id = createId("Property")
     }
 }
-
-const groupColor = computed(() => {
-    return getColorVar(props.data.embeddableType.groupId)
-})
-const groupTheme = computed(() => {
-    return getColorIsDark(props.data.embeddableType.groupId) ? 'dark' : 'light'
-})
 
 const propertyNameSet = computed(() => {
     return propertyNameSetMap.value.get(props.data.embeddableType.id)
@@ -46,6 +61,7 @@ const propertyNameSet = computed(() => {
         </div>
 
         <EditList
+            ref="propertyEditListRef"
             class="embeddable-type-property-list"
             v-model:lines="data.embeddableType.properties"
             :default-line="defaultScalarProperty"

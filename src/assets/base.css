@@ -155,3 +155,7 @@ button {
     border: var(--border);
     border-color: var(--background-color-hover);
 }
+
+button:hover {
+    background-color: var(--background-color-hover);
+}

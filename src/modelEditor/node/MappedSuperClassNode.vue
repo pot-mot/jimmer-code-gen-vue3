@@ -5,17 +5,38 @@ import EditList from "@/components/list/selectableList/EditList.vue";
 import {createId, getColorVar, getColorIsDark, useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import ExtendsIdMultiSelect from "@/modelEditor/node/extendsId/ExtendsIdMultiSelect.vue";
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
-import {computed, ref, useTemplateRef, watch} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import MappedSuperClassPropertyTypeSelect from "@/modelEditor/node/property/MappedSuperClassPropertyTypeSelect.vue";
 import {validateMappedSuperClassProperty} from "@/type/__generated/jsonSchema/items/MappedSuperClassProperty.ts";
 import {NOT_EXIST_ASSOCIATION_ID} from "@/modelEditor/node/EntityNode.ts";
-import {buildReadonlyNameSet} from "@/utils/name/nameSet.ts";
 import IconAim from "@/components/icons/IconAim.vue";
 import {NodeToolbar} from "@vue-flow/node-toolbar";
 import IconDelete from "@/components/icons/IconDelete.vue";
+import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/ModelSubFocus.ts";
 
 const props = defineProps<NodeProps<MappedSuperClassNode["data"]>>()
+
+const groupColor = computed(() => {
+    return getColorVar(props.data.mappedSuperClass.groupId)
+})
+const groupTheme = computed(() => {
+    return getColorIsDark(props.data.mappedSuperClass.groupId) ? 'dark' : 'light'
+})
+
+const propertyEditListRef = useTemplateRef("propertyEditListRef")
+const focusProperty = ({mappedSuperClassId, propertyId}: {mappedSuperClassId: string, propertyId: string}) => {
+    if (mappedSuperClassId === props.data.mappedSuperClass.id && propertyEditListRef.value) {
+        const index = props.data.mappedSuperClass.properties.findIndex(property => property.id === propertyId)
+        if (index !== -1) propertyEditListRef.value?.selection.resetSelection([index])
+    }
+}
+onMounted(() => {
+    modelSubFocusEventBus.on("focusMappedSuperClassProperty", focusProperty)
+})
+onBeforeUnmount(() => {
+    modelSubFocusEventBus.off("focusMappedSuperClassProperty", focusProperty)
+})
 
 const {focusNode, remove, groupItemNameSet, propertyNameSetMap} = useModelEditor()
 
@@ -32,13 +53,6 @@ const beforePaste = (properties: MappedSuperClassProperty[]) => {
         property.id = createId("Property")
     }
 }
-
-const groupColor = computed(() => {
-    return getColorVar(props.data.mappedSuperClass.groupId)
-})
-const groupTheme = computed(() => {
-    return getColorIsDark(props.data.mappedSuperClass.groupId) ? 'dark' : 'light'
-})
 
 // TODO with existed info
 const propertyNameSet = computed(() => {
@@ -86,6 +100,7 @@ watch(() => handleIndexMap.value, () => {
         </div>
 
         <EditList
+            ref="propertyEditListRef"
             class="mapped-super-class-property-list"
             v-model:lines="data.mappedSuperClass.properties"
             :default-line="defaultScalarProperty"

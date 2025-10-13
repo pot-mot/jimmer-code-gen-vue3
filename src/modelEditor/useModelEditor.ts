@@ -40,6 +40,7 @@ import {tableToEntity} from "@/type/script/default/TableEntityConvert/tableToEnt
 import {contextDataToContext} from "@/type/context/utils/ModelContext.ts";
 import {buildReadonlyNameSet, type ReadonlyNameSet} from "@/utils/name/nameSet.ts";
 import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
+import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/ModelSubFocus.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -899,6 +900,73 @@ export const useModelEditor = createStore(() => {
         })
     }
 
+    const focusNode = async (node: GraphNode | string) => {
+        let _node: GraphNode
+        if (typeof node === 'string') {
+            const foundNode = vueFlow.value.findNode(node)
+            if (!foundNode) throw new Error(`node [${node}] is not existed`)
+            _node = foundNode
+        } else {
+            _node = node
+        }
+        _node.zIndex = getNextZIndex()
+        await vueFlow.value.fitBounds({
+            x: _node.computedPosition.x,
+            y: _node.computedPosition.y,
+            width: _node.dimensions.width,
+            height: _node.dimensions.height,
+        }, {duration: 500, padding: 0.4})
+        return _node
+    }
+
+    const focusEdge = async (edge: GraphEdge | string) => {
+        let _edge: GraphEdge
+        if (typeof edge === 'string') {
+            const foundEdge = vueFlow.value.findEdge(edge) ?? findAssociationEdge(edge, vueFlow.value)
+            if (!foundEdge) throw new Error(`edge [${edge}] is not existed`)
+            _edge = foundEdge
+        } else {
+            _edge = edge
+        }
+        _edge.zIndex = getNextZIndex()
+        await vueFlow.value.fitBounds({
+            x: Math.min(_edge.sourceX, _edge.targetX),
+            y: Math.min(_edge.sourceY, _edge.targetY),
+            width: Math.abs(_edge.targetX - _edge.sourceX),
+            height: Math.abs(_edge.targetY - _edge.sourceY),
+        }, {duration: 500, padding: 0.4})
+        return _edge
+    }
+
+    const focusDiagnosticSource = async (source: DiagnosticSource) => {
+        if (source.type === "Entity") {
+            await focusNode(source.id)
+        } else if (source.type === "MappedSuperClass") {
+            await focusNode(source.id)
+        } else if (source.type === "EmbeddableType") {
+            await focusNode(source.id)
+        } else if (source.type === "Enumeration") {
+            await focusNode(source.id)
+        } else if (source.type === "Association") {
+            await focusEdge(source.id)
+        } else if (source.type === "EntityProperty") {
+            modelSubFocusEventBus.emit("focusEntityProperty", source)
+            await focusNode(source.entityId)
+        } else if (source.type === "MappedSuperClassProperty") {
+            modelSubFocusEventBus.emit("focusMappedSuperClassProperty", source)
+            await focusNode(source.mappedSuperClassId)
+        } else if (source.type === "EmbeddableTypeProperty") {
+            modelSubFocusEventBus.emit("focusEmbeddableTypeProperty", source)
+            await focusNode(source.embeddableTypeId)
+        } else if (source.type === "EnumerationItem") {
+            modelSubFocusEventBus.emit("focusEnumerationItem", source)
+            await focusNode(source.enumerationId)
+        } else if (source.type === "MappedProperty") {
+            modelSubFocusEventBus.emit("focusMappedProperty", source)
+            await focusEdge(source.associationId)
+        }
+    }
+
     return {
         // 图的信息与操作
         initModelEditor,
@@ -912,40 +980,10 @@ export const useModelEditor = createStore(() => {
         fitRect: (rect: Rect) => {
             return vueFlow.value.fitBounds(rect, {duration: 800, padding: 0.4})
         },
-        focusNode: (node: GraphNode | string) => {
-            let _node: GraphNode
-            if (typeof node === 'string') {
-                const foundNode = vueFlow.value.findNode(node)
-                if (!foundNode) throw new Error(`node [${node}] is not existed`)
-                _node = foundNode
-            } else {
-                _node = node
-            }
-            _node.zIndex = getNextZIndex()
-            return vueFlow.value.fitBounds({
-                x: _node.computedPosition.x,
-                y: _node.computedPosition.y,
-                width: _node.dimensions.width,
-                height: _node.dimensions.height,
-            }, {duration: 500, padding: 0.4})
-        },
-        focusEdge: (edge: GraphEdge | string) => {
-            let _edge: GraphEdge
-            if (typeof edge === 'string') {
-                const foundEdge = vueFlow.value.findEdge(edge) ?? findAssociationEdge(edge, vueFlow.value)
-                if (!foundEdge) throw new Error(`edge [${edge}] is not existed`)
-                _edge = foundEdge
-            } else {
-                _edge = edge
-            }
-            _edge.zIndex = getNextZIndex()
-            return vueFlow.value.fitBounds({
-                x: Math.min(_edge.sourceX, _edge.targetX),
-                y: Math.min( _edge.sourceY, _edge.targetY),
-                width: Math.abs(_edge.targetX - _edge.sourceX),
-                height: Math.abs(_edge.targetY - _edge.sourceY),
-            }, {duration: 500, padding: 0.4})
-        },
+
+        focusNode,
+        focusEdge,
+        focusDiagnosticSource,
 
         // 历史记录
         canUndo: readonly(canUndo),
