@@ -36,7 +36,9 @@ const emits = defineEmits<EditListEmits<T> & ListEmits<T>>()
 
 const editListBody = useTemplateRef("editListBody")
 
-const {
+const listSelection = useListSelection<number>()
+
+const  {
     lastSelect,
     selectedItemSet,
     isSelected,
@@ -44,7 +46,7 @@ const {
     unselect,
     cleanSelection,
     resetSelection,
-} = useListSelection<number>()
+} = listSelection
 
 const handleItemClick = (e: MouseEvent, item: T, index: number) => {
     emits('clickItem', item, index)
@@ -334,7 +336,8 @@ defineExpose({
     getDefaultLine,
     getTempLines,
     handleAddLine,
-    handleRemoveLine
+    handleRemoveLine,
+    selection: listSelection,
 })
 </script>
 

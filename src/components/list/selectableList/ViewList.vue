@@ -11,6 +11,8 @@ const props = defineProps<ListProps<T>>()
 
 const emits = defineEmits<ListEmits<T>>()
 
+const listSelection = useListSelection<number>()
+
 const {
     lastSelect,
     selectedItemSet,
@@ -19,7 +21,7 @@ const {
     unselect,
     cleanSelection,
     resetSelection,
-} = useListSelection<number>()
+} = listSelection
 
 const handleItemClick = (e: MouseEvent, item: T, index: number) => {
     emits('clickItem', item, index)
@@ -124,6 +126,10 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
         }
     }
 }
+
+defineExpose({
+    selection: listSelection
+})
 </script>
 
 <template>
