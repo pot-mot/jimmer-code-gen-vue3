@@ -38,7 +38,7 @@ const associationNameComment = computed(() => {
         const sourceProperty = sourceAbstractEntity.properties.find(it => it.id === props.association?.sourcePropertyId)
         if (!sourceProperty) return
 
-        let name = translateAbstractFkNameTemplate(props.association.nameTemplate, sourceAbstractEntity, sourceProperty)
+        let name = translateAbstractFkNameTemplate(props.association.nameTemplate, {name: `$${sourceAbstractEntity.name}$`}, sourceProperty)
         let comment = translateAbstractFkCommentTemplate(props.association.commentTemplate, sourceAbstractEntity, sourceProperty)
 
         return {
