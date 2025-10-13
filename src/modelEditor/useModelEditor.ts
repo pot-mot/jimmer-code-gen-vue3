@@ -39,6 +39,7 @@ import {withLoading} from "@/components/loading/loadingApi.ts";
 import {tableToEntity} from "@/type/script/default/TableEntityConvert/tableToEntity.ts";
 import {contextDataToContext} from "@/type/context/utils/ModelContext.ts";
 import {buildReadonlyNameSet, type ReadonlyNameSet} from "@/utils/name/nameSet.ts";
+import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -98,9 +99,6 @@ export const useModelEditor = createStore(() => {
     const getContextData = () => {
         return contextData.value
     }
-    const getContext = () => {
-        return contextDataToContext(getContextData())
-    }
 
     const {
         history,
@@ -111,6 +109,10 @@ export const useModelEditor = createStore(() => {
         waitChangeSync,
         inferCommandInput,
     } = useModelEditorHistory({vueFlow, contextData})
+
+    const getContext = () => {
+        return contextDataToContext(getContextData(), inheritInfo.value)
+    }
 
     // TODO
     const typeOptions = ref<CrossType[]>([])
@@ -348,7 +350,7 @@ export const useModelEditor = createStore(() => {
         association: AssociationIdOnly,
         labelPosition: LabelPosition = {
             from: 'source',
-            percentage: 50
+            fixedLength: 200,
         }
     ) => {
         if ("name" in association && !association.useNameTemplate) {
@@ -925,7 +927,24 @@ export const useModelEditor = createStore(() => {
                 y: _node.computedPosition.y,
                 width: _node.dimensions.width,
                 height: _node.dimensions.height,
-            }, {duration: 800, padding: 0.4})
+            }, {duration: 500, padding: 0.4})
+        },
+        focusEdge: (edge: GraphEdge | string) => {
+            let _edge: GraphEdge
+            if (typeof edge === 'string') {
+                const foundEdge = vueFlow.value.findEdge(edge) ?? findAssociationEdge(edge, vueFlow.value)
+                if (!foundEdge) throw new Error(`edge [${edge}] is not existed`)
+                _edge = foundEdge
+            } else {
+                _edge = edge
+            }
+            _edge.zIndex = getNextZIndex()
+            return vueFlow.value.fitBounds({
+                x: Math.min(_edge.sourceX, _edge.targetX),
+                y: Math.min( _edge.sourceY, _edge.targetY),
+                width: Math.abs(_edge.targetX - _edge.sourceX),
+                height: Math.abs(_edge.targetY - _edge.sourceY),
+            }, {duration: 500, padding: 0.4})
         },
 
         // 历史记录

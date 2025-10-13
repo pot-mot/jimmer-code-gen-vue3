@@ -9,10 +9,13 @@ import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
 import {computed, ref, useTemplateRef, watch} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import {validateEntityProperty} from "@/type/__generated/jsonSchema/items/EntityProperty.ts";
+import IconAim from "@/components/icons/IconAim.vue";
+import {NodeToolbar} from "@vue-flow/node-toolbar";
+import IconDelete from "@/components/icons/IconDelete.vue";
 
 const props = defineProps<NodeProps<EntityNode["data"]>>()
 
-const {groupItemNameSet, propertyNameSetMap} = useModelEditor()
+const {focusNode, remove, groupItemNameSet, propertyNameSetMap} = useModelEditor()
 
 const beforeCopy = (properties: EntityProperty[]) => {
     for (const property of properties) {
@@ -115,6 +118,16 @@ watch(() => handleIndexMap.value, () => {
                 </div>
             </template>
         </EditList>
+
+        <NodeToolbar class="node-toolbar">
+            <button @click="focusNode(id)">
+                <IconAim/>
+            </button>
+
+            <button @click="remove({entityIds: [id]})">
+                <IconDelete/>
+            </button>
+        </NodeToolbar>
     </div>
 </template>
 
@@ -125,14 +138,14 @@ watch(() => handleIndexMap.value, () => {
     background-color: var(--background-color);
     border: var(--border);
     border-color: v-bind(groupColor);
+    border-width: 2px;
+    top: -1px;
+    left: -1px;
     border-radius: var(--border-radius);
     transition: border-color 0.2s ease;
 }
 
 .entity-node:hover {
-    border-width: 2px;
-    top: -1px;
-    left: -1px;
     border-color: var(--border-color);
 }
 

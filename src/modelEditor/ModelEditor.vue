@@ -166,4 +166,20 @@ const handleKeyDown = async (e: KeyboardEvent) => {
     border-color: var(--primary-color);
     background-color: var(--primary-color-opacity-background);
 }
+
+:deep(.node-toolbar),
+:deep(.edge-toolbar) {
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+:deep(.node-toolbar) > button,
+:deep(.edge-toolbar) > button {
+    padding: 0.3rem;
+    margin-right: 0.3rem;
+    margin-top: 0.3rem;
+    transition: background-color 0.3s ease;
+}
 </style>

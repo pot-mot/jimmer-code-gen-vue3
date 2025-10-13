@@ -11,10 +11,13 @@ import MappedSuperClassPropertyTypeSelect from "@/modelEditor/node/property/Mapp
 import {validateMappedSuperClassProperty} from "@/type/__generated/jsonSchema/items/MappedSuperClassProperty.ts";
 import {NOT_EXIST_ASSOCIATION_ID} from "@/modelEditor/node/EntityNode.ts";
 import {buildReadonlyNameSet} from "@/utils/name/nameSet.ts";
+import IconAim from "@/components/icons/IconAim.vue";
+import {NodeToolbar} from "@vue-flow/node-toolbar";
+import IconDelete from "@/components/icons/IconDelete.vue";
 
 const props = defineProps<NodeProps<MappedSuperClassNode["data"]>>()
 
-const {groupItemNameSet, propertyNameSetMap} = useModelEditor()
+const {focusNode, remove, groupItemNameSet, propertyNameSetMap} = useModelEditor()
 
 const beforeCopy = (properties: MappedSuperClassProperty[]) => {
     for (const property of properties) {
@@ -39,7 +42,7 @@ const groupTheme = computed(() => {
 
 // TODO with existed info
 const propertyNameSet = computed(() => {
-    return propertyNameSetMap.get(props.data.mappedSuperClass.id)
+    return propertyNameSetMap.value.get(props.data.mappedSuperClass.id)
 })
 
 const nodeElRef = useTemplateRef("nodeElRef")
@@ -118,6 +121,16 @@ watch(() => handleIndexMap.value, () => {
                 </div>
             </template>
         </EditList>
+
+        <NodeToolbar class="node-toolbar">
+            <button @click="focusNode(id)">
+                <IconAim/>
+            </button>
+
+            <button @click="remove({mappedSuperClassIds: [id]})">
+                <IconDelete/>
+            </button>
+        </NodeToolbar>
     </div>
 </template>
 
@@ -128,14 +141,14 @@ watch(() => handleIndexMap.value, () => {
     background-color: var(--background-color);
     border: var(--border);
     border-color: v-bind(groupColor);
+    border-width: 2px;
+    top: -1px;
+    left: -1px;
     border-radius: var(--border-radius);
     transition: border-color 0.2s ease;
 }
 
 .mapped-super-class-node:hover {
-    border-width: 2px;
-    top: -1px;
-    left: -1px;
     border-color: var(--border-color);
 }
 

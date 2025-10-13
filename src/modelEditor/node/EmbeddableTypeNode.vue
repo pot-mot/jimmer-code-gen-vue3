@@ -8,10 +8,13 @@ import EmbeddableTypePropertyTypeSelect from "@/modelEditor/node/property/Embedd
 import {validateEmbeddableTypeProperty} from "@/type/__generated/jsonSchema/items/EmbeddableTypeProperty.ts";
 import {computed} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
+import {NodeToolbar} from "@vue-flow/node-toolbar";
+import IconAim from "@/components/icons/IconAim.vue";
+import IconDelete from "@/components/icons/IconDelete.vue";
 
 const props = defineProps<NodeProps<EmbeddableTypeNode["data"]>>()
 
-const {groupItemNameSet, propertyNameSetMap} = useModelEditor()
+const {focusNode, remove, groupItemNameSet, propertyNameSetMap} = useModelEditor()
 
 const beforePaste = (properties: Property[]) => {
     for (const property of properties) {
@@ -70,6 +73,16 @@ const propertyNameSet = computed(() => {
                 </div>
             </template>
         </EditList>
+
+        <NodeToolbar class="node-toolbar">
+            <button @click="focusNode(id)">
+                <IconAim/>
+            </button>
+
+            <button @click="remove({embeddableTypeIds: [id]})">
+                <IconDelete/>
+            </button>
+        </NodeToolbar>
     </div>
 </template>
 
@@ -80,14 +93,14 @@ const propertyNameSet = computed(() => {
     background-color: var(--background-color);
     border: var(--border);
     border-color: v-bind(groupColor);
+    border-width: 2px;
+    top: -1px;
+    left: -1px;
     border-radius: var(--border-radius);
     transition: border-color 0.2s ease;
 }
 
 .embeddable-type-node:hover {
-    border-width: 2px;
-    top: -1px;
-    left: -1px;
     border-color: var(--border-color);
 }
 

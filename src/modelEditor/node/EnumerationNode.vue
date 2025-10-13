@@ -7,10 +7,13 @@ import {defaultEnumerationItem} from "@/type/context/default/modelDefaults.ts";
 import {validateEnumerationItem} from "@/type/__generated/jsonSchema/items/EnumerationItem.ts";
 import {computed} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
+import IconAim from "@/components/icons/IconAim.vue";
+import {NodeToolbar} from "@vue-flow/node-toolbar";
+import IconDelete from "@/components/icons/IconDelete.vue";
 
 const props = defineProps<NodeProps<EnumerationNode["data"]>>()
 
-const {groupItemNameSet, enumerationItemNameSetMap} = useModelEditor()
+const {focusNode, remove, groupItemNameSet, enumerationItemNameSetMap} = useModelEditor()
 
 const beforePaste = (items: EnumerationItem[]) => {
     for (const item of items) {
@@ -64,6 +67,16 @@ const itemNameSet = computed(() => {
                 </div>
             </template>
         </EditList>
+
+        <NodeToolbar class="node-toolbar">
+            <button @click="focusNode(id)">
+                <IconAim/>
+            </button>
+
+            <button @click="remove({enumerationIds: [id]})">
+                <IconDelete/>
+            </button>
+        </NodeToolbar>
     </div>
 </template>
 
@@ -74,14 +87,14 @@ const itemNameSet = computed(() => {
     background-color: var(--background-color);
     border: var(--border);
     border-color: v-bind(groupColor);
+    border-width: 2px;
+    top: -1px;
+    left: -1px;
     border-radius: var(--border-radius);
     transition: border-color 0.2s ease;
 }
 
 .enumeration-node:hover {
-    border-width: 2px;
-    top: -1px;
-    left: -1px;
     border-color: var(--border-color);
 }
 

@@ -11,10 +11,12 @@ import MappedSuperClassViewer from "@/modelEditor/viewer/MappedSuperClassViewer.
 import EntityIdViewer from "@/modelEditor/viewer/EntityIdViewer.vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import LabelPositionEditor from "@/modelEditor/edge/labelPosition/LabelPositionEditor.vue";
+import IconAim from "@/components/icons/IconAim.vue";
+import IconDelete from "@/components/icons/IconDelete.vue";
 
 const props = defineProps<EdgeProps<AbstractAssociationEdge["data"]>>()
 
-const {contextData} = useModelEditor()
+const {contextData, focusEdge, remove} = useModelEditor()
 
 const referencedAbstractEntity = computed(() => {
     return contextData.value.mappedSuperClassMap.get(props.data.edgedAssociation.association.mappedProperty.referencedAbstractEntityId)
@@ -111,6 +113,16 @@ const mappedPropertyInfo = computed(() => {
         </template>
 
         <template #toolbar>
+            <div class="edge-toolbar">
+                <button @click="focusEdge(id)">
+                    <IconAim/>
+                </button>
+
+                <button @click="remove({associationIds: [id]})">
+                    <IconDelete/>
+                </button>
+            </div>
+
             <LabelPositionEditor v-model="data.edgedAssociation.labelPosition" :get-path="getPath"/>
         </template>
     </AssociationEdge>
