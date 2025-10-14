@@ -54,6 +54,16 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
             missingSet.add(missingId)
         }
     }
+    const removeFromMissingDependency = (id: string) => {
+        for (const missingSet of inheritInfo.missingDependencies.values()) {
+            if (missingSet.has(id)) {
+                missingSet.delete(id)
+                if (missingSet.size === 0) {
+                    inheritInfo.missingDependencies.delete(id)
+                }
+            }
+        }
+    }
 
     const stringifyPath = (path: string[]) => path.join(' -> ')
 
@@ -163,7 +173,10 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
     const syncAbstract = (_item: DeepReadonly<InheritItem>) => {
         const id = _item.id
         // 如果已存在，先删除旧信息
-        if (inheritInfo.abstractInheritInfoMap.has(id)) removeAbstract(id)
+        if (inheritInfo.abstractInheritInfoMap.has(id)) {
+            removeAbstract(id)
+            removeFromMissingDependency(id)
+        }
 
         // 创建新的继承项副本
         const item = deepCloneItem(_item)
@@ -291,13 +304,14 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
             ancestorInfo.allAbstractChildIdSet.delete(id)
         }
 
-        // 更新所有抽象子类的继承关系
+        // 更新所有抽象子类的继承关系，并添加至 missingDependency
         for (const childId of info.allAbstractChildIdSet) {
             const childInfo = inheritInfo.abstractInheritInfoMap.get(childId)
             if (!childInfo) continue
 
             childInfo.parentIdSet.delete(id)
             childInfo.ancestorIdSet.delete(id)
+            addMissingDependency(childId, id)
 
             // 同时删除所有祖先节点的引用
             for (const ancestorId of info.ancestorIdSet) {
@@ -313,6 +327,7 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
 
             childInfo.parentIdSet.delete(id)
             childInfo.ancestorIdSet.delete(id)
+            addMissingDependency(childId, id)
 
             // 同时删除所有祖先节点的引用
             for (const ancestorId of info.ancestorIdSet) {
