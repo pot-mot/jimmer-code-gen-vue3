@@ -27,7 +27,7 @@ import {
 } from "@/modelEditor/property/PropertyAssociationSync.ts";
 import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
 import {nameTool} from "@/type/context/utils/NameTool.ts";
-import {buildInheritInfo} from "@/type/context/utils/EntityInheritInfo.ts";
+import {defaultInheritInfo, useInheritInfoSync} from "@/type/context/utils/InheritInfo.ts";
 
 const SYNC_DEBOUNCE_TIMEOUT = 500
 
@@ -173,7 +173,8 @@ export const useModelEditorHistory = (
     }
 
     const menuMap = ref(new Map<string, MenuItem>())
-    const inheritInfo = ref(buildInheritInfo(getContextData().entityMap, getContextData().mappedSuperClassMap))
+    const inheritInfo = ref(defaultInheritInfo(getContextData().mappedSuperClassMap, getContextData().entityMap))
+    const inheritInfoSync = useInheritInfoSync(inheritInfo.value)
 
     // 分组
     const groupWatchStopMap = new Map<string, () => void>()
@@ -390,7 +391,7 @@ export const useModelEditorHistory = (
         contextData.entityMap.set(id, entity)
         addEntityWatcher(id)
         menuItem.entityMap.set(id, entity)
-        inheritInfo.value.syncConcrete(entity)
+        inheritInfoSync.syncConcrete(entity)
         const newNode: EntityNode = {
             id,
             type: NodeType_Entity,
@@ -419,7 +420,7 @@ export const useModelEditorHistory = (
         contextData.entityMap.delete(id)
         menuItem.entityMap.delete(id)
         vueFlow.removeNodes([entityNode])
-        inheritInfo.value.removeConcrete(id)
+        inheritInfoSync.removeConcrete(id)
         return {entity, position: entityNode.position}
     }
     const updateEntity = (options: DeepReadonly<{ entity: EntityWithProperties }>) => {
@@ -454,7 +455,7 @@ export const useModelEditorHistory = (
             menuItem.entityMap.set(id, entity)
         }
         addEntityWatcher(id)
-        inheritInfo.value.syncConcrete(entity)
+        inheritInfoSync.syncConcrete(entity)
         node.data.entity = entity
         return {entity: oldEntity}
     }
@@ -552,7 +553,7 @@ export const useModelEditorHistory = (
         contextData.mappedSuperClassMap.set(id, mappedSuperClass)
         addMappedSuperClassWatcher(id)
         menuItem.mappedSuperClassMap.set(id, mappedSuperClass)
-        inheritInfo.value.syncAbstract(mappedSuperClass)
+        inheritInfoSync.syncAbstract(mappedSuperClass)
         const newNode: MappedSuperClassNode = {
             id,
             type: NodeType_MappedSuperClass,
@@ -581,7 +582,7 @@ export const useModelEditorHistory = (
         contextData.mappedSuperClassMap.delete(id)
         menuItem.mappedSuperClassMap.delete(id)
         vueFlow.removeNodes([mappedSuperClassNode])
-        inheritInfo.value.removeAbstract(id)
+        inheritInfoSync.removeAbstract(id)
         return {mappedSuperClass, position: mappedSuperClassNode.position}
     }
     const updateMappedSuperClass = (options: DeepReadonly<{ mappedSuperClass: MappedSuperClassWithProperties }>) => {
@@ -616,7 +617,7 @@ export const useModelEditorHistory = (
             menuItem.mappedSuperClassMap.set(id, mappedSuperClass)
         }
         addMappedSuperClassWatcher(id)
-        inheritInfo.value.syncAbstract(mappedSuperClass)
+        inheritInfoSync.syncAbstract(mappedSuperClass)
         existingMappedSuperClassNode.data.mappedSuperClass = mappedSuperClass
         return {mappedSuperClass: oldMappedSuperClass}
     }
