@@ -64,7 +64,9 @@ watch(() => isOpen.value, async (value) => {
         :class="{ disabled, open: isOpen }"
     >
         <div class="dropdown-trigger" @click="toggleDropdown">
-            <slot name="head"/>
+            <div>
+                <slot name="head"/>
+            </div>
             <div class="dropdown-arrow" :class="{ 'rotated': isOpen }">
                 <IconCaretDown/>
             </div>
