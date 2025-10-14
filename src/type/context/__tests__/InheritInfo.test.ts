@@ -184,69 +184,69 @@ describe('EntityInheritInfo', () => {
         expect(data.missingDependencies.get('8')).toContain('9')
     })
 
-    // 创建包含缺失依赖和循环引用的测试数据
-    const abstractMapWithMissing: DeepReadonly<Map<string, InheritItem>> = new Map([
-        ['1', {id: '1', extendsIds: []}],
-        ['2', {id: '2', extendsIds: ['1', '3']}], // 依赖不存在的 '3'
-        ['4', {id: '4', extendsIds: ['5']}]       // 依赖不存在的 '5'
-    ])
-    const concreteMapWithMissing: DeepReadonly<Map<string, InheritItem>> = new Map([
-        ['6', {id: '6', extendsIds: ['2', '7']}] // 依赖不存在的 '7'
-    ])
+    it('remove abstract entity with missing dependencies', () => {
+        // 创建包含缺失依赖的测试数据
+        const abstractMapWithMissing: DeepReadonly<Map<string, InheritItem>> = new Map([
+            ['1', {id: '1', extendsIds: []}],
+            ['2', {id: '2', extendsIds: ['1', '3']}], // 依赖不存在的 '3'
+        ])
+        const concreteMapWithMissing: DeepReadonly<Map<string, InheritItem>> = new Map([
+            ['4', {id: '4', extendsIds: ['1']}],
+            ['5', {id: '5', extendsIds: ['2']}],
+        ])
 
-    it('remove abstract entity should clean up dependencies and references', () => {
         const {data, sync} = buildInheritInfo(abstractMapWithMissing, concreteMapWithMissing)
 
-        // 确保初始状态包含缺失依赖
-        expect(data.missingDependencies.size).toBe(3)
+        expect(data.missingDependencies.size).toBe(1)
         expect(data.missingDependencies.get('2')?.size).toBe(1)
         expect(data.missingDependencies.get('2')).toContain('3')
-        expect(data.missingDependencies.get('4')?.size).toBe(1)
-        expect(data.missingDependencies.get('4')).toContain('5')
-        expect(data.missingDependencies.get('6')?.size).toBe(1)
-        expect(data.missingDependencies.get('6')).toContain('7')
-        expect(data.abstractInheritInfoMap.get('2')?.parentIdSet.size).toBe(1)
-        expect(data.abstractInheritInfoMap.get('2')?.parentIdSet).toContain('1')
-        expect(data.abstractInheritInfoMap.get('4')?.parentIdSet.size).toBe(0)
-        expect(data.abstractInheritInfoMap.get('4')?.ancestorIdSet.size).toBe(0)
-        expect(data.concreteInheritInfoMap.get('6')?.parentIdSet.size).toBe(1)
-        expect(data.concreteInheritInfoMap.get('6')?.parentIdSet).toContain('2')
-        expect(data.concreteInheritInfoMap.get('6')?.ancestorIdSet.size).toBe(2)
-        expect(data.concreteInheritInfoMap.get('6')?.ancestorIdSet).toContain('1')
-        expect(data.concreteInheritInfoMap.get('6')?.ancestorIdSet).toContain('2')
 
         // 移除抽象实体
-        sync.removeAbstract('2')
+        sync.removeAbstract('1')
 
         expect(data.missingDependencies.size).toBe(2)
+        expect(data.missingDependencies.get('2')?.size).toBe(2)
+        expect(data.missingDependencies.get('2')).toContain('1')
+        expect(data.missingDependencies.get('2')).toContain('3')
         expect(data.missingDependencies.get('4')?.size).toBe(1)
-        expect(data.missingDependencies.get('6')?.size).toBe(1)
-        expect(data.missingDependencies).not.toContain('2')
-        expect(data.concreteInheritInfoMap.get('6')?.parentIdSet.size).toBe(0)
-        expect(data.concreteInheritInfoMap.get('6')?.ancestorIdSet.size).toBe(0)
+        expect(data.missingDependencies.get('4')).toContain('1')
+
+        // 恢复抽象实体
+        sync.syncAbstract({id: '1', extendsIds: []})
+
+        expect(data.missingDependencies.size).toBe(1)
+        expect(data.missingDependencies.get('2')?.size).toBe(1)
+        expect(data.missingDependencies.get('2')).toContain('3')
     })
 
-    it('remove concrete entity should clean up dependencies', () => {
+    it('remove concrete entity with missing dependencies', () => {
         // 创建包含缺失依赖的测试数据
         const abstractMapNormal: DeepReadonly<Map<string, InheritItem>> = new Map([
             ['1', {id: '1', extendsIds: []}]
         ])
-
         const concreteMapWithMissing: DeepReadonly<Map<string, InheritItem>> = new Map([
-            ['2', {id: '2', extendsIds: ['3']}], // 依赖不存在的 '3'
-            ['4', {id: '4', extendsIds: ['5']}]  // 依赖不存在的 '5'
+            ['2', {id: '2', extendsIds: ['1', '3']}], // 依赖不存在的 '3'
         ])
 
         const {data, sync} = buildInheritInfo(abstractMapNormal, concreteMapWithMissing)
 
-        // 确保初始状态包含缺失依赖
-        expect(data.missingDependencies.size).toBeGreaterThan(0)
+        expect(data.missingDependencies.size).toBe(1)
+        expect(data.missingDependencies.get('2')?.size).toBe(1)
+        expect(data.missingDependencies.get('2')).toContain('3')
 
-        // 移除具体实体
+        sync.syncConcrete({id: '2', extendsIds: []})
+
+        expect(data.missingDependencies.size).toBe(0)
+
         sync.removeConcrete('2')
 
-        // 验证相关的数据结构被正确清理
-        expect(data.concreteInheritInfoMap.has('2')).toBeFalsy()
+        expect(data.missingDependencies.size).toBe(0)
+
+        sync.syncConcrete({id: '2', extendsIds: ['1', '3']})
+
+        expect(data.missingDependencies.size).toBe(1)
+        expect(data.missingDependencies.get('2')?.size).toBe(1)
+        expect(data.missingDependencies.get('2')).toContain('3')
     })
 
     // 包含循环引用的测试数据

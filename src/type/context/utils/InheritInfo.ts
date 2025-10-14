@@ -54,12 +54,12 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
             missingSet.add(missingId)
         }
     }
-    const removeFromMissingDependency = (id: string) => {
-        for (const missingSet of inheritInfo.missingDependencies.values()) {
+    const cleanMissingDependencies = (id: string) => {
+        for (const [key, missingSet] of inheritInfo.missingDependencies) {
             if (missingSet.has(id)) {
                 missingSet.delete(id)
                 if (missingSet.size === 0) {
-                    inheritInfo.missingDependencies.delete(id)
+                    inheritInfo.missingDependencies.delete(key)
                 }
             }
         }
@@ -104,10 +104,7 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
                 // 遍历所有父类
                 for (const parentId of item.extendsIds) {
                     const parent = inheritInfo.innerAbstractMap.get(parentId)
-                    if (!parent) {
-                        // 父类不存在，记录为缺失依赖
-                        addMissingDependency(item.id, parentId)
-                    } else {
+                    if (parent) {
                         // 添加到祖先集合
                         ancestorIdSet.add(parentId)
                         // 递归处理父类的继承关系
@@ -120,15 +117,14 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
         // 处理根项的直接父类
         for (const parentId of rootItem.extendsIds) {
             const parent = inheritInfo.innerAbstractMap.get(parentId)
-            if (!parent) {
-                // 父类不存在，记录为缺失依赖
-                addMissingDependency(rootItem.id, parentId)
-            } else {
+            if (parent) {
                 // 添加到父类和祖先类集合
                 parentIdSet.add(parentId)
                 ancestorIdSet.add(parentId)
                 // 递归收集父类的继承关系
                 collectExtends(parent)
+            } else {
+                addMissingDependency(rootItem.id, parentId)
             }
         }
 
@@ -173,10 +169,9 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
     const syncAbstract = (_item: DeepReadonly<InheritItem>) => {
         const id = _item.id
         // 如果已存在，先删除旧信息
-        if (inheritInfo.abstractInheritInfoMap.has(id)) {
-            removeAbstract(id)
-            removeFromMissingDependency(id)
-        }
+        if (inheritInfo.abstractInheritInfoMap.has(id)) removeAbstract(id)
+        // 清理缺失依赖
+        cleanMissingDependencies(id)
 
         // 创建新的继承项副本
         const item = deepCloneItem(_item)
@@ -304,14 +299,13 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
             ancestorInfo.allAbstractChildIdSet.delete(id)
         }
 
-        // 更新所有抽象子类的继承关系，并添加至 missingDependency
+        // 更新所有抽象子类的继承关系
         for (const childId of info.allAbstractChildIdSet) {
             const childInfo = inheritInfo.abstractInheritInfoMap.get(childId)
             if (!childInfo) continue
 
             childInfo.parentIdSet.delete(id)
             childInfo.ancestorIdSet.delete(id)
-            addMissingDependency(childId, id)
 
             // 同时删除所有祖先节点的引用
             for (const ancestorId of info.ancestorIdSet) {
@@ -327,13 +321,20 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
 
             childInfo.parentIdSet.delete(id)
             childInfo.ancestorIdSet.delete(id)
-            addMissingDependency(childId, id)
 
             // 同时删除所有祖先节点的引用
             for (const ancestorId of info.ancestorIdSet) {
                 childInfo.parentIdSet.delete(ancestorId)
                 childInfo.ancestorIdSet.delete(ancestorId)
             }
+        }
+
+        // 添加 missingDependencies
+        for (const childId of info.abstractChildIdSet) {
+            addMissingDependency(childId, id)
+        }
+        for (const childId of info.concreteChildIdSet) {
+            addMissingDependency(childId, id)
         }
 
         // 移除相关的循环引用记录
