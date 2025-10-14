@@ -95,7 +95,8 @@ watch(() => handleIndexMap.value, () => {
             <ExtendsIdMultiSelect
                 style="font-size: 16px; line-height: 32px;"
                 v-model="data.mappedSuperClass.extendsIds"
-                :ignore-ids="[data.mappedSuperClass.id]"
+                type="Abstract"
+                :id="data.mappedSuperClass.id"
             />
         </div>
 

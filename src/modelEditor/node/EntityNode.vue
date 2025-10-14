@@ -37,7 +37,7 @@ onBeforeUnmount(() => {
     modelSubFocusEventBus.off("focusEntityProperty", focusProperty)
 })
 
-const {focusNode, focusDiagnosticSource, remove, groupItemNameSet, propertyNameSetMap} = useModelEditor()
+const {focusNode, remove, groupItemNameSet, propertyNameSetMap} = useModelEditor()
 
 const beforeCopy = (properties: EntityProperty[]) => {
     for (const property of properties) {
@@ -94,6 +94,8 @@ watch(() => handleIndexMap.value, () => {
             <ExtendsIdMultiSelect
                 style="font-size: 16px; line-height: 32px;"
                 v-model="data.entity.extendsIds"
+                type="Concrete"
+                :id="data.entity.id"
             />
         </div>
 

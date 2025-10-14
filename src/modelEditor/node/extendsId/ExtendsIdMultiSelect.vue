@@ -6,19 +6,29 @@ import MappedSuperClassIdViewer from "@/modelEditor/viewer/MappedSuperClassIdVie
 import IconClose from "@/components/icons/IconClose.vue";
 import {computed} from "vue";
 
-const {contextData} = useModelEditor()
+const {contextData, inheritInfo} = useModelEditor()
 
-const props = withDefaults(defineProps<{
-    ignoreIds?: string[]
-}>(), {
-    ignoreIds: () => []
-})
+const props = defineProps<{
+    type: "Abstract" | "Concrete"
+    id: string,
+}>()
 
 const mappedSuperClassOptions = computed(() => {
-    const result = []
-    for (const mappedSuperClass of contextData.value.mappedSuperClassMap.values() ?? []) {
-        if (!props.ignoreIds.includes(mappedSuperClass.id)) {
+    const result: DeepReadonly<MappedSuperClassWithProperties>[] = []
+    if (props.type === "Concrete") {
+        for (const mappedSuperClass of contextData.value.mappedSuperClassMap.values() ?? []) {
             result.push(mappedSuperClass)
+        }
+    } else if (props.type === "Abstract") {
+        const inheritItem = inheritInfo.value.abstractInheritInfoMap.get(props.id)
+        if (!inheritItem) return result
+        for (const mappedSuperClass of contextData.value.mappedSuperClassMap.values() ?? []) {
+            if (
+                mappedSuperClass.id !== props.id &&
+                !inheritItem.allAbstractChildIdSet.has(mappedSuperClass.id)
+            ) {
+                result.push(mappedSuperClass)
+            }
         }
     }
     return result
@@ -45,9 +55,15 @@ const toggleSelect = (id: string) => {
             <ul>
                 <li v-for="id in mappedSuperClassIds" class="selected-item">
                     <MappedSuperClassIdViewer :id="id" hide-comment ctrl-focus/>
+                    <span class="warning-info" v-if="inheritInfo.circularReferences.has(id)">
+                        [Circular Reference]
+                    </span>
                     <IconClose class="remove-button" @click.stop="toggleSelect(id)"/>
                 </li>
             </ul>
+            <div class="warning-info" v-if="inheritInfo.missingDependencies.has(id)">
+                [{{ inheritInfo.missingDependencies.get(id)?.size }} SuperClass Not Existed]
+            </div>
         </template>
         <template #body>
             <div
@@ -107,5 +123,11 @@ const toggleSelect = (id: string) => {
 .mapped-super-class-select-empty {
     padding: 0.25rem 0.5rem;
     font-size: 0.9rem;
+}
+
+.warning-info {
+    font-size: 0.75rem;
+    padding: 0 0.5rem;
+    color: var(--warning-color);
 }
 </style>
