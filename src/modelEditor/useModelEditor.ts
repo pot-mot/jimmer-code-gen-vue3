@@ -180,6 +180,9 @@ export const useModelEditor = createStore(() => {
         }
         propertyNameSetMap.value.set(id, buildReadonlyNameSet(names))
     }
+    const removeEntityFromPropertyNameSetMap = (id: string) => {
+        propertyNameSetMap.value.delete(id)
+    }
     const syncMappedSuperClassPropertyNameSetMap = (id: string, properties: DeepReadonly<{ name: string }[]>) => {
         const names = []
         const inheritItem = inheritInfo.value.abstractInheritInfoMap.get(id)
@@ -209,7 +212,23 @@ export const useModelEditor = createStore(() => {
             names.push(property.name)
         }
         propertyNameSetMap.value.set(id, buildReadonlyNameSet(names))
-        console.log(propertyNameSetMap.value)
+    }
+    const removeMappedSuperClassFromPropertyNameSetMap = (id: string) => {
+        propertyNameSetMap.value.delete(id)
+        const inheritItem = inheritInfo.value.abstractInheritInfoMap.get(id)
+        if (!inheritItem) return
+        for (const childId of inheritItem.allConcreteChildIdSet) {
+            const child = contextData.value.entityMap.get(childId)
+            if (child) {
+                syncEntityPropertyNameSetMap(childId, child.properties)
+            }
+        }
+        for (const childId of inheritItem.allAbstractChildIdSet) {
+            const child = contextData.value.mappedSuperClassMap.get(childId)
+            if (child) {
+                syncMappedSuperClassPropertyNameSetMap(childId, child.properties)
+            }
+        }
     }
     const syncEmbeddableTypePropertyNameSetMap = (id: string, properties: DeepReadonly<{ name: string }[]>) => {
         const names = []
@@ -218,7 +237,7 @@ export const useModelEditor = createStore(() => {
         }
         propertyNameSetMap.value.set(id, buildReadonlyNameSet(names))
     }
-    const removeFromPropertyNameSetMap = (id: string) => {
+    const removeEmbeddableTypeFromPropertyNameSetMap = (id: string) => {
         propertyNameSetMap.value.delete(id)
     }
     for (const [id, entity] of contextData.value.entityMap)
@@ -230,13 +249,13 @@ export const useModelEditor = createStore(() => {
     history.eventBus.on("change", (data) => {
         if (inferCommandInput(data, "entity:add")) {
             if (data.type === "apply") syncEntityPropertyNameSetMap(data.options.entity.id, data.options.entity.properties)
-            else if (data.type === "revert") removeFromPropertyNameSetMap(data.revertOptions.id)
+            else if (data.type === "revert") removeEntityFromPropertyNameSetMap(data.revertOptions.id)
         } else if (inferCommandInput(data, "mapped-super-class:add")) {
             if (data.type === "apply") syncMappedSuperClassPropertyNameSetMap(data.options.mappedSuperClass.id, data.options.mappedSuperClass.properties)
-            else if (data.type === "revert") removeFromPropertyNameSetMap(data.revertOptions.id)
+            else if (data.type === "revert") removeMappedSuperClassFromPropertyNameSetMap(data.revertOptions.id)
         } else if (inferCommandInput(data, "embeddable-type:add")) {
             if (data.type === "apply") syncEmbeddableTypePropertyNameSetMap(data.options.embeddableType.id, data.options.embeddableType.properties)
-            else if (data.type === "revert") removeFromPropertyNameSetMap(data.revertOptions.id)
+            else if (data.type === "revert") removeEmbeddableTypeFromPropertyNameSetMap(data.revertOptions.id)
         } else if (inferCommandInput(data, "entity:change")) {
             if (data.type === "apply") syncEntityPropertyNameSetMap(data.options.entity.id, data.options.entity.properties)
             else if (data.type === "revert") syncEntityPropertyNameSetMap(data.revertOptions.entity.id, data.revertOptions.entity.properties)
