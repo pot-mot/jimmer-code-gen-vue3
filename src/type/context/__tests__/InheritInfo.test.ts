@@ -43,7 +43,6 @@ describe('EntityInheritInfo', () => {
 
         // 验证抽象实体继承信息
         const rootInfo = data.abstractInheritInfoMap.get('1')
-        expect(rootInfo).toBeDefined()
         expect(rootInfo?.parentIdSet.size).toBe(0)
         expect(rootInfo?.ancestorIdSet.size).toBe(0)
         expect(rootInfo?.abstractChildIdSet).toContain('1-1')
@@ -59,38 +58,74 @@ describe('EntityInheritInfo', () => {
 
         // 验证具体实体继承信息
         const concreteInfo = data.concreteInheritInfoMap.get('1-1-1-1')
-        expect(concreteInfo).toBeDefined()
         expect(concreteInfo?.parentIdSet).toContain('1-1-1')
         expect(concreteInfo?.ancestorIdSet).toContain('1-1-1')
         expect(concreteInfo?.ancestorIdSet).toContain('1-1')
         expect(concreteInfo?.ancestorIdSet).toContain('1')
     })
 
-    it('sync abstract entity', () => {
-        const {data, sync} = buildInheritInfo(abstractMap, concreteMap)
-
-        // 添加新的抽象实体
-        const newAbstractItem = {id: '1-3', extendsIds: ['1']}
-        sync.syncAbstract(newAbstractItem)
-
-        const rootInfo = data.abstractInheritInfoMap.get('1')
-        expect(rootInfo?.abstractChildIdSet).toContain('1-3')
-    })
-
-    it('sync concrete entity', () => {
+    it('sync entity', () => {
         const {data, sync} = buildInheritInfo(abstractMap, concreteMap)
 
         const newAbstractItem = {id: '1-3', extendsIds: ['1']}
         sync.syncAbstract(newAbstractItem)
-        const newConcreteItem = {id: '1-3-1', extendsIds: ['1-3']}
-        sync.syncConcrete(newConcreteItem)
+        const newConcreteChild = {id: '1-3-1', extendsIds: ['1-3']}
+        sync.syncConcrete(newConcreteChild)
+        const newAbstractChild = {id: '1-3-2', extendsIds: ['1-3']}
+        sync.syncAbstract(newAbstractChild)
 
-        const concreteInfo = data.concreteInheritInfoMap.get('1-3-1')
-        expect(concreteInfo).toBeDefined()
-        expect(concreteInfo?.parentIdSet).toContain('1-3')
-        const abstractInfo = data.abstractInheritInfoMap.get('1-3')
-        expect(abstractInfo?.concreteChildIdSet).toContain('1-3-1')
-        expect(abstractInfo?.allConcreteChildIdSet).toContain('1-3-1')
+        const concreteChildInfo = data.concreteInheritInfoMap.get('1-3-1')
+        expect(concreteChildInfo?.parentIdSet.size).toBe(1)
+        expect(concreteChildInfo?.parentIdSet).toContain('1-3')
+        expect(concreteChildInfo?.ancestorIdSet.size).toBe(2)
+        expect(concreteChildInfo?.ancestorIdSet).toContain('1-3')
+        expect(concreteChildInfo?.ancestorIdSet).toContain('1')
+        const abstractChildInfo = data.abstractInheritInfoMap.get('1-3-2')
+        expect(abstractChildInfo?.parentIdSet.size).toBe(1)
+        expect(abstractChildInfo?.parentIdSet).toContain('1-3')
+        expect(abstractChildInfo?.ancestorIdSet.size).toBe(2)
+        expect(abstractChildInfo?.ancestorIdSet).toContain('1-3')
+        expect(abstractChildInfo?.ancestorIdSet).toContain('1')
+        const parentInfo = data.abstractInheritInfoMap.get('1-3')
+        expect(parentInfo?.concreteChildIdSet.size).toBe(1)
+        expect(parentInfo?.concreteChildIdSet).toContain('1-3-1')
+        expect(parentInfo?.allConcreteChildIdSet.size).toBe(1)
+        expect(parentInfo?.allConcreteChildIdSet).toContain('1-3-1')
+        expect(parentInfo?.abstractChildIdSet.size).toBe(1)
+        expect(parentInfo?.abstractChildIdSet).toContain('1-3-2')
+        expect(parentInfo?.allAbstractChildIdSet.size).toBe(1)
+        expect(parentInfo?.allAbstractChildIdSet).toContain('1-3-2')
+
+        // 调整抽象实体继承信息，验证子级是否同步
+        sync.syncAbstract({id: '1-3', extendsIds: []})
+        expect(concreteChildInfo?.parentIdSet.size).toBe(1)
+        expect(concreteChildInfo?.parentIdSet).toContain('1-3')
+        expect(concreteChildInfo?.ancestorIdSet.size).toBe(1)
+        expect(concreteChildInfo?.ancestorIdSet).toContain('1-3')
+        expect(abstractChildInfo?.parentIdSet.size).toBe(1)
+        expect(abstractChildInfo?.parentIdSet).toContain('1-3')
+        expect(abstractChildInfo?.ancestorIdSet.size).toBe(1)
+        expect(abstractChildInfo?.ancestorIdSet).toContain('1-3')
+        expect(parentInfo?.concreteChildIdSet.size).toBe(1)
+        expect(parentInfo?.concreteChildIdSet).toContain('1-3-1')
+        expect(parentInfo?.allConcreteChildIdSet.size).toBe(1)
+        expect(parentInfo?.allConcreteChildIdSet).toContain('1-3-1')
+        expect(parentInfo?.abstractChildIdSet.size).toBe(1)
+        expect(parentInfo?.abstractChildIdSet).toContain('1-3-2')
+        expect(parentInfo?.allAbstractChildIdSet.size).toBe(1)
+        expect(parentInfo?.allAbstractChildIdSet).toContain('1-3-2')
+
+        sync.syncAbstract({id: '1-3', extendsIds: ['1']})
+        expect(concreteChildInfo?.parentIdSet.size).toBe(1)
+        expect(concreteChildInfo?.parentIdSet).toContain('1-3')
+        expect(concreteChildInfo?.ancestorIdSet.size).toBe(2)
+        expect(concreteChildInfo?.ancestorIdSet).toContain('1-3')
+        expect(concreteChildInfo?.ancestorIdSet).toContain('1')
+        expect(abstractChildInfo?.parentIdSet.size).toBe(1)
+        expect(abstractChildInfo?.parentIdSet).toContain('1-3')
+        expect(abstractChildInfo?.ancestorIdSet.size).toBe(2)
+        expect(abstractChildInfo?.ancestorIdSet).toContain('1-3')
+        expect(abstractChildInfo?.ancestorIdSet).toContain('1')
     })
 
     it('remove abstract entity', () => {
@@ -394,5 +429,4 @@ describe('EntityInheritInfo', () => {
         // 其他实体的循环引用记录应该仍然存在
         expect(data.circularReferences.size).toBe(4);
     });
-
 })

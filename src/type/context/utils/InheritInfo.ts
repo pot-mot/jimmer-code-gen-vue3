@@ -44,6 +44,8 @@ const deepCloneItem = (item: DeepReadonly<InheritItem>): InheritItem => {
     }
 }
 
+const stringifyPath = (path: string[]) => path.join(' -> ')
+
 export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync => {
     // 辅助函数：添加缺失依赖
     const addMissingDependency = (id: string, missingId: string) => {
@@ -65,8 +67,6 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
         }
     }
 
-    const stringifyPath = (path: string[]) => path.join(' -> ')
-
     // 辅助函数：添加循环引用路径
     const addCircularReferencePath = (rootId: string, path: string[]) => {
         const circularReferencePaths = inheritInfo.circularReferences.get(rootId)
@@ -77,6 +77,18 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
         } else {
             if (circularReferencePaths.some(it => stringifyPath(it) === pathStr)) return
             circularReferencePaths.push(path)
+        }
+    }
+    const cleanCircularReferencePath = (id: string) => {
+        for (const [key, circularReferencePaths] of inheritInfo.circularReferences) {
+            for (let i = circularReferencePaths.length - 1; i >= 0; i--) {
+                if (circularReferencePaths[i]?.includes(id)) {
+                    circularReferencePaths.splice(i, 1)
+                }
+            }
+            if (circularReferencePaths.length === 0) {
+                inheritInfo.circularReferences.delete(key)
+            }
         }
     }
 
@@ -135,127 +147,14 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
     }
 
     /**
-     * 更新祖先节点的子类信息
-     * 当添加新子类时，需要更新所有祖先节点的子类统计信息
-     */
-    const updateAncestorsWithNewChild = (parentId: string, childId: string, isAbstract: boolean, visited: Set<string> = new Set()) => {
-        // 防止循环处理
-        if (visited.has(parentId)) return
-        visited.add(parentId)
-
-        const parentItem = inheritInfo.innerAbstractMap.get(parentId)
-        if (parentItem) {
-            // 遍历父类的所有父类（即当前节点的祖先）
-            for (const ancestorId of parentItem.extendsIds) {
-                const ancestorInfo = inheritInfo.abstractInheritInfoMap.get(ancestorId)
-                if (ancestorInfo) {
-                    // 根据子类类型更新相应的集合
-                    if (isAbstract) {
-                        ancestorInfo.allAbstractChildIdSet.add(childId)
-                    } else {
-                        ancestorInfo.allConcreteChildIdSet.add(childId)
-                    }
-                    // 递归更新更上层的祖先
-                    updateAncestorsWithNewChild(ancestorId, childId, isAbstract, visited)
-                }
-            }
-        }
-    }
-
-    /**
-     * 同步抽象实体继承信息
-     * 当抽象类的继承关系发生变化时调用
-     */
-    const syncAbstract = (_item: DeepReadonly<InheritItem>) => {
-        const id = _item.id
-        // 如果已存在，先删除旧信息
-        if (inheritInfo.abstractInheritInfoMap.has(id)) removeAbstract(id)
-        // 清理缺失依赖
-        cleanMissingDependencies(id)
-
-        // 创建新的继承项副本
-        const item = deepCloneItem(_item)
-        inheritInfo.innerAbstractMap.set(item.id, item)
-
-        // 获取父类和祖先类信息
-        const {parentIdSet, ancestorIdSet} = getAllExtendsIdSet(item)
-
-        // 初始化子类集合
-        const abstractChildIdSet = new Set<string>()
-        const concreteChildIdSet = new Set<string>()
-
-        // 更新直接父类的子类信息
-        for (const parentId of parentIdSet) {
-            const parentInfo = inheritInfo.abstractInheritInfoMap.get(parentId)
-            if (parentInfo) {
-                parentInfo.abstractChildIdSet.add(id)
-                parentInfo.allAbstractChildIdSet.add(id)
-                // 更新祖先节点的子类统计
-                updateAncestorsWithNewChild(parentId, id, true)
-            }
-        }
-
-        // 查找所有直接子类
-        for (const [itemId, item] of inheritInfo.innerAbstractMap) {
-            if (item.extendsIds.includes(id)) {
-                abstractChildIdSet.add(itemId)
-            }
-        }
-        for (const [itemId, item] of inheritInfo.innerConcreteMap) {
-            if (item.extendsIds.includes(id)) {
-                concreteChildIdSet.add(itemId)
-            }
-        }
-
-        // 收集所有间接子类
-        const allAbstractChildIdSet = new Set<string>()
-        const allConcreteChildIdSet = new Set<string>()
-
-        const collectAllChildren = (parentId: string, visited: Set<string> = new Set()) => {
-            if (visited.has(parentId)) return
-            visited.add(parentId)
-
-            for (const [itemId, item] of inheritInfo.innerAbstractMap) {
-                if (item.extendsIds.includes(parentId)) {
-                    allAbstractChildIdSet.add(itemId)
-
-                    // 重新检查并恢复循环引用和缺失依赖信息
-                    getAllExtendsIdSet(item)
-
-                    // 递归收集子类
-                    collectAllChildren(itemId, visited)
-                }
-            }
-            for (const [itemId, item] of inheritInfo.innerConcreteMap) {
-                if (item.extendsIds.includes(parentId)) {
-                    allConcreteChildIdSet.add(itemId)
-
-                    // 重新检查并恢复循环引用和缺失依赖信息
-                    getAllExtendsIdSet(item)
-                }
-            }
-        }
-        collectAllChildren(id)
-
-        // 存储抽象类继承信息
-        inheritInfo.abstractInheritInfoMap.set(id, {
-            parentIdSet,
-            ancestorIdSet,
-            abstractChildIdSet,
-            allAbstractChildIdSet,
-            concreteChildIdSet,
-            allConcreteChildIdSet
-        })
-    }
-
-    /**
      * 同步具体实体继承信息
      * 当具体类的继承关系发生变化时调用
      */
     const syncConcrete = (_item: DeepReadonly<InheritItem>) => {
         const id = _item.id
-        // 如果已存在，先删除旧信息
-        if (inheritInfo.concreteInheritInfoMap.has(id)) removeConcrete(id)
+        // 移除循环引用和缺失依赖
+        inheritInfo.circularReferences.delete(id)
+        inheritInfo.missingDependencies.delete(id)
 
         // 创建新的继承项副本
         const item = deepCloneItem(_item)
@@ -270,8 +169,13 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
             if (parentInfo) {
                 parentInfo.concreteChildIdSet.add(id)
                 parentInfo.allConcreteChildIdSet.add(id)
-                // 更新祖先节点的子类统计
-                updateAncestorsWithNewChild(parentId, id, false)
+            }
+        }
+        // 更新祖先类的子类信息
+        for (const ancestorId of ancestorIdSet) {
+            const ancestorInfo = inheritInfo.abstractInheritInfoMap.get(ancestorId)
+            if (ancestorInfo) {
+                ancestorInfo.allConcreteChildIdSet.add(id)
             }
         }
 
@@ -279,6 +183,136 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
         inheritInfo.concreteInheritInfoMap.set(id, {
             parentIdSet,
             ancestorIdSet
+        })
+    }
+
+
+    /**
+     * 删除具体类继承信息
+     * 清理所有相关的引用关系
+     */
+    const removeConcrete = (id: string) => {
+        const info = inheritInfo.concreteInheritInfoMap.get(id)
+        if (!info) throw new Error(`[${id}] inheritInfo is not existed`)
+
+        for (const parentId of info.parentIdSet) {
+            const parentInfo = inheritInfo.abstractInheritInfoMap.get(parentId)
+            if (!parentInfo) continue
+            parentInfo.concreteChildIdSet.delete(id)
+        }
+        for (const ancestorId of info.ancestorIdSet) {
+            const ancestorInfo = inheritInfo.abstractInheritInfoMap.get(ancestorId)
+            if (!ancestorInfo) continue
+            ancestorInfo.allConcreteChildIdSet.delete(id)
+        }
+
+        // 清理所有相关映射
+        inheritInfo.innerConcreteMap.delete(id)
+        inheritInfo.concreteInheritInfoMap.delete(id)
+        inheritInfo.circularReferences.delete(id)
+        inheritInfo.missingDependencies.delete(id)
+    }
+
+    /**
+     * 同步抽象实体继承信息
+     * 当抽象类的继承关系发生变化时调用
+     */
+    const syncAbstract = (_item: DeepReadonly<InheritItem>) => {
+        const id = _item.id
+        // 移除循环引用和缺失依赖
+        inheritInfo.circularReferences.delete(id)
+        inheritInfo.missingDependencies.delete(id)
+        cleanMissingDependencies(id)
+        cleanCircularReferencePath(id)
+
+        // 创建新的继承项副本
+        const item = deepCloneItem(_item)
+        inheritInfo.innerAbstractMap.set(item.id, item)
+
+        // 获取父类和祖先类信息
+        const {parentIdSet, ancestorIdSet} = getAllExtendsIdSet(item)
+
+        // 更新父类的子类信息
+        for (const parentId of parentIdSet) {
+            const parentInfo = inheritInfo.abstractInheritInfoMap.get(parentId)
+            if (parentInfo) {
+                parentInfo.abstractChildIdSet.add(id)
+                parentInfo.allAbstractChildIdSet.add(id)
+            }
+        }
+        // 更新祖先类的子类信息
+        for (const ancestorId of ancestorIdSet) {
+            const ancestorInfo = inheritInfo.abstractInheritInfoMap.get(ancestorId)
+            if (ancestorInfo) {
+                ancestorInfo.allAbstractChildIdSet.add(id)
+            }
+        }
+
+        // 初始化子类集合
+        const abstractChildIdSet = new Set<string>()
+        const concreteChildIdSet = new Set<string>()
+        const allAbstractChildIdSet = new Set<string>()
+        const allConcreteChildIdSet = new Set<string>()
+
+        // 递归收集子类
+        const collectAllChildren = (parentId: string, visited: Set<string> = new Set()) => {
+            if (visited.has(parentId)) return
+            visited.add(parentId)
+
+            for (const [itemId, item] of inheritInfo.innerAbstractMap) {
+                if (item.extendsIds.includes(parentId)) {
+                    allAbstractChildIdSet.add(itemId)
+                }
+            }
+            for (const [itemId, item] of inheritInfo.innerConcreteMap) {
+                if (item.extendsIds.includes(parentId)) {
+                    allConcreteChildIdSet.add(itemId)
+                }
+            }
+        }
+
+        // 收集直接子类
+        for (const [itemId, item] of inheritInfo.innerAbstractMap) {
+            if (item.extendsIds.includes(id)) {
+                abstractChildIdSet.add(itemId)
+                allAbstractChildIdSet.add(itemId)
+                collectAllChildren(itemId)
+            }
+        }
+        for (const [itemId, item] of inheritInfo.innerConcreteMap) {
+            if (item.extendsIds.includes(id)) {
+                concreteChildIdSet.add(itemId)
+                allConcreteChildIdSet.add(itemId)
+            }
+        }
+
+        for (const childId of allAbstractChildIdSet) {
+            const item = inheritInfo.innerAbstractMap.get(childId)
+            if (!item) continue
+            const inheritItem = inheritInfo.abstractInheritInfoMap.get(childId)
+            if (!inheritItem) continue
+            const {parentIdSet, ancestorIdSet} = getAllExtendsIdSet(item)
+            inheritItem.parentIdSet = parentIdSet
+            inheritItem.ancestorIdSet = ancestorIdSet
+        }
+        for (const childId of allConcreteChildIdSet) {
+            const item = inheritInfo.innerConcreteMap.get(childId)
+            if (!item) continue
+            const inheritItem = inheritInfo.concreteInheritInfoMap.get(childId)
+            if (!inheritItem) continue
+            const {parentIdSet, ancestorIdSet} = getAllExtendsIdSet(item)
+            inheritItem.parentIdSet = parentIdSet
+            inheritItem.ancestorIdSet = ancestorIdSet
+        }
+
+        // 存储抽象类继承信息
+        inheritInfo.abstractInheritInfoMap.set(id, {
+            parentIdSet,
+            ancestorIdSet,
+            abstractChildIdSet,
+            allAbstractChildIdSet,
+            concreteChildIdSet,
+            allConcreteChildIdSet
         })
     }
 
@@ -290,12 +324,14 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
         const info = inheritInfo.abstractInheritInfoMap.get(id)
         if (!info) throw new Error(`[${id}] inheritInfo is not existed`)
 
-        // 从所有祖先类中移除该类的引用
+        for (const parentId of info.parentIdSet) {
+            const parentInfo = inheritInfo.abstractInheritInfoMap.get(parentId)
+            if (!parentInfo) continue
+            parentInfo.abstractChildIdSet.delete(id)
+        }
         for (const ancestorId of info.ancestorIdSet) {
             const ancestorInfo = inheritInfo.abstractInheritInfoMap.get(ancestorId)
             if (!ancestorInfo) continue
-
-            ancestorInfo.abstractChildIdSet.delete(id)
             ancestorInfo.allAbstractChildIdSet.delete(id)
         }
 
@@ -354,30 +390,7 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
         inheritInfo.abstractInheritInfoMap.delete(id)
         inheritInfo.circularReferences.delete(id)
         inheritInfo.missingDependencies.delete(id)
-    }
-
-    /**
-     * 删除具体类继承信息
-     * 清理所有相关的引用关系
-     */
-    const removeConcrete = (id: string) => {
-        const info = inheritInfo.concreteInheritInfoMap.get(id)
-        if (!info) throw new Error(`[${id}] inheritInfo is not existed`)
-
-        // 从所有祖先类中移除该类的引用
-        for (const ancestorId of info.ancestorIdSet) {
-            const ancestorInfo = inheritInfo.abstractInheritInfoMap.get(ancestorId)
-            if (!ancestorInfo) continue
-
-            ancestorInfo.concreteChildIdSet.delete(id)
-            ancestorInfo.allConcreteChildIdSet.delete(id)
-        }
-
-        // 清理所有相关映射
-        inheritInfo.innerConcreteMap.delete(id)
-        inheritInfo.concreteInheritInfoMap.delete(id)
-        inheritInfo.circularReferences.delete(id)
-        inheritInfo.missingDependencies.delete(id)
+        cleanCircularReferencePath(id)
     }
 
     for (const item of inheritInfo.innerAbstractMap.values()) {
