@@ -156,6 +156,20 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
         inheritInfo.circularReferences.delete(id)
         inheritInfo.missingDependencies.delete(id)
 
+        const oldInfo = inheritInfo.concreteInheritInfoMap.get(id)
+        if (oldInfo) {
+            for (const parentId of oldInfo.parentIdSet) {
+                const parentInfo = inheritInfo.abstractInheritInfoMap.get(parentId)
+                if (!parentInfo) continue
+                parentInfo.concreteChildIdSet.delete(id)
+            }
+            for (const ancestorId of oldInfo.ancestorIdSet) {
+                const ancestorInfo = inheritInfo.abstractInheritInfoMap.get(ancestorId)
+                if (!ancestorInfo) continue
+                ancestorInfo.allConcreteChildIdSet.delete(id)
+            }
+        }
+
         // 创建新的继承项副本
         const item = deepCloneItem(_item)
         inheritInfo.innerConcreteMap.set(item.id, item)
@@ -224,6 +238,20 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
         inheritInfo.missingDependencies.delete(id)
         cleanMissingDependencies(id)
         cleanCircularReferencePath(id)
+
+        const oldInfo = inheritInfo.abstractInheritInfoMap.get(id)
+        if (oldInfo) {
+            for (const parentId of oldInfo.parentIdSet) {
+                const parentInfo = inheritInfo.abstractInheritInfoMap.get(parentId)
+                if (!parentInfo) continue
+                parentInfo.abstractChildIdSet.delete(id)
+            }
+            for (const ancestorId of oldInfo.ancestorIdSet) {
+                const ancestorInfo = inheritInfo.abstractInheritInfoMap.get(ancestorId)
+                if (!ancestorInfo) continue
+                ancestorInfo.allAbstractChildIdSet.delete(id)
+            }
+        }
 
         // 创建新的继承项副本
         const item = deepCloneItem(_item)
