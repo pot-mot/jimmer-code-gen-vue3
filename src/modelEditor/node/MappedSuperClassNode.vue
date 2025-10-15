@@ -54,7 +54,6 @@ const beforePaste = (properties: MappedSuperClassProperty[]) => {
     }
 }
 
-// TODO with existed info
 const propertyNameSet = computed(() => {
     return propertyNameSetMap.value.get(props.data.mappedSuperClass.id)
 })

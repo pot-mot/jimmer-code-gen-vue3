@@ -162,7 +162,56 @@ export const useModelEditor = createStore(() => {
     })
 
     const propertyNameSetMap = ref(new Map<string, ReadonlyNameSet>())
-    const syncPropertyNameSetMap = (id: string, properties: DeepReadonly<{ name: string }[]>) => {
+    const syncEntityPropertyNameSetMap = (id: string, properties: DeepReadonly<{ name: string }[]>) => {
+        const names = []
+        const inheritItem = inheritInfo.value.concreteInheritInfoMap.get(id)
+        if (inheritItem) {
+            for (const ancestorId of inheritItem.ancestorIdSet) {
+                const ancestor = contextData.value.mappedSuperClassMap.get(ancestorId)
+                if (ancestor) {
+                    for (const property of ancestor.properties) {
+                        names.push(property.name)
+                    }
+                }
+            }
+        }
+        for (const property of properties) {
+            names.push(property.name)
+        }
+        propertyNameSetMap.value.set(id, buildReadonlyNameSet(names))
+    }
+    const syncMappedSuperClassPropertyNameSetMap = (id: string, properties: DeepReadonly<{ name: string }[]>) => {
+        const names = []
+        const inheritItem = inheritInfo.value.abstractInheritInfoMap.get(id)
+        if (inheritItem) {
+            for (const ancestorId of inheritItem.ancestorIdSet) {
+                const ancestor = contextData.value.mappedSuperClassMap.get(ancestorId)
+                if (ancestor) {
+                    for (const property of ancestor.properties) {
+                        names.push(property.name)
+                    }
+                }
+            }
+            for (const childId of inheritItem.allConcreteChildIdSet) {
+                const child = contextData.value.entityMap.get(childId)
+                if (child) {
+                    syncEntityPropertyNameSetMap(childId, child.properties)
+                }
+            }
+            for (const childId of inheritItem.allAbstractChildIdSet) {
+                const child = contextData.value.mappedSuperClassMap.get(childId)
+                if (child) {
+                    syncMappedSuperClassPropertyNameSetMap(childId, child.properties)
+                }
+            }
+        }
+        for (const property of properties) {
+            names.push(property.name)
+        }
+        propertyNameSetMap.value.set(id, buildReadonlyNameSet(names))
+        console.log(propertyNameSetMap.value)
+    }
+    const syncEmbeddableTypePropertyNameSetMap = (id: string, properties: DeepReadonly<{ name: string }[]>) => {
         const names = []
         for (const property of properties) {
             names.push(property.name)
@@ -172,28 +221,31 @@ export const useModelEditor = createStore(() => {
     const removeFromPropertyNameSetMap = (id: string) => {
         propertyNameSetMap.value.delete(id)
     }
-    for (const [id, entity] of contextData.value.entityMap) syncPropertyNameSetMap(id, entity.properties)
-    for (const [id, mappedSuperClass] of contextData.value.mappedSuperClassMap) syncPropertyNameSetMap(id, mappedSuperClass.properties)
-    for (const [id, embeddableType] of contextData.value.embeddableTypeMap) syncPropertyNameSetMap(id, embeddableType.properties)
+    for (const [id, entity] of contextData.value.entityMap)
+        syncEntityPropertyNameSetMap(id, entity.properties)
+    for (const [id, mappedSuperClass] of contextData.value.mappedSuperClassMap)
+        syncMappedSuperClassPropertyNameSetMap(id, mappedSuperClass.properties)
+    for (const [id, embeddableType] of contextData.value.embeddableTypeMap)
+        syncEmbeddableTypePropertyNameSetMap(id, embeddableType.properties)
     history.eventBus.on("change", (data) => {
         if (inferCommandInput(data, "entity:add")) {
-            if (data.type === "apply") syncPropertyNameSetMap(data.options.entity.id, data.options.entity.properties)
+            if (data.type === "apply") syncEntityPropertyNameSetMap(data.options.entity.id, data.options.entity.properties)
             else if (data.type === "revert") removeFromPropertyNameSetMap(data.revertOptions.id)
         } else if (inferCommandInput(data, "mapped-super-class:add")) {
-            if (data.type === "apply") syncPropertyNameSetMap(data.options.mappedSuperClass.id, data.options.mappedSuperClass.properties)
+            if (data.type === "apply") syncMappedSuperClassPropertyNameSetMap(data.options.mappedSuperClass.id, data.options.mappedSuperClass.properties)
             else if (data.type === "revert") removeFromPropertyNameSetMap(data.revertOptions.id)
         } else if (inferCommandInput(data, "embeddable-type:add")) {
-            if (data.type === "apply") syncPropertyNameSetMap(data.options.embeddableType.id, data.options.embeddableType.properties)
+            if (data.type === "apply") syncEmbeddableTypePropertyNameSetMap(data.options.embeddableType.id, data.options.embeddableType.properties)
             else if (data.type === "revert") removeFromPropertyNameSetMap(data.revertOptions.id)
         } else if (inferCommandInput(data, "entity:change")) {
-            if (data.type === "apply") syncPropertyNameSetMap(data.options.entity.id, data.options.entity.properties)
-            else if (data.type === "revert") syncPropertyNameSetMap(data.revertOptions.entity.id, data.revertOptions.entity.properties)
+            if (data.type === "apply") syncEntityPropertyNameSetMap(data.options.entity.id, data.options.entity.properties)
+            else if (data.type === "revert") syncEntityPropertyNameSetMap(data.revertOptions.entity.id, data.revertOptions.entity.properties)
         } else if (inferCommandInput(data, "mapped-super-class:change")) {
-            if (data.type === "apply") syncPropertyNameSetMap(data.options.mappedSuperClass.id, data.options.mappedSuperClass.properties)
-            else if (data.type === "revert") syncPropertyNameSetMap(data.revertOptions.mappedSuperClass.id, data.revertOptions.mappedSuperClass.properties)
+            if (data.type === "apply") syncMappedSuperClassPropertyNameSetMap(data.options.mappedSuperClass.id, data.options.mappedSuperClass.properties)
+            else if (data.type === "revert") syncMappedSuperClassPropertyNameSetMap(data.revertOptions.mappedSuperClass.id, data.revertOptions.mappedSuperClass.properties)
         } else if (inferCommandInput(data, "embeddable-type:change")) {
-            if (data.type === "apply") syncPropertyNameSetMap(data.options.embeddableType.id, data.options.embeddableType.properties)
-            else if (data.type === "revert") syncPropertyNameSetMap(data.revertOptions.embeddableType.id, data.revertOptions.embeddableType.properties)
+            if (data.type === "apply") syncEmbeddableTypePropertyNameSetMap(data.options.embeddableType.id, data.options.embeddableType.properties)
+            else if (data.type === "revert") syncEmbeddableTypePropertyNameSetMap(data.revertOptions.embeddableType.id, data.revertOptions.embeddableType.properties)
         }
     })
 

@@ -53,7 +53,6 @@ const beforePaste = (properties: EntityProperty[]) => {
     }
 }
 
-// TODO with existed info
 const propertyNameSet = computed(() => {
     return propertyNameSetMap.value.get(props.data.entity.id)
 })
