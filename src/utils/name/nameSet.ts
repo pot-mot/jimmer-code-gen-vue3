@@ -1,10 +1,12 @@
 export type ReadonlyNameSet = {
+    countMap: DeepReadonly<Map<string, number>>
     has(name: string): boolean,
     count(name: string): number,
     next(name: string): string,
 }
 
 export type NameSet = ReadonlyNameSet & {
+    countMap: DeepReadonly<Map<string, number>>
     has(name: string): boolean,
     add(name: string): void,
     count(name: string): number,
@@ -22,6 +24,7 @@ export const buildReadonlyNameSet = (
         }
     }
     return {
+        countMap,
         has(name: string) {
             return countMap.has(name)
         },
@@ -58,6 +61,7 @@ export const buildNameSet = (
         }
     }
     return {
+        countMap,
         add,
         has(name: string) {
             return countMap.has(name)
