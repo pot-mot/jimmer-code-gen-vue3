@@ -2,12 +2,6 @@ import {
     categorizeAbstractCategorizedProperties,
     categorizeEmbeddableTypeProperties, categorizeEntityProperties,
 } from "@/type/context/utils/CategorizedProperties.ts";
-import {
-    type AllExtendsInfo,
-    buildInheritorsMap,
-    getAllExtends,
-    getAllInheritors, getAllProperties
-} from "@/type/context/utils/EntityExtends.ts";
 import {getGroupSubMaps} from "@/type/context/utils/GroupSubDataMap.ts";
 import {overrideEmbeddableTypePropertiesColumnNames} from "@/type/context/utils/EmbeddableTypeOverride.ts";
 import {
@@ -24,9 +18,11 @@ import {
     oneToOneAbstractToReal
 } from "@/type/context/utils/AbstractAssociationToReal.ts";
 import {generatePropertyFkJoinInfo, generatePropertyJoinInfo} from "@/modelEditor/property/PropertyJoinInfoGenerate.ts";
+import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 
 export const contextDataToContext = (
     readonlyContextData: DeepReadonly<ModelContextData>,
+    inheritInfo: DeepReadonly<InheritInfo>,
 ): DeepReadonly<ModelContext> => {
     const contextData = cloneDeepReadonlyRaw<ModelContextData>(readonlyContextData)
     const model = contextData.model
@@ -88,41 +84,67 @@ export const contextDataToContext = (
     }
 
     // 解析实体继承关系
-    const allExtendsCacheMap = new Map<string, AllExtendsInfo<MappedSuperClassWithCategorizedProperties>>()
-
     const mappedSuperClassWithInheritInfoMap = new Map<string, MappedSuperClassWithInheritInfo>()
     for (const [id, mappedSuperClass] of mappedSuperClassWithCategorizedPropertiesMap) {
-        const {
-            directExtendSet: directExtends,
-            extendsSet: allExtends,
-        } = getAllExtends(mappedSuperClass, mappedSuperClassWithCategorizedPropertiesMap, allExtendsCacheMap)
-        const allProperties = getAllProperties(mappedSuperClass, mappedSuperClassWithCategorizedPropertiesMap, allExtends)
-        mappedSuperClassWithInheritInfoMap.set(id, {
-            ...mappedSuperClass,
-            directExtends,
-            allExtends,
-            allProperties,
-        })
+        const inheritItem = inheritInfo.abstractInheritInfoMap.get(id)
+        if (inheritItem) {
+            const directExtends = new Set<MappedSuperClassWithCategorizedProperties>()
+            const allExtends = new Set<MappedSuperClassWithCategorizedProperties>()
+            const allProperties = []
+            for (const parentId of inheritItem.parentIdSet) {
+                const parent = mappedSuperClassWithCategorizedPropertiesMap.get(parentId)
+                if (parent) {
+                    directExtends.add(parent)
+                }
+            }
+            for (const ancestorId of inheritItem.ancestorIdSet) {
+                const ancestor = mappedSuperClassWithCategorizedPropertiesMap.get(ancestorId)
+                if (ancestor) {
+                    allExtends.add(ancestor)
+                    allProperties.push(...ancestor.properties)
+                }
+            }
+            allProperties.push(...mappedSuperClass.properties)
+            mappedSuperClassWithInheritInfoMap.set(id, {
+                ...mappedSuperClass,
+                directExtends,
+                allExtends,
+                allProperties,
+            })
+        }
     }
 
     const entityWithInheritInfoMap = new Map<string, EntityWithInheritInfo>()
     for (const [id, entity] of entityWithCategorizedPropertiesMap) {
-        const {
-            directExtendSet: directExtends,
-            extendsSet: allExtends,
-        } = getAllExtends(entity, mappedSuperClassWithCategorizedPropertiesMap, allExtendsCacheMap)
-        const allProperties = getAllProperties(entity, mappedSuperClassWithCategorizedPropertiesMap, allExtends)
-        entityWithInheritInfoMap.set(id, {
-            ...entity,
-            directExtends,
-            allExtends,
-            allProperties,
-        })
+        const inheritItem = inheritInfo.concreteInheritInfoMap.get(id)
+        if (inheritItem) {
+            const directExtends = new Set<MappedSuperClassWithCategorizedProperties>()
+            const allExtends = new Set<MappedSuperClassWithCategorizedProperties>()
+            const allProperties = []
+            for (const parentId of inheritItem.parentIdSet) {
+                const parent = mappedSuperClassWithCategorizedPropertiesMap.get(parentId)
+                if (parent) {
+                    directExtends.add(parent)
+                }
+            }
+            for (const ancestorId of inheritItem.ancestorIdSet) {
+                const ancestor = mappedSuperClassWithCategorizedPropertiesMap.get(ancestorId)
+                if (ancestor) {
+                    allExtends.add(ancestor)
+                    allProperties.push(...ancestor.properties)
+                }
+            }
+            allProperties.push(...entity.properties)
+            entityWithInheritInfoMap.set(id, {
+                ...entity,
+                directExtends,
+                allExtends,
+                allProperties,
+            })
+        }
     }
 
     // 将 MappedProperty 移动回实体中
-    const inheritorsMap = buildInheritorsMap(entityWithInheritInfoMap, mappedSuperClassWithInheritInfoMap)
-
     for (const entity of entityWithInheritInfoMap.values()) {
         const mappedInfos = getMappedPropertyInfo(entity.properties, associationIdOnlyMap)
         for (const {association, mappedProperty} of mappedInfos) {
@@ -143,7 +165,17 @@ export const contextDataToContext = (
     }
 
     for (const mappedSuperClass of mappedSuperClassWithInheritInfoMap.values()) {
-        const inheritors = getAllInheritors(mappedSuperClass.id, inheritorsMap)
+        const inheritEntities: EntityWithInheritInfo[] = []
+        const inheritItem = inheritInfo.abstractInheritInfoMap.get(mappedSuperClass.id)
+        if (inheritItem) {
+            for (const childId of inheritItem.allConcreteChildIdSet) {
+                const child = entityWithInheritInfoMap.get(childId)
+                if (child) {
+                    inheritEntities.push(child)
+                }
+            }
+        }
+
         const mappedProperties = getAbstractMappedPropertyInfo(mappedSuperClass.properties, associationIdOnlyMap)
         for (const {
             association: abstractAssociation,
@@ -158,7 +190,7 @@ export const contextDataToContext = (
                 abstractSourceProperty.category === "OneToOne_Source" &&
                 abstractMappedProperty.category === "OneToOne_Mapped_Abstract"
             ) {
-                for (const inheritEntity of inheritors.entities) {
+                for (const inheritEntity of inheritEntities) {
                     const {
                         association: realAssociation,
                         sourceProperty: realSourceProperty,
@@ -189,7 +221,7 @@ export const contextDataToContext = (
                 abstractSourceProperty.category === "ManyToOne" &&
                 abstractMappedProperty.category === "OneToMany_Abstract"
             ) {
-                for (const inheritEntity of inheritors.entities) {
+                for (const inheritEntity of inheritEntities) {
                     const {
                         association: realAssociation,
                         sourceProperty: realSourceProperty,
@@ -258,6 +290,6 @@ export const contextDataToContext = (
 
         createId,
         nameTool,
-        typeTool: buildTypeTool(model.jvmLanguage, [], [], [])
+        typeTool: buildTypeTool(model.jvmLanguage, [], [], []) // TODO
     }
 }
