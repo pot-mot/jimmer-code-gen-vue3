@@ -46,7 +46,7 @@ const associationNameComment = computed({
 
 const mappedPropertyEdit = ref(false)
 
-const mappedPropertyInfo = computed(() => {
+const mappedPropertyView = computed(() => {
     if (!referencedAbstractEntity.value) {
         return {
             name: props.data.edgedAssociation.association.mappedProperty.name.replace(INHERIT_ENTITY, "[NOT EXISTED]"),
@@ -85,13 +85,12 @@ const mappedPropertyInfo = computed(() => {
                 />
             </div>
 
-            <div v-if="data.edgedAssociation.association.withMappedProperty"
-                 style="display: flex; justify-content: center; line-height: 2rem;">
+            <div v-if="data.edgedAssociation.association.withMappedProperty" class="mapped-property-info">
                 <EntityIdViewer :id="data.edgedAssociation.association.referencedEntityId" hide-comment ctrl-focus/>
                 <span>.</span>
                 <NameCommentViewer
                     v-if="!mappedPropertyEdit"
-                    :data="mappedPropertyInfo"
+                    :data="mappedPropertyView"
                     @click.stop="mappedPropertyEdit = true"
                 />
                 <NameCommentEditor
@@ -133,5 +132,11 @@ const mappedPropertyInfo = computed(() => {
     border: var(--border);
     border-radius: 0.25rem;
     background-color: var(--background-color);
+}
+
+.mapped-property-info {
+    display: flex;
+    justify-content: center;
+    line-height: 2rem;
 }
 </style>

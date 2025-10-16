@@ -13,7 +13,7 @@ import IconDelete from "@/components/icons/IconDelete.vue";
 
 const props = defineProps<EdgeProps<ConcreteAssociationEdge["data"]>>()
 
-const {focusEdge, remove} = useModelEditor()
+const {propertyNameSetMap, focusEdge, remove} = useModelEditor()
 
 const associationEdgeRef = useTemplateRef("associationEdgeRef")
 const getPath = computed(() => {
@@ -47,11 +47,12 @@ const associationEdit = ref(false)
                 />
             </div>
 
-            <div v-if="data.edgedAssociation.association.withMappedProperty" style="display: flex; justify-content: center; line-height: 2rem;">
+            <div v-if="data.edgedAssociation.association.withMappedProperty" class="mapped-property-info">
                 <EntityIdViewer :id="data.edgedAssociation.association.referencedEntityId" hide-comment ctrl-focus/>
                 <span>.</span>
                 <NameCommentEditor
                     v-model="data.edgedAssociation.association.mappedProperty"
+                    :name-set="propertyNameSetMap.get(data.edgedAssociation.association.referencedEntityId)"
                     class="with-border-bg"
                     @click.stop
                 />
@@ -83,5 +84,15 @@ const associationEdit = ref(false)
     border: var(--border);
     border-radius: 0.25rem;
     background-color: var(--background-color);
+}
+
+.mapped-property-info {
+    display: flex;
+    justify-content: center;
+    line-height: 2rem;
+}
+
+.mapped-property-info :deep(.name-comment-editor) {
+    line-height: 1em;
 }
 </style>

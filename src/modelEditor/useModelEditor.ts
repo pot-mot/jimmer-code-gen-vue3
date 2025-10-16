@@ -162,47 +162,66 @@ export const useModelEditor = createStore(() => {
     })
 
     const propertyNameSetMap = ref(new Map<string, ReadonlyNameSet>())
-    const syncEntityPropertyNameSetMap = (id: string, properties: DeepReadonly<{ name: string }[]>) => {
+    const enumerationItemNameSetMap = ref(new Map<string, ReadonlyNameSet>)
+
+    const syncEntityPropertyNameSetMap = (id: string, properties: DeepReadonly<EntityProperty[]>) => {
+        const contextData = getContextData()
         const names = []
         const inheritItem = inheritInfo.value.concreteInheritInfoMap.get(id)
         if (inheritItem) {
             for (const ancestorId of inheritItem.ancestorIdSet) {
-                const ancestor = contextData.value.mappedSuperClassMap.get(ancestorId)
+                const ancestor = contextData.mappedSuperClassMap.get(ancestorId)
                 if (ancestor) {
                     for (const property of ancestor.properties) {
                         names.push(property.name)
+                        if ("idViewName" in property) {
+                            names.push(property.idViewName)
+                        }
                     }
                 }
             }
         }
         for (const property of properties) {
             names.push(property.name)
+            if ("idViewName" in property) {
+                names.push(property.idViewName)
+            }
+        }
+        for (const {association} of contextData.associationMap.values()) {
+            if (association.referencedEntityId === id) {
+                names.push(association.mappedProperty.name)
+            }
         }
         propertyNameSetMap.value.set(id, buildReadonlyNameSet(names))
     }
     const removeEntityFromPropertyNameSetMap = (id: string) => {
         propertyNameSetMap.value.delete(id)
     }
-    const syncMappedSuperClassPropertyNameSetMap = (id: string, properties: DeepReadonly<{ name: string }[]>) => {
+
+    const syncMappedSuperClassPropertyNameSetMap = (id: string, properties: DeepReadonly<MappedSuperClassProperty[]>) => {
+        const contextData = getContextData()
         const names = []
         const inheritItem = inheritInfo.value.abstractInheritInfoMap.get(id)
         if (inheritItem) {
             for (const ancestorId of inheritItem.ancestorIdSet) {
-                const ancestor = contextData.value.mappedSuperClassMap.get(ancestorId)
+                const ancestor = contextData.mappedSuperClassMap.get(ancestorId)
                 if (ancestor) {
                     for (const property of ancestor.properties) {
                         names.push(property.name)
+                        if ("idViewName" in property) {
+                            names.push(property.idViewName)
+                        }
                     }
                 }
             }
             for (const childId of inheritItem.allConcreteChildIdSet) {
-                const child = contextData.value.entityMap.get(childId)
+                const child = contextData.entityMap.get(childId)
                 if (child) {
                     syncEntityPropertyNameSetMap(childId, child.properties)
                 }
             }
             for (const childId of inheritItem.allAbstractChildIdSet) {
-                const child = contextData.value.mappedSuperClassMap.get(childId)
+                const child = contextData.mappedSuperClassMap.get(childId)
                 if (child) {
                     syncMappedSuperClassPropertyNameSetMap(childId, child.properties)
                 }
@@ -210,6 +229,9 @@ export const useModelEditor = createStore(() => {
         }
         for (const property of properties) {
             names.push(property.name)
+            if ("idViewName" in property) {
+                names.push(property.idViewName)
+            }
         }
         propertyNameSetMap.value.set(id, buildReadonlyNameSet(names))
     }
@@ -230,7 +252,8 @@ export const useModelEditor = createStore(() => {
             }
         }
     }
-    const syncEmbeddableTypePropertyNameSetMap = (id: string, properties: DeepReadonly<{ name: string }[]>) => {
+
+    const syncEmbeddableTypePropertyNameSetMap = (id: string, properties: DeepReadonly<EmbeddableTypeProperty[]>) => {
         const names = []
         for (const property of properties) {
             names.push(property.name)
@@ -240,12 +263,26 @@ export const useModelEditor = createStore(() => {
     const removeEmbeddableTypeFromPropertyNameSetMap = (id: string) => {
         propertyNameSetMap.value.delete(id)
     }
+
+    const syncEnumerationItemNameSetMap = (id: string, items: DeepReadonly<EnumerationItem[]>) => {
+        const names = []
+        for (const property of items) {
+            names.push(property.name)
+        }
+        propertyNameSetMap.value.set(id, buildReadonlyNameSet(names))
+    }
+    const removeFromEnumerationItemNameSetMap = (id: string) => {
+        enumerationItemNameSetMap.value.delete(id)
+    }
+
     for (const [id, entity] of contextData.value.entityMap)
         syncEntityPropertyNameSetMap(id, entity.properties)
     for (const [id, mappedSuperClass] of contextData.value.mappedSuperClassMap)
         syncMappedSuperClassPropertyNameSetMap(id, mappedSuperClass.properties)
     for (const [id, embeddableType] of contextData.value.embeddableTypeMap)
         syncEmbeddableTypePropertyNameSetMap(id, embeddableType.properties)
+    for (const [id, enumeration] of contextData.value.enumerationMap)
+        syncEnumerationItemNameSetMap(id, enumeration.items)
     history.eventBus.on("change", (data) => {
         if (inferCommandInput(data, "entity:add")) {
             if (data.type === "apply") syncEntityPropertyNameSetMap(data.options.entity.id, data.options.entity.properties)
@@ -265,22 +302,29 @@ export const useModelEditor = createStore(() => {
         } else if (inferCommandInput(data, "embeddable-type:change")) {
             if (data.type === "apply") syncEmbeddableTypePropertyNameSetMap(data.options.embeddableType.id, data.options.embeddableType.properties)
             else if (data.type === "revert") syncEmbeddableTypePropertyNameSetMap(data.revertOptions.embeddableType.id, data.revertOptions.embeddableType.properties)
-        }
-    })
-
-    const enumerationItemNameSetMap = ref(new Map<string, ReadonlyNameSet>)
-    const syncEnumerationItemNameSetMap = (id: string, items: DeepReadonly<{ name: string }[]>) => {
-        const names = []
-        for (const property of items) {
-            names.push(property.name)
-        }
-        propertyNameSetMap.value.set(id, buildReadonlyNameSet(names))
-    }
-    const removeFromEnumerationItemNameSetMap = (id: string) => {
-        enumerationItemNameSetMap.value.delete(id)
-    }
-    history.eventBus.on("change", (data) => {
-        if (inferCommandInput(data, "enumeration:add")) {
+        } else if (inferCommandInput(data, "association:add")) {
+            if (data.type === "apply") {
+                const referencedEntity = getContextData().entityMap.get(data.options.association.referencedEntityId)
+                if (!referencedEntity) return
+                syncEntityPropertyNameSetMap(referencedEntity.id, referencedEntity.properties)
+            }
+            else if (data.type === "revert") {
+                const referencedEntity = getContextData().entityMap.get(data.options.association.referencedEntityId)
+                if (!referencedEntity) return
+                syncEntityPropertyNameSetMap(referencedEntity.id, referencedEntity.properties)
+            }
+        } else if (inferCommandInput(data, "association:change")) {
+            if (data.type === "apply") {
+                const referencedEntity = getContextData().entityMap.get(data.options.association.referencedEntityId)
+                if (!referencedEntity) return
+                syncEntityPropertyNameSetMap(referencedEntity.id, referencedEntity.properties)
+            }
+            else if (data.type === "revert") {
+                const referencedEntity = getContextData().entityMap.get(data.revertOptions.association.referencedEntityId)
+                if (!referencedEntity) return
+                syncEntityPropertyNameSetMap(referencedEntity.id, referencedEntity.properties)
+            }
+        } else if (inferCommandInput(data, "enumeration:add")) {
             if (data.type === "apply") syncEnumerationItemNameSetMap(data.options.enumeration.id, data.options.enumeration.items)
             else if (data.type === "revert") removeFromEnumerationItemNameSetMap(data.revertOptions.id)
         } else if (inferCommandInput(data, "enumeration:change")) {
