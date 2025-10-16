@@ -91,8 +91,4 @@ const associationEdit = ref(false)
     justify-content: center;
     line-height: 2rem;
 }
-
-.mapped-property-info :deep(.name-comment-editor) {
-    line-height: 1em;
-}
 </style>
