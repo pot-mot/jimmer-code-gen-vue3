@@ -10,7 +10,8 @@ import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import IconAim from "@/components/icons/IconAim.vue";
 import {NodeToolbar} from "@vue-flow/node-toolbar";
 import IconDelete from "@/components/icons/IconDelete.vue";
-import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/ModelSubFocus.ts";
+import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
+import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 
 const props = defineProps<NodeProps<EnumerationNode["data"]>>()
 
@@ -35,17 +36,13 @@ onBeforeUnmount(() => {
     modelSubFocusEventBus.off("focusEnumerationItem", focusProperty)
 })
 
-const {focusNode, remove, groupItemNameSet, enumerationItemNameSetMap} = useModelEditor()
+const {focusNode, remove, modelDiagnoseInfo} = useModelEditor()
 
 const beforePaste = (items: EnumerationItem[]) => {
     for (const item of items) {
         item.id = createId("EnumerationItem")
     }
 }
-
-const itemNameSet = computed(() => {
-    return enumerationItemNameSetMap.value.get(props.data.enumeration.id)
-})
 </script>
 
 <template>
@@ -53,9 +50,11 @@ const itemNameSet = computed(() => {
         <div class="enumeration-header">
             <NameCommentEditor
                 v-model="data.enumeration"
-                :name-set="groupItemNameSet"
                 :class="groupTheme"
                 style="padding: 2px;"
+            />
+            <DiagnoseViewer
+                :messages="modelDiagnoseInfo.enumerationMap.get(id)?.enumeration"
             />
         </div>
 
@@ -68,7 +67,7 @@ const itemNameSet = computed(() => {
             :before-paste="beforePaste"
             @keydown.stop
         >
-            <template #line="{index}">
+            <template #line="{item, index}">
                 <div class="enumeration-item">
                     <div
                         class="enumeration-item-view"
@@ -77,9 +76,11 @@ const itemNameSet = computed(() => {
                         <NameCommentEditor
                             :font-size="14"
                             v-model="data.enumeration.items[index]"
-                            :name-set="itemNameSet"
                         />
                     </div>
+                    <DiagnoseViewer
+                        :messages="modelDiagnoseInfo.enumerationMap.get(id)?.items.get(item.id)"
+                    />
                 </div>
             </template>
         </EditList>
@@ -120,8 +121,6 @@ const itemNameSet = computed(() => {
 }
 
 .enumeration-header {
-    display: flex;
-    gap: 0.4rem;
     padding: 0.5rem;
     background-color: v-bind(groupColor);
 }

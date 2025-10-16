@@ -10,10 +10,11 @@ import LabelPositionEditor from "@/modelEditor/edge/labelPosition/LabelPositionE
 import IconAim from "@/components/icons/IconAim.vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import IconDelete from "@/components/icons/IconDelete.vue";
+import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 
 const props = defineProps<EdgeProps<ConcreteAssociationEdge["data"]>>()
 
-const {propertyNameSetMap, focusEdge, remove} = useModelEditor()
+const {modelDiagnoseInfo, focusEdge, remove} = useModelEditor()
 
 const associationEdgeRef = useTemplateRef("associationEdgeRef")
 const getPath = computed(() => {
@@ -30,36 +31,43 @@ const associationEdit = ref(false)
         class="concrete-association-edge"
     >
         <template #label>
-            <div style="display: flex; justify-content: center;">
-                <AssociationViewer
-                    v-if="!associationEdit"
-                    :association="data.edgedAssociation.association"
-                    @click.stop="associationEdit = true"
-                />
-                <NameCommentEditor
-                    v-else
-                    v-model="data.edgedAssociation.association"
-                    class="with-border-bg"
-                    auto-focus
-                    @change="associationEdit = false"
-                    @blur="associationEdit = false"
-                    @click.stop
+            <div>
+                <div style="display: flex; justify-content: center;">
+                    <AssociationViewer
+                        v-if="!associationEdit"
+                        :association="data.edgedAssociation.association"
+                        @click.stop="associationEdit = true"
+                    />
+                    <NameCommentEditor
+                        v-else
+                        v-model="data.edgedAssociation.association"
+                        class="with-border-bg"
+                        auto-focus
+                        @change="associationEdit = false"
+                        @blur="associationEdit = false"
+                        @click.stop
+                    />
+                </div>
+                <DiagnoseViewer
+                    :messages="modelDiagnoseInfo.associationMap.get(id)?.association"
                 />
             </div>
 
-            <div v-if="data.edgedAssociation.association.withMappedProperty" class="mapped-property-info">
-                <EntityIdViewer :id="data.edgedAssociation.association.referencedEntityId" hide-comment ctrl-focus/>
-                <span>.</span>
-                <NameCommentEditor
-                    v-model="data.edgedAssociation.association.mappedProperty"
-                    :name-set="propertyNameSetMap.get(data.edgedAssociation.association.referencedEntityId)"
-                    class="with-border-bg"
-                    @click.stop
-                />
-                <span style="padding-right: 0.5rem;">:</span>
-                <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">List<</span>
-                <EntityIdViewer :id="data.edgedAssociation.association.mappedProperty.referencedEntityId" hide-comment ctrl-focus/>
-                <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">></span>
+            <div v-if="data.edgedAssociation.association.withMappedProperty">
+                <div class="mapped-property-info">
+                    <EntityIdViewer :id="data.edgedAssociation.association.referencedEntityId" hide-comment ctrl-focus/>
+                    <span>.</span>
+                    <NameCommentEditor
+                        v-model="data.edgedAssociation.association.mappedProperty"
+                        class="with-border-bg"
+                        @click.stop
+                    />
+                    <span style="padding-right: 0.5rem;">:</span>
+                    <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">List<</span>
+                    <EntityIdViewer :id="data.edgedAssociation.association.mappedProperty.referencedEntityId" hide-comment ctrl-focus/>
+                    <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">></span>
+                </div>
+                <DiagnoseViewer :messages="modelDiagnoseInfo.associationMap.get(id)?.mappedProperty"/>
             </div>
         </template>
 

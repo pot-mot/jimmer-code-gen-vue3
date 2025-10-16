@@ -1,0 +1,43 @@
+import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
+import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
+import type {ModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
+
+export type EmbeddableTypeDiagnose = {
+    embeddableType: DiagnoseMessage[],
+    properties: Map<string, DiagnoseMessage[]>
+}
+
+export const embeddableTypeDiagnose = (
+    embeddableType: DeepReadonly<EmbeddableTypeWithProperties>,
+    contextData: DeepReadonly<ModelContextData>,
+    inheritInfo: DeepReadonly<InheritInfo>,
+    nameSets: DeepReadonly<ModelNameSets>,
+): EmbeddableTypeDiagnose => {
+    const messages: DiagnoseMessage[] = []
+    const propertyDiagnoseMap = new Map<string, DiagnoseMessage[]>()
+
+    const groupItemNameCount = nameSets.groupItemNameSet.count(embeddableType.name)
+    if (groupItemNameCount > 1) {
+        messages.push({
+            content: `[Duplicate Name: ${groupItemNameCount}]`,
+            type: "warning"
+        })
+    }
+
+    for (const property of embeddableType.properties) {
+        const messages: DiagnoseMessage[] = []
+        const nameCount = nameSets.embeddableTypePropertyNameSetMap.get(embeddableType.id)?.count(property.name) ?? 0
+        if (nameCount > 1) {
+            messages.push({
+                content: `[Duplicate Name: ${nameCount}]`,
+                type: "warning"
+            })
+        }
+        propertyDiagnoseMap.set(property.id, messages)
+    }
+
+    return {
+        embeddableType: messages,
+        properties: propertyDiagnoseMap,
+    }
+}

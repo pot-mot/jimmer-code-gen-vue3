@@ -61,9 +61,6 @@ const toggleSelect = (id: string) => {
                     <IconClose class="remove-button" @click.stop="toggleSelect(id)"/>
                 </li>
             </ul>
-            <div class="warning-info" v-if="inheritInfo.missingDependencies.has(id)">
-                [{{ inheritInfo.missingDependencies.get(id)?.size }} SuperClass Not Existed]
-            </div>
         </template>
         <template #body>
             <div

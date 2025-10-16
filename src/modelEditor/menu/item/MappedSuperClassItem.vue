@@ -4,11 +4,12 @@ import {computed} from "vue";
 import IconAim from "@/components/icons/IconAim.vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import IconDelete from "@/components/icons/IconDelete.vue";
+import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 
 const mappedSuperClass = defineModel<MappedSuperClassWithProperties>({required: true})
 
 const {
-    groupItemNameSet,
+    modelDiagnoseInfo,
     selectedIdSets,
     focusNode,
     remove,
@@ -32,11 +33,15 @@ const handleRemove = () => {
         class="mapped-super-class-item"
         :class="{selected: isSelected}"
     >
-        <NameCommentEditor
-            v-model="mappedSuperClass"
-            :name-set="groupItemNameSet"
-            :font-size="14"
-        />
+        <div>
+            <NameCommentEditor
+                v-model="mappedSuperClass"
+                :font-size="14"
+            />
+            <DiagnoseViewer
+                :messages="modelDiagnoseInfo.mappedSuperClassMap.get(mappedSuperClass.id)?.mappedSuperClass"
+            />
+        </div>
 
         <div class="tool">
             <button @click.stop="handleFocus">

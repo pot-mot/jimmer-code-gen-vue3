@@ -4,11 +4,12 @@ import {computed} from "vue";
 import IconAim from "@/components/icons/IconAim.vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import IconDelete from "@/components/icons/IconDelete.vue";
+import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 
 const enumeration = defineModel<Enumeration>({required: true})
 
 const {
-    groupItemNameSet,
+    modelDiagnoseInfo,
     selectedIdSets,
     focusNode,
     remove,
@@ -32,11 +33,15 @@ const handleRemove = () => {
         class="enumeration-item"
         :class="{selected: isSelected}"
     >
-        <NameCommentEditor
-            v-model="enumeration"
-            :name-set="groupItemNameSet"
-            :font-size="14"
-        />
+        <div>
+            <NameCommentEditor
+                v-model="enumeration"
+                :font-size="14"
+            />
+            <DiagnoseViewer
+                :messages="modelDiagnoseInfo.enumerationMap.get(enumeration.id)?.enumeration"
+            />
+        </div>
 
         <div class="tool">
             <button @click.stop="handleFocus">

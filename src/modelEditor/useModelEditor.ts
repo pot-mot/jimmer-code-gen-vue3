@@ -38,9 +38,10 @@ import {validatePartialModelGraphSubData} from "@/modelEditor/graphData/ModelGra
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import {tableToEntity} from "@/type/script/default/TableEntityConvert/tableToEntity.ts";
 import {contextDataToContext} from "@/type/context/utils/ModelContext.ts";
-import {buildReadonlyNameSet, type ReadonlyNameSet} from "@/utils/name/nameSet.ts";
 import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
-import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/ModelSubFocus.ts";
+import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
+import {useModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
+import {useModelDiagnoseInfo} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -108,7 +109,6 @@ export const useModelEditor = createStore(() => {
         menuMap,
         inheritInfo,
         waitChangeSync,
-        inferCommandInput,
     } = useModelEditorHistory({vueFlow, contextData})
 
     const getContext = () => {
@@ -118,220 +118,9 @@ export const useModelEditor = createStore(() => {
     // TODO
     const typeOptions = ref<CrossType[]>([])
 
-    const groupNameSet = computed(() => {
-        const names: string[] = []
-        for (const it of contextData.value.groupMap.values()) names.push(it.name)
-        return buildReadonlyNameSet(names)
-    })
-    const groupItemNameSet = computed(() => {
-        const names: string[] = []
-        for (const it of contextData.value.entityMap.values()) names.push(it.name)
-        for (const it of contextData.value.mappedSuperClassMap.values()) names.push(it.name)
-        for (const it of contextData.value.embeddableTypeMap.values()) names.push(it.name)
-        for (const it of contextData.value.enumerationMap.values()) names.push(it.name)
-        return buildReadonlyNameSet(names)
-    })
-    const entityNameSet = computed(() => {
-        const names: string[] = []
-        for (const it of contextData.value.entityMap.values()) names.push(it.name)
-        return buildReadonlyNameSet(names)
-    })
-    const mappedSuperClassNameSet = computed(() => {
-        const names: string[] = []
-        for (const it of contextData.value.mappedSuperClassMap.values()) names.push(it.name)
-        return buildReadonlyNameSet(names)
-    })
-    const embeddableTypeNameSet = computed(() => {
-        const names: string[] = []
-        for (const it of contextData.value.embeddableTypeMap.values()) names.push(it.name)
-        return buildReadonlyNameSet(names)
-    })
-    const enumerationNameSet = computed(() => {
-        const names: string[] = []
-        for (const it of contextData.value.enumerationMap.values()) names.push(it.name)
-        return buildReadonlyNameSet(names)
-    })
-    const associationNameSet = computed(() => {
-        const names: string[] = []
-        for (const {association} of contextData.value.associationMap.values()) {
-            if ("name" in association && !association.useNameTemplate) {
-                names.push(association.name)
-            }
-        }
-        return buildReadonlyNameSet(names)
-    })
+    const modelNameSets = useModelNameSets(getContextData(), inheritInfo.value, history)
 
-    const propertyNameSetMap = ref(new Map<string, ReadonlyNameSet>())
-    const enumerationItemNameSetMap = ref(new Map<string, ReadonlyNameSet>)
-
-    const syncEntityPropertyNameSetMap = (id: string, properties: DeepReadonly<EntityProperty[]>) => {
-        const contextData = getContextData()
-        const names = []
-        const inheritItem = inheritInfo.value.concreteInheritInfoMap.get(id)
-        if (inheritItem) {
-            for (const ancestorId of inheritItem.ancestorIdSet) {
-                const ancestor = contextData.mappedSuperClassMap.get(ancestorId)
-                if (ancestor) {
-                    for (const property of ancestor.properties) {
-                        names.push(property.name)
-                        if ("idViewName" in property) {
-                            names.push(property.idViewName)
-                        }
-                    }
-                }
-            }
-        }
-        for (const property of properties) {
-            names.push(property.name)
-            if ("idViewName" in property) {
-                names.push(property.idViewName)
-            }
-        }
-        for (const {association} of contextData.associationMap.values()) {
-            if (association.referencedEntityId === id) {
-                names.push(association.mappedProperty.name)
-            }
-        }
-        propertyNameSetMap.value.set(id, buildReadonlyNameSet(names))
-    }
-    const removeEntityFromPropertyNameSetMap = (id: string) => {
-        propertyNameSetMap.value.delete(id)
-    }
-
-    const syncMappedSuperClassPropertyNameSetMap = (id: string, properties: DeepReadonly<MappedSuperClassProperty[]>) => {
-        const contextData = getContextData()
-        const names = []
-        const inheritItem = inheritInfo.value.abstractInheritInfoMap.get(id)
-        if (inheritItem) {
-            for (const ancestorId of inheritItem.ancestorIdSet) {
-                const ancestor = contextData.mappedSuperClassMap.get(ancestorId)
-                if (ancestor) {
-                    for (const property of ancestor.properties) {
-                        names.push(property.name)
-                        if ("idViewName" in property) {
-                            names.push(property.idViewName)
-                        }
-                    }
-                }
-            }
-            for (const childId of inheritItem.allConcreteChildIdSet) {
-                const child = contextData.entityMap.get(childId)
-                if (child) {
-                    syncEntityPropertyNameSetMap(childId, child.properties)
-                }
-            }
-            for (const childId of inheritItem.allAbstractChildIdSet) {
-                const child = contextData.mappedSuperClassMap.get(childId)
-                if (child) {
-                    syncMappedSuperClassPropertyNameSetMap(childId, child.properties)
-                }
-            }
-        }
-        for (const property of properties) {
-            names.push(property.name)
-            if ("idViewName" in property) {
-                names.push(property.idViewName)
-            }
-        }
-        propertyNameSetMap.value.set(id, buildReadonlyNameSet(names))
-    }
-    const removeMappedSuperClassFromPropertyNameSetMap = (id: string) => {
-        propertyNameSetMap.value.delete(id)
-        const inheritItem = inheritInfo.value.abstractInheritInfoMap.get(id)
-        if (!inheritItem) return
-        for (const childId of inheritItem.allConcreteChildIdSet) {
-            const child = contextData.value.entityMap.get(childId)
-            if (child) {
-                syncEntityPropertyNameSetMap(childId, child.properties)
-            }
-        }
-        for (const childId of inheritItem.allAbstractChildIdSet) {
-            const child = contextData.value.mappedSuperClassMap.get(childId)
-            if (child) {
-                syncMappedSuperClassPropertyNameSetMap(childId, child.properties)
-            }
-        }
-    }
-
-    const syncEmbeddableTypePropertyNameSetMap = (id: string, properties: DeepReadonly<EmbeddableTypeProperty[]>) => {
-        const names = []
-        for (const property of properties) {
-            names.push(property.name)
-        }
-        propertyNameSetMap.value.set(id, buildReadonlyNameSet(names))
-    }
-    const removeEmbeddableTypeFromPropertyNameSetMap = (id: string) => {
-        propertyNameSetMap.value.delete(id)
-    }
-
-    const syncEnumerationItemNameSetMap = (id: string, items: DeepReadonly<EnumerationItem[]>) => {
-        const names = []
-        for (const property of items) {
-            names.push(property.name)
-        }
-        propertyNameSetMap.value.set(id, buildReadonlyNameSet(names))
-    }
-    const removeFromEnumerationItemNameSetMap = (id: string) => {
-        enumerationItemNameSetMap.value.delete(id)
-    }
-
-    for (const [id, entity] of contextData.value.entityMap)
-        syncEntityPropertyNameSetMap(id, entity.properties)
-    for (const [id, mappedSuperClass] of contextData.value.mappedSuperClassMap)
-        syncMappedSuperClassPropertyNameSetMap(id, mappedSuperClass.properties)
-    for (const [id, embeddableType] of contextData.value.embeddableTypeMap)
-        syncEmbeddableTypePropertyNameSetMap(id, embeddableType.properties)
-    for (const [id, enumeration] of contextData.value.enumerationMap)
-        syncEnumerationItemNameSetMap(id, enumeration.items)
-    history.eventBus.on("change", (data) => {
-        if (inferCommandInput(data, "entity:add")) {
-            if (data.type === "apply") syncEntityPropertyNameSetMap(data.options.entity.id, data.options.entity.properties)
-            else if (data.type === "revert") removeEntityFromPropertyNameSetMap(data.revertOptions.id)
-        } else if (inferCommandInput(data, "mapped-super-class:add")) {
-            if (data.type === "apply") syncMappedSuperClassPropertyNameSetMap(data.options.mappedSuperClass.id, data.options.mappedSuperClass.properties)
-            else if (data.type === "revert") removeMappedSuperClassFromPropertyNameSetMap(data.revertOptions.id)
-        } else if (inferCommandInput(data, "embeddable-type:add")) {
-            if (data.type === "apply") syncEmbeddableTypePropertyNameSetMap(data.options.embeddableType.id, data.options.embeddableType.properties)
-            else if (data.type === "revert") removeEmbeddableTypeFromPropertyNameSetMap(data.revertOptions.id)
-        } else if (inferCommandInput(data, "entity:change")) {
-            if (data.type === "apply") syncEntityPropertyNameSetMap(data.options.entity.id, data.options.entity.properties)
-            else if (data.type === "revert") syncEntityPropertyNameSetMap(data.revertOptions.entity.id, data.revertOptions.entity.properties)
-        } else if (inferCommandInput(data, "mapped-super-class:change")) {
-            if (data.type === "apply") syncMappedSuperClassPropertyNameSetMap(data.options.mappedSuperClass.id, data.options.mappedSuperClass.properties)
-            else if (data.type === "revert") syncMappedSuperClassPropertyNameSetMap(data.revertOptions.mappedSuperClass.id, data.revertOptions.mappedSuperClass.properties)
-        } else if (inferCommandInput(data, "embeddable-type:change")) {
-            if (data.type === "apply") syncEmbeddableTypePropertyNameSetMap(data.options.embeddableType.id, data.options.embeddableType.properties)
-            else if (data.type === "revert") syncEmbeddableTypePropertyNameSetMap(data.revertOptions.embeddableType.id, data.revertOptions.embeddableType.properties)
-        } else if (inferCommandInput(data, "association:add")) {
-            if (data.type === "apply") {
-                const referencedEntity = getContextData().entityMap.get(data.options.association.referencedEntityId)
-                if (!referencedEntity) return
-                syncEntityPropertyNameSetMap(referencedEntity.id, referencedEntity.properties)
-            }
-            else if (data.type === "revert") {
-                const referencedEntity = getContextData().entityMap.get(data.options.association.referencedEntityId)
-                if (!referencedEntity) return
-                syncEntityPropertyNameSetMap(referencedEntity.id, referencedEntity.properties)
-            }
-        } else if (inferCommandInput(data, "association:change")) {
-            if (data.type === "apply") {
-                const referencedEntity = getContextData().entityMap.get(data.options.association.referencedEntityId)
-                if (!referencedEntity) return
-                syncEntityPropertyNameSetMap(referencedEntity.id, referencedEntity.properties)
-            }
-            else if (data.type === "revert") {
-                const referencedEntity = getContextData().entityMap.get(data.revertOptions.association.referencedEntityId)
-                if (!referencedEntity) return
-                syncEntityPropertyNameSetMap(referencedEntity.id, referencedEntity.properties)
-            }
-        } else if (inferCommandInput(data, "enumeration:add")) {
-            if (data.type === "apply") syncEnumerationItemNameSetMap(data.options.enumeration.id, data.options.enumeration.items)
-            else if (data.type === "revert") removeFromEnumerationItemNameSetMap(data.revertOptions.id)
-        } else if (inferCommandInput(data, "enumeration:change")) {
-            if (data.type === "apply") syncEnumerationItemNameSetMap(data.options.enumeration.id, data.options.enumeration.items)
-            else if (data.type === "revert") syncEnumerationItemNameSetMap(data.revertOptions.enumeration.id, data.revertOptions.enumeration.items)
-        }
-    })
+    const modelDiagnoseInfo = useModelDiagnoseInfo(getContextData(), inheritInfo.value, modelNameSets, history)
 
     const currentGroupId = ref<string>()
     const toggleCurrentGroup = ({id}: { id: string | undefined }) => {
@@ -422,7 +211,7 @@ export const useModelEditor = createStore(() => {
     }
 
     const addGroup = (group: Group = defaultGroup()) => {
-        group.name = groupNameSet.value.next(group.name)
+        group.name = modelNameSets.groupNameSet.next(group.name)
         history.executeCommand('group:add', {group})
         return group.id
     }
@@ -431,7 +220,7 @@ export const useModelEditor = createStore(() => {
         entity: EntityWithProperties = defaultEntity(groupId),
         position: XYPosition = screenPosition.value
     ) => {
-        entity.name = entityNameSet.value.next(entity.name)
+        entity.name = modelNameSets.entityNameSet.next(entity.name)
         history.executeCommand('entity:add', {entity, position})
         return entity.id
     }
@@ -440,7 +229,7 @@ export const useModelEditor = createStore(() => {
         mappedSuperClass: MappedSuperClassWithProperties = defaultMappedSuperClass(groupId),
         position: XYPosition = screenPosition.value
     ) => {
-        mappedSuperClass.name = mappedSuperClassNameSet.value.next(mappedSuperClass.name)
+        mappedSuperClass.name = modelNameSets.mappedSuperClassNameSet.next(mappedSuperClass.name)
         history.executeCommand('mapped-super-class:add', {mappedSuperClass, position})
         return mappedSuperClass.id
     }
@@ -449,7 +238,7 @@ export const useModelEditor = createStore(() => {
         embeddableType: EmbeddableTypeWithProperties = defaultEmbeddableType(groupId),
         position: XYPosition = screenPosition.value
     ) => {
-        embeddableType.name = embeddableTypeNameSet.value.next(embeddableType.name)
+        embeddableType.name = modelNameSets.embeddableTypeNameSet.next(embeddableType.name)
         history.executeCommand('embeddable-type:add', {embeddableType, position})
         return embeddableType.id
     }
@@ -458,7 +247,7 @@ export const useModelEditor = createStore(() => {
         enumeration: Enumeration = defaultEnumeration(groupId, contextData.value.model.defaultEnumerationStrategy),
         position: XYPosition = screenPosition.value
     ) => {
-        enumeration.name = enumerationNameSet.value.next(enumeration.name)
+        enumeration.name = modelNameSets.enumerationNameSet.next(enumeration.name)
         history.executeCommand('enumeration:add', {enumeration, position})
         return enumeration.id
     }
@@ -470,7 +259,7 @@ export const useModelEditor = createStore(() => {
         }
     ) => {
         if ("name" in association && !association.useNameTemplate) {
-            association.name = associationNameSet.value.next(association.name)
+            association.name = modelNameSets.associationNameSet.next(association.name)
         }
         history.executeCommand('association:add', {association, labelPosition})
         return association.id
@@ -1173,16 +962,9 @@ export const useModelEditor = createStore(() => {
         // 模型
         contextData: readonly(contextData),
         typeOptions: readonly(typeOptions),
+        modelNameSets,
+        modelDiagnoseInfo,
         getContext,
-        groupNameSet,
-        groupItemNameSet,
-        entityNameSet,
-        mappedSuperClassNameSet,
-        enumerationNameSet,
-        embeddableTypeNameSet,
-        associationNameSet,
-        propertyNameSetMap: readonly(propertyNameSetMap),
-        enumerationItemNameSetMap: readonly(enumerationItemNameSetMap),
 
         loadModel,
         loadTables,

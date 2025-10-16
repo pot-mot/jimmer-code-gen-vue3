@@ -5,15 +5,16 @@ import ColorInput from "@/components/color/ColorInput.vue";
 import {presetColor} from "@/type/context/default/modelDefaults.ts";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import IconDelete from "@/components/icons/IconDelete.vue";
+import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 
 const group = defineModel<Group>({required: true})
 
 const {
+    modelDiagnoseInfo,
     selectedIdSets,
     currentGroupId,
     toggleCurrentGroup,
     remove,
-    groupNameSet,
 } = useModelEditor()
 
 const isSelected = computed(() => {
@@ -43,11 +44,16 @@ const handleRemove = () => {
             :preset-colors="presetColor"
             style="margin-top: 0.3rem; margin-right: 0.25rem;"
         />
-        <NameCommentEditor
-            v-model="group"
-            :name-set="groupNameSet"
-            :font-size="14"
-        />
+
+        <div>
+            <NameCommentEditor
+                v-model="group"
+                :font-size="14"
+            />
+            <DiagnoseViewer
+                :messages="modelDiagnoseInfo.groupMap.get(group.id)?.group"
+            />
+        </div>
 
         <div class="tool">
             <button @click.stop="handleRemove">

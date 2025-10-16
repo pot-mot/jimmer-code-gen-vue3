@@ -13,7 +13,8 @@ import {NOT_EXIST_ASSOCIATION_ID} from "@/modelEditor/node/EntityNode.ts";
 import IconAim from "@/components/icons/IconAim.vue";
 import {NodeToolbar} from "@vue-flow/node-toolbar";
 import IconDelete from "@/components/icons/IconDelete.vue";
-import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/ModelSubFocus.ts";
+import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
+import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 
 const props = defineProps<NodeProps<MappedSuperClassNode["data"]>>()
 
@@ -38,7 +39,7 @@ onBeforeUnmount(() => {
     modelSubFocusEventBus.off("focusMappedSuperClassProperty", focusProperty)
 })
 
-const {focusNode, remove, groupItemNameSet, propertyNameSetMap} = useModelEditor()
+const {focusNode, remove, modelDiagnoseInfo} = useModelEditor()
 
 const beforeCopy = (properties: MappedSuperClassProperty[]) => {
     for (const property of properties) {
@@ -53,10 +54,6 @@ const beforePaste = (properties: MappedSuperClassProperty[]) => {
         property.id = createId("Property")
     }
 }
-
-const propertyNameSet = computed(() => {
-    return propertyNameSetMap.value.get(props.data.mappedSuperClass.id)
-})
 
 const nodeElRef = useTemplateRef("nodeElRef")
 const handleIndexMap = ref(new Map<number, string>())
@@ -84,18 +81,22 @@ watch(() => handleIndexMap.value, () => {
         <Handle :id="data.mappedSuperClass.id" type="target" :position="Position.Bottom"/>
 
         <div class="mapped-super-class-header">
-            <NameCommentEditor
-                v-model="data.mappedSuperClass"
-                :name-set="groupItemNameSet"
-                :class="groupTheme"
-                style="padding: 2px;"
-            />
-            <span :class="groupTheme" style="color: var(--text-color);">:</span>
-            <ExtendsIdMultiSelect
-                style="font-size: 16px; line-height: 32px;"
-                v-model="data.mappedSuperClass.extendsIds"
-                type="Abstract"
-                :id="data.mappedSuperClass.id"
+            <div style="display: flex; gap: 0.4rem">
+                <NameCommentEditor
+                    v-model="data.mappedSuperClass"
+                    :class="groupTheme"
+                    style="padding: 2px;"
+                />
+                <span :class="groupTheme" style="color: var(--text-color);">:</span>
+                <ExtendsIdMultiSelect
+                    style="font-size: 16px; line-height: 32px;"
+                    v-model="data.mappedSuperClass.extendsIds"
+                    type="Abstract"
+                    :id="data.mappedSuperClass.id"
+                />
+            </div>
+            <DiagnoseViewer
+                :messages="modelDiagnoseInfo.mappedSuperClassMap.get(id)?.mappedSuperClass"
             />
         </div>
 
@@ -124,7 +125,6 @@ watch(() => handleIndexMap.value, () => {
                         <NameCommentEditor
                             :font-size="14"
                             v-model="data.mappedSuperClass.properties[index]"
-                            :name-set="propertyNameSet"
                         />
                         <MappedSuperClassPropertyTypeSelect
                             class="noDrag noWheel"
@@ -133,6 +133,10 @@ watch(() => handleIndexMap.value, () => {
                             v-model="data.mappedSuperClass.properties[index]"
                         />
                     </div>
+
+                    <DiagnoseViewer
+                        :messages="modelDiagnoseInfo.mappedSuperClassMap.get(id)?.properties.get(item.id)"
+                    />
                 </div>
             </template>
         </EditList>
@@ -173,8 +177,6 @@ watch(() => handleIndexMap.value, () => {
 }
 
 .mapped-super-class-header {
-    display: flex;
-    gap: 0.4rem;
     padding: 0.5rem;
     background-color: v-bind(groupColor);
 }

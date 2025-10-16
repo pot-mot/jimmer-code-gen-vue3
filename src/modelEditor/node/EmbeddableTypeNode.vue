@@ -11,7 +11,8 @@ import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import {NodeToolbar} from "@vue-flow/node-toolbar";
 import IconAim from "@/components/icons/IconAim.vue";
 import IconDelete from "@/components/icons/IconDelete.vue";
-import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/ModelSubFocus.ts";
+import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
+import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 
 const props = defineProps<NodeProps<EmbeddableTypeNode["data"]>>()
 
@@ -36,17 +37,13 @@ onBeforeUnmount(() => {
     modelSubFocusEventBus.off("focusEmbeddableTypeProperty", focusProperty)
 })
 
-const {focusNode, remove, groupItemNameSet, propertyNameSetMap} = useModelEditor()
+const {focusNode, remove, modelDiagnoseInfo} = useModelEditor()
 
 const beforePaste = (properties: Property[]) => {
     for (const property of properties) {
         property.id = createId("Property")
     }
 }
-
-const propertyNameSet = computed(() => {
-    return propertyNameSetMap.value.get(props.data.embeddableType.id)
-})
 </script>
 
 <template>
@@ -54,9 +51,11 @@ const propertyNameSet = computed(() => {
         <div class="embeddable-type-header">
             <NameCommentEditor
                 v-model="data.embeddableType"
-                :name-set="groupItemNameSet"
                 :class="groupTheme"
                 style="padding: 2px;"
+            />
+            <DiagnoseViewer
+                :messages="modelDiagnoseInfo.embeddableTypeMap.get(id)?.embeddableType"
             />
         </div>
 
@@ -69,7 +68,7 @@ const propertyNameSet = computed(() => {
             :before-paste="beforePaste"
             @keydown.stop
         >
-            <template #line="{index}">
+            <template #line="{item, index}">
                 <div class="embeddable-type-property">
                     <div
                         class="embeddable-type-property-view"
@@ -78,7 +77,6 @@ const propertyNameSet = computed(() => {
                         <NameCommentEditor
                             :font-size="14"
                             v-model="data.embeddableType.properties[index]"
-                            :name-set="propertyNameSet"
                         />
                         <EmbeddableTypePropertyTypeSelect
                             class="noDrag noWheel"
@@ -86,6 +84,9 @@ const propertyNameSet = computed(() => {
                             v-model="data.embeddableType.properties[index]"
                         />
                     </div>
+                    <DiagnoseViewer
+                        :messages="modelDiagnoseInfo.embeddableTypeMap.get(id)?.properties.get(item.id)"
+                    />
                 </div>
             </template>
         </EditList>
@@ -126,8 +127,6 @@ const propertyNameSet = computed(() => {
 }
 
 .embeddable-type-header {
-    display: flex;
-    gap: 0.4rem;
     padding: 0.5rem;
     background-color: v-bind(groupColor);
 }

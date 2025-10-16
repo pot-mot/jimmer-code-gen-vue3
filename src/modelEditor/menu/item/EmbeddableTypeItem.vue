@@ -4,13 +4,14 @@ import {computed} from "vue";
 import IconAim from "@/components/icons/IconAim.vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import IconDelete from "@/components/icons/IconDelete.vue";
+import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 
 const embeddableType = defineModel<EmbeddableTypeWithProperties>({
     required: true
 })
 
 const {
-    groupItemNameSet,
+    modelDiagnoseInfo,
     selectedIdSets,
     focusNode,
     remove,
@@ -34,11 +35,15 @@ const handleRemove = () => {
         class="embeddable-type-item"
         :class="{selected: isSelected}"
     >
-        <NameCommentEditor
-            v-model="embeddableType"
-            :name-set="groupItemNameSet"
-            :font-size="14"
-        />
+        <div>
+            <NameCommentEditor
+                v-model="embeddableType"
+                :font-size="14"
+            />
+            <DiagnoseViewer
+                :messages="modelDiagnoseInfo.enumerationMap.get(embeddableType.id)?.enumeration"
+            />
+        </div>
 
         <div class="tool">
             <button @click.stop="handleFocus">

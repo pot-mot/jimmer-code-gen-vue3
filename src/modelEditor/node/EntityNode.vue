@@ -12,7 +12,8 @@ import {validateEntityProperty} from "@/type/__generated/jsonSchema/items/Entity
 import IconAim from "@/components/icons/IconAim.vue";
 import {NodeToolbar} from "@vue-flow/node-toolbar";
 import IconDelete from "@/components/icons/IconDelete.vue";
-import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/ModelSubFocus.ts";
+import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
+import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 
 const props = defineProps<NodeProps<EntityNode["data"]>>()
 
@@ -37,7 +38,7 @@ onBeforeUnmount(() => {
     modelSubFocusEventBus.off("focusEntityProperty", focusProperty)
 })
 
-const {focusNode, remove, groupItemNameSet, propertyNameSetMap} = useModelEditor()
+const {focusNode, remove, modelDiagnoseInfo} = useModelEditor()
 
 const beforeCopy = (properties: EntityProperty[]) => {
     for (const property of properties) {
@@ -52,10 +53,6 @@ const beforePaste = (properties: EntityProperty[]) => {
         property.id = createId("Property")
     }
 }
-
-const propertyNameSet = computed(() => {
-    return propertyNameSetMap.value.get(props.data.entity.id)
-})
 
 const nodeElRef = useTemplateRef("nodeElRef")
 const handleIndexMap = ref(new Map<number, string>())
@@ -83,18 +80,22 @@ watch(() => handleIndexMap.value, () => {
         <Handle :id="data.entity.id" type="target" :position="Position.Bottom"/>
 
         <div class="entity-header">
-            <NameCommentEditor
-                v-model="data.entity"
-                :name-set="groupItemNameSet"
-                :class="groupTheme"
-                style="padding: 2px;"
-            />
-            <span :class="groupTheme" style="color: var(--text-color);">:</span>
-            <ExtendsIdMultiSelect
-                style="font-size: 16px; line-height: 32px;"
-                v-model="data.entity.extendsIds"
-                type="Concrete"
-                :id="data.entity.id"
+            <div style="display: flex; gap: 0.4rem;">
+                <NameCommentEditor
+                    v-model="data.entity"
+                    :class="groupTheme"
+                    style="padding: 2px;"
+                />
+                <span :class="groupTheme" style="color: var(--text-color);">:</span>
+                <ExtendsIdMultiSelect
+                    style="font-size: 16px; line-height: 32px;"
+                    v-model="data.entity.extendsIds"
+                    type="Concrete"
+                    :id="data.entity.id"
+                />
+            </div>
+            <DiagnoseViewer
+                :messages="modelDiagnoseInfo.entityMap.get(id)?.entity"
             />
         </div>
 
@@ -123,7 +124,6 @@ watch(() => handleIndexMap.value, () => {
                         <NameCommentEditor
                             :font-size="14"
                             v-model="data.entity.properties[index]"
-                            :name-set="propertyNameSet"
                         />
                         <EntityPropertyTypeSelect
                             class="noDrag noWheel"
@@ -132,6 +132,10 @@ watch(() => handleIndexMap.value, () => {
                             v-model="data.entity.properties[index]"
                         />
                     </div>
+
+                    <DiagnoseViewer
+                        :messages="modelDiagnoseInfo.entityMap.get(id)?.properties.get(item.id)"
+                    />
                 </div>
             </template>
         </EditList>
@@ -172,8 +176,6 @@ watch(() => handleIndexMap.value, () => {
 }
 
 .entity-header {
-    display: flex;
-    gap: 0.4rem;
     padding: 0.5rem;
     background-color: v-bind(groupColor);
 }

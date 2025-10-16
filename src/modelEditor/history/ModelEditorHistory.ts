@@ -102,6 +102,13 @@ export type ModelEditorHistoryCommands = {
     "remove": CommandDefinition<DeepReadonly<ModelSubIds>, DeepReadonly<ModelGraphSubData>>
 }
 
+export const inferCommandInput = <Key extends keyof ModelEditorHistoryCommands>(
+    data: CommandChangeInput<ModelEditorHistoryCommands>,
+    key: Key
+): data is CommandChangeInput<ModelEditorHistoryCommands, Key> => {
+    return data.command.key === key
+}
+
 export const useModelEditorHistory = (
     modelEditorState: {
         contextData: Ref<ModelContextData>
@@ -1316,12 +1323,6 @@ export const useModelEditorHistory = (
         menuMap: shallowReadonly(menuMap),
         inheritInfo: readonly(inheritInfo),
         waitChangeSync,
-        inferCommandInput: <Key extends keyof ModelEditorHistoryCommands>(
-            data: CommandChangeInput<ModelEditorHistoryCommands>,
-            key: Key
-        ): data is CommandChangeInput<ModelEditorHistoryCommands, Key> => {
-            return data.command.key === key
-        },
         noEffect: {
             group: {
                 add: addGroup,
