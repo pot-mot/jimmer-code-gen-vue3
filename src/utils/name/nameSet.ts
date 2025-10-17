@@ -1,50 +1,11 @@
-export type ReadonlyNameSet = {
+export type NameSet = {
     countMap: DeepReadonly<Map<string, number>>
-    has(name: string): boolean,
-    count(name: string): number,
-    next(name: string): string,
-}
-
-export type NameSet = ReadonlyNameSet & {
-    countMap: DeepReadonly<Map<string, number>>
-    has(name: string): boolean,
-    add(name: string): void,
-    count(name: string): number,
-    next(name: string): string,
-}
-
-export const buildReadonlyNameSet = (
-    names: DeepReadonly<Iterable<string | null | undefined>>
-): ReadonlyNameSet => {
-    const countMap = new Map<string, number>()
-    for (const name of names) {
-        if (name !== null && name !== undefined) {
-            const count = countMap.get(name) ?? 0
-            countMap.set(name, count + 1)
-        }
-    }
-    return {
-        countMap,
-        has(name: string) {
-            return countMap.has(name)
-        },
-        count(name: string) {
-            return countMap.get(name) ?? 0
-        },
-        next(name: string): string {
-            let count = countMap.get(name)
-            if (count === undefined) {
-                return name
-            } else {
-                let currentName = `${name}(${count})`
-                while (countMap.has(currentName)) {
-                    count++
-                    currentName = `${name}(${count})`
-                }
-                return currentName
-            }
-        },
-    }
+    has(name: string): boolean
+    add(name: string): void
+    remove(name: string): void
+    count(name: string): number
+    next(name: string): string
+    nextThenAdd(name: string): string
 }
 
 export const buildNameSet = (
@@ -62,9 +23,21 @@ export const buildNameSet = (
     }
     return {
         countMap,
-        add,
         has(name: string) {
             return countMap.has(name)
+        },
+        add,
+        remove(name: string) {
+            if (countMap.has(name)) {
+                const count = countMap.get(name)
+                if (count !== undefined) {
+                    if (count <= 1) {
+                        countMap.delete(name)
+                    } else {
+                        countMap.set(name, count - 1)
+                    }
+                }
+            }
         },
         count(name: string) {
             return countMap.get(name) ?? 0
@@ -79,9 +52,13 @@ export const buildNameSet = (
                     count++
                     currentName = `${name}(${count})`
                 }
-                add(currentName)
                 return currentName
             }
         },
+        nextThenAdd(name: string): string {
+            const nextName = this.next(name)
+            add(nextName)
+            return nextName
+        }
     }
 }
