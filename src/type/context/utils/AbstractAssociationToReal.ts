@@ -41,7 +41,7 @@ export const oneToOneAbstractToReal = (
         nullable: abstractSourceProperty.nullable,
         referencedEntityId: abstractSourceProperty.referencedEntityId,
         onDissociateAction: abstractSourceProperty.onDissociateAction,
-        joinInfo: cloneDeepReadonlyRaw<SingleColumnJoinInfo | MultiColumnJoinInfo | SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo>(abstractSourceProperty.joinInfo), // TODO sync JoinInfo columnName
+        joinInfo: cloneDeepReadonlyRaw<JoinInfo>(abstractSourceProperty.joinInfo), // TODO sync JoinInfo columnName
         autoGenerateJoinInfo: abstractSourceProperty.autoGenerateJoinInfo,
     }
     const mappedProperty: OneToOneMappedProperty = {
@@ -80,6 +80,7 @@ export const oneToOneAbstractToReal = (
         mappedProperty,
     }
 }
+
 export const oneToManyAbstractToReal = (
     abstractPropertyInfo: DeepReadonly<OneToManyAbstractMappedPropertyInfo>,
     inheritSourceEntity: DeepReadonly<{id: string, name: string, comment: string}>,
@@ -113,7 +114,7 @@ export const oneToManyAbstractToReal = (
         nullable: abstractSourceProperty.nullable,
         referencedEntityId: abstractSourceProperty.referencedEntityId,
         onDissociateAction: abstractSourceProperty.onDissociateAction,
-        joinInfo: cloneDeepReadonlyRaw<SingleColumnJoinInfo | MultiColumnJoinInfo | SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo>(abstractSourceProperty.joinInfo), // TODO sync JoinInfo columnName
+        joinInfo: cloneDeepReadonlyRaw<JoinInfo>(abstractSourceProperty.joinInfo), // TODO sync JoinInfo columnName
         autoGenerateJoinInfo: abstractSourceProperty.autoGenerateJoinInfo,
     }
     const mappedProperty: OneToManyProperty = {

@@ -47,16 +47,17 @@ const associationNameComment = computed({
 
 const mappedPropertyEdit = ref(false)
 
-const mappedPropertyView = computed(() => {
+const mappedPropertyNameComment = computed(() => {
+    const mappedProperty = props.data.edgedAssociation.association.mappedProperty
     if (!referencedAbstractEntity.value) {
         return {
-            name: props.data.edgedAssociation.association.mappedProperty.name.replace(INHERIT_ENTITY, "[NOT EXISTED]"),
-            comment: props.data.edgedAssociation.association.mappedProperty.comment.replace(INHERIT_ENTITY, "[NOT EXISTED]"),
+            name: mappedProperty.name.replace(INHERIT_ENTITY, "[NOT EXISTED]"),
+            comment: mappedProperty.comment.replace(INHERIT_ENTITY, "[NOT EXISTED]"),
         }
     } else {
         return {
-            name: props.data.edgedAssociation.association.mappedProperty.name.replace(INHERIT_ENTITY, `$${referencedAbstractEntity.value.name}$`),
-            comment: props.data.edgedAssociation.association.mappedProperty.comment.replace(INHERIT_ENTITY, `$${referencedAbstractEntity.value.comment}$`),
+            name: mappedProperty.name.replace(INHERIT_ENTITY, `$${referencedAbstractEntity.value.name}$`),
+            comment: mappedProperty.comment.replace(INHERIT_ENTITY, `$${referencedAbstractEntity.value.comment}$`),
         }
     }
 })
@@ -110,7 +111,7 @@ const mappedPropertyView = computed(() => {
                         <span>.</span>
                         <NameCommentViewer
                             v-if="!mappedPropertyEdit"
-                            :data="mappedPropertyView"
+                            :data="mappedPropertyNameComment"
                             @click.stop="mappedPropertyEdit = true"
                         />
                         <NameCommentEditor

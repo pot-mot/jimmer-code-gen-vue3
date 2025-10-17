@@ -42,6 +42,8 @@ type SingleColumnMidTableJoinInfo = {
     type: "SingleColumnMidTable"
     sourceColumnName: string
     targetColumnName: string
+    sourceForeignKeyType: ForeignKeyType
+    targetForeignKeyType: ForeignKeyType
 } & MidTableInfo
 
 type MultiColumnMidTableJoinInfo = {
@@ -49,3 +51,17 @@ type MultiColumnMidTableJoinInfo = {
     sourceJoinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
     targetJoinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
 } & MidTableInfo
+
+type FkJoinInfo =
+    | SingleColumnJoinInfo
+    | MultiColumnJoinInfo
+
+type MidTableJoinInfo =
+    | SingleColumnMidTableJoinInfo
+    | MultiColumnMidTableJoinInfo
+
+type JoinInfo =
+    | SingleColumnJoinInfo
+    | MultiColumnJoinInfo
+    | SingleColumnMidTableJoinInfo
+    | MultiColumnMidTableJoinInfo

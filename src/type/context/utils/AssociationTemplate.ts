@@ -8,10 +8,6 @@ export const REFERENCED_PROPERTY = "[[REFERENCED_PROPERTY]]"
 export const ASSOCIATION_FK_NAME_TEMPLATE = `fk_${SOURCE_ENTITY}_${SOURCE_PROPERTY}`
 export const ASSOCIATION_FK_COMMENT_TEMPLATE = `${SOURCE_ENTITY}${SOURCE_PROPERTY}`
 
-export const checkFkTemplate = (template: string) => {
-    return template.includes(SOURCE_ENTITY) || template.includes(SOURCE_PROPERTY)
-}
-
 export const translateFkNameTemplate = (
     template: string,
     sourceEntity: {name: string},

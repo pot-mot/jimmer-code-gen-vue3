@@ -16,6 +16,7 @@ import EntityPropertyJsonSchema from "./items/EntityProperty.ts";
 import EnumerationJsonSchema from "./items/Enumeration.ts";
 import EnumerationItemJsonSchema from "./items/EnumerationItem.ts";
 import EnumerationStrategyJsonSchema from "./items/EnumerationStrategy.ts";
+import FkJoinInfoJsonSchema from "./items/FkJoinInfo.ts";
 import ForeignKeyJsonSchema from "./items/ForeignKey.ts";
 import ForeignKeyTypeJsonSchema from "./items/ForeignKeyType.ts";
 import GetterFormulaPropertyJsonSchema from "./items/GetterFormulaProperty.ts";
@@ -23,6 +24,7 @@ import GroupJsonSchema from "./items/Group.ts";
 import IdCommonPropertyJsonSchema from "./items/IdCommonProperty.ts";
 import IdEmbeddablePropertyJsonSchema from "./items/IdEmbeddableProperty.ts";
 import IndexJsonSchema from "./items/Index.ts";
+import JoinInfoJsonSchema from "./items/JoinInfo.ts";
 import JvmLanguageJsonSchema from "./items/JvmLanguage.ts";
 import JvmToSqlMappingRuleJsonSchema from "./items/JvmToSqlMappingRule.ts";
 import JvmToTsMappingRuleJsonSchema from "./items/JvmToTsMappingRule.ts";
@@ -41,6 +43,7 @@ import ManyToOnePropertyJsonSchema from "./items/ManyToOneProperty.ts";
 import MappedSuperClassJsonSchema from "./items/MappedSuperClass.ts";
 import MappedSuperClassPropertyJsonSchema from "./items/MappedSuperClassProperty.ts";
 import MidTableInfoJsonSchema from "./items/MidTableInfo.ts";
+import MidTableJoinInfoJsonSchema from "./items/MidTableJoinInfo.ts";
 import ModelJsonSchema from "./items/Model.ts";
 import MultiColumnJoinInfoJsonSchema from "./items/MultiColumnJoinInfo.ts";
 import MultiColumnMidTableJoinInfoJsonSchema from "./items/MultiColumnMidTableJoinInfo.ts";
@@ -90,6 +93,7 @@ export const jsonSchemas = Object.freeze({
     Enumeration: EnumerationJsonSchema,
     EnumerationItem: EnumerationItemJsonSchema,
     EnumerationStrategy: EnumerationStrategyJsonSchema,
+    FkJoinInfo: FkJoinInfoJsonSchema,
     ForeignKey: ForeignKeyJsonSchema,
     ForeignKeyType: ForeignKeyTypeJsonSchema,
     GetterFormulaProperty: GetterFormulaPropertyJsonSchema,
@@ -97,6 +101,7 @@ export const jsonSchemas = Object.freeze({
     IdCommonProperty: IdCommonPropertyJsonSchema,
     IdEmbeddableProperty: IdEmbeddablePropertyJsonSchema,
     Index: IndexJsonSchema,
+    JoinInfo: JoinInfoJsonSchema,
     JvmLanguage: JvmLanguageJsonSchema,
     JvmToSqlMappingRule: JvmToSqlMappingRuleJsonSchema,
     JvmToTsMappingRule: JvmToTsMappingRuleJsonSchema,
@@ -115,6 +120,7 @@ export const jsonSchemas = Object.freeze({
     MappedSuperClass: MappedSuperClassJsonSchema,
     MappedSuperClassProperty: MappedSuperClassPropertyJsonSchema,
     MidTableInfo: MidTableInfoJsonSchema,
+    MidTableJoinInfo: MidTableJoinInfoJsonSchema,
     Model: ModelJsonSchema,
     MultiColumnJoinInfo: MultiColumnJoinInfoJsonSchema,
     MultiColumnMidTableJoinInfo: MultiColumnMidTableJoinInfoJsonSchema,

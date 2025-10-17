@@ -15,73 +15,7 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                     "const": false
                 },
                 "joinInfo": {
-                    "anyOf": [
-                        {
-                            "type": "object",
-                            "properties": {
-                                "type": {
-                                    "type": "string",
-                                    "const": "SingleColumn"
-                                },
-                                "columnName": {
-                                    "type": "string"
-                                },
-                                "foreignKeyType": {
-                                    "$ref": "#/definitions/ForeignKeyType"
-                                }
-                            },
-                            "required": [
-                                "columnName",
-                                "foreignKeyType",
-                                "type"
-                            ]
-                        },
-                        {
-                            "type": "object",
-                            "properties": {
-                                "type": {
-                                    "type": "string",
-                                    "const": "MultiColumn"
-                                },
-                                "embeddableTypeId": {
-                                    "type": "string"
-                                },
-                                "columnRefs": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "columnName": {
-                                                "type": "string"
-                                            },
-                                            "referencedColumnName": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "required": [
-                                            "columnName",
-                                            "referencedColumnName"
-                                        ]
-                                    }
-                                },
-                                "foreignKeyType": {
-                                    "$ref": "#/definitions/ForeignKeyType"
-                                }
-                            },
-                            "required": [
-                                "columnRefs",
-                                "embeddableTypeId",
-                                "foreignKeyType",
-                                "type"
-                            ]
-                        },
-                        {
-                            "$ref": "#/definitions/SingleColumnMidTableJoinInfo"
-                        },
-                        {
-                            "$ref": "#/definitions/MultiColumnMidTableJoinInfo"
-                        }
-                    ]
+                    "$ref": "#/definitions/JoinInfo"
                 },
                 "autoGenerateJoinInfo": {
                     "type": "boolean"
@@ -160,6 +94,75 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
         }
     ],
     "definitions": {
+        "JoinInfo": {
+            "anyOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "const": "SingleColumn"
+                        },
+                        "columnName": {
+                            "type": "string"
+                        },
+                        "foreignKeyType": {
+                            "$ref": "#/definitions/ForeignKeyType"
+                        }
+                    },
+                    "required": [
+                        "columnName",
+                        "foreignKeyType",
+                        "type"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "const": "MultiColumn"
+                        },
+                        "embeddableTypeId": {
+                            "type": "string"
+                        },
+                        "columnRefs": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "columnName": {
+                                        "type": "string"
+                                    },
+                                    "referencedColumnName": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "columnName",
+                                    "referencedColumnName"
+                                ]
+                            }
+                        },
+                        "foreignKeyType": {
+                            "$ref": "#/definitions/ForeignKeyType"
+                        }
+                    },
+                    "required": [
+                        "columnRefs",
+                        "embeddableTypeId",
+                        "foreignKeyType",
+                        "type"
+                    ]
+                },
+                {
+                    "$ref": "#/definitions/SingleColumnMidTableJoinInfo"
+                },
+                {
+                    "$ref": "#/definitions/MultiColumnMidTableJoinInfo"
+                }
+            ]
+        },
         "ForeignKeyType": {
             "enum": [
                 "FAKE",

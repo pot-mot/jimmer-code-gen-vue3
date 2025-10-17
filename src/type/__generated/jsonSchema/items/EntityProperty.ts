@@ -1131,73 +1131,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                             "const": false
                         },
                         "joinInfo": {
-                            "anyOf": [
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "type": {
-                                            "type": "string",
-                                            "const": "SingleColumn"
-                                        },
-                                        "columnName": {
-                                            "type": "string"
-                                        },
-                                        "foreignKeyType": {
-                                            "$ref": "#/definitions/ForeignKeyType"
-                                        }
-                                    },
-                                    "required": [
-                                        "columnName",
-                                        "foreignKeyType",
-                                        "type"
-                                    ]
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "type": {
-                                            "type": "string",
-                                            "const": "MultiColumn"
-                                        },
-                                        "embeddableTypeId": {
-                                            "type": "string"
-                                        },
-                                        "columnRefs": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "columnName": {
-                                                        "type": "string"
-                                                    },
-                                                    "referencedColumnName": {
-                                                        "type": "string"
-                                                    }
-                                                },
-                                                "required": [
-                                                    "columnName",
-                                                    "referencedColumnName"
-                                                ]
-                                            }
-                                        },
-                                        "foreignKeyType": {
-                                            "$ref": "#/definitions/ForeignKeyType"
-                                        }
-                                    },
-                                    "required": [
-                                        "columnRefs",
-                                        "embeddableTypeId",
-                                        "foreignKeyType",
-                                        "type"
-                                    ]
-                                },
-                                {
-                                    "$ref": "#/definitions/SingleColumnMidTableJoinInfo"
-                                },
-                                {
-                                    "$ref": "#/definitions/MultiColumnMidTableJoinInfo"
-                                }
-                            ]
+                            "$ref": "#/definitions/JoinInfo"
                         },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
@@ -1273,6 +1207,75 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         "idViewName",
                         "referencedEntityId"
                     ]
+                }
+            ]
+        },
+        "JoinInfo": {
+            "anyOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "const": "SingleColumn"
+                        },
+                        "columnName": {
+                            "type": "string"
+                        },
+                        "foreignKeyType": {
+                            "$ref": "#/definitions/ForeignKeyType"
+                        }
+                    },
+                    "required": [
+                        "columnName",
+                        "foreignKeyType",
+                        "type"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "const": "MultiColumn"
+                        },
+                        "embeddableTypeId": {
+                            "type": "string"
+                        },
+                        "columnRefs": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "columnName": {
+                                        "type": "string"
+                                    },
+                                    "referencedColumnName": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "columnName",
+                                    "referencedColumnName"
+                                ]
+                            }
+                        },
+                        "foreignKeyType": {
+                            "$ref": "#/definitions/ForeignKeyType"
+                        }
+                    },
+                    "required": [
+                        "columnRefs",
+                        "embeddableTypeId",
+                        "foreignKeyType",
+                        "type"
+                    ]
+                },
+                {
+                    "$ref": "#/definitions/SingleColumnMidTableJoinInfo"
+                },
+                {
+                    "$ref": "#/definitions/MultiColumnMidTableJoinInfo"
                 }
             ]
         },
@@ -1655,73 +1658,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                             "const": false
                         },
                         "joinInfo": {
-                            "anyOf": [
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "type": {
-                                            "type": "string",
-                                            "const": "SingleColumn"
-                                        },
-                                        "columnName": {
-                                            "type": "string"
-                                        },
-                                        "foreignKeyType": {
-                                            "$ref": "#/definitions/ForeignKeyType"
-                                        }
-                                    },
-                                    "required": [
-                                        "columnName",
-                                        "foreignKeyType",
-                                        "type"
-                                    ]
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "type": {
-                                            "type": "string",
-                                            "const": "MultiColumn"
-                                        },
-                                        "embeddableTypeId": {
-                                            "type": "string"
-                                        },
-                                        "columnRefs": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "columnName": {
-                                                        "type": "string"
-                                                    },
-                                                    "referencedColumnName": {
-                                                        "type": "string"
-                                                    }
-                                                },
-                                                "required": [
-                                                    "columnName",
-                                                    "referencedColumnName"
-                                                ]
-                                            }
-                                        },
-                                        "foreignKeyType": {
-                                            "$ref": "#/definitions/ForeignKeyType"
-                                        }
-                                    },
-                                    "required": [
-                                        "columnRefs",
-                                        "embeddableTypeId",
-                                        "foreignKeyType",
-                                        "type"
-                                    ]
-                                },
-                                {
-                                    "$ref": "#/definitions/SingleColumnMidTableJoinInfo"
-                                },
-                                {
-                                    "$ref": "#/definitions/MultiColumnMidTableJoinInfo"
-                                }
-                            ]
+                            "$ref": "#/definitions/JoinInfo"
                         },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
@@ -1814,14 +1751,7 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                             "const": true
                         },
                         "joinInfo": {
-                            "anyOf": [
-                                {
-                                    "$ref": "#/definitions/SingleColumnMidTableJoinInfo"
-                                },
-                                {
-                                    "$ref": "#/definitions/MultiColumnMidTableJoinInfo"
-                                }
-                            ]
+                            "$ref": "#/definitions/MidTableJoinInfo"
                         },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
@@ -1864,6 +1794,16 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         "idViewName",
                         "referencedEntityId"
                     ]
+                }
+            ]
+        },
+        "MidTableJoinInfo": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/SingleColumnMidTableJoinInfo"
+                },
+                {
+                    "$ref": "#/definitions/MultiColumnMidTableJoinInfo"
                 }
             ]
         },

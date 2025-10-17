@@ -101,7 +101,7 @@ type OnDissociationAction = "NONE" | "LAX" | "CHECK" | "SET_NULL" | "DELETE"
 type OneToOneSourceProperty = {
     category: "OneToOne_Source"
     typeIsList: false
-    joinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo | SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
+    joinInfo: JoinInfo
     autoGenerateJoinInfo: boolean
     onDissociateAction: OnDissociationAction
 } & BaseProperty & BaseAssociationProperty
@@ -121,7 +121,7 @@ type OneToOneMappedAbstractProperty = Omit<OneToOneMappedProperty, 'category' | 
 type ManyToOneProperty = {
     category: "ManyToOne"
     typeIsList: false
-    joinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo | SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
+    joinInfo: JoinInfo
     autoGenerateJoinInfo: boolean
     onDissociateAction: OnDissociationAction
 } & BaseProperty & BaseAssociationProperty
@@ -141,7 +141,7 @@ type OneToManyAbstractProperty = Omit<OneToManyProperty, 'category' | 'reference
 type ManyToManySourceProperty = {
     category: "ManyToMany_Source"
     typeIsList: true
-    joinInfo: SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
+    joinInfo: MidTableJoinInfo
     autoGenerateJoinInfo: boolean
     nullable: false
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty

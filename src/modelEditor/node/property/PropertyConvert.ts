@@ -1,7 +1,6 @@
 import {nameTool} from "@/type/context/utils/NameTool.ts";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {firstCaseToLower} from "@/utils/name/firstCase.ts";
-import {GENERATED_JOIN_INFO} from "@/modelEditor/property/PropertyJoinInfoGenerate.ts";
 
 const toBaseProperty = (property: DeepReadonly<BaseProperty>): BaseProperty => {
     return {
@@ -126,8 +125,8 @@ export const toManyToOneProperty = (
         autoSyncIdViewName: true,
         joinInfo: {
             type: "SingleColumn",
-            columnName: GENERATED_JOIN_INFO,
-            foreignKeyType
+            columnName: "",
+            foreignKeyType,
         },
         autoGenerateJoinInfo: true,
     }

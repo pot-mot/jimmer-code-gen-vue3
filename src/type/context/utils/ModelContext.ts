@@ -17,7 +17,7 @@ import {
     oneToManyAbstractToReal,
     oneToOneAbstractToReal
 } from "@/type/context/utils/AbstractAssociationToReal.ts";
-import {generatePropertyFkJoinInfo, generatePropertyJoinInfo} from "@/modelEditor/property/PropertyJoinInfoGenerate.ts";
+import {generateFkJoinInfo, generateJoinInfo} from "@/modelEditor/property/PropertyJoinInfoGenerate.ts";
 import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 
 export const contextDataToContext = (
@@ -25,7 +25,6 @@ export const contextDataToContext = (
     inheritInfo: DeepReadonly<InheritInfo>,
 ): DeepReadonly<ModelContext> => {
     const contextData = cloneDeepReadonlyRaw<ModelContextData>(readonlyContextData)
-    const model = contextData.model
 
     const associationIdOnlyMap = new Map<string, AssociationIdOnly>()
     for (const [id, {association}] of contextData.associationMap) {
@@ -39,7 +38,7 @@ export const contextDataToContext = (
                 const edgedAssociation = contextData.associationMap.get(property.associationId)
                 if (edgedAssociation === undefined) throw new Error(`[${id}] is not existed`)
                 const association = edgedAssociation.association
-                generatePropertyJoinInfo(property, association.foreignKeyType, entity, contextData.entityMap, contextData.mappedSuperClassMap, contextData.embeddableTypeMap, model.databaseNameStrategy)
+                property.joinInfo = generateJoinInfo(property, association.foreignKeyType, entity, contextData)
             }
         }
         const categorizedProperties = categorizeEntityProperties(entity.properties, associationIdOnlyMap)
@@ -57,7 +56,7 @@ export const contextDataToContext = (
                 const edgedAssociation = contextData.associationMap.get(property.associationId)
                 if (edgedAssociation === undefined) throw new Error(`[${id}] is not existed`)
                 const association = edgedAssociation.association
-                generatePropertyFkJoinInfo(property, association.foreignKeyType, contextData.entityMap, contextData.mappedSuperClassMap, contextData.embeddableTypeMap, model.databaseNameStrategy)
+                property.joinInfo = generateFkJoinInfo(property, association.foreignKeyType, contextData)
             }
         }
         const categorizedProperties = categorizeAbstractCategorizedProperties(mappedSuperClass.properties, associationIdOnlyMap)
@@ -200,13 +199,25 @@ export const contextDataToContext = (
                         sourceProperty: abstractSourceProperty,
                         mappedProperty: abstractMappedProperty,
                     }, inheritEntity)
+
                     associationIdOnlyMap.set(realAssociation.id, realAssociation)
+
+                    for (let i = 0; i < inheritEntity.properties.length; i++) {
+                        if (inheritEntity.properties[i]?.id === abstractSourceProperty.id) {
+                            inheritEntity.properties[i] = realSourceProperty
+                        }
+                    }
                     for (let i = 0; i < inheritEntity.allProperties.length; i++) {
                         if (inheritEntity.allProperties[i]?.id === abstractSourceProperty.id) {
                             inheritEntity.allProperties[i] = realSourceProperty
+                            inheritEntity.oneToOneSourcePropertyMap.set(realSourceProperty.id, {
+                                ...realSourceProperty,
+                                association: realAssociation
+                            })
                             break
                         }
                     }
+
                     if (realAssociation.withMappedProperty) {
                         referencedEntity.properties.push(realMappedProperty)
                         referencedEntity.allProperties.push(realMappedProperty)
@@ -231,13 +242,25 @@ export const contextDataToContext = (
                         sourceProperty: abstractSourceProperty,
                         mappedProperty: abstractMappedProperty,
                     }, inheritEntity)
+
                     associationIdOnlyMap.set(realAssociation.id, realAssociation)
+
+                    for (let i = 0; i < inheritEntity.properties.length; i++) {
+                        if (inheritEntity.properties[i]?.id === abstractSourceProperty.id) {
+                            inheritEntity.properties[i] = realSourceProperty
+                        }
+                    }
                     for (let i = 0; i < inheritEntity.allProperties.length; i++) {
                         if (inheritEntity.allProperties[i]?.id === abstractSourceProperty.id) {
                             inheritEntity.allProperties[i] = realSourceProperty
+                            inheritEntity.manyToOnePropertyMap.set(realSourceProperty.id, {
+                                ...realSourceProperty,
+                                association: realAssociation
+                            })
                             break
                         }
                     }
+
                     if (realAssociation.withMappedProperty) {
                         referencedEntity.properties.push(realMappedProperty)
                         referencedEntity.allProperties.push(realMappedProperty)
@@ -280,7 +303,7 @@ export const contextDataToContext = (
     }
 
     return {
-        model,
+        model: contextData.model,
         groupMap: groupWithInheritInfoMap,
         entityMap: entityWithInheritInfoMap,
         mappedSuperClassMap: mappedSuperClassWithInheritInfoMap,
@@ -290,6 +313,6 @@ export const contextDataToContext = (
 
         createId,
         nameTool,
-        typeTool: buildTypeTool(model.jvmLanguage, [], [], []) // TODO
+        typeTool: buildTypeTool(contextData.model.jvmLanguage, [], [], []) // TODO
     }
 }

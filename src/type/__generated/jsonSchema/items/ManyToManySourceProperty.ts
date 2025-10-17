@@ -15,14 +15,7 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                     "const": true
                 },
                 "joinInfo": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/SingleColumnMidTableJoinInfo"
-                        },
-                        {
-                            "$ref": "#/definitions/MultiColumnMidTableJoinInfo"
-                        }
-                    ]
+                    "$ref": "#/definitions/MidTableJoinInfo"
                 },
                 "autoGenerateJoinInfo": {
                     "type": "boolean"
@@ -68,6 +61,16 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
         }
     ],
     "definitions": {
+        "MidTableJoinInfo": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/SingleColumnMidTableJoinInfo"
+                },
+                {
+                    "$ref": "#/definitions/MultiColumnMidTableJoinInfo"
+                }
+            ]
+        },
         "SingleColumnMidTableJoinInfo": {
             "allOf": [
                 {

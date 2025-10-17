@@ -4,6 +4,7 @@ import AbstractCategorizedPropertiesDeclare from "./items/AbstractCategorizedPro
 import AbstractEdgedAssociationDeclare from "./items/AbstractEdgedAssociation.ts";
 import AssociationDeclare from "./items/Association.ts";
 import AssociationIdOnlyDeclare from "./items/AssociationIdOnly.ts";
+import AssociationSourceDeclare from "./items/AssociationSource.ts";
 import BaseAssociationPropertyDeclare from "./items/BaseAssociationProperty.ts";
 import BasePropertyDeclare from "./items/BaseProperty.ts";
 import CategorizedEmbeddableTypePropertiesDeclare from "./items/CategorizedEmbeddableTypeProperties.ts";
@@ -19,11 +20,14 @@ import CrossTypeDeclare from "./items/CrossType.ts";
 import DatabaseDeclare from "./items/Database.ts";
 import DatabaseTypeDeclare from "./items/DatabaseType.ts";
 import DeepReadonlyDeclare from "./items/DeepReadonly.ts";
+import DiagnosticSourceDeclare from "./items/DiagnosticSource.ts";
 import EdgedAssociationDeclare from "./items/EdgedAssociation.ts";
 import EmbeddablePropertyDeclare from "./items/EmbeddableProperty.ts";
 import EmbeddableTypeDeclare from "./items/EmbeddableType.ts";
 import EmbeddableTypeOverridePropertiesDeclare from "./items/EmbeddableTypeOverrideProperties.ts";
 import EmbeddableTypePropertyDeclare from "./items/EmbeddableTypeProperty.ts";
+import EmbeddableTypePropertySourceDeclare from "./items/EmbeddableTypePropertySource.ts";
+import EmbeddableTypeSourceDeclare from "./items/EmbeddableTypeSource.ts";
 import EmbeddableTypeWithCategorizedPropertiesDeclare from "./items/EmbeddableTypeWithCategorizedProperties.ts";
 import EmbeddableTypeWithOverridePropertiesDeclare from "./items/EmbeddableTypeWithOverrideProperties.ts";
 import EmbeddableTypeWithPropertiesDeclare from "./items/EmbeddableTypeWithProperties.ts";
@@ -31,12 +35,17 @@ import EntityDeclare from "./items/Entity.ts";
 import EntityCategorizedPropertiesDeclare from "./items/EntityCategorizedProperties.ts";
 import EntityInheritInfoDeclare from "./items/EntityInheritInfo.ts";
 import EntityPropertyDeclare from "./items/EntityProperty.ts";
+import EntityPropertySourceDeclare from "./items/EntityPropertySource.ts";
+import EntitySourceDeclare from "./items/EntitySource.ts";
 import EntityWithCategorizedPropertiesDeclare from "./items/EntityWithCategorizedProperties.ts";
 import EntityWithInheritInfoDeclare from "./items/EntityWithInheritInfo.ts";
 import EntityWithPropertiesDeclare from "./items/EntityWithProperties.ts";
 import EnumerationDeclare from "./items/Enumeration.ts";
 import EnumerationItemDeclare from "./items/EnumerationItem.ts";
+import EnumerationItemSourceDeclare from "./items/EnumerationItemSource.ts";
+import EnumerationSourceDeclare from "./items/EnumerationSource.ts";
 import EnumerationStrategyDeclare from "./items/EnumerationStrategy.ts";
+import FkJoinInfoDeclare from "./items/FkJoinInfo.ts";
 import ForeignKeyDeclare from "./items/ForeignKey.ts";
 import ForeignKeyTypeDeclare from "./items/ForeignKeyType.ts";
 import GetterFormulaPropertyDeclare from "./items/GetterFormulaProperty.ts";
@@ -49,6 +58,7 @@ import GroupWithSubMapsDeclare from "./items/GroupWithSubMaps.ts";
 import IdCommonPropertyDeclare from "./items/IdCommonProperty.ts";
 import IdEmbeddablePropertyDeclare from "./items/IdEmbeddableProperty.ts";
 import IndexDeclare from "./items/Index.ts";
+import JoinInfoDeclare from "./items/JoinInfo.ts";
 import JvmLanguageDeclare from "./items/JvmLanguage.ts";
 import JvmToSqlMappingRuleDeclare from "./items/JvmToSqlMappingRule.ts";
 import JvmToTsMappingRuleDeclare from "./items/JvmToTsMappingRule.ts";
@@ -67,13 +77,17 @@ import ManyToOneAbstractAssociationIdOnlyDeclare from "./items/ManyToOneAbstract
 import ManyToOneAssociationDeclare from "./items/ManyToOneAssociation.ts";
 import ManyToOneAssociationIdOnlyDeclare from "./items/ManyToOneAssociationIdOnly.ts";
 import ManyToOnePropertyDeclare from "./items/ManyToOneProperty.ts";
+import MappedPropertySourceDeclare from "./items/MappedPropertySource.ts";
 import MappedSuperClassDeclare from "./items/MappedSuperClass.ts";
 import MappedSuperClassInheritInfoDeclare from "./items/MappedSuperClassInheritInfo.ts";
 import MappedSuperClassPropertyDeclare from "./items/MappedSuperClassProperty.ts";
+import MappedSuperClassPropertySourceDeclare from "./items/MappedSuperClassPropertySource.ts";
 import MappedSuperClassWithCategorizedPropertiesDeclare from "./items/MappedSuperClassWithCategorizedProperties.ts";
 import MappedSuperClassWithInheritInfoDeclare from "./items/MappedSuperClassWithInheritInfo.ts";
 import MappedSuperClassWithPropertiesDeclare from "./items/MappedSuperClassWithProperties.ts";
+import MapperSuperClassSourceDeclare from "./items/MapperSuperClassSource.ts";
 import MidTableInfoDeclare from "./items/MidTableInfo.ts";
+import MidTableJoinInfoDeclare from "./items/MidTableJoinInfo.ts";
 import ModelDeclare from "./items/Model.ts";
 import ModelContextDeclare from "./items/ModelContext.ts";
 import ModelContextDataDeclare from "./items/ModelContextData.ts";
@@ -119,6 +133,7 @@ export type TypeMap = {
     AbstractEdgedAssociation: AbstractEdgedAssociation
     Association: Association
     AssociationIdOnly: AssociationIdOnly
+    AssociationSource: AssociationSource
     BaseAssociationProperty: BaseAssociationProperty
     BaseProperty: BaseProperty
     CategorizedEmbeddableTypeProperties: CategorizedEmbeddableTypeProperties
@@ -133,11 +148,14 @@ export type TypeMap = {
     CrossType: CrossType
     Database: Database
     DatabaseType: DatabaseType
+    DiagnosticSource: DiagnosticSource
     EdgedAssociation: EdgedAssociation
     EmbeddableProperty: EmbeddableProperty
     EmbeddableType: EmbeddableType
     EmbeddableTypeOverrideProperties: EmbeddableTypeOverrideProperties
     EmbeddableTypeProperty: EmbeddableTypeProperty
+    EmbeddableTypePropertySource: EmbeddableTypePropertySource
+    EmbeddableTypeSource: EmbeddableTypeSource
     EmbeddableTypeWithCategorizedProperties: EmbeddableTypeWithCategorizedProperties
     EmbeddableTypeWithOverrideProperties: EmbeddableTypeWithOverrideProperties
     EmbeddableTypeWithProperties: EmbeddableTypeWithProperties
@@ -145,12 +163,17 @@ export type TypeMap = {
     EntityCategorizedProperties: EntityCategorizedProperties
     EntityInheritInfo: EntityInheritInfo
     EntityProperty: EntityProperty
+    EntityPropertySource: EntityPropertySource
+    EntitySource: EntitySource
     EntityWithCategorizedProperties: EntityWithCategorizedProperties
     EntityWithInheritInfo: EntityWithInheritInfo
     EntityWithProperties: EntityWithProperties
     Enumeration: Enumeration
     EnumerationItem: EnumerationItem
+    EnumerationItemSource: EnumerationItemSource
+    EnumerationSource: EnumerationSource
     EnumerationStrategy: EnumerationStrategy
+    FkJoinInfo: FkJoinInfo
     ForeignKey: ForeignKey
     ForeignKeyType: ForeignKeyType
     GetterFormulaProperty: GetterFormulaProperty
@@ -163,6 +186,7 @@ export type TypeMap = {
     IdCommonProperty: IdCommonProperty
     IdEmbeddableProperty: IdEmbeddableProperty
     Index: Index
+    JoinInfo: JoinInfo
     JvmLanguage: JvmLanguage
     JvmToSqlMappingRule: JvmToSqlMappingRule
     JvmToTsMappingRule: JvmToTsMappingRule
@@ -181,13 +205,17 @@ export type TypeMap = {
     ManyToOneAssociation: ManyToOneAssociation
     ManyToOneAssociationIdOnly: ManyToOneAssociationIdOnly
     ManyToOneProperty: ManyToOneProperty
+    MappedPropertySource: MappedPropertySource
     MappedSuperClass: MappedSuperClass
     MappedSuperClassInheritInfo: MappedSuperClassInheritInfo
     MappedSuperClassProperty: MappedSuperClassProperty
+    MappedSuperClassPropertySource: MappedSuperClassPropertySource
     MappedSuperClassWithCategorizedProperties: MappedSuperClassWithCategorizedProperties
     MappedSuperClassWithInheritInfo: MappedSuperClassWithInheritInfo
     MappedSuperClassWithProperties: MappedSuperClassWithProperties
+    MapperSuperClassSource: MapperSuperClassSource
     MidTableInfo: MidTableInfo
+    MidTableJoinInfo: MidTableJoinInfo
     Model: Model
     ModelContext: ModelContext
     ModelContextData: ModelContextData
@@ -236,6 +264,7 @@ export const typeDeclares = Object.freeze({
     AbstractEdgedAssociation: AbstractEdgedAssociationDeclare,
     Association: AssociationDeclare,
     AssociationIdOnly: AssociationIdOnlyDeclare,
+    AssociationSource: AssociationSourceDeclare,
     BaseAssociationProperty: BaseAssociationPropertyDeclare,
     BaseProperty: BasePropertyDeclare,
     CategorizedEmbeddableTypeProperties: CategorizedEmbeddableTypePropertiesDeclare,
@@ -251,11 +280,14 @@ export const typeDeclares = Object.freeze({
     Database: DatabaseDeclare,
     DatabaseType: DatabaseTypeDeclare,
     DeepReadonly: DeepReadonlyDeclare,
+    DiagnosticSource: DiagnosticSourceDeclare,
     EdgedAssociation: EdgedAssociationDeclare,
     EmbeddableProperty: EmbeddablePropertyDeclare,
     EmbeddableType: EmbeddableTypeDeclare,
     EmbeddableTypeOverrideProperties: EmbeddableTypeOverridePropertiesDeclare,
     EmbeddableTypeProperty: EmbeddableTypePropertyDeclare,
+    EmbeddableTypePropertySource: EmbeddableTypePropertySourceDeclare,
+    EmbeddableTypeSource: EmbeddableTypeSourceDeclare,
     EmbeddableTypeWithCategorizedProperties: EmbeddableTypeWithCategorizedPropertiesDeclare,
     EmbeddableTypeWithOverrideProperties: EmbeddableTypeWithOverridePropertiesDeclare,
     EmbeddableTypeWithProperties: EmbeddableTypeWithPropertiesDeclare,
@@ -263,12 +295,17 @@ export const typeDeclares = Object.freeze({
     EntityCategorizedProperties: EntityCategorizedPropertiesDeclare,
     EntityInheritInfo: EntityInheritInfoDeclare,
     EntityProperty: EntityPropertyDeclare,
+    EntityPropertySource: EntityPropertySourceDeclare,
+    EntitySource: EntitySourceDeclare,
     EntityWithCategorizedProperties: EntityWithCategorizedPropertiesDeclare,
     EntityWithInheritInfo: EntityWithInheritInfoDeclare,
     EntityWithProperties: EntityWithPropertiesDeclare,
     Enumeration: EnumerationDeclare,
     EnumerationItem: EnumerationItemDeclare,
+    EnumerationItemSource: EnumerationItemSourceDeclare,
+    EnumerationSource: EnumerationSourceDeclare,
     EnumerationStrategy: EnumerationStrategyDeclare,
+    FkJoinInfo: FkJoinInfoDeclare,
     ForeignKey: ForeignKeyDeclare,
     ForeignKeyType: ForeignKeyTypeDeclare,
     GetterFormulaProperty: GetterFormulaPropertyDeclare,
@@ -281,6 +318,7 @@ export const typeDeclares = Object.freeze({
     IdCommonProperty: IdCommonPropertyDeclare,
     IdEmbeddableProperty: IdEmbeddablePropertyDeclare,
     Index: IndexDeclare,
+    JoinInfo: JoinInfoDeclare,
     JvmLanguage: JvmLanguageDeclare,
     JvmToSqlMappingRule: JvmToSqlMappingRuleDeclare,
     JvmToTsMappingRule: JvmToTsMappingRuleDeclare,
@@ -299,13 +337,17 @@ export const typeDeclares = Object.freeze({
     ManyToOneAssociation: ManyToOneAssociationDeclare,
     ManyToOneAssociationIdOnly: ManyToOneAssociationIdOnlyDeclare,
     ManyToOneProperty: ManyToOnePropertyDeclare,
+    MappedPropertySource: MappedPropertySourceDeclare,
     MappedSuperClass: MappedSuperClassDeclare,
     MappedSuperClassInheritInfo: MappedSuperClassInheritInfoDeclare,
     MappedSuperClassProperty: MappedSuperClassPropertyDeclare,
+    MappedSuperClassPropertySource: MappedSuperClassPropertySourceDeclare,
     MappedSuperClassWithCategorizedProperties: MappedSuperClassWithCategorizedPropertiesDeclare,
     MappedSuperClassWithInheritInfo: MappedSuperClassWithInheritInfoDeclare,
     MappedSuperClassWithProperties: MappedSuperClassWithPropertiesDeclare,
+    MapperSuperClassSource: MapperSuperClassSourceDeclare,
     MidTableInfo: MidTableInfoDeclare,
+    MidTableJoinInfo: MidTableJoinInfoDeclare,
     Model: ModelDeclare,
     ModelContext: ModelContextDeclare,
     ModelContextData: ModelContextDataDeclare,

@@ -3,7 +3,7 @@ export default Object.freeze({
     content: `type ManyToManySourceProperty = {
     category: "ManyToMany_Source"
     typeIsList: true
-    joinInfo: SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
+    joinInfo: MidTableJoinInfo
     autoGenerateJoinInfo: boolean
     nullable: false
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty`,

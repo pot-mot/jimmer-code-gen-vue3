@@ -3,7 +3,7 @@ export default Object.freeze({
     content: `type ManyToOneProperty = {
     category: "ManyToOne"
     typeIsList: false
-    joinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo | SingleColumnMidTableJoinInfo | MultiColumnMidTableJoinInfo
+    joinInfo: JoinInfo
     autoGenerateJoinInfo: boolean
     onDissociateAction: OnDissociationAction
 } & BaseProperty & BaseAssociationProperty`,
