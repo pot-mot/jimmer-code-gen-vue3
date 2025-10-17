@@ -8,6 +8,10 @@ export const REFERENCED_PROPERTY = "[[REFERENCED_PROPERTY]]"
 export const ASSOCIATION_FK_NAME_TEMPLATE = `fk_${SOURCE_ENTITY}_${SOURCE_PROPERTY}`
 export const ASSOCIATION_FK_COMMENT_TEMPLATE = `${SOURCE_ENTITY}${SOURCE_PROPERTY}`
 
+export const checkFkTemplate = (template: string) => {
+    return template.includes(SOURCE_ENTITY) || template.includes(SOURCE_PROPERTY)
+}
+
 export const translateFkNameTemplate = (
     template: string,
     sourceEntity: {name: string},
@@ -53,6 +57,10 @@ export const translateAbstractFkCommentTemplate = (
 
 export const ASSOCIATION_MID_TABLE_NAME_TEMPLATE = `${SOURCE_ENTITY}_${REFERENCED_ENTITY}_mapping`
 export const ASSOCIATION_MID_TABLE_COMMENT_TEMPLATE = `${SOURCE_ENTITY} - ${REFERENCED_ENTITY}`
+
+export const checkMidTableTemplate = (template: string) => {
+    return template.includes(SOURCE_ENTITY) || template.includes(REFERENCED_ENTITY)
+}
 
 export const translateMidTableNameTemplate = (
     template: string,

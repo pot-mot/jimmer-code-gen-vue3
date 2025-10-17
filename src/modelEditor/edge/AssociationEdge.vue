@@ -142,7 +142,7 @@ defineExpose({
 }
 
 .association-edge:hover {
-    --edge-width: 3px;
+    --edge-width: 2px;
 }
 
 .association-edge.selected {

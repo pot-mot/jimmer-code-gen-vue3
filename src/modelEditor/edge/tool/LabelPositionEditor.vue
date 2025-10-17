@@ -92,10 +92,10 @@ const handleNumberChange = () => {
 </script>
 
 <template>
-    <div style="display: flex; justify-content: center; height: 1.5rem;">
+    <div class="label-position-editor">
         <button
             @click="toggleLabelPositionFrom"
-            style="width: 4rem; text-align: center; margin-right: 0.25rem; border-radius: 0.25rem;"
+            style="width: 4rem; text-align: center; border-radius: 0.25rem;"
         >
             {{ labelPosition.from === "source" ? "[source]" : "[target]" }}
         </button>
@@ -122,3 +122,12 @@ const handleNumberChange = () => {
         </template>
     </div>
 </template>
+
+<style scoped>
+.label-position-editor {
+    display: flex;
+    justify-content: center;
+    height: 1.5rem;
+    background-color: var(--background-color);
+}
+</style>

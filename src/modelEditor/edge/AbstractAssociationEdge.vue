@@ -10,7 +10,7 @@ import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import MappedSuperClassViewer from "@/modelEditor/viewer/MappedSuperClassViewer.vue";
 import EntityIdViewer from "@/modelEditor/viewer/EntityIdViewer.vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
-import LabelPositionEditor from "@/modelEditor/edge/labelPosition/LabelPositionEditor.vue";
+import LabelPositionEditor from "@/modelEditor/edge/tool/LabelPositionEditor.vue";
 import IconAim from "@/components/icons/IconAim.vue";
 import IconDelete from "@/components/icons/IconDelete.vue";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
@@ -69,54 +69,68 @@ const mappedPropertyView = computed(() => {
         class="association-association-edge"
     >
         <template #label>
-            <div>
-                <div style="display: flex; justify-content: center;">
-                    <AssociationViewer
-                        v-if="!associationEdit"
-                        :association="data.edgedAssociation.association"
-                        @click.stop="associationEdit = true"
-                    />
-                    <NameCommentEditor
-                        v-else
-                        v-model="associationNameComment"
-                        class="with-border-bg"
-                        auto-focus
-                        @change="associationEdit = false"
-                        @blur="associationEdit = false"
-                        @click.stop
+            <div class="association-label">
+                <div
+                    class="foreign-key-wrapper"
+                    :class="{selected}"
+                >
+                    <div style="display: flex; justify-content: center;">
+                        <AssociationViewer
+                            v-if="!associationEdit"
+                            :association="data.edgedAssociation.association"
+                            @click.stop="associationEdit = true"
+                        />
+                        <NameCommentEditor
+                            v-else
+                            v-model="associationNameComment"
+                            class="with-border-bg"
+                            auto-focus
+                            @change="associationEdit = false"
+                            @blur="associationEdit = false"
+                            @click.stop
+                        />
+                    </div>
+                    <DiagnoseViewer
+                        :messages="modelDiagnoseInfo.associationMap.get(id)?.association"
                     />
                 </div>
-                <DiagnoseViewer
-                    :messages="modelDiagnoseInfo.associationMap.get(id)?.association"
-                />
-            </div>
 
-            <div v-if="data.edgedAssociation.association.withMappedProperty">
-                <div class="mapped-property-info">
-                    <EntityIdViewer :id="data.edgedAssociation.association.referencedEntityId" hide-comment ctrl-focus/>
-                    <span>.</span>
-                    <NameCommentViewer
-                        v-if="!mappedPropertyEdit"
-                        :data="mappedPropertyView"
-                        @click.stop="mappedPropertyEdit = true"
+                <div
+                    v-if="data.edgedAssociation.association.withMappedProperty"
+                    class="mapped-property-wrapper"
+                >
+                    <div class="mapped-property-info">
+                        <EntityIdViewer
+                            :id="data.edgedAssociation.association.referencedEntityId"
+                            hide-comment
+                            ctrl-focus
+                        />
+                        <span>.</span>
+                        <NameCommentViewer
+                            v-if="!mappedPropertyEdit"
+                            :data="mappedPropertyView"
+                            @click.stop="mappedPropertyEdit = true"
+                        />
+                        <NameCommentEditor
+                            v-else
+                            v-model="data.edgedAssociation.association.mappedProperty"
+                            class="with-border-bg"
+                            auto-focus
+                            @change="mappedPropertyEdit = false"
+                            @blur="mappedPropertyEdit = false"
+                            @click.stop
+                        />
+                        <span style="padding-right: 0.5rem;">:</span>
+                        <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">List<</span>
+                        <span style="color: var(--comment-color);">$</span>
+                        <MappedSuperClassViewer :mapped-super-class="referencedAbstractEntity" hide-comment ctrl-focus/>
+                        <span style="color: var(--comment-color);">$</span>
+                        <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">></span>
+                    </div>
+                    <DiagnoseViewer
+                        :messages="modelDiagnoseInfo.associationMap.get(id)?.mappedProperty"
                     />
-                    <NameCommentEditor
-                        v-else
-                        v-model="data.edgedAssociation.association.mappedProperty"
-                        class="with-border-bg"
-                        auto-focus
-                        @change="mappedPropertyEdit = false"
-                        @blur="mappedPropertyEdit = false"
-                        @click.stop
-                    />
-                    <span style="padding-right: 0.5rem;">:</span>
-                    <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">List<</span>
-                    <span style="color: var(--comment-color);">$</span>
-                    <MappedSuperClassViewer :mapped-super-class="referencedAbstractEntity" hide-comment ctrl-focus/>
-                    <span style="color: var(--comment-color);">$</span>
-                    <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">></span>
                 </div>
-                <DiagnoseViewer :messages="modelDiagnoseInfo.associationMap.get(id)?.mappedProperty"/>
             </div>
         </template>
 
@@ -141,6 +155,25 @@ const mappedPropertyView = computed(() => {
     border: var(--border);
     border-radius: 0.25rem;
     background-color: var(--background-color);
+}
+
+.association-label {
+    box-sizing: border-box;
+    border: var(--border);
+    border-color: var(--background-color-hover);
+    border-radius: 0.25rem;
+    background-color: var(--background-color);
+    padding: 0 0.5rem;
+    transition: border-color 0.2s;
+}
+
+.association-label:hover {
+    border-color: var(--border-color);
+    border-width: 2px;
+}
+
+.association-label.selected {
+    border-color: var(--primary-color);
 }
 
 .mapped-property-info {
