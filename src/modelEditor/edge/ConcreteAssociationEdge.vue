@@ -4,13 +4,12 @@ import {type EdgeProps} from "@vue-flow/core";
 import type {ConcreteAssociationEdge} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import EntityIdViewer from "@/modelEditor/viewer/EntityIdViewer.vue";
-import {computed, ref, useTemplateRef, watch} from "vue";
+import {computed, ref, useTemplateRef} from "vue";
 import LabelPositionEditor from "@/modelEditor/edge/tool/LabelPositionEditor.vue";
 import IconAim from "@/components/icons/IconAim.vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import IconDelete from "@/components/icons/IconDelete.vue";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
-import {checkFkTemplate, checkMidTableTemplate} from "@/type/context/utils/AssociationTemplate.ts";
 import AssociationViewer from "@/modelEditor/viewer/AssociationViewer.vue";
 
 const props = defineProps<EdgeProps<ConcreteAssociationEdge["data"]>>()
@@ -22,22 +21,6 @@ const getPath = computed(() => {
     return associationEdgeRef.value?.getPath ?? (() => {
         return undefined
     })
-})
-
-watch(() => props.data.edgedAssociation.association.name, (newValue) => {
-    if ((checkFkTemplate(newValue) || checkMidTableTemplate(newValue)) && !props.data.edgedAssociation.association.useNameTemplate) {
-        props.data.edgedAssociation.association.useNameTemplate = true
-    } else if (props.data.edgedAssociation.association.useNameTemplate) {
-        props.data.edgedAssociation.association.useNameTemplate = false
-    }
-})
-
-watch(() => props.data.edgedAssociation.association.comment, (newValue) => {
-    if ((checkFkTemplate(newValue) || checkMidTableTemplate(newValue)) && !props.data.edgedAssociation.association.useCommentTemplate) {
-        props.data.edgedAssociation.association.useCommentTemplate = true
-    } else if (props.data.edgedAssociation.association.useCommentTemplate) {
-        props.data.edgedAssociation.association.useCommentTemplate = false
-    }
 })
 
 const associationEdit = ref(false)
@@ -71,9 +54,11 @@ const associationEdit = ref(false)
                             @click.stop
                         />
                     </div>
-                    <DiagnoseViewer
-                        :messages="modelDiagnoseInfo.associationMap.get(id)?.association"
-                    />
+                    <div class="flex-center">
+                        <DiagnoseViewer
+                            :messages="modelDiagnoseInfo.associationMap.get(id)?.association"
+                        />
+                    </div>
                 </div>
 
                 <div
@@ -102,20 +87,22 @@ const associationEdit = ref(false)
                         />
                         <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">></span>
                     </div>
-                    <DiagnoseViewer
-                        :messages="modelDiagnoseInfo.associationMap.get(id)?.mappedProperty"
-                    />
+                    <div class="flex-center">
+                        <DiagnoseViewer
+                            :messages="modelDiagnoseInfo.associationMap.get(id)?.mappedProperty"
+                        />
+                    </div>
                 </div>
             </div>
         </template>
 
         <template #toolbar>
             <div class="edge-toolbar">
-                <button @click="focusEdge(id)">
+                <button @click.stop="focusEdge(id)">
                     <IconAim/>
                 </button>
 
-                <button @click="remove({associationIds: [id]})">
+                <button @click.stop="remove({associationIds: [id]})">
                     <IconDelete/>
                 </button>
             </div>
@@ -155,5 +142,10 @@ const associationEdit = ref(false)
     display: flex;
     justify-content: center;
     line-height: 2rem;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
 }
 </style>

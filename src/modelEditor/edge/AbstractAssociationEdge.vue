@@ -74,7 +74,7 @@ const mappedPropertyView = computed(() => {
                     class="foreign-key-wrapper"
                     :class="{selected}"
                 >
-                    <div style="display: flex; justify-content: center;">
+                    <div class="flex-center">
                         <AssociationViewer
                             v-if="!associationEdit"
                             :association="data.edgedAssociation.association"
@@ -90,9 +90,11 @@ const mappedPropertyView = computed(() => {
                             @click.stop
                         />
                     </div>
-                    <DiagnoseViewer
-                        :messages="modelDiagnoseInfo.associationMap.get(id)?.association"
-                    />
+                    <div class="flex-center">
+                        <DiagnoseViewer
+                            :messages="modelDiagnoseInfo.associationMap.get(id)?.association"
+                        />
+                    </div>
                 </div>
 
                 <div
@@ -127,20 +129,22 @@ const mappedPropertyView = computed(() => {
                         <span style="color: var(--comment-color);">$</span>
                         <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">></span>
                     </div>
-                    <DiagnoseViewer
-                        :messages="modelDiagnoseInfo.associationMap.get(id)?.mappedProperty"
-                    />
+                    <div class="flex-center">
+                        <DiagnoseViewer
+                            :messages="modelDiagnoseInfo.associationMap.get(id)?.mappedProperty"
+                        />
+                    </div>
                 </div>
             </div>
         </template>
 
         <template #toolbar>
             <div class="edge-toolbar">
-                <button @click="focusEdge(id)">
+                <button @click.stop="focusEdge(id)">
                     <IconAim/>
                 </button>
 
-                <button @click="remove({associationIds: [id]})">
+                <button @click.stop="remove({associationIds: [id]})">
                     <IconDelete/>
                 </button>
             </div>
@@ -180,5 +184,10 @@ const mappedPropertyView = computed(() => {
     display: flex;
     justify-content: center;
     line-height: 2rem;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
 }
 </style>
