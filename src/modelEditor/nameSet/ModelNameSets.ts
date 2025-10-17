@@ -274,16 +274,29 @@ export const useModelNameSets = (
         modelNameSets.enumerationItemNameSetMap.delete(enumeration.id)
     }
 
+    const associationNameMap = new Map<string, string>()
     const syncAssociation = (association: DeepReadonly<AssociationIdOnly>) => {
         if ("name" in association && !association.useNameTemplate) {
-            modelNameSets.associationNameSet.add(association.name)
+            syncNameSetAndNameMap(
+                association,
+                [
+                    modelNameSets.associationNameSet
+                ],
+                associationNameMap
+            )
         }
         const referencedEntity = contextData.entityMap.get(association.referencedEntityId)
         if (referencedEntity) syncEntity(referencedEntity)
     }
     const removeAssociation = (association: DeepReadonly<AssociationIdOnly>) => {
-        if ("name" in association && !association.useNameTemplate) {
-            modelNameSets.associationNameSet.remove(association.name)
+        if ("name" in association) {
+            removeFromNameSetAndNameMap(
+                association,
+                [
+                    modelNameSets.associationNameSet
+                ],
+                associationNameMap
+            )
         }
         const referencedEntity = contextData.entityMap.get(association.referencedEntityId)
         if (referencedEntity) syncEntity(referencedEntity)
