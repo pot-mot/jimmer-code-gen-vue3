@@ -1144,7 +1144,10 @@ export const useModelEditorHistory = (
 
     const importIntoContext = (
         graphData: ModelGraphSubData,
-        startPosition?: XYPosition,
+        options: {
+            startPosition?: XYPosition,
+            protectRepeatNames?: boolean,
+        } = {}
     ): ModelSubIds => {
         const result = defaultModelSubIds()
 
@@ -1152,9 +1155,11 @@ export const useModelEditorHistory = (
             const contextData = getContextData()
 
             protectRepeatIds(graphData, contextData)
-            protectDuplicateNames(graphData, contextData)
-            if (startPosition) {
-                layoutPosition(startPosition, [
+            if (options.protectRepeatNames) {
+                protectDuplicateNames(graphData, contextData)
+            }
+            if (options.startPosition !== undefined) {
+                layoutPosition(options.startPosition, [
                     ...graphData.mappedSuperClasses,
                     ...graphData.entities,
                     ...graphData.embeddableTypes,
@@ -1299,7 +1304,7 @@ export const useModelEditorHistory = (
 
     history.registerCommand("import", {
         applyAction: ({data, startPosition}) => {
-            const ids = importIntoContext(cloneDeepReadonlyRaw<ModelGraphSubData>(data), startPosition)
+            const ids = importIntoContext(cloneDeepReadonlyRaw<ModelGraphSubData>(data), {startPosition, protectRepeatNames: true})
             return {ids, startPosition}
         },
         revertAction: ({ids, startPosition}) => {
@@ -1312,7 +1317,7 @@ export const useModelEditorHistory = (
             return removeFromContext(cloneDeepReadonlyRaw<ModelSubIds>(modelSubIds))
         },
         revertAction: (graphData) => {
-            return importIntoContext(cloneDeepReadonlyRaw<ModelGraphSubData>(graphData))
+            return importIntoContext(cloneDeepReadonlyRaw<ModelGraphSubData>(graphData), {protectRepeatNames: false})
         }
     })
 
