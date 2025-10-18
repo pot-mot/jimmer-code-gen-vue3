@@ -5,6 +5,8 @@ import IconAim from "@/components/icons/IconAim.vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import IconDelete from "@/components/icons/IconDelete.vue";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
+import IconEnumeration from "@/components/icons/modelEditor/IconEnumeration.vue";
+import IconEmbeddableType from "@/components/icons/modelEditor/IconEmbeddableType.vue";
 
 const enumeration = defineModel<Enumeration>({required: true})
 
@@ -33,23 +35,27 @@ const handleRemove = () => {
         class="enumeration-item"
         :class="{selected: isSelected}"
     >
-        <div>
+        <div class="menu-label">
+            <IconEnumeration
+                class="menu-icon"
+            />
             <NameCommentEditor
                 v-model="enumeration"
                 :font-size="14"
             />
-            <DiagnoseViewer
-                :messages="modelDiagnoseInfo.enumerationMap.get(enumeration.id)?.enumeration"
-            />
+
+            <div class="tool">
+                <button @click.stop="handleFocus">
+                    <IconAim/>
+                </button>
+                <button @click.stop="handleRemove">
+                    <IconDelete/>
+                </button>
+            </div>
         </div>
 
-        <div class="tool">
-            <button @click.stop="handleFocus">
-                <IconAim/>
-            </button>
-            <button @click.stop="handleRemove">
-                <IconDelete/>
-            </button>
-        </div>
+        <DiagnoseViewer
+            :messages="modelDiagnoseInfo.enumerationMap.get(enumeration.id)?.enumeration"
+        />
     </div>
 </template>

@@ -5,6 +5,8 @@ import IconAim from "@/components/icons/IconAim.vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import IconDelete from "@/components/icons/IconDelete.vue";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
+import IconAbstractEntity from "@/components/icons/modelEditor/IconAbstractEntity.vue";
+import IconEmbeddableType from "@/components/icons/modelEditor/IconEmbeddableType.vue";
 
 const mappedSuperClass = defineModel<MappedSuperClassWithProperties>({required: true})
 
@@ -33,23 +35,27 @@ const handleRemove = () => {
         class="mapped-super-class-item"
         :class="{selected: isSelected}"
     >
-        <div>
+        <div class="menu-label">
+            <IconAbstractEntity
+                class="menu-icon"
+            />
             <NameCommentEditor
                 v-model="mappedSuperClass"
                 :font-size="14"
             />
-            <DiagnoseViewer
-                :messages="modelDiagnoseInfo.mappedSuperClassMap.get(mappedSuperClass.id)?.mappedSuperClass"
-            />
+
+            <div class="tool">
+                <button @click.stop="handleFocus">
+                    <IconAim/>
+                </button>
+                <button @click.stop="handleRemove">
+                    <IconDelete/>
+                </button>
+            </div>
         </div>
 
-        <div class="tool">
-            <button @click.stop="handleFocus">
-                <IconAim/>
-            </button>
-            <button @click.stop="handleRemove">
-                <IconDelete/>
-            </button>
-        </div>
+        <DiagnoseViewer
+            :messages="modelDiagnoseInfo.mappedSuperClassMap.get(mappedSuperClass.id)?.mappedSuperClass"
+        />
     </div>
 </template>

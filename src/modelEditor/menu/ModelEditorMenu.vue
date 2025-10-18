@@ -368,15 +368,23 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
 }
 
 .menu-item {
-    display: flex;
     width: 100%;
     min-height: 1.75rem;
     padding-bottom: 0.25rem;
 }
 
-.menu-item.selected > :deep(.name-comment-editor) input,
-.menu-item.selected > :deep(.name-comment-editor) .name,
-.menu-item.selected > :deep(.name-comment-editor) .comment {
+.menu-item > :deep(.menu-label) {
+    display: flex;
+}
+
+.menu-item > :deep(.menu-label) > .menu-icon {
+    margin-right: 0.25rem;
+    margin-top: 0.3rem;
+}
+
+.menu-item.selected :deep(.name-comment-editor) input,
+.menu-item.selected :deep(.name-comment-editor) .name,
+.menu-item.selected :deep(.name-comment-editor) .comment {
     color: var(--text-color);
 }
 

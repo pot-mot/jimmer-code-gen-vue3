@@ -39,37 +39,37 @@ const handleRemove = () => {
         }"
         @click="setToCurrentGroup"
     >
-        <ColorInput
-            v-model="group.color"
-            :preset-colors="presetColor"
-            style="margin-top: 0.3rem; margin-right: 0.25rem;"
-        />
-
-        <div>
+        <div class="menu-label">
+            <ColorInput
+                v-model="group.color"
+                :preset-colors="presetColor"
+                class="menu-icon"
+            />
             <NameCommentEditor
                 v-model="group"
                 :font-size="14"
             />
-            <DiagnoseViewer
-                :messages="modelDiagnoseInfo.groupMap.get(group.id)?.group"
-            />
+
+            <div class="tool">
+                <button @click.stop="handleRemove">
+                    <IconDelete/>
+                </button>
+            </div>
         </div>
 
-        <div class="tool">
-            <button @click.stop="handleRemove">
-                <IconDelete/>
-            </button>
-        </div>
+        <DiagnoseViewer
+            :messages="modelDiagnoseInfo.groupMap.get(group.id)?.group"
+        />
     </div>
 </template>
 
 <style scoped>
-.group-item.current > .name-comment-editor :deep(.name) > input {
+.group-item.current .name-comment-editor :deep(.name) > input {
     color: var(--primary-color);
 }
 
-.group-item.selected > .name-comment-editor :deep(.name) > input,
-.selected .group-item > .name-comment-editor :deep(.name) > input{
+.group-item.selected .name-comment-editor :deep(.name) > input,
+.selected .group-item .name-comment-editor :deep(.name) > input{
     color: inherit;
 }
 </style>

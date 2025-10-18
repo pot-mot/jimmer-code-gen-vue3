@@ -5,6 +5,8 @@ import IconAim from "@/components/icons/IconAim.vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import IconDelete from "@/components/icons/IconDelete.vue";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
+import IconEntity from "@/components/icons/modelEditor/IconEntity.vue";
+import IconEmbeddableType from "@/components/icons/modelEditor/IconEmbeddableType.vue";
 
 const entity = defineModel<EntityWithProperties>({required: true})
 
@@ -33,23 +35,27 @@ const handleRemove = () => {
         class="entity-item"
         :class="{selected: isSelected}"
     >
-        <div>
+        <div class="menu-label">
+            <IconEntity
+                class="menu-icon"
+            />
             <NameCommentEditor
                 v-model="entity"
                 :font-size="14"
             />
-            <DiagnoseViewer
-                :messages="modelDiagnoseInfo.entityMap.get(entity.id)?.entity"
-            />
+
+            <div class="tool">
+                <button @click.stop="handleFocus">
+                    <IconAim/>
+                </button>
+                <button @click.stop="handleRemove">
+                    <IconDelete/>
+                </button>
+            </div>
         </div>
 
-        <div class="tool">
-            <button @click.stop="handleFocus">
-                <IconAim/>
-            </button>
-            <button @click.stop="handleRemove">
-                <IconDelete/>
-            </button>
-        </div>
+        <DiagnoseViewer
+            :messages="modelDiagnoseInfo.entityMap.get(entity.id)?.entity"
+        />
     </div>
 </template>

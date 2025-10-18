@@ -5,6 +5,7 @@ import IconAim from "@/components/icons/IconAim.vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import IconDelete from "@/components/icons/IconDelete.vue";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
+import IconEmbeddableType from "@/components/icons/modelEditor/IconEmbeddableType.vue";
 
 const embeddableType = defineModel<EmbeddableTypeWithProperties>({
     required: true
@@ -35,23 +36,27 @@ const handleRemove = () => {
         class="embeddable-type-item"
         :class="{selected: isSelected}"
     >
-        <div>
+        <div class="menu-label">
+            <IconEmbeddableType
+                class="menu-icon"
+            />
             <NameCommentEditor
                 v-model="embeddableType"
                 :font-size="14"
             />
-            <DiagnoseViewer
-                :messages="modelDiagnoseInfo.enumerationMap.get(embeddableType.id)?.enumeration"
-            />
+
+            <div class="tool">
+                <button @click.stop="handleFocus">
+                    <IconAim/>
+                </button>
+                <button @click.stop="handleRemove">
+                    <IconDelete/>
+                </button>
+            </div>
         </div>
 
-        <div class="tool">
-            <button @click.stop="handleFocus">
-                <IconAim/>
-            </button>
-            <button @click.stop="handleRemove">
-                <IconDelete/>
-            </button>
-        </div>
+        <DiagnoseViewer
+            :messages="modelDiagnoseInfo.enumerationMap.get(embeddableType.id)?.enumeration"
+        />
     </div>
 </template>
