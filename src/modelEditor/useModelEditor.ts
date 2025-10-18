@@ -24,12 +24,7 @@ import {
     defaultModelContextData
 } from "@/type/context/default/modelDefaults.ts";
 import {tinycolor} from "vue-color";
-import {defaultModelSubIds, fillModelSubIds, subDataToSubIds} from "@/type/context/utils/ModelSubIds.ts";
-import {NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";
-import {NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode.ts";
-import {NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
-import {NodeType_EmbeddableType} from "@/modelEditor/node/EmbeddableTypeNode.ts";
-import {EdgeType_ConcreteAssociation} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
+import {fillModelSubIds, subDataToSubIds} from "@/type/context/utils/ModelSubIds.ts";
 import type {LazyData} from "@/utils/type/lazyDataParse.ts";
 import {useClipBoard} from "@/utils/clipBoard/useClipBoard.ts";
 import {fillModelGraphSubData, modelDataToGraphData} from "@/type/context/utils/ModelGraphSubData.ts";
@@ -327,14 +322,6 @@ export const useModelEditor = createStore(() => {
     /**
      * 点击多选相关配置
      */
-    const isGraphSelectionNotEmpty = computed(() => {
-        const vueFlow = getVueFlow()
-        return (vueFlow.getSelectedNodes.value.length + vueFlow.getSelectedEdges.value.length) > 0
-    })
-    const isGraphSelectionPlural = computed(() => {
-        const vueFlow = getVueFlow()
-        return (vueFlow.getSelectedNodes.value.length + vueFlow.getSelectedEdges.value.length) > 1
-    })
     const canMultiSelect = computed(() => {
         const vueFlow = getVueFlow()
         return vueFlow.multiSelectionActive.value
@@ -609,69 +596,6 @@ export const useModelEditor = createStore(() => {
                     }
                 })
                 nodeMoveMap.clear()
-            })
-
-            /**
-             * 键盘事件监听
-             */
-            el.addEventListener('keydown', (e) => {
-                // 按下 Delete 键删除选中的节点和边
-                if (e.key === "Delete" || e.key === "Backspace") {
-                    if (judgeTargetIsInteraction(e)) return
-
-                    e.preventDefault()
-                    const ids = defaultModelSubIds()
-                    for (const node of getSelectedNodes.value) {
-                        if (node.type === NodeType_Entity) {
-                            ids.entityIds.push(node.id)
-                        } else if (node.type === NodeType_MappedSuperClass) {
-                            ids.mappedSuperClassIds.push(node.id)
-                        } else if (node.type === NodeType_EmbeddableType) {
-                            ids.embeddableTypeIds.push(node.id)
-                        } else if (node.type === NodeType_Enumeration) {
-                            ids.enumerationIds.push(node.id)
-                        }
-                    }
-                    for (const edge of getSelectedEdges.value) {
-                        if (edge.type === EdgeType_ConcreteAssociation) {
-                            ids.associationIds.push(edge.id)
-                        }
-                    }
-                    remove(ids)
-                    focus()
-                }
-                // 按下 Ctrl 键进入多选模式，直到松开 Ctrl 键
-                else if (e.key === "Control") {
-                    if (judgeTargetIsInteraction(e)) return
-
-                    enableMultiSelect(vueFlow)
-                    focus()
-                    document.documentElement.addEventListener('keyup', (e) => {
-                        if (e.key === "Control" || e.ctrlKey) {
-                            disableMultiSelect(vueFlow)
-                        }
-                    }, {once: true})
-                } else if (e.key === "Shift") {
-                    if (judgeTargetIsInteraction(e)) return
-
-                    toggleDefaultMouseAction(vueFlow)
-                    focus()
-                    document.documentElement.addEventListener('keyup', (e) => {
-                        if (e.key === "Shift" || e.shiftKey) {
-                            toggleDefaultMouseAction(vueFlow)
-                        }
-                    }, {once: true})
-                } else if (e.ctrlKey) {
-                    // 按下 Ctrl + a 键，全选
-                    if (e.key === "a" || e.key === "A") {
-                        if (judgeTargetIsInteraction(e)) return
-
-                        e.preventDefault()
-
-                        selectGraphAll()
-                        focus()
-                    }
-                }
             })
 
             // 设置屏幕位置
@@ -951,17 +875,18 @@ export const useModelEditor = createStore(() => {
         selectedIdSets: modelSelection.selectedIdSets,
         isModelSelectionNotEmpty,
 
-        getGraphSelection,
-        clearGraphSelection,
         graphSelection: {
+            get: getGraphSelection,
             selectAll: selectGraphAll,
             unselectAll: clearGraphSelection,
             toggleSelectAll: toggleSelectGraphAll,
+            selectedCount: computed(() => {
+                const vueFlow = getVueFlow()
+                return (vueFlow.getSelectedNodes.value.length + vueFlow.getSelectedEdges.value.length)
+            })
         },
 
         selectionRect: readonly(selectionRect),
-        isGraphSelectionNotEmpty,
-        isGraphSelectionPlural,
         canMultiSelect,
         disableMultiSelect,
         enableMultiSelect,

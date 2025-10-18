@@ -6,7 +6,7 @@ import type {AbstractAssociationEdge} from "@/modelEditor/edge/AbstractAssociati
 import AutoResizeForeignObject from "@/modelEditor/svg/AutoResizeForeignObject.vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 
-const {zoom, isGraphSelectionPlural} = useModelEditor()
+const {zoom, graphSelection} = useModelEditor()
 
 const props = defineProps<EdgeProps<ConcreteAssociationEdge["data"] | AbstractAssociationEdge["data"]>>()
 const association = computed(() => props.data.edgedAssociation.association)
@@ -125,7 +125,7 @@ defineExpose({
         </AutoResizeForeignObject>
 
         <AutoResizeForeignObject
-            v-if="selected && !isGraphSelectionPlural"
+            v-if="selected && graphSelection.selectedCount.value < 2"
             @resize="handleToolBarResize"
             style="z-index: var(--edge-toolbar-z-index);"
             :transform="`translate(${labelPoint.x - toolBarWidth / (zoom * 2)} ${labelPoint.y - labelHeight / 2 - (toolBarHeight + 10) / zoom}) scale(${1 / zoom})`"

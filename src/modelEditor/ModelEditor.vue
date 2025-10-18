@@ -6,13 +6,20 @@ import EntityNode from "@/modelEditor/node/EntityNode.vue";
 import MappedSuperClassNode from "@/modelEditor/node/MappedSuperClassNode.vue";
 import EnumerationNode from "@/modelEditor/node/EnumerationNode.vue";
 import EmbeddableTypeNode from "@/modelEditor/node/EmbeddableTypeNode.vue";
-import {onMounted} from "vue";
+import {onBeforeUnmount, onMounted, ref} from "vue";
 import ModelEditorToolbar from "@/modelEditor/toolbar/ModelEditorToolbar.vue";
 import {judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
 import ConcreteAssociationEdge from "@/modelEditor/edge/ConcreteAssociationEdge.vue";
 import AbstractAssociationEdge from "@/modelEditor/edge/AbstractAssociationEdge.vue";
 import ModelEditorSelectionRect from "@/modelEditor/selectionRect/ModelEditorSelectionRect.vue";
 import ModelGenerator from "@/modelEditor/generator/ModelGenerator.vue";
+import {defaultModelSubIds} from "@/type/context/utils/ModelSubIds.ts";
+import {NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";
+import {NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode.ts";
+import {NodeType_EmbeddableType} from "@/modelEditor/node/EmbeddableTypeNode.ts";
+import {NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
+import {EdgeType_ConcreteAssociation} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
+import {EdgeType_AbstractAssociation} from "@/modelEditor/edge/AbstractAssociationEdge.ts";
 
 const {
     initModelEditor,
@@ -22,19 +29,88 @@ const {
     redo,
     saveModel,
     selectionRect,
-    isGraphSelectionNotEmpty,
+    graphSelection,
+    enableMultiSelect,
+    disableMultiSelect,
+    toggleDefaultMouseAction,
     copy,
     cut,
     paste,
     focus,
+    remove,
 } = useModelEditor()
 
 onMounted(() => {
     initModelEditor()
 })
 
+const isPointerEnter = ref(false)
+
+onMounted(() => {
+    document.addEventListener("keydown", handleKeyDown)
+})
+onBeforeUnmount(() => {
+    document.removeEventListener("keydown", handleKeyDown)
+})
 const handleKeyDown = async (e: KeyboardEvent) => {
-    if (e.ctrlKey) {
+    if (!isPointerEnter.value) return
+
+    // 按下 Delete 键删除选中的节点和边
+    if (e.key === "Delete" || e.key === "Backspace") {
+        if (judgeTargetIsInteraction(e)) return
+
+        e.preventDefault()
+        const ids = defaultModelSubIds()
+        const {nodes, edges} = graphSelection.get()
+        for (const node of nodes) {
+            if (node.type === NodeType_Entity) {
+                ids.entityIds.push(node.id)
+            } else if (node.type === NodeType_MappedSuperClass) {
+                ids.mappedSuperClassIds.push(node.id)
+            } else if (node.type === NodeType_EmbeddableType) {
+                ids.embeddableTypeIds.push(node.id)
+            } else if (node.type === NodeType_Enumeration) {
+                ids.enumerationIds.push(node.id)
+            }
+        }
+        for (const edge of edges) {
+            if (edge.type === EdgeType_ConcreteAssociation) {
+                ids.associationIds.push(edge.id)
+            } else if (edge.type === EdgeType_AbstractAssociation) {
+                ids.associationIds.push(edge.id)
+            }
+        }
+        remove(ids)
+        focus()
+    }
+
+    // 按下 Ctrl 键进入多选模式，直到松开 Ctrl 键
+    else if (e.key === "Control") {
+        if (judgeTargetIsInteraction(e)) return
+
+        enableMultiSelect()
+        focus()
+        document.documentElement.addEventListener('keyup', (e) => {
+            if (e.key === "Control" || e.ctrlKey) {
+                disableMultiSelect()
+            }
+        }, {once: true})
+    }
+
+    // 按下 Shift 键进入框选模式，直到松开 Shift 键
+    else if (e.key === "Shift") {
+        if (judgeTargetIsInteraction(e)) return
+
+        toggleDefaultMouseAction()
+        focus()
+        document.documentElement.addEventListener('keyup', (e) => {
+            if (e.key === "Shift" || e.shiftKey) {
+                toggleDefaultMouseAction()
+            }
+        }, {once: true})
+    }
+
+    else if (e.ctrlKey) {
         // 按下 Ctrl + z 键，进行历史记录的撤回重做
         if ((e.key === "z" || e.key === "Z")) {
             if (judgeTargetIsInteraction(e)) return
@@ -53,19 +129,25 @@ const handleKeyDown = async (e: KeyboardEvent) => {
             e.preventDefault()
             redo()
             focus()
-        } else if (e.key === "s" || e.key === "S") {
+        }
+
+        // 按下 Ctrl + s 键，保存模型
+        else if (e.key === "s" || e.key === "S") {
             e.preventDefault()
             await saveModel()
-        } else if (e.key === "c" || e.key === "C") {
+        }
+
+        // 剪切板快捷键
+        else if (e.key === "c" || e.key === "C") {
             if (judgeTargetIsInteraction(e)) return
-            if (!isGraphSelectionNotEmpty.value) return
+            if (graphSelection.selectedCount.value < 1) return
 
             e.preventDefault()
             await copy()
             focus()
         } else if (e.key === "x" || e.key === "X") {
             if (judgeTargetIsInteraction(e)) return
-            if (!isGraphSelectionNotEmpty.value) return
+            if (graphSelection.selectedCount.value < 1) return
 
             e.preventDefault()
             await cut()
@@ -77,6 +159,16 @@ const handleKeyDown = async (e: KeyboardEvent) => {
             await paste()
             focus()
         }
+
+        // 全选
+        else if (e.key === "a" || e.key === "A") {
+            if (judgeTargetIsInteraction(e)) return
+
+            e.preventDefault()
+
+            graphSelection.selectAll()
+            focus()
+        }
     }
 }
 </script>
@@ -84,8 +176,9 @@ const handleKeyDown = async (e: KeyboardEvent) => {
 <template>
     <div
         tabindex="-1"
-        @keydown="handleKeyDown"
         class="model-editor-wrapper"
+        @pointerenter="isPointerEnter = true"
+        @pointerleave="isPointerEnter = false"
     >
         <ModelEditorBackground :viewport="viewport"/>
 
@@ -103,6 +196,7 @@ const handleKeyDown = async (e: KeyboardEvent) => {
             :connect-on-click="false"
             :select-nodes-on-drag="false"
             :selection-key-code="false"
+            :delete-key-code="() => false"
 
             no-drag-class-name="noDrag"
             no-wheel-class-name="noWheel"
