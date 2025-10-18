@@ -15,11 +15,19 @@ const SingleColumnMidTableJoinInfoJsonSchema: JSONSchemaType<SingleColumnMidTabl
                 },
                 "targetColumnName": {
                     "type": "string"
+                },
+                "sourceForeignKeyType": {
+                    "$ref": "#/definitions/ForeignKeyType"
+                },
+                "targetForeignKeyType": {
+                    "$ref": "#/definitions/ForeignKeyType"
                 }
             },
             "required": [
                 "sourceColumnName",
+                "sourceForeignKeyType",
                 "targetColumnName",
+                "targetForeignKeyType",
                 "type"
             ]
         },
@@ -114,6 +122,15 @@ const SingleColumnMidTableJoinInfoJsonSchema: JSONSchemaType<SingleColumnMidTabl
             ]
         }
     ],
+    "definitions": {
+        "ForeignKeyType": {
+            "enum": [
+                "FAKE",
+                "REAL"
+            ],
+            "type": "string"
+        }
+    },
     "$schema": "http://json-schema.org/draft-07/schema#"
 } as any as JSONSchemaType<SingleColumnMidTableJoinInfo>
 

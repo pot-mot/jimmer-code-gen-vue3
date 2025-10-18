@@ -2,94 +2,210 @@ import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
 import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
 const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> = {
-    "allOf": [
+    "anyOf": [
         {
-            "type": "object",
-            "properties": {
-                "category": {
-                    "type": "string",
-                    "const": "OneToOne_Source"
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "OneToOne_Source"
+                        },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": false
+                        },
+                        "joinInfo": {
+                            "$ref": "#/definitions/JoinInfo"
+                        },
+                        "autoGenerateJoinInfo": {
+                            "type": "boolean"
+                        },
+                        "onDissociateAction": {
+                            "$ref": "#/definitions/OnDissociationAction"
+                        }
+                    },
+                    "required": [
+                        "autoGenerateJoinInfo",
+                        "category",
+                        "joinInfo",
+                        "onDissociateAction",
+                        "typeIsList"
+                    ]
                 },
-                "typeIsList": {
-                    "type": "boolean",
-                    "const": false
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "extraImports": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extraAnnotations": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "comment",
+                        "extraAnnotations",
+                        "extraImports",
+                        "id",
+                        "name",
+                        "nullable"
+                    ]
                 },
-                "joinInfo": {
-                    "$ref": "#/definitions/JoinInfo"
-                },
-                "autoGenerateJoinInfo": {
-                    "type": "boolean"
-                },
-                "onDissociateAction": {
-                    "$ref": "#/definitions/OnDissociationAction"
+                {
+                    "type": "object",
+                    "properties": {
+                        "associationId": {
+                            "type": "string"
+                        },
+                        "referencedEntityId": {
+                            "type": "string"
+                        },
+                        "idViewName": {
+                            "type": "string"
+                        },
+                        "autoSyncIdViewName": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "associationId",
+                        "autoSyncIdViewName",
+                        "idViewName",
+                        "referencedEntityId"
+                    ]
                 }
-            },
-            "required": [
-                "autoGenerateJoinInfo",
-                "category",
-                "joinInfo",
-                "onDissociateAction",
-                "typeIsList"
             ]
         },
         {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "OneToOne_Source"
+                        },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": false
+                        },
+                        "joinInfo": {
+                            "$ref": "#/definitions/JoinInfo"
+                        },
+                        "autoGenerateJoinInfo": {
+                            "type": "boolean"
+                        },
+                        "onDissociateAction": {
+                            "$ref": "#/definitions/OnDissociationAction"
+                        }
+                    },
+                    "required": [
+                        "autoGenerateJoinInfo",
+                        "category",
+                        "joinInfo",
+                        "onDissociateAction",
+                        "typeIsList"
+                    ]
                 },
-                "name": {
-                    "type": "string"
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "extraImports": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extraAnnotations": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "comment",
+                        "extraAnnotations",
+                        "extraImports",
+                        "id",
+                        "name",
+                        "nullable"
+                    ]
                 },
-                "comment": {
-                    "type": "string"
+                {
+                    "type": "object",
+                    "properties": {
+                        "associationId": {
+                            "type": "string"
+                        },
+                        "referencedEntityId": {
+                            "type": "string"
+                        },
+                        "idViewName": {
+                            "type": "string"
+                        },
+                        "autoSyncIdViewName": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "associationId",
+                        "autoSyncIdViewName",
+                        "idViewName",
+                        "referencedEntityId"
+                    ]
                 },
-                "extraImports": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "extraAnnotations": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "nullable": {
-                    "type": "boolean"
+                {
+                    "type": "object",
+                    "properties": {
+                        "key": {
+                            "type": "boolean",
+                            "const": true
+                        },
+                        "keyGroups": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": [
+                        "key",
+                        "keyGroups"
+                    ]
                 }
-            },
-            "required": [
-                "comment",
-                "extraAnnotations",
-                "extraImports",
-                "id",
-                "name",
-                "nullable"
-            ]
-        },
-        {
-            "type": "object",
-            "properties": {
-                "associationId": {
-                    "type": "string"
-                },
-                "referencedEntityId": {
-                    "type": "string"
-                },
-                "idViewName": {
-                    "type": "string"
-                },
-                "autoSyncIdViewName": {
-                    "type": "boolean"
-                }
-            },
-            "required": [
-                "associationId",
-                "autoSyncIdViewName",
-                "idViewName",
-                "referencedEntityId"
             ]
         }
     ],
@@ -184,11 +300,19 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                         },
                         "targetColumnName": {
                             "type": "string"
+                        },
+                        "sourceForeignKeyType": {
+                            "$ref": "#/definitions/ForeignKeyType"
+                        },
+                        "targetForeignKeyType": {
+                            "$ref": "#/definitions/ForeignKeyType"
                         }
                     },
                     "required": [
                         "sourceColumnName",
+                        "sourceForeignKeyType",
                         "targetColumnName",
+                        "targetForeignKeyType",
                         "type"
                     ]
                 },

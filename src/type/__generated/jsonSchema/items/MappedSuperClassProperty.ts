@@ -582,10 +582,414 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
             "$ref": "#/definitions/ScalarEmbeddableProperty"
         },
         {
-            "$ref": "#/definitions/OneToOneSourceProperty"
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "OneToOne_Source"
+                        },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": false
+                        },
+                        "joinInfo": {
+                            "$ref": "#/definitions/JoinInfo"
+                        },
+                        "autoGenerateJoinInfo": {
+                            "type": "boolean"
+                        },
+                        "onDissociateAction": {
+                            "$ref": "#/definitions/OnDissociationAction"
+                        }
+                    },
+                    "required": [
+                        "autoGenerateJoinInfo",
+                        "category",
+                        "joinInfo",
+                        "onDissociateAction",
+                        "typeIsList"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "extraImports": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extraAnnotations": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "comment",
+                        "extraAnnotations",
+                        "extraImports",
+                        "id",
+                        "name",
+                        "nullable"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "associationId": {
+                            "type": "string"
+                        },
+                        "referencedEntityId": {
+                            "type": "string"
+                        },
+                        "idViewName": {
+                            "type": "string"
+                        },
+                        "autoSyncIdViewName": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "associationId",
+                        "autoSyncIdViewName",
+                        "idViewName",
+                        "referencedEntityId"
+                    ]
+                }
+            ]
         },
         {
-            "$ref": "#/definitions/ManyToOneProperty"
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "OneToOne_Source"
+                        },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": false
+                        },
+                        "joinInfo": {
+                            "$ref": "#/definitions/JoinInfo"
+                        },
+                        "autoGenerateJoinInfo": {
+                            "type": "boolean"
+                        },
+                        "onDissociateAction": {
+                            "$ref": "#/definitions/OnDissociationAction"
+                        }
+                    },
+                    "required": [
+                        "autoGenerateJoinInfo",
+                        "category",
+                        "joinInfo",
+                        "onDissociateAction",
+                        "typeIsList"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "extraImports": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extraAnnotations": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "comment",
+                        "extraAnnotations",
+                        "extraImports",
+                        "id",
+                        "name",
+                        "nullable"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "associationId": {
+                            "type": "string"
+                        },
+                        "referencedEntityId": {
+                            "type": "string"
+                        },
+                        "idViewName": {
+                            "type": "string"
+                        },
+                        "autoSyncIdViewName": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "associationId",
+                        "autoSyncIdViewName",
+                        "idViewName",
+                        "referencedEntityId"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "key": {
+                            "type": "boolean",
+                            "const": true
+                        },
+                        "keyGroups": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": [
+                        "key",
+                        "keyGroups"
+                    ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "ManyToOne"
+                        },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": false
+                        },
+                        "joinInfo": {
+                            "$ref": "#/definitions/JoinInfo"
+                        },
+                        "autoGenerateJoinInfo": {
+                            "type": "boolean"
+                        },
+                        "onDissociateAction": {
+                            "$ref": "#/definitions/OnDissociationAction"
+                        }
+                    },
+                    "required": [
+                        "autoGenerateJoinInfo",
+                        "category",
+                        "joinInfo",
+                        "onDissociateAction",
+                        "typeIsList"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "extraImports": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extraAnnotations": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "comment",
+                        "extraAnnotations",
+                        "extraImports",
+                        "id",
+                        "name",
+                        "nullable"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "associationId": {
+                            "type": "string"
+                        },
+                        "referencedEntityId": {
+                            "type": "string"
+                        },
+                        "idViewName": {
+                            "type": "string"
+                        },
+                        "autoSyncIdViewName": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "associationId",
+                        "autoSyncIdViewName",
+                        "idViewName",
+                        "referencedEntityId"
+                    ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "ManyToOne"
+                        },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": false
+                        },
+                        "joinInfo": {
+                            "$ref": "#/definitions/JoinInfo"
+                        },
+                        "autoGenerateJoinInfo": {
+                            "type": "boolean"
+                        },
+                        "onDissociateAction": {
+                            "$ref": "#/definitions/OnDissociationAction"
+                        }
+                    },
+                    "required": [
+                        "autoGenerateJoinInfo",
+                        "category",
+                        "joinInfo",
+                        "onDissociateAction",
+                        "typeIsList"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "comment": {
+                            "type": "string"
+                        },
+                        "extraImports": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "extraAnnotations": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "comment",
+                        "extraAnnotations",
+                        "extraImports",
+                        "id",
+                        "name",
+                        "nullable"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "associationId": {
+                            "type": "string"
+                        },
+                        "referencedEntityId": {
+                            "type": "string"
+                        },
+                        "idViewName": {
+                            "type": "string"
+                        },
+                        "autoSyncIdViewName": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "associationId",
+                        "autoSyncIdViewName",
+                        "idViewName",
+                        "referencedEntityId"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "key": {
+                            "type": "boolean",
+                            "const": true
+                        },
+                        "keyGroups": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": [
+                        "key",
+                        "keyGroups"
+                    ]
+                }
+            ]
         },
         {
             "$ref": "#/definitions/GetterFormulaProperty"
@@ -1111,99 +1515,6 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                 }
             ]
         },
-        "OneToOneSourceProperty": {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "OneToOne_Source"
-                        },
-                        "typeIsList": {
-                            "type": "boolean",
-                            "const": false
-                        },
-                        "joinInfo": {
-                            "$ref": "#/definitions/JoinInfo"
-                        },
-                        "autoGenerateJoinInfo": {
-                            "type": "boolean"
-                        },
-                        "onDissociateAction": {
-                            "$ref": "#/definitions/OnDissociationAction"
-                        }
-                    },
-                    "required": [
-                        "autoGenerateJoinInfo",
-                        "category",
-                        "joinInfo",
-                        "onDissociateAction",
-                        "typeIsList"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "associationId": {
-                            "type": "string"
-                        },
-                        "referencedEntityId": {
-                            "type": "string"
-                        },
-                        "idViewName": {
-                            "type": "string"
-                        },
-                        "autoSyncIdViewName": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "associationId",
-                        "autoSyncIdViewName",
-                        "idViewName",
-                        "referencedEntityId"
-                    ]
-                }
-            ]
-        },
         "JoinInfo": {
             "anyOf": [
                 {
@@ -1294,11 +1605,19 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         },
                         "targetColumnName": {
                             "type": "string"
+                        },
+                        "sourceForeignKeyType": {
+                            "$ref": "#/definitions/ForeignKeyType"
+                        },
+                        "targetForeignKeyType": {
+                            "$ref": "#/definitions/ForeignKeyType"
                         }
                     },
                     "required": [
                         "sourceColumnName",
+                        "sourceForeignKeyType",
                         "targetColumnName",
+                        "targetForeignKeyType",
                         "type"
                     ]
                 },
@@ -1637,99 +1956,6 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                 "SET_NULL"
             ],
             "type": "string"
-        },
-        "ManyToOneProperty": {
-            "allOf": [
-                {
-                    "type": "object",
-                    "properties": {
-                        "category": {
-                            "type": "string",
-                            "const": "ManyToOne"
-                        },
-                        "typeIsList": {
-                            "type": "boolean",
-                            "const": false
-                        },
-                        "joinInfo": {
-                            "$ref": "#/definitions/JoinInfo"
-                        },
-                        "autoGenerateJoinInfo": {
-                            "type": "boolean"
-                        },
-                        "onDissociateAction": {
-                            "$ref": "#/definitions/OnDissociationAction"
-                        }
-                    },
-                    "required": [
-                        "autoGenerateJoinInfo",
-                        "category",
-                        "joinInfo",
-                        "onDissociateAction",
-                        "typeIsList"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "nullable": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
-                        "nullable"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "associationId": {
-                            "type": "string"
-                        },
-                        "referencedEntityId": {
-                            "type": "string"
-                        },
-                        "idViewName": {
-                            "type": "string"
-                        },
-                        "autoSyncIdViewName": {
-                            "type": "boolean"
-                        }
-                    },
-                    "required": [
-                        "associationId",
-                        "autoSyncIdViewName",
-                        "idViewName",
-                        "referencedEntityId"
-                    ]
-                }
-            ]
         },
         "GetterFormulaProperty": {
             "allOf": [

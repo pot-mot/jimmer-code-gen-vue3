@@ -85,11 +85,19 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                         },
                         "targetColumnName": {
                             "type": "string"
+                        },
+                        "sourceForeignKeyType": {
+                            "$ref": "#/definitions/ForeignKeyType"
+                        },
+                        "targetForeignKeyType": {
+                            "$ref": "#/definitions/ForeignKeyType"
                         }
                     },
                     "required": [
                         "sourceColumnName",
+                        "sourceForeignKeyType",
                         "targetColumnName",
+                        "targetForeignKeyType",
                         "type"
                     ]
                 },
@@ -184,6 +192,13 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                     ]
                 }
             ]
+        },
+        "ForeignKeyType": {
+            "enum": [
+                "FAKE",
+                "REAL"
+            ],
+            "type": "string"
         },
         "MultiColumnMidTableJoinInfo": {
             "allOf": [
@@ -418,13 +433,6 @@ const ManyToManySourcePropertyJsonSchema: JSONSchemaType<ManyToManySourcePropert
                     ]
                 }
             ]
-        },
-        "ForeignKeyType": {
-            "enum": [
-                "FAKE",
-                "REAL"
-            ],
-            "type": "string"
         },
         "Omit<BaseProperty,\"nullable\">": {
             "type": "object",

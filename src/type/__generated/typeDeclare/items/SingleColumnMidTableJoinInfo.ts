@@ -4,5 +4,7 @@ export default Object.freeze({
     type: "SingleColumnMidTable"
     sourceColumnName: string
     targetColumnName: string
+    sourceForeignKeyType: ForeignKeyType
+    targetForeignKeyType: ForeignKeyType
 } & MidTableInfo`,
 })

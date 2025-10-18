@@ -6,5 +6,6 @@ export default Object.freeze({
     joinInfo: JoinInfo
     autoGenerateJoinInfo: boolean
     onDissociateAction: OnDissociationAction
-} & BaseProperty & BaseAssociationProperty`,
+} & BaseProperty & BaseAssociationProperty
+    & ({} | KeyProperty)`,
 })

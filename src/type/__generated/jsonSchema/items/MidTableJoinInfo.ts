@@ -25,11 +25,19 @@ const MidTableJoinInfoJsonSchema: JSONSchemaType<MidTableJoinInfo> = {
                         },
                         "targetColumnName": {
                             "type": "string"
+                        },
+                        "sourceForeignKeyType": {
+                            "$ref": "#/definitions/ForeignKeyType"
+                        },
+                        "targetForeignKeyType": {
+                            "$ref": "#/definitions/ForeignKeyType"
                         }
                     },
                     "required": [
                         "sourceColumnName",
+                        "sourceForeignKeyType",
                         "targetColumnName",
+                        "targetForeignKeyType",
                         "type"
                     ]
                 },
@@ -124,6 +132,13 @@ const MidTableJoinInfoJsonSchema: JSONSchemaType<MidTableJoinInfo> = {
                     ]
                 }
             ]
+        },
+        "ForeignKeyType": {
+            "enum": [
+                "FAKE",
+                "REAL"
+            ],
+            "type": "string"
         },
         "MultiColumnMidTableJoinInfo": {
             "allOf": [
@@ -358,13 +373,6 @@ const MidTableJoinInfoJsonSchema: JSONSchemaType<MidTableJoinInfo> = {
                     ]
                 }
             ]
-        },
-        "ForeignKeyType": {
-            "enum": [
-                "FAKE",
-                "REAL"
-            ],
-            "type": "string"
         }
     },
     "$schema": "http://json-schema.org/draft-07/schema#"

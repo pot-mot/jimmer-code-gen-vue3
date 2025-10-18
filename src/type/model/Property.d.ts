@@ -105,6 +105,7 @@ type OneToOneSourceProperty = {
     autoGenerateJoinInfo: boolean
     onDissociateAction: OnDissociationAction
 } & BaseProperty & BaseAssociationProperty
+    & ({} | KeyProperty)
 
 type OneToOneMappedProperty = {
     category: "OneToOne_Mapped"
@@ -125,6 +126,7 @@ type ManyToOneProperty = {
     autoGenerateJoinInfo: boolean
     onDissociateAction: OnDissociationAction
 } & BaseProperty & BaseAssociationProperty
+    & ({} | KeyProperty)
 
 type OneToManyProperty = {
     category: "OneToMany"

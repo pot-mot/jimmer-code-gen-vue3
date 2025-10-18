@@ -91,11 +91,19 @@ const JoinInfoJsonSchema: JSONSchemaType<JoinInfo> = {
                         },
                         "targetColumnName": {
                             "type": "string"
+                        },
+                        "sourceForeignKeyType": {
+                            "$ref": "#/definitions/ForeignKeyType"
+                        },
+                        "targetForeignKeyType": {
+                            "$ref": "#/definitions/ForeignKeyType"
                         }
                     },
                     "required": [
                         "sourceColumnName",
+                        "sourceForeignKeyType",
                         "targetColumnName",
+                        "targetForeignKeyType",
                         "type"
                     ]
                 },
