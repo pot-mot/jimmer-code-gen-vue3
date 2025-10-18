@@ -215,6 +215,9 @@ export const useModelEditor = createStore(() => {
         history.executeCommand('group:add', {group})
         return group.id
     }
+    const changeGroup = (group: DeepReadonly<Group>) => {
+        history.executeCommand('group:change', {group})
+    }
     const addEntity = (
         groupId: string = getCurrentGroupIdOrCreate(),
         entity: EntityWithProperties = defaultEntity(groupId),
@@ -223,6 +226,9 @@ export const useModelEditor = createStore(() => {
         entity.name = modelNameSets.entityNameSet.next(entity.name)
         history.executeCommand('entity:add', {entity, position})
         return entity.id
+    }
+    const changeEntity = (entity: DeepReadonly<EntityWithProperties>) => {
+        history.executeCommand('entity:change', {entity})
     }
     const addMappedSuperClass = (
         groupId: string = getCurrentGroupIdOrCreate(),
@@ -233,6 +239,9 @@ export const useModelEditor = createStore(() => {
         history.executeCommand('mapped-super-class:add', {mappedSuperClass, position})
         return mappedSuperClass.id
     }
+    const changeMappedSuperClass = (mappedSuperClass: DeepReadonly<MappedSuperClassWithProperties>) => {
+        history.executeCommand('mapped-super-class:change', {mappedSuperClass})
+    }
     const addEmbeddableType = (
         groupId: string = getCurrentGroupIdOrCreate(),
         embeddableType: EmbeddableTypeWithProperties = defaultEmbeddableType(groupId),
@@ -242,6 +251,9 @@ export const useModelEditor = createStore(() => {
         history.executeCommand('embeddable-type:add', {embeddableType, position})
         return embeddableType.id
     }
+    const changeEmbeddableType = (embeddableType: DeepReadonly<EmbeddableTypeWithProperties>) => {
+        history.executeCommand('embeddable-type:change', {embeddableType})
+    }
     const addEnumeration = (
         groupId: string = getCurrentGroupIdOrCreate(),
         enumeration: Enumeration = defaultEnumeration(groupId, contextData.value.model.defaultEnumerationStrategy),
@@ -250,6 +262,9 @@ export const useModelEditor = createStore(() => {
         enumeration.name = modelNameSets.enumerationNameSet.next(enumeration.name)
         history.executeCommand('enumeration:add', {enumeration, position})
         return enumeration.id
+    }
+    const changeEnumeration = (enumeration: DeepReadonly<Enumeration>) => {
+        history.executeCommand('enumeration:change', {enumeration})
     }
     const addAssociation = (
         association: AssociationIdOnly,
@@ -263,6 +278,12 @@ export const useModelEditor = createStore(() => {
         }
         history.executeCommand('association:add', {association, labelPosition})
         return association.id
+    }
+    const changeAssociation = (association: DeepReadonly<AssociationIdOnly>) => {
+        const contextData = getContextData()
+        const edgedAssociation = contextData.associationMap.get(association.id)
+        if (!edgedAssociation) throw new Error(`Association [${association.id}] not found`)
+        history.executeCommand('association:change', {association, labelPosition: edgedAssociation.labelPosition})
     }
 
     const remove = (
@@ -980,11 +1001,18 @@ export const useModelEditor = createStore(() => {
 
         // 模型数据变更
         addGroup,
+        changeGroup,
         addEntity,
+        changeEntity,
         addEmbeddableType,
+        changeEmbeddableType,
         addMappedSuperClass,
+        changeMappedSuperClass,
         addEnumeration,
+        changeEnumeration,
         addAssociation,
+        changeAssociation,
+
         remove,
 
         copy: async (
