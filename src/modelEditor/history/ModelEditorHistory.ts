@@ -95,7 +95,10 @@ export type ModelEditorHistoryCommands = {
     }>>
     "association:change": CommandDefinition<DeepReadonly<EdgedAssociation>>
 
-    "import": CommandDefinition<DeepReadonly<{ data: ModelGraphSubData, startPosition: XYPosition }>, DeepReadonly<{
+    "import": CommandDefinition<DeepReadonly<{
+        data: ModelGraphSubData,
+        startPosition: XYPosition,
+    }>, DeepReadonly<{
         ids: ModelSubIds,
         startPosition: XYPosition
     }>>
@@ -1296,7 +1299,7 @@ export const useModelEditorHistory = (
 
     history.registerCommand("import", {
         applyAction: ({data, startPosition}) => {
-            const ids = importIntoContext(cloneDeepReadonlyRaw<ModelGraphSubData>(data), {startPosition, protectRepeatNames: true})
+            const ids = importIntoContext(cloneDeepReadonlyRaw<ModelGraphSubData>(data), {startPosition})
             return {ids, startPosition}
         },
         revertAction: ({ids, startPosition}) => {
@@ -1309,7 +1312,7 @@ export const useModelEditorHistory = (
             return removeFromContext(cloneDeepReadonlyRaw<ModelSubIds>(modelSubIds))
         },
         revertAction: (graphData) => {
-            return importIntoContext(cloneDeepReadonlyRaw<ModelGraphSubData>(graphData), {protectRepeatNames: false})
+            return importIntoContext(cloneDeepReadonlyRaw<ModelGraphSubData>(graphData))
         }
     })
 
