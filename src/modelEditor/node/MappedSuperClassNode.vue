@@ -15,6 +15,7 @@ import {NodeToolbar} from "@vue-flow/node-toolbar";
 import IconDelete from "@/components/icons/IconDelete.vue";
 import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
+import IconAbstractEntity from "@/components/icons/modelEditor/IconAbstractEntity.vue";
 
 const props = defineProps<NodeProps<MappedSuperClassNode["data"]>>()
 
@@ -81,11 +82,13 @@ watch(() => handleIndexMap.value, () => {
         <Handle :id="data.mappedSuperClass.id" type="target" :position="Position.Bottom"/>
 
         <div class="mapped-super-class-header">
-            <div style="display: flex; gap: 0.4rem">
+            <div class="header-label">
+                <IconAbstractEntity
+                    class="header-label-icon"
+                />
                 <NameCommentEditor
                     v-model="data.mappedSuperClass"
                     :class="groupTheme"
-                    style="padding: 2px;"
                 />
                 <span :class="groupTheme" style="color: var(--text-color);">:</span>
                 <ExtendsIdMultiSelect
@@ -95,6 +98,7 @@ watch(() => handleIndexMap.value, () => {
                     :id="data.mappedSuperClass.id"
                 />
             </div>
+
             <DiagnoseViewer
                 :messages="modelDiagnoseInfo.mappedSuperClassMap.get(id)?.mappedSuperClass"
             />
@@ -179,6 +183,16 @@ watch(() => handleIndexMap.value, () => {
 .mapped-super-class-header {
     padding: 0.5rem;
     background-color: v-bind(groupColor);
+}
+
+.header-label {
+    display: flex;
+    gap: 0.3rem;
+}
+
+.header-label-icon {
+    margin-top: 0.3rem;
+    --icon-size: 1.2rem;
 }
 
 .mapped-super-class-property-list {

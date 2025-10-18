@@ -13,6 +13,7 @@ import IconAim from "@/components/icons/IconAim.vue";
 import IconDelete from "@/components/icons/IconDelete.vue";
 import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
+import IconEmbeddableType from "@/components/icons/modelEditor/IconEmbeddableType.vue";
 
 const props = defineProps<NodeProps<EmbeddableTypeNode["data"]>>()
 
@@ -49,11 +50,16 @@ const beforePaste = (properties: Property[]) => {
 <template>
     <div class="embeddable-type-node" :class="{selected}">
         <div class="embeddable-type-header">
-            <NameCommentEditor
-                v-model="data.embeddableType"
-                :class="groupTheme"
-                style="padding: 2px;"
-            />
+            <div class="header-label">
+                <IconEmbeddableType
+                    class="header-label-icon"
+                />
+                <NameCommentEditor
+                    v-model="data.embeddableType"
+                    :class="groupTheme"
+                />
+            </div>
+
             <DiagnoseViewer
                 :messages="modelDiagnoseInfo.embeddableTypeMap.get(id)?.embeddableType"
             />
@@ -129,6 +135,16 @@ const beforePaste = (properties: Property[]) => {
 .embeddable-type-header {
     padding: 0.5rem;
     background-color: v-bind(groupColor);
+}
+
+.header-label {
+    display: flex;
+    gap: 0.3rem;
+}
+
+.header-label-icon {
+    margin-top: 0.3rem;
+    --icon-size: 1.2rem;
 }
 
 .embeddable-type-property-list {
