@@ -5,7 +5,7 @@
  */
 export const checkUpperCamelName = (name: string) => {
     // 检查基本有效性
-    if (!name || name.length === 0) return false
+    if (!name || typeof name !== 'string') return false
 
     // 必须以大写字母开头
     const firstChar = name.charAt(0)
@@ -32,7 +32,7 @@ export const checkUpperCamelName = (name: string) => {
  */
 export const checkLowerCamelName = (name: string) => {
     // 检查基本有效性
-    if (!name || name.length === 0) return false
+    if (!name || typeof name !== 'string') return false
 
     // 必须以小写字母开头
     const firstChar = name.charAt(0)
@@ -51,3 +51,24 @@ export const checkLowerCamelName = (name: string) => {
 
     return true
 }
+
+/**
+ * 检查字符串是否不包含空白字符
+ * @param name 待检查的字符串
+ * @returns 如果字符串不包含空白字符则返回true，否则返回false
+ */
+export const checkNoBlank = (name: string) => {
+    // 检查基本有效性
+    if (!name || typeof name !== 'string') return false
+
+    // 检查是否包含空白字符（空格、制表符、换行符等）
+    for (let i = 0; i < name.length; i++) {
+        const char = name.charAt(i)
+        if (char === ' ' || char === '\t' || char === '\n' || char === '\r') {
+            return false
+        }
+    }
+
+    return true
+}
+
