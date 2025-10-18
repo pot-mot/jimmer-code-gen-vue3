@@ -220,7 +220,7 @@ const association = computed(() => {
                     <ul>
                         <li
                             class="select-item"
-                            v-for="enumeration in menuItem.orderedEnumerations"
+                            v-for="enumeration in menuItem.enumerations"
                             :key="enumeration.id"
                             @click="selectEnumeration(enumeration)"
                         >
@@ -230,7 +230,7 @@ const association = computed(() => {
                     <ul>
                         <li
                             class="select-item"
-                            v-for="entity in menuItem.orderedEntities"
+                            v-for="entity in menuItem.entities"
                             :key="entity.id"
                             @click="selectEntity(entity)"
                         >
@@ -240,7 +240,7 @@ const association = computed(() => {
                     <ul>
                         <li
                             class="select-item"
-                            v-for="embeddableType in menuItem.orderedEmbeddableTypes"
+                            v-for="embeddableType in menuItem.embeddableTypes"
                             :key="embeddableType.id"
                             @click="selectEmbeddableType(embeddableType)"
                         >

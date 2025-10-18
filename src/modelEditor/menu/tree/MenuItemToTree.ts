@@ -18,7 +18,7 @@ export type MenuItemTreeNode = TreeNode<{
     embeddableType: EmbeddableTypeWithProperties,
 } | {
     type: "Association",
-    association: Association,
+    association: AssociationIdOnly,
 }>
 
 const entityToTreeNode = (entity: EntityWithProperties): MenuItemTreeNode => {
@@ -58,6 +58,23 @@ const embeddableToTreeNode = (embeddableType: EmbeddableTypeWithProperties): Men
     }
 }
 
+const getDataName = (item: MenuItemTreeNode): string => {
+    switch (item.data.type) {
+        case "Group":
+            return item.data.group.name
+        case "MappedSuperClass":
+            return item.data.mappedSuperClass.name
+        case "Entity":
+            return item.data.entity.name
+        case "Enumeration":
+            return item.data.enumeration.name
+        case "EmbeddableType":
+            return item.data.embeddableType.name
+        case "Association":
+            return "name" in item.data.association ? item.data.association.name : item.data.association.nameTemplate
+    }
+}
+
 export const menuItemToTree = (
     menuItem: MenuItem,
     filter: (item: {
@@ -72,10 +89,10 @@ export const menuItemToTree = (
             group: menuItem.group,
         },
         children: [
-            ...menuItem.orderedMappedSuperClasses.filter(filter).map(mappedSuperClassToTreeNode),
-            ...menuItem.orderedEntities.filter(filter).map(entityToTreeNode),
-            ...menuItem.orderedEnumerations.filter(filter).map(enumerationToTreeNode),
-            ...menuItem.orderedEmbeddableTypes.filter(filter).map(embeddableToTreeNode),
-        ]
+            ...menuItem.mappedSuperClasses.filter(filter).map(mappedSuperClassToTreeNode),
+            ...menuItem.entities.filter(filter).map(entityToTreeNode),
+            ...menuItem.enumerations.filter(filter).map(enumerationToTreeNode),
+            ...menuItem.embeddableTypes.filter(filter).map(embeddableToTreeNode),
+        ].sort((a, b) => getDataName(a).localeCompare(getDataName(b)))
     }
 }

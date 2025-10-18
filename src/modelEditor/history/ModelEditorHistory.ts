@@ -236,28 +236,20 @@ export const useModelEditorHistory = (
         menuMap.value.set(id, reactive({
             group,
             entityMap: new Map(),
-            orderedEntities: computed(() => {
-                return Array.from(menuMap.value.get(id)?.entityMap.values() ?? []).sort((o1, o2) => {
-                    return o1.name.localeCompare(o2.name)
-                })
+            entities: computed(() => {
+                return Array.from(menuMap.value.get(id)?.entityMap.values() ?? [])
             }),
             mappedSuperClassMap: new Map(),
-            orderedMappedSuperClasses: computed(() => {
-                return Array.from(menuMap.value.get(id)?.mappedSuperClassMap.values() ?? []).sort((o1, o2) => {
-                    return o1.name.localeCompare(o2.name)
-                })
+            mappedSuperClasses: computed(() => {
+                return Array.from(menuMap.value.get(id)?.mappedSuperClassMap.values() ?? [])
             }),
             embeddableTypeMap: new Map(),
-            orderedEmbeddableTypes: computed(() => {
-                return Array.from(menuMap.value.get(id)?.embeddableTypeMap.values() ?? []).sort((o1, o2) => {
-                    return o1.name.localeCompare(o2.name)
-                })
+            embeddableTypes: computed(() => {
+                return Array.from(menuMap.value.get(id)?.embeddableTypeMap.values() ?? [])
             }),
             enumerationMap: new Map(),
-            orderedEnumerations: computed(() => {
-                return Array.from(menuMap.value.get(id)?.enumerationMap.values() ?? []).sort((o1, o2) => {
-                    return o1.name.localeCompare(o2.name)
-                })
+            enumerations: computed(() => {
+                return Array.from(menuMap.value.get(id)?.enumerationMap.values() ?? [])
             }),
         }))
         return {id}

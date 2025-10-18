@@ -87,7 +87,7 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
                     <ul>
                         <li
                             class="select-item"
-                            v-for="enumeration in menuItem.orderedEnumerations"
+                            v-for="enumeration in menuItem.enumerations"
                             :key="enumeration.id"
                             @click="selectEnumeration(enumeration)"
                         >
@@ -97,7 +97,7 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
                     <ul>
                         <li
                             class="select-item"
-                            v-for="embeddableType in menuItem.orderedEmbeddableTypes"
+                            v-for="embeddableType in menuItem.embeddableTypes"
                             :key="embeddableType.id"
                             @click="selectEmbeddableType(embeddableType)"
                         >

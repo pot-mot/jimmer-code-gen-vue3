@@ -50,10 +50,10 @@ type MouseAction = "panDrag" | "selectionRect"
 export type MenuItem = {
     group: Group
 } & GroupSubMaps & {
-    orderedEntities: ReadonlyArray<EntityWithProperties>,
-    orderedMappedSuperClasses: ReadonlyArray<MappedSuperClassWithProperties>,
-    orderedEmbeddableTypes: ReadonlyArray<EmbeddableTypeWithProperties>,
-    orderedEnumerations: ReadonlyArray<Enumeration>,
+    entities: ReadonlyArray<EntityWithProperties>,
+    mappedSuperClasses: ReadonlyArray<MappedSuperClassWithProperties>,
+    embeddableTypes: ReadonlyArray<EmbeddableTypeWithProperties>,
+    enumerations: ReadonlyArray<Enumeration>,
 }
 
 export const createId = (type: "Model" | "Entity" | "Property" | "MappedSuperClass" | "EmbeddableType" | "Enumeration" | "EnumerationItem" | "Association" | "Group") => {
