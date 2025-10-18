@@ -1,6 +1,7 @@
 import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
 import type {ModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
+import {checkLowerCamelName, checkUpperCamelName} from "@/utils/name/nameCheck.ts";
 
 export type EmbeddableTypeDiagnose = {
     embeddableType: DiagnoseMessage[],
@@ -22,6 +23,13 @@ export const embeddableTypeDiagnose = (
             type: "error"
         })
     } else {
+        if (!checkUpperCamelName(embeddableType.name)) {
+            messages.push({
+                content: "[Invalid Name]",
+                type: "error"
+            })
+        }
+
         const nameCount = nameSets.groupItemNameSet.count(embeddableType.name)
         if (nameCount > 1) {
             messages.push({
@@ -39,6 +47,13 @@ export const embeddableTypeDiagnose = (
                 type: "error"
             })
         } else {
+            if (!checkLowerCamelName(property.name)) {
+                messages.push({
+                    content: "[Invalid Name]",
+                    type: "error"
+                })
+            }
+
             const nameCount = nameSets.embeddableTypePropertyNameSetMap.get(embeddableType.id)?.count(property.name) ?? 0
             if (nameCount > 1) {
                 messages.push({

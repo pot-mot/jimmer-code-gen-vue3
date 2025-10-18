@@ -1,6 +1,7 @@
 import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
 import type {ModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
+import {checkLowerCamelName, checkUpperCamelName} from "@/utils/name/nameCheck.ts";
 
 export type EntityDiagnoseResult = {
     entity: DiagnoseMessage[],
@@ -22,6 +23,13 @@ export const entityDiagnose = (
             type: "error"
         })
     } else {
+        if (!checkUpperCamelName(entity.name)) {
+            messages.push({
+                content: "[Invalid Name]",
+                type: "error"
+            })
+        }
+
         const nameCount = nameSets.groupItemNameSet.count(entity.name)
         if (nameCount > 1) {
             messages.push({
@@ -40,6 +48,13 @@ export const entityDiagnose = (
                 type: "error"
             })
         } else {
+            if (!checkLowerCamelName(property.name)) {
+                messages.push({
+                    content: "[Invalid Name]",
+                    type: "error"
+                })
+            }
+
             const nameCount = nameSets.entityPropertyNameSetMap.get(entity.id)?.count(property.name) ?? 0
             if (nameCount > 1) {
                 messages.push({

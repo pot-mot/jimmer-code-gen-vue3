@@ -1,6 +1,7 @@
 import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
 import type {ModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
+import {checkLowerCamelName, checkUpperCamelName} from "@/utils/name/nameCheck.ts";
 
 export type MappedSuperClassDiagnose = {
     mappedSuperClass: DiagnoseMessage[],
@@ -22,6 +23,13 @@ export const mappedSuperClassDiagnose = (
             type: "error"
         })
     } else {
+        if (!checkUpperCamelName(mappedSuperClass.name)) {
+            messages.push({
+                content: "[Invalid Name]",
+                type: "error"
+            })
+        }
+
         const nameCount = nameSets.groupItemNameSet.count(mappedSuperClass.name)
         if (nameCount > 1) {
             messages.push({
@@ -39,6 +47,13 @@ export const mappedSuperClassDiagnose = (
                 type: "error"
             })
         } else {
+            if (!checkLowerCamelName(property.name)) {
+                messages.push({
+                    content: "[Invalid Name]",
+                    type: "error"
+                })
+            }
+
             const nameCount = nameSets.mappedSuperClassPropertyNameSetMap.get(mappedSuperClass.id)?.count(property.name) ?? 0
             if (nameCount > 1) {
                 messages.push({
