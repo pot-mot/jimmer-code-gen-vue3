@@ -280,23 +280,23 @@ export const useModelDiagnoseInfo = (
 
         // 修改
         else if (inferCommandInput(data, "group:change")) {
-            if (data.type === "apply") syncGroup(data.options.group)
-            else if (data.type === "revert") syncGroup(data.revertOptions.group)
+            if (data.type === "apply") syncGroup(data.options.group, data.revertOptions.group)
+            else if (data.type === "revert") syncGroup(data.revertOptions.group, data.options.group)
         } else if (inferCommandInput(data, "entity:change")) {
-            if (data.type === "apply") syncEntity(data.options.entity)
-            else if (data.type === "revert") syncEntity(data.revertOptions.entity)
+            if (data.type === "apply") syncEntity(data.options.entity, data.revertOptions.entity)
+            else if (data.type === "revert") syncEntity(data.revertOptions.entity, data.options.entity)
         } else if (inferCommandInput(data, "mapped-super-class:change")) {
-            if (data.type === "apply") syncMappedSuperClass(data.options.mappedSuperClass)
-            else if (data.type === "revert") syncMappedSuperClass(data.revertOptions.mappedSuperClass)
+            if (data.type === "apply") syncMappedSuperClass(data.options.mappedSuperClass, data.revertOptions.mappedSuperClass)
+            else if (data.type === "revert") syncMappedSuperClass(data.revertOptions.mappedSuperClass, data.options.mappedSuperClass)
         } else if (inferCommandInput(data, "embeddable-type:change")) {
-            if (data.type === "apply") syncEmbeddableType(data.options.embeddableType)
-            else if (data.type === "revert") syncEmbeddableType(data.revertOptions.embeddableType)
+            if (data.type === "apply") syncEmbeddableType(data.options.embeddableType, data.revertOptions.embeddableType)
+            else if (data.type === "revert") syncEmbeddableType(data.revertOptions.embeddableType, data.options.embeddableType)
         } else if (inferCommandInput(data, "enumeration:change")) {
-            if (data.type === "apply") syncEnumeration(data.options.enumeration)
-            else if (data.type === "revert") syncEnumeration(data.revertOptions.enumeration)
+            if (data.type === "apply") syncEnumeration(data.options.enumeration, data.revertOptions.enumeration)
+            else if (data.type === "revert") syncEnumeration(data.revertOptions.enumeration, data.options.enumeration)
         } else if (inferCommandInput(data, "association:change")) {
-            if (data.type === "apply") syncAssociation(data.options.association)
-            else if (data.type === "revert") syncAssociation(data.revertOptions.association)
+            if (data.type === "apply") syncAssociation(data.options.association, data.revertOptions.association)
+            else if (data.type === "revert") syncAssociation(data.revertOptions.association, data.options.association)
         }
 
         // 导入
