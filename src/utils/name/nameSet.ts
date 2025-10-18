@@ -10,8 +10,8 @@ export type NameSet = {
 
 export const buildNameSet = (
     names: DeepReadonly<Iterable<string | null | undefined>>,
-    nextNameTemplate: (name: string, count: number) => string =
-        (name, count) => `${name}_${count}`
+    nextNameTemplate: (name: string, index: number) => string =
+        (name, index) => `${name}_${index}`
 ): NameSet => {
     const countMap = new Map<string, number>()
     const add = (name: string) => {
@@ -45,14 +45,14 @@ export const buildNameSet = (
             return countMap.get(name) ?? 0
         },
         next(name: string): string {
-            let count = countMap.get(name)
+            const count = countMap.get(name)
             if (count === undefined) {
                 return name
             } else {
-                let currentName = nextNameTemplate(name, count)
+                let index = 1
+                let currentName = nextNameTemplate(name, index)
                 while (countMap.has(currentName)) {
-                    count++
-                    currentName = nextNameTemplate(name, count)
+                    currentName = nextNameTemplate(name, ++index)
                 }
                 return currentName
             }
