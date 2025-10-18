@@ -97,7 +97,7 @@ const showComment = computed(() => model.value.comment.length > 0 || nameFocused
                 v-if="!model.name && !nameFocused"
                 class="empty-name"
             >
-                [Empty Name]
+                [Please Enter Name]
             </span>
             <FitSizeLineInput
                 ref="nameInput"

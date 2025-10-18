@@ -17,21 +17,36 @@ export const associationDiagnose = (
     const mappedPropertyMessages: DiagnoseMessage[] = []
 
     if ("name" in association && !association.useNameTemplate) {
-        const nameCount = nameSets.associationNameSet.count(association.name)
-        if (nameCount > 1) {
+        if (association.name.length === 0) {
             messages.push({
-                content: `[Duplicate Name: ${nameCount}]`,
-                type: "warning"
+                content: "[Name is empty]",
+                type: "error"
             })
+        } else {
+            const nameCount = nameSets.associationNameSet.count(association.name)
+            if (nameCount > 1) {
+                messages.push({
+                    content: `[Duplicate Name: ${nameCount}]`,
+                    type: "warning"
+                })
+            }
         }
     }
-    const mappedPropertyNameCount = nameSets.entityPropertyNameSetMap
-        .get(association.referencedEntityId)?.count(association.mappedProperty.name) ?? 0
-    if (mappedPropertyNameCount > 1) {
+
+    if (association.mappedProperty.name.length === 0) {
         mappedPropertyMessages.push({
-            content: `[Duplicate Name: ${mappedPropertyNameCount}]`,
-            type: "warning",
+            content: "[Name is empty]",
+            type: "error"
         })
+    } else {
+        const nameCount = nameSets.entityPropertyNameSetMap
+            .get(association.referencedEntityId)?.count(association.mappedProperty.name) ?? 0
+        if (nameCount > 1) {
+            mappedPropertyMessages.push({
+                content: `[Duplicate Name: ${nameCount}]`,
+                type: "warning",
+            })
+        }
     }
 
     return {

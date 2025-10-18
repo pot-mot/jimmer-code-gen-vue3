@@ -16,32 +16,55 @@ export const mappedSuperClassDiagnose = (
     const messages: DiagnoseMessage[] = []
     const propertyDiagnoseMap = new Map<string, DiagnoseMessage[]>()
 
-    const groupItemNameCount = nameSets.groupItemNameSet.count(mappedSuperClass.name)
-    if (groupItemNameCount > 1) {
+    if (mappedSuperClass.name.length === 0) {
         messages.push({
-            content: `[Duplicate Name: ${groupItemNameCount}]`,
-            type: "warning"
+            content: "[Name is empty]",
+            type: "error"
         })
-    }
-
-    for (const property of mappedSuperClass.properties) {
-        const messages: DiagnoseMessage[] = []
-        const nameCount = nameSets.mappedSuperClassPropertyNameSetMap.get(mappedSuperClass.id)?.count(property.name) ?? 0
+    } else {
+        const nameCount = nameSets.groupItemNameSet.count(mappedSuperClass.name)
         if (nameCount > 1) {
             messages.push({
                 content: `[Duplicate Name: ${nameCount}]`,
                 type: "warning"
             })
         }
-        if ("idViewName" in property) {
-            const nameCount = nameSets.mappedSuperClassPropertyNameSetMap.get(mappedSuperClass.id)?.count(property.idViewName) ?? 0
+    }
+
+    for (const property of mappedSuperClass.properties) {
+        const messages: DiagnoseMessage[] = []
+        if (property.name.length === 0) {
+            messages.push({
+                content: "[Name is empty]",
+                type: "error"
+            })
+        } else {
+            const nameCount = nameSets.mappedSuperClassPropertyNameSetMap.get(mappedSuperClass.id)?.count(property.name) ?? 0
             if (nameCount > 1) {
                 messages.push({
-                    content: `[Duplicate IdView Name: ${nameCount}]`,
+                    content: `[Duplicate Name: ${nameCount}]`,
                     type: "warning"
                 })
             }
         }
+
+        if ("idViewName" in property) {
+            if (property.idViewName.length === 0) {
+                messages.push({
+                    content: "[IdView Name is empty]",
+                    type: "error"
+                })
+            } else {
+                const nameCount = nameSets.mappedSuperClassPropertyNameSetMap.get(mappedSuperClass.id)?.count(property.idViewName) ?? 0
+                if (nameCount > 1) {
+                    messages.push({
+                        content: `[Duplicate IdView Name: ${nameCount}]`,
+                        type: "warning"
+                    })
+                }
+            }
+        }
+
         propertyDiagnoseMap.set(property.id, messages)
     }
 

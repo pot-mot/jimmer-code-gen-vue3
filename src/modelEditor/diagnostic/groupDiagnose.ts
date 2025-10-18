@@ -14,12 +14,19 @@ export const groupDiagnose = (
 ): GroupDiagnose => {
     const messages: DiagnoseMessage[] = []
 
-    const nameCount = nameSets.groupNameSet.count(group.name)
-    if (nameCount > 1) {
+    if (group.name.length === 0) {
         messages.push({
-            content: `[Duplicate Name: ${nameCount}]`,
-            type: "warning"
+            content: "[Name is empty]",
+            type: "error"
         })
+    } else {
+        const nameCount = nameSets.groupNameSet.count(group.name)
+        if (nameCount > 1) {
+            messages.push({
+                content: `[Duplicate Name: ${nameCount}]`,
+                type: "warning"
+            })
+        }
     }
 
     return {

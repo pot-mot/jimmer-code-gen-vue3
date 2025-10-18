@@ -16,22 +16,36 @@ export const embeddableTypeDiagnose = (
     const messages: DiagnoseMessage[] = []
     const propertyDiagnoseMap = new Map<string, DiagnoseMessage[]>()
 
-    const groupItemNameCount = nameSets.groupItemNameSet.count(embeddableType.name)
-    if (groupItemNameCount > 1) {
+    if (embeddableType.name.length === 0) {
         messages.push({
-            content: `[Duplicate Name: ${groupItemNameCount}]`,
-            type: "warning"
+            content: "[Name is empty]",
+            type: "error"
         })
-    }
-
-    for (const property of embeddableType.properties) {
-        const messages: DiagnoseMessage[] = []
-        const nameCount = nameSets.embeddableTypePropertyNameSetMap.get(embeddableType.id)?.count(property.name) ?? 0
+    } else {
+        const nameCount = nameSets.groupItemNameSet.count(embeddableType.name)
         if (nameCount > 1) {
             messages.push({
                 content: `[Duplicate Name: ${nameCount}]`,
                 type: "warning"
             })
+        }
+    }
+
+    for (const property of embeddableType.properties) {
+        const messages: DiagnoseMessage[] = []
+        if (property.name.length === 0) {
+            messages.push({
+                content: "[Name is empty]",
+                type: "error"
+            })
+        } else {
+            const nameCount = nameSets.embeddableTypePropertyNameSetMap.get(embeddableType.id)?.count(property.name) ?? 0
+            if (nameCount > 1) {
+                messages.push({
+                    content: `[Duplicate Name: ${nameCount}]`,
+                    type: "warning"
+                })
+            }
         }
         propertyDiagnoseMap.set(property.id, messages)
     }
