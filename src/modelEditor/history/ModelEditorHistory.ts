@@ -95,14 +95,17 @@ export type ModelEditorHistoryCommands = {
     }>>
     "association:change": CommandDefinition<DeepReadonly<EdgedAssociation>>
 
-    "import": CommandDefinition<DeepReadonly<{
+    "import": CommandDefinition<{
         data: ModelGraphSubData,
         startPosition: XYPosition,
-    }>, DeepReadonly<{
+    }, {
         ids: ModelSubIds,
         startPosition: XYPosition
-    }>>
-    "remove": CommandDefinition<DeepReadonly<ModelSubIds>, DeepReadonly<ModelGraphSubData>>
+    }>
+    "remove": CommandDefinition<
+        ModelSubIds,
+        ModelGraphSubData
+    >
 }
 
 export const inferCommandInput = <Key extends keyof ModelEditorHistoryCommands>(
@@ -1299,20 +1302,20 @@ export const useModelEditorHistory = (
 
     history.registerCommand("import", {
         applyAction: ({data, startPosition}) => {
-            const ids = importIntoContext(cloneDeepReadonlyRaw<ModelGraphSubData>(data), {startPosition})
+            const ids = importIntoContext(data, {startPosition, protectRepeatNames: true})
             return {ids, startPosition}
         },
         revertAction: ({ids, startPosition}) => {
-            const data = removeFromContext(cloneDeepReadonlyRaw<ModelSubIds>(ids))
+            const data = removeFromContext(ids)
             return {data, startPosition}
         }
     })
     history.registerCommand("remove", {
         applyAction: (modelSubIds) => {
-            return removeFromContext(cloneDeepReadonlyRaw<ModelSubIds>(modelSubIds))
+            return removeFromContext(modelSubIds)
         },
         revertAction: (graphData) => {
-            return importIntoContext(cloneDeepReadonlyRaw<ModelGraphSubData>(graphData))
+            return importIntoContext(graphData)
         }
     })
 
