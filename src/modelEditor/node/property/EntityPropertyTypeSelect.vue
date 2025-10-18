@@ -196,12 +196,14 @@ const association = computed(() => {
                 <div v-if="'rawType' in property">
                     {{ property.rawType }}
                 </div>
-
-                <input v-model="filterKeywords" @change="filterTypes">
             </div>
         </template>
 
         <template #body>
+            <div class="select-filter">
+                <input v-model="filterKeywords" @change="filterTypes">
+            </div>
+
             <ul>
                 <li
                     class="select-item"
