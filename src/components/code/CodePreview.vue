@@ -84,7 +84,7 @@ onMounted(() => {
     })
 })
 
-watch(() => props.code, () => {
+watch(() => [props.code, props.language], () => {
     if (props.code.length > props.noHighlightLimit) {
         showCode()
     } else {
