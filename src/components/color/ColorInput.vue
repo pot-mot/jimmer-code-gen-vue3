@@ -119,7 +119,7 @@ watch(() => showPicker.value, async (value) => {
     box-shadow: none;
     border-radius: 0;
     border: var(--border);
-    border-color: var(--background-color-hover);
+    border-color: var(--border-color-light);
     text-align: center;
     padding: 0;
 }

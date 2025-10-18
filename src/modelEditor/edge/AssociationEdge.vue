@@ -137,12 +137,12 @@ defineExpose({
 
 <style scoped>
 .association-edge {
-    --edge-color: var(--border-color);
-    --edge-width: 1px;
+    --edge-color: var(--border-color-light);
+    --edge-width: 2px;
 }
 
 .association-edge:hover {
-    --edge-width: 2px;
+    --edge-color: var(--border-color);
 }
 
 .association-edge.selected {

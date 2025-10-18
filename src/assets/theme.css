@@ -15,6 +15,7 @@
     --text-color: #222;
     --comment-color: #666;
     --border-color: #555;
+    --border-color-light: #aaa;
     --background-color: #f7f7f7;
     --background-color-hover: #ddd;
     --loading-background-color: rgba(0, 0, 0, 0.5);
@@ -47,6 +48,7 @@
     --text-color: #ccc;
     --comment-color: #aaa;
     --border-color: #ccc;
+    --border-color-light: #777;
     --background-color: #333;
     --background-color-hover: #444;
 

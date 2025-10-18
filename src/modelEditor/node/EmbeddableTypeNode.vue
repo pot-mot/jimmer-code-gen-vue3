@@ -109,7 +109,7 @@ const beforePaste = (properties: Property[]) => {
     overflow: hidden;
     background-color: var(--background-color);
     border: var(--border);
-    border-color: v-bind(groupColor);
+    border-color: var(--border-color-light);
     border-width: 2px;
     top: -1px;
     left: -1px;

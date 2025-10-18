@@ -165,7 +165,8 @@ const mappedPropertyNameComment = computed(() => {
 .association-label {
     box-sizing: border-box;
     border: var(--border);
-    border-color: var(--background-color-hover);
+    border-color: var(--border-color-light);
+    border-width: 2px;
     border-radius: 0.25rem;
     background-color: var(--background-color);
     padding: 0 0.5rem;
@@ -174,7 +175,6 @@ const mappedPropertyNameComment = computed(() => {
 
 .association-label:hover {
     border-color: var(--border-color);
-    border-width: 2px;
 }
 
 .association-label.selected {

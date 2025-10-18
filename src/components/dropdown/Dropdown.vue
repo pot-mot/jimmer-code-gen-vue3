@@ -140,7 +140,7 @@ watch(() => isOpen.value, async (value) => {
 .dropdown-body {
     position: absolute;
     border: var(--border);
-    border-color: var(--background-color-hover);
+    border-color: var(--border-color-light);
     border-radius: var(--border-radius);
     background-color: var(--background-color);
     max-height: 200px;

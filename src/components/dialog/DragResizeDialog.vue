@@ -342,7 +342,7 @@ const onDragEnd = () => {
     top: v-bind(positionY);
     z-index: v-bind(zIndex);
     border: var(--border);
-    border-color: var(--background-color-hover);
+    border-color: var(--border-color-light);
     border-radius: var(--border-radius);
     background-color: var(--background-color);
 }
