@@ -28,6 +28,10 @@ const property = defineModel<EntityProperty>({
     required: true
 })
 
+const propertyIsId = computed(() => {
+    return property.value.category === "ID_COMMON" || property.value.category === "ID_EMBEDDABLE"
+})
+
 const {
     contextData,
     typeOptions,
@@ -66,7 +70,10 @@ const selectBaseType = (typePair: DeepReadonly<CrossType>) => {
 }
 
 const selectEnumeration = (enumeration: DeepReadonly<Enumeration>) => {
-    if ("enumId" in property.value && property.value.enumId === enumeration.id) return
+    if (
+        propertyIsId.value ||
+        "enumId" in property.value && property.value.enumId === enumeration.id
+    ) return
 
     executeAsyncBatch(Symbol("property type to enumeration"), async () => {
         cleanPropertyReference()
@@ -98,6 +105,7 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
 
 const selectEntity = (entity: EntityWithProperties) => {
     if (
+        propertyIsId.value ||
         "associationId" in property.value && contextData.value.associationMap.has(property.value.associationId) &&
         "referencedEntityId" in property.value && property.value.referencedEntityId === entity.id
     ) return
@@ -188,14 +196,12 @@ const association = computed(() => {
                 <div v-if="'rawType' in property">
                     {{ property.rawType }}
                 </div>
+
+                <input v-model="filterKeywords" @change="filterTypes">
             </div>
         </template>
 
         <template #body>
-            <div class="select-filter">
-                <input v-model="filterKeywords" @change="filterTypes">
-            </div>
-
             <ul>
                 <li
                     class="select-item"
@@ -217,7 +223,7 @@ const association = computed(() => {
                     <GroupViewer :group="menuItem.group"/>
                 </template>
                 <template #body>
-                    <ul>
+                    <ul v-if="!propertyIsId">
                         <li
                             class="select-item"
                             v-for="enumeration in menuItem.enumerations"
@@ -227,7 +233,7 @@ const association = computed(() => {
                             <EnumerationViewer :enumeration="enumeration"/>
                         </li>
                     </ul>
-                    <ul>
+                    <ul v-if="!propertyIsId">
                         <li
                             class="select-item"
                             v-for="entity in menuItem.entities"
