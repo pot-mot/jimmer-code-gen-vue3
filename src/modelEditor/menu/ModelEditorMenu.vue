@@ -377,6 +377,10 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
     display: flex;
 }
 
+.menu-item > :deep(.menu-label) > * {
+    flex-shrink: 0;
+}
+
 .menu-item > :deep(.menu-label) > .menu-icon {
     margin-right: 0.25rem;
     margin-top: 0.3rem;
