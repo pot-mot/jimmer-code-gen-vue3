@@ -130,4 +130,8 @@ watch(() => isOpen.value, () => {
 .collapse-detail-head > .caret-wrapper > .caret.open {
     transform: translateY(-50%) rotate(0);
 }
+
+.collapse-detail-body {
+    min-width: fit-content;
+}
 </style>
