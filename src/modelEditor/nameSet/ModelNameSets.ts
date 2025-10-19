@@ -4,7 +4,9 @@ import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 import {inferCommandInput, type ModelEditorHistoryCommands} from "@/modelEditor/history/ModelEditorHistory.ts";
 import type {CommandHistory} from "@/history/commandHistory.ts";
 
-export type ModelNameSets = {
+type ReadonlyNameSet = Omit<NameSet, 'add' | 'remove' | 'nextThenAdd'>
+
+type ModelNameSets = {
     groupNameSet: NameSet,
     groupItemNameSet: NameSet,
     entityNameSet: NameSet,
@@ -16,6 +18,20 @@ export type ModelNameSets = {
     mappedSuperClassPropertyNameSetMap: Map<string, NameSet>,
     embeddableTypePropertyNameSetMap: Map<string, NameSet>,
     enumerationItemNameSetMap: Map<string, NameSet>
+}
+
+export type ReadonlyModelNameSets = {
+    readonly groupNameSet: ReadonlyNameSet,
+    readonly groupItemNameSet: ReadonlyNameSet,
+    readonly entityNameSet: ReadonlyNameSet,
+    readonly mappedSuperClassNameSet: ReadonlyNameSet,
+    readonly embeddableTypeNameSet: ReadonlyNameSet,
+    readonly enumerationNameSet: ReadonlyNameSet,
+    readonly associationNameSet: ReadonlyNameSet,
+    readonly entityPropertyNameSetMap: ReadonlyMap<string, ReadonlyNameSet>,
+    readonly mappedSuperClassPropertyNameSetMap: ReadonlyMap<string, ReadonlyNameSet>,
+    readonly embeddableTypePropertyNameSetMap: ReadonlyMap<string, ReadonlyNameSet>,
+    readonly enumerationItemNameSetMap: ReadonlyMap<string, ReadonlyNameSet>
 }
 
 const syncNameSetAndNameMap = (
@@ -53,7 +69,7 @@ export const useModelNameSets = (
     contextData: DeepReadonly<ModelContextData>,
     inheritInfo: DeepReadonly<InheritInfo>,
     history: CommandHistory<ModelEditorHistoryCommands>
-) => {
+): ReadonlyModelNameSets => {
     const modelNameSets = reactive<ModelNameSets>({
         groupNameSet: buildNameSet([]),
         groupItemNameSet: buildNameSet([]),

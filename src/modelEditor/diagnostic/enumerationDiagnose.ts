@@ -1,6 +1,6 @@
 import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
-import type {ModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
+import type {ReadonlyModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
 import {checkNoBlank, checkUpperCamelName} from "@/utils/name/nameCheck.ts";
 
 export type EnumerationDiagnoseResult = {
@@ -12,7 +12,7 @@ export const enumerationDiagnose = (
     enumeration: DeepReadonly<Enumeration>,
     contextData: DeepReadonly<ModelContextData>,
     inheritInfo: DeepReadonly<InheritInfo>,
-    nameSets: DeepReadonly<ModelNameSets>,
+    nameSets: ReadonlyModelNameSets,
 ): EnumerationDiagnoseResult => {
     const messages: DiagnoseMessage[] = []
     const itemDiagnoseMap = new Map<string, DiagnoseMessage[]>()

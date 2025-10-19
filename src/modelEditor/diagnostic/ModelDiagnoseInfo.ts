@@ -2,7 +2,7 @@ import type {MessageType} from "@/components/message/MessageItem.ts";
 import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 import type {CommandHistory} from "@/history/commandHistory.ts";
 import {inferCommandInput, type ModelEditorHistoryCommands} from "@/modelEditor/history/ModelEditorHistory.ts";
-import type {ModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
+import type {ReadonlyModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
 import {reactive, readonly} from "vue";
 import {entityDiagnose, type EntityDiagnoseResult} from "@/modelEditor/diagnostic/entityDiagnose.ts";
 import {enumerationDiagnose, type EnumerationDiagnoseResult} from "@/modelEditor/diagnostic/enumerationDiagnose.ts";
@@ -31,7 +31,7 @@ export type ModelDiagnoseInfo = {
 export const useModelDiagnoseInfo = (
     contextData: DeepReadonly<ModelContextData>,
     inheritInfo: DeepReadonly<InheritInfo>,
-    nameSets: DeepReadonly<ModelNameSets>,
+    nameSets: DeepReadonly<ReadonlyModelNameSets>,
     history: CommandHistory<ModelEditorHistoryCommands>,
 ) => {
     const modelDiagnoseInfo: ModelDiagnoseInfo = reactive({

@@ -1,6 +1,6 @@
 import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
-import type {ModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
+import type {ReadonlyModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
 import {checkLowerCamelName, checkNoBlank} from "@/utils/name/nameCheck.ts";
 
 export type AssociationDiagnose = {
@@ -12,7 +12,7 @@ export const associationDiagnose = (
     association: DeepReadonly<AssociationIdOnly>,
     contextData: DeepReadonly<ModelContextData>,
     inheritInfo: DeepReadonly<InheritInfo>,
-    nameSets: DeepReadonly<ModelNameSets>,
+    nameSets: ReadonlyModelNameSets,
 ): AssociationDiagnose => {
     const messages: DiagnoseMessage[] = []
     const mappedPropertyMessages: DiagnoseMessage[] = []

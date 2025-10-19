@@ -1,6 +1,6 @@
 import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
-import type {ModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
+import type {ReadonlyModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
 import {checkLowerCamelName, checkUpperCamelName} from "@/utils/name/nameCheck.ts";
 
 export type EmbeddableTypeDiagnose = {
@@ -12,7 +12,7 @@ export const embeddableTypeDiagnose = (
     embeddableType: DeepReadonly<EmbeddableTypeWithProperties>,
     contextData: DeepReadonly<ModelContextData>,
     inheritInfo: DeepReadonly<InheritInfo>,
-    nameSets: DeepReadonly<ModelNameSets>,
+    nameSets: ReadonlyModelNameSets,
 ): EmbeddableTypeDiagnose => {
     const messages: DiagnoseMessage[] = []
     const propertyDiagnoseMap = new Map<string, DiagnoseMessage[]>()
