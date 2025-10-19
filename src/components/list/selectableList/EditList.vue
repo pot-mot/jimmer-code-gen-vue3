@@ -133,7 +133,7 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
                 const value = JSON.parse(text)
                 const tempLines = getTempLines()
 
-                let insertIndex = selectedItemSet.value.size > 0 ? Math.max(...selectedItemSet.value.values()) + 1 : tempLines.length
+                const insertIndex = selectedItemSet.value.size > 0 ? Math.max(...selectedItemSet.value.values()) + 1 : tempLines.length
 
                 let insertLength = 0
 
@@ -190,7 +190,7 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
                 }
             }
         } else {
-            let tempLines = getTempLines()
+            const tempLines = getTempLines()
             const newSelectIndexes: Set<number> = new Set
 
             for (let i = 0; i < tempLines.length; i++) {
@@ -200,7 +200,7 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
                     if (i === 0 || newSelectIndexes.has(i - 1)) {
                         newSelectIndexes.add(i)
                     } else {
-                        const tempLine = tempLines[i + 1]
+                        const tempLine = tempLines[i - 1]
                         if (tempLine === undefined) continue
                         tempLines[i] = tempLine
                         tempLines[i - 1] = value
@@ -236,7 +236,7 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
                 }
             }
         } else {
-            let tempLines = getTempLines()
+            const tempLines = getTempLines()
             const newSelectIndexes: Set<number> = new Set
 
             for (let i = tempLines.length - 1; i >= 0; i--) {
