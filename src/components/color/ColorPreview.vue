@@ -17,9 +17,8 @@ defineProps<{
 .color-preview-wrapper {
     position: relative;
     display: inline-block;
-    width: 1rem;
-    height: 1rem;
-    border: var(--border);
+    width: 1em;
+    height: 1em;
     vertical-align: middle;
     user-select: none;
 }
@@ -27,5 +26,7 @@ defineProps<{
 .color-preview {
     width: 100%;
     height: 100%;
+    border: var(--border);
+    border-radius: 3px;
 }
 </style>
