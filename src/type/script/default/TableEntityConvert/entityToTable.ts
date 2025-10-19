@@ -242,6 +242,14 @@ export const entityToTable: EntityToTable = (
                         throw new Error(`[${entity.name}.${property.name}] refColumns [${refColumns.map(it => it.name).join(", ")}] length is not 1`)
                     }
 
+                    if (property.category === "OneToOne_Source") {
+                        table.indexes.push({
+                            name: 'IDX_' + association.name,
+                            columnNames: [property.joinInfo.columnName],
+                            unique: true,
+                        })
+                    }
+
                     if (property.joinInfo.foreignKeyType === "REAL") {
                         const columnRef = {
                             columnName: property.joinInfo.columnName,
@@ -280,6 +288,15 @@ export const entityToTable: EntityToTable = (
                             nullable: property.nullable,
                         })
                     }
+
+                    if (property.category === "OneToOne_Source") {
+                        table.indexes.push({
+                            name: 'IDX_' + association.name,
+                            columnNames: property.joinInfo.columnRefs.map(it => it.columnName),
+                            unique: true,
+                        })
+                    }
+
                     if (property.joinInfo.foreignKeyType === "REAL") {
                         table.foreignKeys.push({
                             name: association.name,
