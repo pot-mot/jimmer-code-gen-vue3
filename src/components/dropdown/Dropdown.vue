@@ -143,8 +143,5 @@ watch(() => isOpen.value, async (value) => {
     border-color: var(--border-color-light);
     border-radius: var(--border-radius);
     background-color: var(--background-color);
-    max-height: 200px;
-    overflow-y: auto;
-    min-width: 100px;
 }
 </style>
