@@ -111,7 +111,74 @@ export const useModelEditor = createStore(() => {
     }
 
     // TODO
-    const typeOptions = ref<CrossType[]>([])
+    const crossTypes = ref<CrossType[]>([
+        {
+            id: "0",
+            jvmSource: "BOTH",
+            databaseSource: "ANY",
+            sqlType: {
+                type: "VARCHAR(255)",
+                dataSize: 255,
+            },
+            jvmType: {
+                fullTypeExpression: "String",
+                serialized: false,
+                extraImports: [],
+                extraAnnotations: []
+            },
+            tsType: {
+                fullTypeExpression: "string",
+                extraImports: []
+            }
+        },
+        {
+            id: "1",
+            jvmSource: "JAVA",
+            databaseSource: "ANY",
+            sqlType: {
+                type: "INT",
+                dataSize: 10,
+            },
+            jvmType: {
+                fullTypeExpression: "int",
+                serialized: false,
+                extraImports: [],
+                extraAnnotations: []
+            },
+            tsType: {
+                fullTypeExpression: "number",
+                extraImports: []
+            }
+        },
+        {
+            id: "2",
+            jvmSource: "KOTLIN",
+            databaseSource: "ANY",
+            sqlType: {
+                type: "INT",
+                dataSize: 10,
+            },
+            jvmType: {
+                fullTypeExpression: "Int",
+                serialized: false,
+                extraImports: [],
+                extraAnnotations: []
+            },
+            tsType: {
+                fullTypeExpression: "number",
+                extraImports: []
+            }
+        }
+    ])
+    const filteredCrossTypes = computed(() => {
+        const jvmLanguage = contextData.value.model.jvmLanguage
+        const databaseType = contextData.value.model.databaseType
+
+        return crossTypes.value.filter(crossType => {
+            return (crossType.jvmSource === jvmLanguage || crossType.jvmSource === "BOTH") &&
+                (crossType.databaseSource === databaseType || crossType.databaseSource === "ANY")
+        })
+    })
 
     const modelNameSets = useModelNameSets(getContextData(), inheritInfo.value, history)
 
@@ -907,7 +974,9 @@ export const useModelEditor = createStore(() => {
 
         // 模型
         contextData: readonly(contextData),
-        typeOptions: readonly(typeOptions),
+        crossTypes: readonly(crossTypes),
+        filteredCrossTypes,
+
         modelNameSets,
         modelDiagnoseInfo,
         getContext,

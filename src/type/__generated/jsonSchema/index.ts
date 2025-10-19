@@ -7,6 +7,7 @@ import ColumnPropertyJsonSchema from "./items/ColumnProperty.ts";
 import ColumnRefJsonSchema from "./items/ColumnRef.ts";
 import CrossTypeJsonSchema from "./items/CrossType.ts";
 import DatabaseJsonSchema from "./items/Database.ts";
+import DatabaseSourceJsonSchema from "./items/DatabaseSource.ts";
 import DatabaseTypeJsonSchema from "./items/DatabaseType.ts";
 import EmbeddablePropertyJsonSchema from "./items/EmbeddableProperty.ts";
 import EmbeddableTypeJsonSchema from "./items/EmbeddableType.ts";
@@ -26,10 +27,10 @@ import IdEmbeddablePropertyJsonSchema from "./items/IdEmbeddableProperty.ts";
 import IndexJsonSchema from "./items/Index.ts";
 import JoinInfoJsonSchema from "./items/JoinInfo.ts";
 import JvmLanguageJsonSchema from "./items/JvmLanguage.ts";
+import JvmSourceJsonSchema from "./items/JvmSource.ts";
 import JvmToSqlMappingRuleJsonSchema from "./items/JvmToSqlMappingRule.ts";
 import JvmToTsMappingRuleJsonSchema from "./items/JvmToTsMappingRule.ts";
 import JvmTypeJsonSchema from "./items/JvmType.ts";
-import JvmTypeSourceJsonSchema from "./items/JvmTypeSource.ts";
 import KeyPropertyJsonSchema from "./items/KeyProperty.ts";
 import LabelPositionJsonSchema from "./items/LabelPosition.ts";
 import LogicalDeletePropertyJsonSchema from "./items/LogicalDeleteProperty.ts";
@@ -84,6 +85,7 @@ export const jsonSchemas = Object.freeze({
     ColumnRef: ColumnRefJsonSchema,
     CrossType: CrossTypeJsonSchema,
     Database: DatabaseJsonSchema,
+    DatabaseSource: DatabaseSourceJsonSchema,
     DatabaseType: DatabaseTypeJsonSchema,
     EmbeddableProperty: EmbeddablePropertyJsonSchema,
     EmbeddableType: EmbeddableTypeJsonSchema,
@@ -103,10 +105,10 @@ export const jsonSchemas = Object.freeze({
     Index: IndexJsonSchema,
     JoinInfo: JoinInfoJsonSchema,
     JvmLanguage: JvmLanguageJsonSchema,
+    JvmSource: JvmSourceJsonSchema,
     JvmToSqlMappingRule: JvmToSqlMappingRuleJsonSchema,
     JvmToTsMappingRule: JvmToTsMappingRuleJsonSchema,
     JvmType: JvmTypeJsonSchema,
-    JvmTypeSource: JvmTypeSourceJsonSchema,
     KeyProperty: KeyPropertyJsonSchema,
     LabelPosition: LabelPositionJsonSchema,
     LogicalDeleteProperty: LogicalDeletePropertyJsonSchema,

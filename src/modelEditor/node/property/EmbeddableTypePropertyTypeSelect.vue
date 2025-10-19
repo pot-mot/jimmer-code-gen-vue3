@@ -9,36 +9,130 @@ import EmbeddableTypeIdViewer from "@/modelEditor/viewer/EmbeddableTypeIdViewer.
 import EnumerationIdViewer from "@/modelEditor/viewer/EnumerationIdViewer.vue";
 import {
     toScalarEmbeddableProperty,
-    toScalarEnumProperty,
-    toScalarCommonProperty
+    toScalarEnumProperty, idToggleType, toScalarCommonProperty
 } from "@/modelEditor/node/property/PropertyConvert.ts";
-import {ref} from "vue";
+import {computed, nextTick, ref} from "vue";
 import TypePairViewer from "@/modelEditor/viewer/TypePairViewer.vue";
+import ColorPreview from "@/components/color/ColorPreview.vue";
+import {
+    getGroupItemTypeOptionName,
+    type GroupTypeOptions,
+    type TypeOptions
+} from "@/modelEditor/node/property/TypeOption.ts";
+import IconEnumeration from "@/components/icons/modelEditor/IconEnumeration.vue";
+import IconEmbeddableType from "@/components/icons/modelEditor/IconEmbeddableType.vue";
+
+const props = defineProps<{
+    embeddableType: DeepReadonly<EmbeddableTypeWithProperties>
+}>()
 
 const property = defineModel<EmbeddableTypeProperty>({
     required: true
 })
 
 const {
-    typeOptions,
+    filteredCrossTypes,
     menuMap,
+    executeAsyncBatch,
+    waitChangeSync,
 } = useModelEditor()
 
-const filterKeywords = ref<string>("")
-const filterTypes = () => {
+const filterKeyword = ref<string>("")
+const options = computed<TypeOptions>(() => {
+    const result: TypeOptions = {
+        crossTypes: [],
+        groups: []
+    }
 
-}
+    const keyword = filterKeyword.value.trim().toLowerCase()
+    if (keyword.length === 0) {
+        result.crossTypes = filteredCrossTypes.value
+
+        for (const menuItem of menuMap.value.values()) {
+            const current: GroupTypeOptions = {
+                group: menuItem.group,
+                options: []
+            }
+
+            for (const enumeration of menuItem.enumerations.values()) {
+                current.options.push({type: "Enumeration", enumeration})
+            }
+            for (const embeddableType of menuItem.embeddableTypes.values()) {
+                if (embeddableType.id === props.embeddableType.id) continue
+                current.options.push({type: "EmbeddableType", embeddableType})
+            }
+
+            if (current.options.length > 0) {
+                current.options.sort((a, b) => getGroupItemTypeOptionName(a).localeCompare(getGroupItemTypeOptionName(b)))
+                result.groups.push(current)
+            }
+        }
+    } else {
+        result.crossTypes = filteredCrossTypes.value.filter(crossType => {
+            return crossType.jvmType.fullTypeExpression.toLowerCase().includes(keyword) ||
+                crossType.sqlType.type.toLowerCase().includes(keyword) ||
+                crossType.tsType.fullTypeExpression.toLowerCase().includes(keyword)
+        })
+
+        for (const menuItem of menuMap.value.values()) {
+            const current: GroupTypeOptions = {
+                group: menuItem.group,
+                options: []
+            }
+
+            for (const enumeration of menuItem.enumerations.values()) {
+                if (enumeration.name.toLowerCase().includes(keyword) || enumeration.comment.toLowerCase().includes(keyword)) {
+                    current.options.push({type: "Enumeration", enumeration})
+                }
+            }
+            for (const embeddableType of menuItem.embeddableTypes.values()) {
+                if (embeddableType.id === props.embeddableType.id) continue
+                if (embeddableType.name.toLowerCase().includes(keyword) || embeddableType.comment.toLowerCase().includes(keyword)) {
+                    current.options.push({type: "EmbeddableType", embeddableType})
+                }
+            }
+
+            if (current.options.length > 0) {
+                current.options.sort((a, b) => getGroupItemTypeOptionName(a).localeCompare(getGroupItemTypeOptionName(b)))
+                result.groups.push(current)
+            }
+        }
+    }
+
+    return result
+})
 
 const selectBaseType = (typePair: DeepReadonly<CrossType>) => {
-    property.value = toScalarCommonProperty(property.value, typePair)
+    executeAsyncBatch(Symbol("property type to baseType"), async () => {
+        property.value = toScalarCommonProperty(property.value, typePair)
+
+        await nextTick()
+        await waitChangeSync()
+    })
 }
 
 const selectEnumeration = (enumeration: DeepReadonly<Enumeration>) => {
-    property.value = toScalarEnumProperty(property.value, enumeration)
+    if (
+        "enumId" in property.value && property.value.enumId === enumeration.id
+    ) return
+
+    executeAsyncBatch(Symbol("property type to enumeration"), async () => {
+        property.value = toScalarEnumProperty(property.value, enumeration)
+
+        await nextTick()
+        await waitChangeSync()
+    })
 }
 
 const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
-    property.value = toScalarEmbeddableProperty(property.value, embeddableType)
+    if ("embeddableTypeId" in property.value && property.value.embeddableTypeId === embeddableType.id) return
+
+    executeAsyncBatch(Symbol("property type to embeddableType"), async () => {
+        property.value = toScalarEmbeddableProperty(property.value, embeddableType)
+
+        await nextTick()
+        await waitChangeSync()
+    })
 }
 </script>
 
@@ -46,80 +140,153 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
     <Dropdown>
         <template #head>
             <div class="current-item">
-                <div v-if="'embeddableTypeId' in property">
-                    <EmbeddableTypeIdViewer :id="property.embeddableTypeId" hide-comment ctrl-focus/>
-                </div>
-                <div v-else-if="'enumId' in property">
+                <div v-if="'enumId' in property" class="current-item-label">
+                    <IconEnumeration class="current-item-label-icon"/>
                     <EnumerationIdViewer :id="property.enumId" hide-comment ctrl-focus/>
                 </div>
-                <div v-else-if="'rawType' in property">
+                <div v-if="'embeddableTypeId' in property" class="current-item-label">
+                    <IconEmbeddableType class="current-item-label-icon"/>
+                    <EmbeddableTypeIdViewer :id="property.embeddableTypeId" hide-comment ctrl-focus/>
+                </div>
+                <div v-if="'rawType' in property" class="current-item-label">
                     {{ property.rawType }}
                 </div>
             </div>
         </template>
 
         <template #body>
-            <div class="select-filter">
-                <input v-model="filterKeywords" @change="filterTypes">
+            <div class="options-filter">
+                <input v-model="filterKeyword">
             </div>
 
-            <ul>
-                <li
-                    class="select-item"
-                    v-for="type in typeOptions"
-                    @click="selectBaseType(type)"
-                >
-                    <TypePairViewer :type-pair="type"/>
-                </li>
-            </ul>
+            <div class="options-container">
+                <ul>
+                    <li
+                        class="select-item"
+                        :class="{selected: 'rawType' in property && property.rawType === type.jvmType.fullTypeExpression}"
+                        v-for="type in options.crossTypes"
+                        @click="selectBaseType(type)"
+                    >
+                        <TypePairViewer :type-pair="type"/>
+                    </li>
+                </ul>
 
-            <CollapseDetail
-                v-for="[id, menuItem] in menuMap"
-                :key="id"
-                :model-value="true"
-                trigger-position="left"
-                open-trigger="head"
-            >
-                <template #head>
-                    <GroupViewer :group="menuItem.group"/>
-                </template>
-                <template #body>
-                    <ul>
-                        <li
-                            class="select-item"
-                            v-for="enumeration in menuItem.enumerations"
-                            :key="enumeration.id"
-                            @click="selectEnumeration(enumeration)"
-                        >
-                            <EnumerationViewer :enumeration="enumeration"/>
-                        </li>
-                    </ul>
-                    <ul>
-                        <li
-                            class="select-item"
-                            v-for="embeddableType in menuItem.embeddableTypes"
-                            :key="embeddableType.id"
-                            @click="selectEmbeddableType(embeddableType)"
-                        >
-                            <EmbeddableTypeViewer :embeddable-type="embeddableType"/>
-                        </li>
-                    </ul>
-                </template>
-            </CollapseDetail>
+                <CollapseDetail
+                    v-for="groupOptions in options.groups"
+                    :key="groupOptions.group.id"
+                    :model-value="true"
+                    trigger-position="left"
+                    open-trigger="head"
+                >
+                    <template #head>
+                        <div class="group-item">
+                            <ColorPreview :value="groupOptions.group.color" class="group-item-color"/>
+                            <GroupViewer :group="groupOptions.group"/>
+                        </div>
+                    </template>
+
+                    <template #body>
+                        <ul>
+                            <template v-for="option in groupOptions.options">
+                                <li
+                                    v-if="option.type === 'Enumeration'"
+                                    class="select-item"
+                                    :class="{selected: 'enumId' in property && option.enumeration.id === property.enumId}"
+                                    :key="option.enumeration.id"
+                                    @click="selectEnumeration(option.enumeration)"
+                                >
+                                    <IconEnumeration class="select-item-icon"/>
+                                    <EnumerationViewer :enumeration="option.enumeration"/>
+                                </li>
+                                <li
+                                    v-if="option.type === 'EmbeddableType'"
+                                    class="select-item"
+                                    :class="{selected: 'embeddableTypeId' in property && option.embeddableType.id === property.embeddableTypeId}"
+                                    :key="option.embeddableType.id"
+                                    @click="selectEmbeddableType(option.embeddableType)"
+                                >
+                                    <IconEmbeddableType class="select-item-icon"/>
+                                    <EmbeddableTypeViewer :embeddable-type="option.embeddableType"/>
+                                </li>
+                            </template>
+                        </ul>
+                    </template>
+                </CollapseDetail>
+            </div>
         </template>
     </Dropdown>
 </template>
 
 <style scoped>
 .current-item {
-    padding: 0 0.5em;
+    padding: 0 0.5rem;
+    max-width: 10rem;
+    overflow-x: auto;
 }
 
-.select-filter {
-    padding: 0.4em 0.5em;
+.current-item-label {
+    display: flex;
+}
+.current-item-label > * {
+    flex-shrink: 0;
+}
+
+.current-item-label-icon {
+    margin-top: 0.4rem;
+    margin-right: 0.25rem;
+}
+
+.options-filter {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.8rem;
+}
+.options-filter > input {
+    width: 100%;
+}
+
+.options-container {
+    max-width: 15rem;
+    overflow-x: auto;
+    max-height: 12rem;
+    overflow-y: auto;
 }
 
 .select-item {
-    padding: 0.2em 0.5em;
+    padding: 0.2rem 0.5rem 0.2rem 1rem;
+    font-size: 0.8rem;
+    display: flex;
+    cursor: default;
+}
+.select-item > * {
+    flex-shrink: 0;
+}
+
+.select-item:hover {
+    background-color: var(--background-color-hover);
+}
+
+.select-item.selected {
+    background-color: var(--primary-color-background);
+}
+
+.select-item-icon {
+    margin-top: 0.2rem;
+    margin-right: 0.25rem;
+}
+
+.group-item {
+    padding: 0.2rem 0.5rem 0.2rem 0;
+    font-size: 0.8rem;
+    display: flex;
+}
+.group-item > * {
+    flex-shrink: 0;
+}
+
+.group-item-color {
+    width: 0.8rem;
+    height: 0.8rem;
+    margin-top: 0.2rem;
+    margin-right: 0.25rem;
 }
 </style>

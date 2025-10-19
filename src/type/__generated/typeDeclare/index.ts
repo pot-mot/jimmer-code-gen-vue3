@@ -18,6 +18,7 @@ import ConcreteAssociationIdOnlyDeclare from "./items/ConcreteAssociationIdOnly.
 import ConcreteEdgedAssociationDeclare from "./items/ConcreteEdgedAssociation.ts";
 import CrossTypeDeclare from "./items/CrossType.ts";
 import DatabaseDeclare from "./items/Database.ts";
+import DatabaseSourceDeclare from "./items/DatabaseSource.ts";
 import DatabaseTypeDeclare from "./items/DatabaseType.ts";
 import DeepReadonlyDeclare from "./items/DeepReadonly.ts";
 import DiagnosticSourceDeclare from "./items/DiagnosticSource.ts";
@@ -60,10 +61,10 @@ import IdEmbeddablePropertyDeclare from "./items/IdEmbeddableProperty.ts";
 import IndexDeclare from "./items/Index.ts";
 import JoinInfoDeclare from "./items/JoinInfo.ts";
 import JvmLanguageDeclare from "./items/JvmLanguage.ts";
+import JvmSourceDeclare from "./items/JvmSource.ts";
 import JvmToSqlMappingRuleDeclare from "./items/JvmToSqlMappingRule.ts";
 import JvmToTsMappingRuleDeclare from "./items/JvmToTsMappingRule.ts";
 import JvmTypeDeclare from "./items/JvmType.ts";
-import JvmTypeSourceDeclare from "./items/JvmTypeSource.ts";
 import KeyPropertyDeclare from "./items/KeyProperty.ts";
 import LabelPositionDeclare from "./items/LabelPosition.ts";
 import LogicalDeletePropertyDeclare from "./items/LogicalDeleteProperty.ts";
@@ -147,6 +148,7 @@ export type TypeMap = {
     ConcreteEdgedAssociation: ConcreteEdgedAssociation
     CrossType: CrossType
     Database: Database
+    DatabaseSource: DatabaseSource
     DatabaseType: DatabaseType
     DiagnosticSource: DiagnosticSource
     EdgedAssociation: EdgedAssociation
@@ -188,10 +190,10 @@ export type TypeMap = {
     Index: Index
     JoinInfo: JoinInfo
     JvmLanguage: JvmLanguage
+    JvmSource: JvmSource
     JvmToSqlMappingRule: JvmToSqlMappingRule
     JvmToTsMappingRule: JvmToTsMappingRule
     JvmType: JvmType
-    JvmTypeSource: JvmTypeSource
     KeyProperty: KeyProperty
     LabelPosition: LabelPosition
     LogicalDeleteProperty: LogicalDeleteProperty
@@ -278,6 +280,7 @@ export const typeDeclares = Object.freeze({
     ConcreteEdgedAssociation: ConcreteEdgedAssociationDeclare,
     CrossType: CrossTypeDeclare,
     Database: DatabaseDeclare,
+    DatabaseSource: DatabaseSourceDeclare,
     DatabaseType: DatabaseTypeDeclare,
     DeepReadonly: DeepReadonlyDeclare,
     DiagnosticSource: DiagnosticSourceDeclare,
@@ -320,10 +323,10 @@ export const typeDeclares = Object.freeze({
     Index: IndexDeclare,
     JoinInfo: JoinInfoDeclare,
     JvmLanguage: JvmLanguageDeclare,
+    JvmSource: JvmSourceDeclare,
     JvmToSqlMappingRule: JvmToSqlMappingRuleDeclare,
     JvmToTsMappingRule: JvmToTsMappingRuleDeclare,
     JvmType: JvmTypeDeclare,
-    JvmTypeSource: JvmTypeSourceDeclare,
     KeyProperty: KeyPropertyDeclare,
     LabelPosition: LabelPositionDeclare,
     LogicalDeleteProperty: LogicalDeletePropertyDeclare,

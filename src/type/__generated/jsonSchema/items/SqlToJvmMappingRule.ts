@@ -4,8 +4,11 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const SqlToJvmMappingRuleJsonSchema: JSONSchemaType<SqlToJvmMappingRule> = {
     "type": "object",
     "properties": {
-        "source": {
-            "$ref": "#/definitions/JvmTypeSource"
+        "jvmSource": {
+            "$ref": "#/definitions/JvmSource"
+        },
+        "databaseSource": {
+            "$ref": "#/definitions/DatabaseSource"
         },
         "matchRegExp": {
             "type": "string"
@@ -41,16 +44,29 @@ const SqlToJvmMappingRuleJsonSchema: JSONSchemaType<SqlToJvmMappingRule> = {
         }
     },
     "required": [
+        "databaseSource",
+        "jvmSource",
         "matchRegExp",
-        "result",
-        "source"
+        "result"
     ],
     "definitions": {
-        "JvmTypeSource": {
+        "JvmSource": {
             "enum": [
                 "BOTH",
                 "JAVA",
                 "KOTLIN"
+            ],
+            "type": "string"
+        },
+        "DatabaseSource": {
+            "enum": [
+                "ANY",
+                "H2",
+                "MYSQL",
+                "ORACLE",
+                "POSTGRESQL",
+                "SQLITE",
+                "SQLSERVER"
             ],
             "type": "string"
         }

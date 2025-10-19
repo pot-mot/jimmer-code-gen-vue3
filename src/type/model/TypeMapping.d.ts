@@ -1,4 +1,6 @@
-type JvmTypeSource = "JAVA" | "KOTLIN" | "BOTH"
+type JvmSource = JvmLanguage | "BOTH"
+
+type DatabaseSource = DatabaseType | "ANY"
 
 type SqlType = {
     type: string
@@ -24,26 +26,29 @@ type TsType = {
 
 type CrossType = {
     id: string
-    source: JvmTypeSource
+    jvmSource: JvmSource
+    databaseSource: DatabaseSource
     sqlType: SqlType
     jvmType: JvmType
     tsType: TsType
 }
 
 type JvmToSqlMappingRule = {
-    source: JvmTypeSource
+    jvmSource: JvmSource
+    databaseSource: DatabaseSource
     matchRegExp: string
     result: SqlType
 }
 
 type SqlToJvmMappingRule = {
-    source: JvmTypeSource
+    jvmSource: JvmSource
+    databaseSource: DatabaseSource
     matchRegExp: string
     result: JvmType
 }
 
 type JvmToTsMappingRule = {
-    source: JvmTypeSource
+    jvmSource: JvmSource
     matchRegExp: string
     result: TsType
 }

@@ -1,37 +1,37 @@
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts"
 
 type CompiledMappingRule<T> = {
-    source: JvmTypeSource
+    jvmSource: JvmSource
     regex: RegExp
     result: DeepReadonly<T>
 }
 
 export const buildTypeTool = (
-    language: JvmLanguage,
+    jvmLanguage: JvmLanguage,
     sqlToJvmMappingRules: DeepReadonly<SqlToJvmMappingRule[]>,
     jvmToSqlMappingRules: DeepReadonly<JvmToSqlMappingRule[]>,
     jvmToTsMappingRules: DeepReadonly<JvmToTsMappingRule[]>,
 ): TypeTool => {
     const cachedSqlToJvmRules: CompiledMappingRule<JvmType>[] = sqlToJvmMappingRules
-        .filter(rule => rule.source === language || rule.source === "BOTH")
+        .filter(rule => rule.jvmSource === jvmLanguage || rule.jvmSource === "BOTH")
         .map(rule => ({
-            source: rule.source,
+            jvmSource: rule.jvmSource,
             regex: new RegExp(rule.matchRegExp),
             result: rule.result
         }))
 
     const cachedJvmToSqlRules: CompiledMappingRule<SqlType>[] = jvmToSqlMappingRules
-        .filter(rule => rule.source === language || rule.source === "BOTH")
+        .filter(rule => rule.jvmSource === jvmLanguage || rule.jvmSource === "BOTH")
         .map(rule => ({
-            source: rule.source,
+            jvmSource: rule.jvmSource,
             regex: new RegExp(rule.matchRegExp),
             result: rule.result
         }))
 
     const cachedJvmToTsRules: CompiledMappingRule<TsType>[] = jvmToTsMappingRules
-        .filter(rule => rule.source === language || rule.source === "BOTH")
+        .filter(rule => rule.jvmSource === jvmLanguage || rule.jvmSource === "BOTH")
         .map(rule => ({
-            source: rule.source,
+            jvmSource: rule.jvmSource,
             regex: new RegExp(rule.matchRegExp),
             result: rule.result
         }))

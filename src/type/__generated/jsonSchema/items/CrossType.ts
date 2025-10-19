@@ -7,8 +7,11 @@ const CrossTypeJsonSchema: JSONSchemaType<CrossType> = {
         "id": {
             "type": "string"
         },
-        "source": {
-            "$ref": "#/definitions/JvmTypeSource"
+        "jvmSource": {
+            "$ref": "#/definitions/JvmSource"
+        },
+        "databaseSource": {
+            "$ref": "#/definitions/DatabaseSource"
         },
         "sqlType": {
             "type": "object",
@@ -91,18 +94,31 @@ const CrossTypeJsonSchema: JSONSchemaType<CrossType> = {
         }
     },
     "required": [
+        "databaseSource",
         "id",
+        "jvmSource",
         "jvmType",
-        "source",
         "sqlType",
         "tsType"
     ],
     "definitions": {
-        "JvmTypeSource": {
+        "JvmSource": {
             "enum": [
                 "BOTH",
                 "JAVA",
                 "KOTLIN"
+            ],
+            "type": "string"
+        },
+        "DatabaseSource": {
+            "enum": [
+                "ANY",
+                "H2",
+                "MYSQL",
+                "ORACLE",
+                "POSTGRESQL",
+                "SQLITE",
+                "SQLSERVER"
             ],
             "type": "string"
         }

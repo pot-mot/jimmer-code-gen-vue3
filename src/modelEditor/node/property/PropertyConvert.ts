@@ -29,7 +29,7 @@ const createColumnInfo = (
 }
 
 export const idToggleType = (
-    property: DeepReadonly<IdCommonProperty>,
+    property: DeepReadonly<IdCommonProperty | IdEmbeddableProperty>,
     typePair: DeepReadonly<CrossType>
 ): IdCommonProperty => {
     return {
@@ -44,7 +44,7 @@ export const idToggleType = (
 }
 
 export const idToEmbeddableProperty = (
-    property: DeepReadonly<IdCommonProperty>,
+    property: DeepReadonly<IdCommonProperty | IdEmbeddableProperty>,
     embeddableType: DeepReadonly<EmbeddableType>
 ): IdEmbeddableProperty => {
     return {

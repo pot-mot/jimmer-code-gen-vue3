@@ -1,7 +1,7 @@
 export default Object.freeze({
     fileName: 'JvmToTsMappingRule.d.ts',
     content: `type JvmToTsMappingRule = {
-    source: JvmTypeSource
+    jvmSource: JvmSource
     matchRegExp: string
     result: TsType
 }`,

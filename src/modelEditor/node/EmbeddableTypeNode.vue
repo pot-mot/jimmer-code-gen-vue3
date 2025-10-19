@@ -87,6 +87,7 @@ const beforePaste = (properties: Property[]) => {
                         <EmbeddableTypePropertyTypeSelect
                             class="noDrag noWheel"
                             style="font-size: 14px; line-height: 30px;"
+                            :embeddable-type="data.embeddableType"
                             v-model="data.embeddableType.properties[index]"
                         />
                     </div>
