@@ -7,7 +7,7 @@ import ExtendsIdMultiSelect from "@/modelEditor/node/extendsId/ExtendsIdMultiSel
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
 import {computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
-import MappedSuperClassPropertyTypeSelect from "@/modelEditor/node/property/MappedSuperClassPropertyTypeSelect.vue";
+import MappedSuperClassPropertyTypeEditor from "@/modelEditor/node/property/MappedSuperClassPropertyTypeEditor.vue";
 import {validateMappedSuperClassProperty} from "@/type/__generated/jsonSchema/items/MappedSuperClassProperty.ts";
 import {NOT_EXIST_ASSOCIATION_ID} from "@/modelEditor/node/EntityNode.ts";
 import IconAim from "@/components/icons/IconAim.vue";
@@ -130,7 +130,7 @@ watch(() => handleIndexMap.value, () => {
                             :font-size="14"
                             v-model="data.mappedSuperClass.properties[index]"
                         />
-                        <MappedSuperClassPropertyTypeSelect
+                        <MappedSuperClassPropertyTypeEditor
                             class="noDrag noWheel"
                             style="font-size: 14px; line-height: 30px;"
                             :mapped-super-class="data.mappedSuperClass"

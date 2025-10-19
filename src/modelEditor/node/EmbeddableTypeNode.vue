@@ -4,7 +4,7 @@ import type {EmbeddableTypeNode} from "@/modelEditor/node/EmbeddableTypeNode.ts"
 import EditList from "@/components/list/selectableList/EditList.vue";
 import {createId, getColorVar, getColorIsDark, useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {defaultScalarProperty} from "@/type/context/default/modelDefaults.ts";
-import EmbeddableTypePropertyTypeSelect from "@/modelEditor/node/property/EmbeddableTypePropertyTypeSelect.vue";
+import EmbeddableTypePropertyTypeEditor from "@/modelEditor/node/property/EmbeddableTypePropertyTypeEditor.vue";
 import {validateEmbeddableTypeProperty} from "@/type/__generated/jsonSchema/items/EmbeddableTypeProperty.ts";
 import {computed, onBeforeUnmount, onMounted, useTemplateRef} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
@@ -84,7 +84,7 @@ const beforePaste = (properties: Property[]) => {
                             :font-size="14"
                             v-model="data.embeddableType.properties[index]"
                         />
-                        <EmbeddableTypePropertyTypeSelect
+                        <EmbeddableTypePropertyTypeEditor
                             class="noDrag noWheel"
                             style="font-size: 14px; line-height: 30px;"
                             :embeddable-type="data.embeddableType"

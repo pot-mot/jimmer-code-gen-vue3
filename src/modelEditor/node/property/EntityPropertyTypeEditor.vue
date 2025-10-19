@@ -28,6 +28,9 @@ import {
 import IconEnumeration from "@/components/icons/modelEditor/IconEnumeration.vue";
 import IconEmbeddableType from "@/components/icons/modelEditor/IconEmbeddableType.vue";
 import IconEntity from "@/components/icons/modelEditor/IconEntity.vue";
+import {toOneToOne} from "@/modelEditor/association/toOneToOne.ts";
+import {toManyToOne} from "@/modelEditor/association/toManyToOne.ts";
+import {toManyToMany} from "@/modelEditor/association/toManyToMany.ts";
 
 const props = defineProps<{
     entity: DeepReadonly<EntityWithProperties>
@@ -279,6 +282,30 @@ const association = computed(() => {
                 <div v-if="'rawType' in property" class="current-item-label">
                     {{ property.rawType }}
                 </div>
+            </div>
+
+            <div v-if="association">
+                <template v-if="association.association.type === 'ManyToOne'">
+                    <button @click.stop="toOneToOne(association.association)">
+                        Many
+                    </button>
+                    To
+                    <button @click.stop="toManyToMany(association.association)">
+                        One
+                    </button>
+                </template>
+                <template v-else-if="association.association.type === 'OneToOne'">
+                    <button @click.stop="toManyToOne(association.association)">
+                        One
+                    </button>
+                    To One
+                </template>
+                <template v-else-if="association.association.type === 'ManyToMany'">
+                    Many To
+                    <button @click.stop="toManyToOne(association.association)">
+                        Many
+                    </button>
+                </template>
             </div>
         </template>
 

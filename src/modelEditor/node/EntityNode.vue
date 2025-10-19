@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {Handle, type NodeProps, Position} from "@vue-flow/core";
 import {type EntityNode, NOT_EXIST_ASSOCIATION_ID} from "@/modelEditor/node/EntityNode.ts";
-import EntityPropertyTypeSelect from "@/modelEditor/node/property/EntityPropertyTypeSelect.vue";
+import EntityPropertyTypeEditor from "@/modelEditor/node/property/EntityPropertyTypeEditor.vue";
 import EditList from "@/components/list/selectableList/EditList.vue";
 import {createId, getColorIsDark, getColorVar, useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import ExtendsIdMultiSelect from "@/modelEditor/node/extendsId/ExtendsIdMultiSelect.vue";
@@ -129,7 +129,7 @@ watch(() => handleIndexMap.value, () => {
                             :font-size="14"
                             v-model="data.entity.properties[index]"
                         />
-                        <EntityPropertyTypeSelect
+                        <EntityPropertyTypeEditor
                             class="noDrag noWheel"
                             style="font-size: 14px; line-height: 30px;"
                             :entity="data.entity"

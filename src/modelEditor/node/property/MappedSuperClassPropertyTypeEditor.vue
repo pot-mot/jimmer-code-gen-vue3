@@ -28,6 +28,8 @@ import {
 import IconEnumeration from "@/components/icons/modelEditor/IconEnumeration.vue";
 import IconEmbeddableType from "@/components/icons/modelEditor/IconEmbeddableType.vue";
 import IconEntity from "@/components/icons/modelEditor/IconEntity.vue";
+import {toOneToOneAbstract} from "@/modelEditor/association/toOneToOneAbstract.ts";
+import {toManyToOneAbstract} from "@/modelEditor/association/toManyToOneAbstract.ts";
 
 const props = defineProps<{
     mappedSuperClass: DeepReadonly<MappedSuperClassWithProperties>
@@ -275,6 +277,21 @@ const association = computed(() => {
                 <div v-if="'rawType' in property" class="current-item-label">
                     {{ property.rawType }}
                 </div>
+            </div>
+
+            <div v-if="association">
+                <template v-if="association.association.type === 'ManyToOne_Abstract'">
+                    <button @click.stop="toOneToOneAbstract(association.association)">
+                        Many
+                    </button>
+                    To One
+                </template>
+                <template v-else-if="association.association.type === 'OneToOne_Abstract'">
+                    <button @click.stop="toManyToOneAbstract(association.association)">
+                        One
+                    </button>
+                    To One
+                </template>
             </div>
         </template>
 
