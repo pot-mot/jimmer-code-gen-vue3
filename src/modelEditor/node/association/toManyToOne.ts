@@ -1,5 +1,9 @@
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {nextTick} from "vue";
+import {
+    ASSOCIATION_FK_COMMENT_TEMPLATE,
+    ASSOCIATION_FK_NAME_TEMPLATE
+} from "@/type/context/utils/AssociationTemplate.ts";
 
 export const toManyToOne = async (
     association: DeepReadonly<ConcreteAssociationIdOnly>
@@ -74,10 +78,10 @@ export const toManyToOne = async (
 
         const newAssociation: ManyToOneAssociationIdOnly = {
             id: association.id,
-            name: association.name,
-            useNameTemplate: association.useNameTemplate,
-            comment: association.comment,
-            useCommentTemplate: association.useCommentTemplate,
+            name: ASSOCIATION_FK_NAME_TEMPLATE,
+            useNameTemplate: true,
+            comment: ASSOCIATION_FK_COMMENT_TEMPLATE,
+            useCommentTemplate: true,
             foreignKeyType: association.foreignKeyType,
             referencedEntityId: association.referencedEntityId,
             sourceEntityId: association.sourceEntityId,

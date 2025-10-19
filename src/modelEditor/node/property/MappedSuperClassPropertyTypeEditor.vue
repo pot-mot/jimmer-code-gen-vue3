@@ -28,8 +28,8 @@ import {
 import IconEnumeration from "@/components/icons/modelEditor/IconEnumeration.vue";
 import IconEmbeddableType from "@/components/icons/modelEditor/IconEmbeddableType.vue";
 import IconEntity from "@/components/icons/modelEditor/IconEntity.vue";
-import {toOneToOneAbstract} from "@/modelEditor/association/toOneToOneAbstract.ts";
-import {toManyToOneAbstract} from "@/modelEditor/association/toManyToOneAbstract.ts";
+import {toOneToOneAbstract} from "@/modelEditor/node/association/toOneToOneAbstract.ts";
+import {toManyToOneAbstract} from "@/modelEditor/node/association/toManyToOneAbstract.ts";
 
 const props = defineProps<{
     mappedSuperClass: DeepReadonly<MappedSuperClassWithProperties>

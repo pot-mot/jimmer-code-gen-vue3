@@ -28,9 +28,9 @@ import {
 import IconEnumeration from "@/components/icons/modelEditor/IconEnumeration.vue";
 import IconEmbeddableType from "@/components/icons/modelEditor/IconEmbeddableType.vue";
 import IconEntity from "@/components/icons/modelEditor/IconEntity.vue";
-import {toOneToOne} from "@/modelEditor/association/toOneToOne.ts";
-import {toManyToOne} from "@/modelEditor/association/toManyToOne.ts";
-import {toManyToMany} from "@/modelEditor/association/toManyToMany.ts";
+import {toOneToOne} from "@/modelEditor/node/association/toOneToOne.ts";
+import {toManyToOne} from "@/modelEditor/node/association/toManyToOne.ts";
+import {toManyToMany} from "@/modelEditor/node/association/toManyToMany.ts";
 
 const props = defineProps<{
     entity: DeepReadonly<EntityWithProperties>
@@ -271,7 +271,9 @@ const association = computed(() => {
                 </div>
                 <div v-if="'referencedEntityId' in property" class="current-item-label">
                     <IconEntity class="current-item-label-icon"/>
+                    <span v-if="property.category === 'ManyToMany_Source'">List<</span>
                     <EntityViewer :entity="referencedEntity" hide-comment ctrl-focus/>
+                    <span v-if="property.category === 'ManyToMany_Source'">></span>
                     <div
                         v-if="referencedEntity && 'associationId' in property && !association"
                         style="color: var(--danger-color);"

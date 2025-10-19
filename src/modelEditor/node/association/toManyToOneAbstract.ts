@@ -1,8 +1,12 @@
 import { useModelEditor } from "@/modelEditor/useModelEditor.ts";
 import { nextTick } from "vue";
+import {
+    ABSTRACT_ASSOCIATION_FK_COMMENT_TEMPLATE,
+    ABSTRACT_ASSOCIATION_FK_NAME_TEMPLATE
+} from "@/type/context/utils/AssociationTemplate.ts";
 
-export const toOneToOneAbstract = async (
-    association: DeepReadonly<AbstractAssociationIdOnly>,
+export const toManyToOneAbstract = async (
+    association: DeepReadonly<AbstractAssociationIdOnly>
 ) => {
     const {
         executeAsyncBatch,
@@ -32,11 +36,11 @@ export const toOneToOneAbstract = async (
         throw new Error(`[${association.sourcePropertyId}] is not AssociationSource`)
     }
 
-    await executeAsyncBatch(Symbol("toOneToOneAbstract"), async () => {
-        const newSourceProperty: OneToOneSourceProperty = {
+    await executeAsyncBatch(Symbol("toManyToOneAbstract"), async () => {
+        const newSourceProperty: ManyToOneProperty = {
             id: sourceProperty.id,
             associationId: association.id,
-            category: "OneToOne_Source",
+            category: "ManyToOne",
             name: sourceProperty.name,
             comment: sourceProperty.comment,
             idViewName: sourceProperty.idViewName,
@@ -46,7 +50,7 @@ export const toOneToOneAbstract = async (
                 columnName: "",
                 foreignKeyType: association.foreignKeyType,
             },
-            autoGenerateJoinInfo: sourceProperty.autoGenerateJoinInfo,
+            autoGenerateJoinInfo: true,
             nullable: sourceProperty.nullable,
             onDissociateAction: sourceProperty.onDissociateAction,
             referencedEntityId: sourceProperty.referencedEntityId,
@@ -55,31 +59,31 @@ export const toOneToOneAbstract = async (
             extraImports: [...sourceProperty.extraImports],
         }
 
-        const newMappedProperty: OneToOneMappedAbstractProperty = {
+        const newMappedProperty: OneToManyAbstractProperty = {
             id: mappedProperty.id,
             associationId: association.id,
-            category: "OneToOne_Mapped_Abstract",
+            category: "OneToMany_Abstract",
             name: mappedProperty.name,
             comment: mappedProperty.comment,
             idViewName: mappedProperty.idViewName,
             autoSyncIdViewName: mappedProperty.autoSyncIdViewName,
             mappedById: mappedProperty.mappedById,
             referencedAbstractEntityId: mappedProperty.referencedAbstractEntityId,
-            nullable: true,
-            typeIsList: false,
+            nullable: false,
+            typeIsList: true,
             extraAnnotations: [...mappedProperty.extraAnnotations],
             extraImports: [...mappedProperty.extraImports],
         }
 
-        const newAssociation: OneToOneAbstractAssociationIdOnly = {
+        const newAssociation: ManyToOneAbstractAssociationIdOnly = {
             id: association.id,
-            nameTemplate: association.nameTemplate,
-            commentTemplate: association.commentTemplate,
+            nameTemplate: ABSTRACT_ASSOCIATION_FK_NAME_TEMPLATE,
+            commentTemplate: ABSTRACT_ASSOCIATION_FK_COMMENT_TEMPLATE,
             foreignKeyType: association.foreignKeyType,
             referencedEntityId: association.referencedEntityId,
             sourceAbstractEntityId: association.sourceAbstractEntityId,
-            sourcePropertyId: sourceProperty.id,
-            type: "OneToOne_Abstract",
+            sourcePropertyId: association.sourcePropertyId,
+            type: "ManyToOne_Abstract",
             mappedProperty: newMappedProperty,
             withMappedProperty: association.withMappedProperty,
         }

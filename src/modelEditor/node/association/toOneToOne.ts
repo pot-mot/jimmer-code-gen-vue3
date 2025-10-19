@@ -1,7 +1,11 @@
-import { useModelEditor } from "@/modelEditor/useModelEditor.ts";
-import { nextTick } from "vue";
+import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
+import {nextTick} from "vue";
+import {
+    ASSOCIATION_FK_COMMENT_TEMPLATE,
+    ASSOCIATION_FK_NAME_TEMPLATE
+} from "@/type/context/utils/AssociationTemplate.ts";
 
-export const toManyToMany = async (
+export const toOneToOne = async (
     association: DeepReadonly<ConcreteAssociationIdOnly>,
 ) => {
     const {
@@ -33,59 +37,56 @@ export const toManyToMany = async (
         throw new Error(`[${association.sourcePropertyId}] is not AssociationSource`)
     }
 
-    await executeAsyncBatch(Symbol("toManyToMany"), async () => {
-        const newSourceProperty: ManyToManySourceProperty = {
+    await executeAsyncBatch(Symbol("toOneToOne"), async () => {
+        const newSourceProperty: OneToOneSourceProperty = {
             id: sourceProperty.id,
             associationId: association.id,
-            category: "ManyToMany_Source",
+            category: "OneToOne_Source",
             name: sourceProperty.name,
             comment: sourceProperty.comment,
             idViewName: sourceProperty.idViewName,
             autoSyncIdViewName: sourceProperty.autoSyncIdViewName,
             joinInfo: {
-                type: "SingleColumnMidTable",
-                tableName: "",
-                tableComment: "",
-                sourceColumnName: "",
-                targetColumnName: "",
-                sourceForeignKeyType: association.foreignKeyType,
-                targetForeignKeyType: association.foreignKeyType,
+                type: "SingleColumn",
+                columnName: "",
+                foreignKeyType: association.foreignKeyType,
             },
             autoGenerateJoinInfo: true,
-            nullable: false,
+            nullable: sourceProperty.nullable,
+            onDissociateAction: "onDissociateAction" in sourceProperty ? sourceProperty.onDissociateAction : "NONE",
             referencedEntityId: sourceProperty.referencedEntityId,
-            typeIsList: true,
+            typeIsList: false,
             extraAnnotations: [...sourceProperty.extraAnnotations],
             extraImports: [...sourceProperty.extraImports],
         }
 
-        const newMappedProperty: ManyToManyMappedProperty = {
+        const newMappedProperty: OneToOneMappedProperty = {
             id: mappedProperty.id,
             associationId: association.id,
-            category: "ManyToMany_Mapped",
+            category: "OneToOne_Mapped",
             name: mappedProperty.name,
             comment: mappedProperty.comment,
             idViewName: mappedProperty.idViewName,
             autoSyncIdViewName: mappedProperty.autoSyncIdViewName,
             mappedById: mappedProperty.mappedById,
             referencedEntityId: mappedProperty.referencedEntityId,
-            nullable: false,
-            typeIsList: true,
+            nullable: true,
+            typeIsList: false,
             extraAnnotations: [...mappedProperty.extraAnnotations],
             extraImports: [...mappedProperty.extraImports],
         }
 
-        const newAssociation: ManyToManyAssociationIdOnly = {
+        const newAssociation: OneToOneAssociationIdOnly = {
             id: association.id,
-            name: association.name,
-            useNameTemplate: association.useNameTemplate,
-            comment: association.comment,
-            useCommentTemplate: association.useCommentTemplate,
+            name: ASSOCIATION_FK_NAME_TEMPLATE,
+            useNameTemplate: true,
+            comment: ASSOCIATION_FK_COMMENT_TEMPLATE,
+            useCommentTemplate: true,
             foreignKeyType: association.foreignKeyType,
             referencedEntityId: association.referencedEntityId,
             sourceEntityId: association.sourceEntityId,
             sourcePropertyId: association.sourcePropertyId,
-            type: "ManyToMany",
+            type: "OneToOne",
             mappedProperty: newMappedProperty,
             withMappedProperty: association.withMappedProperty,
         }
