@@ -52,11 +52,7 @@ export const translateAbstractFkCommentTemplate = (
 }
 
 export const ASSOCIATION_MID_TABLE_NAME_TEMPLATE = `${SOURCE_ENTITY}_${REFERENCED_ENTITY}_mapping`
-export const ASSOCIATION_MID_TABLE_COMMENT_TEMPLATE = `${SOURCE_ENTITY} - ${REFERENCED_ENTITY}`
-
-export const checkMidTableTemplate = (template: string) => {
-    return template.includes(SOURCE_ENTITY) || template.includes(REFERENCED_ENTITY)
-}
+export const ASSOCIATION_MID_TABLE_COMMENT_TEMPLATE = `${SOURCE_ENTITY}${REFERENCED_ENTITY}中间表`
 
 export const translateMidTableNameTemplate = (
     template: string,
