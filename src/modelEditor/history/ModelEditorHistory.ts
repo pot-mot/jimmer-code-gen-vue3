@@ -469,10 +469,10 @@ export const useModelEditorHistory = (
         removeEntityWatcher(id)
         syncEntityAutoChange(entity, contextData)
         contextData.entityMap.set(id, entity)
-        for (const property of entity.properties) {
-            if ("associationId" in property) {
-                const edgedAssociation = contextData.associationMap.get(property.associationId)
-                if (edgedAssociation === undefined) continue
+        for (const edgedAssociation of contextData.associationMap.values()) {
+            if (edgedAssociation.association.referencedEntityId === id) {
+                updateAssociation(edgedAssociation)
+            } else if ("sourceEntityId" in edgedAssociation.association && edgedAssociation.association.sourceEntityId === id) {
                 updateAssociation(edgedAssociation)
             }
         }
@@ -593,13 +593,6 @@ export const useModelEditorHistory = (
         const mappedSuperClass = cloneDeepReadonlyRaw<MappedSuperClassWithProperties>(options.mappedSuperClass)
         syncMappedSuperClassAutoChange(mappedSuperClass, contextData)
         contextData.mappedSuperClassMap.set(id, mappedSuperClass)
-        for (const property of mappedSuperClass.properties) {
-            if ("associationId" in property) {
-                const edgedAssociation = contextData.associationMap.get(property.associationId)
-                if (edgedAssociation === undefined) continue
-                updateAssociation(edgedAssociation)
-            }
-        }
         addMappedSuperClassWatcher(id)
         menuItem.mappedSuperClassMap.set(id, mappedSuperClass)
         inheritInfoSync.syncAbstract(mappedSuperClass)
@@ -655,6 +648,11 @@ export const useModelEditorHistory = (
         removeMappedSuperClassWatcher(id)
         syncMappedSuperClassAutoChange(mappedSuperClass, contextData)
         contextData.mappedSuperClassMap.set(id, mappedSuperClass)
+        for (const edgedAssociation of contextData.associationMap.values()) {
+            if ("sourceAbstractEntityId" in edgedAssociation.association && edgedAssociation.association.sourceAbstractEntityId === id) {
+                updateAssociation(edgedAssociation)
+            }
+        }
         const newGroupId = mappedSuperClass.groupId
         if (oldGroupId !== newGroupId) {
             const newMenuItem = menuMap.value.get(newGroupId)
