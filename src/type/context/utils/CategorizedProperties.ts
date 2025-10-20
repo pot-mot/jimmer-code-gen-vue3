@@ -1,3 +1,5 @@
+import {getPropertyView} from "@/type/context/utils/PropertyView.ts";
+
 const defaultEntityCategorizedProperties = (): Omit<EntityCategorizedProperties, 'idProperty'> => {
     return {
         keyPropertyMap: new Map<string, Property & KeyProperty>(),
@@ -166,19 +168,19 @@ export const categorizeEntityProperties = (
 
         if ("key" in property && property.key) {
             if (result.keyPropertyMap.has(property.id)) {
-                throw new Error(`Duplicate keyProperty id (${property.id}): ${property.name}, ${result.keyPropertyMap.get(property.id)?.name}`)
+                throw new Error(`Duplicate keyProperty id (${property.id}): ${property.name}, ${getPropertyView(result.keyPropertyMap.get(property.id))}`)
             }
             result.keyPropertyMap.set(property.id, property)
         } else if ("logicalDelete" in property && property.logicalDelete) {
             if (result.logicalDeleteProperty !== undefined) {
-                throw new Error(`Multiple logicalDeleteProperty: ${property.name}(${property.id}), ${result.logicalDeleteProperty.name}(${result.logicalDeleteProperty.id})`)
+                throw new Error(`Multiple logicalDeleteProperty: ${property.name}(${property.id}), ${getPropertyView(result.logicalDeleteProperty)}(${result.logicalDeleteProperty.id})`)
             }
             result.logicalDeleteProperty = property
         }
 
         if ("defaultOrderDirection" in property) {
             if (result.defaultOrderPropertyMap.has(property.id)) {
-                throw new Error(`Duplicate defaultOrderProperty id (${property.id}): ${property.name}, ${result.defaultOrderPropertyMap.get(property.id)?.name}`)
+                throw new Error(`Duplicate defaultOrderProperty id (${property.id}): ${property.name}, ${getPropertyView(result.defaultOrderPropertyMap.get(property.id))}`)
             }
             result.defaultOrderPropertyMap.set(property.id, property)
         }
@@ -265,19 +267,19 @@ export const categorizeAbstractCategorizedProperties = (
 
         if ("key" in property && property.key) {
             if (result.keyPropertyMap.has(property.id)) {
-                throw new Error(`Duplicate keyProperty id (${property.id}): ${property.name}, ${result.keyPropertyMap.get(property.id)?.name}`)
+                throw new Error(`Duplicate keyProperty id (${property.id}): ${property.name}, ${getPropertyView(result.keyPropertyMap.get(property.id))}`)
             }
             result.keyPropertyMap.set(property.id, property)
         } else if ("logicalDelete" in property && property.logicalDelete) {
             if (result.logicalDeleteProperty !== undefined) {
-                throw new Error(`Multiple logicalDeleteProperty: ${property.name}(${property.id}), ${result.logicalDeleteProperty.name}(${result.logicalDeleteProperty.id})`)
+                throw new Error(`Multiple logicalDeleteProperty: ${property.name}(${property.id}), ${getPropertyView(result.logicalDeleteProperty)}(${result.logicalDeleteProperty.id})`)
             }
             result.logicalDeleteProperty = property
         }
 
         if ("defaultOrderDirection" in property) {
             if (result.defaultOrderPropertyMap.has(property.id)) {
-                throw new Error(`Duplicate defaultOrderProperty id (${property.id}): ${property.name}, ${result.defaultOrderPropertyMap.get(property.id)?.name}`)
+                throw new Error(`Duplicate defaultOrderProperty id (${property.id}): ${property.name}, ${getPropertyView(result.defaultOrderPropertyMap.get(property.id))}`)
             }
             result.defaultOrderPropertyMap.set(property.id, property)
         }

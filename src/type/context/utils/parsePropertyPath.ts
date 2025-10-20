@@ -82,7 +82,7 @@ export const parsePropertyPath = (
         throw new Error(`PropertyPath is empty`)
     }
 
-    let currentProperty = entity.allProperties.find(it => it.name === propertyPathNames[0])
+    let currentProperty = entity.allProperties.find(it => "name" in it && it.name === propertyPathNames[0])
     if (!currentProperty) {
         throw new Error(`PropertyPath [${propertyPathNames}] is not a valid association path because [${propertyPathNames[0]}] not existed`)
     }
@@ -102,7 +102,7 @@ export const parsePropertyPath = (
             if (!nextEntity) {
                 throw new Error(`[${currentProperty.referencedEntityId}] is not found`)
             }
-            const nextProperty = nextEntity.allProperties.find(it => it.name === nextPropertyName)
+            const nextProperty = nextEntity.allProperties.find(it => "name" in it && it.name === nextPropertyName)
             if (!nextProperty) {
                 throw new Error(`[${nextPropertyName}] is not found in [${currentProperty.referencedEntityId}]`)
             }

@@ -109,7 +109,7 @@ const toggleSelect = (id: string) => {
 }
 
 .mapped-super-class-select-option.selected {
-    background-color: var(--primary-color);
+    background-color: var(--primary-color-background);
 }
 
 .mapped-super-class-select-option.selected :deep(.name-comment-viewer),

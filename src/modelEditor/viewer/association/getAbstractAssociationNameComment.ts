@@ -1,7 +1,7 @@
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {
-    translateAbstractFkCommentTemplate,
-    translateAbstractFkNameTemplate
+    tmpl_fkComment,
+    tmpl_fkName
 } from "@/type/context/utils/AssociationTemplate.ts";
 
 export const getAbstractAssociationNameComment = (association: DeepReadonly<AbstractAssociationIdOnly>) => {
@@ -11,8 +11,8 @@ export const getAbstractAssociationNameComment = (association: DeepReadonly<Abst
     const sourceProperty = sourceAbstractEntity.properties.find(it => it.id === association?.sourcePropertyId)
     if (!sourceProperty) return
 
-    let name = translateAbstractFkNameTemplate(association.nameTemplate, {name: `$${sourceAbstractEntity.name}$`}, sourceProperty)
-    let comment = translateAbstractFkCommentTemplate(association.commentTemplate, sourceAbstractEntity, sourceProperty)
+    let name = tmpl_fkName(association.nameTemplate, {name: `$${sourceAbstractEntity.name}$`}, sourceProperty)
+    let comment = tmpl_fkComment(association.commentTemplate, sourceAbstractEntity, sourceProperty)
 
     return {
         id: association.id,

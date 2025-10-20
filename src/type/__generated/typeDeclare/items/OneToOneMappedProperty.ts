@@ -5,5 +5,9 @@ export default Object.freeze({
     typeIsList: false
     mappedById: string
     nullable: true
+    nameTemplate: string
+    useNameTemplate: boolean
+    commentTemplate: string
+    useCommentTemplate: boolean
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty`,
 })

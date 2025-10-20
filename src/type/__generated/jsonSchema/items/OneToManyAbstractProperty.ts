@@ -4,7 +4,7 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const OneToManyAbstractPropertyJsonSchema: JSONSchemaType<OneToManyAbstractProperty> = {
     "allOf": [
         {
-            "$ref": "#/definitions/Omit<OneToManyProperty,\"category\"|\"referencedEntityId\">"
+            "$ref": "#/definitions/Omit<OneToManyProperty,\"name\"|\"comment\"|\"category\"|\"referencedEntityId\"|\"idViewName\"|\"useNameTemplate\"|\"useCommentTemplate\"|\"useIdViewNameTemplate\">"
         },
         {
             "type": "object",
@@ -15,30 +15,32 @@ const OneToManyAbstractPropertyJsonSchema: JSONSchemaType<OneToManyAbstractPrope
                 },
                 "referencedAbstractEntityId": {
                     "type": "string"
+                },
+                "nameTemplate": {
+                    "type": "string"
+                },
+                "commentTemplate": {
+                    "type": "string"
                 }
             },
             "required": [
                 "category",
+                "commentTemplate",
+                "nameTemplate",
                 "referencedAbstractEntityId"
             ]
         }
     ],
     "definitions": {
-        "Omit<OneToManyProperty,\"category\"|\"referencedEntityId\">": {
+        "Omit<OneToManyProperty,\"name\"|\"comment\"|\"category\"|\"referencedEntityId\"|\"idViewName\"|\"useNameTemplate\"|\"useCommentTemplate\"|\"useIdViewNameTemplate\">": {
             "type": "object",
             "properties": {
-                "name": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "string"
                 },
                 "nullable": {
                     "type": "boolean",
                     "const": false
-                },
-                "comment": {
-                    "type": "string"
                 },
                 "extraImports": {
                     "type": "array",
@@ -59,26 +61,28 @@ const OneToManyAbstractPropertyJsonSchema: JSONSchemaType<OneToManyAbstractPrope
                 "mappedById": {
                     "type": "string"
                 },
+                "nameTemplate": {
+                    "type": "string"
+                },
+                "commentTemplate": {
+                    "type": "string"
+                },
                 "associationId": {
                     "type": "string"
                 },
-                "idViewName": {
+                "idViewNameTemplate": {
                     "type": "string"
-                },
-                "autoSyncIdViewName": {
-                    "type": "boolean"
                 }
             },
             "required": [
                 "associationId",
-                "autoSyncIdViewName",
-                "comment",
+                "commentTemplate",
                 "extraAnnotations",
                 "extraImports",
                 "id",
-                "idViewName",
+                "idViewNameTemplate",
                 "mappedById",
-                "name",
+                "nameTemplate",
                 "nullable",
                 "typeIsList"
             ]

@@ -1,8 +1,12 @@
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {nextTick} from "vue";
 import {
-    ASSOCIATION_FK_COMMENT_TEMPLATE,
-    ASSOCIATION_FK_NAME_TEMPLATE
+    FK_COMMENT_TEMPLATE,
+    FK_NAME_TEMPLATE,
+    MAPPED_PROPERTY_COMMENT_TEMPLATE,
+    MAPPED_PROPERTY_ID_VIEW_TEMPLATE,
+    MAPPED_PROPERTY_NAME_TEMPLATE,
+    ID_VIEW_TEMPLATE
 } from "@/type/context/utils/AssociationTemplate.ts";
 
 export const toOneToOne = async (
@@ -45,7 +49,8 @@ export const toOneToOne = async (
             name: sourceProperty.name,
             comment: sourceProperty.comment,
             idViewName: sourceProperty.idViewName,
-            autoSyncIdViewName: sourceProperty.autoSyncIdViewName,
+            idViewNameTemplate: ID_VIEW_TEMPLATE,
+            useIdViewNameTemplate: true,
             joinInfo: {
                 type: "SingleColumn",
                 columnName: "",
@@ -65,9 +70,14 @@ export const toOneToOne = async (
             associationId: association.id,
             category: "OneToOne_Mapped",
             name: mappedProperty.name,
+            nameTemplate: MAPPED_PROPERTY_NAME_TEMPLATE,
+            useNameTemplate: true,
             comment: mappedProperty.comment,
+            commentTemplate: MAPPED_PROPERTY_COMMENT_TEMPLATE,
+            useCommentTemplate: true,
             idViewName: mappedProperty.idViewName,
-            autoSyncIdViewName: mappedProperty.autoSyncIdViewName,
+            idViewNameTemplate: MAPPED_PROPERTY_ID_VIEW_TEMPLATE,
+            useIdViewNameTemplate: true,
             mappedById: mappedProperty.mappedById,
             referencedEntityId: mappedProperty.referencedEntityId,
             nullable: true,
@@ -78,9 +88,11 @@ export const toOneToOne = async (
 
         const newAssociation: OneToOneAssociationIdOnly = {
             id: association.id,
-            name: ASSOCIATION_FK_NAME_TEMPLATE,
+            name: association.name,
+            nameTemplate: FK_NAME_TEMPLATE,
             useNameTemplate: true,
-            comment: ASSOCIATION_FK_COMMENT_TEMPLATE,
+            comment: association.comment,
+            commentTemplate: FK_COMMENT_TEMPLATE,
             useCommentTemplate: true,
             foreignKeyType: association.foreignKeyType,
             referencedEntityId: association.referencedEntityId,

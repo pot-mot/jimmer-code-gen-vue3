@@ -20,13 +20,29 @@ const OneToManyPropertyJsonSchema: JSONSchemaType<OneToManyProperty> = {
                 "nullable": {
                     "type": "boolean",
                     "const": false
+                },
+                "nameTemplate": {
+                    "type": "string"
+                },
+                "useNameTemplate": {
+                    "type": "boolean"
+                },
+                "commentTemplate": {
+                    "type": "string"
+                },
+                "useCommentTemplate": {
+                    "type": "boolean"
                 }
             },
             "required": [
                 "category",
+                "commentTemplate",
                 "mappedById",
+                "nameTemplate",
                 "nullable",
-                "typeIsList"
+                "typeIsList",
+                "useCommentTemplate",
+                "useNameTemplate"
             ]
         },
         {
@@ -44,15 +60,19 @@ const OneToManyPropertyJsonSchema: JSONSchemaType<OneToManyProperty> = {
                 "idViewName": {
                     "type": "string"
                 },
-                "autoSyncIdViewName": {
+                "idViewNameTemplate": {
+                    "type": "string"
+                },
+                "useIdViewNameTemplate": {
                     "type": "boolean"
                 }
             },
             "required": [
                 "associationId",
-                "autoSyncIdViewName",
                 "idViewName",
-                "referencedEntityId"
+                "idViewNameTemplate",
+                "referencedEntityId",
+                "useIdViewNameTemplate"
             ]
         }
     ],

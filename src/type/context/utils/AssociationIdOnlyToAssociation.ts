@@ -1,11 +1,11 @@
 import {
-    translateAbstractFkCommentTemplate,
-    translateAbstractFkNameTemplate,
-    translateFkCommentTemplate,
-    translateFkNameTemplate, translateMidTableCommentTemplate,
-    translateMidTableNameTemplate
+    INHERIT_ENTITY,
+    tmpl_fkComment,
+    tmpl_fkName,
+    tmpl_midTableComment,
+    tmpl_midTableName
 } from "@/type/context/utils/AssociationTemplate.ts";
-import {INHERIT_ENTITY} from "@/type/context/utils/AbstractAssociationToReal.ts";
+import {getPropertyView} from "@/type/context/utils/PropertyView.ts";
 
 export const oneToOneIdOnlyToAssociation = (
     idOnly: OneToOneAssociationIdOnly,
@@ -18,7 +18,7 @@ export const oneToOneIdOnlyToAssociation = (
     if (!referencedEntity) throw new Error(`[${idOnly.referencedEntityId}] not found`)
     const sourceProperty = sourceEntity.allProperties.find(it => it.id === idOnly.sourcePropertyId)
     if (!sourceProperty) throw new Error(`[${idOnly.sourcePropertyId}] not found`)
-    if (sourceProperty.category !== 'OneToOne_Source') throw new Error(`[${sourceProperty.name}] is not a OneToOne_Source`)
+    if (sourceProperty.category !== 'OneToOne_Source') throw new Error(`[${getPropertyView(sourceProperty)}] is not a OneToOne_Source`)
 
     const association: OneToOneAssociation = {
         id: idOnly.id,
@@ -33,11 +33,11 @@ export const oneToOneIdOnlyToAssociation = (
         foreignKeyType: idOnly.foreignKeyType,
     }
     if (sourceProperty.joinInfo.type === "SingleColumn" || sourceProperty.joinInfo.type === "MultiColumn") {
-        if (idOnly.useNameTemplate) association.name = translateFkNameTemplate(idOnly.name, sourceEntity, sourceProperty)
-        if (idOnly.useCommentTemplate) association.comment = translateFkCommentTemplate(idOnly.comment, sourceEntity, sourceProperty)
+        if (idOnly.useNameTemplate) association.name = tmpl_fkName(idOnly.nameTemplate, sourceEntity, sourceProperty)
+        if (idOnly.useCommentTemplate) association.comment = tmpl_fkComment(idOnly.commentTemplate, sourceEntity, sourceProperty)
     } else {
-        if (idOnly.useNameTemplate) association.name = translateMidTableNameTemplate(idOnly.name, sourceEntity, referencedEntity)
-        if (idOnly.useCommentTemplate) association.comment = translateMidTableCommentTemplate(idOnly.comment, sourceEntity, referencedEntity)
+        if (idOnly.useNameTemplate) association.name = tmpl_midTableName(idOnly.nameTemplate, sourceEntity, referencedEntity)
+        if (idOnly.useCommentTemplate) association.comment = tmpl_midTableComment(idOnly.commentTemplate, sourceEntity, referencedEntity)
     }
 
     return association
@@ -54,7 +54,7 @@ export const manyToOneIdOnlyToAssociation = (
     if (!referencedEntity) throw new Error(`[${idOnly.referencedEntityId}] not found`)
     const sourceProperty = sourceEntity.allProperties.find(it => it.id === idOnly.sourcePropertyId)
     if (!sourceProperty) throw new Error(`[${idOnly.sourcePropertyId}] not found`)
-    if (sourceProperty.category !== 'ManyToOne') throw new Error(`[${sourceProperty.name}] is not a ManyToOne`)
+    if (sourceProperty.category !== 'ManyToOne') throw new Error(`[${getPropertyView(sourceProperty)}] is not a ManyToOne`)
 
     const association: ManyToOneAssociation = {
         id: idOnly.id,
@@ -69,11 +69,11 @@ export const manyToOneIdOnlyToAssociation = (
         foreignKeyType: idOnly.foreignKeyType,
     }
     if (sourceProperty.joinInfo.type === "SingleColumn" || sourceProperty.joinInfo.type === "MultiColumn") {
-        if (idOnly.useNameTemplate) association.name = translateFkNameTemplate(idOnly.name, sourceEntity, sourceProperty)
-        if (idOnly.useCommentTemplate) association.comment = translateFkCommentTemplate(idOnly.comment, sourceEntity, sourceProperty)
+        if (idOnly.useNameTemplate) association.name = tmpl_fkName(idOnly.nameTemplate, sourceEntity, sourceProperty)
+        if (idOnly.useCommentTemplate) association.comment = tmpl_fkComment(idOnly.commentTemplate, sourceEntity, sourceProperty)
     } else {
-        if (idOnly.useNameTemplate) association.name = translateMidTableNameTemplate(idOnly.name, sourceEntity, referencedEntity)
-        if (idOnly.useCommentTemplate) association.comment = translateMidTableCommentTemplate(idOnly.comment, sourceEntity, referencedEntity)
+        if (idOnly.useNameTemplate) association.name = tmpl_midTableName(idOnly.nameTemplate, sourceEntity, referencedEntity)
+        if (idOnly.useCommentTemplate) association.comment = tmpl_midTableComment(idOnly.commentTemplate, sourceEntity, referencedEntity)
     }
 
     return association
@@ -90,7 +90,7 @@ export const manyToManyIdOnlyToAssociation = (
     if (!referencedEntity) throw new Error(`[${idOnly.referencedEntityId}] not found`)
     const sourceProperty = sourceEntity.allProperties.find(it => it.id === idOnly.sourcePropertyId)
     if (!sourceProperty) throw new Error(`[${idOnly.sourcePropertyId}] not found`)
-    if (sourceProperty.category !== 'ManyToMany_Source') throw new Error(`[${sourceProperty.name}] is not a ManyToMany_Source`)
+    if (sourceProperty.category !== 'ManyToMany_Source') throw new Error(`[${getPropertyView(sourceProperty)}] is not a ManyToMany_Source`)
 
     const association: ManyToManyAssociation = {
         id: idOnly.id,
@@ -104,8 +104,8 @@ export const manyToManyIdOnlyToAssociation = (
         mappedProperty: idOnly.mappedProperty,
         foreignKeyType: idOnly.foreignKeyType,
     }
-    if (idOnly.useNameTemplate) association.name = translateMidTableNameTemplate(idOnly.name, sourceEntity, referencedEntity)
-    if (idOnly.useCommentTemplate) association.comment = translateMidTableCommentTemplate(idOnly.comment, sourceEntity, referencedEntity)
+    if (idOnly.useNameTemplate) association.name = tmpl_midTableName(idOnly.nameTemplate, sourceEntity, referencedEntity)
+    if (idOnly.useCommentTemplate) association.comment = tmpl_midTableComment(idOnly.commentTemplate, sourceEntity, referencedEntity)
 
     return association
 }
@@ -122,7 +122,7 @@ export const abstractOneToOneIdOnlyToAssociation = (
     if (!referencedEntity) throw new Error(`[${idOnly.referencedEntityId}] not found`)
     const sourceProperty = sourceAbstractEntity.allProperties.find(it => it.id === idOnly.sourcePropertyId)
     if (!sourceProperty) throw new Error(`[${idOnly.sourcePropertyId}] not found`)
-    if (sourceProperty.category !== 'OneToOne_Source') throw new Error(`[${sourceProperty.name}] is not a OneToOne_Source`)
+    if (sourceProperty.category !== 'OneToOne_Source') throw new Error(`[${getPropertyView(sourceProperty)}] is not a OneToOne_Source`)
 
     const association: OneToOneAbstractAssociation = {
         id: idOnly.id,
@@ -136,8 +136,8 @@ export const abstractOneToOneIdOnlyToAssociation = (
         mappedProperty: idOnly.mappedProperty,
         foreignKeyType: idOnly.foreignKeyType,
     }
-    association.nameTemplate = translateAbstractFkNameTemplate(idOnly.nameTemplate, {name: INHERIT_ENTITY}, sourceProperty)
-    association.commentTemplate = translateAbstractFkCommentTemplate(idOnly.commentTemplate, {comment: INHERIT_ENTITY}, sourceProperty)
+    association.nameTemplate = tmpl_fkName(idOnly.nameTemplate, {name: INHERIT_ENTITY}, sourceProperty)
+    association.commentTemplate = tmpl_fkComment(idOnly.commentTemplate, {comment: INHERIT_ENTITY}, sourceProperty)
 
     return association
 }
@@ -154,7 +154,7 @@ export const abstractManyToOneIdOnlyToAssociation = (
     if (!referencedEntity) throw new Error(`[${idOnly.referencedEntityId}] not found`)
     const sourceProperty = sourceAbstractEntity.allProperties.find(it => it.id === idOnly.sourcePropertyId)
     if (!sourceProperty) throw new Error(`[${idOnly.sourcePropertyId}] not found`)
-    if (sourceProperty.category !== 'ManyToOne') throw new Error(`[${sourceProperty.name}] is not a ManyToOne`)
+    if (sourceProperty.category !== 'ManyToOne') throw new Error(`[${getPropertyView(sourceProperty)}] is not a ManyToOne`)
 
     const association: ManyToOneAbstractAssociation = {
         id: idOnly.id,
@@ -168,8 +168,8 @@ export const abstractManyToOneIdOnlyToAssociation = (
         mappedProperty: idOnly.mappedProperty,
         foreignKeyType: idOnly.foreignKeyType,
     }
-    association.nameTemplate = translateAbstractFkNameTemplate(idOnly.nameTemplate, {name: INHERIT_ENTITY}, sourceProperty)
-    association.commentTemplate = translateAbstractFkCommentTemplate(idOnly.commentTemplate, {comment: INHERIT_ENTITY}, sourceProperty)
+    association.nameTemplate = tmpl_fkName(idOnly.nameTemplate, {name: INHERIT_ENTITY}, sourceProperty)
+    association.commentTemplate = tmpl_fkComment(idOnly.commentTemplate, {comment: INHERIT_ENTITY}, sourceProperty)
 
     return association
 }

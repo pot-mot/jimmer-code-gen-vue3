@@ -28,6 +28,15 @@ import {
 import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
 import {nameTool} from "@/type/context/utils/NameTool.ts";
 import {defaultInheritInfo, useInheritInfoSync} from "@/type/context/utils/InheritInfo.ts";
+import {generateFkJoinInfo, generateJoinInfo} from "@/modelEditor/property/PropertyJoinInfoGenerate.ts";
+import {
+    tmpl_fkComment,
+    tmpl_fkName,
+    tmpl_mappedPropertyComment,
+    tmpl_mappedPropertyIdView,
+    tmpl_mappedPropertyName,
+    tmpl_idView,
+} from "@/type/context/utils/AssociationTemplate.ts";
 
 const SYNC_DEBOUNCE_TIMEOUT = 500
 
@@ -358,8 +367,9 @@ export const useModelEditorHistory = (
 
     const syncEntityName = (
         entity: EntityWithProperties,
-        databaseNameStrategy: NameStrategy
+        contextData: DeepReadonly<ModelContextData>,
     ) => {
+        const databaseNameStrategy = contextData.model.databaseNameStrategy
         if (entity.autoSyncTableName) {
             entity.tableName = nameTool.convert(entity.name, "UPPER_CAMEL", databaseNameStrategy)
         }
@@ -367,11 +377,19 @@ export const useModelEditorHistory = (
             if ("autoSyncColumnName" in property && property.autoSyncColumnName) {
                 property.columnInfo.name = nameTool.convert(property.name, "UPPER_CAMEL", databaseNameStrategy)
             }
-            if ("autoSyncIdViewName" in property && property.autoSyncIdViewName) {
-                if (property.typeIsList) {
-                    property.idViewName = property.name.endsWith("List") ? property.name.substring(0, property.name.length - 4) + "Ids" : property.name + "Ids"
-                } else {
-                    property.idViewName = property.name + "Id"
+            if ("joinInfo" in property && property.autoGenerateJoinInfo) {
+                const edgedAssociation = contextData.associationMap.get(property.associationId)
+                if (edgedAssociation === undefined) return
+                const association = edgedAssociation.association
+                property.joinInfo = generateJoinInfo(property, association.foreignKeyType, entity, contextData)
+                if (property.useIdViewNameTemplate) {
+                    const referenceEntity = contextData.entityMap.get(property.referencedEntityId)
+                    if (referenceEntity === undefined) return
+                    if (property.typeIsList) {
+                        property.idViewName = tmpl_idView(property.idViewNameTemplate, referenceEntity)
+                    } else {
+                        property.idViewName = tmpl_idView(property.idViewNameTemplate, referenceEntity)
+                    }
                 }
             }
         }
@@ -392,7 +410,7 @@ export const useModelEditorHistory = (
         if (menuItem.entityMap.has(id)) throw new Error(`[${id}] is already existed in [${groupId}]`)
 
         const entity = cloneDeepReadonlyRaw<EntityWithProperties>(options.entity)
-        syncEntityName(entity, contextData.model.databaseNameStrategy)
+        syncEntityName(entity, contextData)
         contextData.entityMap.set(id, entity)
         addEntityWatcher(id)
         menuItem.entityMap.set(id, entity)
@@ -447,7 +465,7 @@ export const useModelEditorHistory = (
         const entity = cloneDeepReadonlyRaw<EntityWithProperties>(options.entity)
 
         removeEntityWatcher(id)
-        syncEntityName(entity, contextData.model.databaseNameStrategy)
+        syncEntityName(entity, contextData)
         contextData.entityMap.set(id, entity)
         const newGroupId = entity.groupId
         if (oldGroupId !== newGroupId) {
@@ -524,14 +542,24 @@ export const useModelEditorHistory = (
 
     const syncMappedSuperClassName = (
         mappedSuperClass: MappedSuperClassWithProperties,
-        databaseNameStrategy: NameStrategy
+        contextData: DeepReadonly<ModelContextData>,
     ) => {
+        const databaseNameStrategy = contextData.model.databaseNameStrategy
+
         for (const property of mappedSuperClass.properties) {
             if ("autoSyncColumnName" in property && property.autoSyncColumnName) {
                 property.columnInfo.name = nameTool.convert(property.name, "UPPER_CAMEL", databaseNameStrategy)
             }
-            if ("autoSyncIdViewName" in property && property.autoSyncIdViewName) {
-                property.idViewName = property.name + "Id"
+            if ("joinInfo" in property && property.autoGenerateJoinInfo) {
+                const edgedAssociation = contextData.associationMap.get(property.associationId)
+                if (edgedAssociation === undefined) return
+                const association = edgedAssociation.association
+                property.joinInfo = generateFkJoinInfo(property, association.foreignKeyType, contextData)
+                if (property.useIdViewNameTemplate) {
+                    const referencedEntity = contextData.entityMap.get(association.referencedEntityId)
+                    if (referencedEntity === undefined) return
+                    property.idViewName = tmpl_idView(property.idViewNameTemplate, referencedEntity)
+                }
             }
         }
     }
@@ -554,7 +582,7 @@ export const useModelEditorHistory = (
         if (menuItem.mappedSuperClassMap.has(id)) throw new Error(`[${id}] is already existed in [${groupId}]`)
 
         const mappedSuperClass = cloneDeepReadonlyRaw<MappedSuperClassWithProperties>(options.mappedSuperClass)
-        syncMappedSuperClassName(mappedSuperClass, contextData.model.databaseNameStrategy)
+        syncMappedSuperClassName(mappedSuperClass, contextData)
         contextData.mappedSuperClassMap.set(id, mappedSuperClass)
         addMappedSuperClassWatcher(id)
         menuItem.mappedSuperClassMap.set(id, mappedSuperClass)
@@ -609,7 +637,7 @@ export const useModelEditorHistory = (
         const mappedSuperClass = cloneDeepReadonlyRaw<MappedSuperClassWithProperties>(options.mappedSuperClass)
 
         removeMappedSuperClassWatcher(id)
-        syncMappedSuperClassName(mappedSuperClass, contextData.model.databaseNameStrategy)
+        syncMappedSuperClassName(mappedSuperClass, contextData)
         contextData.mappedSuperClassMap.set(id, mappedSuperClass)
         const newGroupId = mappedSuperClass.groupId
         if (oldGroupId !== newGroupId) {
@@ -962,19 +990,17 @@ export const useModelEditorHistory = (
         association: DeepReadonly<AssociationIdOnly>,
         contextData: DeepReadonly<ModelContextData>,
         vueFlow: VueFlowStore,
-    ) => {
+    ): {sourceNode: GraphNode, sourceHandleId: string} => {
         let sourceNode: GraphNode | undefined
-        let sourceHandleId: string | undefined
 
         if ("sourceEntityId" in association) {
             const sourceEntity = contextData.entityMap.get(association.sourceEntityId)
             if (!sourceEntity) throw new Error(`[${association.sourceEntityId}] is not existed`)
             sourceNode = vueFlow.findNode(association.sourceEntityId)
             if (!sourceNode) throw new Error(`[${association.sourceEntityId}] is not existed`)
-            sourceHandleId = association.sourcePropertyId
             for (const {association: existedAssociation} of contextData.associationMap.values()) {
-                if (existedAssociation.id !== association.id && existedAssociation.sourcePropertyId === sourceHandleId) {
-                    const sourceProperty = sourceEntity.properties.find(property => property.id === sourceHandleId)
+                if (existedAssociation.id !== association.id && existedAssociation.sourcePropertyId ===  association.sourcePropertyId) {
+                    const sourceProperty = sourceEntity.properties.find(property => property.id ===  association.sourcePropertyId)
                     if (!sourceProperty) throw new Error(`[${existedAssociation.sourcePropertyId}] is not existed`)
                     throw new Error(`[${sourceProperty.name}] cannot used as source in two association`)
                 }
@@ -984,10 +1010,9 @@ export const useModelEditorHistory = (
             if (!sourceAbstractEntity) throw new Error(`[${association.sourceAbstractEntityId}] is not existed`)
             sourceNode = vueFlow.findNode(association.sourceAbstractEntityId)
             if (!sourceNode) throw new Error(`[${association.sourceAbstractEntityId}] is not existed`)
-            sourceHandleId = association.sourcePropertyId
             for (const {association: existedAssociation} of contextData.associationMap.values()) {
-                if (existedAssociation.id !== association.id && existedAssociation.sourcePropertyId === sourceHandleId) {
-                    const sourceProperty = sourceAbstractEntity.properties.find(property => property.id === sourceHandleId)
+                if (existedAssociation.id !== association.id && existedAssociation.sourcePropertyId ===  association.sourcePropertyId) {
+                    const sourceProperty = sourceAbstractEntity.properties.find(property => property.id ===  association.sourcePropertyId)
                     if (!sourceProperty) throw new Error(`[${existedAssociation.sourcePropertyId}] is not existed`)
                     throw new Error(`[${sourceProperty.name}] cannot used as source in two association`)
                 }
@@ -996,7 +1021,7 @@ export const useModelEditorHistory = (
 
         return {
             sourceNode,
-            sourceHandleId,
+            sourceHandleId: association.sourcePropertyId,
         }
     }
     const getAssociationTarget = (
@@ -1015,13 +1040,43 @@ export const useModelEditorHistory = (
 
     const syncAssociationName = (
         association: AssociationIdOnly,
+        contextData: DeepReadonly<ModelContextData>,
     ) => {
         const mappedProperty = association.mappedProperty
-        if ("autoSyncIdViewName" in mappedProperty && mappedProperty.autoSyncIdViewName) {
+
+        if ("sourceEntityId" in association) {
+            const sourceEntity = contextData.entityMap.get(association.sourceEntityId)
+            if (!sourceEntity) return
+            const sourceProperty = sourceEntity.properties.find(property => property.id === association.sourcePropertyId)
+            if (!sourceProperty) return
+
+            if ("useNameTemplate" in association && association.useNameTemplate) {
+                association.name = tmpl_fkName(association.nameTemplate, sourceEntity, sourceProperty)
+            }
+            if ("useCommentTemplate" in association && association.useCommentTemplate) {
+                association.comment = tmpl_fkComment(association.commentTemplate, sourceEntity, sourceProperty)
+            }
+
             if (mappedProperty.typeIsList) {
-                mappedProperty.idViewName = mappedProperty.name.endsWith("List") ? mappedProperty.name.substring(0, mappedProperty.name.length - 4) + "Ids" : mappedProperty.name + "Ids"
+                if ("useNameTemplate" in mappedProperty && mappedProperty.useNameTemplate) {
+                    mappedProperty.name = tmpl_mappedPropertyName(mappedProperty.nameTemplate, sourceEntity, sourceProperty)
+                }
+                if ("useCommentTemplate" in mappedProperty && mappedProperty.useCommentTemplate) {
+                    mappedProperty.comment = tmpl_mappedPropertyComment(mappedProperty.commentTemplate, sourceEntity, sourceProperty)
+                }
+                if ("useIdViewNameTemplate" in mappedProperty && mappedProperty.useIdViewNameTemplate) {
+                    mappedProperty.idViewName = tmpl_mappedPropertyIdView(mappedProperty.idViewNameTemplate, sourceEntity, sourceProperty)
+                }
             } else {
-                mappedProperty.idViewName = mappedProperty.name + "Id"
+                if ("useNameTemplate" in mappedProperty && mappedProperty.useNameTemplate) {
+                    mappedProperty.name = tmpl_mappedPropertyName(mappedProperty.nameTemplate, sourceEntity, sourceProperty)
+                }
+                if ("useCommentTemplate" in mappedProperty && mappedProperty.useCommentTemplate) {
+                    mappedProperty.comment = tmpl_mappedPropertyComment(mappedProperty.commentTemplate, sourceEntity, sourceProperty)
+                }
+                if ("useIdViewNameTemplate" in mappedProperty && mappedProperty.useIdViewNameTemplate) {
+                    mappedProperty.idViewName = tmpl_mappedPropertyIdView(mappedProperty.idViewNameTemplate, sourceEntity, sourceProperty)
+                }
             }
         }
     }
@@ -1044,7 +1099,7 @@ export const useModelEditorHistory = (
                 association: options.association,
                 labelPosition: options.labelPosition
             })
-            syncAssociationName(edgedAssociation.association)
+            syncAssociationName(edgedAssociation.association, contextData)
             contextData.associationMap.set(id, edgedAssociation)
             addAssociationWatcher(id)
             const newEdge: ConcreteAssociationEdge = {
@@ -1062,7 +1117,7 @@ export const useModelEditorHistory = (
                 association: options.association,
                 labelPosition: options.labelPosition
             })
-            syncAssociationName(edgedAssociation.association)
+            syncAssociationName(edgedAssociation.association, contextData)
             contextData.associationMap.set(id, edgedAssociation)
             addAssociationWatcher(id)
             const newEdge: AbstractAssociationEdge = {
@@ -1110,7 +1165,7 @@ export const useModelEditorHistory = (
 
         const edgedAssociation = cloneDeepReadonlyRaw<EdgedAssociation>(options)
         removeAssociationWatcher(id)
-        syncAssociationName(edgedAssociation.association)
+        syncAssociationName(edgedAssociation.association, contextData)
         contextData.associationMap.set(id, edgedAssociation)
         addAssociationWatcher(id)
         existedAssociationEdge.data.edgedAssociation = edgedAssociation

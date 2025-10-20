@@ -15,10 +15,12 @@ import {
 import {computed, nextTick, ref} from "vue";
 import TypePairViewer from "@/modelEditor/viewer/TypePairViewer.vue";
 import {
-    ABSTRACT_ASSOCIATION_FK_COMMENT_TEMPLATE,
-    ABSTRACT_ASSOCIATION_FK_NAME_TEMPLATE
+    FK_COMMENT_TEMPLATE,
+    FK_NAME_TEMPLATE,
+    MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
+    MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE,
+    MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
 } from "@/type/context/utils/AssociationTemplate.ts";
-import {INHERIT_ENTITY} from "@/type/context/utils/AbstractAssociationToReal.ts";
 import ColorPreview from "@/components/color/ColorPreview.vue";
 import {
     getGroupItemTypeOptionName,
@@ -207,10 +209,9 @@ const selectEntity = (entity: DeepReadonly<EntityWithProperties>) => {
         const mappedProperty: OneToManyAbstractProperty = {
             mappedById: property.value.id,
             id: mappedPropertyId,
-            name: `${INHERIT_ENTITY}List`,
-            comment: `${INHERIT_ENTITY}列表`,
-            idViewName: `${INHERIT_ENTITY}Ids`,
-            autoSyncIdViewName: true,
+            nameTemplate: MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
+            commentTemplate: MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
+            idViewNameTemplate: MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE,
             category: "OneToMany_Abstract",
             associationId,
             referencedAbstractEntityId: props.mappedSuperClass.id,
@@ -221,8 +222,8 @@ const selectEntity = (entity: DeepReadonly<EntityWithProperties>) => {
         }
         const association: ManyToOneAbstractAssociationIdOnly = {
             id: associationId,
-            nameTemplate: ABSTRACT_ASSOCIATION_FK_NAME_TEMPLATE,
-            commentTemplate: ABSTRACT_ASSOCIATION_FK_COMMENT_TEMPLATE,
+            nameTemplate: FK_NAME_TEMPLATE,
+            commentTemplate: FK_COMMENT_TEMPLATE,
             type: "ManyToOne_Abstract",
             sourceAbstractEntityId: props.mappedSuperClass.id,
             sourcePropertyId: sourceProperty.id,

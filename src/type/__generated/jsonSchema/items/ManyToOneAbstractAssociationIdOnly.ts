@@ -52,7 +52,7 @@ const ManyToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToOneAbst
         "OneToManyAbstractProperty": {
             "allOf": [
                 {
-                    "$ref": "#/definitions/Omit<OneToManyProperty,\"category\"|\"referencedEntityId\">"
+                    "$ref": "#/definitions/Omit<OneToManyProperty,\"name\"|\"comment\"|\"category\"|\"referencedEntityId\"|\"idViewName\"|\"useNameTemplate\"|\"useCommentTemplate\"|\"useIdViewNameTemplate\">"
                 },
                 {
                     "type": "object",
@@ -63,30 +63,32 @@ const ManyToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToOneAbst
                         },
                         "referencedAbstractEntityId": {
                             "type": "string"
+                        },
+                        "nameTemplate": {
+                            "type": "string"
+                        },
+                        "commentTemplate": {
+                            "type": "string"
                         }
                     },
                     "required": [
                         "category",
+                        "commentTemplate",
+                        "nameTemplate",
                         "referencedAbstractEntityId"
                     ]
                 }
             ]
         },
-        "Omit<OneToManyProperty,\"category\"|\"referencedEntityId\">": {
+        "Omit<OneToManyProperty,\"name\"|\"comment\"|\"category\"|\"referencedEntityId\"|\"idViewName\"|\"useNameTemplate\"|\"useCommentTemplate\"|\"useIdViewNameTemplate\">": {
             "type": "object",
             "properties": {
-                "name": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "string"
                 },
                 "nullable": {
                     "type": "boolean",
                     "const": false
-                },
-                "comment": {
-                    "type": "string"
                 },
                 "extraImports": {
                     "type": "array",
@@ -107,26 +109,28 @@ const ManyToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<ManyToOneAbst
                 "mappedById": {
                     "type": "string"
                 },
+                "nameTemplate": {
+                    "type": "string"
+                },
+                "commentTemplate": {
+                    "type": "string"
+                },
                 "associationId": {
                     "type": "string"
                 },
-                "idViewName": {
+                "idViewNameTemplate": {
                     "type": "string"
-                },
-                "autoSyncIdViewName": {
-                    "type": "boolean"
                 }
             },
             "required": [
                 "associationId",
-                "autoSyncIdViewName",
-                "comment",
+                "commentTemplate",
                 "extraAnnotations",
                 "extraImports",
                 "id",
-                "idViewName",
+                "idViewNameTemplate",
                 "mappedById",
-                "name",
+                "nameTemplate",
                 "nullable",
                 "typeIsList"
             ]

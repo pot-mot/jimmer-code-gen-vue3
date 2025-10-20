@@ -1,16 +1,23 @@
-import {firstCaseToLower, firstCaseToUpper} from "@/utils/name/firstCase.ts";
 import {createId} from "@/modelEditor/useModelEditor.ts";
 import type {
     OneToManyAbstractMappedPropertyInfo,
     OneToOneAbstractMappedPropertyInfo
 } from "@/type/context/utils/MappedPropertyInfo.ts";
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
-
-export const INHERIT_ENTITY = "[[INHERIT_ENTITY]]"
+import {
+    tmpl_fkComment,
+    tmpl_fkName,
+    tmpl_mappedPropertyComment,
+    tmpl_mappedPropertyIdView,
+    tmpl_mappedPropertyName,
+    tmpl_midTableComment,
+    tmpl_midTableName
+} from "@/type/context/utils/AssociationTemplate.ts";
 
 export const oneToOneAbstractToReal = (
     abstractPropertyInfo: DeepReadonly<OneToOneAbstractMappedPropertyInfo>,
     inheritSourceEntity: DeepReadonly<{id: string, name: string, comment: string}>,
+    referencedEntity: DeepReadonly<{id: string, name: string, comment: string}>,
 ): {
     association: OneToOneAssociationIdOnly
     sourceProperty: OneToOneSourceProperty
@@ -25,7 +32,6 @@ export const oneToOneAbstractToReal = (
     const newAssociationId = createId("Association")
     const newSourcePropertyId = createId("Property")
     const newMappedPropertyId = createId("Property")
-    const inheritEntityFirstLowerName = firstCaseToLower(inheritSourceEntity.name)
 
     const sourceProperty: OneToOneSourceProperty = {
         id: newSourcePropertyId,
@@ -35,7 +41,8 @@ export const oneToOneAbstractToReal = (
         name: abstractSourceProperty.name,
         comment: abstractSourceProperty.comment,
         idViewName: abstractSourceProperty.idViewName,
-        autoSyncIdViewName: abstractSourceProperty.autoSyncIdViewName,
+        idViewNameTemplate: abstractSourceProperty.idViewNameTemplate,
+        useIdViewNameTemplate: abstractSourceProperty.useIdViewNameTemplate,
         extraAnnotations: [...abstractSourceProperty.extraAnnotations],
         extraImports: [...abstractSourceProperty.extraImports],
         nullable: abstractSourceProperty.nullable,
@@ -44,27 +51,39 @@ export const oneToOneAbstractToReal = (
         joinInfo: cloneDeepReadonlyRaw<JoinInfo>(abstractSourceProperty.joinInfo), // TODO sync JoinInfo columnName
         autoGenerateJoinInfo: abstractSourceProperty.autoGenerateJoinInfo,
     }
+    const associationIsFk = sourceProperty.joinInfo.type === "SingleColumn" || sourceProperty.joinInfo.type === "MultiColumn"
     const mappedProperty: OneToOneMappedProperty = {
         id: newMappedPropertyId,
         associationId: newAssociationId,
         category: "OneToOne_Mapped",
-        typeIsList: abstractMappedProperty.typeIsList,
-        name: abstractMappedProperty.name.replace(INHERIT_ENTITY, inheritEntityFirstLowerName) + `For${firstCaseToUpper(abstractSourceProperty.name)}`,
-        comment: abstractMappedProperty.comment.replace(INHERIT_ENTITY, inheritSourceEntity.comment),
-        idViewName: abstractMappedProperty.idViewName.replace(INHERIT_ENTITY, inheritEntityFirstLowerName),
-        autoSyncIdViewName: true,
+        name: tmpl_mappedPropertyName(abstractMappedProperty.nameTemplate, inheritSourceEntity, sourceProperty),
+        nameTemplate: abstractAssociation.nameTemplate,
+        useNameTemplate: true,
+        comment: tmpl_mappedPropertyComment(abstractMappedProperty.commentTemplate, inheritSourceEntity, sourceProperty),
+        commentTemplate: abstractMappedProperty.commentTemplate,
+        useCommentTemplate: true,
+        idViewName: tmpl_mappedPropertyIdView(abstractMappedProperty.idViewNameTemplate, inheritSourceEntity, sourceProperty),
+        idViewNameTemplate: abstractMappedProperty.idViewNameTemplate,
+        useIdViewNameTemplate: true,
         extraAnnotations: [...abstractMappedProperty.extraAnnotations],
         extraImports: [...abstractMappedProperty.extraImports],
         mappedById: newSourcePropertyId,
+        typeIsList: abstractMappedProperty.typeIsList,
         nullable: abstractMappedProperty.nullable,
         referencedEntityId: inheritSourceEntity.id,
     }
     const association: OneToOneAssociationIdOnly = {
         id: newAssociationId,
         type: "OneToOne",
-        name: abstractAssociation.nameTemplate.replace(INHERIT_ENTITY, inheritSourceEntity.name),
+        name: associationIsFk ?
+            tmpl_fkName(abstractAssociation.nameTemplate, inheritSourceEntity, sourceProperty) :
+            tmpl_midTableName(abstractAssociation.nameTemplate, inheritSourceEntity, referencedEntity),
+        nameTemplate: abstractAssociation.nameTemplate,
         useNameTemplate: true,
-        comment: abstractAssociation.commentTemplate.replace(INHERIT_ENTITY, inheritSourceEntity.comment),
+        comment: associationIsFk ?
+            tmpl_fkComment(abstractAssociation.commentTemplate, inheritSourceEntity, sourceProperty) :
+            tmpl_midTableComment(abstractAssociation.nameTemplate, inheritSourceEntity, referencedEntity),
+        commentTemplate: abstractAssociation.commentTemplate,
         useCommentTemplate: true,
         sourceEntityId: inheritSourceEntity.id,
         sourcePropertyId: newSourcePropertyId,
@@ -84,6 +103,7 @@ export const oneToOneAbstractToReal = (
 export const oneToManyAbstractToReal = (
     abstractPropertyInfo: DeepReadonly<OneToManyAbstractMappedPropertyInfo>,
     inheritSourceEntity: DeepReadonly<{id: string, name: string, comment: string}>,
+    referencedEntity: DeepReadonly<{id: string, name: string, comment: string}>,
 ): {
     association: ManyToOneAssociationIdOnly
     sourceProperty: ManyToOneProperty
@@ -98,7 +118,6 @@ export const oneToManyAbstractToReal = (
     const newAssociationId = createId("Association")
     const newSourcePropertyId = createId("Property")
     const newMappedPropertyId = createId("Property")
-    const inheritEntityFirstLowerName = firstCaseToLower(inheritSourceEntity.name)
 
     const sourceProperty: ManyToOneProperty = {
         id: newSourcePropertyId,
@@ -108,7 +127,8 @@ export const oneToManyAbstractToReal = (
         name: abstractSourceProperty.name,
         comment: abstractSourceProperty.comment,
         idViewName: abstractSourceProperty.idViewName,
-        autoSyncIdViewName: abstractSourceProperty.autoSyncIdViewName,
+        idViewNameTemplate: abstractSourceProperty.idViewNameTemplate,
+        useIdViewNameTemplate: abstractSourceProperty.useIdViewNameTemplate,
         extraAnnotations: [...abstractSourceProperty.extraAnnotations],
         extraImports: [...abstractSourceProperty.extraImports],
         nullable: abstractSourceProperty.nullable,
@@ -117,14 +137,20 @@ export const oneToManyAbstractToReal = (
         joinInfo: cloneDeepReadonlyRaw<JoinInfo>(abstractSourceProperty.joinInfo), // TODO sync JoinInfo columnName
         autoGenerateJoinInfo: abstractSourceProperty.autoGenerateJoinInfo,
     }
+    const associationIsFk = sourceProperty.joinInfo.type === "SingleColumn" || sourceProperty.joinInfo.type === "MultiColumn"
     const mappedProperty: OneToManyProperty = {
         id: newMappedPropertyId,
         associationId: newAssociationId,
         category: "OneToMany",
-        name: abstractMappedProperty.name.replace(INHERIT_ENTITY, inheritEntityFirstLowerName) + `For${firstCaseToUpper(abstractSourceProperty.name)}`,
-        comment: abstractMappedProperty.comment.replace(INHERIT_ENTITY, inheritSourceEntity.comment),
-        idViewName: abstractMappedProperty.idViewName.replace(INHERIT_ENTITY, inheritEntityFirstLowerName),
-        autoSyncIdViewName: true,
+        name: tmpl_mappedPropertyName(abstractMappedProperty.nameTemplate, inheritSourceEntity, sourceProperty),
+        nameTemplate: abstractAssociation.nameTemplate,
+        useNameTemplate: true,
+        comment: tmpl_mappedPropertyComment(abstractMappedProperty.commentTemplate, inheritSourceEntity, sourceProperty),
+        commentTemplate: abstractMappedProperty.commentTemplate,
+        useCommentTemplate: true,
+        idViewName: tmpl_mappedPropertyIdView(abstractMappedProperty.idViewNameTemplate, inheritSourceEntity, sourceProperty),
+        idViewNameTemplate: abstractMappedProperty.idViewNameTemplate,
+        useIdViewNameTemplate: true,
         extraAnnotations: [...abstractMappedProperty.extraAnnotations],
         extraImports: [...abstractMappedProperty.extraImports],
         mappedById: newSourcePropertyId,
@@ -135,9 +161,15 @@ export const oneToManyAbstractToReal = (
     const association: ManyToOneAssociationIdOnly = {
         id: newAssociationId,
         type: "ManyToOne",
-        name: abstractAssociation.nameTemplate.replace(INHERIT_ENTITY, inheritSourceEntity.name),
+        name: associationIsFk ?
+            tmpl_fkName(abstractAssociation.nameTemplate, inheritSourceEntity, sourceProperty) :
+            tmpl_midTableName(abstractAssociation.nameTemplate, inheritSourceEntity, referencedEntity),
+        nameTemplate: abstractAssociation.nameTemplate,
         useNameTemplate: true,
-        comment: abstractAssociation.commentTemplate.replace(INHERIT_ENTITY, inheritSourceEntity.comment),
+        comment: associationIsFk ?
+            tmpl_fkComment(abstractAssociation.commentTemplate, inheritSourceEntity, sourceProperty) :
+            tmpl_midTableComment(abstractAssociation.nameTemplate, inheritSourceEntity, referencedEntity),
+        commentTemplate: abstractAssociation.commentTemplate,
         useCommentTemplate: true,
         sourceEntityId: inheritSourceEntity.id,
         sourcePropertyId: newSourcePropertyId,

@@ -50,36 +50,28 @@ export const associationDiagnose = (
         }
     }
 
-    if (association.mappedProperty.name.length === 0) {
-        mappedPropertyMessages.push({
-            content: "[Name is empty]",
-            type: "error"
-        })
-    } else {
-        if (association.type !== "OneToOne_Abstract" && association.type !== "ManyToOne_Abstract") {
+    if ("name" in association.mappedProperty) {
+        if (association.mappedProperty.name.length === 0) {
+            mappedPropertyMessages.push({
+                content: "[Name is empty]",
+                type: "error"
+            })
+        } else {
             if (!checkLowerCamelName(association.mappedProperty.name)) {
                 mappedPropertyMessages.push({
                     content: "[Invalid Name]",
                     type: "error"
                 })
             }
-        } else {
-            if (!checkNoBlank(association.mappedProperty.name)) {
+
+            const nameCount = nameSets.entityPropertyNameSetMap
+                .get(association.referencedEntityId)?.count(association.mappedProperty.name) ?? 0
+            if (nameCount > 1) {
                 mappedPropertyMessages.push({
-                    content: "[Invalid Name]",
-                    type: "error"
+                    content: `[Duplicate Name: ${nameCount}]`,
+                    type: "warning",
                 })
             }
-        }
-
-
-        const nameCount = nameSets.entityPropertyNameSetMap
-            .get(association.referencedEntityId)?.count(association.mappedProperty.name) ?? 0
-        if (nameCount > 1) {
-            mappedPropertyMessages.push({
-                content: `[Duplicate Name: ${nameCount}]`,
-                type: "warning",
-            })
         }
     }
 

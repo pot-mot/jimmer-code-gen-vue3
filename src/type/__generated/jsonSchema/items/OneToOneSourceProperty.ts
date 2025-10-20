@@ -83,15 +83,19 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                         "idViewName": {
                             "type": "string"
                         },
-                        "autoSyncIdViewName": {
+                        "idViewNameTemplate": {
+                            "type": "string"
+                        },
+                        "useIdViewNameTemplate": {
                             "type": "boolean"
                         }
                     },
                     "required": [
                         "associationId",
-                        "autoSyncIdViewName",
                         "idViewName",
-                        "referencedEntityId"
+                        "idViewNameTemplate",
+                        "referencedEntityId",
+                        "useIdViewNameTemplate"
                     ]
                 }
             ]
@@ -176,15 +180,19 @@ const OneToOneSourcePropertyJsonSchema: JSONSchemaType<OneToOneSourceProperty> =
                         "idViewName": {
                             "type": "string"
                         },
-                        "autoSyncIdViewName": {
+                        "idViewNameTemplate": {
+                            "type": "string"
+                        },
+                        "useIdViewNameTemplate": {
                             "type": "boolean"
                         }
                     },
                     "required": [
                         "associationId",
-                        "autoSyncIdViewName",
                         "idViewName",
-                        "referencedEntityId"
+                        "idViewNameTemplate",
+                        "referencedEntityId",
+                        "useIdViewNameTemplate"
                     ]
                 },
                 {

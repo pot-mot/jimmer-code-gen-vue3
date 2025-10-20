@@ -17,7 +17,6 @@ import {
     oneToManyAbstractToReal,
     oneToOneAbstractToReal
 } from "@/type/context/utils/AbstractAssociationToReal.ts";
-import {generateFkJoinInfo, generateJoinInfo} from "@/modelEditor/property/PropertyJoinInfoGenerate.ts";
 import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 
 export const contextDataToContext = (
@@ -33,14 +32,6 @@ export const contextDataToContext = (
 
     const entityWithCategorizedPropertiesMap = new Map<string, EntityWithCategorizedProperties>()
     for (const [id, entity] of contextData.entityMap) {
-        for (const property of entity.properties) {
-            if ("joinInfo" in property && property.autoGenerateJoinInfo) {
-                const edgedAssociation = contextData.associationMap.get(property.associationId)
-                if (edgedAssociation === undefined) throw new Error(`[${id}] is not existed`)
-                const association = edgedAssociation.association
-                property.joinInfo = generateJoinInfo(property, association.foreignKeyType, entity, contextData)
-            }
-        }
         const categorizedProperties = categorizeEntityProperties(entity.properties, associationIdOnlyMap)
         const entityWithCategorizedProperties: EntityWithCategorizedProperties = {
             ...entity,
@@ -51,14 +42,6 @@ export const contextDataToContext = (
 
     const mappedSuperClassWithCategorizedPropertiesMap = new Map<string, MappedSuperClassWithCategorizedProperties>()
     for (const [id, mappedSuperClass] of contextData.mappedSuperClassMap) {
-        for (const property of mappedSuperClass.properties) {
-            if ("joinInfo" in property && property.autoGenerateJoinInfo) {
-                const edgedAssociation = contextData.associationMap.get(property.associationId)
-                if (edgedAssociation === undefined) throw new Error(`[${id}] is not existed`)
-                const association = edgedAssociation.association
-                property.joinInfo = generateFkJoinInfo(property, association.foreignKeyType, contextData)
-            }
-        }
         const categorizedProperties = categorizeAbstractCategorizedProperties(mappedSuperClass.properties, associationIdOnlyMap)
         const mappedSuperClassWithCategorizedProperties: MappedSuperClassWithCategorizedProperties = {
             ...mappedSuperClass,
@@ -198,7 +181,7 @@ export const contextDataToContext = (
                         association: abstractAssociation,
                         sourceProperty: abstractSourceProperty,
                         mappedProperty: abstractMappedProperty,
-                    }, inheritEntity)
+                    }, inheritEntity, referencedEntity)
 
                     associationIdOnlyMap.set(realAssociation.id, realAssociation)
 
@@ -241,7 +224,7 @@ export const contextDataToContext = (
                         association: abstractAssociation,
                         sourceProperty: abstractSourceProperty,
                         mappedProperty: abstractMappedProperty,
-                    }, inheritEntity)
+                    }, inheritEntity, referencedEntity)
 
                     associationIdOnlyMap.set(realAssociation.id, realAssociation)
 

@@ -1,8 +1,10 @@
 type OneToOneAssociationIdOnly = {
     id: string
     name: string
+    nameTemplate: string
     useNameTemplate: boolean
     comment: string
+    commentTemplate: string
     useCommentTemplate: boolean
     type: 'OneToOne'
     sourceEntityId: string
@@ -29,8 +31,10 @@ type OneToOneAbstractAssociationIdOnly = {
 type ManyToOneAssociationIdOnly = {
     id: string
     name: string
+    nameTemplate: string
     useNameTemplate: boolean
     comment: string
+    commentTemplate: string
     useCommentTemplate: boolean
     type: 'ManyToOne'
     sourceEntityId: string
@@ -57,8 +61,10 @@ type ManyToOneAbstractAssociationIdOnly = {
 type ManyToManyAssociationIdOnly = {
     id: string
     name: string
+    nameTemplate: string
     useNameTemplate: boolean
     comment: string
+    commentTemplate: string
     useCommentTemplate: boolean
     type: 'ManyToMany'
     sourceEntityId: string

@@ -1,12 +1,13 @@
 import {nameTool} from "@/type/context/utils/NameTool.ts";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {firstCaseToLower} from "@/utils/name/firstCase.ts";
+import {ID_VIEW_TEMPLATE} from "@/type/context/utils/AssociationTemplate.ts";
 
-const toBaseProperty = (property: DeepReadonly<BaseProperty>): BaseProperty => {
+const toBaseProperty = (property: DeepReadonly<Property>): BaseProperty => {
     return {
         id: property.id,
-        name: property.name,
-        comment: property.comment,
+        name: "name" in property ? property.name : property.nameTemplate,
+        comment: "comment" in property ? property.comment : property.commentTemplate,
         extraImports: Array.from(property.extraImports),
         extraAnnotations: Array.from(property.extraAnnotations),
         nullable: property.nullable,
@@ -19,8 +20,8 @@ const createColumnInfo = (
     databaseNameStrategy = useModelEditor().contextData.value.model.databaseNameStrategy ?? 'SNAKE'
 ): ColumnProperty["columnInfo"] => {
     return {
-        name: nameTool.convert(property.name, 'LOWER_CAMEL', databaseNameStrategy),
-        comment: property.comment,
+        name: nameTool.convert("name" in property ? property.name : property.nameTemplate, 'LOWER_CAMEL', databaseNameStrategy),
+        comment: "comment" in property ? property.comment : property.commentTemplate,
         nullable: property.nullable,
         type: sqlType.type,
         dataSize: sqlType.dataSize,
@@ -122,7 +123,8 @@ export const toManyToOneProperty = (
         referencedEntityId: referencedEntity.id,
         onDissociateAction: "NONE",
         idViewName: firstCaseToLower(referencedEntity.name) + "Id",
-        autoSyncIdViewName: true,
+        idViewNameTemplate: ID_VIEW_TEMPLATE,
+        useIdViewNameTemplate: true,
         joinInfo: {
             type: "SingleColumn",
             columnName: "",

@@ -138,7 +138,9 @@ export const useModelNameSets = (
         }
         for (const {association} of contextData.associationMap.values()) {
             if (association.referencedEntityId === entity.id) {
-                propertyNameSet.add(association.mappedProperty.name)
+                if ("name" in association.mappedProperty) {
+                    propertyNameSet.add(association.mappedProperty.name)
+                }
             }
         }
         modelNameSets.entityPropertyNameSetMap.set(entity.id, propertyNameSet)

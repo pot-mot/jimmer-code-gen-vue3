@@ -1,3 +1,11 @@
+import {
+    FK_COMMENT_TEMPLATE,
+    FK_NAME_TEMPLATE,
+    MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
+    MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE, MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
+    ID_VIEW_TEMPLATE
+} from "@/type/context/utils/AssociationTemplate.ts";
+
 export const tableToEntity: TableToEntity = (
     groupId: string,
     tables: DeepReadonly<Table[]>,
@@ -230,7 +238,8 @@ export const tableToEntity: TableToEntity = (
                 autoGenerateJoinInfo: true,
                 referencedEntityId: referencedEntity.id,
                 idViewName: lowerSourceEntityName + "Id",
-                autoSyncIdViewName: true,
+                idViewNameTemplate: ID_VIEW_TEMPLATE,
+                useIdViewNameTemplate: true,
                 onDissociateAction: "NONE",
                 extraImports: [],
                 extraAnnotations: [],
@@ -242,12 +251,17 @@ export const tableToEntity: TableToEntity = (
                 mappedById: sourceProperty.id,
                 id: mappedPropertyId,
                 name: lowerReferencedEntityName + "List",
+                nameTemplate: MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
+                useNameTemplate: true,
                 comment: referencedEntity.comment + "列表",
+                commentTemplate: MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
+                useCommentTemplate: true,
                 category: "OneToMany",
                 associationId,
                 referencedEntityId: sourceEntity.id,
                 idViewName: lowerReferencedEntityName + "Ids",
-                autoSyncIdViewName: true,
+                idViewNameTemplate: MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE,
+                useIdViewNameTemplate: true,
                 nullable: false,
                 typeIsList: true,
                 extraAnnotations: [],
@@ -257,8 +271,10 @@ export const tableToEntity: TableToEntity = (
             const association: ManyToOneAssociationIdOnly = {
                 id: associationId,
                 name: foreignKey.name,
+                nameTemplate: FK_NAME_TEMPLATE,
                 useNameTemplate: false,
                 comment: foreignKey.comment,
+                commentTemplate: FK_COMMENT_TEMPLATE,
                 useCommentTemplate: false,
                 type: "ManyToOne",
                 foreignKeyType: "REAL",

@@ -10,10 +10,16 @@ const OneToOneAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAssociationIdO
         "name": {
             "type": "string"
         },
+        "nameTemplate": {
+            "type": "string"
+        },
         "useNameTemplate": {
             "type": "boolean"
         },
         "comment": {
+            "type": "string"
+        },
+        "commentTemplate": {
             "type": "string"
         },
         "useCommentTemplate": {
@@ -44,10 +50,12 @@ const OneToOneAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAssociationIdO
     },
     "required": [
         "comment",
+        "commentTemplate",
         "foreignKeyType",
         "id",
         "mappedProperty",
         "name",
+        "nameTemplate",
         "referencedEntityId",
         "sourceEntityId",
         "sourcePropertyId",
@@ -76,13 +84,29 @@ const OneToOneAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAssociationIdO
                         "nullable": {
                             "type": "boolean",
                             "const": true
+                        },
+                        "nameTemplate": {
+                            "type": "string"
+                        },
+                        "useNameTemplate": {
+                            "type": "boolean"
+                        },
+                        "commentTemplate": {
+                            "type": "string"
+                        },
+                        "useCommentTemplate": {
+                            "type": "boolean"
                         }
                     },
                     "required": [
                         "category",
+                        "commentTemplate",
                         "mappedById",
+                        "nameTemplate",
                         "nullable",
-                        "typeIsList"
+                        "typeIsList",
+                        "useCommentTemplate",
+                        "useNameTemplate"
                     ]
                 },
                 {
@@ -100,15 +124,19 @@ const OneToOneAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAssociationIdO
                         "idViewName": {
                             "type": "string"
                         },
-                        "autoSyncIdViewName": {
+                        "idViewNameTemplate": {
+                            "type": "string"
+                        },
+                        "useIdViewNameTemplate": {
                             "type": "boolean"
                         }
                     },
                     "required": [
                         "associationId",
-                        "autoSyncIdViewName",
                         "idViewName",
-                        "referencedEntityId"
+                        "idViewNameTemplate",
+                        "referencedEntityId",
+                        "useIdViewNameTemplate"
                     ]
                 }
             ]

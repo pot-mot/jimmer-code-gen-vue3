@@ -93,7 +93,8 @@ type BaseAssociationProperty = {
     associationId: string
     referencedEntityId: string
     idViewName: string
-    autoSyncIdViewName: boolean
+    idViewNameTemplate: string
+    useIdViewNameTemplate: boolean
 }
 
 type OnDissociationAction = "NONE" | "LAX" | "CHECK" | "SET_NULL" | "DELETE"
@@ -112,11 +113,21 @@ type OneToOneMappedProperty = {
     typeIsList: false
     mappedById: string
     nullable: true
+    nameTemplate: string
+    useNameTemplate: boolean
+    commentTemplate: string
+    useCommentTemplate: boolean
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
 
-type OneToOneMappedAbstractProperty = Omit<OneToOneMappedProperty, 'category' | 'referencedEntityId'> & {
+type OneToOneMappedAbstractProperty = Omit<OneToOneMappedProperty,
+    'category' | 'referencedEntityId' |
+    'name' | 'comment' | 'idViewName' |
+    'useNameTemplate' | 'useCommentTemplate' | 'useIdViewNameTemplate'
+> & {
     category: "OneToOne_Mapped_Abstract"
     referencedAbstractEntityId: string
+    nameTemplate: string
+    commentTemplate: string
 }
 
 type ManyToOneProperty = {
@@ -133,11 +144,21 @@ type OneToManyProperty = {
     typeIsList: true
     mappedById: string
     nullable: false
+    nameTemplate: string
+    useNameTemplate: boolean
+    commentTemplate: string
+    useCommentTemplate: boolean
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
 
-type OneToManyAbstractProperty = Omit<OneToManyProperty, 'category' | 'referencedEntityId'> & {
+type OneToManyAbstractProperty = Omit<OneToManyProperty,
+    'category' | 'referencedEntityId' |
+    'name' | 'comment' | 'idViewName' |
+    'useNameTemplate' | 'useCommentTemplate' | 'useIdViewNameTemplate'
+> & {
     category: "OneToMany_Abstract"
     referencedAbstractEntityId: string
+    nameTemplate: string
+    commentTemplate: string
 }
 
 type ManyToManySourceProperty = {
@@ -153,6 +174,10 @@ type ManyToManyMappedProperty = {
     typeIsList: true
     mappedById: string
     nullable: false
+    nameTemplate: string
+    useNameTemplate: boolean
+    commentTemplate: string
+    useCommentTemplate: boolean
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
 
 type ManyToManyViewProperty = {

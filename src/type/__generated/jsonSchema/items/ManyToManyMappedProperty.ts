@@ -20,13 +20,29 @@ const ManyToManyMappedPropertyJsonSchema: JSONSchemaType<ManyToManyMappedPropert
                 "nullable": {
                     "type": "boolean",
                     "const": false
+                },
+                "nameTemplate": {
+                    "type": "string"
+                },
+                "useNameTemplate": {
+                    "type": "boolean"
+                },
+                "commentTemplate": {
+                    "type": "string"
+                },
+                "useCommentTemplate": {
+                    "type": "boolean"
                 }
             },
             "required": [
                 "category",
+                "commentTemplate",
                 "mappedById",
+                "nameTemplate",
                 "nullable",
-                "typeIsList"
+                "typeIsList",
+                "useCommentTemplate",
+                "useNameTemplate"
             ]
         },
         {
@@ -44,15 +60,19 @@ const ManyToManyMappedPropertyJsonSchema: JSONSchemaType<ManyToManyMappedPropert
                 "idViewName": {
                     "type": "string"
                 },
-                "autoSyncIdViewName": {
+                "idViewNameTemplate": {
+                    "type": "string"
+                },
+                "useIdViewNameTemplate": {
                     "type": "boolean"
                 }
             },
             "required": [
                 "associationId",
-                "autoSyncIdViewName",
                 "idViewName",
-                "referencedEntityId"
+                "idViewNameTemplate",
+                "referencedEntityId",
+                "useIdViewNameTemplate"
             ]
         }
     ],

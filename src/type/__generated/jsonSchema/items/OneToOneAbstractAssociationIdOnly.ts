@@ -52,7 +52,7 @@ const OneToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAbstra
         "OneToOneMappedAbstractProperty": {
             "allOf": [
                 {
-                    "$ref": "#/definitions/Omit<OneToOneMappedProperty,\"category\"|\"referencedEntityId\">"
+                    "$ref": "#/definitions/Omit<OneToOneMappedProperty,\"name\"|\"comment\"|\"category\"|\"referencedEntityId\"|\"idViewName\"|\"useNameTemplate\"|\"useCommentTemplate\"|\"useIdViewNameTemplate\">"
                 },
                 {
                     "type": "object",
@@ -63,30 +63,32 @@ const OneToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAbstra
                         },
                         "referencedAbstractEntityId": {
                             "type": "string"
+                        },
+                        "nameTemplate": {
+                            "type": "string"
+                        },
+                        "commentTemplate": {
+                            "type": "string"
                         }
                     },
                     "required": [
                         "category",
+                        "commentTemplate",
+                        "nameTemplate",
                         "referencedAbstractEntityId"
                     ]
                 }
             ]
         },
-        "Omit<OneToOneMappedProperty,\"category\"|\"referencedEntityId\">": {
+        "Omit<OneToOneMappedProperty,\"name\"|\"comment\"|\"category\"|\"referencedEntityId\"|\"idViewName\"|\"useNameTemplate\"|\"useCommentTemplate\"|\"useIdViewNameTemplate\">": {
             "type": "object",
             "properties": {
-                "name": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "string"
                 },
                 "nullable": {
                     "type": "boolean",
                     "const": true
-                },
-                "comment": {
-                    "type": "string"
                 },
                 "extraImports": {
                     "type": "array",
@@ -107,26 +109,28 @@ const OneToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAbstra
                 "mappedById": {
                     "type": "string"
                 },
+                "nameTemplate": {
+                    "type": "string"
+                },
+                "commentTemplate": {
+                    "type": "string"
+                },
                 "associationId": {
                     "type": "string"
                 },
-                "idViewName": {
+                "idViewNameTemplate": {
                     "type": "string"
-                },
-                "autoSyncIdViewName": {
-                    "type": "boolean"
                 }
             },
             "required": [
                 "associationId",
-                "autoSyncIdViewName",
-                "comment",
+                "commentTemplate",
                 "extraAnnotations",
                 "extraImports",
                 "id",
-                "idViewName",
+                "idViewNameTemplate",
                 "mappedById",
-                "name",
+                "nameTemplate",
                 "nullable",
                 "typeIsList"
             ]

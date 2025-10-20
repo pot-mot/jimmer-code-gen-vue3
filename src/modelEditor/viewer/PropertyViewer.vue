@@ -1,16 +1,33 @@
 <script setup lang="ts">
 import NameCommentViewer from "@/modelEditor/nameComment/NameCommentViewer.vue";
+import {computed} from "vue";
 
-defineProps<{
+const props = defineProps<{
     property: DeepReadonly<Property> | undefined
 }>()
+
+const nameComment = computed(() => {
+    if (!props.property) return
+
+    if ( "name" in props.property) {
+        return {
+            name: props.property.name,
+            comment: props.property.comment,
+        }
+    } else {
+        return {
+            name: props.property.nameTemplate,
+            comment: props.property.commentTemplate,
+        }
+    }
+})
 </script>
 
 <template>
     <NameCommentViewer
-        v-if="property"
+        v-if="nameComment"
         class="property-viewer"
-        :data="property"
+        :data="nameComment"
     />
     <span
         v-else

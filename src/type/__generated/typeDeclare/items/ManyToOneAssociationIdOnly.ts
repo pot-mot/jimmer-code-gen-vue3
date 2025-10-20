@@ -3,8 +3,10 @@ export default Object.freeze({
     content: `type ManyToOneAssociationIdOnly = {
     id: string
     name: string
+    nameTemplate: string
     useNameTemplate: boolean
     comment: string
+    commentTemplate: string
     useCommentTemplate: boolean
     type: 'ManyToOne'
     sourceEntityId: string

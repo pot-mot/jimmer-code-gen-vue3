@@ -14,10 +14,10 @@ import {
 } from "@/modelEditor/node/property/PropertyConvert.ts";
 import {computed, nextTick, ref} from "vue";
 import TypePairViewer from "@/modelEditor/viewer/TypePairViewer.vue";
-import {firstCaseToLower} from "@/utils/name/firstCase.ts";
 import {
-    ASSOCIATION_FK_COMMENT_TEMPLATE,
-    ASSOCIATION_FK_NAME_TEMPLATE
+    FK_COMMENT_TEMPLATE,
+    FK_NAME_TEMPLATE, MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
+    MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE, MAPPED_PROPERTY_LIST_NAME_TEMPLATE
 } from "@/type/context/utils/AssociationTemplate.ts";
 import ColorPreview from "@/components/color/ColorPreview.vue";
 import {
@@ -205,17 +205,21 @@ const selectEntity = (entity: DeepReadonly<EntityWithProperties>) => {
             associationId,
             contextData.value.model.defaultForeignKeyType,
         )
-        const lowerName = firstCaseToLower(entity.name)
         const mappedProperty: OneToManyProperty = {
             mappedById: property.value.id,
             id: mappedPropertyId,
-            name: lowerName + "List",
-            comment: props.entity.comment + "列表",
             category: "OneToMany",
             associationId,
             referencedEntityId: props.entity.id,
-            idViewName: lowerName + "Ids",
-            autoSyncIdViewName: true,
+            name: MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
+            nameTemplate: MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
+            useNameTemplate: true,
+            comment: MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
+            commentTemplate: MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
+            useCommentTemplate: true,
+            idViewName: MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE,
+            idViewNameTemplate: MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE,
+            useIdViewNameTemplate: true,
             nullable: false,
             typeIsList: true,
             extraAnnotations: [],
@@ -223,9 +227,11 @@ const selectEntity = (entity: DeepReadonly<EntityWithProperties>) => {
         }
         const association: ManyToOneAssociationIdOnly = {
             id: associationId,
-            name: ASSOCIATION_FK_NAME_TEMPLATE,
+            name: FK_NAME_TEMPLATE,
+            nameTemplate: FK_NAME_TEMPLATE,
             useNameTemplate: true,
-            comment: ASSOCIATION_FK_COMMENT_TEMPLATE,
+            comment: FK_COMMENT_TEMPLATE,
+            commentTemplate: FK_COMMENT_TEMPLATE,
             useCommentTemplate: true,
             type: "ManyToOne",
             sourceEntityId: props.entity.id,

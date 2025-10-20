@@ -1,8 +1,12 @@
-import { useModelEditor } from "@/modelEditor/useModelEditor.ts";
-import { nextTick } from "vue";
+import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
+import {nextTick} from "vue";
 import {
-    ASSOCIATION_MID_TABLE_COMMENT_TEMPLATE,
-    ASSOCIATION_MID_TABLE_NAME_TEMPLATE
+    MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
+    MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE,
+    MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
+    MID_TABLE_COMMENT_TEMPLATE,
+    MID_TABLE_NAME_TEMPLATE,
+    LIST_ID_VIEW_TEMPLATE
 } from "@/type/context/utils/AssociationTemplate.ts";
 
 export const toManyToMany = async (
@@ -45,7 +49,8 @@ export const toManyToMany = async (
             name: sourceProperty.name,
             comment: sourceProperty.comment,
             idViewName: sourceProperty.idViewName,
-            autoSyncIdViewName: sourceProperty.autoSyncIdViewName,
+            idViewNameTemplate: LIST_ID_VIEW_TEMPLATE,
+            useIdViewNameTemplate: true,
             joinInfo: {
                 type: "SingleColumnMidTable",
                 tableName: "",
@@ -68,9 +73,14 @@ export const toManyToMany = async (
             associationId: association.id,
             category: "ManyToMany_Mapped",
             name: mappedProperty.name,
+            nameTemplate: MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
+            useNameTemplate: true,
             comment: mappedProperty.comment,
+            commentTemplate: MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
+            useCommentTemplate: true,
             idViewName: mappedProperty.idViewName,
-            autoSyncIdViewName: mappedProperty.autoSyncIdViewName,
+            idViewNameTemplate: MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE,
+            useIdViewNameTemplate: true,
             mappedById: mappedProperty.mappedById,
             referencedEntityId: mappedProperty.referencedEntityId,
             nullable: false,
@@ -81,9 +91,11 @@ export const toManyToMany = async (
 
         const newAssociation: ManyToManyAssociationIdOnly = {
             id: association.id,
-            name: ASSOCIATION_MID_TABLE_NAME_TEMPLATE,
+            name: association.name,
+            nameTemplate: MID_TABLE_NAME_TEMPLATE,
             useNameTemplate: true,
-            comment: ASSOCIATION_MID_TABLE_COMMENT_TEMPLATE,
+            comment: association.comment,
+            commentTemplate: MID_TABLE_COMMENT_TEMPLATE,
             useCommentTemplate: true,
             foreignKeyType: association.foreignKeyType,
             referencedEntityId: association.referencedEntityId,

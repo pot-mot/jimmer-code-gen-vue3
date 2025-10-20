@@ -1,8 +1,12 @@
 import { useModelEditor } from "@/modelEditor/useModelEditor.ts";
 import { nextTick } from "vue";
 import {
-    ABSTRACT_ASSOCIATION_FK_COMMENT_TEMPLATE,
-    ABSTRACT_ASSOCIATION_FK_NAME_TEMPLATE
+    FK_COMMENT_TEMPLATE,
+    FK_NAME_TEMPLATE,
+    MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
+    MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE,
+    MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
+    ID_VIEW_TEMPLATE
 } from "@/type/context/utils/AssociationTemplate.ts";
 
 export const toManyToOneAbstract = async (
@@ -44,7 +48,8 @@ export const toManyToOneAbstract = async (
             name: sourceProperty.name,
             comment: sourceProperty.comment,
             idViewName: sourceProperty.idViewName,
-            autoSyncIdViewName: sourceProperty.autoSyncIdViewName,
+            idViewNameTemplate: ID_VIEW_TEMPLATE,
+            useIdViewNameTemplate: true,
             joinInfo: {
                 type: "SingleColumn",
                 columnName: "",
@@ -63,10 +68,9 @@ export const toManyToOneAbstract = async (
             id: mappedProperty.id,
             associationId: association.id,
             category: "OneToMany_Abstract",
-            name: mappedProperty.name,
-            comment: mappedProperty.comment,
-            idViewName: mappedProperty.idViewName,
-            autoSyncIdViewName: mappedProperty.autoSyncIdViewName,
+            nameTemplate: MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
+            commentTemplate: MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
+            idViewNameTemplate: MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE,
             mappedById: mappedProperty.mappedById,
             referencedAbstractEntityId: mappedProperty.referencedAbstractEntityId,
             nullable: false,
@@ -77,8 +81,8 @@ export const toManyToOneAbstract = async (
 
         const newAssociation: ManyToOneAbstractAssociationIdOnly = {
             id: association.id,
-            nameTemplate: ABSTRACT_ASSOCIATION_FK_NAME_TEMPLATE,
-            commentTemplate: ABSTRACT_ASSOCIATION_FK_COMMENT_TEMPLATE,
+            nameTemplate: FK_NAME_TEMPLATE,
+            commentTemplate: FK_COMMENT_TEMPLATE,
             foreignKeyType: association.foreignKeyType,
             referencedEntityId: association.referencedEntityId,
             sourceAbstractEntityId: association.sourceAbstractEntityId,

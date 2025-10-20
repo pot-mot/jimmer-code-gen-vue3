@@ -3,8 +3,8 @@ import {getEntityIdProperty} from "@/type/context/utils/EntityIdProperty.ts";
 import {flatEmbeddableTypeColumnNames} from "@/type/context/utils/EmbeddableTypeFlat.ts";
 import {firstCaseToUpper} from "@/utils/name/firstCase.ts";
 import {
-    ASSOCIATION_MID_TABLE_COMMENT_TEMPLATE,
-    ASSOCIATION_MID_TABLE_NAME_TEMPLATE,
+    MID_TABLE_COMMENT_TEMPLATE,
+    MID_TABLE_NAME_TEMPLATE,
 } from "@/type/context/utils/AssociationTemplate.ts";
 
 const _generateFkJoinInfo = (
@@ -95,8 +95,8 @@ const _generateJoinInfo = (
         if (!("embeddableTypeId" in sourceIdProperty) && !("embeddableTypeId" in referencedIdProperty)) {
             return {
                 type: "SingleColumnMidTable",
-                tableName: ASSOCIATION_MID_TABLE_NAME_TEMPLATE,
-                tableComment: ASSOCIATION_MID_TABLE_COMMENT_TEMPLATE,
+                tableName: MID_TABLE_NAME_TEMPLATE,
+                tableComment: MID_TABLE_COMMENT_TEMPLATE,
                 sourceColumnName: nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy),
                 targetColumnName: nameTool.convert(referencedEntity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
                 sourceForeignKeyType: foreignKeyType,
@@ -148,8 +148,8 @@ const _generateJoinInfo = (
                 type: "MultiColumnMidTable",
                 sourceJoinInfo,
                 targetJoinInfo,
-                tableName: ASSOCIATION_MID_TABLE_NAME_TEMPLATE,
-                tableComment: ASSOCIATION_MID_TABLE_COMMENT_TEMPLATE,
+                tableName: MID_TABLE_NAME_TEMPLATE,
+                tableComment: MID_TABLE_COMMENT_TEMPLATE,
             }
         }
     }

@@ -13,15 +13,19 @@ const BaseAssociationPropertyJsonSchema: JSONSchemaType<BaseAssociationProperty>
         "idViewName": {
             "type": "string"
         },
-        "autoSyncIdViewName": {
+        "idViewNameTemplate": {
+            "type": "string"
+        },
+        "useIdViewNameTemplate": {
             "type": "boolean"
         }
     },
     "required": [
         "associationId",
-        "autoSyncIdViewName",
         "idViewName",
-        "referencedEntityId"
+        "idViewNameTemplate",
+        "referencedEntityId",
+        "useIdViewNameTemplate"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
 } as any as JSONSchemaType<BaseAssociationProperty>

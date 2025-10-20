@@ -1,75 +1,125 @@
-import {INHERIT_ENTITY} from "@/type/context/utils/AbstractAssociationToReal.ts";
+import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
+import {nameTool} from "@/type/context/utils/NameTool.ts";
+
+export const INHERIT_ENTITY = "[[INHERIT_ENTITY]]"
 
 export const SOURCE_ENTITY = "[[SOURCE_ENTITY]]"
 export const SOURCE_PROPERTY = "[[SOURCE_PROPERTY]]"
 export const REFERENCED_ENTITY = "[[REFERENCED_ENTITY]]"
-export const REFERENCED_PROPERTY = "[[REFERENCED_PROPERTY]]"
 
-export const ASSOCIATION_FK_NAME_TEMPLATE = `fk_${SOURCE_ENTITY}_${SOURCE_PROPERTY}`
-export const ASSOCIATION_FK_COMMENT_TEMPLATE = `${SOURCE_ENTITY}${SOURCE_PROPERTY}`
+export const FK_NAME_TEMPLATE = `fk_${SOURCE_ENTITY}_${SOURCE_PROPERTY}`
+export const FK_COMMENT_TEMPLATE = `${SOURCE_ENTITY}${SOURCE_PROPERTY}`
 
-export const translateFkNameTemplate = (
-    template: string,
-    sourceEntity: {name: string},
-    sourceProperty: {name: string},
-) => {
-    return template
-        .replace(SOURCE_ENTITY, sourceEntity.name)
-        .replace(SOURCE_PROPERTY, sourceProperty.name)
+const getDatabaseNameStrategy = () => {
+    return useModelEditor().contextData.value.model.databaseNameStrategy
 }
 
-export const translateFkCommentTemplate = (
+export const tmpl_fkName = (
     template: string,
-    sourceEntity: {comment: string},
-    sourceProperty: {comment: string},
+    sourceEntity: { name: string },
+    sourceProperty: { name: string },
+) => {
+    return nameTool.convert(
+        template
+            .replace(SOURCE_ENTITY, sourceEntity.name)
+            .replace(SOURCE_PROPERTY, sourceProperty.name),
+        'LOWER_SNAKE',
+        getDatabaseNameStrategy()
+    )
+}
+
+export const tmpl_fkComment = (
+    template: string,
+    sourceEntity: { comment: string },
+    sourceProperty: { comment: string },
 ) => {
     return template
         .replace(SOURCE_ENTITY, sourceEntity.comment)
         .replace(SOURCE_PROPERTY, sourceProperty.comment)
 }
 
-export const ABSTRACT_ASSOCIATION_FK_NAME_TEMPLATE = `fk_${INHERIT_ENTITY}_${SOURCE_PROPERTY}`
-export const ABSTRACT_ASSOCIATION_FK_COMMENT_TEMPLATE = `${INHERIT_ENTITY}${SOURCE_PROPERTY}`
+export const MID_TABLE_NAME_TEMPLATE = `${SOURCE_ENTITY}_${REFERENCED_ENTITY}_mapping`
+export const MID_TABLE_COMMENT_TEMPLATE = `${SOURCE_ENTITY}${REFERENCED_ENTITY}中间表`
 
-export const translateAbstractFkNameTemplate = (
+export const tmpl_midTableName = (
     template: string,
-    sourceEntity: {name: string},
-    sourceProperty: {name: string},
+    sourceEntity: { name: string },
+    referencedEntity: { name: string },
 ) => {
-    return template
-        .replace(INHERIT_ENTITY, sourceEntity.name)
-        .replace(SOURCE_PROPERTY, sourceProperty.name)
+    return nameTool.convert(
+        template
+            .replace(SOURCE_ENTITY, sourceEntity.name)
+            .replace(REFERENCED_ENTITY, referencedEntity.name),
+        'LOWER_SNAKE',
+        getDatabaseNameStrategy()
+    )
 }
 
-export const translateAbstractFkCommentTemplate = (
+export const tmpl_midTableComment = (
     template: string,
-    sourceEntity: {comment: string},
-    sourceProperty: {comment: string},
-) => {
-    return template
-        .replace(INHERIT_ENTITY, sourceEntity.comment)
-        .replace(SOURCE_PROPERTY, sourceProperty.comment)
-}
-
-export const ASSOCIATION_MID_TABLE_NAME_TEMPLATE = `${SOURCE_ENTITY}_${REFERENCED_ENTITY}_mapping`
-export const ASSOCIATION_MID_TABLE_COMMENT_TEMPLATE = `${SOURCE_ENTITY}${REFERENCED_ENTITY}中间表`
-
-export const translateMidTableNameTemplate = (
-    template: string,
-    sourceEntity: {name: string},
-    referencedEntity: {name: string},
-) => {
-    return template
-        .replace(SOURCE_ENTITY, sourceEntity.name)
-        .replace(REFERENCED_ENTITY, referencedEntity.name)
-}
-
-export const translateMidTableCommentTemplate = (
-    template: string,
-    sourceEntity: {comment: string},
-    referencedEntity: {comment: string},
+    sourceEntity: { comment: string },
+    referencedEntity: { comment: string },
 ) => {
     return template
         .replace(SOURCE_ENTITY, sourceEntity.comment)
         .replace(REFERENCED_ENTITY, referencedEntity.comment)
+}
+
+export const ID_VIEW_TEMPLATE = `${REFERENCED_ENTITY}Id`
+export const LIST_ID_VIEW_TEMPLATE = `${REFERENCED_ENTITY}Ids`
+
+export const tmpl_idView = (
+    template: string,
+    referencedEntity: { name: string },
+) => {
+    return nameTool.convert(
+        template
+            .replace(REFERENCED_ENTITY, referencedEntity.name),
+        'LOWER_CAMEL',
+        'LOWER_CAMEL',
+    )
+}
+
+export const MAPPED_PROPERTY_NAME_TEMPLATE = `${SOURCE_ENTITY}`
+export const MAPPED_PROPERTY_COMMENT_TEMPLATE = `${SOURCE_ENTITY}`
+export const MAPPED_PROPERTY_ID_VIEW_TEMPLATE = `${SOURCE_ENTITY}Id`
+
+export const MAPPED_PROPERTY_LIST_NAME_TEMPLATE = `${SOURCE_ENTITY}List`
+export const MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE = `${SOURCE_ENTITY}列表`
+export const MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE = `${SOURCE_ENTITY}Ids`
+
+export const tmpl_mappedPropertyName = (
+    template: string,
+    sourceEntity: { name: string },
+    sourceProperty: { name: string },
+) => {
+    return nameTool.convert(
+        template
+            .replace(SOURCE_ENTITY, sourceEntity.name)
+            .replace(SOURCE_PROPERTY, sourceProperty.name),
+        'LOWER_CAMEL',
+        'LOWER_CAMEL',
+    )
+}
+export const tmpl_mappedPropertyComment = (
+    template: string,
+    sourceEntity: { comment: string },
+    sourceProperty: { comment: string },
+) => {
+    return template
+        .replace(SOURCE_ENTITY, sourceEntity.comment)
+        .replace(SOURCE_PROPERTY, sourceProperty.comment)
+}
+export const tmpl_mappedPropertyIdView = (
+    template: string,
+    sourceEntity: { name: string },
+    sourceProperty: { name: string },
+) => {
+    return nameTool.convert(
+        template
+            .replace(SOURCE_ENTITY, sourceEntity.name)
+            .replace(SOURCE_PROPERTY, sourceProperty.name),
+        'LOWER_CAMEL',
+        'LOWER_CAMEL',
+    )
 }

@@ -1,7 +1,7 @@
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {
-    translateFkCommentTemplate, translateFkNameTemplate,
-    translateMidTableCommentTemplate, translateMidTableNameTemplate
+    tmpl_fkComment, tmpl_fkName,
+    tmpl_midTableComment, tmpl_midTableName
 } from "@/type/context/utils/AssociationTemplate.ts";
 
 export const getConcreteAssociationNameComment = (association: DeepReadonly<ConcreteAssociationIdOnly>) => {
@@ -17,18 +17,18 @@ export const getConcreteAssociationNameComment = (association: DeepReadonly<Conc
     let name = association.name
     if (association.useNameTemplate) {
         if (sourceProperty.joinInfo.type === "SingleColumn" || sourceProperty.joinInfo.type === "MultiColumn") {
-            name = translateFkNameTemplate(name, sourceEntity, sourceProperty)
+            name = tmpl_fkName(association.nameTemplate, sourceEntity, sourceProperty)
         } else {
-            name = translateMidTableNameTemplate(name, sourceEntity, referencedEntity)
+            name = tmpl_midTableName(association.nameTemplate, sourceEntity, referencedEntity)
         }
     }
 
     let comment = association.comment
     if (association.useCommentTemplate) {
         if (sourceProperty.joinInfo.type === "SingleColumn" || sourceProperty.joinInfo.type === "MultiColumn") {
-            comment = translateFkCommentTemplate(comment, sourceEntity, sourceProperty)
+            comment = tmpl_fkComment(association.commentTemplate, sourceEntity, sourceProperty)
         } else {
-            comment = translateMidTableCommentTemplate(comment, sourceEntity, referencedEntity)
+            comment = tmpl_midTableComment(association.commentTemplate, sourceEntity, referencedEntity)
         }
     }
 
