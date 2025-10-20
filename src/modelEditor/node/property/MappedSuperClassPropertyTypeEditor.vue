@@ -34,7 +34,8 @@ import {toOneToOneAbstract} from "@/modelEditor/node/association/toOneToOneAbstr
 import {toManyToOneAbstract} from "@/modelEditor/node/association/toManyToOneAbstract.ts";
 
 const props = defineProps<{
-    mappedSuperClass: DeepReadonly<MappedSuperClassWithProperties>
+    mappedSuperClass: DeepReadonly<MappedSuperClassWithProperties>,
+    propertyIndex: number,
 }>()
 
 const property = defineModel<MappedSuperClassProperty>({
@@ -51,6 +52,7 @@ const {
     menuMap,
     executeAsyncBatch,
     waitChangeSync,
+    changeMappedSuperClass,
     addAssociation,
     remove,
 } = useModelEditor()
@@ -233,12 +235,16 @@ const selectEntity = (entity: DeepReadonly<EntityWithProperties>) => {
             foreignKeyType: "REAL",
         }
 
-        property.value = sourceProperty
+        const properties = [...props.mappedSuperClass.properties]
+        properties[props.propertyIndex] = sourceProperty
+        changeMappedSuperClass({
+            ...props.mappedSuperClass,
+            properties
+        })
+        addAssociation(association)
 
         await nextTick()
         await waitChangeSync()
-
-        addAssociation(association)
     })
 }
 

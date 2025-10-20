@@ -133,6 +133,7 @@ watch(() => handleIndexMap.value, () => {
                             class="noDrag noWheel"
                             style="font-size: 14px; line-height: 30px;"
                             :entity="data.entity"
+                            :property-index="index"
                             v-model="data.entity.properties[index]"
                         />
                     </div>

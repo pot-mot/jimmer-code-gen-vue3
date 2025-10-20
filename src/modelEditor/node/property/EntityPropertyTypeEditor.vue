@@ -33,7 +33,8 @@ import {toManyToOne} from "@/modelEditor/node/association/toManyToOne.ts";
 import {toManyToMany} from "@/modelEditor/node/association/toManyToMany.ts";
 
 const props = defineProps<{
-    entity: DeepReadonly<EntityWithProperties>
+    entity: DeepReadonly<EntityWithProperties>,
+    propertyIndex: number,
 }>()
 
 const property = defineModel<EntityProperty>({
@@ -50,6 +51,7 @@ const {
     menuMap,
     executeAsyncBatch,
     waitChangeSync,
+    changeEntity,
     addAssociation,
     remove,
 } = useModelEditor()
@@ -242,12 +244,17 @@ const selectEntity = (entity: DeepReadonly<EntityWithProperties>) => {
             foreignKeyType: "REAL",
         }
 
+        const properties = [...props.entity.properties]
+        properties[props.propertyIndex] = sourceProperty
+        changeEntity({
+            ...props.entity,
+            properties
+        })
         property.value = sourceProperty
+        addAssociation(association)
 
         await nextTick()
         await waitChangeSync()
-
-        addAssociation(association)
     })
 }
 
