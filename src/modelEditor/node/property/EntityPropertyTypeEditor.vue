@@ -243,10 +243,11 @@ const selectEntity = (entity: DeepReadonly<EntityWithProperties>) => {
         }
 
         property.value = sourceProperty
-        addAssociation(association)
 
         await nextTick()
         await waitChangeSync()
+
+        addAssociation(association)
     })
 }
 
