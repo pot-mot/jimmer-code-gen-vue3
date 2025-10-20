@@ -469,6 +469,13 @@ export const useModelEditorHistory = (
         removeEntityWatcher(id)
         syncEntityAutoChange(entity, contextData)
         contextData.entityMap.set(id, entity)
+        for (const property of entity.properties) {
+            if ("associationId" in property) {
+                const edgedAssociation = contextData.associationMap.get(property.associationId)
+                if (edgedAssociation === undefined) continue
+                updateAssociation(edgedAssociation)
+            }
+        }
         const newGroupId = entity.groupId
         if (oldGroupId !== newGroupId) {
             const newMenuItem = menuMap.value.get(newGroupId)
@@ -586,6 +593,13 @@ export const useModelEditorHistory = (
         const mappedSuperClass = cloneDeepReadonlyRaw<MappedSuperClassWithProperties>(options.mappedSuperClass)
         syncMappedSuperClassAutoChange(mappedSuperClass, contextData)
         contextData.mappedSuperClassMap.set(id, mappedSuperClass)
+        for (const property of mappedSuperClass.properties) {
+            if ("associationId" in property) {
+                const edgedAssociation = contextData.associationMap.get(property.associationId)
+                if (edgedAssociation === undefined) continue
+                updateAssociation(edgedAssociation)
+            }
+        }
         addMappedSuperClassWatcher(id)
         menuItem.mappedSuperClassMap.set(id, mappedSuperClass)
         inheritInfoSync.syncAbstract(mappedSuperClass)
