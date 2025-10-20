@@ -270,9 +270,9 @@ export const contextDataToContext = (
 
     // 填充关联对应实体的继承信息
     const associationMap = new Map<string, Association>()
-    for (const [id, association] of associationIdOnlyMap) {
-        const realAssociation = idOnlyToAssociation(association, entityWithInheritInfoMap, mappedSuperClassWithInheritInfoMap)
-        associationMap.set(id, realAssociation)
+    for (const [id, idOnly] of associationIdOnlyMap) {
+        const association = idOnlyToAssociation(idOnly, entityWithInheritInfoMap, mappedSuperClassWithInheritInfoMap)
+        associationMap.set(id, association)
     }
 
     // 设置属性的子节点信息

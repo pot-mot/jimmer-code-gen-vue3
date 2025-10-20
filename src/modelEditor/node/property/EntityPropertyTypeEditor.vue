@@ -242,8 +242,8 @@ const selectEntity = (entity: DeepReadonly<EntityWithProperties>) => {
             foreignKeyType: "REAL",
         }
 
-        addAssociation(association)
         property.value = sourceProperty
+        addAssociation(association)
 
         await nextTick()
         await waitChangeSync()

@@ -36,6 +36,8 @@ import {
     tmpl_mappedPropertyIdView,
     tmpl_mappedPropertyName,
     tmpl_idView,
+    tmpl_midTableName,
+    tmpl_midTableComment,
 } from "@/type/context/utils/AssociationTemplate.ts";
 
 const SYNC_DEBOUNCE_TIMEOUT = 500
@@ -365,7 +367,7 @@ export const useModelEditorHistory = (
         entityWatchStopMap.delete(id)
     }
 
-    const syncEntityName = (
+    const syncEntityAutoChange = (
         entity: EntityWithProperties,
         contextData: DeepReadonly<ModelContextData>,
     ) => {
@@ -410,7 +412,7 @@ export const useModelEditorHistory = (
         if (menuItem.entityMap.has(id)) throw new Error(`[${id}] is already existed in [${groupId}]`)
 
         const entity = cloneDeepReadonlyRaw<EntityWithProperties>(options.entity)
-        syncEntityName(entity, contextData)
+        syncEntityAutoChange(entity, contextData)
         contextData.entityMap.set(id, entity)
         addEntityWatcher(id)
         menuItem.entityMap.set(id, entity)
@@ -465,7 +467,7 @@ export const useModelEditorHistory = (
         const entity = cloneDeepReadonlyRaw<EntityWithProperties>(options.entity)
 
         removeEntityWatcher(id)
-        syncEntityName(entity, contextData)
+        syncEntityAutoChange(entity, contextData)
         contextData.entityMap.set(id, entity)
         const newGroupId = entity.groupId
         if (oldGroupId !== newGroupId) {
@@ -540,7 +542,7 @@ export const useModelEditorHistory = (
         mappedSuperClassWatchStopMap.delete(id)
     }
 
-    const syncMappedSuperClassName = (
+    const syncMappedSuperClassAutoChange = (
         mappedSuperClass: MappedSuperClassWithProperties,
         contextData: DeepReadonly<ModelContextData>,
     ) => {
@@ -582,7 +584,7 @@ export const useModelEditorHistory = (
         if (menuItem.mappedSuperClassMap.has(id)) throw new Error(`[${id}] is already existed in [${groupId}]`)
 
         const mappedSuperClass = cloneDeepReadonlyRaw<MappedSuperClassWithProperties>(options.mappedSuperClass)
-        syncMappedSuperClassName(mappedSuperClass, contextData)
+        syncMappedSuperClassAutoChange(mappedSuperClass, contextData)
         contextData.mappedSuperClassMap.set(id, mappedSuperClass)
         addMappedSuperClassWatcher(id)
         menuItem.mappedSuperClassMap.set(id, mappedSuperClass)
@@ -637,7 +639,7 @@ export const useModelEditorHistory = (
         const mappedSuperClass = cloneDeepReadonlyRaw<MappedSuperClassWithProperties>(options.mappedSuperClass)
 
         removeMappedSuperClassWatcher(id)
-        syncMappedSuperClassName(mappedSuperClass, contextData)
+        syncMappedSuperClassAutoChange(mappedSuperClass, contextData)
         contextData.mappedSuperClassMap.set(id, mappedSuperClass)
         const newGroupId = mappedSuperClass.groupId
         if (oldGroupId !== newGroupId) {
@@ -1038,7 +1040,7 @@ export const useModelEditorHistory = (
         }
     }
 
-    const syncAssociationName = (
+    const syncAssociationAutoChange = (
         association: AssociationIdOnly,
         contextData: DeepReadonly<ModelContextData>,
     ) => {
@@ -1047,14 +1049,27 @@ export const useModelEditorHistory = (
         if ("sourceEntityId" in association) {
             const sourceEntity = contextData.entityMap.get(association.sourceEntityId)
             if (!sourceEntity) return
+            const referencedEntity = contextData.entityMap.get(association.referencedEntityId)
+            if (!referencedEntity) return
             const sourceProperty = sourceEntity.properties.find(property => property.id === association.sourcePropertyId)
             if (!sourceProperty) return
+            if (sourceProperty.category !== "OneToOne_Source" && sourceProperty.category !== "ManyToOne" && sourceProperty.category !== "ManyToMany_Source")
+                throw new Error(`[${sourceProperty.name}] cannot be used as source in association`)
 
-            if ("useNameTemplate" in association && association.useNameTemplate) {
-                association.name = tmpl_fkName(association.nameTemplate, sourceEntity, sourceProperty)
-            }
-            if ("useCommentTemplate" in association && association.useCommentTemplate) {
-                association.comment = tmpl_fkComment(association.commentTemplate, sourceEntity, sourceProperty)
+            if (sourceProperty.joinInfo.type === "SingleColumn" || sourceProperty.joinInfo.type === "MultiColumn") {
+                if ("useNameTemplate" in association && association.useNameTemplate) {
+                    association.name = tmpl_fkName(association.nameTemplate, sourceEntity, sourceProperty)
+                }
+                if ("useCommentTemplate" in association && association.useCommentTemplate) {
+                    association.comment = tmpl_fkComment(association.commentTemplate, sourceEntity, sourceProperty)
+                }
+            } else {
+                if ("useNameTemplate" in association && association.useNameTemplate) {
+                    association.name = tmpl_midTableName(association.nameTemplate, sourceEntity, sourceProperty)
+                }
+                if ("useCommentTemplate" in association && association.useCommentTemplate) {
+                    association.comment = tmpl_midTableComment(association.commentTemplate, sourceEntity, sourceProperty)
+                }
             }
 
             if (mappedProperty.typeIsList) {
@@ -1099,7 +1114,7 @@ export const useModelEditorHistory = (
                 association: options.association,
                 labelPosition: options.labelPosition
             })
-            syncAssociationName(edgedAssociation.association, contextData)
+            syncAssociationAutoChange(edgedAssociation.association, contextData)
             contextData.associationMap.set(id, edgedAssociation)
             addAssociationWatcher(id)
             const newEdge: ConcreteAssociationEdge = {
@@ -1117,7 +1132,7 @@ export const useModelEditorHistory = (
                 association: options.association,
                 labelPosition: options.labelPosition
             })
-            syncAssociationName(edgedAssociation.association, contextData)
+            syncAssociationAutoChange(edgedAssociation.association, contextData)
             contextData.associationMap.set(id, edgedAssociation)
             addAssociationWatcher(id)
             const newEdge: AbstractAssociationEdge = {
@@ -1165,7 +1180,7 @@ export const useModelEditorHistory = (
 
         const edgedAssociation = cloneDeepReadonlyRaw<EdgedAssociation>(options)
         removeAssociationWatcher(id)
-        syncAssociationName(edgedAssociation.association, contextData)
+        syncAssociationAutoChange(edgedAssociation.association, contextData)
         contextData.associationMap.set(id, edgedAssociation)
         addAssociationWatcher(id)
         existedAssociationEdge.data.edgedAssociation = edgedAssociation

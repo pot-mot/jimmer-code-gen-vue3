@@ -1,10 +1,3 @@
-import {
-    INHERIT_ENTITY,
-    tmpl_fkComment,
-    tmpl_fkName,
-    tmpl_midTableComment,
-    tmpl_midTableName
-} from "@/type/context/utils/AssociationTemplate.ts";
 import {getPropertyView} from "@/type/context/utils/PropertyView.ts";
 
 export const oneToOneIdOnlyToAssociation = (
@@ -20,7 +13,7 @@ export const oneToOneIdOnlyToAssociation = (
     if (!sourceProperty) throw new Error(`[${idOnly.sourcePropertyId}] not found`)
     if (sourceProperty.category !== 'OneToOne_Source') throw new Error(`[${getPropertyView(sourceProperty)}] is not a OneToOne_Source`)
 
-    const association: OneToOneAssociation = {
+    return {
         id: idOnly.id,
         name: idOnly.name,
         comment: idOnly.comment,
@@ -32,15 +25,6 @@ export const oneToOneIdOnlyToAssociation = (
         mappedProperty: idOnly.mappedProperty,
         foreignKeyType: idOnly.foreignKeyType,
     }
-    if (sourceProperty.joinInfo.type === "SingleColumn" || sourceProperty.joinInfo.type === "MultiColumn") {
-        if (idOnly.useNameTemplate) association.name = tmpl_fkName(idOnly.nameTemplate, sourceEntity, sourceProperty)
-        if (idOnly.useCommentTemplate) association.comment = tmpl_fkComment(idOnly.commentTemplate, sourceEntity, sourceProperty)
-    } else {
-        if (idOnly.useNameTemplate) association.name = tmpl_midTableName(idOnly.nameTemplate, sourceEntity, referencedEntity)
-        if (idOnly.useCommentTemplate) association.comment = tmpl_midTableComment(idOnly.commentTemplate, sourceEntity, referencedEntity)
-    }
-
-    return association
 }
 
 export const manyToOneIdOnlyToAssociation = (
@@ -56,7 +40,7 @@ export const manyToOneIdOnlyToAssociation = (
     if (!sourceProperty) throw new Error(`[${idOnly.sourcePropertyId}] not found`)
     if (sourceProperty.category !== 'ManyToOne') throw new Error(`[${getPropertyView(sourceProperty)}] is not a ManyToOne`)
 
-    const association: ManyToOneAssociation = {
+    return {
         id: idOnly.id,
         name: idOnly.name,
         comment: idOnly.comment,
@@ -68,15 +52,6 @@ export const manyToOneIdOnlyToAssociation = (
         mappedProperty: idOnly.mappedProperty,
         foreignKeyType: idOnly.foreignKeyType,
     }
-    if (sourceProperty.joinInfo.type === "SingleColumn" || sourceProperty.joinInfo.type === "MultiColumn") {
-        if (idOnly.useNameTemplate) association.name = tmpl_fkName(idOnly.nameTemplate, sourceEntity, sourceProperty)
-        if (idOnly.useCommentTemplate) association.comment = tmpl_fkComment(idOnly.commentTemplate, sourceEntity, sourceProperty)
-    } else {
-        if (idOnly.useNameTemplate) association.name = tmpl_midTableName(idOnly.nameTemplate, sourceEntity, referencedEntity)
-        if (idOnly.useCommentTemplate) association.comment = tmpl_midTableComment(idOnly.commentTemplate, sourceEntity, referencedEntity)
-    }
-
-    return association
 }
 
 export const manyToManyIdOnlyToAssociation = (
@@ -92,7 +67,7 @@ export const manyToManyIdOnlyToAssociation = (
     if (!sourceProperty) throw new Error(`[${idOnly.sourcePropertyId}] not found`)
     if (sourceProperty.category !== 'ManyToMany_Source') throw new Error(`[${getPropertyView(sourceProperty)}] is not a ManyToMany_Source`)
 
-    const association: ManyToManyAssociation = {
+    return {
         id: idOnly.id,
         name: idOnly.name,
         comment: idOnly.comment,
@@ -104,10 +79,6 @@ export const manyToManyIdOnlyToAssociation = (
         mappedProperty: idOnly.mappedProperty,
         foreignKeyType: idOnly.foreignKeyType,
     }
-    if (idOnly.useNameTemplate) association.name = tmpl_midTableName(idOnly.nameTemplate, sourceEntity, referencedEntity)
-    if (idOnly.useCommentTemplate) association.comment = tmpl_midTableComment(idOnly.commentTemplate, sourceEntity, referencedEntity)
-
-    return association
 }
 
 export const abstractOneToOneIdOnlyToAssociation = (
@@ -124,7 +95,7 @@ export const abstractOneToOneIdOnlyToAssociation = (
     if (!sourceProperty) throw new Error(`[${idOnly.sourcePropertyId}] not found`)
     if (sourceProperty.category !== 'OneToOne_Source') throw new Error(`[${getPropertyView(sourceProperty)}] is not a OneToOne_Source`)
 
-    const association: OneToOneAbstractAssociation = {
+    return {
         id: idOnly.id,
         nameTemplate: idOnly.nameTemplate,
         commentTemplate: idOnly.commentTemplate,
@@ -136,10 +107,6 @@ export const abstractOneToOneIdOnlyToAssociation = (
         mappedProperty: idOnly.mappedProperty,
         foreignKeyType: idOnly.foreignKeyType,
     }
-    association.nameTemplate = tmpl_fkName(idOnly.nameTemplate, {name: INHERIT_ENTITY}, sourceProperty)
-    association.commentTemplate = tmpl_fkComment(idOnly.commentTemplate, {comment: INHERIT_ENTITY}, sourceProperty)
-
-    return association
 }
 
 export const abstractManyToOneIdOnlyToAssociation = (
@@ -156,7 +123,7 @@ export const abstractManyToOneIdOnlyToAssociation = (
     if (!sourceProperty) throw new Error(`[${idOnly.sourcePropertyId}] not found`)
     if (sourceProperty.category !== 'ManyToOne') throw new Error(`[${getPropertyView(sourceProperty)}] is not a ManyToOne`)
 
-    const association: ManyToOneAbstractAssociation = {
+    return {
         id: idOnly.id,
         nameTemplate: idOnly.nameTemplate,
         commentTemplate: idOnly.commentTemplate,
@@ -168,10 +135,6 @@ export const abstractManyToOneIdOnlyToAssociation = (
         mappedProperty: idOnly.mappedProperty,
         foreignKeyType: idOnly.foreignKeyType,
     }
-    association.nameTemplate = tmpl_fkName(idOnly.nameTemplate, {name: INHERIT_ENTITY}, sourceProperty)
-    association.commentTemplate = tmpl_fkComment(idOnly.commentTemplate, {comment: INHERIT_ENTITY}, sourceProperty)
-
-    return association
 }
 
 export const idOnlyToAssociation = (
