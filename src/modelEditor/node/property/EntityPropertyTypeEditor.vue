@@ -250,7 +250,6 @@ const selectEntity = (entity: DeepReadonly<EntityWithProperties>) => {
             ...props.entity,
             properties
         })
-        property.value = sourceProperty
         addAssociation(association)
 
         await nextTick()
