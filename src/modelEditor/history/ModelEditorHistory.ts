@@ -1065,33 +1065,21 @@ export const useModelEditorHistory = (
                 }
             } else {
                 if ("useNameTemplate" in association && association.useNameTemplate) {
-                    association.name = tmpl_midTableName(association.nameTemplate, sourceEntity, sourceProperty)
+                    association.name = tmpl_midTableName(association.nameTemplate, sourceEntity, referencedEntity)
                 }
                 if ("useCommentTemplate" in association && association.useCommentTemplate) {
-                    association.comment = tmpl_midTableComment(association.commentTemplate, sourceEntity, sourceProperty)
+                    association.comment = tmpl_midTableComment(association.commentTemplate, sourceEntity, referencedEntity)
                 }
             }
 
-            if (mappedProperty.typeIsList) {
-                if ("useNameTemplate" in mappedProperty && mappedProperty.useNameTemplate) {
-                    mappedProperty.name = tmpl_mappedPropertyName(mappedProperty.nameTemplate, sourceEntity, sourceProperty)
-                }
-                if ("useCommentTemplate" in mappedProperty && mappedProperty.useCommentTemplate) {
-                    mappedProperty.comment = tmpl_mappedPropertyComment(mappedProperty.commentTemplate, sourceEntity, sourceProperty)
-                }
-                if ("useIdViewNameTemplate" in mappedProperty && mappedProperty.useIdViewNameTemplate) {
-                    mappedProperty.idViewName = tmpl_mappedPropertyIdView(mappedProperty.idViewNameTemplate, sourceEntity, sourceProperty)
-                }
-            } else {
-                if ("useNameTemplate" in mappedProperty && mappedProperty.useNameTemplate) {
-                    mappedProperty.name = tmpl_mappedPropertyName(mappedProperty.nameTemplate, sourceEntity, sourceProperty)
-                }
-                if ("useCommentTemplate" in mappedProperty && mappedProperty.useCommentTemplate) {
-                    mappedProperty.comment = tmpl_mappedPropertyComment(mappedProperty.commentTemplate, sourceEntity, sourceProperty)
-                }
-                if ("useIdViewNameTemplate" in mappedProperty && mappedProperty.useIdViewNameTemplate) {
-                    mappedProperty.idViewName = tmpl_mappedPropertyIdView(mappedProperty.idViewNameTemplate, sourceEntity, sourceProperty)
-                }
+            if ("useNameTemplate" in mappedProperty && mappedProperty.useNameTemplate) {
+                mappedProperty.name = tmpl_mappedPropertyName(mappedProperty.nameTemplate, sourceEntity, sourceProperty)
+            }
+            if ("useCommentTemplate" in mappedProperty && mappedProperty.useCommentTemplate) {
+                mappedProperty.comment = tmpl_mappedPropertyComment(mappedProperty.commentTemplate, sourceEntity, sourceProperty)
+            }
+            if ("useIdViewNameTemplate" in mappedProperty && mappedProperty.useIdViewNameTemplate) {
+                mappedProperty.idViewName = tmpl_mappedPropertyIdView(mappedProperty.idViewNameTemplate, sourceEntity, sourceProperty)
             }
         }
     }
