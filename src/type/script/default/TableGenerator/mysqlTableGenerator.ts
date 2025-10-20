@@ -7,6 +7,7 @@ export const mysqlTableGenerator: TableGenerator = (
 
     const statementMap = new Map<string, {
         createTable: string,
+        createIndexes: string[],
         createForeignKeys: string[],
     }>()
 
@@ -34,18 +35,20 @@ ${table.columns.map(column => `    ${column.name} ${column.type} ${
     ADD CONSTRAINT ${foreignKey.name}
         FOREIGN KEY (${foreignKey.columnRefs.map(it => it.columnName).join(", ")}) 
             REFERENCES ${foreignKey.referencedTableName} (${foreignKey.columnRefs.map(it => it.referencedColumnName).join(", ")});
-`)
-            }
+`),
+                createIndexes: table.indexes.map(index => `CREATE ${index.unique ? "UNIQUE" : ""} INDEX ${index.name} ON ${table.name} (${index.columnNames.join(", ")});`)
+            },
         )
     }
 
-    for (const [tableName, {createTable, createForeignKeys}] of statementMap) {
-        result[`${baseDir}/tables/${tableName}.sql`] = `${createTable}\n${createForeignKeys.join("\n")}`
+    for (const [tableName, {createTable, createIndexes, createForeignKeys}] of statementMap) {
+        result[`${baseDir}/tables/${tableName}.sql`] = `${createTable}\n${createIndexes.join("\n")}\n${createForeignKeys.join("\n")}`
     }
 
     const allTableStatements: string[] = []
-    for (const {createTable} of statementMap.values()) {
+    for (const {createTable, createIndexes} of statementMap.values()) {
         allTableStatements.push(createTable)
+        allTableStatements.push(...createIndexes)
     }
     for (const {createForeignKeys} of statementMap.values()) {
         allTableStatements.push(...createForeignKeys)
