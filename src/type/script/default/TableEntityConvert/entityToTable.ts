@@ -110,8 +110,8 @@ export const entityToTable: EntityToTable = (
         } = options
 
         const midTable: Table = {
-            schema: options.midTable.name,
-            name: options.midTable.schema,
+            schema: options.midTable.schema,
+            name: options.midTable.name,
             comment: options.midTable.comment,
             columns: [],
             indexes: [],
