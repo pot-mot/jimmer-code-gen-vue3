@@ -108,7 +108,7 @@ export const useModelDiagnoseInfo = (
 
     const syncSameNameAssociation = (name: string) => {
         for (const {association} of contextData.associationMap.values()) {
-            if ("name" in association && !association.useNameTemplate && association.name === name) setAssociationDiagnose(association)
+            if ("name" in association && association.name === name) setAssociationDiagnose(association)
         }
     }
 
@@ -229,7 +229,7 @@ export const useModelDiagnoseInfo = (
                 syncSameNameAssociation(oldAssociation.name)
             }
         }
-        if ("name" in association && !association.useNameTemplate) {
+        if ("name" in association) {
             syncSameNameAssociation(association.name)
         } else {
             setAssociationDiagnose(association)
@@ -244,7 +244,7 @@ export const useModelDiagnoseInfo = (
     }
     const removeAssociation = (association: DeepReadonly<AssociationIdOnly>) => {
         removeAssociationDiagnose(association.id)
-        if ("name" in association && !association.useNameTemplate) {
+        if ("name" in association) {
             syncSameNameAssociation(association.name)
         }
         const referencedEntity = contextData.entityMap.get(association.referencedEntityId)

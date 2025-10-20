@@ -335,7 +335,7 @@ export const useModelEditor = createStore(() => {
             fixedLength: 200,
         }
     ) => {
-        if ("name" in association && !association.useNameTemplate) {
+        if ("name" in association) {
             association.name = modelNameSets.associationNameSet.next(association.name)
         }
         history.executeCommand('association:add', {association, labelPosition})
