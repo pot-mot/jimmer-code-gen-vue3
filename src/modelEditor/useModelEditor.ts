@@ -816,6 +816,17 @@ export const useModelEditor = createStore(() => {
         })
     }
 
+    const nodeToFront = (node: GraphNode | string) => {
+        let _node: GraphNode
+        if (typeof node === 'string') {
+            const foundNode = vueFlow.value.findNode(node)
+            if (!foundNode) throw new Error(`node [${node}] is not existed`)
+            _node = foundNode
+        } else {
+            _node = node
+        }
+        _node.zIndex = getNextZIndex()
+    }
     const focusNode = async (node: GraphNode | string) => {
         let _node: GraphNode
         if (typeof node === 'string') {
@@ -835,6 +846,17 @@ export const useModelEditor = createStore(() => {
         return _node
     }
 
+    const edgeToFront = (edge: GraphEdge | string) => {
+        let _edge: GraphEdge
+        if (typeof edge === 'string') {
+            const foundEdge = vueFlow.value.findEdge(edge) ?? findAssociationEdge(edge, vueFlow.value)
+            if (!foundEdge) throw new Error(`edge [${edge}] is not existed`)
+            _edge = foundEdge
+        } else {
+            _edge = edge
+        }
+        _edge.zIndex = getNextZIndex()
+    }
     const focusEdge = async (edge: GraphEdge | string) => {
         let _edge: GraphEdge
         if (typeof edge === 'string') {
@@ -897,6 +919,9 @@ export const useModelEditor = createStore(() => {
             return vueFlow.value.fitBounds(rect, {duration: 800, padding: 0.4})
         },
 
+        getNextZIndex,
+        nodeToFront,
+        edgeToFront,
         focusNode,
         focusEdge,
         focusDiagnosticSource,
