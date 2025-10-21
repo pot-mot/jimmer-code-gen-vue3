@@ -97,7 +97,7 @@ const _generateJoinInfo = (
                 type: "SingleColumnMidTable",
                 tableName: MID_TABLE_NAME_TEMPLATE,
                 tableComment: MID_TABLE_COMMENT_TEMPLATE,
-                sourceColumnName: nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy),
+                sourceColumnName: nameTool.convert(entity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
                 targetColumnName: nameTool.convert(referencedEntity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
                 sourceForeignKeyType: foreignKeyType,
                 targetForeignKeyType: foreignKeyType,
@@ -112,7 +112,7 @@ const _generateJoinInfo = (
                     type: "MultiColumn",
                     embeddableTypeId: sourceIdProperty.embeddableTypeId,
                     columnRefs: sourceColumnNames.map(columnName => ({
-                        columnName: nameTool.convert(entity.name + firstCaseToUpper(columnName), 'UPPER_CAMEL', databaseNameStrategy),
+                        columnName: nameTool.convert(entity.name + nameTool.convert(columnName, databaseNameStrategy, 'UPPER_CAMEL'), 'UPPER_CAMEL', databaseNameStrategy),
                         referencedColumnName: columnName,
                     })),
                     foreignKeyType,
@@ -120,7 +120,7 @@ const _generateJoinInfo = (
             } else {
                 sourceJoinInfo = {
                     type: "SingleColumn",
-                    columnName: nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy),
+                    columnName: nameTool.convert(entity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
                     foreignKeyType,
                 }
             }
@@ -131,20 +131,20 @@ const _generateJoinInfo = (
                     type: "MultiColumn",
                     embeddableTypeId: referencedIdProperty.embeddableTypeId,
                     columnRefs: targetColumnNames.map(columnName => ({
-                        columnName: nameTool.convert(referencedEntity.name + firstCaseToUpper(columnName), 'UPPER_CAMEL', databaseNameStrategy),
+                        columnName: nameTool.convert(entity.name + nameTool.convert(columnName, databaseNameStrategy, 'UPPER_CAMEL'), 'UPPER_CAMEL', databaseNameStrategy),
                         referencedColumnName: columnName,
                     })),
                     foreignKeyType,
                 }
             } else {
-                targetJoinInfo =  {
+                targetJoinInfo = {
                     type: "SingleColumn",
                     columnName: nameTool.convert(referencedEntity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
                     foreignKeyType,
                 }
             }
 
-            return  {
+            return {
                 type: "MultiColumnMidTable",
                 sourceJoinInfo,
                 targetJoinInfo,
