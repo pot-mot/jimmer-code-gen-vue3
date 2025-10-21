@@ -1,7 +1,6 @@
 import {nameTool} from "@/type/context/utils/NameTool.ts";
 import {getEntityIdProperty} from "@/type/context/utils/EntityIdProperty.ts";
 import {flatEmbeddableTypeColumnNames} from "@/type/context/utils/EmbeddableTypeFlat.ts";
-import {firstCaseToUpper} from "@/utils/name/firstCase.ts";
 import {
     MID_TABLE_COMMENT_TEMPLATE,
     MID_TABLE_NAME_TEMPLATE,
@@ -26,7 +25,7 @@ const _generateFkJoinInfo = (
             type: "MultiColumn",
             embeddableTypeId: referencedIdProperty.embeddableTypeId,
             columnRefs: columnNames.map(columnName => ({
-                columnName: nameTool.convert(referencedEntity.name + firstCaseToUpper(columnName), 'UPPER_CAMEL', databaseNameStrategy),
+                columnName: nameTool.convert(referencedEntity.name + nameTool.convert(columnName, databaseNameStrategy, 'UPPER_CAMEL'), 'UPPER_CAMEL', databaseNameStrategy),
                 referencedColumnName: columnName,
             })),
             foreignKeyType,
@@ -76,7 +75,7 @@ const _generateJoinInfo = (
                 type: "MultiColumn",
                 embeddableTypeId: referencedIdProperty.embeddableTypeId,
                 columnRefs: columnNames.map(columnName => ({
-                    columnName: nameTool.convert(referencedEntity.name + firstCaseToUpper(columnName), 'UPPER_CAMEL', databaseNameStrategy),
+                    columnName: nameTool.convert(referencedEntity.name + nameTool.convert(columnName, databaseNameStrategy, 'UPPER_CAMEL'), 'UPPER_CAMEL', databaseNameStrategy),
                     referencedColumnName: columnName,
                 })),
                 foreignKeyType,
@@ -131,7 +130,7 @@ const _generateJoinInfo = (
                     type: "MultiColumn",
                     embeddableTypeId: referencedIdProperty.embeddableTypeId,
                     columnRefs: targetColumnNames.map(columnName => ({
-                        columnName: nameTool.convert(entity.name + nameTool.convert(columnName, databaseNameStrategy, 'UPPER_CAMEL'), 'UPPER_CAMEL', databaseNameStrategy),
+                        columnName: nameTool.convert(referencedEntity.name + nameTool.convert(columnName, databaseNameStrategy, 'UPPER_CAMEL'), 'UPPER_CAMEL', databaseNameStrategy),
                         referencedColumnName: columnName,
                     })),
                     foreignKeyType,
