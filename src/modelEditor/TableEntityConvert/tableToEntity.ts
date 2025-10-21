@@ -6,11 +6,15 @@ import {
     ID_VIEW_TEMPLATE, LIST_ID_VIEW_TEMPLATE
 } from "@/type/context/utils/AssociationTemplate.ts";
 
-export const tableToEntity: TableToEntity = (
+export const tableToEntity = (
     groupId: string,
     tables: DeepReadonly<Table[]>,
     context: DeepReadonly<ModelContext>
-): ReturnType<TableToEntity> => {
+): {
+    entities: EntityWithProperties[],
+    embeddableTypes: EmbeddableTypeWithProperties[],
+    associations: AssociationIdOnly[],
+} => {
     const entities: EntityWithProperties[] = []
     const associations: AssociationIdOnly[] = []
     const embeddableTypes: EmbeddableTypeWithProperties[] = []

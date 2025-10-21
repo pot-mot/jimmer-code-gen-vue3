@@ -1,9 +1,11 @@
-export const entityToTable: EntityToTable = (
+export const entityToTable = (
     entities: DeepReadonly<EntityWithInheritInfo[]>,
     allEntities: DeepReadonly<EntityWithInheritInfo[]>,
     context: DeepReadonly<ModelContext>
-): ReturnType<EntityToTable> => {
-
+): {
+    tables: Table[],
+    midTables: Table[]
+} => {
     const scalarPropertyToColumn = (
         property: DeepReadonly<IdCommonProperty | ScalarCommonProperty | ScalarEnumProperty>
     ): Column => {

@@ -1,6 +1,6 @@
 import type {ScriptsStore} from "@/modelEditor/generator/ScriptsStore.ts";
 import {getArrayFromMap} from "@/utils/map/getArrayFromMap.ts";
-import {entityToTable} from "@/type/script/default/TableEntityConvert/entityToTable.ts";
+import {entityToTable} from "@/modelEditor/TableEntityConvert/entityToTable.ts";
 
 export const modelGenerate = (
     context: DeepReadonly<ModelContext>,

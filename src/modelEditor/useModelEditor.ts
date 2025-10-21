@@ -31,7 +31,7 @@ import {fillModelGraphSubData, modelDataToGraphData} from "@/type/context/utils/
 import {contextDataGetSelectSubData} from "@/type/context/utils/ModelSubData.ts";
 import {validatePartialModelGraphSubData} from "@/modelEditor/graphData/ModelGraphSubData.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
-import {tableToEntity} from "@/type/script/default/TableEntityConvert/tableToEntity.ts";
+import {tableToEntity} from "@/modelEditor/TableEntityConvert/tableToEntity.ts";
 import {contextDataToContext} from "@/type/context/utils/ModelContext.ts";
 import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
 import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
