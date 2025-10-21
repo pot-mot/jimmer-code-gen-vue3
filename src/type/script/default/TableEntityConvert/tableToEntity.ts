@@ -2,8 +2,8 @@ import {
     FK_COMMENT_TEMPLATE,
     FK_NAME_TEMPLATE,
     MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
-    MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE, MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
-    ID_VIEW_TEMPLATE
+    MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
+    ID_VIEW_TEMPLATE, LIST_ID_VIEW_TEMPLATE
 } from "@/type/context/utils/AssociationTemplate.ts";
 
 export const tableToEntity: TableToEntity = (
@@ -260,7 +260,7 @@ export const tableToEntity: TableToEntity = (
                 associationId,
                 referencedEntityId: sourceEntity.id,
                 idViewName: lowerReferencedEntityName + "Ids",
-                idViewNameTemplate: MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE,
+                idViewNameTemplate: LIST_ID_VIEW_TEMPLATE,
                 useIdViewNameTemplate: true,
                 nullable: false,
                 typeIsList: true,

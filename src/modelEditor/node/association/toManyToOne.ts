@@ -4,7 +4,7 @@ import {
     FK_COMMENT_TEMPLATE,
     FK_NAME_TEMPLATE,
     MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
-    MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE,
+    LIST_ID_VIEW_TEMPLATE,
     MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
     ID_VIEW_TEMPLATE
 } from "@/type/context/utils/AssociationTemplate.ts";
@@ -76,7 +76,7 @@ export const toManyToOne = async (
             commentTemplate: MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
             useCommentTemplate: true,
             idViewName: mappedProperty.idViewName,
-            idViewNameTemplate: MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE,
+            idViewNameTemplate: LIST_ID_VIEW_TEMPLATE,
             useIdViewNameTemplate: true,
             mappedById: mappedProperty.mappedById,
             referencedEntityId: mappedProperty.referencedEntityId,

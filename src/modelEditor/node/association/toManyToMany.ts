@@ -2,11 +2,10 @@ import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {nextTick} from "vue";
 import {
     MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
-    MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE,
+    LIST_ID_VIEW_TEMPLATE,
     MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
     MID_TABLE_COMMENT_TEMPLATE,
     MID_TABLE_NAME_TEMPLATE,
-    LIST_ID_VIEW_TEMPLATE
 } from "@/type/context/utils/AssociationTemplate.ts";
 
 export const toManyToMany = async (
@@ -79,7 +78,7 @@ export const toManyToMany = async (
             commentTemplate: MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
             useCommentTemplate: true,
             idViewName: mappedProperty.idViewName,
-            idViewNameTemplate: MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE,
+            idViewNameTemplate: LIST_ID_VIEW_TEMPLATE,
             useIdViewNameTemplate: true,
             mappedById: mappedProperty.mappedById,
             referencedEntityId: mappedProperty.referencedEntityId,

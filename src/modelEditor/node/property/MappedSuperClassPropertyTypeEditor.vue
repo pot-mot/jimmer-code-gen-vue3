@@ -18,7 +18,7 @@ import {
     FK_COMMENT_TEMPLATE,
     FK_NAME_TEMPLATE,
     MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
-    MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE,
+    LIST_ID_VIEW_TEMPLATE,
     MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
 } from "@/type/context/utils/AssociationTemplate.ts";
 import ColorPreview from "@/components/color/ColorPreview.vue";
@@ -245,7 +245,7 @@ const selectEntity = (entity: DeepReadonly<EntityWithProperties>) => {
             id: mappedPropertyId,
             nameTemplate: MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
             commentTemplate: MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
-            idViewNameTemplate: MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE,
+            idViewNameTemplate: LIST_ID_VIEW_TEMPLATE,
             category: "OneToMany_Abstract",
             associationId,
             referencedAbstractEntityId: props.mappedSuperClass.id,

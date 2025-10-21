@@ -3,7 +3,9 @@ import {generateFkJoinInfo, generateJoinInfo} from "@/modelEditor/property/Prope
 import {
     tmpl_fkComment,
     tmpl_fkName,
-    tmpl_idView, tmpl_mappedPropertyComment, tmpl_mappedPropertyIdView, tmpl_mappedPropertyName,
+    tmpl_idView,
+    tmpl_mappedPropertyComment,
+    tmpl_mappedPropertyName,
     tmpl_midTableComment,
     tmpl_midTableName
 } from "@/type/context/utils/AssociationTemplate.ts";
@@ -33,7 +35,7 @@ export const syncEntityAutoChange = (
             if (property.useIdViewNameTemplate) {
                 const referenceEntity = contextData.entityMap.get(property.referencedEntityId)
                 if (referenceEntity === undefined) return
-                property.idViewName = tmpl_idView(property.idViewNameTemplate, referenceEntity)
+                property.idViewName = tmpl_idView(property.idViewNameTemplate, property)
             }
         }
     }
@@ -62,7 +64,7 @@ export const syncMappedSuperClassAutoChange = (
             if (property.useIdViewNameTemplate) {
                 const referencedEntity = contextData.entityMap.get(association.referencedEntityId)
                 if (referencedEntity === undefined) return
-                property.idViewName = tmpl_idView(property.idViewNameTemplate, referencedEntity)
+                property.idViewName = tmpl_idView(property.idViewNameTemplate, property)
             }
         }
     }
@@ -107,7 +109,7 @@ export const syncAssociationAutoChange = (
             mappedProperty.comment = tmpl_mappedPropertyComment(mappedProperty.commentTemplate, sourceEntity, sourceProperty)
         }
         if ("useIdViewNameTemplate" in mappedProperty && mappedProperty.useIdViewNameTemplate) {
-            mappedProperty.idViewName = tmpl_mappedPropertyIdView(mappedProperty.idViewNameTemplate, sourceEntity, sourceProperty)
+            mappedProperty.idViewName = tmpl_idView(mappedProperty.idViewNameTemplate, mappedProperty)
         }
     }
 }

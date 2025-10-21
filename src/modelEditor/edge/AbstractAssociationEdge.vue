@@ -2,10 +2,8 @@
 import AssociationEdge from "@/modelEditor/edge/AssociationEdge.vue";
 import {type EdgeProps} from "@vue-flow/core";
 import type {AbstractAssociationEdge} from "@/modelEditor/edge/AbstractAssociationEdge.ts";
-import AssociationViewer from "@/modelEditor/viewer/AssociationViewer.vue";
 import NameCommentViewer from "@/modelEditor/nameComment/NameCommentViewer.vue";
 import {computed, ref, useTemplateRef} from "vue";
-import {INHERIT_ENTITY} from "@/type/context/utils/AbstractAssociationToReal.ts";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import MappedSuperClassViewer from "@/modelEditor/viewer/MappedSuperClassViewer.vue";
 import EntityIdViewer from "@/modelEditor/viewer/EntityIdViewer.vue";
@@ -14,13 +12,24 @@ import LabelPositionEditor from "@/modelEditor/edge/tool/LabelPositionEditor.vue
 import IconAim from "@/components/icons/IconAim.vue";
 import IconDelete from "@/components/icons/IconDelete.vue";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
+import {
+    tmpl_fkComment,
+    tmpl_fkName,
+    tmpl_mappedPropertyComment,
+    tmpl_mappedPropertyName
+} from "@/type/context/utils/AssociationTemplate.ts";
 
 const props = defineProps<EdgeProps<AbstractAssociationEdge["data"]>>()
 
-const {contextData, focusEdge, remove, modelDiagnoseInfo} = useModelEditor()
+const {contextData, edgeToFront, focusEdge, remove, modelDiagnoseInfo} = useModelEditor()
 
-const referencedAbstractEntity = computed(() => {
-    return contextData.value.mappedSuperClassMap.get(props.data.edgedAssociation.association.mappedProperty.referencedAbstractEntityId)
+const sourceAbstractEntity = computed(() => {
+    return contextData.value.mappedSuperClassMap.get(props.data.edgedAssociation.association.sourceAbstractEntityId)
+})
+const sourceProperty = computed(() => {
+    return sourceAbstractEntity.value?.properties.find(property => {
+        return property.id === props.data.edgedAssociation.association.sourcePropertyId
+    })
 })
 
 const associationEdgeRef = useTemplateRef("associationEdgeRef")
@@ -31,6 +40,21 @@ const getPath = computed(() => {
 })
 
 const associationEdit = ref(false)
+
+const associationNameCommentView = computed(() => {
+    return {
+        name: tmpl_fkName(
+            props.data.edgedAssociation.association.nameTemplate,
+            {name: sourceAbstractEntity.value ? `$${sourceAbstractEntity.value.name}$` : '[NOT_EXISTED]'},
+            {name: sourceProperty.value ? `$${sourceProperty.value.name}$` : '[NOT_EXISTED]'}
+        ),
+        comment: tmpl_fkComment(
+            props.data.edgedAssociation.association.commentTemplate,
+            {comment: sourceAbstractEntity.value ? `$${sourceAbstractEntity.value.comment}$` : '[NOT_EXISTED]'},
+            {comment: sourceProperty.value ? `$${sourceProperty.value.comment}$` : '[NOT_EXISTED]'}
+        ),
+    }
+})
 
 const associationNameComment = computed({
     get: () => {
@@ -47,18 +71,34 @@ const associationNameComment = computed({
 
 const mappedPropertyEdit = ref(false)
 
-const mappedPropertyNameComment = computed(() => {
+const mappedPropertyNameCommentView = computed(() => {
     const mappedProperty = props.data.edgedAssociation.association.mappedProperty
-    if (!referencedAbstractEntity.value) {
+    return {
+        name: tmpl_mappedPropertyName(
+            mappedProperty.nameTemplate,
+            {name: sourceAbstractEntity.value ? `$${sourceAbstractEntity.value.name}$` : '[NOT_EXISTED]'},
+            {name: sourceProperty.value ? `$${sourceProperty.value.name}$` : '[NOT_EXISTED]'}
+        ),
+        comment: tmpl_mappedPropertyComment(
+            mappedProperty.commentTemplate,
+            {comment: sourceAbstractEntity.value ? `$${sourceAbstractEntity.value.comment}$` : '[NOT_EXISTED]'},
+            {comment: sourceProperty.value ? `$${sourceProperty.value.comment}$` : '[NOT_EXISTED]'}
+        ),
+    }
+})
+
+const mappedPropertyNameComment = computed({
+    get: () => {
+        const mappedProperty = props.data.edgedAssociation.association.mappedProperty
         return {
-            name: mappedProperty.name.replace(INHERIT_ENTITY, "[NOT EXISTED]"),
-            comment: mappedProperty.comment.replace(INHERIT_ENTITY, "[NOT EXISTED]"),
+            name: mappedProperty.nameTemplate,
+            comment: mappedProperty.commentTemplate,
         }
-    } else {
-        return {
-            name: mappedProperty.name.replace(INHERIT_ENTITY, `$${referencedAbstractEntity.value.name}$`),
-            comment: mappedProperty.comment.replace(INHERIT_ENTITY, `$${referencedAbstractEntity.value.comment}$`),
-        }
+    },
+    set: (value) => {
+        const mappedProperty = props.data.edgedAssociation.association.mappedProperty
+        mappedProperty.nameTemplate = value.name
+        mappedProperty.commentTemplate = value.comment
     }
 })
 </script>
@@ -76,10 +116,10 @@ const mappedPropertyNameComment = computed(() => {
                     :class="{selected}"
                 >
                     <div class="flex-center">
-                        <AssociationViewer
+                        <NameCommentViewer
                             v-if="!associationEdit"
-                            :association="data.edgedAssociation.association"
-                            @click.stop="associationEdit = true"
+                            :data="associationNameCommentView"
+                            @click.stop="associationEdit = true; edgeToFront(id)"
                         />
                         <NameCommentEditor
                             v-else
@@ -88,7 +128,7 @@ const mappedPropertyNameComment = computed(() => {
                             auto-focus
                             @change="associationEdit = false"
                             @blur="associationEdit = false"
-                            @click.stop
+                            @click.stop="edgeToFront(id)"
                         />
                     </div>
                     <div class="flex-center">
@@ -111,22 +151,22 @@ const mappedPropertyNameComment = computed(() => {
                         <span>.</span>
                         <NameCommentViewer
                             v-if="!mappedPropertyEdit"
-                            :data="mappedPropertyNameComment"
-                            @click.stop="mappedPropertyEdit = true"
+                            :data="mappedPropertyNameCommentView"
+                            @click.stop="mappedPropertyEdit = true; edgeToFront(id)"
                         />
                         <NameCommentEditor
                             v-else
-                            v-model="data.edgedAssociation.association.mappedProperty"
+                            v-model="mappedPropertyNameComment"
                             class="with-border-bg"
                             auto-focus
                             @change="mappedPropertyEdit = false"
                             @blur="mappedPropertyEdit = false"
-                            @click.stop
+                            @click.stop="edgeToFront(id)"
                         />
                         <span style="padding-right: 0.5rem;">:</span>
                         <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">List<</span>
                         <span style="color: var(--comment-color);">$</span>
-                        <MappedSuperClassViewer :mapped-super-class="referencedAbstractEntity" hide-comment ctrl-focus/>
+                        <MappedSuperClassViewer :mapped-super-class="sourceAbstractEntity" hide-comment ctrl-focus/>
                         <span style="color: var(--comment-color);">$</span>
                         <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">></span>
                     </div>

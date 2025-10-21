@@ -17,7 +17,7 @@ import TypePairViewer from "@/modelEditor/viewer/TypePairViewer.vue";
 import {
     FK_COMMENT_TEMPLATE,
     FK_NAME_TEMPLATE, MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
-    MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE, MAPPED_PROPERTY_LIST_NAME_TEMPLATE
+    LIST_ID_VIEW_TEMPLATE, MAPPED_PROPERTY_LIST_NAME_TEMPLATE
 } from "@/type/context/utils/AssociationTemplate.ts";
 import ColorPreview from "@/components/color/ColorPreview.vue";
 import {
@@ -243,8 +243,8 @@ const selectEntity = (entity: DeepReadonly<EntityWithProperties>) => {
             comment: MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
             commentTemplate: MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
             useCommentTemplate: true,
-            idViewName: MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE,
-            idViewNameTemplate: MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE,
+            idViewName: LIST_ID_VIEW_TEMPLATE,
+            idViewNameTemplate: LIST_ID_VIEW_TEMPLATE,
             useIdViewNameTemplate: true,
             nullable: false,
             typeIsList: true,

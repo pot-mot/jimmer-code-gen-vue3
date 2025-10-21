@@ -1,6 +1,8 @@
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {nameTool} from "@/type/context/utils/NameTool.ts";
 
+export const PROPERTY = "[[PROPERTY]]"
+
 export const SOURCE_ENTITY = "[[SOURCE_ENTITY]]"
 export const SOURCE_PROPERTY = "[[SOURCE_PROPERTY]]"
 export const REFERENCED_ENTITY = "[[REFERENCED_ENTITY]]"
@@ -55,16 +57,19 @@ export const tmpl_midTableComment = (
         .replace(REFERENCED_ENTITY, referencedEntity.comment)
 }
 
-export const ID_VIEW_TEMPLATE = `${REFERENCED_ENTITY}Id`
-export const LIST_ID_VIEW_TEMPLATE = `${REFERENCED_ENTITY}Ids`
+export const ID_VIEW_TEMPLATE = `${PROPERTY}Id`
+export const LIST_ID_VIEW_TEMPLATE = `${PROPERTY}Ids`
 
 export const tmpl_idView = (
     template: string,
-    referencedEntity: { name: string },
+    property: { name: string },
 ) => {
+    let propertyName = property.name
+    if (property.name.endsWith("List")) propertyName = propertyName.substring(0, propertyName.length - 4)
+
     return nameTool.convert(
         template
-            .replace(REFERENCED_ENTITY, referencedEntity.name),
+            .replace(PROPERTY, propertyName),
         'LOWER_CAMEL',
         'LOWER_CAMEL',
     )
@@ -72,11 +77,9 @@ export const tmpl_idView = (
 
 export const MAPPED_PROPERTY_NAME_TEMPLATE = `${SOURCE_ENTITY}`
 export const MAPPED_PROPERTY_COMMENT_TEMPLATE = `${SOURCE_ENTITY}`
-export const MAPPED_PROPERTY_ID_VIEW_TEMPLATE = `${SOURCE_ENTITY}Id`
 
 export const MAPPED_PROPERTY_LIST_NAME_TEMPLATE = `${SOURCE_ENTITY}List`
 export const MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE = `${SOURCE_ENTITY}列表`
-export const MAPPED_PROPERTY_LIST_ID_VIEW_NAME_TEMPLATE = `${SOURCE_ENTITY}Ids`
 
 export const tmpl_mappedPropertyName = (
     template: string,
@@ -99,17 +102,4 @@ export const tmpl_mappedPropertyComment = (
     return template
         .replace(SOURCE_ENTITY, sourceEntity.comment)
         .replace(SOURCE_PROPERTY, sourceProperty.comment)
-}
-export const tmpl_mappedPropertyIdView = (
-    template: string,
-    sourceEntity: { name: string },
-    sourceProperty: { name: string },
-) => {
-    return nameTool.convert(
-        template
-            .replace(SOURCE_ENTITY, sourceEntity.name)
-            .replace(SOURCE_PROPERTY, sourceProperty.name),
-        'LOWER_CAMEL',
-        'LOWER_CAMEL',
-    )
 }

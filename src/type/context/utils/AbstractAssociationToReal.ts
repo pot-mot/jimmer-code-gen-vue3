@@ -8,7 +8,7 @@ import {
     tmpl_fkComment,
     tmpl_fkName,
     tmpl_mappedPropertyComment,
-    tmpl_mappedPropertyIdView,
+    tmpl_idView,
     tmpl_mappedPropertyName,
     tmpl_midTableComment,
     tmpl_midTableName
@@ -52,17 +52,18 @@ export const oneToOneAbstractToReal = (
         autoGenerateJoinInfo: abstractSourceProperty.autoGenerateJoinInfo,
     }
     const associationIsFk = sourceProperty.joinInfo.type === "SingleColumn" || sourceProperty.joinInfo.type === "MultiColumn"
+    const mappedPropertyName = tmpl_mappedPropertyName(abstractMappedProperty.nameTemplate, inheritSourceEntity, sourceProperty)
     const mappedProperty: OneToOneMappedProperty = {
         id: newMappedPropertyId,
         associationId: newAssociationId,
         category: "OneToOne_Mapped",
-        name: tmpl_mappedPropertyName(abstractMappedProperty.nameTemplate, inheritSourceEntity, sourceProperty),
+        name: mappedPropertyName,
         nameTemplate: abstractAssociation.nameTemplate,
         useNameTemplate: true,
         comment: tmpl_mappedPropertyComment(abstractMappedProperty.commentTemplate, inheritSourceEntity, sourceProperty),
         commentTemplate: abstractMappedProperty.commentTemplate,
         useCommentTemplate: true,
-        idViewName: tmpl_mappedPropertyIdView(abstractMappedProperty.idViewNameTemplate, inheritSourceEntity, sourceProperty),
+        idViewName: tmpl_idView(abstractMappedProperty.idViewNameTemplate, {name: mappedPropertyName}),
         idViewNameTemplate: abstractMappedProperty.idViewNameTemplate,
         useIdViewNameTemplate: true,
         extraAnnotations: [...abstractMappedProperty.extraAnnotations],
@@ -138,17 +139,18 @@ export const oneToManyAbstractToReal = (
         autoGenerateJoinInfo: abstractSourceProperty.autoGenerateJoinInfo,
     }
     const associationIsFk = sourceProperty.joinInfo.type === "SingleColumn" || sourceProperty.joinInfo.type === "MultiColumn"
+    const mappedPropertyName = tmpl_mappedPropertyName(abstractMappedProperty.nameTemplate, inheritSourceEntity, sourceProperty)
     const mappedProperty: OneToManyProperty = {
         id: newMappedPropertyId,
         associationId: newAssociationId,
         category: "OneToMany",
-        name: tmpl_mappedPropertyName(abstractMappedProperty.nameTemplate, inheritSourceEntity, sourceProperty),
+        name: mappedPropertyName,
         nameTemplate: abstractAssociation.nameTemplate,
         useNameTemplate: true,
         comment: tmpl_mappedPropertyComment(abstractMappedProperty.commentTemplate, inheritSourceEntity, sourceProperty),
         commentTemplate: abstractMappedProperty.commentTemplate,
         useCommentTemplate: true,
-        idViewName: tmpl_mappedPropertyIdView(abstractMappedProperty.idViewNameTemplate, inheritSourceEntity, sourceProperty),
+        idViewName: tmpl_idView(abstractMappedProperty.idViewNameTemplate, {name: mappedPropertyName}),
         idViewNameTemplate: abstractMappedProperty.idViewNameTemplate,
         useIdViewNameTemplate: true,
         extraAnnotations: [...abstractMappedProperty.extraAnnotations],
