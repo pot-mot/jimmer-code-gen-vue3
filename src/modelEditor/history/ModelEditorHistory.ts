@@ -387,11 +387,7 @@ export const useModelEditorHistory = (
                 if (property.useIdViewNameTemplate) {
                     const referenceEntity = contextData.entityMap.get(property.referencedEntityId)
                     if (referenceEntity === undefined) return
-                    if (property.typeIsList) {
-                        property.idViewName = tmpl_idView(property.idViewNameTemplate, referenceEntity)
-                    } else {
-                        property.idViewName = tmpl_idView(property.idViewNameTemplate, referenceEntity)
-                    }
+                    property.idViewName = tmpl_idView(property.idViewNameTemplate, referenceEntity)
                 }
             }
         }
