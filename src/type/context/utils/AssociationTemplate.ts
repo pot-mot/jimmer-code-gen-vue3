@@ -1,8 +1,6 @@
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {nameTool} from "@/type/context/utils/NameTool.ts";
 
-export const INHERIT_ENTITY = "[[INHERIT_ENTITY]]"
-
 export const SOURCE_ENTITY = "[[SOURCE_ENTITY]]"
 export const SOURCE_PROPERTY = "[[SOURCE_PROPERTY]]"
 export const REFERENCED_ENTITY = "[[REFERENCED_ENTITY]]"
@@ -19,13 +17,9 @@ export const tmpl_fkName = (
     sourceEntity: { name: string },
     sourceProperty: { name: string },
 ) => {
-    return nameTool.convert(
-        template
-            .replace(SOURCE_ENTITY, sourceEntity.name)
-            .replace(SOURCE_PROPERTY, sourceProperty.name),
-        'LOWER_SNAKE',
-        getDatabaseNameStrategy()
-    )
+    return template
+        .replace(SOURCE_ENTITY, nameTool.convert(sourceEntity.name, 'UPPER_CAMEL', getDatabaseNameStrategy()))
+        .replace(SOURCE_PROPERTY, nameTool.convert(sourceProperty.name, 'LOWER_CAMEL', getDatabaseNameStrategy()))
 }
 
 export const tmpl_fkComment = (
@@ -46,13 +40,9 @@ export const tmpl_midTableName = (
     sourceEntity: { name: string },
     referencedEntity: { name: string },
 ) => {
-    return nameTool.convert(
-        template
-            .replace(SOURCE_ENTITY, sourceEntity.name)
-            .replace(REFERENCED_ENTITY, referencedEntity.name),
-        'LOWER_SNAKE',
-        getDatabaseNameStrategy()
-    )
+    return template
+        .replace(SOURCE_ENTITY, nameTool.convert(sourceEntity.name, 'UPPER_CAMEL', getDatabaseNameStrategy()))
+        .replace(REFERENCED_ENTITY, nameTool.convert(referencedEntity.name, 'UPPER_CAMEL', getDatabaseNameStrategy()))
 }
 
 export const tmpl_midTableComment = (
