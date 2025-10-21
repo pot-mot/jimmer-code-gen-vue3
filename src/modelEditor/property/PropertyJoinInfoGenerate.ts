@@ -1,5 +1,5 @@
 import {nameTool} from "@/type/context/utils/NameTool.ts";
-import {getEntityIdProperty} from "@/type/context/utils/EntityIdProperty.ts";
+import {getEntityIdProperties} from "@/type/context/utils/EntityIdProperty.ts";
 import {flatEmbeddableTypeColumnNames} from "@/type/context/utils/EmbeddableTypeFlat.ts";
 import {
     MID_TABLE_COMMENT_TEMPLATE,
@@ -16,10 +16,13 @@ const _generateFkJoinInfo = (
 ): FkJoinInfo => {
     const referencedEntity = entityMap.get(property.referencedEntityId)
     if (!referencedEntity) throw new Error(`[${property.referencedEntityId}] not found`)
-    const referencedIdProperty = getEntityIdProperty(referencedEntity, mappedSuperClassMap)
-    if (!referencedIdProperty) throw new Error(`[${referencedEntity.id}] has no id property`)
+    const referencedIdProperties = getEntityIdProperties(referencedEntity, mappedSuperClassMap)
+    if (referencedIdProperties.length === 0) throw new Error(`[${referencedEntity.id}] has no id property`)
+    if (referencedIdProperties.length > 1) throw new Error(`[${referencedEntity.id}] has more than one id properties`)
+    const referencedIdProperty = referencedIdProperties[0]
+    if (referencedIdProperty === undefined) throw new Error(`[${referencedEntity.id}] has no id property`)
 
-    if ("embeddableTypeId" in referencedIdProperty) {
+    if (referencedIdProperty.category === "ID_EMBEDDABLE") {
         const columnNames = flatEmbeddableTypeColumnNames(referencedIdProperty.embeddableTypeId, embeddableTypeMap, referencedIdProperty.columnNameOverrides)
         return {
             type: "MultiColumn",
@@ -65,8 +68,11 @@ const _generateJoinInfo = (
 ): JoinInfo => {
     const referencedEntity = entityMap.get(property.referencedEntityId)
     if (!referencedEntity) throw new Error(`[${property.referencedEntityId}] not found`)
-    const referencedIdProperty = getEntityIdProperty(referencedEntity, mappedSuperClassMap)
-    if (!referencedIdProperty) throw new Error(`[${referencedEntity.id}] has no id property`)
+    const referencedIdProperties = getEntityIdProperties(referencedEntity, mappedSuperClassMap)
+    if (referencedIdProperties.length === 0) throw new Error(`[${referencedEntity.id}] has no id property`)
+    if (referencedIdProperties.length > 1) throw new Error(`[${referencedEntity.id}] has more than one id properties`)
+    const referencedIdProperty = referencedIdProperties[0]
+    if (referencedIdProperty === undefined) throw new Error(`[${referencedEntity.id}] has no id property`)
 
     if (property.joinInfo.type === "SingleColumn" || property.joinInfo.type === "MultiColumn") {
         if ("embeddableTypeId" in referencedIdProperty) {
@@ -88,8 +94,11 @@ const _generateJoinInfo = (
             }
         }
     } else {
-        const sourceIdProperty = getEntityIdProperty(entity, mappedSuperClassMap)
-        if (!sourceIdProperty) throw new Error(`[${entity.id}] has no id property`)
+        const sourceIdProperties = getEntityIdProperties(entity, mappedSuperClassMap)
+        if (sourceIdProperties.length === 0) throw new Error(`[${entity.id}] has no id property`)
+        if (sourceIdProperties.length > 1) throw new Error(`[${entity.id}] has more than one id properties`)
+        const sourceIdProperty = sourceIdProperties[0]
+        if (sourceIdProperty === undefined) throw new Error(`[${entity.id}] has no id property`)
 
         if (!("embeddableTypeId" in sourceIdProperty) && !("embeddableTypeId" in referencedIdProperty)) {
             return {

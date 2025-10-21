@@ -32,7 +32,7 @@ export const contextDataToContext = (
 
     const entityWithCategorizedPropertiesMap = new Map<string, EntityWithCategorizedProperties>()
     for (const [id, entity] of contextData.entityMap) {
-        const categorizedProperties = categorizeEntityProperties(entity.properties, associationIdOnlyMap)
+        const categorizedProperties = categorizeEntityProperties(entity, contextData.mappedSuperClassMap, associationIdOnlyMap)
         const entityWithCategorizedProperties: EntityWithCategorizedProperties = {
             ...entity,
             ...categorizedProperties,

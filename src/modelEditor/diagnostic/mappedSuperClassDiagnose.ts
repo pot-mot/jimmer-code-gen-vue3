@@ -2,6 +2,7 @@ import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
 import type {ReadonlyModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
 import {checkLowerCamelName, checkUpperCamelName} from "@/utils/name/nameCheck.ts";
+import {getEntityIdProperties} from "@/type/context/utils/EntityIdProperty.ts";
 
 export type MappedSuperClassDiagnose = {
     mappedSuperClass: DiagnoseMessage[],
@@ -37,6 +38,14 @@ export const mappedSuperClassDiagnose = (
                 type: "warning"
             })
         }
+    }
+
+    const idProperties = getEntityIdProperties(mappedSuperClass, contextData.mappedSuperClassMap)
+    if (idProperties.length > 1) {
+        messages.push({
+            content: "[Multiple Id Properties]",
+            type: "error"
+        })
     }
 
     for (const property of mappedSuperClass.properties) {
