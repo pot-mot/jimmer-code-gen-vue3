@@ -383,7 +383,12 @@ export const useModelEditorHistory = (
                 const edgedAssociation = contextData.associationMap.get(property.associationId)
                 if (edgedAssociation === undefined) return
                 const association = edgedAssociation.association
-                property.joinInfo = generateJoinInfo(property, association.foreignKeyType, entity, contextData)
+                try {
+                    property.joinInfo = generateJoinInfo(property, association.foreignKeyType, entity, contextData)
+                } catch (e) {
+                    console.warn(e)
+                    // 阻止生成 JoinInfo 失败导致历史记录执行失败
+                }
                 if (property.useIdViewNameTemplate) {
                     const referenceEntity = contextData.entityMap.get(property.referencedEntityId)
                     if (referenceEntity === undefined) return
@@ -465,6 +470,7 @@ export const useModelEditorHistory = (
         removeEntityWatcher(id)
         syncEntityAutoChange(entity, contextData)
         contextData.entityMap.set(id, entity)
+        // 忽略历史记录捕获，在实体信息变更时直接同步关联信息
         for (const edgedAssociation of contextData.associationMap.values()) {
             if (edgedAssociation.association.referencedEntityId === id) {
                 updateAssociation(edgedAssociation)
@@ -559,7 +565,12 @@ export const useModelEditorHistory = (
                 const edgedAssociation = contextData.associationMap.get(property.associationId)
                 if (edgedAssociation === undefined) return
                 const association = edgedAssociation.association
-                property.joinInfo = generateFkJoinInfo(property, association.foreignKeyType, contextData)
+                try {
+                    property.joinInfo = generateFkJoinInfo(property, association.foreignKeyType, contextData)
+                } catch (e) {
+                    console.warn(e)
+                    // 阻止生成 JoinInfo 失败导致历史记录执行失败
+                }
                 if (property.useIdViewNameTemplate) {
                     const referencedEntity = contextData.entityMap.get(association.referencedEntityId)
                     if (referencedEntity === undefined) return
@@ -644,6 +655,7 @@ export const useModelEditorHistory = (
         removeMappedSuperClassWatcher(id)
         syncMappedSuperClassAutoChange(mappedSuperClass, contextData)
         contextData.mappedSuperClassMap.set(id, mappedSuperClass)
+        // 忽略历史记录捕获，在实体信息变更时直接同步关联信息
         for (const edgedAssociation of contextData.associationMap.values()) {
             if ("sourceAbstractEntityId" in edgedAssociation.association && edgedAssociation.association.sourceAbstractEntityId === id) {
                 updateAssociation(edgedAssociation)
@@ -1062,7 +1074,7 @@ export const useModelEditorHistory = (
             const sourceProperty = sourceEntity.properties.find(property => property.id === association.sourcePropertyId)
             if (!sourceProperty) return
             if (sourceProperty.category !== "OneToOne_Source" && sourceProperty.category !== "ManyToOne" && sourceProperty.category !== "ManyToMany_Source")
-                throw new Error(`[${sourceProperty.name}] cannot be used as source in association`)
+                return
 
             if (sourceProperty.joinInfo.type === "SingleColumn" || sourceProperty.joinInfo.type === "MultiColumn") {
                 if ("useNameTemplate" in association && association.useNameTemplate) {
