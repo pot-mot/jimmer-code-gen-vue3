@@ -1,5 +1,5 @@
-// databaseType=MYSQL
-export const mysqlTableGenerator: TableGenerator = (
+// databaseType=POSTGRESQL
+export const pgTableGenerator: TableGenerator = (
     tables: DeepReadonly<Table[]>,
     context: DeepReadonly<ModelContext>,
 ) => {
@@ -23,11 +23,7 @@ ${table.columns.map(column => `    ${column.name} ${column.type} ${
 } ${
     column.defaultValue ? `DEFAULT ${column.defaultValue}` : ''
 } ${
-    column.autoIncrement ? 'AUTO INCREMENT' : ''
-} ${
     column.otherConstraints ? column.otherConstraints.join(' ') : ''
-} ${
-    column.comment ? `COMMENT '${column.comment}'` : ''
 }`.trimEnd()).join(",\n")},
     PRIMARY KEY (${table.columns.filter(it => it.partOfPrimaryKey).map(it => it.name).join(", ")})
 );

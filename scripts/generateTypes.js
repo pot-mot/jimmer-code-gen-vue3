@@ -15,17 +15,21 @@ const modelPath = "src/type/model";
 ensureDirExists(modelPath)
 const contextPath = "src/type/context";
 ensureDirExists(contextPath)
-const contextJsonSchemaPath = "src/type/context/jsonSchema";
-ensureDirExists(contextJsonSchemaPath)
 const scriptPath = "src/type/script";
 ensureDirExists(scriptPath)
+const defaultScriptSourcePath = "src/type/script/default";
+ensureDirExists(defaultScriptSourcePath)
 
 const typeDeclarePath = "src/type/__generated/typeDeclare";
 ensureDirExists(typeDeclarePath)
-const scriptTypeDeclarePath = "src/type/__generated/scriptTypeDeclare";
-ensureDirExists(scriptTypeDeclarePath)
 const jsonSchemaPath = "src/type/__generated/jsonSchema";
 ensureDirExists(jsonSchemaPath)
+const contextJsonSchemaPath = "src/type/context/jsonSchema";
+ensureDirExists(contextJsonSchemaPath)
+const scriptTypeDeclarePath = "src/type/__generated/scriptTypeDeclare";
+ensureDirExists(scriptTypeDeclarePath)
+const defaultScriptPath = "src/type/__generated/defaultScript";
+ensureDirExists(defaultScriptPath)
 
 const getTsFiles = (path) => {
     const files = fs.readdirSync(path);
@@ -36,6 +40,31 @@ const getTsFiles = (path) => {
             content: String(fs.readFileSync(path + "/" + it, "utf-8")).replace("\r\n", "\n"),
         }))
 }
+
+const getAllTsFiles = (dirPath) => {
+    let results = [];
+
+    const walk = (currentPath) => {
+        const files = fs.readdirSync(currentPath);
+
+        for (const file of files) {
+            const fullPath = path.join(currentPath, file);
+            const stat = fs.statSync(fullPath);
+
+            if (stat.isDirectory()) {
+                walk(fullPath); // 递归遍历子目录
+            } else if (file.endsWith(".ts")) {
+                results.push({
+                    fileName: path.relative(dirPath, fullPath).replace(/\\/g, "/"), // 保持相对路径
+                    content: String(fs.readFileSync(fullPath, "utf-8")).replace(/\r\n/g, "\n"),
+                });
+            }
+        }
+    };
+
+    walk(dirPath);
+    return results;
+};
 
 const getDeclareTsFiles = (path) => {
     const files = fs.readdirSync(path);
@@ -49,8 +78,9 @@ const getDeclareTsFiles = (path) => {
 
 const modelTypeFiles = getDeclareTsFiles(modelPath)
 const contextTypeFiles = getDeclareTsFiles(contextPath)
-const scriptTypeFiles = getDeclareTsFiles(scriptPath)
 const contextJsonSchemaFiles = getTsFiles(contextJsonSchemaPath)
+const scriptTypeFiles = getDeclareTsFiles(scriptPath)
+const defaultScriptSourceFiles = getAllTsFiles(defaultScriptSourcePath)
 
 // 创建编译器选项
 const compilerOptions = Object.freeze({
@@ -75,6 +105,9 @@ for (const {fileName, content} of contextTypeFiles) {
     fsMap.set(fileName, content)
 }
 for (const {fileName, content} of scriptTypeFiles) {
+    fsMap.set(fileName, content)
+}
+for (const {fileName, content} of defaultScriptSourceFiles) {
     fsMap.set(fileName, content)
 }
 
@@ -233,7 +266,95 @@ for (const {fileName} of scriptTypeFiles) {
 scriptTypeDeclares.sort((a, b) => a.typeName.localeCompare(b.typeName))
 
 
-// 转换文件
+// 默认脚本
+
+const defaultScripts = []
+const jvmLanguageSet = new Set(["JAVA", "KOTLIN"])
+const databaseTypeSet = new Set(["MYSQL", "POSTGRESQL", "ORACLE", "SQLSERVER", "H2", "SQLITE"]);
+
+for (const {fileName} of defaultScriptSourceFiles) {
+    const sourceFile = program.getSourceFile(fileName)
+    if (sourceFile.statements.length !== 1) {
+        throw new Error(`[${fileName}] contains more than one statement`)
+    }
+    const statement = sourceFile.statements[0]
+    if (!ts.isVariableStatement(statement)) {
+        throw new Error(`[${fileName}] contains statement not a variable declaration`)
+    }
+    const declaration = statement.declarationList.declarations[0];
+    if (!declaration || !ts.isIdentifier(declaration.name)) {
+        throw new Error(`[${fileName}] does not contain a valid identifier`);
+    }
+
+    const variableName = declaration.name.text;
+    const variableType = typeChecker.getTypeAtLocation(declaration);
+    const typeLiteral = typeChecker.typeToString(variableType);
+
+    if (!isFunctionType(variableType)) {
+        throw new Error(`[${fileName}] ${variableName} is not a function type`);
+    }
+    if (hasTypeParameters(declaration)) {
+        throw new Error(`[${fileName}] ${variableName} has type parameters`);
+    }
+    if (variableType.getCallSignatures().length !== 1) {
+        throw new Error(`[${fileName}] ${variableName} has more than one call signature`);
+    }
+    if (!scriptTypeDeclares.some(it => it.typeName === typeLiteral)) {
+        throw new Error(`[${fileName}] ${variableName} is not a script type`);
+    }
+
+    const leadingComments = ts.getLeadingCommentRanges(sourceFile.text, statement.getFullStart())
+    let commentText = '';
+    if (leadingComments) {
+        commentText = leadingComments.map(range =>
+            sourceFile.text.substring(range.pos, range.end)
+        ).join('\n').trim()
+    }
+
+    let enabled = true;
+    let databaseType = 'ANY';
+    let jvmLanguage = 'ANY';
+    if (commentText) {
+        // 匹配 enabled=$value 格式
+        const enabledMatch = commentText.match(/enabled\s*=\s*(\w+)/);
+        if (enabledMatch) {
+            enabled = enabledMatch[1].toLowerCase() === 'true';
+        }
+
+        // 匹配 databaseType=$value 格式
+        const databaseTypeMatch = commentText.match(/databaseType\s*=\s*(\w+)/)
+        const databaseTypeValue = databaseTypeMatch?.[1]?.toUpperCase();
+        if (databaseTypeValue && databaseTypeSet.has(databaseTypeValue)) {
+            databaseType = databaseTypeValue;
+        }
+
+        // 匹配 jvmLanguage=$value 格式
+        const jvmLanguageMatch = commentText.match(/jvmLanguage\s*=\s*(\w+)/);
+        const jvmLanguageValue = jvmLanguageMatch?.[1]?.toUpperCase();
+        if (jvmLanguageValue && jvmLanguageSet.has(jvmLanguageValue)) {
+            jvmLanguage = jvmLanguageValue
+        }
+    }
+
+    defaultScripts.push({
+        fileName,
+        name: variableName,
+        type: typeLiteral,
+        enabled,
+        databaseType,
+        jvmLanguage,
+        content: declaration.initializer.getFullText(sourceFile).trim()
+            .replace(/\\/g, '\\\\')
+            .replace(/`/g, '\\`')
+            .replace(/\$/g, '\\$')
+    })
+}
+
+defaultScripts.sort((a, b) => a.name.localeCompare(b.name))
+
+
+
+// 设置文件内容
 
 const typeDeclareFiles = typeDeclares.map(it => ({
     fileName: `${typeDeclarePath}/items/${it.typeName}.ts`,
@@ -285,6 +406,40 @@ ${scriptTypeDeclares.map(it => `    ${it.typeName}: ${it.typeName}Declare,`).joi
 `,
 })
 
+const defaultScriptFiles = defaultScripts.map(it => {
+    return {
+        fileName: `${defaultScriptPath}/items/${it.name}.ts`,
+        content: `import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
+import {${it.name}} from "@/type/script/default/${it.fileName}";
+
+const scriptInfo: ScriptInfo<"${it.type}"> = {
+    key: "${it.name}",
+    name: "${it.name}",
+    type: "${it.type}",
+    enabled: ${it.enabled},
+    databaseType: "${it.databaseType}",
+    jvmLanguage: "${it.jvmLanguage}",
+    script: {
+        code: \`${it.content}\`,
+        execute: ${it.name}
+    }
+}
+
+export default scriptInfo
+`,
+    }
+})
+
+defaultScriptFiles.push({
+    fileName: `${defaultScriptPath}/index.ts`,
+    content: `${defaultScripts.map(it => `import ${it.name} from "@/type/__generated//defaultScript/items/${it.name}.ts";`).join("\n")}
+
+export const defaultScripts = Object.freeze({
+${defaultScripts.map(it => `    ${it.name},`).join("\n")}
+})
+`,
+})
+
 const jsonSchemaFiles = jsonSchemaDeclares.map(it => ({
     fileName: `${jsonSchemaPath}/items/${it.typeName}.ts`,
     content: `import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
@@ -326,6 +481,7 @@ const cleanDir = (dirPath) => {
 
 cleanDir(typeDeclarePath)
 cleanDir(scriptTypeDeclarePath)
+cleanDir(defaultScriptPath)
 cleanDir(jsonSchemaPath)
 
 const writeFiles = (files) => {
@@ -339,6 +495,7 @@ const writeFiles = (files) => {
 writeFiles([
     ...typeDeclareFiles,
     ...scriptTypeDeclareFiles,
+    ...defaultScriptFiles,
     ...jsonSchemaFiles,
 ])
 
