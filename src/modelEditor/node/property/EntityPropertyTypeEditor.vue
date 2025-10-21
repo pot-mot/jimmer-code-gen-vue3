@@ -52,6 +52,7 @@ const {
     executeAsyncBatch,
     waitChangeSync,
     changeEntity,
+    changeMappedSuperClass,
     addAssociation,
     remove,
 } = useModelEditor()
@@ -139,12 +140,35 @@ const cleanPropertyReference = () => {
     }
 }
 
+const syncSourceEntities = (entityId: string) => {
+    const sourceAbstractEntityIdSet = new Set<string>()
+    const sourceEntityIdSet = new Set<string>()
+    for (const {association} of contextData.value.associationMap.values()) {
+        if (association.referencedEntityId === entityId) {
+            if ("sourceEntityId" in association) {
+                sourceEntityIdSet.add(association.sourceEntityId)
+            } else if ("sourceAbstractEntityId" in association) {
+                sourceAbstractEntityIdSet.add(association.sourceAbstractEntityId)
+            }
+        }
+    }
+    for (const sourceAbstractEntityId of sourceAbstractEntityIdSet) {
+        const sourceAbstractEntity = contextData.value.mappedSuperClassMap.get(sourceAbstractEntityId)
+        if (sourceAbstractEntity) changeMappedSuperClass(sourceAbstractEntity)
+    }
+    for (const sourceEntityId of sourceEntityIdSet) {
+        const sourceEntity = contextData.value.entityMap.get(sourceEntityId)
+        if (sourceEntity) changeEntity(sourceEntity)
+    }
+}
+
 const selectBaseType = (typePair: DeepReadonly<CrossType>) => {
     executeAsyncBatch(Symbol("property type to baseType"), async () => {
         cleanPropertyReference()
 
         if (property.value.category === "ID_COMMON" || property.value.category === "ID_EMBEDDABLE") {
             property.value = idToggleType(property.value, typePair)
+            syncSourceEntities(props.entity.id)
         } else {
             property.value = toScalarCommonProperty(property.value, typePair)
         }
@@ -178,7 +202,7 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
 
         if (property.value.category === "ID_COMMON" || property.value.category === "ID_EMBEDDABLE") {
             property.value = idToEmbeddableProperty(property.value, embeddableType)
-            // TODO sync AssociationProperty
+            syncSourceEntities(props.entity.id)
         } else {
             property.value = toScalarEmbeddableProperty(property.value, embeddableType)
         }
