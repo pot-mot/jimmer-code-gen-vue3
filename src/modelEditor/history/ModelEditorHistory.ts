@@ -28,17 +28,11 @@ import {
 import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
 import {nameTool} from "@/type/context/utils/NameTool.ts";
 import {defaultInheritInfo, useInheritInfoSync} from "@/type/context/utils/InheritInfo.ts";
-import {generateFkJoinInfo, generateJoinInfo} from "@/modelEditor/property/PropertyJoinInfoGenerate.ts";
 import {
-    tmpl_fkComment,
-    tmpl_fkName,
-    tmpl_mappedPropertyComment,
-    tmpl_mappedPropertyIdView,
-    tmpl_mappedPropertyName,
-    tmpl_idView,
-    tmpl_midTableName,
-    tmpl_midTableComment,
-} from "@/type/context/utils/AssociationTemplate.ts";
+    syncAssociationAutoChange,
+    syncEntityAutoChange,
+    syncMappedSuperClassAutoChange
+} from "@/modelEditor/history/SyncAutoChange.ts";
 
 const SYNC_DEBOUNCE_TIMEOUT = 500
 
@@ -367,37 +361,6 @@ export const useModelEditorHistory = (
         entityWatchStopMap.delete(id)
     }
 
-    const syncEntityAutoChange = (
-        entity: EntityWithProperties,
-        contextData: DeepReadonly<ModelContextData>,
-    ) => {
-        const databaseNameStrategy = contextData.model.databaseNameStrategy
-        if (entity.autoSyncTableName) {
-            entity.tableName = nameTool.convert(entity.name, "UPPER_CAMEL", databaseNameStrategy)
-        }
-        for (const property of entity.properties) {
-            if ("autoSyncColumnName" in property && property.autoSyncColumnName) {
-                property.columnInfo.name = nameTool.convert(property.name, "UPPER_CAMEL", databaseNameStrategy)
-            }
-            if ("joinInfo" in property && property.autoGenerateJoinInfo) {
-                const edgedAssociation = contextData.associationMap.get(property.associationId)
-                if (edgedAssociation === undefined) return
-                const association = edgedAssociation.association
-                try {
-                    property.joinInfo = generateJoinInfo(property, association.foreignKeyType, entity, contextData)
-                } catch (e) {
-                    console.warn(e)
-                    // 阻止生成 JoinInfo 失败导致历史记录执行失败
-                }
-                if (property.useIdViewNameTemplate) {
-                    const referenceEntity = contextData.entityMap.get(property.referencedEntityId)
-                    if (referenceEntity === undefined) return
-                    property.idViewName = tmpl_idView(property.idViewNameTemplate, referenceEntity)
-                }
-            }
-        }
-    }
-
     const addEntity = (options: DeepReadonly<{ entity: EntityWithProperties; position: XYPosition }>) => {
         const groupId = options.entity.groupId
         const id = options.entity.id
@@ -473,9 +436,13 @@ export const useModelEditorHistory = (
         // 忽略历史记录捕获，在实体信息变更时直接同步关联信息
         for (const edgedAssociation of contextData.associationMap.values()) {
             if (edgedAssociation.association.referencedEntityId === id) {
-                updateAssociation(edgedAssociation)
+                removeAssociationWatcher(edgedAssociation.association.id)
+                syncAssociationAutoChange(edgedAssociation.association, contextData)
+                addAssociationWatcher(edgedAssociation.association.id)
             } else if ("sourceEntityId" in edgedAssociation.association && edgedAssociation.association.sourceEntityId === id) {
-                updateAssociation(edgedAssociation)
+                removeAssociationWatcher(edgedAssociation.association.id)
+                syncAssociationAutoChange(edgedAssociation.association, contextData)
+                addAssociationWatcher(edgedAssociation.association.id)
             }
         }
         const newGroupId = entity.groupId
@@ -549,35 +516,6 @@ export const useModelEditorHistory = (
 
         watchStop()
         mappedSuperClassWatchStopMap.delete(id)
-    }
-
-    const syncMappedSuperClassAutoChange = (
-        mappedSuperClass: MappedSuperClassWithProperties,
-        contextData: DeepReadonly<ModelContextData>,
-    ) => {
-        const databaseNameStrategy = contextData.model.databaseNameStrategy
-
-        for (const property of mappedSuperClass.properties) {
-            if ("autoSyncColumnName" in property && property.autoSyncColumnName) {
-                property.columnInfo.name = nameTool.convert(property.name, "UPPER_CAMEL", databaseNameStrategy)
-            }
-            if ("joinInfo" in property && property.autoGenerateJoinInfo) {
-                const edgedAssociation = contextData.associationMap.get(property.associationId)
-                if (edgedAssociation === undefined) return
-                const association = edgedAssociation.association
-                try {
-                    property.joinInfo = generateFkJoinInfo(property, association.foreignKeyType, contextData)
-                } catch (e) {
-                    console.warn(e)
-                    // 阻止生成 JoinInfo 失败导致历史记录执行失败
-                }
-                if (property.useIdViewNameTemplate) {
-                    const referencedEntity = contextData.entityMap.get(association.referencedEntityId)
-                    if (referencedEntity === undefined) return
-                    property.idViewName = tmpl_idView(property.idViewNameTemplate, referencedEntity)
-                }
-            }
-        }
     }
 
     const addMappedSuperClass = (options: DeepReadonly<{
@@ -658,7 +596,9 @@ export const useModelEditorHistory = (
         // 忽略历史记录捕获，在实体信息变更时直接同步关联信息
         for (const edgedAssociation of contextData.associationMap.values()) {
             if ("sourceAbstractEntityId" in edgedAssociation.association && edgedAssociation.association.sourceAbstractEntityId === id) {
-                updateAssociation(edgedAssociation)
+                removeAssociationWatcher(edgedAssociation.association.id)
+                syncAssociationAutoChange(edgedAssociation.association, contextData)
+                addAssociationWatcher(edgedAssociation.association.id)
             }
         }
         const newGroupId = mappedSuperClass.groupId
@@ -1057,50 +997,6 @@ export const useModelEditorHistory = (
         return {
             targetNode,
             targetHandleId,
-        }
-    }
-
-    const syncAssociationAutoChange = (
-        association: AssociationIdOnly,
-        contextData: DeepReadonly<ModelContextData>,
-    ) => {
-        const mappedProperty = association.mappedProperty
-
-        if ("sourceEntityId" in association) {
-            const sourceEntity = contextData.entityMap.get(association.sourceEntityId)
-            if (!sourceEntity) return
-            const referencedEntity = contextData.entityMap.get(association.referencedEntityId)
-            if (!referencedEntity) return
-            const sourceProperty = sourceEntity.properties.find(property => property.id === association.sourcePropertyId)
-            if (!sourceProperty) return
-            if (sourceProperty.category !== "OneToOne_Source" && sourceProperty.category !== "ManyToOne" && sourceProperty.category !== "ManyToMany_Source")
-                return
-
-            if (sourceProperty.joinInfo.type === "SingleColumn" || sourceProperty.joinInfo.type === "MultiColumn") {
-                if ("useNameTemplate" in association && association.useNameTemplate) {
-                    association.name = tmpl_fkName(association.nameTemplate, sourceEntity, sourceProperty)
-                }
-                if ("useCommentTemplate" in association && association.useCommentTemplate) {
-                    association.comment = tmpl_fkComment(association.commentTemplate, sourceEntity, sourceProperty)
-                }
-            } else {
-                if ("useNameTemplate" in association && association.useNameTemplate) {
-                    association.name = tmpl_midTableName(association.nameTemplate, sourceEntity, referencedEntity)
-                }
-                if ("useCommentTemplate" in association && association.useCommentTemplate) {
-                    association.comment = tmpl_midTableComment(association.commentTemplate, sourceEntity, referencedEntity)
-                }
-            }
-
-            if ("useNameTemplate" in mappedProperty && mappedProperty.useNameTemplate) {
-                mappedProperty.name = tmpl_mappedPropertyName(mappedProperty.nameTemplate, sourceEntity, sourceProperty)
-            }
-            if ("useCommentTemplate" in mappedProperty && mappedProperty.useCommentTemplate) {
-                mappedProperty.comment = tmpl_mappedPropertyComment(mappedProperty.commentTemplate, sourceEntity, sourceProperty)
-            }
-            if ("useIdViewNameTemplate" in mappedProperty && mappedProperty.useIdViewNameTemplate) {
-                mappedProperty.idViewName = tmpl_mappedPropertyIdView(mappedProperty.idViewNameTemplate, sourceEntity, sourceProperty)
-            }
         }
     }
 

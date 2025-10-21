@@ -18,6 +18,11 @@ import {
     oneToOneAbstractToReal
 } from "@/type/context/utils/AbstractAssociationToReal.ts";
 import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
+import {
+    syncAssociationAutoChange,
+    syncEntityAutoChange,
+    syncMappedSuperClassAutoChange
+} from "@/modelEditor/history/SyncAutoChange.ts";
 
 export const contextDataToContext = (
     readonlyContextData: DeepReadonly<ModelContextData>,
@@ -27,11 +32,13 @@ export const contextDataToContext = (
 
     const associationIdOnlyMap = new Map<string, AssociationIdOnly>()
     for (const [id, {association}] of contextData.associationMap) {
+        syncAssociationAutoChange(association, contextData)
         associationIdOnlyMap.set(id, association)
     }
 
     const entityWithCategorizedPropertiesMap = new Map<string, EntityWithCategorizedProperties>()
     for (const [id, entity] of contextData.entityMap) {
+        syncEntityAutoChange(entity, contextData)
         const categorizedProperties = categorizeEntityProperties(entity, contextData.mappedSuperClassMap, associationIdOnlyMap)
         const entityWithCategorizedProperties: EntityWithCategorizedProperties = {
             ...entity,
@@ -42,6 +49,7 @@ export const contextDataToContext = (
 
     const mappedSuperClassWithCategorizedPropertiesMap = new Map<string, MappedSuperClassWithCategorizedProperties>()
     for (const [id, mappedSuperClass] of contextData.mappedSuperClassMap) {
+        syncMappedSuperClassAutoChange(mappedSuperClass, contextData)
         const categorizedProperties = categorizeAbstractCategorizedProperties(mappedSuperClass.properties, associationIdOnlyMap)
         const mappedSuperClassWithCategorizedProperties: MappedSuperClassWithCategorizedProperties = {
             ...mappedSuperClass,
