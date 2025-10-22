@@ -11,6 +11,7 @@ import IconDelete from "@/components/icons/IconDelete.vue";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import NameCommentViewer from "@/modelEditor/nameComment/NameCommentViewer.vue";
+import {useNameCommentTemplateModel} from "@/modelEditor/edge/templateEdit/useNameCommentTemplateModel.ts";
 
 const props = defineProps<EdgeProps<ConcreteAssociationEdge["data"]>>()
 
@@ -25,36 +26,15 @@ const getPath = computed(() => {
 
 const associationEdit = ref(false)
 
-const associationNameComment = computed({
-    get: () => {
-        return {
-            name: props.data.edgedAssociation.association.nameTemplate,
-            comment: props.data.edgedAssociation.association.commentTemplate,
-        }
-    },
-    set: (value) => {
-        props.data.edgedAssociation.association.nameTemplate = value.name
-        props.data.edgedAssociation.association.commentTemplate = value.comment
-    }
-})
-
+const associationNameCommentTemplate = useNameCommentTemplateModel(() =>
+    props.data.edgedAssociation.association
+)
 
 const mappedPropertyEdit = ref(false)
 
-const mappedPropertyNameComment = computed({
-    get: () => {
-        const mappedProperty = props.data.edgedAssociation.association.mappedProperty
-        return {
-            name: mappedProperty.nameTemplate,
-            comment: mappedProperty.commentTemplate,
-        }
-    },
-    set: (value) => {
-        const mappedProperty = props.data.edgedAssociation.association.mappedProperty
-        mappedProperty.nameTemplate = value.name
-        mappedProperty.commentTemplate = value.comment
-    }
-})
+const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
+    props.data.edgedAssociation.association.mappedProperty
+)
 </script>
 
 <template>
@@ -77,7 +57,7 @@ const mappedPropertyNameComment = computed({
                         />
                         <NameCommentEditor
                             v-else
-                            v-model="associationNameComment"
+                            v-model="associationNameCommentTemplate"
                             class="with-border-bg"
                             auto-focus
                             @change="associationEdit = false"
@@ -111,7 +91,7 @@ const mappedPropertyNameComment = computed({
                         />
                         <NameCommentEditor
                             v-else
-                            v-model="mappedPropertyNameComment"
+                            v-model="mappedPropertyNameCommentTemplate"
                             class="with-border-bg"
                             auto-focus
                             @change="mappedPropertyEdit = false"
