@@ -64,14 +64,13 @@ const defaultCategorizedEmbeddableTypeProperties = (): CategorizedEmbeddableType
 }
 
 export const categorizeEntityProperties = (
-    entity: {properties: ReadonlyArray<Property>, extendsIds: ReadonlyArray<string>},
-    mappedSuperClassMap: ReadonlyMap<string, MappedSuperClassWithProperties>,
+    properties: ReadonlyArray<Property>,
     associationMap: ReadonlyMap<string, Readonly<AssociationIdOnly>>,
 ): EntityCategorizedProperties => {
     const result = defaultEntityCategorizedProperties()
     let idProperty: IdCommonProperty | IdEmbeddableProperty | undefined
 
-    for (const property of entity.properties) {
+    for (const property of properties) {
         if (property.category === "ID_COMMON" || property.category === "ID_EMBEDDABLE") {
             if (idProperty !== undefined) {
                 throw new Error(`Multiple idProperties: ${property.name}(${property.id}), ${idProperty.name}(${idProperty.id})`)
@@ -188,29 +187,12 @@ export const categorizeEntityProperties = (
     }
 
     if (idProperty === undefined) {
-        idProperty = getExtendsIdProperty(entity.extendsIds, mappedSuperClassMap)
-        if (idProperty === undefined) throw new Error(`No idProperty`)
+        throw new Error(`No idProperty`)
     }
+
     return {
         ...result,
         idProperty,
-    }
-}
-
-const getExtendsIdProperty = (
-    extendsIds: ReadonlyArray<string>,
-    mappedSuperClassMap: ReadonlyMap<string, MappedSuperClassWithProperties>,
-) => {
-    const allExtendsIds: string[] = [...extendsIds]
-    for (const mappedSuperClassId of allExtendsIds) {
-        const mappedSuperClass = mappedSuperClassMap.get(mappedSuperClassId)
-        if (mappedSuperClass === undefined) continue
-        for (const property of mappedSuperClass.properties) {
-            if (property.category === "ID_COMMON" || property.category === "ID_EMBEDDABLE") {
-                return property
-            }
-        }
-        allExtendsIds.push(...mappedSuperClass.extendsIds)
     }
 }
 

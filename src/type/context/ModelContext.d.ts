@@ -9,8 +9,8 @@ type ModelContextData = {
 }
 
 type EntityInheritInfo = {
-    directExtends: Set<MappedSuperClassWithCategorizedProperties>,
-    allExtends: Set<MappedSuperClassWithCategorizedProperties>
+    directExtends: Set<MappedSuperClassWithInheritInfo>,
+    allExtends: Set<MappedSuperClassWithInheritInfo>
     allProperties: Property[]
 }
 type EntityWithInheritInfo = Omit<EntityWithCategorizedProperties, 'properties'> & {
@@ -18,8 +18,8 @@ type EntityWithInheritInfo = Omit<EntityWithCategorizedProperties, 'properties'>
 } & EntityInheritInfo
 
 type MappedSuperClassInheritInfo = {
-    directExtends: Set<MappedSuperClassWithCategorizedProperties>,
-    allExtends: Set<MappedSuperClassWithCategorizedProperties>,
+    directExtends: Set<MappedSuperClassWithInheritInfo>,
+    allExtends: Set<MappedSuperClassWithInheritInfo>,
     allProperties: Property[],
 }
 type MappedSuperClassWithInheritInfo = Omit<MappedSuperClassWithCategorizedProperties, 'properties'> & {
