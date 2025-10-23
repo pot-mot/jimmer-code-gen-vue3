@@ -290,6 +290,7 @@ export const useInheritInfoSync = (inheritInfo: InheritInfo): InheritInfoSync =>
             for (const [itemId, item] of inheritInfo.innerAbstractMap) {
                 if (item.extendsIds.includes(parentId)) {
                     allAbstractChildIdSet.add(itemId)
+                    collectAllChildren(itemId, visited)
                 }
             }
             for (const [itemId, item] of inheritInfo.innerConcreteMap) {

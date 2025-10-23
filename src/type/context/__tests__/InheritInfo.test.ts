@@ -429,4 +429,65 @@ describe('EntityInheritInfo', () => {
         // 其他实体的循环引用记录应该仍然存在
         expect(data.circularReferences.size).toBe(4);
     });
+
+    it('build reverse order inherit tree ', () => {
+        const {data, sync} = buildInheritInfo(new Map(), new Map())
+
+        const abstractItems: [string, InheritItem][] = [
+            ['1', {id: '1', extendsIds: ['2']}],
+            ['2', {id: '2', extendsIds: ['3']}],
+            ['3', {id: '3', extendsIds: ['4']}],
+            ['4', {id: '4', extendsIds: ['5']}],
+            ['5', {id: '5', extendsIds: ['6']}],
+            ['6', {id: '6', extendsIds: ['7']}],
+            ['7', {id: '7', extendsIds: []}]
+        ]
+        const concreteItems: [string, InheritItem][] = [
+            ['8', {id: '8', extendsIds: ['1']}]
+        ]
+
+        for (const [_, item] of concreteItems) {
+            sync.syncConcrete(item)
+        }
+        for (const [_, item] of abstractItems) {
+            sync.syncAbstract(item)
+        }
+
+        expect(data.abstractInheritInfoMap.get('1')).toEqual({
+            parentIdSet: new Set(['2']),
+            ancestorIdSet: new Set(['2', '3', '4', '5', '6', '7']),
+            abstractChildIdSet: new Set(),
+            allAbstractChildIdSet: new Set(),
+            concreteChildIdSet: new Set(['8']),
+            allConcreteChildIdSet: new Set(['8'])
+        })
+        expect(data.abstractInheritInfoMap.get('2')).toEqual({
+            parentIdSet: new Set(['3']),
+            ancestorIdSet: new Set(['3', '4', '5', '6', '7']),
+            abstractChildIdSet: new Set(['1']),
+            allAbstractChildIdSet: new Set(['1']),
+            concreteChildIdSet: new Set(),
+            allConcreteChildIdSet: new Set(['8'])
+        })
+        expect(data.abstractInheritInfoMap.get('3')).toEqual({
+            parentIdSet: new Set(['4']),
+            ancestorIdSet: new Set(['4', '5', '6', '7']),
+            abstractChildIdSet: new Set(['2']),
+            allAbstractChildIdSet: new Set(['1', '2']),
+            concreteChildIdSet: new Set(),
+            allConcreteChildIdSet: new Set(['8'])
+        })
+        expect(data.abstractInheritInfoMap.get('4')).toEqual({
+            parentIdSet: new Set(['5']),
+            ancestorIdSet: new Set(['5', '6', '7']),
+            abstractChildIdSet: new Set(['3']),
+            allAbstractChildIdSet: new Set(['1', '2', '3']),
+            concreteChildIdSet: new Set(),
+            allConcreteChildIdSet: new Set(['8'])
+        })
+        expect(data.concreteInheritInfoMap.get('8')).toEqual({
+            parentIdSet: new Set(['1']),
+            ancestorIdSet: new Set(['1', '2', '3', '4', '5', '6', '7']),
+        })
+    })
 })
