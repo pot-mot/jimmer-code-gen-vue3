@@ -1,8 +1,8 @@
 export default Object.freeze({
     fileName: 'MappedSuperClassInheritInfo.d.ts',
     content: `type MappedSuperClassInheritInfo = {
-    directExtends: Set<MappedSuperClassWithCategorizedProperties>,
-    allExtends: Set<MappedSuperClassWithCategorizedProperties>,
+    directExtends: Set<MappedSuperClassWithInheritInfo>,
+    allExtends: Set<MappedSuperClassWithInheritInfo>,
     allProperties: Property[],
 }`,
 })

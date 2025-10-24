@@ -1,4 +1,5 @@
 import {getPropertyView} from "@/type/context/utils/PropertyView.ts";
+import {getAssociationView} from "@/type/context/utils/AssociationView.ts";
 
 const defaultEntityCategorizedProperties = (): Omit<EntityCategorizedProperties, 'idProperty'> => {
     return {
@@ -122,7 +123,7 @@ export const categorizeEntityProperties = (
             }
             const association = associationMap.get(property.associationId)
             if (association === undefined) throw new Error(`[${property.associationId}] not found`)
-            if (association.type !== "OneToOne") throw new Error(`[${association.id}] is not OneToOne`)
+            if (association.type !== "OneToOne") throw new Error(`[${getAssociationView(association)}] is not OneToOne`)
             result.oneToOneSourcePropertyMap.set(property.id, {...property, association})
         } else if (property.category === "OneToOne_Mapped") {
             if (result.oneToOneMappedPropertyMap.has(property.id)) {
@@ -130,7 +131,7 @@ export const categorizeEntityProperties = (
             }
             const association = associationMap.get(property.associationId)
             if (association === undefined) throw new Error(`[${property.associationId}] not found`)
-            if (association.type !== "OneToOne") throw new Error(`[${association.id}] is not OneToOne`)
+            if (association.type !== "OneToOne") throw new Error(`[${getAssociationView(association)}] is not OneToOne`)
             result.oneToOneMappedPropertyMap.set(property.id, {...property, association})
         } else if (property.category === "ManyToOne") {
             if (result.manyToOnePropertyMap.has(property.id)) {
@@ -138,7 +139,7 @@ export const categorizeEntityProperties = (
             }
             const association = associationMap.get(property.associationId)
             if (association === undefined) throw new Error(`[${property.associationId}] not found`)
-            if (association.type !== "ManyToOne") throw new Error(`[${association.id}] is not ManyToOne`)
+            if (association.type !== "ManyToOne") throw new Error(`[${getAssociationView(association)}] is not ManyToOne`)
             result.manyToOnePropertyMap.set(property.id, {...property, association})
         } else if (property.category === "OneToMany") {
             if (result.oneToManyPropertyMap.has(property.id)) {
@@ -146,7 +147,7 @@ export const categorizeEntityProperties = (
             }
             const association = associationMap.get(property.associationId)
             if (association === undefined) throw new Error(`[${property.associationId}] not found`)
-            if (association.type !== "ManyToOne") throw new Error(`[${association.id}] is not ManyToOne`)
+            if (association.type !== "ManyToOne") throw new Error(`[${getAssociationView(association)}] is not ManyToOne`)
             result.oneToManyPropertyMap.set(property.id, {...property, association})
         } else if (property.category === "ManyToMany_Source") {
             if (result.manyToManySourcePropertyMap.has(property.id)) {
@@ -154,7 +155,7 @@ export const categorizeEntityProperties = (
             }
             const association = associationMap.get(property.associationId)
             if (association === undefined) throw new Error(`[${property.associationId}] not found`)
-            if (association.type !== "ManyToMany") throw new Error(`[${association.id}] is not ManyToMany`)
+            if (association.type !== "ManyToMany") throw new Error(`[${getAssociationView(association)}] is not ManyToMany`)
             result.manyToManySourcePropertyMap.set(property.id, {...property, association})
         } else if (property.category === "ManyToMany_Mapped") {
             if (result.manyToManyMappedPropertyMap.has(property.id)) {
@@ -162,7 +163,7 @@ export const categorizeEntityProperties = (
             }
             const association = associationMap.get(property.associationId)
             if (association === undefined) throw new Error(`[${property.associationId}] not found`)
-            if (association.type !== "ManyToMany") throw new Error(`[${association.id}] is not ManyToMany`)
+            if (association.type !== "ManyToMany") throw new Error(`[${getAssociationView(association)}] is not ManyToMany`)
             result.manyToManyMappedPropertyMap.set(property.id, {...property, association})
         }
 
@@ -254,7 +255,7 @@ export const categorizeAbstractCategorizedProperties = (
             }
             const association = associationMap.get(property.associationId)
             if (association === undefined) throw new Error(`[${property.associationId}] not found`)
-            if (association.type !== "OneToOne_Abstract") throw new Error(`[${association.id}] is not OneToOne`)
+            if (association.type !== "OneToOne_Abstract") throw new Error(`[${getAssociationView(association)}] is not OneToOne`)
             result.oneToOneSourcePropertyMap.set(property.id, {...property, association})
         } else if (property.category === "ManyToOne") {
             if (result.manyToOnePropertyMap.has(property.id)) {
@@ -262,7 +263,7 @@ export const categorizeAbstractCategorizedProperties = (
             }
             const association = associationMap.get(property.associationId)
             if (association === undefined) throw new Error(`[${property.associationId}] not found`)
-            if (association.type !== "ManyToOne_Abstract") throw new Error(`[${association.id}] is not ManyToOne`)
+            if (association.type !== "ManyToOne_Abstract") throw new Error(`[${getAssociationView(association)}] is not ManyToOne`)
             result.manyToOnePropertyMap.set(property.id, {...property, association})
         }
 

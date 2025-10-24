@@ -1420,11 +1420,15 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                         "nullable": {
                             "type": "boolean",
                             "const": false
+                        },
+                        "rawType": {
+                            "type": "string"
                         }
                     },
                     "required": [
                         "category",
-                        "nullable"
+                        "nullable",
+                        "rawType"
                     ]
                 },
                 {

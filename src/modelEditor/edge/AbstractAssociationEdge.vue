@@ -47,12 +47,12 @@ const associationNameCommentView = computed(() => {
         name: tmpl_fkName(
             props.data.edgedAssociation.association.nameTemplate,
             {name: sourceAbstractEntity.value ? `$${sourceAbstractEntity.value.name}$` : '[NOT_EXISTED]'},
-            {name: sourceProperty.value ? `$${sourceProperty.value.name}$` : '[NOT_EXISTED]'}
+            {name: sourceProperty.value ? sourceProperty.value.name : '[NOT_EXISTED]'}
         ),
         comment: tmpl_fkComment(
             props.data.edgedAssociation.association.commentTemplate,
             {comment: sourceAbstractEntity.value ? `$${sourceAbstractEntity.value.comment}$` : '[NOT_EXISTED]'},
-            {comment: sourceProperty.value ? `$${sourceProperty.value.comment}$` : '[NOT_EXISTED]'}
+            {comment: sourceProperty.value ? sourceProperty.value.comment : '[NOT_EXISTED]'}
         ),
     }
 })

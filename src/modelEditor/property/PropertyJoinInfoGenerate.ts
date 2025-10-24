@@ -1,5 +1,5 @@
 import {nameTool} from "@/type/context/utils/NameTool.ts";
-import {getEntityIdProperties} from "@/type/context/utils/EntityIdProperty.ts";
+import {getEntityIdProperties} from "@/type/context/utils/EntityCategorizedProperty.ts";
 import {flatEmbeddableTypeColumnNames} from "@/type/context/utils/EmbeddableTypeFlat.ts";
 import {
     MID_TABLE_COMMENT_TEMPLATE,

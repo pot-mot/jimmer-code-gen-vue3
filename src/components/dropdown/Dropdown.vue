@@ -142,6 +142,7 @@ watch(() => isOpen.value, async (value) => {
     border: var(--border);
     border-color: var(--border-color-light);
     border-radius: var(--border-radius);
+    overflow: hidden;
     background-color: var(--background-color);
 }
 </style>

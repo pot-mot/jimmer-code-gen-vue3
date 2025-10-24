@@ -10,7 +10,11 @@ import EmbeddableTypeIdViewer from "@/modelEditor/viewer/EmbeddableTypeIdViewer.
 import EnumerationIdViewer from "@/modelEditor/viewer/EnumerationIdViewer.vue";
 import {
     toScalarEmbeddableProperty,
-    toScalarEnumProperty, idToggleType, toManyToOneProperty, toScalarCommonProperty, idToEmbeddableProperty
+    toScalarEnumProperty,
+    idToggleType,
+    toManyToOneProperty,
+    toScalarCommonProperty,
+    idToEmbeddableProperty
 } from "@/modelEditor/node/property/PropertyConvert.ts";
 import {computed, nextTick, ref} from "vue";
 import TypePairViewer from "@/modelEditor/viewer/TypePairViewer.vue";
@@ -297,17 +301,17 @@ const association = computed(() => {
 <template>
     <Dropdown>
         <template #head>
-            <div class="current-item">
-                <div v-if="'enumId' in property" class="current-item-label">
-                    <IconEnumeration class="current-item-label-icon"/>
+            <div class="type-editor-header">
+                <div v-if="'enumId' in property" class="type-editor-header-label">
+                    <IconEnumeration class="type-editor-header-label-icon"/>
                     <EnumerationIdViewer :id="property.enumId" hide-comment ctrl-focus/>
                 </div>
-                <div v-if="'embeddableTypeId' in property" class="current-item-label">
-                    <IconEmbeddableType class="current-item-label-icon"/>
+                <div v-if="'embeddableTypeId' in property" class="type-editor-header-label">
+                    <IconEmbeddableType class="type-editor-header-label-icon"/>
                     <EmbeddableTypeIdViewer :id="property.embeddableTypeId" hide-comment ctrl-focus/>
                 </div>
-                <div v-if="'referencedEntityId' in property" class="current-item-label">
-                    <IconEntity class="current-item-label-icon"/>
+                <div v-if="'referencedEntityId' in property" class="type-editor-header-label">
+                    <IconEntity class="type-editor-header-label-icon"/>
                     <span v-if="property.category === 'ManyToMany_Source'">List<</span>
                     <EntityViewer :entity="referencedEntity" hide-comment ctrl-focus/>
                     <span v-if="property.category === 'ManyToMany_Source'">></span>
@@ -318,7 +322,7 @@ const association = computed(() => {
                         [Association not existed]
                     </div>
                 </div>
-                <div v-if="'rawType' in property" class="current-item-label">
+                <div v-if="'rawType' in property" class="type-editor-header-label">
                     {{ property.rawType }}
                 </div>
             </div>
@@ -422,20 +426,23 @@ const association = computed(() => {
 </template>
 
 <style scoped>
-.current-item {
-    padding: 0 0.5rem;
+.type-editor-header {
+    height: 2rem;
+    font-size: 0.8rem;
+    line-height: 2rem;
+    padding-left: 0.5rem;
     max-width: 10rem;
     overflow-x: auto;
 }
 
-.current-item-label {
+.type-editor-header-label {
     display: flex;
 }
-.current-item-label > * {
+.type-editor-header-label > * {
     flex-shrink: 0;
 }
 
-.current-item-label-icon {
+.type-editor-header-label-icon {
     margin-top: 0.4rem;
     margin-right: 0.25rem;
 }

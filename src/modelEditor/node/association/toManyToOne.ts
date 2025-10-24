@@ -8,6 +8,7 @@ import {
     MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
     ID_VIEW_TEMPLATE
 } from "@/type/context/utils/AssociationTemplate.ts";
+import {isKeyProperty} from "@/modelEditor/node/property/PropertyConvert.ts";
 
 export const toManyToOne = async (
     association: DeepReadonly<ConcreteAssociationIdOnly>
@@ -63,6 +64,12 @@ export const toManyToOne = async (
             typeIsList: false,
             extraAnnotations: [...sourceProperty.extraAnnotations],
             extraImports: [...sourceProperty.extraImports],
+        }
+        if (isKeyProperty(sourceProperty)) {
+            Object.assign(newSourceProperty, {
+                key: true,
+                keyGroups: [...sourceProperty.keyGroups],
+            })
         }
 
         const newMappedProperty: OneToManyProperty = {

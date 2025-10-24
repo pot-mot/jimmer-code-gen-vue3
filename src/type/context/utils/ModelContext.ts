@@ -1,6 +1,7 @@
 import {
     categorizeAbstractCategorizedProperties,
-    categorizeEmbeddableTypeProperties, categorizeEntityProperties,
+    categorizeEmbeddableTypeProperties,
+    categorizeEntityProperties,
 } from "@/type/context/utils/CategorizedProperties.ts";
 import {getGroupSubMaps} from "@/type/context/utils/GroupSubDataMap.ts";
 import {overrideEmbeddableTypePropertiesColumnNames} from "@/type/context/utils/EmbeddableTypeOverride.ts";
@@ -51,23 +52,121 @@ export const contextDataToContext = (
         enumerationMap.set(id, enumeration)
     }
 
-    for (const entity of contextData.entityMap.values()) {
-        syncEntityAutoChange(entity, contextData)
+    type TempEntity = Entity & {
+        properties: Property[],
+        inheritSourceProperties: (ManyToOneProperty | OneToOneSourceProperty)[]
+    }
+    type TempMappedSuperClass = MappedSuperClass & {
+        properties: Property[],
     }
 
+    const tempEntityMap = new Map<string, TempEntity>()
+    for (const entity of contextData.entityMap.values()) {
+        syncEntityAutoChange(entity, contextData)
+        tempEntityMap.set(entity.id, {
+            ...entity,
+            properties: Array.from(entity.properties),
+            inheritSourceProperties: [],
+        })
+    }
+
+    const tempMappedSuperClassMap = new Map<string, TempMappedSuperClass>()
     for (const mappedSuperClass of contextData.mappedSuperClassMap.values()) {
         syncMappedSuperClassAutoChange(mappedSuperClass, contextData)
+        tempMappedSuperClassMap.set(mappedSuperClass.id, {
+            ...mappedSuperClass,
+            properties: Array.from(mappedSuperClass.properties)
+        })
+    }
+
+    // 将 MappedProperty 移动回实体中
+    for (const entity of tempEntityMap.values()) {
+        const mappedInfos = getMappedPropertyInfo(entity.properties, associationIdOnlyMap)
+        for (const {association, mappedProperty} of mappedInfos) {
+            const referencedEntity = tempEntityMap.get(association.referencedEntityId)
+            if (!referencedEntity) throw new Error(`[${mappedProperty.referencedEntityId}] not existed`)
+            referencedEntity.properties.push(mappedProperty)
+        }
+    }
+
+    // 将抽象 MappedProperty 迁移至子类中
+    for (const mappedSuperClass of tempMappedSuperClassMap.values()) {
+        const inheritEntities: TempEntity[] = []
+        const inheritItem = inheritInfo.abstractInheritInfoMap.get(mappedSuperClass.id)
+        if (!inheritItem) throw new Error(`[${mappedSuperClass.name}] has no inheritInfo`)
+        for (const childId of inheritItem.allConcreteChildIdSet) {
+            const child = tempEntityMap.get(childId)
+            if (child) {
+                inheritEntities.push(child)
+            }
+        }
+
+        const mappedProperties = getAbstractMappedPropertyInfo(mappedSuperClass.properties, associationIdOnlyMap)
+        for (const {
+            association: abstractAssociation,
+            sourceProperty: abstractSourceProperty,
+            mappedProperty: abstractMappedProperty,
+        } of mappedProperties) {
+            const referencedEntity = tempEntityMap.get(abstractAssociation.referencedEntityId)
+            if (!referencedEntity) throw new Error(`[${abstractAssociation.referencedEntityId}] not existed`)
+
+            if (
+                abstractAssociation.type === "OneToOne_Abstract" &&
+                abstractSourceProperty.category === "OneToOne_Source" &&
+                abstractMappedProperty.category === "OneToOne_Mapped_Abstract"
+            ) {
+                for (const inheritEntity of inheritEntities) {
+                    const {
+                        association: realAssociation,
+                        sourceProperty: realSourceProperty,
+                        mappedProperty: realMappedProperty,
+                    } = oneToOneAbstractToReal({
+                        association: abstractAssociation,
+                        sourceProperty: abstractSourceProperty,
+                        mappedProperty: abstractMappedProperty,
+                    }, inheritEntity, referencedEntity)
+
+                    associationIdOnlyMap.set(realAssociation.id, realAssociation)
+                    inheritEntity.inheritSourceProperties.push(realSourceProperty)
+                    if (realAssociation.withMappedProperty) {
+                        referencedEntity.properties.push(realMappedProperty)
+                    }
+                }
+            } else if (
+                abstractAssociation.type === "ManyToOne_Abstract" &&
+                abstractSourceProperty.category === "ManyToOne" &&
+                abstractMappedProperty.category === "OneToMany_Abstract"
+            ) {
+                for (const inheritEntity of inheritEntities) {
+                    const {
+                        association: realAssociation,
+                        sourceProperty: realSourceProperty,
+                        mappedProperty: realMappedProperty,
+                    } = oneToManyAbstractToReal({
+                        association: abstractAssociation,
+                        sourceProperty: abstractSourceProperty,
+                        mappedProperty: abstractMappedProperty,
+                    }, inheritEntity, referencedEntity)
+
+                    associationIdOnlyMap.set(realAssociation.id, realAssociation)
+                    inheritEntity.inheritSourceProperties.push(realSourceProperty)
+                    if (realAssociation.withMappedProperty) {
+                        referencedEntity.properties.push(realMappedProperty)
+                    }
+                }
+            }
+        }
     }
 
     // 解析实体继承关系
     const mappedSuperClassWithInheritInfoMap = new Map<string, MappedSuperClassWithInheritInfo>()
-    for (const [id, mappedSuperClass] of contextData.mappedSuperClassMap) {
+    for (const [id, mappedSuperClass] of tempMappedSuperClassMap) {
         const inheritItem = inheritInfo.abstractInheritInfoMap.get(id)
         if (!inheritItem) throw new Error(`[${mappedSuperClass.name}] has no inheritInfo`)
 
         const allProperties = []
         for (const ancestorId of inheritItem.ancestorIdSet) {
-            const ancestor = contextData.mappedSuperClassMap.get(ancestorId)
+            const ancestor = tempMappedSuperClassMap.get(ancestorId)
             if (ancestor) {
                 allProperties.push(...ancestor.properties)
             }
@@ -99,18 +198,22 @@ export const contextDataToContext = (
     }
 
     const entityWithInheritInfoMap = new Map<string, EntityWithInheritInfo>()
-    for (const [id, entity] of contextData.entityMap) {
+    for (const [id, {inheritSourceProperties, ...entity}] of tempEntityMap) {
         const inheritItem = inheritInfo.concreteInheritInfoMap.get(id)
         if (!inheritItem) throw new Error(`[${entity.name}] has no inheritInfo`)
 
         const allProperties = []
         for (const ancestorId of inheritItem.ancestorIdSet) {
-            const ancestor = contextData.mappedSuperClassMap.get(ancestorId)
+            const ancestor = tempMappedSuperClassMap.get(ancestorId)
             if (ancestor) {
-                allProperties.push(...ancestor.properties)
+                for (const property of ancestor.properties) {
+                    if (property.category === "OneToOne_Source" || property.category === "ManyToOne") continue
+                    allProperties.push(property)
+                }
             }
         }
         allProperties.push(...entity.properties)
+        allProperties.push(...inheritSourceProperties)
 
         entityWithInheritInfoMap.set(id, {
             ...entity,
@@ -133,136 +236,6 @@ export const contextDataToContext = (
             const ancestor = mappedSuperClassWithInheritInfoMap.get(ancestorId)
             if (!ancestor) throw new Error(`[${ancestorId}] has no inheritInfo`)
             entity.allExtends.add(ancestor)
-        }
-    }
-
-    // 将 MappedProperty 移动回实体中
-    for (const entity of entityWithInheritInfoMap.values()) {
-        const mappedInfos = getMappedPropertyInfo(entity.properties, associationIdOnlyMap)
-        for (const {association, mappedProperty} of mappedInfos) {
-            const referencedEntity = entityWithInheritInfoMap.get(association.referencedEntityId)
-            if (!referencedEntity) throw new Error(`[${mappedProperty.referencedEntityId}] not existed`)
-            referencedEntity.properties.push(mappedProperty)
-            referencedEntity.allProperties.push(mappedProperty)
-            if (association.withMappedProperty) {
-                if (mappedProperty.category === "OneToOne_Mapped" && association.type === "OneToOne") {
-                    referencedEntity.oneToOneMappedPropertyMap.set(mappedProperty.id, {...mappedProperty, association})
-                } else if (mappedProperty.category === "OneToMany" && association.type === "ManyToOne") {
-                    referencedEntity.oneToManyPropertyMap.set(mappedProperty.id, {...mappedProperty, association})
-                } else if (mappedProperty.category === "ManyToMany_Mapped" && association.type === "ManyToMany") {
-                    referencedEntity.manyToManyMappedPropertyMap.set(mappedProperty.id, {...mappedProperty, association})
-                }
-            }
-        }
-    }
-
-    for (const mappedSuperClass of mappedSuperClassWithInheritInfoMap.values()) {
-        const inheritEntities: EntityWithInheritInfo[] = []
-        const inheritItem = inheritInfo.abstractInheritInfoMap.get(mappedSuperClass.id)
-        if (!inheritItem) throw new Error(`[${mappedSuperClass.name}] has no inheritInfo`)
-        for (const childId of inheritItem.allConcreteChildIdSet) {
-            const child = entityWithInheritInfoMap.get(childId)
-            if (child) {
-                inheritEntities.push(child)
-            }
-        }
-
-        const mappedProperties = getAbstractMappedPropertyInfo(mappedSuperClass.properties, associationIdOnlyMap)
-        for (const {
-            association: abstractAssociation,
-            sourceProperty: abstractSourceProperty,
-            mappedProperty: abstractMappedProperty,
-        } of mappedProperties) {
-            const referencedEntity = entityWithInheritInfoMap.get(abstractAssociation.referencedEntityId)
-            if (!referencedEntity) throw new Error(`[${abstractAssociation.referencedEntityId}] not existed`)
-
-            if (
-                abstractAssociation.type === "OneToOne_Abstract" &&
-                abstractSourceProperty.category === "OneToOne_Source" &&
-                abstractMappedProperty.category === "OneToOne_Mapped_Abstract"
-            ) {
-                for (const inheritEntity of inheritEntities) {
-                    const {
-                        association: realAssociation,
-                        sourceProperty: realSourceProperty,
-                        mappedProperty: realMappedProperty,
-                    } = oneToOneAbstractToReal({
-                        association: abstractAssociation,
-                        sourceProperty: abstractSourceProperty,
-                        mappedProperty: abstractMappedProperty,
-                    }, inheritEntity, referencedEntity)
-
-                    associationIdOnlyMap.set(realAssociation.id, realAssociation)
-
-                    for (let i = 0; i < inheritEntity.properties.length; i++) {
-                        if (inheritEntity.properties[i]?.id === abstractSourceProperty.id) {
-                            inheritEntity.properties[i] = realSourceProperty
-                        }
-                    }
-                    for (let i = 0; i < inheritEntity.allProperties.length; i++) {
-                        if (inheritEntity.allProperties[i]?.id === abstractSourceProperty.id) {
-                            inheritEntity.allProperties[i] = realSourceProperty
-                            inheritEntity.oneToOneSourcePropertyMap.set(realSourceProperty.id, {
-                                ...realSourceProperty,
-                                association: realAssociation
-                            })
-                            break
-                        }
-                    }
-
-                    if (realAssociation.withMappedProperty) {
-                        referencedEntity.properties.push(realMappedProperty)
-                        referencedEntity.allProperties.push(realMappedProperty)
-                        referencedEntity.oneToOneMappedPropertyMap.set(realMappedProperty.id, {
-                            ...realMappedProperty,
-                            association: realAssociation
-                        })
-                    }
-                }
-            } else if (
-                abstractAssociation.type === "ManyToOne_Abstract" &&
-                abstractSourceProperty.category === "ManyToOne" &&
-                abstractMappedProperty.category === "OneToMany_Abstract"
-            ) {
-                for (const inheritEntity of inheritEntities) {
-                    const {
-                        association: realAssociation,
-                        sourceProperty: realSourceProperty,
-                        mappedProperty: realMappedProperty,
-                    } = oneToManyAbstractToReal({
-                        association: abstractAssociation,
-                        sourceProperty: abstractSourceProperty,
-                        mappedProperty: abstractMappedProperty,
-                    }, inheritEntity, referencedEntity)
-
-                    associationIdOnlyMap.set(realAssociation.id, realAssociation)
-
-                    for (let i = 0; i < inheritEntity.properties.length; i++) {
-                        if (inheritEntity.properties[i]?.id === abstractSourceProperty.id) {
-                            inheritEntity.properties[i] = realSourceProperty
-                        }
-                    }
-                    for (let i = 0; i < inheritEntity.allProperties.length; i++) {
-                        if (inheritEntity.allProperties[i]?.id === abstractSourceProperty.id) {
-                            inheritEntity.allProperties[i] = realSourceProperty
-                            inheritEntity.manyToOnePropertyMap.set(realSourceProperty.id, {
-                                ...realSourceProperty,
-                                association: realAssociation
-                            })
-                            break
-                        }
-                    }
-
-                    if (realAssociation.withMappedProperty) {
-                        referencedEntity.properties.push(realMappedProperty)
-                        referencedEntity.allProperties.push(realMappedProperty)
-                        referencedEntity.oneToManyPropertyMap.set(realMappedProperty.id, {
-                            ...realMappedProperty,
-                            association: realAssociation
-                        })
-                    }
-                }
-            }
         }
     }
 

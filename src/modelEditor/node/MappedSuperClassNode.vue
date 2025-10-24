@@ -16,7 +16,7 @@ import IconDelete from "@/components/icons/IconDelete.vue";
 import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 import IconAbstractEntity from "@/components/icons/modelEditor/IconAbstractEntity.vue";
-import EntityPropertyTypeEditor from "@/modelEditor/node/property/EntityPropertyTypeEditor.vue";
+import EntityPropertyCategoryEditor from "@/modelEditor/node/property/EntityPropertyCategoryEditor.vue";
 
 const props = defineProps<NodeProps<MappedSuperClassNode["data"]>>()
 
@@ -127,13 +127,18 @@ watch(() => handleIndexMap.value, () => {
                         class="mapped-super-class-property-view"
                         v-if="data.mappedSuperClass.properties[index]"
                     >
-                        <NameCommentEditor
-                            :font-size="14"
-                            v-model="data.mappedSuperClass.properties[index]"
-                        />
+                        <span style="display: flex; gap: 0.5rem;">
+                            <EntityPropertyCategoryEditor
+                                v-model="data.mappedSuperClass.properties[index]"
+                            />
+                            <NameCommentEditor
+                                :font-size="14"
+                                v-model="data.mappedSuperClass.properties[index]"
+                            />
+                        </span>
+
                         <MappedSuperClassPropertyTypeEditor
                             class="noDrag noWheel"
-                            style="font-size: 14px; line-height: 30px;"
                             :mapped-super-class="data.mappedSuperClass"
                             :property-index="index"
                             v-model="data.mappedSuperClass.properties[index]"

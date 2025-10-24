@@ -15,6 +15,7 @@ import IconDelete from "@/components/icons/IconDelete.vue";
 import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 import IconEntity from "@/components/icons/modelEditor/IconEntity.vue";
+import EntityPropertyCategoryEditor from "@/modelEditor/node/property/EntityPropertyCategoryEditor.vue";
 
 const props = defineProps<NodeProps<EntityNode["data"]>>()
 
@@ -125,13 +126,18 @@ watch(() => handleIndexMap.value, () => {
                         class="entity-property-view"
                         v-if="data.entity.properties[index]"
                     >
-                        <NameCommentEditor
-                            :font-size="14"
-                            v-model="data.entity.properties[index]"
-                        />
+                        <span style="display: flex; gap: 0.5rem;">
+                            <EntityPropertyCategoryEditor
+                                v-model="data.entity.properties[index]"
+                            />
+                            <NameCommentEditor
+                                :font-size="14"
+                                v-model="data.entity.properties[index]"
+                            />
+                        </span>
+
                         <EntityPropertyTypeEditor
                             class="noDrag noWheel"
-                            style="font-size: 14px; line-height: 30px;"
                             :entity="data.entity"
                             :property-index="index"
                             v-model="data.entity.properties[index]"
