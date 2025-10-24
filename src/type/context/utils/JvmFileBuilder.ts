@@ -15,7 +15,7 @@ export const createJvmFileBuilder = (
     const buildPointPath = (subPackagePaths: string[]) => {
         const parts: string[] = []
         for (const subPath of subPackagePaths) {
-            const splitSubPath = subPath.split("/")
+            const splitSubPath = subPath.split(".")
             if (splitSubPath.length > 0) {
                 for (const subPath of splitSubPath) {
                     if (subPath.length > 0) parts.push(subPath)
