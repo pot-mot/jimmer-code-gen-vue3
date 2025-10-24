@@ -84,7 +84,7 @@ export const toIdProperty = (property: DeepReadonly<Property>): IdCommonProperty
             ...toBaseProperty(property),
             category: "ID_COMMON",
             nullable: false,
-            rawType: "rawType" in property ? property.rawType : property.category,
+            rawType: "rawType" in property ? property.rawType : "String",
             columnInfo: "columnInfo" in property ?
                 createColumnInfo(property, property.columnInfo) :
                 createColumnInfo(property, getDefaultStringSqlType()),

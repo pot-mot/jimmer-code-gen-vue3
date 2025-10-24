@@ -189,6 +189,7 @@ watch(() => handleIndexMap.value, () => {
 .entity-header {
     padding: 0.5rem;
     background-color: v-bind(groupColor);
+    line-height: 1.8rem;
 }
 
 .header-label {
@@ -224,6 +225,7 @@ watch(() => handleIndexMap.value, () => {
     display: flex;
     justify-content: space-between;
     gap: 0.5rem;
+    line-height: 1.8rem;
 }
 
 :deep(.vue-flow__handle) {

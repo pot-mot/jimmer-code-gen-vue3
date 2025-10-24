@@ -327,7 +327,7 @@ const association = computed(() => {
                 </div>
             </div>
 
-            <div v-if="association">
+            <div v-if="association" class="association-type">
                 <template v-if="association.association.type === 'ManyToOne'">
                     <button @click.stop="toOneToOne(association.association)">
                         Many
@@ -427,9 +427,7 @@ const association = computed(() => {
 
 <style scoped>
 .type-editor-header {
-    height: 2rem;
     font-size: 0.8rem;
-    line-height: 2rem;
     padding-left: 0.5rem;
     max-width: 10rem;
     overflow-x: auto;
@@ -499,5 +497,9 @@ const association = computed(() => {
     height: 0.8rem;
     margin-top: 0.2rem;
     margin-right: 0.25rem;
+}
+
+.association-type {
+    font-size: 0.8rem;
 }
 </style>

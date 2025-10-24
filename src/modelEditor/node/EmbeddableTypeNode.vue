@@ -135,6 +135,7 @@ const beforePaste = (properties: Property[]) => {
 .embeddable-type-header {
     padding: 0.5rem;
     background-color: v-bind(groupColor);
+    line-height: 1.8rem;
 }
 
 .header-label {
@@ -170,5 +171,6 @@ const beforePaste = (properties: Property[]) => {
     display: flex;
     justify-content: space-between;
     gap: 0.5rem;
+    line-height: 1.8rem;
 }
 </style>
