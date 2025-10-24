@@ -1,7 +1,7 @@
 import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
 import type {ReadonlyModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
-import {checkLowerCamelName, checkUpperCamelName} from "@/utils/name/nameCheck.ts";
+import {checkLowerCamelName, checkNoBlank, checkUpperCamelName} from "@/utils/name/nameCheck.ts";
 
 export type EmbeddableTypeDiagnose = {
     embeddableType: DiagnoseMessage[],
@@ -23,10 +23,15 @@ export const embeddableTypeDiagnose = (
             type: "error"
         })
     } else {
-        if (!checkUpperCamelName(embeddableType.name)) {
+        if (!checkNoBlank(embeddableType.name)) {
             messages.push({
                 content: "[Invalid Name]",
                 type: "error"
+            })
+        } else if (!checkUpperCamelName(embeddableType.name)) {
+            messages.push({
+                content: "[Should use UpperCamelCase]",
+                type: "warning"
             })
         }
 
@@ -34,7 +39,7 @@ export const embeddableTypeDiagnose = (
         if (nameCount > 1) {
             messages.push({
                 content: `[Duplicate Name: ${nameCount}]`,
-                type: "warning"
+                type: "error"
             })
         }
     }
@@ -47,10 +52,15 @@ export const embeddableTypeDiagnose = (
                 type: "error"
             })
         } else {
-            if (!checkLowerCamelName(property.name)) {
+            if (!checkNoBlank(property.name)) {
                 messages.push({
                     content: "[Invalid Name]",
                     type: "error"
+                })
+            } else if (!checkLowerCamelName(property.name)) {
+                messages.push({
+                    content: "[Should use lowerCamelCase]",
+                    type: "warning"
                 })
             }
 
@@ -58,7 +68,7 @@ export const embeddableTypeDiagnose = (
             if (nameCount > 1) {
                 messages.push({
                     content: `[Duplicate Name: ${nameCount}]`,
-                    type: "warning"
+                    type: "error"
                 })
             }
         }

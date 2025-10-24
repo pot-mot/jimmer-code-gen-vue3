@@ -34,7 +34,7 @@ export const enumerationDiagnose = (
         if (nameCount > 1) {
             messages.push({
                 content: `[Duplicate Name: ${nameCount}]`,
-                type: "warning"
+                type: "error"
             })
         }
     }
@@ -58,7 +58,7 @@ export const enumerationDiagnose = (
             if (nameCount > 1) {
                 messages.push({
                     content: `[Duplicate Name: ${nameCount}]`,
-                    type: "warning"
+                    type: "error"
                 })
             }
         }

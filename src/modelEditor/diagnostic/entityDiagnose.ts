@@ -1,8 +1,11 @@
 import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
 import type {ReadonlyModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
-import {checkLowerCamelName, checkUpperCamelName} from "@/utils/name/nameCheck.ts";
-import {getEntityIdProperties} from "@/type/context/utils/EntityIdProperty.ts";
+import {checkLowerCamelName, checkNoBlank, checkUpperCamelName} from "@/utils/name/nameCheck.ts";
+import {
+    getEntityIdProperties,
+    getEntityLogicalDeleteProperties, getEntityVersionProperties
+} from "@/type/context/utils/EntityCategorizedProperty.ts";
 
 export type EntityDiagnoseResult = {
     entity: DiagnoseMessage[],
@@ -24,18 +27,22 @@ export const entityDiagnose = (
             type: "error"
         })
     } else {
-        if (!checkUpperCamelName(entity.name)) {
+        if (!checkNoBlank(entity.name)) {
             messages.push({
                 content: "[Invalid Name]",
                 type: "error"
             })
+        } else if (!checkUpperCamelName(entity.name)) {
+            messages.push({
+                content: "[Should use UpperCamelCase]",
+                type: "warning"
+            })
         }
-
         const nameCount = nameSets.groupItemNameSet.count(entity.name)
         if (nameCount > 1) {
             messages.push({
                 content: `[Duplicate Name: ${nameCount}]`,
-                type: "warning"
+                type: "error"
             })
         }
     }
@@ -53,6 +60,22 @@ export const entityDiagnose = (
         })
     }
 
+    const logicDeletedProperties = getEntityLogicalDeleteProperties(entity, contextData.mappedSuperClassMap)
+    if (logicDeletedProperties.length > 1) {
+        messages.push({
+            content: "[Multiple Logical Deleted Properties]",
+            type: "error"
+        })
+    }
+
+    const versionProperties = getEntityVersionProperties(entity, contextData.mappedSuperClassMap)
+    if (versionProperties.length > 1) {
+        messages.push({
+            content: "[Multiple Version Properties]",
+            type: "error"
+        })
+    }
+
     for (const property of entity.properties) {
         const messages: DiagnoseMessage[] = []
 
@@ -62,10 +85,15 @@ export const entityDiagnose = (
                 type: "error"
             })
         } else {
-            if (!checkLowerCamelName(property.name)) {
+            if (!checkNoBlank(property.name)) {
                 messages.push({
                     content: "[Invalid Name]",
                     type: "error"
+                })
+            } else if (!checkLowerCamelName(property.name)) {
+                messages.push({
+                    content: "[Should use lowerCamelCase]",
+                    type: "warning"
                 })
             }
 
@@ -73,7 +101,7 @@ export const entityDiagnose = (
             if (nameCount > 1) {
                 messages.push({
                     content: `[Duplicate Name: ${nameCount}]`,
-                    type: "warning"
+                    type: "error"
                 })
             }
         }
@@ -85,6 +113,18 @@ export const entityDiagnose = (
                     type: "error"
                 })
             } else {
+                if (!checkNoBlank(property.idViewName)) {
+                    messages.push({
+                        content: "[Invalid IdView Name]",
+                        type: "error"
+                    })
+                } else if (!checkLowerCamelName(property.idViewName)) {
+                    messages.push({
+                        content: "[IdView should use lowerCamelCase]",
+                        type: "warning"
+                    })
+                }
+
                 const nameCount = nameSets.entityPropertyNameSetMap.get(entity.id)?.count(property.idViewName) ?? 0
                 if (nameCount > 1) {
                     messages.push({

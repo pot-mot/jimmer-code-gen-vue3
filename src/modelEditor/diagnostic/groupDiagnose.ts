@@ -24,7 +24,7 @@ export const groupDiagnose = (
         if (nameCount > 1) {
             messages.push({
                 content: `[Duplicate Name: ${nameCount}]`,
-                type: "warning"
+                type: "error"
             })
         }
     }

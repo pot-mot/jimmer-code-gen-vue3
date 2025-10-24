@@ -36,7 +36,7 @@ export const associationDiagnose = (
                 if (nameCount > 1) {
                     messages.push({
                         content: `[Duplicate Name: ${nameCount}]`,
-                        type: "warning"
+                        type: "error"
                     })
                 }
             }
@@ -57,10 +57,15 @@ export const associationDiagnose = (
                 type: "error"
             })
         } else {
-            if (!checkLowerCamelName(association.mappedProperty.name)) {
-                mappedPropertyMessages.push({
+            if (!checkNoBlank(association.mappedProperty.name)) {
+                messages.push({
                     content: "[Invalid Name]",
                     type: "error"
+                })
+            } else if (!checkLowerCamelName(association.mappedProperty.name)) {
+                messages.push({
+                    content: "[Should use lowerCamelCase]",
+                    type: "warning"
                 })
             }
 
@@ -69,7 +74,7 @@ export const associationDiagnose = (
             if (nameCount > 1) {
                 mappedPropertyMessages.push({
                     content: `[Duplicate Name: ${nameCount}]`,
-                    type: "warning",
+                    type: "error",
                 })
             }
         }

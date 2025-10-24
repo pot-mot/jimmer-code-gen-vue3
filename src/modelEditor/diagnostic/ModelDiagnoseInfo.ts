@@ -155,13 +155,13 @@ export const useModelDiagnoseInfo = (
         syncSameNameGroupItem(mappedSuperClass.name)
         const inheritItem = inheritInfo.abstractInheritInfoMap.get(mappedSuperClass.id)
         if (inheritItem) {
-            for (const childId of inheritItem.allConcreteChildIdSet) {
+            for (const childId of inheritItem.concreteChildIdSet) {
                 const child = contextData.entityMap.get(childId)
-                if (child) setEntityDiagnose(child)
+                if (child) syncEntity(child)
             }
-            for (const childId of inheritItem.allAbstractChildIdSet) {
+            for (const childId of inheritItem.abstractChildIdSet) {
                 const child = contextData.mappedSuperClassMap.get(childId)
-                if (child) setMappedSuperClassDiagnose(child)
+                if (child) syncMappedSuperClass(child)
             }
         }
     }
@@ -178,13 +178,13 @@ export const useModelDiagnoseInfo = (
                     const inheritItem = inheritInfo.abstractInheritInfoMap.get(missingId)
                     if (child && inheritItem) {
                         setMappedSuperClassDiagnose(child)
-                        for (const childId of inheritItem.allConcreteChildIdSet) {
+                        for (const childId of inheritItem.concreteChildIdSet) {
                             const child = contextData.entityMap.get(childId)
-                            if (child) setEntityDiagnose(child)
+                            if (child) syncEntity(child)
                         }
-                        for (const childId of inheritItem.allAbstractChildIdSet) {
+                        for (const childId of inheritItem.abstractChildIdSet) {
                             const child = contextData.mappedSuperClassMap.get(childId)
-                            if (child) setMappedSuperClassDiagnose(child)
+                            if (child) syncMappedSuperClass(child)
                         }
                     }
                 }

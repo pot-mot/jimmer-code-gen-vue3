@@ -1,8 +1,11 @@
 import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
 import type {ReadonlyModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
-import {checkLowerCamelName, checkUpperCamelName} from "@/utils/name/nameCheck.ts";
-import {getEntityIdProperties} from "@/type/context/utils/EntityIdProperty.ts";
+import {checkLowerCamelName, checkNoBlank, checkUpperCamelName} from "@/utils/name/nameCheck.ts";
+import {
+    getEntityIdProperties,
+    getEntityLogicalDeleteProperties, getEntityVersionProperties
+} from "@/type/context/utils/EntityCategorizedProperty.ts";
 
 export type MappedSuperClassDiagnose = {
     mappedSuperClass: DiagnoseMessage[],
@@ -35,7 +38,7 @@ export const mappedSuperClassDiagnose = (
         if (nameCount > 1) {
             messages.push({
                 content: `[Duplicate Name: ${nameCount}]`,
-                type: "warning"
+                type: "error"
             })
         }
     }
@@ -48,6 +51,22 @@ export const mappedSuperClassDiagnose = (
         })
     }
 
+    const logicDeletedProperties = getEntityLogicalDeleteProperties(mappedSuperClass, contextData.mappedSuperClassMap)
+    if (logicDeletedProperties.length > 1) {
+        messages.push({
+            content: "[Multiple Logical Deleted Properties]",
+            type: "error"
+        })
+    }
+
+    const versionProperties = getEntityVersionProperties(mappedSuperClass, contextData.mappedSuperClassMap)
+    if (versionProperties.length > 1) {
+        messages.push({
+            content: "[Multiple Version Properties]",
+            type: "error"
+        })
+    }
+
     for (const property of mappedSuperClass.properties) {
         const messages: DiagnoseMessage[] = []
         if (property.name.length === 0) {
@@ -56,10 +75,15 @@ export const mappedSuperClassDiagnose = (
                 type: "error"
             })
         } else {
-            if (!checkLowerCamelName(property.name)) {
+            if (!checkNoBlank(property.name)) {
                 messages.push({
                     content: "[Invalid Name]",
                     type: "error"
+                })
+            } else if (!checkLowerCamelName(property.name)) {
+                messages.push({
+                    content: "[Should use lowerCamelCase]",
+                    type: "warning"
                 })
             }
 
@@ -67,7 +91,7 @@ export const mappedSuperClassDiagnose = (
             if (nameCount > 1) {
                 messages.push({
                     content: `[Duplicate Name: ${nameCount}]`,
-                    type: "warning"
+                    type: "error"
                 })
             }
         }
@@ -79,6 +103,18 @@ export const mappedSuperClassDiagnose = (
                     type: "error"
                 })
             } else {
+                if (!checkNoBlank(property.idViewName)) {
+                    messages.push({
+                        content: "[Invalid IdView Name]",
+                        type: "error"
+                    })
+                } else if (!checkLowerCamelName(property.idViewName)) {
+                    messages.push({
+                        content: "[IdView should use lowerCamelCase]",
+                        type: "warning"
+                    })
+                }
+
                 const nameCount = nameSets.mappedSuperClassPropertyNameSetMap.get(mappedSuperClass.id)?.count(property.idViewName) ?? 0
                 if (nameCount > 1) {
                     messages.push({
