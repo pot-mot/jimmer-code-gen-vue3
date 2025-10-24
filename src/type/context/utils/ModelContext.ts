@@ -24,6 +24,7 @@ import {
     syncEntityAutoChange,
     syncMappedSuperClassAutoChange
 } from "@/modelEditor/history/SyncAutoChange.ts";
+import {createJvmFileBuilder} from "@/type/context/utils/JvmFileBuilder.ts";
 
 export const contextDataToContext = (
     readonlyContextData: DeepReadonly<ModelContextData>,
@@ -267,7 +268,7 @@ export const contextDataToContext = (
         })
     }
 
-    return {
+    const context: ModelContext = {
         model: contextData.model,
         groupMap: groupWithInheritInfoMap,
         entityMap: entityWithInheritInfoMap,
@@ -278,6 +279,14 @@ export const contextDataToContext = (
 
         createId,
         nameTool,
-        typeTool: buildTypeTool(contextData.model.jvmLanguage, [], [], []) // TODO
+        typeTool: buildTypeTool(contextData.model.jvmLanguage, [], [], []), // TODO
+        createJvmFileBuilder: (options: {
+            groupId: string,
+            subPackagePath: string
+        }) => {
+            return createJvmFileBuilder(context, options)
+        }
     }
+
+    return context
 }

@@ -5,72 +5,16 @@ export const kotlinEntityGenerator: EntityGenerator = (
 ) => {
     const result: Record<string, string> = {}
 
-    const importSet: Set<string> = new Set()
+    const builder = context.createJvmFileBuilder({
+        groupId: entity.groupId,
+        subPackagePath: entity.subPackagePath,
+    })
 
-    const group = context.groupMap.get(entity.groupId)
-    if (group === undefined) throw new Error(`[${entity.groupId}] not found`)
-    const packagePath = `${group.basePackagePath}.${entity.subPackagePath}`
-
-    const propertyList: {
-        name: string
-        comment: string
-        type: string
-        annotations: string[]
-    }[] = []
-
-    const pushEnumeration = (enumerationId: string) => {
-        const enumeration = context.enumerationMap.get(enumerationId)
-        if (enumeration === undefined) throw new Error(`[${enumerationId}] not found`)
-
-        let enumerationPath: string
-        if (enumeration.groupId !== entity.groupId) {
-            const enumerationGroup = context.groupMap.get(enumeration.groupId)
-            if (enumerationGroup === undefined) throw new Error(`[${enumeration.groupId}] not found`)
-            enumerationPath = enumerationGroup.basePackagePath + "." + enumeration.subPackagePath
-        } else {
-            enumerationPath = group.basePackagePath + "." + enumeration.subPackagePath
-        }
-        if (enumerationPath !== packagePath)
-            importSet.add(enumerationPath + "." + enumeration.name)
-
-        return enumeration
+    for (const mappedSuperClassId of entity.extendsIds) {
+        builder.requireMappedSuperClass(mappedSuperClassId)
     }
 
-    const pushEmbeddableType = (embeddableTypeId: string) => {
-        const embeddableType = context.embeddableTypeMap.get(embeddableTypeId)
-        if (embeddableType === undefined) throw new Error(`[${embeddableTypeId}] not found`)
-
-        let embeddableTypePath: string
-        if (embeddableType.groupId !== entity.groupId) {
-            const embeddableTypeGroup = context.groupMap.get(embeddableType.groupId)
-            if (embeddableTypeGroup === undefined) throw new Error(`[${embeddableType.groupId}] not found`)
-            embeddableTypePath = embeddableTypeGroup.basePackagePath + "." + embeddableType.subPackagePath
-        } else {
-            embeddableTypePath = group.basePackagePath + "." + embeddableType.subPackagePath
-        }
-        if (embeddableTypePath !== packagePath)
-            importSet.add(embeddableTypePath + "." + embeddableType.name)
-
-        return embeddableType
-    }
-
-    const pushEntity = (entityId: string) => {
-        const entity = context.entityMap.get(entityId)
-        if (entity === undefined) throw new Error(`[${entityId}] not found`)
-
-        let entityPath: string
-        if (entity.groupId !== entity.groupId) {
-            const entityGroup = context.groupMap.get(entity.groupId)
-            if (entityGroup === undefined) throw new Error(`[${entity.groupId}] not found`)
-            entityPath = entityGroup.basePackagePath + "." + entity.subPackagePath
-        } else {
-            entityPath = group.basePackagePath + "." + entity.subPackagePath
-        }
-        if (entityPath !== packagePath)
-            importSet.add(entityPath + "." + entity.name)
-
-        return entity
-    }
+    const propertyList: PropertyItem[] = []
 
     const pushIdViewProperty = (
         property: DeepReadonly<OneToOneSourceProperty | OneToOneMappedProperty | ManyToOneProperty | OneToManyProperty | ManyToManySourceProperty | ManyToManyMappedProperty>,
@@ -88,7 +32,7 @@ export const kotlinEntityGenerator: EntityGenerator = (
                 ]
             })
         } else if (referencedId.category === "ID_EMBEDDABLE") {
-            const referencedEmbeddableType = pushEmbeddableType(referencedId.embeddableTypeId)
+            const referencedEmbeddableType = builder.requireEmbeddableType(referencedId.embeddableTypeId)
             propertyList.push({
                 name: property.idViewName,
                 comment: property.comment,
@@ -120,9 +64,7 @@ export const kotlinEntityGenerator: EntityGenerator = (
     }
 
     for (const property of entity.properties) {
-        for (const importItem of property.extraImports) {
-            importSet.add(importItem)
-        }
+        builder.addImports(property.extraImports)
 
         if (property.category === "ID_COMMON") {
             propertyList.push({
@@ -136,7 +78,7 @@ export const kotlinEntityGenerator: EntityGenerator = (
                 ],
             })
         } else if (property.category === "ID_EMBEDDABLE") {
-            const embeddableType = pushEmbeddableType(property.embeddableTypeId)
+            const embeddableType = builder.requireEmbeddableType(property.embeddableTypeId)
             propertyList.push({
                 name: property.name,
                 comment: property.comment,
@@ -158,7 +100,7 @@ export const kotlinEntityGenerator: EntityGenerator = (
                 ],
             })
         } else if (property.category === "SCALAR_ENUM") {
-            const enumeration = pushEnumeration(property.enumId)
+            const enumeration = builder.requireEnumeration(property.enumId)
             propertyList.push({
                 name: property.name,
                 comment: property.comment,
@@ -169,7 +111,7 @@ export const kotlinEntityGenerator: EntityGenerator = (
                 ],
             })
         } else if (property.category === "SCALAR_EMBEDDABLE") {
-            const embeddableType = pushEmbeddableType(property.embeddableTypeId)
+            const embeddableType = builder.requireEmbeddableType(property.embeddableTypeId)
             propertyList.push({
                 name: property.name,
                 comment: property.comment,
@@ -179,7 +121,7 @@ export const kotlinEntityGenerator: EntityGenerator = (
                 ],
             })
         } else if (property.category === "OneToOne_Source") {
-            const referencedEntity = pushEntity(property.referencedEntityId)
+            const referencedEntity = builder.requireEntity(property.referencedEntityId)
             const joinAnnotation = buildJoinAnnotation(property.joinInfo)
 
             propertyList.push({
@@ -194,7 +136,7 @@ export const kotlinEntityGenerator: EntityGenerator = (
             })
             pushIdViewProperty(property, referencedEntity)
         } else if (property.category === "OneToOne_Mapped") {
-            const referencedEntity = pushEntity(property.referencedEntityId)
+            const referencedEntity = builder.requireEntity(property.referencedEntityId)
             const sourceProperty = referencedEntity.oneToOneSourcePropertyMap.get(property.mappedById)
             if (sourceProperty === undefined) throw new Error(`[${property.mappedById}] not found`)
             propertyList.push({
@@ -208,7 +150,7 @@ export const kotlinEntityGenerator: EntityGenerator = (
             })
             pushIdViewProperty(property, referencedEntity)
         } else if (property.category === "ManyToOne") {
-            const referencedEntity = pushEntity(property.referencedEntityId)
+            const referencedEntity = builder.requireEntity(property.referencedEntityId)
             const joinAnnotation = buildJoinAnnotation(property.joinInfo)
             propertyList.push({
                 name: property.name,
@@ -222,7 +164,7 @@ export const kotlinEntityGenerator: EntityGenerator = (
             })
             pushIdViewProperty(property, referencedEntity)
         } else if (property.category === "OneToMany") {
-            const referencedEntity = pushEntity(property.referencedEntityId)
+            const referencedEntity = builder.requireEntity(property.referencedEntityId)
             const sourceProperty = referencedEntity.manyToOnePropertyMap.get(property.mappedById)
             if (sourceProperty === undefined) throw new Error(`[${property.mappedById}] not found`)
             propertyList.push({
@@ -236,7 +178,7 @@ export const kotlinEntityGenerator: EntityGenerator = (
             })
             pushIdViewProperty(property, referencedEntity)
         } else if (property.category === "ManyToMany_Source") {
-            const referencedEntity = pushEntity(property.referencedEntityId)
+            const referencedEntity = builder.requireEntity(property.referencedEntityId)
             const joinAnnotation = buildJoinAnnotation(property.joinInfo)
             propertyList.push({
                 name: property.name,
@@ -250,7 +192,7 @@ export const kotlinEntityGenerator: EntityGenerator = (
             })
             pushIdViewProperty(property, referencedEntity)
         } else if (property.category === "ManyToMany_Mapped") {
-            const referencedEntity = pushEntity(property.referencedEntityId)
+            const referencedEntity = builder.requireEntity(property.referencedEntityId)
             const sourceProperty = referencedEntity.manyToManySourcePropertyMap.get(property.mappedById)
             if (sourceProperty === undefined) throw new Error(`[${property.mappedById}] not found`)
             propertyList.push({
@@ -267,14 +209,19 @@ export const kotlinEntityGenerator: EntityGenerator = (
         // TODO
     }
 
-    result[`/entity/${entity.name}.kt`] = `package ${packagePath}
+    const entityExtends = entity.directExtends.size > 0 ?
+        " :\n    " + [...entity.directExtends].map(mappedSuperClass => mappedSuperClass.name).join(",\n    ") + "\n" : " "
 
-${[...importSet].sort((a, b) => a.localeCompare(b)).map(importItem => `import ${importItem}`).join("\n")}
+    result[`/entity/${entity.name}.kt`] = `package ${builder.getPackagePath()}
+
+${[...builder.getImportSet()]
+        .sort((a, b) => a.localeCompare(b))
+        .map(importItem => `import ${importItem}`).join("\n")}
 
 @Entity
 @Table(name = "${entity.tableName}")
 @KeyUniqueConstraint
-interface ${entity.name} {
+interface ${entity.name}${entityExtends}{
 ${propertyList
         .map(property =>
             `    ${property.annotations.join("\n    ")}
