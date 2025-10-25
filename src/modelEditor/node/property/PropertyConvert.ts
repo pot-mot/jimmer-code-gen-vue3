@@ -63,7 +63,7 @@ export const idToggleType = (
         ...toBaseProperty(property),
         category: "ID_COMMON",
         nullable: false,
-        rawType: typePair.jvmType.fullTypeExpression,
+        rawType: typePair.jvmType.typeExpression,
         extraImports: [...typePair.jvmType.extraImports, ...property.extraImports],
         columnInfo: createColumnInfo(property, typePair.sqlType),
         autoSyncColumnName: true,
@@ -222,7 +222,7 @@ export const toScalarCommonProperty = (
     const scalarCommonProperty: ScalarCommonProperty = {
         ...toBaseProperty(property),
         category: "SCALAR_COMMON",
-        rawType: typePair.jvmType.fullTypeExpression,
+        rawType: typePair.jvmType.typeExpression,
         extraImports: Array.from(typePair.jvmType.extraImports),
         serialized: false,
         columnInfo: createColumnInfo(property, typePair.sqlType),

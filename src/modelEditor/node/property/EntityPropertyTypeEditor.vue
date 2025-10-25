@@ -98,9 +98,9 @@ const options = computed<TypeOptions>(() => {
         }
     } else {
         result.crossTypes = filteredCrossTypes.value.filter(crossType => {
-            return crossType.jvmType.fullTypeExpression.toLowerCase().includes(keyword) ||
+            return crossType.jvmType.typeExpression.toLowerCase().includes(keyword) ||
                 crossType.sqlType.type.toLowerCase().includes(keyword) ||
-                crossType.tsType.fullTypeExpression.toLowerCase().includes(keyword)
+                crossType.tsType.typeExpression.toLowerCase().includes(keyword)
         })
 
         for (const menuItem of menuMap.value.values()) {
@@ -361,7 +361,7 @@ const association = computed(() => {
                 <ul>
                     <li
                         class="select-item"
-                        :class="{selected: 'rawType' in property && property.rawType === type.jvmType.fullTypeExpression}"
+                        :class="{selected: 'rawType' in property && property.rawType === type.jvmType.typeExpression}"
                         v-for="type in options.crossTypes"
                         @click="selectBaseType(type)"
                     >

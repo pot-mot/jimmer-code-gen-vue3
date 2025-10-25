@@ -16,7 +16,7 @@ const SqlToJvmMappingRuleJsonSchema: JSONSchemaType<SqlToJvmMappingRule> = {
         "result": {
             "type": "object",
             "properties": {
-                "fullTypeExpression": {
+                "typeExpression": {
                     "type": "string"
                 },
                 "serialized": {
@@ -38,7 +38,7 @@ const SqlToJvmMappingRuleJsonSchema: JSONSchemaType<SqlToJvmMappingRule> = {
             "required": [
                 "extraAnnotations",
                 "extraImports",
-                "fullTypeExpression",
+                "typeExpression",
                 "serialized"
             ]
         }

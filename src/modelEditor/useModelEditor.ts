@@ -121,13 +121,13 @@ export const useModelEditor = createStore(() => {
                 dataSize: 255,
             },
             jvmType: {
-                fullTypeExpression: "String",
+                typeExpression: "String",
                 serialized: false,
                 extraImports: [],
                 extraAnnotations: []
             },
             tsType: {
-                fullTypeExpression: "string",
+                typeExpression: "string",
                 extraImports: []
             }
         },
@@ -140,13 +140,13 @@ export const useModelEditor = createStore(() => {
                 dataSize: 10,
             },
             jvmType: {
-                fullTypeExpression: "int",
+                typeExpression: "int",
                 serialized: false,
                 extraImports: [],
                 extraAnnotations: []
             },
             tsType: {
-                fullTypeExpression: "number",
+                typeExpression: "number",
                 extraImports: []
             }
         },
@@ -159,13 +159,13 @@ export const useModelEditor = createStore(() => {
                 dataSize: 10,
             },
             jvmType: {
-                fullTypeExpression: "Int",
+                typeExpression: "Int",
                 serialized: false,
                 extraImports: [],
                 extraAnnotations: []
             },
             tsType: {
-                fullTypeExpression: "number",
+                typeExpression: "number",
                 extraImports: []
             }
         }

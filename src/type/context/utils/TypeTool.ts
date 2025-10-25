@@ -44,7 +44,7 @@ export const buildTypeTool = (
                 }
             }
             return {
-                fullTypeExpression: "String",
+                typeExpression: "String",
                 extraImports: [],
                 extraAnnotations: [],
                 serialized: false,
@@ -70,7 +70,7 @@ export const buildTypeTool = (
                 }
             }
             return {
-                fullTypeExpression: "string",
+                typeExpression: "string",
                 extraImports: []
             }
         }

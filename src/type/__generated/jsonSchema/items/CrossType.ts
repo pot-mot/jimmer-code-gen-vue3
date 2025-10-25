@@ -36,7 +36,7 @@ const CrossTypeJsonSchema: JSONSchemaType<CrossType> = {
         "jvmType": {
             "type": "object",
             "properties": {
-                "fullTypeExpression": {
+                "typeExpression": {
                     "type": "string"
                 },
                 "serialized": {
@@ -58,14 +58,14 @@ const CrossTypeJsonSchema: JSONSchemaType<CrossType> = {
             "required": [
                 "extraAnnotations",
                 "extraImports",
-                "fullTypeExpression",
+                "typeExpression",
                 "serialized"
             ]
         },
         "tsType": {
             "type": "object",
             "properties": {
-                "fullTypeExpression": {
+                "typeExpression": {
                     "type": "string"
                 },
                 "extraImports": {
@@ -89,7 +89,7 @@ const CrossTypeJsonSchema: JSONSchemaType<CrossType> = {
             },
             "required": [
                 "extraImports",
-                "fullTypeExpression"
+                "typeExpression"
             ]
         }
     },

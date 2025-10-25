@@ -4,7 +4,7 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const JvmTypeJsonSchema: JSONSchemaType<JvmType> = {
     "type": "object",
     "properties": {
-        "fullTypeExpression": {
+        "typeExpression": {
             "type": "string"
         },
         "serialized": {
@@ -26,7 +26,7 @@ const JvmTypeJsonSchema: JSONSchemaType<JvmType> = {
     "required": [
         "extraAnnotations",
         "extraImports",
-        "fullTypeExpression",
+        "typeExpression",
         "serialized"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"

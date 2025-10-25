@@ -10,14 +10,14 @@ type SqlType = {
 }
 
 type JvmType = {
-    fullTypeExpression: string
+    typeExpression: string
     serialized: boolean
     extraImports: string[]
     extraAnnotations: string[]
 }
 
 type TsType = {
-    fullTypeExpression: string
+    typeExpression: string
     extraImports: {
         name: string
         fromPath: string

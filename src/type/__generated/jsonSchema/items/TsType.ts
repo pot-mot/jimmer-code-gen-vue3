@@ -4,7 +4,7 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const TsTypeJsonSchema: JSONSchemaType<TsType> = {
     "type": "object",
     "properties": {
-        "fullTypeExpression": {
+        "typeExpression": {
             "type": "string"
         },
         "extraImports": {
@@ -28,7 +28,7 @@ const TsTypeJsonSchema: JSONSchemaType<TsType> = {
     },
     "required": [
         "extraImports",
-        "fullTypeExpression"
+        "typeExpression"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
 } as any as JSONSchemaType<TsType>

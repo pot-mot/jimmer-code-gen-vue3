@@ -7,7 +7,7 @@ defineProps<{
 <template>
     <span class="type-pair-viewer">
         <span class="back-end-type">
-            {{ typePair.jvmType.fullTypeExpression }}
+            {{ typePair.jvmType.typeExpression }}
         </span>
         -
         <span class="sql-type">

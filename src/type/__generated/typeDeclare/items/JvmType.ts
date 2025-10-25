@@ -1,7 +1,7 @@
 export default Object.freeze({
     fileName: 'JvmType.d.ts',
     content: `type JvmType = {
-    fullTypeExpression: string
+    typeExpression: string
     serialized: boolean
     extraImports: string[]
     extraAnnotations: string[]

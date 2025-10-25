@@ -13,7 +13,7 @@ const JvmToTsMappingRuleJsonSchema: JSONSchemaType<JvmToTsMappingRule> = {
         "result": {
             "type": "object",
             "properties": {
-                "fullTypeExpression": {
+                "typeExpression": {
                     "type": "string"
                 },
                 "extraImports": {
@@ -37,7 +37,7 @@ const JvmToTsMappingRuleJsonSchema: JSONSchemaType<JvmToTsMappingRule> = {
             },
             "required": [
                 "extraImports",
-                "fullTypeExpression"
+                "typeExpression"
             ]
         }
     },
