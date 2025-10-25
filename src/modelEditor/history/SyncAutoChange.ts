@@ -27,7 +27,7 @@ export const syncEntityAutoChange = (
             if (edgedAssociation === undefined) return
             const association = edgedAssociation.association
             try {
-                property.joinInfo = generateJoinInfo(property, association.foreignKeyType, entity, contextData)
+                property.joinInfo = generateJoinInfo(property, association, entity, contextData)
             } catch (e) {
                 console.warn(e)
                 // 阻止生成 JoinInfo 失败导致历史记录执行失败
@@ -56,7 +56,7 @@ export const syncMappedSuperClassAutoChange = (
             if (edgedAssociation === undefined) return
             const association = edgedAssociation.association
             try {
-                property.joinInfo = generateFkJoinInfo(property, association.foreignKeyType, contextData)
+                property.joinInfo = generateFkJoinInfo(property, association, contextData)
             } catch (e) {
                 console.warn(e)
                 // 阻止生成 JoinInfo 失败导致历史记录执行失败

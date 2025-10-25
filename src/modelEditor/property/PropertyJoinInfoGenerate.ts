@@ -1,14 +1,11 @@
 import {nameTool} from "@/type/context/utils/NameTool.ts";
 import {getEntityIdProperties} from "@/type/context/utils/EntityCategorizedProperty.ts";
 import {flatEmbeddableTypeColumnNames} from "@/type/context/utils/EmbeddableTypeFlat.ts";
-import {
-    MID_TABLE_COMMENT_TEMPLATE,
-    MID_TABLE_NAME_TEMPLATE,
-} from "@/type/context/utils/AssociationTemplate.ts";
+import {tmpl_midTableComment, tmpl_midTableName} from "@/type/context/utils/AssociationTemplate.ts";
 
 const _generateFkJoinInfo = (
     property: DeepReadonly<OneToOneSourceProperty | ManyToOneProperty>,
-    foreignKeyType: ForeignKeyType,
+    association: DeepReadonly<AssociationIdOnly>,
     entityMap: DeepReadonly<Map<string, EntityWithProperties>>,
     mappedSuperClassMap: DeepReadonly<Map<string, MappedSuperClassWithProperties>>,
     embeddableTypeMap: DeepReadonly<Map<string, EmbeddableTypeWithProperties>>,
@@ -31,25 +28,25 @@ const _generateFkJoinInfo = (
                 columnName: nameTool.convert(referencedEntity.name + nameTool.convert(columnName, databaseNameStrategy, 'UPPER_CAMEL'), 'UPPER_CAMEL', databaseNameStrategy),
                 referencedColumnName: columnName,
             })),
-            foreignKeyType,
+            foreignKeyType: association.foreignKeyType,
         }
     } else {
         return {
             type: "SingleColumn",
             columnName: nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy),
-            foreignKeyType,
+            foreignKeyType: association.foreignKeyType,
         }
     }
 }
 
 export const generateFkJoinInfo = (
     property: DeepReadonly<OneToOneSourceProperty | ManyToOneProperty>,
-    foreignKeyType: ForeignKeyType,
+    association: DeepReadonly<AssociationIdOnly>,
     contextData: DeepReadonly<ModelContextData>,
 ) => {
     return _generateFkJoinInfo(
         property,
-        foreignKeyType,
+        association,
         contextData.entityMap,
         contextData.mappedSuperClassMap,
         contextData.embeddableTypeMap,
@@ -57,9 +54,45 @@ export const generateFkJoinInfo = (
     )
 }
 
+const translateMidTableName = (
+    association: DeepReadonly<AssociationIdOnly>,
+    entityMap: DeepReadonly<Map<string, Entity>>,
+    mappedSuperClassMap: DeepReadonly<Map<string, MappedSuperClass>>,
+) => {
+    if ("name" in association) {
+        return association.name
+    } else {
+        const referencedEntity = entityMap.get(association.referencedEntityId)
+        const abstractEntity = mappedSuperClassMap.get(association.sourceAbstractEntityId)
+        return tmpl_midTableName(
+            association.nameTemplate,
+            abstractEntity ? {name: `$${abstractEntity.name}$`} : {name: "[NOT_EXISTED]"},
+            referencedEntity ?? {name: "[NOT_EXISTED]"},
+        )
+    }
+}
+
+const translateMidTableComment = (
+    association: DeepReadonly<AssociationIdOnly>,
+    entityMap: DeepReadonly<Map<string, Entity>>,
+    mappedSuperClassMap: DeepReadonly<Map<string, MappedSuperClass>>,
+) => {
+    if ("comment" in association) {
+        return association.comment
+    } else {
+        const referencedEntity = entityMap.get(association.referencedEntityId)
+        const abstractEntity = mappedSuperClassMap.get(association.sourceAbstractEntityId)
+        return tmpl_midTableComment(
+            association.nameTemplate,
+            abstractEntity ? {comment: `$${abstractEntity.comment}$`} : {comment: "[NOT_EXISTED]"},
+            referencedEntity ?? {comment: "[NOT_EXISTED]"},
+        )
+    }
+}
+
 const _generateJoinInfo = (
     property: DeepReadonly<OneToOneSourceProperty | ManyToOneProperty | ManyToManySourceProperty>,
-    foreignKeyType: ForeignKeyType,
+    association: DeepReadonly<AssociationIdOnly>,
     entity: DeepReadonly<EntityWithProperties>,
     entityMap: DeepReadonly<Map<string, EntityWithProperties>>,
     mappedSuperClassMap: DeepReadonly<Map<string, MappedSuperClassWithProperties>>,
@@ -84,13 +117,13 @@ const _generateJoinInfo = (
                     columnName: nameTool.convert(referencedEntity.name + nameTool.convert(columnName, databaseNameStrategy, 'UPPER_CAMEL'), 'UPPER_CAMEL', databaseNameStrategy),
                     referencedColumnName: columnName,
                 })),
-                foreignKeyType,
+                foreignKeyType: association.foreignKeyType,
             }
         } else {
             return {
                 type: "SingleColumn",
                 columnName: nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy),
-                foreignKeyType,
+                foreignKeyType: association.foreignKeyType,
             }
         }
     } else {
@@ -103,12 +136,12 @@ const _generateJoinInfo = (
         if (!("embeddableTypeId" in sourceIdProperty) && !("embeddableTypeId" in referencedIdProperty)) {
             return {
                 type: "SingleColumnMidTable",
-                tableName: MID_TABLE_NAME_TEMPLATE,
-                tableComment: MID_TABLE_COMMENT_TEMPLATE,
+                tableName: translateMidTableName(association, entityMap, mappedSuperClassMap),
+                tableComment: translateMidTableComment(association, entityMap, mappedSuperClassMap),
                 sourceColumnName: nameTool.convert(entity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
                 targetColumnName: nameTool.convert(referencedEntity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
-                sourceForeignKeyType: foreignKeyType,
-                targetForeignKeyType: foreignKeyType,
+                sourceForeignKeyType: association.foreignKeyType,
+                targetForeignKeyType: association.foreignKeyType,
             }
         } else {
             let sourceJoinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
@@ -123,13 +156,13 @@ const _generateJoinInfo = (
                         columnName: nameTool.convert(entity.name + nameTool.convert(columnName, databaseNameStrategy, 'UPPER_CAMEL'), 'UPPER_CAMEL', databaseNameStrategy),
                         referencedColumnName: columnName,
                     })),
-                    foreignKeyType,
+                    foreignKeyType: association.foreignKeyType,
                 }
             } else {
                 sourceJoinInfo = {
                     type: "SingleColumn",
                     columnName: nameTool.convert(entity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
-                    foreignKeyType,
+                    foreignKeyType: association.foreignKeyType,
                 }
             }
 
@@ -142,13 +175,13 @@ const _generateJoinInfo = (
                         columnName: nameTool.convert(referencedEntity.name + nameTool.convert(columnName, databaseNameStrategy, 'UPPER_CAMEL'), 'UPPER_CAMEL', databaseNameStrategy),
                         referencedColumnName: columnName,
                     })),
-                    foreignKeyType,
+                    foreignKeyType: association.foreignKeyType,
                 }
             } else {
                 targetJoinInfo = {
                     type: "SingleColumn",
                     columnName: nameTool.convert(referencedEntity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
-                    foreignKeyType,
+                    foreignKeyType: association.foreignKeyType,
                 }
             }
 
@@ -156,8 +189,8 @@ const _generateJoinInfo = (
                 type: "MultiColumnMidTable",
                 sourceJoinInfo,
                 targetJoinInfo,
-                tableName: MID_TABLE_NAME_TEMPLATE,
-                tableComment: MID_TABLE_COMMENT_TEMPLATE,
+                tableName: translateMidTableName(association, entityMap, mappedSuperClassMap),
+                tableComment: translateMidTableComment(association, entityMap, mappedSuperClassMap),
             }
         }
     }
@@ -165,13 +198,13 @@ const _generateJoinInfo = (
 
 export const generateJoinInfo = (
     property: DeepReadonly<OneToOneSourceProperty | ManyToOneProperty | ManyToManySourceProperty>,
-    foreignKeyType: ForeignKeyType,
+    association: DeepReadonly<AssociationIdOnly>,
     entity: DeepReadonly<EntityWithProperties>,
     contextData: DeepReadonly<ModelContextData>,
 ) => {
     return _generateJoinInfo(
         property,
-        foreignKeyType,
+        association,
         entity,
         contextData.entityMap,
         contextData.mappedSuperClassMap,
