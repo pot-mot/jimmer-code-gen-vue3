@@ -2,7 +2,7 @@ import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
 import {mysqlTableGenerator} from "@/type/script/default/TableGenerator/mysqlTableGenerator.ts";
 
 const scriptInfo: ScriptInfo<"TableGenerator"> = {
-    key: "mysqlTableGenerator",
+    id: "mysqlTableGenerator",
     name: "mysqlTableGenerator",
     type: "TableGenerator",
     enabled: true,

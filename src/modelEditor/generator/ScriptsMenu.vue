@@ -17,22 +17,22 @@ const emits = defineEmits<{
 <template>
     <div
         v-for="scriptInfo of scriptOperator.getScriptInfos({databaseType, jvmLanguage})"
-        :key="scriptInfo.key"
+        :key="scriptInfo.id"
     >
         <div class="script-info-item" @click="() => emits('select', scriptInfo)">
             <input
                 type="checkbox"
                 :value="scriptInfo.enabled"
                 @click="() => {
-                    if (scriptInfo.enabled) scriptOperator.disable(scriptInfo.key)
-                    else scriptOperator.enable(scriptInfo.key)
+                    if (scriptInfo.enabled) scriptOperator.disable(scriptInfo.id)
+                    else scriptOperator.enable(scriptInfo.id)
                 }"
             >
             <input
                 :value="scriptInfo.name"
-                @change="scriptOperator.rename(scriptInfo.key, ($event.target as HTMLInputElement).value)"
+                @change="scriptOperator.rename(scriptInfo.id, ($event.target as HTMLInputElement).value)"
             >
-            <button @click="scriptOperator.remove(scriptInfo.key)">
+            <button @click="scriptOperator.remove(scriptInfo.id)">
                 <IconDelete/>
             </button>
         </div>

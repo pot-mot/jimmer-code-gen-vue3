@@ -2,7 +2,7 @@ import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
 import {kotlinEntityGenerator} from "@/type/script/default/EntityGenerator/kotlinEntityGenerator.ts";
 
 const scriptInfo: ScriptInfo<"EntityGenerator"> = {
-    key: "kotlinEntityGenerator",
+    id: "kotlinEntityGenerator",
     name: "kotlinEntityGenerator",
     type: "EntityGenerator",
     enabled: true,

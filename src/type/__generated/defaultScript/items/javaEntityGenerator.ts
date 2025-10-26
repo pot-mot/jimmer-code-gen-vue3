@@ -2,7 +2,7 @@ import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
 import {javaEntityGenerator} from "@/type/script/default/EntityGenerator/javaEntityGenerator.ts";
 
 const scriptInfo: ScriptInfo<"EntityGenerator"> = {
-    key: "javaEntityGenerator",
+    id: "javaEntityGenerator",
     name: "javaEntityGenerator",
     type: "EntityGenerator",
     enabled: true,

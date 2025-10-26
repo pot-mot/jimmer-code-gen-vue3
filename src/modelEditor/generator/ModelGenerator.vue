@@ -34,7 +34,7 @@ const handleScriptInfoSelect = (scriptInfo: ScriptInfo<any>) => {
 }
 
 const handleScriptInfoSubmit = (scriptInfo: ScriptInfo<any>) => {
-    scriptsStore.value.update(scriptInfo.key, scriptInfo)
+    scriptsStore.value.update(scriptInfo.id, scriptInfo)
 }
 
 const generateResult = ref<Record<string, string>>()

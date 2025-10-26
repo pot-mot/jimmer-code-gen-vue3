@@ -413,7 +413,7 @@ const defaultScriptFiles = defaultScripts.map(it => {
 import {${it.name}} from "@/type/script/default/${it.fileName}";
 
 const scriptInfo: ScriptInfo<"${it.type}"> = {
-    key: "${it.name}",
+    id: "${it.name}",
     name: "${it.name}",
     type: "${it.type}",
     enabled: ${it.enabled},

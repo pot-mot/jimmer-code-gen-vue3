@@ -4,7 +4,7 @@ import {reactive, readonly} from "vue";
 import {defaultScripts} from "@/type/__generated/defaultScript";
 
 export type ScriptInfo<Name extends ScriptTypeName> = {
-    key: string
+    id: string
     name: string
     type: ScriptTypeName
     enabled: boolean
@@ -23,11 +23,11 @@ export type ScriptsStore<Name extends ScriptTypeName> = {
     readonly scriptInfoMap: DeepReadonly<Map<string, ScriptInfo<Name>>>
     readonly getScriptInfos: (options?: ScriptFilterOptions) => DeepReadonly<ScriptInfo<Name>[]>
     readonly add: (script: ScriptInfo<Name>) => void
-    readonly enable: (key: string) => boolean
-    readonly disable: (key: string) => boolean
-    readonly rename: (key: string, newName: string) => boolean
-    readonly update: (key: string, script: ScriptInfo<Name>) => boolean
-    readonly remove: (key: string) => boolean
+    readonly enable: (id: string) => boolean
+    readonly disable: (id: string) => boolean
+    readonly rename: (id: string, newName: string) => boolean
+    readonly update: (id: string, script: ScriptInfo<Name>) => boolean
+    readonly remove: (id: string) => boolean
 }
 
 export const createScriptsStore = <Name extends ScriptTypeName>(
@@ -36,7 +36,7 @@ export const createScriptsStore = <Name extends ScriptTypeName>(
     const scriptInfoMap = reactive(new Map<string, ScriptInfo<Name>>())
 
     for (const script of scripts) {
-        scriptInfoMap.set(script.key, script)
+        scriptInfoMap.set(script.id, script)
     }
 
     return Object.freeze({
@@ -52,13 +52,13 @@ export const createScriptsStore = <Name extends ScriptTypeName>(
             return result
         },
         add: (script: ScriptInfo<Name>) => {
-            if (scriptInfoMap.has(script.key)) {
-                throw new Error(`Script ${script.key} already exists`)
+            if (scriptInfoMap.has(script.id)) {
+                throw new Error(`Script ${script.id} already exists`)
             }
-            scriptInfoMap.set(script.key, script)
+            scriptInfoMap.set(script.id, script)
         },
-        enable: (key: string) => {
-            const script = scriptInfoMap.get(key)
+        enable: (id: string) => {
+            const script = scriptInfoMap.get(id)
             if (script) {
                 script.enabled = true
                 return true
@@ -66,8 +66,8 @@ export const createScriptsStore = <Name extends ScriptTypeName>(
                 return false
             }
         },
-        disable: (key: string) => {
-            const script = scriptInfoMap.get(key)
+        disable: (id: string) => {
+            const script = scriptInfoMap.get(id)
             if (script) {
                 script.enabled = false
                 return true
@@ -75,8 +75,8 @@ export const createScriptsStore = <Name extends ScriptTypeName>(
                 return false
             }
         },
-        rename: (key: string, newName: string) => {
-            const script = scriptInfoMap.get(key)
+        rename: (id: string, newName: string) => {
+            const script = scriptInfoMap.get(id)
             if (script) {
                 script.name = newName
                 return true
@@ -84,14 +84,14 @@ export const createScriptsStore = <Name extends ScriptTypeName>(
                 return false
             }
         },
-        update: (key: string, script: ScriptInfo<Name>) => {
-            if (!scriptInfoMap.has(script.key)) return false
-            scriptInfoMap.set(key, script)
+        update: (id: string, script: ScriptInfo<Name>) => {
+            if (!scriptInfoMap.has(script.id)) return false
+            scriptInfoMap.set(id, script)
             return true
         },
-        remove: (key: string) => {
-            if (!scriptInfoMap.has(key)) return false
-            scriptInfoMap.delete(key)
+        remove: (id: string) => {
+            if (!scriptInfoMap.has(id)) return false
+            scriptInfoMap.delete(id)
             return true
         }
     })
