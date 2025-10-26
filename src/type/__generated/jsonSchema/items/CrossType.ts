@@ -58,8 +58,8 @@ const CrossTypeJsonSchema: JSONSchemaType<CrossType> = {
             "required": [
                 "extraAnnotations",
                 "extraImports",
-                "typeExpression",
-                "serialized"
+                "serialized",
+                "typeExpression"
             ]
         },
         "tsType": {

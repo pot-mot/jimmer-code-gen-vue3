@@ -48,18 +48,32 @@ export const kotlinEntityGenerator: EntityGenerator = (
     const buildJoinAnnotation = (
         joinInfo: DeepReadonly<JoinInfo>,
     ): string => {
+        // TODO push import
         if (joinInfo.type === "SingleColumn") {
             return `@JoinColumn(name = "${joinInfo.columnName}")`
         } else if (joinInfo.type === "MultiColumn") {
-            // TODO
-            return `@JoinColumn`
+            return joinInfo.columnRefs.map(columnRef => {
+                return `@JoinColumn(
+    name = "${columnRef.columnName}",
+    referencedColumnName = "${columnRef.referencedColumnName}"
+)`
+            }).join('\n')
         } else if (joinInfo.type === "SingleColumnMidTable") {
-            // TODO
-            return ''
-        } else if (joinInfo.type === "MultiColumnMidTable") {
-            return ''
+            return `@JoinTable(
+    name = "${joinInfo.tableName}",
+    joinColumnName = "${joinInfo.sourceColumnName}",
+    inverseJoinColumnName = "${joinInfo.targetColumnName}"
+)`
         } else {
-            return ''
+            // TODO
+            return `@JoinTable(
+    name = "${joinInfo.tableName}",
+    joinColumns = [
+        
+    ],
+    inverseJoinColumns = [
+    ]
+)`
         }
     }
 
@@ -224,7 +238,10 @@ ${[...builder.getImportSet()]
 interface ${entity.name}${entityExtends}{
 ${propertyList
         .map(property =>
-            `    ${property.annotations.join("\n    ")}
+            `    ${property.annotations
+                .flatMap(it => it.split("\n"))
+                .filter(it => it.trim().length > 0)
+                .join("\n    ")}
     val ${property.name}: ${property.type}`
         )
         .join("\n\n")}

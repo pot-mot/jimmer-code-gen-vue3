@@ -168,18 +168,18 @@ export const entityToTable = (
             midTable.indexes.push({
                 name: midTable.name + "_S_U",
                 columnNames: sourceJoinColumnInfos.map(it => it.columnRef.columnName),
-                unique: true,
+                uniqueIndex: true,
             })
             midTable.indexes.push({
                 name: midTable.name + "_T_U",
                 columnNames: targetJoinColumnInfos.map(it => it.columnRef.columnName),
-                unique: true,
+                uniqueIndex: true,
             })
         } else if (associationType === "ManyToOne") {
             midTable.indexes.push({
                 name: midTable.name + "_T_U",
                 columnNames:  targetJoinColumnInfos.map(it => it.columnRef.columnName),
-                unique: true,
+                uniqueIndex: true,
             })
         }
 
@@ -248,7 +248,7 @@ export const entityToTable = (
                         table.indexes.push({
                             name: 'IDX_' + association.name,
                             columnNames: [property.joinInfo.columnName],
-                            unique: true,
+                            uniqueIndex: true,
                         })
                     }
 
@@ -295,7 +295,7 @@ export const entityToTable = (
                         table.indexes.push({
                             name: 'IDX_' + association.name,
                             columnNames: property.joinInfo.columnRefs.map(it => it.columnName),
-                            unique: true,
+                            uniqueIndex: true,
                         })
                     }
 

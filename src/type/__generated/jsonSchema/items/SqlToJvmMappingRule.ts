@@ -38,8 +38,8 @@ const SqlToJvmMappingRuleJsonSchema: JSONSchemaType<SqlToJvmMappingRule> = {
             "required": [
                 "extraAnnotations",
                 "extraImports",
-                "typeExpression",
-                "serialized"
+                "serialized",
+                "typeExpression"
             ]
         }
     },

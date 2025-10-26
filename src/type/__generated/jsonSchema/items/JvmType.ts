@@ -26,8 +26,8 @@ const JvmTypeJsonSchema: JSONSchemaType<JvmType> = {
     "required": [
         "extraAnnotations",
         "extraImports",
-        "typeExpression",
-        "serialized"
+        "serialized",
+        "typeExpression"
     ],
     "$schema": "http://json-schema.org/draft-07/schema#"
 } as any as JSONSchemaType<JvmType>

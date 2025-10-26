@@ -47,6 +47,7 @@ export const javaEntityGenerator: EntityGenerator = (
     const buildJoinAnnotation = (
         joinInfo: DeepReadonly<JoinInfo>,
     ): string => {
+        // TODO push import
         if (joinInfo.type === "SingleColumn") {
             return `@JoinColumn(name = "${joinInfo.columnName}")`
         } else if (joinInfo.type === "MultiColumn") {
@@ -54,8 +55,6 @@ export const javaEntityGenerator: EntityGenerator = (
             return `@JoinColumn`
         } else if (joinInfo.type === "SingleColumnMidTable") {
             // TODO
-            return ''
-        } else if (joinInfo.type === "MultiColumnMidTable") {
             return ''
         } else {
             return ''
@@ -223,7 +222,10 @@ ${[...builder.getImportSet()]
 public interface ${entity.name}${entityExtends}{
 ${propertyList
         .map(property =>
-            `    ${property.annotations.join("\n    ")}
+            `    ${property.annotations
+                .flatMap(it => it.split("\n"))
+                .filter(it => it.trim().length > 0)
+                .join("\n    ")}
     ${property.type} ${property.name}();`
         )
         .join("\n\n")}

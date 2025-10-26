@@ -74,7 +74,7 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                             "type": "string"
                         }
                     },
-                    "unique": {
+                    "uniqueIndex": {
                         "type": "boolean"
                     },
                     "wherePredicates": {
@@ -84,7 +84,7 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                 "required": [
                     "columnNames",
                     "name",
-                    "unique"
+                    "uniqueIndex"
                 ]
             }
         },

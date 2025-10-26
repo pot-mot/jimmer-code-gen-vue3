@@ -31,7 +31,7 @@ type Column = {
 type Index = {
     name: string
     columnNames: string[]
-    unique: boolean
+    uniqueIndex: boolean
     wherePredicates?: string
 }
 

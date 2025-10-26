@@ -60,6 +60,7 @@ import IdCommonPropertyDeclare from "./items/IdCommonProperty.ts";
 import IdEmbeddablePropertyDeclare from "./items/IdEmbeddableProperty.ts";
 import IndexDeclare from "./items/Index.ts";
 import JoinInfoDeclare from "./items/JoinInfo.ts";
+import JvmFileBuilderDeclare from "./items/JvmFileBuilder.ts";
 import JvmLanguageDeclare from "./items/JvmLanguage.ts";
 import JvmSourceDeclare from "./items/JvmSource.ts";
 import JvmToSqlMappingRuleDeclare from "./items/JvmToSqlMappingRule.ts";
@@ -113,6 +114,7 @@ import OneToOneSourcePropertyDeclare from "./items/OneToOneSourceProperty.ts";
 import OrderDirectionDeclare from "./items/OrderDirection.ts";
 import PositionDeclare from "./items/Position.ts";
 import PropertyDeclare from "./items/Property.ts";
+import PropertyItemDeclare from "./items/PropertyItem.ts";
 import ScalarCommonPropertyDeclare from "./items/ScalarCommonProperty.ts";
 import ScalarEmbeddablePropertyDeclare from "./items/ScalarEmbeddableProperty.ts";
 import ScalarEnumPropertyDeclare from "./items/ScalarEnumProperty.ts";
@@ -189,6 +191,7 @@ export type TypeMap = {
     IdEmbeddableProperty: IdEmbeddableProperty
     Index: Index
     JoinInfo: JoinInfo
+    JvmFileBuilder: JvmFileBuilder
     JvmLanguage: JvmLanguage
     JvmSource: JvmSource
     JvmToSqlMappingRule: JvmToSqlMappingRule
@@ -242,6 +245,7 @@ export type TypeMap = {
     OrderDirection: OrderDirection
     Position: Position
     Property: Property
+    PropertyItem: PropertyItem
     ScalarCommonProperty: ScalarCommonProperty
     ScalarEmbeddableProperty: ScalarEmbeddableProperty
     ScalarEnumProperty: ScalarEnumProperty
@@ -322,6 +326,7 @@ export const typeDeclares = Object.freeze({
     IdEmbeddableProperty: IdEmbeddablePropertyDeclare,
     Index: IndexDeclare,
     JoinInfo: JoinInfoDeclare,
+    JvmFileBuilder: JvmFileBuilderDeclare,
     JvmLanguage: JvmLanguageDeclare,
     JvmSource: JvmSourceDeclare,
     JvmToSqlMappingRule: JvmToSqlMappingRuleDeclare,
@@ -375,6 +380,7 @@ export const typeDeclares = Object.freeze({
     OrderDirection: OrderDirectionDeclare,
     Position: PositionDeclare,
     Property: PropertyDeclare,
+    PropertyItem: PropertyItemDeclare,
     ScalarCommonProperty: ScalarCommonPropertyDeclare,
     ScalarEmbeddableProperty: ScalarEmbeddablePropertyDeclare,
     ScalarEnumProperty: ScalarEnumPropertyDeclare,

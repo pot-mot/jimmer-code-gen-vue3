@@ -43,7 +43,7 @@ const scriptInfo: ScriptInfo<"TableGenerator"> = {
         FOREIGN KEY (\${foreignKey.columnRefs.map(it => it.columnName).join(", ")}) 
             REFERENCES \${foreignKey.referencedTableName} (\${foreignKey.columnRefs.map(it => it.referencedColumnName).join(", ")});
 \`),
-                createIndexes: table.indexes.map(index => \`CREATE \${index.unique ? "UNIQUE" : ""} INDEX \${index.name} ON \${table.name} (\${index.columnNames.join(", ")});\`)
+                createIndexes: table.indexes.map(index => \`CREATE \${index.uniqueIndex ? "UNIQUE" : ""} INDEX \${index.name} ON \${table.name} (\${index.columnNames.join(", ")});\`)
             },
         )
     }
