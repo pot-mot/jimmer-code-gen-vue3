@@ -7,7 +7,7 @@ export default Object.freeze({
     createdTime: string
     modifiedTime: string
     databaseType: DatabaseType
-    databaseNameStrategy: NameStrategy
+    databaseNameStrategy: "UPPER_SNAKE" | "LOWER_SNAKE"
     defaultForeignKeyType: ForeignKeyType
     jvmLanguage: JvmLanguage
     defaultEnumerationStrategy: EnumerationStrategy

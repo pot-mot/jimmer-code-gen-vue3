@@ -23,7 +23,11 @@ const ModelJsonSchema: JSONSchemaType<Model> = {
             "$ref": "#/definitions/DatabaseType"
         },
         "databaseNameStrategy": {
-            "$ref": "#/definitions/NameStrategy"
+            "enum": [
+                "LOWER_SNAKE",
+                "UPPER_SNAKE"
+            ],
+            "type": "string"
         },
         "defaultForeignKeyType": {
             "$ref": "#/definitions/ForeignKeyType"
@@ -56,17 +60,6 @@ const ModelJsonSchema: JSONSchemaType<Model> = {
                 "POSTGRESQL",
                 "SQLITE",
                 "SQLSERVER"
-            ],
-            "type": "string"
-        },
-        "NameStrategy": {
-            "enum": [
-                "LOWER_CAMEL",
-                "LOWER_KEBAB",
-                "LOWER_SNAKE",
-                "UPPER_CAMEL",
-                "UPPER_KEBAB",
-                "UPPER_SNAKE"
             ],
             "type": "string"
         },
