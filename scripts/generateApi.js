@@ -5,7 +5,7 @@ import { v4 } from "uuid";
 import os from "os";
 import AdmZip from "adm-zip";
 
-const sourceUrl = "http://localhost:8080/ts.zip";
+const sourceUrl = "http://localhost:39000/ts.zip";
 const tmpFilePath = os.tmpdir() + "/" + v4() + ".zip";
 const generatePath = "src/api/__generated";
 
