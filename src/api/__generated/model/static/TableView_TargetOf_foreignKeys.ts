@@ -1,4 +1,4 @@
-import type {TableView_TargetOf_foreignKeys_TargetOf_columnRefs} from './';
+import type {DbColumnRef} from './';
 
 export interface TableView_TargetOf_foreignKeys {
     id: string;
@@ -8,5 +8,5 @@ export interface TableView_TargetOf_foreignKeys {
     referencedTableSchema: string;
     onUpdate?: string | undefined;
     onDelete?: string | undefined;
-    columnRefs: Array<TableView_TargetOf_foreignKeys_TargetOf_columnRefs>;
+    columnRefs: Array<DbColumnRef>;
 }
