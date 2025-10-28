@@ -13,6 +13,7 @@ export const pgTableGenerator: TableGenerator = (
     }>()
 
     for (const table of tables) {
+        // TODO add table checks
         statementMap.set(
             table.name,
             {
@@ -22,8 +23,6 @@ ${table.columns.map(column => `    ${column.name} ${column.type} ${
     column.nullable ? '' : 'NOT NULL'
 } ${
     column.defaultValue ? `DEFAULT ${column.defaultValue}` : ''
-} ${
-    column.otherConstraints ? column.otherConstraints.join(' ') : ''
 }`.trimEnd()).join(",\n")},
     PRIMARY KEY (${table.columns.filter(it => it.partOfPrimaryKey).map(it => it.name).join(", ")})
 );

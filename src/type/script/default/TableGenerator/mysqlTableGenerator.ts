@@ -13,6 +13,7 @@ export const mysqlTableGenerator: TableGenerator = (
     }>()
 
     for (const table of tables) {
+        // TODO add table checks
         statementMap.set(
             table.name,
             {
@@ -24,8 +25,6 @@ ${table.columns.map(column => `    ${column.name} ${column.type} ${
     column.defaultValue ? `DEFAULT ${column.defaultValue}` : ''
 } ${
     column.autoIncrement ? 'AUTO INCREMENT' : ''
-} ${
-    column.otherConstraints ? column.otherConstraints.join(' ') : ''
 } ${
     column.comment ? `COMMENT '${column.comment}'` : ''
 }`.trimEnd()).join(",\n")},

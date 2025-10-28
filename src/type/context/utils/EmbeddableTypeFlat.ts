@@ -5,7 +5,6 @@ const scalarPropertyToColumn = (
 ): Column => {
     return {
         ...property.columnInfo,
-        otherConstraints: property.columnInfo.otherConstraints ? [...property.columnInfo.otherConstraints] : undefined
     }
 }
 

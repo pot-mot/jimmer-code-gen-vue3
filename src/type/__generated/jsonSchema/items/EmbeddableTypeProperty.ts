@@ -597,12 +597,6 @@ const EmbeddableTypePropertyJsonSchema: JSONSchemaType<EmbeddableTypeProperty> =
                 },
                 "defaultValue": {
                     "type": "string"
-                },
-                "otherConstraints": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             },
             "required": [

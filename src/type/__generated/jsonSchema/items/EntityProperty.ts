@@ -1323,12 +1323,6 @@ const EntityPropertyJsonSchema: JSONSchemaType<EntityProperty> = {
                 },
                 "defaultValue": {
                     "type": "string"
-                },
-                "otherConstraints": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             },
             "required": [

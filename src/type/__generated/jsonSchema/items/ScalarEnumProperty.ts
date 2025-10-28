@@ -296,12 +296,6 @@ const ScalarEnumPropertyJsonSchema: JSONSchemaType<ScalarEnumProperty> = {
                 },
                 "defaultValue": {
                     "type": "string"
-                },
-                "otherConstraints": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             },
             "required": [

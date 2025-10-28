@@ -1,5 +1,6 @@
 import BaseAssociationPropertyJsonSchema from "./items/BaseAssociationProperty.ts";
 import BasePropertyJsonSchema from "./items/BaseProperty.ts";
+import CheckJsonSchema from "./items/Check.ts";
 import ColumnJsonSchema from "./items/Column.ts";
 import ColumnInfoJsonSchema from "./items/ColumnInfo.ts";
 import ColumnNameOverrideJsonSchema from "./items/ColumnNameOverride.ts";
@@ -78,6 +79,7 @@ import MappedSuperClassWithPropertiesJsonSchema from "../../context/jsonSchema/M
 export const jsonSchemas = Object.freeze({
     BaseAssociationProperty: BaseAssociationPropertyJsonSchema,
     BaseProperty: BasePropertyJsonSchema,
+    Check: CheckJsonSchema,
     Column: ColumnJsonSchema,
     ColumnInfo: ColumnInfoJsonSchema,
     ColumnNameOverride: ColumnNameOverrideJsonSchema,

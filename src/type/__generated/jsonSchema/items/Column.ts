@@ -30,12 +30,6 @@ const ColumnJsonSchema: JSONSchemaType<Column> = {
         },
         "autoIncrement": {
             "type": "boolean"
-        },
-        "otherConstraints": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
         }
     },
     "required": [

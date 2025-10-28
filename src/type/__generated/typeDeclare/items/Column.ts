@@ -10,6 +10,5 @@ export default Object.freeze({
     defaultValue?: string
     partOfPrimaryKey?: boolean
     autoIncrement?: boolean
-    otherConstraints?: string[]
 }`,
 })

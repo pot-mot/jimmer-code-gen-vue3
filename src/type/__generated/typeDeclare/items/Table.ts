@@ -7,5 +7,6 @@ export default Object.freeze({
     columns: Column[]
     indexes: Index[]
     foreignKeys: ForeignKey[]
+    checks: Check[]
 }`,
 })

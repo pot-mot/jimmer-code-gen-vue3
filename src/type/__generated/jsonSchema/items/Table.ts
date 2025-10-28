@@ -44,12 +44,6 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                     },
                     "autoIncrement": {
                         "type": "boolean"
-                    },
-                    "otherConstraints": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
                     }
                 },
                 "required": [
@@ -138,9 +132,28 @@ const TableJsonSchema: JSONSchemaType<Table> = {
                     "referencedTableSchema"
                 ]
             }
+        },
+        "checks": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "expression": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "expression",
+                    "name"
+                ]
+            }
         }
     },
     "required": [
+        "checks",
         "columns",
         "comment",
         "foreignKeys",

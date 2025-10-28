@@ -8,6 +8,7 @@ import AssociationSourceDeclare from "./items/AssociationSource.ts";
 import BaseAssociationPropertyDeclare from "./items/BaseAssociationProperty.ts";
 import BasePropertyDeclare from "./items/BaseProperty.ts";
 import CategorizedEmbeddableTypePropertiesDeclare from "./items/CategorizedEmbeddableTypeProperties.ts";
+import CheckDeclare from "./items/Check.ts";
 import ColumnDeclare from "./items/Column.ts";
 import ColumnInfoDeclare from "./items/ColumnInfo.ts";
 import ColumnNameOverrideDeclare from "./items/ColumnNameOverride.ts";
@@ -140,6 +141,7 @@ export type TypeMap = {
     BaseAssociationProperty: BaseAssociationProperty
     BaseProperty: BaseProperty
     CategorizedEmbeddableTypeProperties: CategorizedEmbeddableTypeProperties
+    Check: Check
     Column: Column
     ColumnInfo: ColumnInfo
     ColumnNameOverride: ColumnNameOverride
@@ -274,6 +276,7 @@ export const typeDeclares = Object.freeze({
     BaseAssociationProperty: BaseAssociationPropertyDeclare,
     BaseProperty: BasePropertyDeclare,
     CategorizedEmbeddableTypeProperties: CategorizedEmbeddableTypePropertiesDeclare,
+    Check: CheckDeclare,
     Column: ColumnDeclare,
     ColumnInfo: ColumnInfoDeclare,
     ColumnNameOverride: ColumnNameOverrideDeclare,

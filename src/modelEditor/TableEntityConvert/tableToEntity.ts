@@ -59,7 +59,6 @@ export const tableToEntity = (
                 numericPrecision: column.numericPrecision,
                 nullable: false,
                 defaultValue: column.defaultValue,
-                otherConstraints: column.otherConstraints === undefined ? undefined : [...column.otherConstraints],
             },
             autoSyncColumnName: true,
         }
@@ -85,7 +84,6 @@ export const tableToEntity = (
                 numericPrecision: column.numericPrecision,
                 nullable: column.nullable,
                 defaultValue: column.defaultValue,
-                otherConstraints: column.otherConstraints === undefined ? undefined : [...column.otherConstraints],
             },
             autoSyncColumnName: true,
         }

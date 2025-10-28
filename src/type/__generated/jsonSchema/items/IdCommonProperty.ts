@@ -167,12 +167,6 @@ const IdCommonPropertyJsonSchema: JSONSchemaType<IdCommonProperty> = {
                 },
                 "defaultValue": {
                     "type": "string"
-                },
-                "otherConstraints": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             },
             "required": [

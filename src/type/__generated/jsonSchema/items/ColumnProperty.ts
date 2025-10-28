@@ -46,12 +46,6 @@ const ColumnPropertyJsonSchema: JSONSchemaType<ColumnProperty> = {
                 },
                 "defaultValue": {
                     "type": "string"
-                },
-                "otherConstraints": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             },
             "required": [

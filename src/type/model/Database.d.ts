@@ -13,6 +13,7 @@ type Table = {
     columns: Column[]
     indexes: Index[]
     foreignKeys: ForeignKey[]
+    checks: Check[]
 }
 
 type Column = {
@@ -25,7 +26,6 @@ type Column = {
     defaultValue?: string
     partOfPrimaryKey?: boolean
     autoIncrement?: boolean
-    otherConstraints?: string[]
 }
 
 type Index = {
@@ -48,4 +48,9 @@ type ForeignKey = {
     columnRefs: ColumnRef[]
     onUpdate?: string
     onDelete?: string
+}
+
+type Check = {
+    name: string
+    expression: string
 }

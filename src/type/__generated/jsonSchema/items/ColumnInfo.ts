@@ -24,12 +24,6 @@ const ColumnInfoJsonSchema: JSONSchemaType<ColumnInfo> = {
         },
         "defaultValue": {
             "type": "string"
-        },
-        "otherConstraints": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
         }
     },
     "required": [

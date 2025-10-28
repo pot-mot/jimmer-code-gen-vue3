@@ -11,9 +11,10 @@ export const entityToTable = (
     ): Column => {
         return {
             ...property.columnInfo,
-            otherConstraints: property.columnInfo.otherConstraints ? [...property.columnInfo.otherConstraints] : undefined
         }
     }
+
+    // TODO add enumeration checks
 
     const flatEmbeddableTypeColumns = (
         embeddableTypeId: string,
@@ -117,7 +118,8 @@ export const entityToTable = (
             comment: options.midTable.comment,
             columns: [],
             indexes: [],
-            foreignKeys: []
+            foreignKeys: [],
+            checks: [],
         }
         for (const {columnRef, columnInfo} of sourceJoinColumnInfos) {
             midTable.columns.push({
@@ -127,7 +129,6 @@ export const entityToTable = (
                 nullable: false,
                 partOfPrimaryKey: true,
                 autoIncrement: false,
-                otherConstraints: []
             })
         }
         for (const {columnRef, columnInfo} of targetJoinColumnInfos) {
@@ -138,7 +139,6 @@ export const entityToTable = (
                 nullable: false,
                 partOfPrimaryKey: true,
                 autoIncrement: false,
-                otherConstraints: []
             })
         }
         if (sourceForeignKeyType === "REAL") {
@@ -203,7 +203,8 @@ export const entityToTable = (
             comment: entity.comment,
             columns: [],
             indexes: [],
-            foreignKeys: []
+            foreignKeys: [],
+            checks: [],
         }
         const idColumns = getEntityIdColumns(entity.id)
         table.columns.push(...idColumns)

@@ -107,12 +107,6 @@ const VersionPropertyJsonSchema: JSONSchemaType<VersionProperty> = {
                 },
                 "defaultValue": {
                     "type": "string"
-                },
-                "otherConstraints": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             },
             "required": [

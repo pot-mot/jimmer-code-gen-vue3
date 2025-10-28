@@ -326,12 +326,6 @@ const ScalarCommonPropertyJsonSchema: JSONSchemaType<ScalarCommonProperty> = {
                 },
                 "defaultValue": {
                     "type": "string"
-                },
-                "otherConstraints": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
                 }
             },
             "required": [
