@@ -23,6 +23,7 @@ export type {ModelView} from './ModelView';
 export type {SqlTypeInput} from './SqlTypeInput';
 export type {SqlTypeView} from './SqlTypeView';
 export type {TableView} from './TableView';
+export type {TableView_TargetOf_checks} from './TableView_TargetOf_checks';
 export type {TableView_TargetOf_columns} from './TableView_TargetOf_columns';
 export type {TableView_TargetOf_foreignKeys} from './TableView_TargetOf_foreignKeys';
 export type {TableView_TargetOf_indexes} from './TableView_TargetOf_indexes';

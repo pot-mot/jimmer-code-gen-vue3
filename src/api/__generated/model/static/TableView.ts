@@ -1,4 +1,9 @@
-import type {TableView_TargetOf_columns, TableView_TargetOf_foreignKeys, TableView_TargetOf_indexes} from './';
+import type {
+    TableView_TargetOf_checks, 
+    TableView_TargetOf_columns, 
+    TableView_TargetOf_foreignKeys, 
+    TableView_TargetOf_indexes
+} from './';
 
 export interface TableView {
     id: string;
@@ -8,4 +13,5 @@ export interface TableView {
     columns: Array<TableView_TargetOf_columns>;
     indexes: Array<TableView_TargetOf_indexes>;
     foreignKeys: Array<TableView_TargetOf_foreignKeys>;
+    checks: Array<TableView_TargetOf_checks>;
 }

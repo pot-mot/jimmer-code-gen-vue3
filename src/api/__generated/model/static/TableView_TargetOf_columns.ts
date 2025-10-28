@@ -9,5 +9,4 @@ export interface TableView_TargetOf_columns {
     defaultValue?: string | undefined;
     partOfPrimaryKey?: boolean | undefined;
     autoIncrement?: boolean | undefined;
-    otherConstraints?: Array<string> | undefined;
 }
