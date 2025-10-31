@@ -5,8 +5,22 @@ export class GenerateScriptService {
     
     constructor(private executor: Executor) {}
     
+    readonly get: (options: GenerateScriptServiceOptions['get']) => Promise<
+        GenerateScriptView | undefined
+    > = async(options) => {
+        let _uri = '/generateScript/get';
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.scriptId;
+        _uri += _separator
+        _uri += 'scriptId='
+        _uri += encodeURIComponent(_value);
+        _separator = '&';
+        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<GenerateScriptView | undefined>;
+    }
+    
     readonly insert: (options: GenerateScriptServiceOptions['insert']) => Promise<
-        string
+        GenerateScriptView
     > = async(options) => {
         let _uri = '/generateScript/insert';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -41,7 +55,7 @@ export class GenerateScriptService {
         _uri += 'scriptContent='
         _uri += encodeURIComponent(_value);
         _separator = '&';
-        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<string>;
+        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<GenerateScriptView>;
     }
     
     readonly list: () => Promise<
@@ -52,7 +66,7 @@ export class GenerateScriptService {
     }
     
     readonly update: (options: GenerateScriptServiceOptions['update']) => Promise<
-        string
+        GenerateScriptView
     > = async(options) => {
         let _uri = '/generateScript/update';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -92,12 +106,15 @@ export class GenerateScriptService {
         _uri += 'id='
         _uri += encodeURIComponent(_value);
         _separator = '&';
-        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<string>;
+        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<GenerateScriptView>;
     }
 }
 
 export type GenerateScriptServiceOptions = {
     'list': {}, 
+    'get': {
+        scriptId: string
+    }, 
     'insert': {
         input: GenerateScriptInsertInput
     }, 

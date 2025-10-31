@@ -70,10 +70,10 @@ export class ModelService {
     }
     
     readonly insert: (options: ModelServiceOptions['insert']) => Promise<
-        string
+        ModelNoJsonView
     > = async(options) => {
         let _uri = '/model/insert';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<string>;
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<ModelNoJsonView>;
     }
     
     readonly list: (options: ModelServiceOptions['list']) => Promise<
@@ -84,10 +84,10 @@ export class ModelService {
     }
     
     readonly update: (options: ModelServiceOptions['update']) => Promise<
-        string
+        ModelNoJsonView
     > = async(options) => {
         let _uri = '/model/update';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<string>;
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<ModelNoJsonView>;
     }
 }
 

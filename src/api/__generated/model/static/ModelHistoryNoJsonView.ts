@@ -2,8 +2,8 @@ import type {
     DatabaseType, 
     DbNameStrategy, 
     EnumerationStrategy, 
-    ForeignKeyType, 
-    JvmLanguage
+    JvmLanguage, 
+    ModelForeignKeyType
 } from '../enums/';
 
 export interface ModelHistoryNoJsonView {
@@ -13,7 +13,7 @@ export interface ModelHistoryNoJsonView {
     modifiedTime: string;
     databaseType: DatabaseType;
     databaseNameStrategy: DbNameStrategy;
-    defaultForeignKeyType: ForeignKeyType;
+    defaultForeignKeyType: ModelForeignKeyType;
     jvmLanguage: JvmLanguage;
     defaultEnumerationStrategy: EnumerationStrategy;
     modelId: string;

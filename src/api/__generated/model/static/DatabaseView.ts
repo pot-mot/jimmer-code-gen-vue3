@@ -5,6 +5,4 @@ export interface DatabaseView {
     type: DatabaseType;
     name: string;
     url: string;
-    username: string;
-    password: string;
 }

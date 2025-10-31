@@ -39,11 +39,25 @@ export class DatabaseService {
         return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<TableView>>;
     }
     
+    readonly get: (options: DatabaseServiceOptions['get']) => Promise<
+        DatabaseView
+    > = async(options) => {
+        let _uri = '/database/get';
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.databaseId;
+        _uri += _separator
+        _uri += 'databaseId='
+        _uri += encodeURIComponent(_value);
+        _separator = '&';
+        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<DatabaseView>;
+    }
+    
     readonly insert: (options: DatabaseServiceOptions['insert']) => Promise<
-        string
+        DatabaseView
     > = async(options) => {
         let _uri = '/database/insert';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<string>;
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<DatabaseView>;
     }
     
     readonly list: (options: DatabaseServiceOptions['list']) => Promise<
@@ -54,7 +68,7 @@ export class DatabaseService {
     }
     
     readonly refreshTables: (options: DatabaseServiceOptions['refreshTables']) => Promise<
-        void
+        Array<TableView>
     > = async(options) => {
         let _uri = '/database/refreshTables';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -64,7 +78,7 @@ export class DatabaseService {
         _uri += 'databaseId='
         _uri += encodeURIComponent(_value);
         _separator = '&';
-        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<void>;
+        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<TableView>>;
     }
     
     readonly test: (options: DatabaseServiceOptions['test']) => Promise<
@@ -82,16 +96,19 @@ export class DatabaseService {
     }
     
     readonly update: (options: DatabaseServiceOptions['update']) => Promise<
-        string
+        DatabaseView
     > = async(options) => {
         let _uri = '/database/update';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<string>;
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<DatabaseView>;
     }
 }
 
 export type DatabaseServiceOptions = {
     'list': {
         body: DatabaseSpec
+    }, 
+    'get': {
+        databaseId: string
     }, 
     'insert': {
         body: DatabaseInsertInput
