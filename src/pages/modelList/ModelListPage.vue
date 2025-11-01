@@ -84,10 +84,14 @@ const stopModelUpdate = () => {
 const submitModelUpdate = async () => {
     await withLoading("update model", async () => {
         if (modelUpdateInput.value !== undefined) {
-            await api.modelService.update({body: modelUpdateInput.value})
+            const result = await api.modelService.update({body: modelUpdateInput.value})
+            const index = modelList.value.findIndex(model => model.id === result.id)
+            if (index >= 0) {
+                modelList.value[index] = result
+            } else {
+                modelList.value.push(result)
+            }
             modelUpdateVisible.value = false
-            // 更新列表中的模型数据
-            await loadModelList()
         }
     })
 }
