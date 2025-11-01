@@ -1,5 +1,5 @@
 import {createStore} from "@/utils/store/createStore.ts";
-import {computed, nextTick, reactive, readonly, ref} from "vue";
+import {computed, nextTick, reactive, readonly, ref, shallowRef} from "vue";
 import {
     useModelEditorHistory,
 } from "@/modelEditor/history/ModelEditorHistory.ts";
@@ -83,11 +83,15 @@ const CLICK_ADD_NODE_OFFSET_X = 24
 const CLICK_ADD_NODE_OFFSET_Y = 16
 
 export const useModelEditor = createStore(() => {
+    const vueFlow = shallowRef<VueFlowStore>(useVueFlow(VUE_FLOW_ID))
+    const initVueFlow = () => {
+        vueFlow.value = useVueFlow(VUE_FLOW_ID)
+    }
     const getVueFlow = () => {
-        return useVueFlow(VUE_FLOW_ID)
+        return vueFlow.value
     }
     const viewport = computed<ViewportTransform>(() => {
-        return useVueFlow(VUE_FLOW_ID).viewport.value
+        return vueFlow.value.viewport.value
     })
     const zoom = computed<number>(() => {
         return viewport.value.zoom
@@ -621,7 +625,8 @@ export const useModelEditor = createStore(() => {
     })
 
     const initModelEditor = () => {
-        const vueFlow: VueFlowStore = getVueFlow()
+        initVueFlow()
+        const vueFlow = getVueFlow()
 
         setLayerConfigDefault(vueFlow)
 
@@ -853,6 +858,10 @@ export const useModelEditor = createStore(() => {
             })
         })
     }
+    const destroyModelEditor = () => {
+        remove(contextDataToSubIds(getContextData()))
+        getVueFlow().$destroy()
+    }
 
     const nodeToFront = (node: GraphNode | string) => {
         const vueFlow = getVueFlow()
@@ -950,6 +959,7 @@ export const useModelEditor = createStore(() => {
     return {
         // 图的信息与操作
         initModelEditor,
+        destroyModelEditor,
         focus,
 
         viewport,

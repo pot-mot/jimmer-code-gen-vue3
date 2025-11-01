@@ -23,6 +23,7 @@ import {EdgeType_AbstractAssociation} from "@/modelEditor/edge/AbstractAssociati
 
 const {
     initModelEditor,
+    destroyModelEditor,
     viewport,
 
     undo,
@@ -48,6 +49,7 @@ onMounted(() => {
 })
 onBeforeUnmount(() => {
     document.removeEventListener("keydown", handleKeyDown)
+    destroyModelEditor()
 })
 
 const handleKeyDown = async (e: KeyboardEvent) => {
