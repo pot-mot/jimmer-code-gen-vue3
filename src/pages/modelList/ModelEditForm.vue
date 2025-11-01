@@ -1,9 +1,16 @@
 <script setup lang="ts" generic="T extends ModelInsertInput | ModelUpdateInput">
 import type {ModelInsertInput, ModelUpdateInput} from "@/api/__generated/model/static";
-import {ref, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
+import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";
+import JsonEditor from "@/components/code/jsonEditor/JsonEditor.vue";
+import {jsonStrPrettyFormat} from "@/utils/json/jsonStringify.ts";
 
 const model = defineModel<T>({
     required: true
+})
+
+onMounted(() => {
+    model.value.jsonData = jsonStrPrettyFormat(model.value.jsonData)
 })
 
 const emits = defineEmits<{
@@ -22,12 +29,11 @@ const validateForm = (): boolean => {
         errors.value.name = '模型名称不能为空'
     }
 
-    if (!model.value.description || model.value.description.trim() === '') {
-        errors.value.description = '模型描述不能为空'
-    }
-
     try {
-        JSON.parse(model.value.jsonData)
+        let error
+        if (!validatePartialModelGraphSubData(JSON.parse(model.value.jsonData), e => error = e)) {
+            errors.value.jsonData = `JSON 数据格式错误: ${error}`
+        }
     } catch (e) {
         errors.value.jsonData = 'JSON 数据格式不正确'
     }
@@ -56,9 +62,7 @@ const handleCancel = () => {
 <template>
     <form @submit.prevent="handleSubmit" class="model-edit-form">
         <div class="form-group">
-            <label for="modelName">模型名称 *</label>
             <input
-                id="modelName"
                 v-model="model.name"
                 type="text"
                 :class="{ 'error': errors.name }"
@@ -68,73 +72,58 @@ const handleCancel = () => {
         </div>
 
         <div class="form-group">
-            <label for="modelDescription">模型描述 *</label>
             <textarea
-                id="modelDescription"
                 v-model="model.description"
-                :class="{ 'error': errors.description }"
                 placeholder="请输入模型描述"
                 rows="3"
-            ></textarea>
-            <div v-if="errors.description" class="error-message">{{ errors.description }}</div>
+            />
         </div>
 
         <div class="form-row">
             <div class="form-group">
-                <label for="databaseType">数据库类型</label>
-                <select id="databaseType" v-model="model.databaseType">
+                <select v-model="model.jvmLanguage">
+                    <option value="KOTLIN">Kotlin</option>
+                    <option value="JAVA">Java</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <select v-model="model.databaseType">
                     <option value="POSTGRESQL">PostgreSQL</option>
                     <option value="MYSQL">MySQL</option>
                     <option value="ORACLE">Oracle</option>
                     <option value="SQLSERVER">SQL Server</option>
                     <option value="H2">H2</option>
+                    <option value="SQLITE">Sqlite</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <select v-model="model.defaultForeignKeyType">
+                    <option value="REAL">真实外键（REAL）</option>
+                    <option value="FAKE">虚拟外键（FAKE）</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="databaseNameStrategy">数据库命名策略</label>
-                <select id="databaseNameStrategy" v-model="model.databaseNameStrategy">
+                <select v-model="model.defaultEnumerationStrategy">
+                    <option value="NAME">枚举使用名称（NAME）</option>
+                    <option value="ORDINAL">枚举使用序号（ORDINAL）</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <select v-model="model.databaseNameStrategy">
                     <option value="LOWER_SNAKE">小写蛇形 (lower_snake)</option>
                     <option value="UPPER_SNAKE">大写蛇形 (UPPER_SNAKE)</option>
                 </select>
             </div>
         </div>
 
-        <div class="form-row">
-            <div class="form-group">
-                <label for="defaultForeignKeyType">外键类型</label>
-                <select id="defaultForeignKeyType" v-model="model.defaultForeignKeyType">
-                    <option value="REAL">真实外键</option>
-                    <option value="SIMULATED">模拟外键</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="jvmLanguage">JVM 语言</label>
-                <select id="jvmLanguage" v-model="model.jvmLanguage">
-                    <option value="KOTLIN">Kotlin</option>
-                    <option value="JAVA">Java</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="defaultEnumerationStrategy">枚举策略</label>
-            <select id="defaultEnumerationStrategy" v-model="model.defaultEnumerationStrategy">
-                <option value="NAME">名称</option>
-                <option value="ORDINAL">序号</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="jsonData">JSON 数据 *</label>
-            <textarea
-                id="jsonData"
-                v-model="model.jsonData"
-                :class="{ 'error': errors.jsonData }"
-                placeholder='请输入有效的 JSON 数据，例如: {"key": "value"}'
-                rows="6"
-            ></textarea>
+        <div class="json-data-editor">
+            <JsonEditor json-type="PartialModelGraphSubData" v-model="model.jsonData"/>
             <div v-if="errors.jsonData" class="error-message">{{ errors.jsonData }}</div>
         </div>
 
@@ -147,18 +136,17 @@ const handleCancel = () => {
 
 <style scoped>
 .model-edit-form {
-    padding: 24px;
-    max-height: 70vh;
+    padding: 0.5rem 0.5rem 1rem;
     overflow-y: auto;
 }
 
 .form-group {
-    margin-bottom: 20px;
+    margin-bottom: 0.5rem;
 }
 
 .form-row {
     display: flex;
-    gap: 20px;
+    gap: 0.5rem;
 }
 
 .form-row .form-group {
@@ -172,18 +160,16 @@ label {
     color: #333;
 }
 
-input, select, textarea {
+input,
+select,
+textarea {
     width: 100%;
-    padding: 10px 12px;
-    border: var(--border);
     border-radius: var(--border-radius);
-    font-size: 14px;
-    box-sizing: border-box;
-    transition: border-color 0.2s;
+    padding: 0.5rem;
 }
 
-input:focus, select:focus, textarea:focus {
-    border-color: var(--primary-color);
+.json-data-editor {
+    height: calc(100% - 18rem);
 }
 
 input.error, select.error, textarea.error {
@@ -199,10 +185,6 @@ input.error, select.error, textarea.error {
 .form-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 12px;
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: var(--border);
 }
 
 .cancel-button,

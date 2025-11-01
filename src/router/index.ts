@@ -30,8 +30,8 @@ export const router = createRouter({
 
 let stopRouteLoading: () => void | undefined
 
-router.beforeEach((to, from, next) => {
-    stopRouteLoading = startLoading(`to: ${to.fullPath}, from: ${from.fullPath}`).stop
+router.beforeEach((to, _from, next) => {
+    stopRouteLoading = startLoading(`to: ${to.fullPath}`).stop
     next()
 })
 

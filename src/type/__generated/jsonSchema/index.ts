@@ -75,6 +75,7 @@ import VersionPropertyJsonSchema from "./items/VersionProperty.ts";
 import EmbeddableTypeWithPropertiesJsonSchema from "../../context/jsonSchema/EmbeddableTypeWithProperties.ts";
 import EntityWithPropertiesJsonSchema from "../../context/jsonSchema/EntityWithProperties.ts";
 import MappedSuperClassWithPropertiesJsonSchema from "../../context/jsonSchema/MappedSuperClassWithProperties.ts";
+import PartialModelGraphSubDataJsonSchema from "../../context/jsonSchema/PartialModelGraphSubData.ts";
 
 export const jsonSchemas = Object.freeze({
     BaseAssociationProperty: BaseAssociationPropertyJsonSchema,
@@ -154,6 +155,7 @@ export const jsonSchemas = Object.freeze({
     EmbeddableTypeWithProperties: EmbeddableTypeWithPropertiesJsonSchema,
     EntityWithProperties: EntityWithPropertiesJsonSchema,
     MappedSuperClassWithProperties: MappedSuperClassWithPropertiesJsonSchema,
+    PartialModelGraphSubData: PartialModelGraphSubDataJsonSchema,
 })
 
 export type JsonSchemaKey = keyof typeof jsonSchemas

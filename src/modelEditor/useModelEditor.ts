@@ -29,7 +29,7 @@ import type {LazyData} from "@/utils/type/lazyDataParse.ts";
 import {useClipBoard} from "@/utils/clipBoard/useClipBoard.ts";
 import {fillModelGraphSubData, modelDataToGraphData} from "@/type/context/utils/ModelGraphSubData.ts";
 import {contextDataGetSelectSubData, contextDataToSubData} from "@/type/context/utils/ModelSubData.ts";
-import {validatePartialModelGraphSubData} from "@/modelEditor/graphData/ModelGraphSubData.ts";
+import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import {tableToEntity} from "@/modelEditor/TableEntityConvert/tableToEntity.ts";
 import {contextDataToContext} from "@/type/context/utils/ModelContext.ts";

@@ -155,11 +155,13 @@ const deleteModel = async (modelId: string) => {
         @close="stopModelInsert"
         modal
         can-resize
+        :init-w="600"
     >
         <div class="dialog-header">
-            <h3>添加模型</h3>
+            添加模型
         </div>
         <ModelEditForm
+            style="height: calc(100% - 2.5rem);"
             v-if="modelInsertInput"
             v-model="modelInsertInput"
             @submit="submitModelInsert"
@@ -172,11 +174,13 @@ const deleteModel = async (modelId: string) => {
         @close="stopModelUpdate"
         modal
         can-resize
+        :init-w="600"
     >
         <div class="dialog-header">
-            <h3>编辑模型</h3>
+            编辑模型
         </div>
         <ModelEditForm
+            style="height: calc(100% - 2.5rem);"
             v-if="modelUpdateInput"
             v-model="modelUpdateInput"
             @submit="submitModelUpdate"
@@ -207,9 +211,14 @@ const deleteModel = async (modelId: string) => {
     border: none;
     padding: 0.5rem;
     border: var(--border);
+    border-color: var(--border-color-light);
     border-radius: var(--border-radius);
     cursor: pointer;
     font-size: 14px;
+}
+
+.add-button:hover {
+    border-color: var(--border-color);
 }
 
 .model-list {
@@ -240,23 +249,26 @@ const deleteModel = async (modelId: string) => {
     gap: 10px;
 }
 
-.edit-button, .delete-button {
+.edit-button,
+.delete-button {
     display: flex;
     align-items: center;
-    gap: 5px;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 4px;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border: var(--border);
+    border-color: var(--border-color-light);
+    border-radius: var(--border-radius);
     cursor: pointer;
     font-size: 14px;
 }
 
-.dialog-header {
-    padding: 16px 24px;
+.edit-button:hover,
+.delete-button:hover {
+    border-color: var(--border-color);
 }
 
-.dialog-header h3 {
-    margin: 0;
-    font-size: 18px;
+.dialog-header {
+    padding: 0.5rem;
+    font-size: 1rem;
 }
 </style>

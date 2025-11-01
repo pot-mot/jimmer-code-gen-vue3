@@ -9,7 +9,7 @@ import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import {api} from "@/api";
 import {sendMessage} from "@/components/message/messageApi.ts";
-import {validatePartialModelGraphSubData} from "@/modelEditor/graphData/ModelGraphSubData.ts";
+import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";
 
 const router = useRouter()
 const route = useRoute()
