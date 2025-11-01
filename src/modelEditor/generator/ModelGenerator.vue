@@ -62,7 +62,7 @@ const handleGenerate = async () => {
         try {
             generateResult.value = generate(
                 getContext(),
-                isModelSelectionNotEmpty.value ? subIdSetToSubIds(selectedIdSets.value) : contextDataToSubIds(contextData.value)
+                isModelSelectionNotEmpty.value ? subIdSetToSubIds(selectedIdSets.value) : contextDataToSubIds(contextData)
             )
         } catch (e) {
             receiveError(e)

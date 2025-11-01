@@ -16,13 +16,13 @@ const props = defineProps<{
 const mappedSuperClassOptions = computed(() => {
     const result: DeepReadonly<MappedSuperClassWithProperties>[] = []
     if (props.type === "Concrete") {
-        for (const mappedSuperClass of contextData.value.mappedSuperClassMap.values() ?? []) {
+        for (const mappedSuperClass of contextData.mappedSuperClassMap.values() ?? []) {
             result.push(mappedSuperClass)
         }
     } else if (props.type === "Abstract") {
         const inheritItem = inheritInfo.value.abstractInheritInfoMap.get(props.id)
         if (!inheritItem) return result
-        for (const mappedSuperClass of contextData.value.mappedSuperClassMap.values() ?? []) {
+        for (const mappedSuperClass of contextData.mappedSuperClassMap.values() ?? []) {
             if (
                 mappedSuperClass.id !== props.id &&
                 !inheritItem.allAbstractChildIdSet.has(mappedSuperClass.id)

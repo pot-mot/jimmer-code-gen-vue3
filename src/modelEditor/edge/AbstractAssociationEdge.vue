@@ -25,7 +25,7 @@ const props = defineProps<EdgeProps<AbstractAssociationEdge["data"]>>()
 const {contextData, edgeToFront, focusEdge, remove, modelDiagnoseInfo} = useModelEditor()
 
 const sourceAbstractEntity = computed(() => {
-    return contextData.value.mappedSuperClassMap.get(props.data.edgedAssociation.association.sourceAbstractEntityId)
+    return contextData.mappedSuperClassMap.get(props.data.edgedAssociation.association.sourceAbstractEntityId)
 })
 const sourceProperty = computed(() => {
     return sourceAbstractEntity.value?.properties.find(property => {

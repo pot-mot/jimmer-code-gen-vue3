@@ -43,7 +43,7 @@ const toBaseProperty = (property: DeepReadonly<Property>): BaseProperty => {
 const createColumnInfo = (
     property: DeepReadonly<Property>,
     sqlType: DeepReadonly<CrossType["sqlType"]>,
-    databaseNameStrategy = useModelEditor().contextData.value.model.databaseNameStrategy ?? 'SNAKE'
+    databaseNameStrategy = useModelEditor().contextData.model.databaseNameStrategy ?? 'SNAKE'
 ): ColumnProperty["columnInfo"] => {
     return {
         name: nameTool.convert("name" in property ? property.name : property.nameTemplate, 'LOWER_CAMEL', databaseNameStrategy),
@@ -180,7 +180,7 @@ export const toVersionProperty = (property: DeepReadonly<Property>): VersionProp
         ...toBaseProperty(property),
         category: "VERSION",
         nullable: false,
-        rawType: useModelEditor().contextData.value.model.jvmLanguage === "JAVA" ? "int" : "int",
+        rawType: useModelEditor().contextData.model.jvmLanguage === "JAVA" ? "int" : "int",
         extraImports: Array.from(property.extraImports),
         columnInfo: "columnInfo" in property ?
             createColumnInfo(property, property.columnInfo) :

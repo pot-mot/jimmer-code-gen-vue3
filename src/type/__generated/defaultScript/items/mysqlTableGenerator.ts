@@ -23,6 +23,7 @@ const scriptInfo: ScriptInfo<"TableGenerator"> = {
     }>()
 
     for (const table of tables) {
+        // TODO add table checks
         statementMap.set(
             table.name,
             {
@@ -34,8 +35,6 @@ const scriptInfo: ScriptInfo<"TableGenerator"> = {
     column.defaultValue ? \`DEFAULT \${column.defaultValue}\` : ''
 } \${
     column.autoIncrement ? 'AUTO INCREMENT' : ''
-} \${
-    column.otherConstraints ? column.otherConstraints.join(' ') : ''
 } \${
     column.comment ? \`COMMENT '\${column.comment}'\` : ''
 }\`.trimEnd()).join(",\\n")},

@@ -17,11 +17,6 @@ export const jsonPrettyFormat = (obj: object) => {
     return JSON.stringify(obj, sortPropReplacer, '    ')
 }
 
-export const jsonStrCompress = (text: string): string => {
-    const obj = JSON.parse(text)
-    return JSON.stringify(obj)
-}
-
 export const jsonSortPropStringify = (obj: object): string => {
     return JSON.stringify(obj, sortPropReplacer);
 }

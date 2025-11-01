@@ -6,13 +6,13 @@ const routes: RouteRecordRaw[] = [
     {
         path: "",
         name: "ModelList",
-        component: () => import("../pages/ModelListPage.vue")
+        component: () => import("../pages/modelList/ModelListPage.vue")
     },
     {
         path: "/model/:id",
         name: "ModelEditor",
 
-        component: () => import("../pages/ModelEditorPage.vue")
+        component: () => import("../pages/ModelEditor/ModelEditorPage.vue")
     }
 ]
 

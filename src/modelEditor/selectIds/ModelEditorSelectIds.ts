@@ -1,5 +1,4 @@
-import type {Ref} from "@vue/reactivity";
-import {readonly, ref, type ShallowRef} from "vue";
+import {readonly, ref} from "vue";
 import type {EdgeChange, NodeChange, VueFlowStore} from "@vue-flow/core";
 import mitt from "mitt";
 import {fillModelSubIds} from "@/type/context/utils/ModelSubIds.ts";
@@ -7,26 +6,12 @@ import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
 
 export const useModelEditorSelectIds = (
     modelEditorState: {
-        contextData: Ref<ModelContextData | undefined>
-        vueFlow: ShallowRef<VueFlowStore>,
+        getContextData: () => ModelContextData,
+        getVueFlow: () => VueFlowStore,
         getNextZIndex: () => number,
     }
 ) => {
-    const getContextData = () => {
-        const contextData = modelEditorState.contextData.value
-        if (!contextData) {
-            throw new Error("Context is not available")
-        }
-        return contextData
-    }
-
-    const getVueFlow = () => {
-        const vueFlow = modelEditorState.vueFlow.value
-        if (!vueFlow) {
-            throw new Error("VueFlow is not available")
-        }
-        return vueFlow
-    }
+    const {getContextData, getVueFlow, getNextZIndex} = modelEditorState
 
     // 选中的 Id
     const selectedIdSets = ref<ModelSubIdSets>({
@@ -227,7 +212,7 @@ export const useModelEditorSelectIds = (
             if (change.type === "select") {
                 if (change.selected) {
                     const node = vueFlow.findNode(change.id)
-                    if (node) node.zIndex = modelEditorState.getNextZIndex()
+                    if (node) node.zIndex = getNextZIndex()
 
                     if (change.id.startsWith("Entity")) {
                         selectedIdSets.value.entityIdSet.add(change.id)
@@ -290,7 +275,7 @@ export const useModelEditorSelectIds = (
             if (change.type === "select") {
                 if (change.selected) {
                     const edge = vueFlow.findEdge(change.id)
-                    if (edge) edge.zIndex = modelEditorState.getNextZIndex()
+                    if (edge) edge.zIndex = getNextZIndex()
 
                     selectedIdSets.value.associationIdSet.add(change.id)
                     modelSelectionEventBus.emit('association', {id: change.id, selected: true})

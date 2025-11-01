@@ -6,7 +6,7 @@ import {
 
 export const getAbstractAssociationNameComment = (association: DeepReadonly<AbstractAssociationIdOnly>) => {
     const {contextData} = useModelEditor()
-    const sourceAbstractEntity = contextData.value.mappedSuperClassMap.get(association.sourceAbstractEntityId)
+    const sourceAbstractEntity = contextData.mappedSuperClassMap.get(association.sourceAbstractEntityId)
     if (!sourceAbstractEntity) return
     const sourceProperty = sourceAbstractEntity.properties.find(it => it.id === association?.sourcePropertyId)
     if (!sourceProperty) return

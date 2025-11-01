@@ -154,7 +154,7 @@ const syncSourceEntities = (mappedSuperClassId: string) => {
     const sourceEntityIdSet = new Set<string>()
 
     for (const childId of inheritItem.allConcreteChildIdSet) {
-        for (const {association} of contextData.value.associationMap.values()) {
+        for (const {association} of contextData.associationMap.values()) {
             if (association.referencedEntityId === childId) {
                 if ("sourceEntityId" in association) {
                     sourceEntityIdSet.add(association.sourceEntityId)
@@ -166,11 +166,11 @@ const syncSourceEntities = (mappedSuperClassId: string) => {
     }
 
     for (const sourceAbstractEntityId of sourceAbstractEntityIdSet) {
-        const sourceAbstractEntity = contextData.value.mappedSuperClassMap.get(sourceAbstractEntityId)
+        const sourceAbstractEntity = contextData.mappedSuperClassMap.get(sourceAbstractEntityId)
         if (sourceAbstractEntity) changeMappedSuperClass(sourceAbstractEntity)
     }
     for (const sourceEntityId of sourceEntityIdSet) {
-        const sourceEntity = contextData.value.entityMap.get(sourceEntityId)
+        const sourceEntity = contextData.entityMap.get(sourceEntityId)
         if (sourceEntity) changeEntity(sourceEntity)
     }
 }
@@ -228,7 +228,7 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
 const selectEntity = (entity: DeepReadonly<EntityWithProperties>) => {
     if (
         propertyIsId.value ||
-        "associationId" in property.value && contextData.value.associationMap.has(property.value.associationId) &&
+        "associationId" in property.value && contextData.associationMap.has(property.value.associationId) &&
         "referencedEntityId" in property.value && property.value.referencedEntityId === entity.id
     ) return
 
@@ -242,7 +242,7 @@ const selectEntity = (entity: DeepReadonly<EntityWithProperties>) => {
             property.value,
             entity,
             associationId,
-            contextData.value.model.defaultForeignKeyType,
+            contextData.model.defaultForeignKeyType,
         )
         const mappedProperty: OneToManyAbstractProperty = {
             mappedById: property.value.id,
@@ -286,13 +286,13 @@ const selectEntity = (entity: DeepReadonly<EntityWithProperties>) => {
 
 const referencedEntity = computed(() => {
     if ("referencedEntityId" in property.value) {
-        return contextData.value.entityMap.get(property.value.referencedEntityId)
+        return contextData.entityMap.get(property.value.referencedEntityId)
     }
 })
 
 const association = computed(() => {
     if ("associationId" in property.value) {
-        return contextData.value.associationMap.get(property.value.associationId)
+        return contextData.associationMap.get(property.value.associationId)
     }
 })
 </script>

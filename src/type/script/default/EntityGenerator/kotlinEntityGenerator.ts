@@ -10,6 +10,9 @@ export const kotlinEntityGenerator: EntityGenerator = (
         subPackagePath: entity.subPackagePath,
     })
 
+    builder.addImports("org.babyfish.jimmer.sql.Entity")
+    builder.addImports("org.babyfish.jimmer.sql.Table")
+
     for (const mappedSuperClassId of entity.extendsIds) {
         builder.requireMappedSuperClass(mappedSuperClassId)
     }
@@ -81,6 +84,7 @@ export const kotlinEntityGenerator: EntityGenerator = (
         builder.addImports(property.extraImports)
 
         if (property.category === "ID_COMMON") {
+            builder.addImports("org.babyfish.jimmer.sql.Id")
             propertyList.push({
                 name: property.name,
                 comment: property.comment,
@@ -92,6 +96,7 @@ export const kotlinEntityGenerator: EntityGenerator = (
                 ],
             })
         } else if (property.category === "ID_EMBEDDABLE") {
+            builder.addImports("org.babyfish.jimmer.sql.Id")
             const embeddableType = builder.requireEmbeddableType(property.embeddableTypeId)
             propertyList.push({
                 name: property.name,
@@ -104,6 +109,7 @@ export const kotlinEntityGenerator: EntityGenerator = (
                 ],
             })
         } else if (property.category === "SCALAR_COMMON") {
+            builder.addImports("org.babyfish.jimmer.sql.Column")
             propertyList.push({
                 name: property.name,
                 comment: property.comment,
@@ -114,6 +120,7 @@ export const kotlinEntityGenerator: EntityGenerator = (
                 ],
             })
         } else if (property.category === "SCALAR_ENUM") {
+            builder.addImports("org.babyfish.jimmer.sql.Column")
             const enumeration = builder.requireEnumeration(property.enumId)
             propertyList.push({
                 name: property.name,

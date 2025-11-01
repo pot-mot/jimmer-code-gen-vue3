@@ -11,7 +11,7 @@ export const FK_NAME_TEMPLATE = `fk_${SOURCE_ENTITY}_${SOURCE_PROPERTY}`
 export const FK_COMMENT_TEMPLATE = `${SOURCE_ENTITY}${SOURCE_PROPERTY}`
 
 const getDatabaseNameStrategy = () => {
-    return useModelEditor().contextData.value.model.databaseNameStrategy
+    return useModelEditor().contextData.model.databaseNameStrategy
 }
 
 export const tmpl_fkName = (

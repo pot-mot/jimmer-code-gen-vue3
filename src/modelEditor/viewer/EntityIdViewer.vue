@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{
 })
 
 const entity = computed(() => {
-    return contextData.value.entityMap.get(props.id)
+    return contextData.entityMap.get(props.id)
 })
 </script>
 

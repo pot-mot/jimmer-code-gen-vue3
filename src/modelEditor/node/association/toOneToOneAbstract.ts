@@ -21,7 +21,7 @@ export const toOneToOneAbstract = async (
     } = useModelEditor()
 
     const mappedProperty = association.mappedProperty
-    const sourceAbstractEntity = contextData.value.mappedSuperClassMap.get(association.sourceAbstractEntityId)
+    const sourceAbstractEntity = contextData.mappedSuperClassMap.get(association.sourceAbstractEntityId)
     if (!sourceAbstractEntity) {
         throw new Error(`[${association.sourceAbstractEntityId}] not found`)
     }

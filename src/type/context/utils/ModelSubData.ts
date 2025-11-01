@@ -7,7 +7,7 @@ export const defaultModelSubData: () => ModelSubData = () => ({
     associations: [],
 })
 
-export const contextDataGetSubData = (
+export const contextDataToSubData = (
     contextData: ModelContextData,
 ): ModelSubData => {
     const result = defaultModelSubData()

@@ -13,7 +13,7 @@ export default defineConfig({
         port: 4000,//启动端口
         proxy: {
             '/api': {
-                target: 'http://localhost:8080',	//实际请求地址
+                target: 'http://localhost:39000',	//实际请求地址
                 changeOrigin: true,
             },
         }

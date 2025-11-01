@@ -21,7 +21,7 @@ export const toOneToOne = async (
     } = useModelEditor()
 
     const mappedProperty = association.mappedProperty
-    const sourceEntity = contextData.value.entityMap.get(association.sourceEntityId)
+    const sourceEntity = contextData.entityMap.get(association.sourceEntityId)
     if (!sourceEntity) {
         throw new Error(`[${association.sourceEntityId}] not found`)
     }

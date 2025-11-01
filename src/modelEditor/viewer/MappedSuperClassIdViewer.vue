@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<{
 })
 
 const mappedSuperClass = computed(() => {
-    return contextData.value.mappedSuperClassMap.get(props.id)
+    return contextData.mappedSuperClassMap.get(props.id)
 })
 </script>
 

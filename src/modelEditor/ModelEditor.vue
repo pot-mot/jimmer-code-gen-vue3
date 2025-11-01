@@ -40,18 +40,16 @@ const {
     remove,
 } = useModelEditor()
 
-onMounted(() => {
-    initModelEditor()
-})
-
 const isPointerEnter = ref(false)
 
 onMounted(() => {
+    initModelEditor()
     document.addEventListener("keydown", handleKeyDown)
 })
 onBeforeUnmount(() => {
     document.removeEventListener("keydown", handleKeyDown)
 })
+
 const handleKeyDown = async (e: KeyboardEvent) => {
     if (!isPointerEnter.value) return
 

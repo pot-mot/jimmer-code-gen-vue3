@@ -64,7 +64,7 @@ const handleGenerateTest = async () => {
             const scriptStore: ScriptsStore<any> = createScriptsStore([scriptInfo])
             generateResult.value = modelGenerate(
                 getContext(),
-                isModelSelectionNotEmpty.value ? subIdSetToSubIds(selectedIdSets.value) : contextDataToSubIds(contextData.value),
+                isModelSelectionNotEmpty.value ? subIdSetToSubIds(selectedIdSets.value) : contextDataToSubIds(contextData),
                 scriptStore
             )
         } else {

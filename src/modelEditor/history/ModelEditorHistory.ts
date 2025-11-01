@@ -1,6 +1,6 @@
 import {type CommandChangeInput, type CommandDefinition, useCommandHistory} from "@/history/commandHistory.ts";
 import {type GraphNode, type VueFlowStore, type XYPosition} from "@vue-flow/core";
-import {computed, reactive, readonly, type Ref, ref, shallowReadonly, type ShallowRef, watch} from "vue";
+import {computed, type Reactive, reactive, readonly, type Ref, ref, shallowReadonly, type ShallowRef, watch} from "vue";
 import {deleteColorVar, type MenuItem, setColorVar} from "@/modelEditor/useModelEditor.ts";
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 import {debounce} from "lodash-es";
@@ -121,19 +121,9 @@ export const inferCommandInput = <Key extends keyof ModelEditorHistoryCommands>(
 }
 
 export const useModelEditorHistory = (
-    modelEditorState: {
-        contextData: Ref<ModelContextData>
-        vueFlow: ShallowRef<VueFlowStore>,
-    }
+    getContextData: () => ModelContextData,
+    getVueFlow: () => VueFlowStore,
 ) => {
-    const getContextData = () => {
-        return modelEditorState.contextData.value
-    }
-
-    const getVueFlow = () => {
-        return modelEditorState.vueFlow.value
-    }
-
     const history = useCommandHistory<ModelEditorHistoryCommands>()
 
     const canUndo = ref(history.canUndo())

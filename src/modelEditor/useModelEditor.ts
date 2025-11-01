@@ -1,5 +1,5 @@
 import {createStore} from "@/utils/store/createStore.ts";
-import {computed, nextTick, readonly, ref, shallowRef} from "vue";
+import {computed, nextTick, reactive, readonly, ref} from "vue";
 import {
     useModelEditorHistory,
 } from "@/modelEditor/history/ModelEditorHistory.ts";
@@ -24,11 +24,11 @@ import {
     defaultModelContextData
 } from "@/type/context/default/modelDefaults.ts";
 import {tinycolor} from "vue-color";
-import {fillModelSubIds, subDataToSubIds} from "@/type/context/utils/ModelSubIds.ts";
+import {contextDataToSubIds, fillModelSubIds, subDataToSubIds} from "@/type/context/utils/ModelSubIds.ts";
 import type {LazyData} from "@/utils/type/lazyDataParse.ts";
 import {useClipBoard} from "@/utils/clipBoard/useClipBoard.ts";
 import {fillModelGraphSubData, modelDataToGraphData} from "@/type/context/utils/ModelGraphSubData.ts";
-import {contextDataGetSelectSubData} from "@/type/context/utils/ModelSubData.ts";
+import {contextDataGetSelectSubData, contextDataToSubData} from "@/type/context/utils/ModelSubData.ts";
 import {validatePartialModelGraphSubData} from "@/modelEditor/graphData/ModelGraphSubData.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import {tableToEntity} from "@/modelEditor/TableEntityConvert/tableToEntity.ts";
@@ -37,6 +37,8 @@ import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
 import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
 import {useModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
 import {useModelDiagnoseInfo} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
+import {api} from "@/api";
+import type {ModelView} from "@/api/__generated/model/static";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -81,20 +83,19 @@ const CLICK_ADD_NODE_OFFSET_X = 24
 const CLICK_ADD_NODE_OFFSET_Y = 16
 
 export const useModelEditor = createStore(() => {
-    const vueFlow = shallowRef<VueFlowStore>(useVueFlow(VUE_FLOW_ID))
     const getVueFlow = () => {
-        return vueFlow.value
+        return useVueFlow(VUE_FLOW_ID)
     }
     const viewport = computed<ViewportTransform>(() => {
-        return vueFlow.value.viewport.value
+        return useVueFlow(VUE_FLOW_ID).viewport.value
     })
     const zoom = computed<number>(() => {
         return viewport.value.zoom
     })
 
-    const contextData = ref<ModelContextData>(defaultModelContextData())
+    const contextData = reactive<ModelContextData>(defaultModelContextData())
     const getContextData = () => {
-        return contextData.value
+        return contextData
     }
 
     const {
@@ -104,7 +105,7 @@ export const useModelEditor = createStore(() => {
         menuMap,
         inheritInfo,
         waitChangeSync,
-    } = useModelEditorHistory({vueFlow, contextData})
+    } = useModelEditorHistory(getContextData, getVueFlow)
 
     const getContext = () => {
         return contextDataToContext(getContextData(), inheritInfo.value)
@@ -171,8 +172,8 @@ export const useModelEditor = createStore(() => {
         }
     ])
     const filteredCrossTypes = computed(() => {
-        const jvmLanguage = contextData.value.model.jvmLanguage
-        const databaseType = contextData.value.model.databaseType
+        const jvmLanguage = contextData.model.jvmLanguage
+        const databaseType = contextData.model.databaseType
 
         return crossTypes.value.filter(crossType => {
             return (crossType.jvmSource === jvmLanguage || crossType.jvmSource === "BOTH") &&
@@ -215,31 +216,61 @@ export const useModelEditor = createStore(() => {
     const getModelGraphData = (): ModelGraphSubData => {
         const contextData = getContextData()
         const vueFlow = getVueFlow()
+        return modelDataToGraphData(contextDataToSubData(contextData), vueFlow)
+    }
+    const getSelectedGraphData = (): ModelGraphSubData => {
+        const contextData = getContextData()
+        const vueFlow = getVueFlow()
         return modelDataToGraphData(contextDataGetSelectSubData(contextData, modelSelection.selectedIdSets.value), vueFlow)
+
     }
 
-    const importModelGraphData = async (data: Partial<ModelGraphSubData>) => {
+    const importModelGraphData = async (data: Partial<ModelGraphSubData>, options?: {
+        overrideGroupId?: string,
+        select?: boolean
+    }) => {
         const vueFlow = getVueFlow()
 
         const fullData = fillModelGraphSubData(data)
-        const importGroupId = getCurrentGroupIdOrCreate()
-        for (const {data} of fullData.entities) data.groupId = importGroupId
-        for (const {data} of fullData.mappedSuperClasses) data.groupId = importGroupId
-        for (const {data} of fullData.embeddableTypes) data.groupId = importGroupId
-        for (const {data} of fullData.enumerations) data.groupId = importGroupId
+        if (options?.overrideGroupId !== undefined) {
+            const groupId = options.overrideGroupId
+            toggleCurrentGroup({id: groupId})
+            for (const {data} of fullData.entities) data.groupId = groupId
+            for (const {data} of fullData.mappedSuperClasses) data.groupId = groupId
+            for (const {data} of fullData.embeddableTypes) data.groupId = groupId
+            for (const {data} of fullData.enumerations) data.groupId = groupId
+        }
 
         modelSelection.unselectAll()
         const startPosition = vueFlow.screenToFlowCoordinate(screenPosition.value)
         const {ids} = history.executeCommand("import", {data: fullData, startPosition})
         await nextTick()
         await waitChangeSync()
-        modelSelection.select(ids)
+
+        if (options?.select) {
+            modelSelection.select(ids)
+        }
     }
 
-    const loadModel = async (data: ModelGraphSubData) => {
+    const loadModel = async (model: ModelView, data: Partial<ModelGraphSubData>) => {
         await withLoading("Model Loading...", async () => {
-            contextData.value = defaultModelContextData()
+            remove(contextDataToSubIds(getContextData()))
+            contextData.model = {
+                id: model.id,
+                name: model.name,
+                description: model.description,
+                createdTime: model.createdTime,
+                modifiedTime: model.modifiedTime,
+                databaseType: model.databaseType,
+                databaseNameStrategy: model.databaseNameStrategy,
+                defaultForeignKeyType: model.defaultForeignKeyType,
+                jvmLanguage: model.jvmLanguage,
+                defaultEnumerationStrategy: model.defaultEnumerationStrategy,
+            }
             await importModelGraphData(data)
+            if (currentGroupId.value === undefined && contextData.groupMap.size > 0) {
+                toggleCurrentGroup({id: contextData.groupMap.keys().next().value})
+            }
             history.clean()
         })
     }
@@ -268,7 +299,17 @@ export const useModelEditor = createStore(() => {
     const saveModel = async () => {
         await withLoading("Model Saving...", async () => {
             const graphData = getModelGraphData()
-            // TODO save model requests
+            try {
+                await api.modelService.update({
+                    body: {
+                        ...contextData.model,
+                        jsonData: JSON.stringify(graphData),
+                    }
+                })
+                sendMessage("模型保存成功", {type: "success"})
+            } catch (e) {
+                sendMessage(`模型保存失败: ${e}`, {type: "warning"})
+            }
         })
     }
 
@@ -318,7 +359,7 @@ export const useModelEditor = createStore(() => {
     }
     const addEnumeration = (
         groupId: string = getCurrentGroupIdOrCreate(),
-        enumeration: Enumeration = defaultEnumeration(groupId, contextData.value.model.defaultEnumerationStrategy),
+        enumeration: Enumeration = defaultEnumeration(groupId, contextData.model.defaultEnumerationStrategy),
         position: XYPosition = screenPosition.value
     ) => {
         enumeration.name = modelNameSets.enumerationNameSet.next(enumeration.name)
@@ -355,7 +396,7 @@ export const useModelEditor = createStore(() => {
     }
 
     // Selection 选中部分的图数据
-    const modelSelection = useModelEditorSelectIds({contextData, vueFlow, getNextZIndex})
+    const modelSelection = useModelEditorSelectIds({getContextData, getVueFlow, getNextZIndex})
 
     const isModelSelectionNotEmpty = computed(() => {
         const idSets = modelSelection.selectedIdSets.value
@@ -565,10 +606,10 @@ export const useModelEditor = createStore(() => {
      */
     const clipBoard = useClipBoard<Partial<ModelGraphSubData>, ModelGraphSubData>({
         exportData: (): ModelGraphSubData => {
-            return getModelGraphData()
+            return getSelectedGraphData()
         },
         importData: async (data: Partial<ModelGraphSubData>) => {
-            await importModelGraphData(data)
+            await importModelGraphData(data, {overrideGroupId: getCurrentGroupIdOrCreate(), select: true})
         },
         removeData: (data: ModelGraphSubData) => {
             remove(subDataToSubIds(data))
@@ -594,9 +635,6 @@ export const useModelEditor = createStore(() => {
             onNodeDragStart,
             onNodeDragStop,
             onEdgesChange,
-
-            getSelectedNodes,
-            getSelectedEdges,
         } = vueFlow
 
         onInit(() => {
@@ -817,9 +855,10 @@ export const useModelEditor = createStore(() => {
     }
 
     const nodeToFront = (node: GraphNode | string) => {
+        const vueFlow = getVueFlow()
         let _node: GraphNode
         if (typeof node === 'string') {
-            const foundNode = vueFlow.value.findNode(node)
+            const foundNode = vueFlow.findNode(node)
             if (!foundNode) throw new Error(`node [${node}] is not existed`)
             _node = foundNode
         } else {
@@ -828,16 +867,17 @@ export const useModelEditor = createStore(() => {
         _node.zIndex = getNextZIndex()
     }
     const focusNode = async (node: GraphNode | string) => {
+        const vueFlow = getVueFlow()
         let _node: GraphNode
         if (typeof node === 'string') {
-            const foundNode = vueFlow.value.findNode(node)
+            const foundNode = vueFlow.findNode(node)
             if (!foundNode) throw new Error(`node [${node}] is not existed`)
             _node = foundNode
         } else {
             _node = node
         }
         _node.zIndex = getNextZIndex()
-        await vueFlow.value.fitBounds({
+        await vueFlow.fitBounds({
             x: _node.computedPosition.x,
             y: _node.computedPosition.y,
             width: _node.dimensions.width,
@@ -847,9 +887,10 @@ export const useModelEditor = createStore(() => {
     }
 
     const edgeToFront = (edge: GraphEdge | string) => {
+        const vueFlow = getVueFlow()
         let _edge: GraphEdge
         if (typeof edge === 'string') {
-            const foundEdge = vueFlow.value.findEdge(edge) ?? findAssociationEdge(edge, vueFlow.value)
+            const foundEdge = vueFlow.findEdge(edge) ?? findAssociationEdge(edge, vueFlow)
             if (!foundEdge) throw new Error(`edge [${edge}] is not existed`)
             _edge = foundEdge
         } else {
@@ -858,16 +899,17 @@ export const useModelEditor = createStore(() => {
         _edge.zIndex = getNextZIndex()
     }
     const focusEdge = async (edge: GraphEdge | string) => {
+        const vueFlow = getVueFlow()
         let _edge: GraphEdge
         if (typeof edge === 'string') {
-            const foundEdge = vueFlow.value.findEdge(edge) ?? findAssociationEdge(edge, vueFlow.value)
+            const foundEdge = vueFlow.findEdge(edge) ?? findAssociationEdge(edge, vueFlow)
             if (!foundEdge) throw new Error(`edge [${edge}] is not existed`)
             _edge = foundEdge
         } else {
             _edge = edge
         }
         _edge.zIndex = getNextZIndex()
-        await vueFlow.value.fitBounds({
+        await vueFlow.fitBounds({
             x: Math.min(_edge.sourceX, _edge.targetX),
             y: Math.min(_edge.sourceY, _edge.targetY),
             width: Math.abs(_edge.targetX - _edge.sourceX),
@@ -913,10 +955,10 @@ export const useModelEditor = createStore(() => {
         viewport,
         zoom,
         fitView: () => {
-            return vueFlow.value.fitView({duration: 600, padding: 0.1})
+            return getVueFlow().fitView({duration: 600, padding: 0.1})
         },
         fitRect: (rect: Rect) => {
-            return vueFlow.value.fitBounds(rect, {duration: 800, padding: 0.4})
+            return getVueFlow().fitBounds(rect, {duration: 800, padding: 0.4})
         },
 
         getNextZIndex,
