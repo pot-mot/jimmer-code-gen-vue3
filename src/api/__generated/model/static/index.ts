@@ -20,6 +20,7 @@ export type {ModelNoJsonView} from './ModelNoJsonView';
 export type {ModelSpec} from './ModelSpec';
 export type {ModelUpdateInput} from './ModelUpdateInput';
 export type {ModelView} from './ModelView';
+export type {ModelViewport} from './ModelViewport';
 export type {SqlTypeInput} from './SqlTypeInput';
 export type {SqlTypeView} from './SqlTypeView';
 export type {TableView} from './TableView';

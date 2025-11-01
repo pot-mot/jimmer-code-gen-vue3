@@ -36,7 +36,7 @@ const fetchModel = async () => {
             const jsonData = JSON.parse(model.jsonData)
             let error
             if (validatePartialModelGraphSubData(jsonData, (e) => error = e)) {
-                await loadModel(model, jsonData)
+                await loadModel(model, jsonData, model.viewport)
             } else {
                 sendMessage(`模型数据类型错误: ${JSON.stringify(error)}`, {type: "warning"})
             }

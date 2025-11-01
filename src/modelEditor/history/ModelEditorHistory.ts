@@ -102,10 +102,10 @@ export type ModelEditorHistoryCommands = {
 
     "import": CommandDefinition<{
         data: ModelGraphSubData,
-        startPosition: XYPosition,
+        startPosition?: XYPosition,
     }, {
         ids: ModelSubIds,
-        startPosition: XYPosition
+        startPosition?: XYPosition
     }>
     "remove": CommandDefinition<
         ModelSubIds,

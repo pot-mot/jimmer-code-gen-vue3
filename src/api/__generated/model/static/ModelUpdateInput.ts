@@ -5,6 +5,7 @@ import type {
     JvmLanguage, 
     ModelForeignKeyType
 } from '../enums/';
+import type {ModelViewport} from './';
 
 export interface ModelUpdateInput {
     name: string;
@@ -14,6 +15,7 @@ export interface ModelUpdateInput {
     defaultForeignKeyType: ModelForeignKeyType;
     jvmLanguage: JvmLanguage;
     defaultEnumerationStrategy: EnumerationStrategy;
+    viewport: ModelViewport;
     jsonData: string;
     id: string;
 }

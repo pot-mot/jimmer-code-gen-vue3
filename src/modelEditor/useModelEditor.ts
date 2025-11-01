@@ -38,7 +38,6 @@ import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSourc
 import {useModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
 import {useModelDiagnoseInfo} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
 import {api} from "@/api";
-import type {ModelView} from "@/api/__generated/model/static";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -231,7 +230,8 @@ export const useModelEditor = createStore(() => {
 
     const importModelGraphData = async (data: Partial<ModelGraphSubData>, options?: {
         overrideGroupId?: string,
-        select?: boolean
+        select?: boolean,
+        fitCurrentScreenPosition?: boolean
     }) => {
         const vueFlow = getVueFlow()
 
@@ -246,7 +246,7 @@ export const useModelEditor = createStore(() => {
         }
 
         modelSelection.unselectAll()
-        const startPosition = vueFlow.screenToFlowCoordinate(screenPosition.value)
+        const startPosition = options?.fitCurrentScreenPosition ? vueFlow.screenToFlowCoordinate(screenPosition.value) : undefined
         const {ids} = history.executeCommand("import", {data: fullData, startPosition})
         await nextTick()
         await waitChangeSync()
@@ -256,7 +256,11 @@ export const useModelEditor = createStore(() => {
         }
     }
 
-    const loadModel = async (model: ModelView, data: Partial<ModelGraphSubData>) => {
+    const loadModel = async (
+        model: Model,
+        data: Partial<ModelGraphSubData>,
+        viewport: ViewportTransform
+    ) => {
         await withLoading("Model Loading...", async () => {
             remove(contextDataToSubIds(getContextData()))
             contextData.model = {
@@ -272,6 +276,9 @@ export const useModelEditor = createStore(() => {
                 defaultEnumerationStrategy: model.defaultEnumerationStrategy,
             }
             await importModelGraphData(data)
+            await nextTick()
+            await waitChangeSync()
+            await vueFlow.value.setViewport(viewport)
             if (currentGroupId.value === undefined && contextData.groupMap.size > 0) {
                 toggleCurrentGroup({id: contextData.groupMap.keys().next().value})
             }
@@ -308,6 +315,7 @@ export const useModelEditor = createStore(() => {
                     body: {
                         ...contextData.model,
                         jsonData: JSON.stringify(graphData),
+                        viewport: viewport.value
                     }
                 })
                 sendMessage("模型保存成功", {type: "success"})
@@ -613,7 +621,11 @@ export const useModelEditor = createStore(() => {
             return getSelectedGraphData()
         },
         importData: async (data: Partial<ModelGraphSubData>) => {
-            await importModelGraphData(data, {overrideGroupId: getCurrentGroupIdOrCreate(), select: true})
+            await importModelGraphData(data, {
+                overrideGroupId: getCurrentGroupIdOrCreate(),
+                select: true,
+                fitCurrentScreenPosition: true,
+            })
         },
         removeData: (data: ModelGraphSubData) => {
             remove(subDataToSubIds(data))
