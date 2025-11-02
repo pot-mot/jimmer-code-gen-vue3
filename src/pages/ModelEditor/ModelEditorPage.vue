@@ -19,15 +19,15 @@ const {loadModel} = useModelEditor()
 const fetchModel = async () => {
     await withLoading("load model", async () => {
         const id = route.params.id
-        if (id === undefined || typeof id !== "string") {
-            sendMessage("模型ID不合法", {type: "error"})
+        if (id === undefined || typeof id !== "string" || id.length !== 36) {
+            sendMessage("模型ID不合法", {type: "warning"})
             await router.push({name: "ModelList"})
             return
         }
 
         const model = await api.modelService.get({modelId: id})
         if (model === undefined) {
-            sendMessage("模型不存在", {type: "error"})
+            sendMessage("模型不存在", {type: "warning"})
             await router.push({name: "ModelList"})
             return
         }
@@ -41,7 +41,9 @@ const fetchModel = async () => {
                 sendMessage(`模型数据类型错误: ${JSON.stringify(error)}`, {type: "warning"})
             }
         } catch (e) {
-            sendMessage(`模型数据类型错误: ${e}`, {type: "warning"})
+            sendMessage(`模型获取错误: ${e}`, {type: "warning"})
+            await router.push({name: "ModelList"})
+            return
         }
     })
 }
