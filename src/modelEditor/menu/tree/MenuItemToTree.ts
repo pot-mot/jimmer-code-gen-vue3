@@ -80,7 +80,7 @@ export const menuItemToTree = (
     filter: (item: {
         name: string,
         comment: string,
-    }) => boolean
+    }) => boolean = () => true
 ): MenuItemTreeNode => {
     return {
         id: menuItem.group.id,

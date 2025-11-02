@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {CreateType_CONSTANTS, useModelEditor} from "@/modelEditor/useModelEditor.ts";
+import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {computed, nextTick, onBeforeMount, onUnmounted, ref, useTemplateRef} from "vue";
 import {judgeTarget, judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
 import SelectableTree from "@/components/tree/SelectableTree.vue";
@@ -14,6 +14,8 @@ import DragContainer from "@/components/draggable/DragContainer.vue";
 import DragTarget from "@/components/draggable/DragTarget.vue";
 import DragSource from "@/components/draggable/DragSource.vue";
 import {subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
+import IconClose from "@/components/icons/IconClose.vue";
+import IconSearch from "@/components/icons/IconSearch.vue";
 
 const {
     createType,
@@ -45,14 +47,27 @@ const selectedIdSet = computed(() => {
     return treeRef.value?.selectedIdSet
 })
 
+const filterVisible = ref(false)
+const filterFocus = ref(false)
+const filterInput = useTemplateRef("filterInput")
 const filterKeyword = ref("")
+const stopFilter = () => {
+    filterVisible.value = false
+    filterKeyword.value = ""
+}
 
 const menuItemTrees = computed(() => {
-    return Array.from(menuMap.value.values()).sort((o1, o2) => {
-        return o1.group.name.localeCompare(o2.group.name)
-    }).map(it => menuItemToTree(it, ({name, comment}) => {
-        return name.includes(filterKeyword.value) || comment.includes(filterKeyword.value)
-    }))
+    if (filterKeyword.value.length === 0) {
+        return Array.from(menuMap.value.values()).sort((o1, o2) => {
+            return o1.group.name.localeCompare(o2.group.name)
+        }).map(it => menuItemToTree(it))
+    } else {
+        return Array.from(menuMap.value.values()).sort((o1, o2) => {
+            return o1.group.name.localeCompare(o2.group.name)
+        }).map(it => menuItemToTree(it, ({name, comment}) => {
+            return name.includes(filterKeyword.value) || comment.includes(filterKeyword.value)
+        })).filter(it => it.children !== undefined && it.children.length > 0)
+    }
 })
 
 const handleKeyDown = async (e: KeyboardEvent) => {
@@ -62,7 +77,13 @@ const handleKeyDown = async (e: KeyboardEvent) => {
         e.preventDefault()
         remove(subIdSetToSubIds(modelSelection.selectedIdSets.value))
     } else if (e.ctrlKey) {
-        if ((e.key === "z" || e.key === "Z")) {
+        if (e.key === "f" || e.key === "F") {
+            e.preventDefault()
+            filterVisible.value = true
+
+            await nextTick()
+            filterInput.value?.focus()
+        } else if (e.key === "z" || e.key === "Z") {
             if (judgeTargetIsInteraction(e)) return
 
             if (e.shiftKey) {
@@ -273,8 +294,19 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
             </div>
         </div>
 
-        <div class="filter-input">
-            <input v-model="filterKeyword">
+        <div class="filter-input" :class="{focus: filterFocus}" v-show="filterVisible">
+            <div class="filter-icon">
+                <IconSearch/>
+            </div>
+            <input
+                ref="filterInput"
+                v-model="filterKeyword"
+                @focus="filterFocus = true"
+                @blur="filterFocus = false"
+            >
+            <button @click="stopFilter">
+                <IconClose/>
+            </button>
         </div>
 
         <button class="group-create-button" @click="handleAddGroup">
@@ -361,14 +393,31 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
 }
 
 .filter-input {
-    padding: 0 1rem 0 0.5rem;
-    margin-bottom: 0.5rem;
+    margin: 0.25rem 0.5rem;
+    display: flex;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: var(--border);
+    border-color: var(--border-color-light);
+}
+.filter-input.focus {
+    border-color: var(--border-color);
+}
+
+.filter-icon {
+   padding: 0.25rem;
+    line-height: 1rem;
 }
 
 .filter-input > input {
     width: 100%;
-    padding: 0.125rem 0.25rem;
-    border-radius: 0.25rem;
+    padding: 0.25rem 0.5rem 0.25rem 0;
+    border: none;
+}
+
+.filter-input > button {
+    padding: 0.25rem 0.25rem;
+    border: none;
 }
 
 .menu-item {
