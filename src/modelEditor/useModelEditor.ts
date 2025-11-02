@@ -197,14 +197,20 @@ export const useModelEditor = createStore(() => {
         }
         currentGroupId.value = id
     }
-    const getCurrentGroupIdOrCreate = () => {
+    const getCurrentGroupIdOrCreate = (): string => {
         let groupId = currentGroupId.value
         if (groupId === undefined || !menuMap.value.has(groupId)) {
-            const newGroup = defaultGroup()
-            newGroup.name = "Default"
-            history.executeCommand('group:add', {group: newGroup})
-            toggleCurrentGroup({id: newGroup.id})
-            groupId = newGroup.id
+            const firstGroupId = menuMap.value.keys().next().value
+            if (firstGroupId !== undefined) {
+                groupId = firstGroupId
+                toggleCurrentGroup({id: firstGroupId})
+            } else {
+                const newGroup = defaultGroup()
+                newGroup.name = modelNameSets.groupNameSet.next("Default")
+                history.executeCommand('group:add', {group: newGroup})
+                toggleCurrentGroup({id: newGroup.id})
+                groupId = newGroup.id
+            }
         }
         return groupId
     }
