@@ -4,6 +4,8 @@ import {onMounted, ref, watch} from "vue";
 import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";
 import JsonEditor from "@/components/code/jsonEditor/JsonEditor.vue";
 import {jsonStrPrettyFormat} from "@/utils/json/jsonStringify.ts";
+import IconCheck from "@/components/icons/IconCheck.vue";
+import IconClose from "@/components/icons/IconClose.vue";
 
 const model = defineModel<T>({
     required: true
@@ -128,14 +130,22 @@ const handleCancel = () => {
         </div>
 
         <div class="form-actions">
-            <button type="button" @click="handleCancel" class="cancel-button">取消</button>
-            <button type="submit" class="submit-button">保存</button>
+            <button type="button" @click="handleCancel" class="cancel-button">
+                <IconClose/>
+                取消
+            </button>
+            <button type="submit" class="submit-button">
+                <IconCheck/>
+                保存
+            </button>
         </div>
     </form>
 </template>
 
 <style scoped>
 .model-edit-form {
+    height: 100%;
+    width: 100%;
     padding: 0.5rem 0.5rem 1rem;
     overflow-y: auto;
 }
@@ -185,11 +195,30 @@ input.error, select.error, textarea.error {
 .form-actions {
     display: flex;
     justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
 }
 
 .cancel-button,
 .submit-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     padding: 0.5rem;
+    border: var(--border);
+    border-color: var(--border-color-light);
+    border-radius: var(--border-radius);
     cursor: pointer;
+    font-size: 14px;
+}
+
+.cancel-button {
+    border-color: var(--warning-color);
+    --icon-color: var(--warning-color);
+}
+
+.submit-button {
+    border-color: var(--success-color);
+    --icon-color: var(--success-color);
 }
 </style>

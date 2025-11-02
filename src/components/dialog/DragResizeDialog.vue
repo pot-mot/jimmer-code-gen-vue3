@@ -326,7 +326,7 @@ const onDragEnd = () => {
 
                 <div
                     ref="contentRef"
-                    class="content"
+                    class="dialog-content"
                 >
                     <slot/>
                 </div>
@@ -345,28 +345,30 @@ const onDragEnd = () => {
     border-color: var(--border-color-light);
     border-radius: var(--border-radius);
     background-color: var(--background-color);
+    overflow: hidden;
 }
 
 .dialog.full-screen {
     border: none;
 }
 
-.content {
-    height: calc(100% - 1.5rem);
-    width: 100%;
-    overflow: auto;
-}
-
 .dialog-header {
     display: flex;
     justify-content: space-between;
+    height: 2rem;
+    line-height: 2rem;
+    padding-left: 0.5rem;
 }
 
 .dialog-header button {
     border: none;
     cursor: pointer;
-    padding: 0.25rem 0.5rem;
-    height: 1.5rem;
+    padding: 0.5rem;
+    height: 2rem;
+}
+
+.dialog-header button > svg {
+    vertical-align: top;
 }
 
 .dialog-header button.toggle-full-screen:hover {
@@ -375,6 +377,13 @@ const onDragEnd = () => {
 
 .dialog-header button.close:hover {
     background-color: var(--danger-color);
+    --icon-color: #fff;
+}
+
+.dialog-content {
+    height: calc(100% - 2rem);
+    width: 100%;
+    overflow: auto;
 }
 
 .model {

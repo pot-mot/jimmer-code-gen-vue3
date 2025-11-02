@@ -14,12 +14,12 @@
 
     --text-color: #222;
     --comment-color: #666;
-    --border-color: #555;
-    --border-color-light: #aaa;
-    --background-color: #f7f7f7;
-    --background-color-hover: #ddd;
+    --border-color: #777;
+    --border-color-light: #ccc;
+    --background-color: #fff;
+    --background-color-hover: #eee;
     --loading-background-color: rgba(0, 0, 0, 0.5);
-    --mask-color: rgba(0, 0, 0, 0.1);
+    --mask-color: rgba(0, 0, 0, 0.2);
     --highlight-color: var(--primary-color);
     --border: 1px solid var(--border-color);
     --border-radius: 0.5em;

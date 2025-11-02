@@ -124,7 +124,7 @@ const deleteModel = async (modelId: string) => {
                     class="model-info"
                     @click="toModelEditor(model.id)"
                 >
-                    <h3>{{ model.name }}</h3>
+                    <div class="name">{{ model.name }}</div>
                     <div class="timestamps">创建时间: {{ formatDateTime(model.createdTime) }}</div>
                     <div class="timestamps">修改时间: {{ formatDateTime(model.modifiedTime) }}</div>
                     <div class="description">{{ model.description }}</div>
@@ -157,11 +157,10 @@ const deleteModel = async (modelId: string) => {
         can-resize
         :init-w="600"
     >
-        <div class="dialog-header">
+        <template #title>
             添加模型
-        </div>
+        </template>
         <ModelEditForm
-            style="height: calc(100% - 2.5rem);"
             v-if="modelInsertInput"
             v-model="modelInsertInput"
             @submit="submitModelInsert"
@@ -176,11 +175,10 @@ const deleteModel = async (modelId: string) => {
         can-resize
         :init-w="600"
     >
-        <div class="dialog-header">
+        <template #title>
             编辑模型
-        </div>
+        </template>
         <ModelEditForm
-            style="height: calc(100% - 2.5rem);"
             v-if="modelUpdateInput"
             v-model="modelUpdateInput"
             @submit="submitModelUpdate"
@@ -208,45 +206,66 @@ const deleteModel = async (modelId: string) => {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    border: none;
     padding: 0.5rem;
-    border: var(--border);
-    border-color: var(--border-color-light);
     border-radius: var(--border-radius);
     cursor: pointer;
     font-size: 14px;
 }
 
-.add-button:hover {
-    border-color: var(--border-color);
-}
-
 .model-list {
     display: grid;
     grid-gap: 1rem;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 768px) {
+    .model-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .model-list {
+        grid-template-columns: repeat(1, 1fr);
+    }
 }
 
 .model-item {
     border: var(--border);
+    border-color: var(--border-color-light);
     border-radius: var(--border-radius);
+    padding: 0.5rem;
+}
+
+.model-item:hover {
+    border-color: var(--border-color);
 }
 
 .model-info {
     margin: 0.5rem;
 }
 
-.description {
-    overflow: auto;
+.model-info > .name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
 }
 
-.timestamps {
+.model-info > .description {
+    height: 4rem;
+    overflow: auto;
+    margin-top: 0.25rem;
+}
+
+.model-info > .timestamps {
     font-size: 0.75rem;
 }
 
 .actions {
     display: flex;
-    gap: 10px;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1rem;
 }
 
 .edit-button,
@@ -254,17 +273,10 @@ const deleteModel = async (modelId: string) => {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem;
-    border: var(--border);
-    border-color: var(--border-color-light);
+    padding: 0.25rem 0.5rem;
     border-radius: var(--border-radius);
     cursor: pointer;
-    font-size: 14px;
-}
-
-.edit-button:hover,
-.delete-button:hover {
-    border-color: var(--border-color);
+    font-size: 0.8rem;
 }
 
 .dialog-header {

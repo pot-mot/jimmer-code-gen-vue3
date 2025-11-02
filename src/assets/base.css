@@ -123,12 +123,11 @@ textarea,
 select {
     outline: none;
     color: var(--text-color);
-    border: var(--border);
-    border-radius: 0;
-    border-color: var(--background-color-hover);
-    background-color: var(--background-color);
     font-weight: inherit;
     font-family: inherit;
+    background-color: var(--background-color);
+    border: var(--border);
+    border-color: var(--border-color-light);
     tab-size: 4;
 }
 
@@ -149,13 +148,15 @@ select:focus {
 
 button {
     outline: none;
-    border-radius: 0;
-    background-color: var(--background-color);
     color: var(--text-color);
+    font-weight: inherit;
+    font-family: inherit;
+    background-color: var(--background-color);
     border: var(--border);
-    border-color: var(--background-color-hover);
+    border-color: var(--border-color-light);
 }
 
 button:hover {
-    background-color: var(--border-color-light);
+    background-color: var(--background-color-hover);
+    border-color: var(--border-color);
 }
