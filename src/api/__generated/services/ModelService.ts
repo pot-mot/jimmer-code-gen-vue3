@@ -27,6 +27,20 @@ export class ModelService {
         return (await this.executor({uri: _uri, method: 'POST'})) as Promise<number>;
     }
     
+    readonly deleteHistory: (options: ModelServiceOptions['deleteHistory']) => Promise<
+        number
+    > = async(options) => {
+        let _uri = '/model/deleteHistory';
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.modelHistoryId;
+        _uri += _separator
+        _uri += 'modelHistoryId='
+        _uri += encodeURIComponent(_value);
+        _separator = '&';
+        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<number>;
+    }
+    
     readonly fetchHistories: (options: ModelServiceOptions['fetchHistories']) => Promise<
         Array<ModelHistoryNoJsonView>
     > = async(options) => {
@@ -112,5 +126,8 @@ export type ModelServiceOptions = {
     }, 
     'delete': {
         modelId: string
+    }, 
+    'deleteHistory': {
+        modelHistoryId: string
     }
 }

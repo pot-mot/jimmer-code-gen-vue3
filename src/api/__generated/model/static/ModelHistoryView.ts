@@ -5,6 +5,7 @@ import type {
     JvmLanguage, 
     ModelForeignKeyType
 } from '../enums/';
+import type {ModelViewport} from './';
 
 export interface ModelHistoryView {
     id: string;
@@ -16,6 +17,7 @@ export interface ModelHistoryView {
     defaultForeignKeyType: ModelForeignKeyType;
     jvmLanguage: JvmLanguage;
     defaultEnumerationStrategy: EnumerationStrategy;
+    viewport: ModelViewport;
     jsonData: string;
     modelId: string;
 }
