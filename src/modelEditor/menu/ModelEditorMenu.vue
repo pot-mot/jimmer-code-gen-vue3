@@ -241,11 +241,6 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
     >
 
         <div class="create-type-select">
-            <button class="group-create-button" @click="handleAddGroup">
-                <IconAdd/>
-                <span>Group</span>
-            </button>
-
             <div>
                 <button
                     class="create-type-item"
@@ -281,6 +276,11 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
         <div class="filter-input">
             <input v-model="filterKeyword">
         </div>
+
+        <button class="group-create-button" @click="handleAddGroup">
+            <IconAdd/>
+            <span>Group</span>
+        </button>
 
         <DragContainer
             @drag-end="handleDragEnd"
@@ -334,8 +334,12 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
 }
 
 .group-create-button {
-    margin: 0.5rem 0 0.2rem 0.5rem;
-    padding: 0.2rem;
+    margin: 0.5rem 0 0.25rem 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius);
     cursor: pointer;
 }
 

@@ -209,7 +209,7 @@ input.error, select.error, textarea.error {
     border-color: var(--border-color-light);
     border-radius: var(--border-radius);
     cursor: pointer;
-    font-size: 14px;
+    font-size: 0.8rem;
 }
 
 .cancel-button {

@@ -271,9 +271,10 @@ const handleKeyDown = async (e: KeyboardEvent) => {
 
 :deep(.node-toolbar) > button,
 :deep(.edge-toolbar) > button {
-    padding: 0.3rem;
-    margin-right: 0.3rem;
-    margin-top: 0.3rem;
-    transition: background-color 0.3s ease;
+    padding: 0.25rem;
+    margin-right: 0.25rem;
+    margin-top: 0.25rem;
+    border-color: var(--background-color-hover);
+    border-radius: 0.25rem;
 }
 </style>

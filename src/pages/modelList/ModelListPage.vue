@@ -209,7 +209,6 @@ const deleteModel = async (modelId: string) => {
     padding: 0.5rem;
     border-radius: var(--border-radius);
     cursor: pointer;
-    font-size: 14px;
 }
 
 .model-list {
