@@ -1,18 +1,12 @@
-<script setup lang="ts" generic="T extends ModelInsertInput | ModelUpdateInput">
-import type {ModelInsertInput, ModelUpdateInput} from "@/api/__generated/model/static";
-import {onMounted, ref, watch} from "vue";
-import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";
-import JsonEditor from "@/components/code/jsonEditor/JsonEditor.vue";
-import {jsonStrPrettyFormat} from "@/utils/json/jsonStringify.ts";
+<script setup lang="ts" generic="T extends Omit<Model, 'id' | 'createdTime' | 'modifiedTime'>">
+import {ref, watch} from "vue";
 import IconCheck from "@/components/icons/IconCheck.vue";
 import IconClose from "@/components/icons/IconClose.vue";
+import DatabaseTypeSelect from "@/modelEditor/modelForm/databaseType/DatabaseTypeSelect.vue";
+import JvmLanguageSelect from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageSelect.vue";
 
 const model = defineModel<T>({
     required: true
-})
-
-onMounted(() => {
-    model.value.jsonData = jsonStrPrettyFormat(model.value.jsonData)
 })
 
 const emits = defineEmits<{
@@ -29,15 +23,6 @@ const validateForm = (): boolean => {
 
     if (!model.value.name || model.value.name.trim() === '') {
         errors.value.name = '模型名称不能为空'
-    }
-
-    try {
-        let error
-        if (!validatePartialModelGraphSubData(JSON.parse(model.value.jsonData), e => error = e)) {
-            errors.value.jsonData = `JSON 数据格式错误: ${error}`
-        }
-    } catch (e) {
-        errors.value.jsonData = 'JSON 数据格式不正确'
     }
 
     return Object.keys(errors.value).length === 0
@@ -73,31 +58,13 @@ const handleCancel = () => {
             <div v-if="errors.name" class="error-message">{{ errors.name }}</div>
         </div>
 
-        <div class="form-group">
-            <textarea
-                v-model="model.description"
-                placeholder="请输入模型描述"
-                rows="3"
-            />
-        </div>
-
         <div class="form-row">
             <div class="form-group">
-                <select v-model="model.jvmLanguage">
-                    <option value="KOTLIN">Kotlin</option>
-                    <option value="JAVA">Java</option>
-                </select>
+                <JvmLanguageSelect v-model="model.jvmLanguage"/>
             </div>
 
             <div class="form-group">
-                <select v-model="model.databaseType">
-                    <option value="POSTGRESQL">PostgreSQL</option>
-                    <option value="MYSQL">MySQL</option>
-                    <option value="ORACLE">Oracle</option>
-                    <option value="SQLSERVER">SQL Server</option>
-                    <option value="H2">H2</option>
-                    <option value="SQLITE">Sqlite</option>
-                </select>
+                <DatabaseTypeSelect v-model="model.databaseType"/>
             </div>
         </div>
 
@@ -124,9 +91,13 @@ const handleCancel = () => {
             </div>
         </div>
 
-        <div class="json-data-editor">
-            <JsonEditor json-type="PartialModelGraphSubData" v-model="model.jsonData"/>
-            <div v-if="errors.jsonData" class="error-message">{{ errors.jsonData }}</div>
+        <div style="height: calc(100% - 12.5rem);">
+            <textarea
+                v-model="model.description"
+                placeholder="请输入模型描述"
+                rows="3"
+                style="height: 100%;"
+            />
         </div>
 
         <div class="form-actions">
@@ -146,7 +117,7 @@ const handleCancel = () => {
 .model-edit-form {
     height: 100%;
     width: 100%;
-    padding: 0.5rem 0.5rem 1rem;
+    padding: 0.5rem 0.5rem 0.5rem;
     overflow-y: auto;
 }
 
@@ -176,10 +147,6 @@ textarea {
     width: 100%;
     border-radius: var(--border-radius);
     padding: 0.5rem;
-}
-
-.json-data-editor {
-    height: calc(100% - 18rem);
 }
 
 input.error, select.error, textarea.error {

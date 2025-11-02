@@ -5,11 +5,13 @@ import {onBeforeMount, ref} from "vue";
 import type {ModelInsertInput, ModelNoJsonView, ModelUpdateInput} from "@/api/__generated/model/static";
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import IconAdd from "@/components/icons/IconAdd.vue";
-import ModelEditForm from "@/pages/modelList/ModelEditForm.vue";
 import IconEdit from "@/components/icons/IconEdit.vue";
 import IconDelete from "@/components/icons/IconDelete.vue";
 import {formatDateTime} from "@/utils/datetime/timeFormat.ts";
 import {useRouter} from "vue-router";
+import ModelConfigForm from "@/modelEditor/modelForm/ModelConfigForm.vue";
+import JvmLanguageView from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageView.vue";
+import DatabaseTypeView from "@/modelEditor/modelForm/databaseType/DatabaseTypeView.vue";
 
 const modelList = ref<ModelNoJsonView[]>([])
 
@@ -124,7 +126,13 @@ const deleteModel = async (modelId: string) => {
                     class="model-info"
                     @click="toModelEditor(model.id)"
                 >
-                    <div class="name">{{ model.name }}</div>
+                    <div class="header">
+                        <div class="name">{{ model.name }}</div>
+                        <div class="tags">
+                            <JvmLanguageView :jvm-language="model.jvmLanguage"/>
+                            <DatabaseTypeView :database-type="model.databaseType"/>
+                        </div>
+                    </div>
                     <div class="timestamps">创建时间: {{ formatDateTime(model.createdTime) }}</div>
                     <div class="timestamps">修改时间: {{ formatDateTime(model.modifiedTime) }}</div>
                     <div class="description">{{ model.description }}</div>
@@ -156,11 +164,12 @@ const deleteModel = async (modelId: string) => {
         modal
         can-resize
         :init-w="600"
+        :init-h="340"
     >
         <template #title>
             添加模型
         </template>
-        <ModelEditForm
+        <ModelConfigForm
             v-if="modelInsertInput"
             v-model="modelInsertInput"
             @submit="submitModelInsert"
@@ -174,11 +183,12 @@ const deleteModel = async (modelId: string) => {
         modal
         can-resize
         :init-w="600"
+        :init-h="340"
     >
         <template #title>
             编辑模型
         </template>
-        <ModelEditForm
+        <ModelConfigForm
             v-if="modelUpdateInput"
             v-model="modelUpdateInput"
             @submit="submitModelUpdate"
@@ -244,10 +254,28 @@ const deleteModel = async (modelId: string) => {
     margin: 0.5rem;
 }
 
-.model-info > .name {
+.model-info > .header {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.model-info > .header > .name {
     font-size: 1.2rem;
     font-weight: 600;
-    margin-bottom: 0.25rem;
+}
+
+.model-info > .header  > .tags {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.model-info > .header > .tags > div {
+    border: var(--border);
+    border-color: var(--background-color-hover);
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    padding: 0.25rem;
 }
 
 .model-info > .description {
