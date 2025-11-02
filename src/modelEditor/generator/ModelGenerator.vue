@@ -82,14 +82,17 @@ watch(() => openState.value, async () => {
     <DragResizeDialog
         v-model="openState"
         can-resize
+        modal
     >
+        <template #title>
+            生成结果
+        </template>
         <div
             class="error-message-content"
             v-if="errorMessage"
         >
             {{ errorMessage }}
         </div>
-
         <FileTreeViewer
             v-if="generateResult"
             :files="generateResult"
@@ -106,7 +109,11 @@ watch(() => openState.value, async () => {
             v-model="isScriptOpen"
             @close="currentScriptInfo = undefined"
             can-resize
+            modal
         >
+            <template #title>
+                脚本编辑
+            </template>
             <Splitpanes>
                 <Pane :size="20" class="left-pane">
                     <ScriptsMenu

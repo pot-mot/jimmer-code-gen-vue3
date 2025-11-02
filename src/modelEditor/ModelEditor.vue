@@ -20,6 +20,7 @@ import {NodeType_EmbeddableType} from "@/modelEditor/node/EmbeddableTypeNode.ts"
 import {NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
 import {EdgeType_ConcreteAssociation} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
 import {EdgeType_AbstractAssociation} from "@/modelEditor/edge/AbstractAssociationEdge.ts";
+import ModelForm from "@/modelEditor/modelForm/ModelForm.vue";
 
 const {
     initModelEditor,
@@ -227,6 +228,8 @@ const handleKeyDown = async (e: KeyboardEvent) => {
         <ModelEditorToolbar/>
 
         <ModelGenerator/>
+
+        <ModelForm/>
     </div>
 </template>
 

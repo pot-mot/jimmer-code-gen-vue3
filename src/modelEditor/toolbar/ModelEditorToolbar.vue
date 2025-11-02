@@ -8,6 +8,8 @@ import IconSelectRect from "@/components/icons/IconSelectRect.vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import IconDownload from "@/components/icons/IconDownload.vue";
 import {useModelGenerator} from "@/modelEditor/generator/useModelGenerator.ts";
+import IconEdit from "@/components/icons/IconEdit.vue";
+import {useModelForm} from "@/modelEditor/modelForm/useModelForm.ts";
 
 const {
     saveModel,
@@ -23,12 +25,19 @@ const {
 const {
     open: openGenerator
 } = useModelGenerator()
+
+const {
+    open: openForm
+} = useModelForm()
 </script>
 
 <template>
     <div class="toolbar top-left">
         <button @click="saveModel()">
             <IconSave/>
+        </button>
+        <button @click="openForm()">
+            <IconEdit/>
         </button>
 
         <button :disabled="!canUndo" @click="undo()" :class="{disabled: !canUndo}">
@@ -61,6 +70,7 @@ const {
 
 .toolbar button {
     padding: 0 1rem;
+    line-height: 1rem;
     background-color: var(--background-color);
     border: none;
     cursor: pointer;

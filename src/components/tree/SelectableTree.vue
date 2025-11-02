@@ -22,7 +22,10 @@ const emits = defineEmits<{
 }>()
 
 // 存储选中项
-const selectedIdSet = ref(new Set<string>())
+const selectedIdSet = defineModel<Set<string>>('selectedIdSet', {
+    required: false,
+    default: () => new Set<string>()
+})
 const selectedIds = computed(() => Array.from(selectedIdSet.value))
 
 // 存储打开项

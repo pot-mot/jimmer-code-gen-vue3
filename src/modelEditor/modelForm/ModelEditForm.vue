@@ -75,14 +75,6 @@ const handleCancel = () => {
             <div v-if="errors.name" class="error-message">{{ errors.name }}</div>
         </div>
 
-        <div class="form-group">
-            <textarea
-                v-model="model.description"
-                placeholder="请输入模型描述"
-                rows="3"
-            />
-        </div>
-
         <div class="form-row">
             <div class="form-group">
                 <JvmLanguageSelect v-model="model.jvmLanguage"/>
@@ -114,6 +106,14 @@ const handleCancel = () => {
                     <option value="UPPER_SNAKE">大写蛇形 (UPPER_SNAKE)</option>
                 </select>
             </div>
+        </div>
+
+        <div class="form-group">
+            <textarea
+                v-model="model.description"
+                placeholder="请输入模型描述"
+                rows="3"
+            />
         </div>
 
         <div class="json-data-editor">

@@ -1075,6 +1075,7 @@ export const useModelEditor = createStore(() => {
         modelNameSets,
         modelDiagnoseInfo,
         getContext,
+        getModelGraphData,
 
         loadModel,
         loadTables,

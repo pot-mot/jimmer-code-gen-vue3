@@ -11,24 +11,20 @@ const props = defineProps<{
 
 const paths = computed(() => Object.keys(props.files))
 
-const currentPath = ref<string>()
+const currentFilePath = ref<string>()
 
 const currentFileContent = computed(() => {
-    if (currentPath.value !== undefined) {
-        return props.files[currentPath.value]
+    if (currentFilePath.value !== undefined) {
+        return props.files[currentFilePath.value]
     }
 })
 
 const currentLanguage = computed(() => {
-    const splitParts = currentPath.value?.split(".")
+    const splitParts = currentFilePath.value?.split(".")
     if (splitParts && splitParts.length > 0) {
         return splitParts[splitParts.length - 1]
     }
 })
-
-const handleFileClick = (path: string) => {
-    currentPath.value = path
-}
 </script>
 
 <template>
@@ -38,8 +34,7 @@ const handleFileClick = (path: string) => {
                 <slot name="left-top"/>
                 <FileTree
                     :paths="paths"
-                    :current-path="currentPath"
-                    @file-click="handleFileClick"
+                    v-model:current-file-path="currentFilePath"
                 />
             </div>
         </Pane>
