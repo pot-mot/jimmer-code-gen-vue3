@@ -19,7 +19,6 @@ const createDiagnosticsOptions = (): DiagnosticsOptions => {
         }),
         schemaValidation: "error",
         enableSchemaRequest: false,
-        trailingCommas: "ignore",
     }
 }
 

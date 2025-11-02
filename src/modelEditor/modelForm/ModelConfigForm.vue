@@ -157,6 +157,7 @@ input.error, select.error, textarea.error {
     margin-top: 6px;
     color: var(--danger-color);
     font-size: 0.8rem;
+    white-space: pre-line;
 }
 
 .form-actions {

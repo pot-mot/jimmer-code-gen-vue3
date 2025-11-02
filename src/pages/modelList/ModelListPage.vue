@@ -59,13 +59,11 @@ const stopModelInsert = () => {
     modelInsertVisible.value = false
 }
 
-const submitModelInsert = async () => {
+const submitModelInsert = async (model: ModelInsertInput) => {
     await withLoading("insert model", async () => {
-        if (modelInsertInput.value !== undefined) {
-            const result = await api.modelService.insert({body: modelInsertInput.value})
-            modelList.value.push(result)
-            modelInsertVisible.value = false
-        }
+        const result = await api.modelService.insert({body: model})
+        modelList.value.push(result)
+        modelInsertVisible.value = false
     })
 }
 
@@ -83,18 +81,16 @@ const stopModelUpdate = () => {
     modelUpdateVisible.value = false
 }
 
-const submitModelUpdate = async () => {
+const submitModelUpdate = async (model: ModelUpdateInput) => {
     await withLoading("update model", async () => {
-        if (modelUpdateInput.value !== undefined) {
-            const result = await api.modelService.update({body: modelUpdateInput.value})
-            const index = modelList.value.findIndex(model => model.id === result.id)
-            if (index >= 0) {
-                modelList.value[index] = result
-            } else {
-                modelList.value.push(result)
-            }
-            modelUpdateVisible.value = false
+        const result = await api.modelService.update({body: model})
+        const index = modelList.value.findIndex(model => model.id === result.id)
+        if (index >= 0) {
+            modelList.value[index] = result
+        } else {
+            modelList.value.push(result)
         }
+        modelUpdateVisible.value = false
     })
 }
 
@@ -304,10 +300,5 @@ const deleteModel = async (modelId: string) => {
     border-radius: var(--border-radius);
     cursor: pointer;
     font-size: 0.8rem;
-}
-
-.dialog-header {
-    padding: 0.5rem;
-    font-size: 1rem;
 }
 </style>

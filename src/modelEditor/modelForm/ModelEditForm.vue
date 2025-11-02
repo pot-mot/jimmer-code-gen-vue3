@@ -8,6 +8,8 @@ import IconCheck from "@/components/icons/IconCheck.vue";
 import IconClose from "@/components/icons/IconClose.vue";
 import JvmLanguageSelect from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageSelect.vue";
 import DatabaseTypeSelect from "@/modelEditor/modelForm/databaseType/DatabaseTypeSelect.vue";
+import type {ErrorObject} from "ajv";
+import {formatErrorMessage} from "@/utils/type/typeGuard.ts";
 
 const model = defineModel<T>({
     required: true
@@ -34,12 +36,12 @@ const validateForm = (): boolean => {
     }
 
     try {
-        let error
+        let error: ErrorObject[] | null | undefined
         if (!validatePartialModelGraphSubData(JSON.parse(model.value.jsonData), e => error = e)) {
-            errors.value.jsonData = `JSON 数据格式错误: ${error}`
+            errors.value.jsonData = `JSON 数据格式不正确:\n${formatErrorMessage(error)}`
         }
     } catch (e) {
-        errors.value.jsonData = 'JSON 数据格式不正确'
+        errors.value.jsonData = `JSON 数据格式不正确:\n${e}`
     }
 
     return Object.keys(errors.value).length === 0
@@ -118,8 +120,8 @@ const handleCancel = () => {
 
         <div class="json-data-editor">
             <JsonEditor json-type="PartialModelGraphSubData" v-model="model.jsonData"/>
-            <div v-if="errors.jsonData" class="error-message">{{ errors.jsonData }}</div>
         </div>
+        <div v-if="errors.jsonData" class="error-message">{{ errors.jsonData }}</div>
 
         <div class="form-actions">
             <button type="button" @click="handleCancel" class="cancel-button">
@@ -182,6 +184,7 @@ input.error, select.error, textarea.error {
     margin-top: 6px;
     color: var(--danger-color);
     font-size: 0.8rem;
+    white-space: pre-line;
 }
 
 .form-actions {

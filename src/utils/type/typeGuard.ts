@@ -40,4 +40,11 @@ export const createSchemaValidator = <T>(schema: JSONSchemaType<T>, baseErrorHan
     }
 }
 
+export const formatErrorMessage = (error: ErrorObject | ErrorObject[] | null | undefined): string => {
+    if (error === null || error === undefined) return "Invalid data"
+    if (Array.isArray(error)) return error.map(formatErrorMessage).join("\n")
+    const { instancePath, message } = error
+    return `${instancePath}: ${message}`
+};
+
 export type SchemaValidator<T> = ReturnType<typeof createSchemaValidator<T>>
