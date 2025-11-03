@@ -21,6 +21,8 @@ import {NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
 import {EdgeType_ConcreteAssociation} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
 import {EdgeType_AbstractAssociation} from "@/modelEditor/edge/AbstractAssociationEdge.ts";
 import ModelForm from "@/modelEditor/modelForm/ModelForm.vue";
+import {useModelForm} from "@/modelEditor/modelForm/useModelForm.ts";
+import {useModelGenerator} from "@/modelEditor/generator/useModelGenerator.ts";
 
 const {
     initModelEditor,
@@ -42,6 +44,14 @@ const {
     remove,
 } = useModelEditor()
 
+const {
+    close: closeForm,
+} = useModelForm()
+
+const {
+    close: closeGenerator,
+} = useModelGenerator()
+
 const isPointerEnter = ref(false)
 
 onMounted(() => {
@@ -50,6 +60,8 @@ onMounted(() => {
 })
 onBeforeUnmount(() => {
     document.removeEventListener("keydown", handleKeyDown)
+    closeForm()
+    closeGenerator()
     destroyModelEditor()
 })
 
