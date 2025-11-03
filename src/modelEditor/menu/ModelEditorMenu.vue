@@ -44,9 +44,7 @@ const {
 } = useModelEditor()
 
 const treeRef = useTemplateRef("treeRef")
-const selectedIdSet = computed(() => {
-    return treeRef.value?.selectedIdSet
-})
+const selectedIdSet = ref(new Set<string>())
 
 const filterVisible = ref(false)
 const filterFocus = ref(false)
@@ -234,12 +232,11 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
     if (!targetNode) return
     if (targetNode.data.type !== "Group") return
     const groupId = targetNode.data.group.id
-    const selectedIdSet = tree.selectedIdSet
 
     executeAsyncBatch(Symbol("group:move"), async () => {
-        if (selectedIdSet.has(sourceId)) {
+        if (selectedIdSet.value.has(sourceId)) {
             for (const node of nodes) {
-                if (selectedIdSet.has(node.id)) {
+                if (selectedIdSet.value.has(node.id)) {
                     changeNodeGroup(node, groupId)
                 }
             }
@@ -321,6 +318,7 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
             <SelectableTree
                 ref="treeRef"
                 :data="menuItemTrees"
+                v-model:selected-id-set="selectedIdSet"
                 @select="handleSelect"
             >
                 <template #default="{data}">
