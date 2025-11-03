@@ -47,7 +47,7 @@ const handleCancel = () => {
 </script>
 
 <template>
-    <form @submit.prevent="handleSubmit" class="model-edit-form">
+    <form @submit.prevent class="model-edit-form">
         <div class="form-group">
             <input
                 v-model="model.name"
@@ -101,11 +101,11 @@ const handleCancel = () => {
         </div>
 
         <div class="form-actions">
-            <button type="button" @click="handleCancel" class="cancel-button">
+            <button @click="handleCancel" class="cancel-button">
                 <IconClose/>
                 取消
             </button>
-            <button type="submit" class="submit-button">
+            <button @click="handleSubmit" class="submit-button">
                 <IconCheck/>
                 保存
             </button>
