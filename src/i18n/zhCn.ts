@@ -1,19 +1,45 @@
 import type {MainLocale} from "@/i18n/index.ts";
 
 export const localeZhCn: MainLocale = {
-    BUTTON_copy: "复制",
-    BUTTON_cut: "剪切",
-    BUTTON_paste: "粘贴",
+    copy: "复制",
+    cut: "剪切",
+    paste: "粘贴",
 
-    BUTTON_edit: "编辑",
-    BUTTON_submit: "提交",
-    BUTTON_delete: "删除",
-    BUTTON_clear: "清理",
-    BUTTON_save: "保存",
-    BUTTON_cancel: "取消",
-    BUTTON_load: "导入",
-    BUTTON_export: "导出",
-    BUTTON_test: "测试",
+    edit: "编辑",
+    submit: "提交",
+    delete: "删除",
+    clear: "清理",
+    save: "保存",
+    confirm: "确认",
+    cancel: "取消",
+    load: "导入",
+    export: "导出",
+    test: "测试",
 
-    MESSAGE_delete_confirm: (deleteTarget: string) => `确定要删除 ${deleteTarget} 吗？`
+    delete_confirm_title: (deleteTarget: string) => `${deleteTarget}删除确认`,
+    delete_confirm_content: (deleteTarget: string) => `确定要删除${deleteTarget}吗？`,
+
+    name: "名称",
+    comment: "备注",
+    createdTime: "创建时间",
+    modifiedTime: "修改时间",
+
+    model: "模型",
+    group: "分组",
+    entity: "实体",
+    mappedSuperClass: "抽象实体",
+    enumeration: "枚举",
+    embeddableType: "内嵌类型",
+    association: "关联",
+
+    model_create_button: "创建模型",
+    group_create_button: "创建分组",
+
+    database: "数据库",
+    table: "表",
+    column: "列",
+    index: "索引",
+    primaryKey: "主键",
+    foreignKey: "外键",
+    check: "检查",
 }

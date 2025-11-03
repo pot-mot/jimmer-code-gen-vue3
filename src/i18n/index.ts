@@ -1,19 +1,45 @@
 export type MainLocale = {
-    BUTTON_copy: string
-    BUTTON_cut: string
-    BUTTON_paste: string
+    copy: string
+    cut: string
+    paste: string
 
-    BUTTON_edit: string
-    BUTTON_submit: string
-    BUTTON_delete: string
-    BUTTON_clear: string
-    BUTTON_save: string
-    BUTTON_cancel: string
-    BUTTON_load: string
-    BUTTON_export: string
-    BUTTON_test: string
+    edit: string
+    submit: string
+    delete: string
+    clear: string
+    save: string
+    confirm: string
+    cancel: string
+    load: string
+    export: string
+    test: string
 
-    MESSAGE_delete_confirm: (deleteTarget: string) => string
+    delete_confirm_title: (deleteTarget: string) => string
+    delete_confirm_content: (deleteTarget: string) => string
+
+    name: string
+    comment: string
+    createdTime: string
+    modifiedTime: string
+
+    model: string
+    group: string
+    entity: string
+    mappedSuperClass: string
+    enumeration: string
+    embeddableType: string
+    association: string
+
+    model_create_button: string
+    group_create_button: string
+
+    database: string
+    table: string
+    column: string
+    index: string
+    primaryKey: string
+    foreignKey: string
+    check: string
 }
 
 type BaseLocale = {
