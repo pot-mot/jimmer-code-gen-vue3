@@ -140,8 +140,10 @@ const preventShiftSelect = (event: MouseEvent) => {
 // 处理shift选择
 const handleShiftSelection = (currentId: string) => {
     if (lastSelectedId.value === undefined) {
+        const unselectedNodes = selectedIds.value.map(getNodeById)
         selectedIdSet.value.clear()
         selectedIdSet.value.add(currentId)
+        emits('select', {selected: [getNodeById(currentId)], unselected: unselectedNodes})
         return
     }
 
@@ -164,11 +166,14 @@ const handleShiftSelection = (currentId: string) => {
     // 获取范围内的所有节点ID
     const rangeIds = nodeIdsInOrder.value.slice(start, end + 1)
 
-    // 合并现有选中项和范围选中项，去重
     const newSelectSet = new Set(rangeIds)
+    const oldSelectSet = selectedIdSet.value
 
     selectedIdSet.value = newSelectSet
-    emits('select', {selected: selectedIds.value.map(getNodeById), unselected: selectedIds.value.filter(id => !newSelectSet.has(id)).map(getNodeById)})
+    emits('select', {
+        selected: [...newSelectSet].map(getNodeById),
+        unselected: [...oldSelectSet].map(getNodeById)
+    })
 }
 
 const handleKeyDown = (e: KeyboardEvent) => {
