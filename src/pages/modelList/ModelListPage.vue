@@ -95,6 +95,7 @@ const submitModelUpdate = async (model: ModelUpdateInput) => {
 }
 
 const deleteModel = async (modelId: string) => {
+    if (!confirm("确定要删除模型吗？一切数据将无法恢复")) return
     await withLoading("delete model", async () => {
         await api.modelService.delete({modelId})
         modelList.value = modelList.value.filter(model => model.id !== modelId)
@@ -104,7 +105,7 @@ const deleteModel = async (modelId: string) => {
 
 <template>
     <div class="page">
-        <div class="header">
+        <div class="page-header">
             <h2>模型列表</h2>
             <button @click="startModelInsert" class="add-button">
                 <IconAdd/>
@@ -197,15 +198,14 @@ const deleteModel = async (modelId: string) => {
 .page {
     height: 100%;
     width: 100%;
-    padding: 2rem;
     overflow-y: auto;
 }
 
-.header {
+.page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
+    padding: 1rem;
 }
 
 .add-button {
@@ -219,8 +219,13 @@ const deleteModel = async (modelId: string) => {
 
 .model-list {
     display: grid;
+    padding: 1rem;
     grid-gap: 1rem;
+    width: 100%;
     grid-template-columns: repeat(3, 1fr);
+    max-height: calc(100% - 5rem);
+    overflow-y: auto;
+    scrollbar-gutter: stable;
 }
 
 @media (max-width: 768px) {
@@ -252,6 +257,8 @@ const deleteModel = async (modelId: string) => {
 
 .model-info > .header {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.25rem;
 }
@@ -271,7 +278,9 @@ const deleteModel = async (modelId: string) => {
     border-color: var(--background-color-hover);
     border-radius: 0.25rem;
     font-size: 0.75rem;
+    line-height: 0.75rem;
     padding: 0.25rem;
+    height: 1.5rem;
 }
 
 .model-info > .description {
