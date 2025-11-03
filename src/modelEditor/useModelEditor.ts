@@ -269,6 +269,8 @@ export const useModelEditor = createStore(() => {
     ) => {
         await withLoading("Model Loading...", async () => {
             remove(contextDataToSubIds(getContextData()))
+            await nextTick()
+            await waitChangeSync()
             contextData.model = {
                 id: model.id,
                 name: model.name,

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {onBeforeUnmount, onMounted, ref} from "vue";
+import {ref} from "vue";
 import type {ModelUpdateInput} from "@/api/__generated/model/static";
 import ModelEditForm from "@/modelEditor/modelForm/ModelEditForm.vue";
 import {useModelForm} from "@/modelEditor/modelForm/useModelForm.ts";
@@ -18,8 +18,6 @@ const {
 const {
     openState,
     close,
-    on,
-    off,
 } = useModelForm()
 
 const model = ref<ModelUpdateInput>()
@@ -44,14 +42,6 @@ const handleSubmit = async (model: ModelUpdateInput) => {
 const handleCancel = () => {
     close()
 }
-
-onMounted(() => {
-    on('open', setModel)
-})
-
-onBeforeUnmount(() => {
-    off('open', setModel)
-})
 </script>
 
 <template>
@@ -59,6 +49,7 @@ onBeforeUnmount(() => {
         v-model="openState"
         can-resize
         modal
+        @opened="setModel"
     >
         <ModelEditForm
             v-if="model"
