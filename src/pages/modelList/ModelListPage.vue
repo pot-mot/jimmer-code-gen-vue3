@@ -12,6 +12,8 @@ import {useRouter} from "vue-router";
 import ModelConfigForm from "@/modelEditor/modelForm/ModelConfigForm.vue";
 import JvmLanguageView from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageView.vue";
 import DatabaseTypeView from "@/modelEditor/modelForm/databaseType/DatabaseTypeView.vue";
+import {sendConfirm} from "@/components/confirm/confirmApi.ts";
+import {translate} from "@/store/i18nStore.ts";
 
 const modelList = ref<ModelNoJsonView[]>([])
 
@@ -94,11 +96,16 @@ const submitModelUpdate = async (model: ModelUpdateInput) => {
     })
 }
 
-const deleteModel = async (modelId: string) => {
-    if (!confirm("确定要删除模型吗？一切数据将无法恢复")) return
-    await withLoading("delete model", async () => {
-        await api.modelService.delete({modelId})
-        modelList.value = modelList.value.filter(model => model.id !== modelId)
+const deleteModel = async (model: Model) => {
+    sendConfirm({
+        title: translate({key: "delete_confirm_title", args: [translate("model")]}),
+        content: translate({key: "delete_confirm_content", args: [` ${translate("model")}[${model.name}] `]}),
+        onConfirm: async () => {
+            await withLoading("delete model", async () => {
+                await api.modelService.delete({modelId: model.id})
+                modelList.value = modelList.value.filter(it => model.id !== it.id)
+            })
+        }
     })
 }
 </script>
@@ -109,7 +116,7 @@ const deleteModel = async (modelId: string) => {
             <h2>模型列表</h2>
             <button @click="startModelInsert" class="add-button">
                 <IconAdd/>
-                添加模型
+                {{ translate('model_create_button') }}
             </button>
         </div>
 
@@ -130,9 +137,15 @@ const deleteModel = async (modelId: string) => {
                             <DatabaseTypeView :database-type="model.databaseType"/>
                         </div>
                     </div>
-                    <div class="timestamps">创建时间: {{ formatDateTime(model.createdTime) }}</div>
-                    <div class="timestamps">修改时间: {{ formatDateTime(model.modifiedTime) }}</div>
-                    <div class="description">{{ model.description }}</div>
+                    <div class="timestamps">
+                        {{ translate('createdTime') }} {{ formatDateTime(model.createdTime) }}
+                    </div>
+                    <div class="timestamps">
+                        {{ translate('modifiedTime') }} {{ formatDateTime(model.modifiedTime) }}
+                    </div>
+                    <div class="description">
+                        {{ model.description }}
+                    </div>
                 </div>
 
                 <div class="actions">
@@ -141,14 +154,14 @@ const deleteModel = async (modelId: string) => {
                         class="edit-button"
                     >
                         <IconEdit/>
-                        编辑
+                        {{ translate('edit') }}
                     </button>
                     <button
-                        @click="deleteModel(model.id)"
+                        @click="deleteModel(model)"
                         class="delete-button"
                     >
                         <IconDelete/>
-                        删除
+                        {{ translate('delete') }}
                     </button>
                 </div>
             </div>

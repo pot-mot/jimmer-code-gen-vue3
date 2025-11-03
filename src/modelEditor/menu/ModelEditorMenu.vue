@@ -16,6 +16,7 @@ import DragSource from "@/components/draggable/DragSource.vue";
 import {subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
 import IconClose from "@/components/icons/IconClose.vue";
 import IconSearch from "@/components/icons/IconSearch.vue";
+import {translate} from "@/store/i18nStore.ts";
 
 const {
     createType,
@@ -268,28 +269,28 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
                     :class="{selected: createType === 'Entity'}"
                     @click="createType = 'Entity'"
                 >
-                    Entity
+                    {{ translate('entity') }}
                 </button>
                 <button
                     class="create-type-item"
                     :class="{selected: createType === 'Enumeration'}"
                     @click="createType = 'Enumeration'"
                 >
-                    Enum
+                    {{ translate('enumeration') }}
                 </button>
                 <button
                     class="create-type-item"
                     :class="{selected: createType === 'MappedSuperClass'}"
                     @click="createType = 'MappedSuperClass'"
                 >
-                    AbstractEntity
+                    {{ translate('mappedSuperClass') }}
                 </button>
                 <button
                     class="create-type-item"
                     :class="{selected: createType === 'EmbeddableType'}"
                     @click="createType = 'EmbeddableType'"
                 >
-                    Embeddable
+                    {{ translate('embeddableType') }}
                 </button>
             </div>
         </div>
@@ -311,7 +312,7 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
 
         <button class="group-create-button" @click="handleAddGroup">
             <IconAdd/>
-            <span>Group</span>
+            <span>{{ translate('group_create_button') }}</span>
         </button>
 
         <DragContainer
@@ -382,9 +383,10 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
 }
 
 .create-type-item {
-    border: none;
     background-color: transparent;
-    padding-left: 0.5rem;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    margin-left: 0.5rem;
     cursor: pointer;
 }
 
