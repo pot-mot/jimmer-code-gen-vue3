@@ -15,7 +15,7 @@ import IconEdit from "@/components/icons/IconEdit.vue";
 import {sendConfirm} from "@/components/confirm/confirmApi.ts";
 import IconDelete from "@/components/icons/IconDelete.vue";
 import IconDatabaseAdd from "@/components/icons/IconDatabaseAdd.vue";
-import IconDatabase from "@/components/icons/IconDatabase.vue";
+import IconTypedDatabase from "@/components/icons/database/IconTypedDatabase.vue";
 
 const {
     openState
@@ -141,7 +141,7 @@ const deleteDatabase = async (database: DatabaseView) => {
             <template #head>
                 <div class="database-item">
                     <div class="no-drag">
-                        <IconDatabase/>
+                        <IconTypedDatabase :type="database.type"/>
                         {{ database.name }}
                     </div>
                     <div class="database-operations">
