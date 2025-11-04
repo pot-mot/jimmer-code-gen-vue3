@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import ScriptsMenu from "@/modelEditor/generator/ScriptsMenu.vue";
-import GeneratorScriptEditor from "@/modelEditor/generator/GeneratorScriptEditor.vue";
 import {useModelGenerator} from "@/modelEditor/generator/useModelGenerator.ts";
-import Splitpanes from "@/components/splitpanes/Splitpanes.vue";
-import Pane from "@/components/splitpanes/Pane.vue";
 import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {ref, watch} from "vue";
-import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
 import FileTreeViewer from "@/components/file/FileTreeViewer.vue";
 import {contextDataToSubIds, subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
+import {useGenerateScriptEditor} from "@/modelEditor/generateScript/useGenerateScriptEditor.ts";
+import {translate} from "@/store/i18nStore.ts";
 
 const {
     contextData,
@@ -22,20 +19,12 @@ const {
 
 const {
     openState,
-    scriptsStore,
     generate,
 } = useModelGenerator()
 
-const isScriptOpen = ref(false)
-const currentScriptInfo = ref<ScriptInfo<any>>()
-
-const handleScriptInfoSelect = (scriptInfo: ScriptInfo<any>) => {
-    currentScriptInfo.value = scriptInfo
-}
-
-const handleScriptInfoSubmit = (scriptInfo: ScriptInfo<any>) => {
-    scriptsStore.value.update(scriptInfo.id, scriptInfo)
-}
+const {
+    open: openGenerateScriptEditor,
+} = useGenerateScriptEditor()
 
 const generateResult = ref<Record<string, string>>()
 const errorMessage = ref<string>()
@@ -85,7 +74,7 @@ watch(() => openState.value, async () => {
         modal
     >
         <template #title>
-            生成结果
+            {{ translate('generateResult') }}
         </template>
         <div
             class="error-message-content"
@@ -100,46 +89,14 @@ watch(() => openState.value, async () => {
             <template #left-top>
                 <div>
                     <button @click="handleGenerate">Generate</button>
-                    <button @click="isScriptOpen = true">Edit Scripts</button>
+                    <button @click="openGenerateScriptEditor">Edit Scripts</button>
                 </div>
             </template>
         </FileTreeViewer>
-
-        <DragResizeDialog
-            v-model="isScriptOpen"
-            @close="currentScriptInfo = undefined"
-            can-resize
-            modal
-        >
-            <template #title>
-                脚本编辑
-            </template>
-            <Splitpanes>
-                <Pane :size="20" class="left-pane">
-                    <ScriptsMenu
-                        :script-operator="scriptsStore"
-                        :database-type="contextData.model.databaseType"
-                        :jvm-language="contextData.model.jvmLanguage"
-                        @select="handleScriptInfoSelect"
-                    />
-                </Pane>
-                <Pane>
-                    <GeneratorScriptEditor
-                        v-if="currentScriptInfo"
-                        :script-info="currentScriptInfo"
-                        @submit="handleScriptInfoSubmit"
-                    />
-                </Pane>
-            </Splitpanes>
-        </DragResizeDialog>
     </DragResizeDialog>
 </template>
 
 <style scoped>
-.left-pane {
-    overflow: auto;
-}
-
 .error-message-content {
     color: var(--danger-color);
 }

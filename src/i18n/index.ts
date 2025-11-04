@@ -13,6 +13,7 @@ export type MainLocale = {
     load: string
     export: string
     test: string
+    generate: string
 
     delete_confirm_title: (deleteTarget: string) => string
     delete_confirm_content: (deleteTarget: string) => string
@@ -28,6 +29,7 @@ export type MainLocale = {
     password: string
     createdTime: string
     modifiedTime: string
+    generateResult: string
 
     model: string
     group: string

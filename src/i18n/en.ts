@@ -15,6 +15,7 @@ export const localeEn: MainLocale = {
     load: "Load",
     export: "Export",
     test: "Test",
+    generate: "Generate",
 
     delete_confirm_title: (deleteTarget: string) => `${deleteTarget} Delete Confirm`,
     delete_confirm_content: (deleteTarget: string) => `Are you sure to delete ${deleteTarget}?`,
@@ -30,6 +31,7 @@ export const localeEn: MainLocale = {
     password: "Password",
     createdTime: "Created At",
     modifiedTime: "Modified At",
+    generateResult: "Generate Result",
 
     model: "Model",
     group: "Group",

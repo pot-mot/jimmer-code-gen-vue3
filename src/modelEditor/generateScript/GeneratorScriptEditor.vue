@@ -10,6 +10,9 @@ import {contextDataToSubIds, subIdSetToSubIds} from "@/type/context/utils/ModelS
 import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
 import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
 import FileTreeViewer from "@/components/file/FileTreeViewer.vue";
+import IconRefresh from "@/components/icons/IconRefresh.vue";
+import IconCheck from "@/components/icons/IconCheck.vue";
+import IconExecute from "@/components/icons/IconExecute.vue";
 
 const {
     contextData,
@@ -96,7 +99,10 @@ const handleSubmit = async () => {
 <template>
     <div class="generate-script-editor">
         <div class="top-toolbar">
-            <button @click="handleReset">Reset</button>
+            <button @click="handleReset">
+                <IconRefresh/>
+                Reset
+            </button>
         </div>
 
         <TsScriptEditor
@@ -106,8 +112,14 @@ const handleSubmit = async () => {
         />
 
         <div class="tail-toolbar">
-            <button @click="handleGenerateTest">Test</button>
-            <button @click="handleSubmit">Submit</button>
+            <button @click="handleGenerateTest">
+                <IconExecute/>
+                Test
+            </button>
+            <button @click="handleSubmit">
+                <IconCheck/>
+                Submit
+            </button>
         </div>
 
         <DragResizeDialog

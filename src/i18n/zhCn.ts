@@ -15,6 +15,7 @@ export const localeZhCn: MainLocale = {
     load: "导入",
     export: "导出",
     test: "测试",
+    generate: "生成",
 
     delete_confirm_title: (deleteTarget: string) => `${deleteTarget}删除确认`,
     delete_confirm_content: (deleteTarget: string) => `确定要删除${deleteTarget}吗？`,
@@ -30,6 +31,7 @@ export const localeZhCn: MainLocale = {
     password: "密码",
     createdTime: "创建时间",
     modifiedTime: "修改时间",
+    generateResult: "生成结果",
 
     model: "模型",
     group: "分组",

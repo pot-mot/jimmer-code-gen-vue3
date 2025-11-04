@@ -12,7 +12,6 @@ import {judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
 import ConcreteAssociationEdge from "@/modelEditor/edge/ConcreteAssociationEdge.vue";
 import AbstractAssociationEdge from "@/modelEditor/edge/AbstractAssociationEdge.vue";
 import ModelEditorSelectionRect from "@/modelEditor/selectionRect/ModelEditorSelectionRect.vue";
-import ModelGenerator from "@/modelEditor/generator/ModelGenerator.vue";
 import {defaultModelSubIds} from "@/type/context/utils/ModelSubIds.ts";
 import {NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";
 import {NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode.ts";
@@ -20,9 +19,6 @@ import {NodeType_EmbeddableType} from "@/modelEditor/node/EmbeddableTypeNode.ts"
 import {NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
 import {EdgeType_ConcreteAssociation} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
 import {EdgeType_AbstractAssociation} from "@/modelEditor/edge/AbstractAssociationEdge.ts";
-import ModelForm from "@/modelEditor/modelForm/ModelForm.vue";
-import {useModelForm} from "@/modelEditor/modelForm/useModelForm.ts";
-import {useModelGenerator} from "@/modelEditor/generator/useModelGenerator.ts";
 
 const {
     initModelEditor,
@@ -44,14 +40,6 @@ const {
     remove,
 } = useModelEditor()
 
-const {
-    close: closeForm,
-} = useModelForm()
-
-const {
-    close: closeGenerator,
-} = useModelGenerator()
-
 const isPointerEnter = ref(false)
 
 onMounted(() => {
@@ -60,8 +48,6 @@ onMounted(() => {
 })
 onBeforeUnmount(() => {
     document.removeEventListener("keydown", handleKeyDown)
-    closeForm()
-    closeGenerator()
     destroyModelEditor()
 })
 
@@ -238,10 +224,6 @@ const handleKeyDown = async (e: KeyboardEvent) => {
         <ModelEditorSelectionRect :rect="selectionRect"/>
 
         <ModelEditorToolbar/>
-
-        <ModelGenerator/>
-
-        <ModelForm/>
     </div>
 </template>
 

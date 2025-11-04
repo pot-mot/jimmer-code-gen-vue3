@@ -4,12 +4,18 @@ import Pane from "@/components/splitpanes/Pane.vue";
 import ModelEditorMenu from "@/modelEditor/menu/ModelEditorMenu.vue";
 import ModelEditor from "@/modelEditor/ModelEditor.vue";
 import {useRoute, useRouter} from "vue-router";
-import {onMounted, watch} from "vue";
+import {onBeforeUnmount, onMounted, watch} from "vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import {api} from "@/api";
 import {sendMessage} from "@/components/message/messageApi.ts";
 import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";
+import ModelGenerator from "@/modelEditor/generator/ModelGenerator.vue";
+import ModelForm from "@/modelEditor/modelForm/ModelForm.vue";
+import GenerateScriptDialog from "@/modelEditor/generateScript/GenerateScriptDialog.vue";
+import {useModelForm} from "@/modelEditor/modelForm/useModelForm.ts";
+import {useModelGenerator} from "@/modelEditor/generator/useModelGenerator.ts";
+import {useGenerateScriptEditor} from "@/modelEditor/generateScript/useGenerateScriptEditor.ts";
 
 const router = useRouter()
 const route = useRoute()
@@ -55,6 +61,12 @@ onMounted(() => {
 watch(() => route.params.id, async () => {
     await fetchModel()
 })
+
+onBeforeUnmount(() => {
+    useModelForm().close()
+    useModelGenerator().close()
+    useGenerateScriptEditor().close()
+})
 </script>
 
 <template>
@@ -66,4 +78,9 @@ watch(() => route.params.id, async () => {
             <ModelEditor/>
         </Pane>
     </Splitpanes>
+
+    <ModelForm/>
+
+    <ModelGenerator/>
+    <GenerateScriptDialog/>
 </template>
