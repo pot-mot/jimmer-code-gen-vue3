@@ -154,6 +154,7 @@ button {
     background-color: var(--background-color);
     border: var(--border);
     border-color: var(--border-color-light);
+    user-select: none;
 }
 
 button:hover {

@@ -56,13 +56,19 @@ export const localeEn: MainLocale = {
 
     database: "Database",
     table: "Table",
+    tables: "Tables",
     column: "Column",
+    columns: "Columns",
     index: "Index",
+    indexes: "Indexes",
+    check: "Check",
+    checks: "Checks",
     primaryKey: "Primary Key",
     foreignKey: "Foreign Key",
-    check: "Check",
+    foreignKeys: "Foreign Keys",
 
     database_dialog_button: "Database Manage",
+    database_add_button: "Add Database Connection",
     database_create_title: "Add Database Connection",
     database_update_title: "Update Database Connection",
 }

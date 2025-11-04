@@ -54,13 +54,19 @@ export type MainLocale = {
 
     database: string
     table: string
+    tables: string
     column: string
+    columns: string
     index: string
+    indexes: string
+    check: string
+    checks: string
     primaryKey: string
     foreignKey: string
-    check: string
+    foreignKeys: string
 
     database_dialog_button: string
+    database_add_button: string
     database_create_title: string
     database_update_title: string
 }

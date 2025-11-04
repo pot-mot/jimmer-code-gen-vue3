@@ -56,13 +56,19 @@ export const localeZhCn: MainLocale = {
 
     database: "数据库",
     table: "表",
+    tables: "表",
     column: "列",
+    columns: "列",
     index: "索引",
+    indexes: "索引",
+    check: "检查",
+    checks: "检查",
     primaryKey: "主键",
     foreignKey: "外键",
-    check: "检查",
+    foreignKeys: "外键",
 
     database_dialog_button: "数据库管理",
+    database_add_button: "添加数据库连接",
     database_create_title: "添加数据库连接",
     database_update_title: "修改数据库连接",
 }
