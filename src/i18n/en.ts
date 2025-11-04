@@ -18,9 +18,16 @@ export const localeEn: MainLocale = {
 
     delete_confirm_title: (deleteTarget: string) => `${deleteTarget} Delete Confirm`,
     delete_confirm_content: (deleteTarget: string) => `Are you sure to delete ${deleteTarget}?`,
+    input_placeholder: (fieldName: string) => `Please input ${fieldName}`,
+    not_blank_warning: (fieldName: string) => `${fieldName} cannot be empty.`,
+    json_validate_error: "JSON Validate Error",
 
     name: "Name",
     comment: "Comment",
+    description: "Description",
+    url: "URL",
+    username: "Username",
+    password: "Password",
     createdTime: "Created At",
     modifiedTime: "Modified At",
 
@@ -32,8 +39,18 @@ export const localeEn: MainLocale = {
     embeddableType: "Embeddable Type",
     association: "Association",
 
-    model_create_button: "创建模型",
-    group_create_button: "创建分组",
+    model_list_title: "Model List",
+    model_create_button: "Create Model",
+    model_create_title: "Create Model",
+    model_enum_name: "Use Name Enum",
+    model_enum_ordinal: "Use Ordinal Enum",
+    model_fk_real: "Real Foreign Key",
+    model_fk_fake: "Fake Foreign Key",
+    model_db_lower_snake: "Database use lower_snake",
+    model_db_upper_snake: "Database use UPPER_SNAKE",
+
+    model_update_title: "Update Model",
+    group_create_button: "Add Group",
 
     database: "Database",
     table: "Table",
@@ -42,4 +59,8 @@ export const localeEn: MainLocale = {
     primaryKey: "Primary Key",
     foreignKey: "Foreign Key",
     check: "Check",
+
+    database_dialog_button: "Database Manage",
+    database_create_title: "Add Database Connection",
+    database_update_title: "Update Database Connection",
 }

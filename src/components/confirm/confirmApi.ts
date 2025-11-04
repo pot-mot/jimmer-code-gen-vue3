@@ -10,7 +10,7 @@ export const sendConfirm = (
     const props: ConfirmProps = {
         title: input.title,
         content: input.content,
-        confirmText: translate("submit"),
+        confirmText: translate("confirm"),
         cancelText: translate("cancel"),
         onConfirm: async () => {
             await input.onConfirm?.()

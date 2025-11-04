@@ -14,6 +14,9 @@ import JvmLanguageView from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageView
 import DatabaseTypeView from "@/modelEditor/modelForm/databaseType/DatabaseTypeView.vue";
 import {sendConfirm} from "@/components/confirm/confirmApi.ts";
 import {translate} from "@/store/i18nStore.ts";
+import {useDatabaseDialog} from "@/modelEditor/database/useDatabaseDialog.ts";
+import DatabaseDialog from "@/modelEditor/database/DatabaseDialog.vue";
+import IconDatabase from "@/components/icons/IconDatabase.vue";
 
 const modelList = ref<ModelNoJsonView[]>([])
 
@@ -108,16 +111,27 @@ const deleteModel = async (model: Model) => {
         }
     })
 }
+
+const {
+    open: openDatabaseDialog,
+} = useDatabaseDialog()
 </script>
 
 <template>
     <div class="page">
         <div class="page-header">
-            <h2>模型列表</h2>
-            <button @click="startModelInsert" class="add-button">
-                <IconAdd/>
-                {{ translate('model_create_button') }}
-            </button>
+            <h2>{{ translate('model_list_title') }}</h2>
+
+            <div class="header-operations">
+                <button @click="startModelInsert" class="header-button">
+                    <IconAdd/>
+                    {{ translate('model_create_button') }}
+                </button>
+                <button @click="openDatabaseDialog" class="header-button">
+                    <IconDatabase/>
+                    {{ translate('database_dialog_button') }}
+                </button>
+            </div>
         </div>
 
         <div class="model-list">
@@ -177,7 +191,7 @@ const deleteModel = async (model: Model) => {
         :init-h="340"
     >
         <template #title>
-            添加模型
+            {{ translate('model_create_title') }}
         </template>
         <ModelConfigForm
             v-if="modelInsertInput"
@@ -196,7 +210,7 @@ const deleteModel = async (model: Model) => {
         :init-h="340"
     >
         <template #title>
-            编辑模型
+            {{ translate('model_update_title') }}
         </template>
         <ModelConfigForm
             v-if="modelUpdateInput"
@@ -205,6 +219,8 @@ const deleteModel = async (model: Model) => {
             @cancel="stopModelUpdate"
         />
     </DragResizeDialog>
+
+    <DatabaseDialog/>
 </template>
 
 <style scoped>
@@ -221,7 +237,12 @@ const deleteModel = async (model: Model) => {
     padding: 1rem;
 }
 
-.add-button {
+.header-operations {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.header-button {
     display: flex;
     align-items: center;
     gap: 0.5rem;

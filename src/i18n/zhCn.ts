@@ -18,9 +18,16 @@ export const localeZhCn: MainLocale = {
 
     delete_confirm_title: (deleteTarget: string) => `${deleteTarget}删除确认`,
     delete_confirm_content: (deleteTarget: string) => `确定要删除${deleteTarget}吗？`,
+    input_placeholder: (fieldName: string) => `请输入${fieldName}`,
+    not_blank_warning: (fieldName: string) => `${fieldName}不能为空`,
+    json_validate_error: "JSON格式错误",
 
     name: "名称",
     comment: "备注",
+    description: "描述",
+    url: "URL",
+    username: "用户名",
+    password: "密码",
     createdTime: "创建时间",
     modifiedTime: "修改时间",
 
@@ -32,8 +39,18 @@ export const localeZhCn: MainLocale = {
     embeddableType: "内嵌类型",
     association: "关联",
 
+    model_list_title: "模型列表",
     model_create_button: "创建模型",
-    group_create_button: "创建分组",
+    model_create_title: "创建模型",
+    model_enum_name: "枚举使用名称（NAME）",
+    model_enum_ordinal: "枚举使用序号（ORDINAL）",
+    model_fk_real: "真实外键（REAL）",
+    model_fk_fake: "虚拟外键（FAKE）",
+    model_db_lower_snake: "小写蛇形 (lower_snake)",
+    model_db_upper_snake: "大写蛇形 (UPPER_SNAKE)",
+
+    model_update_title: "修改模型",
+    group_create_button: "添加分组",
 
     database: "数据库",
     table: "表",
@@ -42,4 +59,8 @@ export const localeZhCn: MainLocale = {
     primaryKey: "主键",
     foreignKey: "外键",
     check: "检查",
+
+    database_dialog_button: "数据库管理",
+    database_create_title: "添加数据库连接",
+    database_update_title: "修改数据库连接",
 }

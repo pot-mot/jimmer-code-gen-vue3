@@ -4,6 +4,7 @@ import IconCheck from "@/components/icons/IconCheck.vue";
 import IconClose from "@/components/icons/IconClose.vue";
 import DatabaseTypeSelect from "@/modelEditor/modelForm/databaseType/DatabaseTypeSelect.vue";
 import JvmLanguageSelect from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageSelect.vue";
+import {translate} from "@/store/i18nStore.ts";
 
 const model = defineModel<T>({
     required: true
@@ -22,7 +23,7 @@ const validateForm = (): boolean => {
     errors.value = {}
 
     if (!model.value.name || model.value.name.trim() === '') {
-        errors.value.name = '模型名称不能为空'
+        errors.value.name = translate({key: 'not_blank_warning', args: [translate('name')]})
     }
 
     return Object.keys(errors.value).length === 0
@@ -53,7 +54,7 @@ const handleCancel = () => {
                 v-model="model.name"
                 type="text"
                 :class="{ 'error': errors.name }"
-                placeholder="请输入模型名称"
+                :placeholder="translate({key: 'input_placeholder', args: [translate('name')]})"
             />
             <div v-if="errors.name" class="error-message">{{ errors.name }}</div>
         </div>
@@ -71,22 +72,22 @@ const handleCancel = () => {
         <div class="form-row">
             <div class="form-group">
                 <select v-model="model.defaultForeignKeyType">
-                    <option value="REAL">真实外键（REAL）</option>
-                    <option value="FAKE">虚拟外键（FAKE）</option>
+                    <option value="REAL">{{ translate('model_fk_real') }}</option>
+                    <option value="FAKE">{{ translate('model_fk_fake') }}</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <select v-model="model.defaultEnumerationStrategy">
-                    <option value="NAME">枚举使用名称（NAME）</option>
-                    <option value="ORDINAL">枚举使用序号（ORDINAL）</option>
+                    <option value="NAME">{{ translate('model_enum_name') }}</option>
+                    <option value="ORDINAL">{{ translate('model_enum_ordinal') }}</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <select v-model="model.databaseNameStrategy">
-                    <option value="LOWER_SNAKE">小写蛇形 (lower_snake)</option>
-                    <option value="UPPER_SNAKE">大写蛇形 (UPPER_SNAKE)</option>
+                    <option value="LOWER_SNAKE">{{ translate('model_db_lower_snake') }}</option>
+                    <option value="UPPER_SNAKE">{{ translate('model_db_upper_snake') }}</option>
                 </select>
             </div>
         </div>
@@ -94,7 +95,7 @@ const handleCancel = () => {
         <div style="height: calc(100% - 12.5rem);">
             <textarea
                 v-model="model.description"
-                placeholder="请输入模型描述"
+                :placeholder="translate({key: 'input_placeholder', args: [translate('description')]})"
                 rows="3"
                 style="height: 100%;"
             />
@@ -103,11 +104,11 @@ const handleCancel = () => {
         <div class="form-actions">
             <button @click="handleCancel" class="cancel-button">
                 <IconClose/>
-                取消
+                {{ translate('cancel') }}
             </button>
             <button @click="handleSubmit" class="submit-button">
                 <IconCheck/>
-                保存
+                {{ translate('save') }}
             </button>
         </div>
     </form>
