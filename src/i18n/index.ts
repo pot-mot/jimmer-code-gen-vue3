@@ -20,6 +20,7 @@ export type MainLocale = {
     input_placeholder: (fieldName: string) => string
     not_blank_warning: (fieldName: string) => string
     json_validate_error: string
+    no_option_tip: string
 
     name: string
     comment: string

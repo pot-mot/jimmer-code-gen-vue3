@@ -22,6 +22,7 @@ export const localeZhCn: MainLocale = {
     input_placeholder: (fieldName: string) => `请输入${fieldName}`,
     not_blank_warning: (fieldName: string) => `${fieldName}不能为空`,
     json_validate_error: "JSON格式错误",
+    no_option_tip: "无可选项",
 
     name: "名称",
     comment: "备注",

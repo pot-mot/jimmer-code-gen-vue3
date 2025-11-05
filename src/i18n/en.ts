@@ -22,6 +22,7 @@ export const localeEn: MainLocale = {
     input_placeholder: (fieldName: string) => `Please input ${fieldName}`,
     not_blank_warning: (fieldName: string) => `${fieldName} cannot be empty.`,
     json_validate_error: "JSON Validate Error",
+    no_option_tip: "No Options",
 
     name: "Name",
     comment: "Comment",

@@ -1,42 +1,47 @@
 <script setup lang="ts" generic="T">
-import {ref, computed, watch, useTemplateRef, nextTick} from 'vue'
+import {ref, computed, watch, useTemplateRef} from 'vue'
 import Dropdown from "@/components/dropdown/Dropdown.vue";
+import {translate} from "@/store/i18nStore.ts";
 
 const model = defineModel<T>({
     required: true,
 })
+const filterText = defineModel('filterText', {
+    required: false,
+    default: ''
+})
 
 const props = defineProps<{
     options: T[],
-    filter: (option: T, query: string) => boolean,
+    filter: (option: T, filterText: string) => boolean,
     getId: (option: T) => string,
 }>()
 
 defineSlots<{
     selected(props: { option: T }): void,
+    options(props: { filteredOptions: T[], select: (option: T) => void }): void,
     option(props: { option: T }): void,
     empty(): void,
 }>()
 
 // 响应式数据
-const query = ref('')
 const isOpen = ref(false)
 const currentIndex = ref(-1)
 const filterInputRef = useTemplateRef('filterInputRef')
 watch(() => isOpen.value, (value) => {
     if (value) filterInputRef.value?.focus()
 }, {immediate: true})
-watch(() => query.value, (value) => {
+watch(() => filterText.value, (value) => {
     if (value) isOpen.value = true
 })
 
 // 计算属性：根据查询过滤选项
 const filteredOptions = computed(() => {
-    if (!query.value) {
+    if (!filterText.value) {
         return props.options
     }
     return props.options.filter(option =>
-        props.filter(option, query.value)
+        props.filter(option, filterText.value)
     )
 })
 
@@ -46,7 +51,7 @@ watch(() => filteredOptions.value, () => {
 })
 
 const closeSelect = () => {
-    query.value = ''
+    filterText.value = ''
     isOpen.value = false
 }
 
@@ -110,7 +115,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
                 <slot name="selected" :option="model"/>
                 <input
                     ref="filterInputRef"
-                    v-model="query"
+                    v-model="filterText"
                     @focus="handleInputFocus"
                     @blur="handleInputBlur"
                     @keydown="handleKeyDown"
@@ -119,22 +124,32 @@ const handleKeyDown = (e: KeyboardEvent) => {
         </template>
 
         <template #body>
-            <ul class="options-list">
-                <li
-                    v-for="(option, index) in filteredOptions"
-                    :key="props.getId(option)"
-                    @mousedown.stop.prevent="selectOption(option)"
-                    class="option-item"
-                    :class="{
+            <slot
+                v-if="filteredOptions.length > 0"
+                name="options"
+                :filtered-options="filteredOptions"
+                :select="selectOption"
+            >
+                <ul class="options-list">
+                    <li
+                        v-for="(option, index) in filteredOptions"
+                        :key="props.getId(option)"
+                        @mousedown.stop.prevent="selectOption(option)"
+                        class="option-item"
+                        :class="{
                         selected: props.getId(option) === (model ? props.getId(model) : ''),
                         active: index === currentIndex
                     }"
-                >
-                    <slot name="option" :option="option"/>
-                </li>
-            </ul>
-
-            <slot v-if="filteredOptions.length === 0" name="empty"/>
+                    >
+                        <slot name="option" :option="option"/>
+                    </li>
+                </ul>
+            </slot>
+            <slot v-else name="empty">
+                <div class="empty-tip">
+                    {{ translate("no_option_tip") }}
+                </div>
+            </slot>
         </template>
     </Dropdown>
 </template>
@@ -176,5 +191,9 @@ const handleKeyDown = (e: KeyboardEvent) => {
 
 .option-item.selected {
     color: var(--primary-color)
+}
+
+.empty-tip {
+    padding: 0.5rem;
 }
 </style>
