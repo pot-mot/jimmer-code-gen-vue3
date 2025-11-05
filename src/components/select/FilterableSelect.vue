@@ -137,9 +137,9 @@ const handleKeyDown = (e: KeyboardEvent) => {
                         @mousedown.stop.prevent="selectOption(option)"
                         class="option-item"
                         :class="{
-                        selected: props.getId(option) === (model ? props.getId(model) : ''),
-                        active: index === currentIndex
-                    }"
+                            selected: props.getId(option) === (model ? props.getId(model) : ''),
+                            active: index === currentIndex
+                        }"
                     >
                         <slot name="option" :option="option"/>
                     </li>

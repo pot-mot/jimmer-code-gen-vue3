@@ -1,12 +1,31 @@
 <script setup lang="ts">
+import FilterableSelect from "@/components/select/FilterableSelect.vue";
+import JvmLanguageView from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageView.vue";
+
 const jvmLanguage = defineModel<JvmLanguage>({
     required: true
 })
+
+const jvmLanguages: JvmLanguage[] = [
+    "KOTLIN",
+    "JAVA",
+]
 </script>
 
 <template>
-    <select v-model="jvmLanguage">
-        <option value="KOTLIN">Kotlin</option>
-        <option value="JAVA">Java</option>
-    </select>
+    <FilterableSelect
+        v-model="jvmLanguage"
+        :options="jvmLanguages"
+        :filter="(option, query) => option.toLowerCase().includes(query.toLowerCase())"
+        :get-id="(it) => it"
+    >
+        <template #selected="{option}">
+            <JvmLanguageView :jvm-language="option" style="padding: 0.5rem;"/>
+        </template>
+        <template #option="{option}">
+            <div style="min-width: 3rem">
+                <JvmLanguageView :jvm-language="option"/>
+            </div>
+        </template>
+    </FilterableSelect>
 </template>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import FilterableSelect from "@/components/select/FilterableSelect.vue";
-import IconTypedDatabase from "@/components/icons/database/IconTypedDatabase.vue";
+import DatabaseTypeView from "@/modelEditor/modelForm/databaseType/DatabaseTypeView.vue";
 
 const databaseType = defineModel<DatabaseType>({
     required: true
@@ -24,16 +24,10 @@ const databaseTypes: DatabaseType[] = [
         :get-id="(it) => it"
     >
         <template #selected="{option}">
-            <div style="padding: 0.5rem;">
-                <IconTypedDatabase :type="option"/>
-                {{ option }}
-            </div>
+            <DatabaseTypeView style="padding: 0.5rem;" :database-type="option"/>
         </template>
         <template #option="{option}">
-            <div style="min-width: 6rem">
-                <IconTypedDatabase :type="option"/>
-                {{ option }}
-            </div>
+            <DatabaseTypeView style="min-width: 6rem" :database-type="option"/>
         </template>
     </FilterableSelect>
 </template>
