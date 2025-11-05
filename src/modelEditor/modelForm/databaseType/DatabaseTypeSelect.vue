@@ -1,16 +1,37 @@
 <script setup lang="ts">
+import FilterableSelect from "@/components/select/FilterableSelect.vue";
+import IconTypedDatabase from "@/components/icons/database/IconTypedDatabase.vue";
+
 const databaseType = defineModel<DatabaseType>({
     required: true
 })
+
+const databaseTypes: DatabaseType[] = [
+    "POSTGRESQL",
+    "MYSQL",
+    "ORACLE",
+    "SQLSERVER",
+    "H2",
+    "SQLITE",
+]
 </script>
 
 <template>
-    <select v-model="databaseType">
-        <option value="POSTGRESQL">PostgreSQL</option>
-        <option value="MYSQL">MySQL</option>
-        <option value="ORACLE">Oracle</option>
-        <option value="SQLSERVER">Microsoft SQL Server</option>
-        <option value="H2">H2</option>
-        <option value="SQLITE">Sqlite</option>
-    </select>
+    <FilterableSelect
+        v-model="databaseType"
+        :options="databaseTypes"
+        :filter="(option, query) => option.toLowerCase().includes(query.toLowerCase())"
+        :get-id="(it) => it"
+    >
+        <template #selected="{option}">
+            <div style="padding: 0.5rem;">
+                <IconTypedDatabase :type="option"/>
+                {{ option }}
+            </div>
+        </template>
+        <template #option="{option}">
+            <IconTypedDatabase :type="option"/>
+            {{ option }}
+        </template>
+    </FilterableSelect>
 </template>

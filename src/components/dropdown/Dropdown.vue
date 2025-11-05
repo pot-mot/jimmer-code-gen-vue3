@@ -64,7 +64,7 @@ watch(() => isOpen.value, async (value) => {
         :class="{ disabled, open: isOpen }"
     >
         <div class="dropdown-trigger" @click="toggleDropdown">
-            <div>
+            <div class="dropdown-header">
                 <slot name="head"/>
             </div>
             <div class="dropdown-arrow" :class="{ 'rotated': isOpen }">
@@ -104,10 +104,14 @@ watch(() => isOpen.value, async (value) => {
     align-items: center;
     justify-content: space-between;
     border: var(--border);
-    border-color: var(--background-color-hover);
+    border-color: var(--border-color-light);
     border-radius: var(--border-radius);
     background-color: var(--background-color);
     cursor: pointer;
+}
+
+.dropdown-header {
+    width: 100%;
 }
 
 .disabled .dropdown-trigger {
