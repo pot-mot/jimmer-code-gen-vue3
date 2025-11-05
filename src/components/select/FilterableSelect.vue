@@ -133,6 +133,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
                     @focus="handleInputFocus"
                     @blur="handleInputBlur"
                     @keydown="handleKeyDown"
+                    :readonly="!props.canFilter"
                     :style="{scale: props.canFilter ? 1 : 0}"
                 />
             </div>

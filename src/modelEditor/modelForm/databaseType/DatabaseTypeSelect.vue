@@ -21,6 +21,8 @@ const databaseTypes: DatabaseType[] = [
         v-model="databaseType"
         :options="databaseTypes"
         :get-id="(it) => it"
+        can-filter
+        :filter="(option, filterText) => option.toLowerCase().includes(filterText.toLowerCase())"
     >
         <template #selected="{option}">
             <DatabaseTypeView style="padding: 0.5rem;" :database-type="option"/>
