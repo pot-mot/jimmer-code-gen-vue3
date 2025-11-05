@@ -86,6 +86,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
                 selectOption(filteredOption)
             }
         }
+        closeSelect()
     } else if (e.key === 'ArrowDown') {
         e.preventDefault()
         if (!isOpen.value) {
