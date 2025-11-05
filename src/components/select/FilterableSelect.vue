@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T">
-import {ref, computed, watch, useTemplateRef} from 'vue'
+import {ref, computed, watch, useTemplateRef, onBeforeMount} from 'vue'
 import Dropdown from "@/components/dropdown/Dropdown.vue";
 import {translate} from "@/store/i18nStore.ts";
 
@@ -10,23 +10,35 @@ const filterText = defineModel('filterText', {
     required: false,
     default: ''
 })
+const currentIndex = defineModel<number>('currentIndex', {
+    required: false,
+    default: -1
+})
+
+onBeforeMount(() => {
+    currentIndex.value = props.options.findIndex(it => props.getId(it) === props.getId(model.value))
+})
 
 const props = defineProps<{
-    options: T[],
-    filter: (option: T, filterText: string) => boolean,
     getId: (option: T) => string,
+    options: T[],
+    canFilter: true,
+    filter: (option: T, filterText: string) => boolean,
+} | {
+    getId: (option: T) => string,
+    options: T[],
+    canFilter?: false,
 }>()
 
 defineSlots<{
     selected(props: { option: T }): void,
-    options(props: { filteredOptions: T[], select: (option: T) => void }): void,
+    options(props: { filteredOptions: T[], select: (option: T, index: number) => void }): void,
     option(props: { option: T }): void,
     empty(): void,
 }>()
 
 // 响应式数据
 const isOpen = ref(false)
-const currentIndex = ref(-1)
 const filterInputRef = useTemplateRef('filterInputRef')
 watch(() => isOpen.value, (value) => {
     if (value) filterInputRef.value?.focus()
@@ -37,7 +49,7 @@ watch(() => filterText.value, (value) => {
 
 // 计算属性：根据查询过滤选项
 const filteredOptions = computed(() => {
-    if (!filterText.value) {
+    if (!filterText.value || !props.canFilter) {
         return props.options
     }
     return props.options.filter(option =>
@@ -65,8 +77,9 @@ const handleInputBlur = async () => {
 }
 
 // 选择选项
-const selectOption = (option: T) => {
+const selectOption = (option: T, index: number) => {
     model.value = option
+    currentIndex.value = index
     closeSelect()
 }
 
@@ -83,7 +96,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
         if (currentIndex.value >= 0 && filteredOptions.value.length > 0 && currentIndex.value < filteredOptions.value.length) {
             const filteredOption = filteredOptions.value[currentIndex.value]
             if (filteredOption !== undefined && model.value !== filteredOption) {
-                selectOption(filteredOption)
+                selectOption(filteredOption, currentIndex.value)
             }
         }
         closeSelect()
@@ -120,6 +133,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
                     @focus="handleInputFocus"
                     @blur="handleInputBlur"
                     @keydown="handleKeyDown"
+                    :style="{scale: props.canFilter ? 1 : 0}"
                 />
             </div>
         </template>
@@ -135,14 +149,16 @@ const handleKeyDown = (e: KeyboardEvent) => {
                     <li
                         v-for="(option, index) in filteredOptions"
                         :key="props.getId(option)"
-                        @mousedown.stop.prevent="selectOption(option)"
+                        @mousedown.stop.prevent="selectOption(option, index)"
                         class="option-item"
                         :class="{
                             selected: props.getId(option) === (model ? props.getId(model) : ''),
                             active: index === currentIndex
                         }"
                     >
-                        <slot name="option" :option="option"/>
+                        <slot name="option" :option="option">
+                            {{ option }}
+                        </slot>
                     </li>
                 </ul>
             </slot>

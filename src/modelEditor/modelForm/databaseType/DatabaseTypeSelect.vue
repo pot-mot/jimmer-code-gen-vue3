@@ -20,7 +20,6 @@ const databaseTypes: DatabaseType[] = [
     <FilterableSelect
         v-model="databaseType"
         :options="databaseTypes"
-        :filter="(option, query) => option.toLowerCase().includes(query.toLowerCase())"
         :get-id="(it) => it"
     >
         <template #selected="{option}">

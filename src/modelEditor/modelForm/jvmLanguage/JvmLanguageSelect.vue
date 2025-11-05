@@ -16,7 +16,6 @@ const jvmLanguages: JvmLanguage[] = [
     <FilterableSelect
         v-model="jvmLanguage"
         :options="jvmLanguages"
-        :filter="(option, query) => option.toLowerCase().includes(query.toLowerCase())"
         :get-id="(it) => it"
     >
         <template #selected="{option}">
