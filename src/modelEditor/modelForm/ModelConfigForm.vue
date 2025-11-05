@@ -49,7 +49,7 @@ const handleCancel = () => {
 
 <template>
     <form @submit.prevent class="model-edit-form">
-        <div class="form-group">
+        <div class="form-item">
             <input
                 v-model="model.name"
                 type="text"
@@ -60,31 +60,31 @@ const handleCancel = () => {
         </div>
 
         <div class="form-row">
-            <div class="form-group">
+            <div class="form-item">
                 <JvmLanguageSelect v-model="model.jvmLanguage"/>
             </div>
 
-            <div class="form-group">
+            <div class="form-item">
                 <DatabaseTypeSelect v-model="model.databaseType"/>
             </div>
         </div>
 
         <div class="form-row">
-            <div class="form-group">
+            <div class="form-item">
                 <select v-model="model.defaultForeignKeyType">
                     <option value="REAL">{{ translate('model_fk_real') }}</option>
                     <option value="FAKE">{{ translate('model_fk_fake') }}</option>
                 </select>
             </div>
 
-            <div class="form-group">
+            <div class="form-item">
                 <select v-model="model.defaultEnumerationStrategy">
                     <option value="NAME">{{ translate('model_enum_name') }}</option>
                     <option value="ORDINAL">{{ translate('model_enum_ordinal') }}</option>
                 </select>
             </div>
 
-            <div class="form-group">
+            <div class="form-item">
                 <select v-model="model.databaseNameStrategy">
                     <option value="LOWER_SNAKE">{{ translate('model_db_lower_snake') }}</option>
                     <option value="UPPER_SNAKE">{{ translate('model_db_upper_snake') }}</option>
@@ -122,7 +122,7 @@ const handleCancel = () => {
     overflow-y: auto;
 }
 
-.form-group {
+.form-item {
     margin-bottom: 0.5rem;
 }
 
@@ -131,7 +131,7 @@ const handleCancel = () => {
     gap: 0.5rem;
 }
 
-.form-row .form-group {
+.form-row .form-item {
     flex: 1;
 }
 

@@ -73,14 +73,14 @@ const handleCancel = () => {
 
 <template>
     <form @submit.prevent class="database-form">
-        <div class="form-group">
+        <div class="form-item">
             <DatabaseTypeSelect
                 v-model="model.type"
                 @change="handleDatabaseTypeChange"
             />
         </div>
 
-        <div class="form-group">
+        <div class="form-item">
             <label>{{ translate("name") }}</label>
             <input
                 v-model="model.name"
@@ -91,7 +91,7 @@ const handleCancel = () => {
             <div v-if="errors.name" class="error-message">{{ errors.name }}</div>
         </div>
 
-        <div class="form-group">
+        <div class="form-item">
             <label>{{ translate("url") }}</label>
             <input
                 v-model="model.url"
@@ -102,7 +102,7 @@ const handleCancel = () => {
             <div v-if="errors.url" class="error-message">{{ errors.url }}</div>
         </div>
 
-        <div class="form-group">
+        <div class="form-item">
             <label>{{ translate('username') }}</label>
             <input
                 v-model="model.username"
@@ -113,7 +113,7 @@ const handleCancel = () => {
             <div v-if="errors.username" class="error-message">{{ errors.username }}</div>
         </div>
 
-        <div class="form-group">
+        <div class="form-item">
             <label>{{ translate('password') }}</label>
             <input
                 v-model="model.password"
@@ -146,7 +146,7 @@ const handleCancel = () => {
     overflow-y: auto;
 }
 
-.form-group {
+.form-item {
     display: flex;
     margin-bottom: 0.5rem;
 }

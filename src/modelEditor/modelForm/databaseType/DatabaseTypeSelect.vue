@@ -30,8 +30,10 @@ const databaseTypes: DatabaseType[] = [
             </div>
         </template>
         <template #option="{option}">
-            <IconTypedDatabase :type="option"/>
-            {{ option }}
+            <div style="min-width: 6rem">
+                <IconTypedDatabase :type="option"/>
+                {{ option }}
+            </div>
         </template>
     </FilterableSelect>
 </template>
