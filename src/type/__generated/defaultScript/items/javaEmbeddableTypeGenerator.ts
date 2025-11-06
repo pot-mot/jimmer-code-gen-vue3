@@ -1,16 +1,16 @@
 import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
-import {javaEntityGenerator} from "@/type/script/default/EntityGenerator/javaEntityGenerator.ts";
+import {javaEmbeddableTypeGenerator} from "@/type/script/default/EmbeddableTypeGenerator/javaEmbeddableTypeGenerator.ts";
 
-const scriptInfo: ScriptInfo<"EntityGenerator"> = {
-    id: "javaEntityGenerator",
-    name: "javaEntityGenerator",
-    type: "EntityGenerator",
+const scriptInfo: ScriptInfo<"EmbeddableTypeGenerator"> = {
+    id: "javaEmbeddableTypeGenerator",
+    name: "javaEmbeddableTypeGenerator",
+    type: "EmbeddableTypeGenerator",
     enabled: true,
     databaseType: "ANY",
     jvmLanguage: "JAVA",
     script: {
         code: `(
-    entity: DeepReadonly<EntityWithInheritInfo>,
+    entity: DeepReadonly<EmbeddableTypeWithProperties>,
     context: DeepReadonly<ModelContext>,
 ) => {
     const result: Record<string, string> = {}
@@ -20,19 +20,11 @@ const scriptInfo: ScriptInfo<"EntityGenerator"> = {
         subPackagePath: entity.subPackagePath,
     })
 
-    builder.addImports("org.babyfish.jimmer.sql.Entity")
-    builder.addImports("org.babyfish.jimmer.sql.Table")
-
-    for (const mappedSuperClassId of entity.extendsIds) {
-        builder.requireMappedSuperClass(mappedSuperClassId)
-    }
+    builder.addImports("org.babyfish.jimmer.sql.Embeddable")
 
     for (const property of entity.properties) {
         builder.pushProperty(property)
     }
-
-    const entityExtends = entity.directExtends.size > 0 ?
-        " extends\\n    " + [...entity.directExtends].map(mappedSuperClass => mappedSuperClass.name).join(",\\n    ") + "\\n" : " "
 
     result[\`/entity/\${entity.name}.java\`] = \`package \${builder.getPackagePath()};
 
@@ -41,8 +33,7 @@ const scriptInfo: ScriptInfo<"EntityGenerator"> = {
         .map(importItem => \`import \${importItem};\`).join("\\n")}
 
 @Entity
-@Table(name = "\${entity.tableName}")
-public interface \${entity.name}\${entityExtends}{
+public interface \${entity.name} {
 \${builder.getProperties()
         .map(property =>
             \`    \${property.annotations
@@ -57,7 +48,7 @@ public interface \${entity.name}\${entityExtends}{
 
     return result
 }`,
-        execute: javaEntityGenerator
+        execute: javaEmbeddableTypeGenerator
     }
 }
 

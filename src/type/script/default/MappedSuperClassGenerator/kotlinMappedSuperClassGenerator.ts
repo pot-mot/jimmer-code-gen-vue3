@@ -1,6 +1,6 @@
 // jvmLanguage=KOTLIN
-export const kotlinEntityGenerator: EntityGenerator = (
-    entity: DeepReadonly<EntityWithInheritInfo>,
+export const kotlinMappedSuperclassGenerator: MappedSuperClassGenerator = (
+    entity: DeepReadonly<MappedSuperClassWithInheritInfo>,
     context: DeepReadonly<ModelContext>,
 ) => {
     const result: Record<string, string> = {}
@@ -10,8 +10,7 @@ export const kotlinEntityGenerator: EntityGenerator = (
         subPackagePath: entity.subPackagePath,
     })
 
-    builder.addImports("org.babyfish.jimmer.sql.Entity")
-    builder.addImports("org.babyfish.jimmer.sql.Table")
+    builder.addImports("org.babyfish.jimmer.sql.MappedSuperclass")
 
     for (const mappedSuperClassId of entity.extendsIds) {
         builder.requireMappedSuperClass(mappedSuperClassId)
@@ -30,8 +29,7 @@ ${[...builder.getImportSet()]
         .sort((a, b) => a.localeCompare(b))
         .map(importItem => `import ${importItem}`).join("\n")}
 
-@Entity
-@Table(name = "${entity.tableName}")
+@MappedSuperclass
 interface ${entity.name}${entityExtends}{
 ${builder.getProperties()
         .map(property =>

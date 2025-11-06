@@ -1,10 +1,12 @@
 export default Object.freeze({
-    fileName: 'PropertyItem.d.ts',
-    content: `type PropertyItem = {
+    fileName: 'PropertyInfo.d.ts',
+    content: `type PropertyInfo = {
+    raw: DeepReadonly<Property>
     name: string
     comment: string
     type: string
     annotations: string[]
+    nullable: boolean
     body?: string
 }`,
 })

@@ -1,16 +1,16 @@
 import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
-import {javaEntityGenerator} from "@/type/script/default/EntityGenerator/javaEntityGenerator.ts";
+import {javaMappedSuperClassGenerator} from "@/type/script/default/MappedSuperClassGenerator/javaMappedSuperClassGenerator.ts";
 
-const scriptInfo: ScriptInfo<"EntityGenerator"> = {
-    id: "javaEntityGenerator",
-    name: "javaEntityGenerator",
-    type: "EntityGenerator",
+const scriptInfo: ScriptInfo<"MappedSuperClassGenerator"> = {
+    id: "javaMappedSuperClassGenerator",
+    name: "javaMappedSuperClassGenerator",
+    type: "MappedSuperClassGenerator",
     enabled: true,
     databaseType: "ANY",
     jvmLanguage: "JAVA",
     script: {
         code: `(
-    entity: DeepReadonly<EntityWithInheritInfo>,
+    entity: DeepReadonly<MappedSuperClassWithInheritInfo>,
     context: DeepReadonly<ModelContext>,
 ) => {
     const result: Record<string, string> = {}
@@ -20,8 +20,7 @@ const scriptInfo: ScriptInfo<"EntityGenerator"> = {
         subPackagePath: entity.subPackagePath,
     })
 
-    builder.addImports("org.babyfish.jimmer.sql.Entity")
-    builder.addImports("org.babyfish.jimmer.sql.Table")
+    builder.addImports("org.babyfish.jimmer.sql.MappedSuperclass")
 
     for (const mappedSuperClassId of entity.extendsIds) {
         builder.requireMappedSuperClass(mappedSuperClassId)
@@ -40,8 +39,7 @@ const scriptInfo: ScriptInfo<"EntityGenerator"> = {
         .sort((a, b) => a.localeCompare(b))
         .map(importItem => \`import \${importItem};\`).join("\\n")}
 
-@Entity
-@Table(name = "\${entity.tableName}")
+@MappedSuperclass
 public interface \${entity.name}\${entityExtends}{
 \${builder.getProperties()
         .map(property =>
@@ -57,7 +55,7 @@ public interface \${entity.name}\${entityExtends}{
 
     return result
 }`,
-        execute: javaEntityGenerator
+        execute: javaMappedSuperClassGenerator
     }
 }
 

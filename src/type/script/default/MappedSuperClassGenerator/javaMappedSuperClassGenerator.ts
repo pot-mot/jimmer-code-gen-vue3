@@ -1,6 +1,6 @@
-// jvmLanguage=KOTLIN
-export const kotlinEntityGenerator: EntityGenerator = (
-    entity: DeepReadonly<EntityWithInheritInfo>,
+// jvmLanguage=JAVA
+export const javaMappedSuperClassGenerator: MappedSuperClassGenerator = (
+    entity: DeepReadonly<MappedSuperClassWithInheritInfo>,
     context: DeepReadonly<ModelContext>,
 ) => {
     const result: Record<string, string> = {}
@@ -10,8 +10,7 @@ export const kotlinEntityGenerator: EntityGenerator = (
         subPackagePath: entity.subPackagePath,
     })
 
-    builder.addImports("org.babyfish.jimmer.sql.Entity")
-    builder.addImports("org.babyfish.jimmer.sql.Table")
+    builder.addImports("org.babyfish.jimmer.sql.MappedSuperclass")
 
     for (const mappedSuperClassId of entity.extendsIds) {
         builder.requireMappedSuperClass(mappedSuperClassId)
@@ -22,24 +21,23 @@ export const kotlinEntityGenerator: EntityGenerator = (
     }
 
     const entityExtends = entity.directExtends.size > 0 ?
-        " :\n    " + [...entity.directExtends].map(mappedSuperClass => mappedSuperClass.name).join(",\n    ") + "\n" : " "
+        " extends\n    " + [...entity.directExtends].map(mappedSuperClass => mappedSuperClass.name).join(",\n    ") + "\n" : " "
 
-    result[`/entity/${entity.name}.kt`] = `package ${builder.getPackagePath()}
+    result[`/entity/${entity.name}.java`] = `package ${builder.getPackagePath()};
 
 ${[...builder.getImportSet()]
         .sort((a, b) => a.localeCompare(b))
-        .map(importItem => `import ${importItem}`).join("\n")}
+        .map(importItem => `import ${importItem};`).join("\n")}
 
-@Entity
-@Table(name = "${entity.tableName}")
-interface ${entity.name}${entityExtends}{
+@MappedSuperclass
+public interface ${entity.name}${entityExtends}{
 ${builder.getProperties()
         .map(property =>
             `    ${property.annotations
                 .flatMap(it => it.split("\n"))
                 .filter(it => it.trim().length > 0)
                 .join("\n    ")}
-    val ${property.name}: ${property.type}${property.nullable ? "?" : ""}`
+    ${property.type} ${property.name}();`
         )
         .join("\n\n")}
 }

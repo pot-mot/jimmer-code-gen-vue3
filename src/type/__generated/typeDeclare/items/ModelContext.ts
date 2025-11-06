@@ -12,6 +12,9 @@ export default Object.freeze({
     createId: (type: "Model" | "Entity" | "Property" | "MappedSuperClass" | "EmbeddableType" | "Enumeration" | "EnumerationItem" | "Association" | "Group") => string
     nameTool: NameTool
     typeTool: TypeTool
+    createTemplateBuilder: (
+        options: TemplateOptions
+    ) => TemplateBuilder
     createJvmFileBuilder: (
         options: {
             groupId: string,

@@ -25,6 +25,7 @@ import {
     syncMappedSuperClassAutoChange
 } from "@/modelEditor/history/SyncAutoChange.ts";
 import {createJvmFileBuilder} from "@/type/context/utils/JvmFileBuilder.ts";
+import {createTemplateBuilder} from "@/type/context/utils/TemplateBuilder.ts"
 
 export const contextDataToContext = (
     readonlyContextData: DeepReadonly<ModelContextData>,
@@ -280,6 +281,9 @@ export const contextDataToContext = (
         createId,
         nameTool,
         typeTool: buildTypeTool(contextData.model.jvmLanguage, [], [], []), // TODO
+        createTemplateBuilder: (options: TemplateOptions) => {
+            return createTemplateBuilder(options)
+        },
         createJvmFileBuilder: (options: {
             groupId: string,
             subPackagePath: string

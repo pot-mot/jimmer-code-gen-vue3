@@ -1,6 +1,6 @@
 // jvmLanguage=JAVA
-export const javaEntityGenerator: EntityGenerator = (
-    entity: DeepReadonly<EntityWithInheritInfo>,
+export const javaEmbeddableTypeGenerator: EmbeddableTypeGenerator = (
+    entity: DeepReadonly<EmbeddableTypeWithProperties>,
     context: DeepReadonly<ModelContext>,
 ) => {
     const result: Record<string, string> = {}
@@ -10,19 +10,11 @@ export const javaEntityGenerator: EntityGenerator = (
         subPackagePath: entity.subPackagePath,
     })
 
-    builder.addImports("org.babyfish.jimmer.sql.Entity")
-    builder.addImports("org.babyfish.jimmer.sql.Table")
-
-    for (const mappedSuperClassId of entity.extendsIds) {
-        builder.requireMappedSuperClass(mappedSuperClassId)
-    }
+    builder.addImports("org.babyfish.jimmer.sql.Embeddable")
 
     for (const property of entity.properties) {
         builder.pushProperty(property)
     }
-
-    const entityExtends = entity.directExtends.size > 0 ?
-        " extends\n    " + [...entity.directExtends].map(mappedSuperClass => mappedSuperClass.name).join(",\n    ") + "\n" : " "
 
     result[`/entity/${entity.name}.java`] = `package ${builder.getPackagePath()};
 
@@ -31,8 +23,7 @@ ${[...builder.getImportSet()]
         .map(importItem => `import ${importItem};`).join("\n")}
 
 @Entity
-@Table(name = "${entity.tableName}")
-public interface ${entity.name}${entityExtends}{
+public interface ${entity.name} {
 ${builder.getProperties()
         .map(property =>
             `    ${property.annotations

@@ -115,7 +115,7 @@ import OneToOneSourcePropertyDeclare from "./items/OneToOneSourceProperty.ts";
 import OrderDirectionDeclare from "./items/OrderDirection.ts";
 import PositionDeclare from "./items/Position.ts";
 import PropertyDeclare from "./items/Property.ts";
-import PropertyItemDeclare from "./items/PropertyItem.ts";
+import PropertyInfoDeclare from "./items/PropertyInfo.ts";
 import ScalarCommonPropertyDeclare from "./items/ScalarCommonProperty.ts";
 import ScalarEmbeddablePropertyDeclare from "./items/ScalarEmbeddableProperty.ts";
 import ScalarEnumPropertyDeclare from "./items/ScalarEnumProperty.ts";
@@ -125,6 +125,8 @@ import SqlFormulaPropertyDeclare from "./items/SqlFormulaProperty.ts";
 import SqlToJvmMappingRuleDeclare from "./items/SqlToJvmMappingRule.ts";
 import SqlTypeDeclare from "./items/SqlType.ts";
 import TableDeclare from "./items/Table.ts";
+import TemplateBuilderDeclare from "./items/TemplateBuilder.ts";
+import TemplateOptionsDeclare from "./items/TemplateOptions.ts";
 import TransientPropertyDeclare from "./items/TransientProperty.ts";
 import TsTypeDeclare from "./items/TsType.ts";
 import TypeToolDeclare from "./items/TypeTool.ts";
@@ -247,7 +249,7 @@ export type TypeMap = {
     OrderDirection: OrderDirection
     Position: Position
     Property: Property
-    PropertyItem: PropertyItem
+    PropertyInfo: PropertyInfo
     ScalarCommonProperty: ScalarCommonProperty
     ScalarEmbeddableProperty: ScalarEmbeddableProperty
     ScalarEnumProperty: ScalarEnumProperty
@@ -257,6 +259,8 @@ export type TypeMap = {
     SqlToJvmMappingRule: SqlToJvmMappingRule
     SqlType: SqlType
     Table: Table
+    TemplateBuilder: TemplateBuilder
+    TemplateOptions: TemplateOptions
     TransientProperty: TransientProperty
     TsType: TsType
     TypeTool: TypeTool
@@ -383,7 +387,7 @@ export const typeDeclares = Object.freeze({
     OrderDirection: OrderDirectionDeclare,
     Position: PositionDeclare,
     Property: PropertyDeclare,
-    PropertyItem: PropertyItemDeclare,
+    PropertyInfo: PropertyInfoDeclare,
     ScalarCommonProperty: ScalarCommonPropertyDeclare,
     ScalarEmbeddableProperty: ScalarEmbeddablePropertyDeclare,
     ScalarEnumProperty: ScalarEnumPropertyDeclare,
@@ -393,6 +397,8 @@ export const typeDeclares = Object.freeze({
     SqlToJvmMappingRule: SqlToJvmMappingRuleDeclare,
     SqlType: SqlTypeDeclare,
     Table: TableDeclare,
+    TemplateBuilder: TemplateBuilderDeclare,
+    TemplateOptions: TemplateOptionsDeclare,
     TransientProperty: TransientPropertyDeclare,
     TsType: TsTypeDeclare,
     TypeTool: TypeToolDeclare,
