@@ -1,36 +1,36 @@
 // jvmLanguage=KOTLIN
 export const kotlinMappedSuperclassGenerator: MappedSuperClassGenerator = (
-    entity: DeepReadonly<MappedSuperClassWithInheritInfo>,
+    mappedSuperClass: DeepReadonly<MappedSuperClassWithInheritInfo>,
     context: DeepReadonly<ModelContext>,
 ) => {
     const result: Record<string, string> = {}
 
     const builder = context.createJvmFileBuilder({
-        groupId: entity.groupId,
-        subPackagePath: entity.subPackagePath,
+        groupId: mappedSuperClass.groupId,
+        subPackagePath: mappedSuperClass.subPackagePath,
     })
 
     builder.addImports("org.babyfish.jimmer.sql.MappedSuperclass")
 
-    for (const mappedSuperClassId of entity.extendsIds) {
+    for (const mappedSuperClassId of mappedSuperClass.extendsIds) {
         builder.requireMappedSuperClass(mappedSuperClassId)
     }
 
-    for (const property of entity.properties) {
+    for (const property of mappedSuperClass.properties) {
         builder.pushProperty(property)
     }
 
-    const entityExtends = entity.directExtends.size > 0 ?
-        " :\n    " + [...entity.directExtends].map(mappedSuperClass => mappedSuperClass.name).join(",\n    ") + "\n" : " "
+    const entityExtends = mappedSuperClass.directExtends.size > 0 ?
+        " :\n    " + [...mappedSuperClass.directExtends].map(mappedSuperClass => mappedSuperClass.name).join(",\n    ") + "\n" : " "
 
-    result[`/entity/${entity.name}.kt`] = `package ${builder.getPackagePath()}
+    result[`/entity/${mappedSuperClass.name}.kt`] = `package ${builder.getPackagePath()}
 
 ${[...builder.getImportSet()]
         .sort((a, b) => a.localeCompare(b))
         .map(importItem => `import ${importItem}`).join("\n")}
 
 @MappedSuperclass
-interface ${entity.name}${entityExtends}{
+interface ${mappedSuperClass.name}${entityExtends}{
 ${builder.getProperties()
         .map(property =>
             `    ${property.annotations

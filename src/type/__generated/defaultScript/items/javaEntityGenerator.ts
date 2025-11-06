@@ -28,7 +28,11 @@ const scriptInfo: ScriptInfo<"EntityGenerator"> = {
     }
 
     for (const property of entity.properties) {
-        builder.pushProperty(property)
+        const propertyInfo = builder.pushProperty(property)
+        if (property.nullable) {
+            builder.addImports("org.jetbrains.annotations.Nullable")
+            propertyInfo.annotations.push("@Nullable")
+        }
     }
 
     const entityExtends = entity.directExtends.size > 0 ?

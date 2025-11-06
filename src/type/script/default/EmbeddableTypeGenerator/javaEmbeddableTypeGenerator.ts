@@ -1,29 +1,33 @@
 // jvmLanguage=JAVA
 export const javaEmbeddableTypeGenerator: EmbeddableTypeGenerator = (
-    entity: DeepReadonly<EmbeddableTypeWithProperties>,
+    embeddableType: DeepReadonly<EmbeddableTypeWithProperties>,
     context: DeepReadonly<ModelContext>,
 ) => {
     const result: Record<string, string> = {}
 
     const builder = context.createJvmFileBuilder({
-        groupId: entity.groupId,
-        subPackagePath: entity.subPackagePath,
+        groupId: embeddableType.groupId,
+        subPackagePath: embeddableType.subPackagePath,
     })
 
     builder.addImports("org.babyfish.jimmer.sql.Embeddable")
 
-    for (const property of entity.properties) {
-        builder.pushProperty(property)
+    for (const property of embeddableType.properties) {
+        const propertyInfo = builder.pushProperty(property)
+        if (property.nullable) {
+            builder.addImports("org.jetbrains.annotations.Nullable")
+            propertyInfo.annotations.push("@Nullable")
+        }
     }
 
-    result[`/entity/${entity.name}.java`] = `package ${builder.getPackagePath()};
+    result[`/entity/${embeddableType.name}.java`] = `package ${builder.getPackagePath()};
 
 ${[...builder.getImportSet()]
         .sort((a, b) => a.localeCompare(b))
         .map(importItem => `import ${importItem};`).join("\n")}
 
 @Entity
-public interface ${entity.name} {
+public interface ${embeddableType.name} {
 ${builder.getProperties()
         .map(property =>
             `    ${property.annotations

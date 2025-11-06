@@ -10,37 +10,41 @@ const scriptInfo: ScriptInfo<"MappedSuperClassGenerator"> = {
     jvmLanguage: "JAVA",
     script: {
         code: `(
-    entity: DeepReadonly<MappedSuperClassWithInheritInfo>,
+    mappedSuperClass: DeepReadonly<MappedSuperClassWithInheritInfo>,
     context: DeepReadonly<ModelContext>,
 ) => {
     const result: Record<string, string> = {}
 
     const builder = context.createJvmFileBuilder({
-        groupId: entity.groupId,
-        subPackagePath: entity.subPackagePath,
+        groupId: mappedSuperClass.groupId,
+        subPackagePath: mappedSuperClass.subPackagePath,
     })
 
     builder.addImports("org.babyfish.jimmer.sql.MappedSuperclass")
 
-    for (const mappedSuperClassId of entity.extendsIds) {
+    for (const mappedSuperClassId of mappedSuperClass.extendsIds) {
         builder.requireMappedSuperClass(mappedSuperClassId)
     }
 
-    for (const property of entity.properties) {
-        builder.pushProperty(property)
+    for (const property of mappedSuperClass.properties) {
+        const propertyInfo = builder.pushProperty(property)
+        if (property.nullable) {
+            builder.addImports("org.jetbrains.annotations.Nullable")
+            propertyInfo.annotations.push("@Nullable")
+        }
     }
 
-    const entityExtends = entity.directExtends.size > 0 ?
-        " extends\\n    " + [...entity.directExtends].map(mappedSuperClass => mappedSuperClass.name).join(",\\n    ") + "\\n" : " "
+    const entityExtends = mappedSuperClass.directExtends.size > 0 ?
+        " extends\\n    " + [...mappedSuperClass.directExtends].map(mappedSuperClass => mappedSuperClass.name).join(",\\n    ") + "\\n" : " "
 
-    result[\`/entity/\${entity.name}.java\`] = \`package \${builder.getPackagePath()};
+    result[\`/entity/\${mappedSuperClass.name}.java\`] = \`package \${builder.getPackagePath()};
 
 \${[...builder.getImportSet()]
         .sort((a, b) => a.localeCompare(b))
         .map(importItem => \`import \${importItem};\`).join("\\n")}
 
 @MappedSuperclass
-public interface \${entity.name}\${entityExtends}{
+public interface \${mappedSuperClass.name}\${entityExtends}{
 \${builder.getProperties()
         .map(property =>
             \`    \${property.annotations
