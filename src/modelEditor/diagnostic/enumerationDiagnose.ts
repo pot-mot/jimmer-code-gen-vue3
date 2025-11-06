@@ -39,6 +39,8 @@ export const enumerationDiagnose = (
         }
     }
 
+    const ordinalSet = new Set<number>()
+
     for (const item of enumeration.items) {
         const messages: DiagnoseMessage[] = []
         if (item.name.length === 0) {
@@ -61,6 +63,14 @@ export const enumerationDiagnose = (
                     type: "error"
                 })
             }
+
+            if (ordinalSet.has(item.ordinal)) {
+                messages.push({
+                    content: "[Duplicate Ordinal]",
+                    type: "error"
+                })
+            }
+            ordinalSet.add(item.ordinal)
         }
 
         itemDiagnoseMap.set(item.id, messages)

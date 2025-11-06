@@ -13,6 +13,7 @@ import IconDelete from "@/components/icons/IconDelete.vue";
 import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 import IconEnumeration from "@/components/icons/modelEditor/IconEnumeration.vue";
+import FilterableSelect from "@/components/select/FilterableSelect.vue";
 
 const props = defineProps<NodeProps<EnumerationNode["data"]>>()
 
@@ -22,6 +23,15 @@ const groupColor = computed(() => {
 const groupTheme = computed(() => {
     return getColorIsDark(props.data.enumeration.groupId) ? 'dark' : 'light'
 })
+
+const createEnumItem = () => {
+    const item = defaultEnumerationItem()
+    item.ordinal = props.data.enumeration.items.length + 1
+    while (props.data.enumeration.items.some(it => it.ordinal === item.ordinal)) {
+        item.ordinal++
+    }
+    return item
+}
 
 const itemEditListRef = useTemplateRef("itemEditListRef")
 const focusProperty = ({enumerationId, itemId}: {enumerationId: string, itemId: string}) => {
@@ -40,8 +50,16 @@ onBeforeUnmount(() => {
 const {focusNode, remove, modelDiagnoseInfo} = useModelEditor()
 
 const beforePaste = (items: EnumerationItem[]) => {
+    const ordinalSet = new Set<number>(props.data.enumeration.items.map(it => it.ordinal))
     for (const item of items) {
         item.id = createId("EnumerationItem")
+        if (ordinalSet.has(item.ordinal)) {
+            item.ordinal = props.data.enumeration.items.length + 1
+            while (ordinalSet.has(item.ordinal)) {
+                item.ordinal++
+            }
+            ordinalSet.add(item.ordinal)
+        }
     }
 }
 </script>
@@ -57,6 +75,12 @@ const beforePaste = (items: EnumerationItem[]) => {
                     v-model="data.enumeration"
                     :class="groupTheme"
                 />
+
+                <FilterableSelect
+                    v-model="data.enumeration.strategy"
+                    :get-id="(it) => it"
+                    :options="['NAME', 'ORDINAL']"
+                />
             </div>
 
             <DiagnoseViewer
@@ -68,7 +92,7 @@ const beforePaste = (items: EnumerationItem[]) => {
             ref="itemEditListRef"
             class="enumeration-item-list"
             v-model:lines="data.enumeration.items"
-            :default-line="defaultEnumerationItem"
+            :default-line="createEnumItem"
             :json-schema-validate="validateEnumerationItem"
             :before-paste="beforePaste"
             @keydown.stop
@@ -83,6 +107,11 @@ const beforePaste = (items: EnumerationItem[]) => {
                             :font-size="14"
                             v-model="data.enumeration.items[index]"
                         />
+
+                        <input
+                            style="padding: 0.25rem; border-radius: 0.25rem; width: 3rem;"
+                            v-model.number="data.enumeration.items[index].ordinal"
+                        >
                     </div>
                     <DiagnoseViewer
                         :messages="modelDiagnoseInfo.enumerationMap.get(id)?.items.get(item.id)"
