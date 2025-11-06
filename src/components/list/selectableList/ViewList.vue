@@ -57,12 +57,17 @@ useClickOutside(() => viewListBody.value, () => {
 })
 
 const handleKeyboardEvent = async (e: KeyboardEvent) => {
-    if ((e.target as HTMLElement).tagName !== 'DIV') {
+    if (judgeTargetIsInteraction(e)) {
         return
     }
 
     if (e.ctrlKey || e.metaKey) {
-        if (e.key === 'c') {
+        if (e.key === 'a') {
+            e.preventDefault()
+            e.stopPropagation()
+            e.stopImmediatePropagation()
+            resetSelection(Array.from(props.lines.keys()))
+        } else if (e.key === 'c') {
             e.preventDefault()
 
             const {

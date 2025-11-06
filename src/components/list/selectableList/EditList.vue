@@ -105,7 +105,12 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
     }
 
     if (e.ctrlKey || e.metaKey) {
-        if (e.key === 'c') {
+        if (e.key === 'a') {
+            e.preventDefault()
+            e.stopPropagation()
+            e.stopImmediatePropagation()
+            resetSelection(Array.from(lines.value.keys()))
+        } else if (e.key === 'c') {
             e.preventDefault()
             e.stopPropagation()
             e.stopImmediatePropagation()
