@@ -28,6 +28,7 @@ const props = defineProps<{
     getId: (option: T) => string,
     options: T[],
     canFilter?: false,
+    filter?: (option: T, filterText: string) => boolean,
 }>()
 
 defineSlots<{
@@ -126,7 +127,9 @@ const handleKeyDown = (e: KeyboardEvent) => {
     <Dropdown v-model="isOpen" class="filterable-select" ref="filterableSelect" :class="{'input-focus': isInputFocus}">
         <template #head>
             <div class="select-input" :class="{ open: isOpen }">
-                <slot name="selected" :option="model"/>
+                <slot name="selected" :option="model">
+                    <span class="option-view">{{ model }}</span>
+                </slot>
                 <input
                     ref="filterInputRef"
                     v-model="filterText"
@@ -134,7 +137,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
                     @blur="handleInputBlur"
                     @keydown="handleKeyDown"
                     :readonly="!props.canFilter"
-                    :style="{scale: props.canFilter ? 1 : 0}"
+                    :style="{scale: props.canFilter ? 1 : 0, width: props.canFilter ? 'auto' : 0}"
                 />
             </div>
         </template>
@@ -158,7 +161,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
                         }"
                     >
                         <slot name="option" :option="option">
-                            {{ option }}
+                            <span class="option-view">{{ option }}</span>
                         </slot>
                     </li>
                 </ul>
@@ -193,13 +196,17 @@ const handleKeyDown = (e: KeyboardEvent) => {
     border: none;
     outline: none;
     padding: 0;
-    min-width: 1rem;
 }
 
 .option-item {
     padding: 0.25rem 0.5rem;
     cursor: pointer;
     transition: background-color 0.2s;
+}
+
+.option-view {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.8rem;
 }
 
 .option-item:hover,

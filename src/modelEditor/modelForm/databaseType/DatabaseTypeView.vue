@@ -13,35 +13,43 @@ defineProps<{
 </script>
 
 <template>
-    <div v-if="databaseType === 'MYSQL'">
+    <div class="database-type-view" v-if="databaseType === 'MYSQL'">
         <IconMySQL/>
         MySQL
     </div>
-    <div v-else-if="databaseType === 'POSTGRESQL'">
+    <div class="database-type-view" v-else-if="databaseType === 'POSTGRESQL'">
         <IconPostgreSQL/>
         PostgreSQL
     </div>
-    <div v-else-if="databaseType === 'ORACLE'">
+    <div class="database-type-view" v-else-if="databaseType === 'ORACLE'">
         <IconOracle/>
         Oracle
     </div>
-    <div v-else-if="databaseType === 'SQLSERVER'">
+    <div class="database-type-view" v-else-if="databaseType === 'SQLSERVER'">
         <IconSqlServer/>
         Microsoft SQL Server
     </div>
-    <div v-else-if="databaseType === 'H2'">
+    <div class="database-type-view" v-else-if="databaseType === 'H2'">
         <IconH2/>
         H2
     </div>
-    <div v-else-if="databaseType === 'SQLITE'">
+    <div class="database-type-view" v-else-if="databaseType === 'SQLITE'">
         <IconSqlite/>
         Sqlite
     </div>
-    <div v-else-if="databaseType === 'ANY'">
+    <div class="database-type-view" v-else-if="databaseType === 'ANY'">
         <IconDatabase/>
         [ANY]
     </div>
-    <div v-else>
+    <div class="database-type-view" v-else>
         [Unknown]
     </div>
 </template>
+
+<style scoped>
+.database-type-view {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: nowrap;
+}
+</style>
