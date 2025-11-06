@@ -56,7 +56,7 @@ export const enumerationDiagnose = (
                 })
             }
 
-            const nameCount = nameSets.embeddableTypePropertyNameSetMap.get(enumeration.id)?.count(item.name) ?? 0
+            const nameCount = nameSets.enumerationItemNameSetMap.get(enumeration.id)?.count(item.name) ?? 0
             if (nameCount > 1) {
                 messages.push({
                     content: `[Duplicate Name: ${nameCount}]`,
