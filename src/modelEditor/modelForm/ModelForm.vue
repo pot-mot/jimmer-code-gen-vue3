@@ -14,6 +14,7 @@ const {
     viewport,
     getModelGraphData,
     loadModel,
+    changeModel,
 } = useModelEditor()
 
 const {
@@ -41,6 +42,8 @@ const handleSubmit = async (model: ModelUpdateInput) => {
 
         if (model.jsonData !== jsonDataCache) {
             await loadModel(result, JSON.parse(model.jsonData), result.viewport)
+        } else {
+            changeModel(result)
         }
     })
 }

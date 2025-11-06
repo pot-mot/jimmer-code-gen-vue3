@@ -262,6 +262,20 @@ export const useModelEditor = createStore(() => {
         }
     }
 
+    const changeModel = (model: DeepReadonly<Model>) => {
+        contextData.model = {
+            id: model.id,
+            name: model.name,
+            description: model.description,
+            createdTime: model.createdTime,
+            modifiedTime: model.modifiedTime,
+            databaseType: model.databaseType,
+            databaseNameStrategy: model.databaseNameStrategy,
+            defaultForeignKeyType: model.defaultForeignKeyType,
+            jvmLanguage: model.jvmLanguage,
+            defaultEnumerationStrategy: model.defaultEnumerationStrategy,
+        }
+    }
     const loadModel = async (
         model: Model,
         data: Partial<ModelGraphSubData>,
@@ -271,18 +285,7 @@ export const useModelEditor = createStore(() => {
             remove(contextDataToSubIds(getContextData()))
             await nextTick()
             await waitChangeSync()
-            contextData.model = {
-                id: model.id,
-                name: model.name,
-                description: model.description,
-                createdTime: model.createdTime,
-                modifiedTime: model.modifiedTime,
-                databaseType: model.databaseType,
-                databaseNameStrategy: model.databaseNameStrategy,
-                defaultForeignKeyType: model.defaultForeignKeyType,
-                jvmLanguage: model.jvmLanguage,
-                defaultEnumerationStrategy: model.defaultEnumerationStrategy,
-            }
+            changeModel(model)
             await importModelGraphData(data)
             await nextTick()
             await waitChangeSync()
@@ -1079,6 +1082,7 @@ export const useModelEditor = createStore(() => {
         getContext,
         getModelGraphData,
 
+        changeModel,
         loadModel,
         loadTables,
         saveModel,
