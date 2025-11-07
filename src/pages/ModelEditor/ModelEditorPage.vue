@@ -11,7 +11,7 @@ import {api} from "@/api";
 import {sendMessage} from "@/components/message/messageApi.ts";
 import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";
 import ModelGenerator from "@/modelEditor/generator/ModelGenerator.vue";
-import ModelForm from "@/modelEditor/modelForm/ModelForm.vue";
+import ModelEditFormDialog from "@/modelEditor/modelForm/ModelEditFormDialog.vue";
 import GenerateScriptDialog from "@/modelEditor/generateScript/GenerateScriptDialog.vue";
 import {useModelForm} from "@/modelEditor/modelForm/useModelForm.ts";
 import {useModelGenerator} from "@/modelEditor/generator/useModelGenerator.ts";
@@ -79,7 +79,7 @@ onBeforeUnmount(() => {
         </Pane>
     </Splitpanes>
 
-    <ModelForm/>
+    <ModelEditFormDialog/>
 
     <ModelGenerator/>
     <GenerateScriptDialog/>
