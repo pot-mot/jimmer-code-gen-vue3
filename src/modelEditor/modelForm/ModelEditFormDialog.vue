@@ -4,7 +4,7 @@ import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {nextTick, ref} from "vue";
 import type {ModelUpdateInput} from "@/api/__generated/model/static";
 import ModelEditForm from "@/modelEditor/modelForm/ModelEditForm.vue";
-import {useModelForm} from "@/modelEditor/modelForm/useModelForm.ts";
+import {useModelEditDialog} from "@/modelEditor/modelForm/useModelEditDialog.ts";
 import {api} from "@/api";
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
@@ -20,7 +20,7 @@ const {
 const {
     openState,
     close,
-} = useModelForm()
+} = useModelEditDialog()
 
 const model = ref<ModelUpdateInput>()
 let jsonDataCache: string | undefined

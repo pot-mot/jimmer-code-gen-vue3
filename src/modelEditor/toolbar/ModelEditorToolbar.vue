@@ -9,7 +9,7 @@ import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import IconDownload from "@/components/icons/IconDownload.vue";
 import {useModelGenerator} from "@/modelEditor/generator/useModelGenerator.ts";
 import IconEdit from "@/components/icons/IconEdit.vue";
-import {useModelForm} from "@/modelEditor/modelForm/useModelForm.ts";
+import {useModelEditDialog} from "@/modelEditor/modelForm/useModelEditDialog.ts";
 
 const {
     saveModel,
@@ -28,7 +28,7 @@ const {
 
 const {
     open: openForm
-} = useModelForm()
+} = useModelEditDialog()
 </script>
 
 <template>
