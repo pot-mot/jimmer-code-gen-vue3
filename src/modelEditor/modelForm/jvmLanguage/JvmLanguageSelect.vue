@@ -22,9 +22,7 @@ const jvmLanguages: JvmLanguage[] = [
             <JvmLanguageView :jvm-language="option" style="padding: 0.5rem;"/>
         </template>
         <template #option="{option}">
-            <div style="min-width: 3rem">
-                <JvmLanguageView :jvm-language="option"/>
-            </div>
+            <JvmLanguageView :jvm-language="option" style="min-width: 4rem"/>
         </template>
     </FilterableSelect>
 </template>

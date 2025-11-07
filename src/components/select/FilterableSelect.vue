@@ -33,6 +33,7 @@ const props = defineProps<{
 
 defineSlots<{
     selected(props: { option: T }): void,
+    afterInput(): void,
     options(props: { filteredOptions: T[], select: (option: T, index: number) => void }): void,
     option(props: { option: T }): void,
     empty(): void,
@@ -56,11 +57,6 @@ const filteredOptions = computed(() => {
     return props.options.filter(option =>
         props.filter(option, filterText.value)
     )
-})
-
-// 重置 currentIndex 当选项改变时
-watch(() => filteredOptions.value, () => {
-    currentIndex.value = filteredOptions.value.findIndex(it => props.getId(it) === props.getId(model.value))
 })
 
 const closeSelect = () => {
@@ -137,8 +133,11 @@ const handleKeyDown = (e: KeyboardEvent) => {
                     @blur="handleInputBlur"
                     @keydown="handleKeyDown"
                     :readonly="!props.canFilter"
-                    :style="{scale: props.canFilter ? 1 : 0, width: props.canFilter ? 'auto' : 0}"
+                    :style="{width: props.canFilter ? (isInputFocus ? '100%' : 0) : 0}"
                 />
+                <span class="after-input-wrapper">
+                    <slot name="afterInput"/>
+                </span>
             </div>
         </template>
 
@@ -196,6 +195,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
     border: none;
     outline: none;
     padding: 0;
+    background: none;
 }
 
 .option-item {
@@ -220,5 +220,10 @@ const handleKeyDown = (e: KeyboardEvent) => {
 
 .empty-tip {
     padding: 0.5rem;
+}
+
+.after-input-wrapper {
+    display: flex;
+    align-items: center;
 }
 </style>

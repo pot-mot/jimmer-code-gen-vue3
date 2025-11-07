@@ -25,10 +25,10 @@ const databaseTypes: DatabaseType[] = [
         :filter="(option, filterText) => option.toLowerCase().includes(filterText.toLowerCase())"
     >
         <template #selected="{option}">
-            <DatabaseTypeView style="padding: 0.5rem;" :database-type="option"/>
+            <DatabaseTypeView :database-type="option" style="padding: 0.5rem;"/>
         </template>
         <template #option="{option}">
-            <DatabaseTypeView style="min-width: 6rem" :database-type="option"/>
+            <DatabaseTypeView :database-type="option" style="min-width: 6rem"/>
         </template>
     </FilterableSelect>
 </template>
