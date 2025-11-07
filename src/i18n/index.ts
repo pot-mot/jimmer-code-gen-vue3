@@ -70,6 +70,8 @@ export type MainLocale = {
     database_add_button: string
     database_create_title: string
     database_update_title: string
+
+    script_edit: string
 }
 
 type BaseLocale = {

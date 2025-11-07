@@ -72,4 +72,6 @@ export const localeZhCn: MainLocale = {
     database_add_button: "添加数据库连接",
     database_create_title: "添加数据库连接",
     database_update_title: "修改数据库连接",
+
+    script_edit: "脚本编辑",
 }

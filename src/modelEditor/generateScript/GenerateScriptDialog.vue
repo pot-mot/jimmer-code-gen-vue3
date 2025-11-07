@@ -10,6 +10,7 @@ import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
 import {useModelGenerator} from "@/modelEditor/generator/useModelGenerator.ts";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {useGenerateScriptEditor} from "@/modelEditor/generateScript/useGenerateScriptEditor.ts";
+import {translate} from "@/store/i18nStore.ts";
 
 const {
     contextData
@@ -42,7 +43,7 @@ const handleScriptInfoSubmit = (scriptInfo: ScriptInfo<any>) => {
         modal
     >
         <template #title>
-            脚本编辑
+            {{ translate("script_edit") }}
         </template>
         <Splitpanes>
             <Pane :size="20" class="left-pane">

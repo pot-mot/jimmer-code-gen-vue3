@@ -72,4 +72,6 @@ export const localeEn: MainLocale = {
     database_add_button: "Add Database Connection",
     database_create_title: "Add Database Connection",
     database_update_title: "Update Database Connection",
+
+    script_edit: "Script Edit",
 }

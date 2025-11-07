@@ -1,7 +1,6 @@
 import type {ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
-import type {TsScript} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
+import {type TsScript} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
 import {reactive, readonly} from "vue";
-import {defaultScripts} from "@/type/__generated/defaultScript";
 
 export type ScriptInfo<Name extends ScriptTypeName> = {
     id: string
@@ -99,16 +98,4 @@ export const createScriptsStore = <Name extends ScriptTypeName>(
 
 export const emptyScriptsStore = () => {
     return createScriptsStore<any>()
-}
-
-
-// TODO add defaultScript
-export const fetchScripts = async (): Promise<ScriptsStore<any>> => {
-    return createScriptsStore<any>([
-        ...Object.values(defaultScripts)
-    ])
-}
-
-export const saveScripts = async (scripts: ScriptsStore<any>): Promise<void> => {
-    // TODO save scripts
 }
