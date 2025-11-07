@@ -125,7 +125,7 @@ const deleteDatabase = async (database: DatabaseView) => {
         :init-w="700"
     >
         <template #title>
-            {{ translate("database") }}
+            {{ translate("database_dialog_title") }}
         </template>
 
         <button @click="startDatabaseInsert" class="database-add-button">

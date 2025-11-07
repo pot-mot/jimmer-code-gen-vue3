@@ -67,11 +67,18 @@ export type MainLocale = {
     foreignKeys: string
 
     database_dialog_button: string
+    database_dialog_title: string
     database_add_button: string
     database_create_title: string
     database_update_title: string
 
     script_edit: string
+
+    type_mapping_dialog_button: string
+    type_mapping_dialog_title: string
+    sql_type: string
+    jvm_type: string
+    ts_type: string
 }
 
 type BaseLocale = {

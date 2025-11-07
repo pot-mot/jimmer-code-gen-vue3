@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {api} from "@/api";
 import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
-import {onBeforeMount, ref} from "vue";
+import {onBeforeMount, onBeforeUnmount, ref} from "vue";
 import type {ModelInsertInput, ModelNoJsonView, ModelUpdateInput} from "@/api/__generated/model/static";
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import IconAdd from "@/components/icons/IconAdd.vue";
@@ -15,8 +15,11 @@ import DatabaseTypeView from "@/modelEditor/modelForm/databaseType/DatabaseTypeV
 import {sendConfirm} from "@/components/confirm/confirmApi.ts";
 import {translate} from "@/store/i18nStore.ts";
 import {useDatabaseDialog} from "@/modelEditor/database/useDatabaseDialog.ts";
+import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
 import DatabaseDialog from "@/modelEditor/database/DatabaseDialog.vue";
+import TypeMappingDialog from "@/modelEditor/typeMapping/TypeMappingDialog.vue";
 import IconDatabase from "@/components/icons/IconDatabase.vue";
+import IconCode from "@/components/icons/IconCode.vue";
 
 const modelList = ref<ModelNoJsonView[]>([])
 
@@ -115,6 +118,15 @@ const deleteModel = async (model: Model) => {
 const {
     open: openDatabaseDialog,
 } = useDatabaseDialog()
+
+const {
+    open: openTypeMapping,
+} = useTypeMapping()
+
+onBeforeUnmount(() => {
+    useDatabaseDialog().close()
+    useTypeMapping().close()
+})
 </script>
 
 <template>
@@ -130,6 +142,10 @@ const {
                 <button @click="openDatabaseDialog" class="header-button">
                     <IconDatabase/>
                     {{ translate('database_dialog_button') }}
+                </button>
+                <button @click="openTypeMapping" class="header-button">
+                    <IconCode/>
+                    {{ translate('type_mapping_dialog_button') }}
                 </button>
             </div>
         </div>
@@ -221,6 +237,7 @@ const {
     </DragResizeDialog>
 
     <DatabaseDialog/>
+    <TypeMappingDialog/>
 </template>
 
 <style scoped>

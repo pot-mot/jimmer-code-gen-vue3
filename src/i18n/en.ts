@@ -69,9 +69,16 @@ export const localeEn: MainLocale = {
     foreignKeys: "Foreign Keys",
 
     database_dialog_button: "Database Manage",
+    database_dialog_title: "Database Manage",
     database_add_button: "Add Database Connection",
     database_create_title: "Add Database Connection",
     database_update_title: "Update Database Connection",
 
     script_edit: "Script Edit",
+
+    type_mapping_dialog_button: "Type Mapping Manage",
+    type_mapping_dialog_title: "Type Mapping Manage",
+    sql_type: "SQL Type",
+    jvm_type: "JVM Type",
+    ts_type: "TypeScript Type",
 }

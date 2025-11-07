@@ -69,9 +69,16 @@ export const localeZhCn: MainLocale = {
     foreignKeys: "外键",
 
     database_dialog_button: "数据库管理",
+    database_dialog_title: "数据库管理",
     database_add_button: "添加数据库连接",
     database_create_title: "添加数据库连接",
     database_update_title: "修改数据库连接",
 
     script_edit: "脚本编辑",
+
+    type_mapping_dialog_button: "类型映射管理",
+    type_mapping_dialog_title: "类型映射管理",
+    sql_type: "SQL类型",
+    jvm_type: "JVM类型",
+    ts_type: "TS类型",
 }

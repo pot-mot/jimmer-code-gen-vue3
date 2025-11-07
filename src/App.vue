@@ -8,6 +8,7 @@ import {initKeyboardStore} from "@/store/keyBoardStore.ts";
 import {initModelGenerator} from "@/modelEditor/generator/useModelGenerator.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import {languageTypes, useI18nStore} from "@/store/i18nStore.ts";
+import {initTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
 
 withLoading("Initialize...", async () => {
     initDeviceStore()
@@ -15,6 +16,7 @@ withLoading("Initialize...", async () => {
     initFocusTargetStore()
     initKeyboardStore()
     await initModelGenerator()
+    await initTypeMapping()
 })
 
 const themeStore = useThemeStore()

@@ -13,7 +13,7 @@ import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/Partia
 import ModelGenerator from "@/modelEditor/generator/ModelGenerator.vue";
 import ModelEditFormDialog from "@/modelEditor/modelForm/ModelEditFormDialog.vue";
 import GenerateScriptDialog from "@/modelEditor/generateScript/GenerateScriptDialog.vue";
-import {useModelForm} from "@/modelEditor/modelForm/useModelForm.ts";
+import {useModelEditDialog} from "@/modelEditor/modelForm/useModelEditDialog.ts";
 import {useModelGenerator} from "@/modelEditor/generator/useModelGenerator.ts";
 import {useGenerateScriptEditor} from "@/modelEditor/generateScript/useGenerateScriptEditor.ts";
 
@@ -63,7 +63,7 @@ watch(() => route.params.id, async () => {
 })
 
 onBeforeUnmount(() => {
-    useModelForm().close()
+    useModelEditDialog().close()
     useModelGenerator().close()
     useGenerateScriptEditor().close()
 })
@@ -80,7 +80,6 @@ onBeforeUnmount(() => {
     </Splitpanes>
 
     <ModelEditFormDialog/>
-
     <ModelGenerator/>
     <GenerateScriptDialog/>
 </template>

@@ -1,13 +1,9 @@
 import type {Executor} from '../';
 import type {
     CrossTypeInput, 
-    CrossTypeView, 
     JvmTypeInput, 
-    JvmTypeView, 
     SqlTypeInput, 
-    SqlTypeView, 
-    TsTypeInput, 
-    TsTypeView
+    TsTypeInput
 } from '../model/static/';
 
 export class TypeMappingService {
@@ -15,31 +11,31 @@ export class TypeMappingService {
     constructor(private executor: Executor) {}
     
     readonly listCrossType: () => Promise<
-        Array<CrossTypeView>
+        Array<CrossTypeInput>
     > = async() => {
         let _uri = '/typeMapping/listCrossType';
-        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<CrossTypeView>>;
+        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<CrossTypeInput>>;
     }
     
     readonly listJvmType: () => Promise<
-        Array<JvmTypeView>
+        Array<JvmTypeInput>
     > = async() => {
         let _uri = '/typeMapping/listJvmType';
-        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<JvmTypeView>>;
+        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<JvmTypeInput>>;
     }
     
     readonly listSqlType: () => Promise<
-        Array<SqlTypeView>
+        Array<SqlTypeInput>
     > = async() => {
         let _uri = '/typeMapping/listSqlType';
-        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<SqlTypeView>>;
+        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<SqlTypeInput>>;
     }
     
     readonly listTsType: () => Promise<
-        Array<TsTypeView>
+        Array<TsTypeInput>
     > = async() => {
         let _uri = '/typeMapping/listTsType';
-        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<TsTypeView>>;
+        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<TsTypeInput>>;
     }
     
     readonly saveCrossType: (options: TypeMappingServiceOptions['saveCrossType']) => Promise<
