@@ -133,11 +133,6 @@ select {
 
 textarea {
     resize: none;
-    white-space: pre;
-    word-wrap: normal;
-    word-break: keep-all;
-    overflow: hidden;
-    overflow-wrap: normal;
 }
 
 input:focus,
