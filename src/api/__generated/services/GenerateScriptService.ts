@@ -5,6 +5,20 @@ export class GenerateScriptService {
     
     constructor(private executor: Executor) {}
     
+    readonly delete: (options: GenerateScriptServiceOptions['delete']) => Promise<
+        number
+    > = async(options) => {
+        let _uri = '/generateScript/delete';
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.scriptId;
+        _uri += _separator
+        _uri += 'scriptId='
+        _uri += encodeURIComponent(_value);
+        _separator = '&';
+        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<number>;
+    }
+    
     readonly get: (options: GenerateScriptServiceOptions['get']) => Promise<
         GenerateScriptView | undefined
     > = async(options) => {
@@ -120,5 +134,8 @@ export type GenerateScriptServiceOptions = {
     }, 
     'update': {
         input: GenerateScriptUpdateInput
+    }, 
+    'delete': {
+        scriptId: string
     }
 }
