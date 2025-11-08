@@ -12,6 +12,8 @@ export type {JvmSource} from './JvmSource';
 export {JvmSource_CONSTANTS} from './JvmSource';
 export type {ModelForeignKeyType} from './ModelForeignKeyType';
 export {ModelForeignKeyType_CONSTANTS} from './ModelForeignKeyType';
+export type {ModelOrder} from './ModelOrder';
+export {ModelOrder_CONSTANTS} from './ModelOrder';
 export type {ScriptDatabaseType} from './ScriptDatabaseType';
 export {ScriptDatabaseType_CONSTANTS} from './ScriptDatabaseType';
 export type {ScriptJvmLanguage} from './ScriptJvmLanguage';

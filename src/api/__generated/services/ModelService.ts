@@ -1,4 +1,5 @@
 import type {Executor} from '../';
+import type {ModelOrder} from '../model/enums/';
 import type {
     ModelHistoryNoJsonView, 
     ModelHistoryView, 
@@ -94,6 +95,13 @@ export class ModelService {
         Array<ModelNoJsonView>
     > = async(options) => {
         let _uri = '/model/list';
+        let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
+        let _value: any = undefined;
+        _value = options.modelOrder;
+        _uri += _separator
+        _uri += 'modelOrder='
+        _uri += encodeURIComponent(_value);
+        _separator = '&';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<ModelNoJsonView>>;
     }
     
@@ -107,7 +115,8 @@ export class ModelService {
 
 export type ModelServiceOptions = {
     'list': {
-        body: ModelSpec
+        body: ModelSpec, 
+        modelOrder: ModelOrder
     }, 
     'get': {
         modelId: string

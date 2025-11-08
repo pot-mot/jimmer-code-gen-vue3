@@ -20,12 +20,14 @@ export const localeZhCn: MainLocale = {
     delete_confirm_title: (deleteTarget: string) => `${deleteTarget}删除确认`,
     delete_confirm_content: (deleteTarget: string) => `确定要删除${deleteTarget}吗？`,
     input_placeholder: (fieldName: string) => `请输入${fieldName}`,
+    select_placeholder: (fieldName: string) => `请选择${fieldName}`,
     not_blank_warning: (fieldName: string) => `${fieldName}不能为空`,
     json_validate_error: "JSON格式错误",
     no_option_tip: "无可选项",
 
     name: "名称",
     comment: "备注",
+    keywords: "关键词",
     description: "描述",
     url: "URL",
     username: "用户名",
@@ -76,9 +78,12 @@ export const localeZhCn: MainLocale = {
 
     script_edit: "脚本编辑",
 
-    type_mapping_dialog_button: "类型映射管理",
+    type_mapping_dialog_button: "类型映射",
     type_mapping_dialog_title: "类型映射管理",
     sql_type: "SQL类型",
     jvm_type: "JVM类型",
     ts_type: "TS类型",
+
+    database_type: "数据库类型",
+    jvm_language: "JVM语言",
 }

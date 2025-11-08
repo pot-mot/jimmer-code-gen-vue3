@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import {api} from "@/api";
 import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
-import {onBeforeMount, onBeforeUnmount, ref} from "vue";
-import type {ModelInsertInput, ModelNoJsonView, ModelUpdateInput} from "@/api/__generated/model/static";
+import {onBeforeUnmount, onMounted, ref, watch} from "vue";
+import type {
+    ModelInsertInput,
+    ModelNoJsonView,
+    ModelSpec,
+    ModelUpdateInput
+} from "@/api/__generated/model/static";
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import IconAdd from "@/components/icons/IconAdd.vue";
 import IconEdit from "@/components/icons/IconEdit.vue";
@@ -20,16 +25,25 @@ import DatabaseDialog from "@/modelEditor/database/DatabaseDialog.vue";
 import TypeMappingDialog from "@/modelEditor/typeMapping/TypeMappingDialog.vue";
 import IconDatabase from "@/components/icons/IconDatabase.vue";
 import IconCode from "@/components/icons/IconCode.vue";
+import DatabaseTypeNullableSelect from "@/modelEditor/modelForm/databaseType/DatabaseTypeNullableSelect.vue";
+import JvmLanguageNullableSelect from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageNullableSelect.vue";
+import IconCaretDown from "@/components/icons/IconCaretDown.vue";
+import type {ModelOrder} from "@/api/__generated/model/enums";
 
 const modelList = ref<ModelNoJsonView[]>([])
+const modelQuerySpec = ref<ModelSpec>({})
+const modelOrder = ref<ModelOrder>("MODIFIED_TIME_DESC")
 
 const loadModelList = async () => {
     await withLoading("list model", async () => {
-        modelList.value = await api.modelService.list({body: {}})
+        modelList.value = await api.modelService.list({
+            body: modelQuerySpec.value,
+            modelOrder: modelOrder.value,
+        })
     })
 }
 
-onBeforeMount(async () => {
+onMounted(async () => {
     await loadModelList()
 })
 
@@ -72,6 +86,7 @@ const submitModelInsert = async (model: ModelInsertInput) => {
         const result = await api.modelService.insert({body: model})
         modelList.value.push(result)
         modelInsertVisible.value = false
+        toModelEditor(result.id)
     })
 }
 
@@ -132,13 +147,15 @@ onBeforeUnmount(() => {
 <template>
     <div class="page">
         <div class="page-header">
-            <h2>{{ translate('model_list_title') }}</h2>
-
             <div class="header-operations">
+                <h2>{{ translate('model_list_title') }}</h2>
                 <button @click="startModelInsert" class="header-button">
                     <IconAdd/>
                     {{ translate('model_create_button') }}
                 </button>
+            </div>
+
+            <div class="header-operations">
                 <button @click="openDatabaseDialog" class="header-button">
                     <IconDatabase/>
                     {{ translate('database_dialog_button') }}
@@ -148,6 +165,47 @@ onBeforeUnmount(() => {
                     {{ translate('type_mapping_dialog_button') }}
                 </button>
             </div>
+        </div>
+
+        <div class="page-query">
+            <input
+                class="keywords-input"
+                v-model="modelQuerySpec.keywords"
+                :placeholder="translate({key: 'input_placeholder', args: [translate('keywords')]})"
+                @change="loadModelList"
+            >
+            <JvmLanguageNullableSelect
+                class="jvm-language-select"
+                v-model="modelQuerySpec.jvmLanguage"
+                @update:model-value="loadModelList"
+            />
+            <DatabaseTypeNullableSelect
+                class="database-type-select"
+                v-model="modelQuerySpec.databaseType"
+                @update:model-value="loadModelList"
+            />
+            <button @click="() => {
+                if (modelOrder !== 'CREATE_TIME_DESC') modelOrder = 'CREATE_TIME_DESC'
+                else modelOrder = 'CREATE_TIME_ASC'
+                loadModelList()
+            }">
+                {{ translate('createdTime') }}
+                <IconCaretDown :style="{
+                    visibility: modelOrder.startsWith('CREATE_TIME') ? 'visible' : 'hidden',
+                    rotate: modelOrder === 'CREATE_TIME_ASC' ? '180deg' : '0deg'
+                }"/>
+            </button>
+            <button @click="() => {
+                if (modelOrder !== 'MODIFIED_TIME_DESC') modelOrder = 'MODIFIED_TIME_DESC'
+                else modelOrder = 'MODIFIED_TIME_ASC'
+                loadModelList()
+            }">
+                {{ translate('modifiedTime') }}
+                <IconCaretDown :style="{
+                    visibility: modelOrder.startsWith('MODIFIED_TIME') ? 'visible' : 'hidden',
+                    rotate: modelOrder === 'MODIFIED_TIME_ASC' ? '180deg' : '0deg'
+                }"/>
+            </button>
         </div>
 
         <div class="model-list">
@@ -161,17 +219,21 @@ onBeforeUnmount(() => {
                     @click="toModelEditor(model.id)"
                 >
                     <div class="header">
-                        <div class="name">{{ model.name }}</div>
+                        <div class="name" @click.stop>
+                            {{ model.name }}
+                        </div>
                         <div class="tags">
                             <JvmLanguageView :jvm-language="model.jvmLanguage"/>
                             <DatabaseTypeView :database-type="model.databaseType"/>
                         </div>
                     </div>
                     <div class="timestamps">
-                        {{ translate('createdTime') }} {{ formatDateTime(model.createdTime) }}
-                    </div>
-                    <div class="timestamps">
-                        {{ translate('modifiedTime') }} {{ formatDateTime(model.modifiedTime) }}
+                        <div>
+                            {{ translate('createdTime') }} {{ formatDateTime(model.createdTime) }}
+                        </div>
+                        <div>
+                            {{ translate('modifiedTime') }} {{ formatDateTime(model.modifiedTime) }}
+                        </div>
                     </div>
                     <div class="description">
                         {{ model.description }}
@@ -251,12 +313,13 @@ onBeforeUnmount(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding: 1rem 1rem 0;
 }
 
 .header-operations {
     display: flex;
     gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
 .header-button {
@@ -268,13 +331,33 @@ onBeforeUnmount(() => {
     cursor: pointer;
 }
 
+.page-query {
+    display: flex;
+    height: 3rem;
+    padding: 1rem 1rem 0;
+    gap: 0.5rem;
+}
+
+.keywords-input {
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    height: 2.3rem;
+}
+
+.jvm-language-select {
+    width: 9rem;
+}
+.database-type-select {
+    width: 12rem;
+}
+
 .model-list {
     display: grid;
-    padding: 1rem;
+    padding: 1rem 1rem 0;
     grid-gap: 1rem;
     width: 100%;
     grid-template-columns: repeat(3, 1fr);
-    max-height: calc(100% - 5rem);
+    max-height: calc(100% - 8rem);
     overflow-y: auto;
     scrollbar-gutter: stable;
 }
@@ -285,7 +368,7 @@ onBeforeUnmount(() => {
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 500px) {
     .model-list {
         grid-template-columns: repeat(1, 1fr);
     }
@@ -296,6 +379,9 @@ onBeforeUnmount(() => {
     border-color: var(--border-color-light);
     border-radius: var(--border-radius);
     padding: 0.5rem;
+    display: grid;
+    grid-template-rows: 1fr 2rem;
+    min-height: 12rem;
 }
 
 .model-item:hover {
@@ -304,12 +390,13 @@ onBeforeUnmount(() => {
 
 .model-info {
     margin: 0.5rem;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
 }
 
 .model-info > .header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.25rem;
 }
@@ -317,6 +404,8 @@ onBeforeUnmount(() => {
 .model-info > .header > .name {
     font-size: 1.2rem;
     font-weight: 600;
+    word-break: break-word;
+    word-wrap: break-word;
 }
 
 .model-info > .header  > .tags {
@@ -335,9 +424,9 @@ onBeforeUnmount(() => {
 }
 
 .model-info > .description {
-    height: 4rem;
     overflow: auto;
     margin-top: 0.25rem;
+    max-height: 5rem;
 }
 
 .model-info > .timestamps {
@@ -348,7 +437,6 @@ onBeforeUnmount(() => {
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
-    margin-top: 1rem;
 }
 
 .edit-button,

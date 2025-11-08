@@ -20,12 +20,14 @@ export const localeEn: MainLocale = {
     delete_confirm_title: (deleteTarget: string) => `${deleteTarget} Delete Confirm`,
     delete_confirm_content: (deleteTarget: string) => `Are you sure to delete ${deleteTarget}?`,
     input_placeholder: (fieldName: string) => `Please input ${fieldName}`,
+    select_placeholder: (fieldName: string) => `Please select ${fieldName}`,
     not_blank_warning: (fieldName: string) => `${fieldName} cannot be empty.`,
     json_validate_error: "JSON Validate Error",
     no_option_tip: "No Options",
 
     name: "Name",
     comment: "Comment",
+    keywords: "Keywords",
     description: "Description",
     url: "URL",
     username: "Username",
@@ -76,9 +78,12 @@ export const localeEn: MainLocale = {
 
     script_edit: "Script Edit",
 
-    type_mapping_dialog_button: "Type Mapping Manage",
+    type_mapping_dialog_button: "Type Mapping",
     type_mapping_dialog_title: "Type Mapping Manage",
     sql_type: "SQL Type",
     jvm_type: "JVM Type",
     ts_type: "TypeScript Type",
+
+    database_type: "Database Type",
+    jvm_language: "JVM Language",
 }

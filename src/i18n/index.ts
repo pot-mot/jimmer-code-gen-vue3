@@ -18,12 +18,14 @@ export type MainLocale = {
     delete_confirm_title: (deleteTarget: string) => string
     delete_confirm_content: (deleteTarget: string) => string
     input_placeholder: (fieldName: string) => string
+    select_placeholder: (fieldName: string) => string
     not_blank_warning: (fieldName: string) => string
     json_validate_error: string
     no_option_tip: string
 
     name: string
     comment: string
+    keywords: string
     description: string
     url: string
     username: string
@@ -79,6 +81,9 @@ export type MainLocale = {
     sql_type: string
     jvm_type: string
     ts_type: string
+
+    database_type: string
+    jvm_language: string
 }
 
 type BaseLocale = {
