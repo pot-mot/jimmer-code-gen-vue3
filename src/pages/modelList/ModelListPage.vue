@@ -84,7 +84,6 @@ const stopModelInsert = () => {
 const submitModelInsert = async (model: ModelInsertInput) => {
     await withLoading("insert model", async () => {
         const result = await api.modelService.insert({body: model})
-        modelList.value.push(result)
         modelInsertVisible.value = false
         toModelEditor(result.id)
     })
@@ -106,13 +105,8 @@ const stopModelUpdate = () => {
 
 const submitModelUpdate = async (model: ModelUpdateInput) => {
     await withLoading("update model", async () => {
-        const result = await api.modelService.update({body: model})
-        const index = modelList.value.findIndex(model => model.id === result.id)
-        if (index >= 0) {
-            modelList.value[index] = result
-        } else {
-            modelList.value.push(result)
-        }
+        await api.modelService.update({body: model})
+        await loadModelList()
         modelUpdateVisible.value = false
     })
 }
@@ -406,6 +400,8 @@ onBeforeUnmount(() => {
     font-weight: 600;
     word-break: break-word;
     word-wrap: break-word;
+    max-height: 4rem;
+    overflow: auto;
 }
 
 .model-info > .header  > .tags {
