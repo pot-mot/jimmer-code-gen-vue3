@@ -34,7 +34,6 @@ const props = defineProps<{
 defineSlots<{
     selected(props: { option: T }): void,
     afterInput(): void,
-    options(props: { filteredOptions: T[], select: (option: T, index: number) => void }): void,
     option(props: { option: T }): void,
     empty(): void,
 }>()
@@ -142,29 +141,22 @@ const handleKeyDown = (e: KeyboardEvent) => {
         </template>
 
         <template #body>
-            <slot
-                v-if="filteredOptions.length > 0"
-                name="options"
-                :filtered-options="filteredOptions"
-                :select="selectOption"
-            >
-                <ul class="options-list">
-                    <li
-                        v-for="(option, index) in filteredOptions"
-                        :key="props.getId(option)"
-                        @mousedown.stop.prevent="selectOption(option, index)"
-                        class="option-item"
-                        :class="{
-                            selected: props.getId(option) === (model ? props.getId(model) : ''),
-                            active: index === currentIndex
-                        }"
-                    >
-                        <slot name="option" :option="option">
-                            <span class="option-view">{{ option }}</span>
-                        </slot>
-                    </li>
-                </ul>
-            </slot>
+            <ul class="options-list" v-if="filteredOptions.length > 0">
+                <li
+                    v-for="(option, index) in filteredOptions"
+                    :key="props.getId(option)"
+                    @mousedown.stop.prevent="selectOption(option, index)"
+                    class="option-item"
+                    :class="{
+                        selected: props.getId(option) === (model ? props.getId(model) : ''),
+                        active: index === currentIndex
+                    }"
+                >
+                    <slot name="option" :option="option">
+                        <span class="option-view">{{ option }}</span>
+                    </slot>
+                </li>
+            </ul>
             <slot v-else name="empty">
                 <div class="empty-tip">
                     {{ translate("no_option_tip") }}
