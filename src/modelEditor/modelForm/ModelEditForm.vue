@@ -158,19 +158,18 @@ const handleCancel = () => {
     flex: 1;
 }
 
-label {
-    display: block;
-    margin-bottom: 6px;
-    font-weight: 500;
-    color: #333;
+input {
+    width: 100%;
+    border-radius: var(--border-radius);
+    padding: 0.5rem;
+    font-size: 0.9rem;
 }
 
-input,
-select,
 textarea {
     width: 100%;
     border-radius: var(--border-radius);
     padding: 0.5rem;
+    font-size: 1rem;
 }
 
 .json-data-editor {

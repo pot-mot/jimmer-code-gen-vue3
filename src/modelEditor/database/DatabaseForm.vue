@@ -154,19 +154,17 @@ const handleCancel = () => {
 label {
     min-width: 4rem;
     white-space: nowrap;
-}
-
-input,
-select,
-textarea {
-    width: 100%;
-    border-radius: var(--border-radius);
     padding: 0.5rem;
 }
 
-input.error,
-select.error,
-textarea.error {
+input {
+    width: 100%;
+    border-radius: var(--border-radius);
+    padding: 0.5rem;
+    font-size: 0.9rem;
+}
+
+input.error, select.error, textarea.error {
     border-color: var(--danger-color);
 }
 

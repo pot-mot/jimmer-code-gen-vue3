@@ -123,6 +123,7 @@ textarea,
 select {
     outline: none;
     color: var(--text-color);
+    font-size: inherit;
     font-weight: inherit;
     font-family: inherit;
     background-color: var(--background-color);
