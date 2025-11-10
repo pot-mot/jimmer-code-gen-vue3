@@ -5,18 +5,20 @@ import {initFocusTargetStore} from "@/store/focusTargetStore.ts";
 import IconLight from "@/components/icons/IconLight.vue";
 import IconDark from "@/components/icons/IconDark.vue";
 import {initKeyboardStore} from "@/store/keyBoardStore.ts";
-import {initModelGenerator} from "@/modelEditor/generator/useModelGenerator.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import {languageTypes, useI18nStore} from "@/store/i18nStore.ts";
 import {initTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
+import {initScriptDialog} from "@/modelEditor/script/useScriptDialog.ts";
 
-withLoading("Initialize...", async () => {
+withLoading("Initialize Store", async () => {
     initDeviceStore()
     initThemeStore()
     initFocusTargetStore()
     initKeyboardStore()
-    await initModelGenerator()
-    await initTypeMapping()
+    await Promise.all([
+        initScriptDialog,
+        initTypeMapping,
+    ])
 })
 
 const themeStore = useThemeStore()
