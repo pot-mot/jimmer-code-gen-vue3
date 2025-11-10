@@ -1,7 +1,6 @@
 export default Object.freeze({
     fileName: 'CrossType.d.ts',
     content: `type CrossType = {
-    id: string
     jvmSource: JvmSource
     databaseSource: DatabaseSource
     sqlType: SqlType

@@ -38,6 +38,8 @@ import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSourc
 import {useModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
 import {useModelDiagnoseInfo} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
 import {api} from "@/api";
+import {createSqlToJvm} from "@/type/context/utils/TypeTool.ts";
+import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -113,76 +115,6 @@ export const useModelEditor = createStore(() => {
     const getContext = () => {
         return contextDataToContext(getContextData(), inheritInfo.value)
     }
-
-    // TODO
-    const crossTypes = ref<CrossType[]>([
-        {
-            id: "0",
-            jvmSource: "BOTH",
-            databaseSource: "ANY",
-            sqlType: {
-                type: "VARCHAR(255)",
-                dataSize: 255,
-            },
-            jvmType: {
-                typeExpression: "String",
-                serialized: false,
-                extraImports: [],
-                extraAnnotations: []
-            },
-            tsType: {
-                typeExpression: "string",
-                extraImports: []
-            }
-        },
-        {
-            id: "1",
-            jvmSource: "JAVA",
-            databaseSource: "ANY",
-            sqlType: {
-                type: "INT",
-                dataSize: 10,
-            },
-            jvmType: {
-                typeExpression: "int",
-                serialized: false,
-                extraImports: [],
-                extraAnnotations: []
-            },
-            tsType: {
-                typeExpression: "number",
-                extraImports: []
-            }
-        },
-        {
-            id: "2",
-            jvmSource: "KOTLIN",
-            databaseSource: "ANY",
-            sqlType: {
-                type: "INT",
-                dataSize: 10,
-            },
-            jvmType: {
-                typeExpression: "Int",
-                serialized: false,
-                extraImports: [],
-                extraAnnotations: []
-            },
-            tsType: {
-                typeExpression: "number",
-                extraImports: []
-            }
-        }
-    ])
-    const filteredCrossTypes = computed(() => {
-        const jvmLanguage = contextData.model.jvmLanguage
-        const databaseType = contextData.model.databaseType
-
-        return crossTypes.value.filter(crossType => {
-            return (crossType.jvmSource === jvmLanguage || crossType.jvmSource === "BOTH") &&
-                (crossType.databaseSource === databaseType || crossType.databaseSource === "ANY")
-        })
-    })
 
     const modelNameSets = useModelNameSets(getContextData(), inheritInfo.value, history)
 
@@ -298,12 +230,18 @@ export const useModelEditor = createStore(() => {
     }
     const loadTables = async (tables: DeepReadonly<Table[]>) => {
         await withLoading("Table Loading...", async () => {
-            const context = getContext()
+            const {getSqlToJvmMappingRules} = useTypeMapping()
+            const contextData = getContextData()
             const {
                 entities,
                 embeddableTypes,
                 associations,
-            } = tableToEntity(getCurrentGroupIdOrCreate(), tables, context)
+            } = tableToEntity(
+                tables,
+                contextData.model.databaseNameStrategy,
+                getCurrentGroupIdOrCreate(),
+                createSqlToJvm(getSqlToJvmMappingRules(), contextData.model.jvmLanguage, contextData.model.databaseType)
+            )
             history.executeBatch(Symbol("load tables"), () => {
                 for (const entity of entities) {
                     addEntity(entity.groupId, entity)
@@ -1074,8 +1012,6 @@ export const useModelEditor = createStore(() => {
 
         // 模型
         contextData: readonly(contextData),
-        crossTypes: readonly(crossTypes),
-        filteredCrossTypes,
 
         modelNameSets,
         modelDiagnoseInfo,

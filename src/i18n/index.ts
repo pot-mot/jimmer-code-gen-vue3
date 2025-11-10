@@ -82,7 +82,11 @@ export type MainLocale = {
     database_create_title: string
     database_update_title: string
 
-    script_edit: string
+    script: string
+    script_dialog_button: string
+    script_dialog_title: string
+    script_test: string
+    script_execute: string
 
     type_mapping_dialog_button: string
     type_mapping_dialog_title: string
@@ -92,6 +96,15 @@ export type MainLocale = {
 
     database_type: string
     jvm_language: string
+
+    AssociationGenerator: string
+    EmbeddableTypeGenerator: string
+    EntityGenerator: string
+    EnumerationGenerator: string
+    GroupGenerator: string
+    MappedSuperClassGenerator: string
+    ModelGenerator: string
+    TableGenerator: string
 }
 
 type BaseLocale = {

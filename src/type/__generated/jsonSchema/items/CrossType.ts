@@ -4,9 +4,6 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 const CrossTypeJsonSchema: JSONSchemaType<CrossType> = {
     "type": "object",
     "properties": {
-        "id": {
-            "type": "string"
-        },
         "jvmSource": {
             "$ref": "#/definitions/JvmSource"
         },
@@ -95,7 +92,6 @@ const CrossTypeJsonSchema: JSONSchemaType<CrossType> = {
     },
     "required": [
         "databaseSource",
-        "id",
         "jvmSource",
         "jvmType",
         "sqlType",

@@ -64,7 +64,9 @@ import JoinInfoDeclare from "./items/JoinInfo.ts";
 import JvmFileBuilderDeclare from "./items/JvmFileBuilder.ts";
 import JvmLanguageDeclare from "./items/JvmLanguage.ts";
 import JvmSourceDeclare from "./items/JvmSource.ts";
+import JvmToSqlDeclare from "./items/JvmToSql.ts";
 import JvmToSqlMappingRuleDeclare from "./items/JvmToSqlMappingRule.ts";
+import JvmToTsDeclare from "./items/JvmToTs.ts";
 import JvmToTsMappingRuleDeclare from "./items/JvmToTsMappingRule.ts";
 import JvmTypeDeclare from "./items/JvmType.ts";
 import KeyPropertyDeclare from "./items/KeyProperty.ts";
@@ -122,6 +124,7 @@ import ScalarEnumPropertyDeclare from "./items/ScalarEnumProperty.ts";
 import SingleColumnJoinInfoDeclare from "./items/SingleColumnJoinInfo.ts";
 import SingleColumnMidTableJoinInfoDeclare from "./items/SingleColumnMidTableJoinInfo.ts";
 import SqlFormulaPropertyDeclare from "./items/SqlFormulaProperty.ts";
+import SqlToJvmDeclare from "./items/SqlToJvm.ts";
 import SqlToJvmMappingRuleDeclare from "./items/SqlToJvmMappingRule.ts";
 import SqlTypeDeclare from "./items/SqlType.ts";
 import TableDeclare from "./items/Table.ts";
@@ -129,7 +132,6 @@ import TemplateBuilderDeclare from "./items/TemplateBuilder.ts";
 import TemplateOptionsDeclare from "./items/TemplateOptions.ts";
 import TransientPropertyDeclare from "./items/TransientProperty.ts";
 import TsTypeDeclare from "./items/TsType.ts";
-import TypeToolDeclare from "./items/TypeTool.ts";
 import VersionPropertyDeclare from "./items/VersionProperty.ts";
 
 export type TypeMap = {
@@ -198,7 +200,9 @@ export type TypeMap = {
     JvmFileBuilder: JvmFileBuilder
     JvmLanguage: JvmLanguage
     JvmSource: JvmSource
+    JvmToSql: JvmToSql
     JvmToSqlMappingRule: JvmToSqlMappingRule
+    JvmToTs: JvmToTs
     JvmToTsMappingRule: JvmToTsMappingRule
     JvmType: JvmType
     KeyProperty: KeyProperty
@@ -256,6 +260,7 @@ export type TypeMap = {
     SingleColumnJoinInfo: SingleColumnJoinInfo
     SingleColumnMidTableJoinInfo: SingleColumnMidTableJoinInfo
     SqlFormulaProperty: SqlFormulaProperty
+    SqlToJvm: SqlToJvm
     SqlToJvmMappingRule: SqlToJvmMappingRule
     SqlType: SqlType
     Table: Table
@@ -263,7 +268,6 @@ export type TypeMap = {
     TemplateOptions: TemplateOptions
     TransientProperty: TransientProperty
     TsType: TsType
-    TypeTool: TypeTool
     VersionProperty: VersionProperty
 }
 
@@ -336,7 +340,9 @@ export const typeDeclares = Object.freeze({
     JvmFileBuilder: JvmFileBuilderDeclare,
     JvmLanguage: JvmLanguageDeclare,
     JvmSource: JvmSourceDeclare,
+    JvmToSql: JvmToSqlDeclare,
     JvmToSqlMappingRule: JvmToSqlMappingRuleDeclare,
+    JvmToTs: JvmToTsDeclare,
     JvmToTsMappingRule: JvmToTsMappingRuleDeclare,
     JvmType: JvmTypeDeclare,
     KeyProperty: KeyPropertyDeclare,
@@ -394,6 +400,7 @@ export const typeDeclares = Object.freeze({
     SingleColumnJoinInfo: SingleColumnJoinInfoDeclare,
     SingleColumnMidTableJoinInfo: SingleColumnMidTableJoinInfoDeclare,
     SqlFormulaProperty: SqlFormulaPropertyDeclare,
+    SqlToJvm: SqlToJvmDeclare,
     SqlToJvmMappingRule: SqlToJvmMappingRuleDeclare,
     SqlType: SqlTypeDeclare,
     Table: TableDeclare,
@@ -401,6 +408,5 @@ export const typeDeclares = Object.freeze({
     TemplateOptions: TemplateOptionsDeclare,
     TransientProperty: TransientPropertyDeclare,
     TsType: TsTypeDeclare,
-    TypeTool: TypeToolDeclare,
     VersionProperty: VersionPropertyDeclare,
 })

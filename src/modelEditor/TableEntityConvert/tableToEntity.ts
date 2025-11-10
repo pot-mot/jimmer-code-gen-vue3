@@ -5,11 +5,14 @@ import {
     MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
     ID_VIEW_TEMPLATE, LIST_ID_VIEW_TEMPLATE
 } from "@/type/context/utils/AssociationTemplate.ts";
+import {createId} from "@/modelEditor/useModelEditor.ts";
+import {nameTool} from "@/type/context/utils/NameTool.ts";
 
 export const tableToEntity = (
-    groupId: string,
     tables: DeepReadonly<Table[]>,
-    context: DeepReadonly<ModelContext>
+    databaseNameStrategy: NameStrategy,
+    groupId: string,
+    sqlToJvm: SqlToJvm
 ): {
     entities: EntityWithProperties[],
     embeddableTypes: EmbeddableTypeWithProperties[],
@@ -18,11 +21,6 @@ export const tableToEntity = (
     const entities: EntityWithProperties[] = []
     const associations: AssociationIdOnly[] = []
     const embeddableTypes: EmbeddableTypeWithProperties[] = []
-
-    const databaseNameStrategy = context.model.databaseNameStrategy
-    const createId = context.createId
-    const nameTool = context.nameTool
-    const typeTool = context.typeTool
 
     const tableToEntity = (table: DeepReadonly<Table>): EntityWithProperties => {
         return {
@@ -41,7 +39,7 @@ export const tableToEntity = (
     }
 
     const columnToIdProperty = (column: DeepReadonly<Column>): IdCommonProperty => {
-        const jvmType = typeTool.sqlToJvm(column.type)
+        const jvmType = sqlToJvm(column.type)
         return {
             id: createId("Property"),
             name: nameTool.convert(column.name, databaseNameStrategy, 'LOWER_CAMEL'),
@@ -65,7 +63,7 @@ export const tableToEntity = (
     }
 
     const columnToCommonProperty = (column: DeepReadonly<Column>): ScalarCommonProperty => {
-        const jvmType = typeTool.sqlToJvm(column.type)
+        const jvmType = sqlToJvm(column.type)
         return {
             id: createId("Property"),
             name: nameTool.convert(column.name, databaseNameStrategy, 'LOWER_CAMEL'),

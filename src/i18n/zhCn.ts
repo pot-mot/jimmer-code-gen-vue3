@@ -84,7 +84,11 @@ export const localeZhCn: MainLocale = {
     database_create_title: "添加数据库连接",
     database_update_title: "修改数据库连接",
 
-    script_edit: "脚本编辑",
+    script: "脚本",
+    script_dialog_button: "脚本管理",
+    script_dialog_title: "脚本管理",
+    script_test: "脚本测试",
+    script_execute: "脚本执行",
 
     type_mapping_dialog_button: "类型映射",
     type_mapping_dialog_title: "类型映射管理",
@@ -94,4 +98,13 @@ export const localeZhCn: MainLocale = {
 
     database_type: "数据库类型",
     jvm_language: "JVM语言",
+
+    AssociationGenerator: "关联",
+    EmbeddableTypeGenerator: "内嵌类型",
+    EntityGenerator: "实体",
+    EnumerationGenerator: "枚举",
+    GroupGenerator: "分组",
+    MappedSuperClassGenerator: "抽象实体",
+    ModelGenerator: "模型",
+    TableGenerator: "数据库表",
 }

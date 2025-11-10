@@ -22,6 +22,7 @@ import {
 } from "@/modelEditor/node/property/TypeOption.ts";
 import IconEnumeration from "@/components/icons/modelEditor/IconEnumeration.vue";
 import IconEmbeddableType from "@/components/icons/modelEditor/IconEmbeddableType.vue";
+import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
 
 const props = defineProps<{
     embeddableType: DeepReadonly<EmbeddableTypeWithProperties>
@@ -32,11 +33,15 @@ const property = defineModel<EmbeddableTypeProperty>({
 })
 
 const {
-    filteredCrossTypes,
+    contextData,
     menuMap,
     executeAsyncBatch,
     waitChangeSync,
 } = useModelEditor()
+
+const {
+    crossTypeOptions,
+} = useTypeMapping()
 
 const filterKeyword = ref<string>("")
 const options = computed<TypeOptions>(() => {
@@ -45,9 +50,14 @@ const options = computed<TypeOptions>(() => {
         groups: []
     }
 
+    const filteredCrossTypes = crossTypeOptions.value.filter(crossType => {
+        return (crossType.databaseSource === contextData.model.databaseType || crossType.databaseSource === "ANY") &&
+            (crossType.jvmSource === contextData.model.jvmLanguage || crossType.jvmSource === "BOTH")
+    })
+
     const keyword = filterKeyword.value.trim().toLowerCase()
     if (keyword.length === 0) {
-        result.crossTypes = filteredCrossTypes.value
+        result.crossTypes = filteredCrossTypes
 
         for (const menuItem of menuMap.value.values()) {
             const current: GroupTypeOptions = {
@@ -69,7 +79,7 @@ const options = computed<TypeOptions>(() => {
             }
         }
     } else {
-        result.crossTypes = filteredCrossTypes.value.filter(crossType => {
+        result.crossTypes = filteredCrossTypes.filter(crossType => {
             return crossType.jvmType.typeExpression.toLowerCase().includes(keyword) ||
                 crossType.sqlType.type.toLowerCase().includes(keyword) ||
                 crossType.tsType.typeExpression.toLowerCase().includes(keyword)

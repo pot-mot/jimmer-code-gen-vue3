@@ -1,5 +1,3 @@
-type TypeTool = {
-    sqlToJvm(rawType: string): JvmType
-    jvmToSql(rawType: string): SqlType
-    jvmToTs(rawType: string): TsType
-}
+type SqlToJvm = (rawType: string) => JvmType
+type JvmToSql = (rawType: string) => SqlType
+type JvmToTs = (rawType: string) => TsType

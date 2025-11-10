@@ -25,7 +25,6 @@ type TsType = {
 }
 
 type CrossType = {
-    id: string
     jvmSource: JvmSource
     databaseSource: DatabaseSource
     sqlType: SqlType

@@ -12,7 +12,6 @@ import {
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 import {idOnlyToAssociation} from "@/type/context/utils/AssociationIdOnlyToAssociation.ts";
 import {nameTool} from "@/type/context/utils/NameTool.ts";
-import {buildTypeTool} from "@/type/context/utils/TypeTool.ts";
 import {createId} from "@/modelEditor/useModelEditor.ts";
 import {
     oneToManyAbstractToReal,
@@ -280,7 +279,6 @@ export const contextDataToContext = (
 
         createId,
         nameTool,
-        typeTool: buildTypeTool(contextData.model.jvmLanguage, [], [], []), // TODO
         createTemplateBuilder: (options: TemplateOptions) => {
             return createTemplateBuilder(options)
         },

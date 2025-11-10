@@ -84,7 +84,11 @@ export const localeEn: MainLocale = {
     database_create_title: "Add Database Connection",
     database_update_title: "Update Database Connection",
 
-    script_edit: "Script Edit",
+    script: "Script",
+    script_dialog_button: "Script Manage",
+    script_dialog_title: "Script Manage",
+    script_test: "Script Test",
+    script_execute: "Script Execute",
 
     type_mapping_dialog_button: "Type Mapping",
     type_mapping_dialog_title: "Type Mapping Manage",
@@ -94,4 +98,13 @@ export const localeEn: MainLocale = {
 
     database_type: "Database Type",
     jvm_language: "JVM Language",
+
+    AssociationGenerator: "Association",
+    EmbeddableTypeGenerator: "Embeddable Type",
+    EntityGenerator: "Entity",
+    EnumerationGenerator: "Enumeration",
+    GroupGenerator: "Group",
+    MappedSuperClassGenerator: "MappedSuperClass",
+    ModelGenerator: "Model",
+    TableGenerator: "Table",
 }
