@@ -41,7 +41,16 @@ export const createScriptsStore = (
     return Object.freeze({
         scriptInfoMap: readonly(scriptInfoMap),
         getScriptInfos: (options?: ScriptFilterOptions) => {
-            const result = {} as  {[key in ScriptTypeName]: ScriptInfo<key>[]}
+            const result: {[key in ScriptTypeName]: ScriptInfo<key>[]} = {
+                AssociationGenerator: [],
+                EmbeddableTypeGenerator: [],
+                EntityGenerator: [],
+                EnumerationGenerator: [],
+                GroupGenerator: [],
+                MappedSuperClassGenerator: [],
+                ModelGenerator: [],
+                TableGenerator: [],
+            }
             for (const script of scriptInfoMap.values()) {
                 if (options?.enabled !== undefined && script.enabled !== options.enabled) continue
                 if (options?.databaseType !== undefined && (script.databaseType !== "ANY" && script.databaseType !== options.databaseType)) continue

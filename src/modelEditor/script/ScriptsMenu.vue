@@ -44,28 +44,30 @@ const toggleScriptEnabled = (id: string) => {
         <template #head>
             <div class="script-type-label">
                 {{ translate(scriptInfoName as ScriptTypeName) }}
-                <button @click="emits('start-add', scriptInfoName as ScriptTypeName)">
+                <button
+                    class="script-add-button"
+                    @click="emits('start-add', scriptInfoName as ScriptTypeName)"
+                >
                     <IconAdd/>
                 </button>
             </div>
         </template>
         <template #body>
-            <template v-for="scriptInfo in scriptInfos">
-                <div class="script-info-item" @click="selectScript(scriptInfo.id)">
-                    <input
-                        type="checkbox"
-                        :checked="scriptInfo.enabled"
-                        @click.stop="toggleScriptEnabled(scriptInfo.id)"
-                    >
-                    <input
-                        :value="scriptInfo.name"
-                        @change="scriptStore.rename(scriptInfo.id, ($event.target as HTMLInputElement).value)"
-                    >
-                    <button @click.stop="emits('remove', scriptInfo.id)">
-                        <IconDelete/>
-                    </button>
-                </div>
-            </template>
+            <div v-for="scriptInfo in scriptInfos" class="script-info-item" @click="selectScript(scriptInfo.id)">
+                <input
+                    type="checkbox"
+                    :checked="scriptInfo.enabled"
+                    @click.stop="toggleScriptEnabled(scriptInfo.id)"
+                >
+                <input
+                    :value="scriptInfo.name"
+                    @change="scriptStore.rename(scriptInfo.id, ($event.target as HTMLInputElement).value)"
+                >
+                <button @click.stop="emits('remove', scriptInfo.id)">
+                    <IconDelete/>
+                </button>
+            </div>
+            <div v-if="scriptInfos.length === 0" style="height: 0.5rem;"/>
         </template>
     </CollapseDetail>
 </template>
@@ -80,5 +82,12 @@ const toggleScriptEnabled = (id: string) => {
     font-size: 0.8rem;
     display: flex;
     gap: 0.5rem;
+}
+
+.script-add-button {
+    border: none;
+    height: 1rem;
+    line-height: 1rem;
+    border-radius: 0.25rem;
 }
 </style>
