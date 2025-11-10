@@ -135,7 +135,8 @@ const handleCancel = () => {
     flex: 1;
 }
 
-input {
+input,
+select {
     width: 100%;
     border-radius: var(--border-radius);
     padding: 0.5rem;
