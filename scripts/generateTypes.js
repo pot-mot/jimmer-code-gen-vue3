@@ -30,6 +30,8 @@ const scriptTypeDeclarePath = "src/type/__generated/scriptTypeDeclare";
 ensureDirExists(scriptTypeDeclarePath)
 const defaultScriptPath = "src/type/__generated/defaultScript";
 ensureDirExists(defaultScriptPath)
+const scriptTemplatePath = "src/type/__generated/scriptTemplate";
+ensureDirExists(scriptTemplatePath)
 
 const getTsFiles = (path) => {
     const files = fs.readdirSync(path);
@@ -256,10 +258,33 @@ for (const {fileName} of scriptTypeFiles) {
         if (existedTypeSet.has(typeName)) {
             throw new Error(`[${fileName}] ${typeName} is already exists`)
         }
+
+        const signatures = type.getCallSignatures()
+        if (signatures.length !== 1) {
+            throw new Error(`[${fileName}] ${typeName} has multiple call signatures`);
+        }
+
+        const signature = signatures[0]
+        // 提取参数信息
+        const parameters = signature.getParameters().map(param => {
+            const paramSymbol = param;
+            const paramName = paramSymbol.getName()
+            const paramType = typeChecker.getTypeOfSymbolAtLocation(paramSymbol, statement)
+            const paramTypeStr = typeChecker.typeToString(paramType)
+            return {
+                name: paramName,
+                type: paramType,
+                typeStr: paramTypeStr
+            }
+        })
+        // 提取返回值类型
+        const returnType = signature.getReturnType()
+        const returnTypeStr = typeChecker.typeToString(returnType)
+
         existedTypeSet.add(typeName)
 
         const content = statement.getFullText(sourceFile)
-        scriptTypeDeclares.push({type, typeName, content})
+        scriptTypeDeclares.push({type, typeName, content, parameters, returnType, returnTypeStr})
     }
 }
 
@@ -432,10 +457,30 @@ export default scriptInfo
 
 defaultScriptFiles.push({
     fileName: `${defaultScriptPath}/index.ts`,
-    content: `${defaultScripts.map(it => `import ${it.name} from "@/type/__generated//defaultScript/items/${it.name}.ts";`).join("\n")}
+    content: `${defaultScripts.map(it => `import ${it.name} from "@/type/__generated/defaultScript/items/${it.name}.ts";`).join("\n")}
 
 export const defaultScripts = Object.freeze({
 ${defaultScripts.map(it => `    ${it.name},`).join("\n")}
+})
+`,
+})
+
+const scriptTemplateFiles = scriptTypeDeclares.map(it => ({
+    fileName: `${scriptTemplatePath}/items/${it.typeName}.ts`,
+    content: `export default \`(
+${it.parameters.map(it => `    ${it.name}: ${it.typeStr},`).join("\n")}
+): ${it.returnTypeStr} => {
+    // TODO implement ${it.typeName}  
+}\`
+`,
+}))
+
+scriptTemplateFiles.push({
+    fileName: `${scriptTemplatePath}/index.ts`,
+    content: `${scriptTypeDeclares.map(it => `import ${it.typeName}Template from "@/type/__generated/scriptTemplate/items/${it.typeName}.ts";`).join("\n")}
+
+export const scriptTemplates = Object.freeze({
+${scriptTypeDeclares.map(it => `    ${it.typeName}: ${it.typeName}Template,`).join("\n")}
 })
 `,
 })
@@ -482,6 +527,7 @@ const cleanDir = (dirPath) => {
 cleanDir(typeDeclarePath)
 cleanDir(scriptTypeDeclarePath)
 cleanDir(defaultScriptPath)
+cleanDir(scriptTemplatePath)
 cleanDir(jsonSchemaPath)
 
 const writeFiles = (files) => {
@@ -496,6 +542,7 @@ writeFiles([
     ...typeDeclareFiles,
     ...scriptTypeDeclareFiles,
     ...defaultScriptFiles,
+    ...scriptTemplateFiles,
     ...jsonSchemaFiles,
 ])
 
