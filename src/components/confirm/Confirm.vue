@@ -79,8 +79,13 @@ const handleClose = () => {
     padding: 0 1rem;
     width: fit-content;
     height: fit-content;
-    min-width: 300px;
+    min-width: 30vw;
+    max-width: 80vw;
     overflow: auto;
+    font-size: 1rem;
+    line-height: 1.5rem;
+    word-wrap: break-word;
+    word-break: break-word;
 }
 
 .confirm-actions {

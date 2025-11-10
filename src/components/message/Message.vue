@@ -171,13 +171,15 @@ defineExpose({
 }
 
 .message-content {
-    max-width: 100%;
-    overflow: auto;
     height: fit-content;
     width: fit-content;
+    max-width: 80vw;
+    overflow: auto;
     white-space: pre;
     font-size: 1rem;
     line-height: 1.5rem;
+    word-wrap: break-word;
+    word-break: break-word;
 }
 
 .message.primary {

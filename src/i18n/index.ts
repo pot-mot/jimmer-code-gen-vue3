@@ -15,8 +15,16 @@ export type MainLocale = {
     test: string
     generate: string
 
-    delete_confirm_title: (deleteTarget: string) => string
-    delete_confirm_content: (deleteTarget: string) => string
+    delete_confirm_title: (target: string) => string
+    delete_confirm_content: (target: string) => string
+    get_success: (target: string) => string
+    get_fail: (target: string) => string
+    insert_success: (target: string) => string
+    insert_fail: (target: string) => string
+    update_success: (target: string) => string
+    update_fail: (target: string) => string
+    delete_success: (target: string) => string
+    delete_fail: (target: string) => string
     input_placeholder: (fieldName: string) => string
     select_placeholder: (fieldName: string) => string
     not_blank_warning: (fieldName: string) => string

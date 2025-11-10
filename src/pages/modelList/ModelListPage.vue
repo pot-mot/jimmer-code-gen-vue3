@@ -29,6 +29,7 @@ import DatabaseTypeNullableSelect from "@/modelEditor/modelForm/databaseType/Dat
 import JvmLanguageNullableSelect from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageNullableSelect.vue";
 import IconCaretDown from "@/components/icons/IconCaretDown.vue";
 import type {ModelOrder} from "@/api/__generated/model/enums";
+import {sendMessage} from "@/components/message/messageApi.ts";
 
 const modelList = ref<ModelNoJsonView[]>([])
 const modelQuerySpec = ref<ModelSpec>({})
@@ -82,21 +83,30 @@ const stopModelInsert = () => {
 }
 
 const submitModelInsert = async (model: ModelInsertInput) => {
-    await withLoading("insert model", async () => {
-        const result = await api.modelService.insert({body: model})
-        modelInsertVisible.value = false
-        toModelEditor(result.id)
-    })
+    try {
+        await withLoading("insert model", async () => {
+            const result = await api.modelService.insert({body: model})
+            modelInsertVisible.value = false
+            sendMessage(translate({key: "insert_success", args: [`${translate("model")}[${model.name}]`]}), {type: "success"})
+            toModelEditor(result.id)
+        })
+    } catch (e) {
+        sendMessage(translate({key: "insert_fail", args: [`${translate("model")}[${model.name}]`]}), {type: "warning"})
+    }
 }
 
 const modelUpdateVisible = ref(false)
 const modelUpdateInput = ref<ModelUpdateInput>()
 
 const startModelUpdate = async (modelId: string) => {
-    await withLoading("get model", async () => {
-        modelUpdateInput.value = await api.modelService.get({modelId})
-        modelUpdateVisible.value = true
-    })
+    try {
+        await withLoading("get model", async () => {
+            modelUpdateInput.value = await api.modelService.get({modelId})
+            modelUpdateVisible.value = true
+        })
+    } catch (e) {
+        sendMessage(translate({key: "get_fail", args: [translate("model")]}), {type: "warning"})
+    }
 }
 
 const stopModelUpdate = () => {
@@ -104,22 +114,32 @@ const stopModelUpdate = () => {
 }
 
 const submitModelUpdate = async (model: ModelUpdateInput) => {
-    await withLoading("update model", async () => {
-        await api.modelService.update({body: model})
-        await loadModelList()
-        modelUpdateVisible.value = false
-    })
+    try {
+        await withLoading("update model", async () => {
+            await api.modelService.update({body: model})
+            await loadModelList()
+            modelUpdateVisible.value = false
+            sendMessage(translate({key: "update_success", args: [`${translate("model")}[${model.name}]`]}), {type: "success"})
+        })
+    } catch (e) {
+        sendMessage(translate({key: "update_fail", args: [`${translate("model")}[${model.name}]`]}), {type: "warning"})
+    }
 }
 
 const deleteModel = async (model: Model) => {
     sendConfirm({
         title: translate({key: "delete_confirm_title", args: [translate("model")]}),
-        content: translate({key: "delete_confirm_content", args: [` ${translate("model")}[${model.name}] `]}),
+        content: translate({key: "delete_confirm_content", args: [`${translate("model")}[${model.name}]`]}),
         onConfirm: async () => {
-            await withLoading("delete model", async () => {
-                await api.modelService.delete({modelId: model.id})
-                modelList.value = modelList.value.filter(it => model.id !== it.id)
-            })
+            try {
+                await withLoading("delete model", async () => {
+                    await api.modelService.delete({modelId: model.id})
+                    modelList.value = modelList.value.filter(it => model.id !== it.id)
+                    sendMessage(translate({key: "delete_success", args: [`${translate("model")}[${model.name}]`]}), {type: "success"})
+                })
+            } catch (e) {
+                sendMessage(translate({key: "delete_fail", args: [`${translate("model")}[${model.name}]`]}), {type: "warning"})
+            }
         }
     })
 }
@@ -178,7 +198,7 @@ onBeforeUnmount(() => {
                 v-model="modelQuerySpec.databaseType"
                 @update:model-value="loadModelList"
             />
-            <button @click="() => {
+            <button class="sort-button" @click="() => {
                 if (modelOrder !== 'CREATE_TIME_DESC') modelOrder = 'CREATE_TIME_DESC'
                 else modelOrder = 'CREATE_TIME_ASC'
                 loadModelList()
@@ -189,7 +209,7 @@ onBeforeUnmount(() => {
                     rotate: modelOrder === 'CREATE_TIME_ASC' ? '180deg' : '0deg'
                 }"/>
             </button>
-            <button @click="() => {
+            <button class="sort-button" @click="() => {
                 if (modelOrder !== 'MODIFIED_TIME_DESC') modelOrder = 'MODIFIED_TIME_DESC'
                 else modelOrder = 'MODIFIED_TIME_ASC'
                 loadModelList()
@@ -345,13 +365,20 @@ onBeforeUnmount(() => {
     width: 12rem;
 }
 
+.sort-button {
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    height: 2.3rem;
+}
+
 .model-list {
     display: grid;
-    padding: 1rem 1rem 0;
+    padding: 0 1rem;
+    margin-top: 1rem;
     grid-gap: 1rem;
     width: 100%;
     grid-template-columns: repeat(3, 1fr);
-    max-height: calc(100% - 8rem);
+    max-height: calc(100% - 9rem);
     overflow-y: auto;
     scrollbar-gutter: stable;
 }
