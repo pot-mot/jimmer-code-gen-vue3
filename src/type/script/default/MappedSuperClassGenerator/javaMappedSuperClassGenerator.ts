@@ -1,8 +1,8 @@
 // jvmLanguage=JAVA
 export const javaMappedSuperClassGenerator: MappedSuperClassGenerator = (
     mappedSuperClass: DeepReadonly<MappedSuperClassWithInheritInfo>,
-    context: DeepReadonly<ModelContext>,
-) => {
+    context: DeepReadonly<ModelContext>
+): Record<string, string> => {
     const result: Record<string, string> = {}
 
     const builder = context.createJvmFileBuilder({

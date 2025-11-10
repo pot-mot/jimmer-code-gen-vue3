@@ -11,8 +11,8 @@ const scriptInfo: ScriptInfo<"TableGenerator"> = {
     script: {
         code: `(
     tables: DeepReadonly<Table[]>,
-    context: DeepReadonly<ModelContext>,
-) => {
+    context: DeepReadonly<ModelContext>
+): Record<string, string> => {
     const baseDir = "/sql"
     const result: Record<string, string> = {}
 

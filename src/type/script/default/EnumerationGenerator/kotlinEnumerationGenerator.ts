@@ -1,8 +1,8 @@
 // jvmLanguage=KOTLIN
 export const kotlinEnumerationGenerator: EnumerationGenerator = (
     enumeration: DeepReadonly<Enumeration>,
-    context: DeepReadonly<ModelContext>,
-) => {
+    context: DeepReadonly<ModelContext>
+): Record<string, string> => {
     const result: Record<string, string> = {}
 
     const builder = context.createJvmFileBuilder({

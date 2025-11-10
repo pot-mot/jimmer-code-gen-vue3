@@ -1,8 +1,8 @@
 // jvmLanguage=KOTLIN
 export const kotlinEntityGenerator: EntityGenerator = (
     entity: DeepReadonly<EntityWithInheritInfo>,
-    context: DeepReadonly<ModelContext>,
-) => {
+    context: DeepReadonly<ModelContext>
+): Record<string, string> => {
     const result: Record<string, string> = {}
 
     const builder = context.createJvmFileBuilder({

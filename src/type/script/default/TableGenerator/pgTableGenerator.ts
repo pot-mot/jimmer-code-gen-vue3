@@ -1,8 +1,8 @@
 // databaseType=POSTGRESQL
 export const pgTableGenerator: TableGenerator = (
     tables: DeepReadonly<Table[]>,
-    context: DeepReadonly<ModelContext>,
-) => {
+    context: DeepReadonly<ModelContext>
+): Record<string, string> => {
     const baseDir = "/sql"
     const result: Record<string, string> = {}
 

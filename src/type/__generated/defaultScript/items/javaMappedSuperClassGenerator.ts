@@ -11,8 +11,8 @@ const scriptInfo: ScriptInfo<"MappedSuperClassGenerator"> = {
     script: {
         code: `(
     mappedSuperClass: DeepReadonly<MappedSuperClassWithInheritInfo>,
-    context: DeepReadonly<ModelContext>,
-) => {
+    context: DeepReadonly<ModelContext>
+): Record<string, string> => {
     const result: Record<string, string> = {}
 
     const builder = context.createJvmFileBuilder({

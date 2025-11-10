@@ -1,8 +1,8 @@
 // databaseType=MYSQL
 export const mysqlTableGenerator: TableGenerator = (
     tables: DeepReadonly<Table[]>,
-    context: DeepReadonly<ModelContext>,
-) => {
+    context: DeepReadonly<ModelContext>
+): Record<string, string> => {
     const baseDir = "/sql"
     const result: Record<string, string> = {}
 
