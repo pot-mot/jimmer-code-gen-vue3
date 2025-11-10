@@ -8,7 +8,7 @@ import {
 } from "@/modelEditor/script/ScriptsStore.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import {api} from "@/api";
-import type {GenerateScriptSaveInput, GenerateScriptView} from "@/api/__generated/model/static";
+import type {GenerateScriptUpdateInput, GenerateScriptView} from "@/api/__generated/model/static";
 import {readonly, ref} from "vue";
 import type {ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
 import {createTsScript} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
@@ -19,7 +19,7 @@ import {translate} from "@/store/i18nStore.ts";
 
 const scriptsStore = ref<ScriptsStore>(emptyScriptsStore())
 
-const scriptInfoToUpdateInput = (info: ScriptInfo<any>): GenerateScriptSaveInput => {
+const scriptInfoToUpdateInput = (info: ScriptInfo<any>): GenerateScriptUpdateInput => {
     return {
         id: info.id,
         name: info.name,
@@ -86,7 +86,7 @@ export const useScriptDialog = createStore(() => {
         },
         updateScript: async (scriptInfo: ScriptInfo<any>) => {
             await withLoading('save scripts', async () => {
-                await api.generateScriptService.save({body: scriptInfoToUpdateInput(scriptInfo)})
+                await api.generateScriptService.update({body: scriptInfoToUpdateInput(scriptInfo)})
                 scriptsStore.value.update(scriptInfo.id, scriptInfo)
             })
         },

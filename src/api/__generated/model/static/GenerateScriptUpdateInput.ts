@@ -1,6 +1,6 @@
 import type {ScriptDatabaseType, ScriptJvmLanguage, ScriptType} from '../enums/';
 
-export interface GenerateScriptSaveInput {
+export interface GenerateScriptUpdateInput {
     name: string;
     type: ScriptType;
     enabled: boolean;
