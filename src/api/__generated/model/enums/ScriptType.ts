@@ -6,7 +6,6 @@ export const ScriptType_CONSTANTS = [
     'GroupGenerator', 
     'MappedSuperClassGenerator', 
     'ModelGenerator', 
-    'TableDiffGenerator', 
     'TableGenerator'
 ] as const;
 export type ScriptType = typeof ScriptType_CONSTANTS[number];

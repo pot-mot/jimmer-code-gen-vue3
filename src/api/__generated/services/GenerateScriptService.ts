@@ -1,5 +1,5 @@
 import type {Executor} from '../';
-import type {GenerateScriptInsertInput, GenerateScriptUpdateInput, GenerateScriptView} from '../model/static/';
+import type {GenerateScriptInsertInput, GenerateScriptSaveInput, GenerateScriptView} from '../model/static/';
 
 export class GenerateScriptService {
     
@@ -47,10 +47,10 @@ export class GenerateScriptService {
         return (await this.executor({uri: _uri, method: 'POST'})) as Promise<Array<GenerateScriptView>>;
     }
     
-    readonly update: (options: GenerateScriptServiceOptions['update']) => Promise<
+    readonly save: (options: GenerateScriptServiceOptions['save']) => Promise<
         GenerateScriptView
     > = async(options) => {
-        let _uri = '/generateScript/update';
+        let _uri = '/generateScript/save';
         return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<GenerateScriptView>;
     }
 }
@@ -63,8 +63,8 @@ export type GenerateScriptServiceOptions = {
     'insert': {
         body: GenerateScriptInsertInput
     }, 
-    'update': {
-        body: GenerateScriptUpdateInput
+    'save': {
+        body: GenerateScriptSaveInput
     }, 
     'delete': {
         scriptId: string

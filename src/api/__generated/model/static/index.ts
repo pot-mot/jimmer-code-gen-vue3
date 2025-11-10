@@ -5,7 +5,7 @@ export type {DatabaseUpdateInput} from './DatabaseUpdateInput';
 export type {DatabaseView} from './DatabaseView';
 export type {DbColumnRef} from './DbColumnRef';
 export type {GenerateScriptInsertInput} from './GenerateScriptInsertInput';
-export type {GenerateScriptUpdateInput} from './GenerateScriptUpdateInput';
+export type {GenerateScriptSaveInput} from './GenerateScriptSaveInput';
 export type {GenerateScriptView} from './GenerateScriptView';
 export type {JvmTypeInput} from './JvmTypeInput';
 export type {JvmTypeInput_TargetOf_sqlToJvmMappingRules} from './JvmTypeInput_TargetOf_sqlToJvmMappingRules';

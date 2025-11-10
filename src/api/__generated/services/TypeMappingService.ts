@@ -39,31 +39,31 @@ export class TypeMappingService {
     }
     
     readonly saveCrossType: (options: TypeMappingServiceOptions['saveCrossType']) => Promise<
-        void
+        Array<CrossTypeInput>
     > = async(options) => {
         let _uri = '/typeMapping/saveCrossType';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<void>;
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<CrossTypeInput>>;
     }
     
     readonly saveJvmType: (options: TypeMappingServiceOptions['saveJvmType']) => Promise<
-        void
+        Array<JvmTypeInput>
     > = async(options) => {
         let _uri = '/typeMapping/saveJvmType';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<void>;
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<JvmTypeInput>>;
     }
     
     readonly saveSqlType: (options: TypeMappingServiceOptions['saveSqlType']) => Promise<
-        void
+        Array<SqlTypeInput>
     > = async(options) => {
         let _uri = '/typeMapping/saveSqlType';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<void>;
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<SqlTypeInput>>;
     }
     
     readonly saveTsType: (options: TypeMappingServiceOptions['saveTsType']) => Promise<
-        void
+        Array<TsTypeInput>
     > = async(options) => {
         let _uri = '/typeMapping/saveTsType';
-        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<void>;
+        return (await this.executor({uri: _uri, method: 'POST', body: options.body})) as Promise<Array<TsTypeInput>>;
     }
 }
 
