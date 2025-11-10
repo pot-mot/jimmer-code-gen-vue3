@@ -12,10 +12,10 @@ import {sendMessage} from "@/components/message/messageApi.ts";
 import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";
 import ModelGenerator from "@/modelEditor/generator/ModelGenerator.vue";
 import ModelEditFormDialog from "@/modelEditor/modelForm/ModelEditFormDialog.vue";
-import GenerateScriptDialog from "@/modelEditor/generateScript/GenerateScriptDialog.vue";
+import ScriptDialog from "@/modelEditor/script/ScriptDialog.vue";
 import {useModelEditDialog} from "@/modelEditor/modelForm/useModelEditDialog.ts";
 import {useModelGenerator} from "@/modelEditor/generator/useModelGenerator.ts";
-import {useGenerateScriptEditor} from "@/modelEditor/generateScript/useGenerateScriptEditor.ts";
+import {useScriptDialog} from "@/modelEditor/script/useScriptDialog.ts";
 
 const router = useRouter()
 const route = useRoute()
@@ -65,7 +65,7 @@ watch(() => route.params.id, async () => {
 onBeforeUnmount(() => {
     useModelEditDialog().close()
     useModelGenerator().close()
-    useGenerateScriptEditor().close()
+    useScriptDialog().close()
 })
 </script>
 
@@ -81,5 +81,5 @@ onBeforeUnmount(() => {
 
     <ModelEditFormDialog/>
     <ModelGenerator/>
-    <GenerateScriptDialog/>
+    <ScriptDialog/>
 </template>

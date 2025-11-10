@@ -1,4 +1,4 @@
-import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
+import type {ScriptInfo} from "@/modelEditor/script/ScriptsStore.ts";
 import {kotlinMappedSuperclassGenerator} from "@/type/script/default/MappedSuperClassGenerator/kotlinMappedSuperClassGenerator.ts";
 
 const scriptInfo: ScriptInfo<"MappedSuperClassGenerator"> = {

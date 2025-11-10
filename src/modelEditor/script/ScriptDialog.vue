@@ -1,28 +1,26 @@
 <script setup lang="ts">
-
-import GeneratorScriptEditor from "@/modelEditor/generateScript/GeneratorScriptEditor.vue";
+import GeneratorScriptEditor from "@/modelEditor/script/ScriptEditor.vue";
 import Pane from "@/components/splitpanes/Pane.vue";
-import ScriptsMenu from "@/modelEditor/generator/ScriptsMenu.vue";
+import ScriptsMenu from "@/modelEditor/script/ScriptsMenu.vue";
 import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
 import Splitpanes from "@/components/splitpanes/Splitpanes.vue";
 import {ref} from "vue";
-import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
-import {useModelGenerator} from "@/modelEditor/generator/useModelGenerator.ts";
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {useGenerateScriptEditor} from "@/modelEditor/generateScript/useGenerateScriptEditor.ts";
+import type {ScriptInfo} from "@/modelEditor/script/ScriptsStore.ts";
+import {useScriptDialog} from "@/modelEditor/script/useScriptDialog.ts";
 import {translate} from "@/store/i18nStore.ts";
+import type {ScriptType} from "@/api/__generated/model/enums";
+
+defineProps<{
+    model?: Partial<Pick<Model, 'databaseType' | 'jvmLanguage'>>
+}>()
 
 const {
-    contextData
-} = useModelEditor()
-
-const {
-    scriptsStore
-} = useModelGenerator()
-
-const {
-    openState
-} = useGenerateScriptEditor()
+    openState,
+    scriptsStore,
+    insertScript,
+    updateScript,
+    deleteScript,
+} = useScriptDialog()
 
 const currentScriptInfo = ref<ScriptInfo<any>>()
 
@@ -30,8 +28,12 @@ const handleScriptInfoSelect = (scriptInfo: ScriptInfo<any>) => {
     currentScriptInfo.value = scriptInfo
 }
 
+const startScriptInfoInsert = (name: string, type: ScriptType) => {
+
+}
+
 const handleScriptInfoSubmit = (scriptInfo: ScriptInfo<any>) => {
-    scriptsStore.value.update(scriptInfo.id, scriptInfo)
+    updateScript(scriptInfo)
 }
 </script>
 
@@ -43,15 +45,17 @@ const handleScriptInfoSubmit = (scriptInfo: ScriptInfo<any>) => {
         modal
     >
         <template #title>
-            {{ translate("script_edit") }}
+            {{ translate("script_dialog_title") }}
         </template>
         <Splitpanes>
-            <Pane :size="20" class="left-pane">
+            <Pane :size="20">
                 <ScriptsMenu
-                    :script-operator="scriptsStore"
-                    :database-type="contextData.model.databaseType"
-                    :jvm-language="contextData.model.jvmLanguage"
+                    :script-store="scriptsStore"
+                    :database-type="model?.databaseType"
+                    :jvm-language="model?.jvmLanguage"
                     @select="handleScriptInfoSelect"
+                    @start-add=""
+                    @remove="deleteScript"
                 />
             </Pane>
             <Pane>

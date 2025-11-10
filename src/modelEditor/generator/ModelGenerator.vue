@@ -7,7 +7,7 @@ import FileTreeViewer from "@/components/file/FileTreeViewer.vue";
 import {contextDataToSubIds, subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
-import {useGenerateScriptEditor} from "@/modelEditor/generateScript/useGenerateScriptEditor.ts";
+import {useScriptDialog} from "@/modelEditor/script/useScriptDialog.ts";
 import {translate} from "@/store/i18nStore.ts";
 
 const {
@@ -24,7 +24,7 @@ const {
 
 const {
     open: openGenerateScriptEditor,
-} = useGenerateScriptEditor()
+} = useScriptDialog()
 
 const generateResult = ref<Record<string, string>>()
 const errorMessage = ref<string>()

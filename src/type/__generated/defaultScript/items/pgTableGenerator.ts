@@ -1,4 +1,4 @@
-import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
+import type {ScriptInfo} from "@/modelEditor/script/ScriptsStore.ts";
 import {pgTableGenerator} from "@/type/script/default/TableGenerator/pgTableGenerator.ts";
 
 const scriptInfo: ScriptInfo<"TableGenerator"> = {

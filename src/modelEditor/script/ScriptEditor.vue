@@ -1,25 +1,15 @@
 <script setup lang="ts" generic="Name extends ScriptTypeName">
-import {createScriptsStore, type ScriptInfo, type ScriptsStore} from "@/modelEditor/generator/ScriptsStore.ts";
+import {type ScriptInfo} from "@/modelEditor/script/ScriptsStore.ts";
 import type {ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
 import TsScriptEditor from "@/components/code/scriptEditor/TsScriptEditor.vue";
 import {createTsScript, TsScriptExecutor} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
 import {computed, ref, watch} from "vue";
-import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import {modelGenerate} from "@/modelEditor/generator/modelGenerate.ts";
-import {contextDataToSubIds, subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
 import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
 import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
 import FileTreeViewer from "@/components/file/FileTreeViewer.vue";
 import IconRefresh from "@/components/icons/IconRefresh.vue";
 import IconCheck from "@/components/icons/IconCheck.vue";
-import IconExecute from "@/components/icons/IconExecute.vue";
-
-const {
-    contextData,
-    getContext,
-    isModelSelectionNotEmpty,
-    selectedIdSets,
-} = useModelEditor()
+import {translate} from "@/store/i18nStore.ts";
 
 const props = defineProps<{
     scriptInfo: ScriptInfo<Name>,
@@ -56,28 +46,6 @@ const handleReset = () => {
     code.value = props.scriptInfo.script.code
 }
 
-const handleGenerateTest = async () => {
-    try {
-        const scriptResult = await createTsScript(props.scriptInfo.type, code.value, executor.value)
-        if (scriptResult.valid) {
-            const scriptInfo: ScriptInfo<Name> = {
-                ...props.scriptInfo,
-                script: scriptResult.script
-            }
-            const scriptStore: ScriptsStore<any> = createScriptsStore([scriptInfo])
-            generateResult.value = modelGenerate(
-                getContext(),
-                isModelSelectionNotEmpty.value ? subIdSetToSubIds(selectedIdSets.value) : contextDataToSubIds(contextData),
-                scriptStore
-            )
-        } else {
-            receiveError(scriptResult.error)
-        }
-    } catch (e) {
-        receiveError(e)
-    }
-}
-
 const handleSubmit = async () => {
     try {
         const scriptResult = await createTsScript(props.scriptInfo.type, code.value, executor.value)
@@ -112,13 +80,9 @@ const handleSubmit = async () => {
         />
 
         <div class="tail-toolbar">
-            <button @click="handleGenerateTest">
-                <IconExecute/>
-                Test
-            </button>
             <button @click="handleSubmit">
                 <IconCheck/>
-                Submit
+                {{ translate('save') }}
             </button>
         </div>
 

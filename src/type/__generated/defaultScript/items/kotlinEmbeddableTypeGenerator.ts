@@ -1,4 +1,4 @@
-import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
+import type {ScriptInfo} from "@/modelEditor/script/ScriptsStore.ts";
 import {kotlinEmbeddableTypeGenerator} from "@/type/script/default/EmbeddableTypeGenerator/kotlinEmbeddableTypeGenerator.ts";
 
 const scriptInfo: ScriptInfo<"EmbeddableTypeGenerator"> = {

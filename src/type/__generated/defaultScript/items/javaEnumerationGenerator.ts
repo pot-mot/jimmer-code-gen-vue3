@@ -1,4 +1,4 @@
-import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
+import type {ScriptInfo} from "@/modelEditor/script/ScriptsStore.ts";
 import {javaEnumerationGenerator} from "@/type/script/default/EnumerationGenerator/javaEnumerationGenerator.ts";
 
 const scriptInfo: ScriptInfo<"EnumerationGenerator"> = {

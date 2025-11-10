@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {api} from "@/api";
 import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
-import {onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {onBeforeUnmount, onMounted, ref} from "vue";
 import type {
     ModelInsertInput,
     ModelNoJsonView,
@@ -30,6 +30,8 @@ import JvmLanguageNullableSelect from "@/modelEditor/modelForm/jvmLanguage/JvmLa
 import IconCaretDown from "@/components/icons/IconCaretDown.vue";
 import type {ModelOrder} from "@/api/__generated/model/enums";
 import {sendMessage} from "@/components/message/messageApi.ts";
+import ScriptDialog from "@/modelEditor/script/ScriptDialog.vue";
+import {useScriptDialog} from "@/modelEditor/script/useScriptDialog.ts";
 
 const modelList = ref<ModelNoJsonView[]>([])
 const modelQuerySpec = ref<ModelSpec>({})
@@ -144,17 +146,14 @@ const deleteModel = async (model: Model) => {
     })
 }
 
-const {
-    open: openDatabaseDialog,
-} = useDatabaseDialog()
-
-const {
-    open: openTypeMapping,
-} = useTypeMapping()
+const databaseDialog = useDatabaseDialog()
+const typeMappingDialog = useTypeMapping()
+const scriptDialog = useScriptDialog()
 
 onBeforeUnmount(() => {
-    useDatabaseDialog().close()
-    useTypeMapping().close()
+    databaseDialog.close()
+    typeMappingDialog.close()
+    scriptDialog.close()
 })
 </script>
 
@@ -170,13 +169,17 @@ onBeforeUnmount(() => {
             </div>
 
             <div class="header-operations">
-                <button @click="openDatabaseDialog" class="header-button">
+                <button @click="databaseDialog.open()" class="header-button">
                     <IconDatabase/>
                     {{ translate('database_dialog_button') }}
                 </button>
-                <button @click="openTypeMapping" class="header-button">
+                <button @click="typeMappingDialog.open()" class="header-button">
                     <IconCode/>
                     {{ translate('type_mapping_dialog_button') }}
+                </button>
+                <button @click="scriptDialog.open()" class="header-button">
+                    <IconCode/>
+                    {{ translate('script_dialog_button') }}
                 </button>
             </div>
         </div>
@@ -314,6 +317,7 @@ onBeforeUnmount(() => {
 
     <DatabaseDialog/>
     <TypeMappingDialog/>
+    <ScriptDialog/>
 </template>
 
 <style scoped>
@@ -356,6 +360,7 @@ onBeforeUnmount(() => {
     border-radius: 0.5rem;
     padding: 0.5rem;
     height: 2.3rem;
+    font-size: 0.8rem;
 }
 
 .jvm-language-select {

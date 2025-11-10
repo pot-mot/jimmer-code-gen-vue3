@@ -1,4 +1,4 @@
-import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
+import type {ScriptInfo} from "@/modelEditor/script/ScriptsStore.ts";
 import {kotlinEnumerationGenerator} from "@/type/script/default/EnumerationGenerator/kotlinEnumerationGenerator.ts";
 
 const scriptInfo: ScriptInfo<"EnumerationGenerator"> = {

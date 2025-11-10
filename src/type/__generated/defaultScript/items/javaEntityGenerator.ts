@@ -1,4 +1,4 @@
-import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
+import type {ScriptInfo} from "@/modelEditor/script/ScriptsStore.ts";
 import {javaEntityGenerator} from "@/type/script/default/EntityGenerator/javaEntityGenerator.ts";
 
 const scriptInfo: ScriptInfo<"EntityGenerator"> = {

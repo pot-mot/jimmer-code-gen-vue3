@@ -1,4 +1,4 @@
-import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
+import type {ScriptInfo} from "@/modelEditor/script/ScriptsStore.ts";
 import {javaMappedSuperClassGenerator} from "@/type/script/default/MappedSuperClassGenerator/javaMappedSuperClassGenerator.ts";
 
 const scriptInfo: ScriptInfo<"MappedSuperClassGenerator"> = {
