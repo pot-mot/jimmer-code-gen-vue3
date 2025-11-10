@@ -10,7 +10,7 @@ const scriptInfo: ScriptInfo<"EmbeddableTypeGenerator"> = {
     jvmLanguage: "KOTLIN",
     script: {
         code: `(
-    embeddableType: DeepReadonly<EmbeddableTypeWithProperties>,
+    embeddableType: DeepReadonly<EmbeddableTypeWithOverrideProperties>,
     context: DeepReadonly<ModelContext>,
 ) => {
     const result: Record<string, string> = {}

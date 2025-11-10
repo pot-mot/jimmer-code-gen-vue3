@@ -23,17 +23,17 @@ const scriptInfo: ScriptInfo<"EnumerationGenerator"> = {
     builder.addImports("org.babyfish.jimmer.sql.EnumType")
     builder.addImports("org.babyfish.jimmer.sql.EnumItem")
 
-    result[\`/entity/\${enumeration.name}.java\`] = \`package \${builder.getPackagePath()};
+    result[\`/entity/\${enumeration.name}.kt\`] = \`package \${builder.getPackagePath()}
 
 \${[...builder.getImportSet()]
         .sort((a, b) => a.localeCompare(b))
-        .map(importItem => \`import \${importItem};\`).join("\\n")}
+        .map(importItem => \`import \${importItem}\`).join("\\n")}
 
 \${enumeration.strategy === 'NAME' ?
         "@EnumType(EnumType.Strategy.NAME)" :
         "@EnumType(EnumType.Strategy.ORDINAL)"
     }
-public interface \${enumeration.name} {
+enum class \${enumeration.name} {
 \${enumeration.items
         .map(item =>
             \`    \${enumeration.strategy === 'NAME' ?

@@ -33,7 +33,7 @@ const scriptInfo: ScriptInfo<"EnumerationGenerator"> = {
         "@EnumType(EnumType.Strategy.NAME)" :
         "@EnumType(EnumType.Strategy.ORDINAL)"
     }
-public interface \${enumeration.name} {
+public enum \${enumeration.name} {
 \${enumeration.items
         .map(item =>
             \`    \${enumeration.strategy === 'NAME' ? 

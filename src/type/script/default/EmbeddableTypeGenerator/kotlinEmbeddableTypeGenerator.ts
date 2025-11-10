@@ -1,6 +1,6 @@
 // jvmLanguage=KOTLIN
 export const kotlinEmbeddableTypeGenerator: EmbeddableTypeGenerator = (
-    embeddableType: DeepReadonly<EmbeddableTypeWithProperties>,
+    embeddableType: DeepReadonly<EmbeddableTypeWithOverrideProperties>,
     context: DeepReadonly<ModelContext>,
 ) => {
     const result: Record<string, string> = {}

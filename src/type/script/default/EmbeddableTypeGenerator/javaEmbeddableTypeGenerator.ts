@@ -1,6 +1,6 @@
 // jvmLanguage=JAVA
 export const javaEmbeddableTypeGenerator: EmbeddableTypeGenerator = (
-    embeddableType: DeepReadonly<EmbeddableTypeWithProperties>,
+    embeddableType: DeepReadonly<EmbeddableTypeWithOverrideProperties>,
     context: DeepReadonly<ModelContext>,
 ) => {
     const result: Record<string, string> = {}
