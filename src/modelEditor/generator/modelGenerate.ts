@@ -40,11 +40,11 @@ export const modelGenerate = (
         const {tables, midTables} = entityToTable(entities, Array.from(context.entityMap.values()), context)
         const allTables = [...tables, ...midTables]
 
-        for (const {script} of scriptInfos["TableGenerator"]) {
+        for (const {script} of scriptInfos["TableGenerator"] ?? []) {
             mergeIntoFiles(script.execute(allTables, context))
         }
 
-        for (const {script} of scriptInfos["EntityGenerator"]) {
+        for (const {script} of scriptInfos["EntityGenerator"] ?? []) {
             for (const entity of entities) {
                 mergeIntoFiles(script.execute(entity, context))
             }
@@ -53,7 +53,7 @@ export const modelGenerate = (
 
     if (selectedIds.mappedSuperClassIds) {
         const mappedSuperClasses = getArrayFromMap(context.mappedSuperClassMap, selectedIds.mappedSuperClassIds)
-        for (const {script} of scriptInfos["MappedSuperClassGenerator"]) {
+        for (const {script} of scriptInfos["MappedSuperClassGenerator"] ?? []) {
             for (const mappedSuperClass of mappedSuperClasses) {
                 mergeIntoFiles(script.execute(mappedSuperClass, context))
             }
@@ -62,7 +62,7 @@ export const modelGenerate = (
 
     if (selectedIds.embeddableTypeIds) {
         const embeddableTypes = getArrayFromMap(context.embeddableTypeMap, selectedIds.embeddableTypeIds)
-        for (const {script} of scriptInfos["EmbeddableTypeGenerator"]) {
+        for (const {script} of scriptInfos["EmbeddableTypeGenerator"] ?? []) {
             for (const embeddableType of embeddableTypes) {
                 mergeIntoFiles(script.execute(embeddableType, context))
             }
@@ -71,7 +71,7 @@ export const modelGenerate = (
 
     if (selectedIds.enumerationIds) {
         const enumerations = getArrayFromMap(context.enumerationMap, selectedIds.enumerationIds)
-        for (const {script} of scriptInfos["EnumerationGenerator"]) {
+        for (const {script} of scriptInfos["EnumerationGenerator"] ?? []) {
             for (const enumeration of enumerations) {
                 mergeIntoFiles(script.execute(enumeration, context))
             }
@@ -80,7 +80,7 @@ export const modelGenerate = (
 
     if (selectedIds.associationIds) {
         const associations = getArrayFromMap(context.associationMap, selectedIds.associationIds)
-        for (const {script} of scriptInfos["AssociationGenerator"]) {
+        for (const {script} of scriptInfos["AssociationGenerator"] ?? []) {
             for (const association of associations) {
                 mergeIntoFiles(script.execute(association, context))
             }
@@ -89,14 +89,14 @@ export const modelGenerate = (
 
     if (selectedIds.groupIds) {
         const groups = getArrayFromMap(context.groupMap, selectedIds.groupIds)
-        for (const {script} of scriptInfos["GroupGenerator"]) {
+        for (const {script} of scriptInfos["GroupGenerator"] ?? []) {
             for (const group of groups) {
                 mergeIntoFiles(script.execute(group, context))
             }
         }
     }
 
-    for (const {script} of scriptInfos["ModelGenerator"]) {
+    for (const {script} of scriptInfos["ModelGenerator"] ?? []) {
         mergeIntoFiles(script.execute(context.model, context))
     }
 
