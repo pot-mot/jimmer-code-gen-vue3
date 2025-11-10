@@ -409,7 +409,7 @@ ${scriptTypeDeclares.map(it => `    ${it.typeName}: ${it.typeName}Declare,`).joi
 const defaultScriptFiles = defaultScripts.map(it => {
     return {
         fileName: `${defaultScriptPath}/items/${it.name}.ts`,
-        content: `import type {ScriptInfo} from "@/modelEditor/generator/ScriptsStore.ts";
+        content: `import type {ScriptInfo} from "@/modelEditor/script/ScriptsStore.ts";
 import {${it.name}} from "@/type/script/default/${it.fileName}";
 
 const scriptInfo: ScriptInfo<"${it.type}"> = {
