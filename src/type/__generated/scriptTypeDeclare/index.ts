@@ -5,7 +5,6 @@ import EnumerationGeneratorDeclare from "./items/EnumerationGenerator.ts";
 import GroupGeneratorDeclare from "./items/GroupGenerator.ts";
 import MappedSuperClassGeneratorDeclare from "./items/MappedSuperClassGenerator.ts";
 import ModelGeneratorDeclare from "./items/ModelGenerator.ts";
-import TableDiffGeneratorDeclare from "./items/TableDiffGenerator.ts";
 import TableGeneratorDeclare from "./items/TableGenerator.ts";
 
 export type ScriptTypeMap = {
@@ -16,7 +15,6 @@ export type ScriptTypeMap = {
     GroupGenerator: GroupGenerator
     MappedSuperClassGenerator: MappedSuperClassGenerator
     ModelGenerator: ModelGenerator
-    TableDiffGenerator: TableDiffGenerator
     TableGenerator: TableGenerator
 }
 
@@ -30,6 +28,5 @@ export const scriptTypeDeclares = Object.freeze({
     GroupGenerator: GroupGeneratorDeclare,
     MappedSuperClassGenerator: MappedSuperClassGeneratorDeclare,
     ModelGenerator: ModelGeneratorDeclare,
-    TableDiffGenerator: TableDiffGeneratorDeclare,
     TableGenerator: TableGeneratorDeclare,
 })

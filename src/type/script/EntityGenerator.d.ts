@@ -24,7 +24,7 @@ type AssociationGenerator = (
 ) => Record<string, string>
 
 type GroupGenerator = (
-    group: DeepReadonly<GroupWithSubMaps>,
+    group: DeepReadonly<GroupWithInheritInfoMap>,
     context: DeepReadonly<ModelContext>
 ) => Record<string, string>
 
