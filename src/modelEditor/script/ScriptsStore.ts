@@ -42,14 +42,14 @@ export const createScriptsStore = (
         scriptInfoMap: readonly(scriptInfoMap),
         getScriptInfos: (options?: ScriptFilterOptions) => {
             const result: {[key in ScriptTypeName]: ScriptInfo<key>[]} = {
-                AssociationGenerator: [],
-                EmbeddableTypeGenerator: [],
-                EntityGenerator: [],
-                EnumerationGenerator: [],
-                GroupGenerator: [],
-                MappedSuperClassGenerator: [],
                 ModelGenerator: [],
+                GroupGenerator: [],
                 TableGenerator: [],
+                EntityGenerator: [],
+                MappedSuperClassGenerator: [],
+                EmbeddableTypeGenerator: [],
+                EnumerationGenerator: [],
+                AssociationGenerator: [],
             }
             for (const script of scriptInfoMap.values()) {
                 if (options?.enabled !== undefined && script.enabled !== options.enabled) continue

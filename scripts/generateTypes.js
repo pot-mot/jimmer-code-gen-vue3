@@ -487,7 +487,7 @@ const scriptTemplateFiles = scriptTypeDeclares.map(it => ({
     content: `export default \`(
 ${it.parameters.map(it => `    ${it.name}: ${it.typeStr},`).join("\n")}
 ): ${it.returnTypeStr} => {
-    // TODO implement ${it.typeName}  
+    // TODO implement ${it.typeName}
 }\`
 `,
 }))

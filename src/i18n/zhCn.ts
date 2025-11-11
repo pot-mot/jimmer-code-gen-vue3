@@ -14,9 +14,13 @@ export const localeZhCn: MainLocale = {
     cancel: "取消",
     load: "导入",
     export: "导出",
+    execute: "执行",
     test: "测试",
     generate: "生成",
+    reset: "重置",
 
+    reset_confirm_title: (target: string) => `${target}重置确认`,
+    reset_confirm_content: (target: string) => `确定要重置${target}吗？`,
     delete_confirm_title: (target: string) => `${target}删除确认`,
     delete_confirm_content: (target: string) => `确定要删除${target}吗？`,
     get_success: (target: string) => `${target}获取成功`,
@@ -87,8 +91,7 @@ export const localeZhCn: MainLocale = {
     script: "脚本",
     script_dialog_button: "脚本管理",
     script_dialog_title: "脚本管理",
-    script_test: "脚本测试",
-    script_execute: "脚本执行",
+    script_error: "脚本错误",
 
     type_mapping_dialog_button: "类型映射",
     type_mapping_dialog_title: "类型映射管理",

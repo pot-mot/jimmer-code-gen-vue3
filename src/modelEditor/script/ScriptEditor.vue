@@ -5,25 +5,27 @@ import TsScriptEditor from "@/components/code/scriptEditor/TsScriptEditor.vue";
 import {createTsScript, TsScriptExecutor} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
 import {computed, ref, watch} from "vue";
 import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
-import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
-import FileTreeViewer from "@/components/file/FileTreeViewer.vue";
 import IconRefresh from "@/components/icons/IconRefresh.vue";
 import IconCheck from "@/components/icons/IconCheck.vue";
 import {translate} from "@/store/i18nStore.ts";
+import JvmLanguageOrAnySelect from "@/modelEditor/script/JvmLanguageOrAnySelect.vue";
+import DatabaseTypeOrAnySelect from "@/modelEditor/script/DatabaseTypeOrAnySelect.vue";
+import {sendConfirm} from "@/components/confirm/confirmApi.ts";
+import IconClose from "@/components/icons/IconClose.vue";
 
 const props = defineProps<{
-    scriptInfo: ScriptInfo<Name>,
+    scriptInfo: Omit<ScriptInfo<Name>, 'id'>,
 }>()
 
 const emits = defineEmits<{
-    (e: 'submit', result: ScriptInfo<Name>): void
+    (e: 'submit', result: Omit<ScriptInfo<Name>, 'id'>): void
+    (e: 'cancel'): void
 }>()
 
 const code = ref(props.scriptInfo.script.code)
 watch(() => props.scriptInfo.script.code, () => {
     code.value = props.scriptInfo.script.code
 })
-const generateResult = ref<Record<string, string>>()
 const errorMessage = ref<string>()
 
 const executor = computed(() => new TsScriptExecutor(props.scriptInfo.type))
@@ -34,43 +36,80 @@ const receiveError = (error: any) => {
     } else if (error instanceof Error) {
         console.error(error)
         errorMessage.value = error.message
+    } else if (Array.isArray(error)) {
+        console.error(error)
+        errorMessage.value = error.join('\n')
     } else if (typeof error === 'object') {
         console.error(error)
         errorMessage.value = jsonPrettyFormat(error)
     } else {
         errorMessage.value = String(error)
     }
+    sendConfirm({
+        title: translate("script_error"),
+        content: errorMessage.value,
+    })
 }
 
 const handleReset = () => {
-    code.value = props.scriptInfo.script.code
+    sendConfirm({
+        title: translate({key: "reset_confirm_title", args: [translate('script')]}),
+        content: translate({key: "reset_confirm_content", args: [translate('script')]}),
+        onConfirm: () => {
+            code.value = props.scriptInfo.script.code
+        },
+    })
+}
+
+const handleCancel = () => {
+    emits('cancel')
 }
 
 const handleSubmit = async () => {
     try {
         const scriptResult = await createTsScript(props.scriptInfo.type, code.value, executor.value)
         if (scriptResult.valid) {
-            const scriptInfo: ScriptInfo<Name> = {
+            emits('submit', {
                 ...props.scriptInfo,
                 script: scriptResult.script
-            }
-            emits('submit', scriptInfo)
+            })
         } else {
-            receiveError(scriptResult.error)
+            receiveError(scriptResult.errorMessages)
         }
     } catch (e) {
         receiveError(e)
     }
 }
+
+const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.ctrlKey) {
+        if (e.key === 's' || e.key === 'S') {
+            handleSubmit()
+        } else if (e.key === 'Esc') {
+            handleCancel()
+        }
+    }
+}
 </script>
 
 <template>
-    <div class="generate-script-editor">
+    <div class="generate-script-editor" tabindex="-1" @keydown="handleKeyDown">
         <div class="top-toolbar">
-            <button @click="handleReset">
+            <button
+                @click="handleReset"
+                style="padding: 0 0.25rem; border-radius: 0.25rem;"
+            >
                 <IconRefresh/>
-                Reset
+                {{ translate('reset') }}
             </button>
+            <JvmLanguageOrAnySelect
+                v-model="scriptInfo.jvmLanguage"
+                style="width: 10rem;"
+            />
+            <DatabaseTypeOrAnySelect
+                v-model="scriptInfo.databaseType"
+                style="width: 12rem;"
+            />
         </div>
 
         <TsScriptEditor
@@ -80,33 +119,15 @@ const handleSubmit = async () => {
         />
 
         <div class="tail-toolbar">
-            <button @click="handleSubmit">
+            <button @click="handleCancel" class="cancel-button">
+                <IconClose/>
+                {{ translate('cancel') }}
+            </button>
+            <button @click="handleSubmit" class="submit-button">
                 <IconCheck/>
                 {{ translate('save') }}
             </button>
         </div>
-
-        <DragResizeDialog
-            v-if="generateResult !== undefined"
-            :model-value="true"
-            :init-w="600"
-            @close="generateResult = undefined"
-        >
-            <template #title>Test Result</template>
-            <FileTreeViewer :files="generateResult"/>
-        </DragResizeDialog>
-
-        <DragResizeDialog
-            v-if="errorMessage !== undefined"
-            :model-value="true"
-            :init-w="600"
-            @close="errorMessage = undefined"
-        >
-            <template #title>Error</template>
-            <div class="error-message">
-                {{ errorMessage }}
-            </div>
-        </DragResizeDialog>
     </div>
 </template>
 
@@ -117,15 +138,47 @@ const handleSubmit = async () => {
 }
 
 .top-toolbar {
-    height: 1.5rem;
+    height: 2rem;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    padding: 0 0.5rem 0.5rem;
 }
 
 .script {
-    height: calc(100% - 3rem);
+    height: calc(100% - 4.5rem);
 }
 
 .tail-toolbar {
-    height: 1.5rem;
+    height: 2rem;
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    padding: 0 0.5rem;
+}
+
+.cancel-button,
+.submit-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border: var(--border);
+    border-color: var(--border-color-light);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.cancel-button {
+    border-color: var(--warning-color);
+    --icon-color: var(--warning-color);
+}
+
+.submit-button {
+    border-color: var(--success-color);
+    --icon-color: var(--success-color);
 }
 
 .error-message {

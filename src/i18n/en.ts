@@ -14,9 +14,13 @@ export const localeEn: MainLocale = {
     cancel: "Cancel",
     load: "Load",
     export: "Export",
+    execute: "Execute",
     test: "Test",
     generate: "Generate",
+    reset: "Reset",
 
+    reset_confirm_title: (target: string) => `${target} Reset Confirm`,
+    reset_confirm_content: (target: string) => `Are you sure to reset ${target}?`,
     delete_confirm_title: (target: string) => `${target} Delete Confirm`,
     delete_confirm_content: (target: string) => `Are you sure to delete ${target}?`,
     get_success: (target: string) => `${target} get success`,
@@ -87,8 +91,7 @@ export const localeEn: MainLocale = {
     script: "Script",
     script_dialog_button: "Script Manage",
     script_dialog_title: "Script Manage",
-    script_test: "Script Test",
-    script_execute: "Script Execute",
+    script_error: "Script Error",
 
     type_mapping_dialog_button: "Type Mapping",
     type_mapping_dialog_title: "Type Mapping Manage",

@@ -9,8 +9,9 @@ import type {ScriptInfo} from "@/modelEditor/script/ScriptsStore.ts";
 import {useScriptDialog} from "@/modelEditor/script/useScriptDialog.ts";
 import {translate} from "@/store/i18nStore.ts";
 import type {ScriptType} from "@/api/__generated/model/enums";
+import {scriptTemplates} from "@/type/__generated/scriptTemplate";
 
-defineProps<{
+const props = defineProps<{
     model?: Partial<Pick<Model, 'databaseType' | 'jvmLanguage'>>
 }>()
 
@@ -22,18 +23,40 @@ const {
     deleteScript,
 } = useScriptDialog()
 
-const currentScriptInfo = ref<ScriptInfo<any>>()
+let currentScriptId: string | undefined
+const currentScriptInfo = ref<Omit<ScriptInfo<any>, 'id'>>()
 
 const handleScriptInfoSelect = (scriptInfo: ScriptInfo<any>) => {
+    currentScriptId = scriptInfo.id
     currentScriptInfo.value = scriptInfo
 }
 
-const startScriptInfoInsert = (name: string, type: ScriptType) => {
-
+const startScriptInfoInsert = async (type: ScriptType) => {
+    currentScriptId = undefined
+    const template = scriptTemplates[type]
+    currentScriptInfo.value = {
+        name: "[New Script]",
+        type,
+        enabled: true,
+        databaseType: props.model?.databaseType ?? "ANY",
+        jvmLanguage: props.model?.jvmLanguage ?? "ANY",
+        script: {
+            code: template,
+            execute: () => {}
+        },
+    }
 }
 
-const handleScriptInfoSubmit = (scriptInfo: ScriptInfo<any>) => {
-    updateScript(scriptInfo)
+const handleScriptInfoSubmit = async (scriptInfo: Omit<ScriptInfo<any>, 'id'>) => {
+    if (currentScriptId === undefined) {
+        await insertScript(scriptInfo)
+    } else {
+        await updateScript({id: currentScriptId, ...scriptInfo})
+    }
+}
+
+const handleScriptInfoCancel = () => {
+    currentScriptInfo.value = undefined
 }
 </script>
 
@@ -54,7 +77,7 @@ const handleScriptInfoSubmit = (scriptInfo: ScriptInfo<any>) => {
                     :database-type="model?.databaseType"
                     :jvm-language="model?.jvmLanguage"
                     @select="handleScriptInfoSelect"
-                    @start-add=""
+                    @start-add="startScriptInfoInsert"
                     @remove="deleteScript"
                 />
             </Pane>
@@ -63,6 +86,7 @@ const handleScriptInfoSubmit = (scriptInfo: ScriptInfo<any>) => {
                     v-if="currentScriptInfo"
                     :script-info="currentScriptInfo"
                     @submit="handleScriptInfoSubmit"
+                    @cancel="handleScriptInfoCancel"
                 />
             </Pane>
         </Splitpanes>

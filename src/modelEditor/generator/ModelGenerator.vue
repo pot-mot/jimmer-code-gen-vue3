@@ -77,7 +77,7 @@ watch(() => openState.value, async () => {
             {{ translate('generateResult') }}
         </template>
         <div
-            class="error-message-content"
+            class="error-message-content no-drag"
             v-if="errorMessage"
         >
             {{ errorMessage }}

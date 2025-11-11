@@ -20,7 +20,10 @@ import {useScriptDialog} from "@/modelEditor/script/useScriptDialog.ts";
 const router = useRouter()
 const route = useRoute()
 
-const {loadModel} = useModelEditor()
+const {
+    loadModel,
+    contextData,
+} = useModelEditor()
 
 const fetchModel = async () => {
     await withLoading("load model", async () => {
@@ -81,5 +84,5 @@ onBeforeUnmount(() => {
 
     <ModelEditFormDialog/>
     <ModelGenerator/>
-    <ScriptDialog/>
+    <ScriptDialog :model="contextData.model"/>
 </template>

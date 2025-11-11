@@ -12,9 +12,13 @@ export type MainLocale = {
     cancel: string
     load: string
     export: string
+    execute: string
     test: string
     generate: string
+    reset: string
 
+    reset_confirm_title: (target: string) => string
+    reset_confirm_content: (target: string) => string
     delete_confirm_title: (target: string) => string
     delete_confirm_content: (target: string) => string
     get_success: (target: string) => string
@@ -85,8 +89,7 @@ export type MainLocale = {
     script: string
     script_dialog_button: string
     script_dialog_title: string
-    script_test: string
-    script_execute: string
+    script_error: string
 
     type_mapping_dialog_button: string
     type_mapping_dialog_title: string

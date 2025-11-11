@@ -8,7 +8,11 @@ import {
 } from "@/modelEditor/script/ScriptsStore.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import {api} from "@/api";
-import type {GenerateScriptUpdateInput, GenerateScriptView} from "@/api/__generated/model/static";
+import type {
+    GenerateScriptInsertInput,
+    GenerateScriptUpdateInput,
+    GenerateScriptView
+} from "@/api/__generated/model/static";
 import {readonly, ref} from "vue";
 import type {ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
 import {createTsScript} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
@@ -18,6 +22,17 @@ import {sendConfirm} from "@/components/confirm/confirmApi.ts";
 import {translate} from "@/store/i18nStore.ts";
 
 const scriptsStore = ref<ScriptsStore>(emptyScriptsStore())
+
+const scriptInfoToInsertInput = (info: Omit<ScriptInfo<any>, 'id'>): GenerateScriptInsertInput => {
+    return {
+        name: info.name,
+        type: info.type,
+        enabled: info.enabled,
+        databaseType: info.databaseType,
+        jvmLanguage: info.jvmLanguage,
+        scriptContent: info.script.code
+    }
+}
 
 const scriptInfoToUpdateInput = (info: ScriptInfo<any>): GenerateScriptUpdateInput => {
     return {
@@ -78,16 +93,16 @@ export const useScriptDialog = createStore(() => {
     return {
         ...useDialogOpenState(),
         scriptsStore: readonly(scriptsStore),
-        insertScript: async (scriptInfo: ScriptInfo<any>) => {
+        insertScript: async (scriptInfo: Omit<ScriptInfo<any>, 'id'>) => {
             await withLoading('insert scripts', async () => {
-                await api.generateScriptService.insert({body: scriptInfoToUpdateInput(scriptInfo)})
-                scriptsStore.value.add(scriptInfo)
+                const result = await api.generateScriptService.insert({body: scriptInfoToInsertInput(scriptInfo)})
+                scriptsStore.value.add({id: result.id, ...scriptInfo})
             })
         },
         updateScript: async (scriptInfo: ScriptInfo<any>) => {
             await withLoading('save scripts', async () => {
-                await api.generateScriptService.update({body: scriptInfoToUpdateInput(scriptInfo)})
-                scriptsStore.value.update(scriptInfo.id, scriptInfo)
+                const result = await api.generateScriptService.update({body: scriptInfoToUpdateInput(scriptInfo)})
+                scriptsStore.value.update(result.id, scriptInfo)
             })
         },
         deleteScript: async (id: string) => {

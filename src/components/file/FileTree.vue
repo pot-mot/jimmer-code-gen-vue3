@@ -31,16 +31,19 @@ const buildTree = (paths: Iterable<string>): FileTreeNode[] => {
     const trees: FileTreeNode[] = []
 
     for (const path of paths) {
-        let normalizedPath = path
-        if (path.startsWith("/")) normalizedPath = path.substring(1)
-
-        const pathParts = normalizedPath.split('/')
+        const pathParts = path.split('/').filter(it => it.length > 0)
 
         let currentPath: string = ''
         let currentLevel: FileTreeNode[] = trees
 
-        for (const part of pathParts) {
-            currentPath += '/' + part
+        for (let i = 0; i < pathParts.length; i++) {
+            const part = pathParts[i]
+            if (part === undefined) continue
+            if (i === pathParts.length - 1) {
+                currentPath = part
+            } else {
+                currentPath += '/' + part
+            }
 
             // 查找当前层级是否已经存在该部分
             const findNode = currentLevel.find(item => item.data.name === part)

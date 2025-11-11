@@ -8,7 +8,7 @@ export type ConfirmProps = {
     onClose: () => void | Promise<void>,
 }
 
-export type ConfirmInput = {
+export type ConfirmOptions = {
     title: string,
     content: string,
     confirmText?: string,

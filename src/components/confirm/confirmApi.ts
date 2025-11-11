@@ -1,27 +1,27 @@
 import {createApp} from "vue";
 import Confirm from "@/components/confirm/Confirm.vue";
-import type {ConfirmProps, ConfirmInput} from "@/components/confirm/ConfirmType.ts";
+import type {ConfirmProps, ConfirmOptions} from "@/components/confirm/ConfirmType.ts";
 import {translate} from "@/store/i18nStore.ts";
 
 export const sendConfirm = (
-    input: ConfirmInput,
+    options: ConfirmOptions,
 ) => {
     // 合并配置项
     const props: ConfirmProps = {
-        title: input.title,
-        content: input.content,
+        title: options.title,
+        content: options.content,
         confirmText: translate("confirm"),
         cancelText: translate("cancel"),
         onConfirm: async () => {
-            await input.onConfirm?.()
+            await options.onConfirm?.()
             closeInstance()
         },
         onCancel: async () => {
-            await input.onCancel?.()
+            await options.onCancel?.()
             closeInstance()
         },
         onClose: async () => {
-            await input.onClose?.()
+            await options.onClose?.()
             closeInstance()
         }
     }

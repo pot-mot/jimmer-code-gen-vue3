@@ -8,7 +8,7 @@ import IconSqlite from "@/components/icons/database/IconSqlite.vue";
 import IconH2 from "@/components/icons/database/IconH2.vue";
 
 defineProps<{
-   databaseType: DatabaseSource | undefined
+   databaseType: DatabaseType | "ANY" | undefined
 }>()
 </script>
 

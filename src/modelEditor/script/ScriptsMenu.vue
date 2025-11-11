@@ -40,6 +40,7 @@ const toggleScriptEnabled = (id: string) => {
         v-for="[scriptInfoName, scriptInfos] in Object.entries(scriptStore.getScriptInfos({databaseType, jvmLanguage}))"
         :key="scriptInfoName"
         trigger-position="left"
+        :model-value="true"
     >
         <template #head>
             <div class="script-type-label">
