@@ -14,8 +14,7 @@ export type Errors = {
  * 处理非预期的错误
  * 弹出非预期消息，并继续抛出错误
  */
-export const handleUnexpectError = (uri: string, _method: Method, response: Response, error: any) => {
-    sendMessage(`${uri} request error`, {type: "error"})
+export const handleUnexpectError = (_uri: string, _method: Method, _response: Response, error: any) => {
     throw error
 }
 
@@ -31,4 +30,5 @@ export const handleExpectError = (_uri: string, _method: Method, _response: Resp
             // TODO
         }
     }
+    throw error
 }

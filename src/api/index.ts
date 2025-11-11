@@ -27,11 +27,7 @@ export const api = new Api(async ({uri, method, body}) => {
         }
         handleUnexpectError(fetchUrl, method, response, jsonError)
     } else if (response.status !== 200) {
-        try {
-            sendMessage(`Unexpected Response Status: ${response.status}`, {type: "error"})
-        } catch (error) {
-            handleUnexpectError(fetchUrl, method, response, error)
-        }
+        handleUnexpectError(fetchUrl, method, response, new Error(`Unexpected Response Status: ${response.status}`))
     }
 
     const contentType = response.headers.get("content-type");
