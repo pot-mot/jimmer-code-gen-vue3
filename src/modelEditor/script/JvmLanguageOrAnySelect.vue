@@ -20,10 +20,10 @@ const jvmLanguages: (JvmLanguage | "ANY")[] = [
         :get-id="(it) => it"
     >
         <template #selected="{option}">
-            <JvmLanguageView :jvm-language="option" style="padding: 0.25rem; font-size: 0.8rem; --icon-color: 0.8rem;"/>
+            <JvmLanguageView :jvm-language="option" style="padding: 0.25rem; font-size: 0.8rem;"/>
         </template>
         <template #option="{option}">
-            <JvmLanguageView :jvm-language="option" style="min-width: 4rem; font-size: 0.8rem; --icon-color: 0.8rem;"/>
+            <JvmLanguageView :jvm-language="option" style="min-width: 4rem; font-size: 0.8rem;"/>
         </template>
     </FilterableSelect>
 </template>

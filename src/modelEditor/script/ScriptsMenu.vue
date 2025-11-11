@@ -5,6 +5,9 @@ import CollapseDetail from "@/components/collapse/CollapseDetail.vue";
 import {translate} from "@/store/i18nStore.ts";
 import type {ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
 import IconAdd from "@/components/icons/IconAdd.vue";
+import {computed, ref} from "vue";
+import JvmLanguageNullableSelect from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageNullableSelect.vue";
+import DatabaseTypeNullableSelect from "@/modelEditor/modelForm/databaseType/DatabaseTypeNullableSelect.vue";
 
 const props = defineProps<{
     scriptStore: ScriptsStore,
@@ -17,6 +20,16 @@ const emits = defineEmits<{
     (event: 'start-add', type: ScriptTypeName): void
     (event: 'remove', id: string): void
 }>()
+
+const filterDatabaseType = ref<DatabaseType | undefined>(props.databaseType)
+const filterJvmLanguage = ref<JvmLanguage | undefined>(props.jvmLanguage)
+
+const filterableScripts = computed(() => {
+    return Object.entries(props.scriptStore.getScriptInfos({
+        databaseType: filterDatabaseType.value,
+        jvmLanguage: filterJvmLanguage.value
+    }))
+})
 
 const selectScript = (id: string) => {
     const scriptInfo = props.scriptStore.scriptInfoMap.get(id)
@@ -36,8 +49,10 @@ const toggleScriptEnabled = (id: string) => {
 </script>
 
 <template>
+    <DatabaseTypeNullableSelect v-model="filterDatabaseType"/>
+    <JvmLanguageNullableSelect v-model="filterJvmLanguage"/>
     <CollapseDetail
-        v-for="[scriptInfoName, scriptInfos] in Object.entries(scriptStore.getScriptInfos({databaseType, jvmLanguage}))"
+        v-for="[scriptInfoName, scriptInfos] in filterableScripts"
         :key="scriptInfoName"
         trigger-position="left"
         :model-value="true"
