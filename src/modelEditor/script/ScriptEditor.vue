@@ -5,7 +5,6 @@ import TsScriptEditor from "@/components/code/scriptEditor/TsScriptEditor.vue";
 import {createTsScript, TsScriptExecutor} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
 import {computed, ref, watch} from "vue";
 import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
-import IconRefresh from "@/components/icons/IconRefresh.vue";
 import IconCheck from "@/components/icons/IconCheck.vue";
 import {translate} from "@/store/i18nStore.ts";
 import JvmLanguageOrAnySelect from "@/modelEditor/script/JvmLanguageOrAnySelect.vue";
@@ -51,16 +50,6 @@ const receiveError = (error: any) => {
     })
 }
 
-const handleReset = () => {
-    sendConfirm({
-        title: translate({key: "reset_confirm_title", args: [translate('script')]}),
-        content: translate({key: "reset_confirm_content", args: [translate('script')]}),
-        onConfirm: () => {
-            code.value = props.scriptInfo.script.code
-        },
-    })
-}
-
 const handleCancel = () => {
     emits('cancel')
 }
@@ -84,9 +73,8 @@ const handleSubmit = async () => {
 const handleKeyDown = (e: KeyboardEvent) => {
     if (e.ctrlKey) {
         if (e.key === 's' || e.key === 'S') {
+            e.preventDefault()
             handleSubmit()
-        } else if (e.key === 'Esc') {
-            handleCancel()
         }
     }
 }
@@ -95,13 +83,13 @@ const handleKeyDown = (e: KeyboardEvent) => {
 <template>
     <div class="generate-script-editor" tabindex="-1" @keydown="handleKeyDown">
         <div class="top-toolbar">
-            <button
-                @click="handleReset"
-                style="padding: 0 0.25rem; border-radius: 0.25rem;"
+            <input
+                v-model="scriptInfo.name"
             >
-                <IconRefresh/>
-                {{ translate('reset') }}
-            </button>
+            <input
+                type="checkbox"
+                v-model="scriptInfo.enabled"
+            >
             <JvmLanguageOrAnySelect
                 v-model="scriptInfo.jvmLanguage"
                 style="width: 10rem;"
@@ -179,9 +167,5 @@ const handleKeyDown = (e: KeyboardEvent) => {
 .submit-button {
     border-color: var(--success-color);
     --icon-color: var(--success-color);
-}
-
-.error-message {
-    color: var(--danger-color);
 }
 </style>

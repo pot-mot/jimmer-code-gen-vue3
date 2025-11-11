@@ -11,6 +11,7 @@ import DatabaseTypeNullableSelect from "@/modelEditor/modelForm/databaseType/Dat
 
 const props = defineProps<{
     scriptStore: ScriptsStore,
+    currentId?: string,
     databaseType?: DatabaseType,
     jvmLanguage?: JvmLanguage,
 }>()
@@ -36,16 +37,6 @@ const selectScript = (id: string) => {
     if (scriptInfo === undefined) return
     emits('select', scriptInfo)
 }
-
-const toggleScriptEnabled = (id: string) => {
-    const scriptInfo = props.scriptStore.scriptInfoMap.get(id)
-    if (scriptInfo === undefined) return
-    if (scriptInfo.enabled) {
-        props.scriptStore.disable(scriptInfo.id)
-    } else {
-        props.scriptStore.enable(scriptInfo.id)
-    }
-}
 </script>
 
 <template>
@@ -55,35 +46,32 @@ const toggleScriptEnabled = (id: string) => {
         v-for="[scriptInfoName, scriptInfos] in filterableScripts"
         :key="scriptInfoName"
         trigger-position="left"
-        :model-value="true"
+        open-trigger="head"
+        :disabled="scriptInfos.length === 0"
     >
         <template #head>
             <div class="script-type-label">
                 {{ translate(scriptInfoName as ScriptTypeName) }}
                 <button
                     class="script-add-button"
-                    @click="emits('start-add', scriptInfoName as ScriptTypeName)"
+                    @click.stop="emits('start-add', scriptInfoName as ScriptTypeName)"
                 >
                     <IconAdd/>
                 </button>
             </div>
         </template>
         <template #body>
-            <div v-for="scriptInfo in scriptInfos" class="script-info-item" @click="selectScript(scriptInfo.id)">
-                <input
-                    type="checkbox"
-                    :checked="scriptInfo.enabled"
-                    @click.stop="toggleScriptEnabled(scriptInfo.id)"
-                >
-                <input
-                    :value="scriptInfo.name"
-                    @change="scriptStore.rename(scriptInfo.id, ($event.target as HTMLInputElement).value)"
-                >
+            <div
+                v-for="scriptInfo in scriptInfos"
+                class="script-info-item"
+                :class="{selected: scriptInfo.id === currentId}"
+                @click="selectScript(scriptInfo.id)"
+            >
+                {{ scriptInfo.name }}
                 <button @click.stop="emits('remove', scriptInfo.id)">
                     <IconDelete/>
                 </button>
             </div>
-            <div v-if="scriptInfos.length === 0" style="height: 0.5rem;"/>
         </template>
     </CollapseDetail>
 </template>
@@ -92,6 +80,12 @@ const toggleScriptEnabled = (id: string) => {
 .script-info-item {
     display: flex;
     flex-wrap: nowrap;
+    cursor: default;
+    padding-left: 1.5rem;
+}
+
+.script-info-item.selected {
+    color: var(--primary-color);
 }
 
 .script-type-label {

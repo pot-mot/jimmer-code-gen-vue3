@@ -94,28 +94,49 @@ export const useScriptDialog = createStore(() => {
         ...useDialogOpenState(),
         scriptsStore: readonly(scriptsStore),
         insertScript: async (scriptInfo: Omit<ScriptInfo<any>, 'id'>) => {
-            await withLoading('insert scripts', async () => {
-                const result = await api.generateScriptService.insert({body: scriptInfoToInsertInput(scriptInfo)})
-                scriptsStore.value.add({id: result.id, ...scriptInfo})
-            })
+            try {
+                await withLoading('insert scripts', async () => {
+                    const result = await api.generateScriptService.insert({body: scriptInfoToInsertInput(scriptInfo)})
+                    scriptsStore.value.add({id: result.id, ...scriptInfo})
+                    sendMessage(translate({key: "insert_success", args: [translate("script")]}), {type: "success"})
+                })
+            } catch (e) {
+                sendMessage(translate({key: "insert_fail", args: [translate("script")]}), {type: "warning"})
+            }
         },
         updateScript: async (scriptInfo: ScriptInfo<any>) => {
-            await withLoading('save scripts', async () => {
-                const result = await api.generateScriptService.update({body: scriptInfoToUpdateInput(scriptInfo)})
-                scriptsStore.value.update(result.id, scriptInfo)
-            })
+            try {
+                await withLoading('update scripts', async () => {
+                    const result = await api.generateScriptService.update({body: scriptInfoToUpdateInput(scriptInfo)})
+                    scriptsStore.value.update(result.id, scriptInfo)
+                    sendMessage(translate({key: "update_success", args: [translate("script")]}), {type: "success"})
+                })
+            } catch (e) {
+                sendMessage(translate({key: "update_fail", args: [translate("script")]}), {type: "warning"})
+            }
         },
         deleteScript: async (id: string) => {
             const scriptInfo = scriptsStore.value.scriptInfoMap.get(id)
             if (!scriptInfo) return
             sendConfirm({
                 title: translate({key: "delete_confirm_title", args: [translate("script")]}),
-                content: translate({key: "delete_confirm_content", args: [` ${translate("script")}[${scriptInfo.name}] `]}),
+                content: translate({
+                    key: "delete_confirm_content",
+                    args: [` ${translate("script")}[${scriptInfo.name}] `]
+                }),
                 onConfirm: async () => {
-                    await withLoading('delete scripts', async () => {
-                        await api.generateScriptService.delete({scriptId: id})
-                        scriptsStore.value.remove(id)
-                    })
+                    try {
+                        await withLoading('delete scripts', async () => {
+                            await api.generateScriptService.delete({scriptId: id})
+                            scriptsStore.value.remove(id)
+                            sendMessage(translate({
+                                key: "delete_success",
+                                args: [translate("script")]
+                            }), {type: "success"})
+                        })
+                    } catch (e) {
+                        sendMessage(translate({key: "delete_fail", args: [translate("script")]}), {type: "warning"})
+                    }
                 }
             })
         },

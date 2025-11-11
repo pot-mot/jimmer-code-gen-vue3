@@ -23,16 +23,16 @@ const {
     deleteScript,
 } = useScriptDialog()
 
-let currentScriptId: string | undefined
+const currentScriptId = ref<string>()
 const currentScriptInfo = ref<Omit<ScriptInfo<any>, 'id'>>()
 
 const handleScriptInfoSelect = (scriptInfo: ScriptInfo<any>) => {
-    currentScriptId = scriptInfo.id
+    currentScriptId.value = scriptInfo.id
     currentScriptInfo.value = scriptInfo
 }
 
 const startScriptInfoInsert = async (type: ScriptType) => {
-    currentScriptId = undefined
+    currentScriptId.value = undefined
     const template = scriptTemplates[type]
     currentScriptInfo.value = {
         name: "[New Script]",
@@ -48,10 +48,10 @@ const startScriptInfoInsert = async (type: ScriptType) => {
 }
 
 const handleScriptInfoSubmit = async (scriptInfo: Omit<ScriptInfo<any>, 'id'>) => {
-    if (currentScriptId === undefined) {
+    if (currentScriptId.value === undefined) {
         await insertScript(scriptInfo)
     } else {
-        await updateScript({id: currentScriptId, ...scriptInfo})
+        await updateScript({id: currentScriptId.value, ...scriptInfo})
     }
 }
 
@@ -74,6 +74,7 @@ const handleScriptInfoCancel = () => {
             <Pane :size="20">
                 <ScriptsMenu
                     :script-store="scriptsStore"
+                    :current-id="currentScriptId"
                     :database-type="model?.databaseType"
                     :jvm-language="model?.jvmLanguage"
                     @select="handleScriptInfoSelect"

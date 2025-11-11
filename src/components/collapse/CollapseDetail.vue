@@ -1,11 +1,20 @@
 <script setup lang="ts">
 import {onMounted, useTemplateRef, watch} from 'vue'
-import {type CollapseDetailProps, defaultCollapseDetailProps} from "@/components/collapse/CollapseDetailProps.ts";
 import IconCaretDown from "@/components/icons/IconCaretDown.vue";
 
 const isOpen = defineModel<boolean>({required: false, default: false})
 
-const props = withDefaults(defineProps<CollapseDetailProps>(), defaultCollapseDetailProps)
+const props = withDefaults(defineProps<{
+    openTrigger?: 'head' | 'caret' | undefined,
+    triggerPosition?: 'left' | 'right' | undefined,
+    transitionDuration?: number | undefined,
+    disabled?: boolean | undefined,
+}>(), {
+    openTrigger: 'caret',
+    triggerPosition: 'right',
+    transitionDuration: 300,
+    disabled: false
+})
 
 const bodyRef = useTemplateRef("bodyRef")
 
@@ -45,8 +54,9 @@ watch(() => isOpen.value, () => {
     <div class="collapse-detail-container">
         <div
             class="collapse-detail-head"
-            :class="`caret-${triggerPosition} open-by-${openTrigger}`"
+            :class="`caret-${triggerPosition} open-by-${openTrigger} ${disabled ? 'disabled' : ''}`"
             @click="() => {
+                if (disabled) return
                 if (openTrigger === 'head') isOpen = !isOpen
             }"
         >
@@ -94,11 +104,18 @@ watch(() => isOpen.value, () => {
 }
 
 .collapse-detail-head.open-by-head {
-    cursor: pointer;
+    cursor: default;
 }
 
 .collapse-detail-head.open-by-caret > .caret-wrapper {
     cursor: pointer;
+}
+
+.collapse-detail-head.disabled > .caret-wrapper {
+    cursor: default;
+    pointer-events: none;
+    user-select: none;
+    opacity: 0;
 }
 
 .collapse-detail-head.caret-left {
