@@ -16,8 +16,8 @@ withLoading("Initialize Store", async () => {
     initFocusTargetStore()
     initKeyboardStore()
     await Promise.all([
-        initScriptDialog,
-        initTypeMapping,
+        initScriptDialog(),
+        initTypeMapping(),
     ])
 })
 
