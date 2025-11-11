@@ -267,10 +267,19 @@ for (const {fileName} of scriptTypeFiles) {
         const signature = signatures[0]
         // 提取参数信息
         const parameters = signature.getParameters().map(param => {
-            const paramSymbol = param;
-            const paramName = paramSymbol.getName()
-            const paramType = typeChecker.getTypeOfSymbolAtLocation(paramSymbol, statement)
-            const paramTypeStr = typeChecker.typeToString(paramType)
+            const paramName = param.getName()
+            const paramType = typeChecker.getTypeOfSymbolAtLocation(param, statement)
+            let paramTypeStr = "unknown"
+            const declarations = param.getDeclarations()
+            if (declarations && declarations.length > 0) {
+                const paramDeclaration = declarations[0];
+                if (ts.isParameter(paramDeclaration)) {
+                    const typeNode = paramDeclaration.type;
+                    if (typeNode) {
+                        paramTypeStr = typeNode.getFullText(sourceFile).trim();
+                    }
+                }
+            }
             return {
                 name: paramName,
                 type: paramType,
@@ -279,7 +288,15 @@ for (const {fileName} of scriptTypeFiles) {
         })
         // 提取返回值类型
         const returnType = signature.getReturnType()
-        const returnTypeStr = typeChecker.typeToString(returnType)
+        let returnTypeStr = "unknown"
+        // 获取返回值的原始类型文本
+        const returnTypeNode = signature.getDeclaration().type
+        if (returnTypeNode) {
+            returnTypeStr = returnTypeNode.getFullText(sourceFile).trim()
+        } else {
+            // 如果没有显式类型声明，回退到类型检查器的字符串表示
+            returnTypeStr = typeChecker.typeToString(returnType)
+        }
 
         existedTypeSet.add(typeName)
 
