@@ -91,9 +91,7 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
             props.beforeCopy(copyData)
             await navigator.clipboard.writeText(JSON.stringify(copyData))
         }
-    }
-
-    else if (e.key === 'ArrowUp') {
+    } else if (e.key === 'ArrowUp') {
         e.preventDefault()
         e.stopPropagation()
         e.stopImmediatePropagation()
@@ -110,10 +108,10 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
                         resetSelection(createSelectRange(minIndex - 1, maxIndex))
                 }
             }
+        } else if (lastSelect.value !== undefined && lastSelect.value - 1 >= 0) {
+            resetSelection([--lastSelect.value])
         }
-    }
-
-    else if (e.key === 'ArrowDown') {
+    } else if (e.key === 'ArrowDown') {
         e.preventDefault()
         e.stopPropagation()
         e.stopImmediatePropagation()
@@ -130,6 +128,8 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
                         resetSelection(createSelectRange(minIndex + 1, maxIndex))
                 }
             }
+        } else if (lastSelect.value !== undefined && lastSelect.value + 1 < props.lines.length) {
+            resetSelection([++lastSelect.value])
         }
     }
 }
