@@ -137,6 +137,7 @@ const deleteDatabase = async (database: DatabaseView) => {
             v-for="database in databaseList"
             @update:model-value="(value) => {if (value) onDatabaseOpen(database)}"
             trigger-position="left"
+            open-trigger="head"
         >
             <template #head>
                 <div class="database-item">
