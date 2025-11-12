@@ -13,10 +13,10 @@ defineProps<{
 
 <template>
     <div class="table-viewer">
-        <div class="table-viewer-label no-drag">
+        <div class="table-viewer-label">
             <IconTable style="margin-right: 0.25rem;"/>
-            <span v-if="table.schema">{{ table.schema }}.</span>
-            <NameCommentViewer :data="table"/>
+            <span v-if="table.schema" class="no-drag">{{ table.schema }}.</span>
+            <NameCommentViewer :data="table" class="no-drag"/>
         </div>
 
         <!-- 列信息 -->
@@ -29,15 +29,15 @@ defineProps<{
                 <div
                     v-for="column in table.columns"
                     :key="column.id"
-                    class="column-item no-drag"
+                    class="column-item"
                 >
-                    <NameCommentViewer :data="column"/>
+                    <NameCommentViewer :data="column" class="no-drag"/>
                     <span v-if="column.partOfPrimaryKey" class="primary-key">
                         <IconPrimaryKey/>
                     </span>
-                    <span>{{ column.type }}</span>
-                    <span v-if="column.defaultValue"> = {{ column.defaultValue }}</span>
-                    <span>{{ column.nullable ? '' : 'NOT NULL' }}</span>
+                    <span class="no-drag">{{ column.type }}</span>
+                    <span v-if="column.defaultValue" class="no-drag" > = {{ column.defaultValue }}</span>
+                    <span class="no-drag">{{ column.nullable ? '' : 'NOT NULL' }}</span>
                 </div>
             </template>
         </CollapseDetail>
@@ -52,12 +52,12 @@ defineProps<{
                 <div
                     v-for="index in table.indexes"
                     :key="index.id"
-                    class="index-item no-drag"
+                    class="index-item"
                 >
-                    <span>{{ index.name }}</span>
-                    <span v-if="index.uniqueIndex" class="unique-index">Unique</span>
-                    <span>({{ index.columnNames.join(', ') }})</span>
-                    <span v-if="index.wherePredicates">WHERE {{ index.wherePredicates }}</span>
+                    <span class="no-drag">{{ index.name }}</span>
+                    <span v-if="index.uniqueIndex" class="unique-index no-drag">Unique</span>
+                    <span class="no-drag">({{ index.columnNames.join(', ') }})</span>
+                    <span v-if="index.wherePredicates" class="no-drag">WHERE {{ index.wherePredicates }}</span>
                 </div>
             </template>
         </CollapseDetail>
@@ -73,17 +73,17 @@ defineProps<{
                     v-for="fk in table.foreignKeys"
                     :key="fk.id"
                 >
-                    <div class="foreign-key-label no-drag">
-                        <span>{{ fk.name }}</span>
-                        <span v-if="fk.onUpdate">ON UPDATE {{ fk.onUpdate }}</span>
-                        <span v-if="fk.onDelete">ON DELETE {{ fk.onDelete }}</span>
+                    <div class="foreign-key-label">
+                        <span class="no-drag">{{ fk.name }}</span>
+                        <span v-if="fk.onUpdate" class="no-drag">ON UPDATE {{ fk.onUpdate }}</span>
+                        <span v-if="fk.onDelete" class="no-drag">ON DELETE {{ fk.onDelete }}</span>
                     </div>
-                    <div class="foreign-key-column-ref no-drag" v-for="columnRef in fk.columnRefs">
-                        <span>{{ columnRef.columnName }}</span>
-                        <span> -> </span>
-                        <span v-if="fk.referencedTableSchema">{{ fk.referencedTableSchema }}.</span>
-                        <span>{{ fk.referencedTableName }}.</span>
-                        <span>{{ columnRef.referencedColumnName }}</span>
+                    <div class="foreign-key-column-ref" v-for="columnRef in fk.columnRefs">
+                        <span class="no-drag">{{ columnRef.columnName }}</span>
+                        <span class="no-drag"> -> </span>
+                        <span v-if="fk.referencedTableSchema" class="no-drag">{{ fk.referencedTableSchema }}.</span>
+                        <span class="no-drag">{{ fk.referencedTableName }}.</span>
+                        <span class="no-drag">{{ columnRef.referencedColumnName }}</span>
                     </div>
                 </div>
             </template>

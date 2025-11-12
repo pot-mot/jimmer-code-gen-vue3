@@ -260,6 +260,10 @@ let initY = 0
 const onDragStart = (event: PointerEvent) => {
     if (!draggable.value) return
 
+    event.preventDefault()
+    event.stopPropagation()
+    event.stopImmediatePropagation()
+
     isDragging.value = true
     initX = position.x - event.clientX
     initY = position.y - event.clientY
@@ -269,17 +273,25 @@ const onDragStart = (event: PointerEvent) => {
 
 const onDragMove = (event: PointerEvent) => {
     if (!draggable.value) {
-        onDragEnd()
+        onDragEnd(event)
         return
     }
 
     if (isDragging.value) {
+        event.preventDefault()
+        event.stopPropagation()
+        event.stopImmediatePropagation()
+
         position.x = initX + event.clientX
         position.y = initY + event.clientY
     }
 }
 
-const onDragEnd = () => {
+const onDragEnd = (event: PointerEvent) => {
+    event.preventDefault()
+    event.stopPropagation()
+    event.stopImmediatePropagation()
+
     isDragging.value = false
     initX = 0
     initY = 0

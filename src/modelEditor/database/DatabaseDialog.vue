@@ -140,9 +140,9 @@ const deleteDatabase = async (database: DatabaseView) => {
         >
             <template #head>
                 <div class="database-item">
-                    <div class="no-drag">
+                    <div>
                         <IconTypedDatabase :type="database.type"/>
-                        {{ database.name }}
+                        <span class="no-drag">{{ database.name }}</span>
                     </div>
                     <div class="database-operations">
                         <button @click="refreshTables(database.id)">
@@ -154,6 +154,7 @@ const deleteDatabase = async (database: DatabaseView) => {
                         <button @click="deleteDatabase(database)">
                             <IconDelete/>
                         </button>
+                        <slot name="database-operations"/>
                     </div>
                 </div>
             </template>
