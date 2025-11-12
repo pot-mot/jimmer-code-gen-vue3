@@ -6,8 +6,15 @@ import {judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
 import {useClickOutside} from "@/components/list/selectableList/useClickOutside.ts";
 import {useTemplateRef} from "vue";
 import "./list.css"
+import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 
-const props = defineProps<ListProps<T>>()
+const props = withDefaults(
+    defineProps<ListProps<T>>(),
+    {
+        beforeCopy: () => {
+        },
+    }
+)
 
 const emits = defineEmits<ListEmits<T>>()
 
@@ -23,7 +30,7 @@ const {
     resetSelection,
 } = listSelection
 
-const handleItemClick = (e: MouseEvent, item: T, index: number) => {
+const handleItemClick = (e: MouseEvent, item: DeepReadonly<T>, index: number) => {
     emits('clickItem', item, index)
 
     e.stopPropagation()
@@ -61,6 +68,14 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
         return
     }
 
+    const selectedItems: DeepReadonly<T>[] = []
+
+    for (const [index, item] of props.lines.entries()) {
+        if (selectedItemSet.value.has(index)) {
+            selectedItems.push(item)
+        }
+    }
+
     if (e.ctrlKey || e.metaKey) {
         if (e.key === 'a') {
             e.preventDefault()
@@ -69,29 +84,16 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
             resetSelection(Array.from(props.lines.keys()))
         } else if (e.key === 'c') {
             e.preventDefault()
+            e.stopPropagation()
+            e.stopImmediatePropagation()
 
-            const {
-                selectedItems
-            } = props.lines.reduce(
-                (result, _, index) => {
-                    const {selectedItems} = result
-                    const item = props.lines[index]
-
-                    if (selectedItemSet.value.has(index) && item !== undefined) {
-                        selectedItems.push(item)
-                    }
-
-                    return result
-                },
-                {selectedItems: <T[]>[]}
-            )
-
-            const data = JSON.stringify(selectedItems)
-            await navigator.clipboard.writeText(data)
+            const copyData = cloneDeepReadonlyRaw<T[]>(selectedItems)
+            props.beforeCopy(copyData)
+            await navigator.clipboard.writeText(JSON.stringify(copyData))
         }
     }
 
-    if (e.key === 'ArrowUp') {
+    else if (e.key === 'ArrowUp') {
         e.preventDefault()
         e.stopPropagation()
         e.stopImmediatePropagation()
@@ -111,7 +113,7 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
         }
     }
 
-    if (e.key === 'ArrowDown') {
+    else if (e.key === 'ArrowDown') {
         e.preventDefault()
         e.stopPropagation()
         e.stopImmediatePropagation()

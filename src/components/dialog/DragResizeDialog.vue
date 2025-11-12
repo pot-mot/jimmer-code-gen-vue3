@@ -3,7 +3,7 @@ import {computed, nextTick, reactive, ref, toRaw, watch} from 'vue'
 import IconFullScreen from "@/components/icons/IconFullScreen.vue";
 import IconClose from "@/components/icons/IconClose.vue";
 import ResizeWrapper from "@/components/resizer/ResizeWrapper.vue";
-import {judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
+import {judgeTarget, judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
 import {useDialogZIndex} from "@/components/dialog/DialogZIndex.ts";
 import type {ResizeEventArgs} from "@/components/resizer/ResizeWrapperType.ts";
 
@@ -237,7 +237,7 @@ const handleInnerOver = (e: PointerEvent) => {
         return
     }
 
-    draggable.value = !judgeTargetIsInteraction(e);
+    draggable.value = !judgeTargetIsInteraction(e) && !judgeTarget(e, (el) => el.classList.contains('no-drag'))
 }
 
 const handleInnerLeave = () => {

@@ -1,7 +1,8 @@
 import type {SchemaValidatorErrorHandler} from "@/utils/type/typeGuard.ts";
 
 export interface ListProps<T> {
-    lines: T[]
+    lines: DeepReadonly<T[]>,
+    beforeCopy?: (data: T[]) => void
 }
 
 export interface EditListProps<T> extends Omit<ListProps<T>, 'lines'> {

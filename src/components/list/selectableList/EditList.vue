@@ -2,7 +2,7 @@
 import {nextTick, useTemplateRef} from 'vue'
 import {cloneDeep} from 'lodash-es'
 import type {EditListProps} from "@/components/list/selectableList/ListProps.ts";
-import type {EditListEmits, ListEmits} from "@/components/list/selectableList/ListEmits.ts";
+import type {EditListEmits} from "@/components/list/selectableList/ListEmits.ts";
 import {createSelectRange, useListSelection} from "@/components/list/selectableList/listSelection.ts";
 import {judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
 import {useClickOutside} from "@/components/list/selectableList/useClickOutside.ts";
@@ -32,7 +32,7 @@ const props = withDefaults(
     }
 )
 
-const emits = defineEmits<EditListEmits<T> & ListEmits<T>>()
+const emits = defineEmits<EditListEmits<T>>()
 
 const editListBody = useTemplateRef("editListBody")
 
@@ -223,7 +223,7 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
         }
     }
 
-    if (e.key === 'ArrowDown') {
+    else if (e.key === 'ArrowDown') {
         e.preventDefault()
         e.stopPropagation()
         e.stopImmediatePropagation()
@@ -269,7 +269,7 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
         }
     }
 
-    if (e.key === 'Enter' && selectedItems.length === 1) {
+    else if (e.key === 'Enter' && selectedItems.length === 1) {
         e.preventDefault()
         e.stopPropagation()
         e.stopImmediatePropagation()
