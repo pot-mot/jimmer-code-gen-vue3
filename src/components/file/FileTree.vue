@@ -40,7 +40,7 @@ const buildTree = (paths: Iterable<string>): FileTreeNode[] => {
             const part = pathParts[i]
             if (part === undefined) continue
             if (i === pathParts.length - 1) {
-                currentPath = part
+                currentPath = path
             } else {
                 currentPath += '/' + part
             }
