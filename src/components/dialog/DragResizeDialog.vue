@@ -260,10 +260,6 @@ let initY = 0
 const onDragStart = (event: PointerEvent) => {
     if (!draggable.value) return
 
-    event.preventDefault()
-    event.stopPropagation()
-    event.stopImmediatePropagation()
-
     isDragging.value = true
     initX = position.x - event.clientX
     initY = position.y - event.clientY
@@ -273,25 +269,19 @@ const onDragStart = (event: PointerEvent) => {
 
 const onDragMove = (event: PointerEvent) => {
     if (!draggable.value) {
-        onDragEnd(event)
+        onDragEnd()
         return
     }
 
     if (isDragging.value) {
-        event.preventDefault()
-        event.stopPropagation()
-        event.stopImmediatePropagation()
-
         position.x = initX + event.clientX
         position.y = initY + event.clientY
+
+        window.getSelection()?.removeAllRanges()
     }
 }
 
-const onDragEnd = (event: PointerEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
-    event.stopImmediatePropagation()
-
+const onDragEnd = () => {
     isDragging.value = false
     initX = 0
     initY = 0
@@ -336,10 +326,7 @@ const onDragEnd = (event: PointerEvent) => {
                     </div>
                 </div>
 
-                <div
-                    ref="contentRef"
-                    class="dialog-content"
-                >
+                <div class="dialog-content">
                     <slot/>
                 </div>
             </ResizeWrapper>
