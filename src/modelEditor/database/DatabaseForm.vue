@@ -56,8 +56,8 @@ watch(() => model.value, () => {
     errors.value = {}
 }, {deep: true})
 
-const handleDatabaseTypeChange = () => {
-    const {url, username} = defaultDatabase(model.value.type)
+const handleDatabaseTypeChange = (type: DatabaseType) => {
+    const {url, username} = defaultDatabase(type)
     model.value = {
         ...model.value,
         url,
@@ -76,7 +76,7 @@ const handleCancel = () => {
         <div class="form-item">
             <DatabaseTypeSelect
                 v-model="model.type"
-                @change="handleDatabaseTypeChange"
+                @update:model-value="handleDatabaseTypeChange"
             />
         </div>
 
