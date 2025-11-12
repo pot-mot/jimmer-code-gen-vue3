@@ -138,7 +138,7 @@ export const tableToEntity = (
 
             const idProperty: IdEmbeddableProperty = {
                 id: createId("Property"),
-                name: entity.name + "Id",
+                name: "id",
                 category: "ID_EMBEDDABLE",
                 embeddableTypeId: embeddableType.id,
                 columnNameOverrides: [],
@@ -149,7 +149,6 @@ export const tableToEntity = (
             }
             entity.properties.push(idProperty)
         }
-
     }
 
     for (const table of tables) {
@@ -204,7 +203,6 @@ export const tableToEntity = (
             const sourcePropertyId = createId("Property")
             const mappedPropertyId = createId("Property")
             const associationId = createId("Association")
-            const lowerSourceEntityName = nameTool.firstCaseToLower(sourceEntity.name)
             const lowerReferencedEntityName = nameTool.firstCaseToLower(referencedEntity.name)
 
             let joinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
@@ -230,20 +228,20 @@ export const tableToEntity = (
 
             const sourceProperty: ManyToOneProperty = {
                 id: sourcePropertyId,
-                name: lowerSourceEntityName,
+                name: lowerReferencedEntityName,
+                comment: referencedEntity.comment,
                 category: "ManyToOne",
                 typeIsList: false,
                 associationId,
                 joinInfo,
                 autoGenerateJoinInfo: true,
                 referencedEntityId: referencedEntity.id,
-                idViewName: lowerSourceEntityName + "Id",
+                idViewName: lowerReferencedEntityName + "Id",
                 idViewNameTemplate: ID_VIEW_TEMPLATE,
                 useIdViewNameTemplate: true,
                 onDissociateAction: "NONE",
                 extraImports: [],
                 extraAnnotations: [],
-                comment: "",
                 nullable: false
             }
 

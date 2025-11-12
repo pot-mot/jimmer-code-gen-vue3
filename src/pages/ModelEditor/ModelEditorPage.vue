@@ -16,6 +16,10 @@ import ScriptDialog from "@/modelEditor/script/ScriptDialog.vue";
 import {useModelEditDialog} from "@/modelEditor/modelForm/useModelEditDialog.ts";
 import {useModelGenerator} from "@/modelEditor/generator/useModelGenerator.ts";
 import {useScriptDialog} from "@/modelEditor/script/useScriptDialog.ts";
+import {useDatabaseDialog} from "@/modelEditor/database/useDatabaseDialog.ts";
+import DatabaseDialog from "@/modelEditor/database/DatabaseDialog.vue";
+import {translate} from "@/store/i18nStore.ts";
+import type {TableView} from "@/api/__generated/model/static";
 
 const router = useRouter()
 const route = useRoute()
@@ -23,6 +27,7 @@ const route = useRoute()
 const {
     loadModel,
     contextData,
+    loadTables,
 } = useModelEditor()
 
 const fetchModel = async () => {
@@ -57,6 +62,13 @@ const fetchModel = async () => {
     })
 }
 
+const loadFromDatabase = async (getTables: () => Promise<TableView[]>) => {
+    await withLoading("load tables", async () => {
+        const tables = await getTables()
+        await loadTables(tables)
+    })
+}
+
 onMounted(() => {
     fetchModel()
 })
@@ -69,6 +81,7 @@ onBeforeUnmount(() => {
     useModelEditDialog().close()
     useModelGenerator().close()
     useScriptDialog().close()
+    useDatabaseDialog().close()
 })
 </script>
 
@@ -85,4 +98,11 @@ onBeforeUnmount(() => {
     <ModelEditFormDialog/>
     <ModelGenerator/>
     <ScriptDialog :model="contextData.model"/>
+    <DatabaseDialog>
+        <template #database-operations="{getTables}">
+            <button @click.stop="loadFromDatabase(getTables)">
+                {{ translate('load') }}
+            </button>
+        </template>
+    </DatabaseDialog>
 </template>

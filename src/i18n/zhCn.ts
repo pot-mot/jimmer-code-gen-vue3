@@ -18,6 +18,7 @@ export const localeZhCn: MainLocale = {
     test: "测试",
     generate: "生成",
     reset: "重置",
+    refresh: "刷新",
 
     reset_confirm_title: (target: string) => `${target}重置确认`,
     reset_confirm_content: (target: string) => `确定要重置${target}吗？`,
@@ -68,6 +69,7 @@ export const localeZhCn: MainLocale = {
 
     model_update_title: "修改模型",
     group_create_button: "添加分组",
+    load_from_database_button: "从数据库导入",
 
     database: "数据库",
     table: "表",
@@ -95,6 +97,7 @@ export const localeZhCn: MainLocale = {
 
     type_mapping_dialog_button: "类型映射",
     type_mapping_dialog_title: "类型映射管理",
+    cross_type: "交叉类型",
     sql_type: "SQL类型",
     jvm_type: "JVM类型",
     ts_type: "TS类型",

@@ -44,6 +44,15 @@ const refreshTables = async (databaseId: string) => {
     })
 }
 
+const getTables = async (databaseId: string): Promise<TableView[]> => {
+    if (databaseTableMap.value.has(databaseId)) {
+        return databaseTableMap.value.get(databaseId) ?? []
+    } else {
+        await fetchTables(databaseId)
+        return databaseTableMap.value.get(databaseId) ?? []
+    }
+}
+
 const onDatabaseOpen = (database: DatabaseView) => {
     if (!databaseTableMap.value.has(database.id)) {
         fetchTables(database.id)
@@ -152,10 +161,14 @@ const deleteDatabase = async (database: DatabaseView) => {
                         <button @click="startDatabaseUpdate(database)">
                             <IconEdit/>
                         </button>
+                        <slot
+                            name="database-operations"
+                            :database="database"
+                            :getTables="() => getTables(database.id)"
+                        />
                         <button @click="deleteDatabase(database)">
                             <IconDelete/>
                         </button>
-                        <slot name="database-operations"/>
                     </div>
                 </div>
             </template>

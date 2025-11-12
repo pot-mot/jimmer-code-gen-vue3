@@ -18,6 +18,7 @@ export const localeEn: MainLocale = {
     test: "Test",
     generate: "Generate",
     reset: "Reset",
+    refresh: "Refresh",
 
     reset_confirm_title: (target: string) => `${target} Reset Confirm`,
     reset_confirm_content: (target: string) => `Are you sure to reset ${target}?`,
@@ -68,6 +69,7 @@ export const localeEn: MainLocale = {
 
     model_update_title: "Update Model",
     group_create_button: "Add Group",
+    load_from_database_button: "Load From Database",
 
     database: "Database",
     table: "Table",
@@ -95,6 +97,7 @@ export const localeEn: MainLocale = {
 
     type_mapping_dialog_button: "Type Mapping",
     type_mapping_dialog_title: "Type Mapping Manage",
+    cross_type: "Cross Type",
     sql_type: "SQL Type",
     jvm_type: "JVM Type",
     ts_type: "TypeScript Type",

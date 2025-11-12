@@ -16,6 +16,7 @@ export type MainLocale = {
     test: string
     generate: string
     reset: string
+    refresh: string
 
     reset_confirm_title: (target: string) => string
     reset_confirm_content: (target: string) => string
@@ -66,6 +67,7 @@ export type MainLocale = {
 
     model_update_title: string
     group_create_button: string
+    load_from_database_button: string
 
     database: string
     table: string
@@ -93,6 +95,7 @@ export type MainLocale = {
 
     type_mapping_dialog_button: string
     type_mapping_dialog_title: string
+    cross_type: string
     sql_type: string
     jvm_type: string
     ts_type: string

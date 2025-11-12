@@ -17,6 +17,8 @@ import {subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
 import IconClose from "@/components/icons/IconClose.vue";
 import IconSearch from "@/components/icons/IconSearch.vue";
 import {translate} from "@/store/i18nStore.ts";
+import {useDatabaseDialog} from "@/modelEditor/database/useDatabaseDialog.ts";
+import IconDatabaseAdd from "@/components/icons/IconDatabaseAdd.vue";
 
 const {
     createType,
@@ -210,6 +212,11 @@ const handleAddGroup = () => {
     toggleCurrentGroup({id})
 }
 
+const databaseDialog = useDatabaseDialog()
+const handleLoadFromDatabase = () => {
+    databaseDialog.open()
+}
+
 const changeNodeGroup = (node: MenuItemTreeNode, groupId: string) => {
     if (node.data.type === "Entity") {
         node.data.entity.groupId = groupId
@@ -312,6 +319,11 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
             <span>{{ translate('group_create_button') }}</span>
         </button>
 
+        <button class="load-from-database-button" @click="handleLoadFromDatabase">
+            <IconDatabaseAdd/>
+            <span>{{ translate('load_from_database_button') }}</span>
+        </button>
+
         <DragContainer
             @drag-end="handleDragEnd"
         >
@@ -364,7 +376,8 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
     padding-bottom: 5rem;
 }
 
-.group-create-button {
+.group-create-button,
+.load-from-database-button {
     margin: 0.5rem 0 0.25rem 0.5rem;
     display: flex;
     align-items: center;
