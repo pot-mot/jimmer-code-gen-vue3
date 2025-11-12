@@ -26,6 +26,7 @@ const onDragMove = (event: PointerEvent) => {
     if (isDragging.value && dragSourceId.value) {
         dragViewX.value = event.clientX + 'px'
         dragViewY.value = event.clientY + 'px'
+        window.getSelection()?.removeAllRanges()
         emits('drag-move', dragSourceId.value, event)
     }
 }
