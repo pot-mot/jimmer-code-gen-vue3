@@ -96,7 +96,6 @@ watch(() => isOpen.value, async (value) => {
 <style scoped>
 .dropdown {
     position: relative;
-    font-family: Arial, sans-serif;
 }
 
 .dropdown-trigger {

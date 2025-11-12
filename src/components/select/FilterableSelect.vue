@@ -119,7 +119,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
 </script>
 
 <template>
-    <Dropdown v-model="isOpen" class="filterable-select" ref="filterableSelect" :class="{'input-focus': isInputFocus}">
+    <Dropdown v-model="isOpen" ref="filterableSelect" :class="{'input-focus': isInputFocus}">
         <template #head>
             <div class="select-input" :class="{ open: isOpen }">
                 <slot name="selected" :option="model">
@@ -169,11 +169,6 @@ const handleKeyDown = (e: KeyboardEvent) => {
 <style scoped>
 .input-focus :deep(.dropdown-trigger) {
     border-color: var(--border-color);
-}
-
-.filterable-select {
-    position: relative;
-    width: 100%;
 }
 
 .select-input {
