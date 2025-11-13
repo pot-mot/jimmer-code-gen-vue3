@@ -52,7 +52,7 @@ const toggleSelect = (id: string) => {
 <template>
     <Dropdown class="mapped-super-class-select">
         <template #head>
-            <ul>
+            <ul class="selected-items">
                 <li v-for="id in mappedSuperClassIds" class="selected-item">
                     <MappedSuperClassIdViewer :id="id" hide-comment ctrl-focus/>
                     <span class="warning-info" v-if="inheritInfo.circularReferences.has(id)">
@@ -82,6 +82,10 @@ const toggleSelect = (id: string) => {
 </template>
 
 <style scoped>
+.selected-items {
+    min-height: 2rem;
+}
+
 .mapped-super-class-select .selected-item {
     border: var(--border);
     border-color: var(--background-color-hover);

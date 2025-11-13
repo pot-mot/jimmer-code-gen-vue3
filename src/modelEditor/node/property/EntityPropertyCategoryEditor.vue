@@ -152,6 +152,7 @@ const toggleVersion = () => {
 .category-editor-header {
     font-size: 0.8rem;
     padding-left: 0.5rem;
+    min-height: 1.8rem;
     min-width: 1.5rem;
 }
 

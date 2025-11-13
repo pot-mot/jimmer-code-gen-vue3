@@ -121,6 +121,7 @@ watch(() => isOpen.value, async (value) => {
 }
 
 .dropdown-arrow {
+    flex-shrink: 0;
     margin-left: 0.5em;
     transition: transform 0.3s;
 }

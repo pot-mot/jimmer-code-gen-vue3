@@ -74,7 +74,7 @@ const options = computed<TypeOptions>(() => {
 
     const filteredCrossTypes = crossTypeOptions.value.filter(crossType => {
         return (crossType.databaseSource === contextData.model.databaseType || crossType.databaseSource === "ANY") &&
-            (crossType.jvmSource === contextData.model.jvmLanguage || crossType.jvmSource === "BOTH")
+            (crossType.jvmSource === contextData.model.jvmLanguage || crossType.jvmSource === "ANY")
     })
 
     const keyword = filterKeyword.value.trim().toLowerCase()
@@ -438,6 +438,7 @@ const association = computed(() => {
 .type-editor-header {
     font-size: 0.8rem;
     padding-left: 0.5rem;
+    min-height: 1.8rem;
     max-width: 10rem;
     overflow-x: auto;
 }
