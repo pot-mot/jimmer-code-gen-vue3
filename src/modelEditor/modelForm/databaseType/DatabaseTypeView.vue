@@ -49,6 +49,7 @@ defineProps<{
 <style scoped>
 .database-type-view {
     display: flex;
+    align-items: center;
     gap: 0.25rem;
     flex-wrap: nowrap;
 }

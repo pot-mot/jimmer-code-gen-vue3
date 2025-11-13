@@ -33,10 +33,10 @@ const currentIndex = ref(-1)
         <template #selected="{option}">
             <DatabaseTypeView
                 v-if="databaseType !== undefined"
-                style="padding: 0.5rem;"
                 :database-type="option"
+                class="database-type-selected-option"
             />
-            <div v-else class="placeholder">
+            <div v-else class="database-type-selected-option placeholder">
                 {{ translate({key: 'select_placeholder', args: [translate('database_type')]}) }}
             </div>
         </template>
@@ -50,20 +50,32 @@ const currentIndex = ref(-1)
             </button>
         </template>
         <template #option="{option}">
-            <DatabaseTypeView style="min-width: 6rem" :database-type="option"/>
+            <DatabaseTypeView :database-type="option" class="database-type-option"/>
         </template>
     </FilterableSelect>
 </template>
 
 <style scoped>
-.placeholder {
+.database-type-selected-option {
+    padding: 0.25rem;
     font-size: 0.8rem;
-    padding: 0.5rem;
+}
+
+.database-type-option {
+    min-width: 6rem;
+    font-size: 0.8rem;
+}
+
+.placeholder {
     white-space: nowrap;
     color: var(--comment-color);
 }
 
-.input-focus .placeholder {
+:deep(.filter-input) {
+    font-size: 0.8rem;
+}
+
+.input-focus .database-type-selected-option.placeholder {
     width: 0;
     padding-left: 0;
     padding-right: 0;

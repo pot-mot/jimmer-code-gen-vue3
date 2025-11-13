@@ -28,9 +28,9 @@ const currentIndex = ref(-1)
             <JvmLanguageView
                 v-if="jvmLanguage !== undefined"
                 :jvm-language="option"
-                style="padding: 0.5rem;"
+                class="jvm-language-selected-option"
             />
-            <div v-else class="placeholder">
+            <div v-else class="jvm-language-selected-option placeholder">
                 {{ translate({key: 'select_placeholder', args: [translate('jvm_language')]}) }}
             </div>
         </template>
@@ -44,17 +44,23 @@ const currentIndex = ref(-1)
             </button>
         </template>
         <template #option="{option}">
-            <div style="min-width: 3rem">
-                <JvmLanguageView :jvm-language="option"/>
-            </div>
+            <JvmLanguageView :jvm-language="option" class="jvm-language-option"/>
         </template>
     </FilterableSelect>
 </template>
 
 <style scoped>
-.placeholder {
+.jvm-language-selected-option {
+    padding: 0.25rem;
     font-size: 0.8rem;
-    padding: 0.5rem;
+}
+
+.jvm-language-option {
+    min-width: 4rem;
+    font-size: 0.8rem;
+}
+
+.placeholder {
     white-space: nowrap;
     color: var(--comment-color);
 }

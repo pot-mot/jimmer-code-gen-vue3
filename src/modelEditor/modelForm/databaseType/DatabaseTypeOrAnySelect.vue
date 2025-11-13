@@ -26,10 +26,26 @@ const databaseTypes: (DatabaseType | "ANY")[] = [
         :filter="(option, filterText) => option.toLowerCase().includes(filterText.toLowerCase())"
     >
         <template #selected="{option}">
-            <DatabaseTypeView :database-type="option" style="padding: 0.25rem; font-size: 0.8rem;"/>
+            <DatabaseTypeView :database-type="option" class="database-type-selected-option"/>
         </template>
         <template #option="{option}">
-            <DatabaseTypeView :database-type="option" style="min-width: 6rem; font-size: 0.8rem;"/>
+            <DatabaseTypeView :database-type="option" class="database-type-option"/>
         </template>
     </FilterableSelect>
 </template>
+
+<style scoped>
+.database-type-selected-option {
+    padding: 0.25rem;
+    font-size: 0.8rem;
+}
+
+.database-type-option {
+    min-width: 6rem;
+    font-size: 0.8rem;
+}
+
+:deep(.filter-input) {
+    font-size: 0.8rem;
+}
+</style>
