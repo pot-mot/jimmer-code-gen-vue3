@@ -102,9 +102,15 @@ defineExpose({
                         :placeholder="translate({key: 'input_placeholder', args: [translate('typeExpression')]})"
                     >
                     <div v-if="errors.typeExpression" class="error-message">{{ errors.typeExpression }}</div>
-                    <template v-if="!openState">
-                        <div class="error-message" v-if="Object.keys(errors).length > 0">{{ translate('validate_fail') }}</div>
-                    </template>
+                    <div
+                        class="error-message"
+                        v-if="!openState && (
+                            (!errors.typeExpression && Object.keys(errors).length > 0) ||
+                            (Object.keys(errors).length > 1)
+                        )"
+                    >
+                        {{ translate('validate_fail') }}
+                    </div>
                 </div>
             </div>
         </template>
