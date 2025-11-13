@@ -158,12 +158,23 @@ const handleCancel = () => {
     flex: 1;
 }
 
-input,
-select {
+input {
     width: 100%;
     border-radius: var(--border-radius);
     padding: 0.5rem;
     font-size: 0.9rem;
+}
+
+select {
+    width: 100%;
+    border-radius: var(--border-radius);
+    padding: 0.5rem;
+    font-size: 0.8rem;
+}
+
+:deep(.database-type-selected-option),
+:deep(.jvm-language-selected-option) {
+    padding: 0.5rem;
 }
 
 textarea {
