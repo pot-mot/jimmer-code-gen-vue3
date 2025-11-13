@@ -4,7 +4,7 @@ import {cloneDeep} from 'lodash-es'
 import type {EditListProps} from "@/components/list/selectableList/ListProps.ts";
 import type {EditListEmits} from "@/components/list/selectableList/ListEmits.ts";
 import {createSelectRange, useListSelection} from "@/components/list/selectableList/listSelection.ts";
-import {judgeTarget, judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
+import {judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
 import {useClickOutside} from "@/components/list/selectableList/useClickOutside.ts";
 import {sendMessage} from "@/components/message/messageApi.ts";
 import IconAdd from "@/components/icons/IconAdd.vue";
@@ -35,7 +35,6 @@ const props = withDefaults(
 
 const emits = defineEmits<EditListEmits<T>>()
 
-const editListRef = useTemplateRef("editListRef")
 const editListBody = useTemplateRef("editListBody")
 
 const listSelection = useListSelection<number>()
@@ -82,10 +81,7 @@ useClickOutside(() => editListBody.value, () => {
 })
 
 const handleKeyboardEvent = async (e: KeyboardEvent) => {
-    if (
-        judgeTargetIsInteraction(e) ||
-        judgeTarget(e, (el) => el.classList.contains('edit-list') && el !== editListRef.value)
-    ) {
+    if (judgeTargetIsInteraction(e)) {
         return
     }
 
@@ -132,12 +128,13 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
             emits('delete', selectedItems)
             lines.value = unselectedItems
         } else if (e.key === 'v') {
-            if (props.jsonSchemaValidate === undefined) return
-            const jsonSchemaValidate = props.jsonSchemaValidate
-
             e.preventDefault()
             e.stopPropagation()
             e.stopImmediatePropagation()
+
+            if (props.jsonSchemaValidate === undefined) return
+            const jsonSchemaValidate = props.jsonSchemaValidate
+
             const text = await navigator.clipboard.readText()
             try {
                 const value = JSON.parse(text)
@@ -354,7 +351,7 @@ defineExpose({
 </script>
 
 <template>
-    <div ref="editListRef" class="edit-list" tabindex="-1" @keydown="handleKeyboardEvent">
+    <div class="edit-list" tabindex="-1" @keydown="handleKeyboardEvent">
         <slot
             name="head"
             :lines="lines"
