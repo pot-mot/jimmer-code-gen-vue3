@@ -7,8 +7,8 @@ import {computed, ref, watch} from "vue";
 import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
 import IconCheck from "@/components/icons/IconCheck.vue";
 import {translate} from "@/store/i18nStore.ts";
-import JvmLanguageOrAnySelect from "@/modelEditor/script/JvmLanguageOrAnySelect.vue";
-import DatabaseTypeOrAnySelect from "@/modelEditor/script/DatabaseTypeOrAnySelect.vue";
+import JvmLanguageOrAnySelect from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageOrAnySelect.vue";
+import DatabaseTypeOrAnySelect from "@/modelEditor/modelForm/databaseType/DatabaseTypeOrAnySelect.vue";
 import {sendConfirm} from "@/components/confirm/confirmApi.ts";
 import IconClose from "@/components/icons/IconClose.vue";
 
