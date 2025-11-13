@@ -230,11 +230,9 @@ onBeforeUnmount(() => {
                 v-for="model in modelList"
                 :key="model.id"
                 class="model-item"
+                @click="toModelEditor(model.id)"
             >
-                <div
-                    class="model-info"
-                    @click="toModelEditor(model.id)"
-                >
+                <div class="model-info">
                     <div class="header">
                         <div class="name" @click.stop>
                             {{ model.name }}
@@ -259,14 +257,14 @@ onBeforeUnmount(() => {
 
                 <div class="actions">
                     <button
-                        @click="startModelUpdate(model.id)"
+                        @click.stop="startModelUpdate(model.id)"
                         class="edit-button"
                     >
                         <IconEdit/>
                         {{ translate('edit') }}
                     </button>
                     <button
-                        @click="deleteModel(model)"
+                        @click.stop="deleteModel(model)"
                         class="delete-button"
                     >
                         <IconDelete/>
