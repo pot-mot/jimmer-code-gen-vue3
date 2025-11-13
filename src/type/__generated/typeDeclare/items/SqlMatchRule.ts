@@ -1,6 +1,6 @@
 export default Object.freeze({
-    fileName: 'SqlToJvmMatchRule.d.ts',
-    content: `type SqlToJvmMatchRule = {
+    fileName: 'SqlMatchRule.d.ts',
+    content: `type SqlMatchRule = {
     databaseSource: DatabaseSource
     matchRegExp: string
 }`,

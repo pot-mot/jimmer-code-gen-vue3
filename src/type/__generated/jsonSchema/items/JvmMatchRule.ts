@@ -1,7 +1,7 @@
 import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
 import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
-const JvmToTsMatchRuleJsonSchema: JSONSchemaType<JvmToTsMatchRule> = {
+const JvmMatchRuleJsonSchema: JSONSchemaType<JvmMatchRule> = {
     "type": "object",
     "properties": {
         "jvmSource": {
@@ -26,12 +26,12 @@ const JvmToTsMatchRuleJsonSchema: JSONSchemaType<JvmToTsMatchRule> = {
         }
     },
     "$schema": "http://json-schema.org/draft-07/schema#"
-} as any as JSONSchemaType<JvmToTsMatchRule>
+} as any as JSONSchemaType<JvmMatchRule>
 
-export const validateJvmToTsMatchRule = createSchemaValidator<JvmToTsMatchRule>(JvmToTsMatchRuleJsonSchema)
+export const validateJvmMatchRule = createSchemaValidator<JvmMatchRule>(JvmMatchRuleJsonSchema)
 
 export default {
-    uri: "$innerType/JvmToTsMatchRule",
-    schema: JvmToTsMatchRuleJsonSchema,
-    validate: validateJvmToTsMatchRule,
+    uri: "$innerType/JvmMatchRule",
+    schema: JvmMatchRuleJsonSchema,
+    validate: validateJvmMatchRule,
 }

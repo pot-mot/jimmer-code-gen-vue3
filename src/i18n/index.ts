@@ -32,6 +32,7 @@ export type MainLocale = {
     delete_fail: (target: string) => string
     input_placeholder: (fieldName: string) => string
     select_placeholder: (fieldName: string) => string
+    validate_fail: string
     not_blank_warning: (fieldName: string) => string
     json_validate_error: string
     no_option_tip: string
@@ -123,6 +124,8 @@ export type MainLocale = {
     jvmMatchRules: string
     sqlMatchRules: string
     tsMatchRules: string
+    typeExpression: string
+    matchRegExp: string
 }
 
 type BaseLocale = {

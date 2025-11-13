@@ -34,6 +34,7 @@ export const localeZhCn: MainLocale = {
     delete_fail: (target: string) => `${target}删除失败`,
     input_placeholder: (fieldName: string) => `请输入${fieldName}`,
     select_placeholder: (fieldName: string) => `请选择${fieldName}`,
+    validate_fail: "校验失败",
     not_blank_warning: (fieldName: string) => `${fieldName}不能为空`,
     json_validate_error: "JSON格式错误",
     no_option_tip: "无可选项",
@@ -125,4 +126,6 @@ export const localeZhCn: MainLocale = {
     jvmMatchRules: "JVM类型匹配",
     sqlMatchRules: "SQL类型匹配",
     tsMatchRules: "TS类型匹配",
+    typeExpression: "类型表达式",
+    matchRegExp: "匹配正则",
 }

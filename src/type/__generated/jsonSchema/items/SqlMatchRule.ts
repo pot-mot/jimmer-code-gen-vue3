@@ -1,7 +1,7 @@
 import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
 import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
-const SqlToTsMatchRuleJsonSchema: JSONSchemaType<SqlToTsMatchRule> = {
+const SqlMatchRuleJsonSchema: JSONSchemaType<SqlMatchRule> = {
     "type": "object",
     "properties": {
         "databaseSource": {
@@ -30,12 +30,12 @@ const SqlToTsMatchRuleJsonSchema: JSONSchemaType<SqlToTsMatchRule> = {
         }
     },
     "$schema": "http://json-schema.org/draft-07/schema#"
-} as any as JSONSchemaType<SqlToTsMatchRule>
+} as any as JSONSchemaType<SqlMatchRule>
 
-export const validateSqlToTsMatchRule = createSchemaValidator<SqlToTsMatchRule>(SqlToTsMatchRuleJsonSchema)
+export const validateSqlMatchRule = createSchemaValidator<SqlMatchRule>(SqlMatchRuleJsonSchema)
 
 export default {
-    uri: "$innerType/SqlToTsMatchRule",
-    schema: SqlToTsMatchRuleJsonSchema,
-    validate: validateSqlToTsMatchRule,
+    uri: "$innerType/SqlMatchRule",
+    schema: SqlMatchRuleJsonSchema,
+    validate: validateSqlMatchRule,
 }

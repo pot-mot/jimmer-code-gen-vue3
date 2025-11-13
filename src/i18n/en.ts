@@ -34,6 +34,7 @@ export const localeEn: MainLocale = {
     delete_fail: (target: string) => `${target} delete fail`,
     input_placeholder: (fieldName: string) => `Please input ${fieldName}`,
     select_placeholder: (fieldName: string) => `Please select ${fieldName}`,
+    validate_fail: "Validate Fail",
     not_blank_warning: (fieldName: string) => `${fieldName} cannot be empty.`,
     json_validate_error: "JSON Validate Error",
     no_option_tip: "No Options",
@@ -125,4 +126,6 @@ export const localeEn: MainLocale = {
     jvmMatchRules: "JVM Type Match",
     sqlMatchRules: "SQL Type Match",
     tsMatchRules: "TS Type Match",
+    typeExpression: "Type Expression",
+    matchRegExp: "Match RegExp",
 }

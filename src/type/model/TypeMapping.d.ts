@@ -70,30 +70,16 @@ type TsToSqlMappingRule = {
     result: SqlType
 }
 
-type JvmToSqlMatchRule = {
+type JvmMatchRule = {
     jvmSource: JvmSource
     matchRegExp: string
 }
 
-type JvmToTsMatchRule = {
-    jvmSource: JvmSource
-    matchRegExp: string
-}
-
-type SqlToJvmMatchRule = {
+type SqlMatchRule = {
     databaseSource: DatabaseSource
     matchRegExp: string
 }
 
-type SqlToTsMatchRule = {
-    databaseSource: DatabaseSource
-    matchRegExp: string
-}
-
-type TsToJvmMatchRule = {
-    matchRegExp: string
-}
-
-type TsToSqlMatchRule = {
+type TsMatchRule = {
     matchRegExp: string
 }
