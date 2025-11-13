@@ -392,10 +392,7 @@ defineExpose({
 .edit-list .tail-add-button > button {
     cursor: pointer;
     width: 100%;
+    border-radius: 0.25rem;
     transition: border-color 0.2s ease;
-}
-
-.edit-list .tail-add-button > button:hover {
-    border-color: var(--border-color);
 }
 </style>
