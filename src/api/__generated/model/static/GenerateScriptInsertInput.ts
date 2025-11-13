@@ -1,10 +1,10 @@
-import type {ScriptDatabaseType, ScriptJvmLanguage, ScriptType} from '../enums/';
+import type {DatabaseTypeOrAny, JvmLanguageOrAny, ScriptType} from '../enums/';
 
 export interface GenerateScriptInsertInput {
     name: string;
     type: ScriptType;
     enabled: boolean;
-    databaseType: ScriptDatabaseType;
-    jvmLanguage: ScriptJvmLanguage;
+    databaseType: DatabaseTypeOrAny;
+    jvmLanguage: JvmLanguageOrAny;
     scriptContent: string;
 }

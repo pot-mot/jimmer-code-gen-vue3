@@ -1,10 +1,13 @@
-import type {JvmTypeView_TargetOf_sqlToJvmMappingRules} from './';
+import type {JvmLanguageOrAny} from '../enums/';
+import type {JvmTypeView_TargetOf_sqlMatchRules, JvmTypeView_TargetOf_tsMatchRules} from './';
 
 export interface JvmTypeView {
     id: string;
+    jvmSource: JvmLanguageOrAny;
     typeExpression: string;
     serialized: boolean;
     extraImports: Array<string>;
     extraAnnotations: Array<string>;
-    sqlToJvmMappingRules: Array<JvmTypeView_TargetOf_sqlToJvmMappingRules>;
+    sqlMatchRules: Array<JvmTypeView_TargetOf_sqlMatchRules>;
+    tsMatchRules: Array<JvmTypeView_TargetOf_tsMatchRules>;
 }

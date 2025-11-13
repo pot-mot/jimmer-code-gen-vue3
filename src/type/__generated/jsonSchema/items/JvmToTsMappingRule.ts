@@ -49,7 +49,7 @@ const JvmToTsMappingRuleJsonSchema: JSONSchemaType<JvmToTsMappingRule> = {
     "definitions": {
         "JvmSource": {
             "enum": [
-                "BOTH",
+                "ANY",
                 "JAVA",
                 "KOTLIN"
             ],

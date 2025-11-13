@@ -1,8 +1,9 @@
-import type {TsImport, TsTypeInput_TargetOf_jvmToTsMappingRules} from './';
+import type {TsImport, TsTypeInput_TargetOf_jvmMatchRules, TsTypeInput_TargetOf_sqlMatchRules} from './';
 
 export interface TsTypeInput {
     id?: string | undefined;
     typeExpression: string;
     extraImports: Array<TsImport>;
-    jvmToTsMappingRules: Array<TsTypeInput_TargetOf_jvmToTsMappingRules>;
+    jvmMatchRules: Array<TsTypeInput_TargetOf_jvmMatchRules>;
+    sqlMatchRules: Array<TsTypeInput_TargetOf_sqlMatchRules>;
 }

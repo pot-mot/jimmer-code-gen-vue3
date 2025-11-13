@@ -66,8 +66,10 @@ import JvmLanguageDeclare from "./items/JvmLanguage.ts";
 import JvmSourceDeclare from "./items/JvmSource.ts";
 import JvmToSqlDeclare from "./items/JvmToSql.ts";
 import JvmToSqlMappingRuleDeclare from "./items/JvmToSqlMappingRule.ts";
+import JvmToSqlMatchRuleDeclare from "./items/JvmToSqlMatchRule.ts";
 import JvmToTsDeclare from "./items/JvmToTs.ts";
 import JvmToTsMappingRuleDeclare from "./items/JvmToTsMappingRule.ts";
+import JvmToTsMatchRuleDeclare from "./items/JvmToTsMatchRule.ts";
 import JvmTypeDeclare from "./items/JvmType.ts";
 import KeyPropertyDeclare from "./items/KeyProperty.ts";
 import LabelPositionDeclare from "./items/LabelPosition.ts";
@@ -126,11 +128,18 @@ import SingleColumnMidTableJoinInfoDeclare from "./items/SingleColumnMidTableJoi
 import SqlFormulaPropertyDeclare from "./items/SqlFormulaProperty.ts";
 import SqlToJvmDeclare from "./items/SqlToJvm.ts";
 import SqlToJvmMappingRuleDeclare from "./items/SqlToJvmMappingRule.ts";
+import SqlToJvmMatchRuleDeclare from "./items/SqlToJvmMatchRule.ts";
+import SqlToTsMappingRuleDeclare from "./items/SqlToTsMappingRule.ts";
+import SqlToTsMatchRuleDeclare from "./items/SqlToTsMatchRule.ts";
 import SqlTypeDeclare from "./items/SqlType.ts";
 import TableDeclare from "./items/Table.ts";
 import TemplateBuilderDeclare from "./items/TemplateBuilder.ts";
 import TemplateOptionsDeclare from "./items/TemplateOptions.ts";
 import TransientPropertyDeclare from "./items/TransientProperty.ts";
+import TsToJvmMappingRuleDeclare from "./items/TsToJvmMappingRule.ts";
+import TsToJvmMatchRuleDeclare from "./items/TsToJvmMatchRule.ts";
+import TsToSqlMappingRuleDeclare from "./items/TsToSqlMappingRule.ts";
+import TsToSqlMatchRuleDeclare from "./items/TsToSqlMatchRule.ts";
 import TsTypeDeclare from "./items/TsType.ts";
 import VersionPropertyDeclare from "./items/VersionProperty.ts";
 
@@ -202,8 +211,10 @@ export type TypeMap = {
     JvmSource: JvmSource
     JvmToSql: JvmToSql
     JvmToSqlMappingRule: JvmToSqlMappingRule
+    JvmToSqlMatchRule: JvmToSqlMatchRule
     JvmToTs: JvmToTs
     JvmToTsMappingRule: JvmToTsMappingRule
+    JvmToTsMatchRule: JvmToTsMatchRule
     JvmType: JvmType
     KeyProperty: KeyProperty
     LabelPosition: LabelPosition
@@ -262,11 +273,18 @@ export type TypeMap = {
     SqlFormulaProperty: SqlFormulaProperty
     SqlToJvm: SqlToJvm
     SqlToJvmMappingRule: SqlToJvmMappingRule
+    SqlToJvmMatchRule: SqlToJvmMatchRule
+    SqlToTsMappingRule: SqlToTsMappingRule
+    SqlToTsMatchRule: SqlToTsMatchRule
     SqlType: SqlType
     Table: Table
     TemplateBuilder: TemplateBuilder
     TemplateOptions: TemplateOptions
     TransientProperty: TransientProperty
+    TsToJvmMappingRule: TsToJvmMappingRule
+    TsToJvmMatchRule: TsToJvmMatchRule
+    TsToSqlMappingRule: TsToSqlMappingRule
+    TsToSqlMatchRule: TsToSqlMatchRule
     TsType: TsType
     VersionProperty: VersionProperty
 }
@@ -342,8 +360,10 @@ export const typeDeclares = Object.freeze({
     JvmSource: JvmSourceDeclare,
     JvmToSql: JvmToSqlDeclare,
     JvmToSqlMappingRule: JvmToSqlMappingRuleDeclare,
+    JvmToSqlMatchRule: JvmToSqlMatchRuleDeclare,
     JvmToTs: JvmToTsDeclare,
     JvmToTsMappingRule: JvmToTsMappingRuleDeclare,
+    JvmToTsMatchRule: JvmToTsMatchRuleDeclare,
     JvmType: JvmTypeDeclare,
     KeyProperty: KeyPropertyDeclare,
     LabelPosition: LabelPositionDeclare,
@@ -402,11 +422,18 @@ export const typeDeclares = Object.freeze({
     SqlFormulaProperty: SqlFormulaPropertyDeclare,
     SqlToJvm: SqlToJvmDeclare,
     SqlToJvmMappingRule: SqlToJvmMappingRuleDeclare,
+    SqlToJvmMatchRule: SqlToJvmMatchRuleDeclare,
+    SqlToTsMappingRule: SqlToTsMappingRuleDeclare,
+    SqlToTsMatchRule: SqlToTsMatchRuleDeclare,
     SqlType: SqlTypeDeclare,
     Table: TableDeclare,
     TemplateBuilder: TemplateBuilderDeclare,
     TemplateOptions: TemplateOptionsDeclare,
     TransientProperty: TransientPropertyDeclare,
+    TsToJvmMappingRule: TsToJvmMappingRuleDeclare,
+    TsToJvmMatchRule: TsToJvmMatchRuleDeclare,
+    TsToSqlMappingRule: TsToSqlMappingRuleDeclare,
+    TsToSqlMatchRule: TsToSqlMatchRuleDeclare,
     TsType: TsTypeDeclare,
     VersionProperty: VersionPropertyDeclare,
 })

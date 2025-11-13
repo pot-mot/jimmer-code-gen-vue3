@@ -1,12 +1,9 @@
 import type {JSONSchemaType} from "ajv/lib/types/json-schema.ts";
 import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
-const JvmToSqlMappingRuleJsonSchema: JSONSchemaType<JvmToSqlMappingRule> = {
+const TsToSqlMappingRuleJsonSchema: JSONSchemaType<TsToSqlMappingRule> = {
     "type": "object",
     "properties": {
-        "jvmSource": {
-            "$ref": "#/definitions/JvmSource"
-        },
         "databaseSource": {
             "$ref": "#/definitions/DatabaseSource"
         },
@@ -36,19 +33,10 @@ const JvmToSqlMappingRuleJsonSchema: JSONSchemaType<JvmToSqlMappingRule> = {
     },
     "required": [
         "databaseSource",
-        "jvmSource",
         "matchRegExp",
         "result"
     ],
     "definitions": {
-        "JvmSource": {
-            "enum": [
-                "ANY",
-                "JAVA",
-                "KOTLIN"
-            ],
-            "type": "string"
-        },
         "DatabaseSource": {
             "enum": [
                 "ANY",
@@ -63,12 +51,12 @@ const JvmToSqlMappingRuleJsonSchema: JSONSchemaType<JvmToSqlMappingRule> = {
         }
     },
     "$schema": "http://json-schema.org/draft-07/schema#"
-} as any as JSONSchemaType<JvmToSqlMappingRule>
+} as any as JSONSchemaType<TsToSqlMappingRule>
 
-export const validateJvmToSqlMappingRule = createSchemaValidator<JvmToSqlMappingRule>(JvmToSqlMappingRuleJsonSchema)
+export const validateTsToSqlMappingRule = createSchemaValidator<TsToSqlMappingRule>(TsToSqlMappingRuleJsonSchema)
 
 export default {
-    uri: "$innerType/JvmToSqlMappingRule",
-    schema: JvmToSqlMappingRuleJsonSchema,
-    validate: validateJvmToSqlMappingRule,
+    uri: "$innerType/TsToSqlMappingRule",
+    schema: TsToSqlMappingRuleJsonSchema,
+    validate: validateTsToSqlMappingRule,
 }

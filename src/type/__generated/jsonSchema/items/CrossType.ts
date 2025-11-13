@@ -100,7 +100,7 @@ const CrossTypeJsonSchema: JSONSchemaType<CrossType> = {
     "definitions": {
         "JvmSource": {
             "enum": [
-                "BOTH",
+                "ANY",
                 "JAVA",
                 "KOTLIN"
             ],

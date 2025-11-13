@@ -3,7 +3,7 @@ import {createSchemaValidator} from "@/utils/type/typeGuard.ts";
 
 const JvmSourceJsonSchema: JSONSchemaType<JvmSource> = {
     "enum": [
-        "BOTH",
+        "ANY",
         "JAVA",
         "KOTLIN"
     ],

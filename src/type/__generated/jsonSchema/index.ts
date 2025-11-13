@@ -30,7 +30,9 @@ import JoinInfoJsonSchema from "./items/JoinInfo.ts";
 import JvmLanguageJsonSchema from "./items/JvmLanguage.ts";
 import JvmSourceJsonSchema from "./items/JvmSource.ts";
 import JvmToSqlMappingRuleJsonSchema from "./items/JvmToSqlMappingRule.ts";
+import JvmToSqlMatchRuleJsonSchema from "./items/JvmToSqlMatchRule.ts";
 import JvmToTsMappingRuleJsonSchema from "./items/JvmToTsMappingRule.ts";
+import JvmToTsMatchRuleJsonSchema from "./items/JvmToTsMatchRule.ts";
 import JvmTypeJsonSchema from "./items/JvmType.ts";
 import KeyPropertyJsonSchema from "./items/KeyProperty.ts";
 import LabelPositionJsonSchema from "./items/LabelPosition.ts";
@@ -67,9 +69,16 @@ import SingleColumnJoinInfoJsonSchema from "./items/SingleColumnJoinInfo.ts";
 import SingleColumnMidTableJoinInfoJsonSchema from "./items/SingleColumnMidTableJoinInfo.ts";
 import SqlFormulaPropertyJsonSchema from "./items/SqlFormulaProperty.ts";
 import SqlToJvmMappingRuleJsonSchema from "./items/SqlToJvmMappingRule.ts";
+import SqlToJvmMatchRuleJsonSchema from "./items/SqlToJvmMatchRule.ts";
+import SqlToTsMappingRuleJsonSchema from "./items/SqlToTsMappingRule.ts";
+import SqlToTsMatchRuleJsonSchema from "./items/SqlToTsMatchRule.ts";
 import SqlTypeJsonSchema from "./items/SqlType.ts";
 import TableJsonSchema from "./items/Table.ts";
 import TransientPropertyJsonSchema from "./items/TransientProperty.ts";
+import TsToJvmMappingRuleJsonSchema from "./items/TsToJvmMappingRule.ts";
+import TsToJvmMatchRuleJsonSchema from "./items/TsToJvmMatchRule.ts";
+import TsToSqlMappingRuleJsonSchema from "./items/TsToSqlMappingRule.ts";
+import TsToSqlMatchRuleJsonSchema from "./items/TsToSqlMatchRule.ts";
 import TsTypeJsonSchema from "./items/TsType.ts";
 import VersionPropertyJsonSchema from "./items/VersionProperty.ts";
 import EmbeddableTypeWithPropertiesJsonSchema from "../../context/jsonSchema/EmbeddableTypeWithProperties.ts";
@@ -110,7 +119,9 @@ export const jsonSchemas = Object.freeze({
     JvmLanguage: JvmLanguageJsonSchema,
     JvmSource: JvmSourceJsonSchema,
     JvmToSqlMappingRule: JvmToSqlMappingRuleJsonSchema,
+    JvmToSqlMatchRule: JvmToSqlMatchRuleJsonSchema,
     JvmToTsMappingRule: JvmToTsMappingRuleJsonSchema,
+    JvmToTsMatchRule: JvmToTsMatchRuleJsonSchema,
     JvmType: JvmTypeJsonSchema,
     KeyProperty: KeyPropertyJsonSchema,
     LabelPosition: LabelPositionJsonSchema,
@@ -147,9 +158,16 @@ export const jsonSchemas = Object.freeze({
     SingleColumnMidTableJoinInfo: SingleColumnMidTableJoinInfoJsonSchema,
     SqlFormulaProperty: SqlFormulaPropertyJsonSchema,
     SqlToJvmMappingRule: SqlToJvmMappingRuleJsonSchema,
+    SqlToJvmMatchRule: SqlToJvmMatchRuleJsonSchema,
+    SqlToTsMappingRule: SqlToTsMappingRuleJsonSchema,
+    SqlToTsMatchRule: SqlToTsMatchRuleJsonSchema,
     SqlType: SqlTypeJsonSchema,
     Table: TableJsonSchema,
     TransientProperty: TransientPropertyJsonSchema,
+    TsToJvmMappingRule: TsToJvmMappingRuleJsonSchema,
+    TsToJvmMatchRule: TsToJvmMatchRuleJsonSchema,
+    TsToSqlMappingRule: TsToSqlMappingRuleJsonSchema,
+    TsToSqlMatchRule: TsToSqlMatchRuleJsonSchema,
     TsType: TsTypeJsonSchema,
     VersionProperty: VersionPropertyJsonSchema,
     EmbeddableTypeWithProperties: EmbeddableTypeWithPropertiesJsonSchema,

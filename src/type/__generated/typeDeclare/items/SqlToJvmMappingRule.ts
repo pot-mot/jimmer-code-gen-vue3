@@ -1,8 +1,8 @@
 export default Object.freeze({
     fileName: 'SqlToJvmMappingRule.d.ts',
     content: `type SqlToJvmMappingRule = {
-    jvmSource: JvmSource
     databaseSource: DatabaseSource
+    jvmSource: JvmSource
     matchRegExp: string
     result: JvmType
 }`,
