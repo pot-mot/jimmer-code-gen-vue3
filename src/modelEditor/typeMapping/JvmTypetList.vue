@@ -142,7 +142,6 @@ const handleKeyDown = (e: KeyboardEvent) => {
     <div v-if="isEdit" tabindex="-1" @keydown="handleKeyDown">
         <EditList
             v-if="isEdit"
-            class="jvm-type-edit-list"
             v-model:lines="jvmTypeInputs"
             :default-line="defaultTsType"
             :json-schema-validate="validateJvmType"
@@ -193,16 +192,6 @@ const handleKeyDown = (e: KeyboardEvent) => {
 .view-list-operation {
     display: flex;
     gap: 0.5rem;
-}
-
-.jvm-type-edit-list {
-    --list-line-hover-bg-color: var(--background-color);
-    --list-line-selected-bg-color: var(--background-color-hover);
-}
-
-.jvm-type-edit-list :deep(.edit-list) {
-    --list-line-hover-bg-color: var(--background-color-hover);
-    --list-line-selected-bg-color: var(--primary-color-background);
 }
 
 .edit-list-operation {
