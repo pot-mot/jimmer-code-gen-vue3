@@ -1,6 +1,6 @@
 export const defaultCrossTypes: CrossType[] =[
     {
-        jvmSource: "BOTH",
+        jvmSource: "ANY",
         databaseSource: "ANY",
         sqlType: {
             type: "VARCHAR(255)",

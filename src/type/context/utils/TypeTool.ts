@@ -13,7 +13,7 @@ export const createSqlToJvm = (
 ): SqlToJvm => {
     const cachedSqlToJvmRules: CompiledMappingRule<JvmType>[] = sqlToJvmMappingRules
         .filter(rule => {
-            return (rule.jvmSource === jvmLanguage || rule.jvmSource === "BOTH") &&
+            return (rule.jvmSource === jvmLanguage || rule.jvmSource === "ANY") &&
                 (rule.databaseSource === databaseType || rule.databaseSource === "ANY")
         })
         .map(rule => ({
@@ -44,7 +44,7 @@ export const createJvmToSql = (
 ): JvmToSql => {
     const cachedJvmToSqlRules: CompiledMappingRule<SqlType>[] = jvmToSqlMappingRules
         .filter(rule => {
-            return (rule.jvmSource === jvmLanguage || rule.jvmSource === "BOTH") &&
+            return (rule.jvmSource === jvmLanguage || rule.jvmSource === "ANY") &&
                 (rule.databaseSource === databaseType || rule.databaseSource === "ANY")
         })
         .map(rule => ({
@@ -71,7 +71,7 @@ export const createJvmToTs = (
     jvmLanguage: JvmLanguage
 ): JvmToTs => {
     const cachedJvmToTsRules: CompiledMappingRule<TsType>[] = jvmToTsMappingRules
-        .filter(rule => rule.jvmSource === jvmLanguage || rule.jvmSource === "BOTH")
+        .filter(rule => rule.jvmSource === jvmLanguage || rule.jvmSource === "ANY")
         .map(rule => ({
             jvmSource: rule.jvmSource,
             regex: new RegExp(rule.matchRegExp),
