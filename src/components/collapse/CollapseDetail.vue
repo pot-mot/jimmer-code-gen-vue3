@@ -60,7 +60,7 @@ watch(() => isOpen.value, () => {
                 if (openTrigger === 'head') isOpen = !isOpen
             }"
         >
-            <div
+            <button
                 class="caret-wrapper"
                 v-if="triggerPosition === 'left'"
                 @click="() => {
@@ -71,11 +71,11 @@ watch(() => isOpen.value, () => {
                     class="caret left"
                     :class="{ open: isOpen }"
                 />
-            </div>
+            </button>
             <div>
                 <slot name="head"/>
             </div>
-            <div
+            <button
                 class="caret-wrapper"
                 v-if="triggerPosition === 'right'"
                 @click="() => {
@@ -86,7 +86,7 @@ watch(() => isOpen.value, () => {
                     class="caret right"
                     :class="{ open: isOpen }"
                 />
-            </div>
+            </button>
         </div>
 
         <div
@@ -101,6 +101,17 @@ watch(() => isOpen.value, () => {
 <style scoped>
 .collapse-detail-head {
     width: 100%;
+}
+
+.caret-wrapper {
+    display: flex;
+    align-items: center;
+    border: none;
+    background-color: transparent;
+}
+
+.caret-wrapper:focus {
+    outline: none;
 }
 
 .collapse-detail-head.open-by-head {
@@ -119,33 +130,29 @@ watch(() => isOpen.value, () => {
 }
 
 .collapse-detail-head.caret-left {
-    position: relative;
     display: grid;
     grid-template-columns: 1rem calc(100% - 1rem);
 }
 
 .collapse-detail-head.caret-right {
-    position: relative;
     display: grid;
     grid-template-columns: calc(100% - 1rem) 1rem;
 }
 
 .collapse-detail-head > .caret-wrapper > .caret {
-    position: absolute;
-    top: 50%;
     transition: transform v-bind(transitionDuration+ 'ms') ease;
 }
 
 .collapse-detail-head > .caret-wrapper > .caret.left {
-    transform: translateY(-50%) rotate(-90deg);
+    transform: rotate(-90deg);
 }
 
 .collapse-detail-head > .caret-wrapper > .caret.right {
-    transform: translateY(-50%) rotate(90deg);
+    transform: rotate(90deg);
 }
 
 .collapse-detail-head > .caret-wrapper > .caret.open {
-    transform: translateY(-50%) rotate(0);
+    transform: rotate(0);
 }
 
 .collapse-detail-body {
