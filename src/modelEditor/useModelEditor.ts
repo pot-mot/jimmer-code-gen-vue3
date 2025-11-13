@@ -40,6 +40,7 @@ import {useModelDiagnoseInfo} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.t
 import {api} from "@/api";
 import {createSqlToJvm} from "@/type/context/utils/TypeTool.ts";
 import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
+import {translate} from "@/store/i18nStore.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -1052,33 +1053,33 @@ export const useModelEditor = createStore(() => {
         ) => {
             try {
                 const result = await clipBoard.copy(data)
-                sendMessage("copy", {type: "success"})
+                sendMessage(translate("copy_success_tip"), {type: "success"})
                 focus()
                 return result
             } catch (e) {
-                sendMessage(`copy fail`, {type: "warning"})
+                sendMessage(translate("copy_fail_tip"), {type: "warning"})
                 throw e
             }
         },
         paste: async () => {
             try {
                 const result = await clipBoard.paste()
-                sendMessage("paste", {type: "success"})
+                sendMessage(translate("paste_success_tip"), {type: "success"})
                 focus()
                 return result
             } catch (e) {
-                sendMessage(`paste fail`, {type: "warning"})
+                sendMessage(translate("paste_fail_tip"), {type: "warning"})
                 throw e
             }
         },
         cut: async () => {
             try {
                 const result = await clipBoard.cut()
-                sendMessage("cut", {type: "success"})
+                sendMessage(translate("cut_success_tip"), {type: "success"})
                 focus()
                 return result
             } catch (e) {
-                sendMessage(`cut fail`, {type: "warning"})
+                sendMessage(translate("cut_fail_tip"), {type: "warning"})
                 throw e
             }
         },

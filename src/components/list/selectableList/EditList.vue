@@ -4,13 +4,14 @@ import {cloneDeep} from 'lodash-es'
 import type {EditListProps} from "@/components/list/selectableList/ListProps.ts";
 import type {EditListEmits} from "@/components/list/selectableList/ListEmits.ts";
 import {createSelectRange, useListSelection} from "@/components/list/selectableList/listSelection.ts";
-import {judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
+import {judgeTarget, judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
 import {useClickOutside} from "@/components/list/selectableList/useClickOutside.ts";
 import {sendMessage} from "@/components/message/messageApi.ts";
 import IconAdd from "@/components/icons/IconAdd.vue";
 import type {ErrorObject} from "ajv";
 import "./list.css"
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
+import {translate} from "@/store/i18nStore.ts";
 
 const lines = defineModel<T[]>('lines', {
     required: true
@@ -34,6 +35,7 @@ const props = withDefaults(
 
 const emits = defineEmits<EditListEmits<T>>()
 
+const editListRef = useTemplateRef("editListRef")
 const editListBody = useTemplateRef("editListBody")
 
 const listSelection = useListSelection<number>()
@@ -80,7 +82,10 @@ useClickOutside(() => editListBody.value, () => {
 })
 
 const handleKeyboardEvent = async (e: KeyboardEvent) => {
-    if (judgeTargetIsInteraction(e)) {
+    if (
+        judgeTargetIsInteraction(e) ||
+        judgeTarget(e, (el) => el.classList.contains('edit-list') && el !== editListRef.value)
+    ) {
         return
     }
 
@@ -158,7 +163,8 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
                     tempLines.splice(insertIndex, 0, value)
                     insertLength = 1
                 } else {
-                    sendMessage("Paste Fail", {type: "error"})
+                    sendMessage(translate("paste_fail_tip"), {type: "error"})
+                    console.error("Paste Fail", validateErrorsMap)
                     return
                 }
 
@@ -172,7 +178,8 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
                 }
                 props.afterPaste()
             } catch (e) {
-                sendMessage("Paste Fail", {type: "error"})
+                sendMessage(translate("paste_fail_tip"), {type: "error"})
+                console.error("Paste Fail", e)
             }
         }
     }
@@ -347,7 +354,7 @@ defineExpose({
 </script>
 
 <template>
-    <div class="edit-list" tabindex="-1" @keydown="handleKeyboardEvent">
+    <div ref="editListRef" class="edit-list" tabindex="-1" @keydown="handleKeyboardEvent">
         <slot
             name="head"
             :lines="lines"

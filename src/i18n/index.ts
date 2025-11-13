@@ -35,6 +35,12 @@ export type MainLocale = {
     not_blank_warning: (fieldName: string) => string
     json_validate_error: string
     no_option_tip: string
+    copy_success_tip: string
+    copy_fail_tip: string
+    cut_success_tip: string
+    cut_fail_tip: string
+    paste_success_tip: string
+    paste_fail_tip: string
 
     name: string
     comment: string
@@ -111,6 +117,12 @@ export type MainLocale = {
     MappedSuperClassGenerator: string
     ModelGenerator: string
     TableGenerator: string
+
+    extraImports: string
+    extraAnnotations: string
+    jvmMatchRules: string
+    sqlMatchRules: string
+    tsMatchRules: string
 }
 
 type BaseLocale = {

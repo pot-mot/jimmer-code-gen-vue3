@@ -37,6 +37,12 @@ export const localeZhCn: MainLocale = {
     not_blank_warning: (fieldName: string) => `${fieldName}不能为空`,
     json_validate_error: "JSON格式错误",
     no_option_tip: "无可选项",
+    copy_success_tip: "复制成功",
+    copy_fail_tip: "复制失败",
+    cut_success_tip: "剪切成功",
+    cut_fail_tip: "剪切失败",
+    paste_success_tip: "粘贴成功",
+    paste_fail_tip: "粘贴失败",
 
     name: "名称",
     comment: "备注",
@@ -113,4 +119,10 @@ export const localeZhCn: MainLocale = {
     MappedSuperClassGenerator: "抽象实体",
     ModelGenerator: "模型",
     TableGenerator: "数据库表",
+
+    extraImports: "Imports",
+    extraAnnotations: "Annotations",
+    jvmMatchRules: "JVM类型匹配",
+    sqlMatchRules: "SQL类型匹配",
+    tsMatchRules: "TS类型匹配",
 }

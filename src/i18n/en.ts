@@ -37,6 +37,12 @@ export const localeEn: MainLocale = {
     not_blank_warning: (fieldName: string) => `${fieldName} cannot be empty.`,
     json_validate_error: "JSON Validate Error",
     no_option_tip: "No Options",
+    copy_success_tip: "Copy Success",
+    copy_fail_tip: "Copy Fail",
+    cut_success_tip: "Cut Success",
+    cut_fail_tip: "Cut Fail",
+    paste_success_tip: "Paste Success",
+    paste_fail_tip: "Paste Fail",
 
     name: "Name",
     comment: "Comment",
@@ -113,4 +119,10 @@ export const localeEn: MainLocale = {
     MappedSuperClassGenerator: "MappedSuperClass",
     ModelGenerator: "Model",
     TableGenerator: "Table",
+
+    extraImports: "Imports",
+    extraAnnotations: "Annotations",
+    jvmMatchRules: "JVM Type Match",
+    sqlMatchRules: "SQL Type Match",
+    tsMatchRules: "TS Type Match",
 }
