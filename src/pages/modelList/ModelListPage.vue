@@ -359,21 +359,34 @@ onBeforeUnmount(() => {
 .keywords-input {
     border-radius: 0.5rem;
     padding: 0.5rem;
-    height: 2.3rem;
+    height: 2rem;
     font-size: 0.8rem;
 }
 
 .jvm-language-select {
     width: 9rem;
 }
+
+.jvm-language-select :deep(.placeholder),
+.jvm-language-select :deep(.jvm-language-selected-option) {
+    padding: 0.4rem 0.5rem;
+}
+
 .database-type-select {
     width: 12rem;
 }
 
+.database-type-select :deep(.placeholder),
+.database-type-select :deep(.database-type-selected-option) {
+    padding: 0.4rem 0.5rem;
+}
+
 .sort-button {
-    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    height: 2rem;
     padding: 0.5rem;
-    height: 2.3rem;
+    border-radius: 0.5rem;
 }
 
 .model-list {

@@ -77,6 +77,7 @@ const handleCancel = () => {
             <DatabaseTypeSelect
                 v-model="model.type"
                 @update:model-value="handleDatabaseTypeChange"
+                class="database-type-select"
             />
         </div>
 
@@ -144,6 +145,14 @@ const handleCancel = () => {
     width: 100%;
     padding: 0.5rem 0.5rem 1rem;
     overflow-y: auto;
+}
+
+.database-type-select {
+    width: 100%;
+}
+
+.database-type-select :deep(.database-type-selected-option) {
+    padding: 0.5rem;
 }
 
 .form-item {
