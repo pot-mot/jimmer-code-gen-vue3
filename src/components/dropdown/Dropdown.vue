@@ -67,9 +67,7 @@ watch(() => isOpen.value, async (value) => {
             <div class="dropdown-header">
                 <slot name="head"/>
             </div>
-            <div class="dropdown-arrow" :class="{ 'rotated': isOpen }">
-                <IconCaretDown/>
-            </div>
+            <IconCaretDown  class="dropdown-arrow" :class="{ 'rotated': isOpen }"/>
         </div>
 
         <Teleport to="body">

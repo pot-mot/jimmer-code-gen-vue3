@@ -121,11 +121,12 @@ const handleKeyDown = (e: KeyboardEvent) => {
 <template>
     <Dropdown v-model="isOpen" ref="filterableSelect" :class="{'input-focus': isInputFocus}">
         <template #head>
-            <div class="select-input" :class="{ open: isOpen }">
+            <div class="select-head" :class="{ open: isOpen }">
                 <slot name="selected" :option="model">
                     <span class="option-view">{{ model }}</span>
                 </slot>
                 <input
+                    class="filter-input"
                     ref="filterInputRef"
                     v-model="filterText"
                     @focus="handleInputFocus"
@@ -171,13 +172,14 @@ const handleKeyDown = (e: KeyboardEvent) => {
     border-color: var(--border-color);
 }
 
-.select-input {
+.select-head {
     display: flex;
-    width: 100%;
+    align-items: center;
     flex-wrap: nowrap;
+    width: 100%;
 }
 
-.select-input input {
+.select-head .filter-input {
     flex: 1;
     border: none;
     outline: none;
