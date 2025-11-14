@@ -52,6 +52,10 @@ export type MainLocale = {
     password: string
     createdTime: string
     modifiedTime: string
+    nullable: string
+    dataSize: string
+    numericPrecision: string
+    defaultValue: string
     generateResult: string
 
     model: string

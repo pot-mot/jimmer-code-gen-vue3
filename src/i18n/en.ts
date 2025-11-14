@@ -54,6 +54,10 @@ export const localeEn: MainLocale = {
     password: "Password",
     createdTime: "Created At",
     modifiedTime: "Modified At",
+    nullable: "Nullable",
+    dataSize: "Data Size",
+    numericPrecision: "Numeric Precision",
+    defaultValue: "Default Value",
     generateResult: "Generate Result",
 
     model: "Model",

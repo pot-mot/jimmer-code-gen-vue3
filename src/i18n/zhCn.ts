@@ -54,6 +54,10 @@ export const localeZhCn: MainLocale = {
     password: "密码",
     createdTime: "创建时间",
     modifiedTime: "修改时间",
+    nullable: "Nullable",
+    dataSize: "长度",
+    numericPrecision: "精度",
+    defaultValue: "默认值",
     generateResult: "生成结果",
 
     model: "模型",
