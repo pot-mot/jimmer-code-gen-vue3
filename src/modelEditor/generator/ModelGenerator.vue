@@ -9,6 +9,11 @@ import {withLoading} from "@/components/loading/loadingApi.ts";
 import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
 import {useScriptDialog} from "@/modelEditor/script/useScriptDialog.ts";
 import {translate} from "@/store/i18nStore.ts";
+import IconRefresh from "@/components/icons/IconRefresh.vue";
+import IconEdit from "@/components/icons/IconEdit.vue";
+import IconDownload from "@/components/icons/IconDownload.vue";
+import {downloadZip} from "@/utils/file/zipDownload.ts";
+import {sendMessage} from "@/components/message/messageApi.ts";
 
 const {
     contextData,
@@ -60,6 +65,31 @@ const handleGenerate = async () => {
     })
 }
 
+const downloadFileName = "codes.zip"
+const downloadAll = ref(true)
+const handleDownloadFiles = (selectedPathSet?: Set<string>) => {
+    try {
+        withLoading(translate('download'), async () => {
+            if (generateResult.value === undefined || Object.keys(generateResult.value).length === 0) {
+                return
+            }
+
+            if (selectedPathSet !== undefined && selectedPathSet.size > 0) {
+                const files: Record<string, string | undefined> = {}
+                for (const path of selectedPathSet) {
+                    files[path] = generateResult.value[path]
+                }
+                await downloadZip(downloadFileName, files)
+            } else {
+                await downloadZip(downloadFileName, generateResult.value)
+            }
+            sendMessage(translate({key: 'download_success', args: [downloadFileName]}))
+        })
+    } catch (e) {
+        receiveError(e)
+    }
+}
+
 watch(() => openState.value, async () => {
     if (openState.value) {
         await handleGenerate()
@@ -86,10 +116,35 @@ watch(() => openState.value, async () => {
             v-if="generateResult"
             :files="generateResult"
         >
-            <template #left-top>
-                <div>
-                    <button @click="handleGenerate">Generate</button>
-                    <button @click="openGenerateScriptEditor">Edit Scripts</button>
+            <template #left-top="{selectedPathSet}">
+                <div class="file-toolbar">
+                    <button @click="handleGenerate">
+                        <IconRefresh/>
+                        {{ translate('generate') }}
+                    </button>
+                    <button @click="openGenerateScriptEditor">
+                        <IconEdit/>
+                        {{ translate('script_dialog_button') }}
+                    </button>
+                    <button @click="handleDownloadFiles(downloadAll ? undefined : selectedPathSet)">
+                        <IconDownload/>
+                        {{ translate('download') }}
+                        <span
+                            class="download-option"
+                            :class="{selected: downloadAll}"
+                            @click="downloadAll = true"
+                        >
+                            {{ translate('all') }}
+                        </span>
+                        <span> | </span>
+                        <span
+                            class="download-option"
+                            :class="{selected: !downloadAll}"
+                            @click="downloadAll = false"
+                        >
+                            {{ translate('selected') }}
+                        </span>
+                    </button>
                 </div>
             </template>
         </FileTreeViewer>
@@ -99,5 +154,21 @@ watch(() => openState.value, async () => {
 <style scoped>
 .error-message-content {
     color: var(--danger-color);
+}
+
+.file-toolbar {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.file-toolbar > button {
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.download-option.selected {
+    color: var(--primary-color);
 }
 </style>

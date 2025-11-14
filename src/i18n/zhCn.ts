@@ -14,11 +14,16 @@ export const localeZhCn: MainLocale = {
     cancel: "取消",
     load: "导入",
     export: "导出",
+    upload: "上传",
+    download: "下载",
     execute: "执行",
     test: "测试",
     generate: "生成",
     reset: "重置",
     refresh: "刷新",
+
+    all: "全部",
+    selected: "选中部分",
 
     reset_confirm_title: (target: string) => `${target}重置确认`,
     reset_confirm_content: (target: string) => `确定要重置${target}吗？`,

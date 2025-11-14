@@ -10,6 +10,7 @@ const props = defineProps<{
 }>()
 
 const paths = computed(() => Object.keys(props.files))
+const selectedPathSet = ref<Set<string>>(new Set())
 
 const currentFilePath = ref<string>()
 
@@ -31,10 +32,16 @@ const currentLanguage = computed(() => {
     <Splitpanes>
         <Pane size="20">
             <div class="pane-content">
-                <slot name="left-top"/>
+                <slot
+                    name="left-top"
+                    :selectedPathSet="selectedPathSet"
+                    :currentFileContent="currentFileContent"
+                    :currentLanguage="currentLanguage"
+                />
                 <FileTree
                     :paths="paths"
                     v-model:current-file-path="currentFilePath"
+                    v-model:selected-path-set="selectedPathSet"
                 />
             </div>
         </Pane>

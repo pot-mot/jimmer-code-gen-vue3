@@ -25,7 +25,9 @@ type FileTreeNode = TreeNode<{
 }>
 
 const treeData = ref<FileTreeNode[]>([])
-const selectedIdSet = ref(new Set<string>())
+const selectedPathSet = defineModel<Set<string>>('selectedPathSet', {
+    default: new Set<string>()
+})
 
 const buildTree = (paths: Iterable<string>): FileTreeNode[] => {
     const trees: FileTreeNode[] = []
@@ -74,7 +76,7 @@ const buildTree = (paths: Iterable<string>): FileTreeNode[] => {
     if (firstFileNode) {
         currentPath.value = firstFileNode.data.path
         currentFilePath.value = firstFileNode.data.path
-        selectedIdSet.value = new Set([currentPath.value])
+        selectedPathSet.value = new Set([currentPath.value])
     }
 
     return sortedTree
@@ -125,7 +127,7 @@ watch(() => props.paths, async () => {
 <template>
     <SelectableTree
         :data="treeData"
-        v-model:selected-id-set="selectedIdSet"
+        v-model:selected-id-set="selectedPathSet"
     >
         <template #default="{data, node}">
             <div

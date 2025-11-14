@@ -12,11 +12,16 @@ export type MainLocale = {
     cancel: string
     load: string
     export: string
+    upload: string
+    download: string
     execute: string
     test: string
     generate: string
     reset: string
     refresh: string
+
+    all: string
+    selected: string
 
     reset_confirm_title: (target: string) => string
     reset_confirm_content: (target: string) => string

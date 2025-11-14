@@ -14,11 +14,16 @@ export const localeEn: MainLocale = {
     cancel: "Cancel",
     load: "Load",
     export: "Export",
+    upload: "Upload",
+    download: "Download",
     execute: "Execute",
     test: "Test",
     generate: "Generate",
     reset: "Reset",
     refresh: "Refresh",
+
+    all: "All",
+    selected: "Selected",
 
     reset_confirm_title: (target: string) => `${target} Reset Confirm`,
     reset_confirm_content: (target: string) => `Are you sure to reset ${target}?`,
