@@ -21,12 +21,12 @@ onBeforeMount(() => {
 
 const props = defineProps<{
     getId: (option: T) => string,
-    options: T[],
+    options: ReadonlyArray<T>,
     canFilter: true,
     filter: (option: T, filterText: string) => boolean,
 } | {
     getId: (option: T) => string,
-    options: T[],
+    options: ReadonlyArray<T>,
     canFilter?: false,
     filter?: (option: T, filterText: string) => boolean,
 }>()
