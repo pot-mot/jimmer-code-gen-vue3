@@ -19,8 +19,11 @@ export const syncEntityAutoChange = (
         entity.tableName = nameTool.convert(entity.name, "UPPER_CAMEL", databaseNameStrategy)
     }
     for (const property of entity.properties) {
-        if ("autoSyncColumnName" in property && property.autoSyncColumnName) {
-            property.columnInfo.name = nameTool.convert(property.name, "UPPER_CAMEL", databaseNameStrategy)
+        if ("columnInfo" in property) {
+            property.columnInfo.nullable = property.nullable
+            if ("autoSyncColumnName" in property && property.autoSyncColumnName) {
+                property.columnInfo.name = nameTool.convert(property.name, "UPPER_CAMEL", databaseNameStrategy)
+            }
         }
         if ("joinInfo" in property && property.autoGenerateJoinInfo) {
             const edgedAssociation = contextData.associationMap.get(property.associationId)
@@ -48,8 +51,11 @@ export const syncMappedSuperClassAutoChange = (
     const databaseNameStrategy = contextData.model.databaseNameStrategy
 
     for (const property of mappedSuperClass.properties) {
-        if ("autoSyncColumnName" in property && property.autoSyncColumnName) {
-            property.columnInfo.name = nameTool.convert(property.name, "UPPER_CAMEL", databaseNameStrategy)
+        if ("columnInfo" in property) {
+            property.columnInfo.nullable = property.nullable
+            if ("autoSyncColumnName" in property && property.autoSyncColumnName) {
+                property.columnInfo.name = nameTool.convert(property.name, "UPPER_CAMEL", databaseNameStrategy)
+            }
         }
         if ("joinInfo" in property && property.autoGenerateJoinInfo) {
             const edgedAssociation = contextData.associationMap.get(property.associationId)
@@ -65,6 +71,22 @@ export const syncMappedSuperClassAutoChange = (
                 const referencedEntity = contextData.entityMap.get(association.referencedEntityId)
                 if (referencedEntity === undefined) return
                 property.idViewName = tmpl_idView(property.idViewNameTemplate, property)
+            }
+        }
+    }
+}
+
+export const syncEmbeddableTypeAutoChange = (
+    embeddableType: EmbeddableTypeWithProperties,
+    contextData: DeepReadonly<ModelContextData>,
+) => {
+    const databaseNameStrategy = contextData.model.databaseNameStrategy
+
+    for (const property of embeddableType.properties) {
+        if ("columnInfo" in property) {
+            property.columnInfo.nullable = property.nullable
+            if ("autoSyncColumnName" in property && property.autoSyncColumnName) {
+                property.columnInfo.name = nameTool.convert(property.name, "UPPER_CAMEL", databaseNameStrategy)
             }
         }
     }

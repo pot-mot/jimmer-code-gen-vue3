@@ -19,7 +19,7 @@ import {
 } from "@/type/context/utils/AbstractAssociationToReal.ts";
 import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 import {
-    syncAssociationAutoChange,
+    syncAssociationAutoChange, syncEmbeddableTypeAutoChange,
     syncEntityAutoChange,
     syncMappedSuperClassAutoChange
 } from "@/modelEditor/history/SyncAutoChange.ts";
@@ -40,6 +40,7 @@ export const contextDataToContext = (
 
     const embeddableTypeBaseInfoMap = new Map<string, EmbeddableTypeWithCategorizedProperties>()
     for (const [id, embeddableType] of contextData.embeddableTypeMap) {
+        syncEmbeddableTypeAutoChange(embeddableType, contextData)
         const categorizedProperties = categorizeEmbeddableTypeProperties(embeddableType.properties)
         const embeddableTypeWithCategorizedProperties: EmbeddableTypeWithCategorizedProperties = {
             ...embeddableType,

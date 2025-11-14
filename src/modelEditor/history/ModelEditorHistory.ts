@@ -30,6 +30,7 @@ import {nameTool} from "@/type/context/utils/NameTool.ts";
 import {defaultInheritInfo, useInheritInfoSync} from "@/type/context/utils/InheritInfo.ts";
 import {
     syncAssociationAutoChange,
+    syncEmbeddableTypeAutoChange,
     syncEntityAutoChange,
     syncMappedSuperClassAutoChange
 } from "@/modelEditor/history/SyncAutoChange.ts";
@@ -672,6 +673,7 @@ export const useModelEditorHistory = (
         if (menuItem.embeddableTypeMap.has(id)) throw new Error(`[${id}] is already existed in [${groupId}]`)
 
         const embeddableTypeWithId = cloneDeepReadonlyRaw<EmbeddableTypeWithProperties>(options.embeddableType)
+        syncEmbeddableTypeAutoChange(embeddableTypeWithId, contextData)
         contextData.embeddableTypeMap.set(id, embeddableTypeWithId)
         addEmbeddableTypeWatcher(id)
         menuItem.embeddableTypeMap.set(id, embeddableTypeWithId)
@@ -724,6 +726,7 @@ export const useModelEditorHistory = (
         const embeddableType = cloneDeepReadonlyRaw<EmbeddableTypeWithProperties>(options.embeddableType)
 
         removeEmbeddableTypeWatcher(id)
+        syncEmbeddableTypeAutoChange(embeddableType, contextData)
         for (const property of embeddableType.properties) {
             if ("autoSyncColumnName" in property && property.autoSyncColumnName) {
                 property.columnInfo.name = nameTool.convert(property.name, "UPPER_CAMEL", contextData.model.databaseNameStrategy)
