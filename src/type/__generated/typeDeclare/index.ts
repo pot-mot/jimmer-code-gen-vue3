@@ -18,6 +18,7 @@ import ConcreteAssociationDeclare from "./items/ConcreteAssociation.ts";
 import ConcreteAssociationIdOnlyDeclare from "./items/ConcreteAssociationIdOnly.ts";
 import ConcreteEdgedAssociationDeclare from "./items/ConcreteEdgedAssociation.ts";
 import CrossTypeDeclare from "./items/CrossType.ts";
+import CrossType_IdOnlyDeclare from "./items/CrossType_IdOnly.ts";
 import DatabaseDeclare from "./items/Database.ts";
 import DatabaseSourceDeclare from "./items/DatabaseSource.ts";
 import DatabaseTypeDeclare from "./items/DatabaseType.ts";
@@ -134,6 +135,7 @@ import TableDeclare from "./items/Table.ts";
 import TemplateBuilderDeclare from "./items/TemplateBuilder.ts";
 import TemplateOptionsDeclare from "./items/TemplateOptions.ts";
 import TransientPropertyDeclare from "./items/TransientProperty.ts";
+import TsImportDeclare from "./items/TsImport.ts";
 import TsMatchRuleDeclare from "./items/TsMatchRule.ts";
 import TsToJvmMappingRuleDeclare from "./items/TsToJvmMappingRule.ts";
 import TsToSqlMappingRuleDeclare from "./items/TsToSqlMappingRule.ts";
@@ -161,6 +163,7 @@ export type TypeMap = {
     ConcreteAssociationIdOnly: ConcreteAssociationIdOnly
     ConcreteEdgedAssociation: ConcreteEdgedAssociation
     CrossType: CrossType
+    CrossType_IdOnly: CrossType_IdOnly
     Database: Database
     DatabaseSource: DatabaseSource
     DatabaseType: DatabaseType
@@ -276,6 +279,7 @@ export type TypeMap = {
     TemplateBuilder: TemplateBuilder
     TemplateOptions: TemplateOptions
     TransientProperty: TransientProperty
+    TsImport: TsImport
     TsMatchRule: TsMatchRule
     TsToJvmMappingRule: TsToJvmMappingRule
     TsToSqlMappingRule: TsToSqlMappingRule
@@ -306,6 +310,7 @@ export const typeDeclares = Object.freeze({
     ConcreteAssociationIdOnly: ConcreteAssociationIdOnlyDeclare,
     ConcreteEdgedAssociation: ConcreteEdgedAssociationDeclare,
     CrossType: CrossTypeDeclare,
+    CrossType_IdOnly: CrossType_IdOnlyDeclare,
     Database: DatabaseDeclare,
     DatabaseSource: DatabaseSourceDeclare,
     DatabaseType: DatabaseTypeDeclare,
@@ -422,6 +427,7 @@ export const typeDeclares = Object.freeze({
     TemplateBuilder: TemplateBuilderDeclare,
     TemplateOptions: TemplateOptionsDeclare,
     TransientProperty: TransientPropertyDeclare,
+    TsImport: TsImportDeclare,
     TsMatchRule: TsMatchRuleDeclare,
     TsToJvmMappingRule: TsToJvmMappingRuleDeclare,
     TsToSqlMappingRule: TsToSqlMappingRuleDeclare,

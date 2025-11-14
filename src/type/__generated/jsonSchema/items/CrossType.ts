@@ -75,11 +75,15 @@ const CrossTypeJsonSchema: JSONSchemaType<CrossType> = {
                             },
                             "fromPath": {
                                 "type": "string"
+                            },
+                            "typeOnly": {
+                                "type": "boolean"
                             }
                         },
                         "required": [
                             "fromPath",
-                            "name"
+                            "name",
+                            "typeOnly"
                         ]
                     }
                 }

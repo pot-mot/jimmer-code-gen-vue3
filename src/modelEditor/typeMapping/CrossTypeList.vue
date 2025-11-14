@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import EditList from "@/components/list/selectableList/EditList.vue";
 import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
-import type {JvmTypeInput} from "@/api/__generated/model/static";
+import type {CrossTypeInput} from "@/api/__generated/model/static";
 import {type ComponentPublicInstance, ref, watch, type WatchStopHandle} from "vue";
 import IconEdit from "@/components/icons/IconEdit.vue";
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
-import JvmTypeEditor from "@/modelEditor/typeMapping/item/JvmTypeEditor.vue";
-import JvmTypeViewer from "@/modelEditor/typeMapping/item/JvmTypeViewer.vue";
+import CrossTypeEditor from "@/modelEditor/typeMapping/item/CrossTypeEditor.vue";
+import CrossTypeViewer from "@/modelEditor/typeMapping/item/CrossTypeViewer.vue";
 import IconCheck from "@/components/icons/IconCheck.vue";
 import IconRefresh from "@/components/icons/IconRefresh.vue";
-import {validateJvmType} from "@/type/__generated/jsonSchema/items/JvmType.ts";
 import IconDelete from "@/components/icons/IconDelete.vue";
 import IconClose from "@/components/icons/IconClose.vue";
 import {translate} from "@/store/i18nStore.ts";
@@ -17,65 +16,68 @@ import {type CommandDefinition, useCommandHistory} from "@/history/commandHistor
 import DeepReadonly from "@/type/__generated/typeDeclare/items/DeepReadonly.ts";
 import {debounce} from "lodash-es";
 import {judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
+import {validateCrossType_IdOnly} from "@/type/__generated/jsonSchema/items/CrossType_IdOnly.ts";
 
 const {
+    crossTypes,
+    saveCrossType,
+    refreshCrossTypes,
     jvmTypes,
-    saveJvmType,
-    refreshJvmTypes,
+    sqlTypes,
+    tsTypes,
 } = useTypeMapping()
 
 const isEdit = ref(false)
-const jvmTypeInputs = ref<JvmTypeInput[]>([])
+const crossTypeInputs = ref<CrossTypeInput[]>([])
 
-const beforePaste = (jvmTypes: JvmTypeInput[]) => {
-    for (const jvmType of jvmTypes) {
-        jvmType.id = undefined
+const beforePaste = (crossTypes: CrossTypeInput[]) => {
+    for (const crossType of crossTypes) {
+        crossType.id = undefined
     }
 }
 
-
 const history = useCommandHistory<{
     change: CommandDefinition<DeepReadonly<{
-        newValue: JvmTypeInput[],
-        oldValue: JvmTypeInput[],
+        newValue: CrossTypeInput[],
+        oldValue: CrossTypeInput[],
     }>>
 }>()
 
-let oldJvmTypeInputs: DeepReadonly<JvmTypeInput[]> | undefined
-const debounceSynUpdate = debounce(async (inputs: JvmTypeInput[]) => {
-    if (oldJvmTypeInputs !== undefined) {
+let oldCrossTypeInputs: DeepReadonly<CrossTypeInput[]> | undefined
+const debounceSynUpdate = debounce(async (inputs: CrossTypeInput[]) => {
+    if (oldCrossTypeInputs !== undefined) {
         history.executeCommand('change', {
             newValue: inputs,
-            oldValue: oldJvmTypeInputs,
+            oldValue: oldCrossTypeInputs,
         })
     }
-    oldJvmTypeInputs = cloneDeepReadonlyRaw(inputs)
+    oldCrossTypeInputs = cloneDeepReadonlyRaw(inputs)
 }, 500)
 
 let stopWatch: WatchStopHandle | undefined
 const addWatcher = () => {
-    stopWatch = watch(() => jvmTypeInputs.value, (inputs) => {
+    stopWatch = watch(() => crossTypeInputs.value, (inputs) => {
         debounceSynUpdate(inputs)
     }, {deep: true})
 }
 history.registerCommand('change', {
     applyAction: (options) => {
         stopWatch?.()
-        jvmTypeInputs.value = cloneDeepReadonlyRaw<JvmTypeInput[]>(options.newValue)
+        crossTypeInputs.value = cloneDeepReadonlyRaw<CrossTypeInput[]>(options.newValue)
         addWatcher()
         return options
     },
     revertAction: (options) => {
         stopWatch?.()
-        jvmTypeInputs.value = cloneDeepReadonlyRaw<JvmTypeInput[]>(options.oldValue)
+        crossTypeInputs.value = cloneDeepReadonlyRaw<CrossTypeInput[]>(options.oldValue)
         addWatcher()
         return options
     }
 })
 
 const startEdit = () => {
-    jvmTypeInputs.value = cloneDeepReadonlyRaw<JvmTypeInput[]>(jvmTypes.value)
-    oldJvmTypeInputs = cloneDeepReadonlyRaw<JvmTypeInput[]>(jvmTypes.value)
+    crossTypeInputs.value = cloneDeepReadonlyRaw<CrossTypeInput[]>(crossTypes.value)
+    oldCrossTypeInputs = cloneDeepReadonlyRaw<CrossTypeInput[]>(crossTypes.value)
     addWatcher()
     isEdit.value = true
 }
@@ -86,38 +88,36 @@ const handleCancel = () => {
     isEdit.value = false
 }
 
-const jvmTypeEditorRefs = ref<(ComponentPublicInstance<typeof JvmTypeEditor> | null)[]>([])
-const setJvmTypeEditorRef = (index: number, ref: Element | ComponentPublicInstance<typeof JvmTypeEditor> | null) => {
+const crossTypeEditorRefs = ref<(ComponentPublicInstance<typeof CrossTypeEditor> | null)[]>([])
+const setCrossTypeEditorRef = (index: number, ref: Element | ComponentPublicInstance<typeof CrossTypeEditor> | null) => {
     if (ref instanceof Element) {
-        jvmTypeEditorRefs.value[index] = null
+        crossTypeEditorRefs.value[index] = null
     } else {
-        jvmTypeEditorRefs.value[index] = ref
+        crossTypeEditorRefs.value[index] = ref
     }
 }
 const handleSubmit = async () => {
-    for (const editor of jvmTypeEditorRefs.value) {
+    for (const editor of crossTypeEditorRefs.value) {
         if (editor !== null && !editor.validateForm()) return
     }
-    await saveJvmType(jvmTypeInputs.value)
+    await saveCrossType(crossTypeInputs.value)
     history.clean()
     stopWatch?.()
     isEdit.value = false
 }
 
-const defaultTsType = (): JvmTypeInput => {
+const defaultTsType = (): CrossTypeInput => {
     return {
         jvmSource: "ANY",
-        typeExpression: "",
-        serialized: false,
-        extraImports: [],
-        extraAnnotations: [],
-        sqlMatchRules: [],
-        tsMatchRules: []
+        databaseSource: "ANY",
+        sqlTypeId: sqlTypes.value[0]?.id ?? "",
+        jvmTypeId: jvmTypes.value[0]?.id ?? "",
+        tsTypeId: tsTypes.value[0]?.id ?? "",
     }
 }
 
 const removeItem = (index: number) => {
-    jvmTypeInputs.value.splice(index, 1)
+    crossTypeInputs.value.splice(index, 1)
 }
 
 const handleKeyDown = (e: KeyboardEvent) => {
@@ -148,14 +148,14 @@ const handleKeyDown = (e: KeyboardEvent) => {
 <template>
     <div v-if="isEdit" tabindex="-1" @keydown="handleKeyDown">
         <EditList
-            v-model:lines="jvmTypeInputs"
+            v-model:lines="crossTypeInputs"
             :default-line="defaultTsType"
-            :json-schema-validate="validateJvmType"
+            :json-schema-validate="validateCrossType_IdOnly"
             :before-paste="beforePaste"
         >
             <template #line="{index}">
                 <div class="edit-line">
-                    <JvmTypeEditor v-model="jvmTypeInputs[index]!!" :ref="(el) => setJvmTypeEditorRef(index, el)"/>
+                    <CrossTypeEditor v-model="crossTypeInputs[index]!!" :ref="(el) => setCrossTypeEditorRef(index, el)"/>
                     <button @click="removeItem(index)" class="delete-button">
                         <IconDelete/>
                     </button>
@@ -181,15 +181,15 @@ const handleKeyDown = (e: KeyboardEvent) => {
                 <IconEdit/>
                 {{ translate('edit') }}
             </button>
-            <button @click="refreshJvmTypes" class="refresh-button">
+            <button @click="refreshCrossTypes" class="refresh-button">
                 <IconRefresh/>
                 {{ translate('refresh') }}
             </button>
         </div>
 
         <ul>
-            <li v-for="item of jvmTypes">
-                <JvmTypeViewer :jvm-type="item"/>
+            <li v-for="item of crossTypes">
+                <CrossTypeViewer :cross-type="item"/>
             </li>
         </ul>
     </div>

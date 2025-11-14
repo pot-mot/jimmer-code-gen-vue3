@@ -7,6 +7,7 @@ import ColumnNameOverrideJsonSchema from "./items/ColumnNameOverride.ts";
 import ColumnPropertyJsonSchema from "./items/ColumnProperty.ts";
 import ColumnRefJsonSchema from "./items/ColumnRef.ts";
 import CrossTypeJsonSchema from "./items/CrossType.ts";
+import CrossType_IdOnlyJsonSchema from "./items/CrossType_IdOnly.ts";
 import DatabaseJsonSchema from "./items/Database.ts";
 import DatabaseSourceJsonSchema from "./items/DatabaseSource.ts";
 import DatabaseTypeJsonSchema from "./items/DatabaseType.ts";
@@ -73,6 +74,7 @@ import SqlToTsMappingRuleJsonSchema from "./items/SqlToTsMappingRule.ts";
 import SqlTypeJsonSchema from "./items/SqlType.ts";
 import TableJsonSchema from "./items/Table.ts";
 import TransientPropertyJsonSchema from "./items/TransientProperty.ts";
+import TsImportJsonSchema from "./items/TsImport.ts";
 import TsMatchRuleJsonSchema from "./items/TsMatchRule.ts";
 import TsToJvmMappingRuleJsonSchema from "./items/TsToJvmMappingRule.ts";
 import TsToSqlMappingRuleJsonSchema from "./items/TsToSqlMappingRule.ts";
@@ -93,6 +95,7 @@ export const jsonSchemas = Object.freeze({
     ColumnProperty: ColumnPropertyJsonSchema,
     ColumnRef: ColumnRefJsonSchema,
     CrossType: CrossTypeJsonSchema,
+    CrossType_IdOnly: CrossType_IdOnlyJsonSchema,
     Database: DatabaseJsonSchema,
     DatabaseSource: DatabaseSourceJsonSchema,
     DatabaseType: DatabaseTypeJsonSchema,
@@ -159,6 +162,7 @@ export const jsonSchemas = Object.freeze({
     SqlType: SqlTypeJsonSchema,
     Table: TableJsonSchema,
     TransientProperty: TransientPropertyJsonSchema,
+    TsImport: TsImportJsonSchema,
     TsMatchRule: TsMatchRuleJsonSchema,
     TsToJvmMappingRule: TsToJvmMappingRuleJsonSchema,
     TsToSqlMappingRule: TsToSqlMappingRuleJsonSchema,

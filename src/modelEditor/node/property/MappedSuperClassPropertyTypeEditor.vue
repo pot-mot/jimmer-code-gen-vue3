@@ -37,6 +37,7 @@ import IconEntity from "@/components/icons/modelEditor/IconEntity.vue";
 import {toOneToOneAbstract} from "@/modelEditor/node/association/toOneToOneAbstract.ts";
 import {toManyToOneAbstract} from "@/modelEditor/node/association/toManyToOneAbstract.ts";
 import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
+import {translate} from "@/store/i18nStore.ts";
 
 const props = defineProps<{
     mappedSuperClass: DeepReadonly<MappedSuperClassWithProperties>,
@@ -350,6 +351,28 @@ const association = computed(() => {
         </template>
 
         <template #body>
+            <div
+                v-if="'columnInfo' in property"
+                class="view-item"
+            >
+                {{ property.columnInfo.type }}
+            </div>
+            <div
+                v-if="
+                    property.category === 'SCALAR_COMMON' ||
+                    property.category === 'SCALAR_ENUM' ||
+                    property.category === 'OneToOne_Source' ||
+                    property.category === 'ManyToOne' ||
+                    property.category === 'FORMULA_GETTER' ||
+                    property.category === 'FORMULA_SQL' ||
+                    property.category === 'TRANSIENT'
+                "
+                class="view-item"
+            >
+                {{ translate('nullable') }}
+                <input type="checkbox" v-model="property.nullable">
+            </div>
+
             <div class="options-filter">
                 <input v-model="filterKeyword">
             </div>
@@ -358,7 +381,13 @@ const association = computed(() => {
                 <ul>
                     <li
                         class="select-item"
-                        :class="{selected: 'rawType' in property && property.rawType === type.jvmType.typeExpression}"
+                        :class="{
+                            selected:
+                                'rawType' in property &&
+                                property.rawType === type.jvmType.typeExpression &&
+                                'columnInfo' in property &&
+                                property.columnInfo.type === type.sqlType.type
+                        }"
                         v-for="type in options.crossTypes"
                         @click="selectBaseType(type)"
                     >
@@ -441,6 +470,14 @@ const association = computed(() => {
 .type-editor-header-label-icon {
     margin-top: 0.4rem;
     margin-right: 0.25rem;
+}
+
+.view-item {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
 }
 
 .options-filter {

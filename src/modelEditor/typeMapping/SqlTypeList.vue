@@ -1,4 +1,3 @@
-<!-- src/modelEditor/typeMapping/SqlTypeList.vue -->
 <script setup lang="ts">
 import EditList from "@/components/list/selectableList/EditList.vue";
 import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
@@ -27,6 +26,12 @@ const {
 
 const isEdit = ref(false)
 const sqlTypeInputs = ref<SqlTypeInput[]>([])
+
+const beforePaste = (sqlTypes: SqlTypeInput[]) => {
+    for (const sqlType of sqlTypes) {
+        sqlType.id = undefined
+    }
+}
 
 const history = useCommandHistory<{
     change: CommandDefinition<DeepReadonly<{
@@ -145,6 +150,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
             v-model:lines="sqlTypeInputs"
             :default-line="defaultSqlType"
             :json-schema-validate="validateSqlType"
+            :before-paste="beforePaste"
         >
             <template #line="{index}">
                 <div class="edit-line">

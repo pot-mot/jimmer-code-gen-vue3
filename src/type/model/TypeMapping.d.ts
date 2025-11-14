@@ -16,12 +16,15 @@ type JvmType = {
     extraAnnotations: string[]
 }
 
+type TsImport = {
+    name: string
+    fromPath: string
+    typeOnly: boolean
+}
+
 type TsType = {
     typeExpression: string
-    extraImports: {
-        name: string
-        fromPath: string
-    }[]
+    extraImports: TsImport[]
 }
 
 type CrossType = {
@@ -30,6 +33,14 @@ type CrossType = {
     sqlType: SqlType
     jvmType: JvmType
     tsType: TsType
+}
+
+type CrossType_IdOnly = {
+    jvmSource: JvmSource
+    databaseSource: DatabaseSource
+    sqlTypeId: string
+    jvmTypeId: string
+    tsTypeId: string
 }
 
 type JvmToSqlMappingRule = {

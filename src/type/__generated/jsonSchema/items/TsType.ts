@@ -17,11 +17,15 @@ const TsTypeJsonSchema: JSONSchemaType<TsType> = {
                     },
                     "fromPath": {
                         "type": "string"
+                    },
+                    "typeOnly": {
+                        "type": "boolean"
                     }
                 },
                 "required": [
                     "fromPath",
-                    "name"
+                    "name",
+                    "typeOnly"
                 ]
             }
         }

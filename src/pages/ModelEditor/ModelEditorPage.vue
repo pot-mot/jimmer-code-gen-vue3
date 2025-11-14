@@ -20,6 +20,8 @@ import {useDatabaseDialog} from "@/modelEditor/database/useDatabaseDialog.ts";
 import DatabaseDialog from "@/modelEditor/database/DatabaseDialog.vue";
 import {translate} from "@/store/i18nStore.ts";
 import type {TableView} from "@/api/__generated/model/static";
+import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
+import TypeMappingDialog from "@/modelEditor/typeMapping/TypeMappingDialog.vue";
 
 const router = useRouter()
 const route = useRoute()
@@ -82,6 +84,7 @@ onBeforeUnmount(() => {
     useModelGenerator().close()
     useScriptDialog().close()
     useDatabaseDialog().close()
+    useTypeMapping().close()
 })
 </script>
 
@@ -105,4 +108,5 @@ onBeforeUnmount(() => {
             </button>
         </template>
     </DatabaseDialog>
+    <TypeMappingDialog/>
 </template>

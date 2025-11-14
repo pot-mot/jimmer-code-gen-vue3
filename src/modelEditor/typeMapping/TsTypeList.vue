@@ -27,6 +27,12 @@ const {
 const isEdit = ref(false)
 const tsTypeInputs = ref<TsTypeInput[]>([])
 
+const beforePaste = (tsTypes: TsTypeInput[]) => {
+    for (const tsType of tsTypes) {
+        tsType.id = undefined
+    }
+}
+
 const history = useCommandHistory<{
     change: CommandDefinition<DeepReadonly<{
         newValue: TsTypeInput[],
@@ -141,6 +147,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
             v-model:lines="tsTypeInputs"
             :default-line="defaultTsType"
             :json-schema-validate="validateTsType"
+            :before-paste="beforePaste"
         >
             <template #line="{index}">
                 <div class="edit-line">

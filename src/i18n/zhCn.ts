@@ -36,6 +36,7 @@ export const localeZhCn: MainLocale = {
     select_placeholder: (fieldName: string) => `请选择${fieldName}`,
     validate_fail: "校验失败",
     not_blank_warning: (fieldName: string) => `${fieldName}不能为空`,
+    not_existed: "[不存在]",
     json_validate_error: "JSON格式错误",
     no_option_tip: "无可选项",
     copy_success_tip: "复制成功",

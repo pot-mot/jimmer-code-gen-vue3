@@ -36,6 +36,7 @@ export const localeEn: MainLocale = {
     select_placeholder: (fieldName: string) => `Please select ${fieldName}`,
     validate_fail: "Validate Fail",
     not_blank_warning: (fieldName: string) => `${fieldName} cannot be empty.`,
+    not_existed: "[Not Existed]",
     json_validate_error: "JSON Validate Error",
     no_option_tip: "No Options",
     copy_success_tip: "Copy Success",

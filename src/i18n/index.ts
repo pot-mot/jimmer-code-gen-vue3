@@ -34,6 +34,7 @@ export type MainLocale = {
     select_placeholder: (fieldName: string) => string
     validate_fail: string
     not_blank_warning: (fieldName: string) => string
+    not_existed: string
     json_validate_error: string
     no_option_tip: string
     copy_success_tip: string

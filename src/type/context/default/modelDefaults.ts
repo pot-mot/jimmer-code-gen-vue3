@@ -34,8 +34,7 @@ export const defaultIdProperty = (): IdCommonProperty => ({
         name: "id",
         comment: 'id',
         nullable: false,
-        type: "varchar(255)",
-        dataSize: 255,
+        type: "text",
     },
     autoSyncColumnName: true,
 })
@@ -55,8 +54,7 @@ export const defaultScalarProperty = (): ScalarCommonProperty => ({
         name: "property",
         comment: '',
         nullable: false,
-        type: "varchar(255)",
-        dataSize: 255,
+        type: "text",
     },
     autoSyncColumnName: true,
 })

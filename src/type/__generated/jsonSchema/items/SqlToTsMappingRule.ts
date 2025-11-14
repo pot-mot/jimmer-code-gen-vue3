@@ -26,11 +26,15 @@ const SqlToTsMappingRuleJsonSchema: JSONSchemaType<SqlToTsMappingRule> = {
                             },
                             "fromPath": {
                                 "type": "string"
+                            },
+                            "typeOnly": {
+                                "type": "boolean"
                             }
                         },
                         "required": [
                             "fromPath",
-                            "name"
+                            "name",
+                            "typeOnly"
                         ]
                     }
                 }
