@@ -187,6 +187,11 @@ const handleKeyDown = (e: KeyboardEvent) => {
     background: none;
 }
 
+.options-list {
+    max-height: 40vh;
+    overflow-y: auto;
+}
+
 .option-item {
     padding: 0.25rem 0.5rem;
     cursor: pointer;
