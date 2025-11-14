@@ -10,8 +10,11 @@ import IconDownload from "@/components/icons/IconDownload.vue";
 import {useModelGenerator} from "@/modelEditor/generator/useModelGenerator.ts";
 import IconEdit from "@/components/icons/IconEdit.vue";
 import {useModelEditDialog} from "@/modelEditor/modelForm/useModelEditDialog.ts";
+import IconCode from "@/components/icons/IconCode.vue";
+import {downloadJson} from "@/utils/file/jsonDownload.ts";
 
 const {
+    getModelGraphData,
     saveModel,
     canUndo,
     canRedo,
@@ -29,6 +32,14 @@ const {
 const {
     open: openForm
 } = useModelEditDialog()
+
+const exportModelJson = () => {
+    const graphData = getModelGraphData()
+    downloadJson<DeepReadonly<ModelGraphData>>({
+        name: graphData.model.name + ".json",
+        content: graphData
+    })
+}
 </script>
 
 <template>
@@ -56,8 +67,11 @@ const {
     </div>
 
     <div class="toolbar top-right">
-        <button @click="openGenerator()">
+        <button @click="exportModelJson()">
             <IconDownload/>
+        </button>
+        <button @click="openGenerator()">
+            <IconCode/>
         </button>
     </div>
 </template>

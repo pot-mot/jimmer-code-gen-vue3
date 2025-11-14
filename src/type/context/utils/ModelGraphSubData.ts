@@ -55,7 +55,7 @@ export const graphDataToModelData = (
     }
 }
 
-export const modelDataToGraphData = (
+export const modelSubDataToGraphSubData = (
     data: ModelSubData,
     vueFlow: VueFlowStore,
 ): ModelGraphSubData => {

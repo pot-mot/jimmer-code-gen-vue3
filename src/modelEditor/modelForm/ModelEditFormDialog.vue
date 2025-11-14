@@ -12,7 +12,7 @@ import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
 const {
     contextData,
     viewport,
-    getModelGraphData,
+    getModelGraphSubData,
     loadModel,
     changeModel,
 } = useModelEditor()
@@ -28,7 +28,7 @@ let jsonDataCache: string | undefined
 const setModel = async () => {
     model.value = {
         ...contextData.model,
-        jsonData: jsonPrettyFormat(getModelGraphData()),
+        jsonData: jsonPrettyFormat(getModelGraphSubData()),
         viewport: {...viewport.value}
     }
     await nextTick()

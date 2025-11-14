@@ -30,6 +30,10 @@ export type MainLocale = {
     update_fail: (target: string) => string
     delete_success: (target: string) => string
     delete_fail: (target: string) => string
+    export_success: (target: string) => string
+    export_fail: (target: string) => string,
+    download_success: (target: string) => string
+    download_fail: (target: string) => string
     input_placeholder: (fieldName: string) => string
     select_placeholder: (fieldName: string) => string
     validate_fail: string
@@ -70,6 +74,7 @@ export type MainLocale = {
     model_list_title: string
     model_create_button: string
     model_create_title: string
+    model_load_button: string
     model_enum_name: string
     model_enum_ordinal: string
     model_fk_real: string

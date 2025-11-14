@@ -16,3 +16,9 @@ type Model = {
     jvmLanguage: JvmLanguage
     defaultEnumerationStrategy: EnumerationStrategy
 }
+
+type ModelViewport = {
+    x: number
+    y: number
+    zoom: number
+}

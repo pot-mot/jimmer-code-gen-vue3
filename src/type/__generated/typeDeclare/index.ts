@@ -98,10 +98,12 @@ import MidTableJoinInfoDeclare from "./items/MidTableJoinInfo.ts";
 import ModelDeclare from "./items/Model.ts";
 import ModelContextDeclare from "./items/ModelContext.ts";
 import ModelContextDataDeclare from "./items/ModelContextData.ts";
+import ModelGraphDataDeclare from "./items/ModelGraphData.ts";
 import ModelGraphSubDataDeclare from "./items/ModelGraphSubData.ts";
 import ModelSubDataDeclare from "./items/ModelSubData.ts";
 import ModelSubIdsDeclare from "./items/ModelSubIds.ts";
 import ModelSubIdSetsDeclare from "./items/ModelSubIdSets.ts";
+import ModelViewportDeclare from "./items/ModelViewport.ts";
 import MultiColumnJoinInfoDeclare from "./items/MultiColumnJoinInfo.ts";
 import MultiColumnMidTableJoinInfoDeclare from "./items/MultiColumnMidTableJoinInfo.ts";
 import NameStrategyDeclare from "./items/NameStrategy.ts";
@@ -117,6 +119,7 @@ import OneToOneMappedAbstractPropertyDeclare from "./items/OneToOneMappedAbstrac
 import OneToOneMappedPropertyDeclare from "./items/OneToOneMappedProperty.ts";
 import OneToOneSourcePropertyDeclare from "./items/OneToOneSourceProperty.ts";
 import OrderDirectionDeclare from "./items/OrderDirection.ts";
+import PartialModelGraphDataDeclare from "./items/PartialModelGraphData.ts";
 import PositionDeclare from "./items/Position.ts";
 import PropertyDeclare from "./items/Property.ts";
 import PropertyInfoDeclare from "./items/PropertyInfo.ts";
@@ -242,10 +245,12 @@ export type TypeMap = {
     Model: Model
     ModelContext: ModelContext
     ModelContextData: ModelContextData
+    ModelGraphData: ModelGraphData
     ModelGraphSubData: ModelGraphSubData
     ModelSubData: ModelSubData
     ModelSubIds: ModelSubIds
     ModelSubIdSets: ModelSubIdSets
+    ModelViewport: ModelViewport
     MultiColumnJoinInfo: MultiColumnJoinInfo
     MultiColumnMidTableJoinInfo: MultiColumnMidTableJoinInfo
     NameStrategy: NameStrategy
@@ -261,6 +266,7 @@ export type TypeMap = {
     OneToOneMappedProperty: OneToOneMappedProperty
     OneToOneSourceProperty: OneToOneSourceProperty
     OrderDirection: OrderDirection
+    PartialModelGraphData: PartialModelGraphData
     Position: Position
     Property: Property
     PropertyInfo: PropertyInfo
@@ -390,10 +396,12 @@ export const typeDeclares = Object.freeze({
     Model: ModelDeclare,
     ModelContext: ModelContextDeclare,
     ModelContextData: ModelContextDataDeclare,
+    ModelGraphData: ModelGraphDataDeclare,
     ModelGraphSubData: ModelGraphSubDataDeclare,
     ModelSubData: ModelSubDataDeclare,
     ModelSubIds: ModelSubIdsDeclare,
     ModelSubIdSets: ModelSubIdSetsDeclare,
+    ModelViewport: ModelViewportDeclare,
     MultiColumnJoinInfo: MultiColumnJoinInfoDeclare,
     MultiColumnMidTableJoinInfo: MultiColumnMidTableJoinInfoDeclare,
     NameStrategy: NameStrategyDeclare,
@@ -409,6 +417,7 @@ export const typeDeclares = Object.freeze({
     OneToOneMappedProperty: OneToOneMappedPropertyDeclare,
     OneToOneSourceProperty: OneToOneSourcePropertyDeclare,
     OrderDirection: OrderDirectionDeclare,
+    PartialModelGraphData: PartialModelGraphDataDeclare,
     Position: PositionDeclare,
     Property: PropertyDeclare,
     PropertyInfo: PropertyInfoDeclare,

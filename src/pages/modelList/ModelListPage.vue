@@ -32,6 +32,13 @@ import type {ModelOrder} from "@/api/__generated/model/enums";
 import {sendMessage} from "@/components/message/messageApi.ts";
 import ScriptDialog from "@/modelEditor/script/ScriptDialog.vue";
 import {useScriptDialog} from "@/modelEditor/script/useScriptDialog.ts";
+import IconLoad from "@/components/icons/IconLoad.vue";
+import {readJson} from "@/utils/file/jsonRead.ts";
+import {validatePartialModelGraphData} from "@/type/context/jsonSchema/PartialModelGraphData.ts";
+import {fillModelGraphSubData} from "@/type/context/utils/ModelGraphSubData.ts";
+import IconDownload from "@/components/icons/IconDownload.vue";
+import {downloadJson} from "@/utils/file/jsonDownload.ts";
+import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";
 
 const modelList = ref<ModelNoJsonView[]>([])
 const modelQuerySpec = ref<ModelSpec>({})
@@ -97,6 +104,26 @@ const submitModelInsert = async (model: ModelInsertInput) => {
     }
 }
 
+const loadModel = async () => {
+    const modelGraphData = await readJson(validatePartialModelGraphData)
+    if (modelGraphData !== undefined) {
+        try {
+            await withLoading("load model", async () => {
+                const {id, ...model} = modelGraphData.data.model
+                const result = await api.modelService.insert({body: {
+                    ...model,
+                    viewport: modelGraphData.data.viewport,
+                    jsonData: JSON.stringify(fillModelGraphSubData(modelGraphData.data.subData)),
+                }})
+                sendMessage(translate({key: "insert_success", args: [`${translate("model")}[${model.name}]`]}), {type: "success"})
+                toModelEditor(result.id)
+            })
+        } catch (e) {
+            sendMessage(translate({key: "insert_fail", args: [`${translate("model")}[${modelGraphData.name}]`]}), {type: "warning"})
+        }
+    }
+}
+
 const modelUpdateVisible = ref(false)
 const modelUpdateInput = ref<ModelUpdateInput>()
 
@@ -146,6 +173,34 @@ const deleteModel = async (model: Model) => {
     })
 }
 
+const exportModelJson = async (model: ModelNoJsonView) => {
+    try {
+        await withLoading("export model", async () => {
+            const result = await api.modelService.get({modelId: model.id})
+            if (result !== undefined) {
+                const json = JSON.parse(result.jsonData)
+                if (validatePartialModelGraphSubData(json)) {
+                    downloadJson<ModelGraphData>({
+                        name: model.name + ".json",
+                        content: {
+                            model,
+                            viewport: result.viewport,
+                            subData: fillModelGraphSubData(json),
+                        }
+                    })
+                } else {
+                    sendMessage(translate({key: "export_fail", args: [`${translate("model")}[${model.name}]`]}), {type: "warning"})
+                }
+            } else {
+                sendMessage(translate({key: "get_fail", args: [`${translate("model")}[${model.name}]`]}), {type: "warning"})
+            }
+        })
+        sendMessage(translate({key: "export_success", args: [`${translate("model")}[${model.name}]`]}), {type: "success"})
+    } catch (e) {
+        sendMessage(translate({key: "export_fail", args: [`${translate("model")}[${model.name}]`]}), {type: "warning"})
+    }
+}
+
 const databaseDialog = useDatabaseDialog()
 const typeMappingDialog = useTypeMapping()
 const scriptDialog = useScriptDialog()
@@ -165,6 +220,10 @@ onBeforeUnmount(() => {
                 <button @click="startModelInsert" class="header-button">
                     <IconAdd/>
                     {{ translate('model_create_button') }}
+                </button>
+                <button @click="loadModel" class="header-button">
+                    <IconLoad/>
+                    {{ translate('model_load_button') }}
                 </button>
             </div>
 
@@ -256,6 +315,13 @@ onBeforeUnmount(() => {
                 </div>
 
                 <div class="actions">
+                    <button
+                        @click.stop="exportModelJson(model)"
+                        class="export-button"
+                    >
+                        <IconDownload/>
+                        {{ translate('export') }}
+                    </button>
                     <button
                         @click.stop="startModelUpdate(model.id)"
                         class="edit-button"
@@ -478,6 +544,7 @@ onBeforeUnmount(() => {
     gap: 0.5rem;
 }
 
+.export-button,
 .edit-button,
 .delete-button {
     display: flex;

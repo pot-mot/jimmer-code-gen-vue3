@@ -49,6 +49,7 @@ import MappedSuperClassPropertyJsonSchema from "./items/MappedSuperClassProperty
 import MidTableInfoJsonSchema from "./items/MidTableInfo.ts";
 import MidTableJoinInfoJsonSchema from "./items/MidTableJoinInfo.ts";
 import ModelJsonSchema from "./items/Model.ts";
+import ModelViewportJsonSchema from "./items/ModelViewport.ts";
 import MultiColumnJoinInfoJsonSchema from "./items/MultiColumnJoinInfo.ts";
 import MultiColumnMidTableJoinInfoJsonSchema from "./items/MultiColumnMidTableJoinInfo.ts";
 import NameStrategyJsonSchema from "./items/NameStrategy.ts";
@@ -83,6 +84,7 @@ import VersionPropertyJsonSchema from "./items/VersionProperty.ts";
 import EmbeddableTypeWithPropertiesJsonSchema from "../../context/jsonSchema/EmbeddableTypeWithProperties.ts";
 import EntityWithPropertiesJsonSchema from "../../context/jsonSchema/EntityWithProperties.ts";
 import MappedSuperClassWithPropertiesJsonSchema from "../../context/jsonSchema/MappedSuperClassWithProperties.ts";
+import PartialModelGraphDataJsonSchema from "../../context/jsonSchema/PartialModelGraphData.ts";
 import PartialModelGraphSubDataJsonSchema from "../../context/jsonSchema/PartialModelGraphSubData.ts";
 
 export const jsonSchemas = Object.freeze({
@@ -137,6 +139,7 @@ export const jsonSchemas = Object.freeze({
     MidTableInfo: MidTableInfoJsonSchema,
     MidTableJoinInfo: MidTableJoinInfoJsonSchema,
     Model: ModelJsonSchema,
+    ModelViewport: ModelViewportJsonSchema,
     MultiColumnJoinInfo: MultiColumnJoinInfoJsonSchema,
     MultiColumnMidTableJoinInfo: MultiColumnMidTableJoinInfoJsonSchema,
     NameStrategy: NameStrategyJsonSchema,
@@ -171,6 +174,7 @@ export const jsonSchemas = Object.freeze({
     EmbeddableTypeWithProperties: EmbeddableTypeWithPropertiesJsonSchema,
     EntityWithProperties: EntityWithPropertiesJsonSchema,
     MappedSuperClassWithProperties: MappedSuperClassWithPropertiesJsonSchema,
+    PartialModelGraphData: PartialModelGraphDataJsonSchema,
     PartialModelGraphSubData: PartialModelGraphSubDataJsonSchema,
 })
 

@@ -27,7 +27,7 @@ import {tinycolor} from "vue-color";
 import {contextDataToSubIds, fillModelSubIds, subDataToSubIds} from "@/type/context/utils/ModelSubIds.ts";
 import type {LazyData} from "@/utils/type/lazyDataParse.ts";
 import {useClipBoard} from "@/utils/clipBoard/useClipBoard.ts";
-import {fillModelGraphSubData, modelDataToGraphData} from "@/type/context/utils/ModelGraphSubData.ts";
+import {fillModelGraphSubData, modelSubDataToGraphSubData} from "@/type/context/utils/ModelGraphSubData.ts";
 import {contextDataGetSelectSubData, contextDataToSubData} from "@/type/context/utils/ModelSubData.ts";
 import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
@@ -155,16 +155,23 @@ export const useModelEditor = createStore(() => {
         return globalZIndex.value++
     }
 
-    const getModelGraphData = (): ModelGraphSubData => {
+    const getModelGraphSubData = (options?: {selected?: boolean}): ModelGraphSubData => {
         const contextData = getContextData()
         const vueFlow = getVueFlow()
-        return modelDataToGraphData(contextDataToSubData(contextData), vueFlow)
+        if (options?.selected) {
+            return modelSubDataToGraphSubData(contextDataGetSelectSubData(contextData, modelSelection.selectedIdSets.value), vueFlow)
+        } else {
+            return modelSubDataToGraphSubData(contextDataToSubData(contextData), vueFlow)
+        }
     }
-    const getSelectedGraphData = (): ModelGraphSubData => {
+    const getModelGraphData = (options?: {selected?: boolean}): ModelGraphData => {
         const contextData = getContextData()
-        const vueFlow = getVueFlow()
-        return modelDataToGraphData(contextDataGetSelectSubData(contextData, modelSelection.selectedIdSets.value), vueFlow)
-
+        const subData = getModelGraphSubData(options)
+        return {
+            model: contextData.model,
+            viewport: viewport.value,
+            subData,
+        }
     }
 
     const importModelGraphData = async (data: Partial<ModelGraphSubData>, options?: {
@@ -259,7 +266,7 @@ export const useModelEditor = createStore(() => {
 
     const saveModel = async () => {
         await withLoading("Model Saving...", async () => {
-            const graphData = getModelGraphData()
+            const graphData = getModelGraphSubData()
             try {
                 await api.modelService.update({
                     body: {
@@ -568,7 +575,7 @@ export const useModelEditor = createStore(() => {
      */
     const clipBoard = useClipBoard<Partial<ModelGraphSubData>, ModelGraphSubData>({
         exportData: (): ModelGraphSubData => {
-            return getSelectedGraphData()
+            return getModelGraphSubData({selected: true})
         },
         importData: async (data: Partial<ModelGraphSubData>) => {
             await importModelGraphData(data, {
@@ -1017,6 +1024,7 @@ export const useModelEditor = createStore(() => {
         modelNameSets,
         modelDiagnoseInfo,
         getContext,
+        getModelGraphSubData,
         getModelGraphData,
 
         changeModel,
