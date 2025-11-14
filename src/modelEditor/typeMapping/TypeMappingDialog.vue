@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import TsTypeList from "@/modelEditor/typeMapping/TsTypeList.vue";
-import JvmTypeList from "@/modelEditor/typeMapping/JvmTypetList.vue";
+import JvmTypeList from "@/modelEditor/typeMapping/JvmTypeList.vue";
 import SqlTypeList from "@/modelEditor/typeMapping/SqlTypeList.vue";
 import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
 import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
