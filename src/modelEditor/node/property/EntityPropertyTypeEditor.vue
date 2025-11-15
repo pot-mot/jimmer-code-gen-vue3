@@ -333,7 +333,11 @@ const association = computed(() => {
                     </div>
                 </div>
                 <div v-if="'rawType' in property" class="type-editor-header-label">
-                    {{ property.rawType }}{{ property.nullable ? ' ?' : '' }}
+                    {{ property.rawType }}
+                </div>
+
+                <div>
+                    {{ property.nullable ? ' ?' : '' }}
                 </div>
             </div>
 
@@ -470,6 +474,9 @@ const association = computed(() => {
     min-height: 1.8rem;
     max-width: 10rem;
     overflow-x: auto;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
 }
 
 .type-editor-header-label {
