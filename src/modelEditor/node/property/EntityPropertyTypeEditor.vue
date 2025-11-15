@@ -333,7 +333,7 @@ const association = computed(() => {
                     </div>
                 </div>
                 <div v-if="'rawType' in property" class="type-editor-header-label">
-                    {{ property.rawType }}
+                    {{ property.rawType }}{{ property.nullable ? ' ?' : '' }}
                 </div>
             </div>
 
