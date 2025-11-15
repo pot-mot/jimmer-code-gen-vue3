@@ -124,7 +124,7 @@ export const tableToEntity = (
                 id: createId("EmbeddableType"),
                 name: entity.name + "IdType",
                 subPackagePath: "",
-                comment: "",
+                comment: entity.comment + "ID",
                 extraImports: [],
                 extraAnnotations: [],
                 properties: [],
@@ -164,8 +164,10 @@ export const tableToEntity = (
         }
 
         for (const column of table.columns) {
-            if (column.partOfPrimaryKey && !hasEmbeddableId) {
-                entity.properties.push(columnToIdProperty(column))
+            if (column.partOfPrimaryKey) {
+                if (!hasEmbeddableId) {
+                    entity.properties.push(columnToIdProperty(column))
+                }
             } else if (!fkColumnNameSet.has(column.name)) {
                 const property = columnToCommonProperty(column)
                 entity.properties.push(property)
