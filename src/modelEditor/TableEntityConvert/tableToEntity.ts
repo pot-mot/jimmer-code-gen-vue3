@@ -3,10 +3,25 @@ import {
     FK_NAME_TEMPLATE,
     MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
     MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
-    ID_VIEW_TEMPLATE, LIST_ID_VIEW_TEMPLATE
+    ID_VIEW_TEMPLATE,
+    LIST_ID_VIEW_TEMPLATE,
+    MAPPED_PROPERTY_NAME_TEMPLATE,
+    MAPPED_PROPERTY_COMMENT_TEMPLATE
 } from "@/type/context/utils/AssociationTemplate.ts";
 import {createId} from "@/modelEditor/useModelEditor.ts";
 import {nameTool} from "@/type/context/utils/NameTool.ts";
+
+const removeLastId = (text: string): string => {
+    if (text.length < 2) {
+        return text
+    }
+
+    if (text.substring(text.length - 2, text.length).toLowerCase() === "id") {
+        return text.substring(0, text.length - 2)
+    }
+
+    return text;
+}
 
 export const tableToEntity = (
     tables: DeepReadonly<Table[]>,
@@ -156,137 +171,263 @@ export const tableToEntity = (
         if (entity === undefined) throw new Error(`Table ${table.name} has no corresponding entity`)
 
         const hasEmbeddableId = idEmbeddableTypeMap.has(entity.id)
-        const fkColumnNameSet = new Set<string>()
+
+        const fkColumnMapSet = new Map<string, DeepReadonly<ForeignKey>[]>()
+        const producedFkColumnNameSet = new Set<string>()
         for (const fk of table.foreignKeys) {
-            for (const fkColumn of fk.columnRefs) {
-                fkColumnNameSet.add(fkColumn.columnName)
+            for (const columnRef of fk.columnRefs) {
+                const fkList = fkColumnMapSet.get(columnRef.columnName)
+                if (fkList === undefined) {
+                    fkColumnMapSet.set(columnRef.columnName, [fk])
+                } else {
+                    // fkList.push(fk)
+                    throw new Error(`Table ${table.name} ForeignKey ${fk.name} used column ${columnRef.columnName} already exists in other ForeignKey: (${
+                        fkList.map(it => it.name)
+                    })`)
+                }
+            }
+        }
+
+        const indexColumnMapSet = new Map<string, DeepReadonly<Index>[]>()
+        for (const index of table.indexes) {
+            for (const columnName of index.columnNames) {
+                const indexList = indexColumnMapSet.get(columnName)
+                if (indexList === undefined) {
+                    indexColumnMapSet.set(columnName, [index])
+                } else {
+                    indexList.push(index)
+                }
             }
         }
 
         for (const column of table.columns) {
+            // 主键
             if (column.partOfPrimaryKey) {
                 if (!hasEmbeddableId) {
                     entity.properties.push(columnToIdProperty(column))
                 }
-            } else if (!fkColumnNameSet.has(column.name)) {
+            }
+
+            // 非外键
+            else if (!fkColumnMapSet.has(column.name)) {
                 const property = columnToCommonProperty(column)
                 entity.properties.push(property)
-                if (table.indexes.length === 1) {
-                    for (const index of table.indexes) {
-                        if (index.columnNames.includes(column.name)) {
-                            if (!("key" in property)) {
-                                Object.assign(property, {key: true})
+
+                const indexList = indexColumnMapSet.get(column.name)
+                if (indexList !== undefined) {
+                    if (table.indexes.length === 1 && table.indexes[0]?.uniqueIndex) {
+                        Object.assign(property, {key: true})
+                    } else {
+                        for (const index of indexList.filter(it => it.uniqueIndex)) {
+                            if ("key" in property) {
+                                property.keyGroups.push(index.name)
+                            } else {
+                                Object.assign(property, {key: true, keyGroups: [index.name]})
                             }
                         }
                     }
                 }
-                for (const index of table.indexes) {
-                    if (index.columnNames.includes(column.name)) {
-                        if ("key" in property) {
-                            property.keyGroups.push(index.name)
-                        } else {
-                            Object.assign(property, {key: true, keyGroups: [index.name]})
+            }
+
+            // 外键
+            else if (!producedFkColumnNameSet.has(column.name)) {
+                const sourceEntity = entity
+                const fkList = fkColumnMapSet.get(column.name)
+                if (fkList === undefined || fkList.length === 0) {
+                    throw new Error(`Table ${table.name} ForeignKey Column ${column.name} has no ForeignKey`)
+                }
+                for (const foreignKey of fkList) {
+                    for (const columnRef of foreignKey.columnRefs) {
+                        producedFkColumnNameSet.add(columnRef.columnName)
+                    }
+
+                    const referencedEntity = entityTableNameMap.get(foreignKey.referencedTableName)
+                    if (referencedEntity === undefined) throw new Error(`Table ${foreignKey.referencedTableName} has no corresponding entity`)
+                    const idEmbeddableType = idEmbeddableTypeMap.get(referencedEntity.id)
+
+                    let joinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
+                    if (foreignKey.columnRefs.length === 0) {
+                        throw new Error(`ForeignKey ${foreignKey.name} has no column`)
+                    } else if (foreignKey.columnRefs.length === 1 && foreignKey.columnRefs[0]) {
+                        joinInfo = {
+                            type: "SingleColumn",
+                            columnName: foreignKey.columnRefs[0].columnName,
+                            foreignKeyType: "REAL",
                         }
+                    } else {
+                        if (idEmbeddableType === undefined)
+                            throw new Error(`Table ${table.name} has no corresponding embeddable type`)
+                        joinInfo = {
+                            type: "MultiColumn",
+                            embeddableTypeId: idEmbeddableType.id,
+                            columnRefs: foreignKey.columnRefs.map(columnRef => ({
+                                columnName: columnRef.columnName,
+                                referencedColumnName: columnRef.referencedColumnName,
+                            })),
+                            foreignKeyType: "REAL",
+                        }
+                    }
+
+                    const sourceColumns: DeepReadonly<Column>[] = foreignKey.columnRefs.map(it => {
+                        return columnNameMaps.get(table.name)?.get(it.columnName)
+                    }).filter(it => it !== undefined)
+                    if (sourceColumns.length !== foreignKey.columnRefs.length) {
+                        throw new Error(`Table ${table.name}(${
+                            sourceColumns.map(it => it.name).join(", ")
+                        }) and ForeignKey ${
+                            foreignKey.name}(${foreignKey.columnRefs.map(it => it.columnName).join(", ")
+                        }) not match`)
+                    }
+                    const sourceNullable = sourceColumns.some(it => it.nullable)
+
+                    const sourcePropertyId = createId("Property")
+                    const mappedPropertyId = createId("Property")
+                    const associationId = createId("Association")
+                    const lowerSourceEntityName = nameTool.firstCaseToLower(sourceEntity.name)
+                    const lowerReferencedEntityName = nameTool.firstCaseToLower(referencedEntity.name)
+
+                    const sourcePropertyName = sourceColumns.length === 1 && sourceColumns[0] !== undefined ?
+                        removeLastId(nameTool.convert(sourceColumns[0].name, databaseNameStrategy, "LOWER_CAMEL").trim()) :
+                        lowerReferencedEntityName
+                    const sourcePropertyComment = sourceColumns.length === 1 && sourceColumns[0] !== undefined ?
+                        removeLastId(sourceColumns[0].comment.trim()) :
+                        referencedEntity.comment
+                    const sourcePropertyIdViewName = sourcePropertyName + "Id"
+
+                    const sourceProperty: Omit<ManyToOneProperty | OneToOneSourceProperty, 'category'> = {
+                        id: sourcePropertyId,
+                        name: sourcePropertyName,
+                        comment: sourcePropertyComment,
+                        typeIsList: false,
+                        associationId,
+                        joinInfo,
+                        autoGenerateJoinInfo: true,
+                        referencedEntityId: referencedEntity.id,
+                        idViewName: sourcePropertyIdViewName,
+                        idViewNameTemplate: ID_VIEW_TEMPLATE,
+                        useIdViewNameTemplate: true,
+                        onDissociateAction: "NONE",
+                        extraImports: [],
+                        extraAnnotations: [],
+                        nullable: sourceNullable
+                    }
+
+                    // 区分多对一还是一对一
+                    let targetIsUniqueFlag = false
+
+                    const indexList = indexColumnMapSet.get(column.name)
+                    if (indexList !== undefined) {
+                        for (const index of indexList.filter(it => it.uniqueIndex)) {
+                            const indexColumnNameSet = new Set(index.columnNames)
+                            const allSourceColumnInIndex = sourceColumns.every(sourceColumn => indexColumnNameSet.has(sourceColumn.name))
+                            if (allSourceColumnInIndex) {
+                                targetIsUniqueFlag = true
+                                if (table.indexes.length === 1) {
+                                    Object.assign(sourceProperty, {key: true})
+                                } else {
+                                    if ("key" in sourceProperty && "keyGroups" in sourceProperty) {
+                                        (sourceProperty as KeyProperty).keyGroups.push(index.name)
+                                    } else {
+                                        Object.assign(sourceProperty, {key: true, keyGroups: [index.name]})
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (targetIsUniqueFlag) {
+                        const mappedPropertyName = lowerSourceEntityName
+                        const mappedPropertyComment = sourceEntity.comment
+                        const mappedPropertyIdViewName = mappedPropertyName + "Id"
+
+                        const mappedProperty: OneToOneMappedProperty = {
+                            mappedById: sourceProperty.id,
+                            id: mappedPropertyId,
+                            name: mappedPropertyName,
+                            nameTemplate: MAPPED_PROPERTY_NAME_TEMPLATE,
+                            useNameTemplate: true,
+                            comment: mappedPropertyComment,
+                            commentTemplate: MAPPED_PROPERTY_COMMENT_TEMPLATE,
+                            useCommentTemplate: true,
+                            category: "OneToOne_Mapped",
+                            associationId,
+                            referencedEntityId: sourceEntity.id,
+                            idViewName: mappedPropertyIdViewName,
+                            idViewNameTemplate: ID_VIEW_TEMPLATE,
+                            useIdViewNameTemplate: true,
+                            nullable: true,
+                            typeIsList: false,
+                            extraAnnotations: [],
+                            extraImports: [],
+                        }
+
+                        const association: OneToOneAssociationIdOnly = {
+                            id: associationId,
+                            name: foreignKey.name,
+                            nameTemplate: FK_NAME_TEMPLATE,
+                            useNameTemplate: false,
+                            comment: foreignKey.comment,
+                            commentTemplate: FK_COMMENT_TEMPLATE,
+                            useCommentTemplate: false,
+                            type: "OneToOne",
+                            foreignKeyType: "REAL",
+                            sourceEntityId: sourceEntity.id,
+                            referencedEntityId: referencedEntity.id,
+                            sourcePropertyId: sourcePropertyId,
+                            withMappedProperty: true,
+                            mappedProperty,
+                        }
+
+                        sourceEntity.properties.push({...sourceProperty, category: "OneToOne_Source"})
+                        associations.push(association)
+                    } else {
+                        const mappedPropertyName = lowerSourceEntityName + "List"
+                        const mappedPropertyComment = sourceEntity.comment + "列表"
+                        const mappedPropertyIdViewName = mappedPropertyName + "Ids"
+
+                        const mappedProperty: OneToManyProperty = {
+                            mappedById: sourceProperty.id,
+                            id: mappedPropertyId,
+                            name: mappedPropertyName,
+                            nameTemplate: MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
+                            useNameTemplate: true,
+                            comment: mappedPropertyComment,
+                            commentTemplate: MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
+                            useCommentTemplate: true,
+                            category: "OneToMany",
+                            associationId,
+                            referencedEntityId: sourceEntity.id,
+                            idViewName: mappedPropertyIdViewName,
+                            idViewNameTemplate: LIST_ID_VIEW_TEMPLATE,
+                            useIdViewNameTemplate: true,
+                            nullable: false,
+                            typeIsList: true,
+                            extraAnnotations: [],
+                            extraImports: [],
+                        }
+
+                        const association: ManyToOneAssociationIdOnly = {
+                            id: associationId,
+                            name: foreignKey.name,
+                            nameTemplate: FK_NAME_TEMPLATE,
+                            useNameTemplate: false,
+                            comment: foreignKey.comment,
+                            commentTemplate: FK_COMMENT_TEMPLATE,
+                            useCommentTemplate: false,
+                            type: "ManyToOne",
+                            foreignKeyType: "REAL",
+                            sourceEntityId: sourceEntity.id,
+                            referencedEntityId: referencedEntity.id,
+                            sourcePropertyId: sourcePropertyId,
+                            withMappedProperty: true,
+                            mappedProperty,
+                        }
+
+                        sourceEntity.properties.push({...sourceProperty, category: "ManyToOne"})
+                        associations.push(association)
                     }
                 }
             }
-        }
-    }
-
-    for (const table of tables) {
-        const sourceEntity = entityTableNameMap.get(table.name)
-        if (sourceEntity === undefined) throw new Error(`Table ${table.name} has no corresponding entity`)
-
-        for (const foreignKey of table.foreignKeys) {
-            const referencedEntity = entityTableNameMap.get(foreignKey.referencedTableName)
-            if (referencedEntity === undefined) throw new Error(`Table ${foreignKey.referencedTableName} has no corresponding entity`)
-            const idEmbeddableType = idEmbeddableTypeMap.get(referencedEntity.id)
-
-            const sourcePropertyId = createId("Property")
-            const mappedPropertyId = createId("Property")
-            const associationId = createId("Association")
-            const lowerReferencedEntityName = nameTool.firstCaseToLower(referencedEntity.name)
-
-            let joinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
-            if (foreignKey.columnRefs[0]) {
-                joinInfo = {
-                    type: "SingleColumn",
-                    columnName: foreignKey.columnRefs[0].columnName,
-                    foreignKeyType: "REAL",
-                }
-            } else {
-                if (idEmbeddableType === undefined)
-                    throw new Error(`Table ${table.name} has no corresponding embeddable type`)
-                joinInfo = {
-                    type: "MultiColumn",
-                    embeddableTypeId: idEmbeddableType.id,
-                    columnRefs: foreignKey.columnRefs.map(columnRef => ({
-                        columnName: columnRef.columnName,
-                        referencedColumnName: columnRef.referencedColumnName,
-                    })),
-                    foreignKeyType: "REAL",
-                }
-            }
-
-            const sourceProperty: ManyToOneProperty = {
-                id: sourcePropertyId,
-                name: lowerReferencedEntityName,
-                comment: referencedEntity.comment,
-                category: "ManyToOne",
-                typeIsList: false,
-                associationId,
-                joinInfo,
-                autoGenerateJoinInfo: true,
-                referencedEntityId: referencedEntity.id,
-                idViewName: lowerReferencedEntityName + "Id",
-                idViewNameTemplate: ID_VIEW_TEMPLATE,
-                useIdViewNameTemplate: true,
-                onDissociateAction: "NONE",
-                extraImports: [],
-                extraAnnotations: [],
-                nullable: false
-            }
-
-            const mappedProperty: OneToManyProperty = {
-                mappedById: sourceProperty.id,
-                id: mappedPropertyId,
-                name: lowerReferencedEntityName + "List",
-                nameTemplate: MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
-                useNameTemplate: true,
-                comment: referencedEntity.comment + "列表",
-                commentTemplate: MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
-                useCommentTemplate: true,
-                category: "OneToMany",
-                associationId,
-                referencedEntityId: sourceEntity.id,
-                idViewName: lowerReferencedEntityName + "Ids",
-                idViewNameTemplate: LIST_ID_VIEW_TEMPLATE,
-                useIdViewNameTemplate: true,
-                nullable: false,
-                typeIsList: true,
-                extraAnnotations: [],
-                extraImports: [],
-            }
-
-            const association: ManyToOneAssociationIdOnly = {
-                id: associationId,
-                name: foreignKey.name,
-                nameTemplate: FK_NAME_TEMPLATE,
-                useNameTemplate: false,
-                comment: foreignKey.comment,
-                commentTemplate: FK_COMMENT_TEMPLATE,
-                useCommentTemplate: false,
-                type: "ManyToOne",
-                foreignKeyType: "REAL",
-                sourceEntityId: sourceEntity.id,
-                referencedEntityId: referencedEntity.id,
-                sourcePropertyId: sourcePropertyId,
-                withMappedProperty: true,
-                mappedProperty,
-            }
-
-            sourceEntity.properties.push(sourceProperty)
-            associations.push(association)
         }
     }
 
