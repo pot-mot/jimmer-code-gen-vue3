@@ -339,18 +339,18 @@ const association = computed(() => {
             </div>
 
             <div v-if="association" class="association-type">
-                <template v-if="association.association.type === 'ManyToOne_Abstract'">
+                <span v-if="association.association.type === 'ManyToOne_Abstract'">
                     <button @click.stop="toOneToOneAbstract(association.association)">
                         Many
                     </button>
                     To One
-                </template>
-                <template v-else-if="association.association.type === 'OneToOne_Abstract'">
+                </span>
+                <span v-else-if="association.association.type === 'OneToOne_Abstract'">
                     <button @click.stop="toManyToOneAbstract(association.association)">
                         One
                     </button>
                     To One
-                </template>
+                </span>
             </div>
         </template>
 
@@ -543,5 +543,13 @@ const association = computed(() => {
 
 .association-type {
     font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.association-type button {
+    padding: 0 0.25rem;
+    border-radius: 0.25rem;
 }
 </style>
