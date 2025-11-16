@@ -6,6 +6,20 @@ type CompiledMappingRule<T> = {
     result: DeepReadonly<T>
 }
 
+const regExpMatch = /^\/(.*)\/([gimuy]*)$/
+
+function parseRegexString(regexStr: string): RegExp {
+    // 匹配 /pattern/flags 格式
+    const match = regexStr.match(regExpMatch)
+    if (match) {
+        const [, pattern, flags] = match
+        if (pattern !== undefined) return new RegExp(pattern, flags)
+    }
+    // 如果不是标准格式，当作普通字符串处理
+    return new RegExp(regexStr)
+}
+
+
 export const createSqlToJvm = (
     sqlToJvmMappingRules: DeepReadonly<SqlToJvmMappingRule[]>,
     jvmLanguage: JvmLanguage,
@@ -18,7 +32,7 @@ export const createSqlToJvm = (
         })
         .map(rule => ({
             jvmSource: rule.jvmSource,
-            regex: new RegExp(rule.matchRegExp),
+            regex: parseRegexString(rule.matchRegExp),
             result: rule.result
         }))
 
@@ -49,7 +63,7 @@ export const createJvmToSql = (
         })
         .map(rule => ({
             jvmSource: rule.jvmSource,
-            regex: new RegExp(rule.matchRegExp),
+            regex: parseRegexString(rule.matchRegExp),
             result: rule.result
         }))
 
@@ -74,7 +88,7 @@ export const createJvmToTs = (
         .filter(rule => rule.jvmSource === jvmLanguage || rule.jvmSource === "ANY")
         .map(rule => ({
             jvmSource: rule.jvmSource,
-            regex: new RegExp(rule.matchRegExp),
+            regex: parseRegexString(rule.matchRegExp),
             result: rule.result
         }))
 
