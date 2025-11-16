@@ -240,6 +240,7 @@ export const useModelEditor = createStore(() => {
         await withLoading("Table Loading...", async () => {
             const {getSqlToJvmMappingRules} = useTypeMapping()
             const contextData = getContextData()
+            const vueFlow = getVueFlow()
             const {
                 entities,
                 embeddableTypes,
@@ -250,15 +251,60 @@ export const useModelEditor = createStore(() => {
                 getCurrentGroupIdOrCreate(),
                 createSqlToJvm(getSqlToJvmMappingRules(), contextData.model.jvmLanguage, contextData.model.databaseType)
             )
-            history.executeBatch(Symbol("load tables"), () => {
+
+            history.executeBatch(Symbol("load tables"), async () => {
+                const entityIds = []
                 for (const entity of entities) {
-                    addEntity(entity.groupId, entity)
+                    entityIds.push(addEntity(entity.groupId, entity, {x: 0, y: 0}))
                 }
+                const embeddableTypeIds = []
                 for (const embeddableType of embeddableTypes) {
-                    addEmbeddableType(embeddableType.groupId, embeddableType)
+                    embeddableTypeIds.push(addEmbeddableType(embeddableType.groupId, embeddableType, {x: 0, y: 0}))
                 }
+                const associationIds = []
                 for (const association of associations) {
-                    addAssociation(association)
+                    associationIds.push(addAssociation(association))
+                }
+
+                const nodes = []
+
+                for (const entityId of entityIds) {
+                    const node = vueFlow.findNode(entityId)
+                    if (node !== undefined) nodes.push(node)
+                }
+                for (const embeddableId of embeddableTypeIds) {
+                    const node = vueFlow.findNode(embeddableId)
+                    if (node !== undefined) nodes.push(node)
+                }
+
+                modelSelection.select({
+                    entityIds,
+                    embeddableTypeIds,
+                    associationIds,
+                })
+
+                await new Promise((resolve) => setTimeout(resolve, 0))
+
+                const size = Math.max(Math.ceil(Math.sqrt(nodes.length)), 1)
+
+                const startX = screenPosition.value.x
+                const startY = screenPosition.value.y
+                let i = 0
+                let x = startX
+                let y = startY
+                let maxWidth = 0
+                for (const node of nodes) {
+                    node.position = {x, y}
+                    if (node.dimensions.width > maxWidth) {
+                        maxWidth = node.dimensions.width
+                    }
+                    y += node.dimensions.height + 64
+                    i++
+                    if (i % size === 0) {
+                        x += maxWidth + 64
+                        maxWidth = 0
+                        y = startY
+                    }
                 }
             })
         })
@@ -293,7 +339,7 @@ export const useModelEditor = createStore(() => {
     const addEntity = (
         groupId: string = getCurrentGroupIdOrCreate(),
         entity: EntityWithProperties = defaultEntity(groupId),
-        position: XYPosition = screenPosition.value
+        position: XYPosition
     ) => {
         entity.name = modelNameSets.entityNameSet.next(entity.name)
         history.executeCommand('entity:add', {entity, position})
@@ -305,7 +351,7 @@ export const useModelEditor = createStore(() => {
     const addMappedSuperClass = (
         groupId: string = getCurrentGroupIdOrCreate(),
         mappedSuperClass: MappedSuperClassWithProperties = defaultMappedSuperClass(groupId),
-        position: XYPosition = screenPosition.value
+        position: XYPosition
     ) => {
         mappedSuperClass.name = modelNameSets.mappedSuperClassNameSet.next(mappedSuperClass.name)
         history.executeCommand('mapped-super-class:add', {mappedSuperClass, position})
@@ -317,7 +363,7 @@ export const useModelEditor = createStore(() => {
     const addEmbeddableType = (
         groupId: string = getCurrentGroupIdOrCreate(),
         embeddableType: EmbeddableTypeWithProperties = defaultEmbeddableType(groupId),
-        position: XYPosition = screenPosition.value
+        position: XYPosition
     ) => {
         embeddableType.name = modelNameSets.embeddableTypeNameSet.next(embeddableType.name)
         history.executeCommand('embeddable-type:add', {embeddableType, position})
@@ -329,7 +375,7 @@ export const useModelEditor = createStore(() => {
     const addEnumeration = (
         groupId: string = getCurrentGroupIdOrCreate(),
         enumeration: Enumeration = defaultEnumeration(groupId, contextData.model.defaultEnumerationStrategy),
-        position: XYPosition = screenPosition.value
+        position: XYPosition
     ) => {
         enumeration.name = modelNameSets.enumerationNameSet.next(enumeration.name)
         history.executeCommand('enumeration:add', {enumeration, position})
@@ -342,7 +388,7 @@ export const useModelEditor = createStore(() => {
         association: AssociationIdOnly,
         labelPosition: LabelPosition = {
             from: 'source',
-            fixedLength: 200,
+            fixedLength: 350,
         }
     ) => {
         if ("name" in association) {
@@ -896,6 +942,27 @@ export const useModelEditor = createStore(() => {
         return _edge
     }
 
+    const focusEntityProperty = async (source: {entityId: string, propertyId: string}) => {
+        modelSubFocusEventBus.emit("focusEntityProperty", source)
+        await focusNode(source.entityId)
+    }
+    const focusMappedSuperClassProperty = async (source: {mappedSuperClassId: string, propertyId: string}) => {
+        modelSubFocusEventBus.emit("focusMappedSuperClassProperty", source)
+        await focusNode(source.mappedSuperClassId)
+    }
+    const focusEmbeddableTypeProperty = async (source: {embeddableTypeId: string, propertyId: string}) => {
+        modelSubFocusEventBus.emit("focusEmbeddableTypeProperty", source)
+        await focusNode(source.embeddableTypeId)
+    }
+    const focusEnumerationItem = async (source: {enumerationId: string, itemId: string}) => {
+        modelSubFocusEventBus.emit("focusEnumerationItem", source)
+        await focusNode(source.enumerationId)
+    }
+    const focusMappedProperty = async (source: {associationId: string}) => {
+        modelSubFocusEventBus.emit("focusMappedProperty", source)
+        await focusEdge(source.associationId)
+    }
+
     const focusDiagnosticSource = async (source: DiagnosticSource) => {
         if (source.type === "Entity") {
             await focusNode(source.id)
@@ -908,20 +975,15 @@ export const useModelEditor = createStore(() => {
         } else if (source.type === "Association") {
             await focusEdge(source.id)
         } else if (source.type === "EntityProperty") {
-            modelSubFocusEventBus.emit("focusEntityProperty", source)
-            await focusNode(source.entityId)
+            await focusEntityProperty(source)
         } else if (source.type === "MappedSuperClassProperty") {
-            modelSubFocusEventBus.emit("focusMappedSuperClassProperty", source)
-            await focusNode(source.mappedSuperClassId)
+            await focusMappedSuperClassProperty(source)
         } else if (source.type === "EmbeddableTypeProperty") {
-            modelSubFocusEventBus.emit("focusEmbeddableTypeProperty", source)
-            await focusNode(source.embeddableTypeId)
+            await focusEmbeddableTypeProperty(source)
         } else if (source.type === "EnumerationItem") {
-            modelSubFocusEventBus.emit("focusEnumerationItem", source)
-            await focusNode(source.enumerationId)
+            await focusEnumerationItem(source)
         } else if (source.type === "MappedProperty") {
-            modelSubFocusEventBus.emit("focusMappedProperty", source)
-            await focusEdge(source.associationId)
+            await focusMappedProperty(source)
         }
     }
 
@@ -945,6 +1007,11 @@ export const useModelEditor = createStore(() => {
         edgeToFront,
         focusNode,
         focusEdge,
+        focusEntityProperty,
+        focusMappedSuperClassProperty,
+        focusEmbeddableTypeProperty,
+        focusEnumerationItem,
+        focusMappedProperty,
         focusDiagnosticSource,
 
         // 历史记录
