@@ -284,58 +284,60 @@ onBeforeUnmount(() => {
             </button>
         </div>
 
-        <div class="model-list">
-            <div
-                v-for="model in modelList"
-                :key="model.id"
-                class="model-item"
-                @click="toModelEditor(model.id)"
-            >
-                <div class="model-info">
-                    <div class="header">
-                        <div class="name" @click.stop>
-                            {{ model.name }}
+        <div class="page-body">
+            <div class="model-list">
+                <div
+                    v-for="model in modelList"
+                    :key="model.id"
+                    class="model-item"
+                    @click="toModelEditor(model.id)"
+                >
+                    <div class="model-info">
+                        <div class="header">
+                            <div class="name" @click.stop>
+                                {{ model.name }}
+                            </div>
+                            <div class="tags">
+                                <JvmLanguageView :jvm-language="model.jvmLanguage"/>
+                                <DatabaseTypeView :database-type="model.databaseType"/>
+                            </div>
                         </div>
-                        <div class="tags">
-                            <JvmLanguageView :jvm-language="model.jvmLanguage"/>
-                            <DatabaseTypeView :database-type="model.databaseType"/>
+                        <div class="timestamps">
+                            <div>
+                                {{ translate('createdTime') }} {{ formatDateTime(model.createdTime) }}
+                            </div>
+                            <div>
+                                {{ translate('modifiedTime') }} {{ formatDateTime(model.modifiedTime) }}
+                            </div>
+                        </div>
+                        <div class="description">
+                            {{ model.description }}
                         </div>
                     </div>
-                    <div class="timestamps">
-                        <div>
-                            {{ translate('createdTime') }} {{ formatDateTime(model.createdTime) }}
-                        </div>
-                        <div>
-                            {{ translate('modifiedTime') }} {{ formatDateTime(model.modifiedTime) }}
-                        </div>
-                    </div>
-                    <div class="description">
-                        {{ model.description }}
-                    </div>
-                </div>
 
-                <div class="actions">
-                    <button
-                        @click.stop="exportModelJson(model)"
-                        class="export-button"
-                    >
-                        <IconDownload/>
-                        {{ translate('export') }}
-                    </button>
-                    <button
-                        @click.stop="startModelUpdate(model.id)"
-                        class="edit-button"
-                    >
-                        <IconEdit/>
-                        {{ translate('edit') }}
-                    </button>
-                    <button
-                        @click.stop="deleteModel(model)"
-                        class="delete-button"
-                    >
-                        <IconDelete/>
-                        {{ translate('delete') }}
-                    </button>
+                    <div class="actions">
+                        <button
+                            @click.stop="exportModelJson(model)"
+                            class="export-button"
+                        >
+                            <IconDownload/>
+                            {{ translate('export') }}
+                        </button>
+                        <button
+                            @click.stop="startModelUpdate(model.id)"
+                            class="edit-button"
+                        >
+                            <IconEdit/>
+                            {{ translate('edit') }}
+                        </button>
+                        <button
+                            @click.stop="deleteModel(model)"
+                            class="delete-button"
+                        >
+                            <IconDelete/>
+                            {{ translate('delete') }}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -388,14 +390,17 @@ onBeforeUnmount(() => {
 .page {
     height: 100%;
     width: 100%;
-    overflow-y: auto;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    grid-gap: 1rem;
+    padding: 1rem;
 }
 
 .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 1rem 0;
 }
 
 .header-operations {
@@ -415,9 +420,9 @@ onBeforeUnmount(() => {
 
 .page-query {
     display: flex;
-    height: 3rem;
-    padding: 1rem 1rem 0;
+    height: 2.6rem;
     gap: 0.5rem;
+    overflow-x: auto;
 }
 
 .keywords-input {
@@ -425,10 +430,12 @@ onBeforeUnmount(() => {
     padding: 0.5rem;
     height: 2rem;
     font-size: 0.8rem;
+    flex-shrink: 0;
 }
 
 .jvm-language-select {
     width: 9rem;
+    flex-shrink: 0;
 }
 
 .jvm-language-select :deep(.placeholder),
@@ -438,6 +445,7 @@ onBeforeUnmount(() => {
 
 .database-type-select {
     width: 12rem;
+    flex-shrink: 0;
 }
 
 .database-type-select :deep(.placeholder),
@@ -446,21 +454,26 @@ onBeforeUnmount(() => {
 }
 
 .sort-button {
+    flex-shrink: 0;
     display: flex;
+    flex-wrap: nowrap;
     align-items: center;
     height: 2rem;
     padding: 0.5rem;
     border-radius: 0.5rem;
 }
 
+.page-body {
+    height: 100%;
+    overflow: hidden;
+}
+
 .model-list {
     display: grid;
-    padding: 0 1rem;
-    margin-top: 1rem;
     grid-gap: 1rem;
     width: 100%;
     grid-template-columns: repeat(3, 1fr);
-    max-height: calc(100% - 9rem);
+    max-height: 100%;
     overflow-y: auto;
     scrollbar-gutter: stable;
 }
@@ -548,6 +561,8 @@ onBeforeUnmount(() => {
 .edit-button,
 .delete-button {
     display: flex;
+    flex-wrap: nowrap;
+    white-space: nowrap;
     align-items: center;
     gap: 0.5rem;
     padding: 0.25rem 0.5rem;

@@ -224,6 +224,8 @@ const handleKeyDown = (e: KeyboardEvent) => {
 .cancel-button,
 .submit-button {
     display: flex;
+    flex-wrap: nowrap;
+    white-space: nowrap;
     align-items: center;
     gap: 0.5rem;
     padding: 0.25rem 0.5rem;
