@@ -28,7 +28,7 @@ const contextJsonSchemaPath = "src/type/context/jsonSchema";
 ensureDirExists(contextJsonSchemaPath)
 const scriptTypeDeclarePath = "src/type/__generated/scriptTypeDeclare";
 ensureDirExists(scriptTypeDeclarePath)
-const defaultScriptPath = "src/type/__generated/defaultScript";
+const defaultScriptPath = "../jimmer-code-gen-kotlin-refactor/src/main/kotlin/top/potmot/init";
 ensureDirExists(defaultScriptPath)
 const scriptTemplatePath = "src/type/__generated/scriptTemplate";
 ensureDirExists(scriptTemplatePath)
@@ -386,9 +386,6 @@ for (const {fileName} of defaultScriptSourceFiles) {
         databaseType,
         jvmLanguage,
         content: declaration.initializer.getFullText(sourceFile).trim()
-            .replace(/\\/g, '\\\\')
-            .replace(/`/g, '\\`')
-            .replace(/\$/g, '\\$')
     })
 }
 
@@ -448,39 +445,30 @@ ${scriptTypeDeclares.map(it => `    ${it.typeName}: ${it.typeName}Declare,`).joi
 `,
 })
 
-const defaultScriptFiles = defaultScripts.map(it => {
-    return {
-        fileName: `${defaultScriptPath}/items/${it.name}.ts`,
-        content: `import type {ScriptInfo} from "@/modelEditor/script/ScriptsStore.ts";
-import {${it.name}} from "@/type/script/default/${it.fileName}";
+const defaultScriptFiles = [{
+    fileName: `${defaultScriptPath}/GenerateScript.kt`,
+    content: `package top.potmot.init
 
-const scriptInfo: ScriptInfo<"${it.type}"> = {
-    id: "${it.name}",
-    name: "${it.name}",
-    type: "${it.type}",
-    enabled: ${it.enabled},
-    databaseType: "${it.databaseType}",
-    jvmLanguage: "${it.jvmLanguage}",
-    script: {
-        code: \`${it.content}\`,
-        execute: ${it.name}
-    }
-}
+import top.potmot.entity.database.DatabaseTypeOrAny
+import top.potmot.entity.model.JvmLanguageOrAny
+import top.potmot.entity.script.ScriptType
+import top.potmot.entity.script.dto.GenerateScriptInsertInput
 
-export default scriptInfo
+val initGenerateScripts = listOf(
+${defaultScripts.map(it => `    GenerateScriptInsertInput(
+        name = "${it.name}",
+        type = ScriptType.${it.type},
+        enabled = ${it.enabled},
+        databaseType = DatabaseTypeOrAny.${it.databaseType},
+        jvmLanguage = JvmLanguageOrAny.${it.jvmLanguage},
+        scriptContent = $$"""
+${it.content}
+""".trim(),
+    )
+`)}
+)
 `,
-    }
-})
-
-defaultScriptFiles.push({
-    fileName: `${defaultScriptPath}/index.ts`,
-    content: `${defaultScripts.map(it => `import ${it.name} from "@/type/__generated/defaultScript/items/${it.name}.ts";`).join("\n")}
-
-export const defaultScripts = Object.freeze({
-${defaultScripts.map(it => `    ${it.name},`).join("\n")}
-})
-`,
-})
+}]
 
 const scriptTemplateFiles = scriptTypeDeclares.map(it => ({
     fileName: `${scriptTemplatePath}/items/${it.typeName}.ts`,
@@ -543,7 +531,6 @@ const cleanDir = (dirPath) => {
 
 cleanDir(typeDeclarePath)
 cleanDir(scriptTypeDeclarePath)
-cleanDir(defaultScriptPath)
 cleanDir(scriptTemplatePath)
 cleanDir(jsonSchemaPath)
 

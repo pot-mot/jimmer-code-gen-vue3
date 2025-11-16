@@ -17,7 +17,6 @@ import {readonly, ref} from "vue";
 import type {ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
 import {createTsScript} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
 import {sendMessage} from "@/components/message/messageApi.ts";
-import {defaultScripts} from "@/type/__generated/defaultScript";
 import {sendConfirm} from "@/components/confirm/confirmApi.ts";
 import {translate} from "@/store/i18nStore.ts";
 
@@ -80,7 +79,6 @@ const fetchScripts = async (): Promise<ScriptsStore> => {
     }
 
     return createScriptsStore([
-        ...Object.values(defaultScripts),
         ...scriptInfos
     ])
 }
