@@ -476,6 +476,7 @@ onBeforeUnmount(() => {
     max-height: 100%;
     overflow-y: auto;
     scrollbar-gutter: stable;
+    padding-bottom: 30vh;
 }
 
 @media (max-width: 768px) {

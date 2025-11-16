@@ -57,6 +57,14 @@ const stopFilter = () => {
     filterKeyword.value = ""
 }
 
+const pageRowTemplate = computed(() => {
+    if (filterVisible.value) {
+        return 'auto auto auto 1fr'
+    } else {
+        return 'auto auto 1fr'
+    }
+})
+
 const menuItemTrees = computed(() => {
     if (filterKeyword.value.length === 0) {
         return Array.from(menuMap.value.values()).sort((o1, o2) => {
@@ -267,36 +275,34 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
     >
 
         <div class="create-type-select">
-            <div>
-                <button
-                    class="create-type-item"
-                    :class="{selected: createType === 'Entity'}"
-                    @click="createType = 'Entity'"
-                >
-                    {{ translate('entity') }}
-                </button>
-                <button
-                    class="create-type-item"
-                    :class="{selected: createType === 'Enumeration'}"
-                    @click="createType = 'Enumeration'"
-                >
-                    {{ translate('enumeration') }}
-                </button>
-                <button
-                    class="create-type-item"
-                    :class="{selected: createType === 'MappedSuperClass'}"
-                    @click="createType = 'MappedSuperClass'"
-                >
-                    {{ translate('mappedSuperClass') }}
-                </button>
-                <button
-                    class="create-type-item"
-                    :class="{selected: createType === 'EmbeddableType'}"
-                    @click="createType = 'EmbeddableType'"
-                >
-                    {{ translate('embeddableType') }}
-                </button>
-            </div>
+            <button
+                class="create-type-item"
+                :class="{selected: createType === 'Entity'}"
+                @click="createType = 'Entity'"
+            >
+                {{ translate('entity') }}
+            </button>
+            <button
+                class="create-type-item"
+                :class="{selected: createType === 'Enumeration'}"
+                @click="createType = 'Enumeration'"
+            >
+                {{ translate('enumeration') }}
+            </button>
+            <button
+                class="create-type-item"
+                :class="{selected: createType === 'MappedSuperClass'}"
+                @click="createType = 'MappedSuperClass'"
+            >
+                {{ translate('mappedSuperClass') }}
+            </button>
+            <button
+                class="create-type-item"
+                :class="{selected: createType === 'EmbeddableType'}"
+                @click="createType = 'EmbeddableType'"
+            >
+                {{ translate('embeddableType') }}
+            </button>
         </div>
 
         <div class="filter-input" :class="{focus: filterFocus}" v-show="filterVisible">
@@ -314,20 +320,24 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
             </button>
         </div>
 
-        <button class="group-create-button" @click="handleAddGroup">
-            <IconAdd/>
-            <span>{{ translate('group_create_button') }}</span>
-        </button>
+        <div class="menu-operations">
+            <button class="group-create-button" @click="handleAddGroup">
+                <IconAdd/>
+                <span>{{ translate('group_create_button') }}</span>
+            </button>
 
-        <button class="load-from-database-button" @click="handleLoadFromDatabase">
-            <IconDatabaseAdd/>
-            <span>{{ translate('load_from_database_button') }}</span>
-        </button>
+            <button class="load-from-database-button" @click="handleLoadFromDatabase">
+                <IconDatabaseAdd/>
+                <span>{{ translate('load_from_database_button') }}</span>
+            </button>
+        </div>
 
         <DragContainer
+            class="menu-item-tree-wrapper"
             @drag-end="handleDragEnd"
         >
             <SelectableTree
+                class="menu-item-tree"
                 ref="treeRef"
                 :data="menuItemTrees"
                 v-model:selected-id-set="selectedIdSet"
@@ -372,32 +382,29 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
 <style scoped>
 .model-editor-menu {
     height: 100%;
-    overflow-y: auto;
-    padding-bottom: 5rem;
-}
-
-.group-create-button,
-.load-from-database-button {
-    margin: 0.5rem 0 0.25rem 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: var(--border-radius);
-    cursor: pointer;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: v-bind(pageRowTemplate);
+    grid-gap: 0.5rem;
 }
 
 .create-type-select {
-    padding-bottom: 0.5rem;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.5rem;
+    height: 3rem;
     border-bottom: 1px dashed var(--background-color-hover);
-    margin-bottom: 0.5rem;
 }
 
 .create-type-item {
+    flex-shrink: 0;
     background-color: transparent;
     padding: 0.25rem;
     border-radius: 0.25rem;
-    margin-left: 0.5rem;
     cursor: pointer;
 }
 
@@ -406,19 +413,20 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
 }
 
 .filter-input {
-    margin: 0.25rem 0.5rem;
+    margin: 0 0.5rem;
     display: flex;
     border-radius: 0.5rem;
     overflow: hidden;
     border: var(--border);
     border-color: var(--border-color-light);
 }
+
 .filter-input.focus {
     border-color: var(--border-color);
 }
 
 .filter-icon {
-   padding: 0.25rem;
+    padding: 0.25rem;
     line-height: 1rem;
 }
 
@@ -433,6 +441,37 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
     border: none;
 }
 
+.menu-operations {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0 0.5rem;
+}
+
+.group-create-button,
+.load-from-database-button {
+    display: flex;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+}
+
+.menu-item-tree-wrapper {
+    height: 100%;
+    overflow-y: auto;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 30vh;
+    scrollbar-gutter: stable;
+}
+
 .menu-item {
     width: 100%;
     min-height: 1.75rem;
@@ -441,6 +480,10 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
 
 .menu-item > :deep(.menu-label) {
     display: flex;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+    align-items: center;
+    position: relative;
 }
 
 .menu-item > :deep(.menu-label) > * {
@@ -460,11 +503,11 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
 
 .menu-item :deep(.tool) {
     display: none;
-    margin-left: 0.5rem;
 }
 
 .menu-item:hover :deep(.tool) {
     display: flex;
+    flex-wrap: nowrap;
     gap: 0.5rem;
 }
 

@@ -50,6 +50,7 @@ const i18nStore = useI18nStore()
 
 <style scoped>
 .global-config {
+    z-index: var(--message-z-index);
     position: fixed;
     bottom: 0.5rem;
     left: 0.5rem;
