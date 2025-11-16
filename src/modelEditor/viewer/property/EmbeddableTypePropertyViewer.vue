@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import NameCommentViewer from "@/modelEditor/nameComment/NameCommentViewer.vue";
 import {computed} from "vue";
+import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
+    embeddableTypeId: string
     property: DeepReadonly<Property> | undefined
-}>()
+    ctrlFocus?: boolean
+    hideComment?: boolean
+}>(), {
+    ctrlFocus: false
+})
 
 const nameComment = computed(() => {
     if (!props.property) return
@@ -21,6 +27,19 @@ const nameComment = computed(() => {
         }
     }
 })
+
+const {
+    modelSelection,
+    focusEmbeddableTypeProperty,
+} = useModelEditor()
+
+const handleFocus = () => {
+    if (!props.property) return
+    if (!props.ctrlFocus) return
+    modelSelection.unselectAll()
+    modelSelection.selectEmbeddableType(props.embeddableTypeId)
+    focusEmbeddableTypeProperty({embeddableTypeId: props.embeddableTypeId, propertyId: props.property.id})
+}
 </script>
 
 <template>
@@ -28,6 +47,9 @@ const nameComment = computed(() => {
         v-if="nameComment"
         class="property-viewer"
         :data="nameComment"
+        :hide-comment="hideComment"
+        :class="{'ctrl-focus': ctrlFocus}"
+        @click.ctrl.stop="handleFocus"
     />
     <span
         v-else
@@ -40,5 +62,10 @@ const nameComment = computed(() => {
 <style scoped>
 .property-viewer.not-existed-info {
     color: var(--danger-color);
+}
+
+.ctrl-down .property-viewer.ctrl-focus:hover,
+.ctrl-down .property-viewer.ctrl-focus:hover > :deep(.comment) {
+    color: var(--primary-color);
 }
 </style>
