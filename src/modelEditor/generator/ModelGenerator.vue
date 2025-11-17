@@ -4,7 +4,7 @@ import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {ref, watch} from "vue";
 import FileTreeViewer from "@/components/file/FileTreeViewer.vue";
-import {contextDataToSubIds, subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
+import {subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
 import {withLoading} from "@/components/loading/loadingApi.ts";
 import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
 import {useScriptDialog} from "@/modelEditor/script/useScriptDialog.ts";
@@ -16,9 +16,7 @@ import {downloadZip} from "@/utils/file/zipDownload.ts";
 import {sendMessage} from "@/components/message/messageApi.ts";
 
 const {
-    contextData,
     getContext,
-    isModelSelectionNotEmpty,
     selectedIdSets,
 } = useModelEditor()
 
@@ -56,7 +54,7 @@ const handleGenerate = async () => {
         try {
             generateResult.value = generate(
                 getContext(),
-                isModelSelectionNotEmpty.value ? subIdSetToSubIds(selectedIdSets.value) : contextDataToSubIds(contextData)
+                subIdSetToSubIds(selectedIdSets.value)
             )
         } catch (e) {
             receiveError(e)
@@ -66,7 +64,7 @@ const handleGenerate = async () => {
 }
 
 const downloadFileName = "codes.zip"
-const downloadAll = ref(true)
+const downloadScope = ref<"ALL" | "SELECTED">("ALL")
 const handleDownloadFiles = (selectedPathSet?: Set<string>) => {
     try {
         withLoading(translate('download'), async () => {
@@ -126,21 +124,21 @@ watch(() => openState.value, async () => {
                         <IconEdit/>
                         {{ translate('script_dialog_button') }}
                     </button>
-                    <button @click="handleDownloadFiles(downloadAll ? undefined : selectedPathSet)">
+                    <button @click="handleDownloadFiles(downloadScope === 'ALL' ? undefined : selectedPathSet)">
                         <IconDownload/>
                         {{ translate('download') }}
                         <span
                             class="download-option"
-                            :class="{selected: downloadAll}"
-                            @click="downloadAll = true"
+                            :class="{selected: downloadScope}"
+                            @click="downloadScope = 'ALL'"
                         >
                             {{ translate('all') }}
                         </span>
                         <span> | </span>
                         <span
                             class="download-option"
-                            :class="{selected: !downloadAll}"
-                            @click="downloadAll = false"
+                            :class="{selected: !downloadScope}"
+                            @click="downloadScope = 'SELECTED'"
                         >
                             {{ translate('selected') }}
                         </span>

@@ -12,6 +12,10 @@ import IconEdit from "@/components/icons/IconEdit.vue";
 import {useModelEditDialog} from "@/modelEditor/modelForm/useModelEditDialog.ts";
 import IconCode from "@/components/icons/IconCode.vue";
 import {downloadJson} from "@/utils/file/jsonDownload.ts";
+import IconDiagnostic from "@/components/icons/IconDiagnostic.vue";
+import {translate} from "@/store/i18nStore.ts";
+import {useDiagnoseDialog} from "@/modelEditor/diagnostic/useDiagnoseDialog.ts";
+import {watch} from "vue";
 
 const {
     getModelGraphData,
@@ -23,15 +27,26 @@ const {
     fitView,
     defaultMouseAction,
     toggleDefaultMouseAction,
+    modelSelectionCount,
 } = useModelEditor()
 
 const {
-    open: openGenerator
+    open: openGenerator,
+    generateScope,
 } = useModelGenerator()
+watch(() => modelSelectionCount.value, (count) => {
+    if (count === 0) {
+        generateScope.value = 'ALL'
+    }
+})
 
 const {
     open: openForm
 } = useModelEditDialog()
+
+const {
+    open: openDiagnoseDialog
+} = useDiagnoseDialog()
 
 const exportModelJson = () => {
     const graphData = getModelGraphData()
@@ -67,11 +82,34 @@ const exportModelJson = () => {
     </div>
 
     <div class="toolbar top-right">
+        <button @click="openDiagnoseDialog()">
+            <IconDiagnostic/>
+            {{ translate('diagnose_dialog_button') }}
+        </button>
         <button @click="exportModelJson()">
             <IconDownload/>
+            {{ translate('export') }}
         </button>
         <button @click="openGenerator()">
             <IconCode/>
+            {{ translate('generate') }}
+            <template v-if="modelSelectionCount > 0">
+                <span
+                    class="generate-option"
+                    :class="{selected: generateScope === 'ALL'}"
+                    @click="generateScope = 'ALL'"
+                >
+                    {{ translate('all') }}
+                </span>
+                <span> | </span>
+                <span
+                    class="generate-option"
+                    :class="{selected: generateScope === 'SELECTED'}"
+                    @click="generateScope = 'SELECTED'"
+                >
+                    {{ translate('selected') }}
+                </span>
+            </template>
         </button>
     </div>
 </template>
@@ -127,10 +165,15 @@ const exportModelJson = () => {
     border-color: var(--background-color-hover);
     border-bottom-right-radius: var(--border-radius);
 }
+
 .toolbar.top-right {
     right: 0;
     border-left: var(--border);
     border-color: var(--background-color-hover);
     border-bottom-left-radius: var(--border-radius);
+}
+
+.generate-option.selected {
+    color: var(--primary-color);
 }
 </style>

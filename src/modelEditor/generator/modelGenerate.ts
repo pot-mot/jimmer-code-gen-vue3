@@ -4,8 +4,8 @@ import {entityToTable} from "@/modelEditor/TableEntityConvert/entityToTable.ts";
 
 export const modelGenerate = (
     context: DeepReadonly<ModelContext>,
-    selectedIds: DeepReadonly<Partial<ModelSubIds>>,
     scriptsStore: DeepReadonly<ScriptsStore>,
+    selectedIds?: DeepReadonly<Partial<ModelSubIds>> | undefined,
 ): Record<string, string> => {
     const files: Record<string, string> = {}
     const mergeIntoFiles = (newFiles: Record<string, string>) => {
@@ -35,8 +35,30 @@ export const modelGenerate = (
         jvmLanguage,
     })
 
-    if (selectedIds.entityIds) {
-        const entities = getArrayFromMap(context.entityMap, selectedIds.entityIds)
+    let entities: DeepReadonly<EntityWithInheritInfo>[] | undefined
+    let mappedSuperClasses: DeepReadonly<MappedSuperClassWithInheritInfo>[] | undefined
+    let embeddableTypes: DeepReadonly<EmbeddableTypeWithOverrideProperties>[] | undefined
+    let enumerations: DeepReadonly<Enumeration>[] | undefined
+    let associations: DeepReadonly<Association>[] | undefined
+    let groups: DeepReadonly<GroupWithInheritInfoMap>[] | undefined
+
+    if (selectedIds === undefined) {
+        entities = Array.from(context.entityMap.values())
+        mappedSuperClasses = Array.from(context.mappedSuperClassMap.values())
+        embeddableTypes = Array.from(context.embeddableTypeMap.values())
+        enumerations = Array.from(context.enumerationMap.values())
+        associations = Array.from(context.associationMap.values())
+        groups = Array.from(context.groupMap.values())
+    } else {
+        if (selectedIds.entityIds) entities = getArrayFromMap(context.entityMap, selectedIds.entityIds)
+        if (selectedIds.mappedSuperClassIds) mappedSuperClasses = getArrayFromMap(context.mappedSuperClassMap, selectedIds.mappedSuperClassIds)
+        if (selectedIds.embeddableTypeIds) embeddableTypes = getArrayFromMap(context.embeddableTypeMap, selectedIds.embeddableTypeIds)
+        if (selectedIds.enumerationIds) enumerations = getArrayFromMap(context.enumerationMap, selectedIds.enumerationIds)
+        if (selectedIds.associationIds) associations = getArrayFromMap(context.associationMap, selectedIds.associationIds)
+        if (selectedIds.groupIds) groups = getArrayFromMap(context.groupMap, selectedIds.groupIds)
+    }
+
+    if (entities) {
         const {tables, midTables} = entityToTable(entities, Array.from(context.entityMap.values()), context)
         const allTables = [...tables, ...midTables]
 
@@ -51,8 +73,7 @@ export const modelGenerate = (
         }
     }
 
-    if (selectedIds.mappedSuperClassIds) {
-        const mappedSuperClasses = getArrayFromMap(context.mappedSuperClassMap, selectedIds.mappedSuperClassIds)
+    if (mappedSuperClasses) {
         for (const {script} of scriptInfos["MappedSuperClassGenerator"]) {
             for (const mappedSuperClass of mappedSuperClasses) {
                 mergeIntoFiles(script.execute(mappedSuperClass, context))
@@ -60,8 +81,7 @@ export const modelGenerate = (
         }
     }
 
-    if (selectedIds.embeddableTypeIds) {
-        const embeddableTypes = getArrayFromMap(context.embeddableTypeMap, selectedIds.embeddableTypeIds)
+    if (embeddableTypes) {
         for (const {script} of scriptInfos["EmbeddableTypeGenerator"]) {
             for (const embeddableType of embeddableTypes) {
                 mergeIntoFiles(script.execute(embeddableType, context))
@@ -69,8 +89,7 @@ export const modelGenerate = (
         }
     }
 
-    if (selectedIds.enumerationIds) {
-        const enumerations = getArrayFromMap(context.enumerationMap, selectedIds.enumerationIds)
+    if (enumerations) {
         for (const {script} of scriptInfos["EnumerationGenerator"]) {
             for (const enumeration of enumerations) {
                 mergeIntoFiles(script.execute(enumeration, context))
@@ -78,8 +97,7 @@ export const modelGenerate = (
         }
     }
 
-    if (selectedIds.associationIds) {
-        const associations = getArrayFromMap(context.associationMap, selectedIds.associationIds)
+    if (associations) {
         for (const {script} of scriptInfos["AssociationGenerator"]) {
             for (const association of associations) {
                 mergeIntoFiles(script.execute(association, context))
@@ -87,8 +105,7 @@ export const modelGenerate = (
         }
     }
 
-    if (selectedIds.groupIds) {
-        const groups = getArrayFromMap(context.groupMap, selectedIds.groupIds)
+    if (groups) {
         for (const {script} of scriptInfos["GroupGenerator"]) {
             for (const group of groups) {
                 mergeIntoFiles(script.execute(group, context))
