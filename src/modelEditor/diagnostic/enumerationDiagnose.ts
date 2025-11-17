@@ -4,8 +4,9 @@ import type {ReadonlyModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts
 import {checkNoBlank, checkUpperCamelName} from "@/utils/name/nameCheck.ts";
 
 export type EnumerationDiagnoseResult = {
-    enumeration: DiagnoseMessage[],
-    items: Map<string, DiagnoseMessage[]>
+    readonly size: number,
+    readonly enumeration: DiagnoseMessage[],
+    readonly items: Map<string, DiagnoseMessage[]>
 }
 
 export const enumerationDiagnose = (
@@ -76,8 +77,14 @@ export const enumerationDiagnose = (
         itemDiagnoseMap.set(item.id, messages)
     }
 
+    let size = messages.length
+    for (const itemDiagnose of itemDiagnoseMap.values()) {
+        size += itemDiagnose.length
+    }
+
     return {
         enumeration: messages,
         items: itemDiagnoseMap,
+        size,
     }
 }

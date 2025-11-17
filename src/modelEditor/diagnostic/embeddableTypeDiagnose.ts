@@ -4,8 +4,9 @@ import type {ReadonlyModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts
 import {checkLowerCamelName, checkNoBlank, checkUpperCamelName} from "@/utils/name/nameCheck.ts";
 
 export type EmbeddableTypeDiagnose = {
-    embeddableType: DiagnoseMessage[],
-    properties: Map<string, DiagnoseMessage[]>
+    readonly size: number,
+    readonly embeddableType: DiagnoseMessage[],
+    readonly properties: Map<string, DiagnoseMessage[]>
 }
 
 export const embeddableTypeDiagnose = (
@@ -125,8 +126,14 @@ export const embeddableTypeDiagnose = (
         propertyDiagnoseMap.set(property.id, messages)
     }
 
+    let size = messages.length
+    for (const propertyDiagnose of propertyDiagnoseMap.values()) {
+        size += propertyDiagnose.length
+    }
+
     return {
         embeddableType: messages,
         properties: propertyDiagnoseMap,
+        size,
     }
 }

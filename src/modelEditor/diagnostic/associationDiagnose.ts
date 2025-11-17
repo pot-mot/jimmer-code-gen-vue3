@@ -4,8 +4,9 @@ import type {ReadonlyModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts
 import {checkLowerCamelName, checkNoBlank} from "@/utils/name/nameCheck.ts";
 
 export type AssociationDiagnose = {
-    association: DiagnoseMessage[],
-    mappedProperty: DiagnoseMessage[]
+    readonly size: number,
+    readonly association: DiagnoseMessage[],
+    readonly mappedProperty: DiagnoseMessage[],
 }
 
 export const associationDiagnose = (
@@ -105,5 +106,6 @@ export const associationDiagnose = (
     return {
         association: messages,
         mappedProperty: mappedPropertyMessages,
+        size: messages.length + mappedPropertyMessages.length
     }
 }

@@ -8,8 +8,9 @@ import {
 } from "@/type/context/utils/EntityCategorizedProperty.ts";
 
 export type MappedSuperClassDiagnose = {
-    mappedSuperClass: DiagnoseMessage[],
-    properties: Map<string, DiagnoseMessage[]>
+    readonly size: number
+    readonly mappedSuperClass: DiagnoseMessage[],
+    readonly properties: Map<string, DiagnoseMessage[]>
 }
 
 export const mappedSuperClassDiagnose = (
@@ -201,8 +202,14 @@ export const mappedSuperClassDiagnose = (
         })
     }
 
+    let size = messages.length
+    for (const propertyDiagnose of propertyDiagnoseMap.values()) {
+        size += propertyDiagnose.length
+    }
+
     return {
         mappedSuperClass: messages,
         properties: propertyDiagnoseMap,
+        size,
     }
 }

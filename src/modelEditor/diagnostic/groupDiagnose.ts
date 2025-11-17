@@ -3,7 +3,8 @@ import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 import type {ReadonlyModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
 
 export type GroupDiagnose = {
-    group: DiagnoseMessage[],
+    readonly size: number,
+    readonly group: DiagnoseMessage[],
 }
 
 export const groupDiagnose = (
@@ -31,5 +32,6 @@ export const groupDiagnose = (
 
     return {
         group: messages,
+        size: messages.length,
     }
 }

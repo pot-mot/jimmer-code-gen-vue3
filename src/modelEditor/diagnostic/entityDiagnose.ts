@@ -8,8 +8,9 @@ import {
 } from "@/type/context/utils/EntityCategorizedProperty.ts";
 
 export type EntityDiagnoseResult = {
-    entity: DiagnoseMessage[],
-    properties: Map<string, DiagnoseMessage[]>
+    readonly size: number,
+    readonly entity: DiagnoseMessage[],
+    readonly properties: Map<string, DiagnoseMessage[]>
 }
 
 export const entityDiagnose = (
@@ -210,9 +211,14 @@ export const entityDiagnose = (
         })
     }
 
+    let size = messages.length
+    for (const propertyDiagnose of propertyDiagnoseMap.values()) {
+        size += propertyDiagnose.length
+    }
 
     return {
         entity: messages,
         properties: propertyDiagnoseMap,
+        size
     }
 }
