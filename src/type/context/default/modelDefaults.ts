@@ -131,7 +131,7 @@ export const defaultGroup = (): Group => ({
     name: "Group",
     comment: "",
     color: defaultColor,
-    basePackagePath: "",
+    basePackagePath: "com.example",
     baseTableSchema: ""
 })
 

@@ -40,6 +40,7 @@ import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
 import {translate} from "@/store/i18nStore.ts";
 import IconEdit from "@/components/icons/IconEdit.vue";
 import IconRefresh from "@/components/icons/IconRefresh.vue";
+import {usePropertyEditDialog} from "@/modelEditor/node/property/usePropertyEditDialog.ts";
 
 const props = defineProps<{
     mappedSuperClass: DeepReadonly<MappedSuperClassWithProperties>,
@@ -67,6 +68,10 @@ const {
     addAssociation,
     remove,
 } = useModelEditor()
+
+const {
+    open: openPropertyEditDialog,
+} = usePropertyEditDialog()
 
 const {
     crossTypeOptions,
@@ -346,6 +351,10 @@ const association = computed(() => {
                 <div>
                     {{ property.nullable ? ' ?' : '' }}
                 </div>
+
+                <button @click.stop="openPropertyEditDialog({mappedSuperClassId: mappedSuperClass.id, mappedSuperClassProperty: property})">
+                    <IconEdit/>
+                </button>
             </div>
 
             <div v-if="association" class="association-type">

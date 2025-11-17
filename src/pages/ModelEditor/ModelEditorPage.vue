@@ -20,10 +20,15 @@ import {useDatabaseDialog} from "@/modelEditor/database/useDatabaseDialog.ts";
 import DatabaseDialog from "@/modelEditor/database/DatabaseDialog.vue";
 import {translate} from "@/store/i18nStore.ts";
 import type {TableView} from "@/api/__generated/model/static";
-import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
 import TypeMappingDialog from "@/modelEditor/typeMapping/TypeMappingDialog.vue";
+import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
 import DiagnoseDialog from "@/modelEditor/diagnostic/DiagnoseDialog.vue";
 import {useDiagnoseDialog} from "@/modelEditor/diagnostic/useDiagnoseDialog.ts";
+import GroupEditDialog from "@/modelEditor/group/GroupEditDialog.vue";
+import {useGroupEditDialog} from "@/modelEditor/group/useGroupEditDialog.ts";
+import PropertyEditDialog from "@/modelEditor/node/property/PropertyEditDialog.vue";
+import {usePropertyEditDialog} from "@/modelEditor/node/property/usePropertyEditDialog.ts";
+
 
 const router = useRouter()
 const route = useRoute()
@@ -88,6 +93,8 @@ onBeforeUnmount(() => {
     useDatabaseDialog().close()
     useTypeMapping().close()
     useDiagnoseDialog().close()
+    useGroupEditDialog().cancel()
+    usePropertyEditDialog().cancel()
 })
 </script>
 
@@ -113,4 +120,6 @@ onBeforeUnmount(() => {
     </DatabaseDialog>
     <TypeMappingDialog/>
     <DiagnoseDialog/>
+    <GroupEditDialog/>
+    <PropertyEditDialog/>
 </template>

@@ -37,7 +37,7 @@ const handleSubmit = () => {
 }
 
 // 监听模型变化并清除对应错误
-watch(model, () => {
+watch(() => model.value, () => {
     errors.value = {}
 }, { deep: true })
 

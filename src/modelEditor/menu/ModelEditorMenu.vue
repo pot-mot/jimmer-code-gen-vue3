@@ -508,7 +508,8 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
 .menu-item:hover :deep(.tool) {
     display: flex;
     flex-wrap: nowrap;
-    gap: 0.5rem;
+    gap: 0.25rem;
+    padding-left: 0.3rem;
 }
 
 .menu-item :deep(.tool > button) {

@@ -26,6 +26,7 @@ import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
 import {translate} from "@/store/i18nStore.ts";
 import IconEdit from "@/components/icons/IconEdit.vue";
 import IconRefresh from "@/components/icons/IconRefresh.vue";
+import {usePropertyEditDialog} from "@/modelEditor/node/property/usePropertyEditDialog.ts";
 
 const props = defineProps<{
     embeddableType: DeepReadonly<EmbeddableTypeWithProperties>
@@ -43,6 +44,10 @@ const {
     executeAsyncBatch,
     waitChangeSync,
 } = useModelEditor()
+
+const {
+    open: openPropertyEditDialog,
+} = usePropertyEditDialog()
 
 const {
     crossTypeOptions,
@@ -177,6 +182,10 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
                 <div>
                     {{ property.nullable ? ' ?' : '' }}
                 </div>
+
+                <button @click.stop="openPropertyEditDialog({embeddableTypeId: embeddableType.id, embeddableTypeProperty: property})">
+                    <IconEdit/>
+                </button>
             </div>
         </template>
 
