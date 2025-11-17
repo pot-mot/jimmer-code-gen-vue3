@@ -3,10 +3,11 @@ import {parseRegExp} from "@/utils/regExp/parseRegExp.ts";
 import {sendMessage} from "@/components/message/messageApi.ts";
 import {translate} from "@/store/i18nStore.ts";
 
-type CompiledMappingRule<T> = {
+type JvmCompiledMappingRule = {
     jvmSource: JvmSource
+    nullableLimit: boolean | undefined
     regex: RegExp
-    result: DeepReadonly<T>
+    result: DeepReadonly<JvmType>
 }
 
 export const createSqlToJvm = (
@@ -14,7 +15,7 @@ export const createSqlToJvm = (
     jvmLanguage: JvmLanguage,
     databaseType: DatabaseType
 ): SqlToJvm => {
-    const cachedSqlToJvmRules: CompiledMappingRule<JvmType>[] = []
+    const cachedSqlToJvmRules: JvmCompiledMappingRule[] = []
 
     for (const rule of sqlToJvmMappingRules) {
         if (
@@ -24,6 +25,7 @@ export const createSqlToJvm = (
             try {
                 cachedSqlToJvmRules.push({
                     jvmSource: rule.jvmSource,
+                    nullableLimit: rule.nullableLimit,
                     regex: parseRegExp(rule.matchRegExp),
                     result: rule.result
                 })
@@ -34,9 +36,9 @@ export const createSqlToJvm = (
         }
     }
 
-    return (rawType: string): JvmType => {
+    return (rawType: string, nullable: boolean): JvmType => {
         for (const rule of cachedSqlToJvmRules) {
-            if (rule.regex.test(rawType)) {
+            if (rule.regex.test(rawType) && (rule.nullableLimit === undefined || rule.nullableLimit === nullable)) {
                 return cloneDeepReadonlyRaw<JvmType>(rule.result)
             }
         }
@@ -54,12 +56,19 @@ export const createSqlToJvm = (
     }
 }
 
+
+type SqlCompiledMappingRule = {
+    databaseSource: DatabaseSource
+    regex: RegExp
+    result: DeepReadonly<SqlType>
+}
+
 export const createJvmToSql = (
     jvmToSqlMappingRules: DeepReadonly<JvmToSqlMappingRule[]>,
     jvmLanguage: JvmLanguage,
     databaseType: DatabaseType
 ): JvmToSql => {
-    const cachedJvmToSqlRules: CompiledMappingRule<SqlType>[] = []
+    const cachedJvmToSqlRules: SqlCompiledMappingRule[] = []
 
     for (const rule of jvmToSqlMappingRules) {
         if (
@@ -68,7 +77,7 @@ export const createJvmToSql = (
         ) {
             try {
                 cachedJvmToSqlRules.push({
-                    jvmSource: rule.jvmSource,
+                    databaseSource: rule.databaseSource,
                     regex: parseRegExp(rule.matchRegExp),
                     result: rule.result
                 })
@@ -91,17 +100,21 @@ export const createJvmToSql = (
     }
 }
 
+type TsCompiledMappingRule = {
+    regex: RegExp
+    result: DeepReadonly<TsType>
+}
+
 export const createJvmToTs = (
     jvmToTsMappingRules: DeepReadonly<JvmToTsMappingRule[]>,
     jvmLanguage: JvmLanguage
 ): JvmToTs => {
-    const cachedJvmToTsRules: CompiledMappingRule<TsType>[] = []
+    const cachedJvmToTsRules: TsCompiledMappingRule[] = []
 
     for (const rule of jvmToTsMappingRules) {
         if (rule.jvmSource === jvmLanguage || rule.jvmSource === "ANY") {
             try {
                 cachedJvmToTsRules.push({
-                    jvmSource: rule.jvmSource,
                     regex: parseRegExp(rule.matchRegExp),
                     result: rule.result
                 })

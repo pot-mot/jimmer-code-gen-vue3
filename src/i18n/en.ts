@@ -142,5 +142,12 @@ export const localeEn: MainLocale = {
     sqlMatchRules: "SQL Type Match",
     tsMatchRules: "TS Type Match",
     typeExpression: "Type Expression",
+    nullableLimit_true: "[Nullable]",
+    nullableLimit_false: "[Not Null]",
+    nullableLimit_undefined: "",
     matchRegExp: "Match RegExp",
+    invalid_regexp: "Invalid RegExp",
+
+    diagnose_dialog_button: "Problems",
+    diagnose_dialog_title: "Problems",
 }

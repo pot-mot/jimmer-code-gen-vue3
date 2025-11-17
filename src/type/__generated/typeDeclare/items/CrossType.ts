@@ -6,5 +6,6 @@ export default Object.freeze({
     sqlType: SqlType
     jvmType: JvmType
     tsType: TsType
+    nullable: boolean | undefined
 }`,
 })

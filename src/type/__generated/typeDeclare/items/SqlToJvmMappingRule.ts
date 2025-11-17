@@ -3,6 +3,7 @@ export default Object.freeze({
     content: `type SqlToJvmMappingRule = {
     databaseSource: DatabaseSource
     jvmSource: JvmSource
+    nullableLimit: boolean | undefined
     matchRegExp: string
     result: JvmType
 }`,

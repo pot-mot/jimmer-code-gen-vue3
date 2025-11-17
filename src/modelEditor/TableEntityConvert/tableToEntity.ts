@@ -54,7 +54,7 @@ export const tableToEntity = (
     }
 
     const columnToIdProperty = (column: DeepReadonly<Column>): IdCommonProperty => {
-        const jvmType = sqlToJvm(column.type)
+        const jvmType = sqlToJvm(column.type, column.nullable)
         return {
             id: createId("Property"),
             name: nameTool.convert(column.name, databaseNameStrategy, 'LOWER_CAMEL'),
@@ -78,7 +78,7 @@ export const tableToEntity = (
     }
 
     const columnToCommonProperty = (column: DeepReadonly<Column>): ScalarCommonProperty => {
-        const jvmType = sqlToJvm(column.type)
+        const jvmType = sqlToJvm(column.type, column.nullable)
         return {
             id: createId("Property"),
             name: nameTool.convert(column.name, databaseNameStrategy, 'LOWER_CAMEL'),

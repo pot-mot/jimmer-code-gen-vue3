@@ -29,14 +29,14 @@ export const isOrderableProperty = (property: DeepReadonly<Property>): property 
     return "defaultOrderDirection" in property && (property.defaultOrderDirection === "ASC" || property.defaultOrderDirection === "DESC")
 }
 
-const toBaseProperty = (property: DeepReadonly<Property>): BaseProperty => {
+const toBaseProperty = (property: DeepReadonly<Property>, nullable?: boolean | undefined): BaseProperty => {
     return {
         id: property.id,
         name: "name" in property ? property.name : property.nameTemplate,
         comment: "comment" in property ? property.comment : property.commentTemplate,
         extraImports: Array.from(property.extraImports),
         extraAnnotations: Array.from(property.extraAnnotations),
-        nullable: property.nullable,
+        nullable: nullable === undefined ? property.nullable : nullable,
     }
 }
 
@@ -217,15 +217,15 @@ export const idToEmbeddableProperty = (
 
 export const toScalarCommonProperty = (
     property: DeepReadonly<Property>,
-    typePair: DeepReadonly<CrossType>
+    crossType: DeepReadonly<CrossType>
 ): ScalarCommonProperty => {
     const scalarCommonProperty: ScalarCommonProperty = {
-        ...toBaseProperty(property),
+        ...toBaseProperty(property, crossType.nullable),
         category: "SCALAR_COMMON",
-        rawType: typePair.jvmType.typeExpression,
-        extraImports: Array.from(typePair.jvmType.extraImports),
+        rawType: crossType.jvmType.typeExpression,
+        extraImports: Array.from(crossType.jvmType.extraImports),
         serialized: false,
-        columnInfo: createColumnInfo(property, typePair.sqlType),
+        columnInfo: createColumnInfo(property, crossType.sqlType),
         autoSyncColumnName: true,
         typeIsArray: false,
     }

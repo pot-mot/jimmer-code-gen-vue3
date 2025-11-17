@@ -140,7 +140,14 @@ export type MainLocale = {
     sqlMatchRules: string
     tsMatchRules: string
     typeExpression: string
+    nullableLimit_true: string
+    nullableLimit_false: string
+    nullableLimit_undefined: string
     matchRegExp: string
+    invalid_regexp: string
+
+    diagnose_dialog_button: string
+    diagnose_dialog_title: string
 }
 
 type BaseLocale = {

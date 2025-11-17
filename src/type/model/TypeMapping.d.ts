@@ -33,6 +33,7 @@ type CrossType = {
     sqlType: SqlType
     jvmType: JvmType
     tsType: TsType
+    nullable: boolean | undefined
 }
 
 type CrossType_IdOnly = {
@@ -59,6 +60,7 @@ type JvmToTsMappingRule = {
 type SqlToJvmMappingRule = {
     databaseSource: DatabaseSource
     jvmSource: JvmSource
+    nullableLimit: boolean | undefined
     matchRegExp: string
     result: JvmType
 }

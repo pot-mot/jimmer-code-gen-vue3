@@ -1,9 +1,6 @@
-import type {DatabaseTypeOrAny, JvmLanguageOrAny} from '../enums/';
-
 export interface CrossTypeView {
     id: string;
-    jvmSource: JvmLanguageOrAny;
-    databaseSource: DatabaseTypeOrAny;
+    nullable: boolean;
     sqlTypeId: string;
     jvmTypeId: string;
     tsTypeId: string;

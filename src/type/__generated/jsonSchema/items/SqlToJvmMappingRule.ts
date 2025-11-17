@@ -10,6 +10,9 @@ const SqlToJvmMappingRuleJsonSchema: JSONSchemaType<SqlToJvmMappingRule> = {
         "jvmSource": {
             "$ref": "#/definitions/JvmSource"
         },
+        "nullableLimit": {
+            "type": "boolean"
+        },
         "matchRegExp": {
             "type": "string"
         },
@@ -47,6 +50,7 @@ const SqlToJvmMappingRuleJsonSchema: JSONSchemaType<SqlToJvmMappingRule> = {
         "databaseSource",
         "jvmSource",
         "matchRegExp",
+        "nullableLimit",
         "result"
     ],
     "definitions": {

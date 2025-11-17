@@ -142,5 +142,12 @@ export const localeZhCn: MainLocale = {
     sqlMatchRules: "SQL类型匹配",
     tsMatchRules: "TS类型匹配",
     typeExpression: "类型表达式",
+    nullableLimit_true: "[Nullable]",
+    nullableLimit_false: "[Not Null]",
+    nullableLimit_undefined: "",
     matchRegExp: "匹配正则",
+    invalid_regexp: "无效的正则表达式",
+
+    diagnose_dialog_button: "问题",
+    diagnose_dialog_title: "问题",
 }

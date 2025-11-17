@@ -92,12 +92,16 @@ const CrossTypeJsonSchema: JSONSchemaType<CrossType> = {
                 "extraImports",
                 "typeExpression"
             ]
+        },
+        "nullable": {
+            "type": "boolean"
         }
     },
     "required": [
         "databaseSource",
         "jvmSource",
         "jvmType",
+        "nullable",
         "sqlType",
         "tsType"
     ],
