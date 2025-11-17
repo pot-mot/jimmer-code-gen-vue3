@@ -156,4 +156,5 @@ export const localeZhCn: MainLocale = {
 
     diagnose_dialog_button: "问题",
     diagnose_dialog_title: "问题",
+    generate_fail_because_of_some_checked_questions: "生成失败，因为一些问题",
 }

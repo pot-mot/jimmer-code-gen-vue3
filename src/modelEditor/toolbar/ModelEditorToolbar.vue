@@ -16,6 +16,7 @@ import IconDiagnostic from "@/components/icons/IconDiagnostic.vue";
 import {translate} from "@/store/i18nStore.ts";
 import {useDiagnoseDialog} from "@/modelEditor/diagnostic/useDiagnoseDialog.ts";
 import {watch} from "vue";
+import {sendMessage} from "@/components/message/messageApi.ts";
 
 const {
     getModelGraphData,
@@ -28,6 +29,7 @@ const {
     defaultMouseAction,
     toggleDefaultMouseAction,
     modelSelectionCount,
+    modelDiagnoseInfo,
 } = useModelEditor()
 
 const {
@@ -47,6 +49,15 @@ const {
 const {
     open: openDiagnoseDialog
 } = useDiagnoseDialog()
+
+const handleGenerate = () => {
+    if (modelDiagnoseInfo.total > 0) {
+        sendMessage(translate("generate_fail_because_of_some_checked_questions"), {type: "warning"})
+        openDiagnoseDialog()
+    } else {
+        openGenerator()
+    }
+}
 
 const exportModelJson = () => {
     const graphData = getModelGraphData()
@@ -85,12 +96,13 @@ const exportModelJson = () => {
         <button @click="openDiagnoseDialog()">
             <IconDiagnostic/>
             {{ translate('diagnose_dialog_button') }}
+            {{ modelDiagnoseInfo.total > 0 ? `(${modelDiagnoseInfo.total})` : '' }}
         </button>
         <button @click="exportModelJson()">
             <IconDownload/>
             {{ translate('export') }}
         </button>
-        <button @click="openGenerator()">
+        <button @click="handleGenerate()">
             <IconCode/>
             {{ translate('generate') }}
             <template v-if="modelSelectionCount > 0">

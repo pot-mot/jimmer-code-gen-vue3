@@ -11,15 +11,12 @@ const props = withDefaults(defineProps<{
 })
 
 const {
-    modelSelection,
     focusNode,
 } = useModelEditor()
 
 const handleFocus = () => {
     if (!props.mappedSuperClass) return
     if (!props.ctrlFocus) return
-    modelSelection.unselectAll()
-    modelSelection.selectMappedSuperClass(props.mappedSuperClass.id)
     focusNode(props.mappedSuperClass.id)
 }
 </script>

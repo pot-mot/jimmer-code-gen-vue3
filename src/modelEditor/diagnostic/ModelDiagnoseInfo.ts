@@ -3,7 +3,7 @@ import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 import type {CommandHistory} from "@/history/commandHistory.ts";
 import {inferCommandInput, type ModelEditorHistoryCommands} from "@/modelEditor/history/ModelEditorHistory.ts";
 import type {ReadonlyModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
-import {reactive, readonly} from "vue";
+import {computed, reactive, readonly} from "vue";
 import {entityDiagnose, type EntityDiagnoseResult} from "@/modelEditor/diagnostic/entityDiagnose.ts";
 import {enumerationDiagnose, type EnumerationDiagnoseResult} from "@/modelEditor/diagnostic/enumerationDiagnose.ts";
 import {embeddableTypeDiagnose, type EmbeddableTypeDiagnose} from "@/modelEditor/diagnostic/embeddableTypeDiagnose.ts";
@@ -20,12 +20,20 @@ export type DiagnoseMessage = {
 }
 
 export type ModelDiagnoseInfo = {
-    groupMap: Map<string, GroupDiagnose>
-    entityMap: Map<string, EntityDiagnoseResult>
-    enumerationMap: Map<string, EnumerationDiagnoseResult>
-    embeddableTypeMap: Map<string, EmbeddableTypeDiagnose>
-    mappedSuperClassMap: Map<string, MappedSuperClassDiagnose>
-    associationMap: Map<string, AssociationDiagnose>
+    readonly groupMap: Map<string, GroupDiagnose>
+    readonly groupTotal: number
+    readonly entityMap: Map<string, EntityDiagnoseResult>
+    readonly entityTotal: number
+    readonly enumerationMap: Map<string, EnumerationDiagnoseResult>
+    readonly enumerationTotal: number
+    readonly embeddableTypeMap: Map<string, EmbeddableTypeDiagnose>
+    readonly embeddableTypeTotal: number
+    readonly mappedSuperClassMap: Map<string, MappedSuperClassDiagnose>
+    readonly mappedSuperClassTotal: number
+    readonly associationMap: Map<string, AssociationDiagnose>
+    readonly associationTotal: number
+
+    readonly total: number
 }
 
 export const useModelDiagnoseInfo = (
@@ -36,11 +44,64 @@ export const useModelDiagnoseInfo = (
 ) => {
     const modelDiagnoseInfo: ModelDiagnoseInfo = reactive({
         groupMap: new Map(),
+        groupTotal: computed(() => {
+            let total = 0
+            for (const group of modelDiagnoseInfo.groupMap.values()) {
+                total += group.size
+            }
+            return total
+        }),
         entityMap: new Map(),
+        entityTotal: computed(() => {
+            let total = 0
+            for (const entity of modelDiagnoseInfo.entityMap.values()) {
+                total += entity.size
+            }
+            return total
+        }),
         enumerationMap: new Map(),
+        enumerationTotal: computed(() => {
+            let total = 0
+            for (const enumeration of modelDiagnoseInfo.enumerationMap.values()) {
+                total += enumeration.size
+            }
+            return total
+        }),
         embeddableTypeMap: new Map(),
+        embeddableTypeTotal: computed(() => {
+            let total = 0
+            for (const embeddableType of modelDiagnoseInfo.embeddableTypeMap.values()) {
+                total += embeddableType.size
+            }
+            return total
+        }),
         mappedSuperClassMap: new Map(),
+        mappedSuperClassTotal: computed(() => {
+            let total = 0
+            for (const mappedSuperClass of modelDiagnoseInfo.mappedSuperClassMap.values()) {
+                total += mappedSuperClass.size
+            }
+            return total
+        }),
         associationMap: new Map(),
+        associationTotal: computed(() => {
+            let total = 0
+            for (const association of modelDiagnoseInfo.associationMap.values()) {
+                total += association.size
+            }
+            return total
+        }),
+
+        total: computed(() => {
+            let total = 0
+            total += modelDiagnoseInfo.groupTotal
+            total += modelDiagnoseInfo.entityTotal
+            total += modelDiagnoseInfo.enumerationTotal
+            total += modelDiagnoseInfo.embeddableTypeTotal
+            total += modelDiagnoseInfo.mappedSuperClassTotal
+            total += modelDiagnoseInfo.associationTotal
+            return total
+        })
     })
 
     const setGroupDiagnose = (group: DeepReadonly<Group>) => {

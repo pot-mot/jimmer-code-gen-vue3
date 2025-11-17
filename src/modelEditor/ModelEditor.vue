@@ -197,8 +197,8 @@ const handleKeyDown = async (e: KeyboardEvent) => {
             :selection-key-code="false"
             :delete-key-code="() => false"
 
-            no-drag-class-name="noDrag"
-            no-wheel-class-name="noWheel"
+            no-drag-class-name="no-drag"
+            no-wheel-class-name="no-wheel"
             :disable-keyboard-a11y="true"
         >
             <template #node-ENTITY="nodeProps">

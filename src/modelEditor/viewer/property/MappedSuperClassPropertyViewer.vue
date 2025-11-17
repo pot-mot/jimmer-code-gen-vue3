@@ -29,15 +29,12 @@ const nameComment = computed(() => {
 })
 
 const {
-    modelSelection,
     focusMappedSuperClassProperty,
 } = useModelEditor()
 
 const handleFocus = () => {
     if (!props.property) return
     if (!props.ctrlFocus) return
-    modelSelection.unselectAll()
-    modelSelection.selectMappedSuperClass(props.mappedSuperClassId)
     focusMappedSuperClassProperty({mappedSuperClassId: props.mappedSuperClassId, propertyId: props.property.id})
 }
 </script>

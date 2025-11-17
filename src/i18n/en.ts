@@ -156,4 +156,5 @@ export const localeEn: MainLocale = {
 
     diagnose_dialog_button: "Problems",
     diagnose_dialog_title: "Problems",
+    generate_fail_because_of_some_checked_questions: "Generate Fail Because Of Some Questions",
 }

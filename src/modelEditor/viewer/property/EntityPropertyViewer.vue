@@ -29,15 +29,12 @@ const nameComment = computed(() => {
 })
 
 const {
-    modelSelection,
     focusEntityProperty,
 } = useModelEditor()
 
 const handleFocus = () => {
     if (!props.property) return
     if (!props.ctrlFocus) return
-    modelSelection.unselectAll()
-    modelSelection.selectEntity(props.entityId)
     focusEntityProperty({entityId: props.entityId, propertyId: props.property.id})
 }
 </script>

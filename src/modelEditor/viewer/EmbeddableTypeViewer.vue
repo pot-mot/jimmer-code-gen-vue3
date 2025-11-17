@@ -11,15 +11,12 @@ const props = withDefaults(defineProps<{
 })
 
 const {
-    modelSelection,
     focusNode,
 } = useModelEditor()
 
 const handleFocus = () => {
     if (!props.embeddableType) return
     if (!props.ctrlFocus) return
-    modelSelection.unselectAll()
-    modelSelection.selectEmbeddableType(props.embeddableType.id)
     focusNode(props.embeddableType.id)
 }
 </script>

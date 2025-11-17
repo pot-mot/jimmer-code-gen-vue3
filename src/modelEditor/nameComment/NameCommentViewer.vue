@@ -6,7 +6,7 @@ defineProps<{
 </script>
 
 <template>
-    <span class="name-comment-viewer">
+    <span class="name-comment-viewer no-drag">
         <span class="name" v-if="data.name">{{ data.name }}</span>
         <span class="empty-name" v-else>[Empty Name]</span>
         <span class="comment" v-if="data.comment && !hideComment">[{{ data.comment }}]</span>

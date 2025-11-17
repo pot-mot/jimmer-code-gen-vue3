@@ -18,8 +18,6 @@ const {
 const handleFocus = () => {
     if (!props.entity) return
     if (!props.ctrlFocus) return
-    modelSelection.unselectAll()
-    modelSelection.selectEntity(props.entity.id)
     focusNode(props.entity.id)
 }
 </script>

@@ -101,7 +101,7 @@ const showComment = computed(() => model.value.comment.length > 0 || nameFocused
             </span>
             <FitSizeLineInput
                 ref="nameInput"
-                class="noDrag"
+                class="no-drag"
                 :padding="{top: 4, bottom: 4, left: 0, right: 0}"
                 :line-height="fontSize"
                 :font-size="fontSize"
@@ -119,7 +119,7 @@ const showComment = computed(() => model.value.comment.length > 0 || nameFocused
         >
             [<FitSizeLineInput
                 ref="commentInput"
-                class="noDrag"
+                class="no-drag"
                 :padding="{top: 4, bottom: 4, left: 0, right: 0}"
                 :line-height="fontSize"
                 :font-size="fontSize"

@@ -7,7 +7,7 @@ defineProps<{
 </script>
 
 <template>
-    <div class="diagnose-viewer no-drag" v-if="messages && messages.length > 0">
+    <div tabindex="-1" class="diagnose-viewer no-drag" v-if="messages && messages.length > 0">
         <div
             v-for="message in messages"
             class="message-content"
@@ -21,11 +21,12 @@ defineProps<{
 <style scoped>
 .message-content {
     cursor: text;
-    font-size: 0.8em;
-    padding: 0 0.2em;
+    font-size: 0.8rem;
+    padding: 0 0.2rem;
     line-height: 1rem;
     height: 1rem;
     white-space: nowrap;
+    user-select: text;
 }
 
 .message-content.primary {

@@ -12,15 +12,12 @@ const props = withDefaults(defineProps<{
 })
 
 const {
-    modelSelection,
     focusEnumerationItem,
 } = useModelEditor()
 
 const handleFocus = () => {
     if (!props.item) return
     if (!props.ctrlFocus) return
-    modelSelection.unselectAll()
-    modelSelection.selectEnumeration(props.enumerationId)
     focusEnumerationItem({enumerationId: props.enumerationId, itemId: props.item.id})
 }
 </script>

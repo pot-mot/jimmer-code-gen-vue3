@@ -154,6 +154,7 @@ export type MainLocale = {
 
     diagnose_dialog_button: string
     diagnose_dialog_title: string
+    generate_fail_because_of_some_checked_questions: string
 }
 
 type BaseLocale = {

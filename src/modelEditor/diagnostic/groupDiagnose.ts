@@ -1,6 +1,7 @@
 import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
 import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 import type {ReadonlyModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
+import {checkNoBlank} from "@/utils/name/nameCheck.ts";
 
 export type GroupDiagnose = {
     readonly size: number,
@@ -25,6 +26,19 @@ export const groupDiagnose = (
         if (nameCount > 1) {
             messages.push({
                 content: `[Duplicate Name: ${nameCount}]`,
+                type: "error"
+            })
+        }
+    }
+    if (group.basePackagePath.length === 0) {
+        messages.push({
+            content: "[Package Path is empty]",
+            type: "error"
+        })
+    } else {
+        if (!checkNoBlank(group.basePackagePath)) {
+            messages.push({
+                content: "[Invalid Package Path]",
                 type: "error"
             })
         }

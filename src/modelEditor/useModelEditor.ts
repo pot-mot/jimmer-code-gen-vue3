@@ -41,6 +41,12 @@ import {api} from "@/api";
 import {createSqlToJvm} from "@/type/context/utils/TypeTool.ts";
 import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
 import {translate} from "@/store/i18nStore.ts";
+import {NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";
+import {NodeType_EmbeddableType} from "@/modelEditor/node/EmbeddableTypeNode.ts";
+import {NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode.ts";
+import {NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
+import {EdgeType_ConcreteAssociation} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
+import {EdgeType_AbstractAssociation} from "@/modelEditor/edge/AbstractAssociationEdge.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -882,6 +888,28 @@ export const useModelEditor = createStore(() => {
         getVueFlow().$destroy()
     }
 
+    const selectNode = (node: GraphNode | string) => {
+        const vueFlow = getVueFlow()
+        let _node: GraphNode
+        if (typeof node === 'string') {
+            const foundNode = vueFlow.findNode(node)
+            if (!foundNode) throw new Error(`node [${node}] is not existed`)
+            _node = foundNode
+        } else {
+            _node = node
+        }
+        if (_node.type === NodeType_Entity) {
+            modelSelection.selectEntity(_node.id)
+        } else if (_node.type === NodeType_EmbeddableType) {
+            modelSelection.selectEmbeddableType(_node.id)
+        } else if (_node.type === NodeType_MappedSuperClass) {
+            modelSelection.selectMappedSuperClass(_node.id)
+        } else if (_node.type === NodeType_Enumeration) {
+            modelSelection.selectEnumeration(_node.id)
+        } else {
+            vueFlow.addSelectedNodes([_node])
+        }
+    }
     const nodeToFront = (node: GraphNode | string) => {
         const vueFlow = getVueFlow()
         let _node: GraphNode
@@ -905,6 +933,8 @@ export const useModelEditor = createStore(() => {
             _node = node
         }
         _node.zIndex = getNextZIndex()
+        modelSelection.unselectAll()
+        selectNode(_node.id)
         await vueFlow.fitBounds({
             x: _node.computedPosition.x,
             y: _node.computedPosition.y,
@@ -914,6 +944,22 @@ export const useModelEditor = createStore(() => {
         return _node
     }
 
+    const selectEdge = (edge: GraphEdge | string) => {
+        const vueFlow = getVueFlow()
+        let _edge: GraphEdge
+        if (typeof edge === 'string') {
+            const foundEdge = vueFlow.findEdge(edge) ?? findAssociationEdge(edge, vueFlow)
+            if (!foundEdge) throw new Error(`edge [${edge}] is not existed`)
+            _edge = foundEdge
+        } else {
+            _edge = edge
+        }
+        if (_edge.type === EdgeType_ConcreteAssociation || _edge.type === EdgeType_AbstractAssociation) {
+            modelSelection.selectAssociation(_edge.id)
+        } else {
+            vueFlow.addSelectedEdges([_edge])
+        }
+    }
     const edgeToFront = (edge: GraphEdge | string) => {
         const vueFlow = getVueFlow()
         let _edge: GraphEdge
@@ -937,6 +983,8 @@ export const useModelEditor = createStore(() => {
             _edge = edge
         }
         _edge.zIndex = getNextZIndex()
+        modelSelection.unselectAll()
+        selectEdge(_edge.id)
         await vueFlow.fitBounds({
             x: Math.min(_edge.sourceX, _edge.targetX),
             y: Math.min(_edge.sourceY, _edge.targetY),
@@ -968,7 +1016,9 @@ export const useModelEditor = createStore(() => {
     }
 
     const focusDiagnosticSource = async (source: DiagnosticSource) => {
-        if (source.type === "Entity") {
+        if (source.type === "Group") {
+            modelSelection.selectGroup(source.id)
+        } else if (source.type === "Entity") {
             await focusNode(source.id)
         } else if (source.type === "MappedSuperClass") {
             await focusNode(source.id)
@@ -1061,6 +1111,8 @@ export const useModelEditor = createStore(() => {
 
         graphSelection: {
             get: getGraphSelection,
+            selectNode,
+            selectEdge,
             selectAll: selectGraphAll,
             unselectAll: clearGraphSelection,
             toggleSelectAll: toggleSelectGraphAll,

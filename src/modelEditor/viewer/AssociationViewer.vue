@@ -13,14 +13,11 @@ const props = withDefaults(defineProps<{
 
 const {
     focusEdge,
-    modelSelection,
 } = useModelEditor()
 
 const handleFocus = () => {
     if (!props.association) return
     if (!props.ctrlFocus) return
-    modelSelection.unselectAll()
-    modelSelection.selectAssociation(props.association.id)
     focusEdge(props.association.id)
 }
 

@@ -137,7 +137,7 @@ watch(() => handleIndexMap.value, () => {
                         </span>
 
                         <EntityPropertyTypeEditor
-                            class="noDrag noWheel"
+                            class="no-drag no-wheel"
                             :entity="data.entity"
                             :property-index="index"
                             v-model="data.entity.properties[index]"

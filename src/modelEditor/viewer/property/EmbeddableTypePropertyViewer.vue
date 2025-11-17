@@ -29,15 +29,12 @@ const nameComment = computed(() => {
 })
 
 const {
-    modelSelection,
     focusEmbeddableTypeProperty,
 } = useModelEditor()
 
 const handleFocus = () => {
     if (!props.property) return
     if (!props.ctrlFocus) return
-    modelSelection.unselectAll()
-    modelSelection.selectEmbeddableType(props.embeddableTypeId)
     focusEmbeddableTypeProperty({embeddableTypeId: props.embeddableTypeId, propertyId: props.property.id})
 }
 </script>

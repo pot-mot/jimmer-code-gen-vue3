@@ -1,3 +1,8 @@
+type GroupSource = {
+    type: "Group",
+    id: string,
+}
+
 type EntitySource = {
     type: "Entity",
     id: string,
@@ -53,6 +58,7 @@ type MappedPropertySource = {
 }
 
 type DiagnosticSource =
+    | GroupSource
     | EntitySource
     | MapperSuperClassSource
     | EmbeddableTypeSource

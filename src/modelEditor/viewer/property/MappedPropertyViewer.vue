@@ -29,15 +29,12 @@ const nameComment = computed(() => {
 })
 
 const {
-    modelSelection,
     focusMappedProperty,
 } = useModelEditor()
 
 const handleFocus = () => {
     if (!props.property) return
     if (!props.ctrlFocus) return
-    modelSelection.unselectAll()
-    modelSelection.selectAssociation(props.associationId)
     focusMappedProperty({associationId: props.associationId})
 }
 </script>

@@ -138,7 +138,7 @@ watch(() => handleIndexMap.value, () => {
                         </span>
 
                         <MappedSuperClassPropertyTypeEditor
-                            class="noDrag noWheel"
+                            class="no-drag no-wheel"
                             :mapped-super-class="data.mappedSuperClass"
                             :property-index="index"
                             v-model="data.mappedSuperClass.properties[index]"

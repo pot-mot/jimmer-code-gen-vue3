@@ -85,7 +85,7 @@ const beforePaste = (properties: Property[]) => {
                             v-model="data.embeddableType.properties[index]"
                         />
                         <EmbeddableTypePropertyTypeEditor
-                            class="noDrag noWheel"
+                            class="no-drag no-wheel"
                             :embeddable-type="data.embeddableType"
                             v-model="data.embeddableType.properties[index]"
                         />

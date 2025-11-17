@@ -3,6 +3,8 @@ import {createStore} from "@/utils/store/createStore.ts";
 import {throttle} from "lodash-es";
 
 const isTouchDevice = ref('ontouchstart' in window)
+const innerWidth = ref(window.innerWidth)
+const innerHeight = ref(window.innerHeight)
 const visualHeight = ref(window.visualViewport ? Math.min(window.visualViewport.height, window.innerHeight) : window.innerHeight)
 const visualTop = ref(0)
 const visualLeft = ref(0)
@@ -22,6 +24,8 @@ watch(() => visualLeft.value, (value) => {
 }, {immediate: true})
 
 const handleResize = throttle(() => {
+    innerWidth.value = window.innerWidth
+    innerHeight.value = window.innerHeight
     // 通过动态属性修正 vh 在移动端的问题
     if (window.visualViewport) {
         visualHeight.value = Math.min(window.visualViewport.height, window.innerHeight)
@@ -60,6 +64,8 @@ export const initDeviceStore = () => {
 export const useDeviceStore = createStore(() => {
     return {
         isTouchDevice: readonly(isTouchDevice),
+        innerWidth: readonly(innerWidth),
+        innerHeight: readonly(innerHeight),
         visualHeight: readonly(visualHeight),
         visualTop: readonly(visualTop),
         visualLeft: readonly(visualLeft),

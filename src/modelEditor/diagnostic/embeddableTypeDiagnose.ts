@@ -101,13 +101,13 @@ export const embeddableTypeDiagnose = (
         }
 
         if ("columnInfo" in property) {
-            if (property.columnInfo.name.length === 0) {
+            if (property.name.length !== 0 && property.columnInfo.name.length === 0) {
                 messages.push({
                     content: "[Column Name is empty]",
                     type: "error"
                 })
             } else {
-                if (!checkNoBlank(property.columnInfo.name)) {
+                if (checkNoBlank(property.name) && !checkNoBlank(property.columnInfo.name)) {
                     messages.push({
                         content: "[Invalid Column Name]",
                         type: "error"

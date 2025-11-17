@@ -54,6 +54,7 @@ import ForeignKeyTypeDeclare from "./items/ForeignKeyType.ts";
 import GetterFormulaPropertyDeclare from "./items/GetterFormulaProperty.ts";
 import GroupDeclare from "./items/Group.ts";
 import GroupInheritInfoMapDeclare from "./items/GroupInheritInfoMap.ts";
+import GroupSourceDeclare from "./items/GroupSource.ts";
 import GroupSubDataDeclare from "./items/GroupSubData.ts";
 import GroupSubMapsDeclare from "./items/GroupSubMaps.ts";
 import GroupWithInheritInfoMapDeclare from "./items/GroupWithInheritInfoMap.ts";
@@ -201,6 +202,7 @@ export type TypeMap = {
     GetterFormulaProperty: GetterFormulaProperty
     Group: Group
     GroupInheritInfoMap: GroupInheritInfoMap
+    GroupSource: GroupSource
     GroupSubData: GroupSubData
     GroupSubMaps: GroupSubMaps
     GroupWithInheritInfoMap: GroupWithInheritInfoMap
@@ -352,6 +354,7 @@ export const typeDeclares = Object.freeze({
     GetterFormulaProperty: GetterFormulaPropertyDeclare,
     Group: GroupDeclare,
     GroupInheritInfoMap: GroupInheritInfoMapDeclare,
+    GroupSource: GroupSourceDeclare,
     GroupSubData: GroupSubDataDeclare,
     GroupSubMaps: GroupSubMapsDeclare,
     GroupWithInheritInfoMap: GroupWithInheritInfoMapDeclare,
