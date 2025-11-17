@@ -252,6 +252,8 @@ export const useModelEditor = createStore(() => {
                 createSqlToJvm(getSqlToJvmMappingRules(), contextData.model.jvmLanguage, contextData.model.databaseType)
             )
 
+            if (entities.length + embeddableTypes.length + associations.length === 0) return
+
             history.executeBatch(Symbol("load tables"), async () => {
                 const entityIds = []
                 for (const entity of entities) {
@@ -287,8 +289,10 @@ export const useModelEditor = createStore(() => {
 
                 const size = Math.max(Math.ceil(Math.sqrt(nodes.length)), 1)
 
-                const startX = screenPosition.value.x
-                const startY = screenPosition.value.y
+                const {x: startX, y: startY} = vueFlow.screenToFlowCoordinate({
+                    x: vueFlow.dimensions.value.width * 0.15 + (vueFlow.vueFlowRef.value?.getBoundingClientRect().left ?? 0),
+                    y: vueFlow.dimensions.value.height * 0.15,
+                })
                 let i = 0
                 let x = startX
                 let y = startY
