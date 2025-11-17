@@ -79,28 +79,58 @@ export const associationDiagnose = (
                 })
             }
         }
+    }
 
-        if ("sourceEntityId" in association) {
-            if (!contextData.entityMap.has(association.sourceEntityId)) {
-                messages.push({
-                    content: "[Source Entity is missing]",
+    if ("idViewName" in association.mappedProperty) {
+        if (association.mappedProperty.idViewName.length === 0) {
+            mappedPropertyMessages.push({
+                content: "[IdView Name is empty]",
+                type: "error"
+            })
+        } else {
+            if (!checkNoBlank(association.mappedProperty.idViewName)) {
+                mappedPropertyMessages.push({
+                    content: "[Invalid IdView Name]",
                     type: "error"
                 })
+            } else if (!checkLowerCamelName(association.mappedProperty.idViewName)) {
+                mappedPropertyMessages.push({
+                    content: "[IdView should use lowerCamelCase]",
+                    type: "warning"
+                })
             }
-        } else {
-            if (!contextData.mappedSuperClassMap.has(association.sourceAbstractEntityId)) {
-                messages.push({
-                    content: "[Source Abstract Entity is missing]",
-                    type: "error"
+
+            const nameCount = nameSets.entityPropertyNameSetMap
+                .get(association.referencedEntityId)?.count(association.mappedProperty.idViewName) ?? 0
+            if (nameCount > 1) {
+                mappedPropertyMessages.push({
+                    content: `[Duplicate IdView Name: ${nameCount}]`,
+                    type: "warning"
                 })
             }
         }
-        if (!contextData.entityMap.has(association.referencedEntityId)) {
+    }
+
+    if ("sourceEntityId" in association) {
+        if (!contextData.entityMap.has(association.sourceEntityId)) {
             messages.push({
-                content: "[Referenced Entity is missing]",
+                content: "[Source Entity is missing]",
                 type: "error"
             })
         }
+    } else {
+        if (!contextData.mappedSuperClassMap.has(association.sourceAbstractEntityId)) {
+            messages.push({
+                content: "[Source Abstract Entity is missing]",
+                type: "error"
+            })
+        }
+    }
+    if (!contextData.entityMap.has(association.referencedEntityId)) {
+        messages.push({
+            content: "[Referenced Entity is missing]",
+            type: "error"
+        })
     }
 
     return {

@@ -141,6 +141,9 @@ export const useModelNameSets = (
                 if ("name" in association.mappedProperty) {
                     propertyNameSet.add(association.mappedProperty.name)
                 }
+                if ("idViewName" in association.mappedProperty) {
+                    propertyNameSet.add(association.mappedProperty.idViewName)
+                }
             }
         }
         modelNameSets.entityPropertyNameSetMap.set(entity.id, propertyNameSet)
