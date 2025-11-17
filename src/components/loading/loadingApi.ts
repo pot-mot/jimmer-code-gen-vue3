@@ -46,6 +46,7 @@ export const withLoading = async <T> (message: string, fn: () => Promise<T>) => 
         stop(true)
         return result
     } catch (e) {
+        console.error(e)
         stop(false)
         throw e
     }
