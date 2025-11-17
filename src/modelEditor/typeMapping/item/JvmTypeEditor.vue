@@ -12,6 +12,7 @@ import {validateTsMatchRule} from "@/type/__generated/jsonSchema/items/TsMatchRu
 import {validateSqlMatchRule} from "@/type/__generated/jsonSchema/items/SqlMatchRule.ts";
 import {isString} from "@/utils/type/typeGuard.ts";
 import {ref, watch} from "vue";
+import {validateRegExp} from "@/utils/regExp/parseRegExp.ts";
 
 const jvmTypeInput = defineModel<JvmTypeInput>({
     required: true
@@ -63,6 +64,8 @@ const validateForm = (): boolean => {
                 key: 'not_blank_warning',
                 args: [translate('matchRegExp')]
             })
+        } else if (!validateRegExp(rule.matchRegExp)) {
+            errors.value[`sqlMatchRules.${index}`] = translate('invalid_regexp')
         }
     })
     jvmTypeInput.value.tsMatchRules.forEach((rule, index) => {
@@ -71,6 +74,8 @@ const validateForm = (): boolean => {
                 key: 'not_blank_warning',
                 args: [translate('matchRegExp')]
             })
+        } else if (!validateRegExp(rule.matchRegExp)) {
+            errors.value[`tsMatchRules.${index}`] = translate('invalid_regexp')
         }
     })
 

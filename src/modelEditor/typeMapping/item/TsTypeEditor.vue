@@ -74,6 +74,8 @@ const validateForm = (): boolean => {
                 key: 'not_blank_warning',
                 args: [translate('matchRegExp')]
             })
+        } else if (!validateJvmMatchRule(rule.matchRegExp)) {
+            errors.value[`jvmMatchRules.${index}`] = translate('invalid_regexp')
         }
     })
 
@@ -83,6 +85,8 @@ const validateForm = (): boolean => {
                 key: 'not_blank_warning',
                 args: [translate('matchRegExp')]
             })
+        } else if (!validateSqlMatchRule(rule.matchRegExp)) {
+            errors.value[`sqlMatchRules.${index}`] = translate('invalid_regexp')
         }
     })
 

@@ -48,6 +48,8 @@ const validateForm = (): boolean => {
                 key: 'not_blank_warning',
                 args: [translate('matchRegExp')]
             })
+        } else if (!validateTsMatchRule(rule.matchRegExp)) {
+            errors.value[`jvmMatchRules.${index}`] = translate('invalid_regexp')
         }
     })
     sqlTypeInput.value.tsMatchRules.forEach((rule, index) => {
@@ -56,6 +58,8 @@ const validateForm = (): boolean => {
                 key: 'not_blank_warning',
                 args: [translate('matchRegExp')]
             })
+        } else if (!validateTsMatchRule(rule.matchRegExp)) {
+            errors.value[`tsMatchRules.${index}`] = translate('invalid_regexp')
         }
     })
 

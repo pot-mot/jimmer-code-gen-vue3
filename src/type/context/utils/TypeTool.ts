@@ -1,4 +1,7 @@
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts"
+import {parseRegExp} from "@/utils/regExp/parseRegExp.ts";
+import {sendMessage} from "@/components/message/messageApi.ts";
+import {translate} from "@/store/i18nStore.ts";
 
 type CompiledMappingRule<T> = {
     jvmSource: JvmSource
@@ -6,35 +9,30 @@ type CompiledMappingRule<T> = {
     result: DeepReadonly<T>
 }
 
-const regExpMatch = /^\/(.*)\/([gimuy]*)$/
-
-function parseRegexString(regexStr: string): RegExp {
-    // 匹配 /pattern/flags 格式
-    const match = regexStr.match(regExpMatch)
-    if (match) {
-        const [, pattern, flags] = match
-        if (pattern !== undefined) return new RegExp(pattern, flags)
-    }
-    // 如果不是标准格式，当作普通字符串处理
-    return new RegExp(regexStr)
-}
-
-
 export const createSqlToJvm = (
     sqlToJvmMappingRules: DeepReadonly<SqlToJvmMappingRule[]>,
     jvmLanguage: JvmLanguage,
     databaseType: DatabaseType
 ): SqlToJvm => {
-    const cachedSqlToJvmRules: CompiledMappingRule<JvmType>[] = sqlToJvmMappingRules
-        .filter(rule => {
-            return (rule.jvmSource === jvmLanguage || rule.jvmSource === "ANY") &&
-                (rule.databaseSource === databaseType || rule.databaseSource === "ANY")
-        })
-        .map(rule => ({
-            jvmSource: rule.jvmSource,
-            regex: parseRegexString(rule.matchRegExp),
-            result: rule.result
-        }))
+    const cachedSqlToJvmRules: CompiledMappingRule<JvmType>[] = []
+
+    for (const rule of sqlToJvmMappingRules) {
+        if (
+            (rule.jvmSource === jvmLanguage || rule.jvmSource === "ANY") &&
+            (rule.databaseSource === databaseType || rule.databaseSource === "ANY")
+        ) {
+            try {
+                cachedSqlToJvmRules.push({
+                    jvmSource: rule.jvmSource,
+                    regex: parseRegExp(rule.matchRegExp),
+                    result: rule.result
+                })
+            } catch (e) {
+                console.error(`Invalid regexp: ${rule.matchRegExp}`)
+                sendMessage(`${translate('invalid_regexp')}: ${rule.matchRegExp}`, {type: "warning"})
+            }
+        }
+    }
 
     return (rawType: string): JvmType => {
         for (const rule of cachedSqlToJvmRules) {
@@ -42,8 +40,13 @@ export const createSqlToJvm = (
                 return cloneDeepReadonlyRaw<JvmType>(rule.result)
             }
         }
-        return {
-            typeExpression: "String",
+        return jvmLanguage === "JAVA" ? {
+            typeExpression: "Object",
+            extraImports: [],
+            extraAnnotations: [],
+            serialized: false,
+        } : {
+            typeExpression: "Any",
             extraImports: [],
             extraAnnotations: [],
             serialized: false,
@@ -56,16 +59,25 @@ export const createJvmToSql = (
     jvmLanguage: JvmLanguage,
     databaseType: DatabaseType
 ): JvmToSql => {
-    const cachedJvmToSqlRules: CompiledMappingRule<SqlType>[] = jvmToSqlMappingRules
-        .filter(rule => {
-            return (rule.jvmSource === jvmLanguage || rule.jvmSource === "ANY") &&
-                (rule.databaseSource === databaseType || rule.databaseSource === "ANY")
-        })
-        .map(rule => ({
-            jvmSource: rule.jvmSource,
-            regex: parseRegexString(rule.matchRegExp),
-            result: rule.result
-        }))
+    const cachedJvmToSqlRules: CompiledMappingRule<SqlType>[] = []
+
+    for (const rule of jvmToSqlMappingRules) {
+        if (
+            (rule.jvmSource === jvmLanguage || rule.jvmSource === "ANY") &&
+            (rule.databaseSource === databaseType || rule.databaseSource === "ANY")
+        ) {
+            try {
+                cachedJvmToSqlRules.push({
+                    jvmSource: rule.jvmSource,
+                    regex: parseRegExp(rule.matchRegExp),
+                    result: rule.result
+                })
+            } catch (e) {
+                console.error(`Invalid regexp: ${rule.matchRegExp}`)
+                sendMessage(`${translate('invalid_regexp')}: ${rule.matchRegExp}`, {type: "warning"})
+            }
+        }
+    }
 
     return (rawType: string): SqlType => {
         for (const rule of cachedJvmToSqlRules) {
@@ -74,8 +86,7 @@ export const createJvmToSql = (
             }
         }
         return {
-            type: "VARCHAR(255)",
-            dataSize: 255,
+            type: "text",
         }
     }
 }
@@ -84,13 +95,22 @@ export const createJvmToTs = (
     jvmToTsMappingRules: DeepReadonly<JvmToTsMappingRule[]>,
     jvmLanguage: JvmLanguage
 ): JvmToTs => {
-    const cachedJvmToTsRules: CompiledMappingRule<TsType>[] = jvmToTsMappingRules
-        .filter(rule => rule.jvmSource === jvmLanguage || rule.jvmSource === "ANY")
-        .map(rule => ({
-            jvmSource: rule.jvmSource,
-            regex: parseRegexString(rule.matchRegExp),
-            result: rule.result
-        }))
+    const cachedJvmToTsRules: CompiledMappingRule<TsType>[] = []
+
+    for (const rule of jvmToTsMappingRules) {
+        if (rule.jvmSource === jvmLanguage || rule.jvmSource === "ANY") {
+            try {
+                cachedJvmToTsRules.push({
+                    jvmSource: rule.jvmSource,
+                    regex: parseRegExp(rule.matchRegExp),
+                    result: rule.result
+                })
+            } catch (e) {
+                console.error(`Invalid regexp: ${rule.matchRegExp}`)
+                sendMessage(`${translate('invalid_regexp')}: ${rule.matchRegExp}`, {type: "warning"})
+            }
+        }
+    }
 
     return (rawType: string): TsType => {
         for (const rule of cachedJvmToTsRules) {
@@ -99,7 +119,7 @@ export const createJvmToTs = (
             }
         }
         return {
-            typeExpression: "string",
+            typeExpression: "any",
             extraImports: []
         }
     }
