@@ -126,15 +126,25 @@ watch(() => handleIndexMap.value, () => {
                         class="entity-property-view"
                         v-if="data.entity.properties[index]"
                     >
-                        <span style="display: flex; gap: 0.5rem;">
+                        <div style="display: flex; gap: 0.5rem;">
                             <EntityPropertyCategoryEditor
                                 v-model="data.entity.properties[index]"
                             />
-                            <NameCommentEditor
-                                :font-size="14"
-                                v-model="data.entity.properties[index]"
-                            />
-                        </span>
+                            <div>
+                                <div>
+                                    <NameCommentEditor
+                                        :font-size="14"
+                                        v-model="data.entity.properties[index]"
+                                    />
+                                </div>
+                                <div
+                                    v-if="'idViewName' in data.entity.properties[index]"
+                                    class="entity-property-id-view"
+                                >
+                                    {{ data.entity.properties[index].idViewName }}
+                                </div>
+                            </div>
+                        </div>
 
                         <EntityPropertyTypeEditor
                             class="no-drag no-wheel"
@@ -226,6 +236,11 @@ watch(() => handleIndexMap.value, () => {
     justify-content: space-between;
     gap: 0.5rem;
     line-height: 1.8rem;
+}
+
+.entity-property-id-view {
+    font-size: 12px;
+    color: var(--comment-color);
 }
 
 :deep(.vue-flow__handle) {

@@ -460,7 +460,7 @@ const association = computed(() => {
     font-size: 0.8rem;
     padding-left: 0.5rem;
     min-height: 1.8rem;
-    max-width: 10rem;
+    max-width: 15rem;
     overflow-x: auto;
     display: flex;
     flex-wrap: nowrap;

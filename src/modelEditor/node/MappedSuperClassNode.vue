@@ -127,15 +127,25 @@ watch(() => handleIndexMap.value, () => {
                         class="mapped-super-class-property-view"
                         v-if="data.mappedSuperClass.properties[index]"
                     >
-                        <span style="display: flex; gap: 0.5rem;">
+                        <div style="display: flex; gap: 0.5rem;">
                             <EntityPropertyCategoryEditor
                                 v-model="data.mappedSuperClass.properties[index]"
                             />
-                            <NameCommentEditor
-                                :font-size="14"
-                                v-model="data.mappedSuperClass.properties[index]"
-                            />
-                        </span>
+                            <div>
+                                <div>
+                                    <NameCommentEditor
+                                        :font-size="14"
+                                        v-model="data.mappedSuperClass.properties[index]"
+                                    />
+                                </div>
+                                <div
+                                    v-if="'idViewName' in data.mappedSuperClass.properties[index]"
+                                    class="mapped-super-class-property-id-view"
+                                >
+                                    {{ data.mappedSuperClass.properties[index].idViewName }}
+                                </div>
+                            </div>
+                        </div>
 
                         <MappedSuperClassPropertyTypeEditor
                             class="no-drag no-wheel"
@@ -227,6 +237,11 @@ watch(() => handleIndexMap.value, () => {
     justify-content: space-between;
     gap: 0.5rem;
     line-height: 1.8rem;
+}
+
+.mapped-super-class-property-id-view {
+    font-size: 12px;
+    color: var(--comment-color);
 }
 
 :deep(.vue-flow__handle) {

@@ -96,16 +96,18 @@ const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
                     class="foreign-key-wrapper"
                     :class="{selected}"
                 >
-                    <div class="flex-center">
+                    <div class="foreign-key-info">
                         <NameCommentViewer
                             v-if="!associationEdit"
                             :data="associationNameCommentView"
-                            @click.stop="associationEdit = true; edgeToFront(id)"
+                            @click.stop="edgeToFront(id)"
+                            @dblclick.stop="associationEdit = true; "
                         />
                         <NameCommentEditor
                             v-else
                             v-model="associationNameCommentTemplate"
                             class="with-border-bg"
+                            :font-size="12"
                             auto-focus
                             @change="associationEdit = false"
                             @blur="associationEdit = false"
@@ -129,22 +131,24 @@ const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
                             hide-comment
                             ctrl-focus
                         />
-                        <span>.</span>
+                        <span style="padding: 0 0.1rem;">.</span>
                         <NameCommentViewer
                             v-if="!mappedPropertyEdit"
                             :data="mappedPropertyNameCommentView"
-                            @click.stop="mappedPropertyEdit = true; edgeToFront(id)"
+                            @click.stop="edgeToFront(id)"
+                            @dblclick.stop="mappedPropertyEdit = true; "
                         />
                         <NameCommentEditor
                             v-else
                             v-model="mappedPropertyNameCommentTemplate"
                             class="with-border-bg"
+                            :font-size="12"
                             auto-focus
                             @change="mappedPropertyEdit = false"
                             @blur="mappedPropertyEdit = false"
                             @click.stop="edgeToFront(id)"
                         />
-                        <span style="padding-right: 0.5rem;">:</span>
+                        <span style="padding-right: 0.25rem;">:</span>
                         <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">List<</span>
                         <span style="color: var(--comment-color);">$</span>
                         <MappedSuperClassViewer :mapped-super-class="sourceAbstractEntity" hide-comment ctrl-focus/>
@@ -202,10 +206,19 @@ const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
     border-color: var(--primary-color);
 }
 
+.foreign-key-info {
+    display: flex;
+    justify-content: center;
+    line-height: 1.25rem;
+    font-size: 14px;
+}
+
 .mapped-property-info {
     display: flex;
     justify-content: center;
-    line-height: 2rem;
+    align-items: center;
+    line-height: 1.25rem;
+    font-size: 12px;
 }
 
 .flex-center {
