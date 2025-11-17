@@ -81,7 +81,8 @@ export const associationDiagnose = (
         }
     }
 
-    if ("idViewName" in association.mappedProperty) {
+    // when property name no problem, check idView
+    if (mappedPropertyMessages.length === 0 && "idViewName" in association.mappedProperty) {
         if (association.mappedProperty.idViewName.length === 0) {
             mappedPropertyMessages.push({
                 content: "[IdView Name is empty]",

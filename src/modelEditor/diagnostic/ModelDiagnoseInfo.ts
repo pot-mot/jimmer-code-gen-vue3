@@ -416,58 +416,96 @@ export const useModelDiagnoseInfo = (
         }
     }
 
+    for (const it of contextData.groupMap.values()) syncGroup(it)
+    for (const it of contextData.entityMap.values()) syncEntity(it)
+    for (const it of contextData.mappedSuperClassMap.values()) syncMappedSuperClass(it)
+    for (const it of contextData.embeddableTypeMap.values()) syncEmbeddableType(it)
+    for (const it of contextData.enumerationMap.values()) syncEnumeration(it)
+    for (const {association} of contextData.associationMap.values()) syncAssociation(association)
+
+    const getGroup = (id: string) => {
+        const group = contextData.groupMap.get(id)
+        if (!group) throw new Error(`Group ${id} not found`)
+        return group
+    }
+    const getEntity = (id: string) => {
+        const entity = contextData.entityMap.get(id)
+        if (!entity) throw new Error(`Entity ${id} not found`)
+        return entity
+    }
+    const getMappedSuperClass = (id: string) => {
+        const mappedSuperClass = contextData.mappedSuperClassMap.get(id)
+        if (!mappedSuperClass) throw new Error(`MappedSuperClass ${id} not found`)
+        return mappedSuperClass
+    }
+    const getEmbeddableType = (id: string) => {
+        const embeddableType = contextData.embeddableTypeMap.get(id)
+        if (!embeddableType) throw new Error(`EmbeddableType ${id} not found`)
+        return embeddableType
+    }
+    const getEnumeration = (id: string) => {
+        const enumeration = contextData.enumerationMap.get(id)
+        if (!enumeration) throw new Error(`Enumeration ${id} not found`)
+        return enumeration
+    }
+    const getAssociation = (id: string) => {
+        const edgedAssociation = contextData.associationMap.get(id)
+        if (!edgedAssociation) throw new Error(`Association ${id} not found`)
+        return edgedAssociation.association
+    }
+
     history.eventBus.on('change', (data) => {
         // 新增
         if (inferCommandInput(data, "group:add")) {
-            if (data.type === "apply") syncGroup(data.options.group)
+            if (data.type === "apply") syncGroup(getGroup(data.options.group.id))
             else if (data.type === "revert") removeGroup(data.options.group)
         } else if (inferCommandInput(data, "entity:add")) {
-            if (data.type === "apply") syncEntity(data.options.entity)
+            if (data.type === "apply") syncEntity(getEntity(data.options.entity.id))
             else if (data.type === "revert") removeEntity(data.options.entity)
         } else if (inferCommandInput(data, "mapped-super-class:add")) {
-            if (data.type === "apply") syncMappedSuperClass(data.options.mappedSuperClass)
+            if (data.type === "apply") syncMappedSuperClass(getMappedSuperClass(data.options.mappedSuperClass.id))
             else if (data.type === "revert") removeMappedSuperClass(data.options.mappedSuperClass)
         } else if (inferCommandInput(data, "embeddable-type:add")) {
-            if (data.type === "apply") syncEmbeddableType(data.options.embeddableType)
+            if (data.type === "apply") syncEmbeddableType(getEmbeddableType(data.options.embeddableType.id))
             else if (data.type === "revert") removeEmbeddableType(data.options.embeddableType)
         } else if (inferCommandInput(data, "enumeration:add")) {
-            if (data.type === "apply") syncEnumeration(data.options.enumeration)
+            if (data.type === "apply") syncEnumeration(getEnumeration(data.options.enumeration.id))
             else if (data.type === "revert") removeEnumeration(data.options.enumeration)
         }  else if (inferCommandInput(data, "association:add")) {
-            if (data.type === "apply") syncAssociation(data.options.association)
+            if (data.type === "apply") syncAssociation(getAssociation(data.options.association.id))
             else if (data.type === "revert") removeAssociation(data.options.association)
         }
 
         // 修改
         else if (inferCommandInput(data, "group:change")) {
-            if (data.type === "apply") syncGroup(data.options.group, data.revertOptions.group)
-            else if (data.type === "revert") syncGroup(data.revertOptions.group, data.options.group)
+            if (data.type === "apply") syncGroup(getGroup(data.options.group.id), data.revertOptions.group)
+            else if (data.type === "revert") syncGroup(getGroup(data.revertOptions.group.id), data.options.group)
         } else if (inferCommandInput(data, "entity:change")) {
-            if (data.type === "apply") syncEntity(data.options.entity, data.revertOptions.entity)
-            else if (data.type === "revert") syncEntity(data.revertOptions.entity, data.options.entity)
+            if (data.type === "apply") syncEntity(getEntity(data.options.entity.id), data.revertOptions.entity)
+            else if (data.type === "revert") syncEntity(getEntity(data.revertOptions.entity.id), data.options.entity)
         } else if (inferCommandInput(data, "mapped-super-class:change")) {
-            if (data.type === "apply") syncMappedSuperClass(data.options.mappedSuperClass, data.revertOptions.mappedSuperClass)
-            else if (data.type === "revert") syncMappedSuperClass(data.revertOptions.mappedSuperClass, data.options.mappedSuperClass)
+            if (data.type === "apply") syncMappedSuperClass(getMappedSuperClass(data.options.mappedSuperClass.id), data.revertOptions.mappedSuperClass)
+            else if (data.type === "revert") syncMappedSuperClass(getMappedSuperClass(data.revertOptions.mappedSuperClass.id), data.options.mappedSuperClass)
         } else if (inferCommandInput(data, "embeddable-type:change")) {
-            if (data.type === "apply") syncEmbeddableType(data.options.embeddableType, data.revertOptions.embeddableType)
-            else if (data.type === "revert") syncEmbeddableType(data.revertOptions.embeddableType, data.options.embeddableType)
+            if (data.type === "apply") syncEmbeddableType(getEmbeddableType(data.options.embeddableType.id), data.revertOptions.embeddableType)
+            else if (data.type === "revert") syncEmbeddableType(getEmbeddableType(data.revertOptions.embeddableType.id), data.options.embeddableType)
         } else if (inferCommandInput(data, "enumeration:change")) {
-            if (data.type === "apply") syncEnumeration(data.options.enumeration, data.revertOptions.enumeration)
-            else if (data.type === "revert") syncEnumeration(data.revertOptions.enumeration, data.options.enumeration)
+            if (data.type === "apply") syncEnumeration(getEnumeration(data.options.enumeration.id), data.revertOptions.enumeration)
+            else if (data.type === "revert") syncEnumeration(getEnumeration(data.revertOptions.enumeration.id), data.options.enumeration)
         } else if (inferCommandInput(data, "association:change")) {
-            if (data.type === "apply") syncAssociation(data.options.association, data.revertOptions.association)
-            else if (data.type === "revert") syncAssociation(data.revertOptions.association, data.options.association)
+            if (data.type === "apply") syncAssociation(getAssociation(data.options.association.id), data.revertOptions.association)
+            else if (data.type === "revert") syncAssociation(getAssociation(data.revertOptions.association.id), data.options.association)
         }
 
         // 导入
         else if (inferCommandInput(data, "import")) {
             if (data.type === "apply") {
-                for (const group of data.options.data.groups) syncGroup(group)
-                for (const {data: enumeration} of data.options.data.enumerations) syncEnumeration(enumeration)
-                for (const {data: embeddableType} of data.options.data.embeddableTypes) syncEmbeddableType(embeddableType)
-                for (const {data: mappedSuperClass} of data.options.data.mappedSuperClasses) syncMappedSuperClass(mappedSuperClass)
-                for (const {data: entity} of data.options.data.entities) syncEntity(entity)
-                for (const {data: association} of data.options.data.associations) syncAssociation(association)
+                for (const group of data.options.data.groups) syncGroup(getGroup(group.id))
+                for (const {data: enumeration} of data.options.data.enumerations) syncEnumeration(getEnumeration(enumeration.id))
+                for (const {data: embeddableType} of data.options.data.embeddableTypes) syncEmbeddableType(getEmbeddableType(embeddableType.id))
+                for (const {data: mappedSuperClass} of data.options.data.mappedSuperClasses) syncMappedSuperClass(getMappedSuperClass(mappedSuperClass.id))
+                for (const {data: entity} of data.options.data.entities) syncEntity(getEntity(entity.id))
+                for (const {data: association} of data.options.data.associations) syncAssociation(getAssociation(association.id))
             } else {
                 for (const {data: association} of data.options.data.associations) removeAssociation(association)
                 for (const {data: entity} of data.options.data.entities) removeEntity(entity)
@@ -488,12 +526,12 @@ export const useModelDiagnoseInfo = (
                 for (const {data: enumeration} of data.revertOptions.enumerations) removeEnumeration(enumeration)
                 for (const group of data.revertOptions.groups) removeGroup(group)
             } else {
-                for (const group of data.revertOptions.groups) syncGroup(group)
-                for (const {data: enumeration} of data.revertOptions.enumerations) syncEnumeration(enumeration)
-                for (const {data: embeddableType} of data.revertOptions.embeddableTypes) syncEmbeddableType(embeddableType)
-                for (const {data: mappedSuperClass} of data.revertOptions.mappedSuperClasses) syncMappedSuperClass(mappedSuperClass)
-                for (const {data: entity} of data.revertOptions.entities) syncEntity(entity)
-                for (const {data: association} of data.revertOptions.associations) syncAssociation(association)
+                for (const group of data.revertOptions.groups) syncGroup(getGroup(group.id))
+                for (const {data: enumeration} of data.revertOptions.enumerations) syncEnumeration(getEnumeration(enumeration.id))
+                for (const {data: embeddableType} of data.revertOptions.embeddableTypes) syncEmbeddableType(getEmbeddableType(embeddableType.id))
+                for (const {data: mappedSuperClass} of data.revertOptions.mappedSuperClasses) syncMappedSuperClass(getMappedSuperClass(mappedSuperClass.id))
+                for (const {data: entity} of data.revertOptions.entities) syncEntity(getEntity(entity.id))
+                for (const {data: association} of data.revertOptions.associations) syncAssociation(getAssociation(association.id))
             }
         }
     })

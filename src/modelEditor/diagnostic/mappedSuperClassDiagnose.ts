@@ -97,6 +97,35 @@ export const mappedSuperClassDiagnose = (
             }
         }
 
+        // when property name no problem, check idView
+        if (messages.length === 0 && "idViewName" in property) {
+            if (property.idViewName.length === 0) {
+                messages.push({
+                    content: "[IdView Name is empty]",
+                    type: "error"
+                })
+            } else {
+                if (!checkNoBlank(property.idViewName)) {
+                    messages.push({
+                        content: "[Invalid IdView Name]",
+                        type: "error"
+                    })
+                } else if (!checkLowerCamelName(property.idViewName)) {
+                    messages.push({
+                        content: "[IdView should use lowerCamelCase]",
+                        type: "warning"
+                    })
+                }
+
+                const nameCount = nameSets.mappedSuperClassPropertyNameSetMap.get(mappedSuperClass.id)?.count(property.idViewName) ?? 0
+                if (nameCount > 1) {
+                    messages.push({
+                        content: `[Duplicate IdView Name: ${nameCount}]`,
+                        type: "warning"
+                    })
+                }
+            }
+        }
 
         if ("rawType" in property) {
             if (property.rawType.length === 0) {
@@ -151,35 +180,6 @@ export const mappedSuperClassDiagnose = (
                     content: "[Column Type is empty]",
                     type: "error"
                 })
-            }
-        }
-
-        if ("idViewName" in property) {
-            if (property.idViewName.length === 0) {
-                messages.push({
-                    content: "[IdView Name is empty]",
-                    type: "error"
-                })
-            } else {
-                if (!checkNoBlank(property.idViewName)) {
-                    messages.push({
-                        content: "[Invalid IdView Name]",
-                        type: "error"
-                    })
-                } else if (!checkLowerCamelName(property.idViewName)) {
-                    messages.push({
-                        content: "[IdView should use lowerCamelCase]",
-                        type: "warning"
-                    })
-                }
-
-                const nameCount = nameSets.mappedSuperClassPropertyNameSetMap.get(mappedSuperClass.id)?.count(property.idViewName) ?? 0
-                if (nameCount > 1) {
-                    messages.push({
-                        content: `[Duplicate IdView Name: ${nameCount}]`,
-                        type: "warning"
-                    })
-                }
             }
         }
 
