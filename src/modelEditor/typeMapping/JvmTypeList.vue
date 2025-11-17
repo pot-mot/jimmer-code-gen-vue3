@@ -104,7 +104,7 @@ const handleSubmit = async () => {
     isEdit.value = false
 }
 
-const defaultTsType = (): JvmTypeInput => {
+const defaultJvmType = (): JvmTypeInput => {
     return {
         jvmSource: "ANY",
         typeExpression: "",
@@ -149,7 +149,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
     <div v-if="isEdit" tabindex="-1" @keydown="handleKeyDown">
         <EditList
             v-model:lines="jvmTypeInputs"
-            :default-line="defaultTsType"
+            :default-line="defaultJvmType"
             :json-schema-validate="validateJvmType"
             :before-paste="beforePaste"
         >

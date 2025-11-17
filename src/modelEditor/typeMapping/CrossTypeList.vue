@@ -106,13 +106,12 @@ const handleSubmit = async () => {
     isEdit.value = false
 }
 
-const defaultTsType = (): CrossTypeInput => {
+const defaultCrossType = (): CrossTypeInput => {
     return {
-        jvmSource: "ANY",
-        databaseSource: "ANY",
         sqlTypeId: sqlTypes.value[0]?.id ?? "",
         jvmTypeId: jvmTypes.value[0]?.id ?? "",
         tsTypeId: tsTypes.value[0]?.id ?? "",
+        nullable: false,
     }
 }
 
@@ -149,7 +148,7 @@ const handleKeyDown = (e: KeyboardEvent) => {
     <div v-if="isEdit" tabindex="-1" @keydown="handleKeyDown">
         <EditList
             v-model:lines="crossTypeInputs"
-            :default-line="defaultTsType"
+            :default-line="defaultCrossType"
             :json-schema-validate="validateCrossType_IdOnly"
             :before-paste="beforePaste"
         >

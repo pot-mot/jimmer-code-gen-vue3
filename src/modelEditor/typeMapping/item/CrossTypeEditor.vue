@@ -2,12 +2,11 @@
 import type {CrossTypeInput} from "@/api/__generated/model/static";
 import {ref, watch} from "vue";
 import {translate} from "@/store/i18nStore.ts";
-import JvmLanguageOrAnySelect from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageOrAnySelect.vue";
-import DatabaseTypeOrAnySelect from "@/modelEditor/modelForm/databaseType/DatabaseTypeOrAnySelect.vue";
 import JvmTypeSelect from "@/modelEditor/typeMapping/select/JvmTypeSelect.vue";
 import SqlTypeSelect from "@/modelEditor/typeMapping/select/SqlTypeSelect.vue";
 import TsTypeSelect from "@/modelEditor/typeMapping/select/TsTypeSelect.vue";
 import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
+import FilterableSelect from "@/components/select/FilterableSelect.vue";
 
 const crossTypeInput = defineModel<CrossTypeInput>({
     required: true
@@ -52,20 +51,16 @@ defineExpose({
 
 <template>
     <div class="cross-type-editor">
-        <JvmLanguageOrAnySelect v-model="crossTypeInput.jvmSource"/>
         <div class="input-wrapper">
             <JvmTypeSelect
                 v-model="crossTypeInput.jvmTypeId"
-                :jvm-source="crossTypeInput.jvmSource"
                 :class="{ 'error': errors.sqlTypeId }"
             />
             <div v-if="errors.jvmTypeId" class="error-message">{{ errors.jvmTypeId }}</div>
         </div>
-        <DatabaseTypeOrAnySelect v-model="crossTypeInput.databaseSource"/>
         <div class="input-wrapper">
             <SqlTypeSelect
                 v-model="crossTypeInput.sqlTypeId"
-                :database-source="crossTypeInput.databaseSource"
                 :class="{ 'error': errors.sqlTypeId }"
             />
             <div v-if="errors.sqlTypeId" class="error-message">{{ errors.sqlTypeId }}</div>
@@ -77,13 +72,31 @@ defineExpose({
             />
             <div v-if="errors.tsTypeId" class="error-message">{{ errors.tsTypeId }}</div>
         </div>
+        <div>
+            <FilterableSelect
+                v-model="crossTypeInput.nullable"
+                :options="[true, false, undefined]"
+                :get-id="(it) => `${it}`"
+            >
+                <template #selected="{option}">
+                    <span v-if="option === true">{{ translate('nullableLimit_true') }}</span>
+                    <span v-else-if="option === false">{{ translate('nullableLimit_false') }}</span>
+                    <span v-else-if="option === undefined">{{ translate('nullableLimit_undefined') }}</span>
+                </template>
+                <template #option="{option}">
+                    <span v-if="option === true">{{ translate('nullableLimit_true') }}</span>
+                    <span v-else-if="option === false">{{ translate('nullableLimit_false') }}</span>
+                    <span v-else-if="option === undefined">{{ translate('nullableLimit_undefined') }}</span>
+                </template>
+            </FilterableSelect>
+        </div>
     </div>
 </template>
 
 <style scoped>
 .cross-type-editor {
     display: grid;
-    grid-template-columns: 4rem 1fr 6rem 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr auto;
     grid-gap: 0.5rem;
     font-size: 0.8rem;
     padding: 0.25rem 0.5rem;

@@ -52,16 +52,16 @@ const collapseDisabled = computed(() => {
             <div class="viewer-item" v-if="sqlType.jvmMatchRules.length > 0">
                 <span class="label no-drag">{{ translate("jvmMatchRules") }}</span>
                 <ul>
-                    <li v-for="item in sqlType.jvmMatchRules">
-                        <JvmLanguageView v-if="item.jvmSource !== 'ANY'" :jvm-language="item.jvmSource" class="tag"/>
+                    <li v-for="item in sqlType.jvmMatchRules" class="match-rule">
                         <span class="no-drag">{{ item.matchRegExp }}</span>
+                        <JvmLanguageView v-if="item.jvmSource !== 'ANY'" :jvm-language="item.jvmSource" class="tag"/>
                     </li>
                 </ul>
             </div>
             <div class="viewer-item" v-if="sqlType.tsMatchRules.length > 0">
                 <span class="label no-drag">{{ translate("tsMatchRules") }}</span>
                 <ul>
-                    <li v-for="item in sqlType.tsMatchRules">
+                    <li v-for="item in sqlType.tsMatchRules" class="match-rule">
                         <span class="no-drag">{{ item.matchRegExp }}</span>
                     </li>
                 </ul>
@@ -98,5 +98,12 @@ const collapseDisabled = computed(() => {
 
 .viewer-item .label {
     text-align: right;
+}
+
+.match-rule {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.5rem;
 }
 </style>

@@ -119,6 +119,7 @@ export const useTypeMapping = createStore(() => {
                 rules.push({
                     jvmSource: jvmType.jvmSource,
                     databaseSource: sqlRule.databaseSource,
+                    nullableLimit: sqlRule.nullableLimit,
                     matchRegExp: sqlRule.matchRegExp,
                     result: jvmType
                 })
@@ -180,11 +181,12 @@ export const useTypeMapping = createStore(() => {
             if (!tsType) continue
 
             options.push({
-                jvmSource: crossType.jvmSource,
-                databaseSource: crossType.databaseSource,
+                databaseSource: sqlType.databaseSource,
                 sqlType,
+                jvmSource: jvmType.jvmSource,
                 jvmType,
                 tsType,
+                nullable: crossType.nullable
             })
         }
         return options

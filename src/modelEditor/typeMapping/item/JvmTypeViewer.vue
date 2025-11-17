@@ -55,16 +55,19 @@ const collapseDisabled = computed(() => {
             <div class="viewer-item" v-if="jvmType.sqlMatchRules.length > 0">
                 <span class="label no-drag">{{ translate("sqlMatchRules") }}</span>
                 <ul>
-                    <li v-for="item in jvmType.sqlMatchRules">
-                        <DatabaseTypeView v-if="item.databaseSource !== 'ANY'" :database-type="item.databaseSource" class="tag"/>
+                    <li v-for="item in jvmType.sqlMatchRules" class="match-rule">
                         <span class="no-drag">{{ item.matchRegExp }}</span>
+                        <span class="no-drag" v-if="item.nullableLimit === true">{{ translate('nullableLimit_true') }}</span>
+                        <span class="no-drag" v-else-if="item.nullableLimit === false">{{ translate('nullableLimit_false') }}</span>
+                        <span  class="no-drag" v-else-if="item.nullableLimit === undefined">{{ translate('nullableLimit_undefined') }}</span>
+                        <DatabaseTypeView v-if="item.databaseSource !== 'ANY'" :database-type="item.databaseSource" class="tag"/>
                     </li>
                 </ul>
             </div>
             <div class="viewer-item" v-if="jvmType.tsMatchRules.length > 0">
                 <span class="label no-drag">{{ translate("tsMatchRules") }}</span>
                 <ul>
-                    <li v-for="item in jvmType.tsMatchRules">
+                    <li v-for="item in jvmType.tsMatchRules" class="match-rule">
                         <span class="no-drag">{{ item.matchRegExp }}</span>
                     </li>
                 </ul>
@@ -100,5 +103,12 @@ const collapseDisabled = computed(() => {
 
 .viewer-item .label {
     text-align: right;
+}
+
+.match-rule {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.5rem;
 }
 </style>

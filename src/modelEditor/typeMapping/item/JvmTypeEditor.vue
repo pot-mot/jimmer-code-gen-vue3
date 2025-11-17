@@ -13,6 +13,7 @@ import {validateSqlMatchRule} from "@/type/__generated/jsonSchema/items/SqlMatch
 import {isString} from "@/utils/type/typeGuard.ts";
 import {ref, watch} from "vue";
 import {validateRegExp} from "@/utils/regExp/parseRegExp.ts";
+import FilterableSelect from "@/components/select/FilterableSelect.vue";
 
 const jvmTypeInput = defineModel<JvmTypeInput>({
     required: true
@@ -200,6 +201,22 @@ defineExpose({
                                         {{ errors[`sqlMatchRules.${index}`] }}
                                     </div>
                                 </div>
+                                <FilterableSelect
+                                    v-model="jvmTypeInput.sqlMatchRules[index].nullableLimit"
+                                    :options="[true, false, undefined]"
+                                    :get-id="(it) => `${it}`"
+                                >
+                                    <template #selected="{option}">
+                                        <span v-if="option === true">{{ translate('nullableLimit_true') }}</span>
+                                        <span v-else-if="option === false">{{ translate('nullableLimit_false') }}</span>
+                                        <span v-else-if="option === undefined">{{ translate('nullableLimit_undefined') }}</span>
+                                    </template>
+                                    <template #option="{option}">
+                                        <span v-if="option === true">{{ translate('nullableLimit_true') }}</span>
+                                        <span v-else-if="option === false">{{ translate('nullableLimit_false') }}</span>
+                                        <span v-else-if="option === undefined">{{ translate('nullableLimit_undefined') }}</span>
+                                    </template>
+                                </FilterableSelect>
                                 <button class="delete-button" @click="jvmTypeInput.sqlMatchRules.splice(index, 1)">
                                     <IconDelete/>
                                 </button>
