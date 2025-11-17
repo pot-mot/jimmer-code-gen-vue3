@@ -19,6 +19,12 @@ export type MainLocale = {
     generate: string
     reset: string
     refresh: string
+    redo: string
+    redo_fail: string
+    cannot_redo: string
+    undo: string
+    undo_fail: string
+    cannot_undo: string
 
     all: string
     selected: string

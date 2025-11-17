@@ -21,6 +21,12 @@ export const localeEn: MainLocale = {
     generate: "Generate",
     reset: "Reset",
     refresh: "Refresh",
+    redo: "Redo",
+    redo_fail: "Redo Fail",
+    cannot_redo: "Cannot Redo",
+    undo: "Undo",
+    undo_fail: "Undo Fail",
+    cannot_undo: "Cannot Undo",
 
     all: "All",
     selected: "Selected",

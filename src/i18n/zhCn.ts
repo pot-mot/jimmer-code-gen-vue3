@@ -21,6 +21,12 @@ export const localeZhCn: MainLocale = {
     generate: "生成",
     reset: "重置",
     refresh: "刷新",
+    redo: "重做",
+    redo_fail: "重做失败",
+    cannot_redo: "不可再次重做",
+    undo: "撤回",
+    undo_fail: "撤回失败",
+    cannot_undo: "不可再次撤回",
 
     all: "全部",
     selected: "选中部分",
