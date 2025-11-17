@@ -112,6 +112,102 @@ export const useModelDiagnoseInfo = (
         }
     }
 
+    const syncEntityReferences = (
+        entityId: string,
+    ) => {
+        for (const entity of contextData.entityMap.values()) {
+            for (const property of entity.properties) {
+                if ("referencedEntityId" in property && property.referencedEntityId === entityId) {
+                    setEntityDiagnose(entity)
+                    break
+                }
+            }
+        }
+        for (const mappedSuperClass of contextData.mappedSuperClassMap.values()) {
+            for (const property of mappedSuperClass.properties) {
+                if ("referencedEntityId" in property && property.referencedEntityId === entityId) {
+                    setMappedSuperClassDiagnose(mappedSuperClass)
+                    break
+                }
+            }
+        }
+        for (const {association} of contextData.associationMap.values()) {
+            if ("sourceEntityId" in association && association.sourceEntityId === entityId) {
+                setAssociationDiagnose(association)
+            } else if (association.referencedEntityId === entityId) {
+                setAssociationDiagnose(association)
+            }
+        }
+    }
+
+    const syncMappedSuperClassReferences = (
+        mappedSuperClassId: string,
+    ) => {
+        for (const {association} of contextData.associationMap.values()) {
+            if ("sourceAbstractEntityId" in association && association.sourceAbstractEntityId === mappedSuperClassId) {
+                setAssociationDiagnose(association)
+            }
+        }
+    }
+
+    const syncEmbeddableTypeReferences = (
+        embeddableTypeId: string,
+    ) => {
+        for (const entity of contextData.entityMap.values()) {
+            for (const property of entity.properties) {
+                if ("embeddableTypeId" in property && property.embeddableTypeId === embeddableTypeId) {
+                    setEntityDiagnose(entity)
+                    break
+                }
+            }
+        }
+        for (const mappedSuperClass of contextData.mappedSuperClassMap.values()) {
+            for (const property of mappedSuperClass.properties) {
+                if ("embeddableTypeId" in property && property.embeddableTypeId === embeddableTypeId) {
+                    setMappedSuperClassDiagnose(mappedSuperClass)
+                    break
+                }
+            }
+        }
+        for (const embeddableType of contextData.embeddableTypeMap.values()) {
+            for (const property of embeddableType.properties) {
+                if ("embeddableTypeId" in property && property.embeddableTypeId === embeddableTypeId) {
+                    setEmbeddableTypeDiagnose(embeddableType)
+                    break
+                }
+            }
+        }
+    }
+
+    const syncEnumerationReferences = (
+        enumerationId: string,
+    ) => {
+        for (const entity of contextData.entityMap.values()) {
+            for (const property of entity.properties) {
+                if ("enumId" in property && property.enumId === enumerationId) {
+                    setEntityDiagnose(entity)
+                    break
+                }
+            }
+        }
+        for (const mappedSuperClass of contextData.mappedSuperClassMap.values()) {
+            for (const property of mappedSuperClass.properties) {
+                if ("enumId" in property && property.enumId === enumerationId) {
+                    setMappedSuperClassDiagnose(mappedSuperClass)
+                    break
+                }
+            }
+        }
+        for (const embeddableType of contextData.embeddableTypeMap.values()) {
+            for (const property of embeddableType.properties) {
+                if ("enumId" in property && property.enumId === enumerationId) {
+                    setEmbeddableTypeDiagnose(embeddableType)
+                    break
+                }
+            }
+        }
+    }
+
     const syncGroup = (
         group: DeepReadonly<Group>,
         oldGroup?: DeepReadonly<Group>
@@ -134,15 +230,12 @@ export const useModelDiagnoseInfo = (
             syncSameNameGroupItem(oldEntity.name)
         }
         syncSameNameGroupItem(entity.name)
-        for (const {association} of contextData.associationMap.values()) {
-            if (association.referencedEntityId === entity.id) {
-                setAssociationDiagnose(association)
-            }
-        }
+        syncEntityReferences(entity.id)
     }
     const removeEntity = (entity: DeepReadonly<EntityWithProperties>) => {
         removeEntityDiagnose(entity.id)
         syncSameNameGroupItem(entity.name)
+        syncEntityReferences(entity.id)
     }
 
     const syncMappedSuperClass = (
@@ -153,6 +246,7 @@ export const useModelDiagnoseInfo = (
             syncSameNameGroupItem(oldMappedSuperClass.name)
         }
         syncSameNameGroupItem(mappedSuperClass.name)
+        syncMappedSuperClassReferences(mappedSuperClass.id)
         const inheritItem = inheritInfo.abstractInheritInfoMap.get(mappedSuperClass.id)
         if (inheritItem) {
             for (const childId of inheritItem.concreteChildIdSet) {
@@ -168,6 +262,7 @@ export const useModelDiagnoseInfo = (
     const removeMappedSuperClass = (mappedSuperClass: DeepReadonly<MappedSuperClassWithProperties>) => {
         removeMappedSuperClassDiagnose(mappedSuperClass.id)
         syncSameNameGroupItem(mappedSuperClass.name)
+        syncMappedSuperClassReferences(mappedSuperClass.id)
         for (const [missingId, missingDependency] of inheritInfo.missingDependencies) {
             if (missingDependency.has(mappedSuperClass.id)) {
                 if (contextData.entityMap.has(missingId)) {
@@ -200,10 +295,12 @@ export const useModelDiagnoseInfo = (
             syncSameNameGroupItem(oldEmbeddableType.name)
         }
         syncSameNameGroupItem(embeddableType.name)
+        syncEmbeddableTypeReferences(embeddableType.id)
     }
     const removeEmbeddableType = (embeddableType: DeepReadonly<EmbeddableTypeWithProperties>) => {
         removeEmbeddableTypeDiagnose(embeddableType.id)
         syncSameNameGroupItem(embeddableType.name)
+        syncEmbeddableTypeReferences(embeddableType.id)
     }
 
     const syncEnumeration = (
@@ -214,10 +311,12 @@ export const useModelDiagnoseInfo = (
             syncSameNameGroupItem(oldEnumeration.name)
         }
         syncSameNameGroupItem(enumeration.name)
+        syncEnumerationReferences(enumeration.id)
     }
     const removeEnumeration = (enumeration: DeepReadonly<Enumeration>) => {
         removeEnumerationDiagnose(enumeration.id)
         syncSameNameGroupItem(enumeration.name)
+        syncEnumerationReferences(enumeration.id)
     }
 
     const syncAssociation = (

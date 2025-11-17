@@ -78,6 +78,28 @@ export const associationDiagnose = (
                 })
             }
         }
+
+        if ("sourceEntityId" in association) {
+            if (!contextData.entityMap.has(association.sourceEntityId)) {
+                messages.push({
+                    content: "[Source Entity is missing]",
+                    type: "error"
+                })
+            }
+        } else {
+            if (!contextData.mappedSuperClassMap.has(association.sourceAbstractEntityId)) {
+                messages.push({
+                    content: "[Source Abstract Entity is missing]",
+                    type: "error"
+                })
+            }
+        }
+        if (!contextData.entityMap.has(association.referencedEntityId)) {
+            messages.push({
+                content: "[Referenced Entity is missing]",
+                type: "error"
+            })
+        }
     }
 
     return {

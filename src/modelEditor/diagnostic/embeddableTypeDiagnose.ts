@@ -72,6 +72,56 @@ export const embeddableTypeDiagnose = (
                 })
             }
         }
+
+
+        if ("rawType" in property) {
+            if (property.rawType.length === 0) {
+                messages.push({
+                    content: "[Type is empty]",
+                    type: "error"
+                })
+            }
+        }
+        if ("embeddableTypeId" in property) {
+            if (!contextData.embeddableTypeMap.has(property.embeddableTypeId)) {
+                messages.push({
+                    content: "[Type Embeddable is missing]",
+                    type: "error"
+                })
+            }
+        }
+        if ("enumId" in property) {
+            if (!contextData.enumerationMap.has(property.enumId)) {
+                messages.push({
+                    content: "[Type Enumeration is missing]",
+                    type: "error"
+                })
+            }
+        }
+
+        if ("columnInfo" in property) {
+            if (property.columnInfo.name.length === 0) {
+                messages.push({
+                    content: "[Column Name is empty]",
+                    type: "error"
+                })
+            } else {
+                if (!checkNoBlank(property.columnInfo.name)) {
+                    messages.push({
+                        content: "[Invalid Column Name]",
+                        type: "error"
+                    })
+                }
+            }
+
+            if (property.columnInfo.type.length === 0) {
+                messages.push({
+                    content: "[Column Type is empty]",
+                    type: "error"
+                })
+            }
+        }
+
         propertyDiagnoseMap.set(property.id, messages)
     }
 
