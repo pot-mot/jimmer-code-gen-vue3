@@ -417,13 +417,13 @@ export const useModelEditor = createStore(() => {
     // Selection 选中部分的图数据
     const modelSelection = useModelEditorSelectIds({getContextData, getVueFlow, getNextZIndex})
 
-    const isModelSelectionNotEmpty = computed(() => {
+    const modelSelectionCount = computed<number>(() => {
         const idSets = modelSelection.selectedIdSets.value
-        return idSets.groupIdSet.size > 0
-            || idSets.entityIdSet.size > 0
-            || idSets.mappedSuperClassIdSet.size > 0
-            || idSets.embeddableTypeIdSet.size > 0
-            || idSets.enumerationIdSet.size > 0
+        return idSets.groupIdSet.size +
+            idSets.entityIdSet.size +
+            idSets.mappedSuperClassIdSet.size +
+            idSets.embeddableTypeIdSet.size +
+            idSets.enumerationIdSet.size
     })
 
     const getGraphSelection = () => {
@@ -1057,7 +1057,7 @@ export const useModelEditor = createStore(() => {
         // 选择
         modelSelection,
         selectedIdSets: modelSelection.selectedIdSets,
-        isModelSelectionNotEmpty,
+        modelSelectionCount,
 
         graphSelection: {
             get: getGraphSelection,

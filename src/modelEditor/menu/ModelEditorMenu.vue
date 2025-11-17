@@ -37,12 +37,12 @@ const {
     undo,
     redo,
     saveModel,
-    isModelSelectionNotEmpty,
     copy,
     cut,
     paste,
 
     modelSelection,
+    modelSelectionCount,
 } = useModelEditor()
 
 const treeRef = useTemplateRef("treeRef")
@@ -112,13 +112,13 @@ const handleKeyDown = async (e: KeyboardEvent) => {
             await saveModel()
         } else if (e.key === "c" || e.key === "C") {
             if (judgeTargetIsInteraction(e)) return
-            if (!isModelSelectionNotEmpty.value) return
+            if (modelSelectionCount.value === 0) return
 
             e.preventDefault()
             await copy()
         } else if (e.key === "x" || e.key === "X") {
             if (judgeTargetIsInteraction(e)) return
-            if (!isModelSelectionNotEmpty.value) return
+            if (modelSelectionCount.value === 0) return
 
             e.preventDefault()
             await cut()
