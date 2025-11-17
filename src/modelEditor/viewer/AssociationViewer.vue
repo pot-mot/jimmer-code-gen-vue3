@@ -12,6 +12,7 @@ const props = withDefaults(defineProps<{
 })
 
 const {
+    focusEdge,
     modelSelection,
 } = useModelEditor()
 
@@ -20,6 +21,7 @@ const handleFocus = () => {
     if (!props.ctrlFocus) return
     modelSelection.unselectAll()
     modelSelection.selectAssociation(props.association.id)
+    focusEdge(props.association.id)
 }
 
 const associationNameComment = useAssociationNameComment(() => props.association)
@@ -49,6 +51,7 @@ const associationNameComment = useAssociationNameComment(() => props.association
 
 .ctrl-down .association-viewer.ctrl-focus:hover,
 .ctrl-down .association-viewer.ctrl-focus:hover > :deep(.comment) {
+    cursor: pointer;
     color: var(--primary-color);
 }
 </style>

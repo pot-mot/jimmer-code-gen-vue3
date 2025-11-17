@@ -7,7 +7,7 @@ defineProps<{
 </script>
 
 <template>
-    <div class="diagnose-viewer" v-if="messages && messages.length > 0">
+    <div class="diagnose-viewer no-drag" v-if="messages && messages.length > 0">
         <div
             v-for="message in messages"
             class="message-content"

@@ -904,8 +904,8 @@ export const useModelEditor = createStore(() => {
         await vueFlow.fitBounds({
             x: _node.computedPosition.x,
             y: _node.computedPosition.y,
-            width: _node.dimensions.width,
-            height: _node.dimensions.height,
+            width: Math.max(_node.dimensions.width, 320),
+            height: Math.max(_node.dimensions.height, 320),
         }, {duration: 500, padding: 0.4})
         return _node
     }
@@ -936,8 +936,8 @@ export const useModelEditor = createStore(() => {
         await vueFlow.fitBounds({
             x: Math.min(_edge.sourceX, _edge.targetX),
             y: Math.min(_edge.sourceY, _edge.targetY),
-            width: Math.abs(_edge.targetX - _edge.sourceX),
-            height: Math.abs(_edge.targetY - _edge.sourceY),
+            width: Math.max(Math.abs(_edge.targetX - _edge.sourceX), 320),
+            height: Math.max(Math.abs(_edge.targetY - _edge.sourceY), 320),
         }, {duration: 500, padding: 0.4})
         return _edge
     }

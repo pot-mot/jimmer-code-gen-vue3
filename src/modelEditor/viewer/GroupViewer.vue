@@ -46,6 +46,7 @@ const handleFocus = () => {
 
 .ctrl-down .group-viewer.ctrl-focus:hover,
 .ctrl-down .group-viewer.ctrl-focus:hover > :deep(.comment) {
+    cursor: pointer;
     color: var(--primary-color);
 }
 </style>

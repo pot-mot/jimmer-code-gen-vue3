@@ -66,6 +66,7 @@ const handleFocus = () => {
 
 .ctrl-down .property-viewer.ctrl-focus:hover,
 .ctrl-down .property-viewer.ctrl-focus:hover > :deep(.comment) {
+    cursor: pointer;
     color: var(--primary-color);
 }
 </style>

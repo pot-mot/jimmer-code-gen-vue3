@@ -48,6 +48,7 @@ const handleFocus = () => {
 
 .ctrl-down .mapped-super-class-viewer.ctrl-focus:hover,
 .ctrl-down .mapped-super-class-viewer.ctrl-focus:hover > :deep(.comment) {
+    cursor: pointer;
     color: var(--primary-color);
 }
 </style>

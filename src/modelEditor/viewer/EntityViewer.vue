@@ -48,6 +48,7 @@ const handleFocus = () => {
 
 .ctrl-down .entity-viewer.ctrl-focus:hover,
 .ctrl-down .entity-viewer.ctrl-focus:hover > :deep(.comment) {
+    cursor: pointer;
     color: var(--primary-color);
 }
 </style>
