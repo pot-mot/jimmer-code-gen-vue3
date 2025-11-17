@@ -37,6 +37,8 @@ import {toManyToOne} from "@/modelEditor/node/association/toManyToOne.ts";
 import {toManyToMany} from "@/modelEditor/node/association/toManyToMany.ts";
 import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
 import {translate} from "@/store/i18nStore.ts";
+import IconEdit from "@/components/icons/IconEdit.vue";
+import IconRefresh from "@/components/icons/IconRefresh.vue";
 
 const props = defineProps<{
     entity: DeepReadonly<EntityWithProperties>,
@@ -46,6 +48,8 @@ const props = defineProps<{
 const property = defineModel<EntityProperty>({
     required: true
 })
+
+const openState = ref<boolean>(false)
 
 const propertyIsId = computed(() => {
     return property.value.category === "ID_COMMON" || property.value.category === "ID_EMBEDDABLE"
@@ -64,7 +68,13 @@ const {
 
 const {
     crossTypeOptions,
+    open: openTypeMapping,
+    refreshCrossTypes,
 } = useTypeMapping()
+const handleEditTypeMapping = () => {
+    openState.value = false
+    openTypeMapping()
+}
 
 const filterKeyword = ref<string>("")
 const options = computed<TypeOptions>(() => {
@@ -309,7 +319,7 @@ const association = computed(() => {
 </script>
 
 <template>
-    <Dropdown>
+    <Dropdown v-model="openState">
         <template #head>
             <div class="type-editor-header">
                 <div v-if="'enumId' in property" class="type-editor-header-label">
@@ -394,22 +404,38 @@ const association = computed(() => {
             </div>
 
             <div class="options-container">
-                <ul>
-                    <li
-                        class="select-item"
-                        :class="{
-                            selected:
-                                'rawType' in property &&
-                                property.rawType === type.jvmType.typeExpression &&
-                                'columnInfo' in property &&
-                                property.columnInfo.type === type.sqlType.type
-                        }"
-                        v-for="type in options.crossTypes"
-                        @click="selectBaseType(type)"
-                    >
-                        <TypePairViewer :type-pair="type"/>
-                    </li>
-                </ul>
+                <CollapseDetail :model-value="true">
+                    <template #head>
+                        <div class="cross-type-header">
+                            {{ translate('cross_type') }}
+                            <button @click="handleEditTypeMapping()">
+                                <IconEdit/>
+                            </button>
+                            <button @click="refreshCrossTypes()">
+                                <IconRefresh/>
+                            </button>
+                        </div>
+                    </template>
+
+                    <template #body>
+                        <ul>
+                            <li
+                                class="select-item"
+                                :class="{
+                                    selected:
+                                        'rawType' in property &&
+                                        property.rawType === type.jvmType.typeExpression &&
+                                        'columnInfo' in property &&
+                                        property.columnInfo.type === type.sqlType.type
+                                }"
+                                v-for="type in options.crossTypes"
+                                @click="selectBaseType(type)"
+                            >
+                                <TypePairViewer :type-pair="type"/>
+                            </li>
+                        </ul>
+                    </template>
+                </CollapseDetail>
 
                 <CollapseDetail
                     v-for="groupOptions in options.groups"
@@ -505,6 +531,8 @@ const association = computed(() => {
 }
 .options-filter > input {
     width: 100%;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
 }
 
 .options-container {
@@ -535,6 +563,22 @@ const association = computed(() => {
 .select-item-icon {
     margin-top: 0.2rem;
     margin-right: 0.25rem;
+}
+
+.cross-type-header {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 0.5rem;
+    overflow-x: auto;
+    font-size: 0.8rem;
+    color: var(--comment-color);
+}
+.cross-type-header > button {
+    border: none;
+    --icon-size: 0.8rem;
+    border-radius: 0.25rem;
 }
 
 .group-item {
