@@ -4,14 +4,17 @@ import {startLoading} from "@/components/loading/loadingApi.ts";
 
 const routes: RouteRecordRaw[] = [
     {
-        path: "",
+        path: "/",
+        redirect: "/models"
+    },
+    {
+        path: "/models",
         name: "ModelList",
         component: () => import("../pages/modelList/ModelListPage.vue")
     },
     {
         path: "/model/:id",
         name: "ModelEditor",
-
         component: () => import("../pages/ModelEditor/ModelEditorPage.vue")
     }
 ]

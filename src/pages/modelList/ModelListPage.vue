@@ -206,9 +206,9 @@ const typeMappingDialog = useTypeMapping()
 const scriptDialog = useScriptDialog()
 
 onBeforeUnmount(() => {
-    databaseDialog.close()
-    typeMappingDialog.close()
-    scriptDialog.close()
+    try {databaseDialog.close()} catch (e) {console.error(e)}
+    try {typeMappingDialog.close()} catch (e) {console.error(e)}
+    try {scriptDialog.close()} catch (e) {console.error(e)}
 })
 </script>
 

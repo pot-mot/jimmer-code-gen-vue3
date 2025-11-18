@@ -87,14 +87,14 @@ watch(() => route.params.id, async () => {
 })
 
 onBeforeUnmount(() => {
-    useModelEditDialog().close()
-    useModelGenerator().close()
-    useScriptDialog().close()
-    useDatabaseDialog().close()
-    useTypeMapping().close()
-    useDiagnoseDialog().close()
-    useGroupEditDialog().cancel()
-    usePropertyEditDialog().cancel()
+    try {useModelEditDialog().close()} catch (e) {console.error(e)}
+    try {useModelGenerator().close()} catch (e) {console.error(e)}
+    try {useScriptDialog().close()} catch (e) {console.error(e)}
+    try {useDatabaseDialog().close()} catch (e) {console.error(e)}
+    try {useTypeMapping().close()} catch (e) {console.error(e)}
+    try {useDiagnoseDialog().close()} catch (e) {console.error(e)}
+    try {useGroupEditDialog().close()} catch (e) {console.error(e)}
+    try {usePropertyEditDialog().close()} catch (e) {console.error(e)}
 })
 </script>
 
