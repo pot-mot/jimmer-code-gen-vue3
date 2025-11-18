@@ -58,6 +58,7 @@ export type MainLocale = {
     cut_fail_tip: string
     paste_success_tip: string
     paste_fail_tip: string
+    compile_fail: string
 
     name: string
     comment: string
@@ -73,6 +74,7 @@ export type MainLocale = {
     numericPrecision: string
     defaultValue: string
     generateResult: string
+    code: string
 
     model: string
     group: string
@@ -120,6 +122,17 @@ export type MainLocale = {
     script_dialog_button: string
     script_dialog_title: string
     script_error: string
+
+    script_declare_type_not_found: (scriptType: string) => string
+    script_can_contains_only_one_arrow_function_and_type_declares: string
+    parameter_count_mismatch: (expected: number, expectedTypes: string, actual: number) => string
+    parameter_type_mismatch: (parameterName: string, expected: string, actual: string) => string
+    parameter_type_need_default_or_optional: (parameterName: string) => string
+    parameter_type_cannot_optional: (parameterName: string) => string
+    parameter_must_specify_type: (parameterName: string) => string
+    arrow_function_cannot_get_signature: string
+    return_type_mismatch: (expected: string, actual: string) => string
+    target_is_forbidden: (target: string) => string
 
     type_mapping_dialog_button: string
     type_mapping_dialog_title: string

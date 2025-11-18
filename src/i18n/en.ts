@@ -60,6 +60,7 @@ export const localeEn: MainLocale = {
     cut_fail_tip: "Cut Fail",
     paste_success_tip: "Paste Success",
     paste_fail_tip: "Paste Fail",
+    compile_fail: "Compile Fail",
 
     name: "Name",
     comment: "Comment",
@@ -75,6 +76,7 @@ export const localeEn: MainLocale = {
     numericPrecision: "Numeric Precision",
     defaultValue: "Default Value",
     generateResult: "Generate Result",
+    code: "Code",
 
     model: "Model",
     group: "Group",
@@ -122,6 +124,17 @@ export const localeEn: MainLocale = {
     script_dialog_button: "Script Manage",
     script_dialog_title: "Script Manage",
     script_error: "Script Error",
+
+    script_declare_type_not_found: (scriptType: string) => `Script type declaration not found: ${scriptType}`,
+    script_can_contains_only_one_arrow_function_and_type_declares: "Script can only contain one arrow function and type declarations",
+    parameter_count_mismatch: (expected: number, expectedTypes: string, actual: number) => `Parameter count mismatch, expected ${expected} parameters (${expectedTypes}), actual ${actual}`,
+    parameter_type_mismatch: (parameterName: string, expected: string, actual: string) => `Parameter ${parameterName} type mismatch, expected ${expected}, actual ${actual}`,
+    parameter_type_need_default_or_optional: (parameterName: string) => `Parameter ${parameterName} type need default or optional`,
+    parameter_type_cannot_optional: (parameterName: string) => `Parameter ${parameterName} type cannot optional`,
+    parameter_must_specify_type: (parameterName: string) => `Parameter ${parameterName} must specify type`,
+    arrow_function_cannot_get_signature: "Arrow function cannot get signature",
+    return_type_mismatch: (expected: string, actual: string) => `Return type mismatch, expected ${expected}, actual ${actual}`,
+    target_is_forbidden: (target: string) => `\`${target}\` is forbidden`,
 
     type_mapping_dialog_button: "Type Mapping",
     type_mapping_dialog_title: "Type Mapping Manage",

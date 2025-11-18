@@ -4,6 +4,7 @@ import {editor, languages, MarkerSeverity} from "monaco-editor";
 import {typeDeclares} from "@/type/__generated/typeDeclare";
 import {scriptTypeDeclares, type ScriptTypeMap, type ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
 import message from "@/components/message/Message.vue";
+import {translate} from "@/store/i18nStore.ts";
 
 type IMarkerData = editor.IMarkerData
 
@@ -263,11 +264,10 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
         const scriptTypeName = this.scriptTypeName
 
         try {
-            // 添加参数验证
             if (!code) {
                 return {
                     valid: false,
-                    errorMessages: ['代码不能为空'],
+                    errorMessages: [translate({key: 'not_blank_warning', args: [translate('code')]})],
                 }
             }
 
@@ -276,7 +276,7 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
             if (!trimmedCode) {
                 return {
                     valid: false,
-                    errorMessages: ['代码不能为空字符串'],
+                    errorMessages: [translate({key: 'not_blank_warning', args: [translate('code')]})],
                 };
             }
 
@@ -289,7 +289,7 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
             if (!compiledCode) {
                 return {
                     valid: false,
-                    errorMessages: ['编译错误，无编译结果'],
+                    errorMessages: [translate('compile_fail')],
                 }
             }
 
@@ -371,7 +371,7 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
                 if (ts.isIdentifier(node)) {
                     const identifierText = node.text;
                     if (forbiddenGlobalMap.has(identifierText)) {
-                        const marker = createMarker(node, `\`${identifierText}\` is forbidden`)
+                        const marker = createMarker(node, translate({key: 'target_is_forbidden', args: [identifierText]}))
                         forbiddenGlobalMarkers.push(marker)
                     }
                 }
@@ -388,7 +388,7 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
 
             const scriptTypeDeclareFile = program.getSourceFile(scriptTypeDeclares[scriptTypeName].fileName)
             if (!scriptTypeDeclareFile) {
-                errorMessages.push('找不到脚本类型声明文件')
+                errorMessages.push(translate({key: 'script_declare_type_not_found', args: [scriptTypeName]}))
                 return {
                     valid: false,
                     errorMessages,
@@ -397,7 +397,7 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
             }
 
             if (scriptTypeDeclareFile.statements.length !== 1 || !scriptTypeDeclareFile.statements[0]) {
-                errorMessages.push('脚本类型声明文件只能包含一个箭头函数语句')
+                errorMessages.push(translate('script_can_contains_only_one_arrow_function_and_type_declares'))
                 return {
                     valid: false,
                     errorMessages,
@@ -406,7 +406,7 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
             }
 
             if (!ts.isTypeAliasDeclaration(scriptTypeDeclareFile.statements[0])) {
-                errorMessages.push('脚本类型声明文件只能包含一个类型声明语句')
+                errorMessages.push(translate('script_can_contains_only_one_arrow_function_and_type_declares'))
                 return {
                     valid: false,
                     errorMessages,
@@ -419,7 +419,7 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
             const scriptTypeSignatures = scriptType.getCallSignatures()
 
             if (scriptTypeSignatures.length !== 1 || scriptTypeSignatures[0] === undefined) {
-                errorMessages.push('类型声明必须包含唯一一个箭头函数声明')
+                errorMessages.push(translate('script_can_contains_only_one_arrow_function_and_type_declares'))
                 return {
                     valid: false,
                     errorMessages,
@@ -436,7 +436,7 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
             // 查找箭头函数表达式语句
             let arrowFunctionStatement: ts.ExpressionStatement | null = null
 
-            const stateMessage = '代码只能包含一个箭头函数表达式和类型声明语句（type、interface、enum）'
+            const stateMessage = translate('script_can_contains_only_one_arrow_function_and_type_declares')
             for (const statement of statements) {
                 // 检查是否为表达式语句（可能包含箭头函数）
                 if (ts.isExpressionStatement(statement)) {
@@ -478,10 +478,10 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
                     startColumn: 1,
                     endLineNumber: 1,
                     endColumn: 1,
-                    message: '代码必须包含一个箭头函数表达式',
+                    message: translate('script_can_contains_only_one_arrow_function_and_type_declares'),
                     severity: MarkerSeverity.Error,
                 })
-                errorMessages.push('代码必须包含一个箭头函数表达式')
+                errorMessages.push(translate('script_can_contains_only_one_arrow_function_and_type_declares'))
 
                 return {
                     valid: false,
@@ -501,7 +501,10 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
                 const paramDeclarations = param.getDeclarations()
                 if (paramDeclarations && paramDeclarations.length === 1) {
                     const declaration = paramDeclarations[0]
-                    if (declaration && "type" in declaration && declaration.type && typeof declaration.type === "object" && "getFullText" in declaration.type && typeof declaration.type.getFullText === "function") {
+                    if (
+                        declaration && "type" in declaration && declaration.type && typeof declaration.type === "object" &&
+                        "getFullText" in declaration.type && typeof declaration.type.getFullText === "function"
+                    ) {
                         paramTypeName = declaration.type.getFullText()
                     }
                 }
@@ -524,7 +527,10 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
             // 检查参数数量是否匹配
             if (actualParameters.length !== declareParameters.length) {
                 const paramTypesLiteral = declareParameters.map(param => param.typeName)
-                const message = `参数数量不匹配，期望 ${declareParameters.length} 个参数 (${paramTypesLiteral.join(", ")})，实际 ${actualParameters.length} 个`
+                const message = translate({
+                    key: 'parameter_count_mismatch',
+                    args: [declareParameters.length, paramTypesLiteral.join(", "), actualParameters.length]
+                })
                 markers.push(createMarker(arrowFunction.parameters[0] ?? arrowFunction, message))
                 errorMessages.push(message)
             }
@@ -533,17 +539,29 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
             for (let i = 0; i < actualParameters.length; i++) {
                 const declareParam = declareParameters[i]
                 const actualParam = actualParameters[i]
+
+                // 显示可选
+                const isExplicitlyOptional = actualParam?.questionToken !== undefined;
+
+                // 如果联合类型中包含 undefined, 则隐式可选
+                const paramName = actualParam?.name.getText() ?? declareParam?.name ?? `param$i`
+                const actualParamTypeLiteral = actualParam?.type?.getFullText(sourceFile).trim()
+
                 if (!declareParam || !actualParam) {
-                    markers.push(createMarker(arrowFunction.parameters[i] ?? arrowFunction, '参数类型不匹配'))
+                    markers.push(createMarker(
+                        arrowFunction.parameters[i] ?? arrowFunction,
+                        translate({
+                            key: "parameter_type_mismatch",
+                            args: [
+                                paramName,
+                                declareParam?.typeName ?? "unknown",
+                                actualParamTypeLiteral ?? "unknown"
+                            ]
+                        })
+                    ))
                     continue
                 }
 
-                const paramName = actualParam.name.getText()
-
-                // 显示可选
-                const isExplicitlyOptional = actualParam.questionToken !== undefined;
-
-                // 如果联合类型中包含 undefined, 则隐式可选
                 const actualParamType = actualParam.type ? typeChecker.getTypeAtLocation(actualParam.type) : undefined;
                 const isTypeOptional = actualParamType && actualParamType.getFlags() & ts.TypeFlags.Union
                     ? (actualParamType as ts.UnionType).types.some(t => t.getFlags() & ts.TypeFlags.Undefined)
@@ -555,23 +573,41 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
                     if (declareParam.isOptional) {
                         const hasDefaultValue = actualParam.initializer !== undefined
                         if (!hasDefaultValue) {
-                            markers.push(createMarker(actualParam, `参数 ${paramName} 应当可选或具有默认值`))
+                            markers.push(createMarker(actualParam, translate({
+                                key: "parameter_type_need_default_or_optional",
+                                args: [paramName]
+                            })))
                         }
                     } else {
-                        markers.push(createMarker(actualParam, `参数 ${paramName} 不可选`))
+                        markers.push(createMarker(actualParam, translate({
+                            key: "parameter_type_cannot_optional",
+                            args: [paramName]
+                        })))
                     }
                 }
 
                 // 检查参数是否有类型注解
                 if (!actualParam.type) {
-                    markers.push(createMarker(actualParam, `参数 ${paramName} 必须显式声明类型`))
+                    markers.push(createMarker(actualParam, translate({
+                        key: "parameter_must_specify_type",
+                        args: [paramName]
+                    })))
                 } else {
                     // 获取实际参数类型
                     const actualParamType = typeChecker.getTypeAtLocation(actualParam.type)
 
                     // 检查参数类型是否匹配
                     if (!typeChecker.isTypeAssignableTo(actualParamType, declareParam.type)) {
-                        markers.push(createMarker(actualParam, `参数 ${paramName} 的类型不匹配，期望 ${declareParam.typeName}，实际 ${actualParamType}`))
+                        markers.push(createMarker(actualParam,
+                            translate({
+                                key: "parameter_type_mismatch",
+                                args: [
+                                    paramName,
+                                    declareParam.typeName,
+                                    actualParamTypeLiteral ?? "unknown"
+                                ]
+                            })
+                        ))
                     }
                 }
             }
@@ -582,12 +618,15 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
 
             const arrowTypeSignature = typeChecker.getSignatureFromDeclaration(arrowFunction)
             if (!arrowTypeSignature) {
-                markers.push(createMarker(arrowFunction, '箭头函数无法获取签名'))
+                markers.push(createMarker(arrowFunction, translate('arrow_function_cannot_get_signature')))
             } else {
                 const actualReturnType = typeChecker.getReturnTypeOfSignature(arrowTypeSignature)
                 if (!typeChecker.isTypeAssignableTo(actualReturnType, scriptReturnType)) {
                     const actualReturnTypeName = typeChecker.typeToString(actualReturnType)
-                    markers.push(createMarker(arrowFunction.type ?? arrowFunction, `箭头函数的返回类型必须是 ${scriptReturnTypeName}, 目前返回类型: ${actualReturnTypeName}`))
+                    markers.push(createMarker(arrowFunction.type ?? arrowFunction, translate({
+                        key: "return_type_mismatch",
+                        args: [scriptReturnTypeName, actualReturnTypeName]
+                    })))
                 }
             }
 

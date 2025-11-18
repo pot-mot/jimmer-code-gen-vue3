@@ -60,6 +60,7 @@ export const localeZhCn: MainLocale = {
     cut_fail_tip: "剪切失败",
     paste_success_tip: "粘贴成功",
     paste_fail_tip: "粘贴失败",
+    compile_fail: "编译失败",
 
     name: "名称",
     comment: "备注",
@@ -75,6 +76,7 @@ export const localeZhCn: MainLocale = {
     numericPrecision: "精度",
     defaultValue: "默认值",
     generateResult: "生成结果",
+    code: "代码",
 
     model: "模型",
     group: "分组",
@@ -122,6 +124,17 @@ export const localeZhCn: MainLocale = {
     script_dialog_button: "脚本管理",
     script_dialog_title: "脚本管理",
     script_error: "脚本错误",
+
+    script_declare_type_not_found: (scriptType: string) => `未找到声明的类型: ${scriptType}`,
+    script_can_contains_only_one_arrow_function_and_type_declares: "脚本只能包含一个箭头函数和类型声明",
+    parameter_count_mismatch: (expected: number, expectedTypes: string, actual: number) => `参数数量不匹配，期望 ${expected} 个参数 (${expectedTypes})，实际 ${actual} 个`,
+    parameter_type_mismatch: (parameterName: string, expected: string, actual: string) => `参数 ${parameterName} 类型不匹配，期望 ${expected}，实际 ${actual}`,
+    parameter_type_need_default_or_optional: (parameterName: string) => `参数 ${parameterName} 的类型需要有默认值或可选`,
+    parameter_type_cannot_optional: (parameterName: string) => `参数 ${parameterName} 的类型不能为可选`,
+    parameter_must_specify_type: (parameterName: string) => `参数 ${parameterName} 的类型必须指定`,
+    arrow_function_cannot_get_signature: "箭头函数无法获取签名",
+    return_type_mismatch: (expected: string, actual: string) => `返回类型不匹配，期望 ${expected}，实际 ${actual}`,
+    target_is_forbidden: (target: string) => `\`${target}\`被禁止使用`,
 
     type_mapping_dialog_button: "类型映射",
     type_mapping_dialog_title: "类型映射管理",
