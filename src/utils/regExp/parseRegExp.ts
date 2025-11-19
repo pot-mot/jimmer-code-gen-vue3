@@ -16,6 +16,7 @@ export const validateRegExp = (pattern: string): boolean => {
         parseRegExp(pattern)
         return true
     } catch (e) {
+        console.error(e)
         return false
     }
 }

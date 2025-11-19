@@ -14,6 +14,7 @@ import CollapseDetail from "@/components/collapse/CollapseDetail.vue";
 import JvmLanguageOrAnySelect from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageOrAnySelect.vue";
 import DatabaseTypeOrAnySelect from "@/modelEditor/modelForm/databaseType/DatabaseTypeOrAnySelect.vue";
 import {validateTsImport} from "@/type/__generated/jsonSchema/items/TsImport.ts";
+import {validateRegExp} from "@/utils/regExp/parseRegExp.ts";
 
 const tsTypeInput = defineModel<TsTypeInput>({
     required: true
@@ -74,7 +75,7 @@ const validateForm = (): boolean => {
                 key: 'not_blank_warning',
                 args: [translate('matchRegExp')]
             })
-        } else if (!validateJvmMatchRule(rule.matchRegExp)) {
+        } else if (!validateRegExp(rule.matchRegExp)) {
             errors.value[`jvmMatchRules.${index}`] = translate('invalid_regexp')
         }
     })
@@ -85,7 +86,7 @@ const validateForm = (): boolean => {
                 key: 'not_blank_warning',
                 args: [translate('matchRegExp')]
             })
-        } else if (!validateSqlMatchRule(rule.matchRegExp)) {
+        } else if (!validateRegExp(rule.matchRegExp)) {
             errors.value[`sqlMatchRules.${index}`] = translate('invalid_regexp')
         }
     })
