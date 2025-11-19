@@ -523,6 +523,7 @@ onBeforeUnmount(() => {
     font-weight: 600;
     word-break: break-word;
     word-wrap: break-word;
+    min-width: 7.2rem;
     max-height: 4rem;
     overflow: auto;
 }
