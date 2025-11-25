@@ -91,6 +91,7 @@ const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
         v-bind.prop="props"
         ref="associationEdgeRef"
         class="abstract-association-edge"
+        @mousedown="edgeToFront(id)"
     >
         <template #label>
             <div
@@ -105,7 +106,6 @@ const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
                         <NameCommentViewer
                             v-if="!associationEdit"
                             :data="associationNameCommentView"
-                            @click.stop="edgeToFront(id)"
                             @dblclick.stop="associationEdit = true; "
                         />
                         <NameCommentEditor
@@ -116,7 +116,6 @@ const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
                             auto-focus
                             @change="associationEdit = false"
                             @blur="associationEdit = false"
-                            @click.stop="edgeToFront(id)"
                         />
                     </div>
                     <div class="flex-center">
@@ -141,7 +140,6 @@ const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
                         <NameCommentViewer
                             v-if="!mappedPropertyEdit"
                             :data="mappedPropertyNameCommentView"
-                            @click.stop="edgeToFront(id)"
                             @dblclick.stop="mappedPropertyEdit = true; "
                         />
                         <NameCommentEditor
@@ -152,7 +150,6 @@ const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
                             auto-focus
                             @change="mappedPropertyEdit = false"
                             @blur="mappedPropertyEdit = false"
-                            @click.stop="edgeToFront(id)"
                         />
                         <span style="padding-right: 0.25rem;">:</span>
                         <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">List<</span>

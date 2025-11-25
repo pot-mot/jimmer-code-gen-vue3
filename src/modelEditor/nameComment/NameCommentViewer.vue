@@ -18,9 +18,8 @@ defineProps<{
     white-space: nowrap;
 }
 
-.name-comment-editor > .empty-name {
+.name-comment-viewer > .empty-name {
     cursor: text;
-    font-size: 0.8em;
     color: var(--warning-color);
 }
 
