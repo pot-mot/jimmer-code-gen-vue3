@@ -27,6 +27,7 @@ import {translate} from "@/store/i18nStore.ts";
 import IconEdit from "@/components/icons/IconEdit.vue";
 import IconRefresh from "@/components/icons/IconRefresh.vue";
 import {usePropertyEditDialog} from "@/modelEditor/node/property/usePropertyEditDialog.ts";
+import {unclearTypeSet} from "@/modelEditor/diagnostic/unclearType.ts";
 
 const props = defineProps<{
     embeddableType: DeepReadonly<EmbeddableTypeWithProperties>
@@ -175,7 +176,11 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
                     <IconEmbeddableType class="type-editor-header-label-icon"/>
                     <EmbeddableTypeIdViewer :id="property.embeddableTypeId" hide-comment ctrl-focus/>
                 </div>
-                <div v-if="'rawType' in property" class="type-editor-header-label">
+                <div
+                    v-if="'rawType' in property"
+                    class="type-editor-header-label"
+                    :class="{warning: unclearTypeSet.has(property.rawType)}"
+                >
                     {{ property.rawType }}
                 </div>
 
@@ -183,7 +188,13 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
                     {{ property.nullable ? ' ?' : '' }}
                 </div>
 
-                <button @click.stop="openPropertyEditDialog({embeddableTypeId: embeddableType.id, embeddableTypeProperty: property})">
+                <button
+                    class="type-editor-button"
+                    @click.stop="openPropertyEditDialog({
+                        embeddableTypeId: embeddableType.id,
+                        embeddableTypeProperty: property
+                    })"
+                >
                     <IconEdit/>
                 </button>
             </div>
@@ -313,6 +324,17 @@ const selectEmbeddableType = (embeddableType: DeepReadonly<EmbeddableType>) => {
 .type-editor-header-label-icon {
     margin-top: 0.4rem;
     margin-right: 0.25rem;
+}
+
+.type-editor-header-label.warning {
+    color: var(--warning-color);
+}
+
+.type-editor-button {
+    border: none;
+    margin-left: 0.5rem;
+    border-radius: 0.25rem;
+    --icon-size: 0.8rem;
 }
 
 .view-item {

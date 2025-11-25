@@ -11,9 +11,10 @@ import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import {NodeToolbar} from "@vue-flow/node-toolbar";
 import IconAim from "@/components/icons/IconAim.vue";
 import IconDelete from "@/components/icons/IconDelete.vue";
-import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
+import {modelSubSelectEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 import IconEmbeddableType from "@/components/icons/modelEditor/IconEmbeddableType.vue";
+import {nodeSubElementId} from "@/modelEditor/node/nodeElementId.ts";
 
 const props = defineProps<NodeProps<EmbeddableTypeNode["data"]>>()
 
@@ -25,17 +26,22 @@ const groupTheme = computed(() => {
 })
 
 const propertyEditListRef = useTemplateRef("propertyEditListRef")
-const focusProperty = ({embeddableTypeId, propertyId}: {embeddableTypeId: string, propertyId: string}) => {
+const unselectAllProperty = () => {
+    if (propertyEditListRef.value) propertyEditListRef.value.selection.cleanSelection()
+}
+const selectProperty = ({embeddableTypeId, propertyId}: {embeddableTypeId: string, propertyId: string}) => {
     if (embeddableTypeId === props.data.embeddableType.id && propertyEditListRef.value) {
         const index = props.data.embeddableType.properties.findIndex(property => property.id === propertyId)
-        if (index !== -1) propertyEditListRef.value?.selection.resetSelection([index])
+        if (index !== -1) propertyEditListRef.value.selection.resetSelection([index])
     }
 }
 onMounted(() => {
-    modelSubFocusEventBus.on("focusEmbeddableTypeProperty", focusProperty)
+    modelSubSelectEventBus.on("unselectAll", unselectAllProperty)
+    modelSubSelectEventBus.on("selectEmbeddableTypeProperty", selectProperty)
 })
 onBeforeUnmount(() => {
-    modelSubFocusEventBus.off("focusEmbeddableTypeProperty", focusProperty)
+    modelSubSelectEventBus.off("unselectAll", unselectAllProperty)
+    modelSubSelectEventBus.off("selectEmbeddableTypeProperty", selectProperty)
 })
 
 const {focusNode, remove, modelDiagnoseInfo} = useModelEditor()
@@ -79,6 +85,7 @@ const beforePaste = (properties: Property[]) => {
                     <div
                         class="embeddable-type-property-view"
                         v-if="data.embeddableType.properties[index]"
+                        :id="nodeSubElementId(data.embeddableType.id, item.id)"
                     >
                         <NameCommentEditor
                             :font-size="14"

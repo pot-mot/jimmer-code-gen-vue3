@@ -19,6 +19,8 @@ import {
     tmpl_mappedPropertyName
 } from "@/type/context/utils/AssociationTemplate.ts";
 import {useNameCommentTemplateModel} from "@/modelEditor/edge/templateEdit/useNameCommentTemplateModel.ts";
+import {associationElementId, mappedPropertyElementId} from "@/modelEditor/edge/edgeElementId.ts";
+import association from "@/type/__generated/typeDeclare/items/Association.ts";
 
 const props = defineProps<EdgeProps<AbstractAssociationEdge["data"]>>()
 
@@ -88,13 +90,16 @@ const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
     <AssociationEdge
         v-bind.prop="props"
         ref="associationEdgeRef"
-        class="association-association-edge"
+        class="abstract-association-edge"
     >
         <template #label>
-            <div class="association-label">
+            <div
+                class="association-label"
+                :class="{selected}"
+            >
                 <div
-                    class="foreign-key-wrapper"
-                    :class="{selected}"
+                    class="association-info-wrapper"
+                    :id="associationElementId(data.edgedAssociation.association.id)"
                 >
                     <div class="foreign-key-info">
                         <NameCommentViewer
@@ -124,6 +129,7 @@ const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
                 <div
                     v-if="data.edgedAssociation.association.withMappedProperty"
                     class="mapped-property-wrapper"
+                    :id="mappedPropertyElementId(data.edgedAssociation.association.id)"
                 >
                     <div class="mapped-property-info">
                         <EntityIdViewer

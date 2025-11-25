@@ -12,10 +12,11 @@ import {validateEntityProperty} from "@/type/__generated/jsonSchema/items/Entity
 import IconAim from "@/components/icons/IconAim.vue";
 import {NodeToolbar} from "@vue-flow/node-toolbar";
 import IconDelete from "@/components/icons/IconDelete.vue";
-import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
+import {modelSubSelectEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 import IconEntity from "@/components/icons/modelEditor/IconEntity.vue";
 import EntityPropertyCategoryEditor from "@/modelEditor/node/property/EntityPropertyCategoryEditor.vue";
+import {nodeSubElementId} from "@/modelEditor/node/nodeElementId.ts";
 
 const props = defineProps<NodeProps<EntityNode["data"]>>()
 
@@ -27,17 +28,22 @@ const groupTheme = computed(() => {
 })
 
 const propertyEditListRef = useTemplateRef("propertyEditListRef")
-const focusProperty = ({entityId, propertyId}: {entityId: string, propertyId: string}) => {
+const unselectAllProperty = () => {
+    if (propertyEditListRef.value) propertyEditListRef.value.selection.cleanSelection()
+}
+const selectProperty = ({entityId, propertyId}: {entityId: string, propertyId: string}) => {
     if (entityId === props.data.entity.id && propertyEditListRef.value) {
         const index = props.data.entity.properties.findIndex(property => property.id === propertyId)
-        if (index !== -1) propertyEditListRef.value?.selection.resetSelection([index])
+        if (index !== -1) propertyEditListRef.value.selection.resetSelection([index])
     }
 }
 onMounted(() => {
-    modelSubFocusEventBus.on("focusEntityProperty", focusProperty)
+    modelSubSelectEventBus.on("unselectAll", unselectAllProperty)
+    modelSubSelectEventBus.on("selectEntityProperty", selectProperty)
 })
 onBeforeUnmount(() => {
-    modelSubFocusEventBus.off("focusEntityProperty", focusProperty)
+    modelSubSelectEventBus.off("unselectAll", unselectAllProperty)
+    modelSubSelectEventBus.off("selectEntityProperty", selectProperty)
 })
 
 const {focusNode, remove, modelDiagnoseInfo} = useModelEditor()
@@ -125,6 +131,7 @@ watch(() => handleIndexMap.value, () => {
                     <div
                         class="entity-property-view"
                         v-if="data.entity.properties[index]"
+                        :id="nodeSubElementId(data.entity.id, item.id)"
                     >
                         <div style="display: flex; gap: 0.5rem;">
                             <EntityPropertyCategoryEditor

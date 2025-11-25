@@ -67,7 +67,7 @@ const {
                         <div
                             class="diagnose-item"
                             v-if="group.length > 0"
-                            @click="focusDiagnosticSource({type: 'Group', id: groupId})"
+                            @click.stop="focusDiagnosticSource({type: 'Group', id: groupId})"
                         >
                             <GroupIdViewer :id="groupId" ctrl-focus/>
                             <DiagnoseViewer :messages="group"/>
@@ -93,7 +93,7 @@ const {
                         <div
                             class="diagnose-item"
                             v-if="entity.length > 0"
-                            @click="focusDiagnosticSource({type: 'Entity', id: entityId})"
+                            @click.stop="focusDiagnosticSource({type: 'Entity', id: entityId})"
                         >
                             <EntityIdViewer :id="entityId" ctrl-focus/>
                             <DiagnoseViewer :messages="entity"/>
@@ -105,7 +105,7 @@ const {
                             <div
                                 class="diagnose-item"
                                 v-if="messages.length > 0"
-                                @click="focusDiagnosticSource({type: 'EntityProperty', entityId, propertyId})"
+                                @click.stop="focusDiagnosticSource({type: 'EntityProperty', entityId, propertyId})"
                             >
                                 <EntityPropertyIdViewer
                                     :entity-id="entityId"
@@ -136,7 +136,7 @@ const {
                         <div
                             class="diagnose-item"
                             v-if="mappedSuperClass.length > 0"
-                            @click="focusDiagnosticSource({type: 'MappedSuperClass', id: mappedSuperClassId})"
+                            @click.stop="focusDiagnosticSource({type: 'MappedSuperClass', id: mappedSuperClassId})"
                         >
                             <MappedSuperClassIdViewer :id="mappedSuperClassId" ctrl-focus/>
                             <DiagnoseViewer :messages="mappedSuperClass"/>
@@ -148,7 +148,7 @@ const {
                             <div
                                 class="diagnose-item"
                                 v-if="messages.length > 0"
-                                @click="focusDiagnosticSource({type: 'MappedSuperClassProperty', mappedSuperClassId, propertyId})"
+                                @click.stop="focusDiagnosticSource({type: 'MappedSuperClassProperty', mappedSuperClassId, propertyId})"
                             >
                                 <MappedSuperClassPropertyIdViewer
                                     :mapped-super-class-id="mappedSuperClassId"
@@ -179,7 +179,7 @@ const {
                         <div
                             class="diagnose-item"
                             v-if="embeddableType.length > 0"
-                            @click="focusDiagnosticSource({type: 'EmbeddableType', id: embeddableTypeId})"
+                            @click.stop="focusDiagnosticSource({type: 'EmbeddableType', id: embeddableTypeId})"
                         >
                             <EmbeddableTypeIdViewer :id="embeddableTypeId" ctrl-focus/>
                             <DiagnoseViewer :messages="embeddableType"/>
@@ -191,7 +191,7 @@ const {
                             <div
                                 class="diagnose-item"
                                 v-if="messages.length > 0"
-                                @click="focusDiagnosticSource({type: 'EmbeddableTypeProperty', embeddableTypeId, propertyId})"
+                                @click.stop="focusDiagnosticSource({type: 'EmbeddableTypeProperty', embeddableTypeId, propertyId})"
                             >
                                 <EmbeddableTypePropertyIdViewer
                                     :embeddable-type-id="embeddableTypeId"
@@ -222,7 +222,7 @@ const {
                         <div
                             class="diagnose-item"
                             v-if="enumeration.length > 0"
-                            @click="focusDiagnosticSource({type: 'Enumeration', id: enumerationId})"
+                            @click.stop="focusDiagnosticSource({type: 'Enumeration', id: enumerationId})"
                         >
                             <EnumerationIdViewer :id="enumerationId" ctrl-focus/>
                             <DiagnoseViewer :messages="enumeration"/>
@@ -234,7 +234,7 @@ const {
                             <div
                                 class="diagnose-item"
                                 v-if="messages.length > 0"
-                                @click="focusDiagnosticSource({type: 'EnumerationItem', enumerationId, itemId})"
+                                @click.stop="focusDiagnosticSource({type: 'EnumerationItem', enumerationId, itemId})"
                             >
                                 <EnumerationItemIdViewer
                                     :enumeration-id="enumerationId"
@@ -265,7 +265,7 @@ const {
                         <div
                             class="diagnose-item"
                             v-if="association.length > 0"
-                            @click="focusDiagnosticSource({type: 'Association', id: associationId})"
+                            @click.stop="focusDiagnosticSource({type: 'Association', id: associationId})"
                         >
                             <AssociationIdViewer :id="associationId" ctrl-focus/>
                             <DiagnoseViewer :messages="association"/>
@@ -273,7 +273,7 @@ const {
                         <div
                             class="diagnose-item"
                             v-if="mappedProperty.length > 0"
-                            @click="focusDiagnosticSource({type: 'MappedProperty', associationId})"
+                            @click.stop="focusDiagnosticSource({type: 'MappedProperty', associationId})"
                         >
                             <MappedPropertyIdViewer :association-id="associationId" ctrl-focus/>
                             <DiagnoseViewer :messages="mappedProperty"/>

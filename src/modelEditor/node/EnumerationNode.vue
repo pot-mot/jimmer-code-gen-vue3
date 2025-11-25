@@ -10,10 +10,11 @@ import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import IconAim from "@/components/icons/IconAim.vue";
 import {NodeToolbar} from "@vue-flow/node-toolbar";
 import IconDelete from "@/components/icons/IconDelete.vue";
-import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
+import {modelSubSelectEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 import IconEnumeration from "@/components/icons/modelEditor/IconEnumeration.vue";
 import FilterableSelect from "@/components/select/FilterableSelect.vue";
+import {nodeSubElementId} from "@/modelEditor/node/nodeElementId.ts";
 
 const props = defineProps<NodeProps<EnumerationNode["data"]>>()
 
@@ -34,17 +35,22 @@ const createEnumItem = () => {
 }
 
 const itemEditListRef = useTemplateRef("itemEditListRef")
-const focusProperty = ({enumerationId, itemId}: {enumerationId: string, itemId: string}) => {
+const unselectAllItem = () => {
+    if (itemEditListRef.value) itemEditListRef.value.selection.cleanSelection()
+}
+const selectItem = ({enumerationId, itemId}: {enumerationId: string, itemId: string}) => {
     if (enumerationId === props.data.enumeration.id && itemEditListRef.value) {
         const index = props.data.enumeration.items.findIndex(item => item.id === itemId)
-        if (index !== -1) itemEditListRef.value?.selection.resetSelection([index])
+        if (index !== -1) itemEditListRef.value.selection.resetSelection([index])
     }
 }
 onMounted(() => {
-    modelSubFocusEventBus.on("focusEnumerationItem", focusProperty)
+    modelSubSelectEventBus.on("unselectAll", unselectAllItem)
+    modelSubSelectEventBus.on("selectEnumerationItem", selectItem)
 })
 onBeforeUnmount(() => {
-    modelSubFocusEventBus.off("focusEnumerationItem", focusProperty)
+    modelSubSelectEventBus.off("unselectAll", unselectAllItem)
+    modelSubSelectEventBus.off("selectEnumerationItem", selectItem)
 })
 
 const {focusNode, remove, modelDiagnoseInfo} = useModelEditor()
@@ -102,6 +108,7 @@ const beforePaste = (items: EnumerationItem[]) => {
                     <div
                         class="enumeration-item-view"
                         v-if="data.enumeration.items[index]"
+                        :id="nodeSubElementId(data.enumeration.id, item.id)"
                     >
                         <NameCommentEditor
                             :font-size="14"

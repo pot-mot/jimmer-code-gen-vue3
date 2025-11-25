@@ -12,6 +12,7 @@ import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import NameCommentViewer from "@/modelEditor/nameComment/NameCommentViewer.vue";
 import {useNameCommentTemplateModel} from "@/modelEditor/edge/templateEdit/useNameCommentTemplateModel.ts";
+import {associationElementId, mappedPropertyElementId} from "@/modelEditor/edge/edgeElementId.ts";
 
 const props = defineProps<EdgeProps<ConcreteAssociationEdge["data"]>>()
 
@@ -48,7 +49,10 @@ const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
                 class="association-label"
                 :class="{selected}"
             >
-                <div class="foreign-key-wrapper">
+                <div
+                    class="association-info-wrapper"
+                    :id="associationElementId(data.edgedAssociation.association.id)"
+                >
                     <div class="foreign-key-info">
                         <NameCommentViewer
                             v-if="!associationEdit"
@@ -77,7 +81,7 @@ const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
                 <div
                     v-if="data.edgedAssociation.association.withMappedProperty"
                     class="mapped-property-wrapper"
-                    :class="{selected}"
+                    :id="mappedPropertyElementId(data.edgedAssociation.association.id)"
                 >
                     <div class="mapped-property-info">
                         <EntityIdViewer

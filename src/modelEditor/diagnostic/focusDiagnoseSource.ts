@@ -1,23 +1,24 @@
 import mitt from "mitt";
 
-export const modelSubFocusEventBus = mitt<{
-    focusEntityProperty: {
+export const modelSubSelectEventBus = mitt<{
+    unselectAll: void
+    selectEntityProperty: {
         readonly entityId: string
         readonly propertyId: string
     }
-    focusMappedSuperClassProperty: {
+    selectMappedSuperClassProperty: {
         readonly mappedSuperClassId: string
         readonly propertyId: string
     }
-    focusEmbeddableTypeProperty: {
+    selectEmbeddableTypeProperty: {
         readonly embeddableTypeId: string
         readonly propertyId: string
     }
-    focusEnumerationItem: {
+    selectEnumerationItem: {
         readonly enumerationId: string
         readonly itemId: string
     }
-    focusMappedProperty: {
+    selectMappedProperty: {
         readonly associationId: string
     }
 }>()

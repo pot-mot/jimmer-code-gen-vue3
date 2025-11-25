@@ -34,7 +34,7 @@ import {withLoading} from "@/components/loading/loadingApi.ts";
 import {tableToEntity} from "@/modelEditor/TableEntityConvert/tableToEntity.ts";
 import {contextDataToContext} from "@/type/context/utils/ModelContext.ts";
 import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
-import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
+import {modelSubSelectEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
 import {useModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
 import {useModelDiagnoseInfo} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
 import {api} from "@/api";
@@ -47,6 +47,8 @@ import {NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode
 import {NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
 import {EdgeType_ConcreteAssociation} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
 import {EdgeType_AbstractAssociation} from "@/modelEditor/edge/AbstractAssociationEdge.ts";
+import {nodeSubElementId} from "@/modelEditor/node/nodeElementId.ts";
+import {associationElementId, mappedPropertyElementId} from "@/modelEditor/edge/edgeElementId.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -888,7 +890,28 @@ export const useModelEditor = createStore(() => {
         getVueFlow().$destroy()
     }
 
-    const selectNode = (node: GraphNode | string) => {
+    const FIT_BOUND_MIN_W = 320
+    const FIT_BOUND_DURATION = 500
+    const FIT_BOUND_PADDING = 0.4
+    const FIT_BOUND_DEFAULT_OPTION = {
+        duration: FIT_BOUND_DURATION,
+        padding: FIT_BOUND_PADDING,
+    }
+    const getInnerElementRect = (element: HTMLElement) => {
+        const vueFlow = getVueFlow()
+        const rect = element.getBoundingClientRect()
+        const {x: rectX, y: rectY} = vueFlow.screenToFlowCoordinate({x: rect.left, y: rect.top})
+        const rectWidth = rect.width / vueFlow.viewport.value.zoom
+        const rectHeight = rect.height / vueFlow.viewport.value.zoom
+        return {
+            x: rectX,
+            y: rectY,
+            width: rectWidth,
+            height: rectHeight,
+        }
+    }
+
+    const getNode = (node: GraphNode | string): GraphNode => {
         const vueFlow = getVueFlow()
         let _node: GraphNode
         if (typeof node === 'string') {
@@ -898,6 +921,10 @@ export const useModelEditor = createStore(() => {
         } else {
             _node = node
         }
+        return _node
+    }
+    const selectNode = (node: GraphNode | string) => {
+        const _node: GraphNode = getNode(node)
         if (_node.type === NodeType_Entity) {
             modelSelection.selectEntity(_node.id)
         } else if (_node.type === NodeType_EmbeddableType) {
@@ -907,44 +934,48 @@ export const useModelEditor = createStore(() => {
         } else if (_node.type === NodeType_Enumeration) {
             modelSelection.selectEnumeration(_node.id)
         } else {
-            vueFlow.addSelectedNodes([_node])
+            getVueFlow().addSelectedNodes([_node])
         }
     }
     const nodeToFront = (node: GraphNode | string) => {
-        const vueFlow = getVueFlow()
-        let _node: GraphNode
-        if (typeof node === 'string') {
-            const foundNode = vueFlow.findNode(node)
-            if (!foundNode) throw new Error(`node [${node}] is not existed`)
-            _node = foundNode
-        } else {
-            _node = node
-        }
+        const _node: GraphNode = getNode(node)
         _node.zIndex = getNextZIndex()
     }
     const focusNode = async (node: GraphNode | string) => {
         const vueFlow = getVueFlow()
-        let _node: GraphNode
-        if (typeof node === 'string') {
-            const foundNode = vueFlow.findNode(node)
-            if (!foundNode) throw new Error(`node [${node}] is not existed`)
-            _node = foundNode
-        } else {
-            _node = node
-        }
+        const _node: GraphNode = getNode(node)
         _node.zIndex = getNextZIndex()
         modelSelection.unselectAll()
         selectNode(_node.id)
         await vueFlow.fitBounds({
             x: _node.computedPosition.x,
             y: _node.computedPosition.y,
-            width: Math.max(_node.dimensions.width, 320),
-            height: Math.max(_node.dimensions.height, 320),
-        }, {duration: 500, padding: 0.4})
+            width: Math.max(_node.dimensions.width, FIT_BOUND_MIN_W),
+            height: _node.dimensions.height,
+        }, FIT_BOUND_DEFAULT_OPTION)
+        return _node
+    }
+    const focusNodeAndFitSub = async (node: GraphNode | string, subId: string) => {
+        const vueFlow = getVueFlow()
+        const _node: GraphNode = getNode(node)
+        _node.zIndex = getNextZIndex()
+        modelSelection.unselectAll()
+        selectNode(_node.id)
+        const element = document.getElementById(subId)
+        if (element !== null) {
+            await vueFlow.fitBounds(getInnerElementRect(element), FIT_BOUND_DEFAULT_OPTION)
+        } else {
+            await vueFlow.fitBounds({
+                x: _node.computedPosition.x,
+                y: _node.computedPosition.y,
+                width: Math.max(_node.dimensions.width, FIT_BOUND_MIN_W),
+                height: _node.dimensions.height,
+            }, FIT_BOUND_DEFAULT_OPTION)
+        }
         return _node
     }
 
-    const selectEdge = (edge: GraphEdge | string) => {
+    const getEdge = (edge: GraphEdge | string): GraphEdge => {
         const vueFlow = getVueFlow()
         let _edge: GraphEdge
         if (typeof edge === 'string') {
@@ -954,90 +985,89 @@ export const useModelEditor = createStore(() => {
         } else {
             _edge = edge
         }
+        return _edge
+    }
+    const selectEdge = (edge: GraphEdge | string) => {
+        const _edge = getEdge(edge)
         if (_edge.type === EdgeType_ConcreteAssociation || _edge.type === EdgeType_AbstractAssociation) {
             modelSelection.selectAssociation(_edge.id)
         } else {
-            vueFlow.addSelectedEdges([_edge])
+            getVueFlow().addSelectedEdges([_edge])
         }
     }
     const edgeToFront = (edge: GraphEdge | string) => {
-        const vueFlow = getVueFlow()
-        let _edge: GraphEdge
-        if (typeof edge === 'string') {
-            const foundEdge = vueFlow.findEdge(edge) ?? findAssociationEdge(edge, vueFlow)
-            if (!foundEdge) throw new Error(`edge [${edge}] is not existed`)
-            _edge = foundEdge
-        } else {
-            _edge = edge
-        }
+        const _edge = getEdge(edge)
         _edge.zIndex = getNextZIndex()
     }
     const focusEdge = async (edge: GraphEdge | string) => {
         const vueFlow = getVueFlow()
-        let _edge: GraphEdge
-        if (typeof edge === 'string') {
-            const foundEdge = vueFlow.findEdge(edge) ?? findAssociationEdge(edge, vueFlow)
-            if (!foundEdge) throw new Error(`edge [${edge}] is not existed`)
-            _edge = foundEdge
-        } else {
-            _edge = edge
-        }
+        const _edge = getEdge(edge)
         _edge.zIndex = getNextZIndex()
         modelSelection.unselectAll()
         selectEdge(_edge.id)
-        await vueFlow.fitBounds({
-            x: Math.min(_edge.sourceX, _edge.targetX),
-            y: Math.min(_edge.sourceY, _edge.targetY),
-            width: Math.max(Math.abs(_edge.targetX - _edge.sourceX), 320),
-            height: Math.max(Math.abs(_edge.targetY - _edge.sourceY), 320),
-        }, {duration: 500, padding: 0.4})
+        const element = document.getElementById(associationElementId(_edge.id))
+        if (element !== null) {
+            await vueFlow.fitBounds(getInnerElementRect(element), FIT_BOUND_DEFAULT_OPTION)
+        }
+        return _edge
+    }
+    const focusEdgeAndFitSub = async (edge: GraphEdge | string, subId: string) => {
+        const vueFlow = getVueFlow()
+        const _edge = getEdge(edge)
+        _edge.zIndex = getNextZIndex()
+        modelSelection.unselectAll()
+        selectEdge(_edge.id)
+        const element = document.getElementById(subId)
+        if (element !== null) {
+            await vueFlow.fitBounds(getInnerElementRect(element), FIT_BOUND_DEFAULT_OPTION)
+        } else {
+            const associationElement = document.getElementById(associationElementId(_edge.id))
+            if (associationElement !== null) {
+                await vueFlow.fitBounds(getInnerElementRect(associationElement), FIT_BOUND_DEFAULT_OPTION)
+            }
+        }
         return _edge
     }
 
     const focusEntityProperty = async (source: {entityId: string, propertyId: string}) => {
-        modelSubFocusEventBus.emit("focusEntityProperty", source)
-        await focusNode(source.entityId)
+        modelSubSelectEventBus.emit("unselectAll")
+        modelSubSelectEventBus.emit("selectEntityProperty", source)
+        await focusNodeAndFitSub(source.entityId, nodeSubElementId(source.entityId, source.propertyId))
     }
     const focusMappedSuperClassProperty = async (source: {mappedSuperClassId: string, propertyId: string}) => {
-        modelSubFocusEventBus.emit("focusMappedSuperClassProperty", source)
-        await focusNode(source.mappedSuperClassId)
+        modelSubSelectEventBus.emit("unselectAll")
+        modelSubSelectEventBus.emit("selectMappedSuperClassProperty", source)
+        await focusNodeAndFitSub(source.mappedSuperClassId, nodeSubElementId(source.mappedSuperClassId, source.propertyId))
     }
     const focusEmbeddableTypeProperty = async (source: {embeddableTypeId: string, propertyId: string}) => {
-        modelSubFocusEventBus.emit("focusEmbeddableTypeProperty", source)
-        await focusNode(source.embeddableTypeId)
+        modelSubSelectEventBus.emit("unselectAll")
+        modelSubSelectEventBus.emit("selectEmbeddableTypeProperty", source)
+        await focusNodeAndFitSub(source.embeddableTypeId, nodeSubElementId(source.embeddableTypeId, source.propertyId))
     }
     const focusEnumerationItem = async (source: {enumerationId: string, itemId: string}) => {
-        modelSubFocusEventBus.emit("focusEnumerationItem", source)
-        await focusNode(source.enumerationId)
+        modelSubSelectEventBus.emit("unselectAll")
+        modelSubSelectEventBus.emit("selectEnumerationItem", source)
+        await focusNodeAndFitSub(source.enumerationId, nodeSubElementId(source.enumerationId, source.itemId))
     }
     const focusMappedProperty = async (source: {associationId: string}) => {
-        modelSubFocusEventBus.emit("focusMappedProperty", source)
-        await focusEdge(source.associationId)
+        modelSubSelectEventBus.emit("unselectAll")
+        modelSubSelectEventBus.emit("selectMappedProperty", source)
+        await focusEdgeAndFitSub(source.associationId, mappedPropertyElementId(source.associationId))
     }
 
     const focusDiagnosticSource = async (source: DiagnosticSource) => {
-        if (source.type === "Group") {
-            modelSelection.selectGroup(source.id)
-        } else if (source.type === "Entity") {
-            await focusNode(source.id)
-        } else if (source.type === "MappedSuperClass") {
-            await focusNode(source.id)
-        } else if (source.type === "EmbeddableType") {
-            await focusNode(source.id)
-        } else if (source.type === "Enumeration") {
-            await focusNode(source.id)
-        } else if (source.type === "Association") {
-            await focusEdge(source.id)
-        } else if (source.type === "EntityProperty") {
-            await focusEntityProperty(source)
-        } else if (source.type === "MappedSuperClassProperty") {
-            await focusMappedSuperClassProperty(source)
-        } else if (source.type === "EmbeddableTypeProperty") {
-            await focusEmbeddableTypeProperty(source)
-        } else if (source.type === "EnumerationItem") {
-            await focusEnumerationItem(source)
-        } else if (source.type === "MappedProperty") {
-            await focusMappedProperty(source)
+        switch (source.type) {
+            case "Group": modelSelection.selectGroup(source.id); break;
+            case "Entity": await focusNode(source.id); break;
+            case "MappedSuperClass": await focusNode(source.id); break;
+            case "EmbeddableType": await focusNode(source.id); break;
+            case "Enumeration": await focusNode(source.id); break;
+            case "Association": await focusEdge(source.id); break;
+            case "EntityProperty": await focusEntityProperty(source); break;
+            case "MappedSuperClassProperty": await focusMappedSuperClassProperty(source); break;
+            case "EmbeddableTypeProperty": await focusEmbeddableTypeProperty(source); break;
+            case "EnumerationItem": await focusEnumerationItem(source); break;
+            case "MappedProperty": await focusMappedProperty(source); break;
         }
     }
 

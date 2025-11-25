@@ -6,6 +6,7 @@ import {
     getEntityIdProperties,
     getEntityLogicalDeleteProperties, getEntityVersionProperties
 } from "@/type/context/utils/EntityCategorizedProperty.ts";
+import {unclearTypeSet} from "@/modelEditor/diagnostic/unclearType.ts";
 
 export type EntityDiagnoseResult = {
     readonly size: number,
@@ -142,6 +143,11 @@ export const entityDiagnose = (
                 messages.push({
                     content: "[Type is empty]",
                     type: "error"
+                })
+            } else if (unclearTypeSet.has(property.rawType)) {
+                messages.push({
+                    content: "[Type is Unclear]",
+                    type: "warning"
                 })
             }
         }

@@ -13,10 +13,11 @@ import {NOT_EXIST_ASSOCIATION_ID} from "@/modelEditor/node/EntityNode.ts";
 import IconAim from "@/components/icons/IconAim.vue";
 import {NodeToolbar} from "@vue-flow/node-toolbar";
 import IconDelete from "@/components/icons/IconDelete.vue";
-import {modelSubFocusEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
+import {modelSubSelectEventBus} from "@/modelEditor/diagnostic/focusDiagnoseSource.ts";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 import IconAbstractEntity from "@/components/icons/modelEditor/IconAbstractEntity.vue";
 import EntityPropertyCategoryEditor from "@/modelEditor/node/property/EntityPropertyCategoryEditor.vue";
+import {nodeSubElementId} from "@/modelEditor/node/nodeElementId.ts";
 
 const props = defineProps<NodeProps<MappedSuperClassNode["data"]>>()
 
@@ -28,17 +29,22 @@ const groupTheme = computed(() => {
 })
 
 const propertyEditListRef = useTemplateRef("propertyEditListRef")
-const focusProperty = ({mappedSuperClassId, propertyId}: {mappedSuperClassId: string, propertyId: string}) => {
+const unselectAllProperty = () => {
+    if (propertyEditListRef.value) propertyEditListRef.value.selection.cleanSelection()
+}
+const selectProperty = ({mappedSuperClassId, propertyId}: {mappedSuperClassId: string, propertyId: string}) => {
     if (mappedSuperClassId === props.data.mappedSuperClass.id && propertyEditListRef.value) {
         const index = props.data.mappedSuperClass.properties.findIndex(property => property.id === propertyId)
-        if (index !== -1) propertyEditListRef.value?.selection.resetSelection([index])
+        if (index !== -1) propertyEditListRef.value.selection.resetSelection([index])
     }
 }
 onMounted(() => {
-    modelSubFocusEventBus.on("focusMappedSuperClassProperty", focusProperty)
+    modelSubSelectEventBus.on("unselectAll", unselectAllProperty)
+    modelSubSelectEventBus.on("selectMappedSuperClassProperty", selectProperty)
 })
 onBeforeUnmount(() => {
-    modelSubFocusEventBus.off("focusMappedSuperClassProperty", focusProperty)
+    modelSubSelectEventBus.off("unselectAll", unselectAllProperty)
+    modelSubSelectEventBus.off("selectMappedSuperClassProperty", selectProperty)
 })
 
 const {focusNode, remove, modelDiagnoseInfo} = useModelEditor()
@@ -126,6 +132,7 @@ watch(() => handleIndexMap.value, () => {
                     <div
                         class="mapped-super-class-property-view"
                         v-if="data.mappedSuperClass.properties[index]"
+                        :id="nodeSubElementId(data.mappedSuperClass.id, item.id)"
                     >
                         <div style="display: flex; gap: 0.5rem;">
                             <EntityPropertyCategoryEditor

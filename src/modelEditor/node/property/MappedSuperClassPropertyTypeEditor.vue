@@ -41,6 +41,7 @@ import {translate} from "@/store/i18nStore.ts";
 import IconEdit from "@/components/icons/IconEdit.vue";
 import IconRefresh from "@/components/icons/IconRefresh.vue";
 import {usePropertyEditDialog} from "@/modelEditor/node/property/usePropertyEditDialog.ts";
+import {unclearTypeSet} from "@/modelEditor/diagnostic/unclearType.ts";
 
 const props = defineProps<{
     mappedSuperClass: DeepReadonly<MappedSuperClassWithProperties>,
@@ -344,7 +345,11 @@ const association = computed(() => {
                         [Association not existed]
                     </div>
                 </div>
-                <div v-if="'rawType' in property" class="type-editor-header-label">
+                <div
+                    v-if="'rawType' in property"
+                    class="type-editor-header-label"
+                    :class="{warning: unclearTypeSet.has(property.rawType)}"
+                >
                     {{ property.rawType }}
                 </div>
 
@@ -352,7 +357,13 @@ const association = computed(() => {
                     {{ property.nullable ? ' ?' : '' }}
                 </div>
 
-                <button @click.stop="openPropertyEditDialog({mappedSuperClassId: mappedSuperClass.id, mappedSuperClassProperty: property})">
+                <button
+                    class="type-editor-button"
+                    @click.stop="openPropertyEditDialog({
+                        mappedSuperClassId: mappedSuperClass.id,
+                        mappedSuperClassProperty: property
+                    })"
+                >
                     <IconEdit/>
                 </button>
             </div>
@@ -512,6 +523,17 @@ const association = computed(() => {
 .type-editor-header-label-icon {
     margin-top: 0.4rem;
     margin-right: 0.25rem;
+}
+
+.type-editor-header-label.warning {
+    color: var(--warning-color);
+}
+
+.type-editor-button {
+    border: none;
+    margin-left: 0.5rem;
+    border-radius: 0.25rem;
+    --icon-size: 0.8rem;
 }
 
 .view-item {

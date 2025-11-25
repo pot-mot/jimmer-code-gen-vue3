@@ -2,6 +2,7 @@ import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
 import type {ReadonlyModelNameSets} from "@/modelEditor/nameSet/ModelNameSets.ts";
 import {checkLowerCamelName, checkNoBlank, checkUpperCamelName} from "@/utils/name/nameCheck.ts";
+import {unclearTypeSet} from "@/modelEditor/diagnostic/unclearType.ts";
 
 export type EmbeddableTypeDiagnose = {
     readonly size: number,
@@ -80,6 +81,11 @@ export const embeddableTypeDiagnose = (
                 messages.push({
                     content: "[Type is empty]",
                     type: "error"
+                })
+            } else if (unclearTypeSet.has(property.rawType)) {
+                messages.push({
+                    content: "[Type is Unclear]",
+                    type: "warning"
                 })
             }
         }
