@@ -95,7 +95,7 @@ const handleNumberChange = () => {
     <div class="label-position-editor">
         <button
             @click="toggleLabelPositionFrom"
-            style="width: 4rem; text-align: center; border-radius: 0.25rem;"
+            class="from-toggle-button"
         >
             {{ labelPosition.from === "source" ? "[source]" : "[target]" }}
         </button>
@@ -104,21 +104,17 @@ const handleNumberChange = () => {
             <input
                 v-model.lazy.number="labelPosition.percentage"
                 @change="handleNumberChange"
-                style="text-align: center; width: 3rem;"
+                class="label-position-input"
             >
-            <button @click="percentageToFixedLength"
-                    style="width: 1rem; text-align: center; border-radius: 0 0.25rem 0.25rem 0;">%
-            </button>
+            <button @click="percentageToFixedLength" class="type-toggle-button">%</button>
         </template>
         <template v-else>
             <input
                 v-model.lazy.number="labelPosition.fixedLength"
                 @change="handleNumberChange"
-                style="text-align: center; width: 3rem;"
+                class="label-position-input"
             >
-            <button @click="fixedLengthToPercentage"
-                    style="width: 1rem; text-align: center; border-radius: 0 0.25rem 0.25rem 0;">px
-            </button>
+            <button @click="fixedLengthToPercentage" class="type-toggle-button">px</button>
         </template>
     </div>
 </template>
@@ -129,5 +125,30 @@ const handleNumberChange = () => {
     justify-content: center;
     height: 1.5rem;
     background-color: var(--background-color);
+}
+
+.label-position-input {
+    text-align: center;
+    width: 3rem;
+    font-size: 0.8rem;
+    border-right: none;
+    border-left: none;
+}
+
+.label-position-input:focus {
+    border-left: var(--border);
+    border-right: var(--border);
+}
+
+.from-toggle-button {
+    width: 4rem;
+    text-align: center;
+    border-radius: 0.25rem 0 0 0.25rem;
+}
+
+.type-toggle-button {
+    width: 2rem;
+    text-align: center;
+    border-radius: 0 0.25rem 0.25rem 0;
 }
 </style>
