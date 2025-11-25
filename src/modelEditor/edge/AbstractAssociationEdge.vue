@@ -2,25 +2,22 @@
 import AssociationEdge from "@/modelEditor/edge/AssociationEdge.vue";
 import {type EdgeProps} from "@vue-flow/core";
 import type {AbstractAssociationEdge} from "@/modelEditor/edge/AbstractAssociationEdge.ts";
-import NameCommentViewer from "@/modelEditor/nameComment/NameCommentViewer.vue";
-import {computed, ref, useTemplateRef} from "vue";
+import {computed, useTemplateRef} from "vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import MappedSuperClassViewer from "@/modelEditor/viewer/MappedSuperClassViewer.vue";
 import EntityIdViewer from "@/modelEditor/viewer/EntityIdViewer.vue";
-import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
 import LabelPositionEditor from "@/modelEditor/edge/tool/LabelPositionEditor.vue";
 import IconAim from "@/components/icons/IconAim.vue";
 import IconDelete from "@/components/icons/IconDelete.vue";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 import {
+    tmpl_abstractFkName,
     tmpl_fkComment,
-    tmpl_fkName,
     tmpl_mappedPropertyComment,
     tmpl_mappedPropertyName
 } from "@/type/context/utils/AssociationTemplate.ts";
-import {useNameCommentTemplateModel} from "@/modelEditor/edge/templateEdit/useNameCommentTemplateModel.ts";
 import {associationElementId, mappedPropertyElementId} from "@/modelEditor/edge/edgeElementId.ts";
-import association from "@/type/__generated/typeDeclare/items/Association.ts";
+import NameCommentTemplateOnlyEditor from "@/modelEditor/nameComment/NameCommentTemplateOnlyEditor.vue";
 
 const props = defineProps<EdgeProps<AbstractAssociationEdge["data"]>>()
 
@@ -42,13 +39,11 @@ const getPath = computed(() => {
     })
 })
 
-const associationEdit = ref(false)
-
 const associationNameCommentView = computed(() => {
     return {
-        name: tmpl_fkName(
+        name: tmpl_abstractFkName(
             props.data.edgedAssociation.association.nameTemplate,
-            {name: sourceAbstractEntity.value ? `$${sourceAbstractEntity.value.name}$` : '[NOT_EXISTED]'},
+            {name: sourceAbstractEntity.value ? sourceAbstractEntity.value.name : '[NOT_EXISTED]'},
             {name: sourceProperty.value ? sourceProperty.value.name : '[NOT_EXISTED]'}
         ),
         comment: tmpl_fkComment(
@@ -58,12 +53,6 @@ const associationNameCommentView = computed(() => {
         ),
     }
 })
-
-const associationNameCommentTemplate = useNameCommentTemplateModel(() =>
-    props.data.edgedAssociation.association
-)
-
-const mappedPropertyEdit = ref(false)
 
 const mappedPropertyNameCommentView = computed(() => {
     const mappedProperty = props.data.edgedAssociation.association.mappedProperty
@@ -80,10 +69,6 @@ const mappedPropertyNameCommentView = computed(() => {
         ),
     }
 })
-
-const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
-    props.data.edgedAssociation.association.mappedProperty
-)
 </script>
 
 <template>
@@ -103,19 +88,12 @@ const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
                     :id="associationElementId(data.edgedAssociation.association.id)"
                 >
                     <div class="foreign-key-info">
-                        <NameCommentViewer
-                            v-if="!associationEdit"
-                            :data="associationNameCommentView"
-                            @dblclick.stop="associationEdit = true; "
-                        />
-                        <NameCommentEditor
-                            v-else
-                            v-model="associationNameCommentTemplate"
+                        <NameCommentTemplateOnlyEditor
+                            v-model="data.edgedAssociation.association"
+                            :name="associationNameCommentView.name"
+                            :comment="associationNameCommentView.comment"
                             class="with-border-bg"
                             :font-size="12"
-                            auto-focus
-                            @change="associationEdit = false"
-                            @blur="associationEdit = false"
                         />
                     </div>
                     <div class="flex-center">
@@ -137,19 +115,12 @@ const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
                             ctrl-focus
                         />
                         <span style="padding: 0 0.1rem;">.</span>
-                        <NameCommentViewer
-                            v-if="!mappedPropertyEdit"
-                            :data="mappedPropertyNameCommentView"
-                            @dblclick.stop="mappedPropertyEdit = true; "
-                        />
-                        <NameCommentEditor
-                            v-else
-                            v-model="mappedPropertyNameCommentTemplate"
+                        <NameCommentTemplateOnlyEditor
+                            v-model="data.edgedAssociation.association.mappedProperty"
+                            :name="mappedPropertyNameCommentView.name"
+                            :comment="mappedPropertyNameCommentView.comment"
                             class="with-border-bg"
                             :font-size="12"
-                            auto-focus
-                            @change="mappedPropertyEdit = false"
-                            @blur="mappedPropertyEdit = false"
                         />
                         <span style="padding-right: 0.25rem;">:</span>
                         <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">List<</span>

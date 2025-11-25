@@ -24,6 +24,16 @@ export const tmpl_fkName = (
         .replace(SOURCE_PROPERTY, nameTool.convert(sourceProperty.name, 'LOWER_CAMEL', getDatabaseNameStrategy()))
 }
 
+export const tmpl_abstractFkName = (
+    template: string,
+    sourceEntity: { name: string },
+    sourceProperty: { name: string },
+) => {
+    return template
+        .replace(SOURCE_ENTITY, "$" + nameTool.convert(sourceEntity.name, 'UPPER_CAMEL', getDatabaseNameStrategy()) + "$")
+        .replace(SOURCE_PROPERTY, nameTool.convert(sourceProperty.name, 'LOWER_CAMEL', getDatabaseNameStrategy()))
+}
+
 export const tmpl_fkComment = (
     template: string,
     sourceEntity: { comment: string },

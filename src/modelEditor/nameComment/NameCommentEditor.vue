@@ -32,7 +32,7 @@ const wrapperFocused = ref(false)
 const nameFocused = ref(false)
 const commentFocused = ref(false)
 
-useClickOutside(() => nameCommentEditorRef.value, (e) => {
+useClickOutside(() => nameCommentEditorRef.value, () => {
     wrapperFocused.value = false
     nameFocused.value = false
     commentFocused.value = false
