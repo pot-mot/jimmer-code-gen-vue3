@@ -2,13 +2,57 @@
 import FitSizeLineInput from "@/components/input/FitSizeLineInput.vue";
 import {computed, nextTick, onMounted, ref, useTemplateRef} from "vue";
 import {useClickOutside} from "@/components/list/selectableList/useClickOutside.ts";
+import IconCheck from "@/components/icons/IconCheck.vue";
+import IconCode from "@/components/icons/IconCode.vue";
 
 const model = defineModel<{
     name: string
+    nameTemplate: string
+    useNameTemplate: boolean
     comment: string
+    commentTemplate: string,
+    useCommentTemplate: boolean
 }>({
     required: true
 })
+
+const nameModel = computed({
+    get: () => {
+        if (model.value.useNameTemplate && nameFocused.value) return model.value.nameTemplate
+        return model.value.name
+    },
+    set: newValue => {
+        if (model.value.useNameTemplate) model.value.nameTemplate = newValue
+        else model.value.name = newValue
+    }
+})
+
+const toggleNameTemplate = async () => {
+    model.value.useNameTemplate = !model.value.useNameTemplate
+    await nextTick()
+    setTimeout(() => {
+        focusNameInput()
+    }, props.blurDelay)
+}
+
+const commentModel = computed({
+    get: () => {
+        if (model.value.useCommentTemplate && commentFocused.value) return model.value.commentTemplate
+        return model.value.comment
+    },
+    set: newValue => {
+        if (model.value.useCommentTemplate) model.value.commentTemplate = newValue
+        else model.value.comment = newValue
+    }
+})
+
+const toggleCommentTemplate = async () => {
+    model.value.useCommentTemplate = !model.value.useCommentTemplate
+    await nextTick()
+    setTimeout(() => {
+        focusCommentInput()
+    }, props.blurDelay)
+}
 
 const props = withDefaults(defineProps<{
     autoFocus?: boolean
@@ -105,11 +149,18 @@ const showComment = computed(() => model.value.comment.length > 0 || nameFocused
                 :padding="{top: 4, bottom: 4, left: 0, right: 0}"
                 :line-height="fontSize"
                 :font-size="fontSize"
-                v-model="model.name"
+                v-model="nameModel"
                 @change="emits('change')"
                 @focus="handleNameFocus"
                 @blur="handleNameBlur"
-            />
+            /><span
+                v-show="nameFocused"
+                class="template-button"
+                @click.stop.prevent="toggleNameTemplate"
+                :class="{enabled: model.useNameTemplate}"
+            >
+                <IconCode/>
+            </span>
         </span>
         <span
             v-if="showComment"
@@ -123,11 +174,18 @@ const showComment = computed(() => model.value.comment.length > 0 || nameFocused
                 :padding="{top: 4, bottom: 4, left: 0, right: 0}"
                 :line-height="fontSize"
                 :font-size="fontSize"
-                v-model="model.comment"
+                v-model="commentModel"
                 @change="emits('change')"
                 @focus="handleCommentFocus"
                 @blur="handleCommentBlur"
-            />]
+            /><span
+                v-show="commentFocused"
+                class="template-button"
+                @click.stop.prevent="toggleCommentTemplate"
+                :class="{enabled: model.useCommentTemplate}"
+            >
+                <IconCode/>
+            </span>]
         </span>
     </span>
 </template>
@@ -161,5 +219,20 @@ const showComment = computed(() => model.value.comment.length > 0 || nameFocused
 
 .name-comment-editor input:focus {
     background-color: var(--background-color);
+}
+
+.template-button {
+    --icon-color: var(--comment-color);
+    --icon-size: 0.8rem;
+    padding: 0 0.1rem;
+    cursor: pointer;
+}
+
+.template-button.enabled {
+    --icon-color: var(--success-color);
+}
+
+.template-button:hover {
+    --icon-color: var(--text-color);
 }
 </style>

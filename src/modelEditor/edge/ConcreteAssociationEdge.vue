@@ -3,16 +3,14 @@ import AssociationEdge from "@/modelEditor/edge/AssociationEdge.vue";
 import {type EdgeProps} from "@vue-flow/core";
 import type {ConcreteAssociationEdge} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
 import EntityIdViewer from "@/modelEditor/viewer/EntityIdViewer.vue";
-import {computed, ref, useTemplateRef} from "vue";
+import {computed, useTemplateRef} from "vue";
 import LabelPositionEditor from "@/modelEditor/edge/tool/LabelPositionEditor.vue";
 import IconAim from "@/components/icons/IconAim.vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import IconDelete from "@/components/icons/IconDelete.vue";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
-import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
-import NameCommentViewer from "@/modelEditor/nameComment/NameCommentViewer.vue";
-import {useNameCommentTemplateModel} from "@/modelEditor/edge/templateEdit/useNameCommentTemplateModel.ts";
 import {associationElementId, mappedPropertyElementId} from "@/modelEditor/edge/edgeElementId.ts";
+import NameCommentTemplateEditor from "@/modelEditor/nameComment/NameCommentTemplateEditor.vue";
 
 const props = defineProps<EdgeProps<ConcreteAssociationEdge["data"]>>()
 
@@ -24,18 +22,6 @@ const getPath = computed(() => {
         return undefined
     })
 })
-
-const associationEdit = ref(false)
-
-const associationNameCommentTemplate = useNameCommentTemplateModel(() =>
-    props.data.edgedAssociation.association
-)
-
-const mappedPropertyEdit = ref(false)
-
-const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
-    props.data.edgedAssociation.association.mappedProperty
-)
 </script>
 
 <template>
@@ -55,19 +41,10 @@ const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
                     :id="associationElementId(data.edgedAssociation.association.id)"
                 >
                     <div class="foreign-key-info">
-                        <NameCommentViewer
-                            v-if="!associationEdit"
-                            :data="data.edgedAssociation.association"
-                            @dblclick.stop="associationEdit = true; "
-                        />
-                        <NameCommentEditor
-                            v-else
-                            v-model="associationNameCommentTemplate"
+                        <NameCommentTemplateEditor
+                            v-model="data.edgedAssociation.association"
                             class="with-border-bg"
                             :font-size="12"
-                            auto-focus
-                            @change="associationEdit = false"
-                            @blur="associationEdit = false"
                         />
                     </div>
                     <div class="flex-center">
@@ -89,19 +66,10 @@ const mappedPropertyNameCommentTemplate = useNameCommentTemplateModel(() =>
                             ctrl-focus
                         />
                         <span style="padding: 0 0.1rem;">.</span>
-                        <NameCommentViewer
-                            v-if="!mappedPropertyEdit"
-                            :data="data.edgedAssociation.association.mappedProperty"
-                            @dblclick.stop="mappedPropertyEdit = true; "
-                        />
-                        <NameCommentEditor
-                            v-else
-                            v-model="mappedPropertyNameCommentTemplate"
+                        <NameCommentTemplateEditor
+                            v-model="data.edgedAssociation.association.mappedProperty"
                             class="with-border-bg"
                             :font-size="12"
-                            auto-focus
-                            @change="mappedPropertyEdit = false"
-                            @blur="mappedPropertyEdit = false"
                         />
                         <span style="padding-right: 0.25rem;">:</span>
                         <span v-if="data.edgedAssociation.association.mappedProperty.typeIsList">List<</span>
