@@ -40,13 +40,15 @@ const toggleRawTypeByLanguage = (currentLanguage: JvmLanguage) => {
 
         let validateError: ErrorObject[] | null | undefined
         if (!validatePartialModelGraphSubData(graphSubData, e => validateError = e)) {
-            errors.value.jsonData = `${translate('json_validate_error')}:\n${formatErrorMessage(validateError)}`
+            errors.value.jsonData = translate('json_validate_error')
+            console.warn(formatErrorMessage(validateError))
         } else {
             fitRawTypeByJvmLanguage(graphSubData, currentLanguage)
             model.value.jsonData = jsonPrettyFormat(graphSubData)
         }
     } catch (e) {
         errors.value.jsonData = `${translate('json_validate_error')}:\n${e}`
+        console.error(e)
     }
 }
 
@@ -62,7 +64,8 @@ const validateForm = async (): Promise<boolean> => {
         const graphSubData = JSON.parse(model.value.jsonData)
         let validateError: ErrorObject[] | null | undefined
         if (!validatePartialModelGraphSubData(graphSubData, e => validateError = e)) {
-            errors.value.jsonData = `${translate('json_validate_error')}:\n${formatErrorMessage(validateError)}`
+            errors.value.jsonData = translate('json_validate_error')
+            console.warn(formatErrorMessage(validateError))
         } else {
             const unfitTypeWithPaths = getUnfitRawType(graphSubData, model.value.jvmLanguage)
             if (Object.keys(unfitTypeWithPaths).length > 0) {
@@ -87,6 +90,7 @@ const validateForm = async (): Promise<boolean> => {
         }
     } catch (e) {
         errors.value.jsonData = `${translate('json_validate_error')}:\n${e}`
+        console.error(e)
     }
 
     return Object.keys(errors.value).length === 0

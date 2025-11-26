@@ -39,6 +39,8 @@ const {
     loadTables,
 } = useModelEditor()
 
+const modelEditDialog = useModelEditDialog()
+
 const fetchModel = async () => {
     await withLoading("load model", async () => {
         const id = route.params.id
@@ -62,6 +64,7 @@ const fetchModel = async () => {
                 await loadModel(model, jsonData, model.viewport)
             } else {
                 sendMessage(`模型数据类型错误: ${JSON.stringify(error)}`, {type: "warning"})
+                modelEditDialog.open()
             }
         } catch (e) {
             sendMessage(`模型获取错误: ${e}`, {type: "warning"})
@@ -87,7 +90,7 @@ watch(() => route.params.id, async () => {
 })
 
 onBeforeUnmount(() => {
-    try {useModelEditDialog().close()} catch (e) {console.error(e)}
+    try {modelEditDialog.close()} catch (e) {console.error(e)}
     try {useModelGenerator().close()} catch (e) {console.error(e)}
     try {useScriptDialog().close()} catch (e) {console.error(e)}
     try {useDatabaseDialog().close()} catch (e) {console.error(e)}
