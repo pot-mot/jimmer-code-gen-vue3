@@ -69,43 +69,44 @@ const exportModelJson = () => {
 </script>
 
 <template>
-    <div class="toolbar top-left">
-        <button @click="saveModel()">
-            <IconSave/>
-        </button>
-        <button @click="openForm()">
-            <IconEdit/>
-        </button>
+    <div class="toolbar">
+        <div class="left">
+            <button @click="saveModel()">
+                <IconSave/>
+            </button>
+            <button @click="openForm()">
+                <IconEdit/>
+            </button>
 
-        <button :disabled="!canUndo" @click="undo()" :class="{disabled: !canUndo}">
-            <IconUndo/>
-        </button>
-        <button :disabled="!canRedo" @click="redo()" :class="{disabled: !canRedo}">
-            <IconRedo/>
-        </button>
-        <button @click="fitView()">
-            <IconFit/>
-        </button>
-        <button @click="toggleDefaultMouseAction()" :class="{enable: defaultMouseAction === 'selectionRect'}">
-            <IconDrag v-if="defaultMouseAction === 'panDrag'"/>
-            <IconSelectRect v-else-if="defaultMouseAction === 'selectionRect'"/>
-        </button>
-    </div>
+            <button :disabled="!canUndo" @click="undo()" :class="{disabled: !canUndo}">
+                <IconUndo/>
+            </button>
+            <button :disabled="!canRedo" @click="redo()" :class="{disabled: !canRedo}">
+                <IconRedo/>
+            </button>
+            <button @click="fitView()">
+                <IconFit/>
+            </button>
+            <button @click="toggleDefaultMouseAction()" :class="{enable: defaultMouseAction === 'selectionRect'}">
+                <IconDrag v-if="defaultMouseAction === 'panDrag'"/>
+                <IconSelectRect v-else-if="defaultMouseAction === 'selectionRect'"/>
+            </button>
+        </div>
 
-    <div class="toolbar top-right">
-        <button @click="openDiagnoseDialog()">
-            <IconDiagnostic/>
-            {{ translate('diagnose_dialog_button') }}
-            {{ modelDiagnoseInfo.total > 0 ? `(${modelDiagnoseInfo.total})` : '' }}
-        </button>
-        <button @click="exportModelJson()">
-            <IconDownload/>
-            {{ translate('export') }}
-        </button>
-        <button @click="handleGenerate()">
-            <IconCode/>
-            {{ translate('generate') }}
-            <template v-if="modelSelectionCount > 0">
+        <div class="right">
+            <button @click="openDiagnoseDialog()">
+                <IconDiagnostic/>
+                {{ translate('diagnose_dialog_button') }}
+                {{ modelDiagnoseInfo.total > 0 ? `(${modelDiagnoseInfo.total})` : '' }}
+            </button>
+            <button @click="exportModelJson()">
+                <IconDownload/>
+                {{ translate('export') }}
+            </button>
+            <button @click="handleGenerate()">
+                <IconCode/>
+                {{ translate('generate') }}
+                <template v-if="modelSelectionCount > 0">
                 <span
                     class="generate-option"
                     :class="{selected: generateScope === 'ALL'}"
@@ -113,27 +114,36 @@ const exportModelJson = () => {
                 >
                     {{ translate('all') }}
                 </span>
-                <span> | </span>
-                <span
-                    class="generate-option"
-                    :class="{selected: generateScope === 'SELECTED'}"
-                    @click="generateScope = 'SELECTED'"
-                >
+                    <span> | </span>
+                    <span
+                        class="generate-option"
+                        :class="{selected: generateScope === 'SELECTED'}"
+                        @click="generateScope = 'SELECTED'"
+                    >
                     {{ translate('selected') }}
                 </span>
-            </template>
-        </button>
+                </template>
+            </button>
+        </div>
     </div>
 </template>
 
 <style scoped>
 .toolbar {
-    z-index: var(--toolbar-z-index);
     position: absolute;
+    top: 0;
+    z-index: var(--toolbar-z-index);
+    width: 100%;
+    height: 2rem;
+    line-height: 2rem;
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
 }
 
 .toolbar button {
-    padding: 0 1rem;
+    flex-shrink: 0;
     line-height: 1rem;
     background-color: var(--background-color);
     border: none;
@@ -158,31 +168,34 @@ const exportModelJson = () => {
     background-color: var(--primary-color-background);
 }
 
-.toolbar.top-left,
-.toolbar.top-right {
-    top: 0;
-    height: 2rem;
-    line-height: 2rem;
+.toolbar .left,
+.toolbar .right {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     border-bottom: var(--border);
     background-color: var(--background-color);
-    max-width: 100%;
     overflow-x: auto;
+    pointer-events: auto;
 }
 
-.toolbar.top-left {
-    left: 0;
+.toolbar .left {
     border-right: var(--border);
-    border-color: var(--background-color-hover);
     border-bottom-right-radius: var(--border-radius);
+    border-color: var(--background-color-hover);
 }
 
-.toolbar.top-right {
-    right: 0;
+.toolbar .left > button {
+    padding: 0 1rem;
+}
+
+.toolbar .right {
     border-left: var(--border);
-    border-color: var(--background-color-hover);
     border-bottom-left-radius: var(--border-radius);
+    border-color: var(--background-color-hover);
+}
+
+.toolbar .right > button {
+    padding: 0 0.75rem;
 }
 
 .generate-option.selected {
