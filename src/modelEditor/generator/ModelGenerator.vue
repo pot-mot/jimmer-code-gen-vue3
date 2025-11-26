@@ -81,7 +81,7 @@ const handleDownloadFiles = (selectedPathSet?: Set<string>) => {
             } else {
                 await downloadZip(downloadFileName, generateResult.value)
             }
-            sendMessage(translate({key: 'download_success', args: [downloadFileName]}))
+            sendMessage(translate({key: 'download_success', args: [downloadFileName]}), {type: 'success'})
         })
     } catch (e) {
         receiveError(e)
