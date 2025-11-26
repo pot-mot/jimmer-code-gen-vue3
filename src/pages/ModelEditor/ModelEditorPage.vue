@@ -28,6 +28,8 @@ import GroupEditDialog from "@/modelEditor/group/GroupEditDialog.vue";
 import {useGroupEditDialog} from "@/modelEditor/group/useGroupEditDialog.ts";
 import PropertyEditDialog from "@/modelEditor/node/property/PropertyEditDialog.vue";
 import {usePropertyEditDialog} from "@/modelEditor/node/property/usePropertyEditDialog.ts";
+import {useGroupCreateDialog} from "@/modelEditor/group/useGroupCreateDialog.ts";
+import GroupCreateDialog from "@/modelEditor/group/GroupCreateDialog.vue";
 
 
 const router = useRouter()
@@ -96,6 +98,7 @@ onBeforeUnmount(() => {
     try {useDatabaseDialog().close()} catch (e) {console.error(e)}
     try {useTypeMapping().close()} catch (e) {console.error(e)}
     try {useDiagnoseDialog().close()} catch (e) {console.error(e)}
+    try {useGroupCreateDialog().close()} catch (e) {console.error(e)}
     try {useGroupEditDialog().close()} catch (e) {console.error(e)}
     try {usePropertyEditDialog().close()} catch (e) {console.error(e)}
 })
@@ -123,6 +126,7 @@ onBeforeUnmount(() => {
     </DatabaseDialog>
     <TypeMappingDialog/>
     <DiagnoseDialog/>
+    <GroupCreateDialog/>
     <GroupEditDialog/>
     <PropertyEditDialog/>
 </template>

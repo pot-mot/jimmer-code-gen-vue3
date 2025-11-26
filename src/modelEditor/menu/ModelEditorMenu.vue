@@ -19,7 +19,7 @@ import IconSearch from "@/components/icons/IconSearch.vue";
 import {translate} from "@/store/i18nStore.ts";
 import {useDatabaseDialog} from "@/modelEditor/database/useDatabaseDialog.ts";
 import IconDatabaseAdd from "@/components/icons/IconDatabaseAdd.vue";
-import {useGroupEditDialog} from "@/modelEditor/group/useGroupEditDialog.ts";
+import {useGroupCreateDialog} from "@/modelEditor/group/useGroupCreateDialog.ts";
 
 const {
     createType,
@@ -30,8 +30,6 @@ const {
     enableMultiSelect,
     disableMultiSelect,
 
-    addGroup,
-    toggleCurrentGroup,
     executeAsyncBatch,
 
     remove,
@@ -226,12 +224,10 @@ onUnmounted(() => {
     modelSelection.eventBus.off("association", handleSelectChange)
 })
 
-const groupEditDialog = useGroupEditDialog()
+const groupCreateDialog = useGroupCreateDialog()
 
 const handleAddGroup = () => {
-    const group = addGroup()
-    toggleCurrentGroup({id: group.id})
-    groupEditDialog.open(group)
+    groupCreateDialog.open()
 }
 
 const databaseDialog = useDatabaseDialog()
