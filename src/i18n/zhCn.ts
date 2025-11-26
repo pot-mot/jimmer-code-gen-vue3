@@ -161,6 +161,9 @@ export const localeZhCn: MainLocale = {
     ModelGenerator: "模型",
     TableGenerator: "数据库表",
 
+    basePackagePath: "基础包路径",
+    baseTableSchema: "基础表架构",
+
     extraImports: "Imports",
     extraAnnotations: "Annotations",
     jvmMatchRules: "JVM类型匹配",

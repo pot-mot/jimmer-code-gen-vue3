@@ -19,6 +19,7 @@ import IconSearch from "@/components/icons/IconSearch.vue";
 import {translate} from "@/store/i18nStore.ts";
 import {useDatabaseDialog} from "@/modelEditor/database/useDatabaseDialog.ts";
 import IconDatabaseAdd from "@/components/icons/IconDatabaseAdd.vue";
+import {useGroupEditDialog} from "@/modelEditor/group/useGroupEditDialog.ts";
 
 const {
     createType,
@@ -225,9 +226,12 @@ onUnmounted(() => {
     modelSelection.eventBus.off("association", handleSelectChange)
 })
 
+const groupEditDialog = useGroupEditDialog()
+
 const handleAddGroup = () => {
-    const id = addGroup()
-    toggleCurrentGroup({id})
+    const group = addGroup()
+    toggleCurrentGroup({id: group.id})
+    groupEditDialog.open(group)
 }
 
 const databaseDialog = useDatabaseDialog()

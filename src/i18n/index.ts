@@ -157,6 +157,9 @@ export type MainLocale = {
     ModelGenerator: string
     TableGenerator: string
 
+    basePackagePath: string
+    baseTableSchema: string
+
     extraImports: string
     extraAnnotations: string
     jvmMatchRules: string

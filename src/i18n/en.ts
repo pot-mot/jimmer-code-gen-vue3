@@ -161,6 +161,9 @@ export const localeEn: MainLocale = {
     ModelGenerator: "Model",
     TableGenerator: "Table",
 
+    basePackagePath: "Base Package Path",
+    baseTableSchema: "Base Table Schema",
+
     extraImports: "Imports",
     extraAnnotations: "Annotations",
     jvmMatchRules: "JVM Type Match",

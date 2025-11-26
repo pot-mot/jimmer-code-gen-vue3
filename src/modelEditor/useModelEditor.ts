@@ -343,7 +343,7 @@ export const useModelEditor = createStore(() => {
     const addGroup = (group: Group = defaultGroup()) => {
         group.name = modelNameSets.groupNameSet.next(group.name)
         history.executeCommand('group:add', {group})
-        return group.id
+        return group
     }
     const changeGroup = (group: DeepReadonly<Group>) => {
         history.executeCommand('group:change', {group})

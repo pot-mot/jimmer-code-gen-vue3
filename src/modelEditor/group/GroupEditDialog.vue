@@ -16,6 +16,8 @@ const {
         v-model="openState"
         can-resize
         modal
+        :init-w="400"
+        :init-h="290"
     >
         <GroupForm
             v-if="groupState"

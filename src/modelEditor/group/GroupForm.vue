@@ -48,12 +48,43 @@ const handleCancel = () => {
 
 <template>
     <form @submit.prevent class="group-form">
-        <ColorInput v-model="group.color"/>
-        <input v-model="group.name">
-        <input v-model="group.comment">
 
-        <input v-model="group.basePackagePath">
-        <input v-model="group.baseTableSchema">
+        <div class="form-item">
+            <div style="display: flex; flex-wrap: nowrap; align-items: center; gap: 0.5rem;">
+                <ColorInput v-model="group.color"/>
+                <input
+                    v-model="group.name"
+                    type="text"
+                    :class="{ 'error': errors.name }"
+                    :placeholder="translate({key: 'input_placeholder', args: [translate('name')]})"
+                />
+            </div>
+            <div v-if="errors.name" class="error-message">{{ errors.name }}</div>
+        </div>
+
+        <div class="form-item">
+            <input
+                v-model="group.comment"
+                type="text"
+                :placeholder="translate({key: 'input_placeholder', args: [translate('comment')]})"
+            />
+        </div>
+
+        <div class="form-item">
+            <input
+                v-model="group.basePackagePath"
+                type="text"
+                :placeholder="translate({key: 'input_placeholder', args: [translate('basePackagePath')]})"
+            />
+        </div>
+
+        <div class="form-item">
+            <input
+                v-model="group.baseTableSchema"
+                type="text"
+                :placeholder="translate({key: 'input_placeholder', args: [translate('baseTableSchema')]})"
+            />
+        </div>
 
         <div class="form-actions">
             <button @click="handleCancel" class="cancel-button">
@@ -69,12 +100,22 @@ const handleCancel = () => {
 </template>
 
 <style scoped>
+.group-form {
+    height: 100%;
+    width: 100%;
+    padding: 0.5rem 0.5rem 1rem;
+    overflow-y: auto;
+}
 
-textarea {
+.form-item {
+    margin-bottom: 0.5rem;
+}
+
+input {
     width: 100%;
     border-radius: var(--border-radius);
     padding: 0.5rem;
-    font-size: 1rem;
+    font-size: 0.9rem;
 }
 
 input.error, select.error, textarea.error {
