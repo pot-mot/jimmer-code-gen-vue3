@@ -11,7 +11,11 @@ import DatabaseTypeSelect from "@/modelEditor/modelForm/databaseType/DatabaseTyp
 import type {ErrorObject} from "ajv";
 import {formatErrorMessage} from "@/utils/type/typeGuard.ts";
 import {translate} from "@/store/i18nStore.ts";
-import {togglePropertyRawTypeByJvmLanguage} from "@/modelEditor/modelForm/jvmLanguage/togglePropertyRawTypeByJvmLanguage.ts";
+import {
+    getUnfitRawType,
+    fitRawTypeByJvmLanguage, stringifyUnfitRawType
+} from "@/modelEditor/modelForm/jvmLanguage/fitRawTypeByJvmLanguage.ts";
+import {sendConfirm} from "@/components/confirm/confirmApi.ts";
 
 const model = defineModel<T>({
     required: true
@@ -29,8 +33,25 @@ const emits = defineEmits<{
 // 表单验证错误
 const errors = ref<Record<string, string>>({})
 
+// 根据当前语言切换字面类型
+const toggleRawTypeByLanguage = (currentLanguage: JvmLanguage) => {
+    try {
+        const graphSubData = JSON.parse(model.value.jsonData)
+
+        let validateError: ErrorObject[] | null | undefined
+        if (!validatePartialModelGraphSubData(graphSubData, e => validateError = e)) {
+            errors.value.jsonData = `${translate('json_validate_error')}:\n${formatErrorMessage(validateError)}`
+        } else {
+            fitRawTypeByJvmLanguage(graphSubData, currentLanguage)
+            model.value.jsonData = jsonPrettyFormat(graphSubData)
+        }
+    } catch (e) {
+        errors.value.jsonData = `${translate('json_validate_error')}:\n${e}`
+    }
+}
+
 // 验证表单
-const validateForm = (): boolean => {
+const validateForm = async (): Promise<boolean> => {
     errors.value = {}
 
     if (!model.value.name || model.value.name.trim() === '') {
@@ -38,9 +59,31 @@ const validateForm = (): boolean => {
     }
 
     try {
+        const graphSubData = JSON.parse(model.value.jsonData)
         let validateError: ErrorObject[] | null | undefined
-        if (!validatePartialModelGraphSubData(JSON.parse(model.value.jsonData), e => validateError = e)) {
+        if (!validatePartialModelGraphSubData(graphSubData, e => validateError = e)) {
             errors.value.jsonData = `${translate('json_validate_error')}:\n${formatErrorMessage(validateError)}`
+        } else {
+            const unfitTypeWithPaths = getUnfitRawType(graphSubData, model.value.jvmLanguage)
+            if (Object.keys(unfitTypeWithPaths).length > 0) {
+                await sendConfirm({
+                    title: translate('raw_type_not_fit_language_title'),
+                    content: translate({
+                        key: "raw_type_not_fit_language",
+                        args: [model.value.jvmLanguage, unfitTypeWithPaths.map(stringifyUnfitRawType).join(",\n")]
+                    }),
+                    confirmText: translate('raw_type_not_fit_auto_toggle'),
+                    onConfirm: () => {
+                        toggleRawTypeByLanguage(model.value.jvmLanguage)
+                    },
+                    onCancel: () => {
+                        errors.value.jsonData = translate({
+                            key: "raw_type_not_fit_language",
+                            args: [model.value.jvmLanguage, unfitTypeWithPaths.map(stringifyUnfitRawType).join(",\n")]
+                        })
+                    }
+                })
+            }
         }
     } catch (e) {
         errors.value.jsonData = `${translate('json_validate_error')}:\n${e}`
@@ -50,8 +93,9 @@ const validateForm = (): boolean => {
 }
 
 // 提交表单
-const handleSubmit = () => {
-    if (validateForm()) {
+const handleSubmit = async () => {
+    const validateResult = await validateForm()
+    if (validateResult) {
         emits('submit', model.value)
     }
 }
@@ -61,21 +105,8 @@ watch(() => model.value, () => {
     errors.value = {}
 }, { deep: true })
 
-watch(() => model.value.jvmLanguage, (_, oldValue) => {
-    debugger
-    try {
-        const graphSubData = JSON.parse(model.value.jsonData)
-
-        let validateError: ErrorObject[] | null | undefined
-        if (!validatePartialModelGraphSubData(graphSubData, e => validateError = e)) {
-            errors.value.jsonData = `${translate('json_validate_error')}:\n${formatErrorMessage(validateError)}`
-        } else {
-            togglePropertyRawTypeByJvmLanguage(graphSubData, oldValue)
-            model.value.jsonData = jsonPrettyFormat(graphSubData)
-        }
-    } catch (e) {
-        errors.value.jsonData = `${translate('json_validate_error')}:\n${e}`
-    }
+watch(() => model.value.jvmLanguage, (value) => {
+    toggleRawTypeByLanguage(value)
 })
 
 // 取消操作

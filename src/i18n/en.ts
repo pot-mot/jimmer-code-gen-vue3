@@ -101,6 +101,12 @@ export const localeEn: MainLocale = {
     group_create_button: "Add Group",
     load_from_database_button: "Load From Database",
 
+    raw_type_not_fit_language_title: "RawType Not Fit",
+    raw_type_not_fit_auto_toggle: "Auto Toggle",
+    raw_type_not_fit_language: (currentLanguage, info) => {
+        return `[${info}] not fit current language ${currentLanguage}`
+    },
+
     database: "Database",
     table: "Table",
     tables: "Tables",

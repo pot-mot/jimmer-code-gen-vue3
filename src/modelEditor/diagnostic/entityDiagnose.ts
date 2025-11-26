@@ -7,6 +7,8 @@ import {
     getEntityLogicalDeleteProperties, getEntityVersionProperties
 } from "@/type/context/utils/EntityCategorizedProperty.ts";
 import {unclearTypeSet} from "@/modelEditor/diagnostic/unclearType.ts";
+import {checkPropertyRawTypeIsFit} from "@/modelEditor/modelForm/jvmLanguage/fitRawTypeByJvmLanguage.ts";
+import {translate} from "@/store/i18nStore.ts";
 
 export type EntityDiagnoseResult = {
     readonly size: number,
@@ -143,6 +145,14 @@ export const entityDiagnose = (
                 messages.push({
                     content: "[Type is empty]",
                     type: "error"
+                })
+            } else if (!checkPropertyRawTypeIsFit(property, contextData.model.jvmLanguage)) {
+                messages.push({
+                    content: translate({
+                        key: "raw_type_not_fit_language",
+                        args: [contextData.model.jvmLanguage, property.rawType]
+                    }),
+                    type: "warning"
                 })
             } else if (unclearTypeSet.has(property.rawType)) {
                 messages.push({

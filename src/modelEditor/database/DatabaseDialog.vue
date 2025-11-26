@@ -111,7 +111,7 @@ const submitDatabaseUpdate = async (database: DatabaseUpdateInput) => {
 }
 
 const deleteDatabase = async (database: DatabaseView) => {
-    sendConfirm({
+    await sendConfirm({
         title: translate({key: "delete_confirm_title", args: [translate("database")]}),
         content: translate({key: "delete_confirm_content", args: [` ${translate("database")}[${database.name}] `]}),
         onConfirm: async () => {

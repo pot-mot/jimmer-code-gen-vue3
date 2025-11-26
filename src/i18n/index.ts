@@ -99,6 +99,10 @@ export type MainLocale = {
     group_create_button: string
     load_from_database_button: string
 
+    raw_type_not_fit_language_title: string
+    raw_type_not_fit_auto_toggle: string
+    raw_type_not_fit_language: (currentLanguage: JvmLanguage, info: string) => string
+
     database: string
     table: string
     tables: string

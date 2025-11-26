@@ -101,6 +101,12 @@ export const localeZhCn: MainLocale = {
     group_create_button: "添加分组",
     load_from_database_button: "从数据库导入",
 
+    raw_type_not_fit_language_title: "字面类型不匹配",
+    raw_type_not_fit_auto_toggle: "自动切换",
+    raw_type_not_fit_language: (currentLanguage, info) => {
+        return `[${info}] 不匹配当前语言 ${currentLanguage}`
+    },
+
     database: "数据库",
     table: "表",
     tables: "表",

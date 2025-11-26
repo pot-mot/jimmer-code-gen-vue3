@@ -116,7 +116,7 @@ export const useScriptDialog = createStore(() => {
         deleteScript: async (id: string) => {
             const scriptInfo = scriptsStore.value.scriptInfoMap.get(id)
             if (!scriptInfo) return
-            sendConfirm({
+            await sendConfirm({
                 title: translate({key: "delete_confirm_title", args: [translate("script")]}),
                 content: translate({
                     key: "delete_confirm_content",
