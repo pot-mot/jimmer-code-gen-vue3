@@ -3,7 +3,7 @@ import type {ModelInsertInput, ModelUpdateInput} from "@/api/__generated/model/s
 import {onMounted, ref, watch} from "vue";
 import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";
 import JsonEditor from "@/components/code/jsonEditor/JsonEditor.vue";
-import {jsonStrPrettyFormat} from "@/utils/json/jsonStringify.ts";
+import {jsonPrettyFormat, jsonStrPrettyFormat} from "@/utils/json/jsonStringify.ts";
 import IconCheck from "@/components/icons/IconCheck.vue";
 import IconClose from "@/components/icons/IconClose.vue";
 import JvmLanguageSelect from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageSelect.vue";
@@ -11,6 +11,7 @@ import DatabaseTypeSelect from "@/modelEditor/modelForm/databaseType/DatabaseTyp
 import type {ErrorObject} from "ajv";
 import {formatErrorMessage} from "@/utils/type/typeGuard.ts";
 import {translate} from "@/store/i18nStore.ts";
+import {togglePropertyRawTypeByJvmLanguage} from "@/modelEditor/modelForm/jvmLanguage/togglePropertyRawTypeByJvmLanguage.ts";
 
 const model = defineModel<T>({
     required: true
@@ -37,9 +38,9 @@ const validateForm = (): boolean => {
     }
 
     try {
-        let error: ErrorObject[] | null | undefined
-        if (!validatePartialModelGraphSubData(JSON.parse(model.value.jsonData), e => error = e)) {
-            errors.value.jsonData = `${translate('json_validate_error')}:\n${formatErrorMessage(error)}`
+        let validateError: ErrorObject[] | null | undefined
+        if (!validatePartialModelGraphSubData(JSON.parse(model.value.jsonData), e => validateError = e)) {
+            errors.value.jsonData = `${translate('json_validate_error')}:\n${formatErrorMessage(validateError)}`
         }
     } catch (e) {
         errors.value.jsonData = `${translate('json_validate_error')}:\n${e}`
@@ -59,6 +60,23 @@ const handleSubmit = () => {
 watch(() => model.value, () => {
     errors.value = {}
 }, { deep: true })
+
+watch(() => model.value.jvmLanguage, (_, oldValue) => {
+    debugger
+    try {
+        const graphSubData = JSON.parse(model.value.jsonData)
+
+        let validateError: ErrorObject[] | null | undefined
+        if (!validatePartialModelGraphSubData(graphSubData, e => validateError = e)) {
+            errors.value.jsonData = `${translate('json_validate_error')}:\n${formatErrorMessage(validateError)}`
+        } else {
+            togglePropertyRawTypeByJvmLanguage(graphSubData, oldValue)
+            model.value.jsonData = jsonPrettyFormat(graphSubData)
+        }
+    } catch (e) {
+        errors.value.jsonData = `${translate('json_validate_error')}:\n${e}`
+    }
+})
 
 // 取消操作
 const handleCancel = () => {
@@ -185,7 +203,7 @@ textarea {
 }
 
 .json-data-editor {
-    height: calc(100% - 18rem);
+    height: calc(100% - 18rem - 2px);
 }
 
 input.error, select.error, textarea.error {

@@ -14,7 +14,6 @@ import IconEdit from "@/components/icons/IconEdit.vue";
 import IconDelete from "@/components/icons/IconDelete.vue";
 import {formatDateTime} from "@/utils/datetime/timeFormat.ts";
 import {useRouter} from "vue-router";
-import ModelConfigForm from "@/modelEditor/modelForm/ModelConfigForm.vue";
 import JvmLanguageView from "@/modelEditor/modelForm/jvmLanguage/JvmLanguageView.vue";
 import DatabaseTypeView from "@/modelEditor/modelForm/databaseType/DatabaseTypeView.vue";
 import {sendConfirm} from "@/components/confirm/confirmApi.ts";
@@ -39,6 +38,7 @@ import {fillModelGraphSubData} from "@/type/context/utils/ModelGraphSubData.ts";
 import IconDownload from "@/components/icons/IconDownload.vue";
 import {downloadJson} from "@/utils/file/jsonDownload.ts";
 import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";
+import ModelEditForm from "@/modelEditor/modelForm/ModelEditForm.vue";
 
 const modelList = ref<ModelNoJsonView[]>([])
 const modelQuerySpec = ref<ModelSpec>({})
@@ -348,13 +348,11 @@ onBeforeUnmount(() => {
         @close="stopModelInsert"
         modal
         can-resize
-        :init-w="600"
-        :init-h="340"
     >
         <template #title>
             {{ translate('model_create_title') }}
         </template>
-        <ModelConfigForm
+        <ModelEditForm
             v-if="modelInsertInput"
             v-model="modelInsertInput"
             @submit="submitModelInsert"
@@ -367,13 +365,11 @@ onBeforeUnmount(() => {
         @close="stopModelUpdate"
         modal
         can-resize
-        :init-w="600"
-        :init-h="340"
     >
         <template #title>
             {{ translate('model_update_title') }}
         </template>
-        <ModelConfigForm
+        <ModelEditForm
             v-if="modelUpdateInput"
             v-model="modelUpdateInput"
             @submit="submitModelUpdate"
