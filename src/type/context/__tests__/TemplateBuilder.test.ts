@@ -88,6 +88,13 @@ describe('TemplateBuilder', () => {
         builder.appendLine('World')
         builder.endScope()
         expect(builder.build()).toBe('{\n    Hello\n    World\n}')
+        builder.clean()
+
+        builder.append("Hello ")
+        builder.startScope()
+        builder.append('World')
+        builder.endScope()
+        expect(builder.build()).toBe('Hello {\n    World\n}')
     })
 
     it('override scope test', () => {

@@ -50,7 +50,13 @@ export const createTemplateBuilder = (
             }
         },
         startScope: (start) => {
-            addLine(start ?? options.scope.start)
+            const finalStart = start ?? options.scope.start
+            if (currentLine.length > 0) {
+                lines.push(currentLine + finalStart)
+                currentLine = ""
+            } else {
+                addLine(finalStart)
+            }
             currentIndentLevel++
         },
         endScope: (end) => {

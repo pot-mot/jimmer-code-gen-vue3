@@ -64,6 +64,7 @@ import IdEmbeddablePropertyDeclare from "./items/IdEmbeddableProperty.ts";
 import IndexDeclare from "./items/Index.ts";
 import JoinInfoDeclare from "./items/JoinInfo.ts";
 import JvmFileBuilderDeclare from "./items/JvmFileBuilder.ts";
+import JvmFileBuilderOptionsDeclare from "./items/JvmFileBuilderOptions.ts";
 import JvmLanguageDeclare from "./items/JvmLanguage.ts";
 import JvmMatchRuleDeclare from "./items/JvmMatchRule.ts";
 import JvmSourceDeclare from "./items/JvmSource.ts";
@@ -137,6 +138,7 @@ import SqlToTsMappingRuleDeclare from "./items/SqlToTsMappingRule.ts";
 import SqlTypeDeclare from "./items/SqlType.ts";
 import TableDeclare from "./items/Table.ts";
 import TemplateBuilderDeclare from "./items/TemplateBuilder.ts";
+import TemplateBuildOptionsDeclare from "./items/TemplateBuildOptions.ts";
 import TemplateOptionsDeclare from "./items/TemplateOptions.ts";
 import TransientPropertyDeclare from "./items/TransientProperty.ts";
 import TsImportDeclare from "./items/TsImport.ts";
@@ -212,6 +214,7 @@ export type TypeMap = {
     Index: Index
     JoinInfo: JoinInfo
     JvmFileBuilder: JvmFileBuilder
+    JvmFileBuilderOptions: JvmFileBuilderOptions
     JvmLanguage: JvmLanguage
     JvmMatchRule: JvmMatchRule
     JvmSource: JvmSource
@@ -285,6 +288,7 @@ export type TypeMap = {
     SqlType: SqlType
     Table: Table
     TemplateBuilder: TemplateBuilder
+    TemplateBuildOptions: TemplateBuildOptions
     TemplateOptions: TemplateOptions
     TransientProperty: TransientProperty
     TsImport: TsImport
@@ -364,6 +368,7 @@ export const typeDeclares = Object.freeze({
     Index: IndexDeclare,
     JoinInfo: JoinInfoDeclare,
     JvmFileBuilder: JvmFileBuilderDeclare,
+    JvmFileBuilderOptions: JvmFileBuilderOptionsDeclare,
     JvmLanguage: JvmLanguageDeclare,
     JvmMatchRule: JvmMatchRuleDeclare,
     JvmSource: JvmSourceDeclare,
@@ -437,6 +442,7 @@ export const typeDeclares = Object.freeze({
     SqlType: SqlTypeDeclare,
     Table: TableDeclare,
     TemplateBuilder: TemplateBuilderDeclare,
+    TemplateBuildOptions: TemplateBuildOptionsDeclare,
     TemplateOptions: TemplateOptionsDeclare,
     TransientProperty: TransientPropertyDeclare,
     TsImport: TsImportDeclare,

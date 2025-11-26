@@ -129,7 +129,7 @@ watch(() => openState.value, async () => {
                         {{ translate('download') }}
                         <span
                             class="download-option"
-                            :class="{selected: downloadScope}"
+                            :class="{selected: downloadScope === 'ALL'}"
                             @click="downloadScope = 'ALL'"
                         >
                             {{ translate('all') }}
@@ -137,7 +137,7 @@ watch(() => openState.value, async () => {
                         <span> | </span>
                         <span
                             class="download-option"
-                            :class="{selected: !downloadScope}"
+                            :class="{selected: downloadScope === 'SELECTED'}"
                             @click="downloadScope = 'SELECTED'"
                         >
                             {{ translate('selected') }}

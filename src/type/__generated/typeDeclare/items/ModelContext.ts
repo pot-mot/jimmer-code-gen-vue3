@@ -15,10 +15,7 @@ export default Object.freeze({
         options: TemplateOptions
     ) => TemplateBuilder
     createJvmFileBuilder: (
-        options: {
-            groupId: string,
-            subPackagePath: string,
-        }
+        options: JvmFileBuilderOptions
     ) => JvmFileBuilder
 }`,
 })
