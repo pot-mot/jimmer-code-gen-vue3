@@ -55,9 +55,6 @@ type ModelContext = {
         options: TemplateOptions
     ) => TemplateBuilder
     createJvmFileBuilder: (
-        options: {
-            groupId: string,
-            subPackagePath: string,
-        }
+        options: JvmFileBuilderOptions
     ) => JvmFileBuilder
 }

@@ -6,9 +6,16 @@ type TemplateOptions = {
     }
 }
 
+type TemplateBuildOptions = {
+    cleanEmptyLineIndent: boolean
+}
+
 type TemplateBuilder = {
     startScope: (start?: string) => void
     endScope: (end?: string) => void
-    append: (block: string | Iterable<string>) => void
-    build: () => string
+    append: (content: string) => void
+    appendLine: (line?: string) => void
+    appendBlock: (block: string | Iterable<string>) => void
+    build: (option?: Partial<TemplateBuildOptions>) => string
+    clean: () => void
 }

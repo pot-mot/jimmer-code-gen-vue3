@@ -1,3 +1,8 @@
+type JvmFileBuilderOptions = {
+    groupId: string
+    subPackagePath: string
+}
+
 type PropertyInfo = {
     raw: DeepReadonly<Property>
     name: string
