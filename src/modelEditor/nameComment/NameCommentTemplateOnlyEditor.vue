@@ -74,7 +74,7 @@ const handleNameFocus = () => {
     nameFocused.value = true
 }
 const handleNameBlur = () => {
-    setTimeout(() => {
+    window.setTimeout(() => {
         nameFocused.value = false
         if (!commentFocused.value) {
             wrapperFocused.value = false
@@ -86,7 +86,7 @@ const handleCommentFocus = () => {
     commentFocused.value = true
 }
 const handleCommentBlur = () => {
-    setTimeout(() => {
+    window.setTimeout(() => {
         commentFocused.value = false
         if (!nameFocused.value) {
             wrapperFocused.value = false

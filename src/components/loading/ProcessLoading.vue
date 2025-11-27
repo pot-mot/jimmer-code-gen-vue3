@@ -37,7 +37,7 @@ const stop = (symbol: symbol, success: boolean) => {
     if (tasks.value.filter(it => it.status !== undefined).length === tasks.value.length) {
         tasks.value = tasks.value.filter(it => it.status === 'fail')
         if (tasks.value.length === 0) {
-            setTimeout(() => {
+            window.setTimeout(() => {
                 if (tasks.value.length === 0) {
                     emits("allStopped")
                 }

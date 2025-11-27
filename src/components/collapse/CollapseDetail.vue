@@ -24,7 +24,7 @@ onMounted(() => {
         bodyRef.value.style.overflow = 'hidden'
         if (isOpen.value) {
             bodyRef.value.style.maxHeight = `${bodyRef.value.scrollHeight}px`
-            setTimeout(() => {
+            window.setTimeout(() => {
                 if (bodyRef.value) bodyRef.value.style.maxHeight = ''
             }, props.transitionDuration)
         } else {
@@ -37,12 +37,12 @@ watch(() => isOpen.value, () => {
     if (bodyRef.value) {
         if (isOpen.value) {
             bodyRef.value.style.maxHeight = `${bodyRef.value.scrollHeight}px`
-            setTimeout(() => {
+            window.setTimeout(() => {
                 if (bodyRef.value) bodyRef.value.style.maxHeight = ''
             }, props.transitionDuration)
         } else {
             bodyRef.value.style.maxHeight = `${bodyRef.value.scrollHeight}px`
-            setTimeout(() => {
+            window.setTimeout(() => {
                 if (bodyRef.value) bodyRef.value.style.maxHeight = '0'
             })
         }

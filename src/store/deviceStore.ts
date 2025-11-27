@@ -40,7 +40,7 @@ const handleScroll = async () => {
         if (!window.visualViewport) return
         visualTop.value = window.visualViewport.offsetTop
         visualLeft.value = window.visualViewport.offsetLeft
-        await new Promise(resolve => setTimeout(resolve, 5))
+        await new Promise(resolve => window.setTimeout(resolve, 5))
     }
 }
 

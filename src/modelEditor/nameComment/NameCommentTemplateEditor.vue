@@ -29,7 +29,7 @@ const nameModel = computed({
 const toggleNameTemplate = async () => {
     model.value.useNameTemplate = !model.value.useNameTemplate
     await nextTick()
-    setTimeout(() => {
+    window.setTimeout(() => {
         focusNameInput()
     }, props.blurDelay)
 }
@@ -48,7 +48,7 @@ const commentModel = computed({
 const toggleCommentTemplate = async () => {
     model.value.useCommentTemplate = !model.value.useCommentTemplate
     await nextTick()
-    setTimeout(() => {
+    window.setTimeout(() => {
         focusCommentInput()
     }, props.blurDelay)
 }
@@ -94,7 +94,7 @@ const handleNameFocus = () => {
     nameFocused.value = true
 }
 const handleNameBlur = () => {
-    setTimeout(() => {
+    window.setTimeout(() => {
         nameFocused.value = false
         if (!commentFocused.value) {
             wrapperFocused.value = false
@@ -106,7 +106,7 @@ const handleCommentFocus = () => {
     commentFocused.value = true
 }
 const handleCommentBlur = () => {
-    setTimeout(() => {
+    window.setTimeout(() => {
         commentFocused.value = false
         if (!nameFocused.value) {
             wrapperFocused.value = false

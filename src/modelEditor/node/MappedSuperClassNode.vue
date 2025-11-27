@@ -72,7 +72,7 @@ const forceResize = (element: HTMLElement) => {
     const oldStyleWidth = element.style.width
     const currentWidth = element.offsetWidth
     element.style.width = currentWidth + 'px'
-    setTimeout(() => {
+    window.setTimeout(() => {
         element.style.width = oldStyleWidth
     })
 }

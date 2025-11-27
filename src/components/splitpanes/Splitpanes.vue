@@ -145,7 +145,7 @@ const onMouseUp = (event: MouseEvent | TouchEvent) => {
     touch.value.activeSplitter = undefined
     // Keep dragging flag until click event is finished (click happens immediately after mouseup)
     // in order to prevent emitting `splitter-click` event if splitter was dragged.
-    setTimeout(() => {
+    window.setTimeout(() => {
         touch.value.dragging = false
         unbindEvents()
     }, 100)
@@ -165,7 +165,7 @@ const onSplitterClick = (event: MouseEvent | TouchEvent, splitterIndex: number) 
         } else {
             splitterTaps.value.splitter = splitterIndex
             // Store the fist tap and wait for the second one.
-            splitterTaps.value.timeoutId = setTimeout(() => (splitterTaps.value.splitter = undefined), 500)
+            splitterTaps.value.timeoutId = window.setTimeout(() => (splitterTaps.value.splitter = undefined), 500)
         }
     }
 

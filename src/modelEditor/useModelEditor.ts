@@ -293,7 +293,7 @@ export const useModelEditor = createStore(() => {
                     associationIds,
                 })
 
-                await new Promise((resolve) => setTimeout(resolve, 0))
+                await new Promise((resolve) => window.setTimeout(resolve, 0))
 
                 const size = Math.max(Math.ceil(Math.sqrt(nodes.length)), 1)
 
@@ -791,7 +791,7 @@ export const useModelEditor = createStore(() => {
                     lastMousePosition = null
                 } else {
                     waitNextMouseDown = true
-                    waitTimeout = setTimeout(() => {
+                    waitTimeout = window.setTimeout(() => {
                         waitNextMouseDown = false
                         lastMousePosition = null
                     }, 300)
@@ -872,7 +872,7 @@ export const useModelEditor = createStore(() => {
 
                     const newSelectedNodes = vueFlow.getSelectedNodes.value
                     const newSelectedEdges = vueFlow.getSelectedEdges.value
-                    setTimeout(() => {
+                    window.setTimeout(() => {
                         clearGraphSelection()
                         vueFlow.addSelectedNodes(newSelectedNodes)
                         vueFlow.addSelectedEdges(newSelectedEdges)

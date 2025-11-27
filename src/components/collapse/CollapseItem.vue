@@ -21,7 +21,7 @@ onMounted(() => {
         bodyRef.value.style.transition = `max-height ${props.transitionDuration}ms ease-out`
         if (isOpen.value) {
             bodyRef.value.style.maxHeight = `min(${bodyRef.value.scrollHeight}px, ${props.maxHeight})`
-            setTimeout(() => {
+            window.setTimeout(() => {
                 if (bodyRef.value) bodyRef.value.style.maxHeight = ''
             }, props.transitionDuration)
         } else {
@@ -34,12 +34,12 @@ watch(() => isOpen.value, () => {
     if (bodyRef.value) {
         if (isOpen.value) {
             bodyRef.value.style.maxHeight = `min(${bodyRef.value.scrollHeight}px, ${props.maxHeight})`
-            setTimeout(() => {
+            window.setTimeout(() => {
                 if (bodyRef.value) bodyRef.value.style.maxHeight = ''
             }, props.transitionDuration)
         } else {
             bodyRef.value.style.maxHeight = `${bodyRef.value.scrollHeight}px`
-            setTimeout(() => {
+            window.setTimeout(() => {
                 if (bodyRef.value) bodyRef.value.style.maxHeight = props.minHeight
             })
         }
