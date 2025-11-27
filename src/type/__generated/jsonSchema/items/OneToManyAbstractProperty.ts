@@ -15,18 +15,10 @@ const OneToManyAbstractPropertyJsonSchema: JSONSchemaType<OneToManyAbstractPrope
                 },
                 "referencedAbstractEntityId": {
                     "type": "string"
-                },
-                "nameTemplate": {
-                    "type": "string"
-                },
-                "commentTemplate": {
-                    "type": "string"
                 }
             },
             "required": [
                 "category",
-                "commentTemplate",
-                "nameTemplate",
                 "referencedAbstractEntityId"
             ]
         }

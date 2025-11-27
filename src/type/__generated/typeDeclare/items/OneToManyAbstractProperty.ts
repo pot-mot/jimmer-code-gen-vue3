@@ -7,7 +7,5 @@ export default Object.freeze({
 > & {
     category: "OneToMany_Abstract"
     referencedAbstractEntityId: string
-    nameTemplate: string
-    commentTemplate: string
 }`,
 })

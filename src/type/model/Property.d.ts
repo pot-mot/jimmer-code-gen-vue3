@@ -127,8 +127,6 @@ type OneToOneMappedAbstractProperty = Omit<OneToOneMappedProperty,
 > & {
     category: "OneToOne_Mapped_Abstract"
     referencedAbstractEntityId: string
-    nameTemplate: string
-    commentTemplate: string
 }
 
 type ManyToOneProperty = {
@@ -158,8 +156,6 @@ type OneToManyAbstractProperty = Omit<OneToManyProperty,
 > & {
     category: "OneToMany_Abstract"
     referencedAbstractEntityId: string
-    nameTemplate: string
-    commentTemplate: string
 }
 
 type ManyToManySourceProperty = {

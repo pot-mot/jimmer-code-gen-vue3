@@ -7,7 +7,5 @@ export default Object.freeze({
 > & {
     category: "OneToOne_Mapped_Abstract"
     referencedAbstractEntityId: string
-    nameTemplate: string
-    commentTemplate: string
 }`,
 })

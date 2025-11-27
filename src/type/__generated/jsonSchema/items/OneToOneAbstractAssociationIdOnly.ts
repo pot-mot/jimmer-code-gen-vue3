@@ -63,18 +63,10 @@ const OneToOneAbstractAssociationIdOnlyJsonSchema: JSONSchemaType<OneToOneAbstra
                         },
                         "referencedAbstractEntityId": {
                             "type": "string"
-                        },
-                        "nameTemplate": {
-                            "type": "string"
-                        },
-                        "commentTemplate": {
-                            "type": "string"
                         }
                     },
                     "required": [
                         "category",
-                        "commentTemplate",
-                        "nameTemplate",
                         "referencedAbstractEntityId"
                     ]
                 }
