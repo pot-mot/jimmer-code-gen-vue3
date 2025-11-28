@@ -63,7 +63,7 @@ export type MenuItem = {
     enumerations: ReadonlyArray<Enumeration>,
 }
 
-export const createId = (type: "Model" | "Entity" | "Property" | "MappedSuperClass" | "EmbeddableType" | "Enumeration" | "EnumerationItem" | "Association" | "Group") => {
+export const createId = (type: "Entity" | "Property" | "MappedSuperClass" | "EmbeddableType" | "Enumeration" | "EnumerationItem" | "Association" | "Group") => {
     return `${type}_${v7()}`
 }
 

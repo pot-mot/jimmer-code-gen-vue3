@@ -47,14 +47,14 @@ const fetchModel = async () => {
     await withLoading("load model", async () => {
         const id = route.params.id
         if (id === undefined || typeof id !== "string" || id.length !== 36) {
-            sendMessage("模型ID不合法", {type: "warning"})
+            sendMessage(translate('not_existed'), {type: "warning"})
             await router.push({name: "ModelList"})
             return
         }
 
         const model = await api.modelService.get({modelId: id})
         if (model === undefined) {
-            sendMessage("模型不存在", {type: "warning"})
+            sendMessage(translate('not_existed'), {type: "warning"})
             await router.push({name: "ModelList"})
             return
         }
@@ -65,11 +65,14 @@ const fetchModel = async () => {
             if (validatePartialModelGraphSubData(jsonData, (e) => error = e)) {
                 await loadModel(model, jsonData, model.viewport)
             } else {
-                sendMessage(`模型数据类型错误: ${JSON.stringify(error)}`, {type: "warning"})
-                modelEditDialog.open()
+                sendMessage(translate('json_validate_error'), {type: "warning"})
+                await router.push({name: "ModelList"})
+                console.error(error)
+                return
             }
         } catch (e) {
-            sendMessage(`模型获取错误: ${e}`, {type: "warning"})
+            sendMessage(translate({key: 'get_fail', args: [translate('model')]}), {type: "warning"})
+            console.error(e)
             await router.push({name: "ModelList"})
             return
         }

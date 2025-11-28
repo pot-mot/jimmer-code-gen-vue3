@@ -137,7 +137,7 @@ export const defaultGroup = (): Group => ({
 
 export const defaultModelContextData = (): ModelContextData => ({
     model: {
-        id: createId("Model"),
+        id: "",
         name: "Model",
         description: "",
         createdTime: "",
