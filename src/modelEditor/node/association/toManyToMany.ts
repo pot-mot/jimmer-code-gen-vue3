@@ -51,13 +51,16 @@ export const toManyToMany = async (
             idViewNameTemplate: LIST_ID_VIEW_TEMPLATE,
             useIdViewNameTemplate: true,
             joinInfo: {
-                type: "SingleColumnMidTable",
-                tableName: "",
-                tableComment: "",
-                sourceColumnName: "",
-                targetColumnName: "",
-                sourceForeignKeyType: association.foreignKeyType,
-                targetForeignKeyType: association.foreignKeyType,
+                type: "MidTable",
+                sourceJoinInfo: {
+                    type: "Unknown",
+                    foreignKeyType: association.foreignKeyType,
+                },
+                targetJoinInfo: {
+                    type: "Unknown",
+                    foreignKeyType: association.foreignKeyType,
+                },
+                midTableExtraInfo: {},
             },
             autoGenerateJoinInfo: true,
             nullable: false,

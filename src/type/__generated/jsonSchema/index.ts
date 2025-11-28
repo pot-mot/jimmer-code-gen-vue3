@@ -27,7 +27,6 @@ import GroupJsonSchema from "./items/Group.ts";
 import IdCommonPropertyJsonSchema from "./items/IdCommonProperty.ts";
 import IdEmbeddablePropertyJsonSchema from "./items/IdEmbeddableProperty.ts";
 import IndexJsonSchema from "./items/Index.ts";
-import JoinInfoJsonSchema from "./items/JoinInfo.ts";
 import JvmLanguageJsonSchema from "./items/JvmLanguage.ts";
 import JvmMatchRuleJsonSchema from "./items/JvmMatchRule.ts";
 import JvmSourceJsonSchema from "./items/JvmSource.ts";
@@ -37,7 +36,9 @@ import JvmTypeJsonSchema from "./items/JvmType.ts";
 import KeyPropertyJsonSchema from "./items/KeyProperty.ts";
 import LabelPositionJsonSchema from "./items/LabelPosition.ts";
 import LogicalDeletePropertyJsonSchema from "./items/LogicalDeleteProperty.ts";
+import ManyToManyAbstractAssociationIdOnlyJsonSchema from "./items/ManyToManyAbstractAssociationIdOnly.ts";
 import ManyToManyAssociationIdOnlyJsonSchema from "./items/ManyToManyAssociationIdOnly.ts";
+import ManyToManyMappedAbstractPropertyJsonSchema from "./items/ManyToManyMappedAbstractProperty.ts";
 import ManyToManyMappedPropertyJsonSchema from "./items/ManyToManyMappedProperty.ts";
 import ManyToManySourcePropertyJsonSchema from "./items/ManyToManySourceProperty.ts";
 import ManyToManyViewPropertyJsonSchema from "./items/ManyToManyViewProperty.ts";
@@ -46,12 +47,11 @@ import ManyToOneAssociationIdOnlyJsonSchema from "./items/ManyToOneAssociationId
 import ManyToOnePropertyJsonSchema from "./items/ManyToOneProperty.ts";
 import MappedSuperClassJsonSchema from "./items/MappedSuperClass.ts";
 import MappedSuperClassPropertyJsonSchema from "./items/MappedSuperClassProperty.ts";
-import MidTableInfoJsonSchema from "./items/MidTableInfo.ts";
+import MidTableExtraInfoJsonSchema from "./items/MidTableExtraInfo.ts";
 import MidTableJoinInfoJsonSchema from "./items/MidTableJoinInfo.ts";
 import ModelJsonSchema from "./items/Model.ts";
 import ModelViewportJsonSchema from "./items/ModelViewport.ts";
 import MultiColumnJoinInfoJsonSchema from "./items/MultiColumnJoinInfo.ts";
-import MultiColumnMidTableJoinInfoJsonSchema from "./items/MultiColumnMidTableJoinInfo.ts";
 import NameStrategyJsonSchema from "./items/NameStrategy.ts";
 import OnDissociationActionJsonSchema from "./items/OnDissociationAction.ts";
 import OneToManyAbstractPropertyJsonSchema from "./items/OneToManyAbstractProperty.ts";
@@ -67,7 +67,6 @@ import ScalarCommonPropertyJsonSchema from "./items/ScalarCommonProperty.ts";
 import ScalarEmbeddablePropertyJsonSchema from "./items/ScalarEmbeddableProperty.ts";
 import ScalarEnumPropertyJsonSchema from "./items/ScalarEnumProperty.ts";
 import SingleColumnJoinInfoJsonSchema from "./items/SingleColumnJoinInfo.ts";
-import SingleColumnMidTableJoinInfoJsonSchema from "./items/SingleColumnMidTableJoinInfo.ts";
 import SqlFormulaPropertyJsonSchema from "./items/SqlFormulaProperty.ts";
 import SqlMatchRuleJsonSchema from "./items/SqlMatchRule.ts";
 import SqlToJvmMappingRuleJsonSchema from "./items/SqlToJvmMappingRule.ts";
@@ -80,6 +79,7 @@ import TsMatchRuleJsonSchema from "./items/TsMatchRule.ts";
 import TsToJvmMappingRuleJsonSchema from "./items/TsToJvmMappingRule.ts";
 import TsToSqlMappingRuleJsonSchema from "./items/TsToSqlMappingRule.ts";
 import TsTypeJsonSchema from "./items/TsType.ts";
+import UnknownJoinInfoJsonSchema from "./items/UnknownJoinInfo.ts";
 import VersionPropertyJsonSchema from "./items/VersionProperty.ts";
 import EmbeddableTypeWithPropertiesJsonSchema from "../../context/jsonSchema/EmbeddableTypeWithProperties.ts";
 import EntityWithPropertiesJsonSchema from "../../context/jsonSchema/EntityWithProperties.ts";
@@ -117,7 +117,6 @@ export const jsonSchemas = Object.freeze({
     IdCommonProperty: IdCommonPropertyJsonSchema,
     IdEmbeddableProperty: IdEmbeddablePropertyJsonSchema,
     Index: IndexJsonSchema,
-    JoinInfo: JoinInfoJsonSchema,
     JvmLanguage: JvmLanguageJsonSchema,
     JvmMatchRule: JvmMatchRuleJsonSchema,
     JvmSource: JvmSourceJsonSchema,
@@ -127,7 +126,9 @@ export const jsonSchemas = Object.freeze({
     KeyProperty: KeyPropertyJsonSchema,
     LabelPosition: LabelPositionJsonSchema,
     LogicalDeleteProperty: LogicalDeletePropertyJsonSchema,
+    ManyToManyAbstractAssociationIdOnly: ManyToManyAbstractAssociationIdOnlyJsonSchema,
     ManyToManyAssociationIdOnly: ManyToManyAssociationIdOnlyJsonSchema,
+    ManyToManyMappedAbstractProperty: ManyToManyMappedAbstractPropertyJsonSchema,
     ManyToManyMappedProperty: ManyToManyMappedPropertyJsonSchema,
     ManyToManySourceProperty: ManyToManySourcePropertyJsonSchema,
     ManyToManyViewProperty: ManyToManyViewPropertyJsonSchema,
@@ -136,12 +137,11 @@ export const jsonSchemas = Object.freeze({
     ManyToOneProperty: ManyToOnePropertyJsonSchema,
     MappedSuperClass: MappedSuperClassJsonSchema,
     MappedSuperClassProperty: MappedSuperClassPropertyJsonSchema,
-    MidTableInfo: MidTableInfoJsonSchema,
+    MidTableExtraInfo: MidTableExtraInfoJsonSchema,
     MidTableJoinInfo: MidTableJoinInfoJsonSchema,
     Model: ModelJsonSchema,
     ModelViewport: ModelViewportJsonSchema,
     MultiColumnJoinInfo: MultiColumnJoinInfoJsonSchema,
-    MultiColumnMidTableJoinInfo: MultiColumnMidTableJoinInfoJsonSchema,
     NameStrategy: NameStrategyJsonSchema,
     OnDissociationAction: OnDissociationActionJsonSchema,
     OneToManyAbstractProperty: OneToManyAbstractPropertyJsonSchema,
@@ -157,7 +157,6 @@ export const jsonSchemas = Object.freeze({
     ScalarEmbeddableProperty: ScalarEmbeddablePropertyJsonSchema,
     ScalarEnumProperty: ScalarEnumPropertyJsonSchema,
     SingleColumnJoinInfo: SingleColumnJoinInfoJsonSchema,
-    SingleColumnMidTableJoinInfo: SingleColumnMidTableJoinInfoJsonSchema,
     SqlFormulaProperty: SqlFormulaPropertyJsonSchema,
     SqlMatchRule: SqlMatchRuleJsonSchema,
     SqlToJvmMappingRule: SqlToJvmMappingRuleJsonSchema,
@@ -170,6 +169,7 @@ export const jsonSchemas = Object.freeze({
     TsToJvmMappingRule: TsToJvmMappingRuleJsonSchema,
     TsToSqlMappingRule: TsToSqlMappingRuleJsonSchema,
     TsType: TsTypeJsonSchema,
+    UnknownJoinInfo: UnknownJoinInfoJsonSchema,
     VersionProperty: VersionPropertyJsonSchema,
     EmbeddableTypeWithProperties: EmbeddableTypeWithPropertiesJsonSchema,
     EntityWithProperties: EntityWithPropertiesJsonSchema,

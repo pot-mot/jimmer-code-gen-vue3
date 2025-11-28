@@ -74,3 +74,16 @@ type ManyToManyAssociationIdOnly = {
     mappedProperty: ManyToManyMappedProperty
     foreignKeyType: ForeignKeyType
 }
+
+type ManyToManyAbstractAssociationIdOnly = {
+    id: string
+    nameTemplate: string
+    commentTemplate: string
+    type: 'ManyToMany_Abstract'
+    sourceAbstractEntityId: string
+    referencedEntityId: string
+    sourcePropertyId: string
+    withMappedProperty: boolean
+    mappedProperty: ManyToManyMappedAbstractProperty
+    foreignKeyType: ForeignKeyType
+}

@@ -1,21 +1,24 @@
 type ForeignKeyType = 'REAL' | 'FAKE'
 
+type UnknownJoinInfo = {
+    type: "Unknown"
+    foreignKeyType: ForeignKeyType
+}
+
 type SingleColumnJoinInfo = {
-    type: "SingleColumn",
+    type: "SingleColumn"
     columnName: string
     foreignKeyType: ForeignKeyType
 }
 
 type MultiColumnJoinInfo = {
-    type: "MultiColumn",
-    embeddableTypeId: string,
+    type: "MultiColumn"
+    embeddableTypeId: string
     columnRefs: ColumnRef[]
     foreignKeyType: ForeignKeyType
 }
 
-type MidTableInfo = {
-    tableName: string
-    tableComment: string
+type MidTableExtraInfo = {
     readonly?: boolean
     preventDeletionBySource?: boolean
     preventDeletionByTarget?: boolean
@@ -38,30 +41,14 @@ type MidTableInfo = {
     }
 }
 
-type SingleColumnMidTableJoinInfo = {
-    type: "SingleColumnMidTable"
-    sourceColumnName: string
-    targetColumnName: string
-    sourceForeignKeyType: ForeignKeyType
-    targetForeignKeyType: ForeignKeyType
-} & MidTableInfo
-
-type MultiColumnMidTableJoinInfo = {
-    type: "MultiColumnMidTable"
-    sourceJoinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
-    targetJoinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
-} & MidTableInfo
-
 type FkJoinInfo =
+    | UnknownJoinInfo
     | SingleColumnJoinInfo
     | MultiColumnJoinInfo
 
-type MidTableJoinInfo =
-    | SingleColumnMidTableJoinInfo
-    | MultiColumnMidTableJoinInfo
-
-type JoinInfo =
-    | SingleColumnJoinInfo
-    | MultiColumnJoinInfo
-    | SingleColumnMidTableJoinInfo
-    | MultiColumnMidTableJoinInfo
+type MidTableJoinInfo = {
+    type: "MidTable"
+    sourceJoinInfo: FkJoinInfo
+    targetJoinInfo: FkJoinInfo
+    midTableExtraInfo: MidTableExtraInfo
+}

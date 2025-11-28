@@ -13,6 +13,7 @@ type Property =
     | OneToManyAbstractProperty
     | ManyToManySourceProperty
     | ManyToManyMappedProperty
+    | ManyToManyMappedAbstractProperty
     | ManyToManyViewProperty
     | GetterFormulaProperty
     | SqlFormulaProperty

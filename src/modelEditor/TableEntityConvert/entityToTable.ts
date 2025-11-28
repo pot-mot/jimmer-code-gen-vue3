@@ -69,7 +69,7 @@ export const entityToTable = (
         refColumns: DeepReadonly<Column[]>,
     ): JoinColumnInfo[] => {
         if (refColumns.length !== columnRefs.length) {
-            throw new Error(`columns [${refColumns.map(it => it.name).join(", ")}] is not match [${columnRefs}]`)
+            throw new Error(`columns [${refColumns.map(it => it.name).join(", ")}] length is not match [${columnRefs}]`)
         }
 
         const joinColumnInfos: JoinColumnInfo[] = []
@@ -188,7 +188,6 @@ export const entityToTable = (
 
     const entityIdTableMap = new Map<string, Table>()
     const entityIdTableIdColumnsMap = new Map<string, Column[]>()
-    const defaultForeignKeyType = context.model.defaultForeignKeyType
 
     const tables: Table[] = []
     const midTables: Table[] = []
@@ -232,7 +231,7 @@ export const entityToTable = (
             else if (property.category === "OneToOne_Source" || property.category === "ManyToOne" || property.category === "ManyToMany_Source") {
                 const association = context.associationMap.get(property.associationId)
                 if (!association) throw new Error(`[${property.associationId}] not found`)
-                if (association.type === "OneToOne_Abstract" || association.type === "ManyToOne_Abstract")
+                if (association.type === "OneToOne_Abstract" || association.type === "ManyToOne_Abstract" || association.type === "ManyToMany_Abstract")
                     throw new Error(`[${property.associationId}] cannot be abstract`)
 
                 const refTable = entityIdTableMap.get(property.referencedEntityId)
@@ -311,24 +310,51 @@ export const entityToTable = (
                             onUpdate: "",
                         })
                     }
-                } else if (property.joinInfo.type === "SingleColumnMidTable") {
-                    if (idColumns.length !== 1 || !idColumns[0]) {
-                        throw new Error(`[${entity.name}.${property.name}] idColumns [${idColumns.map(it => it.name).join(", ")}] length is not 1`)
-                    }
-                    if (refColumns.length !== 1 || !refColumns[0]) {
-                        throw new Error(`[${entity.name}.${property.name}] refColumns [${refColumns.map(it => it.name).join(", ")}] length is not 1`)
-                    }
-                    midTables.push(buildMidTable({
-                        midTable: {name: association.name, comment: association.comment, schema: table.schema},
-                        sourceTable: {name: table.name, schema: table.schema},
-                        targetTable: {name: refTable.name, schema: refTable.schema},
-                        sourceJoinColumnInfos: bindJoinColumnInfo([{columnName: property.joinInfo.sourceColumnName, referencedColumnName: idColumns[0].name}], refColumns),
-                        sourceForeignKeyType: defaultForeignKeyType,
-                        targetJoinColumnInfos: bindJoinColumnInfo([{columnName: property.joinInfo.targetColumnName, referencedColumnName: refColumns[0].name}], refColumns),
-                        targetForeignKeyType: defaultForeignKeyType,
-                        associationType: property.category,
+                } else if (property.joinInfo.type === "Unknown") {
+                    const referencedTable = entityIdTableMap.get(property.referencedEntityId)
+                    if (!referencedTable) throw new Error(`[${property.referencedEntityId}] not found`)
+                    const referencedTableIdColumns = entityIdTableIdColumnsMap.get(property.referencedEntityId)
+                    if (referencedTableIdColumns === undefined || referencedTableIdColumns.length === 0)
+                        throw new Error(`[${entity.name}.${property.name}] referencedTable [${referencedTable.name}] PK Columns is empty`)
+                    if (referencedTableIdColumns.length > 1)
+                        throw new Error(`[${entity.name}.${property.name}] referencedTable [${referencedTable.name}] PK Columns is more than 1`)
+
+                    const columnRefs: ColumnRef[] = referencedTableIdColumns.map(col => ({
+                        columnName: `${referencedTable.name}_id`,
+                        referencedColumnName: col.name
                     }))
-                } else if (property.joinInfo.type === "MultiColumnMidTable") {
+
+                    const joinColumnInfos = bindJoinColumnInfo(columnRefs, referencedTableIdColumns)
+
+                    for (const { columnRef, columnInfo } of joinColumnInfos) {
+                        table.columns.push({
+                            ...columnInfo,
+                            name: columnRef.columnName,
+                            comment: property.comment + columnInfo.comment,
+                            nullable: property.nullable,
+                        })
+                    }
+
+                    if (property.category === "OneToOne_Source") {
+                        table.indexes.push({
+                            name: 'IDX_' + association.name,
+                            columnNames: columnRefs.map(it => it.columnName),
+                            uniqueIndex: true,
+                        })
+                    }
+
+                    if (property.joinInfo.foreignKeyType === "REAL") {
+                        table.foreignKeys.push({
+                            name: association.name,
+                            comment: association.comment,
+                            referencedTableSchema: refTable.schema,
+                            referencedTableName: refTable.name,
+                            columnRefs: joinColumnInfos.map(it => it.columnRef),
+                            onDelete: "",
+                            onUpdate: "",
+                        })
+                    }
+                } else if (property.joinInfo.type === "MidTable") {
                     const sourceColumnRef: ColumnRef[] = []
                     if (property.joinInfo.sourceJoinInfo.type === "SingleColumn") {
                         if (idColumns.length !== 1 || !idColumns[0]) {
@@ -343,6 +369,20 @@ export const entityToTable = (
                             throw new Error(`[${entity.name}.${property.name}] idColumns [${idColumns.map(it => it.name).join(", ")}] length is not ${property.joinInfo.sourceJoinInfo.columnRefs.length}`)
                         }
                         sourceColumnRef.push(...property.joinInfo.sourceJoinInfo.columnRefs)
+                    } else if (property.joinInfo.sourceJoinInfo.type === "Unknown") {
+                        const sourceTable = entityIdTableMap.get(entity.id)
+                        if (!sourceTable) throw new Error(`[${entity.name}.${property.name}] sourceTable [${entity.id}] not found`)
+                        const sourceTableIdColumns = entityIdTableIdColumnsMap.get(entity.id)
+                        if (sourceTableIdColumns === undefined || sourceTableIdColumns.length === 0)
+                            throw new Error(`[${entity.name}.${property.name}] sourceTable [${sourceTable.name}] PK Columns is empty`)
+                        if (sourceTableIdColumns.length > 1)
+                            throw new Error(`[${entity.name}.${property.name}] sourceTable [${sourceTable.name}] PK Columns is more than 1`)
+
+                        const columnRefs: ColumnRef[] = sourceTableIdColumns.map(col => ({
+                            columnName: `${sourceTable.name}_id`,
+                            referencedColumnName: col.name
+                        }))
+                        sourceColumnRef.push(...columnRefs)
                     }
 
                     const targetColumnRef: ColumnRef[] = []
@@ -359,6 +399,20 @@ export const entityToTable = (
                             throw new Error(`[${entity.name}.${property.name}] refColumns [${refColumns.map(it => it.name).join(", ")}] length is not ${property.joinInfo.targetJoinInfo.columnRefs.length}`)
                         }
                         targetColumnRef.push(...property.joinInfo.targetJoinInfo.columnRefs)
+                    } else if (property.joinInfo.targetJoinInfo.type === "Unknown") {
+                        const refTable = entityIdTableMap.get(property.referencedEntityId)
+                        if (!refTable) throw new Error(`[${entity.name}.${property.name}] refTable [${property.referencedEntityId}] not found`)
+                        const refTableIdColumns = entityIdTableIdColumnsMap.get(property.referencedEntityId)
+                        if (refTableIdColumns === undefined || refTableIdColumns.length === 0)
+                            throw new Error(`[${entity.name}.${property.name}] referencedTable [${refTable.name}] PK Columns is empty`)
+                        if (refTableIdColumns.length > 1)
+                            throw new Error(`[${entity.name}.${property.name}] referencedTable [${refTable.name}] PK Columns is more than 1`)
+
+                        const columnRefs: ColumnRef[] = refTableIdColumns.map(col => ({
+                            columnName: `${refTable.name}_id`,
+                            referencedColumnName: col.name
+                        }))
+                        targetColumnRef.push(...columnRefs)
                     }
 
                     midTables.push(buildMidTable({

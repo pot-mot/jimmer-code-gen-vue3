@@ -70,7 +70,13 @@ export type OneToManyAbstractMappedPropertyInfo = {
     sourceProperty: ManyToOneProperty
 }
 
-export type AbstractMappedPropertyInfo = OneToOneAbstractMappedPropertyInfo | OneToManyAbstractMappedPropertyInfo
+export type ManyToManyAbstractMappedPropertyInfo = {
+    mappedProperty: ManyToManyMappedAbstractProperty
+    association: ManyToManyAbstractAssociationIdOnly
+    sourceProperty: ManyToManySourceProperty
+}
+
+export type AbstractMappedPropertyInfo = OneToOneAbstractMappedPropertyInfo | OneToManyAbstractMappedPropertyInfo | ManyToManyAbstractMappedPropertyInfo
 
 export const getAbstractMappedPropertyInfo = (
     properties: Property[],
@@ -92,6 +98,15 @@ export const getAbstractMappedPropertyInfo = (
             const association = associationMap.get(property.associationId)
             if (!association) throw new Error(`[${property.associationId}] not found`)
             if (association.type !== "ManyToOne_Abstract") throw new Error(`[${property.associationId}] is not ManyToOne_Abstract`)
+            result.push({
+                association,
+                sourceProperty: property,
+                mappedProperty: association.mappedProperty,
+            })
+        } else if (property.category === "ManyToMany_Source") {
+            const association = associationMap.get(property.associationId)
+            if (!association) throw new Error(`[${property.associationId}] not found`)
+            if (association.type !== "ManyToMany_Abstract") throw new Error(`[${property.associationId}] is not ManyToMany_Abstract`)
             result.push({
                 association,
                 sourceProperty: property,

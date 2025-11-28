@@ -15,6 +15,7 @@ export default Object.freeze({
     | OneToManyAbstractProperty
     | ManyToManySourceProperty
     | ManyToManyMappedProperty
+    | ManyToManyMappedAbstractProperty
     | ManyToManyViewProperty
     | GetterFormulaProperty
     | SqlFormulaProperty

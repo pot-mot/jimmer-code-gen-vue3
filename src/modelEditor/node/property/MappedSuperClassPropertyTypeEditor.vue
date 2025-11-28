@@ -36,6 +36,7 @@ import IconEmbeddableType from "@/components/icons/modelEditor/IconEmbeddableTyp
 import IconEntity from "@/components/icons/modelEditor/IconEntity.vue";
 import {toOneToOneAbstract} from "@/modelEditor/node/association/toOneToOneAbstract.ts";
 import {toManyToOneAbstract} from "@/modelEditor/node/association/toManyToOneAbstract.ts";
+import {toManyToManyAbstract} from "@/modelEditor/node/association/toManyToManyAbstract.ts";
 import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
 import {translate} from "@/store/i18nStore.ts";
 import IconEdit from "@/components/icons/IconEdit.vue";
@@ -370,16 +371,25 @@ const association = computed(() => {
 
             <div v-if="association" class="association-type">
                 <span v-if="association.association.type === 'ManyToOne_Abstract'">
-                    <button @click.stop="toOneToOneAbstract(association.association)">
+                    <button @click.stop.prevent="toOneToOneAbstract(association.association)">
                         Many
                     </button>
-                    To One
+                    To
+                    <button @click.stop.prevent="toManyToManyAbstract(association.association)">
+                        One
+                    </button>
                 </span>
                 <span v-else-if="association.association.type === 'OneToOne_Abstract'">
-                    <button @click.stop="toManyToOneAbstract(association.association)">
+                    <button @click.stop.prevent="toManyToOneAbstract(association.association)">
                         One
                     </button>
                     To One
+                </span>
+                <span v-else-if="association.association.type === 'ManyToMany_Abstract'">
+                    Many To
+                    <button @click.stop.prevent="toManyToOneAbstract(association.association)">
+                        Many
+                    </button>
                 </span>
             </div>
         </template>

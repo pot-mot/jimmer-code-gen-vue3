@@ -5,6 +5,9 @@ export const createJvmFileBuilder = (
         subPackagePath: string,
     }
 ): JvmFileBuilder => {
+    const jvmLanguage = context.model.jvmLanguage
+    const defaultForeignKeyType = context.model.defaultForeignKeyType
+
     const {
         groupId,
         subPackagePath,
@@ -24,43 +27,6 @@ export const createJvmFileBuilder = (
             }
         }
         return parts.join(".")
-    }
-
-    const buildJoinAnnotation = (
-        joinInfo: DeepReadonly<JoinInfo>,
-    ): string => {
-        if (joinInfo.type === "SingleColumn") {
-            importSet.add("org.babyfish.jimmer.sql.JoinColumn")
-            return `@JoinColumn(name = "${joinInfo.columnName}")`
-        } else if (joinInfo.type === "MultiColumn") {
-            importSet.add("org.babyfish.jimmer.sql.JoinColumn")
-            return joinInfo.columnRefs.map(columnRef => {
-                return `@JoinColumn(
-    name = "${columnRef.columnName}",
-    referencedColumnName = "${columnRef.referencedColumnName}"
-)`
-            }).join('\n')
-        } else if (joinInfo.type === "SingleColumnMidTable") {
-            importSet.add("org.babyfish.jimmer.sql.JoinTable")
-            // TODO 如果foreignKeyType类型不一致，需要转换为 JoinInfo的写法
-            return `@JoinTable(
-    name = "${joinInfo.tableName}",
-    joinColumnName = "${joinInfo.sourceColumnName}",
-    inverseJoinColumnName = "${joinInfo.targetColumnName}"
-)`
-        } else {
-            importSet.add("org.babyfish.jimmer.sql.JoinTable")
-            importSet.add("org.babyfish.jimmer.sql.JoinColumn")
-            // TODO 完成 joinColumns 和 inverseJoinColumns
-            return `@JoinTable(
-    name = "${joinInfo.tableName}",
-    joinColumns = [
-        
-    ],
-    inverseJoinColumns = [
-    ]
-)`
-        }
     }
 
     const group = context.groupMap.get(groupId)
@@ -197,6 +163,118 @@ export const createJvmFileBuilder = (
         }
     }
 
+    const getAssociation = (
+        associationId: string
+    ): DeepReadonly<Association> => {
+        const association = context.associationMap.get(associationId)
+        if (association === undefined) throw new Error(`[${associationId}] not found`)
+        return association
+    }
+
+    // TODO OnDissociation Action
+    const buildJoinAnnotation = (
+        joinInfo: DeepReadonly<FkJoinInfo | MidTableJoinInfo>,
+        association: DeepReadonly<Association>
+    ): string | undefined => {
+        if (jvmLanguage === "KOTLIN") {
+            const annotationBuilder = context.createTemplateBuilder({
+                indent: "    ",
+                scope: {start: "", end: ""}
+            })
+
+            if (joinInfo.type === "SingleColumn") {
+                importSet.add("org.babyfish.jimmer.sql.JoinColumn")
+                annotationBuilder.append("@JoinColumn")
+                if (joinInfo.columnName && joinInfo.foreignKeyType !== defaultForeignKeyType) {
+                    importSet.add("org.babyfish.jimmer.sql.ForeignKeyType")
+                    annotationBuilder.startScope("(")
+                    annotationBuilder.appendLine(`name = "${joinInfo.columnName}",`)
+                    annotationBuilder.appendLine(`type = ForeignKeyType.${joinInfo.foreignKeyType}`)
+                    annotationBuilder.endScope(")")
+                } else if (joinInfo.columnName) {
+                    annotationBuilder.append(`(name = "${joinInfo.columnName}")`)
+                } else if (joinInfo.foreignKeyType !== defaultForeignKeyType) {
+                    importSet.add("org.babyfish.jimmer.sql.ForeignKeyType")
+                    annotationBuilder.append(`(type = ForeignKeyType.${joinInfo.foreignKeyType})`)
+                }
+                return annotationBuilder.build()
+            } else if (joinInfo.type === "MultiColumn") {
+                if (joinInfo.columnRefs.length === 0) return undefined
+                importSet.add("org.babyfish.jimmer.sql.JoinColumn")
+                for (const columnRef of joinInfo.columnRefs) {
+                    annotationBuilder.append("@JoinColumn")
+                    annotationBuilder.startScope("(")
+                    annotationBuilder.appendLine(`name = "${columnRef.columnName}",`)
+                    annotationBuilder.appendLine(`referencedColumnName = "${columnRef.referencedColumnName}",`)
+                    if (joinInfo.foreignKeyType !== defaultForeignKeyType) {
+                        importSet.add("org.babyfish.jimmer.sql.ForeignKeyType")
+                        annotationBuilder.appendLine(`referencedColumnName = "${columnRef.referencedColumnName}",`)
+                    }
+                    annotationBuilder.endScope(")")
+                }
+                return annotationBuilder.build()
+            } else if (joinInfo.type === "MidTable") {
+                importSet.add("org.babyfish.jimmer.sql.JoinTable")
+                annotationBuilder.append("@JoinTable")
+                if ("sourceEntity" in association) {
+                    annotationBuilder.startScope("(")
+                    annotationBuilder.appendLine(`name = "${association.name}",`)
+                    annotationBuilder.endScope(")")
+                }
+
+                // TODO add other joinInfo
+            }
+        }
+
+        else if (jvmLanguage === "JAVA") {
+            const annotationBuilder = context.createTemplateBuilder({
+                indent: "    ",
+                scope: {start: "", end: ""}
+            })
+
+            if (joinInfo.type === "SingleColumn") {
+                importSet.add("org.babyfish.jimmer.sql.JoinColumn")
+                annotationBuilder.append("@JoinColumn")
+                if (joinInfo.columnName && joinInfo.foreignKeyType !== defaultForeignKeyType) {
+                    importSet.add("org.babyfish.jimmer.sql.ForeignKeyType")
+                    annotationBuilder.startScope("(")
+                    annotationBuilder.appendLine(`name = "${joinInfo.columnName}",`)
+                    annotationBuilder.appendLine(`type = ForeignKeyType.${joinInfo.foreignKeyType}`)
+                    annotationBuilder.endScope(")")
+                } else if (joinInfo.columnName) {
+                    annotationBuilder.append(`(name = "${joinInfo.columnName}")`)
+                } else if (joinInfo.foreignKeyType !== defaultForeignKeyType) {
+                    importSet.add("org.babyfish.jimmer.sql.ForeignKeyType")
+                    annotationBuilder.append(`(type = ForeignKeyType.${joinInfo.foreignKeyType})`)
+                }
+                return annotationBuilder.build()
+            } else if (joinInfo.type === "MultiColumn") {
+                if (joinInfo.columnRefs.length === 0) return undefined
+                importSet.add("org.babyfish.jimmer.sql.JoinColumn")
+                for (const columnRef of joinInfo.columnRefs) {
+                    annotationBuilder.append("@JoinColumn")
+                    annotationBuilder.startScope("(")
+                    annotationBuilder.appendLine(`name = "${columnRef.columnName}",`)
+                    annotationBuilder.appendLine(`referencedColumnName = "${columnRef.referencedColumnName}",`)
+                    if (joinInfo.foreignKeyType !== defaultForeignKeyType) {
+                        importSet.add("org.babyfish.jimmer.sql.ForeignKeyType")
+                        annotationBuilder.appendLine(`referencedColumnName = "${columnRef.referencedColumnName}",`)
+                    }
+                    annotationBuilder.endScope(")")
+                }
+                return annotationBuilder.build()
+            } else if (joinInfo.type === "MidTable") {
+                importSet.add("org.babyfish.jimmer.sql.JoinTable")
+                annotationBuilder.append("@JoinTable")
+                if ("sourceEntity" in association) {
+                    annotationBuilder.startScope("(")
+                    annotationBuilder.appendLine(`name = "${association.name}",`)
+                    annotationBuilder.endScope(")")
+                }
+            }
+        }
+    }
+
     const pushProperty = (property: DeepReadonly<Property>): PropertyInfo => {
         for (const extraImport of property.extraImports) {
             importSet.add(extraImport)
@@ -206,16 +284,17 @@ export const createJvmFileBuilder = (
         if (property.category === "ID_COMMON") {
             importSet.add("org.babyfish.jimmer.sql.Id")
             importSet.add("org.babyfish.jimmer.sql.Column")
+            const annotations: string[] = [
+                '@Id',
+                `@Column(name = "${property.columnInfo.name}")`,
+                ...property.extraAnnotations,
+            ]
             const propertyInfo = {
                 raw: property,
                 name: property.name,
                 comment: property.comment,
                 type: property.rawType,
-                annotations: [
-                    '@Id',
-                    `@Column(name = "${property.columnInfo.name}")`,
-                    ...property.extraAnnotations,
-                ],
+                annotations,
                 nullable: property.nullable
             }
             propertyInfos.push(propertyInfo)
@@ -223,31 +302,44 @@ export const createJvmFileBuilder = (
         } else if (property.category === "ID_EMBEDDABLE") {
             // TODO 添加 PropOverride
             importSet.add("org.babyfish.jimmer.sql.Id")
+            const annotations = [
+                '@Id',
+                ...property.extraAnnotations,
+            ]
             const embeddableType = requireEmbeddableType(property.embeddableTypeId)
             const propertyInfo = {
                 raw: property,
                 name: property.name,
                 comment: property.comment,
                 type: embeddableType.name,
-                annotations: [
-                    '@Id',
-                    ...property.extraAnnotations,
-                ],
+                annotations,
                 nullable: property.nullable
             }
             propertyInfos.push(propertyInfo)
             return propertyInfo
         } else if (property.category === "SCALAR_COMMON") {
             importSet.add("org.babyfish.jimmer.sql.Column")
+            const annotations: string[] = []
+            if (property.typeIsArray) {
+                annotations.push(`@Column(name = "${property.columnInfo.name}", sqlElementType = "${property.columnInfo.type}")`)
+            } else {
+                annotations.push(`@Column(name = "${property.columnInfo.name}")`)
+            }
+            if (property.serialized) {
+                importSet.add("org.babyfish.jimmer.sql.Serialized")
+                annotations.push("@Serialized")
+            }
+            if (property.defaultValue !== undefined) {
+                importSet.add("org.babyfish.jimmer.sql.Default")
+                annotations.push(`@Default("${property.defaultValue}")`)
+            }
+            annotations.push(...property.extraAnnotations)
             const propertyInfo = {
                 raw: property,
                 name: property.name,
                 comment: property.comment,
                 type: property.rawType,
-                annotations: [
-                    `@Column(name = "${property.columnInfo.name}")`,
-                    ...property.extraAnnotations,
-                ],
+                annotations,
                 nullable: property.nullable
             }
             propertyInfos.push(propertyInfo)
@@ -286,17 +378,20 @@ export const createJvmFileBuilder = (
         } else if (property.category === "OneToOne_Source") {
             importSet.add("org.babyfish.jimmer.sql.OneToOne")
             const referencedEntity = requireEntity(property.referencedEntityId)
-            const joinAnnotation = buildJoinAnnotation(property.joinInfo)
+            const annotations = [
+                '@OneToOne',
+                ...property.extraAnnotations,
+            ]
+            const joinAnnotation = buildJoinAnnotation(property.joinInfo, getAssociation(property.associationId))
+            if (joinAnnotation !== undefined) {
+                annotations.push(joinAnnotation)
+            }
             const propertyInfo = {
                 raw: property,
                 name: property.name,
                 comment: property.comment,
                 type: referencedEntity.name,
-                annotations: [
-                    '@OneToOne',
-                    joinAnnotation,
-                    ...property.extraAnnotations,
-                ],
+                annotations,
                 nullable: property.nullable
             }
             propertyInfos.push(propertyInfo)
@@ -324,17 +419,20 @@ export const createJvmFileBuilder = (
         } else if (property.category === "ManyToOne") {
             importSet.add("org.babyfish.jimmer.sql.ManyToOne")
             const referencedEntity = requireEntity(property.referencedEntityId)
-            const joinAnnotation = buildJoinAnnotation(property.joinInfo)
+            const annotations = [
+                '@ManyToOne',
+                ...property.extraAnnotations,
+            ]
+            const joinAnnotation = buildJoinAnnotation(property.joinInfo, getAssociation(property.associationId))
+            if (joinAnnotation !== undefined) {
+                annotations.push(joinAnnotation)
+            }
             const propertyInfo = {
                 raw: property,
                 name: property.name,
                 comment: property.comment,
                 type: referencedEntity.name,
-                annotations: [
-                    `@ManyToOne`,
-                    joinAnnotation,
-                    ...property.extraAnnotations,
-                ],
+                annotations,
                 nullable: property.nullable
             }
             propertyInfos.push(propertyInfo)
@@ -362,17 +460,20 @@ export const createJvmFileBuilder = (
         } else if (property.category === "ManyToMany_Source") {
             importSet.add("org.babyfish.jimmer.sql.ManyToMany")
             const referencedEntity = requireEntity(property.referencedEntityId)
-            const joinAnnotation = buildJoinAnnotation(property.joinInfo)
+            const annotations = [
+                '@ManyToMany',
+                ...property.extraAnnotations,
+            ]
+            const joinAnnotation = buildJoinAnnotation(property.joinInfo, getAssociation(property.associationId))
+            if (joinAnnotation !== undefined) {
+                annotations.push(joinAnnotation)
+            }
             const propertyInfo = {
                 raw: property,
                 name: property.name,
                 comment: property.comment,
                 type: "List<" + referencedEntity.name + ">",
-                annotations: [
-                    `@ManyToMany`,
-                    joinAnnotation,
-                    ...property.extraAnnotations,
-                ],
+                annotations,
                 nullable: property.nullable
             }
             propertyInfos.push(propertyInfo)
@@ -398,7 +499,7 @@ export const createJvmFileBuilder = (
             pushIdViewProperty(property, referencedEntity)
             return propertyInfo
         } else {
-            // TODO
+            // TODO more category
             const propertyInfo = {
                 raw: property,
                 name: "name" in property ? property.name : property.nameTemplate,

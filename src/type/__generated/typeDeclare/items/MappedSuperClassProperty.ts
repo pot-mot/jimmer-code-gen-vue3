@@ -9,6 +9,7 @@ export default Object.freeze({
     | ScalarEmbeddableProperty
     | OneToOneSourceProperty
     | ManyToOneProperty
+    | ManyToManySourceProperty
     | GetterFormulaProperty
     | SqlFormulaProperty
     | TransientProperty`,

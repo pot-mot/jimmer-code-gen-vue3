@@ -294,7 +294,9 @@ export const tableToEntity = (
                         referencedEntity.comment
                     const sourcePropertyIdViewName = sourcePropertyName + "Id"
 
-                    const sourceProperty: Omit<ManyToOneProperty | OneToOneSourceProperty, 'category'> = {
+                    const sourceProperty: Omit<ManyToOneProperty | OneToOneSourceProperty, 'category'> & {
+                        joinInfo: FkJoinInfo
+                    } = {
                         id: sourcePropertyId,
                         name: sourcePropertyName,
                         comment: sourcePropertyComment,

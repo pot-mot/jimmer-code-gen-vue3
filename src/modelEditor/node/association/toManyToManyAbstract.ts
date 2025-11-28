@@ -1,17 +1,15 @@
 import { useModelEditor } from "@/modelEditor/useModelEditor.ts";
 import { nextTick } from "vue";
 import {
-    FK_COMMENT_TEMPLATE,
-    FK_NAME_TEMPLATE,
     MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
     LIST_ID_VIEW_TEMPLATE,
     MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
-    ID_VIEW_TEMPLATE
+    MID_TABLE_COMMENT_TEMPLATE,
+    MID_TABLE_NAME_TEMPLATE,
 } from "@/type/context/utils/AssociationTemplate.ts";
-import {isKeyProperty} from "@/modelEditor/node/property/PropertyConvert.ts";
 
-export const toManyToOneAbstract = async (
-    association: DeepReadonly<AbstractAssociationIdOnly>
+export const toManyToManyAbstract = async (
+    association: DeepReadonly<AbstractAssociationIdOnly>,
 ) => {
     const {
         executeAsyncBatch,
@@ -42,39 +40,40 @@ export const toManyToOneAbstract = async (
         throw new Error(`[${association.sourcePropertyId}] is not AssociationSource`)
     }
 
-    await executeAsyncBatch(Symbol("toManyToOneAbstract"), async () => {
-        const newSourceProperty: ManyToOneProperty = {
+    await executeAsyncBatch(Symbol("toManyToManyAbstract"), async () => {
+        const newSourceProperty: ManyToManySourceProperty = {
             id: sourceProperty.id,
             associationId: association.id,
-            category: "ManyToOne",
+            category: "ManyToMany_Source",
             name: sourceProperty.name,
             comment: sourceProperty.comment,
             idViewName: sourceProperty.idViewName,
-            idViewNameTemplate: ID_VIEW_TEMPLATE,
+            idViewNameTemplate: LIST_ID_VIEW_TEMPLATE,
             useIdViewNameTemplate: true,
             joinInfo: {
-                type: "Unknown",
-                foreignKeyType: association.foreignKeyType,
+                type: "MidTable",
+                sourceJoinInfo: {
+                    type: "Unknown",
+                    foreignKeyType: association.foreignKeyType,
+                },
+                targetJoinInfo: {
+                    type: "Unknown",
+                    foreignKeyType: association.foreignKeyType,
+                },
+                midTableExtraInfo: {},
             },
             autoGenerateJoinInfo: true,
-            nullable: sourceProperty.nullable,
-            onDissociateAction: "onDissociateAction" in sourceProperty ? sourceProperty.onDissociateAction : "NONE",
+            nullable: false,
             referencedEntityId: sourceProperty.referencedEntityId,
-            typeIsList: false,
+            typeIsList: true,
             extraAnnotations: [...sourceProperty.extraAnnotations],
             extraImports: [...sourceProperty.extraImports],
         }
-        if (isKeyProperty(sourceProperty)) {
-            Object.assign(newSourceProperty, {
-                key: true,
-                keyGroups: [...sourceProperty.keyGroups],
-            })
-        }
 
-        const newMappedProperty: OneToManyAbstractProperty = {
+        const newMappedProperty: ManyToManyMappedAbstractProperty = {
             id: mappedProperty.id,
             associationId: association.id,
-            category: "OneToMany_Abstract",
+            category: "ManyToMany_Mapped_Abstract",
             nameTemplate: MAPPED_PROPERTY_LIST_NAME_TEMPLATE,
             commentTemplate: MAPPED_PROPERTY_LIST_COMMENT_TEMPLATE,
             idViewNameTemplate: LIST_ID_VIEW_TEMPLATE,
@@ -86,15 +85,15 @@ export const toManyToOneAbstract = async (
             extraImports: [...mappedProperty.extraImports],
         }
 
-        const newAssociation: ManyToOneAbstractAssociationIdOnly = {
+        const newAssociation: ManyToManyAbstractAssociationIdOnly = {
             id: association.id,
-            nameTemplate: FK_NAME_TEMPLATE,
-            commentTemplate: FK_COMMENT_TEMPLATE,
+            nameTemplate: MID_TABLE_NAME_TEMPLATE,
+            commentTemplate: MID_TABLE_COMMENT_TEMPLATE,
             foreignKeyType: association.foreignKeyType,
             referencedEntityId: association.referencedEntityId,
             sourceAbstractEntityId: association.sourceAbstractEntityId,
             sourcePropertyId: association.sourcePropertyId,
-            type: "ManyToOne_Abstract",
+            type: "ManyToMany_Abstract",
             mappedProperty: newMappedProperty,
             withMappedProperty: association.withMappedProperty,
         }

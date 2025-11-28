@@ -14,6 +14,7 @@ import {idOnlyToAssociation} from "@/type/context/utils/AssociationIdOnlyToAssoc
 import {nameTool} from "@/type/context/utils/NameTool.ts";
 import {createId} from "@/modelEditor/useModelEditor.ts";
 import {
+    manyToManyAbstractToReal,
     oneToManyAbstractToReal,
     oneToOneAbstractToReal
 } from "@/type/context/utils/AbstractAssociationToReal.ts";
@@ -56,7 +57,7 @@ export const contextDataToContext = (
 
     type TempEntity = Entity & {
         properties: Property[],
-        inheritSourceProperties: (ManyToOneProperty | OneToOneSourceProperty)[]
+        inheritSourceProperties: (OneToOneSourceProperty | ManyToOneProperty | ManyToManySourceProperty)[]
     }
     type TempMappedSuperClass = MappedSuperClass & {
         properties: Property[],
@@ -156,6 +157,28 @@ export const contextDataToContext = (
                         referencedEntity.properties.push(realMappedProperty)
                     }
                 }
+            } else if (
+                abstractAssociation.type === "ManyToMany_Abstract" &&
+                abstractSourceProperty.category === "ManyToMany_Source" &&
+                abstractMappedProperty.category === "ManyToMany_Mapped_Abstract"
+            ) {
+                for (const inheritEntity of inheritEntities) {
+                    const {
+                        association: realAssociation,
+                        sourceProperty: realSourceProperty,
+                        mappedProperty: realMappedProperty,
+                    } = manyToManyAbstractToReal({
+                        association: abstractAssociation,
+                        sourceProperty: abstractSourceProperty,
+                        mappedProperty: abstractMappedProperty,
+                    }, inheritEntity, referencedEntity)
+
+                    associationIdOnlyMap.set(realAssociation.id, realAssociation)
+                    inheritEntity.inheritSourceProperties.push(realSourceProperty)
+                    if (realAssociation.withMappedProperty) {
+                        referencedEntity.properties.push(realMappedProperty)
+                    }
+                }
             }
         }
     }
@@ -209,7 +232,7 @@ export const contextDataToContext = (
             const ancestor = tempMappedSuperClassMap.get(ancestorId)
             if (ancestor) {
                 for (const property of ancestor.properties) {
-                    if (property.category === "OneToOne_Source" || property.category === "ManyToOne") continue
+                    if (property.category === "OneToOne_Source" || property.category === "ManyToOne" || property.category === "ManyToMany_Source") continue
                     allProperties.push(property)
                 }
             }
@@ -278,7 +301,6 @@ export const contextDataToContext = (
         enumerationMap,
         associationMap,
 
-        createId,
         nameTool,
         createTemplateBuilder: (options: TemplateOptions) => {
             return createTemplateBuilder(options)

@@ -63,8 +63,21 @@ type ManyToManyAssociation = {
     foreignKeyType: ForeignKeyType
 }
 
+type ManyToManyAbstractAssociation = {
+    id: string
+    nameTemplate: string
+    commentTemplate: string
+    type: 'ManyToMany_Abstract'
+    sourceAbstractEntity: MappedSuperClassWithInheritInfo
+    referencedEntity: EntityWithInheritInfo
+    sourceProperty: ManyToManySourceProperty
+    withMappedProperty: boolean
+    mappedProperty: ManyToManyMappedAbstractProperty
+    foreignKeyType: ForeignKeyType
+}
+
 type ConcreteAssociation = OneToOneAssociation | ManyToOneAssociation | ManyToManyAssociation
 
-type AbstractAssociation = OneToOneAbstractAssociation | ManyToOneAbstractAssociation
+type AbstractAssociation = OneToOneAbstractAssociation | ManyToOneAbstractAssociation | ManyToManyAbstractAssociation
 
 type Association = ConcreteAssociation | AbstractAssociation

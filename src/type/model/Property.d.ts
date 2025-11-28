@@ -103,10 +103,11 @@ type OnDissociationAction = "NONE" | "LAX" | "CHECK" | "SET_NULL" | "DELETE"
 type OneToOneSourceProperty = {
     category: "OneToOne_Source"
     typeIsList: false
-    joinInfo: JoinInfo
     autoGenerateJoinInfo: boolean
     onDissociateAction: OnDissociationAction
-} & BaseProperty & BaseAssociationProperty
+} & ({ joinInfo: FkJoinInfo, nullable: boolean } | { joinInfo: MidTableJoinInfo, nullable: true })
+    & Omit<BaseProperty, 'nullable'>
+    & BaseAssociationProperty
     & ({} | KeyProperty)
 
 type OneToOneMappedProperty = {
@@ -132,10 +133,11 @@ type OneToOneMappedAbstractProperty = Omit<OneToOneMappedProperty,
 type ManyToOneProperty = {
     category: "ManyToOne"
     typeIsList: false
-    joinInfo: JoinInfo
     autoGenerateJoinInfo: boolean
     onDissociateAction: OnDissociationAction
-} & BaseProperty & BaseAssociationProperty
+} & ({ joinInfo: FkJoinInfo, nullable: boolean } | { joinInfo: MidTableJoinInfo, nullable: true })
+    & Omit<BaseProperty, 'nullable'>
+    & BaseAssociationProperty
     & ({} | KeyProperty)
 
 type OneToManyProperty = {
@@ -176,6 +178,15 @@ type ManyToManyMappedProperty = {
     commentTemplate: string
     useCommentTemplate: boolean
 } & Omit<BaseProperty, 'nullable'> & BaseAssociationProperty
+
+type ManyToManyMappedAbstractProperty = Omit<ManyToManyMappedProperty,
+    'category' | 'referencedEntityId' |
+    'name' | 'comment' | 'idViewName' |
+    'useNameTemplate' | 'useCommentTemplate' | 'useIdViewNameTemplate'
+> & {
+    category: "ManyToMany_Mapped_Abstract"
+    referencedAbstractEntityId: string
+}
 
 type ManyToManyViewProperty = {
     category: "ManyToMany_View"
@@ -233,6 +244,7 @@ type MappedSuperClassProperty =
     | ScalarEmbeddableProperty
     | OneToOneSourceProperty
     | ManyToOneProperty
+    | ManyToManySourceProperty
     | GetterFormulaProperty
     | SqlFormulaProperty
     | TransientProperty

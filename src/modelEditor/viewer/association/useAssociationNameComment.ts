@@ -6,7 +6,7 @@ export const useAssociationNameComment = (associationGetter: () => DeepReadonly<
     return computed(() => {
         const association = associationGetter()
         if (!association) return
-        if (association.type === "ManyToOne_Abstract" || association.type === "OneToOne_Abstract") {
+        if (association.type === "ManyToOne_Abstract" || association.type === "OneToOne_Abstract" || association.type === "ManyToMany_Abstract") {
             return getAbstractAssociationNameComment(association)
         } else {
             return getConcreteAssociationNameComment(association)

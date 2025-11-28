@@ -8,6 +8,22 @@ const FkJoinInfoJsonSchema: JSONSchemaType<FkJoinInfo> = {
             "properties": {
                 "type": {
                     "type": "string",
+                    "const": "Unknown"
+                },
+                "foreignKeyType": {
+                    "$ref": "#/definitions/ForeignKeyType"
+                }
+            },
+            "required": [
+                "foreignKeyType",
+                "type"
+            ]
+        },
+        {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "type": "string",
                     "const": "SingleColumn"
                 },
                 "columnName": {

@@ -1,10 +1,9 @@
 import {nameTool} from "@/type/context/utils/NameTool.ts";
 import {getEntityIdProperties} from "@/type/context/utils/EntityCategorizedProperty.ts";
 import {flatEmbeddableTypeColumnNames} from "@/type/context/utils/EmbeddableTypeFlat.ts";
-import {tmpl_midTableComment, tmpl_midTableName} from "@/type/context/utils/AssociationTemplate.ts";
 
 const _generateFkJoinInfo = (
-    property: DeepReadonly<OneToOneSourceProperty | ManyToOneProperty>,
+    property: DeepReadonly<OneToOneSourceProperty | ManyToOneProperty | ManyToManySourceProperty>,
     association: DeepReadonly<AssociationIdOnly>,
     entityMap: DeepReadonly<Map<string, EntityWithProperties>>,
     mappedSuperClassMap: DeepReadonly<Map<string, MappedSuperClassWithProperties>>,
@@ -40,7 +39,7 @@ const _generateFkJoinInfo = (
 }
 
 export const generateFkJoinInfo = (
-    property: DeepReadonly<OneToOneSourceProperty | ManyToOneProperty>,
+    property: DeepReadonly<OneToOneSourceProperty | ManyToOneProperty | ManyToManySourceProperty>,
     association: DeepReadonly<AssociationIdOnly>,
     contextData: DeepReadonly<ModelContextData>,
 ) => {
@@ -54,51 +53,14 @@ export const generateFkJoinInfo = (
     )
 }
 
-const translateMidTableName = (
-    association: DeepReadonly<AssociationIdOnly>,
-    entityMap: DeepReadonly<Map<string, Entity>>,
-    mappedSuperClassMap: DeepReadonly<Map<string, MappedSuperClass>>,
-) => {
-    if ("name" in association) {
-        return association.name
-    } else {
-        const referencedEntity = entityMap.get(association.referencedEntityId)
-        const abstractEntity = mappedSuperClassMap.get(association.sourceAbstractEntityId)
-        return tmpl_midTableName(
-            association.nameTemplate,
-            abstractEntity ? {name: `$${abstractEntity.name}$`} : {name: "[NOT_EXISTED]"},
-            referencedEntity ?? {name: "[NOT_EXISTED]"},
-        )
-    }
-}
-
-const translateMidTableComment = (
-    association: DeepReadonly<AssociationIdOnly>,
-    entityMap: DeepReadonly<Map<string, Entity>>,
-    mappedSuperClassMap: DeepReadonly<Map<string, MappedSuperClass>>,
-) => {
-    if ("comment" in association) {
-        return association.comment
-    } else {
-        const referencedEntity = entityMap.get(association.referencedEntityId)
-        const abstractEntity = mappedSuperClassMap.get(association.sourceAbstractEntityId)
-        return tmpl_midTableComment(
-            association.nameTemplate,
-            abstractEntity ? {comment: `$${abstractEntity.comment}$`} : {comment: "[NOT_EXISTED]"},
-            referencedEntity ?? {comment: "[NOT_EXISTED]"},
-        )
-    }
-}
-
-const _generateJoinInfo = (
+const _generateMidTableJoinInfo = (
     property: DeepReadonly<OneToOneSourceProperty | ManyToOneProperty | ManyToManySourceProperty>,
     association: DeepReadonly<AssociationIdOnly>,
-    entity: DeepReadonly<EntityWithProperties>,
     entityMap: DeepReadonly<Map<string, EntityWithProperties>>,
     mappedSuperClassMap: DeepReadonly<Map<string, MappedSuperClassWithProperties>>,
     embeddableTypeMap: DeepReadonly<Map<string, EmbeddableTypeWithProperties>>,
     databaseNameStrategy: NameStrategy,
-): JoinInfo => {
+): MidTableJoinInfo => {
     const referencedEntity = entityMap.get(property.referencedEntityId)
     if (!referencedEntity) throw new Error(`[${property.referencedEntityId}] not found`)
     const referencedIdProperties = getEntityIdProperties(referencedEntity, mappedSuperClassMap)
@@ -107,68 +69,90 @@ const _generateJoinInfo = (
     const referencedIdProperty = referencedIdProperties[0]
     if (referencedIdProperty === undefined) throw new Error(`[${referencedEntity.id}] has no id property`)
 
-    if (property.joinInfo.type === "SingleColumn" || property.joinInfo.type === "MultiColumn") {
+    if (association.type === "OneToOne" || association.type === "ManyToOne" || association.type === "ManyToMany") {
+        const sourceEntity = entityMap.get(association.sourceEntityId)
+        if (!sourceEntity) throw new Error(`[${association.sourceEntityId}] not found`)
+
+        const sourceIdProperties = getEntityIdProperties(sourceEntity, mappedSuperClassMap)
+        if (sourceIdProperties.length === 0) throw new Error(`[${sourceEntity.id}] has no id property`)
+        if (sourceIdProperties.length > 1) throw new Error(`[${sourceEntity.id}] has more than one id properties`)
+        const sourceIdProperty = sourceIdProperties[0]
+        if (sourceIdProperty === undefined) throw new Error(`[${sourceEntity.id}] has no id property`)
+
+        let sourceJoinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
+        let targetJoinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
+
+        if ("embeddableTypeId" in sourceIdProperty) {
+            const sourceColumnNames = flatEmbeddableTypeColumnNames(sourceIdProperty.embeddableTypeId, embeddableTypeMap, sourceIdProperty.columnNameOverrides)
+            sourceJoinInfo = {
+                type: "MultiColumn",
+                embeddableTypeId: sourceIdProperty.embeddableTypeId,
+                columnRefs: sourceColumnNames.map(columnName => ({
+                    columnName: nameTool.convert(sourceEntity.name + nameTool.convert(columnName, databaseNameStrategy, 'UPPER_CAMEL'), 'UPPER_CAMEL', databaseNameStrategy),
+                    referencedColumnName: columnName,
+                })),
+                foreignKeyType: association.foreignKeyType,
+            }
+        } else {
+            sourceJoinInfo = {
+                type: "SingleColumn",
+                columnName: nameTool.convert(sourceEntity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
+                foreignKeyType: association.foreignKeyType,
+            }
+        }
+
         if ("embeddableTypeId" in referencedIdProperty) {
-            const columnNames = flatEmbeddableTypeColumnNames(referencedIdProperty.embeddableTypeId, embeddableTypeMap, referencedIdProperty.columnNameOverrides)
-            return {
+            const targetColumnNames = flatEmbeddableTypeColumnNames(referencedIdProperty.embeddableTypeId, embeddableTypeMap, referencedIdProperty.columnNameOverrides)
+            targetJoinInfo = {
                 type: "MultiColumn",
                 embeddableTypeId: referencedIdProperty.embeddableTypeId,
-                columnRefs: columnNames.map(columnName => ({
+                columnRefs: targetColumnNames.map(columnName => ({
                     columnName: nameTool.convert(referencedEntity.name + nameTool.convert(columnName, databaseNameStrategy, 'UPPER_CAMEL'), 'UPPER_CAMEL', databaseNameStrategy),
                     referencedColumnName: columnName,
                 })),
                 foreignKeyType: association.foreignKeyType,
             }
         } else {
-            return {
+            targetJoinInfo = {
                 type: "SingleColumn",
-                columnName: nameTool.convert(property.name + "Id", "LOWER_CAMEL", databaseNameStrategy),
+                columnName: nameTool.convert(referencedEntity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
                 foreignKeyType: association.foreignKeyType,
             }
         }
-    } else {
-        const sourceIdProperties = getEntityIdProperties(entity, mappedSuperClassMap)
-        if (sourceIdProperties.length === 0) throw new Error(`[${entity.id}] has no id property`)
-        if (sourceIdProperties.length > 1) throw new Error(`[${entity.id}] has more than one id properties`)
-        const sourceIdProperty = sourceIdProperties[0]
-        if (sourceIdProperty === undefined) throw new Error(`[${entity.id}] has no id property`)
 
-        if (!("embeddableTypeId" in sourceIdProperty) && !("embeddableTypeId" in referencedIdProperty)) {
+        return {
+            type: "MidTable",
+            sourceJoinInfo,
+            targetJoinInfo,
+            midTableExtraInfo: {},
+        }
+    } else {
+        const sourceAbstractEntity = mappedSuperClassMap.get(association.sourceAbstractEntityId)
+        if (!sourceAbstractEntity) throw new Error(`[${association.sourceAbstractEntityId}] not found`)
+
+        if (!("embeddableTypeId" in referencedIdProperty)) {
             return {
-                type: "SingleColumnMidTable",
-                tableName: translateMidTableName(association, entityMap, mappedSuperClassMap),
-                tableComment: translateMidTableComment(association, entityMap, mappedSuperClassMap),
-                sourceColumnName: nameTool.convert(entity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
-                targetColumnName: nameTool.convert(referencedEntity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
-                sourceForeignKeyType: association.foreignKeyType,
-                targetForeignKeyType: association.foreignKeyType,
+                type: "MidTable",
+                sourceJoinInfo: {
+                    type: "Unknown",
+                    foreignKeyType: association.foreignKeyType,
+                },
+                targetJoinInfo: {
+                    type: "SingleColumn",
+                    columnName: nameTool.convert(referencedEntity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
+                    foreignKeyType: association.foreignKeyType,
+                },
+                midTableExtraInfo: {},
             }
         } else {
-            let sourceJoinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
-            let targetJoinInfo: SingleColumnJoinInfo | MultiColumnJoinInfo
-
-            if ("embeddableTypeId" in sourceIdProperty) {
-                const sourceColumnNames = flatEmbeddableTypeColumnNames(sourceIdProperty.embeddableTypeId, embeddableTypeMap, sourceIdProperty.columnNameOverrides)
-                sourceJoinInfo = {
-                    type: "MultiColumn",
-                    embeddableTypeId: sourceIdProperty.embeddableTypeId,
-                    columnRefs: sourceColumnNames.map(columnName => ({
-                        columnName: nameTool.convert(entity.name + nameTool.convert(columnName, databaseNameStrategy, 'UPPER_CAMEL'), 'UPPER_CAMEL', databaseNameStrategy),
-                        referencedColumnName: columnName,
-                    })),
+            const targetColumnNames = flatEmbeddableTypeColumnNames(referencedIdProperty.embeddableTypeId, embeddableTypeMap, referencedIdProperty.columnNameOverrides)
+            return {
+                type: "MidTable",
+                sourceJoinInfo: {
+                    type: "Unknown",
                     foreignKeyType: association.foreignKeyType,
-                }
-            } else {
-                sourceJoinInfo = {
-                    type: "SingleColumn",
-                    columnName: nameTool.convert(entity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
-                    foreignKeyType: association.foreignKeyType,
-                }
-            }
-
-            if ("embeddableTypeId" in referencedIdProperty) {
-                const targetColumnNames = flatEmbeddableTypeColumnNames(referencedIdProperty.embeddableTypeId, embeddableTypeMap, referencedIdProperty.columnNameOverrides)
-                targetJoinInfo = {
+                },
+                targetJoinInfo: {
                     type: "MultiColumn",
                     embeddableTypeId: referencedIdProperty.embeddableTypeId,
                     columnRefs: targetColumnNames.map(columnName => ({
@@ -176,36 +160,21 @@ const _generateJoinInfo = (
                         referencedColumnName: columnName,
                     })),
                     foreignKeyType: association.foreignKeyType,
-                }
-            } else {
-                targetJoinInfo = {
-                    type: "SingleColumn",
-                    columnName: nameTool.convert(referencedEntity.name + "Id", "UPPER_CAMEL", databaseNameStrategy),
-                    foreignKeyType: association.foreignKeyType,
-                }
-            }
-
-            return {
-                type: "MultiColumnMidTable",
-                sourceJoinInfo,
-                targetJoinInfo,
-                tableName: translateMidTableName(association, entityMap, mappedSuperClassMap),
-                tableComment: translateMidTableComment(association, entityMap, mappedSuperClassMap),
+                },
+                midTableExtraInfo: {},
             }
         }
     }
 }
 
-export const generateJoinInfo = (
+export const generateMidTableJoinInfo = (
     property: DeepReadonly<OneToOneSourceProperty | ManyToOneProperty | ManyToManySourceProperty>,
     association: DeepReadonly<AssociationIdOnly>,
-    entity: DeepReadonly<EntityWithProperties>,
     contextData: DeepReadonly<ModelContextData>,
 ) => {
-    return _generateJoinInfo(
+    return _generateMidTableJoinInfo(
         property,
         association,
-        entity,
         contextData.entityMap,
         contextData.mappedSuperClassMap,
         contextData.embeddableTypeMap,

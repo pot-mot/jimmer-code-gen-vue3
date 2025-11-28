@@ -1,5 +1,5 @@
 import {nameTool} from "@/type/context/utils/NameTool.ts";
-import {generateFkJoinInfo, generateJoinInfo} from "@/modelEditor/property/PropertyJoinInfoGenerate.ts";
+import {generateFkJoinInfo, generateMidTableJoinInfo} from "@/modelEditor/property/PropertyJoinInfoGenerate.ts";
 import {
     tmpl_fkComment,
     tmpl_fkName,
@@ -30,7 +30,11 @@ export const syncEntityAutoChange = (
             if (edgedAssociation === undefined) return
             const association = edgedAssociation.association
             try {
-                property.joinInfo = generateJoinInfo(property, association, entity, contextData)
+                if (property.joinInfo.type !== "MidTable") {
+                    property.joinInfo = generateFkJoinInfo(property, association, contextData)
+                } else {
+                    property.joinInfo = generateMidTableJoinInfo(property, association, contextData)
+                }
             } catch (e) {
                 console.warn(e)
                 // 阻止生成 JoinInfo 失败导致历史记录执行失败
@@ -62,7 +66,11 @@ export const syncMappedSuperClassAutoChange = (
             if (edgedAssociation === undefined) return
             const association = edgedAssociation.association
             try {
-                property.joinInfo = generateFkJoinInfo(property, association, contextData)
+                if (property.joinInfo.type !== "MidTable") {
+                    property.joinInfo = generateFkJoinInfo(property, association, contextData)
+                } else {
+                    property.joinInfo = generateMidTableJoinInfo(property, association, contextData)
+                }
             } catch (e) {
                 console.warn(e)
                 // 阻止生成 JoinInfo 失败导致历史记录执行失败

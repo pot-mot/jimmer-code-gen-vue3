@@ -6,6 +6,7 @@ type ConcreteAssociationIdOnly =
 type AbstractAssociationIdOnly =
     | OneToOneAbstractAssociationIdOnly
     | ManyToOneAbstractAssociationIdOnly
+    | ManyToManyAbstractAssociationIdOnly
 
 type AssociationIdOnly =
     | ConcreteAssociationIdOnly

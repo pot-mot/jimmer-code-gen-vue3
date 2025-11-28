@@ -49,7 +49,6 @@ type ModelContext = {
     enumerationMap: Map<string, Enumeration>
     associationMap: Map<string, Association>
 
-    createId: (type: "Model" | "Entity" | "Property" | "MappedSuperClass" | "EmbeddableType" | "Enumeration" | "EnumerationItem" | "Association" | "Group") => string
     nameTool: NameTool
     createTemplateBuilder: (
         options: TemplateOptions

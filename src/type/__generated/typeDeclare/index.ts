@@ -62,7 +62,6 @@ import GroupWithSubMapsDeclare from "./items/GroupWithSubMaps.ts";
 import IdCommonPropertyDeclare from "./items/IdCommonProperty.ts";
 import IdEmbeddablePropertyDeclare from "./items/IdEmbeddableProperty.ts";
 import IndexDeclare from "./items/Index.ts";
-import JoinInfoDeclare from "./items/JoinInfo.ts";
 import JvmFileBuilderDeclare from "./items/JvmFileBuilder.ts";
 import JvmFileBuilderOptionsDeclare from "./items/JvmFileBuilderOptions.ts";
 import JvmLanguageDeclare from "./items/JvmLanguage.ts";
@@ -76,8 +75,11 @@ import JvmTypeDeclare from "./items/JvmType.ts";
 import KeyPropertyDeclare from "./items/KeyProperty.ts";
 import LabelPositionDeclare from "./items/LabelPosition.ts";
 import LogicalDeletePropertyDeclare from "./items/LogicalDeleteProperty.ts";
+import ManyToManyAbstractAssociationDeclare from "./items/ManyToManyAbstractAssociation.ts";
+import ManyToManyAbstractAssociationIdOnlyDeclare from "./items/ManyToManyAbstractAssociationIdOnly.ts";
 import ManyToManyAssociationDeclare from "./items/ManyToManyAssociation.ts";
 import ManyToManyAssociationIdOnlyDeclare from "./items/ManyToManyAssociationIdOnly.ts";
+import ManyToManyMappedAbstractPropertyDeclare from "./items/ManyToManyMappedAbstractProperty.ts";
 import ManyToManyMappedPropertyDeclare from "./items/ManyToManyMappedProperty.ts";
 import ManyToManySourcePropertyDeclare from "./items/ManyToManySourceProperty.ts";
 import ManyToManyViewPropertyDeclare from "./items/ManyToManyViewProperty.ts";
@@ -95,7 +97,7 @@ import MappedSuperClassWithCategorizedPropertiesDeclare from "./items/MappedSupe
 import MappedSuperClassWithInheritInfoDeclare from "./items/MappedSuperClassWithInheritInfo.ts";
 import MappedSuperClassWithPropertiesDeclare from "./items/MappedSuperClassWithProperties.ts";
 import MapperSuperClassSourceDeclare from "./items/MapperSuperClassSource.ts";
-import MidTableInfoDeclare from "./items/MidTableInfo.ts";
+import MidTableExtraInfoDeclare from "./items/MidTableExtraInfo.ts";
 import MidTableJoinInfoDeclare from "./items/MidTableJoinInfo.ts";
 import ModelDeclare from "./items/Model.ts";
 import ModelContextDeclare from "./items/ModelContext.ts";
@@ -107,7 +109,6 @@ import ModelSubIdsDeclare from "./items/ModelSubIds.ts";
 import ModelSubIdSetsDeclare from "./items/ModelSubIdSets.ts";
 import ModelViewportDeclare from "./items/ModelViewport.ts";
 import MultiColumnJoinInfoDeclare from "./items/MultiColumnJoinInfo.ts";
-import MultiColumnMidTableJoinInfoDeclare from "./items/MultiColumnMidTableJoinInfo.ts";
 import NameStrategyDeclare from "./items/NameStrategy.ts";
 import NameToolDeclare from "./items/NameTool.ts";
 import OnDissociationActionDeclare from "./items/OnDissociationAction.ts";
@@ -129,7 +130,6 @@ import ScalarCommonPropertyDeclare from "./items/ScalarCommonProperty.ts";
 import ScalarEmbeddablePropertyDeclare from "./items/ScalarEmbeddableProperty.ts";
 import ScalarEnumPropertyDeclare from "./items/ScalarEnumProperty.ts";
 import SingleColumnJoinInfoDeclare from "./items/SingleColumnJoinInfo.ts";
-import SingleColumnMidTableJoinInfoDeclare from "./items/SingleColumnMidTableJoinInfo.ts";
 import SqlFormulaPropertyDeclare from "./items/SqlFormulaProperty.ts";
 import SqlMatchRuleDeclare from "./items/SqlMatchRule.ts";
 import SqlToJvmDeclare from "./items/SqlToJvm.ts";
@@ -146,6 +146,7 @@ import TsMatchRuleDeclare from "./items/TsMatchRule.ts";
 import TsToJvmMappingRuleDeclare from "./items/TsToJvmMappingRule.ts";
 import TsToSqlMappingRuleDeclare from "./items/TsToSqlMappingRule.ts";
 import TsTypeDeclare from "./items/TsType.ts";
+import UnknownJoinInfoDeclare from "./items/UnknownJoinInfo.ts";
 import VersionPropertyDeclare from "./items/VersionProperty.ts";
 
 export type TypeMap = {
@@ -212,7 +213,6 @@ export type TypeMap = {
     IdCommonProperty: IdCommonProperty
     IdEmbeddableProperty: IdEmbeddableProperty
     Index: Index
-    JoinInfo: JoinInfo
     JvmFileBuilder: JvmFileBuilder
     JvmFileBuilderOptions: JvmFileBuilderOptions
     JvmLanguage: JvmLanguage
@@ -226,8 +226,11 @@ export type TypeMap = {
     KeyProperty: KeyProperty
     LabelPosition: LabelPosition
     LogicalDeleteProperty: LogicalDeleteProperty
+    ManyToManyAbstractAssociation: ManyToManyAbstractAssociation
+    ManyToManyAbstractAssociationIdOnly: ManyToManyAbstractAssociationIdOnly
     ManyToManyAssociation: ManyToManyAssociation
     ManyToManyAssociationIdOnly: ManyToManyAssociationIdOnly
+    ManyToManyMappedAbstractProperty: ManyToManyMappedAbstractProperty
     ManyToManyMappedProperty: ManyToManyMappedProperty
     ManyToManySourceProperty: ManyToManySourceProperty
     ManyToManyViewProperty: ManyToManyViewProperty
@@ -245,7 +248,7 @@ export type TypeMap = {
     MappedSuperClassWithInheritInfo: MappedSuperClassWithInheritInfo
     MappedSuperClassWithProperties: MappedSuperClassWithProperties
     MapperSuperClassSource: MapperSuperClassSource
-    MidTableInfo: MidTableInfo
+    MidTableExtraInfo: MidTableExtraInfo
     MidTableJoinInfo: MidTableJoinInfo
     Model: Model
     ModelContext: ModelContext
@@ -257,7 +260,6 @@ export type TypeMap = {
     ModelSubIdSets: ModelSubIdSets
     ModelViewport: ModelViewport
     MultiColumnJoinInfo: MultiColumnJoinInfo
-    MultiColumnMidTableJoinInfo: MultiColumnMidTableJoinInfo
     NameStrategy: NameStrategy
     NameTool: NameTool
     OnDissociationAction: OnDissociationAction
@@ -279,7 +281,6 @@ export type TypeMap = {
     ScalarEmbeddableProperty: ScalarEmbeddableProperty
     ScalarEnumProperty: ScalarEnumProperty
     SingleColumnJoinInfo: SingleColumnJoinInfo
-    SingleColumnMidTableJoinInfo: SingleColumnMidTableJoinInfo
     SqlFormulaProperty: SqlFormulaProperty
     SqlMatchRule: SqlMatchRule
     SqlToJvm: SqlToJvm
@@ -296,6 +297,7 @@ export type TypeMap = {
     TsToJvmMappingRule: TsToJvmMappingRule
     TsToSqlMappingRule: TsToSqlMappingRule
     TsType: TsType
+    UnknownJoinInfo: UnknownJoinInfo
     VersionProperty: VersionProperty
 }
 
@@ -366,7 +368,6 @@ export const typeDeclares = Object.freeze({
     IdCommonProperty: IdCommonPropertyDeclare,
     IdEmbeddableProperty: IdEmbeddablePropertyDeclare,
     Index: IndexDeclare,
-    JoinInfo: JoinInfoDeclare,
     JvmFileBuilder: JvmFileBuilderDeclare,
     JvmFileBuilderOptions: JvmFileBuilderOptionsDeclare,
     JvmLanguage: JvmLanguageDeclare,
@@ -380,8 +381,11 @@ export const typeDeclares = Object.freeze({
     KeyProperty: KeyPropertyDeclare,
     LabelPosition: LabelPositionDeclare,
     LogicalDeleteProperty: LogicalDeletePropertyDeclare,
+    ManyToManyAbstractAssociation: ManyToManyAbstractAssociationDeclare,
+    ManyToManyAbstractAssociationIdOnly: ManyToManyAbstractAssociationIdOnlyDeclare,
     ManyToManyAssociation: ManyToManyAssociationDeclare,
     ManyToManyAssociationIdOnly: ManyToManyAssociationIdOnlyDeclare,
+    ManyToManyMappedAbstractProperty: ManyToManyMappedAbstractPropertyDeclare,
     ManyToManyMappedProperty: ManyToManyMappedPropertyDeclare,
     ManyToManySourceProperty: ManyToManySourcePropertyDeclare,
     ManyToManyViewProperty: ManyToManyViewPropertyDeclare,
@@ -399,7 +403,7 @@ export const typeDeclares = Object.freeze({
     MappedSuperClassWithInheritInfo: MappedSuperClassWithInheritInfoDeclare,
     MappedSuperClassWithProperties: MappedSuperClassWithPropertiesDeclare,
     MapperSuperClassSource: MapperSuperClassSourceDeclare,
-    MidTableInfo: MidTableInfoDeclare,
+    MidTableExtraInfo: MidTableExtraInfoDeclare,
     MidTableJoinInfo: MidTableJoinInfoDeclare,
     Model: ModelDeclare,
     ModelContext: ModelContextDeclare,
@@ -411,7 +415,6 @@ export const typeDeclares = Object.freeze({
     ModelSubIdSets: ModelSubIdSetsDeclare,
     ModelViewport: ModelViewportDeclare,
     MultiColumnJoinInfo: MultiColumnJoinInfoDeclare,
-    MultiColumnMidTableJoinInfo: MultiColumnMidTableJoinInfoDeclare,
     NameStrategy: NameStrategyDeclare,
     NameTool: NameToolDeclare,
     OnDissociationAction: OnDissociationActionDeclare,
@@ -433,7 +436,6 @@ export const typeDeclares = Object.freeze({
     ScalarEmbeddableProperty: ScalarEmbeddablePropertyDeclare,
     ScalarEnumProperty: ScalarEnumPropertyDeclare,
     SingleColumnJoinInfo: SingleColumnJoinInfoDeclare,
-    SingleColumnMidTableJoinInfo: SingleColumnMidTableJoinInfoDeclare,
     SqlFormulaProperty: SqlFormulaPropertyDeclare,
     SqlMatchRule: SqlMatchRuleDeclare,
     SqlToJvm: SqlToJvmDeclare,
@@ -450,5 +452,6 @@ export const typeDeclares = Object.freeze({
     TsToJvmMappingRule: TsToJvmMappingRuleDeclare,
     TsToSqlMappingRule: TsToSqlMappingRuleDeclare,
     TsType: TsTypeDeclare,
+    UnknownJoinInfo: UnknownJoinInfoDeclare,
     VersionProperty: VersionPropertyDeclare,
 })

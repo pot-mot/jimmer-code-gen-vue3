@@ -52,8 +52,7 @@ export const toOneToOne = async (
             idViewNameTemplate: ID_VIEW_TEMPLATE,
             useIdViewNameTemplate: true,
             joinInfo: {
-                type: "SingleColumn",
-                columnName: "",
+                type: "Unknown",
                 foreignKeyType: association.foreignKeyType,
             },
             autoGenerateJoinInfo: true,

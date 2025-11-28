@@ -3,9 +3,10 @@ export default Object.freeze({
     content: `type OneToOneSourceProperty = {
     category: "OneToOne_Source"
     typeIsList: false
-    joinInfo: JoinInfo
     autoGenerateJoinInfo: boolean
     onDissociateAction: OnDissociationAction
-} & BaseProperty & BaseAssociationProperty
+} & ({ joinInfo: FkJoinInfo, nullable: boolean } | { joinInfo: MidTableJoinInfo, nullable: true })
+    & Omit<BaseProperty, 'nullable'>
+    & BaseAssociationProperty
     & ({} | KeyProperty)`,
 })

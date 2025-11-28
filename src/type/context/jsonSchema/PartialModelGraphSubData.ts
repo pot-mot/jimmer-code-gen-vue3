@@ -14,6 +14,8 @@ import ManyToOneAbstractAssociationIdOnly
     from "@/type/__generated/jsonSchema/items/ManyToOneAbstractAssociationIdOnly.ts";
 import ManyToManyAssociationIdOnly from "@/type/__generated/jsonSchema/items/ManyToManyAssociationIdOnly.ts";
 import LabelPosition from "@/type/__generated/jsonSchema/items/LabelPosition.ts";
+import ManyToManyAbstractAssociationIdOnly
+    from "@/type/__generated/jsonSchema/items/ManyToManyAbstractAssociationIdOnly.ts";
 
 export const PartialModelGraphSubData_JsonSchema: JSONSchemaType<Partial<ModelGraphSubData>> = {
     type: "object",
@@ -83,6 +85,7 @@ export const PartialModelGraphSubData_JsonSchema: JSONSchemaType<Partial<ModelGr
                             ManyToOneAssociationIdOnly.schema,
                             ManyToOneAbstractAssociationIdOnly.schema,
                             ManyToManyAssociationIdOnly.schema,
+                            ManyToManyAbstractAssociationIdOnly.schema,
                         ]
                     },
                     labelPosition: LabelPosition.schema
@@ -103,6 +106,7 @@ export const PartialModelGraphSubData_JsonSchema: JSONSchemaType<Partial<ModelGr
         ...ManyToOneAssociationIdOnly.schema.definitions,
         ...ManyToOneAbstractAssociationIdOnly.schema.definitions,
         ...ManyToManyAssociationIdOnly.schema.definitions,
+        ...ManyToManyAbstractAssociationIdOnly.schema.definitions,
     }
 }
 

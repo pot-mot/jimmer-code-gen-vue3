@@ -57,6 +57,16 @@ export const tmpl_midTableName = (
         .replace(REFERENCED_ENTITY, nameTool.convert(referencedEntity.name, 'UPPER_CAMEL', getDatabaseNameStrategy()))
 }
 
+export const tmp_abstractMidTableName = (
+    template: string,
+    sourceEntity: { name: string },
+    referencedEntity: { name: string },
+) => {
+    return template
+        .replace(SOURCE_ENTITY, "$" + nameTool.convert(sourceEntity.name, 'UPPER_CAMEL', getDatabaseNameStrategy()) + "$")
+        .replace(REFERENCED_ENTITY, nameTool.convert(referencedEntity.name, 'UPPER_CAMEL', getDatabaseNameStrategy()))
+}
+
 export const tmpl_midTableComment = (
     template: string,
     sourceEntity: { comment: string },

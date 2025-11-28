@@ -594,9 +594,6 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                             "type": "boolean",
                             "const": false
                         },
-                        "joinInfo": {
-                            "$ref": "#/definitions/JoinInfo"
-                        },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
                         },
@@ -607,7 +604,6 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                     "required": [
                         "autoGenerateJoinInfo",
                         "category",
-                        "joinInfo",
                         "onDissociateAction",
                         "typeIsList"
                     ]
@@ -615,39 +611,20 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                 {
                     "type": "object",
                     "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
+                        "joinInfo": {
+                            "$ref": "#/definitions/FkJoinInfo"
                         },
                         "nullable": {
                             "type": "boolean"
                         }
                     },
                     "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
+                        "joinInfo",
                         "nullable"
                     ]
+                },
+                {
+                    "$ref": "#/definitions/Omit<BaseProperty,\"nullable\">"
                 },
                 {
                     "type": "object",
@@ -691,8 +668,98 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                             "type": "boolean",
                             "const": false
                         },
+                        "autoGenerateJoinInfo": {
+                            "type": "boolean"
+                        },
+                        "onDissociateAction": {
+                            "$ref": "#/definitions/OnDissociationAction"
+                        }
+                    },
+                    "required": [
+                        "autoGenerateJoinInfo",
+                        "category",
+                        "onDissociateAction",
+                        "typeIsList"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
                         "joinInfo": {
-                            "$ref": "#/definitions/JoinInfo"
+                            "$ref": "#/definitions/FkJoinInfo"
+                        },
+                        "nullable": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "joinInfo",
+                        "nullable"
+                    ]
+                },
+                {
+                    "$ref": "#/definitions/Omit<BaseProperty,\"nullable\">"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "associationId": {
+                            "type": "string"
+                        },
+                        "referencedEntityId": {
+                            "type": "string"
+                        },
+                        "idViewName": {
+                            "type": "string"
+                        },
+                        "idViewNameTemplate": {
+                            "type": "string"
+                        },
+                        "useIdViewNameTemplate": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "associationId",
+                        "idViewName",
+                        "idViewNameTemplate",
+                        "referencedEntityId",
+                        "useIdViewNameTemplate"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "key": {
+                            "type": "boolean",
+                            "const": true
+                        },
+                        "keyGroups": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": [
+                        "key",
+                        "keyGroups"
+                    ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "OneToOne_Source"
+                        },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": false
                         },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
@@ -704,7 +771,6 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                     "required": [
                         "autoGenerateJoinInfo",
                         "category",
-                        "joinInfo",
                         "onDissociateAction",
                         "typeIsList"
                     ]
@@ -712,39 +778,292 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                 {
                     "type": "object",
                     "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
+                        "joinInfo": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "const": "MidTable"
+                                },
+                                "sourceJoinInfo": {
+                                    "$ref": "#/definitions/FkJoinInfo"
+                                },
+                                "targetJoinInfo": {
+                                    "$ref": "#/definitions/FkJoinInfo"
+                                },
+                                "midTableExtraInfo": {
+                                    "type": "object",
+                                    "properties": {
+                                        "readonly": {
+                                            "type": "boolean"
+                                        },
+                                        "preventDeletionBySource": {
+                                            "type": "boolean"
+                                        },
+                                        "preventDeletionByTarget": {
+                                            "type": "boolean"
+                                        },
+                                        "cascadeDeletedBySource": {
+                                            "type": "boolean"
+                                        },
+                                        "cascadeDeletedByTarget": {
+                                            "type": "boolean"
+                                        },
+                                        "deletedWhenEndpointIsLogicallyDeleted": {
+                                            "type": "boolean"
+                                        },
+                                        "filter": {
+                                            "type": "object",
+                                            "properties": {
+                                                "columnName": {
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "type": "string"
+                                                },
+                                                "value": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "columnName",
+                                                "type",
+                                                "value"
+                                            ]
+                                        },
+                                        "logicalDeleteFilter": {
+                                            "type": "object",
+                                            "properties": {
+                                                "columnName": {
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "type": "string"
+                                                },
+                                                "nullable": {
+                                                    "type": "boolean"
+                                                },
+                                                "value": {
+                                                    "type": "string"
+                                                },
+                                                "generatorType": {
+                                                    "type": "string"
+                                                },
+                                                "generatorRef": {
+                                                    "type": "string"
+                                                },
+                                                "initializedValue": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "columnName",
+                                                "generatorRef",
+                                                "generatorType",
+                                                "initializedValue",
+                                                "nullable",
+                                                "type",
+                                                "value"
+                                            ]
+                                        }
+                                    }
+                                }
+                            },
+                            "required": [
+                                "midTableExtraInfo",
+                                "sourceJoinInfo",
+                                "targetJoinInfo",
+                                "type"
+                            ]
                         },
                         "nullable": {
+                            "type": "boolean",
+                            "const": true
+                        }
+                    },
+                    "required": [
+                        "joinInfo",
+                        "nullable"
+                    ]
+                },
+                {
+                    "$ref": "#/definitions/Omit<BaseProperty,\"nullable\">"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "associationId": {
+                            "type": "string"
+                        },
+                        "referencedEntityId": {
+                            "type": "string"
+                        },
+                        "idViewName": {
+                            "type": "string"
+                        },
+                        "idViewNameTemplate": {
+                            "type": "string"
+                        },
+                        "useIdViewNameTemplate": {
                             "type": "boolean"
                         }
                     },
                     "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
+                        "associationId",
+                        "idViewName",
+                        "idViewNameTemplate",
+                        "referencedEntityId",
+                        "useIdViewNameTemplate"
+                    ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "OneToOne_Source"
+                        },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": false
+                        },
+                        "autoGenerateJoinInfo": {
+                            "type": "boolean"
+                        },
+                        "onDissociateAction": {
+                            "$ref": "#/definitions/OnDissociationAction"
+                        }
+                    },
+                    "required": [
+                        "autoGenerateJoinInfo",
+                        "category",
+                        "onDissociateAction",
+                        "typeIsList"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "joinInfo": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "const": "MidTable"
+                                },
+                                "sourceJoinInfo": {
+                                    "$ref": "#/definitions/FkJoinInfo"
+                                },
+                                "targetJoinInfo": {
+                                    "$ref": "#/definitions/FkJoinInfo"
+                                },
+                                "midTableExtraInfo": {
+                                    "type": "object",
+                                    "properties": {
+                                        "readonly": {
+                                            "type": "boolean"
+                                        },
+                                        "preventDeletionBySource": {
+                                            "type": "boolean"
+                                        },
+                                        "preventDeletionByTarget": {
+                                            "type": "boolean"
+                                        },
+                                        "cascadeDeletedBySource": {
+                                            "type": "boolean"
+                                        },
+                                        "cascadeDeletedByTarget": {
+                                            "type": "boolean"
+                                        },
+                                        "deletedWhenEndpointIsLogicallyDeleted": {
+                                            "type": "boolean"
+                                        },
+                                        "filter": {
+                                            "type": "object",
+                                            "properties": {
+                                                "columnName": {
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "type": "string"
+                                                },
+                                                "value": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "columnName",
+                                                "type",
+                                                "value"
+                                            ]
+                                        },
+                                        "logicalDeleteFilter": {
+                                            "type": "object",
+                                            "properties": {
+                                                "columnName": {
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "type": "string"
+                                                },
+                                                "nullable": {
+                                                    "type": "boolean"
+                                                },
+                                                "value": {
+                                                    "type": "string"
+                                                },
+                                                "generatorType": {
+                                                    "type": "string"
+                                                },
+                                                "generatorRef": {
+                                                    "type": "string"
+                                                },
+                                                "initializedValue": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "columnName",
+                                                "generatorRef",
+                                                "generatorType",
+                                                "initializedValue",
+                                                "nullable",
+                                                "type",
+                                                "value"
+                                            ]
+                                        }
+                                    }
+                                }
+                            },
+                            "required": [
+                                "midTableExtraInfo",
+                                "sourceJoinInfo",
+                                "targetJoinInfo",
+                                "type"
+                            ]
+                        },
+                        "nullable": {
+                            "type": "boolean",
+                            "const": true
+                        }
+                    },
+                    "required": [
+                        "joinInfo",
                         "nullable"
                     ]
+                },
+                {
+                    "$ref": "#/definitions/Omit<BaseProperty,\"nullable\">"
                 },
                 {
                     "type": "object",
@@ -807,9 +1126,6 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                             "type": "boolean",
                             "const": false
                         },
-                        "joinInfo": {
-                            "$ref": "#/definitions/JoinInfo"
-                        },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
                         },
@@ -820,7 +1136,6 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                     "required": [
                         "autoGenerateJoinInfo",
                         "category",
-                        "joinInfo",
                         "onDissociateAction",
                         "typeIsList"
                     ]
@@ -828,39 +1143,20 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                 {
                     "type": "object",
                     "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
+                        "joinInfo": {
+                            "$ref": "#/definitions/FkJoinInfo"
                         },
                         "nullable": {
                             "type": "boolean"
                         }
                     },
                     "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
+                        "joinInfo",
                         "nullable"
                     ]
+                },
+                {
+                    "$ref": "#/definitions/Omit<BaseProperty,\"nullable\">"
                 },
                 {
                     "type": "object",
@@ -904,9 +1200,6 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                             "type": "boolean",
                             "const": false
                         },
-                        "joinInfo": {
-                            "$ref": "#/definitions/JoinInfo"
-                        },
                         "autoGenerateJoinInfo": {
                             "type": "boolean"
                         },
@@ -917,7 +1210,6 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                     "required": [
                         "autoGenerateJoinInfo",
                         "category",
-                        "joinInfo",
                         "onDissociateAction",
                         "typeIsList"
                     ]
@@ -925,39 +1217,20 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                 {
                     "type": "object",
                     "properties": {
-                        "id": {
-                            "type": "string"
-                        },
-                        "name": {
-                            "type": "string"
-                        },
-                        "comment": {
-                            "type": "string"
-                        },
-                        "extraImports": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "extraAnnotations": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
+                        "joinInfo": {
+                            "$ref": "#/definitions/FkJoinInfo"
                         },
                         "nullable": {
                             "type": "boolean"
                         }
                     },
                     "required": [
-                        "comment",
-                        "extraAnnotations",
-                        "extraImports",
-                        "id",
-                        "name",
+                        "joinInfo",
                         "nullable"
                     ]
+                },
+                {
+                    "$ref": "#/definitions/Omit<BaseProperty,\"nullable\">"
                 },
                 {
                     "type": "object",
@@ -1006,6 +1279,374 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                     ]
                 }
             ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "ManyToOne"
+                        },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": false
+                        },
+                        "autoGenerateJoinInfo": {
+                            "type": "boolean"
+                        },
+                        "onDissociateAction": {
+                            "$ref": "#/definitions/OnDissociationAction"
+                        }
+                    },
+                    "required": [
+                        "autoGenerateJoinInfo",
+                        "category",
+                        "onDissociateAction",
+                        "typeIsList"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "joinInfo": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "const": "MidTable"
+                                },
+                                "sourceJoinInfo": {
+                                    "$ref": "#/definitions/FkJoinInfo"
+                                },
+                                "targetJoinInfo": {
+                                    "$ref": "#/definitions/FkJoinInfo"
+                                },
+                                "midTableExtraInfo": {
+                                    "type": "object",
+                                    "properties": {
+                                        "readonly": {
+                                            "type": "boolean"
+                                        },
+                                        "preventDeletionBySource": {
+                                            "type": "boolean"
+                                        },
+                                        "preventDeletionByTarget": {
+                                            "type": "boolean"
+                                        },
+                                        "cascadeDeletedBySource": {
+                                            "type": "boolean"
+                                        },
+                                        "cascadeDeletedByTarget": {
+                                            "type": "boolean"
+                                        },
+                                        "deletedWhenEndpointIsLogicallyDeleted": {
+                                            "type": "boolean"
+                                        },
+                                        "filter": {
+                                            "type": "object",
+                                            "properties": {
+                                                "columnName": {
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "type": "string"
+                                                },
+                                                "value": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "columnName",
+                                                "type",
+                                                "value"
+                                            ]
+                                        },
+                                        "logicalDeleteFilter": {
+                                            "type": "object",
+                                            "properties": {
+                                                "columnName": {
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "type": "string"
+                                                },
+                                                "nullable": {
+                                                    "type": "boolean"
+                                                },
+                                                "value": {
+                                                    "type": "string"
+                                                },
+                                                "generatorType": {
+                                                    "type": "string"
+                                                },
+                                                "generatorRef": {
+                                                    "type": "string"
+                                                },
+                                                "initializedValue": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "columnName",
+                                                "generatorRef",
+                                                "generatorType",
+                                                "initializedValue",
+                                                "nullable",
+                                                "type",
+                                                "value"
+                                            ]
+                                        }
+                                    }
+                                }
+                            },
+                            "required": [
+                                "midTableExtraInfo",
+                                "sourceJoinInfo",
+                                "targetJoinInfo",
+                                "type"
+                            ]
+                        },
+                        "nullable": {
+                            "type": "boolean",
+                            "const": true
+                        }
+                    },
+                    "required": [
+                        "joinInfo",
+                        "nullable"
+                    ]
+                },
+                {
+                    "$ref": "#/definitions/Omit<BaseProperty,\"nullable\">"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "associationId": {
+                            "type": "string"
+                        },
+                        "referencedEntityId": {
+                            "type": "string"
+                        },
+                        "idViewName": {
+                            "type": "string"
+                        },
+                        "idViewNameTemplate": {
+                            "type": "string"
+                        },
+                        "useIdViewNameTemplate": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "associationId",
+                        "idViewName",
+                        "idViewNameTemplate",
+                        "referencedEntityId",
+                        "useIdViewNameTemplate"
+                    ]
+                }
+            ]
+        },
+        {
+            "allOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "category": {
+                            "type": "string",
+                            "const": "ManyToOne"
+                        },
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": false
+                        },
+                        "autoGenerateJoinInfo": {
+                            "type": "boolean"
+                        },
+                        "onDissociateAction": {
+                            "$ref": "#/definitions/OnDissociationAction"
+                        }
+                    },
+                    "required": [
+                        "autoGenerateJoinInfo",
+                        "category",
+                        "onDissociateAction",
+                        "typeIsList"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "joinInfo": {
+                            "type": "object",
+                            "properties": {
+                                "type": {
+                                    "type": "string",
+                                    "const": "MidTable"
+                                },
+                                "sourceJoinInfo": {
+                                    "$ref": "#/definitions/FkJoinInfo"
+                                },
+                                "targetJoinInfo": {
+                                    "$ref": "#/definitions/FkJoinInfo"
+                                },
+                                "midTableExtraInfo": {
+                                    "type": "object",
+                                    "properties": {
+                                        "readonly": {
+                                            "type": "boolean"
+                                        },
+                                        "preventDeletionBySource": {
+                                            "type": "boolean"
+                                        },
+                                        "preventDeletionByTarget": {
+                                            "type": "boolean"
+                                        },
+                                        "cascadeDeletedBySource": {
+                                            "type": "boolean"
+                                        },
+                                        "cascadeDeletedByTarget": {
+                                            "type": "boolean"
+                                        },
+                                        "deletedWhenEndpointIsLogicallyDeleted": {
+                                            "type": "boolean"
+                                        },
+                                        "filter": {
+                                            "type": "object",
+                                            "properties": {
+                                                "columnName": {
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "type": "string"
+                                                },
+                                                "value": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "columnName",
+                                                "type",
+                                                "value"
+                                            ]
+                                        },
+                                        "logicalDeleteFilter": {
+                                            "type": "object",
+                                            "properties": {
+                                                "columnName": {
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "type": "string"
+                                                },
+                                                "nullable": {
+                                                    "type": "boolean"
+                                                },
+                                                "value": {
+                                                    "type": "string"
+                                                },
+                                                "generatorType": {
+                                                    "type": "string"
+                                                },
+                                                "generatorRef": {
+                                                    "type": "string"
+                                                },
+                                                "initializedValue": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "columnName",
+                                                "generatorRef",
+                                                "generatorType",
+                                                "initializedValue",
+                                                "nullable",
+                                                "type",
+                                                "value"
+                                            ]
+                                        }
+                                    }
+                                }
+                            },
+                            "required": [
+                                "midTableExtraInfo",
+                                "sourceJoinInfo",
+                                "targetJoinInfo",
+                                "type"
+                            ]
+                        },
+                        "nullable": {
+                            "type": "boolean",
+                            "const": true
+                        }
+                    },
+                    "required": [
+                        "joinInfo",
+                        "nullable"
+                    ]
+                },
+                {
+                    "$ref": "#/definitions/Omit<BaseProperty,\"nullable\">"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "associationId": {
+                            "type": "string"
+                        },
+                        "referencedEntityId": {
+                            "type": "string"
+                        },
+                        "idViewName": {
+                            "type": "string"
+                        },
+                        "idViewNameTemplate": {
+                            "type": "string"
+                        },
+                        "useIdViewNameTemplate": {
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "associationId",
+                        "idViewName",
+                        "idViewNameTemplate",
+                        "referencedEntityId",
+                        "useIdViewNameTemplate"
+                    ]
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "key": {
+                            "type": "boolean",
+                            "const": true
+                        },
+                        "keyGroups": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "required": [
+                        "key",
+                        "keyGroups"
+                    ]
+                }
+            ]
+        },
+        {
+            "$ref": "#/definitions/ManyToManySourceProperty"
         },
         {
             "$ref": "#/definitions/GetterFormulaProperty"
@@ -1529,8 +2170,34 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                 }
             ]
         },
-        "JoinInfo": {
+        "OnDissociationAction": {
+            "enum": [
+                "CHECK",
+                "DELETE",
+                "LAX",
+                "NONE",
+                "SET_NULL"
+            ],
+            "type": "string"
+        },
+        "FkJoinInfo": {
             "anyOf": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "const": "Unknown"
+                        },
+                        "foreignKeyType": {
+                            "$ref": "#/definitions/ForeignKeyType"
+                        }
+                    },
+                    "required": [
+                        "foreignKeyType",
+                        "type"
+                    ]
+                },
                 {
                     "type": "object",
                     "properties": {
@@ -1589,12 +2256,6 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
                         "foreignKeyType",
                         "type"
                     ]
-                },
-                {
-                    "$ref": "#/definitions/SingleColumnMidTableJoinInfo"
-                },
-                {
-                    "$ref": "#/definitions/MultiColumnMidTableJoinInfo"
                 }
             ]
         },
@@ -1605,371 +2266,167 @@ const MappedSuperClassPropertyJsonSchema: JSONSchemaType<MappedSuperClassPropert
             ],
             "type": "string"
         },
-        "SingleColumnMidTableJoinInfo": {
+        "ManyToManySourceProperty": {
             "allOf": [
                 {
                     "type": "object",
                     "properties": {
-                        "type": {
+                        "category": {
                             "type": "string",
-                            "const": "SingleColumnMidTable"
+                            "const": "ManyToMany_Source"
                         },
-                        "sourceColumnName": {
-                            "type": "string"
+                        "typeIsList": {
+                            "type": "boolean",
+                            "const": true
                         },
-                        "targetColumnName": {
-                            "type": "string"
-                        },
-                        "sourceForeignKeyType": {
-                            "$ref": "#/definitions/ForeignKeyType"
-                        },
-                        "targetForeignKeyType": {
-                            "$ref": "#/definitions/ForeignKeyType"
-                        }
-                    },
-                    "required": [
-                        "sourceColumnName",
-                        "sourceForeignKeyType",
-                        "targetColumnName",
-                        "targetForeignKeyType",
-                        "type"
-                    ]
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "tableName": {
-                            "type": "string"
-                        },
-                        "tableComment": {
-                            "type": "string"
-                        },
-                        "readonly": {
-                            "type": "boolean"
-                        },
-                        "preventDeletionBySource": {
-                            "type": "boolean"
-                        },
-                        "preventDeletionByTarget": {
-                            "type": "boolean"
-                        },
-                        "cascadeDeletedBySource": {
-                            "type": "boolean"
-                        },
-                        "cascadeDeletedByTarget": {
-                            "type": "boolean"
-                        },
-                        "deletedWhenEndpointIsLogicallyDeleted": {
-                            "type": "boolean"
-                        },
-                        "filter": {
+                        "joinInfo": {
                             "type": "object",
                             "properties": {
-                                "columnName": {
-                                    "type": "string"
-                                },
                                 "type": {
-                                    "type": "string"
+                                    "type": "string",
+                                    "const": "MidTable"
                                 },
-                                "value": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
+                                "sourceJoinInfo": {
+                                    "$ref": "#/definitions/FkJoinInfo"
+                                },
+                                "targetJoinInfo": {
+                                    "$ref": "#/definitions/FkJoinInfo"
+                                },
+                                "midTableExtraInfo": {
+                                    "type": "object",
+                                    "properties": {
+                                        "readonly": {
+                                            "type": "boolean"
+                                        },
+                                        "preventDeletionBySource": {
+                                            "type": "boolean"
+                                        },
+                                        "preventDeletionByTarget": {
+                                            "type": "boolean"
+                                        },
+                                        "cascadeDeletedBySource": {
+                                            "type": "boolean"
+                                        },
+                                        "cascadeDeletedByTarget": {
+                                            "type": "boolean"
+                                        },
+                                        "deletedWhenEndpointIsLogicallyDeleted": {
+                                            "type": "boolean"
+                                        },
+                                        "filter": {
+                                            "type": "object",
+                                            "properties": {
+                                                "columnName": {
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "type": "string"
+                                                },
+                                                "value": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "columnName",
+                                                "type",
+                                                "value"
+                                            ]
+                                        },
+                                        "logicalDeleteFilter": {
+                                            "type": "object",
+                                            "properties": {
+                                                "columnName": {
+                                                    "type": "string"
+                                                },
+                                                "type": {
+                                                    "type": "string"
+                                                },
+                                                "nullable": {
+                                                    "type": "boolean"
+                                                },
+                                                "value": {
+                                                    "type": "string"
+                                                },
+                                                "generatorType": {
+                                                    "type": "string"
+                                                },
+                                                "generatorRef": {
+                                                    "type": "string"
+                                                },
+                                                "initializedValue": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "columnName",
+                                                "generatorRef",
+                                                "generatorType",
+                                                "initializedValue",
+                                                "nullable",
+                                                "type",
+                                                "value"
+                                            ]
+                                        }
                                     }
                                 }
                             },
                             "required": [
-                                "columnName",
-                                "type",
-                                "value"
+                                "midTableExtraInfo",
+                                "sourceJoinInfo",
+                                "targetJoinInfo",
+                                "type"
                             ]
                         },
-                        "logicalDeleteFilter": {
-                            "type": "object",
-                            "properties": {
-                                "columnName": {
-                                    "type": "string"
-                                },
-                                "type": {
-                                    "type": "string"
-                                },
-                                "nullable": {
-                                    "type": "boolean"
-                                },
-                                "value": {
-                                    "type": "string"
-                                },
-                                "generatorType": {
-                                    "type": "string"
-                                },
-                                "generatorRef": {
-                                    "type": "string"
-                                },
-                                "initializedValue": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "columnName",
-                                "generatorRef",
-                                "generatorType",
-                                "initializedValue",
-                                "nullable",
-                                "type",
-                                "value"
-                            ]
+                        "autoGenerateJoinInfo": {
+                            "type": "boolean"
+                        },
+                        "nullable": {
+                            "type": "boolean",
+                            "const": false
                         }
                     },
                     "required": [
-                        "tableComment",
-                        "tableName"
+                        "autoGenerateJoinInfo",
+                        "category",
+                        "joinInfo",
+                        "nullable",
+                        "typeIsList"
                     ]
-                }
-            ]
-        },
-        "MultiColumnMidTableJoinInfo": {
-            "allOf": [
+                },
                 {
-                    "type": "object",
-                    "properties": {
-                        "type": {
-                            "type": "string",
-                            "const": "MultiColumnMidTable"
-                        },
-                        "sourceJoinInfo": {
-                            "anyOf": [
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "type": {
-                                            "type": "string",
-                                            "const": "SingleColumn"
-                                        },
-                                        "columnName": {
-                                            "type": "string"
-                                        },
-                                        "foreignKeyType": {
-                                            "$ref": "#/definitions/ForeignKeyType"
-                                        }
-                                    },
-                                    "required": [
-                                        "columnName",
-                                        "foreignKeyType",
-                                        "type"
-                                    ]
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "type": {
-                                            "type": "string",
-                                            "const": "MultiColumn"
-                                        },
-                                        "embeddableTypeId": {
-                                            "type": "string"
-                                        },
-                                        "columnRefs": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "columnName": {
-                                                        "type": "string"
-                                                    },
-                                                    "referencedColumnName": {
-                                                        "type": "string"
-                                                    }
-                                                },
-                                                "required": [
-                                                    "columnName",
-                                                    "referencedColumnName"
-                                                ]
-                                            }
-                                        },
-                                        "foreignKeyType": {
-                                            "$ref": "#/definitions/ForeignKeyType"
-                                        }
-                                    },
-                                    "required": [
-                                        "columnRefs",
-                                        "embeddableTypeId",
-                                        "foreignKeyType",
-                                        "type"
-                                    ]
-                                }
-                            ]
-                        },
-                        "targetJoinInfo": {
-                            "anyOf": [
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "type": {
-                                            "type": "string",
-                                            "const": "SingleColumn"
-                                        },
-                                        "columnName": {
-                                            "type": "string"
-                                        },
-                                        "foreignKeyType": {
-                                            "$ref": "#/definitions/ForeignKeyType"
-                                        }
-                                    },
-                                    "required": [
-                                        "columnName",
-                                        "foreignKeyType",
-                                        "type"
-                                    ]
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "type": {
-                                            "type": "string",
-                                            "const": "MultiColumn"
-                                        },
-                                        "embeddableTypeId": {
-                                            "type": "string"
-                                        },
-                                        "columnRefs": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "columnName": {
-                                                        "type": "string"
-                                                    },
-                                                    "referencedColumnName": {
-                                                        "type": "string"
-                                                    }
-                                                },
-                                                "required": [
-                                                    "columnName",
-                                                    "referencedColumnName"
-                                                ]
-                                            }
-                                        },
-                                        "foreignKeyType": {
-                                            "$ref": "#/definitions/ForeignKeyType"
-                                        }
-                                    },
-                                    "required": [
-                                        "columnRefs",
-                                        "embeddableTypeId",
-                                        "foreignKeyType",
-                                        "type"
-                                    ]
-                                }
-                            ]
-                        }
-                    },
-                    "required": [
-                        "sourceJoinInfo",
-                        "targetJoinInfo",
-                        "type"
-                    ]
+                    "$ref": "#/definitions/Omit<BaseProperty,\"nullable\">"
                 },
                 {
                     "type": "object",
                     "properties": {
-                        "tableName": {
+                        "associationId": {
                             "type": "string"
                         },
-                        "tableComment": {
+                        "referencedEntityId": {
                             "type": "string"
                         },
-                        "readonly": {
+                        "idViewName": {
+                            "type": "string"
+                        },
+                        "idViewNameTemplate": {
+                            "type": "string"
+                        },
+                        "useIdViewNameTemplate": {
                             "type": "boolean"
-                        },
-                        "preventDeletionBySource": {
-                            "type": "boolean"
-                        },
-                        "preventDeletionByTarget": {
-                            "type": "boolean"
-                        },
-                        "cascadeDeletedBySource": {
-                            "type": "boolean"
-                        },
-                        "cascadeDeletedByTarget": {
-                            "type": "boolean"
-                        },
-                        "deletedWhenEndpointIsLogicallyDeleted": {
-                            "type": "boolean"
-                        },
-                        "filter": {
-                            "type": "object",
-                            "properties": {
-                                "columnName": {
-                                    "type": "string"
-                                },
-                                "type": {
-                                    "type": "string"
-                                },
-                                "value": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "required": [
-                                "columnName",
-                                "type",
-                                "value"
-                            ]
-                        },
-                        "logicalDeleteFilter": {
-                            "type": "object",
-                            "properties": {
-                                "columnName": {
-                                    "type": "string"
-                                },
-                                "type": {
-                                    "type": "string"
-                                },
-                                "nullable": {
-                                    "type": "boolean"
-                                },
-                                "value": {
-                                    "type": "string"
-                                },
-                                "generatorType": {
-                                    "type": "string"
-                                },
-                                "generatorRef": {
-                                    "type": "string"
-                                },
-                                "initializedValue": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "columnName",
-                                "generatorRef",
-                                "generatorType",
-                                "initializedValue",
-                                "nullable",
-                                "type",
-                                "value"
-                            ]
                         }
                     },
                     "required": [
-                        "tableComment",
-                        "tableName"
+                        "associationId",
+                        "idViewName",
+                        "idViewNameTemplate",
+                        "referencedEntityId",
+                        "useIdViewNameTemplate"
                     ]
                 }
             ]
-        },
-        "OnDissociationAction": {
-            "enum": [
-                "CHECK",
-                "DELETE",
-                "LAX",
-                "NONE",
-                "SET_NULL"
-            ],
-            "type": "string"
         },
         "GetterFormulaProperty": {
             "allOf": [
