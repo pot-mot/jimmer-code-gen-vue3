@@ -211,6 +211,11 @@ export const entityToTable = (
         entityIdTableIdColumnsMap.set(entity.id, idColumns)
     }
 
+    const lowerCase = context.model.databaseNameStrategy === "LOWER_SNAKE"
+    const INDEX_PREFIX = lowerCase ? "idx_" : "IDX_"
+    const DEFAULT_KEY_GROUP = lowerCase ? "_default_key" : "_DEFAULT_KEY"
+
+
     for (const entity of entities) {
         const table = entityIdTableMap.get(entity.id)
         if (!table) throw new Error(`[${entity.id}] not found`)
@@ -219,10 +224,48 @@ export const entityToTable = (
 
         tables.push(table)
 
+        const keyColumnNamesMap = new Map<string, string[]>()
+        const putKeyProperty = (
+            property: DeepReadonly<{id: string, name: string} & KeyProperty & { inheritSource?: MappedSuperClass }>,
+            columnName: string,
+        ) => {
+            let keyIndexPrefix = ""
+            if ("inheritSource" in property && property.inheritSource !== undefined) {
+                keyIndexPrefix = property.inheritSource.name + "_"
+            }
+
+            if (property.keyGroups.length === 0) {
+                const keyGroup = keyIndexPrefix + DEFAULT_KEY_GROUP
+
+                const keyColumns = keyColumnNamesMap.get(keyGroup)
+                if (keyColumns === undefined) {
+                    keyColumnNamesMap.set(keyGroup, [columnName])
+                } else {
+                    keyColumns.push(columnName)
+                }
+            } else {
+                for (let keyGroup of property.keyGroups) {
+                    if (keyGroup.length === 0) keyGroup = DEFAULT_KEY_GROUP
+                    keyGroup = keyIndexPrefix + keyGroup
+
+                    const keyColumns = keyColumnNamesMap.get(keyGroup)
+                    if (keyColumns === undefined) {
+                        keyColumnNamesMap.set(keyGroup, [columnName])
+                    } else {
+                        keyColumns.push(columnName)
+                    }
+                }
+            }
+        }
+
         for (const property of entity.allProperties) {
             // 标量属性
             if (property.category === "SCALAR_COMMON" || property.category === "SCALAR_ENUM") {
-                table.columns.push(scalarPropertyToColumn(property))
+                const column = scalarPropertyToColumn(property)
+                table.columns.push(column)
+                if ("key" in property) {
+                    putKeyProperty(property, column.name)
+                }
             } else if (property.category === "SCALAR_EMBEDDABLE") {
                 table.columns.push(...flatEmbeddableTypeColumns(property.embeddableTypeId))
             }
@@ -244,9 +287,13 @@ export const entityToTable = (
                         throw new Error(`[${entity.name}.${property.name}] refColumns [${refColumns.map(it => it.name).join(", ")}] length is not 1`)
                     }
 
+                    if ("key" in property) {
+                        putKeyProperty(property, property.joinInfo.columnName)
+                    }
+
                     if (property.category === "OneToOne_Source") {
                         table.indexes.push({
-                            name: 'IDX_' + association.name,
+                            name: INDEX_PREFIX + association.name,
                             columnNames: [property.joinInfo.columnName],
                             uniqueIndex: true,
                         })
@@ -291,9 +338,15 @@ export const entityToTable = (
                         })
                     }
 
+                    if ("key" in property) {
+                        for (const columnRef of property.joinInfo.columnRefs) {
+                            putKeyProperty(property, columnRef.columnName)
+                        }
+                    }
+
                     if (property.category === "OneToOne_Source") {
                         table.indexes.push({
-                            name: 'IDX_' + association.name,
+                            name: INDEX_PREFIX + association.name,
                             columnNames: property.joinInfo.columnRefs.map(it => it.columnName),
                             uniqueIndex: true,
                         })
@@ -324,6 +377,12 @@ export const entityToTable = (
                         referencedColumnName: col.name
                     }))
 
+                    if ("key" in property) {
+                        for (const columnRef of columnRefs) {
+                            putKeyProperty(property, columnRef.columnName)
+                        }
+                    }
+
                     const joinColumnInfos = bindJoinColumnInfo(columnRefs, referencedTableIdColumns)
 
                     for (const { columnRef, columnInfo } of joinColumnInfos) {
@@ -337,7 +396,7 @@ export const entityToTable = (
 
                     if (property.category === "OneToOne_Source") {
                         table.indexes.push({
-                            name: 'IDX_' + association.name,
+                            name: INDEX_PREFIX + association.name,
                             columnNames: columnRefs.map(it => it.columnName),
                             uniqueIndex: true,
                         })
@@ -355,6 +414,10 @@ export const entityToTable = (
                         })
                     }
                 } else if (property.joinInfo.type === "MidTable") {
+                    if ("key" in property) {
+                        throw new Error(`[${entity.name}.${property.name}] cannot be key property`)
+                    }
+
                     const sourceColumnRef: ColumnRef[] = []
                     if (property.joinInfo.sourceJoinInfo.type === "SingleColumn") {
                         if (idColumns.length !== 1 || !idColumns[0]) {
@@ -427,6 +490,15 @@ export const entityToTable = (
                     }))
                 }
             }
+        }
+
+        for (const [key, columnNames] of keyColumnNamesMap.entries()) {
+            const idxName = INDEX_PREFIX + key
+            table.indexes.push({
+                name: idxName,
+                columnNames,
+                uniqueIndex: true
+            })
         }
     }
 

@@ -12,7 +12,6 @@ import {
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 import {idOnlyToAssociation} from "@/type/context/utils/AssociationIdOnlyToAssociation.ts";
 import {nameTool} from "@/type/context/utils/NameTool.ts";
-import {createId} from "@/modelEditor/useModelEditor.ts";
 import {
     manyToManyAbstractToReal,
     oneToManyAbstractToReal,
@@ -57,7 +56,9 @@ export const contextDataToContext = (
 
     type TempEntity = Entity & {
         properties: Property[],
-        inheritSourceProperties: (OneToOneSourceProperty | ManyToOneProperty | ManyToManySourceProperty)[]
+        inheritSourceProperties: ((OneToOneSourceProperty | ManyToOneProperty | ManyToManySourceProperty) & {
+            inheritSource: MappedSuperClass
+        })[]
     }
     type TempMappedSuperClass = MappedSuperClass & {
         properties: Property[],
@@ -130,7 +131,10 @@ export const contextDataToContext = (
                     }, inheritEntity, referencedEntity)
 
                     associationIdOnlyMap.set(realAssociation.id, realAssociation)
-                    inheritEntity.inheritSourceProperties.push(realSourceProperty)
+                    inheritEntity.inheritSourceProperties.push({
+                        ...realSourceProperty,
+                        inheritSource: mappedSuperClass,
+                    })
                     if (realAssociation.withMappedProperty) {
                         referencedEntity.properties.push(realMappedProperty)
                     }
@@ -152,7 +156,10 @@ export const contextDataToContext = (
                     }, inheritEntity, referencedEntity)
 
                     associationIdOnlyMap.set(realAssociation.id, realAssociation)
-                    inheritEntity.inheritSourceProperties.push(realSourceProperty)
+                    inheritEntity.inheritSourceProperties.push({
+                        ...realSourceProperty,
+                        inheritSource: mappedSuperClass,
+                    })
                     if (realAssociation.withMappedProperty) {
                         referencedEntity.properties.push(realMappedProperty)
                     }
@@ -174,7 +181,10 @@ export const contextDataToContext = (
                     }, inheritEntity, referencedEntity)
 
                     associationIdOnlyMap.set(realAssociation.id, realAssociation)
-                    inheritEntity.inheritSourceProperties.push(realSourceProperty)
+                    inheritEntity.inheritSourceProperties.push({
+                        ...realSourceProperty,
+                        inheritSource: mappedSuperClass,
+                    })
                     if (realAssociation.withMappedProperty) {
                         referencedEntity.properties.push(realMappedProperty)
                     }
@@ -189,11 +199,14 @@ export const contextDataToContext = (
         const inheritItem = inheritInfo.abstractInheritInfoMap.get(id)
         if (!inheritItem) throw new Error(`[${mappedSuperClass.name}] has no inheritInfo`)
 
-        const allProperties = []
+        const allProperties: PropertyWithInheritSource[] = []
         for (const ancestorId of inheritItem.ancestorIdSet) {
             const ancestor = tempMappedSuperClassMap.get(ancestorId)
             if (ancestor) {
-                allProperties.push(...ancestor.properties)
+                allProperties.push(...ancestor.properties.map(property => ({
+                    ...property,
+                    inheritSource: ancestor
+                })))
             }
         }
         allProperties.push(...mappedSuperClass.properties)
@@ -227,13 +240,16 @@ export const contextDataToContext = (
         const inheritItem = inheritInfo.concreteInheritInfoMap.get(id)
         if (!inheritItem) throw new Error(`[${entity.name}] has no inheritInfo`)
 
-        const allProperties = []
+        const allProperties: PropertyWithInheritSource[] = []
         for (const ancestorId of inheritItem.ancestorIdSet) {
             const ancestor = tempMappedSuperClassMap.get(ancestorId)
             if (ancestor) {
                 for (const property of ancestor.properties) {
                     if (property.category === "OneToOne_Source" || property.category === "ManyToOne" || property.category === "ManyToMany_Source") continue
-                    allProperties.push(property)
+                    allProperties.push({
+                        ...property,
+                        inheritSource: ancestor
+                    })
                 }
             }
         }
@@ -288,7 +304,12 @@ export const contextDataToContext = (
     for (const [id, group] of contextData.groupMap) {
         groupWithInheritInfoMap.set(id, {
             ...group,
-            ...getGroupSubMaps(id, {entityMap: entityWithInheritInfoMap, enumerationMap, mappedSuperClassMap: mappedSuperClassWithInheritInfoMap, embeddableTypeMap}),
+            ...getGroupSubMaps(id, {
+                entityMap: entityWithInheritInfoMap,
+                enumerationMap,
+                mappedSuperClassMap: mappedSuperClassWithInheritInfoMap,
+                embeddableTypeMap
+            }),
         })
     }
 

@@ -275,6 +275,26 @@ export const createJvmFileBuilder = (
         }
     }
 
+    const generateKeyAnnotation = (
+        keyGroups: ReadonlyArray<string>
+    ): string[] => {
+        const annotations = []
+
+        if (keyGroups.length === 0) {
+            annotations.push("@Key")
+        } else {
+            for (const keyGroup of keyGroups) {
+                if (keyGroup.length === 0) {
+                    annotations.push("@Key")
+                } else {
+                    annotations.push(`@Key(group = ${keyGroup})`)
+                }
+            }
+        }
+
+        return annotations
+    }
+
     const pushProperty = (property: DeepReadonly<Property>): PropertyInfo => {
         for (const extraImport of property.extraImports) {
             importSet.add(extraImport)
@@ -325,6 +345,10 @@ export const createJvmFileBuilder = (
             } else {
                 annotations.push(`@Column(name = "${property.columnInfo.name}")`)
             }
+            if ("key" in property) {
+                importSet.add("org.babyfish.jimmer.sql.Key")
+                annotations.push(...generateKeyAnnotation(property.keyGroups))
+            }
             if (property.serialized) {
                 importSet.add("org.babyfish.jimmer.sql.Serialized")
                 annotations.push("@Serialized")
@@ -347,15 +371,19 @@ export const createJvmFileBuilder = (
         } else if (property.category === "SCALAR_ENUM") {
             importSet.add("org.babyfish.jimmer.sql.Column")
             const enumeration = requireEnumeration(property.enumId)
+            const annotations: string[] = []
+            annotations.push(`@Column(name = "${property.columnInfo.name}")`)
+            if ("key" in property) {
+                importSet.add("org.babyfish.jimmer.sql.Key")
+                annotations.push(...generateKeyAnnotation(property.keyGroups))
+            }
+            annotations.push(...property.extraAnnotations)
             const propertyInfo = {
                 raw: property,
                 name: property.name,
                 comment: property.comment,
                 type: enumeration.name,
-                annotations: [
-                    `@Column(name = "${property.columnInfo.name}")`,
-                    ...property.extraAnnotations,
-                ],
+                annotations,
                 nullable: property.nullable
             }
             propertyInfos.push(propertyInfo)
@@ -380,12 +408,16 @@ export const createJvmFileBuilder = (
             const referencedEntity = requireEntity(property.referencedEntityId)
             const annotations = [
                 '@OneToOne',
-                ...property.extraAnnotations,
             ]
+            if ("key" in property) {
+                importSet.add("org.babyfish.jimmer.sql.Key")
+                annotations.push(...generateKeyAnnotation(property.keyGroups))
+            }
             const joinAnnotation = buildJoinAnnotation(property.joinInfo, getAssociation(property.associationId))
             if (joinAnnotation !== undefined) {
                 annotations.push(joinAnnotation)
             }
+            annotations.push(...property.extraAnnotations)
             const propertyInfo = {
                 raw: property,
                 name: property.name,
@@ -421,12 +453,16 @@ export const createJvmFileBuilder = (
             const referencedEntity = requireEntity(property.referencedEntityId)
             const annotations = [
                 '@ManyToOne',
-                ...property.extraAnnotations,
             ]
+            if ("key" in property) {
+                importSet.add("org.babyfish.jimmer.sql.Key")
+                annotations.push(...generateKeyAnnotation(property.keyGroups))
+            }
             const joinAnnotation = buildJoinAnnotation(property.joinInfo, getAssociation(property.associationId))
             if (joinAnnotation !== undefined) {
                 annotations.push(joinAnnotation)
             }
+            annotations.push(...property.extraAnnotations)
             const propertyInfo = {
                 raw: property,
                 name: property.name,
@@ -462,12 +498,12 @@ export const createJvmFileBuilder = (
             const referencedEntity = requireEntity(property.referencedEntityId)
             const annotations = [
                 '@ManyToMany',
-                ...property.extraAnnotations,
             ]
             const joinAnnotation = buildJoinAnnotation(property.joinInfo, getAssociation(property.associationId))
             if (joinAnnotation !== undefined) {
                 annotations.push(joinAnnotation)
             }
+            annotations.push(...property.extraAnnotations)
             const propertyInfo = {
                 raw: property,
                 name: property.name,

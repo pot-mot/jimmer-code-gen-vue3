@@ -8,10 +8,14 @@ type ModelContextData = {
     associationMap: Map<string, EdgedAssociation>
 }
 
+type PropertyWithInheritSource = Property & {
+    inheritSource?: MappedSuperClass
+}
+
 type EntityInheritInfo = {
     directExtends: Set<MappedSuperClassWithInheritInfo>,
     allExtends: Set<MappedSuperClassWithInheritInfo>
-    allProperties: Property[]
+    allProperties: PropertyWithInheritSource[]
 }
 type EntityWithInheritInfo = Omit<EntityWithCategorizedProperties, 'properties'> & {
     properties: Property[]
@@ -20,7 +24,7 @@ type EntityWithInheritInfo = Omit<EntityWithCategorizedProperties, 'properties'>
 type MappedSuperClassInheritInfo = {
     directExtends: Set<MappedSuperClassWithInheritInfo>,
     allExtends: Set<MappedSuperClassWithInheritInfo>,
-    allProperties: Property[],
+    allProperties: PropertyWithInheritSource[],
 }
 type MappedSuperClassWithInheritInfo = Omit<MappedSuperClassWithCategorizedProperties, 'properties'> & {
     properties: Property[]

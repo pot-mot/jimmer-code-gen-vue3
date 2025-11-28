@@ -3,6 +3,6 @@ export default Object.freeze({
     content: `type MappedSuperClassInheritInfo = {
     directExtends: Set<MappedSuperClassWithInheritInfo>,
     allExtends: Set<MappedSuperClassWithInheritInfo>,
-    allProperties: Property[],
+    allProperties: PropertyWithInheritSource[],
 }`,
 })
