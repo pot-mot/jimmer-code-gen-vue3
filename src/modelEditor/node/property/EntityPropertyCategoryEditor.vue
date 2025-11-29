@@ -97,9 +97,9 @@ const toggleVersion = () => {
             <div class="category-editor-header">
                 <IconPrimaryKey v-if="propertyIsId"/>
                 <IconForeignKey v-if="propertyIsForeignKey"/>
-                <IconVersion v-if="propertyIsVersion"/>
                 <IconBusinessKey v-if="propertyIsKey"/>
                 <IconLogicalDelete v-if="propertyIsLogicalDeleted"/>
+                <IconVersion v-if="propertyIsVersion"/>
             </div>
         </template>
 
@@ -122,14 +122,6 @@ const toggleVersion = () => {
             </div>
             <div
                 class="category-option"
-                :class="{selected: propertyIsVersion}"
-                @click="toggleVersion"
-            >
-                <IconVersion/>
-                Version
-            </div>
-            <div
-                class="category-option"
                 :class="{selected: propertyIsKey, disabled: !propertyMayKey}"
                 @click="toggleKey"
             >
@@ -143,6 +135,14 @@ const toggleVersion = () => {
             >
                 <IconLogicalDelete/>
                 LogicalDelete
+            </div>
+            <div
+                class="category-option"
+                :class="{selected: propertyIsVersion}"
+                @click="toggleVersion"
+            >
+                <IconVersion/>
+                Version
             </div>
         </template>
     </Dropdown>

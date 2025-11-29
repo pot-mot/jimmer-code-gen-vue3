@@ -6,15 +6,14 @@ import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 
 const getDefaultStringSqlType = () => {
     return {
-        type: "VARCHAR(255)",
+        type: "varchar(255)",
         dataSize: 255,
         numericPrecision: undefined,
     }
 }
 const getDefaultIntSqlType = () => {
     return {
-        type: "INT",
-        dataSize: 10,
+        type: "int",
         numericPrecision: undefined,
     }
 }
@@ -180,7 +179,7 @@ export const toVersionProperty = (property: DeepReadonly<Property>): VersionProp
         ...toBaseProperty(property),
         category: "VERSION",
         nullable: false,
-        rawType: useModelEditor().contextData.model.jvmLanguage === "JAVA" ? "int" : "int",
+        rawType: useModelEditor().contextData.model.jvmLanguage === "JAVA" ? "int" : "Int",
         extraImports: Array.from(property.extraImports),
         columnInfo: "columnInfo" in property ?
             createColumnInfo(property, property.columnInfo) :
