@@ -338,7 +338,9 @@ const association = computed(() => {
                 </div>
                 <div v-if="'referencedEntityId' in property" class="type-editor-header-label">
                     <IconEntity class="type-editor-header-label-icon"/>
+                    <span v-if="property.category === 'ManyToMany_Source'">List<</span>
                     <EntityViewer :entity="referencedEntity" hide-comment ctrl-focus/>
+                    <span v-if="property.category === 'ManyToMany_Source'">></span>
                     <div
                         v-if="referencedEntity && 'associationId' in property && !association"
                         style="color: var(--danger-color);"
