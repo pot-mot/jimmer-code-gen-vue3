@@ -201,7 +201,6 @@ export const useModelEditor = createStore(() => {
             return groupId
         }
 
-        debugger
         if (fullData.groups.length === 0) {
             for (const {data} of fullData.entities) {
                 data.groupId = requireNewGroup()
