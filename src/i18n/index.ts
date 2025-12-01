@@ -59,6 +59,7 @@ export type MainLocale = {
     paste_success_tip: string
     paste_fail_tip: string
     compile_fail: string
+    no_more_questions: string
 
     name: string
     comment: string

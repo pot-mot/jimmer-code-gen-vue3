@@ -61,6 +61,7 @@ export const localeZhCn: MainLocale = {
     paste_success_tip: "粘贴成功",
     paste_fail_tip: "粘贴失败",
     compile_fail: "编译失败",
+    no_more_questions: "没有问题",
 
     name: "名称",
     comment: "备注",

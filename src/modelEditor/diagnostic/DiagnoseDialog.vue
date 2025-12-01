@@ -50,6 +50,12 @@ const {
         </template>
 
         <div class="diagnose-body">
+            <div
+                v-if="modelDiagnoseInfo.total === 0"
+            >
+                {{ translate('no_more_questions') }}
+            </div>
+
             <CollapseDetail
                 v-if="modelDiagnoseInfo.groupTotal > 0"
                 :model-value="true"

@@ -61,6 +61,7 @@ export const localeEn: MainLocale = {
     paste_success_tip: "Paste Success",
     paste_fail_tip: "Paste Fail",
     compile_fail: "Compile Fail",
+    no_more_questions: "No more Questions",
 
     name: "Name",
     comment: "Comment",
