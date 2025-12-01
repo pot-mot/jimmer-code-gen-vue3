@@ -183,20 +183,53 @@ export const useModelEditor = createStore(() => {
     }
 
     const importModelGraphData = async (data: Partial<ModelGraphSubData>, options?: {
-        overrideGroupId?: string,
         select?: boolean,
         fitCurrentScreenPosition?: boolean
     }) => {
         const vueFlow = getVueFlow()
 
         const fullData = fillModelGraphSubData(data)
-        if (options?.overrideGroupId !== undefined) {
-            const groupId = options.overrideGroupId
+
+        let newGroupId: string | undefined
+        const requireNewGroup = () => {
+            if (newGroupId !== undefined) {
+                return newGroupId
+            }
+            const groupId = getCurrentGroupIdOrCreate()
             toggleCurrentGroup({id: groupId})
-            for (const {data} of fullData.entities) data.groupId = groupId
-            for (const {data} of fullData.mappedSuperClasses) data.groupId = groupId
-            for (const {data} of fullData.embeddableTypes) data.groupId = groupId
-            for (const {data} of fullData.enumerations) data.groupId = groupId
+            newGroupId = groupId
+            return groupId
+        }
+
+        debugger
+        if (fullData.groups.length === 0) {
+            for (const {data} of fullData.entities) {
+                data.groupId = requireNewGroup()
+            }
+            for (const {data} of fullData.mappedSuperClasses) {
+                data.groupId = requireNewGroup()
+            }
+            for (const {data} of fullData.embeddableTypes) {
+                data.groupId = requireNewGroup()
+            }
+            for (const {data} of fullData.enumerations) {
+                data.groupId = requireNewGroup()
+            }
+        } else {
+            const groupIdSet = new Set<string>(fullData.groups.map(it => it.id))
+            for (const groupId of contextData.groupMap.keys()) groupIdSet.add(groupId)
+            for (const {data} of fullData.entities) {
+                if (!groupIdSet.has(data.groupId)) data.groupId = requireNewGroup()
+            }
+            for (const {data} of fullData.mappedSuperClasses) {
+                if (!groupIdSet.has(data.groupId)) data.groupId = requireNewGroup()
+            }
+            for (const {data} of fullData.embeddableTypes) {
+                if (!groupIdSet.has(data.groupId)) data.groupId = requireNewGroup()
+            }
+            for (const {data} of fullData.enumerations) {
+                if (!groupIdSet.has(data.groupId)) data.groupId = requireNewGroup()
+            }
         }
 
         modelSelection.unselectAll()
@@ -637,7 +670,6 @@ export const useModelEditor = createStore(() => {
         },
         importData: async (data: Partial<ModelGraphSubData>) => {
             await importModelGraphData(data, {
-                overrideGroupId: getCurrentGroupIdOrCreate(),
                 select: true,
                 fitCurrentScreenPosition: true,
             })
