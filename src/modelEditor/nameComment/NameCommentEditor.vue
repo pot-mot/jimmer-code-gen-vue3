@@ -36,7 +36,7 @@ useClickOutside(() => nameCommentEditorRef.value, () => {
     wrapperFocused.value = false
     nameFocused.value = false
     commentFocused.value = false
-}, {capture: true})
+})
 
 const focusNameInput = () => {
     wrapperFocused.value = true

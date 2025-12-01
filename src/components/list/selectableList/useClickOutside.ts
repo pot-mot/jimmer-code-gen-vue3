@@ -1,25 +1,39 @@
 import {onBeforeUnmount, onMounted} from "vue";
 
-export const useClickOutside = (
-    _target: () => HTMLElement | null | undefined,
-    callback: (e: MouseEvent) => void,
-    options?: boolean | AddEventListenerOptions
-) => {
-    const handler = (e: MouseEvent) => {
-        const target = _target()
+const clickOutsideHandlers = new Map<
+    () => Element | null | undefined,
+    (e: MouseEvent) => void
+>()
 
-        if (target) {
-            if (!target.contains(e.target as HTMLElement)) {
-                callback(e)
+const handleClickOutside = (e: MouseEvent) => {
+    if (e.target instanceof Element) {
+        for (const [target, handler] of clickOutsideHandlers) {
+            const targetElement = target()
+            if (targetElement && !targetElement.contains(e.target)) {
+                handler(e)
             }
         }
     }
+}
 
+export const mountClickOutside = () => {
+    document.documentElement.addEventListener('click', handleClickOutside, {capture: true})
+}
+
+export const umountClickOutside = () => {
+    document.documentElement.removeEventListener('click', handleClickOutside)
+    clickOutsideHandlers.clear()
+}
+
+export const useClickOutside = (
+    _target: () => Element | null | undefined,
+    callback: (e: MouseEvent) => void,
+) => {
     onMounted(() => {
-        document.documentElement.addEventListener('click', handler, options)
+        clickOutsideHandlers.set(_target, callback)
     })
 
     onBeforeUnmount(() => {
-        document.documentElement.removeEventListener('click', handler, options)
+        clickOutsideHandlers.delete(_target)
     })
 }
