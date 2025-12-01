@@ -159,6 +159,6 @@ button:hover {
 }
 
 button:focus {
-    outline: 0.25rem solid var(--background-color-hover);
+    box-shadow: 0 0 0.25rem 0.25rem var(--background-color-hover);
 }
 
