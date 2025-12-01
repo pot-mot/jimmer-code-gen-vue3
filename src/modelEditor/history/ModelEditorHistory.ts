@@ -1,6 +1,6 @@
 import {type CommandChangeInput, type CommandDefinition, useCommandHistory} from "@/history/commandHistory.ts";
 import {type GraphNode, type VueFlowStore, type XYPosition} from "@vue-flow/core";
-import {computed, type Reactive, reactive, readonly, type Ref, ref, shallowReadonly, type ShallowRef, watch} from "vue";
+import {computed, reactive, readonly, ref, shallowReadonly, watch} from "vue";
 import {deleteColorVar, type MenuItem, setColorVar} from "@/modelEditor/useModelEditor.ts";
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 import {debounce} from "lodash-es";
