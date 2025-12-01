@@ -265,13 +265,22 @@ export const useModelEditor = createStore(() => {
             remove(contextDataToSubIds(getContextData()))
             await nextTick()
             await waitChangeSync()
+
             changeModel(model)
             await importModelGraphData(data)
             await nextTick()
             await waitChangeSync()
             await vueFlow.value.setViewport(viewport)
-            if (currentGroupId.value === undefined && contextData.groupMap.size > 0) {
-                toggleCurrentGroup({id: contextData.groupMap.keys().next().value})
+
+            if (contextData.groupMap.size > 0) {
+                if (
+                    currentGroupId.value === undefined ||
+                    !contextData.groupMap.has(currentGroupId.value)
+                ) {
+                    toggleCurrentGroup({id: contextData.groupMap.keys().next().value})
+                }
+            } else {
+                toggleCurrentGroup({id: undefined})
             }
             history.clean()
         })
