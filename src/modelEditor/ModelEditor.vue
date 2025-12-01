@@ -6,20 +6,14 @@ import EntityNode from "@/modelEditor/node/EntityNode.vue";
 import MappedSuperClassNode from "@/modelEditor/node/MappedSuperClassNode.vue";
 import EnumerationNode from "@/modelEditor/node/EnumerationNode.vue";
 import EmbeddableTypeNode from "@/modelEditor/node/EmbeddableTypeNode.vue";
-import {onBeforeUnmount, onMounted, ref} from "vue";
+import {onBeforeUnmount, onMounted} from "vue";
 import ModelEditorToolbar from "@/modelEditor/toolbar/ModelEditorToolbar.vue";
 import {judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
 import ConcreteAssociationEdge from "@/modelEditor/edge/ConcreteAssociationEdge.vue";
 import AbstractAssociationEdge from "@/modelEditor/edge/AbstractAssociationEdge.vue";
 import ModelEditorSelectionRect from "@/modelEditor/selectionRect/ModelEditorSelectionRect.vue";
-import {defaultModelSubIds} from "@/type/context/utils/ModelSubIds.ts";
-import {NodeType_Entity} from "@/modelEditor/node/EntityNode.ts";
-import {NodeType_MappedSuperClass} from "@/modelEditor/node/MappedSuperClassNode.ts";
-import {NodeType_EmbeddableType} from "@/modelEditor/node/EmbeddableTypeNode.ts";
-import {NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
-import {EdgeType_ConcreteAssociation} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
-import {EdgeType_AbstractAssociation} from "@/modelEditor/edge/AbstractAssociationEdge.ts";
 import {useModelContextMenu} from "@/modelEditor/contextMenu/useModelContextMenu.ts";
+import {subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
 
 const {
     initModelEditor,
@@ -30,6 +24,7 @@ const {
     redo,
     saveModel,
     selectionRect,
+    modelSelection,
     graphSelection,
     enableMultiSelect,
     disableMultiSelect,
@@ -41,14 +36,10 @@ const {
     remove,
 } = useModelEditor()
 
-const isPointerEnter = ref(false)
-
 onMounted(() => {
     initModelEditor()
-    document.addEventListener("keydown", handleKeyDown)
 })
 onBeforeUnmount(() => {
-    document.removeEventListener("keydown", handleKeyDown)
     destroyModelEditor()
 })
 
@@ -57,34 +48,12 @@ const {
 } = useModelContextMenu()
 
 const handleKeyDown = async (e: KeyboardEvent) => {
-    if (!isPointerEnter.value) return
-
     // 按下 Delete 键删除选中的节点和边
     if (e.key === "Delete" || e.key === "Backspace") {
         if (judgeTargetIsInteraction(e)) return
 
         e.preventDefault()
-        const ids = defaultModelSubIds()
-        const {nodes, edges} = graphSelection.get()
-        for (const node of nodes) {
-            if (node.type === NodeType_Entity) {
-                ids.entityIds.push(node.id)
-            } else if (node.type === NodeType_MappedSuperClass) {
-                ids.mappedSuperClassIds.push(node.id)
-            } else if (node.type === NodeType_EmbeddableType) {
-                ids.embeddableTypeIds.push(node.id)
-            } else if (node.type === NodeType_Enumeration) {
-                ids.enumerationIds.push(node.id)
-            }
-        }
-        for (const edge of edges) {
-            if (edge.type === EdgeType_ConcreteAssociation) {
-                ids.associationIds.push(edge.id)
-            } else if (edge.type === EdgeType_AbstractAssociation) {
-                ids.associationIds.push(edge.id)
-            }
-        }
-        remove(ids)
+        remove(subIdSetToSubIds(modelSelection.selectedIdSets.value))
         focus()
     }
 
@@ -181,8 +150,7 @@ const handleKeyDown = async (e: KeyboardEvent) => {
     <div
         tabindex="-1"
         class="model-editor-wrapper"
-        @pointerenter="isPointerEnter = true"
-        @pointerleave="isPointerEnter = false"
+        @keydown="handleKeyDown"
     >
         <ModelEditorBackground :viewport="viewport"/>
 
