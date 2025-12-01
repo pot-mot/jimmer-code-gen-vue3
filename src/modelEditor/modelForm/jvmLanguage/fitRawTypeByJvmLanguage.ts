@@ -36,26 +36,6 @@ const javaKtTypeMapping: DeepReadonly<JavaKtTypeMapping[]> = [
         nullable: false,
     },
     {
-        javaType: "Short",
-        ktType: "Short",
-        nullable: true,
-    },
-    {
-        javaType: "Short",
-        ktType: "Short",
-        nullable: false,
-    },
-    {
-        javaType: "long",
-        ktType: "Long",
-        nullable: false,
-    },
-    {
-        javaType: "Long",
-        ktType: "Long",
-        nullable: true,
-    },
-    {
         javaType: "long",
         ktType: "Long",
         nullable: false,
@@ -66,27 +46,7 @@ const javaKtTypeMapping: DeepReadonly<JavaKtTypeMapping[]> = [
         nullable: false,
     },
     {
-        javaType: "Boolean",
-        ktType: "Boolean",
-        nullable: true,
-    },
-    {
-        javaType: "Boolean",
-        ktType: "Boolean",
-        nullable: false,
-    },
-    {
         javaType: "float",
-        ktType: "Float",
-        nullable: false,
-    },
-    {
-        javaType: "Float",
-        ktType: "Float",
-        nullable: true,
-    },
-    {
-        javaType: "Float",
         ktType: "Float",
         nullable: false,
     },
@@ -96,27 +56,7 @@ const javaKtTypeMapping: DeepReadonly<JavaKtTypeMapping[]> = [
         nullable: false,
     },
     {
-        javaType: "Double",
-        ktType: "Double",
-        nullable: true,
-    },
-    {
-        javaType: "Double",
-        ktType: "Double",
-        nullable: false,
-    },
-    {
         javaType: "byte",
-        ktType: "Byte",
-        nullable: false,
-    },
-    {
-        javaType: "Byte",
-        ktType: "Byte",
-        nullable: true,
-    },
-    {
-        javaType: "Byte",
         ktType: "Byte",
         nullable: false,
     },
