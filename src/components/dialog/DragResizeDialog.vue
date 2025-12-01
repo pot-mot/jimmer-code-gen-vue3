@@ -293,7 +293,11 @@ const onDragEnd = () => {
 <template>
     <Teleport to="body">
         <template v-if="openState">
-            <div v-if="modal" class="model"/>
+            <div class="modal">
+                <slot v-if="modal" name="modal">
+                    <div class="modal-content"/>
+                </slot>
+            </div>
 
             <ResizeWrapper
                 v-model="size"
@@ -385,14 +389,19 @@ const onDragEnd = () => {
     overflow: auto;
 }
 
-.model {
+.modal {
     position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: var(--mask-color);
     z-index: v-bind(zIndex);
+}
+
+.modal-content {
+    height: 100%;
+    width: 100%;
+    background-color: var(--mask-color);
 }
 
 :deep(.resize-border),
