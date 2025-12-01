@@ -30,7 +30,8 @@ import PropertyEditDialog from "@/modelEditor/node/property/PropertyEditDialog.v
 import {usePropertyEditDialog} from "@/modelEditor/node/property/usePropertyEditDialog.ts";
 import {useGroupCreateDialog} from "@/modelEditor/group/useGroupCreateDialog.ts";
 import GroupCreateDialog from "@/modelEditor/group/GroupCreateDialog.vue";
-
+import ModelContextMenu from "@/modelEditor/contextMenu/ModelContextMenu.vue";
+import {useModelContextMenu} from "@/modelEditor/contextMenu/useModelContextMenu.ts";
 
 const router = useRouter()
 const route = useRoute()
@@ -104,6 +105,7 @@ onBeforeUnmount(() => {
     try {useGroupCreateDialog().close()} catch (e) {console.error(e)}
     try {useGroupEditDialog().close()} catch (e) {console.error(e)}
     try {usePropertyEditDialog().close()} catch (e) {console.error(e)}
+    try {useModelContextMenu().close()} catch (e) {console.error(e)}
 })
 </script>
 
@@ -132,4 +134,5 @@ onBeforeUnmount(() => {
     <GroupCreateDialog/>
     <GroupEditDialog/>
     <PropertyEditDialog/>
+    <ModelContextMenu/>
 </template>

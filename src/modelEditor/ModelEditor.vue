@@ -19,6 +19,7 @@ import {NodeType_EmbeddableType} from "@/modelEditor/node/EmbeddableTypeNode.ts"
 import {NodeType_Enumeration} from "@/modelEditor/node/EnumerationNode.ts";
 import {EdgeType_ConcreteAssociation} from "@/modelEditor/edge/ConcreteAssociationEdge.ts";
 import {EdgeType_AbstractAssociation} from "@/modelEditor/edge/AbstractAssociationEdge.ts";
+import {useModelContextMenu} from "@/modelEditor/contextMenu/useModelContextMenu.ts";
 
 const {
     initModelEditor,
@@ -50,6 +51,10 @@ onBeforeUnmount(() => {
     document.removeEventListener("keydown", handleKeyDown)
     destroyModelEditor()
 })
+
+const {
+    open,
+} = useModelContextMenu()
 
 const handleKeyDown = async (e: KeyboardEvent) => {
     if (!isPointerEnter.value) return
@@ -200,6 +205,8 @@ const handleKeyDown = async (e: KeyboardEvent) => {
             no-drag-class-name="no-drag"
             no-wheel-class-name="no-wheel"
             :disable-keyboard-a11y="true"
+
+            @contextmenu.capture.prevent="open({type: 'Model'}, {x: $event.clientX, y: $event.clientY})"
         >
             <template #node-ENTITY="nodeProps">
                 <EntityNode v-bind="nodeProps"/>
