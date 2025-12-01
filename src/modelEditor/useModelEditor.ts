@@ -751,6 +751,7 @@ export const useModelEditor = createStore(() => {
             let lastMousePosition: XYPosition | null = null
 
             paneEl.addEventListener('mousedown', (e) => {
+                if (e.button !== 0) return
                 if (e.target !== paneEl) return
 
                 const currentTime = new Date().getTime()
