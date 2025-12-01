@@ -3,15 +3,18 @@ import type {EdgeChange, NodeChange, VueFlowStore} from "@vue-flow/core";
 import mitt from "mitt";
 import {fillModelSubIds} from "@/type/context/utils/ModelSubIds.ts";
 import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
+import type {CommandHistory} from "@/history/commandHistory.ts";
+import {inferCommandInput, type ModelEditorHistoryCommands} from "@/modelEditor/history/ModelEditorHistory.ts";
 
 export const useModelEditorSelectIds = (
     modelEditorState: {
         getContextData: () => ModelContextData,
         getVueFlow: () => VueFlowStore,
         getNextZIndex: () => number,
+        history: CommandHistory<ModelEditorHistoryCommands>,
     }
 ) => {
-    const {getContextData, getVueFlow, getNextZIndex} = modelEditorState
+    const {getContextData, getVueFlow, getNextZIndex, history} = modelEditorState
 
     // 选中的 Id
     const selectedIdSets = ref<ModelSubIdSets>({
@@ -205,6 +208,31 @@ export const useModelEditorSelectIds = (
         for (const id of selectedIdSets.value.associationIdSet) unselectAssociation(id)
     }
 
+    history.eventBus.on('change', (data) => {
+        if (inferCommandInput(data, "remove")) {
+            if (data.type === "apply") {
+                for (const {data: association} of data.revertOptions.associations) {
+                    selectedIdSets.value.associationIdSet.delete(association.id)
+                }
+                for (const {data: entity} of data.revertOptions.entities) {
+                    selectedIdSets.value.entityIdSet.delete(entity.id)
+                }
+                for (const {data: mappedSuperClass} of data.revertOptions.mappedSuperClasses) {
+                    selectedIdSets.value.mappedSuperClassIdSet.delete(mappedSuperClass.id)
+                }
+                for (const {data: embeddableType} of data.revertOptions.embeddableTypes) {
+                    selectedIdSets.value.embeddableTypeIdSet.delete(embeddableType.id)
+                }
+                for (const {data: enumeration} of data.revertOptions.enumerations) {
+                    selectedIdSets.value.enumerationIdSet.delete(enumeration.id)
+                }
+                for (const group of data.revertOptions.groups) {
+                    selectedIdSets.value.groupIdSet.delete(group.id)
+                }
+            }
+        }
+    })
+
     const syncNodeSelectChange = (changes: NodeChange[]) => {
         const vueFlow = getVueFlow()
 
@@ -242,28 +270,6 @@ export const useModelEditorSelectIds = (
                         modelSelectionEventBus.emit('enumeration', {id: change.id, selected: false})
                     }
                 }
-            } else if (change.type === "remove") {
-                if (change.id.startsWith("Entity")) {
-                    if (selectedIdSets.value.entityIdSet.has(change.id)) {
-                        selectedIdSets.value.entityIdSet.delete(change.id)
-                        modelSelectionEventBus.emit('entity', {id: change.id, selected: false})
-                    }
-                } else if (change.id.startsWith("MappedSuperClass")) {
-                    if (selectedIdSets.value.mappedSuperClassIdSet.has(change.id)) {
-                        selectedIdSets.value.mappedSuperClassIdSet.delete(change.id)
-                        modelSelectionEventBus.emit('mappedSuperClass', {id: change.id, selected: false})
-                    }
-                } else if (change.id.startsWith("EmbeddableType")) {
-                    if (selectedIdSets.value.embeddableTypeIdSet.has(change.id)) {
-                        selectedIdSets.value.embeddableTypeIdSet.delete(change.id)
-                        modelSelectionEventBus.emit('embeddableType', {id: change.id, selected: false})
-                    }
-                } else if (change.id.startsWith("Enumeration")) {
-                    if (selectedIdSets.value.enumerationIdSet.has(change.id)) {
-                        selectedIdSets.value.enumerationIdSet.delete(change.id)
-                        modelSelectionEventBus.emit('enumeration', {id: change.id, selected: false})
-                    }
-                }
             }
         }
     }
@@ -280,11 +286,6 @@ export const useModelEditorSelectIds = (
                     selectedIdSets.value.associationIdSet.add(change.id)
                     modelSelectionEventBus.emit('association', {id: change.id, selected: true})
                 } else {
-                    selectedIdSets.value.associationIdSet.delete(change.id)
-                    modelSelectionEventBus.emit('association', {id: change.id, selected: false})
-                }
-            } else if (change.type === "remove") {
-                if (selectedIdSets.value.associationIdSet.has(change.id)) {
                     selectedIdSets.value.associationIdSet.delete(change.id)
                     modelSelectionEventBus.emit('association', {id: change.id, selected: false})
                 }

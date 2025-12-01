@@ -455,7 +455,7 @@ export const useModelEditor = createStore(() => {
     }
 
     // Selection 选中部分的图数据
-    const modelSelection = useModelEditorSelectIds({getContextData, getVueFlow, getNextZIndex})
+    const modelSelection = useModelEditorSelectIds({getContextData, getVueFlow, getNextZIndex, history})
 
     const modelSelectionCount = computed<number>(() => {
         const idSets = modelSelection.selectedIdSets.value
