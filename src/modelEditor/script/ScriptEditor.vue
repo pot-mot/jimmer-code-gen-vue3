@@ -71,7 +71,7 @@ const handleSubmit = async () => {
 }
 
 const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.ctrlKey) {
+    if (e.ctrlKey || e.metaKey) {
         if (e.key === 's' || e.key === 'S') {
             e.preventDefault()
             handleSubmit()

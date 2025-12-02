@@ -83,7 +83,7 @@ const handleKeyDown = async (e: KeyboardEvent) => {
         }, {once: true})
     }
 
-    else if (e.ctrlKey) {
+    else if (e.ctrlKey || e.metaKey) {
         // 按下 Ctrl + z 键，进行历史记录的撤回重做
         if ((e.key === "z" || e.key === "Z")) {
             if (judgeTargetIsInteraction(e)) return

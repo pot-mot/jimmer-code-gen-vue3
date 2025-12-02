@@ -87,7 +87,7 @@ const handleKeyDown = async (e: KeyboardEvent) => {
         e.preventDefault()
         remove(subIdSetToSubIds(modelSelection.selectedIdSets.value))
         menuRef.value?.focus()
-    } else if (e.ctrlKey) {
+    } else if (e.ctrlKey || e.metaKey) {
         if (e.key === "f" || e.key === "F") {
             e.preventDefault()
             filterVisible.value = true

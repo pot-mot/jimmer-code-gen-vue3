@@ -117,15 +117,15 @@ const removeItem = (index: number) => {
 }
 
 const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === 's' || e.key === 'S') {
-        if (judgeTargetIsInteraction(e)) return
-        e.preventDefault()
-        handleSubmit()
-    } else if (e.key === 'Escape') {
+    if (e.key === 'Escape') {
         e.preventDefault()
         handleCancel()
-    } else if (e.ctrlKey) {
-        if (e.key === 'z' || e.key === 'Z') {
+    } else if (e.ctrlKey || e.metaKey) {
+        if (e.key === 's' || e.key === 'S') {
+            if (judgeTargetIsInteraction(e)) return
+            e.preventDefault()
+            handleSubmit()
+        } else if (e.key === 'z' || e.key === 'Z') {
             if (e.shiftKey) {
                 e.preventDefault()
                 history.redo()

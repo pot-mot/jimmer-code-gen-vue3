@@ -55,7 +55,7 @@ const handleItemClick = (e: MouseEvent, item: T, index: number) => {
     e.stopPropagation()
     e.stopImmediatePropagation()
 
-    if (e.ctrlKey) {
+    if (e.ctrlKey || e.metaKey) {
         if (!isSelected(index)) {
             select(index)
         } else {
