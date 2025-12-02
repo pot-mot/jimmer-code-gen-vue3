@@ -26,7 +26,7 @@ import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
 import {translate} from "@/store/i18nStore.ts";
 import IconEdit from "@/components/icons/IconEdit.vue";
 import IconRefresh from "@/components/icons/IconRefresh.vue";
-import {usePropertyEditDialog} from "@/modelEditor/node/property/usePropertyEditDialog.ts";
+import {usePropertyEditDialog} from "@/modelEditor/property/usePropertyEditDialog.ts";
 import {unclearTypeSet} from "@/modelEditor/diagnostic/unclearType.ts";
 
 const props = defineProps<{

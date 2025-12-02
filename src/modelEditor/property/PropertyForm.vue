@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T extends PropertyWithSource">
-import type {PropertyWithSource} from "@/modelEditor/node/property/usePropertyEditDialog.ts";
+import type {PropertyWithSource} from "@/modelEditor/property/usePropertyEditDialog.ts";
 import {translate} from "@/store/i18nStore.ts";
 import IconCheck from "@/components/icons/IconCheck.vue";
 import IconClose from "@/components/icons/IconClose.vue";

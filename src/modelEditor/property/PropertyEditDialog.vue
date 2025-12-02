@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import DragResizeDialog from "@/components/dialog/DragResizeDialog.vue";
-import {usePropertyEditDialog} from "@/modelEditor/node/property/usePropertyEditDialog.ts";
-import PropertyForm from "@/modelEditor/node/property/PropertyForm.vue";
+import {usePropertyEditDialog} from "@/modelEditor/property/usePropertyEditDialog.ts";
+import PropertyForm from "@/modelEditor/property/PropertyForm.vue";
 
 const {
     openState,
