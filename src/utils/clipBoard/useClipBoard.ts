@@ -10,18 +10,10 @@ export type ClipBoardTarget<INPUT, OUTPUT> = {
     stringifyData: (data: OUTPUT) => string
 }
 
-export const copyText = async (text: string) => {
-    return await writeText(text)
-}
-
-export const readClipBoardText = async () => {
-    return await readText()
-}
-
 export const useClipBoard = <INPUT, OUTPUT>(target: ClipBoardTarget<INPUT, OUTPUT>) => {
     const copy = async (lazyData: LazyData<OUTPUT> = target.exportData): Promise<OUTPUT> => {
         const data = await lazyDataParse(lazyData)
-        await copyText(target.stringifyData(data))
+        await writeText(target.stringifyData(data))
         return data
     }
 
@@ -32,7 +24,7 @@ export const useClipBoard = <INPUT, OUTPUT>(target: ClipBoardTarget<INPUT, OUTPU
     }
 
     const paste = async (): Promise<INPUT | string | undefined> => {
-        const text = await readClipBoardText()
+        const text = await readText()
         const data = JSON.parse(text)
         let errors: any
         if (target.validateInput(data, e => errors = e)) {
@@ -48,18 +40,4 @@ export const useClipBoard = <INPUT, OUTPUT>(target: ClipBoardTarget<INPUT, OUTPU
         cut,
         paste,
     }
-}
-
-export type CustomClipBoard<INPUT, OUTPUT> = ReturnType<typeof useClipBoard<INPUT, OUTPUT>>
-
-export const unimplementedClipBoard: CustomClipBoard<any, any> = {
-    copy: async () => {
-        throw new Error("Unimplemented")
-    },
-    cut: async () => {
-        throw new Error("Unimplemented")
-    },
-    paste: async () => {
-        throw new Error("Unimplemented")
-    },
 }
