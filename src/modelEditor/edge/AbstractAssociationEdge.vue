@@ -7,8 +7,6 @@ import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import MappedSuperClassViewer from "@/modelEditor/viewer/MappedSuperClassViewer.vue";
 import EntityIdViewer from "@/modelEditor/viewer/EntityIdViewer.vue";
 import LabelPositionEditor from "@/modelEditor/edge/tool/LabelPositionEditor.vue";
-import IconAim from "@/components/icons/IconAim.vue";
-import IconDelete from "@/components/icons/IconDelete.vue";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 import {
     tmp_abstractMidTableName,
@@ -22,7 +20,7 @@ import NameCommentTemplateOnlyEditor from "@/modelEditor/nameComment/NameComment
 
 const props = defineProps<EdgeProps<AbstractAssociationEdge["data"]>>()
 
-const {contextData, edgeToFront, focusEdge, remove, modelDiagnoseInfo} = useModelEditor()
+const {contextData, edgeToFront, modelDiagnoseInfo} = useModelEditor()
 
 const sourceAbstractEntity = computed(() => {
     return contextData.mappedSuperClassMap.get(props.data.edgedAssociation.association.sourceAbstractEntityId)
@@ -162,16 +160,6 @@ const mappedPropertyNameCommentView = computed(() => {
         </template>
 
         <template #toolbar>
-            <div class="edge-toolbar">
-                <button @click.stop="focusEdge(id)">
-                    <IconAim/>
-                </button>
-
-                <button @click.stop="remove({associationIds: [id]})">
-                    <IconDelete/>
-                </button>
-            </div>
-
             <LabelPositionEditor v-model="data.edgedAssociation.labelPosition" :get-path="getPath"/>
         </template>
     </AssociationEdge>

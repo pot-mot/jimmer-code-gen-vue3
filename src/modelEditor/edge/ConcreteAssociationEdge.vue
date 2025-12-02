@@ -5,16 +5,14 @@ import type {ConcreteAssociationEdge} from "@/modelEditor/edge/ConcreteAssociati
 import EntityIdViewer from "@/modelEditor/viewer/EntityIdViewer.vue";
 import {computed, useTemplateRef} from "vue";
 import LabelPositionEditor from "@/modelEditor/edge/tool/LabelPositionEditor.vue";
-import IconAim from "@/components/icons/IconAim.vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
-import IconDelete from "@/components/icons/IconDelete.vue";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 import {associationElementId, mappedPropertyElementId} from "@/modelEditor/edge/edgeElementId.ts";
 import NameCommentTemplateEditor from "@/modelEditor/nameComment/NameCommentTemplateEditor.vue";
 
 const props = defineProps<EdgeProps<ConcreteAssociationEdge["data"]>>()
 
-const {modelDiagnoseInfo, edgeToFront, focusEdge, remove} = useModelEditor()
+const {modelDiagnoseInfo, edgeToFront} = useModelEditor()
 
 const associationEdgeRef = useTemplateRef("associationEdgeRef")
 const getPath = computed(() => {
@@ -90,16 +88,6 @@ const getPath = computed(() => {
         </template>
 
         <template #toolbar>
-            <div class="edge-toolbar">
-                <button @click.stop="focusEdge(id)">
-                    <IconAim/>
-                </button>
-
-                <button @click.stop="remove({associationIds: [id]})">
-                    <IconDelete/>
-                </button>
-            </div>
-
             <LabelPositionEditor v-model="data.edgedAssociation.labelPosition" :get-path="getPath"/>
         </template>
     </AssociationEdge>
