@@ -164,7 +164,15 @@ export const entityDiagnose = (
         if ("referencedEntityId" in property) {
             if (!contextData.entityMap.has(property.referencedEntityId)) {
                 messages.push({
-                    content: "[Type Entity is missing]",
+                    content: "[Referenced Entity is missing]",
+                    type: "error"
+                })
+            }
+        }
+        if ("associationId" in property) {
+            if (!contextData.associationMap.has(property.associationId)) {
+                messages.push({
+                    content: "[Association is missing]",
                     type: "error"
                 })
             }
@@ -172,7 +180,7 @@ export const entityDiagnose = (
         if ("embeddableTypeId" in property) {
             if (!contextData.embeddableTypeMap.has(property.embeddableTypeId)) {
                 messages.push({
-                    content: "[Type Embeddable is missing]",
+                    content: "[Embeddable is missing]",
                     type: "error"
                 })
             }
@@ -180,7 +188,7 @@ export const entityDiagnose = (
         if ("enumId" in property) {
             if (!contextData.enumerationMap.has(property.enumId)) {
                 messages.push({
-                    content: "[Type Enumeration is missing]",
+                    content: "[Enumeration is missing]",
                     type: "error"
                 })
             }

@@ -345,7 +345,7 @@ const association = computed(() => {
                         v-if="referencedEntity && 'associationId' in property && !association"
                         style="color: var(--danger-color);"
                     >
-                        [Association not existed]
+                        [!! Association !!]
                     </div>
                 </div>
                 <div

@@ -102,7 +102,7 @@ export const embeddableTypeDiagnose = (
         if ("embeddableTypeId" in property) {
             if (!contextData.embeddableTypeMap.has(property.embeddableTypeId)) {
                 messages.push({
-                    content: "[Type Embeddable is missing]",
+                    content: "[Embeddable is missing]",
                     type: "error"
                 })
             }
@@ -110,7 +110,7 @@ export const embeddableTypeDiagnose = (
         if ("enumId" in property) {
             if (!contextData.enumerationMap.has(property.enumId)) {
                 messages.push({
-                    content: "[Type Enumeration is missing]",
+                    content: "[Enumeration is missing]",
                     type: "error"
                 })
             }
