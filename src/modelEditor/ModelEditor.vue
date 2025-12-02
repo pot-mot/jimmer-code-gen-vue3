@@ -44,7 +44,7 @@ onBeforeUnmount(() => {
 })
 
 const {
-    open,
+    open: openContextMenu,
 } = useModelContextMenu()
 
 const handleKeyDown = async (e: KeyboardEvent) => {
@@ -174,25 +174,102 @@ const handleKeyDown = async (e: KeyboardEvent) => {
             no-wheel-class-name="no-wheel"
             :disable-keyboard-a11y="true"
 
-            @contextmenu.capture.prevent="open({type: 'Model'}, {x: $event.clientX, y: $event.clientY})"
+            @contextmenu.capture="(e: MouseEvent) => {
+                if (judgeTargetIsInteraction(e)) return
+                e.preventDefault()
+                openContextMenu(
+                    {type: 'Model'},
+                    {x: e.clientX, y: e.clientY}
+                )
+            }"
         >
             <template #node-ENTITY="nodeProps">
-                <EntityNode v-bind="nodeProps"/>
+                <EntityNode
+                    v-bind="nodeProps"
+                    @contextmenu="(e: MouseEvent) => {
+                        if (judgeTargetIsInteraction(e)) return
+                        e.preventDefault()
+                        modelSelection.unselectAll()
+                        modelSelection.selectEntity(nodeProps.id)
+                        openContextMenu(
+                            {type: 'Entity', id: nodeProps.id},
+                            {x: e.clientX, y: e.clientY}
+                        )
+                    }"
+                />
             </template>
             <template #node-MAPPED_SUPER_CLASS="nodeProps">
-                <MappedSuperClassNode v-bind="nodeProps"/>
+                <MappedSuperClassNode
+                    v-bind="nodeProps"
+                    @contextmenu="(e: MouseEvent) => {
+                        if (judgeTargetIsInteraction(e)) return
+                        e.preventDefault()
+                        modelSelection.unselectAll()
+                        modelSelection.selectMappedSuperClass(nodeProps.id)
+                        openContextMenu(
+                            {type: 'MappedSuperClass', id: nodeProps.id},
+                            {x: e.clientX, y: e.clientY}
+                        )
+                    }"
+                />
             </template>
             <template #node-ENUMERATION="nodeProps">
-                <EnumerationNode v-bind="nodeProps"/>
+                <EnumerationNode
+                    v-bind="nodeProps"
+                    @contextmenu="(e: MouseEvent) => {
+                        if (judgeTargetIsInteraction(e)) return
+                        e.preventDefault()
+                        modelSelection.unselectAll()
+                        modelSelection.selectEnumeration(nodeProps.id)
+                        openContextMenu(
+                            {type: 'Enumeration', id: nodeProps.id},
+                            {x: e.clientX, y: e.clientY}
+                        )
+                    }"
+                />
             </template>
             <template #node-EMBEDDABLE_TYPE="nodeProps">
-                <EmbeddableTypeNode v-bind="nodeProps"/>
+                <EmbeddableTypeNode
+                    v-bind="nodeProps"
+                    @contextmenu.capture.prevent="(e) => {
+                        modelSelection.unselectAll()
+                        modelSelection.selectEmbeddableType(nodeProps.id)
+                        openContextMenu(
+                            {type: 'EmbeddableType', id: nodeProps.id},
+                            {x: e.clientX, y: e.clientY}
+                        )
+                    }"
+                />
             </template>
             <template #edge-CONCRETE_ASSOCIATION="edgeProps">
-                <ConcreteAssociationEdge v-bind="edgeProps"/>
+                <ConcreteAssociationEdge
+                    v-bind="edgeProps"
+                    @contextmenu="(e: MouseEvent) => {
+                        if (judgeTargetIsInteraction(e)) return
+                        e.preventDefault()
+                        modelSelection.unselectAll()
+                        modelSelection.selectAssociation(edgeProps.id)
+                        openContextMenu(
+                            {type: 'ConcreteAssociation', id: edgeProps.id},
+                            {x: e.clientX, y: e.clientY}
+                        )
+                    }"
+                />
             </template>
             <template #edge-ABSTRACT_ASSOCIATION="edgeProps">
-                <AbstractAssociationEdge v-bind="edgeProps"/>
+                <AbstractAssociationEdge
+                    v-bind="edgeProps"
+                    @contextmenu="(e: MouseEvent) => {
+                        if (judgeTargetIsInteraction(e)) return
+                        e.preventDefault()
+                        modelSelection.unselectAll()
+                        modelSelection.selectAssociation(edgeProps.id)
+                        openContextMenu(
+                            {type: 'AbstractAssociation', id: edgeProps.id},
+                            {x: e.clientX, y: e.clientY}
+                        )
+                    }"
+                />
             </template>
         </VueFlow>
 

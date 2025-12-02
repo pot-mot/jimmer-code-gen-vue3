@@ -3,14 +3,54 @@ import {useDialogOpenState} from "@/components/dialog/DialogOpenState.ts";
 import {readonly, ref} from "vue";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 
+export type ContextMenuTarget_Model = DeepReadonly<{
+    type: "Model"
+}>
+
+export type ContextMenuTarget_Group = DeepReadonly<{
+    type: "Group"
+    id: string
+}>
+
+export type ContextMenuTarget_Entity = DeepReadonly<{
+    type: "Entity"
+    id: string
+}>
+
+export type ContextMenuTarget_MappedSuperClass = DeepReadonly<{
+    type: "MappedSuperClass"
+    id: string
+}>
+
+export type ContextMenuTarget_Enumeration = DeepReadonly<{
+    type: "Enumeration"
+    id: string
+}>
+
+export type ContextMenuTarget_EmbeddableType = DeepReadonly<{
+    type: "EmbeddableType"
+    id: string
+}>
+
+export type ContextMenuTarget_ConcreteAssociation = DeepReadonly<{
+    type: "ConcreteAssociation"
+    id: string
+}>
+
+export type ContextMenuTarget_AbstractAssociation = DeepReadonly<{
+    type: "AbstractAssociation"
+    id: string
+}>
+
 type ContextMenuTarget =
-    | { type: "Model" }
-    | { type: "Group", id: string }
-    | { type: "Entity", id: string }
-    | { type: "MappedSuperClass", id: string }
-    | { type: "Enumeration", id: string }
-    | { type: "EmbeddableType", id: string }
-    | { type: "Association", id: string }
+    | ContextMenuTarget_Model
+    | ContextMenuTarget_Group
+    | ContextMenuTarget_Entity
+    | ContextMenuTarget_MappedSuperClass
+    | ContextMenuTarget_Enumeration
+    | ContextMenuTarget_EmbeddableType
+    | ContextMenuTarget_ConcreteAssociation
+    | ContextMenuTarget_AbstractAssociation
 
 export const useModelContextMenu = createStore(() => {
     const {open, close, ...dialogOpenState} = useDialogOpenState()

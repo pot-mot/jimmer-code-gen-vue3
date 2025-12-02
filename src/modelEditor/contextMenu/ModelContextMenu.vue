@@ -7,7 +7,8 @@ import EntityContextMenu from "@/modelEditor/contextMenu/item/EntityContextMenu.
 import MappedSuperClassContextMenu from "@/modelEditor/contextMenu/item/MappedSuperClassContextMenu.vue";
 import EnumerationContextMenu from "@/modelEditor/contextMenu/item/EnumerationContextMenu.vue";
 import EmbeddableTypeContextMenu from "@/modelEditor/contextMenu/item/EmbeddableTypeContextMenu.vue";
-import AssociationContextMenu from "@/modelEditor/contextMenu/item/AssociationContextMenu.vue";
+import ConcreteAssociationContextMenu from "@/modelEditor/contextMenu/item/ConcreteAssociationContextMenu.vue";
+import AbstractAssociationContextMenu from "@/modelEditor/contextMenu/item/AbstractAssociationContextMenu.vue";
 
 const {
     openState,
@@ -46,7 +47,7 @@ watch(() => openState.value, async (value) => {
 <template>
     <Teleport to="body">
         <div
-            v-show="openState"
+            v-if="openState"
             class="context-menu-mask"
             @click.self="close"
             @contextmenu.prevent
@@ -82,8 +83,12 @@ watch(() => openState.value, async (value) => {
                     v-else-if="target.type === 'EmbeddableType'"
                     :id="target.id"
                 />
-                <AssociationContextMenu
-                    v-else-if="target.type === 'Association'"
+                <ConcreteAssociationContextMenu
+                    v-else-if="target.type === 'ConcreteAssociation'"
+                    :id="target.id"
+                />
+                <AbstractAssociationContextMenu
+                    v-else-if="target.type === 'AbstractAssociation'"
                     :id="target.id"
                 />
             </div>
