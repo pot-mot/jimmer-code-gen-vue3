@@ -1,5 +1,3 @@
-import {getKeys} from "@/utils/type/typeGuard.ts";
-
 export const defaultModelSubIds: () => ModelSubIds = () => ({
     groupIds: [],
     entityIds: [],
@@ -21,80 +19,117 @@ export const fillModelSubIds = (ids: DeepReadonly<Partial<ModelSubIds>>): ModelS
 }
 
 export const contextDataToSubIds = (
-    contextData: DeepReadonly<ModelContextData>
+    contextData: Partial<DeepReadonly<ModelContextData>>
 ): ModelSubIds => {
     const result = defaultModelSubIds()
 
-    for (const id of contextData.groupMap.keys()) {
-        result.groupIds.push(id)
+    if (contextData.groupMap !== undefined) {
+        for (const id of contextData.groupMap.keys()) {
+            result.groupIds.push(id)
+        }
     }
-    for (const id of contextData.entityMap.keys()) {
-        result.entityIds.push(id)
+    if (contextData.entityMap !== undefined) {
+        for (const id of contextData.entityMap.keys()) {
+            result.entityIds.push(id)
+        }
     }
-    for (const id of contextData.mappedSuperClassMap.keys()) {
-        result.mappedSuperClassIds.push(id)
+    if (contextData.mappedSuperClassMap !== undefined) {
+        for (const id of contextData.mappedSuperClassMap.keys()) {
+            result.mappedSuperClassIds.push(id)
+        }
     }
-    for (const id of contextData.embeddableTypeMap.keys()) {
-        result.embeddableTypeIds.push(id)
+    if (contextData.embeddableTypeMap !== undefined) {
+        for (const id of contextData.embeddableTypeMap.keys()) {
+            result.embeddableTypeIds.push(id)
+        }
     }
-    for (const id of contextData.enumerationMap.keys()) {
-        result.enumerationIds.push(id)
+    if (contextData.enumerationMap !== undefined) {
+        for (const id of contextData.enumerationMap.keys()) {
+            result.enumerationIds.push(id)
+        }
     }
-    for (const id of contextData.associationMap.keys()) {
-        result.associationIds.push(id)
+    if (contextData.associationMap !== undefined) {
+        for (const id of contextData.associationMap.keys()) {
+            result.associationIds.push(id)
+        }
     }
+
     return result
 }
 
 export const subDataToSubIds = (
-    subData: DeepReadonly<ModelGraphSubData>
+    subData: Partial<DeepReadonly<ModelGraphSubData>>
 ): ModelSubIds => {
     const result = defaultModelSubIds()
 
-    for (const group of subData.groups) {
-        result.groupIds.push(group.id)
+    if (subData.groups !== undefined) {
+        for (const group of subData.groups) {
+            result.groupIds.push(group.id)
+        }
     }
-    for (const {data} of subData.entities) {
-        result.entityIds.push(data.id)
+    if (subData.entities !== undefined) {
+        for (const entity of subData.entities) {
+            result.entityIds.push(entity.data.id)
+        }
     }
-    for (const {data} of subData.mappedSuperClasses) {
-        result.mappedSuperClassIds.push(data.id)
+    if (subData.mappedSuperClasses !== undefined) {
+        for (const mappedSuperClass of subData.mappedSuperClasses) {
+            result.mappedSuperClassIds.push(mappedSuperClass.data.id)
+        }
     }
-    for (const {data} of subData.embeddableTypes) {
-        result.embeddableTypeIds.push(data.id)
+    if (subData.embeddableTypes !== undefined) {
+        for (const embeddableType of subData.embeddableTypes) {
+            result.embeddableTypeIds.push(embeddableType.data.id)
+        }
     }
-    for (const {data} of subData.enumerations) {
-        result.enumerationIds.push(data.id)
+    if (subData.enumerations !== undefined) {
+        for (const enumeration of subData.enumerations) {
+            result.enumerationIds.push(enumeration.data.id)
+        }
     }
-    for (const {data} of subData.associations) {
-        result.associationIds.push(data.id)
+    if (subData.associations !== undefined) {
+        for (const association of subData.associations) {
+            result.associationIds.push(association.data.id)
+        }
     }
 
     return result
 }
 
 export const subIdSetToSubIds = (
-    subIdSets: DeepReadonly<ModelSubIdSets>
+    subIdSets: Partial<DeepReadonly<ModelSubIdSets>>
 ): ModelSubIds => {
     const result = defaultModelSubIds()
 
-    for (const id of subIdSets.groupIdSet) {
-        result.groupIds.push(id)
+    if (subIdSets.groupIdSet !== undefined) {
+        for (const id of subIdSets.groupIdSet) {
+            result.groupIds.push(id)
+        }
     }
-    for (const id of subIdSets.entityIdSet) {
-        result.entityIds.push(id)
+    if (subIdSets.entityIdSet !== undefined) {
+        for (const id of subIdSets.entityIdSet) {
+            result.entityIds.push(id)
+        }
     }
-    for (const id of subIdSets.mappedSuperClassIdSet) {
-        result.mappedSuperClassIds.push(id)
+    if (subIdSets.mappedSuperClassIdSet !== undefined) {
+        for (const id of subIdSets.mappedSuperClassIdSet) {
+            result.mappedSuperClassIds.push(id)
+        }
     }
-    for (const id of subIdSets.embeddableTypeIdSet) {
-        result.embeddableTypeIds.push(id)
+    if (subIdSets.embeddableTypeIdSet !== undefined) {
+        for (const id of subIdSets.embeddableTypeIdSet) {
+            result.embeddableTypeIds.push(id)
+        }
     }
-    for (const id of subIdSets.enumerationIdSet) {
-        result.enumerationIds.push(id)
+    if (subIdSets.enumerationIdSet !== undefined) {
+        for (const id of subIdSets.enumerationIdSet) {
+            result.enumerationIds.push(id)
+        }
     }
-    for (const id of subIdSets.associationIdSet) {
-        result.associationIds.push(id)
+    if (subIdSets.associationIdSet !== undefined) {
+        for (const id of subIdSets.associationIdSet) {
+            result.associationIds.push(id)
+        }
     }
 
     return result
@@ -110,45 +145,27 @@ export const defaultModelSubIdSets: () => ModelSubIdSets = () => ({
 })
 
 export const subIdsToSubIdSets = (
-    subIds: DeepReadonly<ModelSubIds>
+    subIds: Partial<DeepReadonly<ModelSubIds>>
 ): ModelSubIdSets => {
     const result = defaultModelSubIdSets()
-    for (const id of subIds.groupIds) result.groupIdSet.add(id)
-    for (const id of subIds.entityIds) result.entityIdSet.add(id)
-    for (const id of subIds.mappedSuperClassIds) result.mappedSuperClassIdSet.add(id)
-    for (const id of subIds.embeddableTypeIds) result.embeddableTypeIdSet.add(id)
-    for (const id of subIds.enumerationIds) result.enumerationIdSet.add(id)
-    for (const id of subIds.associationIds) result.associationIdSet.add(id)
-    return result
-}
 
-/**
- * 合并任意多个 ModelSubIds 对象
- * @param subIds - 需要合并的 ModelSubIds 对象数组
- * @returns 合并后的 ModelSubIds 对象
- */
-export const mergeModelSubIds = (...subIds: ModelSubIds[]): ModelSubIds => {
-    const result: ModelSubIds = defaultModelSubIds()
-
-    // 遍历每个字段名
-    for (const fieldName of getKeys(result)) {
-        const uniqueSet = new Set<string>()
-
-        // 遍历所有传入的对象
-        for (const subId of subIds) {
-            if (subId[fieldName] && subId[fieldName].length > 0) {
-                for (const id of subId[fieldName]) {
-                    if (!uniqueSet.has(id)) {
-                        uniqueSet.add(id)
-                    }
-                }
-            }
-        }
-
-        // 只有当数组不为空时才添加到结果中
-        if (uniqueSet.size > 0) {
-            result[fieldName] = Array.from(uniqueSet)
-        }
+    if (subIds.groupIds !== undefined) {
+        for (const id of subIds.groupIds) result.groupIdSet.add(id)
+    }
+    if (subIds.entityIds !== undefined) {
+        for (const id of subIds.entityIds) result.entityIdSet.add(id)
+    }
+    if (subIds.mappedSuperClassIds !== undefined) {
+        for (const id of subIds.mappedSuperClassIds) result.mappedSuperClassIdSet.add(id)
+    }
+    if (subIds.embeddableTypeIds !== undefined) {
+        for (const id of subIds.embeddableTypeIds) result.embeddableTypeIdSet.add(id)
+    }
+    if (subIds.enumerationIds !== undefined) {
+        for (const id of subIds.enumerationIds) result.enumerationIdSet.add(id)
+    }
+    if (subIds.associationIds !== undefined) {
+        for (const id of subIds.associationIds) result.associationIdSet.add(id)
     }
 
     return result
