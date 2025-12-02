@@ -24,7 +24,7 @@ export const useClipBoard = <INPUT, OUTPUT>(target: ClipBoardTarget<INPUT, OUTPU
         return data
     }
 
-    const paste = async (): Promise<INPUT | string | undefined> => {
+    const paste = async (): Promise<INPUT | undefined> => {
         const text = await readText()
         const data = JSON.parse(text)
         let errors: any
