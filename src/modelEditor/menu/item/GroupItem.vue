@@ -4,10 +4,7 @@ import {computed} from "vue";
 import ColorInput from "@/components/color/ColorInput.vue";
 import {presetColor} from "@/type/context/default/modelDefaults.ts";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
-import IconDelete from "@/components/icons/IconDelete.vue";
 import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
-import IconEdit from "@/components/icons/IconEdit.vue";
-import {useGroupEditDialog} from "@/modelEditor/group/useGroupEditDialog.ts";
 
 const group = defineModel<Group>({required: true})
 
@@ -16,12 +13,7 @@ const {
     selectedIdSets,
     currentGroupId,
     toggleCurrentGroup,
-    remove,
 } = useModelEditor()
-
-const {
-    open: handleEdit,
-} = useGroupEditDialog()
 
 const isSelected = computed(() => {
     return selectedIdSets.value.groupIdSet.has(group.value.id)
@@ -29,10 +21,6 @@ const isSelected = computed(() => {
 
 const setToCurrentGroup = () => {
     toggleCurrentGroup({id: group.value.id})
-}
-
-const handleRemove = () => {
-    remove({groupIds: [group.value.id]})
 }
 </script>
 
@@ -55,15 +43,6 @@ const handleRemove = () => {
                 v-model="group"
                 :font-size="14"
             />
-
-            <div class="tool">
-                <button @click.stop="handleEdit(group)">
-                    <IconEdit/>
-                </button>
-                <button @click.stop="handleRemove">
-                    <IconDelete/>
-                </button>
-            </div>
         </div>
 
         <DiagnoseViewer

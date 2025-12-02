@@ -20,6 +20,7 @@ import {translate} from "@/store/i18nStore.ts";
 import {useDatabaseDialog} from "@/modelEditor/database/useDatabaseDialog.ts";
 import IconDatabaseAdd from "@/components/icons/IconDatabaseAdd.vue";
 import {useGroupCreateDialog} from "@/modelEditor/group/useGroupCreateDialog.ts";
+import {useModelContextMenu} from "@/modelEditor/contextMenu/useModelContextMenu.ts";
 
 const {
     createType,
@@ -43,6 +44,10 @@ const {
     modelSelection,
     modelSelectionCount,
 } = useModelEditor()
+
+const {
+    open: openContextMenu,
+} = useModelContextMenu()
 
 const treeRef = useTemplateRef("treeRef")
 const selectedIdSet = ref(new Set<string>())
@@ -283,6 +288,15 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
         @keydown="handleKeyDown($event)"
         @click="handleClick($event)"
         class="model-editor-menu"
+
+        @contextmenu.capture="(e) => {
+            if (judgeTargetIsInteraction(e)) return
+            e.preventDefault()
+            openContextMenu(
+                {type: 'Model'},
+                {x: e.clientX, y: e.clientY}
+            )
+        }"
     >
 
         <div class="create-type-select">
@@ -357,27 +371,92 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
                 <template #default="{data}">
                     <template v-if="data.type === 'Group'">
                         <DragTarget :id="data.group.id">
-                            <GroupItem class="menu-item" v-model="data.group"/>
+                            <GroupItem
+                                class="menu-item"
+                                v-model="data.group"
+                                @contextmenu="(e: MouseEvent) => {
+                                    if (judgeTargetIsInteraction(e)) return
+                                    e.preventDefault()
+                                    modelSelection.unselectAll()
+                                    modelSelection.selectGroup(data.group.id)
+                                    openContextMenu(
+                                        {type: 'Group', id: data.group.id},
+                                        {x: e.clientX, y: e.clientY}
+                                    )
+                                }"
+                            />
                         </DragTarget>
                     </template>
                     <template v-else-if="data.type === 'Entity'">
                         <DragSource :id="data.entity.id">
-                            <EntityItem class="menu-item" v-model="data.entity"/>
+                            <EntityItem
+                                class="menu-item"
+                                v-model="data.entity"
+                                @contextmenu="(e: MouseEvent) => {
+                                    if (judgeTargetIsInteraction(e)) return
+                                    e.preventDefault()
+                                    modelSelection.unselectAll()
+                                    modelSelection.selectEntity(data.entity.id)
+                                    openContextMenu(
+                                        {type: 'Entity', id: data.entity.id},
+                                        {x: e.clientX, y: e.clientY}
+                                    )
+                                }"
+                            />
                         </DragSource>
                     </template>
                     <template v-else-if="data.type === 'MappedSuperClass'">
                         <DragSource :id="data.mappedSuperClass.id">
-                            <MappedSuperClassItem class="menu-item" v-model="data.mappedSuperClass"/>
+                            <MappedSuperClassItem
+                                class="menu-item"
+                                v-model="data.mappedSuperClass"
+                                @contextmenu="(e: MouseEvent) => {
+                                    if (judgeTargetIsInteraction(e)) return
+                                    e.preventDefault()
+                                    modelSelection.unselectAll()
+                                    modelSelection.selectMappedSuperClass(data.mappedSuperClass.id)
+                                    openContextMenu(
+                                        {type: 'MappedSuperClass', id: data.mappedSuperClass.id},
+                                        {x: e.clientX, y: e.clientY}
+                                    )
+                                }"
+                            />
                         </DragSource>
                     </template>
                     <template v-else-if="data.type === 'EmbeddableType'">
                         <DragSource :id="data.embeddableType.id">
-                            <EmbeddableTypeItem class="menu-item" v-model="data.embeddableType"/>
+                            <EmbeddableTypeItem
+                                class="menu-item"
+                                v-model="data.embeddableType"
+                                @contextmenu="(e: MouseEvent) => {
+                                    if (judgeTargetIsInteraction(e)) return
+                                    e.preventDefault()
+                                    modelSelection.unselectAll()
+                                    modelSelection.selectEmbeddableType(data.embeddableType.id)
+                                    openContextMenu(
+                                        {type: 'EmbeddableType', id: data.embeddableType.id},
+                                        {x: e.clientX, y: e.clientY}
+                                    )
+                                }"
+                            />
                         </DragSource>
                     </template>
                     <template v-else-if="data.type === 'Enumeration'">
                         <DragSource :id="data.enumeration.id">
-                            <EnumerationItem class="menu-item" v-model="data.enumeration"/>
+                            <EnumerationItem
+                                class="menu-item"
+                                v-model="data.enumeration"
+                                @contextmenu="(e: MouseEvent) => {
+                                    if (judgeTargetIsInteraction(e)) return
+                                    e.preventDefault()
+                                    modelSelection.unselectAll()
+                                    modelSelection.selectEnumeration(data.enumeration.id)
+                                    openContextMenu(
+                                        {type: 'Enumeration', id: data.enumeration.id},
+                                        {x: e.clientX, y: e.clientY}
+                                    )
+                                }"
+                            />
                         </DragSource>
                     </template>
                 </template>
@@ -486,7 +565,6 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
 .menu-item {
     width: 100%;
     min-height: 1.75rem;
-    padding-bottom: 0.25rem;
 }
 
 .menu-item > :deep(.menu-label) {
@@ -510,23 +588,6 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
 .menu-item.selected :deep(.name-comment-editor) .name,
 .menu-item.selected :deep(.name-comment-editor) .comment {
     color: var(--text-color);
-}
-
-.menu-item :deep(.tool) {
-    display: none;
-}
-
-.menu-item:hover :deep(.tool) {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 0.25rem;
-    padding-left: 0.3rem;
-}
-
-.menu-item :deep(.tool > button) {
-    border: none;
-    background-color: transparent;
-    --icon-color: var(--comment-color);
 }
 
 .drag-view-box {
