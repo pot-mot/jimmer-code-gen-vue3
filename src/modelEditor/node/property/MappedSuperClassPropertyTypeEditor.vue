@@ -34,9 +34,9 @@ import {
 import IconEnumeration from "@/components/icons/modelEditor/IconEnumeration.vue";
 import IconEmbeddableType from "@/components/icons/modelEditor/IconEmbeddableType.vue";
 import IconEntity from "@/components/icons/modelEditor/IconEntity.vue";
-import {toOneToOneAbstract} from "@/modelEditor/node/association/toOneToOneAbstract.ts";
-import {toManyToOneAbstract} from "@/modelEditor/node/association/toManyToOneAbstract.ts";
-import {toManyToManyAbstract} from "@/modelEditor/node/association/toManyToManyAbstract.ts";
+import {toOneToOneAbstract} from "@/modelEditor/association/toOneToOneAbstract.ts";
+import {toManyToOneAbstract} from "@/modelEditor/association/toManyToOneAbstract.ts";
+import {toManyToManyAbstract} from "@/modelEditor/association/toManyToManyAbstract.ts";
 import {useTypeMapping} from "@/modelEditor/typeMapping/useTypeMapping.ts";
 import {translate} from "@/store/i18nStore.ts";
 import IconEdit from "@/components/icons/IconEdit.vue";
