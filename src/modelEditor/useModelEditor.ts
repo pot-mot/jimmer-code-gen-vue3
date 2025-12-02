@@ -164,7 +164,7 @@ export const useModelEditor = createStore(() => {
         return globalZIndex.value++
     }
 
-    const getModelGraphSubData = (options?: {selected?: boolean}): ModelGraphSubData => {
+    const getModelGraphSubData = (options?: { selected?: boolean }): ModelGraphSubData => {
         const contextData = getContextData()
         const vueFlow = getVueFlow()
         if (options?.selected) {
@@ -173,7 +173,7 @@ export const useModelEditor = createStore(() => {
             return modelSubDataToGraphSubData(contextDataToSubData(contextData), vueFlow)
         }
     }
-    const getModelGraphData = (options?: {selected?: boolean}): ModelGraphData => {
+    const getModelGraphData = (options?: { selected?: boolean }): ModelGraphData => {
         const contextData = getContextData()
         const subData = getModelGraphSubData(options)
         return {
@@ -479,7 +479,17 @@ export const useModelEditor = createStore(() => {
     const remove = (
         ids: Partial<ModelSubIds>
     ) => {
-        return history.executeCommand("remove", fillModelSubIds(ids))
+        const fullIds = fillModelSubIds(ids)
+        const count =
+            fullIds.groupIds.length +
+            fullIds.entityIds.length +
+            fullIds.mappedSuperClassIds.length +
+            fullIds.embeddableTypeIds.length +
+            fullIds.enumerationIds.length +
+            fullIds.associationIds.length
+        if (count === 0) return
+
+        return history.executeCommand("remove", fullIds)
     }
 
     // Selection 选中部分的图数据
@@ -1089,27 +1099,27 @@ export const useModelEditor = createStore(() => {
         return _edge
     }
 
-    const focusEntityProperty = async (source: {entityId: string, propertyId: string}) => {
+    const focusEntityProperty = async (source: { entityId: string, propertyId: string }) => {
         modelSubSelectEventBus.emit("unselectAll")
         modelSubSelectEventBus.emit("selectEntityProperty", source)
         await focusNodeAndFitSub(source.entityId, nodeSubElementId(source.entityId, source.propertyId))
     }
-    const focusMappedSuperClassProperty = async (source: {mappedSuperClassId: string, propertyId: string}) => {
+    const focusMappedSuperClassProperty = async (source: { mappedSuperClassId: string, propertyId: string }) => {
         modelSubSelectEventBus.emit("unselectAll")
         modelSubSelectEventBus.emit("selectMappedSuperClassProperty", source)
         await focusNodeAndFitSub(source.mappedSuperClassId, nodeSubElementId(source.mappedSuperClassId, source.propertyId))
     }
-    const focusEmbeddableTypeProperty = async (source: {embeddableTypeId: string, propertyId: string}) => {
+    const focusEmbeddableTypeProperty = async (source: { embeddableTypeId: string, propertyId: string }) => {
         modelSubSelectEventBus.emit("unselectAll")
         modelSubSelectEventBus.emit("selectEmbeddableTypeProperty", source)
         await focusNodeAndFitSub(source.embeddableTypeId, nodeSubElementId(source.embeddableTypeId, source.propertyId))
     }
-    const focusEnumerationItem = async (source: {enumerationId: string, itemId: string}) => {
+    const focusEnumerationItem = async (source: { enumerationId: string, itemId: string }) => {
         modelSubSelectEventBus.emit("unselectAll")
         modelSubSelectEventBus.emit("selectEnumerationItem", source)
         await focusNodeAndFitSub(source.enumerationId, nodeSubElementId(source.enumerationId, source.itemId))
     }
-    const focusMappedProperty = async (source: {associationId: string}) => {
+    const focusMappedProperty = async (source: { associationId: string }) => {
         modelSubSelectEventBus.emit("unselectAll")
         modelSubSelectEventBus.emit("selectMappedProperty", source)
         await focusEdgeAndFitSub(source.associationId, mappedPropertyElementId(source.associationId))
@@ -1117,17 +1127,39 @@ export const useModelEditor = createStore(() => {
 
     const focusDiagnosticSource = async (source: DiagnosticSource) => {
         switch (source.type) {
-            case "Group": modelSelection.selectGroup(source.id); break;
-            case "Entity": await focusNode(source.id); break;
-            case "MappedSuperClass": await focusNode(source.id); break;
-            case "EmbeddableType": await focusNode(source.id); break;
-            case "Enumeration": await focusNode(source.id); break;
-            case "Association": await focusEdge(source.id); break;
-            case "EntityProperty": await focusEntityProperty(source); break;
-            case "MappedSuperClassProperty": await focusMappedSuperClassProperty(source); break;
-            case "EmbeddableTypeProperty": await focusEmbeddableTypeProperty(source); break;
-            case "EnumerationItem": await focusEnumerationItem(source); break;
-            case "MappedProperty": await focusMappedProperty(source); break;
+            case "Group":
+                modelSelection.selectGroup(source.id);
+                break;
+            case "Entity":
+                await focusNode(source.id);
+                break;
+            case "MappedSuperClass":
+                await focusNode(source.id);
+                break;
+            case "EmbeddableType":
+                await focusNode(source.id);
+                break;
+            case "Enumeration":
+                await focusNode(source.id);
+                break;
+            case "Association":
+                await focusEdge(source.id);
+                break;
+            case "EntityProperty":
+                await focusEntityProperty(source);
+                break;
+            case "MappedSuperClassProperty":
+                await focusMappedSuperClassProperty(source);
+                break;
+            case "EmbeddableTypeProperty":
+                await focusEmbeddableTypeProperty(source);
+                break;
+            case "EnumerationItem":
+                await focusEnumerationItem(source);
+                break;
+            case "MappedProperty":
+                await focusMappedProperty(source);
+                break;
         }
     }
 
