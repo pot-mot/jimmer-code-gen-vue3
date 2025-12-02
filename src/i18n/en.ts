@@ -9,6 +9,7 @@ export const localeEn: MainLocale = {
     submit: "Submit",
     delete: "Delete",
     clear: "Clear",
+    focus: "Focus",
     save: "Save",
     confirm: "Confirm",
     cancel: "Cancel",

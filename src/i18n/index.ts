@@ -7,6 +7,7 @@ export type MainLocale = {
     submit: string
     delete: string
     clear: string
+    focus: string
     save: string
     confirm: string
     cancel: string

@@ -9,6 +9,7 @@ export const localeZhCn: MainLocale = {
     submit: "提交",
     delete: "删除",
     clear: "清理",
+    focus: "聚焦",
     save: "保存",
     confirm: "确认",
     cancel: "取消",
