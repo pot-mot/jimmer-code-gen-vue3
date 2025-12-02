@@ -47,7 +47,7 @@ onBeforeUnmount(() => {
     modelSubSelectEventBus.off("selectMappedSuperClassProperty", selectProperty)
 })
 
-const {focusNode, remove, modelDiagnoseInfo} = useModelEditor()
+const {focusNode, focus, remove, modelDiagnoseInfo} = useModelEditor()
 
 const beforeCopy = (properties: MappedSuperClassProperty[]) => {
     for (const property of properties) {
@@ -170,11 +170,11 @@ watch(() => handleIndexMap.value, () => {
         </EditList>
 
         <NodeToolbar class="node-toolbar">
-            <button @click="focusNode(id)">
+            <button @click="focusNode(id); focus()">
                 <IconAim/>
             </button>
 
-            <button @click="remove({mappedSuperClassIds: [id]})">
+            <button @click="remove({mappedSuperClassIds: [id]}); focus()">
                 <IconDelete/>
             </button>
         </NodeToolbar>

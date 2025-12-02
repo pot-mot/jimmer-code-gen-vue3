@@ -53,7 +53,7 @@ onBeforeUnmount(() => {
     modelSubSelectEventBus.off("selectEnumerationItem", selectItem)
 })
 
-const {focusNode, remove, modelDiagnoseInfo} = useModelEditor()
+const {focusNode, focus, remove, modelDiagnoseInfo} = useModelEditor()
 
 const beforePaste = (items: EnumerationItem[]) => {
     const ordinalSet = new Set<number>(props.data.enumeration.items.map(it => it.ordinal))
@@ -128,11 +128,11 @@ const beforePaste = (items: EnumerationItem[]) => {
         </EditList>
 
         <NodeToolbar class="node-toolbar">
-            <button @click="focusNode(id)">
+            <button @click="focusNode(id); focus()">
                 <IconAim/>
             </button>
 
-            <button @click="remove({enumerationIds: [id]})">
+            <button @click="remove({enumerationIds: [id]}); focus()">
                 <IconDelete/>
             </button>
         </NodeToolbar>

@@ -44,7 +44,7 @@ onBeforeUnmount(() => {
     modelSubSelectEventBus.off("selectEmbeddableTypeProperty", selectProperty)
 })
 
-const {focusNode, remove, modelDiagnoseInfo} = useModelEditor()
+const {focusNode, focus, remove, modelDiagnoseInfo} = useModelEditor()
 
 const beforePaste = (properties: Property[]) => {
     for (const property of properties) {
@@ -105,11 +105,11 @@ const beforePaste = (properties: Property[]) => {
         </EditList>
 
         <NodeToolbar class="node-toolbar">
-            <button @click="focusNode(id)">
+            <button @click="focusNode(id); focus()">
                 <IconAim/>
             </button>
 
-            <button @click="remove({embeddableTypeIds: [id]})">
+            <button @click="remove({embeddableTypeIds: [id]}); focus()">
                 <IconDelete/>
             </button>
         </NodeToolbar>

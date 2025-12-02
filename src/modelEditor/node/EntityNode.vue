@@ -46,7 +46,7 @@ onBeforeUnmount(() => {
     modelSubSelectEventBus.off("selectEntityProperty", selectProperty)
 })
 
-const {focusNode, remove, modelDiagnoseInfo} = useModelEditor()
+const {focusNode, focus, remove, modelDiagnoseInfo} = useModelEditor()
 
 const beforeCopy = (properties: EntityProperty[]) => {
     for (const property of properties) {
@@ -169,11 +169,11 @@ watch(() => handleIndexMap.value, () => {
         </EditList>
 
         <NodeToolbar class="node-toolbar">
-            <button @click="focusNode(id)">
+            <button @click="focusNode(id); focus()">
                 <IconAim/>
             </button>
 
-            <button @click="remove({entityIds: [id]})">
+            <button @click="remove({entityIds: [id]}); focus()">
                 <IconDelete/>
             </button>
         </NodeToolbar>
