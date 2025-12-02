@@ -50,6 +50,7 @@ import {EdgeType_AbstractAssociation} from "@/modelEditor/edge/AbstractAssociati
 import {nodeSubElementId} from "@/modelEditor/node/nodeElementId.ts";
 import {associationElementId, mappedPropertyElementId} from "@/modelEditor/edge/edgeElementId.ts";
 import {fitRawTypeByJvmLanguage} from "@/modelEditor/modelForm/jvmLanguage/fitRawTypeByJvmLanguage.ts";
+import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -701,20 +702,23 @@ export const useModelEditor = createStore(() => {
     /**
      * 剪切板
      */
-    const clipBoard = useClipBoard<Partial<ModelGraphSubData>, ModelGraphSubData>({
+    const clipBoard = useClipBoard<
+        Partial<DeepReadonly<ModelGraphSubData>>,
+        Partial<DeepReadonly<ModelGraphSubData>>
+    >({
         exportData: (): ModelGraphSubData => {
             return getModelGraphSubData({selected: true})
         },
-        importData: async (data: Partial<ModelGraphSubData>) => {
-            await importModelGraphData(data, {
+        importData: async (data: Partial<DeepReadonly<ModelGraphSubData>>) => {
+            await importModelGraphData(cloneDeepReadonlyRaw<Partial<ModelGraphSubData>>(data), {
                 select: true,
                 fitCurrentScreenPosition: true,
             })
         },
-        removeData: (data: ModelGraphSubData) => {
+        removeData: (data: Partial<DeepReadonly<ModelGraphSubData>>) => {
             remove(subDataToSubIds(data))
         },
-        stringifyData: (data: ModelGraphSubData): string => {
+        stringifyData: (data: Partial<DeepReadonly<ModelGraphSubData>>): string => {
             return jsonSortPropStringify(data)
         },
         validateInput: validatePartialModelGraphSubData
@@ -1179,6 +1183,8 @@ export const useModelEditor = createStore(() => {
         },
 
         getNextZIndex,
+        getNode,
+        getEdge,
         nodeToFront,
         edgeToFront,
         focusNode,
@@ -1302,7 +1308,7 @@ export const useModelEditor = createStore(() => {
         remove,
 
         copy: async (
-            data: LazyData<ModelGraphSubData> | undefined = undefined,
+            data?: LazyData<Partial<DeepReadonly<ModelGraphSubData>>>
         ) => {
             try {
                 const result = await clipBoard.copy(data)
@@ -1326,7 +1332,7 @@ export const useModelEditor = createStore(() => {
             }
         },
         cut: async (
-            data: LazyData<ModelGraphSubData> | undefined = undefined,
+            data?: LazyData<Partial<DeepReadonly<ModelGraphSubData>>>
         ) => {
             try {
                 const result = await clipBoard.cut(data)
