@@ -49,6 +49,7 @@ import {EdgeType_ConcreteAssociation} from "@/modelEditor/edge/ConcreteAssociati
 import {EdgeType_AbstractAssociation} from "@/modelEditor/edge/AbstractAssociationEdge.ts";
 import {nodeSubElementId} from "@/modelEditor/node/nodeElementId.ts";
 import {associationElementId, mappedPropertyElementId} from "@/modelEditor/edge/edgeElementId.ts";
+import {fitRawTypeByJvmLanguage} from "@/modelEditor/modelForm/jvmLanguage/fitRawTypeByJvmLanguage.ts";
 
 export const VUE_FLOW_ID = "[[__VUE_FLOW_ID__]]"
 
@@ -190,6 +191,7 @@ export const useModelEditor = createStore(() => {
 
         const fullData = fillModelGraphSubData(data)
 
+        // ensure group existed
         let newGroupId: string | undefined
         const requireNewGroup = () => {
             if (newGroupId !== undefined) {
@@ -231,6 +233,23 @@ export const useModelEditor = createStore(() => {
             }
         }
 
+        // remove unreferenced association
+        const entityIdSet = new Set<string>(fullData.entities.map(it => it.data.id))
+        for (const entityId of contextData.entityMap.keys()) entityIdSet.add(entityId)
+        const mappedSuperClassIdSet = new Set<string>(fullData.mappedSuperClasses.map(it => it.data.id))
+        for (const mappedSuperClassId of contextData.mappedSuperClassMap.keys()) mappedSuperClassIdSet.add(mappedSuperClassId)
+        fullData.associations = fullData.associations.filter(({data}) => {
+            if ("sourceEntityId" in data) {
+                return entityIdSet.has(data.sourceEntityId) && entityIdSet.has(data.referencedEntityId)
+            } else {
+                return mappedSuperClassIdSet.has(data.sourceAbstractEntityId) && entityIdSet.has(data.referencedEntityId)
+            }
+        })
+
+        // fit raw type
+        fitRawTypeByJvmLanguage(fullData, contextData.model.jvmLanguage)
+
+        // import into context
         modelSelection.unselectAll()
         const startPosition = options?.fitCurrentScreenPosition ? vueFlow.screenToFlowCoordinate(screenPosition.value) : undefined
         const {ids} = history.executeCommand("import", {data: fullData, startPosition})
