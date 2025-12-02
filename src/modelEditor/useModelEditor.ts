@@ -1325,9 +1325,11 @@ export const useModelEditor = createStore(() => {
                 throw e
             }
         },
-        cut: async () => {
+        cut: async (
+            data: LazyData<ModelGraphSubData> | undefined = undefined,
+        ) => {
             try {
-                const result = await clipBoard.cut()
+                const result = await clipBoard.cut(data)
                 sendMessage(translate("cut_success_tip"), {type: "success"})
                 focus()
                 return result

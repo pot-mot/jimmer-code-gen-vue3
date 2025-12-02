@@ -17,8 +17,9 @@ export const useClipBoard = <INPUT, OUTPUT>(target: ClipBoardTarget<INPUT, OUTPU
         return data
     }
 
-    const cut = async (): Promise<OUTPUT> => {
-        const data = await copy()
+    const cut = async (lazyData: LazyData<OUTPUT> = target.exportData): Promise<OUTPUT> => {
+        const data = await lazyDataParse(lazyData)
+        await writeText(target.stringifyData(data))
         await target.removeData(data)
         return data
     }
