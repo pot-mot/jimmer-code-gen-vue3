@@ -72,11 +72,10 @@ export const useModelEditorSelectIds = (
         modelSelectionEventBus.emit('entity', {id, selected: true})
     }
     const unselectEntity = (id: string) => {
+        selectedIdSets.value.entityIdSet.delete(id)
         const vueFlow = getVueFlow()
         const node = vueFlow.findNode(id)
-        if (!node) throw new Error(`Node [${id}] is not existed`)
-        selectedIdSets.value.entityIdSet.delete(id)
-        vueFlow.removeSelectedNodes([node])
+        if (node) vueFlow.removeSelectedNodes([node])
         modelSelectionEventBus.emit('entity', {id, selected: false})
     }
     const selectMappedSuperClass = (id: string) => {
@@ -92,11 +91,10 @@ export const useModelEditorSelectIds = (
         modelSelectionEventBus.emit('mappedSuperClass', {id, selected: true})
     }
     const unselectMappedSuperClass = (id: string) => {
+        selectedIdSets.value.mappedSuperClassIdSet.delete(id)
         const vueFlow = getVueFlow()
         const node = vueFlow.findNode(id)
-        if (!node) throw new Error(`Node [${id}] is not existed`)
-        selectedIdSets.value.mappedSuperClassIdSet.delete(id)
-        vueFlow.removeSelectedNodes([node])
+        if (node) vueFlow.removeSelectedNodes([node])
         modelSelectionEventBus.emit('mappedSuperClass', {id, selected: false})
     }
     const selectEmbeddableType = (id: string) => {
@@ -112,11 +110,10 @@ export const useModelEditorSelectIds = (
         modelSelectionEventBus.emit('embeddableType', {id, selected: true})
     }
     const unselectEmbeddableType = (id: string) => {
+        selectedIdSets.value.embeddableTypeIdSet.delete(id)
         const vueFlow = getVueFlow()
         const node = vueFlow.findNode(id)
-        if (!node) throw new Error(`Node [${id}] is not existed`)
-        selectedIdSets.value.embeddableTypeIdSet.delete(id)
-        vueFlow.removeSelectedNodes([node])
+        if (node) vueFlow.removeSelectedNodes([node])
         modelSelectionEventBus.emit('embeddableType', {id, selected: false})
     }
     const selectEnumeration = (id: string) => {
@@ -132,11 +129,10 @@ export const useModelEditorSelectIds = (
         modelSelectionEventBus.emit('enumeration', {id, selected: true})
     }
     const unselectEnumeration = (id: string) => {
+        selectedIdSets.value.enumerationIdSet.delete(id)
         const vueFlow = getVueFlow()
         const node = vueFlow.findNode(id)
-        if (!node) throw new Error(`Node [${id}] is not existed`)
-        selectedIdSets.value.enumerationIdSet.delete(id)
-        vueFlow.removeSelectedNodes([node])
+        if (node) vueFlow.removeSelectedNodes([node])
         modelSelectionEventBus.emit('enumeration', {id, selected: false})
     }
     const selectAssociation = (id: string) => {
@@ -152,12 +148,10 @@ export const useModelEditorSelectIds = (
         modelSelectionEventBus.emit('association', {id, selected: true})
     }
     const unselectAssociation = (id: string) => {
+        selectedIdSets.value.associationIdSet.delete(id)
         const vueFlow = getVueFlow()
         const edge = findAssociationEdge(id, vueFlow)
-        if (!edge) throw new Error(`Edge [${id}] is not existed`)
-
-        selectedIdSets.value.associationIdSet.delete(id)
-        vueFlow.removeSelectedEdges([edge])
+        if (edge) vueFlow.removeSelectedEdges([edge])
         modelSelectionEventBus.emit('association', {id, selected: false})
     }
 
@@ -212,22 +206,22 @@ export const useModelEditorSelectIds = (
         if (inferCommandInput(data, "remove")) {
             if (data.type === "apply") {
                 for (const {data: association} of data.revertOptions.associations) {
-                    selectedIdSets.value.associationIdSet.delete(association.id)
+                    unselectAssociation(association.id)
                 }
                 for (const {data: entity} of data.revertOptions.entities) {
-                    selectedIdSets.value.entityIdSet.delete(entity.id)
+                    unselectEntity(entity.id)
                 }
                 for (const {data: mappedSuperClass} of data.revertOptions.mappedSuperClasses) {
-                    selectedIdSets.value.mappedSuperClassIdSet.delete(mappedSuperClass.id)
+                    unselectMappedSuperClass(mappedSuperClass.id)
                 }
                 for (const {data: embeddableType} of data.revertOptions.embeddableTypes) {
-                    selectedIdSets.value.embeddableTypeIdSet.delete(embeddableType.id)
+                    unselectEmbeddableType(embeddableType.id)
                 }
                 for (const {data: enumeration} of data.revertOptions.enumerations) {
-                    selectedIdSets.value.enumerationIdSet.delete(enumeration.id)
+                    unselectEnumeration(enumeration.id)
                 }
                 for (const group of data.revertOptions.groups) {
-                    selectedIdSets.value.groupIdSet.delete(group.id)
+                    unselectGroup(group.id)
                 }
             }
         }
