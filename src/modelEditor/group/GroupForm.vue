@@ -4,6 +4,7 @@ import {translate} from "@/store/i18nStore.ts";
 import IconCheck from "@/components/icons/IconCheck.vue";
 import IconClose from "@/components/icons/IconClose.vue";
 import {ref, watch} from "vue";
+import {presetColor} from "@/type/context/default/modelDefaults.ts";
 
 const group = defineModel<T>({
     required: true
@@ -51,7 +52,7 @@ const handleCancel = () => {
 
         <div class="form-item">
             <div style="display: flex; flex-wrap: nowrap; align-items: center; gap: 0.5rem;">
-                <ColorInput v-model="group.color"/>
+                <ColorInput v-model="group.color" :preset-colors="presetColor"/>
                 <input
                     v-model="group.name"
                     type="text"
