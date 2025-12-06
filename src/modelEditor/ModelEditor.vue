@@ -231,7 +231,7 @@ const handleKeyDown = async (e: KeyboardEvent) => {
             <template #node-EMBEDDABLE_TYPE="nodeProps">
                 <EmbeddableTypeNode
                     v-bind="nodeProps"
-                    @contextmenu.capture.prevent="(e) => {
+                    @contextmenu="(e: MouseEvent) => {
                         modelSelection.unselectAll()
                         modelSelection.selectEmbeddableType(nodeProps.id)
                         openContextMenu(
