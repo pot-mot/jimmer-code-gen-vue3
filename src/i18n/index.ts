@@ -183,20 +183,12 @@ type BaseLocale = {
     [K : string]: string | ((...args: any[]) => string)
 }
 
-type LocaleKey<
-    Locale extends BaseLocale = MainLocale
-> =
-    keyof Locale
-
-type LocaleKeyWithArgs<
-    Locale extends BaseLocale = MainLocale,
-    K extends keyof Locale = keyof Locale,
-    V extends Locale[K] = Locale[K]
-> =
-    { key: K, args: V extends (...args: infer A) => string ? A : [] }
-
 export type LocalKeyParam<
     Locale extends BaseLocale = MainLocale
 > =
-    LocaleKey<Locale> | LocaleKeyWithArgs<Locale>
-
+    {
+        [K in keyof Locale]:
+        Locale[K] extends (...args: any[]) => string
+            ? { key: K, args: Parameters<Locale[K]> }
+            : K
+    }[keyof Locale]

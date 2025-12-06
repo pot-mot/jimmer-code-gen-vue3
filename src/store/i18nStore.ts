@@ -37,22 +37,12 @@ export const useI18nStore = createStore(() => {
 
 export const translate = (keyParam: LocalKeyParam): string => {
     if (isString(keyParam)) {
-        const translateItem = mainLocale.value[keyParam]
-
-        if (isString(translateItem)) {
-            return translateItem
-        } else if (isFunction(translateItem)) {
-            // @ts-ignore
-            return translateItem()
-        }
+        return mainLocale.value[keyParam]
     } else if (typeof keyParam === "object") {
         const {key, args} = keyParam
 
         const translateItem = mainLocale.value[key]
-
-        if (isString(translateItem)) {
-            return translateItem
-        } else if (isFunction(translateItem)) {
+        if (isFunction(translateItem)) {
             // @ts-ignore
             return translateItem(...args)
         }
