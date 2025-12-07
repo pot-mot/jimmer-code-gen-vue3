@@ -74,7 +74,8 @@ const fetchScripts = async (): Promise<ScriptsStore> => {
             const scriptInfo = await scriptViewToInfo(scriptView)
             scriptInfos.push(scriptInfo)
         } catch (e) {
-            sendMessage(`${scriptView.name} pass error: ${e}`, {type: "warning"})
+            console.error(e)
+            sendMessage(`GenerateScript ${scriptView.name} pass error`, {type: "warning"})
         }
     }
 
