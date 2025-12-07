@@ -81,11 +81,11 @@ const startResize = (direction: ResizeDirection, e: MouseEvent | TouchEvent) => 
     }
 
     if (isTouchEvent) {
-        document.addEventListener('touchmove', handleResizingByTouch)
+        document.addEventListener('touchmove', scheduleResizeUpdateByTouch)
         document.addEventListener('touchend', stopResizeByTouch)
         document.addEventListener('touchcancel', stopResizeByTouch)
     } else {
-        document.addEventListener('mousemove', handleResizing)
+        document.addEventListener('mousemove', scheduleResizeUpdate)
         document.addEventListener('mouseup', stopResize)
     }
 
@@ -96,9 +96,9 @@ const startResize = (direction: ResizeDirection, e: MouseEvent | TouchEvent) => 
 }
 
 const cleanResizeEvent = () => {
-    document.removeEventListener('mousemove', handleResizing)
+    document.removeEventListener('mousemove', scheduleResizeUpdate)
     document.removeEventListener('mouseup', stopResize)
-    document.removeEventListener('touchmove', handleResizingByTouch)
+    document.removeEventListener('touchmove', scheduleResizeUpdateByTouch)
     document.removeEventListener('touchend', stopResizeByTouch)
     document.removeEventListener('touchcancel', stopResizeByTouch)
 }
@@ -213,10 +213,25 @@ const handleResizing = (position: { clientX: number, clientY: number }) => {
     })
 }
 
-const handleResizingByTouch = (e: TouchEvent) => {
+let requestAnimationFrameId: number | undefined = undefined
+const scheduleResizeUpdate = (position: { clientX: number; clientY: number }) => {
+    if (!isResizing.value || !resizeOrigin.value || !resizeDirection.value) {
+        cleanResizeEvent()
+        return
+    }
+
+    if (requestAnimationFrameId === undefined) {
+        requestAnimationFrameId = requestAnimationFrame(() => {
+            handleResizing(position)
+            requestAnimationFrameId = undefined
+        })
+    }
+}
+
+const scheduleResizeUpdateByTouch = (e: TouchEvent) => {
     const touch = e.changedTouches[0] ?? e.touches[0]
     if (!touch) return
-    handleResizing(touch)
+    scheduleResizeUpdate(touch)
 }
 
 const stopResize = (position: { clientX: number, clientY: number }) => {
