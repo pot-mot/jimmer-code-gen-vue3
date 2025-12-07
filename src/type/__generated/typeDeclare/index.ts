@@ -126,6 +126,7 @@ import PartialModelGraphDataDeclare from "./items/PartialModelGraphData.ts";
 import PositionDeclare from "./items/Position.ts";
 import PropertyDeclare from "./items/Property.ts";
 import PropertyInfoDeclare from "./items/PropertyInfo.ts";
+import PropertyOwnerDeclare from "./items/PropertyOwner.ts";
 import PropertyWithInheritSourceDeclare from "./items/PropertyWithInheritSource.ts";
 import ScalarCommonPropertyDeclare from "./items/ScalarCommonProperty.ts";
 import ScalarEmbeddablePropertyDeclare from "./items/ScalarEmbeddableProperty.ts";
@@ -278,6 +279,7 @@ export type TypeMap = {
     Position: Position
     Property: Property
     PropertyInfo: PropertyInfo
+    PropertyOwner: PropertyOwner
     PropertyWithInheritSource: PropertyWithInheritSource
     ScalarCommonProperty: ScalarCommonProperty
     ScalarEmbeddableProperty: ScalarEmbeddableProperty
@@ -434,6 +436,7 @@ export const typeDeclares = Object.freeze({
     Position: PositionDeclare,
     Property: PropertyDeclare,
     PropertyInfo: PropertyInfoDeclare,
+    PropertyOwner: PropertyOwnerDeclare,
     PropertyWithInheritSource: PropertyWithInheritSourceDeclare,
     ScalarCommonProperty: ScalarCommonPropertyDeclare,
     ScalarEmbeddableProperty: ScalarEmbeddablePropertyDeclare,

@@ -3,7 +3,7 @@ export default Object.freeze({
     content: `type JvmFileBuilder = {
     readonly getPackagePath(): string
     readonly getProperties(): PropertyInfo[]
-    readonly pushProperty(property: DeepReadonly<Property>): PropertyInfo
+    readonly pushProperty(property: DeepReadonly<Property>, propertyOwner: DeepReadonly<PropertyOwner>): PropertyInfo
     readonly getImportSet(): ReadonlySet<string>
     readonly addImports(imports: string | Iterable<string>): void
     readonly requireEnumeration(id: string): DeepReadonly<Enumeration>

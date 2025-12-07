@@ -13,10 +13,15 @@ type PropertyInfo = {
     body?: string
 }
 
+type PropertyOwner =
+    | { type: "Entity", entity: EntityWithInheritInfo }
+    | { type: "MappedSuperClass", mappedSuperClass: MappedSuperClassWithInheritInfo }
+    | { type: "EmbeddableType", embeddableType: EmbeddableTypeWithOverrideProperties }
+
 type JvmFileBuilder = {
     readonly getPackagePath(): string
     readonly getProperties(): PropertyInfo[]
-    readonly pushProperty(property: DeepReadonly<Property>): PropertyInfo
+    readonly pushProperty(property: DeepReadonly<Property>, propertyOwner: DeepReadonly<PropertyOwner>): PropertyInfo
     readonly getImportSet(): ReadonlySet<string>
     readonly addImports(imports: string | Iterable<string>): void
     readonly requireEnumeration(id: string): DeepReadonly<Enumeration>

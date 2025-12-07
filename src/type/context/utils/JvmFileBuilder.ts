@@ -16,7 +16,7 @@ export const createJvmFileBuilder = (
     const importSet: Set<string> = new Set()
     const propertyInfos: PropertyInfo[] = []
 
-    const buildPointPath = (subPackagePaths: string[]) => {
+    const buildPointPath = (subPackagePaths: string[]): string => {
         const parts: string[] = []
         for (const subPath of subPackagePaths) {
             const splitSubPath = subPath.split(".")
@@ -27,6 +27,11 @@ export const createJvmFileBuilder = (
             }
         }
         return parts.join(".")
+    }
+
+    const getShortName = (fullName: string): string => {
+        const lastDotIndex = fullName.lastIndexOf(".")
+        return lastDotIndex === -1 ? fullName : fullName.substring(lastDotIndex + 1)
     }
 
     const group = context.groupMap.get(groupId)
@@ -134,6 +139,13 @@ export const createJvmFileBuilder = (
         referencedEntity: DeepReadonly<EntityWithInheritInfo>
     ) => {
         importSet.add("org.babyfish.jimmer.sql.IdView")
+        const annotations: string[] = []
+        if (property.nullable) {
+            importSet.add("org.jetbrains.annotations.Nullable")
+            annotations.push("@Nullable")
+        }
+        annotations.push(`@IdView("${property.name}")`)
+
         const referencedId = referencedEntity.idProperty
         if (referencedId.category === "ID_COMMON") {
             propertyInfos.push({
@@ -141,10 +153,7 @@ export const createJvmFileBuilder = (
                 name: property.idViewName,
                 comment: property.comment,
                 type: property.typeIsList ? "List<" + referencedId.rawType + ">" : referencedId.rawType,
-                annotations: [
-                    `@IdView("${property.name}")`,
-                    ...referencedId.extraAnnotations,
-                ],
+                annotations,
                 nullable: property.nullable
             })
         } else if (referencedId.category === "ID_EMBEDDABLE") {
@@ -154,10 +163,7 @@ export const createJvmFileBuilder = (
                 name: property.idViewName,
                 comment: property.comment,
                 type: property.typeIsList ? "List<" + referencedEmbeddableType.name + ">" : referencedEmbeddableType.name,
-                annotations: [
-                    `@IdView("${property.name}")`,
-                    ...referencedId.extraAnnotations,
-                ],
+                annotations,
                 nullable: property.nullable
             })
         }
@@ -221,12 +227,11 @@ export const createJvmFileBuilder = (
                     annotationBuilder.appendLine(`name = "${association.name}",`)
                     annotationBuilder.endScope(")")
                 }
+                return annotationBuilder.build()
 
                 // TODO add other joinInfo
             }
-        }
-
-        else if (jvmLanguage === "JAVA") {
+        } else if (jvmLanguage === "JAVA") {
             const annotationBuilder = context.createTemplateBuilder({
                 indent: "    ",
                 scope: {start: "", end: ""}
@@ -271,6 +276,8 @@ export const createJvmFileBuilder = (
                     annotationBuilder.appendLine(`name = "${association.name}",`)
                     annotationBuilder.endScope(")")
                 }
+                return annotationBuilder.build()
+                // TODO add other joinInfo
             }
         }
     }
@@ -287,7 +294,7 @@ export const createJvmFileBuilder = (
                 if (keyGroup.length === 0) {
                     annotations.push("@Key")
                 } else {
-                    annotations.push(`@Key(group = ${keyGroup})`)
+                    annotations.push(`@Key(group = "${keyGroup}")`)
                 }
             }
         }
@@ -295,20 +302,29 @@ export const createJvmFileBuilder = (
         return annotations
     }
 
-    const pushProperty = (property: DeepReadonly<Property>): PropertyInfo => {
+    const pushProperty = (
+        property: DeepReadonly<Property>,
+        owner: DeepReadonly<PropertyOwner>
+    ): PropertyInfo => {
         for (const extraImport of property.extraImports) {
             importSet.add(extraImport)
         }
 
-        // TODO generate value, default
+        const annotations: string[] = []
+        if (jvmLanguage === "JAVA") {
+            if (property.nullable) {
+                importSet.add("org.jetbrains.annotations.Nullable")
+                annotations.push("@Nullable")
+            }
+        }
+
+        // TODO generate value, default, order, logicalDelete
         if (property.category === "ID_COMMON") {
             importSet.add("org.babyfish.jimmer.sql.Id")
             importSet.add("org.babyfish.jimmer.sql.Column")
-            const annotations: string[] = [
-                '@Id',
-                `@Column(name = "${property.columnInfo.name}")`,
-                ...property.extraAnnotations,
-            ]
+            annotations.push("@Id")
+            annotations.push(`@Column(name = "${property.columnInfo.name}")`)
+            annotations.push(...property.extraAnnotations)
             const propertyInfo = {
                 raw: property,
                 name: property.name,
@@ -322,10 +338,8 @@ export const createJvmFileBuilder = (
         } else if (property.category === "ID_EMBEDDABLE") {
             // TODO 添加 PropOverride
             importSet.add("org.babyfish.jimmer.sql.Id")
-            const annotations = [
-                '@Id',
-                ...property.extraAnnotations,
-            ]
+            annotations.push("@Id")
+            annotations.push(...property.extraAnnotations)
             const embeddableType = requireEmbeddableType(property.embeddableTypeId)
             const propertyInfo = {
                 raw: property,
@@ -339,7 +353,6 @@ export const createJvmFileBuilder = (
             return propertyInfo
         } else if (property.category === "SCALAR_COMMON") {
             importSet.add("org.babyfish.jimmer.sql.Column")
-            const annotations: string[] = []
             if (property.typeIsArray) {
                 annotations.push(`@Column(name = "${property.columnInfo.name}", sqlElementType = "${property.columnInfo.type}")`)
             } else {
@@ -371,7 +384,6 @@ export const createJvmFileBuilder = (
         } else if (property.category === "SCALAR_ENUM") {
             importSet.add("org.babyfish.jimmer.sql.Column")
             const enumeration = requireEnumeration(property.enumId)
-            const annotations: string[] = []
             annotations.push(`@Column(name = "${property.columnInfo.name}")`)
             if ("key" in property) {
                 importSet.add("org.babyfish.jimmer.sql.Key")
@@ -390,14 +402,13 @@ export const createJvmFileBuilder = (
             return propertyInfo
         } else if (property.category === "SCALAR_EMBEDDABLE") {
             const embeddableType = requireEmbeddableType(property.embeddableTypeId)
+            annotations.push(...property.extraAnnotations)
             const propertyInfo = {
                 raw: property,
                 name: property.name,
                 comment: property.comment,
                 type: embeddableType.name,
-                annotations: [
-                    ...property.extraAnnotations,
-                ],
+                annotations,
                 nullable: property.nullable
             }
             // TODO 添加 PropOverride
@@ -434,15 +445,14 @@ export const createJvmFileBuilder = (
             const referencedEntity = requireEntity(property.referencedEntityId)
             const sourceProperty = referencedEntity.oneToOneSourcePropertyMap.get(property.mappedById)
             if (sourceProperty === undefined) throw new Error(`[${property.mappedById}] not found`)
+            annotations.push(`@OneToOne(mappedBy = "${sourceProperty.name}")`)
+            annotations.push(...property.extraAnnotations)
             const propertyInfo = {
                 raw: property,
                 name: property.name,
                 comment: property.comment,
                 type: referencedEntity.name,
-                annotations: [
-                    `@OneToOne(mappedBy = "${sourceProperty.name}")`,
-                    ...property.extraAnnotations,
-                ],
+                annotations,
                 nullable: property.nullable
             }
             propertyInfos.push(propertyInfo)
@@ -479,15 +489,14 @@ export const createJvmFileBuilder = (
             const referencedEntity = requireEntity(property.referencedEntityId)
             const sourceProperty = referencedEntity.manyToOnePropertyMap.get(property.mappedById)
             if (sourceProperty === undefined) throw new Error(`[${property.mappedById}] not found`)
+            annotations.push(`@OneToMany(mappedBy = "${sourceProperty.name}")`)
+            annotations.push(...property.extraAnnotations)
             const propertyInfo = {
                 raw: property,
                 name: property.name,
                 comment: property.comment,
                 type: "List<" + referencedEntity.name + ">",
-                annotations: [
-                    `@OneToMany(mappedBy = "${sourceProperty.name}")`,
-                    ...property.extraAnnotations,
-                ],
+                annotations,
                 nullable: property.nullable
             }
             propertyInfos.push(propertyInfo)
@@ -520,34 +529,148 @@ export const createJvmFileBuilder = (
             const referencedEntity = requireEntity(property.referencedEntityId)
             const sourceProperty = referencedEntity.manyToManySourcePropertyMap.get(property.mappedById)
             if (sourceProperty === undefined) throw new Error(`[${property.mappedById}] not found`)
+            annotations.push(`@ManyToMany(mappedBy = "${sourceProperty.name}")`)
+            annotations.push(...property.extraAnnotations)
             const propertyInfo = {
                 raw: property,
                 name: property.name,
                 comment: property.comment,
                 type: "List<" + referencedEntity.name + ">",
-                annotations: [
-                    `@ManyToMany(mappedBy = "${sourceProperty.name}")`,
-                    ...property.extraAnnotations,
-                ],
+                annotations,
                 nullable: property.nullable
             }
             propertyInfos.push(propertyInfo)
             pushIdViewProperty(property, referencedEntity)
             return propertyInfo
-        } else {
-            // TODO more category
+        } else if (property.category === "VERSION") {
+            importSet.add("org.babyfish.jimmer.sql.Version")
+            importSet.add("org.babyfish.jimmer.sql.Column")
+            annotations.push(`@Version`)
+            annotations.push(`@Column(name = "${property.columnInfo.name}")`)
+            annotations.push(...property.extraAnnotations)
             const propertyInfo = {
                 raw: property,
-                name: "name" in property ? property.name : property.nameTemplate,
-                comment: "comment" in property ? property.comment : property.commentTemplate,
-                type: "Object",
-                annotations: [
-                    ...property.extraAnnotations,
-                ],
+                name: property.name,
+                comment: property.comment,
+                type: property.rawType,
+                annotations,
+                nullable: false
+            }
+            propertyInfos.push(propertyInfo)
+            return propertyInfo
+        } else if (property.category === "FORMULA_GETTER") {
+            importSet.add("org.babyfish.jimmer.sql.Formula")
+            if (!("entity" in owner) && !("mappedSuperClass" in owner)) throw new Error(`[${property.name}] owner is not an entity`)
+            const ownerProperties: DeepReadonly<Property>[] = []
+            if ("entity" in owner) {
+                ownerProperties.push(...owner.entity.allProperties)
+            } else {
+                ownerProperties.push(...owner.mappedSuperClass.allProperties)
+            }
+
+            const dependencyString = property.dependencies.map(dependency => {
+                const dependencyProperty = ownerProperties.find(
+                    p => p.id === dependency
+                )
+                if (dependencyProperty === undefined) throw new Error(`[${dependency}] not found`)
+                if (!("name" in dependencyProperty)) throw new Error(`[${dependency}] not found`)
+                return `"${dependencyProperty.name}"`
+            }).join(", ")
+            if (jvmLanguage === "KOTLIN") {
+                annotations.push(`@Formula(dependencies = [${dependencyString}])`)
+            } else if (jvmLanguage === "JAVA") {
+                annotations.push(`@Formula(dependencies = {${dependencyString}})`)
+            }
+            annotations.push(...property.extraAnnotations)
+            const propertyInfo = {
+                raw: property,
+                name: property.name,
+                comment: property.comment,
+                type: property.rawType,
+                annotations,
+                nullable: property.nullable,
+                body: property.body
+            }
+            propertyInfos.push(propertyInfo)
+            return propertyInfo
+        } else if (property.category === "FORMULA_SQL") {
+            importSet.add("org.babyfish.jimmer.sql.Formula")
+            annotations.push(`@Formula(sql = "${property.sql}")`)
+            annotations.push(...property.extraAnnotations)
+            const propertyInfo = {
+                raw: property,
+                name: property.name,
+                comment: property.comment,
+                type: property.rawType,
+                annotations,
                 nullable: property.nullable
             }
             propertyInfos.push(propertyInfo)
             return propertyInfo
+        } else if (property.category === "TRANSIENT") {
+            importSet.add("org.babyfish.jimmer.sql.Transient")
+
+            if ('resolver' in property) {
+                importSet.add(property.resolver)
+                const resolverShortName = getShortName(property.resolver)
+                if (jvmLanguage === "KOTLIN") {
+                    annotations.push(`@Transient(${resolverShortName}::class)`)
+                } else if (jvmLanguage === "JAVA") {
+                    annotations.push(`@Transient(${resolverShortName}.class)`)
+                }
+            } else if ("resolverRef" in property && property.resolverRef) {
+                annotations.push(`@Transient(ref = "${property.resolverRef}")`)
+            } else {
+                annotations.push('@Transient')
+            }
+
+            let typeName: string
+            if ("referencedEntityId" in property) {
+                const referencedEntity = requireEntity(property.referencedEntityId)
+                typeName = property.typeIsList ? `List<${referencedEntity.name}>` : referencedEntity.name
+            } else {
+                typeName = property.rawType
+            }
+
+            const propertyInfo = {
+                raw: property,
+                name: property.name,
+                comment: property.comment,
+                type: typeName,
+                annotations,
+                nullable: property.nullable
+            }
+            propertyInfos.push(propertyInfo)
+            return propertyInfo
+        } else if (property.category === "ManyToMany_View") {
+            if (!("entity" in owner)) throw new Error(`[${property.name}] owner is not an entity`)
+
+            const baseToManyProperty =
+                owner.entity.oneToManyPropertyMap.get(property.baseToManyPropertyId) ??
+                owner.entity.manyToManySourcePropertyMap.get(property.baseToManyPropertyId) ??
+                owner.entity.manyToManyMappedPropertyMap.get(property.baseToManyPropertyId)
+            if (baseToManyProperty === undefined) throw new Error(`[${property.baseToManyPropertyId}] not found`)
+            const referencedEntity = requireEntity(baseToManyProperty.referencedEntityId)
+            const deeperProperty = referencedEntity.allProperties.find(prop => prop.id === property.deeperPropertyId)
+            if (deeperProperty === undefined) throw new Error(`[${referencedEntity.name}.${property.deeperPropertyId}] not found`)
+            if (!("name" in deeperProperty)) throw new Error(`[${referencedEntity.name}.${deeperProperty.nameTemplate}] not a concrete property`)
+
+            importSet.add("org.babyfish.jimmer.sql.ManyToManyView")
+            annotations.push(`@ManyToManyView(prop = "${baseToManyProperty.name}", deeperProp = "${deeperProperty.name}")`)
+            annotations.push(...property.extraAnnotations)
+
+            const propertyInfo = {
+                raw: property,
+                name: property.name, // Use template if available
+                comment: property.comment,
+                type: `List<${referencedEntity.name}>`,
+                annotations,
+                nullable: property.nullable
+            }
+            propertyInfos.push(propertyInfo)
+            return propertyInfo
+        } else {
+            throw new Error(`Unknown property category: ${property.category}`)
         }
     }
 

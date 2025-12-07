@@ -212,13 +212,22 @@ type SqlFormulaProperty = {
 
 type TransientProperty = {
     category: "TRANSIENT"
-} & BaseProperty & ({
-    rawType: string
-} | {
-    referencedEntityId: string
-    resolver: string
-    typeIsList: boolean
-})
+} & BaseProperty & (
+    | ({
+        rawType: string
+    }  & (
+        | {}
+        | { resolver: string }
+        | { resolverRef: string }
+    ))
+    | ({
+        referencedEntityId: string
+        typeIsList: boolean
+    } & (
+        | { resolver: string }
+        | { resolverRef: string }
+    ))
+)
 
 type EntityProperty =
     | IdCommonProperty
