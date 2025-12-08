@@ -1,6 +1,6 @@
 const interactionTagNames = ["INPUT", "TEXTAREA", "BUTTON"]
 
-export const interactionTagClassList = ["monaco-editor", "code-preview", "splitpanes__splitter", "resize-border", "resize-handle", "dropdown-trigger", "diagnose-viewer"]
+export const interactionClassList = ["monaco-editor", "code-preview", "splitpanes__splitter", "resize-border", "resize-handle", "dropdown-trigger", "diagnose-info"]
 
 export const checkIsElement = (e: any): e is Element => {
     return (e instanceof Element)
@@ -54,7 +54,7 @@ export const judgeInteraction = (el: Element): boolean => {
     if (interactionTagNames.includes(el.tagName)) {
         return true
     }
-    return containsClassList(el, interactionTagClassList);
+    return containsClassList(el, interactionClassList);
 }
 
 export const judgeElementIsInteraction = (
