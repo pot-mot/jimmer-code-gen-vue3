@@ -13,6 +13,7 @@ import "./list.css"
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 import {translate} from "@/store/i18nStore.ts";
 import {readText, writeText} from "clipboard-polyfill";
+import {json5Parse} from "@/utils/json/jsonParse.ts";
 
 const lines = defineModel<T[]>('lines', {
     required: true
@@ -138,7 +139,7 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
 
             const text = await readText()
             try {
-                const value = JSON.parse(text)
+                const value = json5Parse(text)
                 const tempLines = getTempLines()
 
                 const insertIndex = selectedItemSet.value.size > 0 ? Math.max(...selectedItemSet.value.values()) + 1 : tempLines.length

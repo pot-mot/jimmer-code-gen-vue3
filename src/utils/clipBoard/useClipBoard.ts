@@ -1,6 +1,7 @@
 import {type SchemaValidator} from "@/utils/type/typeGuard.ts";
 import {type LazyData, lazyDataParse} from "@/utils/type/lazyDataParse.ts";
 import {readText, writeText} from "clipboard-polyfill"
+import {json5Parse} from "@/utils/json/jsonParse.ts";
 
 export type ClipBoardTarget<INPUT, OUTPUT> = {
     importData: (data: INPUT) => void | Promise<void>,
@@ -26,7 +27,7 @@ export const useClipBoard = <INPUT, OUTPUT>(target: ClipBoardTarget<INPUT, OUTPU
 
     const paste = async (): Promise<INPUT | undefined> => {
         const text = await readText()
-        const data = JSON.parse(text)
+        const data = json5Parse(text)
         let errors: any
         if (target.validateInput(data, e => errors = e)) {
             await target.importData(data)
