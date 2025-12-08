@@ -7,6 +7,7 @@ import {useClickOutside} from "@/components/list/selectableList/useClickOutside.
 import {useTemplateRef} from "vue";
 import "./list.css"
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
+import {writeText} from "clipboard-polyfill";
 
 const props = withDefaults(
     defineProps<ListProps<T>>(),
@@ -89,7 +90,7 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
 
             const copyData = cloneDeepReadonlyRaw<T[]>(selectedItems)
             props.beforeCopy(copyData)
-            await navigator.clipboard.writeText(JSON.stringify(copyData))
+            await writeText(JSON.stringify(copyData))
         }
     } else if (e.key === 'ArrowUp') {
         e.preventDefault()

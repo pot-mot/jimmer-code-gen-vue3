@@ -19,6 +19,7 @@ import {prism} from "@/components/code/prismjs-index.ts"
 import {computed, nextTick, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {sendMessage} from "@/components/message/messageApi.ts";
 import IconCopy from "@/components/icons/IconCopy.vue";
+import {writeText} from "clipboard-polyfill";
 
 const props = withDefaults(defineProps<{
 	code: string,
@@ -107,7 +108,7 @@ const lineCounts = computed(() => {
 const copyFinish = ref(false)
 
 const handleCopy = () => {
-	navigator.clipboard.writeText(props.code)
+	writeText(props.code)
 	sendMessage('Copied', {type: 'success'})
 	copyFinish.value = true
 }

@@ -12,6 +12,7 @@ import type {ErrorObject} from "ajv";
 import "./list.css"
 import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 import {translate} from "@/store/i18nStore.ts";
+import {readText, writeText} from "clipboard-polyfill";
 
 const lines = defineModel<T[]>('lines', {
     required: true
@@ -118,12 +119,12 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
 
             const copyData = cloneDeepReadonlyRaw<T[]>(selectedItems)
             props.beforeCopy(copyData)
-            await navigator.clipboard.writeText(JSON.stringify(copyData))
+            await writeText(JSON.stringify(copyData))
         } else if (e.key === 'x') {
             e.preventDefault()
             e.stopPropagation()
             e.stopImmediatePropagation()
-            await navigator.clipboard.writeText(JSON.stringify(selectedItems))
+            await writeText(JSON.stringify(selectedItems))
             cleanSelection()
             emits('delete', selectedItems)
             lines.value = unselectedItems
@@ -135,7 +136,7 @@ const handleKeyboardEvent = async (e: KeyboardEvent) => {
             if (props.jsonSchemaValidate === undefined) return
             const jsonSchemaValidate = props.jsonSchemaValidate
 
-            const text = await navigator.clipboard.readText()
+            const text = await readText()
             try {
                 const value = JSON.parse(text)
                 const tempLines = getTempLines()
