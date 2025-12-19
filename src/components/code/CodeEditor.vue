@@ -4,7 +4,7 @@
  * https://blog.csdn.net/yyXieDaiMa/article/details/125371318
  */
 
-import {editor, languages} from 'monaco-editor'
+import {editor} from 'monaco-editor'
 import {onMounted, onUnmounted, ref, shallowRef, watch} from "vue";
 import {type CodeEditorLanguage} from "@/components/code/CodeEditorLanguages.ts";
 import {defaultOptions} from "@/components/code/defaultOptions.ts";
@@ -20,8 +20,6 @@ const props = defineProps<{
 	language?: CodeEditorLanguage | string,
 	options?: Omit<Partial<IStandaloneEditorConstructionOptions>, 'language' | 'value'>
 }>()
-
-languages.typescript.typescriptDefaults.setEagerModelSync(true);
 
 const editorContainer = ref<HTMLElement>()
 
