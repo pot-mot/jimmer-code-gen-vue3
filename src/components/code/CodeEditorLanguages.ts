@@ -2,7 +2,7 @@ export const CodeEditorLanguage_CONSTANTS = [
     'json',
     'typescript', 'javascript',
     'html',
-    'css', "scss", "less",
+    'css',
     'java',
     'kotlin',
     'sql',
@@ -29,8 +29,6 @@ export const getWorker = (language: CodeEditorLanguage | string | undefined) => 
         case "html":
             return new HTMLWorker()
         case "css":
-        case "scss":
-        case "less":
             return new CSSWorker()
         case "json":
             return new JSONWorker()
