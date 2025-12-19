@@ -56,6 +56,7 @@ const handleScriptInfoSubmit = async (scriptInfo: Omit<ScriptInfo<any>, 'id'>) =
 }
 
 const handleScriptInfoCancel = () => {
+    currentScriptId.value = undefined
     currentScriptInfo.value = undefined
 }
 </script>
@@ -63,7 +64,7 @@ const handleScriptInfoCancel = () => {
 <template>
     <DragResizeDialog
         v-model="openState"
-        @close="currentScriptInfo = undefined"
+        @close="handleScriptInfoCancel"
         can-resize
         modal
     >
