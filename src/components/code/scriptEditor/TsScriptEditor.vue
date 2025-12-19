@@ -4,7 +4,7 @@ import {
     type TsScriptExecuteResult,
     TsScriptExecutor,
     type TsScriptValidatedCompileResult
-} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
+} from "@/utils/tsExecutor/TsScriptExecutor.ts";
 import CodeEditor from "@/components/code/CodeEditor.vue";
 import {debounce} from "lodash-es";
 import {editor} from "monaco-editor";

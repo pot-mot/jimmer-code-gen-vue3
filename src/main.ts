@@ -8,14 +8,14 @@ import "@vue-flow/core/dist/theme-default.css"
 import './assets/theme.css'
 import './assets/base.css'
 
-import {useCodeEditor} from "@/components/code/CodeEditorWorkers.ts";
-import {initMonacoTsScriptEditor} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
+import {useCodeEditorWorker} from "@/components/code/worker/CodeEditorWorkers.ts";
+import {registerTypeDeclareForMonacoEditor} from "@/components/code/language/typescript.ts";
 
 const app = createApp(App)
 
 app.use(router)
 
-useCodeEditor()
-initMonacoTsScriptEditor()
+useCodeEditorWorker()
+registerTypeDeclareForMonacoEditor()
 
 app.mount('#app')

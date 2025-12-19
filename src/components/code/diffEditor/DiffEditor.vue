@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {editor, languages, type Uri} from 'monaco-editor'
 import {onMounted, onUnmounted, ref, shallowRef, watch} from "vue";
-import {type CodeEditorLanguage} from "@/components/code/CodeEditorLanguages.ts";
+import {type CodeEditorLanguage} from "@/components/code/worker/CodeEditorWorkers.ts";
 import {defaultOptions} from "@/components/code/defaultOptions.ts";
 type IDiffEditor = editor.IDiffEditor;
 type ITextModel = editor.ITextModel;

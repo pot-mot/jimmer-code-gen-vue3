@@ -1,40 +1,12 @@
 import ts, {type SourceFile} from 'typescript';
 import {createDefaultMapFromCDN, createSystem, createVirtualCompilerHost} from "@typescript/vfs";
-import {editor, languages, MarkerSeverity} from "monaco-editor";
-import {typeDeclares} from "@/type/__generated/typeDeclare";
+import {editor, MarkerSeverity} from "monaco-editor";
 import {scriptTypeDeclares, type ScriptTypeMap, type ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
 import message from "@/components/message/Message.vue";
 import {translate} from "@/store/i18nStore.ts";
+import {getTypeDeclareFiles} from "@/components/code/language/typescript.ts";
 
 type IMarkerData = editor.IMarkerData
-
-const typeDeclareFiles = new Map<string, string>()
-
-export const registerTypeDeclareFile = (fileName: string, content: string) => {
-    if (typeDeclareFiles.has(fileName)) {
-        throw new Error(`File [${fileName}] already registered`)
-    }
-    typeDeclareFiles.set(fileName, content)
-    languages.typescript.typescriptDefaults.addExtraLib(content, fileName)
-}
-
-export const initMonacoTsScriptEditor = () => {
-    languages.typescript.typescriptDefaults.setCompilerOptions({
-        target: languages.typescript.ScriptTarget.ES2020,
-        allowNonTsExtensions: true,
-    })
-    languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-        noSemanticValidation: true,
-        noSyntaxValidation: true,
-        noSuggestionDiagnostics: true,
-    })
-    for (const {fileName, content} of Object.values(typeDeclares)) {
-        registerTypeDeclareFile(fileName, content)
-    }
-    for (const {fileName, content} of Object.values(scriptTypeDeclares)) {
-        registerTypeDeclareFile(fileName, content)
-    }
-}
 
 export const forbiddenGlobal = Object.freeze([
     'import',
@@ -136,66 +108,71 @@ const compilerOptions = Object.freeze({
     baseUrl: "./",
 })
 
-type TsProgramCache = {
+type TsProgram = {
     updateFile: (sourceFile: SourceFile) => boolean
     deleteFile: (sourceFile: SourceFile) => boolean
     compilerHost: ts.CompilerHost
     program: ts.Program
 }
-let tsProgramCache: TsProgramCache | null = null
+let tsProgramCache: TsProgram | null = null
 
-let tsProgramInitPromise: Promise<TsProgramCache> | null = null
+let tsProgramInitPromise: Promise<TsProgram> | null = null
 
 const scriptCodeFileName = "[[__SCRIPT_CODE_FILE_NAME__]].ts"
-const getProgramCache = async () => {
-    if (tsProgramCache) {
+
+const getTsProgram = async (): Promise<TsProgram> => {
+    const fsMap = await createDefaultMapFromCDN(
+        compilerOptions,
+        ts.version,
+        true,
+        ts,
+    );
+
+    for (const [fileName, content] of getTypeDeclareFiles()) {
+        fsMap.set(fileName, content)
+    }
+    fsMap.set(scriptCodeFileName, "")
+
+    const system = createSystem(fsMap);
+    const {
+        compilerHost,
+        updateFile,
+        deleteFile,
+    } = createVirtualCompilerHost(system, compilerOptions, ts);
+
+    const program = ts.createProgram({
+        rootNames: [...fsMap.keys()],
+        options: compilerOptions,
+        host: compilerHost,
+    })
+
+    return {
+        updateFile,
+        deleteFile,
+        compilerHost,
+        program,
+    }
+}
+
+const getProgramCache = (): TsProgram | Promise<TsProgram> => {
+    if (tsProgramCache !== null) {
         return tsProgramCache
     }
 
-    if (tsProgramInitPromise) {
+    if (tsProgramInitPromise !== null) {
         return tsProgramInitPromise
     }
 
-    tsProgramInitPromise = (async () => {
-        try {
-            const fsMap = await createDefaultMapFromCDN(
-                compilerOptions,
-                ts.version,
-                true,
-                ts,
-            );
-
-            for (const [fileName, content] of typeDeclareFiles) {
-                fsMap.set(fileName, content)
-            }
-            fsMap.set(scriptCodeFileName, "")
-
-            const system = createSystem(fsMap);
-            const {
-                compilerHost,
-                updateFile,
-                deleteFile,
-            } = createVirtualCompilerHost(system, compilerOptions, ts);
-
-            const program = ts.createProgram({
-                rootNames: [...fsMap.keys()],
-                options: compilerOptions,
-                host: compilerHost,
-            })
-
-            tsProgramCache = {
-                updateFile,
-                deleteFile,
-                compilerHost,
-                program,
-            }
-
-            return tsProgramCache
-        } finally {
+    tsProgramInitPromise = getTsProgram()
+    tsProgramInitPromise
+        .then(res => {
+            tsProgramCache = res
             tsProgramInitPromise = null
-        }
-    })()
-
+        })
+        .catch(err => {
+            console.error(err)
+            tsProgramInitPromise = null
+        })
     return tsProgramInitPromise
 }
 
@@ -371,7 +348,10 @@ export class TsScriptExecutor<Name extends ScriptTypeName> {
                 if (ts.isIdentifier(node)) {
                     const identifierText = node.text;
                     if (forbiddenGlobalMap.has(identifierText)) {
-                        const marker = createMarker(node, translate({key: 'target_is_forbidden', args: [identifierText]}))
+                        const marker = createMarker(node, translate({
+                            key: 'target_is_forbidden',
+                            args: [identifierText]
+                        }))
                         forbiddenGlobalMarkers.push(marker)
                     }
                 }

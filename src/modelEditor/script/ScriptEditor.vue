@@ -2,7 +2,7 @@
 import {type ScriptInfo} from "@/modelEditor/script/ScriptsStore.ts";
 import type {ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
 import TsScriptEditor from "@/components/code/scriptEditor/TsScriptEditor.vue";
-import {createTsScript, TsScriptExecutor} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
+import {createTsScript, TsScriptExecutor} from "@/utils/tsExecutor/TsScriptExecutor.ts";
 import {computed, ref, watch} from "vue";
 import {jsonPrettyFormat} from "@/utils/json/jsonStringify.ts";
 import IconCheck from "@/components/icons/IconCheck.vue";

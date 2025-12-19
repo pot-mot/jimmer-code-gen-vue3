@@ -15,7 +15,7 @@ import type {
 } from "@/api/__generated/model/static";
 import {readonly, ref} from "vue";
 import type {ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
-import {createTsScript} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
+import {createTsScript} from "@/utils/tsExecutor/TsScriptExecutor.ts";
 import {sendMessage} from "@/components/message/messageApi.ts";
 import {sendConfirm} from "@/components/confirm/confirmApi.ts";
 import {translate} from "@/store/i18nStore.ts";

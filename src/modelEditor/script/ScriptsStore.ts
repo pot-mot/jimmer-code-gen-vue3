@@ -1,5 +1,5 @@
 import type {ScriptTypeName} from "@/type/__generated/scriptTypeDeclare";
-import {type TsScript} from "@/components/code/scriptEditor/TsScriptExecutor.ts";
+import {type TsScript} from "@/utils/tsExecutor/TsScriptExecutor.ts";
 import {reactive, readonly} from "vue";
 
 export type ScriptInfo<Name extends ScriptTypeName> = {
