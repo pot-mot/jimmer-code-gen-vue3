@@ -3,7 +3,7 @@ export const createTemplateBuilder = (
 ): TemplateBuilder => {
     let lines: string[] = []
     let currentIndentLevel: number = 0
-    let currentLine: string = ""
+    let currentLine: string[] = []
 
     const getCurrentIndent = () => {
         return options.indent.repeat(currentIndentLevel)
@@ -17,25 +17,25 @@ export const createTemplateBuilder = (
         append: (content: string) => {
             if (content.length > 0) {
                 if (currentLine.length === 0) {
-                    currentLine = getCurrentIndent()
+                    currentLine.push(getCurrentIndent())
                 }
-                currentLine += content
+                currentLine.push(content)
             }
         },
         appendLine: (line?: string) => {
             if (line !== undefined && line.length > 0) {
                 if (currentLine.length === 0) {
-                    currentLine = getCurrentIndent()
+                    currentLine.push(getCurrentIndent())
                 }
-                currentLine += line
+                currentLine.push(line)
             }
-            lines.push(currentLine)
-            currentLine = ""
+            lines.push(currentLine.join(''))
+            currentLine = []
         },
         appendBlock: (block) => {
             if (currentLine.length > 0) {
-                lines.push(currentLine)
-                currentLine = ""
+                lines.push(currentLine.join(''))
+                currentLine = []
             }
             if (typeof block === "string") {
                 for (const line of block.split("\n")) {
@@ -52,8 +52,8 @@ export const createTemplateBuilder = (
         startScope: (start) => {
             const finalStart = start ?? options.scope.start
             if (currentLine.length > 0) {
-                lines.push(currentLine + finalStart)
-                currentLine = ""
+                lines.push(currentLine.join('') + finalStart)
+                currentLine = []
             } else {
                 addLine(finalStart)
             }
@@ -61,16 +61,16 @@ export const createTemplateBuilder = (
         },
         endScope: (end) => {
             if (currentLine.length > 0) {
-                lines.push(currentLine)
-                currentLine = ""
+                lines.push(currentLine.join(''))
+                currentLine = []
             }
             currentIndentLevel--
             addLine(end ?? options.scope.end)
         },
         build: (options?: Partial<TemplateBuildOptions>) => {
             if (currentLine.length > 0) {
-                lines.push(currentLine)
-                currentLine = ""
+                lines.push(currentLine.join(''))
+                currentLine = []
             }
             if (options?.cleanEmptyLineIndent) {
                 return lines.map(line => {
@@ -87,7 +87,7 @@ export const createTemplateBuilder = (
         clean: () => {
             lines = []
             currentIndentLevel = 0
-            currentLine = ""
+            currentLine = []
         }
     }
 }
