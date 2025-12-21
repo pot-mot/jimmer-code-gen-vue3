@@ -16,6 +16,10 @@ const props = withDefaults(defineProps<{
     disabled: false
 })
 
+const emits = defineEmits<{
+    (event: 'header-click', e: MouseEvent): void
+}>()
+
 const bodyRef = useTemplateRef("bodyRef")
 
 onMounted(() => {
@@ -55,16 +59,23 @@ watch(() => isOpen.value, () => {
         <div
             class="collapse-detail-head"
             :class="`caret-${triggerPosition} open-by-${openTrigger} ${disabled ? 'disabled' : ''}`"
-            @click="() => {
-                if (disabled) return
-                if (openTrigger === 'head') isOpen = !isOpen
+            @click="(e: MouseEvent) => {
+                if (!disabled && openTrigger === 'head') {
+                    e.stopPropagation()
+                    isOpen = !isOpen
+                } else {
+                    emits('header-click', e)
+                }
             }"
         >
             <button
                 class="caret-wrapper"
                 v-if="triggerPosition === 'left'"
-                @click="() => {
-                    if (openTrigger === 'caret') isOpen = !isOpen
+                @click="(e: MouseEvent) => {
+                    if (openTrigger === 'caret') {
+                        e.stopPropagation()
+                        isOpen = !isOpen
+                    }
                 }"
             >
                 <IconCaretDown
@@ -78,8 +89,11 @@ watch(() => isOpen.value, () => {
             <button
                 class="caret-wrapper"
                 v-if="triggerPosition === 'right'"
-                @click="() => {
-                    if (openTrigger === 'caret') isOpen = !isOpen
+                @click="(e: MouseEvent) => {
+                    if (openTrigger === 'caret') {
+                        e.stopPropagation()
+                        isOpen = !isOpen
+                    }
                 }"
             >
                 <IconCaretDown
@@ -108,10 +122,13 @@ watch(() => isOpen.value, () => {
     align-items: center;
     border: none;
     background-color: transparent;
+    outline: none;
+    box-shadow: none;
 }
 
 .caret-wrapper:focus {
     outline: none;
+    box-shadow: none;
 }
 
 .collapse-detail-head.open-by-head {

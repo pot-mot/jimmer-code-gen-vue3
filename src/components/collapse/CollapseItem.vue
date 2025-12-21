@@ -86,6 +86,13 @@ watch(() => isOpen.value, () => {
 
 .caret-wrapper {
     cursor: pointer;
+    outline: none;
+    box-shadow: none;
+}
+
+.caret-wrapper:focus {
+    outline: none;
+    box-shadow: none;
 }
 
 .caret-left {
