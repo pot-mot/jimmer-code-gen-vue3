@@ -79,6 +79,8 @@ export const localeZhCn: MainLocale = {
     defaultValue: "默认值",
     generateResult: "生成结果",
     code: "代码",
+    enabled: "启用",
+    disabled: "禁用",
 
     model: "模型",
     group: "分组",

@@ -92,15 +92,17 @@ export const useScriptDialog = createStore(() => {
     return {
         ...useDialogOpenState(),
         scriptsStore: readonly(scriptsStore),
-        insertScript: async (scriptInfo: Omit<ScriptInfo<any>, 'id'>) => {
+        insertScript: async (scriptInfo: Omit<ScriptInfo<any>, 'id'>): Promise<string> => {
             try {
-                await withLoading('insert scripts', async () => {
+                return await withLoading('insert scripts', async () => {
                     const result = await api.generateScriptService.insert({body: scriptInfoToInsertInput(scriptInfo)})
                     scriptsStore.value.add({id: result.id, ...scriptInfo})
                     sendMessage(translate({key: "insert_success", args: [translate("script")]}), {type: "success"})
+                    return result.id
                 })
             } catch (e) {
                 sendMessage(translate({key: "insert_fail", args: [translate("script")]}), {type: "warning"})
+                throw e
             }
         },
         updateScript: async (scriptInfo: ScriptInfo<any>) => {
@@ -112,6 +114,7 @@ export const useScriptDialog = createStore(() => {
                 })
             } catch (e) {
                 sendMessage(translate({key: "update_fail", args: [translate("script")]}), {type: "warning"})
+                throw e
             }
         },
         deleteScript: async (id: string) => {
@@ -135,6 +138,7 @@ export const useScriptDialog = createStore(() => {
                         })
                     } catch (e) {
                         sendMessage(translate({key: "delete_fail", args: [translate("script")]}), {type: "warning"})
+                        throw e
                     }
                 }
             })

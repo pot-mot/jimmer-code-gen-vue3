@@ -79,6 +79,8 @@ export const localeEn: MainLocale = {
     defaultValue: "Default Value",
     generateResult: "Generate Result",
     code: "Code",
+    enabled: "Enabled",
+    disabled: "Disabled",
 
     model: "Model",
     group: "Group",

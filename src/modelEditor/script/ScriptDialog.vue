@@ -10,6 +10,7 @@ import {useScriptDialog} from "@/modelEditor/script/useScriptDialog.ts";
 import {translate} from "@/store/i18nStore.ts";
 import type {ScriptType} from "@/api/__generated/model/enums";
 import {scriptTemplates} from "@/type/__generated/scriptTemplate";
+import {cloneDeepReadonlyRaw} from "@/utils/type/cloneDeepReadonly.ts";
 
 const props = defineProps<{
     model?: Partial<Pick<Model, 'databaseType' | 'jvmLanguage'>>
@@ -26,9 +27,9 @@ const {
 const currentScriptId = ref<string>()
 const currentScriptInfo = ref<Omit<ScriptInfo<any>, 'id'>>()
 
-const handleScriptInfoSelect = (scriptInfo: ScriptInfo<any>) => {
+const handleScriptInfoSelect = (scriptInfo: DeepReadonly<ScriptInfo<any>>) => {
     currentScriptId.value = scriptInfo.id
-    currentScriptInfo.value = scriptInfo
+    currentScriptInfo.value = cloneDeepReadonlyRaw<ScriptInfo<any>>(scriptInfo)
 }
 
 const startScriptInfoInsert = async (type: ScriptType) => {
@@ -48,8 +49,8 @@ const startScriptInfoInsert = async (type: ScriptType) => {
 }
 
 const handleScriptInfoSubmit = async (scriptInfo: Omit<ScriptInfo<any>, 'id'>) => {
-    if (currentScriptId.value === undefined) {
-        await insertScript(scriptInfo)
+    if (currentScriptId.value === undefined || !scriptsStore.value.scriptInfoMap.has(currentScriptId.value)) {
+        currentScriptId.value = await insertScript(scriptInfo)
     } else {
         await updateScript({id: currentScriptId.value, ...scriptInfo})
     }
@@ -58,6 +59,13 @@ const handleScriptInfoSubmit = async (scriptInfo: Omit<ScriptInfo<any>, 'id'>) =
 const handleScriptInfoCancel = () => {
     currentScriptId.value = undefined
     currentScriptInfo.value = undefined
+}
+
+const handleScriptDelete = async (id: string) => {
+    await deleteScript(id)
+    if (currentScriptId.value === id) {
+        handleScriptInfoCancel()
+    }
 }
 </script>
 
@@ -80,13 +88,13 @@ const handleScriptInfoCancel = () => {
                     :jvm-language="model?.jvmLanguage"
                     @select="handleScriptInfoSelect"
                     @start-add="startScriptInfoInsert"
-                    @remove="deleteScript"
+                    @remove="handleScriptDelete"
                 />
             </Pane>
             <Pane>
                 <GeneratorScriptEditor
                     v-if="currentScriptInfo"
-                    :script-info="currentScriptInfo"
+                    v-model="currentScriptInfo"
                     @submit="handleScriptInfoSubmit"
                     @cancel="handleScriptInfoCancel"
                 />

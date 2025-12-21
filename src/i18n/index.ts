@@ -77,6 +77,8 @@ export type MainLocale = {
     defaultValue: string
     generateResult: string
     code: string
+    enabled: string
+    disabled: string
 
     model: string
     group: string

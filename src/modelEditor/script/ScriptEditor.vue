@@ -12,22 +12,22 @@ import DatabaseTypeOrAnySelect from "@/modelEditor/modelForm/databaseType/Databa
 import {sendConfirm} from "@/components/confirm/confirmApi.ts";
 import IconClose from "@/components/icons/IconClose.vue";
 
-const props = defineProps<{
-    scriptInfo: Omit<ScriptInfo<Name>, 'id'>,
-}>()
+const scriptInfo = defineModel<Omit<ScriptInfo<Name>, 'id'>>({
+    required: true
+})
 
 const emits = defineEmits<{
     (e: 'submit', result: Omit<ScriptInfo<Name>, 'id'>): void
     (e: 'cancel'): void
 }>()
 
-const code = ref(props.scriptInfo.script.code)
-watch(() => props.scriptInfo.script.code, () => {
-    code.value = props.scriptInfo.script.code
+const code = ref(scriptInfo.value.script.code)
+watch(() => scriptInfo.value.script.code, () => {
+    code.value = scriptInfo.value.script.code
 })
 const errorMessage = ref<string>()
 
-const executor = computed(() => new TsScriptExecutor(props.scriptInfo.type))
+const executor = computed(() => new TsScriptExecutor(scriptInfo.value.type))
 
 const receiveError = (error: any) => {
     if (typeof error === 'string') {
@@ -56,10 +56,10 @@ const handleCancel = () => {
 
 const handleSubmit = async () => {
     try {
-        const scriptResult = await createTsScript(props.scriptInfo.type, code.value, executor.value)
+        const scriptResult = await createTsScript(scriptInfo.value.type, code.value, executor.value)
         if (scriptResult.valid) {
             emits('submit', {
-                ...props.scriptInfo,
+                ...scriptInfo.value,
                 script: scriptResult.script
             })
         } else {
@@ -82,22 +82,29 @@ const handleKeyDown = (e: KeyboardEvent) => {
 
 <template>
     <div class="generate-script-editor" tabindex="-1" @keydown="handleKeyDown">
-        <div class="top-toolbar">
+        <div class="script-editor-header">
             <input
                 v-model="scriptInfo.name"
+                :placeholder="translate({key: 'input_placeholder', args: [translate('name')]})"
+                style="border-radius: 0.5rem; padding: 0 0.5rem; line-height: 1.75rem;"
             >
-            <input
-                type="checkbox"
-                v-model="scriptInfo.enabled"
-            >
-            <JvmLanguageOrAnySelect
-                v-model="scriptInfo.jvmLanguage"
-                style="width: 10rem;"
-            />
-            <DatabaseTypeOrAnySelect
-                v-model="scriptInfo.databaseType"
-                style="width: 12rem;"
-            />
+            <div style="display: flex; align-items: center; gap: 0.25rem;">
+                {{ scriptInfo.enabled ? translate('enabled') : translate('disabled') }}
+                <input
+                    type="checkbox"
+                    v-model="scriptInfo.enabled"
+                >
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <JvmLanguageOrAnySelect
+                    v-model="scriptInfo.jvmLanguage"
+                    style="width: 10rem;"
+                />
+                <DatabaseTypeOrAnySelect
+                    v-model="scriptInfo.databaseType"
+                    style="width: 12rem;"
+                />
+            </div>
         </div>
 
         <TsScriptEditor
@@ -125,16 +132,17 @@ const handleKeyDown = (e: KeyboardEvent) => {
     width: 100%;
 }
 
-.top-toolbar {
+.script-editor-header {
     height: 2rem;
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 0.5rem;
-    padding: 0 0.5rem 0.5rem;
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    grid-gap: 0.5rem;
+    padding: 0 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 .script {
-    height: calc(100% - 4.5rem);
+    height: calc(100% - 5rem);
 }
 
 .tail-toolbar {
