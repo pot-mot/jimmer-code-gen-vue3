@@ -377,8 +377,6 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
                                 @contextmenu="(e: MouseEvent) => {
                                     if (judgeTargetIsInteraction(e)) return
                                     e.preventDefault()
-                                    modelSelection.unselectAll()
-                                    modelSelection.selectGroup(data.group.id)
                                     openContextMenu(
                                         {type: 'Group', id: data.group.id},
                                         {x: e.clientX, y: e.clientY}
@@ -395,8 +393,6 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
                                 @contextmenu="(e: MouseEvent) => {
                                     if (judgeTargetIsInteraction(e)) return
                                     e.preventDefault()
-                                    modelSelection.unselectAll()
-                                    modelSelection.selectEntity(data.entity.id)
                                     openContextMenu(
                                         {type: 'Entity', id: data.entity.id},
                                         {x: e.clientX, y: e.clientY}
@@ -413,8 +409,6 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
                                 @contextmenu="(e: MouseEvent) => {
                                     if (judgeTargetIsInteraction(e)) return
                                     e.preventDefault()
-                                    modelSelection.unselectAll()
-                                    modelSelection.selectMappedSuperClass(data.mappedSuperClass.id)
                                     openContextMenu(
                                         {type: 'MappedSuperClass', id: data.mappedSuperClass.id},
                                         {x: e.clientX, y: e.clientY}
@@ -431,8 +425,6 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
                                 @contextmenu="(e: MouseEvent) => {
                                     if (judgeTargetIsInteraction(e)) return
                                     e.preventDefault()
-                                    modelSelection.unselectAll()
-                                    modelSelection.selectEmbeddableType(data.embeddableType.id)
                                     openContextMenu(
                                         {type: 'EmbeddableType', id: data.embeddableType.id},
                                         {x: e.clientX, y: e.clientY}
@@ -449,8 +441,6 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
                                 @contextmenu="(e: MouseEvent) => {
                                     if (judgeTargetIsInteraction(e)) return
                                     e.preventDefault()
-                                    modelSelection.unselectAll()
-                                    modelSelection.selectEnumeration(data.enumeration.id)
                                     openContextMenu(
                                         {type: 'Enumeration', id: data.enumeration.id},
                                         {x: e.clientX, y: e.clientY}
