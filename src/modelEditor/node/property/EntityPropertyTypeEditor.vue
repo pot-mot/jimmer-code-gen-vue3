@@ -300,11 +300,11 @@ const selectEntity = (entity: DeepReadonly<EntityWithProperties>) => {
 
         const properties = [...props.entity.properties]
         properties[props.propertyIndex] = sourceProperty
+        addAssociation(association)
         changeEntity({
             ...props.entity,
             properties
         })
-        addAssociation(association)
 
         await nextTick()
         await waitChangeSync()
