@@ -40,58 +40,65 @@ const selectScript = (id: string) => {
 </script>
 
 <template>
-    <DatabaseTypeNullableSelect v-model="filterDatabaseType"/>
-    <JvmLanguageNullableSelect v-model="filterJvmLanguage"/>
-    <CollapseDetail
-        v-for="[scriptInfoName, scriptInfos] in filterableScripts"
-        :key="scriptInfoName"
-        trigger-position="left"
-        open-trigger="head"
-        :disabled="scriptInfos.length === 0"
-    >
-        <template #head>
-            <div class="script-type-label">
-                {{ translate(scriptInfoName as ScriptTypeName) }}
-                <button
-                    class="script-add-button"
-                    @click.stop="emits('start-add', scriptInfoName as ScriptTypeName)"
-                >
-                    <IconAdd/>
-                </button>
-            </div>
-        </template>
-        <template #body>
-            <div
-                v-for="scriptInfo in scriptInfos"
-                class="script-info-item"
-                :class="{selected: scriptInfo.id === currentId}"
-                @click="selectScript(scriptInfo.id)"
+    <div class="scripts-menu">
+        <DatabaseTypeNullableSelect v-model="filterDatabaseType"/>
+        <JvmLanguageNullableSelect v-model="filterJvmLanguage"/>
+        <div class="script-items-wrapper">
+            <CollapseDetail
+                v-for="[scriptInfoName, scriptInfos] in filterableScripts"
+                :model-value="true"
+                :key="scriptInfoName"
+                trigger-position="left"
+                open-trigger="head"
+                :disabled="scriptInfos.length === 0"
             >
-                {{ scriptInfo.name }}
-                <button @click.stop="emits('remove', scriptInfo.id)">
-                    <IconDelete/>
-                </button>
-            </div>
-        </template>
-    </CollapseDetail>
+                <template #head>
+                    <div class="script-type-label">
+                        {{ translate(scriptInfoName as ScriptTypeName) }}
+                        <button
+                            class="script-add-button"
+                            @click.stop="emits('start-add', scriptInfoName as ScriptTypeName)"
+                        >
+                            <IconAdd/>
+                        </button>
+                    </div>
+                </template>
+                <template #body>
+                    <div
+                        v-for="scriptInfo in scriptInfos"
+                        class="script-item"
+                        :class="{selected: scriptInfo.id === currentId}"
+                        @click="selectScript(scriptInfo.id)"
+                    >
+                        {{ scriptInfo.name }}
+                        <button @click.stop="emits('remove', scriptInfo.id)">
+                            <IconDelete/>
+                        </button>
+                    </div>
+                </template>
+            </CollapseDetail>
+        </div>
+    </div>
 </template>
 
 <style scoped>
-.script-info-item {
-    display: flex;
-    flex-wrap: nowrap;
-    cursor: default;
-    padding-left: 1.5rem;
-}
-
-.script-info-item.selected {
-    color: var(--primary-color);
+.scripts-menu {
+    display: grid;
+    grid-gap: 0.5rem;
+    grid-template-rows: auto auto 1fr;
+    padding: 0.5rem;
+    height: 100%;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 .script-type-label {
     font-size: 0.8rem;
     display: flex;
+    flex-wrap: nowrap;
     gap: 0.5rem;
+    white-space: nowrap;
 }
 
 .script-add-button {
@@ -99,5 +106,26 @@ const selectScript = (id: string) => {
     height: 1rem;
     line-height: 1rem;
     border-radius: 0.25rem;
+}
+
+.script-items-wrapper {
+    height: 100%;
+    overflow-y: auto;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.script-item {
+    font-size: 0.8rem;
+    line-height: 1.6rem;
+    display: flex;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+    cursor: default;
+    padding-left: 1.5rem;
+}
+
+.script-item.selected {
+    color: var(--primary-color);
 }
 </style>
