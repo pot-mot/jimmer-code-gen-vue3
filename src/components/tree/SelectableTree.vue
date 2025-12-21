@@ -1,5 +1,5 @@
 <script setup lang="ts" generic="T">
-import {ref, computed, provide, watch} from 'vue'
+import {ref, computed, provide, watch, reactive} from 'vue'
 import SelectableTreeItem from './SelectableTreeItem.vue'
 import type {TreeNode} from "@/components/tree/TreeNode.ts";
 import {SelectableTreeInjectKey} from "@/components/tree/SelectableTreeInjectKey.ts";
@@ -25,7 +25,7 @@ const emits = defineEmits<{
 // 存储选中项
 const selectedIdSet = defineModel<Set<string>>('selectedIdSet', {
     required: false,
-    default: () => new Set<string>()
+    default: () => reactive(new Set<string>())
 })
 const selectedIds = computed(() => Array.from(selectedIdSet.value))
 

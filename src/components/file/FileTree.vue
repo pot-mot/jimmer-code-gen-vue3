@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, watch} from 'vue'
+import {reactive, ref, watch} from 'vue'
 import SelectableTree from "@/components/tree/SelectableTree.vue";
 import type {TreeNode} from "@/components/tree/TreeNode.ts";
 
@@ -26,7 +26,8 @@ type FileTreeNode = TreeNode<{
 
 const treeData = ref<FileTreeNode[]>([])
 const selectedPathSet = defineModel<Set<string>>('selectedPathSet', {
-    default: new Set<string>()
+    required: false,
+    default: () => reactive(new Set<string>())
 })
 
 const buildTree = (paths: Iterable<string>): FileTreeNode[] => {
