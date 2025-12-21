@@ -167,13 +167,16 @@ const handleShiftSelection = (currentId: string) => {
     // 获取范围内的所有节点ID
     const rangeIds = nodeIdsInOrder.value.slice(start, end + 1)
 
-    const newSelectSet = new Set(rangeIds)
-    const oldSelectSet = selectedIdSet.value
+    const oldSelectIds = [...selectedIdSet.value]
 
-    selectedIdSet.value = newSelectSet
+    selectedIdSet.value.clear()
+    for (const id of rangeIds) {
+        selectedIdSet.value.add(id)
+    }
+
     emits('select', {
-        selected: [...newSelectSet].map(getNodeById),
-        unselected: [...oldSelectSet].map(getNodeById)
+        selected: rangeIds.map(getNodeById),
+        unselected: oldSelectIds.map(getNodeById)
     })
 }
 
