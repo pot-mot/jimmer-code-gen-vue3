@@ -8,6 +8,8 @@ import {useModelContextMenu} from "@/modelEditor/contextMenu/useModelContextMenu
 import {computed, watch} from "vue";
 import IconEdit from "@/components/icons/IconEdit.vue";
 import {useGroupEditDialog} from "@/modelEditor/group/useGroupEditDialog.ts";
+import IconPaste from "@/components/icons/IconPaste.vue";
+import {overrideGroupProducer, useModelEditorPaste} from "@/modelEditor/contextMenu/item/useModelEditorPaste.ts";
 
 const props = defineProps<{
     id: string
@@ -37,6 +39,10 @@ watch(() => group.value, (value) => {
         close()
     }
 }, {immediate: true})
+
+const {canPaste, handlePaste} = useModelEditorPaste(
+    overrideGroupProducer(() => props.id)
+)
 
 const handleEditClick = () => {
     if (group.value) {
@@ -71,6 +77,11 @@ const handleDeleteClick = () => {
 
 <template>
     <ul class="context-menu-item-list">
+        <li @click="handlePaste" :class="{disabled: !canPaste}">
+            <IconPaste class="icon"/>
+            <span class="label">{{ translate('paste') }}</span>
+            <span class="shortcut">[Ctrl + V]</span>
+        </li>
         <li @click="handleEditClick">
             <IconEdit class="icon"/>
             <span class="label">{{ translate('edit') }}</span>

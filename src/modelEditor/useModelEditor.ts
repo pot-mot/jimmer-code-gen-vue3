@@ -1320,9 +1320,11 @@ export const useModelEditor = createStore(() => {
                 throw e
             }
         },
-        paste: async () => {
+        paste: async (
+            data?: LazyData<Partial<DeepReadonly<ModelGraphSubData>>>
+        ) => {
             try {
-                const result = await clipBoard.paste()
+                const result = await clipBoard.paste(data)
                 sendMessage(translate("paste_success_tip"), {type: "success"})
                 focus()
                 return result

@@ -7,6 +7,8 @@ import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {useModelContextMenu} from "@/modelEditor/contextMenu/useModelContextMenu.ts";
 import {computed, watch} from "vue";
 import IconAim from "@/components/icons/IconAim.vue";
+import {overrideGroupProducer, useModelEditorPaste} from "@/modelEditor/contextMenu/item/useModelEditorPaste.ts";
+import IconPaste from "@/components/icons/IconPaste.vue";
 
 const props = defineProps<{
     id: string
@@ -40,6 +42,10 @@ watch(() => enumerationAndNodeExisted.value, (value) => {
         close()
     }
 }, {immediate: true})
+
+const {canPaste, handlePaste} = useModelEditorPaste(
+    overrideGroupProducer(() => enumeration.value?.groupId)
+)
 
 const handleFocus = () => {
     focusNode(props.id)
@@ -78,6 +84,11 @@ const handleDeleteClick = () => {
 
 <template>
     <ul class="context-menu-item-list">
+        <li @click="handlePaste" v-if="canPaste">
+            <IconPaste class="icon"/>
+            <span class="label">{{ translate('paste') }}</span>
+            <span class="shortcut">[Ctrl + V]</span>
+        </li>
         <li @click="handleFocus">
             <IconAim class="icon"/>
             <span class="label">{{ translate('focus') }}</span>

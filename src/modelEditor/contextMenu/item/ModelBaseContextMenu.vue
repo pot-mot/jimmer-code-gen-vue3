@@ -7,9 +7,7 @@ import {translate} from "@/store/i18nStore.ts";
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {useModelContextMenu} from "@/modelEditor/contextMenu/useModelContextMenu.ts";
 import {subIdSetToSubIds} from "@/type/context/utils/ModelSubIds.ts";
-import {validatePartialModelGraphSubData} from "@/type/context/jsonSchema/PartialModelGraphSubData.ts";
-import {readText} from "clipboard-polyfill";
-import {onMounted, ref} from "vue";
+import {useModelEditorPaste} from "@/modelEditor/contextMenu/item/useModelEditorPaste.ts";
 
 const {
     modelSelection,
@@ -24,29 +22,7 @@ const {
     close
 } = useModelContextMenu()
 
-const canPaste = ref(false)
-
-const calcCanPaste = async () => {
-    try {
-        const text = await readText()
-        const json = JSON.parse(text)
-        canPaste.value = validatePartialModelGraphSubData(json)
-    } catch (e) {
-        console.warn(e)
-        canPaste.value = false
-    }
-}
-
-onMounted(() => {
-    calcCanPaste()
-})
-
-const handlePasteClick = async () => {
-    await calcCanPaste()
-    if (!canPaste.value) return
-    await paste()
-    close()
-}
+const {canPaste, handlePaste} = useModelEditorPaste()
 
 const handleCopyClick = async () => {
     if (modelSelectionCount.value === 0) return
@@ -69,7 +45,7 @@ const handleDeleteClick = () => {
 
 <template>
     <ul class="context-menu-item-list">
-        <li @click="handlePasteClick" :class="{disabled: !canPaste}">
+        <li @click="handlePaste" :class="{disabled: !canPaste}">
             <IconPaste class="icon"/>
             <span class="label">{{ translate('paste') }}</span>
             <span class="shortcut">[Ctrl + V]</span>
