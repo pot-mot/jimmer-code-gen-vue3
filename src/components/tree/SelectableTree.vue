@@ -18,6 +18,7 @@ const props = withDefaults(defineProps<{
 })
 
 const emits = defineEmits<{
+    (e: 'item-click', node: TreeNode<T>, event: MouseEvent): void
     (e: 'select', nodes: { selected?: TreeNode<T>[], unselected?: TreeNode<T>[] }): void
 }>()
 
@@ -237,10 +238,15 @@ const handleKeyDown = (e: KeyboardEvent) => {
     }
 }
 
+const handleItemClick = (id: string, event: MouseEvent) => {
+    emits('item-click', getNodeById(id), event)
+}
+
 // 提供给子组件的方法
 provide(SelectableTreeInjectKey, {
     selectedIdSet,
     toggleSelection,
+    treeItemClick: handleItemClick,
     openedIdSet,
     isDisabled: props.disabled,
     levelPadding: props.levelPadding,

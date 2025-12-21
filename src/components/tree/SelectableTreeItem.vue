@@ -42,10 +42,6 @@ const hasChildren = computed(() => {
     return props.node.children && props.node.children.length > 0
 })
 
-const caretShow = computed(() => {
-    return hasChildren.value ? 'visible' : 'hidden'
-})
-
 // 计算是否选中
 const isSelected = computed(() => {
     return treeSelect.selectedIdSet.value.has(props.node.id)
@@ -58,6 +54,7 @@ const isDisabled = computed(() => {
 
 // 点击处理
 const handleClick = (event: MouseEvent) => {
+    treeSelect.treeItemClick(props.node.id, event)
     if (isDisabled.value) return
     treeSelect.toggleSelection(props.node.id, event)
 }
@@ -72,16 +69,15 @@ defineSlots<{
         <CollapseDetail
             v-model="isOpen"
             trigger-position="left"
+            :disabled="!hasChildren"
+            @header-click="handleClick"
         >
             <template #head>
-                <div
-                    class="tree-node"
-                    @click="handleClick"
-                >
+                <div class="tree-node">
                     <slot :data="node.data" :node="node" :selected="isSelected" :disabled="isDisabled"/>
                 </div>
             </template>
-            <template #body v-if="hasChildren">
+            <template #body>
                 <div class="children">
                     <SelectableTreeItem
                         v-for="child in node.children"
@@ -122,10 +118,6 @@ defineSlots<{
 
 .tree-select-item.disabled > :deep(.collapse-detail-container > .collapse-detail-head) {
     background-color: var(--mask-color);
-}
-
-.tree-select-item > :deep(.collapse-detail-container > .collapse-detail-head > .caret-wrapper) {
-    visibility: v-bind(caretShow);
 }
 
 .children {

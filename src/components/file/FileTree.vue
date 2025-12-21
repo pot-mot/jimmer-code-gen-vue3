@@ -128,21 +128,11 @@ watch(() => props.paths, async () => {
     <SelectableTree
         :data="treeData"
         v-model:selected-id-set="selectedPathSet"
+        @item-click="node => handleFileClick(node)"
     >
-        <template #default="{data, node}">
-            <div
-                class="file-tree-node"
-                @click="handleFileClick(node)"
-            >
-                <div v-if="data.name">{{ data.name }}</div>
-                <div v-else>[Empty Name]</div>
-            </div>
+        <template #default="{data}">
+            <div v-if="data.name">{{ data.name }}</div>
+            <div v-else>[Empty Name]</div>
         </template>
     </SelectableTree>
 </template>
-
-<style scoped>
-.file-tree-node {
-    width: 100%;
-}
-</style>
