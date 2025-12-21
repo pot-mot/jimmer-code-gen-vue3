@@ -130,15 +130,20 @@ const handleKeyDown = (e: KeyboardEvent) => {
 .generate-script-editor {
     height: 100%;
     width: 100%;
+    overflow: hidden;
 }
 
 .script-editor-header {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
     height: 2rem;
     display: grid;
     grid-template-columns: 1fr auto auto;
     grid-gap: 0.5rem;
     padding: 0 0.5rem;
     margin-bottom: 0.5rem;
+    white-space: nowrap;
 }
 
 .script {
