@@ -117,20 +117,22 @@ export const useScriptDialog = createStore(() => {
                 throw e
             }
         },
-        deleteScript: async (id: string) => {
-            const scriptInfo = scriptsStore.value.scriptInfoMap.get(id)
-            if (!scriptInfo) return
+        deleteScript: async (ids: string[]) => {
+            const scriptInfo = ids.map(id => scriptsStore.value.scriptInfoMap.get(id))
+            if (scriptInfo.length === 0) return
             await sendConfirm({
                 title: translate({key: "delete_confirm_title", args: [translate("script")]}),
                 content: translate({
                     key: "delete_confirm_content",
-                    args: [` ${translate("script")}[${scriptInfo.name}] `]
+                    args: [` ${translate("script")}[${scriptInfo.map(info => info?.name ?? '').join(", ")}] `]
                 }),
                 onConfirm: async () => {
                     try {
                         await withLoading('delete scripts', async () => {
-                            await api.generateScriptService.delete({scriptId: id})
-                            scriptsStore.value.remove(id)
+                            await api.generateScriptService.delete({scriptIds: ids})
+                            for (const id of ids) {
+                                scriptsStore.value.remove(id)
+                            }
                             sendMessage(translate({
                                 key: "delete_success",
                                 args: [translate("script")]

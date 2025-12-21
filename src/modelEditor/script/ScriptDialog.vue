@@ -61,10 +61,12 @@ const handleScriptInfoCancel = () => {
     currentScriptInfo.value = undefined
 }
 
-const handleScriptDelete = async (id: string) => {
-    await deleteScript(id)
-    if (currentScriptId.value === id) {
-        handleScriptInfoCancel()
+const handleScriptDelete = async (ids: string[]) => {
+    await deleteScript(ids)
+    for (const id of ids) {
+        if (currentScriptId.value === id) {
+            handleScriptInfoCancel()
+        }
     }
 }
 </script>
