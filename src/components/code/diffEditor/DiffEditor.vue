@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {editor, languages, type Uri} from 'monaco-editor'
+import {editor, type Uri} from 'monaco-editor'
 import {onMounted, onUnmounted, ref, shallowRef, watch} from "vue";
 import {type CodeEditorLanguage} from "@/components/code/worker/CodeEditorWorkers.ts";
 import {defaultOptions} from "@/components/code/defaultOptions.ts";
@@ -26,8 +26,6 @@ const props = withDefaults(defineProps<{
 }>(), {
     originalEditable: true
 })
-
-languages.typescript.typescriptDefaults.setEagerModelSync(true);
 
 const editorContainer = ref<HTMLElement>()
 

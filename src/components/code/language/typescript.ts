@@ -17,6 +17,7 @@ export const getTypeDeclareFiles = (): DeepReadonly<Map<string, string>> => {
 }
 
 export const registerTypeDeclareForMonacoEditor = () => {
+    languages.typescript.typescriptDefaults.setEagerModelSync(true);
     languages.typescript.typescriptDefaults.setCompilerOptions({
         target: languages.typescript.ScriptTarget.ES2020,
         allowNonTsExtensions: true,
