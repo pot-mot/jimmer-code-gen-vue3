@@ -273,7 +273,7 @@ export const useModelDiagnoseInfo = (
         group: DeepReadonly<Group>,
         oldGroup?: DeepReadonly<Group>
     ) => {
-        if (oldGroup !== undefined) {
+        if (oldGroup !== undefined && oldGroup.name !== group.name) {
             syncSameNameGroup(oldGroup.name)
         }
         syncSameNameGroup(group.name)
@@ -287,7 +287,7 @@ export const useModelDiagnoseInfo = (
         entity: DeepReadonly<EntityWithProperties>,
         oldEntity?: DeepReadonly<EntityWithProperties>
     ) => {
-        if (oldEntity !== undefined) {
+        if (oldEntity !== undefined && oldEntity.name !== entity.name) {
             syncSameNameGroupItem(oldEntity.name)
         }
         syncSameNameGroupItem(entity.name)
@@ -303,7 +303,7 @@ export const useModelDiagnoseInfo = (
         mappedSuperClass: DeepReadonly<MappedSuperClassWithProperties>,
         oldMappedSuperClass?: DeepReadonly<MappedSuperClassWithProperties>
     ) => {
-        if (oldMappedSuperClass !== undefined) {
+        if (oldMappedSuperClass !== undefined && oldMappedSuperClass.name !== mappedSuperClass.name) {
             syncSameNameGroupItem(oldMappedSuperClass.name)
         }
         syncSameNameGroupItem(mappedSuperClass.name)
@@ -352,7 +352,7 @@ export const useModelDiagnoseInfo = (
         embeddableType: DeepReadonly<EmbeddableTypeWithProperties>,
         oldEmbeddableType?: DeepReadonly<EmbeddableTypeWithProperties>
     ) => {
-        if (oldEmbeddableType !== undefined) {
+        if (oldEmbeddableType !== undefined && oldEmbeddableType.name !== embeddableType.name) {
             syncSameNameGroupItem(oldEmbeddableType.name)
         }
         syncSameNameGroupItem(embeddableType.name)
@@ -368,7 +368,7 @@ export const useModelDiagnoseInfo = (
         enumeration: DeepReadonly<Enumeration>,
         oldEnumeration?: DeepReadonly<Enumeration>
     ) => {
-        if (oldEnumeration !== undefined) {
+        if (oldEnumeration !== undefined && oldEnumeration.name !== enumeration.name) {
             syncSameNameGroupItem(oldEnumeration.name)
         }
         syncSameNameGroupItem(enumeration.name)
@@ -385,7 +385,7 @@ export const useModelDiagnoseInfo = (
         oldAssociation?: DeepReadonly<AssociationIdOnly>
     ) => {
         if (oldAssociation !== undefined) {
-            if ("name" in oldAssociation && !oldAssociation.useNameTemplate) {
+            if ("name" in oldAssociation && "name" in association && oldAssociation.name !== association.name) {
                 syncSameNameAssociation(oldAssociation.name)
             }
         }
