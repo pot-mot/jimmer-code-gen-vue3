@@ -108,6 +108,7 @@ const handleKeyDown = async (e: KeyboardEvent) => {
         else if (e.key === "s" || e.key === "S") {
             e.preventDefault()
             await saveModel()
+            focus()
         }
 
         // 剪切板快捷键
