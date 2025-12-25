@@ -13,7 +13,7 @@ import {
     type VueFlowStore, type XYPosition
 } from "@vue-flow/core";
 import {sendMessage} from "@/components/message/messageApi.ts";
-import {blurActiveElement, judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
+import {judgeTargetIsInteraction} from "@/utils/event/judgeEventTarget.ts";
 import {jsonSortPropStringify} from "@/utils/json/jsonStringify.ts";
 import {v7} from "uuid";
 import {
@@ -899,7 +899,7 @@ export const useModelEditor = createStore(() => {
                 const rectY = clientRect.y
 
                 e.preventDefault()
-                blurActiveElement()
+                focus()
 
                 vueFlow.multiSelectionActive.value = true
                 clearGraphSelection()
