@@ -40,7 +40,7 @@ export class DatabaseService {
     }
     
     readonly get: (options: DatabaseServiceOptions['get']) => Promise<
-        DatabaseView
+        DatabaseView | undefined
     > = async(options) => {
         let _uri = '/database/get';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
@@ -50,7 +50,7 @@ export class DatabaseService {
         _uri += 'databaseId='
         _uri += encodeURIComponent(_value);
         _separator = '&';
-        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<DatabaseView>;
+        return (await this.executor({uri: _uri, method: 'POST'})) as Promise<DatabaseView | undefined>;
     }
     
     readonly insert: (options: DatabaseServiceOptions['insert']) => Promise<

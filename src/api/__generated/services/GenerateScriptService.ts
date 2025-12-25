@@ -11,11 +11,13 @@ export class GenerateScriptService {
         let _uri = '/generateScript/delete';
         let _separator = _uri.indexOf('?') === -1 ? '?' : '&';
         let _value: any = undefined;
-        _value = options.scriptId;
-        _uri += _separator
-        _uri += 'scriptId='
-        _uri += encodeURIComponent(_value);
-        _separator = '&';
+        _value = options.scriptIds;
+        for (const _item of _value) {
+            _uri += _separator
+            _uri += 'scriptIds='
+            _uri += encodeURIComponent(_item);
+            _separator = '&';
+        }
         return (await this.executor({uri: _uri, method: 'POST'})) as Promise<number>;
     }
     
@@ -67,6 +69,6 @@ export type GenerateScriptServiceOptions = {
         body: GenerateScriptUpdateInput
     }, 
     'delete': {
-        scriptId: string
+        scriptIds: Array<string>
     }
 }
