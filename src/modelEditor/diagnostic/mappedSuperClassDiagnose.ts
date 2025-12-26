@@ -41,7 +41,7 @@ export const mappedSuperClassDiagnose = (
         const nameCount = nameSets.groupItemNameSet.count(mappedSuperClass.name)
         if (nameCount > 1) {
             messages.push({
-                content: `[Duplicate Name: ${nameCount}]`,
+                content: `[Duplicate Name: ${nameCount} times]`,
                 type: "error"
             })
         }
@@ -71,6 +71,17 @@ export const mappedSuperClassDiagnose = (
         })
     }
 
+    const propertyNameSet = nameSets.mappedSuperClassPropertyNameSetMap.get(mappedSuperClass.id)
+    const innerPropertyNameSet = new Set(mappedSuperClass.properties.map(property => property.name))
+    for (const [name, count] of propertyNameSet?.countMap?.entries() ?? []) {
+        if (count > 1 && !innerPropertyNameSet.has(name)) {
+            messages.push({
+                content: `[Inherited property "${name}" is duplicate: ${count} times]`,
+                type: "error"
+            })
+        }
+    }
+
     for (const property of mappedSuperClass.properties) {
         const messages: DiagnoseMessage[] = []
         if (property.name.length === 0) {
@@ -91,10 +102,10 @@ export const mappedSuperClassDiagnose = (
                 })
             }
 
-            const nameCount = nameSets.mappedSuperClassPropertyNameSetMap.get(mappedSuperClass.id)?.count(property.name) ?? 0
+            const nameCount = propertyNameSet?.count(property.name) ?? 0
             if (nameCount > 1) {
                 messages.push({
-                    content: `[Duplicate Name: ${nameCount}]`,
+                    content: `[Duplicate Name: ${nameCount} times]`,
                     type: "error"
                 })
             }
@@ -120,10 +131,10 @@ export const mappedSuperClassDiagnose = (
                     })
                 }
 
-                const nameCount = nameSets.mappedSuperClassPropertyNameSetMap.get(mappedSuperClass.id)?.count(property.idViewName) ?? 0
+                const nameCount = propertyNameSet?.count(property.idViewName) ?? 0
                 if (nameCount > 1) {
                     messages.push({
-                        content: `[Duplicate IdView Name: ${nameCount}]`,
+                        content: `[Duplicate IdView Name: ${nameCount} times]`,
                         type: "warning"
                     })
                 }
@@ -213,7 +224,7 @@ export const mappedSuperClassDiagnose = (
     const missingDependencies = inheritInfo.missingDependencies.get(mappedSuperClass.id)
     if (missingDependencies) {
         messages.push({
-            content: `[Missing Dependencies: ${missingDependencies.size}]`,
+            content: `[Missing Dependencies: ${missingDependencies.size} times]`,
             type: "warning"
         })
     }
@@ -221,7 +232,7 @@ export const mappedSuperClassDiagnose = (
     const circularReferences = inheritInfo.circularReferences.get(mappedSuperClass.id)
     if (circularReferences) {
         messages.push({
-            content: `[Circular References: ${circularReferences.length}]`,
+            content: `[Circular References: ${circularReferences.length} times]`,
             type: "warning"
         })
     }

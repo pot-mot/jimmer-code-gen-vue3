@@ -34,7 +34,7 @@ export const enumerationDiagnose = (
         const nameCount = nameSets.groupItemNameSet.count(enumeration.name)
         if (nameCount > 1) {
             messages.push({
-                content: `[Duplicate Name: ${nameCount}]`,
+                content: `[Duplicate Name: ${nameCount} times]`,
                 type: "error"
             })
         }
@@ -60,7 +60,7 @@ export const enumerationDiagnose = (
             const nameCount = nameSets.enumerationItemNameSetMap.get(enumeration.id)?.count(item.name) ?? 0
             if (nameCount > 1) {
                 messages.push({
-                    content: `[Duplicate Name: ${nameCount}]`,
+                    content: `[Duplicate Name: ${nameCount} times]`,
                     type: "error"
                 })
             }

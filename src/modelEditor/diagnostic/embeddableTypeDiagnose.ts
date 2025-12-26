@@ -42,7 +42,7 @@ export const embeddableTypeDiagnose = (
         const nameCount = nameSets.groupItemNameSet.count(embeddableType.name)
         if (nameCount > 1) {
             messages.push({
-                content: `[Duplicate Name: ${nameCount}]`,
+                content: `[Duplicate Name: ${nameCount} times]`,
                 type: "error"
             })
         }
@@ -71,7 +71,7 @@ export const embeddableTypeDiagnose = (
             const nameCount = nameSets.embeddableTypePropertyNameSetMap.get(embeddableType.id)?.count(property.name) ?? 0
             if (nameCount > 1) {
                 messages.push({
-                    content: `[Duplicate Name: ${nameCount}]`,
+                    content: `[Duplicate Name: ${nameCount} times]`,
                     type: "error"
                 })
             }

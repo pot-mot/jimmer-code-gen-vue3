@@ -36,7 +36,7 @@ export const associationDiagnose = (
                 const nameCount = nameSets.associationNameSet.count(association.name)
                 if (nameCount > 1) {
                     messages.push({
-                        content: `[Duplicate Name: ${nameCount}]`,
+                        content: `[Duplicate Name: ${nameCount} times]`,
                         type: "error"
                     })
                 }
@@ -74,7 +74,7 @@ export const associationDiagnose = (
                 .get(association.referencedEntityId)?.count(association.mappedProperty.name) ?? 0
             if (nameCount > 1) {
                 mappedPropertyMessages.push({
-                    content: `[Duplicate Name: ${nameCount}]`,
+                    content: `[Duplicate Name: ${nameCount} times]`,
                     type: "error",
                 })
             }
@@ -105,7 +105,7 @@ export const associationDiagnose = (
                 .get(association.referencedEntityId)?.count(association.mappedProperty.idViewName) ?? 0
             if (nameCount > 1) {
                 mappedPropertyMessages.push({
-                    content: `[Duplicate IdView Name: ${nameCount}]`,
+                    content: `[Duplicate IdView Name: ${nameCount} times]`,
                     type: "warning"
                 })
             }

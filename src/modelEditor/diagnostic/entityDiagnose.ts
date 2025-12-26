@@ -45,7 +45,7 @@ export const entityDiagnose = (
         const nameCount = nameSets.groupItemNameSet.count(entity.name)
         if (nameCount > 1) {
             messages.push({
-                content: `[Duplicate Name: ${nameCount}]`,
+                content: `[Duplicate Name: ${nameCount} times]`,
                 type: "error"
             })
         }
@@ -80,6 +80,17 @@ export const entityDiagnose = (
         })
     }
 
+    const propertyNameSet = nameSets.entityPropertyNameSetMap.get(entity.id)
+    const innerPropertyNameSet = new Set(entity.properties.map(property => property.name))
+    for (const [name, count] of propertyNameSet?.countMap?.entries() ?? []) {
+        if (count > 1 && !innerPropertyNameSet.has(name)) {
+            messages.push({
+                content: `[Inherited property "${name}" is duplicate: ${count} times]`,
+                type: "error"
+            })
+        }
+    }
+
     for (const property of entity.properties) {
         const messages: DiagnoseMessage[] = []
 
@@ -101,10 +112,10 @@ export const entityDiagnose = (
                 })
             }
 
-            const nameCount = nameSets.entityPropertyNameSetMap.get(entity.id)?.count(property.name) ?? 0
+            const nameCount = propertyNameSet?.count(property.name) ?? 0
             if (nameCount > 1) {
                 messages.push({
-                    content: `[Duplicate Name: ${nameCount}]`,
+                    content: `[Duplicate Name: ${nameCount} times]`,
                     type: "error"
                 })
             }
@@ -133,7 +144,7 @@ export const entityDiagnose = (
                 const nameCount = nameSets.entityPropertyNameSetMap.get(entity.id)?.count(property.idViewName) ?? 0
                 if (nameCount > 1) {
                     messages.push({
-                        content: `[Duplicate IdView Name: ${nameCount}]`,
+                        content: `[Duplicate IdView Name: ${nameCount} times]`,
                         type: "warning"
                     })
                 }
@@ -223,7 +234,7 @@ export const entityDiagnose = (
     const missingDependencies = inheritInfo.missingDependencies.get(entity.id)
     if (missingDependencies) {
         messages.push({
-            content: `[Missing Dependencies: ${missingDependencies.size}]`,
+            content: `[Missing Dependencies: ${missingDependencies.size} times]`,
             type: "warning"
         })
     }
@@ -231,7 +242,7 @@ export const entityDiagnose = (
     const circularReferences = inheritInfo.circularReferences.get(entity.id)
     if (circularReferences) {
         messages.push({
-            content: `[Circular References: ${circularReferences.length}]`,
+            content: `[Circular References: ${circularReferences.length} times]`,
             type: "warning"
         })
     }

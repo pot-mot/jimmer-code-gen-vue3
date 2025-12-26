@@ -25,7 +25,7 @@ export const groupDiagnose = (
         const nameCount = nameSets.groupNameSet.count(group.name)
         if (nameCount > 1) {
             messages.push({
-                content: `[Duplicate Name: ${nameCount}]`,
+                content: `[Duplicate Name: ${nameCount} times]`,
                 type: "error"
             })
         }
