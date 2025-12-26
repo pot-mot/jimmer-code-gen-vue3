@@ -1,4 +1,3 @@
-import type {MessageType} from "@/components/message/MessageItem.ts";
 import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
 import type {CommandHistory} from "@/history/commandHistory.ts";
 import {inferCommandInput, type ModelEditorHistoryCommands} from "@/modelEditor/history/ModelEditorHistory.ts";
@@ -14,9 +13,11 @@ import {
 import {groupDiagnose, type GroupDiagnose} from "@/modelEditor/diagnostic/groupDiagnose.ts";
 import {type AssociationDiagnose, associationDiagnose} from "@/modelEditor/diagnostic/associationDiagnose.ts";
 
+export type DiagnoseType = "warning" | "error" | "info"
+
 export type DiagnoseMessage = {
     content: string
-    type: MessageType
+    type: DiagnoseType
 }
 
 export type ModelDiagnoseInfo = {
