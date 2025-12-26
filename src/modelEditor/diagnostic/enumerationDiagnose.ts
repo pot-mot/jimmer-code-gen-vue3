@@ -24,10 +24,15 @@ export const enumerationDiagnose = (
             type: "error"
         })
     } else {
-        if (!checkUpperCamelName(enumeration.name)) {
+        if (!checkNoBlank(enumeration.name)) {
             messages.push({
                 content: "[Invalid Name]",
                 type: "error"
+            })
+        } else if (!checkUpperCamelName(enumeration.name)) {
+            messages.push({
+                content: "[Should use UpperCamelCase]",
+                type: "warning"
             })
         }
 

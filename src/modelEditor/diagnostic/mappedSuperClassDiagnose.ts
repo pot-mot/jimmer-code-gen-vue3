@@ -31,10 +31,15 @@ export const mappedSuperClassDiagnose = (
             type: "error"
         })
     } else {
-        if (!checkUpperCamelName(mappedSuperClass.name)) {
+        if (!checkNoBlank(mappedSuperClass.name)) {
             messages.push({
                 content: "[Invalid Name]",
                 type: "error"
+            })
+        } else if (!checkUpperCamelName(mappedSuperClass.name)) {
+            messages.push({
+                content: "[Should use UpperCamelCase]",
+                type: "warning"
             })
         }
 
