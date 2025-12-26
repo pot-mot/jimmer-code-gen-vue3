@@ -4,7 +4,8 @@ import {computed} from "vue";
 import ColorInput from "@/components/color/ColorInput.vue";
 import {presetColor} from "@/type/context/default/modelDefaults.ts";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
-import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
+import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
+import DiagnoseCount from "@/modelEditor/diagnostic/DiagnoseCount.vue";
 
 const group = defineModel<Group>({required: true})
 
@@ -22,6 +23,15 @@ const isSelected = computed(() => {
 const setToCurrentGroup = () => {
     toggleCurrentGroup({id: group.value.id})
 }
+
+const allDiagnoseMessages = computed(() => {
+    const messages: DiagnoseMessage[] = []
+    const diagnoseInfo = modelDiagnoseInfo.groupMap.get(group.value.id)
+    if (diagnoseInfo !== undefined) {
+        messages.push(...diagnoseInfo.group)
+    }
+    return messages
+})
 </script>
 
 <template>
@@ -45,8 +55,8 @@ const setToCurrentGroup = () => {
             />
         </div>
 
-        <DiagnoseViewer
-            :messages="modelDiagnoseInfo.groupMap.get(group.id)?.group"
+        <DiagnoseCount
+            :messages="allDiagnoseMessages"
         />
     </div>
 </template>

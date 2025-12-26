@@ -555,6 +555,8 @@ const handleDragEnd = (sourceId: string, targetId: string | null | undefined) =>
 .menu-item {
     width: 100%;
     min-height: 1.75rem;
+    display: flex;
+    justify-content: space-between;
 }
 
 .menu-item > :deep(.menu-label) {

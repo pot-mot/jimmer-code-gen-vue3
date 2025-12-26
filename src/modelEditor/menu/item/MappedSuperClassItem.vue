@@ -2,8 +2,9 @@
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {computed} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
-import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 import IconAbstractEntity from "@/components/icons/modelEditor/IconAbstractEntity.vue";
+import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
+import DiagnoseCount from "@/modelEditor/diagnostic/DiagnoseCount.vue";
 
 const mappedSuperClass = defineModel<MappedSuperClassWithProperties>({required: true})
 
@@ -14,6 +15,18 @@ const {
 
 const isSelected = computed(() => {
     return selectedIdSets.value.mappedSuperClassIdSet.has(mappedSuperClass.value.id)
+})
+
+const allDiagnoseMessages = computed(() => {
+    const messages: DiagnoseMessage[] = []
+    const diagnoseInfo = modelDiagnoseInfo.mappedSuperClassMap.get(mappedSuperClass.value.id)
+    if (diagnoseInfo !== undefined) {
+        messages.push(...diagnoseInfo.mappedSuperClass)
+        for (const property of Object.values(diagnoseInfo.properties)) {
+            messages.push(...property)
+        }
+    }
+    return messages
 })
 </script>
 
@@ -32,8 +45,8 @@ const isSelected = computed(() => {
             />
         </div>
 
-        <DiagnoseViewer
-            :messages="modelDiagnoseInfo.mappedSuperClassMap.get(mappedSuperClass.id)?.mappedSuperClass"
+        <DiagnoseCount
+            :messages="allDiagnoseMessages"
         />
     </div>
 </template>

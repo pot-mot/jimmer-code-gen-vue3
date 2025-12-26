@@ -2,8 +2,9 @@
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {computed} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
-import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 import IconEntity from "@/components/icons/modelEditor/IconEntity.vue";
+import DiagnoseCount from "@/modelEditor/diagnostic/DiagnoseCount.vue";
+import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
 
 const entity = defineModel<EntityWithProperties>({required: true})
 
@@ -14,6 +15,18 @@ const {
 
 const isSelected = computed(() => {
     return selectedIdSets.value.entityIdSet.has(entity.value.id)
+})
+
+const allDiagnoseMessages = computed<DiagnoseMessage[]>(() => {
+    const messages: DiagnoseMessage[] = []
+    const diagnoseInfo = modelDiagnoseInfo.entityMap.get(entity.value.id)
+    if (diagnoseInfo !== undefined) {
+        messages.push(...diagnoseInfo.entity)
+        for (const property of Object.values(diagnoseInfo.properties)) {
+            messages.push(...property)
+        }
+    }
+    return messages
 })
 </script>
 
@@ -32,8 +45,8 @@ const isSelected = computed(() => {
             />
         </div>
 
-        <DiagnoseViewer
-            :messages="modelDiagnoseInfo.entityMap.get(entity.id)?.entity"
+        <DiagnoseCount
+            :messages="allDiagnoseMessages"
         />
     </div>
 </template>

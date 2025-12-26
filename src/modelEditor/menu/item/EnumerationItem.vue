@@ -2,8 +2,9 @@
 import {useModelEditor} from "@/modelEditor/useModelEditor.ts";
 import {computed} from "vue";
 import NameCommentEditor from "@/modelEditor/nameComment/NameCommentEditor.vue";
-import DiagnoseViewer from "@/modelEditor/diagnostic/DiagnoseViewer.vue";
 import IconEnumeration from "@/components/icons/modelEditor/IconEnumeration.vue";
+import type {DiagnoseMessage} from "@/modelEditor/diagnostic/ModelDiagnoseInfo.ts";
+import DiagnoseCount from "@/modelEditor/diagnostic/DiagnoseCount.vue";
 
 const enumeration = defineModel<Enumeration>({required: true})
 
@@ -14,6 +15,15 @@ const {
 
 const isSelected = computed(() => {
     return selectedIdSets.value.enumerationIdSet.has(enumeration.value.id)
+})
+
+const allDiagnoseMessages = computed(() => {
+    const messages: DiagnoseMessage[] = []
+    const diagnoseInfo = modelDiagnoseInfo.enumerationMap.get(enumeration.value.id)
+    if (diagnoseInfo !== undefined) {
+        messages.push(...diagnoseInfo.enumeration)
+    }
+    return messages
 })
 </script>
 
@@ -32,8 +42,8 @@ const isSelected = computed(() => {
             />
         </div>
 
-        <DiagnoseViewer
-            :messages="modelDiagnoseInfo.enumerationMap.get(enumeration.id)?.enumeration"
+        <DiagnoseCount
+            :messages="allDiagnoseMessages"
         />
     </div>
 </template>
