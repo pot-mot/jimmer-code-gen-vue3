@@ -24,7 +24,7 @@ const allDiagnoseMessages = computed(() => {
     const diagnoseInfo = modelDiagnoseInfo.embeddableTypeMap.get(embeddableType.value.id)
     if (diagnoseInfo !== undefined) {
         messages.push(...diagnoseInfo.embeddableType)
-        for (const property of Object.values(diagnoseInfo.properties)) {
+        for (const property of diagnoseInfo.properties.values()) {
             messages.push(...property)
         }
     }

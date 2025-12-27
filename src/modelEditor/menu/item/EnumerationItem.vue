@@ -22,6 +22,9 @@ const allDiagnoseMessages = computed(() => {
     const diagnoseInfo = modelDiagnoseInfo.enumerationMap.get(enumeration.value.id)
     if (diagnoseInfo !== undefined) {
         messages.push(...diagnoseInfo.enumeration)
+        for (const item of diagnoseInfo.items.values()) {
+            messages.push(...item)
+        }
     }
     return messages
 })

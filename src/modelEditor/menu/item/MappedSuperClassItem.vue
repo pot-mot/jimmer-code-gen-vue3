@@ -22,7 +22,7 @@ const allDiagnoseMessages = computed(() => {
     const diagnoseInfo = modelDiagnoseInfo.mappedSuperClassMap.get(mappedSuperClass.value.id)
     if (diagnoseInfo !== undefined) {
         messages.push(...diagnoseInfo.mappedSuperClass)
-        for (const property of Object.values(diagnoseInfo.properties)) {
+        for (const property of diagnoseInfo.properties.values()) {
             messages.push(...property)
         }
     }

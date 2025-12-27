@@ -20,9 +20,10 @@ const isSelected = computed(() => {
 const allDiagnoseMessages = computed<DiagnoseMessage[]>(() => {
     const messages: DiagnoseMessage[] = []
     const diagnoseInfo = modelDiagnoseInfo.entityMap.get(entity.value.id)
+    console.log(diagnoseInfo)
     if (diagnoseInfo !== undefined) {
         messages.push(...diagnoseInfo.entity)
-        for (const property of Object.values(diagnoseInfo.properties)) {
+        for (const property of diagnoseInfo.properties.values()) {
             messages.push(...property)
         }
     }
