@@ -1,6 +1,5 @@
 import cloneDeep from "lodash-es/cloneDeep";
-import type {BaseHistory, FullUndefinedHistoryEventsArgs, HistoryEvents} from "@/history/BaseHistory.ts";
-import mitt from "mitt";
+import mitt, {type Emitter} from "mitt";
 
 export type CommandDefinition<ApplyOptions, RevertOptions = ApplyOptions> = {
     applyAction: (options: ApplyOptions) => RevertOptions
@@ -26,9 +25,9 @@ export type HistoryCommandOption<CommandMap extends CustomCommandMap, Key extend
     Omit<HistoryCommand<CommandMap, Key>, 'key'>
 
 export type SingleCommandData<CommandMap extends CustomCommandMap, Key extends keyof CommandMap = keyof CommandMap> = {
-    command: HistoryCommand<CommandMap, Key>,
-    options: Parameters<CommandMap[Key]['applyAction']>[0];
-    revertOptions: Parameters<CommandMap[Key]['revertAction']>[0],
+    command: HistoryCommand<CommandMap, Key>
+    options: Parameters<CommandMap[Key]['applyAction']>[0]
+    revertOptions: Parameters<CommandMap[Key]['revertAction']>[0]
 }
 
 export type BatchCommandData<CommandMap extends CustomCommandMap> = CommandData<CommandMap>[]
@@ -47,30 +46,36 @@ export type CommandChangeInput<CommandMap extends CustomCommandMap, Key extends 
     type: CommandChangeInputType,
 } & SingleCommandData<CommandMap, Key>
 
-export type CommandHistoryEvents<CommandMap extends CustomCommandMap> =
-    HistoryEvents<
-        Omit<FullUndefinedHistoryEventsArgs, 'beforeChangeInput' | 'changeInput' | 'undoInput' | 'redoInput'> &
-        {
-            beforeChangeInput: { key: keyof CommandMap, type: CommandChangeInputType },
-            changeInput: CommandChangeInput<CommandMap>,
-            undoInput: CommandData<CommandMap>,
-            redoInput: CommandData<CommandMap>,
-        }
-    > &
-    {
-        beforeClean: undefined,
-        clean: undefined,
-        registerCommand: { key: keyof CommandMap }
-        unregisterCommand: { key: keyof CommandMap }
-        batchStart: undefined,
-        batchStop: undefined,
-    }
+export type CommandHistoryEvents<CommandMap extends CustomCommandMap> = {
+    beforeChange: { key: keyof CommandMap, type: CommandChangeInputType }
+    change: CommandChangeInput<CommandMap>
+
+    beforeUndo: undefined
+    undo: CommandData<CommandMap>
+
+    beforeRedo: undefined
+    redo: CommandData<CommandMap>
+
+    beforeClean: undefined
+    clean: undefined
+
+    registerCommand: { key: keyof CommandMap }
+    unregisterCommand: { key: keyof CommandMap }
+
+    batchStart: undefined
+    batchStop: undefined
+}
 
 export type CommandHistory<CommandMap extends CustomCommandMap> =
-    BaseHistory<
-        CommandHistoryEvents<CommandMap>
-    > &
     {
+        eventBus: Emitter<CommandHistoryEvents<CommandMap>>
+
+        canUndo(): boolean
+        undo(): void
+
+        canRedo(): boolean
+        redo(): void
+
         clean(): void
 
         // 命令注册方法
