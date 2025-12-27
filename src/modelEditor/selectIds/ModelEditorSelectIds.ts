@@ -4,7 +4,7 @@ import mitt from "mitt";
 import {fillModelSubIds} from "@/type/context/utils/ModelSubIds.ts";
 import {findAssociationEdge} from "@/modelEditor/edge/findAssociationEdge.ts";
 import type {CommandHistory} from "@/history/commandHistory.ts";
-import {inferCommandInput, type ModelEditorHistoryCommands} from "@/modelEditor/history/ModelEditorHistory.ts";
+import {type ModelEditorHistoryCommands} from "@/modelEditor/history/ModelEditorHistory.ts";
 
 export const useModelEditorSelectIds = (
     modelEditorState: {
@@ -203,7 +203,7 @@ export const useModelEditorSelectIds = (
     }
 
     history.eventBus.on('change', (data) => {
-        if (inferCommandInput(data, "remove")) {
+        if (data.key === "remove") {
             if (data.type === "apply") {
                 for (const {data: association} of data.revertOptions.associations) {
                     unselectAssociation(association.id)

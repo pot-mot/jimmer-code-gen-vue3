@@ -1,7 +1,7 @@
 import {buildNameSet, type NameSet} from "@/utils/name/nameSet.ts";
 import {reactive, readonly} from "vue";
 import type {InheritInfo} from "@/type/context/utils/InheritInfo.ts";
-import {inferCommandInput, type ModelEditorHistoryCommands} from "@/modelEditor/history/ModelEditorHistory.ts";
+import {type ModelEditorHistoryCommands} from "@/modelEditor/history/ModelEditorHistory.ts";
 import type {CommandHistory} from "@/history/commandHistory.ts";
 
 type ReadonlyNameSet = Omit<NameSet, 'add' | 'remove' | 'nextThenAdd'>
@@ -298,6 +298,8 @@ export const useModelNameSets = (
     const associationNameMap = new Map<string, string>()
     const syncAssociation = (association: DeepReadonly<AssociationIdOnly>) => {
         if ("name" in association) {
+            console.log(association.name)
+            console.log(new Error())
             syncNameSetAndNameMap(
                 association,
                 [
@@ -364,49 +366,49 @@ export const useModelNameSets = (
 
     history.eventBus.on('change', (data) => {
         // 新增
-        if (inferCommandInput(data, "group:add")) {
+        if (data.key === "group:add") {
             if (data.type === "apply") syncGroup(getGroup(data.options.group.id))
             else if (data.type === "revert") removeGroup(data.options.group)
-        } else if (inferCommandInput(data, "entity:add")) {
+        } else if (data.key === "entity:add") {
             if (data.type === "apply") syncEntity(getEntity(data.options.entity.id))
             else if (data.type === "revert") removeEntity(data.options.entity)
-        } else if (inferCommandInput(data, "mapped-super-class:add")) {
+        } else if (data.key === "mapped-super-class:add") {
             if (data.type === "apply") syncMappedSuperClass(getMappedSuperClass(data.options.mappedSuperClass.id))
             else if (data.type === "revert") removeMappedSuperClass(data.options.mappedSuperClass)
-        } else if (inferCommandInput(data, "embeddable-type:add")) {
+        } else if (data.key === "embeddable-type:add") {
             if (data.type === "apply") syncEmbeddableType(getEmbeddableType(data.options.embeddableType.id))
             else if (data.type === "revert") removeEmbeddableType(data.options.embeddableType)
-        } else if (inferCommandInput(data, "enumeration:add")) {
+        } else if (data.key === "enumeration:add") {
             if (data.type === "apply") syncEnumeration(getEnumeration(data.options.enumeration.id))
             else if (data.type === "revert") removeEnumeration(data.options.enumeration)
-        }  else if (inferCommandInput(data, "association:add")) {
+        }  else if (data.key === "association:add") {
             if (data.type === "apply") syncAssociation(getAssociation(data.options.association.id))
             else if (data.type === "revert") removeAssociation(data.options.association)
         }
 
         // 修改
-        else if (inferCommandInput(data, "group:change")) {
+        else if (data.key === "group:change") {
             if (data.type === "apply") syncGroup(getGroup(data.options.group.id))
             else if (data.type === "revert") syncGroup(getGroup(data.revertOptions.group.id))
-        } else if (inferCommandInput(data, "entity:change")) {
+        } else if (data.key === "entity:change") {
             if (data.type === "apply") syncEntity(getEntity(data.options.entity.id))
             else if (data.type === "revert") syncEntity(getEntity(data.revertOptions.entity.id))
-        } else if (inferCommandInput(data, "mapped-super-class:change")) {
+        } else if (data.key === "mapped-super-class:change") {
             if (data.type === "apply") syncMappedSuperClass(getMappedSuperClass(data.options.mappedSuperClass.id))
             else if (data.type === "revert") syncMappedSuperClass(getMappedSuperClass(data.revertOptions.mappedSuperClass.id))
-        } else if (inferCommandInput(data, "embeddable-type:change")) {
+        } else if (data.key === "embeddable-type:change") {
             if (data.type === "apply") syncEmbeddableType(getEmbeddableType(data.options.embeddableType.id))
             else if (data.type === "revert") syncEmbeddableType(getEmbeddableType(data.revertOptions.embeddableType.id))
-        } else if (inferCommandInput(data, "enumeration:change")) {
+        } else if (data.key === "enumeration:change") {
             if (data.type === "apply") syncEnumeration(getEnumeration(data.options.enumeration.id))
             else if (data.type === "revert") syncEnumeration(getEnumeration(data.revertOptions.enumeration.id))
-        } else if (inferCommandInput(data, "association:change")) {
+        } else if (data.key === "association:change") {
             if (data.type === "apply") syncAssociation(getAssociation(data.options.association.id))
             else if (data.type === "revert") syncAssociation(getAssociation(data.revertOptions.association.id))
         }
 
         // 导入
-        else if (inferCommandInput(data, "import")) {
+        else if (data.key === "import") {
             if (data.type === "apply") {
                 for (const group of data.options.data.groups) syncGroup(getGroup(group.id))
                 for (const {data: enumeration} of data.options.data.enumerations) syncEnumeration(getEnumeration(enumeration.id))
@@ -425,7 +427,7 @@ export const useModelNameSets = (
         }
 
         // 删除
-        else if (inferCommandInput(data, "remove")) {
+        else if (data.key === "remove") {
             if (data.type === "apply") {
                 for (const {data: association} of data.revertOptions.associations) removeAssociation(association)
                 for (const {data: entity} of data.revertOptions.entities) removeEntity(entity)

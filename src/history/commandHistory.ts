@@ -42,9 +42,11 @@ const revertType = 'revert'
 const pushType = 'push'
 type CommandChangeInputType = typeof applyType | typeof revertType | typeof pushType
 
-export type CommandChangeInput<CommandMap extends CustomCommandMap, Key extends keyof CommandMap = keyof CommandMap> = {
+export type CommandChangeInput<CommandMap extends CustomCommandMap> = {
     type: CommandChangeInputType,
-} & SingleCommandData<CommandMap, Key>
+} & {
+    [K in keyof CommandMap]: { key: K } & SingleCommandData<CommandMap, K>
+}[keyof CommandMap]
 
 export type CommandHistoryEvents<CommandMap extends CustomCommandMap> = {
     beforeChange: { key: keyof CommandMap, type: CommandChangeInputType }
@@ -221,7 +223,7 @@ export const useCommandHistory = <CommandMap extends CustomCommandMap>(): Comman
         const commandData = {command, options, revertOptions}
         push(commandData)
 
-        eventBus.emit("change", {type: applyType, ...commandData})
+        eventBus.emit("change", {type: applyType, key: command.key, ...commandData})
 
         return revertOptions
     }
@@ -237,7 +239,7 @@ export const useCommandHistory = <CommandMap extends CustomCommandMap>(): Comman
         if (command !== undefined) {
             const commandData = {command, options, revertOptions}
             push(commandData)
-            eventBus.emit("change", {type: pushType, ...commandData})
+            eventBus.emit("change", {type: pushType, key: command.key, ...commandData})
         }
     }
 
@@ -254,7 +256,7 @@ export const useCommandHistory = <CommandMap extends CustomCommandMap>(): Comman
             if (newOptions !== undefined) {
                 commandData.options = newOptions
             }
-            eventBus.emit("change", {type: revertType, ...commandData})
+            eventBus.emit("change", {type: revertType, key: command.key, ...commandData})
         }
     };
 
@@ -268,7 +270,7 @@ export const useCommandHistory = <CommandMap extends CustomCommandMap>(): Comman
 
             eventBus.emit("beforeChange", {key: command.key, type: applyType})
             command.applyAction(options)
-            eventBus.emit("change", {type: applyType, ...commandData})
+            eventBus.emit("change", {type: applyType, key: command.key, ...commandData})
         }
     };
 
