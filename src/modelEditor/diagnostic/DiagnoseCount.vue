@@ -36,6 +36,7 @@ const dangerMessages = computed(() => props.messages?.filter(message => message.
     display: flex;
     gap: 0.4rem;
     padding: 0.1rem;
+    flex-wrap: nowrap;
 }
 
 .diagnose-count-item {
@@ -43,6 +44,7 @@ const dangerMessages = computed(() => props.messages?.filter(message => message.
     border: var(--border);
     border-color: var(--background-color-hover);
     border-radius: 0.25rem;
+    white-space: nowrap;
 }
 
 .count-label {
