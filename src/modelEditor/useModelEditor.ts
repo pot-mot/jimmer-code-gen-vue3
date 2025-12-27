@@ -129,7 +129,10 @@ export const useModelEditor = createStore(() => {
 
     const modelNameSets = useModelNameSets(getContextData(), inheritInfo.value, history)
 
-    const modelDiagnoseInfo = useModelDiagnoseInfo(getContextData(), inheritInfo.value, modelNameSets, history)
+    const {
+        modelDiagnoseInfo,
+        diagnose,
+    } = useModelDiagnoseInfo(getContextData(), inheritInfo.value, modelNameSets, history)
 
     const currentGroupId = ref<string>()
     const toggleCurrentGroup = ({id}: { id: string | undefined }) => {
@@ -1277,6 +1280,8 @@ export const useModelEditor = createStore(() => {
 
         modelNameSets,
         modelDiagnoseInfo,
+        diagnose,
+
         getContext,
         getModelGraphSubData,
         getModelGraphData,

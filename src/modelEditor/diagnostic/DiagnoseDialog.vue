@@ -18,10 +18,12 @@ import EnumerationItemIdViewer from "@/modelEditor/viewer/property/EnumerationIt
 import AssociationIdViewer from "@/modelEditor/viewer/AssociationIdViewer.vue";
 import MappedPropertyIdViewer from "@/modelEditor/viewer/property/MappedPropertyIdViewer.vue";
 import MappedPropertyOwnerIdViewer from "@/modelEditor/viewer/property/MappedPropertyOwnerIdViewer.vue";
+import IconRefresh from "@/components/icons/IconRefresh.vue";
 
 const {
     modelDiagnoseInfo,
     focusDiagnosticSource,
+    diagnose,
 } = useModelEditor()
 
 const {
@@ -47,6 +49,9 @@ const {
             <div class="diagnose-dialog-title">
                 {{ translate('diagnose_dialog_title') }}
                 {{ modelDiagnoseInfo.total > 0 ? `(${modelDiagnoseInfo.total})` : '' }}
+                <button @click="diagnose()">
+                    <IconRefresh/>
+                </button>
             </div>
         </template>
 
