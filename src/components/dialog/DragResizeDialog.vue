@@ -293,8 +293,8 @@ const onDragEnd = () => {
 <template>
     <Teleport to="body">
         <template v-if="openState">
-            <div class="modal">
-                <slot v-if="modal" name="modal">
+            <div v-if="modal" class="modal">
+                <slot name="modal">
                     <div class="modal-content"/>
                 </slot>
             </div>
