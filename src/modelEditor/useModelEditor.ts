@@ -186,7 +186,8 @@ export const useModelEditor = createStore(() => {
 
     const importModelGraphData = async (data: Partial<ModelGraphSubData>, options?: {
         select?: boolean,
-        fitCurrentScreenPosition?: boolean
+        fitCurrentScreenPosition?: boolean,
+        protectRepeatNames?: boolean,
     }) => {
         const vueFlow = getVueFlow()
 
@@ -253,7 +254,8 @@ export const useModelEditor = createStore(() => {
         // import into context
         modelSelection.unselectAll()
         const startPosition = options?.fitCurrentScreenPosition ? vueFlow.screenToFlowCoordinate(screenPosition.value) : undefined
-        const {ids} = history.executeCommand("import", {data: fullData, startPosition})
+        const protectRepeatNames = options?.protectRepeatNames
+        const {ids} = history.executeCommand("import", {data: fullData, startPosition, protectRepeatNames})
         await nextTick()
         await waitChangeSync()
 
@@ -713,6 +715,7 @@ export const useModelEditor = createStore(() => {
             await importModelGraphData(cloneDeepReadonlyRaw<Partial<ModelGraphSubData>>(data), {
                 select: true,
                 fitCurrentScreenPosition: true,
+                protectRepeatNames: true
             })
         },
         removeData: (data: Partial<DeepReadonly<ModelGraphSubData>>) => {

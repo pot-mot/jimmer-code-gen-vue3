@@ -104,9 +104,11 @@ export type ModelEditorHistoryCommands = {
     "import": CommandDefinition<{
         data: ModelGraphSubData,
         startPosition?: XYPosition,
+        protectRepeatNames?: boolean,
     }, {
         ids: ModelSubIds,
-        startPosition?: XYPosition
+        startPosition?: XYPosition,
+        protectRepeatNames?: boolean,
     }>
     "remove": CommandDefinition<
         ModelSubIds,
@@ -1268,13 +1270,13 @@ export const useModelEditorHistory = (
     }
 
     history.registerCommand("import", {
-        applyAction: ({data, startPosition}) => {
-            const ids = importIntoContext(data, {startPosition, protectRepeatNames: true})
-            return {ids, startPosition}
+        applyAction: ({data, startPosition, protectRepeatNames}) => {
+            const ids = importIntoContext(data, {startPosition, protectRepeatNames})
+            return {ids, startPosition, protectRepeatNames}
         },
-        revertAction: ({ids, startPosition}) => {
+        revertAction: ({ids, startPosition, protectRepeatNames}) => {
             const data = removeFromContext(ids)
-            return {data, startPosition}
+            return {data, startPosition, protectRepeatNames}
         }
     })
     history.registerCommand("remove", {
