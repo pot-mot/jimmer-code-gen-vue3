@@ -32,14 +32,12 @@ export const associationDiagnose = (
                 })
             }
 
-            if (!association.useNameTemplate) {
-                const nameCount = nameSets.associationNameSet.count(association.name)
-                if (nameCount > 1) {
-                    messages.push({
-                        content: `[Duplicate Name: ${nameCount} times]`,
-                        type: "error"
-                    })
-                }
+            const nameCount = nameSets.associationNameSet.count(association.name)
+            if (nameCount > 1) {
+                messages.push({
+                    content: `[Duplicate Name: ${nameCount} times]`,
+                    type: "error"
+                })
             }
         }
     } else {
