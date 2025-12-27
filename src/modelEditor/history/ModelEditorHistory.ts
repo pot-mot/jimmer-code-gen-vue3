@@ -1,4 +1,8 @@
-import {type CommandChangeInput, type CommandDefinition, useCommandHistory} from "@/history/commandHistory.ts";
+import {
+    type CommandChangeInput,
+    type CommandDefinition,
+    useCommandHistory
+} from "@/history/commandHistory.ts";
 import {type GraphNode, type VueFlowStore, type XYPosition} from "@vue-flow/core";
 import {computed, reactive, readonly, ref, shallowReadonly, watch} from "vue";
 import {deleteColorVar, type MenuItem, setColorVar} from "@/modelEditor/useModelEditor.ts";
@@ -114,13 +118,6 @@ export type ModelEditorHistoryCommands = {
         ModelSubIds,
         ModelGraphSubData
     >
-}
-
-export const inferCommandInput = <Key extends keyof ModelEditorHistoryCommands>(
-    data: CommandChangeInput<ModelEditorHistoryCommands>,
-    key: Key
-): data is CommandChangeInput<ModelEditorHistoryCommands, Key> => {
-    return data.command.key === key
 }
 
 export const useModelEditorHistory = (
@@ -430,12 +427,40 @@ export const useModelEditorHistory = (
         for (const edgedAssociation of contextData.associationMap.values()) {
             if (edgedAssociation.association.referencedEntityId === id) {
                 removeAssociationWatcher(edgedAssociation.association.id)
+                const oldAssociation = cloneDeepReadonlyRaw<EdgedAssociation>(edgedAssociation)
                 syncAssociationAutoChange(edgedAssociation.association, contextData)
+                const newAssociation = cloneDeepReadonlyRaw<EdgedAssociation>(edgedAssociation)
                 addAssociationWatcher(edgedAssociation.association.id)
+                const commandInput: CommandChangeInput<ModelEditorHistoryCommands> = {
+                    type: "apply",
+                    key: "association:change",
+                    command: {
+                        key:  "association:change",
+                        applyAction: updateAssociation,
+                        revertAction: updateAssociation,
+                    },
+                    options: newAssociation,
+                    revertOptions: oldAssociation,
+                }
+                history.eventBus.emit("change", commandInput)
             } else if ("sourceEntityId" in edgedAssociation.association && edgedAssociation.association.sourceEntityId === id) {
                 removeAssociationWatcher(edgedAssociation.association.id)
+                const oldAssociation = cloneDeepReadonlyRaw<EdgedAssociation>(edgedAssociation)
                 syncAssociationAutoChange(edgedAssociation.association, contextData)
+                const newAssociation = cloneDeepReadonlyRaw<EdgedAssociation>(edgedAssociation)
                 addAssociationWatcher(edgedAssociation.association.id)
+                const commandInput: CommandChangeInput<ModelEditorHistoryCommands> = {
+                    type: "apply",
+                    key: "association:change",
+                    command: {
+                        key:  "association:change",
+                        applyAction: updateAssociation,
+                        revertAction: updateAssociation,
+                    },
+                    options: newAssociation,
+                    revertOptions: oldAssociation,
+                }
+                history.eventBus.emit("change", commandInput)
             }
         }
         const newGroupId = entity.groupId
@@ -590,8 +615,22 @@ export const useModelEditorHistory = (
         for (const edgedAssociation of contextData.associationMap.values()) {
             if ("sourceAbstractEntityId" in edgedAssociation.association && edgedAssociation.association.sourceAbstractEntityId === id) {
                 removeAssociationWatcher(edgedAssociation.association.id)
+                const oldAssociation = cloneDeepReadonlyRaw<EdgedAssociation>(edgedAssociation)
                 syncAssociationAutoChange(edgedAssociation.association, contextData)
+                const newAssociation = cloneDeepReadonlyRaw<EdgedAssociation>(edgedAssociation)
                 addAssociationWatcher(edgedAssociation.association.id)
+                const commandInput: CommandChangeInput<ModelEditorHistoryCommands> = {
+                    type: "apply",
+                    key: "association:change",
+                    command: {
+                        key:  "association:change",
+                        applyAction: updateAssociation,
+                        revertAction: updateAssociation,
+                    },
+                    options: newAssociation,
+                    revertOptions: oldAssociation,
+                }
+                history.eventBus.emit("change", commandInput)
             }
         }
         const newGroupId = mappedSuperClass.groupId
@@ -1295,37 +1334,5 @@ export const useModelEditorHistory = (
         menuMap: shallowReadonly(menuMap),
         inheritInfo: readonly(inheritInfo),
         waitChangeSync,
-        noEffect: {
-            group: {
-                add: addGroup,
-                delete: revertAddGroup,
-                update: updateGroup,
-            },
-            entity: {
-                add: addEntity,
-                delete: revertAddEntity,
-                update: updateEntity,
-            },
-            mappedSuperClass: {
-                add: addMappedSuperClass,
-                delete: revertAddMappedSuperClass,
-                update: updateMappedSuperClass,
-            },
-            embeddableType: {
-                add: addEmbeddableType,
-                delete: revertAddEmbeddableType,
-                update: updateEmbeddableType,
-            },
-            enumeration: {
-                add: addEnumeration,
-                delete: revertAddEnumeration,
-                update: updateEnumeration,
-            },
-            association: {
-                add: addAssociation,
-                delete: revertAddAssociation,
-                update: updateAssociation,
-            },
-        }
     }
 }
